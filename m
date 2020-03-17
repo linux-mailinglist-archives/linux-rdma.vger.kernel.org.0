@@ -2,259 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F28C7187855
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 04:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26781187907
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 06:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgCQD7g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Mar 2020 23:59:36 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41514 "EHLO huawei.com"
+        id S1725794AbgCQFXc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 01:23:32 -0400
+Received: from mail-dm6nam10on2109.outbound.protection.outlook.com ([40.107.93.109]:22493
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726192AbgCQD7g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Mar 2020 23:59:36 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 88B36F2E64D6C5ACD4A1;
-        Tue, 17 Mar 2020 11:59:15 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Mar 2020 11:59:06 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 2/2] RDMA/hns: Optimize mhop put flow for multi-hop addressing
-Date:   Tue, 17 Mar 2020 11:55:24 +0800
-Message-ID: <1584417324-2255-3-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1584417324-2255-1-git-send-email-liweihang@huawei.com>
-References: <1584417324-2255-1-git-send-email-liweihang@huawei.com>
+        id S1725536AbgCQFXb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 01:23:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kbypH6xJYP3nCmb2s5kYkdqLE8qwLp3JnOebG/CQ5AetHpUVy5+qZRaJtLxJsQTbEOMJezP6T364FL63g+Hv2NWWmQOS+7qiaBnSD2AiR7agmLI7E49go7413fwTRfzdFY0Es8tC2If8aKw1vo3zD1wSroN/yL3MCV7liKmsZ8XEQvvEYLK6oMqIVNwCLHE+4Rg182TRe+6nkngToambWIGQF9IsRIss5IV6CYUQV1eHmLzMoVeQ7bctAfyrxnL6adJAxN5NWhQEXTzD08ATHrtrppZJ6dqswsvFw0kLYq0ZQPnrGVmkUtRLjNpTB5GRJVEWMdoGQiiTmF1TNyP6XA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LKtQzW/TeH++D4rQBIrVzbgS2SwHp6VpdoCLylUEsAc=;
+ b=JYFiAFARWiU6fNeGvCqWnKDXqirtcr2x27RqCo4fBcw3hela7mzgcji6yDy3aTduUV0KJA5w0GfqhCwlJCPWaJSWloNoiTAAEidSBNOc9ybj1PirZ5tIQ5oMvu1WCq0roBFjV/Ze9mKfyCqM3H/o1+JPXlkCtjn5q7BZ8/JnDDjuEQDCtaOm7oKQGFH+XU3jo7jXL9zZ4IgFsVRJfcQlSL7o28f3cjJDAFIneJtKIP5xK2pkRMrYEloMWjPLBomfcvHRbrkPqpxbaXkxz6Hmie06/ACZafih+fFBA2LNilcoE0700I3YDLltLAlZhdoJmDI51iMW+02sombBF9v6vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LKtQzW/TeH++D4rQBIrVzbgS2SwHp6VpdoCLylUEsAc=;
+ b=frhwbv9AVmC1XYyB8vOMbMMcUW+rvWO3jy2ogx0uTcl/Ttznka2arR07Cs8mlpgIXdbVGqXV1oRAAbEe291UicYXZ7XEfTv2UconTFxN/Ds9YZUKg88fZ9qVzxdlLkg7PhABQX0RRcS3snMCxTUGl+XMZ6h3s39GyfVE1AQ6vGs=
+Received: from BYAPR21MB1223.namprd21.prod.outlook.com (2603:10b6:a03:107::14)
+ by BYAPR21MB1334.namprd21.prod.outlook.com (2603:10b6:a03:115::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.2; Tue, 17 Mar
+ 2020 05:23:28 +0000
+Received: from BYAPR21MB1223.namprd21.prod.outlook.com
+ ([fe80::8d1f:f622:2bc1:a518]) by BYAPR21MB1223.namprd21.prod.outlook.com
+ ([fe80::8d1f:f622:2bc1:a518%8]) with mapi id 15.20.2856.001; Tue, 17 Mar 2020
+ 05:23:28 +0000
+From:   Ju-Hyoung Lee <juhlee@microsoft.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Ju-Hyoung Lee <juhlee@microsoft.com>
+Subject: Find rdma-core version
+Thread-Topic: Find rdma-core version
+Thread-Index: AdX8G/w1CIvOVTxSRQyfs/GZbAPOgw==
+Date:   Tue, 17 Mar 2020 05:23:28 +0000
+Message-ID: <BYAPR21MB1223A416AA7FE380D8DDFFC9DAF60@BYAPR21MB1223.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=juhlee@microsoft.com; 
+x-originating-ip: [2601:1c2:4b00:8ff0:9b9:5798:e241:7820]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 604cc95a-8d8c-447d-a1fb-08d7ca335359
+x-ms-traffictypediagnostic: BYAPR21MB1334:|BYAPR21MB1334:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR21MB1334A990E45DEC9B94A64951DAF60@BYAPR21MB1334.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0345CFD558
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(199004)(55016002)(186003)(7696005)(8676002)(71200400001)(5660300002)(558084003)(8990500004)(316002)(10290500003)(478600001)(81156014)(2906002)(8936002)(52536014)(86362001)(4326008)(81166006)(3480700007)(66946007)(66446008)(64756008)(66556008)(66476007)(76116006)(33656002)(6506007)(6916009)(9686003)(107886003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR21MB1334;H:BYAPR21MB1223.namprd21.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+received-spf: None (protection.outlook.com: microsoft.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WTcw3JkYsd1O+Kb7dJjAatyVvFMiSDKi5J7gws3cpDHZ1wfspUroNNhXeyy96QbK0xIt0j+MYpziQV9mAkXdXBdm+w0kBMrGFMx6yBYBe4HCFBhKP2UA/ro/xT3+8AWmnJD03E2WRQ0uTled9T4eeYJFVlp2MtKK7mrWQRKyP/BHreqSdZoLZ9+evrLNJfywFqg62DmxpCEVQsToNl0jJx8KnikXgZFl+d2eKi/YKAVQ86lct5fnDVZTpCfWFRGTYarmtsNkYwFhJV09BzTWbydbb1+wDgqlO57dOLvaPnBrLCyR87o7vUCaysN6KQ8vvy3S5E+G/Y7alKfuVOTlFYKYXT39bllALTYEdHsrqjT5NO8RS91G6AEEsOgBmWAPqBxwqDKyrqlnKSAP4+WOQ8OyOB0xY4g2nkc8GwSd3q5D4eqJeTHV3yV8sq30gL1I
+x-ms-exchange-antispam-messagedata: RiijZIfVaApoLgjVzoDxqb70dlpnMc5HKqPrVcXi2xaoHwXUapjvrIwqoQusRzPPkP6dqJe7wuFByeSIR3clRT6b4TRtHNfXWUSSQHjlOAyw4X6/xosrJjBcrnXYFLtaGd1quPEkZlh3QSlzrqN41IHeZTKIVWFP+bEUnX3jTSUXyOmYeFcT/Y/b+P8oW4QHWvR/KkLVILca9xQoVXMXDw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 604cc95a-8d8c-447d-a1fb-08d7ca335359
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2020 05:23:28.5591
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: i9kaWgsSGT9p/J1horPTRi077wBfK0MSpOejO9Vlh0gNbR8pM3WyYiz5sEbkvtOzP0CQ9R/P5Bf7WMk2ik+EXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1334
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+Hi,
 
-Optimizes hns_roce_table_mhop_get() by encapsulating code about clearing
-hem into clear_mhop_hem(), which will make the code flow clearer.
+Can anyone help me find what rdma-core version I installed in the system? I=
+t's a set of lib and utilities, but there might be a way I can verify the v=
+ersion after the official release installation.
+Any help?
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hem.c | 161 ++++++++++++-------------------
- 1 file changed, 61 insertions(+), 100 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index cc557f1..c963787 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -94,25 +94,27 @@ bool hns_roce_check_whether_mhop(struct hns_roce_dev *hr_dev, u32 type)
- 	return hop_num ? true : false;
- }
- 
--static bool hns_roce_check_hem_null(struct hns_roce_hem **hem, u64 start_idx,
--			    u32 bt_chunk_num, u64 hem_max_num)
-+static bool hns_roce_check_hem_null(struct hns_roce_hem **hem, u64 hem_idx,
-+				    u32 bt_chunk_num, u64 hem_max_num)
- {
-+	u64 start_idx = round_down(hem_idx, bt_chunk_num);
- 	u64 check_max_num = start_idx + bt_chunk_num;
- 	u64 i;
- 
- 	for (i = start_idx; (i < check_max_num) && (i < hem_max_num); i++)
--		if (hem[i])
-+		if (i != hem_idx && hem[i])
- 			return false;
- 
- 	return true;
- }
- 
--static bool hns_roce_check_bt_null(u64 **bt, u64 start_idx, u32 bt_chunk_num)
-+static bool hns_roce_check_bt_null(u64 **bt, u64 ba_idx, u32 bt_chunk_num)
- {
-+	u64 start_idx = round_down(ba_idx, bt_chunk_num);
- 	int i;
- 
- 	for (i = 0; i < bt_chunk_num; i++)
--		if (bt[start_idx + i])
-+		if (i != ba_idx && bt[start_idx + i])
- 			return false;
- 
- 	return true;
-@@ -723,116 +725,75 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
- 	return ret;
- }
- 
-+static void clear_mhop_hem(struct hns_roce_dev *hr_dev,
-+			   struct hns_roce_hem_table *table, unsigned long obj,
-+			   struct hns_roce_hem_mhop *mhop,
-+			   struct hns_roce_hem_index *index)
-+{
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	u32 hop_num = mhop->hop_num;
-+	u32 chunk_ba_num;
-+	int step_idx;
-+
-+	index->inited = HEM_INDEX_BUF;
-+	chunk_ba_num = mhop->bt_chunk_size / BA_BYTE_LEN;
-+	if (check_whether_bt_num_2(table->type, hop_num)) {
-+		if (hns_roce_check_hem_null(table->hem, index->buf,
-+					    chunk_ba_num, table->num_hem))
-+			index->inited |= HEM_INDEX_L0;
-+	} else if (check_whether_bt_num_3(table->type, hop_num)) {
-+		if (hns_roce_check_hem_null(table->hem, index->buf,
-+					    chunk_ba_num, table->num_hem)) {
-+			index->inited |= HEM_INDEX_L1;
-+			if (hns_roce_check_bt_null(table->bt_l1, index->l1,
-+						   chunk_ba_num))
-+				index->inited |= HEM_INDEX_L0;
-+		}
-+	}
-+
-+	if (table->type < HEM_TYPE_MTT) {
-+		if (hop_num == HNS_ROCE_HOP_NUM_0)
-+			step_idx = 0;
-+		else
-+			step_idx = hop_num;
-+
-+		if (hr_dev->hw->clear_hem(hr_dev, table, obj, step_idx))
-+			ibdev_warn(ibdev, "Clear hop%d HEM failed.\n", hop_num);
-+
-+		if (index->inited & HEM_INDEX_L1)
-+			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 1))
-+				ibdev_warn(ibdev, "Clear HEM step 1 failed.\n");
-+
-+		if (index->inited & HEM_INDEX_L0)
-+			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
-+				ibdev_warn(ibdev, "Clear HEM step 0 failed.\n");
-+	}
-+}
-+
- static void hns_roce_table_mhop_put(struct hns_roce_dev *hr_dev,
- 				    struct hns_roce_hem_table *table,
- 				    unsigned long obj,
- 				    int check_refcount)
- {
--	struct device *dev = hr_dev->dev;
--	struct hns_roce_hem_mhop mhop;
--	unsigned long mhop_obj = obj;
--	u32 bt_chunk_size;
--	u32 chunk_ba_num;
--	u32 hop_num;
--	u32 start_idx;
--	u32 bt_num;
--	u64 hem_idx;
--	u64 bt_l1_idx = 0;
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct hns_roce_hem_index index = {};
-+	struct hns_roce_hem_mhop mhop = {};
- 	int ret;
- 
--	ret = hns_roce_calc_hem_mhop(hr_dev, table, &mhop_obj, &mhop);
--	if (ret)
--		return;
--
--	bt_chunk_size = mhop.bt_chunk_size;
--	hop_num = mhop.hop_num;
--	chunk_ba_num = bt_chunk_size / BA_BYTE_LEN;
--
--	bt_num = hns_roce_get_bt_num(table->type, hop_num);
--	switch (bt_num) {
--	case 3:
--		hem_idx = mhop.l0_idx * chunk_ba_num * chunk_ba_num +
--			  mhop.l1_idx * chunk_ba_num + mhop.l2_idx;
--		bt_l1_idx = mhop.l0_idx * chunk_ba_num + mhop.l1_idx;
--		break;
--	case 2:
--		hem_idx = mhop.l0_idx * chunk_ba_num + mhop.l1_idx;
--		break;
--	case 1:
--		hem_idx = mhop.l0_idx;
--		break;
--	default:
--		dev_err(dev, "Table %d not support hop_num = %d!\n",
--			     table->type, hop_num);
-+	ret = calc_hem_config(hr_dev, table, obj, &mhop, &index);
-+	if (ret) {
-+		ibdev_err(ibdev, "calc hem config failed!\n");
- 		return;
- 	}
- 
- 	mutex_lock(&table->mutex);
--
--	if (check_refcount && (--table->hem[hem_idx]->refcount > 0)) {
-+	if (check_refcount && (--table->hem[index.buf]->refcount > 0)) {
- 		mutex_unlock(&table->mutex);
- 		return;
- 	}
- 
--	if (table->type < HEM_TYPE_MTT && hop_num == 1) {
--		if (hr_dev->hw->clear_hem(hr_dev, table, obj, 1))
--			dev_warn(dev, "Clear HEM base address failed.\n");
--	} else if (table->type < HEM_TYPE_MTT && hop_num == 2) {
--		if (hr_dev->hw->clear_hem(hr_dev, table, obj, 2))
--			dev_warn(dev, "Clear HEM base address failed.\n");
--	} else if (table->type < HEM_TYPE_MTT &&
--		   hop_num == HNS_ROCE_HOP_NUM_0) {
--		if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
--			dev_warn(dev, "Clear HEM base address failed.\n");
--	}
--
--	/*
--	 * free buffer space chunk for QPC/MTPT/CQC/SRQC/SCCC.
--	 * free bt space chunk for MTT/CQE.
--	 */
--	hns_roce_free_hem(hr_dev, table->hem[hem_idx]);
--	table->hem[hem_idx] = NULL;
--
--	if (check_whether_bt_num_2(table->type, hop_num)) {
--		start_idx = mhop.l0_idx * chunk_ba_num;
--		if (hns_roce_check_hem_null(table->hem, start_idx,
--					    chunk_ba_num, table->num_hem)) {
--			if (table->type < HEM_TYPE_MTT &&
--			    hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
--				dev_warn(dev, "Clear HEM base address failed.\n");
--
--			dma_free_coherent(dev, bt_chunk_size,
--					  table->bt_l0[mhop.l0_idx],
--					  table->bt_l0_dma_addr[mhop.l0_idx]);
--			table->bt_l0[mhop.l0_idx] = NULL;
--		}
--	} else if (check_whether_bt_num_3(table->type, hop_num)) {
--		start_idx = mhop.l0_idx * chunk_ba_num * chunk_ba_num +
--			    mhop.l1_idx * chunk_ba_num;
--		if (hns_roce_check_hem_null(table->hem, start_idx,
--					    chunk_ba_num, table->num_hem)) {
--			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 1))
--				dev_warn(dev, "Clear HEM base address failed.\n");
--
--			dma_free_coherent(dev, bt_chunk_size,
--					  table->bt_l1[bt_l1_idx],
--					  table->bt_l1_dma_addr[bt_l1_idx]);
--			table->bt_l1[bt_l1_idx] = NULL;
--
--			start_idx = mhop.l0_idx * chunk_ba_num;
--			if (hns_roce_check_bt_null(table->bt_l1, start_idx,
--						   chunk_ba_num)) {
--				if (hr_dev->hw->clear_hem(hr_dev, table, obj,
--							  0))
--					dev_warn(dev, "Clear HEM base address failed.\n");
--
--				dma_free_coherent(dev, bt_chunk_size,
--					    table->bt_l0[mhop.l0_idx],
--					    table->bt_l0_dma_addr[mhop.l0_idx]);
--				table->bt_l0[mhop.l0_idx] = NULL;
--			}
--		}
--	}
-+	clear_mhop_hem(hr_dev, table, obj, &mhop, &index);
-+	free_mhop_hem(hr_dev, table, &mhop, &index);
- 
- 	mutex_unlock(&table->mutex);
- }
--- 
-2.8.1
-
+Ju
