@@ -2,163 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EC11879D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 07:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57030187C11
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 10:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgCQGqe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 02:46:34 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:33643 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgCQGqe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 02:46:34 -0400
-Received: by mail-io1-f68.google.com with SMTP id o127so7370412iof.0
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Mar 2020 23:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYc3TqkNGARcihTDAYzSKGoHrmWkzfgJOC6Y58NUrpc=;
-        b=N+hu/2zAKNgKvmerOz044tLkpjMolltoWQlN7wOIPUYjGuDpB5wZNhgSS34hHEqQWv
-         oHnJc09wpl2ccm0KIofGOc3rbcYWr8pUSU/rVKMARhEFFCsboZvv1gNS3GQlLZkjv8Bt
-         FomJpxoG8wKb4ZG7QY6EmDqRO0D6zBpEatNNgftHQYt2Z4o/p/fJBle1KDU0DpkOwJRs
-         w9mETcZR3+rNS9mqFaQ7IWi6QmfdVynEGyLBoe5bR4wzpp/+3EYetYvxBmnhun+gV9Ar
-         YYsBS7zk0uB95OIrd6dYAa6ZDBZmvhRmhVrXuJtugOSpu75Ojxdf9SY/bPb+ga1snsNa
-         kqxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYc3TqkNGARcihTDAYzSKGoHrmWkzfgJOC6Y58NUrpc=;
-        b=ojg4aUas8dtzu+/EGk/7bii9zV23mKYnuq0Rv1HKPuCNKrGmerCcS/4fMguir3O76f
-         gIzHLezDpzVXMKHGZYTFeAY5nibqd0ygSpNYcx4jvNJ6Phl9QyWqpVOGPap9x7Mtfqon
-         qMDY9V9wFwFEgzoOsnsKSmVOnqzd/r1yk16GIKWavpQtlY8z6bqs3N7vXrnEDZTHjluh
-         HSRHdFNMdmQsF6j4sRgIIKjpkQF0NMlHnLQIc/bZrDULo3I+sq085k5Zyg1BerkwLBxO
-         1G86bBM31iF2Id3BCBMWK+Tdpb3V2hv+jhUUjvEEdHdtV3cCwVlb/vezq4nwwPnjPFV8
-         OPRg==
-X-Gm-Message-State: ANhLgQ1YNcFPMo4Ml6uZj4gL0PH6fbY6BqySlCyGrbbvP2E1oEOWbZOm
-        xIKgeoJJ0KEkt7sXNYNO3izANP9+x4uewXBX1EPJAw1eQlCr
-X-Google-Smtp-Source: ADFU+vvrJkz+Uz4cFJ9sI2/Gf19IjPXpR5Pn4uoVRuBjMcCgfYfd7klv6NKwh0+PSO2J6OC1zGbD+2wDtzpuvOM3OcI=
-X-Received: by 2002:a02:cb8b:: with SMTP id u11mr3609156jap.57.1584427593155;
- Mon, 16 Mar 2020 23:46:33 -0700 (PDT)
+        id S1725872AbgCQJbe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 17 Mar 2020 05:31:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62638 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725730AbgCQJbe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 05:31:34 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02H9LlmZ082716
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 05:31:32 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ytb3p5wqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 05:31:32 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 17 Mar 2020 09:31:30 -0000
+Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
+        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 17 Mar 2020 09:31:25 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020031709312372-264063 ;
+          Tue, 17 Mar 2020 09:31:23 +0000 
+In-Reply-To: <20200316162008.GA7001@chelsio.com>
+Subject: Re: broken CRCs at NVMeF target with SIW & NVMe/TCP transports
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     sagi@grimberg.me, hch@lst.de, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org,
+        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>
+Date:   Tue, 17 Mar 2020 09:31:23 +0000
 MIME-Version: 1.0
-References: <20200311161240.30190-1-jinpu.wang@cloud.ionos.com>
- <20200311161240.30190-7-jinpu.wang@cloud.ionos.com> <20200311190156.GH31668@ziepe.ca>
- <CAHg0HuziyOuUZ48Rp5S_-A9osB==UFOTfWH0+35omiqVjogqww@mail.gmail.com>
- <20200312172517.GU31668@ziepe.ca> <CAHg0HuxmjWu2V6gN=OTsv3v6aYxDkQN=z4F4gMYAu5Wwvp1qGg@mail.gmail.com>
- <20200313122546.GC31668@ziepe.ca>
-In-Reply-To: <20200313122546.GC31668@ziepe.ca>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Tue, 17 Mar 2020 07:46:16 +0100
-Message-ID: <CAHg0Huy1UUduAGX8Qq0QG-+WkR8suAP9n2wiQUwK=dq3F0ZrOw@mail.gmail.com>
-Subject: Re: [PATCH v10 06/26] RDMA/rtrs: client: main functionality
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200316162008.GA7001@chelsio.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-KeepSent: 1E443249:92333F66-0025852E:002FF389;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 61547
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20031709-3975-0000-0000-000001E93232
+X-IBM-SpamModules-Scores: BY=0.067541; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.005233
+X-IBM-SpamModules-Versions: BY=3.00012763; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000293; SDB=6.01348900; UDB=6.00719409; IPR=6.01131308;
+ MB=3.00031260; MTD=3.00000008; XFM=3.00000015; UTC=2020-03-17 09:31:30
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-03-17 04:52:51 - 6.00011128
+x-cbparentid: 20031709-3976-0000-0000-0000359854A8
+Message-Id: <OF1E443249.92333F66-ON0025852E.002FF389-0025852E.00345020@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-17_02:2020-03-12,2020-03-17 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 1:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Mar 13, 2020 at 01:18:23PM +0100, Danil Kipnis wrote:
-> > > > > calling rcu list iteration without holding rcu_lock is wrong
-> > > > This function (add_path) along with the corresponding
-> > > > remove_path_from_arr() are the only functions modifying the
-> > > > paths_list. In both functions paths_mutex is taken so that they are
-> > > > serialized. Since the modification of the paths_list is protected by
-> > > > the mutex, the rcu_read_lock is superfluous here.
-> > >
-> > > Then don't use the _rcu functions.
-> > We need to traverse rcu list in the update-side of the code. According
-> > to the whatisRCU.rst "if list_for_each_entry_rcu() instance might be
-> > used by update-side code...then an additional lockdep expression can
-> > be added to its list of arguments..." The would be our case since we
-> > always hold a lock when doing this, but I don't see a corresponding
-> > API. We can just surround the statement with
-> > rcu_readlock/rcu_readunlock to avoid the warning.
->
-> The only case where you can avoid RCU is if the code is already
-> holding a lock preventing writes to the list, in which case you use
-> the normal list iterator.
->
-> > > > > > +     /*
-> > > > > > +      * @pcpu paths can still point to the path which is going to be
-> > > > > > +      * removed, so change the pointer manually.
-> > > > > > +      */
-> > > > > > +     for_each_possible_cpu(cpu) {
-> > > > > > +             struct rtrs_clt_sess __rcu **ppcpu_path;
-> > > > > > +
-> > > > > > +             ppcpu_path = per_cpu_ptr(clt->pcpu_path, cpu);
-> > > > > > +             if (rcu_dereference(*ppcpu_path) != sess)
-> > > > >
-> > > > > calling rcu_dereference without holding rcu_lock is wrong.
-> > > > We only need a READ_ONCE semantic here. ppcpu_path is pointing to the
-> > > > last path used for an IO and is used for the round robin multipath
-> > > > policy. I guess the call can be changed to rcu_dereference_raw to
-> > > > avoid rcu_lockdep warning. The round-robin algorithm has been reviewed
-> > > > by Paul E. McKenney, he wrote a litmus test for it:
-> > > > https://lkml.org/lkml/2018/5/28/2080.
-> > >
-> > > You can't call rcu expecting functions without holding the rcu lock -
-> > > use READ_ONCE/etc if that is what is really going on
->
-> > Look's people are using rcu_dereference_protected when dereferencing
-> > rcu pointer in update-side and have an explicit lock to protect it, as
-> > we do. Will dig into it next week.
->
-> Yes, that is right too
->
-> > > > > > +static void rtrs_clt_add_path_to_arr(struct rtrs_clt_sess *sess,
-> > > > > > +                                   struct rtrs_addr *addr)
-> > > > > > +{
-> > > > > > +     struct rtrs_clt *clt = sess->clt;
-> > > > > > +
-> > > > > > +     mutex_lock(&clt->paths_mutex);
-> > > > > > +     clt->paths_num++;
-> > > > > > +
-> > > > > > +     /*
-> > > > > > +      * Firstly increase paths_num, wait for GP and then
-> > > > > > +      * add path to the list.  Why?  Since we add path with
-> > > > > > +      * !CONNECTED state explanation is similar to what has
-> > > > > > +      * been written in rtrs_clt_remove_path_from_arr().
-> > > > > > +      */
-> > > > > > +     synchronize_rcu();
-> > > > >
-> > > > > This makes no sense to me. RCU readers cannot observe the element in
-> > > > > the list without also observing paths_num++
-> > > > Paths_num is only used to make sure a reader doesn't look for a
-> > > > CONNECTED path in the list for ever - instead he makes at most
-> > > > paths_num attempts. The reader can in fact observe paths_num++ without
-> > > > observing new element in the paths_list, but this is OK. When adding a
-> > > > new path we first increase the paths_num and them add the element to
-> > > > the list to make sure the reader will also iterate over it. When
-> > > > removing the path - the logic is opposite: we first remove element
-> > > > from the list and only then decrement the paths_num.
-> > >
-> > > I don't understand how this explains why synchronize_rcu would be need
-> > > here.
-> > It is needed here so that readers who read the old (smaller) value of
-> > paths_num and are iterating over the list of paths will have a chance
-> > to reach the new path we are about to insert. Basically it is here to
-> > be symmetrical with the removal procedure: remove path,
-> > syncronize_rcu, path_num--.
->
-> How do readers see the paths_num before it is inserted into the list?
-We increase paths_num and insert element into the list while holding
-paths_mutex. The readers only do rcu_readlock and rcu_readunlock when
-iterating over the list, they do not take the paths_mutex, so there is
-a window where they can see the increased paths_num, but the element
-isn't yet in the list...
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>, sagi@grimberg.me,
+>hch@lst.de
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 03/16/2020 05:20PM
+>Cc: linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+>"Nirranjan Kirubaharan" <nirranjan@chelsio.com>, "Potnuri Bharat
+>Teja" <bharat@chelsio.com>
+>Subject: [EXTERNAL] broken CRCs at NVMeF target with SIW & NVMe/TCP
+>transports
 >
-> Jason
+>I'm seeing broken CRCs at NVMeF target while running the below
+>program
+>at host. Here RDMA transport is SoftiWARP, but I'm also seeing the
+>same issue with NVMe/TCP aswell.
+>
+>It appears to me that the same buffer is being rewritten by the
+>application/ULP before getting the completion for the previous
+>requests.
+>getting the completion for the previous requests. HW based
+>HW based trasports(like iw_cxgb4) are not showing this issue because
+>they copy/DMA and then compute the CRC on copied buffer.
+>
+
+Thanks Krishna!
+
+Yes, I see those errors as well. For TCP/NVMeF, I see it if
+the data digest is enabled, which is functional similar to
+have CRC enabled for iWarp. This appears to be your suggested
+'-G' command line switch during TCP connect.
+
+For SoftiWarp at host side and iWarp hardware at target side,
+CRC gets enabled. Then I see that problem at host side for
+SEND type work requests: A page of data referenced by the
+SEND gets sometimes modified by the ULP after CRC computation
+and before the data gets handed over (copied) to TCP via
+kernel_sendmsg(), and far before the ULP reaps a work
+completion for that SEND. So the ULP sometimes touches the
+buffer after passing ownership to the provider, and before
+getting it back by a matching work completion.
+
+With siw and CRC switched off, this issue goes undetected,
+since TCP copies the buffer at some point in time, and
+only computes its TCP/IP checksum on a stable copy, or
+typically even offloaded.
+
+Another question is if it is possible that we are finally
+placing stale data, or if closing the file recovers the
+error by re-sending affected data. With my experiments,
+until now I never detected broken file content after
+file close. 
+
+
+Thanks,
+Bernard.
+
+
+
+>Please share your thoughts/comments/suggestions on this.
+>
+>Commands used:
+>--------------
+>#nvme connect -t tcp -G -a 102.1.1.6 -s 4420 -n nvme-ram0  ==> for
+>NVMe/TCP
+>#nvme connect -t rdma -a 102.1.1.6 -s 4420 -n nvme-ram0 ==> for
+>SoftiWARP
+>#mkfs.ext3 -F /dev/nvme0n1 (issue occuring frequency is more with
+>ext3
+>than ext4)
+>#mount /dev/nvme0n1 /mnt
+>#Then run the below program:
+>#include <stdlib.h>
+>#include <stdio.h>
+>#include <string.h>
+>#include <unistd.h>
+>
+>int main() {
+>	int i;
+>	char* line1 = "123";
+>	FILE* fp;
+>	while(1) {
+>		fp = fopen("/mnt/tmp.txt", "w");
+>		setvbuf(fp, NULL, _IONBF, 0);
+>		for (i=0; i<100000; i++)
+>		     if ((fwrite(line1, 1, strlen(line1), fp) !=
+>strlen(line1)))
+>			exit(1);
+>
+>		if (fclose(fp) != 0)
+>			exit(1);
+>	}
+>return 0;
+>}
+>
+>DMESG at NVMe/TCP Target:
+>[  +5.119267] nvmet_tcp: queue 2: cmd 83 pdu (6) data digest error:
+>recv
+>0xb1acaf93 expected 0xcd0b877d
+>[  +0.000017] nvmet: ctrl 1 fatal error occurred!
+>
+>
+>Thanks,
+>Krishna.
+>
+>
+
