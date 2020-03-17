@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B8F1890E7
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 22:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E9118913A
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 23:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgCQV46 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 17:56:58 -0400
-Received: from mail-eopbgr120045.outbound.protection.outlook.com ([40.107.12.45]:3632
-        "EHLO FRA01-PR2-obe.outbound.protection.outlook.com"
+        id S1726530AbgCQWTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 18:19:08 -0400
+Received: from mail-eopbgr80077.outbound.protection.outlook.com ([40.107.8.77]:28641
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726530AbgCQV46 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Mar 2020 17:56:58 -0400
+        id S1726476AbgCQWTI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 18:19:08 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dO+ABR8atUPp71iBhU6SGbTK5bf7NvI9ibbFMt+U2zNeQ32pfxmzpqyks0UfkoiGKbHHsuEP/YFczPMzkn563b/luVAj/kVNh3cZwzQg+XA2FB/jyO74FxhN/CyH+2Q/eACaiGorbxAekBRapZtaAKgWBFZEGHgtFfj1VpCwp9JGa2LOIZbstaJm7ePqQ5Pxv0CwGZ0yxH4UR6cQwWkowJwxWbkxkCf3lOZ3BnF61UxJP9mpCkIP2+JlxRMMmJnDUXENuLE97Gshj4os6rtIjNyE+xzjMweeNzvOtyOIZQ2kRg1pDhcRtUq4Xlx4O+43euOAMsjCqpB0XcXNX/tQsw==
+ b=WE6C/ElINSUNRql0US3cYd6mrhtl6UtK1dcZzFEbIjYgexbbPHj2JAqhOTz/HDxphXz0vA5YBKXLbCIXzfxVqoYx6y9wgK2P6h4kk9ntHkmONls7gUsgW1JgieTujLOa8dlvz5BoFNdq5UDTIQnpGiqhkgQkzlcraGTC//HdB/t/nSciyo1aU2IVAdr3S/4BhEtwXUNyt+WjICJ/rf26Sdb2NWG/WEMhxA6LF3qML2Pov3R5IoZcDCE8C9vRJkdtkYsUjkqMZlGwDz2i8eUkcEQfdDYLaCJnyLKPILEAh5T+EhKXhJlG/r/S70Ej2o4kUtYlfEOk5xKSqdOK/rFT1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LCOV0b9sx1SlfGSKVGBSA+gLRUuwd3Z017RAawaOGSE=;
- b=Yh6QkEezrT2BKuAPrD3gH7dpzKQP73ETDUqXUjeM8DhD7mMPK17ArQqNKUzcC3Fz87ueoDIyQMV9SEgagPwSKxR0p3QdGhfg+66ldzk1fGh/XPg8BPphYqkTfW6d8825GORiFRc/DZIDuSh9Vkt7ideJnkblkLfxJHYocc64eqxstyo45T8NoME9gC7uaq+BPvO2YjaxJ2PHAR7PGMOEf9Pyw2imjaUrY2TxkqgnFyEVTm92BNTi38tMxxzCg7ZmMbgcEX/v/00okD7ydxxm1cAkgbULWX6au+9Eq6qLpxcgXzkLZjBh4qf9C7ieP30Pv0kca02+n71ffWHS2QCpZw==
+ bh=Bd/Xgnoy3PqQJbsYjxuaNXzTRZSLdp2gEfvm3bkRKco=;
+ b=TWl0nu/eIWI5KbqhA2KFlMCC9wBPyZ0kjuDeqpzSsoOyRPaiq4xgndwvTSoRkhvxstTrSlkWGRzSUy7p0KFvIlcIDFIfNWDX0YejeyE/EIA1Dniok6TLUtNT8/BTpOx7T+0rbKiN3zvmUMkZMIgo+ZvYzWHkfTZHfcHMJHmmlH9toIYVTImxhMQ4Jc9xc1aule1vPgEJmm045X5f2PK78JuZGoqw05U2nqQmLnfjvfXQXovgMCP5P4pA/jTlHnu+v1z0ZvHCrmVUgdnHpDVh+/tFfnRpPjIyoswGrjySNtPRN7zEFZp5X2VwoqnOf1X4uqoAep7/bmfefkQ3FVB9Iw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  193.47.165.251) smtp.rcpttodomain=redhat.com smtp.mailfrom=mellanox.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=mellanox.com;
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LCOV0b9sx1SlfGSKVGBSA+gLRUuwd3Z017RAawaOGSE=;
- b=hAdL4K/3o49qFaJmcEtDHVLknudBVidL5dFjaW6q7i5yoZuF8fOvTJnhcN+GfQAxNc8HW7/QmbxqvorD8FVVe7sMPCJzxjStdJcUBt9P1PJH7TBWu2WpSZTFFfevzIrxBle64Aw3y3OQ2SUdQwqwQxSAMoZvh1pUhOeK4qZydmA=
-Received: from VI1PR0701CA0068.eurprd07.prod.outlook.com
- (2603:10a6:800:5f::30) by PR1PR05MB5483.eurprd05.prod.outlook.com
- (2603:10a6:102:c::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Tue, 17 Mar
- 2020 21:56:40 +0000
-Received: from VE1EUR03FT022.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:800:5f:cafe::1b) by VI1PR0701CA0068.outlook.office365.com
- (2603:10a6:800:5f::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.12 via Frontend
- Transport; Tue, 17 Mar 2020 21:56:40 +0000
+ bh=Bd/Xgnoy3PqQJbsYjxuaNXzTRZSLdp2gEfvm3bkRKco=;
+ b=tDtdGs+F+/7t4pcS24k0JJ/0SboGgpHOcZBNpeXrkcvSODvVDLsM8aBUyA61JzUlrmWs2fc5xY8pqHYm3lFE5pThTUCShnHH7cIYIFnos8ayA7OtHmRX/cHY24HdSOx8yJvO/S954p9cR66hIHodDOyQKgSuD5mBx4OOOjCSiZw=
+Received: from DB6PR0801CA0053.eurprd08.prod.outlook.com (2603:10a6:4:2b::21)
+ by AM0PR05MB6132.eurprd05.prod.outlook.com (2603:10a6:208:133::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18; Tue, 17 Mar
+ 2020 22:19:04 +0000
+Received: from DB5EUR03FT006.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:4:2b:cafe::23) by DB6PR0801CA0053.outlook.office365.com
+ (2603:10a6:4:2b::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.15 via Frontend
+ Transport; Tue, 17 Mar 2020 22:19:04 +0000
 Authentication-Results: spf=pass (sender IP is 193.47.165.251)
  smtp.mailfrom=mellanox.com; redhat.com; dkim=none (message not signed)
  header.d=none;redhat.com; dmarc=pass action=none header.from=mellanox.com;
@@ -45,132 +45,182 @@ Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
  193.47.165.251 as permitted sender) receiver=protection.outlook.com;
  client-ip=193.47.165.251; helo=mtlcas13.mtl.com;
 Received: from mtlcas13.mtl.com (193.47.165.251) by
- VE1EUR03FT022.mail.protection.outlook.com (10.152.18.64) with Microsoft SMTP
+ DB5EUR03FT006.mail.protection.outlook.com (10.152.20.106) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2814.13 via Frontend Transport; Tue, 17 Mar 2020 21:56:38 +0000
+ 15.20.2814.13 via Frontend Transport; Tue, 17 Mar 2020 22:19:03 +0000
 Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4; Tue, 17 Mar 2020 23:56:37
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4; Wed, 18 Mar 2020 00:19:02
  +0200
 Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Tue,
- 17 Mar 2020 23:56:36 +0200
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Wed,
+ 18 Mar 2020 00:19:02 +0200
 Received: from [172.27.14.181] (172.27.14.181) by MTLCAS01.mtl.com (10.0.8.71)
- with Microsoft SMTP Server (TLS) id 14.3.468.0; Tue, 17 Mar 2020 23:56:17
+ with Microsoft SMTP Server (TLS) id 14.3.468.0; Wed, 18 Mar 2020 00:19:00
  +0200
-Subject: Re: [PATCH 1/5] IB/core: add a simple SRQ set per PD
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        <linux-nvme@lists.infradead.org>, <sagi@grimberg.me>, <hch@lst.de>,
+Subject: Re: [PATCH 4/5] IB/core: cache the CQ completion vector
+To:     Chuck Lever <chucklever@gmail.com>
+CC:     <linux-nvme@lists.infradead.org>, <sagi@grimberg.me>, <hch@lst.de>,
         <loberman@redhat.com>, <bvanassche@acm.org>,
         <linux-rdma@vger.kernel.org>, <kbusch@kernel.org>,
-        <dledford@redhat.com>, <idanb@mellanox.com>,
-        <shlomin@mellanox.com>, <oren@mellanox.com>,
-        <vladimirk@mellanox.com>
+        <leonro@mellanox.com>, <jgg@mellanox.com>, <dledford@redhat.com>,
+        <idanb@mellanox.com>, <shlomin@mellanox.com>,
+        "Oren Duer" <oren@mellanox.com>, <vladimirk@mellanox.com>
 References: <20200317134030.152833-1-maxg@mellanox.com>
- <20200317134030.152833-2-maxg@mellanox.com> <20200317135518.GG3351@unreal>
- <46bb23ed-2941-2eaa-511a-3d0f3b09a9ed@mellanox.com>
- <20200317181036.GX13183@mellanox.com>
- <290500dc-7a89-2326-2abf-1ab9f613162e@mellanox.com>
- <20200317184338.GY13183@mellanox.com>
+ <20200317134030.152833-5-maxg@mellanox.com>
+ <448195E1-CE26-4658-8106-91BAFF115853@gmail.com>
+ <078fd456-b1bc-a103-070b-d1a8ea6bff9c@mellanox.com>
+ <82D6A70B-A201-4592-A031-F8EC581C0123@gmail.com>
 From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <d2e06706-4671-aeab-1c7e-c5bf0f3c65a4@mellanox.com>
-Date:   Tue, 17 Mar 2020 23:56:16 +0200
+Message-ID: <48d76fb8-538d-7e0b-c5c8-9b984f229a0c@mellanox.com>
+Date:   Wed, 18 Mar 2020 00:18:59 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200317184338.GY13183@mellanox.com>
+In-Reply-To: <82D6A70B-A201-4592-A031-F8EC581C0123@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Originating-IP: [172.27.14.181]
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(396003)(346002)(199004)(46966005)(336012)(16526019)(81156014)(26005)(186003)(31696002)(8676002)(86362001)(2616005)(81166006)(107886003)(37006003)(6862004)(2906002)(6636002)(54906003)(16576012)(4326008)(70586007)(356004)(53546011)(478600001)(31686004)(8936002)(316002)(36906005)(36756003)(70206006)(47076004)(5660300002)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:PR1PR05MB5483;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;A:1;
+X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(396003)(346002)(136003)(199004)(46966005)(70586007)(70206006)(86362001)(31696002)(107886003)(478600001)(47076004)(186003)(2616005)(26005)(53546011)(336012)(16526019)(356004)(54906003)(31686004)(4326008)(2906002)(5660300002)(16576012)(36756003)(81166006)(8676002)(8936002)(81156014)(6916009)(316002)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6132;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;A:1;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6ef0a246-ff5d-445e-6d43-08d7cabe11dd
-X-MS-TrafficTypeDiagnostic: PR1PR05MB5483:
-X-Microsoft-Antispam-PRVS: <PR1PR05MB548323DD6E59370B79C54844B6F60@PR1PR05MB5483.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: b1ff8467-4b2d-456f-85a3-08d7cac1339c
+X-MS-TrafficTypeDiagnostic: AM0PR05MB6132:
+X-Microsoft-Antispam-PRVS: <AM0PR05MB6132A4EB536A69770FF1E918B6F60@AM0PR05MB6132.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-Forefront-PRVS: 0345CFD558
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +/7+PfaPqTV4zAGoqp22Qi0rr1SpV1JVlxRgCFml/LBC8VYPwvShtgs27NGCsms/Q0WbCOCw/lga1/mxGZz3q3hUFI2lqdGI2sOwPvDG9NeeyYAIjSkEMLK3HKsix/zFt37+kiOCGtFI9uWD5txnbZoQ1Q/+6TXFffucr/cTUTVM+Ah0OQowH4v8R7tyYwh027jiEVL+OOARJdSMaudqRt68O0d99oR/g56r/Syqi4La4JWpLij5/aiiu5VRK7KhrqPUwqGghSFqM8WF3+ui6MV8yM60ZH9Lz3rHNjynljtkJVQZtoYmi/t1ywF/NvVaz9PKJdwLiP8VFnNdEvd1G6CFnHMH4cca8+5MX+9NkbYQ9gEdaqgwglOZZylsZB6INJsmqpdNQr+magWNm7OeaJq2SXjCMsBgfQotViu5/AuSu4sp4HYYJ4gKdghrqKBNPfdP0Huo2cDHenHLOOiFPg16S41TuO3Fhm6Fp35A/+RXABL3QpvUDqfgqW8EhHtfea9962KIEs/xIf9WNuKRhnHinKTTl1cg5jdpwaWXby0=
+X-Microsoft-Antispam-Message-Info: E3wQTS9DowfiHKUAkgHZhU67890LW48/MNIPXUWVCqpWZiMrYv+06p6JgCedvZoWYDEDrt5F/sEm5in0EL+V+01uBy9WiATdtkvF2J6td5B2wlrqT22ruVJumMoTDq45kf4+rxh9gzNlBwC/USuGWxWTdg6L6s1kDTAPbTrXYxuJxVXkY8gLHchebPka+Dv2zgRfYzlPcCvUkvIfk8tSST6inKqFF05DzNJ3/ovOHTph7nBopAppBy5DupgDD9SabPXdV3jPHVzGHmMdRVXHa31AvTM9kt03lLgLsLnwbRtFE0me/WRyHlOUFks6ydOG/ODLn/FZZzoZMFLVAVhaYd+e/6ay4JuqOYK8xf0LVZHGziwi4i6nqrlfh1eUH2q3TZ54zoXKxfyG4HbiRPLxvUCrHSPfuBZ7nB9wWTksA6aP5fnwOegZ0kQTlQsvfZXldETCE1qvE+GYmNkP/LgX2t2kO6gZaYUiZewSUILaVlFTVwZ27XP20ZWEEdBXCMOJEdnhXth89g8gmULlz5SaLPYCkd1fPO15pK1GOrGECgg=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 21:56:38.6373
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 22:19:03.7717
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ef0a246-ff5d-445e-6d43-08d7cabe11dd
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1ff8467-4b2d-456f-85a3-08d7cac1339c
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.251];Helo=[mtlcas13.mtl.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1PR05MB5483
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6132
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On 3/17/2020 8:43 PM, Jason Gunthorpe wrote:
-> On Tue, Mar 17, 2020 at 08:24:30PM +0200, Max Gurtovoy wrote:
->> On 3/17/2020 8:10 PM, Jason Gunthorpe wrote:
->>> On Tue, Mar 17, 2020 at 06:37:57PM +0200, Max Gurtovoy wrote:
->>>
->>>>>> +#include <rdma/ib_verbs.h>
->>>>>> +
->>>>>> +struct ib_srq *rdma_srq_get(struct ib_pd *pd);
->>>>>> +void rdma_srq_put(struct ib_pd *pd, struct ib_srq *srq);
->>>>> At the end, it is not get/put semantics but more add/remove.
->>>> srq = rdma_srq_add ?
->>>>
->>>> rdma_srq_remove(pd, srq) ?
->>>>
->>>> Doesn't seems right to me.
->>>>
->>>> Lets make it simple. For asking a SRQ from the PD set lets use rdma_srq_get
->>>> and returning to we'll use rdma_srq_put.
->>> Is there reference couting here? get/put should be restricted to
->>> refcounting APIs, IMHO.
->> I've added a counter (pd->srqs_used) that Leon asked to remove .
+On 3/17/2020 10:36 PM, Chuck Lever wrote:
+>
+>> On Mar 17, 2020, at 11:41 AM, Max Gurtovoy <maxg@mellanox.com> wrote:
 >>
->> There is no call to kref get/put here.
-> I didn't look closely, any kind of refcount scheme is reasonable, but
-> if add is supposed to create a new srq then that isn't 'get'..
+>>
+>> On 3/17/2020 5:19 PM, Chuck Lever wrote:
+>>> Hi Max-
+>>>
+>>>> On Mar 17, 2020, at 9:40 AM, Max Gurtovoy <maxg@mellanox.com> wrote:
+>>>>
+>>>> In some cases, e.g. when using ib_alloc_cq_any, one would like to know
+>>>> the completion vector that eventually assigned to the CQ. Cache this
+>>>> value during CQ creation.
+>>> I'm confused by the mention of the ib_alloc_cq_any() API here.
+>> Can't the user use ib_alloc_cq_any() and still want to know what is the final comp vector for his needs ?
+> If your caller cares about the final cv value, then it should not use
+> the _any API. The point of _any is that the caller really does not care,
+> the cv value is hidden because it is not consequential. Your design
+> breaks that assumption/contract.
 
-No, we don't create new srq during the "get". We create a set using 
-"rdma_srq_set_init".
+How come it breaks ?
 
-"get" will simple pull some srq from the set and "put" will push it back.
+If the ULP want to let the rdma-core layer to allocate the optimal 
+vector and rely on it to do so, why is it wrong to know the final vector 
+assigned ?
 
->
->> Do you prefer that I'll change it to be array in PD: "struct
->> ib_srq           **srqs;" ?
-> Not particularly..
->
-> It actually feels a bit weird, should there be some numa-ness involved
-> here so that the SRQ with memory on the node that is going to be
-> polling it is returned?
-
-Maybe this will be the next improvement. But for now the receive buffers 
-are allocated by the ULP.
-
-The idea is to spread the SRQs as much as possible as we do for QP/CQ to 
-reach almost the same performance.
-
-In case of 1 SRQ we can't reach good performance since many resources 
-and cores are racing for 1 resources.
-
-In case of regular RQ we allocate many buffers that most of the time are 
-idle.
-
-If we'll spread SRQs for all cores/vectors we have we'll get great perf 
-with saving resources that might be critical in MQ ULPs as NVMf/SRP 
-targets that might serve hundreds initiators with hundreds of queues each.
-
+I can remove it and change the SRP target to use ib_alloc_cq but it 
+doesn't break the contract.
 
 >
->> And update ib_alloc_pd API to get pd_attrs and allocate the array during PD
->> allocation ?
-> The API is a bit more composable if things can can be done as
-> following function calls are done that way.. I don't like the giant
-> multiplexor structs in general
+>>> Is your design somehow dependent on the way the current ib_alloc_cq_any()
+>>> selects comp_vectors? The contract for _any() is that it is an API for
+>>> callers that simply do not care about what comp_vector is chosen. There's
+>>> no guarantee that the _any() comp_vector allocator will continue to use
+>>> round-robin in the future, for instance.
+>> it's fine. I just want to make sure that I'll spread the SRQ's equally.
+> The _any algorithm is simplistic, it spreads cvs for the system as a whole.
+> All devices, all callers. You're going to get some bad degenerate cases
+> as soon as you have multiple users of the SRQ facility.
+
+how come ? This facility is per PD that is created by the ULP.
+
+
 >
-> Jason
+> So, you really want to have a more specialized comp_vector selector for
+> the SRQ facility; one that is careful to spread cvs per device, independent
+> of the global allocator, which is good enough for normal cases.
+>
+> I think your tests perform well simply because there was no other contender
+> for comp_vectors on your test system.
+
+For the testing result I did I used NVMf target that uses ib_alloc_cq so 
+it would be good anyway.
+
+According to your theory ib_alloc_cq_any will not perform well and have 
+degenerate cases anyway regardless the SRQ feature that was intended to 
+save resources and stay with great performance.
+
+>
+>
+>>> If you want to guarantee that there is an SRQ for each comp_vector and a
+>>> comp_vector for each SRQ, stick with a CQ allocation API that enables
+>>> explicit selection of the comp_vector value, and cache that value in the
+>>> caller, not in the core data structures.
+>> I'm Ok with that as well. This is exactly what we do in the nvmf/rdma but I wanted to stick also with the SRP target approach.
+>>
+>> Bart,
+>>
+>> Any objection to remove the call for ib_alloc_cq_any() from ib_srpt and use ib_alloc_cq() ?
+>>
+>>
+>>>
+>>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+>>>> ---
+>>>> drivers/infiniband/core/cq.c | 1 +
+>>>> include/rdma/ib_verbs.h      | 1 +
+>>>> 2 files changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+>>>> index 4f25b24..a7cbf52 100644
+>>>> --- a/drivers/infiniband/core/cq.c
+>>>> +++ b/drivers/infiniband/core/cq.c
+>>>> @@ -217,6 +217,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+>>>> 	cq->device = dev;
+>>>> 	cq->cq_context = private;
+>>>> 	cq->poll_ctx = poll_ctx;
+>>>> +	cq->comp_vector = comp_vector;
+>>>> 	atomic_set(&cq->usecnt, 0);
+>>>>
+>>>> 	cq->wc = kmalloc_array(IB_POLL_BATCH, sizeof(*cq->wc), GFP_KERNEL);
+>>>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+>>>> index fc8207d..0d61772 100644
+>>>> --- a/include/rdma/ib_verbs.h
+>>>> +++ b/include/rdma/ib_verbs.h
+>>>> @@ -1558,6 +1558,7 @@ struct ib_cq {
+>>>> 	struct ib_device       *device;
+>>>> 	struct ib_ucq_object   *uobject;
+>>>> 	ib_comp_handler   	comp_handler;
+>>>> +	u32			comp_vector;
+>>>> 	void                  (*event_handler)(struct ib_event *, void *);
+>>>> 	void                   *cq_context;
+>>>> 	int               	cqe;
+>>>> -- 
+>>>> 1.8.3.1
+>>>>
+>>> --
+>>> Chuck Lever
+>>> chucklever@gmail.com
+>>>
+>>>
+>>>
+> --
+> Chuck Lever
+> chucklever@gmail.com
+>
+>
+>
