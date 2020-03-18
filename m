@@ -2,130 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A58E189E0A
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 15:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC5D189E90
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 16:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgCROjM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 10:39:12 -0400
-Received: from mail-am6eur05on2058.outbound.protection.outlook.com ([40.107.22.58]:9536
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726643AbgCROjM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Mar 2020 10:39:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZSJfLOmY48aphJ5gYa8ZiejgNe1fzHHfYzGgbuZN2SoVXXicI/y+dILw/1RxJONGWJOaZTLCNKIUtsanqaDeC9XaChJtgcsqujp6/agTCO7/JbeLioghqUe5p3yinR27YuEhEyov/JvXcmbE4Noia16XsThwrDQ5jUPzR/87PPM3APVmAb4LMsheGZTmQBHWiWMpg9BBszrmubW2MKiY9pwSE8a6shWDB8BTB/WJaGnsWAmLsM/aDMHSshFuqXzJoOvKC3xsYnvjULcK1hI/kdqaBxJjQImf50w/Ql87toeyvf5bESPWYTUjApcSGbsyVD4SnC7TbCSVTzzisT4JEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dOwEtWXXh33/RkFgQDwFv18II2ipIMgyp+m4sv9lExM=;
- b=QrXnpQfFEfpW0ZkDXctudLQ1zh4GQuK/vdE/5M9OcuE0IyHmRCe+4nXHn17uAQHIM/r4Pgv998jJtqgS5TkS13sOyg7KiqTOzP567hiivKSqlfxBB5C448VUixpUHBVHBDhvw8ExlT7QHPQHpnR0D6EOIFYqMgiEwfVtWWZDJeqn59BXvfu7hOGP4u+JS88GTfVHKYUqPMRXOzav86VCLF+V0t5vpsEDa8URN1459EMhEJtILcomUJrJ0UDt6Irlopboeo5u3gNb+nQswU6mgjv0MpQvZPInm1fPiLriwKo8IAhZXddUSPyMrg0Vg37R0XsvNTdMq7o5sgFLEk1EQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dOwEtWXXh33/RkFgQDwFv18II2ipIMgyp+m4sv9lExM=;
- b=d+THGvkfUQBTOwn8BrshIlvLL0mxXrEu5IS1O42z9GIhpHG2P4tDX0r9ddLa+SzRtF11D2jjqCYPS7PIf7Jqwp8we+YXQGYyZpGYGP+vLzy4DnBd/S4Aou+SxGWzBJbxCp62J+vX11dlRSGlAG9xlOY87jAahtkK/bPok+i1Td0=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB6045.eurprd05.prod.outlook.com (20.178.126.91) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.18; Wed, 18 Mar 2020 14:39:08 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::18d2:a9ea:519:add3]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::18d2:a9ea:519:add3%7]) with mapi id 15.20.2814.025; Wed, 18 Mar 2020
- 14:39:08 +0000
-Date:   Wed, 18 Mar 2020 11:39:03 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/4] Introduce dynamic UAR allocation mode
-Message-ID: <20200318143903.GN13183@mellanox.com>
-References: <20200318124329.52111-1-leon@kernel.org>
- <20200318125459.GI13183@mellanox.com>
- <20200318131450.GY3351@unreal>
- <20200318132100.GK13183@mellanox.com>
- <20200318135631.GA126497@unreal>
- <20200318140001.GL13183@mellanox.com>
- <20200318140932.GB126814@unreal>
- <20200318141208.GM13183@mellanox.com>
- <20200318142455.GC126814@unreal>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200318142455.GC126814@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: BN3PR03CA0080.namprd03.prod.outlook.com
- (2a01:111:e400:7a4d::40) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1726762AbgCRPDB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 11:03:01 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:38033 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726619AbgCRPDA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 11:03:00 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 18 Mar 2020 17:02:57 +0200
+Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02IF2vEK008733;
+        Wed, 18 Mar 2020 17:02:57 +0200
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, bvanassche@acm.org, linux-rdma@vger.kernel.org
+Cc:     kbusch@kernel.org, leonro@mellanox.com, jgg@mellanox.com,
+        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com, rgirase@redhat.com,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH v2 0/5] nvmet-rdma/srpt: SRQ per completion vector
+Date:   Wed, 18 Mar 2020 17:02:52 +0200
+Message-Id: <20200318150257.198402-1-maxg@mellanox.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by BN3PR03CA0080.namprd03.prod.outlook.com (2a01:111:e400:7a4d::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.15 via Frontend Transport; Wed, 18 Mar 2020 14:39:07 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jEZqZ-0000t8-LE; Wed, 18 Mar 2020 11:39:03 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8a9aadb6-ccd9-433d-7514-08d7cb4a1d5c
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6045:|VI1PR05MB6045:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB6045629CA552DC3C3BC669ABCFF70@VI1PR05MB6045.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 03468CBA43
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(376002)(396003)(39860400002)(346002)(199004)(54906003)(1076003)(2906002)(66556008)(66476007)(66946007)(2616005)(9746002)(9786002)(33656002)(26005)(186003)(316002)(478600001)(36756003)(6916009)(86362001)(8936002)(8676002)(81156014)(107886003)(4326008)(52116002)(5660300002)(81166006)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6045;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LHStuT5oKUOJFvXGAZLaNVDSuU3S/xI9pVcb6uO4v8Bqq4YVtmQC4eubB6WBmK5JFsTyQpLhk+upPRPrTkqoqkeRdLX5QhjFU85fb4pYQ2eaSEn6g8NDYfi1h4MaaZHaduwoeljp2kZwcn/YtJLUPkORTwbdR+1S7CEyyfEO5kpWps7C1Qm5wVc5Li3xq1+Dcl23YnSO1xZJqCTfYd/QbQHy3RukGL4zxHTqlDQGUFd/sg0bBvmTQkiam97QeUCHVozSWb/O4L+EgP3VBfNTTZumMclOVd7Q0wTHoB4QrpOnnbzsCNcbF55/WBt9lKhF+qp26q9GG01k1Pdkh5e11mNxcVEa6TQfwU51IbbfHeiNYySzIVpjtnMgUp6JIwJ71z3JTQM6kTpPFkVQNdFNDJogJlNTYHdH2zVqKT+tJXNfZLu32jH2x9Q3wRo9ADPaBLu5Y85xW85AZcpD2R47YD1RzTX06eANlr+2b4fSFseEIgGCAuPsb/wQhpuYAgdF
-X-MS-Exchange-AntiSpam-MessageData: jrQlnZwZV505wBZHtgVP564G1LNMlAvWIN3/eYMYi7PzxQEqtNihtI9mDdsQpjjzfY+Q9LE+1NkB3t3biSdD+quassRUvBrr0ESUFB1VapcSsmpDV7Y+w+cOec7mzo1CFzm8r5/xNWRYZY6zM0s7Tw==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a9aadb6-ccd9-433d-7514-08d7cb4a1d5c
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2020 14:39:07.8900
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /retbBQC1ez7vQc2ux0vR3NMCjIb88qSyS8vpV2qcL+yVlqPvXbL2w5xIQ3NCtAY8Qkw93X3tR2a7mIb2yVtyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6045
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 04:24:55PM +0200, Leon Romanovsky wrote:
-> > > I'm ok with this approach because it helps us to find those dead
-> > > paths, but have last question, shouldn't this be achieved with
-> > > proper documentation of every flag instead of adding CONFIG_..?
-> >
-> > How do you mean?
-> >
-> > The other half of this idea is to disable obsolete un tested code to
-> > avoid potential bugs. Which requires CONFIG_?
-> 
-> The second part is achievable by distros when they will decide to
-> support starting from version X. The same decision is not so easy
-> to do in the upstream.
+This set is a renewed version of the feature for NVMEoF/RDMA target. In
+this series I've decided to implement it also for SRP target that had
+similar implementatiom (SRQ per HCA) after previous requests from the
+community. The logic is intended to save resource allocation (by sharing
+them) and utilize the locality of completions to get the best performance
+with Shared Receive Queues (SRQs). We'll create a SRQ per completion
+vector (and not per device) using a new API (basic SRQ pool, added to this
+patchset too) and associate each created QP/CQ/channel with an
+appropriate SRQ. This will also reduce the lock contention on the single
+SRQ per device (today's solution).
 
-Upstream will probably carry the code for a long, long time, that
-doesn't mean the distros don't get value by using a shorter time
-window
+For NVMEoF, my testing environment included 4 initiators (CX5, CX5, CX4,
+CX3) that were connected to 4 subsystems (1 ns per sub) throw 2 ports
+(each initiator connected to unique subsystem backed in a different
+bull_blk device) using a switch to the NVMEoF target (CX5).
+I used RoCE link layer. For SRP, I used 1 server with RoCE loopback connection
+(results are not mentioned below) for testing. Hopefully I'll get a tested-by
+signature and feedback from Laurence and Rupesh on the SRP part during the review
+process.
 
-> Let's take as an example this feature. It will be set as default from
-> rdma-core v29 and the legacy code will be guarded by
-> "if (CONFIG_INFINIBAND_MIN_RDMA_CORE_VERSION >= 29)". When will change
-> CONFIG_INFINIBAND_MIN_RDMA_CORE_VERSION to be above 29? So we will
-> delete such legacy code.
+The below results were made a while ago using NVMEoF.
 
-First the distros will decide in their own kconfigs where they want to
-set the value.
+Configuration:
+ - Irqbalancer stopped on each server
+ - set_irq_affinity.sh on each interface
+ - 2 initiators run traffic throw port 1
+ - 2 initiators run traffic throw port 2
+ - On initiator set register_always=N
+ - Fio with 12 jobs, iodepth 128
 
-Then the upstream kernel will decide some default value
+Memory consumption calculation for recv buffers (target):
+ - Multiple SRQ: SRQ_size * comp_num * ib_devs_num * inline_buffer_size
+ - Single SRQ: SRQ_size * 1 * ib_devs_num * inline_buffer_size
+ - MQ: RQ_size * CPU_num * ctrl_num * inline_buffer_size
 
-Then maybe we could talk about lowest values when enough of the user
-community uses a higher value
+Cases:
+ 1. Multiple SRQ with 1024 entries:
+    - Mem = 1024 * 24 * 2 * 4k = 192MiB (Constant number - not depend on initiators number)
+ 2. Multiple SRQ with 256 entries:
+    - Mem = 256 * 24 * 2 * 4k = 48MiB (Constant number - not depend on initiators number)
+ 3. MQ:
+    - Mem = 256 * 24 * 8 * 4k = 192MiB (Mem grows for every new created ctrl)
+ 4. Single SRQ (current SRQ implementation):
+    - Mem = 4096 * 1 * 2 * 4k = 32MiB (Constant number - not depend on initiators number)
 
-Jason
+results:
+
+BS    1.read (target CPU)   2.read (target CPU)    3.read (target CPU)   4.read (target CPU)
+---  --------------------- --------------------- --------------------- ----------------------
+1k     5.88M (80%)            5.45M (72%)            6.77M (91%)          2.2M (72%)
+
+2k     3.56M (65%)            3.45M (59%)            3.72M (64%)          2.12M (59%)
+
+4k     1.8M (33%)             1.87M (32%)            1.88M (32%)          1.59M (34%)
+
+BS    1.write (target CPU)   2.write (target CPU) 3.write (target CPU)   4.write (target CPU)
+---  --------------------- --------------------- --------------------- ----------------------
+1k     5.42M (63%)            5.14M (55%)            7.75M (82%)          2.14M (74%)
+
+2k     4.15M (56%)            4.14M (51%)            4.16M (52%)          2.08M (73%)
+
+4k     2.17M (28%)            2.17M (27%)            2.16M (28%)          1.62M (24%)
+
+
+We can see the perf improvement between Case 2 and Case 4 (same order of resource).
+We can see the benefit in resource consumption (mem and CPU) with a small perf loss
+between cases 2 and 3.
+There is still an open question between the perf differance for 1k between Case 1 and
+Case 3, but I guess we can investigate and improve it incrementaly.
+
+Thanks to Idan Burstein and Oren Duer for suggesting this nice feature.
+
+Changes from v1:
+ - rename srq_set to srq_pool (Leon)
+ - changed srpt to use ib_alloc_cq (patch 4/5)
+ - removed caching of comp_vector in ib_cq
+ - minor fixes got from Leon's review
+
+Max Gurtovoy (5):
+  IB/core: add a simple SRQ pool per PD
+  nvmet-rdma: add srq pointer to rdma_cmd
+  nvmet-rdma: use SRQ per completion vector
+  RDMA/srpt: use ib_alloc_cq instead of ib_alloc_cq_any
+  RDMA/srpt: use SRQ per completion vector
+
+ drivers/infiniband/core/Makefile      |   2 +-
+ drivers/infiniband/core/srq_pool.c    |  75 +++++++++++++
+ drivers/infiniband/core/verbs.c       |   3 +
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 187 +++++++++++++++++++++++--------
+ drivers/infiniband/ulp/srpt/ib_srpt.h |  28 ++++-
+ drivers/nvme/target/rdma.c            | 203 ++++++++++++++++++++++++++--------
+ include/rdma/ib_verbs.h               |   4 +
+ include/rdma/srq_pool.h               |  18 +++
+ 8 files changed, 419 insertions(+), 101 deletions(-)
+ create mode 100644 drivers/infiniband/core/srq_pool.c
+ create mode 100644 include/rdma/srq_pool.h
+
+-- 
+1.8.3.1
+
