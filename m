@@ -2,136 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C051896CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 09:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3556F1897A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 10:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbgCRIXL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 04:23:11 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35610 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgCRIXK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 04:23:10 -0400
-Received: by mail-wm1-f65.google.com with SMTP id m3so2183330wmi.0
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 01:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eWYN2Db9ZcqvQrB3OwtrasTgq/eyNiz5vz104R0BA2w=;
-        b=Fc/7F8BeJnANyKXD0LIUJldAiLur3AMYTZQlNA/3XLUEEJdoD9WurQp4Nw3tMjFYYG
-         NeNbbp/rdn3zaKMKEyvsnHpnsNs6Q6J/HEYvp7WAb2mzZ1RGiqW1+8pTAzT07A3xX3bS
-         FUkLExfuo17ulaIKopPd9aACwA9oos7w+HpV8DveXiKiS03Y1PXPNGq6Rg884YV2w0hU
-         MFIlniWdjO79dvYbuH1WGiYA3X80I72hl/Flk8RNiFLHzDdQILNKhUOrMPrWVkij+mby
-         3Jhx4fEgsckBuRwQQTH53mSzeqOcVOXZ+xr8RRvmnASjBTltLOfAJnRWfrPvAL9z9e8k
-         rNaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eWYN2Db9ZcqvQrB3OwtrasTgq/eyNiz5vz104R0BA2w=;
-        b=B6+LufWYDqRm0NNu/24UuVzS1GbvqxWutGrCE6k1389qpOvRTXn404QAFNpsCxTlAF
-         l6Ue8IHx6prMwzpr8o7DLRPVFjcxoFbolb13sFVNczAfrogM93QjF1mOk+FUAnfaLxek
-         acgVpOtuSa6lOV4i+nXu1YJ0Q5JKFqp6roeDn7UVl116pekr0pE1fykCyu/FLnCib59y
-         A9RFACXvp0aqQK4Uq9zo5FowNt1t0rlwFg0v8c15WCA16nuU3DRb+BoOkfjVionx1Omn
-         cU2P0J/JweeSFMUIf6pA9riUPRTW03D08cI8zVgzq7q3ravQksYCQOuc2/f0/WMQU5Sc
-         cZMQ==
-X-Gm-Message-State: ANhLgQ3XF3G3x/84Q5yErwI64kr+ey3u3uCL/kvgLOC+2dUQNyJt7Yhs
-        89BDgvhjTqPWSjhd67ej4UxaPJjCxiE=
-X-Google-Smtp-Source: ADFU+vsPJr7Yysx+oxn0l2TEPMxL/hrgB3f5c3zBbKlTW7r2jfWRBdEjoLBGPZuc84kjgLJFUfhh8w==
-X-Received: by 2002:a1c:208a:: with SMTP id g132mr3742439wmg.44.1584519312789;
-        Wed, 18 Mar 2020 01:15:12 -0700 (PDT)
-Received: from [10.0.0.57] ([5.22.133.241])
-        by smtp.googlemail.com with ESMTPSA id k133sm3020322wma.11.2020.03.18.01.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Mar 2020 01:15:12 -0700 (PDT)
-Subject: Re: Lockless behavior for CQs in userspace
-To:     Leon Romanovsky <leonro@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Andrew Boyer <aboyer@pensando.io>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-rdma@vger.kernel.org, maorg@mellanox.com
-References: <6C1A3349-65B0-4F22-8E82-1BBC22BF8CA2@pensando.io>
- <20200317150057.GJ3351@unreal>
- <F97A8269-872F-4B94-8F03-7A8E26AE0952@pensando.io>
- <20200317195153.GX20941@ziepe.ca>
- <73154a58-8d65-702a-2bf3-1d0197079ed8@dev.mellanox.co.il>
- <20200318080326.GR3351@unreal>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <826a4fd1-b7fb-6651-4939-c1a388dd0646@dev.mellanox.co.il>
-Date:   Wed, 18 Mar 2020 10:15:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727113AbgCRJNw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 05:13:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726994AbgCRJNw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 05:13:52 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EF3820767;
+        Wed, 18 Mar 2020 09:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584522831;
+        bh=K9d7Q4ibY31/9Tj95TOmMoRmMlZS3Do7zERJLvevqak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wv/5Rs6dX3i+R9gWL3Qubfsobb4NHKXjJZwD6biJGdju1r3oF967LPkT4B1GXVT5l
+         VmKl44wkaKpyJUJYk4PVleodK4DNJHLtQqcAUCTHFzEKMBvTR5oFHVs5s5qI1AvO09
+         hOPm4D0rkiVnIcas3CO+MHxBR10ddL24udOG3ykg=
+Date:   Wed, 18 Mar 2020 11:13:48 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 03/11] RDMA/efa: Use in-kernel offsetofend()
+ to check field availability
+Message-ID: <20200318091348.GS3351@unreal>
+References: <20200310091438.248429-1-leon@kernel.org>
+ <20200310091438.248429-4-leon@kernel.org>
+ <a1635b7d-004c-5721-a884-e11b3870928d@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200318080326.GR3351@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1635b7d-004c-5721-a884-e11b3870928d@amazon.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/18/2020 10:03 AM, Leon Romanovsky wrote:
-> On Wed, Mar 18, 2020 at 09:52:27AM +0200, Yishai Hadas wrote:
->> On 3/17/2020 9:51 PM, Jason Gunthorpe wrote:
->>> On Tue, Mar 17, 2020 at 11:10:15AM -0400, Andrew Boyer wrote:
->>>>
->>>>> On Mar 17, 2020, at 11:00 AM, Leon Romanovsky <leonro@mellanox.com> wrote:
->>>>>
->>>>> On Tue, Mar 17, 2020 at 10:45:08AM -0400, Andrew Boyer wrote:
->>>>>> Hello Leon,
->>>>>> I understand that we are not to create new providers that use environment variables to control locking behavior. The ‘new’ way to do it is to use thread domains and parent domains.
->>>>>>
->>>>>> However, even mlx5 still uses the env var exclusively to control lockless behavior for CQs. Do you have anything in mind for how to extend thread_domains or some other part of the API to cover the CQ case?
->>>>>
->>>>> Which parameter did you have in mind?
->>>>> I would say that all those parameters are coming from pre-rdma-core era.
->>>>>
->>>>> Doesn't this commit do what you are asking?
->>>>> https://github.com/linux-rdma/rdma-core/commit/0dbde57c59d2983e848c3dbd9ae93eaf8e7b9405
->>>>>
->>>>> Thanks
->>>>>
->>>>>>
->>>>>> Thank you,
->>>>>> Andrew
->>>>>>
->>>>
->>>> You are right - I got thrown off by this:
->>>>
->>>>> 	if (mlx5_spinlock_init(&cq->lock, !mlx5_single_threaded))
->>>>>                   goto err;
->>>>
->>>> If IBV_CREATE_CQ_ATTR_SINGLE_THREADED is set, it passes an argument
->>>> to the polling function to skip the lock calls entirely. So it
->>>> doesn’t matter that they are still enabled internally.
->>>
->>> Hmm, a thread domain should probably force
->>> IBV_CREATE_CQ_ATTR_SINGLE_THREADED during greation with the new API..
->>>
->>> Yishai?
->>>
->>
->> We can really consider extending the functionality of a parent domain that
->> was just added for CQ in case it holds a thread domain for this purpose.
->> However, current code enforces creating a dedicated BF as part of thread
->> domain unless we extend ibv_alloc_td() to ask only for marking the single
->> thread functionality.
->> The existing alternative is or to use the legacy ENV that mentioned above or
->> to use the ibv_cq_ex functionality which upon its creation gets an explicit
->> flag for single threaded one (i.e. IBV_CREATE_CQ_ATTR_SINGLE_THREADED).
-> 
-> "dedicated BF", isn't this Mellanox internal implementation?
-> 
+On Sun, Mar 15, 2020 at 09:44:04AM +0200, Gal Pressman wrote:
+> On 10/03/2020 11:14, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Remove custom and duplicated variant of offsetofend().
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/hw/efa/efa_verbs.c | 7 ++-----
+> >  1 file changed, 2 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> > index bf3120f140f7..5c57098a4aee 100644
+> > --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> > @@ -144,9 +144,6 @@ static inline bool is_rdma_read_cap(struct efa_dev *dev)
+> >         return dev->dev_attr.device_caps & EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK;
+> >  }
+> >
+> > -#define field_avail(x, fld, sz) (offsetof(typeof(x), fld) + \
+> > -                                sizeof_field(typeof(x), fld) <= (sz))
+>
+> I would use offsetofend here and keep the field_avail naming for readability
+> sake of the using functions, but I guess that's fine as well.
+>
+> Thanks Leon,
+> Acked-by: Gal Pressman <galpress@amazon.com>
 
-Yes, however from API point of view we can consider extending 
-ibv_alloc_td() to ask for this specific usage that may prevent this 
-resource allocation, unless we are fine with having it always which may 
-give a benefit also for a QP that will use it down the road.
+Jason,
 
-As pointed above, there are already few alternatives that may be used in 
-the meantime.
+Can you please pick this patch?
 
-Yishai
-
+Thanks
