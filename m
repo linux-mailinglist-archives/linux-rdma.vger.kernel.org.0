@@ -2,133 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6AB18923E
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 00:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D99E1895F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 07:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgCQXkP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 19:40:15 -0400
-Received: from mail-eopbgr70050.outbound.protection.outlook.com ([40.107.7.50]:14535
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1726871AbgCRGra (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 02:47:30 -0400
+Received: from mail-eopbgr60083.outbound.protection.outlook.com ([40.107.6.83]:33837
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726564AbgCQXkP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Mar 2020 19:40:15 -0400
+        id S1726586AbgCRGra (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 02:47:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fxh+3hulAjFY/T3DMQnZZKxZlYo77sN14b973BT/YE1fNTxeMZa4LLlIZzwEzTOj749ZYqnYF+sdE3cHQkn+pj9/DSOIPn+9BGKkejb+Zk2UvOLr1/Y1gOpO5Zp0Pz0hxYNTbZwSGvMjV4JD1x56UGt11oT3bW46kyLQeWwYiWyehySVAbDlc8QJf3dtam5I2YEd4DvjZXBAPtpPDmdEEMis+rBBczKvypxkoWxcTm1E6kgg57yi1Jr9zKytvgTeb98tdHr4fx3fWiO8czss9/KIm5cCXCZigXzrXDsv3NYm7rgcsAwgXq3cPNLCykG6wJSxbodnpKVfJmBwZM2wTA==
+ b=lEPVpGWaFubFDeseQ9cAFO290ewoDIcpg5bCjDa2lIYx0ZlBhgKDYhwIVN9915OisTBhmgICKLZw7b53TRrYz7zHoJ6jQUQBiH2aC4PRwXpwVMCqKQZZWmbqq1+R5qmhmoYCc4YImZu6vfwQTgUTdVxDoKQzG24LiGCtXxECbF6WsnStba8D+Q7ZRIRKG7X0zi4WUwe3TDAAY3DQwyyZnEpFcyW+Vgi2AslwnT6oXXNNyajd18n9vvBZDPx/sSr82r1tRICtL+C/xQ5+tCR2d/xsOL/qojnOUZ68e43YcTs5fvmJrrQ7q/LVo9EyKRYjgfb31130MyVjBlgR19fnlA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KPi9cKOHFTTxD5hL3E4LCGjQm6vHGV5Ite2WdNSvYsc=;
- b=oBFzPEZjYGruk8DIVCd3qJ7OruM4FmPstXCZ9ShQPYG0ktVhZUsRXJXJsArZaFIgWUHP3ya2Dw0JNonyurhxNYThNfjtDwnGyE0LaEVa98icHRdf95dfGy6pPO2lF3iLCN4I1YulU/iNupm249g7DJDui6S48bllGIQaE0hLws/j2tZ2+8ej2RWg+eHxMYjGs3yEuNKUDYWFO0iOBuHhm/mVgX6zA5o7AW0629YywZEBZSeCH3D6p3z0xFnliF/Htp8M1TuUw3EYGL8Wyr5FLsATzebptBfNptWUiaeDap+PSeNSWFP9NpUgjPhJ6rQMn3pFEN7qVl1kaEVosm/r+Q==
+ bh=cdCYOu+RC3qvSNwD6MBrLxGmNQOX2sqQHLS9JTl8Pgo=;
+ b=g5ZBmepm1So9tuB8vy2bJEB1NDvskWi/VVckdI8xw0QFIUqdm9NMbithYe2YxuF4McJPmGUBNHU+VF1cmZUIBSJeH8oYJ2aEV3WNFA9fCK62C7kYEjF/rqvhPAWZQRHM8up6nOeJB4UAAlICk0qfcxfSlguQhwZz5qUh+5BZ6oR30m4Zn3Z4mod9C+nuNn3REoAMlHgQRJE/oLjQJjB/yhSAZD3yi/GhsRrtT4prpWa+Sr+5R+I5BuF5B5kJvu8dH5WactBDfll1l1pev+IZ96wBsLtQdll8c4lEVXrKTMVlN9YnXrGTlHytOY0nowRCCAxGc5HWOgwGlMPls1Thqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KPi9cKOHFTTxD5hL3E4LCGjQm6vHGV5Ite2WdNSvYsc=;
- b=PI5fpTs3g8EA7bq6L8SVBS82TIBlrh9ddo05P9DSu5d7SNMzwGDo9NtwluGRfXFNoDmqBYCMLMHtdssTzxjmJ3iKl+FlOcHC2PB9fbREP3UvHobZWN4B/Y9XmNhL/W0i1cZ/vnikGNljpY0TK3ecl1CAHpYgqd1EONcTxE2Hofs=
+ bh=cdCYOu+RC3qvSNwD6MBrLxGmNQOX2sqQHLS9JTl8Pgo=;
+ b=S65Fi3GBwnYphFAs2goPxKxahgafAhn7Fe9AMCu6yApvaHbm83801M3itiadGOHtoQNlTRvWGgN1zbAYG4fr64Ewz0eiKv27GuXi8nM2/Q/PsE5XfoUBxEiPOhRtWRiBeB26O9gzy/LLsyul85jNFqv5N5hqYzs1SCC9L32ZhHU=
 Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=markb@mellanox.com; 
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com (10.170.238.143) by
- VI1PR05MB5791.eurprd05.prod.outlook.com (20.178.122.145) with Microsoft SMTP
+ smtp.mailfrom=leonro@mellanox.com; 
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
+ AM6PR05MB6133.eurprd05.prod.outlook.com (20.179.3.144) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.22; Tue, 17 Mar 2020 23:40:10 +0000
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::4566:b84d:efdb:cb1a]) by VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::4566:b84d:efdb:cb1a%6]) with mapi id 15.20.2814.021; Tue, 17 Mar 2020
- 23:40:10 +0000
-Subject: Re: Should I expect lower bandwidth when using IBV_QPT_RAW_PACKET and
- steering rule?
-To:     Terry Toole <toole@photodiagnostic.com>, linux-rdma@vger.kernel.org
-References: <CADw-U9C9vh5rU1o4uSmw=EzMqOvXFqSm-ff-7UbLCKd2CUxT4A@mail.gmail.com>
-From:   Mark Bloch <markb@mellanox.com>
-Message-ID: <e73505bf-d556-ae4a-adfb-6c7e3efb2c32@mellanox.com>
-Date:   Tue, 17 Mar 2020 16:40:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CADw-U9C9vh5rU1o4uSmw=EzMqOvXFqSm-ff-7UbLCKd2CUxT4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR13CA0029.namprd13.prod.outlook.com
- (2603:10b6:300:95::15) To VI1PR05MB3342.eurprd05.prod.outlook.com
- (2603:10a6:802:1d::15)
+ 15.20.2814.14; Wed, 18 Mar 2020 06:47:26 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0%3]) with mapi id 15.20.2814.021; Wed, 18 Mar 2020
+ 06:47:26 +0000
+Date:   Wed, 18 Mar 2020 08:47:24 +0200
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, kbusch@kernel.org, jgg@mellanox.com,
+        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com
+Subject: Re: [PATCH 1/5] IB/core: add a simple SRQ set per PD
+Message-ID: <20200318064724.GP3351@unreal>
+References: <20200317134030.152833-1-maxg@mellanox.com>
+ <20200317134030.152833-2-maxg@mellanox.com>
+ <20200317135518.GG3351@unreal>
+ <46bb23ed-2941-2eaa-511a-3d0f3b09a9ed@mellanox.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46bb23ed-2941-2eaa-511a-3d0f3b09a9ed@mellanox.com>
+X-ClientProxiedBy: PR2P264CA0019.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::31)
+ To AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.9.98.14] (208.186.24.68) by MWHPR13CA0029.namprd13.prod.outlook.com (2603:10b6:300:95::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.11 via Frontend Transport; Tue, 17 Mar 2020 23:40:09 +0000
-X-Originating-IP: [208.186.24.68]
+Received: from localhost (2a00:a040:183:2d::393) by PR2P264CA0019.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18 via Frontend Transport; Wed, 18 Mar 2020 06:47:26 +0000
+X-Originating-IP: [2a00:a040:183:2d::393]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 39bf7a69-8a62-47ae-5be1-08d7cacc8843
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5791:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB57911CAC7B2CC0FD6F80E9F6D2F60@VI1PR05MB5791.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0345CFD558
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(199004)(31696002)(6666004)(186003)(956004)(2616005)(55236004)(16526019)(26005)(53546011)(86362001)(31686004)(6486002)(66574012)(52116002)(316002)(66946007)(66556008)(8936002)(66476007)(2906002)(36756003)(966005)(478600001)(8676002)(5660300002)(16576012)(81156014)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5791;H:VI1PR05MB3342.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+X-MS-Office365-Filtering-Correlation-Id: 78748429-4e54-44b8-d45a-08d7cb083877
+X-MS-TrafficTypeDiagnostic: AM6PR05MB6133:|AM6PR05MB6133:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB6133BC68E5E85AA9C12D84ECB0F70@AM6PR05MB6133.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Forefront-PRVS: 03468CBA43
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(199004)(81166006)(6486002)(81156014)(1076003)(8676002)(8936002)(33716001)(33656002)(86362001)(16526019)(186003)(316002)(6496006)(52116002)(66476007)(66946007)(478600001)(6636002)(53546011)(2906002)(107886003)(9686003)(4326008)(5660300002)(6862004)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6133;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
 Received-SPF: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E+qroR/RGOiG4O0HiyfKCEoxNTdDszsT2grTpyUa5LKwvVaS7iZnY1WGkVxaXY7Uvs8B72v6N2WtY/tlAwEsv11fIPKJ2sGdAPsLnaIBUDb9c3p6+q3aCWw3J4XNSp/hZky+F1Uiv6wqhguYB3npRx3O3WYY3PGyJZDom6Z8TXDAKZRSDHVoRo4kTQqBgVeWjxflaRNX0jVxxXbuK6xmtu9wJB6gwOTtQwTWnzln6nEdBZCSBKvE9akriRnL1S2glGyKbKuyZ2CFCyMRnjVC91yllCxjjfGZAjrWQGiAyZB9dSf9PoQgoSMxgby+FcMhQhYQOKPmTez9MzRRsxB6m2awa12c6lc9oaIcaF4lfSaR6ciHWxefnHUrOyX87bsw+LdBKf64hctBFvF6iuB7ULLAOF1ZaiveG8Gc5fpTSCxs1kbE19YMIqjA+ZZVP3jxnZqbD+E6xHPxzQNZPxzYGoumB/zu8GjZiFWHXw+kw2VRAKOVsc+94Q1wY9G/xAKNq17jV1jhHHREqg4YLlwO8Q==
-X-MS-Exchange-AntiSpam-MessageData: JAawOIFJL5rXVF0yUDv6CtcXJB9RqNsJ2IiEciOK+uPpYMTIwrHbVsoVTUq7/LN0KTnt5XqjVSR5+my5H9gTY4F7m51CGtfrduVXtXgJMqzhcaofpO4VeSKlJ0HOKU8kovkJ0Lli7e9uoFc2vUYfvw==
+X-Microsoft-Antispam-Message-Info: rFZGUItNovrguKx/KMRRZhSPDnwTd7LaGFB9DbBWkZE3ydjRbC5vFWLuA5EvvAzBzIT4LlL6fO69IDuK9MP3jJ/PkeZV8aKK3vJn/brd1aaG6XXZcp+QXOKC/LRhyC2cRqWcezk9ssWOxIpo/SPk2Kr7pKRSV4qdi+JtXELMBFUfsE9L12VWDOWO5lr5uqZfFHWdGbx6guPM7mlJGdg3nGPw7EKKv295NtOtsWhrsWrBZ5MaUGtHHSDf3SMVFqdBkY9vtiVQaP0vwearXHz20vmKlmCyWazxGNd/uyi+25Dmi5ezw5HdXaMt1AcDLaedGf6l6rkjGYkmkZU5JFUZ6s7XdSPN8E52FyfsEwdMcPqGjNto5+nw+3Zll9omGdGwS12x8SxrEibnURs9qSnUQa+iOkKprHUvToZZiAQPO/rxezlKRhd0hs80m1il12pF
+X-MS-Exchange-AntiSpam-MessageData: UhB36T0XX/QgttM6XZ55Kuroq7GbFhTcfl0KE3klOJL1ridHwBnbNKcJnHFh8mZ0nibhIgYPrTCdCsaKxEURxrB0fHfqaDj1R0Ar77NItDxnOz8vasEn8tOqY6c6qyHEytgl2aytpcMxxRnpecnUxqK3afjYYcDjz5/ov4ahf5E=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39bf7a69-8a62-47ae-5be1-08d7cacc8843
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 23:40:10.6568
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78748429-4e54-44b8-d45a-08d7cb083877
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2020 06:47:26.5517
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w8+j/rVHRq6jjH1TwH6PGZRnMsq05FRmPIdMh56UYxtH5BSWwp4+L18QQduQ1uWv/eCW1AjOZrrm46kuFaEc0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5791
+X-MS-Exchange-CrossTenant-UserPrincipalName: /hB7oRh50ah1Ym/Oca/3/ljw5eNK+7NTO8pkErKGO4eAMPUJl0LuqmNekNYwgr1I8C7ofhA9CSzZY4gh3fsNAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6133
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hey Terry,
+On Tue, Mar 17, 2020 at 06:37:57PM +0200, Max Gurtovoy wrote:
+>
+> On 3/17/2020 3:55 PM, Leon Romanovsky wrote:
+> > On Tue, Mar 17, 2020 at 03:40:26PM +0200, Max Gurtovoy wrote:
+> > > ULP's can use this API to create/destroy SRQ's with the same
+> > > characteristics for implementing a logic that aimed to save resources
+> > > without significant performance penalty (e.g. create SRQ per completion
+> > > vector and use shared receive buffers for multiple controllers of the
+> > > ULP).
+> > >
+> > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> > > ---
+> > >   drivers/infiniband/core/Makefile  |  2 +-
+> > >   drivers/infiniband/core/srq_set.c | 78 +++++++++++++++++++++++++++++++++++++++
+> > >   drivers/infiniband/core/verbs.c   |  4 ++
+> > >   include/rdma/ib_verbs.h           |  5 +++
+> > >   include/rdma/srq_set.h            | 18 +++++++++
+> > >   5 files changed, 106 insertions(+), 1 deletion(-)
+> > >   create mode 100644 drivers/infiniband/core/srq_set.c
+> > >   create mode 100644 include/rdma/srq_set.h
+> > >
+> > > diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+> > > index d1b14887..1d3eaec 100644
+> > > --- a/drivers/infiniband/core/Makefile
+> > > +++ b/drivers/infiniband/core/Makefile
+> > > @@ -12,7 +12,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+> > >   				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
+> > >   				multicast.o mad.o smi.o agent.o mad_rmpp.o \
+> > >   				nldev.o restrack.o counters.o ib_core_uverbs.o \
+> > > -				trace.o
+> > > +				trace.o srq_set.o
+> > Why did you call it "srq_set.c" and not "srq.c"?
+>
+> because it's not a SRQ API but SRQ-set API.
 
-On 3/17/20 2:07 PM, Terry Toole wrote:
-> Hi,
-> I am trying to understand if I should expect lower bandwidth from a
-> setup when using IBV_QPT_RAW_PACKET and a steering rule which looks at
-> the MAC addresses of
-> the source and destination NICs. I am trying out an example program
-> from the Mellanox community website which uses these features. For the
-> code example, please see
-> 
-> https://community.mellanox.com/s/article/raw-ethernet-programming--basic-introduction---code-example
-> 
-> In my test setup, I am using two Mellanox MCX515A-CCAT NICs, which have a
-> maximum bandwidth of 100 Gbps. They are installed in two linux computers which
-> are connected by a single cable (no switch or router). Previously,
-> when I was running
-> tests like ib_send_bw or ib_write_bw and using UD, UC, or RC transport
-> mode, I was seeing bandwidths ~90Gbps or higher. With the example in
-> Raw Ethernet Programming: Basic introduction, after adding some code
-> to count packets and measure time, I am seeing bandwidths around 10
-> Gbps. I have been playing with different parameters such as MTU,
-> packet size, or IBV_SEND_INLINE. I am wondering if the reduction in
-> bandwidth is due to the packet filtering being done by the steering
+I would say that it is SRQ-pool and not SRQ-set API.
 
-While steering requires more work from the HW (if a packet hits too many
-steering rules before being directed to a TIR/RQ it might affect the BW)
-A single steering rule shouldn't.
-
-> rule? Or should I expect to see similar bandwidths (~90 Gbps) as in my
-> earlier tests and the problem is one of lack of optimization of my
-> setup?
-
-More like lack of optimizations in the test program you've used.
-When talking about sending traffic using RAW_ETHERNET QP there are lot of optimizations
-that can/should be done.
-
-If you would like to have a look at a highly optimized datapath from userspace:
-https://github.com/DPDK/dpdk/blob/master/drivers/net/mlx5/mlx5_rxtx.c
-
-With the right code you should have no issue reaching line rate speeds with raw_ethernet QPs
-
-Mark
- 
-> 
-> Thanks for any help you can provide.
-> 
+Thanks
