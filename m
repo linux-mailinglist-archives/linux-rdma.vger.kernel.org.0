@@ -2,130 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2347189D05
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42578189D08
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgCRNbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 09:31:14 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41213 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgCRNbN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 09:31:13 -0400
-Received: by mail-qk1-f193.google.com with SMTP id s11so27320823qks.8
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 06:31:12 -0700 (PDT)
+        id S1727022AbgCRNb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 09:31:59 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:39112 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727021AbgCRNb7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 09:31:59 -0400
+Received: by mail-qv1-f65.google.com with SMTP id v38so8814591qvf.6
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 06:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=GPKxR7olV5/T1T+od1GxMHemLMz8pRGQCdMpqt03qic=;
-        b=FU7QQqy5x9gv96LM4XepCWfdFI2Q0WA/KCqokqiL78snHTZ9c+0AJR8YnQGEZVGeWn
-         ceFHynbbvg3Llzj4g/ZgBnrp4rTfgSGCSItJpiljNNIxGzmUbUZ9QE6QwJQ4gLxhiBD1
-         7TqxM9R9qqdVq1MUI7KYhhElL1wF2vj5jRH18pDWDmVkdXLbEAD596GV0zoQuOt6+8Qx
-         wgfQcPh2TIC6yiTAWh4OKJz6tH9Z+k/wH5Pqd6PnG9nT9OUSXRD+RU7I9C65gZbANZfT
-         ECC9eLe9+t48H95CShJvY5ezElS1v9ZTdQ9ARaEsJpdqgXOv6WSRN5w7ss9EDJzgUyLD
-         Xxzg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qzAgeY2gtUUjppeja8hkbhLFuahvZLkObqjCiaqSXN0=;
+        b=nOcZJpukzdbrC93OBPLQ/T1ljCPNBFp6cIaa33WZYPBtacX8NRYbYNKokVo/Y8J+xi
+         nJdhdBYYn1WJw3qanylpSgRUdRDiTygBtKUYuQSHSAaQbBmPitgqZ8ik00G3Dv6Lokr1
+         aI094T1OooA1QHiWsqSa0eRb9n21VKd+eZqx/IIDFtkxS1Pug65hBm2DinwiaYSCsXjc
+         bJ6n/T++xxJ8lhW705W4YtOxeHMiOBeg1TfgAJIUdz+U0BQYkPTyGGpJeLPlLD55EBoR
+         7rJQ07TLUA5pddAMG47O+7Wzqjr7h+N7/KXIiEiIjoWPTx6Cj7uYvTGtO1s9ansJESCH
+         J7qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GPKxR7olV5/T1T+od1GxMHemLMz8pRGQCdMpqt03qic=;
-        b=Siu8eJYGIoBuRm/gMOTcI+Cs6DqegfaHkXO7Fi8OT/M2tIDLlHZBWFq1fIHfFgqjsF
-         POYk9Kpb9YLKgNZvWrPNdO0H3PcC/QOL4MlhrEpllMoevmw5+JRE5nPtxt6ZXrEJhIMv
-         gL4LdGZXwkEotJfMMw3FQ4ejVpjPDmcpmrImnmx6rg97H9HtaRi12Rfe2S6q7hGNktm6
-         cRcPB/Ibzs2rpStl76sdgKFbsZNpMybQ/UIrrWGiQrK0DPf7eGaIVGhYTOtfd8Wm5L3k
-         5k42JMrZPegF9FTnjsTwLrWotiGQ/JTTLvBQ9FEiDJfTK37wwjUGAMXnYMGO0lcOsZaa
-         En6w==
-X-Gm-Message-State: ANhLgQ2byxJYey2u0JhwXOq0GYHPnbm6FiaaThDSQB33CAyqRVwoZWtA
-        qGKGLet48yJEOyjoj/12N/QFkg==
-X-Google-Smtp-Source: ADFU+vtQrH3yS7LDafZaLJQxjijKlKJG01tSYCDrSkAXXm9LXdUOoNx9zB3AdihxGOMvUlNsmUV3Zw==
-X-Received: by 2002:a37:a007:: with SMTP id j7mr3937351qke.73.1584538271554;
-        Wed, 18 Mar 2020 06:31:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qzAgeY2gtUUjppeja8hkbhLFuahvZLkObqjCiaqSXN0=;
+        b=DIi2E8sIG1J2lhXdPAPNZUAWbQ+G7alWmjoTptfQciC0VgI5l+ttUi6+G128QMrHMA
+         AeS2LKZn/1yPvnk5jIJWWBgEGpzRtpGyixjJcYFx4x1FLC+aUo7xFz9FGSSAHyTocusb
+         jjRqlMSX7JVDFmGSDxG7+5JD8tmakVi/bYMEPy1J5/3+5jeS4qCDHV4eSu3l8MmF49/6
+         mjQqWPqxu7EBSeI9WgZnj5Tv785j8GiVlht80PsT7hKkNjIwF8eGyFMDWWH74UPKzLTV
+         wcAIkQJ03rkPNtggP/PvaHQUEgSj/DIHexbQA9Y/4zRm6sEpEpCE10NSQPfQbMIaBYYU
+         oJng==
+X-Gm-Message-State: ANhLgQ01CL9lOuDNhY0Sv1Ml07HbHiPnILMJ7TKZ3d1AFz8PN4u38cLy
+        y9tNSJhXRBV+lscQNiqzsXntNg==
+X-Google-Smtp-Source: ADFU+vuT3pNTBo9Lvua7ZKsM5p0iV2N1J3n1fcrHADg2nHk5klcNXgmaajYZ5LwE2XBzp/QPGDD98A==
+X-Received: by 2002:a05:6214:14a:: with SMTP id x10mr4374877qvs.158.1584538316376;
+        Wed, 18 Mar 2020 06:31:56 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g7sm4371916qtu.38.2020.03.18.06.31.10
+        by smtp.gmail.com with ESMTPSA id u34sm943338qtj.60.2020.03.18.06.31.55
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Mar 2020 06:31:10 -0700 (PDT)
+        Wed, 18 Mar 2020 06:31:55 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jEYms-0006gQ-2L; Wed, 18 Mar 2020 10:31:10 -0300
-Date:   Wed, 18 Mar 2020 10:31:10 -0300
+        id 1jEYnb-0006hH-Cy; Wed, 18 Mar 2020 10:31:55 -0300
+Date:   Wed, 18 Mar 2020 10:31:55 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/core: Insure security pkey modify is not lost
-Message-ID: <20200318133110.GA25617@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata as
+ the parent of cdev
+Message-ID: <20200318133155.GA20941@ziepe.ca>
+References: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
+ <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313124704.14982.55907.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 08:47:05AM -0400, Mike Marciniszyn wrote:
-> The following modify sequence (loosely based on ipoib) will
-> lose a pkey modifcation:
+On Mon, Mar 16, 2020 at 05:05:07PM -0400, Dennis Dalessandro wrote:
+> From: Kaike Wan <kaike.wan@intel.com>
 > 
-> - Modify (pkey index, port)
-> - Modify (new pkey index, NO port)
+> This patch is implemented to address the concerns raised in:
+>   https://marc.info/?l=linux-rdma&m=158101337614772&w=2
 > 
-> After the first modify, the qp_pps list will have saved the pkey and the
-> unit on the main list.
+> The hfi1 driver dynammically allocates a struct device to represent the
+> cdev in sysfs and devtmpfs (/dev/hfi1_x). On the other hand, the
+> hfi1_devdata already contains a struct device in its ibdev field
+> (hfi1_devdata.verbs_dev.rdi.ibdev.dev), and it is therefore possible to
+> eliminate the dynamical allocation when creating the cdev. Since each
+> device could be added to the sysfs only once and the function
+> device_add() is already called for the ibdev in ib_register_device(),
+> the function cdev_device_add() could not be used to create the cdev,
+> even though the hfi1_devdata contains both cdev and ibdev in the same
+> structure.
 > 
-> During the second modify, get_new_pps() will fetch the port from qp_pps
-> and read the new pkey index from qp_attr->pkey_index.  The state will
-> still be zero, or IB_PORT_PKEY_NOT_VALID. Because of the invalid state,
-> the new values will never replace the one in the qp pps list, losing
-> the new pkey.
-> 
-> This happens because the following if statements will never correct the
-> state because the first term will be false. If the code had been executed,
-> it would incorrectly overwrite valid values.
-> 
-> if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
-> 	new_pps->main.state = IB_PORT_PKEY_VALID;
-> 
-> 
-> if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
-> 	new_pps->main.port_num = qp_pps->main.port_num;
-> 	new_pps->main.pkey_index = qp_pps->main.pkey_index;
-> 	if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
-> 		new_pps->main.state = IB_PORT_PKEY_VALID;
-> }
-> 
-> Fix by joining the two if statements with an or test to see if qp_pps
-> is non-NULL and in the correct state.
-> 
-> Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
-> Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-> Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> This patch eliminates the dynamic allocation by creating the cdev
+> first, setting up the ibdev, and then calling the ib_register_device()
+> to add the device to sysfs and devtmpfs.
 
-Leon? Maor?
+What do the sysfs paths for the cdev look like now?
 
-> diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
-> index 2d56083..75e7ec0 100644
-> +++ b/drivers/infiniband/core/security.c
-> @@ -349,16 +349,11 @@ static struct ib_ports_pkeys *get_new_pps(const struct ib_qp *qp,
->  	else if (qp_pps)
->  		new_pps->main.pkey_index = qp_pps->main.pkey_index;
->  
-> -	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
-> +	if (((qp_attr_mask & IB_QP_PKEY_INDEX) &&
-> +	     (qp_attr_mask & IB_QP_PORT)) ||
-> +	    (qp_pps && qp_pps->main.state != IB_PORT_PKEY_NOT_VALID))
->  		new_pps->main.state = IB_PORT_PKEY_VALID;
->  
-> -	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
-> -		new_pps->main.port_num = qp_pps->main.port_num;
-> -		new_pps->main.pkey_index = qp_pps->main.pkey_index;
-> -		if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
-> -			new_pps->main.state = IB_PORT_PKEY_VALID;
-> -	}
-> -
->  	if (qp_attr_mask & IB_QP_ALT_PATH) {
->  		new_pps->alt.port_num = qp_attr->alt_port_num;
->  		new_pps->alt.pkey_index = qp_attr->alt_pkey_index;
-> 
+Jason
