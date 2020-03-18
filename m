@@ -2,87 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E8B18A932
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 00:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92AC18A937
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 00:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgCRX2d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 19:28:33 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:37607 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgCRX2d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 19:28:33 -0400
-Received: by mail-qv1-f68.google.com with SMTP id n1so56839qvz.4
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 16:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mm3MksJ3BUo7zZdHMDp9yMRTpM8pOfN7QwrIIYT8tHc=;
-        b=KIJ0Np7WfmPtoWIFKjTpwcXtbh/OOMwBxU7W+Ajua/9UGjcJNjehZJwDeZ9EX8O0wX
-         3MDwTO4wKKP/0exx0CHNitnplnLRG49ruBN6MncDCE1aMKIlyrIFVG1dPP+Gaw132VlM
-         Q05hGSoc1nF/qh/aEVNxNQZJrE9+mfTK96/QiVM6PpdMucHpmQ6w9G4gKzO17zgtKYoh
-         VFc2E/KUcGVkH4+E3P7eQS9pw1s0V0JX+4CKtFM93uUuD0PxTqHPtqN5UIFAQwfK0YU3
-         aAV0wBtDIv9+RZcXGLK6bzgpFUogLBtlN80kfoTkI4yX+w2hVrQs7F5IP5kUr4xkzvyw
-         jC2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mm3MksJ3BUo7zZdHMDp9yMRTpM8pOfN7QwrIIYT8tHc=;
-        b=E090O1WdNsZ5z1gh0WTdfo8ZGM0iRKJ0MhO6HSC1C5wcHHKrGEZhHDD1nVyuR0wtUY
-         n+BVKr0Vke8MLnKX3bJoMVUWZ/4u+SviGMPCQT79EK0/t/UtSHs+nMmsjbwsAxa7U0iE
-         sdmNUQc4sVaKCOgQo2V+inCtMUlL/v3COrEInlzH6aFxcZWRz7GLgR90WmfzdFt9t4UQ
-         9PxyocPE9rMnJW6f0r6lrEZVl3+OvI0uGwhA+iRf1HpXgEGUtS0PH7R5p1twAmC7vPBb
-         sSnEuPFlgFTJrtzMpVXVcSclirkzAgjqVVrE1uFxCjEB1pyCjBq6//lCV2kuOxJX128F
-         tZKQ==
-X-Gm-Message-State: ANhLgQ0dyBpnO0vFjy8cZ90xCHi4iAezIsqVCEOjVM8Ir/TbBIRcvNTC
-        5f2rdSv+73FddypjsvGSGGCSk3VwJVLngA==
-X-Google-Smtp-Source: ADFU+vvf0ZVEKO1E2QvID6Dbah38JvI5prANO4qh9aIhJIS9pny8ESGbSnWOMp5frtaIGQvscbdm+w==
-X-Received: by 2002:a0c:fde7:: with SMTP id m7mr385068qvu.53.1584574111811;
-        Wed, 18 Mar 2020 16:28:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id b25sm365261qkk.28.2020.03.18.16.28.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Mar 2020 16:28:31 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jEi6w-0004r8-Rh; Wed, 18 Mar 2020 20:28:30 -0300
-Date:   Wed, 18 Mar 2020 20:28:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 0/3] Clean up and improvements for 5.7
-Message-ID: <20200318232830.GA18585@ziepe.ca>
-References: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
-MIME-Version: 1.0
+        id S1726663AbgCRXbH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 19:31:07 -0400
+Received: from mail-eopbgr40074.outbound.protection.outlook.com ([40.107.4.74]:47052
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726619AbgCRXbH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 19:31:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sj548AEv8pYJWr2zhEfkjUgttjL98BwerAICoq4c6vDgAFBZY1aVSy1RDTID4HfTYwtb4H40VCmRpYWB1sZ/nJhrSd5Pg+bCxmqZNAdAaZlfH/DtP0YfsKmdCbBTb4niQQnFspkkwe6kAKaoS855rianqffGWALWJt6VddRNZ6a6gs7wzWj10iLdVc/lN4Tv3D+MRMIoWy1i4ZSd6e6cRkRriaQYTFjp3T80cSpaeM4TPeRiXvA+ja+VoD7ivLD3nSgQmyp2PSern+wIOIuUhc7Klb64ndcwMfWk4SzgazQ1lpI426NuDDYe8Lri9DsKG4eIwuzXp7HIoXitn6Mv+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iBFNkX7W4JNRHNpQCBpgH8Zk0uw+mrz1rPAk/1LLETU=;
+ b=kktD5g99y8DQiizCmef5/JtolArwWx9o0vU1Nn4JdITjx9c0sGWUAWc4DdSgtCN/InozRq+Ttv+iHom+YMn0jageeoj8Qw4yzobFVFEAR3VbmgUT3NLk3q671wuA/TvnruIlqgxea2I8R2S3iXBdFvGPXKg0mh6i7FK/5mVZRlhrK1XsYrDXd8qhXn3EHTgonuhsH60yzb46AZBvFggwJ+t2QS9bsKecQPmGa+W3JCrJcjnZNlMp1euGzOWL5vzcPYu4KowSnzdgPGQB6swnE5si6behTK36qPItPl4eI6KizWyOLViOjdN6KdgGcFh1+qhprPw6eiqnOLc9L71EyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iBFNkX7W4JNRHNpQCBpgH8Zk0uw+mrz1rPAk/1LLETU=;
+ b=PbmSNXWTnD/ASqHyh+f2Gk2pA3cxy6VPZn9TxRpzYBI9dDlerYiCI8b+5ikMlwKwLD8d+WmiwbzjYMG0B86Rxzb8HBQPb0AtD0HHr06n7/Y56+p/Cc7g1xBglO03ERv7vuDclpM0wQuE6JaLBTK3YmGSujSqvva5Y/iE16/yNcU=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB6784.eurprd05.prod.outlook.com (10.186.163.202) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.19; Wed, 18 Mar 2020 23:31:04 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3%7]) with mapi id 15.20.2814.025; Wed, 18 Mar 2020
+ 23:31:04 +0000
+Date:   Wed, 18 Mar 2020 20:31:01 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org, Moni Shoua <monis@mellanox.com>,
+        Zhu Yanjun <yanjunz@mellanox.com>
+Subject: Re: [PATCH rdma-next] MAINTAINERS: Clean RXE section and add Zhu as
+ RXE maintainer
+Message-ID: <20200318233101.GA18746@ziepe.ca>
+References: <20200312083658.29603-1-leon@kernel.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20200312083658.29603-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR05CA0057.namprd05.prod.outlook.com
+ (2603:10b6:208:236::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR05CA0057.namprd05.prod.outlook.com (2603:10b6:208:236::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.12 via Frontend Transport; Wed, 18 Mar 2020 23:31:04 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jEi9N-0004tz-2t; Wed, 18 Mar 2020 20:31:01 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d26d9f48-397c-4fff-7f3e-08d7cb946d0d
+X-MS-TrafficTypeDiagnostic: VI1PR05MB6784:|VI1PR05MB6784:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB67844B02C417570D42B3F299CFF70@VI1PR05MB6784.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
+X-Forefront-PRVS: 03468CBA43
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(346002)(39860400002)(376002)(396003)(199004)(316002)(8676002)(81166006)(81156014)(8936002)(2906002)(4326008)(52116002)(186003)(26005)(86362001)(54906003)(1076003)(9686003)(4744005)(66946007)(66556008)(66476007)(33656002)(107886003)(36756003)(478600001)(6916009)(9786002)(5660300002)(9746002)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6784;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L0yF1TQBYrM1MMwWjkDddtxhvPVOsj/epwxRN1O17rGmslrtFBme+QrftLa5bDZb+9Nj282prHhClcv+0TZX3A6yG4Gzz7WtsJ1gM4YeytezRenNhwH9Hqr5zReBvk45LjawnYx9aX0m4mVpkXYcTT3kdK0ZYe2LvEzT9Wt4J/12miMzC34tf1kDTTrM8yHTRViG8KRVxUBlEwtw3dCqQp3yVd8C1pwI8aediB9HHZhqcPUQYEnvkSZtSDUmATHyWFTyErmMDalL6v7X0a/kWJH8G/RMx0xsw0U7bMxbufZbT2gQaDJTL5birQ1g8jqZCLFuTTmWSJfVXebsC5LU1S8ly7X05oQsZHtzuzYsS9o/Vni2MHAk/tEB/7xPPtd7zfbIug7gWjK4WrFRfu7W109Oo1LZvCQmQmy3kdL0R5qHwzwIEPst+NChzEVm8TmJgup5Ajc8oVHqeyY6VnhVrwrPKx7KOv0+istiDCGIEQAPZPX1EJkA+VZEXi5c6b6N
+X-MS-Exchange-AntiSpam-MessageData: rHawJkbIPGtNrDIr/vAcI/7tGM0zTcWcNn3fCZqS2u/rO0vGJuH+zviiempA+H45qYMwe+6/E/fyMM4OUGxfVegoDwpyF1VWcLx7yt2yjAxDIFAr+zC85O7ToGXgaCw+ofiAWqYK5WcJ3VCkzNzRLQ==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d26d9f48-397c-4fff-7f3e-08d7cb946d0d
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2020 23:31:04.2923
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WjvXVIi+kr+6Nr/UqbOJ0hSUZURCcOZhzserw8JOdcnMvOaLnHrFbn2phOmhLZA61MGbB1r7SJQP2jRsaBJQiw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6784
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 05:04:47PM -0400, Dennis Dalessandro wrote:
-> Here are some clean up/improvement patches. Mike got rid of dead code and Kaike
-> took a stab at fixing the kobj and cdev complaints.  This serious should
-> go before the AIP posting. I'll be posting a v2 of the AIP code soon, and I
-> think I still owe a response on one issue. Coming up, but for now it's just
-> these 3.
+On Thu, Mar 12, 2020 at 10:36:58AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
+> Zhu Yanjun contributed many patches to RXE and expressed genuine
+> interest in improve RXE even more. Let's add him as a maintainer.
 > 
-> Kaike Wan (2):
->       IB/hfi1: Remove kobj from hfi1_devdata
-> 
-> Mike Marciniszyn (1):
->       IB/rdmavt: Delete unused routine
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> --
+>  MAINTAINERS | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-I'm going to take these two to for-next
+Moni has moved on to other areas and is having trouble sending plain
+text emails, he gave a verbal:
 
->       IB/hfi1: Use the ibdev in hfi1_devdata as the parent of cdev
+Acked-by: Moni Shoua <monis@mellanox.com>
 
-This one is getting closer to the right idea but needs a lot more work
-
-Thanks,
 Jason
