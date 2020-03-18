@@ -2,131 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13147189D6D
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2741F189D7A
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgCRN4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 09:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
+        id S1726893AbgCRN7M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 09:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbgCRN4g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Mar 2020 09:56:36 -0400
+        id S1726877AbgCRN7M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 09:59:12 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA2D120767;
-        Wed, 18 Mar 2020 13:56:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C499120767;
+        Wed, 18 Mar 2020 13:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584539795;
-        bh=s2Syxr6GUpgn4pQlOKtFC5d8LE8eQFOrX5wK6AAWQT4=;
+        s=default; t=1584539951;
+        bh=t2zFtJIr7b4K9W5WBhzNvBMh8EhfnyjBu9cVHqoODRc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kHFmFoknlP6Op3f1shVWtVQ9vxp+RCwcw3Ei1K72+2GS9jyD0celskeeyNoQQpaS0
-         +hs8Ara2HYc2y1Y2Zly234kr3rCLxmSyj5QrSaR8OD9Rz6irYIeyTl7eppx8XwKYYX
-         3LPNVZOr0poX2XEeIisOMicK0ZguX1CST3Iy6c0c=
-Date:   Wed, 18 Mar 2020 15:56:31 +0200
+        b=ve3Kf7c7z07d3ZcU3MheHKGfFFAW1j+zQsKOIZ5DhuB+6SuFW2wsec2G2TOsGTfoI
+         Ny9xwUx7i0Etfl6Bh8KIp0tNmPCyaAl6a37FlD1AbAb/nCmW3MLAOP/6F+xZ0Aazb9
+         5yxAzQ2AGz/YN//jJ04gOBStrpbzNPPU1uof+KXE=
+Date:   Wed, 18 Mar 2020 15:59:08 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/4] Introduce dynamic UAR allocation mode
-Message-ID: <20200318135631.GA126497@unreal>
-References: <20200318124329.52111-1-leon@kernel.org>
- <20200318125459.GI13183@mellanox.com>
- <20200318131450.GY3351@unreal>
- <20200318132100.GK13183@mellanox.com>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/core: Insure security pkey modify is not lost
+Message-ID: <20200318135908.GB126497@unreal>
+References: <20200313124704.14982.55907.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200318132100.GK13183@mellanox.com>
+In-Reply-To: <20200313124704.14982.55907.stgit@awfm-01.aw.intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 10:21:00AM -0300, Jason Gunthorpe wrote:
-> On Wed, Mar 18, 2020 at 03:14:50PM +0200, Leon Romanovsky wrote:
-> > On Wed, Mar 18, 2020 at 09:54:59AM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Mar 18, 2020 at 02:43:25PM +0200, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@mellanox.com>
-> > > >
-> > > > From Yishai,
-> > > >
-> > > > This series exposes API to enable a dynamic allocation and management of a
-> > > > UAR which now becomes to be a regular uobject.
-> > > >
-> > > > Moving to that mode enables allocating a UAR only upon demand and drop the
-> > > > redundant static allocation of UARs upon context creation.
-> > > >
-> > > > In addition, it allows master and secondary processes that own the same command
-> > > > FD to allocate and manage UARs according to their needs, this can’t be achieved
-> > > > today.
-> > > >
-> > > > As part of this option, QP & CQ creation flows were adapted to support this
-> > > > dynamic UAR mode once asked by user space.
-> > > >
-> > > > Once this mode is asked by mlx5 user space driver on a given context, it will
-> > > > be mutual exclusive, means both the static and legacy dynamic modes for using
-> > > > UARs will be blocked.
-> > > >
-> > > > The legacy modes are supported for backward compatible reasons, looking
-> > > > forward we expect this new mode to be the default.
-> > >
-> > > We are starting to accumulate a lot of code that is now old-rdma-core
-> > > only.
-> >
-> > Agree
-> >
-> > >
-> > > I have been wondering if we should add something like
-> > >
-> > > #if CONFIG_INFINIBAND_MIN_RDMA_CORE_VERSION < 21
-> > > #endif
-> >
-> > From one side it will definitely help to see old code, but from another
-> > it will create many ifdef inside of the code with a very little chance
-> > of testing. Also we will continue to have the same problem to decide when
-> > we can delete this code.
+On Fri, Mar 13, 2020 at 08:47:05AM -0400, Mike Marciniszyn wrote:
+> The following modify sequence (loosely based on ipoib) will
+> lose a pkey modifcation:
 >
-> Well, it doesn't have to be an #ifdef, eg just sticking
+> - Modify (pkey index, port)
+> - Modify (new pkey index, NO port)
 >
-> if (CONFIG_INFINIBAND_MIN_RDMA_CORE_VERSION >= 21)
->      return -ENOPROTOOPT;
+> After the first modify, the qp_pps list will have saved the pkey and the
+> unit on the main list.
 >
-> at the top of obsolete functions would go a long way
+> During the second modify, get_new_pps() will fetch the port from qp_pps
+> and read the new pkey index from qp_attr->pkey_index.  The state will
+> still be zero, or IB_PORT_PKEY_NOT_VALID. Because of the invalid state,
+> the new values will never replace the one in the qp pps list, losing
+> the new pkey.
+>
+> This happens because the following if statements will never correct the
+> state because the first term will be false. If the code had been executed,
+> it would incorrectly overwrite valid values.
+>
+> if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
+> 	new_pps->main.state = IB_PORT_PKEY_VALID;
+>
+>
+> if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
+> 	new_pps->main.port_num = qp_pps->main.port_num;
+> 	new_pps->main.pkey_index = qp_pps->main.pkey_index;
+> 	if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
+> 		new_pps->main.state = IB_PORT_PKEY_VALID;
+> }
+>
+> Fix by joining the two if statements with an or test to see if qp_pps
+> is non-NULL and in the correct state.
+>
+> Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
+> Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+> Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> ---
+>  drivers/infiniband/core/security.c |   11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+>
 
-First, how will you set this min_version? hordcoded in the kernel code?
-Second, it will work for simple flows, but can be extremely complex
-if your code looks like:
-if (old_version)
- do something
-if (new version)
- do something else
-
-You will need to add logic to handle this -ENOPROTOOPT error value.
-
->
-> > > So we can keep track of what is actually a used code flow and what is
-> > > now hard to test legacy code.
-> > >
-> > > eg this config would also disable the write interface(), turn off
-> > > compat write interfaces as they are switched to use ioctl, etc, etc.
-> >
-> > What about if we introduce one ifdef, let's say CONFIG_INFINIBAND_LEGACY
-> > and put everything that will be declared as legacy to that bucket? And
-> > once every 5 (???) years delete everything from that bucket.
->
-> It is much harder to see what is really old vs only a little old
->
-> I'm not sure we can ever completely delete any of this, but at least
-> the distros can make an informed choice to either do more detailed
-> test of old libraries or disable those code paths.
-
-It will be nice to hear how distros decide to disable/drop the code.
-
-Thanks
-
->
-> Jason
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
