@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3A518A8C7
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 23:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735E818A8FB
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 00:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgCRW5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 18:57:47 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:45685 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727350AbgCRW5q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 18:57:46 -0400
-Received: by mail-ed1-f47.google.com with SMTP id u59so178380edc.12
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 15:57:45 -0700 (PDT)
+        id S1726733AbgCRXHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 19:07:51 -0400
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:34512 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgCRXHv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 19:07:51 -0400
+Received: by mail-ed1-f54.google.com with SMTP id i24so287404eds.1
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 16:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=imatrex-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:from:date:message-id:subject:to;
-        bh=LrawvO9SKelHeBqWG3UxYxrUpUZJPSeMgUg+gUx01to=;
-        b=RNbukeWfLdeqdEZxbA0yYQaWfQ/5wivMNrAS5Hm7UnyfG+fVfzHPlUxUacJuQGmgC5
-         EG4WBP7aqvgwdUToqiY1NEZqZBQfSIKu9edSOUn9alSI9UtcIkBTXGUv4O8llFROCLAh
-         o1ImGrqXv22NdJC8YoBQ2nZQmG/X13OdHNGYBgEWcSGzJyPXC5gFB722S35uuaAWgsCh
-         7a4a0/Ng9rjusoxEkWaoWejm6FPZ/u2ak2qawTV30vq3td9a+7xcmUGTeoUwFCQYAx9C
-         VfRM6FUpFQMc+5zdDDTDFvsnoA6HMXRF12PlYlqxOxPArrcrry4aK36lI0c1LgDEJVJr
-         x1UQ==
+        bh=7tP46YN5vtYe4c8oJNbBW9X6X2YsjiAXlQCTpLv+bLw=;
+        b=v37AMJ2Cjz+G3FeiWFmEGKZqvixv2fs8MTuYJwuXbm2is3LPDYwUL31dJTCDUKlFQO
+         M4e7jc/swztBd1Pq/QDsn0Ot5KwXY8kQFrvt9E7TdAB+nQzpVKnv+tGiFQGhw5nieMJ7
+         3Wje6gQPIKZjKshalaXgU6b+bIh5OD4M+oyN3wKoqlGcTkgxz6mp+hoPd+0nilV1CJrD
+         yitOsYqfN5quw4fWBY0/R24ooKTtRzWBcY89Y7fCdzkijGBfVuGkzCU8yB6RkICMrUvU
+         fDtdP0W2c/RzhzNvBSRq2+ss5fqNuKW9SkhIbjMJ/KXyW8/1fFr2EPcyiyTk5lbwXkX8
+         kpqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=LrawvO9SKelHeBqWG3UxYxrUpUZJPSeMgUg+gUx01to=;
-        b=TbC9/pRb8gKDsYUhlXiy8dJXb/cujgvyk/U//vuKbV5oqqtDhiW1+VCj0nPjEsqFMd
-         4qgUwYwZndx99xfNnlfC5FJgwuDyDAP1hVEXao/6hgqJz6+++Zt3fqYV7uqckJuhTVsp
-         0UJ2Xgtl+OJz++LayaPm/nGj+QJsZfyLCZXvX1vnt8RjxHmyRIP7VCVTXAgiKTc+z/S+
-         6QgKn5VZ7Sn5oBGB7u+8R/zGDaBWVo0DwFul89m0jqLOPlP5ko9kaqLZFUQ+oVZgGMCq
-         OEFHzD8RMB/6X1NMuG/6yRbarYwJ6wAETpo/vpT61O4uXTA9cnoJupnGpRro20+DIpKN
-         7Uww==
-X-Gm-Message-State: ANhLgQ1tImSe5EFMHc74kYB7b3TyIFeFAKpQiI6RdLPAftILedCo6KQ9
-        +hZ/XTYCsb6xhNRfWq7AkiPgQchs41sDqLAijyU2N1dp
-X-Google-Smtp-Source: ADFU+vvmQB++P9bb8F2ring4vhrvwR3uBVubMfNMDBNeMFY/Q02wr3e6ueOmFBAmGo6Puysawx3yN6Nz7lYLemIl4/E=
-X-Received: by 2002:aa7:d14c:: with SMTP id r12mr6566824edo.17.1584572264961;
- Wed, 18 Mar 2020 15:57:44 -0700 (PDT)
+        bh=7tP46YN5vtYe4c8oJNbBW9X6X2YsjiAXlQCTpLv+bLw=;
+        b=RI/VfvFSoxHM5rqlrV+x1LQkVxFDhcE1ELUxiUwYi1Dal/DOT/shuQIjAVVFVKrtvZ
+         36PGBspPNuGmpmSNC6BQO++pwxgOjhf6cGoBS9gGeDC757FZCSFfQBzzQdRL+bW6jMVP
+         PUiHsvOO/Rjm5C9UyeLhHBxphZJ5QYCmNUBeel76GEwrujFf2ojxyRvv4Qt3lGx1vFZJ
+         mg1/kF8WhOR8ctR875aYJWN4OBIN8mu3CNTx8BAcV+CjXEy5psyvGdXz7mLz5LObVs/K
+         BfaxhB4U03ZIsgfgCAGk8ZdRgzX3df2WT2VZWP9Wcqg/lXaDHh0eYfpuXanhhcsw6DWF
+         xUzw==
+X-Gm-Message-State: ANhLgQ2AQTiBYTIbPErg4yISbPzEoMLXMfCvJWMMTEoIDbes5exMou97
+        foo93NrLbedLU3dry4EeOOpBUI/qiPi03u4PiMZbw/hi
+X-Google-Smtp-Source: ADFU+vtusC2BzzHg21+io5RMbtAoYiqVD7E5uUbO7ZqPefW4QDnc+QCmRH2Uvobvc2p0cD29v56UQdxR9Y8fjZz8/50=
+X-Received: by 2002:a50:aca3:: with SMTP id x32mr6594184edc.368.1584572868978;
+ Wed, 18 Mar 2020 16:07:48 -0700 (PDT)
 MIME-Version: 1.0
 From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Date:   Wed, 18 Mar 2020 15:57:33 -0700
-Message-ID: <CAOc41xF2xRfSpZDn-XRA=R+SegMJTPU6GJe6_6q=0j4=a-Bw9w@mail.gmail.com>
-Subject: RoCE v2 packet size
+Date:   Wed, 18 Mar 2020 16:07:37 -0700
+Message-ID: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
+Subject: UDP with IB verbs lib
 To:     linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
@@ -52,10 +52,18 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Hi,
 
-In RoCE v2 there various options for the protocol packet size: 4096,
-2048, etc. To what does this number refer to exactly. Is it the
-payload that ends up in the QP buffers, or does it include headers
-some of the headers as well ?
+I'm looking at UDP using the IB verbs library. If I send UDP packets
+that are intercepted by the IB verbs layer, what happens with the
+completion notifications ?
+
+For example, say I create a list of 10 ibv_recv_wr objects and each
+has num_sge = 30, with each SGE having a 4K size. And I setup for
+reception with ibv_post_recv(). If I transmit 30 UDP packets each 4K
+in size will I receive one CQ event ? Or 30 ?
+
+Will the UDP packets be written in consecutive SGEs of the first
+ibv_recv_wr object ? Or will they be written in consecutive
+ibv_recv_wr objects (in their first SGE) ?
 
 Thank you.
 
