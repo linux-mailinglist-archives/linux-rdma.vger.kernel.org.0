@@ -2,239 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5095C1898D9
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 11:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8F5189918
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 11:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgCRKEZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 06:04:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:9606 "EHLO mga02.intel.com"
+        id S1727503AbgCRKRt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 06:17:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgCRKEZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Mar 2020 06:04:25 -0400
-IronPort-SDR: CYGGtWHbkMM5DQd7jtTlJkvtFOrRM/shGkaLhN69tPqvQ3brkLyocGYTtOVJym/nFqbVpm+P74
- xuIu0WDyBcBw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2020 03:04:22 -0700
-IronPort-SDR: FTjV6hQ4SK4OMDmHno6nf/bl2phhatGrU2US68+rtebBdl2K8DiUQRP2MNELdW5mVyD4jstVj7
- W9IOPSqjxwVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,566,1574150400"; 
-   d="scan'208";a="445819010"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Mar 2020 03:04:20 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jEVYh-000F3n-Is; Wed, 18 Mar 2020 18:04:19 +0800
-Date:   Wed, 18 Mar 2020 18:04:02 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 683604c0c29e75ddfe071f37226534c882eff531
-Message-ID: <5e71f212.wyvptMT9c3DiqmuS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727443AbgCRKRt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 06:17:49 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1156D2076D;
+        Wed, 18 Mar 2020 10:17:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584526667;
+        bh=/E+/DQUlSBxS9zzJjnYdUqkbp+h+ATTreJYFn49eFQE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MCJNAv5ou4mkNCkuSDS25KHNO/YGZ607ICmfv4LDzceKrWT2Ec4S4vbOsoku7gF1G
+         qA6HlLu8Rwe/L5QVZzRsAHUxSn4n+7RHFabcg8iDN8op+8nrJDf00LFAGZL460Vuds
+         axqcRUbJ4oy8+DHtQa8jcV+oekHI7aVnd3a9XLsU=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Avihai Horon <avihaih@mellanox.com>,
+        Eli Cohen <eli@dev.mellanox.co.il>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Roland Dreier <rolandd@cisco.com>
+Subject: [PATCH rdma-next] RDMA/cm: Update num_paths in cma_resolve_iboe_route error flow
+Date:   Wed, 18 Mar 2020 12:17:41 +0200
+Message-Id: <20200318101741.47211-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 683604c0c29e75ddfe071f37226534c882eff531  RDMA/bnxt_re: Remove unnecessary sched count
+From: Avihai Horon <avihaih@mellanox.com>
 
-elapsed time: 488m
+After a successful allocation of path_rec, num_paths is set to 1,
+but any error after such allocation will leave num_paths uncleared.
 
-configs tested: 180
-configs skipped: 0
+This causes to de-referencing a NULL pointer later on. Hence,
+num_paths needs to be set back to 0 if such an error occurs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The following crash from syzkaller revealed it.
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-i386                             allyesconfig
-nios2                         10m50_defconfig
-parisc                generic-32bit_defconfig
-s390                             alldefconfig
-alpha                               defconfig
-openrisc                    or1ksim_defconfig
-nios2                         3c120_defconfig
-arc                              allyesconfig
-csky                                defconfig
-ia64                                defconfig
-riscv                             allnoconfig
-sh                                allnoconfig
-um                                  defconfig
-m68k                          multi_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                           sun3_defconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-64bit_defconfig
-i386                 randconfig-a003-20200317
-i386                 randconfig-a001-20200317
-x86_64               randconfig-a001-20200317
-x86_64               randconfig-a003-20200317
-i386                 randconfig-a002-20200317
-x86_64               randconfig-a002-20200317
-x86_64               randconfig-a001-20200318
-x86_64               randconfig-a002-20200318
-x86_64               randconfig-a003-20200318
-i386                 randconfig-a001-20200318
-i386                 randconfig-a002-20200318
-i386                 randconfig-a003-20200318
-alpha                randconfig-a001-20200317
-m68k                 randconfig-a001-20200317
-mips                 randconfig-a001-20200317
-nds32                randconfig-a001-20200317
-parisc               randconfig-a001-20200317
-riscv                randconfig-a001-20200317
-c6x                  randconfig-a001-20200317
-h8300                randconfig-a001-20200317
-microblaze           randconfig-a001-20200317
-nios2                randconfig-a001-20200317
-sparc64              randconfig-a001-20200317
-c6x                  randconfig-a001-20200318
-h8300                randconfig-a001-20200318
-microblaze           randconfig-a001-20200318
-nios2                randconfig-a001-20200318
-sparc64              randconfig-a001-20200318
-csky                 randconfig-a001-20200318
-openrisc             randconfig-a001-20200318
-s390                 randconfig-a001-20200318
-sh                   randconfig-a001-20200318
-xtensa               randconfig-a001-20200318
-xtensa               randconfig-a001-20200317
-openrisc             randconfig-a001-20200317
-csky                 randconfig-a001-20200317
-sh                   randconfig-a001-20200317
-s390                 randconfig-a001-20200317
-x86_64               randconfig-b001-20200317
-x86_64               randconfig-b002-20200317
-x86_64               randconfig-b003-20200317
-i386                 randconfig-b001-20200317
-i386                 randconfig-b002-20200317
-i386                 randconfig-b003-20200317
-x86_64               randconfig-c001-20200317
-x86_64               randconfig-c002-20200317
-x86_64               randconfig-c003-20200317
-i386                 randconfig-c001-20200317
-i386                 randconfig-c002-20200317
-i386                 randconfig-c003-20200317
-x86_64               randconfig-d001-20200317
-x86_64               randconfig-d002-20200317
-x86_64               randconfig-d003-20200317
-i386                 randconfig-d001-20200317
-i386                 randconfig-d002-20200317
-i386                 randconfig-d003-20200317
-x86_64               randconfig-e001-20200317
-x86_64               randconfig-e002-20200317
-x86_64               randconfig-e003-20200317
-i386                 randconfig-e001-20200317
-i386                 randconfig-e002-20200317
-i386                 randconfig-e003-20200317
-x86_64               randconfig-f001-20200317
-x86_64               randconfig-f002-20200317
-x86_64               randconfig-f003-20200317
-i386                 randconfig-f001-20200317
-i386                 randconfig-f002-20200317
-i386                 randconfig-f003-20200317
-i386                 randconfig-g003-20200317
-i386                 randconfig-g001-20200317
-x86_64               randconfig-g002-20200317
-x86_64               randconfig-g003-20200317
-x86_64               randconfig-g001-20200317
-i386                 randconfig-g002-20200317
-arc                  randconfig-a001-20200317
-arm                  randconfig-a001-20200317
-arm64                randconfig-a001-20200317
-ia64                 randconfig-a001-20200317
-powerpc              randconfig-a001-20200317
-sparc                randconfig-a001-20200317
-arc                  randconfig-a001-20200318
-arm                  randconfig-a001-20200318
-arm64                randconfig-a001-20200318
-ia64                 randconfig-a001-20200318
-powerpc              randconfig-a001-20200318
-sparc                randconfig-a001-20200318
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
+CPU: 0 PID: 357 Comm: syz-executor060 Not tainted 4.18.0+ #311
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.11.0-0-g63451fca13-prebuilt.qemu-project.org 04/01/2014
+RIP: 0010:ib_copy_path_rec_to_user+0x94/0x3e0
+Code: f1 f1 f1 f1 c7 40 0c 00 00 f4 f4 65 48 8b 04 25 28 00 00 00 48 89
+45 c8 31 c0 e8 d7 60 24 ff 48 8d 7b 4c 48 89 f8 48 c1 e8 03 <42> 0f b6
+14 30 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85
+RSP: 0018:ffff88006586f980 EFLAGS: 00010207
+RAX: 0000000000000009 RBX: 0000000000000000 RCX: 1ffff1000d5fe475
+RDX: ffff8800621e17c0 RSI: ffffffff820d45f9 RDI: 000000000000004c
+RBP: ffff88006586fa50 R08: ffffed000cb0df73 R09: ffffed000cb0df72
+R10: ffff88006586fa70 R11: ffffed000cb0df73 R12: 1ffff1000cb0df30
+R13: ffff88006586fae8 R14: dffffc0000000000 R15: ffff88006aff2200
+FS: 00000000016fc880(0000) GS:ffff88006d000000(0000)
+knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 0000000063fec000 CR4: 00000000000006b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+? ib_copy_path_rec_from_user+0xcc0/0xcc0
+? __mutex_unlock_slowpath+0xfc/0x670
+? wait_for_completion+0x3b0/0x3b0
+? ucma_query_route+0x818/0xc60
+ucma_query_route+0x818/0xc60
+? ucma_listen+0x1b0/0x1b0
+? sched_clock_cpu+0x18/0x1d0
+? sched_clock_cpu+0x18/0x1d0
+? ucma_listen+0x1b0/0x1b0
+? ucma_write+0x292/0x460
+ucma_write+0x292/0x460
+? ucma_close_id+0x60/0x60
+? sched_clock_cpu+0x18/0x1d0
+? sched_clock_cpu+0x18/0x1d0
+__vfs_write+0xf7/0x620
+? ucma_close_id+0x60/0x60
+? kernel_read+0x110/0x110
+? time_hardirqs_on+0x19/0x580
+? lock_acquire+0x18b/0x3a0
+? finish_task_switch+0xf3/0x5d0
+? _raw_spin_unlock_irq+0x29/0x40
+? _raw_spin_unlock_irq+0x29/0x40
+? finish_task_switch+0x1be/0x5d0
+? __switch_to_asm+0x34/0x70
+? __switch_to_asm+0x40/0x70
+? security_file_permission+0x172/0x1e0
+vfs_write+0x192/0x460
+ksys_write+0xc6/0x1a0
+? __ia32_sys_read+0xb0/0xb0
+? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
+? do_syscall_64+0x1d/0x470
+do_syscall_64+0x9e/0x470
+entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x410899
+Code: 00 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00 48 89 f8 48 89
+f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
+f0 ff ff 0f 83 6b 23 00 00 c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc8d2d4498 EFLAGS: 00000286 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 006d635f616d6472 RCX: 0000000000410899
+RDX: 0000000000000018 RSI: 0000000020000080 RDI: 0000000000000039
+RBP: 2f646e6162696e69 R08: 00000000004002e0 R09: 00000000004002e0
+R10: 00000000004002e0 R11: 0000000000000286 R12: 666e692f7665642f
+R13: 0000000000401b80 R14: 0000000000401c10 R15: 0000000000000006
+Modules linked in:
+Dumping ftrace buffer:
+(ftrace buffer empty)
+---[ end trace b0e1982aeff8bfd1 ]---
+RIP: 0010:ib_copy_path_rec_to_user+0x94/0x3e0
+Code: f1 f1 f1 f1 c7 40 0c 00 00 f4 f4 65 48 8b 04 25 28 00 00 00 48 89
+45 c8 31 c0 e8 d7 60 24 ff 48 8d 7b 4c 48 89 f8 48 c1 e8 03 <42> 0f b6
+14 30 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85
+RSP: 0018:ffff88006586f980 EFLAGS: 00010207
+RAX: 0000000000000009 RBX: 0000000000000000 RCX: 1ffff1000d5fe475
+RDX: ffff8800621e17c0 RSI: ffffffff820d45f9 RDI: 000000000000004c
+RBP: ffff88006586fa50 R08: ffffed000cb0df73 R09: ffffed000cb0df72
+R10: ffff88006586fa70 R11: ffffed000cb0df73 R12: 1ffff1000cb0df30
+R13: ffff88006586fae8 R14: dffffc0000000000 R15: ffff88006aff2200
+FS: 00000000016fc880(0000) GS:ffff88006d000000(0000)
+knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 0000000063fec000 CR4: 00000000000006b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Kernel panic - not syncing: Fatal exception
+Dumping ftrace buffer:
+(ftrace buffer empty)
+Kernel Offset: disabled
 
+Fixes: 3c86aa70bf67 ("RDMA/cm: Add RDMA CM support for IBoE devices")
+Signed-off-by: Avihai Horon <avihaih@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I'm sending it to -next, because this flow existed many years and
+doesn't worth to have a merge conflict between -rc and -next.
+
+Thanks
+---
+ drivers/infiniband/core/cma.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 8924b2f8e299..8f73a7e87359 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -3007,6 +3007,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+ err2:
+ 	kfree(route->path_rec);
+ 	route->path_rec = NULL;
++	route->num_paths = 0;
+ err1:
+ 	kfree(work);
+ 	return ret;
+--
+2.24.1
+
