@@ -2,93 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42578189D08
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16B6189D6B
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 14:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgCRNb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 09:31:59 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:39112 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727021AbgCRNb7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 09:31:59 -0400
-Received: by mail-qv1-f65.google.com with SMTP id v38so8814591qvf.6
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 06:31:57 -0700 (PDT)
+        id S1726958AbgCRN4W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 09:56:22 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42661 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgCRN4V (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 09:56:21 -0400
+Received: by mail-qt1-f195.google.com with SMTP id g16so20649904qtp.9
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 06:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=qzAgeY2gtUUjppeja8hkbhLFuahvZLkObqjCiaqSXN0=;
-        b=nOcZJpukzdbrC93OBPLQ/T1ljCPNBFp6cIaa33WZYPBtacX8NRYbYNKokVo/Y8J+xi
-         nJdhdBYYn1WJw3qanylpSgRUdRDiTygBtKUYuQSHSAaQbBmPitgqZ8ik00G3Dv6Lokr1
-         aI094T1OooA1QHiWsqSa0eRb9n21VKd+eZqx/IIDFtkxS1Pug65hBm2DinwiaYSCsXjc
-         bJ6n/T++xxJ8lhW705W4YtOxeHMiOBeg1TfgAJIUdz+U0BQYkPTyGGpJeLPlLD55EBoR
-         7rJQ07TLUA5pddAMG47O+7Wzqjr7h+N7/KXIiEiIjoWPTx6Cj7uYvTGtO1s9ansJESCH
-         J7qQ==
+        bh=VLTE7LlnyouQoakEIcCMj/A9xCpW9OpvmzA0kjN3/NU=;
+        b=KnsHcqMcEWCfYB28HFZm/UemfTp8vebklg6XLEl3pwLdmRxy8iXb7ZL8bSjnQRblK7
+         Q1PXPZU001y5OqkJF7vo+rSRT2gYKMVzdhYgFu3MrK5rsQ8jydB1KHhl4CP6QTo1v+i1
+         pbarKVbQdlDu4biyG5dumortxMm2Jj2zL9M1dON/tMi7Tn3aw1nPwVPrcLxV0B6uuQrp
+         FsEK4OGXmsG/nkYL39b9NR90KEmhYqkjDNQbfzN4O0LucPHwTcxny14lfkbHUUzjGn05
+         EL23j5iFgV0AohKuJq/N14bOMybdN/++8gxl0Z2ELyEEjEQrNpOzlCjcj+tFxdBVX6uQ
+         n3Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qzAgeY2gtUUjppeja8hkbhLFuahvZLkObqjCiaqSXN0=;
-        b=DIi2E8sIG1J2lhXdPAPNZUAWbQ+G7alWmjoTptfQciC0VgI5l+ttUi6+G128QMrHMA
-         AeS2LKZn/1yPvnk5jIJWWBgEGpzRtpGyixjJcYFx4x1FLC+aUo7xFz9FGSSAHyTocusb
-         jjRqlMSX7JVDFmGSDxG7+5JD8tmakVi/bYMEPy1J5/3+5jeS4qCDHV4eSu3l8MmF49/6
-         mjQqWPqxu7EBSeI9WgZnj5Tv785j8GiVlht80PsT7hKkNjIwF8eGyFMDWWH74UPKzLTV
-         wcAIkQJ03rkPNtggP/PvaHQUEgSj/DIHexbQA9Y/4zRm6sEpEpCE10NSQPfQbMIaBYYU
-         oJng==
-X-Gm-Message-State: ANhLgQ01CL9lOuDNhY0Sv1Ml07HbHiPnILMJ7TKZ3d1AFz8PN4u38cLy
-        y9tNSJhXRBV+lscQNiqzsXntNg==
-X-Google-Smtp-Source: ADFU+vuT3pNTBo9Lvua7ZKsM5p0iV2N1J3n1fcrHADg2nHk5klcNXgmaajYZ5LwE2XBzp/QPGDD98A==
-X-Received: by 2002:a05:6214:14a:: with SMTP id x10mr4374877qvs.158.1584538316376;
-        Wed, 18 Mar 2020 06:31:56 -0700 (PDT)
+        bh=VLTE7LlnyouQoakEIcCMj/A9xCpW9OpvmzA0kjN3/NU=;
+        b=DpSHFVpskiw+Lz43R7+wLBW23BF55FELRSMWpGeUV+vyLzmP5glZgJtfKuEIYUbshw
+         QfJov1HVTdppl0cNRO2I4V+mZWfbLLrkZm49ZiZHZNlHRLRPJ0O3Wf3mu4pTTwf2d0+4
+         V5B+lQqBUso1AtxyocUFCwmJbMNLGJ9B2u1IkkOmqRiJHxMtMI/L7iwZrhwi6+DUB4ao
+         e5ouMNKB2bIot1hPChi59aERvOT++aXeWl3zJJZyM9pKyQFQgQNSCEwHuvkHCPQJrn5n
+         uFTcPvOfID/tTDupxpVnsH3oCnghKUCStD10S7v4+hB8u/wq6y0YP7+nyXRy/2wV0tFy
+         LP3g==
+X-Gm-Message-State: ANhLgQ2fU7Jd2UI6QFrO59/Htrh69wA0mcvVHRvWAhmTnQ6BJzG/MgZ0
+        KIoiAGHylNP3tA7MkFOKuWwd1Tl0HGKdMw==
+X-Google-Smtp-Source: ADFU+vuYU+F0Pgk1dkAHvGdzZo0Ja0GoYr7qsWZjBVW6k9jjP9K88ivOFyybP02Mgn6eOTilIaR0WQ==
+X-Received: by 2002:aed:2499:: with SMTP id t25mr4660405qtc.127.1584539780481;
+        Wed, 18 Mar 2020 06:56:20 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u34sm943338qtj.60.2020.03.18.06.31.55
+        by smtp.gmail.com with ESMTPSA id 60sm4625598qtb.95.2020.03.18.06.56.19
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Mar 2020 06:31:55 -0700 (PDT)
+        Wed, 18 Mar 2020 06:56:19 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jEYnb-0006hH-Cy; Wed, 18 Mar 2020 10:31:55 -0300
-Date:   Wed, 18 Mar 2020 10:31:55 -0300
+        id 1jEZBD-0008Rr-AX; Wed, 18 Mar 2020 10:56:19 -0300
+Date:   Wed, 18 Mar 2020 10:56:19 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
 Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Subject: Re: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata as
- the parent of cdev
-Message-ID: <20200318133155.GA20941@ziepe.ca>
-References: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
- <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
+        "Sindhu, Devale" <sindhu.devale@intel.com>,
+        Jarod Wilson <jarod@redhat.com>
+Subject: Re: [PATCH v1 rdma-next] i40iw: Report correct firmware version
+Message-ID: <20200318135619.GA31930@ziepe.ca>
+References: <20200313214406.2159-1-shiraz.saleem@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20200313214406.2159-1-shiraz.saleem@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 05:05:07PM -0400, Dennis Dalessandro wrote:
-> From: Kaike Wan <kaike.wan@intel.com>
+On Fri, Mar 13, 2020 at 04:44:06PM -0500, Shiraz Saleem wrote:
+> From: "Sindhu, Devale" <sindhu.devale@intel.com>
 > 
-> This patch is implemented to address the concerns raised in:
->   https://marc.info/?l=linux-rdma&m=158101337614772&w=2
+> The driver uses a hard-coded value for FW version and
+> reports an inconsistent FW version between ibv_devinfo
+> and /sys/class/infiniband/i40iw/fw_ver.
+> Retrieve the FW version via a Control QP (CQP) operation
+> and report it consistently across sysfs and query device.
 > 
-> The hfi1 driver dynammically allocates a struct device to represent the
-> cdev in sysfs and devtmpfs (/dev/hfi1_x). On the other hand, the
-> hfi1_devdata already contains a struct device in its ibdev field
-> (hfi1_devdata.verbs_dev.rdi.ibdev.dev), and it is therefore possible to
-> eliminate the dynamical allocation when creating the cdev. Since each
-> device could be added to the sysfs only once and the function
-> device_add() is already called for the ibdev in ib_register_device(),
-> the function cdev_device_add() could not be used to create the cdev,
-> even though the hfi1_devdata contains both cdev and ibdev in the same
-> structure.
-> 
-> This patch eliminates the dynamic allocation by creating the cdev
-> first, setting up the ibdev, and then calling the ib_register_device()
-> to add the device to sysfs and devtmpfs.
+> Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+> Reported-by: Jarod Wilson <jarod@redhat.com>
+> Signed-off-by: Sindhu, Devale <sindhu.devale@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+> v0-->v1:
+> -Remove implicit casts
+> -Use static inline function for computing FW version instead of macros
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw.h        | 22 ++++++-
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c   | 99 ++++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/i40iw/i40iw_d.h      | 26 +++++++-
+>  drivers/infiniband/hw/i40iw/i40iw_main.c   |  6 ++
+>  drivers/infiniband/hw/i40iw/i40iw_p.h      |  1 +
+>  drivers/infiniband/hw/i40iw/i40iw_status.h |  3 +-
+>  drivers/infiniband/hw/i40iw/i40iw_type.h   | 12 ++++
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c  | 10 +--
+>  8 files changed, 170 insertions(+), 9 deletions(-)
 
-What do the sysfs paths for the cdev look like now?
+Applied to for-next
 
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_d.h b/drivers/infiniband/hw/i40iw/i40iw_d.h
+> index 6ddaeec..e8367d6 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_d.h
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_d.h
+> @@ -403,7 +403,7 @@
+>  #define I40IW_CQP_OP_MANAGE_ARP                 0x0f
+>  #define I40IW_CQP_OP_MANAGE_VF_PBLE_BP          0x10
+>  #define I40IW_CQP_OP_MANAGE_PUSH_PAGES          0x11
+> -#define I40IW_CQP_OP_MANAGE_PE_TEAM             0x12
+> +#define I40IW_CQP_OP_QUERY_RDMA_FEATURES	0x12
+>  #define I40IW_CQP_OP_UPLOAD_CONTEXT             0x13
+>  #define I40IW_CQP_OP_ALLOCATE_LOC_MAC_IP_TABLE_ENTRY 0x14
+>  #define I40IW_CQP_OP_MANAGE_HMC_PM_FUNC_TABLE   0x15
+> @@ -431,6 +431,24 @@
+>  #define I40IW_CQP_OP_SHMC_PAGES_ALLOCATED       0x2b
+>  #define I40IW_CQP_OP_SET_HMC_RESOURCE_PROFILE   0x2d
+>  
+> +#define I40IW_FEATURE_BUF_SIZE                  (8 * I40IW_MAX_FEATURES)
+> +
+> +#define I40IW_FW_VER_MINOR_SHIFT        0
+> +#define I40IW_FW_VER_MINOR_MASK         \
+> +	(0xffffULL << I40IW_FW_VER_MINOR_SHIFT)
+> +
+> +#define I40IW_FW_VER_MAJOR_SHIFT        16
+> +#define I40IW_FW_VER_MAJOR_MASK	        \
+> +	(0xffffULL << I40IW_FW_VER_MAJOR_SHIFT)
+> +
+> +#define I40IW_FEATURE_INFO_SHIFT        0
+> +#define I40IW_FEATURE_INFO_MASK         \
+> +	(0xffffULL << I40IW_FEATURE_INFO_SHIFT)
+> +
+> +#define I40IW_FEATURE_CNT_SHIFT         32
+> +#define I40IW_FEATURE_CNT_MASK          \
+> +	(0xffffULL << I40IW_FEATURE_CNT_SHIFT)
+
+Please see the discussion about these kinds of macros on the EFA
+thread - please don't use this scheme in the new
+driver. The standard GENMASK/FIELD_PREP/etc should be used
+
+Thanks,
 Jason
