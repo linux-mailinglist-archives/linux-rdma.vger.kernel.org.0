@@ -2,171 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8F5189918
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 11:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E76EA189950
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Mar 2020 11:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727503AbgCRKRt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 06:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727443AbgCRKRt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Mar 2020 06:17:49 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1156D2076D;
-        Wed, 18 Mar 2020 10:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584526667;
-        bh=/E+/DQUlSBxS9zzJjnYdUqkbp+h+ATTreJYFn49eFQE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MCJNAv5ou4mkNCkuSDS25KHNO/YGZ607ICmfv4LDzceKrWT2Ec4S4vbOsoku7gF1G
-         qA6HlLu8Rwe/L5QVZzRsAHUxSn4n+7RHFabcg8iDN8op+8nrJDf00LFAGZL460Vuds
-         axqcRUbJ4oy8+DHtQa8jcV+oekHI7aVnd3a9XLsU=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Avihai Horon <avihaih@mellanox.com>,
-        Eli Cohen <eli@dev.mellanox.co.il>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Roland Dreier <rolandd@cisco.com>
-Subject: [PATCH rdma-next] RDMA/cm: Update num_paths in cma_resolve_iboe_route error flow
-Date:   Wed, 18 Mar 2020 12:17:41 +0200
-Message-Id: <20200318101741.47211-1-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1726486AbgCRK3t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 06:29:49 -0400
+Received: from mail-eopbgr60063.outbound.protection.outlook.com ([40.107.6.63]:45405
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726310AbgCRK3t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Mar 2020 06:29:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gPTXSTDhwAnBVy6UO+qhSYy8goyBmP6q6+56X1bx7Umh6Y3nNMb5CKxZlijQTFgZPmsJuycrcwUMd28XPntSw4ur9cfX1yK/0GpSUNlMhuvv/7I1lkC6I4iQ4uxgHvHi4k1mYTkQL0x8J49A9PMftIGrjkoZx7T/NFxectRCnaU4UgF6GpmQLs4qaDneNTZnOtHsVF/nLUzZbsgw1Bx74tmUh4zR9m45XMjQ0DRTkCN38LvBucJl0hr6xhSLKnrTy3hQl0w6BAoKUJU9qCWad9YSqXOXzTu0m8w9eM/gMFfK4EccAeci5tTvpJ3cStT0O8FiaInLAbj49dKlPjoW/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kr+aV4AEuY4BXGcB4oaSXLkQTTGJaWP3o8rxQPVMqCI=;
+ b=cL6NQkg72fPuxgZk/gWpeijuBYoY27PldMLGkfcWNvMnXAunMM8DXjWvD9zMsdi3n+orAsI77+X5XH+hwfbfsxGZ4jGQv6rU1MxJ1ocoCQCxRNC+dqugQO+tc4Hq3RifFz+esGD/oiZj1abpW/1Aiq5pMTOZrfGkskG70DzQM5bU0DZqURpRxRjhOXtaXOypmdUZvhJPDZbNwGlCZqbRZaBfyvLY8AlJ9YIc05kgUdTZCNFdL6w5vUhPSKeDCrNb0FBENf7R6R1iB8impTorh0tDAgFDBFZEJZbnrShFSKrfivJhKibXxZZQt42rgd7BvLnOqJSx4MK7HRjgQAjUHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kr+aV4AEuY4BXGcB4oaSXLkQTTGJaWP3o8rxQPVMqCI=;
+ b=DC2z2AeEjeT0cF8Hq72ZUVT5AY5gM97qY17oW1yggsya6dLKaTrYuj36lZwVIu8dLAdWlbPoti71DnPoXQkGOOsiPyZRRuri1dUKchiTEs3hvsr+7mI8aF01leIJlkgdtIqznv+DEoo4//jnwzWiMlS+yrc29BamMtKPOkgFifc=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
+ AM6PR05MB6053.eurprd05.prod.outlook.com (20.179.1.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2814.13; Wed, 18 Mar 2020 10:29:45 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0%3]) with mapi id 15.20.2814.021; Wed, 18 Mar 2020
+ 10:29:45 +0000
+Date:   Wed, 18 Mar 2020 12:29:42 +0200
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, kbusch@kernel.org, jgg@mellanox.com,
+        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com
+Subject: Re: [PATCH 1/5] IB/core: add a simple SRQ set per PD
+Message-ID: <20200318102942.GT3351@unreal>
+References: <20200317134030.152833-1-maxg@mellanox.com>
+ <20200317134030.152833-2-maxg@mellanox.com>
+ <20200317135518.GG3351@unreal>
+ <46bb23ed-2941-2eaa-511a-3d0f3b09a9ed@mellanox.com>
+ <20200318064724.GP3351@unreal>
+ <ec3ff6af-dd68-d049-5ff3-0c01320117e7@mellanox.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec3ff6af-dd68-d049-5ff3-0c01320117e7@mellanox.com>
+X-ClientProxiedBy: FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::10) To AM6PR05MB6408.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a00:a040:183:2d::393) by FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18 via Frontend Transport; Wed, 18 Mar 2020 10:29:45 +0000
+X-Originating-IP: [2a00:a040:183:2d::393]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 97e134a3-99b4-40a6-4fb6-08d7cb27472e
+X-MS-TrafficTypeDiagnostic: AM6PR05MB6053:|AM6PR05MB6053:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB6053B4DA4A68CDE63AA3944FB0F70@AM6PR05MB6053.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:569;
+X-Forefront-PRVS: 03468CBA43
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(199004)(5660300002)(81166006)(8676002)(8936002)(33716001)(52116002)(2906002)(6496006)(107886003)(6486002)(53546011)(33656002)(4326008)(478600001)(186003)(16526019)(9686003)(6666004)(316002)(1076003)(66556008)(6862004)(81156014)(6636002)(66476007)(66946007)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6053;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8SbYPFi500Qx5u6/fJIBIqjcepPaBvMnD7/FUmz2hNjgdEFdFesQS4UdOaFfUH6OS3nlAPRGdmAAcQMBI0O0vB1j8eWLMxXEb42DvRGxkTtUfETAIGDxb+8UZTXVv5ffY8CMgtPWRb4sFEnb46yO1oY5qrUFD3LNmaQLKPXhLZFwl5IknFbK49FoiHpwS7rK7DCAJ6gcUGqh+qjAWppTz+6nS7EtIFIioaSEpRAdDSUDbkUgC/kgxzGeJLbvRkKAAu6xhJCKlfONvVxoeMOjBSLMN04cRbJnx9P7dhSs+nz3sHcL7YRNYaUAndBIZliwh8XM93TO1WuPJqgxEXs383Z0/Lst+HKN/YR8jocirQqNmhkL4IgW3Bxols/HLALecvKD++qLzKHRAJWm4XL1WTTS2LSt/meeYeMurfrQZBDigecolmr4FBXFKbMIRuU4
+X-MS-Exchange-AntiSpam-MessageData: MCxaMz4pQ7ADEqiwaNEhRZmQpTclwKG+RvnXs9S/U/a2QOa5zv+DQ7XeIz9HGVBiLb+IUGtl8T5CWbayRwCccesPhADCG6vxckP3eCZpJKGMnKdt3Mmc2JLHA99T9gov53+/8/RqQ1dMr/BZPGLpXy7Htsal/LOANUR1RHUnQXc=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97e134a3-99b4-40a6-4fb6-08d7cb27472e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2020 10:29:45.6294
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vlEnrpzcYccHMI6E5z/Tq6dx13//GFRSo6iNPjkCk9p6bVRe/GhhnvRO5Fs1cHvzdK6GOeJuxFcezpkJV/ye0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6053
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Avihai Horon <avihaih@mellanox.com>
+On Wed, Mar 18, 2020 at 11:46:19AM +0200, Max Gurtovoy wrote:
+>
+> On 3/18/2020 8:47 AM, Leon Romanovsky wrote:
+> > On Tue, Mar 17, 2020 at 06:37:57PM +0200, Max Gurtovoy wrote:
+> > > On 3/17/2020 3:55 PM, Leon Romanovsky wrote:
+> > > > On Tue, Mar 17, 2020 at 03:40:26PM +0200, Max Gurtovoy wrote:
+> > > > > ULP's can use this API to create/destroy SRQ's with the same
+> > > > > characteristics for implementing a logic that aimed to save resources
+> > > > > without significant performance penalty (e.g. create SRQ per completion
+> > > > > vector and use shared receive buffers for multiple controllers of the
+> > > > > ULP).
+> > > > >
+> > > > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> > > > > ---
+> > > > >    drivers/infiniband/core/Makefile  |  2 +-
+> > > > >    drivers/infiniband/core/srq_set.c | 78 +++++++++++++++++++++++++++++++++++++++
+> > > > >    drivers/infiniband/core/verbs.c   |  4 ++
+> > > > >    include/rdma/ib_verbs.h           |  5 +++
+> > > > >    include/rdma/srq_set.h            | 18 +++++++++
+> > > > >    5 files changed, 106 insertions(+), 1 deletion(-)
+> > > > >    create mode 100644 drivers/infiniband/core/srq_set.c
+> > > > >    create mode 100644 include/rdma/srq_set.h
+> > > > >
+> > > > > diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+> > > > > index d1b14887..1d3eaec 100644
+> > > > > --- a/drivers/infiniband/core/Makefile
+> > > > > +++ b/drivers/infiniband/core/Makefile
+> > > > > @@ -12,7 +12,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+> > > > >    				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
+> > > > >    				multicast.o mad.o smi.o agent.o mad_rmpp.o \
+> > > > >    				nldev.o restrack.o counters.o ib_core_uverbs.o \
+> > > > > -				trace.o
+> > > > > +				trace.o srq_set.o
+> > > > Why did you call it "srq_set.c" and not "srq.c"?
+> > > because it's not a SRQ API but SRQ-set API.
+> > I would say that it is SRQ-pool and not SRQ-set API.
+>
+> If you have some other idea for an API, please share with us.
+>
+> I've created this API in core layer to make the life of the ULPs easier and
+> we can see that it's very easy to add this feature to ULPs and get a big
+> benefit of it.
 
-After a successful allocation of path_rec, num_paths is set to 1,
-but any error after such allocation will leave num_paths uncleared.
+No one here said against the feature, but tried to understand the
+rationale behind name *_set and why you decided to use "set" term
+and not "pool", like was done for MR pool.
 
-This causes to de-referencing a NULL pointer later on. Hence,
-num_paths needs to be set back to 0 if such an error occurs.
-
-The following crash from syzkaller revealed it.
-
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
-CPU: 0 PID: 357 Comm: syz-executor060 Not tainted 4.18.0+ #311
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.11.0-0-g63451fca13-prebuilt.qemu-project.org 04/01/2014
-RIP: 0010:ib_copy_path_rec_to_user+0x94/0x3e0
-Code: f1 f1 f1 f1 c7 40 0c 00 00 f4 f4 65 48 8b 04 25 28 00 00 00 48 89
-45 c8 31 c0 e8 d7 60 24 ff 48 8d 7b 4c 48 89 f8 48 c1 e8 03 <42> 0f b6
-14 30 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85
-RSP: 0018:ffff88006586f980 EFLAGS: 00010207
-RAX: 0000000000000009 RBX: 0000000000000000 RCX: 1ffff1000d5fe475
-RDX: ffff8800621e17c0 RSI: ffffffff820d45f9 RDI: 000000000000004c
-RBP: ffff88006586fa50 R08: ffffed000cb0df73 R09: ffffed000cb0df72
-R10: ffff88006586fa70 R11: ffffed000cb0df73 R12: 1ffff1000cb0df30
-R13: ffff88006586fae8 R14: dffffc0000000000 R15: ffff88006aff2200
-FS: 00000000016fc880(0000) GS:ffff88006d000000(0000)
-knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 0000000063fec000 CR4: 00000000000006b0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-? ib_copy_path_rec_from_user+0xcc0/0xcc0
-? __mutex_unlock_slowpath+0xfc/0x670
-? wait_for_completion+0x3b0/0x3b0
-? ucma_query_route+0x818/0xc60
-ucma_query_route+0x818/0xc60
-? ucma_listen+0x1b0/0x1b0
-? sched_clock_cpu+0x18/0x1d0
-? sched_clock_cpu+0x18/0x1d0
-? ucma_listen+0x1b0/0x1b0
-? ucma_write+0x292/0x460
-ucma_write+0x292/0x460
-? ucma_close_id+0x60/0x60
-? sched_clock_cpu+0x18/0x1d0
-? sched_clock_cpu+0x18/0x1d0
-__vfs_write+0xf7/0x620
-? ucma_close_id+0x60/0x60
-? kernel_read+0x110/0x110
-? time_hardirqs_on+0x19/0x580
-? lock_acquire+0x18b/0x3a0
-? finish_task_switch+0xf3/0x5d0
-? _raw_spin_unlock_irq+0x29/0x40
-? _raw_spin_unlock_irq+0x29/0x40
-? finish_task_switch+0x1be/0x5d0
-? __switch_to_asm+0x34/0x70
-? __switch_to_asm+0x40/0x70
-? security_file_permission+0x172/0x1e0
-vfs_write+0x192/0x460
-ksys_write+0xc6/0x1a0
-? __ia32_sys_read+0xb0/0xb0
-? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
-? do_syscall_64+0x1d/0x470
-do_syscall_64+0x9e/0x470
-entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x410899
-Code: 00 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00 48 89 f8 48 89
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
-f0 ff ff 0f 83 6b 23 00 00 c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc8d2d4498 EFLAGS: 00000286 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 006d635f616d6472 RCX: 0000000000410899
-RDX: 0000000000000018 RSI: 0000000020000080 RDI: 0000000000000039
-RBP: 2f646e6162696e69 R08: 00000000004002e0 R09: 00000000004002e0
-R10: 00000000004002e0 R11: 0000000000000286 R12: 666e692f7665642f
-R13: 0000000000401b80 R14: 0000000000401c10 R15: 0000000000000006
-Modules linked in:
-Dumping ftrace buffer:
-(ftrace buffer empty)
----[ end trace b0e1982aeff8bfd1 ]---
-RIP: 0010:ib_copy_path_rec_to_user+0x94/0x3e0
-Code: f1 f1 f1 f1 c7 40 0c 00 00 f4 f4 65 48 8b 04 25 28 00 00 00 48 89
-45 c8 31 c0 e8 d7 60 24 ff 48 8d 7b 4c 48 89 f8 48 c1 e8 03 <42> 0f b6
-14 30 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85
-RSP: 0018:ffff88006586f980 EFLAGS: 00010207
-RAX: 0000000000000009 RBX: 0000000000000000 RCX: 1ffff1000d5fe475
-RDX: ffff8800621e17c0 RSI: ffffffff820d45f9 RDI: 000000000000004c
-RBP: ffff88006586fa50 R08: ffffed000cb0df73 R09: ffffed000cb0df72
-R10: ffff88006586fa70 R11: ffffed000cb0df73 R12: 1ffff1000cb0df30
-R13: ffff88006586fae8 R14: dffffc0000000000 R15: ffff88006aff2200
-FS: 00000000016fc880(0000) GS:ffff88006d000000(0000)
-knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 0000000063fec000 CR4: 00000000000006b0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Kernel panic - not syncing: Fatal exception
-Dumping ftrace buffer:
-(ftrace buffer empty)
-Kernel Offset: disabled
-
-Fixes: 3c86aa70bf67 ("RDMA/cm: Add RDMA CM support for IBoE devices")
-Signed-off-by: Avihai Horon <avihaih@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
-I'm sending it to -next, because this flow existed many years and
-doesn't worth to have a merge conflict between -rc and -next.
+So my suggestion is to name file as srq_pool.c and use rdma_srq_poll_*()
+function names.
 
 Thanks
----
- drivers/infiniband/core/cma.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 8924b2f8e299..8f73a7e87359 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3007,6 +3007,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
- err2:
- 	kfree(route->path_rec);
- 	route->path_rec = NULL;
-+	route->num_paths = 0;
- err1:
- 	kfree(work);
- 	return ret;
---
-2.24.1
-
+>
+> >
+> > Thanks
