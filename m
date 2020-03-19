@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2B118AB84
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 05:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E638718AB8E
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 05:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbgCSECS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 00:02:18 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33635 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726063AbgCSECS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 00:02:18 -0400
-Received: by mail-pf1-f196.google.com with SMTP id n7so693427pfn.0
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 21:02:17 -0700 (PDT)
+        id S1725767AbgCSEFh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 00:05:37 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:34556 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgCSEFh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 00:05:37 -0400
+Received: by mail-pj1-f68.google.com with SMTP id q16so1803759pje.1
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 21:05:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=CS6j/dj+b0UdPfXca74cRX59NxtxC7h0wAYHH2FNfHA=;
-        b=G1ESG/MzauhndbECiQMuH/bgWg2+S8z8l4z2dUFKWk8kXjI7AqnMZNEwmRIsCjgUAt
-         suzn69L3U//iKZvIZZQTAYY6hJqJ6mbMifeTFLOIMbjzczmsrPk4j4tWqIznm8ex7dqP
-         9IaZAo0lUhAlZWbSLf+vhhsEPnluWDLV/YpUvBld4IuxYLPj58Bp+CS1eWjpXTd5lB2Q
-         fNngUVE0fHVyHtsmbJAqZell3vbOu6Ds1DFjf3PL+b4mx81Mav08EZx3DJeoVg+peDAa
-         EotKrezWZ9vYzPCB/UQq+AvKtO0wp1PyNG8aW6pY2wOqUD5ekNE5MaPjaKuvwx+B4IBC
-         R2Mw==
-X-Gm-Message-State: ANhLgQ1uofwP2u+ZMdmVZVoB4XbfmV773+wrpW/C7KHaDyLc85W71S+B
-        USXgK2DbPfwg042c/nAJH5g=
-X-Google-Smtp-Source: ADFU+vusO1JaNVfvuDAODDqmien8P0AqPsSWq6bSkBcLJkLuDhxFX8vcFUALvEyvUbWHGJg/U/6FSw==
-X-Received: by 2002:a63:9dc2:: with SMTP id i185mr1208717pgd.240.1584590536968;
-        Wed, 18 Mar 2020 21:02:16 -0700 (PDT)
+        bh=wr6kC4JScFrW2hgAcl7y9c5/eIVPDlJgXz+wP6QicTw=;
+        b=s70qYvTB2kLFkbcQRI3u6oxR+nFnDU8isMfi19p3Fw9cDVzTC31oqU49HAViHQSgpH
+         EOGVR4ltLvTiWfwW9hHB94AQ9Fc17eM2sogD8GIyP2SCkU+alfDcZqjBj5VMdrAn5dT3
+         brQdSyOLtHLfaaIP7Og1B/YmG86QeCB+kL0Z1PU777u927hnoz2vq6zDXw6WgwknaAzU
+         HGGmpR2qPWdZx917OQ4dcI/zVSxYsHCK4UoKSJXLxTRjNS3B4fWqk50w5dBf64yhXJjp
+         LFFd+VDKQ8XPwtXxDl5SXMJ2P9KCDmxcUSxbue5ZBn0eJX7RnTs2EJtxQbZrIDteThAJ
+         eTtw==
+X-Gm-Message-State: ANhLgQ2yLzUHY0jPweq0RNRNvsfYYE3PAeKtcmTENfGotOnT3E52ij+I
+        niF2931G5v1F4hqoICzT2ls=
+X-Google-Smtp-Source: ADFU+vsVGW/k6e5yMCEGH5+krNUDm2bXxjXi2jwCUkuv2I42Bt5pF7ZuCSWbZdqVkbnQ3MDEhqRp0Q==
+X-Received: by 2002:a17:90a:8c0f:: with SMTP id a15mr1660754pjo.156.1584590736459;
+        Wed, 18 Mar 2020 21:05:36 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:84b7:c685:175f:6f9b? ([2601:647:4000:d7:84b7:c685:175f:6f9b])
-        by smtp.gmail.com with ESMTPSA id fz3sm403037pjb.41.2020.03.18.21.02.15
+        by smtp.gmail.com with ESMTPSA id y131sm498309pfb.78.2020.03.18.21.05.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Mar 2020 21:02:15 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] nvmet-rdma/srpt: SRQ per completion vector
+        Wed, 18 Mar 2020 21:05:35 -0700 (PDT)
+Subject: Re: [PATCH v2 2/5] nvmet-rdma: add srq pointer to rdma_cmd
 To:     Max Gurtovoy <maxg@mellanox.com>, linux-nvme@lists.infradead.org,
         sagi@grimberg.me, hch@lst.de, loberman@redhat.com,
         linux-rdma@vger.kernel.org
-Cc:     kbusch@kernel.org, leonro@mellanox.com, jgg@mellanox.com,
-        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
-        oren@mellanox.com, vladimirk@mellanox.com, rgirase@redhat.com
+Cc:     rgirase@redhat.com, vladimirk@mellanox.com, shlomin@mellanox.com,
+        leonro@mellanox.com, dledford@redhat.com, jgg@mellanox.com,
+        oren@mellanox.com, kbusch@kernel.org, idanb@mellanox.com
 References: <20200318150257.198402-1-maxg@mellanox.com>
+ <20200318150257.198402-3-maxg@mellanox.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -66,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <64006872-53be-d7fa-831f-a1e79302038e@acm.org>
-Date:   Wed, 18 Mar 2020 21:02:13 -0700
+Message-ID: <46185d3b-6b17-753d-b3c3-be223ee281a9@acm.org>
+Date:   Wed, 18 Mar 2020 21:05:34 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200318150257.198402-1-maxg@mellanox.com>
+In-Reply-To: <20200318150257.198402-3-maxg@mellanox.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,17 +82,9 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-18 08:02, Max Gurtovoy wrote:
-> I used RoCE link layer. For SRP, I used 1 server with RoCE loopback connection
-> (results are not mentioned below) for testing. Hopefully I'll get a tested-by
-> signature and feedback from Laurence and Rupesh on the SRP part during the review
-> process.
-
-Hi Max,
-
-The MAD code in ib_srpt is not triggered when using RoCE. Please also
-test SRP over IB.
-
-Additionally, how does this patch series affect SRP performance?
+> This is a preparetion patch for the SRQ per completion vector feature.
+            ^^^^^^^^^^^
+            preparation?
 
 Thanks,
 
