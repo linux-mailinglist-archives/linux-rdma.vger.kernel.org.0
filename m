@@ -2,102 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 704F918B9B9
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 15:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6EA18BAD9
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 16:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbgCSOtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 10:49:35 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42883 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727095AbgCSOtf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 10:49:35 -0400
-Received: by mail-pf1-f195.google.com with SMTP id x2so1545961pfn.9
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 07:49:34 -0700 (PDT)
+        id S1727231AbgCSPU3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 11:20:29 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:41333 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgCSPU2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 11:20:28 -0400
+Received: by mail-qv1-f68.google.com with SMTP id a10so1182254qvq.8;
+        Thu, 19 Mar 2020 08:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=ZtMj/CBgCD3yGjXP1YkOgaQmTlsjIgpm/I74/jq1ac4=;
+        b=E4JRJX4luJOgYONYsHvQhSr12DWtuR5xbWoovSf6PvhbhhpGNj38hF7rznswQcU1I3
+         kXbeXvCea3H3ueHXMzH/nbXUEL2dFHXgdUhDghJ1n5mrxZXbp2MetqyRwODoAfe20tio
+         P31XRvSOYR4Dq4sp5Zxxfjd30Ry557T+LiHTDjsgp0KJ55I4CVTXA4INuPa9Mp0rTDi8
+         b/4lct20e40sh4WSHRMVJr46rUpeztRZgAi6BECb40MtrNVV/O4F860GZOqVG9k8YSYd
+         lYrT09V8L9nz/h5RtxuyWVNIWGKBa3VLNFFZkpamjvoMJQ9N+44lfNHnQuW6pzUruFVH
+         bunQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JuHbSS0eGsYBNljx6ogyRU5OrOR3D6tnYOH5aEot1bo=;
-        b=gj2ODWfAepJ9fEdzuwa9QYLqeYZ5DXTB1Ge7ZJ6i2QCPoUxqT7mZO5CavqIwXXArQs
-         Q+J5mqp5TkxVLorwDWJaearu81rJ1DtMbCx20F0sLmCA3LgS8ENdcf1P1r9IZWx0590H
-         j+IDqvbgYNuC9qQdF/8jeIFS0FRKttOzOYskSDlK3mJakrXYMNzzhwxGdIwab9Nmh9rG
-         uwSbmW6azaPCTKMF1dYZ3vMi7dTWrZO7DELw747e0VQZ0thZMHyMiN5W+pzlPuUojCma
-         P/9UJfC6vC5QCsdZ6l3fHZCcCObtu7oKzM5bR8VBU7X6D1CemeRWG214WhVnoT54GTKK
-         8Jiw==
-X-Gm-Message-State: ANhLgQ1Gbx6ZVca6uadGNuoZHXCjzLos1t6CRnWm8bBJsRYg+gjmbmo1
-        DyjJLBLoOMos7KpF/FBbLi8=
-X-Google-Smtp-Source: ADFU+vsVsNb+pyULR/67nR+rIO5LTV/Xrueh2tN2NiSmX7YZWsKNbda6OdDSE8Bh0g5Z19vwJuslFA==
-X-Received: by 2002:a63:1e4f:: with SMTP id p15mr3832067pgm.28.1584629374199;
-        Thu, 19 Mar 2020 07:49:34 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:af99:b4cf:6b17:1075? ([2601:647:4000:d7:af99:b4cf:6b17:1075])
-        by smtp.gmail.com with ESMTPSA id y131sm2920765pfb.78.2020.03.19.07.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 07:49:33 -0700 (PDT)
-Subject: Re: [PATCH v2 3/5] nvmet-rdma: use SRQ per completion vector
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        loberman@redhat.com, linux-rdma@vger.kernel.org, kbusch@kernel.org,
-        leonro@mellanox.com, dledford@redhat.com, idanb@mellanox.com,
-        shlomin@mellanox.com, oren@mellanox.com, vladimirk@mellanox.com,
-        rgirase@redhat.com
-References: <20200318150257.198402-1-maxg@mellanox.com>
- <20200318150257.198402-4-maxg@mellanox.com>
- <d72e0312-1dfd-460e-bc83-49699d86dd64@acm.org>
- <5623419a-39e6-6090-4ae2-d4725a8b9740@mellanox.com>
- <20200319115654.GV13183@mellanox.com>
- <0b11c26f-d3de-faf5-5609-c290ea46ed9c@mellanox.com>
- <20200319135356.GZ13183@mellanox.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <6dcf300c-d010-829b-b996-285ad16786d5@acm.org>
-Date:   Thu, 19 Mar 2020 07:49:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=ZtMj/CBgCD3yGjXP1YkOgaQmTlsjIgpm/I74/jq1ac4=;
+        b=mHviqZ2ZrkCkDctR5FX6bQJaOpn+eckbixG3Agd7Esm/vrYmGq+vdI6eg2Saw2RUH4
+         uyeP1JRqFcPidJubfHzJ4gyIktPJoLkNZlGaLcqWzSJxXw5DfDy9rG9KKt5A+WKZ5B3X
+         nfRU7gX7Vou7uTpGQ/Qoa3lslnR9AjS7aRqJQxgMNBoXC4uOUCIkFUciPtkvVWZ79DxW
+         J4Gj0nQ1TUwSHSzuYHe6T8BJ0s+5COPlDiFDqc+GYZiWV862YNW3UvAUtaIDgV+ab69c
+         1Cf5L80ZTuzFpjif2BA6BhJC20xCqK7ivG7FN0YKvR0YHCYNn2Em3vRi0EVW7xjKsbzA
+         GWyQ==
+X-Gm-Message-State: ANhLgQ3wrlPFJn/7aWAHPANYNXJ1beJxnjptOIZKY77M4mr+tk5UgmZn
+        3TT84iRHa0itOtY82m9lNTSOGNFzzos=
+X-Google-Smtp-Source: ADFU+vsTt5F2ty1kdCBE2hG4/bJmmvyxcpTUpMaVIC/e6eJDAtfVAoGXAPjYSUe1CHGoSzN0UrduFQ==
+X-Received: by 2002:ad4:4a89:: with SMTP id h9mr3494361qvx.168.1584631225592;
+        Thu, 19 Mar 2020 08:20:25 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id h25sm1652734qkg.87.2020.03.19.08.20.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Mar 2020 08:20:24 -0700 (PDT)
+Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 02JFKNfo011145;
+        Thu, 19 Mar 2020 15:20:23 GMT
+Subject: [PATCH RFC 00/11] Linux NFS server support for multiple Write chunks
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Thu, 19 Mar 2020 11:20:23 -0400
+Message-ID: <20200319150136.16298.68813.stgit@klimt.1015granger.net>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-In-Reply-To: <20200319135356.GZ13183@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/19/20 6:53 AM, Jason Gunthorpe wrote:
-> On Thu, Mar 19, 2020 at 02:48:20PM +0200, Max Gurtovoy wrote:
-> 
->> Nevertheless, this situation is better from the current SRQ per HCA
->> implementation.
-> 
-> nvme/srp/etc already use srq? I see it in the target but not initiator?
-> 
-> Just worried about breaking some weird target somewhere
+The RPC/RDMA version 1 protocol allows clients to provision more
+than one Write chunk in each RPC/RDMA message. The Linux NFS client
+never has need to construct a message with multiple Write chunks, so
+the Linux NFS server has never implemented support for them.
 
- From the upstream SRP target driver:
+At testing events, we discovered that the Solaris NFS client can
+emit such requests on occasion, but only when an application invokes
+readv(2) on a "forcedirectio" mount -- rare, indeed.
 
-static void srpt_get_ioc(struct srpt_port *sport, u32 slot,
-			 struct ib_dm_mad *mad)
-{
-	[ ... ]
-	if (sdev->use_srq)
-		send_queue_depth = sdev->srq_size;
-	else
-		send_queue_depth = min(MAX_SRPT_RQ_SIZE,
-				       sdev->device->attrs.max_qp_wr);
-	[ ... ]
-	iocp->send_queue_depth = cpu_to_be16(send_queue_depth);
-	[ ... ]
-}
+Even so, it's been on my "to-do" list for quite some time to get the
+Linux NFS server to handle multiple Write chunks. While addressing
+the recent NFSD/RDMA bug with Linux filesystems that do not have a 
+.read_splice method [1], I realized that it was time to get this one
+off my plate.
 
-I'm not sure the SRP initiator uses that data from the device management
-I/O controller profile.
+So here is an attempt to support NFS/RDMA clients that send multiple
+Write chunks. To do this generically requires more xdr_buf slicing
+and dicing than the simple "zero or one" implementation.
 
-Anyway, with one SRQ per initiator it is possible for the initiator to
-prevent SRQ overflows. I don't think that it is possible for an initiator
-to prevent target side SRQ overflows if shared receive queues are shared
-across multiple initiators.
+At the same time, the ability to send RDMA Write requests _outside_
+the .xpo_sendto path is introduced. Extensive testing has not
+revealed any functional or performance regression with this change.
 
-Thanks,
+Thoughts and comments are welcome.
 
-Bart.
+
+[1] - https://bugzilla.kernel.org/show_bug.cgi?id=198053
+
+---
+
+Chuck Lever (11):
+
+      SUNRPC: Adjust synopsis of xdr_buf_subsegment()
+      svcrdma: Clean up RDMA Write path
+      NFSD: Invoke svc_encode_read_payload in "read" NFSD encoders
+      svcrdma: Post RDMA Writes while XDR encoding replies
+      svcrdma: Clean up svc_rdma_encode_reply_chunk()
+      svcrdma: Cache number of Write chunks
+      svcrdma: Add a data structure to track READ payloads
+      svcrdma: Add svc_rdma_skip_payloads()
+      svcrdma: Support multiple READ payloads when pulling up
+      svcrdma: Support multiple READ payloads in svc_rdma_map_reply_msg()
+      svcrdma: Support multiple Write chunks in svc_rdma_send_reply_chunk
+
+
+ fs/nfsd/nfs3xdr.c                       |   4 +
+ fs/nfsd/nfs4xdr.c                       |   3 +
+ fs/nfsd/nfsxdr.c                        |   4 +
+ include/linux/sunrpc/svc_rdma.h         |  24 +-
+ include/trace/events/rpcrdma.h          |  16 +-
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |  32 +-
+ net/sunrpc/xprtrdma/svc_rdma_rw.c       | 134 +++++---
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c   | 556 ++++++++++++++++++++------------
+ 8 files changed, 486 insertions(+), 287 deletions(-)
+
+--
+Chuck Lever
