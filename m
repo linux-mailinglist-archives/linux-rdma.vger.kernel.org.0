@@ -2,106 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5B818A975
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 00:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F8118A98F
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 01:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgCRXtl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 19:49:41 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:34054 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726856AbgCRXtk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 19:49:40 -0400
-Received: by mail-qv1-f67.google.com with SMTP id o18so89164qvf.1
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 16:49:40 -0700 (PDT)
+        id S1726647AbgCSAIX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 20:08:23 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43959 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgCSAIX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 20:08:23 -0400
+Received: by mail-qt1-f195.google.com with SMTP id l13so314078qtv.10
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 17:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=x8b6+B0ZmGbe/KsLpXXCgEez+7ji4ZVNHFWJbYGybDw=;
-        b=UYvHH4eZJ7A3yCDKmkY5vTTbYfMrkFQgWDvVCFefYJgzH9R5exqNMOIlm1gMBtqUmK
-         KVcRDaYWZasrNGQHN0yKEAsNvFIwaPUPUtJQ5uMg+9atY+EhNqUHU3CUpTgRObM3Fa6X
-         KM5GfvBKOEQ9dV6sAPF1E6OYpbRVyDUiKw8iuvpVj9L1wF/ztc/MhM5+8DazpqYU35B2
-         B2zCI4ekJThcRxz8M/DrslKEYRY1m+kdYobqtqHIUYbTdMcFVmr4NgzkY0XKo1WJ991z
-         WlDoB32+MWOWtN/f6Xrpnx7rTNUKu1iLpNE+zMh7qZW5vKNgTU5QElAg0A9pe5/csJcE
-         mZXA==
+        bh=PslStRvh/gwdX+fLXeuyKLv6Tn2yNwGOFXZhuX6lfcE=;
+        b=GtFH+bxZWQQzGdgetUwKfxPM2f2iTqG1CihTmFqkxHLjdNw3jLwaxKmDVtgkrpFOCF
+         1Rfr56T5YF3RaAUoov952PMWiyGEoARTGab2L+VNtSo2fpROyDQ8z5fIY7H69pxEWmhs
+         ZsvMlcV6Qh607iPbJqdJLjiQ3OzYcvDGd2VTDcU3N7wdjDTFZl2JKGYNiwXm0WO4Po7c
+         54alyfZ5SgdrKegM5sA9A+rI0ACFy7ucHY0EIyoNNvEAeaQt13TYYETcVEG+0YhIMGgm
+         BD93w2e2Hz17RQADDtnBfTx09tLM15YYiw+f+okbaI+qF+P6bR6bmqGkjgf+zJTXR5s/
+         NHJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x8b6+B0ZmGbe/KsLpXXCgEez+7ji4ZVNHFWJbYGybDw=;
-        b=cSBR33oqT5qC/KE9cn1vbXniz96h5xJ7w1yzv9u1GLbhh99xwjIcWVxI3IqbVlgsOl
-         y5jDSKj1Ncr9vle65mf3HOqV1nN6kqZNvvyh7Za8X4SD5IG+pMqwxBx45nfVbJtbAx4E
-         EjlAwWtcbKMjgUne2PXwxRIAx9X9e4GzcTnugVTFGdqZQZhW/GtYlI3OAoHsM9TwqnZN
-         5Gvip8gagzxw7Vt/T+z69yrcU9BkimjkFmYrsD6QBT/FldeEyZ0CDgVj38xQJLOnmJ+d
-         is8tY32xXJONSsrGkof3Mf6ZO6znZxhilOmOR4UL8AdlXSqU6KiylvCJmdrQhDFNpVLU
-         MG0w==
-X-Gm-Message-State: ANhLgQ1XacApO0B2lqYmBsFmrhd7csLn2ItlicY5OA5eULAOIXIFCqgR
-        5AByM7OTfn+1YHBV+Q/j/unerQ==
-X-Google-Smtp-Source: ADFU+vtMh3MpGKyMT4gES+QNvHlF4xhsL17r187tjiZZRiM38bPC6nmRpMqywEmt/goIVNjPq4cVKA==
-X-Received: by 2002:a05:6214:205:: with SMTP id i5mr437502qvt.223.1584575379907;
-        Wed, 18 Mar 2020 16:49:39 -0700 (PDT)
+        bh=PslStRvh/gwdX+fLXeuyKLv6Tn2yNwGOFXZhuX6lfcE=;
+        b=mShHEfkPTcCF6xAWvBdhOh4hukycbLEMHO18J21kpSdz2536H2zhU74sCJDbcju5xa
+         bcYv8U7UFxKzEzZKcNsv6acJe2fhWi9DZzWjeiz5Sqg3wYQ6NU36v5nnAEEXVoSjK5xj
+         jXpQkhJ6nub03T+6K32Q8QLlY0+0qGQ5ffHO6gchxiAorLeSkfv22+i3rgV3LsnkaMRL
+         6PCfswwA/mzdt4CFapXYyRoZ/xSr5DWIfuQNgc8MXwR/Oggr0bs1SpQAyjN+TCsU9qmN
+         zdOvsLnF4+0wYvRI5hRuRHQuoqn/uZ9TVkmQU0KpNUyEZfHhYgzbTAFo4KDJFq0vrimU
+         Gw8w==
+X-Gm-Message-State: ANhLgQ0AAj2ERyN7HUD4fsx9G6mNquGe+lpMO5fRhhETAVhdE3u6YOZt
+        g0mnBAu1Vu8Z54+gVdPhBjdgCQ==
+X-Google-Smtp-Source: ADFU+vtHRFX82JB81DTdLOZxA2wHXgmmvXNiRk/fYXRj+nqr/8DYoAKBO7GIKRhEYqYhlwAFv4DwlA==
+X-Received: by 2002:ac8:4787:: with SMTP id k7mr293473qtq.267.1584576502550;
+        Wed, 18 Mar 2020 17:08:22 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u40sm232547qtc.62.2020.03.18.16.49.39
+        by smtp.gmail.com with ESMTPSA id l6sm289348qti.10.2020.03.18.17.08.21
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Mar 2020 16:49:39 -0700 (PDT)
+        Wed, 18 Mar 2020 17:08:21 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jEiRO-0005Hj-Vb; Wed, 18 Mar 2020 20:49:38 -0300
-Date:   Wed, 18 Mar 2020 20:49:38 -0300
+        id 1jEijV-0007IP-AM; Wed, 18 Mar 2020 21:08:21 -0300
+Date:   Wed, 18 Mar 2020 21:08:21 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Subject: Re: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-Message-ID: <20200318234938.GA19965@ziepe.ca>
-References: <20200317160510.85914.22202.stgit@awfm-01.aw.intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 03/11] RDMA/efa: Use in-kernel offsetofend()
+ to check field availability
+Message-ID: <20200319000821.GA27970@ziepe.ca>
+References: <20200310091438.248429-1-leon@kernel.org>
+ <20200310091438.248429-4-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200317160510.85914.22202.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20200310091438.248429-4-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 12:05:10PM -0400, Dennis Dalessandro wrote:
-> +static void flush_pq_iowait(struct hfi1_user_sdma_pkt_q *pq)
-> +{
-> +	unsigned long flags;
-> +	seqlock_t *lock = pq->busy.lock;
-> +
-> +	if (!lock)
-> +		return;
-> +	write_seqlock_irqsave(lock, flags);
-> +	if (!list_empty(&pq->busy.list)) {
-> +		list_del_init(&pq->busy.list);
-> +		pq->busy.lock = NULL;
-> +	}
-> +	write_sequnlock_irqrestore(lock, flags);
+On Tue, Mar 10, 2020 at 11:14:30AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Remove custom and duplicated variant of offsetofend().
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/efa/efa_verbs.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 
-I'm trying to grasp how a seqlock is protecting a list_empty and
-list_del_init, and this seems.. uh.. insane?
+Applied to for-next
 
-The only place that uses seqlock in infiniband is in hfi1
-
-It only calls seqlock_init and write_seqlock
-
-Never read_seqlock
-
-So, this isn't a seqlock, it is a normal spinlock obfuscated as a
-seqlock.
-
-Please clean this mess too.
-
-I don't know what to do with this patch, it might well be functionally
-right, but everything about reading it screams wrong wrong wrong. I
-don't want to send it to Linus in -rc like this.
-
-At least add something to the commit message asking temporary
-forgiveness for this madness.
-
-Also s/insure/ensure/, right?
-
+Thanks,
 Jason
