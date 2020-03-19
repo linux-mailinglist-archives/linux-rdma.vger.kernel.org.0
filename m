@@ -2,91 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A3218A9E1
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 01:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86E818AA74
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 02:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgCSAgr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Mar 2020 20:36:47 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:38425 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgCSAgr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 20:36:47 -0400
-Received: by mail-qv1-f65.google.com with SMTP id p60so131082qva.5
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 17:36:46 -0700 (PDT)
+        id S1726821AbgCSBts (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Mar 2020 21:49:48 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:44896 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgCSBtr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Mar 2020 21:49:47 -0400
+Received: by mail-pl1-f180.google.com with SMTP id h11so310216plr.11
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 18:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fqdpgXYcUZijy2Tim4u70zVZLXSOAEfPxfR1JdoPz+o=;
-        b=eF92YLiEaamcZiN6MXf0NWxBawKcgVk/aO7nYp/v0aF+nAyU8fZ8yRayp7R2SYysw4
-         gUDqIZs8WLlKEdONsjZUMAOkY2AKTPsFj9zNxWfNqDyrgVCZOJ/ydBgY+TNr8wDObmpQ
-         vuQEW3RbUbb7MMLkOGyXavxHs+M233FNPmLzszDaTXyq4DrXj5Pz9J437XjVLsyUbG4w
-         tmc/sYlEXyrtobrU4DSfE4A3nqv2RVETnhfp5ZbYTYWeROIpkeXaI7ywUpT6lXSynk9a
-         klU0QrudtOz21VAM7ZAg5omyvS4zRBfMs221owN2xgHT8hC0vfQN+34mbKS51HV1Mf66
-         6mtw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=XOhIJUKz4PCXZxXEOXoWCJ6nIHhUfx5esbK4KlMkWgk=;
+        b=nkA3MsATzj9O/lJKSJLNkssfIpG7ugOHHWBszWgxdMvggfNS8DnV+VcAx1GeTLVxbB
+         iigX+yFoCei5ObamlW8jZAVJX2n1BJpSxbylQy4OVOJKygb8cOhdOO+gW2AH/cy7/J8J
+         9HRV0kz2JuV963dshBi9pVOw/P9cmOS16rfAmuv0Dw19WERkYFUadKTcgXAFiC3qq7ft
+         wL6M5D9qtf5ATX2z/8kIBiVZ23dQ8scC8r1tw2Ct4wUI6WHuhNOZPV/1tvHjzSuWzLQ3
+         crLyA7hOmGBnuEOpN0s8boxTZuQsRGUjYmJ44dihH1sedqzEHLx6jgoe3MpfC54odpz1
+         6a8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fqdpgXYcUZijy2Tim4u70zVZLXSOAEfPxfR1JdoPz+o=;
-        b=hi/kHMlw/hxA7ZYe0Oa4XpTMwZNAmBccdFtwo6h2cLp5V5XCY4gybpp6aBGap6JN0R
-         2SMiCDdo7/QE3ci46jCGXMI9ybRFIcDOWlX99bcrmp/yAYSEFpOpKN5M+ZHLzgAJIUxc
-         dfopG/jsa/n+o5TGoFySif/5sC7e2A2CqDeZtKTorpsJT9w9GjxOk3dmcXMcXxW2eZHl
-         lMcP+OlZq/ZkqbLshZ7742EOvQ7SuZAMgrhpkSm/LVUfraEFyOJTPANgMno8DPJEXFQQ
-         RI4cmh//RGTI/nl//2WK4mLt2AMrllGWnrOuVrISjYnYb5/kl3o1I8ZUCLiwJ/liO8BV
-         Aelw==
-X-Gm-Message-State: ANhLgQ3OnepRUGPx6KKNPejWxKJk6QswfDLRPb7OBZ0SdgGoyIuI5ARy
-        kPm5TwLMlG2e2W4oMu6BqqxBUQ==
-X-Google-Smtp-Source: ADFU+vsFt1BuB+oCHIvm0540W/zf+ZnzvOL6/mgS9/sImW9FgDFqvnX787lcAKwo39SFTXr3uTX5dg==
-X-Received: by 2002:a05:6214:72f:: with SMTP id c15mr605415qvz.3.1584578206504;
-        Wed, 18 Mar 2020 17:36:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t7sm310920qtr.88.2020.03.18.17.36.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Mar 2020 17:36:45 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jEjAz-0002ID-Cs; Wed, 18 Mar 2020 21:36:45 -0300
-Date:   Wed, 18 Mar 2020 21:36:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 14/17] infiniband: pa_vnic_encap.h: get rid of a warning
-Message-ID: <20200319003645.GH20941@ziepe.ca>
-References: <cover.1584456635.git.mchehab+huawei@kernel.org>
- <9dce702510505556d75a13d9641e09218a4b4a65.1584456635.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XOhIJUKz4PCXZxXEOXoWCJ6nIHhUfx5esbK4KlMkWgk=;
+        b=saQ4fwyn9SJDo/iq/nrqMea8rbnv80xf4OkfYPnAlq5dslmcwlPmyZH1000FtcklzT
+         hjsNnErRNjiiH+5pJPB12E4U+sGxpKb6gMsOoq2HrYbIauhPiECmPcFzYKlB5pW15rU4
+         TNKy3r325cwMjjiTPgeZfpH9knWB6CFN8BeTt0pmjSSPiadOSkU3UlEtvQMOTIe7bBJY
+         FMar8bWl857NcLveXLEqNSloqxOrNB+MMrAA+0WBuNc/xopKnYuMrnhBbn2IuTagQczv
+         erg1GYsL5w7wi2zKmEckwxjg1c69Pbj9aRgsI26PRZQLCd6U3cffMSlo0epsKb/myiBz
+         k2ng==
+X-Gm-Message-State: ANhLgQ3VEO19bT1Qf99MlZXoWnLQtnDUlZ2c6+MUZkaWjmOZcUHygdwA
+        L/Yuud27ikgpVFHFQNWn/SNlvDAt
+X-Google-Smtp-Source: ADFU+vu1RxTodigui/Zn/olBnyvzELBze3g8eIh+f5JKM3gOEi9ZxaI73/qEhD78oMjuhR42NjFGWw==
+X-Received: by 2002:a17:90b:4385:: with SMTP id in5mr1143791pjb.87.1584582584462;
+        Wed, 18 Mar 2020 18:49:44 -0700 (PDT)
+Received: from [10.75.201.14] ([118.201.220.138])
+        by smtp.gmail.com with ESMTPSA id i2sm200263pjs.21.2020.03.18.18.49.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Mar 2020 18:49:43 -0700 (PDT)
+Subject: Re: UDP with IB verbs lib
+To:     Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>,
+        linux-rdma@vger.kernel.org
+References: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Message-ID: <0a7c5226-baab-e65f-2706-fd7204e74924@gmail.com>
+Date:   Thu, 19 Mar 2020 09:49:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9dce702510505556d75a13d9641e09218a4b4a65.1584456635.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 03:54:23PM +0100, Mauro Carvalho Chehab wrote:
-> The right markup for a variable is @foo, and not @foo[].
-> 
-> Using a wrong markup caused this warning:
-> 
-> 	./drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h:243: WARNING: Inline strong start-string without end-string.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Please refer to SoftRoCE. The source code is here 
+./drivers/infiniband/sw/rxe/
 
-Do you want this to go to the RDMA tree? I wasn't cc'd on the cover
-letter
+On 3/19/2020 7:07 AM, Dimitris Dimitropoulos wrote:
+> Hi,
+>
+> I'm looking at UDP using the IB verbs library. If I send UDP packets
+> that are intercepted by the IB verbs layer, what happens with the
+> completion notifications ?
+>
+> For example, say I create a list of 10 ibv_recv_wr objects and each
+> has num_sge = 30, with each SGE having a 4K size. And I setup for
+> reception with ibv_post_recv(). If I transmit 30 UDP packets each 4K
+> in size will I receive one CQ event ? Or 30 ?
+>
+> Will the UDP packets be written in consecutive SGEs of the first
+> ibv_recv_wr object ? Or will they be written in consecutive
+> ibv_recv_wr objects (in their first SGE) ?
+>
+> Thank you.
+>
+> Dimitris
 
-Otherwise
 
-Acked-by: Jason Gunthorpe <jgg@mellanox.com>
- 
-Thanks,
-Jason
