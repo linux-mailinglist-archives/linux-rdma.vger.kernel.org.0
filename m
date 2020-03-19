@@ -2,89 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AFD18BD06
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 17:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7072F18BF30
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 19:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbgCSQtE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 12:49:04 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:38716 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727212AbgCSQtE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 12:49:04 -0400
-Received: by mail-ed1-f45.google.com with SMTP id h5so3543250edn.5
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 09:49:01 -0700 (PDT)
+        id S1726785AbgCSSS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 14:18:28 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33800 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbgCSSS2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 14:18:28 -0400
+Received: by mail-qk1-f194.google.com with SMTP id f3so4186470qkh.1
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 11:18:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SdzFHOmYospsL/7Qp0KUB/LlvyPOMe1//9ss/cmtGhc=;
-        b=IJTvFH2tBpSqKTEjLikAskiHRhVKllpCAdMG2f+5N6OQTmx+fkQGCLHFu0EjHI+A0L
-         5lYStjygwYoViSo0Nze0IJkBVNI1NLJSO2TPpycqvzp6SqLBYkYNIMBJufpJVIr+pxSk
-         KPPXmV4OwrTIPP19YOdCArd9aa8DuE038q6fGMHNS6afw3pNF0ltizwSAkH9KvnBCTK5
-         aMJB2iXSyjdeaq18FfSf1S7vBQapivIQ3Yi33qcP32/Nm0tm/C4JdSkhfhwx7Q8d0Q7b
-         //EZEKbrebUId9KLk6n9ZwlPzrHn00Z22Bnm4SCJyJJOJadFuv8RwV6JVJSgDYQmS+Sn
-         fZlg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Vr7DLv3HSxOj6K9fPCliwQQlELliSFR6e/HpBZpUVqo=;
+        b=FcVP9CVpL4uQsrtvVtTC60EWaMqW7Zv3inetNXfNAmR2O/P6wuOLIQnPgMzC+Q0KEf
+         7c+N4HsW0A++4gqhBPtqBccstSO60665F2nOKRd1eKk8g+6hCDlFfZ1rP4K7m9NbNWeZ
+         f5R7oAaWLhrVTIMivbBuIOpehXOXLkeUvAnVdcDIxCaioGTHHMGm1P2PvXCSEPiHVWjf
+         +riFFlDrUN7bjXmmwHUQdyItYOVcvL4Ug2ebUPwTcYxFhuNfEb6YNMniOYEaN2QxM8aW
+         EF5S+5OBysCnNCM+6f73GupTYqXzDvTh0Cxmyiy0fQom8m48QPmbHI+FxQdLD0goUcYo
+         MvZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SdzFHOmYospsL/7Qp0KUB/LlvyPOMe1//9ss/cmtGhc=;
-        b=fwVELxEuibKyOzgavJkDAoe+hLoGKXAwi9kohDDMN2XC+rBD7VfvNQJ8q3NPIDLJZr
-         mpZgcCBUWJr+Q3Wc6Utw/oZK7qmPkFdkQVM1NSbuY4EMUaJ8nS3pvXbNCWtBIBq1c9+R
-         ZmlPgk7WGEQKd3Zb4x51KzpiRm/SVB/XNLCDz4s7jbjbbyJ0JJ6On2fStoi1Jw3gnYbB
-         t/5X92lbjpZQ3Yzl1ZAv33GWVQBxq13muwNkr/RfJoYCjbQ5qhKdzmY6PIRlxJSwaY4U
-         Btf7kc/aAV6mhqI3aTtGqug5tKMCPAPOTS5cgviDB00S0DLOVUKSConTRZMB4uQyMbSe
-         1ECA==
-X-Gm-Message-State: ANhLgQ2BgEKf1VbiUEtAm59+0Htp+glQ95gAHLj/lXsw9ESRDUyQJdjH
-        26hToxG1G0XqahuDB6U/S1SGDR1HZ6a2iDJ3cAiisC1x
-X-Google-Smtp-Source: ADFU+vujy51bYA6wL1kw8cW0p6EvREin9Sa44fRQjRaFIxJ1SjrJWskIACoaUwcrVE1eWSggyK8laqYRZ2CPhgD1sKk=
-X-Received: by 2002:aa7:cb0b:: with SMTP id s11mr3680398edt.165.1584636540830;
- Thu, 19 Mar 2020 09:49:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Vr7DLv3HSxOj6K9fPCliwQQlELliSFR6e/HpBZpUVqo=;
+        b=KQMGm2UmKNh12P8DOrEAXG2Q0xNd8lIOIl7CirMVi1qhDSbPYewcwFAj4RFgSR2tXx
+         A/vncYECT+Dzg7+J7L8mtIneG8jb2oiRcE1x7BBRM2yudAtldko4V6XnflzB5aJhTefS
+         0CLjX0WC3YrWmSKz493dAjz82Py0+L7gdH4eChLAzRhV7SJ6lKkvN3LZzVegrJ3pyd9+
+         MRzeaEd98Fx3Sy/VLyFpTYVFhWphgZBzmNgiYjgkIrNq5xcXJQ7rZXfhF7vLIZmI0glp
+         Es369ZB04B1yapxKzFpIpDk95ks7xjjLBaRcfHR3Xq7zLi28rhrpjCMeQIWJjJYlrwOM
+         bisA==
+X-Gm-Message-State: ANhLgQ29VlfsUpDJY2Lnwsvj0j1NGfHZ8HCTzXuV+/JXkp8H3qiCk8oT
+        i1NvXwBmvkKrHDYv8jgwyEFKvA==
+X-Google-Smtp-Source: ADFU+vtTS3028adhtSlqI7E7TjGlMtNzFV3p67Zkrhb1WKRGzio4yElrgiheBHg4PoR0KPnXf/Av2w==
+X-Received: by 2002:a37:4fc3:: with SMTP id d186mr4555125qkb.100.1584641905799;
+        Thu, 19 Mar 2020 11:18:25 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id g7sm2041439qki.64.2020.03.19.11.18.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 19 Mar 2020 11:18:25 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jEzkO-0004dL-RQ; Thu, 19 Mar 2020 15:18:24 -0300
+Date:   Thu, 19 Mar 2020 15:18:24 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 03/11] RDMA/hns: Check return value of kmalloc
+ with macro
+Message-ID: <20200319181824.GL20941@ziepe.ca>
+References: <1584624298-23841-1-git-send-email-liweihang@huawei.com>
+ <1584624298-23841-4-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-References: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
- <20200319135218.GJ20941@ziepe.ca>
-In-Reply-To: <20200319135218.GJ20941@ziepe.ca>
-From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Date:   Thu, 19 Mar 2020 09:48:48 -0700
-Message-ID: <CAOc41xFeKKcyD2iE4Tpax+GJF+VO5aN_cN5yfjnGnzLVnWNqZw@mail.gmail.com>
-Subject: Re: UDP with IB verbs lib
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1584624298-23841-4-git-send-email-liweihang@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-That's pretty clear. Thank you.
+On Thu, Mar 19, 2020 at 09:24:50PM +0800, Weihang Li wrote:
+> From: Yixian Liu <liuyixian@huawei.com>
+> 
+> As the return value of kmalloc may be null or error code, use kernel macro
+> to do return value check.
 
-Dimitris
+kmalloc always returns null, do not use IS_ERR_OR_NULL
 
-On Thu, Mar 19, 2020 at 6:52 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Mar 18, 2020 at 04:07:37PM -0700, Dimitris Dimitropoulos wrote:
-> > Hi,
-> >
-> > I'm looking at UDP using the IB verbs library. If I send UDP packets
-> > that are intercepted by the IB verbs layer, what happens with the
-> > completion notifications ?
->
-> Each recv that requests a completion gets a completion.
->
-> > For example, say I create a list of 10 ibv_recv_wr objects and each
-> > has num_sge = 30, with each SGE having a 4K size. And I setup for
-> > reception with ibv_post_recv(). If I transmit 30 UDP packets each 4K
-> > in size will I receive one CQ event ? Or 30 ?
->
-> One per ibv_recv_wr requesting completion
->
-> > Will the UDP packets be written in consecutive SGEs of the first
-> > ibv_recv_wr object ? Or will they be written in consecutive
-> > ibv_recv_wr objects (in their first SGE) ?
->
-> Only the first. Each recv handles a single incoming packet.
->
-> DPDK has a hyper-optimized version of processing IP/UDP packets via
-> mlx5dv
->
-> Jason
+Jason
