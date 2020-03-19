@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0C518ABAA
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 05:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE8918ABB2
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 05:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgCSEPb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 00:15:31 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43585 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgCSEPa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 00:15:30 -0400
-Received: by mail-pf1-f196.google.com with SMTP id f206so683250pfa.10
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 21:15:27 -0700 (PDT)
+        id S1725767AbgCSEUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 00:20:37 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43649 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgCSEUg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 00:20:36 -0400
+Received: by mail-pg1-f193.google.com with SMTP id u12so513174pgb.10
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Mar 2020 21:20:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=8kkJruqha5cfOcqdL2dBZSpbnGPcrevIKMbH+BYaoog=;
-        b=dBoN2/PWD+jXOftKHCw/aHuzQ/aUMcjp/qlzs65QJkaP4j7XxDnVbqF2bJpC2r3rMa
-         Rgc6zX62er7rBHk8RdhcpwQJINfo5KAYYLz7tdUwcZ0JmN5GACBuEdOxyq96BT1TJl4I
-         WyjzVUM5Pu2t/+m1VUl/8mBkwXRrfs4qC/4KsF9yO0JLZ94J2tpP12sSOHbapguqg30R
-         3Ny7XyEfwmKJyWiKdKSJZNou2AkzPQhMGH2ClUzPR51Q97prHKTw9E8VU5CifX6J6wtP
-         bUuCMGqwhNlLe3WaGOAblCRC0JD6VG46TcV5DeRuklRFmzC9lZV9xryhglctL4RH+2Mm
-         /pFA==
-X-Gm-Message-State: ANhLgQ1O8SU6cXWazmYhM/PYttjXcpbO0PJCYa5VR5sgP0aRtj0G4w59
-        +gYuJ09sPyrlHQAa0bKEZNg=
-X-Google-Smtp-Source: ADFU+vu9hTq+vovNK3nH59FW/BDgaY26b3Q8S/Z5QE3/J7G7QtC0rlIGC3JHo1IAl2lJTGqiG4pIPA==
-X-Received: by 2002:a62:3854:: with SMTP id f81mr1875949pfa.81.1584591327319;
-        Wed, 18 Mar 2020 21:15:27 -0700 (PDT)
+        bh=l5XhcxCMQg8oTVpOAkuu6Pgu0Fm+gg1zDu8gyd3uVj0=;
+        b=eVWoq7acxskGuFd0xWPg8Zh3PRh9TOel77KnOJOLRN4JdcAnrRGlGZUnOUJjs5jfxO
+         Ux/DeYJ272QA6/X9YKso5Gb8Q1qrolbHqBNL1pq5l8XczDHMux5lkY2zRGYasOjaDsFs
+         bGSxroep9S2Bog9s+7PGEuOUXzkSXrC3UX1BtUqRYT8qDnyvsB7UN6/CtAi5z+/JPwtG
+         n2Mg9rkFQDyDICPjesOwtfNeT20UsFiGmknsAmGxpNkZkKOFhnHyBAc2SxuIShuF0rSo
+         ZgnWnN7UBdfNrbKdImqmpTKyNwkGeYKjQBKbUEoC278Ak8/tPhOGjOUDw9KjBcIQN44F
+         7s/A==
+X-Gm-Message-State: ANhLgQ3jUXEuCMYFGIev7p9EbP6NNOcZHl2k/pCnYNGMKhxmETYvtOPO
+        I5KDH/ZaK6g0rxBIdhQlM8w=
+X-Google-Smtp-Source: ADFU+vs9BT5h8/ILGqDxzYrVa0LtIW7S1biNtmQvN6npeW3BDjdAKtZSHe7W+kovGHY49Ll2P5tiNw==
+X-Received: by 2002:a63:5c18:: with SMTP id q24mr1346808pgb.322.1584591635271;
+        Wed, 18 Mar 2020 21:20:35 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:84b7:c685:175f:6f9b? ([2601:647:4000:d7:84b7:c685:175f:6f9b])
-        by smtp.gmail.com with ESMTPSA id k3sm536056pgr.40.2020.03.18.21.15.25
+        by smtp.gmail.com with ESMTPSA id g81sm511355pfb.188.2020.03.18.21.20.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Mar 2020 21:15:26 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] RDMA/srpt: use ib_alloc_cq instead of
- ib_alloc_cq_any
+        Wed, 18 Mar 2020 21:20:34 -0700 (PDT)
+Subject: Re: [PATCH v2 5/5] RDMA/srpt: use SRQ per completion vector
 To:     Max Gurtovoy <maxg@mellanox.com>, linux-nvme@lists.infradead.org,
         sagi@grimberg.me, hch@lst.de, loberman@redhat.com,
         linux-rdma@vger.kernel.org
@@ -43,7 +42,7 @@ Cc:     kbusch@kernel.org, leonro@mellanox.com, jgg@mellanox.com,
         dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
         oren@mellanox.com, vladimirk@mellanox.com, rgirase@redhat.com
 References: <20200318150257.198402-1-maxg@mellanox.com>
- <20200318150257.198402-5-maxg@mellanox.com>
+ <20200318150257.198402-6-maxg@mellanox.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -68,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <9bb2758f-19b2-34ff-dd78-78ff00ae234f@acm.org>
-Date:   Wed, 18 Mar 2020 21:15:24 -0700
+Message-ID: <27e2267c-6793-c7dd-1e06-3f12acf08078@acm.org>
+Date:   Wed, 18 Mar 2020 21:20:33 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200318150257.198402-5-maxg@mellanox.com>
+In-Reply-To: <20200318150257.198402-6-maxg@mellanox.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,22 +82,12 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-18 08:02, Max Gurtovoy wrote:
-> For spreading the completion vectors fairly, add global ida for RDMA
-> channeles and use ida_simple_{get,remove} API. This is a preparation
-  ^^^^^^^^^
-  channels?
+> +	for (i = 0; i < sdev->srq_size; ++i) {
+> +		INIT_LIST_HEAD(&srq->ioctx_ring[i]->wait_list);
+> +		srpt_srq_post_recv(srq, srq->ioctx_ring[i]);
+> +	}
 
-> +/* Will be used to allocate an index for srpt_rdma_ch. */
-> +static DEFINE_IDA(srpt_channel_ida);
-
-I don't think that we need a global data structure for spreading work
-across completion vectors. How about assigning 0 to ch->idx if
-SRP_MTCH_ACTION is not set during login and assigning 1 .. n to ch->idx
-for all other channels for which SRP_MTCH_ACTION is set during login?
-
-> +	 /* Spread the io channeles across completion vectors */
-                       ^^^^^^^^^^^^
-                       RDMA channels?
+Please check the srpt_srq_post_recv() return value.
 
 Thanks,
 
