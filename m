@@ -2,91 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6726618B863
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 14:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC25418B865
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 14:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgCSNwV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 09:52:21 -0400
-Received: from mail-qt1-f170.google.com ([209.85.160.170]:44057 "EHLO
-        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727141AbgCSNwV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 09:52:21 -0400
-Received: by mail-qt1-f170.google.com with SMTP id y24so1773775qtv.11
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 06:52:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LeIJ8QX8g7k39gXV9ez+TLKO2ATd125VcXiQnyDPFUc=;
-        b=kticJZ+OgJaA2vbsAFtBRyHLwVZxPD7C3gB7Ej6wZhCthO67McwdXZ+JnHgIlEzstP
-         hPc3TVcBhRycy77et+AdAyZGvHROVhgrELuL3BCMNI9ETD31BQ1OK37UGVNTy1nh3UXE
-         kLMwb2WYWewU/Qlg86IkeXWtURX2CLdnL5hreoqJMpzgISYVlFsVOaLGIl/bGwHaICda
-         WAWgkqTvH7cF+UloT0qnmfcshIfdz2iMcjR8Jq2C2FBGiEGblPwtni/Les3uEoYYVsPU
-         lCCVemzJXMayVunMlybt9qpViSvW8pEcnzQmyGzQlV1fXvdq+z4r/iyoUHrhKxtT5d/b
-         JBsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LeIJ8QX8g7k39gXV9ez+TLKO2ATd125VcXiQnyDPFUc=;
-        b=Kb2RFGmnFxYzQWME24HbG3dHm2/JBWT1mbi1+iQVFzcCyHCTPZdY+fxjmuERY+nHe1
-         nAnOSTF3YJls6vw0hrbuiaoHWEWjnLNSZYcLCSuc8dCG5muWU9E5DWrRTFDdfRP2AvbK
-         nN4tOaqqGfhWX/v4jvpIrF1vXVnDBVid7RwYPjGYBWINntYDyWakCOEiyKFsrhAxtZSS
-         +pWcwJORZbf58mtTk3L/lHjOFyezlJRos/YlM+njFe8/jDItGxBG1m7FgRwHSTif2cxC
-         Z2LLfCUuJ8Nhr5KCBQZTAksLGFlPCtLAByb0ZDw8baenGHH69DN7ET7XMQ41E5SPpXjt
-         KHOg==
-X-Gm-Message-State: ANhLgQ0sUm9cEe1uqvSpmykC2uo0aYBPzf53FaCixyoXyjbk2VCmYu3+
-        hcs7Rjx/F+14nDV/JeeKDmijUGiSett7sg==
-X-Google-Smtp-Source: ADFU+vtmlSDDvMG0mrG+kG6uxQN0LTPV4Ude3wYMey7a0YchGNtHk06HyFW1jozME4bWQjGfgj5iPg==
-X-Received: by 2002:aed:21c5:: with SMTP id m5mr2959598qtc.42.1584625939981;
-        Thu, 19 Mar 2020 06:52:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d25sm179855qtj.86.2020.03.19.06.52.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Mar 2020 06:52:19 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jEvas-0006Vc-QU; Thu, 19 Mar 2020 10:52:18 -0300
-Date:   Thu, 19 Mar 2020 10:52:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: UDP with IB verbs lib
-Message-ID: <20200319135218.GJ20941@ziepe.ca>
-References: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
-MIME-Version: 1.0
+        id S1727188AbgCSNyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 09:54:03 -0400
+Received: from mail-eopbgr150048.outbound.protection.outlook.com ([40.107.15.48]:45478
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727180AbgCSNyD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Mar 2020 09:54:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DjZzcj+TqZb9GcVNfGaXbrLjC1V+c3Kpwwiqtmc0XKJjA4HoTYYCm/TMaKjKvloUAG7kyD+FMybBercngbOaw446PnSEEf0NAs5JeB+2qqhwB2eH8Tnq5Q/0zAMO+KOMNbYPq9HcOe/NGKvTMJ5ebzJN7n1PkfvF5D0rgx56XJAqlPvx6JfqyVOXW1axQM02INTs/hvR4ZrWujhzzMrElbPgLCIDDR+vGDNXrDCqfw4ZRizh4qgG/ExfIeePIxXQPFkkKp+PQq4LNJoeVTaVGQxD9c7UaQ7jCfQ2Q1UfoS7MSu82NwbCxeHflWqiIUziPR2sWzH8mkGocGgy+wH6Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j4rCbFSeHaAhrILgIORU7FJ6Ux83uyJHyHnKjNx1xnA=;
+ b=ZXYa9d7r8Nav8YNWWvJB6uZMyLF51AaplRTL6c3nwKmvsHxqRfo82oCEBx/KuHQwE35a00dgoCMhfQeZDsewpNrxwwj1ijVRWnkidVewRVhuEN+3rI5/uPlWrMeipuFBhBp5hNv5C5vJg4h/R3X7+tz4DO7U/0xxgtCn5J8pQJeffN+zgGRyO/pSygp0iaH9Y80386EFoYnNAzzIsBDWR5LL7gbW54rDCIcDM4CVf1z4LCPGte98YxX6C8Yi+Pc6caEo5IY+qHp2Hd3L01/2I0Y8VJPyeZdw9eVzR22L0d7TpiWuldqJw+OQmmZnUcDkj26wCNXeer38Qi4u9zk3pA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j4rCbFSeHaAhrILgIORU7FJ6Ux83uyJHyHnKjNx1xnA=;
+ b=iavV5eIaRUORe2KRjaxOIc4F8UH00idwlXKbm181s+3MOoZYVKbiiftPnhp57Kysn6pAIMqHNcMhWZAlcVki8eN7Y+zPhiTkP8yKIAKRLmxIa/VtmRFrrOva26brZa4buNCv9GN617zoT4WreGZTIw85fjcihz988HPtuRAOyOo=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB6382.eurprd05.prod.outlook.com (20.179.27.206) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.18; Thu, 19 Mar 2020 13:54:00 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3%7]) with mapi id 15.20.2814.025; Thu, 19 Mar 2020
+ 13:54:00 +0000
+Date:   Thu, 19 Mar 2020 10:53:56 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, linux-rdma@vger.kernel.org, kbusch@kernel.org,
+        leonro@mellanox.com, dledford@redhat.com, idanb@mellanox.com,
+        shlomin@mellanox.com, oren@mellanox.com, vladimirk@mellanox.com,
+        rgirase@redhat.com
+Subject: Re: [PATCH v2 3/5] nvmet-rdma: use SRQ per completion vector
+Message-ID: <20200319135356.GZ13183@mellanox.com>
+References: <20200318150257.198402-1-maxg@mellanox.com>
+ <20200318150257.198402-4-maxg@mellanox.com>
+ <d72e0312-1dfd-460e-bc83-49699d86dd64@acm.org>
+ <5623419a-39e6-6090-4ae2-d4725a8b9740@mellanox.com>
+ <20200319115654.GV13183@mellanox.com>
+ <0b11c26f-d3de-faf5-5609-c290ea46ed9c@mellanox.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
+In-Reply-To: <0b11c26f-d3de-faf5-5609-c290ea46ed9c@mellanox.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR05CA0011.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::24) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR05CA0011.namprd05.prod.outlook.com (2603:10b6:208:c0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.11 via Frontend Transport; Thu, 19 Mar 2020 13:53:59 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jEvcS-0006YX-O5; Thu, 19 Mar 2020 10:53:56 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d810e7b3-2b44-4a13-c1c7-08d7cc0cf9cc
+X-MS-TrafficTypeDiagnostic: VI1PR05MB6382:|VI1PR05MB6382:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB63828EA77783173E5216A063CFF40@VI1PR05MB6382.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 0347410860
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(199004)(4326008)(66946007)(66476007)(9786002)(6862004)(9746002)(478600001)(558084003)(26005)(186003)(52116002)(2616005)(1076003)(2906002)(6636002)(86362001)(81166006)(5660300002)(33656002)(37006003)(81156014)(316002)(66556008)(8676002)(36756003)(8936002)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6382;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8ecRMMB59QTHK7/JwA6NpD9T+pRQlWyaISc4B230EDVLjQFiB4dmXEvIoBRRuhK+9HGUmK6tgfVxeAUQpS/cFp0pOT6SIVRVG/XF5Grv/hbJTFFW7BNmS07HM7+jlK90FkbkXfXNgyv7CAkXfDwSK3B04Oz5JJJoFFzIBwwxQ5/HOn0PTeGKbxIB7U88laiuNH5RUgtmPKDThvswTYVqKsnjM4mMYg908XCvlOHNDZbMEaqhj8C19P0LgM1XUhjnTGYdotqgRHoU9eSRdAInlZB4teR7+MufY2Vb8BA9oUeSAHodwPVPB5Nt0RoeyE+T02Gydl66O2sXGf2IxsPGtgtY2dUFIKNZjsubuv50lMPS/6URiFow3qOTk32N7IeghhLIYBbxfd+YerbmFxAYa2xWl6qnWgPdwO2lRwwWnIB2oLbv5l0KTGn3k00kLdYPZW33Vf7hytTkIXkdSfAK4QgxVLuxf9ScMO9hulis9TGg0chCPVi4RBskCmIF6+vB
+X-MS-Exchange-AntiSpam-MessageData: ea7UjBS5zHF4WR0ONRye884+UfHCWf+RRWM6IDtYeFUV9wnYLgiijpfHRp1+M/usrfM3SCY8Zw/ibX8CCET8DlmZL7ncSomAToHlOsL75S4fghhpvj/X8OQNEzGEFVjMaxHOifNUqoUZCTHDUy08pA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d810e7b3-2b44-4a13-c1c7-08d7cc0cf9cc
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 13:54:00.0792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zUv6w1AAjl3QJBlUVyKflrM/y77ahqw0BxLQdnYSdMCYL4bjs/GWeIJjFjW59fqCDp0i6xEZNyS3szOwz+0JCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6382
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 04:07:37PM -0700, Dimitris Dimitropoulos wrote:
-> Hi,
-> 
-> I'm looking at UDP using the IB verbs library. If I send UDP packets
-> that are intercepted by the IB verbs layer, what happens with the
-> completion notifications ?
+On Thu, Mar 19, 2020 at 02:48:20PM +0200, Max Gurtovoy wrote:
 
-Each recv that requests a completion gets a completion.
+> Nevertheless, this situation is better from the current SRQ per HCA
+> implementation.
 
-> For example, say I create a list of 10 ibv_recv_wr objects and each
-> has num_sge = 30, with each SGE having a 4K size. And I setup for
-> reception with ibv_post_recv(). If I transmit 30 UDP packets each 4K
-> in size will I receive one CQ event ? Or 30 ?
+nvme/srp/etc already use srq? I see it in the target but not initiator?
 
-One per ibv_recv_wr requesting completion
-
-> Will the UDP packets be written in consecutive SGEs of the first
-> ibv_recv_wr object ? Or will they be written in consecutive
-> ibv_recv_wr objects (in their first SGE) ?
-
-Only the first. Each recv handles a single incoming packet.
-
-DPDK has a hyper-optimized version of processing IP/UDP packets via
-mlx5dv
+Just worried about breaking some weird target somewhere
 
 Jason
