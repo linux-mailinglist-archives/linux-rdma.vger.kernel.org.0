@@ -2,147 +2,223 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1FC18B1D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 11:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F237418B25B
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 12:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgCSKzw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 06:55:52 -0400
-Received: from mail-eopbgr30044.outbound.protection.outlook.com ([40.107.3.44]:30062
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726982AbgCSKzw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Mar 2020 06:55:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kt1DUbi/g2zlgri1jF0UE/h566lz6f6cEL1heiBkTHzfw/IPVTjrqPlKkkNHJ9qP61ilsoQt5OQgFcPDKpP/QaMTZNYy/HP4JX8vPb2kP56j2KKUqJnScpWHVPxdJJFg8wiQqjL/9fFaCXrPteIdHc92QKaLp4UdNNfz9pWGjl/JzyN9PunpeV767Pta43Qnp20aXqcM8vJ7pgVTNAt7TeNVe7Bi6jgZEN1wcVjKmtWk58Sp9JNBmM4g4AO6YVxAXMtXmQL6NY8R1+jUggjUKkhti6mdqaYwYk7FxwvtANvss0JKtMmuHZqdfuGJhLDh3hd9u5/k8SH7s/Qx3v+wYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vRCCvzP5xWZTdDebJzjcF/HMKdpD3jm0Y5iRSSL4Py4=;
- b=ckto+f3uQu3icBMx7og1173wR/0ojKRJqs8Dw3ZHVrBUmLoQQOpDnYTNWHyfjVGjSp8U3mq+Y3gmdqCqnuNR51lH3JXovTkFn1AbWhKfAQIxe/tYFc4NZw7GxBHTLSAS/tAHKBmudg6JYnh6HshPzAjf+B5WmIxoyZZ1OtxUWEZ3DZgafm4zdyE2EACaW9q2dnmu4BeCb23agdlybgcBtP/SWs97jIY3WA4U4gQs7VUkn3yZBuDMlaw6xtwKkEqPF94fG4Rjx84yPytmHlUlSQZOkqKHoLBSeWpuCuCmCshgqCTZGH8ap73B4spVycp0lP8hQcZ9hunxHko3qo3Ozw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.47.165.251) smtp.rcpttodomain=redhat.com smtp.mailfrom=mellanox.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=mellanox.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vRCCvzP5xWZTdDebJzjcF/HMKdpD3jm0Y5iRSSL4Py4=;
- b=Ar4MVyhvUcPJmlAxuh0hqFAgwuT6vwzoUME6ZFDAJ5RLQa83laeqfWAKFeC9GRf/1+Q9t/hmzRwzLsh8ifY+E7MIZwend1/NifKNfCHwjjM01W8DUx8UWvLGYr7ytIG70k9tQ4J60fc8vIFYmUF3gud5/ZTErOMurBpqRAkJpk4=
-Received: from VI1PR07CA0189.eurprd07.prod.outlook.com (2603:10a6:802:3f::13)
- by DB7PR05MB5464.eurprd05.prod.outlook.com (2603:10a6:10:58::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.21; Thu, 19 Mar
- 2020 10:55:46 +0000
-Received: from VE1EUR03FT052.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:802:3f:cafe::7a) by VI1PR07CA0189.outlook.office365.com
- (2603:10a6:802:3f::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.10 via Frontend
- Transport; Thu, 19 Mar 2020 10:55:46 +0000
-Authentication-Results: spf=pass (sender IP is 193.47.165.251)
- smtp.mailfrom=mellanox.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=mellanox.com;
-Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
- 193.47.165.251 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.47.165.251; helo=mtlcas13.mtl.com;
-Received: from mtlcas13.mtl.com (193.47.165.251) by
- VE1EUR03FT052.mail.protection.outlook.com (10.152.19.173) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2814.13 via Frontend Transport; Thu, 19 Mar 2020 10:55:45 +0000
-Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4; Thu, 19 Mar 2020 12:55:44
- +0200
-Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Thu,
- 19 Mar 2020 12:55:44 +0200
-Received: from [172.27.15.129] (172.27.15.129) by MTLCAS01.mtl.com (10.0.8.71)
- with Microsoft SMTP Server (TLS) id 14.3.468.0; Thu, 19 Mar 2020 12:55:17
- +0200
-Subject: Re: [PATCH v2 2/5] nvmet-rdma: add srq pointer to rdma_cmd
-To:     Leon Romanovsky <leonro@mellanox.com>
-CC:     Jason Gunthorpe <jgg@mellanox.com>,
-        <linux-nvme@lists.infradead.org>, <sagi@grimberg.me>, <hch@lst.de>,
-        <loberman@redhat.com>, <bvanassche@acm.org>,
-        <linux-rdma@vger.kernel.org>, <kbusch@kernel.org>,
-        <dledford@redhat.com>, <idanb@mellanox.com>,
-        <shlomin@mellanox.com>, <oren@mellanox.com>,
-        <vladimirk@mellanox.com>, <rgirase@redhat.com>
-References: <20200318150257.198402-1-maxg@mellanox.com>
- <20200318150257.198402-3-maxg@mellanox.com>
- <20200318233258.GR13183@mellanox.com>
- <1a79f626-c358-2941-4e8e-492f5f7de133@mellanox.com>
- <20200319091454.GN126814@unreal>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <f08af9c6-b2bf-8036-0e5a-70b52e5ed168@mellanox.com>
-Date:   Thu, 19 Mar 2020 12:55:16 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726881AbgCSLc7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 07:32:59 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22415 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgCSLc7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Mar 2020 07:32:59 -0400
+IronPort-SDR: t/LxrSe1UiHM4TCdJ1KYEsz0IFmTfGPInvMw/5qgJToMpHLwDolPtAOXDP/XlyMQ/g5cDQecKW
+ yH0wKQLF5oew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2020 04:32:58 -0700
+IronPort-SDR: ROd5qSotbHQlrvILyx3qazCJM53vjaPNAMy4cLHgahu/YLL99pussymC58yAYDfYM0ovW+d86P
+ WMEh+tJveOSg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,571,1574150400"; 
+   d="scan'208";a="280059802"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Mar 2020 04:32:57 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jEtQ0-0001Kp-Oo; Thu, 19 Mar 2020 19:32:56 +0800
+Date:   Thu, 19 Mar 2020 19:32:30 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 026ded373483c07983a6a30b70034ad0f3667a44
+Message-ID: <5e73584e.wZTCJEcfRtbVZkJF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200319091454.GN126814@unreal>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.27.15.129]
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(376002)(39860400002)(136003)(199004)(46966005)(70206006)(8936002)(16526019)(8676002)(6636002)(316002)(356004)(86362001)(70586007)(5660300002)(186003)(37006003)(31686004)(54906003)(53546011)(47076004)(4326008)(966005)(6862004)(81156014)(31696002)(81166006)(16576012)(36906005)(26005)(36756003)(336012)(2906002)(2616005)(478600001)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5464;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;A:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0203f30b-bc74-46c8-4836-08d7cbf413d5
-X-MS-TrafficTypeDiagnostic: DB7PR05MB5464:
-X-Microsoft-Antispam-PRVS: <DB7PR05MB5464C880ADCAF26B8E9B285EB6F40@DB7PR05MB5464.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-Forefront-PRVS: 0347410860
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K4UhDafdviqrQQ+byYEMwj9TM7ILvcI0WVU0AZKd+bVt5Jeuc09jAuV1sswBvyopaOR+ia/M0DOVWJfKKMnMVVFhjZFLn2Ba+8JWzOxPG/hQg30WcmDt9ig2g2ie/1AxiCUZyVdtVvBA0bsZRJueGWDa7+bENgmmj26NPIHAaoymR4W5OyqjP8ZmcyYfv/R/hDmfTWsoZdjXjWeF9z0FJgK+wbNvbX8BR1+DqzIYx2+uuR/ZR7pMB9iToSvN9bTXCoshemrwIR9X22m7K8/zfh6kr35YAdLFash+okaSgu/Zd0e2mI18R4tPZYtG7w0zqC3zqENW1Fo3FMoWfDYSmf0wHdOv1fME1TyxqJbhhu42T+cOaPKAevth+nil62144yk4fIg2vueVw6secPn+wxaUfTdS0jNV8kiIJyHKXhm3LnfhKh3Hq0AYR2MKme1xkDg9b+Q6R2jQ3ugiCW7CpTW35HCrXT5d5dnwD9bKKz8LGLIulgM0nBbSc0QFhhK3gE7P5UkcpvTdaxtafuOt1wbj1zKQst5ZYF3umdq4592/3egxDJ5hAnQEiRdoElrclavb1WOmJTR+bqhiWRA+Z1Ajc04CD2NllAJY/5573SMPi4j2o2r7QMR1tUszsiJl
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 10:55:45.8735
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0203f30b-bc74-46c8-4836-08d7cbf413d5
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.251];Helo=[mtlcas13.mtl.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5464
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: 026ded373483c07983a6a30b70034ad0f3667a44  RDMA/hns: Check if depth of qp is 0 before configure
 
-On 3/19/2020 11:14 AM, Leon Romanovsky wrote:
-> On Thu, Mar 19, 2020 at 10:48:22AM +0200, Max Gurtovoy wrote:
->> On 3/19/2020 1:32 AM, Jason Gunthorpe wrote:
->>> On Wed, Mar 18, 2020 at 05:02:54PM +0200, Max Gurtovoy wrote:
->>>> This is a preparetion patch for the SRQ per completion vector feature.
->>>>
->>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
->>>> ---
->>>>    drivers/nvme/target/rdma.c | 6 ++++--
->>>>    1 file changed, 4 insertions(+), 2 deletions(-)
->>> Max, how are you sending these emails, and why don't they thread
->>> properly on patchworks:
->>>
->>> https://patchwork.kernel.org/project/linux-rdma/list/?series=258271
->>>
->>> This patch is missing from the series
->>>
->>> v1 had the same issue
->>>
->>> Very strange. Can you fix it?
->> I'm using "git send-email".
->>
->> Should I use some special flags or CC another email for it ?
->>
->> How do you suggest sending patches so we'll see it on patchworks ?
-> It can be related to your SMTP relay, I see that you are sending
-> patches through labmailer, and it is known as unreliable. Use the
-> same SMTP server as you are using to send emails.
+elapsed time: 485m
 
-I'll use it in V3.
+configs tested: 164
+configs skipped: 0
 
-Thanks.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                           sunxi_defconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+openrisc                    or1ksim_defconfig
+s390                              allnoconfig
+mips                      malta_kvm_defconfig
+riscv                    nommu_virt_defconfig
+ia64                                defconfig
+sparc64                             defconfig
+microblaze                      mmu_defconfig
+mips                      fuloong2e_defconfig
+nios2                         3c120_defconfig
+riscv                          rv32_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200319
+x86_64               randconfig-a002-20200319
+x86_64               randconfig-a003-20200319
+i386                 randconfig-a001-20200319
+i386                 randconfig-a002-20200319
+i386                 randconfig-a003-20200319
+alpha                randconfig-a001-20200319
+m68k                 randconfig-a001-20200319
+mips                 randconfig-a001-20200319
+nds32                randconfig-a001-20200319
+parisc               randconfig-a001-20200319
+riscv                randconfig-a001-20200319
+c6x                  randconfig-a001-20200319
+h8300                randconfig-a001-20200319
+microblaze           randconfig-a001-20200319
+nios2                randconfig-a001-20200319
+sparc64              randconfig-a001-20200319
+xtensa               randconfig-a001-20200319
+csky                 randconfig-a001-20200319
+openrisc             randconfig-a001-20200319
+sh                   randconfig-a001-20200319
+s390                 randconfig-a001-20200319
+x86_64               randconfig-b001-20200319
+x86_64               randconfig-b002-20200319
+x86_64               randconfig-b003-20200319
+i386                 randconfig-b001-20200319
+i386                 randconfig-b002-20200319
+i386                 randconfig-b003-20200319
+x86_64               randconfig-c001-20200319
+x86_64               randconfig-c002-20200319
+x86_64               randconfig-c003-20200319
+i386                 randconfig-c001-20200319
+i386                 randconfig-c002-20200319
+i386                 randconfig-c003-20200319
+x86_64               randconfig-d001-20200319
+x86_64               randconfig-d002-20200319
+x86_64               randconfig-d003-20200319
+i386                 randconfig-d001-20200319
+i386                 randconfig-d002-20200319
+i386                 randconfig-d003-20200319
+x86_64               randconfig-e001-20200319
+x86_64               randconfig-e002-20200319
+x86_64               randconfig-e003-20200319
+i386                 randconfig-e001-20200319
+i386                 randconfig-e002-20200319
+i386                 randconfig-e003-20200319
+x86_64               randconfig-f001-20200319
+x86_64               randconfig-f002-20200319
+x86_64               randconfig-f003-20200319
+i386                 randconfig-f001-20200319
+i386                 randconfig-f002-20200319
+i386                 randconfig-f003-20200319
+x86_64               randconfig-g001-20200319
+x86_64               randconfig-g002-20200319
+x86_64               randconfig-g003-20200319
+i386                 randconfig-g001-20200319
+i386                 randconfig-g002-20200319
+i386                 randconfig-g003-20200319
+x86_64               randconfig-h001-20200319
+x86_64               randconfig-h002-20200319
+x86_64               randconfig-h003-20200319
+i386                 randconfig-h001-20200319
+i386                 randconfig-h002-20200319
+i386                 randconfig-h003-20200319
+arc                  randconfig-a001-20200319
+ia64                 randconfig-a001-20200319
+arm                  randconfig-a001-20200319
+arm64                randconfig-a001-20200319
+powerpc              randconfig-a001-20200319
+sparc                randconfig-a001-20200319
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
->
-> Thanks
->
->>> Jason
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
