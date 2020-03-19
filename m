@@ -2,216 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5889118B259
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 12:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7803118B261
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 12:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgCSLcx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 07:32:53 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10080 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgCSLcx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Mar 2020 07:32:53 -0400
-IronPort-SDR: jJCgDuQLDO3hgrQXitF76Mz04zwrfHYW/ghQ/7Nb34aCk4zo6qpbHvj3/wDknaIvIkSb2vF6VX
- 47FHda7slU6w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2020 04:32:52 -0700
-IronPort-SDR: WUq4G9JjlHxhk8fcP1C4c0d76UDfCwI0tq/GxdINwP/m3zJzBvHeGQwL5hvn5kZ2jXXjbtxRZm
- TQzccETqIbUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,571,1574150400"; 
-   d="scan'208";a="268704245"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Mar 2020 04:32:50 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jEtPu-0000ZD-GC; Thu, 19 Mar 2020 19:32:50 +0800
-Date:   Thu, 19 Mar 2020 19:32:39 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- fa8a44f6b245ffa9d39d667ebbf81bebc61ca657
-Message-ID: <5e735857.g6cTZTXDjmmxicnn%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727088AbgCSLd4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 07:33:56 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:33423 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgCSLd4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 07:33:56 -0400
+Received: by mail-pj1-f66.google.com with SMTP id dw20so2243090pjb.0
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 04:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oK/5AnAIQtAzwp5LtDPsr0B0YqK3MbYelmVR8oZRePM=;
+        b=S4lPMkx9sAM4YOhfGPGNuTyQk5plJbvRwkvWecLxjItv/X/kJ8I5it2EoQn4PwgX0P
+         XqcyQhaTg0wn+r/h4mhL4moLNQbjYTvb9KRWPZM9yw6TAI4Cce7IqxlK6aZ8HyU7rded
+         fm7cL9Ha7cRqSN0LORxD5Q4pjeqmE1Ls5xSy+998DN/lW8qkKSGjoPMuD7oXIEKvLNcL
+         dlNHuyNoNL5A9o7V1TAu37gvzWl2VXuEnh9w7TESmmnYxoJAYGDtwnx9LhQ9Tm73SS/s
+         RIOtcx7utIJhp9cyayCLOBswZfKC84XeH6qNqSOxbqb4s/vEJPGXY/G317iE4NDPOBwY
+         or/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oK/5AnAIQtAzwp5LtDPsr0B0YqK3MbYelmVR8oZRePM=;
+        b=ueCzDh7eKOPBxebgvy35Q7KJraH4st4sO8mvEaISASZq4vRM3sYd0UF7UmHh8ml8r0
+         xRiFDNXX0+JdlEqdgxKNUcNseeRNdwz420DCEcbaSHxYNpnyIRJc37ayrAmGfj/YGpYm
+         lCUZylODT2A2nNUvniDTI3t5UySB/wATvr2GpkXHWyPMIf0Qe6oNsILgRqQJFocxC4/k
+         ZaM0mhf+USey24ujDc5mGAI7igVhUmXvdp9LuXdjPYRkl5JVJU5eXHL348JnRPK+yj/K
+         tMVOjDvOgnOdLzlVY9CMFIXs5T41+q2k8TjrErFlR4U5O4HRrQfMbt6LkxVFbtNk+Duw
+         U5yA==
+X-Gm-Message-State: ANhLgQ0htTu3pc7Xa82A1PkK26h5BriFxjzrbbh+59Dq+tXlignrV62c
+        8b3bwnsE+qpYrJdE8NY8O6epDk3rV/qqWFoM+Ug=
+X-Google-Smtp-Source: ADFU+vvXEwXItatFF+HGJsntLDLkJyTdRBfQ3W1H5ImMaexn4WF6EGyR+8+XnyVb/Jhb38q9CNKn2i/t08aibSPdo9g=
+X-Received: by 2002:a17:90a:c482:: with SMTP id j2mr3388270pjt.71.1584617634754;
+ Thu, 19 Mar 2020 04:33:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90a:a501:0:0:0:0 with HTTP; Thu, 19 Mar 2020 04:33:54
+ -0700 (PDT)
+Reply-To: micheasawadogo072@gmail.com
+From:   "Mr.Michea Sawadogo" <honbarrzongoibrahim@gmail.com>
+Date:   Thu, 19 Mar 2020 04:33:54 -0700
+Message-ID: <CAKZhgJTNvYZAbX2o7f3-zD_6S+HfwrfyNcVzCEa44_4YqemqBA@mail.gmail.com>
+Subject: HI
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: fa8a44f6b245ffa9d39d667ebbf81bebc61ca657  RDMA/efa: Use in-kernel offsetofend() to check field availability
+-- 
+Hello,
 
-elapsed time: 485m
+We are here to notify you that the sum of US$2,800,000.00 was
+generated and awarded to you by the United Arab Emirates, and Qatar's
+United Development (UD) under (CBI) Foundation of Burkina Faso, for a
+charity project, The achieve and results of this is to help financial
+problem in the nation.
 
-configs tested: 157
-configs skipped: 0
+This award was been selected through the internet, where your e-mail
+address was indicated and notified. The Foundation collect all the
+email addresses of the people that are active online, among the
+Billions of customers who used all those means of Money Transfer, in
+their business transactions. Four people are selected yearly to
+benefit from this promotion and you are one of the Selected Winners.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+For your prize contact the Agent: Mr Michea Sawadogo. With this code
+(X220E) His E-mail (micheasawadogo072@gmail.com) he will direct you on what
+to do for the releasing of your prize.
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-openrisc                    or1ksim_defconfig
-s390                              allnoconfig
-mips                      malta_kvm_defconfig
-riscv                    nommu_virt_defconfig
-ia64                                defconfig
-sparc64                             defconfig
-arc                              allyesconfig
-mips                      fuloong2e_defconfig
-nios2                         3c120_defconfig
-m68k                           sun3_defconfig
-sh                                allnoconfig
-c6x                        evmc6678_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-nios2                         10m50_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200319
-x86_64               randconfig-a002-20200319
-x86_64               randconfig-a003-20200319
-i386                 randconfig-a001-20200319
-i386                 randconfig-a002-20200319
-i386                 randconfig-a003-20200319
-riscv                randconfig-a001-20200319
-m68k                 randconfig-a001-20200319
-nds32                randconfig-a001-20200319
-alpha                randconfig-a001-20200319
-parisc               randconfig-a001-20200319
-mips                 randconfig-a001-20200319
-h8300                randconfig-a001-20200319
-sparc64              randconfig-a001-20200319
-c6x                  randconfig-a001-20200319
-nios2                randconfig-a001-20200319
-microblaze           randconfig-a001-20200319
-xtensa               randconfig-a001-20200319
-csky                 randconfig-a001-20200319
-openrisc             randconfig-a001-20200319
-sh                   randconfig-a001-20200319
-s390                 randconfig-a001-20200319
-x86_64               randconfig-b001-20200319
-x86_64               randconfig-b002-20200319
-x86_64               randconfig-b003-20200319
-i386                 randconfig-b001-20200319
-i386                 randconfig-b002-20200319
-i386                 randconfig-b003-20200319
-x86_64               randconfig-c001-20200319
-x86_64               randconfig-c002-20200319
-x86_64               randconfig-c003-20200319
-i386                 randconfig-c001-20200319
-i386                 randconfig-c002-20200319
-i386                 randconfig-c003-20200319
-x86_64               randconfig-d001-20200319
-x86_64               randconfig-d002-20200319
-x86_64               randconfig-d003-20200319
-i386                 randconfig-d001-20200319
-i386                 randconfig-d002-20200319
-i386                 randconfig-d003-20200319
-x86_64               randconfig-f001-20200319
-x86_64               randconfig-f002-20200319
-x86_64               randconfig-f003-20200319
-i386                 randconfig-f001-20200319
-i386                 randconfig-f002-20200319
-i386                 randconfig-f003-20200319
-x86_64               randconfig-g001-20200319
-x86_64               randconfig-g002-20200319
-x86_64               randconfig-g003-20200319
-i386                 randconfig-g001-20200319
-i386                 randconfig-g002-20200319
-i386                 randconfig-g003-20200319
-x86_64               randconfig-h001-20200319
-x86_64               randconfig-h002-20200319
-x86_64               randconfig-h003-20200319
-i386                 randconfig-h001-20200319
-i386                 randconfig-h002-20200319
-i386                 randconfig-h003-20200319
-arc                  randconfig-a001-20200319
-arm                  randconfig-a001-20200319
-arm64                randconfig-a001-20200319
-ia64                 randconfig-a001-20200319
-powerpc              randconfig-a001-20200319
-sparc                randconfig-a001-20200319
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yours Faithfully,
+Awards Coordinator Mr. Samie Salam,
+Chief executive Jassim Al-Othman.
