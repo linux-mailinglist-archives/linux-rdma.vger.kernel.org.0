@@ -2,153 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6786318C286
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 22:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3946E18C2A2
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 22:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgCSVq7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 17:46:59 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57430 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726934AbgCSVq7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Mar 2020 17:46:59 -0400
-IronPort-SDR: ro2qVkYcl+UdnRb5uwsUF+cmylnTVDpbwguQm8SISFVc1TwrW9zbAkXNQDCdk9B+gFazeA4dYi
- 9YCbedDIpJ4g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2020 14:46:58 -0700
-IronPort-SDR: qDbr24q+fJ90Lb5uHK58M5ehhddqqNdxXGfr3Eoc0kZvguEG+jpvE6PU9Fhh/jmJYjFcWGtdOB
- KlBMX28in4HQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,573,1574150400"; 
-   d="scan'208";a="239048411"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga008.jf.intel.com with ESMTP; 19 Mar 2020 14:46:58 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 19 Mar 2020 14:46:57 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 19 Mar 2020 14:46:57 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 19 Mar 2020 14:46:57 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 19 Mar 2020 14:46:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oALb4hfKUeT90/7z69CH5b8w4yBt6E7wGP2N949Wyb01uOJ6wtOQA6n0eSHZVKCiGryKu8Z4imoDxCndldgGsGCHVknhQv7SLWSJk44Y4UzJX/vd2hzRj8CrLJGaasOYde2e/X31aOi9Zh5O8q+rO5QzKZlrcm2DKgB2yzkeIQjXbsszDgmCS5nMmSm+LKgTS+t2havwFyOzgXSrRStp0ukslawvgs8Zh6ZEu+b+RiPTLBMaLDakQc/DaQkXQvYNckIIvfTn1CAgQ85Pj96qXmWu3TgMCot++rJiH0ocrWXPaeHvig3NgHZ/KEzJ6jXX+M9PWb4JslEf33Ne7RR4/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y1XxGQHhCjjWrjmiAX5MRB9eTorBj3LVn5WMMMm/wKU=;
- b=eHOMKM3PX9j2KSzzZtQUW46fJ+wMjpkSOo94lXq5ZfZXAqd9xp+EgbV/KvRdgMq2Mt7/uz3dAOtwxMkqjJEXFnMxTL/J5t4Qi+pBHuBCfZ8Xr9Zikbrbdiw3hDYrEKEjJ74FcngP43ce7MhMgb3xH3nB4feH/8o+zB4cR4YZvR74BmQnYBb73Kt92IWVHO10NKSUTOSmx0ag5Wl96OnMpw036A2IO6/7UOlhomSUcH4l8Kg8R5EPKP3KFLf8AdjQFlC96ZFpBEaZbUNVhAgv5TVQAQyj0WLtMFb18Kq03AEoIFhCHsFyAj5o/pxcmiVd9nLAnbDU4V2aRqnhTz+ToQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y1XxGQHhCjjWrjmiAX5MRB9eTorBj3LVn5WMMMm/wKU=;
- b=i//2rvzU81ThLEhVX/2oDaKhbj9bW5fCEm524nHsx+xiqCdDFKyBiAGLdAs/EybcQBFE9q+7Ke4rhNRq+MvRbqW3IXxvV+TVCqdAz8vJtT0Ai7G4Y8KRX7q5E91Pmcnrp1vjV8VzNGT4h7G7xuAJ9DUHIHd6Zs7nXK+T2tr+1Us=
-Received: from BY5PR11MB3958.namprd11.prod.outlook.com (2603:10b6:a03:18e::19)
- by BY5PR11MB4434.namprd11.prod.outlook.com (2603:10b6:a03:1c2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.18; Thu, 19 Mar
- 2020 21:46:54 +0000
-Received: from BY5PR11MB3958.namprd11.prod.outlook.com
- ([fe80::dcc8:671c:82b1:5ba3]) by BY5PR11MB3958.namprd11.prod.outlook.com
- ([fe80::dcc8:671c:82b1:5ba3%7]) with mapi id 15.20.2835.017; Thu, 19 Mar 2020
- 21:46:54 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Wan, Kaike" <kaike.wan@intel.com>
-Subject: RE: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-Thread-Topic: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-Thread-Index: AQHV/IsQucSlfc77E0CRxCDuqAbtfqhPBq4AgAFvtbA=
-Date:   Thu, 19 Mar 2020 21:46:54 +0000
-Message-ID: <BY5PR11MB3958F9E412A2033B6293772686F40@BY5PR11MB3958.namprd11.prod.outlook.com>
-References: <20200317160510.85914.22202.stgit@awfm-01.aw.intel.com>
- <20200318234938.GA19965@ziepe.ca>
-In-Reply-To: <20200318234938.GA19965@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=mike.marciniszyn@intel.com; 
-x-originating-ip: [134.134.136.207]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 566528bc-07ca-465e-f90a-08d7cc4f0a49
-x-ms-traffictypediagnostic: BY5PR11MB4434:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB443405C8C9A69878D579EF3186F40@BY5PR11MB4434.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 0347410860
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(376002)(136003)(39860400002)(199004)(66946007)(186003)(26005)(4326008)(81166006)(107886003)(8676002)(81156014)(8936002)(478600001)(71200400001)(5660300002)(33656002)(52536014)(2906002)(66476007)(66446008)(64756008)(6636002)(9686003)(76116006)(66556008)(7696005)(110136005)(6506007)(54906003)(316002)(86362001)(55016002);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR11MB4434;H:BY5PR11MB3958.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1OJ3ZFrYtpgkBS67tZRztPbarhtewAFiRyczb9Hjtap4DxVXky2fUK9ZWRrDPehQn5RYuEcyw13ssf5sAhmk76UNUVzH6hwgXHo/jr7LRC8XtsKc8JbcK4zUKed0ovicPnlotHO9mECT1VuHOWdc/grOd52QyuUFWxQkpX7JAiYcpMbzIgu32wc7Zy7rtHaJnapnnIBYW/AxKHyvBu8twO4QANaSR2zN4XUZbs2+B/hwJC824OyRNgJpvj1MSVoCWgJaO0r7AkQ0x5USsBDSC9b36u5y+Bsx6iyN6LNvVwyhn1N+IftXJTGXqnxpM94S4IZ1gBMWjoLeVjVnwFuQlZrUafoRlPf01Nx7gU6JGgz11hda4NYDNNnRTOsDwdtoBW2oWSpaxSEkPTgB8sbeRkteRNOzSeL8nlQmN5ZPpu3JJSztrTMITkK1FSf20M6E
-x-ms-exchange-antispam-messagedata: PFgHG0H5Hh9sU+JwRKsUnPtaTg2Ait0F8VRZ06mJ1be9LzMOnpUjey9fHKAKHrktZeZ9bchxlFgs32r7VQBF2/xLd5wXSRNxVxZqLLKSJywTJKELJ16rAzDfvU23R7KD2d/MeNFYkqmMbj6JA4KHGA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727313AbgCSV6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 17:58:48 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:54346 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgCSV6r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 17:58:47 -0400
+Received: by mail-wm1-f66.google.com with SMTP id f130so3288948wmf.4
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 14:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DB3YYIIUIJs2/T8ItUVmTy2bglm16clHCLna3e3Z/lM=;
+        b=Zoh+9qjnRHoNgsfCd7D5XU1zfR302FMUQQB1Wn1fqY3N/9KlDRLWTxLGYrwTE9/opY
+         B366klEBpJPqjX5Z6m8GDjjdT4Tp3xLMn98UnndiRQaFdpRFjBnc3XlBS5gKE6OsPrEV
+         kbT4bow0NwcgwrH8gG0kbR+PVZuW7fUV3F4W8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DB3YYIIUIJs2/T8ItUVmTy2bglm16clHCLna3e3Z/lM=;
+        b=rBpfvGj6GAqgigdrxJSUWlbNaf8igwc/1CH9A9JSGPT4Dwy3fC94S153n3ocYPGeVr
+         pRGUSktXrx0jnpsMYWNNj/+ECe0NxArDcukEVTK+be6boeI2a2aNAM6rbr+bWNSqn7v0
+         HVLD77PmpPKKdYzpPfRb5YeF81xiE9dRQDXakd8R4N+5hW5wWt3Xb1SdcJ0ozNxQBhX1
+         XgFNB0HA0bf4kGQZ6ARgv8UNe1LvQfK0R4ryViK8nAh8mSbxMnmp3ZZVHfhZxc2XZ+fx
+         1L5UlECoz1T3eyXXglt+qe8btfg262Fvgn/eoDIHLOYsplM1hGYmiX3Qb/EGgFPCsUD3
+         Im/w==
+X-Gm-Message-State: ANhLgQ3LgCrIHfPSOBjiDQBmA8Fq+mVG4jyO0awzD4EAI2gn7PFZEet8
+        eh1UeO6rht8qEWB54SIOlad3BA==
+X-Google-Smtp-Source: ADFU+vt/GtwStWc2HQ/XEuUayBLVnS5q98IvgRtLPgHTy5VC5y+I28Nm3aQgMRf3X5zmjtNIYbLD1w==
+X-Received: by 2002:a7b:cb42:: with SMTP id v2mr6273842wmj.170.1584655124891;
+        Thu, 19 Mar 2020 14:58:44 -0700 (PDT)
+Received: from chatter.i7.local ([185.220.101.11])
+        by smtp.gmail.com with ESMTPSA id o9sm5489305wrw.20.2020.03.19.14.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Mar 2020 14:58:44 -0700 (PDT)
+Date:   Thu, 19 Mar 2020 17:58:38 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Max Gurtovoy <maxg@mellanox.com>, linux-nvme@lists.infradead.org,
+        sagi@grimberg.me, hch@lst.de, loberman@redhat.com,
+        bvanassche@acm.org, linux-rdma@vger.kernel.org, kbusch@kernel.org,
+        leonro@mellanox.com, dledford@redhat.com, idanb@mellanox.com,
+        shlomin@mellanox.com, oren@mellanox.com, vladimirk@mellanox.com,
+        rgirase@redhat.com
+Subject: Re: [PATCH v2 2/5] nvmet-rdma: add srq pointer to rdma_cmd
+Message-ID: <20200319215838.bwxu3esvu26q2fje@chatter.i7.local>
+References: <20200318150257.198402-1-maxg@mellanox.com>
+ <20200318150257.198402-3-maxg@mellanox.com>
+ <20200318233258.GR13183@mellanox.com>
+ <1a79f626-c358-2941-4e8e-492f5f7de133@mellanox.com>
+ <20200319115431.GU13183@mellanox.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 566528bc-07ca-465e-f90a-08d7cc4f0a49
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2020 21:46:54.2017
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JFPqEL6HrXWrs01M6b1hCdEAe44lHm2mkh0nZp5kzZLQO8eAjZ3ZVP9DT8AZsxpZguMiMKLOFZyQeTGIG2w0cg8IWiupudQUqCc7z4qENgI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4434
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200319115431.GU13183@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
->=20
-> The only place that uses seqlock in infiniband is in hfi1
->
-> It only calls seqlock_init and write_seqlock
->
-> Never read_seqlock
+On Thu, Mar 19, 2020 at 08:54:31AM -0300, Jason Gunthorpe wrote:
+> > I'm using "git send-email".
+> > 
+> > Should I use some special flags or CC another email for it ?
+> > 
+> > How do you suggest sending patches so we'll see it on patchworks ?
+> 
+> I looked at these mails and they seem properly threaded/etc.
+> 
+> I've added Konstantin, perhaps he knows why patchworks is acting
+> weird here?
 
-The sdma code uses read_seqbegin() and read_seq_retry() to avoid the spin
-that is in that is in read_seqlock().
+Looks like it's hitting a race condition in patchwork that will be fixed 
+in the next release.
 
-The two calls together allow for detecting a race where the
-interrupt handler detects if the base level submit routines
-have enqueued to a waiter list due to a descriptor shortage
-concurrently with the this interrupt handler.
+Until then, you can grab these patches from lore.kernel.org (e.g. with 
+b4), though it won't help with git-patchwork-bot integration.
 
-The full write_seqlock() is gotten when the list is not empty and the
-req_seq_retry() detects when a list entry might have been added.
-
-SDMA interrupts frequently encounter no waiters, so the lock only slows
-down the interrupt handler.
-
-See sdma_desc_avail() for details.
-
-> Please clean this mess too.
-
-The APIs associated with SDMA and iowait are pretty loose and we
-will clean the up in a subsequent patch series.  The nature of the locking
-should not bleed out to the client code of SDMA.   We will adjust the
-commit message to indicate this.
-
-> Also s/insure/ensure/, right?
-
-Will Fix.
-
-Mike
+-K
