@@ -2,182 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F57118B28C
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 12:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105CB18B2BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 12:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgCSLuA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 07:50:00 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:35446 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726188AbgCSLuA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Mar 2020 07:50:00 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us3.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id C6646480064;
-        Thu, 19 Mar 2020 11:49:57 +0000 (UTC)
-Received: from [10.17.20.62] (10.17.20.62) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 19 Mar
- 2020 11:49:53 +0000
-Subject: Re: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework definitions
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Parav Pandit <parav@mellanox.com>
-CC:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>
-References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-11-jeffrey.t.kirsher@intel.com>
- <6f01d517-3196-1183-112e-8151b821bd72@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
- <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <9DD61F30A802C4429A01CA4200E302A7C60CE4C4@fmsmsx124.amr.corp.intel.com>
- <b8263bea-fd0f-345e-b497-d5531dc63554@mellanox.com>
- <20200221180427.GL31668@ziepe.ca>
-From:   Martin Habets <mhabets@solarflare.com>
-Message-ID: <745514bf-80a0-db20-044b-220a9f49e71f@solarflare.com>
-Date:   Thu, 19 Mar 2020 11:49:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727196AbgCSLyh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 07:54:37 -0400
+Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]:57972
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727195AbgCSLyh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Mar 2020 07:54:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CD20e4LlwmgM/UR6LbOtRcz82W0ESav5yMPGqq+rLoI5YTzsLK+vj3/faCD6kyVaQk0OlfIZMUMMGekM2JP76KGcIG+AOT4piMJAw/OGVl1uJ/koouYdpV3jq1vyGTfAkP+PYFmsRIJKJYFAytOe49XfCYgWJkrB8CmSBhYVKOwZpC5WJ3WCyaqnwWS9oMKLxGPYbAfphN+skIJ3yWKe3VhqSv8KuvzF2FTc2JfA+T3uRLIl8PlMTpiV3z00SRMjZR00QTGTJF+3xINyODrx2vmu9xmhqcHijUgFhkmY8pWcBQsyiWH/OANhMoqu2Ppp7/lVV1ZtlpxWMJV2eI3aHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S4zELetwIoPLR2PIVLmlttLQxzwTA8m1LtVPwHBe58Y=;
+ b=lX5Vx0qB9El/QYCz5SFT7J2su/+lcCeaxaTG8jGdUU2lMUd/Zj0qoNi+YN3Wa/yy77TYLA5UBXyGzZModzPCddV/q7JhhT+piftQt80uIbaGA0Yq6eOZwK/ytca7dTL1bF5yrdCXXoIQCMJeBeSA59ff/sBynT14U8J2TPEBgoucr9Orfn5amBEkqfIHH06rAmlDPmHyhJ6QYfLBvmVNX6CqYB2Um6MSEfPvNp6IJiEBdtG9FbpKaKcCSC1poyny9DERnmv8GCb391PfBplOOgL8g3vW2Dlbg7zFpkTOjAk5clY/jcrImAuBhMSEMWU2H1sPhVLYOMDFMl3HGCVnCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S4zELetwIoPLR2PIVLmlttLQxzwTA8m1LtVPwHBe58Y=;
+ b=gtGYuEHPIdbPDSfgq4sPIDo5fTwv/KmBNCitmcFpxV3p0yLpXHipLCyhrm/apE8+h1t5AU0gdN4CjfRpZHBjs5rQsstJZPMB42GvhDjTBZSIkEobLX2cgVeZh2KKRRBUVlgf66qvpXy8JU/BZuP5deKNaBlfIN27c59Risv7ji4=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB6061.eurprd05.prod.outlook.com (20.178.204.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.20; Thu, 19 Mar 2020 11:54:34 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18d2:a9ea:519:add3%7]) with mapi id 15.20.2814.025; Thu, 19 Mar 2020
+ 11:54:34 +0000
+Date:   Thu, 19 Mar 2020 08:54:31 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, kbusch@kernel.org, leonro@mellanox.com,
+        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com, rgirase@redhat.com
+Subject: Re: [PATCH v2 2/5] nvmet-rdma: add srq pointer to rdma_cmd
+Message-ID: <20200319115431.GU13183@mellanox.com>
+References: <20200318150257.198402-1-maxg@mellanox.com>
+ <20200318150257.198402-3-maxg@mellanox.com>
+ <20200318233258.GR13183@mellanox.com>
+ <1a79f626-c358-2941-4e8e-492f5f7de133@mellanox.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a79f626-c358-2941-4e8e-492f5f7de133@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: BL0PR02CA0007.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-In-Reply-To: <20200221180427.GL31668@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.17.20.62]
-X-ClientProxiedBy: ukex01.SolarFlarecom.com (10.17.10.4) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25300.003
-X-TM-AS-Result: No-12.703500-8.000000-10
-X-TMASE-MatchedRID: ZFzIhWOuIzvmLzc6AOD8DfHkpkyUphL9GbJMFqqIm9z5+tteD5Rzha6+
-        UxOBi85N24tqHTHJmVXa/g/NGTW3Mk35WIWBwPo02hLNwCAdUPiD33mO/UVvMyE1JvW2fYa9smc
-        +HzD5Hmi62ywKGGMysDNFIrN/Vt9sYTXYZm8jWOUr1glPpqgMG3yzRzLq38pIKjjlLG8O6u+Ypu
-        G7kpoKR9KnI5FyUdwyBYjoXaYrmv++L9dc5lmniub3p4cnIXGNB4Id7CiQcz+YeMTPaAHLLcCFO
-        gbeAbERQgjA2Itda2IUsaXRuE4OZqVIsznpoCaY9VjtTc1fwmA2vbWaKPnQ22AMM0WKD4as1jqf
-        1r9/odYCQPxvuU25lKeAlEiFDc3dAqsA4DtLDcxHg88w74mNDuRo6SIMqLecBCzD0Dc8iUtRLTE
-        RhRg1g+HdKiXhYPHWNDqav/CGQyuLBJcjq3oXqD2gUycsvOMF1JP9NndNOkV7eGs179ltWfFdHM
-        D3AvmRi1xd/4mI/4CFGo7M/s8DiaG06k9cn1gViPIR0a1i6hd3ipg0lIGuKJsoi2XrUn/JyeMtM
-        D9QOgChMIDkR/KfwI2j49Ftap9EOwBXM346/+y0MMRbgrM41GDYRJi6QYs1Fkf2abs520Uj7jco
-        F6NGbpndNYHoMPQc
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--12.703500-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25300.003
-X-MDID: 1584618599-Rx2pbd7JB5q3
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR02CA0007.namprd02.prod.outlook.com (2603:10b6:207:3c::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.22 via Frontend Transport; Thu, 19 Mar 2020 11:54:33 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jEtkt-0004pd-4d; Thu, 19 Mar 2020 08:54:31 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f1a55e8f-e148-437d-ed00-08d7cbfc4a87
+X-MS-TrafficTypeDiagnostic: VI1PR05MB6061:|VI1PR05MB6061:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB6061369AABC7AD1F43186691CFF40@VI1PR05MB6061.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-Forefront-PRVS: 0347410860
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(199004)(86362001)(8676002)(1076003)(66946007)(66476007)(66556008)(33656002)(53546011)(9746002)(9786002)(8936002)(26005)(5660300002)(966005)(2906002)(52116002)(36756003)(186003)(478600001)(7416002)(110136005)(81166006)(316002)(81156014)(2616005)(4326008)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6061;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l5A/XmGlilKw2HWbCNkFzxUP3UXsOZ3YrK4GZKV07NOZI+/KB/tW3THQ1fCUUiDDGylzOWA7lU0tyLkcfaQ5zc4DMHdrp1VLFIZst3wc1+AJZfwsKxWbzT4pYHMvZpyX6+lHgSClO1qHR5nr9KKmHDCcfgXMS+ghjmuBE8pfziulaNd3a2ZlfVSrMgOo2Up+2it3tAg5kZ1OoCC/xpDDNijgXFmyLNGMM3ZrY3fAHiid+kDNW58Cgajt2dRzysT5jt35BlH8sl+HI+YSQTGPsyttxQA9/uldlamD9R0SMAgULyhHZFRvetRze9lxDkuM7Qp2XBeHZd2wqVg8+O6xH/uIeTAzBsWYPQLWCg7alW8VQVqT0zRwyPYULMrD0xjvVHSQ+nfLmxZYYwJK7Bl3xtuG4L8F8GNahCpKDXr4g3+FK+aLN2osuvptKEft7x1S/7t9+tZjdTdTgY68/x+VkmdJe1FJSrNhZwEhz8uULCi9rPeyqzcV41iqOuJmpiqlx8me/jMkqILwwMmDkwnD+IhdEfUdxpSgBt6uVzN/nHvconRVLqOopEweLGPz8PTCCVjuyTfeCZxQIrXG3l9w1g==
+X-MS-Exchange-AntiSpam-MessageData: /jUdGRKM3uDg12skzTXqYzWs5cjVdBCSnvC5gwowFhTjN7lle7rTZb+dl1HOLWrjkFDCEQQbK+3iQUVL01oMvxukree9LmHI8BTYh89ug2AeTsI58zkk1vT3GkcshjY/dYmsqGbEVqrlLG2QdfS6Ew==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1a55e8f-e148-437d-ed00-08d7cbfc4a87
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2020 11:54:34.1102
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Mc2v4Ljs2cbYABpAYVY/nExaem0OCqVtW1vzbPq9MJYCRzyUv+XCVRf1UAkLpS07iGKrf0CcDhmiM7PVkBEQVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6061
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 21/02/2020 18:04, Jason Gunthorpe wrote:
-> On Fri, Feb 21, 2020 at 05:23:31PM +0000, Parav Pandit wrote:
->> On 2/21/2020 11:01 AM, Saleem, Shiraz wrote:
->>>> Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
->>>> definitions
->>>>
->>>
->>> [....]
->>>
->>>>>>> +static int irdma_devlink_reload_up(struct devlink *devlink,
->>>>>>> +				   struct netlink_ext_ack *extack) {
->>>>>>> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
->>>>>>> +	union devlink_param_value saved_value;
->>>>>>> +	const struct virtbus_dev_id *id = priv->vdev->matched_element;
->>>>>>
->>>>>> Like irdma_probe(), struct iidc_virtbus_object *vo is accesible for
->>>>>> the given
->>>>> priv.
->>>>>> Please use struct iidc_virtbus_object for any sharing between two drivers.
->>>>>> matched_element modification inside the virtbus match() function and
->>>>>> accessing pointer to some driver data between two driver through
->>>>>> this matched_element is not appropriate.
->>>>>
->>>>> We can possibly avoid matched_element and driver data look up here.
->>>>> But fundamentally, at probe time (see irdma_gen_probe) the irdma
->>>>> driver needs to know which generation type of vdev we bound to. i.e. i40e or ice
->>>> ?
->>>>> since we support both.
->>>>> And based on it, extract the driver specific virtbus device object,
->>>>> i.e i40e_virtbus_device vs iidc_virtbus_object and init that device.
->>>>>
->>>>> Accessing driver_data off the vdev matched entry in
->>>>> irdma_virtbus_id_table is how we know this generation info and make the
->>>> decision.
->>>>>
->>>> If there is single irdma driver for two different virtbus device types, it is better to
->>>> have two instances of virtbus_register_driver() with different matching string/id.
->>>> So based on the probe(), it will be clear with virtbus device of interest got added.
->>>> This way, code will have clear separation between two device types.
->>>
->>> Thanks for the feedback!
->>> Is it common place to have multiple driver_register instances of same bus type
->>> in a driver to support different devices? Seems odd.
->>> Typically a single driver that supports multiple device types for a specific bus-type
->>> would do a single bus-specific driver_register and pass in an array of bus-specific
->>> device IDs and let the bus do the match up for you right? And in the probe(), a driver could do device
->>> specific quirks for the device types. Isnt that purpose of device ID tables for pci, platform, usb etc?
->>> Why are we trying to handle multiple virtbus device types from a driver any differently?
->>>
->>
->> If differences in treating the two devices is not a lot, if you have lot
->> of common code, it make sense to do single virtbus_register_driver()
->> with two different ids.
->> In that case, struct virtbus_device_id should have some device specific
->> field like how pci has driver_data.
->>
->> It should not be set by the match() function by virtbus core.
->> This field should be setup in the id table by the hw driver which
->> invokes virtbus_register_device().
+On Thu, Mar 19, 2020 at 10:48:22AM +0200, Max Gurtovoy wrote:
 > 
-> Yes
+> On 3/19/2020 1:32 AM, Jason Gunthorpe wrote:
+> > On Wed, Mar 18, 2020 at 05:02:54PM +0200, Max Gurtovoy wrote:
+> > > This is a preparetion patch for the SRQ per completion vector feature.
+> > > 
+> > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> > >   drivers/nvme/target/rdma.c | 6 ++++--
+> > >   1 file changed, 4 insertions(+), 2 deletions(-)
+> > Max, how are you sending these emails, and why don't they thread
+> > properly on patchworks:
+> > 
+> > https://patchwork.kernel.org/project/linux-rdma/list/?series=258271
+> > 
+> > This patch is missing from the series
+> > 
+> > v1 had the same issue
+> > 
+> > Very strange. Can you fix it?
 > 
-> I think the basic point here is that the 'id' should specify what
-> container_of() is valid on the virtbus_device
+> I'm using "git send-email".
 > 
-> And for things like this where we want to make a many to one
-> connection then it makes sense to permute the id for each 'connection
-> point'
+> Should I use some special flags or CC another email for it ?
 > 
-> ie, if the id was a string like OF uses maybe you'd have
-> 
->  intel,i40e,rdma
->  intel,i40e,ethernet
->  intel,ice,rdma
-> 
-> etc
-> 
-> A string for match id is often a good idea..
-> 
-> And I'd suggest introducing a matching alloc so it is all clear and
-> type safe:
-> 
->    struct mydev_struct mydev;
-> 
->    mydev = virtbus_alloc(parent, "intel,i40e,rdma", struct mydev_struct,
->                          vbus_dev);
-> 
-> 
->    [..]
->    virtbus_register(&mydev->vbus_dev);
+> How do you suggest sending patches so we'll see it on patchworks ?
 
-I'd like to see something like this as well. In my experiments for a single type of device I've been doing this,
-which works fine but is not future-proof:
+I looked at these mails and they seem properly threaded/etc.
 
-	struct sfc_rdma_dev *rdev;
+I've added Konstantin, perhaps he knows why patchworks is acting
+weird here?
 
-	rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-	if (!rdev)
-		return -ENOMEM;
-
-	/* This is like virtbus_dev_alloc() but using our own memory. */
-	rdev->vdev.name = SFC_RDMA_DEVNAME;
-	rdev->vdev.data = (void *) &rdma_devops;
-	rdev->vdev.dev.release = efx_rdma_dev_release;
-
-Martin
+Jason
