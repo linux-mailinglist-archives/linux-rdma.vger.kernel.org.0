@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB6C18B6C2
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 14:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AEB18B6C4
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 14:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729088AbgCSN3I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 09:29:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12164 "EHLO huawei.com"
+        id S1727468AbgCSN3F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 09:29:05 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12159 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729236AbgCSN3I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Mar 2020 09:29:08 -0400
+        id S1729719AbgCSN3E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Mar 2020 09:29:04 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F2D9C81C967C2ED411C7;
+        by Forcepoint Email with ESMTP id DC39118F67D14A699FEC;
         Thu, 19 Mar 2020 21:28:52 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 03/11] RDMA/hns: Check return value of kmalloc with macro
-Date:   Thu, 19 Mar 2020 21:24:50 +0800
-Message-ID: <1584624298-23841-4-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next 04/11] RDMA/hns: Simplify attribute judgment code
+Date:   Thu, 19 Mar 2020 21:24:51 +0800
+Message-ID: <1584624298-23841-5-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1584624298-23841-1-git-send-email-liweihang@huawei.com>
 References: <1584624298-23841-1-git-send-email-liweihang@huawei.com>
@@ -36,30 +36,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+From: Lang Cheng <chenglang@huawei.com>
 
-As the return value of kmalloc may be null or error code, use kernel macro
-to do return value check.
+Combine attribute flags before masking them.
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index 455d533..d52311a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -268,7 +268,7 @@ struct hns_roce_cmd_mailbox
- 	struct hns_roce_cmd_mailbox *mailbox;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 94cb2984..518a649 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4281,8 +4281,7 @@ static int modify_qp_rtr_to_rts(struct ib_qp *ibqp,
+ 	}
  
- 	mailbox = kmalloc(sizeof(*mailbox), GFP_KERNEL);
--	if (!mailbox)
-+	if (IS_ERR_OR_NULL(mailbox))
- 		return ERR_PTR(-ENOMEM);
- 
- 	mailbox->buf = dma_pool_alloc(hr_dev->cmd.pool, GFP_KERNEL,
+ 	/* Not support alternate path and path migration */
+-	if ((attr_mask & IB_QP_ALT_PATH) ||
+-	    (attr_mask & IB_QP_PATH_MIG_STATE)) {
++	if (attr_mask & (IB_QP_ALT_PATH | IB_QP_PATH_MIG_STATE)) {
+ 		ibdev_err(ibdev, "RTR2RTS attr_mask (0x%x)error\n", attr_mask);
+ 		return -EINVAL;
+ 	}
 -- 
 2.8.1
 
