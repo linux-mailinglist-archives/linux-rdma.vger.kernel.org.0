@@ -2,99 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE9418B8AC
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 15:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704F918B9B9
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 15:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725787AbgCSOIu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 10:08:50 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:43463 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgCSOIu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 10:08:50 -0400
-Received: by mail-wr1-f68.google.com with SMTP id b2so3140661wrj.10
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 07:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=99K2Gw3OyNC688bY0UbsB4VsbokKiE/LOqor4VmBdao=;
-        b=NzNbbUsPHbl3jpzp+5eJSeEd92Hj76Z9w0lKlIO6KF3ap/PviXDMp+1zcCAJpuFDWF
-         33y0qfJutWvtLXKQgG2y/m20jqhIat0vAXXtJ5uvFpaohYkeZUFkNOtB9oi5aNzjFp9h
-         f9kU7z6171wUTxX4R3fmFGy6KYGmo8yzZwgFU=
+        id S1727217AbgCSOtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 10:49:35 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42883 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727095AbgCSOtf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 10:49:35 -0400
+Received: by mail-pf1-f195.google.com with SMTP id x2so1545961pfn.9
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 07:49:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=99K2Gw3OyNC688bY0UbsB4VsbokKiE/LOqor4VmBdao=;
-        b=J81tEr286hGi+cSTjNanlIhEY5SvrLyYl4+lKd1Uba7Sq6TSgJ2aDnL3r4zEuP7lmE
-         /YO5Q0ZKCXQyLMNqmw4jU8TGaPsnrvXB4/w2R+4SWUCuDVJwv+RdmSA8kw00GToVn/7F
-         Y3m3KAlYwh+BvXjlv19uH5S/hFMYj4jYzVJaNQK49exGBFk8YcLWxQsE7tsc1azKYy0p
-         139fEsqXsbWf1taoXU4v1UFTv7Q3O8OhD39Tihb0xsxknw5DUEfgxlhbm2XZfedb8bzs
-         kindJqmFo3TP58K2ncaeWw8GcFMcx3FHaNn8YUut8GCIuKm2B2qEoBxGo0RzLj7Wp7nn
-         Y0HA==
-X-Gm-Message-State: ANhLgQ0BHDWrxPbYKSnZTOJQKNVGEd/WvwRUtaL4RnVPgxG3usobmTbN
-        +2EHtTtYy2JGm8lkDE8PlPuJGGysqGjl5HyqvUQ=
-X-Google-Smtp-Source: ADFU+vubzEV76oU1jJKRuuzpLgfRjDsA9/unbxRRyZDLkthpW3WE2Ye4dY/IF7WdPlNRrP35EEsr7Q==
-X-Received: by 2002:adf:e9d2:: with SMTP id l18mr4474483wrn.400.1584626928770;
-        Thu, 19 Mar 2020 07:08:48 -0700 (PDT)
-Received: from chatter.i7.local ([45.67.14.0])
-        by smtp.gmail.com with ESMTPSA id j39sm3880051wre.11.2020.03.19.07.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Mar 2020 07:08:46 -0700 (PDT)
-Date:   Thu, 19 Mar 2020 10:08:39 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Max Gurtovoy <maxg@mellanox.com>, linux-nvme@lists.infradead.org,
-        sagi@grimberg.me, hch@lst.de, loberman@redhat.com,
-        bvanassche@acm.org, linux-rdma@vger.kernel.org, kbusch@kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JuHbSS0eGsYBNljx6ogyRU5OrOR3D6tnYOH5aEot1bo=;
+        b=gj2ODWfAepJ9fEdzuwa9QYLqeYZ5DXTB1Ge7ZJ6i2QCPoUxqT7mZO5CavqIwXXArQs
+         Q+J5mqp5TkxVLorwDWJaearu81rJ1DtMbCx20F0sLmCA3LgS8ENdcf1P1r9IZWx0590H
+         j+IDqvbgYNuC9qQdF/8jeIFS0FRKttOzOYskSDlK3mJakrXYMNzzhwxGdIwab9Nmh9rG
+         uwSbmW6azaPCTKMF1dYZ3vMi7dTWrZO7DELw747e0VQZ0thZMHyMiN5W+pzlPuUojCma
+         P/9UJfC6vC5QCsdZ6l3fHZCcCObtu7oKzM5bR8VBU7X6D1CemeRWG214WhVnoT54GTKK
+         8Jiw==
+X-Gm-Message-State: ANhLgQ1Gbx6ZVca6uadGNuoZHXCjzLos1t6CRnWm8bBJsRYg+gjmbmo1
+        DyjJLBLoOMos7KpF/FBbLi8=
+X-Google-Smtp-Source: ADFU+vsVsNb+pyULR/67nR+rIO5LTV/Xrueh2tN2NiSmX7YZWsKNbda6OdDSE8Bh0g5Z19vwJuslFA==
+X-Received: by 2002:a63:1e4f:: with SMTP id p15mr3832067pgm.28.1584629374199;
+        Thu, 19 Mar 2020 07:49:34 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:af99:b4cf:6b17:1075? ([2601:647:4000:d7:af99:b4cf:6b17:1075])
+        by smtp.gmail.com with ESMTPSA id y131sm2920765pfb.78.2020.03.19.07.49.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Mar 2020 07:49:33 -0700 (PDT)
+Subject: Re: [PATCH v2 3/5] nvmet-rdma: use SRQ per completion vector
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, linux-rdma@vger.kernel.org, kbusch@kernel.org,
         leonro@mellanox.com, dledford@redhat.com, idanb@mellanox.com,
         shlomin@mellanox.com, oren@mellanox.com, vladimirk@mellanox.com,
         rgirase@redhat.com
-Subject: Re: [PATCH v2 2/5] nvmet-rdma: add srq pointer to rdma_cmd
-Message-ID: <20200319140839.7a2opbgqpenlrtlj@chatter.i7.local>
 References: <20200318150257.198402-1-maxg@mellanox.com>
- <20200318150257.198402-3-maxg@mellanox.com>
- <20200318233258.GR13183@mellanox.com>
- <1a79f626-c358-2941-4e8e-492f5f7de133@mellanox.com>
- <20200319115431.GU13183@mellanox.com>
+ <20200318150257.198402-4-maxg@mellanox.com>
+ <d72e0312-1dfd-460e-bc83-49699d86dd64@acm.org>
+ <5623419a-39e6-6090-4ae2-d4725a8b9740@mellanox.com>
+ <20200319115654.GV13183@mellanox.com>
+ <0b11c26f-d3de-faf5-5609-c290ea46ed9c@mellanox.com>
+ <20200319135356.GZ13183@mellanox.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <6dcf300c-d010-829b-b996-285ad16786d5@acm.org>
+Date:   Thu, 19 Mar 2020 07:49:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200319115431.GU13183@mellanox.com>
+In-Reply-To: <20200319135356.GZ13183@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 08:54:31AM -0300, Jason Gunthorpe wrote:
-> > > Max, how are you sending these emails, and why don't they thread
-> > > properly on patchworks:
-> > > 
-> > > https://patchwork.kernel.org/project/linux-rdma/list/?series=258271
-> > > 
-> > > This patch is missing from the series
-> > > 
-> > > v1 had the same issue
-> > > 
-> > > Very strange. Can you fix it?
-> > 
-> > I'm using "git send-email".
-> > 
-> > Should I use some special flags or CC another email for it ?
-> > 
-> > How do you suggest sending patches so we'll see it on patchworks ?
+On 3/19/20 6:53 AM, Jason Gunthorpe wrote:
+> On Thu, Mar 19, 2020 at 02:48:20PM +0200, Max Gurtovoy wrote:
 > 
-> I looked at these mails and they seem properly threaded/etc.
+>> Nevertheless, this situation is better from the current SRQ per HCA
+>> implementation.
 > 
-> I've added Konstantin, perhaps he knows why patchworks is acting
-> weird here?
+> nvme/srp/etc already use srq? I see it in the target but not initiator?
+> 
+> Just worried about breaking some weird target somewhere
 
-Not sure. Everything appears to be properly threaded. I see 2/5 arriving 
-at precisely the same time as the cover letter, so 2/5 probably got 
-processed before 0/5. I have no idea if that actually matters to 
-patchwork -- a whole bunch of series would break if arrival ordering was 
-that important. At least I assume that would be the case.
+ From the upstream SRP target driver:
 
-I'll check with upstream.
+static void srpt_get_ioc(struct srpt_port *sport, u32 slot,
+			 struct ib_dm_mad *mad)
+{
+	[ ... ]
+	if (sdev->use_srq)
+		send_queue_depth = sdev->srq_size;
+	else
+		send_queue_depth = min(MAX_SRPT_RQ_SIZE,
+				       sdev->device->attrs.max_qp_wr);
+	[ ... ]
+	iocp->send_queue_depth = cpu_to_be16(send_queue_depth);
+	[ ... ]
+}
 
--K
+I'm not sure the SRP initiator uses that data from the device management
+I/O controller profile.
+
+Anyway, with one SRQ per initiator it is possible for the initiator to
+prevent SRQ overflows. I don't think that it is possible for an initiator
+to prevent target side SRQ overflows if shared receive queues are shared
+across multiple initiators.
+
+Thanks,
+
+Bart.
