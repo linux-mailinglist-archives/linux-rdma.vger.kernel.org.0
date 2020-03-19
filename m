@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DDF18BCFE
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 17:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AFD18BD06
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Mar 2020 17:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbgCSQrE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 12:47:04 -0400
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:34966 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727302AbgCSQrE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 12:47:04 -0400
-Received: by mail-ed1-f42.google.com with SMTP id a20so3559607edj.2
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 09:47:03 -0700 (PDT)
+        id S1727222AbgCSQtE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 12:49:04 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:38716 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727212AbgCSQtE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 12:49:04 -0400
+Received: by mail-ed1-f45.google.com with SMTP id h5so3543250edn.5
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 09:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=imatrex-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PvrjSD/tcT6JWhdgPt3c7EKE8GemhzT/enqjRh1s/Fg=;
-        b=WoiSHjUEGVGWRMHW2Pgd1J3ox23JofyF7ubaXXWkKXwePeollPHj6/qrxx05BzA9se
-         N3FIggqO+ZAB3XO9tU7neoc7PhVZg9sYiEotz2Stnlcz7ouR7BQ++O602Z2Zcf88w/hf
-         TcZpalRRkvF/kAVmRJPjBFlGMx9qCUceBTrsQDVjZES+k6LNVfHYAjlepUk4H/MFaCAD
-         Qjvhw6kw1XXHEwBwurysfUXFoJybhEWTfoTT6laCcYu0zUeBO7L11VxVCvbnZI7C0pfb
-         +pu5CktahdoQSXHFvIFDQG6WivConJjjLi+nrRopbOz3tRJYVuVYg+cpES5AfS7Hsuub
-         cMag==
+        bh=SdzFHOmYospsL/7Qp0KUB/LlvyPOMe1//9ss/cmtGhc=;
+        b=IJTvFH2tBpSqKTEjLikAskiHRhVKllpCAdMG2f+5N6OQTmx+fkQGCLHFu0EjHI+A0L
+         5lYStjygwYoViSo0Nze0IJkBVNI1NLJSO2TPpycqvzp6SqLBYkYNIMBJufpJVIr+pxSk
+         KPPXmV4OwrTIPP19YOdCArd9aa8DuE038q6fGMHNS6afw3pNF0ltizwSAkH9KvnBCTK5
+         aMJB2iXSyjdeaq18FfSf1S7vBQapivIQ3Yi33qcP32/Nm0tm/C4JdSkhfhwx7Q8d0Q7b
+         //EZEKbrebUId9KLk6n9ZwlPzrHn00Z22Bnm4SCJyJJOJadFuv8RwV6JVJSgDYQmS+Sn
+         fZlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PvrjSD/tcT6JWhdgPt3c7EKE8GemhzT/enqjRh1s/Fg=;
-        b=OUNz9H860PckzZ41hK/JJMuLjlDkb16ilpr46o1Xb3jzHArJWH2wzbGjLGabVbY1so
-         7Kf/8NCp2knRSBnhqOj37gqplamH0ZvxyPahCjtpHuSJ6NpEFcNOxYqPQU3UqWRAxks2
-         Bc9Pkm0QsfcjNFrmdLrdFqrFK/HADafMAfQfZZc4638k627l71RYpJ7zPgX6halvsCJo
-         N10f00v3o1W5+0onJZ0oIdFIs/W9a1hA+GNxElzi+j0ajrC+KUe+Bp67Zy/oaaIktgHU
-         b9hETmc4PtjhCarZhmFMrU6kt6C0AbiY+eGtuPCdklsZZdbcUESavf4fyhn/Xyb1en2c
-         z6Gw==
-X-Gm-Message-State: ANhLgQ1fit23BhuHeqx5l4d8jxtqjR6Gap3YTXdep/RUmUIJWJH3JxLX
-        sKMFQjUQQ718/HjCFbVqzCVux4HbE8wmL4tHUktoghrwJWQ=
-X-Google-Smtp-Source: ADFU+vv7Nx6ptqNKo6B/oenAGU9RiALzIuaweheKcdZSc9mkjmzxPrhYQ2y9Uw7XtjyrElEF5yhyOXetBitkXcguDhU=
-X-Received: by 2002:a17:906:78a:: with SMTP id l10mr4146439ejc.263.1584636422398;
- Thu, 19 Mar 2020 09:47:02 -0700 (PDT)
+        bh=SdzFHOmYospsL/7Qp0KUB/LlvyPOMe1//9ss/cmtGhc=;
+        b=fwVELxEuibKyOzgavJkDAoe+hLoGKXAwi9kohDDMN2XC+rBD7VfvNQJ8q3NPIDLJZr
+         mpZgcCBUWJr+Q3Wc6Utw/oZK7qmPkFdkQVM1NSbuY4EMUaJ8nS3pvXbNCWtBIBq1c9+R
+         ZmlPgk7WGEQKd3Zb4x51KzpiRm/SVB/XNLCDz4s7jbjbbyJ0JJ6On2fStoi1Jw3gnYbB
+         t/5X92lbjpZQ3Yzl1ZAv33GWVQBxq13muwNkr/RfJoYCjbQ5qhKdzmY6PIRlxJSwaY4U
+         Btf7kc/aAV6mhqI3aTtGqug5tKMCPAPOTS5cgviDB00S0DLOVUKSConTRZMB4uQyMbSe
+         1ECA==
+X-Gm-Message-State: ANhLgQ2BgEKf1VbiUEtAm59+0Htp+glQ95gAHLj/lXsw9ESRDUyQJdjH
+        26hToxG1G0XqahuDB6U/S1SGDR1HZ6a2iDJ3cAiisC1x
+X-Google-Smtp-Source: ADFU+vujy51bYA6wL1kw8cW0p6EvREin9Sa44fRQjRaFIxJ1SjrJWskIACoaUwcrVE1eWSggyK8laqYRZ2CPhgD1sKk=
+X-Received: by 2002:aa7:cb0b:: with SMTP id s11mr3680398edt.165.1584636540830;
+ Thu, 19 Mar 2020 09:49:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOc41xF2xRfSpZDn-XRA=R+SegMJTPU6GJe6_6q=0j4=a-Bw9w@mail.gmail.com>
- <20200319065528.GL126814@unreal>
-In-Reply-To: <20200319065528.GL126814@unreal>
+References: <CAOc41xGSL3bYs5s9AO-3hfEwLjOy4PEdpbN8xBYMpk5j4cLQSQ@mail.gmail.com>
+ <20200319135218.GJ20941@ziepe.ca>
+In-Reply-To: <20200319135218.GJ20941@ziepe.ca>
 From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Date:   Thu, 19 Mar 2020 09:46:50 -0700
-Message-ID: <CAOc41xHEcSHOFEJB3x=nWnt85ZnmuBRO46gzpDgu2SFytR=W+g@mail.gmail.com>
-Subject: Re: RoCE v2 packet size
-To:     Leon Romanovsky <leon@kernel.org>
+Date:   Thu, 19 Mar 2020 09:48:48 -0700
+Message-ID: <CAOc41xFeKKcyD2iE4Tpax+GJF+VO5aN_cN5yfjnGnzLVnWNqZw@mail.gmail.com>
+Subject: Re: UDP with IB verbs lib
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
@@ -56,32 +56,35 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Most helpful. Thank you.
+That's pretty clear. Thank you.
 
 Dimitris
 
-On Wed, Mar 18, 2020 at 11:55 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Thu, Mar 19, 2020 at 6:52 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Wed, Mar 18, 2020 at 03:57:33PM -0700, Dimitris Dimitropoulos wrote:
+> On Wed, Mar 18, 2020 at 04:07:37PM -0700, Dimitris Dimitropoulos wrote:
 > > Hi,
 > >
-> > In RoCE v2 there various options for the protocol packet size: 4096,
-> > 2048, etc. To what does this number refer to exactly. Is it the
-> > payload that ends up in the QP buffers, or does it include headers
-> > some of the headers as well ?
+> > I'm looking at UDP using the IB verbs library. If I send UDP packets
+> > that are intercepted by the IB verbs layer, what happens with the
+> > completion notifications ?
 >
-> If I'm looking on the correct RoCE spec section (A17.3.1.2.3 PAYLOAD LENGTH).
-> It doesn't include headers but does include ICRC.
+> Each recv that requests a completion gets a completion.
 >
-> The section "5.2.13 PAYLOAD" in the IBTA spec says that:
-> "C5-8: All packets of an IBA message that contain a payload shall fill the
-> payload to the full path MTU except the last (or only) packet of the message."
+> > For example, say I create a list of 10 ibv_recv_wr objects and each
+> > has num_sge = 30, with each SGE having a 4K size. And I setup for
+> > reception with ibv_post_recv(). If I transmit 30 UDP packets each 4K
+> > in size will I receive one CQ event ? Or 30 ?
 >
-> This is why headers aren't included.
+> One per ibv_recv_wr requesting completion
 >
-> Thanks
+> > Will the UDP packets be written in consecutive SGEs of the first
+> > ibv_recv_wr object ? Or will they be written in consecutive
+> > ibv_recv_wr objects (in their first SGE) ?
 >
-> >
-> > Thank you.
-> >
-> > Dimitris
+> Only the first. Each recv handles a single incoming packet.
+>
+> DPDK has a hyper-optimized version of processing IP/UDP packets via
+> mlx5dv
+>
+> Jason
