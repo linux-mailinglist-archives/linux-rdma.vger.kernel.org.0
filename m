@@ -2,152 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 469C118C448
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 01:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57C018C464
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 01:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgCTAbc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 20:31:32 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45378 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgCTAbc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 20:31:32 -0400
-Received: by mail-qk1-f194.google.com with SMTP id c145so5204147qke.12
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 17:31:31 -0700 (PDT)
+        id S1727240AbgCTAtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 20:49:35 -0400
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:40045 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgCTAtf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 20:49:35 -0400
+Received: by mail-pj1-f74.google.com with SMTP id d2so2806329pjz.5
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 17:49:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cImjSaTaKG3dbJzAUkuQiwkXQeybHpPxUkMBnbohOTw=;
-        b=f6RG1+z/gzYv7w2bXuxyoBRJbnNUNgbMQl7crgaT1VluU1HPcjVqrIDI66mdaMvx7d
-         jlyBJOfWqrZ58lETvQuC71QZ79md6Owy2XLwA8TykpjGGLQZ43aFK+kqhN093oHIazXc
-         FSo7CgYTXkCpiH/jBTn8McXj8eyxULnpoS3RN0Qh2bOrlsPcUGJVwerr+LDcjEcviPHw
-         ErsSsDvJUQJ4Tueeu5y8Lywe8W5gh9mQtbn1sLLgZyogJ1lLru0bVcU5W5fbG/NgJQkJ
-         05iVoJqOj73MmZmo0gd//pT6pyv6idGO6sSRogiRRmzD76FXK3zrq3rZEExEOCNgfrEN
-         yn6A==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6XSIWZSfT7R2ZOldWxPdhoNf46UCTZYXjLRaAA5FSXM=;
+        b=ckGFSUc9Xz3wH3gwbW3G6O1aUsb4KC328w0jk8RKqCK3nfTKrmFV91YsM/0awOPkwz
+         KYm+e8wY46hqTw8d75BZfgY522NY8azTmcHhHHMZIHqk2onyis5Cs0cVrBYLXpMVLeB9
+         rYZZKwpeM7UClomQzOtEnbXCEEBkJAMWeXCvD+A/Aws6i1fo6/PSgdwZYEPwErTenoOr
+         dsi27cg/k1ua4CdcW4XyoXHueVBbqM1QzHoLdgg5b/BOSPrDtJM5UfL8Jg9E1Puy0n+3
+         WfzOByzuIu8Ec6B0gsmWdC4RUa4e2XtO5Jm/X23BetE45bXS9XPFE337YyROKlAJctTN
+         t5HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cImjSaTaKG3dbJzAUkuQiwkXQeybHpPxUkMBnbohOTw=;
-        b=pMgnCTkd7jMOmPH8nc22b31Hx1rNccDKXNzSkSWjkNwV2QKD6rk0u6tX1uB0uQbtBO
-         l+KFpCP4GWPcPY4kVoe1zHZybloDWHSe8l49s+YXpXw9jvzpsSQcgDvC2cVkGCTWtYKu
-         ZBX6b4o8nNq4hX4bnOQcyZEMk3c9THe33AmkDFBqYAX/tfC6t23Y8TM2PeN3+ADdJc7H
-         tzKmSc+yCpj+WKceBagpr5T5Hf/IiTqr9AtYXhsEqC6frFQLrHPj4W7nf17bc6SoRek/
-         he5Iw5mQYkSNjYdwyrJS7YoFQ/MEm1KHGFTZvA8VuFCUvvtbZh9G9oVJVqS/pmz5hwPX
-         oTqw==
-X-Gm-Message-State: ANhLgQ3rO5Zv/9AoQxsZt/xsMDQ6YaggZpFiwcboCkffTgCYwXgn52mZ
-        20UtUDiCNRrlB0Ov+rxeMWTJKQ==
-X-Google-Smtp-Source: ADFU+vtOLvuhR5qYUiUTN7bS3Zg6vvcvabwtgqJIUZ28Y1ZX63fWqvH7rcWSHwSCSgNF313Dh+De2w==
-X-Received: by 2002:a37:a0c1:: with SMTP id j184mr5801696qke.351.1584664290401;
-        Thu, 19 Mar 2020 17:31:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 128sm2822784qki.103.2020.03.19.17.31.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Mar 2020 17:31:29 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jF5ZR-0004rH-A3; Thu, 19 Mar 2020 21:31:29 -0300
-Date:   Thu, 19 Mar 2020 21:31:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-Cc:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Wan, Kaike" <kaike.wan@intel.com>
-Subject: Re: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-Message-ID: <20200320003129.GP20941@ziepe.ca>
-References: <20200317160510.85914.22202.stgit@awfm-01.aw.intel.com>
- <20200318234938.GA19965@ziepe.ca>
- <BY5PR11MB3958F9E412A2033B6293772686F40@BY5PR11MB3958.namprd11.prod.outlook.com>
- <20200319220403.GN20941@ziepe.ca>
- <BY5PR11MB3958128AA68368EBC40F91D786F50@BY5PR11MB3958.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR11MB3958128AA68368EBC40F91D786F50@BY5PR11MB3958.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6XSIWZSfT7R2ZOldWxPdhoNf46UCTZYXjLRaAA5FSXM=;
+        b=I/ZwmrY3ictWvYi22ic/lqWXg0ZKBvHApY5ZSbIQTbK3baMDvF+j6un02aLCtDN/nw
+         wBEEBuqDhjCfAA67EQN+lrDfedoNnNyztMVnzjyLmOyzeFWVQiccnDvML27OJo52XcRL
+         olk0agdSkH/XKdonzYC7pJmPDKUPjvnCngTnxYN06C2kYNwS3luQ9T/DOXC3SZDCUXus
+         Yn4Dga+kD2WXeTB0atKgcgUQbZJnLQzK5XcvrS7ST7dkVC+10ySzIXZcpIVv2kiZprpW
+         nhvF3Z91xSgqL95l/JFUXmkomNFO8XiA+ev7cRCi2v7ECPtqtRsjuvWXxW+FVW5co3SK
+         7vvg==
+X-Gm-Message-State: ANhLgQ1tyhSEmqVebR3pZQrHpnaqnSHGdbSo8AoeDfDLx0OkaWGhWgK8
+        2ssMwv1hNsf0K7VjzcrKU0+O4ns=
+X-Google-Smtp-Source: ADFU+vsPF+rjSx8XAW8GOnpJ2gg60yMlYvzrbbr6aiethIVryl3mBF97SbNlmVFzL+WsNKLp/D9aR9g=
+X-Received: by 2002:a17:90b:307:: with SMTP id ay7mr6715109pjb.123.1584665374353;
+ Thu, 19 Mar 2020 17:49:34 -0700 (PDT)
+Date:   Thu, 19 Mar 2020 17:48:36 -0700
+Message-Id: <20200320004836.49844-1-enh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.696.g5e7596f4ac-goog
+Subject: [PATCH] uapi/rdma/: add SPDX for remaining OpenIB headers.
+From:   Elliott Hughes <enh@google.com>
+To:     tglx@linutronix.de, gregkh@linuxfoundation.org
+Cc:     linux-spdx@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Elliott Hughes <enh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 12:26:32AM +0000, Marciniszyn, Mike wrote:
-> > Subject: Re: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-> > 
-> > On Thu, Mar 19, 2020 at 09:46:54PM +0000, Marciniszyn, Mike wrote:
-> > > > Subject: Re: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-> > > >
-> > > > The only place that uses seqlock in infiniband is in hfi1
-> > > >
-> > > > It only calls seqlock_init and write_seqlock
-> > > >
-> > > > Never read_seqlock
-> > >
-> > > The sdma code uses read_seqbegin() and read_seq_retry() to avoid the
-> > spin
-> > > that is in that is in read_seqlock().
-> > 
-> > Hm, I see.. I did not find these uses when I was grepping, but now I'm
-> > even less happy with this :(
-> > 
-> > > The two calls together allow for detecting a race where the
-> > > interrupt handler detects if the base level submit routines
-> > > have enqueued to a waiter list due to a descriptor shortage
-> > > concurrently with the this interrupt handler.
-> > 
-> > You can't use read seqlock to protect a linked list when the write
-> > side is doing list_del. It is just wrong.
-> > 
-> 
-> It is not actually doing that.   The lock only protects the list_empty().
+These header files have the same copyright as others in this directory
+that have this SPDX line.
+---
+ include/uapi/rdma/i40iw-abi.h             | 1 +
+ include/uapi/rdma/ib_user_ioctl_cmds.h    | 1 +
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h  | 1 +
+ include/uapi/rdma/mlx5_user_ioctl_verbs.h | 1 +
+ include/uapi/rdma/rdma_user_ioctl_cmds.h  | 1 +
+ 5 files changed, 5 insertions(+)
 
-Which is now running concurrently with list_del - fortunately
-list_empty() is safe to run unlocked.
+diff --git a/include/uapi/rdma/i40iw-abi.h b/include/uapi/rdma/i40iw-abi.h
+index 79890baa6fdb..81bdbceb70f4 100644
+--- a/include/uapi/rdma/i40iw-abi.h
++++ b/include/uapi/rdma/i40iw-abi.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+ /*
+  * Copyright (c) 2006 - 2016 Intel Corporation.  All rights reserved.
+  * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index d4ddbe4e696c..e21aff578905 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+ /*
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
+  *
+diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+index afe7da6f2b8e..060976cbf72f 100644
+--- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
++++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+ /*
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
+  *
+diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
+index 88b6ca70c2fe..506e63d0add4 100644
+--- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
++++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+ /*
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
+  *
+diff --git a/include/uapi/rdma/rdma_user_ioctl_cmds.h b/include/uapi/rdma/rdma_user_ioctl_cmds.h
+index 7b1ec806f8f9..f994916ae84e 100644
+--- a/include/uapi/rdma/rdma_user_ioctl_cmds.h
++++ b/include/uapi/rdma/rdma_user_ioctl_cmds.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+ /*
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
+  *
+-- 
+2.25.1.696.g5e7596f4ac-goog
 
-> > > The full write_seqlock() is gotten when the list is not empty and the
-> > > req_seq_retry() detects when a list entry might have been added.
-> > 
-> > A write side inside a read_side? It is maddness.
-> > 
-> > > SDMA interrupts frequently encounter no waiters, so the lock only slows
-> > > down the interrupt handler.
-> > 
-> > So, if you don't care about the race with adding then just use
-> > list_empty with no lock and then a normal spin lock
-> > 
-> 
-> So are you suggesting the list_empty() can be uncontrolled?
-
-Yes. list_empty() is defined to work for RCU readers, so it is safe to
-call unlocked.
-
-> Perhaps list_empty_careful() is a better choice?
-
-The comments for this say it is not safe if list_add is happening
-concurrently.
-
-list_empty has a single concurrent safe READ_ONCE.
-
-> > > > Please clean this mess too.
-> > >
-> > > The APIs associated with SDMA and iowait are pretty loose and we
-> > > will clean the up in a subsequent patch series.  The nature of the locking
-> > > should not bleed out to the client code of SDMA.   We will adjust the
-> > > commit message to indicate this.
-> > 
-> > So what is the explanation here? This uses a write seqlock for a
-> > linked list but it is OK because nothing uses the read side except to
-> > do list_empty, which is unnecessary, and will be fixed later?
-> 
-> I suggest we fix the bug and submit a follow-up to clean the locking up and
-> the open coding.
-
-Yes, but I still can't send this to Linus without a commit message
-explaining why it is like this. Like I say, protecting list calls with
-seqlock does not make any sense.
-
-> The patch footprint would probably be too large for stable as a single patch.
-
-Yes
-
-Jason
