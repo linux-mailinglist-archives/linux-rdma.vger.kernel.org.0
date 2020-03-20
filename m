@@ -2,40 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E5118D8F5
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 21:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E3618D8CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 21:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgCTUYX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Mar 2020 16:24:23 -0400
-Received: from mga04.intel.com ([192.55.52.120]:54411 "EHLO mga04.intel.com"
+        id S1726840AbgCTUCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Mar 2020 16:02:13 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28216 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbgCTUYW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Mar 2020 16:24:22 -0400
-IronPort-SDR: oSUho3wqmMcIa/ZbkWHECcleiVYRTsdw5wEtQmjH7HBPa+Y47w88CFzsSei/qTjVcCZiT06p9q
- 53ES7CjQC1Ww==
+        id S1726829AbgCTUCN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Mar 2020 16:02:13 -0400
+IronPort-SDR: VU3jAt1LqlGb0AeyG9J72um5L3TimQmojz6FhGDqeRVoVupFAdeZhFCki7cNM0Zr75SPt8Fd0I
+ YFFERnz5/d1Q==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2020 13:24:22 -0700
-IronPort-SDR: 86UeV3fs1qNSWFI6T7NK+HQNXxQWDg0r3Puy4bQBp1Z/6Vgo8d0xJ0pdTZ9ECY62qzWClOJ5rJ
- HPXnFROr/ZWg==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2020 13:02:12 -0700
+IronPort-SDR: GYrIV0+VsamVBv9kcWi0rbip2hF+DK/vC+I7Wa93xxx7bPM4sXmaHT3i6DVKu61eywEmWjom+v
+ xducdwNLt4Lg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; 
-   d="scan'208";a="392261261"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga004.jf.intel.com with ESMTP; 20 Mar 2020 13:24:21 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 02KKO8Fh059649;
-        Fri, 20 Mar 2020 13:24:20 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 02KJ7aMq019906;
-        Fri, 20 Mar 2020 15:07:37 -0400
+   d="scan'208";a="418829577"
+Received: from awfm-01.aw.intel.com ([10.228.212.213])
+  by orsmga005.jf.intel.com with ESMTP; 20 Mar 2020 13:02:10 -0700
 Subject: [PATCH v2] IB/hfi1: Insure pq is not left on waitlist
 To:     jgg@ziepe.ca, dledford@redhat.com
 From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
 Cc:     linux-rdma@vger.kernel.org
-Date:   Fri, 20 Mar 2020 15:07:36 -0400
-Message-ID: <20200320190715.19862.20440.stgit@awfm-01.aw.intel.com>
+Date:   Fri, 20 Mar 2020 16:02:10 -0400
+Message-ID: <20200320200200.23203.37777.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.16
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
