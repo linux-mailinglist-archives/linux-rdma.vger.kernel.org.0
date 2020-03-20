@@ -2,112 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C57C018C464
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 01:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E398F18C486
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 02:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbgCTAtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Mar 2020 20:49:35 -0400
-Received: from mail-pj1-f74.google.com ([209.85.216.74]:40045 "EHLO
-        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgCTAtf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 20:49:35 -0400
-Received: by mail-pj1-f74.google.com with SMTP id d2so2806329pjz.5
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 17:49:34 -0700 (PDT)
+        id S1727238AbgCTBJb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Mar 2020 21:09:31 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:45034 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgCTBJb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Mar 2020 21:09:31 -0400
+Received: by mail-ed1-f67.google.com with SMTP id z3so5149976edq.11
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Mar 2020 18:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=6XSIWZSfT7R2ZOldWxPdhoNf46UCTZYXjLRaAA5FSXM=;
-        b=ckGFSUc9Xz3wH3gwbW3G6O1aUsb4KC328w0jk8RKqCK3nfTKrmFV91YsM/0awOPkwz
-         KYm+e8wY46hqTw8d75BZfgY522NY8azTmcHhHHMZIHqk2onyis5Cs0cVrBYLXpMVLeB9
-         rYZZKwpeM7UClomQzOtEnbXCEEBkJAMWeXCvD+A/Aws6i1fo6/PSgdwZYEPwErTenoOr
-         dsi27cg/k1ua4CdcW4XyoXHueVBbqM1QzHoLdgg5b/BOSPrDtJM5UfL8Jg9E1Puy0n+3
-         WfzOByzuIu8Ec6B0gsmWdC4RUa4e2XtO5Jm/X23BetE45bXS9XPFE337YyROKlAJctTN
-         t5HA==
+        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VRfvlMMGmgTBJaBPgqPFouBIvum+nCOG3QUr0fkD65U=;
+        b=QfRSen0QzA5aeW0cb7Ut9rT4ayHzsjPwTXLcC0f3R+9PRDsSqbUZA9WjFdLyAnWAEl
+         YvtnndEHZT3ziRz3ph+X85kzMhjQUpbJanDjZq/cGP7yYFOqynHleKvvMb4WMaPSxSIA
+         JUYpv+HuGx+/h+UyuRBQF9aLaIfEgoVK839OHNYPg4XVraxv6pSs0BhVYBGrX1pX+6lZ
+         /rMNJAICPqyYvvz0bRFSmEBQIvleaEIvP8hhYPpj39ey47gowZ4CPovCT4p3SrtCF9u6
+         T6kdAFkDXuVEqkf9AtQ5tYNTDotK+xrc7kiSMNOl4YunmzgQANmPLALotJ9gbOMO/8Xw
+         NGhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=6XSIWZSfT7R2ZOldWxPdhoNf46UCTZYXjLRaAA5FSXM=;
-        b=I/ZwmrY3ictWvYi22ic/lqWXg0ZKBvHApY5ZSbIQTbK3baMDvF+j6un02aLCtDN/nw
-         wBEEBuqDhjCfAA67EQN+lrDfedoNnNyztMVnzjyLmOyzeFWVQiccnDvML27OJo52XcRL
-         olk0agdSkH/XKdonzYC7pJmPDKUPjvnCngTnxYN06C2kYNwS3luQ9T/DOXC3SZDCUXus
-         Yn4Dga+kD2WXeTB0atKgcgUQbZJnLQzK5XcvrS7ST7dkVC+10ySzIXZcpIVv2kiZprpW
-         nhvF3Z91xSgqL95l/JFUXmkomNFO8XiA+ev7cRCi2v7ECPtqtRsjuvWXxW+FVW5co3SK
-         7vvg==
-X-Gm-Message-State: ANhLgQ1tyhSEmqVebR3pZQrHpnaqnSHGdbSo8AoeDfDLx0OkaWGhWgK8
-        2ssMwv1hNsf0K7VjzcrKU0+O4ns=
-X-Google-Smtp-Source: ADFU+vsPF+rjSx8XAW8GOnpJ2gg60yMlYvzrbbr6aiethIVryl3mBF97SbNlmVFzL+WsNKLp/D9aR9g=
-X-Received: by 2002:a17:90b:307:: with SMTP id ay7mr6715109pjb.123.1584665374353;
- Thu, 19 Mar 2020 17:49:34 -0700 (PDT)
-Date:   Thu, 19 Mar 2020 17:48:36 -0700
-Message-Id: <20200320004836.49844-1-enh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.1.696.g5e7596f4ac-goog
-Subject: [PATCH] uapi/rdma/: add SPDX for remaining OpenIB headers.
-From:   Elliott Hughes <enh@google.com>
-To:     tglx@linutronix.de, gregkh@linuxfoundation.org
-Cc:     linux-spdx@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Elliott Hughes <enh@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VRfvlMMGmgTBJaBPgqPFouBIvum+nCOG3QUr0fkD65U=;
+        b=FTMkUArR9Y+0JSru7cjmvaKn01pb41tI/FfshJrw7rGd2cX1xy18rdqiCoBxaotFzt
+         X+EJvBVzydVxZ06uScg9djl7gHQ3yZpBmfESwEeQ9pf7H4yDEQywDNUAQe28dWXKQzK6
+         v20j5MrsaOEjL0cDBQZg46VvSOM7Kbpfp2NX+SuidQpNt9NGTgxN7WT/NMDA151ReE5R
+         pGUAx577+XZ3IWMUQaQgNZzsRNzE5qt64qF1wYjUGHAHqI6p37vC7PH7JIllfzZYGAIN
+         TNCnsGfLUAIWb0gc3JGygDpTakTOS7OOooZYLbo3Nn8FWL1mE8zVPINnOXzaYldIGGZ/
+         Bf4g==
+X-Gm-Message-State: ANhLgQ2y7+1hl8vcbZAO2TG8DO/We2rI4ekVVmcY0NUz2Gcc/lI7sJo0
+        H9/G6TJUZDipGiqZ2sdXi//zj1gXgnJT8A86uFnSF04O
+X-Google-Smtp-Source: ADFU+vuC7WQn++tUoHF7QhuCOglfyH7MuDV5XvZFvFes8g20IDdnwV2djiqopV/kVOFP2zjtRauLIc8lPsqSUSeuGs8=
+X-Received: by 2002:a05:6402:10c3:: with SMTP id p3mr5386025edu.157.1584666567744;
+ Thu, 19 Mar 2020 18:09:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAOc41xG5xb-6LEKmsvPPET9jKZ8ScAMW1rW=AzV1_HLs9DhNEQ@mail.gmail.com>
+ <20200203200820.GU414821@unreal> <AM0PR05MB4866C4C3F7553DA6273725C8D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB4866C4C3F7553DA6273725C8D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
+From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
+Date:   Thu, 19 Mar 2020 18:09:16 -0700
+Message-ID: <CAOc41xHZM_YvwM1F_BQ04sLJ7G34F71chkQoD6phU7i8s5aYjQ@mail.gmail.com>
+Subject: Re: RDMA header inspection
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-These header files have the same copyright as others in this directory
-that have this SPDX line.
----
- include/uapi/rdma/i40iw-abi.h             | 1 +
- include/uapi/rdma/ib_user_ioctl_cmds.h    | 1 +
- include/uapi/rdma/mlx5_user_ioctl_cmds.h  | 1 +
- include/uapi/rdma/mlx5_user_ioctl_verbs.h | 1 +
- include/uapi/rdma/rdma_user_ioctl_cmds.h  | 1 +
- 5 files changed, 5 insertions(+)
+Hi,
 
-diff --git a/include/uapi/rdma/i40iw-abi.h b/include/uapi/rdma/i40iw-abi.h
-index 79890baa6fdb..81bdbceb70f4 100644
---- a/include/uapi/rdma/i40iw-abi.h
-+++ b/include/uapi/rdma/i40iw-abi.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
- /*
-  * Copyright (c) 2006 - 2016 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2005 Topspin Communications.  All rights reserved.
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index d4ddbe4e696c..e21aff578905 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-  *
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index afe7da6f2b8e..060976cbf72f 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-  *
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-index 88b6ca70c2fe..506e63d0add4 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-  *
-diff --git a/include/uapi/rdma/rdma_user_ioctl_cmds.h b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-index 7b1ec806f8f9..f994916ae84e 100644
---- a/include/uapi/rdma/rdma_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-  *
--- 
-2.25.1.696.g5e7596f4ac-goog
+That seems to be the simplest way to view the traffic. I just tried it
+successfully on a ConnectX-5 card (Mellanox driver OFED-5.0 on a
+Centos 7.7 / Kernel 3.10.0).
 
+Thank you.
+
+Dimitris
+
+On Mon, Feb 3, 2020 at 11:53 PM Parav Pandit <parav@mellanox.com> wrote:
+>
+>
+>
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Leon Romanovsky
+> > Sent: Tuesday, February 4, 2020 1:38 AM
+> > To: Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
+> > Cc: linux-rdma@vger.kernel.org
+> > Subject: Re: RDMA header inspection
+> >
+> > On Mon, Feb 03, 2020 at 11:30:09AM -0800, Dimitris Dimitropoulos wrote:
+> > > Hi,
+> > >
+> > > I'm trying to inspect RDMA headers and they do not show up on
+> > > wireshark. How can I observe RDMA headers ? Also, any header parser
+> > > available in the code base that I can link to and use to process the
+> > > headers ?
+> >
+> > The libpcap which is compiled with RDMA support has ability to catch traffic for
+> > mlx4/mlx5 devices.
+> > https://github.com/the-tcpdump-group/libpcap/pull/585
+> >
+>
+> If you want to consume this feature in simpler and quicker way, you can follow the steps [1] without affecting your OS userspace environment.
+> I find it useful and quick way to debug issues.
+>
+> But feel free ignore my suggestion and use your latest or compiled tcpdump with latest libpcap.
+>
+> [1] https://hub.docker.com/r/mellanox/tcpdump-rdma
