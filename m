@@ -2,119 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADCF18CF7D
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 14:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806B018D0BB
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 15:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgCTNxb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Mar 2020 09:53:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7268 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbgCTNxb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Mar 2020 09:53:31 -0400
-IronPort-SDR: 7sqVtrrBX3agBiD7K0v2j9oMUJPtnAfcTBt6vrVKkDbFLu0Xx4ChYE/No4Z4Y2XUEZ7MdccXFD
- VMxo0W/efeMg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2020 06:53:30 -0700
-IronPort-SDR: ppjv/nDQKVNeqoB5wdkIbuWd5NuwdUewZeVxapcTbftpphlug9EqDwjc9x/wKfMyLPKQ1sSWGe
- ljoI7nlTQ7sg==
-X-IronPort-AV: E=Sophos;i="5.72,284,1580803200"; 
-   d="scan'208";a="234512596"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.204]) ([10.254.204.204])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2020 06:53:28 -0700
-Subject: Re: [PATCH for-next 13/16] IB/{hfi1, ipoib, rdma}: Broadcast ping
- sent packets which exceeded mtu size
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.alessandro@intel.com>,
-        Gary Leshner <Gary.S.Leshner@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
- <20200210131944.87776.64386.stgit@awfm-01.aw.intel.com>
- <20200219004249.GA24178@ziepe.ca>
- <2c91a053-add3-a7f9-2da1-f56f4c70381d@intel.com>
- <20200221233249.GM31668@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <277fe13b-63f7-e633-7f72-9c3e9932863c@intel.com>
-Date:   Fri, 20 Mar 2020 09:53:27 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726956AbgCTO14 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Mar 2020 10:27:56 -0400
+Received: from mail-eopbgr150054.outbound.protection.outlook.com ([40.107.15.54]:27099
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726896AbgCTO14 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:27:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dGHUcT8nJS0RCkeol+l6peyiLECDS8Vf7woCs9+kB3A6ivaX59cpk9XtktpFbeTqxlRMnrW8aAn5r2cxtfk3qR6+8zoAS7qKYK3ZXYQuh75MV8Jz22z3TyR9DFG5RRXxbPrsb6BY86PGRvRTEULtrzuDtnELp1y+tXq6NfwJvhw8xugItlIJppzMsXLARutmNx6BPciAm56zMALTcxPSc0Z9wO5NvgCRRa5vbQ2gUYx+KEeO5DYC5/JJLkipk1LlUZhlCNoZbBHviVCBR5byqwjxdlhC6OzmQYYhuMTR14+Yr6bmN9EHg249llJedbpcUHVIJC67kbSjSaQ4nCcSYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qFFHkQtJYW9bs8afAh3vXLmxD/2w7SWGt315wVxhBoU=;
+ b=Q7iORRLM1xulY084/u6+i9AjCIGpJVYtTEY1x+qlD3ouIpbrjwI0MxXCRAL7Ia9wfRdIgOMWDFTu+h6ubLxqtqJIcnhO3xGa5EG6jpx2EhAbEbY8eHPKL8Kvht2ky2prqYfCP1Sfl685E4NV0+6AnTCZJdaisag5U2rMjlTIsXqSPjMaQ0MrGkBPYqEw9y9vN2taWwPnSMsdIZ+iLGfqiLsM/na0fNs0QXGht70OIAWL+1XDeJ4L8jcXAUsawb4qGg2MXzoMlRAy+OVLn7sVzKlCfCGhkEyNFvaL7iJ2s3EUvVTvUx5cpWaMn8oArHHK9VN+a3eDKmgwpgKun2PMkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qFFHkQtJYW9bs8afAh3vXLmxD/2w7SWGt315wVxhBoU=;
+ b=Wbmfi3800xjR8a5NYFxS+YG7RNQy1mkBnZXsWSyVtBKFmW0cYvkBXqW2Fw1ZnJ98baeXod+LTmtBhYvB4oP45zGOZbb9bTYGqm6LmY81QCveIY/ddWI6+94QubP+bJ1oMaQtlVPh1bHacHcc+Z48/G56Ti69ICjnsC4m0atlhFc=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
+ AM6PR05MB4455.eurprd05.prod.outlook.com (52.135.167.24) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.20; Fri, 20 Mar 2020 14:27:52 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0%3]) with mapi id 15.20.2814.021; Fri, 20 Mar 2020
+ 14:27:52 +0000
+Date:   Fri, 20 Mar 2020 16:27:50 +0200
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Max Gurtovoy <maxg@mellanox.com>, linux-nvme@lists.infradead.org,
+        hch@lst.de, loberman@redhat.com, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, kbusch@kernel.org, jgg@mellanox.com,
+        dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
+        oren@mellanox.com, vladimirk@mellanox.com, rgirase@redhat.com
+Subject: Re: [PATCH v2 1/5] IB/core: add a simple SRQ pool per PD
+Message-ID: <20200320142750.GE514123@unreal>
+References: <20200318150257.198402-1-maxg@mellanox.com>
+ <20200318150257.198402-2-maxg@mellanox.com>
+ <b37caf65-a084-6ed2-2ee9-8a51a6e9b79d@grimberg.me>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b37caf65-a084-6ed2-2ee9-8a51a6e9b79d@grimberg.me>
+X-ClientProxiedBy: PR2P264CA0006.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::18)
+ To AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-In-Reply-To: <20200221233249.GM31668@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a00:a040:183:2d::393) by PR2P264CA0006.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.15 via Frontend Transport; Fri, 20 Mar 2020 14:27:52 +0000
+X-Originating-IP: [2a00:a040:183:2d::393]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a1ffbea5-bd36-4fcc-01ee-08d7ccdadfd1
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4455:|AM6PR05MB4455:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB44554DE7C04691B226A51987B0F50@AM6PR05MB4455.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 03484C0ABF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(7916004)(136003)(346002)(39860400002)(366004)(396003)(376002)(199004)(86362001)(8676002)(6486002)(1076003)(33716001)(66556008)(33656002)(9686003)(66946007)(66476007)(186003)(6496006)(8936002)(2906002)(52116002)(6916009)(478600001)(316002)(16526019)(81166006)(5660300002)(4326008)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4455;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7W9wnCs8+B81/JPPVU4kluFw4X9ScZyfp7x2Rc+iair8QXHpeVj4t+wcUsnB//R6CmXJHqELctYp7d6gD9QRYWlWiV4l8xlvEsU6QS8xGUktvc1Dq9wjs9WMPVPyzYe+WnOvU+BV+KNFWi/8qbZ++iHS2g62ex7vxovMCJdLoQPFIchiROGtMpZVRL9HHm+sN2lWqzweHw67VNRYcZ7AOvoMwC9R8MIc7FOr3WliiJsM0klmCK4sG4aQsne+SkO3VwnNnoMyITyQr9cigYHNgdf/0jExVlcfD15shk2Wvi7Ca+yWQH9fIWwJl/snCbZv0rcxxws8c6eQZ57BB6oqb1tofOv9o8M2qm8rLUf+pD2mXSRyyJtlSdRTjff/9wXq092n5tsFPvRjWlpYwC6FFkqO9K4u2DnHV7vRK3E++LkfjuOQbFfAGRvRYLZ5uGmi
+X-MS-Exchange-AntiSpam-MessageData: HhBISl9+Vw5Ix5ex97WzMydevC4pnNKAqab8RLBrnztJWMDjuQtZZ/0P1h8N2RguzcFvrVHkOqifuUhkmuIzAXDXHusPRaPTeDbGl2ruK8YP7F+vfUTgr+Cg4PLrcxU7iWPtzDc+4Yt/GlJ/zLoQpwvYD+Hd7r9IysBeOK9YGYc=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1ffbea5-bd36-4fcc-01ee-08d7ccdadfd1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2020 14:27:52.7427
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sIbAIt0qDOb5Sv8CAWqm2vKZD34q5kOVmxNKaFYtWtmSS2HGXNrG5jIJnGGne/zmHivFN5DmEBmJRSw/dKREXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4455
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/21/2020 6:32 PM, Jason Gunthorpe wrote:
-> On Fri, Feb 21, 2020 at 02:40:28PM -0500, Dennis Dalessandro wrote:
->> On 2/18/2020 7:42 PM, Jason Gunthorpe wrote:
->>> On Mon, Feb 10, 2020 at 08:19:44AM -0500, Dennis Dalessandro wrote:
->>>> From: Gary Leshner <Gary.S.Leshner@intel.com>
->>>>
->>>> When in connected mode ipoib sent broadcast pings which exceeded the mtu
->>>> size for broadcast addresses.
->>>>
->>>> Add an mtu attribute to the rdma_netdev structure which ipoib sets to its
->>>> mcast mtu size.
->>>>
->>>> The RDMA netdev uses this value to determine if the skb length is too long
->>>> for the mtu specified and if it is, drops the packet and logs an error
->>>> about the errant packet.
->>>
->>> I'm confused by this comment, connected mode is not able to use
->>> rdma_netdev, for various technical reason, I thought?
->>>
->>> Is this somehow running a rdma_netdev concurrently with connected
->>> mode? How?
->>
->> No, not concurrently. When ipoib is in connected mode, a broadcast request,
->> something like:
->>
->> ping -s 2017 -i 0.001 -c 10 -M do -I ib0 -b 192.168.0.255
->>
->> will be sent down from user space to ipoib. At an mcast_mtu of 2048, the max
->> payload size is 2016 (2048 - 28 - 4). If AIP is not being used then the
->> datagram send function (ipoib_send()) does a check and drops the packet.
->>
->> However when AIP is enabled ipoib_send is of course not used and we land in
->> rn->send function. Which needs to do the same check.
-> 
-> You just contradicted yourself: the first sentence was 'not
-> concurrently' and here you say we have connected mode turned on and
-> yet a packet is delivered to AIP, so what do you mean?
+On Thu, Mar 19, 2020 at 10:59:33PM -0700, Sagi Grimberg wrote:
+>
+> > ULP's can use this API to create/destroy SRQ's with the same
+> > characteristics for implementing a logic that aimed to save resources
+> > without significant performance penalty (e.g. create SRQ per completion
+> > vector and use shared receive buffers for multiple controllers of the
+> > ULP).
+>
+> There is almost no logic in here. Is there a real point in having
+> in the way it is?
+>
+> What is the point of creating a pool, getting all the srqs, manage
+> in the ulp (in an array), putting back, and destroy as a pool?
+>
+> I'd expect to have a refcount for each qp referencing a srq from the
+> pool, and also that the pool would manage the srqs themselves.
+>
+> srqs are long lived resources, unlike mrs which are taken and restored
+> to the pool on a per I/O basis...
+>
+> Its not that I hate it or something, just not clear to me how useful it
+> is to have in this form...
 
-AIP provides a rdma_netdev (rn) that overloads the rn inside ipoib. When 
-the broadcast skb is passed down from the user space, even in connected 
-mode, the skb will be forwarded to the rn to send out.
+Sagi,
 
-> What I mean is if you can do connected mode you don't have a
-> rdma_netdev and you can't do AIP.
+Why do we need such complexity of referencing to the QPs?
+This SRQ pool is intended for the kernel users whom we trust and we don't expect
+that QP will be destroyed before SRQ.
 
-The rdma_netdev is always present, regardless of the ipoib mode.
-
-> How are things in connected mode and a rdma_netdev is available?
-
-So we don't only overload the rn for datagram, we do it for connected as 
-well.
-
-The rdma_netdev is set up when ipoib first finds the port, not when the 
-mode is switched through sysfs. Therefore, it has to be there always, 
-even in connected mode.
-
-In hfi1_ipoib_setup_rn() (the setup function for rdma_netdev), we set:
-     rn->send = hfi1_ipoib_send
-
-We also keeps the default netdev_ops and overload it with our netdev_ops 
-to set up /tear down resources during netdev init/uninit/open/close:
-
-     Priv->netdev_ops = netdev->netdev_ops;
-     Netdev->netdev_ops = &hfi1_ipoib_netdev_ops;
-
--Denny
-
+Thanks
