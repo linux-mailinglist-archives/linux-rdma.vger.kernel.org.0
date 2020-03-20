@@ -2,123 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C242318D38C
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 17:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0AA18D397
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 17:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727447AbgCTQFz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Mar 2020 12:05:55 -0400
-Received: from mail-eopbgr80054.outbound.protection.outlook.com ([40.107.8.54]:38883
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727377AbgCTQFz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Mar 2020 12:05:55 -0400
+        id S1727401AbgCTQJl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Mar 2020 12:09:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60127 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727134AbgCTQJk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Mar 2020 12:09:40 -0400
+IronPort-SDR: AIg1z4ZoOduSHpBggqL4D612RmeUip2fysHsnpYXX+/m+5KO20siGWyBpyt4TBRAuE0ZvNeQJ0
+ fe1cMuu73qSg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2020 09:09:39 -0700
+IronPort-SDR: TQ/lPXklTnwrMBuPuou+MyMcQ/wERT6HZ471ZHWWH2iQfMmGhojtgjurAkFmvuA7pS8cVGdxAJ
+ 727TcmjCP8Hw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,285,1580803200"; 
+   d="scan'208";a="446696218"
+Received: from orsmsx103.amr.corp.intel.com ([10.22.225.130])
+  by fmsmga006.fm.intel.com with ESMTP; 20 Mar 2020 09:09:38 -0700
+Received: from orsmsx161.amr.corp.intel.com (10.22.240.84) by
+ ORSMSX103.amr.corp.intel.com (10.22.225.130) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 20 Mar 2020 09:09:38 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX161.amr.corp.intel.com (10.22.240.84) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 20 Mar 2020 09:09:38 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 20 Mar 2020 09:09:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R6VmXdCyP9KnwsVEOVhAyE6fz8A26b6F7pSlungPHKUe9SJi2CjxCU7jGSsYNzkxg8WzWv+I3f5raY3JNEFgdJwTqq6N2o6UNKxN3I6rYEy2sbJrE6xEvNIEOrnJ12UDS8RTYe/By6Cioo/QNf1+7Nop23ghBUkT34sBq1+GyQkXUo6097Cr4SNqNUQPYIkcv8WLa42gxjE/8XApjQI4pkejqUIAtJzhO863XtpnYALttYOgQWJz/MWH/urLP6z9Wcb6P0cTrdxRlWp7tq1l8dm0XK04/fF0FsjYhDpwRzO6DfmQb45ux1i0qCUk+CP30LWKmfLGJYNkXw4l8z7C7g==
+ b=gOAyXq43zUh29IeiSRV6HMMRCnSNSQLg0so7d3f4yYjYYU1t9goi96YD+E4ggsUnxnNC5GWJN36yN7scH/HxEw0xEnIdSVFkNZaScHBZNQjuhw4oxf5701tRLs12bLIsebLybpgE2jRPTQEK0gCRfe7ID5W7F3SNDpIv9l0kqByUPWEl4qtegrv96tpz09vSo0TfLUqmIHpN1o3JiCck9fwy6pOk3XU3D2a+J9CaV5u50269ZAV+qZTJqLDGh6a90VZyb5aZ0NLfRTpkRws3IGCaZ0+tMcZtvT0nMmEGvYmoh7KWbmLb8SNHG9qbH4dcWTe/gv8eQD5IsMObyPeWhg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sItVpgYryw3csx0Iw0AJqDuIKtA8gRT9wzsGfwybFoM=;
- b=aQZb4ghiWOubIZp2vmgL8uiq3IQ7z2Ch7DigzzxZqAiIEmvGp28zE2SixsFp7OgLg8HPb/LsQkPSM4Lswylyj1ruFbLqDeqJAMfyrCP2+IXAJvwmVgxrSaC62Z4JjpfYygNScUXEdZn1D6imINbm7x/O5MgLcNtEZkEhtIz65/hzmGCYjOso09PaQ8w5mO5jDXzcSAIMYJ6eqrixt3vtxNa8x9X0WaD0xe9uiBiG6Ov3gKG7hqQLn4gDwEM3WTzQSR4KtoR8gN2iXgkU1uTulfKyeEgN1A0HfwM7KIL7rG8LzB5AsJjldaJG9QPe5nM7BhDJurGX9TphmJgGWgvuGA==
+ bh=4Zw8HLsy2fgkJSqVwcTL6wddwlDCML48Rewrq9qTmgQ=;
+ b=U6YCClmWqmYcKDrLphpTCuZFaqwumLo8tGVwaKMZ131sRpC4dDa7Tsv5rDYgnkY5HS+dys0FKJ29YnpQ1OBlvuYjqYI2NUzfSmYv7yNqwcLVUkNExYLGx82QdJDobyjaP5iYYE3c9fYEwdI9sTSejtecrBxiB22I5aml+geyADHZ3IfGGIjWGabrIsggf1BLanUlke1Cu08s/jqayxuEhloztiL3YgWtMy+Ht/dZpstENolhU90cAfH/utGYg9ZGzmtqLnYTx2EdcvV7oybBOVGPtUgwVxh2ZQCDuJnEM9x+X6RAjS+iq+BAPswDyNDoiAT0zQ7WbVCTVgqCtTIsSA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sItVpgYryw3csx0Iw0AJqDuIKtA8gRT9wzsGfwybFoM=;
- b=A5Aihm+XnIBMarD9JF0rm556f4NWFbJbFG2J2qXsPPhGtTZ9vx1kI1h2uM98kHSg/hZztjmhJV3p+HWQX12OzK3QJbRACQBVtiQ+jSkjKTMujWkoVtjuV431AUytGUJoF7GbLKhkt1kxhpMXRZj81Erz/LLHJMERGcr6DQgtqSY=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=markb@mellanox.com; 
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com (10.170.238.143) by
- VI1PR05MB3264.eurprd05.prod.outlook.com (10.170.236.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2835.20; Fri, 20 Mar 2020 16:05:51 +0000
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::4566:b84d:efdb:cb1a]) by VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::4566:b84d:efdb:cb1a%6]) with mapi id 15.20.2835.017; Fri, 20 Mar 2020
- 16:05:51 +0000
-Subject: Re: Should I expect lower bandwidth when using IBV_QPT_RAW_PACKET and
- steering rule?
-To:     Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Cc:     Terry Toole <toole@photodiagnostic.com>, linux-rdma@vger.kernel.org
-References: <CADw-U9C9vh5rU1o4uSmw=EzMqOvXFqSm-ff-7UbLCKd2CUxT4A@mail.gmail.com>
- <e73505bf-d556-ae4a-adfb-6c7e3efb2c32@mellanox.com>
- <CAOc41xGXtcviBp4sWd5X_0_5H627tL2Ji857NtJ9P9UZxJL+uA@mail.gmail.com>
-From:   Mark Bloch <markb@mellanox.com>
-Message-ID: <8c2c8049-af47-e8b0-3b63-c179f16908ed@mellanox.com>
-Date:   Fri, 20 Mar 2020 09:05:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-In-Reply-To: <CAOc41xGXtcviBp4sWd5X_0_5H627tL2Ji857NtJ9P9UZxJL+uA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+ bh=4Zw8HLsy2fgkJSqVwcTL6wddwlDCML48Rewrq9qTmgQ=;
+ b=VTrunw9lsLap9tCJgO1Y/Kc6I+sGVDzXrIzSzB98ntIn34ZqGaCtsXifDt4j5hFOMNJRbXy4oxiyVmc8O1NJmoczDAo8wbNzih6FOBL9V/WGXBHg+I7Y4YYMZucse4LqskdIHfkQ9bjmdnftc/IsDzIndm+QVdIqCQGQeomjCcw=
+Received: from MW3PR11MB4665.namprd11.prod.outlook.com (2603:10b6:303:5d::12)
+ by MW3PR11MB4762.namprd11.prod.outlook.com (2603:10b6:303:5d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.20; Fri, 20 Mar
+ 2020 16:09:36 +0000
+Received: from MW3PR11MB4665.namprd11.prod.outlook.com
+ ([fe80::c008:bca9:22e9:4dc9]) by MW3PR11MB4665.namprd11.prod.outlook.com
+ ([fe80::c008:bca9:22e9:4dc9%4]) with mapi id 15.20.2835.017; Fri, 20 Mar 2020
+ 16:09:36 +0000
+From:   "Wan, Kaike" <kaike.wan@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Subject: RE: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata as
+ the parent of cdev
+Thread-Topic: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata as
+ the parent of cdev
+Thread-Index: AQHV+9aq9JxrAmD3GUitnjKGS5ypvqhO/2QAgAKnXgA=
+Date:   Fri, 20 Mar 2020 16:09:36 +0000
+Message-ID: <MW3PR11MB46651022C7EFD74C856675E1F4F50@MW3PR11MB4665.namprd11.prod.outlook.com>
+References: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
+ <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
+ <20200318231830.GA9586@ziepe.ca>
+In-Reply-To: <20200318231830.GA9586@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR17CA0081.namprd17.prod.outlook.com
- (2603:10b6:300:c2::19) To VI1PR05MB3342.eurprd05.prod.outlook.com
- (2603:10a6:802:1d::15)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kaike.wan@intel.com; 
+x-originating-ip: [72.94.197.171]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d083ef3c-fb2e-4339-1189-08d7cce915ef
+x-ms-traffictypediagnostic: MW3PR11MB4762:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB47620288963814A8C23C1FF8F4F50@MW3PR11MB4762.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-forefront-prvs: 03484C0ABF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(199004)(71200400001)(5660300002)(9686003)(2906002)(53546011)(55016002)(6506007)(186003)(86362001)(26005)(7696005)(66946007)(76116006)(66476007)(66556008)(110136005)(81166006)(66446008)(81156014)(8676002)(54906003)(4326008)(498600001)(52536014)(8936002)(6636002)(33656002)(107886003)(966005)(64756008)(21314003)(6606295002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR11MB4762;H:MW3PR11MB4665.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oxsKYoSLufiBw39OdORutBA4xv6Ld+T0W3kGNS+HUmTp6pizZgPnU0xVte+zTgyyOe1XIxkaJAfjQYaW3SrxALX3Pe6KMUXKlkk1/edM6ae1okWbs81jPjV63oVAdeKIoHWNSd++GX5mYUBouaOIdtkPY4A1cKHFqtrgFG8iehsoXtWTiN3PcBaGBaZiu6G7l1lhGhZUj5NeqRWDADbU8TOH40wWsBiAtmOHZ0N0Nu1f8PGdVFinjSG/yUGayHEbkwh764JdlQ/uDyUvtp8sqQ15SbEmNBnd4+vcvC1NAguAmqvH7gqr0rTwqW6yEjPESO1kjA/8rpFyuNf8HrInHdUUo+RKwer6rd6fLi6TicP8RphmyYCliL7X3OaEpUlnXgetNitM5fz/t3FZ83tKvozbMbdn5gVVRze7sQ6JLlLWtTIQePQGA1y14ad4GgVyILpeYlOsE3/F0R6jgRUdILhI8j8nvq1qN8FRb7E55xl+zntPvPxDv3x8s4pwOuNRPL1rB57ghbX66kIikJKAKybqDuE6KV+Ql+a7u2lyjC5GUZKRU1kd5O3Hi4AOd0cje7n8Eqg1UFIaFZgsVti2BWZJGDLXNlKRkNZKrxgZV+Q=
+x-ms-exchange-antispam-messagedata: M/1oZ6kUIFUrW+50V878HbP3rqefCx0aA/phwTivwWo2vF8asqJkA14sDOMi+ZHXCF/wG81tnjSbiORNXasJvFwmvB2vNYVHzDbYnXimqlJ53lqdlcCsk/A5eQ0/ZNDQyqlMVVAOzmTjwZEhuuR4ug==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.33] (104.156.100.52) by MWHPR17CA0081.namprd17.prod.outlook.com (2603:10b6:300:c2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.18 via Frontend Transport; Fri, 20 Mar 2020 16:05:50 +0000
-X-Originating-IP: [104.156.100.52]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ba82d412-25b6-43e1-6070-08d7cce88fc2
-X-MS-TrafficTypeDiagnostic: VI1PR05MB3264:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB32645FC7853EEAF34EF2D4D6D2F50@VI1PR05MB3264.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 03484C0ABF
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(199004)(4326008)(36756003)(2616005)(186003)(966005)(2906002)(6666004)(26005)(478600001)(5660300002)(16526019)(81156014)(31686004)(6916009)(6486002)(956004)(53546011)(52116002)(66556008)(66946007)(316002)(66476007)(31696002)(86362001)(8936002)(16576012)(81166006)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3264;H:VI1PR05MB3342.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nGeguuNjnHNg1L1Y2RnxSplPeICiu3WSU8auj6HQGctvQWUe346owcW7WWfQbEMfjEifdxu3vJQ6Dw5+VOgCNsXQWk6l+x3R8Go+Yw9HaNiq0Z0w/LrDLV+queTqGgKXBouc3vF58e4svE6hSAzkVXvLmMVrjWhCFPgoELbjP2FodswsJ/E18N36B+TI8rxR/WmX1K8C+Y7VkyYAl1cbI8ODWN16eQE8/HZP2PWPDISj97wEXY++UkugzQpbH7quConf04ffaLPw6ItxVnAFOVxgHMhtdJM90Id2uPmT2YGPMwzoqAvBCAlHexqraBx4jHPAd6dxCH+FX1pUvPhJJrBZa4llLjXh8rxOTeB8tpD4H16GhUhgC4stt1RRuoH/fS9ywK26Iyom6moXuELm2B9CdYkH67V+cCC7Ha3qMOuSJBo/lyF9k1zP7aeMMMVFw2vpWiuvQy+5FxmEbOAeHlclMsFNxBijBF7hXNotEz5QS7SqW0a7weg0+6/O+WlGjwnEJRObobXKgB0/8F9rkg==
-X-MS-Exchange-AntiSpam-MessageData: t03b2zDgdpaSTTHKIfYwiAjV3gDKNeGiBBqfz2eoQUOF7FoLQ+iNY086GCH4ftfWodHm/UtIgfyjznW9Ppo5jKmTONoC7RMFu5ANsaQtGH9QrT/yExlR6Ihy1+u14gv28aKsfYbgAZjtiJcfhOHHFw==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba82d412-25b6-43e1-6070-08d7cce88fc2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2020 16:05:51.5412
+X-MS-Exchange-CrossTenant-Network-Message-Id: d083ef3c-fb2e-4339-1189-08d7cce915ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2020 16:09:36.0444
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2c7rXOv/1IliKRT/HsBV3SF8qiuNMp2vKz9Um5vjc+Z+07ToTFFpT/KHw4uax7WNbJeIRl77nbrKL6iqBoXUcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3264
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rc4QxGbRcHwgsIhfxA1/HpLtYOn4hkus+8JuIv7fLSiHgv3jjfrTwdbmjhY98u9+P51xL8CE9SG1d4C5/EI1rA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4762
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hey Dimitris,
 
-On 3/20/2020 08:40, Dimitris Dimitropoulos wrote:
-> Hi Mark,
-> 
-> Just a clarification: when you say reach line rates speeds, you mean
-> with no packet drops ?
 
-Yep* you can have a look at the following PDF for some numbers:
-https://fast.dpdk.org/doc/perf/DPDK_19_08_Mellanox_NIC_performance_report.pdf
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Wednesday, March 18, 2020 7:19 PM
+> To: Dalessandro, Dennis <dennis.dalessandro@intel.com>
+> Cc: dledford@redhat.com; linux-rdma@vger.kernel.org; Marciniszyn, Mike
+> <mike.marciniszyn@intel.com>; Wan, Kaike <kaike.wan@intel.com>
+> Subject: Re: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata =
+as
+> the parent of cdev
+>=20
+> On Mon, Mar 16, 2020 at 05:05:07PM -0400, Dennis Dalessandro wrote:
+> > From: Kaike Wan <kaike.wan@intel.com>
+> >
+> > This patch is implemented to address the concerns raised in:
+> >   https://marc.info/?l=3Dlinux-rdma&m=3D158101337614772&w=3D2
+> >
+> > The hfi1 driver dynammically allocates a struct device to represent
+> > the cdev in sysfs and devtmpfs (/dev/hfi1_x). On the other hand, the
+> > hfi1_devdata already contains a struct device in its ibdev field
+> > (hfi1_devdata.verbs_dev.rdi.ibdev.dev), and it is therefore possible
+> > to eliminate the dynamical allocation when creating the cdev. Since
+> > each device could be added to the sysfs only once and the function
+> > device_add() is already called for the ibdev in ib_register_device(),
+> > the function cdev_device_add() could not be used to create the cdev,
+> > even though the hfi1_devdata contains both cdev and ibdev in the same
+> > structure.
+> >
+> > This patch eliminates the dynamic allocation by creating the cdev
+> > first, setting up the ibdev, and then calling the ib_register_device()
+> > to add the device to sysfs and devtmpfs.
+> >
+> > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> > Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> > Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+> > Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> >  drivers/infiniband/hw/hfi1/device.c   |   23 ++++++++++++++++-------
+> >  drivers/infiniband/hw/hfi1/file_ops.c |    5 ++---
+> >  drivers/infiniband/hw/hfi1/hfi.h      |    1 -
+> >  drivers/infiniband/hw/hfi1/init.c     |   18 +++++++++---------
+> >  4 files changed, 27 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/hfi1/device.c
+> > b/drivers/infiniband/hw/hfi1/device.c
+> > index bbb6069..4e1ad5f 100644
+> > +++ b/drivers/infiniband/hw/hfi1/device.c
+> > @@ -79,10 +79,12 @@ int hfi1_cdev_init(int minor, const char *name,
+> >  		goto done;
+> >  	}
+> >
+> > -	if (user_accessible)
+> > -		device =3D device_create(user_class, NULL, dev, NULL, "%s",
+> name);
+> > -	else
+> > +	if (user_accessible) {
+> > +		device =3D kobj_to_dev(parent);
+> > +		device->devt =3D dev;
+>=20
+> What is this doing?
+>=20
+> The only caller passes:
+>=20
+> parent =3D=3D &dd->verbs_dev.rdi.ibdev.dev.kobj
+>=20
+> So,
+>=20
+>  1) the kobj_to_dev is obfuscation
+Will be fixed.
 
-*I just want to point out that in the real world (as opposed to the tests/applications used during the measurements
-inside the PDF) usually there is a lot more processing inside the application itself which can
-make it harder to handle large number of packets and still saturate the wire.
-Once you take into account packet sizes, MTU, servers configuration/hardware etc it can get a bit tricky
-but not impossible.
+>  2) WTF? Why is it changing the devt inside a struct ib_device??
+This is needed to create /dev/hfi1_xxx. See below.
 
-Just to add that currently we have support and ability to insert millions for flow steering rules with very
-high update rate, but you have to use the DV APIs to achieve that:
-https://github.com/linux-rdma/rdma-core/blob/master/providers/mlx5/man/mlx5dv_dr_flow.3.md
+>=20
+> And I'm looking at some of the existing code around the cdev and wonderin=
+g
+> how on earth does it even work?
+>=20
+> Why is it calling kobject_set_name()? Look in Documentation/kobject.txt.
+> This function isn't supposed to be used.
+There is no need to set the kobject name in cdev. Will be removed.
+>=20
+> Shouldn't there be a struct device to anchor this in sysfs? I'm very conf=
+used
+> how this is working, where did the hif1_xx sysfs directory come from?
+Yes, ib_device is the struct device the cdev is anchored to. All we do here=
+ is to imitate what is done in cdev_device_add(), as suggested by you previ=
+ously. The cdev and ib_device are in the same hfi1_devdata structure and no=
+rmally we should use cdev_device_add() to add the cdev to the system. Howev=
+er, due to the fact that ib_register_device() calls device_add() to add the=
+ ib_device to the system, we can't call
+cdev_device_add() (which also calls device_add()) directly. Instead, we hav=
+e to set devt inside ib_device first, call cdev_set_parent() and cdev_add()=
+, and eventually call ib_register_device().
 
-Mark
+If this is not desirable, we could keep the current approach to create the =
+struct device dynamically through device_create(). In that case, all we nee=
+d to do is to clean up the code. Which one do you prefer?
 
-> 
-> Thanks
-> Dimitris
-> 
-> On Tue, Mar 17, 2020 at 4:40 PM Mark Bloch <markb@mellanox.com> wrote:
->> If you would like to have a look at a highly optimized datapath from userspace:
->> https://github.com/DPDK/dpdk/blob/master/drivers/net/mlx5/mlx5_rxtx.c
->>
->> With the right code you should have no issue reaching line rate speeds with raw_ethernet QPs
->>
->> Mark
+Kaike
