@@ -2,88 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B470118DC85
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2020 01:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847D018DD83
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2020 02:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727745AbgCUAbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Mar 2020 20:31:21 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5081 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbgCUAbU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Mar 2020 20:31:20 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e755ff40000>; Fri, 20 Mar 2020 17:29:40 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 20 Mar 2020 17:31:19 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 20 Mar 2020 17:31:19 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 21 Mar
- 2020 00:31:15 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sat, 21 Mar 2020 00:31:15 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e7560530000>; Fri, 20 Mar 2020 17:31:15 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        "Ralph Campbell" <rcampbell@nvidia.com>
-Subject: [PATCH v8 3/3] MAINTAINERS: add HMM selftests
-Date:   Fri, 20 Mar 2020 17:31:08 -0700
-Message-ID: <20200321003108.22941-4-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200321003108.22941-1-rcampbell@nvidia.com>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
+        id S1726840AbgCUBnZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Mar 2020 21:43:25 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:34862 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgCUBnZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Mar 2020 21:43:25 -0400
+Received: by mail-ed1-f52.google.com with SMTP id a20so9446941edj.2
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2020 18:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZsHR36uAh/kc03yNsuBqLp/d9Zya8yomuDWUON2GGA=;
+        b=PlBVj9QOsvLkQSsLWKQp8xdO4/w/Ghshi/OOlF4P2szrPJkRd9X23GWfsOhie85gYT
+         PsvBtPPDOXjW7MaBjaAagPYavz1utTsagWYVWCJCr8Ga2jnrNrGwpt5OxFUyi1tL049A
+         aYAG9YV4/s81fsjTVfm1wC3BntBb5Xr0fr1drdusHIQ61LOgR5y2665OjUvAiVzmKkL1
+         fPijjwlj+2nlZobWMiQEGKAxdmBFs5NG61ofif3CY3dlTY1YIy8wEJ1Ranw0hE4j6gcY
+         tEbMOfK+6KZ2m+PSTB2zQaux0RM2DfVkwq/FjEhpozDhJsOMSuunrmon/0bjszSaDLhP
+         LacA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZsHR36uAh/kc03yNsuBqLp/d9Zya8yomuDWUON2GGA=;
+        b=BCnnY0gDPAg998O8YW8vNxoL/nEPIeW/UKEMo4kiZR4spVNd78keXA+Lwh9oRBS82+
+         h9kW4QeFIcSC/mP/06+KdyC0p//d3u6vPqepiLrVWI8kTYyKGojsIuJDr3ZQA2MBFAjy
+         2RZJWE+6ThLdxCxtfSNqmmvlceKsWSbTf47k2BwNL2tN572yNi309pRtRB/UtbPDepha
+         wh24wBR3I6leZuxXXwkT5cwd/laZh6Puwl96tuzhyPGOQzScmI3gYRlqWM2uOSbTljEk
+         mEA0pB6wYTlVS8VKeQyipvIjOs46zyhCQgWhQh8HiIFIbu6DqqZzR3KgNmVgsSBymnIx
+         2VrA==
+X-Gm-Message-State: ANhLgQ2mloHF5YB+sA5/pixmHGF1XWSNDIXkm5i1zDIUwtZtLbsUqAhQ
+        0R541qtNUGEgHjYyk6VK8hY/1xV2bZDRNHsEPk6wmg==
+X-Google-Smtp-Source: ADFU+vsdy38EsP1y+t91TQMQ71Gj6NCCtZYt5n75uxrZOFpDIKXrShM5/rl+7UQ1RX0bH+wsI27Z4rfU5Jj6IPb+1no=
+X-Received: by 2002:a50:ab1e:: with SMTP id s30mr11179131edc.336.1584755001508;
+ Fri, 20 Mar 2020 18:43:21 -0700 (PDT)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1584750580; bh=bNrMPa0jrTNV4fcrzexEDzXuAkPayCgL/RpL1nSWEq4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=sQJwWTTYPeHTuFtS9c/PuGy+fTzcfjEBsl93lYRQ3DohZdMwIwYMi49AxT48k7uXt
-         J18O7HhdLj1J4p5gEoClh1yH097UAA1HbwJ3oksXxgiIF/2h5S1tgOv0iTWBRlb8Ll
-         DJCLQQVaqUgV98hMft2uDzim2xown9KZblxADidoUMblvRK7SubytFIH7uf0BHjF3I
-         Z6etKG72v91Uc0BAD9VILagMWvIcJ68STlQjChlchbr5ycJmQt2K6IpXrowRiOKfPA
-         3/CljxkhyS4DSwd1QiIFdvIfBJQEaGd8KyQuS0Jg+F8eDaTuuCmvJggLRBvjij5C2i
-         f1ZZMqJ5T4q6w==
+References: <CADw-U9C9vh5rU1o4uSmw=EzMqOvXFqSm-ff-7UbLCKd2CUxT4A@mail.gmail.com>
+ <e73505bf-d556-ae4a-adfb-6c7e3efb2c32@mellanox.com> <CAOc41xGXtcviBp4sWd5X_0_5H627tL2Ji857NtJ9P9UZxJL+uA@mail.gmail.com>
+ <CAOc41xGkcgDZoqPHX8uH4uG6E+FSUHMoZdB1H2cQ1X5LYkuM8g@mail.gmail.com> <20200320163411.GT20941@ziepe.ca>
+In-Reply-To: <20200320163411.GT20941@ziepe.ca>
+From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
+Date:   Fri, 20 Mar 2020 18:43:10 -0700
+Message-ID: <CAOc41xFQBUXBLuVYXoTWEHxHHFnBFr=ABY8rx2Dtp6fe1A4ZOg@mail.gmail.com>
+Subject: Re: Should I expect lower bandwidth when using IBV_QPT_RAW_PACKET and
+ steering rule?
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Mark Bloch <markb@mellanox.com>,
+        Terry Toole <toole@photodiagnostic.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add files for HMM selftests.
+Got it. Thank you.
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+Dimitris
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fcd79fc38928..d9f5869d6cda 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7610,7 +7610,10 @@ L:	linux-mm@kvack.org
- S:	Maintained
- F:	mm/hmm*
- F:	include/linux/hmm*
-+F:	include/uapi/linux/test_hmm*
- F:	Documentation/vm/hmm.rst
-+F:	lib/test_hmm*
-+F:	tools/testing/selftests/vm/*hmm*
-=20
- HOST AP DRIVER
- M:	Jouni Malinen <j@w1.fi>
---=20
-2.20.1
-
+On Fri, Mar 20, 2020 at 9:34 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Fri, Mar 20, 2020 at 09:04:34AM -0700, Dimitris Dimitropoulos wrote:
+> > I should make the question more precise: in a peer to peer setup where
+> > RDMA UC can achieve line rate with no packet drops, can we expect the
+> > same result with UDP with IB verbs ?
+>
+> I would expect UDP and UD to be similar
+>
+> But verbs will be slower than dpdk.
+>
+> Jason
