@@ -2,85 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7DF18D9B1
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Mar 2020 21:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF39218DC7F
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2020 01:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgCTUtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Mar 2020 16:49:35 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:41999 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgCTUtf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Mar 2020 16:49:35 -0400
-Received: by mail-wr1-f41.google.com with SMTP id v11so9105894wrm.9
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Mar 2020 13:49:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=odGQ2hQgXyuroa90B5vjBwZ7z7ei2Hr/GxAMeid1ZH8=;
-        b=lKvzSj9yvv2clWwsGhHWlYGe282Nd2TidEgaAZy36vXT9DuGWnVf7AJrEY3vvrtxFT
-         9ecQbR/TewPb+jLGV4/7QV7nhnA83xiTh9PrnbvufHwQmiER7ToC0+XdL0ab43oAq7Hg
-         q3QwPDSqS5IKv5E/2b3dc8Lkrpru3IsjsU33jhc4BfwBUhn2KXljjUlDs7M8rDLqyRRr
-         jZqlyuvqtduqr8ifJVOjRDn5DZSpJl8FlJ7A237imEjovSilciE88mxRewujtcLENsJ5
-         /5HEEZR4XOqBVOznQHKBmm4FYV8tjaHZYfmBpWmlUYLw+Xs5lBo/CwuNqbLHHIATcReP
-         CCrA==
-X-Gm-Message-State: ANhLgQ18faUs2SNh97ovYIG7wxtjBNUdlyleesxiNY8PjVmsscIY1Uos
-        EJD0lDlbIOSm8ulLALhYcTE=
-X-Google-Smtp-Source: ADFU+vvPCN8W93w/UXwiY5NIerSxTt+y669GCRGqUK+Jar3v1M3uTqBgmF5GSDgm6wMkIsTDRpBM0A==
-X-Received: by 2002:adf:dd10:: with SMTP id a16mr5140930wrm.26.1584737371342;
-        Fri, 20 Mar 2020 13:49:31 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:b9e4:7d48:9c27:2b02? ([2601:647:4802:9070:b9e4:7d48:9c27:2b02])
-        by smtp.gmail.com with ESMTPSA id f9sm9883254wrc.71.2020.03.20.13.49.28
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 20 Mar 2020 13:49:30 -0700 (PDT)
-Subject: Re: broken CRCs at NVMeF target with SIW & NVMe/TCP transports
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-References: <a8e7b61a-b238-2cc3-d3c8-743ad1f8c8ee@grimberg.me>
- <20200316162008.GA7001@chelsio.com> <20200317124533.GB12316@lst.de>
- <OFB2589549.AD31F8B8-ON0025852E.005A969A-0025852E.005A96A3@notes.na.collabserv.com>
- <70b13212-faa6-d634-8beb-55ba39891d7f@grimberg.me>
- <20200317191743.GA22065@chelsio.com>
- <38f79fb7-841a-9faa-e1f8-2de4b9f21118@grimberg.me>
- <20200317203152.GA14946@chelsio.com>
- <3f42f881-0309-b86a-4b70-af23c58960fc@grimberg.me>
- <20200320143544.GA5539@chelsio.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <87bfe03d-baad-1166-14a1-6eba1739fde4@grimberg.me>
-Date:   Fri, 20 Mar 2020 13:49:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 Thunderbird/60.9.0
+        id S1727158AbgCUAbP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Mar 2020 20:31:15 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2735 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgCUAbP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Mar 2020 20:31:15 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e7560450000>; Fri, 20 Mar 2020 17:31:01 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 20 Mar 2020 17:31:14 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 20 Mar 2020 17:31:14 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 21 Mar
+ 2020 00:31:13 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sat, 21 Mar 2020 00:31:13 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5e7560500001>; Fri, 20 Mar 2020 17:31:12 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
+Date:   Fri, 20 Mar 2020 17:31:05 -0700
+Message-ID: <20200321003108.22941-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200320143544.GA5539@chelsio.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1584750661; bh=zYpRQ3kz35hjqDNLoNXpaNAgVIUKR+CRIyvN3RxU/8s=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=ErrK7/OyuloQtImP831nTRcCemaDcTU5ejkOUV45jmN+v5nCuIUe+mA9FPdcRJD+4
+         a/UcP3z/tBG/cUFSzn6K403LNF5wk3jqunNhYpdT/ljNMESq+G9z/xNFqlBDCpGW0i
+         QcOg0knQkbteuo4Lz1Nr39JxBYoV1tYWrrZPZroJJXlZFmv+jT/+kVyNlNkUZveh3x
+         iT1R9kbEpM4e86yxN4PDjvSPil+K06SWGlB/7ETAvFaLJxeeYZu7nVm+ZyxdJ9PqoM
+         3nbinTCcrRyM1USmvYwZqFE5rS21BulAhbd2U2kyrCBbvOy0b68h6CMPnWwGm807Pp
+         cgztSQUyL3RPA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This series adds basic self tests for HMM and are intended for Jason
+Gunthorpe's rdma tree which has a number of HMM patches applied.
 
->> I assume this happens with iSCSI as well? There is nothing special
->> we are doing with respect to digest.
-> 
-> I don't see this issue with iscsi-tcp.
-> 
-> May be blk-mq is causing this issue? I assume iscsi-tcp does not have
-> blk_mq support yet upstream to verify with blk_mq enabled.
-> I tried on Ubuntu 19.10(which is based on Linux kernel 5.3), note that
-> RHEL does not support DataDigest.
-> 
-> The reason that I'm seeing this issue only with NVMe(tcp/softiwarp) &
-> iSER(softiwarp) is becuase of NVMeF&ISER using blk-mq?
-> 
-> Anyhow, I see the content of the page is being updated by upper layers
-> while the tranport driver is computing CRC on that page content and
-> this needs a fix.
+Changes v7 -> v8:
+Rebased to Jason's rdma/hmm tree, plus Jason's 6 patch series
+  "Small hmm_range_fault() cleanups".
+Applied a number of changes from Jason's comments.
 
-Krishna, do you happen to run with nvme multipath enabled?
+Changes v6 -> v7:
+Rebased to linux-5.6.0-rc6
+Reverted back to just using mmu_interval_notifier_insert() and making
+  this series only introduce HMM self tests.
+
+Changes v5 -> v6:
+Rebased to linux-5.5.0-rc6
+Refactored mmu interval notifier patches
+Converted nouveau to use the new mmu interval notifier API
+
+Changes v4 -> v5:
+Added mmu interval notifier insert/remove/update callable from the
+  invalidate() callback
+Updated HMM tests to use the new core interval notifier API
+
+Changes v1 -> v4:
+https://lore.kernel.org/linux-mm/20191104222141.5173-1-rcampbell@nvidia.com
+
+Ralph Campbell (3):
+  mm/hmm/test: add selftest driver for HMM
+  mm/hmm/test: add selftests for HMM
+  MAINTAINERS: add HMM selftests
+
+ MAINTAINERS                            |    3 +
+ include/uapi/linux/test_hmm.h          |   59 ++
+ lib/Kconfig.debug                      |   12 +
+ lib/Makefile                           |    1 +
+ lib/test_hmm.c                         | 1177 +++++++++++++++++++++
+ tools/testing/selftests/vm/.gitignore  |    1 +
+ tools/testing/selftests/vm/Makefile    |    3 +
+ tools/testing/selftests/vm/config      |    2 +
+ tools/testing/selftests/vm/hmm-tests.c | 1353 ++++++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests |   16 +
+ tools/testing/selftests/vm/test_hmm.sh |   97 ++
+ 11 files changed, 2724 insertions(+)
+ create mode 100644 include/uapi/linux/test_hmm.h
+ create mode 100644 lib/test_hmm.c
+ create mode 100644 tools/testing/selftests/vm/hmm-tests.c
+ create mode 100755 tools/testing/selftests/vm/test_hmm.sh
+
+--=20
+2.20.1
+
