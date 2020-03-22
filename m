@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3860018E7D7
+	by mail.lfdr.de (Postfix) with ESMTP id A2D2718E7D8
 	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2020 10:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgCVJao (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Mar 2020 05:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
+        id S1726951AbgCVJar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Mar 2020 05:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726789AbgCVJao (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 22 Mar 2020 05:30:44 -0400
+        id S1726789AbgCVJar (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 22 Mar 2020 05:30:47 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE95F20774;
-        Sun, 22 Mar 2020 09:30:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 688E320753;
+        Sun, 22 Mar 2020 09:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584869443;
-        bh=+JzgYKhY5nIBDApiyW2pHZ2/M0kvEbcJCdYn9QNagc0=;
+        s=default; t=1584869447;
+        bh=92Fl2NMvLtf0y7rWzAO8F79vsU0RwK5UUQS9WWfWwtI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CrBSBuIoBLyUPXLa+0qo4DXQh6+9/XRW4sJKI/N1w43Hz55gIwpr9TtX5jeEEw1MW
-         ZtfL9ZecOyibFcSE0KkXnGAdx1256ptJ2Zs6Xv05KgpDt70nEsXmR5AQqeKlgzaLoz
-         mA49uV5t3+ItiKHnNgxKkl993HQRWqYezz+guMR4=
+        b=qo39KecmEOQkZF/0A7zVGz4CEod6wvjlsGuEQqDBTyP/4tzwaL9cYjiVWQW8bVQOW
+         oXWjezMq/iKwA5Hn2kyJVKLoadrhPBhi+ozFAPUFW6HnG6NYqBPX5tGK1thEi+5+j0
+         xyOVXz0twDDInTfnhzNturzVFOBWzacg9BOIb8wM=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
         Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next v1 3/7] RDMA/core: Add hash functions to calculate RoCEv2 flowlabel and UDP source port
-Date:   Sun, 22 Mar 2020 11:30:27 +0200
-Message-Id: <20200322093031.918447-4-leon@kernel.org>
+Subject: [PATCH rdma-next v1 4/7] RDMA/mlx5: Define RoCEv2 udp source port when set path
+Date:   Sun, 22 Mar 2020 11:30:28 +0200
+Message-Id: <20200322093031.918447-5-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200322093031.918447-1-leon@kernel.org>
 References: <20200322093031.918447-1-leon@kernel.org>
@@ -43,71 +43,64 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mark Zhang <markz@mellanox.com>
 
-Add two hash functions to distribute RoCE v2 UDP source and Flowlabel
-symmetrically. These are user visible API and any change in the
-implementation needs to be tested for inter-operability between old and
-new variant.
+Calculate and set UDP source port based on the flow label. If flow label is
+not defined in GRH then calculate it based on lqpn/rqpn.
 
 Signed-off-by: Mark Zhang <markz@mellanox.com>
 Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- include/rdma/ib_verbs.h | 44 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ drivers/infiniband/hw/mlx5/qp.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 60f9969b6d83..8763d4a06eb7 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4703,4 +4703,48 @@ static inline struct ib_device *rdma_device_to_ibdev(struct device *device)
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 9c2f0cf63d1b..d3055f3eb0b6 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -2954,6 +2954,21 @@ static int modify_raw_packet_tx_affinity(struct mlx5_core_dev *dev,
+ 	return err;
+ }
 
- bool rdma_dev_access_netns(const struct ib_device *device,
- 			   const struct net *net);
++static void mlx5_set_path_udp_sport(struct mlx5_qp_path *path,
++				    const struct rdma_ah_attr *ah,
++				    u32 lqpn, u32 rqpn)
 +
-+#define IB_ROCE_UDP_ENCAP_VALID_PORT_MIN (0xC000)
-+#define IB_GRH_FLOWLABEL_MASK (0x000FFFFF)
-+
-+/**
-+ * rdma_flow_label_to_udp_sport - generate a RoCE v2 UDP src port value based
-+ *                               on the flow_label
-+ *
-+ * This function will convert the 20 bit flow_label input to a valid RoCE v2
-+ * UDP src port 14 bit value. All RoCE V2 drivers should use this same
-+ * convention.
-+ */
-+static inline u16 rdma_flow_label_to_udp_sport(u32 fl)
 +{
-+	u32 fl_low = fl & 0x03fff, fl_high = fl & 0xFC000;
++	u32 fl = ah->grh.flow_label;
++	u16 sport;
 +
-+	fl_low ^= fl_high >> 14;
-+	return (u16)(fl_low | IB_ROCE_UDP_ENCAP_VALID_PORT_MIN);
++	if (!fl)
++		fl = rdma_calc_flow_label(lqpn, rqpn);
++
++	sport = rdma_flow_label_to_udp_sport(fl);
++	path->udp_sport = cpu_to_be16(sport);
 +}
 +
-+/**
-+ * rdma_calc_flow_label - generate a RDMA symmetric flow label value based on
-+ *                        local and remote qpn values
-+ *
-+ * This function folded the multiplication results of two qpns, 24 bit each,
-+ * fields, and converts it to a 20 bit results.
-+ *
-+ * This function will create symmetric flow_label value based on the local
-+ * and remote qpn values. this will allow both the requester and responder
-+ * to calculate the same flow_label for a given connection.
-+ *
-+ * This helper function should be used by driver in case the upper layer
-+ * provide a zero flow_label value. This is to improve entropy of RDMA
-+ * traffic in the network.
-+ */
-+static inline u32 rdma_calc_flow_label(u32 lqpn, u32 rqpn)
-+{
-+	u64 v = (u64)lqpn * rqpn;
-+
-+	v ^= v >> 20;
-+	v ^= v >> 40;
-+
-+	return (u32)(v & IB_GRH_FLOWLABEL_MASK);
-+}
- #endif /* IB_VERBS_H */
+ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 			 const struct rdma_ah_attr *ah,
+ 			 struct mlx5_qp_path *path, u8 port, int attr_mask,
+@@ -2985,12 +3000,15 @@ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 			return -EINVAL;
+
+ 		memcpy(path->rmac, ah->roce.dmac, sizeof(ah->roce.dmac));
+-		if (qp->ibqp.qp_type == IB_QPT_RC ||
+-		    qp->ibqp.qp_type == IB_QPT_UC ||
+-		    qp->ibqp.qp_type == IB_QPT_XRC_INI ||
+-		    qp->ibqp.qp_type == IB_QPT_XRC_TGT)
+-			path->udp_sport =
+-				mlx5_get_roce_udp_sport(dev, ah->grh.sgid_attr);
++		if ((qp->ibqp.qp_type == IB_QPT_RC ||
++		     qp->ibqp.qp_type == IB_QPT_UC ||
++		     qp->ibqp.qp_type == IB_QPT_XRC_INI ||
++		     qp->ibqp.qp_type == IB_QPT_XRC_TGT) &&
++		    (grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP) &&
++		    (attr_mask & IB_QP_DEST_QPN))
++			mlx5_set_path_udp_sport(path, ah,
++						qp->ibqp.qp_num,
++						attr->dest_qp_num);
+ 		path->dci_cfi_prio_sl = (sl & 0x7) << 4;
+ 		gid_type = ah->grh.sgid_attr->gid_type;
+ 		if (gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP)
 --
 2.24.1
 
