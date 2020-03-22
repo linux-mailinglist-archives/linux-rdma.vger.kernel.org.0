@@ -2,126 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6B618E4EC
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Mar 2020 22:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9132E18E724
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Mar 2020 07:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgCUVzL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 21 Mar 2020 17:55:11 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37064 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgCUVzK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 21 Mar 2020 17:55:10 -0400
-Received: by mail-qt1-f194.google.com with SMTP id d12so5977682qtj.4
-        for <linux-rdma@vger.kernel.org>; Sat, 21 Mar 2020 14:55:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CmG5rzS1VTJ/Gtn12pCRpchEX5vnXgpD/KCibm4JPWQ=;
-        b=QXg0ZNos1/J6d1p0hrWrf/BNlal1wCBZAa4x4E5PIa8BDk8jeEY0GblJxuI4oFmQT/
-         NEFlXQButDNW6Sy8rWCrWEBqBlDVBmAq88Oe1Os3P4X8W9sHapEqJpHApMkG11UZBuGc
-         b5c/Qy70trzWRO+uM2yXpARmvj2AlCEyD9eXx6cUiReoJKwIlahoUDHxSd5sVQiu5kWj
-         lVf+vPf/2xCoROinRkXtRalmj0jS8jiUcIn3LB1fR12o0e5z5NIXXdxa+F/1bZGwg4Ye
-         oRdVryO7nhpz8T7n1j5VtSpK27aodaU2eCFv/2TbkyAf3cxW7xJHjI725K50b1LhbcfF
-         k1dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CmG5rzS1VTJ/Gtn12pCRpchEX5vnXgpD/KCibm4JPWQ=;
-        b=FbYZ86NzEq3gOUOcW5uoXO69R10uxOuESSJLtr24ZMY3C/V+x0ecxrgqluHDQrmY5s
-         CQXOU1tVX064/1SPGu5FpskG+3fN6JgxntHGyKHgYbrwPU+ptc3UCVHnVVl82SqL1MR3
-         06LOB6YROJaQBkG4nkisLlwyU0+HNSs5b4iO/YFCi53x2M5CfCTnmzNNeuTn4TfA3OhI
-         JyBNDFS4ptvvTlah2/8vvhia1s0ADm8r2svDc4QHqPCwdtR22IKBhczsJ2vWmoW9p/Ct
-         paXbPT9oc2unbn/sMeuog3VkScDdkbihl8N/d1WfON48KVMuVvrqjyXrEKIpblTORNaJ
-         v5tQ==
-X-Gm-Message-State: ANhLgQ0ZGZBpKpRFl7U54CTzriKFvABju5WUOBrEKp8gVjIEY5H7GXoZ
-        NutYwQxkXUslUwMh6uDD0GWZzQ==
-X-Google-Smtp-Source: ADFU+vv/Zh+hyXfiOpNLqojKXOQJzZZr2FWGVPNjpoK48D71dPO0p426cqJtcyzUzhZk5VY+Qlxcbw==
-X-Received: by 2002:ac8:7499:: with SMTP id v25mr15399957qtq.237.1584827707243;
-        Sat, 21 Mar 2020 14:55:07 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p191sm7884005qke.6.2020.03.21.14.55.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 21 Mar 2020 14:55:06 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jFm5B-0002J4-FR; Sat, 21 Mar 2020 18:55:05 -0300
-Date:   Sat, 21 Mar 2020 18:55:05 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
-Message-ID: <20200321215505.GW20941@ziepe.ca>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
- <20200321090047.GM514123@unreal>
- <396f0c30-4a49-6a18-ff02-a73ee1a09883@nvidia.com>
-MIME-Version: 1.0
+        id S1725892AbgCVGpJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Mar 2020 02:45:09 -0400
+Received: from in01-tec.fasttelco.net ([78.159.162.5]:35946 "EHLO
+        in01-tec.fasttelco.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgCVGpJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Mar 2020 02:45:09 -0400
+Received: from hf6fja6.com ([62.215.195.91])
+        by in01-tec.fasttelco.net (8.14.3/8.14.3/Debian-9.4) with ESMTP id 02M6iuKV028660
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Mar 2020 09:44:57 +0300
+Message-Id: <202003220644.02M6iuKV028660@in01-tec.fasttelco.net>
+From:   "Robert Andrew Piper" <info@kuwana.ne.jp>
+Subject: United Nations Assistant Secretary-General for Development
+ Coordination
+To:     linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <396f0c30-4a49-6a18-ff02-a73ee1a09883@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Reply-To: "Robert Andrew Piper" <sarah.buchiri@gmail.com>,
+          sarah.buchiri@gmail.com
+Date:   Sun, 22 Mar 2020 07:44:57 +0100
+X-Priority: 3
+X-Spam-Score: 3.92 (***) [Tag at 5.00] FREEMAIL_FORGED_REPLYTO:2.503,MISSING_MID:0.14,RDNS_NONE:1.274
+X-Scanned-By: CanIt (www . roaringpenguin . com) on 78.159.162.5
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 21, 2020 at 10:27:46AM -0700, Ralph Campbell wrote:
-> 
-> On 3/21/20 2:00 AM, Leon Romanovsky wrote:
-> > On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
-> > > This series adds basic self tests for HMM and are intended for Jason
-> > > Gunthorpe's rdma tree which has a number of HMM patches applied.
-> > > 
-> > > Changes v7 -> v8:
-> > > Rebased to Jason's rdma/hmm tree, plus Jason's 6 patch series
-> > >    "Small hmm_range_fault() cleanups".
-> > > Applied a number of changes from Jason's comments.
-> > > 
-> > > Changes v6 -> v7:
-> > > Rebased to linux-5.6.0-rc6
-> > > Reverted back to just using mmu_interval_notifier_insert() and making
-> > >    this series only introduce HMM self tests.
-> > > 
-> > > Changes v5 -> v6:
-> > > Rebased to linux-5.5.0-rc6
-> > > Refactored mmu interval notifier patches
-> > > Converted nouveau to use the new mmu interval notifier API
-> > > 
-> > > Changes v4 -> v5:
-> > > Added mmu interval notifier insert/remove/update callable from the
-> > >    invalidate() callback
-> > > Updated HMM tests to use the new core interval notifier API
-> > > 
-> > > Changes v1 -> v4:
-> > > https://lore.kernel.org/linux-mm/20191104222141.5173-1-rcampbell@nvidia.com
-> > > 
-> > > Ralph Campbell (3):
-> > >    mm/hmm/test: add selftest driver for HMM
-> > >    mm/hmm/test: add selftests for HMM
-> > >    MAINTAINERS: add HMM selftests
-> > > 
-> > >   MAINTAINERS                            |    3 +
-> > >   include/uapi/linux/test_hmm.h          |   59 ++
-> > 
-> > Isn't UAPI folder supposed to be for user-visible interfaces that follow
-> > the rule of non-breaking user space and not for selftests?
-> > 
-> > Thanks
-> > 
-> 
-> Most of the other kernel module tests seem to invoke the test as part of the
-> module load/init. I'm open to moving it if there is a more appropriate location.
+United Nations Assistant Secretary-General for Development Coordination, In Affiliation with World Bank Our Ref: U.N.D.C/2020/10/0109
 
-Is it even possible to create a user mm_struct and put crazy things in
-it soley from a kernel module?
+Congratulations,
 
-Jason 
 
+Your email was randomly selected for the 2020 first quarter reimbursement. Please reach Mrs. Sarah Buchiri with your code:U.N.D.C/2020/10/0109 for more information.
+
+Contact Name: Mrs. Sarah Buchiri
+Email: sarah.buchiri@gmail.com
+
+
+Robert Andrew Piper
+Assistant Secretary-General for Development Coordination
