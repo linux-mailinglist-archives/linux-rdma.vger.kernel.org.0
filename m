@@ -2,87 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FA818F3A2
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2020 12:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5886D18FAB3
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Mar 2020 18:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgCWL2G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Mar 2020 07:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45432 "EHLO mail.kernel.org"
+        id S1727374AbgCWRB2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Mar 2020 13:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728115AbgCWL2G (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Mar 2020 07:28:06 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1727333AbgCWRB2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Mar 2020 13:01:28 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 501F3206F9;
-        Mon, 23 Mar 2020 11:28:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A941720735;
+        Mon, 23 Mar 2020 17:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584962886;
-        bh=93NYenk8ojVDz3sbRwUUBMs/JT5oLNI9JE4lWCt3GxQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LzphApIAUCTGIe3EP8ILZEr2EVwiHI8osN2QtK5rOp+0GMZFwsxeN2XHtkppYDNma
-         w2g6KKzenclGmlmFYbKzzElmeKRT55a/vBQ9nMILuMa9VtreWZNNXEOcv8EyqphM2A
-         GnCLW9bFIepIvxa2d5NheGCAGKH9APS9PbfF1Myo=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Zhu Yanjun <yanjunz@mellanox.com>, Amir Vadai <amirv@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>,
-        Kamal Heib <kamalh@mellanox.com>, linux-rdma@vger.kernel.org,
-        Moni Shoua <monis@mellanox.com>
-Subject: [PATCH rdma-next] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
-Date:   Mon, 23 Mar 2020 13:28:00 +0200
-Message-Id: <20200323112800.1444784-1-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        s=default; t=1584982887;
+        bh=7tmCZHVG0haQMMfQaXKGfvCkeQtsMbpAmACMnqoUcJM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kGiiBBvcbC+wBP57HVIVlQn9O8FxUIf5wwRNqVgJmBatptsJfWcctZJTbUOnoJzs/
+         30xLVvPzDTYS29PuhSU35RxrN1QDFgsGAiKRUssZEPJaz/nbtei6rtRWEor++WXomF
+         ESTgXW1dasRoQG2/yFbz6U70cjvZ+s9QS1E6aRSY=
+Date:   Mon, 23 Mar 2020 10:01:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Paul Blakey <paulb@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Roi Dayan <roid@mellanox.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        Oz Shlomo <ozsh@mellanox.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5e: Fix actions_match_supported()
+ return
+Message-ID: <20200323100124.0a07236f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200323100215.GB26299@kadam>
+References: <20200320132305.GB95012@mwanda>
+        <35fcb57643c0522b051318e75b106100422fb1dc.camel@mellanox.com>
+        <20200323100215.GB26299@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjunz@mellanox.com>
+On Mon, 23 Mar 2020 13:02:16 +0300 Dan Carpenter wrote:
+> On Sat, Mar 21, 2020 at 02:43:08AM +0000, Saeed Mahameed wrote:
+> > On Fri, 2020-03-20 at 16:23 +0300, Dan Carpenter wrote:  
+> > > The actions_match_supported() function returns a bool, true for
+> > > success
+> > > and false for failure.  This error path is returning a negative which
+> > > is cast to true but it should return false.
+> > > 
+> > > Fixes: 4c3844d9e97e ("net/mlx5e: CT: Introduce connection tracking")
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > ---
+> > >  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > index 044891a03be3..e5de7d2bac2b 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > @@ -3058,7 +3058,7 @@ static bool actions_match_supported(struct
+> > > mlx5e_priv *priv,
+> > >  			 */
+> > >  			NL_SET_ERR_MSG_MOD(extack,
+> > >  					   "Can't offload mirroring
+> > > with action ct");
+> > > -			return -EOPNOTSUPP;
+> > > +			return false;
+> > >  		}
+> > >  	} else {
+> > >  		actions = flow->nic_attr->action;  
+> > 
+> > applied to net-next-mlx5   
+> 
+> I can never figure out which tree these are supposed to be applied to.
+> :(  Is there a trick to it?
 
-The RXE driver doesn't set sys_image_guid and user space applications
-see zeros. This causes to pyverbs tests to fail with the following
-traceback, because the IBTA spec requires to have valid sys_image_guid.
+Not as far as I know :/ Upstream maintainers usually know which
+sub-maintainers like to take patches into their own tree first.
 
- Traceback (most recent call last):
-   File "./tests/test_device.py", line 51, in test_query_device
-     self.verify_device_attr(attr)
-   File "./tests/test_device.py", line 74, in verify_device_attr
-     assert attr.sys_image_guid != 0
+Tagging things as "net-next" is perfectly fine in this case.
 
-In order to fix it, set sys_image_guid to be equal to node_guid.
-
-Before:
-5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
-0000:0000:0000:0000
-
-After:
-5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
-5054:00ff:feaa:5363
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/sw/rxe/rxe.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 0946a301a5c5..4afdd2e20883 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -103,6 +103,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
- 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
- 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
-+	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
-+			rxe->ndev->dev_addr);
- 
- 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
- }
--- 
-2.24.1
-
+We could ask all maintainers who want to funnel patches via their own
+trees to add T: entries in MAINTAINERS, but I'm not sure how practical
+that is.
