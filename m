@@ -2,84 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD44F191D62
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2020 00:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE0D191D65
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2020 00:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgCXXSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Mar 2020 19:18:00 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33502 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgCXXR7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Mar 2020 19:17:59 -0400
-Received: by mail-qt1-f196.google.com with SMTP id c14so613693qtp.0
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Mar 2020 16:17:57 -0700 (PDT)
+        id S1727064AbgCXXTb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Mar 2020 19:19:31 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:41690 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgCXXTa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Mar 2020 19:19:30 -0400
+Received: by mail-qv1-f68.google.com with SMTP id o7so37445qvq.8
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Mar 2020 16:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=xU4m3TV1neUbxOA7Rg4CVwlQNhcKtQQdTho3IyQ6ECg=;
-        b=PW1C5z40c3Iw8GG4qnHw8g2SS4hoR8rBYokXovxcBZeUHguzD/SKIqmAF+aFseVgK6
-         9JfHebCHRxQlwb7O6Dg9sLSGUdccAl79xgFgTMWoHAJaKO0ZElY/fjyW+O8WRagGkMyo
-         2dd5ZL4zRpg2yMf/qkrcFXI0Lme0JjHV056df3md0LfeL+axjCiP4dR9m4kc6LVrjW1o
-         +sV8NpTDw+tU1XsMvEySNRHKxzX8/oOYqhP3PwECocVkNWhxu05zE3P9S/p9ZvnQ8iZv
-         rOrCTskle1uVOMQ/tm5dUVbHKz8CU9vkv4143il9yiAV/XizDEAN7DykuyWJHiR7LEg8
-         mQig==
+        bh=iwuK+V+bSMY7skEQ9KSdoZ+/XCGhWcT7PycmSb6h+EM=;
+        b=m4KFu0f39xN8B7TMeDg/ON9LHIi3Q9W+vqFmKYaY52YlQDcXO5WwwoFIrVNOJTOSu4
+         An/qBFxQHQuPVUP1zdR5huUtA4gZBVS3edKJuJPwbwlKxdo06A2gxAB9SYmJHKCVGHCG
+         iQYiYSXHFWYoerIv539b32LvLPNug3b8enF8JwfH+dL6a9kauXUNpgAYU7+Ns+0E/jEt
+         A9gHD6uW1odDIurfBI+REP0GjMrkC9u1vfpunaFBb/EOX792bCdkcJG+n7oPRN80ccxt
+         +V2QxZpPFq9u/pdTQetosLt2ZD77+UFq1jQxF/kPi5yd67gOq8lcZJLheEgXOx9oB6qm
+         3VAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xU4m3TV1neUbxOA7Rg4CVwlQNhcKtQQdTho3IyQ6ECg=;
-        b=BlJnn9trdUJ/fPCCKaiUWtk03VxvLuCJqltv7B5YjtZ/S8oY0f0UCFhOKyEWdwMdCm
-         d8jjHj6pNrVhr9HxoT1tLlzioA0uWkex6zS/SEhP+mJpbljD4jgstMYzYSoEqwWD/98H
-         lTRtPLDTM2h5OBqgvcDRolaNyF0lW4EsANlFGpsCOWApfHEnUjS43daFZgzvW7ToM889
-         9V/5rnBW7SKc8bIRc7e6qRJLEkDMMhFr/pqggvX7cWSVoE8STp+uu8N/xsj083J1ZemV
-         J4VlJS/u4XbEe1eagJsp9PM+E5B8+ApNPffXnqB7gmMQWzP0K3qyS8QgjMERvckkSXv8
-         Xj1w==
-X-Gm-Message-State: ANhLgQ2olmbd4qL50JvQUpsRpfnBeCB04w7dge61GIt4QcO1mLLcdSdb
-        Av9l5u+qJl8y+oAj/ew88wTNRQ==
-X-Google-Smtp-Source: ADFU+vtlYS4SRIbEWzbQNuxyfCuDoJ0pNMuVQk10cURIKRSw3Dlf+NbjGxW0tXF5Y5SldbEF/yAZqA==
-X-Received: by 2002:ac8:fcf:: with SMTP id f15mr288821qtk.233.1585091877128;
-        Tue, 24 Mar 2020 16:17:57 -0700 (PDT)
+        bh=iwuK+V+bSMY7skEQ9KSdoZ+/XCGhWcT7PycmSb6h+EM=;
+        b=IoGnq4aW4u+Rul6rWnboVPclDgdM9M3GjAyse6UG63n9DjsZRWXOdnKgyp3HR8XApS
+         3cStx0ZdgM9joiITo/f6trEzMypKZZmI35xtbB5enLMfrOhV32L3xg6QKFtmauLLSSdQ
+         dOQljAfDoFSRcIT3O0s+BnvEUUYUigUO2lzXDkLDyeKILeZbq3y0jRXAuzK44FMVb8R1
+         gpnJHkxAKCSueG0DbLfkq3NwbPs/mK3WkhUrAM5jaUhwqZKHHwEl7XaEhwUrJUGeZinF
+         QOALf1i7b29DdFSJ+6l/JpO/Pv5xrgFOzK1WSuys8RbZQLhWxu2bHQ7EIfD7ecCof6jj
+         tgyA==
+X-Gm-Message-State: ANhLgQ1YyocFRH/I0cQrd8VDyTd1lSPFn5owNwDHjRcyU1UYUTEgBbqt
+        4pJu8IrmRfZSLrXc5t+qMzfxZA==
+X-Google-Smtp-Source: ADFU+vtfkpYfxRLWtubKE0aZ+6HgCsog6VpQZq5hSVvEdJecWXIcThaIsF1AOs9Srh0LPF6bd8gzDw==
+X-Received: by 2002:a05:6214:16d1:: with SMTP id d17mr622140qvz.56.1585091968199;
+        Tue, 24 Mar 2020 16:19:28 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c191sm13847277qkg.49.2020.03.24.16.17.56
+        by smtp.gmail.com with ESMTPSA id 65sm14733066qtc.4.2020.03.24.16.19.27
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 24 Mar 2020 16:17:56 -0700 (PDT)
+        Tue, 24 Mar 2020 16:19:27 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jGsnz-0002jX-UA; Tue, 24 Mar 2020 20:17:55 -0300
-Date:   Tue, 24 Mar 2020 20:17:55 -0300
+        id 1jGspS-0002on-P6; Tue, 24 Mar 2020 20:19:26 -0300
+Date:   Tue, 24 Mar 2020 20:19:26 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/bnxt_re: Wait for all the CQ events before
- freeing CQ data structures
-Message-ID: <20200324231755.GA10457@ziepe.ca>
-References: <1584120842-3200-1-git-send-email-selvin.xavier@broadcom.com>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 0/2] RDMA/hns: Optimize codes related to
+ multi-hop addressing
+Message-ID: <20200324231926.GA10804@ziepe.ca>
+References: <1584417324-2255-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1584120842-3200-1-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <1584417324-2255-1-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 10:34:02AM -0700, Selvin Xavier wrote:
-> Destroy CQ command to firmware returns the num_cnq_events
-> as a response. This indicates the driver about the number
-> of CQ events generated for this CQ. Driver should wait
-> for all these events before freeing the CQ host structures.
-> Also, add routine to clean all the pending notification
-> for the CQs getting destroyed. This avoids the possibility
-> of accessing the CQ data structures after its freed.
+On Tue, Mar 17, 2020 at 11:55:22AM +0800, Weihang Li wrote:
+> Codes about getting/putting HEM(Hardware Entry Memory) in multi-hop
+> addressing are not clear enough, so optimize by spliting and encapsulating
+> them into new functions.
 > 
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/qplib_fp.c | 74 ++++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/bnxt_re/qplib_fp.h |  1 +
->  2 files changed, 75 insertions(+)
+> Xi Wang (2):
+>   RDMA/hns: Optimize mhop get flow for multi-hop addressing
+>   RDMA/hns: Optimize mhop put flow for multi-hop addressing
 
 Applied to for-next, thanks
 
