@@ -2,99 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A091911C8
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2020 14:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAAC191D19
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Mar 2020 23:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgCXNq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Mar 2020 09:46:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9199 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727585AbgCXNq0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Mar 2020 09:46:26 -0400
-IronPort-SDR: BSS69do+hlG0xr19GqKJh57LF3bHaxcFm0twRDYsTui1kHnZkDOqkTsEUuk6Bs2BdaEr2T/ZNg
- zNgCou382yMg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2020 06:46:26 -0700
-IronPort-SDR: tS6QY+jKBUuFi/+hBntpOGqUGNmEcDYgQh7BAmIyu6VGd9ylGst9YBhqKX86/uh+lGKHuFRHkL
- AcEp2NMv8Llg==
-X-IronPort-AV: E=Sophos;i="5.72,300,1580803200"; 
-   d="scan'208";a="238237056"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.203.77]) ([10.254.203.77])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2020 06:46:24 -0700
-Subject: Re: [PATCH v2 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
- MTU's upper limit
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, dledford@redhat.com,
-        Mike Marciniszyn <mike.marcinisyzn@intel.com>,
-        linux-rdma@vger.kernel.org,
-        Sadanand Warrier <sadanand.warrier@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-References: <20200323231152.64035.19274.stgit@awfm-01.aw.intel.com>
- <20200323231511.64035.16923.stgit@awfm-01.aw.intel.com>
- <20200324054536.GR650439@unreal>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <a8a8176c-393c-5fbf-c2e1-14d9b20b71cd@intel.com>
-Date:   Tue, 24 Mar 2020 09:46:23 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727384AbgCXWte (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Mar 2020 18:49:34 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41846 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727209AbgCXWte (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Mar 2020 18:49:34 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i3so505698qtv.8
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Mar 2020 15:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wyre3unUyh1VElX8qQhfnuJe+QdabugraqvEEHKN5YY=;
+        b=JHxWKsrHre+Ce4pqLceZTwJslN4U/dAs+9ebExo+k14lMpfIb+6utSRVDoFt3DfKB6
+         gmgtze8t9WvmSoxBdR4uF+gQQcAqqQgaNzZRNa2Qkvq3FxtuiL1+oEBVzipVmSLeZH1u
+         AkPQnXx4ZR2YjQfROHmvO8kUd48krZ++1H5PMkkewe9zzLOMy3si5FWidbfOEzzRxIYw
+         lVsP2uXCaktz7Jag9+j2HvUJFu9wpvD2gdwIKbS6oRPDgPA2lm62qgL5ZdJrrzaZMUqf
+         1edRMPYdNHRPxhXrONQsHyyJ+ynwEZINfJRyaPSk7m5QPXMhpHbbk7IlW/HFkz3A8M3k
+         klkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wyre3unUyh1VElX8qQhfnuJe+QdabugraqvEEHKN5YY=;
+        b=Bss79lLUwIqTwcDvhsVVHPPOGzfPnRif+u5hR4WytghFm7capTEBv9GNtM6NdUw2Uj
+         lNTYm6uIfyJPELIqn673r4bHGIXiXh85vuw1vG/KEW733EhTdiCayEBD4fETkJ0mSiaO
+         McZttUdc72TJuM67QrXsN3nMdAESqdg99EcBjSQjFBaD2KLoTxwcUbI3d0tQrNgaJLM5
+         s62Uy9TCszlXeRBvC8/Xcqc7fwS6/fwQABeTT72dyTZZ9iwa1SdpCCRG2096jLxe4FVo
+         NQAYRuSeP0wsU1s8kVDmrDXCVTy5k+VvNAnVoKoG/7C1q9w4TxFvEyReWWbJ+8j8RYHm
+         5XcQ==
+X-Gm-Message-State: ANhLgQ19OcBANDa7jV/vU+7YtFSv4RJBzHuix1jpQkhPNESJ0HfsfztV
+        qhyysgKalzgG1K0y91oiv7rlXg==
+X-Google-Smtp-Source: ADFU+vt9bpUw3FK771MMLlRTjLi7t80bcVF9NWM8TbZifYI3XyUssP/a/KNH8DQ1koq0V4GiQsASMw==
+X-Received: by 2002:aed:2a55:: with SMTP id k21mr185313qtf.159.1585090173412;
+        Tue, 24 Mar 2020 15:49:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id v126sm14541082qkb.107.2020.03.24.15.49.32
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 24 Mar 2020 15:49:32 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jGsMW-0007PL-37; Tue, 24 Mar 2020 19:49:32 -0300
+Date:   Tue, 24 Mar 2020 19:49:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] IB/mlx5: Fix a NULL vs IS_ERR() check
+Message-ID: <20200324224932.GA28435@ziepe.ca>
+References: <20200320132641.GF95012@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200324054536.GR650439@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200320132641.GF95012@mwanda>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/24/2020 1:45 AM, Leon Romanovsky wrote:
->> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
->> index babfdb0..da8d0d6 100644
->> --- a/include/rdma/ib_verbs.h
->> +++ b/include/rdma/ib_verbs.h
->> @@ -462,6 +462,11 @@ enum ib_mtu {
->>   	IB_MTU_4096 = 5
->>   };
->>
->> +enum opa_mtu {
->> +	OPA_MTU_8192 = 6,
->> +	OPA_MTU_10240 = 7
->> +};
->> +
->>   static inline int ib_mtu_enum_to_int(enum ib_mtu mtu)
->>   {
->>   	switch (mtu) {
->> @@ -488,6 +493,28 @@ static inline enum ib_mtu ib_mtu_int_to_enum(int mtu)
->>   		return IB_MTU_256;
->>   }
->>
->> +static inline int opa_mtu_enum_to_int(enum opa_mtu mtu)
->> +{
->> +	switch (mtu) {
->> +	case OPA_MTU_8192:
->> +		return 8192;
->> +	case OPA_MTU_10240:
->> +		return 10240;
->> +	default:
->> +		return(ib_mtu_enum_to_int((enum ib_mtu)mtu));
->> +	}
->> +}
->> +
->> +static inline enum opa_mtu opa_mtu_int_to_enum(int mtu)
->> +{
->> +	if (mtu >= 10240)
->> +		return OPA_MTU_10240;
->> +	else if (mtu >= 8192)
->> +		return OPA_MTU_8192;
->> +	else
->> +		return ((enum opa_mtu)ib_mtu_int_to_enum(mtu));
->> +}
+On Fri, Mar 20, 2020 at 04:26:41PM +0300, Dan Carpenter wrote:
+> The kzalloc() function returns NULL, not error pointers.
 > 
-> Is it possible to include opa_port_info.h in the ib_verbs.h and leave all
-> those functions there?
+> Fixes: 30f2fe40c72b ("IB/mlx5: Introduce UAPIs to manage packet pacing")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Acked-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/qos.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-We can take a look at doing that.
+Applied to for-next, thanks
 
--Denny
+Jason
