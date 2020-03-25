@@ -2,100 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD71B191F5C
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2020 03:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10AA192178
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Mar 2020 08:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgCYCm1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Mar 2020 22:42:27 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:52815 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727325AbgCYCm0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Mar 2020 22:42:26 -0400
-Received: by mail-pj1-f66.google.com with SMTP id ng8so402942pjb.2
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Mar 2020 19:42:26 -0700 (PDT)
+        id S1725911AbgCYHAp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Mar 2020 03:00:45 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:40969 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725907AbgCYHAp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Mar 2020 03:00:45 -0400
+Received: by mail-ed1-f66.google.com with SMTP id v1so1110721edq.8
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Mar 2020 00:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=tJVGZmmA1bFjoevn7/qDYyyvIJ/eyc0u4ubgnC7ziTY=;
-        b=H4706YZqf8/zScGoFg12vybnR9M2VsIQVJgSz3rS1dHY9dQHDGFEdxDFbUd7d1zTgX
-         a1SAGpNqJGQq66/k++qcyoET2sxmyH3emD3uXnYHai1yW2TdH35PONdQL7aDm0PfPzyp
-         tYlxhgWpkpR2jgcSCMS6Pg5GkhF65IhQxffKc=
+        d=mellanox-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yz5M6ok0F41qcCpMJnXS/jpaz042QaOHYupAoJk6Vz0=;
+        b=BYHNbokyAZCb6ngr1AjUS1YbBA12nyO14LfCwICpaV8CZSYyEE6NFKl9IF5Zwo96Wd
+         Mi7MFbNykijlVp6E9by5Zm6GzT1+xy25SIY3eYhQzZTpxxyei9C4RUaDdlwaEoZpxf6h
+         dYGNL8UJor1yVEMDxboonMWnHpYBjhxa8VZb3zKJFWC0qF8FzbUonhWyQw7TiM8WXNpU
+         mABVphX+oSKkJCiuEySySrifni4RbU1OwE5TnyVXDRo9YQyJGxUOvFpcBLNOBb1FPk22
+         GNPb+Ggwa29xd6/bko+hfN5MzkbEcXpv1JeKdGizqBeBbi2l30Y5hfyj3E9o/CRmiLWT
+         aqOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=tJVGZmmA1bFjoevn7/qDYyyvIJ/eyc0u4ubgnC7ziTY=;
-        b=jMeK1MGdw/OgmS049XthtAgYEyIUzoZdBEebj4eJTUDVTot7BeycpDIzEIMqFdLpAn
-         g5hYq71PUoaQU8j1PvqGgbSftpOarbaosZ8ow9CCQMmUl8c4lsBS1cBmtlNSNyviHgM2
-         9j0JLIHsYVk6dkJGuWrMkEKZncs3XwmUiqMjzaBBBgFY/oBL3i/0ZUiZ9oGhVOYxZA+U
-         +rweQ8mKJtZYlIiYKT8niEcbk7kwYVaV7YkHu0OAG3FsWkUC2yTgSyEOL0bKQ5LnyXcG
-         EfuDyRApvG/OLnggUaITpyspPZUP73SNxn+owa/vbb0qLccRif42hoqjbuuK05sYQ1lX
-         u4Wg==
-X-Gm-Message-State: ANhLgQ0tw9jHN0K/pa+4aM1CkcIKfLPOBff+WwYv9e1Xx8XD0pv8o9Dy
-        2iDoK/wjeb75zu3BT0HaKEWlYQ==
-X-Google-Smtp-Source: ADFU+vtS5LbLrzS1jhzDwYVrTj6A9lZWX06g/Mga4Nlp7aFIrRyOCBB7aq2FIo/kyw4uUBQ1+JG/MQ==
-X-Received: by 2002:a17:90a:33d1:: with SMTP id n75mr1033588pjb.167.1585104145832;
-        Tue, 24 Mar 2020 19:42:25 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id x4sm858194pgr.9.2020.03.24.19.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 19:42:25 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yz5M6ok0F41qcCpMJnXS/jpaz042QaOHYupAoJk6Vz0=;
+        b=pOE/jNyTGHySU69fjbsGF3L1Xnk/tawh0+XKlz8Oq3OkHFfwz5JLhUSviv62IcJO+Y
+         jDYlb4Ql7t8RuIlpzHvFZm+d1lNHxFj0xnVXw4CrW4shPOsSc3khMI5tiVCBPT8ZD8Pg
+         Zy9zlVF9M0qPqOgk73daQAs+q4zHIXUslXvyXZmDub0Wadyp5hdK9Lh3uF982SyN5A4Z
+         4b0KzLWBigOf/7VtkoPA51q7fIS77yaGqnPymBcwSxU577Xqiy6+ppazq8uOEcxuWOm3
+         PmIK7QYOUa/js+kiuRqriVLLKRQGxul35H09w8kkuFDNZUS1a0YcVLnadOqZrOWhnYD2
+         szhw==
+X-Gm-Message-State: ANhLgQ2r7SeR9Ud8oRVH1aOW8EHVjiYnH2nKVQ35yC6n8xO3qDGuRav/
+        9Bq5KA0oJ5X0HLi9zdgc/OmSVxeR+s7mY1+fCYE=
+X-Google-Smtp-Source: ADFU+vs4/oYOzkXxXMLejN416Dh/jx5J8hhnfKqKcQdMOrgvDD/WopZA37NLgbWdamG9+JhodpeHZjxRpLQ/50SeJi8=
+X-Received: by 2002:a17:907:abc:: with SMTP id bz28mr1892815ejc.83.1585119643168;
+ Wed, 25 Mar 2020 00:00:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
-References: <cover.1582361737.git.mchehab+huawei@kernel.org> <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 3/7] docs: fix broken references to text files
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arch@vger.kernel.org, linux-nfs@vger.kernel.org,
-        kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        netdev@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Date:   Tue, 24 Mar 2020 19:42:24 -0700
-Message-ID: <158510414428.125146.17397141028775937874@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <20200312083658.29603-1-leon@kernel.org> <20200318233101.GA18746@ziepe.ca>
+In-Reply-To: <20200318233101.GA18746@ziepe.ca>
+From:   Moni Shoua <monis@mellanox.com>
+Date:   Wed, 25 Mar 2020 09:00:32 +0200
+Message-ID: <CAG9sBKNFPmow-DFzVYKVmhYq_hdrn+_Oe6rh7xixS=PUVexU6Q@mail.gmail.com>
+Subject: Re: [PATCH rdma-next] MAINTAINERS: Clean RXE section and add Zhu as
+ RXE maintainer
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Zhu Yanjun <yanjunz@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Quoting Mauro Carvalho Chehab (2020-02-22 01:00:03)
-> Several references got broken due to txt to ReST conversion.
->=20
-> Several of them can be automatically fixed with:
->=20
->         scripts/documentation-file-ref-check --fix
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/hwtracing/coresight/Kconfig                  |  2 +-
->=20
-> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/core=
-sight/Kconfig
-> index 6ff30e25af55..6d42a6d3766f 100644
-> --- a/drivers/hwtracing/coresight/Kconfig
-> +++ b/drivers/hwtracing/coresight/Kconfig
-> @@ -107,7 +107,7 @@ config CORESIGHT_CPU_DEBUG
->           can quickly get to know program counter (PC), secure state,
->           exception level, etc. Before use debugging functionality, platf=
-orm
->           needs to ensure the clock domain and power domain are enabled
-> -         properly, please refer Documentation/trace/coresight-cpu-debug.=
-rst
-> +         properly, please refer Documentation/trace/coresight/coresight-=
-cpu-debug.rst
->           for detailed description and the example for usage.
-> =20
->  endif
+Sorry for not responding in time. I was a little bit sick for the last few days.
+I Ack this of course.
 
-I ran into this today and almost sent a patch. Can you split this patch
-up into more pieces and send it off to the respective subsystem
-maintainers?
+On Thu, Mar 19, 2020 at 1:32 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> On Thu, Mar 12, 2020 at 10:36:58AM +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Zhu Yanjun contributed many patches to RXE and expressed genuine
+> > interest in improve RXE even more. Let's add him as a maintainer.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > --
+> >  MAINTAINERS | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> Moni has moved on to other areas and is having trouble sending plain
+> text emails, he gave a verbal:
+>
+> Acked-by: Moni Shoua <monis@mellanox.com>
+>
+> Jason
