@@ -2,67 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E506319447F
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2020 17:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C1E194567
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2020 18:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgCZQlB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Mar 2020 12:41:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7059 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgCZQlB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 26 Mar 2020 12:41:01 -0400
-IronPort-SDR: QocpAerC0XtuEBmvwHcfT5lfmCvK56LFiCBECoWqHW2Z+u17ELD6T7Ft8NTTl6eMBEwtRwpkTZ
- +R2a3U3+TS6w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2020 09:41:00 -0700
-IronPort-SDR: DSODgxtVCl8+PmNCNVn7Uj3hQk1cdGPkjxTHa8jCeIfH6SfenzJefkBKXCMaI2QjWgJqs8D2/V
- FAd2+LSEg/vw==
-X-IronPort-AV: E=Sophos;i="5.72,309,1580803200"; 
-   d="scan'208";a="420773576"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.200.139]) ([10.254.200.139])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2020 09:40:59 -0700
-Subject: Re: [PATCH for-rc 2/2] IB/hfi1: Call kobject_put() when
- kobject_init_and_add() fails
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
+        id S1725994AbgCZRZo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Mar 2020 13:25:44 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:38462 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727393AbgCZRZo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Mar 2020 13:25:44 -0400
+Received: by mail-qv1-f68.google.com with SMTP id p60so3438137qva.5
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Mar 2020 10:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=r1jUyMkQJrDu5V/f8nEvdhsmZBYjYcPFwpTXfYffy00=;
+        b=jFxOw/leIb9Hr5GcHroTulCd9u3sNDwplxRa9Su4n+tX+gSVT+rJkU7PZ/WCFtCv1W
+         L4BikAnrLMx3eVZRu2hvy6o5Gi3OQ6si/+pa7ti91Lf6aEA+DiVkaZyffWMq/U2odfUA
+         /SgWhpUgcR5NTGmv/WdSqYnVnCmMAxdAqI2+iAeXc3roSrLiqPAjOxdE9XriqSUmJJQD
+         UrUpAiTyVDqyF0iNyPqFJ7stHa3eTZu2naO8foWhL686rmdnRy6dV9GHqWLs6gkH6dfp
+         J+DHyHQjdWuyUg6ERFX2G49NDqJVtC9E20wXTfMyr3+FTVwLNPMmbUyUffrlLjPlGW1m
+         d79g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=r1jUyMkQJrDu5V/f8nEvdhsmZBYjYcPFwpTXfYffy00=;
+        b=Xmfd1K23RMmwaQASAM0YzYFpkb2oJzZaySWczFski159szdRimsi7SfL6aRuxiuHO5
+         dXW3IC40Bh2Qht4IEAONsIWoh+81IZWl6iu6pXhtC5owb8CqfFz7Xb8B8qUF+RSnhBx9
+         DfwSSej+MfDZOIWxgqcmXpaPeavAYJAaahh6xkngaf0cuLA3Def5/Jto0yiqy3a6TGHx
+         wPDVyOz57sIkXTSC6ywmoiG7zSQF+Edp/njAQzzChjGY2b4dwsaJq7K1HeKaz7rrzxNu
+         mqYqOJvwd8nxikQd/QYBt6DX2ssKzOuEjiK4lft4zomfhXxT0o42nF20nmJQNjiFu4Es
+         KElg==
+X-Gm-Message-State: ANhLgQ2lqr1ZJbCH7qycx6j43j8Y8iuLO+Io0ah4qq55G0lYmHEhG2Nm
+        bRCIjtZ+otCYwWWyERlUFLB35YA8Xdpg1A==
+X-Google-Smtp-Source: ADFU+vvujrhVchWtlZ8ZC/TiAmNO/A57lif5w48e0hthqfmrBJr/Kyc3EQFCjp6O6gvsol02ELRU8g==
+X-Received: by 2002:a05:6214:1e5:: with SMTP id c5mr2663861qvu.233.1585243543241;
+        Thu, 26 Mar 2020 10:25:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id d2sm1804938qkl.98.2020.03.26.10.25.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 26 Mar 2020 10:25:42 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jHWGD-0005jU-PR; Thu, 26 Mar 2020 14:25:41 -0300
+Date:   Thu, 26 Mar 2020 14:25:41 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-rc 1/2] IB/hfi1: Fix memory leaks in sysfs
+ registration and unregistration
+Message-ID: <20200326172541.GM20941@ziepe.ca>
 References: <20200326163619.21129.13002.stgit@awfm-01.aw.intel.com>
- <20200326163813.21129.44280.stgit@awfm-01.aw.intel.com>
-Message-ID: <da6e7401-de90-5786-51c1-142ea89c254b@intel.com>
-Date:   Thu, 26 Mar 2020 12:40:57 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ <20200326163807.21129.27371.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200326163813.21129.44280.stgit@awfm-01.aw.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326163807.21129.27371.stgit@awfm-01.aw.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/26/2020 12:38 PM, Dennis Dalessandro wrote:
+On Thu, Mar 26, 2020 at 12:38:07PM -0400, Dennis Dalessandro wrote:
 > From: Kaike Wan <kaike.wan@intel.com>
 > 
-> When kobject_init_and_add() returns an error in the function
-> hfi1_create_port_files(), the function kobject_put() is not called for
-> the corresponding kobject, which potentially leads to memory leak.
+> When the hfi1 driver is unloaded, kmemleak will report the following
+> issue:
 > 
-> This patch fixes the issue by calling kobject_put() even if
-> kobject_init_and_add() fails.
+> unreferenced object 0xffff8888461a4c08 (size 8):
+> comm "kworker/0:0", pid 5, jiffies 4298601264 (age 2047.134s)
+> hex dump (first 8 bytes):
+> 73 64 6d 61 30 00 ff ff sdma0...
+> backtrace:
+> [<00000000311a6ef5>] kvasprintf+0x62/0xd0
+> [<00000000ade94d9f>] kobject_set_name_vargs+0x1c/0x90
+> [<0000000060657dbb>] kobject_init_and_add+0x5d/0xb0
+> [<00000000346fe72b>] 0xffffffffa0c5ecba
+> [<000000006cfc5819>] 0xffffffffa0c866b9
+> [<0000000031c65580>] 0xffffffffa0c38e87
+> [<00000000e9739b3f>] local_pci_probe+0x41/0x80
+> [<000000006c69911d>] work_for_cpu_fn+0x16/0x20
+> [<00000000601267b5>] process_one_work+0x171/0x380
+> [<0000000049a0eefa>] worker_thread+0x1d1/0x3f0
+> [<00000000909cf2b9>] kthread+0xf8/0x130
+> [<0000000058f5f874>] ret_from_fork+0x35/0x40
 > 
+> This patch fixes the issue by:
+> - Releasing dd->per_sdma[i].kobject in hfi1_unregister_sysfs().
+>   - This will fix the memory leak.
+> - Calling kobject_put() to unwind operations only for those entries in
+>    dd->per_sdma[] whose operations have succeeded (including the current
+>    one that has just failed) in hfi1_verbs_register_sysfs().
+> 
+> Fixes: 0cb2aa690c7e ("IB/hfi1: Add sysfs interface for affinity setup")
 > Cc: <stable@vger.kernel.org>
 > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 > Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 > Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> ---
+>  drivers/infiniband/hw/hfi1/sysfs.c |   13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 
-My bad, overzealous commit message clean up on my part, lost this:
+I'm not certain, but this seems unwise.
 
-Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+After hfi1_verbs_unregiser_sysfs() returns there should be no sysfs left
+under the ibdev as we are going to delete the ibdev sysfs next.
 
--Denny
+kobject_del() triggers synchronous delete of the sysfs, while
+kobject_put() potentially defers it to the future.
+
+Will ib unregister fail if the kobject_del() has not happened yet? I
+am unsure.
+
+Jason
