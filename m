@@ -2,53 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D271945CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2020 18:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4149194601
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Mar 2020 19:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgCZRuH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Mar 2020 13:50:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgCZRuH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 26 Mar 2020 13:50:07 -0400
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585245006;
-        bh=T4RhMfsPNRHkPPICu5fdtPwDOB8bAIcLR18c12kcTNI=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ojpWnY+GskkYpxDqYM3iaenCeQwRYQ1UeTUyhIukImj8Uf0X46bIX+kaylMy8kxrs
-         nGG37veQDWFq52bXoxKmtdzYC+q2RRVYWwFzJV1kZtkCEIV0EWYHwHyG6oPf17nL3N
-         GGog+95Ig8EoFf6PWvYXRpibIMaGX48DvRKVcExA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200326173152.GA22458@ziepe.ca>
-References: <20200326173152.GA22458@ziepe.ca>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200326173152.GA22458@ziepe.ca>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: ba80013fba656b9830ef45cd40a6a1e44707f47a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9420e8ade4353a6710908ffafa23ecaf1caa0123
-Message-Id: <158524500654.16048.14590188393209667775.pr-tracker-bot@kernel.org>
-Date:   Thu, 26 Mar 2020 17:50:06 +0000
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1726340AbgCZSFx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Mar 2020 14:05:53 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:46614 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgCZSFx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Mar 2020 14:05:53 -0400
+Received: by mail-qv1-f66.google.com with SMTP id m2so3499065qvu.13
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Mar 2020 11:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zPQVdK6oZX4cEZTC40z1MokVsqKFhAbw9MqIeIMMxJo=;
+        b=IfsZRu5JqCqNUEZVefu7PTCCNwWPj1/9XekkayTWLuwEnJh6UJ7NqWMJwqKYIBiYd+
+         rnhMHDpoMN0+ITu2vxkOhR+pp+zZsk8eogVgM+Gz2DRRrjOM83hJSD3HjWQicFcfuiHk
+         YxqTBuIgZYneznEgXvwbM5kxAuvVC7daV0sSmkUUtIvKyO552gzZdmlsnC6MGBAEqMP5
+         Zd9+KhaJcmFooxBIGZj8JGhrdpEhlTSTqKJAw9NOo5lvPrZdef3PjJZxdvjjvojp7U3k
+         NAOPxCndo7yUPae4PhopQSyupfxiQEN0753uJqCbv20oWsTXQ9jFwosDOqVj3E4FlAnu
+         WRmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zPQVdK6oZX4cEZTC40z1MokVsqKFhAbw9MqIeIMMxJo=;
+        b=lx6wev0xgigUVyClXT4Q5w1AMEhrfbVLsfpDJv62ur1KBXnVX/unlrWw4o7WMk93yM
+         NzZxTkA70CZtCe+8sDNCSqn7a1CFFKPQ0QmCHOQmPF3FI/WqrU9euD1nQy9Rxx5uo6/i
+         9xp9RU1MiNyQVdpMxB0wypWbIRp80GXHCrBjBkk+VMZosFydjN+hOiAlnYCH8vU00/Fn
+         p87yPv1w58DUips01oROY8p0rFZSTkna3yN2UesSxf9moSiN8YblogX6KerCvjVdpnvP
+         rZGWP7Z0UBhpIQIxgFIqYk5a3m3A+mLGRTKQblXedAX9feDqwkfpTRGcHkrlW8qBv+du
+         8CgQ==
+X-Gm-Message-State: ANhLgQ0XKz8EflXJzNT4v8I/UBV9Y1RhDth3gFLYlxXu0r/bM57yv+7k
+        e4tCSyL2vrhJ7O8Jp1cSihycCA==
+X-Google-Smtp-Source: ADFU+vuk3yQDzEA7CU+SYaXfsmGVkOf8t0857l6YDBQF90m/z2fDC/wGoTTncKXs8YBIMqVBpm7EhQ==
+X-Received: by 2002:a0c:d601:: with SMTP id c1mr9724833qvj.164.1585245952524;
+        Thu, 26 Mar 2020 11:05:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id c14sm1990726qtv.32.2020.03.26.11.05.51
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 26 Mar 2020 11:05:51 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jHWt5-0002k8-2v; Thu, 26 Mar 2020 15:05:51 -0300
+Date:   Thu, 26 Mar 2020 15:05:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@mellanox.com>,
+        Eli Cohen <eli@dev.mellanox.co.il>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Roland Dreier <rolandd@cisco.com>
+Subject: Re: [PATCH rdma-next] RDMA/cm: Update num_paths in
+ cma_resolve_iboe_route error flow
+Message-ID: <20200326180551.GA10496@ziepe.ca>
+References: <20200318101741.47211-1-leon@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200318101741.47211-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Thu, 26 Mar 2020 14:31:52 -0300:
+On Wed, Mar 18, 2020 at 12:17:41PM +0200, Leon Romanovsky wrote:
+> From: Avihai Horon <avihaih@mellanox.com>
+> 
+> After a successful allocation of path_rec, num_paths is set to 1,
+> but any error after such allocation will leave num_paths uncleared.
+> 
+> This causes to de-referencing a NULL pointer later on. Hence,
+> num_paths needs to be set back to 0 if such an error occurs.
+> 
+> The following crash from syzkaller revealed it.
+.. 
+> 
+> Fixes: 3c86aa70bf67 ("RDMA/cm: Add RDMA CM support for IBoE devices")
+> Signed-off-by: Avihai Horon <avihaih@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Applied to for-next
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9420e8ade4353a6710908ffafa23ecaf1caa0123
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Thanks,
+Jason
