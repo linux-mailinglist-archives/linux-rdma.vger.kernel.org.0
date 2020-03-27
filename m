@@ -2,211 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EA41951AE
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 08:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A284C1951B9
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 08:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgC0HDN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 03:03:13 -0400
-Received: from mga11.intel.com ([192.55.52.93]:12567 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgC0HDN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Mar 2020 03:03:13 -0400
-IronPort-SDR: BOFqEfjCVQqclFfds/Sbxr1KsFXBb/FolItdybibCHjjs1DIzwfPndHdYnZgw4zm0e3WL8bq41
- q8t0e/TOiDkg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2020 00:03:12 -0700
-IronPort-SDR: 9zbdT4zt7JPvrdZnrQUKOzeht0QJcxFertsKPS+rd53+ZeU+RTykmOUxpuM/Wx9pGqUHcJ1VjH
- /GEb0VMbQDfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,311,1580803200"; 
-   d="scan'208";a="326811324"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 27 Mar 2020 00:03:10 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jHj1K-000EFf-5Q; Fri, 27 Mar 2020 15:03:10 +0800
-Date:   Fri, 27 Mar 2020 15:03:01 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 23ab5261e29b6b95803ee8dc919ae76e260b358d
-Message-ID: <5e7da525.DQw46wq1s5Zdvi1q%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725956AbgC0HJR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Mar 2020 03:09:17 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3423 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725936AbgC0HJR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Mar 2020 03:09:17 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 1074582CB4490420B5C4;
+        Fri, 27 Mar 2020 15:09:10 +0800 (CST)
+Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 27 Mar 2020 15:09:09 +0800
+Received: from DGGEML502-MBS.china.huawei.com ([169.254.3.252]) by
+ dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
+ Fri, 27 Mar 2020 15:09:02 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 04/10] RDMA/hns: Optimize
+ hns_roce_alloc_vf_resource()
+Thread-Topic: [PATCH v2 for-next 04/10] RDMA/hns: Optimize
+ hns_roce_alloc_vf_resource()
+Thread-Index: AQHV/meJCyHjaGwIp0CEti43/V/n0A==
+Date:   Fri, 27 Mar 2020 07:09:02 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A022B650A@DGGEML502-MBS.china.huawei.com>
+References: <1584674622-52773-1-git-send-email-liweihang@huawei.com>
+ <1584674622-52773-5-git-send-email-liweihang@huawei.com>
+ <20200326195135.GA27277@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 23ab5261e29b6b95803ee8dc919ae76e260b358d  IB/hfi1: Use scnprintf() for avoiding potential buffer overflow
+On 2020/3/27 3:51, Jason Gunthorpe wrote:
+> On Fri, Mar 20, 2020 at 11:23:36AM +0800, Weihang Li wrote:
+> 
+>> @@ -2028,6 +2002,13 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+>>  	if (ret)
+>>  		set_default_caps(hr_dev);
+>>  
+>> +	ret = hns_roce_alloc_vf_resource(hr_dev);
+>> +	if (ret) {
+>> +		dev_err(hr_dev->dev, "Allocate vf resource fail, ret = %d.\n",
+>> +			ret);
+>> +		return ret;
+>> +	}
+> 
+> It is unfortunate these have to remain as dev_err()
+> 
+> I've thought about setting the name during ib_alloc_dev, which would
+> avoid this, what do you think?
+> 
+> Jason
+> 
 
-elapsed time: 487m
+Hi Jason,
 
-configs tested: 152
-configs skipped: 0
+Thanks for your comments. I agree with you and make a simple test by just
+moving assign_name() into _ib_alloc_device(), and ibdev_*() works fine
+anywhere in hns. But I'm not sure if there are any side effects.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I noticed that the code about name assignment is implemented by you, could
+you please explain why put assign_name() in ib_register_device() rather than
+ib_alloc_device()?
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-nios2                         10m50_defconfig
-sparc64                           allnoconfig
-ia64                             allyesconfig
-sh                            titan_defconfig
-parisc                            allnoconfig
-h8300                       h8s-sim_defconfig
-sh                          rsk7269_defconfig
-powerpc                           allnoconfig
-m68k                           sun3_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                                defconfig
-nios2                         3c120_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200326
-x86_64               randconfig-a002-20200326
-x86_64               randconfig-a003-20200326
-i386                 randconfig-a001-20200326
-i386                 randconfig-a002-20200326
-i386                 randconfig-a003-20200326
-alpha                randconfig-a001-20200326
-m68k                 randconfig-a001-20200326
-mips                 randconfig-a001-20200326
-nds32                randconfig-a001-20200326
-parisc               randconfig-a001-20200326
-riscv                randconfig-a001-20200326
-c6x                  randconfig-a001-20200326
-h8300                randconfig-a001-20200326
-microblaze           randconfig-a001-20200326
-nios2                randconfig-a001-20200326
-sparc64              randconfig-a001-20200326
-csky                 randconfig-a001-20200326
-openrisc             randconfig-a001-20200326
-s390                 randconfig-a001-20200326
-xtensa               randconfig-a001-20200326
-sh                   randconfig-a001-20200326
-x86_64               randconfig-c001-20200326
-x86_64               randconfig-c002-20200326
-x86_64               randconfig-c003-20200326
-i386                 randconfig-c001-20200326
-i386                 randconfig-c002-20200326
-i386                 randconfig-c003-20200326
-x86_64               randconfig-e001-20200326
-x86_64               randconfig-e002-20200326
-x86_64               randconfig-e003-20200326
-i386                 randconfig-e001-20200326
-i386                 randconfig-e002-20200326
-i386                 randconfig-e003-20200326
-x86_64               randconfig-f001-20200326
-x86_64               randconfig-f002-20200326
-x86_64               randconfig-f003-20200326
-i386                 randconfig-f001-20200326
-i386                 randconfig-f002-20200326
-i386                 randconfig-f003-20200326
-x86_64               randconfig-g001-20200327
-x86_64               randconfig-g002-20200327
-x86_64               randconfig-g003-20200327
-i386                 randconfig-g001-20200327
-i386                 randconfig-g002-20200327
-i386                 randconfig-g003-20200327
-x86_64               randconfig-h001-20200326
-x86_64               randconfig-h002-20200326
-x86_64               randconfig-h003-20200326
-i386                 randconfig-h001-20200326
-i386                 randconfig-h002-20200326
-i386                 randconfig-h003-20200326
-arc                  randconfig-a001-20200326
-arm                  randconfig-a001-20200326
-arm64                randconfig-a001-20200326
-ia64                 randconfig-a001-20200326
-powerpc              randconfig-a001-20200326
-sparc                randconfig-a001-20200326
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                  sh7785lcr_32bit_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+Thanks
+Weihang
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
