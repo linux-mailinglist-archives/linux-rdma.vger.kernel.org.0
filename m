@@ -2,107 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D33EF195B6A
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 17:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E36195C4E
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 18:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727606AbgC0Qt0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 12:49:26 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46883 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgC0Qt0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 12:49:26 -0400
-Received: by mail-qt1-f194.google.com with SMTP id g7so9058859qtj.13
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 09:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=r39V2KqVEfk1IDfjZx77OcaJjv04kjF3CXcU01BjV7I=;
-        b=hC3Q+HHWiwclJMqVoZa7/j8K00cnyZQ1hL6/6NrQG1Vcu3DuBawZuOP55Q8Rr05+fG
-         0i3HM1wSl/d4MyfmHMaNFXgAz+vK3j/SFqHBMNCoShcClIJRQSK8H0XV+1t9zkJpSpRb
-         bO0Cs51Oe/PQzWN0rASndYL8yDFfhmK/40DAJbFxR1IeaYB6wCGtAdcb5Jjj8MiIrZbs
-         QpWO1jY4DYL3TE6eczrXRksLapEEP4LkPBWdtthIqPMLIQSPmuPnh9EsCJFJ6gYD4ypD
-         ukCK0aN9jzkmd2Gk89zPQEU8QgdPCFqvaaRcDopMXLf1hcG/tXrtyNKCnmNnESz3XgMn
-         KozA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=r39V2KqVEfk1IDfjZx77OcaJjv04kjF3CXcU01BjV7I=;
-        b=CrpNM67ggo0YsnhFj5gqp31K9PQcmgBCLukwTCpwQksf61NGSp/4czg7T+j+3INCZ6
-         x3Q3XuQyUXCyGFHaNYZlvGysHXkMasEKhP8IPLNh7uhlpoOosKY6/X6fR8P07Th7dSfL
-         VFVGtDqKUr1ANfr2fmsIzsiqT1koRLTYaVVp1q1VzR8d7ms7/PJiAPgHYNzdkZljvCYZ
-         8Frt4i/AWvx4NqdvBt2a7Cif1tPuH+YdXe8p6nLkpnWIGc3M2rqBSUZih14dWiIcvkht
-         sjsrjuG88h8OdZkl1yjPYEnpU9BM9e0lThzHmvM3cf0XX3VhoxAHCTngdsYab0+GoQIC
-         vegg==
-X-Gm-Message-State: ANhLgQ05YVuQsK3T/G4NwIK2AAk2FzYGj1xjbVknwbSlU4ofwKTkjNA/
-        TyguAoHlwVB2tvfnc9u7RLhSOw==
-X-Google-Smtp-Source: ADFU+vt2lBLBec68oVJIQqslL0jF6popxXradOYScM8mSO+8/UvcUijS85kmtF/FLEWxsgX6Ebw7sQ==
-X-Received: by 2002:ac8:928:: with SMTP id t37mr157749qth.36.1585327765616;
-        Fri, 27 Mar 2020 09:49:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d185sm4089119qkf.46.2020.03.27.09.49.24
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 27 Mar 2020 09:49:24 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jHsAe-0002S9-EV; Fri, 27 Mar 2020 13:49:24 -0300
-Date:   Fri, 27 Mar 2020 13:49:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, Mike Marciniszyn <mike.marcinisyzn@intel.com>,
-        linux-rdma@vger.kernel.org,
-        Sadanand Warrier <sadanand.warrier@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Subject: Re: [PATCH v2 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
- MTU's upper limit
-Message-ID: <20200327164924.GY20941@ziepe.ca>
-References: <20200323231152.64035.19274.stgit@awfm-01.aw.intel.com>
- <20200323231511.64035.16923.stgit@awfm-01.aw.intel.com>
+        id S1727473AbgC0RP7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 13:15:59 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:51186 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727585AbgC0RPw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 13:15:52 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 27 Mar 2020 20:15:46 +0300
+Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02RHFjj2004869;
+        Fri, 27 Mar 2020 20:15:45 +0300
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
+        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
+        linux-rdma@vger.kernel.org
+Cc:     idanb@mellanox.com, axboe@kernel.dk, maxg@mellanox.com,
+        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
+        israelr@mellanox.com, jgg@mellanox.com
+Subject: [PATCH 00/17 V5] nvme-rdma/nvmet-rdma: Add metadata/T10-PI support
+Date:   Fri, 27 Mar 2020 20:15:27 +0300
+Message-Id: <20200327171545.98970-1-maxg@mellanox.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200323231511.64035.16923.stgit@awfm-01.aw.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 07:15:12PM -0400, Dennis Dalessandro wrote:
-> @@ -240,13 +241,11 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
->  		priv->broadcast->mcmember.flow_label = mcmember->flow_label;
->  		priv->broadcast->mcmember.hop_limit = mcmember->hop_limit;
->  		/* assume if the admin and the mcast are the same both can be changed */
-> +		mtu = rdma_mtu_enum_to_int(priv->ca,  priv->port,
-> +					   priv->broadcast->mcmember.mtu);
->  		if (priv->mcast_mtu == priv->admin_mtu)
-> -			priv->admin_mtu =
-> -			priv->mcast_mtu =
-> -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
-> -		else
-> -			priv->mcast_mtu =
-> -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
-> +			priv->admin_mtu = IPOIB_UD_MTU(mtu);
-> +		priv->mcast_mtu = IPOIB_UD_MTU(mtu);
+Hello Sagi, Christoph, Keith, Martin, James and Co
 
-Er, how did this ever work? Does the OPA SM not use the 6 & 7 values
-for the mtu in the path record? Why is it being changed now?
+This patchset adds metadata (T10-PI) support for NVMeoF/RDMA host side
+and target side, using signature verbs API. This set starts with a few
+preparation commits to the NVMe host core layer. It continues with
+NVMeoF/RDMA host implementation + few preparation commits to the RDMA/rw
+API and to NVMe target core layer. The patchset ends with NVMeoF/RDMA
+target implementation. Also patch for NVMe-cli added to this series.
 
-> +/**
-> + * rdma_mtu_from_attr - Return the mtu of the port from the port attribute.
-> + * @device: Device
-> + * @port_num: Port number
-> + * @attr: port attribute
-> + *
-> + * Return the MTU size supported by the port as an integer value.
-> + */
-> +static inline int rdma_mtu_from_attr(struct ib_device *device, u8 port,
-> +				     struct ib_port_attr *attr)
-> +{
-> +	if (rdma_core_cap_opa_port(device, port))
-> +		return attr->phys_mtu;
+In V5 I mainly did some renamings and removed 2 patches to get_mdts that
+were already merged to main branch. I tried get some inspiration from
+James suggestion of the settings in NVMe core, but unfortunately couldn't
+take much from there and I stayed with Christoph suggestion for features
+flag per namespace. I found the code more readable in this form and
+hopefully we can continue with the review and the merge soon.
 
-Why not just always set this?
+Configuration:
+Host:
+ - nvme connect --pi_enable --transport=rdma --traddr=10.0.1.1 --nqn=test-nvme
 
-Jason
+Target:
+ - echo 1 > /config/nvmet/subsystems/${NAME}/attr_pi_enable
+ - echo 1 > /config/nvmet/ports/${PORT_NUM}/param_pi_enable
+
+The code was tested using Mellanox's ConnectX-4/ConnectX-5 HCAs.
+This series applies on top of nvme_5.7 branch cleanly.
+
+Changes from v4:
+ - removed get_mdts patches (merged)
+ - added enum nvme_ns_features instead of defines (patch 1/17)
+ - rename pi/prot to md (patches 2/17 + 6/17 + 8/17 + 9/17 + 10/17)
+ - another rebase
+
+Changes from v3:
+ - Added Reviewed-by signatures
+ - New RDMA/rw patch (Patch 17/19)
+ - Add mdts setting op for controllers (Patches 14/19, 18/19)
+ - Rename NVME_NS_DIX_SUPPORTED to NVME_NS_MD_HOST_SUPPORTED and
+   NVME_NS_DIF_SUPPORTED to NVME_NS_MD_CTRL_SUPPORTED (Patch 01/19)
+ - Split "nvme: Introduce namespace features flag" patch (patch 02/19)
+ - Rename nvmet_rdma_set_diff_domain to nvmet_rdma_set_sig_domain
+   and nvme_rdma_set_diff_domain to nvme_rdma_set_sig_domain
+   (Patches 08/19, 19/19)
+ - Remove ns parameter from nvme_rdma_set_sig_domain/nvmet_rdma_set_sig_domain
+   functions (patch 08/19, 19/19)
+ - Rebase over nvme-5.7 branch
+
+Changes from v2:
+ - Convert the virtual start sector (which passed to bip_set_seed function)
+   to be in integrity interval units (Patch 14/15)
+ - Clarify some commit messages
+
+Changes from v1:
+ - Added Reviewed-by signatures
+ - Added namespace features flag (Patch 01/15)
+ - Remove nvme_ns_has_pi function (Patch 01/15)
+ - Added has_pi field to struct nvme_request (Patch 01/15)
+ - Subject change for patch 02/15
+ - Fix comment for PCI metadata (Patch 03/15)
+ - Rebase over "nvme: Avoid preallocating big SGL for data" patchset
+ - Introduce NVME_INLINE_PROT_SG_CNT flag (Patch 05/15)
+ - Introduce nvme_rdma_sgl structure (Patch 06/15)
+ - Remove first_sgl pointer from struct nvme_rdma_request (Patch 06/15)
+ - Split nvme-rdma patches (Patches 06/15, 07/15)
+ - Rename is_protected to use_pi (Patch 07/15)
+ - Refactor nvme_rdma_get_max_fr_pages function (Patch 07/15)
+ - Added ifdef CONFIG_BLK_DEV_INTEGRITY (Patches 07/15, 09/15, 13/15,
+   14/15, 15/15)
+ - Added port configfs pi_enable (Patch 14/15)
+
+
+Israel Rukshin (12):
+  nvme: introduce namespace features flag
+  nvme: Add has_md field to the nvme_req structure
+  nvme-fabrics: Allow user enabling metadata/T10-PI support
+  nvme: introduce NVME_INLINE_MD_SG_CNT
+  nvme-rdma: Introduce nvme_rdma_sgl structure
+  nvmet: prepare metadata request
+  nvmet: add metadata characteristics for a namespace
+  nvmet: Rename nvmet_rw_len to nvmet_rw_data_len
+  nvmet: Rename nvmet_check_data_len to nvmet_check_transfer_len
+  nvme: Add Metadata Capabilities enumerations
+  nvmet: Add metadata/T10-PI support
+  nvmet: Add metadata support for block devices
+
+Max Gurtovoy (5):
+  nvme: Enforce extended LBA format for fabrics metadata
+  nvme: introduce max_integrity_segments ctrl attribute
+  nvme-rdma: add metadata/T10-PI support
+  RDMA/rw: Expose maximal page list for a device per 1 MR
+  nvmet-rdma: Add metadata/T10-PI support
+
+ drivers/infiniband/core/rw.c      |  14 +-
+ drivers/nvme/host/core.c          |  79 +++++---
+ drivers/nvme/host/fabrics.c       |  11 ++
+ drivers/nvme/host/fabrics.h       |   3 +
+ drivers/nvme/host/nvme.h          |  12 +-
+ drivers/nvme/host/pci.c           |   7 +
+ drivers/nvme/host/rdma.c          | 367 +++++++++++++++++++++++++++++++++-----
+ drivers/nvme/target/admin-cmd.c   |  33 +++-
+ drivers/nvme/target/configfs.c    |  61 +++++++
+ drivers/nvme/target/core.c        |  54 ++++--
+ drivers/nvme/target/discovery.c   |   8 +-
+ drivers/nvme/target/fabrics-cmd.c |  19 +-
+ drivers/nvme/target/io-cmd-bdev.c | 113 +++++++++++-
+ drivers/nvme/target/io-cmd-file.c |   6 +-
+ drivers/nvme/target/nvmet.h       |  38 +++-
+ drivers/nvme/target/rdma.c        | 245 +++++++++++++++++++++++--
+ include/linux/nvme.h              |   2 +
+ include/rdma/rw.h                 |   1 +
+ 18 files changed, 946 insertions(+), 127 deletions(-)
+
+-- 
+1.8.3.1
+
