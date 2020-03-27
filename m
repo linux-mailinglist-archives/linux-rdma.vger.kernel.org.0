@@ -2,100 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2EB195A48
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 16:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6222B195A9B
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 17:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgC0Pvl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 11:51:41 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37475 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgC0Pvl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 11:51:41 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z24so7687320qtu.4
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 08:51:40 -0700 (PDT)
+        id S1727444AbgC0QIJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 12:08:09 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:41782 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727423AbgC0QIJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 12:08:09 -0400
+Received: by mail-qv1-f67.google.com with SMTP id t4so931690qvz.8
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 09:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m8e1t2URI8U7vsMzc9OwFUvFf9TchHday/nZmdlm/Bc=;
-        b=XvzIk11ZgUsdpnfnuoichso6upeqV2Fr6l3tyzOo5JKIkUELWesJaX8XSghz6si3tD
-         xXRm2ovbTBK2aS1SptYapKH5L778NQZ0wXK+y++E/Y3aqyitiUEJ9yvE7dcOcls2gkX3
-         G4wnpAHNQAe8i+B2MFW9fxmioVMs544R1zkKK02CSeICz9leLhZmPFN/pEtGv1NRftNE
-         9a1vI+58/uweZP6JMlx0iwVGIBWhSTndYgpbN0lCaFx9nDkBCRT05OQU0VIPQr04VJxL
-         CotSzb297EAD8vP52+rw2GCqXW2VTlVwqs+8GrqnVrE9fd9hD0yoL6AnzxkzkZS6Rd6R
-         Annw==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=6d7CjkKwOJ6/75cMo6cG150E0b5j4qklpYgJXNLC6is=;
+        b=fogSYuttuQ89mf6Se0Gm/eq3Q5j806h3/yEOlVqgNWwxtrqnuFK9sCyGiF50X43D0i
+         2lLF30thWJzXcWNWmf0kbr1hhVV+n3fyccKllre7eNb8MD8fYvh9RmlPaXIbQeFdcmvB
+         Mi9E3pkM7fR9QkC/BMKREY0PBhtpSfdlJdh6SUD8LotH2TtS3QGm1V8uz7OBYIKWYckM
+         xcKv1YpvlmtDdteOs/FZ8SadaSHRZfI+kRrxD5mWC73nrj9CJ+HYswX9oacLwBXQ8oU1
+         HWa9+ljzm6eaFPBKpEQDUQT6YKGAvYayaBrzm87Zw2ui98cFQgXsDBeZRFggRc7twVjk
+         yy2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m8e1t2URI8U7vsMzc9OwFUvFf9TchHday/nZmdlm/Bc=;
-        b=NXjgp6+L7vrAwwqtQmfpEq4d2KqQB7TlZmPy1+maUoA/wIQgNb5n9NrOVEteCWMNaY
-         nmcS6625eMtzFuO7RUDRJ8A0SESm87Fb/11E8FBDYVlp7NvUlWt5IDL/2kqjjbfrT7vW
-         z0cKBagfcLtuJdVoHUSXE58CgkDAseesyHYN1EwnkmQWXWmOODTsTqqDufyJP5iMasUR
-         581Yw/uDQr3aIV2tdh5o9LTYj789B31M8cq9majAsNG/8C36DIK3TcI+qy03157jMqeY
-         kvdqi2jS+bjedsEOy+9krV5noRbqIBfBZeDLwRvsZhn3k9RjjjMeaGQcvXc1h9xeA7Bz
-         yrHw==
-X-Gm-Message-State: ANhLgQ0TXZ4XBO/EDRIpity5d07NcAlhRmuPvkXFe4SVB0HSVJ4NOe/j
-        BPsOBpN9RyDvckkpphItKH0TuQ==
-X-Google-Smtp-Source: ADFU+vs7IQPv1SwKkkfEK42tDG3IIZh7dDMSegkFSdNrKQY6L07g3w09IacJgdU3HOCbM7FKaYHRGw==
-X-Received: by 2002:aed:2415:: with SMTP id r21mr5456624qtc.82.1585324299805;
-        Fri, 27 Mar 2020 08:51:39 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6d7CjkKwOJ6/75cMo6cG150E0b5j4qklpYgJXNLC6is=;
+        b=bJN87Yv4Tpm/4FP01pxnY5cWWQQiHe+sZiP1GMxJFxXRTplcVn/yAEVpKykWg29q73
+         or6D+4gxdxxBHyPwo/JPmAWEhGxzC+7c2vMIgX+zy7Wp9B+Jt7NA1+29hwV/XeR86e1e
+         ovgB7SoQEyJzP/G9z27cm+cWpgaKGSeacrdN67F5IbarUKxb6RmrEGWxbUkFqq7G1Opd
+         wA1tzGiYZlc7nULugZSd0EBESwDLkj4WVDS9mI4lrFB8BseiyEdwHjwqjXFS19+8Ss0m
+         rWuVkss+kb1R4P44FcCyk9RZhwtpKte3rSz1Jy+RJxJLyFMvlSQ/Ms1sIn1o50BOIycU
+         NPLQ==
+X-Gm-Message-State: ANhLgQ3AoquIS0MMB1mGX+//xtAgA+yzrpVjOMRPnQvU09unrqas6HD4
+        VvvIuTMjUuBP1FEMSnxZndaYng==
+X-Google-Smtp-Source: ADFU+vtNjGH2j2KjqdN1B464a5k7E/2Bo0HG17gxirwAirXD4vOznGQ1x4vOEDCunyE8HVmhnCEadw==
+X-Received: by 2002:a05:6214:1863:: with SMTP id eh3mr14444312qvb.71.1585325287800;
+        Fri, 27 Mar 2020 09:08:07 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d2sm3967804qkl.98.2020.03.27.08.51.39
+        by smtp.gmail.com with ESMTPSA id 17sm3945919qkm.105.2020.03.27.09.08.06
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 27 Mar 2020 08:51:39 -0700 (PDT)
+        Fri, 27 Mar 2020 09:08:06 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jHrGk-0002JY-Io; Fri, 27 Mar 2020 12:51:38 -0300
-Date:   Fri, 27 Mar 2020 12:51:38 -0300
+        id 1jHrWg-0006Jy-17; Fri, 27 Mar 2020 13:08:06 -0300
+Date:   Fri, 27 Mar 2020 13:08:06 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 14/17] infiniband: pa_vnic_encap.h: get rid of a warning
-Message-ID: <20200327155138.GX20941@ziepe.ca>
-References: <cover.1584456635.git.mchehab+huawei@kernel.org>
- <9dce702510505556d75a13d9641e09218a4b4a65.1584456635.git.mchehab+huawei@kernel.org>
- <20200319003645.GH20941@ziepe.ca>
- <20200327153226.1fed1835@coco.lan>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next v1 0/5] Introduce dynamic UAR allocation mode
+Message-ID: <20200327160806.GA24265@ziepe.ca>
+References: <20200324060143.1569116-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200327153226.1fed1835@coco.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200324060143.1569116-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 03:32:26PM +0100, Mauro Carvalho Chehab wrote:
-> Em Wed, 18 Mar 2020 21:36:45 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> escreveu:
+On Tue, Mar 24, 2020 at 08:01:38AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> > On Tue, Mar 17, 2020 at 03:54:23PM +0100, Mauro Carvalho Chehab wrote:
-> > > The right markup for a variable is @foo, and not @foo[].
-> > > 
-> > > Using a wrong markup caused this warning:
-> > > 
-> > > 	./drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h:243: WARNING: Inline strong start-string without end-string.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > >  drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)  
-> > 
-> > Do you want this to go to the RDMA tree? I wasn't cc'd on the cover
-> > letter
+> Changelog:
+> v1: * Added patch that moved mlx5_bfreg_info from global header to the mlx5_ib.h
+>     * No other changes.
+> v0: * https://lore.kernel.org/linux-rdma/20200318124329.52111-1-leon@kernel.org
 > 
-> Sorry for not answering earlier. Got sidetracked with other things.
+> ----------------------------------------------------------------------------------
 > 
-> Yeah, if there are still time, feel free to pick it. Otherwise, 
-> I'll likely send again after the merge window, to be applied either 
-> by you or via the docs tree.
+> >From Yishai,
+> 
+> This series exposes API to enable a dynamic allocation and management of a
+> UAR which now becomes to be a regular uobject.
+> 
+> Moving to that mode enables allocating a UAR only upon demand and drop the
+> redundant static allocation of UARs upon context creation.
+> 
+> In addition, it allows master and secondary processes that own the same command
+> FD to allocate and manage UARs according to their needs, this can’t be achieved
+> today.
+> 
+> As part of this option, QP & CQ creation flows were adapted to support this
+> dynamic UAR mode once asked by user space.
+> 
+> Once this mode is asked by mlx5 user space driver on a given context, it will
+> be mutual exclusive, means both the static and legacy dynamic modes for using
+> UARs will be blocked.
+> 
+> The legacy modes are supported for backward compatible reasons, looking
+> forward we expect this new mode to be the default.
+> 
+> Thanks
+> 
+> Leon Romanovsky (1):
+>   IB/mlx5: Limit the scope of struct mlx5_bfreg_info to mlx5_ib
+> 
+> Yishai Hadas (4):
+>   IB/mlx5: Expose UAR object and its alloc/destroy commands
+>   IB/mlx5: Extend CQ creation to get uar page index from user space
+>   IB/mlx5: Extend QP creation to get uar page index from user space
+>   IB/mlx5: Move to fully dynamic UAR mode once user space supports it
 
-Sure, done
+Applied to for-next, thanks
 
-Thanks,
 Jason
