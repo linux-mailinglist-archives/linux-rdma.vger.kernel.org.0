@@ -2,83 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C413195903
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 15:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11ED4195A20
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 16:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgC0Occ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 10:32:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbgC0Occ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Mar 2020 10:32:32 -0400
-Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD410206F2;
-        Fri, 27 Mar 2020 14:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585319551;
-        bh=rGsnUkAfzHyC/Eb7Gb/9HXJVVTaSwN/ewijdlwINBOU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n3cS6pSNtwlXzCsTj6mOeaL7HmPD7n5lnu3s86Wx38DfXbaogmfWvwo7J21xmtK0B
-         04J+hvJJSDEE2sOv6nZEe2LXSjDNrE+NG0xqFSG97KD3SXkp5WSsMmsFx6U1a5brcb
-         zKZ+wJBsxCudgmlFddWCqbGFwNlar9IjMK/1FcNA=
-Date:   Fri, 27 Mar 2020 15:32:26 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 14/17] infiniband: pa_vnic_encap.h: get rid of a warning
-Message-ID: <20200327153226.1fed1835@coco.lan>
-In-Reply-To: <20200319003645.GH20941@ziepe.ca>
-References: <cover.1584456635.git.mchehab+huawei@kernel.org>
-        <9dce702510505556d75a13d9641e09218a4b4a65.1584456635.git.mchehab+huawei@kernel.org>
-        <20200319003645.GH20941@ziepe.ca>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726959AbgC0Pon (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 11:44:43 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:38371 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgC0Pom (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 11:44:42 -0400
+Received: by mail-il1-f174.google.com with SMTP id n13so1815231ilm.5;
+        Fri, 27 Mar 2020 08:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=2ykPEOgSq0wavRzazX4tMFg+Ejah2L4TJdy5WsFJqoE=;
+        b=ZtiQqMEVUOYnpBfmeFamFP5oTnv52BpsMtztqk0PgOAcQ8mqHLTea3sDABawgsY+JR
+         B/nKBv93hPGt1VR9ZYw1bjcJQro11uSEEM2uzW3wg5UWccmTomhEg57mkDyXjkmkW9C2
+         /z2eXnv6TXBmYIKWG0NNWxNAx5Vx+VlqvvN7EvcsCcF7mi//Fg17odOixCw2UK/BcTig
+         J1/N0AoMKRpJB7zSsJD7buGsfKoUhj/4fVj8br3JW8G+16Vjm/iEZrai97KBStyMZgMA
+         zqKMKJG/vUCVft8iEVUJKmaEzNw00h2dyfY+eLQs/JmuNDTw/ZT67h5fYhLXJa3UHH2E
+         9zxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:message-id:subject:from:to:cc:date
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=2ykPEOgSq0wavRzazX4tMFg+Ejah2L4TJdy5WsFJqoE=;
+        b=V1hbepaEzA5Mg6dN5lgch4tbiEb3SYkNOdEtbBGEZLzTt7UKJvg45xP38tJcfg1mlO
+         Ks53tJVag7bmoF99diIUF1FQbYR9JOBmgGWnMxBY6NEJ+D5ViEWkVYyDZxxNGk/Y/jtI
+         E419YyjMNRdD113vqEmaNgC1pk3Bxi0IF0UNT/6/j6URI/aJk0rg14B5rbDo3Z2pA4bw
+         q75IuMIror5IWL6rU4b9t/ug0Y3OwfkBI8B5RRxSQj/gfuh4XnbsV997yVVXZiL7/GPI
+         Yp+spj8iwIDibB+VgdXVCO3hFlU6wCkrfMI+sJaFWoiI50WWGiiKwdRzmFfs2r1sC8+j
+         ph7A==
+X-Gm-Message-State: ANhLgQ0gAEWdCqDfA7LFTIspR9+iOEOowxbg/G14Vl7mMAG0sL8Y3eqx
+        oRSbwoCyNekPliX7d0tAFeHWxHlT
+X-Google-Smtp-Source: ADFU+vsBNrx3qZGgKUul2SAgXNQL/V5EDeYBgCogrXc+QD75aVEy7rkiUVNdIGUoFVJ0tMXQDis9zQ==
+X-Received: by 2002:a92:3b9c:: with SMTP id n28mr14405007ilh.53.1585323881480;
+        Fri, 27 Mar 2020 08:44:41 -0700 (PDT)
+Received: from gouda.nowheycreamery.com (c-68-32-74-190.hsd1.mi.comcast.net. [68.32.74.190])
+        by smtp.googlemail.com with ESMTPSA id h70sm2021930ilf.8.2020.03.27.08.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Mar 2020 08:44:40 -0700 (PDT)
+Message-ID: <4efff0ad2ddd1db5a5c067ce1d450edd1da46bbc.camel@gmail.com>
+Subject: [GIT PULL] Please pull NFSoRDMA Client Updates for 5.7
+From:   Anna Schumaker <schumaker.anna@gmail.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Date:   Fri, 27 Mar 2020 11:44:40 -0400
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Em Wed, 18 Mar 2020 21:36:45 -0300
-Jason Gunthorpe <jgg@ziepe.ca> escreveu:
+Hi Trond,
 
-> On Tue, Mar 17, 2020 at 03:54:23PM +0100, Mauro Carvalho Chehab wrote:
-> > The right markup for a variable is @foo, and not @foo[].
-> > 
-> > Using a wrong markup caused this warning:
-> > 
-> > 	./drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h:243: WARNING: Inline strong start-string without end-string.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)  
-> 
-> Do you want this to go to the RDMA tree? I wasn't cc'd on the cover
-> letter
+The following changes since commit fb33c6510d5595144d585aa194d377cf74d31911:
 
-Sorry for not answering earlier. Got sidetracked with other things.
+  Linux 5.6-rc6 (2020-03-15 15:01:23 -0700)
 
-Yeah, if there are still time, feel free to pick it. Otherwise, 
-I'll likely send again after the merge window, to be applied either 
-by you or via the docs tree.
+are available in the Git repository at:
 
-> 
-> Otherwise
-> 
-> Acked-by: Jason Gunthorpe <jgg@mellanox.com>
->  
-> Thanks,
-> Jason
+  git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-rdma-for-5.7-1
 
+for you to fetch changes up to e28ce90083f032ca0e8ea03478f5b6a38f5930f7:
 
+  xprtrdma: kmalloc rpcrdma_ep separate from rpcrdma_xprt (2020-03-27 10:47:25
+-0400)
+
+----------------------------------------------------------------
+New Features:
+- Allow one active connection and several zombie connections to prevent
+  blocking if the remote server is unresponsive.
+
+Bugfixes and Cleanups:
+- Enhance MR-related trace points 
+- Refactor connection set-up and disconnect functions
+- Make Protection Domains per-connection instead of per-transport
+- Merge struct rpcrdma_ia into rpcrdma_ep
 
 Thanks,
-Mauro
+Anna
+----------------------------------------------------------------
+
+Chuck Lever (12):
+      xprtrdma: Enhance MR-related trace points
+      xprtrdma: Invoke rpcrdma_ep_create() in the connect worker
+      xprtrdma: Refactor frwr_init_mr()
+      xprtrdma: Clean up the post_send path
+      xprtrdma: Refactor rpcrdma_ep_connect() and rpcrdma_ep_disconnect()
+      xprtrdma: Allocate Protection Domain in rpcrdma_ep_create()
+      xprtrdma: Invoke rpcrdma_ia_open in the connect worker
+      xprtrdma: Remove rpcrdma_ia::ri_flags
+      xprtrdma: Disconnect on flushed completion
+      xprtrdma: Merge struct rpcrdma_ia into struct rpcrdma_ep
+      xprtrdma: Extract sockaddr from struct rdma_cm_id
+      xprtrdma: kmalloc rpcrdma_ep separate from rpcrdma_xprt
+
+ include/trace/events/rpcrdma.h    | 153 ++++++++++------------
+ net/sunrpc/xprtrdma/backchannel.c |   8 +-
+ net/sunrpc/xprtrdma/frwr_ops.c    | 152 +++++++++++-----------
+ net/sunrpc/xprtrdma/rpc_rdma.c    |  32 ++---
+ net/sunrpc/xprtrdma/transport.c   |  72 ++++-------
+ net/sunrpc/xprtrdma/verbs.c       | 679 +++++++++++++++++++++++++++++++++++++
+-------------------------------------------------------------
+ net/sunrpc/xprtrdma/xprt_rdma.h   |  89 +++++--------
+ 7 files changed, 473 insertions(+), 712 deletions(-)
+
