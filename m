@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8B1195C4C
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 18:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB7E195C45
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 18:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727636AbgC0RP6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 13:15:58 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:44789 "EHLO
+        id S1727612AbgC0RPx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 13:15:53 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:51235 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727473AbgC0RPw (ORCPT
+        with ESMTP id S1727696AbgC0RPw (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 13:15:52 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 27 Mar 2020 20:15:47 +0300
 Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02RHFjjC004869;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02RHFjjD004869;
         Fri, 27 Mar 2020 20:15:47 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
@@ -23,9 +23,9 @@ To:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
 Cc:     idanb@mellanox.com, axboe@kernel.dk, maxg@mellanox.com,
         vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
         israelr@mellanox.com, jgg@mellanox.com
-Subject: [PATCH 09/17] nvmet: prepare metadata request
-Date:   Fri, 27 Mar 2020 20:15:37 +0300
-Message-Id: <20200327171545.98970-11-maxg@mellanox.com>
+Subject: [PATCH 10/17] nvmet: add metadata characteristics for a namespace
+Date:   Fri, 27 Mar 2020 20:15:38 +0300
+Message-Id: <20200327171545.98970-12-maxg@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200327171545.98970-1-maxg@mellanox.com>
 References: <20200327171545.98970-1-maxg@mellanox.com>
@@ -38,151 +38,78 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Israel Rukshin <israelr@mellanox.com>
 
-Allocate the metadata SGL buffers and set metadata fields for the
-request. This is a preparation for adding metadata support over the
-fabrics.
+Fill those namespace fields from the block device format for adding
+metadata (T10-PI) over fabric support with block devices.
 
 Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- drivers/nvme/target/core.c  | 48 ++++++++++++++++++++++++++++++++++++++-------
- drivers/nvme/target/nvmet.h |  5 +++++
- 2 files changed, 46 insertions(+), 7 deletions(-)
+ drivers/nvme/target/io-cmd-bdev.c | 22 ++++++++++++++++++++++
+ drivers/nvme/target/nvmet.h       |  3 +++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index b685f99d..3899b2b4 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -873,13 +873,17 @@ bool nvmet_req_init(struct nvmet_req *req, struct nvmet_cq *cq,
- 	req->sq = sq;
- 	req->ops = ops;
- 	req->sg = NULL;
-+	req->md_sg = NULL;
- 	req->sg_cnt = 0;
-+	req->md_sg_cnt = 0;
- 	req->transfer_len = 0;
-+	req->md_len = 0;
- 	req->cqe->status = 0;
- 	req->cqe->sq_head = 0;
- 	req->ns = NULL;
- 	req->error_loc = NVMET_NO_ERROR_LOC;
- 	req->error_slba = 0;
-+	req->use_md = false;
- 
- 	trace_nvmet_req_init(req, req->cmd);
- 
-@@ -962,6 +966,7 @@ bool nvmet_check_data_len_lte(struct nvmet_req *req, size_t data_len)
- int nvmet_req_alloc_sgl(struct nvmet_req *req)
+diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
+index ea0e596..bdf611f 100644
+--- a/drivers/nvme/target/io-cmd-bdev.c
++++ b/drivers/nvme/target/io-cmd-bdev.c
+@@ -50,6 +50,9 @@ void nvmet_bdev_set_limits(struct block_device *bdev, struct nvme_id_ns *id)
+ int nvmet_bdev_ns_enable(struct nvmet_ns *ns)
  {
- 	struct pci_dev *p2p_dev = NULL;
-+	int data_len = req->transfer_len - req->md_len;
+ 	int ret;
++#ifdef CONFIG_BLK_DEV_INTEGRITY
++	struct blk_integrity *bi;
++#endif
  
- 	if (IS_ENABLED(CONFIG_PCI_P2PDMA)) {
- 		if (req->sq->ctrl && req->ns)
-@@ -971,11 +976,23 @@ int nvmet_req_alloc_sgl(struct nvmet_req *req)
- 		req->p2p_dev = NULL;
- 		if (req->sq->qid && p2p_dev) {
- 			req->sg = pci_p2pmem_alloc_sgl(p2p_dev, &req->sg_cnt,
--						       req->transfer_len);
--			if (req->sg) {
--				req->p2p_dev = p2p_dev;
--				return 0;
-+						       data_len);
-+			if (!req->sg)
-+				goto fallback;
-+
-+			if (req->md_len) {
-+				req->md_sg =
-+					pci_p2pmem_alloc_sgl(p2p_dev,
-+							     &req->md_sg_cnt,
-+							     req->md_len);
-+				if (!req->md_sg) {
-+					pci_p2pmem_free_sgl(req->p2p_dev,
-+							    req->sg);
-+					goto fallback;
-+				}
- 			}
-+			req->p2p_dev = p2p_dev;
-+			return 0;
- 		}
- 
- 		/*
-@@ -984,23 +1001,40 @@ int nvmet_req_alloc_sgl(struct nvmet_req *req)
- 		 */
+ 	ns->bdev = blkdev_get_by_path(ns->device_path,
+ 			FMODE_READ | FMODE_WRITE, NULL);
+@@ -64,6 +67,25 @@ int nvmet_bdev_ns_enable(struct nvmet_ns *ns)
  	}
- 
--	req->sg = sgl_alloc(req->transfer_len, GFP_KERNEL, &req->sg_cnt);
-+fallback:
-+	req->sg = sgl_alloc(data_len, GFP_KERNEL, &req->sg_cnt);
- 	if (unlikely(!req->sg))
- 		return -ENOMEM;
- 
-+	if (req->md_len) {
-+		req->md_sg = sgl_alloc(req->md_len, GFP_KERNEL,
-+					 &req->md_sg_cnt);
-+		if (unlikely(!req->md_sg)) {
-+			sgl_free(req->sg);
-+			return -ENOMEM;
-+		}
+ 	ns->size = i_size_read(ns->bdev->bd_inode);
+ 	ns->blksize_shift = blksize_bits(bdev_logical_block_size(ns->bdev));
++
++	ns->md_type = 0;
++	ns->ms = 0;
++#ifdef CONFIG_BLK_DEV_INTEGRITY
++	bi = bdev_get_integrity(ns->bdev);
++	if (bi) {
++		ns->ms = bi->tuple_size;
++		if (bi->profile == &t10_pi_type1_crc)
++			ns->md_type = NVME_NS_DPS_PI_TYPE1;
++		else if (bi->profile == &t10_pi_type3_crc)
++			ns->md_type = NVME_NS_DPS_PI_TYPE3;
++		else
++			/* Unsupported metadata type */
++			ns->ms = 0;
 +	}
++
++	pr_debug("ms %d md_type %d\n", ns->ms, ns->md_type);
++#endif
 +
  	return 0;
  }
- EXPORT_SYMBOL_GPL(nvmet_req_alloc_sgl);
- 
- void nvmet_req_free_sgl(struct nvmet_req *req)
- {
--	if (req->p2p_dev)
-+	if (req->p2p_dev) {
- 		pci_p2pmem_free_sgl(req->p2p_dev, req->sg);
--	else
-+		if (req->md_sg)
-+			pci_p2pmem_free_sgl(req->p2p_dev, req->md_sg);
-+	} else {
- 		sgl_free(req->sg);
-+		if (req->md_sg)
-+			sgl_free(req->md_sg);
-+	}
- 
- 	req->sg = NULL;
-+	req->md_sg = NULL;
- 	req->sg_cnt = 0;
-+	req->md_sg_cnt = 0;
- }
- EXPORT_SYMBOL_GPL(nvmet_req_free_sgl);
  
 diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
-index 421dff3..8c75667 100644
+index 8c75667..f5f93d4 100644
 --- a/drivers/nvme/target/nvmet.h
 +++ b/drivers/nvme/target/nvmet.h
-@@ -302,6 +302,7 @@ struct nvmet_req {
- 	struct nvmet_cq		*cq;
- 	struct nvmet_ns		*ns;
- 	struct scatterlist	*sg;
-+	struct scatterlist	*md_sg;
- 	struct bio_vec		inline_bvec[NVMET_MAX_INLINE_BIOVEC];
- 	union {
- 		struct {
-@@ -315,8 +316,10 @@ struct nvmet_req {
- 		} f;
- 	};
- 	int			sg_cnt;
-+	int			md_sg_cnt;
- 	/* data length as parsed from the SGL descriptor: */
- 	size_t			transfer_len;
-+	size_t			md_len;
+@@ -19,6 +19,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/blkdev.h>
+ #include <linux/radix-tree.h>
++#include <linux/t10-pi.h>
  
- 	struct nvmet_port	*port;
+ #define NVMET_ASYNC_EVENTS		4
+ #define NVMET_ERROR_LOG_SLOTS		128
+@@ -77,6 +78,8 @@ struct nvmet_ns {
  
-@@ -327,6 +330,8 @@ struct nvmet_req {
- 	struct device		*p2p_client;
- 	u16			error_loc;
- 	u64			error_slba;
-+	/* Metadata support */
-+	bool			use_md;
+ 	int			use_p2pmem;
+ 	struct pci_dev		*p2p_dev;
++	int			md_type;
++	int			ms;
  };
  
- extern struct workqueue_struct *buffered_io_wq;
+ static inline struct nvmet_ns *to_nvmet_ns(struct config_item *item)
 -- 
 1.8.3.1
 
