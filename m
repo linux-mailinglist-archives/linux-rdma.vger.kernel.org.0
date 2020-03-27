@@ -2,37 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB191951AF
+	by mail.lfdr.de (Postfix) with ESMTP id 18EA41951AE
 	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 08:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgC0HDO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 03:03:14 -0400
-Received: from mga05.intel.com ([192.55.52.43]:17627 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgC0HDN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1725942AbgC0HDN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 27 Mar 2020 03:03:13 -0400
-IronPort-SDR: x5zLexNvb23KsYKbJiWKxY7+nyHLzvvFFcXifOyyqIPHiIhwPvbknlF6hcZI4TyIcRLR3fkdwn
- 44ZWeCSa3MKQ==
+Received: from mga11.intel.com ([192.55.52.93]:12567 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbgC0HDN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Mar 2020 03:03:13 -0400
+IronPort-SDR: BOFqEfjCVQqclFfds/Sbxr1KsFXBb/FolItdybibCHjjs1DIzwfPndHdYnZgw4zm0e3WL8bq41
+ q8t0e/TOiDkg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2020 00:03:13 -0700
-IronPort-SDR: AKc62b68JMUosnwSNLXq/NBkYaMpOIO5ibSXad9JcyXiYADfMnPpOL7cYGeZUyJERLZ3JfkcU4
- GXXcrVUo+oig==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2020 00:03:12 -0700
+IronPort-SDR: 9zbdT4zt7JPvrdZnrQUKOzeht0QJcxFertsKPS+rd53+ZeU+RTykmOUxpuM/Wx9pGqUHcJ1VjH
+ /GEb0VMbQDfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,311,1580803200"; 
-   d="scan'208";a="420998004"
+   d="scan'208";a="326811324"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 27 Mar 2020 00:03:11 -0700
+  by orsmga001.jf.intel.com with ESMTP; 27 Mar 2020 00:03:10 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jHj1K-000EJz-OK; Fri, 27 Mar 2020 15:03:10 +0800
-Date:   Fri, 27 Mar 2020 15:02:52 +0800
+        id 1jHj1K-000EFf-5Q; Fri, 27 Mar 2020 15:03:10 +0800
+Date:   Fri, 27 Mar 2020 15:03:01 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:hmm] BUILD SUCCESS 08ddddda667b3b7aaac10641418283f78118c5cd
-Message-ID: <5e7da51c.FN7cp0YOtOnPpDbl%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 23ab5261e29b6b95803ee8dc919ae76e260b358d
+Message-ID: <5e7da525.DQw46wq1s5Zdvi1q%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -42,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  hmm
-branch HEAD: 08ddddda667b3b7aaac10641418283f78118c5cd  mm/hmm: check the device private page owner in hmm_range_fault()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 23ab5261e29b6b95803ee8dc919ae76e260b358d  IB/hfi1: Use scnprintf() for avoiding potential buffer overflow
 
 elapsed time: 487m
 
-configs tested: 146
+configs tested: 152
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -75,6 +76,7 @@ sh                            titan_defconfig
 parisc                            allnoconfig
 h8300                       h8s-sim_defconfig
 sh                          rsk7269_defconfig
+powerpc                           allnoconfig
 m68k                           sun3_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
@@ -104,7 +106,6 @@ arc                              allyesconfig
 arc                                 defconfig
 microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
-powerpc                           allnoconfig
 powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
@@ -115,9 +116,9 @@ mips                              allnoconfig
 mips                             allyesconfig
 mips                      fuloong2e_defconfig
 mips                      malta_kvm_defconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
 parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
 x86_64               randconfig-a001-20200326
 x86_64               randconfig-a002-20200326
 x86_64               randconfig-a003-20200326
@@ -135,10 +136,10 @@ h8300                randconfig-a001-20200326
 microblaze           randconfig-a001-20200326
 nios2                randconfig-a001-20200326
 sparc64              randconfig-a001-20200326
-s390                 randconfig-a001-20200326
 csky                 randconfig-a001-20200326
-xtensa               randconfig-a001-20200326
 openrisc             randconfig-a001-20200326
+s390                 randconfig-a001-20200326
+xtensa               randconfig-a001-20200326
 sh                   randconfig-a001-20200326
 x86_64               randconfig-c001-20200326
 x86_64               randconfig-c002-20200326
@@ -158,6 +159,12 @@ x86_64               randconfig-f003-20200326
 i386                 randconfig-f001-20200326
 i386                 randconfig-f002-20200326
 i386                 randconfig-f003-20200326
+x86_64               randconfig-g001-20200327
+x86_64               randconfig-g002-20200327
+x86_64               randconfig-g003-20200327
+i386                 randconfig-g001-20200327
+i386                 randconfig-g002-20200327
+i386                 randconfig-g003-20200327
 x86_64               randconfig-h001-20200326
 x86_64               randconfig-h002-20200326
 x86_64               randconfig-h003-20200326
@@ -193,12 +200,12 @@ sparc64                             defconfig
 um                                  defconfig
 um                             i386_defconfig
 um                           x86_64_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
 x86_64                              fedora-25
 x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
