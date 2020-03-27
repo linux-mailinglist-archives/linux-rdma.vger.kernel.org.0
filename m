@@ -2,105 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1BA19572C
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 13:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020AF19572E
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 13:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgC0Mgp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 08:36:45 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37510 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgC0Mgp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 08:36:45 -0400
-Received: by mail-qk1-f194.google.com with SMTP id x3so10532550qki.4
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 05:36:44 -0700 (PDT)
+        id S1726515AbgC0Mhg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 08:37:36 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:37463 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbgC0Mhg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 08:37:36 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z24so7097349qtu.4
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 05:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=fuWoohX/XqCbV9IjPWAnshNnLgyLLeXGtate+NUqmTE=;
-        b=Tv4z/HTa+q1HhDO9N5rGq+VqYchKqn0WDODY3hVOIBJj84iOrvaNfxy4lOdqnKQbdn
-         gYCR6Zey5xdV8qVK55QLzit0ggxH7QsKHWxVRvqvPR3ak3FlOfeQQFM9GonA7vX4wOgU
-         JWif+68Y8mCgG1lTYW/yYmWRZEuO2az5xFhhpO8oP2uFLuGfCK1szAEWdjG93vAuISVO
-         tUN/ZZXavwQYvQAVWJKkmK1ZS3isYU5h3AA2xo2G+VM48iYmXYoEocLDwk/Ih5K+URYA
-         JEd5uudHbprot23Cys+BU1VLmfsz9g3/Qv9ptjWdNnQd1ZeWXvj4Hv+EdUyX4o3/vKsP
-         +MWQ==
+        bh=R0T029vJ/SUKWVLqY5K375bXlsPrFCmutIbwoNf3r04=;
+        b=oCpcelUz7XOBRDyNznFY5WGjoY5SCtER9oe+OfVaRKYN9qj0iumwPTrE+PbhoQ9PHQ
+         3zE24+26lwsYSgiRc5YG5/mfJQ8ArXFhuTFAmshazuL2chytgPOeAeiQPGvkvSHT/P71
+         iGBaqMOjY73JnZMvbwDCQAftyEkflj0zONxYZthlswBsVrMMT53aqD5Etucfvd1Dq6Ov
+         YIcJ0tYPKFvgBfno9v2rJDi5otcl2p2L9072M4ntF02eyJe/a9dRlufVCeWYU6XsEpT9
+         23+rEeeh4smAwU1RulY9/4fpJd0kvX5U/7r6LgOS8tg20ehT6tHmnM6A0NicEMv35ouZ
+         Heyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fuWoohX/XqCbV9IjPWAnshNnLgyLLeXGtate+NUqmTE=;
-        b=pT5aAhlKDYUKbwKe7NWEI3+6f5cNgQJO/zjGdd2pVQTpQiOyN+3uAmyAABS6J02ND+
-         uELpp0SfpzGEiWl+tFK49Jc9MViPUWybxkVx6//2M8js2mU4yDtfoJxIie6MQW/tShcZ
-         DDtxr5eA11wPRwWRC6y+hMBHXDtIwMjPaAESY9cAx6SMwvC2byHLParJ86PX4qnGk4Wj
-         Yz9NuLSpweCkH3X9Pc28u3Y9k00Jbi5lbfascy+lQG6xZ+JVDbJwdFOj8eFwwzrwUgIP
-         xCBcn4AiVko+4sS1D7DnYJEbE9TjE58bDiG1FIwZOy5+PI97fU8GH6q7AVcOODG2QxMM
-         6xhQ==
-X-Gm-Message-State: ANhLgQ2nya3/bdX2fRnCsEhaRPEiUapTTnIz9U21neTZiW14A8um4hwS
-        GQ3KXHCqGAOSsE+pMCzg/oe8xA==
-X-Google-Smtp-Source: ADFU+vvBZCMRKDopbcMK7ramBp2OrFhGpAx1qHSbCS8HR5mQ77eJVJeRQ+AkT/se/1MhyIc5gfm+ZQ==
-X-Received: by 2002:a37:85c2:: with SMTP id h185mr13529418qkd.446.1585312604142;
-        Fri, 27 Mar 2020 05:36:44 -0700 (PDT)
+        bh=R0T029vJ/SUKWVLqY5K375bXlsPrFCmutIbwoNf3r04=;
+        b=GSTwVdaXETHDfebbkpbHjGeKZqz+83xSqC+/74gbkLUnBx2tpqnkp9Kmt3lS0yoLT+
+         VBKd4fWXjvRnxV/1e5z9s0+DLnb02naPCw6j7zXBocMbHGMqMPdvYT3Z0/3oeLMRLcPt
+         K1mbjcSP695oFpv86m8CAq+yLFtMTkaKU3UdDJiceZqG2oM1YPlijfjrTPZOy1qZK9ac
+         05tJcwLN2wPuEbMb3vkVtzHKObpSd3949db4BVFx9b968hzd/GwwBEx3VJ7cEPilscJ8
+         jsLst1iYk38f4K989FA1sPhSMeoZ6JoAbpxiBZrllnSUMpbMcFtUsPCgZqwF9fm2ULAE
+         gA6Q==
+X-Gm-Message-State: ANhLgQ0BXtQitDJ9a1+s7jxNXh4LiRiz2/Cx3vjCfM8C35TLkEdm9Ec2
+        WYFXVvtRcJrsql+rwIbaYTBMLw==
+X-Google-Smtp-Source: ADFU+vvg/5Mz6Rtlw0jUYi0ok1G/kUbyLTgZyhnRG24xJXVp7l2O//zv2kphfg95avK5XpNgtlSAyQ==
+X-Received: by 2002:aed:2da7:: with SMTP id i36mr3780921qtd.84.1585312655204;
+        Fri, 27 Mar 2020 05:37:35 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id s188sm3560767qkh.67.2020.03.27.05.36.43
+        by smtp.gmail.com with ESMTPSA id r29sm3588067qkk.85.2020.03.27.05.37.34
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 27 Mar 2020 05:36:43 -0700 (PDT)
+        Fri, 27 Mar 2020 05:37:34 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jHoE6-0007pk-SB; Fri, 27 Mar 2020 09:36:42 -0300
-Date:   Fri, 27 Mar 2020 09:36:42 -0300
+        id 1jHoEv-0007qx-R1; Fri, 27 Mar 2020 09:37:33 -0300
+Date:   Fri, 27 Mar 2020 09:37:33 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     liweihang <liweihang@huawei.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 04/10] RDMA/hns: Optimize
- hns_roce_alloc_vf_resource()
-Message-ID: <20200327123642.GT20941@ziepe.ca>
-References: <1584674622-52773-1-git-send-email-liweihang@huawei.com>
- <1584674622-52773-5-git-send-email-liweihang@huawei.com>
- <20200326195135.GA27277@ziepe.ca>
- <B82435381E3B2943AA4D2826ADEF0B3A022B650A@DGGEML502-MBS.china.huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next v1 6/7] RDMA/cm: Set flow label of recv_wc
+ based on primary flow label
+Message-ID: <20200327123733.GA6821@ziepe.ca>
+References: <20200322093031.918447-1-leon@kernel.org>
+ <20200322093031.918447-7-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <B82435381E3B2943AA4D2826ADEF0B3A022B650A@DGGEML502-MBS.china.huawei.com>
+In-Reply-To: <20200322093031.918447-7-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 07:09:02AM +0000, liweihang wrote:
-> On 2020/3/27 3:51, Jason Gunthorpe wrote:
-> > On Fri, Mar 20, 2020 at 11:23:36AM +0800, Weihang Li wrote:
-> > 
-> >> @@ -2028,6 +2002,13 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
-> >>  	if (ret)
-> >>  		set_default_caps(hr_dev);
-> >>  
-> >> +	ret = hns_roce_alloc_vf_resource(hr_dev);
-> >> +	if (ret) {
-> >> +		dev_err(hr_dev->dev, "Allocate vf resource fail, ret = %d.\n",
-> >> +			ret);
-> >> +		return ret;
-> >> +	}
-> > 
-> > It is unfortunate these have to remain as dev_err()
-> > 
-> > I've thought about setting the name during ib_alloc_dev, which would
-> > avoid this, what do you think?
-> > 
-> > Jason
-> > 
+On Sun, Mar 22, 2020 at 11:30:30AM +0200, Leon Romanovsky wrote:
+> From: Mark Zhang <markz@mellanox.com>
 > 
-> Hi Jason,
+> In the request handler of the response side, Set flow label of the
+> recv_wc if it is not net. It will be used for all messages sent
+> by the responder.
 > 
-> Thanks for your comments. I agree with you and make a simple test by just
-> moving assign_name() into _ib_alloc_device(), and ibdev_*() works fine
-> anywhere in hns. But I'm not sure if there are any side effects.
+> Signed-off-by: Mark Zhang <markz@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>  drivers/infiniband/core/cm.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> index bbbfa77dbce7..4ab2f71da522 100644
+> +++ b/drivers/infiniband/core/cm.c
+> @@ -2039,6 +2039,7 @@ static int cm_req_handler(struct cm_work *work)
+>  	struct cm_req_msg *req_msg;
+>  	const struct ib_global_route *grh;
+>  	const struct ib_gid_attr *gid_attr;
+> +	struct ib_grh *ibgrh;
+>  	int ret;
+> 
+>  	req_msg = (struct cm_req_msg *)work->mad_recv_wc->recv_buf.mad;
+> @@ -2048,6 +2049,12 @@ static int cm_req_handler(struct cm_work *work)
+>  	if (IS_ERR(cm_id_priv))
+>  		return PTR_ERR(cm_id_priv);
+> 
+> +	ibgrh = work->mad_recv_wc->recv_buf.grh;
+> +	if (!(be32_to_cpu(ibgrh->version_tclass_flow) & IB_GRH_FLOWLABEL_MASK))
+> +		ibgrh->version_tclass_flow |=
+> +			cpu_to_be32(IBA_GET(CM_REQ_PRIMARY_FLOW_LABEL,
+> +					    req_msg));
 
-Hmm. It actually looks like it should work now, older versions may
-have had problems, but this looks OK.
+This doesn't seem right.
+
+Up until the path is established the response should follow the
+reversible GMP rules and the flow_label should come out of the
+request's GRH.
+
+Once we established the return data path and the GMP's switch to using
+the datapath, the flowlabel should be set in something like
+cm_format_paths_from_req()
+
+If you want to switch to using the return data path for REP replies
+earlier then it should be done completely and not only the flow
+label. But somehow I suspect we cannot as this could fail too.
 
 Jason
