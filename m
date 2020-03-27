@@ -2,19 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A731F195C42
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF05195C41
 	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 18:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbgC0RPy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 13:15:54 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:44833 "EHLO
+        id S1727703AbgC0RPz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 13:15:55 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:51302 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727639AbgC0RPw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 13:15:52 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+        with ESMTP id S1727639AbgC0RPz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 13:15:55 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 27 Mar 2020 20:15:48 +0300
 Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02RHFjjI004869;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 02RHFjjJ004869;
         Fri, 27 Mar 2020 20:15:48 +0300
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
@@ -23,9 +23,9 @@ To:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
 Cc:     idanb@mellanox.com, axboe@kernel.dk, maxg@mellanox.com,
         vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
         israelr@mellanox.com, jgg@mellanox.com
-Subject: [PATCH 15/17] nvmet: Add metadata support for block devices
-Date:   Fri, 27 Mar 2020 20:15:43 +0300
-Message-Id: <20200327171545.98970-17-maxg@mellanox.com>
+Subject: [PATCH 16/17] RDMA/rw: Expose maximal page list for a device per 1 MR
+Date:   Fri, 27 Mar 2020 20:15:44 +0300
+Message-Id: <20200327171545.98970-18-maxg@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200327171545.98970-1-maxg@mellanox.com>
 References: <20200327171545.98970-1-maxg@mellanox.com>
@@ -36,148 +36,58 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Israel Rukshin <israelr@mellanox.com>
+ULP's will use this information to determine the maximal data transfer
+size per IO operation.
 
-Create a block IO request for the metadata from the protection SG list.
-
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
 ---
- drivers/nvme/target/io-cmd-bdev.c | 87 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 85 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/rw.c | 14 ++++++++++++--
+ include/rdma/rw.h            |  1 +
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
-index 2e9e309..018acd7 100644
---- a/drivers/nvme/target/io-cmd-bdev.c
-+++ b/drivers/nvme/target/io-cmd-bdev.c
-@@ -164,6 +164,61 @@ static void nvmet_bio_done(struct bio *bio)
- 		bio_put(bio);
+diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
+index 4fad732..edc9bee 100644
+--- a/drivers/infiniband/core/rw.c
++++ b/drivers/infiniband/core/rw.c
+@@ -56,8 +56,17 @@ static inline bool rdma_rw_io_needs_mr(struct ib_device *dev, u8 port_num,
+ 	return false;
  }
  
-+#ifdef CONFIG_BLK_DEV_INTEGRITY
-+static int nvmet_bdev_alloc_bip(struct nvmet_req *req, struct bio *bio,
-+				struct sg_mapping_iter *miter)
-+{
-+	struct blk_integrity *bi;
-+	struct bio_integrity_payload *bip;
-+	struct block_device *bdev = req->ns->bdev;
-+	int rc;
-+	size_t resid, len;
-+
-+	bi = bdev_get_integrity(bdev);
-+	if (unlikely(!bi)) {
-+		pr_err("Unable to locate bio_integrity\n");
-+		return -ENODEV;
-+	}
-+
-+	bip = bio_integrity_alloc(bio, GFP_NOIO,
-+			min_t(unsigned int, req->md_sg_cnt, BIO_MAX_PAGES));
-+	if (IS_ERR(bip)) {
-+		pr_err("Unable to allocate bio_integrity_payload\n");
-+		return PTR_ERR(bip);
-+	}
-+
-+	bip->bip_iter.bi_size = bio_integrity_bytes(bi, bio_sectors(bio));
-+	/* virtual start sector must be in integrity interval units */
-+	bip_set_seed(bip, bio->bi_iter.bi_sector >>
-+		     (bi->interval_exp - SECTOR_SHIFT));
-+
-+	resid = bip->bip_iter.bi_size;
-+	while (resid > 0 && sg_miter_next(miter)) {
-+		len = min_t(size_t, miter->length, resid);
-+		rc = bio_integrity_add_page(bio, miter->page, len,
-+					    offset_in_page(miter->addr));
-+		if (unlikely(rc != len)) {
-+			pr_err("bio_integrity_add_page() failed; %d\n", rc);
-+			sg_miter_stop(miter);
-+			return -ENOMEM;
-+		}
-+
-+		resid -= len;
-+		if (len < miter->length)
-+			miter->consumed -= miter->length - len;
-+	}
-+	sg_miter_stop(miter);
-+
-+	return 0;
-+}
-+#else
-+static int nvmet_bdev_alloc_bip(struct nvmet_req *req, struct bio *bio,
-+				struct sg_mapping_iter *miter)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_BLK_DEV_INTEGRITY */
-+
- static void nvmet_bdev_execute_rw(struct nvmet_req *req)
+-static inline u32 rdma_rw_fr_page_list_len(struct ib_device *dev,
+-					   bool pi_support)
++/**
++ * rdma_rw_fr_page_list_len - return the max number of pages mapped by 1 MR
++ * @dev:	RDMA device that will eventually create a PD for needed MRs
++ * @pi_support:	Whether MRs will be created for protection information offload
++ *
++ * Returns the number of pages that one MR can map for RDMA operation by the
++ * given device. One can determine the maximal data size according to the
++ * result of this function, or chose using multiple MRs for the RDMA operation
++ * as well.
++ */
++u32 rdma_rw_fr_page_list_len(struct ib_device *dev, bool pi_support)
  {
- 	int sg_cnt = req->sg_cnt;
-@@ -171,9 +226,11 @@ static void nvmet_bdev_execute_rw(struct nvmet_req *req)
- 	struct scatterlist *sg;
- 	struct blk_plug plug;
- 	sector_t sector;
--	int op, i;
-+	int op, i, rc;
-+	struct sg_mapping_iter prot_miter;
+ 	u32 max_pages;
  
--	if (!nvmet_check_transfer_len(req, nvmet_rw_data_len(req)))
-+	if (!nvmet_check_transfer_len(req,
-+				      nvmet_rw_data_len(req) + req->md_len))
- 		return;
- 
- 	if (!req->sg_cnt) {
-@@ -208,11 +265,25 @@ static void nvmet_bdev_execute_rw(struct nvmet_req *req)
- 	bio->bi_opf = op;
- 
- 	blk_start_plug(&plug);
-+	if (req->use_md)
-+		sg_miter_start(&prot_miter, req->md_sg, req->md_sg_cnt,
-+			       op == REQ_OP_READ ? SG_MITER_FROM_SG :
-+						   SG_MITER_TO_SG);
-+
- 	for_each_sg(req->sg, sg, req->sg_cnt, i) {
- 		while (bio_add_page(bio, sg_page(sg), sg->length, sg->offset)
- 				!= sg->length) {
- 			struct bio *prev = bio;
- 
-+			if (req->use_md) {
-+				rc = nvmet_bdev_alloc_bip(req, bio,
-+							  &prot_miter);
-+				if (unlikely(rc)) {
-+					bio_io_error(bio);
-+					return;
-+				}
-+			}
-+
- 			bio = bio_alloc(GFP_KERNEL, min(sg_cnt, BIO_MAX_PAGES));
- 			bio_set_dev(bio, req->ns->bdev);
- 			bio->bi_iter.bi_sector = sector;
-@@ -226,6 +297,14 @@ static void nvmet_bdev_execute_rw(struct nvmet_req *req)
- 		sg_cnt--;
- 	}
- 
-+	if (req->use_md) {
-+		rc = nvmet_bdev_alloc_bip(req, bio, &prot_miter);
-+		if (unlikely(rc)) {
-+			bio_io_error(bio);
-+			return;
-+		}
-+	}
-+
- 	submit_bio(bio);
- 	blk_finish_plug(&plug);
+@@ -69,6 +78,7 @@ static inline u32 rdma_rw_fr_page_list_len(struct ib_device *dev,
+ 	/* arbitrary limit to avoid allocating gigantic resources */
+ 	return min_t(u32, max_pages, 256);
  }
-@@ -353,6 +432,10 @@ u16 nvmet_bdev_parse_io_cmd(struct nvmet_req *req)
- 	case nvme_cmd_read:
- 	case nvme_cmd_write:
- 		req->execute = nvmet_bdev_execute_rw;
-+		if (req->sq->ctrl->pi_support && nvmet_ns_has_pi(req->ns)) {
-+			req->use_md = true;
-+			req->md_len = nvmet_rw_md_len(req);
-+		}
- 		return 0;
- 	case nvme_cmd_flush:
- 		req->execute = nvmet_bdev_execute_flush;
++EXPORT_SYMBOL(rdma_rw_fr_page_list_len);
+ 
+ static inline int rdma_rw_inv_key(struct rdma_rw_reg_ctx *reg)
+ {
+diff --git a/include/rdma/rw.h b/include/rdma/rw.h
+index 6ad9dc8..a9bbda7 100644
+--- a/include/rdma/rw.h
++++ b/include/rdma/rw.h
+@@ -69,5 +69,6 @@ unsigned int rdma_rw_mr_factor(struct ib_device *device, u8 port_num,
+ void rdma_rw_init_qp(struct ib_device *dev, struct ib_qp_init_attr *attr);
+ int rdma_rw_init_mrs(struct ib_qp *qp, struct ib_qp_init_attr *attr);
+ void rdma_rw_cleanup_mrs(struct ib_qp *qp);
++u32 rdma_rw_fr_page_list_len(struct ib_device *dev, bool pi_support);
+ 
+ #endif /* _RDMA_RW_H */
 -- 
 1.8.3.1
 
