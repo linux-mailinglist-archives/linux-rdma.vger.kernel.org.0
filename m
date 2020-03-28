@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8E519639B
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 05:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B97E19639E
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 06:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgC1E7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 28 Mar 2020 00:59:14 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:55265 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgC1E7O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 00:59:14 -0400
-Received: by mail-pj1-f66.google.com with SMTP id np9so4796913pjb.4;
-        Fri, 27 Mar 2020 21:59:13 -0700 (PDT)
+        id S1725999AbgC1FAB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Mar 2020 01:00:01 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:52717 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725810AbgC1FAB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 01:00:01 -0400
+Received: by mail-pj1-f68.google.com with SMTP id ng8so4798163pjb.2;
+        Fri, 27 Mar 2020 22:00:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=/Apl6FFfvBMblHz3lu2KBr2CflFfrXNBu1R9exOTI20=;
-        b=iS3h5ugprqC+zVV/FfpmVa17TAt0hrxlESO7pgRln1OiyouI0fLTOrRr4CRuhAEbDw
-         /hZDzTDokMLsAT2oQml5LZOe57PmGgFJm4962d0QM0qZsmav13Sv7tAp0ohmrogyiea0
-         R/UN/9uddJ/OWtHK9tsU64ZKK0LZ+Uz0Kt+1qQloZyHVUWD5AbXFplBXAfT4omkBnxT4
-         JV9wtJ9XogoAaouZcLad8uFjMBASa9Qyn+6iRxAHAUVw/NJc636eUEQu/s785EiDET8T
-         opRcsovJbL6ajeXToNhHtjB2Wy3vP8vXV686UYhvLzUUvMCuUY98YM96MOQLfSjf/lAt
-         r/MA==
-X-Gm-Message-State: ANhLgQ1Bw0hj7OPAyHgUOez2VqUMtU4p6nLbxlMqZgBZzlZXduha+Pip
-        WzSnMT64vOb6wYc7+3DR27Y=
-X-Google-Smtp-Source: ADFU+vvfu22xl2CGu0OY4EOSTDho+Kvn+BFQ4IaPniUVEwa9F3arlgIIZxn0OinvH7yv2hjpJj8SsA==
-X-Received: by 2002:a17:90a:34e:: with SMTP id 14mr3131523pjf.32.1585371552679;
-        Fri, 27 Mar 2020 21:59:12 -0700 (PDT)
+        bh=L4669NroGBW9XLBryKAcQdYv2RuzVeTTkHzEuRlB8Ns=;
+        b=LisnqsBsj45lbggqau70lCzUX47gwY8ej1cd2JqovjMf9EYIRXtn5G8gHVyyqSKPIQ
+         pFut/OigGyiGdQ6ZMgj9jZ1MVrPBOxbFjR3jB6a/2nwGYNpF72vMweKA3gBmk0qRSPbZ
+         kURdhK30ayHptyRh7x10kkZ7W/JI6k10Dg0vZkJN4HwZFgk53E7nmvAdSUHas79jQPxc
+         0MeagEnJnX5icFGGSKWWpZ2UJJxlhZdILla1NdzYOigIN6bhAxLYUSWutaM4NPEYLBEv
+         rHywkMLvXVHfWTD3lFdk0tsVbDlOTZws80X+sGQN68BbSG+iz663jtXUciGh7MC31Xl3
+         Tj8g==
+X-Gm-Message-State: ANhLgQ2Vr3H4Z/QJq4dW5FlMEFzZlxwEsAnB+sy0X/3gYxuqu/1b1t/s
+        xbfgYEG5v+H33KOdYZDoAXY=
+X-Google-Smtp-Source: ADFU+vu0tnsLz6dFMA049Icba0dRqFurginc9TaPwISgkviWXSO9pYJcB42R1jw2Ce+J6N3QZ5ASDQ==
+X-Received: by 2002:a17:90a:af81:: with SMTP id w1mr3126326pjq.14.1585371600528;
+        Fri, 27 Mar 2020 22:00:00 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:3563:edda:f4cf:995c? ([2601:647:4000:d7:3563:edda:f4cf:995c])
-        by smtp.gmail.com with ESMTPSA id q71sm4851843pjb.5.2020.03.27.21.59.11
+        by smtp.gmail.com with ESMTPSA id o29sm5377486pfp.208.2020.03.27.21.59.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Mar 2020 21:59:12 -0700 (PDT)
-Subject: Re: [PATCH v11 18/26] block/rnbd: client: main functionality
+        Fri, 27 Mar 2020 21:59:59 -0700 (PDT)
+Subject: Re: [PATCH v11 19/26] block/rnbd: client: sysfs interface functions
 To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
         linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -42,7 +42,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         pankaj.gupta@cloud.ionos.com
 References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-19-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-20-jinpu.wang@cloud.ionos.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <27b4e9a5-826f-d323-3d19-3f64c79e03eb@acm.org>
-Date:   Fri, 27 Mar 2020 21:59:10 -0700
+Message-ID: <5c710388-c40e-4336-d1d8-b50d4ed3ca85@acm.org>
+Date:   Fri, 27 Mar 2020 21:59:58 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200320121657.1165-19-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20200320121657.1165-20-jinpu.wang@cloud.ionos.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,16 +82,10 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-20 05:16, Jack Wang wrote:
-> +	/*
-> +	 * Nothing was found, establish rtrs connection and proceed further.
-> +	 */
-> +	sess->rtrs = rtrs_clt_open(&rtrs_ops, sessname,
-> +				     paths, path_cnt, RTRS_PORT,
-> +				     sizeof(struct rnbd_iu),
-> +				     RECONNECT_DELAY, BMAX_SEGMENTS,
-> +				     MAX_RECONNECTS);
+> +			ret = rtrs_addr_to_sockaddr(p, strlen(p), RTRS_PORT,
+> +						     &opt->paths[p_cnt]);
 
-Is the server port number perhaps hardcoded in the above code?
+Same question here: has the server port number been hardcoded here?
 
 Thanks,
 
