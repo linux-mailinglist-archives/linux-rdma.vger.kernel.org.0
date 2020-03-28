@@ -2,79 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 635FC19633C
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 04:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D8A196370
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 04:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgC1DDP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Mar 2020 23:03:15 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3424 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726225AbgC1DDP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Mar 2020 23:03:15 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id A6AB346EBB4B39B53B44;
-        Sat, 28 Mar 2020 11:03:09 +0800 (CST)
-Received: from DGGEML502-MBS.china.huawei.com ([169.254.3.252]) by
- DGGEML404-HUB.china.huawei.com ([fe80::b177:a243:7a69:5ab8%31]) with mapi id
- 14.03.0487.000; Sat, 28 Mar 2020 11:03:00 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        oulijun <oulijun@huawei.com>,
-        "Huwei (Xavier)" <huwei87@hisilicon.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "wangxi (M)" <wangxi11@huawei.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2][next] RDMA/hns: Fix uninitialized variable bug
-Thread-Topic: [PATCH v2][next] RDMA/hns: Fix uninitialized variable bug
-Thread-Index: AQHWBKkctrZs8Dqln0e5bv89qkQeTQ==
-Date:   Sat, 28 Mar 2020 03:02:59 +0000
-Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A022B7434@DGGEML502-MBS.china.huawei.com>
-References: <20200328023539.GA32016@embeddedor>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.40.168.149]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727104AbgC1D6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Mar 2020 23:58:14 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:33636 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgC1D6O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 23:58:14 -0400
+Received: by mail-pg1-f195.google.com with SMTP id d17so5643778pgo.0;
+        Fri, 27 Mar 2020 20:58:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6XAzsIkky0iGjjbYAoderOkTetKVIzqFicvOG2WBOm4=;
+        b=Mjg0ddRPutKF8vtTW0kSfJYVKu4clKxS+TnuvIbDnUFVxilpDAxl/fMbHdrkyiokV9
+         WqwguYABxAAo2kLNwPiXjE8Nw/WjDGfmXidHJ3rm1dNQlVfx6T2hnqW6LwCyjLRfHxvD
+         XjPAcxbqP5FNECrwL8e1/bPjE33p6jqEXKyG8LTsmR73HLBWJnJUWD8OeROXGXBS5xid
+         tL1ERiSiDs4Tih0bcTytrQperbaWykrwgA7EPFmnrgbfd7xuDJXtpQDB2/uvrLJ6b6OW
+         b+j+lwfMfEnLggbsulcXSzcqYrQuwTYg6DTj1GBBsMSYzqooNT9OWM+JWDOUJ8CrWeUa
+         9n+w==
+X-Gm-Message-State: ANhLgQ3QG+DvGgWfoVrtOngAROD8XFxdFY1Z3lt60Qs83sCKOSob5f+t
+        FIh6e7EeNhdQT7ttCpUbhAA=
+X-Google-Smtp-Source: ADFU+vuIkXcozYny5SmOxQYHk7T4h1kv+qPHEmquq9IvloG8TxlB4S0eogZhzpiXHpx0N1UJHwGEfg==
+X-Received: by 2002:aa7:9f42:: with SMTP id h2mr2453256pfr.22.1585367892594;
+        Fri, 27 Mar 2020 20:58:12 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:3563:edda:f4cf:995c? ([2601:647:4000:d7:3563:edda:f4cf:995c])
+        by smtp.gmail.com with ESMTPSA id ci18sm4747281pjb.23.2020.03.27.20.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Mar 2020 20:58:11 -0700 (PDT)
+Subject: Re: [PATCH v11 15/26] block: reexport bio_map_kern
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
+        pankaj.gupta@cloud.ionos.com
+References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-16-jinpu.wang@cloud.ionos.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <15f25902-1f5a-a542-a311-c1e86330834b@acm.org>
+Date:   Fri, 27 Mar 2020 20:58:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200320121657.1165-16-jinpu.wang@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/3/28 10:32, Gustavo A. R. Silva wrote:
-> There is a potential execution path in which variable *ret* is returned
-> without being properly initialized, previously.
+On 2020-03-20 05:16, Jack Wang wrote:
+> To avoid duplicate code in rnbd-srv, we need to reexport
+> bio_map_kern.
 > 
-> Fix this by initializing variable *ret* to 0.
+> This reverts commit 00ec4f3039a9e36cbccd1aea82d06c77c440a51c.
 > 
-> Addresses-Coverity-ID: 1491917 ("Uninitialized scalar variable")
-> Fixes: 2f49de21f3e9 ("RDMA/hns: Optimize mhop get flow for multi-hop addressing")
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Suggested-by: Bart Van Assche <bvanassche@acm.org>
+> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 > ---
-> Changes in v2:
->  - Set ret to 0 instead of -ENODEV. Thanks Weihang Li, for the feedback.
+>  block/bio.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->  drivers/infiniband/hw/hns/hns_roce_hem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-> index c96378718f88..263338b90d7a 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-> @@ -603,7 +603,7 @@ static int set_mhop_hem(struct hns_roce_dev *hr_dev,
->  {
->  	struct ib_device *ibdev = &hr_dev->ib_dev;
->  	int step_idx;
-> -	int ret;
-> +	int ret = 0;
->  
->  	if (index->inited & HEM_INDEX_L0) {
->  		ret = hr_dev->hw->set_hem(hr_dev, table, obj, 0);
-> 
+> diff --git a/block/bio.c b/block/bio.c
+> index 94d697217887..9190d68adad7 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -1564,6 +1564,7 @@ struct bio *bio_map_kern(struct request_queue *q, void *data, unsigned int len,
+>  	bio->bi_end_io = bio_map_kern_endio;
+>  	return bio;
+>  }
+> +EXPORT_SYMBOL(bio_map_kern);
 
-Acked-by: Weihang Li <liweihang@huawei.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
