@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B46419682D
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 18:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6B319689E
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 19:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbgC1RlC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 28 Mar 2020 13:41:02 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44983 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgC1RlC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 13:41:02 -0400
-Received: by mail-pg1-f193.google.com with SMTP id 142so6322474pgf.11;
-        Sat, 28 Mar 2020 10:41:01 -0700 (PDT)
+        id S1726265AbgC1Sjx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Mar 2020 14:39:53 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:37347 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgC1Sjw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 14:39:52 -0400
+Received: by mail-pj1-f67.google.com with SMTP id o12so5311624pjs.2;
+        Sat, 28 Mar 2020 11:39:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=jkOHlRAoN+j03l4CPBRNAGNX/d7wFgHYyCjnbfVxJCo=;
-        b=nhJZgSHH6YTorJ/GV9ldVPVWfZM7xn7Ye4miibqHqtlXSXq0YlpRXwep+VlKS/jfyU
-         I8oSDM9W7BEvlOPitqeAlOdR9jFqmdKk464pNuSlXkhdR1sHQLHEghhrh9dkvCmLDBk9
-         EFsD7wQr6kCbYVuZ5FWnEMkV9mjYVGN494nsERgBEoJ6NCyynUpouM78xKy1JoDnYT+k
-         nEKhO3NDPe9VWKZIHKvDLN8JFrMhrUhitb54NByjnOSDPNTvNIKGD3boor4iLG4OXGhr
-         Of/4e/DQ07ZgKp/qq6UmFo4TOWyNaJ2LabWG/C/59HSdyJbVU5ea0+qD5LX/JVNeSG7c
-         jhbw==
-X-Gm-Message-State: ANhLgQ3POo5YM3g35QT4F54JBlDk9Cqlqy2lvPXQA0Lw8maXayWv6r2y
-        GG79iHRRrwrEbfmL5GS+c4M=
-X-Google-Smtp-Source: ADFU+vtRxBcXr0Kaz6brD/hFUX6/7V06bPiXPxeOSYVZ/fPqFFdVtV8hndPJyKfJoBnpTLuICnUEiQ==
-X-Received: by 2002:a63:67c7:: with SMTP id b190mr5289865pgc.289.1585417260586;
-        Sat, 28 Mar 2020 10:41:00 -0700 (PDT)
+        bh=XerZ3Gorggp6JfGE9WxhW/P41bOToikN7aDIdEAHasU=;
+        b=Fgi4zVB+S6Cs2sFQrf5/FkaaH2k2EpnLgL4hyzJK825ASyIblcL03S8wATdRC0CBmk
+         r+QCrRLOEqrxwvPAtdHmxPNS4bW75VC+AuhFycmewDAG32wLqdp2vfMejj2q+14ptkP+
+         hOG1GVNPLDbYc1xbpYiApcPPrdj6UnOLir77sMEWog3QvBPCMi4JW57/d5hj+cu0FYmF
+         Nef0Q4KmrS5hFRLNw9126VX5glK9wLuAN5eURyBiJTaWBtkMnhshZFW9eGgsDxK4Y3fv
+         pAdsB2HJwBpJPOQRfpW6MrJ9SVZ+d4S2I/+3y7wvTLTZMVHsaY4F43XPB8+6NAR0eMN4
+         ElhA==
+X-Gm-Message-State: ANhLgQ1rBvWbFipSzJ6Vk2SykX2WQu14Ts4avsgG0ejzGcuieAlpiOIg
+        TIT5hKjcFAw1NL4YUPkcF0E=
+X-Google-Smtp-Source: ADFU+vsYYKjO2+LiH7X1NsG9tMzGqwyerZnbgfYC0fuyGOSYCllpNPIdjpiLvHCBdUAzbn/j4tW/Jg==
+X-Received: by 2002:a17:90a:37c6:: with SMTP id v64mr6441101pjb.20.1585420791214;
+        Sat, 28 Mar 2020 11:39:51 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:597d:a863:13de:4665? ([2601:647:4000:d7:597d:a863:13de:4665])
-        by smtp.gmail.com with ESMTPSA id x70sm6158596pgd.37.2020.03.28.10.40.58
+        by smtp.gmail.com with ESMTPSA id k20sm6216119pgn.62.2020.03.28.11.39.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Mar 2020 10:40:59 -0700 (PDT)
-Subject: Re: [PATCH v11 21/26] block/rnbd: server: main functionality
+        Sat, 28 Mar 2020 11:39:50 -0700 (PDT)
+Subject: Re: [PATCH v11 22/26] block/rnbd: server: functionality for IO
+ submission to file or block dev
 To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
         linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -42,7 +43,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         pankaj.gupta@cloud.ionos.com
 References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-22-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-23-jinpu.wang@cloud.ionos.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +68,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <ba7c258f-a169-f2d5-3d62-62a7d09908a4@acm.org>
-Date:   Sat, 28 Mar 2020 10:40:57 -0700
+Message-ID: <cfe1dba2-04f7-f74d-af90-c70dce4d85cf@acm.org>
+Date:   Sat, 28 Mar 2020 11:39:49 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200320121657.1165-22-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20200320121657.1165-23-jinpu.wang@cloud.ionos.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,79 +83,83 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-20 05:16, Jack Wang wrote:
-> +static int __read_mostly port_nr = RTRS_PORT;
+> This provides helper functions for IO submission to file or block dev.
 
-Would uint16_t be sufficient for this kernel module parameter?
+Regarding the title of this patch: is file I/O still supported? Wasn't
+that support removed some time ago?
 
-Is this kernel module parameter used anywhere in the hot path? If not,
-should __read_mostly perhaps be left out?
-
-> +module_param_named(port_nr, port_nr, int, 0444);
-> +MODULE_PARM_DESC(port_nr,
-> +		 "The port number server is listening on (default: "
-                                ^^^
-                                the?
-> +		 __stringify(RTRS_PORT)")");
-> +
-> +#define DEFAULT_DEV_SEARCH_PATH "/"
-
-> +static void destroy_device(struct rnbd_srv_dev *dev)
+> +struct rnbd_dev *rnbd_dev_open(const char *path, fmode_t flags,
+> +			       void (*io_cb)(void *priv, int error))
 > +{
-> +	WARN(!list_empty(&dev->sess_dev_list),
-> +	     "Device %s is being destroyed but still in use!\n",
-> +	     dev->id);
-
-Has it been considered to change WARN() into WARN_ONCE()?
-
-> +static int rnbd_srv_rdma_ev(struct rtrs_srv *rtrs, void *priv,
-> +			     struct rtrs_srv_op *id, int dir,
-> +			     void *data, size_t datalen, const void *usr,
-> +			     size_t usrlen)
-> +{
-> +	struct rnbd_srv_session *srv_sess = priv;
-> +	const struct rnbd_msg_hdr *hdr = usr;
-> +	int ret = 0;
-> +	u16 type;
+> +	struct rnbd_dev *dev;
+> +	int ret;
 > +
-> +	if (WARN_ON(!srv_sess))
-> +		return -ENODEV;
-
-Same question here: how about using WARN_ON_ONCE() instead of WARN_ON()?
-
-> +static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
-> +				     const char *dev_name)
-> +{
-> +	char *full_path;
-> +	char *a, *b;
-> +
-> +	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
-> +	if (!full_path)
+> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> +	if (!dev)
 > +		return ERR_PTR(-ENOMEM);
 > +
-> +	/*
-> +	 * Replace %SESSNAME% with a real session name in order to
-> +	 * create device namespace.
-> +	 */
-> +	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
-> +	if (a) {
-> +		int len = a - dev_search_path;
+> +	dev->blk_open_flags = flags;
+> +	dev->bdev = blkdev_get_by_path(path, flags, THIS_MODULE);
+> +	ret = PTR_ERR_OR_ZERO(dev->bdev);
+> +	if (ret)
+> +		goto err;
 > +
-> +		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
-> +			       dev_search_path, srv_sess->sessname, dev_name);
-> +		if (len >= PATH_MAX) {
-> +			pr_err("Tooooo looong path: %s, %s, %s\n",
-> +			       dev_search_path, srv_sess->sessname, dev_name);
-> +			kfree(full_path);
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +	} else {
-> +		snprintf(full_path, PATH_MAX, "%s/%s",
-> +			 dev_search_path, dev_name);
+> +	dev->blk_open_flags	= flags;
+> +	dev->io_cb		= io_cb;
+> +	bdevname(dev->bdev, dev->name);
+> +
+> +	return dev;
+> +
+> +err:
+> +	kfree(dev);
+> +	return ERR_PTR(ret);
+> +}
+
+This function only has one caller so io_cb is always equal to the
+argument passed by that single caller, namely rnbd_endio. If that
+argument and also dev->io_cb would be removed, would that make the hot
+path faster?
+
+> +int rnbd_dev_submit_io(struct rnbd_dev *dev, sector_t sector, void *data,
+> +			size_t len, u32 bi_size, enum rnbd_io_flags flags,
+> +			short prio, void *priv)
+> +{
+> +	struct request_queue *q = bdev_get_queue(dev->bdev);
+> +	struct rnbd_dev_blk_io *io;
+> +	struct bio *bio;
+> +
+> +	/* check if the buffer is suitable for bdev */
+> +	if (WARN_ON(!blk_rq_aligned(q, (unsigned long)data, len)))
+> +		return -EINVAL;
+
+The blk_rq_aligned() check looks weird to me. bio_map_kern() can handle
+data buffers that do not match the DMA alignment requirements, so why to
+refuse data buffers that are not satisfy DMA alignment requirements?
+
+> +	/* Generate bio with pages pointing to the rdma buffer */
+> +	bio = bio_map_kern(q, data, len, GFP_KERNEL);
+> +	if (IS_ERR(bio))
+> +		return PTR_ERR(bio);
+> +
+> +	io = kmalloc(sizeof(*io), GFP_KERNEL);
+> +	if (unlikely(!io)) {
+> +		bio_put(bio);
+> +		return -ENOMEM;
 > +	}
+> +
+> +	io->dev		= dev;
+> +	io->priv	= priv;
+> +
+> +	bio->bi_end_io		= rnbd_dev_bi_end_io;
+> +	bio->bi_private		= io;
+> +	bio->bi_opf		= rnbd_to_bio_flags(flags);
+> +	bio->bi_iter.bi_sector	= sector;
+> +	bio->bi_iter.bi_size	= bi_size;
+> +	bio_set_prio(bio, prio);
+> +	bio_set_dev(bio, dev->bdev);
 
-Has it been considered to use kasprintf() instead of kmalloc() + snprintf()?
-
-Otherwise this patch looks fine to me.
+I think Jason strongly prefers to have a single space at the left of the
+assignment operator.
 
 Thanks,
 
