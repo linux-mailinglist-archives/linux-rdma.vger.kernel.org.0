@@ -2,101 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B52195E9E
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Mar 2020 20:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ABF1962FA
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 02:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgC0T2H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 15:28:07 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.68]:43132 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727423AbgC0T2H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Mar 2020 15:28:07 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 8B92D2C7E90
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Mar 2020 14:28:06 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id HueEjDDb6Sl8qHueEjk7Un; Fri, 27 Mar 2020 14:28:06 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Buqi6OLghYZwwzbP5D9+pYan+g0L6EIsYgrXmMspPF0=; b=mNjug9fnBO0RNjDFqB25HutLRA
-        pdoV97bGFsrtxdD6c4cv0QDOYKWDw3SlNAEGuGvoLSDPmNFuDnqGKEnqQ4IL4ZlHs+3gdeFtt78Tn
-        br8ERDh1FLCl7DGv0CfZHMqPUL+iwqYX6kNZ47qNx3h3nvAyh2G82J0YtCSJ+JzdDbZoqh1/t8Gqw
-        Em4+5auxJtZMOW//BiBwt7TAcHbJxsTptKbMIUjNKBa39hsvSSHVDDwz8iwKYLY174GbWCCPE+H08
-        SD5eGpOKkjyUrWh7EuhThX2KQITdXVIkWrIUgTM34OggWv4HkEk3Mk4boPPT7nZZA6ij1KIfClzdV
-        x4dkxwCw==;
-Received: from cablelink-189-218-116-241.hosts.intercable.net ([189.218.116.241]:45216 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jHueD-002Ixm-1D; Fri, 27 Mar 2020 14:28:05 -0500
-Date:   Fri, 27 Mar 2020 14:31:42 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Lijun Ou <oulijun@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Xi Wang <wangxi11@huawei.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] RDMA/hns: Fix uninitialized variable bug
-Message-ID: <20200327193142.GA32547@embeddedor>
+        id S1726661AbgC1Bzh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Mar 2020 21:55:37 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3480 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726291AbgC1Bzh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Mar 2020 21:55:37 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 27177188061899A9A5E1;
+        Sat, 28 Mar 2020 09:55:34 +0800 (CST)
+Received: from DGGEML502-MBS.china.huawei.com ([169.254.3.252]) by
+ dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0487.000;
+ Sat, 28 Mar 2020 09:55:25 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 04/10] RDMA/hns: Optimize
+ hns_roce_alloc_vf_resource()
+Thread-Topic: [PATCH v2 for-next 04/10] RDMA/hns: Optimize
+ hns_roce_alloc_vf_resource()
+Thread-Index: AQHV/meJCyHjaGwIp0CEti43/V/n0A==
+Date:   Sat, 28 Mar 2020 01:55:24 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A022B7373@DGGEML502-MBS.china.huawei.com>
+References: <1584674622-52773-1-git-send-email-liweihang@huawei.com>
+ <1584674622-52773-5-git-send-email-liweihang@huawei.com>
+ <20200326195135.GA27277@ziepe.ca>
+ <B82435381E3B2943AA4D2826ADEF0B3A022B650A@DGGEML502-MBS.china.huawei.com>
+ <20200327123642.GT20941@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.218.116.241
-X-Source-L: No
-X-Exim-ID: 1jHueD-002Ixm-1D
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: cablelink-189-218-116-241.hosts.intercable.net (embeddedor) [189.218.116.241]:45216
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is a potential execution path in which variable *ret* is returned
-without being properly initialized, previously.
+On 2020/3/27 20:36, Jason Gunthorpe wrote:
+> On Fri, Mar 27, 2020 at 07:09:02AM +0000, liweihang wrote:
+>> On 2020/3/27 3:51, Jason Gunthorpe wrote:
+>>> On Fri, Mar 20, 2020 at 11:23:36AM +0800, Weihang Li wrote:
+>>>
+>>>> @@ -2028,6 +2002,13 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+>>>>  	if (ret)
+>>>>  		set_default_caps(hr_dev);
+>>>>  
+>>>> +	ret = hns_roce_alloc_vf_resource(hr_dev);
+>>>> +	if (ret) {
+>>>> +		dev_err(hr_dev->dev, "Allocate vf resource fail, ret = %d.\n",
+>>>> +			ret);
+>>>> +		return ret;
+>>>> +	}
+>>>
+>>> It is unfortunate these have to remain as dev_err()
+>>>
+>>> I've thought about setting the name during ib_alloc_dev, which would
+>>> avoid this, what do you think?
+>>>
+>>> Jason
+>>>
+>>
+>> Hi Jason,
+>>
+>> Thanks for your comments. I agree with you and make a simple test by just
+>> moving assign_name() into _ib_alloc_device(), and ibdev_*() works fine
+>> anywhere in hns. But I'm not sure if there are any side effects.
+> 
+> Hmm. It actually looks like it should work now, older versions may
+> have had problems, but this looks OK.
+> 
+> Jason
+> 
+OK, I will make a series to modify.
 
-Fix this by initializing variable *ret* to -ENODEV.
-
-Addresses-Coverity-ID: 1491917 ("Uninitialized scalar variable")
-Fixes: 2f49de21f3e9 ("RDMA/hns: Optimize mhop get flow for multi-hop addressing")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/infiniband/hw/hns/hns_roce_hem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index c96378718f88..3fd8100c2b56 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -603,7 +603,7 @@ static int set_mhop_hem(struct hns_roce_dev *hr_dev,
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int step_idx;
--	int ret;
-+	int ret = -ENODEV;
- 
- 	if (index->inited & HEM_INDEX_L0) {
- 		ret = hr_dev->hw->set_hem(hr_dev, table, obj, 0);
--- 
-2.26.0
-
+Thank you
+Weihang
