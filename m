@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6B319689E
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 19:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1D11968E8
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 20:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgC1Sjx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 28 Mar 2020 14:39:53 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:37347 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgC1Sjw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 14:39:52 -0400
-Received: by mail-pj1-f67.google.com with SMTP id o12so5311624pjs.2;
-        Sat, 28 Mar 2020 11:39:51 -0700 (PDT)
+        id S1726751AbgC1TbN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Mar 2020 15:31:13 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:33451 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgC1TbM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 15:31:12 -0400
+Received: by mail-pf1-f196.google.com with SMTP id j1so6391459pfe.0;
+        Sat, 28 Mar 2020 12:31:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=XerZ3Gorggp6JfGE9WxhW/P41bOToikN7aDIdEAHasU=;
-        b=Fgi4zVB+S6Cs2sFQrf5/FkaaH2k2EpnLgL4hyzJK825ASyIblcL03S8wATdRC0CBmk
-         r+QCrRLOEqrxwvPAtdHmxPNS4bW75VC+AuhFycmewDAG32wLqdp2vfMejj2q+14ptkP+
-         hOG1GVNPLDbYc1xbpYiApcPPrdj6UnOLir77sMEWog3QvBPCMi4JW57/d5hj+cu0FYmF
-         Nef0Q4KmrS5hFRLNw9126VX5glK9wLuAN5eURyBiJTaWBtkMnhshZFW9eGgsDxK4Y3fv
-         pAdsB2HJwBpJPOQRfpW6MrJ9SVZ+d4S2I/+3y7wvTLTZMVHsaY4F43XPB8+6NAR0eMN4
-         ElhA==
-X-Gm-Message-State: ANhLgQ1rBvWbFipSzJ6Vk2SykX2WQu14Ts4avsgG0ejzGcuieAlpiOIg
-        TIT5hKjcFAw1NL4YUPkcF0E=
-X-Google-Smtp-Source: ADFU+vsYYKjO2+LiH7X1NsG9tMzGqwyerZnbgfYC0fuyGOSYCllpNPIdjpiLvHCBdUAzbn/j4tW/Jg==
-X-Received: by 2002:a17:90a:37c6:: with SMTP id v64mr6441101pjb.20.1585420791214;
-        Sat, 28 Mar 2020 11:39:51 -0700 (PDT)
+        bh=noIzwJuLliZHQuzVY+AOp3AspAm0g+pmGqKmESWOJsI=;
+        b=NPPYouQ1s+f/HvIKgYxj0ZdGtsYNxo0c6CMbqNEhaF47bxBnX9PQiu9FDmU4GA2N9Y
+         xLJOkAVLyfjsEzhcQR1PM5DyYYRiYQkFrfzc8dxUaw2gmLUWzR6orHZKUkB9IUoZB8gY
+         Pyo8mg3WZCPyCU15i74Fqzs7oPbCODol8ins4bSlU9/KzKwZ463z6pQbSvlQSNwu0juk
+         WU5yE5qdfrjaXPnYxAg+5FASYdimaIJabi71is+XFnaLu900kXBhKO9VJUXnCNSwhESz
+         k4b8MPqpSAhUoOCvMy+IU9D1Z3uZEEld8bZecrueQBrU3lNxJC7KYQ+RzUHCloIYKGku
+         LtBw==
+X-Gm-Message-State: ANhLgQ3hEJrlzpwaJchCCrt0c77WJUNg+vw55MPMi2dRYbdTXEjQZy6z
+        tQ3lTfOjGYs8R3A8ZLfv1PU=
+X-Google-Smtp-Source: ADFU+vvcIKeF3iV6v2EefGwrqyHCoapLTPdFGtNBdxApLk0XGQkaXfEsP+O7HA9b0Y8BocJVBYuROg==
+X-Received: by 2002:a62:3305:: with SMTP id z5mr5673621pfz.297.1585423870738;
+        Sat, 28 Mar 2020 12:31:10 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:597d:a863:13de:4665? ([2601:647:4000:d7:597d:a863:13de:4665])
-        by smtp.gmail.com with ESMTPSA id k20sm6216119pgn.62.2020.03.28.11.39.49
+        by smtp.gmail.com with ESMTPSA id h64sm6616093pfg.191.2020.03.28.12.31.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Mar 2020 11:39:50 -0700 (PDT)
-Subject: Re: [PATCH v11 22/26] block/rnbd: server: functionality for IO
- submission to file or block dev
+        Sat, 28 Mar 2020 12:31:09 -0700 (PDT)
+Subject: Re: [PATCH v11 23/26] block/rnbd: server: sysfs interface functions
 To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
         linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -43,7 +42,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         pankaj.gupta@cloud.ionos.com
 References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-23-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-24-jinpu.wang@cloud.ionos.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -68,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <cfe1dba2-04f7-f74d-af90-c70dce4d85cf@acm.org>
-Date:   Sat, 28 Mar 2020 11:39:49 -0700
+Message-ID: <8ecc1c47-bad0-dadb-7861-8776b89f0174@acm.org>
+Date:   Sat, 28 Mar 2020 12:31:08 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200320121657.1165-23-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20200320121657.1165-24-jinpu.wang@cloud.ionos.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,83 +82,129 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-20 05:16, Jack Wang wrote:
-> This provides helper functions for IO submission to file or block dev.
+> This is the sysfs interface to rnbd mapped devices on server side:
+> 
+>   /sys/devices/virtual/rnbd-server/ctl/devices/<device_name>/
+>     |- block_dev
+>     |  *** link pointing to the corresponding block device sysfs entry
+>     |
+>     |- sessions/<session-name>/
+>     |  *** sessions directory
+>        |
+>        |- read_only
+>        |  *** is devices mapped as read only
+>        |
+>        |- mapping_path
+>           *** relative device path provided by the client during mapping
+> 
 
-Regarding the title of this patch: is file I/O still supported? Wasn't
-that support removed some time ago?
+> +static struct kobj_type ktype = {
+> +	.sysfs_ops	= &kobj_sysfs_ops,
+> +};
 
-> +struct rnbd_dev *rnbd_dev_open(const char *path, fmode_t flags,
-> +			       void (*io_cb)(void *priv, int error))
+From Documentation/kobject.txt: "One important point cannot be
+overstated: every kobject must have a release() method." I think this is
+something that Greg KH feels very strongly about. Please fix this.
+
+> +int rnbd_srv_create_dev_sysfs(struct rnbd_srv_dev *dev,
+> +			       struct block_device *bdev,
+> +			       const char *dir_name)
 > +{
-> +	struct rnbd_dev *dev;
+> +	struct kobject *bdev_kobj;
 > +	int ret;
 > +
-> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return ERR_PTR(-ENOMEM);
+> +	ret = kobject_init_and_add(&dev->dev_kobj, &ktype,
+> +				   rnbd_devs_kobj, dir_name);
+> +	if (ret)
+> +		return ret;
 > +
-> +	dev->blk_open_flags = flags;
-> +	dev->bdev = blkdev_get_by_path(path, flags, THIS_MODULE);
-> +	ret = PTR_ERR_OR_ZERO(dev->bdev);
+> +	ret = kobject_init_and_add(&dev->dev_sessions_kobj,
+> +				   &ktype,
+> +				   &dev->dev_kobj, "sessions");
 > +	if (ret)
 > +		goto err;
 > +
-> +	dev->blk_open_flags	= flags;
-> +	dev->io_cb		= io_cb;
-> +	bdevname(dev->bdev, dev->name);
+> +	bdev_kobj = &disk_to_dev(bdev->bd_disk)->kobj;
+> +	ret = sysfs_create_link(&dev->dev_kobj, bdev_kobj, "block_dev");
+> +	if (ret)
+> +		goto err2;
 > +
-> +	return dev;
+> +	return 0;
 > +
+> +err2:
+> +	kobject_put(&dev->dev_sessions_kobj);
 > +err:
-> +	kfree(dev);
-> +	return ERR_PTR(ret);
+> +	kobject_put(&dev->dev_kobj);
+> +	return ret;
 > +}
 
-This function only has one caller so io_cb is always equal to the
-argument passed by that single caller, namely rnbd_endio. If that
-argument and also dev->io_cb would be removed, would that make the hot
-path faster?
+Please choose more descriptive names for the goto labels, e.g.
+put_sess_kobj and put_dev_kobj.
 
-> +int rnbd_dev_submit_io(struct rnbd_dev *dev, sector_t sector, void *data,
-> +			size_t len, u32 bi_size, enum rnbd_io_flags flags,
-> +			short prio, void *priv)
+> +static ssize_t read_only_show(struct kobject *kobj, struct kobj_attribute *attr,
+> +			      char *page)
 > +{
-> +	struct request_queue *q = bdev_get_queue(dev->bdev);
-> +	struct rnbd_dev_blk_io *io;
-> +	struct bio *bio;
+> +	struct rnbd_srv_sess_dev *sess_dev;
 > +
-> +	/* check if the buffer is suitable for bdev */
-> +	if (WARN_ON(!blk_rq_aligned(q, (unsigned long)data, len)))
-> +		return -EINVAL;
-
-The blk_rq_aligned() check looks weird to me. bio_map_kern() can handle
-data buffers that do not match the DMA alignment requirements, so why to
-refuse data buffers that are not satisfy DMA alignment requirements?
-
-> +	/* Generate bio with pages pointing to the rdma buffer */
-> +	bio = bio_map_kern(q, data, len, GFP_KERNEL);
-> +	if (IS_ERR(bio))
-> +		return PTR_ERR(bio);
+> +	sess_dev = container_of(kobj, struct rnbd_srv_sess_dev, kobj);
 > +
-> +	io = kmalloc(sizeof(*io), GFP_KERNEL);
-> +	if (unlikely(!io)) {
-> +		bio_put(bio);
-> +		return -ENOMEM;
+> +	return scnprintf(page, PAGE_SIZE, "%s\n",
+> +			 (sess_dev->open_flags & FMODE_WRITE) ? "0" : "1");
+> +}
+
+The scnprintf() statement looks overcomplicated. How about the following?
+
+return scnprintf(page, PAGE_SIZE, "%d\n",
+                 (sess_dev->open_flags & FMODE_WRITE) != 0);
+
+> +void rnbd_srv_destroy_dev_session_sysfs(struct rnbd_srv_sess_dev *sess_dev)
+> +{
+> +	DECLARE_COMPLETION_ONSTACK(sysfs_compl);
+> +
+> +	sysfs_remove_group(&sess_dev->kobj,
+> +			   &rnbd_srv_default_dev_session_attr_group);
+> +
+> +	sess_dev->sysfs_release_compl = &sysfs_compl;
+> +	kobject_del(&sess_dev->kobj);
+> +	kobject_put(&sess_dev->kobj);
+> +	wait_for_completion(&sysfs_compl);
+> +}
+
+Why is there a wait_for_completion() call in the above function? I think
+Greg KH strongly disagrees with such calls in functions that remove
+sysfs attributes.
+
+> +int rnbd_srv_create_sysfs_files(void)
+> +{
+> +	int err;
+> +
+> +	rnbd_dev_class = class_create(THIS_MODULE, "rnbd-server");
+> +	if (IS_ERR(rnbd_dev_class))
+> +		return PTR_ERR(rnbd_dev_class);
+> +
+> +	rnbd_dev = device_create(rnbd_dev_class, NULL,
+> +				  MKDEV(0, 0), NULL, "ctl");
+> +	if (IS_ERR(rnbd_dev)) {
+> +		err = PTR_ERR(rnbd_dev);
+> +		goto cls_destroy;
+> +	}
+> +	rnbd_devs_kobj = kobject_create_and_add("devices", &rnbd_dev->kobj);
+> +	if (!rnbd_devs_kobj) {
+> +		err = -ENOMEM;
+> +		goto dev_destroy;
 > +	}
 > +
-> +	io->dev		= dev;
-> +	io->priv	= priv;
+> +	return 0;
 > +
-> +	bio->bi_end_io		= rnbd_dev_bi_end_io;
-> +	bio->bi_private		= io;
-> +	bio->bi_opf		= rnbd_to_bio_flags(flags);
-> +	bio->bi_iter.bi_sector	= sector;
-> +	bio->bi_iter.bi_size	= bi_size;
-> +	bio_set_prio(bio, prio);
-> +	bio_set_dev(bio, dev->bdev);
+> +dev_destroy:
+> +	device_destroy(rnbd_dev_class, MKDEV(0, 0));
+> +cls_destroy:
+> +	class_destroy(rnbd_dev_class);
+> +
+> +	return err;
+> +}
 
-I think Jason strongly prefers to have a single space at the left of the
-assignment operator.
+Please mention the device class in the description of this patch.
 
 Thanks,
 
