@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D8A196370
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 04:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781D1196389
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Mar 2020 05:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgC1D6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Mar 2020 23:58:14 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:33636 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgC1D6O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Mar 2020 23:58:14 -0400
-Received: by mail-pg1-f195.google.com with SMTP id d17so5643778pgo.0;
-        Fri, 27 Mar 2020 20:58:13 -0700 (PDT)
+        id S1725865AbgC1E0J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Mar 2020 00:26:09 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:53439 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgC1E0J (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Mar 2020 00:26:09 -0400
+Received: by mail-pj1-f67.google.com with SMTP id l36so4766665pjb.3;
+        Fri, 27 Mar 2020 21:26:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=6XAzsIkky0iGjjbYAoderOkTetKVIzqFicvOG2WBOm4=;
-        b=Mjg0ddRPutKF8vtTW0kSfJYVKu4clKxS+TnuvIbDnUFVxilpDAxl/fMbHdrkyiokV9
-         WqwguYABxAAo2kLNwPiXjE8Nw/WjDGfmXidHJ3rm1dNQlVfx6T2hnqW6LwCyjLRfHxvD
-         XjPAcxbqP5FNECrwL8e1/bPjE33p6jqEXKyG8LTsmR73HLBWJnJUWD8OeROXGXBS5xid
-         tL1ERiSiDs4Tih0bcTytrQperbaWykrwgA7EPFmnrgbfd7xuDJXtpQDB2/uvrLJ6b6OW
-         b+j+lwfMfEnLggbsulcXSzcqYrQuwTYg6DTj1GBBsMSYzqooNT9OWM+JWDOUJ8CrWeUa
-         9n+w==
-X-Gm-Message-State: ANhLgQ3QG+DvGgWfoVrtOngAROD8XFxdFY1Z3lt60Qs83sCKOSob5f+t
-        FIh6e7EeNhdQT7ttCpUbhAA=
-X-Google-Smtp-Source: ADFU+vuIkXcozYny5SmOxQYHk7T4h1kv+qPHEmquq9IvloG8TxlB4S0eogZhzpiXHpx0N1UJHwGEfg==
-X-Received: by 2002:aa7:9f42:: with SMTP id h2mr2453256pfr.22.1585367892594;
-        Fri, 27 Mar 2020 20:58:12 -0700 (PDT)
+        bh=2KNTRreR7/QNIxvs47qkeR0tg0ESW3Na3avWlW9173E=;
+        b=iDbOj3i3CWRfVTBjqANtNBq8iEffKwUVwi7J+upJvsonJtpeeIyXT1IBpB42EX8FeY
+         GY1H0jmgZIyfVh89iZ0efshcQYxjxnrlb/2+8V+ezvHoLwidD1VfMDmRTnfbFhJZMbDc
+         /rOlsY8x0c7K1JSsomvqoviPAh751XYD7G/1l6RFt+/z/nSygeT3neHdAmYUIOWO9sR1
+         Bme33GGYOw9D966IEZgK+/gZfJWaK9f5LjGIhO81kqzBrzkjvf9p90lUe5ih1ZC+3Bzv
+         9CCMQvzAWcAjPUvKPS0oET43sIo+ZPqlECy1z6TKbgZruYIEAOBlSRr2KMNEwn9okLBj
+         KLaQ==
+X-Gm-Message-State: ANhLgQ1hm0DGKAV2lFsBKmk52E+NlLZ+0L7Lf69bVyOOdeLfVnX/I/kr
+        Q5kBx8fgKbsh8aoiNTetLaw=
+X-Google-Smtp-Source: ADFU+vv9gSXl1er+T1RZrVar2BpGUmP1feSa0D5s63Swscg2gYtdb6jNwmOaI98OCYpeTDwTaXU58Q==
+X-Received: by 2002:a17:90b:3752:: with SMTP id ne18mr3067204pjb.143.1585369565375;
+        Fri, 27 Mar 2020 21:26:05 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:3563:edda:f4cf:995c? ([2601:647:4000:d7:3563:edda:f4cf:995c])
-        by smtp.gmail.com with ESMTPSA id ci18sm4747281pjb.23.2020.03.27.20.58.10
+        by smtp.gmail.com with ESMTPSA id j21sm5177678pff.39.2020.03.27.21.26.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Mar 2020 20:58:11 -0700 (PDT)
-Subject: Re: [PATCH v11 15/26] block: reexport bio_map_kern
+        Fri, 27 Mar 2020 21:26:04 -0700 (PDT)
+Subject: Re: [PATCH v11 04/26] RDMA/rtrs: core: lib functions shared between
+ client and server modules
 To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
         linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -42,7 +43,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
         pankaj.gupta@cloud.ionos.com
 References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-16-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-5-jinpu.wang@cloud.ionos.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +68,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <15f25902-1f5a-a542-a311-c1e86330834b@acm.org>
-Date:   Fri, 27 Mar 2020 20:58:09 -0700
+Message-ID: <cad654ae-d6c9-882d-aeeb-d6871994d280@acm.org>
+Date:   Fri, 27 Mar 2020 21:26:03 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200320121657.1165-16-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20200320121657.1165-5-jinpu.wang@cloud.ionos.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,25 +83,92 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-03-20 05:16, Jack Wang wrote:
-> To avoid duplicate code in rnbd-srv, we need to reexport
-> bio_map_kern.
-> 
-> This reverts commit 00ec4f3039a9e36cbccd1aea82d06c77c440a51c.
-> 
-> Suggested-by: Bart Van Assche <bvanassche@acm.org>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  block/bio.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 94d697217887..9190d68adad7 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1564,6 +1564,7 @@ struct bio *bio_map_kern(struct request_queue *q, void *data, unsigned int len,
->  	bio->bi_end_io = bio_map_kern_endio;
->  	return bio;
->  }
-> +EXPORT_SYMBOL(bio_map_kern);
+> +/**
+> + * rtrs_str_to_sockaddr() - Convert rtrs address string to sockaddr
+> + * @addr:	String representation of an addr (IPv4, IPv6 or IB GID):
+> + *              - "ip:192.168.1.1"
+> + *              - "ip:fe80::200:5aee:feaa:20a2"
+> + *              - "gid:fe80::200:5aee:feaa:20a2"
+> + * @len:        String address length
+> + * @port:	Destination port
+> + * @dst:	Destination sockaddr structure
+> + *
+> + * Returns 0 if conversion successful. Non-zero on error.
+> + */
+> +static int rtrs_str_to_sockaddr(const char *addr, size_t len,
+> +				 short port, struct sockaddr_storage *dst)
+> +{
+> +	if (strncmp(addr, "gid:", 4) == 0) {
+> +		return rtrs_str_gid_to_sockaddr(addr + 4, len - 4, port, dst);
+> +	} else if (strncmp(addr, "ip:", 3) == 0) {
+> +		char port_str[8];
+> +		char *cpy;
+> +		int err;
+> +
+> +		snprintf(port_str, sizeof(port_str), "%u", port);
+> +		cpy = kstrndup(addr + 3, len - 3, GFP_KERNEL);
+> +		err = cpy ? inet_pton_with_scope(&init_net, AF_UNSPEC,
+> +						 cpy, port_str, dst) : -ENOMEM;
+> +		kfree(cpy);
+> +
+> +		return err;
+> +	}
+> +	return -EPROTONOSUPPORT;
+> +}
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Please use 'u16' or 'uint16_t' for port numbers instead of 'short'.
+
+> +/**
+> + * rtrs_addr_to_sockaddr() - convert path string "src,dst" to sockaddreses
+> + * @str:	string containing source and destination addr of a path
+> + *		separated by comma. I.e. "ip:1.1.1.1,ip:1.1.1.2". If str
+> + *		contains only one address it's considered to be destination.
+> + * @len:	string length
+> + * @port:	will be set to port.
+                ^^^^^^^^^^^^^^^^^^^
+What does this mean? Please make comments easy to comprehend.
+
+> + * @addr:	will be set to the source/destination address or to NULL
+> + *		if str doesn't contain any sorce address.
+                                           ^^^^^
+Is this perhaps a typo?
+
+> + *
+> + * Returns zero if conversion successful. Non-zero otherwise.
+> + */
+> +int rtrs_addr_to_sockaddr(const char *str, size_t len, short port,
+                                                          ^^^^^
+I think most kernel code uses type u16 for port numbers.
+
+> +			   struct rtrs_addr *addr)
+> +{
+> +	const char *d;
+> +
+> +	d = strchr(str, ',');
+> +	if (!d)
+> +		d = strchr(str, '@');
+> +	if (d) {
+> +		if (rtrs_str_to_sockaddr(str, d - str, 0, addr->src))
+                                                      ^^^
+Does this mean that the @port argument only applies to the destination
+address? If so, please mention this in the comment above this function.
+
+> +			return -EINVAL;
+> +		d += 1;
+> +		len -= d - str;
+> +		str  = d;
+> +
+> +	} else {
+> +		addr->src = NULL;
+> +	}
+> +	return rtrs_str_to_sockaddr(str, len, port, addr->dst);
+> +}
+> +EXPORT_SYMBOL(rtrs_addr_to_sockaddr);
+
+So this function either accepts ',' or '@' as separator between source
+and destination address? Shouldn't that be mentioned in the comment
+block above the function?
+
+Thanks,
+
+Bart.
