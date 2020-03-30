@@ -2,57 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D7B197A2F
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 13:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C7A197A4E
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 13:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgC3LBQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 07:01:16 -0400
-Received: from mail.11d01.mspz7.gob.ec ([190.152.145.91]:53644 "EHLO
-        mail.11d01.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729715AbgC3LBP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 07:01:15 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id 9D5D82F6F5E1;
-        Mon, 30 Mar 2020 04:16:33 -0500 (-05)
-Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id jS3N6oHiX3hJ; Mon, 30 Mar 2020 04:16:33 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id D18C22F6F5DC;
-        Mon, 30 Mar 2020 04:16:32 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.9.2 mail.11d01.mspz7.gob.ec D18C22F6F5DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=11d01.mspz7.gob.ec;
-        s=50CBC7E4-8BED-11E9-AF6C-F1A741A224D3; t=1585559792;
-        bh=cLQbOHa1aY+/FyDjaDQOZOnnnlZDxMu+rBX/cg5yps8=;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
-         From:Date:Reply-To:Message-Id;
-        b=Yd2UegFssipD4ow3UX5rsxTDVfivs3Hpv9jsQZmqL2oSmzV+gmn2Wz84APqZHW00Q
-         zWEow3YV8uK4k8SGRV1a/s+xDuSIo1/5hPGAZf0KBnnCX8yFig6DVKyWH2F7vzCOa2
-         27IjL8Ko2QHqd0rtKtRDZeDez5VXijn3wqC3+l1A=
-X-Virus-Scanned: amavisd-new at 11d01.mspz7.gob.ec
-Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LsAsK3Fukf2X; Mon, 30 Mar 2020 04:16:32 -0500 (-05)
-Received: from [10.121.152.251] (unknown [105.12.0.10])
-        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTPSA id 5AF1E2F6F5A4;
-        Mon, 30 Mar 2020 04:16:21 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1729494AbgC3LDM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 07:03:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46286 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729739AbgC3LDM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 30 Mar 2020 07:03:12 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E0DFFE931822773FA77A;
+        Mon, 30 Mar 2020 19:03:06 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 30 Mar 2020
+ 19:02:55 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <selvin.xavier@broadcom.com>, <devesh.sharma@broadcom.com>,
+        <somnath.kotur@broadcom.com>, <sriharsha.basavapatna@broadcom.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] RDMA/bnxt_re: make bnxt_re_ib_init static
+Date:   Mon, 30 Mar 2020 19:02:19 +0800
+Message-ID: <20200330110219.24448-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: spende von 2.000.000,00 Euro
-To:     Recipients <luis.sanchez@11d01.mspz7.gob.ec>
-From:   "Manuel Franco" <luis.sanchez@11d01.mspz7.gob.ec>
-Date:   Mon, 30 Mar 2020 11:47:35 +0200
-Reply-To: manuelfrancospende11@gmail.com
-Message-Id: <20200330091622.5AF1E2F6F5A4@mail.11d01.mspz7.gob.ec>
+Content-Type: text/plain
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ich bin Manuel Franco, ich spende Ihnen 2.000.000,00 Euro. Kontaktieren Sie=
- mich jetzt, damit wir fortfahren k=F6nnen.
+Fix sparse warning:
 
-I am Manuel Franco, I donate to you 2,000,000.00 euros. Contact me now so w=
-e can proceed.
+drivers/infiniband/hw/bnxt_re/main.c:1313:5:
+ warning: symbol 'bnxt_re_ib_init' was not declared. Should it be static?
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/infiniband/hw/bnxt_re/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4a8fb1ad74a8..b12fbc857f94 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1310,7 +1310,7 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
+ 		le16_to_cpu(resp.hwrm_intf_patch);
+ }
+ 
+-int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
++static int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
+ {
+ 	int rc = 0;
+ 	u32 event;
+-- 
+2.17.1
+
+
