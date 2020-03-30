@@ -2,90 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 530E71981EC
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 19:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636C61982E9
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 20:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730233AbgC3RIW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 13:08:22 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34661 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730228AbgC3RIV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 13:08:21 -0400
-Received: by mail-ot1-f65.google.com with SMTP id m2so4130413otr.1
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2020 10:08:19 -0700 (PDT)
+        id S1726385AbgC3SES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 14:04:18 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38726 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727745AbgC3SES (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 14:04:18 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h14so20075759qke.5
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2020 11:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blockbridge-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KzOIcpQMGry/S7KX/3i7FgRktSaDHF+E1Qb4eqLRCuI=;
-        b=Ad+nBNSpjurCoWqj//saej4OFOKjZlYLa0jKuodco+te+2JVG/IANMC0ikGvaZGOg9
-         ehwwvhE5XhgZpWyO0m9adpKNM4PYIQaxkbNUEHZf9Sy3sOzUQ88RnOSIl5hXYIu3symh
-         2Yzv1I0vyFWGAEfDUG0zNQuf98O4BdjfDYJTUE7jFws0nGCYTn19Is7qyYIL5hrqRWgt
-         rDx0G/o8YABjNrEhlFc6aY35c65jRO4QjO7+cJG871TLgXoTAxgN9C6wlTwv1MsBDXlg
-         15QEJSRz69OeHuBm6MfshBiN30xhgVlJOeAU0T4Ra+XlpoI1qPuQCkRPGdDJyx4JBLRA
-         whtg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=c4hYfBPPMsnQLhbHNboJva/pkduGULtadEHE/+GQT34=;
+        b=E/UcXSV4s5eVQyTMQKe79QSsPgXJ2wOIzcOHLZBLea8gQPgvLHAwErJWFPozUT1Jth
+         n2Q1DAywnmP0TFdLlksu3SFxl8e4OK2aFcLS/COesMHooSjeDG7xtKfei8O7z6WebEdV
+         vp7U/5gpSwwY1iEJQGGlDVg+RqFlZkAPPBrVdUJ25KKjnlX1p18DMuwNIAz6jkqcGTb1
+         Dny1qA7/lawXuLuJflZdl42jd5LbTwbJpAzcq/PrCNn6ifHbsM8nSDjeGKUzWN9dvWo6
+         HiReh2wLZJcTVSw5WeDdn1FzuEm/ZMbqJfdoimsJRLi7YoDr0KRh6ZtKkPiceqTkVB7F
+         vVBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KzOIcpQMGry/S7KX/3i7FgRktSaDHF+E1Qb4eqLRCuI=;
-        b=JIeqH9MYLWJa/uTlWUVIrz6zgykAUPDBU9sO7fpAIo9Pi0PynxKjyErYvmJQJlg8lO
-         3rJnaCoQ1vLNaJnTiDCCYRJTB2/CJsNOhTHI0LSPV/TLIvJW69kUJIrDjTRqHp6q9LOz
-         R6InTxkJGyG7YMsjLIqTthA6U7JAc6YnGbI1WxuGprtrh6vUCbZEmQ06gDLjQuiu4dQs
-         U119N+Dkmqq7mkcVUqVyw8WVViIrXumqaraxQNpqNB0yDvvg45LG//USH4UFJaZ4dWHe
-         5bfjOKz0sDxdA9O1RbakugzFQ+z/8fEd09CSJu/xTgOlj3O30bT52C8gavl5mKaKxeh/
-         fFnw==
-X-Gm-Message-State: ANhLgQ3x0EBRIR0Utw2ZHF5BtBNwyOXiOYh/yyjWYY7KQ1zJkFynhul1
-        k2DwCUVwKBs7Cmavx+/wGZOWU0t1Vv7pIsIN8rFGqQ==
-X-Google-Smtp-Source: ADFU+vsZduY51eDd7FS9ubS+PNYEHKDob0M//Wghi65nlZ5LqUBQIcY9bjjm+Kk1UD2LVIpEBTaw7W/SLGM8xpAsD6U=
-X-Received: by 2002:a9d:6ad8:: with SMTP id m24mr126508otq.66.1585588099575;
- Mon, 30 Mar 2020 10:08:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c4hYfBPPMsnQLhbHNboJva/pkduGULtadEHE/+GQT34=;
+        b=F+qAURfj/WdoupqxqYYY5x65LnuJQJPlTdW2JxL0ADNT93+QkN7Occ5HqdTNef6vJ5
+         NiGNn2D1CXdbV6u84UAZTs/UlXFMEFZi/GAk16vUaJjt1JfS11j/x2pVC/Gux5ViDRw4
+         9icPQ+fTSgBQcWC+4nHnYn64NYOPEZIo9LHgSoqnoXU1Xahv3SCAMP4suVJO/lDGyfXA
+         kNEQSaF86Yc3YNmOFlovyxy0MX0RnNxITVHMxZnPFor7dSDDGPxbZG+EFQyTR9Dj6L1S
+         R0cgZUiWfirkYF2mDey+eKSR91c8EDELLx52QDTFw9V2FSxLID+2/MT/znDUen1imFis
+         MSKA==
+X-Gm-Message-State: ANhLgQ20Lvsxgntif/cIBBWUOmCWAN9d2DAE2uLXR6T00QXYd8ilPSYo
+        uD+f5bZKl5vDmAAPmmSGBJ8y2w==
+X-Google-Smtp-Source: ADFU+vslFdZMufUpGUjNF685OiAvFuwqrraXFVX1mi5EP3rlxYGLgJNHBKGy/SGMgS5a0DiGDu/+lg==
+X-Received: by 2002:a05:620a:2101:: with SMTP id l1mr1194780qkl.375.1585591455594;
+        Mon, 30 Mar 2020 11:04:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id r192sm10992825qke.95.2020.03.30.11.04.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 30 Mar 2020 11:04:14 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jIylh-000302-Ui; Mon, 30 Mar 2020 15:04:13 -0300
+Date:   Mon, 30 Mar 2020 15:04:13 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] RDMA/bnxt_re: make bnxt_re_ib_init static
+Message-ID: <20200330180413.GA11459@ziepe.ca>
+References: <20200330110219.24448-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
- <20191203005849.GB25002@ming.t460p> <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
- <20191203031444.GB6245@ming.t460p> <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
- <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
- <20191203124558.GA22805@ming.t460p> <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
- <20191204010529.GA3910@ming.t460p> <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
- <20191204230225.GA26189@ming.t460p> <d9d39d10-d3f3-f2d8-b32e-96896ba0cdb2@grimberg.me>
- <CAAFE1beqFBQS_zVYEXFTD2qu8PAF9hBSW4j1k9ZD6MhU_gWg5Q@mail.gmail.com> <d2f633f1-57ef-4618-c3a6-c5ff0afead5b@grimberg.me>
-In-Reply-To: <d2f633f1-57ef-4618-c3a6-c5ff0afead5b@grimberg.me>
-From:   Stephen Rust <srust@blockbridge.com>
-Date:   Mon, 30 Mar 2020 13:08:37 -0400
-Message-ID: <CAAFE1bdAbKfqbf05pKBcMUj+58fijDMT-8WBSuwiKk2Bmm4v2w@mail.gmail.com>
-Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Rob Townley <rob.townley@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330110219.24448-1-yuehaibing@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sagi,
+On Mon, Mar 30, 2020 at 07:02:19PM +0800, YueHaibing wrote:
+> Fix sparse warning:
+> 
+> drivers/infiniband/hw/bnxt_re/main.c:1313:5:
+>  warning: symbol 'bnxt_re_ib_init' was not declared. Should it be static?
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Sorry for the late reply, lost track of this.
+Applied to for-next, thanks
 
-No problem!
-
-> Can you try attached patch and see if it solves your issue?
-> WARNING: very lightly tested...
-
-I have run our tests against this patch and it is working well for our
-"basic" testing as well. The test case that previously failed, now
-passes with this patch. So that's encouraging! Thanks for the quick
-response and quick patch.
-
-One question we had is regarding the hard coded header length: What
-happens if the initiator sends an extended CDB, like a WRITE32? Are
-there any concerns with an additional header segment (AHS)?
-
-Thanks again,
-Steve
+Jason
