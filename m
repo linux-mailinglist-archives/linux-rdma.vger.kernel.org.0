@@ -2,106 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5752D19747E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 08:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2BA197480
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 08:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgC3G1k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 02:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgC3G1k (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 30 Mar 2020 02:27:40 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 080D120732;
-        Mon, 30 Mar 2020 06:27:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585549659;
-        bh=UPmaYQE/JY+TF/CTQ3W+w14eEAN6TItastTu2iVLRBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JKje8GuhDUFgIFL2SKhXauRTg6/Z9wK8qcSsGxk00ARr907mGQuaQpI8EfCu7hdJj
-         YDub1V8UK2AkBVnMDkoojiTH2n5Sg5SojBgZ//AjKLKuo3O9r63HlcQPe4hxeMizW1
-         HfV1rLqBbhRkIGkt3sVeYb43No6BQaFWosYS5+CI=
-Date:   Mon, 30 Mar 2020 09:27:22 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 6/7] RDMA/cm: Set flow label of recv_wc
- based on primary flow label
-Message-ID: <20200330062722.GG2454444@unreal>
-References: <20200322093031.918447-1-leon@kernel.org>
- <20200322093031.918447-7-leon@kernel.org>
- <20200327123733.GA6821@ziepe.ca>
+        id S1729184AbgC3G2L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 02:28:11 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:50132 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728489AbgC3G2L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 02:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CAVk4o7a9QdE9f5V4Rob2eu2jcOd66eTyjHi8aMLFJM=; b=qF8rnTCqYw1CmyXWeEB8U/VHeQ
+        XumxbijNgxczjzUD7L0LAqp/ww3lgm+Ye59Di8yB/bkzXvBFwDT80jEFEoXu/+2Ksvpva91VQl3SC
+        2qtkTcuRHBfO/qtfxRN6TuVphJQPWBkSL7mMCltfE00kTI8S9vGvhreOor/Rco6yLiodc0WAAj4PZ
+        2foGx/iMTT7SrCR5nOIdsWuW+x4hgK4soR+xdmtOJ3JFnkcEa6cnsskdsFvVUXb6ncwS54bWKpS0A
+        08aTAZ6FCaK5nhzBoNhJc9ar9BOsR5PQVYX1VjjMsKaSd2VdSgbBwYoWe+L1CImI+62ILlFEZFsTq
+        669dqpPA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jInu1-000667-R8; Mon, 30 Mar 2020 06:28:05 +0000
+Date:   Sun, 29 Mar 2020 23:28:05 -0700
+From:   "hch@infradead.org" <hch@infradead.org>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     "hch@infradead.org" <hch@infradead.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "danil.kipnis@cloud.ionos.com" <danil.kipnis@cloud.ionos.com>,
+        "rpenyaev@suse.de" <rpenyaev@suse.de>,
+        "pankaj.gupta@cloud.ionos.com" <pankaj.gupta@cloud.ionos.com>
+Subject: Re: [PATCH v11 15/26] block: reexport bio_map_kern
+Message-ID: <20200330062805.GA21989@infradead.org>
+References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-16-jinpu.wang@cloud.ionos.com>
+ <15f25902-1f5a-a542-a311-c1e86330834b@acm.org>
+ <20200328082953.GB16355@infradead.org>
+ <bbba2682-0221-4173-9d00-b42d4f91f3b8@acm.org>
+ <20200329150524.GA13909@infradead.org>
+ <BYAPR04MB4965BA89446761D2C3D414D386CA0@BYAPR04MB4965.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200327123733.GA6821@ziepe.ca>
+In-Reply-To: <BYAPR04MB4965BA89446761D2C3D414D386CA0@BYAPR04MB4965.namprd04.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 09:37:33AM -0300, Jason Gunthorpe wrote:
-> On Sun, Mar 22, 2020 at 11:30:30AM +0200, Leon Romanovsky wrote:
-> > From: Mark Zhang <markz@mellanox.com>
+On Sun, Mar 29, 2020 at 06:08:31PM +0000, Chaitanya Kulkarni wrote:
+> > which bio_map_kerl is the wrong interfac given that it
+> > uses bio_add_pc_page.  Read, write and other non-passthrough requests
+> > must use bio_add_page instead.
 > >
-> > In the request handler of the response side, Set flow label of the
-> > recv_wc if it is not net. It will be used for all messages sent
-> > by the responder.
-> >
-> > Signed-off-by: Mark Zhang <markz@mellanox.com>
-> > Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/core/cm.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> > index bbbfa77dbce7..4ab2f71da522 100644
-> > +++ b/drivers/infiniband/core/cm.c
-> > @@ -2039,6 +2039,7 @@ static int cm_req_handler(struct cm_work *work)
-> >  	struct cm_req_msg *req_msg;
-> >  	const struct ib_global_route *grh;
-> >  	const struct ib_gid_attr *gid_attr;
-> > +	struct ib_grh *ibgrh;
-> >  	int ret;
-> >
-> >  	req_msg = (struct cm_req_msg *)work->mad_recv_wc->recv_buf.mad;
-> > @@ -2048,6 +2049,12 @@ static int cm_req_handler(struct cm_work *work)
-> >  	if (IS_ERR(cm_id_priv))
-> >  		return PTR_ERR(cm_id_priv);
-> >
-> > +	ibgrh = work->mad_recv_wc->recv_buf.grh;
-> > +	if (!(be32_to_cpu(ibgrh->version_tclass_flow) & IB_GRH_FLOWLABEL_MASK))
-> > +		ibgrh->version_tclass_flow |=
-> > +			cpu_to_be32(IBA_GET(CM_REQ_PRIMARY_FLOW_LABEL,
-> > +					    req_msg));
->
-> This doesn't seem right.
->
-> Up until the path is established the response should follow the
-> reversible GMP rules and the flow_label should come out of the
-> request's GRH.
->
-> Once we established the return data path and the GMP's switch to using
-> the datapath, the flowlabel should be set in something like
-> cm_format_paths_from_req()
->
-> If you want to switch to using the return data path for REP replies
-> earlier then it should be done completely and not only the flow
-> label. But somehow I suspect we cannot as this could fail too.
+> 
+> Since rw are most common operations, it'd be nice to have a helper
+> function for REQ_OP_[READ|WRITE] to map and submit bio from data buffer
+> with chaining to avoid code duplication in each driver which based on 
+> the bio_add_page().
+> 
+> I'd be happy to send a patch for that if that is acceptable.
 
-Jason,
+Well, there aren't a whole lot of driver submitting bios - it's mostly
+file systems, and those often use shared code and/or have very specific
+requirements.
 
-We can drop this patch, it was added to provide same sport in REJ
-messages, but it is not needed due to the IBTA section
-"13.5.4.3 CONSTRUCTING A RESPONSE WITHOUT A GRH".
-
-Rest of the series is fine.
-
-Thanks
-
->
-> Jason
+I've started to factor some reasonably common code into self-contained
+helpers with recent XFS work: xlog_map_iclog_data and xfs_rw_bdev.
+Both could probably move to the block layer with a little more work,
+but we'll have to be careful and actually find enough suitable users.
