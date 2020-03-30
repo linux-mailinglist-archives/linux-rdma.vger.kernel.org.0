@@ -2,64 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C7A197A4E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 13:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E8D197B64
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 13:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgC3LDM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 07:03:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46286 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729739AbgC3LDM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 30 Mar 2020 07:03:12 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E0DFFE931822773FA77A;
-        Mon, 30 Mar 2020 19:03:06 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 30 Mar 2020
- 19:02:55 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <selvin.xavier@broadcom.com>, <devesh.sharma@broadcom.com>,
-        <somnath.kotur@broadcom.com>, <sriharsha.basavapatna@broadcom.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] RDMA/bnxt_re: make bnxt_re_ib_init static
-Date:   Mon, 30 Mar 2020 19:02:19 +0800
-Message-ID: <20200330110219.24448-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1730034AbgC3L6a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 07:58:30 -0400
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:35422 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729785AbgC3L6a (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 07:58:30 -0400
+Received: by mail-yb1-f173.google.com with SMTP id x63so8891659ybx.2
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Mar 2020 04:58:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hZ1K5X1phN7beW28/2naiHUtsnsfPriBuUBHe9LpPRE=;
+        b=Az4bL9vFGDr1K4y0hhsFH+xOvKKToQzN7JL9xNDwRlpLGXpvOlPpB5QuA1wpR1IedK
+         vOthhhI/WFcAjr7evAevv9avDlMiSQHt/ut1rgvFf2zzr09aAngoh7Av+bVUCAUBQLGM
+         0Z2xqetpu9Zg/RbAGAO/fiBnLEBthoNZG2Y1w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hZ1K5X1phN7beW28/2naiHUtsnsfPriBuUBHe9LpPRE=;
+        b=ng3GLzcJZyZw8pRKwAb/NbEfMMGHCRk3aGAbQafyMs8MLeM4taNxCCgR6T+ZgMzpan
+         f5+I1zzYaPWTyqcGpyruTzvy3ZkNmT1BpQDNjUOP9et4Kbj/hJ08jHVKLZI8VYLFbn04
+         dipOJzjpe6I9EKoFfdhuBO9QTiEjNIZjMOcW6VTm5txhpDeVGPLkdysjXre9S6ul9sYt
+         2A4vWZEPO39yB8OdZUkdKNBD1aAE+9cypPOoi82J7NnXIo7sRmiDFwmrgGtqZC0ePEH6
+         AiqU0aA455/QqdbaV7Ajm0VPILhz1IatuHfVDjZtOneaW5Pw+aSa8uRYWlgZtM4n4ahj
+         EaGw==
+X-Gm-Message-State: ANhLgQ0IMGpVpWFOKIUasAzmM+KjYQPSqnxV0EGSlwqOye5PIBhLUXj/
+        j2JZxgarGm3yY7kSBcRq+p8sa4F/IncXxfdYbD8TRQ==
+X-Google-Smtp-Source: ADFU+vtuY4/KkBhkSck5B8WKc6bnlZp4dSirUh6Dci3jP9EzD3+YupYJ9TZ8C7a2KtaygPYZb89xdPw047tuL3S+HFs=
+X-Received: by 2002:a5b:447:: with SMTP id s7mr19471531ybp.160.1585569508651;
+ Mon, 30 Mar 2020 04:58:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+References: <20200330110219.24448-1-yuehaibing@huawei.com>
+In-Reply-To: <20200330110219.24448-1-yuehaibing@huawei.com>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Mon, 30 Mar 2020 17:28:17 +0530
+Message-ID: <CA+sbYW1d0GPH+ztur6v-PzPiA4Y-GXf2ptA0hF=U6LgJvaBB9A@mail.gmail.com>
+Subject: Re: [PATCH -next] RDMA/bnxt_re: make bnxt_re_ib_init static
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix sparse warning:
+On Mon, Mar 30, 2020 at 4:33 PM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> Fix sparse warning:
+>
+> drivers/infiniband/hw/bnxt_re/main.c:1313:5:
+>  warning: symbol 'bnxt_re_ib_init' was not declared. Should it be static?
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
 
-drivers/infiniband/hw/bnxt_re/main.c:1313:5:
- warning: symbol 'bnxt_re_ib_init' was not declared. Should it be static?
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 4a8fb1ad74a8..b12fbc857f94 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1310,7 +1310,7 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- 		le16_to_cpu(resp.hwrm_intf_patch);
- }
- 
--int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
-+static int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
- {
- 	int rc = 0;
- 	u32 event;
--- 
-2.17.1
-
-
+Thanks,
+Selvin Xavier
