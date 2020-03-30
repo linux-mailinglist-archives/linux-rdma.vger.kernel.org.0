@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9501219747A
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 08:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5752D19747E
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Mar 2020 08:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgC3G11 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 02:27:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44238 "EHLO mail.kernel.org"
+        id S1728983AbgC3G1k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 02:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbgC3G11 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 30 Mar 2020 02:27:27 -0400
+        id S1728489AbgC3G1k (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 30 Mar 2020 02:27:40 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7DF520732;
-        Mon, 30 Mar 2020 06:27:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 080D120732;
+        Mon, 30 Mar 2020 06:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585549646;
-        bh=YhYNb7spyVxkfCJi4xuEQir7TVe0wbthheTdqNXZCww=;
+        s=default; t=1585549659;
+        bh=UPmaYQE/JY+TF/CTQ3W+w14eEAN6TItastTu2iVLRBs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CmT3PifYvNRYJDblnKoVVj33ecVxmOMFk23+/Z9tEnlyp7YPSZdJl5T0SJorRd6/j
-         fawma9PHBXphCpDsiTZr0lXifSH96dPuX5t8dtZtdJWm/xJuDkZy/ZjcAw2Q5++kM2
-         sQY6jYXnflbRHkIkV2MCUVkhEixxWeMqdBUc2yuY=
-Date:   Sun, 29 Mar 2020 11:00:07 +0300
+        b=JKje8GuhDUFgIFL2SKhXauRTg6/Z9wK8qcSsGxk00ARr907mGQuaQpI8EfCu7hdJj
+         YDub1V8UK2AkBVnMDkoojiTH2n5Sg5SojBgZ//AjKLKuo3O9r63HlcQPe4hxeMizW1
+         HfV1rLqBbhRkIGkt3sVeYb43No6BQaFWosYS5+CI=
+Date:   Mon, 30 Mar 2020 09:27:22 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
@@ -31,7 +31,7 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Maor Gottlieb <maorg@mellanox.com>
 Subject: Re: [PATCH rdma-next v1 6/7] RDMA/cm: Set flow label of recv_wc
  based on primary flow label
-Message-ID: <20200329080007.GC2454444@unreal>
+Message-ID: <20200330062722.GG2454444@unreal>
 References: <20200322093031.918447-1-leon@kernel.org>
  <20200322093031.918447-7-leon@kernel.org>
  <20200327123733.GA6821@ziepe.ca>
@@ -80,9 +80,28 @@ On Fri, Mar 27, 2020 at 09:37:33AM -0300, Jason Gunthorpe wrote:
 > > +					    req_msg));
 >
 > This doesn't seem right.
+>
+> Up until the path is established the response should follow the
+> reversible GMP rules and the flow_label should come out of the
+> request's GRH.
+>
+> Once we established the return data path and the GMP's switch to using
+> the datapath, the flowlabel should be set in something like
+> cm_format_paths_from_req()
+>
+> If you want to switch to using the return data path for REP replies
+> earlier then it should be done completely and not only the flow
+> label. But somehow I suspect we cannot as this could fail too.
 
-I will check, this part looks strange while reading IBTA sections
-"13.5.4.3 CONSTRUCTING A RESPONSE WITHOUT A GRH" and
-"13.5.4.4 CONSTRUCTING A RESPONSE WITH A GRH"
+Jason,
+
+We can drop this patch, it was added to provide same sport in REJ
+messages, but it is not needed due to the IBTA section
+"13.5.4.3 CONSTRUCTING A RESPONSE WITHOUT A GRH".
+
+Rest of the series is fine.
 
 Thanks
+
+>
+> Jason
