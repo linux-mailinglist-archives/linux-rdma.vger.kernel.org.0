@@ -2,153 +2,228 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26220199242
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 11:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DAA1992A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 11:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730284AbgCaJ35 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Mar 2020 05:29:57 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:32934 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730216AbgCaJ35 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Mar 2020 05:29:57 -0400
-Received: by mail-io1-f67.google.com with SMTP id o127so20990843iof.0
-        for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2020 02:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e9TC9Dvq+NxHGmVjcxml98fEBNVdqGYWIzldJgXCRdc=;
-        b=L4AdER7p0yZLutfy4JSvfuKwUGwUmZY2JV3er/hjSVcru+yO8m3Egcr096hguEw12Q
-         kG15HJ6d7JqhzwOT0tw9DIIxCvpEixVwn39C6k1HAEHhp8mFv7YN4eFVcemYszFPOUpU
-         0rWazWw5V3HmcarKda3nQN6I4XsioPeTiqg57pMMIAcFwnWSfcOHOBqy3ZytnVWE678H
-         nFeH2A0KlPu7tzGNqIkVftUouawcRYHYxkWsBXOWXqU97hqUZ+hjlT5IZhxvEqlNIKZ7
-         b6jCOfNNnknKTfNXNUAlTT7a5oH9CMUi9pem8iaFF2MLcog5D5nVH68T2Jz7sTNqfM5G
-         djfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e9TC9Dvq+NxHGmVjcxml98fEBNVdqGYWIzldJgXCRdc=;
-        b=aVlJyp0l4JatzUFz4BV02GXXTz+cfjpiF0qlu6uwK+cfmn0uAYTXaOH5zELR8AJlEK
-         XM0Tpo3r9ZbYQpdKTOoGjtrZ4fF4uZ8IWJCpdtnG/3KAZhOjtJV71/9My9v1G73o1x3v
-         gzXeuaYLjaZ1wbcQ963oRtV9CTfodKndTX73zDQU0WQnFgHswCzuvVcGp4XYdEsjPNfz
-         t5T1rj2SyAH0W12TeRWCkQpTBjom2jrqIKH5/Dh4HB12P1Uzj+UhrgkxG0DC50KxDcuG
-         P5qoL3Eo9j3k+o/nd71JgU0K3kwzP5iUVtdpFkHSbJfQzClLjLMVeiabmzNG/VAwqdwS
-         xuYA==
-X-Gm-Message-State: ANhLgQ0uyLd/Kf1MpU4W9/+9bSKIHyM3vqRPOs7sg4h30FLFzycjsH9n
-        H3KFpfci5eya47h2fiOrKWpNG9ey6dhHFgvnUGew7w==
-X-Google-Smtp-Source: ADFU+vtWWlZdtpSbBkN5OF1s68dy0E68ycIqrABToueXo4BBTpuuADtHMSmrlQ5bG4CgB6gHmAHmcls73EBg9Oeub2A=
-X-Received: by 2002:a6b:b24d:: with SMTP id b74mr14544159iof.49.1585646996530;
- Tue, 31 Mar 2020 02:29:56 -0700 (PDT)
+        id S1730131AbgCaJoy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Mar 2020 05:44:54 -0400
+Received: from mga03.intel.com ([134.134.136.65]:5268 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729997AbgCaJoy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 31 Mar 2020 05:44:54 -0400
+IronPort-SDR: IPqadkz4YM4kizSjdvr2SJJIN4d3wpT592PO0UqBUeYfiU++S/W8/AruYGCo3cbZ8Iie/F1Frv
+ Oy+sLk55h+nQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2020 02:44:53 -0700
+IronPort-SDR: F1nMl89l2kGIujogtzmaTPfOigZDRhOu8ecvuj2jqvGvLqMh5iCzyrnjPMPljat7PWNwnFfxbB
+ fp0uI9nmXx9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,327,1580803200"; 
+   d="scan'208";a="395436761"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 31 Mar 2020 02:44:52 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jJDRz-000Aod-Bs; Tue, 31 Mar 2020 17:44:51 +0800
+Date:   Tue, 31 Mar 2020 17:44:29 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:hmm] BUILD SUCCESS bd5d3587b218d33d70a835582dfe1d8f8498e702
+Message-ID: <5e8310fd.pBUfs4w5944h9xEp%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-22-jinpu.wang@cloud.ionos.com> <ba7c258f-a169-f2d5-3d62-62a7d09908a4@acm.org>
-In-Reply-To: <ba7c258f-a169-f2d5-3d62-62a7d09908a4@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 31 Mar 2020 11:29:45 +0200
-Message-ID: <CAMGffE=4LNom-aWJhogqjgD+mHPp1_B9g=rEzHzdr=x9Zy6vAw@mail.gmail.com>
-Subject: Re: [PATCH v11 21/26] block/rnbd: server: main functionality
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 28, 2020 at 6:41 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2020-03-20 05:16, Jack Wang wrote:
-> > +static int __read_mostly port_nr = RTRS_PORT;
->
-> Would uint16_t be sufficient for this kernel module parameter?
-yes, u16 is enough.
->
-> Is this kernel module parameter used anywhere in the hot path? If not,
-> should __read_mostly perhaps be left out?
-not in hot path, __read_mostly can be removed.
->
-> > +module_param_named(port_nr, port_nr, int, 0444);
-> > +MODULE_PARM_DESC(port_nr,
-> > +              "The port number server is listening on (default: "
->                                 ^^^
->                                 the?
-right!
-> > +              __stringify(RTRS_PORT)")");
-> > +
-> > +#define DEFAULT_DEV_SEARCH_PATH "/"
->
-> > +static void destroy_device(struct rnbd_srv_dev *dev)
-> > +{
-> > +     WARN(!list_empty(&dev->sess_dev_list),
-> > +          "Device %s is being destroyed but still in use!\n",
-> > +          dev->id);
->
-> Has it been considered to change WARN() into WARN_ONCE()?
-ok.
->
-> > +static int rnbd_srv_rdma_ev(struct rtrs_srv *rtrs, void *priv,
-> > +                          struct rtrs_srv_op *id, int dir,
-> > +                          void *data, size_t datalen, const void *usr,
-> > +                          size_t usrlen)
-> > +{
-> > +     struct rnbd_srv_session *srv_sess = priv;
-> > +     const struct rnbd_msg_hdr *hdr = usr;
-> > +     int ret = 0;
-> > +     u16 type;
-> > +
-> > +     if (WARN_ON(!srv_sess))
-> > +             return -ENODEV;
->
-> Same question here: how about using WARN_ON_ONCE() instead of WARN_ON()?
-ok.
->
-> > +static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
-> > +                                  const char *dev_name)
-> > +{
-> > +     char *full_path;
-> > +     char *a, *b;
-> > +
-> > +     full_path = kmalloc(PATH_MAX, GFP_KERNEL);
-> > +     if (!full_path)
-> > +             return ERR_PTR(-ENOMEM);
-> > +
-> > +     /*
-> > +      * Replace %SESSNAME% with a real session name in order to
-> > +      * create device namespace.
-> > +      */
-> > +     a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
-> > +     if (a) {
-> > +             int len = a - dev_search_path;
-> > +
-> > +             len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
-> > +                            dev_search_path, srv_sess->sessname, dev_name);
-> > +             if (len >= PATH_MAX) {
-> > +                     pr_err("Tooooo looong path: %s, %s, %s\n",
-> > +                            dev_search_path, srv_sess->sessname, dev_name);
-> > +                     kfree(full_path);
-> > +                     return ERR_PTR(-EINVAL);
-> > +             }
-> > +     } else {
-> > +             snprintf(full_path, PATH_MAX, "%s/%s",
-> > +                      dev_search_path, dev_name);
-> > +     }
->
-> Has it been considered to use kasprintf() instead of kmalloc() + snprintf()?
-will convert to kasprintf.
->
-> Otherwise this patch looks fine to me.
->
-> Thanks,
->
-> Bart.
-Thanks Bart!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  hmm
+branch HEAD: bd5d3587b218d33d70a835582dfe1d8f8498e702  mm/hmm: return error for non-vma snapshots
+
+elapsed time: 483m
+
+configs tested: 170
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+microblaze                      mmu_defconfig
+riscv                               defconfig
+i386                             allyesconfig
+arm                              allmodconfig
+c6x                        evmc6678_defconfig
+m68k                          multi_defconfig
+xtensa                          iss_defconfig
+ia64                                defconfig
+powerpc                             defconfig
+riscv                             allnoconfig
+sparc                               defconfig
+mips                      malta_kvm_defconfig
+nios2                         10m50_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                                defconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+arm64                            allmodconfig
+c6x                              allyesconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                      fuloong2e_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200331
+x86_64               randconfig-a002-20200331
+x86_64               randconfig-a003-20200331
+i386                 randconfig-a001-20200331
+i386                 randconfig-a002-20200331
+i386                 randconfig-a003-20200331
+alpha                randconfig-a001-20200331
+m68k                 randconfig-a001-20200331
+mips                 randconfig-a001-20200331
+nds32                randconfig-a001-20200331
+parisc               randconfig-a001-20200331
+riscv                randconfig-a001-20200331
+microblaze           randconfig-a001-20200331
+h8300                randconfig-a001-20200331
+nios2                randconfig-a001-20200331
+c6x                  randconfig-a001-20200331
+sparc64              randconfig-a001-20200331
+csky                 randconfig-a001-20200331
+openrisc             randconfig-a001-20200331
+s390                 randconfig-a001-20200331
+sh                   randconfig-a001-20200331
+xtensa               randconfig-a001-20200331
+x86_64               randconfig-b001-20200330
+x86_64               randconfig-b002-20200330
+x86_64               randconfig-b003-20200330
+i386                 randconfig-b001-20200330
+i386                 randconfig-b002-20200330
+i386                 randconfig-b003-20200330
+x86_64               randconfig-b001-20200331
+x86_64               randconfig-b002-20200331
+x86_64               randconfig-b003-20200331
+i386                 randconfig-b001-20200331
+i386                 randconfig-b002-20200331
+i386                 randconfig-b003-20200331
+x86_64               randconfig-c001-20200331
+x86_64               randconfig-c002-20200331
+x86_64               randconfig-c003-20200331
+i386                 randconfig-c001-20200331
+i386                 randconfig-c002-20200331
+i386                 randconfig-c003-20200331
+i386                 randconfig-d003-20200331
+i386                 randconfig-d001-20200331
+i386                 randconfig-d002-20200331
+x86_64               randconfig-d001-20200331
+x86_64               randconfig-d002-20200331
+x86_64               randconfig-d003-20200331
+i386                 randconfig-e002-20200331
+i386                 randconfig-e003-20200331
+x86_64               randconfig-e001-20200331
+x86_64               randconfig-e002-20200331
+x86_64               randconfig-e003-20200331
+i386                 randconfig-e001-20200331
+i386                 randconfig-f001-20200331
+i386                 randconfig-f003-20200331
+i386                 randconfig-f002-20200331
+x86_64               randconfig-f002-20200331
+x86_64               randconfig-f003-20200331
+x86_64               randconfig-f001-20200331
+x86_64               randconfig-g001-20200331
+x86_64               randconfig-g002-20200331
+x86_64               randconfig-g003-20200331
+i386                 randconfig-g001-20200331
+i386                 randconfig-g002-20200331
+i386                 randconfig-g003-20200331
+x86_64               randconfig-h003-20200331
+x86_64               randconfig-h002-20200331
+x86_64               randconfig-h001-20200331
+i386                 randconfig-h003-20200331
+i386                 randconfig-h002-20200331
+i386                 randconfig-h001-20200331
+arc                  randconfig-a001-20200331
+arm                  randconfig-a001-20200331
+arm64                randconfig-a001-20200331
+ia64                 randconfig-a001-20200331
+powerpc              randconfig-a001-20200331
+sparc                randconfig-a001-20200331
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
