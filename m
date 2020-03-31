@@ -2,82 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6231996F4
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 15:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D7C199837
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 16:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730686AbgCaNCo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Mar 2020 09:02:44 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:33664 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730473AbgCaNCo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Mar 2020 09:02:44 -0400
-Received: by mail-qt1-f172.google.com with SMTP id c14so18216581qtp.0
-        for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2020 06:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WvciGNT4Swu8x7tqkBLqGitjDN1PC4vLzFpPCNletYE=;
-        b=iqckFFsDpFlxtbJS5sb+1XmDhhTelXn/8FdvMk9NclL+RchNfUcwPb2C9q5Gml936E
-         YBxU7//mELwQEPn8zAA1wXm8Xxaw3F83uE7zwBlOCB8/wR9RNW9TM0zSm01epQ1UEblR
-         s1tDCnPtonZ+2j/GIkmxgFkzbDwjuMlBunPx6+pecE79fYDyLd1iBnWHwWkwMpR7m/OG
-         EC+aK6hGeVx+sbJtW9x+mMEUrjERBzHGIK5kN/j0G+9+7Blh1tQFlzknBv1mhDeUPvNv
-         dV1dirqhzPEn6K8HI7X+H+a28u5ecW9jzko6Ha2VovgvBkkbbLtaLcALyYyn+5GiPD6y
-         vMPg==
+        id S1730556AbgCaONC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Mar 2020 10:13:02 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44310 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730358AbgCaONB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Mar 2020 10:13:01 -0400
+Received: by mail-pf1-f193.google.com with SMTP id b72so10367830pfb.11;
+        Tue, 31 Mar 2020 07:13:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WvciGNT4Swu8x7tqkBLqGitjDN1PC4vLzFpPCNletYE=;
-        b=m0aXnPdDKqaD7quTSOs5VsENkCUnXgDgsYWgqUMb4l/1Jwq9o1MOoCy6+hQADSeocP
-         l4nFPpbI/X+RzW6gUd/PV2t3pbYpmsQTBgtEKaw2tqyhTy4rHv+MHvcOfyEbARYxW1ar
-         Lq6x+nfqxeLYOFstdHQKDpuDar/piDZPzOyI0RQ3OdkhJg3aAt3khkudiCEvyRmcjmu1
-         hZdgrP/KMRGuVZJqHt61prvnbvZGawWSxH/i4Cf64up/9S4v8FQK7oXlVENNSVzR0z0B
-         jHlizKxaLO+bZllPd4OPPnTqGuzTg1RbQmfa8A3ndYDDGTYmXN6zN+/xSdpnf5bHrLJ3
-         YD8g==
-X-Gm-Message-State: AGi0PubUuEeCB+mGsn7fMvvbrL2LmgkZl1iKiED9HacIpc1XED3VV3Ta
-        YY2o6CYRPusHSR/7BX9nTuEBBkOF1AZm3w==
-X-Google-Smtp-Source: APiQypKwfdmHSjAKC+yYPrx3gnmnEzljrLLmNIX5AzT8PpupJ5lr+VDbNMaAlRn2pCkrQR5ILE7seA==
-X-Received: by 2002:ac8:2a68:: with SMTP id l37mr430751qtl.77.1585659761795;
-        Tue, 31 Mar 2020 06:02:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id a18sm10174670qkc.117.2020.03.31.06.02.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 31 Mar 2020 06:02:40 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jJGXP-0002hS-R6; Tue, 31 Mar 2020 10:02:39 -0300
-Date:   Tue, 31 Mar 2020 10:02:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jacques Marais <jacques.marais@vastech.co.za>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: ibv_send_wr untagged union
-Message-ID: <20200331130239.GL20941@ziepe.ca>
-References: <CC88D066-59C0-42D3-9C19-41D1D9FDF3EC@vastech.co.za>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pDPoyb50ipf2PSCWKmSvKKT3EtwQc1EYTQvbcON3/IM=;
+        b=AsovXVd5HCIxXMk7LiyBvAUFCDqV8OWSWDWe537ws1aI5yGeRqcOln8aBUkRoRUqYm
+         7C3+glxWp9hg7Opw98TfzT+CCZWSk6T8lgfFVbKrSewP8OBb9wVWNX6YLwzJOTtpYdqH
+         XD3yIdjJalgQC+N2G5dejF2XBMdjaQKoO0b+yyHGVpia4G22po1aL6Rw/9sYxMd0uDWg
+         UODv0AtPej32yFleANKLnn7S80El+OdsOUpsauB/uipPprygCawsCUFx4Mx53FYYfQlM
+         JneBjxl51yIhdba/uZKCgSrqi2S3j44nCsJxLA3jqhyp6ojd9XaASSDkE3w8NhE25fVL
+         WRbQ==
+X-Gm-Message-State: ANhLgQ1Yvt2CCq+gdBUaXh21bWGR2tlsgUY/Qh2S1WuFZi0WVOq3jerU
+        qwjrlgIgLpuXDq6yGm6wVGYF61PgaFk=
+X-Google-Smtp-Source: ADFU+vud4u/ZVfomi5/aP0XOpttI95G1OGU8F48U6pLW7dFlluEw1mx9ypniq14UBW0ZQPjdHXyajA==
+X-Received: by 2002:aa7:9aaa:: with SMTP id x10mr18280549pfi.326.1585663980324;
+        Tue, 31 Mar 2020 07:13:00 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:af99:b4cf:6b17:1075? ([2601:647:4000:d7:af99:b4cf:6b17:1075])
+        by smtp.gmail.com with ESMTPSA id h64sm12438793pfg.191.2020.03.31.07.12.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Mar 2020 07:12:59 -0700 (PDT)
+Subject: Re: [PATCH v11 18/26] block/rnbd: client: main functionality
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
+ <20200320121657.1165-19-jinpu.wang@cloud.ionos.com>
+ <27b4e9a5-826f-d323-3d19-3f64c79e03eb@acm.org>
+ <CAMGffEmWPyBAHWJpkVvWuptgoX0tw4rs4jJH1TuJ0jRrkMBdYQ@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a02887c4-2e54-3b55-612a-29721b44eb7b@acm.org>
+Date:   Tue, 31 Mar 2020 07:12:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CC88D066-59C0-42D3-9C19-41D1D9FDF3EC@vastech.co.za>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAMGffEmWPyBAHWJpkVvWuptgoX0tw4rs4jJH1TuJ0jRrkMBdYQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 12:42:06PM +0000, Jacques Marais wrote:
-> Hi
-> 
-> I have a question regarding a untagged union field added in commit:
-> https://github.com/linux-rdma/rdma-core/commit/f67fa98d3c0cb78c95f84301572eb93989d4b0f9
-> 
-> Specifically the union in the 'ibv_send_wr' structure:
-> https://github.com/linux-rdma/rdma-core/blob/master/libibverbs/verbs.h#L1097-L1100
-> 
-> We have a golang wrapper library in order to make use of infiniband
-> in our system. However golang can only interface with tagged unions.
-> 
-> Is it possible to tag that union?
+On 3/31/20 2:25 AM, Jinpu Wang wrote:
+> On Sat, Mar 28, 2020 at 5:59 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>>
+>> On 2020-03-20 05:16, Jack Wang wrote:
+>>> +     /*
+>>> +      * Nothing was found, establish rtrs connection and proceed further.
+>>> +      */
+>>> +     sess->rtrs = rtrs_clt_open(&rtrs_ops, sessname,
+>>> +                                  paths, path_cnt, RTRS_PORT,
+>>> +                                  sizeof(struct rnbd_iu),
+>>> +                                  RECONNECT_DELAY, BMAX_SEGMENTS,
+>>> +                                  MAX_RECONNECTS);
+>>
+>> Is the server port number perhaps hardcoded in the above code?
+>
+> Yes, we should have introduced a module parameter for rnbd-clt too, so
+> if admin changes port_nr, it's possible to change it also on rnbd-clt.
 
-No, it is 'api' that it remain untagged
+What if someone decides to use different port numbers for different rnbd 
+servers? Shouldn't the port number be configurable per connection 
+instead of making it a kernel module parameter? How about extracting the 
+destination port number from the address string like srp_parse_in() does?
 
-Jason
+Thanks,
+
+Bart.
