@@ -2,52 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D5E198CD9
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 09:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337CF198CE2
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 09:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgCaHVD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Mar 2020 03:21:03 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45257 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgCaHVC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Mar 2020 03:21:02 -0400
-Received: by mail-io1-f67.google.com with SMTP id y14so3527036iol.12
-        for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2020 00:21:00 -0700 (PDT)
+        id S1726488AbgCaHXf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Mar 2020 03:23:35 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:42847 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgCaHXe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Mar 2020 03:23:34 -0400
+Received: by mail-il1-f193.google.com with SMTP id f16so18430847ilj.9
+        for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2020 00:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=52yap1u5QwMRqsrXFtOjtT2B5QyIT4tucmUPphiOHrI=;
-        b=GTEMTjOKXFybxlRKumEuM4V/PfF6eBoKtww0OsO9YQzyVAdmrNJggQ9yvKE3ewczqJ
-         F+jPdYQ3iOHbUnaKd5ChLHGybOJzcn5KN9BElQ8ELug4liXs5Deb1SnBHz0eh7KmudSC
-         qAB58ESePxjulAy6d3OajZ3wwhsnemHu/wSAtrk6kIu0VVzJN4CN93CPwecH1RwZfRak
-         Ak7V7rGQCPkXfNVvBD2cJyMedHJS93EzOT4liUhD0/bHf0cPG+CIru100SXDPHjlvnLm
-         9zi/m/0Td1R6AWxbb5CEkSR+rHvnYLP414D8r8PpT8jXhFEKU9D7vxR//2MBRfgl7EEK
-         ITjw==
+        bh=pYmhvetgwgJB3/SNAs9Ay4+GNdd0buNQ8ScCdL5qIAo=;
+        b=NhH9Aqnwn/jz9n5nmhhg5FmBCES9+80n1eqtkI4oil9+I157ZCyWonmXousXTYXiec
+         omrLkGkVIJDzsGte9wa+X1iCcmPQb+ekIWwnl3o8pR9jqYfH/7W0DGAmfG/1fLnEt+WT
+         GBxOr3oPH2faNZh7vAeR4aZf5Tun1GU9IRErfuzw3NhyjxT7rPMxao3YQE+9ILjz3mRN
+         UBu/L2VkTdzZC5AGHbcQlp6E+ahLF1lkNTokNwxrIs2/6sKsHdxnAel/kSgs80jOODMW
+         pYrxOKsv56J8TQtn/Gxq7Cg0J4dC+UtSLAUsM1WtHf7JnQFcM2rEfhNsGrWpJ9aa1c3c
+         0NIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=52yap1u5QwMRqsrXFtOjtT2B5QyIT4tucmUPphiOHrI=;
-        b=sLwcd2WvOYL4fbSrQbrDVG8Oyu490IPa/hmujWliuwT7vX+/HImhiyrI/pGUACtrJ4
-         WLLEGOLttRIOqmWavMFielrs6hUk/uBrOO9RJarwTZ75lvSMvAoNN3qIcpXSqbWT/SxI
-         3gaK/F1ZdpTCwwa1wCh/XeYLEOeyFJ7EW6ESV+v5LiRsHucHGEOvWYq0tcplbhidV7+D
-         /C8G9O5CkFIsdzM9MRZoxrDtSEVHWOIEAZ2UZzt3NFK/R3O175R/QQ3rkRS2WUChjBSt
-         Wu5XIbbeV+OLFyOOXr8ZTag+nVqXVo4Obq6VWBebcorhOO/v8HYA3sLkQbOUBAnV6wW6
-         QtSQ==
-X-Gm-Message-State: ANhLgQ20heYVp+icg1NdXYiXSf5MZuZwB0QDbRYJ49ub8Zuhr6p3FJuu
-        C846+lpfMbe65qcdj4uxtDqHxgjYdh285Fzf/yR2yA==
-X-Google-Smtp-Source: ADFU+vsGLU/X7G6MrKpVK698XftSrAYv6eZQKIXo1zyQm2wQUl+il0qTmzzzZLjZ6UV6oJNrdPigOZINLrNoZWrkQJg=
-X-Received: by 2002:a6b:2d7:: with SMTP id 206mr14110250ioc.42.1585639260339;
- Tue, 31 Mar 2020 00:21:00 -0700 (PDT)
+        bh=pYmhvetgwgJB3/SNAs9Ay4+GNdd0buNQ8ScCdL5qIAo=;
+        b=P97HidJeNyTWYzY9B7j5Axdzq9MNUZh51Zw+0aIwQW9jqCIvaSn1KWlLjf60jZwm4B
+         UIxfABuG94gQcarT481Zb4mJzUh5pX754ACqtaMf5rnX/BhyTxAp4sJ9APtwvqA/3qQa
+         A5kgh/lXDQtB5lqMKkveg8i0/XtspVh67K1OuTsxXLT6LScxY5d4+Tv1f/N/RATrItSx
+         iDVLW0DPVD5DrVUF3Y6LqRV9lvKCx84uRQNZ5fVWoSUhumcJsXPUZnfX6+mr/BCvA5xg
+         hNGuhRTfTywOtGDwP0EJvXqU/rJcojO27pps+NTwLrVv4ftgLDOswdc/TMZ0r6aRgDTj
+         hD0A==
+X-Gm-Message-State: ANhLgQ18IVHTLsN9Gfaq3KulRj3pDEhAyssaY0A6wRTCCItdnEp7sjLR
+        uvMt4PMarONZ+mQBP6izieGorVRudRtjvCav8y4VrA==
+X-Google-Smtp-Source: ADFU+vviX+IfrrdYTDhxf766mcWvYHTwA5u5Bqq+BCi0GBesPQ5JpHC7+tlOjcPdC2VP5OHwNQf7J5yyBB0Xp2sXbU0=
+X-Received: by 2002:a92:ba01:: with SMTP id o1mr14705790ili.217.1585639412583;
+ Tue, 31 Mar 2020 00:23:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-9-jinpu.wang@cloud.ionos.com> <788b815a-913b-5e4e-4023-585407411b5b@acm.org>
-In-Reply-To: <788b815a-913b-5e4e-4023-585407411b5b@acm.org>
+ <20200320121657.1165-25-jinpu.wang@cloud.ionos.com> <181aba74-b942-2faf-060b-89782c8f804e@acm.org>
+In-Reply-To: <181aba74-b942-2faf-060b-89782c8f804e@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 31 Mar 2020 09:20:49 +0200
-Message-ID: <CAMGffEnHp51g8dTObhjYZTwrRLRCcZD9nbNQi1X1a08-Tu+ZLQ@mail.gmail.com>
-Subject: Re: [PATCH v11 08/26] RDMA/rtrs: client: sysfs interface functions
+Date:   Tue, 31 Mar 2020 09:23:21 +0200
+Message-ID: <CAMGffEnRZE-GBd8CwOsfY1YRq=fYzaX-2f+zHpy3CapZCAgfKw@mail.gmail.com>
+Subject: Re: [PATCH v11 24/26] block/rnbd: include client and server modules
+ into kernel compilation
 To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>,
@@ -65,17 +66,11 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 12:28 AM Bart Van Assche <bvanassche@acm.org> wrote:
+On Sat, Mar 28, 2020 at 8:34 PM Bart Van Assche <bvanassche@acm.org> wrote:
 >
 > On 2020-03-20 05:16, Jack Wang wrote:
-> > +static struct kobj_type ktype = {
-> > +     .sysfs_ops = &kobj_sysfs_ops,
-> > +};
+> > Add rnbd Makefile, Kconfig and also corresponding lines into upper
+> > block layer files.
 >
-> A release method is missing - please fix this.
->
-> Thanks,
->
-> Bart.
-Sure, will fix it.
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Thanks Bart!
