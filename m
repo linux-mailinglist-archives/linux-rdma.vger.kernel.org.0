@@ -2,78 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E53A19875F
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 00:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DA4198964
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Mar 2020 03:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgC3W3U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Mar 2020 18:29:20 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:44970 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbgC3W3T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 18:29:19 -0400
-Received: by mail-pl1-f194.google.com with SMTP id h11so7313058plr.11;
-        Mon, 30 Mar 2020 15:29:19 -0700 (PDT)
+        id S1729299AbgCaBHT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Mar 2020 21:07:19 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:42610 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729129AbgCaBHT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Mar 2020 21:07:19 -0400
+Received: by mail-pg1-f193.google.com with SMTP id h8so9546395pgs.9;
+        Mon, 30 Mar 2020 18:07:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WxPMXDAVCMgxHw1lTLqOxkQSABPvO25tJYgztSXGdRM=;
-        b=pCXJY3qsNjMextqdAE43C2SykSjwRMrgB+9yzyVP8JKoFCvqVmzdFsP03KFG3cFizM
-         TCN0wlgD6Fl7SvYwpTvVD536gRgbCmQiY53mTXM/oHw4awoHwxSU2xsUeclkz71wUU36
-         MwyJ9GCyqDPkfGFPZB262GbZUPgnTyZWRZ1ap/r4aqfG/i7GiKncAJA/XxOsJqPhDGpF
-         6gYhXYTY3b+63YIRpr+hasatlFX6f0VDtVM0DfAEN3NYt7ud17K6YSqOibiegUvYOTy5
-         EF82jK45dEYOBQA3Qt9zfm1fNcFc0VqGwqncijh/Byi8zaNePEYybdmSzJyYNqeQY70b
-         fl1g==
-X-Gm-Message-State: AGi0PuYN80jAcUWfA6d9cDJgN0JMRI4NRz5W2l3Y9JwFLlJPyhNWyiDf
-        6EBJIU5h0IvrWP9gpTRp7LM=
-X-Google-Smtp-Source: APiQypJralrCXkTvUqZ8tOFgwDSBNb+lshclmI2BB8i2ANNMt6B60pY4ruuxRWiAOkKs7816sqhnsw==
-X-Received: by 2002:a17:90a:240f:: with SMTP id h15mr351081pje.176.1585607358540;
-        Mon, 30 Mar 2020 15:29:18 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:5408:f41a:5985:3059? ([2601:647:4000:d7:5408:f41a:5985:3059])
-        by smtp.gmail.com with ESMTPSA id y30sm11069017pff.67.2020.03.30.15.29.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Mar 2020 15:29:17 -0700 (PDT)
-Subject: Re: [PATCH v11 12/26] RDMA/rtrs: server: sysfs interface functions
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
-        pankaj.gupta@cloud.ionos.com
-References: <20200320121657.1165-1-jinpu.wang@cloud.ionos.com>
- <20200320121657.1165-13-jinpu.wang@cloud.ionos.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <9ecaaa54-9aa2-958e-e741-c908fee60a83@acm.org>
-Date:   Mon, 30 Mar 2020 15:29:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZhOw+cmsFZegzfDW5fDINEwsMjwUxjfPEvGqp7eI5u4=;
+        b=bo5ZEfa9Nxm/Fx6IjrFKls3j31XopQ7j2KdR/RslF+/FzrvFKfNyoKdQt5zMTLf8wo
+         dYMt2gS1N53NJQmGFn1OskJLB62NTkqENx05UauPOkBUI+wFhGkuBnkLX0xO6CrtGwMX
+         nMX6zxzK7R5LvbIHiBKtroRnNKQGqnuEg0H6EqdKghvbBrqKAiQvbvvTsoJM1whg9bKB
+         MJx8ge9CyZtKstluw2PvYae8P/aIfbizv15JHD7Ro86XLnFZmM1KlDD6TlzgnYeo+eN3
+         VUS8MhPRxIAWX54CVUgeID43waS3G+CjT4C+YhFDrU+sbzCIfrp/w/mUFMUnjKn8Sryz
+         AXmw==
+X-Gm-Message-State: AGi0PuafC6oghmkh/9jb2828EMxgjiN0EWtbI8/3V0ZLTfp1E9aUPy4K
+        om+FW2dJ0xriC11IIHUtwhc=
+X-Google-Smtp-Source: APiQypJIdVuKuKZ7Aa3Vg7gQq1G9lVCm+lr+jCVHNNN8BOlt4XPlTODgILTRDlepSvF3t5O1Nic12A==
+X-Received: by 2002:a62:7d4e:: with SMTP id y75mr1984803pfc.32.1585616836680;
+        Mon, 30 Mar 2020 18:07:16 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:b015:431e:549a:54d? ([2601:647:4802:9070:b015:431e:549a:54d])
+        by smtp.gmail.com with ESMTPSA id a3sm600490pjq.36.2020.03.30.18.07.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Mar 2020 18:07:15 -0700 (PDT)
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+To:     Stephen Rust <srust@blockbridge.com>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Max Gurtovoy <maxg@mellanox.com>
+References: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+ <20191203005849.GB25002@ming.t460p>
+ <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
+ <20191203031444.GB6245@ming.t460p>
+ <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
+ <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
+ <20191203124558.GA22805@ming.t460p>
+ <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
+ <20191204010529.GA3910@ming.t460p>
+ <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
+ <20191204230225.GA26189@ming.t460p>
+ <d9d39d10-d3f3-f2d8-b32e-96896ba0cdb2@grimberg.me>
+ <CAAFE1beqFBQS_zVYEXFTD2qu8PAF9hBSW4j1k9ZD6MhU_gWg5Q@mail.gmail.com>
+ <d2f633f1-57ef-4618-c3a6-c5ff0afead5b@grimberg.me>
+ <CAAFE1bdAbKfqbf05pKBcMUj+58fijDMT-8WBSuwiKk2Bmm4v2w@mail.gmail.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <82bbbdf2-cf61-d523-29e0-d756b7f208f4@grimberg.me>
+Date:   Mon, 30 Mar 2020 18:07:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200320121657.1165-13-jinpu.wang@cloud.ionos.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAAFE1bdAbKfqbf05pKBcMUj+58fijDMT-8WBSuwiKk2Bmm4v2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -81,13 +74,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-03-20 05:16, Jack Wang wrote:
-> +static struct kobj_type ktype = {
-> +	.sysfs_ops	= &kobj_sysfs_ops,
-> +};
 
-It seems like a release method is missing here.
+>> Can you try attached patch and see if it solves your issue?
+>> WARNING: very lightly tested...
+> 
+> I have run our tests against this patch and it is working well for our
+> "basic" testing as well. The test case that previously failed, now
+> passes with this patch. So that's encouraging! Thanks for the quick
+> response and quick patch.
 
-Thanks,
+Good to know..
 
-Bart.
+> One question we had is regarding the hard coded header length: What
+> happens if the initiator sends an extended CDB, like a WRITE32? Are
+> there any concerns with an additional header segment (AHS)?
+
+You are absolutely correct! t10-dif is broken with this patch as
+32 byte cdb would break into two buffers which is not expected
+by the target core...
+
+I take back this patch, I guess we should keep contiguous allocation but
+just make the recv wr such that the data is aligned for 16 bytes cdbs,
+and for 32-byte cdbs we never support immediate data anyways...
