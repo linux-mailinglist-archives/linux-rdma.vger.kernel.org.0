@@ -2,56 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B7919A50A
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2020 08:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F5719ABA6
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Apr 2020 14:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731683AbgDAGCh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Apr 2020 02:02:37 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:55366 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731680AbgDAGCh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Apr 2020 02:02:37 -0400
-Received: by mail-pj1-f67.google.com with SMTP id fh8so2230767pjb.5
-        for <linux-rdma@vger.kernel.org>; Tue, 31 Mar 2020 23:02:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=nvcfWhIXqBYO4SslzyQp1Rb1fqvy5ZQBekVSsmvRh0+TzEqiAIVrZcDI8gXIMaAk3a
-         swo/UNynQlELTiYuO4POylVTGbd85A9kk2f6Lq3Tzf0yaeL4CAWM13Hi1Ja4fQBRYbWY
-         poWZx7h1X9GzyAQyvULY46HuyUnGr9m89LmUeRrTnj4PSBgvxf3hEMsoYN8fY33t8i5I
-         9zXoqn/eKoPnj7N7wn7zUCV3jZC0i3zCHvqpnfFzti/FGeQ2uJyiPai8BoxXjvLbVWRE
-         C7/FkcJ/W7ueEaHV7Y/gyWBCi8tWALObsbyYic5gyzLMbIHZ2RuaX+RCri3VWW8dl6X7
-         5Ohw==
-X-Gm-Message-State: AGi0PuaZAeqaPvkuXTt/lxmvKad6EPaBAn5JkBMIipxyd5wbw24K9Rgi
-        t1tP2QpbYp7tbNXh3csQ6Xz/Byhy
-X-Google-Smtp-Source: APiQypIj1DzrPRlAx+O3t6cxMF7VI5IbDRqskNeVl5g9vmSOaaIzgL8rT8PTpUN1tvYqxaOpqeisXQ==
-X-Received: by 2002:a17:90a:e7c8:: with SMTP id kb8mr2843642pjb.79.1585720954502;
-        Tue, 31 Mar 2020 23:02:34 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:cca1:4ce7:5ea6:1461? ([2601:647:4802:9070:cca1:4ce7:5ea6:1461])
-        by smtp.gmail.com with ESMTPSA id o15sm703216pjp.41.2020.03.31.23.02.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 31 Mar 2020 23:02:33 -0700 (PDT)
-Subject: Re: [PATCH] IB/iser: Always check sig MR before putting it to the
- free pool
-To:     Sergey Gorenko <sergeygo@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Max Gurtovoy <maxg@mellanox.com>
-References: <20200325151210.1548-1-sergeygo@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <351df07d-b7e9-2de9-e74f-f8ee6ff6a465@grimberg.me>
-Date:   Tue, 31 Mar 2020 23:02:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 Thunderbird/60.9.0
+        id S1732504AbgDAM1F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Apr 2020 08:27:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726804AbgDAM1E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 1 Apr 2020 08:27:04 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 471C920776;
+        Wed,  1 Apr 2020 12:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585744024;
+        bh=eXd3Vs0wNSdsPSapWx3TL2HK2zt58Vodt7QDkASU47g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wXHCAc29m0daGI9FMUQtSjz41unxyUtqY556CihAgR4e1EJjg8LGCNiu/btU8qce1
+         rgCyK03XxUUXK5EggqdNqR5DuDkueggfpOcqGM6zW2qF6CnThOtsOJ/3ecYJiNugBi
+         jA10D5RAJW3H0vEN1hdt87SBlx3LJFPemEFeSjYI=
+Date:   Wed, 1 Apr 2020 15:26:59 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     George Spelvin <lkml@sdf.org>, Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH v1 01/50] IB/qib: Delete struct qib_ivdev.qp_rnd
+Message-ID: <20200401122659.GA80989@unreal>
+References: <202003281643.02SGh6eG002694@sdf.org>
+ <20200329141710.GE20941@ziepe.ca>
+ <20200329160825.GA4675@SDF.ORG>
+ <20200330132808.GB20969@lakrids.cambridge.arm.com>
+ <20200330164333.GB2459@SDF.ORG>
+ <20200330164912.GK20941@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200325151210.1548-1-sergeygo@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330164912.GK20941@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+On Mon, Mar 30, 2020 at 01:49:12PM -0300, Jason Gunthorpe wrote:
+> On Mon, Mar 30, 2020 at 04:43:33PM +0000, George Spelvin wrote:
+> > On Mon, Mar 30, 2020 at 02:28:08PM +0100, Mark Rutland wrote:
+> > > Also, if you do send a series, *please* add a cover-letter explaining
+> > > what the overall purpose of the series is, and have all patches chained
+> > > in-reply-to that rather than patch 1. Otherwise reviewers have to
+> > > reverse-engineer the intent of the author.
+> > >
+> > > You can generate the cover letter with:
+> > >
+> > > $ git format-patch --cover $FROM..$TO
+> > >
+> > > ... and IIRC git send-email does the right thing by default if you hand
+> > > it all of the patches at once.
+> >
+> > Er, I *did* send a cover letter.  Cc:ed to the union of everyone
+> > Cc:ed on any of the individual patches.  It's appended.  (I left in
+> > the full Cc: list so you can see you're on it.)
+> >
+> > My problem is I don't have git on my e-mail machine, so I fed them to
+> > sendmail manually, and that does some strange things.
+>
+> The problem is that none of the patches had a in-reply-to header to
+> the cover letter so it is very difficult to find it.
+>
+> Things work best if you can use git send-email :) I've never tried it,
+> bu I wonder if you can tell git that the sendmail is 'ssh foo-server
+> /usr/bin/sendmail' ?
+
+I don't know if it is possible to do directly, but such feature is
+achievable through custom script.
+
+I'm doing it to be able to send emails with git-send-email in offline
+mode too.
+
+In my .gitconfig:
+ 28 [sendemail]
+ 29         smtpserver = /usr/local/bin/msmtp-enqueue.sh
+
+Thanks
+
+>
+> Jason
