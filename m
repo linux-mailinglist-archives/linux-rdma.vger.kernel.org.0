@@ -2,228 +2,243 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD2619CDBC
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Apr 2020 02:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A3519CEB1
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Apr 2020 04:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390292AbgDCAMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Apr 2020 20:12:40 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:47015 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390235AbgDCAMk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Apr 2020 20:12:40 -0400
-Received: by mail-qk1-f193.google.com with SMTP id u4so6218534qkj.13;
-        Thu, 02 Apr 2020 17:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aWmkjsHgC2Mb/1FGC/6TX9gaFt65nfjoT/5opdlfIXI=;
-        b=cA95/rqNKt4GJ8TqL9VvKamVwGntNFDkakTaFHbn+ZscON5wgxCacDzuKVup+ik6To
-         a3ReYx3HVggglTWzA2pYjhQVb3ZGFHsnLUusDge30JXUUF9tmGe8H91OXDF5HtvfFmxB
-         cjAITp1Tn9iOrBTNSVlm8Ae0UazaIIhH9Wie1Ir9K+f2r5Jl7x6gqWO1RqUIYXDRCQtO
-         i03UaL0C7+XOAaE/ASe6J7hIFfIaf2JgTp626UWJGjA5m9YOaZ0cWaOeSKluL4eyf57r
-         I37XKhi/X44sq2u3RcP7ppmUxgdaKFKdUWpyo1ymFXRhdxUD67TIEDFyIuoYt7hcMgnd
-         zGkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aWmkjsHgC2Mb/1FGC/6TX9gaFt65nfjoT/5opdlfIXI=;
-        b=D+w/I0fYSFvz289xjbFHX6m1Slz7MdP1ByuR0BTQMK1+5JGhZOgpGdg6koiubegInK
-         TcJ32OOTOG6bcaurS/UyRg4Q3ug7/8uNFVOMhAhOoqvm9xuteom5osTrvyJ97GqxTZep
-         dq39kXDKXsANywg1XnAIvq73V5XukbcaCwvcwiCbhSvE1kyQWBBpZFbbpHMNU0gSF+7K
-         lrls2Pmfa3vboA9BHOgz1rlzNDojYY2H232nRvGPHbPv4tytpr6Ra9dLRvkH1cqrby2e
-         3AVgCEGFYtGujTMQoy/fFf75HirUa6MYqoJz6w1gDOmyWJMuluStODJ2k6ZCqD+IA+i7
-         mhlA==
-X-Gm-Message-State: AGi0Pua6aZua3hYY/je+oIeADvXt/iJs+Ojm5vEe/OdsCOZd04L+9tUj
-        /5MGRrA1JNGysCsAO5nnePY=
-X-Google-Smtp-Source: APiQypIlDxIGCC/U+zxp4VQPLayYZgf9BhozwSlBtIIe8yyKbpL95gt7C+q0TTOdfeabAeG5+IYOCQ==
-X-Received: by 2002:a37:a0d6:: with SMTP id j205mr2243608qke.455.1585872758562;
-        Thu, 02 Apr 2020 17:12:38 -0700 (PDT)
-Received: from localhost.localdomain ([2001:1284:f016:e706:e019:95fc:6441:c82])
-        by smtp.gmail.com with ESMTPSA id n190sm4668547qkb.93.2020.04.02.17.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 17:12:37 -0700 (PDT)
-Received: by localhost.localdomain (Postfix, from userid 1000)
-        id 8D495C0EBA; Thu,  2 Apr 2020 21:12:35 -0300 (-03)
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        marcelo.leitner@gmail.com
-Subject: [PATCH net] net/mlx5e: limit log messages due to (ovs) probing to _once
-Date:   Thu,  2 Apr 2020 21:11:54 -0300
-Message-Id: <d57b95462cccf0f67089c91d3dfd3d1f4c46e9bf.1585872570.git.marcelo.leitner@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S2390364AbgDCC1N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Apr 2020 22:27:13 -0400
+Received: from mail-eopbgr140057.outbound.protection.outlook.com ([40.107.14.57]:32999
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390376AbgDCC1N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Apr 2020 22:27:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=goj/9eJt4lgJJzbv+Y0+d1v/JEkVSWgC4hK9eFd5e5h9i0+foXYHJ5/59NdtXJn7wHn1LpQYTOIKanR+MB1aKYYnYt384EldFRS3fkIrwXF8jDU56SpSoS5WubRI8lNf1+7OQxa8TB6jitb+pM0YMTemKOZG0i4gYGuTpl+1SXMohzYw5BUSbS7o7IcYl5YKyH5/PNFGAGEEGZwiAIIu3rZqN8HJY2oEJkgWn+RAzWFMLa3Y/w0mlfZ5ErQ8Xi4GEiIQ9RNt7OL5zLi/Sp2761Uo3Ji9r/Ebi667yqEQT/3ITKAr8fh7E1zq0DFGcIrGAPBrgArzdaVgqTFjOSpb3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tn2mArFfbwUMqwLE4YpsHRkw3DnAbRFuUYJDkCIl5Ro=;
+ b=U1l6qyOtc9I2C50PS1VbZztHdau/Uz0vLolfcrrlbZYKv2tBphootssrbbmKubwwI7hPUbJepgJutkbwFPCcB3PdisiYEtnnC7n+lriLHEiuIP0sUeOU6tZu+i5sA5sCdrb39lN1ssiMaBgyfX8s4UHtNZB4J+XOZ4a/77Hh/VPcEUHvaHgewRkRhG4Q/5Qpz/8d0EKKOBWozwZLgMlA0LWNKphcNGm5z2XU8l97UsTMf+2JGzQAYjcyKZLsh7ahkm0uMshYWwfovug0tbaFrQOao2GXatTk7Wi0OyjVc9SzDX5kQHNdanXN0SyIu+ePhv4XNKU23EYoBJUf+XJfJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tn2mArFfbwUMqwLE4YpsHRkw3DnAbRFuUYJDkCIl5Ro=;
+ b=dfY7nwKXo+02VC/11aPN9w4wagzF+f4WvAzhL83fatIRXbNwuyUeLdMwKPgovRk/HLb3akCVsyjSqugkFDbIWXpm4sJu8MLVpZTWC+dhB0CSMD/MYSd6adZWUQo/QIyFB4NFAR2FZWxMdIFwlDUt9OO36ALJa5QpX9TRNmce1wo=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
+ by VI1PR05MB3374.eurprd05.prod.outlook.com (2603:10a6:802:1d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Fri, 3 Apr
+ 2020 02:27:08 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2878.018; Fri, 3 Apr 2020
+ 02:27:08 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Roi Dayan <roid@mellanox.com>, Paul Blakey <paulb@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Vlad Buslov <vladbu@mellanox.com>,
+        "marcelo.leitner@gmail.com" <marcelo.leitner@gmail.com>,
+        Oz Shlomo <ozsh@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [PATCH net] net/mlx5e: limit log messages due to (ovs) probing to
+ _once
+Thread-Topic: [PATCH net] net/mlx5e: limit log messages due to (ovs) probing
+ to _once
+Thread-Index: AQHWCUyXcROC9qaN+Eig+06PJQGPPKhmrCGA
+Date:   Fri, 3 Apr 2020 02:27:08 +0000
+Message-ID: <c4e43a61a8ad7f57e2cb228cc0ba810b68af89cb.camel@mellanox.com>
+References: <d57b95462cccf0f67089c91d3dfd3d1f4c46e9bf.1585872570.git.marcelo.leitner@gmail.com>
+In-Reply-To: <d57b95462cccf0f67089c91d3dfd3d1f4c46e9bf.1585872570.git.marcelo.leitner@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 344418ff-18cc-46c6-7b31-08d7d776821c
+x-ms-traffictypediagnostic: VI1PR05MB3374:|VI1PR05MB3374:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB3374504AC9B304D66E5432D2BEC70@VI1PR05MB3374.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-forefront-prvs: 0362BF9FDB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(39860400002)(136003)(396003)(376002)(366004)(478600001)(186003)(2616005)(110136005)(71200400001)(5660300002)(81156014)(54906003)(8936002)(81166006)(6486002)(8676002)(15650500001)(6636002)(6512007)(6506007)(26005)(4326008)(66446008)(2906002)(66946007)(76116006)(64756008)(66476007)(66556008)(316002)(36756003)(91956017)(86362001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YnARk8LOEt3Td3BPuYkzYGHO/fmZgMlOsVQURFyIwvLIJzDQnVqxzXKSBNZdnMmVhcbjheo7bxvtNx02V+cnkPOgr2jixSYGaLNh0pwEOheZpgQK1PYrKmVHchbI1e3vGdZXtO4T1dVAchiHo0bJiFxtS/kW4yXPsCvw36kRVGpXTMSBWg3H2gZhjspq4TF8G6PuoWqpemDj8uxf3dJ9yqWQ5dLmVQaxobimy+fli72ZUVlPv6qwyo0cherP6KGp3lO8T4ezpWqaW7zuATjm3+NtkiBFwxA5lsqzodIohnETDOKbC4qTjxTtyQ6G4Hf69b0jNR8OV69KNqJLOcPLEBylTm873cg/kaNe7KKFgNzXUcDd92L/d7Ln9oEl3N0sX0cQ1nBcK3wJ7hatlkJWZCf7RvQ+3R121wxtCRRcjt5U1uyKYBwwzmAJbKTjNLlR
+x-ms-exchange-antispam-messagedata: Py2L644vfjLh+vI03VuLLzrsLCAVT8QXcpw/tynzB2W0+ZvCizAbb7oyDIsyk/h4gakCElJcFWcEYkCKqgEe/hdsMEZkYd1t2nPtvRWsFWaWX70/JhUgqVZ1Btq60HCTktGOum9C9KdXCV3M+q1eYQ==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7D4AA3AE72D7E94FAFBC4FA8B041BFF4@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 344418ff-18cc-46c6-7b31-08d7d776821c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2020 02:27:08.4102
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9oR0IzyUkeCnaqQg6LaB/hkjXkF3V1EDoPQayFrwWFrFeiZgXnqIcpNsn8gaeRkrYb96w1PHolo+JM38kC4Ivw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3374
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-OVS will keep adding such flows, no matter what. They will usually be
-handled by tc software (or ovs datapath, if skip_sw is used). But the
-driver is logging these messages for each and every attempt, despite the
-extack. Note that they weren't rate limited, and a broadcast storm could
-trigger system console flooding.
-
-Switch these to be _once. It's enough to tell the sysadmin what is
-happenning, and if anything, the OVS log will have all the errors.
-
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
----
- .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 61 ++++++++++---------
- 1 file changed, 32 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 438128dde187d7ec58892c2879c6037f807f576f..1182fba3edbb8cf7bd59557b7ece18765c704186 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1828,8 +1828,8 @@ enc_opts_is_dont_care_or_full_match(struct mlx5e_priv *priv,
- 				       opt->length * 4)) {
- 				NL_SET_ERR_MSG(extack,
- 					       "Partial match of tunnel options in chain > 0 isn't supported");
--				netdev_warn(priv->netdev,
--					    "Partial match of tunnel options in chain > 0 isn't supported");
-+				netdev_warn_once(priv->netdev,
-+						 "Partial match of tunnel options in chain > 0 isn't supported");
- 				return -EOPNOTSUPP;
- 			}
- 		}
-@@ -1988,8 +1988,8 @@ static int parse_tunnel_attr(struct mlx5e_priv *priv,
- 	    !mlx5_eswitch_reg_c1_loopback_enabled(esw)) {
- 		NL_SET_ERR_MSG(extack,
- 			       "Chains on tunnel devices isn't supported without register loopback support");
--		netdev_warn(priv->netdev,
--			    "Chains on tunnel devices isn't supported without register loopback support");
-+		netdev_warn_once(priv->netdev,
-+				 "Chains on tunnel devices isn't supported without register loopback support");
- 		return -EOPNOTSUPP;
- 	}
- 
-@@ -2133,8 +2133,8 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 	      BIT(FLOW_DISSECTOR_KEY_ENC_IP) |
- 	      BIT(FLOW_DISSECTOR_KEY_ENC_OPTS))) {
- 		NL_SET_ERR_MSG_MOD(extack, "Unsupported key");
--		netdev_warn(priv->netdev, "Unsupported key used: 0x%x\n",
--			    dissector->used_keys);
-+		netdev_warn_once(priv->netdev, "Unsupported key used: 0x%x\n",
-+				 dissector->used_keys);
- 		return -EOPNOTSUPP;
- 	}
- 
-@@ -2484,8 +2484,8 @@ static int parse_cls_flower(struct mlx5e_priv *priv,
- 		    esw->offloads.inline_mode < non_tunnel_match_level)) {
- 			NL_SET_ERR_MSG_MOD(extack,
- 					   "Flow is not offloaded due to min inline setting");
--			netdev_warn(priv->netdev,
--				    "Flow is not offloaded due to min inline setting, required %d actual %d\n",
-+			netdev_warn_once(priv->netdev,
-+					 "Flow is not offloaded due to min inline setting, required %d actual %d\n",
- 				    non_tunnel_match_level, esw->offloads.inline_mode);
- 			return -EOPNOTSUPP;
- 		}
-@@ -2885,7 +2885,9 @@ static int alloc_tc_pedit_action(struct mlx5e_priv *priv, int namespace,
- 		if (memcmp(cmd_masks, &zero_masks, sizeof(zero_masks))) {
- 			NL_SET_ERR_MSG_MOD(extack,
- 					   "attempt to offload an unsupported field");
--			netdev_warn(priv->netdev, "attempt to offload an unsupported field (cmd %d)\n", cmd);
-+			netdev_warn_once(priv->netdev,
-+					 "attempt to offload an unsupported field (cmd %d)\n",
-+					 cmd);
- 			print_hex_dump(KERN_WARNING, "mask: ", DUMP_PREFIX_ADDRESS,
- 				       16, 1, cmd_masks, sizeof(zero_masks), true);
- 			err = -EOPNOTSUPP;
-@@ -2912,17 +2914,17 @@ static bool csum_offload_supported(struct mlx5e_priv *priv,
- 	if (!(action & MLX5_FLOW_CONTEXT_ACTION_MOD_HDR)) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "TC csum action is only offloaded with pedit");
--		netdev_warn(priv->netdev,
--			    "TC csum action is only offloaded with pedit\n");
-+		netdev_warn_once(priv->netdev,
-+				 "TC csum action is only offloaded with pedit\n");
- 		return false;
- 	}
- 
- 	if (update_flags & ~prot_flags) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "can't offload TC csum action for some header/s");
--		netdev_warn(priv->netdev,
--			    "can't offload TC csum action for some header/s - flags %#x\n",
--			    update_flags);
-+		netdev_warn_once(priv->netdev,
-+				 "can't offload TC csum action for some header/s - flags %#x\n",
-+				 update_flags);
- 		return false;
- 	}
- 
-@@ -3224,8 +3226,9 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
- 			} else {
- 				NL_SET_ERR_MSG_MOD(extack,
- 						   "device is not on same HW, can't offload");
--				netdev_warn(priv->netdev, "device %s not on same HW, can't offload\n",
--					    peer_dev->name);
-+				netdev_warn_once(priv->netdev,
-+						 "device %s not on same HW, can't offload\n",
-+						 peer_dev->name);
- 				return -EINVAL;
- 			}
- 			}
-@@ -3754,9 +3757,9 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 			if (attr->out_count >= MLX5_MAX_FLOW_FWD_VPORTS) {
- 				NL_SET_ERR_MSG_MOD(extack,
- 						   "can't support more output ports, can't offload forwarding");
--				netdev_warn(priv->netdev,
--					    "can't support more than %d output ports, can't offload forwarding\n",
--					    attr->out_count);
-+				netdev_warn_once(priv->netdev,
-+						 "can't support more than %d output ports, can't offload forwarding\n",
-+						 attr->out_count);
- 				return -EOPNOTSUPP;
- 			}
- 
-@@ -3821,10 +3824,10 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 				if (!mlx5e_is_valid_eswitch_fwd_dev(priv, out_dev)) {
- 					NL_SET_ERR_MSG_MOD(extack,
- 							   "devices are not on same switch HW, can't offload forwarding");
--					netdev_warn(priv->netdev,
--						    "devices %s %s not on same switch HW, can't offload forwarding\n",
--						    priv->netdev->name,
--						    out_dev->name);
-+					netdev_warn_once(priv->netdev,
-+							 "devices %s %s not on same switch HW, can't offload forwarding\n",
-+							 priv->netdev->name,
-+							 out_dev->name);
- 					return -EOPNOTSUPP;
- 				}
- 
-@@ -3843,10 +3846,10 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 			} else {
- 				NL_SET_ERR_MSG_MOD(extack,
- 						   "devices are not on same switch HW, can't offload forwarding");
--				netdev_warn(priv->netdev,
--					    "devices %s %s not on same switch HW, can't offload forwarding\n",
--					    priv->netdev->name,
--					    out_dev->name);
-+				netdev_warn_once(priv->netdev,
-+						 "devices %s %s not on same switch HW, can't offload forwarding\n",
-+						 priv->netdev->name,
-+						 out_dev->name);
- 				return -EINVAL;
- 			}
- 			}
-@@ -3959,8 +3962,8 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 
- 			NL_SET_ERR_MSG(extack,
- 				       "Decap with goto isn't supported");
--			netdev_warn(priv->netdev,
--				    "Decap with goto isn't supported");
-+			netdev_warn_once(priv->netdev,
-+					 "Decap with goto isn't supported");
- 			return -EOPNOTSUPP;
- 		}
- 
--- 
-2.25.1
-
+T24gVGh1LCAyMDIwLTA0LTAyIGF0IDIxOjExIC0wMzAwLCBNYXJjZWxvIFJpY2FyZG8gTGVpdG5l
+ciB3cm90ZToNCj4gT1ZTIHdpbGwga2VlcCBhZGRpbmcgc3VjaCBmbG93cywgbm8gbWF0dGVyIHdo
+YXQuIFRoZXkgd2lsbCB1c3VhbGx5IGJlDQo+IGhhbmRsZWQgYnkgdGMgc29mdHdhcmUgKG9yIG92
+cyBkYXRhcGF0aCwgaWYgc2tpcF9zdyBpcyB1c2VkKS4gQnV0IHRoZQ0KPiBkcml2ZXIgaXMgbG9n
+Z2luZyB0aGVzZSBtZXNzYWdlcyBmb3IgZWFjaCBhbmQgZXZlcnkgYXR0ZW1wdCwgZGVzcGl0ZQ0K
+PiB0aGUNCj4gZXh0YWNrLiBOb3RlIHRoYXQgdGhleSB3ZXJlbid0IHJhdGUgbGltaXRlZCwgYW5k
+IGEgYnJvYWRjYXN0IHN0b3JtDQo+IGNvdWxkDQo+IHRyaWdnZXIgc3lzdGVtIGNvbnNvbGUgZmxv
+b2RpbmcuDQo+IA0KPiBTd2l0Y2ggdGhlc2UgdG8gYmUgX29uY2UuIEl0J3MgZW5vdWdoIHRvIHRl
+bGwgdGhlIHN5c2FkbWluIHdoYXQgaXMNCj4gaGFwcGVubmluZywgYW5kIGlmIGFueXRoaW5nLCB0
+aGUgT1ZTIGxvZyB3aWxsIGhhdmUgYWxsIHRoZSBlcnJvcnMuDQo+IA0KDQorKyBtbG54IFRDIHN0
+YWtlIGhvbGRlcnMgDQoNClRoZSBmYWN0IHRoYXQgZm9yIGFsbCBvZiB0aGUgc3VwcHJlc3NlZCBt
+ZXNzYWdlcyB3ZSB3aWxsIHN0aWxsIGhhdmUgTkwNCmV4dGFjayByZXBvcnRpbmcsIG1ha2VzIGl0
+IGVhc2llciBmb3IgbWUgdG8gYWdyZWUgd2l0aCB0aGlzIHBhdGNoLiBidXQNCnRoZXJlIGlzIGEg
+bG9zcyBvZiBpbmZvcm1hdGlvbiBzaW5jZSBub3cgd2Ugd2lsbCBzdG9wIHByaW50aW5nIHRoZQ0K
+YXR0cmlidXRlL3BhcmFtcyB3aGljaCBjYXVzZWQgdGhlIGZhaWx1cmUgaW4gbW9zdCBvZiB0aGUg
+Y2FzZXMsIGFuZCBpdA0Kd2lsbCBiZSBoYXJkZXIgZm9yIHRoZSB1c2VyIGFuZCB0aGUgZGV2ZWxv
+cGVyIHRvIHVuZGVyc3RhbmQgd2h5IHRoZXNlDQphdHRyaWJ1dGVzIGFyZSBub3Qgd29ya2luZyAu
+LiANCg0KSSB1bmRlcnN0YW5kIGl0IGlzIGZvciBkZWJ1ZyBvbmx5IGJ1dCBpIHN0cm9uZ2x5IHN1
+Z2dlc3QgdG8gbm90IHRvdGFsbHkNCnN1cHByZXNzIHRoZXNlIG1lc3NhZ2VzIGFuZCBtYXliZSBq
+dXN0IG1vdmUgdGhlbSB0byB0cmFjZXBvaW50cyBidWZmZXINCj8gZm9yIHRob3NlIHdobyB3b3Vs
+ZCB3YW50IHRvIHJlYWxseSBkZWJ1ZyAuLiANCg0Kd2UgYWxyZWFkeSBoYXZlIHNvbWUgdHJhY2Vw
+b2ludHMgaW1wbGVtZW50ZWQgZm9yIGVuX3RjLmMgDQptbHg1L2NvcmUvZGlhZy9lbl90Y190cmFj
+ZXBvaW50cy5jLCBtYXliZSB3ZSBzaG91bGQgZGVmaW5lIGEgdHJhY2Vwb2ludA0KZm9yIGVycm9y
+IHJlcG9ydGluZyAuLiANCg0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJjZWxvIFJpY2FyZG8gTGVpdG5l
+ciA8bWFyY2Vsby5sZWl0bmVyQGdtYWlsLmNvbT4NCg0KbmV0IHBhdGNoZXMgbXVzdCBoYXZlIGEg
+IkZpeGVzOiIgdGFnDQoNCj4gLS0tDQo+ICAuLi4vbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUv
+Y29yZS9lbl90Yy5jICAgfCA2MSArKysrKysrKysrLS0tLS0tLQ0KPiAtLQ0KPiAgMSBmaWxlIGNo
+YW5nZWQsIDMyIGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl90Yy5jDQo+IGIv
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3RjLmMNCj4gaW5kZXgN
+Cj4gNDM4MTI4ZGRlMTg3ZDdlYzU4ODkyYzI4NzljNjAzN2Y4MDdmNTc2Zi4uMTE4MmZiYTNlZGJi
+OGNmN2JkNTk1NTdiN2VjDQo+IGUxODc2NWM3MDQxODYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl90Yy5jDQo+ICsrKyBiL2RyaXZlcnMv
+bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl90Yy5jDQo+IEBAIC0xODI4LDggKzE4
+MjgsOCBAQCBlbmNfb3B0c19pc19kb250X2NhcmVfb3JfZnVsbF9tYXRjaChzdHJ1Y3QNCj4gbWx4
+NWVfcHJpdiAqcHJpdiwNCj4gIAkJCQkgICAgICAgb3B0LT5sZW5ndGggKiA0KSkgew0KPiAgCQkJ
+CU5MX1NFVF9FUlJfTVNHKGV4dGFjaywNCj4gIAkJCQkJICAgICAgICJQYXJ0aWFsIG1hdGNoIG9m
+IHR1bm5lbA0KPiBvcHRpb25zIGluIGNoYWluID4gMCBpc24ndCBzdXBwb3J0ZWQiKTsNCj4gLQkJ
+CQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsDQo+IC0JCQkJCSAgICAiUGFydGlhbCBtYXRjaCBv
+ZiB0dW5uZWwNCj4gb3B0aW9ucyBpbiBjaGFpbiA+IDAgaXNuJ3Qgc3VwcG9ydGVkIik7DQo+ICsJ
+CQkJbmV0ZGV2X3dhcm5fb25jZShwcml2LT5uZXRkZXYsDQo+ICsJCQkJCQkgIlBhcnRpYWwgbWF0
+Y2ggb2YNCj4gdHVubmVsIG9wdGlvbnMgaW4gY2hhaW4gPiAwIGlzbid0IHN1cHBvcnRlZCIpOw0K
+PiAgCQkJCXJldHVybiAtRU9QTk9UU1VQUDsNCj4gIAkJCX0NCj4gIAkJfQ0KPiBAQCAtMTk4OCw4
+ICsxOTg4LDggQEAgc3RhdGljIGludCBwYXJzZV90dW5uZWxfYXR0cihzdHJ1Y3QgbWx4NWVfcHJp
+dg0KPiAqcHJpdiwNCj4gIAkgICAgIW1seDVfZXN3aXRjaF9yZWdfYzFfbG9vcGJhY2tfZW5hYmxl
+ZChlc3cpKSB7DQo+ICAJCU5MX1NFVF9FUlJfTVNHKGV4dGFjaywNCj4gIAkJCSAgICAgICAiQ2hh
+aW5zIG9uIHR1bm5lbCBkZXZpY2VzIGlzbid0DQo+IHN1cHBvcnRlZCB3aXRob3V0IHJlZ2lzdGVy
+IGxvb3BiYWNrIHN1cHBvcnQiKTsNCj4gLQkJbmV0ZGV2X3dhcm4ocHJpdi0+bmV0ZGV2LA0KPiAt
+CQkJICAgICJDaGFpbnMgb24gdHVubmVsIGRldmljZXMgaXNuJ3Qgc3VwcG9ydGVkDQo+IHdpdGhv
+dXQgcmVnaXN0ZXIgbG9vcGJhY2sgc3VwcG9ydCIpOw0KPiArCQluZXRkZXZfd2Fybl9vbmNlKHBy
+aXYtPm5ldGRldiwNCj4gKwkJCQkgIkNoYWlucyBvbiB0dW5uZWwgZGV2aWNlcyBpc24ndA0KPiBz
+dXBwb3J0ZWQgd2l0aG91dCByZWdpc3RlciBsb29wYmFjayBzdXBwb3J0Iik7DQo+ICAJCXJldHVy
+biAtRU9QTk9UU1VQUDsNCj4gIAl9DQo+ICANCj4gQEAgLTIxMzMsOCArMjEzMyw4IEBAIHN0YXRp
+YyBpbnQgX19wYXJzZV9jbHNfZmxvd2VyKHN0cnVjdCBtbHg1ZV9wcml2DQo+ICpwcml2LA0KPiAg
+CSAgICAgIEJJVChGTE9XX0RJU1NFQ1RPUl9LRVlfRU5DX0lQKSB8DQo+ICAJICAgICAgQklUKEZM
+T1dfRElTU0VDVE9SX0tFWV9FTkNfT1BUUykpKSB7DQo+ICAJCU5MX1NFVF9FUlJfTVNHX01PRChl
+eHRhY2ssICJVbnN1cHBvcnRlZCBrZXkiKTsNCj4gLQkJbmV0ZGV2X3dhcm4ocHJpdi0+bmV0ZGV2
+LCAiVW5zdXBwb3J0ZWQga2V5IHVzZWQ6DQo+IDB4JXhcbiIsDQo+IC0JCQkgICAgZGlzc2VjdG9y
+LT51c2VkX2tleXMpOw0KPiArCQluZXRkZXZfd2Fybl9vbmNlKHByaXYtPm5ldGRldiwgIlVuc3Vw
+cG9ydGVkIGtleSB1c2VkOg0KPiAweCV4XG4iLA0KPiArCQkJCSBkaXNzZWN0b3ItPnVzZWRfa2V5
+cyk7DQo+ICAJCXJldHVybiAtRU9QTk9UU1VQUDsNCj4gIAl9DQo+ICANCj4gQEAgLTI0ODQsOCAr
+MjQ4NCw4IEBAIHN0YXRpYyBpbnQgcGFyc2VfY2xzX2Zsb3dlcihzdHJ1Y3QgbWx4NWVfcHJpdg0K
+PiAqcHJpdiwNCj4gIAkJICAgIGVzdy0+b2ZmbG9hZHMuaW5saW5lX21vZGUgPA0KPiBub25fdHVu
+bmVsX21hdGNoX2xldmVsKSkgew0KPiAgCQkJTkxfU0VUX0VSUl9NU0dfTU9EKGV4dGFjaywNCj4g
+IAkJCQkJICAgIkZsb3cgaXMgbm90IG9mZmxvYWRlZCBkdWUNCj4gdG8gbWluIGlubGluZSBzZXR0
+aW5nIik7DQo+IC0JCQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsDQo+IC0JCQkJICAgICJGbG93
+IGlzIG5vdCBvZmZsb2FkZWQgZHVlIHRvIG1pbg0KPiBpbmxpbmUgc2V0dGluZywgcmVxdWlyZWQg
+JWQgYWN0dWFsICVkXG4iLA0KPiArCQkJbmV0ZGV2X3dhcm5fb25jZShwcml2LT5uZXRkZXYsDQo+
+ICsJCQkJCSAiRmxvdyBpcyBub3Qgb2ZmbG9hZGVkIGR1ZSB0bw0KPiBtaW4gaW5saW5lIHNldHRp
+bmcsIHJlcXVpcmVkICVkIGFjdHVhbCAlZFxuIiwNCj4gIAkJCQkgICAgbm9uX3R1bm5lbF9tYXRj
+aF9sZXZlbCwgZXN3LQ0KPiA+b2ZmbG9hZHMuaW5saW5lX21vZGUpOw0KPiAgCQkJcmV0dXJuIC1F
+T1BOT1RTVVBQOw0KPiAgCQl9DQo+IEBAIC0yODg1LDcgKzI4ODUsOSBAQCBzdGF0aWMgaW50IGFs
+bG9jX3RjX3BlZGl0X2FjdGlvbihzdHJ1Y3QNCj4gbWx4NWVfcHJpdiAqcHJpdiwgaW50IG5hbWVz
+cGFjZSwNCj4gIAkJaWYgKG1lbWNtcChjbWRfbWFza3MsICZ6ZXJvX21hc2tzLCBzaXplb2YoemVy
+b19tYXNrcykpKQ0KPiB7DQo+ICAJCQlOTF9TRVRfRVJSX01TR19NT0QoZXh0YWNrLA0KPiAgCQkJ
+CQkgICAiYXR0ZW1wdCB0byBvZmZsb2FkIGFuDQo+IHVuc3VwcG9ydGVkIGZpZWxkIik7DQo+IC0J
+CQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsICJhdHRlbXB0IHRvIG9mZmxvYWQNCj4gYW4gdW5z
+dXBwb3J0ZWQgZmllbGQgKGNtZCAlZClcbiIsIGNtZCk7DQo+ICsJCQluZXRkZXZfd2Fybl9vbmNl
+KHByaXYtPm5ldGRldiwNCj4gKwkJCQkJICJhdHRlbXB0IHRvIG9mZmxvYWQgYW4NCj4gdW5zdXBw
+b3J0ZWQgZmllbGQgKGNtZCAlZClcbiIsDQo+ICsJCQkJCSBjbWQpOw0KPiAgCQkJcHJpbnRfaGV4
+X2R1bXAoS0VSTl9XQVJOSU5HLCAibWFzazogIiwNCj4gRFVNUF9QUkVGSVhfQUREUkVTUywNCj4g
+IAkJCQkgICAgICAgMTYsIDEsIGNtZF9tYXNrcywNCj4gc2l6ZW9mKHplcm9fbWFza3MpLCB0cnVl
+KTsNCj4gIAkJCWVyciA9IC1FT1BOT1RTVVBQOw0KPiBAQCAtMjkxMiwxNyArMjkxNCwxNyBAQCBz
+dGF0aWMgYm9vbCBjc3VtX29mZmxvYWRfc3VwcG9ydGVkKHN0cnVjdA0KPiBtbHg1ZV9wcml2ICpw
+cml2LA0KPiAgCWlmICghKGFjdGlvbiAmIE1MWDVfRkxPV19DT05URVhUX0FDVElPTl9NT0RfSERS
+KSkgew0KPiAgCQlOTF9TRVRfRVJSX01TR19NT0QoZXh0YWNrLA0KPiAgCQkJCSAgICJUQyBjc3Vt
+IGFjdGlvbiBpcyBvbmx5IG9mZmxvYWRlZA0KPiB3aXRoIHBlZGl0Iik7DQo+IC0JCW5ldGRldl93
+YXJuKHByaXYtPm5ldGRldiwNCj4gLQkJCSAgICAiVEMgY3N1bSBhY3Rpb24gaXMgb25seSBvZmZs
+b2FkZWQgd2l0aA0KPiBwZWRpdFxuIik7DQo+ICsJCW5ldGRldl93YXJuX29uY2UocHJpdi0+bmV0
+ZGV2LA0KPiArCQkJCSAiVEMgY3N1bSBhY3Rpb24gaXMgb25seSBvZmZsb2FkZWQgd2l0aA0KPiBw
+ZWRpdFxuIik7DQo+ICAJCXJldHVybiBmYWxzZTsNCj4gIAl9DQo+ICANCj4gIAlpZiAodXBkYXRl
+X2ZsYWdzICYgfnByb3RfZmxhZ3MpIHsNCj4gIAkJTkxfU0VUX0VSUl9NU0dfTU9EKGV4dGFjaywN
+Cj4gIAkJCQkgICAiY2FuJ3Qgb2ZmbG9hZCBUQyBjc3VtIGFjdGlvbiBmb3INCj4gc29tZSBoZWFk
+ZXIvcyIpOw0KPiAtCQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsDQo+IC0JCQkgICAgImNhbid0
+IG9mZmxvYWQgVEMgY3N1bSBhY3Rpb24gZm9yIHNvbWUNCj4gaGVhZGVyL3MgLSBmbGFncyAlI3hc
+biIsDQo+IC0JCQkgICAgdXBkYXRlX2ZsYWdzKTsNCj4gKwkJbmV0ZGV2X3dhcm5fb25jZShwcml2
+LT5uZXRkZXYsDQo+ICsJCQkJICJjYW4ndCBvZmZsb2FkIFRDIGNzdW0gYWN0aW9uIGZvciBzb21l
+DQo+IGhlYWRlci9zIC0gZmxhZ3MgJSN4XG4iLA0KPiArCQkJCSB1cGRhdGVfZmxhZ3MpOw0KPiAg
+CQlyZXR1cm4gZmFsc2U7DQo+ICAJfQ0KPiAgDQo+IEBAIC0zMjI0LDggKzMyMjYsOSBAQCBzdGF0
+aWMgaW50IHBhcnNlX3RjX25pY19hY3Rpb25zKHN0cnVjdA0KPiBtbHg1ZV9wcml2ICpwcml2LA0K
+PiAgCQkJfSBlbHNlIHsNCj4gIAkJCQlOTF9TRVRfRVJSX01TR19NT0QoZXh0YWNrLA0KPiAgCQkJ
+CQkJICAgImRldmljZSBpcyBub3Qgb24NCj4gc2FtZSBIVywgY2FuJ3Qgb2ZmbG9hZCIpOw0KPiAt
+CQkJCW5ldGRldl93YXJuKHByaXYtPm5ldGRldiwgImRldmljZSAlcw0KPiBub3Qgb24gc2FtZSBI
+VywgY2FuJ3Qgb2ZmbG9hZFxuIiwNCj4gLQkJCQkJICAgIHBlZXJfZGV2LT5uYW1lKTsNCj4gKwkJ
+CQluZXRkZXZfd2Fybl9vbmNlKHByaXYtPm5ldGRldiwNCj4gKwkJCQkJCSAiZGV2aWNlICVzIG5v
+dCBvbiBzYW1lDQo+IEhXLCBjYW4ndCBvZmZsb2FkXG4iLA0KPiArCQkJCQkJIHBlZXJfZGV2LT5u
+YW1lKTsNCj4gIAkJCQlyZXR1cm4gLUVJTlZBTDsNCj4gIAkJCX0NCj4gIAkJCX0NCj4gQEAgLTM3
+NTQsOSArMzc1Nyw5IEBAIHN0YXRpYyBpbnQgcGFyc2VfdGNfZmRiX2FjdGlvbnMoc3RydWN0DQo+
+IG1seDVlX3ByaXYgKnByaXYsDQo+ICAJCQlpZiAoYXR0ci0+b3V0X2NvdW50ID49DQo+IE1MWDVf
+TUFYX0ZMT1dfRldEX1ZQT1JUUykgew0KPiAgCQkJCU5MX1NFVF9FUlJfTVNHX01PRChleHRhY2ss
+DQo+ICAJCQkJCQkgICAiY2FuJ3Qgc3VwcG9ydCBtb3JlDQo+IG91dHB1dCBwb3J0cywgY2FuJ3Qg
+b2ZmbG9hZCBmb3J3YXJkaW5nIik7DQo+IC0JCQkJbmV0ZGV2X3dhcm4ocHJpdi0+bmV0ZGV2LA0K
+PiAtCQkJCQkgICAgImNhbid0IHN1cHBvcnQgbW9yZSB0aGFuICVkDQo+IG91dHB1dCBwb3J0cywg
+Y2FuJ3Qgb2ZmbG9hZCBmb3J3YXJkaW5nXG4iLA0KPiAtCQkJCQkgICAgYXR0ci0+b3V0X2NvdW50
+KTsNCj4gKwkJCQluZXRkZXZfd2Fybl9vbmNlKHByaXYtPm5ldGRldiwNCj4gKwkJCQkJCSAiY2Fu
+J3Qgc3VwcG9ydCBtb3JlDQo+IHRoYW4gJWQgb3V0cHV0IHBvcnRzLCBjYW4ndCBvZmZsb2FkIGZv
+cndhcmRpbmdcbiIsDQo+ICsJCQkJCQkgYXR0ci0+b3V0X2NvdW50KTsNCj4gIAkJCQlyZXR1cm4g
+LUVPUE5PVFNVUFA7DQo+ICAJCQl9DQo+ICANCj4gQEAgLTM4MjEsMTAgKzM4MjQsMTAgQEAgc3Rh
+dGljIGludCBwYXJzZV90Y19mZGJfYWN0aW9ucyhzdHJ1Y3QNCj4gbWx4NWVfcHJpdiAqcHJpdiwN
+Cj4gIAkJCQlpZg0KPiAoIW1seDVlX2lzX3ZhbGlkX2Vzd2l0Y2hfZndkX2Rldihwcml2LCBvdXRf
+ZGV2KSkgew0KPiAgCQkJCQlOTF9TRVRfRVJSX01TR19NT0QoZXh0YWNrLA0KPiAgCQkJCQkJCSAg
+ICJkZXZpY2VzIGFyZQ0KPiBub3Qgb24gc2FtZSBzd2l0Y2ggSFcsIGNhbid0IG9mZmxvYWQgZm9y
+d2FyZGluZyIpOw0KPiAtCQkJCQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsDQo+IC0JCQkJCQkg
+ICAgImRldmljZXMgJXMgJXMgbm90DQo+IG9uIHNhbWUgc3dpdGNoIEhXLCBjYW4ndCBvZmZsb2Fk
+IGZvcndhcmRpbmdcbiIsDQo+IC0JCQkJCQkgICAgcHJpdi0+bmV0ZGV2LT5uYW1lLA0KPiAtCQkJ
+CQkJICAgIG91dF9kZXYtPm5hbWUpOw0KPiArCQkJCQluZXRkZXZfd2Fybl9vbmNlKHByaXYtPm5l
+dGRldiwNCj4gKwkJCQkJCQkgImRldmljZXMgJXMgJXMNCj4gbm90IG9uIHNhbWUgc3dpdGNoIEhX
+LCBjYW4ndCBvZmZsb2FkIGZvcndhcmRpbmdcbiIsDQo+ICsJCQkJCQkJIHByaXYtPm5ldGRldi0N
+Cj4gPm5hbWUsDQo+ICsJCQkJCQkJIG91dF9kZXYtDQo+ID5uYW1lKTsNCj4gIAkJCQkJcmV0dXJu
+IC1FT1BOT1RTVVBQOw0KPiAgCQkJCX0NCj4gIA0KPiBAQCAtMzg0MywxMCArMzg0NiwxMCBAQCBz
+dGF0aWMgaW50IHBhcnNlX3RjX2ZkYl9hY3Rpb25zKHN0cnVjdA0KPiBtbHg1ZV9wcml2ICpwcml2
+LA0KPiAgCQkJfSBlbHNlIHsNCj4gIAkJCQlOTF9TRVRfRVJSX01TR19NT0QoZXh0YWNrLA0KPiAg
+CQkJCQkJICAgImRldmljZXMgYXJlIG5vdCBvbg0KPiBzYW1lIHN3aXRjaCBIVywgY2FuJ3Qgb2Zm
+bG9hZCBmb3J3YXJkaW5nIik7DQo+IC0JCQkJbmV0ZGV2X3dhcm4ocHJpdi0+bmV0ZGV2LA0KPiAt
+CQkJCQkgICAgImRldmljZXMgJXMgJXMgbm90IG9uIHNhbWUNCj4gc3dpdGNoIEhXLCBjYW4ndCBv
+ZmZsb2FkIGZvcndhcmRpbmdcbiIsDQo+IC0JCQkJCSAgICBwcml2LT5uZXRkZXYtPm5hbWUsDQo+
+IC0JCQkJCSAgICBvdXRfZGV2LT5uYW1lKTsNCj4gKwkJCQluZXRkZXZfd2Fybl9vbmNlKHByaXYt
+Pm5ldGRldiwNCj4gKwkJCQkJCSAiZGV2aWNlcyAlcyAlcyBub3Qgb24NCj4gc2FtZSBzd2l0Y2gg
+SFcsIGNhbid0IG9mZmxvYWQgZm9yd2FyZGluZ1xuIiwNCj4gKwkJCQkJCSBwcml2LT5uZXRkZXYt
+Pm5hbWUsDQo+ICsJCQkJCQkgb3V0X2Rldi0+bmFtZSk7DQo+ICAJCQkJcmV0dXJuIC1FSU5WQUw7
+DQo+ICAJCQl9DQo+ICAJCQl9DQo+IEBAIC0zOTU5LDggKzM5NjIsOCBAQCBzdGF0aWMgaW50IHBh
+cnNlX3RjX2ZkYl9hY3Rpb25zKHN0cnVjdA0KPiBtbHg1ZV9wcml2ICpwcml2LA0KPiAgDQo+ICAJ
+CQlOTF9TRVRfRVJSX01TRyhleHRhY2ssDQo+ICAJCQkJICAgICAgICJEZWNhcCB3aXRoIGdvdG8g
+aXNuJ3QNCj4gc3VwcG9ydGVkIik7DQo+IC0JCQluZXRkZXZfd2Fybihwcml2LT5uZXRkZXYsDQo+
+IC0JCQkJICAgICJEZWNhcCB3aXRoIGdvdG8gaXNuJ3Qgc3VwcG9ydGVkIik7DQo+ICsJCQluZXRk
+ZXZfd2Fybl9vbmNlKHByaXYtPm5ldGRldiwNCj4gKwkJCQkJICJEZWNhcCB3aXRoIGdvdG8gaXNu
+J3QNCj4gc3VwcG9ydGVkIik7DQo+ICAJCQlyZXR1cm4gLUVPUE5PVFNVUFA7DQo+ICAJCX0NCj4g
+IA0K
