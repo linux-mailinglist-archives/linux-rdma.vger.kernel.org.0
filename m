@@ -2,146 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 517ED1A0A8B
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 11:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3171A0D0F
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 13:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgDGJ4p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Apr 2020 05:56:45 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:37793 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728091AbgDGJ4p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 05:56:45 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 130so994257qke.4
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Apr 2020 02:56:44 -0700 (PDT)
+        id S1728075AbgDGLvT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Apr 2020 07:51:19 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:36156 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726720AbgDGLvT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 07:51:19 -0400
+Received: by mail-qv1-f68.google.com with SMTP id z13so1641829qvw.3
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Apr 2020 04:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wOvU8XbPeciAVuMkk94uCPCE8fOwB8s2h2DZgFPF+lI=;
-        b=tt81uMJuBtlesP98X1T0RIiaiUiPYLoOuerlBYu9yxMWEFu9A0CTSdBwhQzhWRNVjL
-         9hFiYtVL60xs1vfkP+hmJ/5DrRrf65DKUypMVi6WCyAtHJRAF0mgHufnw4RMGY0bvqve
-         4+W6UiFxZlXtN709TsERNrr8+XbICXrUQXFBDLUGAUeq8Nn1bVx2MczRJ6rmRdrzor2A
-         iqQByCNIZwkfuW0zTxcOJFgksMyoSM2m0p2XpdGCxLNOw/WIAYlDwzbVvYYNv7jBHA6W
-         4Pg2QcDxFQ1wZc4ozCXWJ0TwN5NIkviK5VW/pDSoM9Ew8dAnKkM0eR6X4ZLxhQ21Wgc/
-         0DqQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DgGvpFyYOKi8wIGYRHQghIAFXV9pugTvRfOBwVdCKoY=;
+        b=fZIhXWbwIS9//XMFzQM9z6K+jfIE68P1xzCtbj5H2YXennkUpGzZDiV41P8JQtXd9f
+         ONW40aHKwAgEBgQD5aPhQWLhi295ewAkrSrf+6JW1GXVqJu2JuMqWfZPW0xB+PfDPwk0
+         HK4+Ofxs6OAq6WqOwjB6O/6VIkEVylsrVli7llRscoD3sfuldJwj2ookkLUzYwaW/HTU
+         aM2dWMyDLTfucaN8wwK6H52W1dbqpd812mihhgMOZy0XTymvG+oYEXgq8oKTC3d7rJIX
+         8JGBMv3V56JqZRHEmq6jEOactXe7bkx7cr37R/JV2pZC9PiQIpt5JF5ghk6jaEcQrEAI
+         Kzcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wOvU8XbPeciAVuMkk94uCPCE8fOwB8s2h2DZgFPF+lI=;
-        b=pXl2F3iGepU4ZI/7ZVyvNPhJIQiQyzx9Y49xRQN+BIobEL22/kQCjrDHsoaIPjtH8a
-         FBDjzwHsaO1h/w1F0El/LviGEYIV7n620ycUMOnm1uRMfFO6wqhfFJ12W2fia1zfV6K/
-         NjXIzjKfZVLBS0c+GbasV60u6ZjtF8pQtcu2YMtuGT8H7H7glS1UUWjkjiGwHd6O1iIM
-         CuIGeuR3H5ut4RJsdYh7DcmPht/boYRoz/6IcpPn39HmVZFEcBl05pmFyyhVHPdrfrUi
-         jmYAJN4Vo6t4AslxvqYYKq6uLbcElvkGd2M4Do9m+hqGY5rBv1D+l/PadD01DZZ4WGe2
-         ItDw==
-X-Gm-Message-State: AGi0PuZo0hf/TcLQjoeeuev0rEvvrFSDa0ANfeSMXqlDs9jSD6Fg/KfF
-        gtWd1UChnYDPEI9qq7YKcwrNrJd3aoJ0zE+gLwt+3w==
-X-Google-Smtp-Source: APiQypIrHCaGuQCjUmPSy0FTruafk+m/gHJzlMFr46V09puGrz9Tz+8jGD/WYBJ0gcI+UjmSNKBFWp8/vldVa9o5GXQ=
-X-Received: by 2002:a37:8d86:: with SMTP id p128mr1330952qkd.250.1586253403265;
- Tue, 07 Apr 2020 02:56:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DgGvpFyYOKi8wIGYRHQghIAFXV9pugTvRfOBwVdCKoY=;
+        b=JZHOUhzI/qubDvPB7hePXf9Sv+Mk3dIYbJIy3hvQEIH9KqMrE9q0JaiM9jjD+/aZak
+         ugK2DCqM1t3OAlvxdP+t70d7kGu5jPPja5LP+mdTlbcBuQOLGikEABtKNJXMcSFOfK+o
+         k6XCwF/lUsytBdxsr4rOoM8X9WJ9twuiHScaQAExHQM6o611lnx2JoTmc6KXEP+fsCUj
+         vtL7Wd8GxpNuiiF2+cGjJPK80EcalWwJZ7s5R/OoNmos0rDGe3L6VxrEp2Gp0jRs6xok
+         CY/bHcC8eiLmVzmkVfpNIhTTkfLia/Wg16Or09kXjGfHgrNODZ5bNVBktymbgts3V57b
+         MKgQ==
+X-Gm-Message-State: AGi0PuZdSu8l6VBIHDg8lYiz/OdKtJ0fJ6mdvZ3tZRPcG8vF2eDP5PwO
+        5xT47/DGUzvDYlNN+mDmL3TGvggklxTB5g==
+X-Google-Smtp-Source: APiQypJaZ8vH9ymCACHwit03NYODmsAMH4UvE9ddzGpzB3Sx6zqGDX3mpS1pT9Drwuax87+g5z0lWg==
+X-Received: by 2002:a05:6214:3ea:: with SMTP id cf10mr1746500qvb.6.1586260276111;
+        Tue, 07 Apr 2020 04:51:16 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id f21sm17199382qtc.97.2020.04.07.04.51.15
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Apr 2020 04:51:15 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jLml9-0007SR-15; Tue, 07 Apr 2020 08:51:15 -0300
+Date:   Tue, 7 Apr 2020 08:51:15 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/uverbs: Make the event_queue fds return POLLERR
+ when disassociated
+Message-ID: <20200407115115.GT20941@ziepe.ca>
+References: <0-v1-ace813388969+48859-uverbs_poll_fix%jgg@mellanox.com>
+ <20200407051632.GL80989@unreal>
 MIME-Version: 1.0
-References: <00000000000075245205a2997f68@google.com> <20200406172151.GJ80989@unreal>
- <20200406174440.GR20941@ziepe.ca>
-In-Reply-To: <20200406174440.GR20941@ziepe.ca>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 7 Apr 2020 11:56:30 +0200
-Message-ID: <CACT4Y+Zv_WXEn6u5a6kRZpkDJnSzeGF1L7JMw4g85TLEgAM7Lw@mail.gmail.com>
-Subject: Re: WARNING in ib_umad_kill_port
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Rafael Wysocki <rafael@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407051632.GL80989@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 7:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Apr 06, 2020 at 08:21:51PM +0300, Leon Romanovsky wrote:
-> > + RDMA
+On Tue, Apr 07, 2020 at 08:16:32AM +0300, Leon Romanovsky wrote:
+> On Mon, Apr 06, 2020 at 09:44:26PM -0300, Jason Gunthorpe wrote:
+> > From: Jason Gunthorpe <jgg@mellanox.com>
 > >
-> > On Sun, Apr 05, 2020 at 11:37:15PM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    304e0242 net_sched: add a temporary refcnt for struct tcin..
-> > > git tree:       net
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=119dd16de00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=9627a92b1f9262d5d30c
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > >
-> > > Unfortunately, I don't have any reproducer for this crash yet.
-> > >
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com
-> > >
-> > > sysfs group 'power' not found for kobject 'umad1'
-> > > WARNING: CPU: 1 PID: 31308 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
-> > > WARNING: CPU: 1 PID: 31308 at fs/sysfs/group.c:279 sysfs_remove_group+0x155/0x1b0 fs/sysfs/group.c:270
-> > > Kernel panic - not syncing: panic_on_warn set ...
-> > > CPU: 1 PID: 31308 Comm: kworker/u4:10 Not tainted 5.6.0-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > Workqueue: events_unbound ib_unregister_work
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > >  dump_stack+0x188/0x20d lib/dump_stack.c:118
-> > >  panic+0x2e3/0x75c kernel/panic.c:221
-> > >  __warn.cold+0x2f/0x35 kernel/panic.c:582
-> > >  report_bug+0x27b/0x2f0 lib/bug.c:195
-> > >  fixup_bug arch/x86/kernel/traps.c:175 [inline]
-> > >  fixup_bug arch/x86/kernel/traps.c:170 [inline]
-> > >  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
-> > >  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
-> > >  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-> > > RIP: 0010:sysfs_remove_group fs/sysfs/group.c:279 [inline]
-> > > RIP: 0010:sysfs_remove_group+0x155/0x1b0 fs/sysfs/group.c:270
-> > > Code: 48 89 d9 49 8b 14 24 48 b8 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 01 00 75 41 48 8b 33 48 c7 c7 60 c3 39 88 e8 93 c3 5f ff <0f> 0b eb 95 e8 22 62 cb ff e9 d2 fe ff ff 48 89 df e8 15 62 cb ff
-> > > RSP: 0018:ffffc90001d97a60 EFLAGS: 00010282
-> > > RAX: 0000000000000000 RBX: ffffffff88915620 RCX: 0000000000000000
-> > > RDX: 0000000000000000 RSI: ffffffff815ca861 RDI: fffff520003b2f3e
-> > > RBP: 0000000000000000 R08: ffff8880a78fc2c0 R09: ffffed1015ce66a1
-> > > R10: ffffed1015ce66a0 R11: ffff8880ae733507 R12: ffff88808e5ba070
-> > > R13: ffffffff88915bc0 R14: ffff88808e5ba008 R15: dffffc0000000000
-> > >  dpm_sysfs_remove+0x97/0xb0 drivers/base/power/sysfs.c:794
-> > >  device_del+0x18b/0xd30 drivers/base/core.c:2687
-> > >  cdev_device_del+0x15/0x80 fs/char_dev.c:570
-> > >  ib_umad_kill_port+0x45/0x250 drivers/infiniband/core/user_mad.c:1327
-> > >  ib_umad_remove_one+0x18a/0x220 drivers/infiniband/core/user_mad.c:1409
-> > >  remove_client_context+0xbe/0x110 drivers/infiniband/core/device.c:724
-> > >  disable_device+0x13b/0x230 drivers/infiniband/core/device.c:1270
-> > >  __ib_unregister_device+0x91/0x180 drivers/infiniband/core/device.c:1437
-> > >  ib_unregister_work+0x15/0x30 drivers/infiniband/core/device.c:1547
-> > >  process_one_work+0x965/0x16a0 kernel/workqueue.c:2266
-> > >  worker_thread+0x96/0xe20 kernel/workqueue.c:2412
-> > >  kthread+0x388/0x470 kernel/kthread.c:268
-> > >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-> > > Kernel Offset: disabled
-> > > Rebooting in 86400 seconds..
->
-> I'm not sure what could be done wrong here to elicit this:
->
->  sysfs group 'power' not found for kobject 'umad1'
->
-> ??
->
-> I've seen another similar sysfs related trigger that we couldn't
-> figure out.
->
-> Hard to investigate without a reproducer.
->
-> Jason
+> > If is_closed is set, and the event list is empty, then read() will return
+> > -EIO without blocking. After setting is_closed in
+> > ib_uverbs_free_event_queue(), we do trigger a wake_up on the poll_wait,
+> > but the fops->poll() function does not check it, so poll will continue to
+> > sleep on an empty list.
+> >
+> > Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
+> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> >  drivers/infiniband/core/uverbs_main.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> > index 2d4083bf4a0487..8710a3427146e7 100644
+> > +++ b/drivers/infiniband/core/uverbs_main.c
+> > @@ -296,6 +296,8 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
+> >  	spin_lock_irq(&ev_queue->lock);
+> >  	if (!list_empty(&ev_queue->event_list))
+> >  		pollflags = EPOLLIN | EPOLLRDNORM;
+> > +	else if (ev_queue->is_closed)
+> > +		pollflags = EPOLLERR;
+> >  	spin_unlock_irq(&ev_queue->lock);
+> 
+> Don't you need to set EPOLLHUP too? Probably, it won't change anything,
+> just for the sake of the correctness.
 
+HUP means read will return 0, in this case read returns -EIO
 
-Based on all of the sysfs-related bugs I've seen, my bet would be on
-some races. E.g. one thread registers devices, while another
-unregisters these.
+Jason
