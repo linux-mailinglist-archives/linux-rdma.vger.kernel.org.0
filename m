@@ -2,123 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F44D1A134D
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 20:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6045D1A1599
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 21:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgDGSHB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Apr 2020 14:07:01 -0400
-Received: from mail-qv1-f50.google.com ([209.85.219.50]:44146 "EHLO
-        mail-qv1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGSHB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 14:07:01 -0400
-Received: by mail-qv1-f50.google.com with SMTP id ef12so2266445qvb.11
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Apr 2020 11:07:00 -0700 (PDT)
+        id S1726719AbgDGTKz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Apr 2020 15:10:55 -0400
+Received: from mail-qk1-f181.google.com ([209.85.222.181]:35433 "EHLO
+        mail-qk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgDGTKz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 15:10:55 -0400
+Received: by mail-qk1-f181.google.com with SMTP id k134so588860qke.2;
+        Tue, 07 Apr 2020 12:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vlIJyAk9fhkb7fDf5GFtGsGGIxix3xLtpQ4+bHU/G4Y=;
-        b=PL9uee3TdL4TVfPAmQfbdTyTKc1KWRSoBpGkeQu7mPe7rMveuDUoQdM+wLT1tuaQpI
-         o2m6ZztWwEHu0II4AQoUWaSDtgE5ZKYDDsgRF6/nsqietAhMzD4CsMSeu6kJZaRKtsSi
-         6n6YWaAd7+1EuTiAonXHbQnKZ5hNcspvaGzaoe5T+KyXoRWsH5H5I98Q+sxzPHjm3cjX
-         VmX8keFXMOxRn+qE7ygNTfYcFreEzv3cVTViLw7uWixczB3kyMG2GUorirK3o+OZUmrI
-         z//IvPfs1NK2aAR6EElnir7wzJ9UDfuDEM5Ouia9KV0HAc3QgLHHIn/+AlEsj1+9/ltI
-         mvjg==
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=/4bUw7+wMtjsSD4LYclu/0Z5AW7mD3lXnarzF+2do9w=;
+        b=ZEunXeNXNngc7PViZ7ipEXTKwQvGhoj3hUORzakyfwrkjIwtIaQYuz5tVIzCXV5T6I
+         OiHFNRHlgNFd9p5t5ZyRCpCvfLX46jDGlotEjyAR1BHnyWAMHyrA2iYHIqV71oHD4zPi
+         yi1oBHRPOvLvvmMcAtZyIKng99UsUii5OT6JvDlXEiJlRVQ5budJlDWssMv7HLOVBjT/
+         wbb04Tc4yVaNGRL09bywzx681saN2UFngprAzq9LznTlWuOwD2AWZVGOMZSGINUiTXYm
+         xdk3rCN/MnKGGtROdLYQy3CiFEvHMaP9adbQxQZUDpmyIbFp7EX7NaxWuPDGvbemVI8a
+         iliA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vlIJyAk9fhkb7fDf5GFtGsGGIxix3xLtpQ4+bHU/G4Y=;
-        b=OAt6ZYml4uWtwOes8NfX048Qdr4/tpPLljnTP8y8LxNIWqskkduFj1pgxaMMG0XGJm
-         KbRudjmNrNW3ZWXb54gb0On2SNYnZAcsmw821k6hD5AXgcfdnCMq70HqrN96Zc9D9Os4
-         Ba45xg/iMoI75oAS0JZyPRZgRjZwbp1z2yMojH2HA2GFFZBU//ljG8AUd+pEEUHyTzip
-         hW6eA6xEGpPd2pqVMVRaAhXD/SNbSba4oZdyiHnAyEurunKt4WJZFoeNRFRuKLMq8S2C
-         B/EGl6i6DQZCtpLhV9uZ/BBh1rnR8rbLfdI1c7RUE6sm27tIejLNovKfCIt04x+SSHJ/
-         aMSw==
-X-Gm-Message-State: AGi0PuYms8qdtI8o/yYt7DW+OxMTl7gX+nzRVibvnkpytZavvCRy+Jh7
-        LsnFtSnVQftUQpMp7+wP/szEHUIP9BcNpQ==
-X-Google-Smtp-Source: APiQypKEiqXRrw72ANQfWgJswIKdp5CXRvYIqXF9it7FZfsJe0ZvxPVCSoFK5e2i918uhPV3ODV7pg==
-X-Received: by 2002:ad4:5141:: with SMTP id g1mr3375832qvq.79.1586282820029;
-        Tue, 07 Apr 2020 11:07:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id b195sm1171481qkg.108.2020.04.07.11.06.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 Apr 2020 11:06:59 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jLsck-0005Um-RD; Tue, 07 Apr 2020 15:06:58 -0300
-Date:   Tue, 7 Apr 2020 15:06:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: Can't build rdma-core's azp image
-Message-ID: <20200407180658.GW20941@ziepe.ca>
-References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=/4bUw7+wMtjsSD4LYclu/0Z5AW7mD3lXnarzF+2do9w=;
+        b=LX3A3xlzjLSLFD3W5E5BQNbLitls2rHcTDizjyHI+VyEMXA1OnlNac3fh11zCXOQnv
+         Ma6UIXtbjJtTeEuVq/adYcMv0uvsYjknX3uWlL7Hjb/6q20qlEWjhenRFPKoHf53JZJh
+         bq42tCQTnOwVIMsmj2QBBB7z+rvEZ2ZV32SjIlybiHtXJ4P5STP47tTch5zYIRsyG6RM
+         DJIJNvVUUzC8lJvtxEJj5koxeKxWQljyhNY3f+v/hCYHtGBMdJ67t8XdcaZpPbHS0+wO
+         eo4TT8rKnCkeJ8//Kg6wHOQy7JEOwnhQq++atMPtrGgrCJ8hPfMTlXBt8RkwHlY7VQ10
+         7LRA==
+X-Gm-Message-State: AGi0PuZkLc6dlkW8E9oXtKLH9k9PA5C4qJtDjsVpdhwEPb2zdHTkjDwS
+        KOTmqKTHlPLBa67MFxWA1GAUy1Q3
+X-Google-Smtp-Source: APiQypKN19ji7kr4EbK7g06cHx8DxxAZkTjh43M5BwlNhZiQIlw8Hf+TN5CEN3Hjj68+8JLnEfqfaQ==
+X-Received: by 2002:a05:620a:2052:: with SMTP id d18mr3678170qka.362.1586286652565;
+        Tue, 07 Apr 2020 12:10:52 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id s32sm59367qth.43.2020.04.07.12.10.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Apr 2020 12:10:52 -0700 (PDT)
+Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 037JAnGT010255;
+        Tue, 7 Apr 2020 19:10:50 GMT
+Subject: [PATCH v1 0/3] NFS/RDMA server fixes for 5.7-rc
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Tue, 07 Apr 2020 15:10:49 -0400
+Message-ID: <20200407190938.24045.64947.stgit@klimt.1015granger.net>
+User-Agent: StGit/0.22-8-g198f
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 06:47:51PM +0300, Gal Pressman wrote:
-> I'm trying to build the azp image and it fails with the following error [1].
-> Anyone has an idea what went wrong?
+For review, the following three patches address bugs in the Linux
+NFS/RDMA server implementation.
 
-> Reading package lists...
-> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/InRelease: No system
-> certificates available. Try installing ca-certificates.
-> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/Release: No system
-> certificates available. Try installing ca-certificates.
-> E: The repository 'http://apt.llvm.org/bionic llvm-toolchain-bionic-8 Release'
-> does not have a Release file.
+---
 
-Oh, there is lots going wrong here..
+Chuck Lever (3):
+      svcrdma: Fix trace point use-after-free race
+      SUNRPC: Remove naked ->xpo_release_rqst from svc_send()
+      svcrdma: Fix leak of svc_rdma_recv_ctxt objects
 
-Above is because llvm droped http support from their repo.. Bit
-annoying to fix..
 
-> The following packages have unmet dependencies:
->  libc6-dev:arm64 : Depends: libc6:arm64 (= 2.27-3ubuntu1) but it is not going to
-> be installed
->  libgcc-8-dev:arm64 : Depends: libgcc1:arm64 (>= 1:8.4.0-1ubuntu1~18.04)
->                       Depends: libgomp1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->                       Depends: libitm1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it is
-> not going to be installed
->                       Depends: libatomic1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->                       Depends: libasan5:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->                       Depends: liblsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->                       Depends: libtsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->                       Depends: libubsan1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
-> is not going to be installed
->  libnl-3-dev:arm64 : Depends: libnl-3-200:arm64 (= 3.2.29-0ubuntu3) but it is
-> not going to be installed
->  libnl-route-3-dev:arm64 : Depends: libnl-route-3-200:arm64 (= 3.2.29-0ubuntu3)
-> but it is not going to be installed
->  libsystemd-dev:arm64 : Depends: libsystemd0:arm64 (= 237-3ubuntu10.39) but it
-> is not going to be installed
->  libudev-dev:arm64 : Depends: libudev1:arm64 (= 237-3ubuntu10.39) but it is not
-> going to be installed
+ include/linux/sunrpc/svc_rdma.h          |  1 +
+ net/sunrpc/svc_xprt.c                    |  3 ---
+ net/sunrpc/svcsock.c                     |  4 ++++
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c  | 22 ++++++++++++++++++++++
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c    | 13 +++----------
+ net/sunrpc/xprtrdma/svc_rdma_transport.c |  5 -----
+ 6 files changed, 30 insertions(+), 18 deletions(-)
 
-Oh neat, that is a problem in the toolchain ppa:
-
-$ apt-get install libgcc-s1:arm64 gcc-7
-
-The following packages have unmet dependencies:
- libgcc-s1:arm64 : Breaks: libgcc-7-dev (< 7.5.0-4) but 7.5.0-3ubuntu1~18.04 is to be installed
-
-The only ubuntu not broken right now is focal.. which is very new.
-
-Keep using the old docker image? Ask me in a week if it is still
-broken, we can probably fix this by updating to focal, it is the next
-LTS anyhow..
-
-Jason
+--
+Chuck Lever
