@@ -2,81 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA471A0D74
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 14:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FBA1A0DDF
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 14:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgDGMU6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Apr 2020 08:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728573AbgDGMU6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:20:58 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C96082063A;
-        Tue,  7 Apr 2020 12:20:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586262057;
-        bh=24ouL8dScLkiy2iTzYBVIu9ZNMGJW2THjsOhK+oecso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c5CmznUSX1JLMEGQLnrnkDShaMfpfpqTOnuNKGYETJ2qOJPlt1yEL45syvA8flnHC
-         UyWDD0Cl5QAdAadr92s4n1P3c3FoyXTpOp/4jz6djyB6mGWMo0ZJG4Ev1cV1tbAfqB
-         2caDQxbKQIyQLFE3bbDg2flt8Q2qSGBoORqb2L+4=
-Date:   Tue, 7 Apr 2020 15:20:53 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/uverbs: Make the event_queue fds return POLLERR
- when disassociated
-Message-ID: <20200407122053.GN80989@unreal>
-References: <0-v1-ace813388969+48859-uverbs_poll_fix%jgg@mellanox.com>
- <20200407051632.GL80989@unreal>
- <20200407115115.GT20941@ziepe.ca>
+        id S1728146AbgDGMkB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Apr 2020 08:40:01 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36058 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728596AbgDGMkA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 08:40:00 -0400
+Received: by mail-qk1-f193.google.com with SMTP id l25so1400120qkk.3
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Apr 2020 05:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=REDd9q05KI702EFSQR/cgT2WpH4+rJemrcfJ/MESpiQ=;
+        b=KAWILKHjC4U9jPdGMThPZYzHGsdaOtMUPXfBK3RD9JmlOj98NEM4m0KQgCBFHOy4n2
+         fz1uocxz1N2G9vMJEeyZholf93xXeY1RNkHv6cTa7zlix8KDMLaEwtOetBNS4xgCG65i
+         nl/kidfVBsyDg10Vb6nj662lbRm4o+KQ0OAxYFWRFZmYWbTHnP345h0tsgP/m4ka1MA1
+         Y47N+uagOXchGg8ch0blRb8O8a9R0pDqCrK3bvXOzycUe0+e8e0c2zx1cOxvwkqQO6Ad
+         iSD3Oz8xgI+cNYoJpa8jDIUY+efa5fjKfgWGE16NzX7q01rSH5gbyz6Uou6p83ih43tR
+         g9gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=REDd9q05KI702EFSQR/cgT2WpH4+rJemrcfJ/MESpiQ=;
+        b=EWejEa9oyEzTVMLLSvuCbKSO7j5IeZRAN5lg6Jf0uvdELrvDQw+CTJPQ8PDvHQFmbe
+         J7Bq/g3wUK1sllCy/netI/TRstNx2jsgJGkdh0Z2ifquzR9O0mwAYb7/Pq1a8mw/QY9O
+         6PZmr5WQwRopOVRWi9RO172Z+t+WXm7bhUYpzKSt+QzJITsVFoVmxA7AeKboL5qnyVSi
+         +xUWCsdbAKnnkgduxmRPQjAoEDWP9dNWBi8b/nXfYr9kV/s0+3dUSUXwKJ2iBrW768GJ
+         Hb0TAGfLgZ7fon8UEZKFDznY4uSdO1f+ZH8WLzI3teCzKnPu9aQUciXX1k7LNUG5CFVe
+         hqDw==
+X-Gm-Message-State: AGi0PuaP6oYUEy1Hu20wePW/kSleldim4ekFfp/xOrRcJ+8rYD2LAks1
+        mNp0n1+dwSiIhtJMSS9SUnItlHGOUFpZGTEymsuNXQ==
+X-Google-Smtp-Source: APiQypJufCd7AZpci4Y41mZ7FMY2K9lw7Nzb7z1xobj1dlFqbdAhNNzeKkI9NXFd18jF3KT1Xafx0uU+IQkz5xU0O7w=
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr1690858qkm.407.1586263198896;
+ Tue, 07 Apr 2020 05:39:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407115115.GT20941@ziepe.ca>
+References: <00000000000075245205a2997f68@google.com> <20200406172151.GJ80989@unreal>
+ <20200406174440.GR20941@ziepe.ca> <CACT4Y+Zv_WXEn6u5a6kRZpkDJnSzeGF1L7JMw4g85TLEgAM7Lw@mail.gmail.com>
+ <20200407115548.GU20941@ziepe.ca>
+In-Reply-To: <20200407115548.GU20941@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 7 Apr 2020 14:39:42 +0200
+Message-ID: <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
+Subject: Re: WARNING in ib_umad_kill_port
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 08:51:15AM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 07, 2020 at 08:16:32AM +0300, Leon Romanovsky wrote:
-> > On Mon, Apr 06, 2020 at 09:44:26PM -0300, Jason Gunthorpe wrote:
-> > > From: Jason Gunthorpe <jgg@mellanox.com>
+On Tue, Apr 7, 2020 at 1:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Apr 07, 2020 at 11:56:30AM +0200, Dmitry Vyukov wrote:
+> > > I'm not sure what could be done wrong here to elicit this:
 > > >
-> > > If is_closed is set, and the event list is empty, then read() will return
-> > > -EIO without blocking. After setting is_closed in
-> > > ib_uverbs_free_event_queue(), we do trigger a wake_up on the poll_wait,
-> > > but the fops->poll() function does not check it, so poll will continue to
-> > > sleep on an empty list.
+> > >  sysfs group 'power' not found for kobject 'umad1'
 > > >
-> > > Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
-> > > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> > >  drivers/infiniband/core/uverbs_main.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
+> > > ??
 > > >
-> > > diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-> > > index 2d4083bf4a0487..8710a3427146e7 100644
-> > > +++ b/drivers/infiniband/core/uverbs_main.c
-> > > @@ -296,6 +296,8 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
-> > >  	spin_lock_irq(&ev_queue->lock);
-> > >  	if (!list_empty(&ev_queue->event_list))
-> > >  		pollflags = EPOLLIN | EPOLLRDNORM;
-> > > +	else if (ev_queue->is_closed)
-> > > +		pollflags = EPOLLERR;
-> > >  	spin_unlock_irq(&ev_queue->lock);
+> > > I've seen another similar sysfs related trigger that we couldn't
+> > > figure out.
+> > >
+> > > Hard to investigate without a reproducer.
 > >
-> > Don't you need to set EPOLLHUP too? Probably, it won't change anything,
-> > just for the sake of the correctness.
+> > Based on all of the sysfs-related bugs I've seen, my bet would be on
+> > some races. E.g. one thread registers devices, while another
+> > unregisters these.
 >
-> HUP means read will return 0, in this case read returns -EIO
-
-I see, it is because we don't have events to read.
-
-Thanks
-
+> I did check that the naming is ordered right, at least we won't be
+> concurrently creating and destroying umadX sysfs of the same names.
 >
-> Jason
+> I'm also fairly sure we can't be destroying the parent at the same
+> time as this child.
+>
+> Do you see the above commonly? Could it be some driver core thing? Or
+> is it more likely something wrong in umad?
+
+Mmmm... I can't say, I am looking at some bugs very briefly. I've
+noticed that sysfs comes up periodically (or was it some other similar
+fs?). General observation is that code frequently assumes only the
+happy scenario and only, say, a single administrator doing one thing
+at a time, slowly and carefully, and it is not really hardened against
+armies of monkeys.
+But I did not look at code abstractions, bug patterns, contracts, etc.
+
+Greg KH may know better. Greg, as far as I remember you commented on
+some of these reports along the lines of, for example, "the warning is
+in sysfs code, but the bug is in the callers".
