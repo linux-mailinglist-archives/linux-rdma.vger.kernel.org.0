@@ -2,80 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 287A51A0674
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 07:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FF21A0678
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Apr 2020 07:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgDGFPW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Apr 2020 01:15:22 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:44515 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgDGFPP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Apr 2020 01:15:15 -0400
-Received: by mail-vs1-f66.google.com with SMTP id e138so1395601vsc.11
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Apr 2020 22:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=MfHDvIBIt69xqysjTBYVVNc0kV20i2uh+5pM5bA0kgqzaY38Y8DWEj01Pvo2lprKBQ
-         GeMPmsDw8mI8JPS3USlc7fo909SxPcbTvuuO8fmlDj3Epr1eVDtR360WKQPQyhZWRFR1
-         e2AVs/X8xmnpyFeBVbEpWkW/7xUX6BkoKcBNjhVPYru9i1s3MQXqsGzojyz2OPT8Gzuk
-         eAsRgBBtJfCcoxVL23nq2mmza5GNfLtG1Vewilonxc/7to20Va10m3hSWyxvaqvjeUuq
-         +R1bw/nay987q2JQWtF8qmoAYape5iyXc2fGu9oueeJmEOdg+02io2ZWkJnJglNvfVbH
-         fVHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=JBOOg59DrKNzgkON88OyRuYAlz9A+om41HL5oOedJhr4uGnIqCvSR5iA2Jd2mzxG4d
-         gCF0yKhcBnvGE+JB+4NN0OK+MWDwuRdW038R+FZ1zP1XIp5mS4/hcrxvBsZawpnv/rB0
-         XlLRA9CSA0VCPmn9i9/bEF4tNu/GK0PRbgsti50v9LZ0oqBunn/Abj5o3bUtZ8nqoMKI
-         SK9IIJRohAT3jdvACNTWMirLv2+lGOEWn2114QtY7nhy2iERpOgNVvdEJqUS6sF6ez11
-         74IGxVUCnvP0YZCu9544ERqjNh3cD3m/4bttd7RvIhdPB8vcBvWUHogfRxvJ9UhXZkim
-         C8hA==
-X-Gm-Message-State: AGi0PuauaFNRKYgWnTZS0Z3Zifm9hOnz8t0+UirGIxPe/9CLky3uyu7P
-        m/sZX+BE77m+htjaShmU63TfNJa6GW9IFefDIrY=
-X-Google-Smtp-Source: APiQypL+ArhsKP1HCJpJZSuqqOKzmqGe03VSBcvbyU5XLwMdkDIdNu0ELlIqojTyqMNnJA6AEodSyvd4rSFXD4DVz/E=
-X-Received: by 2002:a67:fa85:: with SMTP id f5mr495699vsq.65.1586236514277;
- Mon, 06 Apr 2020 22:15:14 -0700 (PDT)
+        id S1726657AbgDGFQg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Apr 2020 01:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726232AbgDGFQg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Apr 2020 01:16:36 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F26720730;
+        Tue,  7 Apr 2020 05:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586236596;
+        bh=PP9yPSE8t2IY7iYlwDeMuKlNYVHVBgt72mFtMa0Qhdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLMD7pM7YjM7CPw+ZJmNWyQYwC9SPctbCS6+0omLTgp0q3YIq+aycLAV3sxS5/0KU
+         L0ZTflbCJ6tZH/OfxxiDReeNolLJ8BgokSUDOb9cc5IZpOmWHpXfv7q2t3L7Uj2y6h
+         rZb98PURYW14AfI5V0bGU4+DQb4rd+CfHOQXomVs=
+Date:   Tue, 7 Apr 2020 08:16:32 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/uverbs: Make the event_queue fds return POLLERR
+ when disassociated
+Message-ID: <20200407051632.GL80989@unreal>
+References: <0-v1-ace813388969+48859-uverbs_poll_fix%jgg@mellanox.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:254a:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 22:15:12 -0700 (PDT)
-From:   SANDRA DEWI <sdewisandra@gmail.com>
-Date:   Tue, 7 Apr 2020 05:15:12 +0000
-Message-ID: <CALe9-EdG2aBp2yBY=t79ZuBObzzfY6nuVfAsra6+wc2BAYMhcg@mail.gmail.com>
-Subject: whether this is your correct email address or not
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0-v1-ace813388969+48859-uverbs_poll_fix%jgg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear ,Pastor
+On Mon, Apr 06, 2020 at 09:44:26PM -0300, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>
+> If is_closed is set, and the event list is empty, then read() will return
+> -EIO without blocking. After setting is_closed in
+> ib_uverbs_free_event_queue(), we do trigger a wake_up on the poll_wait,
+> but the fops->poll() function does not check it, so poll will continue to
+> sleep on an empty list.
+>
+> Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/uverbs_main.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> index 2d4083bf4a0487..8710a3427146e7 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -296,6 +296,8 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
+>  	spin_lock_irq(&ev_queue->lock);
+>  	if (!list_empty(&ev_queue->event_list))
+>  		pollflags = EPOLLIN | EPOLLRDNORM;
+> +	else if (ev_queue->is_closed)
+> +		pollflags = EPOLLERR;
+>  	spin_unlock_irq(&ev_queue->lock);
 
+Don't you need to set EPOLLHUP too? Probably, it won't change anything,
+just for the sake of the correctness.
 
-
-I have a client who is an oil business man and he made a fixed deposit
-of $26 million USD in my bank, where I am the director of the branch,
-My client died with his entire family in Jordanian
-
-50% of the fund will be for the church  for the work of God,the
-balance 50% we share it in the ratio of 50/50. Meaning 50% to you and
-50% for me
-
-intervention in the Syrian Civil War 2014 leaving behind no next of
-kin. I Propose to present you as next of kin to claim the funds, if
-interested reply me for full details and how we are to
-
-
-
-proceed to close this deal.
-
-
-
-
-Mrs. Sandra Dewi
-
-
-
-Email  mrsdewi@gmx.com
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
