@@ -2,35 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E681A2AA6
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 22:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393F51A2AEC
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 23:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbgDHUuI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Apr 2020 16:50:08 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:54063 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgDHUuI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Apr 2020 16:50:08 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MRn0U-1jjxYa1Qni-00TASI; Wed, 08 Apr 2020 22:50:06 +0200
-Received: by mail-qt1-f178.google.com with SMTP id z90so755393qtd.10;
-        Wed, 08 Apr 2020 13:50:05 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYSte0JCTfSv334dYLgt146dhcHbnZFs1fjjw/q07PHpKtg65KW
-        TvjKchHvC767o4ppNWAkIV472zaYw57qMUMU/24=
-X-Google-Smtp-Source: APiQypIP5yghqg/2MrWIAF2lP5PX73f0nNW4IRcRHBZR7UjH98P/p+NK0Mdk7nj6cOkNVhU/171r9JSmuzucI6UHA5Q=
-X-Received: by 2002:ac8:12c2:: with SMTP id b2mr1560498qtj.7.1586379004961;
- Wed, 08 Apr 2020 13:50:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
-In-Reply-To: <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 8 Apr 2020 22:49:48 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
-Message-ID: <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S1728635AbgDHVRy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Apr 2020 17:17:54 -0400
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:51922 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbgDHVRx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Apr 2020 17:17:53 -0400
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 15C175069A;
+        Wed,  8 Apr 2020 17:17:49 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=UIkb5A+H+jKDQ3GWp3Tbf0a8oXM=; b=AcgYlX
+        TnCHG5UcWgHkl8IlsC1e1uSPmTDBMpHTb4rnXL06C201X87TtsWkywbE7tyhVEgL
+        joaA4hStDMXuw8ZUssiqUmef7sB8CpImWNNVRynUk532oaFQQiq7ylZfjC6WKOG0
+        n438CvV7eUlVobxBSL2o/win8JdgiYwNnjPJU=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id EBD9250698;
+        Wed,  8 Apr 2020 17:17:48 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=C5qZnucLOvddU0/aYHUwvuoSJMokDJ9d4K7zprmELhs=; b=rhI9Y9k7ariW+D63u1TPx511dXcnGqLfZWvC4hyySB7C8iu6lcGWtATA4lzrxivdp5SOwycFxqeXwlBHGMIZ+/TN4juy0TA9A3TTPQBm6TTbluFOmyrcr3+B1c5KEDP/2UtjGbuSvcOZxVxL1iYp3mQwA1ofghE5W48Ncw1e8cc=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 5F86F50697;
+        Wed,  8 Apr 2020 17:17:48 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 798F72DA0D4B;
+        Wed,  8 Apr 2020 17:17:47 -0400 (EDT)
+Date:   Wed, 8 Apr 2020 17:17:47 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -47,63 +56,52 @@ Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Kc+e7gOBMBy4fgliV8+wTzDtBqkiekso8uwFk7zpl+8KOTV8+lX
- Ap1gmqRHFqlreu2JMKQibxZMLFg41DngvaRlbUp6bQ6HqHzNitKK6BAF17eRnVOzM+83oLR
- kdeMOO12t6SMt3u23iWu+r2JcMbLG35L2VIQNh1nfC7TKStTWi7e0AGrUEbXygGI1vJ5uPX
- 4/AwJwq+3OpoQaCQiU3SA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WPSVnHxAXP4=:WKy5dFAMgXMpgCWnVu65UZ
- QteWtKeojy14W0LmkgFTYQNlRL3eFXMl5aNJfxb/6OduNcFchA0paC7RAF/5V9qt/6yb+1rzi
- bHhU5mgLaOtgXHe+5YxLh4+XEOGHcuyVFZ1EgXhAro4wpzkTq5WZBtkWAJ2PzGw03LAXyjcJc
- cU944pFKMJzVuDc610M9KLSRtCOo2IftlKgcbUDdo+cOSBKor+r1cuAJkaJ1x3cFM9coDS6Jq
- jNZIz8EY3dx8nC6+9po6QN2vfIATPB9RO5e2fKeG0n3uWb5KWjV8yGS5jxxZx6/+8P/P32t2J
- M9tQmsUv5v+xdkrGrhmybW6qj+5g4ZFq4gKur5GE8AAhttBuQ2W00H2ZM6H+v8wf9SlyB6r/s
- g8VhW9DBF+O66BPTw4KUTKJ7AxlcSEgQ57+3HqgJFgVJllXM9+FlHIgVy3MUeZB+nQ+1475cK
- ZPYtLUnMbbRL9v55b+U/u7OOVAv9VxGLhild8wmli/zy+RU9SR2yMriJQ7iBdZbimMS+o75Uk
- oXA0npHY/vMi5T3LGN3OvH39aPng3rFMX/MtT7RJ8OjoM3qAmtkdF45vTCOOv0gFTG/rwS0J+
- HYX6fgc0NRfHWfxNgscRPgmzOv8CTbkUhex8KVxGLSDmt9Bwu5dHuQ1JSYO1zWP7abKxETagu
- paICl+4hQhFkZMyaShonq+2mkwRrPMxpynSZ2XTTypcip+noEfaVfTclpHkZjf9y20JrwAAy+
- tIrvDlgfM+zweorIIew+RnF6pGfndYFAoidP+I7letj/8BWi91/7mVJ2VmDmBFEkLAPWlIegC
- EMQYXagKpFV0ujNNzMFDCVfVafkkcWo78uIHnbIow74iR9ZtxQ=
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+In-Reply-To: <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
+Message-ID: <nycvar.YSQ.7.76.2004081715080.2671@knanqh.ubzr>
+References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr> <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 65B28AAA-79DE-11EA-BF5C-D1361DBA3BAF-78420484!pb-smtp2.pobox.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 10:38 PM Nicolas Pitre <nico@fluxnic.net> wrote:
-> On Wed, 8 Apr 2020, Arnd Bergmann wrote:
-> > I have created workarounds for the Kconfig files, which now stop using
-> > imply and do something else in each case. I don't know whether there was
-> > a bug in the kconfig changes that has led to allowing configurations that
-> > were not meant to be legal even with the new semantics, or if the Kconfig
-> > files have simply become incorrect now and the tool works as expected.
->
-> In most cases it is the code that has to be fixed. It typically does:
->
->         if (IS_ENABLED(CONFIG_FOO))
->                 foo_init();
->
-> Where it should rather do:
->
->         if (IS_REACHABLE(CONFIG_FOO))
->                 foo_init();
->
-> A couple of such patches have been produced and queued in their
-> respective trees already.
+On Wed, 8 Apr 2020, Arnd Bergmann wrote:
 
-I try to use IS_REACHABLE() only as a last resort, as it tends to
-confuse users when a subsystem is built as a module and already
-loaded but something relying on that subsystem does not use it.
+> On Wed, Apr 8, 2020 at 10:38 PM Nicolas Pitre <nico@fluxnic.net> wrote:
+> > On Wed, 8 Apr 2020, Arnd Bergmann wrote:
+> > > I have created workarounds for the Kconfig files, which now stop using
+> > > imply and do something else in each case. I don't know whether there was
+> > > a bug in the kconfig changes that has led to allowing configurations that
+> > > were not meant to be legal even with the new semantics, or if the Kconfig
+> > > files have simply become incorrect now and the tool works as expected.
+> >
+> > In most cases it is the code that has to be fixed. It typically does:
+> >
+> >         if (IS_ENABLED(CONFIG_FOO))
+> >                 foo_init();
+> >
+> > Where it should rather do:
+> >
+> >         if (IS_REACHABLE(CONFIG_FOO))
+> >                 foo_init();
+> >
+> > A couple of such patches have been produced and queued in their
+> > respective trees already.
+> 
+> I try to use IS_REACHABLE() only as a last resort, as it tends to
+> confuse users when a subsystem is built as a module and already
+> loaded but something relying on that subsystem does not use it.
 
-In the six patches I made, I had to use IS_REACHABLE() once,
-for the others I tended to use a Kconfig dependency like
+Then this is a usage policy issue, not a code correctness issue.
 
-'depends on FOO || FOO=n'
+The correctness issue is fixed with IS_REACHABLE(). If you want to 
+enforce a usage policy then this goes in Kconfig.
 
-which avoids the case that IS_REACHABLE() works around badly.
+But you still can do both.
 
-I did come up with the IS_REACHABLE() macro originally, but that
-doesn't mean I think it's a good idea to use it liberally ;-)
 
-      Arnd
+Nicolas
