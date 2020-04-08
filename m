@@ -2,186 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCB01A1BC0
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 08:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4873C1A1BEE
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 08:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgDHGCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Apr 2020 02:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbgDHGCr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 Apr 2020 02:02:47 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A796E20692;
-        Wed,  8 Apr 2020 06:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586325766;
-        bh=8v8ZKXib54k0pnUocYC3djwt29r0O8csFX6JxH9NeOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I8Hl/5DKmnHwOdThCnnANV+OtdCemNc0qjoKCUprQdh3GmAP+u63XbrZRgae0SlFx
-         /d/lnSiF5W4FUGiUNdzfMuJmeTr8ysGLIaMlWMGYXPWs5tiaV9u6G8UTAxSObkLeUg
-         RH9+LVDKJbhP9R2hJ/A/jX6dRkhu9Tl71aMPAk8Q=
-Date:   Wed, 8 Apr 2020 09:02:42 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] svcrdma: Fix leak of svc_rdma_recv_ctxt objects
-Message-ID: <20200408060242.GB3310@unreal>
-References: <20200407190938.24045.64947.stgit@klimt.1015granger.net>
- <20200407191106.24045.88035.stgit@klimt.1015granger.net>
+        id S1726513AbgDHGfr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Apr 2020 02:35:47 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:3588 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgDHGfq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Apr 2020 02:35:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1586327746; x=1617863746;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Os+5nSGLobhgm1MgM4LtepQogKsu6uJ6PxE/akeWJ58=;
+  b=NxW72qA+mMRt/MEDlxnucP5irHJOhn1WDdSIqdUAdM4P07b+f/jVFxMF
+   s4Th3zxmcE3Zo4xEj0CUThcL6ZN+jrjKRsRr0P85rQCuvh3gtjES5qQxK
+   igy7R5vuMkZmiBUPEDjCS7IB6iJIXAKheR8ot+zMF4YBj00SPy8urGAgz
+   Q=;
+IronPort-SDR: 4nEoDzlORuo279zN++jBOYGmoTdMmXcro2SxkiuOUaGWk9lmmFnQFDzUwrTguuqIU9qWbKGPmg
+ Yy4VR2vdtjFg==
+X-IronPort-AV: E=Sophos;i="5.72,357,1580774400"; 
+   d="scan'208";a="27562551"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 08 Apr 2020 06:35:44 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id DF596A2523;
+        Wed,  8 Apr 2020 06:35:42 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 06:35:42 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 06:35:39 +0000
+Subject: Re: Can't build rdma-core's azp image
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
+ <20200407180658.GW20941@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <67f9e08a-467c-34ce-e17e-816cb4bf03db@amazon.com>
+Date:   Wed, 8 Apr 2020 09:35:32 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407191106.24045.88035.stgit@klimt.1015granger.net>
+In-Reply-To: <20200407180658.GW20941@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D37UWC004.ant.amazon.com (10.43.162.212) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 03:11:06PM -0400, Chuck Lever wrote:
-> Utilize the xpo_release_rqst transport method to ensure that each
-> rqstp's svc_rdma_recv_ctxt object is released even when the server
-> cannot return a Reply for that rqstp.
->
-> Without this fix, each RPC whose Reply cannot be sent leaks one
-> svc_rdma_recv_ctxt. This is a 2.5KB structure, a 4KB DMA-mapped
-> Receive buffer, and any pages that might be part of the Reply
-> message.
->
-> The leak is infrequent unless the network fabric is unreliable or
-> Kerberos is in use, as GSS sequence window overruns, which result
-> in connection loss, are more common on fast transports.
->
-> Fixes: 3a88092ee319 ("svcrdma: Preserve Receive buffer until ... ")
+On 07/04/2020 21:06, Jason Gunthorpe wrote:
+> On Tue, Apr 07, 2020 at 06:47:51PM +0300, Gal Pressman wrote:
+>> I'm trying to build the azp image and it fails with the following error [1].
+>> Anyone has an idea what went wrong?
+> 
+>> Reading package lists...
+>> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/InRelease: No system
+>> certificates available. Try installing ca-certificates.
+>> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/Release: No system
+>> certificates available. Try installing ca-certificates.
+>> E: The repository 'http://apt.llvm.org/bionic llvm-toolchain-bionic-8 Release'
+>> does not have a Release file.
+> 
+> Oh, there is lots going wrong here..
+> 
+> Above is because llvm droped http support from their repo.. Bit
+> annoying to fix..
+> 
+>> The following packages have unmet dependencies:
+>>  libc6-dev:arm64 : Depends: libc6:arm64 (= 2.27-3ubuntu1) but it is not going to
+>> be installed
+>>  libgcc-8-dev:arm64 : Depends: libgcc1:arm64 (>= 1:8.4.0-1ubuntu1~18.04)
+>>                       Depends: libgomp1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>                       Depends: libitm1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it is
+>> not going to be installed
+>>                       Depends: libatomic1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>                       Depends: libasan5:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>                       Depends: liblsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>                       Depends: libtsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>                       Depends: libubsan1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>> is not going to be installed
+>>  libnl-3-dev:arm64 : Depends: libnl-3-200:arm64 (= 3.2.29-0ubuntu3) but it is
+>> not going to be installed
+>>  libnl-route-3-dev:arm64 : Depends: libnl-route-3-200:arm64 (= 3.2.29-0ubuntu3)
+>> but it is not going to be installed
+>>  libsystemd-dev:arm64 : Depends: libsystemd0:arm64 (= 237-3ubuntu10.39) but it
+>> is not going to be installed
+>>  libudev-dev:arm64 : Depends: libudev1:arm64 (= 237-3ubuntu10.39) but it is not
+>> going to be installed
+> 
+> Oh neat, that is a problem in the toolchain ppa:
+> 
+> $ apt-get install libgcc-s1:arm64 gcc-7
+> 
+> The following packages have unmet dependencies:
+>  libgcc-s1:arm64 : Breaks: libgcc-7-dev (< 7.5.0-4) but 7.5.0-3ubuntu1~18.04 is to be installed
+> 
+> The only ubuntu not broken right now is focal.. which is very new.
+> 
+> Keep using the old docker image? Ask me in a week if it is still
+> broken, we can probably fix this by updating to focal, it is the next
+> LTS anyhow..
 
-Chuck,
-
-Can you please don't mangle the Fixes line?
-A lot of automatization is relying on the fact that this line is canonical,
-both in format and in the actual content.
-
-Thanks
-
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  include/linux/sunrpc/svc_rdma.h          |    1 +
->  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c  |   22 ++++++++++++++++++++++
->  net/sunrpc/xprtrdma/svc_rdma_sendto.c    |   13 +++----------
->  net/sunrpc/xprtrdma/svc_rdma_transport.c |    5 -----
->  4 files changed, 26 insertions(+), 15 deletions(-)
->
-> diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-> index 78fe2ac6dc6c..cbcfbd0521e3 100644
-> --- a/include/linux/sunrpc/svc_rdma.h
-> +++ b/include/linux/sunrpc/svc_rdma.h
-> @@ -170,6 +170,7 @@ extern bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma);
->  extern void svc_rdma_recv_ctxt_put(struct svcxprt_rdma *rdma,
->  				   struct svc_rdma_recv_ctxt *ctxt);
->  extern void svc_rdma_flush_recv_queues(struct svcxprt_rdma *rdma);
-> +extern void svc_rdma_release_rqst(struct svc_rqst *rqstp);
->  extern int svc_rdma_recvfrom(struct svc_rqst *);
->
->  /* svc_rdma_rw.c */
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-> index 54469b72b25f..efa5fcb5793f 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-> @@ -223,6 +223,26 @@ void svc_rdma_recv_ctxt_put(struct svcxprt_rdma *rdma,
->  		svc_rdma_recv_ctxt_destroy(rdma, ctxt);
->  }
->
-> +/**
-> + * svc_rdma_release_rqst - Release transport-specific per-rqst resources
-> + * @rqstp: svc_rqst being released
-> + *
-> + * Ensure that the recv_ctxt is released whether or not a Reply
-> + * was sent. For example, the client could close the connection,
-> + * or svc_process could drop an RPC, before the Reply is sent.
-> + */
-> +void svc_rdma_release_rqst(struct svc_rqst *rqstp)
-> +{
-> +	struct svc_rdma_recv_ctxt *ctxt = rqstp->rq_xprt_ctxt;
-> +	struct svc_xprt *xprt = rqstp->rq_xprt;
-> +	struct svcxprt_rdma *rdma =
-> +		container_of(xprt, struct svcxprt_rdma, sc_xprt);
-> +
-> +	rqstp->rq_xprt_ctxt = NULL;
-> +	if (ctxt)
-> +		svc_rdma_recv_ctxt_put(rdma, ctxt);
-> +}
-> +
->  static int __svc_rdma_post_recv(struct svcxprt_rdma *rdma,
->  				struct svc_rdma_recv_ctxt *ctxt)
->  {
-> @@ -820,6 +840,8 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
->  	__be32 *p;
->  	int ret;
->
-> +	rqstp->rq_xprt_ctxt = NULL;
-> +
->  	spin_lock(&rdma_xprt->sc_rq_dto_lock);
->  	ctxt = svc_rdma_next_recv_ctxt(&rdma_xprt->sc_read_complete_q);
->  	if (ctxt) {
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> index 6a87a2379e91..b6c8643867f2 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> @@ -926,12 +926,7 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
->  	ret = svc_rdma_send_reply_msg(rdma, sctxt, rctxt, rqstp);
->  	if (ret < 0)
->  		goto err1;
-> -	ret = 0;
-> -
-> -out:
-> -	rqstp->rq_xprt_ctxt = NULL;
-> -	svc_rdma_recv_ctxt_put(rdma, rctxt);
-> -	return ret;
-> +	return 0;
->
->   err2:
->  	if (ret != -E2BIG && ret != -EINVAL)
-> @@ -940,16 +935,14 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
->  	ret = svc_rdma_send_error_msg(rdma, sctxt, rqstp);
->  	if (ret < 0)
->  		goto err1;
-> -	ret = 0;
-> -	goto out;
-> +	return 0;
->
->   err1:
->  	svc_rdma_send_ctxt_put(rdma, sctxt);
->   err0:
->  	trace_svcrdma_send_failed(rqstp, ret);
->  	set_bit(XPT_CLOSE, &xprt->xpt_flags);
-> -	ret = -ENOTCONN;
-> -	goto out;
-> +	return -ENOTCONN;
->  }
->
->  /**
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> index 8bb99980ae85..ea54785db4f8 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> @@ -71,7 +71,6 @@ static struct svc_xprt *svc_rdma_create(struct svc_serv *serv,
->  					struct sockaddr *sa, int salen,
->  					int flags);
->  static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt);
-> -static void svc_rdma_release_rqst(struct svc_rqst *);
->  static void svc_rdma_detach(struct svc_xprt *xprt);
->  static void svc_rdma_free(struct svc_xprt *xprt);
->  static int svc_rdma_has_wspace(struct svc_xprt *xprt);
-> @@ -552,10 +551,6 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
->  	return NULL;
->  }
->
-> -static void svc_rdma_release_rqst(struct svc_rqst *rqstp)
-> -{
-> -}
-> -
->  /*
->   * When connected, an svc_xprt has at least two references:
->   *
->
+Thanks Jason, I'll keep tracking the issue.
