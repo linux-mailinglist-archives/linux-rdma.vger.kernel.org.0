@@ -2,119 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4873C1A1BEE
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 08:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF011A1C70
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Apr 2020 09:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgDHGfr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Apr 2020 02:35:47 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:3588 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgDHGfq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Apr 2020 02:35:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1586327746; x=1617863746;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Os+5nSGLobhgm1MgM4LtepQogKsu6uJ6PxE/akeWJ58=;
-  b=NxW72qA+mMRt/MEDlxnucP5irHJOhn1WDdSIqdUAdM4P07b+f/jVFxMF
-   s4Th3zxmcE3Zo4xEj0CUThcL6ZN+jrjKRsRr0P85rQCuvh3gtjES5qQxK
-   igy7R5vuMkZmiBUPEDjCS7IB6iJIXAKheR8ot+zMF4YBj00SPy8urGAgz
-   Q=;
-IronPort-SDR: 4nEoDzlORuo279zN++jBOYGmoTdMmXcro2SxkiuOUaGWk9lmmFnQFDzUwrTguuqIU9qWbKGPmg
- Yy4VR2vdtjFg==
-X-IronPort-AV: E=Sophos;i="5.72,357,1580774400"; 
-   d="scan'208";a="27562551"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 08 Apr 2020 06:35:44 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id DF596A2523;
-        Wed,  8 Apr 2020 06:35:42 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Apr 2020 06:35:42 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Apr 2020 06:35:39 +0000
-Subject: Re: Can't build rdma-core's azp image
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
- <20200407180658.GW20941@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <67f9e08a-467c-34ce-e17e-816cb4bf03db@amazon.com>
-Date:   Wed, 8 Apr 2020 09:35:32 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        id S1726345AbgDHHSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Apr 2020 03:18:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9674 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725932AbgDHHSA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Apr 2020 03:18:00 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03873ubo146245
+        for <linux-rdma@vger.kernel.org>; Wed, 8 Apr 2020 03:17:59 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30920raqhc-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 08 Apr 2020 03:17:59 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <ubraun@linux.ibm.com>;
+        Wed, 8 Apr 2020 08:17:29 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 8 Apr 2020 08:17:27 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0387GnBP49480130
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Apr 2020 07:16:49 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 484CFA405D;
+        Wed,  8 Apr 2020 07:17:54 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24FB3A4057;
+        Wed,  8 Apr 2020 07:17:54 +0000 (GMT)
+Received: from oc5311105230.ibm.com (unknown [9.145.4.110])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Apr 2020 07:17:54 +0000 (GMT)
+Subject: Re: [PATCH] RDMA: Remove a few extra calls to ib_get_client_data()
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Karsten Graul <kgraul@linux.ibm.com>
+References: <0-v1-fae83f600b4a+68-less_get_client_data%jgg@mellanox.com>
+From:   Ursula Braun <ubraun@linux.ibm.com>
+Date:   Wed, 8 Apr 2020 09:17:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200407180658.GW20941@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <0-v1-fae83f600b4a+68-less_get_client_data%jgg@mellanox.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D37UWC004.ant.amazon.com (10.43.162.212) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-TM-AS-GCONF: 00
+x-cbid: 20040807-0020-0000-0000-000003C3CE86
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20040807-0021-0000-0000-0000221C90B2
+Message-Id: <91b0c86a-10d2-0427-eda9-39c1bf820ff5@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_10:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004080052
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 07/04/2020 21:06, Jason Gunthorpe wrote:
-> On Tue, Apr 07, 2020 at 06:47:51PM +0300, Gal Pressman wrote:
->> I'm trying to build the azp image and it fails with the following error [1].
->> Anyone has an idea what went wrong?
-> 
->> Reading package lists...
->> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/InRelease: No system
->> certificates available. Try installing ca-certificates.
->> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/Release: No system
->> certificates available. Try installing ca-certificates.
->> E: The repository 'http://apt.llvm.org/bionic llvm-toolchain-bionic-8 Release'
->> does not have a Release file.
-> 
-> Oh, there is lots going wrong here..
-> 
-> Above is because llvm droped http support from their repo.. Bit
-> annoying to fix..
-> 
->> The following packages have unmet dependencies:
->>  libc6-dev:arm64 : Depends: libc6:arm64 (= 2.27-3ubuntu1) but it is not going to
->> be installed
->>  libgcc-8-dev:arm64 : Depends: libgcc1:arm64 (>= 1:8.4.0-1ubuntu1~18.04)
->>                       Depends: libgomp1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>                       Depends: libitm1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it is
->> not going to be installed
->>                       Depends: libatomic1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>                       Depends: libasan5:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>                       Depends: liblsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>                       Depends: libtsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>                       Depends: libubsan1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
->> is not going to be installed
->>  libnl-3-dev:arm64 : Depends: libnl-3-200:arm64 (= 3.2.29-0ubuntu3) but it is
->> not going to be installed
->>  libnl-route-3-dev:arm64 : Depends: libnl-route-3-200:arm64 (= 3.2.29-0ubuntu3)
->> but it is not going to be installed
->>  libsystemd-dev:arm64 : Depends: libsystemd0:arm64 (= 237-3ubuntu10.39) but it
->> is not going to be installed
->>  libudev-dev:arm64 : Depends: libudev1:arm64 (= 237-3ubuntu10.39) but it is not
->> going to be installed
-> 
-> Oh neat, that is a problem in the toolchain ppa:
-> 
-> $ apt-get install libgcc-s1:arm64 gcc-7
-> 
-> The following packages have unmet dependencies:
->  libgcc-s1:arm64 : Breaks: libgcc-7-dev (< 7.5.0-4) but 7.5.0-3ubuntu1~18.04 is to be installed
-> 
-> The only ubuntu not broken right now is focal.. which is very new.
-> 
-> Keep using the old docker image? Ask me in a week if it is still
-> broken, we can probably fix this by updating to focal, it is the next
-> LTS anyhow..
 
-Thanks Jason, I'll keep tracking the issue.
+
+On 4/8/20 1:20 AM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> These four places already have easy access to the client data, just use
+> that instead.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/sa_query.c    | 15 ++++++---------
+>  drivers/infiniband/core/user_mad.c    |  3 +--
+>  drivers/infiniband/ulp/srpt/ib_srpt.c |  7 ++-----
+>  net/smc/smc_ib.c                      |  3 +--
+>  4 files changed, 10 insertions(+), 18 deletions(-)
+> 
+
+For the net/smc part:
+Acked-by: Ursula Braun <ubraun@linux.ibm.com>
+
