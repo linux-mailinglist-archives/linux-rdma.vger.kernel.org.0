@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 734B51A5874
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE661A585B
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgDKXKk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:10:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49328 "EHLO mail.kernel.org"
+        id S1729741AbgDKXLA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:11:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729658AbgDKXKj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:10:39 -0400
+        id S1729733AbgDKXK5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:10:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFD39215A4;
-        Sat, 11 Apr 2020 23:10:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39E30215A4;
+        Sat, 11 Apr 2020 23:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646639;
-        bh=iir4ia2z/AOluTWFDVeTzVpMBJS5j6/hFvhzHHABHYc=;
+        s=default; t=1586646657;
+        bh=8Cwoy2amtFzQGMw1MK2u/E5zJynCI/+buenWaMNjp5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2OAJaEMVZp7qoL2y5QO4NJyb156NxSupbW+FebaenjtEveYmNe0yOwLcYKHk6Enfv
-         QHrt0MY1u8c5Dk2V21YSUXEO0Lgb5HPcnWnR/A86L+S6ZFtA3zruOqrNm/9F0KkI89
-         Ypyz+4iS8f+hggSIWBDbXAlXMA76YAZWYyybu1e0=
+        b=MK73dRtHeTaKjUJAYoO+ROAzCfqxNCkzX8ERwYa2h6nUEYsztyOAqduj45ytbvofe
+         QUVE2BxQ20DnG8qUmKMvk9fYBwYpNCWOQtaLQ9qDd56A+PLy/WjVozdc8TtAerYd4w
+         z9fE/LQ1yTG9YF2a+H865lZ99V4jJRX8k76CwbFQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kamal Heib <kamalheib1@gmail.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
+Cc:     Yixian Liu <liuyixian@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 046/108] RDMA/siw: Fix setting active_mtu attribute
-Date:   Sat, 11 Apr 2020 19:08:41 -0400
-Message-Id: <20200411230943.24951-46-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 059/108] RDMA/hns: Add the workqueue framework for flush cqe handler
+Date:   Sat, 11 Apr 2020 19:08:54 -0400
+Message-Id: <20200411230943.24951-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230943.24951-1-sashal@kernel.org>
 References: <20200411230943.24951-1-sashal@kernel.org>
@@ -45,45 +44,156 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Yixian Liu <liuyixian@huawei.com>
 
-[ Upstream commit beb205dd67aaa4315dedf5c40b47c6e9dee5a469 ]
+[ Upstream commit ffd541d45726341c1830ff595fd7352b6d1cfbcd ]
 
-Make sure to set the active_mtu attribute to avoid report the following
-invalid value:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.  To
+overcome this hardware problem and as a workaround, when QP is detected to
+be in errored state during various legs like post send, post receive etc
+[1], flush needs to be performed from the driver.
 
-$ ibv_devinfo -d siw0 | grep active_mtu
-			active_mtu:		invalid MTU (0)
+The earlier patch[1] sent to solve the hardware limitation explained in
+the cover-letter had a bug in the software flushing leg. It acquired mutex
+while modifying QP state to errored state and while conveying it to the
+hardware using the mailbox. This caused leg to sleep while holding
+spin-lock and caused crash.
 
-Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-Link: https://lore.kernel.org/r/20200205081354.30438-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Gal Pressman <galpress@amazon.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Suggested Solution:
+we have proposed to defer the flushing of the QP in the Errored state
+using the workqueue to get around with the limitation of our hardware.
+
+This patch adds the framework of the workqueue and the flush handler
+function.
+
+[1] https://patchwork.kernel.org/patch/10534271/
+
+Link: https://lore.kernel.org/r/1580983005-13899-2-git-send-email-liuyixian@huawei.com
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 20 ++++++-----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 37 +++++++++++++++++++++
+ 3 files changed, 49 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 1b1a40db529c6..73442bd57dbe8 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -200,12 +200,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index e36d315690819..2408a363fb191 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -648,6 +648,15 @@ struct hns_roce_rinl_buf {
+ 	u32			 wqe_cnt;
+ };
  
- 	memset(attr, 0, sizeof(*attr));
++struct hns_roce_work {
++	struct hns_roce_dev *hr_dev;
++	struct work_struct work;
++	u32 qpn;
++	u32 cqn;
++	int event_type;
++	int sub_type;
++};
++
+ struct hns_roce_qp {
+ 	struct ib_qp		ibqp;
+ 	struct hns_roce_buf	hr_buf;
+@@ -691,6 +700,7 @@ struct hns_roce_qp {
+ 	struct hns_roce_sge	sge;
+ 	u32			next_sge;
  
--	attr->active_mtu = attr->max_mtu;
- 	attr->active_speed = 2;
- 	attr->active_width = 2;
- 	attr->gid_tbl_len = 1;
- 	attr->max_msg_sz = -1;
- 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-+	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
- 	attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
- 		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
- 	attr->pkey_tbl_len = 1;
++	struct hns_roce_work	flush_work;
+ 	struct hns_roce_rinl_buf rq_inl_buf;
+ };
+ 
+@@ -911,15 +921,6 @@ struct hns_roce_caps {
+ 	u64		flags;
+ };
+ 
+-struct hns_roce_work {
+-	struct hns_roce_dev *hr_dev;
+-	struct work_struct work;
+-	u32 qpn;
+-	u32 cqn;
+-	int event_type;
+-	int sub_type;
+-};
+-
+ struct hns_roce_dfx_hw {
+ 	int (*query_cqc_info)(struct hns_roce_dev *hr_dev, u32 cqn,
+ 			      int *buffer);
+@@ -1239,6 +1240,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
+ 				 struct ib_udata *udata);
+ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		       int attr_mask, struct ib_udata *udata);
++void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
+ void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
+ void *get_send_wqe(struct hns_roce_qp *hr_qp, int n);
+ void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 4540b00ccee94..b5112170b8761 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -5975,8 +5975,7 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
+ 		goto err_request_irq_fail;
+ 	}
+ 
+-	hr_dev->irq_workq =
+-		create_singlethread_workqueue("hns_roce_irq_workqueue");
++	hr_dev->irq_workq = alloc_ordered_workqueue("hns_roce_irq_workq", 0);
+ 	if (!hr_dev->irq_workq) {
+ 		dev_err(dev, "Create irq workqueue failed!\n");
+ 		ret = -ENOMEM;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 8dd2d666f6875..fe791c4e8ff60 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -43,6 +43,43 @@
+ 
+ #define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
+ 
++static void flush_work_handle(struct work_struct *work)
++{
++	struct hns_roce_work *flush_work = container_of(work,
++					struct hns_roce_work, work);
++	struct hns_roce_qp *hr_qp = container_of(flush_work,
++					struct hns_roce_qp, flush_work);
++	struct device *dev = flush_work->hr_dev->dev;
++	struct ib_qp_attr attr;
++	int attr_mask;
++	int ret;
++
++	attr_mask = IB_QP_STATE;
++	attr.qp_state = IB_QPS_ERR;
++
++	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
++	if (ret)
++		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
++			ret);
++
++	/*
++	 * make sure we signal QP destroy leg that flush QP was completed
++	 * so that it can safely proceed ahead now and destroy QP
++	 */
++	if (atomic_dec_and_test(&hr_qp->refcount))
++		complete(&hr_qp->free);
++}
++
++void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
++{
++	struct hns_roce_work *flush_work = &hr_qp->flush_work;
++
++	flush_work->hr_dev = hr_dev;
++	INIT_WORK(&flush_work->work, flush_work_handle);
++	atomic_inc(&hr_qp->refcount);
++	queue_work(hr_dev->irq_workq, &flush_work->work);
++}
++
+ void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
+ {
+ 	struct device *dev = hr_dev->dev;
 -- 
 2.20.1
 
