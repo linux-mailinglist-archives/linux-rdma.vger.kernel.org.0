@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 841931A59D4
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46F61A59CC
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729011AbgDKXjJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:39:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43998 "EHLO mail.kernel.org"
+        id S1728957AbgDKXis (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:38:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728719AbgDKXHq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:07:46 -0400
+        id S1728773AbgDKXHz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:07:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38F9A20787;
-        Sat, 11 Apr 2020 23:07:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E62820708;
+        Sat, 11 Apr 2020 23:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646467;
-        bh=8dfx3TFr55L01u2UiTLlYyea/1cGYV7ld0fs3BRL5wo=;
+        s=default; t=1586646475;
+        bh=DV5Siq9nxgXQLlufSKA5rpKeFOV7fcM+GMowbjG7CGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WgBZz80FZfbKOVz8CDH17ntEw0cWy/rfX7G5lzsn6bZEI1RZtBNddgQpMfnTK7a4J
-         EJF+1rXWj+Ggj7bxZZ7IA/R5ELUNlh3fI4RtjUTmvc/RpDH2b0NhTo6lDTydzR2pfU
-         un1i9GDtqyAEiNUPWEFV/gu+sggRNkAsr7yCK4hE=
+        b=ssPTzC2ZDGXo1V3v0X2fA1PYAcId0e1N3eqq5tGzgA4R9u2Bs9n2DGdRK/Kv8jCyR
+         eZjhHHZ6Ull5t8dBR7K+KNs57OZUX5KWwoXInYxm4Za5BrkbnkeRjDyueqFuCSmHx8
+         UgZGhb2EmRSpOFcqFoNQZnW3JeV5Z/WMy3PT0kAw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>, Mark Bloch <markb@mellanox.com>,
+Cc:     Bart Van Assche <bvanassche@acm.org>,
         Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 034/121] IB/mlx5: Fix missing congestion control debugfs on rep rdma device
-Date:   Sat, 11 Apr 2020 19:05:39 -0400
-Message-Id: <20200411230706.23855-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 041/121] RDMA/rxe: Fix configuration of atomic queue pair attributes
+Date:   Sat, 11 Apr 2020 19:05:46 -0400
+Message-Id: <20200411230706.23855-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
 References: <20200411230706.23855-1-sashal@kernel.org>
@@ -44,41 +44,74 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 79db784e794b6e7b7fb9b1dd464a34e4c0c039af ]
+[ Upstream commit fb3063d31995cc4cf1d47a406bb61d6fb1b1d58d ]
 
-Cited commit missed to include low level congestion control related
-debugfs stage initialization.  This resulted in missing debugfs entries
-for cc_params of a RDMA device.
+From the comment above the definition of the roundup_pow_of_two() macro:
 
-Add them back.
+     The result is undefined when n == 0.
 
-Fixes: b5ca15ad7e61 ("IB/mlx5: Add proper representors support")
-Link: https://lore.kernel.org/r/20200227125407.99803-1-leon@kernel.org
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Mark Bloch <markb@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Hence only pass positive values to roundup_pow_of_two(). This patch fixes
+the following UBSAN complaint:
+
+  UBSAN: Undefined behaviour in ./include/linux/log2.h:57:13
+  shift exponent 64 is too large for 64-bit type 'long unsigned int'
+  Call Trace:
+   dump_stack+0xa5/0xe6
+   ubsan_epilogue+0x9/0x26
+   __ubsan_handle_shift_out_of_bounds.cold+0x4c/0xf9
+   rxe_qp_from_attr.cold+0x37/0x5d [rdma_rxe]
+   rxe_modify_qp+0x59/0x70 [rdma_rxe]
+   _ib_modify_qp+0x5aa/0x7c0 [ib_core]
+   ib_modify_qp+0x3b/0x50 [ib_core]
+   cma_modify_qp_rtr+0x234/0x260 [rdma_cm]
+   __rdma_accept+0x1a7/0x650 [rdma_cm]
+   nvmet_rdma_cm_handler+0x1286/0x14cd [nvmet_rdma]
+   cma_cm_event_handler+0x6b/0x330 [rdma_cm]
+   cma_ib_req_handler+0xe60/0x22d0 [rdma_cm]
+   cm_process_work+0x30/0x140 [ib_cm]
+   cm_req_handler+0x11f4/0x1cd0 [ib_cm]
+   cm_work_handler+0xb8/0x344e [ib_cm]
+   process_one_work+0x569/0xb60
+   worker_thread+0x7a/0x5d0
+   kthread+0x1e6/0x210
+   ret_from_fork+0x24/0x30
+
+Link: https://lore.kernel.org/r/20200217205714.26937-1-bvanassche@acm.org
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index f3c73dc40078c..2a8c82cfb5148 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6845,6 +6845,9 @@ const struct mlx5_ib_profile raw_eth_profile = {
- 	STAGE_CREATE(MLX5_IB_STAGE_COUNTERS,
- 		     mlx5_ib_stage_counters_init,
- 		     mlx5_ib_stage_counters_cleanup),
-+	STAGE_CREATE(MLX5_IB_STAGE_CONG_DEBUGFS,
-+		     mlx5_ib_stage_cong_debugfs_init,
-+		     mlx5_ib_stage_cong_debugfs_cleanup),
- 	STAGE_CREATE(MLX5_IB_STAGE_UAR,
- 		     mlx5_ib_stage_uar_init,
- 		     mlx5_ib_stage_uar_cleanup),
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index e2c6d1cedf416..f85273883794b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -592,15 +592,16 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 	int err;
+ 
+ 	if (mask & IB_QP_MAX_QP_RD_ATOMIC) {
+-		int max_rd_atomic = __roundup_pow_of_two(attr->max_rd_atomic);
++		int max_rd_atomic = attr->max_rd_atomic ?
++			roundup_pow_of_two(attr->max_rd_atomic) : 0;
+ 
+ 		qp->attr.max_rd_atomic = max_rd_atomic;
+ 		atomic_set(&qp->req.rd_atomic, max_rd_atomic);
+ 	}
+ 
+ 	if (mask & IB_QP_MAX_DEST_RD_ATOMIC) {
+-		int max_dest_rd_atomic =
+-			__roundup_pow_of_two(attr->max_dest_rd_atomic);
++		int max_dest_rd_atomic = attr->max_dest_rd_atomic ?
++			roundup_pow_of_two(attr->max_dest_rd_atomic) : 0;
+ 
+ 		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
+ 
 -- 
 2.20.1
 
