@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7761A5952
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B541A5959
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgDKXIk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:08:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        id S1728554AbgDKXIs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728961AbgDKXIi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:08:38 -0400
+        id S1729006AbgDKXIr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:08:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E876C20708;
-        Sat, 11 Apr 2020 23:08:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70B0E216FD;
+        Sat, 11 Apr 2020 23:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646518;
-        bh=Qc1MszDvtFX47QFUVjupcSqhvLXQ5E4E7d2btWtC4YE=;
+        s=default; t=1586646527;
+        bh=mfsdc27c9Is7lCM07MtzICt/uZCLGi1YiEvmZs5Pmx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dG2qY4XkrQFUQ45BR8rNLt11SOJXjEV4RANRuA27qaTMHjipLBkGYZrhF6V9A7U4L
-         PvDi9RbkmIRCEfd3+8NMQG1vmbC2xsUhrkoBXCz1iAgmRC5Uw8XxViH3mMqjTLGt0H
-         QcfgUZDqbSoxW+6ochyQVeqmlTacN66sdjkFz5gA=
+        b=IyGBOAzYqqZKhyCS92fRj+E7m0cV66QnbtB5rpr6Umn/yGEYP+9eVp3F7dPH5CHZT
+         Fdi5KkcKwRYieuvnFDTldkLvJ/fmCcA69YuS6Wm/MOFSZwD5UFmx3ea1fn5N8pscXU
+         QHVolO77i5viWNVq8E7LUtcaYR2gdk/3HY45ZolE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 075/121] RDMA/siw: Fix passive connection establishment
-Date:   Sat, 11 Apr 2020 19:06:20 -0400
-Message-Id: <20200411230706.23855-75-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 082/121] RDMA/cm: Remove a race freeing timewait_info
+Date:   Sat, 11 Apr 2020 19:06:27 -0400
+Message-Id: <20200411230706.23855-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
 References: <20200411230706.23855-1-sashal@kernel.org>
@@ -45,203 +43,144 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bernard Metzler <bmt@zurich.ibm.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit 33fb27fd54465c74cbffba6315b2f043e90cec4c ]
+[ Upstream commit bede86a39d9dc3387ac00dcb8e1ac221676b2f25 ]
 
-Holding the rtnl_lock while iterating a devices interface address list
-potentially causes deadlocks with the cma_netdev_callback. While this was
-implemented to limit the scope of a wildcard listen to addresses of the
-current device only, a better solution limits the scope of the socket to
-the device. This completely avoiding locking, and also results in
-significant code simplification.
+When creating a cm_id during REQ the id immediately becomes visible to the
+other MAD handlers, and shortly after the state is moved to IB_CM_REQ_RCVD
 
-Fixes: c421651fa229 ("RDMA/siw: Add missing rtnl_lock around access to ifa")
-Link: https://lore.kernel.org/r/20200228173534.26815-1-bmt@zurich.ibm.com
-Reported-by: syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com
-Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+This allows cm_rej_handler() to run concurrently and free the work:
+
+        CPU 0                                CPU1
+ cm_req_handler()
+  ib_create_cm_id()
+  cm_match_req()
+    id_priv->state = IB_CM_REQ_RCVD
+                                       cm_rej_handler()
+                                         cm_acquire_id()
+                                         spin_lock(&id_priv->lock)
+                                         switch (id_priv->state)
+  					   case IB_CM_REQ_RCVD:
+                                            cm_reset_to_idle()
+                                             kfree(id_priv->timewait_info);
+   goto destroy
+  destroy:
+    kfree(id_priv->timewait_info);
+                                             id_priv->timewait_info = NULL
+
+Causing a double free or worse.
+
+Do not free the timewait_info without also holding the
+id_priv->lock. Simplify this entire flow by making the free unconditional
+during cm_destroy_id() and removing the confusing special case error
+unwind during creation of the timewait_info.
+
+This also fixes a leak of the timewait if cm_destroy_id() is called in
+IB_CM_ESTABLISHED with an XRC TGT QP. The state machine will be left in
+ESTABLISHED while it needed to transition through IB_CM_TIMEWAIT to
+release the timewait pointer.
+
+Also fix a leak of the timewait_info if the caller mis-uses the API and
+does ib_send_cm_reqs().
+
+Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
+Link: https://lore.kernel.org/r/20200310092545.251365-4-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 137 +++++++----------------------
- 1 file changed, 31 insertions(+), 106 deletions(-)
+ drivers/infiniband/core/cm.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index ac86363ce1a24..b7d459ba499d8 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1769,14 +1769,23 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
- 	return 0;
- }
- 
--static int siw_listen_address(struct iw_cm_id *id, int backlog,
--			      struct sockaddr *laddr, int addr_family)
-+/*
-+ * siw_create_listen - Create resources for a listener's IWCM ID @id
-+ *
-+ * Starts listen on the socket address id->local_addr.
-+ *
-+ */
-+int siw_create_listen(struct iw_cm_id *id, int backlog)
- {
- 	struct socket *s;
- 	struct siw_cep *cep = NULL;
- 	struct siw_device *sdev = to_siw_dev(id->device);
-+	int addr_family = id->local_addr.ss_family;
- 	int rv = 0, s_val;
- 
-+	if (addr_family != AF_INET && addr_family != AF_INET6)
-+		return -EAFNOSUPPORT;
-+
- 	rv = sock_create(addr_family, SOCK_STREAM, IPPROTO_TCP, &s);
- 	if (rv < 0)
- 		return rv;
-@@ -1791,9 +1800,25 @@ static int siw_listen_address(struct iw_cm_id *id, int backlog,
- 		siw_dbg(id->device, "setsockopt error: %d\n", rv);
- 		goto error;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index f7afa1c75746b..4b00c6c83512d 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1066,14 +1066,22 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 		break;
  	}
--	rv = s->ops->bind(s, laddr, addr_family == AF_INET ?
--				    sizeof(struct sockaddr_in) :
--				    sizeof(struct sockaddr_in6));
-+	if (addr_family == AF_INET) {
-+		struct sockaddr_in *laddr = &to_sockaddr_in(id->local_addr);
-+
-+		/* For wildcard addr, limit binding to current device only */
-+		if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
-+			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
-+
-+		rv = s->ops->bind(s, (struct sockaddr *)laddr,
-+				  sizeof(struct sockaddr_in));
-+	} else {
-+		struct sockaddr_in6 *laddr = &to_sockaddr_in6(id->local_addr);
-+
-+		/* For wildcard addr, limit binding to current device only */
-+		if (ipv6_addr_any(&laddr->sin6_addr))
-+			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
-+
-+		rv = s->ops->bind(s, (struct sockaddr *)laddr,
-+				  sizeof(struct sockaddr_in6));
+ 
+-	spin_lock_irq(&cm.lock);
++	spin_lock_irq(&cm_id_priv->lock);
++	spin_lock(&cm.lock);
++	/* Required for cleanup paths related cm_req_handler() */
++	if (cm_id_priv->timewait_info) {
++		cm_cleanup_timewait(cm_id_priv->timewait_info);
++		kfree(cm_id_priv->timewait_info);
++		cm_id_priv->timewait_info = NULL;
 +	}
- 	if (rv) {
- 		siw_dbg(id->device, "socket bind error: %d\n", rv);
- 		goto error;
-@@ -1852,7 +1877,7 @@ static int siw_listen_address(struct iw_cm_id *id, int backlog,
- 	list_add_tail(&cep->listenq, (struct list_head *)id->provider_data);
- 	cep->state = SIW_EPSTATE_LISTENING;
+ 	if (!list_empty(&cm_id_priv->altr_list) &&
+ 	    (!cm_id_priv->altr_send_port_not_ready))
+ 		list_del(&cm_id_priv->altr_list);
+ 	if (!list_empty(&cm_id_priv->prim_list) &&
+ 	    (!cm_id_priv->prim_send_port_not_ready))
+ 		list_del(&cm_id_priv->prim_list);
+-	spin_unlock_irq(&cm.lock);
++	spin_unlock(&cm.lock);
++	spin_unlock_irq(&cm_id_priv->lock);
  
--	siw_dbg(id->device, "Listen at laddr %pISp\n", laddr);
-+	siw_dbg(id->device, "Listen at laddr %pISp\n", &id->local_addr);
+ 	cm_free_id(cm_id->local_id);
+ 	cm_deref_id(cm_id_priv);
+@@ -1390,7 +1398,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	/* Verify that we're not in timewait. */
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+-	if (cm_id->state != IB_CM_IDLE) {
++	if (cm_id->state != IB_CM_IDLE || WARN_ON(cm_id_priv->timewait_info)) {
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 		ret = -EINVAL;
+ 		goto out;
+@@ -1408,12 +1416,12 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 				 param->ppath_sgid_attr, &cm_id_priv->av,
+ 				 cm_id_priv);
+ 	if (ret)
+-		goto error1;
++		goto out;
+ 	if (param->alternate_path) {
+ 		ret = cm_init_av_by_path(param->alternate_path, NULL,
+ 					 &cm_id_priv->alt_av, cm_id_priv);
+ 		if (ret)
+-			goto error1;
++			goto out;
+ 	}
+ 	cm_id->service_id = param->service_id;
+ 	cm_id->service_mask = ~cpu_to_be64(0);
+@@ -1431,7 +1439,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
  
+ 	ret = cm_alloc_msg(cm_id_priv, &cm_id_priv->msg);
+ 	if (ret)
+-		goto error1;
++		goto out;
+ 
+ 	req_msg = (struct cm_req_msg *) cm_id_priv->msg->mad;
+ 	cm_format_req(req_msg, cm_id_priv, param);
+@@ -1454,7 +1462,6 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
  	return 0;
  
-@@ -1910,106 +1935,6 @@ static void siw_drop_listeners(struct iw_cm_id *id)
- 	}
+ error2:	cm_free_msg(cm_id_priv->msg);
+-error1:	kfree(cm_id_priv->timewait_info);
+ out:	return ret;
  }
+ EXPORT_SYMBOL(ib_send_cm_req);
+@@ -1935,7 +1942,7 @@ static int cm_req_handler(struct cm_work *work)
+ 		pr_debug("%s: local_id %d, no listen_cm_id_priv\n", __func__,
+ 			 be32_to_cpu(cm_id->local_id));
+ 		ret = -EINVAL;
+-		goto free_timeinfo;
++		goto destroy;
+ 	}
  
--/*
-- * siw_create_listen - Create resources for a listener's IWCM ID @id
-- *
-- * Listens on the socket address id->local_addr.
-- *
-- * If the listener's @id provides a specific local IP address, at most one
-- * listening socket is created and associated with @id.
-- *
-- * If the listener's @id provides the wildcard (zero) local IP address,
-- * a separate listen is performed for each local IP address of the device
-- * by creating a listening socket and binding to that local IP address.
-- *
-- */
--int siw_create_listen(struct iw_cm_id *id, int backlog)
--{
--	struct net_device *dev = to_siw_dev(id->device)->netdev;
--	int rv = 0, listeners = 0;
--
--	siw_dbg(id->device, "backlog %d\n", backlog);
--
--	/*
--	 * For each attached address of the interface, create a
--	 * listening socket, if id->local_addr is the wildcard
--	 * IP address or matches the IP address.
--	 */
--	if (id->local_addr.ss_family == AF_INET) {
--		struct in_device *in_dev = in_dev_get(dev);
--		struct sockaddr_in s_laddr;
--		const struct in_ifaddr *ifa;
--
--		if (!in_dev) {
--			rv = -ENODEV;
--			goto out;
--		}
--		memcpy(&s_laddr, &id->local_addr, sizeof(s_laddr));
--
--		siw_dbg(id->device, "laddr %pISp\n", &s_laddr);
--
--		rtnl_lock();
--		in_dev_for_each_ifa_rtnl(ifa, in_dev) {
--			if (ipv4_is_zeronet(s_laddr.sin_addr.s_addr) ||
--			    s_laddr.sin_addr.s_addr == ifa->ifa_address) {
--				s_laddr.sin_addr.s_addr = ifa->ifa_address;
--
--				rv = siw_listen_address(id, backlog,
--						(struct sockaddr *)&s_laddr,
--						AF_INET);
--				if (!rv)
--					listeners++;
--			}
--		}
--		rtnl_unlock();
--		in_dev_put(in_dev);
--	} else if (id->local_addr.ss_family == AF_INET6) {
--		struct inet6_dev *in6_dev = in6_dev_get(dev);
--		struct inet6_ifaddr *ifp;
--		struct sockaddr_in6 *s_laddr = &to_sockaddr_in6(id->local_addr);
--
--		if (!in6_dev) {
--			rv = -ENODEV;
--			goto out;
--		}
--		siw_dbg(id->device, "laddr %pISp\n", &s_laddr);
--
--		rtnl_lock();
--		list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
--			if (ifp->flags & (IFA_F_TENTATIVE | IFA_F_DEPRECATED))
--				continue;
--			if (ipv6_addr_any(&s_laddr->sin6_addr) ||
--			    ipv6_addr_equal(&s_laddr->sin6_addr, &ifp->addr)) {
--				struct sockaddr_in6 bind_addr  = {
--					.sin6_family = AF_INET6,
--					.sin6_port = s_laddr->sin6_port,
--					.sin6_flowinfo = 0,
--					.sin6_addr = ifp->addr,
--					.sin6_scope_id = dev->ifindex };
--
--				rv = siw_listen_address(id, backlog,
--						(struct sockaddr *)&bind_addr,
--						AF_INET6);
--				if (!rv)
--					listeners++;
--			}
--		}
--		rtnl_unlock();
--		in6_dev_put(in6_dev);
--	} else {
--		rv = -EAFNOSUPPORT;
--	}
--out:
--	if (listeners)
--		rv = 0;
--	else if (!rv)
--		rv = -EINVAL;
--
--	siw_dbg(id->device, "%s\n", rv ? "FAIL" : "OK");
--
--	return rv;
--}
--
- int siw_destroy_listen(struct iw_cm_id *id)
- {
- 	if (!id->provider_data) {
+ 	cm_id_priv->id.cm_handler = listen_cm_id_priv->id.cm_handler;
+@@ -2020,8 +2027,6 @@ static int cm_req_handler(struct cm_work *work)
+ rejected:
+ 	refcount_dec(&cm_id_priv->refcount);
+ 	cm_deref_id(listen_cm_id_priv);
+-free_timeinfo:
+-	kfree(cm_id_priv->timewait_info);
+ destroy:
+ 	ib_destroy_cm_id(cm_id);
+ 	return ret;
 -- 
 2.20.1
 
