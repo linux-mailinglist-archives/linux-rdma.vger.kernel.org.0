@@ -2,36 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC8E1A5B72
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748B61A5B85
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgDKXD4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:03:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36748 "EHLO mail.kernel.org"
+        id S1727441AbgDKXuO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgDKXDz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:03:55 -0400
+        id S1726802AbgDKXEL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:04:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5266A20787;
-        Sat, 11 Apr 2020 23:03:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B12621841;
+        Sat, 11 Apr 2020 23:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646236;
-        bh=sGcawhSCorjKNqb+a3+qFPoK9A8AmdvKn3bP+dfMO2M=;
+        s=default; t=1586646251;
+        bh=1IWRsMVDCva7+MM7iqo8mvOES57KUbQFUfDN2CjSJF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2gGz70CNE7A5+wyXWIek7tcslYdFzX6ABnASUg7txSeh89OKW+NDFeiy29VKQU20/
-         nXsBpLP6m/bvQcwetyPPW3CBYZF0ASTiTP9FRQY7P83ow8SdSazPte0mmVSFbzLC51
-         kiqXaFjyq7I6Pkr4pNhzDC4/rBFhvP1tXEjzAsu4=
+        b=F+zYOaSVCQcRiAHM/NCey3jsM8ZCNjXUgEo6D+5Avk2MFjl/WkZH6VM/bS26UgKmB
+         zGpqgyiAV0TZ+/YcU6eu9QIavztPCk7eD9ISsyxJA3gh6VhORzuKTWVQexL0vpxNVb
+         9XjdTL2v3D62ZZF4byybeCn+SMqnLvOzzdwf/7tQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhu Yanjun <yanjunz@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 006/149] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
-Date:   Sat, 11 Apr 2020 19:01:23 -0400
-Message-Id: <20200411230347.22371-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 019/149] RDMA/bnxt_re: Fix lifetimes in bnxt_re_task
+Date:   Sat, 11 Apr 2020 19:01:36 -0400
+Message-Id: <20200411230347.22371-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
 References: <20200411230347.22371-1-sashal@kernel.org>
@@ -44,53 +43,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjunz@mellanox.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit d0ca2c35dd15a3d989955caec02beea02f735ee6 ]
+[ Upstream commit 8a6c61704746d3a1e004e054504ae8d98ed95697 ]
 
-The RXE driver doesn't set sys_image_guid and user space applications see
-zeros. This causes to pyverbs tests to fail with the following traceback,
-because the IBTA spec requires to have valid sys_image_guid.
+A work queue cannot just rely on the ib_device not being freed, it must
+hold a kref on the memory so that the BNXT_RE_FLAG_IBDEV_REGISTERED check
+works.
 
- Traceback (most recent call last):
-   File "./tests/test_device.py", line 51, in test_query_device
-     self.verify_device_attr(attr)
-   File "./tests/test_device.py", line 74, in verify_device_attr
-     assert attr.sys_image_guid != 0
-
-In order to fix it, set sys_image_guid to be equal to node_guid.
-
-Before:
- 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
- 0000:0000:0000:0000
-
-After:
- 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
- 5054:00ff:feaa:5363
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20200323112800.1444784-1-leon@kernel.org
-Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Link: https://lore.kernel.org/r/1584117207-2664-3-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe.c | 2 ++
+ drivers/infiniband/hw/bnxt_re/main.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 0946a301a5c5d..4afdd2e208839 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -103,6 +103,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
- 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
- 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
-+	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
-+			rxe->ndev->dev_addr);
- 
- 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 793c97251588a..400b4fd669a9a 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1604,6 +1604,7 @@ static void bnxt_re_task(struct work_struct *work)
+ 	smp_mb__before_atomic();
+ 	atomic_dec(&rdev->sched_count);
+ exit:
++	put_device(&rdev->ibdev.dev);
+ 	kfree(re_work);
  }
+ 
+@@ -1680,6 +1681,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+ 		/* Allocate for the deferred task */
+ 		re_work = kzalloc(sizeof(*re_work), GFP_ATOMIC);
+ 		if (re_work) {
++			get_device(&rdev->ibdev.dev);
+ 			re_work->rdev = rdev;
+ 			re_work->event = event;
+ 			re_work->vlan_dev = (real_dev == netdev ?
 -- 
 2.20.1
 
