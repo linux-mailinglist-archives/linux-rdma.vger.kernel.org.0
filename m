@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BD41A55C6
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18DE1A57C6
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730107AbgDKXMN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52194 "EHLO mail.kernel.org"
+        id S1727365AbgDKXYz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729220AbgDKXMN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:12:13 -0400
+        id S1730148AbgDKXMW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:12:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFCFD215A4;
-        Sat, 11 Apr 2020 23:12:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4499520757;
+        Sat, 11 Apr 2020 23:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646733;
-        bh=7e+lmk/j9ahmLbPN8IdAVtxZF4+xs2Crkur5y87gkOQ=;
+        s=default; t=1586646743;
+        bh=DL7FZWMXVY7jVUP98TMif3m59vlVfWQB0U8iPAGHm9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKsISCHWfagA9sJaufaGQMWxXUH7Sejj+l4j5HOc3lZRWIAPh/4zBJVgWTLFVYOP0
-         ja3Le+LyqWqM1yJkA2y/zahmmC3s6tkuJrfbVSYs0VqVWZGnpxLYrSXvtWmrx8NMDH
-         dncSjkfE2ATzYMUOQhB3HdXqgpaVHWD7Y4BcHAkk=
+        b=CTD8bVijkDo7Up2UG3Soq0x1zwP4m5B3vGG5s+NXGwNPRencNPAlV5kIbtFFB2sA6
+         yoq/z5+zT01iGbDtQhlr9+oIBJN1YwyDf1ltxQSWxfADJ281QWJ4BLUv1CV8PcsVVY
+         Yc0jyk+hgGuFh3gpcdJ/1/M3DwVc+BNWAbxw9JyM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 08/66] RDMA/cm: Add missing locking around id.state in cm_dup_req_handler
-Date:   Sat, 11 Apr 2020 19:11:05 -0400
-Message-Id: <20200411231203.25933-8-sashal@kernel.org>
+Cc:     Vlad Buslov <vladbu@mellanox.com>, Roi Dayan <roid@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 16/66] net/mlx5e: Init ethtool steering for representors
+Date:   Sat, 11 Apr 2020 19:11:13 -0400
+Message-Id: <20200411231203.25933-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411231203.25933-1-sashal@kernel.org>
 References: <20200411231203.25933-1-sashal@kernel.org>
@@ -43,39 +43,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Vlad Buslov <vladbu@mellanox.com>
 
-[ Upstream commit d1de9a88074b66482443f0cd91618d7b51a7c9b6 ]
+[ Upstream commit 6783e8b29f636383af293a55336f036bc7ad5619 ]
 
-All accesses to id.state must be done under the spinlock.
+During transition to uplink representors the code responsible for
+initializing ethtool steering functionality wasn't added to representor
+init rx routine. This causes NULL pointer dereference during configuration
+of network flow classification rule with ethtool (only possible to
+reproduce with next commit in this series which registers necessary ethtool
+callbacks).
 
-Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
-Link: https://lore.kernel.org/r/20200310092545.251365-10-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Vlad Buslov <vladbu@mellanox.com>
+Reviewed-by: Roi Dayan <roid@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 64f206e11d497..7251068b6af0f 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1812,8 +1812,12 @@ static void cm_dup_req_handler(struct cm_work *work,
- 			counter[CM_REQ_COUNTER]);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index 701624a63d2f4..d70af8a8e8b48 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -1022,6 +1022,8 @@ static int mlx5e_init_rep_rx(struct mlx5e_priv *priv)
+ 	}
+ 	rpriv->vport_rx_rule = flow_rule;
  
- 	/* Quick state check to discard duplicate REQs. */
--	if (cm_id_priv->id.state == IB_CM_REQ_RCVD)
-+	spin_lock_irq(&cm_id_priv->lock);
-+	if (cm_id_priv->id.state == IB_CM_REQ_RCVD) {
-+		spin_unlock_irq(&cm_id_priv->lock);
- 		return;
-+	}
-+	spin_unlock_irq(&cm_id_priv->lock);
++	mlx5e_ethtool_init_steering(priv);
++
+ 	return 0;
  
- 	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, &msg);
- 	if (ret)
+ err_destroy_direct_tirs:
 -- 
 2.20.1
 
