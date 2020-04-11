@@ -2,45 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F88C1A598A
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7761A5952
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgDKXgs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
+        id S1728171AbgDKXIk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 11 Apr 2020 19:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727924AbgDKXIf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:08:35 -0400
+        id S1728961AbgDKXIi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:08:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A96C821973;
-        Sat, 11 Apr 2020 23:08:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E876C20708;
+        Sat, 11 Apr 2020 23:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646515;
-        bh=flNWI2rqEkwXumb5U+jMSBqr5JotjHTWX7/n12VkmrQ=;
+        s=default; t=1586646518;
+        bh=Qc1MszDvtFX47QFUVjupcSqhvLXQ5E4E7d2btWtC4YE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K4MyRbArfQLlsX88N+Ohnunlv4lD3bcgxbWoxm1CBe7iWa0SHfmM2rC6PedDNWj5V
-         knRvXZBq6v7SimkeQIdTzduzygkQ+1NfEfgMfFFI22P+rMsEBQcnajCGDN9yCuBaA3
-         xoP86LqKj1BQgEcuSRbZEHuipzITWnRvetSxd77g=
+        b=dG2qY4XkrQFUQ45BR8rNLt11SOJXjEV4RANRuA27qaTMHjipLBkGYZrhF6V9A7U4L
+         PvDi9RbkmIRCEfd3+8NMQG1vmbC2xsUhrkoBXCz1iAgmRC5Uw8XxViH3mMqjTLGt0H
+         QcfgUZDqbSoxW+6ochyQVeqmlTacN66sdjkFz5gA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        syzbot+adb15cf8c2798e4e0db4@syzkaller.appspotmail.com,
-        syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com,
-        syzbot+4b628fcc748474003457@syzkaller.appspotmail.com,
-        syzbot+29ee8f76017ce6cf03da@syzkaller.appspotmail.com,
-        syzbot+6956235342b7317ec564@syzkaller.appspotmail.com,
-        syzbot+b358909d8d01556b790b@syzkaller.appspotmail.com,
-        syzbot+6b46b135602a3f3ac99e@syzkaller.appspotmail.com,
-        syzbot+8458d13b13562abf6b77@syzkaller.appspotmail.com,
-        syzbot+bd034f3fdc0402e942ed@syzkaller.appspotmail.com,
-        syzbot+c92378b32760a4eef756@syzkaller.appspotmail.com,
-        syzbot+68b44a1597636e0b342c@syzkaller.appspotmail.com,
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 072/121] RDMA/ucma: Put a lock around every call to the rdma_cm layer
-Date:   Sat, 11 Apr 2020 19:06:17 -0400
-Message-Id: <20200411230706.23855-72-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 075/121] RDMA/siw: Fix passive connection establishment
+Date:   Sat, 11 Apr 2020 19:06:20 -0400
+Message-Id: <20200411230706.23855-75-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
 References: <20200411230706.23855-1-sashal@kernel.org>
@@ -53,282 +45,203 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Bernard Metzler <bmt@zurich.ibm.com>
 
-[ Upstream commit 7c11910783a1ea17e88777552ef146cace607b3c ]
+[ Upstream commit 33fb27fd54465c74cbffba6315b2f043e90cec4c ]
 
-The rdma_cm must be used single threaded.
+Holding the rtnl_lock while iterating a devices interface address list
+potentially causes deadlocks with the cma_netdev_callback. While this was
+implemented to limit the scope of a wildcard listen to addresses of the
+current device only, a better solution limits the scope of the socket to
+the device. This completely avoiding locking, and also results in
+significant code simplification.
 
-This appears to be a bug in the design, as it does have lots of locking
-that seems like it should allow concurrency. However, when it is all said
-and done every single place that uses the cma_exch() scheme is broken, and
-all the unlocked reads from the ucma of the cm_id data are wrong too.
-
-syzkaller has been finding endless bugs related to this.
-
-Fixing this in any elegant way is some enormous amount of work. Take a
-very big hammer and put a mutex around everything to do with the
-ucma_context at the top of every syscall.
-
-Fixes: 75216638572f ("RDMA/cma: Export rdma cm interface to userspace")
-Link: https://lore.kernel.org/r/20200218210432.GA31966@ziepe.ca
-Reported-by: syzbot+adb15cf8c2798e4e0db4@syzkaller.appspotmail.com
-Reported-by: syzbot+e5579222b6a3edd96522@syzkaller.appspotmail.com
-Reported-by: syzbot+4b628fcc748474003457@syzkaller.appspotmail.com
-Reported-by: syzbot+29ee8f76017ce6cf03da@syzkaller.appspotmail.com
-Reported-by: syzbot+6956235342b7317ec564@syzkaller.appspotmail.com
-Reported-by: syzbot+b358909d8d01556b790b@syzkaller.appspotmail.com
-Reported-by: syzbot+6b46b135602a3f3ac99e@syzkaller.appspotmail.com
-Reported-by: syzbot+8458d13b13562abf6b77@syzkaller.appspotmail.com
-Reported-by: syzbot+bd034f3fdc0402e942ed@syzkaller.appspotmail.com
-Reported-by: syzbot+c92378b32760a4eef756@syzkaller.appspotmail.com
-Reported-by: syzbot+68b44a1597636e0b342c@syzkaller.appspotmail.com
+Fixes: c421651fa229 ("RDMA/siw: Add missing rtnl_lock around access to ifa")
+Link: https://lore.kernel.org/r/20200228173534.26815-1-bmt@zurich.ibm.com
+Reported-by: syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/ucma.c | 49 ++++++++++++++++++++++++++++++++--
- 1 file changed, 47 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 137 +++++++----------------------
+ 1 file changed, 31 insertions(+), 106 deletions(-)
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 0274e9b704be5..f4f79f1292b91 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -91,6 +91,7 @@ struct ucma_context {
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index ac86363ce1a24..b7d459ba499d8 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1769,14 +1769,23 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
+ 	return 0;
+ }
  
- 	struct ucma_file	*file;
- 	struct rdma_cm_id	*cm_id;
-+	struct mutex		mutex;
- 	u64			uid;
+-static int siw_listen_address(struct iw_cm_id *id, int backlog,
+-			      struct sockaddr *laddr, int addr_family)
++/*
++ * siw_create_listen - Create resources for a listener's IWCM ID @id
++ *
++ * Starts listen on the socket address id->local_addr.
++ *
++ */
++int siw_create_listen(struct iw_cm_id *id, int backlog)
+ {
+ 	struct socket *s;
+ 	struct siw_cep *cep = NULL;
+ 	struct siw_device *sdev = to_siw_dev(id->device);
++	int addr_family = id->local_addr.ss_family;
+ 	int rv = 0, s_val;
  
- 	struct list_head	list;
-@@ -216,6 +217,7 @@ static struct ucma_context *ucma_alloc_ctx(struct ucma_file *file)
- 	init_completion(&ctx->comp);
- 	INIT_LIST_HEAD(&ctx->mc_list);
- 	ctx->file = file;
-+	mutex_init(&ctx->mutex);
- 
- 	if (xa_alloc(&ctx_table, &ctx->id, ctx, xa_limit_32b, GFP_KERNEL))
++	if (addr_family != AF_INET && addr_family != AF_INET6)
++		return -EAFNOSUPPORT;
++
+ 	rv = sock_create(addr_family, SOCK_STREAM, IPPROTO_TCP, &s);
+ 	if (rv < 0)
+ 		return rv;
+@@ -1791,9 +1800,25 @@ static int siw_listen_address(struct iw_cm_id *id, int backlog,
+ 		siw_dbg(id->device, "setsockopt error: %d\n", rv);
  		goto error;
-@@ -589,6 +591,7 @@ static int ucma_free_ctx(struct ucma_context *ctx)
  	}
- 
- 	events_reported = ctx->events_reported;
-+	mutex_destroy(&ctx->mutex);
- 	kfree(ctx);
- 	return events_reported;
- }
-@@ -658,7 +661,10 @@ static ssize_t ucma_bind_ip(struct ucma_file *file, const char __user *inbuf,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_bind_addr(ctx->cm_id, (struct sockaddr *) &cmd.addr);
-+	mutex_unlock(&ctx->mutex);
+-	rv = s->ops->bind(s, laddr, addr_family == AF_INET ?
+-				    sizeof(struct sockaddr_in) :
+-				    sizeof(struct sockaddr_in6));
++	if (addr_family == AF_INET) {
++		struct sockaddr_in *laddr = &to_sockaddr_in(id->local_addr);
 +
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -681,7 +687,9 @@ static ssize_t ucma_bind(struct ucma_file *file, const char __user *inbuf,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_bind_addr(ctx->cm_id, (struct sockaddr *) &cmd.addr);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -705,8 +713,10 @@ static ssize_t ucma_resolve_ip(struct ucma_file *file,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_resolve_addr(ctx->cm_id, (struct sockaddr *) &cmd.src_addr,
- 				(struct sockaddr *) &cmd.dst_addr, cmd.timeout_ms);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -731,8 +741,10 @@ static ssize_t ucma_resolve_addr(struct ucma_file *file,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_resolve_addr(ctx->cm_id, (struct sockaddr *) &cmd.src_addr,
- 				(struct sockaddr *) &cmd.dst_addr, cmd.timeout_ms);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -752,7 +764,9 @@ static ssize_t ucma_resolve_route(struct ucma_file *file,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_resolve_route(ctx->cm_id, cmd.timeout_ms);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -841,6 +855,7 @@ static ssize_t ucma_query_route(struct ucma_file *file,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	memset(&resp, 0, sizeof resp);
- 	addr = (struct sockaddr *) &ctx->cm_id->route.addr.src_addr;
- 	memcpy(&resp.src_addr, addr, addr->sa_family == AF_INET ?
-@@ -864,6 +879,7 @@ static ssize_t ucma_query_route(struct ucma_file *file,
- 		ucma_copy_iw_route(&resp, &ctx->cm_id->route);
- 
- out:
-+	mutex_unlock(&ctx->mutex);
- 	if (copy_to_user(u64_to_user_ptr(cmd.response),
- 			 &resp, sizeof(resp)))
- 		ret = -EFAULT;
-@@ -1014,6 +1030,7 @@ static ssize_t ucma_query(struct ucma_file *file,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	switch (cmd.option) {
- 	case RDMA_USER_CM_QUERY_ADDR:
- 		ret = ucma_query_addr(ctx, response, out_len);
-@@ -1028,6 +1045,7 @@ static ssize_t ucma_query(struct ucma_file *file,
- 		ret = -ENOSYS;
- 		break;
- 	}
-+	mutex_unlock(&ctx->mutex);
- 
- 	ucma_put_ctx(ctx);
- 	return ret;
-@@ -1068,7 +1086,9 @@ static ssize_t ucma_connect(struct ucma_file *file, const char __user *inbuf,
- 		return PTR_ERR(ctx);
- 
- 	ucma_copy_conn_param(ctx->cm_id, &conn_param, &cmd.conn_param);
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_connect(ctx->cm_id, &conn_param);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -1089,7 +1109,9 @@ static ssize_t ucma_listen(struct ucma_file *file, const char __user *inbuf,
- 
- 	ctx->backlog = cmd.backlog > 0 && cmd.backlog < max_backlog ?
- 		       cmd.backlog : max_backlog;
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_listen(ctx->cm_id, ctx->backlog);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -1112,13 +1134,17 @@ static ssize_t ucma_accept(struct ucma_file *file, const char __user *inbuf,
- 	if (cmd.conn_param.valid) {
- 		ucma_copy_conn_param(ctx->cm_id, &conn_param, &cmd.conn_param);
- 		mutex_lock(&file->mut);
-+		mutex_lock(&ctx->mutex);
- 		ret = __rdma_accept(ctx->cm_id, &conn_param, NULL);
-+		mutex_unlock(&ctx->mutex);
- 		if (!ret)
- 			ctx->uid = cmd.uid;
- 		mutex_unlock(&file->mut);
--	} else
++		/* For wildcard addr, limit binding to current device only */
++		if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
++			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
++
++		rv = s->ops->bind(s, (struct sockaddr *)laddr,
++				  sizeof(struct sockaddr_in));
 +	} else {
-+		mutex_lock(&ctx->mutex);
- 		ret = __rdma_accept(ctx->cm_id, NULL, NULL);
--
-+		mutex_unlock(&ctx->mutex);
-+	}
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -1137,7 +1163,9 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_reject(ctx->cm_id, cmd.private_data, cmd.private_data_len);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -1156,7 +1184,9 @@ static ssize_t ucma_disconnect(struct ucma_file *file, const char __user *inbuf,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_disconnect(ctx->cm_id);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
- }
-@@ -1187,7 +1217,9 @@ static ssize_t ucma_init_qp_attr(struct ucma_file *file,
- 	resp.qp_attr_mask = 0;
- 	memset(&qp_attr, 0, sizeof qp_attr);
- 	qp_attr.qp_state = cmd.qp_state;
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_init_qp_attr(ctx->cm_id, &qp_attr, &resp.qp_attr_mask);
-+	mutex_unlock(&ctx->mutex);
- 	if (ret)
- 		goto out;
- 
-@@ -1273,9 +1305,13 @@ static int ucma_set_ib_path(struct ucma_context *ctx,
- 		struct sa_path_rec opa;
- 
- 		sa_convert_path_ib_to_opa(&opa, &sa_path);
-+		mutex_lock(&ctx->mutex);
- 		ret = rdma_set_ib_path(ctx->cm_id, &opa);
-+		mutex_unlock(&ctx->mutex);
- 	} else {
-+		mutex_lock(&ctx->mutex);
- 		ret = rdma_set_ib_path(ctx->cm_id, &sa_path);
-+		mutex_unlock(&ctx->mutex);
- 	}
- 	if (ret)
- 		return ret;
-@@ -1308,7 +1344,9 @@ static int ucma_set_option_level(struct ucma_context *ctx, int level,
- 
- 	switch (level) {
- 	case RDMA_OPTION_ID:
-+		mutex_lock(&ctx->mutex);
- 		ret = ucma_set_option_id(ctx, optname, optval, optlen);
-+		mutex_unlock(&ctx->mutex);
- 		break;
- 	case RDMA_OPTION_IB:
- 		ret = ucma_set_option_ib(ctx, optname, optval, optlen);
-@@ -1368,8 +1406,10 @@ static ssize_t ucma_notify(struct ucma_file *file, const char __user *inbuf,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
- 
-+	mutex_lock(&ctx->mutex);
- 	if (ctx->cm_id->device)
- 		ret = rdma_notify(ctx->cm_id, (enum ib_event_type)cmd.event);
-+	mutex_unlock(&ctx->mutex);
- 
- 	ucma_put_ctx(ctx);
- 	return ret;
-@@ -1412,8 +1452,10 @@ static ssize_t ucma_process_join(struct ucma_file *file,
- 	mc->join_state = join_state;
- 	mc->uid = cmd->uid;
- 	memcpy(&mc->addr, addr, cmd->addr_size);
-+	mutex_lock(&ctx->mutex);
- 	ret = rdma_join_multicast(ctx->cm_id, (struct sockaddr *)&mc->addr,
- 				  join_state, mc);
-+	mutex_unlock(&ctx->mutex);
- 	if (ret)
- 		goto err2;
- 
-@@ -1513,7 +1555,10 @@ static ssize_t ucma_leave_multicast(struct ucma_file *file,
- 		goto out;
- 	}
- 
-+	mutex_lock(&mc->ctx->mutex);
- 	rdma_leave_multicast(mc->ctx->cm_id, (struct sockaddr *) &mc->addr);
-+	mutex_unlock(&mc->ctx->mutex);
++		struct sockaddr_in6 *laddr = &to_sockaddr_in6(id->local_addr);
 +
- 	mutex_lock(&mc->ctx->file->mut);
- 	ucma_cleanup_mc_events(mc);
- 	list_del(&mc->list);
++		/* For wildcard addr, limit binding to current device only */
++		if (ipv6_addr_any(&laddr->sin6_addr))
++			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
++
++		rv = s->ops->bind(s, (struct sockaddr *)laddr,
++				  sizeof(struct sockaddr_in6));
++	}
+ 	if (rv) {
+ 		siw_dbg(id->device, "socket bind error: %d\n", rv);
+ 		goto error;
+@@ -1852,7 +1877,7 @@ static int siw_listen_address(struct iw_cm_id *id, int backlog,
+ 	list_add_tail(&cep->listenq, (struct list_head *)id->provider_data);
+ 	cep->state = SIW_EPSTATE_LISTENING;
+ 
+-	siw_dbg(id->device, "Listen at laddr %pISp\n", laddr);
++	siw_dbg(id->device, "Listen at laddr %pISp\n", &id->local_addr);
+ 
+ 	return 0;
+ 
+@@ -1910,106 +1935,6 @@ static void siw_drop_listeners(struct iw_cm_id *id)
+ 	}
+ }
+ 
+-/*
+- * siw_create_listen - Create resources for a listener's IWCM ID @id
+- *
+- * Listens on the socket address id->local_addr.
+- *
+- * If the listener's @id provides a specific local IP address, at most one
+- * listening socket is created and associated with @id.
+- *
+- * If the listener's @id provides the wildcard (zero) local IP address,
+- * a separate listen is performed for each local IP address of the device
+- * by creating a listening socket and binding to that local IP address.
+- *
+- */
+-int siw_create_listen(struct iw_cm_id *id, int backlog)
+-{
+-	struct net_device *dev = to_siw_dev(id->device)->netdev;
+-	int rv = 0, listeners = 0;
+-
+-	siw_dbg(id->device, "backlog %d\n", backlog);
+-
+-	/*
+-	 * For each attached address of the interface, create a
+-	 * listening socket, if id->local_addr is the wildcard
+-	 * IP address or matches the IP address.
+-	 */
+-	if (id->local_addr.ss_family == AF_INET) {
+-		struct in_device *in_dev = in_dev_get(dev);
+-		struct sockaddr_in s_laddr;
+-		const struct in_ifaddr *ifa;
+-
+-		if (!in_dev) {
+-			rv = -ENODEV;
+-			goto out;
+-		}
+-		memcpy(&s_laddr, &id->local_addr, sizeof(s_laddr));
+-
+-		siw_dbg(id->device, "laddr %pISp\n", &s_laddr);
+-
+-		rtnl_lock();
+-		in_dev_for_each_ifa_rtnl(ifa, in_dev) {
+-			if (ipv4_is_zeronet(s_laddr.sin_addr.s_addr) ||
+-			    s_laddr.sin_addr.s_addr == ifa->ifa_address) {
+-				s_laddr.sin_addr.s_addr = ifa->ifa_address;
+-
+-				rv = siw_listen_address(id, backlog,
+-						(struct sockaddr *)&s_laddr,
+-						AF_INET);
+-				if (!rv)
+-					listeners++;
+-			}
+-		}
+-		rtnl_unlock();
+-		in_dev_put(in_dev);
+-	} else if (id->local_addr.ss_family == AF_INET6) {
+-		struct inet6_dev *in6_dev = in6_dev_get(dev);
+-		struct inet6_ifaddr *ifp;
+-		struct sockaddr_in6 *s_laddr = &to_sockaddr_in6(id->local_addr);
+-
+-		if (!in6_dev) {
+-			rv = -ENODEV;
+-			goto out;
+-		}
+-		siw_dbg(id->device, "laddr %pISp\n", &s_laddr);
+-
+-		rtnl_lock();
+-		list_for_each_entry(ifp, &in6_dev->addr_list, if_list) {
+-			if (ifp->flags & (IFA_F_TENTATIVE | IFA_F_DEPRECATED))
+-				continue;
+-			if (ipv6_addr_any(&s_laddr->sin6_addr) ||
+-			    ipv6_addr_equal(&s_laddr->sin6_addr, &ifp->addr)) {
+-				struct sockaddr_in6 bind_addr  = {
+-					.sin6_family = AF_INET6,
+-					.sin6_port = s_laddr->sin6_port,
+-					.sin6_flowinfo = 0,
+-					.sin6_addr = ifp->addr,
+-					.sin6_scope_id = dev->ifindex };
+-
+-				rv = siw_listen_address(id, backlog,
+-						(struct sockaddr *)&bind_addr,
+-						AF_INET6);
+-				if (!rv)
+-					listeners++;
+-			}
+-		}
+-		rtnl_unlock();
+-		in6_dev_put(in6_dev);
+-	} else {
+-		rv = -EAFNOSUPPORT;
+-	}
+-out:
+-	if (listeners)
+-		rv = 0;
+-	else if (!rv)
+-		rv = -EINVAL;
+-
+-	siw_dbg(id->device, "%s\n", rv ? "FAIL" : "OK");
+-
+-	return rv;
+-}
+-
+ int siw_destroy_listen(struct iw_cm_id *id)
+ {
+ 	if (!id->provider_data) {
 -- 
 2.20.1
 
