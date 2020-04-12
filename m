@@ -2,141 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD27D1A5642
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 01:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FB21A5D69
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Apr 2020 10:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgDKXPG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Apr 2020 19:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730954AbgDKXPG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:15:06 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E9E920787;
-        Sat, 11 Apr 2020 23:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646906;
-        bh=06XGdWIN+D/JmviHDNKHS9E6ebWDr+uXqIvGMpMTJ0M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Co5/YoNROfwSwGWHOERh+4La8JHMM4sMCFQQH7QiL1MUPUcJ11rZ7tfULXPS42/d/
-         wzpgKlJADRa/3fwoEfVVe6VgcgKY7l5fQC7DXhNs/wxUzZMUXBpdSTgRtmTlYCU/A+
-         Z1GwDQy8M3+/MwaPOPMFLQuHAxVj67yuLtrNMAZI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Avihai Horon <avihaih@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 15/16] RDMA/cm: Update num_paths in cma_resolve_iboe_route error flow
-Date:   Sat, 11 Apr 2020 19:14:45 -0400
-Message-Id: <20200411231447.27182-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411231447.27182-1-sashal@kernel.org>
-References: <20200411231447.27182-1-sashal@kernel.org>
+        id S1725907AbgDLIOo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Apr 2020 04:14:44 -0400
+Received: from mail-eopbgr50040.outbound.protection.outlook.com ([40.107.5.40]:10277
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725903AbgDLIOo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 12 Apr 2020 04:14:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GkODFjmOVyD7W/QCKKHQuO0MYrbmcO6y+j6k/Vt/ambeKvVzaD0gpGuPLA4SZ5JAnther/dKmS2knxBRMXIib5ZpzOzsEIDJngPVIdFrv6pZ/V+uS4c1W4EvaunpZLqz5O/XeOUK+woJWlD2Tyv1KUQ4hSBvOgVYzjTN/mghsF+QDdyaIExVEEHsuG8oOjrPF0pWGrzNIiqB0vbZARapGUkx0ySDuQe9snLAF3U4leP0GqSNKoqJ66vFjxpM8+8IytvcX2OBQMpG89VtErnEVp1BMUzK0k+nLM31DOciJw5axYZo5LT6mLJqi5yn3lZiy1vEpOdTqXE9w3eHhLSwLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rp+M80PlNmgf2kMZbHALXg/Ry/Wmh10MKTx3shaqjZI=;
+ b=eEVNQ9wPxBu7cbN52DkvSEEntIxY+HClqIOIT5hQZDuDciwl0voc4pR3alqHs2Ic38cg0ajsprBFbh+xya2gD/QT2jUhIUV23Zr7x8LP4k5dOb/soz8qNjyRYvpCflgFHNQHaP24MrBqJbLofBp4BZoaTHM65T8eonfAxOJEi7z6WHImYXw/w2O6m3mL7VU+Kd+xFHYvL5kLo8w5DlToAESs3H7zUttMnN+NjRleeh+hOhlFy37F90DZSdLj47t9mPmjgj7NNdCCP6WC8yj6TXLo7ULVT7ZlGGLf/U7QtF/5R9nquRs8ykwCJW/KQ8j0vhJl89mbdFbgOpSiVylUaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rp+M80PlNmgf2kMZbHALXg/Ry/Wmh10MKTx3shaqjZI=;
+ b=G4Xh6HEMYjD8ZWLV/nZ+B8uhvvoif8eMUtJ9vceyO9kAoOnc4PUfn+idEG/bOpgx83+EQl1ldJ9XPZJ4iFaqdsUr08bGmNKhEjQWThjT98V46Yg9UJkzcdFpR+arV/bu7ptrr4mb7XC6DVxjFoeoWW13kqhhLRl6ljYxcDBmABs=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=roid@mellanox.com; 
+Received: from DB7PR05MB4156.eurprd05.prod.outlook.com (2603:10a6:5:18::21) by
+ DB7PR05MB5210.eurprd05.prod.outlook.com (2603:10a6:10:65::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2900.15; Sun, 12 Apr 2020 08:14:39 +0000
+Received: from DB7PR05MB4156.eurprd05.prod.outlook.com
+ ([fe80::d12b:b2d7:95a0:8088]) by DB7PR05MB4156.eurprd05.prod.outlook.com
+ ([fe80::d12b:b2d7:95a0:8088%7]) with mapi id 15.20.2900.026; Sun, 12 Apr 2020
+ 08:14:39 +0000
+Subject: Re: [PATCH net] net/mlx5e: limit log messages due to (ovs) probing to
+ _once
+To:     "marcelo.leitner@gmail.com" <marcelo.leitner@gmail.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Cc:     Vlad Buslov <vladbu@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
+        Paul Blakey <paulb@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <d57b95462cccf0f67089c91d3dfd3d1f4c46e9bf.1585872570.git.marcelo.leitner@gmail.com>
+ <c4e43a61a8ad7f57e2cb228cc0ba810b68af89cb.camel@mellanox.com>
+ <20200403024835.GA3547@localhost.localdomain>
+ <d4c0225fc25a6979c6f6863eaf84ee4d4d0a7972.camel@mellanox.com>
+ <20200408215422.GA137894@localhost.localdomain>
+ <54e70f800bc8f3b4d2dc7ddea02c1baa0036ea54.camel@mellanox.com>
+ <20200408224256.GB137894@localhost.localdomain>
+From:   Roi Dayan <roid@mellanox.com>
+Message-ID: <6f4e8a85-ede4-0c10-0ef7-0d45f2b7fc73@mellanox.com>
+Date:   Sun, 12 Apr 2020 11:14:35 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+In-Reply-To: <20200408224256.GB137894@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM4PR0101CA0050.eurprd01.prod.exchangelabs.com
+ (2603:10a6:200:41::18) To DB7PR05MB4156.eurprd05.prod.outlook.com
+ (2603:10a6:5:18::21)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.170] (176.231.113.172) by AM4PR0101CA0050.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17 via Frontend Transport; Sun, 12 Apr 2020 08:14:37 +0000
+X-Originating-IP: [176.231.113.172]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a9b45e72-e58a-4570-3541-08d7deb98bae
+X-MS-TrafficTypeDiagnostic: DB7PR05MB5210:|DB7PR05MB5210:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR05MB5210EA82E548EB4FF813C497B5DC0@DB7PR05MB5210.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0371762FE7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR05MB4156.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(366004)(376002)(136003)(86362001)(36756003)(478600001)(26005)(31696002)(8936002)(186003)(53546011)(956004)(16526019)(2616005)(31686004)(2906002)(110136005)(54906003)(6636002)(66946007)(66476007)(5660300002)(15650500001)(4326008)(8676002)(16576012)(52116002)(6486002)(316002)(66556008)(81156014);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r4yeppOMetpe7HmVg3NSdWO1PDqzfkyjIX64N84aU7xUr0XVHWKFt4jHbw7NGQF5oXqWKG4/y6GOXSK5BxcJuJ+oBvEYJdq0+NwNUacfnJKt9PYY36pMnPzfuTWwZ1M1oLuKgGYaexjc0x52j+NYIVBLWCLqoi/T9rV7vx0gwVAD7rFELLJ8tz9cy4OfppDbXgzxJ9LYB+HT6zD/CNAgCqyz8rx355CninkmdF/kqrHTH2cG5XANpF0P+VyrVDDc325uSkztN4EBLElaZOMx45/qB7Ea0aFkRSsypM24Cfa6YnKyy4Y5AKI2Mp0roe7/WrT5RSBNLBgJASgUfneN1GjtTBPccSQWxrofhuxDYtVzqp3HyK/c6U/wOXlTEsvlioflUE6eklV25e1azXIjLuz6SHmgjO5/sc/Z6iOJOQ0IQ8QxKEzT0JbZpFPa3Dnm
+X-MS-Exchange-AntiSpam-MessageData: d/t256TqIVUwUynhyaSo1kAuuqhtmQlqC6+iT0xoBA9a5VtX0aAADPz3i3xinw9OY6q2AhWhhoWkpcxrOiMihvc790SFSQL/IdGxHOwwPJOli/GzRPopH9fL5mDN7n0XOr62a+SlKxFawO8g8x7zYw==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9b45e72-e58a-4570-3541-08d7deb98bae
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2020 08:14:39.2039
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZFqbBAiUNs695lKbijm5HmzQu8B9NZKGffFzBc3QWpXvGSOroi1X5rsQ88Q2hxSLlYt4p0HjlDPIhgYsg+bluA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5210
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Avihai Horon <avihaih@mellanox.com>
 
-[ Upstream commit 987914ab841e2ec281a35b54348ab109b4c0bb4e ]
 
-After a successful allocation of path_rec, num_paths is set to 1, but any
-error after such allocation will leave num_paths uncleared.
+On 2020-04-09 1:42 AM, marcelo.leitner@gmail.com wrote:
+> On Wed, Apr 08, 2020 at 10:38:52PM +0000, Saeed Mahameed wrote:
+>> On Wed, 2020-04-08 at 18:54 -0300, marcelo.leitner@gmail.com wrote:
+>>> On Wed, Apr 08, 2020 at 07:51:22PM +0000, Saeed Mahameed wrote:
+>>> ...
+>>>>>> I understand it is for debug only but i strongly suggest to not
+>>>>>> totally
+>>>>>> suppress these messages and maybe just move them to tracepoints
+>>>>>> buffer
+>>>>>> ? for those who would want to really debug .. 
+>>>>>>
+>>>>>> we already have some tracepoints implemented for en_tc.c 
+>>>>>> mlx5/core/diag/en_tc_tracepoints.c, maybe we should define a
+>>>>>> tracepoint
+>>>>>> for error reporting .. 
+>>>>>
+>>>>> That, or s/netdev_warn/netdev_dbg/, but both are more hidden to
+>>>>> the
+>>>>> user than the _once.
+>>>>>
+>>>>
+>>>> i don't see any reason to pollute kernel log with debug messages
+>>>> when
+>>>> we have tracepoint buffer for en_tc .. 
+>>>
+>>> So we're agreeing that these need to be changed. Good.
+>>
+>> I would like to wait for the feedback from the CC'ed mlnx TC
+>> developers..
+>>
+>> I just pinged them, lets see what they think.
+>>
+>> but i totally agree, TC can support 100k offloads requests per seconds,
+>> dumping every possible issue to the kernel log shouldn't be an option,this is not a boot or a fatal error/warning .. 
+>>
+>>>
+>>> I don't think a sysadmin would be using tracepoints for
+>>> troubleshooting this, but okay. My only objective here is exactly
+>>> what
+>>> you said, to not pollute kernel log too much with these potentially
+>>> repetitive messages.
+>>
+>> these types of errors are easily reproduce-able, a sysadmin can see and
+>> report the errno and the extack message, and in case it is really
+>> required, the support or development team can ask to turn on trace-
+>> points or debug and reproduce .. 
+> 
+> Roger that, thanks Saeed.
+> 
 
-This causes to de-referencing a NULL pointer later on. Hence, num_paths
-needs to be set back to 0 if such an error occurs.
+Hi Marcelo,
 
-The following crash from syzkaller revealed it.
+I was somewhat in favor for *_once when first read it, without starting to
+enable probe stuff but I guess *_once will become redundant pretty quick.
+another option is debugging with tc verbose flag but ovs doesn't support
+logging extack errors today.
+checking ovs issues on a large system with many bridges/ports/rules without
+the tc/driver errors in the log will be very difficult.
+in some places we already only use extack without netdev_warn.
+so currently in favor in removing the other logs if extack error exists to
+avoid flooding the log each time ovs age out an unsupported rule and re-adds it.
+i'm also in favor for the trace points to ease debug.
 
-  kasan: CONFIG_KASAN_INLINE enabled
-  kasan: GPF could be caused by NULL-ptr deref or user memory access
-  general protection fault: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
-  CPU: 0 PID: 357 Comm: syz-executor060 Not tainted 4.18.0+ #311
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-  rel-1.11.0-0-g63451fca13-prebuilt.qemu-project.org 04/01/2014
-  RIP: 0010:ib_copy_path_rec_to_user+0x94/0x3e0
-  Code: f1 f1 f1 f1 c7 40 0c 00 00 f4 f4 65 48 8b 04 25 28 00 00 00 48 89
-  45 c8 31 c0 e8 d7 60 24 ff 48 8d 7b 4c 48 89 f8 48 c1 e8 03 <42> 0f b6
-  14 30 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85
-  RSP: 0018:ffff88006586f980 EFLAGS: 00010207
-  RAX: 0000000000000009 RBX: 0000000000000000 RCX: 1ffff1000d5fe475
-  RDX: ffff8800621e17c0 RSI: ffffffff820d45f9 RDI: 000000000000004c
-  RBP: ffff88006586fa50 R08: ffffed000cb0df73 R09: ffffed000cb0df72
-  R10: ffff88006586fa70 R11: ffffed000cb0df73 R12: 1ffff1000cb0df30
-  R13: ffff88006586fae8 R14: dffffc0000000000 R15: ffff88006aff2200
-  FS: 00000000016fc880(0000) GS:ffff88006d000000(0000)
-  knlGS:0000000000000000
-  CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000000020000040 CR3: 0000000063fec000 CR4: 00000000000006b0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-  ? ib_copy_path_rec_from_user+0xcc0/0xcc0
-  ? __mutex_unlock_slowpath+0xfc/0x670
-  ? wait_for_completion+0x3b0/0x3b0
-  ? ucma_query_route+0x818/0xc60
-  ucma_query_route+0x818/0xc60
-  ? ucma_listen+0x1b0/0x1b0
-  ? sched_clock_cpu+0x18/0x1d0
-  ? sched_clock_cpu+0x18/0x1d0
-  ? ucma_listen+0x1b0/0x1b0
-  ? ucma_write+0x292/0x460
-  ucma_write+0x292/0x460
-  ? ucma_close_id+0x60/0x60
-  ? sched_clock_cpu+0x18/0x1d0
-  ? sched_clock_cpu+0x18/0x1d0
-  __vfs_write+0xf7/0x620
-  ? ucma_close_id+0x60/0x60
-  ? kernel_read+0x110/0x110
-  ? time_hardirqs_on+0x19/0x580
-  ? lock_acquire+0x18b/0x3a0
-  ? finish_task_switch+0xf3/0x5d0
-  ? _raw_spin_unlock_irq+0x29/0x40
-  ? _raw_spin_unlock_irq+0x29/0x40
-  ? finish_task_switch+0x1be/0x5d0
-  ? __switch_to_asm+0x34/0x70
-  ? __switch_to_asm+0x40/0x70
-  ? security_file_permission+0x172/0x1e0
-  vfs_write+0x192/0x460
-  ksys_write+0xc6/0x1a0
-  ? __ia32_sys_read+0xb0/0xb0
-  ? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
-  ? do_syscall_64+0x1d/0x470
-  do_syscall_64+0x9e/0x470
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Fixes: 3c86aa70bf67 ("RDMA/cm: Add RDMA CM support for IBoE devices")
-Link: https://lore.kernel.org/r/20200318101741.47211-1-leon@kernel.org
-Signed-off-by: Avihai Horon <avihaih@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/core/cma.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 5ed9b5f8a0377..b59a4a819aaaa 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2378,6 +2378,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
- err2:
- 	kfree(route->path_rec);
- 	route->path_rec = NULL;
-+	route->num_paths = 0;
- err1:
- 	kfree(work);
- 	return ret;
--- 
-2.20.1
-
+Thanks,
+Roi
