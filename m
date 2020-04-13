@@ -2,34 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E071A67B2
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2020 16:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A713F1A67B0
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2020 16:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbgDMOQJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Apr 2020 10:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47526 "EHLO mail.kernel.org"
+        id S1730460AbgDMOQH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Apr 2020 10:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730466AbgDMOQI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:16:08 -0400
+        id S1730417AbgDMOQF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:16:05 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 821E020774;
-        Mon, 13 Apr 2020 14:16:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2FAB20775;
+        Mon, 13 Apr 2020 14:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586787368;
-        bh=0+DYeGxuA3rBGJsMtNwcPFFDVHi7+1Guj97iek2BZSQ=;
+        s=default; t=1586787364;
+        bh=KbDKNk7jlIOD+Nk6QwOVlWa2NBSPay8x8Tbh6q4I/E8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rwNjP0zIpPA5KHvx512F8y0iWS0OvqEFIYgzfMUwYVlDePUMghHTheLHoTcgLOt9o
-         HomuwMSzju2JmH/2JxhqV0md7p919BOCxoH+i36xnXFeKcHx9TKxBwyDdGJOhsnUkK
-         B0RPaIzvvH13ctV/9rZ9JK62X8MlFPDB0IBPRVbw=
+        b=WvERr7UoS9p4cpxG7/mPOEtFKqDf9cj6xBtKAgkkDs995qqr6OGUkYkZEsHOX8K7C
+         lShZybJIgw7NY+zkeM7H7v1fYn5Y/dyh2ZTSzbsH+Eaq9O3a4LSloowJoaa3V/dEIw
+         3IRtGUIta2n3kJR25fRyygUObzUF7m3n/O0udc8Q=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v2 6/7] RDMA/cma: Connect ECE to rdma_accept
-Date:   Mon, 13 Apr 2020 17:15:37 +0300
-Message-Id: <20200413141538.935574-7-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        target-devel@vger.kernel.org
+Subject: [PATCH rdma-next v2 7/7] RDMA/cma: Provide ECE reject reason
+Date:   Mon, 13 Apr 2020 17:15:38 +0300
+Message-Id: <20200413141538.935574-8-leon@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200413141538.935574-1-leon@kernel.org>
 References: <20200413141538.935574-1-leon@kernel.org>
@@ -42,138 +52,204 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The rdma_accept() is called by both passive and active
-sides of CMID connection to mark readiness to start data
-transfer. For passive side, this is called explicitly,
-for active side, it is called implicitly while receiving
-REP message.
+IBTA declares "vendor option not supported" reject reason in REJ
+messages if passive side doesn't want to accept proposed ECE options.
 
-Provide ECE data to rdma_accept function needed for passive
-side to send that REP message.
+Due to the fact that ECE is managed by userspace, there is a need to let
+users to provide such rejected reason.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cma.c    | 19 +++++++++++++++++++
- drivers/infiniband/core/ucma.c   | 14 +++++++++++---
- include/rdma/rdma_cm.h           |  3 +++
- include/uapi/rdma/rdma_user_cm.h |  1 +
- 4 files changed, 34 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/cma.c           | 12 +++++++-----
+ drivers/infiniband/core/ucma.c          |  7 ++++++-
+ drivers/infiniband/ulp/isert/ib_isert.c |  4 ++--
+ drivers/infiniband/ulp/srpt/ib_srpt.c   |  2 +-
+ drivers/nvme/target/rdma.c              |  2 +-
+ include/rdma/ib_cm.h                    |  3 ++-
+ include/rdma/rdma_cm.h                  |  3 ++-
+ include/uapi/rdma/rdma_user_cm.h        |  7 ++++++-
+ net/rds/ib_cm.c                         |  2 +-
+ 9 files changed, 28 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index e33e47caab08..409f752f40ae 100644
+index 409f752f40ae..b79f71b10593 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -4077,6 +4077,8 @@ static int cma_accept_ib(struct rdma_id_private *id_priv,
- 	rep.flow_control = conn_param->flow_control;
- 	rep.rnr_retry_count = min_t(u8, 7, conn_param->rnr_retry_count);
- 	rep.srq = id_priv->srq ? 1 : 0;
-+	rep.ece.vendor_id = id_priv->ece.vendor_id;
-+	rep.ece.attr_mod = id_priv->ece.attr_mod;
- 
- 	trace_cm_send_rep(id_priv);
- 	ret = ib_send_cm_rep(id_priv->cm_id.ib, &rep);
-@@ -4124,7 +4126,11 @@ static int cma_send_sidr_rep(struct rdma_id_private *id_priv,
- 			return ret;
- 		rep.qp_num = id_priv->qp_num;
- 		rep.qkey = id_priv->qkey;
-+
-+		rep.ece.vendor_id = id_priv->ece.vendor_id;
-+		rep.ece.attr_mod = id_priv->ece.attr_mod;
- 	}
-+
- 	rep.private_data = private_data;
- 	rep.private_data_len = private_data_len;
- 
-@@ -4182,6 +4188,19 @@ int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
+@@ -4183,7 +4183,7 @@ int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
+ 	return 0;
+ reject:
+ 	cma_modify_qp_err(id_priv);
+-	rdma_reject(id, NULL, 0);
++	rdma_reject(id, NULL, 0, 0);
+ 	return ret;
  }
  EXPORT_SYMBOL(__rdma_accept);
+@@ -4223,7 +4223,7 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
+ EXPORT_SYMBOL(rdma_notify);
  
-+int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-+		      const char *caller, struct rdma_ucm_ece *ece)
-+{
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
-+
-+	id_priv->ece.vendor_id = ece->vendor_id;
-+	id_priv->ece.attr_mod = ece->attr_mod;
-+
-+	return __rdma_accept(id, conn_param, caller);
-+}
-+EXPORT_SYMBOL(__rdma_accept_ece);
-+
- int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
+ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+-		u8 private_data_len)
++		u8 private_data_len, enum rdma_ucm_reject_reason reason)
  {
  	struct rdma_id_private *id_priv;
+ 	int ret;
+@@ -4237,10 +4237,12 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+ 			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
+ 						private_data, private_data_len);
+ 		} else {
++			enum ib_cm_rej_reason r =
++				(reason) ?: IB_CM_REJ_CONSUMER_DEFINED;
++
+ 			trace_cm_send_rej(id_priv);
+-			ret = ib_send_cm_rej(id_priv->cm_id.ib,
+-					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
+-					     0, private_data, private_data_len);
++			ret = ib_send_cm_rej(id_priv->cm_id.ib, r, NULL, 0,
++					     private_data, private_data_len);
+ 		}
+ 	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+ 		ret = iw_cm_reject(id_priv->cm_id.iw,
 diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index b67cdd2ef187..d41598954cc4 100644
+index d41598954cc4..99482dc5934b 100644
 --- a/drivers/infiniband/core/ucma.c
 +++ b/drivers/infiniband/core/ucma.c
-@@ -1132,28 +1132,36 @@ static ssize_t ucma_accept(struct ucma_file *file, const char __user *inbuf,
- {
- 	struct rdma_ucm_accept cmd;
- 	struct rdma_conn_param conn_param;
-+	struct rdma_ucm_ece ece = {};
- 	struct ucma_context *ctx;
-+	size_t in_size;
- 	int ret;
- 
--	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
-+	in_size = min_t(size_t, in_len, sizeof(cmd));
-+	if (copy_from_user(&cmd, inbuf, in_size))
+@@ -1178,12 +1178,17 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
+ 	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
  		return -EFAULT;
  
++	if (cmd.reason &&
++	    cmd.reason != RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
++		return -EINVAL;
++
  	ctx = ucma_get_ctx_dev(file, cmd.id);
  	if (IS_ERR(ctx))
  		return PTR_ERR(ctx);
  
-+	if (offsetofend(typeof(cmd), ece) <= in_size) {
-+		ece.vendor_id = cmd.ece.vendor_id;
-+		ece.attr_mod = cmd.ece.attr_mod;
-+	}
-+
- 	if (cmd.conn_param.valid) {
- 		ucma_copy_conn_param(ctx->cm_id, &conn_param, &cmd.conn_param);
- 		mutex_lock(&file->mut);
- 		mutex_lock(&ctx->mutex);
--		ret = __rdma_accept(ctx->cm_id, &conn_param, NULL);
-+		ret = __rdma_accept_ece(ctx->cm_id, &conn_param, NULL, &ece);
- 		mutex_unlock(&ctx->mutex);
- 		if (!ret)
- 			ctx->uid = cmd.uid;
- 		mutex_unlock(&file->mut);
- 	} else {
- 		mutex_lock(&ctx->mutex);
--		ret = __rdma_accept(ctx->cm_id, NULL, NULL);
-+		ret = __rdma_accept_ece(ctx->cm_id, NULL, NULL, &ece);
- 		mutex_unlock(&ctx->mutex);
- 	}
+ 	mutex_lock(&ctx->mutex);
+-	ret = rdma_reject(ctx->cm_id, cmd.private_data, cmd.private_data_len);
++	ret = rdma_reject(ctx->cm_id, cmd.private_data, cmd.private_data_len,
++			  cmd.reason);
+ 	mutex_unlock(&ctx->mutex);
  	ucma_put_ctx(ctx);
-diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
-index 761168c41848..8d961d8b7cdb 100644
---- a/include/rdma/rdma_cm.h
-+++ b/include/rdma/rdma_cm.h
-@@ -288,6 +288,9 @@ int rdma_listen(struct rdma_cm_id *id, int backlog);
- int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
- 		  const char *caller);
+ 	return ret;
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index a1a035270cab..42f78d0b61cc 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -502,7 +502,7 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 	if (!np->enabled) {
+ 		spin_unlock_bh(&np->np_thread_lock);
+ 		isert_dbg("iscsi_np is not enabled, reject connect request\n");
+-		return rdma_reject(cma_id, NULL, 0);
++		return rdma_reject(cma_id, NULL, 0, 0);
+ 	}
+ 	spin_unlock_bh(&np->np_thread_lock);
  
-+int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-+		      const char *caller, struct rdma_ucm_ece *ece);
-+
- /**
-  * rdma_accept - Called to accept a connection request or response.
-  * @id: Connection identifier associated with the request.
-diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-index 150b3f075f99..c4ca1412bcf9 100644
---- a/include/uapi/rdma/rdma_user_cm.h
-+++ b/include/uapi/rdma/rdma_user_cm.h
-@@ -228,6 +228,7 @@ struct rdma_ucm_accept {
- 	struct rdma_ucm_conn_param conn_param;
- 	__u32 id;
- 	__u32 reserved;
-+	struct rdma_ucm_ece ece;
+@@ -553,7 +553,7 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 	isert_free_login_buf(isert_conn);
+ out:
+ 	kfree(isert_conn);
+-	rdma_reject(cma_id, NULL, 0);
++	rdma_reject(cma_id, NULL, 0, 0);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 7047f6a5d0a3..44eefa83bfc6 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2496,7 +2496,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 				   SRP_BUF_FORMAT_INDIRECT);
+ 
+ 	if (rdma_cm_id)
+-		rdma_reject(rdma_cm_id, rej, sizeof(*rej));
++		rdma_reject(rdma_cm_id, rej, sizeof(*rej), 0);
+ 	else
+ 		ib_send_cm_rej(ib_cm_id, IB_CM_REJ_CONSUMER_DEFINED, NULL, 0,
+ 			       rej, sizeof(*rej));
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index fd47de0e4e4e..9f3fea89b254 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -1138,7 +1138,7 @@ static int nvmet_rdma_cm_reject(struct rdma_cm_id *cm_id,
+ 	rej.recfmt = cpu_to_le16(NVME_RDMA_CM_FMT_1_0);
+ 	rej.sts = cpu_to_le16(status);
+ 
+-	return rdma_reject(cm_id, (void *)&rej, sizeof(rej));
++	return rdma_reject(cm_id, (void *)&rej, sizeof(rej), 0);
+ }
+ 
+ static struct nvmet_rdma_queue *
+diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
+index 0f1ea5f2d01c..ed328a99ed0a 100644
+--- a/include/rdma/ib_cm.h
++++ b/include/rdma/ib_cm.h
+@@ -168,7 +168,8 @@ enum ib_cm_rej_reason {
+ 	IB_CM_REJ_INVALID_CLASS_VERSION		= 31,
+ 	IB_CM_REJ_INVALID_FLOW_LABEL		= 32,
+ 	IB_CM_REJ_INVALID_ALT_FLOW_LABEL	= 33,
+-	IB_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED	= 35,
++	IB_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED	=
++		RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED,
  };
  
+ struct ib_cm_rej_event_param {
+diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+index 8d961d8b7cdb..f8781b132f62 100644
+--- a/include/rdma/rdma_cm.h
++++ b/include/rdma/rdma_cm.h
+@@ -324,11 +324,12 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
+  */
+ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event);
+ 
++
+ /**
+  * rdma_reject - Called to reject a connection request or response.
+  */
+ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+-		u8 private_data_len);
++		u8 private_data_len, enum rdma_ucm_reject_reason reason);
+ 
+ /**
+  * rdma_disconnect - This function disconnects the associated QP and
+diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+index c4ca1412bcf9..e545f2de1e13 100644
+--- a/include/uapi/rdma/rdma_user_cm.h
++++ b/include/uapi/rdma/rdma_user_cm.h
+@@ -78,6 +78,10 @@ enum rdma_ucm_port_space {
+ 	RDMA_PS_UDP   = 0x0111,
+ };
+ 
++enum rdma_ucm_reject_reason {
++	RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED = 35
++};
++
+ /*
+  * command ABI structures.
+  */
+@@ -234,7 +238,8 @@ struct rdma_ucm_accept {
  struct rdma_ucm_reject {
+ 	__u32 id;
+ 	__u8  private_data_len;
+-	__u8  reserved[3];
++	__u8  reason; /* enum rdma_ucm_reject_reason */
++	__u8  reserved[2];
+ 	__u8  private_data[RDMA_MAX_PRIVATE_DATA];
+ };
+ 
+diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+index c71f4328d138..bac8c68df66c 100644
+--- a/net/rds/ib_cm.c
++++ b/net/rds/ib_cm.c
+@@ -927,7 +927,7 @@ int rds_ib_cm_handle_connect(struct rdma_cm_id *cm_id,
+ 	if (conn)
+ 		mutex_unlock(&conn->c_cm_lock);
+ 	if (err)
+-		rdma_reject(cm_id, &err, sizeof(int));
++		rdma_reject(cm_id, &err, sizeof(int), 0);
+ 	return destroy;
+ }
+ 
 -- 
 2.25.2
 
