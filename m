@@ -2,35 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497331A675D
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2020 15:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB2E1A67A6
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Apr 2020 16:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730165AbgDMNxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Apr 2020 09:53:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43388 "EHLO mail.kernel.org"
+        id S1730448AbgDMOPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Apr 2020 10:15:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729430AbgDMNxe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Apr 2020 09:53:34 -0400
+        id S1730417AbgDMOPn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:15:43 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EEBA2072C;
-        Mon, 13 Apr 2020 13:53:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 417A92073E;
+        Mon, 13 Apr 2020 14:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586786013;
-        bh=qSZrBlN+Q58gVLsa1JaP3bz24Jb89LFixhB1AFzdm7g=;
+        s=default; t=1586787342;
+        bh=p4H0mbNsqUXCc+rVKfiFXeEwB+ggGqgRm+g9Z3fEcEY=;
         h=From:To:Cc:Subject:Date:From;
-        b=VPvex01gkbH3ZLEcJO/xbf3FWQQITxlfSCCxfAL6zghJXOcsacgBqD6w/R/grSQgl
-         3tpBSDANu49w+agG9ghJb+pVVQAccEPNwcmoNuq23OjnbbSuA5Ovc5ydKrNV7IxAWn
-         RZBRrBTWzTZp2cKzpMEw7tyKNgptG2qU/PghlwfY=
+        b=Cc2GAdH6dnHe8KR4lpmbGMf5sORxwT0GEUnUKFd8hZi3eGW5HejVhjHLQKnx3hrkQ
+         N8IFris9OuI3EAyBxcks0qgFRnqc1Vi+1oYi7SScdH6CD1/6DU0YCBtHWoawpVE5UX
+         t3k8dWDqrsJV4BbxHVbO3BkqmcK/PWt1HfJPSvhw=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Daria Velikovsky <daria@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next] RDMA/mlx5: Add support for drop action in DV steering
-Date:   Mon, 13 Apr 2020 16:53:28 +0300
-Message-Id: <20200413135328.934419-1-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        target-devel@vger.kernel.org
+Subject: [PATCH rdma-next v2 0/7] Add Enhanced Connection Established (ECE)
+Date:   Mon, 13 Apr 2020 17:15:31 +0300
+Message-Id: <20200413141538.935574-1-leon@kernel.org>
 X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,119 +48,57 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Daria Velikovsky <daria@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-When drop action is used the matching packet will stop
-processing in steering and will be dropped. This functionality
-will allow users to drop matching packets.
+Changelog:
+ v2:
+ * Rebased on latest rdma-next and removed already accepted patches.
+ * Updated all rdma_reject in-kernel users to provide reject reason.
+ v1: Dropped field_avail patch in favor of mass conversion to use function
+     which already exists in the kernel code.
+ https://lore.kernel.org/lkml/20200310091438.248429-1-leon@kernel.org
+ v0: https://lore.kernel.org/lkml/20200305150105.207959-1-leon@kernel.org
 
-Signed-off-by: Daria Velikovsky <daria@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/flow.c        | 37 +++++++++++++++---------
- include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
- 2 files changed, 24 insertions(+), 14 deletions(-)
+Enhanced Connection Established or ECE is new negotiation scheme
+introduced in IBTA v1.4 to exchange extra information about nodes
+capabilities and later negotiate them at the connection establishment
+phase.
 
-diff --git a/drivers/infiniband/hw/mlx5/flow.c b/drivers/infiniband/hw/mlx5/flow.c
-index 7db672fd1395..6111f8162e5f 100644
---- a/drivers/infiniband/hw/mlx5/flow.c
-+++ b/drivers/infiniband/hw/mlx5/flow.c
-@@ -69,38 +69,44 @@ static const struct uverbs_attr_spec mlx5_ib_flow_type[] = {
+The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
+to carry two fields, one new and another gained new functionality:
+ * VendorID is a new field that indicates that common subset of vendor
+   option bits are supported as indicated by that VendorID.
+ * AttributeModifier already exists, but overloaded to indicate which
+   vendor options are supported by this VendorID.
 
- static int get_dests(struct uverbs_attr_bundle *attrs,
- 		     struct mlx5_ib_flow_matcher *fs_matcher, int *dest_id,
--		     int *dest_type, struct ib_qp **qp, bool *def_miss)
-+		     int *dest_type, struct ib_qp **qp, u32 *flags)
- {
- 	bool dest_devx, dest_qp;
- 	void *devx_obj;
--	u32 flags;
+This is kernel part of such functionality which is responsible to get data
+from librdmacm and properly create and handle RDMA-CM messages.
 
- 	dest_devx = uverbs_attr_is_valid(attrs,
- 					 MLX5_IB_ATTR_CREATE_FLOW_DEST_DEVX);
- 	dest_qp = uverbs_attr_is_valid(attrs,
- 				       MLX5_IB_ATTR_CREATE_FLOW_DEST_QP);
+Thanks
 
--	*def_miss = false;
-+	*flags = 0;
- 	if (uverbs_attr_is_valid(attrs, MLX5_IB_ATTR_FLOW_MATCHER_FLOW_FLAGS)) {
- 		int err;
+Leon Romanovsky (7):
+  RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+  RDMA/uapi: Add ECE definitions to UCMA
+  RDMA/ucma: Extend ucma_connect to receive ECE parameters
+  RDMA/ucma: Deliver ECE parameters through UCMA events
+  RDMA/cm: Send and receive ECE parameter over the wire
+  RDMA/cma: Connect ECE to rdma_accept
+  RDMA/cma: Provide ECE reject reason
 
--		err = uverbs_get_flags32(&flags, attrs,
--					 MLX5_IB_ATTR_CREATE_FLOW_FLAGS,
--					 MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS);
-+		err = uverbs_get_flags32(
-+			flags, attrs, MLX5_IB_ATTR_CREATE_FLOW_FLAGS,
-+			MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS |
-+				MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP);
- 		if (err)
- 			return err;
--		*def_miss = flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS;
-+
-+		/* Both flags are not allowed */
-+		if (*flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS &&
-+		    *flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP)
-+			return -EINVAL;
-+
- 	}
+ drivers/infiniband/core/cm.c            | 41 ++++++++++++++++---
+ drivers/infiniband/core/cma.c           | 52 ++++++++++++++++++++++---
+ drivers/infiniband/core/cma_priv.h      |  1 +
+ drivers/infiniband/core/ucma.c          | 40 +++++++++++++++----
+ drivers/infiniband/ulp/isert/ib_isert.c |  4 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.c   |  2 +-
+ drivers/nvme/target/rdma.c              |  2 +-
+ include/rdma/ib_cm.h                    | 10 ++++-
+ include/rdma/ibta_vol1_c12.h            |  6 +++
+ include/rdma/rdma_cm.h                  | 18 ++++++++-
+ include/uapi/rdma/rdma_user_cm.h        | 15 ++++++-
+ net/rds/ib_cm.c                         |  2 +-
+ 12 files changed, 167 insertions(+), 26 deletions(-)
 
- 	if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_BYPASS) {
--		if (dest_devx && (dest_qp || *def_miss))
-+		if (dest_devx && (dest_qp || *flags))
- 			return -EINVAL;
--		else if (dest_qp && *def_miss)
-+		else if (dest_qp && *flags)
- 			return -EINVAL;
- 	}
-
--	/* Allow only DEVX object as dest when inserting to FDB */
--	if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_FDB && !dest_devx)
-+	/* Allow only DEVX object, drop as dest for FDB */
-+	if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_FDB && !(dest_devx ||
-+	     (*flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP)))
- 		return -EINVAL;
-
- 	/* Allow only DEVX object or QP as dest when inserting to RDMA_RX */
-@@ -169,7 +175,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	void *devx_obj, *cmd_in;
- 	struct ib_uobject *uobj;
- 	struct mlx5_ib_dev *dev;
--	bool def_miss;
-+	u32 flags;
-
- 	if (!capable(CAP_NET_RAW))
- 		return -EPERM;
-@@ -179,12 +185,15 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	uobj =  uverbs_attr_get_uobject(attrs, MLX5_IB_ATTR_CREATE_FLOW_HANDLE);
- 	dev = mlx5_udata_to_mdev(&attrs->driver_udata);
-
--	if (get_dests(attrs, fs_matcher, &dest_id, &dest_type, &qp, &def_miss))
-+	if (get_dests(attrs, fs_matcher, &dest_id, &dest_type, &qp, &flags))
- 		return -EINVAL;
-
--	if (def_miss)
-+	if (flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS)
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_FWD_NEXT_NS;
-
-+	if (flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP)
-+		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_DROP;
-+
- 	len = uverbs_attr_get_uobjs_arr(attrs,
- 		MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX, &arr_flow_actions);
- 	if (len) {
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index 07cf54333193..8e316ef896b5 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -243,6 +243,7 @@ enum mlx5_ib_flow_type {
-
- enum mlx5_ib_create_flow_flags {
- 	MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DEFAULT_MISS = 1 << 0,
-+	MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP = 1 << 1,
- };
-
- enum mlx5_ib_create_flow_attrs {
 --
 2.25.2
 
