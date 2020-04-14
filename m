@@ -2,125 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5C21A787E
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 12:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4601A7944
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 13:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438429AbgDNKe7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 06:34:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58364 "EHLO
+        id S2438985AbgDNLRp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 07:17:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41152 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438420AbgDNKep (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 06:34:45 -0400
+        with ESMTP id S1728734AbgDNLRi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 07:17:38 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAY6P7104127;
-        Tue, 14 Apr 2020 10:34:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=ODYjFKovVROzUffQ0Q5ivlO/NVShVWUd9U0ez6Ob+/M=;
- b=oMjbxPr5bvpeIWLYjDUb/X/0jGmLgtp0Dtw8+ySx8wn/QptD3yoNjH6VO1Wv6yxT+o1t
- LwIW07h3RS4l4z+M8Ak+19lQe6ZKScydFXO7srTgxYp6p0Y7bOUe7XP9VYDl9ZBdvhpf
- 3BgHIdPWVPALpkh9Ywr7shFedSWwOIE4WATzWIQVyKeEWUIVp1TUGgYoHaqM8n1SLdZd
- F+HM4IY/NiwTPOSf7FWhtmVB1alEWko2gSslNWaHCBh1Wxh5u/aNUm96WRlW5UNq+Cf0
- fok5yBl3r+mLR8TVzQKGhIlXEsolaNeWjtFiT+ZPxLBgPE4E8f+wPRHOzHx34h1lRQjE dQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 30b5um3p0b-1
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EBE5OV183588;
+        Tue, 14 Apr 2020 11:17:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=U1DYInaWF9r6JLCqRiQSfxpvGShrnJsJYzNtQlYMsPA=;
+ b=jAekoehyp68H0g1hHvBT0ect0LfjCX/eYzIBZfxwMAYnBA8eQiIOywlMQbiioF1YRz+c
+ Ydw50WmRwaEyXeV3U+j1YCzyDfvzDB36KQ8Nm5xiF2sKWsvoWPvtEUxFy9AcKSKx+mji
+ j2jEgakAGZkagBk9D+W3GNchB6Zh4Zc9P0kutW1SPoHhLpTRBDxBeqacOKxMjVBoml9L
+ p8JK7sEirMaRU/ZgdvYm+SBRSNsrWqQ6SMHAIMDKr6jgV+gcXkKY4cxQNKKnz01W2mPN
+ Srk+BsTj4z8zsHeBUEIS35JTE33tV2iWlYMuB9fl+mlZLtmOZ6cLqDfEhnnF4RLwosLE WQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30b5um3w47-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:34:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EAWu16018924;
-        Tue, 14 Apr 2020 10:34:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30bqm1d60n-1
+        Tue, 14 Apr 2020 11:17:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EBBwd1058337;
+        Tue, 14 Apr 2020 11:17:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30bqpg37xd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 10:34:38 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EAYb0h011233;
-        Tue, 14 Apr 2020 10:34:37 GMT
-Received: from dhcp-10-175-176-104.vpn.oracle.com (/10.175.176.104)
+        Tue, 14 Apr 2020 11:17:32 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EBHVNA019599;
+        Tue, 14 Apr 2020 11:17:31 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Apr 2020 03:34:37 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.60.0.2.5\))
-Subject: Re: [PATCH for-rc] RDMA/cma: fix race between addr_handler and
- resolve_route
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20200406181032.GI11616@mellanox.com>
-Date:   Tue, 14 Apr 2020 12:34:35 +0200
-Cc:     Doug Ledford <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        george kennedy <george.kennedy@oracle.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EAE5B24F-142B-478D-BBA5-BBF784AA9E39@oracle.com>
-References: <20200403184328.1154929-1-haakon.bugge@oracle.com>
- <20200403185707.GE8514@mellanox.com>
- <1720C7BF-D6E4-4779-B05D-203703042B36@oracle.com>
- <20200403193656.GF8514@mellanox.com>
- <EDBCDCC1-E03F-428A-8352-734E3F01B316@oracle.com>
- <20200406173149.GH11616@mellanox.com>
- <09A6E613-AA59-4C5F-889A-EF45722B7F69@oracle.com>
- <20200406181032.GI11616@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-X-Mailer: Apple Mail (2.3608.60.0.2.5)
+        with ESMTP ; Tue, 14 Apr 2020 04:17:30 -0700
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, ted.h.kim@oracle.com,
+        william.taylor@oracle.com
+Subject: [PATCH for-rc] RDMA/cm: Do not send REJ when remote_id is unknown
+Date:   Tue, 14 Apr 2020 13:17:20 +0200
+Message-Id: <20200414111720.1789168-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140087
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140093
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
  mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=3 malwarescore=0 priorityscore=1501
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140087
+ definitions=main-2004140093
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+In cm_destroy_id(), when the cm_id state is IB_CM_REQ_SENT or
+IB_CM_MRA_REQ_RCVD, an attempt is made to send a REJ with
+IB_CM_REJ_TIMEOUT as the reject reason.
 
+However, in said states, we have no remote_id. For the REQ_SENT case,
+we simply haven't received anything from our peer, for the
+MRA_REQ_RCVD case, the cm_rma_handler() doesn't pick up the remote_id.
 
-> On 6 Apr 2020, at 20:10, Jason Gunthorpe <jgg@mellanox.com> wrote:
->=20
-> On Mon, Apr 06, 2020 at 08:02:41PM +0200, H=C3=A5kon Bugge wrote:
->=20
->>> However, I'm not sure what the state machine is supposed to look
->>> like..
->>=20
->> The neat state machines in Figure 13{5,6} in IBTA version 1.3. If you =
-do not have it handy, I can send you the PDF off list.
->=20
-> That is the IB CM state machine
->=20
-> The RDMA CM I thought had extra things like this defered addr_resolve
-> business
+Therefore, it is no reason to send this REJ, since it simply will be
+tossed at the peer's CM layer (if it reaches it). If running in CX-3
+virtualized and having the pr_debug enabled in the mlx4_ib driver, we
+will see:
 
-The "runway" before you can send a REQ is not captured by IBTA. So the =
-{ADDR,ROUTE}_{QUERY,RESOLVED} states are not IBTA defined.
+mlx4_ib_demux_cm_handler: Couldn't find an entry for pv_cm_id 0x0
 
->>>> Shall I make a v2 base on next based on this idea, or do you have
->>>> something coming?
->>>=20
->>> Sure, I have nothing :)
->>>=20
->>> Also that rdma_destroy_id in addr_handler looks wrong.. ie we still
->>> retain pointers to the rdma_cm_id it destroys inside the struct
->>> ucma_context, don't we?
->>=20
->> On entry from user-space, we use the u32 id and looks it up in the
->> XArray. But if rdma_destoy_id() is called asynchronously called
->> between ucma_get_ctx_dev() and the de-reference of ctx->cm_id, we
->> are toast.
->=20
-> Is that what happens on the addr_handler path?
+because the proxy de-muxer is unable to determine which slave this MAD
+packet should be sent to.
 
-No, there, the main problem is the revert of the state transitions. The =
-first transition enables rdma_resolve_route() to pass its gate (i.e. =
-state =3D=3D ADDR_RESOLVED). Then it thinks the address is resolved, but =
-the addr_handler changes its mind afterwards.
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-
-Thxs, H=C3=A5kon
-
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 4794113ecd59..ed80e5b56e2b 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1058,10 +1058,6 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 	case IB_CM_REQ_SENT:
+ 	case IB_CM_MRA_REQ_RCVD:
+ 		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
+-		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_TIMEOUT,
+-				   &cm_id_priv->id.device->node_guid,
+-				   sizeof(cm_id_priv->id.device->node_guid),
+-				   NULL, 0);
+ 		break;
+ 	case IB_CM_REQ_RCVD:
+ 		if (err == -ENOMEM) {
+-- 
+2.20.1
 
