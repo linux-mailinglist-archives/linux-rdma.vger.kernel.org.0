@@ -2,130 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7E51A89A9
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 20:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260D71A8A16
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 20:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504048AbgDNSeq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 14:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504001AbgDNSeo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:34:44 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB634C061A0F
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:34:43 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c63so14467972qke.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UckdiV4g5smZ/YcYI1aDJQcvx18cWKoMgwV0GVKDwJ0=;
-        b=Qal0UHDj/Eh4X2gPNfet+Ka0Gd7Qxqv6WpAnof0EP/tM7en7YjAoUu3rwectliHx7Y
-         r/11+bJ0rk7/AA1OcEDXD0YMNQT+id7VTgB/BnjObZPMdLPfh4SqFd14nx6Ngqon4GJl
-         N1uiOu7wVABx2p4DOPdrqi0i1GwK4np0KxVY7jJOV+80BPCzYqXPRoE+YkXM6cOT22X7
-         suqYhKQbOmCb8IPB+SA6OC1Rv4kfGqukqe03wLBKfPm1FczWzmZc4h7MVrHJnzCzzMqP
-         LeC8pauqSDJJ7L8P0aVYRe+qybQjGc4hrCDzc7wRoOozJrVPBZS3LgeicsSvK3GxD6en
-         DfHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UckdiV4g5smZ/YcYI1aDJQcvx18cWKoMgwV0GVKDwJ0=;
-        b=Oy5tOHrNfAgdmEqaKpYraJf3J7nz6RgmpObEXddETm9lSTNqtniWQnP6dmvy7Twsim
-         SOy2aMpQxUPsTxdJt1CfLCaU6jnK1HwRTCSXlSudTFs82KQMtzWhD7xUKz2oR3imeSAh
-         0eCr7PPtJatxzGiOajmHyeALK2Q+VEQyJXLHhGNsi7YGiqwiC1xsMJynFOGNUOzr3e8v
-         jAQPlKMo1A9funhvSHi8RLuwhcm+Bml89yOaipVkpQKuBiWU5j0Wz4FsgUKDfBaWrr/R
-         PSnXusXqFhefg2drw42Q7QD6xAEFZtthDN8L3Ao+DzValbQ1L605BknWudQ+yQ/aYm37
-         RJCA==
-X-Gm-Message-State: AGi0PuZAxQLMzYlryFAyorKNu+1OM6AujwJY2aQr+mogjy4kc+sUWlm6
-        jZR4xYVkhbQegfLACjokEkiCUg==
-X-Google-Smtp-Source: APiQypLAHvd4BQDsWDVAsKlHDEm2qIIWVfGyjyhDo2xP6GrGkkqj/rTWWaUyHuGIzua7pF+OJeIiSQ==
-X-Received: by 2002:a37:6754:: with SMTP id b81mr2072274qkc.129.1586889282884;
-        Tue, 14 Apr 2020 11:34:42 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o6sm10819346qkd.113.2020.04.14.11.34.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 11:34:42 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOQOP-0007ea-Qq; Tue, 14 Apr 2020 15:34:41 -0300
-Date:   Tue, 14 Apr 2020 15:34:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
-        roland@purestorage.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
-Message-ID: <20200414183441.GA28870@ziepe.ca>
-References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
+        id S2504337AbgDNSro (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 14:47:44 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:43699 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504185AbgDNSrn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 14:47:43 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M597q-1jNK8G2wTc-0019oG; Tue, 14 Apr 2020 20:47:40 +0200
+Received: by mail-qt1-f172.google.com with SMTP id w24so11090673qts.11;
+        Tue, 14 Apr 2020 11:47:40 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaUj0jgMT/pF/Q4T4nB7p2Dvn1GmqpF6LCPz2+76M2w4s/3gzUO
+        jX4r+af9LMGBjZaeoAaGHZYqstvl+pWKP6ZPSNU=
+X-Google-Smtp-Source: APiQypJkm7YK7DFcAXzV9bKRiTg4ndg9+lnP/bhAkYKcaZ1Yw17IqxDBvH++61J2ztireirhfyoBdFwDtwNvTt2Nro4=
+X-Received: by 2002:ac8:d8e:: with SMTP id s14mr17254416qti.204.1586890059307;
+ Tue, 14 Apr 2020 11:47:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
+ <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
+ <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com>
+ <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
+ <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
+ <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
+ <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
+ <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
+In-Reply-To: <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Apr 2020 20:47:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
+Message-ID: <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "nico@fluxnic.net" <nico@fluxnic.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:lz+utpL2BuBOA5D9VOLFoYKJVgXLXYJqK4q5UjrxvDCIrqFf0MS
+ 3lwqvFNt+ZdhOi6W1+JUOaxRPxnZyz1gFrX8vajN9UA+jAAyTIvKc7WENid2RX/wLJgzjci
+ 3GOKK0p8/A14FVytNaUGvXPhjxfVlXgYktvK24OOKskHvQiRErMXEilQriSDhYn+fVRhYax
+ geT4oFaicC+O6wM54V3xA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BomH8QEDJV4=:ntIuB13EiCR7pWtapSJVge
+ J4cB8Aba+rh8/NTD9cEQ5TyuZ84tIDqwWeQCR2YbElbe3TJ36hfx3NBjVDqk5hVrQaaau2UFy
+ rV+Z2om/vZpkzaN1YxtH673J0giu8Iu9nVf2BkyqDneRJbm/wyC/modqYfdhHx8UeVZ/had/L
+ 7XvJ+mGC8pIQH1BRv4urhEgq5L42xPihQ1VfTRMwMNPSxq4ZxZLW2gIIWrxoi9d13XGlEtNFC
+ gPba6yESbPZMx7GPuJpDKeKdZeafCnVcNquETNmahkLgBk0Lp3n2YDXhfe6tLzCmgZaFj+Q8v
+ vl/Px13mgqBM0sY7qjsRP2SSMBPTHXQnZKR87cheG2H4K7ax+JznLa8fodDmjkcu/jCbbs1Vi
+ oVjZad18pJp5Gm1DhfUwpzKJo380efPkKxqaoEB+vV+Cnzvlk+GSu+Lxs1dk+F2wSdC+6uUZ6
+ 38LyRG2EWJrA+r76L7nVDZrx+YfizZA1LHCgpE1Dfwvj0FdG21nPAzLc+QvaBQM2+G/S+i2mW
+ /oR87M6mYgqMJ0ROMQqJp14Cbeo/D8+IpPvF7enJtrNEBOjUCkH7NmaMTvKpTM7WhQrMyjeAF
+ m/ltdC70nBsrpz9Wl12UQTV1+nIxVdAXTBeUOBvdiYjWnOU30EwwyF+8RlNKhe4aU0Ibrqu1m
+ t0h35AJEarmVsB2e4RIW8japZOHOzURvlmJETW9SqMrvhMj+fZ22/ITLL96vgWIzF9zCrmMOQ
+ 8yltUSqjVk6KqbMDCoGWMk+87nGvG8O5AmySaraRl5nyi7LUIY0VjpTb47Nax+Y1OLi5AMB3S
+ +9wwz0VSlwjQUobM/9/GFsXGCFOaYX2Snjyw5Fhvx65KWWi1M0=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 28, 2020 at 08:30:40AM +0100, Christophe JAILLET wrote:
-> There is an off-by-one issue when checking if there is enough space in the
-> output buffer, because we must keep some place for a final '\0'.
-> 
-> While at it:
->    - Use 'scnprintf' instead of 'snprintf' in order to avoid a superfluous
->     'strlen'
->    - avoid some useless initializations
->    - avoida hard coded buffer size that can be computed at built time.
-> 
-> Fixes: a51f06e1679e ("RDMA/ocrdma: Query controller information")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> The '\0' comes from memset(..., 0, ...) in all callers.
-> This could be also avoided if needed.
-> ---
->  drivers/infiniband/hw/ocrdma/ocrdma_stats.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
-> index 5f831e3bdbad..614a449e6b87 100644
-> --- a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
-> +++ b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
-> @@ -49,13 +49,12 @@ static struct dentry *ocrdma_dbgfs_dir;
->  static int ocrdma_add_stat(char *start, char *pcur,
->  				char *name, u64 count)
->  {
-> -	char buff[128] = {0};
-> -	int cpy_len = 0;
-> +	char buff[128];
-> +	int cpy_len;
->  
-> -	snprintf(buff, 128, "%s: %llu\n", name, count);
-> -	cpy_len = strlen(buff);
-> +	cpy_len = scnprintf(buff, sizeof(buff), "%s: %llu\n", name, count);
->  
-> -	if (pcur + cpy_len > start + OCRDMA_MAX_DBGFS_MEM) {
-> +	if (pcur + cpy_len >= start + OCRDMA_MAX_DBGFS_MEM) {
->  		pr_err("%s: No space in stats buff\n", __func__);
->  		return 0;
->  	}
+On Tue, Apr 14, 2020 at 7:49 PM Saeed Mahameed <saeedm@mellanox.com> wrote:
+> On Tue, 2020-04-14 at 17:25 +0200, Arnd Bergmann wrote:
+> > On Tue, Apr 14, 2020 at 5:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > Correct.
+> >
+>
+> Great !
+>
+> Then bottom line we will change mlx5/Kconfig: to
+>
+> depends on VXLAN || !VXLAN
 
-The memcpy is still kind of silly right? What about this:
+Ok
 
-static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
-{
-	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
-	int cpy_len;
+> This will force MLX5_CORE to m when necessary to make vxlan reachable
+> to mlx5_core.  So no need for explicit use of IS_REACHABLE().
+> in mlx5 there are 4 of these:
+>
+>         imply PTP_1588_CLOCK
+>         imply VXLAN
+>         imply MLXFW
+>         imply PCI_HYPERV_INTERFACE
 
-	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
-	if (cpy_len >= len || cpy_len < 0) {
-		pr_err("%s: No space in stats buff\n", __func__);
-		return 0;
-	}
-	return cpy_len;
-}
+As mentioned earlier, we do need to replace the 'imply PTP_1588_CLOCK'
+with the same
 
-Jason
+         depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
+
+So far I have not seen problems for the other two options, so I assume they
+are fine for now -- it seems to build just fine without PCI_HYPERV_INTERFACE,
+and MLXFW has no other dependencies, meaning that 'imply' is the
+same as 'select' here. Using 'select MLXFW' would make it clearer perhaps.
+
+      Arnd
