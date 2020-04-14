@@ -2,128 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6401A827A
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 17:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8381A829A
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 17:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407419AbgDNPUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 11:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
+        id S2440376AbgDNPYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 11:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2438611AbgDNPUS (ORCPT
+        by vger.kernel.org with ESMTP id S2390841AbgDNPXP (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:20:18 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18600C061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:20:18 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id w24so10384636qts.11
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:20:18 -0700 (PDT)
+        Tue, 14 Apr 2020 11:23:15 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33CCC061A10
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:23:14 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id s18so6387409qvn.1
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Z1YAow+p2oTS0KjZHDFQURwufvTps2Ola21Ebzq8/Ho=;
-        b=iyezjIJqp/sdBoQ3UXzMjDRI+QlR0jFpXTz00KcHVKW7gUIdLKtgUaLTamCODYtz44
-         ZauNxHF/IJdYh2sg7CUvVwod3mRBxoiB4q93Qzaj1fnEFF5JNbOt4qhCYFW/wI6SZZnO
-         hAueQYPyxW/A0iKkYz4XN+Lj7YKnTe40Gxbbrcr9183wAEfqaJyQiDO1A+2h4xYtp6qJ
-         Wj/ceKFv3tuB7I2dOeBYDUk+yoSGCAiOuIdNIZ8UDJSUEEio6zhwr8aYIwi0hjD+14d+
-         sLZOhQhqXJWbvf58qItDWr6KOsPTtAbESMzNm3CUJPKme/hM+vNEfnCvDCvnEU4sOb7Q
-         EIqA==
+        bh=mFojnywoPNyFdhtgvXnmkYzEiNUOhwI6TxTxAvK3xdg=;
+        b=SS4y0WhvQF1bhRQ3pn3wLMCiWkfm25jaLNJNqFQ3AGdG5Ie+8aNc3U9tGocHDfSWTi
+         nP+oDC2NmQXii1RTPcUNQIL8gVaiNDH9qzhRCfQwRsuSwl/EmmYHOIZ9KjxJur5xTeSL
+         7Vjbus/zWtsfWnZ8bBIMSrZuDZ0y/TqLZ0QIUfvodRUt9yC0QUXhZMc9fdqbHI2yoa6K
+         w1ySea+kHv4r8Ugu79ALt3mtAd1B/Ihd2AamFw/3d/AtK6QauU6u7ZaiyS4j+fQmNDwy
+         EDJOBUhMExnxLYWwN9HQ1rqa8gZ/OgdahR8fmY45lXLkUx5Vq8b+XdpMp0OL1rfhdNWu
+         ti+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Z1YAow+p2oTS0KjZHDFQURwufvTps2Ola21Ebzq8/Ho=;
-        b=OUGNhjiwQmN1KWF4O0flWgcAhgN1OpuoC/MMyAj3LUGl6BoUzhLLH3DFtoIUsVVyXT
-         4LJ0+X3YJdwyccksmN0H27vyPxFDgTTtJd1XkMROfKyXOsoUd7IEUe0zo4ZvY5JkLbwD
-         OFz8jobs0LqujqTRTddB9+VamIJGAyqnj0z0bJH+ai4tarqC18LtmLz606xLTl6YysVX
-         vbEaVVfl1OlrJ7vJ3G+qz45cMdDpbnIMtqtJzfzm2eV1sEUmBBF8S7lL6Gjmo0/gTUHd
-         qZ/6aeoV1vpM099D36oWddY6Vs1uEVCHSiBsxelpb49xXc3E3yxbI96EVWhn8kIielwT
-         SIAg==
-X-Gm-Message-State: AGi0Puasu2WcKY3R3PfEeM9Ath/6nOuoIH1Jj3kcQ5aAeAv7icxwRmZ0
-        ZwuFMHXkQN6lPCkK6Nzs+3vCuQ==
-X-Google-Smtp-Source: APiQypIptgaajcv77BtAUSNRPq5NLkX+lMzcXJvBuSXT5gbE3Qw12Uvx7WK9RRNPmKVPyXyIO06lXw==
-X-Received: by 2002:aed:3bf7:: with SMTP id s52mr16668392qte.362.1586877617287;
-        Tue, 14 Apr 2020 08:20:17 -0700 (PDT)
+        bh=mFojnywoPNyFdhtgvXnmkYzEiNUOhwI6TxTxAvK3xdg=;
+        b=cvttB1w+PvOrQZISRuhsvyS3YK5WSjMAA0CGIsdQS6v12+kojJG4GUKXgvWZRGQLLt
+         ZGARIbctlfwOvdYaIEqi/n537jvRqjjaLsBfZGqj+7NuhIseb/wo+ZpikqH+PvhDCsmg
+         9PLs9ik2PoSe0RICL0pfLuaxV5nVqyCmEFyIY6Q3/Y9jO99ISbnFIQRm/N2ITgZAJNwm
+         gdRGP0n1zlagp54VK++b17OTASfABxNii8nF7Hl2KqoXjNBDSQt+JwxDEpc/7J2tygrm
+         LA2oX8+qz+Qvq0lGcb96RZGfBLm/yVSpCe7V1nHol5MzsDZkYDWnotiwOrXldv7nm/qv
+         NQ6w==
+X-Gm-Message-State: AGi0PuZx+I2wFFfAJlc0ndHzKAuVKZ6aSX7f7vhIe6V2xMpsGakUgBOp
+        O7P6bdbEBph3ML7+/miGsU2vPQ==
+X-Google-Smtp-Source: APiQypKtItLidlBv85QFnpoyu7Va9Voe4R7MeN23XgRqelBoPM+HtCP/PCBCt2N7ezfG4+eyRUxTjA==
+X-Received: by 2002:a0c:ac48:: with SMTP id m8mr509910qvb.13.1586877793898;
+        Tue, 14 Apr 2020 08:23:13 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id y127sm10755689qkb.76.2020.04.14.08.20.16
+        by smtp.gmail.com with ESMTPSA id m11sm10391993qkg.130.2020.04.14.08.23.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 08:20:16 -0700 (PDT)
+        Tue, 14 Apr 2020 08:23:13 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jONMG-0005Bp-8h; Tue, 14 Apr 2020 12:20:16 -0300
-Date:   Tue, 14 Apr 2020 12:20:16 -0300
+        id 1jONP6-0005EN-Cy; Tue, 14 Apr 2020 12:23:12 -0300
+Date:   Tue, 14 Apr 2020 12:23:12 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] svcrdma: Fix leak of svc_rdma_recv_ctxt objects
-Message-ID: <20200414152016.GE5100@ziepe.ca>
-References: <20200407190938.24045.64947.stgit@klimt.1015granger.net>
- <20200407191106.24045.88035.stgit@klimt.1015granger.net>
- <20200408060242.GB3310@unreal>
- <D3CFDCAA-589C-4B3F-B769-099BF775D098@oracle.com>
- <20200409174750.GK11886@ziepe.ca>
- <20200413192907.GA23596@fieldses.org>
- <20200414121931.GA5100@ziepe.ca>
- <20200414151303.GA9796@fieldses.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nico@fluxnic.net" <nico@fluxnic.net>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+Message-ID: <20200414152312.GF5100@ziepe.ca>
+References: <20200408202711.1198966-1-arnd@arndb.de>
+ <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
+ <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
+ <20200408224224.GD11886@ziepe.ca>
+ <87k12pgifv.fsf@intel.com>
+ <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
+ <20200410171320.GN11886@ziepe.ca>
+ <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
+ <20200414132900.GD5100@ziepe.ca>
+ <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414151303.GA9796@fieldses.org>
+In-Reply-To: <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 11:13:03AM -0400, J. Bruce Fields wrote:
-> On Tue, Apr 14, 2020 at 09:19:31AM -0300, Jason Gunthorpe wrote:
-> > On Mon, Apr 13, 2020 at 03:29:07PM -0400, J. Bruce Fields wrote:
-> > > On Thu, Apr 09, 2020 at 02:47:50PM -0300, Jason Gunthorpe wrote:
-> > > > On Thu, Apr 09, 2020 at 10:33:32AM -0400, Chuck Lever wrote:
-> > > > > The commit ID is what automation should key off of. The short
-> > > > > description is only for human consumption. 
-> > > > 
-> > > > Right, so if the actual commit message isn't included so humans can
-> > > > read it then what was the point of including anything?
-> > > 
-> > > Personally as a human reading commits in a terminal window I prefer the
-> > > abbreviated form.
-> > 
-> > Frankly, I think they are useless, picking one of yours at random:
-> > 
-> >     Fixes: 4e48f1cccab3 "NFSD: allow inter server COPY to have... "
-> > 
-> > And sadly the '4e48f1cccab3' commit doesn't appear in Linus's tree so
+On Tue, Apr 14, 2020 at 04:27:41PM +0200, Arnd Bergmann wrote:
+> On Tue, Apr 14, 2020 at 3:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > On Fri, Apr 10, 2020 at 07:04:27PM +0000, Saeed Mahameed wrote:
+> > > On Fri, 2020-04-10 at 14:13 -0300, Jason Gunthorpe wrote:
+> > > > On Fri, Apr 10, 2020 at 02:40:42AM +0000, Saeed Mahameed wrote:
+> > > >
+> > > > > This assumes that the module using FOO has its own flag
+> > > > > representing
+> > > > > FOO which is not always the case.
+> > > > >
+> > > > > for example in mlx5 we use VXLAN config flag directly to compile
+> > > > > VXLAN related files:
+> > > > >
+> > > > > mlx5/core/Makefile:
+> > > > >
+> > > > > obj-$(CONFIG_MLX5_CORE) += mlx5_core.o
+> > > > >
+> > > > > mlx5_core-y := mlx5_core.o
+> > > > > mlx5_core-$(VXLAN) += mlx5_vxlan.o
+> > > > >
+> > > > > and in mlx5_main.o we do:
+> > > >
+> > > > Does this work if VXLAN = m ?
+> > >
+> > > Yes, if VXLAN IS_REACHABLE to MLX5, mlx5_vxlan.o will be
+> > > compiled/linked.
+> >
+> > So mlx5_core-m does the right thing somehow?
 > 
-> Ow, apologies.  Looks like I rebased after writing that Fixes tag.
+> What happens with CONFIG_VXLAN=m is that the above turns into
 > 
-> I wonder if it's possible to make git warn....
+> mlx5_core-y := mlx5_core.o
+> mlx5_core-m += mlx5_vxlan.o
 > 
-> Looks like a pre-rebase hook could check the branch being rebased for
-> "Fixes:" lines referencing commits on the rebased branch.
+> which in turn leads to mlx5_core.ko *not* containing mlx5_vxlan.o,
+> and in turn causing that link error against
+> mlx5_vxlan_create/mlx5_vxlan_destroy, unless the IS_ENABLED()
+> is changed to IS_REACHABLE().
 
-I have some silly stuff to check patches before pushing them and it
-includes checking the fixes lines because they are very often
-wrong, both with wrong commit IDs and wrong subjects!
+What about the reverse if mlx5_core is 'm' and VLXAN is 'y'?
 
-linux-next now automates complaining about them, but perhaps not
-following the standard format defeats that..
+ mlx5_core-m := mlx5_core.o
+ mlx5_core-y += mlx5_vxlan.o
 
-Use 'git merge-base --is-ancestor fixes_id linus/master' to check
-them.
+Magically works out?
 
-> > now we are just totally lost, with a bad commit ID and a mangled
-> > subject line.
+> > IIRC that isn't what the expression does, if vxlan is 'n' then
+> >   n || !n == true
 > 
-> For what it's worth, that part of the subject line is enough to find the
-> original commit (even to uniquely specify it).
+> It forces MLX5_CORE to 'm' or 'n' but not 'y' if VXLAN=m,
+> but allows any option if VXLAN=y
 
-Lucky, but I wouldn't count on this as the general rule.. The point of
-the full subject line is to be informative to the reader and serve as
-a backup key in case the hash got mangled, as happens surprisingly
-often..
+And any option if VXLAN=n ?
 
 Jason
