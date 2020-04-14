@@ -2,94 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3761A8A3F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 20:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755F91A8A65
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 21:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504479AbgDNSvs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 14:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S2504569AbgDNTAR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 15:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504464AbgDNSvo (ORCPT
+        by vger.kernel.org with ESMTP id S2504568AbgDNTAL (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:51:44 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780BBC061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:51:44 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g74so14451425qke.13
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:51:44 -0700 (PDT)
+        Tue, 14 Apr 2020 15:00:11 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69BCC061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 12:00:11 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 20so6481007qkl.10
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 12:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=mNvcNki6DCZFlJtIurocF3iVY17GM7LhVVQ5RlcG4fI=;
-        b=NlJ+/mDaUQtpLI6q/kjYwbiSsd0/JkXQsHrWHugJxu7K9BN+1w+KqhPTq/bUaSZ79f
-         a1msdGVgwtl1lPqz04n0C01bL3IDng99SwhCtdgIXBVR4An/Vgb90pyj05viPRUyaMbV
-         YdpPZ10cL2PkiznAGyWoAK3GPxlFSWhI0KjoH1KI7b9HprwlH+MjHidj6GKerGuiE3EB
-         RqYCXFZbE635rhJrhiQ5MwUaUKWw1+SiDegYjYMfdGQ/iISeDWHX3CUjxsyJrqTqE+5L
-         9qMwcRHjLdWIeQ0R8ZDKOhMzUm/fcfU6Bx7sdkGyJWcGu/Sqcn46pvfWzxEpQ8Jjpg6d
-         chqA==
+        bh=90Tgv69rBj5juCZjgOb+Srz2hKZI/H0KVL8B8b7TvMk=;
+        b=FeAKYkkGz+R8EZASeqiStlgiyXnGmRqif8sybwMCa0eNM1nhCt5v+mprE1C0Rkwgum
+         9ahqXOAkrcKfpSh0f3mCjoFu7e+y/xdn11ISeXZdQe5tlzvAmAuBSxVoBqVZOibUxyhQ
+         zWqpGsvRvUgv/G0rLECBUpNkFU2Vf51QqbtDYfSynM+G6df7R6XHN0zh20uzywcBZ1cB
+         c6fgFs7TemF0OiuEqzr9Pvxi8VVVfkGK5XSO0CWToYQCka1nuab9dB6UYre2wBppjs/H
+         GdgdbbKJ6RXqXtj/9C8eYJ4l6vl8NpaFvvEBwYLOsqkl0M+KGe+wDhy7CebMSFSVPg57
+         Idvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mNvcNki6DCZFlJtIurocF3iVY17GM7LhVVQ5RlcG4fI=;
-        b=h6UxdPnXQsE48QbPRMbTq9I2rZNqWSnQ7ysG/pDwoCPmH+343qYm/oVydy0yLYbWz8
-         Y9rzknRCezUpY2EW3vzMr2yhmFiyNiQm40yHBgKN6dMLLPEUAMcvo9C+AvWTtBv2x+HI
-         AVdewqHU7tv9J+WxOKZjdfrJ1m9im/hqzOvOE37xd6gmeMW9bo4/JJP11n4RBbl6uzp9
-         O7nNLCkAuyanlEHaR6ng4GDx4xVKyny6Wm4Jf2xShxKETXLsYOTsGSNw2S3ZvaOy91hv
-         S6YeHUr2xhyXcmFLOmOIo8kGBf891+ac4D7FLdlRRYTVO/KL9wl945Gxs20E4mZheZWE
-         8PTg==
-X-Gm-Message-State: AGi0PuasCSDiXjRbNqI9NVjNCsErZgs2ePcNkeR/YHDdm4g+G8py0At7
-        GxwhgIJ7SS1Pfo9xmbnfc6ya8w==
-X-Google-Smtp-Source: APiQypIfGc4y/p8sfMl7qqOxTl+qTWeoksvDcOBTkh7phnqgjSUcZ+0q7EorhqNV5eZg6PlzHUaiIg==
-X-Received: by 2002:a05:620a:15a4:: with SMTP id f4mr8808177qkk.221.1586890303770;
-        Tue, 14 Apr 2020 11:51:43 -0700 (PDT)
+        bh=90Tgv69rBj5juCZjgOb+Srz2hKZI/H0KVL8B8b7TvMk=;
+        b=Ftn0bc6vymdD+zrKGEqAagY+uIQJ3Euu/igMDFAwC1McYHb+Nzzz2FQ71e3oxd7y8f
+         EVxIGz1fczlDCv4wjj6k8YOEz+HGU9U6DK+V//hKZjjqpKfEDn8kiyZsFM9zi/hDeJzC
+         IJyZfZLbHrooKJj94D4ATr5H/9KpfH3ru1sgtPTqnS7L47BGDmzaXpUS/sXsKo7HpYhB
+         v29y4hGmSjsX49CEPlBf0CXhUqg+X5Drqwsb5buF0W0tmYKF+jgV0aKS2rHvUVATIc0j
+         Lvq7TA+pMnElB1q1jH8c9JLtsFsu9YhpprlQe+dL1A7POudicZqYUsW5BkqrYYTYQceR
+         X8Xw==
+X-Gm-Message-State: AGi0PuaCPAwNJfUeKySblYFV7eyOga0KkrbDaJ9coSK/ZbcgWcZrQ7Sj
+        nbNDLco9BFTI8oJ5AGpeWuH8vw==
+X-Google-Smtp-Source: APiQypJclVKXcDWr7YTnZ9PWOPSWc/RKa771cCWQxkfdLF3rzNN9madTFWJ1N6DXgcZ/vNzxQKvhpg==
+X-Received: by 2002:ae9:f70a:: with SMTP id s10mr11094189qkg.313.1586890811021;
+        Tue, 14 Apr 2020 12:00:11 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id l189sm11101494qkd.112.2020.04.14.11.51.43
+        by smtp.gmail.com with ESMTPSA id r128sm11096283qke.95.2020.04.14.12.00.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 11:51:43 -0700 (PDT)
+        Tue, 14 Apr 2020 12:00:10 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jOQes-0001CG-PO; Tue, 14 Apr 2020 15:51:42 -0300
-Date:   Tue, 14 Apr 2020 15:51:42 -0300
+        id 1jOQn4-000339-0o; Tue, 14 Apr 2020 16:00:10 -0300
+Date:   Tue, 14 Apr 2020 16:00:10 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] RDMA/cm: Fix missing RDMA_CM_EVENT_REJECTED
- event after receiving REJ message
-Message-ID: <20200414185142.GB4556@ziepe.ca>
-References: <20200406173242.1465911-1-leon@kernel.org>
+        Zhu Yanjun <yanjunz@mellanox.com>,
+        Amir Vadai <amirv@mellanox.com>,
+        Haggai Eran <haggaie@mellanox.com>,
+        Kamal Heib <kamalh@mellanox.com>, linux-rdma@vger.kernel.org,
+        Moni Shoua <monis@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/rxe: Set default vendor ID
+Message-ID: <20200414190010.GA11664@ziepe.ca>
+References: <20200406173501.1466273-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406173242.1465911-1-leon@kernel.org>
+In-Reply-To: <20200406173501.1466273-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 08:32:42PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Mon, Apr 06, 2020 at 08:35:01PM +0300, Leon Romanovsky wrote:
+> From: Zhu Yanjun <yanjunz@mellanox.com>
 > 
-> The cm_reset_to_idle() call before formatting event changed the CM_ID
-> state from IB_CM_REQ_RCVD to be IB_CM_IDLE. It caused to wrong value
-> of CM_REJ_MESSAGE_REJECTED field.
+> The RXE driver doesn't set vendor_id and user space applications
+> see zeros. This causes to pyverbs tests to fail with the following
+> traceback, because the expectation is to have valid vendor_id.
 > 
-> The result of that was that rdma_reject() calls in the passive side
-> didn't generate RDMA_CM_EVENT_REJECTED event in the active side.
+> Traceback (most recent call last):
+>   File "tests/test_device.py", line 51, in test_query_device
+>     self.verify_device_attr(attr)
+>   File "tests/test_device.py", line 77, in verify_device_attr
+>     assert attr.vendor_id != 0
 > 
-> Fixes: 81ddb41f876d ("RDMA/cm: Allow ib_send_cm_rej() to be done under lock")
+> In order to fix it, we will set vendor_id 0XFFFFFF, according
+> to the IBTA v1.4 A3.3.1 VENDOR INFORMATION section.
+> 
+> """
+> A vendor that produces a generic controller (i.e., one that supports a
+> standard I/O protocol such as SRP), which does not have vendor specific
+> device drivers, may use the value of 0xFFFFFF in the VendorID field.
+> """
+> 
+> Before:
+> "
+> hca_id: rxe0
+>         transport:                      InfiniBand (0)
+>         fw_ver:                         0.0.0
+>         node_guid:                      5054:00ff:feaa:5363
+>         sys_image_guid:                 5054:00ff:feaa:5363
+>         vendor_id:                      0x0000
+> "
+> 
+> After:
+> "
+> hca_id: rxe0
+>         transport:                      InfiniBand (0)
+>         fw_ver:                         0.0.0
+>         node_guid:                      5054:00ff:feaa:5363
+>         sys_image_guid:                 5054:00ff:feaa:5363
+>         vendor_id:                      0xffffff
+> "
+> 
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
 > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/infiniband/core/cm.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> --
-> 2.25.1
+>  drivers/infiniband/sw/rxe/rxe.c       | 1 +
+>  drivers/infiniband/sw/rxe/rxe_param.h | 3 +++
+>  2 files changed, 4 insertions(+)
 
-Applied to for-rc, thanks
+Applied to for-next, thanks
 
 Jason
