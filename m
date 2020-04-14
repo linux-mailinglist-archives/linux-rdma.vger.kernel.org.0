@@ -2,101 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AC11A7B87
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 14:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0D11A7DFC
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 15:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502379AbgDNM4u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 08:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502372AbgDNM4r (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:56:47 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5B5C061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 05:56:47 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id s63so8832854qke.4
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 05:56:47 -0700 (PDT)
+        id S1732124AbgDNN3P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 09:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732111AbgDNN3C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 09:29:02 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421B7C061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 06:29:02 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v7so13180897qkc.0
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 06:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=tB72+XXLm2yUjrWAv44G5JTZV0a6ONe5aJ0Qlk1TmqQ=;
-        b=W0UG0g8fS3NZFlKAI6xueuOnXDs2fFIA5QiM0ri/P2agC1FV4K7iQq3pX3kYrQfGhQ
-         AwZiWTR5gcgUK/8SfgVLN1oAIyspOoYcv7N4FelTfkpgVXLkI+e4f917wExkcespYqvc
-         CA0MRt7f7MwbwiugB6OYO0UJpEP4GWuUMmUmXphHG1ofvN5vwsJDpS2Wi+8CdNqKEcwS
-         KPtS8VJt010PVp1PI4kElNJvkW+nM5ICbLggbv08OXSSE06jelVa7QKJ8G0iR5TYOIOO
-         j1o2EzHot3h+g6hctJXhPBiyLh30rOWf1J9kBNZCNc/jVAcmb/SRmNCfQcio4EorJiIN
-         +taQ==
+        bh=35JPFQoqu2n9cN3F6+ZUlaG1xiUip5sDdcTtmfYSpe8=;
+        b=SGDVO9RhBeIKEvWxZM+JWkgmaml/HD1RGTWogUTjrp7mfpYcvQzhzvnQvuqqNth22N
+         Rruj/VI4H3I+sFH0OMY7v28QPW7MuXUg2mASS1xE6j7UY02Vsml5mZ/Qw3RjVn6hM5sL
+         91+i14Bcrzqhm6veEVFJKC4kDq6XPaCQMogswLGFbM3gHKAmva9nPlymq+fzZNGMon0d
+         x8zpf/ituX5C+wfeuP6qyk4GEct1eoKycovq5kubVEQ6lMA/5i8wWni2DZtPa6Up9Ooi
+         kYXcRlzmeiczsaiU0z/VZCQS1033PVmAEKoP0aAKyt6Q1y5kmS85rGIwGACP5nqbuo27
+         H/ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tB72+XXLm2yUjrWAv44G5JTZV0a6ONe5aJ0Qlk1TmqQ=;
-        b=Zl+TmlwgDbS3xchSdVkYw+JHN5hmqiOR3DStouPyEgeXpiIXSiRihA79DIF+SDItTK
-         bJZCG4PEHqLZKI4W/uMvDB28+BpCyZQkzWJEA7L5mR+uXTWkopfuKJ5F5AZQyJBm7B/E
-         aJRHJdL4bG41UuzmtM30dbljEj3iKavEknfsRQarw3CeWHjFrSXxAEmSYY65BdNJvmty
-         PI+5W3pmVZwGjUDPM2U1/j9g7uYElZMug8/oMfG6vcZZnTiLUnHgGjcPQKx9dOfqSwyf
-         YsYkgWUHsFzpcACuB/5OIWP24nw8onDzZXHSTssbvG+HWl93Ph49sDL96BAWI0/Wn2wf
-         fc9A==
-X-Gm-Message-State: AGi0PubUAIjHAiTYGJjhZdpnJYa1riVYjISRp9qBw9eLZ4Oat1Esipxy
-        XGBJS/aKyzrwFImPZzEMbNW+aQ==
-X-Google-Smtp-Source: APiQypKt9s9ie3OACO2HQ7rOEpVzVMud2ucheqX9shj6g0gTzvFzCE/DYgKk57i3z703M3G0jKXnXQ==
-X-Received: by 2002:ae9:dfc2:: with SMTP id t185mr21241622qkf.20.1586869006819;
-        Tue, 14 Apr 2020 05:56:46 -0700 (PDT)
+        bh=35JPFQoqu2n9cN3F6+ZUlaG1xiUip5sDdcTtmfYSpe8=;
+        b=igkV09i+1pwCHiH6nW2Hdy98bAmu4qgMsL8QqMRXugSyRuoahU1SViKx+la4jXTu1w
+         4hWr9nDx0BkPf55LkYoTgh5RGIMKpO3xCWOgH2KMaa+pwYpPaa01q/zo76zTa5IPHoa7
+         rBZuRqOidN5+USB1NJ39YEAYrGjBgefwZ7+2nmxN4Ytvggncyq56QNq/JVVRdCpp3jX+
+         5wFypY85mUHqdvKlh+h+lVTbAeTsJZhmo4jap+OSwFI2k5i07xz7IbqDJbYUWLYVdWyV
+         SZ6wkPGOUEko7j7IuEigk84SEuMPogunnnNr/KksvJKsS8r2jVDki40JpAsnffo/WIZh
+         AYpw==
+X-Gm-Message-State: AGi0PuawpEt+htb8PI3d3Kk7AqTp8xYgucaEzAufoczHzixjIyeIIbPx
+        +dEv8p1kRnCm14H9NdsE/C4Ggw==
+X-Google-Smtp-Source: APiQypIkNBlhG/qtn+tMNh1eYCoqf1FbWKttUwwrXZkT7Pr6J06H5IKbF/sYAPrVFKbZXZI1qCFvng==
+X-Received: by 2002:a37:cc7:: with SMTP id 190mr6464058qkm.44.1586870941325;
+        Tue, 14 Apr 2020 06:29:01 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p1sm10523046qkf.73.2020.04.14.05.56.46
+        by smtp.gmail.com with ESMTPSA id f1sm9986663qkl.91.2020.04.14.06.29.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 05:56:46 -0700 (PDT)
+        Tue, 14 Apr 2020 06:29:00 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jOL7N-0004JF-TM; Tue, 14 Apr 2020 09:56:45 -0300
-Date:   Tue, 14 Apr 2020 09:56:45 -0300
+        id 1jOLca-000515-3n; Tue, 14 Apr 2020 10:29:00 -0300
+Date:   Tue, 14 Apr 2020 10:29:00 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 4/6] RDMA/hns: Simplify the cqe code of poll cq
-Message-ID: <20200414125645.GC5100@ziepe.ca>
-References: <1586760042-40516-1-git-send-email-liweihang@huawei.com>
- <1586760042-40516-5-git-send-email-liweihang@huawei.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nico@fluxnic.net" <nico@fluxnic.net>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
+Message-ID: <20200414132900.GD5100@ziepe.ca>
+References: <20200408202711.1198966-1-arnd@arndb.de>
+ <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
+ <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
+ <20200408224224.GD11886@ziepe.ca>
+ <87k12pgifv.fsf@intel.com>
+ <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
+ <20200410171320.GN11886@ziepe.ca>
+ <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586760042-40516-5-git-send-email-liweihang@huawei.com>
+In-Reply-To: <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 02:40:40PM +0800, Weihang Li wrote:
-> From: Lang Cheng <chenglang@huawei.com>
+On Fri, Apr 10, 2020 at 07:04:27PM +0000, Saeed Mahameed wrote:
+> On Fri, 2020-04-10 at 14:13 -0300, Jason Gunthorpe wrote:
+> > On Fri, Apr 10, 2020 at 02:40:42AM +0000, Saeed Mahameed wrote:
+> > 
+> > > This assumes that the module using FOO has its own flag
+> > > representing
+> > > FOO which is not always the case.
+> > > 
+> > > for example in mlx5 we use VXLAN config flag directly to compile
+> > > VXLAN
+> > > related files:
+> > > 
+> > > mlx5/core/Makefile:
+> > > 
+> > > obj-$(CONFIG_MLX5_CORE) += mlx5_core.o
+> > > 
+> > > mlx5_core-y := mlx5_core.o
+> > > mlx5_core-$(VXLAN) += mlx5_vxlan.o
+> > > 
+> > > and in mlx5_main.o we do:
+> > 
+> > Does this work if VXLAN = m ?
 > 
-> Encapsulate codes to get status of cqe into a function and use map table
-> instead of switch-case to reduce cyclomatic complexity of
-> hns_roce_v2_poll_one().
-> 
-> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 130 +++++++++++++----------------
->  1 file changed, 57 insertions(+), 73 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index e938bd8..c2d2c9e 100644
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -2954,6 +2954,61 @@ static int hns_roce_v2_sw_poll_cq(struct hns_roce_cq *hr_cq, int num_entries,
->  	return npolled;
->  }
->  
-> +static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
-> +			   struct hns_roce_v2_cqe *cqe, struct ib_wc *wc)
-> +{
-> +	static struct {
-> +		u32 cqe_status;
-> +		enum ib_wc_status wc_status;
-> +	} map[] = {
+> Yes, if VXLAN IS_REACHABLE to MLX5, mlx5_vxlan.o will be
+> compiled/linked.
 
-Also should be const
+So mlx5_core-m does the right thing somehow?
+
+> > 
+> > > if (IS_ENABLED(VXLAN))
+> > >        mlx5_vxlan_init()
+> > > 
+> > > after the change in imply semantics:
+> > > our options are:
+> > > 
+> > > 1) use IS_REACHABLE(VXLAN) instead of IS_ENABLED(VXLAN)
+> > > 
+> > > 2) have MLX5_VXLAN in mlx5 Kconfig and use IS_ENABLED(MLX5_VXLAN) 
+> > > config MLX5_VXLAN
+> > > 	depends on VXLAN || !VXLAN
+> > > 	bool
+> > 
+> > Does this trick work when vxlan is a bool not a tristate?
+> > 
+> > Why not just put the VXLAN || !VXLAN directly on MLX5_CORE?
+> > 
+> 
+> so force MLX5_CORE to n if vxlan is not reachable ? 
+
+IIRC that isn't what the expression does, if vxlan is 'n' then 
+  n || !n == true
+
+The other version of this is (m || VXLAN != m)
+
+Basically all it does is prevent MLX5_CORE=y && VXLAN=m
+
+> and how do we compile mlx5_vxlan.o wihout a single flag 
+> can i do in Makefile :
+> mlx5_core-$(VXLAN || !VXLAN) += mlx5_vxlan.o ?? 
+
+No, you just use VXLAN directly, it will be m, n or y, but it won't be
+m if mlx5_core is y
 
 Jason
