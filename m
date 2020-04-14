@@ -2,112 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0F41A82A4
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 17:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333561A8346
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 17:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439396AbgDNP0G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 11:26:06 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:49335 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729755AbgDNP0B (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 11:26:01 -0400
-Received: from mail-qt1-f177.google.com ([209.85.160.177]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MlfCm-1iyQMg4B2Q-00ihuc; Tue, 14 Apr 2020 17:25:57 +0200
-Received: by mail-qt1-f177.google.com with SMTP id w24so10404110qts.11;
-        Tue, 14 Apr 2020 08:25:56 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYEawHzwf0tXCXIhqzyveDf/fKgTJRq7lmc/+qMlr9Ipu+OaO8G
-        0dGxzi9Jeq3U1wcV3mVJHRnr9OgzCouXCMt4z3U=
-X-Google-Smtp-Source: APiQypL2bnXf86E03hawsz8pxDqc8oMdZRSmBA+dTNzneuRbxAzCaV1aI5lbgXSqxBtoHIjMy0g/toQKbqbs9h0eD6I=
-X-Received: by 2002:aed:20e3:: with SMTP id 90mr16307053qtb.142.1586877955579;
- Tue, 14 Apr 2020 08:25:55 -0700 (PDT)
+        id S2440553AbgDNPih (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 11:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2440495AbgDNPhc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:37:32 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8765DC061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:37:31 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id x10so1344711oie.1
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 08:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=spgEKsLHuoSv2vMq2/Lj/d/1/1xxZuCoTVcXDlhH9Ok=;
+        b=QCa+HQiqSjjGQWMb/RlUNGNvWzhKgNJFUp8IYc5gSGyoBrGoNluUOC/wFoexVZ7Fi+
+         +um4IaVWkfPhcQ8/g8hj7XRfww+n/f7r0rYzT2wXnDuXuIpqdfTFqTO9iq6N6T9a8GrQ
+         GQ9eePSdjlTs3z7WBwR4w/0viLaAziacG3g8g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=spgEKsLHuoSv2vMq2/Lj/d/1/1xxZuCoTVcXDlhH9Ok=;
+        b=MZy5QmZkTWkpD3q7PdxLD33EZmUvyhXvuUxz04JCQjE3W9FOvGpmZZRdgolK8JviUh
+         ztkBvkbGxuk41QdzCDwXwo1SIoC62J53H0dRozetxREKwTsBJi5+gw9oe5hkFnmCjlu2
+         3C1NIXZ9/aedECw8ejoyQxFV5fdLy5nGn8eEaIq+xeinaeVBRhRbgM+8xW0Lb6FjVpVj
+         oXYASw6ZkN46yA08528OMleVaguFddCkWCXihZjolDcbrksIA8fk6W9qVg3PhvLscbni
+         44a9/4zKksD10CIyqJI4kKWp4u12lRfdR68lRdasMFNiIdR64yaRnzCLIDShm1EV5spu
+         j4LA==
+X-Gm-Message-State: AGi0PuYhe3MNj/66rgeog3PXoXJRIQZdDvGwdufWzFhNS+GjdxHY3GQz
+        dknHsgTbqAvAM/L3QaFuCQNvpmYA9BQ+28x1EC6H9g==
+X-Google-Smtp-Source: APiQypLsvLDVhQlSCSYfwXakR2y/dcpDVgVfmQK0C2JClQk86N/kbNsZ8j+53xoehuEj3kRAtjmVc4hh5VckYQcEdUg=
+X-Received: by 2002:aca:2113:: with SMTP id 19mr10130356oiz.128.1586878650635;
+ Tue, 14 Apr 2020 08:37:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
- <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
- <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com>
- <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
- <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
- <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
- <20200414152312.GF5100@ziepe.ca>
-In-Reply-To: <20200414152312.GF5100@ziepe.ca>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Apr 2020 17:25:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
-Message-ID: <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "leon@kernel.org" <leon@kernel.org>,
+References: <20200408202711.1198966-1-arnd@arndb.de> <CGME20200408202802eucas1p13a369a5c584245a1affee35d2c8cad32@eucas1p1.samsung.com>
+ <20200408202711.1198966-5-arnd@arndb.de> <ff7809b6-f566-9c93-1838-610be5d22431@samsung.com>
+ <CAK8P3a2BXZAiHh83RZJ-v9HvoE1gSED59j8k0ydJKCnHzwYz=w@mail.gmail.com>
+In-Reply-To: <CAK8P3a2BXZAiHh83RZJ-v9HvoE1gSED59j8k0ydJKCnHzwYz=w@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 14 Apr 2020 17:37:18 +0200
+Message-ID: <CAKMK7uGpRkPsNqFR=taD68dT8T2tnEhias380ayGnjMH1b09xg@mail.gmail.com>
+Subject: Re: [RFC 4/6] drm/bridge/sii8620: fix extcon dependency
+To:     Arnd Bergmann <arnd@arndb.de>,
+        "Nikula, Jani" <jani.nikula@linux.intel.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Networking <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma <linux-rdma@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:RfyQ2xDdl1ZlEgiL+Y7PvwDBC33min6ODLsofcFtD6lUaRExO0j
- r8qU4Oxw/EwZ0jcE7ean97MitHxLRZ048iY3UOXaVjNOSKnU0Y7o523T7uNpODg4HluSYzY
- 6Q71sv+dp75ckYuN1gISTUMofFGxPDFRqfpBSObbWeOxdeouDF9GnPoZuP9pCavduX6KCfd
- a2goUqaqWN+WvjFVFe0IQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H4VJsjCrV9Y=:1ww5YkAP8BYP33jjCBtzZe
- gAO+1ID6L/XYyf25eZrQfum6CG9xfTfdFeSUlx1AGSvB4KRT9QBiyMUC0eMaA8HPHGmLn4BHX
- 0JYaYQii3d7kq01oXl+YG5NnH5GQ3seNgthXW7lEo6eNP5s6DTWZ1VpYcN0mJCwu9axrNz1bE
- DuZRztf4DXqT5G5cafsLPex64cjAg7FQIY8C+d2mfrqDcy5s5/cRqIYK77fINjGGP/MNvEZWN
- veDFHLYczUC4KgniBlp/EmkfiWkaADKUlj/8gLr4vqjyUMYwNSj/eSEyYtlCjI29ZV3NQJFbk
- tyPFgS3MZARIorz4Qpc7UYtL4MU6UG1QXVsd1jYci9KBR4Kq0AaLFDLQXBUtR2x8OO8k5V9PH
- 6qnQJZZFtfHbP7wObk9LM+CvBpI7XqIlc/n/sTawfpMVPgYNxFnYtmPCbE5UV7UBloLW0YE5c
- /SMOKjNLjRSTsmePktSG4S87NiGZxocpW3wE369nqChe01muVtomXN49usjPyhBdKdz1/B9kT
- VRqIdr4uL8mH0dTF/Ol3WiyHoMClteYldixTsV5nCu+EASX9wduTld5BJNlgT/juwXS1AjceG
- WDIVO/74jqtUbyupvdXS28wWsA4fRaHju9l7oanMXY4SP3h+qoC5baYYdoP6dXOWjl4UWfYKn
- lSEoaKVUaLdHqwHdl1BWYq0xm34uPzZrf6eBiHBkJki6KZjLz+7M2+QjRL6+9JoVWm+9BUJsd
- OEY227ILu/yh2AM0ARpOcVUYyDfSITw00i2yYqNkIAZ5fVlg85b7AfIz7QnwUX9bvO4TMyFFH
- rDilYgJhpmyVd2yS3WJb5TVhbuQyM0NdtEn6Aj9rSTtQH47ahA=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 5:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Apr 14, 2020 at 5:05 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> On Tue, Apr 14, 2020 at 04:27:41PM +0200, Arnd Bergmann wrote:
-> > On Tue, Apr 14, 2020 at 3:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > On Fri, Apr 10, 2020 at 07:04:27PM +0000, Saeed Mahameed wrote:
-> > which in turn leads to mlx5_core.ko *not* containing mlx5_vxlan.o,
-> > and in turn causing that link error against
-> > mlx5_vxlan_create/mlx5_vxlan_destroy, unless the IS_ENABLED()
-> > is changed to IS_REACHABLE().
->
-> What about the reverse if mlx5_core is 'm' and VLXAN is 'y'?
->
->  mlx5_core-m := mlx5_core.o
->  mlx5_core-y += mlx5_vxlan.o
->
-> Magically works out?
-
-Yes, Kbuild takes care of that case.
-
-> > > IIRC that isn't what the expression does, if vxlan is 'n' then
-> > >   n || !n == true
+> On Fri, Apr 10, 2020 at 8:56 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
 > >
-> > It forces MLX5_CORE to 'm' or 'n' but not 'y' if VXLAN=m,
-> > but allows any option if VXLAN=y
+> >
+> > On 08.04.2020 22:27, Arnd Bergmann wrote:
+> > > Using 'imply' does not work here, it still cause the same build
+> > > failure:
+> > >
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_remove':
+> > > sil-sii8620.c:(.text+0x1b8): undefined reference to `extcon_unregister_notifier'
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_probe':
+> > > sil-sii8620.c:(.text+0x27e8): undefined reference to `extcon_find_edev_by_node'
+> > > arm-linux-gnueabi-ld: sil-sii8620.c:(.text+0x2870): undefined reference to `extcon_register_notifier'
+> > > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_extcon_work':
+> > > sil-sii8620.c:(.text+0x2908): undefined reference to `extcon_get_state'
+> > >
+> > > I tried the usual 'depends on EXTCON || !EXTCON' logic, but that caused
+> > > a circular Kconfig dependency. Using IS_REACHABLE() is ugly but works.
+> >
+> > 'depends on EXTCON || !EXTCON' seems to be proper solution, maybe would be better to try to solve circular dependencies issue.
 >
-> And any option if VXLAN=n ?
+> I agree that would be nice, but I failed to come to a proper solution
+> here. FWIW, there
+> is one circular dependency that I managed to avoid by changing all
+> drivers that select FB_DDC
+> to depend on I2C rather than selecting it:
+>
+> drivers/i2c/Kconfig:8:error: recursive dependency detected!
+> drivers/i2c/Kconfig:8: symbol I2C is selected by FB_DDC
+> drivers/video/fbdev/Kconfig:63: symbol FB_DDC depends on FB
+> drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+> drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+> drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+> drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+> drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+> drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+> drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by
+> HID_BATTERY_STRENGTH
+> drivers/hid/Kconfig:29: symbol HID_BATTERY_STRENGTH depends on HID
+> drivers/hid/Kconfig:8: symbol HID is selected by I2C_HID
+> drivers/hid/i2c-hid/Kconfig:5: symbol I2C_HID depends on I2C
+>
+> After that, Kconfig crashes with a segfault:
+>
+> drivers/video/fbdev/Kconfig:12:error: recursive dependency detected!
+> drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+> drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+> drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+> drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+> drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+> drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+> drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by HID_ASUS
+> drivers/hid/Kconfig:150: symbol HID_ASUS depends on LEDS_CLASS
+> drivers/leds/Kconfig:17: symbol LEDS_CLASS depends on NEW_LEDS
+> drivers/leds/Kconfig:9: symbol NEW_LEDS is selected by SENSORS_APPLESMC
+> drivers/hwmon/Kconfig:327: symbol SENSORS_APPLESMC depends on HWMON
+> drivers/hwmon/Kconfig:6: symbol HWMON is selected by EEEPC_LAPTOP
+> drivers/platform/x86/Kconfig:260: symbol EEEPC_LAPTOP depends on ACPI_VIDEO
+> make[3]: *** [/git/arm-soc/scripts/kconfig/Makefile:71: randconfig]
+> Segmentation fault (core dumped)
+>
+> After changing EEEPC_LAPTOP and THINKPAD_ACPI to 'depends on HWMON' instead of
+> 'select HWMON', I get this one:
+>
+> drivers/video/fbdev/Kconfig:12:error: recursive dependency detected!
+> drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+> drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+> drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+> drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+> drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+> drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+> drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by HID_ASUS
+> drivers/hid/Kconfig:150: symbol HID_ASUS depends on LEDS_CLASS
+> drivers/leds/Kconfig:17: symbol LEDS_CLASS depends on NEW_LEDS
+> drivers/leds/Kconfig:9: symbol NEW_LEDS is selected by BACKLIGHT_ADP8860
+> drivers/video/backlight/Kconfig:316: symbol BACKLIGHT_ADP8860 depends
+> on BACKLIGHT_CLASS_DEVICE
+> drivers/video/backlight/Kconfig:143: symbol BACKLIGHT_CLASS_DEVICE is
+> selected by FB_BACKLIGHT
+> drivers/video/fbdev/Kconfig:187: symbol FB_BACKLIGHT depends on FB
+>
+> Changing all drivers that select 'FB_BACKLIGHT' or 'BACKLIGHT_CLASS_DEVICE' to
+> 'depends on BACKLIGHT_CLASS_DEVICE' gets it to build.
+>
+> The steps each seem reasonable, in particular since they mostly clean
+> up the legacy
+> fbdev drivers to what they should have done anyway, but it is quite
+> invasive in the end.
+> Any other ideas?
 
-Correct.
+Adding Jani, since iirc he looked at the entire backlight Kconfig
+story before. I think there's some nonsense going on where in some
+cases you don't get reasonable dummy functions where it just doesn't
+make sense. Or something like that.
 
-      Arnd
+At least the entire select vs depends on backlight sounds eerily familiar.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
