@@ -2,87 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EC21A8F14
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 01:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4121A8F27
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 01:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392125AbgDNXZl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 19:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731159AbgDNXZi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 19:25:38 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC19C061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 16:25:36 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id x66so15349646qkd.9
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 16:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=01FhJZSkiAajc/QWMbWLZMuQXLtpiZ7LIV7bWz1kZ/U=;
-        b=ZyIx622+ephtl2XUgYNHD+2c2T4dqzejn1LMrfWolRG1O3grzzFkigVa6N3AfPlHKw
-         BBSzkUyQggE7LwhlukwhD+DFVXk94p2Nne3RTyze/D8wXAHNZY2YsoTObwC53mjOVOkG
-         1C1fUJKvvFl22aE7bZtcp+A3BNpTs+K6oFnmEaqZaK01lpnvUEHBQC+RXD5mFpxP1NLC
-         b1cjLK/QtFZcQD4Lh0sBnZJeqSB81hCznwaY3P3wYM5xFltYQCVZhXr+5jFMlBQXW5GZ
-         I1EKFYCHYmOjLRdmjd0X22bkZpJ/ZvEnFOfr95TDaT+cR54DAnn9TwLOW2gEoWJesrzc
-         nzJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=01FhJZSkiAajc/QWMbWLZMuQXLtpiZ7LIV7bWz1kZ/U=;
-        b=lE8l5iNrd9UThban4ASZCKU8+A09aFZuOZplGy6vBVa7bMo31LhLJ9mRhRwPLjhApu
-         KbWib56QwOzwfegQ7t/+ZoFdQvGhXkc8v73O/mcBFr6gb13TClWMlFYf+jDkHBLT5gn/
-         8CGoLV9yPnkqgBD+CmINlODHyezWHFFUo2bqG9Xj1VzGQMeDfMZfNzdWUpnDXpHIPixC
-         5nqzV0NRoboyoQpomrMrcOCOnK77PIAJiUgoEbyoCSHYaiUo7rIcsBGW/RhKHU6kbndw
-         LX34UjVhzyD3v/nmp18HidwDL7zWQSph6aGngT9xf/ezYh59NfkjcOm27r/AwQuumyN2
-         0ALw==
-X-Gm-Message-State: AGi0PuYvyei36icA+zvKkkIsjl2FKQmKX21za3FH+Zo25FYOOItAgqU9
-        EP8m2/y2pRwKAh5v2CVSF5I75w==
-X-Google-Smtp-Source: APiQypLIndMM8QI5p3mSdjThZNprOtcQIDD9RjDMiG7JK+cduUDAjt/OUikzv6Hw0ArskMDaahFXpw==
-X-Received: by 2002:a37:278c:: with SMTP id n134mr24535021qkn.348.1586906736061;
-        Tue, 14 Apr 2020 16:25:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id m66sm11594151qkf.42.2020.04.14.16.25.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 16:25:35 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOUvv-0003eM-45; Tue, 14 Apr 2020 20:25:35 -0300
-Date:   Tue, 14 Apr 2020 20:25:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-rc] RDMA/cma: Limit the scope of
- rdma_is_consumer_reject function
-Message-ID: <20200414232535.GA14001@ziepe.ca>
-References: <20200413132323.930869-1-leon@kernel.org>
+        id S1731572AbgDNXbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 19:31:21 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34736 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731539AbgDNXbT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 19:31:19 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ENSquX113426;
+        Tue, 14 Apr 2020 23:31:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=2jdGuo0zoA7vP3fMlIQC/iywu1V4S/KJEoFbomfY6PU=;
+ b=L89khCD1ZvrOxy9mRjBEy9Lj1sxEHNSZmyAb7h/LghXcMWVTEs9h8uodB+GTeY1LNv40
+ dHA+E8HCErmAWwjGsDhDHxTOjQPpbQ6IT6PVYQPaW1UtqjW6MXKJiOq86+b/Mf0OYG+7
+ EijRILdJD/Wn+lJ66KVYocW1feomGjtFdaP9y+WvViwgFNobBmBcLLIAEsd9DtXg9Ldh
+ x1KR2cLIdRP3m67izLeNkjTvexNGAaclWbEdIuc+MkI4bJU4aazBt2tWe3fotSm/FHqZ
+ lNE5HJ0kcLgIHavZhb7TBcYzUo3b2yNfnv4a1TRW+Vo8R1Exh62IxmmJ+tJIyPaf4j+h 3Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30dn9cgb7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 23:31:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ENRxY0101491;
+        Tue, 14 Apr 2020 23:29:14 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 30dn99qtx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Apr 2020 23:29:14 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03ENTDMV104232;
+        Tue, 14 Apr 2020 23:29:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30dn99qtwh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 23:29:13 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03ENTA2l028627;
+        Tue, 14 Apr 2020 23:29:10 GMT
+Received: from [10.159.137.253] (/10.159.137.253)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 16:29:10 -0700
+Subject: Re: [PATCH] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com
+References: <0-v1-a3e19ba593e0+f5-rds_gcc10%jgg@mellanox.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <6ea2ccf7-6bea-3a00-2fe7-79c09c7cb782@oracle.com>
+Date:   Tue, 14 Apr 2020 16:29:09 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413132323.930869-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0-v1-a3e19ba593e0+f5-rds_gcc10%jgg@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140167
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:23:23PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On 4/14/20 4:02 PM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> The function is local to cma.c, so let's limit its scope.
+> Returning the error code via a 'int *ret' when the function returns a
+> pointer is very un-kernely and causes gcc 10's static analysis to choke:
 > 
-> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> net/rds/message.c: In function ‘rds_message_map_pages’:
+> net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>    358 |   return ERR_PTR(ret);
+> 
+> Use a typical ERR_PTR return instead.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 > ---
->  drivers/infiniband/core/cma.c | 3 +--
->  include/rdma/rdma_cm.h        | 8 --------
->  2 files changed, 1 insertion(+), 10 deletions(-)
+Looks good Jason. Thanks !!
 
-Applied to for-next, thanks
-
-Jason
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
