@@ -2,159 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0D11A7DFC
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 15:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0211A7EF9
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 15:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgDNN3P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 09:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732111AbgDNN3C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 09:29:02 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421B7C061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 06:29:02 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id v7so13180897qkc.0
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 06:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=35JPFQoqu2n9cN3F6+ZUlaG1xiUip5sDdcTtmfYSpe8=;
-        b=SGDVO9RhBeIKEvWxZM+JWkgmaml/HD1RGTWogUTjrp7mfpYcvQzhzvnQvuqqNth22N
-         Rruj/VI4H3I+sFH0OMY7v28QPW7MuXUg2mASS1xE6j7UY02Vsml5mZ/Qw3RjVn6hM5sL
-         91+i14Bcrzqhm6veEVFJKC4kDq6XPaCQMogswLGFbM3gHKAmva9nPlymq+fzZNGMon0d
-         x8zpf/ituX5C+wfeuP6qyk4GEct1eoKycovq5kubVEQ6lMA/5i8wWni2DZtPa6Up9Ooi
-         kYXcRlzmeiczsaiU0z/VZCQS1033PVmAEKoP0aAKyt6Q1y5kmS85rGIwGACP5nqbuo27
-         H/ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=35JPFQoqu2n9cN3F6+ZUlaG1xiUip5sDdcTtmfYSpe8=;
-        b=igkV09i+1pwCHiH6nW2Hdy98bAmu4qgMsL8QqMRXugSyRuoahU1SViKx+la4jXTu1w
-         4hWr9nDx0BkPf55LkYoTgh5RGIMKpO3xCWOgH2KMaa+pwYpPaa01q/zo76zTa5IPHoa7
-         rBZuRqOidN5+USB1NJ39YEAYrGjBgefwZ7+2nmxN4Ytvggncyq56QNq/JVVRdCpp3jX+
-         5wFypY85mUHqdvKlh+h+lVTbAeTsJZhmo4jap+OSwFI2k5i07xz7IbqDJbYUWLYVdWyV
-         SZ6wkPGOUEko7j7IuEigk84SEuMPogunnnNr/KksvJKsS8r2jVDki40JpAsnffo/WIZh
-         AYpw==
-X-Gm-Message-State: AGi0PuawpEt+htb8PI3d3Kk7AqTp8xYgucaEzAufoczHzixjIyeIIbPx
-        +dEv8p1kRnCm14H9NdsE/C4Ggw==
-X-Google-Smtp-Source: APiQypIkNBlhG/qtn+tMNh1eYCoqf1FbWKttUwwrXZkT7Pr6J06H5IKbF/sYAPrVFKbZXZI1qCFvng==
-X-Received: by 2002:a37:cc7:: with SMTP id 190mr6464058qkm.44.1586870941325;
-        Tue, 14 Apr 2020 06:29:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id f1sm9986663qkl.91.2020.04.14.06.29.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 06:29:00 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOLca-000515-3n; Tue, 14 Apr 2020 10:29:00 -0300
-Date:   Tue, 14 Apr 2020 10:29:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-Message-ID: <20200414132900.GD5100@ziepe.ca>
-References: <20200408202711.1198966-1-arnd@arndb.de>
- <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
- <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
- <20200408224224.GD11886@ziepe.ca>
- <87k12pgifv.fsf@intel.com>
- <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
- <20200410171320.GN11886@ziepe.ca>
- <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2388534AbgDNN5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 09:57:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36768 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388513AbgDNN5c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 09:57:32 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EDtbF9105473;
+        Tue, 14 Apr 2020 13:57:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=v76e+q/MLDPFP9tsb/iUMwuIOALrpj9yccjBXtTk2vQ=;
+ b=JZFxO9ykf9NGT/lAdMMkjru84/BCz5d833Tt9sUVmw9CTskSjnjhE8dsHAjiU+M6NspY
+ pNoovpCX0EcA+fBWyZgyRW+Z83b+boq27MBU2nsyuQpnJwDca8LET836bjxXPJtp3W79
+ 0dRSUX/zN2TDZJ3QmVuT5n+IwgRWKukCcHuuuKD0RyubZEDvUlvrHrEc1DCbwgDNo6bU
+ 64wURZteKQEcnh2fvq4p6iNETS7oD6AkRFr13bpWjxB87dTKfUHgm4GdI3JPZ8vO3o82
+ YO/vyDR+U3Y5HO3RDrpENj5Z/SsuMCMJt9ixyGhiWf1IfYEGHEr8MRqtJIfhf78JOR2C Tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30b5um4v36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 13:57:25 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03EDm1m5194057;
+        Tue, 14 Apr 2020 13:57:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30bqpgjtja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Apr 2020 13:57:25 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03EDvN5J027614;
+        Tue, 14 Apr 2020 13:57:23 GMT
+Received: from dhcp-10-175-176-104.vpn.oracle.com (/10.175.176.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Apr 2020 06:57:23 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.60.0.2.5\))
+Subject: Re: [PATCH for-rc] RDMA/cma: fix race between addr_handler and
+ resolve_route
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200414125012.GK11945@mellanox.com>
+Date:   Tue, 14 Apr 2020 15:57:20 +0200
+Cc:     Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        george kennedy <george.kennedy@oracle.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BCFFD1E1-F013-4B09-9DC5-5A4EE205EA10@oracle.com>
+References: <20200403184328.1154929-1-haakon.bugge@oracle.com>
+ <20200403185707.GE8514@mellanox.com>
+ <1720C7BF-D6E4-4779-B05D-203703042B36@oracle.com>
+ <20200403193656.GF8514@mellanox.com>
+ <EDBCDCC1-E03F-428A-8352-734E3F01B316@oracle.com>
+ <20200406173149.GH11616@mellanox.com>
+ <09A6E613-AA59-4C5F-889A-EF45722B7F69@oracle.com>
+ <20200406181032.GI11616@mellanox.com>
+ <EAE5B24F-142B-478D-BBA5-BBF784AA9E39@oracle.com>
+ <20200414125012.GK11945@mellanox.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+X-Mailer: Apple Mail (2.3608.60.0.2.5)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=3 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 bulkscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=3 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004140112
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 07:04:27PM +0000, Saeed Mahameed wrote:
-> On Fri, 2020-04-10 at 14:13 -0300, Jason Gunthorpe wrote:
-> > On Fri, Apr 10, 2020 at 02:40:42AM +0000, Saeed Mahameed wrote:
-> > 
-> > > This assumes that the module using FOO has its own flag
-> > > representing
-> > > FOO which is not always the case.
-> > > 
-> > > for example in mlx5 we use VXLAN config flag directly to compile
-> > > VXLAN
-> > > related files:
-> > > 
-> > > mlx5/core/Makefile:
-> > > 
-> > > obj-$(CONFIG_MLX5_CORE) += mlx5_core.o
-> > > 
-> > > mlx5_core-y := mlx5_core.o
-> > > mlx5_core-$(VXLAN) += mlx5_vxlan.o
-> > > 
-> > > and in mlx5_main.o we do:
-> > 
-> > Does this work if VXLAN = m ?
-> 
-> Yes, if VXLAN IS_REACHABLE to MLX5, mlx5_vxlan.o will be
-> compiled/linked.
 
-So mlx5_core-m does the right thing somehow?
 
-> > 
-> > > if (IS_ENABLED(VXLAN))
-> > >        mlx5_vxlan_init()
-> > > 
-> > > after the change in imply semantics:
-> > > our options are:
-> > > 
-> > > 1) use IS_REACHABLE(VXLAN) instead of IS_ENABLED(VXLAN)
-> > > 
-> > > 2) have MLX5_VXLAN in mlx5 Kconfig and use IS_ENABLED(MLX5_VXLAN) 
-> > > config MLX5_VXLAN
-> > > 	depends on VXLAN || !VXLAN
-> > > 	bool
-> > 
-> > Does this trick work when vxlan is a bool not a tristate?
-> > 
-> > Why not just put the VXLAN || !VXLAN directly on MLX5_CORE?
-> > 
-> 
-> so force MLX5_CORE to n if vxlan is not reachable ? 
+> On 14 Apr 2020, at 14:50, Jason Gunthorpe <jgg@mellanox.com> wrote:
+>=20
+> On Tue, Apr 14, 2020 at 12:34:35PM +0200, H=C3=A5kon Bugge wrote:
+>=20
+>>>>>> Shall I make a v2 base on next based on this idea, or do you have
+>>>>>> something coming?
+>>>>>=20
+>>>>> Sure, I have nothing :)
+>>>>>=20
+>>>>> Also that rdma_destroy_id in addr_handler looks wrong.. ie we =
+still
+>>>>> retain pointers to the rdma_cm_id it destroys inside the struct
+>>>>> ucma_context, don't we?
+>>>>=20
+>>>> On entry from user-space, we use the u32 id and looks it up in the
+>>>> XArray. But if rdma_destoy_id() is called asynchronously called
+>>>> between ucma_get_ctx_dev() and the de-reference of ctx->cm_id, we
+>>>> are toast.
+>>>=20
+>>> Is that what happens on the addr_handler path?
+>>=20
+>> No, there, the main problem is the revert of the state
+>> transitions. The first transition enables rdma_resolve_route() to
+>> pass its gate (i.e. state =3D=3D ADDR_RESOLVED). Then it thinks the
+>> address is resolved, but the addr_handler changes its mind
+>> afterwards.
+>=20
+> That is a problem, but the call to rdma_destroy_id looks like another
+> problem
 
-IIRC that isn't what the expression does, if vxlan is 'n' then 
-  n || !n == true
+I am not sure. Almost all events/incoming packets, can, after the =
+cm_id's event_handler is called from cma_ib_handler(), call =
+rdma_destroy_id(). I assume the refcounting takes care of this.
 
-The other version of this is (m || VXLAN != m)
 
-Basically all it does is prevent MLX5_CORE=y && VXLAN=m
+Thxs, H=C3=A5kon
 
-> and how do we compile mlx5_vxlan.o wihout a single flag 
-> can i do in Makefile :
-> mlx5_core-$(VXLAN || !VXLAN) += mlx5_vxlan.o ?? 
 
-No, you just use VXLAN directly, it will be m, n or y, but it won't be
-m if mlx5_core is y
-
-Jason
