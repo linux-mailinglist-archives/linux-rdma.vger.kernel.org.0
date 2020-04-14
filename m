@@ -2,159 +2,209 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C321A8D4E
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 23:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC7A1A8ED7
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 01:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgDNVKd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 17:10:33 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:35569 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733025AbgDNVKa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 17:10:30 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1M2w0K-1jPZHx48w0-003MvL; Tue, 14 Apr 2020 23:10:26 +0200
-Received: by mail-qt1-f172.google.com with SMTP id s30so11570542qth.2;
-        Tue, 14 Apr 2020 14:10:25 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZy+Fwkk0wHRtar9vwfFhqYovV5Kvg1DUcY4CACvSE1JrRFNg29
-        d2qfkznoikgUdl4ttQJMMmFAOfzxo4yEJBpElyI=
-X-Google-Smtp-Source: APiQypIfZFDXhI4lfhgtQhLYBcr5CwllPu4hW9XiyLfwj2+0CNULa+LPLq/UglD75HRb9VggpbRIiRppC0fPBwcpn5M=
-X-Received: by 2002:ac8:296f:: with SMTP id z44mr16506720qtz.18.1586898624486;
- Tue, 14 Apr 2020 14:10:24 -0700 (PDT)
+        id S2634337AbgDNXCM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 19:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2634335AbgDNXCJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Apr 2020 19:02:09 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53311C061A0E
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 16:02:09 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id c63so15353970qke.2
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 16:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G97zkBNRyySh5txmeGq9cKz6S6trOBJKgLryq5aO2f8=;
+        b=CzsC+AD55ARAnqtGjSdW0gEVS9paXztBinbodLgrKeBOyZBLJSTTVGoTxqkIwVKh7V
+         xQEl4pEHpg/8VkxEU/LV336i7gS/Egzc3NfL3jGqpnSHTpA4IqjUYfN8mKwvCmfQcV6y
+         oslsQunsSMFfTLn0DMha19b8ghgxhQ5gvzRLlDpXfVjxuDmtY8BbdCOw+1kSXJGocAKc
+         BSo4M8UOOqZ1jeopMbnwY/FOaSh1wa5jX8+EUzeeWj4Lh3chZuxyCOJ49xVv3JhDh4Sj
+         PKLrW11F52rffDHt+kcws89w95blAtUg3/vChv37UW/uzbopeL4oQAY+2VCdAua2nnUK
+         evmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G97zkBNRyySh5txmeGq9cKz6S6trOBJKgLryq5aO2f8=;
+        b=pO9NL8EGdIvAKxXYIOgKjsRNt6XjLJRUNU2rlSB239170TO+QRpmNzLCf58YmQci++
+         YTZjAmDJTwfCXVtss/H29i8VKA1odeiR/w5Y/6BuAcDoyvBXQkPXafe897c9376CzQvE
+         vKJLl4Ix18B4D0BHkVBOg+UYtVcfqGq80fnvckuMi2d1BgrYEeXW+jJeo2cRnjBx8dyl
+         1TTWXvtKGk/sAGLglozNxiKyTZRwrluo1Uj28QxIh4b1Pn1/YoUYGYTcznIgvTJwQDv7
+         zOJi3q9tT+4mHjbJSFPdeUSeDdgwpiIupP/SGslONdb/BbIuxDLxBHuroeLnmc1gSJ1L
+         u6/A==
+X-Gm-Message-State: AGi0PuYaJuv0T+Ut5LZ+UAvnnXXl6uP4RMWv8UUaqRKNEqhgPWTiRg1n
+        LQQXxCl4t2Pk75ECklkBdTbEGA==
+X-Google-Smtp-Source: APiQypJbvZJiaA9elJAdioLrhcNR+T8+UbyllHK4lcqmPPC3dYKPMCD8rBfvtaDo1hoikcJGlwjpoA==
+X-Received: by 2002:ae9:e011:: with SMTP id m17mr12572605qkk.103.1586905328317;
+        Tue, 14 Apr 2020 16:02:08 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id w42sm9135530qtj.63.2020.04.14.16.02.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Apr 2020 16:02:07 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jOUZD-0002Fj-9V; Tue, 14 Apr 2020 20:02:07 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Subject: [PATCH] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
+Date:   Tue, 14 Apr 2020 20:02:07 -0300
+Message-Id: <0-v1-a3e19ba593e0+f5-rds_gcc10%jgg@mellanox.com>
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <20200408202711.1198966-6-arnd@arndb.de>
- <20200414201739.GJ19819@pendragon.ideasonboard.com> <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
- <20200414205158.GM19819@pendragon.ideasonboard.com>
-In-Reply-To: <20200414205158.GM19819@pendragon.ideasonboard.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Apr 2020 23:10:08 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
-Message-ID: <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
-Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:a8WGAT5AJthQDNS/7Nj8B52n5j60+HG2fzoN+gb2gdj3gP/Jmmx
- 3SE3HImIDUxg7ZE5314iDoJa4HnsHCm+jX7iNq+huSyITSd/qpiuOFo7h5hTPrGWgaCQoN/
- +TIlnb6SmdPVP7uRMde1hCk5woxeuOxJ0LJUI/K/pdwDM5Dp2Xd96PLSmuNPbuKkbm7sCgI
- Yh1HKrL1EdCRzhDOCBtkw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vc+0jWPD8GU=:t2YtIX2F85uzHoov9/daVy
- v5bwqmf6AOehFpMLBYwjQ93cDcnxd4zTvNXPtZd0SLoye9GuzUnnd3chRS7JOXz9f443p+ktf
- yT+qjz0LykHBIbsiUMAxsU5zVvxHaOyEjeJfyCBuQZTXFwzKCR7Fu25//EN0cdI/0qnw7kjM0
- fArbEUmn3vqOeGEE0sdWkTHDNPMwjAg612sLh2r0rYq1Z7enWAcwrQNFNXoecxibFxdDJz9kf
- Qjd5r7vMgCBOSEGmNhMk/Wgn5QtPP9+Ue2sDu3qqz2V1u4U9s3lEjbm6aBIun4t9nyzoL6yfu
- hcRYQg8ozaqRg77WnDZCY7nMtY2dhi9VKl7Hoxdq66uDGCjxL+DTKpfWcf8p6j6Obyw7apSak
- VFmdQx3/4FKuu9xLS/efchZ14z06X/XN0EQTILjFSGCGs/tuMMK+m6cQ1fuiyzADlKz8klwk+
- aaZB1oXNY97dGROFHGyZBAX+ObIdzSsjyDuh4i01sWMRVfsAUF06Dz7bTUS4OKKgq2Gcs09Az
- EY+WEf95JvIKPLOGNKf2eS55NUixc3LmL9p+78gBs2XOpIe9dvyUjZpmrQUzNAOf5LBD/TuaI
- tFBwz5ejlY3exAdXOrEM4H3A5+h8p+Y5SFhyCnsW2CgppPC9ce79IeDfmAJ1BKOBxRnzKZP9R
- dzOY2qsbNQgMAIPk91JJVcqIjLD5uJHFPkZ76/u4pVdMO8LCgTg/2JRir8xFKXcxKfqqLKjbO
- sxE/uolwifZ90Pr7GvegjjiGlOPJ0lOMP88Tyz2/HVMCFO81H9KxV6fZS+7npfpdfFPOi89RL
- tmM2VWADXOEZeTQXW71eaYACIoF04ObCEwAeh9DOT1jKZuNLb8=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Arnd,
->
-> On Tue, Apr 14, 2020 at 10:38:27PM +0200, Arnd Bergmann wrote:
-> > On Tue, Apr 14, 2020 at 10:17 PM Laurent Pinchart wrote:
-> > > On Wed, Apr 08, 2020 at 10:27:10PM +0200, Arnd Bergmann wrote:
-> > > > The 'imply' statement does not seem to have an effect, as it's
-> > > > still possible to turn the CMM code into a loadable module
-> > > > in a randconfig build, leading to a link error:
-> > > >
-> > > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_enable':
-> > > > rcar_du_crtc.c:(.text+0xad4): undefined reference to `rcar_lvds_clk_enable'
-> > > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_disable':
-> > > > rcar_du_crtc.c:(.text+0xd7c): undefined reference to `rcar_lvds_clk_disable'
-> > > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_drv.o: in function `rcar_du_init':
-> > > > rcar_du_drv.c:(.init.text+0x4): undefined reference to `rcar_du_of_init'
-> > > > arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_encoder.o: in function `rcar_du_encoder_init':
-> > > >
-> > > > Remove the 'imply', and instead use a silent symbol that defaults
-> > > > to the correct setting.
-> > >
-> > > This will result in the CMM always being selected when DU is, increasing
-> > > the kernel size even for devices that don't need it. I believe we need a
-> > > better construct in Kconfig to fix this.
-> >
-> > I had expected this to have the same meaning that we had before the
-> > Kconfig change: whenever the dependencies are available, turn it on,
-> > otherwise leave it disabled.
-> >
-> > Can you describe what behavior you actually want instead?
->
-> Doesn't "imply" mean it gets selected by default but can be manually
-> disabled ?
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-That may be what it means now (I still don't understand how it's defined
-as of v5.7-rc1), but traditionally it was more like a 'select if all
-dependencies
-are met'.
+Returning the error code via a 'int *ret' when the function returns a
+pointer is very un-kernely and causes gcc 10's static analysis to choke:
 
-> > > > --- a/drivers/gpu/drm/rcar-du/Kconfig
-> > > > +++ b/drivers/gpu/drm/rcar-du/Kconfig
-> > > > @@ -4,7 +4,6 @@ config DRM_RCAR_DU
-> > > >       depends on DRM && OF
-> > > >       depends on ARM || ARM64
-> > > >       depends on ARCH_RENESAS || COMPILE_TEST
-> > > > -     imply DRM_RCAR_CMM
-> > > >       imply DRM_RCAR_LVDS
-> > > >       select DRM_KMS_HELPER
-> > > >       select DRM_KMS_CMA_HELPER
-> > > > @@ -15,9 +14,8 @@ config DRM_RCAR_DU
-> > > >         If M is selected the module will be called rcar-du-drm.
-> > > >
-> > > >  config DRM_RCAR_CMM
-> > > > -     tristate "R-Car DU Color Management Module (CMM) Support"
-> > > > +     def_tristate DRM_RCAR_DU
-> > > >       depends on DRM && OF
-> > > > -     depends on DRM_RCAR_DU
-> > > >       help
-> >
-> > It would be easy enough to make this a visible 'bool' symbol and
-> > build it into the rcu-du-drm.ko module itself. Would that help you?
->
-> That could indeed simplify a few things. I wonder if it could introduce
-> a few small issues though (but likely nothing we can't fix). The two
-> that come to mind are the fact that the module would have two
-> MODULE_DESCRIPTION and MODULE_LICENSE entries (I have no idea if that
-> could cause breakages), and that it could make module unloading more
-> difficult as the CMM being used by the DU would increase the refcount on
-> the module. I think the latter could be worked around by manually
-> unbinding the DU device through sysfs before unloading the module (and I
-> can't say for sure that unloading the DU module is not broken today
-> *innocent and naive look* :-)).
+net/rds/message.c: In function ‘rds_message_map_pages’:
+net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  358 |   return ERR_PTR(ret);
 
-In that case, a Makefile trick could also work, doing
+Use a typical ERR_PTR return instead.
 
-ifdef CONFIG_DRM_RCAR_CMM
-obj-$(CONFIG_DRM_RCAR_DU) += rcar-cmm.o
-endif
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ net/rds/message.c | 19 ++++++-------------
+ net/rds/rdma.c    | 12 ++++++++----
+ net/rds/rds.h     |  3 +--
+ net/rds/send.c    |  6 ++++--
+ 4 files changed, 19 insertions(+), 21 deletions(-)
 
-Thereby making the cmm module have the same state (y or m) as
-the du module whenever the option is enabled.
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 50f13f1d4ae091..2d43e13d6dd598 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -308,26 +308,20 @@ struct rds_message *rds_message_alloc(unsigned int extra_len, gfp_t gfp)
+ /*
+  * RDS ops use this to grab SG entries from the rm's sg pool.
+  */
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret)
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents)
+ {
+ 	struct scatterlist *sg_first = (struct scatterlist *) &rm[1];
+ 	struct scatterlist *sg_ret;
+ 
+-	if (WARN_ON(!ret))
+-		return NULL;
+-
+ 	if (nents <= 0) {
+ 		pr_warn("rds: alloc sgs failed! nents <= 0\n");
+-		*ret = -EINVAL;
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	if (rm->m_used_sgs + nents > rm->m_total_sgs) {
+ 		pr_warn("rds: alloc sgs failed! total %d used %d nents %d\n",
+ 			rm->m_total_sgs, rm->m_used_sgs, nents);
+-		*ret = -ENOMEM;
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	sg_ret = &sg_first[rm->m_used_sgs];
+@@ -343,7 +337,6 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	unsigned int i;
+ 	int num_sgs = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	int extra_bytes = num_sgs * sizeof(struct scatterlist);
+-	int ret;
+ 
+ 	rm = rds_message_alloc(extra_bytes, GFP_NOWAIT);
+ 	if (!rm)
+@@ -352,10 +345,10 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	set_bit(RDS_MSG_PAGEVEC, &rm->m_flags);
+ 	rm->m_inc.i_hdr.h_len = cpu_to_be32(total_len);
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+-	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-	if (!rm->data.op_sg) {
++	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++	if (IS_ERR(rm->data.op_sg)) {
+ 		rds_message_put(rm);
+-		return ERR_PTR(ret);
++		return ERR_CAST(rm->data.op_sg);
+ 	}
+ 
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index 585e6b3b69ce4c..554ea7f0277f01 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -664,9 +664,11 @@ int rds_cmsg_rdma_args(struct rds_sock *rs, struct rds_message *rm,
+ 	op->op_odp_mr = NULL;
+ 
+ 	WARN_ON(!nr_pages);
+-	op->op_sg = rds_message_alloc_sgs(rm, nr_pages, &ret);
+-	if (!op->op_sg)
++	op->op_sg = rds_message_alloc_sgs(rm, nr_pages);
++	if (IS_ERR(op->op_sg)) {
++		ret = PTR_ERR(op->op_sg);
+ 		goto out_pages;
++	}
+ 
+ 	if (op->op_notify || op->op_recverr) {
+ 		/* We allocate an uninitialized notifier here, because
+@@ -905,9 +907,11 @@ int rds_cmsg_atomic(struct rds_sock *rs, struct rds_message *rm,
+ 	rm->atomic.op_silent = !!(args->flags & RDS_RDMA_SILENT);
+ 	rm->atomic.op_active = 1;
+ 	rm->atomic.op_recverr = rs->rs_recverr;
+-	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1, &ret);
+-	if (!rm->atomic.op_sg)
++	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1);
++	if (IS_ERR(rm->atomic.op_sg)) {
++		ret = PTR_ERR(rm->atomic.op_sg);
+ 		goto err;
++	}
+ 
+ 	/* verify 8 byte-aligned */
+ 	if (args->local_addr & 0x7) {
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index e4a60352308369..b8b7ad766046cb 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -852,8 +852,7 @@ rds_conn_connecting(struct rds_connection *conn)
+ 
+ /* message.c */
+ struct rds_message *rds_message_alloc(unsigned int nents, gfp_t gfp);
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret);
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents);
+ int rds_message_copy_from_user(struct rds_message *rm, struct iov_iter *from,
+ 			       bool zcopy);
+ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned int total_len);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 82dcd8b84fe779..68e2bdb08fd099 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1274,9 +1274,11 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 
+ 	/* Attach data to the rm */
+ 	if (payload_len) {
+-		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-		if (!rm->data.op_sg)
++		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++		if (IS_ERR(rm->data.op_sg)) {
++			ret = PTR_ERR(rm->data.op_sg);
+ 			goto out;
++		}
+ 		ret = rds_message_copy_from_user(rm, &msg->msg_iter, zcopy);
+ 		if (ret)
+ 			goto out;
+-- 
+2.26.0
 
-       Arnd
