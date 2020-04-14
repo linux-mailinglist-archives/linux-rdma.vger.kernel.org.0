@@ -2,104 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD33C1A8047
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 16:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02441A8138
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 17:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405136AbgDNOsv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 10:48:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38348 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404893AbgDNOst (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:48:49 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03EEjXqb009667
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 10:48:46 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30cxxqm13m-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 10:48:46 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Tue, 14 Apr 2020 15:48:26 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 14 Apr 2020 15:48:23 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03EEmehS47317270
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Apr 2020 14:48:40 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 153CD4C046;
-        Tue, 14 Apr 2020 14:48:40 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D3B054C040;
-        Tue, 14 Apr 2020 14:48:39 +0000 (GMT)
-Received: from flex20.zurich.ibm.com (unknown [9.4.244.20])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Apr 2020 14:48:39 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        krishna2@chelsio.com
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [RFC PATCH] RDMA/siw: Experimental e2e negotiation of GSO usage.
-Date:   Tue, 14 Apr 2020 16:48:22 +0200
-X-Mailer: git-send-email 2.20.1
+        id S2407232AbgDNPFT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 11:05:19 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:39861 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407186AbgDNPFK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 11:05:10 -0400
+Received: from mail-qv1-f41.google.com ([209.85.219.41]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N5FxN-1jE1tk22j7-0119dA; Tue, 14 Apr 2020 17:05:05 +0200
+Received: by mail-qv1-f41.google.com with SMTP id s18so6346431qvn.1;
+        Tue, 14 Apr 2020 08:05:05 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYHrG6Y/RC1nTvdAEhTRv6LtJxtPzUGhWrBX519ff/Ytz9NERJD
+        BDOMYoC2hAPE8M0YNnlFG3LDVF0TydT0BWeDy+E=
+X-Google-Smtp-Source: APiQypLg53lbvwM7SS+vs6GZuu1V+f5ASJ1OTKDbmA6YwidcSTB5Gp26EmpzyTd2a0/A/WzgZ9UHn80nFHIsFLn9j2M=
+X-Received: by 2002:a0c:9e2f:: with SMTP id p47mr355001qve.211.1586876703988;
+ Tue, 14 Apr 2020 08:05:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041414-0012-0000-0000-000003A465E5
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041414-0013-0000-0000-000021E19DAE
-Message-Id: <20200414144822.2365-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_06:2020-04-14,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 phishscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 mlxlogscore=676 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004140108
+References: <20200408202711.1198966-1-arnd@arndb.de> <CGME20200408202802eucas1p13a369a5c584245a1affee35d2c8cad32@eucas1p1.samsung.com>
+ <20200408202711.1198966-5-arnd@arndb.de> <ff7809b6-f566-9c93-1838-610be5d22431@samsung.com>
+In-Reply-To: <ff7809b6-f566-9c93-1838-610be5d22431@samsung.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Apr 2020 17:04:47 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2BXZAiHh83RZJ-v9HvoE1gSED59j8k0ydJKCnHzwYz=w@mail.gmail.com>
+Message-ID: <CAK8P3a2BXZAiHh83RZJ-v9HvoE1gSED59j8k0ydJKCnHzwYz=w@mail.gmail.com>
+Subject: Re: [RFC 4/6] drm/bridge/sii8620: fix extcon dependency
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Networking <netdev@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:TZf60EAGSNVbxG8Ebo7CPWg5FOckWYVhjoT9Xj7S/35jyWVb6jX
+ VqnP+fGk2LwQ7NXhEodQ4tL7G9yh2hVQvFLPtQW2Ev8RrzQjhtQcZWbdDTFjpmibzq1Y2Uf
+ yI6D+SIgtO6SHF+UysDhdSu27gU9EH3z6JcIE6hHNep7gOavJYlCaX37C/klcU/3kcfemSV
+ GK3BuRJFN99cFIrsfIo0w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NgjUJ1WFxn8=:T0Mu8bRZJgEzxY1Opk5mD3
+ pv/dgnF685Icz2N/M0AU5alrBSGDTBRCX4g5/t5DUku2lIjGefOggdh0D21ngzUMQH9PUdtc8
+ WTBBoYxpwJ2Ev29fgaJr3pEvGIGCapiMY4Gh54ZXcR/+66tO/kd7RKCm1qpuAbt85WKrrhvM8
+ qS26C+oIql4zcWLB1W/u4NyB5CPNXeGdIQBZJVeZj55wo0uqcXtfqBWsbWa1b9t+YR0NhG6OR
+ ySXVWjr9yB5HQiATOU4fl5PmF5FshZG15a266IGbYTG4QEsXIGAIIbdeVj8s8bgNx62bxAPhv
+ tirDAQlUz1f1jaCYdBbR2xSpUBcycfPeHC+7VU2bgNnfziybwdR++bCZpScRtQclWhctutDss
+ +QKC2UK+or58AX3H7vRSq4DlzWvU9V2DN0RvhPAfY3ohnffJL8XOxOX2cI1FrgJN8exAq33Eb
+ FO+eamAElQr0cNEkWzkS2bW9O561ovuR7MfjRtd3X5jd7ETWddDIfqWl5lyWXBsy1fvZ85Kvt
+ LNBm7lnrsxr4B7C/i9RbYHljkxaxcZ3MNjvm/FWChNSOJaOfmDHeuOO0oVFCjBShTjndjK8Aa
+ aLb+GqGqwn2VmNhh2fjlT2kbqNQce3YZhwpu0glUaZAXutZ/4S+THEkdgebVdsFuCj30EaBoR
+ uKZLA+9JGiwzpvq94KWpP++h78rsHnKutLGBASTeiwo/6iol3OUw6bveDVbD7NeLF0LDFnu8u
+ GQPylWp7G9SydhVeQFD8LMN9CEBxlfMjxGzhCdahF7X6NMK95v5BzJNJNeH21GeFrEmqNzgBs
+ cmeP8nqqFrOjzxZXuGG+yepdhmVRh/NzfgGtuUT7tblPXOIkDU=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Disabling GS0 usage lets siw create FPDUs fitting MTU size.
-Enabling GSO usage lets siw form larger FPDUs fitting up to one
-current GSO frame. As a software only iWarp implementation, for
-large messages, siw bandwidth performance severly suffers from not
-using GSO, reducing available single stream bandwidth on fast links
-by more than 50%, while increasing CPU load.
+On Fri, Apr 10, 2020 at 8:56 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+>
+> On 08.04.2020 22:27, Arnd Bergmann wrote:
+> > Using 'imply' does not work here, it still cause the same build
+> > failure:
+> >
+> > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_remove':
+> > sil-sii8620.c:(.text+0x1b8): undefined reference to `extcon_unregister_notifier'
+> > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_probe':
+> > sil-sii8620.c:(.text+0x27e8): undefined reference to `extcon_find_edev_by_node'
+> > arm-linux-gnueabi-ld: sil-sii8620.c:(.text+0x2870): undefined reference to `extcon_register_notifier'
+> > arm-linux-gnueabi-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_extcon_work':
+> > sil-sii8620.c:(.text+0x2908): undefined reference to `extcon_get_state'
+> >
+> > I tried the usual 'depends on EXTCON || !EXTCON' logic, but that caused
+> > a circular Kconfig dependency. Using IS_REACHABLE() is ugly but works.
+>
+> 'depends on EXTCON || !EXTCON' seems to be proper solution, maybe would be better to try to solve circular dependencies issue.
 
-Experimental GSO usage handshake is implemented by using one spare
-bit of the MPA header, which is used to signal GSO framing at
-initiator side and GSO framing acceptance at responder side.
-Typical iWarp hardware implementations will not set or interpret
-that header bit. Against such peer, siw will adhere to forming
-FPDUs fitting with MTU size. This assures interoperability with
-peer iWarp implementations unable to process FPDUs larger than
-MTU size.
+I agree that would be nice, but I failed to come to a proper solution
+here. FWIW, there
+is one circular dependency that I managed to avoid by changing all
+drivers that select FB_DDC
+to depend on I2C rather than selecting it:
 
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+drivers/i2c/Kconfig:8:error: recursive dependency detected!
+drivers/i2c/Kconfig:8: symbol I2C is selected by FB_DDC
+drivers/video/fbdev/Kconfig:63: symbol FB_DDC depends on FB
+drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by
+HID_BATTERY_STRENGTH
+drivers/hid/Kconfig:29: symbol HID_BATTERY_STRENGTH depends on HID
+drivers/hid/Kconfig:8: symbol HID is selected by I2C_HID
+drivers/hid/i2c-hid/Kconfig:5: symbol I2C_HID depends on I2C
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 5cd40fb9e20c..a2dbdbcacf72 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -36,7 +36,7 @@ const bool zcopy_tx = true;
-  * large packets. try_gso = true lets siw try to use local GSO,
-  * if peer agrees.  Not using GSO severly limits siw maximum tx bandwidth.
-  */
--const bool try_gso;
-+const bool try_gso = true;
- 
- /* Attach siw also with loopback devices */
- const bool loopback_enabled = true;
--- 
-2.20.1
+After that, Kconfig crashes with a segfault:
 
+drivers/video/fbdev/Kconfig:12:error: recursive dependency detected!
+drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by HID_ASUS
+drivers/hid/Kconfig:150: symbol HID_ASUS depends on LEDS_CLASS
+drivers/leds/Kconfig:17: symbol LEDS_CLASS depends on NEW_LEDS
+drivers/leds/Kconfig:9: symbol NEW_LEDS is selected by SENSORS_APPLESMC
+drivers/hwmon/Kconfig:327: symbol SENSORS_APPLESMC depends on HWMON
+drivers/hwmon/Kconfig:6: symbol HWMON is selected by EEEPC_LAPTOP
+drivers/platform/x86/Kconfig:260: symbol EEEPC_LAPTOP depends on ACPI_VIDEO
+make[3]: *** [/git/arm-soc/scripts/kconfig/Makefile:71: randconfig]
+Segmentation fault (core dumped)
+
+After changing EEEPC_LAPTOP and THINKPAD_ACPI to 'depends on HWMON' instead of
+'select HWMON', I get this one:
+
+drivers/video/fbdev/Kconfig:12:error: recursive dependency detected!
+drivers/video/fbdev/Kconfig:12: symbol FB is selected by DRM_KMS_FB_HELPER
+drivers/gpu/drm/Kconfig:80: symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
+drivers/gpu/drm/Kconfig:74: symbol DRM_KMS_HELPER is selected by DRM_SIL_SII8620
+drivers/gpu/drm/bridge/Kconfig:89: symbol DRM_SIL_SII8620 depends on EXTCON
+drivers/extcon/Kconfig:2: symbol EXTCON is selected by CHARGER_MANAGER
+drivers/power/supply/Kconfig:482: symbol CHARGER_MANAGER depends on POWER_SUPPLY
+drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by HID_ASUS
+drivers/hid/Kconfig:150: symbol HID_ASUS depends on LEDS_CLASS
+drivers/leds/Kconfig:17: symbol LEDS_CLASS depends on NEW_LEDS
+drivers/leds/Kconfig:9: symbol NEW_LEDS is selected by BACKLIGHT_ADP8860
+drivers/video/backlight/Kconfig:316: symbol BACKLIGHT_ADP8860 depends
+on BACKLIGHT_CLASS_DEVICE
+drivers/video/backlight/Kconfig:143: symbol BACKLIGHT_CLASS_DEVICE is
+selected by FB_BACKLIGHT
+drivers/video/fbdev/Kconfig:187: symbol FB_BACKLIGHT depends on FB
+
+Changing all drivers that select 'FB_BACKLIGHT' or 'BACKLIGHT_CLASS_DEVICE' to
+'depends on BACKLIGHT_CLASS_DEVICE' gets it to build.
+
+The steps each seem reasonable, in particular since they mostly clean
+up the legacy
+fbdev drivers to what they should have done anyway, but it is quite
+invasive in the end.
+Any other ideas?
+
+       Arnd
