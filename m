@@ -2,117 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260D71A8A16
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 20:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB6A1A8A3C
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 20:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504337AbgDNSro (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 14:47:44 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:43699 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504185AbgDNSrn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 14:47:43 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M597q-1jNK8G2wTc-0019oG; Tue, 14 Apr 2020 20:47:40 +0200
-Received: by mail-qt1-f172.google.com with SMTP id w24so11090673qts.11;
-        Tue, 14 Apr 2020 11:47:40 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaUj0jgMT/pF/Q4T4nB7p2Dvn1GmqpF6LCPz2+76M2w4s/3gzUO
-        jX4r+af9LMGBjZaeoAaGHZYqstvl+pWKP6ZPSNU=
-X-Google-Smtp-Source: APiQypJkm7YK7DFcAXzV9bKRiTg4ndg9+lnP/bhAkYKcaZ1Yw17IqxDBvH++61J2ztireirhfyoBdFwDtwNvTt2Nro4=
-X-Received: by 2002:ac8:d8e:: with SMTP id s14mr17254416qti.204.1586890059307;
- Tue, 14 Apr 2020 11:47:39 -0700 (PDT)
+        id S2504466AbgDNSvh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 14:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504444AbgDNSve (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Apr 2020 14:51:34 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538FAC061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:51:34 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id q17so10851306qtp.4
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 11:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+pj2d/UhEffZ+BGtjmYawglygVQvC6XutQRC9yavuQ8=;
+        b=Fi9Gct8ywSHuMzlhqXmHeEouwgNdM/N6XscrCf6dfjOWwL3xnqOO7wmCo9DI1kK9+M
+         PvFGEOIM5KxqND8BqDNIyDixTdJHNANHf9DxV4JSJXTyCQ5KOO3ajb6ButNl55OVqrSt
+         DpF6PtOmcDiaDXJuy+cCA6Qg6VEAAzDXxPA35roai1S6TnDTNUReZ1hdVUq0sPLN7fCZ
+         LPLRr3ZrknbT2Sx1hOPUyA6DuO+C1FS4vz07+CHmu23jNZARj9FbiH+JFyqKWlcKDTIu
+         +gTrVk2EhuBmFG0PTWpkpP89xMzrzkyAPRKFL0LdAuUWyI0m/BT+lxZYa/MKuf2/n3jk
+         EzDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+pj2d/UhEffZ+BGtjmYawglygVQvC6XutQRC9yavuQ8=;
+        b=te4JbxwPcAzLFklAiCWIF0gszu2ujg3MbdjGgoTuqGWPWLO5NHXDJ9VmDKG/SByXh5
+         +N+jRpoyKth0q0785L7LV446irSu/LM3vdHUxhaf+L+l+n9szSuhbORIybmeN5PIAN8i
+         HrDRmGwrN0TY2oxDUQXksFUlN9XOYS5Ytxdm8LhII9zji25TS9UJ+mG5dYRwe3eRHLLv
+         l0FG224mh7df4naPdvzs0sX5GhX4rrSThFjJwJj6rn3CuHGRpIliGb8JxXoP5UfTuqXv
+         W7huT7zIiSM1v/wsadN7Dt8CN0GZZhpdzSVOad0znE5c5rdcssTrZyrH7JX0uXoVL/Tc
+         rljw==
+X-Gm-Message-State: AGi0PuY3fNY/J+r6Z9MHYpXIRz3kIq0bNT0ULt4ecEJm5UjsBxYAtVYy
+        V2SMhukhPvTgFPYTajnhjdObYg==
+X-Google-Smtp-Source: APiQypJPbl2HYS41QgZwy6Kbla3bs4hTTS8H3zzlkOxdjWX2b0lK6R609TRSaWWLbYrQN5WnpagJpg==
+X-Received: by 2002:ac8:3874:: with SMTP id r49mr17790847qtb.66.1586890293466;
+        Tue, 14 Apr 2020 11:51:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id t35sm1715044qte.92.2020.04.14.11.51.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Apr 2020 11:51:32 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jOQei-0001C3-DP; Tue, 14 Apr 2020 15:51:32 -0300
+Date:   Tue, 14 Apr 2020 15:51:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>, sindhu.devale@intel.com,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] i40iw: fix null pointer dereference on a null wqe
+ pointer
+Message-ID: <20200414185132.GA4556@ziepe.ca>
+References: <20200401224921.405279-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
- <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
- <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com>
- <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
- <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
- <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
- <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
- <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
-In-Reply-To: <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Apr 2020 20:47:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
-Message-ID: <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:lz+utpL2BuBOA5D9VOLFoYKJVgXLXYJqK4q5UjrxvDCIrqFf0MS
- 3lwqvFNt+ZdhOi6W1+JUOaxRPxnZyz1gFrX8vajN9UA+jAAyTIvKc7WENid2RX/wLJgzjci
- 3GOKK0p8/A14FVytNaUGvXPhjxfVlXgYktvK24OOKskHvQiRErMXEilQriSDhYn+fVRhYax
- geT4oFaicC+O6wM54V3xA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BomH8QEDJV4=:ntIuB13EiCR7pWtapSJVge
- J4cB8Aba+rh8/NTD9cEQ5TyuZ84tIDqwWeQCR2YbElbe3TJ36hfx3NBjVDqk5hVrQaaau2UFy
- rV+Z2om/vZpkzaN1YxtH673J0giu8Iu9nVf2BkyqDneRJbm/wyC/modqYfdhHx8UeVZ/had/L
- 7XvJ+mGC8pIQH1BRv4urhEgq5L42xPihQ1VfTRMwMNPSxq4ZxZLW2gIIWrxoi9d13XGlEtNFC
- gPba6yESbPZMx7GPuJpDKeKdZeafCnVcNquETNmahkLgBk0Lp3n2YDXhfe6tLzCmgZaFj+Q8v
- vl/Px13mgqBM0sY7qjsRP2SSMBPTHXQnZKR87cheG2H4K7ax+JznLa8fodDmjkcu/jCbbs1Vi
- oVjZad18pJp5Gm1DhfUwpzKJo380efPkKxqaoEB+vV+Cnzvlk+GSu+Lxs1dk+F2wSdC+6uUZ6
- 38LyRG2EWJrA+r76L7nVDZrx+YfizZA1LHCgpE1Dfwvj0FdG21nPAzLc+QvaBQM2+G/S+i2mW
- /oR87M6mYgqMJ0ROMQqJp14Cbeo/D8+IpPvF7enJtrNEBOjUCkH7NmaMTvKpTM7WhQrMyjeAF
- m/ltdC70nBsrpz9Wl12UQTV1+nIxVdAXTBeUOBvdiYjWnOU30EwwyF+8RlNKhe4aU0Ibrqu1m
- t0h35AJEarmVsB2e4RIW8japZOHOzURvlmJETW9SqMrvhMj+fZ22/ITLL96vgWIzF9zCrmMOQ
- 8yltUSqjVk6KqbMDCoGWMk+87nGvG8O5AmySaraRl5nyi7LUIY0VjpTb47Nax+Y1OLi5AMB3S
- +9wwz0VSlwjQUobM/9/GFsXGCFOaYX2Snjyw5Fhvx65KWWi1M0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401224921.405279-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 7:49 PM Saeed Mahameed <saeedm@mellanox.com> wrote:
-> On Tue, 2020-04-14 at 17:25 +0200, Arnd Bergmann wrote:
-> > On Tue, Apr 14, 2020 at 5:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > Correct.
-> >
->
-> Great !
->
-> Then bottom line we will change mlx5/Kconfig: to
->
-> depends on VXLAN || !VXLAN
+On Wed, Apr 01, 2020 at 11:49:21PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the null check for wqe is incorrect and lets a null wqe
+> be passed to set_64bit_val and this indexes into the null pointer
+> causing a null pointer dereference.  Fix this by fixing the null
+> pointer check to return an error if wqe is null.
+> 
+> Addresses-Coverity: ("dereference after a null check")
+> Fixes: 4b34e23f4eaa ("i40iw: Report correct firmware version")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ok
+Applied to for-rc, thanks
 
-> This will force MLX5_CORE to m when necessary to make vxlan reachable
-> to mlx5_core.  So no need for explicit use of IS_REACHABLE().
-> in mlx5 there are 4 of these:
->
->         imply PTP_1588_CLOCK
->         imply VXLAN
->         imply MLXFW
->         imply PCI_HYPERV_INTERFACE
-
-As mentioned earlier, we do need to replace the 'imply PTP_1588_CLOCK'
-with the same
-
-         depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
-
-So far I have not seen problems for the other two options, so I assume they
-are fine for now -- it seems to build just fine without PCI_HYPERV_INTERFACE,
-and MLXFW has no other dependencies, meaning that 'imply' is the
-same as 'select' here. Using 'select MLXFW' would make it clearer perhaps.
-
-      Arnd
+Jason
