@@ -2,84 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271AD1A8B45
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 21:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3217D1A8C4B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Apr 2020 22:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505111AbgDNTm0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 15:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504949AbgDNTmU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:42:20 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F6FC061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 12:42:19 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id s18so534048qvn.1
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 12:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eusG5D6jcFoy32ZD4LulM4BOYOy0kUnD+bxHesDKhdU=;
-        b=O9T8qqpQWQ87msScjiKzIJLRknJxbSzRuDQmETQVLA1tGAPQ1LRLgZMPeHoT4i3mY8
-         tan73AgfXIiCtHXOlw26W6VZeeiksZLeBv/2DQ1RWNdom8EfjAN6JRd6QCB9Fhg2tw8w
-         QHdApRqV+wWMPObm0sTG1wqFylH0pf1zgEbUabUj6Nx4oQ6H4Jcz3wh9gCDW/qRDEzFb
-         o/PfEhpLNpz6eVZSE+JVAjeFdK+1rF2cYsREnNW+erUOyv6s3eMo2szoJh7BZRPKFtmy
-         ZiAsft9tBwi+HO8RrRM5ZqMo38QNlCsu/PEmrHilpsN7dNip/24TmbxNEVQWQtxjA1y6
-         GMAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eusG5D6jcFoy32ZD4LulM4BOYOy0kUnD+bxHesDKhdU=;
-        b=LeYXA+PAxN2dTiYRtlbxltizR+jrt+sFPcyfScLjqYPcudMmashMBgPi9pXG6W7lxS
-         G7ZRr3QBiACxH4wCiLkBv8Poa245uRJhzaurXUuDk3e/2v/7Yn7d983n3CnNpktZIm4i
-         tAOYxGLq0tUkgJ7LTjDY4wOpnG8cnwlajh7akyK1dFpWgG87l6jdOHHGT8V0HsLAWX0/
-         D7QWz3QIh3Y8XRPxScQD+UJlPuDc1oEvlu/DBYNUdsizD4fdpVtjCWtZW94MfvBTPxfb
-         xZHHHFksefvN0nkvI04KoHrluNyV9t0j6G46is4hL7w22UV19DQSrKve8ceEVBBEkAHL
-         1vJg==
-X-Gm-Message-State: AGi0PuantT7UPc06Okp+PHkY5363qRM1iYFhOA4hXYdToK0pD+qcfERT
-        EhqF3CeFkJks699wQoSjefxeWVkmbGLpzQ==
-X-Google-Smtp-Source: APiQypK6aI1cBeozShFpJuOD5OWiwixHnlaI1rHE/i+5s0oFtL+1008+PDhy5YNXgc79BKqHX7mvvQ==
-X-Received: by 2002:ad4:498c:: with SMTP id t12mr1665855qvx.27.1586893338564;
-        Tue, 14 Apr 2020 12:42:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c124sm7678336qke.13.2020.04.14.12.42.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 12:42:18 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jORRp-00077A-Ox; Tue, 14 Apr 2020 16:42:17 -0300
-Date:   Tue, 14 Apr 2020 16:42:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com
-Subject: Re: [PATCH for-next 0/4] Further improvements to bnxt_re driver
-Message-ID: <20200414194217.GA27323@ziepe.ca>
-References: <1585851136-2316-1-git-send-email-devesh.sharma@broadcom.com>
+        id S2632809AbgDNUSK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Apr 2020 16:18:10 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33892 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2632807AbgDNUR5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Apr 2020 16:17:57 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 37C1A521;
+        Tue, 14 Apr 2020 22:17:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1586895471;
+        bh=c6Xr5+2L0DxCtZfSvJoou6RSwZxi4WmjMmnUCKihyVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A5kQMUxsLc5akyV7IZRrNEf5uWfY0EWXJPRdjxLlff3vbw/+enM8JPoV9d/klth3g
+         zy8/qwAIcychqwGy6M1fbNCf4BFOlly2O0efLT8+BkhrXO+ravDVV+cX9ixjTqoIF6
+         JhgwFOeRP6FoG1U7zCp4n/vRB5aCityKHQlGUGzU=
+Date:   Tue, 14 Apr 2020 23:17:39 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+Message-ID: <20200414201739.GJ19819@pendragon.ideasonboard.com>
+References: <20200408202711.1198966-1-arnd@arndb.de>
+ <20200408202711.1198966-6-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1585851136-2316-1-git-send-email-devesh.sharma@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200408202711.1198966-6-arnd@arndb.de>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:12:11PM -0400, Devesh Sharma wrote:
-> This short patch series is an extension to the previous
-> refactor series. The main pourpose of these patches is to
-> streamline the queue management code in slightly better
-> way.
+Hi Arnd,
+
+Thank you for the patch.
+
+On Wed, Apr 08, 2020 at 10:27:10PM +0200, Arnd Bergmann wrote:
+> The 'imply' statement does not seem to have an effect, as it's
+> still possible to turn the CMM code into a loadable module
+> in a randconfig build, leading to a link error:
 > 
-> Devesh Sharma (4):
->   RDMA/bnxt_re: reduce device page size detection code
->   RDMA/bnxt_re: Update missing hsi data structures
->   RDMA/bnxt_re: simplify obtaining queue entry from hw ring
->   RDMA/bnxt_re: Remove dead code from rcfw
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_enable':
+> rcar_du_crtc.c:(.text+0xad4): undefined reference to `rcar_lvds_clk_enable'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_disable':
+> rcar_du_crtc.c:(.text+0xd7c): undefined reference to `rcar_lvds_clk_disable'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_drv.o: in function `rcar_du_init':
+> rcar_du_drv.c:(.init.text+0x4): undefined reference to `rcar_du_of_init'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_encoder.o: in function `rcar_du_encoder_init':
+> 
+> Remove the 'imply', and instead use a silent symbol that defaults
+> to the correct setting.
 
-Applied to for-next, thanks
+This will result in the CMM always being selected when DU is, increasing
+the kernel size even for devices that don't need it. I believe we need a
+better construct in Kconfig to fix this.
 
-Jason
+> Fixes: e08e934d6c28 ("drm: rcar-du: Add support for CMM")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/rcar-du/Kconfig | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+> index 0919f1f159a4..5e35f5934d62 100644
+> --- a/drivers/gpu/drm/rcar-du/Kconfig
+> +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> @@ -4,7 +4,6 @@ config DRM_RCAR_DU
+>  	depends on DRM && OF
+>  	depends on ARM || ARM64
+>  	depends on ARCH_RENESAS || COMPILE_TEST
+> -	imply DRM_RCAR_CMM
+>  	imply DRM_RCAR_LVDS
+>  	select DRM_KMS_HELPER
+>  	select DRM_KMS_CMA_HELPER
+> @@ -15,9 +14,8 @@ config DRM_RCAR_DU
+>  	  If M is selected the module will be called rcar-du-drm.
+>  
+>  config DRM_RCAR_CMM
+> -	tristate "R-Car DU Color Management Module (CMM) Support"
+> +	def_tristate DRM_RCAR_DU
+>  	depends on DRM && OF
+> -	depends on DRM_RCAR_DU
+>  	help
+>  	  Enable support for R-Car Color Management Module (CMM).
+>  
+
+-- 
+Regards,
+
+Laurent Pinchart
