@@ -2,118 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FC21AABAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 17:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E811AAFB0
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 19:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414658AbgDOPSn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Apr 2020 11:18:43 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:56625 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1414655AbgDOPSl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Apr 2020 11:18:41 -0400
-Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mi23L-1il1DD0uZt-00e37A; Wed, 15 Apr 2020 17:18:38 +0200
-Received: by mail-qk1-f181.google.com with SMTP id c63so17606965qke.2;
-        Wed, 15 Apr 2020 08:18:37 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYQ7iQhk/BikuN6BKO+BL3lPwjdOlvL37MtOvCFqqOG4wui5OGn
-        0cIjB+fYfemUFnWfZ5APRYOtoJstcXL1jjQMy9o=
-X-Google-Smtp-Source: APiQypKR0HaZQKe1NU2qEEDNoosGf+Eiif2YA3+bZv4o1jlLLMUkDmtAFRquqje/5krjrQpj3uXRFFr+JLm/a3RbNKI=
-X-Received: by 2002:a37:ba47:: with SMTP id k68mr15682834qkf.394.1586963916750;
- Wed, 15 Apr 2020 08:18:36 -0700 (PDT)
+        id S2411079AbgDOR2o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Apr 2020 13:28:44 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3196 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411067AbgDOR2b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Apr 2020 13:28:31 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9743cf0000>; Wed, 15 Apr 2020 10:26:39 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 15 Apr 2020 10:28:28 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 15 Apr 2020 10:28:28 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Apr
+ 2020 17:28:28 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Wed, 15 Apr 2020 17:28:23 +0000
+Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+References: <20200321003108.22941-1-rcampbell@nvidia.com>
+ <20200415144125.GU11945@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
+Date:   Wed, 15 Apr 2020 10:28:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <20200408202711.1198966-6-arnd@arndb.de>
- <20200414201739.GJ19819@pendragon.ideasonboard.com> <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
- <20200414205158.GM19819@pendragon.ideasonboard.com> <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
- <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 15 Apr 2020 17:18:20 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
-Message-ID: <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
-Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:LcT7bwGznqc8gtfgF2bfiglIsjD0HReWu/nHchEwDxrf+9vm5BH
- rmdjTk0uOUNkmKoP4TP/efPp6Sd4lGmapqbt1l63xHODdE9k8x8ilzOIS4zVIE7rJAwPgP9
- nv14ZKTD64pSJNEWvMGnfnTFEl7qLpGkCgk1VSBIzOAG5FvyjqcFClevQUtWagaxdqe70Vi
- puR68X7pu8N6lETJMiAIw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rJ5/p8u5JGQ=:gVqEX27W8WlhhlVVuppYhw
- JyqF3pScGR9U4BjvZeVFBDID+rUE2rQ0KuPuwkLy+zaw8dkwKT5TBF2enfoMg5vPY7VwZWvP9
- vfupHu/mPvuaiLi1AKTCDKPzUSIdaiApiIOh3cEMybo46gLRfZmBqZ/J/hZSqRsIS+vLmPuwg
- sMXQ7c2s00DUvGHbdT3j7a7Rgn0/+wtM0hti3hxDOh+gKrjqemtVQKhCFesKpkAKm1YdytiX0
- 0hhKtlq0AQmQdMh1tQ7lU1agyr75LwPnoXOO9VBvFEe3k1xMXZDde8z9s7EQSyBan6D4m2tVf
- 6L1x0HOk2oRxloiZEceJ4uwAnbk2RyNEa52eKzpKWAIjAElLRCIM+vt8eQx7KsVVGoT+v/LfR
- ed2ShkBR9f75Jdr81/tnXf9pVh6q8aG3m+0qvRHX4Bl0vVLFJO08jbmWUqOkNLEF7zMTXcajM
- upeHDmBLR0mWFlBJ3j6dNwuzla/nOE5IC0pjp9HzM7062i2ioS8SK6Ymzs/QcOrJ9mq8aAH+h
- AHk8r/ZfXxAZpMf8LASeNLo+0cluDkYIgGv2USXQEYAF8Dd1/ke3ZE+YhDbXlm2r5HDaDJHzx
- pfnDCCgLnHJFCfiuJeoydljGjjVg6Ke3S9NWPk74dJgsTLy4SfNVJ6GHEwKVtmu6fcmV/+KGv
- YiEUm4b0yF9GbqOytoeONWGo/bbkaH4BkXZjHbHSGjbKv6YLJKWFoghy7b/Hwd6TZNdOUH8nh
- L9XmRJrRDca56ZO3dVfd8ZYxPOMI0iCDISUZ4RCvho8beBrx9uaeU/i+QvlIcN3QhP25d1+Aj
- YWRg42iGcwguhIE/rxMHGkxFeTHXMtCrANnjYw5JzNGBBef0rg=
+In-Reply-To: <20200415144125.GU11945@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586971599; bh=dqlcMJl24ki/evoHvr/O4JoODiicyWi8Sw0LjbvxTvI=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=TuSrV2IsUaLFPSBBuyEzLITMxYVaL+ZGWD/29n2/5zxMAGCt8AFyzMstB7sbQ4ffN
+         UoVgp2iLlLj55PlXTvsW2ckwc0ZH3UeDStag9jQVm3MMmjmYXvhNk4k1/jN1WdlF8y
+         KlMdAJh36AB7Oa1ntTlfMPxz/lkXKs/fxSJqesbZPw8R7TSWBNMaWIlCDtE7WpDdxJ
+         ILyI0u2vuNk2k+tepYOP6DJ5oic+Tjj99uI+MX11sLbMiC2JJCuvfFJ1UW7t37kw2G
+         TSPYbNDD0pgysPSGkU7I6q2Gs0POH5MyLY9ujSSXbjnSMc4WEG74xtVR+SXknlLCa/
+         evkqAuEz7eDDw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
-> > > Doesn't "imply" mean it gets selected by default but can be manually
-> > > disabled ?
-> >
-> > That may be what it means now (I still don't understand how it's defined
-> > as of v5.7-rc1), but traditionally it was more like a 'select if all
-> > dependencies are met'.
->
-> That's still what it is supposed to mean right now ;-)
-> Except that now it should correctly handle the modular case, too.
 
-Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
-and enable CONFIG_DRM_RCAR_DU, I can set
-DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
-of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
-statement seems to be ignored entirely, except as reverse 'default'
-setting.
+On 4/15/20 7:41 AM, Jason Gunthorpe wrote:
+> On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
+>> This series adds basic self tests for HMM and are intended for Jason
+>> Gunthorpe's rdma tree which has a number of HMM patches applied.
+> 
+> Here are some hunks I noticed while testing this:
+> 
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2201,7 +2201,8 @@ config TEST_MEMINIT
+>   
+>   config TEST_HMM
+>   	tristate "Test HMM (Heterogeneous Memory Management)"
+> -	depends on DEVICE_PRIVATE
+> +	depends on TRANSPARENT_HUGEPAGE
+> +	select DEVICE_PRIVATE
+>   	select HMM_MIRROR
+>   	select MMU_NOTIFIER
+>   	help
+> 
+> It fails testing if TRANSPARENT_HUGEPAGE is not on
+> 
+> @@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
+>   	spin_lock_init(&mdevice->lock);
+>   
+>   	cdev_init(&mdevice->cdevice, &dmirror_fops);
+> +	mdevice->cdevice.owner = THIS_MODULE;
+>   	ret = cdev_add(&mdevice->cdevice, dev, 1);
+>   	if (ret)
+>   		return ret;
+> 
+> The use of cdev without a struct device is super weird, but it still
+> needs this
+> 
+> diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
+> index 461e4a99a362cf..0647b525a62564 100755
+> --- a/tools/testing/selftests/vm/test_hmm.sh
+> +++ b/tools/testing/selftests/vm/test_hmm.sh
+> @@ -59,7 +59,7 @@ run_smoke()
+>   	echo "Running smoke test. Note, this test provides basic coverage."
+>   
+>   	load_driver
+> -	./hmm-tests
+> +	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
+>   	unload_driver
+>   }
+> 
+> Make it runnably reliably
+> 
+> Jason
 
-> >
-> > In that case, a Makefile trick could also work, doing
-> >
-> > ifdef CONFIG_DRM_RCAR_CMM
-> > obj-$(CONFIG_DRM_RCAR_DU) += rcar-cmm.o
-> > endif
-> >
-> > Thereby making the cmm module have the same state (y or m) as
-> > the du module whenever the option is enabled.
->
-> What about dropping the "imply DRM_RCAR_CMM", but defaulting to
-> enable CMM if DU is enabled?
->
->     config DRM_RCAR_CMM
->             tristate "R-Car DU Color Management Module (CMM) Support"
->             depends on DRM_RCAR_DU && OF
->             default DRM_RCAR_DU
-
-That doesn't work because it allows DRM_RCAR_DU=y with
-DRM_RCAR_CMM=m, which causes a link failure.
-
-         Arnd
+Thanks for the fixes. I'll apply these and send a v9.
+I will also add missing calls to release_mem_region() to free the reserved device private
+addresses.
