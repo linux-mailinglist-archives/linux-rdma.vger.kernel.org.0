@@ -2,141 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782BC1AAA82
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 16:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FC21AABAC
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 17:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634244AbgDOOmU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Apr 2020 10:42:20 -0400
-Received: from mail-eopbgr40085.outbound.protection.outlook.com ([40.107.4.85]:61607
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2636742AbgDOOlg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:41:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ex+0SpgjWvUGBYW12OhBAwYgg4VxvsW4IuQleWGEqsnxAc8qCrMDbbOy95AnxnKmf+nsGZ+SUkF8fHToI8eISpRoCmCDOox9Xw2AVQ01TecD28rMa3KaRggtS/10vdei26iqFUVDKK+JZO0GYDUgy5jnJQhrkA+9OZ0eUeN4hhqhd76kzKZb+IqQf33aeBTUSsY/+ogA6jSD0BK4v4cKtrGF8hxSxV0/XZsxdg1L3LnTcw/t708pmQI/+vGKRBPkwwpXTqlzfa7I+7OFG5sQ42Yk/MoBSc65dvN7cXyzR+iSzrx5nCdTcB//DATftr8RYyhYVOFd+HidpTOO5rGZIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
- b=OfkLgAw+wx29DLhHrSWcorAGJXIQx0/cgMtFYhBQsxJbb19uuVDjdwmZavM1VE9xQkBblL9OlBYNIbKevJ9PejXC7WlZSq3Yi7CRqBlqp6X1Y7JmXEgQx1kFdk25vLcUL2Ojjr9mjy5HYwRZBn7av2hupOoPNK9EF2NLcPwAlWBrvQ+PB8MTl1IPpmWprxJrgOUXPyDGVWkqYzUTpVDiJANaSdsbRU60ghF9vYB/qgTYnrTbP2/xJMThIEufd8bVoevCWa972ogjHG99/QsRtzkbq7/+eLumnybbPudbu9BscTSl5y1nPTmWA0AEl/7M1+fio0yO2cG9N/5TpNK3yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UN5QnRcedVZTuVlK057N6B0N5v9K0C2AFFtlJG+C85E=;
- b=fxZIjOVQQIYcH1JUGv8SkKrnYgWbIqs9hxTJn3naT8eLml5sbOffS+9JD93TNzd783CO53jNbxgWnCB/wdQKMslCJjeRpw4598STmxJPufKwkpaIyvOb/73KsWbXfcIeUnvZ+OCB6Ssys6evsgXUucd0MnvXorQKDfawiJGAZsc=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5533.eurprd05.prod.outlook.com (2603:10a6:803:96::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Wed, 15 Apr
- 2020 14:41:29 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
- 14:41:29 +0000
-Date:   Wed, 15 Apr 2020 11:41:25 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
-Message-ID: <20200415144125.GU11945@mellanox.com>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200321003108.22941-1-rcampbell@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR19CA0055.namprd19.prod.outlook.com
- (2603:10b6:208:19b::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1414658AbgDOPSn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Apr 2020 11:18:43 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:56625 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1414655AbgDOPSl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Apr 2020 11:18:41 -0400
+Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mi23L-1il1DD0uZt-00e37A; Wed, 15 Apr 2020 17:18:38 +0200
+Received: by mail-qk1-f181.google.com with SMTP id c63so17606965qke.2;
+        Wed, 15 Apr 2020 08:18:37 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYQ7iQhk/BikuN6BKO+BL3lPwjdOlvL37MtOvCFqqOG4wui5OGn
+        0cIjB+fYfemUFnWfZ5APRYOtoJstcXL1jjQMy9o=
+X-Google-Smtp-Source: APiQypKR0HaZQKe1NU2qEEDNoosGf+Eiif2YA3+bZv4o1jlLLMUkDmtAFRquqje/5krjrQpj3uXRFFr+JLm/a3RbNKI=
+X-Received: by 2002:a37:ba47:: with SMTP id k68mr15682834qkf.394.1586963916750;
+ Wed, 15 Apr 2020 08:18:36 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0055.namprd19.prod.outlook.com (2603:10b6:208:19b::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.16 via Frontend Transport; Wed, 15 Apr 2020 14:41:27 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jOjED-0007Uk-5I; Wed, 15 Apr 2020 11:41:25 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5533:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB55339E3891DBF7E4FEFCE2D5CFDB0@VI1PR05MB5533.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-Forefront-PRVS: 0374433C81
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(66476007)(1076003)(8936002)(52116002)(81156014)(8676002)(9746002)(4326008)(33656002)(5660300002)(66946007)(316002)(66556008)(9786002)(54906003)(86362001)(7416002)(2616005)(6916009)(36756003)(2906002)(186003)(478600001)(26005)(24400500001);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YpBxg11EYDmValOU/rCKBsdsr9b9/w/QMIGMupqMlQHq5mTeKy1W3J2Hnza62QrRutuO8PfpoWeXSEPo0shMg4i/PJS0nU1eqgsTYDFgXc3vtbPYKPr1UsetDtFSxUPkSQ+4pdhR+C11mFhjHxFz9Hy4YLgCkHmLMWx7JQi8r58XNiZypKH0sJN6n/v48LOqWFgM/EupckYozNGhpRygbFspvG/gKQ7YHilL6lJC+YIF/CH6alAsAATKike9ERQ5IydT19xdEYlkmMjWbIo7kgCBpVnTgaxwtHLRBbuETNOtDvqYDleDHrqKyvQa6xvLPh3UXFtGN/IqLDxh+a761ThbbyvRxeO+FBktJLcOloOZ8BK0QDDgHkA+pJNKQBpU+CJUIOu7enQ7IvPP3TlMKs8C31VrM7cEWAxulAe0x9LOEoNHmjHRXTIL1fS5eRtqYed8WGGsw9xQt8rzoH8VyOA+4zHddtNjhf9l8Z07nH77um2VOT7MEeSGQMfC+vaY
-X-MS-Exchange-AntiSpam-MessageData: cqSvC6QoY+WBbpkLrhNr0uopG/avHTbOW1kLmJYRva2rtt02/q6NB3iIwusTj9vBAJXuUua9peVN5j+vgUI7K2wZ+sGLXl/KtLzCUWCfjYi5R7cwPhg4liNfSJKxtmeFDgGHh+h0TTrX/DDMWKBdGg==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 032dd051-1370-4d2c-6a22-08d7e14b1481
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2020 14:41:28.9551
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3xZ/q+/oN3DXhbq42Y9j169NR7GypD8m+tEMpVLiXf4aKy1e7DqcEJNfbwDXwEWGYVlvpVl5EoftF3CBzK+NIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5533
+References: <20200408202711.1198966-1-arnd@arndb.de> <20200408202711.1198966-6-arnd@arndb.de>
+ <20200414201739.GJ19819@pendragon.ideasonboard.com> <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
+ <20200414205158.GM19819@pendragon.ideasonboard.com> <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
+ <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 15 Apr 2020 17:18:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+Message-ID: <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:LcT7bwGznqc8gtfgF2bfiglIsjD0HReWu/nHchEwDxrf+9vm5BH
+ rmdjTk0uOUNkmKoP4TP/efPp6Sd4lGmapqbt1l63xHODdE9k8x8ilzOIS4zVIE7rJAwPgP9
+ nv14ZKTD64pSJNEWvMGnfnTFEl7qLpGkCgk1VSBIzOAG5FvyjqcFClevQUtWagaxdqe70Vi
+ puR68X7pu8N6lETJMiAIw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rJ5/p8u5JGQ=:gVqEX27W8WlhhlVVuppYhw
+ JyqF3pScGR9U4BjvZeVFBDID+rUE2rQ0KuPuwkLy+zaw8dkwKT5TBF2enfoMg5vPY7VwZWvP9
+ vfupHu/mPvuaiLi1AKTCDKPzUSIdaiApiIOh3cEMybo46gLRfZmBqZ/J/hZSqRsIS+vLmPuwg
+ sMXQ7c2s00DUvGHbdT3j7a7Rgn0/+wtM0hti3hxDOh+gKrjqemtVQKhCFesKpkAKm1YdytiX0
+ 0hhKtlq0AQmQdMh1tQ7lU1agyr75LwPnoXOO9VBvFEe3k1xMXZDde8z9s7EQSyBan6D4m2tVf
+ 6L1x0HOk2oRxloiZEceJ4uwAnbk2RyNEa52eKzpKWAIjAElLRCIM+vt8eQx7KsVVGoT+v/LfR
+ ed2ShkBR9f75Jdr81/tnXf9pVh6q8aG3m+0qvRHX4Bl0vVLFJO08jbmWUqOkNLEF7zMTXcajM
+ upeHDmBLR0mWFlBJ3j6dNwuzla/nOE5IC0pjp9HzM7062i2ioS8SK6Ymzs/QcOrJ9mq8aAH+h
+ AHk8r/ZfXxAZpMf8LASeNLo+0cluDkYIgGv2USXQEYAF8Dd1/ke3ZE+YhDbXlm2r5HDaDJHzx
+ pfnDCCgLnHJFCfiuJeoydljGjjVg6Ke3S9NWPk74dJgsTLy4SfNVJ6GHEwKVtmu6fcmV/+KGv
+ YiEUm4b0yF9GbqOytoeONWGo/bbkaH4BkXZjHbHSGjbKv6YLJKWFoghy7b/Hwd6TZNdOUH8nh
+ L9XmRJrRDca56ZO3dVfd8ZYxPOMI0iCDISUZ4RCvho8beBrx9uaeU/i+QvlIcN3QhP25d1+Aj
+ YWRg42iGcwguhIE/rxMHGkxFeTHXMtCrANnjYw5JzNGBBef0rg=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
-> This series adds basic self tests for HMM and are intended for Jason
-> Gunthorpe's rdma tree which has a number of HMM patches applied.
+On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> > > Doesn't "imply" mean it gets selected by default but can be manually
+> > > disabled ?
+> >
+> > That may be what it means now (I still don't understand how it's defined
+> > as of v5.7-rc1), but traditionally it was more like a 'select if all
+> > dependencies are met'.
+>
+> That's still what it is supposed to mean right now ;-)
+> Except that now it should correctly handle the modular case, too.
 
-Here are some hunks I noticed while testing this:
+Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
+and enable CONFIG_DRM_RCAR_DU, I can set
+DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
+of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
+statement seems to be ignored entirely, except as reverse 'default'
+setting.
 
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2201,7 +2201,8 @@ config TEST_MEMINIT
- 
- config TEST_HMM
- 	tristate "Test HMM (Heterogeneous Memory Management)"
--	depends on DEVICE_PRIVATE
-+	depends on TRANSPARENT_HUGEPAGE
-+	select DEVICE_PRIVATE
- 	select HMM_MIRROR
- 	select MMU_NOTIFIER
- 	help
+> >
+> > In that case, a Makefile trick could also work, doing
+> >
+> > ifdef CONFIG_DRM_RCAR_CMM
+> > obj-$(CONFIG_DRM_RCAR_DU) += rcar-cmm.o
+> > endif
+> >
+> > Thereby making the cmm module have the same state (y or m) as
+> > the du module whenever the option is enabled.
+>
+> What about dropping the "imply DRM_RCAR_CMM", but defaulting to
+> enable CMM if DU is enabled?
+>
+>     config DRM_RCAR_CMM
+>             tristate "R-Car DU Color Management Module (CMM) Support"
+>             depends on DRM_RCAR_DU && OF
+>             default DRM_RCAR_DU
 
-It fails testing if TRANSPARENT_HUGEPAGE is not on
+That doesn't work because it allows DRM_RCAR_DU=y with
+DRM_RCAR_CMM=m, which causes a link failure.
 
-@@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
- 	spin_lock_init(&mdevice->lock);
- 
- 	cdev_init(&mdevice->cdevice, &dmirror_fops);
-+	mdevice->cdevice.owner = THIS_MODULE;
- 	ret = cdev_add(&mdevice->cdevice, dev, 1);
- 	if (ret)
- 		return ret;
-
-The use of cdev without a struct device is super weird, but it still
-needs this
-
-diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-index 461e4a99a362cf..0647b525a62564 100755
---- a/tools/testing/selftests/vm/test_hmm.sh
-+++ b/tools/testing/selftests/vm/test_hmm.sh
-@@ -59,7 +59,7 @@ run_smoke()
- 	echo "Running smoke test. Note, this test provides basic coverage."
- 
- 	load_driver
--	./hmm-tests
-+	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
- 	unload_driver
- }
-
-Make it runnably reliably
-
-Jason
+         Arnd
