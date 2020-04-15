@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566271AA242
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 14:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B981AA0BA
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 14:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897492AbgDOMwp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Apr 2020 08:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33866 "EHLO mail.kernel.org"
+        id S369500AbgDOMal (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Apr 2020 08:30:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897469AbgDOLme (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:42:34 -0400
+        id S2409104AbgDOLou (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:44:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BB952137B;
-        Wed, 15 Apr 2020 11:42:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1A9820737;
+        Wed, 15 Apr 2020 11:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586950954;
+        s=default; t=1586951087;
         bh=7XeeStrCK5kGavojARUQVC9UvgsLzqP+H2GH7ek/uyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eh6UNaTd0bAPE6LUIUA4nbKadqnaNTdP2FNFflUWVaV5bpaC6N62aD4Li9NIuYDeW
-         WC+fCHMd0q0I2yuW8QgzKVkdKR0GZ69q9nodIbF4d2jj4slw7zQ8EEyNiaWIz02u3V
-         2+iSOcX5uaCmI5IQXSrYRXZHH3lPdYRxz/Ik07xk=
+        b=Qlfe7J/NcvT4OzRyBOy1dJejv1E1XiP8///BmeDwf7MtTIJt8mmhOxaMLgaZjhRXJ
+         2yG8Kwp/F/+Xs5PD6Sorx9SGdDnrVOfujDrAvQTm/hjYOJ24LJ26tSFQ25VCemzfym
+         FSemuJ2Apr/cdLrQkj+IC5KgVH5svv4qqqG6ECk4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Aya Levin <ayal@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 006/106] net/mlx5e: Enforce setting of a single FEC mode
-Date:   Wed, 15 Apr 2020 07:40:46 -0400
-Message-Id: <20200415114226.13103-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/84] net/mlx5e: Enforce setting of a single FEC mode
+Date:   Wed, 15 Apr 2020 07:43:21 -0400
+Message-Id: <20200415114442.14166-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114226.13103-1-sashal@kernel.org>
-References: <20200415114226.13103-1-sashal@kernel.org>
+In-Reply-To: <20200415114442.14166-1-sashal@kernel.org>
+References: <20200415114442.14166-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
