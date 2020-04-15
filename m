@@ -2,114 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8255A1A9890
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 11:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507A21A9B9F
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 13:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895426AbgDOJXh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Apr 2020 05:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895417AbgDOJXT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Apr 2020 05:23:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EFBC03C1AD
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2020 02:23:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f13so18216890wrm.13
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2020 02:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+lzbi8aK38U3+DnvnY6rCKYXK2X3LSq1Bs0xPjQHnEY=;
-        b=IhRTjTDz7EJWFq9QmsxzQIXFo/Rz3p94HTg5QUIce2pHs0vR3K/yQlWoDkJjT7He0Z
-         xRnivZ/Znkw7AR7UZS6EvUSTJY9YeFboUWxVV1VjtXTiprve5IVpyGRptJE+8C3tBH0/
-         tgkpnAjMv3N4JiZRQ5Mr+W+Fji7QVJn1rwXgHnJbYwWK6V/GoCpM/Ci6daZx62Moh+Lm
-         IRLgxB7s3VdZUjGuqH70CDCrUcxhyqHZXGuASdLZca4OrXD017gWVnF+KU585tMXB+YE
-         24sCXYIC4zPEfv/B6eH+75F7xLSJ/p6tY2Kod7H0tPDoR2GZNZ6yhp6Rh6eYbUAzQOhT
-         OwvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+lzbi8aK38U3+DnvnY6rCKYXK2X3LSq1Bs0xPjQHnEY=;
-        b=OpfsSiZgrmeYidD2jkyQSbiFCiii3oyDjH9kCauRe8N8u8weei8mXY5BUC0PcRLOLk
-         H5WEj0T2uIq24gjFJG2EGFjxtP9MYufP4fvUseNRvwyGecL1YN6Dol77+4gW1doUXDrL
-         R6NFzQDIvdURPUwIDYp3CLYMTlZt1BD9k4WViYvlaYqFVWggkmD69brop15Dgj1xPjB9
-         gjJZdV3gVojG+eW0ndtGLdCSlZlc7FR9NAmVhB8EvykI1UTXxqr2XZ+Fut0/RXCGf8pQ
-         81n3RdGFs3IRGYNlhBYSzsItGzJHwKtYwcMPSVFzVNxQoLtd9Xk+bYW/dMLzyY0uFvU/
-         AMTA==
-X-Gm-Message-State: AGi0PubCPYZGW0+uEOcA8/Yl26rLyce95Al7g/piP0E1Xk1jD4noeo3+
-        5bG3RqqXDOjnbzG28sOi+ouw
-X-Google-Smtp-Source: APiQypJ3GJM0/+2P/AexxwNZcsOmkayjLCRqYin26oqaGvC5I/yiPcNjbwDbLtPAlMe8SMno++ygnQ==
-X-Received: by 2002:a5d:50c9:: with SMTP id f9mr9515274wrt.191.1586942597275;
-        Wed, 15 Apr 2020 02:23:17 -0700 (PDT)
-Received: from dkxps.fkb.profitbricks.net (dslb-002-204-231-072.002.204.pools.vodafone-ip.de. [2.204.231.72])
-        by smtp.gmail.com with ESMTPSA id v7sm22534615wmg.3.2020.04.15.02.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 02:23:16 -0700 (PDT)
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com
-Subject: [PATCH v12 25/25] MAINTAINERS: Add maintainers for RNBD/RTRS modules
-Date:   Wed, 15 Apr 2020 11:20:45 +0200
-Message-Id: <20200415092045.4729-26-danil.kipnis@cloud.ionos.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
-References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
+        id S2896703AbgDOLBy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Apr 2020 07:01:54 -0400
+Received: from mout.web.de ([217.72.192.78]:38799 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896697AbgDOLBf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:01:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586948425;
+        bh=R6b+YCXNkpmld5Z0AKrGLTjWrOqTjG9Cgl54SpiD9LE=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=WIwfVVtQuCR7EebeJn6ed4ksBEST9zydh8nIG5aN2cTjSX840vfJ91OXXLcROwG8H
+         OMglWeKBxRFwU6dBp7uhVoy0qHBOqxaSmOkHYQoyEsVOPUDWrOg0IuLPoLGlVkJDE9
+         OUWvOdpXezILDE3MtHX9VVMaVIXMNVwpV7mQ/6iM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.48.133.192]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LtnvF-1jEoNI2YUf-0117Vo; Wed, 15
+ Apr 2020 13:00:25 +0200
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kangjie Lu <kjlu@umn.edu>,
+        Yuan Zhang <yuanxzhang@fudan.edu.cn>
+Subject: Re: [PATCH] RDMA/siw: Fix potential siw_mem refcnt leak in
+ nr_add_node
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <08a5af5b-96f8-837c-ff4b-814901ad9ed5@web.de>
+Date:   Wed, 15 Apr 2020 13:00:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gr+Wes45jCDED7l/oZbtpyl17ALJlyj6H2FuHX6hJHhSNQtWonk
+ mu2fhvHDnJrt5NUged7UXeJiEkTePbyH/UADx4PetvnAPzDLKY7+mzgfvlJp+WLm0ynw8TR
+ Jbraz0OP3BcuZaW7L7nRwh7KBNi3Ob/nI9EBiRTgz8BuphsmC7EsAKmUP97GRk/GtoTItZy
+ lEW6RueTLJUdTjQmk4lcA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hbjir+Sindc=:7qnVU2HkGc1meRZXER6wdX
+ jSGFZvUeGQ2RsKPDW+BK+FTx/6bivuPSuygR6IYKuOeY2n+0FBARyx6zcOEk6RAegugyCPxoN
+ HgPdk4Oz8NhP2TBa2B1kF0mufnnSW7IpIVS7zFQXUVwcPLahSuO1XzR5eIznlo/lH+i21ceuy
+ Q42IdfQ2IQcG+shdrCu1wZSRjOaSsVoG2AtfN3dEjqCuT4BeKsnXjMLxjSqsFTH+nfLMeBLDY
+ Z9MqwOq0uc0GtWZU3MkRXow30FnxJcj9tLq0uH6b2HnaHwZQZBfzyGMItd9YHj5YT8EikPkFW
+ pyovNgj9OE6K+CG//clKohLY8vstw9qYztsxoTAG/7TbJ+CHQApeBZ2WMrlAH77T/WUhjjjJM
+ wMrgYq0EkpGTSbBf1ZcoEQyc5BBq93IbHUHiqHtPYFFF8IclUvOz4/bKIsR5JR4YEqrvXWJoK
+ AJeOax0i/50jd+6ZQgaheG7O2WA5Uf8PGnYovOGAWUTEmQ6AxHJUu8VLbpSLwgJz5NiGmUBME
+ 9XiH7ADM3zBR6J3JvA67zZTRBVc1HzR8CawJbpxFqlyR0GiR7lUykjH3FFYqfxsDhaYoxn5uj
+ UY4qNPbs0yZVkr8LFrfgb7qnIFC5nqoHTGu+FcuoIOfNSKOZ0+llRK+0Xt8DG75xnsT9KH7Wm
+ 0MWvt3c3wLXFWhbZr/WZWoVur/nj/edLHP0yw/f+YMrnuV4NkKiIi8N1tdz6S13mcQYIosffY
+ 7i6ZMOYn8ytqAZy3Jq0s0D3PYmSJYw4n66+WkNMOe3Kaswpq0f+6trNowJsiio7ryD34NYqV4
+ RnxcaY7ucAUnH1K9fRxI6ULaCm+NB9DjuWbL3wDcpf5kx2OxZxWXNHDt69bzKteMbo5ldzMg1
+ 1wgBn2XeC/PN+0mFRdeIET/GESulZEK2hq8CBNemZ7ppAjDqACX8Sqt8UdOIpsE/7VR7aa/6R
+ 2lgeytX2IqskjjumZTPDmKQHfOkpM/x2H/YAZmjYt0ogJQEnuRUDxmjrP22+292m41/1YAHRK
+ UUYdb4x4trmR3p5JtncB1zIeFAAdyZPQNepX45KAWRztNuI0/YT0K4bSvjoCFuHs5e5yxhngp
+ LZ1aALeARzld1H2RxwSq/8a4d5czp984qncjgFS6JF2aOq32yKkbTD5Z65F84Gxj427TekXBB
+ kQO/UlW2mZU0zBunsqPEuV/moP94FfVc+QUVRT05lTT3wpyVnwXuA/5VetKJlQYIchjQCSfMk
+ EFyYjpFN9LLZ7rh3T
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+> The issue happens in one error path of siw_fastreg_mr(). When "base_mr"
+> equals to NULL but "mem" is not NULL, the function forgets to decrease
+> the refcnt increased by siw_mem_id2obj() and causes a refcnt leak.
 
-Danil and I will maintain RNBD/RTRS modules.
+How do you think about to mention the terms =E2=80=9Cexception handling=E2=
+=80=9D
+and =E2=80=9Creference counting=E2=80=9D in the commit message?
 
-Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
----
- MAINTAINERS | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the change descri=
+ption?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..8031a923e5a5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14448,6 +14448,13 @@ F:	arch/riscv/
- N:	riscv
- K:	riscv
- 
-+RNBD BLOCK DRIVERS
-+M:	Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+M:	Jack Wang <jinpu.wang@cloud.ionos.com>
-+L:	linux-block@vger.kernel.org
-+S:	Maintained
-+F:	drivers/block/rnbd/
-+
- ROCCAT DRIVERS
- M:	Stefan Achatz <erazor_de@users.sourceforge.net>
- S:	Maintained
-@@ -14576,6 +14583,13 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jes/linux.git rtl8xxxu-devel
- F:	drivers/net/wireless/realtek/rtl8xxxu/
- 
-+RTRS TRANSPORT DRIVERS
-+M:	Danil Kipnis <danil.kipnis@cloud.ionos.com>
-+M:	Jack Wang <jinpu.wang@cloud.ionos.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Maintained
-+F:	drivers/infiniband/ulp/rtrs/
-+
- RXRPC SOCKETS (AF_RXRPC)
- M:	David Howells <dhowells@redhat.com>
- L:	linux-afs@lists.infradead.org
--- 
-2.20.1
-
+Regards,
+Markus
