@@ -2,132 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA0B1AB20D
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 21:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DF31AB333
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 23:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436834AbgDOTw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Apr 2020 15:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406367AbgDOTw6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Apr 2020 15:52:58 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57BFE20768;
-        Wed, 15 Apr 2020 19:52:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586980377;
-        bh=VIJbq8z+EJopl5dPNKugVY1RH2ciDkjwJJAVLC+WXtw=;
+        id S371393AbgDOVMl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Apr 2020 17:12:41 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38226 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371387AbgDOVMk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Apr 2020 17:12:40 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 498802D1;
+        Wed, 15 Apr 2020 23:12:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1586985152;
+        bh=6ZsvRs7bRQKm2uUaVr3nSLa1kHFG0xzNrbDdN57gCCQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8SIg/rAhUuNpb63I3FxCT/9WF5sH257PdsEZjlN4Rasbbf3cmMzAtM6ilEvTxw39
-         S98cbtdUeOFq2LGC7LWxu3SVaCBsf6cmg5BfgZA8olpGkIuQsZLqavp5h0391M6izK
-         z+qYrsyH750BlDWEYAabXcP0W3fq8ervDj5XG0bM=
-Date:   Wed, 15 Apr 2020 22:52:47 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] mm/hmm/test: add self tests for HMM
-Message-ID: <20200415195247.GB1309273@unreal>
-References: <20200321003108.22941-1-rcampbell@nvidia.com>
- <20200415144125.GU11945@mellanox.com>
- <6d7adb28-96a0-5dc5-e85e-68fca2db403a@nvidia.com>
- <20200415192952.GA1309273@unreal>
- <1b94e41d-2335-0cb4-9605-cf9f404900c9@nvidia.com>
+        b=Asq687MHzIHKq43berIYmZ59aeoEo+vMV3L0Kmj60d9CPYdYFrSOTpzamKOx7ty4P
+         RovcFHD6tSHE6LH/oKFii6xcTJvMhpSzgSQSO/AwUu9TmSH0HB8/5jwj5kQHQpGG3I
+         HaqY0Wr/aUbcwlF7mJE34yCw4xZy4KOu4ykEJTyI=
+Date:   Thu, 16 Apr 2020 00:12:20 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
+Message-ID: <20200415211220.GQ4758@pendragon.ideasonboard.com>
+References: <20200408202711.1198966-1-arnd@arndb.de>
+ <20200408202711.1198966-6-arnd@arndb.de>
+ <20200414201739.GJ19819@pendragon.ideasonboard.com>
+ <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
+ <20200414205158.GM19819@pendragon.ideasonboard.com>
+ <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
+ <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
+ <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
+ <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1b94e41d-2335-0cb4-9605-cf9f404900c9@nvidia.com>
+In-Reply-To: <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 12:39:45PM -0700, Ralph Campbell wrote:
->
-> On 4/15/20 12:29 PM, Leon Romanovsky wrote:
-> > On Wed, Apr 15, 2020 at 10:28:23AM -0700, Ralph Campbell wrote:
+Hi Arnd,
+
+On Wed, Apr 15, 2020 at 09:07:14PM +0200, Arnd Bergmann wrote:
+> On Wed, Apr 15, 2020 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> > > > > Doesn't "imply" mean it gets selected by default but can be manually
+> > > > > disabled ?
+> > > >
+> > > > That may be what it means now (I still don't understand how it's defined
+> > > > as of v5.7-rc1), but traditionally it was more like a 'select if all
+> > > > dependencies are met'.
 > > >
-> > > On 4/15/20 7:41 AM, Jason Gunthorpe wrote:
-> > > > On Fri, Mar 20, 2020 at 05:31:05PM -0700, Ralph Campbell wrote:
-> > > > > This series adds basic self tests for HMM and are intended for Jason
-> > > > > Gunthorpe's rdma tree which has a number of HMM patches applied.
-> > > >
-> > > > Here are some hunks I noticed while testing this:
-> > > >
-> > > > --- a/lib/Kconfig.debug
-> > > > +++ b/lib/Kconfig.debug
-> > > > @@ -2201,7 +2201,8 @@ config TEST_MEMINIT
-> > > >    config TEST_HMM
-> > > >    	tristate "Test HMM (Heterogeneous Memory Management)"
-> > > > -	depends on DEVICE_PRIVATE
-> > > > +	depends on TRANSPARENT_HUGEPAGE
-> > > > +	select DEVICE_PRIVATE
-> > > >    	select HMM_MIRROR
-> > > >    	select MMU_NOTIFIER
-> > > >    	help
-> > > >
-> > > > It fails testing if TRANSPARENT_HUGEPAGE is not on
-> > > >
-> > > > @@ -1097,6 +1071,7 @@ static int dmirror_device_init(struct dmirror_device *mdevice, int id)
-> > > >    	spin_lock_init(&mdevice->lock);
-> > > >    	cdev_init(&mdevice->cdevice, &dmirror_fops);
-> > > > +	mdevice->cdevice.owner = THIS_MODULE;
-> > > >    	ret = cdev_add(&mdevice->cdevice, dev, 1);
-> > > >    	if (ret)
-> > > >    		return ret;
-> > > >
-> > > > The use of cdev without a struct device is super weird, but it still
-> > > > needs this
-> > > >
-> > > > diff --git a/tools/testing/selftests/vm/test_hmm.sh b/tools/testing/selftests/vm/test_hmm.sh
-> > > > index 461e4a99a362cf..0647b525a62564 100755
-> > > > --- a/tools/testing/selftests/vm/test_hmm.sh
-> > > > +++ b/tools/testing/selftests/vm/test_hmm.sh
-> > > > @@ -59,7 +59,7 @@ run_smoke()
-> > > >    	echo "Running smoke test. Note, this test provides basic coverage."
-> > > >    	load_driver
-> > > > -	./hmm-tests
-> > > > +	$(dirname "${BASH_SOURCE[0]}")/hmm-tests
-> > > >    	unload_driver
-> > > >    }
-> > > >
-> > > > Make it runnably reliably
-> > > >
-> > > > Jason
-> > >
-> > > Thanks for the fixes. I'll apply these and send a v9.
-> > > I will also add missing calls to release_mem_region() to free the reserved device private
-> > > addresses.
+> > > That's still what it is supposed to mean right now ;-)
+> > > Except that now it should correctly handle the modular case, too.
 > >
-> > If you decide to ignore my request to avoid addition of special header
-> > file to UAPI, at least don't copy and install that file without some
-> > special CONFIG option (TEST_HMM ???) requested by the users. It also
-> > will be good to get Acked-by on this change from HMM people.
-> >
-> > However, I still think that include/uapi/linux/test_hmm.h opens
-> > pandora box of having UAPI files without real promise to keep it
-> > backward compatible.
-> >
-> > Thanks
->
-> I think that is a valid point. I would expect the test<->driver UAPI to track the kernel
-> version since the sources are "released" together. I suppose a version number could be
-> included in the request structure to handle mismatch driver and test program but that
-> may be overkill.
+> > Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
+> > and enable CONFIG_DRM_RCAR_DU, I can set
+> > DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
+> > of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
+> > statement seems to be ignored entirely, except as reverse 'default'
+> > setting.
+> 
+> Here is another version that should do what we want and is only
+> half-ugly. I can send that as a proper patch if it passes my testing
+> and nobody hates it too much.
 
-Yes, it is really overkill.
+This may be a stupid question, but doesn't this really call for fixing
+Kconfig ? This seems to be such a common pattern that requiring
+constructs similar to the ones below will be a never-ending chase of
+offenders.
 
-> Are you suggesting that include/linux/test_hmm.h is a better location?
+> diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+> index 0919f1f159a4..d2fcec807dfa 100644
+> --- a/drivers/gpu/drm/rcar-du/Kconfig
+> +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> @@ -4,8 +4,6 @@ config DRM_RCAR_DU
+>         depends on DRM && OF
+>         depends on ARM || ARM64
+>         depends on ARCH_RENESAS || COMPILE_TEST
+> -       imply DRM_RCAR_CMM
+> -       imply DRM_RCAR_LVDS
+>         select DRM_KMS_HELPER
+>         select DRM_KMS_CMA_HELPER
+>         select DRM_GEM_CMA_HELPER
+> @@ -14,13 +12,17 @@ config DRM_RCAR_DU
+>           Choose this option if you have an R-Car chipset.
+>           If M is selected the module will be called rcar-du-drm.
+> 
+> -config DRM_RCAR_CMM
+> -       tristate "R-Car DU Color Management Module (CMM) Support"
+> -       depends on DRM && OF
+> +config DRM_RCAR_USE_CMM
+> +       bool "R-Car DU Color Management Module (CMM) Support"
+>         depends on DRM_RCAR_DU
+> +       default DRM_RCAR_DU
+>         help
+>           Enable support for R-Car Color Management Module (CMM).
+> 
+> +config DRM_RCAR_CMM
+> +       def_tristate DRM_RCAR_DU
+> +       depends on DRM_RCAR_USE_CMM
+> +
+>  config DRM_RCAR_DW_HDMI
+>         tristate "R-Car DU Gen3 HDMI Encoder Support"
+>         depends on DRM && OF
+> @@ -28,15 +30,20 @@ config DRM_RCAR_DW_HDMI
+>         help
+>           Enable support for R-Car Gen3 internal HDMI encoder.
+> 
+> -config DRM_RCAR_LVDS
+> -       tristate "R-Car DU LVDS Encoder Support"
+> -       depends on DRM && DRM_BRIDGE && OF
+> +config DRM_RCAR_USE_LVDS
+> +       bool "R-Car DU LVDS Encoder Support"
+> +       depends on DRM_BRIDGE && OF
+> +       default DRM_RCAR_DU
+>         select DRM_PANEL
+>         select OF_FLATTREE
+>         select OF_OVERLAY
+>         help
+>           Enable support for the R-Car Display Unit embedded LVDS encoders.
+> 
+> +config DRM_RCAR_LVDS
+> +       def_tristate DRM_RCAR_DU
+> +       depends on DRM_RCAR_USE_LVDS
+> +
+>  config DRM_RCAR_VSP
+>         bool "R-Car DU VSP Compositor Support" if ARM
+>         default y if ARM64
 
-It is one of options, another option maybe similar to that is done in
-scripts/mod/modpost.c [1], where C file is generated on the fly.
+-- 
+Regards,
 
-[1] https://lore.kernel.org/netdev/20200415133648.1306956-5-leon@kernel.org
+Laurent Pinchart
