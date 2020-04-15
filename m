@@ -2,92 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8BA1A8FCA
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 02:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E200C1A9041
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Apr 2020 03:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407876AbgDOAl5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Apr 2020 20:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733064AbgDOAlz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Apr 2020 20:41:55 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2029C061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 17:41:55 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id x66so15508075qkd.9
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Apr 2020 17:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eo385VfZcGAz7coUgjGWNzMa0vEHywn06GjdqDem0NY=;
-        b=YGLvHs8pYWq8xOGZpyM0F/OH7orZNDtMeXefo+v908z8GZXUl9dNS4lKl7OFo8zXT6
-         56UQaKdOOLmPU1+bEqyUUwXvt2I8QZmkBxTxjCiADlGQiexX1PhXEXmznGHWpAcBYBzn
-         eJTbupadIfCG6uO1W4gwhw+cFI4E+GkhKuy1hX2YPzWiE1yT5LvCmAxmEDB/c6fMRe5c
-         X7qhcNqHtrvMqGrszYAVba23f3CmjLK1bXbK59NJWUiVl9xKOn+5pPXCjh+z43zwSzCh
-         egHZEDvxawIXzZ8kF5KJ3PudFm1XdnyG9vh2rEHV2QduEO2moRoMRoyUlo0qj5xt6baZ
-         +LEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eo385VfZcGAz7coUgjGWNzMa0vEHywn06GjdqDem0NY=;
-        b=UKnf8376UvU6nL9Dtlp2GhrhQvoAnEr5S/hMJSYIPWl1ZEbDdBFKG9ogjccbxH1LIU
-         vBwY6keYCQvf+nWHgCBIqp6wI7cWbasOexiieIoP90HziZ142jRXtMK/nSPzJHRo7C8c
-         zlTvlfOc3dFkb0Rm9TaWgNETOmXsVl90Cfgct6OWGNkGK7586ZqY7fcYejnEhvRcBbqU
-         OZX9hhsg51wCCAqC19Fr+1Jwdz5YigXlbXy6xGruNPL5yrikSUvWLRNY3CPq+fIVBZty
-         fQpS6bN79lrSczaXbb70myKlm+wAx8Zmugjjp0GLiKI5B2kqiWShwdPQeKxQZ5uVQS4f
-         TrEQ==
-X-Gm-Message-State: AGi0PuaHfQmaMVuJyJCC9XhIHRCwaKb/+FAitT0f6ZxOa0+bfHD4vE47
-        ttONkMQeCQb8Q/xVSecaGQEPAw==
-X-Google-Smtp-Source: APiQypLglDzqCDqMLVb5A1TB1kZOz4RvLejsXTssywOz6b9TW05QtDw6BdZK2lmpxbPssI8Holb0uA==
-X-Received: by 2002:a05:620a:1259:: with SMTP id a25mr12781217qkl.323.1586911314698;
-        Tue, 14 Apr 2020 17:41:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p22sm2068507qte.2.2020.04.14.17.41.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Apr 2020 17:41:54 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jOW7l-0006br-Lu; Tue, 14 Apr 2020 21:41:53 -0300
-Date:   Tue, 14 Apr 2020 21:41:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Alaa Hleihel <alaa@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Roland Dreier <roland@purestorage.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx4: Initialize ib_spec on the stack
-Message-ID: <20200415004153.GA25366@ziepe.ca>
-References: <20200413132235.930642-1-leon@kernel.org>
+        id S2389055AbgDOBPq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 14 Apr 2020 21:15:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:41678 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388394AbgDOBPn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Apr 2020 21:15:43 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id 1E12957534F9F18236F8;
+        Wed, 15 Apr 2020 09:15:38 +0800 (CST)
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.102]) by
+ DGGEML403-HUB.china.huawei.com ([fe80::74d9:c659:fbec:21fa%31]) with mapi id
+ 14.03.0487.000; Wed, 15 Apr 2020 09:15:28 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next 3/6] RDMA/hns: Simplify the qp state convert
+ code
+Thread-Topic: [PATCH for-next 3/6] RDMA/hns: Simplify the qp state convert
+ code
+Thread-Index: AQHWEV6FH2zX2yyFxUKHVDP6F7KFBA==
+Date:   Wed, 15 Apr 2020 01:15:28 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A022FF6D6@DGGEML522-MBX.china.huawei.com>
+References: <1586760042-40516-1-git-send-email-liweihang@huawei.com>
+ <1586760042-40516-4-git-send-email-liweihang@huawei.com>
+ <20200414125600.GB5100@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413132235.930642-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:22:35PM +0300, Leon Romanovsky wrote:
-> From: Alaa Hleihel <alaa@mellanox.com>
+On 2020/4/14 20:56, Jason Gunthorpe wrote:
+> On Mon, Apr 13, 2020 at 02:40:39PM +0800, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> Use type map table to reduce the cyclomatic complexity.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 27 ++++++++++++++-------------
+>>  1 file changed, 14 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index 6816278..e938bd8 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -4540,19 +4540,20 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+>>  	return ret;
+>>  }
+>>  
+>> -static inline enum ib_qp_state to_ib_qp_st(enum hns_roce_v2_qp_state state)
+>> -{
+>> -	switch (state) {
+>> -	case HNS_ROCE_QP_ST_RST:	return IB_QPS_RESET;
+>> -	case HNS_ROCE_QP_ST_INIT:	return IB_QPS_INIT;
+>> -	case HNS_ROCE_QP_ST_RTR:	return IB_QPS_RTR;
+>> -	case HNS_ROCE_QP_ST_RTS:	return IB_QPS_RTS;
+>> -	case HNS_ROCE_QP_ST_SQ_DRAINING:
+>> -	case HNS_ROCE_QP_ST_SQD:	return IB_QPS_SQD;
+>> -	case HNS_ROCE_QP_ST_SQER:	return IB_QPS_SQE;
+>> -	case HNS_ROCE_QP_ST_ERR:	return IB_QPS_ERR;
+>> -	default:			return -1;
+>> -	}
+>> +static int to_ib_qp_st(enum hns_roce_v2_qp_state state)
+>> +{
+>> +	const enum ib_qp_state map[] = {
 > 
-> Initialize ib_spec on the stack before using it, otherwise we will
-> have garbage values that will break creating default rules with
-> invalid parsing error.
+> Should be static
 > 
-> Fixes: a37a1a428431 ("IB/mlx4: Add mechanism to support flow steering over IB links")
-> Signed-off-by: Alaa Hleihel <alaa@mellanox.com>
-> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx4/main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Jason
+> 
 
-Applied to for-rc, thanks
+OK, thank you.
 
-Jason
+Weihang
