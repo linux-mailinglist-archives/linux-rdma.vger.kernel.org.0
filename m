@@ -2,141 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E3B1AD026
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 21:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AA71AD067
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 21:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgDPTIW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 15:08:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:58689 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727989AbgDPTIV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Apr 2020 15:08:21 -0400
-IronPort-SDR: 0VncqVuJHZPGmazrFxpf7BC367x8thEF0IpFtjpT6va943ukJyvmEmRjl0cghMVcYZF23ZuZI6
- k6tUDrFlJpig==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 12:08:18 -0700
-IronPort-SDR: H6IDGTEOSYGrm0rQ70klsZs5WPt4/VHjAOqThyecqwMtctTn2oLUmZkIQ8iHsCgkvwak6lRb/c
- dhTSWjpprymA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
-   d="scan'208";a="427948994"
-Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
-  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 12:08:18 -0700
-Received: from orsmsx155.amr.corp.intel.com (10.22.240.21) by
- ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 12:08:18 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- ORSMSX155.amr.corp.intel.com (10.22.240.21) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 12:08:17 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 12:08:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UpbtLRBS+bGk2o5+4UY4OulhykxZLkDLuBK10VopMSjjn6GEIrmD8bJj8ZFzKNBiAXQD0P6Dl75hlSNv69Re6KMWruj9u5s32x9S2S0IMpYe7M02XwiOtjf5+YlmP1yXnGA6AT9pvzT+lUL2FA8QpkFEyLomEcIBhDtE47QB4nh0VrEVcNnQfSkSbOcjo6xW3uRhZMos1M8pz9/nxMqV9qDPSaCLQEfzdhnPCPkGOD1VJgqJ4/pYLIRAB0AdAE/+04c+E7eIMugS02/OSKOStD520fjF2cEilSrmdU54A+HmGV62Wt29FhKHBEVuVV6wRan6ATF0wPQ636HEyBiJMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RxUNjInDDa6WxtaVsIDFhSvxY+XvV8ZHAs01MzY3FCY=;
- b=UvLy+p/SnDEvrqanlyzK0+L1DbiMK/Xtm9g3adW08ViKt3A7kZPi+YrUbXRnOj9mOo5qIke5PX4nBLT8lQiXmWR9TEXfLUbly3yIfOc8VI2w/FL7E5JjUuVJzJF4we22xHmjiq8jv0ZZn6hPqFInBBMkB5BCxJuhV2pUAZfcJ6k/MqihiwpGOaDR12W2AkeEJS0K9iVTZc+qsyJNKIRkpYBkr5gNiJHLConXDRfk47asiTQJ6K4Fm387HQswG4D02kWxeONI2hY4mqbxwM0I0hymgERgBxT2QjR5SByZwhJVs358yivl/tfkyaeFAMWDvB7azwHHIo/7RO7kg66Psw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RxUNjInDDa6WxtaVsIDFhSvxY+XvV8ZHAs01MzY3FCY=;
- b=ODuF32Lr2jloidlcgbPqQbjcXlYp90v9ou3T5QbV+xwjwZUcufrcCY1IzB4nVfi83+HFTs1COPS4YtGOK28nXfxpC6PXSwYzLzcTZzFoWpIMA9FxhW1LCuyD1wOjk6sOuBXXk9VlKEhZc516wTru5AxK3676y2BykQAuLcVkWKA=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MW3PR11MB4585.namprd11.prod.outlook.com (2603:10b6:303:52::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.28; Thu, 16 Apr
- 2020 19:08:16 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::1916:3bdd:3f40:fd36]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::1916:3bdd:3f40:fd36%6]) with mapi id 15.20.2921.027; Thu, 16 Apr 2020
- 19:08:16 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        id S1725969AbgDPTeM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 15:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725894AbgDPTeL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Apr 2020 15:34:11 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEFEC061A0C
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2020 12:34:10 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id f13so17356910qti.5
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2020 12:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3bdfmLSGDBDiQGqrSZoq13wA4pyt1/GANxHaalzYyRA=;
+        b=BF6Q5YiCB/KwYoP4ltCmnyMRaty/XCpafM7y4GSCKHposRRY066ln/pMQdTeZnd7K0
+         qJflBGNj4ycdMKIYJGi0PyjuG5djAqU4Opvz42rwKkscoskeH5vrkA7lbPqHH49YbxEC
+         FflMq6LF4uJ75KrW1WZI/GU1QeQWnLUeq79yVPRKgOgrYh/clk9lPfXWJJTfVaPqJt3e
+         v2B6/aaDIrMcdjqTzr2XLqcVAS4K9dbIRbi8Bi+3txy/ZYJ1S8AFCDWTEg6vlyE8UaIo
+         2zqbA1IMAW7+VINDa1Lwew9ecghTg65wEj7k6r5WQ3cNEeA6BTc5e+NbJ1BQa40VRCxZ
+         7jvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3bdfmLSGDBDiQGqrSZoq13wA4pyt1/GANxHaalzYyRA=;
+        b=sKlt/V+zX5e2r+tdbyir2cd9lrcBMyvJZzhnVvDjN/+jyIgD6FfzTXtR2uM2XK7EmR
+         kp0IltepsR/MxX8SNRXz8g+2OR+2pcbK2+2l8+aC3aVLgofvN8WjmdTFi+dOKV95/BfV
+         9ZddfGUWikrCTeNLCbLU2uvFaEYz3UikYN/0UYDokSl9HQ7eO6g38Jr2rNgB2SDVQIre
+         vu+3jSt61DbGEv8uZOzWlrh7FgV2Eoal9gLS8ofiVq2JTWfeBBo2u6w0YipzcA9NHHv2
+         cGawvWW7vCsn4kFdQMV6Puxs9AnpE7A+MIXyee5b7f7Bib5HumXjPTH8ScuWqDUHtuBD
+         OxdA==
+X-Gm-Message-State: AGi0PuYZ8QZWa5QWfajUcbHsvAoby953wqVKHfE4ycp2Sammi0bdSZxr
+        +eEyqyAuMjKGMVyYcC9vtuge3g==
+X-Google-Smtp-Source: APiQypJrBj0f4So+zI4nlqamLDD1r/iDmqZRVzo1SO2coTne2pEUcJVgxYd7ywwWl/9HNzV+G68zJg==
+X-Received: by 2002:ac8:7102:: with SMTP id z2mr27611503qto.278.1587065649829;
+        Thu, 16 Apr 2020 12:34:09 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id q32sm9270490qta.13.2020.04.16.12.34.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Apr 2020 12:34:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jPAH2-0007n6-IV; Thu, 16 Apr 2020 16:34:08 -0300
+Date:   Thu, 16 Apr 2020 16:34:08 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        "Leon Romanovsky" <leon@kernel.org>
-Subject: RE: [RFC PATCH 0/3] RDMA: Add dma-buf support
-Thread-Topic: [RFC PATCH 0/3] RDMA: Add dma-buf support
-Thread-Index: AQHWFBA3dsUND9lDWUyvrL59SuGKJKh8CCQAgAAKdtA=
-Date:   Thu, 16 Apr 2020 19:08:15 +0000
-Message-ID: <MW3PR11MB45554BB257360F7CDD96175EE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [RFC PATCH 0/3] RDMA: Add dma-buf support
+Message-ID: <20200416193408.GB5100@ziepe.ca>
 References: <1587056973-101760-1-git-send-email-jianxin.xiong@intel.com>
  <20200416175454.GT5100@ziepe.ca>
-In-Reply-To: <20200416175454.GT5100@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jianxin.xiong@intel.com; 
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0b92fcc4-69df-467d-5ae9-08d7e2398484
-x-ms-traffictypediagnostic: MW3PR11MB4585:
-x-microsoft-antispam-prvs: <MW3PR11MB4585E0217496AC01779E229BE5D80@MW3PR11MB4585.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0375972289
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(346002)(396003)(376002)(136003)(366004)(26005)(54906003)(186003)(8676002)(33656002)(5660300002)(2906002)(478600001)(9686003)(8936002)(66556008)(55016002)(76116006)(81156014)(71200400001)(316002)(86362001)(6506007)(6916009)(66476007)(66946007)(4326008)(66446008)(52536014)(7696005)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: syKq7R3iuNbqEFoHZOe+kvsLLbxE0g/96164uFXijPY2UgD7goRjkiPA/mSppE9KJXj3J7urxwKS+jyOzH0YrKmi6pFqtDPjjZIcm7gldMn0TA5lLL2bjvkA2bAKUgIF9pYTiE4oLO5mt0Mavo8gSJYc2I1Spo5ib8XWLwfnFdkYYUxozs1HVxVNxw6dnORSQr1N5qUG6NsgH5f/hHKhjvQCjZ7WmCR7ODtsIYPa6baUu5rxTacPZc8M859lhhx1v+OxAOppxqtamrmaH2fCKkQxDUvJ0DOxAiM6ywcYB9gSMWle483l8J78EXSWs4iE99h2yaEuR6D4YYMTFeZnyoUVOSQVpibOgJ2zA+QCnk94Khzigd8fc0V1HZXIjiX4ue3FINYznbRROVeJZ2EZQULFS4Y4K1YYoRuzOf7qcnHb+pJogQk5sET61LSovfAO
-x-ms-exchange-antispam-messagedata: LKQePMTVrYURmhSnco38/h6riaP7AGeZ8877sRgOq+QNcudBQwSZfudY8kuRWK9XpBfJWvksGRJuUXv+Ey9sIWU9Wa8aYT87JptNVuYmpp8z2+89u2IXkxwoGE6ZriCYihgF8HJs5bSpCOGSD4pjQQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <MW3PR11MB45554BB257360F7CDD96175EE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b92fcc4-69df-467d-5ae9-08d7e2398484
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2020 19:08:15.9329
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gKqq3kM18tlMy18hiCRc6eDmGWlfC0fCNplY4YUQGTTdbBAiYlaaeIZIm835y7dYdlpXBOD+LN0uWeWKNB5MaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4585
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB45554BB257360F7CDD96175EE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> > This patch set adds dma-buf importer role to the RDMA driver and thus
-> > provides a non-proprietary approach for supporting RDMA to/from
-> > buffers allocated from device local memory (e.g. GPU VRAM).
->=20
-> How exactly does this allow access to GPU VRAM?
->=20
-> dma_buf_attach() cannot return non-struct page memory in the sgt, and I'm=
- not sure the API has enough information to do use the p2pdma
-> stuff to even establish a p2p mapping.
->=20
-> We've already been over this in another thread.. There is a way to improv=
-e things to get there, but I don't understand how this patch series
-> is claming to be able to work with VRAM - if it is that means there is a =
-bug in a GPU driver that should be squashed.
->=20
+On Thu, Apr 16, 2020 at 07:08:15PM +0000, Xiong, Jianxin wrote:
+> > > This patch set adds dma-buf importer role to the RDMA driver and thus
+> > > provides a non-proprietary approach for supporting RDMA to/from
+> > > buffers allocated from device local memory (e.g. GPU VRAM).
+> > 
+> > How exactly does this allow access to GPU VRAM?
+> > 
+> > dma_buf_attach() cannot return non-struct page memory in the sgt,
+> > and I'm not sure the API has enough information to do use the
+> > p2pdma stuff to even establish a p2p mapping.
+> > 
+> > We've already been over this in another thread.. There is a way to
+> > improve things to get there, but I don't understand how this patch
+> > series is claming to be able to work with VRAM - if it is that
+> > means there is a bug in a GPU driver that should be squashed.
+> > 
+> 
+> Right, the GPU driver needs to cooperate to get the thing to work as
+> expected. The "p2p" flag and related GPU driver changes proposed in
+> other threads would ensure VRAM is really used.  Alternatively, a
+> GPU driver can have a working mode that assumes p2p mapping
+> capability of the client. Either way, the patches to the RDMA driver
+> would be mostly identical except for adding the use of the "p2p"
+> flag.
 
-Right, the GPU driver needs to cooperate to get the thing to work as expect=
-ed. The "p2p" flag and related GPU driver changes proposed in other threads=
- would ensure VRAM is really used.  Alternatively, a GPU driver can have a =
-working mode that assumes p2p mapping capability of the client. Either way,=
- the patches to the RDMA driver would be mostly identical except for adding=
- the use of the "p2p" flag. =20
+I think the other thread has explained this would not be "mostly
+identical" but here is significant work to rip out the scatter list
+from the umem.
 
-> Other than that, this seems broadly reasonable to me as a way to access a=
- DMA buf pointing at system memory, though it would be nice to
-> have a rational for why we should do this rather than rely on mmap'd vers=
-ions of a dma buf.
->=20
+So, I'm back to my original ask, can you justify adding this if it
+cannot do VRAM? What is the use case?
 
-> Jason
+Jason
