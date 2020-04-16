@@ -2,145 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD8C1ACB0A
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 17:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44021AC711
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 16:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897187AbgDPNfn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 09:35:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57550 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897170AbgDPNfi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Apr 2020 09:35:38 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDRuCr008601;
-        Thu, 16 Apr 2020 13:35:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=pB4RFjmJnZEger3DzMc3XUODnXkLJAAR7JUcOa5yHvc=;
- b=VyOle/UYWdi5wzE7SBbbSGHUiG6mdV7pAudIPbcd26Wbg4FBnfc4Q2PcfuYCwVQgFp1K
- yK7NVLeQI7aixGJXhbzLFE+RHMTVi89Cljk6fZt9affO7iFBA2FJxaSFd4ocKVGvjjBM
- 9fj8sTlYdYmiVlczk5IEsOZutgE17fUAu+PhqaDe83iW4HIh34phkAlLo6DFDNN3i7eO
- FUl87iUuCnZmMsqaxZtgMkhU/EVTZqK/QIppqHBLeOywN6Wxm+BaWwun39CsSVYVpB60
- ZKQPQOcoaZ+CQjaNbRcW46ud4/3dWnPgv5l5MF+OpJ8czRGIH2nXDrX4h1MGQj6tW9/N Lw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 30emejh76c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 13:35:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GDR8Q3065578;
-        Thu, 16 Apr 2020 13:33:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30emen2bnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 13:33:32 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03GDXVW0032510;
-        Thu, 16 Apr 2020 13:33:31 GMT
-Received: from [192.168.10.144] (/51.175.204.144)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 06:33:31 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.60.0.2.5\))
-Subject: Re: [PATCH for-rc] RDMA/cma: fix race between addr_handler and
- resolve_route
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20200414161141.GL11945@mellanox.com>
-Date:   Thu, 16 Apr 2020 15:33:28 +0200
-Cc:     Doug Ledford <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        george kennedy <george.kennedy@oracle.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3168883E-169E-4D96-A4F5-8FF882B164BC@oracle.com>
-References: <20200403185707.GE8514@mellanox.com>
- <1720C7BF-D6E4-4779-B05D-203703042B36@oracle.com>
- <20200403193656.GF8514@mellanox.com>
- <EDBCDCC1-E03F-428A-8352-734E3F01B316@oracle.com>
- <20200406173149.GH11616@mellanox.com>
- <09A6E613-AA59-4C5F-889A-EF45722B7F69@oracle.com>
- <20200406181032.GI11616@mellanox.com>
- <EAE5B24F-142B-478D-BBA5-BBF784AA9E39@oracle.com>
- <20200414125012.GK11945@mellanox.com>
- <BCFFD1E1-F013-4B09-9DC5-5A4EE205EA10@oracle.com>
- <20200414161141.GL11945@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-X-Mailer: Apple Mail (2.3608.60.0.2.5)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004160096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 adultscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004160096
+        id S2394706AbgDPOsX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 10:48:23 -0400
+Received: from m12-15.163.com ([220.181.12.15]:41115 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388313AbgDPOsU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:48:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=ZQh8z
+        vaxY75qRenaS2+9ZBLOwyTNAytPW3k4i9ijrVc=; b=GK1YygrFtatATaJVoO56P
+        hng3VrGOv784QI2W6ZXsWS85QE0uNQ82LuIwqO8IUE4yUfg8mKXPfWYtmMvb/Mee
+        15U89pwYTYbABP4ezatVClCBPfRAFZ8QOiHhz9s3PQXPDne87fhfmS8Fwyk4u/yA
+        5jukIUYgiNye2pbmEhbdps=
+Received: from [192.168.0.6] (unknown [125.82.10.107])
+        by smtp11 (Coremail) with SMTP id D8CowAAnNupBb5he2_OiDg--.557S2;
+        Thu, 16 Apr 2020 22:44:18 +0800 (CST)
+Subject: Re: [PATCH v2] net/mlx5: add the missing space character
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>
+Cc:     "cai@lca.pw" <cai@lca.pw>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "lsahlber@redhat.com" <lsahlber@redhat.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wqu@suse.com" <wqu@suse.com>,
+        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
+        "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+        "stfrench@microsoft.com" <stfrench@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20200403042659.9167-1-xianfengting221@163.com>
+ <14df0ecf093bb2df4efaf9e6f5220ea2bf863f53.camel@mellanox.com>
+From:   Hu Haowen <xianfengting221@163.com>
+Message-ID: <fae7a094-62e8-d797-a89b-23faf0eb374e@163.com>
+Date:   Thu, 16 Apr 2020 22:44:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <14df0ecf093bb2df4efaf9e6f5220ea2bf863f53.camel@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: D8CowAAnNupBb5he2_OiDg--.557S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tw4xtFWrXF15ArW3Gw4rXwb_yoW8ZF18pF
+        s5Jay7Ca1ktryUXa1xZF48Z3s5Cws5Ka48WF4fK3s5Xr1kt3WfGr15KrW5CFnI9r1fJ3ya
+        qFnrZFW7Aw15WaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jKApnUUUUU=
+X-Originating-IP: [125.82.10.107]
+X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/1tbiQwMIAFc7OSCDLgAAsQ
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+On 2020/4/9 3:42 AM, Saeed Mahameed wrote:
+> On Fri, 2020-04-03 at 12:26 +0800, Hu Haowen wrote:
+>> Commit 91b56d8462a9 ("net/mlx5: improve some comments") did not add
+>> that missing space character and this commit is used to fix it up.
+>>
+>> Fixes: 91b56d8462a9 ("net/mlx5: improve some comments")
+>>
+> Please re-spin and submit to net-next once net-next re-opens,
+> avoid referencing the above commit since this patch is a stand alone
+> and has nothing to do with that patch.. just have a stand alone commit
+> message explaining the space fix.
 
-> On 14 Apr 2020, at 18:11, Jason Gunthorpe <jgg@mellanox.com> wrote:
->=20
-> On Tue, Apr 14, 2020 at 03:57:20PM +0200, H=C3=A5kon Bugge wrote:
->>=20
->>=20
->>> On 14 Apr 2020, at 14:50, Jason Gunthorpe <jgg@mellanox.com> wrote:
->>>=20
->>> On Tue, Apr 14, 2020 at 12:34:35PM +0200, H=C3=A5kon Bugge wrote:
->>>=20
->>>>>>>> Shall I make a v2 base on next based on this idea, or do you =
-have
->>>>>>>> something coming?
->>>>>>>=20
->>>>>>> Sure, I have nothing :)
->>>>>>>=20
->>>>>>> Also that rdma_destroy_id in addr_handler looks wrong.. ie we =
-still
->>>>>>> retain pointers to the rdma_cm_id it destroys inside the struct
->>>>>>> ucma_context, don't we?
->>>>>>=20
->>>>>> On entry from user-space, we use the u32 id and looks it up in =
-the
->>>>>> XArray. But if rdma_destoy_id() is called asynchronously called
->>>>>> between ucma_get_ctx_dev() and the de-reference of ctx->cm_id, we
->>>>>> are toast.
->>>>>=20
->>>>> Is that what happens on the addr_handler path?
->>>>=20
->>>> No, there, the main problem is the revert of the state
->>>> transitions. The first transition enables rdma_resolve_route() to
->>>> pass its gate (i.e. state =3D=3D ADDR_RESOLVED). Then it thinks the
->>>> address is resolved, but the addr_handler changes its mind
->>>> afterwards.
->>>=20
->>> That is a problem, but the call to rdma_destroy_id looks like =
-another
->>> problem
->>=20
->> I am not sure. Almost all events/incoming packets, can, after the
->> cm_id's event_handler is called from cma_ib_handler(), call
->> rdma_destroy_id().=20
->=20
-> I think the trick is that ucma_event_handler never returns failure
-> unless RDMA_CM_EVENT_CONNECT_REQUEST, which means the cm_id isn't in
-> the xarray yet?
+Sorry for my late reply. Because I'm a kernel newbie, I know nothing
+about the basic methods and manners in the kernel development. Thanks
+a lot for your patience on my mistake, pointing it out and fixing it
+up.
 
-Sure does. 1 or -ENOMEM. But the ULP's event handlers isn't that polite. =
-But a different issue from this syzkaller one.
-
->> I assume the refcounting takes care of this.
->=20
-> There is no refcounting for destroy, it must be called once.
-
-I was thinking about the "cma_deref_id(id_priv);" stuff, but I may have =
-misunderstood.
+Btw, did net-next re-open and did my changes get into the mainline?
 
 
-
-Thxs, H=C3=A5kon
+>
+> i fixed the commit message of the previous patch, so the Fixes tag is
+> unnecessary
+>
+>> Signed-off-by: Hu Haowen <xianfengting221@163.com>
+>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+>> b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+>> index c9c9b479bda5..31bddb48e5c3 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+>> @@ -676,7 +676,7 @@ static void mlx5_fw_tracer_handle_traces(struct
+>> work_struct *work)
+>>   	block_count = tracer->buff.size / TRACER_BLOCK_SIZE_BYTE;
+>>   	start_offset = tracer->buff.consumer_index *
+>> TRACER_BLOCK_SIZE_BYTE;
+>>   
+>> -	/* Copy the block to local buffer to avoid HW override while
+>> being processed*/
+>> +	/* Copy the block to local buffer to avoid HW override while
+>> being processed */
+>>   	memcpy(tmp_trace_block, tracer->buff.log_buf + start_offset,
+>>   	       TRACER_BLOCK_SIZE_BYTE);
+>>   
 
