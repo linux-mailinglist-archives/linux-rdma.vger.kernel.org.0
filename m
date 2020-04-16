@@ -2,118 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9A91AD017
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 21:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E3B1AD026
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 21:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730583AbgDPTFh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 15:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728611AbgDPTFe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Apr 2020 15:05:34 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA5FC061A0C
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2020 12:05:34 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id s63so18383010qke.4
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Apr 2020 12:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XhfGxn6jc7e8D8i7SongnP0TYe1kQlI7ZqhlC/3v4ao=;
-        b=g4omBsfXROniaxYIxlhCUVRClP59Iuiw1htHSX0ztzQOdE3r4L6oOcqbNqm72vGgon
-         oFi8qTGtqNyYxyZm7NZF3UNsF1dAMG9dhj0GHWOoUKf6k52gSK+OhV0XjS1mtbFeNCLN
-         gWFzqG+9zyhKbEAVA5H6Opbpyod7cLafsSkok/zDp3Ny0ENWhS3aG77PhKv/hbfm/5qt
-         hstzl7ffFY2JcJqic1tippB1DHLsOcy2clhzXh7x4ukVAbkz6YhEAs4+xe8Qy7kQHYcz
-         P5yJjnWBSK6hdxDpQ7CBAi4DAKq5Lzf7GkdNRWSmgDgBZdvWddCzFbJr5KRf3Q7iDTw3
-         ZKHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XhfGxn6jc7e8D8i7SongnP0TYe1kQlI7ZqhlC/3v4ao=;
-        b=bAgoZqd+PDh/4eQWXTWcz71bKaTtFTIpdkvOK+4wureyzIkL3N3cLaWcDvD0gcpDey
-         x1X6/weWVZiRpgEId9lh+hQlhfj9jXknx5tcYqOuya10sUU5cpQMkDBnhK0Pxjyqra94
-         gNaGxpT4KA5/LqixDkn+gUiH4qxBWSo24iuTXl5Bka1/gip0UloiMp2ZYF105it7VUoB
-         DLlFAIzNBgKq26Ipc2tWJi9SHaj9iptnEoioCukMt4s/lxQdcn6DbXL1aAqJWMpU+zWN
-         Mq3u6CEKwErEj/9dW0OkzJtqNVeDTBKIaeskHk8K/78j+rCRbguERXreO2uySxUy+ikI
-         JXQw==
-X-Gm-Message-State: AGi0Puaq2i6/CITuOnPvSiQJUrAYdfxNTUVKxB/uYEEia440e+IdnAeD
-        uu6LIIPR+MnC/8Wj5L3wJXgEuQ==
-X-Google-Smtp-Source: APiQypIcyHlxTWxUikFJ0W4WN7Qm8jAEhbxfg+Epu22JCk0t+ZiPOKJNocPmN/Fmgy08lIlI06SZWA==
-X-Received: by 2002:a37:67c4:: with SMTP id b187mr11383303qkc.296.1587063933377;
-        Thu, 16 Apr 2020 12:05:33 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id b19sm1739084qkg.72.2020.04.16.12.05.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Apr 2020 12:05:32 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jP9pM-0007EN-6V; Thu, 16 Apr 2020 16:05:32 -0300
-Date:   Thu, 16 Apr 2020 16:05:32 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] svcrdma: Fix leak of svc_rdma_recv_ctxt objects
-Message-ID: <20200416190532.GA5100@ziepe.ca>
-References: <20200407190938.24045.64947.stgit@klimt.1015granger.net>
- <20200407191106.24045.88035.stgit@klimt.1015granger.net>
- <20200408060242.GB3310@unreal>
- <D3CFDCAA-589C-4B3F-B769-099BF775D098@oracle.com>
- <20200409174750.GK11886@ziepe.ca>
- <20200413192907.GA23596@fieldses.org>
- <20200414121931.GA5100@ziepe.ca>
- <20200414151303.GA9796@fieldses.org>
- <20200414152016.GE5100@ziepe.ca>
- <20200414161744.GB9796@fieldses.org>
+        id S1728429AbgDPTIW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 15:08:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:58689 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727989AbgDPTIV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Apr 2020 15:08:21 -0400
+IronPort-SDR: 0VncqVuJHZPGmazrFxpf7BC367x8thEF0IpFtjpT6va943ukJyvmEmRjl0cghMVcYZF23ZuZI6
+ k6tUDrFlJpig==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 12:08:18 -0700
+IronPort-SDR: H6IDGTEOSYGrm0rQ70klsZs5WPt4/VHjAOqThyecqwMtctTn2oLUmZkIQ8iHsCgkvwak6lRb/c
+ dhTSWjpprymA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
+   d="scan'208";a="427948994"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2020 12:08:18 -0700
+Received: from orsmsx155.amr.corp.intel.com (10.22.240.21) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 12:08:18 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX155.amr.corp.intel.com (10.22.240.21) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 12:08:17 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 16 Apr 2020 12:08:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UpbtLRBS+bGk2o5+4UY4OulhykxZLkDLuBK10VopMSjjn6GEIrmD8bJj8ZFzKNBiAXQD0P6Dl75hlSNv69Re6KMWruj9u5s32x9S2S0IMpYe7M02XwiOtjf5+YlmP1yXnGA6AT9pvzT+lUL2FA8QpkFEyLomEcIBhDtE47QB4nh0VrEVcNnQfSkSbOcjo6xW3uRhZMos1M8pz9/nxMqV9qDPSaCLQEfzdhnPCPkGOD1VJgqJ4/pYLIRAB0AdAE/+04c+E7eIMugS02/OSKOStD520fjF2cEilSrmdU54A+HmGV62Wt29FhKHBEVuVV6wRan6ATF0wPQ636HEyBiJMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RxUNjInDDa6WxtaVsIDFhSvxY+XvV8ZHAs01MzY3FCY=;
+ b=UvLy+p/SnDEvrqanlyzK0+L1DbiMK/Xtm9g3adW08ViKt3A7kZPi+YrUbXRnOj9mOo5qIke5PX4nBLT8lQiXmWR9TEXfLUbly3yIfOc8VI2w/FL7E5JjUuVJzJF4we22xHmjiq8jv0ZZn6hPqFInBBMkB5BCxJuhV2pUAZfcJ6k/MqihiwpGOaDR12W2AkeEJS0K9iVTZc+qsyJNKIRkpYBkr5gNiJHLConXDRfk47asiTQJ6K4Fm387HQswG4D02kWxeONI2hY4mqbxwM0I0hymgERgBxT2QjR5SByZwhJVs358yivl/tfkyaeFAMWDvB7azwHHIo/7RO7kg66Psw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RxUNjInDDa6WxtaVsIDFhSvxY+XvV8ZHAs01MzY3FCY=;
+ b=ODuF32Lr2jloidlcgbPqQbjcXlYp90v9ou3T5QbV+xwjwZUcufrcCY1IzB4nVfi83+HFTs1COPS4YtGOK28nXfxpC6PXSwYzLzcTZzFoWpIMA9FxhW1LCuyD1wOjk6sOuBXXk9VlKEhZc516wTru5AxK3676y2BykQAuLcVkWKA=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MW3PR11MB4585.namprd11.prod.outlook.com (2603:10b6:303:52::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.28; Thu, 16 Apr
+ 2020 19:08:16 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::1916:3bdd:3f40:fd36]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::1916:3bdd:3f40:fd36%6]) with mapi id 15.20.2921.027; Thu, 16 Apr 2020
+ 19:08:16 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Leon Romanovsky" <leon@kernel.org>
+Subject: RE: [RFC PATCH 0/3] RDMA: Add dma-buf support
+Thread-Topic: [RFC PATCH 0/3] RDMA: Add dma-buf support
+Thread-Index: AQHWFBA3dsUND9lDWUyvrL59SuGKJKh8CCQAgAAKdtA=
+Date:   Thu, 16 Apr 2020 19:08:15 +0000
+Message-ID: <MW3PR11MB45554BB257360F7CDD96175EE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1587056973-101760-1-git-send-email-jianxin.xiong@intel.com>
+ <20200416175454.GT5100@ziepe.ca>
+In-Reply-To: <20200416175454.GT5100@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jianxin.xiong@intel.com; 
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b92fcc4-69df-467d-5ae9-08d7e2398484
+x-ms-traffictypediagnostic: MW3PR11MB4585:
+x-microsoft-antispam-prvs: <MW3PR11MB4585E0217496AC01779E229BE5D80@MW3PR11MB4585.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0375972289
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(346002)(396003)(376002)(136003)(366004)(26005)(54906003)(186003)(8676002)(33656002)(5660300002)(2906002)(478600001)(9686003)(8936002)(66556008)(55016002)(76116006)(81156014)(71200400001)(316002)(86362001)(6506007)(6916009)(66476007)(66946007)(4326008)(66446008)(52536014)(7696005)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: syKq7R3iuNbqEFoHZOe+kvsLLbxE0g/96164uFXijPY2UgD7goRjkiPA/mSppE9KJXj3J7urxwKS+jyOzH0YrKmi6pFqtDPjjZIcm7gldMn0TA5lLL2bjvkA2bAKUgIF9pYTiE4oLO5mt0Mavo8gSJYc2I1Spo5ib8XWLwfnFdkYYUxozs1HVxVNxw6dnORSQr1N5qUG6NsgH5f/hHKhjvQCjZ7WmCR7ODtsIYPa6baUu5rxTacPZc8M859lhhx1v+OxAOppxqtamrmaH2fCKkQxDUvJ0DOxAiM6ywcYB9gSMWle483l8J78EXSWs4iE99h2yaEuR6D4YYMTFeZnyoUVOSQVpibOgJ2zA+QCnk94Khzigd8fc0V1HZXIjiX4ue3FINYznbRROVeJZ2EZQULFS4Y4K1YYoRuzOf7qcnHb+pJogQk5sET61LSovfAO
+x-ms-exchange-antispam-messagedata: LKQePMTVrYURmhSnco38/h6riaP7AGeZ8877sRgOq+QNcudBQwSZfudY8kuRWK9XpBfJWvksGRJuUXv+Ey9sIWU9Wa8aYT87JptNVuYmpp8z2+89u2IXkxwoGE6ZriCYihgF8HJs5bSpCOGSD4pjQQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414161744.GB9796@fieldses.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b92fcc4-69df-467d-5ae9-08d7e2398484
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2020 19:08:15.9329
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gKqq3kM18tlMy18hiCRc6eDmGWlfC0fCNplY4YUQGTTdbBAiYlaaeIZIm835y7dYdlpXBOD+LN0uWeWKNB5MaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4585
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:17:44PM -0400, J. Bruce Fields wrote:
-> On Tue, Apr 14, 2020 at 12:20:16PM -0300, Jason Gunthorpe wrote:
-> > On Tue, Apr 14, 2020 at 11:13:03AM -0400, J. Bruce Fields wrote:
-> > > On Tue, Apr 14, 2020 at 09:19:31AM -0300, Jason Gunthorpe wrote:
-> > > > On Mon, Apr 13, 2020 at 03:29:07PM -0400, J. Bruce Fields wrote:
-> > > > > On Thu, Apr 09, 2020 at 02:47:50PM -0300, Jason Gunthorpe wrote:
-> > > > > > On Thu, Apr 09, 2020 at 10:33:32AM -0400, Chuck Lever wrote:
-> > > > > > > The commit ID is what automation should key off of. The short
-> > > > > > > description is only for human consumption. 
-> > > > > > 
-> > > > > > Right, so if the actual commit message isn't included so humans can
-> > > > > > read it then what was the point of including anything?
-> > > > > 
-> > > > > Personally as a human reading commits in a terminal window I prefer the
-> > > > > abbreviated form.
-> > > > 
-> > > > Frankly, I think they are useless, picking one of yours at random:
-> > > > 
-> > > >     Fixes: 4e48f1cccab3 "NFSD: allow inter server COPY to have... "
-> > > > 
-> > > > And sadly the '4e48f1cccab3' commit doesn't appear in Linus's tree so
-> > > 
-> > > Ow, apologies.  Looks like I rebased after writing that Fixes tag.
-> > > 
-> > > I wonder if it's possible to make git warn....
-> > > 
-> > > Looks like a pre-rebase hook could check the branch being rebased for
-> > > "Fixes:" lines referencing commits on the rebased branch.
-> > 
-> > I have some silly stuff to check patches before pushing them and it
-> > includes checking the fixes lines because they are very often
-> > wrong, both with wrong commit IDs and wrong subjects!
-> 
-> I'd be interested in seeing it.
+> > This patch set adds dma-buf importer role to the RDMA driver and thus
+> > provides a non-proprietary approach for supporting RDMA to/from
+> > buffers allocated from device local memory (e.g. GPU VRAM).
+>=20
+> How exactly does this allow access to GPU VRAM?
+>=20
+> dma_buf_attach() cannot return non-struct page memory in the sgt, and I'm=
+ not sure the API has enough information to do use the p2pdma
+> stuff to even establish a p2p mapping.
+>=20
+> We've already been over this in another thread.. There is a way to improv=
+e things to get there, but I don't understand how this patch series
+> is claming to be able to work with VRAM - if it is that means there is a =
+bug in a GPU driver that should be squashed.
+>=20
 
-Sure, let me put my scripts on github..
+Right, the GPU driver needs to cooperate to get the thing to work as expect=
+ed. The "p2p" flag and related GPU driver changes proposed in other threads=
+ would ensure VRAM is really used.  Alternatively, a GPU driver can have a =
+working mode that assumes p2p mapping capability of the client. Either way,=
+ the patches to the RDMA driver would be mostly identical except for adding=
+ the use of the "p2p" flag. =20
 
-Jason
+> Other than that, this seems broadly reasonable to me as a way to access a=
+ DMA buf pointing at system memory, though it would be nice to
+> have a rational for why we should do this rather than rely on mmap'd vers=
+ions of a dma buf.
+>=20
+
+> Jason
