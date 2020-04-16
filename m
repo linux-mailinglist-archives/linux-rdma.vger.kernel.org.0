@@ -2,150 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FB61AB87F
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 08:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E4C1AB952
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 09:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436545AbgDPGv2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 02:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2408551AbgDPGv0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Apr 2020 02:51:26 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D981C061A10
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2020 23:51:26 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id q204so15754026oia.13
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Apr 2020 23:51:26 -0700 (PDT)
+        id S2438469AbgDPHFn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 03:05:43 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:40751 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438365AbgDPHFe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Apr 2020 03:05:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pLZEHboHrVUvSiMzAU5mB2mWJMs+hZ8IHC8retFcrgk=;
-        b=JHwymh36ehjFDNDrb8YuMyQ1MkWFaqFQka5rlpHvpOpNowJkEQBJjUJHh6tEn9ItJf
-         44VDASM1Nm9+28OJ0BhPDfmpGS7h0JIyE4ei3cCTN1kvXMsSEqE7hJ6ugWHQLwwsjP4k
-         SXfyV81W2EeHu0cLCfENisqsTzpcXqPmUQBbg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pLZEHboHrVUvSiMzAU5mB2mWJMs+hZ8IHC8retFcrgk=;
-        b=kmez5zWN0dUqeaBBx1/vXAj6IlFJ8Dga1mO619NhZEM85SaCL70wHRJcfW1OtY9Frs
-         2bxZ3IBAHfjb7pJeaRRK4viXmQIS5pDkiYRpwLFOr4RDssDYTmnFiL16XUU5n+pBdb7Y
-         f9N/pvmSBLRsUVm8SxUY9T2glPG8r+WFFzRtJVHucCNP/7mbZM61zsYX6KlD4RMWNnz4
-         GLm8dClnmqGwY5m8uOuKyfah+kZcLp41NYCbl1P48LG9cScgvtVMZaC2AmG3G9gGDdsA
-         6SYejbkWxdMkJVHfQ/62wkn5hKR3AGmuFAaIIhpM3JFRfmcwUzcmQTN4leF5pmrab2md
-         jvaQ==
-X-Gm-Message-State: AGi0PuaEZS93fJg6g42d6lLpLcbvbKbo3QkNJeBzIm2z8Jt0ilHstWq4
-        kyH2iuHFgm2gLQqr8kUfAcYicK2Anutc/NryVDsRDA==
-X-Google-Smtp-Source: APiQypLyNc+eIs12WumzaBN5ipx1548wfPjx2IqBdj2oxsFx0exWa6GdqAAPbqs2svHCYqkW3eZbfQLmptUx4Q5ixiM=
-X-Received: by 2002:aca:2113:: with SMTP id 19mr2018002oiz.128.1587019885629;
- Wed, 15 Apr 2020 23:51:25 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587020733; x=1618556733;
+  h=subject:from:to:cc:references:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=cQL9asWXNP0HyvQQQXydK9FeC9MKJcmNK55Tycabov0=;
+  b=gl3kZxzGAqMu6QJ0J1k1l3/xmzR04tCJ1+G0ABWf393dP9dcG9HNf9SE
+   e3Qd937StnOuWzdi1W5W3EysNsq6AfWVhKNIemgAQ9WSR27V2z35ChQVA
+   mAdSx8uv+4B9rIqVo7rJ4uMjoFRPZGp01WKtys7IMTqsyRj9pjiaDUa/D
+   U=;
+IronPort-SDR: Y7UqhSsf7FSM4lf0Ygu/J4Iss5XiFIA3YD/yCJ6HOfWnLOGbcQxD3D7HQxznqqLLyTuE/SDWn4
+ 2s7MIySj29wg==
+X-IronPort-AV: E=Sophos;i="5.72,390,1580774400"; 
+   d="scan'208";a="27143853"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 16 Apr 2020 07:05:21 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id E3887A24C2;
+        Thu, 16 Apr 2020 07:05:19 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 16 Apr 2020 07:05:19 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.238) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 16 Apr 2020 07:05:16 +0000
+Subject: Re: Can't build rdma-core's azp image
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
+ <20200407180658.GW20941@ziepe.ca>
+ <67f9e08a-467c-34ce-e17e-816cb4bf03db@amazon.com>
+Message-ID: <ca41331c-3b53-fbb6-4543-bc960f796062@amazon.com>
+Date:   Thu, 16 Apr 2020 10:05:11 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <20200408202711.1198966-6-arnd@arndb.de>
- <20200414201739.GJ19819@pendragon.ideasonboard.com> <CAK8P3a0hd5bsezrJS3+GV2nRMui4P5yeD2Rk7wQpJsAZeOCOUg@mail.gmail.com>
- <20200414205158.GM19819@pendragon.ideasonboard.com> <CAK8P3a1PZbwdvdH_Gi9UQVUz2+_a8QDxKuWLqPtjhK1stxzMBQ@mail.gmail.com>
- <CAMuHMdUb=XXucGUbxt26tZ1xu9pdyVUB8RVsfB2SffURVVXwSg@mail.gmail.com>
- <CAK8P3a1uasBFg9dwvPEcokrRhYE2qh6iwOMW1fDTY+LBZMrTjg@mail.gmail.com>
- <CAK8P3a0CoPUTSJp6ddDnmabo59iE73pugGSYayoeB5N57az9_w@mail.gmail.com>
- <20200415211220.GQ4758@pendragon.ideasonboard.com> <CAK8P3a1rDZO4cuL6VAXgu9sOiedcHqOSL7ELhpvULz+YYRaGbA@mail.gmail.com>
-In-Reply-To: <CAK8P3a1rDZO4cuL6VAXgu9sOiedcHqOSL7ELhpvULz+YYRaGbA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 16 Apr 2020 08:51:14 +0200
-Message-ID: <CAKMK7uEoZ1jC8c25tPVX20kcdC1=+TpUUNyf+-c=sg5iK2cTZA@mail.gmail.com>
-Subject: Re: [RFC 5/6] drm/rcar-du: fix selection of CMM driver
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <67f9e08a-467c-34ce-e17e-816cb4bf03db@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.238]
+X-ClientProxiedBy: EX13D28UWC002.ant.amazon.com (10.43.162.145) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 11:22 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Apr 15, 2020 at 11:12 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> > On Wed, Apr 15, 2020 at 09:07:14PM +0200, Arnd Bergmann wrote:
-> > > On Wed, Apr 15, 2020 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > On Wed, Apr 15, 2020 at 4:13 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Wed, Apr 15, 2020 at 3:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > > On Tue, Apr 14, 2020 at 10:52 PM Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
-> > > > > > > Doesn't "imply" mean it gets selected by default but can be manually
-> > > > > > > disabled ?
-> > > > > >
-> > > > > > That may be what it means now (I still don't understand how it's defined
-> > > > > > as of v5.7-rc1), but traditionally it was more like a 'select if all
-> > > > > > dependencies are met'.
-> > > > >
-> > > > > That's still what it is supposed to mean right now ;-)
-> > > > > Except that now it should correctly handle the modular case, too.
-> > > >
-> > > > Then there is a bug. If I run 'make menuconfig' now on a mainline kernel
-> > > > and enable CONFIG_DRM_RCAR_DU, I can set
-> > > > DRM_RCAR_CMM and DRM_RCAR_LVDS to 'y', 'n' or 'm' regardless
-> > > > of whether CONFIG_DRM_RCAR_DU is 'm' or 'y'. The 'implies'
-> > > > statement seems to be ignored entirely, except as reverse 'default'
-> > > > setting.
-> > >
-> > > Here is another version that should do what we want and is only
-> > > half-ugly. I can send that as a proper patch if it passes my testing
-> > > and nobody hates it too much.
-> >
-> > This may be a stupid question, but doesn't this really call for fixing
-> > Kconfig ? This seems to be such a common pattern that requiring
-> > constructs similar to the ones below will be a never-ending chase of
-> > offenders.
->
-> Maybe, I suppose the hardest part here would be to come up with
-> an appropriate name for the keyword ;-)
->
-> Any suggestions?
->
-> This specific issue is fairly rare though, in most cases the dependencies
-> are in the right order so a Kconfig symbol 'depends on' a second one
-> when the corresponding loadable module uses symbols from that second
-> module. The problem here is that the two are mixed up.
->
-> The much more common problem is the one where one needs to
-> wrong
->
-> config FOO
->        depends on BAR || !BAR
->
-> To ensure the dependency is either met or BAR is disabled, but
-> not FOO=y with BAR=m. If you have any suggestions for a keyword
-> for that thing, we can clean up hundreds of such instances.
+On 08/04/2020 9:35, Gal Pressman wrote:
+> On 07/04/2020 21:06, Jason Gunthorpe wrote:
+>> On Tue, Apr 07, 2020 at 06:47:51PM +0300, Gal Pressman wrote:
+>>> I'm trying to build the azp image and it fails with the following error [1].
+>>> Anyone has an idea what went wrong?
+>>
+>>> Reading package lists...
+>>> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/InRelease: No system
+>>> certificates available. Try installing ca-certificates.
+>>> W: http://apt.llvm.org/bionic/dists/llvm-toolchain-bionic-8/Release: No system
+>>> certificates available. Try installing ca-certificates.
+>>> E: The repository 'http://apt.llvm.org/bionic llvm-toolchain-bionic-8 Release'
+>>> does not have a Release file.
+>>
+>> Oh, there is lots going wrong here..
+>>
+>> Above is because llvm droped http support from their repo.. Bit
+>> annoying to fix..
+>>
+>>> The following packages have unmet dependencies:
+>>>  libc6-dev:arm64 : Depends: libc6:arm64 (= 2.27-3ubuntu1) but it is not going to
+>>> be installed
+>>>  libgcc-8-dev:arm64 : Depends: libgcc1:arm64 (>= 1:8.4.0-1ubuntu1~18.04)
+>>>                       Depends: libgomp1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>                       Depends: libitm1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it is
+>>> not going to be installed
+>>>                       Depends: libatomic1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>                       Depends: libasan5:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>                       Depends: liblsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>                       Depends: libtsan0:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>                       Depends: libubsan1:arm64 (>= 8.4.0-1ubuntu1~18.04) but it
+>>> is not going to be installed
+>>>  libnl-3-dev:arm64 : Depends: libnl-3-200:arm64 (= 3.2.29-0ubuntu3) but it is
+>>> not going to be installed
+>>>  libnl-route-3-dev:arm64 : Depends: libnl-route-3-200:arm64 (= 3.2.29-0ubuntu3)
+>>> but it is not going to be installed
+>>>  libsystemd-dev:arm64 : Depends: libsystemd0:arm64 (= 237-3ubuntu10.39) but it
+>>> is not going to be installed
+>>>  libudev-dev:arm64 : Depends: libudev1:arm64 (= 237-3ubuntu10.39) but it is not
+>>> going to be installed
+>>
+>> Oh neat, that is a problem in the toolchain ppa:
+>>
+>> $ apt-get install libgcc-s1:arm64 gcc-7
+>>
+>> The following packages have unmet dependencies:
+>>  libgcc-s1:arm64 : Breaks: libgcc-7-dev (< 7.5.0-4) but 7.5.0-3ubuntu1~18.04 is to be installed
+>>
+>> The only ubuntu not broken right now is focal.. which is very new.
+>>
+>> Keep using the old docker image? Ask me in a week if it is still
+>> broken, we can probably fix this by updating to focal, it is the next
+>> LTS anyhow..
+> 
+> Thanks Jason, I'll keep tracking the issue.
 
-Some ideas:
-
-config FOO
-    can use  BAR
-    maybe BAR
-    optional BAR
-
-We should probably double-check that this is only ever used for when
-both FOO and BAR are tri-state, since without that it doesn't make
-much sense.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Looks like the issue persists :\.
