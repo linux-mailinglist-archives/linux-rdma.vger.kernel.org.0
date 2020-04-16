@@ -2,121 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E670D1AC173
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 14:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794161AC213
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2635850AbgDPMjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 08:39:20 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:49927 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2635720AbgDPMjL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Apr 2020 08:39:11 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N7zJj-1jClw02wGx-0155ZG; Thu, 16 Apr 2020 14:39:07 +0200
-Received: by mail-lj1-f177.google.com with SMTP id y4so7622553ljn.7;
-        Thu, 16 Apr 2020 05:39:07 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZCrYRbhBk6titTh0aN0KepnQmgROdDLy6FfIZ4bV/9xH4uJq/+
-        7CeBoTRRXBt2AuyNw0zYIfkmF8xcEalFZzPxAX8=
-X-Google-Smtp-Source: APiQypJBjKSJ60PBcmBCW4rJUa3iEMj8puJUFjtDtgFXYZenSiZo1kQ7qfLc3ugSe7HBLKnPyUhQlFliM3tyUpQ3SD4=
-X-Received: by 2002:a2e:6a08:: with SMTP id f8mr6773388ljc.8.1587040747110;
- Thu, 16 Apr 2020 05:39:07 -0700 (PDT)
+        id S2894765AbgDPNJU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 09:09:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41712 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894692AbgDPNJP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Apr 2020 09:09:15 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GD8Bhi030563;
+        Thu, 16 Apr 2020 13:09:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JVRFfnFS+OgWj7u5UNa3ISrw5T9J6EGkJSXP5AV0oP4=;
+ b=kKM3XCkJV1xc4zUZKFip7MGr/drhgl31vuH/o+h5t35tdgm/gCgIaCAWFMs2H5nJEfrf
+ 5Eq+H9EQuNAVqB7LKcUcqK5e37QC/1iIiYGsKKDA4NBfOnhoO+116xwjwIHU9UEFbLTT
+ zY0z8Y425XQ4cJC2CpzsLuzafOBa49ie4JVWzzxmUixlNFQUHy9Vp/vtsOxHpL43RTQ+
+ 8Yz+lxUZ2q8bxADDxZslpeAsDjFJ8TrpKLcnlmOJry0MQZ2F8Gj9TI2E5l/Hc47IgJY/
+ J3fKyBgIw7DoBWzJN2JMeO7gA3gI7v774Tp9xsqLVkToKEQoGIJsHsKf6S1IkS/o61iW xg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30dn95s9mp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 13:09:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GD7F8s117906;
+        Thu, 16 Apr 2020 13:09:02 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30emen0dbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Apr 2020 13:09:02 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GD8wWc001606;
+        Thu, 16 Apr 2020 13:08:58 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Apr 2020 06:08:58 -0700
+Date:   Thu, 16 Apr 2020 16:08:47 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
+        roland@purestorage.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
+Message-ID: <20200416130847.GP1163@kadam>
+References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
+ <20200414183441.GA28870@ziepe.ca>
 MIME-Version: 1.0
-References: <20200408202711.1198966-1-arnd@arndb.de> <nycvar.YSQ.7.76.2004081633260.2671@knanqh.ubzr>
- <CAK8P3a2frDf4BzEpEF0uwPTV2dv6Jve+6N97z1sSuSBUAPJquA@mail.gmail.com>
- <20200408224224.GD11886@ziepe.ca> <87k12pgifv.fsf@intel.com>
- <7d9410a4b7d0ef975f7cbd8f0b6762df114df539.camel@mellanox.com>
- <20200410171320.GN11886@ziepe.ca> <16441479b793077cdef9658f35773739038c39dc.camel@mellanox.com>
- <20200414132900.GD5100@ziepe.ca> <CAK8P3a0aFQ7h4zRDW=QLogXWc88JkJJXEOK0_CpWwsRjq6+T+w@mail.gmail.com>
- <20200414152312.GF5100@ziepe.ca> <CAK8P3a1PjP9_b5NdmqTLeGN4y+3JXx_yyTE8YAf1u5rYHWPA9g@mail.gmail.com>
- <f6d83b08fc0bc171b5ba5b2a0bc138727d92e2c0.camel@mellanox.com>
- <CAK8P3a1-J=4EAxh7TtQxugxwXk239u8ffgxZNRdw_WWy8ExFoQ@mail.gmail.com>
- <834c7606743424c64951dd2193ca15e29799bf18.camel@mellanox.com>
- <CAK8P3a3Wx5_bUOKnN3_hG5nLOqv3WCUtMSq6vOkJzWZgsmAz+A@mail.gmail.com> <874ktj4tvn.fsf@intel.com>
-In-Reply-To: <874ktj4tvn.fsf@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Apr 2020 14:38:50 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
-Message-ID: <CAK8P3a1S2x1jnx9Q5B22vX8gBHs0Ztu-znA9hqZ5xp5tRAykGg@mail.gmail.com>
-Subject: Re: [RFC 0/6] Regressions for "imply" behavior change
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:F8U/N57N4ckbcTeNDfExN5yylgb+ezCMC5CxuKhm89y+pGLDcau
- TREUOKo1o7WqeUtbope5PEn3ZpW/vvn9CO6eTPp4FgVJSWUMLQkv9ZiwTNMlTrUksypdRkL
- iekpBmtIaw/V0rrPXVnRsSsS4KnQG9tja4TN0vUbG4n6n8i7TRUGcMnwdO/uVog7m/pWJMQ
- szUoSrbUSgkQ1PeMQ3Qhg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EG5Pwn24R0E=:NEbJWW3YOe8tbYtXoYzQlB
- OYg76xqSVyfU+/ffXRtmY2F9L/jdC9+7winJhhdBcrgqy/cmI9hA1PzJ+O63YcHHjaKN/gghJ
- Rfp1wl6U7HQetDu3+0QYelsd+30GJVA03G9SL0JR6NY52MLgLMcXXjcbpBnR7HdRzB8OptiqP
- oUJfdahNM4nDohNOj+WsdsVatMuKlloeqszEytPxYNHOZHOiJNo3nlMHrhOFMnkc+c+rhCs01
- Tp5oyyUP+RRoLiEAvYn/YxY03443yZmMYCrOIfGDdmwc7wURorYc725p4fyKeT9X8CxzuPKMn
- 4QlugRQEkWhj9+0kUJLnelNqBjg/nRpzSgm5bdeNwoeH4o1ouafmEcMYPJ/qXpaANcDLIQpCd
- x4gPZmDJ+kxDxf+c/0v5LZJ75+sUQ4DPLfuOlUfAenV6xxU0lSpZVkdeDaUXXjbbRub6SOAHD
- srVyUcUFbDpXjch+HtEqUMQcQKepiKhm/bl4pDktj6VicPIkd3ZkEpA7o6wNOHgj4XK0GlSxB
- 01k415eeDnDwMhVrQqarpasfYw7yWI6ftUYtaOZMY5N6JP3nchBTSHOuuw2SX/t3+dBBF1akg
- J/dQilZQjOljqzOyKDfx/7/6lwexgABL7jI7ys3SApuTzsYIX5M8TD4vA59r0VoQlEWUJ1emQ
- 2ptxk0G9LLwXYi+SxR4sjzZ61XreMX+Jw7B7vi30YHtbHNH/FUTcAFDAjL1ytz5lYq6IYfMMq
- ihIyKkE8nLu0z0bsFkuo3GNPdUKZhstr81HUW7Tus5uYok8AMo/+Qxf1O5zOK1vfIeTOalrcO
- 3BNPsKq2lLZray15UpWQU5C20cOWblEffC2DJIUeh0mNPOqgMI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414183441.GA28870@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004160093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004160093
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 12:17 PM Jani Nikula
-<jani.nikula@linux.intel.com> wrote:
->
-> On Thu, 16 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Thu, Apr 16, 2020 at 5:25 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
-> >> BTW how about adding a new Kconfig option to hide the details of
-> >> ( BAR || !BAR) ? as Jason already explained and suggested, this will
-> >> make it easier for the users and developers to understand the actual
-> >> meaning behind this tristate weird condition.
-> >>
-> >> e.g have a new keyword:
-> >>      reach VXLAN
-> >> which will be equivalent to:
-> >>      depends on VXLAN && !VXLAN
-> >
-> > I'd love to see that, but I'm not sure what keyword is best. For your
-> > suggestion of "reach", that would probably do the job, but I'm not
-> > sure if this ends up being more or less confusing than what we have
-> > today.
->
-> Ah, perfect bikeshedding topic!
->
-> Perhaps "uses"? If the dependency is enabled it gets used as a
-> dependency.
+On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
+> The memcpy is still kind of silly right? What about this:
+> 
+> static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
+> {
+> 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
+> 	int cpy_len;
+> 
+> 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
+> 	if (cpy_len >= len || cpy_len < 0) {
 
-That seems to be the best naming suggestion so far
+The kernel version of snprintf() doesn't and will never return
+negatives.  It would cause a huge security headache if it started
+returning negatives.
 
-> Of course, this is all just talk until someone(tm) posts a patch
-> actually making the change. I've looked at the kconfig tool sources
-> before; not going to make the same mistake again.
+> 		pr_err("%s: No space in stats buff\n", __func__);
+> 		return 0;
+> 	}
 
-Right. OTOH whoever implements it gets to pick the color of the
-bikeshed. ;-)
+regards,
+dan carpenter
 
-      Arnd
