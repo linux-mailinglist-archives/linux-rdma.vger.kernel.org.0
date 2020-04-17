@@ -2,94 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C9A1ADD65
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 14:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399111ADE08
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 15:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgDQMfi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 08:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727877AbgDQMfh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:35:37 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC055C061A0C
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:35:37 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 20so2105610qkl.10
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TqCdGc0Me+uJBSVA6SEi2XVYoiYD5p4Z/QOYuhMDTKM=;
-        b=SyStNrA6i39cziPIwvY5z1dZrHkb91ny44DrRZ7FD61BcOpMuX1J0/45c5VVZU7hT1
-         qv0om7a61wh8PxUsodihheG2EYaXiaFDLMCA56n9efq9Z9WvVPLgbPrWc6L6ArJz9i0H
-         +VwhXQujI5AedVqiMJ/FT1hdM9Jn2Yo8Iljg6K5zRvMsZKbNwy1DVe/JXSQ4aEK01ovH
-         o4J1CvqpwMf+UsSQWCTDt1ShTiz4NyqMc0VX+7QDf3kA3oQi3RRMEheZlsqb0+J5ZSyE
-         7qQZzFFWl5gzScS26NsVT5Suj92vY8ZHzSrTHGH2R27OU3PNv729x5ADj864q86SjAHL
-         +4dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TqCdGc0Me+uJBSVA6SEi2XVYoiYD5p4Z/QOYuhMDTKM=;
-        b=bsnycTTQucVKC4+FIgiYLNt/5Qv45AdgNXiTgTNMpf2K2OS5KbbwZYEkfGQDZ9Hyji
-         PylDwrJQTN2MuJU+UwgGywL5PHUQ2d+hZX/BStx/Qk1wx5tgVFerbKMYu53GKfjDGRKh
-         mSt50lkSEKxNhOipcalERO7UK2/ndhMxpm6qNKrjeoINWCgUSdBk0pDVumsmsMiQzTz2
-         M6ynias6cQWK8rHjkPpSJh83dSArUPWyP4U1w/7+Le7q56wrvyx+DnUXYmo3zVf2cJKF
-         jIjzAbYTuYdPagzRQzgAoEUPlNqKPhMn1bUz6L1+Tp1STqW8HhIztepaF1CxBgfJpB4x
-         y5Kw==
-X-Gm-Message-State: AGi0PuaOEaa9Ht0MFD0Nlm6eoO8W6vqsnxnH3A9jZUU5RX2IOH+8wYiM
-        istd0WPTfI0RbizE/zP/xj5ozA==
-X-Google-Smtp-Source: APiQypKNRrZUZQPqnaJD6tyLJr0qRwdUN9BMh/yNG3rSgcyBJyKGwrYV9XAgbt0iBpr38rCkJ0hyqQ==
-X-Received: by 2002:a37:6697:: with SMTP id a145mr2981696qkc.479.1587126936917;
-        Fri, 17 Apr 2020 05:35:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x24sm17994705qth.80.2020.04.17.05.35.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Apr 2020 05:35:36 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jPQDX-00071A-WD; Fri, 17 Apr 2020 09:35:36 -0300
-Date:   Fri, 17 Apr 2020 09:35:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [RFC PATCH 2/3] RDMA/uverbs: Add uverbs commands for fd-based MR
- registration
-Message-ID: <20200417123535.GC26002@ziepe.ca>
-References: <1587056973-101760-1-git-send-email-jianxin.xiong@intel.com>
- <1587056973-101760-3-git-send-email-jianxin.xiong@intel.com>
- <20200416174748.GS5100@ziepe.ca>
- <MW3PR11MB45556D47A2D3767A4ECC32BFE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
+        id S1729952AbgDQNKT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 09:10:19 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37714 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729799AbgDQNKS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 09:10:18 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HD8ETx152452;
+        Fri, 17 Apr 2020 13:10:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=AjtxkhDippqjmbKdJrsNp6jAtRzGaVDPxncdrI9lIWU=;
+ b=bYCVjtMIVEaMujhoppxNMGSyItJ/4HWhQUW5qnWzvTQHp719OMlO+nIixHidV5pY4hgW
+ Uf1XyQIGgYYpyyCJdSpTBzi3U/99Ux2F7NTjlbghdWGEU4pg69Gpo0O425LaCOBlgRKo
+ lAPQ0G+bdrXxMcON/5qWhiAqiQFJZGsunRSBlTuSXO1vzo9TbaS9WxKA3bjwe0hG7Nkx
+ ORRIXROh6ayZSMlGaMQ8/Zbf5woL2Rkf2/DCBUs/MxjRYFageQO9gH48fT1QQIal6mJQ
+ XxpKRYW0m0vASjX9esFVgqANCpdOScunQ7MQDJVXc0fRxpDsO8cZjrU2ObqA3OLJCLAu ag== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30dn95xyyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 13:10:11 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HD8Kur082364;
+        Fri, 17 Apr 2020 13:10:11 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30dn9jxru9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 13:10:09 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03HDA7lC009948;
+        Fri, 17 Apr 2020 13:10:07 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Apr 2020 06:10:06 -0700
+Date:   Fri, 17 Apr 2020 16:09:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     g@ziepe.ca, Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
+Message-ID: <20200417130955.GU1163@kadam>
+References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
+ <20200414183441.GA28870@ziepe.ca>
+ <20200416130847.GP1163@kadam>
+ <20200416184754.GZ5100@ziepe.ca>
+ <20200417112624.GS1163@kadam>
+ <20200417122542.GC5100@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MW3PR11MB45556D47A2D3767A4ECC32BFE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
+In-Reply-To: <20200417122542.GC5100@ziepe.ca>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004170105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170105
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 06:32:01PM +0000, Xiong, Jianxin wrote:
-> > >  	SET_DEVICE_OP(dev_ops, read_counters);
-> > >  	SET_DEVICE_OP(dev_ops, reg_dm_mr);
-> > >  	SET_DEVICE_OP(dev_ops, reg_user_mr);
-> > > +	SET_DEVICE_OP(dev_ops, reg_user_mr_fd);
-> > >  	SET_DEVICE_OP(dev_ops, req_ncomp_notif);
-> > >  	SET_DEVICE_OP(dev_ops, req_notify_cq);
-> > >  	SET_DEVICE_OP(dev_ops, rereg_user_mr);
-> > > +	SET_DEVICE_OP(dev_ops, rereg_user_mr_fd);
+On Fri, Apr 17, 2020 at 09:25:42AM -0300, Jason Gunthorpe wrote:
+> On Fri, Apr 17, 2020 at 02:26:24PM +0300, Dan Carpenter wrote:
+> > On Thu, Apr 16, 2020 at 03:47:54PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Apr 16, 2020 at 04:08:47PM +0300, Dan Carpenter wrote:
+> > > > On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
+> > > > > The memcpy is still kind of silly right? What about this:
+> > > > > 
+> > > > > static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
+> > > > > {
+> > > > > 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
+> > > > > 	int cpy_len;
+> > > > > 
+> > > > > 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
+> > > > > 	if (cpy_len >= len || cpy_len < 0) {
+> > > > 
+> > > > The kernel version of snprintf() doesn't and will never return
+> > > > negatives.  It would cause a huge security headache if it started
+> > > > returning negatives.
+> > > 
+> > > Begs the question why it returns an int then :)
 > > 
-> > I'm not so found of adding such a specific callback.. It seems better to have a generic reg_user_mr that accepts a ib_umem created by the
-> > core code. Burying the umem_get in the drivers was probably a mistake.
+> > People should use "int" as their default type.  "int i;".  It means
+> > "This is a normal number.  Nothing special about it.  It's not too high.
+> > It's not defined by hardware requirements."  Other types call attention
+> > to themselves, but int is the humble datatype.
 > 
-> I totally agree. But that would require major changes to the uverbs workflow.
+> No, I strongly disagree with this, it is one of my pet peeves to see
+> 'int' being used for data which is known to be only ever be positive
+> just to save typing 'unsigned'.
+> 
+> Not only is it confusing, but allowing signed values has caused tricky
+> security bugs, unfortuntely.
 
-I don't think it is that bad and would prefer it
+I have the opposite pet peeve.
 
-Jason
+I complain about it a lot.  It pains me every time I see a "u32 i;".  I
+think there is a static analysis warning for using signed which
+encourages people to write code like that.  That warning really upsets
+me for two reasons 1) The static checker should know the range of values
+but it doesn't so it makes me sad to see inferior technology being used
+when it should deleted instead.  2)  I have never seen this warning
+prevent a real life bug.  You would need to hit a series of fairly rare
+events for this warning to be useful and I have never seen that happen
+yet.
+
+The most common bug caused by unsigned variables is that it breaks the
+kernel error handling but there are other problems as well.  There was
+an example a little while back where someone "fixed" a security problem
+by making things unsigned.
+
+	for (i = 0; i < user_value; i++) {
+
+Originally if user_value was an int then the loop would have been a
+harmless no-op but now it was a large positive value so it lead to
+memory corruption.  Another example is:
+
+	for (i = 0; i < user_value - 1; i++) {
+
+If "user_value" is zero the subtraction becomes UINT_MAX.  Or some
+people use a "u16 i;" but then the limit increases so the loop doesn't
+work any more.
+
+From my experience with static analysis and security audits, making
+things unsigned en mass causes more security bugs.  There are definitely
+times where making variables unsigned is correct for security reasons
+like when you are taking a size from userspace.
+
+Complicated types call attention to themselves and they hurt
+readability.  You sometimes *need* other datatypes and you want those to
+stand out but if everything is special then nothing is special.
+
+regards,
+dan carpenter
+
