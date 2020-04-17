@@ -2,127 +2,279 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027F61AD1B8
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Apr 2020 23:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110201AD3FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 03:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgDPVI6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 17:08:58 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9473 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725928AbgDPVI6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Apr 2020 17:08:58 -0400
-IronPort-SDR: v4pdMJ6IeV53HitpjSA/9hRngADLSahNNK1ZQb2ZeyPy8yg5399jzUhdrXqkj3d4AaQAKd7TtB
- 2X0owFWkVlCg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2020 14:08:57 -0700
-IronPort-SDR: F/mrHh4Q4WO2MD9RBJfoTpFR4d+6JO/AAZVnyQulhgSbsbx0i/0ucDtEh4b0NQE3Xik8yDeCiU
- OgzQh4hyHUeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,392,1580803200"; 
-   d="scan'208";a="289031260"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Apr 2020 14:08:57 -0700
-Received: from fmsmsx153.amr.corp.intel.com (10.18.125.6) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 14:08:57 -0700
-Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
- FMSMSX153.amr.corp.intel.com (10.18.125.6) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 16 Apr 2020 14:08:57 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 16 Apr 2020 14:08:57 -0700
+        id S1727984AbgDQBM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 21:12:28 -0400
+Received: from mail-eopbgr00066.outbound.protection.outlook.com ([40.107.0.66]:6126
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgDQBMZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Apr 2020 21:12:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eTwvmIt1FsoyzBuPOhGHsx5sWIjpsegrlCph2XIkQp2+Dt80ebunvNfGo6p8DF8vgTcUYoFaeniwYhPo0jyrE0trqWJSHIttUxP6LoaMBUHYcZVCwULuTIa9JMbVUkfrX3T2J6maiRxj/mdmrraObpwNGoIcObBzLbhl3trhvf34UsXt4WsHRo/aqC1aj7/TBILRWUbImf3suapa7w5SM1GPUR0IlkgsQ66lcdq4X/UKgwecEXXQn1jFr+eeYmdTJisjP4jFOENIXce65H8c3tAT7gKY3REGZNy3Y2Rw9H976x6R4xFIxrFH7fA00tBTNShfUTVO8enpk/A5riON/g==
+ b=ZjXz6/ZVqlUF+EofsHgGwTp0iRJM1h4aU19u7AeRLQL5B8ufcrzKfUKwDqlCmrnxy/AfWA5uRrcS+yj7IoFrWHEUIlggDT/ZC2PeCAJ7JGnebG8buNaQkF3pr+I/ABIojJ0Y54mmNbTK1dKig6UvuY1X3zUMdEMUsqdZNWr8gSMeC0TigMhbDTSmGIwMfvA0uzprnAxCUAbBkZW8MD+mKj9zfTpRgWKZTL2aqbenpxy/ulT0pw13oG9ZEUlQUAbUJh5KSqooJu4jFV85dIjWG6Yq+XHUqHhbm1U26unaH9n4V7NE/Z91JakWz8Y0xz9WKa7wu5wvuYQJqXUgiAcUEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vk5B6mTAdBOS1Iuf0d4JhH3VeErtI3ka3zBka4nD1h0=;
- b=Fmigb4VufNbUVAKwO4Azr4Hjn0Hz4IFllIHZO3I1pzu+f3eAzbKoSnPmfg86DS5f0YED7BBxGMr9LI8lBSenl3UrW3r5UIYRHaasuh9aeZpb0ZIrPQ12gtzFYC2hDuuvLMG48db9blKPEYb8E3Bd2a+XK9PjasmeLRM2dPXazOTNIG/vWkC95OzJgBVufwqCUYT0tGn+DVyBBCErd18yEHSAotkBa0Y0ra5a9vuEiUfBF7Y3IvRhgisEP8ErHb8QgjVs2XGV1f+/DqYWGzxbWRyj9GuNmIR63uT1vhK/ZZc+Xni9m8WIVAfq4zywD3NeFCKnymlqUrNFXXqb+O9Xaw==
+ bh=VKcO74LyHepa6b+2cACzDbUQkFCy/yrHXhAejZAEkM8=;
+ b=XEbnGnUTrfNLZ6QSBL3zza5LwybfEOoyfyZ0YiMm867QewrG2P4tkjXLiG7iO7uHYzGEURUA0gQDYEw3LhqYihjx++EQuqGNGWy+mM6TQI3spRAtznEVNIizkLvxuWtHR2UasBb7tCH5I6y4S75AULl9Zeb6R5nG6zI31pYGLlUki/kR4J4n9FL0YCFUmkMRHUeuhQB8TkrJWOzEKhubdEHvCRiNqJEjp8qhZXwSsVYtEi72d3UGj5VQlMkJrkJOB7TonozRARzaIU2GGiqsC+1lSsKnKT+VwU5shO/NMHL+PmzwKbJWi9fQZYpk/9h9uOgB8xx9Zt9rvKYmvE6mOg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vk5B6mTAdBOS1Iuf0d4JhH3VeErtI3ka3zBka4nD1h0=;
- b=vq1o2Rvc3gfGc5trdQCjmRis3PuaATsqS9AnxDYsMbskePMtH+zsoIbAW/S+R2p2GnsX+7zC+RAChQwGi639cY0N/jO0o+aYv+quQJ01fClFY+fZ2Y5+ffInpm7PXztT+sYoAuhfQ6L4dOfJu3e3khI1zNCvzctJ6esEbvI9DnU=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MW3PR11MB4729.namprd11.prod.outlook.com (2603:10b6:303:5d::24) with
+ bh=VKcO74LyHepa6b+2cACzDbUQkFCy/yrHXhAejZAEkM8=;
+ b=XFCYqCJG0vT1Q7ppYbjw+kj8M1EyqwA+fV75AMA7Z77U1TrRL4w5Ztr8TfhHxyb4QOBMApthPU/ab2YCbUMNS8BqSjHZl/1W14OVznkVEF1xX/A7aH5WLdIZBR5a9HayEq2lzdEMljFa2UF2p5SaZQ0J8Urft+xZTRMJc9ffHDQ=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
+ by VI1PR05MB6237.eurprd05.prod.outlook.com (2603:10a6:803:d8::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25; Thu, 16 Apr
- 2020 21:08:55 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::1916:3bdd:3f40:fd36]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::1916:3bdd:3f40:fd36%6]) with mapi id 15.20.2921.027; Thu, 16 Apr 2020
- 21:08:55 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: RE: [RFC PATCH 1/3] RDMA/umem: Support importing dma-buf as user
- memory region
-Thread-Topic: [RFC PATCH 1/3] RDMA/umem: Support importing dma-buf as user
- memory region
-Thread-Index: AQHWFBA18200UyEIcUiReZoCYrPtRKh8CiGAgAAb5yA=
-Date:   Thu, 16 Apr 2020 21:08:55 +0000
-Message-ID: <MW3PR11MB45555D053D389175F030BF9BE5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1587056973-101760-1-git-send-email-jianxin.xiong@intel.com>
- <1587056973-101760-2-git-send-email-jianxin.xiong@intel.com>
- <20200416180201.GH1309273@unreal>
-In-Reply-To: <20200416180201.GH1309273@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jianxin.xiong@intel.com; 
-x-originating-ip: [134.134.136.210]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ae0437c6-0b90-4d5f-cacf-08d7e24a5f72
-x-ms-traffictypediagnostic: MW3PR11MB4729:
-x-microsoft-antispam-prvs: <MW3PR11MB472969DEA7F5D02D893B41F1E5D80@MW3PR11MB4729.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0375972289
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(346002)(376002)(396003)(136003)(366004)(9686003)(55016002)(4326008)(2906002)(4744005)(6506007)(33656002)(54906003)(5660300002)(7696005)(8936002)(66946007)(66476007)(66556008)(66446008)(64756008)(52536014)(26005)(478600001)(8676002)(71200400001)(76116006)(86362001)(6916009)(316002)(81156014)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0W/ynGfHG4aI2bY5RU9vrdZ4KLji7cF8cDmfEKvYstud6I7rCooz1r77M8PFMpZ68CeZ22Glp9E3Arfv4dBVIGIgbZpZ3FbPBuW3Pcj007bWXMsF2TVQ1gJFMFKtEtdRs1oOvpid3yJqSxnKBjLtPLmBM5eVmUCBSaCLf1LrBYbZFxVhfaY6M3RzpgUbXXC75YfRhQdEw89R4ERnuySnycgC1wbRUlgBXuUDwY1nA/4RYNLvzq1ozf7JEfuopPIDbvDKQNlh7HyQ3yDJaQsbhGAdpTfgJStMgiknDID5WnMkc1cTUHuACKtmA8FNFuPccZgEJO/rIKp0Y08sDVQZefTYkV3DWeIy0mv8xY8fDYetZ/2bm0sBMuYXMt5RLXN0UjYnJ4k4qlok+l0cMkOVX81Ccin+GKa81aV256LDIEostoK5uA/w7C9lXUryWX27
-x-ms-exchange-antispam-messagedata: uxGAfHYxS197CfBvGpz6o+coDWZSvMC/gSmZyYem41CLck2yqbrtl4gz0ALbWA59zk8oBcdgnGIneWCv0IHso8e9ck2KFd+lltWj3tjRnsPlWExhUJ3cI81LMVDvmKPbRLkH37MamghQ9rnXZ6Oqkg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Fri, 17 Apr
+ 2020 01:12:20 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2900.030; Fri, 17 Apr 2020
+ 01:12:20 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
+        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
+        airlied@linux.ie, jernej.skrabec@siol.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+Date:   Thu, 16 Apr 2020 18:11:45 -0700
+Message-Id: <20200417011146.83973-1-saeedm@mellanox.com>
+X-Mailer: git-send-email 2.25.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0041.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::18) To VI1PR05MB5102.eurprd05.prod.outlook.com
+ (2603:10a6:803:5e::23)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae0437c6-0b90-4d5f-cacf-08d7e24a5f72
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2020 21:08:55.2552
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from smtp.office365.com (73.15.39.150) by BYAPR08CA0041.namprd08.prod.outlook.com (2603:10b6:a03:117::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Fri, 17 Apr 2020 01:12:16 +0000
+X-Mailer: git-send-email 2.25.2
+X-Originating-IP: [73.15.39.150]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 294d7ada-5e3f-4669-67b3-08d7e26c6097
+X-MS-TrafficTypeDiagnostic: VI1PR05MB6237:|VI1PR05MB6237:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB6237AFAD4DDBC5BD585D97C0BED90@VI1PR05MB6237.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-Forefront-PRVS: 0376ECF4DD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(966005)(4326008)(6512007)(316002)(66556008)(6666004)(86362001)(54906003)(26005)(66476007)(7416002)(6486002)(478600001)(36756003)(186003)(1076003)(2906002)(5660300002)(52116002)(16526019)(66946007)(8676002)(956004)(81156014)(6506007)(8936002)(2616005)(54420400002);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mAnNW2zm100S9L+yY+PobH7atlyV0zqjjIAVUdyugq4rMih65Ycga3HDDmRSkMiT6ptzlwnUBHsikijSXP5djma7+9J/Ql6WAW/Bpqkr2i56wcolBdNfZQqi0TMpoXA+tr16PhBFW706r6lAph/1xSlzRZz0HbKEQKXZSeSegD5AM8/ZixG6kxMo+dtV4XxFlyKTZMvDjzCGvLxBp5CkMiaXeoM3BZ92GaTD17ejwNcG/tNFE4j7v74FEHpgFVHUohWgpdg4kWkm/vbuW28jYcQUeTBZPQrfdGwqEBntdyxSUFUPB0mdpCeE6aAi+fkRMRf8aTJlyFHZIWtHtMhNlrWjUsCXZ0T3A7bf3dw/AmqqoW8iJdh2jmP8uxfk0Nuf/h2apeo1B55a160SR//56ORSbXFCj1IC26C2E2jshTs+NxK2N3Uvgs+IRSBX58Qg0EiDEkKXZL0kadlfKKk+3q/VgYip6RC9OmWA4t8yYheAzGZMcJjaYktRqBO/nkgs2urOlcLkIlE6iQ93GBEFzjkAD/NpsoXs0yiH5nfiHJ/GzsgQ2ebKYuqTN6B8OWmheEzfpok3DwiGx0ArnhWuzA==
+X-MS-Exchange-AntiSpam-MessageData: Wei2iZ2mfLvGeCzZKzLhDTDjDOfjqcyheR6htXKTxYeNuuPZaFUC4hoStlPXGpaiY1k19q7ar0EEaFO7zn4e5yDkTOm4YYJ7dmH46QIs4D/C8v/YLxcCzF5ZmT312YSxmC53kcB6t5aPM8l8POe4qA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 294d7ada-5e3f-4669-67b3-08d7e26c6097
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 01:12:20.5132
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7Nt/BrKucYYVssE9K51RGRLNS6XXiZVGKXh4WZ8Eye60iogsczltEq/PoRFIE+4l/iPYFBkORgOl6WI6NFw1Ig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4729
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OnhA70Drt5q0fctTj03b5t2Lh0X4FxenDvI7vIcUR89hbGTxsQQgX3fv/vzwRd17hQTrY5Zgs7gtlVn2Yq2hpA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6237
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> > Dma-buf, a standard cross-driver buffer sharing mechanism, is chosen
-> > to be the basis of a non-proprietary approach for supporting RDMA
-> > to/from buffers allocated from device local memory (e.g. GPU VRAM).
->=20
-> Where can I read more about "is chosen to be the basis of a non-proprieta=
-ry approach" part of the sentence?
->=20
-> Especially HMM vs. dma-buf in this regard.
->=20
+Due to the changes to the semantics of imply keyword [1], which now
+doesn't force any config options to the implied configs any more.
 
-I will write up more details. Thanks.
+A module (FOO) that has a weak dependency on some other modules (BAR)
+is now broken if it was using imply to force dependency restrictions.
+e.g.: FOO needs BAR to be reachable, especially when FOO=y and BAR=m.
+Which might now introduce build/link errors.
 
+There are two options to solve this:
+1. use IS_REACHABLE(BAR), everywhere BAR is referenced inside FOO.
+2. in FOO's Kconfig add: depends on (BAR || !BAR)
+
+The first option is not desirable, and will leave the user confused when
+setting FOO=y and BAR=m, FOO will never reach BAR even though both are
+compiled.
+
+The 2nd one is the preferred approach, and will guarantee BAR is always
+reachable by FOO if both are compiled. But, (BAR || !BAR) is really
+confusing for those who don't really get how kconfig tristate arithmetics
+work.
+
+To solve this and hide this weird expression and to avoid repetition
+across the tree, we introduce new keyword "uses" to the Kconfig options
+family.
+
+uses BAR:
+Equivalent to: depends on symbol || !symbol
+Semantically it means, if FOO is enabled (y/m) and has the option:
+uses BAR, make sure it can reach/use BAR when possible.
+
+For example: if FOO=y and BAR=m, FOO will be forced to m.
+
+[1] https://lore.kernel.org/linux-doc/20200302062340.21453-1-masahiroy@kernel.org/
+
+Link: https://lkml.org/lkml/2020/4/8/839
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ Documentation/kbuild/kconfig-language.rst | 10 ++++++++++
+ scripts/kconfig/expr.h                    |  1 +
+ scripts/kconfig/lexer.l                   |  1 +
+ scripts/kconfig/menu.c                    |  4 +++-
+ scripts/kconfig/parser.y                  | 15 +++++++++++++++
+ scripts/kconfig/symbol.c                  |  2 ++
+ 6 files changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+index a1601ec3317b..8db8c2d80794 100644
+--- a/Documentation/kbuild/kconfig-language.rst
++++ b/Documentation/kbuild/kconfig-language.rst
+@@ -130,6 +130,16 @@ applicable everywhere (see syntax).
+ 	bool "foo"
+ 	default y
+ 
++- uses dependencies: "uses" <symbol>
++
++  Equivalent to: depends on symbol || !symbol
++  Semantically it means, if FOO is enabled (y/m) and has the option:
++  uses BAR, make sure it can reach/use BAR when possible.
++  For example: if FOO=y and BAR=m, FOO will be forced to m.
++
++  Note:
++      To understand how (symbol || !symbol) is actually computed, please see `Menu dependencies`_
++
+ - reverse dependencies: "select" <symbol> ["if" <expr>]
+ 
+   While normal dependencies reduce the upper limit of a symbol (see
+diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+index 5c3443692f34..face672fb4b4 100644
+--- a/scripts/kconfig/expr.h
++++ b/scripts/kconfig/expr.h
+@@ -185,6 +185,7 @@ enum prop_type {
+ 	P_CHOICE,   /* choice value */
+ 	P_SELECT,   /* select BAR */
+ 	P_IMPLY,    /* imply BAR */
++	P_USES,     /* uses BAR */
+ 	P_RANGE,    /* range 7..100 (for a symbol) */
+ 	P_SYMBOL,   /* where a symbol is defined */
+ };
+diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+index 6354c905b006..c6a0017b10d4 100644
+--- a/scripts/kconfig/lexer.l
++++ b/scripts/kconfig/lexer.l
+@@ -102,6 +102,7 @@ n	[A-Za-z0-9_-]
+ "default"		return T_DEFAULT;
+ "defconfig_list"	return T_DEFCONFIG_LIST;
+ "depends"		return T_DEPENDS;
++"uses"			return T_USES;
+ "endchoice"		return T_ENDCHOICE;
+ "endif"			return T_ENDIF;
+ "endmenu"		return T_ENDMENU;
+diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+index e436ba44c9c5..e26161b31a11 100644
+--- a/scripts/kconfig/menu.c
++++ b/scripts/kconfig/menu.c
+@@ -274,7 +274,9 @@ static void sym_check_prop(struct symbol *sym)
+ 			break;
+ 		case P_SELECT:
+ 		case P_IMPLY:
+-			use = prop->type == P_SELECT ? "select" : "imply";
++		case P_USES:
++			use = prop->type == P_SELECT ? "select" :
++				prop->type == P_IMPLY ? "imply" : "uses";
+ 			sym2 = prop_get_symbol(prop);
+ 			if (sym->type != S_BOOLEAN && sym->type != S_TRISTATE)
+ 				prop_warn(prop,
+diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+index 708b6c4b13ca..c5e9abb49d29 100644
+--- a/scripts/kconfig/parser.y
++++ b/scripts/kconfig/parser.y
+@@ -57,6 +57,7 @@ static struct menu *current_menu, *current_entry;
+ %token T_DEF_BOOL
+ %token T_DEF_TRISTATE
+ %token T_DEPENDS
++%token T_USES
+ %token T_ENDCHOICE
+ %token T_ENDIF
+ %token T_ENDMENU
+@@ -169,6 +170,7 @@ config_option_list:
+ 	  /* empty */
+ 	| config_option_list config_option
+ 	| config_option_list depends
++	| config_option_list uses
+ 	| config_option_list help
+ ;
+ 
+@@ -261,6 +263,7 @@ choice_option_list:
+ 	  /* empty */
+ 	| choice_option_list choice_option
+ 	| choice_option_list depends
++	| choice_option_list uses
+ 	| choice_option_list help
+ ;
+ 
+@@ -360,6 +363,7 @@ menu_option_list:
+ 	  /* empty */
+ 	| menu_option_list visible
+ 	| menu_option_list depends
++	| menu_option_list uses
+ ;
+ 
+ source_stmt: T_SOURCE T_WORD_QUOTE T_EOL
+@@ -384,6 +388,7 @@ comment_stmt: comment comment_option_list
+ comment_option_list:
+ 	  /* empty */
+ 	| comment_option_list depends
++	| comment_option_list uses
+ ;
+ 
+ /* help option */
+@@ -418,6 +423,16 @@ depends: T_DEPENDS T_ON expr T_EOL
+ 	printd(DEBUG_PARSE, "%s:%d:depends on\n", zconf_curname(), zconf_lineno());
+ };
+ 
++/* uses symbol: depends on symbol || !symbol */
++uses: T_USES symbol T_EOL
++{
++	struct expr *symexpr = expr_alloc_symbol($2);
++
++	menu_add_dep(expr_alloc_two(E_OR, symexpr, expr_alloc_one(E_NOT, symexpr)));
++	printd(DEBUG_PARSE, "%s:%d: uses: depends on %s || ! %s\n",
++	       zconf_curname(), zconf_lineno(), $2->name, $2->name);
++};
++
+ /* visibility option */
+ visible: T_VISIBLE if_expr T_EOL
+ {
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 3dc81397d003..422f7ea47722 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -1295,6 +1295,8 @@ const char *prop_get_type_name(enum prop_type type)
+ 		return "choice";
+ 	case P_SELECT:
+ 		return "select";
++	case P_USES:
++		return "uses";
+ 	case P_IMPLY:
+ 		return "imply";
+ 	case P_RANGE:
+-- 
+2.25.2
 
