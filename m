@@ -2,419 +2,284 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9811AE667
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 21:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44B41AE679
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 22:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgDQT7f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 15:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730573AbgDQT7e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Apr 2020 15:59:34 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1367E2076A;
-        Fri, 17 Apr 2020 19:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587153573;
-        bh=BjQaMABmwPPxZJ+SYYSyHBQ5+A9wcORK7gUbW1PFPE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ICv0kkq78Lqj8UiBtpeM1mRjf4yb/XpROfZyEhh6pSKfdvBrZ4OrWWdVRhoiWgoGk
-         jmIzkxZjFuDiy5/7bpl2ZThQPpLGZ65LdQCoTfFTsoolOuImWyAkgwdxuZkkPfinYB
-         IySKIALXV52wIjA783+5aimqsIuih8M88K8sqVNI=
-Date:   Fri, 17 Apr 2020 22:59:28 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     gregkh@linuxfoundation.org, jgg@ziepe.ca,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [RFC PATCH v5 09/16] RDMA/irdma: Implement device supported verb
- APIs
-Message-ID: <20200417195928.GE3083@unreal>
-References: <20200417171251.1533371-1-jeffrey.t.kirsher@intel.com>
- <20200417171251.1533371-10-jeffrey.t.kirsher@intel.com>
+        id S1730909AbgDQUHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 16:07:22 -0400
+Received: from mail-eopbgr50087.outbound.protection.outlook.com ([40.107.5.87]:12773
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730573AbgDQUHV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Apr 2020 16:07:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RhAI4ttjLXvLvQLHkl9GIWpVs859y/jA8+G/Sx7bE9ViVV8geVwaUiW3H97BX/zPHopE2kDuLskzK4hyFu+A+Y5jvU2+iPQWtaJkecuwm8P1S1jRQat7S69BE6BOkDlWckFujUBvljTvErDFclDtVZXIFS+zuZQqhgTQTiUQqwHSPvdn6lxrKc9ZZizZXukk7FrgNfZUnyw0XqP6qgGWJvEeEpHBPcEw8ujbkxvF0DyXLqe6+iuSm18gxqsGbzVRm9lDz73KMp3ZSq0bb6U/9DLUqpPCkd7xDrJgNgLKTPeu2FwSeynttdMnrZQnq4QsbVMM76rBlVQ15htvk+pnnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1GwEgSulrP4Nghlw8OO20TCr145kK9+j6WbLr7NlmcE=;
+ b=Pmf6ef4aQut05fP6+PTCoJeYIg349cEIIRzh4rrOHWqwlJ6elrVoIjPqr6OqH2MMOipRIcOUdVZmLEm5H8Pele6DEwijtVbBnjOr9tfAVG/fVBd7wghA4BZBUkOjslLAPUzUBwFMl8+kHZe4Fbe4JXn0VJnZX2+w/lTdIZ0FayJgpoANR+WcDngjpI1K2CLPChsKO9bc0uw4+NwlVKy+bKyQgGmer6EEzdRK5lBpZ8BbhF+7WUdxG75RnDcy6A2rrsRQfNYGvrx7jjafOMK87Vq75+DxDhhtfBe7IsMfNls/b8OFnKeBGLbSZR1ipupjgoVv/6JbyvTXDZXYPmz0lA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1GwEgSulrP4Nghlw8OO20TCr145kK9+j6WbLr7NlmcE=;
+ b=t0sfYbthM9pfdUzthwGpjX5qEPJzfSVsOwK1aRH5gSWB5R4GwBej1P1jiYee+vtgl00cUVrpvuBc1dm90c3XZy5w9p8UOTHKR7i1WsUwRVLDzw7iriz15xgLqx5WOmuG4711H1mJtxLwW3cXNM5TrmqzZPwN9XJmniXLe/ekbwk=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
+ by VI1PR05MB5917.eurprd05.prod.outlook.com (2603:10a6:803:e5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17; Fri, 17 Apr
+ 2020 20:07:16 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2900.030; Fri, 17 Apr 2020
+ 20:07:16 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Saeed Mahameed <saeedm@mellanox.com>, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
+        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
+        airlied@linux.ie, jernej.skrabec@siol.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [RFC PATCH v2 1/3] Kconfig: Introduce "uses" keyword
+Date:   Fri, 17 Apr 2020 13:06:25 -0700
+Message-Id: <20200417200627.129849-1-saeedm@mellanox.com>
+X-Mailer: git-send-email 2.25.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0100.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::41) To VI1PR05MB5102.eurprd05.prod.outlook.com
+ (2603:10a6:803:5e::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417171251.1533371-10-jeffrey.t.kirsher@intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from smtp.office365.com (73.15.39.150) by BYAPR05CA0100.namprd05.prod.outlook.com (2603:10b6:a03:e0::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.9 via Frontend Transport; Fri, 17 Apr 2020 20:07:10 +0000
+X-Mailer: git-send-email 2.25.2
+X-Originating-IP: [73.15.39.150]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1493a089-ef3b-4bf2-be3a-08d7e30aebe5
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5917:|VI1PR05MB5917:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB591718CD85CCEF4F65BC1AD4BED90@VI1PR05MB5917.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-Forefront-PRVS: 0376ECF4DD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(8676002)(7416002)(26005)(6666004)(478600001)(86362001)(2906002)(81156014)(52116002)(4326008)(186003)(16526019)(36756003)(956004)(5660300002)(2616005)(54906003)(1076003)(316002)(66556008)(66946007)(66476007)(6506007)(8936002)(6512007)(6486002)(966005)(54420400002);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SllO1p/qRzzh0x2F4yDWUf1hJCy5n4oP0BJYrYYBsZrJJMaxEC+j4qnVVrSmmQXNX/tXDC/ALjLYoqrBK7tbx+ktxZ2281jKWmCIshmSA2NMr+antHK5uUW/VfjSpiWVTtW9cb++Oa4WztPyvf/EcTBd1Y6M0Fgfjwebk1OV6WD0Nl8YYs+nstyDb4+66y7pOyvSLtpHsPgdh8Z2gUjYWLCcNTm0A/AK2vIQwrxWpH0rw6IWG8LTPmeHRBzHhi0HW9Vg5qlfAwEX2W+Vnop8WDIR8Lhv8tAJ/PJB2omEs0g7UakRamfVBB6sP9WA0jTbw7Chqcf+adR51mQaXL4qAd8k0kK39te1+nI2O1XL1SLT5J0WKcvqgcahSy/0pBJS45Q3hHLlaJW70JRg73eosbDWEENXYUPhZoTGRMSR4OOHAqBVcG+x1bscOQq1PMC+asKZCcstcmoF7B0UkYIpcN4SBsIf7oqb5Xh85GBNRUcRPcK9B5tqKJX9V8rFFAF3gGwVpwyDiK3Nw6/tgWGEa7e5Uv2F8UCAjHD56u8DldYgu7TEus1LFt1VFcN0GN7O2mnny4swvUgEg+lI/rU48g==
+X-MS-Exchange-AntiSpam-MessageData: zKaOXgsJIKy0QS+qqr44jBQ/DTBHAMzAYIU1voG7lbnPjiREyyABIdiXhgQ5KRItNi+hokJRYIq2ikaie5yNxP0zncrZwPn75isnF16xYztSqjcV0SNoCSiTzfy+OhnpkEAvXaGW5J2A29TVWCWhPw==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1493a089-ef3b-4bf2-be3a-08d7e30aebe5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 20:07:16.1425
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CDFlQ799+nlqI+IMtsJGZ5DL0nTwFBwIVGrf/rbz+Ki2AjOqBIqaBeTZ2J3S6kPeC8qdX0l3HhWzm+BW3ij7TA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5917
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 10:12:44AM -0700, Jeff Kirsher wrote:
-> From: Mustafa Ismail <mustafa.ismail@intel.com>
->
-> Implement device supported verb APIs. The supported APIs
-> vary based on the underlying transport the ibdev is
-> registered as (i.e. iWARP or RoCEv2).
->
-> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> ---
->  drivers/infiniband/hw/irdma/verbs.c     | 4555 +++++++++++++++++++++++
->  drivers/infiniband/hw/irdma/verbs.h     |  213 ++
->  include/uapi/rdma/ib_user_ioctl_verbs.h |    1 +
->  3 files changed, 4769 insertions(+)
->  create mode 100644 drivers/infiniband/hw/irdma/verbs.c
->  create mode 100644 drivers/infiniband/hw/irdma/verbs.h
+Due to the changes to the semantics of the imply keyword [1], which now
+will not force any config options to the implied configs any more.
 
-<...>
+A module (FOO) that has a weak dependency on some other modules (BAR)
+is now broken if it was using imply to force dependency restrictions.
+e.g.: FOO needs BAR to be reachable, especially when FOO=y and BAR=m.
+Which might now introduce build/link errors.
 
-> +static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-> +{
-> +	struct irdma_qp *iwqp = to_iwqp(ibqp);
-> +
-> +	iwqp->destroyed = 1;
-> +	if (iwqp->ibqp_state >= IB_QPS_INIT && iwqp->ibqp_state < IB_QPS_RTS)
-> +		irdma_next_iw_state(iwqp, IRDMA_QP_STATE_ERROR, 0, 0, 0);
-> +
-> +	if (!iwqp->user_mode) {
-> +		if (iwqp->iwscq) {
-> +			irdma_clean_cqes(iwqp, iwqp->iwscq);
-> +			if (iwqp->iwrcq != iwqp->iwscq)
-> +				irdma_clean_cqes(iwqp, iwqp->iwrcq);
-> +		}
-> +	}
-> +
-> +	irdma_remove_push_mmap_entries(iwqp);
-> +	irdma_free_lsmm_rsrc(iwqp);
-> +	irdma_rem_ref(&iwqp->ibqp);
+There are two options to solve this:
+1. use IS_REACHABLE(BAR), everywhere BAR is referenced inside FOO.
+2. in FOO's Kconfig add: depends on (BAR || !BAR)
 
-No, please ensure that call to destroy_qp is kfree QP without any need
-in reference counting. We need this to move QP allocation to be IB/core
-responsibility. I hope that all other verbs objects (with MR as
-exception) follow the same pattern: create->kzalloc->destroy>kfree.
+The first option is not desirable, and will leave the user confused when
+setting FOO=y and BAR=m, FOO will never reach BAR even though both are
+compiled.
 
-> +
-> +	return 0;
-> +}
+The 2nd one is the preferred approach, and will guarantee BAR is always
+reachable by FOO if both are compiled. But, (BAR || !BAR) is really
+confusing for those who don't really get how kconfig tristate arithmetics
+work.
 
-<...>
+To solve this and hide this weird expression and to avoid repetition
+across the tree, we introduce new keyword "uses" to the Kconfig options
+family.
 
-> +
-> +/**
-> + * irdma_create_qp - create qp
-> + * @ibpd: ptr of pd
-> + * @init_attr: attributes for qp
-> + * @udata: user data for create qp
-> + */
-> +static struct ib_qp *irdma_create_qp(struct ib_pd *ibpd,
-> +				     struct ib_qp_init_attr *init_attr,
-> +				     struct ib_udata *udata)
-> +{
-> +	struct irdma_pd *iwpd = to_iwpd(ibpd);
-> +	struct irdma_device *iwdev = to_iwdev(ibpd->device);
-> +	struct irdma_pci_f *rf = iwdev->rf;
-> +	struct irdma_cqp *iwcqp = &rf->cqp;
-> +	struct irdma_qp *iwqp;
-> +	struct irdma_create_qp_req req;
-> +	struct irdma_create_qp_resp uresp = {};
-> +	struct i40iw_create_qp_resp uresp_gen1 = {};
-> +	u32 qp_num = 0;
-> +	void *mem;
-> +	enum irdma_status_code ret;
-> +	int err_code = 0;
-> +	int sq_size;
-> +	int rq_size;
-> +	struct irdma_sc_qp *qp;
-> +	struct irdma_sc_dev *dev = &rf->sc_dev;
-> +	struct irdma_uk_attrs *uk_attrs = &dev->hw_attrs.uk_attrs;
-> +	struct irdma_qp_init_info init_info = {};
-> +	struct irdma_create_qp_info *qp_info;
-> +	struct irdma_cqp_request *cqp_request;
-> +	struct cqp_cmds_info *cqp_info;
-> +	struct irdma_qp_host_ctx_info *ctx_info;
-> +	struct irdma_iwarp_offload_info *iwarp_info;
-> +	struct irdma_roce_offload_info *roce_info;
-> +	struct irdma_udp_offload_info *udp_info;
-> +	unsigned long flags;
-> +
-> +	if (init_attr->create_flags ||
-> +	    init_attr->cap.max_inline_data > uk_attrs->max_hw_inline ||
-> +	    init_attr->cap.max_send_sge > uk_attrs->max_hw_wq_frags ||
-> +	    init_attr->cap.max_recv_sge > uk_attrs->max_hw_wq_frags)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	sq_size = init_attr->cap.max_send_wr;
-> +	rq_size = init_attr->cap.max_recv_wr;
-> +
-> +	init_info.vsi = &iwdev->vsi;
-> +	init_info.qp_uk_init_info.uk_attrs = uk_attrs;
-> +	init_info.qp_uk_init_info.sq_size = sq_size;
-> +	init_info.qp_uk_init_info.rq_size = rq_size;
-> +	init_info.qp_uk_init_info.max_sq_frag_cnt = init_attr->cap.max_send_sge;
-> +	init_info.qp_uk_init_info.max_rq_frag_cnt = init_attr->cap.max_recv_sge;
-> +	init_info.qp_uk_init_info.max_inline_data = init_attr->cap.max_inline_data;
-> +
-> +	mem = kzalloc(sizeof(*iwqp), GFP_KERNEL);
-> +	if (!mem)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	iwqp = mem;
+uses BAR:
+Equivalent to: depends on symbol || !symbol
+Semantically it means, if FOO is enabled (y/m) and has the option:
+uses BAR, make sure it can reach/use BAR when possible.
 
-I'm confused, why do you need "mem" in the first place?
+For example: if FOO=y and BAR=m, FOO will be forced to m.
 
-> +	qp = &iwqp->sc_qp;
-> +	qp->qp_uk.back_qp = (void *)iwqp;
-> +	qp->qp_uk.lock = &iwqp->lock;
-> +	qp->push_idx = IRDMA_INVALID_PUSH_PAGE_INDEX;
-> +
-> +	iwqp->q2_ctx_mem.size = ALIGN(IRDMA_Q2_BUF_SIZE + IRDMA_QP_CTX_SIZE,
-> +				      256);
-> +	iwqp->q2_ctx_mem.va = dma_alloc_coherent(hw_to_dev(dev->hw),
-> +						 iwqp->q2_ctx_mem.size,
-> +						 &iwqp->q2_ctx_mem.pa,
-> +						 GFP_KERNEL);
-> +	if (!iwqp->q2_ctx_mem.va) {
-> +		err_code = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	init_info.q2 = iwqp->q2_ctx_mem.va;
-> +	init_info.q2_pa = iwqp->q2_ctx_mem.pa;
-> +	init_info.host_ctx = (void *)init_info.q2 + IRDMA_Q2_BUF_SIZE;
-> +	init_info.host_ctx_pa = init_info.q2_pa + IRDMA_Q2_BUF_SIZE;
-> +
-> +	if (init_attr->qp_type == IB_QPT_GSI && !rf->ldev.ftype)
-> +		qp_num = 1;
-> +	else
-> +		err_code = irdma_alloc_rsrc(rf, rf->allocated_qps, rf->max_qp,
-> +					    &qp_num, &rf->next_qp);
-> +	if (err_code)
-> +		goto error;
-> +
-> +	iwqp->iwdev = iwdev;
-> +	iwqp->iwpd = iwpd;
-> +	if (init_attr->qp_type == IB_QPT_GSI && !rf->ldev.ftype)
-> +		iwqp->ibqp.qp_num = 1;
-> +	else
-> +		iwqp->ibqp.qp_num = qp_num;
-> +
-> +	qp = &iwqp->sc_qp;
-> +	iwqp->iwscq = to_iwcq(init_attr->send_cq);
-> +	iwqp->iwrcq = to_iwcq(init_attr->recv_cq);
-> +	iwqp->host_ctx.va = init_info.host_ctx;
-> +	iwqp->host_ctx.pa = init_info.host_ctx_pa;
-> +	iwqp->host_ctx.size = IRDMA_QP_CTX_SIZE;
-> +
-> +	init_info.pd = &iwpd->sc_pd;
-> +	init_info.qp_uk_init_info.qp_id = iwqp->ibqp.qp_num;
-> +	if (!rdma_protocol_roce(&iwdev->ibdev, 1))
-> +		init_info.qp_uk_init_info.first_sq_wq = 1;
-> +	iwqp->ctx_info.qp_compl_ctx = (uintptr_t)qp;
-> +	init_waitqueue_head(&iwqp->waitq);
-> +	init_waitqueue_head(&iwqp->mod_qp_waitq);
-> +
-> +	if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
-> +		if (init_attr->qp_type != IB_QPT_RC &&
-> +		    init_attr->qp_type != IB_QPT_UD &&
-> +		    init_attr->qp_type != IB_QPT_GSI) {
-> +			err_code = -EINVAL;
-> +			goto error;
-> +		}
-> +	} else {
-> +		if (init_attr->qp_type != IB_QPT_RC) {
-> +			err_code = -EINVAL;
-> +			goto error;
-> +		}
-> +	}
-> +	if (udata) {
-> +		err_code = ib_copy_from_udata(&req, udata,
-> +					      min(sizeof(req), udata->inlen));
-> +		if (err_code) {
-> +			ibdev_dbg(to_ibdev(iwdev),
-> +				  "VERBS: ib_copy_from_data fail\n");
-> +			goto error;
-> +		}
-> +
-> +		iwqp->ctx_info.qp_compl_ctx = req.user_compl_ctx;
-> +		iwqp->user_mode = 1;
-> +		if (req.user_wqe_bufs) {
-> +			struct irdma_ucontext *ucontext =
-> +				rdma_udata_to_drv_context(udata,
-> +							  struct irdma_ucontext,
-> +							  ibucontext);
-> +			spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
-> +			iwqp->iwpbl = irdma_get_pbl((unsigned long)req.user_wqe_bufs,
-> +						    &ucontext->qp_reg_mem_list);
-> +			spin_unlock_irqrestore(&ucontext->qp_reg_mem_list_lock, flags);
-> +
-> +			if (!iwqp->iwpbl) {
-> +				err_code = -ENODATA;
-> +				ibdev_dbg(to_ibdev(iwdev),
-> +					  "VERBS: no pbl info\n");
-> +				goto error;
-> +			}
-> +		}
-> +		init_info.qp_uk_init_info.abi_ver = iwpd->sc_pd.abi_ver;
-> +		err_code = irdma_setup_virt_qp(iwdev, iwqp, &init_info);
-> +	} else {
-> +		init_info.qp_uk_init_info.abi_ver = IRDMA_ABI_VER;
-> +		err_code = irdma_setup_kmode_qp(iwdev, iwqp, &init_info, init_attr);
-> +	}
-> +
-> +	if (err_code) {
-> +		ibdev_dbg(to_ibdev(iwdev), "VERBS: setup qp failed\n");
-> +		goto error;
-> +	}
-> +
-> +	if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
-> +		if (init_attr->qp_type == IB_QPT_RC) {
-> +			init_info.type = IRDMA_QP_TYPE_ROCE_RC;
-> +			init_info.qp_uk_init_info.qp_caps = IRDMA_SEND_WITH_IMM |
-> +							    IRDMA_WRITE_WITH_IMM |
-> +							    IRDMA_ROCE;
-> +		} else {
-> +			init_info.type = IRDMA_QP_TYPE_ROCE_UD;
-> +			init_info.qp_uk_init_info.qp_caps = IRDMA_SEND_WITH_IMM |
-> +							    IRDMA_ROCE;
-> +		}
-> +	} else {
-> +		init_info.type = IRDMA_QP_TYPE_IWARP;
-> +		init_info.qp_uk_init_info.qp_caps = IRDMA_WRITE_WITH_IMM;
-> +	}
-> +
-> +	ret = dev->iw_priv_qp_ops->qp_init(qp, &init_info);
-> +	if (ret) {
-> +		err_code = -EPROTO;
-> +		ibdev_dbg(to_ibdev(iwdev), "VERBS: qp_init fail\n");
-> +		goto error;
-> +	}
-> +
-> +	ctx_info = &iwqp->ctx_info;
-> +	if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
-> +		iwqp->ctx_info.roce_info = &iwqp->roce_info;
-> +		iwqp->ctx_info.udp_info = &iwqp->udp_info;
-> +		udp_info = &iwqp->udp_info;
-> +		udp_info->snd_mss = irdma_roce_mtu(iwdev->vsi.mtu);
-> +		udp_info->cwnd = 0x400;
-> +		udp_info->src_port = 0xc000;
-> +		udp_info->dst_port = ROCE_V2_UDP_DPORT;
-> +		roce_info = &iwqp->roce_info;
-> +		ether_addr_copy(roce_info->mac_addr, iwdev->netdev->dev_addr);
-> +
-> +		if (init_attr->qp_type == IB_QPT_GSI && !rf->sc_dev.privileged)
-> +			roce_info->is_qp1 = true;
-> +		roce_info->rd_en = true;
-> +		roce_info->wr_rdresp_en = true;
-> +		roce_info->dcqcn_en = true;
-> +
-> +		roce_info->ack_credits = 0x1E;
-> +		roce_info->ird_size = IRDMA_MAX_ENCODED_IRD_SIZE;
-> +		roce_info->ord_size = dev->hw_attrs.max_hw_ord;
-> +
-> +		if (!iwqp->user_mode) {
-> +			roce_info->priv_mode_en = true;
-> +			roce_info->fast_reg_en = true;
-> +			roce_info->udprivcq_en = true;
-> +		}
-> +		roce_info->roce_tver = 0;
-> +	} else {
-> +		iwqp->ctx_info.iwarp_info = &iwqp->iwarp_info;
-> +		iwarp_info = &iwqp->iwarp_info;
-> +		ether_addr_copy(iwarp_info->mac_addr, iwdev->netdev->dev_addr);
-> +		iwarp_info->rd_en = true;
-> +		iwarp_info->wr_rdresp_en = true;
-> +		iwarp_info->ecn_en = true;
-> +
-> +		if (dev->hw_attrs.uk_attrs.hw_rev > IRDMA_GEN_1)
-> +			iwarp_info->ib_rd_en = true;
-> +		if (!iwqp->user_mode) {
-> +			iwarp_info->priv_mode_en = true;
-> +			iwarp_info->fast_reg_en = true;
-> +		}
-> +		iwarp_info->ddp_ver = 1;
-> +		iwarp_info->rdmap_ver = 1;
-> +		ctx_info->iwarp_info_valid = true;
-> +	}
-> +	ctx_info->send_cq_num = iwqp->iwscq->sc_cq.cq_uk.cq_id;
-> +	ctx_info->rcv_cq_num = iwqp->iwrcq->sc_cq.cq_uk.cq_id;
-> +	if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
-> +		ret = dev->iw_priv_qp_ops->qp_setctx_roce(&iwqp->sc_qp,
-> +							  iwqp->host_ctx.va,
-> +							  ctx_info);
-> +	} else {
-> +		ret = dev->iw_priv_qp_ops->qp_setctx(&iwqp->sc_qp,
-> +						     iwqp->host_ctx.va,
-> +						     ctx_info);
-> +		ctx_info->iwarp_info_valid = false;
-> +	}
-> +
-> +	cqp_request = irdma_get_cqp_request(iwcqp, true);
-> +	if (!cqp_request) {
-> +		err_code = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	cqp_info = &cqp_request->info;
-> +	qp_info = &cqp_request->info.in.u.qp_create.info;
-> +	memset(qp_info, 0, sizeof(*qp_info));
-> +	qp_info->mac_valid = true;
-> +	qp_info->cq_num_valid = true;
-> +	qp_info->next_iwarp_state = IRDMA_QP_STATE_IDLE;
-> +
-> +	cqp_info->cqp_cmd = IRDMA_OP_QP_CREATE;
-> +	cqp_info->post_sq = 1;
-> +	cqp_info->in.u.qp_create.qp = qp;
-> +	cqp_info->in.u.qp_create.scratch = (uintptr_t)cqp_request;
-> +	ret = irdma_handle_cqp_op(rf, cqp_request);
-> +	if (ret) {
-> +		ibdev_dbg(to_ibdev(iwdev), "VERBS: CQP-OP QP create fail");
-> +		err_code = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	refcount_set(&iwqp->refcnt, 1);
-> +	spin_lock_init(&iwqp->lock);
-> +	spin_lock_init(&iwqp->sc_qp.pfpdu.lock);
-> +	iwqp->sig_all = (init_attr->sq_sig_type == IB_SIGNAL_ALL_WR) ? 1 : 0;
-> +	rf->qp_table[qp_num] = iwqp;
-> +	iwqp->max_send_wr = sq_size;
-> +	iwqp->max_recv_wr = rq_size;
-> +	if (udata) {
-> +		/* GEN_1 legacy support with libi40iw */
-> +		if (iwpd->sc_pd.abi_ver <= 5) {
-> +			uresp_gen1.lsmm = 1;
-> +			uresp_gen1.actual_sq_size = sq_size;
-> +			uresp_gen1.actual_rq_size = rq_size;
-> +			uresp_gen1.qp_id = qp_num;
-> +			uresp_gen1.push_idx = IRDMA_INVALID_PUSH_PAGE_INDEX;
-> +			uresp_gen1.lsmm = 1;
-> +			err_code = ib_copy_to_udata(udata, &uresp_gen1,
-> +						    min(sizeof(uresp_gen1), udata->outlen));
-> +		} else {
-> +			if (rdma_protocol_iwarp(&iwdev->ibdev, 1))
-> +				uresp.lsmm = 1;
-> +			uresp.actual_sq_size = sq_size;
-> +			uresp.actual_rq_size = rq_size;
-> +			uresp.qp_id = qp_num;
-> +			uresp.qp_caps = qp->qp_uk.qp_caps;
-> +
-> +			err_code = ib_copy_to_udata(udata, &uresp,
-> +						    min(sizeof(uresp), udata->outlen));
-> +		}
-> +		if (err_code) {
-> +			ibdev_dbg(to_ibdev(iwdev),
-> +				  "VERBS: copy_to_udata failed\n");
-> +			irdma_destroy_qp(&iwqp->ibqp, udata);
-> +			return ERR_PTR(err_code);
-> +		}
-> +	}
-> +	init_completion(&iwqp->sq_drained);
-> +	init_completion(&iwqp->rq_drained);
-> +	return &iwqp->ibqp;
-> +
-> +error:
-> +	irdma_free_qp_rsrc(iwdev, iwqp, qp_num);
-> +
-> +	return ERR_PTR(err_code);
-> +}
-> +
+[1] https://lore.kernel.org/linux-doc/20200302062340.21453-1-masahiroy@kernel.org/
 
-This function was too long.
+Link: https://lkml.org/lkml/2020/4/8/839
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
 
-Thanks
+V2: - Fix double free due to single allocation of sym expr.
+    - Added a 3rd patch to convert to new keyword treewide.
+
+ Documentation/kbuild/kconfig-language.rst | 10 ++++++++++
+ scripts/kconfig/expr.h                    |  1 +
+ scripts/kconfig/lexer.l                   |  1 +
+ scripts/kconfig/menu.c                    |  4 +++-
+ scripts/kconfig/parser.y                  | 16 ++++++++++++++++
+ scripts/kconfig/symbol.c                  |  2 ++
+ 6 files changed, 33 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+index a1601ec3317b..8db8c2d80794 100644
+--- a/Documentation/kbuild/kconfig-language.rst
++++ b/Documentation/kbuild/kconfig-language.rst
+@@ -130,6 +130,16 @@ applicable everywhere (see syntax).
+ 	bool "foo"
+ 	default y
+ 
++- uses dependencies: "uses" <symbol>
++
++  Equivalent to: depends on symbol || !symbol
++  Semantically it means, if FOO is enabled (y/m) and has the option:
++  uses BAR, make sure it can reach/use BAR when possible.
++  For example: if FOO=y and BAR=m, FOO will be forced to m.
++
++  Note:
++      To understand how (symbol || !symbol) is actually computed, please see `Menu dependencies`_
++
+ - reverse dependencies: "select" <symbol> ["if" <expr>]
+ 
+   While normal dependencies reduce the upper limit of a symbol (see
+diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+index 5c3443692f34..face672fb4b4 100644
+--- a/scripts/kconfig/expr.h
++++ b/scripts/kconfig/expr.h
+@@ -185,6 +185,7 @@ enum prop_type {
+ 	P_CHOICE,   /* choice value */
+ 	P_SELECT,   /* select BAR */
+ 	P_IMPLY,    /* imply BAR */
++	P_USES,     /* uses BAR */
+ 	P_RANGE,    /* range 7..100 (for a symbol) */
+ 	P_SYMBOL,   /* where a symbol is defined */
+ };
+diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+index 6354c905b006..c6a0017b10d4 100644
+--- a/scripts/kconfig/lexer.l
++++ b/scripts/kconfig/lexer.l
+@@ -102,6 +102,7 @@ n	[A-Za-z0-9_-]
+ "default"		return T_DEFAULT;
+ "defconfig_list"	return T_DEFCONFIG_LIST;
+ "depends"		return T_DEPENDS;
++"uses"			return T_USES;
+ "endchoice"		return T_ENDCHOICE;
+ "endif"			return T_ENDIF;
+ "endmenu"		return T_ENDMENU;
+diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+index e436ba44c9c5..e26161b31a11 100644
+--- a/scripts/kconfig/menu.c
++++ b/scripts/kconfig/menu.c
+@@ -274,7 +274,9 @@ static void sym_check_prop(struct symbol *sym)
+ 			break;
+ 		case P_SELECT:
+ 		case P_IMPLY:
+-			use = prop->type == P_SELECT ? "select" : "imply";
++		case P_USES:
++			use = prop->type == P_SELECT ? "select" :
++				prop->type == P_IMPLY ? "imply" : "uses";
+ 			sym2 = prop_get_symbol(prop);
+ 			if (sym->type != S_BOOLEAN && sym->type != S_TRISTATE)
+ 				prop_warn(prop,
+diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+index 708b6c4b13ca..0356ecbaf87d 100644
+--- a/scripts/kconfig/parser.y
++++ b/scripts/kconfig/parser.y
+@@ -57,6 +57,7 @@ static struct menu *current_menu, *current_entry;
+ %token T_DEF_BOOL
+ %token T_DEF_TRISTATE
+ %token T_DEPENDS
++%token T_USES
+ %token T_ENDCHOICE
+ %token T_ENDIF
+ %token T_ENDMENU
+@@ -169,6 +170,7 @@ config_option_list:
+ 	  /* empty */
+ 	| config_option_list config_option
+ 	| config_option_list depends
++	| config_option_list uses
+ 	| config_option_list help
+ ;
+ 
+@@ -261,6 +263,7 @@ choice_option_list:
+ 	  /* empty */
+ 	| choice_option_list choice_option
+ 	| choice_option_list depends
++	| choice_option_list uses
+ 	| choice_option_list help
+ ;
+ 
+@@ -360,6 +363,7 @@ menu_option_list:
+ 	  /* empty */
+ 	| menu_option_list visible
+ 	| menu_option_list depends
++	| menu_option_list uses
+ ;
+ 
+ source_stmt: T_SOURCE T_WORD_QUOTE T_EOL
+@@ -384,6 +388,7 @@ comment_stmt: comment comment_option_list
+ comment_option_list:
+ 	  /* empty */
+ 	| comment_option_list depends
++	| comment_option_list uses
+ ;
+ 
+ /* help option */
+@@ -418,6 +423,17 @@ depends: T_DEPENDS T_ON expr T_EOL
+ 	printd(DEBUG_PARSE, "%s:%d:depends on\n", zconf_curname(), zconf_lineno());
+ };
+ 
++/* uses symbol: depends on symbol || !symbol */
++uses: T_USES symbol T_EOL
++{
++	struct expr *symexpr1 = expr_alloc_symbol($2);
++	struct expr *symexpr2 = expr_alloc_symbol($2);
++
++	menu_add_dep(expr_alloc_two(E_OR, symexpr1, expr_alloc_one(E_NOT, symexpr2)));
++	printd(DEBUG_PARSE, "%s:%d: uses: depends on %s || ! %s\n",
++	       zconf_curname(), zconf_lineno(), $2->name, $2->name);
++};
++
+ /* visibility option */
+ visible: T_VISIBLE if_expr T_EOL
+ {
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 3dc81397d003..422f7ea47722 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -1295,6 +1295,8 @@ const char *prop_get_type_name(enum prop_type type)
+ 		return "choice";
+ 	case P_SELECT:
+ 		return "select";
++	case P_USES:
++		return "uses";
+ 	case P_IMPLY:
+ 		return "imply";
+ 	case P_RANGE:
+-- 
+2.25.2
+
