@@ -2,219 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85021AE8B5
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2020 01:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD20E1AE8C5
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2020 01:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgDQXtp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 19:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgDQXtp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 19:49:45 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040C4C061A0F
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id s30so3563437qth.2
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rv+SIvq+0d5RU7/wGuuG4u37IHm0iWvJ0sVJzXRdtBg=;
-        b=Djaf0gR5xl0A166FGH2eh3UZrlL+mMOJ6MJWMUad07t1KvlBrSH/fPStFh7ThJL1zh
-         Pf/dUDE+Uz4nnnk/DtSoEjfjcUv0YPQh5O3xTKRicliSds8/2R3vS3Fw06U2bDzRHPo1
-         KtxtX6rY0BAh1bdQkTQpkpcF06qycUQWBTlqSc6GwhSxXy3VPr5Gcixmj5pJzFyoQniJ
-         LTE9IxnDpvoMsyp8Z8sCrI/ZRVSVnqz89FCHxyAAKujRFJXhLY2AHfu+NjLgnKZEZ0u+
-         5zMNAeS+bgabRnwqr9xl1X5dRQRo/W7+23j4JDG0zeYsXfpqWBOtLLz9rr5NpG9doLMm
-         grEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rv+SIvq+0d5RU7/wGuuG4u37IHm0iWvJ0sVJzXRdtBg=;
-        b=QF+r6hFowmxbWwDVB6set14lQRWdjOJURyE1Gzx8W23ZvcpKeKvqSVQGU/x49wpFHV
-         YRbMFitGjKbkADF+8RTdRIBK0g5bCLOE7Rr7GkIJiz9wfj4ST+WSRayBMTmXkJ+w7CtY
-         taBll/HaturAsy+7CRPKrF4LyHnU7iCfQQNRJZY4xJrkpoQoXxpMPT5PbOA+6szVjdeB
-         HCIZJakVViNYIkTrpzbtyB7iAxpd8tFsoZx2BFJATqlAcbA/38UewmJInEqglfsLBd9E
-         LrwxF/h1TjhqGlu/wOm68Qs0KsiVdqjIwLAsUZW/s014rcD8YL9Tz+Q3iEB+2fd7KP3n
-         GDnw==
-X-Gm-Message-State: AGi0PubmFCjR57SVH3xXjeYRxnWmvt3zUgJF3l54mCSPj6H4YaMtt2xN
-        ypynwmQV/ElaHzutQsukMtBQ3A==
-X-Google-Smtp-Source: APiQypI2JZHWDsTvhNPOt4w6MPSufSWhWXO4Y60JCD3ch58mhHIwtRzZXh3Mc1p9qk0+VA7fQyW9Dw==
-X-Received: by 2002:ac8:164e:: with SMTP id x14mr5725673qtk.196.1587167384100;
-        Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u17sm9349864qka.0.2020.04.17.16.49.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Apr 2020 16:49:43 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jPajv-0007ff-2U; Fri, 17 Apr 2020 20:49:43 -0300
-Date:   Fri, 17 Apr 2020 20:49:43 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>
-Subject: Re: [net-next 2/9] ice: Create and register virtual bus for RDMA
-Message-ID: <20200417234943.GM26002@ziepe.ca>
-References: <20200417171034.1533253-1-jeffrey.t.kirsher@intel.com>
- <20200417171034.1533253-3-jeffrey.t.kirsher@intel.com>
+        id S1726414AbgDQXzP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 19:55:15 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15693 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgDQXzL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 19:55:11 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e9a41a40000>; Fri, 17 Apr 2020 16:54:12 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 17 Apr 2020 16:55:11 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 17 Apr 2020 16:55:11 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 17 Apr
+ 2020 23:55:06 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 17 Apr 2020 23:55:06 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5e9a41d90001>; Fri, 17 Apr 2020 16:55:06 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH v9 0/3] mm/hmm/test: add self tests for HMM
+Date:   Fri, 17 Apr 2020 16:54:55 -0700
+Message-ID: <20200417235458.13462-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417171034.1533253-3-jeffrey.t.kirsher@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587167652; bh=jXe1h9wiaq7PvwMYbpcxTu8towIVS5zrK8zscgA10h0=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:Content-Type:Content-Transfer-Encoding;
+        b=Cc1JzmWDg1VMol1croxpnpCYVltbXWmaVHTaQe7iQemi04JchWJEZxKwGmPQehagY
+         kwbJdINTtwsl79S99RKAu/LDb8frNI1B1uCIfR8DSeupYTi443T7S/FMGmm/2O//A2
+         PnDLj4wcUh6EJKG+eAYiEBfB6QKLh+Wj1iK4E8sbTN4cUms/KQCvA2q8m/9V4CWCKa
+         j+lKCfEH5l4Rd3x1ZMj/ednjz5SCidswcVioKDZd/iaVbM2YvFCH1K5KyM2+WOt3aN
+         OB0THU1FdknQmeArErLxKQRAQO6K1EX69/3tnwD8bf8R1Gwpk67LgK6aMjySZfvaTT
+         aww+gJkFd9Viw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 10:10:27AM -0700, Jeff Kirsher wrote:
+This series adds basic self tests for HMM and are intended for Jason
+Gunthorpe's rdma tree since I believe he is planning to make some HMM
+related changes that this can help test.
 
-> +/**
-> + * ice_peer_vdev_release - function to map to virtbus_devices release callback
-> + * @vdev: pointer to virtbus_device to free
-> + */
-> +static void ice_peer_vdev_release(struct virtbus_device *vdev)
-> +{
-> +	struct iidc_virtbus_object *vbo;
-> +
-> +	vbo = container_of(vdev, struct iidc_virtbus_object, vdev);
-> +	kfree(vbo);
-> +}
-> +
-> +/**
-> + * ice_init_peer_devices - initializes peer devices
-> + * @pf: ptr to ice_pf
-> + *
-> + * This function initializes peer devices on the virtual bus.
-> + */
-> +int ice_init_peer_devices(struct ice_pf *pf)
-> +{
-> +	struct ice_vsi *vsi = pf->vsi[0];
-> +	struct pci_dev *pdev = pf->pdev;
-> +	struct device *dev = &pdev->dev;
-> +	int status = 0;
-> +	unsigned int i;
-> +
-> +	/* Reserve vector resources */
-> +	status = ice_reserve_peer_qvector(pf);
-> +	if (status < 0) {
-> +		dev_err(dev, "failed to reserve vectors for peer drivers\n");
-> +		return status;
-> +	}
-> +	for (i = 0; i < ARRAY_SIZE(ice_peers); i++) {
-> +		struct ice_peer_dev_int *peer_dev_int;
-> +		struct ice_peer_drv_int *peer_drv_int;
-> +		struct iidc_qos_params *qos_info;
-> +		struct iidc_virtbus_object *vbo;
-> +		struct msix_entry *entry = NULL;
-> +		struct iidc_peer_dev *peer_dev;
-> +		struct virtbus_device *vdev;
-> +		int j;
-> +
-> +		/* structure layout needed for container_of's looks like:
-> +		 * ice_peer_dev_int (internal only ice peer superstruct)
-> +		 * |--> iidc_peer_dev
-> +		 * |--> *ice_peer_drv_int
-> +		 *
-> +		 * iidc_virtbus_object (container_of parent for vdev)
-> +		 * |--> virtbus_device
-> +		 * |--> *iidc_peer_dev (pointer from internal struct)
-> +		 *
-> +		 * ice_peer_drv_int (internal only peer_drv struct)
-> +		 */
-> +		peer_dev_int = kzalloc(sizeof(*peer_dev_int), GFP_KERNEL);
-> +		if (!peer_dev_int)
-> +			return -ENOMEM;
-> +
-> +		vbo = kzalloc(sizeof(*vbo), GFP_KERNEL);
-> +		if (!vbo) {
-> +			kfree(peer_dev_int);
-> +			return -ENOMEM;
-> +		}
-> +
-> +		peer_drv_int = kzalloc(sizeof(*peer_drv_int), GFP_KERNEL);
-> +		if (!peer_drv_int) {
-> +			kfree(peer_dev_int);
-> +			kfree(vbo);
-> +			return -ENOMEM;
-> +		}
+Changes v8 -> v9:
+Rebased to linux-5.7.0-rc1.
+Moved include/uapi/linux/test_hmm.h to lib/test_hmm_uapi.h
+Added calls to release_mem_region() to free device private addresses
+Applied Jason's suggested changes for v8.
+Added a check for no VMA read access before migrating to device private
+  memory.
 
-The lifetimes of all this memory look really suspect. The vbo holds a
-pointer to the peer_dev but who ensures it it freed after all the vbo
-kref's are released so there isn't a dangling pointer in
-vbo->peer_dev?
+Changes v7 -> v8:
+Rebased to Jason's rdma/hmm tree, plus Jason's 6 patch series
+  "Small hmm_range_fault() cleanups".
+Applied a number of changes from Jason's comments.
 
-One allocation is much simpler to understand:
+Changes v6 -> v7:
+Rebased to linux-5.6.0-rc6
+Reverted back to just using mmu_interval_notifier_insert() and making
+  this series only introduce HMM self tests.
 
-struct iidc_virtbus_object {
-   struct virbus_device vdev;
-   [public members]
-}
+Changes v5 -> v6:
+Rebased to linux-5.5.0-rc6
+Refactored mmu interval notifier patches
+Converted nouveau to use the new mmu interval notifier API
 
-struct iidc_virtbus_object_private {
-   struct iidc_virtbus_object vobj;
-   [private members]
-}
+Changes v4 -> v5:
+Added mmu interval notifier insert/remove/update callable from the
+  invalidate() callback
+Updated HMM tests to use the new core interval notifier API
 
-And just kzalloc a single iidc_virtbus_object_private
+Changes v1 -> v4:
+https://lore.kernel.org/linux-mm/20191104222141.5173-1-rcampbell@nvidia.com
 
-> +		peer_dev->msix_entries = entry;
-> +		ice_peer_state_change(peer_dev_int, ICE_PEER_DEV_STATE_INIT,
-> +				      false);
-> +
-> +		vdev = &vbo->vdev;
-> +		vdev->name = ice_peers[i].name;
-> +		vdev->release = ice_peer_vdev_release;
-> +		vdev->dev.parent = &pdev->dev;
-> +
-> +		status = virtbus_register_device(vdev);
-> +		if (status) {
-> +			kfree(peer_dev_int);
-> +			kfree(peer_drv_int);
-> +			vdev = NULL;
+Ralph Campbell (3):
+  mm/hmm/test: add selftest driver for HMM
+  mm/hmm/test: add selftests for HMM
+  MAINTAINERS: add HMM selftests
 
-To me this feels very unnatural, virtbus_register_device() does the
-kfree for the vbo if it fails so this function can't have a the normal
-goto error unwind and ends up open coding the error unwinds in each if
-above.
+ MAINTAINERS                            |    3 +
+ lib/Kconfig.debug                      |   13 +
+ lib/Makefile                           |    1 +
+ lib/test_hmm.c                         | 1175 ++++++++++++++++++++
+ lib/test_hmm_uapi.h                    |   59 +
+ tools/testing/selftests/vm/.gitignore  |    1 +
+ tools/testing/selftests/vm/Makefile    |    3 +
+ tools/testing/selftests/vm/config      |    2 +
+ tools/testing/selftests/vm/hmm-tests.c | 1359 ++++++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests |   16 +
+ tools/testing/selftests/vm/test_hmm.sh |   97 ++
+ 11 files changed, 2729 insertions(+)
+ create mode 100644 lib/test_hmm.c
+ create mode 100644 lib/test_hmm_uapi.h
+ create mode 100644 tools/testing/selftests/vm/hmm-tests.c
+ create mode 100755 tools/testing/selftests/vm/test_hmm.sh
 
-> +/* Following APIs are implemented by peer drivers and invoked by device
-> + * owner
-> + */
-> +struct iidc_peer_ops {
-> +	void (*event_handler)(struct iidc_peer_dev *peer_dev,
-> +			      struct iidc_event *event);
-> +
-> +	/* Why we have 'open' and when it is expected to be called:
-> +	 * 1. symmetric set of API w.r.t close
-> +	 * 2. To be invoked form driver initialization path
-> +	 *     - call peer_driver:open once device owner is fully
-> +	 *     initialized
-> +	 * 3. To be invoked upon RESET complete
-> +	 */
-> +	int (*open)(struct iidc_peer_dev *peer_dev);
-> +
-> +	/* Peer's close function is to be called when the peer needs to be
-> +	 * quiesced. This can be for a variety of reasons (enumerated in the
-> +	 * iidc_close_reason enum struct). A call to close will only be
-> +	 * followed by a call to either remove or open. No IDC calls from the
-> +	 * peer should be accepted until it is re-opened.
-> +	 *
-> +	 * The *reason* parameter is the reason for the call to close. This
-> +	 * can be for any reason enumerated in the iidc_close_reason struct.
-> +	 * It's primary reason is for the peer's bookkeeping and in case the
-> +	 * peer want to perform any different tasks dictated by the reason.
-> +	 */
-> +	void (*close)(struct iidc_peer_dev *peer_dev,
-> +		      enum iidc_close_reason reason);
+--=20
+2.25.2
 
-The open and close op looks really weird
-
-Jason
