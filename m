@@ -2,92 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3D11ADD55
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6051ADD57
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 14:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgDQM2f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 08:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
+        id S1728197AbgDQMb1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 08:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728234AbgDQM2a (ORCPT
+        by vger.kernel.org with ESMTP id S1728071AbgDQMb1 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:28:30 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579D3C061A10
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:28:30 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c63so2151585qke.2
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:28:30 -0700 (PDT)
+        Fri, 17 Apr 2020 08:31:27 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19529C061A0C
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:31:27 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id s30so1754108qth.2
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:31:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=aZefJ2eeeg5YJ8LbNLwmZ0QsC9kKV35KaDs/t6j0M1g=;
-        b=K9+oC8zpTs7eoXwYoNCM97j0wAjePnqvg1MIHJIH7ous//tMV1Jr3cBr+kIJfIT6tw
-         3OcVpAAq67QKQZkGQMvO3bNsWwbJBnCUPX+HM2kSXjzzVPxyBC33diZFfVD7g36eaQ8V
-         qfI7KDcfKd2QX+EUZ3jdUHgnHovu2cehHa1LIeWfd5uLrxhCooatkyANNHv7afAV7XJT
-         obDDx3gIJGnGLvMi6zrE6ny3daHSgAl4TGZNNZtepoDTUoHKeOtld3APKqR8zMhi0jaR
-         hYAiqzB2jOWifkzgQ5CnHvC62GPxGS/ig8I2V4XV7ODMhCnKVLz6AW73AfOwbKI5YsJ5
-         eQcw==
+        bh=HMUofvPCsPY7hTCC6RIPzXSRLfhxf2L64il5kqnOl6U=;
+        b=I4sRKIdJgJzEzgmo9IW+ekW44TyxfYcND7gQkH4nu808smmPXsF45o51nIo+H6Vs2W
+         22mrAiWKT4SHeDWMtG5561T4KQlaAEDAtS1lATU5qsRvk2vAYxdbWMUv2HN+z5n52E7j
+         8emk1cQp1Q4mjJF3eWEnlMTgo86HhhS5mRoeKyKVsc7ZeuN9sRTa3vFbjBsojarJPUj9
+         kQT3Khxe1HrBddfq0mrebjed5FI5bvBT9M9m9OjIsavSx+BpW8NO84gUmCBNo3YFVsaU
+         QCMRuw8CfzyMOtwUmMV0Ayz+IH5LziWEYPOddQ8II3i1kalfNTMaCF9Xpq2sOdbyr11D
+         Ymzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aZefJ2eeeg5YJ8LbNLwmZ0QsC9kKV35KaDs/t6j0M1g=;
-        b=YrxJwyDwcx+uz80oOH9IFtW7PHx6rphDFAlFjxrVg80I60v++sgQDKplDtpcGlA7or
-         vlC/ADS9oE/+QacrD9R+27p8ppUn3lGv0atN95Zc8AlxkJnGNEssmQ/AriUr0SoDUQSM
-         DPyuO+ItU0BCVp17BMoYm+iIsIJ1mstyeXqY/TiXPC8EONhnjU3Y7xOLkVULRZZIeLnn
-         YwbjPBXxtI8f6lCHT4LVE9D4XPmYwIKgF6rzeX8HI9B4NXh72zPceskkPGEJ08fNyTOL
-         S2y9eYCpY2aWgYZmr5+XAY1rgtwSljzK5bgTcapaOWKIwcyik/XWOgLWZXrSHgxqiXoJ
-         j9XA==
-X-Gm-Message-State: AGi0PubRXy3eFHJEAFnUfL03rUKs7eXym/BpYZPD+y/xfXiUakrb9M2R
-        l7v+MBZNTx1WNUX/Yb89eZtydQ==
-X-Google-Smtp-Source: APiQypJ1vYJs1OcOpG6NFzpsPpo2EzISzAbbiESS6yc0Q6fShvvLk7GfaJtAZP1aoEPPARaV+dFckA==
-X-Received: by 2002:a05:620a:39b:: with SMTP id q27mr3018858qkm.94.1587126509481;
-        Fri, 17 Apr 2020 05:28:29 -0700 (PDT)
+        bh=HMUofvPCsPY7hTCC6RIPzXSRLfhxf2L64il5kqnOl6U=;
+        b=ht1+gxVD0Of9M5KtFv+RLE4068CpiIBNOQtpySNK+NqZ7RSD79ND4BvIFL17lpqEro
+         EdUGUq29rbzFoIaFw7hNyRVbD/nGz9L0MGa/mmwu4LjzBbSPSs73GWGM2S4M092ILyQX
+         H4lkuHK1T81ad/mh9yR+Nm42QsHP1dEVhot2dQ+WZszzNreRqkF6V/UWmec8Iny5aTuV
+         nLk+iDiihIPFAdv3bBP5s9aVDdfe8valVxqsvpVJzV+0vWXtuqjqyHAESMlZu/R/Z7Yz
+         J1ARfIhAIwfyQmU1GS9YFXC7CjtimBZJOpjlBb10cOsqg/KIWgLMDX6APOPPEiIRPGzb
+         NDug==
+X-Gm-Message-State: AGi0PuZSEXCwrtGIRFa+RFqBtwbVb87j24Lh6nT51x5BQr0IEHiS9+hU
+        SuLZHyBgDR/PeAfUGIjsNvp08A==
+X-Google-Smtp-Source: APiQypLHRpSBi2AbPFZzgNKP0SqrmcU4tZd+JDxDFZJJ5DCYuw2u8Rohfbw7TlN31PeIhaLlJcJq0Q==
+X-Received: by 2002:ac8:27a2:: with SMTP id w31mr493382qtw.318.1587126686260;
+        Fri, 17 Apr 2020 05:31:26 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u17sm8223117qka.0.2020.04.17.05.28.27
+        by smtp.gmail.com with ESMTPSA id h23sm2188829qkk.90.2020.04.17.05.31.25
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Apr 2020 05:28:28 -0700 (PDT)
+        Fri, 17 Apr 2020 05:31:25 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jPQ6d-0006gf-52; Fri, 17 Apr 2020 09:28:27 -0300
-Date:   Fri, 17 Apr 2020 09:28:27 -0300
+        id 1jPQ9U-0006me-OH; Fri, 17 Apr 2020 09:31:24 -0300
+Date:   Fri, 17 Apr 2020 09:31:24 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Pitre <nico@fluxnic.net>, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
-        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
-        airlied@linux.ie, jernej.skrabec@siol.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-Message-ID: <20200417122827.GD5100@ziepe.ca>
-References: <20200417011146.83973-1-saeedm@mellanox.com>
- <87v9ly3a0w.fsf@intel.com>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Support importing dma-buf as user
+ memory region
+Message-ID: <20200417123124.GA26002@ziepe.ca>
+References: <1587056973-101760-1-git-send-email-jianxin.xiong@intel.com>
+ <1587056973-101760-2-git-send-email-jianxin.xiong@intel.com>
+ <20200416180151.GU5100@ziepe.ca>
+ <MW3PR11MB4555DDC186D6F5EF30771EB0E5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v9ly3a0w.fsf@intel.com>
+In-Reply-To: <MW3PR11MB4555DDC186D6F5EF30771EB0E5D80@MW3PR11MB4555.namprd11.prod.outlook.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 09:23:59AM +0300, Jani Nikula wrote:
+On Thu, Apr 16, 2020 at 07:41:33PM +0000, Xiong, Jianxin wrote:
+> > > +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf) {
+> > > +	enum dma_data_direction dir;
+> > > +
+> > > +	dir = umem_dmabuf->umem.writable ? DMA_BIDIRECTIONAL :
+> > > +DMA_FROM_DEVICE;
+> > > +
+> > > +	/*
+> > > +	 * Only use the original sgt returned from dma_buf_map_attachment(),
+> > > +	 * otherwise the scatterlist may be freed twice due to the map caching
+> > > +	 * mechanism.
+> > > +	 */
+> > > +	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt, dir);
+> > > +	dma_buf_detach(umem_dmabuf->dmabuf, umem_dmabuf->attach);
+> > > +	dma_buf_put(umem_dmabuf->dmabuf);
+> > > +	mmdrop(umem_dmabuf->umem.owning_mm);
+> > > +	kfree(umem_dmabuf);
+> > > +}
+> > > +EXPORT_SYMBOL(ib_umem_dmabuf_release);
+> > 
+> > Why is this an EXPORT_SYMBOL?
+> 
+> It is called from ib_umem_release() which is in a different file.
 
-> Which means that would have to split up to two. Not ideal, but
-> doable.
+export is only required to call outside the current module, which is
+is not.
 
-Why is this not ideal?
+> > > diff --git a/include/rdma/ib_umem_dmabuf.h
+> > > b/include/rdma/ib_umem_dmabuf.h new file mode 100644 index
+> > > 0000000..e82b205
+> > > +++ b/include/rdma/ib_umem_dmabuf.h
+> > 
+> > This should not be a public header
+> 
+> It's put there to be consistent with similar headers such as "ib_umem_odp.h". Can be changed.
 
-I think the one per line is easier to maintain (eg for merge
-conflicts) and easier to read than a giant && expression.
-
-I would not complicate things further by extending the boolean
-language..
+ib_umem_odp is needed by drivers, this is not.
 
 Jason
