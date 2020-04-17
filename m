@@ -2,136 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7541ADAFE
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 12:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7872D1ADC1F
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 13:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729343AbgDQKZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 06:25:17 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:51859 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbgDQKZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 06:25:16 -0400
-Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MVaQW-1jqzE40EHE-00RZzt; Fri, 17 Apr 2020 12:25:12 +0200
-Received: by mail-qv1-f53.google.com with SMTP id fb4so607467qvb.7;
-        Fri, 17 Apr 2020 03:25:11 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZWLl2qM+AGVO525O3nGWCzx7Bs8FZF7lV45SVq3IIic1k2JjTk
-        PboGWa2pbEfvTS5bnIeaWYDOccnZJSfx34Qkr7E=
-X-Google-Smtp-Source: APiQypIB2zeumiLa3MV5PYzBoQjOUFtHKNbyl4fGbow5Q2vMaBcCtz4gWpqlw/ntLojC4LisiS1Dfdptk6HkaKY1e3k=
-X-Received: by 2002:a0c:eb11:: with SMTP id j17mr1919854qvp.197.1587119110584;
- Fri, 17 Apr 2020 03:25:10 -0700 (PDT)
+        id S1730267AbgDQL0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 07:26:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42686 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730176AbgDQL0t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 07:26:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HBOxtT112760;
+        Fri, 17 Apr 2020 11:26:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=2O0V3yblK/29tvWyAvBHQUZ86B8G/e/jVaheTAg9ans=;
+ b=NW9h3C7l12IBiw3dwnhbItGHVe+6NB4UKB4+7UPW5vT91Y60g/arwqpQ3lh5UGmbyeqO
+ p2eEbhI74qD+NqeKdDkkoIuB4UbK3eTKI13UpccLSwMuyTrAMhUBS7Hx4NMmBC7d8RyF
+ SfrBD6hBkk9WWK4QQwFFqUG6A2pfMA8yLMNHvvRmVwdhBNFzBOsx7xoEHxwsPp5th4rj
+ cAubsGgVjpyVHc2KT17rEZ7a6DBA19GSf91Oi8L2FNNy991jl0+tN8AAKWA1J3V3UYW2
+ Zhw132HJLj0yiB5DwLmE4jRP41oym7DpKrTBxdb4TIMR42l4cgO6kQcHhT7TNBqSfQOO Wg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30dn95xk6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 11:26:41 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03HBLMwB040528;
+        Fri, 17 Apr 2020 11:26:40 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 30dn91c893-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Apr 2020 11:26:40 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03HBQb78005629;
+        Fri, 17 Apr 2020 11:26:38 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Apr 2020 04:26:37 -0700
+Date:   Fri, 17 Apr 2020 14:26:24 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
+        roland@purestorage.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
+Message-ID: <20200417112624.GS1163@kadam>
+References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
+ <20200414183441.GA28870@ziepe.ca>
+ <20200416130847.GP1163@kadam>
+ <20200416184754.GZ5100@ziepe.ca>
 MIME-Version: 1.0
-References: <20200417011146.83973-1-saeedm@mellanox.com>
-In-Reply-To: <20200417011146.83973-1-saeedm@mellanox.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Apr 2020 12:24:54 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2LXR1pHoid7F69Q6VZp4E0g-Fcdt03PaGdebxWpguexw@mail.gmail.com>
-Message-ID: <CAK8P3a2LXR1pHoid7F69Q6VZp4E0g-Fcdt03PaGdebxWpguexw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:FKewQyedx4MT95mr2TOU1/1mQ/CNhYY4mnJwtHzgnmnsXdB4uTA
- ArAC2d45lYaeKOWrsZAG3xBhidATB0pcOOJ2olVR7ReDdiZMlCmq0NZUcK1XcikzVNY+oyq
- w2BcTGBN/hfdmxJDGslVB7zgSthwoDNqb4ylOQx5JEJMPf6Ha44HQ9P89BhU37mgH+HDzjK
- /WSoS9FWp40Yghdkai1Ng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:68JXqcqwA1Q=:o2PR7LcuJAO/9T3Pf5qxuV
- boVSQg7iRUg6VH8QKZclMmfu7cSx1dd/26lov4u6YPbgmOy+CiiG8vs046gVs9XjvKwq60oYW
- 1UU9msB5FvsX5TGu+wjMTOPmLbHp8y7V/zC2x+ox1sPnn4THnZLRLaFMTYv8rhhKaJAmUIrEC
- d3yDwssBf2Q/q13er8PBNVpt1aGKhAaF974e+d8q38V6KvxdC0KlJWI8AwuIs4M9PYcXUb8u4
- iQ8cMeh2Mzg78fpW0XG+WTlJd5c/KFn8Ky8Sud2MO10Fu5jqe9ibEi9Ncr2BODtG4HlhMAVQm
- 6j4MM/w9MBPou5MxuCR8gCYgoq9Wlo5uOfpqh7wdKA2l9nPzhThh2erYAYYkl/+Rpe6dXcoxb
- /JndQ7+ye4gEVKXVQm6/yH5RWjdFsrk2zxVnqeUGZ4x4Hx5o6k/hF7k35vNUNZjbYDKcDlKH4
- EV7TVruo7sAKhJL88/jG2EBfTtiONUUYZBkW+izhdnsScoQ1SxnQXOMPM6hxFGuf1S8GxX0yl
- XrgfvzdkEZvGyS+l/5oq4xCNGhEIKGYUZjT9kQztklArZFe8t7jC1o4AHnLdGZOn/3fLiAGG0
- b2dDuaJt2ykdPZGo5qwgOIDBrh8x9Eph5iPG8mW9X/1z7gF5lt3Z5Cv8EoiNU9dSx984aiylM
- yue36YGGDkQ6s3h/zLeWON63sfPfmr18UoWpv0v8FraDnzU0uXoy+2P1MUWRjFdiQUoDoiXqh
- MSDSIKSLqwrCWOexFBY9/JgRB385P0ae9jum8b+J0vR99JEH6Tq4VfiKU6hxR6qdI2Gj8XXUM
- 7vAF/aeoD63NYVqpMuiW1TVd/zTHVky+2rovxuAogbiqkBe2Fo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200416184754.GZ5100@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 malwarescore=0 spamscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170091
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9593 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004170091
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 3:12 AM Saeed Mahameed <saeedm@mellanox.com> wrote:
->
-> Due to the changes to the semantics of imply keyword [1], which now
-> doesn't force any config options to the implied configs any more.
->
-> A module (FOO) that has a weak dependency on some other modules (BAR)
-> is now broken if it was using imply to force dependency restrictions.
-> e.g.: FOO needs BAR to be reachable, especially when FOO=y and BAR=m.
-> Which might now introduce build/link errors.
->
-> There are two options to solve this:
-> 1. use IS_REACHABLE(BAR), everywhere BAR is referenced inside FOO.
-> 2. in FOO's Kconfig add: depends on (BAR || !BAR)
->
-> The first option is not desirable, and will leave the user confused when
-> setting FOO=y and BAR=m, FOO will never reach BAR even though both are
-> compiled.
->
-> The 2nd one is the preferred approach, and will guarantee BAR is always
-> reachable by FOO if both are compiled. But, (BAR || !BAR) is really
-> confusing for those who don't really get how kconfig tristate arithmetics
-> work.
->
-> To solve this and hide this weird expression and to avoid repetition
-> across the tree, we introduce new keyword "uses" to the Kconfig options
-> family.
->
-> uses BAR:
-> Equivalent to: depends on symbol || !symbol
-> Semantically it means, if FOO is enabled (y/m) and has the option:
-> uses BAR, make sure it can reach/use BAR when possible.
->
-> For example: if FOO=y and BAR=m, FOO will be forced to m.
->
-> [1] https://lore.kernel.org/linux-doc/20200302062340.21453-1-masahiroy@kernel.org/
+On Thu, Apr 16, 2020 at 03:47:54PM -0300, Jason Gunthorpe wrote:
+> On Thu, Apr 16, 2020 at 04:08:47PM +0300, Dan Carpenter wrote:
+> > On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
+> > > The memcpy is still kind of silly right? What about this:
+> > > 
+> > > static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
+> > > {
+> > > 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
+> > > 	int cpy_len;
+> > > 
+> > > 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
+> > > 	if (cpy_len >= len || cpy_len < 0) {
+> > 
+> > The kernel version of snprintf() doesn't and will never return
+> > negatives.  It would cause a huge security headache if it started
+> > returning negatives.
+> 
+> Begs the question why it returns an int then :)
 
-Thanks a lot for getting this done. I've tried it out on my randconfig
-build tree
-and can confirm that this works together with your second patch to address the
-specific MLX5 problem.
+People should use "int" as their default type.  "int i;".  It means
+"This is a normal number.  Nothing special about it.  It's not too high.
+It's not defined by hardware requirements."  Other types call attention
+to themselves, but int is the humble datatype.
 
-I also tried out replacing all other instances of 'depends on FOO ||
-!FOO', using
-this oneline script:
-
-git ls-files | grep Kconfig |  xargs sed -i
-'s:depends.on.\([A-Z0-9_a-z]\+\) || \(\1 \?= \?n\|!\1\):uses \1:'
-
-Unfortunately, this immediately crashes with:
-
-$ make -skj30
-how to free type 0?
-double free or corruption (fasttop)
-make[6]: *** [/git/arm-soc/scripts/kconfig/Makefile:71: olddefconfig]
-Aborted (core dumped)
-make[5]: *** [/git/arm-soc/Makefile:587: olddefconfig] Error 2
-make[4]: *** [/git/arm-soc/scripts/kconfig/Makefile:95:
-allrandom.config] Error 2
-make[3]: *** [/git/arm-soc/Makefile:587: allrandom.config] Error 2
-make[2]: *** [Makefile:180: sub-make] Error 2
-make[2]: Target 'allrandom.config' not remade because of errors.
-make[1]: *** [makefile:127: allrandom.config] Error 2
-
-It's probably easy to fix, but I did not look any deeper into the bug.
-
-       Arnd
+regards,
+dan carpenter
