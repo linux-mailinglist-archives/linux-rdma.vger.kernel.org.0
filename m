@@ -2,137 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1881AD3FD
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 03:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4871AD4EA
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 05:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgDQBNA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Apr 2020 21:13:00 -0400
-Received: from mail-eopbgr00066.outbound.protection.outlook.com ([40.107.0.66]:6126
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        id S1725867AbgDQDoR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Apr 2020 23:44:17 -0400
+Received: from mail-eopbgr60060.outbound.protection.outlook.com ([40.107.6.60]:51041
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725858AbgDQBM3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Apr 2020 21:12:29 -0400
+        id S1725843AbgDQDoQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Apr 2020 23:44:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJbsQ0l3p051Ye9x4t1UjKMjAc5d3+A1NfMpmw8DN83RCNTYaaEtmIsewY4G9LHm9TDAjb3kGYReDZ5y/WedvH5yvoZmfhrc5Wglkvy9zP7Ym0RaIU8peVSzD4IEMFEAxWtFFVpk5Xq8INFN0sQy1vSbsO4Pj+BY7fiEwvzfupuPoZP2Re6lFWDWdq8YoWA9J0wqhRgbUq7oN8XDxhrwZS3QXFz4eZFnN4lHu/0VUGqHv0TWqRdsSXQ0i+n8WuwLCTcQSuUDmR1aGt5A2Bo6I/F0K43H6vP5oWr2GVBLdHHfUaYvzHMoJeg9WD8zTseKcWMZ2rIcnqBu6+uvmw9G7Q==
+ b=V/Z1Xkpbo3fTkoZtpiuZTSVjy5BGxp7eOzLPUcpU73EuaUIsYDQWGOsNA++U6T9h0EnZ+3GDSGhqEcf53BOtk5ZpPa+cIW0FeresRWWxhSFGjog9fAjAg+w7gOVV9xevP/8daIxGXM8euvqiPhv0/D7EqzLGOpsJVRPbqBDljLksxvEMVDbqu64pWQgixJcmX3d7H6PLmT8QOMHk26fzWfcn0+MbgUSIMMHoDUoFZpwAChHZl3lWL4B41Nb6N4nBrfXU509aOfYQzWTtLKcTYTWbzzzuCQn/AhxC/rWUMWDbhNsh63idjun6e8CrykQsiqX33FM6MJmJ503CXQ0hew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3908gRRsC5R9RqEQI8MM5RiPxynAWTWtPIBrXz1wJWk=;
- b=YQckjWxHge8oBoaAYfn0vBvpivCTy6sc/XahlXBhbUCDnZIWWQef0I6X+ybyiWhOOrheM5RVTgFXO1H1/y2qEGS9NWObib5tK8C0zNZaFpb6FJFwNZ7KK8iBJe7hvTlUGq1qBEuQ+Sm0hebPv7y0JAB1n1UM2UVyszg4+t++JWVuU4V9ne055T0LQwOAisaxST+1kHoM7r5zsaQNeTo+5HY8FZrz3xcnMrdSa/IGMzIS/7xJvbEI7/P/KWrITxtfgvKHsTcboHdqyZIWznoB1WpcLW/fzzIuZYsW12QwEHEYFbaoTeuho0rIE6r0N2KTnVJBomYiafsvDcl4dEfBEg==
+ bh=EVK5cTl4/1tYIpsf7nhH+h9xnoGZBUVBHyj9TK9dFcY=;
+ b=chFf4//4m6zQEgT1kprBpBt7FOalAuvi9v/6ofMb8w08Xu3gZ4fTGFZiWe4enFkLraBvalB9EBRTzMlJ6OPPjz9T3CZ5bCyMO5rspeAuH2ij39Z1yfsIvfFhp4wnF2dF4MSTaWKN2lBTyT+lnm5L9NX47P5YnkmaO55mhn5YSnWC++N1VUXiYxWvAvoo2araJLj5jwntEuHripA7QmXLNOKeiBzbmq0RYxRt2KfXz5i8Sa+uilRoXyw8Gf2ZczAPldwrKq+qvkCxTyw+OS0k/cddU1hznNl265OK15PysuWIggpyXvTXBKjCS6WjzNy8KTHg6Zy+GuCZkJpxTSVHCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3908gRRsC5R9RqEQI8MM5RiPxynAWTWtPIBrXz1wJWk=;
- b=dB3/qAoNjnX8YlylwgpIfNLVDbGcBo2hV3aTTiUBjkwkCpIfVN7e12zsPrGabL9A6yzVvsYIrlhyMnkc0+/b7SDdqvvPHVvvNYXi3p8sszPV25cSy/+cd6RzijXfn710rDgt0xNVyZ6paR5MP8UjQp2jVMmBcm8dCfH5D4Cz43g=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
+ bh=EVK5cTl4/1tYIpsf7nhH+h9xnoGZBUVBHyj9TK9dFcY=;
+ b=VXVza/TJR5iNlYnaaxTQfE7ydY1FvACjQAvXvaLmQkTK20MS7WDZjxHgD4pheLeUFRq0YuUUBtGtlPPig3x7ZKhiydRDlqE7ulRiWqtVJL4AsV9wDIMay6pHkiwg8cGQ+0TOM+ghQXBEOtr5QxYK07dhPAaG/oIGff+9wXz2qaM=
 Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB6237.eurprd05.prod.outlook.com (2603:10a6:803:d8::28) with
+ by VI1PR05MB6320.eurprd05.prod.outlook.com (2603:10a6:803:f5::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Fri, 17 Apr
- 2020 01:12:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.20; Fri, 17 Apr
+ 2020 03:44:11 +0000
 Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
  ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
  ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2900.030; Fri, 17 Apr 2020
- 01:12:25 +0000
+ 03:44:11 +0000
 From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Saeed Mahameed <saeedm@mellanox.com>, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
-        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
-        airlied@linux.ie, jernej.skrabec@siol.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [RFC PATCH 2/2] net/mlx5: Kconfig: Use "uses" instead of "imply"
-Date:   Thu, 16 Apr 2020 18:11:46 -0700
-Message-Id: <20200417011146.83973-2-saeedm@mellanox.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200417011146.83973-1-saeedm@mellanox.com>
-References: <20200417011146.83973-1-saeedm@mellanox.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR08CA0041.namprd08.prod.outlook.com
- (2603:10b6:a03:117::18) To VI1PR05MB5102.eurprd05.prod.outlook.com
- (2603:10a6:803:5e::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from smtp.office365.com (73.15.39.150) by BYAPR08CA0041.namprd08.prod.outlook.com (2603:10b6:a03:117::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Fri, 17 Apr 2020 01:12:20 +0000
-X-Mailer: git-send-email 2.25.2
-X-Originating-IP: [73.15.39.150]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d4ee7aa6-cbbe-49a3-a6c2-08d7e26c6323
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6237:|VI1PR05MB6237:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB62372DB416DADE4CDA71F651BED90@VI1PR05MB6237.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0376ECF4DD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(4326008)(6512007)(316002)(66556008)(6666004)(86362001)(54906003)(26005)(66476007)(7416002)(6486002)(478600001)(36756003)(186003)(1076003)(2906002)(5660300002)(52116002)(16526019)(66946007)(8676002)(956004)(81156014)(6506007)(8936002)(2616005)(54420400002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        "xianfengting221@163.com" <xianfengting221@163.com>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "cai@lca.pw" <cai@lca.pw>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "lsahlber@redhat.com" <lsahlber@redhat.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wqu@suse.com" <wqu@suse.com>,
+        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
+        "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+        "stfrench@microsoft.com" <stfrench@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2] net/mlx5: add the missing space character
+Thread-Topic: [PATCH v2] net/mlx5: add the missing space character
+Thread-Index: AQHWCXBS9ROcHN2SK0+YUleKNIIPWqhvqOGAgAw/QICAANnkAA==
+Date:   Fri, 17 Apr 2020 03:44:10 +0000
+Message-ID: <a77ddcfad6bfd68b9d69e0d5a18cf5d66692d270.camel@mellanox.com>
+References: <20200403042659.9167-1-xianfengting221@163.com>
+         <14df0ecf093bb2df4efaf9e6f5220ea2bf863f53.camel@mellanox.com>
+         <fae7a094-62e8-d797-a89b-23faf0eb374e@163.com>
+In-Reply-To: <fae7a094-62e8-d797-a89b-23faf0eb374e@163.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8ac2988c-3df6-42b6-595d-08d7e2819752
+x-ms-traffictypediagnostic: VI1PR05MB6320:|VI1PR05MB6320:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB6320237E87C8986214487C85BED90@VI1PR05MB6320.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:873;
+x-forefront-prvs: 0376ECF4DD
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(136003)(346002)(396003)(39860400002)(366004)(86362001)(8676002)(6506007)(6512007)(4326008)(2616005)(26005)(53546011)(186003)(7416002)(2906002)(64756008)(6486002)(66946007)(478600001)(66556008)(81156014)(316002)(76116006)(66446008)(5660300002)(54906003)(66476007)(8936002)(71200400001)(966005)(36756003)(110136005)(91956017);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6ZZi2itoorU+FjfkQ51ifIfclORohYCnaL+KT9PoN3gS3Sn6cpXdVkN0iFT/z0xMQesLRAezWRWQ28twNcN2UUczOsHvxVejwn0VS74RSbYeTBd20arGIelCKObllbrwkIDXGORGJRLaEmRDhjxFSjO1cigAl3TyQqIY0rN4tb3QdGxsTadgGxfYslpphB4CDX4kLZbsMFwh75H8gu/KxNysJkxX9EvHQQcTIfdutTXJm/Revxgy4qzuKj+gSMr4PVM4tADlEPVyY9izsrh0jK14y+YKEXIv39zyXnUCZot67vn2CMvblKWYhCpCV/VL66ceb4dnAnjcNIz1QtE7a1etQUCpVc4LYWaZLs1mMru28vnM/JbTmPimYgrdRhVdU3x311ZMQEg2UHdbcF8JxH0V0QmvyqZANPbO+RFFrYHsfOhZ0vsR7BuZyb/ZIm/CfEUazjPtFuTwMcjvkn/EkRIfdfer9Mto/j7k1OTQMhnY0NF59DNAzZwSEWm0P65i
-X-MS-Exchange-AntiSpam-MessageData: 83eFyu1R4fO+7UjyGhuYTL+4SAOzkjBJ3W0fnpk2q0AS8znOOBsVyYWLdWCwJMpv4VbOhaRcTMkrGBSNztqLT98hqNrvw9VMgkERQNqAHj4k6CU/x9ebZcpjdeg5G9y+FhSakdYLhdOtMCFz4feDBw==
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DwkWpGwqTctD892Dj7b+YbE7UnuDRbpmed1IIHPH4amhbLB9z0ylQVb0BTb8wVlTuX0sSLvpsnjDvh/43HrKp8ak+dgzYCc/008jJa5hGx5dPGr9DbWXmDX6xNDf3etdVcuWVpxsyspOHAPyEJM6eTNk9lN22MDpTQLqTmYVcD2taIh0HJoUoCHBcxpF9YyVl0377dMKohnIpPoTssOTnGMg8RDk4rOGoebdUADO0irFsz3qY06bticMgPjr7jUjDldqd6+/TTi4S3UXLQKf+Ts7yef5G+0+5o2QL78IAjzm+e929wdLRrCRHNpMcePIM4cI/IleSQa07jBdM635xQ5s3nDONtLsUpGyw88Xu/tJe2HbCYLcqLQK2E9uISh0MjLiPuk9o58hUyUD25Kbov+8liSrnqcldS76WxGtKX1/IORwRCcJK6w+5umIv5DMDr1eQLOwndDAgE14orzNtjOo+CCvlE0JmRTEm6uRrAOzYuWlOAoxWLVQjRa3FRn1QQzPViBRpXTvJ8FyST/hGg==
+x-ms-exchange-antispam-messagedata: QEehV83TyQDWrPPjgHzO3MNHxRexyiJ8cN9+9JAYSB54Jau8OQ+BGOPCrpMxVNIukSTofqJ115AgQGC8VDzt2zEUss+B2RyBbws9PR17Me4/zSUeEm+OsrVqK2RuTr64y7yChX++CU9vCYTaY/ZfXw==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3F37045E54A9BF4EA95688D4A903F82E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4ee7aa6-cbbe-49a3-a6c2-08d7e26c6323
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2020 01:12:24.9257
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ac2988c-3df6-42b6-595d-08d7e2819752
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 03:44:10.7692
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yQNpT4GCQKc9lSZiHR0L9f1wD1MN/nCT25Px1aPKByhl6epZ/uFZBI+jWK3X48wm9SkjeTEWCY7hZiQAvQXN9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6237
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2M3/7VgXSPwwkgCxvavEgvYR3vcKh8IiVBk3UiOAPCmFNMTII8/c/NvhrNavvWqJl5U36ThsG54Zs3ZbH9aUNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6320
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-mlx5 uses the imply keyword to force weak dependencies on the implied
-modules, to make sure they are always reachable by mlx5.
-
-"imply" doesn't work this way any more, and it was wrong to use it in
-first place.
-
-The right solution is to use: "depends on symbol || !symbol", which is
-exactly what the uses keyword is there for.
-
-Use the new "uses" keyword to replace all mlx5 implied dependencies.
-
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index 312e0a1ad43d..4e07179217e8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -7,10 +7,10 @@ config MLX5_CORE
- 	tristate "Mellanox 5th generation network adapters (ConnectX series) core driver"
- 	depends on PCI
- 	select NET_DEVLINK
--	imply PTP_1588_CLOCK
--	imply VXLAN
--	imply MLXFW
--	imply PCI_HYPERV_INTERFACE
-+	uses PTP_1588_CLOCK
-+	uses VXLAN
-+	uses MLXFW
-+	uses PCI_HYPERV_INTERFACE
- 	default n
- 	---help---
- 	  Core driver for low level functionality of the ConnectX-4 and
--- 
-2.25.2
-
+T24gVGh1LCAyMDIwLTA0LTE2IGF0IDIyOjQ0ICswODAwLCBIdSBIYW93ZW4gd3JvdGU6DQo+IE9u
+IDIwMjAvNC85IDM6NDIgQU0sIFNhZWVkIE1haGFtZWVkIHdyb3RlOg0KPiA+IE9uIEZyaSwgMjAy
+MC0wNC0wMyBhdCAxMjoyNiArMDgwMCwgSHUgSGFvd2VuIHdyb3RlOg0KPiA+ID4gQ29tbWl0IDkx
+YjU2ZDg0NjJhOSAoIm5ldC9tbHg1OiBpbXByb3ZlIHNvbWUgY29tbWVudHMiKSBkaWQgbm90DQo+
+ID4gPiBhZGQNCj4gPiA+IHRoYXQgbWlzc2luZyBzcGFjZSBjaGFyYWN0ZXIgYW5kIHRoaXMgY29t
+bWl0IGlzIHVzZWQgdG8gZml4IGl0DQo+ID4gPiB1cC4NCj4gPiA+IA0KPiA+ID4gRml4ZXM6IDkx
+YjU2ZDg0NjJhOSAoIm5ldC9tbHg1OiBpbXByb3ZlIHNvbWUgY29tbWVudHMiKQ0KPiA+ID4gDQo+
+ID4gUGxlYXNlIHJlLXNwaW4gYW5kIHN1Ym1pdCB0byBuZXQtbmV4dCBvbmNlIG5ldC1uZXh0IHJl
+LW9wZW5zLA0KPiA+IGF2b2lkIHJlZmVyZW5jaW5nIHRoZSBhYm92ZSBjb21taXQgc2luY2UgdGhp
+cyBwYXRjaCBpcyBhIHN0YW5kDQo+ID4gYWxvbmUNCj4gPiBhbmQgaGFzIG5vdGhpbmcgdG8gZG8g
+d2l0aCB0aGF0IHBhdGNoLi4ganVzdCBoYXZlIGEgc3RhbmQgYWxvbmUNCj4gPiBjb21taXQNCj4g
+PiBtZXNzYWdlIGV4cGxhaW5pbmcgdGhlIHNwYWNlIGZpeC4NCj4gDQo+IFNvcnJ5IGZvciBteSBs
+YXRlIHJlcGx5LiBCZWNhdXNlIEknbSBhIGtlcm5lbCBuZXdiaWUsIEkga25vdyBub3RoaW5nDQo+
+IGFib3V0IHRoZSBiYXNpYyBtZXRob2RzIGFuZCBtYW5uZXJzIGluIHRoZSBrZXJuZWwgZGV2ZWxv
+cG1lbnQuIFRoYW5rcw0KPiBhIGxvdCBmb3IgeW91ciBwYXRpZW5jZSBvbiBteSBtaXN0YWtlLCBw
+b2ludGluZyBpdCBvdXQgYW5kIGZpeGluZyBpdA0KPiB1cC4NCj4gDQo+IEJ0dywgZGlkIG5ldC1u
+ZXh0IHJlLW9wZW4gYW5kIGRpZCBteSBjaGFuZ2VzIGdldCBpbnRvIHRoZSBtYWlubGluZT8NCj4g
+DQo+IA0KDQpOb3JtYWxseSBuZXQtbmV4dCBjbG9zZXMgb25jZSBtZXJnZSB3aW5kb3cgaXMgb3Bl
+biBhdCB0aGUgZW5kIG9mDQpyYzcvcmM4IGtlcm5lbCBjeWNsZS4NCg0KYW5kIHJlb3BlbnMgb24g
+dGhlIHdlZWsgb2YgdGhlIGtlcm5lbCByZWxlYXNlLCBhZnRlciB0aGUgbWVyZ2Ugd2luZG93DQpp
+cyBjbG9zZWQgKDIgd2Vla3MgYWZ0ZXIgcmM3LzggaXMgY2xvc2VkKS4NCg0KeW91IGNhbiB1c2Ug
+dGhpcyBsaW5rLg0KaHR0cDovL3ZnZXIua2VybmVsLm9yZy9+ZGF2ZW0vbmV0LW5leHQuaHRtbA0K
+DQpPciBqdXN0IG1vbml0b3IgbmV0ZGV2IG1haWxpbmcgbGlzdCBmb3IgYW4gZW1haWwgYW5ub3Vu
+Y2VtZW50IGZyb20NCkRhdmlkIE1pbGxlci4NCg0KVGhhbmtzIGFuZCB3ZWxjb21lIHRvIHRoZSBu
+ZXRkZXYgZmFtaWx5Lg0KDQoNCiANCg0K
