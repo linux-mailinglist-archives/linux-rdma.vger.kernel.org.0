@@ -2,140 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5815C1AE855
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2020 00:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85021AE8B5
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2020 01:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgDQWkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 18:40:13 -0400
-Received: from mail-am6eur05on2068.outbound.protection.outlook.com ([40.107.22.68]:38456
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728762AbgDQWkM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Apr 2020 18:40:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W40b3ZVj/ZQnCNUkMFgtpndw6UrqlDqZcmtZY+W8Xu35l7GXdEKZ7h9ZPAZwP/rXkGH+2hkgIahRjMb4ac5OfWGCBblOmmfutGPOILxo+RwToKGBws/i6C5qUikskihZmULxrZUDrokhnyASaDS3WY4oHJmUwqcOdhHvIiks8ODx1Q/8oGNOjAz6RY5J8a5ROclGflF2lBilS69/9UwCwrDvx+pg+7YhpfJdBvtb3Yyqvgvv0gZHP/8DbFteJby3ZUsBzjWVpT5W/aotsdFO421gN0z/z8C3iyVKwIx1sqJKg6R9L4iMcgb/rDnSfEXxv1qZkoSzoDtVQeoIe/pgZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WFYLOG8PlQwcjazfBlrgLn5HA6N64xytHHsBhOU37FM=;
- b=jxXt9TUk7L+fQb0kkBKAtPPdpUVhvo35S6XYfrhj5xw9H+WPaXod8okiMKxwC9Abn8xqjTy6YjIJNYrsqDUBXTxz76Ceu8Ta/jjw+mDTogW42hLnoD80u/BLqx7dsUb3m2Zs8V6FsoRdRm3Pvz3Jo75Ytf+rlkr2tkt1gK8K5ayCgRvCcmMx7uQgaki0ePDB3w548nMw4OcItqUyfv6GAyLWYFIDABws0Q+AzrEdA99QauamifqM1krMB0+x9JgPIp9b/zH/m1WTCvDhOEi5lQRO3zee26PZdG9gNIRxnEf5XOUjCbG7rpckSi5ClyFW+aeCIt+MYvIEFdJVA/yVPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WFYLOG8PlQwcjazfBlrgLn5HA6N64xytHHsBhOU37FM=;
- b=ntU3SF4pZka1sLn40qpFfJb6wa4F7fviKi0iagFUKOWG4eR0vxTXwApW5gXsfyvgmAas00FRodWzRAMraCxtco2gdjD/i0MTU3XsTlRQ21YjX0PoImmTJHku2fp90graY+ZcF5KijY2oS1jmMkNuS199qwjS66kMg8gdn+9rcZk=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB6350.eurprd05.prod.outlook.com (2603:10a6:803:fb::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Fri, 17 Apr
- 2020 22:40:08 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2900.030; Fri, 17 Apr 2020
- 22:40:08 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>,
-        "xianfengting221@163.com" <xianfengting221@163.com>,
-        "leon@kernel.org" <leon@kernel.org>
-CC:     "cai@lca.pw" <cai@lca.pw>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "lsahlber@redhat.com" <lsahlber@redhat.com>,
-        "kw@linux.com" <kw@linux.com>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "airlied@redhat.com" <airlied@redhat.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wqu@suse.com" <wqu@suse.com>,
-        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
-        "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
-        "stfrench@microsoft.com" <stfrench@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] net/mlx5: add the missing space character
-Thread-Topic: [PATCH v2] net/mlx5: add the missing space character
-Thread-Index: AQHWCXBS9ROcHN2SK0+YUleKNIIPWqhvqOGAgAw/QICAANnkAIAADjEAgAEvMQA=
-Date:   Fri, 17 Apr 2020 22:40:08 +0000
-Message-ID: <cc28a4bf79e8edbe4a27fac068ce556e8b9da2da.camel@mellanox.com>
-References: <20200403042659.9167-1-xianfengting221@163.com>
-         <14df0ecf093bb2df4efaf9e6f5220ea2bf863f53.camel@mellanox.com>
-         <fae7a094-62e8-d797-a89b-23faf0eb374e@163.com>
-         <a77ddcfad6bfd68b9d69e0d5a18cf5d66692d270.camel@mellanox.com>
-         <4861c789-a333-efea-6d51-ab5511645dcf@163.com>
-In-Reply-To: <4861c789-a333-efea-6d51-ab5511645dcf@163.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b023c4bc-3bd6-4457-f2b0-08d7e3204841
-x-ms-traffictypediagnostic: VI1PR05MB6350:|VI1PR05MB6350:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB6350A5DF1A31384D0EE0D815BED90@VI1PR05MB6350.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0376ECF4DD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(316002)(66476007)(478600001)(66556008)(66446008)(966005)(91956017)(66946007)(7416002)(64756008)(86362001)(110136005)(76116006)(4326008)(54906003)(6512007)(36756003)(2616005)(71200400001)(186003)(81156014)(5660300002)(6506007)(2906002)(6486002)(53546011)(8676002)(8936002)(26005);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: f1BDd2SA8BHAXDLEpm/4AhJLZ570xFGWSPL+SI6m3uhJAt0eoytw1Vp4eOYvTkvtLpzA2MKRY2sUhPLFNp9E/vTK1PZzjG9Hl7yyFBIk/jZjVAoQQTFiIlR50FhltBwxNTU/IzhaM4EmZB9WQnxNffCSEE3Od4o4wms0uD0hynMRr5K9PqtbkHmSZ9QMknfIWtmbAAbGMCmTTyXErWEavFWPQP4S+TBbqJItkv6ApIJFlb9eEW9BjGhWAVn/ataEZYevYO3BkFGubWQ4US6hJeZJrk0Vl3XWB/8WvXz48pxLeGqW71JKycvUCM/VAvcRIqAkfSA9vev5FMxxDXZx59VHCdf8FLnL5eeki/PEDHQKSl80ZK318P+gkIqWKmUgfaCcW0em2Zn7w0kjRaZw8Wk57+lOFlBjskETSFhaWkBtQHR3x0rGob/YJCX5WZqjqRxKWOiGr2HG7l+YkFVADDOfF7gbc5UsWhvuCYHFxPIy1Fgrc7i6+xUWX+nswx2hYwpr2ft8N5/JP0zc3H/pxQ==
-x-ms-exchange-antispam-messagedata: Sf5t1Vi+yUuJZ5fg6tHgWm6TKu2zLfyUTIiKRF0wF8W0iOp5T59neiIzx0pRk7P9mWdkLEpqk6mSfoO0e3jIHn/U+mZAkBpbQV7nvhf1QokOo31iyzafjLJL6ejbvc7eW7mD5L28iiW8mPmwfS98Iw==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1D710F895E2AB8499BA13B3BEACB7FCA@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726421AbgDQXtp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 19:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgDQXtp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Apr 2020 19:49:45 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040C4C061A0F
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id s30so3563437qth.2
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rv+SIvq+0d5RU7/wGuuG4u37IHm0iWvJ0sVJzXRdtBg=;
+        b=Djaf0gR5xl0A166FGH2eh3UZrlL+mMOJ6MJWMUad07t1KvlBrSH/fPStFh7ThJL1zh
+         Pf/dUDE+Uz4nnnk/DtSoEjfjcUv0YPQh5O3xTKRicliSds8/2R3vS3Fw06U2bDzRHPo1
+         KtxtX6rY0BAh1bdQkTQpkpcF06qycUQWBTlqSc6GwhSxXy3VPr5Gcixmj5pJzFyoQniJ
+         LTE9IxnDpvoMsyp8Z8sCrI/ZRVSVnqz89FCHxyAAKujRFJXhLY2AHfu+NjLgnKZEZ0u+
+         5zMNAeS+bgabRnwqr9xl1X5dRQRo/W7+23j4JDG0zeYsXfpqWBOtLLz9rr5NpG9doLMm
+         grEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rv+SIvq+0d5RU7/wGuuG4u37IHm0iWvJ0sVJzXRdtBg=;
+        b=QF+r6hFowmxbWwDVB6set14lQRWdjOJURyE1Gzx8W23ZvcpKeKvqSVQGU/x49wpFHV
+         YRbMFitGjKbkADF+8RTdRIBK0g5bCLOE7Rr7GkIJiz9wfj4ST+WSRayBMTmXkJ+w7CtY
+         taBll/HaturAsy+7CRPKrF4LyHnU7iCfQQNRJZY4xJrkpoQoXxpMPT5PbOA+6szVjdeB
+         HCIZJakVViNYIkTrpzbtyB7iAxpd8tFsoZx2BFJATqlAcbA/38UewmJInEqglfsLBd9E
+         LrwxF/h1TjhqGlu/wOm68Qs0KsiVdqjIwLAsUZW/s014rcD8YL9Tz+Q3iEB+2fd7KP3n
+         GDnw==
+X-Gm-Message-State: AGi0PubmFCjR57SVH3xXjeYRxnWmvt3zUgJF3l54mCSPj6H4YaMtt2xN
+        ypynwmQV/ElaHzutQsukMtBQ3A==
+X-Google-Smtp-Source: APiQypI2JZHWDsTvhNPOt4w6MPSufSWhWXO4Y60JCD3ch58mhHIwtRzZXh3Mc1p9qk0+VA7fQyW9Dw==
+X-Received: by 2002:ac8:164e:: with SMTP id x14mr5725673qtk.196.1587167384100;
+        Fri, 17 Apr 2020 16:49:44 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id u17sm9349864qka.0.2020.04.17.16.49.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Apr 2020 16:49:43 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jPajv-0007ff-2U; Fri, 17 Apr 2020 20:49:43 -0300
+Date:   Fri, 17 Apr 2020 20:49:43 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [net-next 2/9] ice: Create and register virtual bus for RDMA
+Message-ID: <20200417234943.GM26002@ziepe.ca>
+References: <20200417171034.1533253-1-jeffrey.t.kirsher@intel.com>
+ <20200417171034.1533253-3-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b023c4bc-3bd6-4457-f2b0-08d7e3204841
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 22:40:08.5635
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7ZaEGKBbImAOlN2MsyWUF4LnBtm/CObj5v53ENJ2d+s9cJpJHNTFbBFNmcjs6ZBZOLqLjLBMA9wRJplJXvl/fw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6350
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417171034.1533253-3-jeffrey.t.kirsher@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA0LTE3IGF0IDEyOjM0ICswODAwLCBIdSBIYW93ZW4gd3JvdGU6DQo+IE9u
-IDIwMjAvNC8xNyAxMTo0NCBBTSwgU2FlZWQgTWFoYW1lZWQgd3JvdGU6DQo+ID4gT24gVGh1LCAy
-MDIwLTA0LTE2IGF0IDIyOjQ0ICswODAwLCBIdSBIYW93ZW4gd3JvdGU6DQo+ID4gPiBPbiAyMDIw
-LzQvOSAzOjQyIEFNLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToNCj4gPiA+ID4gT24gRnJpLCAyMDIw
-LTA0LTAzIGF0IDEyOjI2ICswODAwLCBIdSBIYW93ZW4gd3JvdGU6DQo+ID4gPiA+ID4gQ29tbWl0
-IDkxYjU2ZDg0NjJhOSAoIm5ldC9tbHg1OiBpbXByb3ZlIHNvbWUgY29tbWVudHMiKSBkaWQNCj4g
-PiA+ID4gPiBub3QNCj4gPiA+ID4gPiBhZGQNCj4gPiA+ID4gPiB0aGF0IG1pc3Npbmcgc3BhY2Ug
-Y2hhcmFjdGVyIGFuZCB0aGlzIGNvbW1pdCBpcyB1c2VkIHRvIGZpeA0KPiA+ID4gPiA+IGl0DQo+
-ID4gPiA+ID4gdXAuDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gRml4ZXM6IDkxYjU2ZDg0NjJhOSAo
-Im5ldC9tbHg1OiBpbXByb3ZlIHNvbWUgY29tbWVudHMiKQ0KPiA+ID4gPiA+IA0KPiA+ID4gPiBQ
-bGVhc2UgcmUtc3BpbiBhbmQgc3VibWl0IHRvIG5ldC1uZXh0IG9uY2UgbmV0LW5leHQgcmUtb3Bl
-bnMsDQo+ID4gPiA+IGF2b2lkIHJlZmVyZW5jaW5nIHRoZSBhYm92ZSBjb21taXQgc2luY2UgdGhp
-cyBwYXRjaCBpcyBhIHN0YW5kDQo+ID4gPiA+IGFsb25lDQo+ID4gPiA+IGFuZCBoYXMgbm90aGlu
-ZyB0byBkbyB3aXRoIHRoYXQgcGF0Y2guLiBqdXN0IGhhdmUgYSBzdGFuZCBhbG9uZQ0KPiA+ID4g
-PiBjb21taXQNCj4gPiA+ID4gbWVzc2FnZSBleHBsYWluaW5nIHRoZSBzcGFjZSBmaXguDQo+ID4g
-PiBTb3JyeSBmb3IgbXkgbGF0ZSByZXBseS4gQmVjYXVzZSBJJ20gYSBrZXJuZWwgbmV3YmllLCBJ
-IGtub3cNCj4gPiA+IG5vdGhpbmcNCj4gPiA+IGFib3V0IHRoZSBiYXNpYyBtZXRob2RzIGFuZCBt
-YW5uZXJzIGluIHRoZSBrZXJuZWwgZGV2ZWxvcG1lbnQuDQo+ID4gPiBUaGFua3MNCj4gPiA+IGEg
-bG90IGZvciB5b3VyIHBhdGllbmNlIG9uIG15IG1pc3Rha2UsIHBvaW50aW5nIGl0IG91dCBhbmQg
-Zml4aW5nDQo+ID4gPiBpdA0KPiA+ID4gdXAuDQo+ID4gPiANCj4gPiA+IEJ0dywgZGlkIG5ldC1u
-ZXh0IHJlLW9wZW4gYW5kIGRpZCBteSBjaGFuZ2VzIGdldCBpbnRvIHRoZQ0KPiA+ID4gbWFpbmxp
-bmU/DQo+ID4gPiANCj4gPiA+IA0KPiA+IE5vcm1hbGx5IG5ldC1uZXh0IGNsb3NlcyBvbmNlIG1l
-cmdlIHdpbmRvdyBpcyBvcGVuIGF0IHRoZSBlbmQgb2YNCj4gPiByYzcvcmM4IGtlcm5lbCBjeWNs
-ZS4NCj4gPiANCj4gPiBhbmQgcmVvcGVucyBvbiB0aGUgd2VlayBvZiB0aGUga2VybmVsIHJlbGVh
-c2UsIGFmdGVyIHRoZSBtZXJnZQ0KPiA+IHdpbmRvdw0KPiA+IGlzIGNsb3NlZCAoMiB3ZWVrcyBh
-ZnRlciByYzcvOCBpcyBjbG9zZWQpLg0KPiA+IA0KPiA+IHlvdSBjYW4gdXNlIHRoaXMgbGluay4N
-Cj4gPiBodHRwOi8vdmdlci5rZXJuZWwub3JnL35kYXZlbS9uZXQtbmV4dC5odG1sDQo+IA0KPiBP
-aC4uLiBUaGFua3MuDQo+IA0KPiBCdXQgaXQncyBtb3JlIHRoYW4gMiB3ZWVrcyBzaW5jZSBMaW51
-eCA1LjYgd2FzIHJlbGVhc2VkLCBzbyBuZXQtbmV4dA0KPiBzaG91bGQgYmUgb3BlbiBub3cgYWNj
-b3JkaW5nIHRvIHlvdXIgd29yZHMuIEJ1dCBpdCdzIHN0aWxsIGNsb3NlZC4NCj4gDQo+IElzIG15
-IGlkZWEgd3Jvbmc/IERvZXMgImtlcm5lbCByZWxlYXNlIiBtZWFuIGFuIC1yYyByZWxlYXNlIG9y
-IGENCj4gZm9ybWFsDQo+IHJlbGVhc2U/DQoNCk9oLCBteSBiYWQsIA0KeWVzIHJlbGVhc2UgbWVh
-bnMgYSBrZXJuZWwgcmVsZWFzZSAuLiA1LngNCndoYXQgaSBtZWFudCBpcyB3aGVuIHRoZSByYzEg
-aXMgb3V0IHR3byB3ZWVrcyBhZnRlciB0aGUga2VybmVsIHJlbGVhc2UuDQoNCg==
+On Fri, Apr 17, 2020 at 10:10:27AM -0700, Jeff Kirsher wrote:
+
+> +/**
+> + * ice_peer_vdev_release - function to map to virtbus_devices release callback
+> + * @vdev: pointer to virtbus_device to free
+> + */
+> +static void ice_peer_vdev_release(struct virtbus_device *vdev)
+> +{
+> +	struct iidc_virtbus_object *vbo;
+> +
+> +	vbo = container_of(vdev, struct iidc_virtbus_object, vdev);
+> +	kfree(vbo);
+> +}
+> +
+> +/**
+> + * ice_init_peer_devices - initializes peer devices
+> + * @pf: ptr to ice_pf
+> + *
+> + * This function initializes peer devices on the virtual bus.
+> + */
+> +int ice_init_peer_devices(struct ice_pf *pf)
+> +{
+> +	struct ice_vsi *vsi = pf->vsi[0];
+> +	struct pci_dev *pdev = pf->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	int status = 0;
+> +	unsigned int i;
+> +
+> +	/* Reserve vector resources */
+> +	status = ice_reserve_peer_qvector(pf);
+> +	if (status < 0) {
+> +		dev_err(dev, "failed to reserve vectors for peer drivers\n");
+> +		return status;
+> +	}
+> +	for (i = 0; i < ARRAY_SIZE(ice_peers); i++) {
+> +		struct ice_peer_dev_int *peer_dev_int;
+> +		struct ice_peer_drv_int *peer_drv_int;
+> +		struct iidc_qos_params *qos_info;
+> +		struct iidc_virtbus_object *vbo;
+> +		struct msix_entry *entry = NULL;
+> +		struct iidc_peer_dev *peer_dev;
+> +		struct virtbus_device *vdev;
+> +		int j;
+> +
+> +		/* structure layout needed for container_of's looks like:
+> +		 * ice_peer_dev_int (internal only ice peer superstruct)
+> +		 * |--> iidc_peer_dev
+> +		 * |--> *ice_peer_drv_int
+> +		 *
+> +		 * iidc_virtbus_object (container_of parent for vdev)
+> +		 * |--> virtbus_device
+> +		 * |--> *iidc_peer_dev (pointer from internal struct)
+> +		 *
+> +		 * ice_peer_drv_int (internal only peer_drv struct)
+> +		 */
+> +		peer_dev_int = kzalloc(sizeof(*peer_dev_int), GFP_KERNEL);
+> +		if (!peer_dev_int)
+> +			return -ENOMEM;
+> +
+> +		vbo = kzalloc(sizeof(*vbo), GFP_KERNEL);
+> +		if (!vbo) {
+> +			kfree(peer_dev_int);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		peer_drv_int = kzalloc(sizeof(*peer_drv_int), GFP_KERNEL);
+> +		if (!peer_drv_int) {
+> +			kfree(peer_dev_int);
+> +			kfree(vbo);
+> +			return -ENOMEM;
+> +		}
+
+The lifetimes of all this memory look really suspect. The vbo holds a
+pointer to the peer_dev but who ensures it it freed after all the vbo
+kref's are released so there isn't a dangling pointer in
+vbo->peer_dev?
+
+One allocation is much simpler to understand:
+
+struct iidc_virtbus_object {
+   struct virbus_device vdev;
+   [public members]
+}
+
+struct iidc_virtbus_object_private {
+   struct iidc_virtbus_object vobj;
+   [private members]
+}
+
+And just kzalloc a single iidc_virtbus_object_private
+
+> +		peer_dev->msix_entries = entry;
+> +		ice_peer_state_change(peer_dev_int, ICE_PEER_DEV_STATE_INIT,
+> +				      false);
+> +
+> +		vdev = &vbo->vdev;
+> +		vdev->name = ice_peers[i].name;
+> +		vdev->release = ice_peer_vdev_release;
+> +		vdev->dev.parent = &pdev->dev;
+> +
+> +		status = virtbus_register_device(vdev);
+> +		if (status) {
+> +			kfree(peer_dev_int);
+> +			kfree(peer_drv_int);
+> +			vdev = NULL;
+
+To me this feels very unnatural, virtbus_register_device() does the
+kfree for the vbo if it fails so this function can't have a the normal
+goto error unwind and ends up open coding the error unwinds in each if
+above.
+
+> +/* Following APIs are implemented by peer drivers and invoked by device
+> + * owner
+> + */
+> +struct iidc_peer_ops {
+> +	void (*event_handler)(struct iidc_peer_dev *peer_dev,
+> +			      struct iidc_event *event);
+> +
+> +	/* Why we have 'open' and when it is expected to be called:
+> +	 * 1. symmetric set of API w.r.t close
+> +	 * 2. To be invoked form driver initialization path
+> +	 *     - call peer_driver:open once device owner is fully
+> +	 *     initialized
+> +	 * 3. To be invoked upon RESET complete
+> +	 */
+> +	int (*open)(struct iidc_peer_dev *peer_dev);
+> +
+> +	/* Peer's close function is to be called when the peer needs to be
+> +	 * quiesced. This can be for a variety of reasons (enumerated in the
+> +	 * iidc_close_reason enum struct). A call to close will only be
+> +	 * followed by a call to either remove or open. No IDC calls from the
+> +	 * peer should be accepted until it is re-opened.
+> +	 *
+> +	 * The *reason* parameter is the reason for the call to close. This
+> +	 * can be for any reason enumerated in the iidc_close_reason struct.
+> +	 * It's primary reason is for the peer's bookkeeping and in case the
+> +	 * peer want to perform any different tasks dictated by the reason.
+> +	 */
+> +	void (*close)(struct iidc_peer_dev *peer_dev,
+> +		      enum iidc_close_reason reason);
+
+The open and close op looks really weird
+
+Jason
