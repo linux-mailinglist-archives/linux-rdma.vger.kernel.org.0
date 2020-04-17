@@ -2,110 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFB91ADD4B
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 14:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3D11ADD55
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Apr 2020 14:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgDQMZp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Apr 2020 08:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S1728561AbgDQM2f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Apr 2020 08:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728943AbgDQMZp (ORCPT
+        by vger.kernel.org with ESMTP id S1728234AbgDQM2a (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Apr 2020 08:25:45 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF4EC061A0C
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:25:45 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id s18so756753qvn.1
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:25:45 -0700 (PDT)
+        Fri, 17 Apr 2020 08:28:30 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579D3C061A10
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:28:30 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c63so2151585qke.2
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Apr 2020 05:28:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=b3iFtRhJs5VqWIfspmC5p02IfQnZ1OBoJDiilSZitow=;
-        b=Z9Ljm0d8QguBsl++bS9kVtdhIXM4iGBa3wZPoDF+/p5QDbbf+Ecx1WOeV/KWVqEAXj
-         ABy5J6+w2bDlgPY3w06H5Xmi/cS0kRvv5T8Ra6TZWtYIBGQu5I4Rx4AHl3+T2gROjJUI
-         0J0m16+FNgCJ90BwzGrj3pRV6Zus7SXB4Rjqp3UWJLn4YHfKIy4u4rXgTAeGs3KE6EUt
-         wQD9z1iG0OEn/tMOLZCt4+Kkayd7XfuvCsNuXdb4ntlg7V35JxLrywkpo+GJvWBjweCZ
-         Ep0gCRUjFRU+1N/O3lHk6ytDkXA+SH1mGrPuTDCuKZHiafjG1shCNAuJ0aW6sHAig3B0
-         xd2A==
+        bh=aZefJ2eeeg5YJ8LbNLwmZ0QsC9kKV35KaDs/t6j0M1g=;
+        b=K9+oC8zpTs7eoXwYoNCM97j0wAjePnqvg1MIHJIH7ous//tMV1Jr3cBr+kIJfIT6tw
+         3OcVpAAq67QKQZkGQMvO3bNsWwbJBnCUPX+HM2kSXjzzVPxyBC33diZFfVD7g36eaQ8V
+         qfI7KDcfKd2QX+EUZ3jdUHgnHovu2cehHa1LIeWfd5uLrxhCooatkyANNHv7afAV7XJT
+         obDDx3gIJGnGLvMi6zrE6ny3daHSgAl4TGZNNZtepoDTUoHKeOtld3APKqR8zMhi0jaR
+         hYAiqzB2jOWifkzgQ5CnHvC62GPxGS/ig8I2V4XV7ODMhCnKVLz6AW73AfOwbKI5YsJ5
+         eQcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b3iFtRhJs5VqWIfspmC5p02IfQnZ1OBoJDiilSZitow=;
-        b=tC7x+9qP+P/cxJMyylCKG1lel05QxjROcnGZPzuM8MqgqO1T2oK1FbAT5Zb6KIKKbL
-         ORZ/GOb373Gtj3D+nt49Ddl2bTN1uR9k2NsYwJF5IZslgk7J6MO0p3C4gJSp8m4cAtHQ
-         v98apRQbpcfe9VU30U1G4455afRUQbf7Po045SqCK7JpKHAhgeWxv2jzVU9khJTFA5eR
-         +lpbez9th5AbZlYCTZtvH2PM13ZAtyShc9sktsmO6duFEy+14Ev0p3F6Brqfd6SgQccV
-         NLggnUlUAWiesp73Ey0JYx06hya82879p/HoSwsgOIZyEtHTCTBpt64Ie1YGSQV/Ow+N
-         HWwA==
-X-Gm-Message-State: AGi0PuY1S9s0kyrKxzztDUhHFrwk4c3iSMiREk3fl9x3eqxWv57dZRQk
-        Fr+/QcCxMPtg6d9O+WcrTNZWbQ==
-X-Google-Smtp-Source: APiQypKRejHQkO6SPjqQHCzSrXkoqY5ngsJkDP3GjBxzcNqfAerdMXzQrgdeW6YJO40tzYBCUCmAeQ==
-X-Received: by 2002:ad4:4c4d:: with SMTP id cs13mr2347165qvb.207.1587126344506;
-        Fri, 17 Apr 2020 05:25:44 -0700 (PDT)
+        bh=aZefJ2eeeg5YJ8LbNLwmZ0QsC9kKV35KaDs/t6j0M1g=;
+        b=YrxJwyDwcx+uz80oOH9IFtW7PHx6rphDFAlFjxrVg80I60v++sgQDKplDtpcGlA7or
+         vlC/ADS9oE/+QacrD9R+27p8ppUn3lGv0atN95Zc8AlxkJnGNEssmQ/AriUr0SoDUQSM
+         DPyuO+ItU0BCVp17BMoYm+iIsIJ1mstyeXqY/TiXPC8EONhnjU3Y7xOLkVULRZZIeLnn
+         YwbjPBXxtI8f6lCHT4LVE9D4XPmYwIKgF6rzeX8HI9B4NXh72zPceskkPGEJ08fNyTOL
+         S2y9eYCpY2aWgYZmr5+XAY1rgtwSljzK5bgTcapaOWKIwcyik/XWOgLWZXrSHgxqiXoJ
+         j9XA==
+X-Gm-Message-State: AGi0PubRXy3eFHJEAFnUfL03rUKs7eXym/BpYZPD+y/xfXiUakrb9M2R
+        l7v+MBZNTx1WNUX/Yb89eZtydQ==
+X-Google-Smtp-Source: APiQypJ1vYJs1OcOpG6NFzpsPpo2EzISzAbbiESS6yc0Q6fShvvLk7GfaJtAZP1aoEPPARaV+dFckA==
+X-Received: by 2002:a05:620a:39b:: with SMTP id q27mr3018858qkm.94.1587126509481;
+        Fri, 17 Apr 2020 05:28:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k2sm17252465qte.16.2020.04.17.05.25.43
+        by smtp.gmail.com with ESMTPSA id u17sm8223117qka.0.2020.04.17.05.28.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Apr 2020 05:25:43 -0700 (PDT)
+        Fri, 17 Apr 2020 05:28:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jPQ3y-0006eb-6h; Fri, 17 Apr 2020 09:25:42 -0300
-Date:   Fri, 17 Apr 2020 09:25:42 -0300
+        id 1jPQ6d-0006gf-52; Fri, 17 Apr 2020 09:28:27 -0300
+Date:   Fri, 17 Apr 2020 09:28:27 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Carpenter <dan.carpenter@oracle.com>, g@ziepe.ca
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        dledford@redhat.com, leon@kernel.org, colin.king@canonical.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ocrdma: Fix an off-by-one issue in 'ocrdma_add_stat'
-Message-ID: <20200417122542.GC5100@ziepe.ca>
-References: <20200328073040.24429-1-christophe.jaillet@wanadoo.fr>
- <20200414183441.GA28870@ziepe.ca>
- <20200416130847.GP1163@kadam>
- <20200416184754.GZ5100@ziepe.ca>
- <20200417112624.GS1163@kadam>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Pitre <nico@fluxnic.net>, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, leon@kernel.org,
+        kieran.bingham+renesas@ideasonboard.com, jonas@kwiboo.se,
+        airlied@linux.ie, jernej.skrabec@siol.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+Message-ID: <20200417122827.GD5100@ziepe.ca>
+References: <20200417011146.83973-1-saeedm@mellanox.com>
+ <87v9ly3a0w.fsf@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417112624.GS1163@kadam>
+In-Reply-To: <87v9ly3a0w.fsf@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 02:26:24PM +0300, Dan Carpenter wrote:
-> On Thu, Apr 16, 2020 at 03:47:54PM -0300, Jason Gunthorpe wrote:
-> > On Thu, Apr 16, 2020 at 04:08:47PM +0300, Dan Carpenter wrote:
-> > > On Tue, Apr 14, 2020 at 03:34:41PM -0300, Jason Gunthorpe wrote:
-> > > > The memcpy is still kind of silly right? What about this:
-> > > > 
-> > > > static int ocrdma_add_stat(char *start, char *pcur, char *name, u64 count)
-> > > > {
-> > > > 	size_t len = (start + OCRDMA_MAX_DBGFS_MEM) - pcur;
-> > > > 	int cpy_len;
-> > > > 
-> > > > 	cpy_len = snprintf(pcur, len, "%s: %llu\n", name, count);
-> > > > 	if (cpy_len >= len || cpy_len < 0) {
-> > > 
-> > > The kernel version of snprintf() doesn't and will never return
-> > > negatives.  It would cause a huge security headache if it started
-> > > returning negatives.
-> > 
-> > Begs the question why it returns an int then :)
-> 
-> People should use "int" as their default type.  "int i;".  It means
-> "This is a normal number.  Nothing special about it.  It's not too high.
-> It's not defined by hardware requirements."  Other types call attention
-> to themselves, but int is the humble datatype.
+On Fri, Apr 17, 2020 at 09:23:59AM +0300, Jani Nikula wrote:
 
-No, I strongly disagree with this, it is one of my pet peeves to see
-'int' being used for data which is known to be only ever be positive
-just to save typing 'unsigned'.
+> Which means that would have to split up to two. Not ideal, but
+> doable.
 
-Not only is it confusing, but allowing signed values has caused tricky
-security bugs, unfortuntely.
+Why is this not ideal?
+
+I think the one per line is easier to maintain (eg for merge
+conflicts) and easier to read than a giant && expression.
+
+I would not complicate things further by extending the boolean
+language..
 
 Jason
