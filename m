@@ -2,148 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFC81AF484
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Apr 2020 22:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84C11AF5C6
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Apr 2020 01:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgDRUML (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Apr 2020 16:12:11 -0400
-Received: from condef-06.nifty.com ([202.248.20.71]:41159 "EHLO
-        condef-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgDRUML (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Apr 2020 16:12:11 -0400
-Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-06.nifty.com with ESMTP id 03IK8vr2009205
-        for <linux-rdma@vger.kernel.org>; Sun, 19 Apr 2020 05:08:57 +0900
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 03IK8KnK027464;
-        Sun, 19 Apr 2020 05:08:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 03IK8KnK027464
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587240501;
-        bh=FHGQZW3L61l0ht0FqMOh2lDbaq5P4UJ78OF0DaS8gXw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E90rOCkolc4VeNd0U16ZLeAyevVrnC0jfgTv/flP1QA6O5Xtu16KJ/yPoJSSWpIY/
-         NNoCDZD45SUBLY7346VKhAMDkrw4Tey3zmbXj49KOwBL+ZqWr1h1fwrIxp2J4d5ZHb
-         LL0TrFEGuddsTVn+f5JECpUepekY/yXP9R2hK3qzR+iyZ6A++b4ZwrLX9tIOwAT2Fp
-         Qv6mf9RSpzU7ROoCWZHAKuCZUUY/3ZPSuTXCuM9bGWFvQs/TplBdgsIc04TPy/3ZwE
-         zMJ1dk8Bn3BOxzTuuYivVdS6VW11gceVDlvgowTKUCbfpOubgijJh1wxn6iHStEgDJ
-         aXj+i0zaInSPA==
-X-Nifty-SrcIP: [209.85.222.50]
-Received: by mail-ua1-f50.google.com with SMTP id x18so2066557uap.8;
-        Sat, 18 Apr 2020 13:08:20 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY+cgyHgUSBaNhdKiPkB8EqL1a+z+Zldb2A8OtToDR5Yq6ONeYS
-        /vw3Qb0Ol4M4dUJ4kKpxYr5IKTbuektTNpwQwkY=
-X-Google-Smtp-Source: APiQypLv56nIJHUkp6yZ1l2SZf5qOusJczTvcie3CqjRSju4r9GOlItOZ6lCW8Ag7V+ab1eP/w/DBkQLiUqCh/Jy9O8=
-X-Received: by 2002:ab0:1166:: with SMTP id g38mr1810895uac.40.1587240499498;
- Sat, 18 Apr 2020 13:08:19 -0700 (PDT)
+        id S1725827AbgDRXBr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Apr 2020 19:01:47 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43518 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgDRXBr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Apr 2020 19:01:47 -0400
+Received: by mail-pf1-f195.google.com with SMTP id u9so3034663pfm.10;
+        Sat, 18 Apr 2020 16:01:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V4cZY/tZI/5BtLraJVLO57HFJT+0fqpSncYi3Zy+2Go=;
+        b=KLexCcqp4p2ouxm5WmEQfQExNM/gOlt41rPpTAWrvxmgXRLnbqsnRn9EuWyhuoPq0R
+         5nTGiVX5pjfuJUoVFsFlZHXk0okGYU6IGTqhggSOIqWAXRtShygsuJgehoRPR6TkSN5a
+         67G53RGHasGcfem3W9OBG3ClUcnl30wtqtD4MVKpOk0zfvvi3IlQQS/MzgEINESq59br
+         ppqRvWukULHWpqN+MNwABTxVKBlcC11Ni5mvnAyKI4T58Glxo61T9OF+uiZnX/LIeskn
+         BdgaelOOXs+ilrXpaMEuk5HX7pRolV3SaylBDTnco7m//npNozwl4BWlNiirKLMbaGae
+         9qLw==
+X-Gm-Message-State: AGi0PuaEUvLYRMRyzuMwQrnJfS4skj/n9TlUmuYnZV/X0XFLps11yAjP
+        oOzHoYa+l2Sf+25hkk4ONgw=
+X-Google-Smtp-Source: APiQypJFM9PvUDclrd/a+vsZOP5zCCdVITBBK80YAunCcAe+ZR5UeC8OuKe5HhD6/D7/Bv2dSObMDw==
+X-Received: by 2002:a63:fe54:: with SMTP id x20mr9274883pgj.195.1587250905458;
+        Sat, 18 Apr 2020 16:01:45 -0700 (PDT)
+Received: from [100.124.15.238] ([104.129.198.228])
+        by smtp.gmail.com with ESMTPSA id i15sm11410820pfo.195.2020.04.18.16.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Apr 2020 16:01:44 -0700 (PDT)
+Subject: Re: [PATCH v12 15/25] block/rnbd: private headers with rnbd protocol
+ structs and helpers
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com
+References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
+ <20200415092045.4729-16-danil.kipnis@cloud.ionos.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <d972a2e2-a26d-fa24-d5ba-6beac2ee2b69@acm.org>
+Date:   Sat, 18 Apr 2020 16:01:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
- <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr>
-In-Reply-To: <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 19 Apr 2020 05:07:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
-Message-ID: <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        jonas@kwiboo.se, David Airlie <airlied@linux.ie>,
-        jernej.skrabec@siol.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200415092045.4729-16-danil.kipnis@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 4:11 AM Nicolas Pitre <nico@fluxnic.net> wrote:
->
-> On Sun, 19 Apr 2020, Masahiro Yamada wrote:
->
-> > (FOO || !FOO) is difficult to understand, but
-> > the behavior of "uses FOO" is as difficult to grasp.
->
-> Can't this be expressed as the following instead:
->
->         depends on FOO if FOO
->
-> That would be a little clearer.
->
->
-> Nicolas
+On 4/15/20 2:20 AM, Danil Kipnis wrote:
+> These are common private headers with rnbd protocol structures,
+> logging, sysfs and other helper functions, which are used on
+> both client and server sides.
 
-
-
-'depends on' does not take the 'if <expr>'
-
-'depends on A if B' is the syntax sugar of
-'depends on (A || !B), right ?
-
-I do not know how clearer it would make things.
-
-depends on (m || FOO != m)
-is another equivalent, but we are always
-talking about a matter of expression.
-
-
-How important is it to stick to
-depends on (FOO || !FOO)
-or its equivalents?
-
-
-If a driver wants to use the feature FOO
-in most usecases, 'depends on FOO' is sensible.
-
-If FOO is just optional, you can get rid of the dependency,
-and IS_REACHABLE() will do logically correct things.
-
-
-I do not think IS_REACHABLE() is too bad,
-but if it is confusing, we can add one more
-option to make it explicit.
-
-
-
-config DRIVER_X
-       tristate "driver x"
-
-config DRIVER_X_USES_FOO
-       bool "use FOO from driver X"
-       depends on DRIVER_X
-       depends on DRIVER_X <= FOO
-       help
-         DRIVER_X works without FOO, but
-         Using FOO will provide better usability.
-         Say Y if you want to make driver X use FOO.
-
-
-
-Of course,
-
-      if (IS_ENABLED(CONFIG_DRIVER_X_USES_FOO))
-               foo_init();
-
-works like
-
-      if (IS_REACHABLE(CONFIG_FOO))
-                foo_init();
-
-
-At lease, it will eliminate a question like
-"I loaded the module FOO, I swear.
-But my built-in driver X still would not use FOO, why?"
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
