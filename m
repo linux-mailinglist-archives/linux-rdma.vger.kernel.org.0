@@ -2,90 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C721AFA75
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Apr 2020 15:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D7D1AFAD0
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Apr 2020 15:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgDSNUx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 19 Apr 2020 09:20:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgDSNUv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 19 Apr 2020 09:20:51 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7020521744;
-        Sun, 19 Apr 2020 13:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587302451;
-        bh=yaXZpoIjE58QIRalYbskWrzei+/nTC6pZqDn8sBWf1s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=liV7DvJm5kIKBNP0MgqJyAsa0hf0iTtnYzahGyG5W3I/vc69gJuqwsTQNOMm5Fd1i
-         u1W8lfm/DNCxyKhZ/K2LRjx7OShS8/49ooR9kMH3h3zRQD28B/4J7domiM45OwXhyl
-         x4zD9tZBvDmW3wZ+5aFNUrzhiuCJPq5t+ZUGOxEo=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next] RDMA/bnxt: Delete 'nq_ptr' variable which is not used
-Date:   Sun, 19 Apr 2020 16:20:46 +0300
-Message-Id: <20200419132046.123887-1-leon@kernel.org>
-X-Mailer: git-send-email 2.25.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726123AbgDSNkJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 19 Apr 2020 09:40:09 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37189 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726048AbgDSNkJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 19 Apr 2020 09:40:09 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maorg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 19 Apr 2020 16:40:03 +0300
+Received: from dev-l-vrt-201.mtl.labs.mlnx (dev-l-vrt-201.mtl.labs.mlnx [10.134.201.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 03JDe3Xl019088;
+        Sun, 19 Apr 2020 16:40:03 +0300
+From:   Maor Gottlieb <maorg@mellanox.com>
+To:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org
+Cc:     leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com, Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH mlx5-next 00/10] Add support to get xmit slave
+Date:   Sun, 19 Apr 2020 16:39:24 +0300
+Message-Id: <20200419133933.28258-1-maorg@mellanox.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+Hi Dave,
 
-The variable "nq_ptr" is set but never used, this generates the
-following warning while compiling kernel with W=1 option.
+This series is a combination of netdev and RDMA, so in order to avoid
+conflicts, we would like to ask you to route this series through
+mlx5-next shared branch. It is based on v5.7-rc1 tag.
 
-drivers/infiniband/hw/bnxt_re/qplib_fp.c: In function 'bnxt_qplib_service_nq':
-drivers/infiniband/hw/bnxt_re/qplib_fp.c:303:25: warning:
-   variable 'nq_ptr' set but not used [-Wunused-but-set-variable]
-303 |  struct nq_base *nqe, **nq_ptr;
-    |
+---------------------------------------------------------------------
 
-Fixes: fddcbbb02af4 ("RDMA/bnxt_re: Simplify obtaining queue entry from hw ring")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The following series adds support to get the LAG master xmit slave by
+introducing new .ndo - ndo_xmit_slave_get. Every LAG module can
+implement it and it first implemented in the bond driver. 
+This is follow-up to the RFC discussion [1].
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index a4de56bdd6e8..c5e29577cd43 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -300,12 +300,12 @@ static void bnxt_qplib_service_nq(unsigned long data)
- {
- 	struct bnxt_qplib_nq *nq = (struct bnxt_qplib_nq *)data;
- 	struct bnxt_qplib_hwq *hwq = &nq->hwq;
--	struct nq_base *nqe, **nq_ptr;
- 	int num_srqne_processed = 0;
- 	int num_cqne_processed = 0;
- 	struct bnxt_qplib_cq *cq;
- 	int budget = nq->budget;
- 	u32 sw_cons, raw_cons;
-+	struct nq_base *nqe;
- 	uintptr_t q_handle;
- 	u16 type;
- 
-@@ -314,7 +314,6 @@ static void bnxt_qplib_service_nq(unsigned long data)
- 	raw_cons = hwq->cons;
- 	while (budget--) {
- 		sw_cons = HWQ_CMP(raw_cons, hwq);
--		nq_ptr = (struct nq_base **)hwq->pbl_ptr;
- 		nqe = bnxt_qplib_get_qe(hwq, sw_cons, NULL);
- 		if (!NQE_CMP_VALID(nqe, raw_cons, hwq->max_elements))
- 			break;
+The main motivation for doing this is for drivers that offload part
+of the LAG functionality. For example, Mellanox Connect-X hardware
+implements RoCE LAG which selects the TX affinity when the resources
+are created and port is remapped when it goes down.
+
+The first part of this patchset introduces the new .ndo and add the
+support to the bonding module.
+
+The second part adds support to get the RoCE LAG xmit slave by building
+skb of the RoCE packet based on the AH attributes and call to the new .ndo.
+
+The third part change the mlx5 driver driver to set the QP's affinity
+port according to the slave which found by the .ndo.
+
+Thanks
+
+[1] https://lore.kernel.org/netdev/20200126132126.9981-1-maorg@mellanox.com/
+
+Maor Gottlieb (10):
+  net/core: Introduce master_xmit_slave_get
+  bonding: Rename slave_arr to usable_slaves
+  bonding: Add helpers to get xmit slave
+  bonding: Implement ndo_xmit_slave_get
+  RDMA/core: Add LAG functionality
+  RDMA/core: Get xmit slave for LAG
+  net/mlx5: Change lag mutex lock to spin lock
+  net/mlx5: Add support to get lag physical port
+  RDMA/mlx5: Refactor affinity related code
+  RDMA/mlx5: Set lag tx affinity according to slave
+
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/lag.c                 | 139 +++++++++
+ drivers/infiniband/core/verbs.c               |  44 ++-
+ drivers/infiniband/hw/mlx5/ah.c               |   4 +
+ drivers/infiniband/hw/mlx5/gsi.c              |  34 ++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   1 +
+ drivers/infiniband/hw/mlx5/qp.c               | 123 +++++---
+ drivers/net/bonding/bond_alb.c                |  39 ++-
+ drivers/net/bonding/bond_main.c               | 272 +++++++++++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  66 +++--
+ include/linux/mlx5/driver.h                   |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |   4 +-
+ include/linux/mlx5/qp.h                       |   2 +
+ include/linux/netdevice.h                     |   3 +
+ include/net/bond_alb.h                        |   4 +
+ include/net/bonding.h                         |   3 +-
+ include/net/lag.h                             |  32 +++
+ include/rdma/ib_verbs.h                       |   2 +
+ include/rdma/lag.h                            |  22 ++
+ 20 files changed, 621 insertions(+), 179 deletions(-)
+ create mode 100644 drivers/infiniband/core/lag.c
+ create mode 100644 include/rdma/lag.h
+
 -- 
-2.25.2
+2.17.2
 
