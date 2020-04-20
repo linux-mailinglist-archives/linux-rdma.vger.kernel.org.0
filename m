@@ -2,97 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CC91B021C
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 09:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2740C1B0373
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 09:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgDTHCW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 03:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726006AbgDTHCV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:02:21 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A192C061A0C
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 00:02:20 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z2so5427875iol.11
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 00:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4A6SxKXFQeFuhZ520Fb1Z9inEFcHWLahAvurgebovF0=;
-        b=W+Lw7ol4m5Pp+NIVMJifky+1tJ056gHvBlIzI1UvOcpw8Yumgvyzcvn6nFcbX0LEER
-         4fMjbfmI0ptIQDXcBAidLHxY/aCtNggnRh1S3f8/eaaiwmRPXSRuCF/WuC30kAh4UArN
-         GSZNpwkC6Zu3V/30Uf7BbKw0qTpeG7BiIAvAZh+LxwJoRTwZ9VsHMo8s5KuXga8TCSAC
-         V6S88oFbwUBYh78lEXHzKwrbXir6I4IknN+5PaLhE37DKBv3LC+eQB9c8QCFLcQ2tSRq
-         r4WB9ULhz/OUJCfP7bT+4cskcnxNlWXGGo+9tymT11QVCQxs559aGPCS2Js99DEqbPRR
-         DN8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4A6SxKXFQeFuhZ520Fb1Z9inEFcHWLahAvurgebovF0=;
-        b=fzfogwxt9rNobJrINtkCHH6AGHLjDMeqrDWhNBk9RG6hxJAvNoijC/2fadP3QHcfvx
-         sFh6SiJ0Jt0mpkQUM5zztQFaxRyxQbRXjjMrN4j6ziaqMIA6Vt+KBLn17uZYUmPr+2jL
-         +za35TaT14s44NNuhbRBTM0i6ECjV7nN1H2BePKG9OnyuD9sM9xSyxjljlCp/p8ep0Nu
-         Wzn5xRlBd25PkFhiiWi6UelNPdV/Y/HqYg0YIvWI75wuDlCCR+ewgH2Q5XJ8Wzbe9VA4
-         Ijc4ZTsXbr0scafA8/I7d602LLXdexzS4e+DwbY6gPqKDH+QJEyfKEt1zbkAUh2Lqktq
-         Ibgg==
-X-Gm-Message-State: AGi0PuY9W5icGhSKK1smxOJRaw/lwMhojoPG1uqAVDaWrWY4pd5XjCdT
-        JeGfrHdddreE0wOVg2FlGNEFEQ7+IBjY7+y3+vSPDw==
-X-Google-Smtp-Source: APiQypL3kqmc36Z8nDaWOeggnqdyC0h9bl6lWidbucVAtp/7nrpTjRikTAly3Zvg8/ynoYSstspKecnSjdnY+aEryDM=
-X-Received: by 2002:a02:1a82:: with SMTP id 124mr13459829jai.37.1587366139636;
- Mon, 20 Apr 2020 00:02:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
- <20200415092045.4729-19-danil.kipnis@cloud.ionos.com> <2827b679-70f5-3026-605a-14f2cc89aaab@acm.org>
-In-Reply-To: <2827b679-70f5-3026-605a-14f2cc89aaab@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 20 Apr 2020 09:02:11 +0200
-Message-ID: <CAMGffEn7JEfoZVopMCZzUEdWWBPG=Y=4P59=5zVm4dy4=agrSg@mail.gmail.com>
-Subject: Re: [PATCH v12 18/25] block/rnbd: client: sysfs interface functions
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726245AbgDTHyk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 03:54:40 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:51602 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726284AbgDTHyk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 03:54:40 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maorg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 20 Apr 2020 10:54:30 +0300
+Received: from dev-l-vrt-201.mtl.labs.mlnx (dev-l-vrt-201.mtl.labs.mlnx [10.134.201.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 03K7sUf9026672;
+        Mon, 20 Apr 2020 10:54:30 +0300
+From:   Maor Gottlieb <maorg@mellanox.com>
+To:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org
+Cc:     leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com, Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH V2 mlx5-next 00/10] Add support to get xmit slave
+Date:   Mon, 20 Apr 2020 10:54:16 +0300
+Message-Id: <20200420075426.31462-1-maorg@mellanox.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 1:18 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 4/15/20 2:20 AM, Danil Kipnis wrote:
-> > This is the sysfs interface to rnbd block devices on client side:
-> >
-> >    /sys/class/rnbd-client/ctl/
-> >      |- map_device
-> >      |  *** maps remote device
-> >      |
-> >      |- devices/
-> >         *** all mapped devices
-> >
-> >    /sys/block/rnbd<N>/rnbd/
-> >      |- unmap_device
-> >      |  *** unmaps device
-> >      |
-> >      |- state
-> >      |  *** device state
-> >      |
-> >      |- session
-> >      |  *** session name
-> >      |
-> >      |- mapping_path
-> >         *** path of the dev that was mapped on server
->
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
->
-Thanks Bart!
+Hi Dave,
+
+This series is a combination of netdev and RDMA, so in order to avoid
+conflicts, we would like to ask you to route this series through
+mlx5-next shared branch. It is based on v5.7-rc1 tag.
+
+---------------------------------------------------------------------
+
+The following series adds support to get the LAG master xmit slave by
+introducing new .ndo - ndo_xmit_slave_get. Every LAG module can
+implement it and it first implemented in the bond driver. 
+This is follow-up to the RFC discussion [1].
+
+The main motivation for doing this is for drivers that offload part
+of the LAG functionality. For example, Mellanox Connect-X hardware
+implements RoCE LAG which selects the TX affinity when the resources
+are created and port is remapped when it goes down.
+
+The first part of this patchset introduces the new .ndo and add the
+support to the bonding module.
+
+The second part adds support to get the RoCE LAG xmit slave by building
+skb of the RoCE packet based on the AH attributes and call to the new .ndo.
+
+The third part change the mlx5 driver driver to set the QP's affinity
+port according to the slave which found by the .ndo.
+
+Thanks
+
+[1] https://lore.kernel.org/netdev/20200126132126.9981-1-maorg@mellanox.com/
+
+Change log:
+v2: The first patch wasn't sent in v1.
+v1: https://lore.kernel.org/netdev/ac373456-b838-29cf-645f-b1ea1a93e3b0@gmail.com/T/#t 
+
+Maor Gottlieb (10):
+  net/core: Introduce master_xmit_slave_get
+  bonding: Rename slave_arr to usable_slaves
+  bonding: Add helpers to get xmit slave
+  bonding: Implement ndo_xmit_slave_get
+  RDMA/core: Add LAG functionality
+  RDMA/core: Get xmit slave for LAG
+  net/mlx5: Change lag mutex lock to spin lock
+  net/mlx5: Add support to get lag physical port
+  RDMA/mlx5: Refactor affinity related code
+  RDMA/mlx5: Set lag tx affinity according to slave
+
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/lag.c                 | 139 +++++++++
+ drivers/infiniband/core/verbs.c               |  44 ++-
+ drivers/infiniband/hw/mlx5/ah.c               |   4 +
+ drivers/infiniband/hw/mlx5/gsi.c              |  34 ++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   1 +
+ drivers/infiniband/hw/mlx5/qp.c               | 123 +++++---
+ drivers/net/bonding/bond_alb.c                |  39 ++-
+ drivers/net/bonding/bond_main.c               | 272 +++++++++++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  66 +++--
+ include/linux/mlx5/driver.h                   |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |   4 +-
+ include/linux/mlx5/qp.h                       |   2 +
+ include/linux/netdevice.h                     |   3 +
+ include/net/bond_alb.h                        |   4 +
+ include/net/bonding.h                         |   3 +-
+ include/net/lag.h                             |  32 +++
+ include/rdma/ib_verbs.h                       |   2 +
+ include/rdma/lag.h                            |  22 ++
+ 20 files changed, 621 insertions(+), 179 deletions(-)
+ create mode 100644 drivers/infiniband/core/lag.c
+ create mode 100644 include/rdma/lag.h
+
+-- 
+2.17.2
+
