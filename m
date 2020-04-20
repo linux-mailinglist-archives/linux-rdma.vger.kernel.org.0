@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E35C1B0F69
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 17:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2172A1B0F6A
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 17:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgDTPLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 11:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        id S1727919AbgDTPLh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 11:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgDTPLd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:11:33 -0400
+        id S1726847AbgDTPLh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Apr 2020 11:11:37 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CBB720775;
-        Mon, 20 Apr 2020 15:11:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C50E12074F;
+        Mon, 20 Apr 2020 15:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587395492;
-        bh=8A+gTFQUza7i9c+hxdn8MnmOYsgzis0HjMpoQnvzfyI=;
+        s=default; t=1587395496;
+        bh=E4EQl9aslAp5J/SGs/L64gImtgsD7c9opvmUF9mISho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duA892+4p656BXXye/oL7nBefioRpZ1MUwfaAmTRNsbHsaNB6MHju8P0QVB9GTtxT
-         fXCc3jEsQ+Z/ZPddd0I1DyVw5sRJAEWaXOowPiIF7x6udEAqeBmW/NjbsgP1f7ONYA
-         EMg0YqUpv7qQKKhic8YDSZHjYe/jvuzfWYbAmEBw=
+        b=VqDUZVc1iRIkzSeZTHXEZ+lB4j27xcOM9QSZVt9jT++bOgn3BWZ6wJADoQ5rsqwRA
+         oOF8+AlaF73PKpZbzsoUb/XzILawPNOS1ryvAce9RTU0V4hu60EE5KXUCODwGuLIUs
+         b8/XriPE7OUwc9ZqatGIN7DdyHBwP81beILyEqyY=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
         Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next 06/18] RDMA/mlx5: Set QP subtype immediately when it is known
-Date:   Mon, 20 Apr 2020 18:10:53 +0300
-Message-Id: <20200420151105.282848-7-leon@kernel.org>
+Subject: [PATCH rdma-next 07/18] RDMA/mlx5: Separate create QP flows to be based on type
+Date:   Mon, 20 Apr 2020 18:10:54 +0300
+Message-Id: <20200420151105.282848-8-leon@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200420151105.282848-1-leon@kernel.org>
 References: <20200420151105.282848-1-leon@kernel.org>
@@ -43,49 +43,131 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-There is no need to delay QP subtype assignment to the end of the
-create_qp() function and it is better to move it to be immediately
-after it is checked so we would be able to rewrite later checks
-to be based on it and not on over-written struct ib_qp_init_attr.
+Move driver QP creation flow to separate functions to simplify
+the create_qp() and allow future separation of create_qp_common()
+to subtypes.
 
 Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/qp.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 54 ++++++++++++++++++++++++---------
+ 1 file changed, 39 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 2039f5391e20..35308e7ae312 100644
+index 35308e7ae312..3b10fa5c6db8 100644
 --- a/drivers/infiniband/hw/mlx5/qp.c
 +++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2581,7 +2581,6 @@ static struct ib_qp *mlx5_ib_create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
+@@ -2557,10 +2557,9 @@ static void destroy_qp_common(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 		destroy_qp_user(dev, &get_pd(qp)->ibpd, qp, base, udata);
+ }
+ 
+-static struct ib_qp *mlx5_ib_create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
+-					struct ib_qp_init_attr *attr,
+-					struct mlx5_ib_create_qp *ucmd,
+-					struct ib_udata *udata)
++static int create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
++		      struct ib_qp_init_attr *attr,
++		      struct mlx5_ib_create_qp *ucmd, struct ib_udata *udata)
+ {
+ 	struct mlx5_ib_ucontext *ucontext = rdma_udata_to_drv_context(
+ 		udata, struct mlx5_ib_ucontext, ibucontext);
+@@ -2568,16 +2567,13 @@ static struct ib_qp *mlx5_ib_create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
+ 	u32 uidx = MLX5_IB_DEFAULT_UIDX;
+ 	void *dctc;
+ 
+-	if (!attr->srq || !attr->recv_cq)
+-		return ERR_PTR(-EINVAL);
+-
+ 	err = get_qp_user_index(ucontext, ucmd, sizeof(*ucmd), &uidx);
+ 	if (err)
+-		return ERR_PTR(err);
++		return err;
+ 
+ 	qp->dct.in = kzalloc(MLX5_ST_SZ_BYTES(create_dct_in), GFP_KERNEL);
+ 	if (!qp->dct.in)
+-		return ERR_PTR(-ENOMEM);
++		return -ENOMEM;
  
  	MLX5_SET(create_dct_in, qp->dct.in, uid, to_mpd(pd)->uid);
  	dctc = MLX5_ADDR_OF(create_dct_in, qp->dct.in, dct_context_entry);
--	qp->qp_sub_type = MLX5_IB_QPT_DCT;
- 	MLX5_SET(dctc, dctc, pd, to_mpd(pd)->pdn);
- 	MLX5_SET(dctc, dctc, srqn_xrqn, to_msrq(attr->srq)->msrq.srqn);
- 	MLX5_SET(dctc, dctc, cqn, to_mcq(attr->recv_cq)->mcq.cqn);
-@@ -2765,7 +2764,9 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
- 				err = -EINVAL;
- 				goto free_qp;
- 			}
-+			qp->qp_sub_type = MLX5_IB_QPT_DCI;
- 		} else {
-+			qp->qp_sub_type = MLX5_IB_QPT_DCT;
- 			return mlx5_ib_create_dct(pd, qp, init_attr, &ucmd,
- 						  udata);
- 		}
-@@ -2789,9 +2790,6 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
+@@ -2592,7 +2588,7 @@ static struct ib_qp *mlx5_ib_create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
  
- 	qp->trans_qp.xrcdn = xrcdn;
+ 	qp->state = IB_QPS_RESET;
  
--	if (verbs_init_attr->qp_type == IB_QPT_DRIVER)
--		qp->qp_sub_type = init_attr->qp_type;
+-	return &qp->ibqp;
++	return 0;
+ }
+ 
+ static int set_mlx_qp_type(struct mlx5_ib_dev *dev,
+@@ -2716,10 +2712,36 @@ static int check_valid_flow(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	return 0;
+ }
+ 
++static int create_driver_qp(struct ib_pd *pd, struct mlx5_ib_qp *qp,
++			    struct ib_qp_init_attr *attr,
++			    struct mlx5_ib_create_qp *ucmd,
++			    struct ib_udata *udata)
++{
++	struct mlx5_ib_dev *mdev = to_mdev(pd->device);
++	int ret = -EINVAL;
++
++	switch (qp->qp_sub_type) {
++	case MLX5_IB_QPT_DCT:
++		if (!attr->srq || !attr->recv_cq)
++			goto out;
++
++		ret = create_dct(pd, qp, attr, ucmd, udata);
++		break;
++	case MLX5_IB_QPT_DCI:
++		ret = create_qp_common(mdev, pd, attr, udata, qp);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++out:	return ret;
++}
++
+ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
+ 				struct ib_qp_init_attr *verbs_init_attr,
+ 				struct ib_udata *udata)
+ {
++	struct mlx5_ib_create_qp ucmd = {};
+ 	struct mlx5_ib_dev *dev;
+ 	struct mlx5_ib_qp *qp;
+ 	u16 xrcdn = 0;
+@@ -2749,8 +2771,6 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	if (init_attr->qp_type == IB_QPT_DRIVER) {
+-		struct mlx5_ib_create_qp ucmd;
 -
- 	return &qp->ibqp;
+ 		init_attr = &mlx_init_attr;
+ 		memcpy(init_attr, verbs_init_attr, sizeof(*verbs_init_attr));
+ 		err = set_mlx_qp_type(dev, init_attr, &ucmd, udata);
+@@ -2767,15 +2787,19 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
+ 			qp->qp_sub_type = MLX5_IB_QPT_DCI;
+ 		} else {
+ 			qp->qp_sub_type = MLX5_IB_QPT_DCT;
+-			return mlx5_ib_create_dct(pd, qp, init_attr, &ucmd,
+-						  udata);
+ 		}
+ 	}
  
- free_qp:
+ 	if (init_attr->qp_type == IB_QPT_XRC_TGT)
+ 		xrcdn = to_mxrcd(init_attr->xrcd)->xrcdn;
+ 
+-	err = create_qp_common(dev, pd, init_attr, udata, qp);
++	switch (init_attr->qp_type) {
++	case IB_QPT_DRIVER:
++		err = create_driver_qp(pd, qp, init_attr, &ucmd, udata);
++		break;
++	default:
++		err = create_qp_common(dev, pd, init_attr, udata, qp);
++	}
+ 	if (err) {
+ 		mlx5_ib_dbg(dev, "create_qp_common failed\n");
+ 		goto free_qp;
 -- 
 2.25.2
 
