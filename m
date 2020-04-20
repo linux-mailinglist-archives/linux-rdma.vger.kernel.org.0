@@ -2,174 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9FD1B0D9F
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 16:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BAA1B0DE1
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 16:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgDTOBZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 10:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729052AbgDTOBX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:01:23 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB809C061A10
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 07:01:21 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j1so6884181wrt.1
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 07:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3vSFuictiXaH6DTHu7ZG1ytuLG8BYZy4W0CQuxmGYs8=;
-        b=tOb745zS5TEEe0RI6MG40EcpZ2e0YDjeI4tcBRazKqgW9b05jceB+8bWT6NL+vjvME
-         rvDTR+Ypc+OjwtlP5YlYSH7jGdmBbaVgNxWV10TeikynNfoUqh07OzxC2uiCf/cayhpV
-         MKv0J79CD9Y4FEgzumG1Bt13lLHytInG39uX+qjyN7AGsXo1HQDE/88bVFhDJyl/FPFm
-         6sZo4ZvqUX8UkQLzET6tjq0cLTjvBuDSr2F8kvfhGeTee0yjyt1TKsbXoX1i920wnH9/
-         D6PLgwzp2adrSx8eTljTAbf8NeD0VfDvyIKvd+lbfOlBE4axFZghWtszc03HaHcs51Dp
-         eP6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3vSFuictiXaH6DTHu7ZG1ytuLG8BYZy4W0CQuxmGYs8=;
-        b=jjJ6pvTQJvgEvLaouCLj+ELJKoEeh2SWfmxKtO4ObRs/FwOht7emG6J4vgB9apl09z
-         43c4znyjVqvrqd1QII4yqCUc8rFS20BFKKIcFfoZRUA0PFUHRZpcDbI3qe1Igaulh46q
-         dUQqUqGCjxI8ox+mgCUM/XGQlyqkNUKeqE8ZWIK3oavTxu5kqj8MaHJnakxDiHvvXXhD
-         9C2nAMMBAVefCTskohyfB63iwB54eyX4s8OCRCZTuMVVPoQGb0eMV/UUTB9u4Ix2d+nB
-         1jbDT7dbMJAwLHYCvDBIHeLUS32eMCad6Hw+kFaD+ztDpnBMgoYICFPGaxd0k/5Yh5Lg
-         8MPg==
-X-Gm-Message-State: AGi0PubEU0NSOmiqIjxJ+Z7xcmQi5RCWdwmZtTG458XjCoYi+bW568Yz
-        0YpD10yuRHJtf3msUKNyziwVQg==
-X-Google-Smtp-Source: APiQypI1i3OBkNY85OHtJAVy/MKsMr7pD6uqP5IhPCPyUl24ZnXaNs4STsSyn6JmvDssY+dK7WCG7g==
-X-Received: by 2002:a5d:5085:: with SMTP id a5mr20425454wrt.394.1587391280517;
-        Mon, 20 Apr 2020 07:01:20 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id i5sm1301926wrw.77.2020.04.20.07.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 07:01:19 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 16:01:18 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Maor Gottlieb <maorg@mellanox.com>
-Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
-        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
-        kuba@kernel.org, leonro@mellanox.com, saeedm@mellanox.com,
-        jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, alexr@mellanox.com
-Subject: Re: [PATCH V2 mlx5-next 01/10] net/core: Introduce
- master_xmit_slave_get
-Message-ID: <20200420140118.GJ6581@nanopsycho.orion>
-References: <20200420075426.31462-1-maorg@mellanox.com>
- <20200420075426.31462-2-maorg@mellanox.com>
+        id S1727768AbgDTOGz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 10:06:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgDTOGy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:06:54 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6692720722;
+        Mon, 20 Apr 2020 14:06:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587391614;
+        bh=e3MmtYQABhBh9rFChqYBDuhjifnNwIB8F2EYklT+0p0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eJqItJGpC3V/SGLs6SfOK7Ky7RFScwjitQLkCKIXXESv2ywnxJpfIJHT1j13LxM6t
+         lTGaTvVfEkNqzROcWYtBDqtOrCbMPC03zy0/qDftmVvypZiDsEShClzKEMNktC3jBt
+         5fxnUjPPZw7jlLmPLh4jN+uHAerw/jDi9T6flIvw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-core 00/12] Add Enhanced Connection Established (ECE) APIs
+Date:   Mon, 20 Apr 2020 17:06:36 +0300
+Message-Id: <20200420140648.275554-1-leon@kernel.org>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420075426.31462-2-maorg@mellanox.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Apr 20, 2020 at 09:54:17AM CEST, maorg@mellanox.com wrote:
->Add new ndo to get the xmit slave of master device.
->User should release the slave when it's not longer needed.
->When slave selection method is based on hash, then the user can ask to
->get the xmit slave assume all the slaves can transmit by setting the
->LAG_FLAGS_HASH_ALL_SLAVES bit in the flags argument.
->
->Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
->---
-> include/linux/netdevice.h |  3 +++
-> include/net/lag.h         | 32 ++++++++++++++++++++++++++++++++
-> 2 files changed, 35 insertions(+)
->
->diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->index 130a668049ab..e8852f3ad0b6 100644
->--- a/include/linux/netdevice.h
->+++ b/include/linux/netdevice.h
->@@ -1389,6 +1389,9 @@ struct net_device_ops {
-> 						 struct netlink_ext_ack *extack);
-> 	int			(*ndo_del_slave)(struct net_device *dev,
-> 						 struct net_device *slave_dev);
->+	struct net_device*	(*ndo_xmit_get_slave)(struct net_device *master_dev,
->+						      struct sk_buff *skb,
->+						      u16 flags);
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Please adjust the name to:
-ndo_get_lag_xmit_slave
+Hi,
 
+Enhanced Connection Established or ECE is new negotiation scheme
+introduced in IBTA v1.4 to exchange extra information about nodes
+capabilities and later negotiate them at the connection establishment
+phase.
 
+The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
+to carry two fields, one new and another gained new functionality:
+ * VendorID is a new field that indicates that common subset of vendor
+   option bits are supported as indicated by that VendorID.
+ * AttributeModifier already exists, but overloaded to indicate which
+   vendor options are supported by this VendorID.
 
-> 	netdev_features_t	(*ndo_fix_features)(struct net_device *dev,
-> 						    netdev_features_t features);
-> 	int			(*ndo_set_features)(struct net_device *dev,
->diff --git a/include/net/lag.h b/include/net/lag.h
->index 95b880e6fdde..c43b035989c4 100644
->--- a/include/net/lag.h
->+++ b/include/net/lag.h
->@@ -6,6 +6,38 @@
-> #include <linux/if_team.h>
-> #include <net/bonding.h>
-> 
->+enum lag_get_slaves_flags {
->+	LAG_FLAGS_HASH_ALL_SLAVES = 1<<0
+The general (success) communication flow can be described by the following table:
 
-Enum name and the values should be in sync. Also sync with the ndo name.
+------------------------------------------------------------------------------
+Requester (client)                        | Responder (server)
+-----------------------------------------------------------------------------
+1. Create data QP.                        |
+2. Get ECE information about this QP.     |
+3. Update REQ message with local ECE data.|
+4. Send REQ message with rdma_connect().  |
+                                          | 5. Get REQ message with rdma_get_events.
+                                          | 6. Read remote ECE data from the REQ message.
+                                          | 7. Create data QP.
+                                          | 8. Set in QP the desired ECE options by giving remote ECE data.
+                                          | 9. Read accepted local ECE options.
+                                          |10. Modify QP based on those options.
+                                          |11. Fill local ECE options in REP message.
+                                          |12. Send REP message with rdma_accept().
+13. Receive REP message.                  |
+14. Read remote ECE data from REP message.|
+15. Set in QP remote ECE data             |
+16. Modify QP based on remote ECE data    |
+------------------------------------------------------------------------------
 
-Why exactly do you need these flags? Do you anticipate more of them?
-A simple bool arg to the ndo would do I believe. Can be changed later if
-needed.
+In case the server decides to reject connection, the items #9-10 will be
+replaced with rdma_reject_ece() call that will send REJ message together
+with "ECE options not supported" reason as described in the IBTA.
 
+Thanks
 
+Ido Kalir (2):
+  pyverbs: Add support for ECE
+  tests: Add test for rdmacm ECE mechanism
 
->+};
->+
->+/**
->+ * master_xmit_slave_get - Get the xmit slave of master device
->+ * @skb: The packet
->+ * @flags: lag_get_slaves_flags
->+ *
->+ * This can be called from any context and does its own locking.
->+ * The returned handle has the usage count incremented and the caller must
->+ * use dev_put() to release it when it is no longer needed.
->+ * %NULL is returned if no slave is found.
->+ */
->+
->+static inline
->+struct net_device *master_xmit_get_slave(struct net_device *master_dev,
+Leon Romanovsky (10):
+  Update kernel headers
+  libibverbs: Add interfaces to configure and use ECE
+  libibverbs: Document ECE API
+  debian: Install all available librdmacm man pages
+  librdmacm: Provide interface to use ECE for external QPs
+  librdmacm: Connect rdma_connect to the ECE
+  librdmacm: Return ECE results through rdma_accept
+  librdmacm: Add an option to reject ECE request
+  librdmacm: Implement ECE handshake logic
+  librdmacm: Document ECE API
 
-Please honor the namespace:
-net_lag_get_xmit_slave
+ CMakeLists.txt                             |   2 +-
+ debian/libibverbs1.symbols                 |   5 +-
+ debian/librdmacm-dev.install               |  53 +--------
+ debian/librdmacm1.symbols                  |   4 +
+ kernel-headers/rdma/mlx5_user_ioctl_cmds.h |   6 +
+ kernel-headers/rdma/rdma_user_cm.h         |  15 ++-
+ libibverbs/CMakeLists.txt                  |   2 +-
+ libibverbs/driver.h                        |   2 +
+ libibverbs/dummy_ops.c                     |  14 +++
+ libibverbs/libibverbs.map.in               |   6 +
+ libibverbs/man/CMakeLists.txt              |   2 +
+ libibverbs/man/ibv_query_ece.3.md          |  56 +++++++++
+ libibverbs/man/ibv_set_ece.3.md            |  61 ++++++++++
+ libibverbs/verbs.c                         |  15 +++
+ libibverbs/verbs.h                         |  18 +++
+ librdmacm/CMakeLists.txt                   |   2 +-
+ librdmacm/cma.c                            | 130 +++++++++++++++++++--
+ librdmacm/librdmacm.map                    |   7 ++
+ librdmacm/man/CMakeLists.txt               |   2 +
+ librdmacm/man/rdma_cm.7                    |  14 ++-
+ librdmacm/man/rdma_get_remote_ece.3.md     |  61 ++++++++++
+ librdmacm/man/rdma_set_local_ece.3.md      |  62 ++++++++++
+ librdmacm/rdma_cma.h                       |  24 ++++
+ librdmacm/rdma_cma_abi.h                   |  15 ++-
+ pyverbs/cmid.pyx                           |  23 +++-
+ pyverbs/libibverbs.pxd                     |   7 ++
+ pyverbs/librdmacm.pxd                      |   2 +
+ pyverbs/qp.pxd                             |   3 +
+ pyverbs/qp.pyx                             |  45 ++++++-
+ tests/rdmacm_utils.py                      |  18 ++-
+ 30 files changed, 606 insertions(+), 70 deletions(-)
+ create mode 100644 libibverbs/man/ibv_query_ece.3.md
+ create mode 100644 libibverbs/man/ibv_set_ece.3.md
+ create mode 100644 librdmacm/man/rdma_get_remote_ece.3.md
+ create mode 100644 librdmacm/man/rdma_set_local_ece.3.md
 
-Also, just "struct net_device *dev" would be enough.
+--
+2.25.2
 
-
-
->+					 struct sk_buff *skb,
->+					 u16 flags)
->+{
->+	const struct net_device_ops *ops = master_dev->netdev_ops;
->+	struct net_device *slave = NULL;
-
-"slave_dev" please.
-
-Just check the ndo here and return NULL if it is not defined. That way
-you avoid unnecessary NULL initialization and rcu lock.
-
-
->+
->+	rcu_read_lock();
->+	if (ops->ndo_xmit_get_slave)
->+		slave = ops->ndo_xmit_get_slave(master_dev, skb, flags);
->+	if (slave)
->+		dev_hold(slave);
->+	rcu_read_unlock();
->+	return slave;
->+}
->+
-> static inline bool net_lag_port_dev_txable(const struct net_device *port_dev)
-> {
-> 	if (netif_is_team_port(port_dev))
->-- 
->2.17.2
->
