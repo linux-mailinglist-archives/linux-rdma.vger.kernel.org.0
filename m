@@ -2,106 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E121AFD9F
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Apr 2020 21:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2871AFF0F
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 02:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgDSToj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 19 Apr 2020 15:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726472AbgDSToi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 19 Apr 2020 15:44:38 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89950C061A0C;
-        Sun, 19 Apr 2020 12:44:38 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n143so1651983qkn.8;
-        Sun, 19 Apr 2020 12:44:38 -0700 (PDT)
+        id S1725949AbgDTAC6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 19 Apr 2020 20:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725947AbgDTAC5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 19 Apr 2020 20:02:57 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51D2C061A0C;
+        Sun, 19 Apr 2020 17:02:57 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id g74so8823204qke.13;
+        Sun, 19 Apr 2020 17:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/a00SXdtPLR1UXli00oeOMOKBStwD3QxEoGYBvjNXKA=;
-        b=NVDCPA8l7oqxgZUR2EN4/un6Ni8ocqk++OuNEvIbTjfzEAfBnXRBQzHD4YgoVSd4xz
-         qCZCbCeE9OIYjGhQ1U1UiCSSkdMJGisqkw/oVPAUbDaYU3d75ez5Hc+pggzYrbSVfC9Z
-         5w+N3GoY/58c+82ZI5m6wfeMR5Qx8RNX1Jva9hJfSABVEYRCydsav4OgzRp7WIZQDhIv
-         TvlqoVL85v2UhDxz+sneQhJKtazPExPqxdA1BS4r/fq/tl9Fl28eZBVyfBsy07ulH0Nq
-         6lu2x2CRa6yLLOWT4+by8EYUAfpm89yZlqm4qFEBwn5kXjr8SAm3DhqrGg2A/X7aijAT
-         iEDg==
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=B7xhq+APf45x2wvg9KIt4Ho6+03Chcke1iwq0BwwM+M=;
+        b=MscsKhTEA6Jnkt8Ng2/gx2Arr179frr1l9cNMNP71SdbeHVAWRGTZaD9FbnSOu5uhr
+         xhCjjFsRkkIJuVCdT6fhtKfh2XTFtHG+GOP7r6o3la6oRTweSy7TtNUNMqiZzMKQHG7v
+         VlOkNaXPUxCLdjIMzWoLAlTAoPML2KLybCHhE6jJStU+2iSmsnkeoTq0aGcTKeS+P1oD
+         WnC2L2pe4+JNlwzYlEDBHNuANRuDF+CcAfR7ZWMeB1zoHeSr1tyQg5fJxqBhHOGxlu9Q
+         SlJUMHQAJp9KjtZMQhXCxffDtibVVncFBst04AW7Xl/exNJlTM1FR/v3gQyU2YApHS89
+         xYJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/a00SXdtPLR1UXli00oeOMOKBStwD3QxEoGYBvjNXKA=;
-        b=awXJGFrlrQyz5VQsvbJA6Ts3wKng1ICvdIEOQzHO5EjDGSOgHXa7aOjG/RRw2EuIYQ
-         zO5caY4WidtXbUyJi93vnwAwMt5M8JrUMH6NgprRhRP1VKBRzomn4Q3ipcWpt2DmITR0
-         huA75V4idloDMARIj2pBq2zsxUYMB6ffY9mo0RQN2mwilsCUwv9/J2J3tSkIdItRpHgt
-         4v+wIXXyewhcqCieT56lxmK8OZcorvltVyOTPRZ7MNhmPVQxKjNCBOZGYlZUe5ubhsQA
-         gH5BoauI6Dg1YatVYRHuOM4dBBgn0yuabACgCMUUm1vijr8dueZJNykOLPSQPy7qwdOj
-         kS2g==
-X-Gm-Message-State: AGi0PuYDh/vQBYoxdIEa/a0Ipvbir4hsSAwDjk8rF0MqwsHrhTTg8M+0
-        CcGV4eHA6l3Ht3GZTmb8jK6Bgrpl
-X-Google-Smtp-Source: APiQypLQyJLMB8U7Ux4CMOC/JrBsRNv9p50j/KhDzT+BgNL0o8BcydpRFHifdyGKjn+y1AGBPsGZqA==
-X-Received: by 2002:a37:4885:: with SMTP id v127mr12647564qka.253.1587325477837;
-        Sun, 19 Apr 2020 12:44:37 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:b4ef:508c:423e:3e6a? ([2601:282:803:7700:b4ef:508c:423e:3e6a])
-        by smtp.googlemail.com with ESMTPSA id b201sm1531138qkg.32.2020.04.19.12.44.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Apr 2020 12:44:37 -0700 (PDT)
-Subject: Re: [PATCH mlx5-next 00/10] Add support to get xmit slave
-To:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
-        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org
-Cc:     leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alexr@mellanox.com
-References: <20200419133933.28258-1-maorg@mellanox.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <ac373456-b838-29cf-645f-b1ea1a93e3b0@gmail.com>
-Date:   Sun, 19 Apr 2020 13:44:34 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=B7xhq+APf45x2wvg9KIt4Ho6+03Chcke1iwq0BwwM+M=;
+        b=BF/Mbqkfqi8+upjxYpuxe8/LnXTQhFLnuJVbP7L6kVYch3RsMi44yzZkKuC9k0wTGG
+         DlpebsjOny48iR5bVUS5IId8W8+/TW6tWeH/HQ6s9E4miegiTo9kFuH5bDImJmyZxC3i
+         L/iISyNdMZZ/Ieqi07ZE5GFzG8D5i2p2sEo4BFLsHQFw2fGH0RtfpzcgxFl82gTvXQzT
+         Xy4jXDQRd3FXMEz59ZIxjdeeXv4JQyAsm55MbwA2qD8DFRTfI7EIuFYKWrfPYAoIAj0+
+         9D076uko4fGFnzgATpbKpIyeLFVo3X6wDY8Lno2IJrbEw0LDv9aC2bWOxUV12cCoxCAP
+         ep5A==
+X-Gm-Message-State: AGi0PuYaLRdbKxZN1nqWIu/JGMFuawRuYZWWJfV81udSMI7DYErO0lv8
+        j5Crk3HEk5mmhHfhR4LQq1c4lqOO
+X-Google-Smtp-Source: APiQypIbwA2jcpLiZ0M7FZU1gj+i3IUO+DwedgVWGEjmMbkPPfjFDDljXe7qBU+N/NIIJBBKxr1DLg==
+X-Received: by 2002:ae9:ef93:: with SMTP id d141mr13783889qkg.311.1587340976769;
+        Sun, 19 Apr 2020 17:02:56 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id o43sm6087979qtc.23.2020.04.19.17.02.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 19 Apr 2020 17:02:56 -0700 (PDT)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 03K02sIh016690;
+        Mon, 20 Apr 2020 00:02:54 GMT
+Subject: [PATCH v1 0/3] NFS/RDMA client patches for v5.7-rc
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     anna.schumaker@netapp.com
+Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Sun, 19 Apr 2020 20:02:54 -0400
+Message-ID: <20200420000223.6417.32126.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20200419133933.28258-1-maorg@mellanox.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/19/20 7:39 AM, Maor Gottlieb wrote:
-> Hi Dave,
-> 
-> This series is a combination of netdev and RDMA, so in order to avoid
-> conflicts, we would like to ask you to route this series through
-> mlx5-next shared branch. It is based on v5.7-rc1 tag.
-> 
-> ---------------------------------------------------------------------
-> 
-> The following series adds support to get the LAG master xmit slave by
-> introducing new .ndo - ndo_xmit_slave_get. Every LAG module can
+Hi Anna-
 
-I do not see ndo_xmit_slave_get  introduced ...
+Patches 1 and 3 fix problems introduced in v5.7, and patch 2
+addresses a potential crasher that's been around for a while.
+
+Please consider these for 5.7-rc. Thanks!
+
+---
+
+Chuck Lever (3):
+      xprtrdma: Restore wake-up-all to rpcrdma_cm_event_handler()
+      xprtrdma: Fix trace point use-after-free race
+      xprtrdma: Fix use of xdr_stream_encode_item_{present,absent}
 
 
-> 
->  drivers/infiniband/core/Makefile              |   2 +-
->  drivers/infiniband/core/lag.c                 | 139 +++++++++
->  drivers/infiniband/core/verbs.c               |  44 ++-
->  drivers/infiniband/hw/mlx5/ah.c               |   4 +
->  drivers/infiniband/hw/mlx5/gsi.c              |  34 ++-
->  drivers/infiniband/hw/mlx5/main.c             |   2 +
->  drivers/infiniband/hw/mlx5/mlx5_ib.h          |   1 +
->  drivers/infiniband/hw/mlx5/qp.c               | 123 +++++---
->  drivers/net/bonding/bond_alb.c                |  39 ++-
->  drivers/net/bonding/bond_main.c               | 272 +++++++++++++-----
->  drivers/net/ethernet/mellanox/mlx5/core/lag.c |  66 +++--
->  include/linux/mlx5/driver.h                   |   2 +
->  include/linux/mlx5/mlx5_ifc.h                 |   4 +-
->  include/linux/mlx5/qp.h                       |   2 +
->  include/linux/netdevice.h                     |   3 +
+ include/trace/events/rpcrdma.h |   12 ++++--------
+ net/sunrpc/xprtrdma/rpc_rdma.c |   15 +++++++++++----
+ net/sunrpc/xprtrdma/verbs.c    |    3 ++-
+ 3 files changed, 17 insertions(+), 13 deletions(-)
 
-nor any changes to netdevice.h. Bad spin of the patches?
-
+--
+Chuck Lever
