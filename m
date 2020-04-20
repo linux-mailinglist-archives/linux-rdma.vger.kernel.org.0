@@ -2,63 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F02A1B1521
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98561B1533
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgDTSsP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 14:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgDTSsO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 14:48:14 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A4AC061A0F
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 11:48:14 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g13so11463129wrb.8
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 11:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2cSdc7HOKNn19uIovkBV2qQLh5+gmDP21h5U9G3vQpg=;
-        b=AWt7dvWRP+vAoE+odGSw7XNnLZObieoTenf9eCtsh7RVN/TGFvcAACtffqBThNrcS3
-         zlsMF/jJreikztfpiqVKzjgSIFM4qjed8tvPnuxNNDLP15XzxLkr0h/PGgSII0P0sAqF
-         lmVeVm3FrGFdKB9eeAyOzIeGYwO8v/NwLvBei3p0LWS3CINC+60AS1V5JXMUEs5ANHZI
-         QKB+6lyaSIJTmKFQSohenGvdTEm+yBs4CtxG6NyqvCiCKgj0F9C+aT26ElLTWuwdi0m9
-         rFDTH48y22+S/y70iDfaE+cpCiet5XiTzu+otbKEcVlIXWzbkw32YpaEkctMGDMAZGp8
-         ym3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2cSdc7HOKNn19uIovkBV2qQLh5+gmDP21h5U9G3vQpg=;
-        b=CWHQ76jbf2u561FhJ5T429SlMwbbHL5ybipyv8T/W1K2ujYLl8UG10ss/pjiO0UJ4G
-         su9NSutSsPkIVVlQzW13whiDz2SsswiteDJ2e6utmT91hU/aR7AduYn9rYDUbExpiR8x
-         sArQl3zZvNxyjuwgJtP/GFRB0QsuTQTK7NqZu0DgKtXYvMdsojLaVPT7iGdkzfOrFRRn
-         iv94j3IIxUNVdnL0XiOg3GXRVwDT0w4+9qgyYsqzyym7ftdv35r9NDWdWntUP1peybeA
-         gthgA8q4H8I1kbyCjY4XJE0DDLE89CDbgmnH4drOyEexsohCb1BevnJGQuKBkBds6xtY
-         Hoqg==
-X-Gm-Message-State: AGi0Pua4NeqLLO4w7lv8R8kILJssxiX7E5GnE5o3e4phrbnBTkvLLIh5
-        d9Arx08p1QW+UF2ASDbNyXfvAQ==
-X-Google-Smtp-Source: APiQypJTmGD6w4kcJc/Jb8LZ9aIRN3E+NN52Jim9VsAd/ZOeMB8QLIvIrgK3iYSjr2bKc6PscVe0HQ==
-X-Received: by 2002:a5d:610e:: with SMTP id v14mr19672293wrt.159.1587408493333;
-        Mon, 20 Apr 2020 11:48:13 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id y63sm386040wmg.21.2020.04.20.11.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2020 11:48:12 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 20:48:11 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
-        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
-        leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alexr@mellanox.com
+        id S1726023AbgDTS41 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 14:56:27 -0400
+Received: from mail-eopbgr70083.outbound.protection.outlook.com ([40.107.7.83]:12854
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726017AbgDTS41 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Apr 2020 14:56:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FMEh9/QoyPMZhFpxfaB2vMZNAlTNRkgpR7CegWrF8ybP8GOVLOel9tBAp9l+EoSsQ/hHlSXoGgZRhnoNJmREw3Sg+K/ghzS1YqtDNopPJ6bARwfmH1KQCJZ3ptU1dM/1Rvzik7rmo8+IJlp1mkNWTgkFKDoHr8UxMPCvmaR/5pZg5L+Oz5VnTWFhL0/Ep6z8p0QNlOC3kettcQlBPMjB/TevFnkG/vkVh/iFgxX/9uVcVTYXOhx72aaoYKLswKIYRZPtMOjQRAZY5HaqWxDht/oU9c3jE9ZaleZSgzHTwEEUnhHm/sDJQcZZ8lpd42scAHdu+K8S5Ll47upA4VYvpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94TKUF2hG+GRh39AO3ol7+KbShQ60OqFgFTtedpvfdc=;
+ b=ZasO0jZHjpsMKA2Dw4k3K6NzoUhR8R+Zn7DY9LVkkFfMCIyOK3UVrvmnb8tok+4oWGJ/F4kh8suOAdByGdgqBLr7bhTMd5AELlFciTcETIsUJnGVfKCyQ2X5XrIQ6HcSkNrmixvZk7C0U8xs7hUJK1nNUhbrkVlOfzbnlOK1IjhTltrybmjmveKeygSbZWTrcJuAadpNuOm8MTffGFWTBJ+6izVVafMy5IJoPkUNMZGiHVHsd6mzJVg7CG3bhny7smF0s9JCJyy+79t+kJo1SbclfthfoFST+xvj668ey8FSqoRimgDGQzJGLCFeoXn0sEhaQgOewlH9ecvGXdlonA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94TKUF2hG+GRh39AO3ol7+KbShQ60OqFgFTtedpvfdc=;
+ b=EtVT7y6jJYLE6EPXNNdw+HJarN0kGxGwCyXpoZh+elo6IhSRcjurAk9aQsHQpY8JVX0o6zz3NEkNz0pNvAUrtAEaQRMX6rDSIiyTyWGNOiiMIdeOlV9tlzzjE6RjL4SJ8wJaeToALyOqit+wCzYLke0MVntW01ayAi13W7q/Zxs=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=maorg@mellanox.com; 
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
+ by AM0PR05MB6420.eurprd05.prod.outlook.com (2603:10a6:208:13f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Mon, 20 Apr
+ 2020 18:56:23 +0000
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::3401:44fa:caa1:8d41]) by AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::3401:44fa:caa1:8d41%6]) with mapi id 15.20.2921.027; Mon, 20 Apr 2020
+ 18:56:23 +0000
 Subject: Re: [PATCH V2 mlx5-next 01/10] net/core: Introduce
  master_xmit_slave_get
-Message-ID: <20200420184811.GW6581@nanopsycho.orion>
+To:     Jiri Pirko <jiri@resnulli.us>, David Ahern <dsahern@gmail.com>
+Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, leonro@mellanox.com, saeedm@mellanox.com,
+        jiri@mellanox.com, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, alexr@mellanox.com
 References: <20200420075426.31462-1-maorg@mellanox.com>
  <20200420075426.31462-2-maorg@mellanox.com>
  <20200420140118.GJ6581@nanopsycho.orion>
@@ -67,23 +54,63 @@ References: <20200420075426.31462-1-maorg@mellanox.com>
  <916ab047-3b50-7104-311a-6dcf604bcf6d@gmail.com>
  <20200420180144.GV6581@nanopsycho.orion>
  <75dffa6a-c14f-45c9-44e1-bf5b5c650a9b@gmail.com>
+ <20200420184811.GW6581@nanopsycho.orion>
+From:   Maor Gottlieb <maorg@mellanox.com>
+Message-ID: <60467948-041c-5de1-d365-4f21030683e7@mellanox.com>
+Date:   Mon, 20 Apr 2020 21:56:18 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200420184811.GW6581@nanopsycho.orion>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM3PR07CA0130.eurprd07.prod.outlook.com
+ (2603:10a6:207:8::16) To AM0PR05MB5873.eurprd05.prod.outlook.com
+ (2603:10a6:208:125::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75dffa6a-c14f-45c9-44e1-bf5b5c650a9b@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.100.102.4] (89.138.210.166) by AM3PR07CA0130.eurprd07.prod.outlook.com (2603:10a6:207:8::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.6 via Frontend Transport; Mon, 20 Apr 2020 18:56:21 +0000
+X-Originating-IP: [89.138.210.166]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8676c697-5bff-469e-b511-08d7e55c8520
+X-MS-TrafficTypeDiagnostic: AM0PR05MB6420:|AM0PR05MB6420:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB64201D52C6F87CB1FE3B1621D3D40@AM0PR05MB6420.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 03793408BA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5873.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(31686004)(5660300002)(31696002)(2616005)(4744005)(478600001)(186003)(956004)(16526019)(4326008)(107886003)(6666004)(86362001)(8936002)(8676002)(66556008)(66476007)(66946007)(6486002)(110136005)(52116002)(2906002)(16576012)(81156014)(316002)(36756003)(53546011)(7416002)(26005);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SFIR59H6wJhq/ovkDKqe9ARjvAPeKPdCG7SxjOT0EXIGLdbS1yq+DiM8N9OKNSLfpaMk2QNYsdBRcqGSAFvmIceRfNK95Kzno8D45BE9MHYJTRVFO61u8rorITBfP1uNrE9eXrWo1MVl+iVzwFbRW6B9bj4j8CF/D3N/1dR1jPqFUaJ2i/MU3d34NzqWPkYzkF7xHhaJkgW1V6w9NzQ3Bi7rPl7HoMrljlZj7KDvDWdqzHcKJqVixtwtTJcGzZGkoG4poX2lMwJldMA/g1OeaBo7hPtIvFpuqCyCOBOPpGokrY1X/fxBFnc0r+AByzuY4pnDeReIyWlQBaQnpFJwmvGtNd5SUPbPA1l6KkHn3nsohZG3w1uZSfU0o6fEuTiLQ2FJMtosD4B4DQ1v7dzK86aag4I8plG+aAXohmDMsOYVpASLhKYY/colNN5k7fMQ
+X-MS-Exchange-AntiSpam-MessageData: 18CqnzOTnDIS7XpEycMYRAAGVK1BT1xi+qJquf52TLAJ5o74y6bh16ngFGUhT7pYaa/YHKdMU/oqkaO6cNjHh1sfecVqGn53KjZNCKTjYb6OAetRx+Ge5Bj9YTlbxWVGzzNkYqqdV1c9wDvzC00qZg==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8676c697-5bff-469e-b511-08d7e55c8520
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2020 18:56:23.0898
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XF9jWOLweqWlVRmobZ6sWhN2YPkBZvraB3990UUHoKm7BgiC88A9CMNb/DFoNOstwPkc7eAC5I68fW6GCVEv+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6420
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Apr 20, 2020 at 08:04:01PM CEST, dsahern@gmail.com wrote:
->On 4/20/20 12:01 PM, Jiri Pirko wrote:
->> Generic ndo with lag-specific arg? Odd. Plus, there is a small chance
->> this is ever going to be used for other master. And if so, could be very
->> easily renamed then...
+
+On 4/20/2020 9:48 PM, Jiri Pirko wrote:
+> Mon, Apr 20, 2020 at 08:04:01PM CEST, dsahern@gmail.com wrote:
+>> On 4/20/20 12:01 PM, Jiri Pirko wrote:
+>>> Generic ndo with lag-specific arg? Odd. Plus, there is a small chance
+>>> this is ever going to be used for other master. And if so, could be very
+>>> easily renamed then...
+>> core code should be generic, not specific and renamed at a later date
+>> when a second use case arises.
+> Yeah, I guess we just have to agree to disagree :)
+
+So I am remaining with the flags. Any suggestion for better name for the 
+enum? Should I move master_xmit_get_slave from lag.h to netdevice.h?
 >
->core code should be generic, not specific and renamed at a later date
->when a second use case arises.
-
-Yeah, I guess we just have to agree to disagree :)
-
