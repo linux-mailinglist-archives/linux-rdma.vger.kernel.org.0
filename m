@@ -2,114 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DCC1B0D71
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 15:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9FD1B0D9F
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 16:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728978AbgDTNxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 09:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        id S1728881AbgDTOBZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 10:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728775AbgDTNxS (ORCPT
+        by vger.kernel.org with ESMTP id S1729052AbgDTOBX (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:53:18 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A88C061A0F
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 06:53:16 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id j4so10513064qkc.11
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 06:53:16 -0700 (PDT)
+        Mon, 20 Apr 2020 10:01:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB809C061A10
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 07:01:21 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j1so6884181wrt.1
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 07:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=o13LKn2rJ4UJRW2h0bHPO25xmhuYtNcawFVc7d+lgRo=;
-        b=XZ0QzRtY25nEU44AD6pxDnkqb8l9QSmUK6ijcSmpjmSIiOt930jssLLchxgYVBCReC
-         kvYOxln/nTnQQL7H2lKTWo6IXjD3qn+zcWML+FsuFwe/qTLF0+lzQRa4i76CpOezVmAT
-         6hZftVtcfPfRamgioSFKBVcYiQO08xyeQ+qDvTH48MqKN7VflkvGm6h4Inti4Omg4pBU
-         8S5JLyQ3B1HArKJ1F4j4BZ+Ze4inRaNI9T3ClS8676Q8+g9apTVesyJEzQupy1dc+tp5
-         1tInQ3pj1/10OXIXsRtRMYg+qjDqrC8VjbnL0Vt6r2OvV6sFo96gKXHgQMZq/WcDGFla
-         o0Gw==
+         :content-disposition:in-reply-to;
+        bh=3vSFuictiXaH6DTHu7ZG1ytuLG8BYZy4W0CQuxmGYs8=;
+        b=tOb745zS5TEEe0RI6MG40EcpZ2e0YDjeI4tcBRazKqgW9b05jceB+8bWT6NL+vjvME
+         rvDTR+Ypc+OjwtlP5YlYSH7jGdmBbaVgNxWV10TeikynNfoUqh07OzxC2uiCf/cayhpV
+         MKv0J79CD9Y4FEgzumG1Bt13lLHytInG39uX+qjyN7AGsXo1HQDE/88bVFhDJyl/FPFm
+         6sZo4ZvqUX8UkQLzET6tjq0cLTjvBuDSr2F8kvfhGeTee0yjyt1TKsbXoX1i920wnH9/
+         D6PLgwzp2adrSx8eTljTAbf8NeD0VfDvyIKvd+lbfOlBE4axFZghWtszc03HaHcs51Dp
+         eP6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=o13LKn2rJ4UJRW2h0bHPO25xmhuYtNcawFVc7d+lgRo=;
-        b=FCS52A3kFFZkz4OSAdBAMECbXpXzNBhrjlRpzcoIpWCtpz9t6CSzXA4KBVaJoEHSHP
-         0P65A8M1RDjhSBXM6DJWSWr4+Yyuir2tEiLDkwpdwOp8oSHpfUfHTB4XN8lI+pm8m5pa
-         gqzS4Sc+J5hS0kSTgVdvO4rAvK534C8vS2O1IYk8g6xqYNZeEVU7OCQmAtuyJVVtlcU8
-         rISxsjOzvZW+D9PFnGvWU9CcJ9bIK0qs9H9w407624VL58sjpAyR3TWWXpwugfnqvKCj
-         n6YPlgrVrcurTfMxHzA29O0T4ikSgJmUTNlzCa486WgqhsviN4lReODal4n9c7rlnW2u
-         TnRw==
-X-Gm-Message-State: AGi0PuaJJRfHbuDL2vpHph2XmQjSx7qLkzSB+4+bJQvAw4AghuS/dpZm
-        35kZyJECJ6PnECqL2vfu/jTRpg==
-X-Google-Smtp-Source: APiQypKAuhKh4rWPi/Nv88pFYcY1AEs9cY0OovBK26lllR60Dcz1ju17EnwdSoy7oIdUQy3ML9dWdQ==
-X-Received: by 2002:a37:65c3:: with SMTP id z186mr15820182qkb.484.1587390796111;
-        Mon, 20 Apr 2020 06:53:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id n124sm595348qkn.136.2020.04.20.06.53.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 Apr 2020 06:53:14 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jQWrJ-0002Xf-Co; Mon, 20 Apr 2020 10:53:13 -0300
-Date:   Mon, 20 Apr 2020 10:53:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        jonas@kwiboo.se, David Airlie <airlied@linux.ie>,
-        jernej.skrabec@siol.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-Message-ID: <20200420135313.GN26002@ziepe.ca>
-References: <20200417011146.83973-1-saeedm@mellanox.com>
- <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=3vSFuictiXaH6DTHu7ZG1ytuLG8BYZy4W0CQuxmGYs8=;
+        b=jjJ6pvTQJvgEvLaouCLj+ELJKoEeh2SWfmxKtO4ObRs/FwOht7emG6J4vgB9apl09z
+         43c4znyjVqvrqd1QII4yqCUc8rFS20BFKKIcFfoZRUA0PFUHRZpcDbI3qe1Igaulh46q
+         dUQqUqGCjxI8ox+mgCUM/XGQlyqkNUKeqE8ZWIK3oavTxu5kqj8MaHJnakxDiHvvXXhD
+         9C2nAMMBAVefCTskohyfB63iwB54eyX4s8OCRCZTuMVVPoQGb0eMV/UUTB9u4Ix2d+nB
+         1jbDT7dbMJAwLHYCvDBIHeLUS32eMCad6Hw+kFaD+ztDpnBMgoYICFPGaxd0k/5Yh5Lg
+         8MPg==
+X-Gm-Message-State: AGi0PubEU0NSOmiqIjxJ+Z7xcmQi5RCWdwmZtTG458XjCoYi+bW568Yz
+        0YpD10yuRHJtf3msUKNyziwVQg==
+X-Google-Smtp-Source: APiQypI1i3OBkNY85OHtJAVy/MKsMr7pD6uqP5IhPCPyUl24ZnXaNs4STsSyn6JmvDssY+dK7WCG7g==
+X-Received: by 2002:a5d:5085:: with SMTP id a5mr20425454wrt.394.1587391280517;
+        Mon, 20 Apr 2020 07:01:20 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id i5sm1301926wrw.77.2020.04.20.07.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 07:01:19 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 16:01:18 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Maor Gottlieb <maorg@mellanox.com>
+Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, leonro@mellanox.com, saeedm@mellanox.com,
+        jiri@mellanox.com, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, alexr@mellanox.com
+Subject: Re: [PATCH V2 mlx5-next 01/10] net/core: Introduce
+ master_xmit_slave_get
+Message-ID: <20200420140118.GJ6581@nanopsycho.orion>
+References: <20200420075426.31462-1-maorg@mellanox.com>
+ <20200420075426.31462-2-maorg@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200420075426.31462-2-maorg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 04:00:43AM +0900, Masahiro Yamada wrote:
+Mon, Apr 20, 2020 at 09:54:17AM CEST, maorg@mellanox.com wrote:
+>Add new ndo to get the xmit slave of master device.
+>User should release the slave when it's not longer needed.
+>When slave selection method is based on hash, then the user can ask to
+>get the xmit slave assume all the slaves can transmit by setting the
+>LAG_FLAGS_HASH_ALL_SLAVES bit in the flags argument.
+>
+>Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+>---
+> include/linux/netdevice.h |  3 +++
+> include/net/lag.h         | 32 ++++++++++++++++++++++++++++++++
+> 2 files changed, 35 insertions(+)
+>
+>diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>index 130a668049ab..e8852f3ad0b6 100644
+>--- a/include/linux/netdevice.h
+>+++ b/include/linux/netdevice.h
+>@@ -1389,6 +1389,9 @@ struct net_device_ops {
+> 						 struct netlink_ext_ack *extack);
+> 	int			(*ndo_del_slave)(struct net_device *dev,
+> 						 struct net_device *slave_dev);
+>+	struct net_device*	(*ndo_xmit_get_slave)(struct net_device *master_dev,
+>+						      struct sk_buff *skb,
+>+						      u16 flags);
 
-> People would wonder, "what 'uses FOO' means?",
-> then they would find the explanation in kconfig-language.rst:
+Please adjust the name to:
+ndo_get_lag_xmit_slave
+
+
+
+> 	netdev_features_t	(*ndo_fix_features)(struct net_device *dev,
+> 						    netdev_features_t features);
+> 	int			(*ndo_set_features)(struct net_device *dev,
+>diff --git a/include/net/lag.h b/include/net/lag.h
+>index 95b880e6fdde..c43b035989c4 100644
+>--- a/include/net/lag.h
+>+++ b/include/net/lag.h
+>@@ -6,6 +6,38 @@
+> #include <linux/if_team.h>
+> #include <net/bonding.h>
 > 
->   "Equivalent to: depends on symbol || !symbol
->   Semantically it means, if FOO is enabled (y/m) and has the option:
->   uses BAR, make sure it can reach/use BAR when possible."
-> 
-> To understand this correctly, people must study
-> the arithmetic of (symbol || !symbol) anyway.
+>+enum lag_get_slaves_flags {
+>+	LAG_FLAGS_HASH_ALL_SLAVES = 1<<0
 
-I think people will just cargo-cult copy it and not think too hard
-about how kconfig works.
+Enum name and the values should be in sync. Also sync with the ndo name.
 
-The descriptions in kconfig-language.rst can be improved to better
-guide C people using kconfig without entirely understanding
-it. Something like:
+Why exactly do you need these flags? Do you anticipate more of them?
+A simple bool arg to the ndo would do I believe. Can be changed later if
+needed.
 
- BAR depends on FOO // BAR selects FOO: BAR requires functionality from
- FOO
 
- BAR uses FOO: BAR optionally consumes functionality from FOO using
- IS_ENABLED
 
- BAR implies FOO: BAR optionally consumes functionality from FOO using
- IS_REACHABLE
+>+};
+>+
+>+/**
+>+ * master_xmit_slave_get - Get the xmit slave of master device
+>+ * @skb: The packet
+>+ * @flags: lag_get_slaves_flags
+>+ *
+>+ * This can be called from any context and does its own locking.
+>+ * The returned handle has the usage count incremented and the caller must
+>+ * use dev_put() to release it when it is no longer needed.
+>+ * %NULL is returned if no slave is found.
+>+ */
+>+
+>+static inline
+>+struct net_device *master_xmit_get_slave(struct net_device *master_dev,
 
-Now someone adding IS_ENABLED or IS_REACHABLE checks to C code knows
-exactly what to put in the kconfig.
+Please honor the namespace:
+net_lag_get_xmit_slave
 
-Jason
+Also, just "struct net_device *dev" would be enough.
+
+
+
+>+					 struct sk_buff *skb,
+>+					 u16 flags)
+>+{
+>+	const struct net_device_ops *ops = master_dev->netdev_ops;
+>+	struct net_device *slave = NULL;
+
+"slave_dev" please.
+
+Just check the ndo here and return NULL if it is not defined. That way
+you avoid unnecessary NULL initialization and rcu lock.
+
+
+>+
+>+	rcu_read_lock();
+>+	if (ops->ndo_xmit_get_slave)
+>+		slave = ops->ndo_xmit_get_slave(master_dev, skb, flags);
+>+	if (slave)
+>+		dev_hold(slave);
+>+	rcu_read_unlock();
+>+	return slave;
+>+}
+>+
+> static inline bool net_lag_port_dev_txable(const struct net_device *port_dev)
+> {
+> 	if (netif_is_team_port(port_dev))
+>-- 
+>2.17.2
+>
