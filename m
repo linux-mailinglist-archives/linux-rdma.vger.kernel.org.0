@@ -2,34 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEAA1B0DEE
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 16:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9901C1B0DF1
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 16:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgDTOH3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 10:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32994 "EHLO mail.kernel.org"
+        id S1728390AbgDTOHk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 10:07:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727939AbgDTOH2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:07:28 -0400
+        id S1728378AbgDTOHj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:07:39 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2365E214AF;
-        Mon, 20 Apr 2020 14:07:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A89220722;
+        Mon, 20 Apr 2020 14:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587391647;
-        bh=9Rhz1ie63HGNxUMnanR3tcL/vX2nObFsx1txrFhlcQc=;
+        s=default; t=1587391658;
+        bh=83qtSHazwCIrl4vrD+8ed/b2heIjxn61VO1XS+w8hXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yogIJL+0SGKLpKDJ++Ui6AGoBrRTAxI2lYQjUprCHCrgttPy48HR5Q/Ul/AJyFkU3
-         1C1Vp8obUijcZIsp/955vQ0UncrvMNZTPMe4BDwABdgMcLG7oreCG5d953Y3lWX0EU
-         mJYrLLxk7UAnEOia3XsX2pQqrlJGFIVgn4rQ49M0=
+        b=r3LuQLzDuRcb5VQwo2/8C/zddKpV/5c0k4ofLEqgiC2g0N1iCR+o2KUKJTdUOJq97
+         qWHuU9jXUjE51M8IR1c01zOEGX1gk+qoO25aO1rLQn4mRwrruDeUdd2VCmx5uxn4M9
+         DyGVzKZwf3BvHD4aRkZqogwEQbsj7NxWaQAZB/tc=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-core 10/12] librdmacm: Document ECE API
-Date:   Mon, 20 Apr 2020 17:06:46 +0300
-Message-Id: <20200420140648.275554-11-leon@kernel.org>
+Cc:     Ido Kalir <idok@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-core 11/12] pyverbs: Add support for ECE
+Date:   Mon, 20 Apr 2020 17:06:47 +0300
+Message-Id: <20200420140648.275554-12-leon@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200420140648.275554-1-leon@kernel.org>
 References: <20200420140648.275554-1-leon@kernel.org>
@@ -40,228 +42,186 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Ido Kalir <idok@mellanox.com>
 
-Add manual pages for librdmacm part of ECE.
+ECE (enhanced connection establishment) is a mechanism that gives an
+option to different libibverbs providers to advertise and use various
+provider-specific QP configuration options.
+Add those verbs:
+ibv_query_ece - get QPs ece.
+ibv_set_ece - set the QPs ece.
+rdma_set_local_ece - set the local CMs ece.
+rdma_get_remote_ece - get the remote CM ece from the connection request.
 
+Signed-off-by: Maxim Chicherin <maximc@mellanox.com>
+Signed-off-by: Ido Kalir <idok@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- librdmacm/man/CMakeLists.txt           |  2 +
- librdmacm/man/rdma_cm.7                | 14 +++++-
- librdmacm/man/rdma_get_remote_ece.3.md | 61 +++++++++++++++++++++++++
- librdmacm/man/rdma_set_local_ece.3.md  | 62 ++++++++++++++++++++++++++
- 4 files changed, 138 insertions(+), 1 deletion(-)
- create mode 100644 librdmacm/man/rdma_get_remote_ece.3.md
- create mode 100644 librdmacm/man/rdma_set_local_ece.3.md
+ pyverbs/cmid.pyx       | 23 ++++++++++++++++++++-
+ pyverbs/libibverbs.pxd |  7 +++++++
+ pyverbs/librdmacm.pxd  |  2 ++
+ pyverbs/qp.pxd         |  3 +++
+ pyverbs/qp.pyx         | 45 ++++++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 77 insertions(+), 3 deletions(-)
 
-diff --git a/librdmacm/man/CMakeLists.txt b/librdmacm/man/CMakeLists.txt
-index 2d1efbff..6159c3e3 100644
---- a/librdmacm/man/CMakeLists.txt
-+++ b/librdmacm/man/CMakeLists.txt
-@@ -29,6 +29,7 @@ rdma_man_pages(
-   rdma_get_local_addr.3
-   rdma_get_peer_addr.3
-   rdma_get_recv_comp.3
-+  rdma_get_remote_ece.3.md
-   rdma_get_request.3
-   rdma_get_send_comp.3
-   rdma_get_src_port.3
-@@ -56,6 +57,7 @@ rdma_man_pages(
-   rdma_resolve_addr.3
-   rdma_resolve_route.3
-   rdma_server.1
-+  rdma_set_local_ece.3.md
-   rdma_set_option.3
-   rdma_xclient.1
-   rdma_xserver.1
-diff --git a/librdmacm/man/rdma_cm.7 b/librdmacm/man/rdma_cm.7
-index 8e5ad99e..122c96f0 100644
---- a/librdmacm/man/rdma_cm.7
-+++ b/librdmacm/man/rdma_cm.7
-@@ -26,6 +26,10 @@ parameter in specific calls.  If an event channel is provided, an rdma_cm identi
- will report its event data (results of connecting, for example), on that channel.
- If a channel is not provided, then all rdma_cm operations for the selected
- rdma_cm identifier will block until they complete.
-+.P
-+The RDMA CM gives an option to different libibverbs providers to advertise and
-+use various specific to that provider QP configuration options. This functionality
-+is called ECE (enhanced connection establishment).
- .SH "RDMA VERBS"
- The rdma_cm supports the full range of verbs available through the libibverbs
- library and interfaces.  However, it also provides wrapper functions for some
-@@ -111,6 +115,8 @@ destroy the QP
- release the rdma_cm_id
- .IP rdma_destroy_event_channel
- release the event channel
-+.IP rdma_set_local_ece
-+set desired ECE options
- .P
- An almost identical process is used to setup unreliable datagram (UD)
- communication between nodes.  No actual connection is formed between QPs
-@@ -157,6 +163,10 @@ release the connected rdma_cm_id
- release the listening rdma_cm_id
- .IP rdma_destroy_event_channel
- release the event channel
-+.IP rdma_get_remote_ece
-+get ECe options sent by the client
-+.IP rdma_set_local_ece
-+set desired ECE options
- .SH "RETURN CODES"
- .IP "=  0"
- success
-@@ -198,6 +208,7 @@ rdma_get_dst_port(3),
- rdma_get_local_addr(3),
- rdma_get_peer_addr(3),
- rdma_get_recv_comp(3),
-+rdma_get_remote_ece(3),
- rdma_get_request(3),
- rdma_get_send_comp(3),
- rdma_get_src_port(3),
-@@ -221,7 +232,8 @@ rdma_reg_write(3),
- rdma_reject(3),
- rdma_resolve_addr(3),
- rdma_resolve_route(3),
--rdma_set_option(3)
-+rdma_get_remote_ece(3),
-+rdma_set_option(3),
- mckey(1),
- rdma_client(1),
- rdma_server(1),
-diff --git a/librdmacm/man/rdma_get_remote_ece.3.md b/librdmacm/man/rdma_get_remote_ece.3.md
-new file mode 100644
-index 00000000..1db1f8ee
---- /dev/null
-+++ b/librdmacm/man/rdma_get_remote_ece.3.md
-@@ -0,0 +1,61 @@
-+---
-+date: 2020-02-02
-+footer: librdmacm
-+header: "Librdmacm Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: RDMA_GET_REMOTE_ECE
-+---
+diff --git a/pyverbs/cmid.pyx b/pyverbs/cmid.pyx
+index 66d73268..2505ec70 100755
+--- a/pyverbs/cmid.pyx
++++ b/pyverbs/cmid.pyx
+@@ -1,7 +1,7 @@
+ from libc.string cimport memset
+
+ from pyverbs.pyverbs_error import PyverbsUserError
+-from pyverbs.qp cimport QPInitAttr, QPAttr
++from pyverbs.qp cimport QPInitAttr, QPAttr, ECE
+ from pyverbs.base import PyverbsRDMAErrno
+ cimport pyverbs.libibverbs_enums as e
+ cimport pyverbs.librdmacm_enums as ce
+@@ -424,6 +424,27 @@ cdef class CMID(PyverbsCM):
+         if ret != 0:
+             raise PyverbsRDMAErrno('Failed to Complete an active connection request')
+
++    def set_local_ece(self, ECE ece):
++        """
++        Set local ECE paraemters to be used for REQ/REP communication.
++        :param ece: ECE object with the requested configuration
++        :return: None
++        """
++        rc = cm.rdma_set_local_ece(self.id, &ece.ece)
++        if rc != 0:
++            raise PyverbsRDMAErrno('Failed to set local ECE')
 +
-+# NAME
++    def get_remote_ece(self):
++        """
++        Get ECE parameters as were received from the communication peer.
++        :return: ECE object with the ece configuration
++        """
++        ece = ECE()
++        rc = cm.rdma_get_remote_ece(self.id, &ece.ece)
++        if rc != 0:
++            raise PyverbsRDMAErrno('Failed to get remote ECE')
++        return ece
 +
-+rdma_get_remote_ece - Get remote ECE paraemters as received from the peer.
+     def create_qp(self, QPInitAttr qp_init not None):
+         """
+         Create a QP, which is associated with CMID.
+diff --git a/pyverbs/libibverbs.pxd b/pyverbs/libibverbs.pxd
+index 6ffa303c..52f51f07 100755
+--- a/pyverbs/libibverbs.pxd
++++ b/pyverbs/libibverbs.pxd
+@@ -475,6 +475,11 @@ cdef extern from 'infiniband/verbs.h':
+         uint64_t        wr_id
+         unsigned int    wr_flags
+
++    cdef struct ibv_ece:
++        uint32_t vendor_id
++        uint32_t options
++        uint32_t comp_mask
 +
-+# SYNOPSIS
+     ibv_device **ibv_get_device_list(int *n)
+     void ibv_free_device_list(ibv_device **list)
+     ibv_context *ibv_open_device(ibv_device *device)
+@@ -599,3 +604,5 @@ cdef extern from 'infiniband/verbs.h':
+ cdef extern from 'infiniband/driver.h':
+     int ibv_query_gid_type(ibv_context *context, uint8_t port_num,
+                            unsigned int index, ibv_gid_type *type)
++    int ibv_set_ece(ibv_qp *qp, ibv_ece *ece)
++    int ibv_query_ece(ibv_qp *qp, ibv_ece *ece)
+diff --git a/pyverbs/librdmacm.pxd b/pyverbs/librdmacm.pxd
+index 03c0cddc..ff579205 100755
+--- a/pyverbs/librdmacm.pxd
++++ b/pyverbs/librdmacm.pxd
+@@ -97,6 +97,8 @@ cdef extern from '<rdma/rdma_cma.h>':
+     int rdma_create_id(rdma_event_channel *channel, rdma_cm_id **id,
+                        void *context, rdma_port_space ps)
+     int rdma_destroy_id(rdma_cm_id *id)
++    int rdma_get_remote_ece(rdma_cm_id *id, ibv_ece *ece)
++    int rdma_set_local_ece(rdma_cm_id *id, ibv_ece *ece)
+     int rdma_get_request(rdma_cm_id *listen, rdma_cm_id **id)
+     int rdma_bind_addr(rdma_cm_id *id, sockaddr *addr)
+     int rdma_resolve_addr(rdma_cm_id *id, sockaddr *src_addr,
+diff --git a/pyverbs/qp.pxd b/pyverbs/qp.pxd
+index 209a2438..1294560a 100644
+--- a/pyverbs/qp.pxd
++++ b/pyverbs/qp.pxd
+@@ -43,3 +43,6 @@ cdef class DataBuffer(PyverbsCM):
+
+ cdef class QPEx(QP):
+     cdef v.ibv_qp_ex *qp_ex
 +
-+```c
-+#include <rdma/rdma_cma.h>
++cdef class ECE(PyverbsCM):
++    cdef v.ibv_ece ece
+diff --git a/pyverbs/qp.pyx b/pyverbs/qp.pyx
+index 95ef554c..fd851443 100755
+--- a/pyverbs/qp.pyx
++++ b/pyverbs/qp.pyx
+@@ -4,9 +4,8 @@
+ from libc.stdlib cimport malloc, free
+ from libc.string cimport memcpy
+
++from pyverbs.pyverbs_error import PyverbsUserError, PyverbsError, PyverbsRDMAError
+ from pyverbs.utils import gid_str, qp_type_to_str, qp_state_to_str, mtu_to_str
+-from pyverbs.pyverbs_error import PyverbsUserError, PyverbsError, \
+-    PyverbsRDMAError
+ from pyverbs.utils import access_flags_to_str, mig_state_to_str
+ from pyverbs.base import PyverbsRDMAErrno
+ from pyverbs.wr cimport RecvWR, SendWR, SGE
+@@ -871,6 +870,27 @@ cdef class QPAttr(PyverbsObject):
+                print_format.format('Rate limit', self.attr.rate_limit)
+
+
++cdef class ECE(PyverbsCM):
++    def __init__(self, vendor_id=0, options=0, comp_mask=0):
++        """
++        :param vendor_id: Unique identifier of the provider vendor.
++        :param options: Provider specific attributes which are supported or
++                        needed to be enabled by ECE users.
++        :param comp_mask: A bitmask specifying which ECE options should be
++                          valid.
++        """
++        super().__init__()
++        self.ece.vendor_id = vendor_id
++        self.ece.options = options
++        self.ece.comp_mask = comp_mask
 +
-+int rdma_get_remote_ece(struct rdma_cm_id *id, struct ibv_ece *ece);
-+```
-+# DESCRIPTION
++    def __str__(self):
++        print_format = '{:22}: {:<20}\n'
++        print_format.format('Vendor ID', self.ece.vendor_id) +\
++        print_format.format('Options', self.ece.options) +\
++        print_format.format('Comp Mask', self.ece.comp_mask)
 +
-+**rdma_get_remote_ece()** get ECE parameters as were received from the communication peer.
 +
-+This function is suppose to be used by the users of external QPs. The call needs
-+to be performed before replying to the peer and needed to allow for the passive
-+side to know ECE options of other side.
+ cdef class QP(PyverbsCM):
+     def __init__(self, object creator not None, object init_attr not None,
+                  QPAttr qp_attr=None):
+@@ -1133,6 +1153,27 @@ cdef class QP(PyverbsCM):
+                 memcpy(&bad_wr.send_wr, my_bad_wr, sizeof(bad_wr.send_wr))
+             raise PyverbsRDMAError('Failed to post send', rc)
+
++    def set_ece(self, ECE ece):
++        """
++        Set ECE options and use them for QP configuration stage
++        :param ece: The requested ECE values.
++        :return: None
++        """
++        rc = v.ibv_set_ece(self.qp, &ece.ece)
++        if rc != 0:
++            raise PyverbsRDMAError('Failed to set ECE', rc)
 +
-+Being used by external QP and RDMA_CM doesn't manage that QP, the peer needs
-+to call to libibverbs API by itself.
++    def query_ece(self):
++        """
++        Query QPs ECE options
++        :return: ECE object with this QP ece configuration.
++        """
++        ece = ECE()
++        rc = v.ibv_query_ece(self.qp, &ece.ece)
++        if rc != 0:
++            raise PyverbsRDMAError('Failed to query ECE', rc)
++        return ece
 +
-+Usual flow for the passive side will be:
-+
-+ * ibv_create_qp() <- create data QP.
-+ * ece = rdma_get_remote_ece() <- get ECE options from remote peer
-+ * ibv_set_ece(ece) <- set local ECE options with data received from the peer.
-+ * ibv_modify_qp() <- enable data QP.
-+ * rdma_set_local_ece(ece) <- set desired ECE options after respective
-+				libibverbs provider masked unsupported options.
-+ * rdma_accept()/rdma_establish()/rdma_reject_ece()
-+
-+# ARGUMENTS
-+
-+*id
-+:    RDMA communication identifier.
-+
-+*ece
-+:    ECE struct to be filled.
-+
-+# RETURN VALUE
-+
-+**rdma_get_remote_ece()** returns 0 on success, or -1 on error.  If an error occurs, errno will be set to indicate the failure reason.
-+
-+# SEE ALSO
-+
-+**rdma_cm**(7), rdma_set_local_ece(3)
-+
-+# AUTHOR
-+
-+Leon Romanovsky <leonro@mellanox.com>
-diff --git a/librdmacm/man/rdma_set_local_ece.3.md b/librdmacm/man/rdma_set_local_ece.3.md
-new file mode 100644
-index 00000000..253e60df
---- /dev/null
-+++ b/librdmacm/man/rdma_set_local_ece.3.md
-@@ -0,0 +1,62 @@
-+---
-+date: 2020-02-02
-+footer: librdmacm
-+header: "Librdmacm Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: RDMA_SET_LOCAL_ECE
-+---
-+
-+# NAME
-+
-+rdma_set_local_ece - Set local ECE paraemters to be used for REQ/REP communication.
-+
-+# SYNOPSIS
-+
-+```c
-+#include <rdma/rdma_cma.h>
-+
-+int rdma_set_local_ece(struct rdma_cm_id *id, struct ibv_ece *ece);
-+```
-+# DESCRIPTION
-+
-+**rdma_set_local_ece()** set local ECE parameters.
-+
-+This function is suppose to be used by the users of external QPs. The call needs
-+to be performed before replying to the peer and needed to configure RDMA_CM with
-+desired ECE options.
-+
-+Being used by external QP and RDMA_CM doesn't manage that QP, the peer needs
-+to call to libibverbs API by itself.
-+
-+Usual flow for the passive side will be:
-+
-+ * ibv_create_qp() <- create data QP.
-+ * ece = ibv_get_ece() <- get ECE from libibvers provider.
-+ * rdma_set_local_ece(ece) <- set desired ECE options.
-+ * rdma_connect() <- send connection request
-+ * ece = rdma_get_remote_ece() <- get ECE options from remote peer
-+ * ibv_set_ece(ece) <- set local ECE options with data received from the peer.
-+ * ibv_modify_qp() <- enable data QP.
-+ * rdma_accept()/rdma_establish()/rdma_reject_ece()
-+
-+# ARGUMENTS
-+
-+*id*
-+:    RDMA communication identifier.
-+
-+*ece
-+:    ECE parameters.
-+
-+# RETURN VALUE
-+
-+**rdma_set_local_ece()** returns 0 on success, or -1 on error.  If an error occurs, errno will be set to indicate the failure reason.
-+
-+# SEE ALSO
-+
-+**rdma_cm**(7), rdma_get_remote_ece(3)
-+
-+# AUTHOR
-+
-+Leon Romanovsky <leonro@mellanox.com>
+     @property
+     def qp_type(self):
+         return self.qp.qp_type
 --
 2.25.2
 
