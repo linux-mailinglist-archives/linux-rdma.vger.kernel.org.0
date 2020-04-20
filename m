@@ -2,93 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10881B14D7
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067B11B14E4
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgDTSj2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 14:39:28 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4729 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgDTSj2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 14:39:28 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e9dec220002>; Mon, 20 Apr 2020 11:38:26 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 20 Apr 2020 11:39:27 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 20 Apr 2020 11:39:27 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Apr
- 2020 18:39:27 +0000
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 20 Apr
- 2020 18:39:26 +0000
-Subject: Re: [PATCH v9 3/3] MAINTAINERS: add HMM selftests
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jerome Glisse" <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-References: <20200417235458.13462-1-rcampbell@nvidia.com>
- <20200417235458.13462-4-rcampbell@nvidia.com> <20200418060651.GI3083@unreal>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <95f046e5-74c4-cb34-c7a0-056d47e131cb@nvidia.com>
-Date:   Mon, 20 Apr 2020 11:39:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726439AbgDTSmV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 14:42:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725613AbgDTSmU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Apr 2020 14:42:20 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F4802074F;
+        Mon, 20 Apr 2020 18:42:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587408140;
+        bh=J1Pz4saX9jEjbkW/1+ZB7lzOWI+VGAU8j2Mv8AfiHU4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JsAB6+t1dHV6pvoNwy2P8v+KHnBGozzcYEBAsOqCqaQK7HENSdA/Epo8cuYKfdaeH
+         UQmrYop56C28Q6adcFqTx4BaxJjZ9m7iZ1VJO4KIbv7oJr7VzX8Xfj1938D62gu5ay
+         CxfzWhjJbvIpNgzF6SClWGl8oh09kyNCstcquWOI=
+Date:   Mon, 20 Apr 2020 11:42:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        jonas@kwiboo.se, David Airlie <airlied@linux.ie>,
+        jernej.skrabec@siol.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+Message-ID: <20200420114218.30b373d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87v9lu1ra6.fsf@intel.com>
+References: <20200417011146.83973-1-saeedm@mellanox.com>
+        <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com>
+        <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr>
+        <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
+        <87v9lu1ra6.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200418060651.GI3083@unreal>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1587407906; bh=UO48xKNQQkbx0fToE/eGIFWIt+8G+Q0r/bKLmM4b5VI=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=kQXIwptChFeHtXFhW/NZVAWCUcyDN1AFmkVJszwzOlnCtzrAIkZFy+p/WU8c20lX+
-         gf/9Hgl4TJYcIztiIlHwN470CqvFV89LJEeDlDxO3cvWB7RKbc5UtyDgixJ4s+86oJ
-         Pt+FMveMttbKPLRgnewlKXzsqf9n10I4PKFp8nbaGGe/0WpLnQlq9kmtw21bt6XXwf
-         ALib0Lzlkb8/iIN3SL2T8eXrhwL+IU/MEuBp7nX/X8tpaVyJyGtlhRT3rqr3yhkpQc
-         jtKCbf9qtVijfwCN8XRIQnzcH6KdGPe70Ow8YAP7fuazdUpW61tJZDqsciFGoPfzSd
-         Y19u1ZETdBNYw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 4/17/20 11:06 PM, Leon Romanovsky wrote:
-> On Fri, Apr 17, 2020 at 04:54:58PM -0700, Ralph Campbell wrote:
->> Add files for HMM selftests.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> ---
->>   MAINTAINERS | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index e64e5db31497..072921b7bae2 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -7729,6 +7729,9 @@ S:	Maintained
->>   F:	Documentation/vm/hmm.rst
->>   F:	include/linux/hmm*
->>   F:	mm/hmm*
->> +F:	include/uapi/linux/test_hmm*
+On Mon, 20 Apr 2020 11:43:13 +0300 Jani Nikula wrote:
+> On Sun, 19 Apr 2020, Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > On Sun, Apr 19, 2020 at 4:11 AM Nicolas Pitre <nico@fluxnic.net> wrote:  
+> >>
+> >> On Sun, 19 Apr 2020, Masahiro Yamada wrote:
+> >>  
+> >> > (FOO || !FOO) is difficult to understand, but
+> >> > the behavior of "uses FOO" is as difficult to grasp.  
+> >>
+> >> Can't this be expressed as the following instead:
+> >>
+> >>         depends on FOO if FOO
+> >>
+> >> That would be a little clearer.
+> >>
+> >>
+> >> Nicolas  
+> >
+> > 'depends on' does not take the 'if <expr>'
+> >
+> > 'depends on A if B' is the syntax sugar of
+> > 'depends on (A || !B), right ?
+> >
+> > I do not know how clearer it would make things.
+> >
+> > depends on (m || FOO != m)
+> > is another equivalent, but we are always
+> > talking about a matter of expression.
+> >
+> >
+> > How important is it to stick to
+> > depends on (FOO || !FOO)
+> > or its equivalents?
+> >
+> >
+> > If a driver wants to use the feature FOO
+> > in most usecases, 'depends on FOO' is sensible.
+> >
+> > If FOO is just optional, you can get rid of the dependency,
+> > and IS_REACHABLE() will do logically correct things.  
 > 
-> This line is not needed anymore.
-> 
-> Thanks
+> If by logically correct you mean the kernel builds, you're
+> right. However the proliferation of IS_REACHABLE() is making the kernel
+> config *harder* to understand. User enables FOO=m and expects BAR to use
+> it, however if BAR=y it silently gets ignored. I have and I will oppose
+> adding IS_REACHABLE() usage to i915 because it's just silently accepting
+> configurations that should be flagged and forbidden at kconfig stage.
 
-Thank you. I'll fix this in the next posting.
++1
+
+I wholeheartedly agree. In case of Ethernet drivers having higher
+layers of the stack not able to communicate with drivers is just 
+broken IMHO.
