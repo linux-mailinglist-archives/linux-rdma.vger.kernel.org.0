@@ -2,288 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFD91B0F95
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 17:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3711B1052
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 17:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730243AbgDTPMR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Apr 2020 11:12:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730229AbgDTPMO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Apr 2020 11:12:14 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDE6D2074F;
-        Mon, 20 Apr 2020 15:12:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587395533;
-        bh=H9xGtNlN8x0Q2usQ4nKlGNL/X5euEW8HvSxXPR4pHzY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxyu19s07cj5zIMCCFt/RsGuTrTS7klUrFn3FEQLQ9EP5/qfd568Azx/WbEBpKHNx
-         aCZJcdHBRA/Zb1TYKlgwsS8IsxoFjhEoausnrETQlqSxa/kaAikuSQ1NxVtXDPiICk
-         gn6SoG0F2KLMDEkyuwHKvG6owYF1IeSDBS1EV5HY=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next 18/18] RDMA/mlx5: Process all vendor flags in one place
-Date:   Mon, 20 Apr 2020 18:11:05 +0300
-Message-Id: <20200420151105.282848-19-leon@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200420151105.282848-1-leon@kernel.org>
-References: <20200420151105.282848-1-leon@kernel.org>
+        id S1726415AbgDTPgq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 11:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgDTPgq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 11:36:46 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D27C061A0C;
+        Mon, 20 Apr 2020 08:36:46 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id n10so11433732iom.3;
+        Mon, 20 Apr 2020 08:36:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xpyyjOah+SNmSyAdLM/sULwsGots46QSaLyc9pMiVp8=;
+        b=SMpcvUKPCrnBP/1D1GILH+9dJhg3Ew+RFSzyapFmYW5cNEKpZ2Gq9D1Ls3qJFdS+F/
+         dsoSz4CRHqHUey9tvUldedqHmIvVS9GwpbShans2Dh7YTN433ROdaTpMMqa6eD1ZJ+P/
+         zM3oSGEWDajMTh9xHdxEPfz8UGDx4g4QcBtpYts/lUdhpFI7jzPEdyrlfH2FDBWaEXWU
+         9amNNkxhIUo4zzP3IUEa1qs+7+10qWl0J6MhVCoYOkYFy+yT8f3AVfycLupVQZSssu8U
+         Mc6hh7H8mPQCn0yo1XbB0E/UvlzUBN0rK3VsE+TVfA8YMml0Je0E1WF8xR6kBLCPmuip
+         crOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xpyyjOah+SNmSyAdLM/sULwsGots46QSaLyc9pMiVp8=;
+        b=tZvdWgpVEz0ukKw+XHHg2t33vULiavMndsXeKdEAVmsctc+E+WXIRJMwfZN6dh/ru4
+         /WiuPTDoCU73vzSMI169zm5qdLkwlz0zN51aVEYABgUjCYr8zBXrVGNVvkrXCGi/mDQ4
+         8ZRAZxh3SFkyM7AmYQIBsZHXAHmQij8lGg3FDpnSqfHxqCjQKKOGey5i1nFv2N66l1ve
+         pbFqYRoXcJTXaY2jymJHKc+NmwUE4NcYWDhnpQjeE7LjfW7GmfhdgnrxBGoBhXZEY3b8
+         TiIPic5n3Kgb3H0F+s0M0VOD4EVg7LbMisRocaF5mBHrw92cNbNpdqpTRsxEH6jo206z
+         +wCQ==
+X-Gm-Message-State: AGi0Pubd24cK429OOOqZxepuqwlnau5NfO8w5AUPMgzxvALNAXEF8xEB
+        FXqzmbT8wK/p9eXcDs6Xj6s=
+X-Google-Smtp-Source: APiQypI+awmNegG6xdj0dsgCCfaJbp6HXicBBTWHS3T8N9PqMnXTpfvQAh9tsadBsceYudkqYa2peQ==
+X-Received: by 2002:a6b:6c01:: with SMTP id a1mr16165914ioh.196.1587397005739;
+        Mon, 20 Apr 2020 08:36:45 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:294e:2b15:7b00:d585? ([2601:282:803:7700:294e:2b15:7b00:d585])
+        by smtp.googlemail.com with ESMTPSA id k24sm377646ior.49.2020.04.20.08.36.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Apr 2020 08:36:45 -0700 (PDT)
+Subject: Re: [PATCH V2 mlx5-next 04/10] bonding: Implement ndo_xmit_slave_get
+To:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
+        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org
+Cc:     leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com
+References: <20200420075426.31462-1-maorg@mellanox.com>
+ <20200420075426.31462-5-maorg@mellanox.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <d01c874f-419e-36b1-5ddd-72daabcc0b83@gmail.com>
+Date:   Mon, 20 Apr 2020 09:36:43 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200420075426.31462-5-maorg@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On 4/20/20 1:54 AM, Maor Gottlieb wrote:
+> Add implementation of ndo_xmit_slave_get.
+> When user sets the LAG_FLAGS_HASH_ALL_SLAVES bit and the xmit slave
+> result is based on the hash, then the slave will be selected from the
+> array of all the slaves.
+> 
+> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> ---
+>  drivers/net/bonding/bond_main.c | 123 +++++++++++++++++++++++++++-----
+>  include/net/bonding.h           |   1 +
+>  2 files changed, 105 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 7e04be86fda8..320bcb1394fd 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -4137,6 +4137,40 @@ static void bond_skip_slave(struct bond_up_slave *slaves,
+>  	}
+>  }
+>  
+> +static void bond_set_slave_arr(struct bonding *bond,
+> +			       struct bond_up_slave *usable_slaves,
+> +			       struct bond_up_slave *all_slaves)
+> +{
+> +	struct bond_up_slave *usable, *all;
+> +
+> +	usable = rtnl_dereference(bond->usable_slaves);
+> +	rcu_assign_pointer(bond->usable_slaves, usable_slaves);
+> +	if (usable)
+> +		kfree_rcu(usable, rcu);
+> +
+> +	all = rtnl_dereference(bond->all_slaves);
+> +	rcu_assign_pointer(bond->all_slaves, all_slaves);
+> +	if (all)
+> +		kfree_rcu(all, rcu);
+> +}
+> +
+> +static void bond_reset_slave_arr(struct bonding *bond)
+> +{
+> +	struct bond_up_slave *usable, *all;
+> +
+> +	usable = rtnl_dereference(bond->usable_slaves);
+> +	if (usable) {
+> +		RCU_INIT_POINTER(bond->usable_slaves, NULL);
+> +		kfree_rcu(usable, rcu);
+> +	}
+> +
+> +	all = rtnl_dereference(bond->all_slaves);
+> +	if (all) {
+> +		RCU_INIT_POINTER(bond->all_slaves, NULL);
+> +		kfree_rcu(all, rcu);
+> +	}
+> +}
+> +
+>  /* Build the usable slaves array in control path for modes that use xmit-hash
+>   * to determine the slave interface -
+>   * (a) BOND_MODE_8023AD
+> @@ -4147,7 +4181,7 @@ static void bond_skip_slave(struct bond_up_slave *slaves,
+>   */
+>  int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>  {
+> -	struct bond_up_slave *usable_slaves, *old_usable_slaves;
+> +	struct bond_up_slave *usable_slaves = NULL, *all_slaves = NULL;
+>  	struct slave *slave;
+>  	struct list_head *iter;
+>  	int agg_id = 0;
+> @@ -4159,7 +4193,9 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>  
+>  	usable_slaves = kzalloc(struct_size(usable_slaves, arr,
+>  					    bond->slave_cnt), GFP_KERNEL);
+> -	if (!usable_slaves) {
+> +	all_slaves = kzalloc(struct_size(all_slaves, arr,
+> +					 bond->slave_cnt), GFP_KERNEL);
+> +	if (!usable_slaves || !all_slaves) {
+>  		ret = -ENOMEM;
+>  		goto out;
+>  	}
+> @@ -4168,20 +4204,19 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>  
+>  		if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
+>  			pr_debug("bond_3ad_get_active_agg_info failed\n");
+> -			kfree_rcu(usable_slaves, rcu);
+>  			/* No active aggragator means it's not safe to use
+>  			 * the previous array.
+>  			 */
+> -			old_usable_slaves = rtnl_dereference(bond->usable_slaves);
+> -			if (old_usable_slaves) {
+> -				RCU_INIT_POINTER(bond->usable_slaves, NULL);
+> -				kfree_rcu(old_usable_slaves, rcu);
+> -			}
+> +			bond_reset_slave_arr(bond);
+>  			goto out;
+>  		}
+>  		agg_id = ad_info.aggregator_id;
+>  	}
+>  	bond_for_each_slave(bond, slave, iter) {
+> +		if (skipslave == slave)
+> +			continue;
+> +
+> +		all_slaves->arr[all_slaves->count++] = slave;
+>  		if (BOND_MODE(bond) == BOND_MODE_8023AD) {
+>  			struct aggregator *agg;
+>  
+> @@ -4191,8 +4226,6 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>  		}
+>  		if (!bond_slave_can_tx(slave))
+>  			continue;
+> -		if (skipslave == slave)
+> -			continue;
+>  
+>  		slave_dbg(bond->dev, slave->dev, "Adding slave to tx hash array[%d]\n",
+>  			  usable_slaves->count);
+> @@ -4200,14 +4233,17 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+>  		usable_slaves->arr[usable_slaves->count++] = slave;
+>  	}
+>  
+> -	old_usable_slaves = rtnl_dereference(bond->usable_slaves);
+> -	rcu_assign_pointer(bond->usable_slaves, usable_slaves);
+> -	if (old_usable_slaves)
+> -		kfree_rcu(old_usable_slaves, rcu);
+> +	bond_set_slave_arr(bond, usable_slaves, all_slaves);
+> +	return ret;
+>  out:
+> -	if (ret != 0 && skipslave)
+> +	if (ret != 0 && skipslave) {
+> +		bond_skip_slave(rtnl_dereference(bond->all_slaves),
+> +				skipslave);
+>  		bond_skip_slave(rtnl_dereference(bond->usable_slaves),
+>  				skipslave);
+> +	}
+> +	kfree_rcu(all_slaves, rcu);
+> +	kfree_rcu(usable_slaves, rcu);
+>  
+>  	return ret;
+>  }
 
-Check that vendor flags provided through ucmd are valid.
-
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/qp.c | 156 +++++++++++++++-----------------
- 1 file changed, 71 insertions(+), 85 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 15c476e858c5..eb9e1944263c 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1430,13 +1430,6 @@ static void destroy_raw_packet_qp_rq(struct mlx5_ib_dev *dev,
- 	mlx5_core_destroy_rq_tracked(dev, &rq->base.mqp);
- }
- 
--static bool tunnel_offload_supported(struct mlx5_core_dev *dev)
--{
--	return  (MLX5_CAP_ETH(dev, tunnel_stateless_vxlan) ||
--		 MLX5_CAP_ETH(dev, tunnel_stateless_gre) ||
--		 MLX5_CAP_ETH(dev, tunnel_stateless_geneve_rx));
--}
--
- static void destroy_raw_packet_qp_tir(struct mlx5_ib_dev *dev,
- 				      struct mlx5_ib_rq *rq,
- 				      u32 qp_flags_en,
-@@ -1693,27 +1686,20 @@ static int create_rss_raw_qp_tir(struct ib_pd *pd, struct mlx5_ib_qp *qp,
- 		return -EOPNOTSUPP;
- 	}
- 
--	if (ucmd.flags & MLX5_QP_FLAG_TUNNEL_OFFLOADS &&
--	    !tunnel_offload_supported(dev->mdev)) {
--		mlx5_ib_dbg(dev, "tunnel offloads isn't supported\n");
--		return -EOPNOTSUPP;
--	}
--
- 	if (ucmd.rx_hash_fields_mask & MLX5_RX_HASH_INNER &&
- 	    !(ucmd.flags & MLX5_QP_FLAG_TUNNEL_OFFLOADS)) {
- 		mlx5_ib_dbg(dev, "Tunnel offloads must be set for inner RSS\n");
- 		return -EOPNOTSUPP;
- 	}
- 
--	if (ucmd.flags & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC || dev->is_rep) {
--		lb_flag |= MLX5_TIRC_SELF_LB_BLOCK_BLOCK_UNICAST;
-+	if (dev->is_rep)
- 		qp->flags_en |= MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC;
--	}
- 
--	if (ucmd.flags & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC) {
-+	if (qp->flags_en & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC)
-+		lb_flag |= MLX5_TIRC_SELF_LB_BLOCK_BLOCK_UNICAST;
-+
-+	if (qp->flags_en & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC)
- 		lb_flag |= MLX5_TIRC_SELF_LB_BLOCK_BLOCK_MULTICAST;
--		qp->flags_en |= MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC;
--	}
- 
- 	err = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
- 	if (err) {
-@@ -1959,11 +1945,6 @@ static int get_atomic_mode(struct mlx5_ib_dev *dev,
- 	return atomic_mode;
- }
- 
--static inline bool check_flags_mask(uint64_t input, uint64_t supported)
--{
--	return (input & ~supported) == 0;
--}
--
- static int create_qp_common(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			    struct ib_qp_init_attr *init_attr,
- 			    struct mlx5_ib_create_qp *ucmd,
-@@ -1999,63 +1980,9 @@ static int create_qp_common(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 		qp->sq_signal_bits = MLX5_WQE_CTRL_CQ_UPDATE;
- 
- 	if (udata) {
--		if (!check_flags_mask(ucmd->flags,
--				      MLX5_QP_FLAG_ALLOW_SCATTER_CQE |
--				      MLX5_QP_FLAG_BFREG_INDEX |
--				      MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE |
--				      MLX5_QP_FLAG_SCATTER_CQE |
--				      MLX5_QP_FLAG_SIGNATURE |
--				      MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC |
--				      MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC |
--				      MLX5_QP_FLAG_TUNNEL_OFFLOADS |
--				      MLX5_QP_FLAG_UAR_PAGE_INDEX |
--				      MLX5_QP_FLAG_TYPE_DCI |
--				      MLX5_QP_FLAG_TYPE_DCT))
--			return -EINVAL;
--
- 		err = get_qp_user_index(ucontext, ucmd, udata->inlen, &uidx);
- 		if (err)
- 			return err;
--
--		if (ucmd->flags & MLX5_QP_FLAG_SIGNATURE)
--			qp->flags_en |= MLX5_QP_FLAG_SIGNATURE;
--		if (ucmd->flags & MLX5_QP_FLAG_SCATTER_CQE &&
--		    MLX5_CAP_GEN(dev->mdev, sctr_data_cqe))
--			qp->flags_en |= MLX5_QP_FLAG_SCATTER_CQE;
--
--		if (ucmd->flags & MLX5_QP_FLAG_TUNNEL_OFFLOADS) {
--			if (init_attr->qp_type != IB_QPT_RAW_PACKET ||
--			    !tunnel_offload_supported(mdev)) {
--				mlx5_ib_dbg(dev, "Tunnel offload isn't supported\n");
--				return -EOPNOTSUPP;
--			}
--			qp->flags_en |= MLX5_QP_FLAG_TUNNEL_OFFLOADS;
--		}
--
--		if (ucmd->flags & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC) {
--			if (init_attr->qp_type != IB_QPT_RAW_PACKET) {
--				mlx5_ib_dbg(dev, "Self-LB UC isn't supported\n");
--				return -EOPNOTSUPP;
--			}
--			qp->flags_en |= MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC;
--		}
--
--		if (ucmd->flags & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC) {
--			if (init_attr->qp_type != IB_QPT_RAW_PACKET) {
--				mlx5_ib_dbg(dev, "Self-LB UM isn't supported\n");
--				return -EOPNOTSUPP;
--			}
--			qp->flags_en |= MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC;
--		}
--
--		if (ucmd->flags & MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE) {
--			if (init_attr->qp_type != IB_QPT_RC ||
--				!MLX5_CAP_GEN(dev->mdev, qp_packet_based)) {
--				mlx5_ib_dbg(dev, "packet based credit mode isn't supported\n");
--				return -EOPNOTSUPP;
--			}
--			qp->flags_en |= MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE;
--		}
- 	}
- 
- 	if (qp->flags & IB_QP_CREATE_SOURCE_QPN)
-@@ -2474,7 +2401,7 @@ static int create_dct(struct ib_pd *pd, struct mlx5_ib_qp *qp,
- 	MLX5_SET64(dctc, dctc, dc_access_key, ucmd->access_key);
- 	MLX5_SET(dctc, dctc, user_index, uidx);
- 
--	if (ucmd->flags & MLX5_QP_FLAG_SCATTER_CQE) {
-+	if (qp->flags_en & MLX5_QP_FLAG_SCATTER_CQE) {
- 		int rcqe_sz = mlx5_ib_get_cqe_size(attr->recv_cq);
- 
- 		if (rcqe_sz == 128)
-@@ -2577,22 +2504,81 @@ static int check_valid_flow(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	return 0;
- }
- 
--static int process_vendor_flags(struct mlx5_ib_qp *qp,
-+static void process_vendor_flag(struct mlx5_ib_dev *dev, int *flags, int flag,
-+				bool cond, struct mlx5_ib_qp *qp)
-+{
-+	if (!(*flags & flag))
-+		return;
-+
-+	if (cond) {
-+		qp->flags_en |= flag;
-+		*flags &= ~flag;
-+		return;
-+	}
-+
-+	if (flag == MLX5_QP_FLAG_SCATTER_CQE) {
-+		/*
-+		 * We don't return error if this flag was provided,
-+		 * and mlx5 doesn't have right capability.
-+		 */
-+		*flags &= ~MLX5_QP_FLAG_SCATTER_CQE;
-+		return;
-+	}
-+	mlx5_ib_dbg(dev, "Vendor create QP flag 0x%X is not supported\n", flag);
-+}
-+
-+static int process_vendor_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 				struct ib_qp_init_attr *attr,
- 				struct mlx5_ib_create_qp *ucmd)
- {
--	switch (ucmd->flags & (MLX5_QP_FLAG_TYPE_DCT | MLX5_QP_FLAG_TYPE_DCI)) {
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	int flags = ucmd->flags;
-+	bool cond;
-+
-+	switch (flags & (MLX5_QP_FLAG_TYPE_DCT | MLX5_QP_FLAG_TYPE_DCI)) {
- 	case MLX5_QP_FLAG_TYPE_DCI:
- 		qp->qp_sub_type = MLX5_IB_QPT_DCI;
- 		break;
- 	case MLX5_QP_FLAG_TYPE_DCT:
- 		qp->qp_sub_type = MLX5_IB_QPT_DCT;
--		break;
-+		fallthrough;
- 	default:
-+		break;
-+	}
-+
-+	if (attr->qp_type == IB_QPT_DRIVER && !qp->qp_sub_type)
- 		return -EINVAL;
-+
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_TYPE_DCI, true, qp);
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_TYPE_DCT, true, qp);
-+
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SIGNATURE, true, qp);
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SCATTER_CQE,
-+			    MLX5_CAP_GEN(mdev, sctr_data_cqe), qp);
-+
-+	if (attr->qp_type == IB_QPT_RAW_PACKET) {
-+		cond = MLX5_CAP_ETH(mdev, tunnel_stateless_vxlan) ||
-+		       MLX5_CAP_ETH(mdev, tunnel_stateless_gre) ||
-+		       MLX5_CAP_ETH(mdev, tunnel_stateless_geneve_rx);
-+		process_vendor_flag(dev, &flags, MLX5_QP_FLAG_TUNNEL_OFFLOADS,
-+				    cond, qp);
-+		process_vendor_flag(dev, &flags,
-+				    MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_UC, true,
-+				    qp);
-+		process_vendor_flag(dev, &flags,
-+				    MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC, true,
-+				    qp);
- 	}
- 
--	return 0;
-+	if (attr->qp_type == IB_QPT_RC)
-+		process_vendor_flag(dev, &flags,
-+				    MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE,
-+				    MLX5_CAP_GEN(mdev, qp_packet_based), qp);
-+
-+	if (flags)
-+		mlx5_ib_dbg(dev, "udata has unsupported flags 0x%X\n", flags);
-+
-+	return (flags) ? -EINVAL : 0;
- }
- 
- static void process_create_flag(struct mlx5_ib_dev *dev, int *flags, int flag,
-@@ -2774,8 +2760,8 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
- 	if (!qp)
- 		return ERR_PTR(-ENOMEM);
- 
--	if (init_attr->qp_type == IB_QPT_DRIVER) {
--		err = process_vendor_flags(qp, init_attr, &ucmd);
-+	if (udata) {
-+		err = process_vendor_flags(dev, qp, init_attr, &ucmd);
- 		if (err)
- 			goto free_qp;
- 	}
--- 
-2.25.2
-
+none of the above code has anything to do directly with looking up the
+bond slave in bond_xmit_get_slave; all of that and the bond_uninit
+changes should be done in refactoring patch(es) that prepare existing
+code to be called from the new ndo.
