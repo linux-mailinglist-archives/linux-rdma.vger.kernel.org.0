@@ -2,359 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDD41B1516
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F02A1B1521
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Apr 2020 20:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgDTSq5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 20 Apr 2020 14:46:57 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52775 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbgDTSq5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 14:46:57 -0400
-Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jay.vosburgh@canonical.com>)
-        id 1jQbRP-00004y-C3; Mon, 20 Apr 2020 18:46:47 +0000
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id 9BD6767BB3; Mon, 20 Apr 2020 11:46:45 -0700 (PDT)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id 923C5AC1DC;
-        Mon, 20 Apr 2020 11:46:45 -0700 (PDT)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-cc:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
-        jgg@mellanox.com, dledford@redhat.com, vfalico@gmail.com,
-        andy@greyhouse.net, kuba@kernel.org, leonro@mellanox.com,
-        saeedm@mellanox.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, alexr@mellanox.com
-Subject: Re: [PATCH V2 mlx5-next 03/10] bonding: Add helpers to get xmit slave
-In-reply-to: <20200420142726.GM6581@nanopsycho.orion>
-References: <20200420075426.31462-1-maorg@mellanox.com> <20200420075426.31462-4-maorg@mellanox.com> <20200420142726.GM6581@nanopsycho.orion>
-Comments: In-reply-to Jiri Pirko <jiri@resnulli.us>
-   message dated "Mon, 20 Apr 2020 16:27:26 +0200."
-X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+        id S1727915AbgDTSsP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Apr 2020 14:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbgDTSsO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Apr 2020 14:48:14 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A4AC061A0F
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 11:48:14 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g13so11463129wrb.8
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Apr 2020 11:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2cSdc7HOKNn19uIovkBV2qQLh5+gmDP21h5U9G3vQpg=;
+        b=AWt7dvWRP+vAoE+odGSw7XNnLZObieoTenf9eCtsh7RVN/TGFvcAACtffqBThNrcS3
+         zlsMF/jJreikztfpiqVKzjgSIFM4qjed8tvPnuxNNDLP15XzxLkr0h/PGgSII0P0sAqF
+         lmVeVm3FrGFdKB9eeAyOzIeGYwO8v/NwLvBei3p0LWS3CINC+60AS1V5JXMUEs5ANHZI
+         QKB+6lyaSIJTmKFQSohenGvdTEm+yBs4CtxG6NyqvCiCKgj0F9C+aT26ElLTWuwdi0m9
+         rFDTH48y22+S/y70iDfaE+cpCiet5XiTzu+otbKEcVlIXWzbkw32YpaEkctMGDMAZGp8
+         ym3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2cSdc7HOKNn19uIovkBV2qQLh5+gmDP21h5U9G3vQpg=;
+        b=CWHQ76jbf2u561FhJ5T429SlMwbbHL5ybipyv8T/W1K2ujYLl8UG10ss/pjiO0UJ4G
+         su9NSutSsPkIVVlQzW13whiDz2SsswiteDJ2e6utmT91hU/aR7AduYn9rYDUbExpiR8x
+         sArQl3zZvNxyjuwgJtP/GFRB0QsuTQTK7NqZu0DgKtXYvMdsojLaVPT7iGdkzfOrFRRn
+         iv94j3IIxUNVdnL0XiOg3GXRVwDT0w4+9qgyYsqzyym7ftdv35r9NDWdWntUP1peybeA
+         gthgA8q4H8I1kbyCjY4XJE0DDLE89CDbgmnH4drOyEexsohCb1BevnJGQuKBkBds6xtY
+         Hoqg==
+X-Gm-Message-State: AGi0Pua4NeqLLO4w7lv8R8kILJssxiX7E5GnE5o3e4phrbnBTkvLLIh5
+        d9Arx08p1QW+UF2ASDbNyXfvAQ==
+X-Google-Smtp-Source: APiQypJTmGD6w4kcJc/Jb8LZ9aIRN3E+NN52Jim9VsAd/ZOeMB8QLIvIrgK3iYSjr2bKc6PscVe0HQ==
+X-Received: by 2002:a5d:610e:: with SMTP id v14mr19672293wrt.159.1587408493333;
+        Mon, 20 Apr 2020 11:48:13 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id y63sm386040wmg.21.2020.04.20.11.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 11:48:12 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 20:48:11 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
+        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
+        leonro@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com
+Subject: Re: [PATCH V2 mlx5-next 01/10] net/core: Introduce
+ master_xmit_slave_get
+Message-ID: <20200420184811.GW6581@nanopsycho.orion>
+References: <20200420075426.31462-1-maorg@mellanox.com>
+ <20200420075426.31462-2-maorg@mellanox.com>
+ <20200420140118.GJ6581@nanopsycho.orion>
+ <a9e00f31-2f4e-1dfc-2464-d3d25376a4b8@gmail.com>
+ <20200420175421.GU6581@nanopsycho.orion>
+ <916ab047-3b50-7104-311a-6dcf604bcf6d@gmail.com>
+ <20200420180144.GV6581@nanopsycho.orion>
+ <75dffa6a-c14f-45c9-44e1-bf5b5c650a9b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1201.1587408405.1@famine>
-Content-Transfer-Encoding: 8BIT
-Date:   Mon, 20 Apr 2020 11:46:45 -0700
-Message-ID: <1202.1587408405@famine>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75dffa6a-c14f-45c9-44e1-bf5b5c650a9b@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Jiri Pirko <jiri@resnulli.us> wrote:
+Mon, Apr 20, 2020 at 08:04:01PM CEST, dsahern@gmail.com wrote:
+>On 4/20/20 12:01 PM, Jiri Pirko wrote:
+>> Generic ndo with lag-specific arg? Odd. Plus, there is a small chance
+>> this is ever going to be used for other master. And if so, could be very
+>> easily renamed then...
+>
+>core code should be generic, not specific and renamed at a later date
+>when a second use case arises.
 
->Mon, Apr 20, 2020 at 09:54:19AM CEST, maorg@mellanox.com wrote:
->>This helpers will be used by both the xmit function
->>and the get xmit slave ndo.
->
->Be more verbose about what you are doing please. From this I have no
->clue what is going on.
+Yeah, I guess we just have to agree to disagree :)
 
-	Agreed, and also with Jiri's comment further down to split this
-into multiple patches.  The current series is difficult to follow.
-
-	-J
-
->
->>
->>Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
->>---
->> drivers/net/bonding/bond_alb.c  | 35 ++++++++----
->> drivers/net/bonding/bond_main.c | 94 +++++++++++++++++++++------------
->> include/net/bond_alb.h          |  4 ++
->> 3 files changed, 89 insertions(+), 44 deletions(-)
->>
->>diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
->>index 7bb49b049dcc..e863c694c309 100644
->>--- a/drivers/net/bonding/bond_alb.c
->>+++ b/drivers/net/bonding/bond_alb.c
->>@@ -1334,11 +1334,11 @@ static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
->> 	return NETDEV_TX_OK;
->> }
->> 
->>-netdev_tx_t bond_tlb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->>+struct slave *bond_xmit_tlb_slave_get(struct bonding *bond,
->>+				      struct sk_buff *skb)
->> {
->>-	struct bonding *bond = netdev_priv(bond_dev);
->>-	struct ethhdr *eth_data;
->> 	struct slave *tx_slave = NULL;
->>+	struct ethhdr *eth_data;
->> 	u32 hash_index;
->> 
->> 	skb_reset_mac_header(skb);
->>@@ -1369,20 +1369,29 @@ netdev_tx_t bond_tlb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->> 			break;
->> 		}
->> 	}
->>-	return bond_do_alb_xmit(skb, bond, tx_slave);
->>+	return tx_slave;
->> }
->> 
->>-netdev_tx_t bond_alb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->>+netdev_tx_t bond_tlb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->> {
->> 	struct bonding *bond = netdev_priv(bond_dev);
->>-	struct ethhdr *eth_data;
->>+	struct slave *tx_slave;
->>+
->>+	tx_slave = bond_xmit_tlb_slave_get(bond, skb);
->>+	return bond_do_alb_xmit(skb, bond, tx_slave);
->>+}
->>+
->>+struct slave *bond_xmit_alb_slave_get(struct bonding *bond,
->>+				      struct sk_buff *skb)
->>+{
->> 	struct alb_bond_info *bond_info = &(BOND_ALB_INFO(bond));
->>-	struct slave *tx_slave = NULL;
->> 	static const __be32 ip_bcast = htonl(0xffffffff);
->>-	int hash_size = 0;
->>+	struct slave *tx_slave = NULL;
->>+	const u8 *hash_start = NULL;
->> 	bool do_tx_balance = true;
->>+	struct ethhdr *eth_data;
->> 	u32 hash_index = 0;
->>-	const u8 *hash_start = NULL;
->>+	int hash_size = 0;
->> 
->> 	skb_reset_mac_header(skb);
->> 	eth_data = eth_hdr(skb);
->>@@ -1501,7 +1510,15 @@ netdev_tx_t bond_alb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->> 						       count];
->> 		}
->> 	}
->>+	return tx_slave;
->>+}
->>+
->>+netdev_tx_t bond_alb_xmit(struct sk_buff *skb, struct net_device *bond_dev)
->>+{
->>+	struct bonding *bond = netdev_priv(bond_dev);
->>+	struct slave *tx_slave = NULL;
->> 
->>+	tx_slave = bond_xmit_alb_slave_get(bond, skb);
->> 	return bond_do_alb_xmit(skb, bond, tx_slave);
->> }
->> 
->>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
->>index 2cb41d480ae2..7e04be86fda8 100644
->>--- a/drivers/net/bonding/bond_main.c
->>+++ b/drivers/net/bonding/bond_main.c
->>@@ -82,6 +82,7 @@
->> #include <net/bonding.h>
->> #include <net/bond_3ad.h>
->> #include <net/bond_alb.h>
->>+#include <net/lag.h>
->> 
->> #include "bonding_priv.h"
->> 
->>@@ -3406,10 +3407,26 @@ u32 bond_xmit_hash(struct bonding *bond, struct sk_buff *skb)
->> 		(__force u32)flow_get_u32_src(&flow);
->> 	hash ^= (hash >> 16);
->> 	hash ^= (hash >> 8);
->>-
->
->Please avoid changes like this one.
->
->
->> 	return hash >> 1;
->> }
->> 
->>+static struct slave *bond_xmit_3ad_xor_slave_get(struct bonding *bond,
->>+						 struct sk_buff *skb,
->>+						 struct bond_up_slave *slaves)
->>+{
->>+	struct slave *slave;
->>+	unsigned int count;
->>+	u32 hash;
->>+
->>+	hash = bond_xmit_hash(bond, skb);
->>+	count = slaves ? READ_ONCE(slaves->count) : 0;
->>+	if (unlikely(!count))
->>+		return NULL;
->>+
->>+	slave = slaves->arr[hash % count];
->>+	return slave;
->>+}
->
->Why don't you have this helper near bond_3ad_xor_xmit() as you have for
->round robin for example?
->
->I think it would make this patch much easier to review if you split to
->multiple patches, per-mode.
->
->
->>+
->> /*-------------------------- Device entry points ----------------------------*/
->> 
->> void bond_work_init_all(struct bonding *bond)
->>@@ -3923,16 +3940,15 @@ static int bond_set_mac_address(struct net_device *bond_dev, void *addr)
->> }
->> 
->> /**
->>- * bond_xmit_slave_id - transmit skb through slave with slave_id
->>+ * bond_get_slave_by_id - get xmit slave with slave_id
->>  * @bond: bonding device that is transmitting
->>- * @skb: buffer to transmit
->>  * @slave_id: slave id up to slave_cnt-1 through which to transmit
->>  *
->>- * This function tries to transmit through slave with slave_id but in case
->>+ * This function tries to get slave with slave_id but in case
->>  * it fails, it tries to find the first available slave for transmission.
->>- * The skb is consumed in all cases, thus the function is void.
->>  */
->>-static void bond_xmit_slave_id(struct bonding *bond, struct sk_buff *skb, int slave_id)
->>+static struct slave *bond_get_slave_by_id(struct bonding *bond,
->>+					  int slave_id)
->> {
->> 	struct list_head *iter;
->> 	struct slave *slave;
->>@@ -3941,10 +3957,8 @@ static void bond_xmit_slave_id(struct bonding *bond, struct sk_buff *skb, int sl
->> 	/* Here we start from the slave with slave_id */
->> 	bond_for_each_slave_rcu(bond, slave, iter) {
->> 		if (--i < 0) {
->>-			if (bond_slave_can_tx(slave)) {
->>-				bond_dev_queue_xmit(bond, skb, slave->dev);
->>-				return;
->>-			}
->>+			if (bond_slave_can_tx(slave))
->>+				return slave;
->> 		}
->> 	}
->> 
->>@@ -3953,13 +3967,11 @@ static void bond_xmit_slave_id(struct bonding *bond, struct sk_buff *skb, int sl
->> 	bond_for_each_slave_rcu(bond, slave, iter) {
->> 		if (--i < 0)
->> 			break;
->>-		if (bond_slave_can_tx(slave)) {
->>-			bond_dev_queue_xmit(bond, skb, slave->dev);
->>-			return;
->>-		}
->>+		if (bond_slave_can_tx(slave))
->>+			return slave;
->> 	}
->>-	/* no slave that can tx has been found */
->>-	bond_tx_drop(bond->dev, skb);
->>+
->>+	return NULL;
->> }
->> 
->> /**
->>@@ -3995,10 +4007,9 @@ static u32 bond_rr_gen_slave_id(struct bonding *bond)
->> 	return slave_id;
->> }
->> 
->>-static netdev_tx_t bond_xmit_roundrobin(struct sk_buff *skb,
->>-					struct net_device *bond_dev)
->>+static struct slave *bond_xmit_roundrobin_slave_get(struct bonding *bond,
->>+						    struct sk_buff *skb)
->> {
->>-	struct bonding *bond = netdev_priv(bond_dev);
->> 	struct slave *slave;
->> 	int slave_cnt;
->> 	u32 slave_id;
->>@@ -4020,24 +4031,40 @@ static netdev_tx_t bond_xmit_roundrobin(struct sk_buff *skb,
->> 		if (iph->protocol == IPPROTO_IGMP) {
->> 			slave = rcu_dereference(bond->curr_active_slave);
->> 			if (slave)
->>-				bond_dev_queue_xmit(bond, skb, slave->dev);
->>-			else
->>-				bond_xmit_slave_id(bond, skb, 0);
->>-			return NETDEV_TX_OK;
->>+				return slave;
->>+			return bond_get_slave_by_id(bond, 0);
->> 		}
->> 	}
->> 
->> non_igmp:
->> 	slave_cnt = READ_ONCE(bond->slave_cnt);
->> 	if (likely(slave_cnt)) {
->>-		slave_id = bond_rr_gen_slave_id(bond);
->>-		bond_xmit_slave_id(bond, skb, slave_id % slave_cnt);
->>-	} else {
->>-		bond_tx_drop(bond_dev, skb);
->>+		slave_id = bond_rr_gen_slave_id(bond) % slave_cnt;
->>+		return bond_get_slave_by_id(bond, slave_id);
->> 	}
->>+	return NULL;
->>+}
->>+
->>+static netdev_tx_t bond_xmit_roundrobin(struct sk_buff *skb,
->>+					struct net_device *bond_dev)
->>+{
->>+	struct bonding *bond = netdev_priv(bond_dev);
->>+	struct slave *slave;
->>+
->>+	slave = bond_xmit_roundrobin_slave_get(bond, skb);
->>+	if (slave)
->>+		bond_dev_queue_xmit(bond, skb, slave->dev);
->>+	else
->>+		bond_tx_drop(bond_dev, skb);
->> 	return NETDEV_TX_OK;
->> }
->> 
->>+static struct slave *bond_xmit_activebackup_slave_get(struct bonding *bond,
->>+						      struct sk_buff *skb)
->>+{
->>+	return rcu_dereference(bond->curr_active_slave);
->>+}
->>+
->> /* In active-backup mode, we know that bond->curr_active_slave is always valid if
->>  * the bond has a usable interface.
->>  */
->>@@ -4047,7 +4074,7 @@ static netdev_tx_t bond_xmit_activebackup(struct sk_buff *skb,
->> 	struct bonding *bond = netdev_priv(bond_dev);
->> 	struct slave *slave;
->> 
->>-	slave = rcu_dereference(bond->curr_active_slave);
->>+	slave = bond_xmit_activebackup_slave_get(bond, skb);
->> 	if (slave)
->> 		bond_dev_queue_xmit(bond, skb, slave->dev);
->> 	else
->>@@ -4193,18 +4220,15 @@ static netdev_tx_t bond_3ad_xor_xmit(struct sk_buff *skb,
->> 				     struct net_device *dev)
->> {
->> 	struct bonding *bond = netdev_priv(dev);
->>-	struct slave *slave;
->> 	struct bond_up_slave *slaves;
->>-	unsigned int count;
->>+	struct slave *slave;
->> 
->> 	slaves = rcu_dereference(bond->usable_slaves);
->>-	count = slaves ? READ_ONCE(slaves->count) : 0;
->>-	if (likely(count)) {
->>-		slave = slaves->arr[bond_xmit_hash(bond, skb) % count];
->>+	slave = bond_xmit_3ad_xor_slave_get(bond, skb, slaves);
->>+	if (likely(slave))
->> 		bond_dev_queue_xmit(bond, skb, slave->dev);
->>-	} else {
->>+	else
->> 		bond_tx_drop(dev, skb);
->>-	}
->> 
->> 	return NETDEV_TX_OK;
->> }
->>diff --git a/include/net/bond_alb.h b/include/net/bond_alb.h
->>index b3504fcd773d..f6af76c87a6c 100644
->>--- a/include/net/bond_alb.h
->>+++ b/include/net/bond_alb.h
->>@@ -158,6 +158,10 @@ void bond_alb_handle_link_change(struct bonding *bond, struct slave *slave, char
->> void bond_alb_handle_active_change(struct bonding *bond, struct slave *new_slave);
->> int bond_alb_xmit(struct sk_buff *skb, struct net_device *bond_dev);
->> int bond_tlb_xmit(struct sk_buff *skb, struct net_device *bond_dev);
->>+struct slave *bond_xmit_alb_slave_get(struct bonding *bond,
->>+				      struct sk_buff *skb);
->>+struct slave *bond_xmit_tlb_slave_get(struct bonding *bond,
->>+				      struct sk_buff *skb);
->> void bond_alb_monitor(struct work_struct *);
->> int bond_alb_set_mac_address(struct net_device *bond_dev, void *addr);
->> void bond_alb_clear_vlan(struct bonding *bond, unsigned short vlan_id);
->>-- 
->>2.17.2
->>
-
----
-	-Jay Vosburgh, jay.vosburgh@canonical.com
