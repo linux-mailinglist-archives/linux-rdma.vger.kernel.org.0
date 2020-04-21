@@ -2,124 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCE91B2198
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 10:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBDF1B219F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 10:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgDUI3p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 04:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
+        id S1728398AbgDUIaI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 04:30:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgDUI3o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:29:44 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1726095AbgDUIaG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:30:06 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BB082084D;
-        Tue, 21 Apr 2020 08:29:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 950CF2084D;
+        Tue, 21 Apr 2020 08:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587457784;
-        bh=NFtwC8kW7dlgL75woeLEO3xy6rSEiG05N+3+AH52ulg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mjlCUYDMaKR/qrkKZDElblop9Rdhg3nSirwb6qmKzFFLM56UVkwbRe9/OtzZuJImF
-         bY7lBaf92v4d3xLgCHQjTnZXrwlbuLAj1NpHjb7aiPIPaHPV7+6ob5W6WoPkOa9Tv/
-         nhMlNAPrKZJ+gUHxGIm0gj5YSSbGjZB6nEIxWA/M=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-rc 2/2] RDMA/core: Fix overwriting of uobj in case of error
-Date:   Tue, 21 Apr 2020 11:29:29 +0300
-Message-Id: <20200421082929.311931-3-leon@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200421082929.311931-1-leon@kernel.org>
-References: <20200421082929.311931-1-leon@kernel.org>
+        s=default; t=1587457806;
+        bh=vsiOnnLYbbBCAd4J6fXIOLziqke0F8QVm3amieyYgzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xRJbIQCnSEfRnHfgR0eDiv6NHRtYCm/pqm4s6rjx7QQtBYFyc8iqkO5avAKz85cP9
+         YoVl2EL+OPsWDnZtGzcK8Lt4igQQTDV0yTTAmRbX7MU197QEU0rSwC7KVVZTv5TDtp
+         lI4QvgMjlCdgYQM0iUd1UGn+kmlDhd/Xoafbok80=
+Date:   Tue, 21 Apr 2020 10:30:04 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "leonro@mellanox.com" <leonro@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver
+ Updates 2020-04-20
+Message-ID: <20200421083004.GB716720@kroah.com>
+References: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
+ <61CC2BC414934749BD9F5BF3D5D940449866D71D@ORSMSX112.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61CC2BC414934749BD9F5BF3D5D940449866D71D@ORSMSX112.amr.corp.intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Apr 21, 2020 at 08:15:59AM +0000, Kirsher, Jeffrey T wrote:
+> > -----Original Message-----
+> > From: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
+> > Sent: Tuesday, April 21, 2020 01:02
+> > To: davem@davemloft.net; gregkh@linuxfoundation.org
+> > Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org;
+> > linux-rdma@vger.kernel.org; nhorman@redhat.com; sassmann@redhat.com;
+> > jgg@ziepe.ca; parav@mellanox.com; galpress@amazon.com;
+> > selvin.xavier@broadcom.com; sriharsha.basavapatna@broadcom.com;
+> > benve@cisco.com; bharat@chelsio.com; xavier.huwei@huawei.com;
+> > yishaih@mellanox.com; leonro@mellanox.com; mkalderon@marvell.com;
+> > aditr@vmware.com; ranjani.sridharan@linux.intel.com; pierre-
+> > louis.bossart@linux.intel.com
+> > Subject: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver Updates
+> > 2020-04-20
+> > 
+> > This series contains the initial implementation of the Virtual Bus, virtbus_device,
+> > virtbus_driver, updates to 'ice' and 'i40e' to use the new Virtual Bus.
+> > 
+> > The primary purpose of the Virtual bus is to put devices on it and hook the
+> > devices up to drivers.  This will allow drivers, like the RDMA drivers, to hook up
+> > to devices via this Virtual bus.
+> > 
+> > This series currently builds against net-next tree.
+> > 
+> > Revision history:
+> > v2: Made changes based on community feedback, like Pierre-Louis's and
+> >     Jason's comments to update virtual bus interface.
+> [Kirsher, Jeffrey T] 
+> 
+> David Miller, I know we have heard from Greg KH and Jason Gunthorpe on the patch
+> series and have responded accordingly, I would like your personal opinion on the
+> patch series.  I respect your opinion and would like to make sure we appease all the
+> maintainers and users involved to get this accepted into the 5.8 kernel.
 
-In case of failure to get file, the uobj is overwritten and causes to
-supply bad pointer as an input to uverbs_uobject_put().
+Wait, you haven't gotten my ack on that code, why are you asking for it
+to be merged already???
 
-RBP: 00007efe9f6a86bc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: 0000000000000bf2 R14: 00000000004cb80a R15: 00000000006fefc0
-==================================================================
-BUG: KASAN: null-ptr-deref in atomic_fetch_sub include/asm-generic/atomic-instrumented.h:199 [inline]
-BUG: KASAN: null-ptr-deref in refcount_sub_and_test include/linux/refcount.h:253 [inline]
-BUG: KASAN: null-ptr-deref in refcount_dec_and_test include/linux/refcount.h:281 [inline]
-BUG: KASAN: null-ptr-deref in kref_put include/linux/kref.h:64 [inline]
-BUG: KASAN: null-ptr-deref in uverbs_uobject_put+0x22/0x90 drivers/infiniband/core/rdma_core.c:57
-Write of size 4 at addr 0000000000000030 by task syz-executor.4/1691
+{sigh}
 
-CPU: 1 PID: 1691 Comm: syz-executor.4 Not tainted 5.6.0 #17
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x94/0xce lib/dump_stack.c:118
- __kasan_report+0x10c/0x190 mm/kasan/report.c:515
- kasan_report+0x32/0x50 mm/kasan/common.c:625
- check_memory_region_inline mm/kasan/generic.c:187 [inline]
- check_memory_region+0x16d/0x1c0 mm/kasan/generic.c:193
- atomic_fetch_sub include/asm-generic/atomic-instrumented.h:199 [inline]
- refcount_sub_and_test include/linux/refcount.h:253 [inline]
- refcount_dec_and_test include/linux/refcount.h:281 [inline]
- kref_put include/linux/kref.h:64 [inline]
- uverbs_uobject_put+0x22/0x90 drivers/infiniband/core/rdma_core.c:57
- alloc_begin_fd_uobject+0x1d0/0x250 drivers/infiniband/core/rdma_core.c:486
- rdma_alloc_begin_uobject+0xa8/0xf0 drivers/infiniband/core/rdma_core.c:509
- __uobj_alloc include/rdma/uverbs_std_types.h:117 [inline]
- ib_uverbs_create_comp_channel+0x16d/0x230 drivers/infiniband/core/uverbs_cmd.c:982
- ib_uverbs_write+0xaa5/0xdf0 drivers/infiniband/core/uverbs_main.c:665
- __vfs_write+0x7c/0x100 fs/read_write.c:494
- vfs_write+0x168/0x4a0 fs/read_write.c:558
- ksys_write+0xc8/0x200 fs/read_write.c:611
- do_syscall_64+0x9c/0x390 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x466479
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007efe9f6a7c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000466479
-RDX: 0000000000000018 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 00007efe9f6a86bc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: 0000000000000bf2 R14: 00000000004cb80a R15: 00000000006fefc0
-==================================================================
-
-Fixes: 849e149063bd ("RDMA/core: Do not allow alloc_commit to fail")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/rdma_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 8f480de5596a..2947f4f83561 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -474,16 +474,15 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
- 	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
- 				  fd_type->flags);
- 	if (IS_ERR(filp)) {
-+		uverbs_uobject_put(uobj);
- 		uobj = ERR_CAST(filp);
--		goto err_uobj;
-+		goto err_fd;
- 	}
- 	uobj->object = filp;
- 
- 	uobj->id = new_fd;
- 	return uobj;
- 
--err_uobj:
--	uverbs_uobject_put(uobj);
- err_fd:
- 	put_unused_fd(new_fd);
- 	return uobj;
--- 
-2.25.2
-
+greg k-h
