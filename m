@@ -2,149 +2,259 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FC11B21CB
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 10:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4954D1B21E6
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 10:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgDUIiC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 21 Apr 2020 04:38:02 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43448 "EHLO mga01.intel.com"
+        id S1726052AbgDUIoT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 04:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUIiB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:38:01 -0400
-IronPort-SDR: qRlxKjQD0Tng2ISZ2tPRHeQIIiBXUE59yjeG9jRl45QmnlnbHFDVyNX7lwRl8lVHGd9U3ksYEE
- z0N6IqMJ0/Fw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:38:01 -0700
-IronPort-SDR: 8IW+2PE/fR+gwgM4knYj4Zc1jYAtrinha2oujA0dDKHRB3T1dtUQudt4Z8EfJZkr219po/MAzt
- +aIqesChNmOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
-   d="scan'208";a="456024496"
-Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Apr 2020 01:38:00 -0700
-Received: from orsmsx155.amr.corp.intel.com (10.22.240.21) by
- ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Apr 2020 01:38:00 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.248]) by
- ORSMSX155.amr.corp.intel.com ([169.254.7.34]) with mapi id 14.03.0439.000;
- Tue, 21 Apr 2020 01:37:59 -0700
-From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
-        "sriharsha.basavapatna@broadcom.com" 
-        <sriharsha.basavapatna@broadcom.com>,
-        "benve@cisco.com" <benve@cisco.com>,
-        "bharat@chelsio.com" <bharat@chelsio.com>,
-        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
-        "yishaih@mellanox.com" <yishaih@mellanox.com>,
-        "leonro@mellanox.com" <leonro@mellanox.com>,
-        "mkalderon@marvell.com" <mkalderon@marvell.com>,
-        "aditr@vmware.com" <aditr@vmware.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>
-Subject: RE: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver
- Updates 2020-04-20
-Thread-Topic: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver
- Updates 2020-04-20
-Thread-Index: AQHWF7M+ytg6HKzOoEituinftxWI0KiDOHUAgAB7mQD//4wT0A==
-Date:   Tue, 21 Apr 2020 08:37:59 +0000
-Message-ID: <61CC2BC414934749BD9F5BF3D5D940449866D8D2@ORSMSX112.amr.corp.intel.com>
+        id S1726018AbgDUIoS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:44:18 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31FC72072D;
+        Tue, 21 Apr 2020 08:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587458657;
+        bh=vsQlr1gciJx4R74jHKq+EyyVwW79oBb2TKFKEJ8IcMs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vOec6tn0iR35kS8JmmG2fzZLnQF2nqyX77Ya9mM4Vh6sJBq2dEt/6XsQftBJ2Az+S
+         aX5431JOq4P4Zw7leWx4+Jg8Ty5EDDwtJX6ZPVpqmcOm6oYCfk3QK6f2M5oCurpaC4
+         r0I4QmXnuMRuOoLaoqZGMkvZhd8lVzT1hUU2EQqQ=
+Date:   Tue, 21 Apr 2020 10:44:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, Dave Ertman <david.m.ertman@intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, jgg@ziepe.ca,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [net-next v2 2/9] ice: Create and register virtual bus for RDMA
+Message-ID: <20200421084415.GD716720@kroah.com>
 References: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
- <61CC2BC414934749BD9F5BF3D5D940449866D71D@ORSMSX112.amr.corp.intel.com>
- <20200421083004.GB716720@kroah.com>
-In-Reply-To: <20200421083004.GB716720@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.139]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ <20200421080235.6515-3-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421080235.6515-3-jeffrey.t.kirsher@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Apr 21, 2020 at 01:02:28AM -0700, Jeff Kirsher wrote:
+> diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> index 5c11448bfbb3..529a6743fd4e 100644
+> --- a/drivers/net/ethernet/intel/ice/ice.h
+> +++ b/drivers/net/ethernet/intel/ice/ice.h
+> @@ -33,6 +33,7 @@
+>  #include <linux/if_bridge.h>
+>  #include <linux/ctype.h>
+>  #include <linux/bpf.h>
+> +#include <linux/virtual_bus.h>
+
+Why do you need this #include?  You don't use anything from this file in
+this .h file.
+
+> --- a/drivers/net/ethernet/intel/ice/ice_common.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_common.c
+> @@ -825,7 +825,8 @@ enum ice_status ice_check_reset(struct ice_hw *hw)
+>  				 GLNVM_ULD_POR_DONE_1_M |\
+>  				 GLNVM_ULD_PCIER_DONE_2_M)
+>  
+> -	uld_mask = ICE_RESET_DONE_MASK;
+> +	uld_mask = ICE_RESET_DONE_MASK | (hw->func_caps.common_cap.iwarp ?
+> +					  GLNVM_ULD_PE_DONE_M : 0);
+>  
+>  	/* Device is Active; check Global Reset processes are done */
+>  	for (cnt = 0; cnt < ICE_PF_RESET_WAIT_COUNT; cnt++) {
+> @@ -1678,6 +1679,11 @@ ice_parse_caps(struct ice_hw *hw, void *buf, u32 cap_count,
+>  				  "%s: msix_vector_first_id = %d\n", prefix,
+>  				  caps->msix_vector_first_id);
+>  			break;
+> +		case ICE_AQC_CAPS_IWARP:
+> +			caps->iwarp = (number == 1);
+> +			ice_debug(hw, ICE_DBG_INIT,
+> +				  "%s: iwarp = %d\n", prefix, caps->iwarp);
+> +			break;
+>  		case ICE_AQC_CAPS_MAX_MTU:
+>  			caps->max_mtu = number;
+>  			ice_debug(hw, ICE_DBG_INIT, "%s: max_mtu = %d\n",
+> @@ -1701,6 +1707,16 @@ ice_parse_caps(struct ice_hw *hw, void *buf, u32 cap_count,
+>  		ice_debug(hw, ICE_DBG_INIT,
+>  			  "%s: maxtc = %d (based on #ports)\n", prefix,
+>  			  caps->maxtc);
+> +		if (caps->iwarp) {
+> +			ice_debug(hw, ICE_DBG_INIT, "%s: forcing RDMA off\n",
+> +				  prefix);
+> +			caps->iwarp = 0;
+> +		}
+> +
+> +		/* print message only when processing device capabilities */
+> +		if (dev_p)
+> +			dev_info(ice_hw_to_dev(hw),
+> +				 "RDMA functionality is not available with the current device configuration.\n");
+
+Shouldn't that be dev_err()?
+
+And why are you adding new functionality to the driver when you should
+only be adding virtual bus support?  This feels like you are mixing two
+different things into one patch, making it _really_ hard to review.
 
 
-> -----Original Message-----
-> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
-> Sent: Tuesday, April 21, 2020 01:30
-> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
-> Cc: davem@davemloft.net; netdev@vger.kernel.org; linux-
-> rdma@vger.kernel.org; nhorman@redhat.com; sassmann@redhat.com;
-> jgg@ziepe.ca; parav@mellanox.com; galpress@amazon.com;
-> selvin.xavier@broadcom.com; sriharsha.basavapatna@broadcom.com;
-> benve@cisco.com; bharat@chelsio.com; xavier.huwei@huawei.com;
-> yishaih@mellanox.com; leonro@mellanox.com; mkalderon@marvell.com;
-> aditr@vmware.com; ranjani.sridharan@linux.intel.com; pierre-
-> louis.bossart@linux.intel.com
-> Subject: Re: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver
-> Updates 2020-04-20
-> 
-> On Tue, Apr 21, 2020 at 08:15:59AM +0000, Kirsher, Jeffrey T wrote:
-> > > -----Original Message-----
-> > > From: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
-> > > Sent: Tuesday, April 21, 2020 01:02
-> > > To: davem@davemloft.net; gregkh@linuxfoundation.org
-> > > Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>;
-> > > netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
-> > > nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca;
-> > > parav@mellanox.com; galpress@amazon.com;
-> selvin.xavier@broadcom.com;
-> > > sriharsha.basavapatna@broadcom.com;
-> > > benve@cisco.com; bharat@chelsio.com; xavier.huwei@huawei.com;
-> > > yishaih@mellanox.com; leonro@mellanox.com; mkalderon@marvell.com;
-> > > aditr@vmware.com; ranjani.sridharan@linux.intel.com; pierre-
-> > > louis.bossart@linux.intel.com
-> > > Subject: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN
-> > > Driver Updates
-> > > 2020-04-20
-> > >
-> > > This series contains the initial implementation of the Virtual Bus,
-> > > virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
-> Virtual Bus.
-> > >
-> > > The primary purpose of the Virtual bus is to put devices on it and
-> > > hook the devices up to drivers.  This will allow drivers, like the
-> > > RDMA drivers, to hook up to devices via this Virtual bus.
-> > >
-> > > This series currently builds against net-next tree.
-> > >
-> > > Revision history:
-> > > v2: Made changes based on community feedback, like Pierre-Louis's and
-> > >     Jason's comments to update virtual bus interface.
-> > [Kirsher, Jeffrey T]
-> >
-> > David Miller, I know we have heard from Greg KH and Jason Gunthorpe on
-> > the patch series and have responded accordingly, I would like your
-> > personal opinion on the patch series.  I respect your opinion and
-> > would like to make sure we appease all the maintainers and users involved to
-> get this accepted into the 5.8 kernel.
-> 
-> Wait, you haven't gotten my ack on that code, why are you asking for it to be
-> merged already???
-> 
-[Kirsher, Jeffrey T] 
+> +/**
+> + * ice_init_peer_devices - initializes peer devices
+> + * @pf: ptr to ice_pf
+> + *
+> + * This function initializes peer devices on the virtual bus.
+> + */
+> +int ice_init_peer_devices(struct ice_pf *pf)
+> +{
+> +	struct ice_vsi *vsi = pf->vsi[0];
+> +	struct pci_dev *pdev = pf->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	int status = 0;
+> +	unsigned int i;
+> +
+> +	/* Reserve vector resources */
+> +	status = ice_reserve_peer_qvector(pf);
+> +	if (status < 0) {
+> +		dev_err(dev, "failed to reserve vectors for peer drivers\n");
+> +		return status;
+> +	}
+> +	for (i = 0; i < ARRAY_SIZE(ice_peers); i++) {
+> +		struct ice_peer_dev_int *peer_dev_int;
+> +		struct ice_peer_drv_int *peer_drv_int;
+> +		struct iidc_qos_params *qos_info;
+> +		struct iidc_virtbus_object *vbo;
+> +		struct msix_entry *entry = NULL;
+> +		struct iidc_peer_dev *peer_dev;
+> +		struct virtbus_device *vdev;
+> +		int j;
+> +
+> +		/* structure layout needed for container_of's looks like:
+> +		 * ice_peer_dev_int (internal only ice peer superstruct)
+> +		 * |--> iidc_peer_dev
+> +		 * |--> *ice_peer_drv_int
+> +		 *
+> +		 * iidc_virtbus_object (container_of parent for vdev)
+> +		 * |--> virtbus_device
+> +		 * |--> *iidc_peer_dev (pointer from internal struct)
+> +		 *
+> +		 * ice_peer_drv_int (internal only peer_drv struct)
+> +		 */
+> +		peer_dev_int = kzalloc(sizeof(*peer_dev_int), GFP_KERNEL);
+> +		if (!peer_dev_int)
+> +			return -ENOMEM;
+> +
+> +		vbo = kzalloc(sizeof(*vbo), GFP_KERNEL);
+> +		if (!vbo) {
+> +			kfree(peer_dev_int);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		peer_drv_int = kzalloc(sizeof(*peer_drv_int), GFP_KERNEL);
+> +		if (!peer_drv_int) {
+> +			kfree(peer_dev_int);
+> +			kfree(vbo);
+> +			return -ENOMEM;
 
-I was just asking for Dave's review, I was not asking that get merged without your or anyone's ACK.
+So any errors cause you to break out of your loop and leave things
+around?
 
-> {sigh}
-> 
-> greg k-h
+And isn't goto the best thing for unwinding stuff?
+
+
+> +		}
+> +
+> +		pf->peers[i] = peer_dev_int;
+> +		vbo->peer_dev = &peer_dev_int->peer_dev;
+> +		peer_dev_int->peer_drv_int = peer_drv_int;
+> +		peer_dev_int->peer_dev.vdev = &vbo->vdev;
+> +
+> +		/* Initialize driver values */
+> +		for (j = 0; j < IIDC_EVENT_NBITS; j++)
+> +			bitmap_zero(peer_drv_int->current_events[j].type,
+> +				    IIDC_EVENT_NBITS);
+> +
+> +		mutex_init(&peer_dev_int->peer_dev_state_mutex);
+> +
+> +		peer_dev = &peer_dev_int->peer_dev;
+> +		peer_dev->peer_ops = NULL;
+> +		peer_dev->hw_addr = (u8 __iomem *)pf->hw.hw_addr;
+> +		peer_dev->peer_dev_id = ice_peers[i].id;
+> +		peer_dev->pf_vsi_num = vsi->vsi_num;
+> +		peer_dev->netdev = vsi->netdev;
+> +
+> +		peer_dev_int->ice_peer_wq =
+> +			alloc_ordered_workqueue("ice_peer_wq_%d", WQ_UNBOUND,
+> +						i);
+> +		if (!peer_dev_int->ice_peer_wq) {
+> +			kfree(peer_dev_int);
+> +			kfree(peer_drv_int);
+> +			kfree(vbo);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		peer_dev->pdev = pdev;
+> +		qos_info = &peer_dev->initial_qos_info;
+> +
+> +		/* setup qos_info fields with defaults */
+> +		qos_info->num_apps = 0;
+> +		qos_info->num_tc = 1;
+> +
+> +		for (j = 0; j < IIDC_MAX_USER_PRIORITY; j++)
+> +			qos_info->up2tc[j] = 0;
+> +
+> +		qos_info->tc_info[0].rel_bw = 100;
+> +		for (j = 1; j < IEEE_8021QAZ_MAX_TCS; j++)
+> +			qos_info->tc_info[j].rel_bw = 0;
+> +
+> +		/* for DCB, override the qos_info defaults. */
+> +		ice_setup_dcb_qos_info(pf, qos_info);
+> +
+> +		/* make sure peer specific resources such as msix_count and
+> +		 * msix_entries are initialized
+> +		 */
+> +		switch (ice_peers[i].id) {
+> +		case IIDC_PEER_RDMA_ID:
+> +			if (test_bit(ICE_FLAG_IWARP_ENA, pf->flags)) {
+> +				peer_dev->msix_count = pf->num_rdma_msix;
+> +				entry = &pf->msix_entries[pf->rdma_base_vector];
+> +			}
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +
+> +		peer_dev->msix_entries = entry;
+> +		ice_peer_state_change(peer_dev_int, ICE_PEER_DEV_STATE_INIT,
+> +				      false);
+> +
+> +		vdev = &vbo->vdev;
+> +		vdev->name = ice_peers[i].name;
+> +		vdev->release = ice_peer_vdev_release;
+> +		vdev->dev.parent = &pdev->dev;
+> +
+> +		status = virtbus_register_device(vdev);
+> +		if (status) {
+> +			kfree(peer_dev_int);
+> +			kfree(peer_drv_int);
+> +			vdev = NULL;
+
+I doubt you need to set a local variable to NULL right before exiting
+the function :)
+
+And what about all of the other things you need to unwind that you
+created above here?
+
+> +			return status;
+
+Again, you are breaking out of here and leaving the other things
+allocated in this loop around to just stay there for forever???
+
+greg k-h
