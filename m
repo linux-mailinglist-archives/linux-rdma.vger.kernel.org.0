@@ -2,134 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2DB1B2EFB
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 20:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2880C1B30A1
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 21:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgDUSX5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 14:23:57 -0400
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:61107 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgDUSX5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Apr 2020 14:23:57 -0400
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id D8BFAB9C22;
-        Tue, 21 Apr 2020 14:23:53 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=XIF+lHQmIGJlgPyKUKfgN7ocejk=; b=K9v4tX
-        y+mRt6OcJpt6RtETLC+W9D+ACu1UExe3jrOmLpVlTYRM7WUkdB5vj6aVE0UUlaOa
-        udNMfKiGLYjYYQnlms8Q8l4NuSpG5qfsyHSEL4vnmz924SUs/rKOtmgh3hhQ0GoU
-        8Tx850K4b0tY8POWlok71ONxLxRftDMBlvk6Y=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id CF244B9C20;
-        Tue, 21 Apr 2020 14:23:53 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=x7fL8/5SX4Xr9sIGNCqUqMxcBILv9SZc87FE2gx3TwU=; b=l9pbCK2ETrm+QZLPaoOv8fFZyWmAeWWOcrwsohSI96G4dsavFYhV75RPBJuBptQ+TVkiyTSt0xvsNiImlBKmr0Nc/3ymXLeFFapNutfiMCQTSzAmNkDskibrOJ1IruUKnCIf8iEqBL/QX3nIAX+clCx7CHu9e0LroUCrPgn7Ht8=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 44DE3B9C1F;
-        Tue, 21 Apr 2020 14:23:49 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 544F62DA014B;
-        Tue, 21 Apr 2020 14:23:47 -0400 (EDT)
-Date:   Tue, 21 Apr 2020 14:23:47 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-In-Reply-To: <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com>
-Message-ID: <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr>
-References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com> <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr> <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
- <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com> <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr> <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        id S1726050AbgDUTrl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 15:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgDUTrl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Apr 2020 15:47:41 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FFDC0610D5
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 12:47:39 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g13so15929866wrb.8
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 12:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3fl+lvLy/eECmlgZWfYYWnfhkwqQGBLTrseAA2rmeCA=;
+        b=ewRnXuwLIo4LCFt/bUB2DhfOUGO+gehpOMxmhHjijhKBBUU0LsEGKij2pnaZE72wll
+         HZilhtsV6wtqgKTgq6ML4n+tFg4l0bHOG7lz66+ne4aLeqfZCUrUxvXvjclqlqvJiYTu
+         6B/000GB6j6OrYXARTEiGQJI7j3lnfbKSK4xlu/nF1SyzOV+kTQLCxSjU5oTJa5Hauaf
+         tIp7rX0Bez+s7tldBHxq0RJ4EG7bKuwoaxmhEORoDzsa2QAHo8sohXa+sD65AfubLAA8
+         wi20g/4JNbxwkzkQfgXhqO4/Wwn3jyMMcowz3XyEaMI0KZIrA2BQpsIxTcB8QodVIrVW
+         20ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3fl+lvLy/eECmlgZWfYYWnfhkwqQGBLTrseAA2rmeCA=;
+        b=jFPHCCfVbopMzrX7xPU8dAz38wwK/rZaWBH6sC1ebtOmh6bnVWxCo045g7v5N12iMA
+         bCvSdd6KL1KD7Dne+MxYU3a3m8aTNh78+lbyU08xF1JW+Urgb0TAYAL/yvyrrYq1WEUP
+         8gv67AXUvdp12OWP8N3wM0Gd4LorMwSCE03rgubjKbDyLW13eNeAZj0kZMCWio26Iz9s
+         LO7KFrZcZtCfh0iIOeaz4aK0qOsilVW/IIzSIkbu4AvZs6YX9pgGTfANBfO8XqEmkR1T
+         xd08HqC65rqchuXVkvyhHdhcLrGqHlpRyAZhKjP/ABCSse7xVGix8vkFPJ10Ro2S3Zco
+         JMHg==
+X-Gm-Message-State: AGi0PuZ/dh9YIsN5A6F3e9YKoYFVHb92cmJKzM8LwpoOq35d9JrLfgMF
+        MQqcX6Hwa9FylICN+Bqkapb+dFCEI7M=
+X-Google-Smtp-Source: APiQypJI3dyTLtlGmPWjEbq/MzKWyTGAmOjZYNJQy0aKf68LlBT1OMLDqi3nms/L0XeumvizZyZ4vg==
+X-Received: by 2002:a5d:4443:: with SMTP id x3mr25015672wrr.162.1587498458295;
+        Tue, 21 Apr 2020 12:47:38 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id a1sm5051893wrn.80.2020.04.21.12.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 12:47:37 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 21:47:36 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Maor Gottlieb <maorg@mellanox.com>
+Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, jiri@mellanox.com, dsahern@kernel.org,
+        leonro@mellanox.com, saeedm@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com
+Subject: Re: [PATCH V3 mlx5-next 08/15] bonding: Add array of all salves
+Message-ID: <20200421194736.GG6581@nanopsycho.orion>
+References: <20200421102844.23640-1-maorg@mellanox.com>
+ <20200421102844.23640-9-maorg@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 3EDF1E74-83FD-11EA-8A3A-B0405B776F7B-78420484!pb-smtp20.pobox.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421102844.23640-9-maorg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 21 Apr 2020, Saeed Mahameed wrote:
+Tue, Apr 21, 2020 at 12:28:37PM CEST, maorg@mellanox.com wrote:
+>Keep all slaves in array so it could be used to get the xmit slave
+>assume all the slaves are active.
+>The logic to add slave to the array is like the usable slaves, except
+>that we also add slaves that currently can't transmit - not up or active.
+>
+>Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
 
-> On Tue, 2020-04-21 at 09:58 -0400, Nicolas Pitre wrote:
-> > On Tue, 21 Apr 2020, Saeed Mahameed wrote:
-> > 
-> > > I wonder how many of those 8889 cases wanted a weak dependency but
-> > > couldn't figure out how to do it ? 
-> > > 
-> > > Users of depends on FOO || !FOO
-> > > 
-> > > $ git ls-files | grep Kconfig | xargs grep -E \
-> > >   "depends\s+on\s+([A-Za-z0-9_]+)\s*\|\|\s*(\!\s*\1|\1\s*=\s*n)" \
-> > >  | wc -l
-> > > 
-> > > 156
-> > > 
-> > > a new keyword is required :) .. 
-> > > 
-> > > 
-> > > > In another mail I suggested
-> > > > 
-> > > > 	optionally depends on FOO
-> > > > 
-> > > > might be a better alternative than "uses".
-> > > > 
-> > > > 
-> > > 
-> > > how about just:
-> > >       optional FOO
-> > > 
-> > > It is clear and easy to document .. 
-> > 
-> > I don't dispute your argument for having a new keyword. But the most 
-> > difficult part as Arnd said is to find it. You cannot pretend that 
-> 
-> kconfig-language.rst  ?
-> 
-> > "optional FOO" is clear when it actually imposes a restriction when 
-> > FOO=m. Try to justify to people why they cannot select y because of
-> > this 
-> > "optional" thing.
-> > 
-> 
-> Then let's use "uses" it is more assertive. Documentation will cover
-> any vague anything about it .. 
-
-It uses what? And why can't I configure this with "uses FOO" when FOO=m?
-That's not any clearer. And saying that "this is weird but it is 
-described in the documentation" is not good enough. We must make things 
-clear in the first place.
-
-This is really a conditional dependency. That's all this is about.
-So why not simply making it so rather than fooling ourselves? All that 
-is required is an extension that would allow:
-
-	depends on (expression) if (expression)
-
-This construct should be obvious even without reading the doc, is 
-already used extensively for other things already, and is flexible 
-enough to cover all sort of cases in addition to this particular one.
-
-
-Nicolas
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
