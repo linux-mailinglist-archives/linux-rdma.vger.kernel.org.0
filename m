@@ -2,129 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D601B2596
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 14:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BCD1B2598
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 14:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgDUMIu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 08:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgDUMIu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:08:50 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DD9C061A41
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 05:08:50 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id t3so14205356qkg.1
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 05:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3FhjQ0bL3FcnfxRJzwU2birDevO5bn+c/zKDG6q4ojY=;
-        b=N5hGOnvmCUPCUcy5qlF8TnpMPyS5NrUDPwMg5ziycNEn6xaHz+vUgwmOfqMDzovFqM
-         KitZtnSid0LTXK7MGOmRnsmIOeaZ8zMh8hq9FUSjgBj2njm4ACScqR6yvId/hNp2z7lE
-         wiu/eXTamuCQ8Z1XkqPoim29eogc0Pv45t865NTWzrAty898+iGQ27i9IVdEaBjMRZ+7
-         bqmvujumQb3naOHgLwk9ik7dvsnrtaVuYuDMjn7Go91BpmZE8ImRtGMy8ULNmFRKJGWd
-         Gi6J7w2usbq0oBlSR50+KazBhWUS918rRZzzuLs5bEsFq2YkWA3DQ0og6zkppm2QjEnY
-         2BZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3FhjQ0bL3FcnfxRJzwU2birDevO5bn+c/zKDG6q4ojY=;
-        b=ejF4O29DLFtRZZsr/2oi8dRVCENMiw3rA+jXDSgMwIT2vKCQzl0EOCMrO1d9EY6+lG
-         VKUMPJKkIDOcyiZXP9Bm+ftCjSngP9gEdd1eU7btBIPL5szywa7MqVcEcOnt//iktvjk
-         Bo7Xo7pUW6ego7DyL7J7zAKaGUtWyr/AkXVr+9EC4B8Zmr7eaifO/2oGf5PGSVpGBNML
-         FmfNEQ+rKYWU8pjhG3xiUUEit1ayl2W1Y+S+N4Kg7Xy/ZlGcqzlwZl/38X1ThBy2Rw44
-         ylqze/tZVImjhtf/Up0Hf7fiIzs6njoh82ZjAcLYBkMQbvS7kDyJbK+s7H9IWrQOJSxE
-         h5Rg==
-X-Gm-Message-State: AGi0PuZrg6hnhLjQekQl/e4yay2wDlsKmCPl5DMW7mCBgt8eVtMz54Rh
-        UM2ISC+NDzeeEtPAcY2vqNkTIw==
-X-Google-Smtp-Source: APiQypIj0hH3787ssUZ6URQylyWbMjelHPcljWGv7eRHlsoDIsY260nUcnsi5hmoo4c/Ctks8RpB0A==
-X-Received: by 2002:a37:7906:: with SMTP id u6mr19843423qkc.489.1587470929241;
-        Tue, 21 Apr 2020 05:08:49 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o27sm1583527qko.71.2020.04.21.05.08.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Apr 2020 05:08:48 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jQrho-0007vI-1O; Tue, 21 Apr 2020 09:08:48 -0300
-Date:   Tue, 21 Apr 2020 09:08:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, parav@mellanox.com, galpress@amazon.com,
-        selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
-        yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
-        aditr@vmware.com, ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com,
-        Kiran Patil <kiran.patil@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>
-Subject: Re: [net-next v2 1/9] Implementation of Virtual Bus
-Message-ID: <20200421120848.GR26002@ziepe.ca>
-References: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
- <20200421080235.6515-2-jeffrey.t.kirsher@intel.com>
+        id S1726628AbgDUMKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 08:10:00 -0400
+Received: from verein.lst.de ([213.95.11.211]:46318 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgDUMKA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:10:00 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6E6EE68C4E; Tue, 21 Apr 2020 14:09:57 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 14:09:57 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
+        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
+        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
+        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
+        israelr@mellanox.com, jgg@mellanox.com
+Subject: Re: [PATCH 04/17] nvme: introduce max_integrity_segments ctrl
+ attribute
+Message-ID: <20200421120957.GE26432@lst.de>
+References: <20200327171545.98970-1-maxg@mellanox.com> <20200327171545.98970-6-maxg@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200421080235.6515-2-jeffrey.t.kirsher@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200327171545.98970-6-maxg@mellanox.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 01:02:27AM -0700, Jeff Kirsher wrote:
-> +/**
-> + * virtbus_release_device - Destroy a virtbus device
-> + * @_dev: device to release
-> + */
-> +static void virtbus_release_device(struct device *_dev)
-> +{
-> +	struct virtbus_device *vdev = to_virtbus_dev(_dev);
-> +	int ida = vdev->id;
-> +
-> +	vdev->release(vdev);
-> +	ida_simple_remove(&virtbus_dev_ida, ida);
-> +}
-> +
-> +/**
-> + * virtbus_register_device - add a virtual bus device
-> + * @vdev: virtual bus device to add
-> + */
-> +int virtbus_register_device(struct virtbus_device *vdev)
-> +{
-> +	int ret;
-> +
-> +	if (!vdev->release) {
-> +		dev_err(&vdev->dev, "virtbus_device MUST have a .release callback that does something.\n");
-> +		return -EINVAL;
-> +	}
-> +	
-> +	/* Don't return on error here before the device_initialize.
-> +	 * All error paths out of this function must perform a
-> +	 * put_device(), unless the release callback does not exist,
-> +	 * so that the .release() callback is called, and thus have
-> +	 * to occur after the device_initialize.
+On Fri, Mar 27, 2020 at 08:15:32PM +0300, Max Gurtovoy wrote:
+> +	/*
+> +	 * NVMe PCI driver doesn't support Extended LBA format and supports
+> +	 * only a single integrity segment for a separate contiguous buffer
+> +	 * of metadata.
 > +	 */
-> +	device_initialize(&vdev->dev);
-> +
-> +	vdev->dev.bus = &virtual_bus_type;
-> +	vdev->dev.release = virtbus_release_device;
-> +
-> +	/* All device IDs are automatically allocated */
-> +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
-> +
-> +	if (ret < 0) {
-> +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
-> +		goto device_pre_err;
 
-This still has the problem I described, why are you resending without
-fixing?
+That isn't strictly true, PCIe can also support SGLs for metadata.
 
-Jason
+I'd rather ѕay something like:
+
+	/*
+	 * We do not support an SGL for metadata (yet), so we are limited
+	 * to a single integrity segment for the separate metadata pointer.
+	 */
+
+Except for that this looks good:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
