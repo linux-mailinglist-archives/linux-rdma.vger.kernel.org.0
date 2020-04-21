@@ -2,56 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BCD1B2598
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 14:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CA41B259F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 14:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgDUMKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 08:10:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:46318 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUMKA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:10:00 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6E6EE68C4E; Tue, 21 Apr 2020 14:09:57 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 14:09:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
-        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
-        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
-        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
-        israelr@mellanox.com, jgg@mellanox.com
-Subject: Re: [PATCH 04/17] nvme: introduce max_integrity_segments ctrl
- attribute
-Message-ID: <20200421120957.GE26432@lst.de>
-References: <20200327171545.98970-1-maxg@mellanox.com> <20200327171545.98970-6-maxg@mellanox.com>
+        id S1728739AbgDUMK0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 08:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728684AbgDUMKY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:10:24 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45177C0610D5
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 05:10:24 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id v10so2303600qvr.2
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Apr 2020 05:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J8kMnoTAf5N/1/mqlMzmP0TcaVH3d2tPygufRLATZSc=;
+        b=K3aWlbF5pgAeUL9C5H05pCE+cFLJ8DOJz7Y4/soPQoNTvHjxJMCQ/5syH3SfTgvvJE
+         P4+TL/Qm2q/ZvbVWwuF42VgGzkO1sBd/3lYPyWe/nUcNnVWYlmRVXrkEqAqWhUXO8V6i
+         2etxUBOOWMncFghUdV03KYof2saAARy2dDK8Bd2FdFHSlZAji89iqCUUryh19t+QfJ5e
+         OIAORAf86jOKsCK2Gp/U5eO+CtUUd5NjGZdMD2w6VlId/FMHgTkzshD8nqZzwfafOjJj
+         3/024sLc+tCuzKtnXx4oEZOJzoxHt82v5+73uVen3jnrKXvfQDC9Lib3wVbOGIySPkBP
+         5o1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J8kMnoTAf5N/1/mqlMzmP0TcaVH3d2tPygufRLATZSc=;
+        b=VefIK9G74gMqp3eh+yKKYLB5BbvCKYJORyZyeuqd3L59DnnDVANUFcVYlFFNSBm+kV
+         ufZnxiKeV57amFz3b26JAt1wp1YFhvN8SdZEzpTKAhAs/1S1YDhRgfdzTwASbQaFA6Yp
+         Yjwd2ZTfawmIF1Kyo3FbGXEZtxXT0rM8OMZJ9VzyOAd9mklzajlAK++vYF0K4Zh7dDoA
+         u0AMD1zmDGh/1QU+cpAYu8d7sIDMTifu71BbXw/xwqnYUcKBbMgmk9bFSHOPoCQiH7+E
+         NpRgkmgQOb66GHEZE8epQoMckiHc+yxaXT64bzht13MLQzPy8CdBhDkZWJt47zVrRKyI
+         U2Pg==
+X-Gm-Message-State: AGi0PuY5ERv13yMwgG+85oGan5tg8HAOLQSwK3MVhtYz5+UszGphLJU2
+        cTasXgULnLNJZtoGApiU76jigg==
+X-Google-Smtp-Source: APiQypLISq769By5rj05kVgIJcl0/1iuN+LwoiI8fYSSVn/+qmWJ+fURRXGWwooSQQvq4PA8hgdxGA==
+X-Received: by 2002:ad4:4966:: with SMTP id p6mr12953272qvy.161.1587471023421;
+        Tue, 21 Apr 2020 05:10:23 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 103sm1582932qte.82.2020.04.21.05.10.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 Apr 2020 05:10:22 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jQrjK-0007wM-2b; Tue, 21 Apr 2020 09:10:22 -0300
+Date:   Tue, 21 Apr 2020 09:10:22 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, parav@mellanox.com,
+        galpress@amazon.com, selvin.xavier@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, benve@cisco.com,
+        bharat@chelsio.com, xavier.huwei@huawei.com, yishaih@mellanox.com,
+        leonro@mellanox.com, mkalderon@marvell.com, aditr@vmware.com,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com
+Subject: Re: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver
+ Updates 2020-04-20
+Message-ID: <20200421121022.GS26002@ziepe.ca>
+References: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200327171545.98970-6-maxg@mellanox.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 08:15:32PM +0300, Max Gurtovoy wrote:
-> +	/*
-> +	 * NVMe PCI driver doesn't support Extended LBA format and supports
-> +	 * only a single integrity segment for a separate contiguous buffer
-> +	 * of metadata.
-> +	 */
+On Tue, Apr 21, 2020 at 01:02:26AM -0700, Jeff Kirsher wrote:
+> This series contains the initial implementation of the Virtual Bus,
+> virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
+> Virtual Bus.
+> 
+> The primary purpose of the Virtual bus is to put devices on it and hook the
+> devices up to drivers.  This will allow drivers, like the RDMA drivers, to
+> hook up to devices via this Virtual bus.
+> 
+> This series currently builds against net-next tree.
+> 
+> Revision history:
+> v2: Made changes based on community feedback, like Pierre-Louis's and
+>     Jason's comments to update virtual bus interface.
 
-That isn't strictly true, PCIe can also support SGLs for metadata.
+A lot of stuff has been ignored, why?
 
-I'd rather ѕay something like:
-
-	/*
-	 * We do not support an SGL for metadata (yet), so we are limited
-	 * to a single integrity segment for the separate metadata pointer.
-	 */
-
-Except for that this looks good:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Jason
