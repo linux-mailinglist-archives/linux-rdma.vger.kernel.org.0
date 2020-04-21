@@ -2,123 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA641B25CD
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 14:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6BC1B28CC
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 15:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgDUMUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 08:20:34 -0400
-Received: from verein.lst.de ([213.95.11.211]:46396 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgDUMUe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:20:34 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 92A6668C4E; Tue, 21 Apr 2020 14:20:30 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 14:20:30 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, hch@lst.de,
-        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
-        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
-        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
-        israelr@mellanox.com, jgg@mellanox.com
-Subject: Re: [PATCH 08/17] nvme-rdma: add metadata/T10-PI support
-Message-ID: <20200421122030.GI26432@lst.de>
-References: <20200327171545.98970-1-maxg@mellanox.com> <20200327171545.98970-10-maxg@mellanox.com>
+        id S1729001AbgDUN6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 09:58:24 -0400
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:60611 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728912AbgDUN6W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Apr 2020 09:58:22 -0400
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id AE924B4ED3;
+        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=H8yh9MEx3hZkv8zIqzP78ok50J4=; b=x/Xbfg
+        vZYvPS8Wqcq7omo/3Yq9OUmbsVLJHa2VNvxQEpouF+afBKVP/4FPIxxpHczJ9OBr
+        p5JCD6YdSsRu7JXgkD0IexgBvEpHL1tDQ4j++ESXOqHrF/QrylAJlUn11BfNxVAo
+        +6z+o19D6AXf3oiqvR26JXHX6i6C4vQlBxzCs=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id A4E23B4ED2;
+        Tue, 21 Apr 2020 09:58:18 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=S9IEMKuiDJF/j1aD5HeQF9LyanvsJexzTiSbI4WlfDA=; b=HEE7M2YMLncR0Cx0FbMI4zv+qdbUdh5RGzbVr/VnLmFuCcA8EaAt2iu3/wxVYe3x5iiRjNumaZvBT2DnobJkrSrUr08ZTTJfWEoY9E2Qahout6wsZey493C/2R+FjLDszFdsTzb5GgH+F/9kgc+C0d0NI193Ji9twflHDSMWuhc=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 8BB0AB4ECD;
+        Tue, 21 Apr 2020 09:58:15 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 9DA582DA0D15;
+        Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
+Date:   Tue, 21 Apr 2020 09:58:13 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
+In-Reply-To: <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
+Message-ID: <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr>
+References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com> <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr> <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
+ <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200327171545.98970-10-maxg@mellanox.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 25A4AB2E-83D8-11EA-AC8D-8D86F504CC47-78420484!pb-smtp21.pobox.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 08:15:36PM +0300, Max Gurtovoy wrote:
-> For capable HCAs (e.g. ConnectX-5/ConnectX-6) this will allow end-to-end
-> protection information passthrough and validation for NVMe over RDMA
-> transport. Metadata offload support was implemented over the new RDMA
-> signature verbs API and it is enabled per controller by using nvme-cli.
+On Tue, 21 Apr 2020, Saeed Mahameed wrote:
+
+> I wonder how many of those 8889 cases wanted a weak dependency but
+> couldn't figure out how to do it ? 
 > 
-> usage example:
-> nvme connect --pi_enable --transport=rdma --traddr=10.0.1.1 --nqn=test-nvme
+> Users of depends on FOO || !FOO
 > 
-> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-> Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-> ---
->  drivers/nvme/host/rdma.c | 330 ++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 296 insertions(+), 34 deletions(-)
+> $ git ls-files | grep Kconfig | xargs grep -E \
+>   "depends\s+on\s+([A-Za-z0-9_]+)\s*\|\|\s*(\!\s*\1|\1\s*=\s*n)" \
+>  | wc -l
 > 
-> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-> index e38f8f7..23cc77e 100644
-> --- a/drivers/nvme/host/rdma.c
-> +++ b/drivers/nvme/host/rdma.c
-> @@ -67,6 +67,9 @@ struct nvme_rdma_request {
->  	struct ib_cqe		reg_cqe;
->  	struct nvme_rdma_queue  *queue;
->  	struct nvme_rdma_sgl	data_sgl;
-> +	/* Metadata (T10-PI) support */
-> +	struct nvme_rdma_sgl	*md_sgl;
-> +	bool			use_md;
+> 156
+> 
+> a new keyword is required :) .. 
+> 
+> 
+> > In another mail I suggested
+> > 
+> > 	optionally depends on FOO
+> > 
+> > might be a better alternative than "uses".
+> > 
+> > 
+> 
+> how about just:
+>       optional FOO
+> 
+> It is clear and easy to document .. 
 
-Do we need a use_md flag vs just using md_sgl as a boolean and/or
-using blk_integrity_rq?
-
->  enum nvme_rdma_queue_flags {
-> @@ -88,6 +91,7 @@ struct nvme_rdma_queue {
->  	struct rdma_cm_id	*cm_id;
->  	int			cm_error;
->  	struct completion	cm_done;
-> +	bool			pi_support;
-
-Why do we need this on a per-queue basis vs always checking the
-controller?
-
-> +	u32 max_page_list_len =
-> +		pi_support ? ibdev->attrs.max_pi_fast_reg_page_list_len :
-> +			     ibdev->attrs.max_fast_reg_page_list_len;
-> +
-> +	return min_t(u32, NVME_RDMA_MAX_SEGMENTS, max_page_list_len - 1);
-
-Can you use a good old if / else here?
-
-> +#ifdef CONFIG_BLK_DEV_INTEGRITY
-> +static void nvme_rdma_set_sig_domain(struct blk_integrity *bi,
-> +		struct nvme_command *cmd, struct ib_sig_domain *domain,
-> +		u16 control)
->  {
-> +	domain->sig_type = IB_SIG_TYPE_T10_DIF;
-> +	domain->sig.dif.bg_type = IB_T10DIF_CRC;
-> +	domain->sig.dif.pi_interval = 1 << bi->interval_exp;
-> +	domain->sig.dif.ref_tag = le32_to_cpu(cmd->rw.reftag);
->  
->  	/*
-> +	 * At the moment we hard code those, but in the future
-> +	 * we will take them from cmd.
-
-I don't understand this comment.  Also it doesn't use up all 80 chars.
+I don't dispute your argument for having a new keyword. But the most 
+difficult part as Arnd said is to find it. You cannot pretend that 
+"optional FOO" is clear when it actually imposes a restriction when 
+FOO=m. Try to justify to people why they cannot select y because of this 
+"optional" thing.
 
 
-> +static void nvme_rdma_set_sig_attrs(struct blk_integrity *bi,
-> +		struct nvme_command *cmd, struct ib_sig_attrs *sig_attrs)
-> +{
-> +	u16 control = le16_to_cpu(cmd->rw.control);
-> +
-> +	WARN_ON(bi == NULL);
-
-I think this WARN_ON is pointless, as we'll get a NULL pointer derference
-a little later anyway.
-
-> +mr_put:
-> +	if (req->use_md)
-> +		ib_mr_pool_put(queue->qp, &queue->qp->sig_mrs, req->mr);
-> +	else
-> +		ib_mr_pool_put(queue->qp, &queue->qp->rdma_mrs, req->mr);
-
-I've seen this patterns a few times, maybe a little helper to return
-the right mr pool for a request?
-
-> +	if (blk_integrity_rq(rq)) {
-> +		memset(req->md_sgl, 0, sizeof(struct nvme_rdma_sgl));
-
-Why do we need this memset?
+Nicolas
