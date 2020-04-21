@@ -2,129 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299501B1E47
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 07:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83B11B1F3F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 08:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgDUFnd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 01:43:33 -0400
-Received: from mail-vi1eur05on2064.outbound.protection.outlook.com ([40.107.21.64]:6142
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725385AbgDUFnc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 01:43:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F/CjNW3AZOR35XU/AchnyRrDonNPrYReG4vjJPEZkLHic9YsvMeTDpnpW11+JIbTfaVA3ZNrWBr5DHS6DJOyOZn1xdp63pQI1nF3y3f0n1Mm38hpLrBR0mlpOcxyjZ+/G7zHgEeeGP+7GkLGCOgUILN98bmMYd9wggGuvl9HHrt/BsFujUOWC7iHCc6gPksCVfGoIBaS1ZyRQdm0Wyn2xCLR83jHHD8tW7Hu7Mc9TM6e+QsxsCeir8fDG4Lm4/7NGNIbJ0QjFj/DMdB7NjIKOw6alsCCnSQLbXpmVVQIPTe1MWNlgBaJkVp2QHYsKWLaHQsawuZES9xSeBwdm7p3vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q/M/yIwTjCWlBI1EnCIoDCpZ73bPdYQAoLHoNUifeyA=;
- b=Ty8pE4y2FN+xGZAGCUSpXZ1yTlWk5zitVNCrjcEX9BtvrjkT966pa6XSkiaeybEnd9Lx78gkND91CP9ZNPctcZGdGVEOTYssCDdwneNFuSEYE4/VqMXcY9Oe9+hmHUOf0EAb81wGYPbj+Rf1HBwLyZ4pSwLLknSRxjhm1HDcktnQzRY9ooXjMOUgol09XFiHQLPOEDcyyq0y0/Q4+tIAnZMUby1WuvLwJunzTQWx5JguwQWieGZIw0XkBP2H6K1LxduV1LhyF9M7cfBA0f5gwOe3TnHGMLEBB6OBhcE5ZAsx8+g/2oKuxTYFCFjGItbWR8Pc3uBkf4UFmCUyU6qiaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q/M/yIwTjCWlBI1EnCIoDCpZ73bPdYQAoLHoNUifeyA=;
- b=eGQkeiV2A85bz7zRlpfo1npyUOFnZFxt4WBDSwZ00jNDNvwhQ9jCtDDU3MdaP2a6eTkVmQ+qC1g8QR0K0H/OpkoahDp3L3hVRmi/EPIF8LP22XenyU+vffZcWgM81+E1ITB0+slDxNZNdK3U6vjo4x1LCY3CCeveZQV/tNIises=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=maorg@mellanox.com; 
-Received: from AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
- by AM0PR05MB4897.eurprd05.prod.outlook.com (2603:10a6:208:cf::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Tue, 21 Apr
- 2020 05:43:28 +0000
-Received: from AM0PR05MB5873.eurprd05.prod.outlook.com
- ([fe80::3401:44fa:caa1:8d41]) by AM0PR05MB5873.eurprd05.prod.outlook.com
- ([fe80::3401:44fa:caa1:8d41%6]) with mapi id 15.20.2921.027; Tue, 21 Apr 2020
- 05:43:28 +0000
-Subject: Re: [PATCH V2 mlx5-next 01/10] net/core: Introduce
- master_xmit_slave_get
-To:     Jiri Pirko <jiri@resnulli.us>, David Ahern <dsahern@gmail.com>
-Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
-        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
-        kuba@kernel.org, leonro@mellanox.com, saeedm@mellanox.com,
-        jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, alexr@mellanox.com
-References: <20200420075426.31462-2-maorg@mellanox.com>
- <20200420140118.GJ6581@nanopsycho.orion>
- <a9e00f31-2f4e-1dfc-2464-d3d25376a4b8@gmail.com>
- <20200420175421.GU6581@nanopsycho.orion>
- <916ab047-3b50-7104-311a-6dcf604bcf6d@gmail.com>
- <20200420180144.GV6581@nanopsycho.orion>
- <75dffa6a-c14f-45c9-44e1-bf5b5c650a9b@gmail.com>
- <20200420184811.GW6581@nanopsycho.orion>
- <60467948-041c-5de1-d365-4f21030683e7@mellanox.com>
- <46f77bb5-c26e-70b9-0f5a-cd3327171960@gmail.com>
- <20200421053744.GX6581@nanopsycho.orion>
-From:   Maor Gottlieb <maorg@mellanox.com>
-Message-ID: <3a6ac4ea-bd8a-af43-fa99-fdc9f65fa761@mellanox.com>
-Date:   Tue, 21 Apr 2020 08:43:23 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <20200421053744.GX6581@nanopsycho.orion>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: FRYP281CA0015.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::25)
- To AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
+        id S1726959AbgDUGw0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 02:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726123AbgDUGw0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 02:52:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 346802072D;
+        Tue, 21 Apr 2020 06:52:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587451945;
+        bh=OHlqcF306QhYIeTd9bYZQ5LtHbsOIHrlGcnT1sqQsKA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EqZ1nHxwagrKTX0o/mqD6JUX0yUnRx6L644kP2uXi8mO3IvDEcYhpWkRBgsmD/Mc6
+         mPk6juFXZ9W3fsGVZucDJ5nkwAz9sJfRZBzeKz5pWeAjXXx2Z4wAGfZyc6W8/rTRHT
+         p+Y2cpeHpiKSCCFpay6Or4E81YF6/syoMK1cfVRw=
+Date:   Tue, 21 Apr 2020 08:52:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "leonro@mellanox.com" <leonro@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        "Bowers, AndrewX" <andrewx.bowers@intel.com>
+Subject: Re: [net-next 1/9] Implementation of Virtual Bus
+Message-ID: <20200421065223.GB347130@kroah.com>
+References: <20200417171034.1533253-1-jeffrey.t.kirsher@intel.com>
+ <20200417171034.1533253-2-jeffrey.t.kirsher@intel.com>
+ <20200418125051.GA3473692@kroah.com>
+ <DM6PR11MB28418BEB2385E7E2929C2FF6DDD40@DM6PR11MB2841.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.100.102.4] (89.138.210.166) by FRYP281CA0015.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Tue, 21 Apr 2020 05:43:26 +0000
-X-Originating-IP: [89.138.210.166]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 15af35bb-81eb-4bf9-823b-08d7e5b6ea9f
-X-MS-TrafficTypeDiagnostic: AM0PR05MB4897:|AM0PR05MB4897:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB4897470EF402B2B791072EBBD3D50@AM0PR05MB4897.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 038002787A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5873.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(2616005)(316002)(2906002)(478600001)(8676002)(7416002)(81156014)(8936002)(31696002)(5660300002)(956004)(186003)(16526019)(53546011)(86362001)(110136005)(66946007)(52116002)(31686004)(6666004)(16576012)(107886003)(4326008)(26005)(66556008)(66476007)(36756003)(6486002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: unMh1xcFcLFTUFdEaGw+23IDh5TcjnxpHKi7/uujG5tpd7CQWBHKJMaOxJprxZWcTeZw2L29hK0tJh6StQDY/XT8PtsaSIdVQn5cJtXdJHhRu/+7O54D+OXXgztqKfCMWebKjIRtlD2g+6JjziECFdK6guy6zyyZBiEChHBv7QzADMerwOVXHsLLm+mLs1ypGHPTI9XHU5/U5/6UKKXi1+ARC3IWkruC47Ki4Xf1JI6g0Rkw+H6wwBs8t0W1bZNS8DFCrY1OLJhVPrzJpzxgrLo7j3CfQaB5dgFHoM4pDOrYrxMQH8MUejjYMtuwXrvQN3viej4biGq3bOeg67vZFS8EBt3oPr9Pn9lOvZ8ecb+xS/kypD5iIu6UlNhxGo914+YmUdbTb/V8pNaB02NVtwFks/05XMQ0pvhfPQKcC1C7ystVFFGd2H8s/ZlDAayQ
-X-MS-Exchange-AntiSpam-MessageData: Ie2hCVF5mpNLE8zAPdoJ1ho5bSpWMskS+6yQZBnc4/0mJWZM5QlICYxXNNQCY2EG06c5hxItTjBcrNMRk/X7ZEwHC2AH6JveDQuAuPOhnjdZrtBynXqRirTZIznut5nP75+wmvLmV8MFS231BJzo1A==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15af35bb-81eb-4bf9-823b-08d7e5b6ea9f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2020 05:43:28.1174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Bo2xE+oDHjWkGiebFDWhEEoYipeE1PPZF8PEcnnPvft7GdnhQ6OjeY/mcRDgN/YYiChtcHGqHJQ3DMfCh+vfSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4897
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB28418BEB2385E7E2929C2FF6DDD40@DM6PR11MB2841.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Apr 20, 2020 at 10:59:12PM +0000, Ertman, David M wrote:
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Saturday, April 18, 2020 5:51 AM
+> > To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>
+> > Cc: davem@davemloft.net; Ertman, David M <david.m.ertman@intel.com>;
+> > netdev@vger.kernel.org; linux-rdma@vger.kernel.org; nhorman@redhat.com;
+> > sassmann@redhat.com; jgg@ziepe.ca; parav@mellanox.com;
+> > galpress@amazon.com; selvin.xavier@broadcom.com;
+> > sriharsha.basavapatna@broadcom.com; benve@cisco.com;
+> > bharat@chelsio.com; xavier.huwei@huawei.com; yishaih@mellanox.com;
+> > leonro@mellanox.com; mkalderon@marvell.com; aditr@vmware.com;
+> > ranjani.sridharan@linux.intel.com; pierre-louis.bossart@linux.intel.com; Patil,
+> > Kiran <kiran.patil@intel.com>; Bowers, AndrewX <andrewx.bowers@intel.com>
+> > Subject: Re: [net-next 1/9] Implementation of Virtual Bus
+> > 
+> > On Fri, Apr 17, 2020 at 10:10:26AM -0700, Jeff Kirsher wrote:
+> > > @@ -0,0 +1,53 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * virtual_bus.h - lightweight software bus
+> > > + *
+> > > + * Copyright (c) 2019-20 Intel Corporation
+> > > + *
+> > > + * Please see Documentation/driver-api/virtual_bus.rst for more information
+> > > + */
+> > > +
+> > > +#ifndef _VIRTUAL_BUS_H_
+> > > +#define _VIRTUAL_BUS_H_
+> > > +
+> > > +#include <linux/device.h>
+> > > +
+> > > +struct virtbus_device {
+> > > +	struct device dev;
+> > > +	const char *name;
+> > 
+> > struct device already has a name, why do you need another one?
+> 
+> The name in dev is the base name appended with the id to make sure each device
+> has unique name.  The name in vdev is the abbreviated one (without the id) which
+> will be used in the matching function, so that a driver can claim to support
+> <name> and will be matched with all <name>.<id> devices for all id's.
+> 
+> This is similar logic to platform_device's name field.
 
-On 4/21/2020 8:37 AM, Jiri Pirko wrote:
-> Mon, Apr 20, 2020 at 09:02:58PM CEST, dsahern@gmail.com wrote:
->> On 4/20/20 12:56 PM, Maor Gottlieb wrote:
->>> On 4/20/2020 9:48 PM, Jiri Pirko wrote:
->>>> Mon, Apr 20, 2020 at 08:04:01PM CEST, dsahern@gmail.com wrote:
->>>>> On 4/20/20 12:01 PM, Jiri Pirko wrote:
->>>>>> Generic ndo with lag-specific arg? Odd. Plus, there is a small chance
->>>>>> this is ever going to be used for other master. And if so, could be
->>>>>> very
->>>>>> easily renamed then...
->>>>> core code should be generic, not specific and renamed at a later date
->>>>> when a second use case arises.
->>>> Yeah, I guess we just have to agree to disagree :)
->>> So I am remaining with the flags. Any suggestion for better name for the
->>> enum? Should I move master_xmit_get_slave from lag.h to netdevice.h?
->> IMHO, yes, that is a better place.
->>
->> generic ndo name and implementation.
->> type specific flag as needed.
->>
->> This is consistent with net_device and ndo - both generic concepts -
->> with specifics relegated to flags (e.g., IFF_*)
-> Why there is need for flags? Why a single bool can't do as I suggested?
-> Do you see any usecase for another flag?
+Don't treat platform_device as a good example of much :)
 
-Currently no. I am okay with single bool.
+I still think this is duplicated stuff, but I'll let it go for now...
+
+> > > +	void (*release)(struct virtbus_device *);
+> > 
+> > A bus should have the release function, not the actual device itself.  A
+> > device should not need function pointers.
+> > 
+> 
+> The bus does have a release function, but it is a wrapper to call the release defined by
+> the device.
+
+odd.  That is normally handled by the bus, not by the device itself.
+
+> This is where the KO registering the virtbus_device is expected to clean up
+> the resources allocated for this device (e.g. free memory, etc).  Having the virtual_bus_release
+> call a release callback in the virtual_device allows for extra cleanup from the originating KO
+> if necessary.
+> 
+> The memory model of virtual bus is for the originating KO to manage the lifespan of the
+> memory for the virtual_device.  The virtual_bus expects the KO defining the virtbus_device
+> have the memory allocated before registering a virtbus_device and to clean up that memory
+> when the release is called.
+> 
+> The platform_device also has function pointers in it, by including a MFD object, but the
+> platform_bus is managing the memory for the platform_bus_object that contains the
+> platform_device which it why it using a generic kref_put to free memory.
+
+Again, platform_devices are not good things to emulate, they have grown
+into a total mess.
+
+Ok, given that you are going to be putting lots of different things on
+this "generic" type of bus, a release function for the device can make
+sense.  Still feels odd, I wonder if you should just do something with
+the type of the device instead.
+
+thanks,
+
+greg k-h
