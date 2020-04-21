@@ -2,349 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA661B1FEA
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 09:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8361B20D9
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Apr 2020 10:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbgDUHds (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Apr 2020 03:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
+        id S1726600AbgDUICm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Apr 2020 04:02:42 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43437 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgDUHds (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:33:48 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89F422084D;
-        Tue, 21 Apr 2020 07:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587454427;
-        bh=ulC4S4JOd2jZB0mi3cxckT1F1OgcMGjWK5RW17M0y3Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OCSVfxsGUNUDXf3BV6qFb8gFuOvGyR22O0zUW77AIdtDS/vAaZqNbi7D8lwwZNLzS
-         j/E+WK+wLFBNZ3N07aZcrBXO+z7bNp6cxmoSo/j6yD4USV1X05GgFBl/ocrVZyD9h+
-         Nipm3K4/vzwlJL80/NlcE/y22aJBCUycaDlLk/V4=
-Date:   Tue, 21 Apr 2020 10:33:43 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>
-Subject: Re: [RFC PATCH v5 07/16] RDMA/irdma: Add connection manager
-Message-ID: <20200421073343.GJ121146@unreal>
-References: <20200417171251.1533371-1-jeffrey.t.kirsher@intel.com>
- <20200417171251.1533371-8-jeffrey.t.kirsher@intel.com>
- <20200417202332.GG3083@unreal>
- <9DD61F30A802C4429A01CA4200E302A7DCD4858B@fmsmsx124.amr.corp.intel.com>
+        id S1726018AbgDUICj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Apr 2020 04:02:39 -0400
+IronPort-SDR: hZhssiphPqDNyhG/6z2JnBOPOl+xppmeBX6Y0mjAiC98cUcihjhJeKMY3vFzhcQkxtI+xd7Z5z
+ dqohbtfQ4GgA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 01:02:38 -0700
+IronPort-SDR: xNcryT9DeBlROC7j7eqsrqynliqXHPc/LXA+z8Z0VvK+rO1XLXZlqXDsEsoU/C6pL0O3alSfFM
+ bcV5P9p4fWwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,409,1580803200"; 
+   d="scan'208";a="429443763"
+Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.86])
+  by orsmga005.jf.intel.com with ESMTP; 21 Apr 2020 01:02:37 -0700
+From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+To:     davem@davemloft.net, gregkh@linuxfoundation.org
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, jgg@ziepe.ca, parav@mellanox.com,
+        galpress@amazon.com, selvin.xavier@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, benve@cisco.com,
+        bharat@chelsio.com, xavier.huwei@huawei.com, yishaih@mellanox.com,
+        leonro@mellanox.com, mkalderon@marvell.com, aditr@vmware.com,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com
+Subject: [net-next v2 0/9][pull request] 100GbE Intel Wired LAN Driver Updates 2020-04-20
+Date:   Tue, 21 Apr 2020 01:02:26 -0700
+Message-Id: <20200421080235.6515-1-jeffrey.t.kirsher@intel.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7DCD4858B@fmsmsx124.amr.corp.intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 12:26:14AM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RFC PATCH v5 07/16] RDMA/irdma: Add connection manager
-> >
-> > On Fri, Apr 17, 2020 at 10:12:42AM -0700, Jeff Kirsher wrote:
-> > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > >
-> > > Add connection management (CM) implementation for iWARP including
-> > > accept, reject, connect, create_listen, destroy_listen and CM utility
-> > > functions
-> > >
-> > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > ---
-> > >  drivers/infiniband/hw/irdma/cm.c | 4499
-> > > ++++++++++++++++++++++++++++++  drivers/infiniband/hw/irdma/cm.h |
-> > > 413 +++
-> > >  2 files changed, 4912 insertions(+)
-> > >  create mode 100644 drivers/infiniband/hw/irdma/cm.c  create mode
-> > > 100644 drivers/infiniband/hw/irdma/cm.h
-> > >
-> > > diff --git a/drivers/infiniband/hw/irdma/cm.c
-> > > b/drivers/infiniband/hw/irdma/cm.c
-> > > new file mode 100644
-> > > index 000000000000..87d6300fee35
-> > > --- /dev/null
-> > > +++ b/drivers/infiniband/hw/irdma/cm.c
-> > > @@ -0,0 +1,4499 @@
-> > > +// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
-> > > +/* Copyright (c) 2015 - 2019 Intel Corporation */ #include
-> > > +<linux/highmem.h> #include <net/addrconf.h> #include
-> > > +<net/ip6_route.h> #include <net/flow.h> #include <net/secure_seq.h>
-> > > +
-> > > +#include "main.h"
-> > > +#include "trace.h"
-> > > +
-> > > +static void irdma_rem_ref_cm_node(struct irdma_cm_node *); static
-> > > +void irdma_cm_post_event(struct irdma_cm_event *event); static void
-> > > +irdma_disconnect_worker(struct work_struct *work);
-> > > +
-> > > +/**
-> > > + * irdma_free_sqbuf - put back puda buffer if refcount is 0
-> > > + * @vsi: The VSI structure of the device
-> > > + * @bufp: puda buffer to free
-> > > + */
-> > > +void irdma_free_sqbuf(struct irdma_sc_vsi *vsi, void *bufp) {
-> > > +	struct irdma_puda_buf *buf = bufp;
-> > > +	struct irdma_puda_rsrc *ilq = vsi->ilq;
-> > > +
-> > > +	if (refcount_dec_and_test(&buf->refcount))
-> > > +		irdma_puda_ret_bufpool(ilq, buf);
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_derive_hw_ird_setting - Calculate IRD
-> > > + * @cm_ird: IRD of connection's node
-> > > + *
-> > > + * The ird from the connection is rounded to a supported HW
-> > > + * setting (2,8,32,64,128) and then encoded for ird_size field
-> > > + * of qp_ctx
-> > > + */
-> > > +u8 irdma_derive_hw_ird_setting(u16 cm_ird) {
-> > > +	/* ird_size field is encoded in qp_ctx */
-> > > +	switch (cm_ird ? roundup_pow_of_two(cm_ird) : 0) {
-> > > +	case IRDMA_HW_IRD_SETTING_128:
-> > > +		return 4;
-> > > +	case IRDMA_HW_IRD_SETTING_64:
-> > > +		return 3;
-> > > +	case IRDMA_HW_IRD_SETTING_32:
-> > > +	case IRDMA_HW_IRD_SETTING_16:
-> > > +		return 2;
-> > > +	case IRDMA_HW_IRD_SETTING_8:
-> > > +	case IRDMA_HW_IRD_SETTING_4:
-> > > +		return 1;
-> > > +	case IRDMA_HW_IRD_SETTING_2:
-> > > +	default:
-> > > +		break;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_record_ird_ord - Record IRD/ORD passed in
-> > > + * @cm_node: connection's node
-> > > + * @conn_ird: connection IRD
-> > > + * @conn_ord: connection ORD
-> > > + */
-> > > +static void irdma_record_ird_ord(struct irdma_cm_node *cm_node, u32
-> > conn_ird,
-> > > +				 u32 conn_ord)
-> > > +{
-> > > +	if (conn_ird > cm_node->dev->hw_attrs.max_hw_ird)
-> > > +		conn_ird = cm_node->dev->hw_attrs.max_hw_ird;
-> > > +
-> > > +	if (conn_ord > cm_node->dev->hw_attrs.max_hw_ord)
-> > > +		conn_ord = cm_node->dev->hw_attrs.max_hw_ord;
-> > > +	else if (!conn_ord && cm_node->send_rdma0_op ==
-> > SEND_RDMA_READ_ZERO)
-> > > +		conn_ord = 1;
-> > > +	cm_node->ird_size = conn_ird;
-> > > +	cm_node->ord_size = conn_ord;
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_copy_ip_ntohl - copy IP address from  network to host
-> > > + * @dst: IP address in host order
-> > > + * @src: IP address in network order (big endian)  */ void
-> > > +irdma_copy_ip_ntohl(u32 *dst, __be32 *src) {
-> > > +	*dst++ = ntohl(*src++);
-> > > +	*dst++ = ntohl(*src++);
-> > > +	*dst++ = ntohl(*src++);
-> > > +	*dst = ntohl(*src);
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_copy_ip_htonl - copy IP address from host to network order
-> > > + * @dst: IP address in network order (big endian)
-> > > + * @src: IP address in host order
-> > > + */
-> > > +void irdma_copy_ip_htonl(__be32 *dst, u32 *src) {
-> > > +	*dst++ = htonl(*src++);
-> > > +	*dst++ = htonl(*src++);
-> > > +	*dst++ = htonl(*src++);
-> > > +	*dst = htonl(*src);
-> > > +}
-> >
-> > It is strange that we don't have in the kernel some generic function to do it.
-> >
-> > > +
-> > > +/**
-> > > + * irdma_get_addr_info
-> > > + * @cm_node: contains ip/tcp info
-> > > + * @cm_info: to get a copy of the cm_node ip/tcp info  */ static void
-> > > +irdma_get_addr_info(struct irdma_cm_node *cm_node,
-> > > +				struct irdma_cm_info *cm_info)
-> > > +{
-> > > +	memset(cm_info, 0, sizeof(*cm_info));
-> > > +	cm_info->ipv4 = cm_node->ipv4;
-> > > +	cm_info->vlan_id = cm_node->vlan_id;
-> > > +	memcpy(cm_info->loc_addr, cm_node->loc_addr, sizeof(cm_info-
-> > >loc_addr));
-> > > +	memcpy(cm_info->rem_addr, cm_node->rem_addr, sizeof(cm_info-
-> > >rem_addr));
-> > > +	cm_info->loc_port = cm_node->loc_port;
-> > > +	cm_info->rem_port = cm_node->rem_port; }
-> > > +
-> > > +/**
-> > > + * irdma_fill_sockaddr4 - fill in addr info for IPv4 connection
-> > > + * @cm_node: connection's node
-> > > + * @event: upper layer's cm event
-> > > + */
-> > > +static inline void irdma_fill_sockaddr4(struct irdma_cm_node *cm_node,
-> > > +					struct iw_cm_event *event)
-> > > +{
-> > > +	struct sockaddr_in *laddr = (struct sockaddr_in *)&event->local_addr;
-> > > +	struct sockaddr_in *raddr = (struct sockaddr_in
-> > > +*)&event->remote_addr;
-> > > +
-> > > +	laddr->sin_family = AF_INET;
-> > > +	raddr->sin_family = AF_INET;
-> > > +
-> > > +	laddr->sin_port = htons(cm_node->loc_port);
-> > > +	raddr->sin_port = htons(cm_node->rem_port);
-> > > +
-> > > +	laddr->sin_addr.s_addr = htonl(cm_node->loc_addr[0]);
-> > > +	raddr->sin_addr.s_addr = htonl(cm_node->rem_addr[0]); }
-> > > +
-> > > +/**
-> > > + * irdma_fill_sockaddr6 - fill in addr info for IPv6 connection
-> > > + * @cm_node: connection's node
-> > > + * @event: upper layer's cm event
-> > > + */
-> > > +static inline void irdma_fill_sockaddr6(struct irdma_cm_node *cm_node,
-> > > +					struct iw_cm_event *event)
-> > > +{
-> > > +	struct sockaddr_in6 *laddr6 = (struct sockaddr_in6 *)&event->local_addr;
-> > > +	struct sockaddr_in6 *raddr6 = (struct sockaddr_in6
-> > > +*)&event->remote_addr;
-> > > +
-> > > +	laddr6->sin6_family = AF_INET6;
-> > > +	raddr6->sin6_family = AF_INET6;
-> > > +
-> > > +	laddr6->sin6_port = htons(cm_node->loc_port);
-> > > +	raddr6->sin6_port = htons(cm_node->rem_port);
-> > > +
-> > > +	irdma_copy_ip_htonl(laddr6->sin6_addr.in6_u.u6_addr32,
-> > > +			    cm_node->loc_addr);
-> > > +	irdma_copy_ip_htonl(raddr6->sin6_addr.in6_u.u6_addr32,
-> > > +			    cm_node->rem_addr);
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_get_cmevent_info - for cm event upcall
-> > > + * @cm_node: connection's node
-> > > + * @cm_id: upper layers cm struct for the event
-> > > + * @event: upper layer's cm event
-> > > + */
-> > > +static inline void irdma_get_cmevent_info(struct irdma_cm_node *cm_node,
-> > > +					  struct iw_cm_id *cm_id,
-> > > +					  struct iw_cm_event *event)
-> > > +{
-> > > +	memcpy(&event->local_addr, &cm_id->m_local_addr,
-> > > +	       sizeof(event->local_addr));
-> > > +	memcpy(&event->remote_addr, &cm_id->m_remote_addr,
-> > > +	       sizeof(event->remote_addr));
-> > > +	if (cm_node) {
-> > > +		event->private_data = cm_node->pdata_buf;
-> > > +		event->private_data_len = (u8)cm_node->pdata.size;
-> > > +		event->ird = cm_node->ird_size;
-> > > +		event->ord = cm_node->ord_size;
-> > > +	}
-> > > +}
-> > > +
-> > > +/**
-> > > + * irdma_send_cm_event - upcall cm's event handler
-> > > + * @cm_node: connection's node
-> > > + * @cm_id: upper layer's cm info struct
-> > > + * @type: Event type to indicate
-> > > + * @status: status for the event type  */ static int
-> > > +irdma_send_cm_event(struct irdma_cm_node *cm_node,
-> > > +			       struct iw_cm_id *cm_id,
-> > > +			       enum iw_cm_event_type type, int status) {
-> > > +	struct iw_cm_event event = {};
-> > > +
-> > > +	event.event = type;
-> > > +	event.status = status;
-> > > +	switch (type) {
-> > > +	case IW_CM_EVENT_CONNECT_REQUEST:
-> > > +		trace_irdma_send_cm_event(cm_node, cm_id, type, status,
-> > > +					  __builtin_return_address(0));
-> > > +		if (cm_node->ipv4)
-> > > +			irdma_fill_sockaddr4(cm_node, &event);
-> > > +		else
-> > > +			irdma_fill_sockaddr6(cm_node, &event);
-> > > +		event.provider_data = cm_node;
-> > > +		event.private_data = cm_node->pdata_buf;
-> > > +		event.private_data_len = (u8)cm_node->pdata.size;
-> > > +		event.ird = cm_node->ird_size;
-> > > +		break;
-> > > +	case IW_CM_EVENT_CONNECT_REPLY:
-> > > +		trace_irdma_send_cm_event(cm_node, cm_id, type, status,
-> > > +					  __builtin_return_address(0));
-> > > +		irdma_get_cmevent_info(cm_node, cm_id, &event);
-> > > +		break;
-> > > +	case IW_CM_EVENT_ESTABLISHED:
-> > > +		trace_irdma_send_cm_event(cm_node, cm_id, type, status,
-> > > +					  __builtin_return_address(0));
-> > > +		event.ird = cm_node->ird_size;
-> > > +		event.ord = cm_node->ord_size;
-> > > +		break;
-> > > +	case IW_CM_EVENT_DISCONNECT:
-> > > +		trace_irdma_send_cm_event_no_node(cm_id, type, status,
-> > > +						  __builtin_return_address(0));
-> > > +		break;
-> > > +	case IW_CM_EVENT_CLOSE:
-> > > +		trace_irdma_send_cm_event_no_node(cm_id, type, status,
-> > > +						  __builtin_return_address(0));
-> > > +		break;
-> > > +	default:
-> > > +		ibdev_dbg(to_ibdev(cm_node->iwdev),
-> > > +			  "CM: Unsupported event type received type = %d\n",
-> > > +			  type);
-> > > +		return -1;
-> >
-> > How are these trace events different from existing in IB/core and why should driver
-> > implement CM event handler? Is it iWARP specific?
-> >
-> > I'm really worried to see CM code in the driver.
-> >
->
-> Yes the CM code in the driver is iWARP specific
-> https://elixir.bootlin.com/linux/v5.7-rc2/source/include/rdma/iw_cm.h#L72
-> https://elixir.bootlin.com/linux/v5.7-rc2/source/include/rdma/ib_verbs.h#L2566
->
-> We have some CM tracing to record driver specific data / paths in connection
-> flows. For example in this patch we record,
->
-> +	    TP_printk("iwdev=%p  caller=%pS  cm_id=%p  node=%p  refcnt=%d  vlan_id=%d  accel=%d  state=%s  event_type=%s  status=%d  loc: %s  rem: %s",
-> +		      __entry->iwdev,
-> +		      __entry->caller,
-> +		      __entry->cm_id,
-> +		      __entry->cm_node,
-> +		      __entry->refcount,
-> +		      __entry->vlan_id,
-> +		      __entry->accel,
-> +		      parse_cm_state(__entry->state),
-> +		      parse_iw_event_type(__entry->type),
-> +		      __entry->status,
-> +		      __print_ip_addr(__get_dynamic_array(laddr),
-> +				      __entry->lport, __entry->ipv4),
-> +		      __print_ip_addr(__get_dynamic_array(raddr),
-> +				      __entry->rport, __entry->ipv4)
-> +		    )
-> +);
+This series contains the initial implementation of the Virtual Bus,
+virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
+Virtual Bus.
 
+The primary purpose of the Virtual bus is to put devices on it and hook the
+devices up to drivers.  This will allow drivers, like the RDMA drivers, to
+hook up to devices via this Virtual bus.
 
-IMHO, everything here should be in general iWARP CM implementation.
+This series currently builds against net-next tree.
 
-Thanks
+Revision history:
+v2: Made changes based on community feedback, like Pierre-Louis's and
+    Jason's comments to update virtual bus interface.
+ 
+The following are changes since commit 82ebc889091a488b4dd95e682b3c3b889a50713c:
+  qed: use true,false for bool variables
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jkirsher/next-queue 100GbE
+
+Dave Ertman (7):
+  Implementation of Virtual Bus
+  ice: Create and register virtual bus for RDMA
+  ice: Complete RDMA peer registration
+  ice: Support resource allocation requests
+  ice: Enable event notifications
+  ice: Allow reset operations
+  ice: Pass through communications to VF
+
+Shiraz Saleem (2):
+  i40e: Move client header location
+  i40e: Register a virtbus device to provide RDMA
+
+ Documentation/driver-api/virtual_bus.rst      |   62 +
+ MAINTAINERS                                   |    1 +
+ drivers/bus/Kconfig                           |   10 +
+ drivers/bus/Makefile                          |    2 +
+ drivers/bus/virtual_bus.c                     |  279 ++++
+ drivers/infiniband/hw/i40iw/Makefile          |    1 -
+ drivers/infiniband/hw/i40iw/i40iw.h           |    2 +-
+ drivers/net/ethernet/intel/Kconfig            |    2 +
+ drivers/net/ethernet/intel/i40e/i40e.h        |    2 +-
+ drivers/net/ethernet/intel/i40e/i40e_client.c |  133 +-
+ drivers/net/ethernet/intel/ice/Makefile       |    1 +
+ drivers/net/ethernet/intel/ice/ice.h          |   15 +
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |   33 +
+ drivers/net/ethernet/intel/ice/ice_common.c   |  206 ++-
+ drivers/net/ethernet/intel/ice/ice_common.h   |    9 +
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |   68 +
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.h  |    3 +
+ .../net/ethernet/intel/ice/ice_hw_autogen.h   |    1 +
+ drivers/net/ethernet/intel/ice/ice_idc.c      | 1327 +++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_idc_int.h  |  105 ++
+ drivers/net/ethernet/intel/ice/ice_lib.c      |   50 +
+ drivers/net/ethernet/intel/ice/ice_lib.h      |    4 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |  104 +-
+ drivers/net/ethernet/intel/ice/ice_sched.c    |   69 +-
+ drivers/net/ethernet/intel/ice/ice_switch.c   |   27 +
+ drivers/net/ethernet/intel/ice/ice_switch.h   |    4 +
+ drivers/net/ethernet/intel/ice/ice_type.h     |    4 +
+ .../net/ethernet/intel/ice/ice_virtchnl_pf.c  |   59 +-
+ include/linux/mod_devicetable.h               |    8 +
+ .../linux/net/intel}/i40e_client.h            |   15 +
+ include/linux/net/intel/iidc.h                |  337 +++++
+ include/linux/virtual_bus.h                   |   53 +
+ scripts/mod/devicetable-offsets.c             |    3 +
+ scripts/mod/file2alias.c                      |    7 +
+ 34 files changed, 2942 insertions(+), 64 deletions(-)
+ create mode 100644 Documentation/driver-api/virtual_bus.rst
+ create mode 100644 drivers/bus/virtual_bus.c
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc.c
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc_int.h
+ rename {drivers/net/ethernet/intel/i40e => include/linux/net/intel}/i40e_client.h (94%)
+ create mode 100644 include/linux/net/intel/iidc.h
+ create mode 100644 include/linux/virtual_bus.h
+
+-- 
+2.25.3
+
