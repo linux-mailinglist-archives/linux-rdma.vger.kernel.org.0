@@ -2,432 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FB31B4965
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 18:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA401B4ADC
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 18:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgDVQDE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Apr 2020 12:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgDVQDD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Apr 2020 12:03:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37980C03C1A9;
-        Wed, 22 Apr 2020 09:03:03 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m8so2915567lji.1;
-        Wed, 22 Apr 2020 09:03:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2N9yyathP5NvaYI1H3e9TAu0H3QGqSzr8JeuinlG/i8=;
-        b=HbDPiQvMPNKvSw1NlIntuLCTTy5/ae97g2Cxr34FFjyhhX/EfCLknKQcF+kU5abgiF
-         0wN7My7ReU7J0U/ST7JcLSliCOW48YVGhqDn86wywjJxH9mFl503mUQ63Yv302Nzsqy6
-         xg/1FLvlc7MsGKwWYSAgD+6nZI6gY48CZt1k2R5/DO82m0R52ybpM+ofO6d1fU1uM5v5
-         4Xpy3Pf+lCjpuDRoKrJnONMdmdMOB4rBiOJoz6XI07E/jqIWjg+J3j03ZdwtZma/OKA7
-         +y+EmDZ8hhGkf9TNXKO91XTQ1nV7yS2Pcll/pObxAonBVFAXaFSfuHuCgjnwhjaPobHp
-         ivWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2N9yyathP5NvaYI1H3e9TAu0H3QGqSzr8JeuinlG/i8=;
-        b=sEZhh+NAYY49FOJYnPvAVMdAML3JCPMN0VOMf/0c5Gid12TMY/pUoM3BP3zet5MsTX
-         1zALRGf7jSXVsrvTg404W7LGbRBuD7LtAdICGY2pc/ze5c1ZaH4YrESckqAJ6B0vJfE3
-         spQOdmUIX3W6t8hiHd3nCn9k1k2yrN2mRl8EoiPtOIzEyIGKXfNzl3BtD9hoQkaz2JfZ
-         kkhLEihi8zq8b654RZvg/09BqJ7GwcyhF2NoxByIPUSsLqtQdVv/ooGHUzEWA2aBM7Vf
-         Kzvhyq80OoR3iBHheFOTvMySR8/yeN9D9sXWw/AxHNromcq7eTvDWb9LzlElamFWHUTf
-         1YuQ==
-X-Gm-Message-State: AGi0PuYSTKEUAk/Ejyq0cyBbddJWxVPYtF0qWQP1RFsjhXUDusDin4Hf
-        NOToWAjY+5bguj62Pcv0nZYVOIySRDRv/AKWZ4k=
-X-Google-Smtp-Source: APiQypKJruQtD5ccxcH95BWKX5p0SVLGRANM3PyB3bAMpuIzsHuDSfLhLLUKcZ6WWlq8U8yAuizoo24VcShvw0NpXlU=
-X-Received: by 2002:a2e:3813:: with SMTP id f19mr16388007lja.216.1587571380575;
- Wed, 22 Apr 2020 09:03:00 -0700 (PDT)
+        id S1726402AbgDVQt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Apr 2020 12:49:59 -0400
+Received: from mail-eopbgr20085.outbound.protection.outlook.com ([40.107.2.85]:59903
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726303AbgDVQt6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Apr 2020 12:49:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RqOu3lx4xLTXMBwj8DE/qW/Ijn0TicEXUyX1pOYmi+M5I7VYx5VJPIQZKQpAmo+Gr3DPSMyOoawQpPCf57AOP4YUO+8gB3zuXssD3E2XGuYkg0Ax6wO7LAT0KamC/oUm+z/PpacU28XTdx0K/BgDWMLlbkcRX6VfkveOb+hDOCMZ0EchG9ZY+8arEDzw/DfJ+uCrtBdRbl2VNaorCoNxP0lBDZPwDUbEDdN/b7wQopqu/DlH7Kfz3AO78gxfrBs/ebH2vZxlhXkqO9o3VfjiQKOdTHHdjwC0zfq6Vw4x4cjDrI/cnRYoiE4ySD/msxWp5QkxgN5I3wield96dqTOxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Qq23kPeuOx4JiOLSfSXotlSRMq9zGfLjnuy1PEwrnM=;
+ b=XoGJXaTVkW0rhLSK7B04knoZuHzbemmffpYMoYjDWXvIuUAa0WG7EiQcSzBo0RRUbJHb/GCvAszEWe5UrSpbeKOuZYLGsqZYVRygIVt2XY114vud1SVOAy1jy0J5kqw+0s3VYY7ExiAI7d115/AG2UIodHLXDj60ibNhzTQGPxZUxU+G8UwWGwOEYSTWbzU5kdSqYXH/6BOuUH+EVCth+bhnwxIb9+1U19fpOPiaPLOivHsFiIILUArhV45IgTNVYaO1bX1SlHhXpblcc1XxifzUJTpG86eVkPIe7xqTOA44oWkgxpiMknhSNfPGq+LhD+GmnEcisevT83KQ8TXJIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Qq23kPeuOx4JiOLSfSXotlSRMq9zGfLjnuy1PEwrnM=;
+ b=q49K4cFJ/1cSGEkn7Cm2c/EhEnGZdcJTnNvkw+NI5sjWt18PoDlpRIFrqzkX2i1+nRIgcsFqOyLPhWidTFHupjzkN++mXdxrrSeQpvRbiYQCXCNDGG9U7tbbe9WJ73/FRLFWeKiV7LwKAV/s5I4WvU70KR79jz/3e4G9dFMGvnE=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
+ by AM6PR05MB6055.eurprd05.prod.outlook.com (2603:10a6:20b:af::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Wed, 22 Apr
+ 2020 16:49:51 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.2921.030; Wed, 22 Apr 2020
+ 16:49:51 +0000
+Date:   Wed, 22 Apr 2020 19:49:48 +0300
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [PATCH mlx5-next 02/24] net/mlx5: Update cq.c to new cmd
+ interface
+Message-ID: <20200422164948.GB492196@unreal>
+References: <20200420114136.264924-1-leon@kernel.org>
+ <20200420114136.264924-3-leon@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420114136.264924-3-leon@kernel.org>
+X-ClientProxiedBy: AM4PR0701CA0014.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::24) To AM6PR05MB6408.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-References: <1587408228-10861-1-git-send-email-orson.unisoc@gmail.com>
- <20200420191014.GE121146@unreal> <CA+H2tpGgGtW_8Z8fV9to39JwA_KrcfAeBC+KN87v0xKnZHt2_w@mail.gmail.com>
- <20200422142552.GA492196@unreal>
-In-Reply-To: <20200422142552.GA492196@unreal>
-From:   Orson Zhai <orsonzhai@gmail.com>
-Date:   Thu, 23 Apr 2020 00:02:48 +0800
-Message-ID: <CA+H2tpGR7tywhkexa31AD_FkhyxQgVq_L+b0DbvXzwr6yT8j9Q@mail.gmail.com>
-Subject: Re: [PATCH V2] dynamic_debug: Add an option to enable dynamic debug
- for modules only
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Orson Zhai <orson.unisoc@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Orson Zhai <orson.zhai@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a00:a040:183:2d::a43) by AM4PR0701CA0014.eurprd07.prod.outlook.com (2603:10a6:200:42::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.6 via Frontend Transport; Wed, 22 Apr 2020 16:49:51 +0000
+X-Originating-IP: [2a00:a040:183:2d::a43]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7bd6b0d7-d367-46ae-ffec-08d7e6dd2cf7
+X-MS-TrafficTypeDiagnostic: AM6PR05MB6055:|AM6PR05MB6055:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB6055C60E72AEFFC46A70FBC3B0D20@AM6PR05MB6055.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:586;
+X-Forefront-PRVS: 03818C953D
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(7916004)(39860400002)(346002)(136003)(376002)(366004)(396003)(110136005)(6666004)(6486002)(1076003)(316002)(54906003)(107886003)(86362001)(5660300002)(9686003)(2906002)(6636002)(6496006)(52116002)(15650500001)(33716001)(186003)(16526019)(81156014)(66946007)(8936002)(66556008)(33656002)(8676002)(478600001)(4326008)(66476007);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R/1e0eloc1YVAmrMNzCmFKSskwYNEcMxY9kwbCbrREL43bkjEjsZTgN5Zih49c5TCwvamG6QKPLTbUyaUvVOzmkvW0jHyqNAG/n0qIlItM40oJroA1Axkc/FyqIi8KvfEJuMbJT0C6yWnhunGlkBYkf0pZHoQa1BlDFR69C+yoHmvHtA886cxi6T1GF32xy4qN4gwvHy8IhimKXmFhWYn8kpkwXsObTo1swBWedIQ3OQX+5RMMZLxaTylZx5DQ83rFDUaiLa7bMy5CV2N5NhHX8oL1j+bMa7+81AMqwHvtD1Cj5UnQkp3DQlNL2/4SeXmlJJAsKhjIfT3FSNygiAT2uVaqFw1joYHm5Dy7IkTcAr4b4Ku8QLA1Etbe4mKucmpGu4pnBIHPAUucdtn52zlxw5m5Z+BcthLQuaBQ+LHSV5nqnWMgRZsdzRQubEP5me
+X-MS-Exchange-AntiSpam-MessageData: fQnYq4zhXPeUo94lHvfVeASXXNWSp0pR2sXAexAib1faMaXRRAKvItyGI1yjLuKV72Q344zdi/HIWFfAaCXf+Rq8JRl8jcnSxOUnK0p7NPnhn+MT6IDZ/UbQpqToHa+ZxHSI559dgzBpeHokWG8UMslgJofeZOXm/e3DzRFL39U=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bd6b0d7-d367-46ae-ffec-08d7e6dd2cf7
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 16:49:51.4215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GpQE5lmntSVxaXrrqjIkRwpVMJOw/uGoRXj8bX87G0xJj1lM/HplbK91Oayi2kBrb99a21lDicR/ik26t4orww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6055
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:25 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Mon, Apr 20, 2020 at 02:41:14PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 >
-> On Wed, Apr 22, 2020 at 09:06:08PM +0800, Orson Zhai wrote:
-> > On Tue, Apr 21, 2020 at 3:10 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Tue, Apr 21, 2020 at 02:43:48AM +0800, Orson Zhai wrote:
-> > > > From: Orson Zhai <orson.zhai@unisoc.com>
-> > > >
-> > > > Instead of enabling dynamic debug globally with CONFIG_DYNAMIC_DEBUG,
-> > > > CONFIG_DYNAMIC_DEBUG_CORE will only enable core function of dynamic
-> > > > debug. With the DYNAMIC_DEBUG_MODULE defined for any modules, dynamic
-> > > > debug will be tied to them.
-> > > >
-> > > > This is useful for people who only want to enable dynamic debug for
-> > > > kernel modules without worrying about kernel image size and memory
-> > > > consumption is increasing too much.
-> > >
-> > > Let's talk about extreme case, what is the output of bloat-o-meter
-> > > for allyesconfig build with and without dynamic debug?
-> >
-> > It is a good question.
-> > I have done exactly what you ask for x86 build yesterday. Here is the result:
-> > Total: Before=306735842, After=312600260, chg +1.91%
-> >
-> > In my case of a mobile phone, the difference is about 2MiB on 14MiB kernel image
-> > (not compressed).
-> > The reduced size is often critical sometimes, especially for low-end phones, say
-> > a system with 512MB DDR memory.
-> >
-> > Another smaller arm system in my hand, kernel size reduced about
-> > 600KiB to the zImage
-> > of 4.2MiB.
+> Do mass update of cq.c to reuse newly introduced
+> mlx5_cmd_exec_in*() interfaces.
 >
-> The numbers support the assumption that "memory consumption is increasing
-> too much" sentence is not fully accurate.
-
-OK, I may change the description more accurate. I was thinking about
-only embedded
-environment for this patch. But it really should be accurate for all
-kinds users to learn
-about it.
-.
-> According to the result of
-> compilation for mobile phone, it looks like the problem with explode of
-> prints, which is better to clean, before introducing extra config.
-
-I don't think the debug log print is too much in my kernel. I didn't add extra
-debug print other than its original code.
-In fact it is very close to one of GKI kernels which could be found at
-AOSP kernel/common branch: android-5.4.
-
+> Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/cq.c  | 24 +++++++------------
+>  .../net/ethernet/mellanox/mlx5/core/debugfs.c |  2 +-
+>  .../ethernet/mellanox/mlx5/core/en/health.c   |  2 +-
+>  include/linux/mlx5/cq.h                       |  2 +-
+>  4 files changed, 12 insertions(+), 18 deletions(-)
 >
-> >
-> > >
-> > > I imagine that people who are interested in decreasing memory
-> > > footprint will use minimal config anyway, so it is very interesting
-> > > to see who is the target audience for this change?
-> >
-> > My motivation came from the concept of GKI (Generic Kernel Image) in Android.
-> > Google will release a common kernel image (binary) to all of the Android system
-> > vendors in the world instead of letting them to build their owns as before.
-> > Every SoC vendor's device drivers will be provided in kernel modules only.
-> > By my patch, the driver owners could debug their modules in field (say
-> > production releases)
-> > without having to enable dynamic debug for the whole GKI.
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> index 4477a590b308..1a6f1f14da97 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> @@ -90,8 +90,7 @@ int mlx5_core_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+>  			u32 *in, int inlen, u32 *out, int outlen)
+>  {
+>  	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), c_eqn);
+> -	u32 dout[MLX5_ST_SZ_DW(destroy_cq_out)];
+> -	u32 din[MLX5_ST_SZ_DW(destroy_cq_in)];
+> +	u32 din[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
+>  	struct mlx5_eq_comp *eq;
+>  	int err;
 >
-> Will Google release that binary with CONFIG_DYNAMIC_DEBUG_CORE disabled?
+> @@ -141,20 +140,17 @@ int mlx5_core_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+>  err_cq_add:
+>  	mlx5_eq_del_cq(&eq->core, cq);
+>  err_cmd:
+> -	memset(din, 0, sizeof(din));
+> -	memset(dout, 0, sizeof(dout));
+>  	MLX5_SET(destroy_cq_in, din, opcode, MLX5_CMD_OP_DESTROY_CQ);
+>  	MLX5_SET(destroy_cq_in, din, cqn, cq->cqn);
+>  	MLX5_SET(destroy_cq_in, din, uid, cq->uid);
+> -	mlx5_cmd_exec(dev, din, sizeof(din), dout, sizeof(dout));
+> +	mlx5_cmd_exec_in(dev, destroy_cq, din);
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(mlx5_core_create_cq);
 >
-In Google's plan, there will be only one GKI (no debug version) for
-one Android version per kernel version per year.
-So if I request to enable it and they accept my request (actually they
-did), the config will be opened in that
-GKI release for this year.
-
-> If yes, by introducing you kernel config, these driver authors won't
-> be able to enable debug on GKI (at least for production) at all.
-> If no, what is the point of this change?
-
-I am sorry to make you feel confused.
-One of the main purpose of this  change is to export the core
-functions of dynamic debug to kernel modules.
-These functions are defined in lib/dynamic_debug.c.
-EXPORT_SYMBOL(__dynamic_pr_debug);
-EXPORT_SYMBOL(__dynamic_dev_dbg);
-EXPORT_SYMBOL(__dynamic_netdev_dbg);
-EXPORT_SYMBOL(__dynamic_ibdev_dbg);
-
-These are only being built when CONFIG_DYNAMIC_DEBUG is set. But all
-pr_debug in GKI will be built-in as well.
-It will increase not very much size as you pointed out but might worth
-to be considerred for some cases.
-To eliminate this "side-effect", my change will give an option to
-people like Google guys to export these symbols
-without the burden of size it adds before.
-
--Orson
+>  int mlx5_core_destroy_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
+>  {
+> -	u32 out[MLX5_ST_SZ_DW(destroy_cq_out)] = {0};
+> -	u32 in[MLX5_ST_SZ_DW(destroy_cq_in)] = {0};
+> +	u32 in[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
+>  	int err;
 >
-> >
-> > -Orson
-> >
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
-> > > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > ---
-> > > > Changes to V2:
-> > > > 1) Change DEBUG_MODULE to DYNAMIC_DEBUG_MODULE.
-> > > > 2) Change more #if defined(DYNAMIC_DEBUG) condition (in net.h, netdevice.h
-> > > >    and ib_verbs.h).
-> > > > 3) Rewrite description in howto document.
-> > > > 4) Add acked-by from Greg.
-> > > >
-> > > >
-> > > >  Documentation/admin-guide/dynamic-debug-howto.rst |  5 +++++
-> > > >  include/linux/dev_printk.h                        |  6 ++++--
-> > > >  include/linux/dynamic_debug.h                     |  2 +-
-> > > >  include/linux/net.h                               |  3 ++-
-> > > >  include/linux/netdevice.h                         |  6 ++++--
-> > > >  include/linux/printk.h                            | 14 +++++++++-----
-> > > >  include/rdma/ib_verbs.h                           |  6 ++++--
-> > > >  lib/Kconfig.debug                                 | 12 ++++++++++++
-> > > >  lib/Makefile                                      |  2 +-
-> > > >  lib/dynamic_debug.c                               |  9 +++++++--
-> > > >  10 files changed, 49 insertions(+), 16 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > > index 0dc2eb8..1012bd9 100644
-> > > > --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > > +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > > @@ -13,6 +13,11 @@ kernel code to obtain additional kernel information.  Currently, if
-> > > >  ``print_hex_dump_debug()``/``print_hex_dump_bytes()`` calls can be dynamically
-> > > >  enabled per-callsite.
-> > > >
-> > > > +If you do not want to enable dynamic debug globally (i.e. in some embedded
-> > > > +system), you may set ``CONFIG_DYNAMIC_DEBUG_CORE`` as basic support of dynamic
-> > > > +debug and add ``ccflags := -DDYNAMIC_DEBUG_MODULE`` into the Makefile of any
-> > > > +modules which you'd like to dynamically debug later.
-> > > > +
-> > > >  If ``CONFIG_DYNAMIC_DEBUG`` is not set, ``print_hex_dump_debug()`` is just
-> > > >  shortcut for ``print_hex_dump(KERN_DEBUG)``.
-> > > >
-> > > > diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
-> > > > index 5aad06b..3028b64 100644
-> > > > --- a/include/linux/dev_printk.h
-> > > > +++ b/include/linux/dev_printk.h
-> > > > @@ -109,7 +109,8 @@ void _dev_info(const struct device *dev, const char *fmt, ...)
-> > > >  #define dev_info(dev, fmt, ...)                                              \
-> > > >       _dev_info(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define dev_dbg(dev, fmt, ...)                                               \
-> > > >       dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > > >  #elif defined(DEBUG)
-> > > > @@ -181,7 +182,8 @@ do {                                                                      \
-> > > >       dev_level_ratelimited(dev_notice, dev, fmt, ##__VA_ARGS__)
-> > > >  #define dev_info_ratelimited(dev, fmt, ...)                          \
-> > > >       dev_level_ratelimited(dev_info, dev, fmt, ##__VA_ARGS__)
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > > >  #define dev_dbg_ratelimited(dev, fmt, ...)                           \
-> > > >  do {                                                                 \
-> > > > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-> > > > index 4cf02ec..abcd5fd 100644
-> > > > --- a/include/linux/dynamic_debug.h
-> > > > +++ b/include/linux/dynamic_debug.h
-> > > > @@ -48,7 +48,7 @@ struct _ddebug {
-> > > >
-> > > >
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG_CORE)
-> > > >  int ddebug_add_module(struct _ddebug *tab, unsigned int n,
-> > > >                               const char *modname);
-> > > >  extern int ddebug_remove_module(const char *mod_name);
-> > > > diff --git a/include/linux/net.h b/include/linux/net.h
-> > > > index 6451425..7b7b21a 100644
-> > > > --- a/include/linux/net.h
-> > > > +++ b/include/linux/net.h
-> > > > @@ -264,7 +264,8 @@ do {                                                              \
-> > > >       net_ratelimited_function(pr_warn, fmt, ##__VA_ARGS__)
-> > > >  #define net_info_ratelimited(fmt, ...)                               \
-> > > >       net_ratelimited_function(pr_info, fmt, ##__VA_ARGS__)
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define net_dbg_ratelimited(fmt, ...)                                        \
-> > > >  do {                                                                 \
-> > > >       DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);                 \
-> > > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > > > index 130a668..e874643 100644
-> > > > --- a/include/linux/netdevice.h
-> > > > +++ b/include/linux/netdevice.h
-> > > > @@ -4868,7 +4868,8 @@ do {                                                            \
-> > > >  #define MODULE_ALIAS_NETDEV(device) \
-> > > >       MODULE_ALIAS("netdev-" device)
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define netdev_dbg(__dev, format, args...)                   \
-> > > >  do {                                                         \
-> > > >       dynamic_netdev_dbg(__dev, format, ##args);              \
-> > > > @@ -4938,7 +4939,8 @@ do {                                                            \
-> > > >  #define netif_info(priv, type, dev, fmt, args...)            \
-> > > >       netif_level(info, priv, type, dev, fmt, ##args)
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define netif_dbg(priv, type, netdev, format, args...)               \
-> > > >  do {                                                         \
-> > > >       if (netif_msg_##type(priv))                             \
-> > > > diff --git a/include/linux/printk.h b/include/linux/printk.h
-> > > > index e061635..b64c39c 100644
-> > > > --- a/include/linux/printk.h
-> > > > +++ b/include/linux/printk.h
-> > > > @@ -286,8 +286,9 @@ extern int kptr_restrict;
-> > > >  /*
-> > > >   * These can be used to print at the various log levels.
-> > > >   * All of these will print unconditionally, although note that pr_debug()
-> > > > - * and other debug macros are compiled out unless either DEBUG is defined
-> > > > - * or CONFIG_DYNAMIC_DEBUG is set.
-> > > > + * and other debug macros are compiled out unless either DEBUG is defined,
-> > > > + * CONFIG_DYNAMIC_DEBUG is set, or CONFIG_DYNAMIC_DEBUG_CORE is set when
-> > > > + * DYNAMIC_DEBUG_MODULE being defined for any modules.
-> > > >   */
-> > > >  #define pr_emerg(fmt, ...) \
-> > > >       printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
-> > > > @@ -322,7 +323,8 @@ extern int kptr_restrict;
-> > > >
-> > > >
-> > > >  /* If you are writing a driver, please use dev_dbg instead */
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #include <linux/dynamic_debug.h>
-> > > >
-> > > >  /* dynamic_pr_debug() uses pr_fmt() internally so we don't need it here */
-> > > > @@ -448,7 +450,8 @@ extern int kptr_restrict;
-> > > >  #endif
-> > > >
-> > > >  /* If you are writing a driver, please use dev_dbg instead */
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > > >  #define pr_debug_ratelimited(fmt, ...)                                       \
-> > > >  do {                                                                 \
-> > > > @@ -495,7 +498,8 @@ static inline void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
-> > > >
-> > > >  #endif
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define print_hex_dump_debug(prefix_str, prefix_type, rowsize,       \
-> > > >                            groupsize, buf, len, ascii)        \
-> > > >       dynamic_hex_dump(prefix_str, prefix_type, rowsize,      \
-> > > > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> > > > index bbc5cfb..e072ef6 100644
-> > > > --- a/include/rdma/ib_verbs.h
-> > > > +++ b/include/rdma/ib_verbs.h
-> > > > @@ -100,7 +100,8 @@ void ibdev_notice(const struct ib_device *ibdev, const char *format, ...);
-> > > >  __printf(2, 3) __cold
-> > > >  void ibdev_info(const struct ib_device *ibdev, const char *format, ...);
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  #define ibdev_dbg(__dev, format, args...)                       \
-> > > >       dynamic_ibdev_dbg(__dev, format, ##args)
-> > > >  #else
-> > > > @@ -133,7 +134,8 @@ do {                                                                    \
-> > > >  #define ibdev_info_ratelimited(ibdev, fmt, ...) \
-> > > >       ibdev_level_ratelimited(ibdev_info, ibdev, fmt, ##__VA_ARGS__)
-> > > >
-> > > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > > >  #define ibdev_dbg_ratelimited(ibdev, fmt, ...)                          \
-> > > >  do {                                                                    \
-> > > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > > index 21d9c5f..9ab791b 100644
-> > > > --- a/lib/Kconfig.debug
-> > > > +++ b/lib/Kconfig.debug
-> > > > @@ -99,6 +99,7 @@ config DYNAMIC_DEBUG
-> > > >       default n
-> > > >       depends on PRINTK
-> > > >       depends on (DEBUG_FS || PROC_FS)
-> > > > +     select DYNAMIC_DEBUG_CORE
-> > > >       help
-> > > >
-> > > >         Compiles debug level messages into the kernel, which would not
-> > > > @@ -165,6 +166,17 @@ config DYNAMIC_DEBUG
-> > > >         See Documentation/admin-guide/dynamic-debug-howto.rst for additional
-> > > >         information.
-> > > >
-> > > > +config DYNAMIC_DEBUG_CORE
-> > > > +     bool "Enable core function of dynamic debug support"
-> > > > +     depends on PRINTK
-> > > > +     depends on (DEBUG_FS || PROC_FS)
-> > > > +     help
-> > > > +       Enable core functional support of dynamic debug. It is useful
-> > > > +       when you want to tie dynamic debug to your kernel modules with
-> > > > +       DYNAMIC_DEBUG_MODULE defined for each of them, especially for
-> > > > +       the case of embedded system where the kernel image size is
-> > > > +       sensitive for people.
-> > > > +
-> > > >  config SYMBOLIC_ERRNAME
-> > > >       bool "Support symbolic error names in printf"
-> > > >       default y if PRINTK
-> > > > diff --git a/lib/Makefile b/lib/Makefile
-> > > > index 685aee6..8952772 100644
-> > > > --- a/lib/Makefile
-> > > > +++ b/lib/Makefile
-> > > > @@ -186,7 +186,7 @@ lib-$(CONFIG_GENERIC_BUG) += bug.o
-> > > >
-> > > >  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
-> > > >
-> > > > -obj-$(CONFIG_DYNAMIC_DEBUG) += dynamic_debug.o
-> > > > +obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
-> > > >  obj-$(CONFIG_SYMBOLIC_ERRNAME) += errname.o
-> > > >
-> > > >  obj-$(CONFIG_NLATTR) += nlattr.o
-> > > > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> > > > index 8f199f4..321437b 100644
-> > > > --- a/lib/dynamic_debug.c
-> > > > +++ b/lib/dynamic_debug.c
-> > > > @@ -1032,8 +1032,13 @@ static int __init dynamic_debug_init(void)
-> > > >       int verbose_bytes = 0;
-> > > >
-> > > >       if (&__start___verbose == &__stop___verbose) {
-> > > > -             pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
-> > > > -             return 1;
-> > > > +             if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
-> > > > +                     pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
-> > > > +                     return 1;
-> > > > +             }
-> > > > +             pr_info("Ignore empty _ddebug table in a CONFIG_DYNAMIC_DEBUG_CORE build\n");
-> > > > +             ddebug_init_success = 1;
-> > > > +             return 0;
-> > > >       }
-> > > >       iter = __start___verbose;
-> > > >       modname = iter->modname;
-> > > > --
-> > > > 2.7.4
-> > > >
+>  	mlx5_eq_del_cq(mlx5_get_async_eq(dev), cq);
+> @@ -163,7 +159,7 @@ int mlx5_core_destroy_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
+>  	MLX5_SET(destroy_cq_in, in, opcode, MLX5_CMD_OP_DESTROY_CQ);
+>  	MLX5_SET(destroy_cq_in, in, cqn, cq->cqn);
+>  	MLX5_SET(destroy_cq_in, in, uid, cq->uid);
+> -	err = mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
+> +	err = mlx5_cmd_exec_in(dev, destroy_cq, in);
+>  	if (err)
+>  		return err;
+>
+> @@ -178,24 +174,22 @@ int mlx5_core_destroy_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
+>  EXPORT_SYMBOL(mlx5_core_destroy_cq);
+>
+>  int mlx5_core_query_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+> -		       u32 *out, int outlen)
+> +		       u32 *out)
+>  {
+> -	u32 in[MLX5_ST_SZ_DW(query_cq_in)] = {0};
+> +	u32 in[MLX5_ST_SZ_DW(query_cq_in)] = {};
+>
+>  	MLX5_SET(query_cq_in, in, opcode, MLX5_CMD_OP_QUERY_CQ);
+>  	MLX5_SET(query_cq_in, in, cqn, cq->cqn);
+> -	return mlx5_cmd_exec(dev, in, sizeof(in), out, outlen);
+> +	return mlx5_cmd_exec_inout(dev, query_cq, in, out);
+>  }
+>  EXPORT_SYMBOL(mlx5_core_query_cq);
+>
+>  int mlx5_core_modify_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+>  			u32 *in, int inlen)
+>  {
+> -	u32 out[MLX5_ST_SZ_DW(modify_cq_out)] = {0};
+> -
+>  	MLX5_SET(modify_cq_in, in, opcode, MLX5_CMD_OP_MODIFY_CQ);
+>  	MLX5_SET(modify_cq_in, in, uid, cq->uid);
+> -	return mlx5_cmd_exec(dev, in, inlen, out, sizeof(out));
+> +	return mlx5_cmd_exec_in(dev, modify_cq, in);
+>  }
+>  EXPORT_SYMBOL(mlx5_core_modify_cq);
+>
+
+This hunk needs this fixup:
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+index 1a6f1f14da97..8379b24cb838 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+@@ -187,9 +187,11 @@ EXPORT_SYMBOL(mlx5_core_query_cq);
+ int mlx5_core_modify_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+                        u32 *in, int inlen)
+ {
++       u32 out[MLX5_ST_SZ_DW(modify_cq_out)] = {};
++
+        MLX5_SET(modify_cq_in, in, opcode, MLX5_CMD_OP_MODIFY_CQ);
+        MLX5_SET(modify_cq_in, in, uid, cq->uid);
+-       return mlx5_cmd_exec_in(dev, modify_cq, in);
++       return mlx5_cmd_exec(dev, in, inlen, out, sizeof(out));
+ }
+ EXPORT_SYMBOL(mlx5_core_modify_cq);
+
+Thanks
