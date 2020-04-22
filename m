@@ -2,202 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A63A1B4EEC
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 23:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A3D1B4FD9
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 00:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgDVVNV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Apr 2020 17:13:21 -0400
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:63763 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgDVVNU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Apr 2020 17:13:20 -0400
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id B53CDC1DDB;
-        Wed, 22 Apr 2020 17:13:14 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=KCqFDkcnN7N1Y7R0KRCvFAr8MLI=; b=KIbKWh
-        AbdIWaBaebAgLwoh2ThPlltYCc2foyVfx3t5RGx23zPbfk5ZygFMQ6V+xFMTq1kE
-        9293hckV2hM9HE8YnviV92teAo25sN5Pn1+gMhJAW8tmTdxqo874AP+U+IHEAe1v
-        Jb3C1C3k7xq53FLrbl57aYbe547PHqFcI8j8o=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 9F526C1DDA;
-        Wed, 22 Apr 2020 17:13:14 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=nfzC0aNp5HVyqlWKusrH+9gqQGBzO85jDBBTE4zv1kI=; b=dSk4dlZT9yKZv4bLmdcgCoTwO5y1setDry4GEaS+RjW57zBXRzcW7Lw2o6AV/+F/HGYODms0BJU7IykvnTc2LG84CJToIzhXgGVw9UPFmhaiBrWUb/nGnT5E+1aAaIeVtyzTKAkQZguQLF20DzrON2J7R3/wvmDwZ9szXZb53ME=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 5AD9CC1DD9;
-        Wed, 22 Apr 2020 17:13:11 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 6C2822DA0D31;
-        Wed, 22 Apr 2020 17:13:09 -0400 (EDT)
-Date:   Wed, 22 Apr 2020 17:13:09 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [RFC PATCH 1/2] Kconfig: Introduce "uses" keyword
-In-Reply-To: <871rofdhtg.fsf@intel.com>
-Message-ID: <nycvar.YSQ.7.76.2004221649480.2671@knanqh.ubzr>
-References: <20200417011146.83973-1-saeedm@mellanox.com> <CAK7LNAQZd_LUyA2V_pCvMTr_201nSX1Nm0TDw5kOeNV64rOfpA@mail.gmail.com> <nycvar.YSQ.7.76.2004181509030.2671@knanqh.ubzr> <CAK7LNATmPD1R+Ranis2u3yohx8b0+dGKAvFpjg8Eo9yEHRT6zQ@mail.gmail.com>
- <87v9lu1ra6.fsf@intel.com> <45b9efec57b2e250e8e39b3b203eb8cee10cb6e8.camel@mellanox.com> <nycvar.YSQ.7.76.2004210951160.2671@knanqh.ubzr> <62a51b2e5425a3cca4f7a66e2795b957f237b2da.camel@mellanox.com> <nycvar.YSQ.7.76.2004211411500.2671@knanqh.ubzr>
- <871rofdhtg.fsf@intel.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        id S1726006AbgDVWH4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Apr 2020 18:07:56 -0400
+Received: from mail-eopbgr20086.outbound.protection.outlook.com ([40.107.2.86]:51264
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725854AbgDVWHz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Apr 2020 18:07:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jIcts24ba/K3o+9kTqqJSNQjDocTLnxa7tuBUn4MOAJia5Md8SG1tObRYIMB17zQuZihX5wVl8MQWCwtWV/8hgUz7AzBvIj2fIM2Ri6/rdEGLZhtu6h+6vPnTWedjtwyl0Xzc8Bk1RmGPNiQjALayatCmpciXhVC2mRHOImlBShnbCqlKXkGQpmbsR9EJdIBlWbZXPZGTaNySdsF9p7gNxnsELqO1cPwoqU0mrSWtXAcRfqdfESQ3NiK6uNWdwMkc0mHZatpOsoO/7Q6TpW3J+pXWJ8pPTRUnTrLZDsrt5ZKV5ksIJ1kU08nBASaDUtgoXX66+YUf/NGTY1fkCT2cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QfeScfucmiTzSqAdnRGSl3Tlge0R87qRwsWI4JEqP3Y=;
+ b=AmyZzfmnXAqjlXzjlod9LOEj2RXn74Nnnh4kvIR6rlMy2R/uARjbjbSeHjMpiGJeYVCOK4Ct9lMXQFTEr8r3DoKR1fGjz+gre7XCL0ihqzzD/w9KdgAenI81b1QxWx51yJooIiYVPMe3+M5zvzQ69PiojF8N6DSsO3+QoM3WW7FFkIFNXiIulWXlJy3/jRTBiYG/ugqNh1SqpX9Xvd/VOKo2qFf0DXT9nkE3WIlPq20oc+mXHcd73XnTEWp85R1j5d4qbU+Rv4lKu9k4bLCl6OtUeqaIwIjHuzlAqSwTsh+pgDFJCLGvwucJ+XszfhZqW8QITKj+TxNNvmQFKZLGZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QfeScfucmiTzSqAdnRGSl3Tlge0R87qRwsWI4JEqP3Y=;
+ b=mBllWf30HRKMJi+a5DovaYOf2ZKNaix+sOKAmalXGlorj5EFpEjGztbamIhw1yW4wKtNuSXraQyeFNsXlP0FYqd/HKvV+1FKc2WhfyevBOGDwpHTImT9BcsxYMWYbOwHYjRO4Odqi/AZoWJ02nZvGZpYmFIIjL5WL/6mdXfC/3Q=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=maxg@mellanox.com; 
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+ by AM0PR05MB4737.eurprd05.prod.outlook.com (2603:10a6:208:b0::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25; Wed, 22 Apr
+ 2020 22:07:51 +0000
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4]) by AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4%5]) with mapi id 15.20.2937.012; Wed, 22 Apr 2020
+ 22:07:51 +0000
+Subject: Re: [PATCH 05/17] nvme-fabrics: Allow user enabling metadata/T10-PI
+ support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org,
+        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
+        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
+        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
+        israelr@mellanox.com, jgg@mellanox.com
+References: <20200327171545.98970-1-maxg@mellanox.com>
+ <20200327171545.98970-7-maxg@mellanox.com> <20200421151747.GA10837@lst.de>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <54c05d2d-2ea5-bf58-455f-91efa085aa9b@mellanox.com>
+Date:   Thu, 23 Apr 2020 01:07:47 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200421151747.GA10837@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM4P190CA0006.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:200:56::16) To AM0PR05MB5810.eurprd05.prod.outlook.com
+ (2603:10a6:208:11f::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 125CCF72-84DE-11EA-B4E7-8D86F504CC47-78420484!pb-smtp21.pobox.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.0.0.3] (217.132.177.164) by AM4P190CA0006.EURP190.PROD.OUTLOOK.COM (2603:10a6:200:56::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Wed, 22 Apr 2020 22:07:49 +0000
+X-Originating-IP: [217.132.177.164]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ab260f7f-883f-48eb-2b3c-08d7e7099969
+X-MS-TrafficTypeDiagnostic: AM0PR05MB4737:|AM0PR05MB4737:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB47372C589C7998CF2B5CBEF2B6D20@AM0PR05MB4737.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 03818C953D
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(16576012)(6486002)(2616005)(956004)(52116002)(86362001)(107886003)(4326008)(4744005)(66556008)(6916009)(66476007)(66946007)(26005)(31696002)(316002)(5660300002)(478600001)(8676002)(186003)(81156014)(53546011)(36756003)(2906002)(8936002)(16526019)(31686004);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bjQMc0wR1lPiWhfHy1bpEfh9WOB75be0MnYHxl7YGpiPK8um2bI49XHWU7Uh4jhUChnqTJ0sZdCGEQY+jwKWhJY+IO/4hnSjOuPLDmY9uCj+pZcjpY4kudfeb9k16X7zfPvf5MWA5w5fEfV1yeLdrIruJYYjCwOt0bNwzGQuKTCCnIxv8cr6sKX/XWsx+OsaqfkyRdy2pLWkhty/euzxzZeL0nbKtGlzwEzXgYNOMUp+NuTX4xLNpzbDJwOicSDngReS5XhI5O3+4gIRCM1/j488jpYdrm6DrhvRzprdy0fV/sZCo3IpRZWXW5OkJWNJB7ArOEtaJgZjFwW+j4Tb2JkxFdOBAJfjFSJJ0bUR6WugG6R4T/0sVWlkthn73VUBDP9cnoDPmYzebocn1fZ5/UWb7JR/B/vNZ2lQkmO9tNRDss7S63S/NTGvHXgeiSB3
+X-MS-Exchange-AntiSpam-MessageData: vK/9zR1NPVf24+OuyfvfQ282zfqRZYdWXk1/DwL/t0nxBTOkLIGiJBjZNaTtrOsb78ktNDOExnqJVr0KcfOwezTUjvEF1nYWb97TTSbwzhJgyUpqhVVgv3PXPItwLLdYIJ85te2eMpQoipeEXgk6PIhM7cOyAQ9VjjfVN1qJ2Qtl9xEs1LXn8Sf3rn3fZPu3hW7DQ8x6GBzWk1F06vbBuGek3pcIBcR/JYf378pCC0QRy8zQxjBZJ5b1rv+hqfrOI7ICb2FpAGCSZOSyFNGRM+ed1kkpODpROC85Kipfz3eqE5JvMKLNjnmIn4Q09GhYq6Rth5O9bpkeQQKqG0D0N4iEhLF33w+M3Dk7RZZUhmItwXYGZvvkucoDxeGxQ+Zni+6UlDNRIQH6dLo3MDgvXIBqH6fChCtAfptVQB6UbG3TvcqahEpS6usWtl8yVixrCZT32Pb4t3SofsSApGawFXat0ABYnADnwigusc0NJTWYPgDVwM7u03OAiNoQfcOcJA9LHKYzdicza+zvLOIVSBSYW69qa9CYVGjvLPjDelpwmsyxL5eDQWQHnNWnJpEBYgQ1xGs/lMwibvppWv/hVuxs8k04aZ/KmWcf/cfrBtwMONe12VqZHeqbd56KxwgPQ5MgIzt6XXWOjHLnbdKDU+a3fC/Yo/D8QZT6gr9m2cyjgoq6P9KJZRc+Gzf4K9pzfT5SC+ndPmykLdjz4xNby+AAq2BmBveQjjnzIyoLqyADdn/oeWDeuzkW1+4LeM/zM65p1Jzdc3etx7A//VNuloeOdHMocVwulS/lmZ4Xfm2yZ21lYjxvqC3TdRoVvkUw
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab260f7f-883f-48eb-2b3c-08d7e7099969
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2020 22:07:51.4870
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +fyQe5aa2RwDgJsst50v7Nrvx0n3UDTOEnTcwQI2GUR7LwK90+8wi0x6sulCuSXrbP+1dlXsVZo98jUYolEQuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4737
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 22 Apr 2020, Jani Nikula wrote:
 
-> On Tue, 21 Apr 2020, Nicolas Pitre <nico@fluxnic.net> wrote:
-> > This is really a conditional dependency. That's all this is about.
-> > So why not simply making it so rather than fooling ourselves? All that 
-> > is required is an extension that would allow:
-> >
-> > 	depends on (expression) if (expression)
-> >
-> > This construct should be obvious even without reading the doc, is 
-> > already used extensively for other things already, and is flexible 
-> > enough to cover all sort of cases in addition to this particular one.
-> 
-> Okay, you convinced me. Now you only need to convince whoever is doing
-> the actual work of implementing this stuff. ;)
+On 4/21/2020 6:17 PM, Christoph Hellwig wrote:
+> On Fri, Mar 27, 2020 at 08:15:33PM +0300, Max Gurtovoy wrote:
+>> From: Israel Rukshin <israelr@mellanox.com>
+>>
+>> Preparation for adding metadata (T10-PI) over fabric support. This will
+>> allow end-to-end protection information passthrough and validation for
+>> NVMe over Fabric.
+> So actually - for PCIe we enable PI by default.  Not sure why RDMA would
+> be any different?  If we have a switch to turn it off we probably want
+> it work similar (can't be the same due to the lack of connect) for PCIe
+> as well.
 
-What about this:
+For PCI we use a format command to configure metadata. In fabrics we can 
+choose doing it in the connect command and we can also choose to have 
+"protected" controllers and "non-protected" controllers.
 
------ >8
-Subject: [PATCH] kconfig: allow for conditional dependencies
+I don't think it's all or nothing case, and configuration using nvme-cli 
+(or other tool) seems reasonable and flexible.
 
-This might appear to be a strange concept, but sometimes we want
-a dependency to be conditionally applied. One such case is currently
-expressed with:
 
-	depends on FOO || !FOO
-
-This pattern is strange enough to give one's pause. Given that it is
-also frequent, let's make the intent more obvious with some syntaxic 
-sugar by effectively making dependencies optionally conditional.
-This also makes the kconfig language more uniform.
-
-Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-
-diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-index d0111dd264..0f841e0037 100644
---- a/Documentation/kbuild/kconfig-language.rst
-+++ b/Documentation/kbuild/kconfig-language.rst
-@@ -114,7 +114,7 @@ applicable everywhere (see syntax).
-   This is a shorthand notation for a type definition plus a value.
-   Optionally dependencies for this default value can be added with "if".
- 
--- dependencies: "depends on" <expr>
-+- dependencies: "depends on" <expr> ["if" <expr>]
- 
-   This defines a dependency for this menu entry. If multiple
-   dependencies are defined, they are connected with '&&'. Dependencies
-@@ -130,6 +130,16 @@ applicable everywhere (see syntax).
- 	bool "foo"
- 	default y
- 
-+  The dependency definition itself may be conditional by appending "if"
-+  followed by an expression. If such expression is false (n) then this
-+  dependency is ignored. One possible use case is:
-+
-+    config FOO
-+	tristate
-+	depends on BAZ if BAZ != n
-+
-+  meaning that FOO is constrained by the value of BAZ only when it is set.
-+
- - reverse dependencies: "select" <symbol> ["if" <expr>]
- 
-   While normal dependencies reduce the upper limit of a symbol (see
-diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
-index d4ca829736..1a9337d1b9 100644
---- a/scripts/kconfig/lkc.h
-+++ b/scripts/kconfig/lkc.h
-@@ -72,7 +72,7 @@ void menu_warn(struct menu *menu, const char *fmt, ...);
- struct menu *menu_add_menu(void);
- void menu_end_menu(void);
- void menu_add_entry(struct symbol *sym);
--void menu_add_dep(struct expr *dep);
-+void menu_add_dep(struct expr *dep, struct expr *cond);
- void menu_add_visibility(struct expr *dep);
- struct property *menu_add_prompt(enum prop_type type, char *prompt, struct expr *dep);
- void menu_add_expr(enum prop_type type, struct expr *expr, struct expr *dep);
-diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-index e436ba44c9..e6b204225e 100644
---- a/scripts/kconfig/menu.c
-+++ b/scripts/kconfig/menu.c
-@@ -103,8 +103,22 @@ static struct expr *rewrite_m(struct expr *e)
- 	return e;
- }
- 
--void menu_add_dep(struct expr *dep)
-+void menu_add_dep(struct expr *dep, struct expr *cond)
- {
-+	if (cond) {
-+		struct expr *cond2, *left, *right;
-+		/*
-+		 * We have "depends on X if Y" and we want:
-+		 *	Y != n --> X
-+		 *	Y == n --> y
-+		 * Meaning: ((Y != n) && X) || (Y == n)
-+		 */
-+		cond2 = expr_copy(cond);
-+		left = expr_trans_compare(cond2, E_UNEQUAL, &symbol_no);
-+		left = expr_alloc_and(dep, left);
-+		right = expr_trans_compare(cond, E_EQUAL, &symbol_no);
-+		dep = expr_alloc_or(left, right);
-+	}
- 	current_entry->dep = expr_alloc_and(current_entry->dep, dep);
- }
- 
-diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index 708b6c4b13..4161207da2 100644
---- a/scripts/kconfig/parser.y
-+++ b/scripts/kconfig/parser.y
-@@ -316,7 +316,7 @@ if_entry: T_IF expr T_EOL
- {
- 	printd(DEBUG_PARSE, "%s:%d:if\n", zconf_curname(), zconf_lineno());
- 	menu_add_entry(NULL);
--	menu_add_dep($2);
-+	menu_add_dep($2, NULL);
- 	$$ = menu_add_menu();
- };
- 
-@@ -412,9 +412,9 @@ help: help_start T_HELPTEXT
- 
- /* depends option */
- 
--depends: T_DEPENDS T_ON expr T_EOL
-+depends: T_DEPENDS T_ON expr if_expr T_EOL
- {
--	menu_add_dep($3);
-+	menu_add_dep($3, $4);
- 	printd(DEBUG_PARSE, "%s:%d:depends on\n", zconf_curname(), zconf_lineno());
- };
- 
