@@ -2,89 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0656B1B4D44
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 21:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DC61B4D4F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 21:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgDVTWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Apr 2020 15:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S1726002AbgDVT0u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Apr 2020 15:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725961AbgDVTW2 (ORCPT
+        by vger.kernel.org with ESMTP id S1725935AbgDVT0t (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Apr 2020 15:22:28 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D605C03C1A9
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 12:22:28 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id 92so2721255qtg.0
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 12:22:28 -0700 (PDT)
+        Wed, 22 Apr 2020 15:26:49 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E45AC03C1A9
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 12:26:49 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id q31so1516585qvf.11
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 12:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=CN43+dhBFndfri4biu3f0rYCyyiNZRagKV6flNNGro4=;
-        b=Qz3S/A6g6FqCWR0GY0x0ot+OcB1rS1sgJF74IVrIoSY71NvhECB0O0z3ex68RwoaZp
-         zq8QUxJM2gYqbAlJ7gWKZmh+rUDRfqe5n/RSV86UzogOIwztRqGpw4TrqIGDcfb7TtxS
-         dRGrDTChDY3uGIqdsGazi94Yw/f2S0i/aMTf748r//d2NvbuFRI0L4SDFTo2be+c0UTi
-         xgJqnkwFgtHV2jJFPIPCRVnYkYCDKq7mVUKwXeYAwiqv9M11XlsWXAvIki0p9ZuV1abi
-         0kn7lp02m9TWaEbAEGoM+Vw8V8IAWmQDEirxum0h6yrxdP62NgJRtb7PpZusimz2fdfR
-         a3tQ==
+        bh=HlkJ7DCMRW5DM0Cr5A//hH5XtvheICAxstvQ6UI2sz0=;
+        b=l2HAlcJqHWneHN7oLMLzLEvygAVPcJP1+sbx1OZz6tmEcynOSCDAgW4hOEb/pJ5UCj
+         ut4ETMBw+lkV4oxp2L6Dyrlchz9p1dojaPhrI6oqQDu0s3Uzgp2N1CfXdig461Xc/i5H
+         gBU9xWKHKtk0KtrshHfFh8/VJYfiLm0iEqC3zmgvVzcXqX/+gPOdcnjPIhObbgCSvUQG
+         hqpU0YzD+hIjiDs5yxmdXh+/s/NvdcuBBIV5kiNysuCxm4feLtA0ebLVuacnoJTogXnX
+         /dF5uX1jRFff5jp/LJRFjoh9yi0scwLhlRjcFNmtk1tPqqLC41P0xByhOJKgGJlAURuu
+         P6/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CN43+dhBFndfri4biu3f0rYCyyiNZRagKV6flNNGro4=;
-        b=B2JNQChSCZ7iWa76qJ/GUDht/f2MrBOZ9T9Du3APSxN+dafyaKjsozvu8osswqid83
-         j1+XP9Np5z4mTO78XahC+QXo3sjjFROuXgLEMy6Gk+wXGPMzvI7cOhYP0w7+3auFRuCO
-         wIfIQfBz0lsnZMUIsj/OjhnL6h+911yZp91gxAwCTzSapkOhwZblUVbDcOQVB8D6VFTD
-         5EhduwxqauOYWb6Z9r2wrUp2kvKuU20dfyNlEH99e2IzSXrXcgTGlZ9vbaJLaz0lwrvl
-         Eqvep5u4rnhDVLtSLLs8p13Zf2SpHjWCdEO6JylYgkkVFXyYuzvHdZDdneqxLmeSnmx6
-         yb+A==
-X-Gm-Message-State: AGi0PubMg3DwPGWcsOtVevVo4NyVuOwDxW+mCCZcW4u3plq9HP44sk26
-        O7DrvS3GY/8RL5OA1nrCt1m1OA==
-X-Google-Smtp-Source: APiQypIpM6Cq2xb/2SjJV3ydF+AQpuaGrVMkjolYqFpno5PkO/tttDqTjt+OQJxTeq0+pEnpondgDA==
-X-Received: by 2002:ac8:31aa:: with SMTP id h39mr197046qte.190.1587583347704;
-        Wed, 22 Apr 2020 12:22:27 -0700 (PDT)
+        bh=HlkJ7DCMRW5DM0Cr5A//hH5XtvheICAxstvQ6UI2sz0=;
+        b=LkAi3VwXzIkRlBUF5RA/FupTgewoQRL7B8h4Jg32lU1zMvxRX7T8ftOf4c6gphGUJt
+         TAlxjv96LWQS6MEm3RaSF+0ZIa3XgKpOS4XoreX+r+G+V+PbFjkTDJ/oeQ7a7Cv+l5n0
+         c7StnElkp2DjxEjE0cRC2tJ6Og/CvFG9asLwMlTrLKESSLoP76p+pgxiC2wamvj8dAh+
+         Tg50UjzLJrEUoURZvls0U7R0nM/GQtbXyRySazpw5t9RSMw3Y1ZS/Ove4m7vYLWyt+YL
+         UYkihpfHIPNCIV6OE4zqu3dz+i7N8HhX8HNtWJymfGdPD6F42HY/yMtDsIuZj6et0pTc
+         Djaw==
+X-Gm-Message-State: AGi0PuaZdETJmd61utpiYDAZv4tnSz5q8gaMZyc0EAp+5pSK+UUxuT/e
+        m6I65y2XhR1aPJdeRRBVVgQkDZY+bP7KgQ==
+X-Google-Smtp-Source: APiQypIYJDpuDR+lnGc+ksLKS43xUeBVGtTLzuiwzhd0kQZuu8xw6XFnarph+QCZAZ+pehF+CBQnhA==
+X-Received: by 2002:a0c:e9cc:: with SMTP id q12mr567945qvo.128.1587583608758;
+        Wed, 22 Apr 2020 12:26:48 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id j25sm117035qtn.21.2020.04.22.12.22.26
+        by smtp.gmail.com with ESMTPSA id d188sm69311qkg.59.2020.04.22.12.26.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Apr 2020 12:22:27 -0700 (PDT)
+        Wed, 22 Apr 2020 12:26:48 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jRKx0-00037P-7D; Wed, 22 Apr 2020 16:22:26 -0300
-Date:   Wed, 22 Apr 2020 16:22:26 -0300
+        id 1jRL1D-0003Bs-RN; Wed, 22 Apr 2020 16:26:47 -0300
+Date:   Wed, 22 Apr 2020 16:26:47 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 0/6] RDMA/hns: Support 0 hop addressing
-Message-ID: <20200422192226.GA11931@ziepe.ca>
-References: <1586779091-51410-1-git-send-email-liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Daria Velikovsky <daria@mellanox.com>,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Add support for drop action in DV
+ steering
+Message-ID: <20200422192647.GA12235@ziepe.ca>
+References: <20200413135328.934419-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586779091-51410-1-git-send-email-liweihang@huawei.com>
+In-Reply-To: <20200413135328.934419-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 07:58:05PM +0800, Weihang Li wrote:
-> Add support for 0 hop addressing, which means hip08 supports multi-hops
-> addressing range from 0 to 3.
+On Mon, Apr 13, 2020 at 04:53:28PM +0300, Leon Romanovsky wrote:
+> From: Daria Velikovsky <daria@mellanox.com>
 > 
-> Unforunately, there are still some dev_*() in in the initialization process
-> of the hns driver in this series that can't be replaced by ibdev_*()
-> currently, but they will be modified in subsequent patches.
+> When drop action is used the matching packet will stop
+> processing in steering and will be dropped. This functionality
+> will allow users to drop matching packets.
 > 
-> Xi Wang (6):
->   RDMA/hns: Add support for addressing when hopnum is 0
->   RDMA/hns: Optimize hns buffer allocation flow
->   RDMA/hns: Optimize 0 hop addressing for EQE buffer
->   RDMA/hns: Support 0 hop addressing for WQE buffer
->   RDMA/hns: Support 0 hop addressing for SRQ buffer
->   RDMA/hns: Support 0 hop addressing for CQE buffer
+> Signed-off-by: Daria Velikovsky <daria@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/flow.c        | 37 +++++++++++++++---------
+>  include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
+>  2 files changed, 24 insertions(+), 14 deletions(-)
 
-Applied to for-next, thanks
+Where is the rdma-core part of this?
 
 Jason
