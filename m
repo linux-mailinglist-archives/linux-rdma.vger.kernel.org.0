@@ -2,372 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B722A1B4731
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 16:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BEE1B4843
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 17:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgDVOZ6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Apr 2020 10:25:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726969AbgDVOZ6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Apr 2020 10:25:58 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3B062076E;
-        Wed, 22 Apr 2020 14:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587565556;
-        bh=kgXj6xDdmGqk6X//p8ixsjKjrFNHVESJPB0CWxOlCrA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j+3JVgRoZmbJVVCSL5BCTC3TI/Q89JtJSjj+6/Ru7gCG5ccNt+TKdD7//vkC5D8kn
-         HbyY+BL37wWiHlrDSHk8nwq33r6xT/wG3cD9N0IWNDscjWVjjNSxFLWaaK10tUiZPH
-         68020aaP989sg/H/Xu8192KY7bWb0/dHPvPtiMUY=
-Date:   Wed, 22 Apr 2020 17:25:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Orson Zhai <orsonzhai@gmail.com>
-Cc:     Orson Zhai <orson.unisoc@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Orson Zhai <orson.zhai@unisoc.com>
-Subject: Re: [PATCH V2] dynamic_debug: Add an option to enable dynamic debug
- for modules only
-Message-ID: <20200422142552.GA492196@unreal>
-References: <1587408228-10861-1-git-send-email-orson.unisoc@gmail.com>
- <20200420191014.GE121146@unreal>
- <CA+H2tpGgGtW_8Z8fV9to39JwA_KrcfAeBC+KN87v0xKnZHt2_w@mail.gmail.com>
+        id S1726472AbgDVPJm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Apr 2020 11:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgDVPJm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Apr 2020 11:09:42 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8C4C03C1AC;
+        Wed, 22 Apr 2020 08:09:42 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id 71so1872616qtc.12;
+        Wed, 22 Apr 2020 08:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8c7hTySQReHi882ORjYoI2k/+/cgd95b2HG6MquGzOY=;
+        b=M5N0FrsLlhirypGtKqTqIeHxTCQcQmd55VNkgey763C1wygubwK0x4n0Ly95j2+HRC
+         g3hHOV08biMMIGndYVsy0aJEx4ZMEOnc5AO3lvgOWHZdoY4ls5nq7hUw1GPq484T04DU
+         PSmnWXBQPEK1BX7vZlnxkPxCSOBHtYv5gPp4egqpm6qUpC/8gJ5tZesgsFk0wdaoNy5R
+         1nL4c/n/Eu+onQAnlsqbwbXVBEu3udzIS1NmRpXRNzOn/l7tfthbuHQ7JdoOOheQE4Yl
+         ZEJFMy5168oyi+PucxKRu/Basg4BX/tfx+fROpCnVGl6APJjc5R0Qc9g5HcOYUWhEzDI
+         cFBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8c7hTySQReHi882ORjYoI2k/+/cgd95b2HG6MquGzOY=;
+        b=h+A8TaZY44hzUt8V8egHyH9dtOtbjuDGpr8Rctl+fYEtfaddK7Q42B4nU2JjX2Z3eZ
+         3aBYFtmbmpF959VNWvRFCB/siRPhW/zL/egniXqDSScFfokV3X0sfuowXEOEKKjX7oua
+         4ZZnAYlTgsUMpD6lUzhCzyFQWViUGkhqNzV/tNHc8q4hBovZIY+W/Hk18mVlS9e8VfgX
+         ipyPgYEcCQnJYFJj4J4n3fT+s+y3PFR8bQ+raCwFjFDTDo4QQFxdyZaMwUv+6RTurmYj
+         Zvehz1Pflz85eecW0z4EBp/XvnuvDVBFHAF/Fctahrr8U2e3GSvXHR4R1D0nd6n52lRN
+         kRDA==
+X-Gm-Message-State: AGi0PuZWsajxCt6Pa6qDgb93POsbUeqyRJ0pdEEPaqMv49MyvA64EVVY
+        bjSzdMYmWPuCWCIbtEzjpycEp3M6
+X-Google-Smtp-Source: APiQypKLX+sXZA2f9KfpbnC4fWWYtobntcPpsJsZ6STaDKPVa+TLkkAPP2yfWrpBVORN9ux1gmUMcQ==
+X-Received: by 2002:aed:3bda:: with SMTP id s26mr26982652qte.261.1587568181450;
+        Wed, 22 Apr 2020 08:09:41 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:c19e:4650:3a73:fee4? ([2601:282:803:7700:c19e:4650:3a73:fee4])
+        by smtp.googlemail.com with ESMTPSA id p47sm4268828qta.44.2020.04.22.08.09.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Apr 2020 08:09:40 -0700 (PDT)
+Subject: Re: [PATCH V4 mlx5-next 01/15] net/core: Introduce
+ netdev_get_xmit_slave
+To:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
+        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
+        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
+        jiri@mellanox.com, dsahern@kernel.org
+Cc:     leonro@mellanox.com, saeedm@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com
+References: <20200422083951.17424-1-maorg@mellanox.com>
+ <20200422083951.17424-2-maorg@mellanox.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <93110507-2ffe-c9f1-f53c-41c6968751ac@gmail.com>
+Date:   Wed, 22 Apr 2020 09:09:38 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+H2tpGgGtW_8Z8fV9to39JwA_KrcfAeBC+KN87v0xKnZHt2_w@mail.gmail.com>
+In-Reply-To: <20200422083951.17424-2-maorg@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 09:06:08PM +0800, Orson Zhai wrote:
-> On Tue, Apr 21, 2020 at 3:10 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, Apr 21, 2020 at 02:43:48AM +0800, Orson Zhai wrote:
-> > > From: Orson Zhai <orson.zhai@unisoc.com>
-> > >
-> > > Instead of enabling dynamic debug globally with CONFIG_DYNAMIC_DEBUG,
-> > > CONFIG_DYNAMIC_DEBUG_CORE will only enable core function of dynamic
-> > > debug. With the DYNAMIC_DEBUG_MODULE defined for any modules, dynamic
-> > > debug will be tied to them.
-> > >
-> > > This is useful for people who only want to enable dynamic debug for
-> > > kernel modules without worrying about kernel image size and memory
-> > > consumption is increasing too much.
-> >
-> > Let's talk about extreme case, what is the output of bloat-o-meter
-> > for allyesconfig build with and without dynamic debug?
->
-> It is a good question.
-> I have done exactly what you ask for x86 build yesterday. Here is the result:
-> Total: Before=306735842, After=312600260, chg +1.91%
->
-> In my case of a mobile phone, the difference is about 2MiB on 14MiB kernel image
-> (not compressed).
-> The reduced size is often critical sometimes, especially for low-end phones, say
-> a system with 512MB DDR memory.
->
-> Another smaller arm system in my hand, kernel size reduced about
-> 600KiB to the zImage
-> of 4.2MiB.
+On 4/22/20 2:39 AM, Maor Gottlieb wrote:
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 9c9e763bfe0e..294553551ba5 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -7785,6 +7785,36 @@ void netdev_bonding_info_change(struct net_device *dev,
+>  }
+>  EXPORT_SYMBOL(netdev_bonding_info_change);
+>  
+> +/**
+> + * netdev_get_xmit_slave - Get the xmit slave of master device
+> + * @skb: The packet
+> + * @all_slaves: assume all the slaves are active
+> + *
+> + * This can be called from any context and does its own locking.
+> + * The returned handle has the usage count incremented and the caller must
+> + * use dev_put() to release it when it is no longer needed.
+> + * %NULL is returned if no slave is found.
+> + */
+> +
+> +struct net_device *netdev_get_xmit_slave(struct net_device *dev,
+> +					 struct sk_buff *skb,
+> +					 bool all_slaves)
+> +{
+> +	const struct net_device_ops *ops = dev->netdev_ops;
+> +	struct net_device *slave_dev;
+> +
+> +	if (!ops->ndo_get_xmit_slave)
+> +		return NULL;
+> +
+> +	rcu_read_lock();
+> +	slave_dev = ops->ndo_get_xmit_slave(dev, skb, all_slaves);
+> +	if (slave_dev)
+> +		dev_hold(slave_dev);
+> +	rcu_read_unlock();
+> +	return slave_dev;
+> +}
+> +EXPORT_SYMBOL(netdev_get_xmit_slave);
+> +
+>  static void netdev_adjacent_add_links(struct net_device *dev)
+>  {
+>  	struct netdev_adjacent *iter;
+> 
 
-The numbers support the assumption that "memory consumption is increasing
-too much" sentence is not fully accurate. According to the result of
-compilation for mobile phone, it looks like the problem with explode of
-prints, which is better to clean, before introducing extra config.
+The rcu_read_lock and reference seem overkill for a general purpose
+helper. When this set goes in I want to make modifications for use with
+XDP and that does not need either.
 
->
-> >
-> > I imagine that people who are interested in decreasing memory
-> > footprint will use minimal config anyway, so it is very interesting
-> > to see who is the target audience for this change?
->
-> My motivation came from the concept of GKI (Generic Kernel Image) in Android.
-> Google will release a common kernel image (binary) to all of the Android system
-> vendors in the world instead of letting them to build their owns as before.
-> Every SoC vendor's device drivers will be provided in kernel modules only.
-> By my patch, the driver owners could debug their modules in field (say
-> production releases)
-> without having to enable dynamic debug for the whole GKI.
-
-Will Google release that binary with CONFIG_DYNAMIC_DEBUG_CORE disabled?
-
-If yes, by introducing you kernel config, these driver authors won't
-be able to enable debug on GKI (at least for production) at all.
-If no, what is the point of this change?
-
->
-> -Orson
->
-> >
-> > Thanks
-> >
-> > >
-> > > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
-> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > > Changes to V2:
-> > > 1) Change DEBUG_MODULE to DYNAMIC_DEBUG_MODULE.
-> > > 2) Change more #if defined(DYNAMIC_DEBUG) condition (in net.h, netdevice.h
-> > >    and ib_verbs.h).
-> > > 3) Rewrite description in howto document.
-> > > 4) Add acked-by from Greg.
-> > >
-> > >
-> > >  Documentation/admin-guide/dynamic-debug-howto.rst |  5 +++++
-> > >  include/linux/dev_printk.h                        |  6 ++++--
-> > >  include/linux/dynamic_debug.h                     |  2 +-
-> > >  include/linux/net.h                               |  3 ++-
-> > >  include/linux/netdevice.h                         |  6 ++++--
-> > >  include/linux/printk.h                            | 14 +++++++++-----
-> > >  include/rdma/ib_verbs.h                           |  6 ++++--
-> > >  lib/Kconfig.debug                                 | 12 ++++++++++++
-> > >  lib/Makefile                                      |  2 +-
-> > >  lib/dynamic_debug.c                               |  9 +++++++--
-> > >  10 files changed, 49 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > index 0dc2eb8..1012bd9 100644
-> > > --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> > > @@ -13,6 +13,11 @@ kernel code to obtain additional kernel information.  Currently, if
-> > >  ``print_hex_dump_debug()``/``print_hex_dump_bytes()`` calls can be dynamically
-> > >  enabled per-callsite.
-> > >
-> > > +If you do not want to enable dynamic debug globally (i.e. in some embedded
-> > > +system), you may set ``CONFIG_DYNAMIC_DEBUG_CORE`` as basic support of dynamic
-> > > +debug and add ``ccflags := -DDYNAMIC_DEBUG_MODULE`` into the Makefile of any
-> > > +modules which you'd like to dynamically debug later.
-> > > +
-> > >  If ``CONFIG_DYNAMIC_DEBUG`` is not set, ``print_hex_dump_debug()`` is just
-> > >  shortcut for ``print_hex_dump(KERN_DEBUG)``.
-> > >
-> > > diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
-> > > index 5aad06b..3028b64 100644
-> > > --- a/include/linux/dev_printk.h
-> > > +++ b/include/linux/dev_printk.h
-> > > @@ -109,7 +109,8 @@ void _dev_info(const struct device *dev, const char *fmt, ...)
-> > >  #define dev_info(dev, fmt, ...)                                              \
-> > >       _dev_info(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define dev_dbg(dev, fmt, ...)                                               \
-> > >       dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > >  #elif defined(DEBUG)
-> > > @@ -181,7 +182,8 @@ do {                                                                      \
-> > >       dev_level_ratelimited(dev_notice, dev, fmt, ##__VA_ARGS__)
-> > >  #define dev_info_ratelimited(dev, fmt, ...)                          \
-> > >       dev_level_ratelimited(dev_info, dev, fmt, ##__VA_ARGS__)
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > >  #define dev_dbg_ratelimited(dev, fmt, ...)                           \
-> > >  do {                                                                 \
-> > > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-> > > index 4cf02ec..abcd5fd 100644
-> > > --- a/include/linux/dynamic_debug.h
-> > > +++ b/include/linux/dynamic_debug.h
-> > > @@ -48,7 +48,7 @@ struct _ddebug {
-> > >
-> > >
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG_CORE)
-> > >  int ddebug_add_module(struct _ddebug *tab, unsigned int n,
-> > >                               const char *modname);
-> > >  extern int ddebug_remove_module(const char *mod_name);
-> > > diff --git a/include/linux/net.h b/include/linux/net.h
-> > > index 6451425..7b7b21a 100644
-> > > --- a/include/linux/net.h
-> > > +++ b/include/linux/net.h
-> > > @@ -264,7 +264,8 @@ do {                                                              \
-> > >       net_ratelimited_function(pr_warn, fmt, ##__VA_ARGS__)
-> > >  #define net_info_ratelimited(fmt, ...)                               \
-> > >       net_ratelimited_function(pr_info, fmt, ##__VA_ARGS__)
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define net_dbg_ratelimited(fmt, ...)                                        \
-> > >  do {                                                                 \
-> > >       DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);                 \
-> > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > > index 130a668..e874643 100644
-> > > --- a/include/linux/netdevice.h
-> > > +++ b/include/linux/netdevice.h
-> > > @@ -4868,7 +4868,8 @@ do {                                                            \
-> > >  #define MODULE_ALIAS_NETDEV(device) \
-> > >       MODULE_ALIAS("netdev-" device)
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define netdev_dbg(__dev, format, args...)                   \
-> > >  do {                                                         \
-> > >       dynamic_netdev_dbg(__dev, format, ##args);              \
-> > > @@ -4938,7 +4939,8 @@ do {                                                            \
-> > >  #define netif_info(priv, type, dev, fmt, args...)            \
-> > >       netif_level(info, priv, type, dev, fmt, ##args)
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define netif_dbg(priv, type, netdev, format, args...)               \
-> > >  do {                                                         \
-> > >       if (netif_msg_##type(priv))                             \
-> > > diff --git a/include/linux/printk.h b/include/linux/printk.h
-> > > index e061635..b64c39c 100644
-> > > --- a/include/linux/printk.h
-> > > +++ b/include/linux/printk.h
-> > > @@ -286,8 +286,9 @@ extern int kptr_restrict;
-> > >  /*
-> > >   * These can be used to print at the various log levels.
-> > >   * All of these will print unconditionally, although note that pr_debug()
-> > > - * and other debug macros are compiled out unless either DEBUG is defined
-> > > - * or CONFIG_DYNAMIC_DEBUG is set.
-> > > + * and other debug macros are compiled out unless either DEBUG is defined,
-> > > + * CONFIG_DYNAMIC_DEBUG is set, or CONFIG_DYNAMIC_DEBUG_CORE is set when
-> > > + * DYNAMIC_DEBUG_MODULE being defined for any modules.
-> > >   */
-> > >  #define pr_emerg(fmt, ...) \
-> > >       printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
-> > > @@ -322,7 +323,8 @@ extern int kptr_restrict;
-> > >
-> > >
-> > >  /* If you are writing a driver, please use dev_dbg instead */
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #include <linux/dynamic_debug.h>
-> > >
-> > >  /* dynamic_pr_debug() uses pr_fmt() internally so we don't need it here */
-> > > @@ -448,7 +450,8 @@ extern int kptr_restrict;
-> > >  #endif
-> > >
-> > >  /* If you are writing a driver, please use dev_dbg instead */
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > >  #define pr_debug_ratelimited(fmt, ...)                                       \
-> > >  do {                                                                 \
-> > > @@ -495,7 +498,8 @@ static inline void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
-> > >
-> > >  #endif
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define print_hex_dump_debug(prefix_str, prefix_type, rowsize,       \
-> > >                            groupsize, buf, len, ascii)        \
-> > >       dynamic_hex_dump(prefix_str, prefix_type, rowsize,      \
-> > > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> > > index bbc5cfb..e072ef6 100644
-> > > --- a/include/rdma/ib_verbs.h
-> > > +++ b/include/rdma/ib_verbs.h
-> > > @@ -100,7 +100,8 @@ void ibdev_notice(const struct ib_device *ibdev, const char *format, ...);
-> > >  __printf(2, 3) __cold
-> > >  void ibdev_info(const struct ib_device *ibdev, const char *format, ...);
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  #define ibdev_dbg(__dev, format, args...)                       \
-> > >       dynamic_ibdev_dbg(__dev, format, ##args)
-> > >  #else
-> > > @@ -133,7 +134,8 @@ do {                                                                    \
-> > >  #define ibdev_info_ratelimited(ibdev, fmt, ...) \
-> > >       ibdev_level_ratelimited(ibdev_info, ibdev, fmt, ##__VA_ARGS__)
-> > >
-> > > -#if defined(CONFIG_DYNAMIC_DEBUG)
-> > > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > > +     (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > >  /* descriptor check is first to prevent flooding with "callbacks suppressed" */
-> > >  #define ibdev_dbg_ratelimited(ibdev, fmt, ...)                          \
-> > >  do {                                                                    \
-> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > index 21d9c5f..9ab791b 100644
-> > > --- a/lib/Kconfig.debug
-> > > +++ b/lib/Kconfig.debug
-> > > @@ -99,6 +99,7 @@ config DYNAMIC_DEBUG
-> > >       default n
-> > >       depends on PRINTK
-> > >       depends on (DEBUG_FS || PROC_FS)
-> > > +     select DYNAMIC_DEBUG_CORE
-> > >       help
-> > >
-> > >         Compiles debug level messages into the kernel, which would not
-> > > @@ -165,6 +166,17 @@ config DYNAMIC_DEBUG
-> > >         See Documentation/admin-guide/dynamic-debug-howto.rst for additional
-> > >         information.
-> > >
-> > > +config DYNAMIC_DEBUG_CORE
-> > > +     bool "Enable core function of dynamic debug support"
-> > > +     depends on PRINTK
-> > > +     depends on (DEBUG_FS || PROC_FS)
-> > > +     help
-> > > +       Enable core functional support of dynamic debug. It is useful
-> > > +       when you want to tie dynamic debug to your kernel modules with
-> > > +       DYNAMIC_DEBUG_MODULE defined for each of them, especially for
-> > > +       the case of embedded system where the kernel image size is
-> > > +       sensitive for people.
-> > > +
-> > >  config SYMBOLIC_ERRNAME
-> > >       bool "Support symbolic error names in printf"
-> > >       default y if PRINTK
-> > > diff --git a/lib/Makefile b/lib/Makefile
-> > > index 685aee6..8952772 100644
-> > > --- a/lib/Makefile
-> > > +++ b/lib/Makefile
-> > > @@ -186,7 +186,7 @@ lib-$(CONFIG_GENERIC_BUG) += bug.o
-> > >
-> > >  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
-> > >
-> > > -obj-$(CONFIG_DYNAMIC_DEBUG) += dynamic_debug.o
-> > > +obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
-> > >  obj-$(CONFIG_SYMBOLIC_ERRNAME) += errname.o
-> > >
-> > >  obj-$(CONFIG_NLATTR) += nlattr.o
-> > > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> > > index 8f199f4..321437b 100644
-> > > --- a/lib/dynamic_debug.c
-> > > +++ b/lib/dynamic_debug.c
-> > > @@ -1032,8 +1032,13 @@ static int __init dynamic_debug_init(void)
-> > >       int verbose_bytes = 0;
-> > >
-> > >       if (&__start___verbose == &__stop___verbose) {
-> > > -             pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
-> > > -             return 1;
-> > > +             if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
-> > > +                     pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
-> > > +                     return 1;
-> > > +             }
-> > > +             pr_info("Ignore empty _ddebug table in a CONFIG_DYNAMIC_DEBUG_CORE build\n");
-> > > +             ddebug_init_success = 1;
-> > > +             return 0;
-> > >       }
-> > >       iter = __start___verbose;
-> > >       modname = iter->modname;
-> > > --
-> > > 2.7.4
-> > >
+Looking at the mlx5 changes, you could easily handle that in the driver.
