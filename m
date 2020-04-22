@@ -2,96 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52851B3B2A
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 11:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EBD1B4557
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Apr 2020 14:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgDVJYn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Apr 2020 05:24:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52878 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgDVJYn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Apr 2020 05:24:43 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M9IrnL176412;
-        Wed, 22 Apr 2020 09:24:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=ea4Xx2uOESGSTPL7fA9IjvUV0VptHdwXwCFtrgPNjUU=;
- b=ajetrHf9lZFg8wT1u2sn2/2qXuyMnXz1aPILUFurvTE7HLHzv5KIfuyZHW6jh1EkwyqM
- EK8G0ZJWtI0qHDkt25wozZwotcw3OMhGxjHBYRnMWDP9pyA2YJQ5WVX+aUcDhpiWRmFp
- 5fafSWvO7FtZA+fDAKEw6UgClloLN0UzYSvQdUM1978DbP6lBx2+lw0+hey4h/R75M81
- PNJK+vSfBo9/5sE2HTwi+wvGQAK5cLCopXID62ssSPbQts1L2EIz8PVnMbgc9sepBwMW
- WrEY/X3ysKTI2yeAT2s5vBmLJGktS2OKCDQJpJs3pc/KoCFo113oJxxhxUkQseZfUnsf vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30jhyc0gca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 09:24:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03M9IJjl118960;
-        Wed, 22 Apr 2020 09:22:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30gb1j45ma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 09:22:20 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03M9MIxX023060;
-        Wed, 22 Apr 2020 09:22:18 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Apr 2020 02:22:18 -0700
-Date:   Wed, 22 Apr 2020 12:22:11 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Faisal Latif <faisal.latif@intel.com>
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Shannon Nelson <shannon.nelson@intel.com>,
-        Anjali Singhai Jain <anjali.singhai@intel.com>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] i40iw: Fix error handling in i40iw_manage_arp_cache()
-Message-ID: <20200422092211.GA195357@mwanda>
+        id S1726604AbgDVMqm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Apr 2020 08:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726144AbgDVMqm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:46:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9525AC03C1A9
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 05:46:40 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id i10so2216128wrv.10
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Apr 2020 05:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EuT/fEOlZIC1WMcbeBP0QRgC14FMSWwARYB0ycLTxi4=;
+        b=YQSA1dvXDoptGkDZ8cA3QF6KMExx+bW/o52vI9F91tk43laEhfwGjvb/hTfDlW2Fxn
+         ioWIUEHPxxW9czEn3CuF/+2gCBi4IWDoh2fylwSOsR26oejwJiCGMPRtL4/HbrmV8eBK
+         VjF5IManKVyV/yLBbWoVpd6bA5/hLIBk2BVRfEGzw2mssTPNFGMvWrrfESJP+CKqwxRI
+         fYbrctEC7Wjfym3n4fZmSfFux0s71r8gxp8B7k8iLxkbrWsZ0VSpgHx+rlFuFmkXJcqg
+         ucY6cHqplv0l691VIjI+Gk9eIVZPHs3ckJX+T50gIlAkx9oBGvnKO3WYaN0sZZtbfSqo
+         HPQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EuT/fEOlZIC1WMcbeBP0QRgC14FMSWwARYB0ycLTxi4=;
+        b=OUHgT5ftr3jVYSQzPDlD7tywPQX2DwGhStwi//wQLet1oc11XmPaMvMCgn6WpSiVkj
+         zDXRFyLaoCql+8F/WQwvOXdp+GjigghANWdYxg44m8wsTZh8SaN09OhxW0kJwaCScSGK
+         Rr7+PiLGgDrtO/OaVNHk+rNwOMj/6iAXpE06/GZq7rCYgFE64wnPbNLNbVlQmYa0VGu6
+         qrNxwxQ+IVH5No7SrOyolwbr15mErX+DXJunoeWg/MkuKQqqfpEfcyUVNILacQG45Jgy
+         A99SnmpstUDE5jiLTJzNqOuiI9NUe1QWeCje9cs0vIYC6b/QBnUFKlDtBMvlC5wrvVDz
+         PePQ==
+X-Gm-Message-State: AGi0PubpNygSGJEy8c7LtC++SZLIXxUpqEPEvqwESABPa/B7Y2AHjo8t
+        x/zR1S13Qo97dnNremDviafQsw==
+X-Google-Smtp-Source: APiQypK+UHJLrc00nBiZskVSi344kmJMw1MTGPUu7AR8Ey2WS0qKD+/2ugdZeuYUmVq+iiCjKub9Ug==
+X-Received: by 2002:adf:80ee:: with SMTP id 101mr18065519wrl.156.1587559599393;
+        Wed, 22 Apr 2020 05:46:39 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id v16sm7531861wml.30.2020.04.22.05.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 05:46:38 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 14:46:38 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Maor Gottlieb <maorg@mellanox.com>
+Cc:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, jiri@mellanox.com, dsahern@kernel.org,
+        leonro@mellanox.com, saeedm@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com
+Subject: Re: [PATCH V4 mlx5-next 00/15] Add support to get xmit slave
+Message-ID: <20200422124638.GK6581@nanopsycho.orion>
+References: <20200422083951.17424-1-maorg@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004220075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9598 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- clxscore=1011 suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004220075
+In-Reply-To: <20200422083951.17424-1-maorg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The i40iw_arp_table() function can return -EOVERFLOW if
-i40iw_alloc_resource() fails so we can't just test for "== -1".
+Wed, Apr 22, 2020 at 10:39:36AM CEST, maorg@mellanox.com wrote:
 
-Fixes: 4e9042e647ff ("i40iw: add hw and utils files")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/infiniband/hw/i40iw/i40iw_hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
-index 55a1fbf0e670..ae8b97c30665 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_hw.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
-@@ -534,7 +534,7 @@ void i40iw_manage_arp_cache(struct i40iw_device *iwdev,
- 	int arp_index;
- 
- 	arp_index = i40iw_arp_table(iwdev, ip_addr, ipv4, mac_addr, action);
--	if (arp_index == -1)
-+	if (arp_index < 0)
- 		return;
- 	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
- 	if (!cqp_request)
--- 
-2.25.1
+>
+>Change log:
+>v4: 1. Rename master_get_xmit_slave to netdev_get_xmit_slave and move the implementation to dev.c 
+>    2. Remove unnecessary check of NULL pointer.
+>    3. Fix typo.
 
+It is really hard to follow the changes if you don't have the changelog
+per patch. Could you have it per patch next time please?
+
+
+>v3: 1. Move master_get_xmit_slave to netdevice.h and change the flags arg.
+
+>to bool.
+>    2. Split helper functions commit to multiple commits for each bond
+>mode.
+>    3. Extract refcotring changes to seperate commits.
+>v2: The first patch wasn't sent in v1.
+>v1: https://lore.kernel.org/netdev/ac373456-b838-29cf-645f-b1ea1a93e3b0@gmail.com/T/#t 
+>
