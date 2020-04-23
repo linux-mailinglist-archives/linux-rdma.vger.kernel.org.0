@@ -2,87 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A801B5990
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 12:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773561B5A36
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 13:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgDWKsV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 06:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727814AbgDWKsV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 06:48:21 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D72C035494;
-        Thu, 23 Apr 2020 03:48:19 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k1so6296320wrx.4;
-        Thu, 23 Apr 2020 03:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=uuN7SEmlSjuk+Gnycj0hvsm+gRKwErsOSGKcMr+0EhQ=;
-        b=CZUrI6YCFd+njEqy/2DIIl4dtBH1jKqNXw/SKMpVQS2gayA3J/aktDz5duwVPUyy7K
-         4piDfz7MuxJZ6WBrTb5zhDPW+hWbY6j2ahbeq3Ytai2f0mfqQC90UzUNWnjXqyDTNmMF
-         gxzdMkwSEOZM4M8tKSO1ypJ7fbVkaCpX8yM10NEs67DuhAIa14UlfuIsaLr2pEDidPfO
-         15Zar997tKXzi0t+rM+VIttTsNrBvKQaxkwiowGG3/lXje7tr1hAOZv9wVGhytoP1q8I
-         Rr6SbNpd7J5kV9IoPiyPzt2Zqsq+eM72HZEnCRoa/m1EOdC60lixUq1DIu4HNBR7gdkO
-         Dg/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=uuN7SEmlSjuk+Gnycj0hvsm+gRKwErsOSGKcMr+0EhQ=;
-        b=pfan0yG4m9Rk9RogsBW5onH3ZpLhEHSLdSj28o8S7tTvzGxUtmo75M8vQM9Wo7ADvV
-         k6Cg5SehisCHJlIuTI9w2J2BT/PW1Kw8SBUUZcGjOp4XDQboFaaeYuuZoz4lDOWmc1Ob
-         1gpClLXSx+ZRCKxKG+9rv+ociRt+sXkwiiCpXLfwv7hlC/iq6YXzk9DW1szF05t+5u5u
-         O/BBdkiCbafysYpBASf+EpdTdtMV6U77QI7jew4Oe194nnPlnOSYjHwHP3DHxB7EL6nz
-         tKdoN/Ufum4SJ8wtsd98SZunbkQbRxJn8pCaNSHiFZz/aytE0dxpnON74X/T+0LHJ3rj
-         Cw7w==
-X-Gm-Message-State: AGi0Puby/MntTZ1uFt4r8zSlg/vaBNVUCTmB2toYgxOwVxN88/MUVevt
-        khaD9rRMde/MArYhypKJfWE=
-X-Google-Smtp-Source: APiQypK4ida8yQjISROyeOUjx9VZqo05aKQK380fTUucftS7WRI/tOewVY4IqlyW87KeC+6GZ/qExQ==
-X-Received: by 2002:a5d:5085:: with SMTP id a5mr4523790wrt.394.1587638898409;
-        Thu, 23 Apr 2020 03:48:18 -0700 (PDT)
-Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id t20sm10182007wmi.2.2020.04.23.03.48.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Apr 2020 03:48:17 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Zhu Yanjun <yanjunz@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] RDMA/rxe: check for error
-Date:   Thu, 23 Apr 2020 11:48:13 +0100
-Message-Id: <20200423104813.20484-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1728035AbgDWLQD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 07:16:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49368 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728032AbgDWLQD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:16:03 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7FE085674411E32F1BB8;
+        Thu, 23 Apr 2020 19:16:00 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 23 Apr 2020 19:15:53 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next 0/5] RDMA/hns: Refactor process of buffer allocation and calculation
+Date:   Thu, 23 Apr 2020 19:15:45 +0800
+Message-ID: <1587640550-16777-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-rxe_create_mmap_info() returns either NULL or an error value in ERR_PTR
-and we only checked for NULL after return. We should be using
-IS_ERR_OR_NULL to check for both.
+Patch #1 and #2 aim to use MTR interfaces for PBL buffer instead of MTT,
+and after this, MTT can be removed completely. Patch #3 and #5 refactor
+buffer size calculation process for WQE and SRQ. #4 can be considered as a
+preparation for #5, which just moves code of SRQ together to a more
+suitable place.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series looks huge, but most of the modification is to replace and
+remove old interfaces, and patch #4 also contribute a lot. Actually, the
+original logic is not changed so much.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
-index ff92704de32f..ef438ce4fcfa 100644
---- a/drivers/infiniband/sw/rxe/rxe_queue.c
-+++ b/drivers/infiniband/sw/rxe/rxe_queue.c
-@@ -45,7 +45,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
- 
- 	if (outbuf) {
- 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
--		if (!ip)
-+		if (IS_ERR_OR_NULL(ip))
- 			goto err1;
- 
- 		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+Xi Wang (4):
+  RDMA/hns: Optimize PBL buffer allocation process
+  RDMA/hns: Remove unused MTT functions
+  RDMA/hns: Optimize WQE buffer size calculating process
+  RDMA/hns: Optimize SRQ buffer size calculating process
+
+Yixian Liu (1):
+  RDMA/hns: Move SRQ code to the reasonable place
+
+ drivers/infiniband/hw/hns/hns_roce_alloc.c  |   43 -
+ drivers/infiniband/hw/hns/hns_roce_device.h |  119 +--
+ drivers/infiniband/hw/hns/hns_roce_hem.c    |  105 ---
+ drivers/infiniband/hw/hns/hns_roce_hem.h    |    6 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |   45 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  941 ++++++++++----------
+ drivers/infiniband/hw/hns/hns_roce_main.c   |   70 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c     | 1250 +++------------------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  313 +++----
+ drivers/infiniband/hw/hns/hns_roce_srq.c    |   16 +-
+ 10 files changed, 777 insertions(+), 2131 deletions(-)
+
 -- 
-2.11.0
+2.8.1
 
