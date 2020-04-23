@@ -2,189 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228651B5C32
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 15:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587691B5D56
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 16:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgDWNNG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 09:13:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35888 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726361AbgDWNNG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:13:06 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 720B69467506B1EF964F;
-        Thu, 23 Apr 2020 21:13:01 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 23 Apr 2020 21:12:54 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 5/5] RDMA/hns: Optimize SRQ buffer size calculating process
-Date:   Thu, 23 Apr 2020 21:12:50 +0800
-Message-ID: <1587647570-46972-6-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1587647570-46972-1-git-send-email-liweihang@huawei.com>
-References: <1587647570-46972-1-git-send-email-liweihang@huawei.com>
+        id S1728013AbgDWOJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 10:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726532AbgDWOJt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Apr 2020 10:09:49 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77300C08ED7D
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 07:09:49 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z90so4908391qtd.10
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 07:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=H/+Q8e5oerF4BwNtbt1tBZt7I6E+9pXW8RRwltOsRy8=;
+        b=UwWPPSqLsDLJj5kVLj5Docv2a2W96+I7Gk7WCYQNt/o/HAaM/w1cwahcvlRS1MEr/2
+         zVer42Szqrqnk2Tpyk5DIcSwlSfhbeqrJKcmyxQMSMgX3cCJbAgTcgOXbRtwmqoI6K4K
+         cOT9WEagDnuHBME1l7DVLk1E9el7IZaPfIQ8G4j+SEMqU+wMeIoCy49HI5wNLDD2MVR/
+         rWVO+xBa8rEqljR9lTgDntsISJTYciG1SX+TUKNuz0WefwzVd9u0Y6CECyFIDo5jGNaD
+         /RST2vyCE/vew8VDEjQ13Y5f5e16rN8IR5JsCs8XVTTBJUwHSyO3IYGCv7DcN9SZIHId
+         5cKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=H/+Q8e5oerF4BwNtbt1tBZt7I6E+9pXW8RRwltOsRy8=;
+        b=FXLJiVF5fr+EVh5xy2zeRiap0Jo6p2/g0vB/144f5GWEAuiBr/1H+9xWvOQ7IRBQ1l
+         xon9dBkEZBHXycbHV51Jud1p5aYNFqhImtImIGhCixewhjYg8lhUUKlIAts02TptUf68
+         7+8+j5EBLRWBFbkrz6qPePKGCxSfLPzBC/PG0OZ7eUPKVj7POqppShSoGmM4MpgkXLHq
+         Kpm4w6a0OsKG1F7zHcgUO4Oiuj7fQLaIlXypWWEqzCj954ornpL2iVxVF9USTXmQpISS
+         cc1eyAHlgZt1Tw/vAUI4FFxQZLK1qbX6Af48SH5IhC5DKW+2K2/rTH17FbdYd07qg0ug
+         HrEA==
+X-Gm-Message-State: AGi0PuYSZTeIB0fWHlRvr/GUVw/sR3DHB3jzSJunsapVAgUYhRRshkbM
+        kSvzJkKngyW6KquvoLyJK0ixUg==
+X-Google-Smtp-Source: APiQypLxPQIFwtFObavkhsPpjyOPaIMVOJv5jOmr1rDC0lxmFCb0Y9jW+6u/iBrGk86fW5P3zu9b1g==
+X-Received: by 2002:aed:258a:: with SMTP id x10mr4127236qtc.51.1587650988612;
+        Thu, 23 Apr 2020 07:09:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id n67sm1583727qke.88.2020.04.23.07.09.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Apr 2020 07:09:48 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jRcXz-0002TU-Jo; Thu, 23 Apr 2020 11:09:47 -0300
+Date:   Thu, 23 Apr 2020 11:09:47 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] IB/rdmavt: return proper error code
+Message-ID: <20200423140947.GX26002@ziepe.ca>
+References: <20200423120434.19304-1-sudipm.mukherjee@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423120434.19304-1-sudipm.mukherjee@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Thu, Apr 23, 2020 at 01:04:34PM +0100, Sudip Mukherjee wrote:
+> The function rvt_create_mmap_info() can return either NULL or an error
+> in ERR_PTR(). Check properly for both the error type and return the
+> error code accordingly.
 
-Optimize the SRQ's WQE buffer parameters calculating process to make the
-codes more readable by using new functions about multi-hop addressing to
-calculating capabilities of SRQ.
+Please fix rvt_create_mmap_info to always return ERR_PTR, never null
+on failure.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 29 ++++++++++++++---------------
- drivers/infiniband/hw/hns/hns_roce_srq.c    | 16 ++++++++--------
- 3 files changed, 23 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a5706c9..58673e5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -472,7 +472,7 @@ struct hns_roce_cq {
- 
- struct hns_roce_idx_que {
- 	struct hns_roce_mtr		mtr;
--	int				entry_sz;
-+	int				entry_shift;
- 	unsigned long			*bitmap;
- };
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 0b79daf..f70370d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -699,6 +699,12 @@ static void *get_srq_wqe(struct hns_roce_srq *srq, int n)
- 	return hns_roce_buf_offset(srq->buf_mtr.kmem, n << srq->wqe_shift);
- }
- 
-+static void *get_idx_buf(struct hns_roce_idx_que *idx_que, int n)
-+{
-+	return hns_roce_buf_offset(idx_que->mtr.kmem,
-+				   n << idx_que->entry_shift);
-+}
-+
- static void hns_roce_free_srq_wqe(struct hns_roce_srq *srq, int wqe_index)
- {
- 	/* always called with interrupts disabled. */
-@@ -725,16 +731,6 @@ static int find_empty_entry(struct hns_roce_idx_que *idx_que,
- 	return wqe_idx;
- }
- 
--static void fill_idx_queue(struct hns_roce_idx_que *idx_que,
--			   int cur_idx, int wqe_idx)
--{
--	unsigned int *addr;
--
--	addr = (unsigned int *)hns_roce_buf_offset(idx_que->mtr.kmem,
--						   cur_idx * idx_que->entry_sz);
--	*addr = wqe_idx;
--}
--
- static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 				     const struct ib_recv_wr *wr,
- 				     const struct ib_recv_wr **bad_wr)
-@@ -744,6 +740,7 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_v2_db srq_db;
- 	unsigned long flags;
-+	__le32 *srq_idx;
- 	int ret = 0;
- 	int wqe_idx;
- 	void *wqe;
-@@ -775,7 +772,6 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 			break;
- 		}
- 
--		fill_idx_queue(&srq->idx_que, ind, wqe_idx);
- 		wqe = get_srq_wqe(srq, wqe_idx);
- 		dseg = (struct hns_roce_v2_wqe_data_seg *)wqe;
- 
-@@ -791,6 +787,9 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 			dseg[i].addr = 0;
- 		}
- 
-+		srq_idx = get_idx_buf(&srq->idx_que, ind);
-+		*srq_idx = cpu_to_le32(wqe_idx);
-+
- 		srq->wrid[wqe_idx] = wr->wr_id;
- 		ind = (ind + 1) & (srq->wqe_cnt - 1);
- 	}
-@@ -4901,8 +4900,8 @@ static void hns_roce_v2_write_srqc(struct hns_roce_dev *hr_dev,
- 	roce_set_field(srq_context->byte_4_srqn_srqst,
- 		       SRQC_BYTE_4_SRQ_WQE_HOP_NUM_M,
- 		       SRQC_BYTE_4_SRQ_WQE_HOP_NUM_S,
--		       (hr_dev->caps.srqwqe_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
--		       hr_dev->caps.srqwqe_hop_num));
-+		       to_hr_hem_hopnum(hr_dev->caps.srqwqe_hop_num,
-+					srq->wqe_cnt));
- 	roce_set_field(srq_context->byte_4_srqn_srqst,
- 		       SRQC_BYTE_4_SRQ_SHIFT_M, SRQC_BYTE_4_SRQ_SHIFT_S,
- 		       ilog2(srq->wqe_cnt));
-@@ -4944,8 +4943,8 @@ static void hns_roce_v2_write_srqc(struct hns_roce_dev *hr_dev,
- 	roce_set_field(srq_context->byte_44_idxbufpgsz_addr,
- 		       SRQC_BYTE_44_SRQ_IDX_HOP_NUM_M,
- 		       SRQC_BYTE_44_SRQ_IDX_HOP_NUM_S,
--		       hr_dev->caps.idx_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
--		       hr_dev->caps.idx_hop_num);
-+		       to_hr_hem_hopnum(hr_dev->caps.idx_hop_num,
-+					srq->wqe_cnt));
- 
- 	roce_set_field(srq_context->byte_44_idxbufpgsz_addr,
- 		       SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_M,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index e413a97..6e5a2ad 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -181,16 +181,15 @@ static int alloc_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_buf_attr buf_attr = {};
--	int sge_size;
- 	int err;
- 
--	sge_size = roundup_pow_of_two(max(HNS_ROCE_SGE_SIZE,
--					  HNS_ROCE_SGE_SIZE * srq->max_gs));
--
--	srq->wqe_shift = ilog2(sge_size);
-+	srq->wqe_shift = ilog2(roundup_pow_of_two(max(HNS_ROCE_SGE_SIZE,
-+						      HNS_ROCE_SGE_SIZE *
-+						      srq->max_gs)));
- 
- 	buf_attr.page_shift = hr_dev->caps.srqwqe_buf_pg_sz + PAGE_ADDR_SHIFT;
--	buf_attr.region[0].size = srq->wqe_cnt * sge_size;
-+	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
-+							 srq->wqe_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.srqwqe_hop_num;
- 	buf_attr.region_count = 1;
- 	buf_attr.fixed_page = true;
-@@ -217,10 +216,11 @@ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 	struct hns_roce_buf_attr buf_attr = {};
- 	int err;
- 
--	srq->idx_que.entry_sz = HNS_ROCE_IDX_QUE_ENTRY_SZ;
-+	srq->idx_que.entry_shift = ilog2(HNS_ROCE_IDX_QUE_ENTRY_SZ);
- 
- 	buf_attr.page_shift = hr_dev->caps.idx_buf_pg_sz + PAGE_ADDR_SHIFT;
--	buf_attr.region[0].size = srq->wqe_cnt * HNS_ROCE_IDX_QUE_ENTRY_SZ;
-+	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
-+					srq->idx_que.entry_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.idx_hop_num;
- 	buf_attr.region_count = 1;
- 	buf_attr.fixed_page = true;
--- 
-2.8.1
-
+Thanks,
+Jason
