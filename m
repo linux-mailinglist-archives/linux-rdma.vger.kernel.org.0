@@ -2,131 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6268B1B585B
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 11:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A801B5990
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 12:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbgDWJjx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 05:39:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32696 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726953AbgDWJjx (ORCPT
+        id S1727019AbgDWKsV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 06:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727814AbgDWKsV (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 05:39:53 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03N9W4wL045235
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 05:39:52 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30k7rbsk79-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 05:39:52 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <ubraun@linux.ibm.com>;
-        Thu, 23 Apr 2020 10:39:01 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 23 Apr 2020 10:38:56 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03N9ca9J64356722
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Apr 2020 09:38:36 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 08E76A405B;
-        Thu, 23 Apr 2020 09:39:44 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88239A4060;
-        Thu, 23 Apr 2020 09:39:43 +0000 (GMT)
-Received: from oc5311105230.ibm.com (unknown [9.145.18.72])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 23 Apr 2020 09:39:43 +0000 (GMT)
-Subject: Re: [PATCH rdma-next] RDMA: Allow ib_client's to fail when add() is
- called
-To:     Leon Romanovsky <leon@kernel.org>,
+        Thu, 23 Apr 2020 06:48:21 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D72C035494;
+        Thu, 23 Apr 2020 03:48:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k1so6296320wrx.4;
+        Thu, 23 Apr 2020 03:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uuN7SEmlSjuk+Gnycj0hvsm+gRKwErsOSGKcMr+0EhQ=;
+        b=CZUrI6YCFd+njEqy/2DIIl4dtBH1jKqNXw/SKMpVQS2gayA3J/aktDz5duwVPUyy7K
+         4piDfz7MuxJZ6WBrTb5zhDPW+hWbY6j2ahbeq3Ytai2f0mfqQC90UzUNWnjXqyDTNmMF
+         gxzdMkwSEOZM4M8tKSO1ypJ7fbVkaCpX8yM10NEs67DuhAIa14UlfuIsaLr2pEDidPfO
+         15Zar997tKXzi0t+rM+VIttTsNrBvKQaxkwiowGG3/lXje7tr1hAOZv9wVGhytoP1q8I
+         Rr6SbNpd7J5kV9IoPiyPzt2Zqsq+eM72HZEnCRoa/m1EOdC60lixUq1DIu4HNBR7gdkO
+         Dg/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uuN7SEmlSjuk+Gnycj0hvsm+gRKwErsOSGKcMr+0EhQ=;
+        b=pfan0yG4m9Rk9RogsBW5onH3ZpLhEHSLdSj28o8S7tTvzGxUtmo75M8vQM9Wo7ADvV
+         k6Cg5SehisCHJlIuTI9w2J2BT/PW1Kw8SBUUZcGjOp4XDQboFaaeYuuZoz4lDOWmc1Ob
+         1gpClLXSx+ZRCKxKG+9rv+ociRt+sXkwiiCpXLfwv7hlC/iq6YXzk9DW1szF05t+5u5u
+         O/BBdkiCbafysYpBASf+EpdTdtMV6U77QI7jew4Oe194nnPlnOSYjHwHP3DHxB7EL6nz
+         tKdoN/Ufum4SJ8wtsd98SZunbkQbRxJn8pCaNSHiFZz/aytE0dxpnON74X/T+0LHJ3rj
+         Cw7w==
+X-Gm-Message-State: AGi0Puby/MntTZ1uFt4r8zSlg/vaBNVUCTmB2toYgxOwVxN88/MUVevt
+        khaD9rRMde/MArYhypKJfWE=
+X-Google-Smtp-Source: APiQypK4ida8yQjISROyeOUjx9VZqo05aKQK380fTUucftS7WRI/tOewVY4IqlyW87KeC+6GZ/qExQ==
+X-Received: by 2002:a5d:5085:: with SMTP id a5mr4523790wrt.394.1587638898409;
+        Thu, 23 Apr 2020 03:48:18 -0700 (PDT)
+Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
+        by smtp.gmail.com with ESMTPSA id t20sm10182007wmi.2.2020.04.23.03.48.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Apr 2020 03:48:17 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Zhu Yanjun <yanjunz@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        rds-devel@oss.oracle.com,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        target-devel@vger.kernel.org
-References: <20200421172440.387069-1-leon@kernel.org>
-From:   Ursula Braun <ubraun@linux.ibm.com>
-Date:   Thu, 23 Apr 2020 11:39:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200421172440.387069-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042309-0016-0000-0000-00000309C8DA
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042309-0017-0000-0000-0000336DE989
-Message-Id: <8ee742d7-952b-b521-d05c-17de601f6e32@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-23_06:2020-04-22,2020-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 impostorscore=0
- mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230070
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] RDMA/rxe: check for error
+Date:   Thu, 23 Apr 2020 11:48:13 +0100
+Message-Id: <20200423104813.20484-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+rxe_create_mmap_info() returns either NULL or an error value in ERR_PTR
+and we only checked for NULL after return. We should be using
+IS_ERR_OR_NULL to check for both.
 
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 4/21/20 7:24 PM, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> When a client is added it isn't allowed to fail, but all the client's have
-> various failure paths within their add routines.
-> 
-> This creates the very fringe condition where the client was added, failed
-> during add and didn't set the client_data. The core code will then still
-> call other client_data centric ops like remove(), rename(), get_nl_info(),
-> and get_net_dev_by_params() with NULL client_data - which is confusing and
-> unexpected.
-> 
-> If the add() callback fails, then do not call any more client ops for the
-> device, even remove.
-> 
-> Remove all the now redundant checks for NULL client_data in ops callbacks.
-> 
-> Update all the add() callbacks to return error codes
-> appropriately. EOPNOTSUPP is used for cases where the ULP does not support
-> the ib_device - eg because it only works with IB.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/cm.c                  | 24 ++++++++++--------
->  drivers/infiniband/core/cma.c                 | 23 +++++++++--------
->  drivers/infiniband/core/device.c              | 16 ++++++++++--
->  drivers/infiniband/core/mad.c                 | 17 ++++++++++---
->  drivers/infiniband/core/multicast.c           | 12 ++++-----
->  drivers/infiniband/core/sa_query.c            | 22 ++++++++--------
->  drivers/infiniband/core/user_mad.c            | 22 ++++++++--------
->  drivers/infiniband/core/uverbs_main.c         | 24 +++++++++---------
->  drivers/infiniband/ulp/ipoib/ipoib_main.c     | 15 ++++-------
->  .../infiniband/ulp/opa_vnic/opa_vnic_vema.c   | 12 ++++-----
->  drivers/infiniband/ulp/srp/ib_srp.c           | 21 ++++++++--------
->  drivers/infiniband/ulp/srpt/ib_srpt.c         | 25 ++++++++-----------
->  include/rdma/ib_verbs.h                       |  2 +-
->  net/rds/ib.c                                  | 21 ++++++++++------
->  net/smc/smc_ib.c                              | 10 +++-----
->  15 files changed, 142 insertions(+), 124 deletions(-)
-> 
-
-For the net/smc part:
-Acked-by: Ursula Braun <ubraun@linux.ibm.com>
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index ff92704de32f..ef438ce4fcfa 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -45,7 +45,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ 
+ 	if (outbuf) {
+ 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
+-		if (!ip)
++		if (IS_ERR_OR_NULL(ip))
+ 			goto err1;
+ 
+ 		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+-- 
+2.11.0
 
