@@ -2,110 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D993D1B5B34
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 14:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75C21B5B99
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 14:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgDWMRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 08:17:52 -0400
-Received: from mail-eopbgr00088.outbound.protection.outlook.com ([40.107.0.88]:46862
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        id S1726706AbgDWMk3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 08:40:29 -0400
+Received: from mail-eopbgr80072.outbound.protection.outlook.com ([40.107.8.72]:63394
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726366AbgDWMRw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:17:52 -0400
+        id S1726117AbgDWMk2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Apr 2020 08:40:28 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZZyzi8DbZ/lmaXK6ktO1nN31p9AIqehJgUcTlnkqXuYzyNh6GrrA+qA/bqrpeyIwl7zfsXsYdbBZoMneAWlYxiLJMlZMr/YDeKXMQp2gW48TaM71aRJ4l3gnOSrEuBCXaZoooa01M1RhCKrtjr1Vh17ovdtFfuLVNAAaMg8kyC1O0KPlTAxfCpHMsSyxZGk1fr7VzRRmwnIfIGDDBNxOszEErJ96U1/+oIRcZpF2okeIfzO1AoqeqtJASSZfLXWF9n+ATyeybG7oPTPgCapKZZzj8JkR5hGUK7s7K/86yRo25D9UKOSXakeL2lJL/pSlA1o8B49lDEL2xF8CAT4GfQ==
+ b=NaCmEyccSEV6t84cld50+jYjz9NAKpYTyXi/KdqK+z15+SwqyfaLwl/Mwk778co9djvOCVPChkjTZajStwwH4aICPzPq1p/LS1m8MmQ9x/G/VNLxePkf0bXP4yNLoIoSrHDgPF1Qtqa6xZwLVUCWGcZ9UTFS4YoDAPvbKmn+sNrdyP61otFHEZLkBEKdMyXc1XUn6jrMESBqIaFKlYI+auK2oAxSAw+VogdTSppiBBLNEVeV/3UiFIrKP49zkTaVJi/s5TITpjIwucZTrK+1M6u2F8y3keBiJdmEvq+tj+WNVQMzK9c95APmG1y1oHRTiShu/H+zjrezOYlEIhEUMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dn9F7R44nUz7GwWrSJ44IU/Wi0zqqn0xJLxFv3gGq58=;
- b=KsKopDRx2w/e2Zywc7tn/nJj/zYDILciyTba9RYCG1ibyzfUoZ25ou02BZLBD8JV/4SLyOa4V7RDGIpYYBX+tV9t/A2Oy69/5+l/4E+gzr9DAy81YEpyDZM7DLBaH4BvW0t+lLe4cCSMB8KKxVslgdqxYIkulHg5ijQYzdCSwxoSOYZqB2UURbt6qEAIn0oqRP0cpX9iCKZVP2z3nzD7V10wvNFXPGqqm/Fe0OQPmyT52xfWs0WPQtyx1BYCPdu89VC6ec6kMzAOEHcufMQNfE1gSMSVtffqTjlzLDbABWFc5gZWYSrMFYwpZUkKMne+e272oA8ZN/cusvGVRTUZbA==
+ bh=g1eJuPx+yEKYOxMMDPXwOZTIcWXKNH4bWiPhMZZmaT0=;
+ b=ShBwwkf95SBM0ZAiLZCNW/kZFfNW7THi91wpEainTheDXsXx7869iizTek1z/dS9m7U69/ekMp4pPBXXwl8XKqdvZyHSryYDSgk1vtCGWImdMsmJhqmWoZuInBmf/zGxTjdu5D3T2LrcBNOrX7sMZHeh0FsJJHPviY9i2VAEEDOOpAeSbX0z/fj0eB4PfbLZIiw9f2cx6dPSvKh9Mqq/0EtkUQMATeIPuWWYEMF0RxWrl1aKlo6F/HapONXZeY9XxoE5kyipiLWl9AGO/RnMESpR63P2256YMjOTVCgIGJqiBxgrlZ9UW1GNpeApw3bNOEXgTqboPqoMKtb0J6LBBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dn9F7R44nUz7GwWrSJ44IU/Wi0zqqn0xJLxFv3gGq58=;
- b=iV19hIxO+ni/ri6/2+HJwDF9t2E3G6hsbGFL4AIs7IflQ3rr0sVIOoZrwF5PYinOkiM67rJJG1f0ehKymIuSOSP8XHMs2nXCuj6qDkibhytZXwS2xvJhZqkTf6r31MI+E5jNqvzuyq9dBdvLsUL6KuARvypMN7354yv650jJJrY=
+ bh=g1eJuPx+yEKYOxMMDPXwOZTIcWXKNH4bWiPhMZZmaT0=;
+ b=jKuuYkZ5e0WtjqeoBnMhsXf6GIGf7V+T273UxTwQCo6y255IpUSQ2xXI7nteodSR8b/rPaD2cpbV/7I1Ocl/6/2FlbZS4MAJThpsrBnfbldhCa2p7mhYhSuOCqMn3p2yM6dBfi8kI66577On8C857S8EG8shDmST0e0Kg1P15do=
 Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5309.eurprd05.prod.outlook.com (2603:10a6:803:b0::16) with
+ smtp.mailfrom=maxg@mellanox.com; 
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+ by AM0PR05MB4612.eurprd05.prod.outlook.com (2603:10a6:208:ae::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Thu, 23 Apr
- 2020 12:17:48 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2921.030; Thu, 23 Apr 2020
- 12:17:48 +0000
-Date:   Thu, 23 Apr 2020 09:17:44 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [PATCH] nouveau/hmm: fix nouveau_dmem_chunk allocations
-Message-ID: <20200423121744.GY11945@mellanox.com>
-References: <20200421231107.30958-1-rcampbell@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421231107.30958-1-rcampbell@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR05CA0040.namprd05.prod.outlook.com
- (2603:10b6:208:236::9) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 23 Apr
+ 2020 12:39:43 +0000
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4]) by AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4%5]) with mapi id 15.20.2937.012; Thu, 23 Apr 2020
+ 12:39:43 +0000
+Subject: Re: [PATCH 14/17] nvmet: Add metadata/T10-PI support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org,
+        sagi@grimberg.me, martin.petersen@oracle.com, jsmart2021@gmail.com,
+        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
+        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
+        israelr@mellanox.com, jgg@mellanox.com
+References: <20200327171545.98970-1-maxg@mellanox.com>
+ <20200327171545.98970-16-maxg@mellanox.com> <20200421153045.GE10837@lst.de>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <0c6caf5b-693b-74af-670e-7df9c7f9c829@mellanox.com>
+Date:   Thu, 23 Apr 2020 15:39:38 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200421153045.GE10837@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: FR2P281CA0019.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::6) To AM0PR05MB5810.eurprd05.prod.outlook.com
+ (2603:10a6:208:11f::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR05CA0040.namprd05.prod.outlook.com (2603:10b6:208:236::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.7 via Frontend Transport; Thu, 23 Apr 2020 12:17:48 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jRanY-0000Yz-Mh; Thu, 23 Apr 2020 09:17:44 -0300
-X-Originating-IP: [142.68.57.212]
+Received: from [10.0.0.3] (217.132.177.164) by FR2P281CA0019.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Thu, 23 Apr 2020 12:39:41 +0000
+X-Originating-IP: [217.132.177.164]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: eeadbf96-dc79-4c79-8fe0-08d7e780561d
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5309:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB5309B847A35EA2EEC76F2366CFD30@VI1PR05MB5309.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 7da80e5a-fd7b-4c64-ad3e-08d7e78365a9
+X-MS-TrafficTypeDiagnostic: AM0PR05MB4612:|AM0PR05MB4612:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB46121F3A9AB8A02001423B32B6D30@AM0PR05MB4612.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-Forefront-PRVS: 03827AF76E
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(376002)(366004)(136003)(346002)(478600001)(2616005)(36756003)(26005)(6916009)(54906003)(316002)(9746002)(8936002)(52116002)(33656002)(9786002)(1076003)(4326008)(186003)(8676002)(2906002)(86362001)(66556008)(66946007)(81156014)(4744005)(66476007)(5660300002)(24400500001);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(136003)(39860400002)(366004)(376002)(53546011)(316002)(8676002)(26005)(186003)(16526019)(52116002)(36756003)(86362001)(4326008)(66476007)(66556008)(478600001)(6666004)(31696002)(16576012)(5660300002)(6486002)(81156014)(2906002)(107886003)(8936002)(66946007)(956004)(6916009)(31686004)(2616005);DIR:OUT;SFP:1101;
 Received-SPF: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aKcP5yubRMascTm+4jBG2c1VCBne/enCht7uTYQn5/Sv029hAR12RbpL93sx6qRxjdItreNysQW1MfkUsSatUfKSP+PWMgeNTXuc7YQ6oe5cLWHx5twxvEGAKARpeG2rHTPqeulMO6/N/jNShCpo9vgeYcvEyXZEFiUD6oB0ImqmeGvY7s3wT/gBtKMjTQ+ap6+YARkyyNT8cmEmosanmJfD6dv1BjJnni/iJXliAzmzV/2Bz8IpA/DuMJ5KlvnQNRyS2KuFdWbPPij+0hb/qjso6trEnQDLCwI+vAO1cfy0fMALVaCuazdgYXaNdn5xGcPIQanUTMu4qj/Bh0tn5kb/tiiNthpx6E1dCSAdNTJGFUBb9YnfUVXF/xmRbuVkAOPWsnbVhFbj/L6aDXLSlXN61UZ/vQ4PiEHDydsQPc31fehPn5GUAooEJx9+10r0fcazIhjEI/bKEfAjbagPmHUalgj8yAw2ujm+yQZKN/JvH7JA3gOt0qHUXGTdsG6h
-X-MS-Exchange-AntiSpam-MessageData: lvOkdB4WXtBGXgfBQVAHdAWyjTKJed3l/FQfOnEGDwXrjbkx+KtG4e+gxLO91YuSM08pmM/EoZ+2anRmdof74fN0ygvsZ8bQyOp/3ZxngIUiqdLvKqAaa7vmGiX/h6qJdLcEgGcUvNjuxxwxmUR9SA==
+X-Microsoft-Antispam-Message-Info: gcR9A663l1nDP8wX6Y7+C5f16tqhP6JmZjXu12P7mGcsJfpHHr3Pz1CAxfV1UbOycz7Vf6t7iKV15oVuvAXC1l93BA+fylD7THwVhkGoJc3aj4YBw0NLBRc59hM5z07uSEqPjne6VB23tKbWx2ttp+/Z0rYdngyl5cgbfPkWO57DqNu7JN6VKgdpzTqys1m5TE8+YoQAa5a7kYfFz3f7rvN3tH2q3ejOThHlRbSJOkBWujzrm+fLPIBPNVDqlDQaLhm+NCU5Us7nbK6GfMQ0imPODp2HuM3vK8TdKVxzk9lvoMriAtv2k5YjoTPw/PN8CciB5i1z3k4n6OutoIUwS3g/GiJe7bYOo80n4l/qUQmKf4qUda5rP694pm+Y4BXyTVDz9EuFh90b5xkk6qgazHMH/wJPZOfvhFchKNZkvE26ptUtAFSlrIphc2ylahbm
+X-MS-Exchange-AntiSpam-MessageData: +eN0FFpMm2dmRvv9X9Plz5z+Z6Pc1v0YotDm4UDSVo7JmI/LJHRfx19FsVZQ+42fCZYRL5AqxjYJy4KSL4fU/5uZyhmDlJ4aY45es2J+QxCSZMN5nbWF40jQx/WHqRTgNQnBCCIa50F/Zw+LFMigdknBFeDjBGTkPMyJgRqRhPimom/3ViGFyWTmcWoFxy6GJP9oT1f+YnpoMpAiDWTXDftPGD1sLShdsuLE61dDxJY7snNztHhaIR8vjSL7+N6Xn5kbu6MF6vogqUtFjf7rDOrx1i0zf8Eemi19OU+uHyKqDQOdO515+eSdGuPJFeBQKozOKmKp+hzEqf6+lzE1774vdIpbygx/oVV8ErbNBQ9HbsBHDl6ZvKWE0qJI+Xa1G34C46pJtJSCTYqE1MNGdb26FoeOLZE5E0a/eVaS95o/0syNIRQHsACdMYU05sisht/CZKHzuvyO99ox3DWmqecYcdCCyq1uGdob0LyYbKn/aGRcKGENpx/Uutklr8NzckZaK+mYCXx2O2sKwFgcNvDTucu/VA7QK5hDLxPZsVoG49WV+c6qm5veRRuBcRrAPw1au7bpvPXTPRs9dfcTQ+WS4bh4NhKbEufL2b2MBqGsPGcbicCzw5RfViAgWDZcxlcAw4QNcHfYAvcYSo9cscYHIf0evI5cVKDGR5Ply/ERdhKF801CPjD66p48j2BcjnSGubVGa4tOBAb6xFqnae1806sLKygRzfFFD+4xrhLoYQb0Z9DEM9UvnkuCEjj8UgBbYwcNIuo3l0z8b+yRcI3kXcR+p20ue2JiNbPNWmoPNqZg8trRTE/jyzpbOWbc
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eeadbf96-dc79-4c79-8fe0-08d7e780561d
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 12:17:48.4621
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7da80e5a-fd7b-4c64-ad3e-08d7e78365a9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 12:39:43.1313
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WKL/A2P4WVUBu71hpNLnkmFrKlUM36EzPzX/hP3/YA5tuTlTYnQtFRLIn6GL7cp/mavcWkWj3bycvUguVQGeLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5309
+X-MS-Exchange-CrossTenant-UserPrincipalName: mEZ7YXd+zWygT+eHKxCtaf7w275cyyNZpOV/6s+P8YNhn4IPC76Bp0sxpL8sBGKSvtfnEmhNCXnqUaxSl5b3PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4612
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 04:11:07PM -0700, Ralph Campbell wrote:
-> In nouveau_dmem_init(), a number of struct nouveau_dmem_chunk are allocated
-> and put on the dmem->chunk_empty list. Then in nouveau_dmem_pages_alloc(),
-> a nouveau_dmem_chunk is removed from the list and GPU memory is allocated.
-> However, the nouveau_dmem_chunk is never removed from the chunk_empty
-> list nor placed on the chunk_free or chunk_full lists. This results
-> in only one chunk ever being actually used (2MB) and quickly leads to
-> migration to device private memory failures.
-> 
-> Fix this by having just one list of free device private pages and if no
-> pages are free, allocate a chunk of device private pages and GPU memory.
-> 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_dmem.c | 304 +++++++++----------------
->  1 file changed, 112 insertions(+), 192 deletions(-)
 
-Does this generate any conflicts with my series to rework
-hmm_range_fault?
+On 4/21/2020 6:30 PM, Christoph Hellwig wrote:
+>> +	/*
+>> +	 * Max command capsule size is sqe + single page of in-capsule data.
+>> +	 * Disable inline data for Metadata capable controllers.
+>> +	 */
+>>   	id->ioccsz = cpu_to_le32((sizeof(struct nvme_command) +
+>> -				  req->port->inline_data_size) / 16);
+>> +				  req->port->inline_data_size *
+>> +				  !ctrl->pi_support) / 16);
+> Can we de-obsfucated this a little?
+>
+> 	cmd_capsule_size = sizeof(struct nvme_command);
+> 	if (!ctrl->pi_support)
+> 		cmd_capsule_size += req->port->inline_data_size;
+> 	id->ioccsz = cpu_to_le32(cmd_capsule_size / 16);
 
-Jason
+Yes good idea.
+
+
+>
+>> +	if (ctrl->subsys->pi_support && ctrl->port->pi_enable) {
+>> +		if (ctrl->port->pi_capable) {
+>> +			ctrl->pi_support = true;
+>> +			pr_info("controller %d T10-PI enabled\n", ctrl->cntlid);
+>> +		} else {
+>> +			ctrl->pi_support = false;
+>> +			pr_warn("T10-PI is not supported on controller %d\n",
+>> +				ctrl->cntlid);
+>> +		}
+> I think the printks are a little verbose.  Also why can we set
+> ctrl->port->pi_enable if ctrl->port->pi_capable is false?  Shoudn't
+> we reject that earlier?  In that case this could simply become:
+>
+> 	ctrl->pi_support = ctrl->subsys->pi_support && ctrl->port->pi_enable;
+
+for that we'll need to check pi_capable during add_port process and 
+disable pi_enable bit if user set it.
+
+User should set it before enable the port (this will always succeed).
+
+I'll make this change as well.
+
+re the verbosity, sometimes I get many requests from users to get 
+indication for some features.
+
+We can remove this as well if needed.
+
+>> +#ifdef CONFIG_BLK_DEV_INTEGRITY
+>> +static inline u32 nvmet_rw_md_len(struct nvmet_req *req)
+>> +{
+>> +	return ((u32)le16_to_cpu(req->cmd->rw.length) + 1) * req->ns->ms;
+>> +}
+>> +
+>> +static inline bool nvmet_ns_has_pi(struct nvmet_ns *ns)
+>> +{
+>> +	return ns->md_type && ns->ms == sizeof(struct t10_pi_tuple);
+>> +}
+>> +#else
+>> +static inline u32 nvmet_rw_md_len(struct nvmet_req *req)
+>> +{
+>> +	return 0;
+> Do we really need a stub for nvmet_rw_md_len?  Also for nvmet_ns_has_pi
+> we could probably reword it as:
+>
+> static inline bool nvmet_ns_has_pi(struct nvmet_ns *ns)
+> {
+> 	if (!IS_ENABLED(CONFIG_BLK_DEV_INTEGRITY))
+> 		return false;
+> 	return ns->pi_type && ns->metadata_size == sizeof(struct t10_pi_tuple);
+> }
+>
+> and avoid the need for a stub as well.
+
+yup.
+
+
