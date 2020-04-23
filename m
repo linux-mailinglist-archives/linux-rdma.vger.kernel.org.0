@@ -2,42 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650A61B6421
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 21:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A8E1B6423
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 21:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730267AbgDWTDL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 15:03:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41222 "EHLO mail.kernel.org"
+        id S1730360AbgDWTDO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 15:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgDWTDK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 15:03:10 -0400
+        id S1726385AbgDWTDO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Apr 2020 15:03:14 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C2E520728;
-        Thu, 23 Apr 2020 19:03:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B35620728;
+        Thu, 23 Apr 2020 19:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587668590;
-        bh=fV4hS5vC5zAI09G1v+Nac9F6wR9rmXGc8WgEFUdyEHk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KuxzHIxoHvSqGwqSK42KIinZ/xNucnGpXM/0nXMSKR7VcYYfKmlLN5XrfHHNYd28X
-         BEX5gqUsKCVLSqyC1Ok2nD97OxbaMiEiXyKLphYkbdxkPSlAsCHaQnr1Tnfu8FmkcH
-         zccM8QeLoqhdD67U5oNC0x0y/Hb1Dda+lNsdUCko=
+        s=default; t=1587668594;
+        bh=FIXUVzDOEzuBDsv87sFrIixoMQ+XVNv6wPHEHpoS/DI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fqAVCpGF79VG5UB4vIduM3jWpDqWLx6d++w0B8g7UwQ4yzAegLZNCmzLfpRg0gvFJ
+         iKvERNvFBp8KOScK5Q4JKm1ltlf2RglhSDFLLXPETBrFJxvwsO16/YuH9wGRvC4yVg
+         zD2URtjT+iUcFvLvGrpKHNAQQbQS6zDn/4hxt7w8=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Aharon Landau <aharonl@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Roland Dreier <roland@purestorage.com>
-Subject: [PATCH rdma-next 00/18] Refactor mlx5_ib_create_qp (Part II)
-Date:   Thu, 23 Apr 2020 22:02:45 +0300
-Message-Id: <20200423190303.12856-1-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next 01/18] RDMA/mlx5: Delete unsupported QP types
+Date:   Thu, 23 Apr 2020 22:02:46 +0300
+Message-Id: <20200423190303.12856-2-leon@kernel.org>
 X-Mailer: git-send-email 2.25.3
+In-Reply-To: <20200423190303.12856-1-leon@kernel.org>
+References: <20200423190303.12856-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -47,45 +43,56 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Hi,
+There is no need to explicitly check unsupported QP types,
+rely on  "default" keyword in switch-case to catch them.
 
-This is second part of refactor mlx5_ib_create_qp() series [1] with one
-extra fix from Aharon.
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/qp.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-It is based on [1].
-
-Thanks
-
-[1] https://lore.kernel.org/lkml/20200420151105.282848-1-leon@kernel.org
-
-Aharon Landau (1):
-  RDMA/mlx5: Verify that QP is created with RQ or SQ
-
-Leon Romanovsky (17):
-  RDMA/mlx5: Delete unsupported QP types
-  RDMA/mlx5: Store QP type in the vendor QP structure
-  RDMA/mlx5: Promote RSS RAW QP attribute check in higher level
-  RDMA/mlx5: Combine copy of create QP command in RSS RAW QP
-  RDMA/mlx5: Remove second user copy in create_user_qp
-  RDMA/mlx5: Rely on existence of udata to separate kernel/user flows
-  RDMA/mlx5: Delete impossible inlen check
-  RDMA/mlx5: Globally parse DEVX UID
-  RDMA/mlx5: Separate XRC_TGT QP creation from common flow
-  RDMA/mlx5: Separate to user/kernel create QP flows
-  RDMA/mlx5: Reduce amount of duplication in QP destroy
-  RDMA/mlx5: Group all create QP parameters to simplify in-kernel
-    interfaces
-  RDMA/mlx5: Promote RSS RAW QP flags check to higher level
-  RDMA/mlx5: Handle udate outlen checks in one place
-  RDMA/mlx5: Copy response to the user in one place
-  RDMA/mlx5: Remove redundant destroy QP call
-  RDMA/mlx5: Consolidate into special function all create QP calls
-
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  22 +-
- drivers/infiniband/hw/mlx5/odp.c     |   3 +-
- drivers/infiniband/hw/mlx5/qp.c      | 989 ++++++++++++++++-----------
- 3 files changed, 586 insertions(+), 428 deletions(-)
-
---
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 452683776445..04206b9c2c48 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -760,10 +760,7 @@ static int to_mlx5_st(enum ib_qp_type type)
+ 	case IB_QPT_SMI:		return MLX5_QP_ST_QP0;
+ 	case MLX5_IB_QPT_HW_GSI:	return MLX5_QP_ST_QP1;
+ 	case MLX5_IB_QPT_DCI:		return MLX5_QP_ST_DCI;
+-	case IB_QPT_RAW_IPV6:		return MLX5_QP_ST_RAW_IPV6;
+-	case IB_QPT_RAW_PACKET:
+-	case IB_QPT_RAW_ETHERTYPE:	return MLX5_QP_ST_RAW_ETHERTYPE;
+-	case IB_QPT_MAX:
++	case IB_QPT_RAW_PACKET:		return MLX5_QP_ST_RAW_ETHERTYPE;
+ 	default:		return -EINVAL;
+ 	}
+ }
+@@ -2282,14 +2279,10 @@ static void get_cqs(enum ib_qp_type qp_type,
+ 	case IB_QPT_RC:
+ 	case IB_QPT_UC:
+ 	case IB_QPT_UD:
+-	case IB_QPT_RAW_IPV6:
+-	case IB_QPT_RAW_ETHERTYPE:
+ 	case IB_QPT_RAW_PACKET:
+ 		*send_cq = ib_send_cq ? to_mcq(ib_send_cq) : NULL;
+ 		*recv_cq = ib_recv_cq ? to_mcq(ib_recv_cq) : NULL;
+ 		break;
+-
+-	case IB_QPT_MAX:
+ 	default:
+ 		*send_cq = NULL;
+ 		*recv_cq = NULL;
+@@ -2434,9 +2427,6 @@ static int check_qp_type(struct mlx5_ib_dev *dev, struct ib_qp_init_attr *attr)
+ 	case IB_QPT_DRIVER:
+ 	case IB_QPT_GSI:
+ 		return 0;
+-	case IB_QPT_RAW_IPV6:
+-	case IB_QPT_RAW_ETHERTYPE:
+-	case IB_QPT_MAX:
+ 	default:
+ 		goto out;
+ 	}
+-- 
 2.25.3
 
