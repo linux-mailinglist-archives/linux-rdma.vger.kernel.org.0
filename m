@@ -2,82 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587691B5D56
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 16:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6F11B5DF0
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Apr 2020 16:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgDWOJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 10:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726532AbgDWOJt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Apr 2020 10:09:49 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77300C08ED7D
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 07:09:49 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z90so4908391qtd.10
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 07:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=H/+Q8e5oerF4BwNtbt1tBZt7I6E+9pXW8RRwltOsRy8=;
-        b=UwWPPSqLsDLJj5kVLj5Docv2a2W96+I7Gk7WCYQNt/o/HAaM/w1cwahcvlRS1MEr/2
-         zVer42Szqrqnk2Tpyk5DIcSwlSfhbeqrJKcmyxQMSMgX3cCJbAgTcgOXbRtwmqoI6K4K
-         cOT9WEagDnuHBME1l7DVLk1E9el7IZaPfIQ8G4j+SEMqU+wMeIoCy49HI5wNLDD2MVR/
-         rWVO+xBa8rEqljR9lTgDntsISJTYciG1SX+TUKNuz0WefwzVd9u0Y6CECyFIDo5jGNaD
-         /RST2vyCE/vew8VDEjQ13Y5f5e16rN8IR5JsCs8XVTTBJUwHSyO3IYGCv7DcN9SZIHId
-         5cKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=H/+Q8e5oerF4BwNtbt1tBZt7I6E+9pXW8RRwltOsRy8=;
-        b=FXLJiVF5fr+EVh5xy2zeRiap0Jo6p2/g0vB/144f5GWEAuiBr/1H+9xWvOQ7IRBQ1l
-         xon9dBkEZBHXycbHV51Jud1p5aYNFqhImtImIGhCixewhjYg8lhUUKlIAts02TptUf68
-         7+8+j5EBLRWBFbkrz6qPePKGCxSfLPzBC/PG0OZ7eUPKVj7POqppShSoGmM4MpgkXLHq
-         Kpm4w6a0OsKG1F7zHcgUO4Oiuj7fQLaIlXypWWEqzCj954ornpL2iVxVF9USTXmQpISS
-         cc1eyAHlgZt1Tw/vAUI4FFxQZLK1qbX6Af48SH5IhC5DKW+2K2/rTH17FbdYd07qg0ug
-         HrEA==
-X-Gm-Message-State: AGi0PuYSZTeIB0fWHlRvr/GUVw/sR3DHB3jzSJunsapVAgUYhRRshkbM
-        kSvzJkKngyW6KquvoLyJK0ixUg==
-X-Google-Smtp-Source: APiQypLxPQIFwtFObavkhsPpjyOPaIMVOJv5jOmr1rDC0lxmFCb0Y9jW+6u/iBrGk86fW5P3zu9b1g==
-X-Received: by 2002:aed:258a:: with SMTP id x10mr4127236qtc.51.1587650988612;
-        Thu, 23 Apr 2020 07:09:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id n67sm1583727qke.88.2020.04.23.07.09.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 07:09:48 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRcXz-0002TU-Jo; Thu, 23 Apr 2020 11:09:47 -0300
-Date:   Thu, 23 Apr 2020 11:09:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] IB/rdmavt: return proper error code
-Message-ID: <20200423140947.GX26002@ziepe.ca>
-References: <20200423120434.19304-1-sudipm.mukherjee@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423120434.19304-1-sudipm.mukherjee@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726487AbgDWOgo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 10:36:44 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56686 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgDWOgo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Apr 2020 10:36:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NESqx4043325;
+        Thu, 23 Apr 2020 14:36:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=corp-2020-01-29;
+ bh=vhc1qxRXMx+iuW9x2FbtF55Pq5hnzBq07HQyTGBkbI4=;
+ b=M0IdiOuhleGgSwvuxcumRfGfShs+bWWU8BddaDiKGgCPDw8xDeNALaru/oA5jLPbUJv4
+ K28p+Iwq9GCqEU0d0Svz/QuCmf+16GiQ6jzP8XW35seZDKetC2uDbpcqCYVIia/xcmiq
+ 3SBNHz1nM186Am/qu3zQ8CPrXD8i5YOLGqDGNsj4tMel0bV0BxULUqdJG3qiWcH8zLm/
+ /XYQt8SPYNE/Eb/c9MhsGEDbg9pgxItsTyEU6HuSKlvHT7EhtXKcmrwe0YNJJvfj3Wef
+ soFHNnKGs7I3O2H5LuQ1bRumFiuupTdxJGiY+iF6cpceJyv8UjHnTmP1s/pqyy4yGyQk zQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30grpgwd7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 14:36:41 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03NEXfYh016068;
+        Thu, 23 Apr 2020 14:36:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 30k7qv81my-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 14:36:41 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03NEae1Z028661;
+        Thu, 23 Apr 2020 14:36:40 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 23 Apr 2020 07:36:40 -0700
+From:   Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: [GIT PULL] Please pull first round of NFS server -rc fixes for v5.7
+Message-Id: <AC510313-C744-4F22-82F7-F75F20F4B073@oracle.com>
+Date:   Thu, 23 Apr 2020 10:36:39 -0400
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=2 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004230116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=2 bulkscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004230116
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 01:04:34PM +0100, Sudip Mukherjee wrote:
-> The function rvt_create_mmap_info() can return either NULL or an error
-> in ERR_PTR(). Check properly for both the error type and return the
-> error code accordingly.
+Hi Linus-
 
-Please fix rvt_create_mmap_info to always return ERR_PTR, never null
-on failure.
+As promised, here is the first set of 5.7-rc fixes for NFS server =
+issues.
+These were all unresolved at the time the 5.7 window opened, and needed
+some additional time to ensure they were correctly addressed. They are
+ready now.
 
-Thanks,
-Jason
+At the moment I know of one more urgent issue regarding the NFS server.
+A fix has been tested and is under review. I expect to send one more
+"5.7-rc fixes" PR, containing this fix (which now consists of 3 =
+patches).
+
+
+The following changes since commit =
+8f3d9f354286745c751374f5f1fcafee6b3f3136:
+
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+
+are available in the Git repository at:
+
+  git://git.linux-nfs.org/projects/cel/cel-2.6.git tags/nfsd-5.7-rc-1
+
+for you to fetch changes up to 23cf1ee1f1869966b75518c59b5cbda4c6c92450:
+
+  svcrdma: Fix leak of svc_rdma_recv_ctxt objects (2020-04-17 12:40:38 =
+-0400)
+
+----------------------------------------------------------------
+Fixes:
+
+- Address several use-after-free and memory leak bugs
+
+- Prevent a backchannel livelock
+
+----------------------------------------------------------------
+Chuck Lever (3):
+      SUNRPC: Fix backchannel RPC soft lockups
+      svcrdma: Fix trace point use-after-free race
+      svcrdma: Fix leak of svc_rdma_recv_ctxt objects
+
+Vasily Averin (1):
+      nfsd: memory corruption in nfsd4_lock()
+
+Yihao Wu (1):
+      SUNRPC/cache: Fix unsafe traverse caused double-free in =
+cache_purge
+
+ fs/nfsd/nfs4callback.c                     |  4 +++-
+ fs/nfsd/nfs4state.c                        |  2 ++
+ include/linux/sunrpc/svc_rdma.h            |  1 +
+ include/trace/events/rpcrdma.h             | 50 =
+++++++++++++++++++++++++++++++++++++--------------
+ net/sunrpc/cache.c                         |  5 +++--
+ net/sunrpc/svc_xprt.c                      |  5 ++---
+ net/sunrpc/svcsock.c                       |  4 ++++
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c |  2 ++
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c    | 22 ++++++++++++++++++++++
+ net/sunrpc/xprtrdma/svc_rdma_rw.c          |  3 +--
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c      | 29 =
+++++++++++++-----------------
+ net/sunrpc/xprtrdma/svc_rdma_transport.c   |  5 -----
+ net/sunrpc/xprtsock.c                      |  1 +
+ 13 files changed, 89 insertions(+), 44 deletions(-)
+
+--
+Chuck Lever
+
+
+
