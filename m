@@ -2,105 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0C1B7F5C
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 21:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847031B7F5F
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 21:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbgDXTx0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 15:53:26 -0400
-Received: from mail-eopbgr60059.outbound.protection.outlook.com ([40.107.6.59]:29594
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726793AbgDXTxZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:53:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OwNukLujAIho6ewtYhaNJQ6W/qiHHaIzQtOuIaN4jyRE/LA2RjwZ6fFdGtV1jrQQY3dzzlCao8pnw9bVfPq/ful+l+BKUfTJUqbRjRrhevjGH7zcxM7gZrlbXeZtT+EBFW7mkSVqQpPsxng2UPLTzKDuyQX3njbhexOoX/ZfSQqEndksXQmCyjVEZlIeWT9hPmmokax+YKyVmJHLnsKRz455xDH/xuDE4XFaOV4d8WRmM4eBItvg3L9MZb/KWa3ebkKfswz9/KZhl3ymCOPzcEQ93SL6MSM8zFnmgCAotZ6TNv3WgeQb64bXNu/ZSENH1YrOkARUq8sYU/Iz6pwifQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tB9SdX4+nXyRffRhdfvTokn8YkxP8B45OQF0I4nnWV8=;
- b=ijPrQU0z0S2A92YFc6jwJTij8QTtrE7c7QLKtuDropgBJvqzVWp7TQVq4ThtERYP4h1h1F4BB1ZizaH6EmxlIVMJTPGwnau4wdLW8hPzE//8agxB9re0jdGQA25SulhsjtIBSdfdtGwvXNRGjziFqm+M6KXy8TgdHkA90WiViyC6Exe2llvmM7kmdLsyxLGI9hlVs7yDBBZ98+ctMhNyUwTSVlwwIf20pkxkqbYYMmdZQAAwR/AXIKdHJeI1ZjmT3CKEzHSBHr1ct2EK1kbsas1i8j4w11yl5eEzzmBy01CWfBFID1JnTIxe/n8PNKBHvScpiLYJh3md5nLk+xTeGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tB9SdX4+nXyRffRhdfvTokn8YkxP8B45OQF0I4nnWV8=;
- b=U6EU5bdEFLOzovPDL5+sCmRuY3ISBhgkFk6Ws/q5SsB5Y+hrGOlcSAMCjis5sYoKJ1YAimZZQ6cTb43tbJvmU1uEYCS/WTgcY3+gaiqWqHGnB0Pmtz6Cr4KbS2STw0fmOw3WE2H28iYvpQ3FJaNgnxvkOTNZ+NviP2gSUJNc7Cc=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM6PR05MB6007.eurprd05.prod.outlook.com (2603:10a6:20b:b0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
- 2020 19:53:22 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.2937.020; Fri, 24 Apr 2020
- 19:53:22 +0000
-Date:   Fri, 24 Apr 2020 22:53:20 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>
-Subject: Re: [PATCH mlx5-next 3/9] net/mlx5: Use aligned variable while
- allocating ICM memory
-Message-ID: <20200424195320.GB15990@unreal>
-References: <20200424194510.11221-1-saeedm@mellanox.com>
- <20200424194510.11221-4-saeedm@mellanox.com>
+        id S1729280AbgDXTy2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 15:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgDXTy2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 15:54:28 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EA1C09B049
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 12:54:28 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id di6so5298783qvb.10
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 12:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VRWGw+Ids2J/IVS8Zfm76j7+TTZ3bwJIR/se+BO3dNs=;
+        b=jOkapKtXRrSVdQIX+HKmfTfebHFdL6/rZHzHufL4crJNiVgRl3vuGoCk1k7PYleJTN
+         Y9QPA8fFaUnyScF4/gjS6AHcXqS7oQzh8cpQG//Dw+lV1L/7QozlIGx29bUMFXi2zOV/
+         Pz+W6NopTcbp+G7mQhJJjbVDXhahbBLhO9D+DofekdIS+rPS1Y9Ye4Z8zassoE23uc4l
+         WmDmS1xyw7n9FK9Nh3iKym6l+heBY8VQoVcJ0dQVEcar5Ucl0vytM9nmAkeHDm5mMjjQ
+         c4zK603mpXhtDf1bHx2+mMIbeT94YYyQHcGm1fbZN+ZGIzWvEb3fwbr06Qtt/RKZWut7
+         O2IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VRWGw+Ids2J/IVS8Zfm76j7+TTZ3bwJIR/se+BO3dNs=;
+        b=QpanFZU+E9IlPXajep7jdJPeqg//qnCLpWepGvSM2Lsyppqsf6q6rzIVFnvyUE+T1L
+         B5+9JRt3JkdHkhuAP90BsuIy64EAYcrneM9psuRGa6vNX3UPg7T5ijJyQG9xKiO8TCec
+         fUuqSbktDNLvfDH0Vb8l6CEf0CJGgjTOYET6J11YHhjote75JywVegHrinGjiDE+cwcD
+         XYntEIUd1Y9wJOGWoQlctENniWXSjYBalFpU9T6hjInDeofwXTS76d1yZ1EN+weCUWKb
+         FbSdmpH+zz8+O5Mvfz6zWrvdlTjX6EbmfUIGRH6YDHVkTyEoRifoOr87WgWlq4WBE6WI
+         LueQ==
+X-Gm-Message-State: AGi0PuYb4I3eixvyjD1oevkp+UZPDbdzQIayaBoszGWdj+jrNQnA0AA1
+        9Nmhd7VeJ0GPI9agWf7vntyNdw==
+X-Google-Smtp-Source: APiQypLWXS5Rfvw4pDLkSd1Bcle5kpvUQdgBT2nx0m2i2bXnCx0BVS6MOSW8pZFqkWdYjJN4WKf/hg==
+X-Received: by 2002:ad4:45ec:: with SMTP id q12mr11067687qvu.157.1587758067042;
+        Fri, 24 Apr 2020 12:54:27 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id o94sm4612480qtd.34.2020.04.24.12.54.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Apr 2020 12:54:26 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jS4P4-0007b4-1S; Fri, 24 Apr 2020 16:54:26 -0300
+Date:   Fri, 24 Apr 2020 16:54:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next 00/18] Refactor mlx5_ib_create_qp (Part I)
+Message-ID: <20200424195426.GA29169@ziepe.ca>
+References: <20200420151105.282848-1-leon@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200424194510.11221-4-saeedm@mellanox.com>
-X-ClientProxiedBy: FR2P281CA0017.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a::27) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a00:a040:183:2d::a43) by FR2P281CA0017.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Fri, 24 Apr 2020 19:53:22 +0000
-X-Originating-IP: [2a00:a040:183:2d::a43]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 70beacfa-dc84-4b8a-9577-08d7e88924df
-X-MS-TrafficTypeDiagnostic: AM6PR05MB6007:|AM6PR05MB6007:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB6007842F36098AC9669209BFB0D00@AM6PR05MB6007.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 03838E948C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(6486002)(4744005)(2906002)(6862004)(6636002)(8936002)(5660300002)(52116002)(6496006)(107886003)(9686003)(86362001)(54906003)(33716001)(1076003)(316002)(186003)(66946007)(16526019)(33656002)(478600001)(66476007)(8676002)(66556008)(4326008)(81156014)(450100002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LW1axazG7v2eMNzsG/Mgqy2nZA6Z9J4XQTe9LJh5xy+KvRU3p7jpWlCmPMad0eOU28ptilMWB0n1SdNJGkMMev6UBhpdScfzFAY3XGgDJgFiJe9QF3i/YeYEX1xxYWYpqZBHSoLqGFFk7MHXDZsmehI0mKgFkeuylseJ2jzV8CjIsTkH/WDoX1InzjN9PuNSVpwTR1rOLUXvhTw0rX0KWIhUindlTbO2cgFG4YZNbKXlJq3IkYL7t6MGm1tMY6I5mQHnSsmnAW8V0DwyigdvJ2B2N9xLJj+YXVy3GnWTrRM2Kn0GAJsTGgUm64ISYv1sqn/CfleeRruuw4ZNoajBhBIKTgPI2MF6qt07o4imbbHrCRR22VyKZpVuPmrCTTHPYCwG+Uv/ToN6J7E0glsnFcM5ggUOap1wLmpI+VlSKjmHt44sLC3C4vk+U4e8LDKK
-X-MS-Exchange-AntiSpam-MessageData: mRBkKPr87A4iH2JDQQXuqBs3k3E2n0MCAeeb+mla+fbD9nKeUw5Nig2bRQLWUoW+89WcLp3FRM+6hWc1oSNwxCHngcaAVWht9jBpkTOjdqeLbdPbQmWzX9FCD5RcpnDu79q7/GtsEKZ3HDh+MbdnQ2F/PQNdZmmkkHi2R9FDXS8=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70beacfa-dc84-4b8a-9577-08d7e88924df
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2020 19:53:22.6608
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d9vA1mLbSbgKMysQdguEdTM3+kETDgE5r23wDhgHwLL6tm6hBqn+17Hk9dZ6e/Jxvrypvyc9bqum7Qh2lmx+kw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6007
+In-Reply-To: <20200420151105.282848-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 12:45:04PM -0700, Saeed Mahameed wrote:
-> From: Erez Shitrit <erezsh@mellanox.com>
->
-> The alignment value is part of the input structure, so use it and spare
-> extra memory allocation when is not needed.
-> Now, using the new ability when allocating icm for Direct-Rule
-> insertion.
-> Signed-off-by: Ariel Levkovich <lariel@mellanox.com>
-> Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
->
-> Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-> ---
+On Mon, Apr 20, 2020 at 06:10:47PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Hi,
+> 
+> This is first part of series which tries to return some sanity
+> to mlx5_ib_create_qp() function. Such refactoring is required
+> to make extension of that function with less worries of breaking
+> driver.
+> 
+> Extra goal of such refactoring is to ensure that QP is allocated
+> at the beginning of function and released at the end. It will allow
+> us to move QP allocation to be under IB/core responsibility.
+> 
+> It is based on previously sent [1] "[PATCH mlx5-next 00/24] Mass
+> conversion to light mlx5 command interface"
+> 
+> Thanks
+> 
+> [1] https://lore.kernel.org/linux-rdma/20200420114136.264924-1-leon@kernel.org
+> 
+> Leon Romanovsky (18):
+>   RDMA/mlx5: Organize QP types checks in one place
+>   RDMA/mlx5: Delete impossible GSI port check
+>   RDMA/mlx5: Perform check if QP creation flow is valid
+>   RDMA/mlx5: Prepare QP allocation for future removal
+>   RDMA/mlx5: Avoid setting redundant NULL for XRC QPs
+>   RDMA/mlx5: Set QP subtype immediately when it is known
+>   RDMA/mlx5: Separate create QP flows to be based on type
+>   RDMA/mlx5: Split scatter CQE configuration for DCT QP
+>   RDMA/mlx5: Update all DRIVER QP places to use QP subtype
+>   RDMA/mlx5: Move DRIVER QP flags check into separate function
+>   RDMA/mlx5: Remove second copy from user for non RSS RAW QPs
+>   RDMA/mlx5: Initial separation of RAW_PACKET QP from common flow
+>   RDMA/mlx5: Delete create QP flags obfuscation
+>   RDMA/mlx5: Process create QP flags in one place
+>   RDMA/mlx5: Use flags_en mechanism to mark QP created with WQE
+>     signature
+>   RDMA/mlx5: Change scatter CQE flag to be set like other vendor flags
+>   RDMA/mlx5: Return all configured create flags through query QP
+>   RDMA/mlx5: Process all vendor flags in one place
 
-Extra blank line between SOBs and no line between text and SOBs.
+This seems reasonable, can you send it so it applies without other
+series?
 
-Thanks
+Jason
