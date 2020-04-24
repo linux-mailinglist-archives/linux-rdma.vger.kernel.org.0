@@ -2,100 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4190A1B8197
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 23:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E05C1B8243
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2020 00:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgDXVTW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 17:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgDXVTW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 17:19:22 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83DEC09B048;
-        Fri, 24 Apr 2020 14:19:21 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id i68so9193258qtb.5;
-        Fri, 24 Apr 2020 14:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=fXa5ZQfBwOl7sxD1r5EZkygeH/aqjfJgOvY7hYBHa9w=;
-        b=pTsALS5ldCOL8b8K4RRVPC2hHJb1+FgzXfI931FbjXV0hDLETRK4iwFhke7W2/10oV
-         6SCuFCn98Dg5fXPUd2230yxerekJI7foUrUzA+Sy4VuvH6e+Qg9PnfpJ0CM5/FriH/NQ
-         HTfaJ1ubiYvheHvQ/o0QLOEOwm0Hc8KJI5w7220lJ1D52jhE/qs7d33ajnWXRAxxG65Q
-         PC7/FpOMFOVkLLU93JRpsZl5XH6TBBWFWqbHOQNkPP4z77mUQ0F8BN61hsqV1SsmNXxC
-         anD1wx3PIntX4jCNLTI+p7KTx1vwZtA+ysWucseZLmeKnVhax1eAdBNxIXg6dNNbEJFL
-         elgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:from:subject:message-id:date
-         :user-agent:mime-version:content-transfer-encoding:content-language;
-        bh=fXa5ZQfBwOl7sxD1r5EZkygeH/aqjfJgOvY7hYBHa9w=;
-        b=GZooiuMQV3hMvh2J0V7HkqsRwY2uxWTT8kP4wwOYtyELXHZao837WsmoVczklSdoiP
-         vjOfl/lcCYYmc6ckJ/qem9Ayskvfewk1TSKeCvIrMdijurpLqcFmYZMaS7877LgpqiaB
-         8yO723heUrQOv9YHNj8JicNAa0E+FVoZemGUez8LzoFrbXjTDEYFVF2cz0cgZEpFCaSZ
-         tmW2mecdyGdYzSHB9OR6ndTrKzFkFDZPLCM+Zo1u2AlCAQ06jL4CuwGAeFwERstBVRuL
-         qImPBzEKqne7QF5xHALOLB7/iwvRE0REJ46eAAzhX+I4l6mHJO0EyJb88BIAT8kGLkEJ
-         kMVQ==
-X-Gm-Message-State: AGi0Pub/dn1P+uWZrgK05swy1hrc2ei/IgvFrKwAJ8LL5m+1hxGYIJiG
-        oGpCgLrZHccRV0JeJRHXHC6a9l9kpqk=
-X-Google-Smtp-Source: APiQypJywaIdnm4aLifH77u50linEM5gKc2ZL+3ntkv/UawL0RBccSXYT8nu25D4do6ICxkpGv6vRA==
-X-Received: by 2002:ac8:32a4:: with SMTP id z33mr12022128qta.363.1587763160564;
-        Fri, 24 Apr 2020 14:19:20 -0700 (PDT)
-Received: from [192.168.1.43] (c-68-32-74-190.hsd1.mi.comcast.net. [68.32.74.190])
-        by smtp.gmail.com with ESMTPSA id p22sm2166422qtb.91.2020.04.24.14.19.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 14:19:20 -0700 (PDT)
-To:     trondmy@hammerspace.com
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-From:   Anna Schumaker <anna.schumaker@netapp.com>
-Subject: [GIT PULL] Please pull NFSoRDMA Client Bugfixes for Linux 5.7
-Message-ID: <b380cea4-b711-fd33-8a79-434657168950@gmail.com>
-Date:   Fri, 24 Apr 2020 17:19:18 -0400
+        id S1726060AbgDXW6d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 18:58:33 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2181 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgDXW6c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 18:58:32 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea36f090000>; Fri, 24 Apr 2020 15:58:17 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 24 Apr 2020 15:58:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 24 Apr 2020 15:58:30 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 24 Apr
+ 2020 22:58:30 +0000
+Received: from [10.2.53.96] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 24 Apr
+ 2020 22:58:29 +0000
+Subject: Re: [regression] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Dave Chinner" <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+ <20200211001536.1027652-7-jhubbard@nvidia.com>
+ <20200424121846.5ee2685f@w520.home>
+ <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+ <20200424141548.5afdd2bb@w520.home>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+Date:   Fri, 24 Apr 2020 15:58:29 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200424141548.5afdd2bb@w520.home>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587769097; bh=eWq6lnMyYMCE4u6Qo5YJg74M9siYA8iyhwQdRnlfX1c=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=c2hKhoEuSh1BAJrQqwmQ4yRX74kL6heQtFpgh7vdU0THjF65L33iCiD03eDW+FA/A
+         gPzdByilynRgl6PXyZbjbFqiMAPfg2MC2yWKEUmWV3hNz2kXS0FG1vD8v0ladCzvkp
+         ensNbePajMC62D3wlNBE0ggKDFPB7iksWmuTz/TmgzRz66HITXTAXbFjLQsDogUOac
+         89EWT/bWRcVSdjG/Jj1uvJd+YfWM6Dzo6LnQHChsW1bmPSswJ20xCCbZ+ZSP/f5ouO
+         xEjzb7jndBL51nmhtJ3vfyuBMCtIVJy+ryq2i429v4MB4nctSJU5bnSnOJtk2esANH
+         vYuZIhb4iJBWA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Trond,
+On 2020-04-24 13:15, Alex Williamson wrote:
+> On Fri, 24 Apr 2020 12:20:03 -0700
+> John Hubbard <jhubbard@nvidia.com> wrote:
+> 
+>> On 2020-04-24 11:18, Alex Williamson wrote:
+>> ...
+>>> Hi John,
+>>>
+>>> I'm seeing a regression bisected back to this commit (3faa52c03f44
+>>> mm/gup: track FOLL_PIN pages).  I've attached some vfio-pci test code
+>>> that reproduces this by mmap'ing a page of MMIO space of a device and
+>>> then tries to map that through the IOMMU, so this should be attempting
+>>> a gup/pin of a PFNMAP page.  Previously this failed gracefully (-EFAULT),
+>>> but now results in:
+>>
+>>
+>> Hi Alex,
+>>
+>> Thanks for this report, and especially for source code to test it,
+>> seeing as how I can't immediately spot the problem just from the crash
+>> data so far.  I'll get set up and attempt a repro.
+>>
+>> Actually this looks like it should be relatively easier than the usual
+>> sort of "oops, we leaked a pin_user_pages() or unpin_user_pages() call,
+>> good luck finding which one" report that I fear the most. :) This one
+>> looks more like a crash that happens directly, when calling into the
+>> pin_user_pages_remote() code. Which should be a lot easier to solve...
+>>
+>> btw, if you are set up for it, it would be nice to know what source file
+>> and line number corresponds to the RIP (get_pfnblock_flags_mask+0x22)
+>> below. But if not, no problem, because I've likely got to do the repro
+>> in any case.
+> 
+> Hey John,
+> 
+> TBH I'm feeling a lot less confident about this bisect.  This was
+> readily reproducible to me on a clean tree a bit ago, but now it
+> eludes me.  Let me go back and figure out what's going on before you
+> spend any more time on it.  Thanks,
+> 
 
-The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
+OK. But I'm keeping the repro program! :)  It made it quick and easy to
+set up a vfio test, so it was worth doing in any case.
 
-  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
+Anyway, I wanted to double check this just out of paranoia, and so
+now I have a data point for you: your test program runs and passes for
+me using today's linux.git kernel, with an NVIDIA GPU as the vfio
+device, and the kernel log is clean. No hint of any problems.
+
+I traced it a little bit:
+
+# sudo bpftrace -e kprobe:__get_user_pages { @[kstack()] = count(); }
+Attaching 1 probe...
+^C
+...
+@[
+     __get_user_pages+1
+     __gup_longterm_locked+176
+     vaddr_get_pfn+104
+     vfio_pin_pages_remote+113
+     vfio_dma_do_map+760
+     vfio_iommu_type1_ioctl+761
+     ksys_ioctl+135
+     __x64_sys_ioctl+22
+     do_syscall_64+90
+     entry_SYSCALL_64_after_hwframe+73
+]: 1
+
+...and also verified that it's not actually pinning any pages with that
+path:
+
+$ grep foll_pin /proc/vmstat
+nr_foll_pin_acquired 0
+nr_foll_pin_released 0
 
 
-are available in the Git repository at:
+Good luck and let me know if it starts pointing to FOLL_PIN or gup, etc.
 
-  git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-rdma-for-5.7-2
-
-for you to fetch changes up to 48a124e383508d3d73453d540a825c0745454af9:
-
-  xprtrdma: Fix use of xdr_stream_encode_item_{present, absent} (2020-04-20 10:45:01 -0400)
-
-----------------------------------------------------------------
-
-These patches fix two bugs that Chuck found that were introduced in the original 5.7 pull request, and also a use-after-free race in the tracepoints code.
-
-Thanks,
-
-Anna
-
-----------------------------------------------------------------
-
-Chuck Lever (3):
-      xprtrdma: Restore wake-up-all to rpcrdma_cm_event_handler()
-      xprtrdma: Fix trace point use-after-free race
-      xprtrdma: Fix use of xdr_stream_encode_item_{present, absent}
-
- include/trace/events/rpcrdma.h | 12 ++++--------
- net/sunrpc/xprtrdma/rpc_rdma.c | 15 +++++++++++----
- net/sunrpc/xprtrdma/verbs.c    |  3 ++-
- 3 files changed, 17 insertions(+), 13 deletions(-)
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
