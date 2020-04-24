@@ -2,137 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B371B7982
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 17:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8991B7989
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 17:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgDXP0T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 11:26:19 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:34606 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgDXP0T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 11:26:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1587741978; x=1619277978;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=iYO/LJ4La79F/76gxXRPyaXqKc6JWGM33HL3SC6ywrk=;
-  b=lHZYyowYk3E0yIihwwYUOnA8MIZbCIEL4DRKIiKDANy8diMNeMKt+X/D
-   tHe3hLS7jK8D5B9x9rO0lU3mXRXbETjzNNe9M7jgbOZb57uyYus7vRos6
-   I1FJ+xvP/YY6ouSIpxO+rUmZiH4vNa74gn4/k/IkgZIZ3A3um3s98hQf6
-   Y=;
-IronPort-SDR: FueZyyEWGKXDkytDi5hVHfUn6A/sUUAk8w3CnydiuThOloC2xodszTaL2KVKOKu1+cuxtvfTps
- ZFp/w7Kj31lA==
-X-IronPort-AV: E=Sophos;i="5.73,311,1583193600"; 
-   d="scan'208";a="27241078"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Apr 2020 15:26:05 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id B6A90A1FB6;
-        Fri, 24 Apr 2020 15:26:04 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 24 Apr 2020 15:26:04 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.203) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 24 Apr 2020 15:26:00 +0000
-Subject: Re: [PATCH for-next 2/3] RDMA/efa: Count mmap failures
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20200420062213.44577-1-galpress@amazon.com>
- <20200420062213.44577-3-galpress@amazon.com>
- <20200424145923.GH26002@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <e0ce4fa2-f802-a17c-2b13-666d086029c0@amazon.com>
-Date:   Fri, 24 Apr 2020 18:25:54 +0300
+        id S1727033AbgDXP23 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 11:28:29 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40720 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727016AbgDXP22 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 11:28:28 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OFIll1061933;
+        Fri, 24 Apr 2020 15:28:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=zOaIIh5Y3Ixgy8+bW/8s0a5JA8RFQkLrn9lA9JvNLy8=;
+ b=JKL8z3JICdqTHf3tVLjbYDCwsZ7/2LePqlPUskPF0EEb4j31YoDElbnDjxpFL7PFB3+T
+ o7b41+JXFs9vXmWXCDT/vOm7xCk0q7RbtGAtfGax9OItLT9PlfXcx+kfzWfqacyU80+x
+ PjHtLZxxYqEPZIHf/slDkzxRYAJh5iHOEMxkTs+HYM5sKfeCeD8eR3H0fr4NzMotyJR0
+ YkVW9t6u8SyJ5F40u7pDgPfA9vX2A0x97gbk+zUOIqtnUqq7HrIfhF9/+Hp6VR3dAe1a
+ Plcs7PwbgDs45i7rOIe5h0UMAyUldWQ3p/8GEQnmSyAyx74WehsytUu9dVkLeGfP8U+B XQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30ketdn08h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 15:28:23 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03OFBdxZ096279;
+        Fri, 24 Apr 2020 15:28:22 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30k7qxbu2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 15:28:22 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03OFSLZW015782;
+        Fri, 24 Apr 2020 15:28:21 GMT
+Received: from dhcp-10-159-159-71.vpn.oracle.com (/10.159.159.71)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Apr 2020 08:28:21 -0700
+From:   Divya Indi <divya.indi@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>
+Subject: Request for feedback : Possible use-after-free in routing SA query
+ via netlink
+Message-ID: <8fbdf10e-3f08-6407-eb0d-a1bf663873c3@oracle.com>
+Date:   Fri, 24 Apr 2020 08:28:09 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200424145923.GH26002@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.203]
-X-ClientProxiedBy: EX13D35UWC004.ant.amazon.com (10.43.162.180) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=11 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004240121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1011 suspectscore=11 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240121
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 24/04/2020 17:59, Jason Gunthorpe wrote:
-> On Mon, Apr 20, 2020 at 09:22:12AM +0300, Gal Pressman wrote:
->> Add a new stat that counts mmap failures, which might help when
->> debugging different issues.
->>
->> Reviewed-by: Firas JahJah <firasj@amazon.com>
->> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
->> Signed-off-by: Gal Pressman <galpress@amazon.com>
->>  drivers/infiniband/hw/efa/efa.h       | 3 ++-
->>  drivers/infiniband/hw/efa/efa_verbs.c | 9 +++++++--
->>  2 files changed, 9 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
->> index aa7396a1588a..77c9ff798117 100644
->> +++ b/drivers/infiniband/hw/efa/efa.h
->> @@ -1,6 +1,6 @@
->>  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->>  /*
->> - * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
->> + * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
->>   */
->>  
->>  #ifndef _EFA_H_
->> @@ -40,6 +40,7 @@ struct efa_sw_stats {
->>  	atomic64_t reg_mr_err;
->>  	atomic64_t alloc_ucontext_err;
->>  	atomic64_t create_ah_err;
->> +	atomic64_t mmap_err;
->>  };
->>  
->>  /* Don't use anything other than atomic64 */
->> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
->> index b555845d6c14..75eef1ec2474 100644
->> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
->> @@ -44,7 +44,8 @@ struct efa_user_mmap_entry {
->>  	op(EFA_CREATE_CQ_ERR, "create_cq_err") \
->>  	op(EFA_REG_MR_ERR, "reg_mr_err") \
->>  	op(EFA_ALLOC_UCONTEXT_ERR, "alloc_ucontext_err") \
->> -	op(EFA_CREATE_AH_ERR, "create_ah_err")
->> +	op(EFA_CREATE_AH_ERR, "create_ah_err") \
->> +	op(EFA_MMAP_ERR, "mmap_err")
->>  
->>  #define EFA_STATS_ENUM(ename, name) ename,
->>  #define EFA_STATS_STR(ename, name) [ename] = name,
->> @@ -1569,6 +1570,7 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->>  		ibdev_dbg(&dev->ibdev,
->>  			  "pgoff[%#lx] does not have valid entry\n",
->>  			  vma->vm_pgoff);
->> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
->>  		return -EINVAL;
->>  	}
->>  	entry = to_emmap(rdma_entry);
->> @@ -1604,12 +1606,14 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->>  		err = -EINVAL;
->>  	}
->>  
->> -	if (err)
->> +	if (err) {
->>  		ibdev_dbg(
->>  			&dev->ibdev,
->>  			"Couldn't mmap address[%#llx] length[%#zx] mmap_flag[%d] err[%d]\n",
->>  			entry->address, rdma_entry->npages * PAGE_SIZE,
->>  			entry->mmap_flag, err);
->> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
-> 
-> Really? Isn't this something that is only possible with a buggy
-> rdma-core provider? Why count it?
+Hi All,
 
-Though unlikely, it could happen, otherwise this error flow wouldn't exist in
-the first place.
+I wanted some feedback on a crash caused due to use-after-free in the 
+ibacm code path [while routing SA query via netlink].
 
-If for some reason a customer app steps on a bug we're not aware of, this
-counter could serve as a red flag.
+Commit 3ebd2fd IB/sa: Put netlink request into the request list before sending
+
+Above commit moved adding the query to the request list before ib_nl_snd_msg
+and moved ib_nl_snd_msg out of the spinlock (request_lock).
+
+However, if there is a delay in sending out the request (For
+eg: Delay due to low memory situation) the timer to handle request timeout
+might kick in before the request is sent out to ibacm via netlink.
+ib_nl_request_timeout may result in release of the query (by call to send_handler) 
+while ib_nl_snd_msg is still accessing query.
+
+
+We get the following stacktrace for the crash -
+
+[<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
+[<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
+[<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
+[<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
+[<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
+[rds_rdma]
+[<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
+[rds_rdma]
+[<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
+[<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
+[<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
+[<ffffffff810a02f9>] process_one_work+0x169/0x4a0
+[<ffffffff810a0b2b>] worker_thread+0x5b/0x560
+[<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
+[<ffffffff810a68fb>] kthread+0xcb/0xf0
+[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+[<ffffffff816f25a7>] ret_from_fork+0x47/0x90
+[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+....
+RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa] 
+
+On analysis of the vmcore, we see crash happens at -
+
+ib_sa_path_rec_get
+  send_mad
+     ib_nl_make_request()
+        ib_nl_send_msg
+                1  static void ib_nl_set_path_rec_attrs(struct sk_buff *skb,
+                2        struct ib_sa_query *query)
+                3  {
+                4   struct ib_sa_path_rec *sa_rec = query->mad_buf->context[1];
+                5   struct ib_sa_mad *mad = query->mad_buf->mad;
+                6   ib_sa_comp_mask comp_mask = mad->sa_hdr.comp_mask;
+
+Page fault occurs at line 5 while trying to access query->mad_buf->mad;
+
+If we look at the query, it does not appear to be a valid ib_sa_query. Instead
+looks like a pid struct for a process -> Use-after-free situation.
+
+We could simulate the crash by explicitly introducing a delay in ib_nl_snd_msg with
+a sleep. The timer kicks in before ib_nl_send_msg has even sent out the request 
+and releases the query. We could reproduce the crash with a similar stack trace.
+
+To summarize - We have a use-after-free possibility here when the timer(ib_nl_request_timeout)
+kicks in before ib_nl_snd_msg has completed sending the query out to ibacm via netlink. The 
+timeout handler ie ib_nl_request_timeout may result in releasing the query while ib_nl_snd_msg 
+is still accessing query.
+
+Appreciate your thoughts on the above issue.
+
+
+Thanks,
+Divya 
+
