@@ -2,151 +2,416 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51171B7CD4
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 19:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF601B7DBD
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 20:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgDXRbt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 13:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727031AbgDXRbt (ORCPT
+        id S1728708AbgDXSTN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 14:19:13 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41185 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726920AbgDXSTN (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Apr 2020 13:31:49 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045B9C09B047;
-        Fri, 24 Apr 2020 10:31:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r26so11803546wmh.0;
-        Fri, 24 Apr 2020 10:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=RQGcdRJLNrYqSHSgVV8oTnHfyay5BCm0woR8WhTdc4Q=;
-        b=ja+aS0yrKmnDgS7/Yv353TzMUKf+Ohd2yz5rM1nrhcs5dukGoeteAfWBJAbt9agbOq
-         f23Nn2GAq/qOdvbIRw/3KPT4ycN+pInXMjd1BChA640icyCAStpunnza9TON5zmWMu1c
-         1ncRB2J/f7CYgBxuId+vlwxI0hwDmtqs8WM5Nx+E/1Qj82b0akdSIo8m7dwMIWIfZLmj
-         wm0MkvHkENoCf8kX1kuTXcsyiHwBE90KfYczH3u7iNcGNw3zA/yU1fPsG86QmBe706e+
-         lnVV5pozr5Qvn5kcurLq4rGmVJafcm02HGsPIMeYIq7N/IGfY8m4NS7YMgkBf/ZnvW/c
-         c7pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=RQGcdRJLNrYqSHSgVV8oTnHfyay5BCm0woR8WhTdc4Q=;
-        b=rTiLQJaBjeNFEbmfCcRUd36kwg+H4USUtzkfUbLN+606VJY0kRItZrijdMnV6eOZzU
-         I3x+HIXtDg4VTscHTL7QBYBDI5Rilrgjd7Zadi64UZeD37OT1T4YgA8QjKs/5xLghH+1
-         bbShNF9n2Fv8MwFkGlrN8C2bT43OVB1b9MxGSCCd4XgJuLIqDOQnND6PI8GoWlQFPXoJ
-         7lxm6fDpahHAeu3Egmzdbk0VyEW1y/+26hO2vMPhM4pXeN3fpGkNTeivwgOnkS6R0eDa
-         FMTYV01sCrXyYhoW66zhTuC0SSeKgnWgBDTZG5EkrEfTh+AgKnna/L039WAYd4bYieat
-         k+qg==
-X-Gm-Message-State: AGi0PuYLf7R1MHGf1xmMd41AkaUKA04zJTq0SbJYgOH1K7ykXj9lGLOA
-        sRc1nhXHfepZRCjj9LMapCA=
-X-Google-Smtp-Source: APiQypIVOrCpLaUv6phLa+L8W2tcwyIUTRMpgnidvQwqKqpiIqMqXsVGTeo/XmtxMnTfLSyKDoDk4w==
-X-Received: by 2002:a7b:c4c7:: with SMTP id g7mr10922438wmk.97.1587749507716;
-        Fri, 24 Apr 2020 10:31:47 -0700 (PDT)
-Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id s17sm3556006wmc.48.2020.04.24.10.31.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 10:31:47 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH v3] IB/rdmavt: return proper error code
-Date:   Fri, 24 Apr 2020 18:31:46 +0100
-Message-Id: <20200424173146.10970-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Fri, 24 Apr 2020 14:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587752350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zBlEEl/4DE3AueNz8EcPFW+nerY+eN9VDgbsYvuIwAk=;
+        b=UY8BwCb70wwghcv4D2Lc/PpHFB3IGZnkYy6h6iiJd18g0lATXwG4DX62i2MsZ7NuJlMA1/
+        XG9wbvWs1UIG3mAphoTIq14EUd2G+6yeFAt3ZlUS/hBE+PdNwO2BlWTH3/GaNHPfNwPGIT
+        mRYW7lQwok/cGxpQKGvDQgGmznmRPqA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-wM_L9XSxPy-Wam3e3x_hbA-1; Fri, 24 Apr 2020 14:18:57 -0400
+X-MC-Unique: wM_L9XSxPy-Wam3e3x_hbA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 676B48015D1;
+        Fri, 24 Apr 2020 18:18:50 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 73F46619DC;
+        Fri, 24 Apr 2020 18:18:47 +0000 (UTC)
+Date:   Fri, 24 Apr 2020 12:18:46 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [regression] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200424121846.5ee2685f@w520.home>
+In-Reply-To: <20200211001536.1027652-7-jhubbard@nvidia.com>
+References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+        <20200211001536.1027652-7-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="MP_/aRIlGjxB14=fzhStE9AJEEB"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The commit 'ff23dfa13457' modified rvt_create_mmap_info() to return
-error code and also NULL but missed fixing codes which called
-rvt_create_mmap_info(). Modify rvt_create_mmap_info() to only return
-errorcode and fix error checking after rvt_create_mmap_info() was
-called.
+--MP_/aRIlGjxB14=fzhStE9AJEEB
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
-Cc: stable@vger.kernel.org [5.4+]
-Tested-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Acked-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/infiniband/sw/rdmavt/cq.c   | 4 ++--
- drivers/infiniband/sw/rdmavt/mmap.c | 4 ++--
- drivers/infiniband/sw/rdmavt/qp.c   | 4 ++--
- drivers/infiniband/sw/rdmavt/srq.c  | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+On Mon, 10 Feb 2020 16:15:30 -0800
+John Hubbard <jhubbard@nvidia.com> wrote:
 
-diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
-index 5724cbbe38b1..04d2e72017fe 100644
---- a/drivers/infiniband/sw/rdmavt/cq.c
-+++ b/drivers/infiniband/sw/rdmavt/cq.c
-@@ -248,8 +248,8 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	 */
- 	if (udata && udata->outlen >= sizeof(__u64)) {
- 		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
--		if (!cq->ip) {
--			err = -ENOMEM;
-+		if (IS_ERR(cq->ip)) {
-+			err = PTR_ERR(cq->ip);
- 			goto bail_wc;
- 		}
- 
-diff --git a/drivers/infiniband/sw/rdmavt/mmap.c b/drivers/infiniband/sw/rdmavt/mmap.c
-index 652f4a7efc1b..37853aa3bcf7 100644
---- a/drivers/infiniband/sw/rdmavt/mmap.c
-+++ b/drivers/infiniband/sw/rdmavt/mmap.c
-@@ -154,7 +154,7 @@ int rvt_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
-  * @udata: user data (must be valid!)
-  * @obj: opaque pointer to a cq, wq etc
-  *
-- * Return: rvt_mmap struct on success
-+ * Return: rvt_mmap struct on success, ERR_PTR on failure
-  */
- struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
- 					   struct ib_udata *udata, void *obj)
-@@ -166,7 +166,7 @@ struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
- 
- 	ip = kmalloc_node(sizeof(*ip), GFP_KERNEL, rdi->dparms.node);
- 	if (!ip)
--		return ip;
-+		return ERR_PTR(-ENOMEM);
- 
- 	size = PAGE_ALIGN(size);
- 
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 0e1b291d2cec..500a7ee04c44 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -1244,8 +1244,8 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
- 
- 			qp->ip = rvt_create_mmap_info(rdi, s, udata,
- 						      qp->r_rq.wq);
--			if (!qp->ip) {
--				ret = ERR_PTR(-ENOMEM);
-+			if (IS_ERR(qp->ip)) {
-+				ret = ERR_CAST(qp->ip);
- 				goto bail_qpn;
- 			}
- 
-diff --git a/drivers/infiniband/sw/rdmavt/srq.c b/drivers/infiniband/sw/rdmavt/srq.c
-index 24fef021d51d..f547c115af03 100644
---- a/drivers/infiniband/sw/rdmavt/srq.c
-+++ b/drivers/infiniband/sw/rdmavt/srq.c
-@@ -111,8 +111,8 @@ int rvt_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *srq_init_attr,
- 		u32 s = sizeof(struct rvt_rwq) + srq->rq.size * sz;
- 
- 		srq->ip = rvt_create_mmap_info(dev, s, udata, srq->rq.wq);
--		if (!srq->ip) {
--			ret = -ENOMEM;
-+		if (IS_ERR(srq->ip)) {
-+			ret = PTR_ERR(srq->ip);
- 			goto bail_wq;
- 		}
- 
--- 
-2.11.0
+> Add tracking of pages that were pinned via FOLL_PIN. This tracking is
+> implemented via overloading of page->_refcount: pins are added by
+> adding GUP_PIN_COUNTING_BIAS (1024) to the refcount. This provides a
+> fuzzy indication of pinning, and it can have false positives (and that's
+> OK). Please see the pre-existing
+> Documentation/core-api/pin_user_pages.rst for details.
+>=20
+> As mentioned in pin_user_pages.rst, callers who effectively set FOLL_PIN
+> (typically via pin_user_pages*()) are required to ultimately free such
+> pages via unpin_user_page().
+>=20
+> Please also note the limitation, discussed in pin_user_pages.rst under
+> the "TODO: for 1GB and larger huge pages" section. (That limitation will
+> be removed in a following patch.)
+>=20
+> The effect of a FOLL_PIN flag is similar to that of FOLL_GET, and may be
+> thought of as "FOLL_GET for DIO and/or RDMA use".
+>=20
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
+>=20
+>    bool page_maybe_dma_pinned(struct page *page);
+>=20
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1], [2], [3], and [4].
+>=20
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+>=20
+> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
+>     https://lwn.net/Articles/784574/
+> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+>     https://lwn.net/Articles/774411/
+> [3] The trouble with get_user_pages() (Apr 30, 2018):
+>     https://lwn.net/Articles/753027/
+> [4] LWN kernel index: get_user_pages():
+>     https://lwn.net/Kernel/Index/#Memory_management-get_user_pages
+>=20
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  Documentation/core-api/pin_user_pages.rst |   6 +-
+>  include/linux/mm.h                        |  82 +++++--
+>  mm/gup.c                                  | 254 +++++++++++++++++-----
+>  mm/huge_memory.c                          |  29 ++-
+>  mm/hugetlb.c                              |  54 +++--
+>  5 files changed, 334 insertions(+), 91 deletions(-)
+
+Hi John,
+
+I'm seeing a regression bisected back to this commit (3faa52c03f44
+mm/gup: track FOLL_PIN pages).  I've attached some vfio-pci test code
+that reproduces this by mmap'ing a page of MMIO space of a device and
+then tries to map that through the IOMMU, so this should be attempting
+a gup/pin of a PFNMAP page.  Previously this failed gracefully (-EFAULT),
+but now results in:
+
+BUG: unable to handle page fault for address: ffffae5cbfe5e938
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0=20
+Oops: 0000 [#1] SMP NOPTI
+CPU: 18 PID: 3365 Comm: vfio-pci-dma-ma Tainted: G           OE     5.6.0+ =
+#6
+Hardware name: AMD Corporation Diesel/Diesel, BIOS TDL100CB 03/17/2020
+RIP: 0010:get_pfnblock_flags_mask+0x22/0x70
+Code: c3 0f 1f 80 00 00 00 00 0f 1f 44 00 00 48 8b 05 bc e1 d9 01 48 89 f7 =
+49 89 c8 48 c1 ef 0f 48 85 c0 74 48 48 89 f1 48 c1 e9 17 <48> 8b 04 c8 48 8=
+5 c0 74 0b 40 0f b6 ff 48 c1 e7 04 48 01 f8 48 c1
+RSP: 0018:ffffb55289b3fcc8 EFLAGS: 00010216
+RAX: ffff9e5cbff50000 RBX: 0000000000000001 RCX: 000001fffffe1d27
+RDX: 0000000000000002 RSI: ffffff0e93acd633 RDI: 0001fffffe1d2759
+RBP: ffffb55289b3fd88 R08: 0000000000000007 R09: ffff9e48a52476a8
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: ffff9e48ab358cc0
+FS:  00007f4ef7269740(0000) GS:ffff9e48afa80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffae5cbfe5e938 CR3: 0000000c61eda000 CR4: 00000000003406e0
+Call Trace:
+ __gup_longterm_locked+0x274/0x620
+ vaddr_get_pfn+0x74/0x110 [vfio_iommu_type1]
+ vfio_pin_pages_remote+0x6e/0x370 [vfio_iommu_type1]
+ vfio_iommu_type1_ioctl+0x8e5/0xaac [vfio_iommu_type1]
+ ksys_ioctl+0x86/0xc0
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x5b/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f4ef6d7d307
+Code: 44 00 00 48 8b 05 69 1b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff =
+ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff f=
+f 73 01 c3 48 8b 0d 39 1b 2d 00 f7 d8 64 89 01 48
+RSP: 002b:00007fff76ada738 EFLAGS: 00000213 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f4ef6d7d307
+RDX: 00007fff76ada760 RSI: 0000000000003b71 RDI: 0000000000000003
+RBP: 00007fff76ada930 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000213 R12: 0000000000400950
+R13: 00007fff76adaa10 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in: vfio_pci(OE) vfio_virqfd(OE) vfio_iommu_type1(OE) vfio(O=
+E) amd64_edac_mod edac_mce_amd kvm_amd kvm rfkill sunrpc ipmi_ssif vfat irq=
+bypass fat ipmi_si crct10dif_pclmul crc32_pclmul sp5100_tco ghash_clmulni_i=
+ntel ipmi_devintf pcspkr joydev ccp i2c_piix4 k10temp ipmi_msghandler pinct=
+rl_amd acpi_cpufreq ip_tables nouveau ast video mxm_wmi drm_vram_helper wmi=
+ drm_ttm_helper i2c_algo_bit drm_kms_helper cec ttm drm i40e e1000e crc32c_=
+intel
+CR2: ffffae5cbfe5e938
+---[ end trace a384ab7cc8e37d46 ]---
+RIP: 0010:get_pfnblock_flags_mask+0x22/0x70
+Code: c3 0f 1f 80 00 00 00 00 0f 1f 44 00 00 48 8b 05 bc e1 d9 01 48 89 f7 =
+49 89 c8 48 c1 ef 0f 48 85 c0 74 48 48 89 f1 48 c1 e9 17 <48> 8b 04 c8 48 8=
+5 c0 74 0b 40 0f b6 ff 48 c1 e7 04 48 01 f8 48 c1
+RSP: 0018:ffffb55289b3fcc8 EFLAGS: 00010216
+RAX: ffff9e5cbff50000 RBX: 0000000000000001 RCX: 000001fffffe1d27
+RDX: 0000000000000002 RSI: ffffff0e93acd633 RDI: 0001fffffe1d2759
+RBP: ffffb55289b3fd88 R08: 0000000000000007 R09: ffff9e48a52476a8
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: ffff9e48ab358cc0
+FS:  00007f4ef7269740(0000) GS:ffff9e48afa80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffae5cbfe5e938 CR3: 0000000c61eda000 CR4: 00000000003406e0
+
+Thanks,
+Alex
+
+--MP_/aRIlGjxB14=fzhStE9AJEEB
+Content-Type: text/x-c++src
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=vfio-pci-dma-map-mmio.c
+
+#include <errno.h>
+#include <libgen.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/eventfd.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
+#include <linux/ioctl.h>
+#include <linux/vfio.h>
+#include <linux/pci_regs.h>
+
+void usage(char *name)
+{
+	fprintf(stderr, "usage: %s <ssss:bb:dd.f>\n", name);
+	fprintf(stderr, "\tssss: PCI segment, ex. 0000\n");
+	fprintf(stderr, "\tbb:   PCI bus, ex. 01\n");
+	fprintf(stderr, "\tdd:   PCI device, ex. 06\n");
+	fprintf(stderr, "\tf:    PCI function, ex. 0\n");
+}
+
+int main(int argc, char **argv)
+{
+	int seg, bus, slot, func;
+	int ret, container, group, device, groupid;
+	char path[50], iommu_group_path[50], *group_name;
+	struct stat st;
+	ssize_t len;
+	void *map = MAP_FAILED;
+	int i;
+	unsigned int bar;
+	struct vfio_group_status group_status = {
+		.argsz = sizeof(group_status)
+	};
+	struct vfio_region_info region_info = {
+		.argsz = sizeof(region_info)
+	};
+	struct vfio_region_info config_info = {
+		.argsz = sizeof(config_info)
+	};
+	struct vfio_iommu_type1_dma_map dma_map = {
+		.argsz = sizeof(dma_map),
+		.flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE,
+	};
+
+	if (argc != 2) {
+		usage(argv[0]);
+		return -1;
+	}
+
+	ret = sscanf(argv[1], "%04x:%02x:%02x.%d", &seg, &bus, &slot, &func);
+	if (ret != 4) {
+		fprintf(stderr, "Invalid device\n");
+		usage(argv[0]);
+		return -1;
+	}
+
+	/* Boilerplate vfio setup */
+	container = open("/dev/vfio/vfio", O_RDWR);
+	if (container < 0) {
+		fprintf(stderr, "Failed to open /dev/vfio/vfio, %d (%s)\n",
+		       container, strerror(errno));
+		return container;
+	}
+
+	snprintf(path, sizeof(path),
+		 "/sys/bus/pci/devices/%04x:%02x:%02x.%01x/",
+		 seg, bus, slot, func);
+
+	ret = stat(path, &st);
+	if (ret < 0) {
+		fprintf(stderr, "No such device\n");
+		return ret;
+	}
+
+	strncat(path, "iommu_group", sizeof(path) - strlen(path) - 1);
+
+	len = readlink(path, iommu_group_path, sizeof(iommu_group_path));
+	if (len <= 0) {
+		fprintf(stderr, "No iommu_group for device\n");
+		return -1;
+	}
+
+	iommu_group_path[len] = 0;
+	group_name = basename(iommu_group_path);
+
+	if (sscanf(group_name, "%d", &groupid) != 1) {
+		fprintf(stderr, "Unknown group\n");
+		return -1;
+	}
+
+	snprintf(path, sizeof(path), "/dev/vfio/%d", groupid);
+	group = open(path, O_RDWR);
+	if (group < 0) {
+		fprintf(stderr, "Failed to open %s, %d (%s)\n",
+		       path, group, strerror(errno));
+		return group;
+	}
+
+	ret = ioctl(group, VFIO_GROUP_GET_STATUS, &group_status);
+	if (ret) {
+		fprintf(stderr, "ioctl(VFIO_GROUP_GET_STATUS) failed\n");
+		return ret;
+	}
+
+	if (!(group_status.flags & VFIO_GROUP_FLAGS_VIABLE)) {
+		fprintf(stderr,
+			"Group not viable, all devices attached to vfio?\n");
+		return -1;
+	}
+
+	ret = ioctl(group, VFIO_GROUP_SET_CONTAINER, &container);
+	if (ret) {
+		fprintf(stderr, "Failed to set group container\n");
+		return ret;
+	}
+
+	ret = ioctl(container, VFIO_SET_IOMMU, VFIO_TYPE1_IOMMU);
+	if (ret) {
+		fprintf(stderr, "Failed to set IOMMU\n");
+		return ret;
+	}
+
+	snprintf(path, sizeof(path), "%04x:%02x:%02x.%d", seg, bus, slot, func);
+
+	device = ioctl(group, VFIO_GROUP_GET_DEVICE_FD, path);
+	if (device < 0) {
+		fprintf(stderr, "Failed to get device\n");
+		return -ENODEV;
+	}
+
+	config_info.index = VFIO_PCI_CONFIG_REGION_INDEX;
+	ret = ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &config_info);
+	if (ret) {
+		fprintf(stderr, "Failed to get config space region info\n");
+		return ret;
+	}
+
+	for (i = 0; i < 6; i++) {
+		if (pread(device, &bar, sizeof(bar),
+		          config_info.offset + PCI_BASE_ADDRESS_0 + (4 * i)) !=
+		    sizeof(bar)) {
+			fprintf(stderr, "Error reading BAR%d\n", i);
+			return -errno;
+		}
+
+		if (!(bar & PCI_BASE_ADDRESS_SPACE)) {
+			break;
+
+tryagain:
+			if (bar & PCI_BASE_ADDRESS_MEM_TYPE_64)
+				i++;
+		}
+	}
+
+	if (i >= 6) {
+		fprintf(stderr, "No memory BARs found\n");
+		return -ENODEV;
+	}
+
+	region_info.index = VFIO_PCI_BAR0_REGION_INDEX + i;
+	ret = ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &region_info);
+	if (ret) {
+		fprintf(stderr, "Failed to get BAR%d region info\n", i);
+		return ret;
+	}
+  
+	if (!(region_info.flags & VFIO_REGION_INFO_FLAG_MMAP)) {
+		printf("No mmap support, try next\n");
+		goto tryagain;
+	}
+
+	if (region_info.size < getpagesize()) {
+		printf("Too small for mmap, try next\n");
+		goto tryagain;
+	}
+
+	map = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE,
+		   MAP_SHARED, device, region_info.offset);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Error mmap'ing BAR: %m\n");
+		goto tryagain;
+	}
+
+	dma_map.size = getpagesize();
+	dma_map.vaddr = (__u64)map;
+	dma_map.iova = 1024 * 1024 * 1024; /* 1GB IOVA, arbitrary */
+
+	ret = ioctl(container, VFIO_IOMMU_MAP_DMA, &dma_map);
+	if (ret) {
+		fprintf(stderr, "Failed to DMA map: %m\n");
+		return ret;
+	}
+		
+	printf("Passed\n");
+	return 0;
+}
+
+--MP_/aRIlGjxB14=fzhStE9AJEEB--
 
