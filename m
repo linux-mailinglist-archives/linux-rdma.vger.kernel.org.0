@@ -2,141 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464B81B78B2
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 16:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686C51B7AF1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 18:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgDXO73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 10:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727021AbgDXO7Z (ORCPT
+        id S1726698AbgDXQAZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 12:00:25 -0400
+Received: from gateway34.websitewelcome.com ([192.185.149.105]:16179 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726301AbgDXQAZ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:59:25 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC46EC09B045
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 07:59:25 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g74so10356293qke.13
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 07:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/xjYsVZHDw4SC9mlHBGyGF+E/ZmG6pBAai8JJNEZgwo=;
-        b=RqZpI0DJw+Masz39wUHuq2qfwcTQSD++6RoeMqgZtIgRt3dD3mq3Gze65/Xa7ql2fT
-         10ao9ncfQOG7CjkBKQbjuCW6Pmlg6vG7OY3bUdv2ItIjHXy8+RC/QT1BreXEmNloFZA6
-         czM9v8WB7UByPJUzoDP8c9WYi/ZteN9UhRcuE23m1CJfyTbHpI50BjLDJS7FPvQDgzi3
-         d4Tu/BA1g830RrM1lWK14gSX9W/LsGs+9yLQ2JPJGzwtuCRw4FzZoFZb7wiL2OfLqCUv
-         abIpJcRVBi0vIEARA4EluhdSWyARiiq+UI7R5FVCIbaR9D8iF7WaNfO5xZA7wgzGVtxX
-         Uceg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/xjYsVZHDw4SC9mlHBGyGF+E/ZmG6pBAai8JJNEZgwo=;
-        b=J/edkZhtO1TR6RSVh3g9e4zm1fXnUN28hKpj1P76XZEQie+uJbUg1xiMsH2ieRK0Lg
-         ZFfPkN+8AqgLie8QBqcmmIIBIRXU1VmC0LTYSrVjQXabEUKKw7cv7JXDkrvdUXJvxlxJ
-         qNOgwD1nWFQ13PEvHb/gLZ18/I2xzDr/M3Tkj7r/rcmgoZgh7TkW1Kgug9Ibj7/2RtnY
-         Nl2CN+ZVjBD8fkr4UllZBNnlV35/aAyzRlepUaW2T2GsTUOqu6bgU0cImen0/qIrsfBQ
-         15cXPfiv//WZaoxCPkVS6ay3p9W+rMFQYmSvPO8Ez5b7SaTp6wmCw6H9m61qwSCIgyXw
-         tazA==
-X-Gm-Message-State: AGi0Pub7GUtn0T3LzApoL0DpxHvVLrG/7ZuO081oKiZYEtZr3heWiYWi
-        ihSwVqbPcVEPs5iJtvoVCqBGdjSyimitsw==
-X-Google-Smtp-Source: APiQypI3/SNNnjuVTqitJ0ZiAeWD0ZnpdfFgF58ANQ0c0LOpLwuhwzK2klofzI6skY/yjdLPuiPb+Q==
-X-Received: by 2002:a37:404f:: with SMTP id n76mr9208471qka.442.1587740364761;
-        Fri, 24 Apr 2020 07:59:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w42sm4123965qtj.63.2020.04.24.07.59.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Apr 2020 07:59:24 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRznX-0001LG-Nz; Fri, 24 Apr 2020 11:59:23 -0300
-Date:   Fri, 24 Apr 2020 11:59:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 2/3] RDMA/efa: Count mmap failures
-Message-ID: <20200424145923.GH26002@ziepe.ca>
-References: <20200420062213.44577-1-galpress@amazon.com>
- <20200420062213.44577-3-galpress@amazon.com>
+        Fri, 24 Apr 2020 12:00:25 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id 0C3D731CFA88
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 10:13:41 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id S01Nj0i201s2xS01NjcYqr; Fri, 24 Apr 2020 10:13:41 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GtcnpGsolmgR53+FPf7YoLxFdbs5TBp3BgCqahnxZ6Y=; b=JRszSWBIDiIx+kiBBosfMlCQy/
+        5lkVx+FrQnZhEsZDP7hcLs8TUpKxd5R4ikmH4H7wr5hWKSH3Aa37dzKwxMk+69js4HoXHJFA121tc
+        5jGtWkmST36gJCkuz1JOnzRCBxUVuKB1dT+2IOBVPDrMPAauZMxO9ZRqbqmFep9f868Blke6RJrIj
+        HMhCzc0bvBkB5iEtGFtNgCuNdph6Ci1nOsh6qtNNBVFSQw9LcChAeNqKX2D4v871u/dVpCYmItlHg
+        rMuGyhR70WOUq8OxcudWFahcPngjRb/W6bszhreOe1f9H0pqJ1rq/UMnoOp+drY0xJdwqP0/inbd3
+        MtJW9T8g==;
+Received: from [201.162.177.68] (port=57568 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jS01M-000a3c-JL; Fri, 24 Apr 2020 10:13:40 -0500
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <6342c465-e34b-3e18-cc31-1d989926aebd@embeddedor.com>
+ <20200424034704.GA12320@ubuntu-s3-xlarge-x86>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Subject: Re: remaining flexible-array conversions
+Message-ID: <f636ad65-b313-90e9-557b-856d44c2e14b@embeddedor.com>
+Date:   Fri, 24 Apr 2020 10:17:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420062213.44577-3-galpress@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200424034704.GA12320@ubuntu-s3-xlarge-x86>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.177.68
+X-Source-L: No
+X-Exim-ID: 1jS01M-000a3c-JL
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.177.68]:57568
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 09:22:12AM +0300, Gal Pressman wrote:
-> Add a new stat that counts mmap failures, which might help when
-> debugging different issues.
-> 
-> Reviewed-by: Firas JahJah <firasj@amazon.com>
-> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
->  drivers/infiniband/hw/efa/efa.h       | 3 ++-
->  drivers/infiniband/hw/efa/efa_verbs.c | 9 +++++++--
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-> index aa7396a1588a..77c9ff798117 100644
-> +++ b/drivers/infiniband/hw/efa/efa.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->  /*
-> - * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #ifndef _EFA_H_
-> @@ -40,6 +40,7 @@ struct efa_sw_stats {
->  	atomic64_t reg_mr_err;
->  	atomic64_t alloc_ucontext_err;
->  	atomic64_t create_ah_err;
-> +	atomic64_t mmap_err;
->  };
->  
->  /* Don't use anything other than atomic64 */
-> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> index b555845d6c14..75eef1ec2474 100644
-> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> @@ -44,7 +44,8 @@ struct efa_user_mmap_entry {
->  	op(EFA_CREATE_CQ_ERR, "create_cq_err") \
->  	op(EFA_REG_MR_ERR, "reg_mr_err") \
->  	op(EFA_ALLOC_UCONTEXT_ERR, "alloc_ucontext_err") \
-> -	op(EFA_CREATE_AH_ERR, "create_ah_err")
-> +	op(EFA_CREATE_AH_ERR, "create_ah_err") \
-> +	op(EFA_MMAP_ERR, "mmap_err")
->  
->  #define EFA_STATS_ENUM(ename, name) ename,
->  #define EFA_STATS_STR(ename, name) [ename] = name,
-> @@ -1569,6 +1570,7 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->  		ibdev_dbg(&dev->ibdev,
->  			  "pgoff[%#lx] does not have valid entry\n",
->  			  vma->vm_pgoff);
-> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
->  		return -EINVAL;
->  	}
->  	entry = to_emmap(rdma_entry);
-> @@ -1604,12 +1606,14 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
->  		err = -EINVAL;
->  	}
->  
-> -	if (err)
-> +	if (err) {
->  		ibdev_dbg(
->  			&dev->ibdev,
->  			"Couldn't mmap address[%#llx] length[%#zx] mmap_flag[%d] err[%d]\n",
->  			entry->address, rdma_entry->npages * PAGE_SIZE,
->  			entry->mmap_flag, err);
-> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
+Hi Nathan,
 
-Really? Isn't this something that is only possible with a buggy
-rdma-core provider? Why count it?
+On 4/23/20 22:47, Nathan Chancellor wrote:
+> Hi Gustavo,
+> 
+> That patch in -next appears to introduce some warnings with clang when
+> CONFIG_UAPI_HEADER_TEST is enabled (allyesconfig/allmodconfig exposed it
+> for us with KernelCI [1]):
+> 
 
-Jason
+Thanks a lot for reporting this.
+
+> ./usr/include/rdma/ib_user_verbs.h:436:34: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of
+> a struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_cq_resp base;
+>                                         ^
+> ./usr/include/rdma/ib_user_verbs.h:647:34: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of
+> a struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_qp_resp base;
+>                                         ^
+> ./usr/include/rdma/ib_user_verbs.h:743:29: warning: field 'base' with
+> variable sized type 'struct ib_uverbs_modify_qp' not at the end of a
+> struct or class is a GNU extension
+> [-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_modify_qp base;
+>                                    ^
+> 3 warnings generated.
+> 
+> I presume this is part of the point of the conversion since you mention
+> a compiler warning when the flexible member is not at the end of a
+> struct. How should they be fixed? That should probably happen before the
+> patch gets merged.
+> 
+For all the cases above, the solution seems to be to move the declaration
+of the "base" member to the end of the corresponding structure, as below:
+
+diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
+index a390a667b3f3..e05538be8b30 100644
+--- a/include/uapi/rdma/ib_user_verbs.h
++++ b/include/uapi/rdma/ib_user_verbs.h
+@@ -644,9 +644,9 @@ struct ib_uverbs_create_qp_resp {
+ };
+
+ struct ib_uverbs_ex_create_qp_resp {
+-       struct ib_uverbs_create_qp_resp base;
+        __u32 comp_mask;
+        __u32 response_length;
++       struct ib_uverbs_create_qp_resp base;
+ };
+
+ /*
+
+but I guess this will change the ABI?
+
+Also, notice that:
+
+"A structure containing a flexible array member, or a union containing
+such a structure (possibly recursively), may not be a member of a structure
+or an element of an array. (However, these uses are permitted by GCC as
+extensions.)"[1]
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+
+Thanks
+--
+Gustavo
