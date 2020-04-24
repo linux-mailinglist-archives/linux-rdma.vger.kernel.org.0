@@ -2,117 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57361B76C4
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 15:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9D01B76E8
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 15:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgDXNRa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 09:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
+        id S1726900AbgDXNYk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 09:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgDXNR3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 09:17:29 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3C9C09B045
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:17:28 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 23so5184453qkf.0
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:17:28 -0700 (PDT)
+        with ESMTP id S1726888AbgDXNYk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 09:24:40 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8DDC09B045
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:24:39 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l78so10059239qke.7
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=ArmYYg9gHVxZclqhQc/cgoSoOikRwX728/If3n/XW/A=;
-        b=IsIepsyr4XddxHlovtTmt0m+m8ohuxPWejepCuhs8nrUsPCndbfZhcT5Q2/4b5TnGw
-         PPxJBwTmqHkc5vR+vMqmLHZ21tMtcEVMujjf0W1NfhJvc9JnvWBdvGa3afjEnPkEW/ml
-         LUdqNc8m8O7edBdvCwWzjyNmk17pQaN0Mm5A4eYpcOLl7gI9xeENbs4YChrbp9stc8O1
-         T8E+EwRL1K2uEwFcGYQj/KagUloJII6Hzp0N4R3mUr8tChIBBTJXVdb+CHeBYUfqVE+U
-         w8YgVN7lCVLq9/3GakkcrayO9d4/EniiUghZ6+z6aF6PY4b5ZwCSTiE83Zlh/wLFu+sX
-         ziVQ==
+        bh=FjurQ7y4aLZjgRR+9oqb6xDrtsHdA+oEzaoMRtAbVI8=;
+        b=X0gozXDobfvLzL4+QqIQ1e0UwNhQGNEl1SWZkaURAyqiD2RIXFcUa3Mi2EG57QqyYr
+         FeyGK6nGcMwQbwhRy9KpZyhF8csN2Iuwc2YJc5N1VkdOwO6VsCkOeUNsChfXRJy12f5H
+         uyU368GcskIQaJ3Eh5WVDjCd6vzOKhkNjIWepQj6pRUji7V3zwWOYBryVRXR+AzmPnO/
+         2oBTVXFHGBOOYE45vWcP9T1kJdZCMePOvLd9diQtmE7r4FtjsnbzIWX5+KH90q5VNEEi
+         lUVheAdRrki2ak84Dz3U8GtQVv4khnRnligLnbTN5SE5DF1XtT5LMPEelQ5BBZOSXT2H
+         W1Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ArmYYg9gHVxZclqhQc/cgoSoOikRwX728/If3n/XW/A=;
-        b=q/7USseV35EQkkmoAnY0XneAyMKk0t2FtPWl/7hBc3N5kssulRZH5ICl+YIEIla7jv
-         GYgSL4Xdn5VhHL7aw/ecpl3vlHmNDrU+xvun8H8SaQG8UTanLq1y813NrRRPZY/2Gbwi
-         sjf8uAOuetFCssheDgGA0KMkagiQ61bQqkkB0010xnOx/Czv3o3l0B3NYdqC1lfvtqoY
-         SFyi1ugRvrxgq7rK1JKQvSsNAsd0Ik60NdsTp5soXLvwn1nwK4/bRPFLQOTcKJbkfhd5
-         NsU58B9LlaFVQfb2XEXp6u9M6O3t2mNh39BlRyAPxa4JX3Q+vVwQELTWWz2mLXsHAJzq
-         wPbQ==
-X-Gm-Message-State: AGi0PuYNSo9l8asXfeG9/jbRNWlNu8+UnDmqU2pmAKJrypfKSBEpWvpt
-        B4lkB0/cHdyzDYdryJpU9Z9lqQ==
-X-Google-Smtp-Source: APiQypI1CnpfTu9ROpuJzgU7fj9BChbgZTiK8qvhRSbDCvnH4a8xHytQrsaQr8Vdau1Ocxyy44X/xQ==
-X-Received: by 2002:a05:620a:14b2:: with SMTP id x18mr8410869qkj.153.1587734248080;
-        Fri, 24 Apr 2020 06:17:28 -0700 (PDT)
+        bh=FjurQ7y4aLZjgRR+9oqb6xDrtsHdA+oEzaoMRtAbVI8=;
+        b=I1KAbT3sTf6uMA3dZm3HnOqF0qt4axqH2LrG0c1zM6AyhVC5LKXcgV+ahLu29fPlG5
+         JpyM+Nmb8yxZ8Odje1a3H2z5aY8RRCPaUoTiENlEuTL3bDyU2CZL5KNXz2iclEfLCek7
+         4KEEZ5THoXjiCsXvdgg+smkHnzJmW9iSipAqAup50rMFXXGiSXE/08l5zbu9wW8QXleg
+         yXvktEFoo/YrDIJNrd3Ig16j+7M5x9AqJEjXXmjrskYIXDu85CwRnm0fr1GG9/pwLeEo
+         3mgPjYwQeHcZ9Rtv/KKr5GISmv8pmMCwUGfeQbYicvInnLjOC3IQiePd935nBvq817Yz
+         Z2TQ==
+X-Gm-Message-State: AGi0PuYIYBe3iRM3Hk2y2MArYBP+jlHWc9Ag95P+Jlp3hi+fgaJnTb0h
+        bL7+63MIgeXaU3xV0jQ6vMA+1w==
+X-Google-Smtp-Source: APiQypJTVCxDJ+P1pqSyN51A/YrScF7FfBhUTGMSOoeW6rF3rFnxsXSwcY9+rMtLEkHhlfKJy8JoBA==
+X-Received: by 2002:a05:620a:2f2:: with SMTP id a18mr8325368qko.261.1587734678188;
+        Fri, 24 Apr 2020 06:24:38 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p24sm4068541qtp.59.2020.04.24.06.17.27
+        by smtp.gmail.com with ESMTPSA id g133sm3671108qke.73.2020.04.24.06.24.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Apr 2020 06:17:27 -0700 (PDT)
+        Fri, 24 Apr 2020 06:24:37 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jRyCs-00062V-S8; Fri, 24 Apr 2020 10:17:26 -0300
-Date:   Fri, 24 Apr 2020 10:17:26 -0300
+        id 1jRyJp-0007gV-6U; Fri, 24 Apr 2020 10:24:37 -0300
+Date:   Fri, 24 Apr 2020 10:24:37 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH rdma-next 4/4] RDMA/mlx5: Add support in steering default
- miss
-Message-ID: <20200424131726.GA23075@ziepe.ca>
-References: <20200413135220.934007-1-leon@kernel.org>
- <20200413135220.934007-5-leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v2 for-next 0/6] RDMA/hns: Codes optimization
+Message-ID: <20200424132437.GA29510@ziepe.ca>
+References: <1586938475-37049-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413135220.934007-5-leon@kernel.org>
+In-Reply-To: <1586938475-37049-1-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:52:20PM +0300, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@mellanox.com>
+On Wed, Apr 15, 2020 at 04:14:29PM +0800, Weihang Li wrote:
+> This series optimize some codes in hns drivers. The first two patches are
+> mainly to remove unnecessary memset(), and the others use map table to
+> simplify the conversion of values.
 > 
-> User can configure default miss rule in order to skip matching in
-> the user domain and forward the packet to the kernel steering domain.
-> When user requests a default miss rule, we add steering rule
-> to forward the traffic to the next namespace.
+> Previous version can be found at:
+> https://patchwork.kernel.org/cover/11485099/
 > 
-> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> Reviewed-by: Mark Zhang <markz@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/hw/mlx5/flow.c        | 35 ++++++++++++++++++++----
->  drivers/infiniband/hw/mlx5/main.c        |  9 +++---
->  include/uapi/rdma/mlx5_user_ioctl_cmds.h |  5 ++++
->  3 files changed, 38 insertions(+), 11 deletions(-)
+> Changes since v1:
+> - Fix comments from Jason that the arrays should be defined in type of
+>   "static const" in patch #3 ~ #6.
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/flow.c b/drivers/infiniband/hw/mlx5/flow.c
-> index 7ff8d7188b82..7db672fd1395 100644
-> +++ b/drivers/infiniband/hw/mlx5/flow.c
-> @@ -69,19 +69,35 @@ static const struct uverbs_attr_spec mlx5_ib_flow_type[] = {
->  
->  static int get_dests(struct uverbs_attr_bundle *attrs,
->  		     struct mlx5_ib_flow_matcher *fs_matcher, int *dest_id,
-> -		     int *dest_type, struct ib_qp **qp)
-> +		     int *dest_type, struct ib_qp **qp, bool *def_miss)
->  {
->  	bool dest_devx, dest_qp;
->  	void *devx_obj;
-> +	u32 flags;
->  
->  	dest_devx = uverbs_attr_is_valid(attrs,
->  					 MLX5_IB_ATTR_CREATE_FLOW_DEST_DEVX);
->  	dest_qp = uverbs_attr_is_valid(attrs,
->  				       MLX5_IB_ATTR_CREATE_FLOW_DEST_QP);
->  
-> -	if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_BYPASS &&
-> -	    ((dest_devx && dest_qp) || (!dest_devx && !dest_qp)))
-> -		return -EINVAL;
-> +	*def_miss = false;
-> +	if (uverbs_attr_is_valid(attrs, MLX5_IB_ATTR_FLOW_MATCHER_FLOW_FLAGS)) {
+> Lang Cheng (4):
+>   RDMA/hns: Simplify the qp state convert code
+>   RDMA/hns: Simplify the cqe code of poll cq
+>   RDMA/hns: Simplify the state judgment code of qp
+>   RDMA/hns: Simplify the status judgment code of hns_roce_v1_m_qp()
+> 
+> Lijun Ou (2):
+>   RDMA/hns: Optimize hns_roce_config_link_table()
+>   RDMA/hns: Optimize hns_roce_v2_set_mac()
 
-attr_is_valid should not be called on flags, get_flags already knows
-to return 0 as the flags if the attr is not present.
+applied to for-next, thanks
 
-Jason
+Jason 
