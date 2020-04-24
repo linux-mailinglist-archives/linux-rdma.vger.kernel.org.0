@@ -2,115 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336901B8055
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 22:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694191B8074
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 22:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgDXUQC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 16:16:02 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39251 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729595AbgDXUQC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587759360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mijZ0deIMv+7N52HZ2/oeSJuKxO51O9zwfYwlf/bvUU=;
-        b=LM9epuzexSiF2slJwrZ5gfMuU0H/glRthazJd0nGhYhaIgZIsPEPea2A4fTf80io5qe1Gi
-        7zVlsZRm7Wqx9pGqCvOOLu6/1gTqDP3EO6c7lE2zBW95myXZhei/ju8dLwGGq4DHKQIhx/
-        drkGRjmMEmmsu7tpXp/lQ5hzrI5SCB8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-D4Qq4ngMOX6rlbMg-FH6uw-1; Fri, 24 Apr 2020 16:15:56 -0400
-X-MC-Unique: D4Qq4ngMOX6rlbMg-FH6uw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726793AbgDXUXg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 16:23:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725970AbgDXUXg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Apr 2020 16:23:36 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A496D107BEFE;
-        Fri, 24 Apr 2020 20:15:53 +0000 (UTC)
-Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C2F531002380;
-        Fri, 24 Apr 2020 20:15:51 +0000 (UTC)
-Date:   Fri, 24 Apr 2020 14:15:48 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Ira Weiny" <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [regression] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
-Message-ID: <20200424141548.5afdd2bb@w520.home>
-In-Reply-To: <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
-        <20200211001536.1027652-7-jhubbard@nvidia.com>
-        <20200424121846.5ee2685f@w520.home>
-        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 87664214AF;
+        Fri, 24 Apr 2020 20:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587759815;
+        bh=imcGJDNl4KGhWyPbfTPIPbmT/2fx2oUz4PpGdBxZ73w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hZmsFqt/+8pQEqAPXlS0kV94m6zKNwbFpowR+E/hBUeTPmLHFhJBtzDIncwHvmqCx
+         0Q/8/B6UnazbnWjfbtdFn/mmzffLfb2wFEM0sBIIo6uOvLUng8kokWHU+DbVupFcRm
+         56u/wf0CLO/XYIhKjibPCqTU2qMqbTJ4nMCTOIVI=
+Date:   Fri, 24 Apr 2020 23:23:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next 14/18] RDMA/mlx5: Process create QP flags in
+ one place
+Message-ID: <20200424202331.GC15990@unreal>
+References: <20200420151105.282848-1-leon@kernel.org>
+ <20200420151105.282848-15-leon@kernel.org>
+ <20200424195127.GA28751@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424195127.GA28751@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 24 Apr 2020 12:20:03 -0700
-John Hubbard <jhubbard@nvidia.com> wrote:
+On Fri, Apr 24, 2020 at 04:51:27PM -0300, Jason Gunthorpe wrote:
+> On Mon, Apr 20, 2020 at 06:11:01PM +0300, Leon Romanovsky wrote:
+> > +	process_create_flag(dev, &create_flags,
+> > +			    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK,
+> > +			    MLX5_CAP_GEN(mdev, block_lb_mc), qp);
+>
+> This only applies to datagram QP types
 
-> On 2020-04-24 11:18, Alex Williamson wrote:
-> ...
-> > Hi John,
-> > 
-> > I'm seeing a regression bisected back to this commit (3faa52c03f44
-> > mm/gup: track FOLL_PIN pages).  I've attached some vfio-pci test code
-> > that reproduces this by mmap'ing a page of MMIO space of a device and
-> > then tries to map that through the IOMMU, so this should be attempting
-> > a gup/pin of a PFNMAP page.  Previously this failed gracefully (-EFAULT),
-> > but now results in:  
-> 
-> 
-> Hi Alex,
-> 
-> Thanks for this report, and especially for source code to test it, 
-> seeing as how I can't immediately spot the problem just from the crash
-> data so far.  I'll get set up and attempt a repro.
-> 
-> Actually this looks like it should be relatively easier than the usual 
-> sort of "oops, we leaked a pin_user_pages() or unpin_user_pages() call,
-> good luck finding which one" report that I fear the most. :) This one 
-> looks more like a crash that happens directly, when calling into the 
-> pin_user_pages_remote() code. Which should be a lot easier to solve...
-> 
-> btw, if you are set up for it, it would be nice to know what source file 
-> and line number corresponds to the RIP (get_pfnblock_flags_mask+0x22) 
-> below. But if not, no problem, because I've likely got to do the repro 
-> in any case.
+We didn't really check it before, should I check it now?
 
-Hey John,
+>
+> > +	process_create_flag(dev, &create_flags, IB_QP_CREATE_CROSS_CHANNEL,
+> > +			    MLX5_CAP_GEN(mdev, cd), qp);
+> > +	process_create_flag(dev, &create_flags, IB_QP_CREATE_MANAGED_SEND,
+> > +			    MLX5_CAP_GEN(mdev, cd), qp);
+> > +	process_create_flag(dev, &create_flags, IB_QP_CREATE_MANAGED_RECV,
+> > +			    MLX5_CAP_GEN(mdev, cd), qp);
+> > +
+> > +	if (qp_type == IB_QPT_UD) {
+> > +		process_create_flag(dev, &create_flags,
+> > +				    IB_QP_CREATE_IPOIB_UD_LSO,
+> > +				    MLX5_CAP_GEN(mdev, ipoib_basic_offloads),
+> > +				    qp);
+> > +		cond = MLX5_CAP_GEN(mdev, port_type) == MLX5_CAP_PORT_TYPE_IB;
+> > +		process_create_flag(dev, &create_flags, IB_QP_CREATE_SOURCE_QPN,
+> > +				    cond, qp);
+> > +	}
+> > +
+> > +	if (qp_type == IB_QPT_RAW_PACKET) {
+> > +		cond = MLX5_CAP_GEN(mdev, eth_net_offloads) &&
+> > +		       MLX5_CAP_ETH(mdev, scatter_fcs);
+> > +		process_create_flag(dev, &create_flags,
+> > +				    IB_QP_CREATE_SCATTER_FCS, cond, qp);
+> > +
+> > +		cond = MLX5_CAP_GEN(mdev, eth_net_offloads) &&
+> > +		       MLX5_CAP_ETH(mdev, vlan_cap);
+> > +		process_create_flag(dev, &create_flags,
+> > +				    IB_QP_CREATE_CVLAN_STRIPPING, cond, qp);
+> > +	}
+> > +
+> > +	process_create_flag(dev, &create_flags,
+> > +			    IB_QP_CREATE_PCI_WRITE_END_PADDING,
+> > +			    MLX5_CAP_GEN(mdev, end_pad), qp);
+>
+> This one is datagram only toos
 
-TBH I'm feeling a lot less confident about this bisect.  This was
-readily reproducible to me on a clean tree a bit ago, but now it
-eludes me.  Let me go back and figure out what's going on before you
-spend any more time on it.  Thanks,
+Same
 
-Alex
+>
+> > +
+> > +	process_create_flag(dev, &create_flags, MLX5_IB_QP_CREATE_WC_TEST,
+> > +			    qp_type != MLX5_IB_QPT_REG_UMR, qp);
+> > +	process_create_flag(dev, &create_flags, MLX5_IB_QP_CREATE_SQPN_QP1,
+> > +			    true, qp);
+>
+> I wonder if these are excluded from userspace someplace, seems like it
+> is worth a udata test here just to be clear
 
+We are excluding them in create_qp():drivers/infiniband/core/uverbs_cmd.c
+
+1411         if (attr.create_flags & ~(IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK |
+1412                                 IB_QP_CREATE_CROSS_CHANNEL |
+1413                                 IB_QP_CREATE_MANAGED_SEND |
+1414                                 IB_QP_CREATE_MANAGED_RECV |
+1415                                 IB_QP_CREATE_SCATTER_FCS |
+1416                                 IB_QP_CREATE_CVLAN_STRIPPING |
+1417                                 IB_QP_CREATE_SOURCE_QPN |
+1418                                 IB_QP_CREATE_PCI_WRITE_END_PADDING)) {
+1419                 ret = -EINVAL;
+1420                 goto err_put;
+1421         }
+
+>
+> > +
+> > +	if (create_flags)
+> > +		mlx5_ib_dbg(dev, "Create QP has unsupported flags 0x%X\n",
+> > +			    create_flags);
+> > +
+> > +	return (create_flags) ? -EINVAL : 0;
+>
+> Since there is already an if, avoid ternary expression
+
+No problem
+
+>
+> Jason
