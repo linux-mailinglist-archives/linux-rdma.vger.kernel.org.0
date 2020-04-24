@@ -2,135 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E7E1B6A76
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 02:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D25C1B6ABD
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 03:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgDXAsn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Apr 2020 20:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgDXAsn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Apr 2020 20:48:43 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286E7C09B044
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 17:48:43 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id w29so6647373qtv.3
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Apr 2020 17:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kqQ/23kvMPhmrmbio1Pott7UiPk/E3soHL+iEgcmvJE=;
-        b=pUYxO/YhdP6mGEU94Urf8DYtAWFKRSHq1lS8SA6GdE/cfQUQwzkDrLdQZuKpZLNzgs
-         Bn9pqYw3xEAf68z5eCZWB4Ah2+CN4i1tPETngY5flIQZoyhjpxJYTqdkYRMsqQYAGFc+
-         mzB8E8n9Bq/wBIvmgHLz+bLi6CXq0/3+WCrT3kxDF7Dxty/EtrlsRMvVTR2TfKLdfMdG
-         4KrKGjhLOExomMrHST7/Buv/w+2Ny/WkkmJQV73YlwexX5lPAcb/Qs7wuFyjwdMLnhta
-         Xf38fW4vxQoDlLz/kgBOsgXcnq1GowAwSMsPhUTSCT8jYROFFNMXnD+Hz/iLF6yNpw2I
-         VKNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kqQ/23kvMPhmrmbio1Pott7UiPk/E3soHL+iEgcmvJE=;
-        b=rM1NbQtzlq1AEWnIn2S+yZjeiNI+yklvojFDx6OLnr2+9SmrtSk4JncTdniA8GtLSc
-         hcFWQhQhgLcUtV1BZNQ0t/UXIhcRhQ0YTXCKP8GBvHIlysfZig9H7r7NVBFISYaPs3RW
-         2vmce6yHCStFeimG8D13F4VKlp1UpJClHLd1cuGTmuCajtYOozbHIQpD6TV1Vf7ZXYZO
-         LRrzYYmwRV7c7jqRfC7eEnq7QITGTFc9BTBcJf1f4Y2nzlwVWzdhP5h+TirytZA+D6Z6
-         peN3hqagObfBpnkphINLoi98noHaeTbmoe1dnPw8JRpieb45+ysskElN6waBN0/3Za3b
-         Sw1Q==
-X-Gm-Message-State: AGi0PubmTIvoyWGwpkqnQlO9Qux/HTFIHRZkOARiztr0FAu1FxoxyvNH
-        dJN6vct0p+tgL4wax/dA+RsN7Q==
-X-Google-Smtp-Source: APiQypKWwi1lUphnIm1u0yFW06VhOaNprkeE+qFrgi+iix9qyLy8VLygPu09qSBXOAZrrWLCnoHffw==
-X-Received: by 2002:ac8:359d:: with SMTP id k29mr7227438qtb.106.1587689322283;
-        Thu, 23 Apr 2020 17:48:42 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t75sm2659650qke.127.2020.04.23.17.48.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Apr 2020 17:48:41 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRmWH-0002OL-A5; Thu, 23 Apr 2020 21:48:41 -0300
-Date:   Thu, 23 Apr 2020 21:48:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework definitions
-Message-ID: <20200424004841.GD26002@ziepe.ca>
-References: <20200417193421.GB3083@unreal>
- <9DD61F30A802C4429A01CA4200E302A7DCD4853F@fmsmsx124.amr.corp.intel.com>
- <20200421004628.GQ26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4A3E9@fmsmsx124.amr.corp.intel.com>
- <20200421182256.GT26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4DB92@fmsmsx124.amr.corp.intel.com>
- <20200423150201.GY26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4ED27@fmsmsx124.amr.corp.intel.com>
- <20200423190327.GC26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4FD03@fmsmsx124.amr.corp.intel.com>
+        id S1727902AbgDXBSE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Apr 2020 21:18:04 -0400
+Received: from mail-eopbgr00055.outbound.protection.outlook.com ([40.107.0.55]:36823
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727063AbgDXBSE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Apr 2020 21:18:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fF8cllWJmiMtXxZyIEjJt8NxM94KCns6IstlGberFlxKc19Th9nhyJVfS/QlUYTFRU3yhkj06hATdp3rRTlLniItBxYzpP2llq24aKSN5yMt8LovLDW/rHMPIH0PiSU/f20QLrTbH/eVeLFqh78n7EJRx+5s60KHJoLbG+99i2cpf4bcO89oPaQ49Qq2I8Zj3SwaSE5sd5CnJQ2KW1VE+u3tCeJH0kFGZQyUOMsv+rVopUwwsIWO/bBPhJ/FtjuM+Ng2zA8xiDmM/lR+NY9jrp4uJep7YLQsERDp02HNvmSnAKSZYSKuTN2JujEYUux2+b8mYPfZMF5FXozD9WZaLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s4qYH8rmO5kMFF9/lxLBbdWe1+49HoWOazS3y1+phKk=;
+ b=kNgPqy7QOmms07OPPvVzPy2JayBkHVKJMsTXTvRgDrp6vVngprmP+m5+rCPkWzNkm/mrOE6LRYVRZsYXdy97hcdivVVn78Z3aO2cO2UmJPGZRDtPKHNoXzfKzNCUy3kFx2wwx0rqLDVe0I368beNfFx8xp40G9f44+g/Kp+BsQxIMMYu6SNb6lrWDbxIEU1WokbMDP0HdJk1x6KmIW8L/XA8JHpu47UNkNaA4OzpKRIOZ32K8CFO5DrioAjJUBSP6D090jC5ZW0uKbe9XM1e3aHKedJXkzukFCOav5+8ugL3nsH/sP3oweZt5X8hl9V6s26E8GMlkCiXoJ+c8/3/Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s4qYH8rmO5kMFF9/lxLBbdWe1+49HoWOazS3y1+phKk=;
+ b=FKDkjOvCIZAOrAPhUe0eEbywaLcpXrEiSuxx2uY7tfJCNiIn41/Uspp5ZJvrQKRbh584+ulIM3tzTczgCH3VTuLrhx6uEH3P906e/lDwfBvNrPQuuyP5rKbMvfKIn6YvUywVR0T1UKKpqL2x+CmcxPT1UcTBwf9bkvl64evrkdw=
+Received: from AM6PR05MB5014.eurprd05.prod.outlook.com (2603:10a6:20b:4::13)
+ by AM6PR05MB5537.eurprd05.prod.outlook.com (2603:10a6:20b:30::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Fri, 24 Apr
+ 2020 01:18:00 +0000
+Received: from AM6PR05MB5014.eurprd05.prod.outlook.com
+ ([fe80::fdcf:854a:cffb:1ac3]) by AM6PR05MB5014.eurprd05.prod.outlook.com
+ ([fe80::fdcf:854a:cffb:1ac3%7]) with mapi id 15.20.2921.030; Fri, 24 Apr 2020
+ 01:18:00 +0000
+From:   Yanjun Zhu <yanjunz@mellanox.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] RDMA/rxe: check for error
+Thread-Topic: [PATCH] RDMA/rxe: check for error
+Thread-Index: AQHWGVy13PkgHRNx8kiMNYeLb1O0RKiHeXoQ
+Date:   Fri, 24 Apr 2020 01:17:59 +0000
+Message-ID: <AM6PR05MB5014AED9AF55149641D2E7FFD8D00@AM6PR05MB5014.eurprd05.prod.outlook.com>
+References: <20200423104813.20484-1-sudipm.mukherjee@gmail.com>
+In-Reply-To: <20200423104813.20484-1-sudipm.mukherjee@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=yanjunz@mellanox.com; 
+x-originating-ip: [118.201.220.138]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 375bc872-d738-4f32-b5e9-08d7e7ed541b
+x-ms-traffictypediagnostic: AM6PR05MB5537:
+x-microsoft-antispam-prvs: <AM6PR05MB553793FF999FA635CF039C13D8D00@AM6PR05MB5537.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB5014.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(346002)(39860400002)(376002)(366004)(136003)(2906002)(81156014)(316002)(52536014)(26005)(66446008)(64756008)(66476007)(66556008)(53546011)(6506007)(7696005)(33656002)(55016002)(9686003)(66946007)(110136005)(186003)(76116006)(86362001)(54906003)(4326008)(5660300002)(8676002)(8936002)(71200400001)(478600001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fDL84t3H/QtwVTIcHosydBXjn60urCrP3bCLWwmLo+uZbhbD2QYSt3pSw/X21trau8Ow+hiHWKTkcW06MYThIUdnSem11KbZ2dYdSDa/nkkPUiCQAKoXbSMmydtGlkFiLlHVtrS77vRlWYBFOkK7AhzWHM4djU+fYF6ULHLhrNSBOwgDhok7YtGOLlrR+VbGh412chkjPSi6an9sSrq/VUWkskWHw6q07XkpZGIpoJGhxB9orzI6Ezha4p3BrfmA2G7d8nMeQnioyFo3InaC/sFR4HiynRUtRK+UA4IrGxlZ1OutooDevWWTY+a8y66wrLZfnmbXROCBFI8M4/nEs1uhD+e9TSaFbsVT/PPMPzrLHu475YDWa6Pjyy8C8ow0ioKBdmg2cLMrlKRnQPgfCvoq5yq2vKvARCVmiN9ljQv+AjUy7TfAiMIHPb2C2aNT
+x-ms-exchange-antispam-messagedata: n4ElyU08rkNXd6XEXf5V6pG9e3BhnVduStv8xd+lrtPO54qD/z+CByO+As4vOi99VEJsgRRw9FAs0FLPZN8WnPiv8wRm0GhYboyxhgqV0/os5VmQGJZMfEo9OhYbq0R20HsDvAEiTkv5+S76/4181g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7DCD4FD03@fmsmsx124.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 375bc872-d738-4f32-b5e9-08d7e7ed541b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 01:17:59.9692
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5WRzNggIvhaeTafisgjQkccW2P34ZWZ9HrNQyI1Ku5rZZ4UX1sWSga6eTcxxP49g0Z5wse5nGn4bv34TvYtjKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5537
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:54:18PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework
-> > definitions
-> > 
-> > On Thu, Apr 23, 2020 at 05:15:22PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework
-> > > > definitions
-> > > >
-> > > > On Thu, Apr 23, 2020 at 12:32:48AM +0000, Saleem, Shiraz wrote:
-> > > >
-> > > > > we have a split initialization design for gen2 and future products.
-> > > > > phase1 is control path resource initialization in irdma_probe_dev
-> > > > > and
-> > > > > phase-2 is the rest of the resources with the ib registration at
-> > > > > the end of irdma_open. irdma_close must de-register the ib device
-> > > > > which will take care of ibdev free too. So it makes sense to keep
-> > > > > allocation of the ib device in irdma_open.
-> > > >
-> > > > The best driver pattern is to allocate the ib_device at the very
-> > > > start of probe() and use this to anchor all the device resources and memories.
-> > > >
-> > > > The whole close/open thing is really weird, you should get rid of it.
-> > > maybe I missing something. But why is it weird?
-> > 
-> > Because the RDMA driver should exist as its own entity. It does not shutdown
-> > unless the remove() method on is struct device_driver is closed.
-> > So what exactly are open/cose supposed to be doing? I think it is a left over of
-> > trying to re-implement the driver model.
-> > 
-> > > underlying configuration changes and reset management for the physical
-> > > function need a light-weight mechanism which is realized with the
-> > > close/open from netdev PCI drv --> rdma drv.
-> > 
-> > > Without a teardown and re-add of virtual device off the bus.
-> > 
-> > Yes, that is exactly right. If you have done something so disruptive that the
-> > ib_device needs to be destroyed then you should unplug/replug the entire virtual
-> > bus device, that is the correct and sane thing to do.
-> 
-> Well we have resources created in rdma driver probe which are used by any
-> VF's regardless of the registration of the ib device on the PF.
+Thanks,
+Reviewed-by: Zhu Yanjun <yanjunz@mellanox.com>
 
-Ugh, drivers that have the VF driver require the PF driver have a lot
-of problems.
+-----Original Message-----
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>=20
+Sent: Thursday, April 23, 2020 6:48 PM
+To: Yanjun Zhu <yanjunz@mellanox.com>; Doug Ledford <dledford@redhat.com>; =
+Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Sudip Mukherj=
+ee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] RDMA/rxe: check for error
 
-But, even so, with your new split design, resources held for a VF
-belong in the core pci driver, not the rdma virtual bus device.
+rxe_create_mmap_info() returns either NULL or an error value in ERR_PTR and=
+ we only checked for NULL after return. We should be using IS_ERR_OR_NULL t=
+o check for both.
 
-Jason
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/=
+rxe/rxe_queue.c
+index ff92704de32f..ef438ce4fcfa 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -45,7 +45,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __use=
+r *outbuf,
+=20
+ 	if (outbuf) {
+ 		ip =3D rxe_create_mmap_info(rxe, buf_size, udata, buf);
+-		if (!ip)
++		if (IS_ERR_OR_NULL(ip))
+ 			goto err1;
+=20
+ 		err =3D copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+--
+2.11.0
+
