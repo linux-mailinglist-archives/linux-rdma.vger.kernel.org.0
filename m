@@ -2,94 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9D01B76E8
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 15:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66581B777B
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 15:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgDXNYk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 09:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726888AbgDXNYk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 09:24:40 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8DDC09B045
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:24:39 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l78so10059239qke.7
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Apr 2020 06:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FjurQ7y4aLZjgRR+9oqb6xDrtsHdA+oEzaoMRtAbVI8=;
-        b=X0gozXDobfvLzL4+QqIQ1e0UwNhQGNEl1SWZkaURAyqiD2RIXFcUa3Mi2EG57QqyYr
-         FeyGK6nGcMwQbwhRy9KpZyhF8csN2Iuwc2YJc5N1VkdOwO6VsCkOeUNsChfXRJy12f5H
-         uyU368GcskIQaJ3Eh5WVDjCd6vzOKhkNjIWepQj6pRUji7V3zwWOYBryVRXR+AzmPnO/
-         2oBTVXFHGBOOYE45vWcP9T1kJdZCMePOvLd9diQtmE7r4FtjsnbzIWX5+KH90q5VNEEi
-         lUVheAdRrki2ak84Dz3U8GtQVv4khnRnligLnbTN5SE5DF1XtT5LMPEelQ5BBZOSXT2H
-         W1Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FjurQ7y4aLZjgRR+9oqb6xDrtsHdA+oEzaoMRtAbVI8=;
-        b=I1KAbT3sTf6uMA3dZm3HnOqF0qt4axqH2LrG0c1zM6AyhVC5LKXcgV+ahLu29fPlG5
-         JpyM+Nmb8yxZ8Odje1a3H2z5aY8RRCPaUoTiENlEuTL3bDyU2CZL5KNXz2iclEfLCek7
-         4KEEZ5THoXjiCsXvdgg+smkHnzJmW9iSipAqAup50rMFXXGiSXE/08l5zbu9wW8QXleg
-         yXvktEFoo/YrDIJNrd3Ig16j+7M5x9AqJEjXXmjrskYIXDu85CwRnm0fr1GG9/pwLeEo
-         3mgPjYwQeHcZ9Rtv/KKr5GISmv8pmMCwUGfeQbYicvInnLjOC3IQiePd935nBvq817Yz
-         Z2TQ==
-X-Gm-Message-State: AGi0PuYIYBe3iRM3Hk2y2MArYBP+jlHWc9Ag95P+Jlp3hi+fgaJnTb0h
-        bL7+63MIgeXaU3xV0jQ6vMA+1w==
-X-Google-Smtp-Source: APiQypJTVCxDJ+P1pqSyN51A/YrScF7FfBhUTGMSOoeW6rF3rFnxsXSwcY9+rMtLEkHhlfKJy8JoBA==
-X-Received: by 2002:a05:620a:2f2:: with SMTP id a18mr8325368qko.261.1587734678188;
-        Fri, 24 Apr 2020 06:24:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g133sm3671108qke.73.2020.04.24.06.24.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Apr 2020 06:24:37 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jRyJp-0007gV-6U; Fri, 24 Apr 2020 10:24:37 -0300
-Date:   Fri, 24 Apr 2020 10:24:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 0/6] RDMA/hns: Codes optimization
-Message-ID: <20200424132437.GA29510@ziepe.ca>
-References: <1586938475-37049-1-git-send-email-liweihang@huawei.com>
+        id S1726753AbgDXNu3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 09:50:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:15449 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726301AbgDXNu3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Apr 2020 09:50:29 -0400
+IronPort-SDR: +fsqupmTXBmafTaycO/G7WYPN1Rad91lFmrgBvrmQFk2o8RISPMcKmRXP74vh2XxfoDwdAuyp3
+ wsSOmEewv0Xg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2020 06:50:28 -0700
+IronPort-SDR: 8fjcEJiDO2ruG7MQB1H8Gkca8dUfaKDbie26y/u/VTiS21bTGrdRcMTlc2PFBg2kUUXgphQK5u
+ xQlb6tJFwWKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,311,1583222400"; 
+   d="scan'208";a="246595304"
+Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
+  by fmsmga007.fm.intel.com with ESMTP; 24 Apr 2020 06:50:28 -0700
+Received: from fmsmsx121.amr.corp.intel.com (10.18.125.36) by
+ FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 24 Apr 2020 06:50:24 -0700
+Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx121.amr.corp.intel.com (10.18.125.36) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 24 Apr 2020 06:50:25 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.102)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Fri, 24 Apr 2020 06:50:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hXbdG/yPQvcyuAsloRxUmL0C7VQZR0cz3DYnl/ft0uHxGKBb3kyY32G4/6PdoeRtSXVtGEO5h2Awu9JWoFVQfGy9i20kTe2A3BMITf8X6TgZ+d5IpV+tOIWi/65w6tzc45ndyvlpVTnfFaIeJOJUhOOZoArxk3lhJMXMundgvCXR6KOl4xr64SoOpgQmtNjdZ22PB81g6SPbRDJIAZrkCBK8l61Gdaztm4DK7ch+bhLvJHNWfEveyZ9ib27IK/Lv3voFv/v4mJySt89jN4LydVe5BmWypus0enHqK68D+F2X0Z9GnMFbEnmOjTO7WXR+uZgtLJCrsW8a03/ViaRMzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QhQyJ5wBBBxXyzfMXBN/hpbIRlKfe82aShWmBP8c5xY=;
+ b=lI7b/cJlXb1eA1pWdqMZsgdl0Zooc/x1/PWDv0+yx7BFxcxLEJIpicDCtyXOpWluaGxKWYN4jdSFw1v0+EeyNsU0stUpH2W+kGCv6P8gvweJcyisiXeZi1cqwdthbgD7KxxM+ZvXDPCf0ING+iok7/SsrGq02RL0FRdH3Pl2GCiSz9atvpef7vtfBXRXDrvSZ59AAFtt5HIyz0hS/xRGjK3VyVteACOiFZ4u1xiFPJFjrUsTJmX1+61ws6g0CXjJnmve+1dL0C6wXQACMuv2pv8TAPIfKb3OXZpLchh5njgp058wr3kb9FEEGvyv5/rjyoBFPFamKnv7a8svqiHgzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QhQyJ5wBBBxXyzfMXBN/hpbIRlKfe82aShWmBP8c5xY=;
+ b=SwA6aEsdNkAI7o3/ZulYIqdE9lcPIGn06txmhFLb8ed7sJy0VaUZG8BJh/lEy//KAOpqhDEXRF8M0EEUjdc6Hfu4hvYSYaAXnX9jrDGO7jNUBFga5J6cM8BLimyO4cBaN3uphSsdeWDUywBxzpO6hFMlQbaTfjr3VZKn6L2uUhw=
+Received: from BY5PR11MB3958.namprd11.prod.outlook.com (2603:10b6:a03:18e::19)
+ by BY5PR11MB4021.namprd11.prod.outlook.com (2603:10b6:a03:191::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Fri, 24 Apr
+ 2020 13:50:22 +0000
+Received: from BY5PR11MB3958.namprd11.prod.outlook.com
+ ([fe80::e57f:cc7f:1fda:69c1]) by BY5PR11MB3958.namprd11.prod.outlook.com
+ ([fe80::e57f:cc7f:1fda:69c1%6]) with mapi id 15.20.2937.012; Fri, 24 Apr 2020
+ 13:50:22 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+CC:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] IB/rdmavt: return proper error code
+Thread-Topic: [PATCH] IB/rdmavt: return proper error code
+Thread-Index: AQHWGWd1CYnztpE4g0qOcUuaVAX/Y6iGvuGAgAGLwWA=
+Date:   Fri, 24 Apr 2020 13:50:22 +0000
+Message-ID: <BY5PR11MB3958DBE0C624D035D00E5AAB86D00@BY5PR11MB3958.namprd11.prod.outlook.com>
+References: <20200423120434.19304-1-sudipm.mukherjee@gmail.com>
+ <20200423140947.GX26002@ziepe.ca>
+In-Reply-To: <20200423140947.GX26002@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=mike.marciniszyn@intel.com; 
+x-originating-ip: [192.55.52.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 100d6c05-ca32-4516-0161-08d7e8566f0f
+x-ms-traffictypediagnostic: BY5PR11MB4021:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB402140D47DA9448FB0B3937486D00@BY5PR11MB4021.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3958.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(136003)(39860400002)(376002)(346002)(5660300002)(52536014)(26005)(4326008)(76116006)(66946007)(186003)(2906002)(9686003)(478600001)(66556008)(66446008)(55016002)(71200400001)(64756008)(4744005)(33656002)(86362001)(110136005)(8676002)(8936002)(6506007)(7696005)(81156014)(66476007)(316002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lkMJIXfVF182p1XOZHD08D6chUK0DidmRuv9+Ha5TmsZms7MJLFjWEJV061usSvT3KQ+4QzS4sXAhqR/hJkAiWojy4kVaA/rPNpB2DHaf6/ISevLC6a6RwTEFHsnoX7Q5loCEFf8F+dSX4xsKltG2wlG1fBmgG1h22Sy4HXhGVvpcZvnUw4lRlGJtVxqeOcuO3Mr8eO44KdSsnkAR3LfVPzsNjoIRzM1ZG0NYaP+EjdctaFrsTd4CyzU24Ai2PK0PjnbDlUATERysbqueXQGkmdn4w035gkuAMlIBBYgCOF8zrlWGGELMIsyJyJiuWGgbfmDY4ZEcyaH/EGE5aBqx9ujT8VNeKO4B+P5uifdEJS7EaqDncx2xhZJj0PVOTCfrGM6pSIu8po5iMeQv3+LUKEj4M4F42iBQSLb1LwwqphymDJ9CRbRvaQ2/mZv91FW
+x-ms-exchange-antispam-messagedata: 6sSPDBuUcX9QRnN+I2kw6/DS8BqKoD/Cs9POdakGNbXOKpWTP/uQKk9p3Av/4lAEjaDFvkOfql/c6g4750bpuvX4L0H1ITtv62jiBwcV+z3YoSM4HLvzMw6Pk/Prnwl9oPeR6tP1KuN3APyteTBuQg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586938475-37049-1-git-send-email-liweihang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 100d6c05-ca32-4516-0161-08d7e8566f0f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 13:50:22.2681
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LsDDikKhaNbIdifC0MWCCn+CO/TPCrvLLwW+JRFFQID47JOvxLuZ+1v0rvnS5UXRsD4ZdMHdDf1GV3JmuYf43J3JFAKx9V3fclYgTuxtUMk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4021
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 04:14:29PM +0800, Weihang Li wrote:
-> This series optimize some codes in hns drivers. The first two patches are
-> mainly to remove unnecessary memset(), and the others use map table to
-> simplify the conversion of values.
-> 
-> Previous version can be found at:
-> https://patchwork.kernel.org/cover/11485099/
-> 
-> Changes since v1:
-> - Fix comments from Jason that the arrays should be defined in type of
->   "static const" in patch #3 ~ #6.
-> 
-> Lang Cheng (4):
->   RDMA/hns: Simplify the qp state convert code
->   RDMA/hns: Simplify the cqe code of poll cq
->   RDMA/hns: Simplify the state judgment code of qp
->   RDMA/hns: Simplify the status judgment code of hns_roce_v1_m_qp()
-> 
-> Lijun Ou (2):
->   RDMA/hns: Optimize hns_roce_config_link_table()
->   RDMA/hns: Optimize hns_roce_v2_set_mac()
+> Subject: Re: [PATCH] IB/rdmavt: return proper error code
+>=20
+> On Thu, Apr 23, 2020 at 01:04:34PM +0100, Sudip Mukherjee wrote:
+> > The function rvt_create_mmap_info() can return either NULL or an error
+> > in ERR_PTR(). Check properly for both the error type and return the
+> > error code accordingly.
+>=20
+> Please fix rvt_create_mmap_info to always return ERR_PTR, never null
+> on failure.
+>=20
+> Thanks,
+> Jason
 
-applied to for-next, thanks
+I agree on the ERR_PTR return, but the patch is incomplete.
 
-Jason 
+The original patch:
+
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+
+Broke all the call sites: cq.c, srq.c, and qp.c.
+
+Mike
+
+
