@@ -2,95 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACB61B80A2
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 22:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4190A1B8197
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Apr 2020 23:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgDXU0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Apr 2020 16:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727031AbgDXU0i (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Apr 2020 16:26:38 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F4042214AF;
-        Fri, 24 Apr 2020 20:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587759998;
-        bh=F6hgGfn1OQ7snT4vz/4qxh3KrQ9Mk8F2aBcJMTj/TG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KOjE5/Qr2A/f2M9BbxTeT5lvvhQ9DJS+PQGu8Po4BDctq2yG4q6heOR5h260tHf7s
-         dWCUoXo2yVho0xYxxFG0J5Q3XdgPvRIozU+dpctV01ogdjgOHp8VJ8VSPmpLhAYJfD
-         vfoFXqBYiXZxkGmBI9kQImrtFU0zzQr81kQw0wcc=
-Date:   Fri, 24 Apr 2020 23:26:35 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next 00/18] Refactor mlx5_ib_create_qp (Part I)
-Message-ID: <20200424202635.GD15990@unreal>
-References: <20200420151105.282848-1-leon@kernel.org>
- <20200424195426.GA29169@ziepe.ca>
+        id S1726061AbgDXVTW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Apr 2020 17:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726108AbgDXVTW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Apr 2020 17:19:22 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83DEC09B048;
+        Fri, 24 Apr 2020 14:19:21 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id i68so9193258qtb.5;
+        Fri, 24 Apr 2020 14:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=fXa5ZQfBwOl7sxD1r5EZkygeH/aqjfJgOvY7hYBHa9w=;
+        b=pTsALS5ldCOL8b8K4RRVPC2hHJb1+FgzXfI931FbjXV0hDLETRK4iwFhke7W2/10oV
+         6SCuFCn98Dg5fXPUd2230yxerekJI7foUrUzA+Sy4VuvH6e+Qg9PnfpJ0CM5/FriH/NQ
+         HTfaJ1ubiYvheHvQ/o0QLOEOwm0Hc8KJI5w7220lJ1D52jhE/qs7d33ajnWXRAxxG65Q
+         PC7/FpOMFOVkLLU93JRpsZl5XH6TBBWFWqbHOQNkPP4z77mUQ0F8BN61hsqV1SsmNXxC
+         anD1wx3PIntX4jCNLTI+p7KTx1vwZtA+ysWucseZLmeKnVhax1eAdBNxIXg6dNNbEJFL
+         elgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:from:subject:message-id:date
+         :user-agent:mime-version:content-transfer-encoding:content-language;
+        bh=fXa5ZQfBwOl7sxD1r5EZkygeH/aqjfJgOvY7hYBHa9w=;
+        b=GZooiuMQV3hMvh2J0V7HkqsRwY2uxWTT8kP4wwOYtyELXHZao837WsmoVczklSdoiP
+         vjOfl/lcCYYmc6ckJ/qem9Ayskvfewk1TSKeCvIrMdijurpLqcFmYZMaS7877LgpqiaB
+         8yO723heUrQOv9YHNj8JicNAa0E+FVoZemGUez8LzoFrbXjTDEYFVF2cz0cgZEpFCaSZ
+         tmW2mecdyGdYzSHB9OR6ndTrKzFkFDZPLCM+Zo1u2AlCAQ06jL4CuwGAeFwERstBVRuL
+         qImPBzEKqne7QF5xHALOLB7/iwvRE0REJ46eAAzhX+I4l6mHJO0EyJb88BIAT8kGLkEJ
+         kMVQ==
+X-Gm-Message-State: AGi0Pub/dn1P+uWZrgK05swy1hrc2ei/IgvFrKwAJ8LL5m+1hxGYIJiG
+        oGpCgLrZHccRV0JeJRHXHC6a9l9kpqk=
+X-Google-Smtp-Source: APiQypJywaIdnm4aLifH77u50linEM5gKc2ZL+3ntkv/UawL0RBccSXYT8nu25D4do6ICxkpGv6vRA==
+X-Received: by 2002:ac8:32a4:: with SMTP id z33mr12022128qta.363.1587763160564;
+        Fri, 24 Apr 2020 14:19:20 -0700 (PDT)
+Received: from [192.168.1.43] (c-68-32-74-190.hsd1.mi.comcast.net. [68.32.74.190])
+        by smtp.gmail.com with ESMTPSA id p22sm2166422qtb.91.2020.04.24.14.19.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Apr 2020 14:19:20 -0700 (PDT)
+To:     trondmy@hammerspace.com
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+From:   Anna Schumaker <anna.schumaker@netapp.com>
+Subject: [GIT PULL] Please pull NFSoRDMA Client Bugfixes for Linux 5.7
+Message-ID: <b380cea4-b711-fd33-8a79-434657168950@gmail.com>
+Date:   Fri, 24 Apr 2020 17:19:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200424195426.GA29169@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 04:54:26PM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 20, 2020 at 06:10:47PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Hi,
-> >
-> > This is first part of series which tries to return some sanity
-> > to mlx5_ib_create_qp() function. Such refactoring is required
-> > to make extension of that function with less worries of breaking
-> > driver.
-> >
-> > Extra goal of such refactoring is to ensure that QP is allocated
-> > at the beginning of function and released at the end. It will allow
-> > us to move QP allocation to be under IB/core responsibility.
-> >
-> > It is based on previously sent [1] "[PATCH mlx5-next 00/24] Mass
-> > conversion to light mlx5 command interface"
-> >
-> > Thanks
-> >
-> > [1] https://lore.kernel.org/linux-rdma/20200420114136.264924-1-leon@kernel.org
-> >
-> > Leon Romanovsky (18):
-> >   RDMA/mlx5: Organize QP types checks in one place
-> >   RDMA/mlx5: Delete impossible GSI port check
-> >   RDMA/mlx5: Perform check if QP creation flow is valid
-> >   RDMA/mlx5: Prepare QP allocation for future removal
-> >   RDMA/mlx5: Avoid setting redundant NULL for XRC QPs
-> >   RDMA/mlx5: Set QP subtype immediately when it is known
-> >   RDMA/mlx5: Separate create QP flows to be based on type
-> >   RDMA/mlx5: Split scatter CQE configuration for DCT QP
-> >   RDMA/mlx5: Update all DRIVER QP places to use QP subtype
-> >   RDMA/mlx5: Move DRIVER QP flags check into separate function
-> >   RDMA/mlx5: Remove second copy from user for non RSS RAW QPs
-> >   RDMA/mlx5: Initial separation of RAW_PACKET QP from common flow
-> >   RDMA/mlx5: Delete create QP flags obfuscation
-> >   RDMA/mlx5: Process create QP flags in one place
-> >   RDMA/mlx5: Use flags_en mechanism to mark QP created with WQE
-> >     signature
-> >   RDMA/mlx5: Change scatter CQE flag to be set like other vendor flags
-> >   RDMA/mlx5: Return all configured create flags through query QP
-> >   RDMA/mlx5: Process all vendor flags in one place
->
-> This seems reasonable, can you send it so it applies without other
-> series?
+Hi Trond,
 
-Maybe it is doable, but part II needs [1] as pre-requirement.
-Do you anyway prefer me to do it?
+The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
 
-Thanks
+  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
 
->
-> Jason
+
+are available in the Git repository at:
+
+  git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-rdma-for-5.7-2
+
+for you to fetch changes up to 48a124e383508d3d73453d540a825c0745454af9:
+
+  xprtrdma: Fix use of xdr_stream_encode_item_{present, absent} (2020-04-20 10:45:01 -0400)
+
+----------------------------------------------------------------
+
+These patches fix two bugs that Chuck found that were introduced in the original 5.7 pull request, and also a use-after-free race in the tracepoints code.
+
+Thanks,
+
+Anna
+
+----------------------------------------------------------------
+
+Chuck Lever (3):
+      xprtrdma: Restore wake-up-all to rpcrdma_cm_event_handler()
+      xprtrdma: Fix trace point use-after-free race
+      xprtrdma: Fix use of xdr_stream_encode_item_{present, absent}
+
+ include/trace/events/rpcrdma.h | 12 ++++--------
+ net/sunrpc/xprtrdma/rpc_rdma.c | 15 +++++++++++----
+ net/sunrpc/xprtrdma/verbs.c    |  3 ++-
+ 3 files changed, 17 insertions(+), 13 deletions(-)
+
