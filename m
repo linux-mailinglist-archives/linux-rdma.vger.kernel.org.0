@@ -2,153 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573161B87AA
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Apr 2020 18:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B06B1B89D4
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 00:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgDYQTR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Apr 2020 12:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbgDYQTR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Apr 2020 12:19:17 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0A4C09B04D;
-        Sat, 25 Apr 2020 09:19:14 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id i19so13977384ioh.12;
-        Sat, 25 Apr 2020 09:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k+l2Dw/0DdtUd1lcg1ku8NU/TmLLMdmDMb3p6NrvwZ8=;
-        b=fq1CHCG0feG/vV4mbXm4WQ2e8G50Ya0rcOTwBzJ2wUZZRrChMALbHgBPEyMGRAIhqc
-         Eu70Qevd5MdWQZB44t89Hovz7ltKNqDKghFCgvrYzGhaNynD/pYvBc4QIl6WmUjwiAXD
-         4kBySOO0Quqfkc53pEG4Vk7Lm7+hsP2NIcHdir+9sujyEfxYE0mS+8fyk7XSEjyKm8xf
-         H0cgJGUQ6Asa7VSdx2fZKl1vFqGiW/6PWEanYq2Ri8I/Lq7kPELvQK5F5kMph0Ls98nm
-         gQKLgfUMg3T23DqAINAHAKfHaEKMmTQVBhdphFBGXx6pxmIMNySrcXbHkXAL3TA5zvgr
-         pGyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k+l2Dw/0DdtUd1lcg1ku8NU/TmLLMdmDMb3p6NrvwZ8=;
-        b=UVUHpJc/KMveEaX/9D1pZwf7vwNrIcJpkUzpt2OULE8rKK6ge7J7j15ZufuhLagVD7
-         R7G/KUujb8qNUO1FuaNMyafvfMY5FxB6YcnydFY4JzgKtVfri3uorCEYni3f5IJamOqP
-         GGR0Jw78UDB6Z6M8zlUr7VEoJXYz6Yhpa9rEUeRyzY0syx7xSlOjtiq3CCtBFGV2Jqir
-         5uKRGHzrEjP1NP+bRnRqDwe1GDxmdrD2srUfttr3NsepfGXY26LpN56QOhz8V8LWZWa8
-         XHSL8nLkI5IxK3xTC9eRc+k0uxnGtMA2Yx+5QntGEX7Dbs6Lh+oSE/tDFGGynu5REJiY
-         6jpQ==
-X-Gm-Message-State: AGi0PuZ1t19Y7E/JTAossU2k2mgjZupnuRdoxolWEZNdCY3+HQbR81oi
-        W2G3Y+cMqIAZ3y5JkZlQPn0=
-X-Google-Smtp-Source: APiQypKy8jXL/VhrlWkqC/f7r8T4pRuZZrYoFxXhsubXRXR9ubcWrR69AiyQGuQnVB627oMQ2AL+QA==
-X-Received: by 2002:a02:9f94:: with SMTP id a20mr13137782jam.40.1587831554139;
-        Sat, 25 Apr 2020 09:19:14 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:7013:38e0:b27:9cc3? ([2601:282:803:7700:7013:38e0:b27:9cc3])
-        by smtp.googlemail.com with ESMTPSA id o19sm3375056ild.42.2020.04.25.09.19.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 09:19:13 -0700 (PDT)
-Subject: Re: [PATCH V5 mlx5-next 01/16] net/core: Introduce
- netdev_get_xmit_slave
-To:     Maor Gottlieb <maorg@mellanox.com>, davem@davemloft.net,
-        jgg@mellanox.com, dledford@redhat.com, j.vosburgh@gmail.com,
+        id S1726239AbgDYWkv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Apr 2020 18:40:51 -0400
+Received: from mail-eopbgr140057.outbound.protection.outlook.com ([40.107.14.57]:62599
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726232AbgDYWku (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Apr 2020 18:40:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZDZehdk1zSH7UvM/V3XyNTxB/73NsbJNRpWvqVD+MmL9+gcntlcju17aYh7jyG2SK/UVd/ZIwKR7EQq4K866uVo35KLMfqiTlde4ppR6TcgNKqLNgjk+C1NDsWLTY3P0KJ2oe4WBgfm1Uh8K75r1xOWQ5n10SMhBdOFVeLKz3G/YzFB3in8qHBGEd9GBg2fHQCyLCB8Xvtn0Aq0MIxZHfj/OLNHfBQP0r1IaiRbAI8DWG2PuGS8AN6c3v7btKVfKUyY9YIjc0LS9I/lMvtUDa4AtbuyFSrSXXw0F+dozLGdWH2bYZfvUpRrEssPhCB55jnaQcaGS+mJc9Y7oWyMgzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0V3T/7NTxei3HHG2abiAhOnIT5uKdyhDB6aObY4w2o=;
+ b=eCmj3C2j/Wcl88mQD21aMkFMYRPElr2+fWzQh2StUlRbmLW+S+3oFs9rcbzmrmVwQhjcJLDKfYaLpDCByvAsqm1dih+P4lzK7KA95y7ZSsFunbEw8PgTWkSVLTsJCMHAjy8bGOYBa34cDB9RuvwIFcCc96ZO8ptvebfw8C5KnBcv/h5GdBoHMOiAqpguo4TJlruGVPh6IDVoGJOQK7UF+QOOYRYNqDO3dNV3F6XphyYyhRDW2J5Ex/dFm303BSMeurdAPhQBHr+Zhr83MezxSvTbejnROy0ZvkzyEo4o+zURTkNSu92lj9qs0XRMCsJ+/CIQ4npdQYWv1jEMWfLzog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0V3T/7NTxei3HHG2abiAhOnIT5uKdyhDB6aObY4w2o=;
+ b=LRYBvidIwPJ3ru3jNzKjGtdHbx3VqHMeai3oD2kvS/FrplYOGZL0XntJtNBJWCBfSi+0HSncDsQl4H340uTp8zG7AvIlVHexXaxP2ozcbpOKyvr9mL2z0FVqXrkI1WHS9+87X5op0VBdVIaEAT6ME+rfEaVrJKeRkiTiemt+yg4=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB4544.eurprd05.prod.outlook.com (2603:10a6:802:5e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Sat, 25 Apr
+ 2020 22:40:47 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2937.020; Sat, 25 Apr 2020
+ 22:40:46 +0000
+Date:   Sat, 25 Apr 2020 19:40:43 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Maor Gottlieb <maorg@mellanox.com>
+Cc:     davem@davemloft.net, dledford@redhat.com, j.vosburgh@gmail.com,
         vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
-        jiri@mellanox.com, dsahern@kernel.org
-Cc:     leonro@mellanox.com, saeedm@mellanox.com,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alexr@mellanox.com
+        jiri@mellanox.com, dsahern@kernel.org, leonro@mellanox.com,
+        saeedm@mellanox.com, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, alexr@mellanox.com
+Subject: Re: [PATCH V5 mlx5-next 10/16] RDMA: Group create AH arguments in
+ struct
+Message-ID: <20200425224043.GY13640@mellanox.com>
 References: <20200423125555.21759-1-maorg@mellanox.com>
- <20200423125555.21759-2-maorg@mellanox.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <3d68acb4-b20d-ac02-1499-e4279abb9f34@gmail.com>
-Date:   Sat, 25 Apr 2020 10:19:12 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+ <20200423125555.21759-11-maorg@mellanox.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423125555.21759-11-maorg@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR19CA0017.namprd19.prod.outlook.com
+ (2603:10b6:208:178::30) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-In-Reply-To: <20200423125555.21759-2-maorg@mellanox.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0017.namprd19.prod.outlook.com (2603:10b6:208:178::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Sat, 25 Apr 2020 22:40:46 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jSTTX-0005np-Ci; Sat, 25 Apr 2020 19:40:43 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c123e9a9-95bc-4260-c97a-08d7e969b211
+X-MS-TrafficTypeDiagnostic: VI1PR05MB4544:|VI1PR05MB4544:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB4544C3EFB051C3B04A48E10ECFD10@VI1PR05MB4544.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-Forefront-PRVS: 0384275935
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(136003)(396003)(39850400004)(346002)(366004)(376002)(9786002)(186003)(2616005)(8936002)(9746002)(478600001)(81156014)(8676002)(5660300002)(1076003)(37006003)(6636002)(4744005)(86362001)(66946007)(107886003)(6862004)(33656002)(316002)(52116002)(4326008)(26005)(36756003)(66556008)(66476007)(2906002)(24400500001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3tOpungQRg3QoL2URP4Rtsq+bLrerFvoOFtSMbowJ4RRXHjVWQgcvAEQnKB36WP79xxS/FGmXrihB/Zb2FOHm5DiTs3sXcLXgBdHKb3gTYStJ2hCvAGaNIB7MRBWNX4BM3B3c+Tnw4ujVuxtuuq/PP5OMsbKMvL8p+kfKV0J6zLIrCFv5pvst7sVOdoDdfuQRxynH6GCwPM6J3sc0u2bp8JbGqtgLDSvwCyD9iuEedGjxf9dT9nsknRjk3numChUla3omX+wwhtKMFtFhUVFQUSBqO1gjhX2GTTvBF1/Y3nVUHGpU3uErSH5yJzDmfzDmsMy0kvM1W5JfKPD9a5JTJ+9UT8CPS6FUdW8tAkwqpl/AsBZHgHaqi2qRKghi9ikMyox1d3DCNdwMLQZ1hF0DOm4sA1v6NMFIpw5aX5dElwTaUZomcbLf2zWZGcKs9k/K5Ztx6RnjyxqzL3bVzF4UtFUK/ysVBZOEBrF0WZznJ9ldAdzYHGDlFFWI8Z+lcB1
+X-MS-Exchange-AntiSpam-MessageData: ulpoiAlW7Qxni8lv6AQ3Wh5XRxZqYc8qA/N241Xqp5H1yQ4+aJn0CWY1IYuZUQdFu9x3DFhhzrh3N0eh+XywPFTxsz9lDBjO8Sw6lSzuk3Ny5WjzMHzbuW3D1uxZysCY+pR7w4sYRHplMYe2HnP+As9p065AmBeqKtL1EpgAb0VMjw9BO6n9y1OTyuKPD0YSxitdOC9QGaN5/xY3sXpmfDgQ6qYEAwzCBBDB48VinxHkuJLbhToHqWfUVzSa5xeDcFb+56YBk+Yo+yacFrst2dG8O3Pru85DYTyPHT2jr1H/+HU9hcBX5cDEHsk0ZlObIa7So8v1sLYRcurI5I/4pEpU4GgkxNQp2pzB7KK8ZPWtoFQddRUDfeLQ0oJ6G9/gOaqFy9P5PlW9Teihd0CiavI+zRZY3aVvN0MJw8PduqMEX/JkLMhPlnwsnbpa5TomHQL+T3aoyPXwB2CfyxuOfr9Hz0yg9/lXP8Xtfc5uNfGUs8OVIR16+2R4RLjE3/M1mdKT73PHxy3tTh9UGktOPbJDSLiCXa+YqZDG3qzhcnIerKQfkVc+KdhjqXNYrvM+mnhW16eFn9xDTrth2FnzPEaUcEqnOv0v/gCodw9/2HvLrqeGugcU+KlVK8+f/sqigAQ3lPewkDOCAZwSSlzl2ot5M11wsL3i58TFBRcbH8FQyD/aMoKigoyqo2gDwArOMNqPmDcICUtKUN+AauLMQLbNuA6K5CaT5/A35gK4uoKQKXjH5wlvpMC36NUCIoJ8RVGnQY1ieZ2XGoDCYRbeHwJX5a7CsKRB9cNWC/QRN+0=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c123e9a9-95bc-4260-c97a-08d7e969b211
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2020 22:40:46.7880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6tI+VMQqdnR5ftNf5/XZMXK3r8dnKOT+X8pzOjR5YK7qbiJvaqrKD533DWpcqDJL58BorJ/5FaH5N0eIRoakNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4544
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/23/20 6:55 AM, Maor Gottlieb wrote:
-> Add new ndo to get the xmit slave of master device.
-> Caller should call dev_put() when it no longer works with
-> slave netdevice.
-
-description needs to be updated.
-
-> User can ask to get the xmit slave assume all the slaves can
-> transmit by set all_slaves arg to true.
-> 
-> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> ---
->  include/linux/netdevice.h |  6 ++++++
->  net/core/dev.c            | 22 ++++++++++++++++++++++
->  2 files changed, 28 insertions(+)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 130a668049ab..d1206f08e099 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1389,6 +1389,9 @@ struct net_device_ops {
->  						 struct netlink_ext_ack *extack);
->  	int			(*ndo_del_slave)(struct net_device *dev,
->  						 struct net_device *slave_dev);
-> +	struct net_device*	(*ndo_get_xmit_slave)(struct net_device *dev,
-> +						      struct sk_buff *skb,
-> +						      bool all_slaves);
-
-documentation above struct net_device_ops { }; needs to be updated.
-
->  	netdev_features_t	(*ndo_fix_features)(struct net_device *dev,
->  						    netdev_features_t features);
->  	int			(*ndo_set_features)(struct net_device *dev,
-> @@ -2731,6 +2734,9 @@ void netdev_freemem(struct net_device *dev);
->  void synchronize_net(void);
->  int init_dummy_netdev(struct net_device *dev);
+On Thu, Apr 23, 2020 at 03:55:49PM +0300, Maor Gottlieb wrote:
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index bbc5cfb57cd2..c49e4d9ead66 100644
+> +++ b/include/rdma/ib_verbs.h
+> @@ -880,6 +880,12 @@ struct ib_mr_status {
+>   */
+>  __attribute_const__ enum ib_rate mult_to_ib_rate(int mult);
 >  
-> +struct net_device *netdev_get_xmit_slave(struct net_device *dev,
-> +					 struct sk_buff *skb,
-> +					 bool all_slaves);
->  struct net_device *dev_get_by_index(struct net *net, int ifindex);
->  struct net_device *__dev_get_by_index(struct net *net, int ifindex);
->  struct net_device *dev_get_by_index_rcu(struct net *net, int ifindex);
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 9c9e763bfe0e..e6c10980abfd 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -7785,6 +7785,28 @@ void netdev_bonding_info_change(struct net_device *dev,
->  }
->  EXPORT_SYMBOL(netdev_bonding_info_change);
->  
-> +/**
-> + * netdev_get_xmit_slave - Get the xmit slave of master device
-> + * @skb: The packet
-> + * @all_slaves: assume all the slaves are active
-> + *
-> + * The reference counters are not incremented so the caller must be
-> + * careful with locks. The caller must hold RCU lock.
-> + * %NULL is returned if no slave is found.
-> + */
-> +
-> +struct net_device *netdev_get_xmit_slave(struct net_device *dev,
-> +					 struct sk_buff *skb,
-> +					 bool all_slaves)
-> +{
-> +	const struct net_device_ops *ops = dev->netdev_ops;
-> +
-> +	if (!ops->ndo_get_xmit_slave)
-> +		return NULL;
-> +	return ops->ndo_get_xmit_slave(dev, skb, all_slaves);
-> +}
-> +EXPORT_SYMBOL(netdev_get_xmit_slave);
-> +
->  static void netdev_adjacent_add_links(struct net_device *dev)
->  {
->  	struct netdev_adjacent *iter;
-> 
+> +struct rdma_ah_init_attr {
+> +	struct rdma_ah_attr *ah_attr;
+> +	u32 flags;
+> +	struct ib_udata *udata;
 
+I prefer to keep the udata as a function argument
+
+Jason
