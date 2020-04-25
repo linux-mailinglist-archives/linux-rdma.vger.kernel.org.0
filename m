@@ -2,99 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0781B89DC
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 01:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E1B1B8A08
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 01:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgDYXAI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Apr 2020 19:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726232AbgDYXAI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 25 Apr 2020 19:00:08 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA238C09B050
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2020 16:00:06 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b188so12697312qkd.9
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Apr 2020 16:00:06 -0700 (PDT)
+        id S1726101AbgDYXft (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Apr 2020 19:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgDYXft (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Apr 2020 19:35:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26714C061A0C;
+        Sat, 25 Apr 2020 16:35:49 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j1so16131910wrt.1;
+        Sat, 25 Apr 2020 16:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2/3PKFH4+Dgb7ByQk7h++0OjX0dIa7Z5llVx9VERmM0=;
-        b=X6n1+GJstCa1UOknoW/4jU9lM8Eu5DFFhopt138f9UsIkKweqKEdSHZCrGnWHJdS+U
-         nyRtIFLIsVDgcKApmA0L1GM5O+RJYDGfDa/Hgd2jsws2wtwDVplcB8lc5O46TAdRRRSM
-         gE/YUx1r8fEhclpqE5xvaszMieDGPVkX9uvpwAhBNWMQp7KZH4ckWnQLjFpsvzs3oCWJ
-         Q+qunQ25WroqlaxLxVAAY2arL+AmOhGNxMJbRbihjcClxqNxdOi8cRGWVtXaXXsC3Tbr
-         qgsgnvs62+QHuFV5/BPnZjZvFQoOle4scmsm0MtQvUIVzMSHyO9Bf6iOnH0HVRlRxh3l
-         BJmw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=gCF6xgbqYSz+54ZxWOLptTQH8ldDtaIZB0EHa3I8s7g=;
+        b=T8aoYfsWg4JVLALRHi9Z04fd1eCSeHhYbpQ11yQhS+812OR5im0BVC/ZHDMc4iKdNy
+         guToyYkT4SnuPjJ2AbTiifPqgR6fK7oagu426nzKNSWCB/B6v6WY7pcwVGcOU3PzAqbT
+         LqJFAjwdnpeknVGGBeqoyhTfs9E5hJ77ejLgjofD7hDiRp8nWW4C539x6pQPJVmKPPrk
+         t3ByUzTvqVSkwC1sU9Xi7b+9M8lxQuyxDy6HDcEn3K53cZc8Of1iO9tw5CDq9cGikuo2
+         4fXc1tb8lG2il+c1GyBrMOKLKcC64LNCWqceDtPtOVanraLMs+cRXJHPWOKsHzNdJhET
+         Ho0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2/3PKFH4+Dgb7ByQk7h++0OjX0dIa7Z5llVx9VERmM0=;
-        b=gJ7wT/cpSTii2hotIV3mDXbQVchyoLHn8Ja/W2vTi7l3IiCK6TJ7NB6GrkqnMLM++m
-         xjaM4+OzA8ZteUvVv+oq1KxX+b3ah2NGkDx7Cv7oO8bhoJN/zyXrsrgsTumNyXKkxxYv
-         PwvL+Pgbl5N1WpVmRsPtgfhBdt+x0KWUO/nZPZbZicr+ZENW7Q3fHO68b/tYi5JqI6mw
-         XRk/zHfk2jCBJOdTKkwUmuLe6H1oUedlSvaq9lKsbARfm2qyfhDcDV9RDzGGw5LrbrZ3
-         WJX/qCMDUuVj9F562fZh6yAL5oCXGaOdIMocooVDb/D8hpd9lkiPz9Ekl+geSDlFHF9+
-         n1ZA==
-X-Gm-Message-State: AGi0Pua2WyC0QyOFTmHrJIEK+PfY/K91/hk3F8fClLYPpPHAu2WGYCvI
-        nNFXpucleCNXW5qQnINdRlpiQg==
-X-Google-Smtp-Source: APiQypKNJi8s73zrdACrBIXMEnQ714azX1svadGwXvKQqstUgKeEfDqSrKoNAlSQld/ERLfh3u8oFQ==
-X-Received: by 2002:a37:7202:: with SMTP id n2mr14027797qkc.427.1587855605811;
-        Sat, 25 Apr 2020 16:00:05 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k127sm6611978qkb.35.2020.04.25.16.00.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Apr 2020 16:00:05 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jSTmG-0006Fh-GX; Sat, 25 Apr 2020 20:00:04 -0300
-Date:   Sat, 25 Apr 2020 20:00:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     Faisal Latif <faisal.latif@intel.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gCF6xgbqYSz+54ZxWOLptTQH8ldDtaIZB0EHa3I8s7g=;
+        b=S6b7Acsh0pmWoJzReA3DHhxyooLJzbxfflqtEMsko9jCqapxx5MIq61Z6CJkTBjAzI
+         6qLPyPBpmZfa9ieoCcnEigGJa3Lj28MoZXVMDgRL3+9oyZSEPLwU3T39MCdtCZUG+kHu
+         /G5XL0agBosAQVI5DbtYydmgSDQFmN4SjVCJX9Fq++c4HKZjGkHAF+Zox2saR74s4WoO
+         mMx88RzX9XcgkH7O8CrHk1hdhBlpb+gsclFOsR+bUgOTHsrHmaIk4p0Rt6kTtWJKaXab
+         OGkZRbmzkcgrQ1XgAS66bgcsAlIrEGiFe8PttdkArZB5LzZvnbnynwnAKpP0UcEv1jmQ
+         sKgw==
+X-Gm-Message-State: AGi0PuZb2sE/KlduDX1WOVkBKB2iUiJZz/33roCYFc9maBN0u182lH+Q
+        TjLF3XobT64MQYEFbRLgCjI=
+X-Google-Smtp-Source: APiQypLDE+3FtAtDjztwiZj+kKl3kGDNakv/8cg+KE2bpgvqjMexpyw4TnOCpkYf59tkesFOXdntIA==
+X-Received: by 2002:a5d:498b:: with SMTP id r11mr19106371wrq.368.1587857747844;
+        Sat, 25 Apr 2020 16:35:47 -0700 (PDT)
+Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
+        by smtp.gmail.com with ESMTPSA id l16sm14443865wrp.91.2020.04.25.16.35.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 Apr 2020 16:35:47 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Zhu Yanjun <yanjunz@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Shannon Nelson <shannon.nelson@intel.com>,
-        Anjali Singhai Jain <anjali.singhai@intel.com>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] i40iw: Fix error handling in i40iw_manage_arp_cache()
-Message-ID: <20200425230004.GA23991@ziepe.ca>
-References: <20200422092211.GA195357@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422092211.GA195357@mwanda>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v2] RDMA/rxe: check for error
+Date:   Sun, 26 Apr 2020 00:35:45 +0100
+Message-Id: <20200425233545.17210-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:22:11PM +0300, Dan Carpenter wrote:
-> The i40iw_arp_table() function can return -EOVERFLOW if
-> i40iw_alloc_resource() fails so we can't just test for "== -1".
-> 
-> Fixes: 4e9042e647ff ("i40iw: add hw and utils files")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->  drivers/infiniband/hw/i40iw/i40iw_hw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
-> index 55a1fbf0e670..ae8b97c30665 100644
-> +++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
-> @@ -534,7 +534,7 @@ void i40iw_manage_arp_cache(struct i40iw_device *iwdev,
->  	int arp_index;
->  
->  	arp_index = i40iw_arp_table(iwdev, ip_addr, ipv4, mac_addr, action);
-> -	if (arp_index == -1)
-> +	if (arp_index < 0)
->  		return;
->  	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
->  	if (!cqp_request)
+The commit 'ff23dfa13457' modified rxe_create_mmap_info() to return
+error code and also NULL but missed fixing codes which called
+rxe_create_mmap_info(). Modify rxe_create_mmap_info() to only return
+errorcode and fix error checking after rxe_create_mmap_info() was
+called.
 
-It is right Shiraz?
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+Cc: stable@vger.kernel.org [5.4+]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_mmap.c  | 2 +-
+ drivers/infiniband/sw/rxe/rxe_queue.c | 6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Jason
+diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
+index 48f48122ddcb..6a413d73b95d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mmap.c
++++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
+@@ -151,7 +151,7 @@ struct rxe_mmap_info *rxe_create_mmap_info(struct rxe_dev *rxe, u32 size,
+ 
+ 	ip = kmalloc(sizeof(*ip), GFP_KERNEL);
+ 	if (!ip)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	size = PAGE_ALIGN(size);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index ff92704de32f..fef2ab5112de 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -45,8 +45,10 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ 
+ 	if (outbuf) {
+ 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
+-		if (!ip)
++		if (IS_ERR(ip)) {
++			err = PTR_ERR(ip);
+ 			goto err1;
++		}
+ 
+ 		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+ 		if (err)
+@@ -64,7 +66,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ err2:
+ 	kfree(ip);
+ err1:
+-	return -EINVAL;
++	return err;
+ }
+ 
+ inline void rxe_queue_reset(struct rxe_queue *q)
+-- 
+2.11.0
+
