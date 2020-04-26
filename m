@@ -2,189 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A6D1B8CF8
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 08:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5381B8D40
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 09:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgDZGnN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Apr 2020 02:43:13 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:57420 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726126AbgDZGnN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Apr 2020 02:43:13 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4867FB875D0FDC8C58E3;
-        Sun, 26 Apr 2020 14:43:11 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 26 Apr 2020 14:43:02 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v3 for-next 5/5] RDMA/hns: Optimize SRQ buffer size calculating process
-Date:   Sun, 26 Apr 2020 14:42:57 +0800
-Message-ID: <1587883377-22975-6-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1587883377-22975-1-git-send-email-liweihang@huawei.com>
-References: <1587883377-22975-1-git-send-email-liweihang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S1726194AbgDZHRm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Apr 2020 03:17:42 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:41446 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726344AbgDZHRa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Apr 2020 03:17:30 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maorg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 26 Apr 2020 10:17:22 +0300
+Received: from dev-l-vrt-201.mtl.labs.mlnx (dev-l-vrt-201.mtl.labs.mlnx [10.134.201.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 03Q7HMT6023889;
+        Sun, 26 Apr 2020 10:17:22 +0300
+From:   Maor Gottlieb <maorg@mellanox.com>
+To:     davem@davemloft.net, jgg@mellanox.com, dledford@redhat.com,
+        j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        kuba@kernel.org, jiri@mellanox.com, dsahern@kernel.org
+Cc:     leonro@mellanox.com, saeedm@mellanox.com,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alexr@mellanox.com, Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH 00/16] Add support to get xmit slave
+Date:   Sun, 26 Apr 2020 10:17:01 +0300
+Message-Id: <20200426071717.17088-1-maorg@mellanox.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+Hi Dave,
 
-Optimize the SRQ's WQE buffer parameters calculating process to make the
-codes more readable by using new functions about multi-hop addressing to
-calculating capabilities of SRQ.
+This series is a combination of netdev and RDMA, so in order to avoid
+conflicts, we would like to ask you to route this series through
+mlx5-next shared branch. It is based on v5.7-rc1 tag.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 29 ++++++++++++++---------------
- drivers/infiniband/hw/hns/hns_roce_srq.c    | 16 ++++++++--------
- 3 files changed, 23 insertions(+), 24 deletions(-)
+---------------------------------------------------------------------
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a5706c9..58673e5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -472,7 +472,7 @@ struct hns_roce_cq {
- 
- struct hns_roce_idx_que {
- 	struct hns_roce_mtr		mtr;
--	int				entry_sz;
-+	int				entry_shift;
- 	unsigned long			*bitmap;
- };
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 0b79daf..f70370d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -699,6 +699,12 @@ static void *get_srq_wqe(struct hns_roce_srq *srq, int n)
- 	return hns_roce_buf_offset(srq->buf_mtr.kmem, n << srq->wqe_shift);
- }
- 
-+static void *get_idx_buf(struct hns_roce_idx_que *idx_que, int n)
-+{
-+	return hns_roce_buf_offset(idx_que->mtr.kmem,
-+				   n << idx_que->entry_shift);
-+}
-+
- static void hns_roce_free_srq_wqe(struct hns_roce_srq *srq, int wqe_index)
- {
- 	/* always called with interrupts disabled. */
-@@ -725,16 +731,6 @@ static int find_empty_entry(struct hns_roce_idx_que *idx_que,
- 	return wqe_idx;
- }
- 
--static void fill_idx_queue(struct hns_roce_idx_que *idx_que,
--			   int cur_idx, int wqe_idx)
--{
--	unsigned int *addr;
--
--	addr = (unsigned int *)hns_roce_buf_offset(idx_que->mtr.kmem,
--						   cur_idx * idx_que->entry_sz);
--	*addr = wqe_idx;
--}
--
- static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 				     const struct ib_recv_wr *wr,
- 				     const struct ib_recv_wr **bad_wr)
-@@ -744,6 +740,7 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_v2_db srq_db;
- 	unsigned long flags;
-+	__le32 *srq_idx;
- 	int ret = 0;
- 	int wqe_idx;
- 	void *wqe;
-@@ -775,7 +772,6 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 			break;
- 		}
- 
--		fill_idx_queue(&srq->idx_que, ind, wqe_idx);
- 		wqe = get_srq_wqe(srq, wqe_idx);
- 		dseg = (struct hns_roce_v2_wqe_data_seg *)wqe;
- 
-@@ -791,6 +787,9 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 			dseg[i].addr = 0;
- 		}
- 
-+		srq_idx = get_idx_buf(&srq->idx_que, ind);
-+		*srq_idx = cpu_to_le32(wqe_idx);
-+
- 		srq->wrid[wqe_idx] = wr->wr_id;
- 		ind = (ind + 1) & (srq->wqe_cnt - 1);
- 	}
-@@ -4901,8 +4900,8 @@ static void hns_roce_v2_write_srqc(struct hns_roce_dev *hr_dev,
- 	roce_set_field(srq_context->byte_4_srqn_srqst,
- 		       SRQC_BYTE_4_SRQ_WQE_HOP_NUM_M,
- 		       SRQC_BYTE_4_SRQ_WQE_HOP_NUM_S,
--		       (hr_dev->caps.srqwqe_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
--		       hr_dev->caps.srqwqe_hop_num));
-+		       to_hr_hem_hopnum(hr_dev->caps.srqwqe_hop_num,
-+					srq->wqe_cnt));
- 	roce_set_field(srq_context->byte_4_srqn_srqst,
- 		       SRQC_BYTE_4_SRQ_SHIFT_M, SRQC_BYTE_4_SRQ_SHIFT_S,
- 		       ilog2(srq->wqe_cnt));
-@@ -4944,8 +4943,8 @@ static void hns_roce_v2_write_srqc(struct hns_roce_dev *hr_dev,
- 	roce_set_field(srq_context->byte_44_idxbufpgsz_addr,
- 		       SRQC_BYTE_44_SRQ_IDX_HOP_NUM_M,
- 		       SRQC_BYTE_44_SRQ_IDX_HOP_NUM_S,
--		       hr_dev->caps.idx_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
--		       hr_dev->caps.idx_hop_num);
-+		       to_hr_hem_hopnum(hr_dev->caps.idx_hop_num,
-+					srq->wqe_cnt));
- 
- 	roce_set_field(srq_context->byte_44_idxbufpgsz_addr,
- 		       SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_M,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index e413a97..6e5a2ad 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -181,16 +181,15 @@ static int alloc_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_buf_attr buf_attr = {};
--	int sge_size;
- 	int err;
- 
--	sge_size = roundup_pow_of_two(max(HNS_ROCE_SGE_SIZE,
--					  HNS_ROCE_SGE_SIZE * srq->max_gs));
--
--	srq->wqe_shift = ilog2(sge_size);
-+	srq->wqe_shift = ilog2(roundup_pow_of_two(max(HNS_ROCE_SGE_SIZE,
-+						      HNS_ROCE_SGE_SIZE *
-+						      srq->max_gs)));
- 
- 	buf_attr.page_shift = hr_dev->caps.srqwqe_buf_pg_sz + PAGE_ADDR_SHIFT;
--	buf_attr.region[0].size = srq->wqe_cnt * sge_size;
-+	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
-+							 srq->wqe_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.srqwqe_hop_num;
- 	buf_attr.region_count = 1;
- 	buf_attr.fixed_page = true;
-@@ -217,10 +216,11 @@ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 	struct hns_roce_buf_attr buf_attr = {};
- 	int err;
- 
--	srq->idx_que.entry_sz = HNS_ROCE_IDX_QUE_ENTRY_SZ;
-+	srq->idx_que.entry_shift = ilog2(HNS_ROCE_IDX_QUE_ENTRY_SZ);
- 
- 	buf_attr.page_shift = hr_dev->caps.idx_buf_pg_sz + PAGE_ADDR_SHIFT;
--	buf_attr.region[0].size = srq->wqe_cnt * HNS_ROCE_IDX_QUE_ENTRY_SZ;
-+	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
-+					srq->idx_que.entry_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.idx_hop_num;
- 	buf_attr.region_count = 1;
- 	buf_attr.fixed_page = true;
+The following series adds support to get the LAG master xmit slave by
+introducing new .ndo - ndo_get_xmit_slave. Every LAG module can
+implement it and it first implemented in the bond driver. 
+This is follow-up to the RFC discussion [1].
+
+The main motivation for doing this is for drivers that offload part
+of the LAG functionality. For example, Mellanox Connect-X hardware
+implements RoCE LAG which selects the TX affinity when the resources
+are created and port is remapped when it goes down.
+
+The first part of this patchset introduces the new .ndo and add the
+support to the bonding module.
+
+The second part adds support to get the RoCE LAG xmit slave by building
+skb of the RoCE packet based on the AH attributes and call to the new
+.ndo.
+
+The third part change the mlx5 driver driver to set the QP's affinity
+port according to the slave which found by the .ndo.
+
+Thanks
+
+[1]
+https://lore.kernel.org/netdev/20200126132126.9981-1-maorg@xxxxxxxxxxxx/
+
+Change log:
+v6: patch 1 - Fix commit message and add function description. 
+    patch 10 - Keep udata as function argument.
+v5: patch 1 - Remove rcu lock.
+    patch 10 - Refactor patch that group the AH attributes in struct.
+    patch 11 - call the ndo while holding the rcu and initialize xmit_slave.
+    patch 12 - Store the xmit slave in rdma_ah_init_attr and qp_attr.
+
+v4: 1. Rename master_get_xmit_slave to netdev_get_xmit_slave and move
+the implementation to dev.c 
+    2. Remove unnecessary check of NULL pointer.
+    3. Fix typo.
+v3: 1. Move master_get_xmit_slave to netdevice.h and change the flags
+arg.
+to bool.
+    2. Split helper functions commit to multiple commits for each bond
+mode.
+    3. Extract refcotring changes to seperate commits.
+v2: The first patch wasn't sent in v1.
+v1:
+https://lore.kernel.org/netdev/ac373456-b838-29cf-645f-b1ea1a93e3b0@xxxxxxxxx/T/#t 
+
+Maor Gottlieb (16):
+  net/core: Introduce netdev_get_xmit_slave
+  bonding: Export skip slave logic to function
+  bonding: Rename slave_arr to usable_slaves
+  bonding/alb: Add helper functions to get the xmit slave
+  bonding: Add helper function to get the xmit slave based on hash
+  bonding: Add helper function to get the xmit slave in rr mode
+  bonding: Add function to get the xmit slave in active-backup mode
+  bonding: Add array of all slaves
+  bonding: Implement ndo_get_xmit_slave
+  RDMA: Group create AH arguments in struct
+  RDMA/core: Add LAG functionality
+  RDMA/core: Get xmit slave for LAG
+  net/mlx5: Change lag mutex lock to spin lock
+  net/mlx5: Add support to get lag physical port
+  RDMA/mlx5: Refactor affinity related code
+  RDMA/mlx5: Set lag tx affinity according to slave
+
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/lag.c                 | 141 +++++++++
+ drivers/infiniband/core/verbs.c               |  58 ++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |   8 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   2 +-
+ drivers/infiniband/hw/efa/efa.h               |   3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |   6 +-
+ drivers/infiniband/hw/hns/hns_roce_ah.c       |   5 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |   4 +-
+ drivers/infiniband/hw/mlx4/ah.c               |  11 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   2 +-
+ drivers/infiniband/hw/mlx5/ah.c               |  14 +-
+ drivers/infiniband/hw/mlx5/gsi.c              |  34 ++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   3 +-
+ drivers/infiniband/hw/mlx5/qp.c               | 122 +++++---
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   9 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.c      |   3 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.h      |   2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   4 +-
+ drivers/infiniband/hw/qedr/verbs.h            |   2 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   |   5 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   2 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |  11 +-
+ drivers/infiniband/sw/rdmavt/ah.h             |   4 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |   9 +-
+ drivers/net/bonding/bond_alb.c                |  39 ++-
+ drivers/net/bonding/bond_main.c               | 268 +++++++++++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  66 +++--
+ include/linux/mlx5/driver.h                   |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |   4 +-
+ include/linux/mlx5/qp.h                       |   2 +
+ include/linux/netdevice.h                     |  12 +
+ include/net/bond_alb.h                        |   4 +
+ include/net/bonding.h                         |   3 +-
+ include/rdma/ib_verbs.h                       |  12 +-
+ include/rdma/lag.h                            |  23 ++
+ net/core/dev.c                                |  22 ++
+ 38 files changed, 696 insertions(+), 229 deletions(-)
+ create mode 100644 drivers/infiniband/core/lag.c
+ create mode 100644 include/rdma/lag.h
+
 -- 
-2.8.1
+2.17.2
 
