@@ -2,140 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D251B90B2
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 15:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395331B90D3
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 16:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgDZNnS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Apr 2020 09:43:18 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36326 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgDZNnQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Apr 2020 09:43:16 -0400
-Received: by mail-io1-f70.google.com with SMTP id m16so1319696ion.3
-        for <linux-rdma@vger.kernel.org>; Sun, 26 Apr 2020 06:43:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rlJAfwbPqtPWQJVZIPkomN7KJEtdzrl3Ui0y/x3Z8hs=;
-        b=l7UD3xUZKOpLHwt0Hnup5A5uYfgFjEiSIuwh36MhPt/+G/AY1l2Hnve1dcaowganFT
-         5G8qMKTnTJ1j4BLnFmK3KQnpjWuKI9ElN/wsByShw0pBXJhtdsf8Ep3fQTv+G+LU43es
-         oTfW7Fm4z3LxwgvCzQL4NkQAatr3iwu7x0o1rFnSY/zLLOMmct6n7OdQ96K6YVmDtHaq
-         YzbBHO6VVU4fgArUkAgR6ZUp9XlAvp/NHJF4C0tFOd9co0tFmckI8MmG0l3piJ8sAyCs
-         EUbhZvWQjmvyElNXpUyezHzO6MuRzG7cYB5WMtagKOSfIwR29dkIt5zMPS+Wwx58ZXz1
-         AqHQ==
-X-Gm-Message-State: AGi0PuajZIYrzqs0qcfGFhl8bganNiSgQbA0bjD3wD5FSC89Pfo1OaTX
-        QKGfqamFAIX7r6migko9dQPFGFLGMkRp3zrxVa6wJHBEMvHR
-X-Google-Smtp-Source: APiQypKxs5VGnvM1qXq+lYJKi9Um6WY+7O0zommb3ly8Y5J38otFgmbS3FSL4vxdihxPch6+sK5nNtt+xHbSN3izMbjCgJLBOJWR
+        id S1726162AbgDZORW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Apr 2020 10:17:22 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:3832 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgDZORV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Apr 2020 10:17:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587910640; x=1619446640;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=dmunxSzeLvfFYb9yMMMhmI9GjTtdYECEMeHPUWWSJxk=;
+  b=W5o4GqlLj4SYXt0VjzlLC3nJTh/j2VdttdBJGJkPBluGvLY8s5UZcjtq
+   0H7IboFsyEHx8zCKi/pQDAlV+6wt00nwt4/UPZkVuoGe5yha8DY3NG8az
+   QxfTxHW5vj263nZ9Xh9G58eAWTyRBvs/MhcMBl4N5RuX845aP/gEiSigh
+   E=;
+IronPort-SDR: WBqMtJmO8BMhzVndN0xI7GAEjbDZ7G+6jI8r1XqgbwYVh+BwhKin1KILbctfK3mZlIoxhMEZmG
+ Mu9nVyZ02xQw==
+X-IronPort-AV: E=Sophos;i="5.73,320,1583193600"; 
+   d="scan'208";a="40903350"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 26 Apr 2020 14:17:19 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id E67A9A22DD;
+        Sun, 26 Apr 2020 14:17:18 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 26 Apr 2020 14:17:18 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.253) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 26 Apr 2020 14:17:14 +0000
+Subject: Re: [PATCH for-next 2/3] RDMA/efa: Count mmap failures
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20200420062213.44577-1-galpress@amazon.com>
+ <20200420062213.44577-3-galpress@amazon.com>
+ <20200424145923.GH26002@ziepe.ca>
+ <e0ce4fa2-f802-a17c-2b13-666d086029c0@amazon.com>
+ <20200424182612.GJ26002@ziepe.ca>
+ <523c9dee-cedf-b762-8a68-cd1232e87e48@amazon.com>
+ <20200426133000.GL26002@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <f5a28928-45f7-d8e5-e491-8082c206c5dd@amazon.com>
+Date:   Sun, 26 Apr 2020 17:17:09 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:9642:: with SMTP id c60mr16053970jai.87.1587908593710;
- Sun, 26 Apr 2020 06:43:13 -0700 (PDT)
-Date:   Sun, 26 Apr 2020 06:43:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa012505a431c7d9@google.com>
-Subject: WARNING in ib_unregister_device_queued
-From:   syzbot <syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, kamalheib1@gmail.com,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        parav@mellanox.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200426133000.GL26002@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.253]
+X-ClientProxiedBy: EX13D10UWA002.ant.amazon.com (10.43.160.228) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On 26/04/2020 16:30, Jason Gunthorpe wrote:
+> On Sun, Apr 26, 2020 at 09:42:27AM +0300, Gal Pressman wrote:
+>> On 24/04/2020 21:26, Jason Gunthorpe wrote:
+>>> On Fri, Apr 24, 2020 at 06:25:54PM +0300, Gal Pressman wrote:
+>>>> On 24/04/2020 17:59, Jason Gunthorpe wrote:
+>>>>> On Mon, Apr 20, 2020 at 09:22:12AM +0300, Gal Pressman wrote:
+>>>>>> Add a new stat that counts mmap failures, which might help when
+>>>>>> debugging different issues.
+>>>>>>
+>>>>>> Reviewed-by: Firas JahJah <firasj@amazon.com>
+>>>>>> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+>>>>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>>>>>>  drivers/infiniband/hw/efa/efa.h       | 3 ++-
+>>>>>>  drivers/infiniband/hw/efa/efa_verbs.c | 9 +++++++--
+>>>>>>  2 files changed, 9 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+>>>>>> index aa7396a1588a..77c9ff798117 100644
+>>>>>> +++ b/drivers/infiniband/hw/efa/efa.h
+>>>>>> @@ -1,6 +1,6 @@
+>>>>>>  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+>>>>>>  /*
+>>>>>> - * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
+>>>>>> + * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
+>>>>>>   */
+>>>>>>  
+>>>>>>  #ifndef _EFA_H_
+>>>>>> @@ -40,6 +40,7 @@ struct efa_sw_stats {
+>>>>>>  	atomic64_t reg_mr_err;
+>>>>>>  	atomic64_t alloc_ucontext_err;
+>>>>>>  	atomic64_t create_ah_err;
+>>>>>> +	atomic64_t mmap_err;
+>>>>>>  };
+>>>>>>  
+>>>>>>  /* Don't use anything other than atomic64 */
+>>>>>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>>> index b555845d6c14..75eef1ec2474 100644
+>>>>>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>>> @@ -44,7 +44,8 @@ struct efa_user_mmap_entry {
+>>>>>>  	op(EFA_CREATE_CQ_ERR, "create_cq_err") \
+>>>>>>  	op(EFA_REG_MR_ERR, "reg_mr_err") \
+>>>>>>  	op(EFA_ALLOC_UCONTEXT_ERR, "alloc_ucontext_err") \
+>>>>>> -	op(EFA_CREATE_AH_ERR, "create_ah_err")
+>>>>>> +	op(EFA_CREATE_AH_ERR, "create_ah_err") \
+>>>>>> +	op(EFA_MMAP_ERR, "mmap_err")
+>>>>>>  
+>>>>>>  #define EFA_STATS_ENUM(ename, name) ename,
+>>>>>>  #define EFA_STATS_STR(ename, name) [ename] = name,
+>>>>>> @@ -1569,6 +1570,7 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>>>>>>  		ibdev_dbg(&dev->ibdev,
+>>>>>>  			  "pgoff[%#lx] does not have valid entry\n",
+>>>>>>  			  vma->vm_pgoff);
+>>>>>> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
+>>>>>>  		return -EINVAL;
+>>>>>>  	}
+>>>>>>  	entry = to_emmap(rdma_entry);
+>>>>>> @@ -1604,12 +1606,14 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>>>>>>  		err = -EINVAL;
+>>>>>>  	}
+>>>>>>  
+>>>>>> -	if (err)
+>>>>>> +	if (err) {
+>>>>>>  		ibdev_dbg(
+>>>>>>  			&dev->ibdev,
+>>>>>>  			"Couldn't mmap address[%#llx] length[%#zx] mmap_flag[%d] err[%d]\n",
+>>>>>>  			entry->address, rdma_entry->npages * PAGE_SIZE,
+>>>>>>  			entry->mmap_flag, err);
+>>>>>> +		atomic64_inc(&dev->stats.sw_stats.mmap_err);
+>>>>>
+>>>>> Really? Isn't this something that is only possible with a buggy
+>>>>> rdma-core provider? Why count it?
+>>>>
+>>>> Though unlikely, it could happen, otherwise this error flow wouldn't exist in
+>>>> the first place.
+>>>>
+>>>> If for some reason a customer app steps on a bug we're not aware of, this
+>>>> counter could serve as a red flag.
+>>>
+>>> But there are lots of cases where a buggy provider can cause error
+>>> exits, why choose this one to count against all the others?
+>>
+>> It's not one against all others, most if not all of our userspace facing API
+>> error flows have a similar counter.
+> 
+> Hurm, seems a bit strange, but OK
+> 
+>> And TBH, I think that the mmap flow is quite convoluted with the cookie response
+>> from the crate verb, so it deserves a counter IMO.
+> 
+> How so? Userspace takes the u64 from the command and pass it to mmap,
+> what is convoluted?
 
-syzbot found the following crash on:
-
-HEAD commit:    b9663b7c net: stmmac: Enable SERDES power up/down sequence
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=166bf717e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=4088ed905e4ae2b0e13b
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com
-
-rdma_rxe: ignoring netdev event = 10 for netdevsim0
-infiniband  yz2: set down
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 22753 at drivers/infiniband/core/device.c:1565 ib_unregister_device_queued+0x122/0x160 drivers/infiniband/core/device.c:1565
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 22753 Comm: syz-executor.5 Not tainted 5.7.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:ib_unregister_device_queued+0x122/0x160 drivers/infiniband/core/device.c:1565
-Code: fb e8 72 e2 d4 fb 48 89 ef e8 2a c3 c1 fe 48 83 c4 08 5b 5d e9 5f e2 d4 fb e8 5a e2 d4 fb 0f 0b e9 46 ff ff ff e8 4e e2 d4 fb <0f> 0b e9 6f ff ff ff 48 89 ef e8 2f a9 12 fc e9 16 ff ff ff 48 c7
-RSP: 0018:ffffc900072ef290 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff8880a6a24000 RCX: ffffc90013201000
-RDX: 0000000000040000 RSI: ffffffff859e51b2 RDI: ffff8880a6a24310
-RBP: 0000000000000019 R08: ffff88808d21c280 R09: ffffed1014d449bb
-R10: ffff8880a6a24dd3 R11: ffffed1014d449ba R12: 0000000000000006
-R13: ffff88805988c000 R14: 0000000000000000 R15: ffffffff8a44f8c0
- rxe_notify+0x77/0xd0 drivers/infiniband/sw/rxe/rxe_net.c:605
- notifier_call_chain+0xc0/0x230 kernel/notifier.c:83
- call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1933
- call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
- call_netdevice_notifiers net/core/dev.c:1974 [inline]
- rollback_registered_many+0x75c/0xe70 net/core/dev.c:8828
- rollback_registered+0xf2/0x1c0 net/core/dev.c:8873
- unregister_netdevice_queue net/core/dev.c:9969 [inline]
- unregister_netdevice_queue+0x1d7/0x2b0 net/core/dev.c:9962
- unregister_netdevice include/linux/netdevice.h:2725 [inline]
- nsim_destroy+0x35/0x60 drivers/net/netdevsim/netdev.c:330
- __nsim_dev_port_del+0x144/0x1e0 drivers/net/netdevsim/dev.c:934
- nsim_dev_port_del_all+0x86/0xe0 drivers/net/netdevsim/dev.c:947
- nsim_dev_reload_destroy+0x77/0x110 drivers/net/netdevsim/dev.c:1123
- nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:703
- devlink_reload+0xbd/0x3b0 net/core/devlink.c:2797
- devlink_nl_cmd_reload+0x2f7/0x7c0 net/core/devlink.c:2832
- genl_family_rcv_msg_doit net/netlink/genetlink.c:673 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:718 [inline]
- genl_rcv_msg+0x627/0xdf0 net/netlink/genetlink.c:735
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:746
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
- ___sys_sendmsg+0x100/0x170 net/socket.c:2416
- __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c829
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f6fae1cac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004fcc00 RCX: 000000000045c829
-RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000006
-RBP: 000000000078c040 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000905 R14: 00000000004cbaab R15: 00007f6fae1cb6d4
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+It's the only flow that involves two phases/userspace calls and not a single
+command-response call, so it's a bit more error prone. Convoluted was a bit
+harsh :).
