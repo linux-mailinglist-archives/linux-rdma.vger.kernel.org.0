@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681E51B8A7D
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 02:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56CA1B8A8A
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Apr 2020 02:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgDZA4G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Apr 2020 20:56:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27571 "EHLO mga06.intel.com"
+        id S1726126AbgDZA5Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Apr 2020 20:57:16 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20919 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726101AbgDZA4G (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 25 Apr 2020 20:56:06 -0400
-IronPort-SDR: V9si3VPgw6fCqynGO7KbF+5Q0mBNeQDndxKllSUBNmpD2+pdw8wPOdgaFsLmBtEJ25czz7+pAq
- +pdhSiB3jp2A==
+        id S1726150AbgDZA5P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Apr 2020 20:57:15 -0400
+IronPort-SDR: JRc6QHHHcN+qgc+EAt5H/ZwHvEh5zdtWZWOgUd9dfjIQF7S8zIsZDGPXYNo/imhQ4zjFvQv0IG
+ vlhbcMflCKrA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 17:56:05 -0700
-IronPort-SDR: hE5mlrjiNYGYB2AjCEZ57ef41X3y6i1Oe15dNQwWWZ3bqhQiE6HO6XImIJjIQVrIaDwnYy1jX9
- PrPIQ9vrQRHQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 17:57:08 -0700
+IronPort-SDR: xfZVeEgcUTJYI8fweEUgwNS6r30Ow/v6ZvWSiUofykjFfJtUUGdmlvklkDzQjLAqEASz4KUoT4
+ t3mKocmflZ1A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,318,1583222400"; 
-   d="scan'208";a="245682794"
+   d="scan'208";a="431262091"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 25 Apr 2020 17:56:04 -0700
+  by orsmga005.jf.intel.com with ESMTP; 25 Apr 2020 17:57:06 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jSVaV-000GWT-Gm; Sun, 26 Apr 2020 08:56:03 +0800
-Date:   Sun, 26 Apr 2020 08:54:52 +0800
+        id 1jSVbW-000I50-AZ; Sun, 26 Apr 2020 08:57:06 +0800
+Date:   Sun, 26 Apr 2020 08:56:42 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 47c370c1a5eea9b2f6f026d49e060c3748c89667
-Message-ID: <5ea4dbdc.WkhRpmTv0RvVgD83%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ f0abc761bbb9418876cc4d1ebc473e4ea6352e42
+Message-ID: <5ea4dc4a.4TXbOrdGDkViDmDa%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,10 +43,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
-branch HEAD: 47c370c1a5eea9b2f6f026d49e060c3748c89667  IB/rdmavt: Always return ERR_PTR from rvt_create_mmap_info()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: f0abc761bbb9418876cc4d1ebc473e4ea6352e42  RDMA/core: Fix race between destroy and release FD object
 
-elapsed time: 1694m
+elapsed time: 1696m
 
 configs tested: 249
 configs skipped: 0
@@ -69,9 +69,8 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
-ia64                                defconfig
 s390                             alldefconfig
-powerpc                             defconfig
+ia64                                defconfig
 mips                          ath79_defconfig
 openrisc                    or1ksim_defconfig
 i386                              allnoconfig
@@ -82,10 +81,10 @@ i386                              debian-10.3
 ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                        generic_defconfig
+ia64                          tiger_defconfig
 ia64                         bigsur_defconfig
 ia64                             allyesconfig
 ia64                             alldefconfig
-ia64                          tiger_defconfig
 nios2                         3c120_defconfig
 nios2                         10m50_defconfig
 c6x                        evmc6678_defconfig
@@ -106,6 +105,7 @@ m68k                           sun3_defconfig
 m68k                          multi_defconfig
 arc                                 defconfig
 arc                              allyesconfig
+powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 microblaze                      mmu_defconfig
@@ -214,18 +214,18 @@ i386                 randconfig-f003-20200425
 x86_64               randconfig-f003-20200425
 i386                 randconfig-f001-20200425
 x86_64               randconfig-f001-20200425
-x86_64               randconfig-f002-20200424
-i386                 randconfig-f002-20200424
-i386                 randconfig-f003-20200424
-x86_64               randconfig-f003-20200424
-i386                 randconfig-f001-20200424
-x86_64               randconfig-f001-20200424
 x86_64               randconfig-f002-20200426
 i386                 randconfig-f002-20200426
 x86_64               randconfig-f003-20200426
 i386                 randconfig-f003-20200426
 i386                 randconfig-f001-20200426
 x86_64               randconfig-f001-20200426
+x86_64               randconfig-f002-20200424
+i386                 randconfig-f002-20200424
+i386                 randconfig-f003-20200424
+x86_64               randconfig-f003-20200424
+i386                 randconfig-f001-20200424
+x86_64               randconfig-f001-20200424
 i386                 randconfig-g003-20200424
 i386                 randconfig-g001-20200424
 x86_64               randconfig-g001-20200424
@@ -244,17 +244,17 @@ x86_64               randconfig-a003-20200424
 i386                 randconfig-a002-20200424
 i386                 randconfig-a001-20200424
 x86_64               randconfig-a002-20200424
+i386                 randconfig-h003-20200425
+x86_64               randconfig-h001-20200425
+x86_64               randconfig-h003-20200425
+i386                 randconfig-h002-20200425
+i386                 randconfig-h001-20200425
 i386                 randconfig-h003-20200424
 x86_64               randconfig-h001-20200424
 x86_64               randconfig-h003-20200424
 x86_64               randconfig-h002-20200424
 i386                 randconfig-h001-20200424
 i386                 randconfig-h002-20200424
-i386                 randconfig-h003-20200425
-x86_64               randconfig-h001-20200425
-x86_64               randconfig-h003-20200425
-i386                 randconfig-h002-20200425
-i386                 randconfig-h001-20200425
 i386                 randconfig-h003-20200426
 x86_64               randconfig-h001-20200426
 x86_64               randconfig-h003-20200426
