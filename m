@@ -2,48 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8741B96EA
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 08:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BE71B96F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 08:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgD0GEQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Apr 2020 02:04:16 -0400
-Received: from verein.lst.de ([213.95.11.211]:45564 "EHLO verein.lst.de"
+        id S1726585AbgD0GGS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Apr 2020 02:06:18 -0400
+Received: from verein.lst.de ([213.95.11.211]:45575 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgD0GEQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Apr 2020 02:04:16 -0400
+        id S1726221AbgD0GGR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Apr 2020 02:06:17 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3D5D268CF0; Mon, 27 Apr 2020 08:04:12 +0200 (CEST)
-Date:   Mon, 27 Apr 2020 08:04:11 +0200
+        id 9565668CEE; Mon, 27 Apr 2020 08:06:14 +0200 (CEST)
+Date:   Mon, 27 Apr 2020 08:06:14 +0200
 From:   Christoph Hellwig <hch@lst.de>
 To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     Christoph Hellwig <hch@lst.de>, James Smart <jsmart2021@gmail.com>,
-        linux-nvme@lists.infradead.org, kbusch@kernel.org,
-        sagi@grimberg.me, martin.petersen@oracle.com,
-        linux-rdma@vger.kernel.org, idanb@mellanox.com, axboe@kernel.dk,
-        vladimirk@mellanox.com, oren@mellanox.com, shlomin@mellanox.com,
-        israelr@mellanox.com, jgg@mellanox.com
-Subject: Re: [PATCH 05/17] nvme-fabrics: Allow user enabling
- metadata/T10-PI support
-Message-ID: <20200427060411.GA16186@lst.de>
-References: <20200327171545.98970-1-maxg@mellanox.com> <20200327171545.98970-7-maxg@mellanox.com> <20200421151747.GA10837@lst.de> <54c05d2d-2ea5-bf58-455f-91efa085aa9b@mellanox.com> <70f40e49-d9d7-68fe-6a63-a73fabcd146d@gmail.com> <172c1860-bebe-04b2-a9ab-2c03c7cfbf18@mellanox.com> <20200423055447.GB9486@lst.de> <639d6edd-ffa6-f08a-9fa2-047ca97c47ee@mellanox.com> <20200424070647.GB24059@lst.de> <7ff771eb-078e-7eb1-d363-11f96b78eb64@mellanox.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
+        kbusch@kernel.org, sagi@grimberg.me, martin.petersen@oracle.com,
+        jsmart2021@gmail.com, linux-rdma@vger.kernel.org,
+        idanb@mellanox.com, axboe@kernel.dk, vladimirk@mellanox.com,
+        oren@mellanox.com, shlomin@mellanox.com, israelr@mellanox.com,
+        jgg@mellanox.com
+Subject: Re: [PATCH 14/17] nvmet: Add metadata/T10-PI support
+Message-ID: <20200427060614.GB16186@lst.de>
+References: <20200327171545.98970-1-maxg@mellanox.com> <20200327171545.98970-16-maxg@mellanox.com> <20200421153045.GE10837@lst.de> <0c6caf5b-693b-74af-670e-7df9c7f9c829@mellanox.com> <20200424071433.GE24059@lst.de> <9da15ad2-ed9c-9a00-4781-b57712835b3b@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7ff771eb-078e-7eb1-d363-11f96b78eb64@mellanox.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9da15ad2-ed9c-9a00-4781-b57712835b3b@mellanox.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 12:48:18PM +0300, Max Gurtovoy wrote:
->> I see no reason not to support a simple Format NVM for our fabrics target
->> implementation.  But that isn't the point - you don't really need Format
->> as you can also control it from configfs in your series.  So for the
->> initial version I don't think we need Format NVM, but I don't mind
->> adding it later.
+On Sun, Apr 26, 2020 at 01:50:05PM +0300, Max Gurtovoy wrote:
+>>>> I think the printks are a little verbose.  Also why can we set
+>>>> ctrl->port->pi_enable if ctrl->port->pi_capable is false?  Shoudn't
+>>>> we reject that earlier?  In that case this could simply become:
+>>>>
+>>>> 	ctrl->pi_support = ctrl->subsys->pi_support && ctrl->port->pi_enable;
+>>> for that we'll need to check pi_capable during add_port process and disable
+>>> pi_enable bit if user set it.
+>> Which seems pretty sensible.  In fact I think the configfs write for
+>> pi enable should fail if we don't have the capability.
 >
-> so we're ok with passing -p in nvme-cli during connect command ?
+> The port is not enabled so it's not possible currently.
+>
+> But we can disable it afterwards (in nvmet_enable_port) :
+>
+> +       /* If the transport didn't set pi_capable, then disable it. */
+> +       if (!port->pi_capable)
+> +               port->pi_enable = false;
 
-PI should be enable by default.  We can think of a hook disabling it,
-but please keep it at the end of the series.
+I don't think we should allow users to enable invalid configurations
+and silently clear flags, but reject flags as soon as we can - write
+to the attribute where possible, else during enable.
+
+> how about:
+>
+> -       pr_info("creating controller %d for subsystem %s for NQN %s.\n",
+> -               ctrl->cntlid, ctrl->subsys->subsysnqn, ctrl->hostnqn);
+> +       pr_info("creating controller %d for subsystem %s for NQN %s%s.\n",
+> +               ctrl->cntlid, ctrl->subsys->subsysnqn, ctrl->hostnqn,
+> +               ctrl->pi_support ? " T10-PI is enabled" : "");
+
+Ok.
