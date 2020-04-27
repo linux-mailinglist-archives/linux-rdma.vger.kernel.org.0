@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1201BA5C8
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 16:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C111BA5CB
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 16:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgD0OLV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Apr 2020 10:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
+        id S1727894AbgD0OLY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Apr 2020 10:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727878AbgD0OLV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Apr 2020 10:11:21 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBFBC03C1A7
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 07:11:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t14so20699078wrw.12
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 07:11:20 -0700 (PDT)
+        with ESMTP id S1727878AbgD0OLX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Apr 2020 10:11:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C775AC0610D5
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 07:11:21 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x18so20716379wrq.2
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 07:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yU68bYZll0mzggjcp/THbKrh4n5hlEmB9/xKZTuuEY8=;
-        b=XQDbbbhKZSJugo9U1zz+n+BU2S+O3Up2vczalaMtq4GtRmbKg60rvg2K/kkxb9Yd4C
-         fH4LN50WyAVs0R6nhiTgQ0gBkiEm+ZnuzVcwg62M9FYt25ADUljlhzTgqk50bGSm9k4+
-         8OY5ONH4jc+dysxunM0pj92rLddP3CUTzb2EFS5wWqcawYcfVt/O3hThinRHd6s4iuSx
-         51hk4ZlTqZfuhuv3mu5bH5Xq8XzTuS7NPJJT0moh8NlOUzPH1sR3FoZJ1R+LoRoilGrW
-         I7dFJ4hjRniOwWr147wXkW0kod67xJvm4m/0NWEJYdZ+BASSeKhrPOEjDbNKzstj45W6
-         19kQ==
+        bh=AbEb4GO4bkclUwQzLx6sFQQlfkXtWxWn8YWxJIwHuCk=;
+        b=AGoPK/3X/wh/f93lMHdV88o5Zn6xH4ws3b9r8u31gLtYjNKSWhBlbdE5OP6bHoQf//
+         Q31MlBy4i0p/pCPgHa2c2TY2wMZmxVb6o20HNVdyZW7Vsp3CR61sg7DIn77jJNRoG+cK
+         Jc/9a5KUfmMpbuChZa/RxRjnkOuu449Fdccy4TnqbvTbZH2E/+WvUyM32lmDySI2SITN
+         NjfQsjKJ+Qj6Zz9e5xQG+UUuaISOAN7s//MXFtL6rfDoXbDztg4rS6+DPDd3+wdp3/kP
+         Z3PYPwkCER+daXemoL1tB9TOYrfcxV01Cm7uCoUyBnJni22zBuVc/8A+raWWZJkc4ehK
+         im/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yU68bYZll0mzggjcp/THbKrh4n5hlEmB9/xKZTuuEY8=;
-        b=oBDnAebPY2bWFvALYJJiBLmfXW0hvUBX83IqafMAVAD6FQ3s4i8vjwfSh30TzHntS1
-         MX5FOyF1ClS1hAbFMnn9fxOxKGB5HI5Kd94Fm6DbojyDwDxDjy3JTxr+6D1Xw0qbczMo
-         6m03ddZe+mDZwdNe+C8rIyPtT49Z+cCEqtQ1+yRk+HRF8kuwq05ZwIF0NOBK+mxpq8UZ
-         FlQXJBa1PsyBEgzHoQEUWbFfcc8z4l8Zpk64RoWf1RS2HhqhOicp6jpwce6vfy78q5d+
-         St4QOXsBoqTeTphr2n1QOJMiAm/NCvhV0fiZE3OGoqUU/O7FVq+wb3j0R+9ODgYw8iVK
-         nq0A==
-X-Gm-Message-State: AGi0PuaF/HJRNkauh5wHC+9Nnshq5xNxx0dC9lx9/jciJ6tN8zKnxrZT
-        ++fG5TQwqaHfPm4g+UoMwDaDfZ+KBRF3MhU=
-X-Google-Smtp-Source: APiQypIKG7HUNkwNoeYGauvodtwavLeK08mylDIqWesGqSRBqQyfdVX8bCpDuWj648KrF1GKCHfeaw==
-X-Received: by 2002:adf:82f5:: with SMTP id 108mr26730462wrc.43.1587996679184;
-        Mon, 27 Apr 2020 07:11:19 -0700 (PDT)
+        bh=AbEb4GO4bkclUwQzLx6sFQQlfkXtWxWn8YWxJIwHuCk=;
+        b=pkp8O8TlltuLi5LT+2QJOwTjJIA4eBlUJo8o1klZDFWEYIYRKfZ52ghaxGlOgg5wfL
+         RJ3JUv2CH2jR0d5srkhnoUia/fND3U2OUMU+xJgIY7e9SN+KtbvhZnNCQNFsZm3b/5jc
+         VlyiKwUeS9GD3N8Twe+RkX1ZOhKcEBx+kFwGlgL+r6p8YLbmbwLsRoEf9QpB9AGKwsNc
+         Kdo6sydrSov73iYfGl42HRaEWe1Evucmhl5xoizvpxQuwZhP1SHI72KuH+9HH5YvBtYX
+         eYRAcH5cboSz8rsxQptoMEIrtzO9ZJCAatfoKRN/tqNqHyY8mCQZAqcZ2nOtRWvbStPS
+         l4kw==
+X-Gm-Message-State: AGi0PuZifD/l2j74nuT6cAzcLuH7eweX+nNuvfQPWpK26ypPZ5Ywp9y6
+        LsDmdo8Lnx2IWUGU38fDy4at
+X-Google-Smtp-Source: APiQypK9l9vZkulTiD7e/dORKp55sw0JmqD/Aa+44iRsJZqO7j9En6lh8ul15pCF2rZt5Kdu4yiQoA==
+X-Received: by 2002:a5d:420a:: with SMTP id n10mr26458610wrq.235.1587996680525;
+        Mon, 27 Apr 2020 07:11:20 -0700 (PDT)
 Received: from dkxps.fkb.profitbricks.net (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
-        by smtp.gmail.com with ESMTPSA id o3sm21499756wru.68.2020.04.27.07.11.17
+        by smtp.gmail.com with ESMTPSA id o3sm21499756wru.68.2020.04.27.07.11.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 07:11:18 -0700 (PDT)
+        Mon, 27 Apr 2020 07:11:19 -0700 (PDT)
 From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
 To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com
-Subject: [PATCH v13 08/25] RDMA/rtrs: client: sysfs interface functions
-Date:   Mon, 27 Apr 2020 16:10:03 +0200
-Message-Id: <20200427141020.655-9-danil.kipnis@cloud.ionos.com>
+Subject: [PATCH v13 09/25] RDMA/rtrs: server: private header with server structs and functions
+Date:   Mon, 27 Apr 2020 16:10:04 +0200
+Message-Id: <20200427141020.655-10-danil.kipnis@cloud.ionos.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200427141020.655-1-danil.kipnis@cloud.ionos.com>
 References: <20200427141020.655-1-danil.kipnis@cloud.ionos.com>
@@ -68,60 +68,24 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-This is the sysfs interface to rtrs sessions on client side:
-
-  /sys/class/rtrs-client/<SESS-NAME>/
-    *** rtrs session created by rtrs_clt_open() API call
-    |
-    |- max_reconnect_attempts
-    |  *** number of reconnect attempts for session
-    |
-    |- add_path
-    |  *** adds another connection path into rtrs session
-    |
-    |- paths/<SRC@DST>/
-       *** established paths to server in a session
-       |
-       |- disconnect
-       |  *** disconnect path
-       |
-       |- reconnect
-       |  *** reconnect path
-       |
-       |- remove_path
-       |  *** remove current path
-       |
-       |- state
-       |  *** retrieve current path state
-       |
-       |- hca_port
-       |  *** HCA port number
-       |
-       |- hca_name
-       |  *** HCA name
-       |
-       |- stats/
-          *** current path statistics
-          |
-	  |- cpu_migration
-	  |- rdma
-	  |- reconnects
-	  |- reset_all
+This header describes main structs and functions used by rtrs-server
+module, mainly for accepting rtrs sessions, creating/destroying
+sysfs entries, accounting statistics on server side.
 
 Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 481 +++++++++++++++++++
- 1 file changed, 481 insertions(+)
- create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h | 148 +++++++++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.h
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
 new file mode 100644
-index 000000000000..4310130ee3bb
+index 000000000000..dc95b0932f0d
 --- /dev/null
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -0,0 +1,481 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+@@ -0,0 +1,148 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
 +/*
 + * RDMA Transport Layer
 + *
@@ -129,479 +93,146 @@ index 000000000000..4310130ee3bb
 + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
 + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
 + */
-+#undef pr_fmt
-+#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 +
++#ifndef RTRS_SRV_H
++#define RTRS_SRV_H
++
++#include <linux/device.h>
++#include <linux/refcount.h>
 +#include "rtrs-pri.h"
-+#include "rtrs-clt.h"
-+#include "rtrs-log.h"
 +
-+#define MIN_MAX_RECONN_ATT -1
-+#define MAX_MAX_RECONN_ATT 9999
-+
-+static void rtrs_clt_sess_release(struct kobject *kobj)
-+{
-+	struct rtrs_clt_sess *sess;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+
-+	free_sess(sess);
-+}
-+
-+static struct kobj_type ktype_sess = {
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.release = rtrs_clt_sess_release
++/*
++ * enum rtrs_srv_state - Server states.
++ */
++enum rtrs_srv_state {
++	RTRS_SRV_CONNECTING,
++	RTRS_SRV_CONNECTED,
++	RTRS_SRV_CLOSING,
++	RTRS_SRV_CLOSED,
 +};
 +
-+static void rtrs_clt_sess_stats_release(struct kobject *kobj)
-+{
-+	struct rtrs_clt_stats *stats;
-+
-+	stats = container_of(kobj, struct rtrs_clt_stats, kobj_stats);
-+
-+	kfree(stats);
-+}
-+
-+static struct kobj_type ktype_stats = {
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.release = rtrs_clt_sess_stats_release,
++/* stats for Read and write operation.
++ * see Documentation/ABI/testing/sysfs-class-rtrs-server for details
++ */
++struct rtrs_srv_stats_rdma_stats {
++	struct {
++		atomic64_t	cnt;
++		atomic64_t	size_total;
++	} dir[2];
 +};
 +
-+static ssize_t max_reconnect_attempts_show(struct device *dev,
-+					   struct device_attribute *attr,
-+					   char *page)
-+{
-+	struct rtrs_clt *clt = container_of(dev, struct rtrs_clt, dev);
-+
-+	return sprintf(page, "%d\n", rtrs_clt_get_max_reconnect_attempts(clt));
-+}
-+
-+static ssize_t max_reconnect_attempts_store(struct device *dev,
-+					    struct device_attribute *attr,
-+					    const char *buf,
-+					    size_t count)
-+{
-+	int value;
-+	int ret;
-+	struct rtrs_clt *clt  = container_of(dev, struct rtrs_clt, dev);
-+
-+	ret = kstrtoint(buf, 10, &value);
-+	if (ret) {
-+		rtrs_err(clt, "%s: failed to convert string '%s' to int\n",
-+			  attr->attr.name, buf);
-+		return ret;
-+	}
-+	if (value > MAX_MAX_RECONN_ATT ||
-+		     value < MIN_MAX_RECONN_ATT) {
-+		rtrs_err(clt,
-+			  "%s: invalid range (provided: '%s', accepted: min: %d, max: %d)\n",
-+			  attr->attr.name, buf, MIN_MAX_RECONN_ATT,
-+			  MAX_MAX_RECONN_ATT);
-+		return -EINVAL;
-+	}
-+	rtrs_clt_set_max_reconnect_attempts(clt, value);
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(max_reconnect_attempts);
-+
-+static ssize_t mpath_policy_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *page)
-+{
-+	struct rtrs_clt *clt;
-+
-+	clt = container_of(dev, struct rtrs_clt, dev);
-+
-+	switch (clt->mp_policy) {
-+	case MP_POLICY_RR:
-+		return sprintf(page, "round-robin (RR: %d)\n", clt->mp_policy);
-+	case MP_POLICY_MIN_INFLIGHT:
-+		return sprintf(page, "min-inflight (MI: %d)\n", clt->mp_policy);
-+	default:
-+		return sprintf(page, "Unknown (%d)\n", clt->mp_policy);
-+	}
-+}
-+
-+static ssize_t mpath_policy_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf,
-+				  size_t count)
-+{
-+	struct rtrs_clt *clt;
-+	int value;
-+	int ret;
-+
-+	clt = container_of(dev, struct rtrs_clt, dev);
-+
-+	ret = kstrtoint(buf, 10, &value);
-+	if (!ret && (value == MP_POLICY_RR ||
-+		     value == MP_POLICY_MIN_INFLIGHT)) {
-+		clt->mp_policy = value;
-+		return count;
-+	}
-+
-+	if (!strncasecmp(buf, "round-robin", 11) ||
-+	    !strncasecmp(buf, "rr", 2))
-+		clt->mp_policy = MP_POLICY_RR;
-+	else if (!strncasecmp(buf, "min-inflight", 12) ||
-+		 !strncasecmp(buf, "mi", 2))
-+		clt->mp_policy = MP_POLICY_MIN_INFLIGHT;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(mpath_policy);
-+
-+static ssize_t add_path_show(struct device *dev,
-+			     struct device_attribute *attr, char *page)
-+{
-+	return scnprintf(page, PAGE_SIZE,
-+			 "Usage: echo [<source addr>@]<destination addr> > %s\n\n*addr ::= [ ip:<ipv4|ipv6> | gid:<gid> ]\n",
-+			 attr->attr.name);
-+}
-+
-+static ssize_t add_path_store(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	struct sockaddr_storage srcaddr, dstaddr;
-+	struct rtrs_addr addr = {
-+		.src = &srcaddr,
-+		.dst = &dstaddr
-+	};
-+	struct rtrs_clt *clt;
-+	const char *nl;
-+	size_t len;
-+	int err;
-+
-+	clt = container_of(dev, struct rtrs_clt, dev);
-+
-+	nl = strchr(buf, '\n');
-+	if (nl)
-+		len = nl - buf;
-+	else
-+		len = count;
-+	err = rtrs_addr_to_sockaddr(buf, len, clt->port, &addr);
-+	if (err)
-+		return -EINVAL;
-+
-+	err = rtrs_clt_create_path_from_sysfs(clt, &addr);
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(add_path);
-+
-+static ssize_t rtrs_clt_state_show(struct kobject *kobj,
-+				    struct kobj_attribute *attr, char *page)
-+{
-+	struct rtrs_clt_sess *sess;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	if (sess->state == RTRS_CLT_CONNECTED)
-+		return sprintf(page, "connected\n");
-+
-+	return sprintf(page, "disconnected\n");
-+}
-+
-+static struct kobj_attribute rtrs_clt_state_attr =
-+	__ATTR(state, 0444, rtrs_clt_state_show, NULL);
-+
-+static ssize_t rtrs_clt_reconnect_show(struct kobject *kobj,
-+					struct kobj_attribute *attr,
-+					char *page)
-+{
-+	return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
-+			 attr->attr.name);
-+}
-+
-+static ssize_t rtrs_clt_reconnect_store(struct kobject *kobj,
-+					 struct kobj_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct rtrs_clt_sess *sess;
-+	int ret;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	if (!sysfs_streq(buf, "1")) {
-+		rtrs_err(sess->clt, "%s: unknown value: '%s'\n",
-+			  attr->attr.name, buf);
-+		return -EINVAL;
-+	}
-+	ret = rtrs_clt_reconnect_from_sysfs(sess);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static struct kobj_attribute rtrs_clt_reconnect_attr =
-+	__ATTR(reconnect, 0644, rtrs_clt_reconnect_show,
-+	       rtrs_clt_reconnect_store);
-+
-+static ssize_t rtrs_clt_disconnect_show(struct kobject *kobj,
-+					 struct kobj_attribute *attr,
-+					 char *page)
-+{
-+	return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
-+			 attr->attr.name);
-+}
-+
-+static ssize_t rtrs_clt_disconnect_store(struct kobject *kobj,
-+					  struct kobj_attribute *attr,
-+					  const char *buf, size_t count)
-+{
-+	struct rtrs_clt_sess *sess;
-+	int ret;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	if (!sysfs_streq(buf, "1")) {
-+		rtrs_err(sess->clt, "%s: unknown value: '%s'\n",
-+			  attr->attr.name, buf);
-+		return -EINVAL;
-+	}
-+	ret = rtrs_clt_disconnect_from_sysfs(sess);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static struct kobj_attribute rtrs_clt_disconnect_attr =
-+	__ATTR(disconnect, 0644, rtrs_clt_disconnect_show,
-+	       rtrs_clt_disconnect_store);
-+
-+static ssize_t rtrs_clt_remove_path_show(struct kobject *kobj,
-+					  struct kobj_attribute *attr,
-+					  char *page)
-+{
-+	return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
-+			 attr->attr.name);
-+}
-+
-+static ssize_t rtrs_clt_remove_path_store(struct kobject *kobj,
-+					   struct kobj_attribute *attr,
-+					   const char *buf, size_t count)
-+{
-+	struct rtrs_clt_sess *sess;
-+	int ret;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	if (!sysfs_streq(buf, "1")) {
-+		rtrs_err(sess->clt, "%s: unknown value: '%s'\n",
-+			  attr->attr.name, buf);
-+		return -EINVAL;
-+	}
-+	ret = rtrs_clt_remove_path_from_sysfs(sess, &attr->attr);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static struct kobj_attribute rtrs_clt_remove_path_attr =
-+	__ATTR(remove_path, 0644, rtrs_clt_remove_path_show,
-+	       rtrs_clt_remove_path_store);
-+
-+STAT_ATTR(struct rtrs_clt_stats, cpu_migration,
-+	  rtrs_clt_stats_migration_cnt_to_str,
-+	  rtrs_clt_reset_cpu_migr_stats);
-+
-+STAT_ATTR(struct rtrs_clt_stats, reconnects,
-+	  rtrs_clt_stats_reconnects_to_str,
-+	  rtrs_clt_reset_reconnects_stat);
-+
-+STAT_ATTR(struct rtrs_clt_stats, rdma,
-+	  rtrs_clt_stats_rdma_to_str,
-+	  rtrs_clt_reset_rdma_stats);
-+
-+STAT_ATTR(struct rtrs_clt_stats, reset_all,
-+	  rtrs_clt_reset_all_help,
-+	  rtrs_clt_reset_all_stats);
-+
-+static struct attribute *rtrs_clt_stats_attrs[] = {
-+	&cpu_migration_attr.attr,
-+	&reconnects_attr.attr,
-+	&rdma_attr.attr,
-+	&reset_all_attr.attr,
-+	NULL
++struct rtrs_srv_stats {
++	struct kobject				kobj_stats;
++	struct rtrs_srv_stats_rdma_stats	rdma_stats;
++	struct rtrs_srv_sess			*sess;
 +};
 +
-+static struct attribute_group rtrs_clt_stats_attr_group = {
-+	.attrs = rtrs_clt_stats_attrs,
++struct rtrs_srv_con {
++	struct rtrs_con		c;
++	atomic_t		wr_cnt;
++	atomic_t		sq_wr_avail;
++	struct list_head	rsp_wr_wait_list;
++	spinlock_t		rsp_wr_wait_lock;
 +};
 +
-+static ssize_t rtrs_clt_hca_port_show(struct kobject *kobj,
-+				       struct kobj_attribute *attr,
-+				       char *page)
-+{
-+	struct rtrs_clt_sess *sess;
-+
-+	sess = container_of(kobj, typeof(*sess), kobj);
-+
-+	return scnprintf(page, PAGE_SIZE, "%u\n", sess->hca_port);
-+}
-+
-+static struct kobj_attribute rtrs_clt_hca_port_attr =
-+	__ATTR(hca_port, 0444, rtrs_clt_hca_port_show, NULL);
-+
-+static ssize_t rtrs_clt_hca_name_show(struct kobject *kobj,
-+				       struct kobj_attribute *attr,
-+				       char *page)
-+{
-+	struct rtrs_clt_sess *sess;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+
-+	return scnprintf(page, PAGE_SIZE, "%s\n", sess->hca_name);
-+}
-+
-+static struct kobj_attribute rtrs_clt_hca_name_attr =
-+	__ATTR(hca_name, 0444, rtrs_clt_hca_name_show, NULL);
-+
-+static ssize_t rtrs_clt_src_addr_show(struct kobject *kobj,
-+				       struct kobj_attribute *attr,
-+				       char *page)
-+{
-+	struct rtrs_clt_sess *sess;
-+	int cnt;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	cnt = sockaddr_to_str((struct sockaddr *)&sess->s.src_addr,
-+			      page, PAGE_SIZE);
-+	return cnt + scnprintf(page + cnt, PAGE_SIZE - cnt, "\n");
-+}
-+
-+static struct kobj_attribute rtrs_clt_src_addr_attr =
-+	__ATTR(src_addr, 0444, rtrs_clt_src_addr_show, NULL);
-+
-+static ssize_t rtrs_clt_dst_addr_show(struct kobject *kobj,
-+				       struct kobj_attribute *attr,
-+				       char *page)
-+{
-+	struct rtrs_clt_sess *sess;
-+	int cnt;
-+
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+	cnt = sockaddr_to_str((struct sockaddr *)&sess->s.dst_addr,
-+			      page, PAGE_SIZE);
-+	return cnt + scnprintf(page + cnt, PAGE_SIZE - cnt, "\n");
-+}
-+
-+static struct kobj_attribute rtrs_clt_dst_addr_attr =
-+	__ATTR(dst_addr, 0444, rtrs_clt_dst_addr_show, NULL);
-+
-+static struct attribute *rtrs_clt_sess_attrs[] = {
-+	&rtrs_clt_hca_name_attr.attr,
-+	&rtrs_clt_hca_port_attr.attr,
-+	&rtrs_clt_src_addr_attr.attr,
-+	&rtrs_clt_dst_addr_attr.attr,
-+	&rtrs_clt_state_attr.attr,
-+	&rtrs_clt_reconnect_attr.attr,
-+	&rtrs_clt_disconnect_attr.attr,
-+	&rtrs_clt_remove_path_attr.attr,
-+	NULL,
++/* IO context in rtrs_srv, each io has one */
++struct rtrs_srv_op {
++	struct rtrs_srv_con		*con;
++	u32				msg_id;
++	u8				dir;
++	struct rtrs_msg_rdma_read	*rd_msg;
++	struct ib_rdma_wr		tx_wr;
++	struct ib_sge			tx_sg;
++	struct list_head		wait_list;
++	int				status;
 +};
 +
-+static struct attribute_group rtrs_clt_sess_attr_group = {
-+	.attrs = rtrs_clt_sess_attrs,
++/*
++ * server side memory region context, when always_invalidate=Y, we need
++ * queue_depth of memory regrion to invalidate each memory region.
++ */
++struct rtrs_srv_mr {
++	struct ib_mr	*mr;
++	struct sg_table	sgt;
++	struct ib_cqe	inv_cqe;	/* only for always_invalidate=true */
++	u32		msg_id;		/* only for always_invalidate=true */
++	u32		msg_off;	/* only for always_invalidate=true */
++	struct rtrs_iu	*iu;		/* send buffer for new rkey msg */
 +};
 +
-+int rtrs_clt_create_sess_files(struct rtrs_clt_sess *sess)
-+{
-+	struct rtrs_clt *clt = sess->clt;
-+	char str[NAME_MAX];
-+	int err, cnt;
-+
-+	cnt = sockaddr_to_str((struct sockaddr *)&sess->s.src_addr,
-+			      str, sizeof(str));
-+	cnt += scnprintf(str + cnt, sizeof(str) - cnt, "@");
-+	sockaddr_to_str((struct sockaddr *)&sess->s.dst_addr,
-+			str + cnt, sizeof(str) - cnt);
-+
-+	err = kobject_init_and_add(&sess->kobj, &ktype_sess, clt->kobj_paths,
-+				   "%s", str);
-+	if (err) {
-+		pr_err("kobject_init_and_add: %d\n", err);
-+		return err;
-+	}
-+	err = sysfs_create_group(&sess->kobj, &rtrs_clt_sess_attr_group);
-+	if (err) {
-+		pr_err("sysfs_create_group(): %d\n", err);
-+		goto put_kobj;
-+	}
-+	err = kobject_init_and_add(&sess->stats->kobj_stats, &ktype_stats,
-+				   &sess->kobj, "stats");
-+	if (err) {
-+		pr_err("kobject_init_and_add: %d\n", err);
-+		goto remove_group;
-+	}
-+
-+	err = sysfs_create_group(&sess->stats->kobj_stats,
-+				 &rtrs_clt_stats_attr_group);
-+	if (err) {
-+		pr_err("failed to create stats sysfs group, err: %d\n", err);
-+		goto put_kobj_stats;
-+	}
-+
-+	return 0;
-+
-+put_kobj_stats:
-+	kobject_del(&sess->stats->kobj_stats);
-+	kobject_put(&sess->stats->kobj_stats);
-+remove_group:
-+	sysfs_remove_group(&sess->kobj, &rtrs_clt_sess_attr_group);
-+put_kobj:
-+	kobject_del(&sess->kobj);
-+	kobject_put(&sess->kobj);
-+
-+	return err;
-+}
-+
-+void rtrs_clt_destroy_sess_files(struct rtrs_clt_sess *sess,
-+				  const struct attribute *sysfs_self)
-+{
-+	kobject_del(&sess->stats->kobj_stats);
-+	kobject_put(&sess->stats->kobj_stats);
-+	if (sysfs_self)
-+		sysfs_remove_file_self(&sess->kobj, sysfs_self);
-+	kobject_del(&sess->kobj);
-+}
-+
-+static struct attribute *rtrs_clt_attrs[] = {
-+	&dev_attr_max_reconnect_attempts.attr,
-+	&dev_attr_mpath_policy.attr,
-+	&dev_attr_add_path.attr,
-+	NULL,
++struct rtrs_srv_sess {
++	struct rtrs_sess	s;
++	struct rtrs_srv	*srv;
++	struct work_struct	close_work;
++	enum rtrs_srv_state	state;
++	spinlock_t		state_lock;
++	int			cur_cq_vector;
++	struct rtrs_srv_op	**ops_ids;
++	atomic_t		ids_inflight;
++	wait_queue_head_t	ids_waitq;
++	struct rtrs_srv_mr	*mrs;
++	unsigned int		mrs_num;
++	dma_addr_t		*dma_addr;
++	bool			established;
++	unsigned int		mem_bits;
++	struct kobject		kobj;
++	struct rtrs_srv_stats	*stats;
 +};
 +
-+static struct attribute_group rtrs_clt_attr_group = {
-+	.attrs = rtrs_clt_attrs,
++struct rtrs_srv {
++	struct list_head	paths_list;
++	int			paths_up;
++	struct mutex		paths_ev_mutex;
++	size_t			paths_num;
++	struct mutex		paths_mutex;
++	uuid_t			paths_uuid;
++	refcount_t		refcount;
++	struct rtrs_srv_ctx	*ctx;
++	struct list_head	ctx_list;
++	void			*priv;
++	size_t			queue_depth;
++	struct page		**chunks;
++	struct device		dev;
++	unsigned int		dev_ref;
++	struct kobject		*kobj_paths;
 +};
 +
-+int rtrs_clt_create_sysfs_root_files(struct rtrs_clt *clt)
++struct rtrs_srv_ctx {
++	struct rtrs_srv_ops ops;
++	struct rdma_cm_id *cm_id_ip;
++	struct rdma_cm_id *cm_id_ib;
++	struct mutex srv_mutex;
++	struct list_head srv_list;
++};
++
++extern struct class *rtrs_dev_class;
++
++void close_sess(struct rtrs_srv_sess *sess);
++
++static inline void rtrs_srv_update_rdma_stats(struct rtrs_srv_stats *s,
++					      size_t size, int d)
 +{
-+	return sysfs_create_group(&clt->dev.kobj, &rtrs_clt_attr_group);
++	atomic64_inc(&s->rdma_stats.dir[d].cnt);
++	atomic64_add(size, &s->rdma_stats.dir[d].size_total);
 +}
 +
-+void rtrs_clt_destroy_sysfs_root_folders(struct rtrs_clt *clt)
-+{
-+	if (clt->kobj_paths) {
-+		kobject_del(clt->kobj_paths);
-+		kobject_put(clt->kobj_paths);
-+	}
-+}
++/* functions which are implemented in rtrs-srv-stats.c */
++int rtrs_srv_reset_rdma_stats(struct rtrs_srv_stats *stats, bool enable);
++ssize_t rtrs_srv_stats_rdma_to_str(struct rtrs_srv_stats *stats,
++				    char *page, size_t len);
++int rtrs_srv_reset_wc_completion_stats(struct rtrs_srv_stats *stats,
++					bool enable);
++int rtrs_srv_stats_wc_completion_to_str(struct rtrs_srv_stats *stats, char *buf,
++					 size_t len);
++int rtrs_srv_reset_all_stats(struct rtrs_srv_stats *stats, bool enable);
++ssize_t rtrs_srv_reset_all_help(struct rtrs_srv_stats *stats,
++				 char *page, size_t len);
 +
-+void rtrs_clt_destroy_sysfs_root_files(struct rtrs_clt *clt)
-+{
-+	sysfs_remove_group(&clt->dev.kobj, &rtrs_clt_attr_group);
-+}
++/* functions which are implemented in rtrs-srv-sysfs.c */
++int rtrs_srv_create_sess_files(struct rtrs_srv_sess *sess);
++void rtrs_srv_destroy_sess_files(struct rtrs_srv_sess *sess);
++
++#endif /* RTRS_SRV_H */
 -- 
 2.20.1
 
