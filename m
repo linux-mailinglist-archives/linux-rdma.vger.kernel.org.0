@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E050C1BA912
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 17:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF5D1BA900
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Apr 2020 17:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgD0Psw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Apr 2020 11:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57600 "EHLO mail.kernel.org"
+        id S1728400AbgD0Pso (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Apr 2020 11:48:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728418AbgD0Psu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:48:50 -0400
+        id S1728207AbgD0Psn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:48:43 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8477206BF;
-        Mon, 27 Apr 2020 15:48:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12E412064C;
+        Mon, 27 Apr 2020 15:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588002530;
-        bh=p235Q6jGtFWNRY0Cy+Dx1Q4L/bYZNrrkkRWL/l/rctQ=;
+        s=default; t=1588002522;
+        bh=yz4VI0jrgXwXbYAMzQnJWK6XlsZLs5WKYcGj5unIB1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cJFbSc+63KsdxLg1ppn6mD5yMLuE+rqr/FdYRYRGrSf1GhIkdveUvVCB3Pc/a91Q6
-         KQnrHzaJEbe4l6ZpeYk8kZUPJDsXKrz0FaekJmnR4lj8jkxafVUPbGAoB4yTOEL2Ba
-         PFuykQkcM5Y2DxZbHfVZM3j5HW/aIztTAleieVLk=
+        b=OzBamVxuOfdw1mNDNjoJfVw8BpnuoRE0sM2zPBRYTYCv/srIGJNqqroxrX05kDT++
+         zGBAK4eJPkYsCRPEoG8U80bMCHOfxOhWiBqdLOn/0o7GHZhMmtMaEtn1DXC71nNJuq
+         SzOkiN5nOXil0WJRvrjh1+KzwCp7xviEc1G5puwU=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -31,9 +31,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Aharon Landau <aharonl@mellanox.com>,
         Eli Cohen <eli@mellanox.com>,
         Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next v1 32/36] RDMA/mlx5: Handle udate outlen checks in one place
-Date:   Mon, 27 Apr 2020 18:46:32 +0300
-Message-Id: <20200427154636.381474-33-leon@kernel.org>
+Subject: [PATCH rdma-next v1 33/36] RDMA/mlx5: Copy response to the user in one place
+Date:   Mon, 27 Apr 2020 18:46:33 +0300
+Message-Id: <20200427154636.381474-34-leon@kernel.org>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200427154636.381474-1-leon@kernel.org>
 References: <20200427154636.381474-1-leon@kernel.org>
@@ -46,110 +46,241 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Place in one function all udata size checks. This will allow
-us move ib_copy_to_udata() in general place and ensure that
-it will be performed after call to the FW.
+Update all the places in create QP flows to copy response
+to the user in one place.
 
 Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/qp.c | 48 ++++++++++++++++++++-------------
- 1 file changed, 30 insertions(+), 18 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 113 +++++++++++++++-----------------
+ 1 file changed, 52 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 8daa8bc6b9c7..0d06706e6ce1 100644
+index 0d06706e6ce1..9ca742189281 100644
 --- a/drivers/infiniband/hw/mlx5/qp.c
 +++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1613,6 +1613,7 @@ static void destroy_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *q
- struct mlx5_create_qp_params {
- 	struct ib_udata *udata;
- 	size_t inlen;
-+	size_t outlen;
- 	void *ucmd;
+@@ -1015,17 +1015,8 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		goto err_free;
+ 	}
+ 
+-	err = ib_copy_to_udata(udata, resp, min(udata->outlen, sizeof(*resp)));
+-	if (err) {
+-		mlx5_ib_dbg(dev, "copy failed\n");
+-		goto err_unmap;
+-	}
+-
+ 	return 0;
+ 
+-err_unmap:
+-	mlx5_ib_db_unmap_user(context, &qp->db);
+-
+ err_free:
+ 	kvfree(*in);
+ 
+@@ -1551,14 +1542,8 @@ static int create_raw_packet_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 
+ 	qp->trans_qp.base.mqp.qpn = qp->sq.wqe_cnt ? sq->base.mqp.qpn :
+ 						     rq->base.mqp.qpn;
+-	err = ib_copy_to_udata(udata, resp, min(udata->outlen, sizeof(*resp)));
+-	if (err)
+-		goto err_destroy_tir;
+-
+ 	return 0;
+ 
+-err_destroy_tir:
+-	destroy_raw_packet_qp_tir(dev, rq, qp->flags_en, pd);
+ err_destroy_rq:
+ 	destroy_raw_packet_qp_rq(dev, rq);
+ err_destroy_sq:
+@@ -1618,6 +1603,7 @@ struct mlx5_create_qp_params {
  	u8 is_rss_raw : 1;
  	struct ib_qp_init_attr *attr;
-@@ -1638,15 +1639,9 @@ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	void *hfso;
- 	u32 selected_fields = 0;
- 	u32 outer_l4;
--	size_t min_resp_len;
- 	u32 tdn = mucontext->tdn;
- 	u8 lb_flag = 0;
+ 	u32 uidx;
++	struct mlx5_ib_create_qp_resp resp;
+ };
  
--	min_resp_len =
--		offsetof(typeof(resp), bfreg_index) + sizeof(resp.bfreg_index);
--	if (udata->outlen < min_resp_len)
+ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+@@ -1629,7 +1615,6 @@ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	struct ib_udata *udata = params->udata;
+ 	struct mlx5_ib_ucontext *mucontext = rdma_udata_to_drv_context(
+ 		udata, struct mlx5_ib_ucontext, ibucontext);
+-	struct mlx5_ib_create_qp_resp resp = {};
+ 	int inlen;
+ 	int outlen;
+ 	int err;
+@@ -1662,12 +1647,6 @@ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	if (qp->flags_en & MLX5_QP_FLAG_TIR_ALLOW_SELF_LB_MC)
+ 		lb_flag |= MLX5_TIRC_SELF_LB_BLOCK_BLOCK_MULTICAST;
+ 
+-	err = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
+-	if (err) {
+-		mlx5_ib_dbg(dev, "copy failed\n");
 -		return -EINVAL;
+-	}
 -
- 	if (ucmd->comp_mask) {
- 		mlx5_ib_dbg(dev, "invalid comp mask\n");
- 		return -EOPNOTSUPP;
-@@ -2780,26 +2775,43 @@ static int process_create_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	return (create_flags) ? -EINVAL : 0;
+ 	inlen = MLX5_ST_SZ_BYTES(create_tir_in);
+ 	outlen = MLX5_ST_SZ_BYTES(create_tir_out);
+ 	in = kvzalloc(inlen + outlen, GFP_KERNEL);
+@@ -1803,34 +1782,30 @@ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		goto err;
+ 
+ 	if (mucontext->devx_uid) {
+-		resp.comp_mask |= MLX5_IB_CREATE_QP_RESP_MASK_TIRN;
+-		resp.tirn = qp->rss_qp.tirn;
++		params->resp.comp_mask |= MLX5_IB_CREATE_QP_RESP_MASK_TIRN;
++		params->resp.tirn = qp->rss_qp.tirn;
+ 		if (MLX5_CAP_FLOWTABLE_NIC_RX(dev->mdev, sw_owner)) {
+-			resp.tir_icm_addr =
++			params->resp.tir_icm_addr =
+ 				MLX5_GET(create_tir_out, out, icm_address_31_0);
+-			resp.tir_icm_addr |= (u64)MLX5_GET(create_tir_out, out,
+-							   icm_address_39_32)
+-					     << 32;
+-			resp.tir_icm_addr |= (u64)MLX5_GET(create_tir_out, out,
+-							   icm_address_63_40)
+-					     << 40;
+-			resp.comp_mask |=
++			params->resp.tir_icm_addr |=
++				(u64)MLX5_GET(create_tir_out, out,
++					      icm_address_39_32)
++				<< 32;
++			params->resp.tir_icm_addr |=
++				(u64)MLX5_GET(create_tir_out, out,
++					      icm_address_63_40)
++				<< 40;
++			params->resp.comp_mask |=
+ 				MLX5_IB_CREATE_QP_RESP_MASK_TIR_ICM_ADDR;
+ 		}
+ 	}
+ 
+-	err = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
+-	if (err)
+-		goto err_copy;
+-
+ 	kvfree(in);
+ 	/* qpn is reserved for that QP */
+ 	qp->trans_qp.base.mqp.qpn = 0;
+ 	qp->is_rss = true;
+ 	return 0;
+ 
+-err_copy:
+-	mlx5_cmd_destroy_tir(dev->mdev, qp->rss_qp.tirn, mucontext->devx_uid);
+ err:
+ 	kvfree(in);
+ 	return err;
+@@ -1995,7 +1970,6 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	struct mlx5_ib_resources *devr = &dev->devr;
+ 	int inlen = MLX5_ST_SZ_BYTES(create_qp_in);
+ 	struct mlx5_core_dev *mdev = dev->mdev;
+-	struct mlx5_ib_create_qp_resp resp = {};
+ 	struct mlx5_ib_cq *send_cq;
+ 	struct mlx5_ib_cq *recv_cq;
+ 	unsigned long flags;
+@@ -2038,8 +2012,8 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	if (ucmd->sq_wqe_count > (1 << MLX5_CAP_GEN(mdev, log_max_qp_sz)))
+ 		return -EINVAL;
+ 
+-	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &resp, &inlen,
+-			      base, ucmd);
++	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
++			      &inlen, base, ucmd);
+ 	if (err)
+ 		return err;
+ 
+@@ -2139,7 +2113,7 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		qp->raw_packet_qp.sq.ubuffer.buf_addr = ucmd->sq_buf_addr;
+ 		raw_packet_qp_copy_info(qp, &qp->raw_packet_qp);
+ 		err = create_raw_packet_qp(dev, qp, in, inlen, pd, udata,
+-					   &resp);
++					   &params->resp);
+ 	} else
+ 		err = mlx5_core_create_qp(dev, &base->mqp, in, inlen);
+ 
+@@ -2865,6 +2839,25 @@ static int get_qp_uidx(struct mlx5_ib_qp *qp,
+ 	return get_qp_user_index(ucontext, ucmd, sizeof(*ucmd), &params->uidx);
  }
  
--static size_t process_udata_size(struct ib_qp_init_attr *attr,
--				 struct ib_udata *udata)
-+static int process_udata_size(struct mlx5_ib_dev *dev,
-+			      struct mlx5_create_qp_params *params)
++static int mlx5_ib_destroy_dct(struct mlx5_ib_qp *mqp)
++{
++	struct mlx5_ib_dev *dev = to_mdev(mqp->ibqp.device);
++
++	if (mqp->state == IB_QPS_RTR) {
++		int err;
++
++		err = mlx5_core_destroy_dct(dev, &mqp->dct.mdct);
++		if (err) {
++			mlx5_ib_warn(dev, "failed to destroy DCT %d\n", err);
++			return err;
++		}
++	}
++
++	kfree(mqp->dct.in);
++	kfree(mqp);
++	return 0;
++}
++
+ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attr,
+ 				struct ib_udata *udata)
  {
- 	size_t ucmd = sizeof(struct mlx5_ib_create_qp);
-+	struct ib_qp_init_attr *attr = params->attr;
-+	struct ib_udata *udata = params->udata;
-+	size_t outlen = udata->outlen;
- 	size_t inlen = udata->inlen;
+@@ -2955,6 +2948,7 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attr,
+ 	}
  
--	if (attr->qp_type == IB_QPT_DRIVER)
--		return (inlen < ucmd) ? 0 : ucmd;
-+	params->outlen = min(outlen, sizeof(struct mlx5_ib_create_qp_resp));
-+	if (attr->qp_type == IB_QPT_DRIVER) {
-+		params->inlen = (inlen < ucmd) ? 0 : ucmd;
-+		goto out;
-+	}
+ 	kfree(params.ucmd);
++	params.ucmd = NULL;
  
--	if (!attr->rwq_ind_tbl)
--		return ucmd;
-+	if (!params->is_rss_raw) {
-+		params->inlen = ucmd;
-+		goto out;
-+	}
+ 	if (is_qp0(attr->qp_type))
+ 		qp->ibqp.qp_num = 0;
+@@ -2965,8 +2959,24 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attr,
  
-+	/* RSS RAW QP */
- 	if (inlen < offsetofend(struct mlx5_ib_create_qp_rss, flags))
--		return 0;
-+		return -EINVAL;
+ 	qp->trans_qp.xrcdn = xrcdn;
+ 
++	if (udata)
++		/*
++		 * It is safe to copy response for all user create QP flows,
++		 * including MLX5_IB_QPT_DCT, which doesn't need it.
++		 * In that case, resp will be filled with zeros.
++		 */
++		err = ib_copy_to_udata(udata, &params.resp, params.outlen);
++	if (err)
++		goto destroy_qp;
 +
-+	if (outlen < offsetofend(struct mlx5_ib_create_qp_resp, bfreg_index))
-+		return -EINVAL;
+ 	return &qp->ibqp;
  
- 	ucmd = sizeof(struct mlx5_ib_create_qp_rss);
- 	if (inlen > ucmd && !ib_is_udata_cleared(udata, ucmd, inlen - ucmd))
--		return 0;
-+		return -EINVAL;
-+
-+	params->inlen = min(ucmd, inlen);
-+out:
-+	if (!params->inlen)
-+		mlx5_ib_dbg(dev, "udata is too small or not cleared\n");
- 
--	return min(ucmd, inlen);
-+	return (params->inlen) ? 0 : -EINVAL;
++destroy_qp:
++	if (qp->type == MLX5_IB_QPT_DCT)
++		mlx5_ib_destroy_dct(qp);
++	else
++		destroy_qp_common(dev, qp, udata);
++	qp = NULL;
+ free_qp:
+ 	kfree(qp);
+ free_ucmd:
+@@ -2974,25 +2984,6 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attr,
+ 	return ERR_PTR(err);
  }
  
- static int create_raw_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
-@@ -2883,9 +2895,9 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attr,
- 	params.is_rss_raw = !!attr->rwq_ind_tbl;
- 
- 	if (udata) {
--		params.inlen = process_udata_size(attr, udata);
--		if (!params.inlen)
--			return ERR_PTR(-EINVAL);
-+		err = process_udata_size(dev, &params);
-+		if (err)
-+			return ERR_PTR(err);
- 
- 		params.ucmd = kzalloc(params.inlen, GFP_KERNEL);
- 		if (!params.ucmd)
+-static int mlx5_ib_destroy_dct(struct mlx5_ib_qp *mqp)
+-{
+-	struct mlx5_ib_dev *dev = to_mdev(mqp->ibqp.device);
+-
+-	if (mqp->state == IB_QPS_RTR) {
+-		int err;
+-
+-		err = mlx5_core_destroy_dct(dev, &mqp->dct.mdct);
+-		if (err) {
+-			mlx5_ib_warn(dev, "failed to destroy DCT %d\n", err);
+-			return err;
+-		}
+-	}
+-
+-	kfree(mqp->dct.in);
+-	kfree(mqp);
+-	return 0;
+-}
+-
+ int mlx5_ib_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(qp->device);
 -- 
 2.25.3
 
