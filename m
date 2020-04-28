@@ -2,118 +2,356 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8271BBEBF
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 15:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83D21BC5D8
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 18:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgD1NPc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 09:15:32 -0400
-Received: from relay.sw.ru ([185.231.240.75]:51234 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726764AbgD1NPc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:15:32 -0400
-Received: from [192.168.15.93] (helo=iris.lishka.ru)
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <den@openvz.org>)
-        id 1jTQ4u-0005SY-Dh; Tue, 28 Apr 2020 16:15:12 +0300
-From:   "Denis V. Lunev" <den@openvz.org>
-Cc:     "Denis V. Lunev" <den@openvz.org>,
-        Konstantin Khorenko <khorenko@virtuozzo.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] i40iw: remove bogus call to netdev_master_upper_dev_get
-Date:   Tue, 28 Apr 2020 16:15:11 +0300
-Message-Id: <20200428131511.11049-1-den@openvz.org>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        id S1728333AbgD1QzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Apr 2020 12:55:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24034 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728314AbgD1QzH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Apr 2020 12:55:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588092905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ebXyDv/i8jtA4VSfqIkOWbEh11RYKbfmfy2Rk5FO8Vk=;
+        b=Sj2sB5L8CAA/yQhhYwL0XH5UphAnLKwJlOOmp6OLkKqfVeAJhjLt7I7+A14twX+RMaZSiI
+        o6Chgd5GClaFOK7cH24Nd7DBDxdCTtxqUMxtHvGQ3J5NuwPSjmegXBT9JInw3iGVU15dbA
+        XR1ZAVfzoLlwX1qnlCpz5wn798ZEUug=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-1w1_27iUPpKirbacfPJCIQ-1; Tue, 28 Apr 2020 12:55:01 -0400
+X-MC-Unique: 1w1_27iUPpKirbacfPJCIQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDFED1005510;
+        Tue, 28 Apr 2020 16:54:57 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 009E510013BD;
+        Tue, 28 Apr 2020 16:54:55 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 10:54:55 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Dave Chinner" <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200428105455.30343fb4@w520.home>
+In-Reply-To: <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+        <20200211001536.1027652-7-jhubbard@nvidia.com>
+        <20200424121846.5ee2685f@w520.home>
+        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+        <20200424141548.5afdd2bb@w520.home>
+        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="MP_/BQ=NWFsJNN2mugeC9JYOndi"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Local variable netdev is not used in these calls.
+--MP_/BQ=NWFsJNN2mugeC9JYOndi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-It should be noted, that this change is required to work in bonded mode.
-In the other case we would get the following assert:
- "RTNL: assertion failed at net/core/dev.c (5665)"
-with the calltrace as follows:
-	dump_stack+0x19/0x1b
-	netdev_master_upper_dev_get+0x61/0x70
-	i40iw_addr_resolve_neigh+0x1e8/0x220
-	i40iw_make_cm_node+0x296/0x700
-	? i40iw_find_listener.isra.10+0xcc/0x110
-	i40iw_receive_ilq+0x3d4/0x810
-	i40iw_puda_poll_completion+0x341/0x420
-	i40iw_process_ceq+0xa5/0x280
-	i40iw_ceq_dpc+0x1e/0x40
-	tasklet_action+0x83/0x140
-	__do_softirq+0x125/0x2bb
-	call_softirq+0x1c/0x30
-	do_softirq+0x65/0xa0
-	irq_exit+0x105/0x110
-	do_IRQ+0x56/0xf0
-	common_interrupt+0x16a/0x16a
-	? cpuidle_enter_state+0x57/0xd0
-	cpuidle_idle_call+0xde/0x230
-	arch_cpu_idle+0xe/0xc0
-	cpu_startup_entry+0x14a/0x1e0
-	start_secondary+0x1f7/0x270
-	start_cpu+0x5/0x14
+On Fri, 24 Apr 2020 15:58:29 -0700
+John Hubbard <jhubbard@nvidia.com> wrote:
 
-Signed-off-by: Denis V. Lunev <den@openvz.org>
-CC: Konstantin Khorenko <khorenko@virtuozzo.com>
-CC: Faisal Latif <faisal.latif@intel.com>
-CC: Shiraz Saleem <shiraz.saleem@intel.com>
-CC: Doug Ledford <dledford@redhat.com>
-CC: Jason Gunthorpe <jgg@ziepe.ca>
-CC: linux-rdma@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
- 1 file changed, 8 deletions(-)
+> On 2020-04-24 13:15, Alex Williamson wrote:
+> > On Fri, 24 Apr 2020 12:20:03 -0700
+> > John Hubbard <jhubbard@nvidia.com> wrote:
+> >   
+> >> On 2020-04-24 11:18, Alex Williamson wrote:
+> >> ...  
+> >>> Hi John,
+> >>>
+> >>> I'm seeing a regression bisected back to this commit (3faa52c03f44
+> >>> mm/gup: track FOLL_PIN pages).  I've attached some vfio-pci test code
+> >>> that reproduces this by mmap'ing a page of MMIO space of a device and
+> >>> then tries to map that through the IOMMU, so this should be attempting
+> >>> a gup/pin of a PFNMAP page.  Previously this failed gracefully (-EFAULT),
+> >>> but now results in:  
+> >>
+> >>
+> >> Hi Alex,
+> >>
+> >> Thanks for this report, and especially for source code to test it,
+> >> seeing as how I can't immediately spot the problem just from the crash
+> >> data so far.  I'll get set up and attempt a repro.
+> >>
+> >> Actually this looks like it should be relatively easier than the usual
+> >> sort of "oops, we leaked a pin_user_pages() or unpin_user_pages() call,
+> >> good luck finding which one" report that I fear the most. :) This one
+> >> looks more like a crash that happens directly, when calling into the
+> >> pin_user_pages_remote() code. Which should be a lot easier to solve...
+> >>
+> >> btw, if you are set up for it, it would be nice to know what source file
+> >> and line number corresponds to the RIP (get_pfnblock_flags_mask+0x22)
+> >> below. But if not, no problem, because I've likely got to do the repro
+> >> in any case.  
+> > 
+> > Hey John,
+> > 
+> > TBH I'm feeling a lot less confident about this bisect.  This was
+> > readily reproducible to me on a clean tree a bit ago, but now it
+> > eludes me.  Let me go back and figure out what's going on before you
+> > spend any more time on it.  Thanks,
+> >   
+> 
+> OK. But I'm keeping the repro program! :)  It made it quick and easy to
+> set up a vfio test, so it was worth doing in any case.
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index bb78d3280acc..fa7a5ff498c7 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -1987,7 +1987,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 	struct rtable *rt;
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	__be32 dst_ipaddr = htonl(dst_ip);
- 	__be32 src_ipaddr = htonl(src_ip);
+Great, because I've traced my steps, re-bisected and came back to the
+same upstream commit with the same test program.  The major difference
+is that I thought I was seeing this on pure upstream, but some vfio
+code that I'm trying to prepare for upstream snuck in, so this isn't a
+pure upstream regression, but the changes I was making worked on v5.6
+and does not work with this commit.  Maybe still a latent regression,
+maybe a bug in my changes.
+
+> Anyway, I wanted to double check this just out of paranoia, and so
+> now I have a data point for you: your test program runs and passes for
+> me using today's linux.git kernel, with an NVIDIA GPU as the vfio
+> device, and the kernel log is clean. No hint of any problems.
+
+Yep, I agree.  The vfio change I'm experimenting with is to move the
+remap_pfn_range() from vfio_pci_mmap() to a vm_ops.fault handler.  This
+is why I have the test program creating an mmap of the device mmio
+space and then immediately mapping it through the iommu without
+touching it.  If the vma gets faulted in the dma mapping path via
+pin_user_pages_remote(), I see the crash I reported initially.  If the
+test program is modified to access the mmap before doing the dma
+mapping, everything works normally.  In either case, the fault handler
+is called and satisfies the fault with remap_pfn_range() and returns
+VM_FAULT_NOPAGE (vfio patch attached).
+
+Here's the crash I'm seeing with some further debugging:
+
+BUG: unable to handle page fault for address: ffffa5b8bfe14f38
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] SMP NOPTI
+CPU: 70 PID: 3343 Comm: vfio-pci-dma-ma Not tainted 5.6.0-3faa52c03f44+ #20
+Hardware name: AMD Corporation Diesel/Diesel, BIOS TDL100CB 03/17/2020
+RIP: 0010:get_pfnblock_flags_mask+0x22/0x70
+Code: c3 0f 1f 80 00 00 00 00 0f 1f 44 00 00 48 8b 05 bc e1 d9 01 48 89 f7 49 89 c8 48 c1 ef 0f 48 85 c0 74 48 48 89 f1 48 c1 e9 17 <48> 8b 04 c8 48 85 c0 74 0b 40 0f b6 ff 48 c1 e7 04 48 01 f8 48 c1
+RSP: 0018:ffffb2e3c910fcc8 EFLAGS: 00010216
+RAX: ffff95b8bff50000 RBX: 0000000000000001 RCX: 000001fffffd89e7
+RDX: 0000000000000002 RSI: fffffec4f3a899ba RDI: 0001fffffd89e751
+RBP: ffffb2e3c910fd88 R08: 0000000000000007 R09: ffff95a4aa79fce8
+R10: 0000000000000000 R11: ffffb2e3c910f840 R12: 0000000100000000
+R13: 0000000000000000 R14: 0000000000000001 R15: ffff959caa266e80
+FS:  00007f1a95023740(0000) GS:ffff959caf180000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffa5b8bfe14f38 CR3: 0000000462a1e000 CR4: 00000000003406e0
+Call Trace:
+ __gup_longterm_locked+0x274/0x620
+ vaddr_get_pfn+0x74/0x110 [vfio_iommu_type1]
+ vfio_pin_pages_remote+0x6e/0x370 [vfio_iommu_type1]
+ vfio_iommu_type1_ioctl+0x8e5/0xaac [vfio_iommu_type1]
+
+get_pfnblock_flags_mask+0x22/0x70 is here:
+
+include/linux/mmzone.h:1254
+static inline struct mem_section *__nr_to_section(unsigned long nr)
+{
+#ifdef CONFIG_SPARSEMEM_EXTREME
+        if (!mem_section)
+                return NULL;
+#endif
+====>   if (!mem_section[SECTION_NR_TO_ROOT(nr)])
+                return NULL;
+        return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+}
+
+The call trace is:
+
+__gup_longterm_locked
+  check_and_migrate_cma_pages
+    is_migrate_cma_page
+      get_pageblock_migratetype
+        get_pfnblock_flags_mask
+          __get_pfnblock_flags_mask
+            get_pageblock_bitmap
+              __pfn_to_section
+                __nr_to_section
+
+Any ideas why we see this difference between the vma being faulted in
+outside of the page pinning path versus faulted by it?
+
+FWIW, here's the stack dump for getting to the fault handler in the
+latter case:
+
+ vfio_pci_mmap_fault+0x22/0x130 [vfio_pci]
+ __do_fault+0x38/0xd0
+ __handle_mm_fault+0xd4b/0x1380
+ handle_mm_fault+0xe2/0x1f0
+ __get_user_pages+0x188/0x820
+ __gup_longterm_locked+0xc8/0x620
+
+Thanks!
+Alex
+
+--MP_/BQ=NWFsJNN2mugeC9JYOndi
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=vfio-fault.diff
+
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 379a02c36e37..3b8db2ef6247 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1195,6 +1195,76 @@ static ssize_t vfio_pci_write(void *device_data, const char __user *buf,
+ 	return vfio_pci_rw(device_data, (char __user *)buf, count, ppos, true);
+ }
  
-@@ -1997,9 +1996,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 		return rc;
- 	}
- 
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(&rt->dst, &dst_ipaddr);
- 
- 	rcu_read_lock();
-@@ -2065,7 +2061,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
++static int vfio_pci_add_vma(struct vfio_pci_device *vdev,
++			    struct vm_area_struct *vma)
++{
++	struct vfio_pci_mmap_vma *mmap_vma;
++
++	mmap_vma = kzalloc(sizeof(*mmap_vma), GFP_KERNEL);
++	if (!mmap_vma)
++		return -ENOMEM;
++
++	mmap_vma->vma = vma;
++
++	mutex_lock(&vdev->vma_lock);
++	list_add(&mmap_vma->vma_next, &vdev->vma_list);
++	mutex_unlock(&vdev->vma_lock);
++
++	return 0;
++}
++
++/*
++ * Zap mmaps on open so that we can fault them in on access and therefore
++ * our vma_list only tracks mappings accessed since last zap.
++ */
++static void vfio_pci_mmap_open(struct vm_area_struct *vma)
++{
++	zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
++}
++
++static void vfio_pci_mmap_close(struct vm_area_struct *vma)
++{
++	struct vfio_pci_device *vdev = vma->vm_private_data;
++	struct vfio_pci_mmap_vma *mmap_vma;
++
++	mutex_lock(&vdev->vma_lock);
++	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
++		if (mmap_vma->vma == vma) {
++			list_del(&mmap_vma->vma_next);
++			kfree(mmap_vma);
++			break;
++		}
++	}
++	mutex_unlock(&vdev->vma_lock);
++}
++
++static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
++{
++	struct vm_area_struct *vma = vmf->vma;
++	struct vfio_pci_device *vdev = vma->vm_private_data;
++
++	printk("Fault: %p\n", vma);
++	if (vfio_pci_add_vma(vdev, vma)) {
++		printk("SIGOOM\n");
++		return VM_FAULT_OOM;
++	}
++
++	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
++			    vma->vm_end - vma->vm_start, vma->vm_page_prot)) {
++		printk("SIGBUS\n");
++		return VM_FAULT_SIGBUS;
++	}
++
++	printk("OK\n");
++	return VM_FAULT_NOPAGE;
++}
++
++static const struct vm_operations_struct vfio_pci_mmap_ops = {
++	.open = vfio_pci_mmap_open,
++	.close = vfio_pci_mmap_close,
++	.fault = vfio_pci_mmap_fault,
++};
++
+ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
  {
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	struct dst_entry *dst;
- 	struct sockaddr_in6 dst_addr;
- 	struct sockaddr_in6 src_addr;
-@@ -2086,9 +2081,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
- 		return rc;
- 	}
+ 	struct vfio_pci_device *vdev = device_data;
+@@ -1253,8 +1323,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+ 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+ 	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
  
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(dst, dst_addr.sin6_addr.in6_u.u6_addr32);
++	vma->vm_ops = &vfio_pci_mmap_ops;
++
++#if 1
++	return 0;
++#else
+ 	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+-			       req_len, vma->vm_page_prot);
++			       vma->vm_end - vma->vm_start, vma->vm_page_prot);
++#endif
+ }
  
- 	rcu_read_lock();
--- 
-2.17.1
+ static void vfio_pci_request(void *device_data, unsigned int count)
+@@ -1330,6 +1406,8 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	spin_lock_init(&vdev->irqlock);
+ 	mutex_init(&vdev->ioeventfds_lock);
+ 	INIT_LIST_HEAD(&vdev->ioeventfds_list);
++	mutex_init(&vdev->vma_lock);
++	INIT_LIST_HEAD(&vdev->vma_list);
+ 
+ 	ret = vfio_add_group_dev(&pdev->dev, &vfio_pci_ops, vdev);
+ 	if (ret) {
+diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
+index 8a2c7607d513..7faed79fe033 100644
+--- a/drivers/vfio/pci/vfio_pci_private.h
++++ b/drivers/vfio/pci/vfio_pci_private.h
+@@ -84,6 +84,11 @@ struct vfio_pci_reflck {
+ 	struct mutex		lock;
+ };
+ 
++struct vfio_pci_mmap_vma {
++	struct vm_area_struct	*vma;
++	struct list_head	vma_next;
++};
++
+ struct vfio_pci_device {
+ 	struct pci_dev		*pdev;
+ 	void __iomem		*barmap[PCI_STD_NUM_BARS];
+@@ -122,6 +127,8 @@ struct vfio_pci_device {
+ 	struct list_head	dummy_resources_list;
+ 	struct mutex		ioeventfds_lock;
+ 	struct list_head	ioeventfds_list;
++	struct mutex		vma_lock;
++	struct list_head	vma_list;
+ };
+ 
+ #define is_intx(vdev) (vdev->irq_type == VFIO_PCI_INTX_IRQ_INDEX)
+
+--MP_/BQ=NWFsJNN2mugeC9JYOndi--
 
