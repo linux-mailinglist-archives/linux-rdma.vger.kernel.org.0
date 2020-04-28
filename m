@@ -2,103 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4261BB28C
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 02:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F346D1BB36E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 03:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgD1AKh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Apr 2020 20:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726279AbgD1AKg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Apr 2020 20:10:36 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA84C03C1A8
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:10:36 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id ck5so2781604qvb.11
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+SvbcRM+D8Hoa6IrST25It7oQmI1YKKGE8UvIYsd3j4=;
-        b=egsqS2uaZQ0GqvuGL0dUXYrCAQ34rUZ7q4SKDLz3KYfTgCwcsf5vUKXxMBovxwsQJR
-         9V9FdJpN5GX9QGqu6QlMkbhg+VFg/ZPNDC3T9lEm9VG1y8mCW3+FLp3MCpuwPXte4sWy
-         EyN47YLP+7s7+GqENKpIiRrZ5UjNjRZNufDzGdOWOzmlgNdZ6KhQLT3ZFR419K8TfQdL
-         uD+ODP8FUSOZyCAjeuq38WK2BnicfgYd9rvH8K+nV3jLkqUZgfRfksPvxdMqT++wLBtd
-         kdHp/LlbAQyi+otXveuXhsh+trZa9qp/1i8GMo/fQGUT2OSnBwtx2w7hOtz6CluqI3fZ
-         LoWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+SvbcRM+D8Hoa6IrST25It7oQmI1YKKGE8UvIYsd3j4=;
-        b=dyNcSTwXFd0iQ1IADy89ZCTQ4E7M0p6c0p+glEdds8dwtr+0z2WEyj5xmS933UdJ4y
-         EE4nP0hgNbdxdxCu1219tMsQ/5mBfvKzufj+sb1dpp5mOZT65QvhVa3EJqIqza51LF+T
-         gkgvyk/qQNDRnin56iVVgTzLRu6/ksE7pm6oAAvp2xvhmIf6/jiaO4O8YqLDv0Gt9Oil
-         y/7B6E9Xvo3M0GABdpBwH389ZJSTXNuCCXZ1dzM936LW18sLfD5N67bXO/zrKIOUfKnr
-         Wwmvz27cHOExAzJDq2C2OqahV3RxVNydw+huNMLDgSqlklplPgdR2iSUPDOglVWKybcO
-         krzg==
-X-Gm-Message-State: AGi0PuYIHHNO/KH+OCB8LrzZ5HzydchTL6SQdpEjxzSIyUK6LdAQYWYW
-        1CQVNMLWS7L8SRSRDI97xOzf7g==
-X-Google-Smtp-Source: APiQypJXnyTV0OcNdko5OBsfPbZLy53Ghm/5PHAA7ooZmHNZVFoHsm0r3ONTDRpVr8v2Sdv0o97Isg==
-X-Received: by 2002:a0c:f004:: with SMTP id z4mr25173331qvk.29.1588032635506;
-        Mon, 27 Apr 2020 17:10:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p80sm12120531qka.134.2020.04.27.17.10.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Apr 2020 17:10:34 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jTDpa-0002Q4-8l; Mon, 27 Apr 2020 21:10:34 -0300
-Date:   Mon, 27 Apr 2020 21:10:34 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com>
-Cc:     dledford@redhat.com, kamalheib1@gmail.com, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in ib_unregister_device_queued
-Message-ID: <20200428001034.GQ26002@ziepe.ca>
-References: <000000000000aa012505a431c7d9@google.com>
+        id S1726303AbgD1B3d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 27 Apr 2020 21:29:33 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:59922 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgD1B3d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:29:33 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id F3431E0A2AAFBF7216A2;
+        Tue, 28 Apr 2020 09:29:29 +0800 (CST)
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.242]) by
+ dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0487.000;
+ Tue, 28 Apr 2020 09:29:19 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "faisal.latif@intel.com" <faisal.latif@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Topic: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Index: AQHWG62Z7/BNGudzR0CivwFowafwZQ==
+Date:   Tue, 28 Apr 2020 01:29:19 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0232975D@DGGEML522-MBX.china.huawei.com>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <20200427114734.GC134660@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000aa012505a431c7d9@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 06:43:13AM -0700, syzbot wrote:
-> Hello,
+On 2020/4/27 19:47, Leon Romanovsky wrote:
+> On Sun, Apr 26, 2020 at 05:31:57PM +0800, Weihang Li wrote:
+>> If the name of a device is assigned during ib_register_device(), some
+>> drivers have to use dev_*() for printing before register device. Bring
+>> assign_name() into ib_alloc_device(), so that drivers can use ibdev_*()
+>> anywhere.
+>>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/core/device.c               | 85 +++++++++++++-------------
+>>  drivers/infiniband/hw/bnxt_re/main.c           |  4 +-
+>>  drivers/infiniband/hw/cxgb4/device.c           |  2 +-
+>>  drivers/infiniband/hw/cxgb4/provider.c         |  2 +-
+>>  drivers/infiniband/hw/efa/efa_main.c           |  4 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c     |  2 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c     |  2 +-
+>>  drivers/infiniband/hw/hns/hns_roce_main.c      |  2 +-
+>>  drivers/infiniband/hw/i40iw/i40iw_verbs.c      |  4 +-
+>>  drivers/infiniband/hw/mlx4/main.c              |  4 +-
+>>  drivers/infiniband/hw/mlx5/ib_rep.c            |  8 ++-
+>>  drivers/infiniband/hw/mlx5/main.c              | 18 +++---
+>>  drivers/infiniband/hw/mthca/mthca_main.c       |  2 +-
+>>  drivers/infiniband/hw/mthca/mthca_provider.c   |  2 +-
+>>  drivers/infiniband/hw/ocrdma/ocrdma_main.c     |  4 +-
+>>  drivers/infiniband/hw/qedr/main.c              |  4 +-
+>>  drivers/infiniband/hw/usnic/usnic_ib_main.c    |  4 +-
+>>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  4 +-
+>>  drivers/infiniband/sw/rxe/rxe.c                |  4 +-
+>>  drivers/infiniband/sw/rxe/rxe.h                |  2 +-
+>>  drivers/infiniband/sw/rxe/rxe_net.c            |  4 +-
+>>  drivers/infiniband/sw/rxe/rxe_verbs.c          |  4 +-
+>>  drivers/infiniband/sw/rxe/rxe_verbs.h          |  2 +-
+>>  include/rdma/ib_verbs.h                        |  8 +--
+>>  24 files changed, 95 insertions(+), 86 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+>> index d0b3d35..30d28da 100644
+>> --- a/drivers/infiniband/core/device.c
+>> +++ b/drivers/infiniband/core/device.c
+>> @@ -557,9 +557,45 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
+>>  	write_pnet(&coredev->rdma_net, net);
+>>  }
+>>
+>> +/*
+>> + * Assign the unique string device name and the unique device index. This is
+>> + * undone by ib_dealloc_device.
+>> + */
+>> +static int assign_name(struct ib_device *device, const char *name)
+>> +{
+>> +	static u32 last_id;
+>> +	int ret;
+>> +
+>> +	down_write(&devices_rwsem);
+>> +	/* Assign a unique name to the device */
+>> +	if (strchr(name, '%'))
+>> +		ret = alloc_name(device, name);
+>> +	else
+>> +		ret = dev_set_name(&device->dev, name);
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	if (__ib_device_get_by_name(dev_name(&device->dev))) {
+>> +		ret = -ENFILE;
+>> +		goto out;
+>> +	}
+>> +	strlcpy(device->name, dev_name(&device->dev), IB_DEVICE_NAME_MAX);
+>> +
+>> +	ret = xa_alloc_cyclic(&devices, &device->index, device, xa_limit_31b,
+>> +			      &last_id, GFP_KERNEL);
+>> +	if (ret > 0)
+>> +		ret = 0;
+>> +
+>> +out:
+>> +	up_write(&devices_rwsem);
+>> +	return ret;
+>> +}
+>> +
+>>  /**
+>>   * _ib_alloc_device - allocate an IB device struct
+>>   * @size:size of structure to allocate
+>> + * @name: unique string device name. This may include a '%' which will
 > 
-> syzbot found the following crash on:
+> It looks like all drivers are setting "%" in their name and "name" can
+> be changed to be "prefix".
 > 
-> HEAD commit:    b9663b7c net: stmmac: Enable SERDES power up/down sequence
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=166bf717e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4088ed905e4ae2b0e13b
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> Thanks
 > 
-> Unfortunately, I don't have any reproducer for this crash yet.
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com
-> 
-> rdma_rxe: ignoring netdev event = 10 for netdevsim0
-> infiniband  yz2: set down
-> WARNING: CPU: 0 PID: 22753 at drivers/infiniband/core/device.c:1565 ib_unregister_device_queued+0x122/0x160 drivers/infiniband/core/device.c:1565
 
-The only thing I can think of for this is that ib_register_driver()
-is racing with __ib_unregister_device() and took the special error
-unwind.
+Thank you for the advice, I will try.
 
-I suspect this is not a bug, but over complexity triggering a
-pre-condition WARN_ON..
-
-Maybe the solution is to swap the dealloc_driver = NULL for some other flag.
-
-Jason
+Weihang
