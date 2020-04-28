@@ -2,60 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF9B1BB855
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 10:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7C91BB88E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 10:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgD1IAt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 28 Apr 2020 04:00:49 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2494 "EHLO huawei.com"
+        id S1726523AbgD1IMv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 28 Apr 2020 04:12:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2120 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726253AbgD1IAt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:00:49 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id 775114EBC60F729861DD;
-        Tue, 28 Apr 2020 16:00:47 +0800 (CST)
+        id S1726377AbgD1IMu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 04:12:50 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 6AD22A89ECA926A08D2E;
+        Tue, 28 Apr 2020 16:12:48 +0800 (CST)
+Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
+ dggeml405-hub.china.huawei.com (10.3.17.49) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 28 Apr 2020 16:12:48 +0800
 Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.242]) by
- DGGEML401-HUB.china.huawei.com ([fe80::89ed:853e:30a9:2a79%31]) with mapi id
- 14.03.0487.000; Tue, 28 Apr 2020 16:00:30 +0800
+ dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
+ Tue, 28 Apr 2020 16:12:39 +0800
 From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
+To:     kbuild test robot <lkp@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
-        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
-        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
-        "sriharsha.basavapatna@broadcom.com" 
-        <sriharsha.basavapatna@broadcom.com>,
-        "bharat@chelsio.com" <bharat@chelsio.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "faisal.latif@intel.com" <faisal.latif@intel.com>,
-        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
-        "yishaih@mellanox.com" <yishaih@mellanox.com>,
-        "mkalderon@marvell.com" <mkalderon@marvell.com>,
-        "aelior@marvell.com" <aelior@marvell.com>,
-        "benve@cisco.com" <benve@cisco.com>,
-        "neescoba@cisco.com" <neescoba@cisco.com>,
-        "pkaustub@cisco.com" <pkaustub@cisco.com>,
-        "aditr@vmware.com" <aditr@vmware.com>,
-        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
-        "monis@mellanox.com" <monis@mellanox.com>,
-        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "markz@mellanox.com" <markz@mellanox.com>,
-        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
-        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
- allocating ib_device
-Thread-Topic: [PATCH for-next] RDMA/core: Assign the name of device when
- allocating ib_device
-Thread-Index: AQHWG62Z7/BNGudzR0CivwFowafwZQ==
-Date:   Tue, 28 Apr 2020 08:00:29 +0000
-Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
-References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
- <20200427114734.GC134660@unreal> <20200427115201.GN26002@ziepe.ca>
- <20200427120337.GD134660@unreal>
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v3 for-next 1/5] RDMA/hns: Optimize PBL buffer
+ allocation process
+Thread-Topic: [PATCH v3 for-next 1/5] RDMA/hns: Optimize PBL buffer
+ allocation process
+Thread-Index: AQHWG5YJYnszuwJ0jUanNYXVoU5kFQ==
+Date:   Tue, 28 Apr 2020 08:12:39 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0232A154@DGGEML522-MBX.china.huawei.com>
+References: <1587883377-22975-2-git-send-email-liweihang@huawei.com>
+ <202004280904.BP6w786k%lkp@intel.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -70,52 +51,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/4/27 20:03, Leon Romanovsky wrote:
->>>>  /**
->>>>   * _ib_alloc_device - allocate an IB device struct
->>>>   * @size:size of structure to allocate
->>>> + * @name: unique string device name. This may include a '%' which will
->>> It looks like all drivers are setting "%" in their name and "name" can
->>> be changed to be "prefix".
->> Does hfi? I thought the name was forced there for some port swapped
->> reason?
-> This patch doesn't touch HFI, nothing prohibits from us to make this
-> conversion work for all drivers except HFI and for the HFI add some
-> different callback. There is no need to make API harder just because
-> one driver needs it.
+On 2020/4/28 10:53, kbuild test robot wrote:
+> Hi Weihang,
 > 
-> Thanks
+> I love your patch! Perhaps something to improve:
 > 
->> Jason
+> [auto build test WARNING on rdma/for-next]
+> [also build test WARNING on linus/master v5.7-rc3 next-20200424]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Weihang-Li/RDMA-hns-Refactor-process-of-buffer-allocation-and-calculation/20200428-015905
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.1-191-gc51a0382-dirty
+>         make ARCH=x86_64 allmodconfig
+>         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+>>> drivers/infiniband/hw/hns/hns_roce_mr.c:375:6: sparse: sparse: symbol 'hns_roce_mr_free' was not declared. Should it be static?
+> 
+> Please review and possibly fold the followup patch.
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
-Hi Jason and Leon,
+It will be used out of this file in later series, but it's better to add
+a static currently. Will fix it, thanks.
 
-I missed some codes related to assign_name() in this series including
-hfi/qib as Shiraz pointed. And I found a "name" without a "%" in following
-funtions in core/nldev.c, and ibdev_name will be used for rxe/siw later.
-
-	static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
-				  struct netlink_ext_ack *extack)
-	{
-		...
-	
-		nla_strlcpy(ibdev_name, tb[RDMA_NLDEV_ATTR_DEV_NAME],
-			    sizeof(ibdev_name));
-		if (strchr(ibdev_name, '%') || strlen(ibdev_name) == 0)
-			return -EINVAL;
-	
-		...
-	}
-
-I'm not familiar with these codes, but I think the judgment in assign_name()
-is for the situaion like above.
-
-	if (strchr(name, '%'))
-		ret = alloc_name(device, name);
-	else
-		ret = dev_set_name(&device->dev, name);
-
-So is it a better idea to keep using "name" instead of "prefix"?
-
-Thanks
 Weihang
+
