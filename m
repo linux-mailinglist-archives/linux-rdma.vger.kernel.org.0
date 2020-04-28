@@ -2,108 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A571BCCB3
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 21:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7432F1BCCDA
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 21:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgD1Ttj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 15:49:39 -0400
-Received: from mail-eopbgr130074.outbound.protection.outlook.com ([40.107.13.74]:41219
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        id S1728819AbgD1T7X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Apr 2020 15:59:23 -0400
+Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:20523
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728559AbgD1Ttj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:49:39 -0400
+        id S1728559AbgD1T7W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 15:59:22 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JB8ILTRcyr+2LcGXPP4ILc2TdUUCvo39HJgeT/ZfBZdjIzXDETH5T/WogjekqRmA7Sd3HmQa851gkzh65clrl8VZKOz8PuKM0l3V4GbmVhbvu/b+LE+S8DIkUoQsYKGGCFZelNJxqJ454A7GMW4uqEYEFr7fs13dMgOh0t3kkMly4lwPi8RrIh56gjKc06Re+xr3pLVNFs4Tv0fVLMdmC8D+cHfPWyA0mWuFe2RdtEx2jprpLpAAtuxnWf15OgRIunOsE+HAXnzy/X5tSTyttp1b3aH/cHakNjYTVU8Si1O/YouIqe6oubez7MevOJEpQ0MLlQ0VMVSjYtHmIt5kJg==
+ b=iLKutJGOoejb6Zwwoue8KVopX/vYNzdNk0fOa+qBFq7NvpVkERj+GnJDFbYyvoOj1r5TV64ftocT60WJmrKELn8y3gQ04NP7Eea9dbyV1lOCxKM/CW1aCVepsCuUapgvnz/MAkENxemF9ssTYEy2nKadkP3O3Z3pp2ClOiwuxOrDQaTBvqRoag5NPXnf2YgBiW/9szGy4RGa3TIqgG/HTFkN6T0o3QPGHgQJwFBEXeK47AuuAZqJJ1S/rFjbsKnQPa+Q73v0NJMk0zSKzhJ+vMybQaEg09OX8jp25bAuISP6FoAWIcRm4GnvDPf5hxE6nzvm/9/asr/RRqk5SDBaXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+9u+fLOZ4yJuS9BOGR/I0XYG6jyU3Fbeh8NUyZ6pC10=;
- b=hIviLSBHkqbmtlawRRyekGLKPq0GBi/N0/90j86HJppAZq/JgQEuFyvi1a70Pzr8FopFNXsoOoQ0jpGs4X+84d0rbzb9rYgbYG+cdRCrCsEBisHP5CfRdkBhJ6c4Tnicx8F349Zzn+jgU1LLYaIzJdlF4pmrbiBbqPiaa1q3llMMxw50qnjWEzVeVbxekX1gJTKrCICXGVh3lOl0ZQplSt1VIluvnaYeG+WBBL4zPHsr5OF5fnNO1fPDKobfMcHMLFX7n5r7mPpVj+dMlynrlfcwy9obMIks9sq8nSBEeOAHJ9gK/zKG6TUf08+li7OqXZzZJHIM1tvhDuVQucMLlw==
+ bh=ffWu9iuM9KiJ4HsgsH/HOZHD2vryWFAKfGpk9tQdCM0=;
+ b=U5hRN2+i+mO2GB83eNC/1+HN+euk08ceQIyZKRwnWSgn+nYwyFskbiE/BYmeA5tgBGgbEREwgTGlPnpv0EdnDFtWKAlRKXfMD4Ap14CWqBDP9bhlI5YsUUIeXOfT0iTsyLrPvV/YDzrjz+uPnrlIDHKmUGnNybhCVFA3qUAXlYSq9u4mFAIpCjH8W2im5hC4e7LpKOmppdK0b3mgN5bulvNoaS72pdSOlKNI5hdjXi2z1wuwopPmyqwLNfzGDbnWkk3IeDK+HSFUbuu4ImRqD0vA2k7UMftGMUGu6T8o908sdqzN66UbfsCK8duKVBixuklf0Z5pc+2shn++r4ftcg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+9u+fLOZ4yJuS9BOGR/I0XYG6jyU3Fbeh8NUyZ6pC10=;
- b=pAfqgVDlwSyZwrbr7v0yQXT4QarUzxOoFXz8e/zfWsQ3My5H28XUyXQD8tTECayFOpk9hIMXUU0cNL5j+Iz5Ue4+UdAxv0ENW2QvxaXw41ik99v3CaEfP18ibIhFMldxR25+8xSr4RTgMasIF/YRn64iDUuu9zgtcU3S36o+W70=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB5487.eurprd05.prod.outlook.com (2603:10a6:803:91::15) with
+ bh=ffWu9iuM9KiJ4HsgsH/HOZHD2vryWFAKfGpk9tQdCM0=;
+ b=A435SePrCfR8vivwRqkD5aqa4n2Nz+9t8AJGNUqq2q32sxLiRsfo3pBHH88t07vFEoKUJ71wV7klwAxHfDpCvDcCsMDglFPjBJEve9gSTqzPDteiAiyq8r25MyCr6RGdpjl3pGDcqvl9/7iZmiSknd4QSt5V2JeilFXd1QSNaXo=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB3151.eurprd05.prod.outlook.com (2603:10a6:802:19::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Tue, 28 Apr
- 2020 19:49:34 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
- 19:49:34 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zhengbin13@huawei.com" <zhengbin13@huawei.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH] net/mlx5e: Remove unneeded semicolon
-Thread-Topic: [PATCH] net/mlx5e: Remove unneeded semicolon
-Thread-Index: AQHWGhOK1iItA7OFSE2pYtjUtrylqqiO+B4A
-Date:   Tue, 28 Apr 2020 19:49:34 +0000
-Message-ID: <486b0d0b3b2607ece7324c98ccf9caa9a0af570d.camel@mellanox.com>
-References: <20200424084357.80679-1-zhengbin13@huawei.com>
-In-Reply-To: <20200424084357.80679-1-zhengbin13@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=mellanox.com;
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 142654b0-75b4-4d37-68b2-08d7ebad4698
-x-ms-traffictypediagnostic: VI1PR05MB5487:
-x-microsoft-antispam-prvs: <VI1PR05MB548741AE9DF957C335893FF8BEAC0@VI1PR05MB5487.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-forefront-prvs: 0387D64A71
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(8936002)(6512007)(66446008)(5660300002)(4744005)(6506007)(2616005)(66476007)(76116006)(498600001)(26005)(86362001)(2906002)(91956017)(8676002)(64756008)(66556008)(66946007)(36756003)(71200400001)(110136005)(186003)(6486002);DIR:OUT;SFP:1101;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WgCQCi8J4xke7Zj/zcImo6GMy1Z8amUsEn0sZjXN6E3jW4nG9DF7+tFNw5ZlOhUTuDvhflVqrcvSNeRVQyOZDH+KuSN3H5B/nsqKJ8zv8dFFGQCLFM5LTngu9BV4O5DlSblVJBFYAe18e0eVAdRfaYd6rGXqIupa1G7k8b+TBgi1ZPO1u58SrDfsYdcFjGq62UHGwWk5/cfnKyHF3Uk3t2ZsjeTuvb9BH4eu45bAanl+j2LJQqJ06c03wLSzKSgzj7dfEFazjlNdMp0142AkO4Rq5cJC8VoeXTuKBZ1ze6v5hQ9Phx7gLVLWBk8v/LVgvWTTeWLZbwJ8eV4aVqu2PSeoqSWXTuLPy0dngmu26mo/ELvh8Z2B5pxfDMgqR1KcztA8cbNZjgP7r/kNAgGeTko5p5OBlIGO8XR9iIqXLvVn6463zCCvixCdAz29Yc45
-x-ms-exchange-antispam-messagedata: uubdabK7jaWXEbr1Ma5POxyYcYfWsqrKpXqRZ6KosncHlPTpzey5GUk0hMu8ZkkpzqYlPrYSmiwPs+olpp01vjw6FFrHF71elZkfHxnYoBp0jsOz0nGT6blKgitG+QL8n+jMaNGpCcmP4MDV6x1hYj47M74hANsUndvJcejMMP1fu2zLXnpuir8j+KJF2IcJjJIfZrTwD4NPxLHihUEph/VsYgXk6KqOyVyM/mjLwtXDOMrqRrqeMEHk8LDcg163lH17ouwSUpD1Y2vL/CuJoTMo9ee1DsPITIm1jHtMkCUQBtbyhGpwlzTDosHebWcfwF/qDyse57z172jpKxsWPFpuHSNp3oJ1jIcvBoyasJfjUrqHz3O+i2JjZ1YEeZo8DMdT2RZ948+hQTmS0MO3Rk/L8r0iWxhMgk//5tjGkF4JeTW7MJGNKaV1pnX7LOu1svnHB99wqQ0eqpDl7nTTb+zNAlNk/wHkMZLuCdZfFfDX4xp3dTwFPkJs7sSudnEnbqg7cubnYLjsCIeQjDpe+xrrxYsREWhBCLfrRoZqKtFeEWeXVNuwwwhhJPWTUPs1jDn/SScFDuhhQTc7diFslTezB+6n3qQWzZv/wBrpsIQPUA4ovjidqwGUvcPEF5beHNBhvY853+btL0gDlo2W2j9jpUZ8A8I3Xig8J91Q2ImeCE3lcMIcaY+OoVQUSg93DLIV1lBUHX6Egz5JW8FBVa6bD4Yk7+ARtUF+1OmJiZGTCHU1TNLdBBu8Jb5HTlZUjdBk3DRGkcPCJzq04ifleHnmAMycZyjHzG45k50e3Ww=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A0AADAD52BFCA14EB03205CF39FE8201@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ 2020 19:59:18 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2937.020; Tue, 28 Apr 2020
+ 19:59:17 +0000
+Date:   Tue, 28 Apr 2020 16:59:14 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20200428195914.GA24418@ziepe.ca>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: BL0PR02CA0127.namprd02.prod.outlook.com
+ (2603:10b6:208:35::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR02CA0127.namprd02.prod.outlook.com (2603:10b6:208:35::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 19:59:17 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jTWNu-0006N0-Nx; Tue, 28 Apr 2020 16:59:14 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 822f9b2c-fd21-4de5-a07c-08d7ebaea25d
+X-MS-TrafficTypeDiagnostic: VI1PR05MB3151:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB315137FB15685AD2DF62E550CFAC0@VI1PR05MB3151.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:569;
+X-Forefront-PRVS: 0387D64A71
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(5660300002)(1076003)(110136005)(66556008)(36756003)(66476007)(4326008)(66946007)(33656002)(26005)(52116002)(186003)(9686003)(86362001)(44144004)(498600001)(21480400003)(9786002)(8676002)(8936002)(2906002)(9746002)(24400500001)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bV3cGbmakr/bSeICOSyVjAZak307sONbHlv+H0oJJAut1gePPE+0ZH9d42epzKHrEMoqVMRTddZyh2/tWOvHcm/PieK8XTneDq0yR2XR9eAOIZ6Cx2bnX/yXkf6AGr8EaoaD2opbYyShajkES1oVDitDztRJz0w0Y9KN5i0x7tE7XM2hd7XZC5/wrUaYDo2WQlGVFVD5MYPXpHsMAwOJgLI7s4Co9rIVPIF/FbXrOdFITj9t3E0JBqIbLR6+7IBt9/D3mGkEPbHlYR7mM2Flc0DbLNMPpGGGFH4ax03Xc730Iw01TrnXybwGuHj+owMr+qykTrywvNg3KXERFxQB1Sw9Xe8FXoToVqaoHlB5kW8CbqQA9Qkh3PX3vl2r8+3v/Uf3G4zDLg5OPGqqkRFIRr60mWnqiFT1X391QOKnsVx2UQr+6vHXeZqkbxCl2uBd5IEQWP0m16EtyhMNSEgZbeYwZpFXA//KtcBecbRWhVL5mKOKEY10y0bDZst7MaDxt0cz1djoqNXWrBdnqwjpLw==
+X-MS-Exchange-AntiSpam-MessageData: yXXZdM45QCmVjW2AVH8SW0NuYq2WmEZyEhEHN1Eix7psEAtjo74yXwkiC3xGf/KEGCB0J/bj97NE6dsbTo6Ez2JzYGPfPtSL85f1WPkSOu+WwB/MSube1ieA9KP7yBf9WmW53ty7NEyuC/D6TOlRdR9MRwPVeH3SDAwX/89mnzlJZVUy54lp2oxYSI54/mmN0uuwPGnqOlECssWE0BmyHbPaBhSWV1XC09YSTUPk5S766lBIvrR433VOcIY92i3sWVVk+8uV/bkNQXT24HFHKglGvKTuHS+TCoehcERo7pqw7U7AgQH2kGul0D3sc+vvFx56/ETeXulPgOjzHbVw4LtpBGM77kf6HApCeE580j8MD5clqRSnLBJKtY20xsfhItWtVofBbxudUEj0CywCj8bnRHm2V5me568qJr+94SmDQEFwt3kDlobT0Z+pyqFDa1/UMuUQWYKygbP+niib2sTUDUlqJy1QJkbO8xdFKY5oyEBH8FjdejQbThidesVgJ89xh03zvynyIZ4Bmv98fhraVL6eYyBuMnClvqCgIUUDTNFB5LfuEFat2jTVxt8uHW3dxWhy/3u5SHLz/4xP99847R8AszYAcM1307qQIDbRkAbsFAfJbOMmm24MSicb23czZGWzCVJDFeLkheTBgO1yLx4Tel3gSFo/77hn1W8/1iXom9aPVdl0x1ulDWc47GXV4hdlioVcQVfrjdf8WHSxBcVLd28fCaFoIiViJQ+kdJUPawifB4HxToN54hEbzHTfxn7CZt+rjUpU8h/l+faURr+A7H/SYmQ5YPc0ocE=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 142654b0-75b4-4d37-68b2-08d7ebad4698
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2020 19:49:34.1088
+X-MS-Exchange-CrossTenant-Network-Message-Id: 822f9b2c-fd21-4de5-a07c-08d7ebaea25d
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 19:59:17.8365
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wkhZ5uR9P8lhNVA0WH7vR9fUirxzMVwWhv5sfJ4grDqeXEWZuRkWmlyl+cQ3uUnbJSNP2UMuNadZG2AAbRbxRw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5487
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DW+moOkZjIj9UYv/JVUU447LqJUZdLaobQ2iH9Hj4TuLAD749IisejGiNL0QF8r4SAm+E9vW7gnKSCT+TY8K2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3151
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA0LTI0IGF0IDE2OjQzICswODAwLCBaaGVuZyBCaW4gd3JvdGU6DQo+IEZp
-eGVzIGNvY2NpY2hlY2sgd2FybmluZzoNCj4gDQo+IGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxh
-bm94L21seDUvY29yZS9lbi90Y19jdC5jOjY5MDoyLTM6IFVubmVlZGVkDQo+IHNlbWljb2xvbg0K
-PiANCj4gUmVwb3J0ZWQtYnk6IEh1bGsgUm9ib3QgPGh1bGtjaUBodWF3ZWkuY29tPg0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBaaGVuZyBCaW4gPHpoZW5nYmluMTNAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBk
-cml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfY3QuYyB8IDIgKy0N
-Cj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbi90
-Y19jdC5jDQo+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuL3Rj
-X2N0LmMNCj4gaW5kZXggYTE3MmM1ZTM5NzEwLi5hNjczYWRiNTQzMDcgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbi90Y19jdC5jDQo+ICsr
-KyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbi90Y19jdC5jDQo+
-IEBAIC02ODcsNyArNjg3LDcgQEAgbWx4NV90Y19jdF9ibG9ja19mbG93X29mZmxvYWQoZW51bSB0
-Y19zZXR1cF90eXBlDQo+IHR5cGUsIHZvaWQgKnR5cGVfZGF0YSwNCj4gIAkJcmV0dXJuIG1seDVf
-dGNfY3RfYmxvY2tfZmxvd19vZmZsb2FkX3N0YXRzKGZ0LCBmKTsNCj4gIAlkZWZhdWx0Og0KPiAg
-CQlicmVhazsNCj4gLQl9Ow0KPiArCX0NCj4gDQo+ICAJcmV0dXJuIC1FT1BOT1RTVVBQOw0KPiAg
-fQ0KPiAtLQ0KPiAyLjI2LjAuMTA2Lmc5ZmFkZWRkDQo+IA0KDQoNCkFwcGxpZWQgdG8gbmV0LW5l
-eHQtbWx4NSwgd2lsbCBiZSBzZW50IHRvIG5ldC1uZXh0IGluIG9uZSBvZiBteSBuZXh0DQpwdWxs
-IHJlcXVlc3RzLi4NCg0KVGhhbmtzIQ0KDQoNCg==
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Linus,
+
+First rc pull request
+
+A few regressions and some syzkaller crashers for RDMA.
+
+Thanks,
+Jason
+
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to f0abc761bbb9418876cc4d1ebc473e4ea6352e42:
+
+  RDMA/core: Fix race between destroy and release FD object (2020-04-24 15:40:41 -0300)
+
+----------------------------------------------------------------
+First RDMA 5.7 rc pull request
+
+A couple of regressions were found in rc1, as well as another set of races
+and bugs :
+
+- A regression where RDMA_CM_EVENT_REJECTED was lost in some cases
+
+- Bad error handling in the CM, uverbs, rvt, siw and i40iw
+
+- Kernel stack memory leak to user space in mlx4
+
+- Missing data in a uapi query for mlx5
+
+- Three races found by syzkaller in the ib core code
+
+----------------------------------------------------------------
+Aharon Landau (1):
+      RDMA/mlx5: Set GRH fields in query QP on RoCE
+
+Alaa Hleihel (1):
+      RDMA/mlx4: Initialize ib_spec on the stack
+
+Colin Ian King (1):
+      i40iw: fix null pointer dereference on a null wqe pointer
+
+Dan Carpenter (1):
+      RDMA/cm: Fix an error check in cm_alloc_id_priv()
+
+Jason Gunthorpe (2):
+      RDMA/siw: Fix potential siw_mem refcnt leak in siw_fastreg_mr()
+      RDMA/uverbs: Fix a race with disassociate and exit_mmap()
+
+Leon Romanovsky (4):
+      RDMA/cm: Fix missing RDMA_CM_EVENT_REJECTED event after receiving REJ message
+      RDMA/core: Prevent mixed use of FDs between shared ufiles
+      RDMA/core: Fix overwriting of uobj in case of error
+      RDMA/core: Fix race between destroy and release FD object
+
+Sudip Mukherjee (1):
+      IB/rdmavt: Always return ERR_PTR from rvt_create_mmap_info()
+
+ drivers/infiniband/core/cm.c             | 26 ++++++++++++++------------
+ drivers/infiniband/core/rdma_core.c      |  9 ++++-----
+ drivers/infiniband/core/uverbs_main.c    |  4 ++++
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c |  2 +-
+ drivers/infiniband/hw/mlx4/main.c        |  3 ++-
+ drivers/infiniband/hw/mlx5/qp.c          |  4 +++-
+ drivers/infiniband/sw/rdmavt/cq.c        |  4 ++--
+ drivers/infiniband/sw/rdmavt/mmap.c      |  4 ++--
+ drivers/infiniband/sw/rdmavt/qp.c        |  4 ++--
+ drivers/infiniband/sw/rdmavt/srq.c       |  4 ++--
+ drivers/infiniband/sw/siw/siw_qp_tx.c    | 15 +++++++++++----
+ 11 files changed, 47 insertions(+), 32 deletions(-)
+
+--n8g4imXOkfNTN/H1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl6oixAACgkQOG33FX4g
+mxq9oQ/+L8mrioExJZ7oU2u3HMP7EgYIe+I2WWE1ceRDCYr+Ifgd8oKXCHNXOQok
+ujzQdMJRW+Z3cGuN/qFrA2ofN9eCZA3BDl1S4wW6NCSDTjQd626u2la3GOx+mUkM
+KritWVIzSTnpMhXboVNDlDz3TLqkPzswB70ltmJXXCK8Gxh82nyBIL7yoga3oHoy
+zzzeA+AEqJOzhKrLrJ14hWgAjOSH+LBfs0luWmaEpg3utOlikXgjY/8zdetgJVZs
++dyuWfo1ks5UBiTNsKapN1KL7mYx7GvgjJ0DhUpfNC4pZAJGCRam1XZE3PNfXXM/
+r0BSSkUFcyJW39aNlfLTKLN8iPZIdznvbMWrEJzEaaN+64bOz/eE+SKNlrQUwPCl
+oipQBilNNS2nnWSx01X1C/GKj2codsk7XiDoMOJ3X9QkHFTT9PLWnL2cIFTcHQcn
+zrbo5RuTA8ftw8B5c5opSNggbPWlv3MX27bXeg5hSAvPuHPMw7dFnkpr/0brQo0a
+0z1dVP22yRKvtBfynFXric48lpnk64CHOuN2PBRzoYQQVoN4JwYxKsc9hfiMVK6k
+QgioQrMNvIB62ehLqgl4jSB8IO3FhAkRUviaVWXalFq3v0m2+so3p+Tv8uKdn1St
+KIpIr9TF5TQjGb/bKXVTZydXPDRpIpS7qiJXjM8gQRa0cLFsdcE=
+=stEt
+-----END PGP SIGNATURE-----
+
+--n8g4imXOkfNTN/H1--
