@@ -2,127 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8321BBDA8
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 14:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163A91BBDBB
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 14:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgD1Mbz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 08:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726739AbgD1Mby (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:31:54 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D0FC03C1AB
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2020 05:31:54 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id g74so21451483qke.13
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2020 05:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yvnqZOpIhV+8wCjf27Mt4KlSqBJrjtqU1xwqeoc76wk=;
-        b=PFYa8ZlAjDo6ijp1AnsAAmBB/kjyK5ZLBn0c4/9gBKpPQC0hFRw1wZ1Ylpd5UWh1QI
-         ZIzVm/UuEviap8chz106dn9VG7s68oQccbXPjNtG/aetSW6ax0eptL/Z6GvK2pUG2woX
-         J4C5wkOJeN79D+EbDggJRnILWfB2I8qz9Ss0S79piiX2Mx8/o8gLf3ePAShI6jQln5uR
-         lmy0/Rqwim1EqKFlk5enIYFhTjoppOJYh3Sb3ETBV02Zqg4YAETmeceslsGXOl5mKXkM
-         vl9u7vCieTA23E8N5oTVhiFGuzMIU4Izf4cB07rm62w1XmHjHH6mW4CF7K4GdMOxxzDE
-         lbog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yvnqZOpIhV+8wCjf27Mt4KlSqBJrjtqU1xwqeoc76wk=;
-        b=JSww8NHka0ZlOHe0MKdW1OVfu0qjmWVTwr0NcXu78u8b+GsVA7rY8W4AUXWJkLJuLB
-         Ljxk1ebBWeJPFPuRewuOLESUpNxqspy7ciPVgYcWbmSG87CRNv3C4+WSCMRX1qLe0GNt
-         Hk2HcYhg0jfSttWhmq3fNCruMdELWa0SR7gIZORgty2p8DIxMS4PZSLO7uJvWrULJp1n
-         Z2ufmDMG0M596nxnckUqp+7ODvhn+SJoRXG+m4eg/k7a7ca6RPFK2cm8LArvT5GH+Md5
-         hHFPSbp5GfYr53moSDTd6DzVFvZM/teHXXEcWBsvI51hxbcDqVSVIxOqvCCpFm3d74F3
-         hiKg==
-X-Gm-Message-State: AGi0PuawiSnO/bpNI7CSyqWJ/MwEMM/CbNLNcZ+z1wkKR1Qmn6hp/YoG
-        /Bb98ejFfDX98RGMSv1LShJpbw==
-X-Google-Smtp-Source: APiQypJE0XMFJTGSTZ3ftCbb5kdENgEmLpfrbQDaSL2brXKiNwf0w0Qje1uA9iQnF71GI3khQNpsvQ==
-X-Received: by 2002:a05:620a:5bc:: with SMTP id q28mr25756082qkq.468.1588077112373;
-        Tue, 28 Apr 2020 05:31:52 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o68sm13041661qka.110.2020.04.28.05.31.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Apr 2020 05:31:51 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jTPOx-0007LA-2D; Tue, 28 Apr 2020 09:31:51 -0300
-Date:   Tue, 28 Apr 2020 09:31:51 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-block@vger.kernel.org,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Subject: Re: [PATCH v12 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-Message-ID: <20200428123151.GS26002@ziepe.ca>
-References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
- <CAMGffE=R2zaL6Ao3gZ_XvKPvG0YX5bmo18o3cJ_SLBEjZ0Mv_g@mail.gmail.com>
+        id S1726792AbgD1Mj7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 28 Apr 2020 08:39:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2121 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726645AbgD1Mj7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:39:59 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 2EAEC55D422EA2CE8671;
+        Tue, 28 Apr 2020 20:39:57 +0800 (CST)
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.242]) by
+ DGGEML402-HUB.china.huawei.com ([fe80::fca6:7568:4ee3:c776%31]) with mapi id
+ 14.03.0487.000; Tue, 28 Apr 2020 20:39:49 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "faisal.latif@intel.com" <faisal.latif@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Topic: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Index: AQHWG62Z7/BNGudzR0CivwFowafwZQ==
+Date:   Tue, 28 Apr 2020 12:39:49 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0232A3E3@DGGEML522-MBX.china.huawei.com>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <20200427114734.GC134660@unreal> <20200427115201.GN26002@ziepe.ca>
+ <20200427120337.GD134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
+ <20200428111907.GI134660@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMGffE=R2zaL6Ao3gZ_XvKPvG0YX5bmo18o3cJ_SLBEjZ0Mv_g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 10:31:55AM +0200, Jinpu Wang wrote:
-
-> >  create mode 100644 Documentation/ABI/testing/sysfs-block-rnbd
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-client
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-server
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-client
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-server
-> >  create mode 100644 drivers/block/rnbd/Kconfig
-> >  create mode 100644 drivers/block/rnbd/Makefile
-> >  create mode 100644 drivers/block/rnbd/README
-> >  create mode 100644 drivers/block/rnbd/rnbd-clt-sysfs.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-clt.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-clt.h
-> >  create mode 100644 drivers/block/rnbd/rnbd-common.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-log.h
-> >  create mode 100644 drivers/block/rnbd/rnbd-proto.h
-> >  create mode 100644 drivers/block/rnbd/rnbd-srv-dev.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-srv-dev.h
-> >  create mode 100644 drivers/block/rnbd/rnbd-srv-sysfs.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-srv.c
-> >  create mode 100644 drivers/block/rnbd/rnbd-srv.h
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/Kconfig
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/Makefile
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/README
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.h
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-log.h
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.h
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
-> >
-> >
-> Hi Jason, hi Leon, hi Doug, hi all,
+On 2020/4/28 19:19, Leon Romanovsky wrote:
+> On Tue, Apr 28, 2020 at 08:00:29AM +0000, liweihang wrote:
+>> On 2020/4/27 20:03, Leon Romanovsky wrote:
+>>>>>>  /**
+>>>>>>   * _ib_alloc_device - allocate an IB device struct
+>>>>>>   * @size:size of structure to allocate
+>>>>>> + * @name: unique string device name. This may include a '%' which will
+>>>>> It looks like all drivers are setting "%" in their name and "name" can
+>>>>> be changed to be "prefix".
+>>>> Does hfi? I thought the name was forced there for some port swapped
+>>>> reason?
+>>> This patch doesn't touch HFI, nothing prohibits from us to make this
+>>> conversion work for all drivers except HFI and for the HFI add some
+>>> different callback. There is no need to make API harder just because
+>>> one driver needs it.
+>>>
+>>> Thanks
+>>>
+>>>> Jason
+>>
+>> Hi Jason and Leon,
+>>
+>> I missed some codes related to assign_name() in this series including
+>> hfi/qib as Shiraz pointed. And I found a "name" without a "%" in following
+>> funtions in core/nldev.c, and ibdev_name will be used for rxe/siw later.
+>>
+>> 	static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+>> 				  struct netlink_ext_ack *extack)
+>> 	{
+>> 		...
+>>
+>> 		nla_strlcpy(ibdev_name, tb[RDMA_NLDEV_ATTR_DEV_NAME],
+>> 			    sizeof(ibdev_name));
+>> 		if (strchr(ibdev_name, '%') || strlen(ibdev_name) == 0)
+>> 			return -EINVAL;
+>>
+>> 		...
+>> 	}
+>>
+>> I'm not familiar with these codes, but I think the judgment in assign_name()
+>> is for the situaion like above.
+>>
+>> 	if (strchr(name, '%'))
+>> 		ret = alloc_name(device, name);
+>> 	else
+>> 		ret = dev_set_name(&device->dev, name);
+>>
+>> So is it a better idea to keep using "name" instead of "prefix"?
 > 
-> We now have Reviewed-by for RNBD part from Bart (Thanks again), Do you
-> have new comments regarding RTRS, should we send another round to do a
-> rebase to latest rc?
+> nldev_newlink() doesn't call to ib_alloc_device() and alloc_name(). The
+> check pointed by you is for the user input.
+> 
 
-We'd need an ack from Jens before the block stuff could go through the
-RDMA tree
+Hi Leon,
 
-Jason
+nldev_newlink() will call "ops->newlink(ibdev_name, ndev)", and it point to
+siw_newlink() in siw_main.c. And then it will call ib_alloc_device() and
+ib_register_device().
+
+According to the code I pointed before, it seems that nldev_newlink()
+expects users to input a name without '%', and then passes this name
+to assign_name(). I think siw/rxe have to call ib_alloc_device() with
+a name without '%', so we can't treat it as a prefix and add "_%d" to
+it like for other drivers.
+
+>>
+>> Thanks
+>> Weihang
+> 
+
