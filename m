@@ -2,171 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDAF1BB27A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 02:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAF61BB27E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 02:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgD1ADr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Apr 2020 20:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
+        id S1726279AbgD1AEa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Apr 2020 20:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726284AbgD1ADq (ORCPT
+        by vger.kernel.org with ESMTP id S1726270AbgD1AEa (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Apr 2020 20:03:46 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE22FC03C1A8
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:03:46 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 23so15248160qkf.0
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:03:46 -0700 (PDT)
+        Mon, 27 Apr 2020 20:04:30 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E6FC0610D5
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:04:30 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id m67so20041371qke.12
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Apr 2020 17:04:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=+dJHzHn3P3N/q9k7RcYAVsGHDtVe7jVKqq70yFQhzc0=;
-        b=KKYhkj2FeBFdqsp/q8cx2WVbbNF2nkENbcnp4aPJvbMpvqJB7jmxB8Fk2YWn27WraL
-         Z5sOQhyHwgeNbNkyNqfZUu9qgUDBOzuoDntUFLSxgO77gh2kymx4GUexp90rqqGiZEIl
-         LHpyBI18IEA0AZtDqy2wIxNrifRK3RE8SHAbO6v9eM38nmQ3mJejidj9EFW1ejqRAdG9
-         sXJhiUq+Vey6A92z/qJ+/u4AbD5sS1FJTis4xuOwTSmva3l8LHhIDfouEDDK74m0u2az
-         W//yRIPuY8iM8hj6EP1ae4QJubFC/AQoSQq8q8FJ+HdhmWy0wyRuW3Gf/yTnP2wx2fSa
-         A2QA==
+        bh=7We4wQPfGVzbLfm2tt1UyuIbkpEYHuxn5M+03yD5qVU=;
+        b=balZ31xu8iZwCBel899DYUkc7jPkKRXu1tyqZjRGfAN/hySXyZqDeeDxLNBy4y+sv4
+         HQ7J7Vbi4hNNbLufrPEDhjwJW3IqQmBy94DJ9hBH/SzOmtecc6RpTTHkp/mXai3G4CyH
+         lK5B/eqQ1kaJj7pnM2TWm8imNp6h2598I2vnvd4NZix6P8fN4FTx3tG9CzwpdCiPMswI
+         BnyAOHk05O9Qgdcu79EXnV4aRu0JPdS4saovG4e8a76z8q+tzNJ4Y7K/7dWvWqn9SZXf
+         YKctVUEczkjdVrhC+WsK/su1WTUIWgvSi6H0tECkeRtgk0kop9Lrh5uVT9+u6tKxXRWF
+         TZGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+dJHzHn3P3N/q9k7RcYAVsGHDtVe7jVKqq70yFQhzc0=;
-        b=F1qIMWhd17KmV1sMkWZ1P2F43o5pVzbEYylnDQwkxeaVzIaF9Whz6AHjSNUCF4wJAF
-         88kbD/9HHw6xZwPRqQsCPPwdGtAjl3CevGtzU6efhAr545IvzS+ORieeGXRgvgsvSj7Q
-         q3s24kGZ2B8EZjoEUSA9ZKRYDa7vY1Jljx651s/vlfy40UaONxdcmZRb1z8BXraB+Xe8
-         +UoS37vHIVt7r3kQDHfb4YmtzATEkXcjZBQSHDXCAEdD0jAjVEUuQxrsWP0ipXznuLB/
-         9t7Mw58f1QSzrv6ZKfywECx3KAVTtc0mhqB9G3yi/40rwUEvBQwctBsMOt6a/WTdQMpX
-         8N9w==
-X-Gm-Message-State: AGi0PuYhXsy4alz+uV9FB6DfoAOEaebFfh5PRvTB9ZXJrDH3W2gF4Anl
-        d1Q8rl1j1Y2VzLS2aE/u/Nd9uA==
-X-Google-Smtp-Source: APiQypJNnMmCgxqMQi9ZBtOvvkq6cwBClxPeotMbRiAQPWM5AIuUcQ17eADRALmm6Dvu9ReDyz1D6w==
-X-Received: by 2002:a37:7d0:: with SMTP id 199mr22580629qkh.499.1588032225741;
-        Mon, 27 Apr 2020 17:03:45 -0700 (PDT)
+        bh=7We4wQPfGVzbLfm2tt1UyuIbkpEYHuxn5M+03yD5qVU=;
+        b=DytEtLcAjcdqgVWGBfGIz65MWYSL27peblEc2p8afRp6w1WXWHMfMNNXrkRqCF8e91
+         UZiVOaQkl0SzBZ9zPOQD81xVxWcBqWylKQtRuW9TXdOtMoHKhUOJgheLL+chXSFaXEwg
+         qzFeLQjfe/0O9YBibIb/wcdmENMzVQs6H0qsXg6Gx/8QiyUt4tFAOgcrX5eU7oni8ZTa
+         BEUq6evqnP8LWv0CUwgxOyKzjnygNjm5osY/Ps18ChLOjhujMZsnQXucn8Be3UeZ2WaL
+         7e/QhltmkNteqjw2iKGwnmLNIBSnsvhIQb/ws2ojNLTXf2jxXi7QYOfkbPuZZpShSnbT
+         h0Nw==
+X-Gm-Message-State: AGi0PuaHvLSXKFbAX1urBh6V81ApmlAqgWhBe5TKpKqf/zKxXjFm3fd9
+        qzY6j/VU/QYnf2ZhdUd7dG+feQ==
+X-Google-Smtp-Source: APiQypJTjXxLkspO6C4IHnRhDdSK9ondxVkt3Wv8LOMlv+xJ5OX+kjjmMilCGdck3XAuyP5D0tek3g==
+X-Received: by 2002:a37:63d4:: with SMTP id x203mr24331906qkb.391.1588032269224;
+        Mon, 27 Apr 2020 17:04:29 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 28sm12255259qkp.10.2020.04.27.17.03.45
+        by smtp.gmail.com with ESMTPSA id a27sm12839532qtb.26.2020.04.27.17.04.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Apr 2020 17:03:45 -0700 (PDT)
+        Mon, 27 Apr 2020 17:04:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jTDiy-0002Jv-Gh; Mon, 27 Apr 2020 21:03:44 -0300
-Date:   Mon, 27 Apr 2020 21:03:44 -0300
+        id 1jTDjg-0002Kc-2u; Mon, 27 Apr 2020 21:04:28 -0300
+Date:   Mon, 27 Apr 2020 21:04:28 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+Cc:     Weihang Li <liweihang@huawei.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Sharp, Robert O" <robert.o.sharp@intel.com>,
-        "Lacombe, John S" <john.s.lacombe@intel.com>
-Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework definitions
-Message-ID: <20200428000344.GO26002@ziepe.ca>
-References: <20200421004628.GQ26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4A3E9@fmsmsx124.amr.corp.intel.com>
- <20200421182256.GT26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4DB92@fmsmsx124.amr.corp.intel.com>
- <20200423150201.GY26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4ED27@fmsmsx124.amr.corp.intel.com>
- <20200423190327.GC26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD4FD03@fmsmsx124.amr.corp.intel.com>
- <20200424004841.GD26002@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7DCD5588C@fmsmsx124.amr.corp.intel.com>
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Message-ID: <20200428000428.GP26002@ziepe.ca>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <9DD61F30A802C4429A01CA4200E302A7DCD54BBA@fmsmsx124.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7DCD5588C@fmsmsx124.amr.corp.intel.com>
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7DCD54BBA@fmsmsx124.amr.corp.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:57:51PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework
-> > definitions
+On Mon, Apr 27, 2020 at 05:55:57PM +0000, Saleem, Shiraz wrote:
+> > Subject: [PATCH for-next] RDMA/core: Assign the name of device when allocating
+> > ib_device
 > > 
-> > On Thu, Apr 23, 2020 at 11:54:18PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver framework
-> > > > definitions
-> > > >
-> > > > On Thu, Apr 23, 2020 at 05:15:22PM +0000, Saleem, Shiraz wrote:
-> > > > > > Subject: Re: [RFC PATCH v5 01/16] RDMA/irdma: Add driver
-> > > > > > framework definitions
-> > > > > >
-> > > > > > On Thu, Apr 23, 2020 at 12:32:48AM +0000, Saleem, Shiraz wrote:
-> > > > > >
-> > > > > > > we have a split initialization design for gen2 and future products.
-> > > > > > > phase1 is control path resource initialization in
-> > > > > > > irdma_probe_dev and
-> > > > > > > phase-2 is the rest of the resources with the ib registration
-> > > > > > > at the end of irdma_open. irdma_close must de-register the ib
-> > > > > > > device which will take care of ibdev free too. So it makes
-> > > > > > > sense to keep allocation of the ib device in irdma_open.
-> > > > > >
-> > > > > > The best driver pattern is to allocate the ib_device at the very
-> > > > > > start of probe() and use this to anchor all the device resources and
-> > memories.
-> > > > > >
-> > > > > > The whole close/open thing is really weird, you should get rid of it.
-> > > > > maybe I missing something. But why is it weird?
-> > > >
-> > > > Because the RDMA driver should exist as its own entity. It does not
-> > > > shutdown unless the remove() method on is struct device_driver is closed.
-> > > > So what exactly are open/cose supposed to be doing? I think it is a
-> > > > left over of trying to re-implement the driver model.
-> > > >
-> > > > > underlying configuration changes and reset management for the
-> > > > > physical function need a light-weight mechanism which is realized
-> > > > > with the close/open from netdev PCI drv --> rdma drv.
-> > > >
-> > > > > Without a teardown and re-add of virtual device off the bus.
-> > > >
-> > > > Yes, that is exactly right. If you have done something so disruptive
-> > > > that the ib_device needs to be destroyed then you should
-> > > > unplug/replug the entire virtual bus device, that is the correct and sane thing to
-> > do.
-> > >
-> > > Well we have resources created in rdma driver probe which are used by
-> > > any VF's regardless of the registration of the ib device on the PF.
+> > If the name of a device is assigned during ib_register_device(), some drivers have
+> > to use dev_*() for printing before register device. Bring
+> > assign_name() into ib_alloc_device(), so that drivers can use ibdev_*() anywhere.
 > > 
-> > Ugh, drivers that have the VF driver require the PF driver have a lot of problems.
-> > 
-> > But, even so, with your new split design, resources held for a VF belong in the
-> > core pci driver, not the rdma virtual bus device.
-> > 
+> > Signed-off-by: Weihang Li <liweihang@huawei.com>
+> >  drivers/infiniband/core/device.c               | 85 +++++++++++++-------------
+> >  drivers/infiniband/hw/bnxt_re/main.c           |  4 +-
+> >  drivers/infiniband/hw/cxgb4/device.c           |  2 +-
+> >  drivers/infiniband/hw/cxgb4/provider.c         |  2 +-
+> >  drivers/infiniband/hw/efa/efa_main.c           |  4 +-
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v1.c     |  2 +-
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c     |  2 +-
+> >  drivers/infiniband/hw/hns/hns_roce_main.c      |  2 +-
+> >  drivers/infiniband/hw/i40iw/i40iw_verbs.c      |  4 +-
+> >  drivers/infiniband/hw/mlx4/main.c              |  4 +-
+> >  drivers/infiniband/hw/mlx5/ib_rep.c            |  8 ++-
+> >  drivers/infiniband/hw/mlx5/main.c              | 18 +++---
+> >  drivers/infiniband/hw/mthca/mthca_main.c       |  2 +-
+> >  drivers/infiniband/hw/mthca/mthca_provider.c   |  2 +-
+> >  drivers/infiniband/hw/ocrdma/ocrdma_main.c     |  4 +-
+> >  drivers/infiniband/hw/qedr/main.c              |  4 +-
+> >  drivers/infiniband/hw/usnic/usnic_ib_main.c    |  4 +-
+> >  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  4 +-
+> >  drivers/infiniband/sw/rxe/rxe.c                |  4 +-
+> >  drivers/infiniband/sw/rxe/rxe.h                |  2 +-
+> >  drivers/infiniband/sw/rxe/rxe_net.c            |  4 +-
+> >  drivers/infiniband/sw/rxe/rxe_verbs.c          |  4 +-
+> >  drivers/infiniband/sw/rxe/rxe_verbs.h          |  2 +-
+> >  include/rdma/ib_verbs.h                        |  8 +--
+> >  24 files changed, 95 insertions(+), 86 deletions(-)
 > 
-> This is not a new design per se but been this way from the get go in our first
-> submission.
+> I think you ll need to update siw driver similarly.
 > 
-> What your suggesting makes sense if we had a core PCI driver and
-> function specific drivers (i.e netdev and rdma driver in our case).
-> The resources held for VF, device IRQs and other common resource
-> initialization would be done by this core PCI driver. Function specific
-> drivers would bind to their virtual devices and access their slice of
-> resources. It sounds architecturally more clean but this is a major
-> undertaking that needs a re-write of both netdev and rdma drivers.
-> Moreover not sure if we are solving any problem here and the current
-> design is proven out to work for us.
-> 
-> As it stands now, the netdev driver is the pci driver and moving rdma
-> specific admin queues / resources out of rdma PF driver to be managed
-> by the netdev driver does not make a lot of sense in the present design.
-> We want rdma VF specific resources be managed by rdma PF driver.
-> And netdev specific VF resources by netdev PF driver.
+> rvt_register_device should be adapted to use the revised device registration API.
+> hfi1/qib also need some rework.
 
-While I won't say you need to undertake such work, it does seem very
-hacky considering the new virtual bus/etc to leave it like this.
+It is necessary to make such a big change? :(
 
-Still, you need to be able to cope with the user unbinding your
-drivers in any order via sysfs. What happens to the VFs when the PF is
-unbound and releases whatever resources? This is where the broadcom
-driver ran into troubles..
+> rvt_alloc_device needs to be adapted for the new one-shot 
+> name + device allocation scheme.
+> Hoping we can just use move the name setting from rvt_set_ibdev_name
+
+I thought so..
 
 Jason
