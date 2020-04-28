@@ -2,130 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E26C1BBDC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 14:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8271BBEBF
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 15:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgD1Mll (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 08:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726743AbgD1Mll (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:41:41 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE090C03C1AC
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2020 05:41:40 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id q8so17137748eja.2
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Apr 2020 05:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2jb9elzh/74ZWm4bFfjq7/QUpnKgP6S86qUXhjXdPl8=;
-        b=WpdqH2v/MZNbC1y2LwFDPVj6TJ8XVB8xtVoaSjQGJjuuIts2SvG/F1aCWEsMgZNz5V
-         b8DiEjUBpMGtx9ZZ383qetmnIgvNvrB+SikeXNDp7lsxjyJlhoSEbJRj9vxeKb1NCZWP
-         dESZdJFqkC0j6aCmKbtHVRMoZASgG4GTN2qfuvSHwNZis3DNMjshfxvnjgO1KiQHtpCE
-         pJzmoHcmgfAtzMcTfD/p28CIl76uMkp/9LQP+ThqL2EI1y90zMeul+C9USJ1pS9wHiPb
-         uIVe8riqcxOCdzmI1/tmJD6yWKjsHem5M9pl92ecTHEEZS091dKHfxJYYCpeUVwvanSU
-         IMXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2jb9elzh/74ZWm4bFfjq7/QUpnKgP6S86qUXhjXdPl8=;
-        b=VMoecuEHK2Q9E3HSeBxI5gFgY3L4X/FD4jStAtp/qrt+b2lTsCCFJtfSDI6WgEj0JK
-         pI6CoFtWxkKxHuK3CNpHtNnSBO+KIg85RIq1Vdcy+jOCS/rkDzw/q6BBIo5FXHyDhGbS
-         WI0+mX3B9FoqDpnRcBSmUw9Jkios4vG5frshIRY017RafARCrmtg9HgH6W0jZvvRf817
-         E19pJPlxrTq9MluEphetbQXHWXD3i4karxaSM/N4AF+WBKKJoo3YhCXV04DjdtuQ35HK
-         7xs6Gv1Bm1d0RlQ/KytsHYPX5tM7VwWeTb3wJo0el2NBJz0Wx9sjQBDNm26EkIJiYtfC
-         dQEg==
-X-Gm-Message-State: AGi0PuYv3+d3kdsTPre/g8ukcd9w6vcjo3RJ8GFXT+knfsQhi22S5zzX
-        fNsg9jK/SuVYmBKvHBPzrLX9TCHZUdYez1m+pE2Vpw==
-X-Google-Smtp-Source: APiQypIt5QxH0bocTs9uxDt53Avl+v2Af4RfA+4Dq3POVZYa8RWwnjwHZjjbmBgwTmnGmeTVQr7ZOmZVgX1p+JMfxH0=
-X-Received: by 2002:a17:906:9494:: with SMTP id t20mr23467353ejx.51.1588077699476;
- Tue, 28 Apr 2020 05:41:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200415092045.4729-1-danil.kipnis@cloud.ionos.com>
- <CAMGffE=R2zaL6Ao3gZ_XvKPvG0YX5bmo18o3cJ_SLBEjZ0Mv_g@mail.gmail.com> <20200428123151.GS26002@ziepe.ca>
-In-Reply-To: <20200428123151.GS26002@ziepe.ca>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 28 Apr 2020 14:41:28 +0200
-Message-ID: <CAMGffEkEQ37bbG5BFixnESor8kjyLkEu4jC99a5g=xiCkyXECw@mail.gmail.com>
-Subject: Re: [PATCH v12 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>
-Cc:     Leon Romanovsky <leon@kernel.org>,
+        id S1726836AbgD1NPc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Apr 2020 09:15:32 -0400
+Received: from relay.sw.ru ([185.231.240.75]:51234 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726764AbgD1NPc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:15:32 -0400
+Received: from [192.168.15.93] (helo=iris.lishka.ru)
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <den@openvz.org>)
+        id 1jTQ4u-0005SY-Dh; Tue, 28 Apr 2020 16:15:12 +0300
+From:   "Denis V. Lunev" <den@openvz.org>
+Cc:     "Denis V. Lunev" <den@openvz.org>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        linux-block@vger.kernel.org,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] i40iw: remove bogus call to netdev_master_upper_dev_get
+Date:   Tue, 28 Apr 2020 16:15:11 +0300
+Message-Id: <20200428131511.11049-1-den@openvz.org>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Sat, Apr 25, 2020 at 10:31:55AM +0200, Jinpu Wang wrote:
->
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-block-rnbd
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-client
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-server
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-client
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-server
-> > >  create mode 100644 drivers/block/rnbd/Kconfig
-> > >  create mode 100644 drivers/block/rnbd/Makefile
-> > >  create mode 100644 drivers/block/rnbd/README
-> > >  create mode 100644 drivers/block/rnbd/rnbd-clt-sysfs.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-clt.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-clt.h
-> > >  create mode 100644 drivers/block/rnbd/rnbd-common.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-log.h
-> > >  create mode 100644 drivers/block/rnbd/rnbd-proto.h
-> > >  create mode 100644 drivers/block/rnbd/rnbd-srv-dev.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-srv-dev.h
-> > >  create mode 100644 drivers/block/rnbd/rnbd-srv-sysfs.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-srv.c
-> > >  create mode 100644 drivers/block/rnbd/rnbd-srv.h
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/Kconfig
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/Makefile
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/README
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.h
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-log.h
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.h
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
-> > >
-> > >
-> > Hi Jason, hi Leon, hi Doug, hi all,
-> >
-> > We now have Reviewed-by for RNBD part from Bart (Thanks again), Do you
-> > have new comments regarding RTRS, should we send another round to do a
-> > rebase to latest rc?
->
-> We'd need an ack from Jens before the block stuff could go through the
-> RDMA tree
->
-> Jason
-Hi Jason
-Thanks for reply.
+Local variable netdev is not used in these calls.
 
-Hi Jens,
+It should be noted, that this change is required to work in bonded mode.
+In the other case we would get the following assert:
+ "RTNL: assertion failed at net/core/dev.c (5665)"
+with the calltrace as follows:
+	dump_stack+0x19/0x1b
+	netdev_master_upper_dev_get+0x61/0x70
+	i40iw_addr_resolve_neigh+0x1e8/0x220
+	i40iw_make_cm_node+0x296/0x700
+	? i40iw_find_listener.isra.10+0xcc/0x110
+	i40iw_receive_ilq+0x3d4/0x810
+	i40iw_puda_poll_completion+0x341/0x420
+	i40iw_process_ceq+0xa5/0x280
+	i40iw_ceq_dpc+0x1e/0x40
+	tasklet_action+0x83/0x140
+	__do_softirq+0x125/0x2bb
+	call_softirq+0x1c/0x30
+	do_softirq+0x65/0xa0
+	irq_exit+0x105/0x110
+	do_IRQ+0x56/0xf0
+	common_interrupt+0x16a/0x16a
+	? cpuidle_enter_state+0x57/0xd0
+	cpuidle_idle_call+0xde/0x230
+	arch_cpu_idle+0xe/0xc0
+	cpu_startup_entry+0x14a/0x1e0
+	start_secondary+0x1f7/0x270
+	start_cpu+0x5/0x14
 
-Could you give your ack so Jason could take RNBD/RTRS through RDMA
-tree, Jason mentioned in the past, we should get it ready at around
-rc4ish,  so we still can get about 2 weeks of little bug fixes from
-all the cross-arch compilation if any.
+Signed-off-by: Denis V. Lunev <den@openvz.org>
+CC: Konstantin Khorenko <khorenko@virtuozzo.com>
+CC: Faisal Latif <faisal.latif@intel.com>
+CC: Shiraz Saleem <shiraz.saleem@intel.com>
+CC: Doug Ledford <dledford@redhat.com>
+CC: Jason Gunthorpe <jgg@ziepe.ca>
+CC: linux-rdma@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-Thanks!
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index bb78d3280acc..fa7a5ff498c7 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -1987,7 +1987,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
+ 	struct rtable *rt;
+ 	struct neighbour *neigh;
+ 	int rc = arpindex;
+-	struct net_device *netdev = iwdev->netdev;
+ 	__be32 dst_ipaddr = htonl(dst_ip);
+ 	__be32 src_ipaddr = htonl(src_ip);
+ 
+@@ -1997,9 +1996,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
+ 		return rc;
+ 	}
+ 
+-	if (netif_is_bond_slave(netdev))
+-		netdev = netdev_master_upper_dev_get(netdev);
+-
+ 	neigh = dst_neigh_lookup(&rt->dst, &dst_ipaddr);
+ 
+ 	rcu_read_lock();
+@@ -2065,7 +2061,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ {
+ 	struct neighbour *neigh;
+ 	int rc = arpindex;
+-	struct net_device *netdev = iwdev->netdev;
+ 	struct dst_entry *dst;
+ 	struct sockaddr_in6 dst_addr;
+ 	struct sockaddr_in6 src_addr;
+@@ -2086,9 +2081,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+ 		return rc;
+ 	}
+ 
+-	if (netif_is_bond_slave(netdev))
+-		netdev = netdev_master_upper_dev_get(netdev);
+-
+ 	neigh = dst_neigh_lookup(dst, dst_addr.sin6_addr.in6_u.u6_addr32);
+ 
+ 	rcu_read_lock();
+-- 
+2.17.1
+
