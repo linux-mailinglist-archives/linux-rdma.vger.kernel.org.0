@@ -2,203 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD9A1BCCEE
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 22:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5D21BCD28
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 22:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgD1UEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 16:04:24 -0400
-Received: from mail-eopbgr30073.outbound.protection.outlook.com ([40.107.3.73]:45374
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726180AbgD1UEY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:04:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fHd+lJoGXM3MV0uh8UOlKKf3IKzNohr3jhXATMotL1CDnrhEj/7m4PzPD8dPOR8UvuMxPiOFK+2GozBVkFgXoDvkvUoxrDVPt7kVVbK1PvWFd1DB87oXUk0kdzEd/4seLsxp78RYZSRwew1q9Ux3RGr1S+U2b+WShrK/BpVlce8tgKev3mdxjLfFv9xdMGv2PgCvibBt6q+5SBaaDgX8E8a0FMbki8nyuGYyKUh2ziE5QkKXvxXWSp/CoMAzjWr1OfclaPaxeFc8D2GJjp/39WZf8KhfTA6VnL7BoZM7XFEqKAI8/Vm/PkvomuFJdZRnS5FGqClsMnkMJcs04MLm+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T9yuyCIFj+lxhtkhZ9CQ2e4Q0g9lhOhqQDMpAO510TY=;
- b=fedhCpA1MbgQ8eXBbHTaa8Qa0k/Sa5o5pl1l0bQyJFNymthjk63r9RbsCm/F1XChBYMwr7GQT34K9kloEsMfOJVW2mZqTW8Mb1FQ0mdx3/4syt4H2+fpw8lKItl8Sb2e600HqzluLnq5asQhRNZWeMFnY2sRAQvwAUkzVUBIqBK0pxyZ/dDMkLle6tpBAeY7zuzQhRR12UHBtngEkRVHRzfy9+f9uuOb0mRmJVOTsne7AjTJ+AN0iNvWxrITKFGUzjA0c/XUWCJTB9XAPDIuy5ozFNv/UcZjaod4S3m7By8JXZqKpxhCtyyHu/yWMgP2laytUObgng74Nw7Og6dKEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T9yuyCIFj+lxhtkhZ9CQ2e4Q0g9lhOhqQDMpAO510TY=;
- b=YKpDp3ac7dbqx7KZ3PccAvORCHlZooFPb6V5pja2BiXKg4kIZb9ShX1gFw9Y8A+9deL1UFf8psvVWAUAE3IS1L8BfpsUtIFHbPbn9+A9jEGWXNnMXFCrAn4UnbnHoVWVn7YjMa63p+1lzwmnqN/G6KjEh0s7Yb653DChYtfFLcI=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB3167.eurprd05.prod.outlook.com (2603:10a6:802:19::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Tue, 28 Apr
- 2020 20:04:18 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
- 20:04:18 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "vfalico@gmail.com" <vfalico@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "andy@greyhouse.net" <andy@greyhouse.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        "j.vosburgh@gmail.com" <j.vosburgh@gmail.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     Alex Rosenbaum <alexr@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 00/16] Add support to get xmit slave
-Thread-Topic: [PATCH 00/16] Add support to get xmit slave
-Thread-Index: AQHWG5rKgVRJq8uuZUW3C3iVVFdkVKiO+SyA
-Date:   Tue, 28 Apr 2020 20:04:18 +0000
-Message-ID: <089adbfe7c89d8513a2c2ef49f82c390240c4e30.camel@mellanox.com>
-References: <20200426071717.17088-1-maorg@mellanox.com>
-In-Reply-To: <20200426071717.17088-1-maorg@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: mellanox.com; dkim=none (message not signed)
- header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2fdf6b1b-e06a-4b5a-ffa8-08d7ebaf559e
-x-ms-traffictypediagnostic: VI1PR05MB3167:|VI1PR05MB3167:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB31679F9BDE62BF2222C41EE0BEAC0@VI1PR05MB3167.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0387D64A71
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(110136005)(54906003)(8676002)(91956017)(66946007)(64756008)(6506007)(26005)(6486002)(76116006)(66476007)(5660300002)(36756003)(66446008)(8936002)(71200400001)(66556008)(2616005)(186003)(2906002)(6512007)(966005)(498600001)(86362001)(4326008)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dMRwnvxTZK5aTbC6E2QEBqrt65iBBnOU0cfl8GCV9mYYxZdruhsiAdROpZXZ85CV4GAM59LmjvvWmcW9OMKIQHVCUMdgfHgd4igxSkPD23IXSt38rJ3382fxejOGAlDm2YvvpRn7oFOMMhH0gxG4574gr5qYiZnQNAYtBGJc5Mon8xwA0HHQ870FHA+h02MYdiclvrEKzz/WGsu9kROaFICWNZnP/XxY6gGzSNAwUh02G6jLWU9hNr0OLIwYMuWd94IVH2Bif15H211igV7SyAYrV+D01q+fmcLMe9ssJLmOQ9sXtBr3J8/77Cfqr8d0/SIKFHtxI7n8PCwzfJM1L9ryDHzG2OJO0u7kH5v8nQuvSGW/I4NjV2Ec4z9FLAR3gXC2MbLekevjw5d+treG2wqjv8VLW2xAw10vyNBlHG8pnUAGmwcr9U6Xyh+o8b+zX+7j+aXZF573HUZNOisysOs+e1EEb4pmHRVfMFtazMPXrIlCiKMlboMkKG1/0qFBmEbwp4JPPC7XjJ3PLHWkH8BI65PohTR+GgSIecXGN8Oy50DrOIh+HQxGl1bwvB8S
-x-ms-exchange-antispam-messagedata: qbO1oonjAeQSTJK1Z2XEEfN+Pxw+c6z1IEbMdxZXzUGPvLOkGt1kcGG5G6vXy2gH8aCAWXGrdB1CPVvzpqBitBZ1lc+NbLZeXGVKE4MEnLsltFT30v/Xo7OAbYI/fTX0QfRc2gYQ9vzIDEsChn7KGqfWsos3w3E7P390XSkuTaa9nmIsbazewB4UXDavk4q6QWW3kx8E1IZwRaRPpwrbDUHvqO5BSo4MSSEbZ6ETblmFiAAthx8TeQpHz/0VutELitpHB1JL6X1orPZek4z6+9S2lyWTIgWABlH8THi8PRqfER0y7euC275m66xUg9JMc1BkvW/iBcj02qtzb3u86Fo/XIGz2GZNTT2tclTtCTU7XVOXnRznfxgJmiIMz2ydepKiosR72GYe7Ame6mOMIEeiz/rGGArTRyxldJfgyjeiC/AdpajGjFDj0n6gi27TEfL5ITLkNM2CYPA3i5DnBsuC3dz5dFzzJ1roTnxneSLTKdY/0bkeXYPzBwUx6pcyvURGFk4grFrwnFj6xqz7Ti0HSRezXkurQT51hB5vOm7HTJNOAhoBeY6MJDnIbCA6V2dseziIiW2da3V5oZf8RVcmxgHH5PW11Eh8RtEkdQ+39/VHu72edSKVamhX3ZYFdYWYiy1qOexm0PpabfgcQBEItiMifwS9UotKcGx4A65pkqLAa35w1tlZybQFpG/mmi+yMNLXDAYlwLgDi2wDKWbWVng6x83gdF9zazvSUH7qlhTFXfDOQ/+G6DKTU66cSv2n8Mx/rUx3lIBZYpHYqZrWxG+KzuFk9dqETgywt1M=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F7AF87314091104F99745DAEB05B4082@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726291AbgD1UMf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Apr 2020 16:12:35 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30525 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726286AbgD1UMf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:12:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588104753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2OKswG1ruzns5I21UqjqGNJ9iohxx9gNx+0J1CK9CTA=;
+        b=D0C+GL9gb42BSyu+10PlWp9ItWFFKkM8YSUAhBaz15H3FbaBdZC5rPLY5AMrIoOoL9BlIs
+        qSvQTEanSzzgRY3yvQMe5H3fwOBde5QRyyau42pkjO9D/HkHNJNayrJGzHfb7ITZca907a
+        KwSo9gOS6rSnSMk43SVdVp3Gv+U+7QA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-z8QR-YRYPemkXjd5Mb2htQ-1; Tue, 28 Apr 2020 16:12:28 -0400
+X-MC-Unique: z8QR-YRYPemkXjd5Mb2htQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF0171895A28;
+        Tue, 28 Apr 2020 20:12:25 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 037E9648D6;
+        Tue, 28 Apr 2020 20:12:23 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 14:12:23 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-doc@vger.kernel.org
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200428141223.5b1653db@w520.home>
+In-Reply-To: <20200428192251.GW26002@ziepe.ca>
+References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+        <20200211001536.1027652-7-jhubbard@nvidia.com>
+        <20200424121846.5ee2685f@w520.home>
+        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+        <20200424141548.5afdd2bb@w520.home>
+        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+        <20200428105455.30343fb4@w520.home>
+        <20200428174957.GV26002@ziepe.ca>
+        <20200428130752.75c153bd@w520.home>
+        <20200428192251.GW26002@ziepe.ca>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fdf6b1b-e06a-4b5a-ffa8-08d7ebaf559e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2020 20:04:18.3382
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K8+Ws61JwQf2E5vuTWPq+9Z0ZUCKbCzDCVYyPE74SGlXxUIxJr2yDdaBC5FhPuXUDlhHpv7/0dtIIjjjsOrCPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3167
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTA0LTI2IGF0IDEwOjE3ICswMzAwLCBNYW9yIEdvdHRsaWViIHdyb3RlOg0K
-PiBIaSBEYXZlLA0KPiANCj4gVGhpcyBzZXJpZXMgaXMgYSBjb21iaW5hdGlvbiBvZiBuZXRkZXYg
-YW5kIFJETUEsIHNvIGluIG9yZGVyIHRvIGF2b2lkDQo+IGNvbmZsaWN0cywgd2Ugd291bGQgbGlr
-ZSB0byBhc2sgeW91IHRvIHJvdXRlIHRoaXMgc2VyaWVzIHRocm91Z2gNCj4gbWx4NS1uZXh0IHNo
-YXJlZCBicmFuY2guIEl0IGlzIGJhc2VkIG9uIHY1LjctcmMxIHRhZy4NCj4gDQoNCkhpIERhdmUs
-IA0KDQpTaW5jZSB0aGlzIHNlcmllcyBoYXMgbmV0ZGV2IGJvbmRpbmcgc3R1ZmYgKyByZG1hICsg
-bWx4NSwgSSB3b3VsZCBsaWtlDQp0byBnZXQgeW91ciBhY2sgYmVmb3JlIGkgbWVyZ2VkIGl0IGlu
-dG8gbWx4NSB0cmVlIGFuZCBzZW5kIGl0IHRvIHlvdQ0KYW5kIHRvIHRoZSByZG1hIGZvbGtzIGlu
-IGEgcHVsbCByZXF1ZXN0IC4uIA0KDQpQbGVhc2UgbGV0IG1lIGtub3cgaWYgeW91IGFyZSBvayB3
-aXRoIHRoaXMgc2VyaWVzIGFuZCB3aXRoIHRoZQ0Kc3VibWlzc2lvbiBwbGFuLg0KDQpUaGFua3Ms
-DQpTYWVlZC4NCg0KDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiANCj4gVGhlIGZvbGxvd2luZyBzZXJpZXMg
-YWRkcyBzdXBwb3J0IHRvIGdldCB0aGUgTEFHIG1hc3RlciB4bWl0IHNsYXZlIGJ5DQo+IGludHJv
-ZHVjaW5nIG5ldyAubmRvIC0gbmRvX2dldF94bWl0X3NsYXZlLiBFdmVyeSBMQUcgbW9kdWxlIGNh
-bg0KPiBpbXBsZW1lbnQgaXQgYW5kIGl0IGZpcnN0IGltcGxlbWVudGVkIGluIHRoZSBib25kIGRy
-aXZlci4gDQo+IFRoaXMgaXMgZm9sbG93LXVwIHRvIHRoZSBSRkMgZGlzY3Vzc2lvbiBbMV0uDQo+
-IA0KPiBUaGUgbWFpbiBtb3RpdmF0aW9uIGZvciBkb2luZyB0aGlzIGlzIGZvciBkcml2ZXJzIHRo
-YXQgb2ZmbG9hZCBwYXJ0DQo+IG9mIHRoZSBMQUcgZnVuY3Rpb25hbGl0eS4gRm9yIGV4YW1wbGUs
-IE1lbGxhbm94IENvbm5lY3QtWCBoYXJkd2FyZQ0KPiBpbXBsZW1lbnRzIFJvQ0UgTEFHIHdoaWNo
-IHNlbGVjdHMgdGhlIFRYIGFmZmluaXR5IHdoZW4gdGhlIHJlc291cmNlcw0KPiBhcmUgY3JlYXRl
-ZCBhbmQgcG9ydCBpcyByZW1hcHBlZCB3aGVuIGl0IGdvZXMgZG93bi4NCj4gDQo+IFRoZSBmaXJz
-dCBwYXJ0IG9mIHRoaXMgcGF0Y2hzZXQgaW50cm9kdWNlcyB0aGUgbmV3IC5uZG8gYW5kIGFkZCB0
-aGUNCj4gc3VwcG9ydCB0byB0aGUgYm9uZGluZyBtb2R1bGUuDQo+IA0KPiBUaGUgc2Vjb25kIHBh
-cnQgYWRkcyBzdXBwb3J0IHRvIGdldCB0aGUgUm9DRSBMQUcgeG1pdCBzbGF2ZSBieQ0KPiBidWls
-ZGluZw0KPiBza2Igb2YgdGhlIFJvQ0UgcGFja2V0IGJhc2VkIG9uIHRoZSBBSCBhdHRyaWJ1dGVz
-IGFuZCBjYWxsIHRvIHRoZSBuZXcNCj4gLm5kby4NCj4gDQo+IFRoZSB0aGlyZCBwYXJ0IGNoYW5n
-ZSB0aGUgbWx4NSBkcml2ZXIgZHJpdmVyIHRvIHNldCB0aGUgUVAncyBhZmZpbml0eQ0KPiBwb3J0
-IGFjY29yZGluZyB0byB0aGUgc2xhdmUgd2hpY2ggZm91bmQgYnkgdGhlIC5uZG8uDQo+IA0KPiBU
-aGFua3MNCj4gDQo+IFsxXQ0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9uZXRkZXYvMjAyMDAx
-MjYxMzIxMjYuOTk4MS0xLW1hb3JnQHh4eHh4eHh4eHh4eC8NCj4gDQo+IENoYW5nZSBsb2c6DQo+
-IHY2OiBwYXRjaCAxIC0gRml4IGNvbW1pdCBtZXNzYWdlIGFuZCBhZGQgZnVuY3Rpb24gZGVzY3Jp
-cHRpb24uIA0KPiAgICAgcGF0Y2ggMTAgLSBLZWVwIHVkYXRhIGFzIGZ1bmN0aW9uIGFyZ3VtZW50
-Lg0KPiB2NTogcGF0Y2ggMSAtIFJlbW92ZSByY3UgbG9jay4NCj4gICAgIHBhdGNoIDEwIC0gUmVm
-YWN0b3IgcGF0Y2ggdGhhdCBncm91cCB0aGUgQUggYXR0cmlidXRlcyBpbiBzdHJ1Y3QuDQo+ICAg
-ICBwYXRjaCAxMSAtIGNhbGwgdGhlIG5kbyB3aGlsZSBob2xkaW5nIHRoZSByY3UgYW5kIGluaXRp
-YWxpemUNCj4geG1pdF9zbGF2ZS4NCj4gICAgIHBhdGNoIDEyIC0gU3RvcmUgdGhlIHhtaXQgc2xh
-dmUgaW4gcmRtYV9haF9pbml0X2F0dHIgYW5kIHFwX2F0dHIuDQo+IA0KPiB2NDogMS4gUmVuYW1l
-IG1hc3Rlcl9nZXRfeG1pdF9zbGF2ZSB0byBuZXRkZXZfZ2V0X3htaXRfc2xhdmUgYW5kIG1vdmUN
-Cj4gdGhlIGltcGxlbWVudGF0aW9uIHRvIGRldi5jIA0KPiAgICAgMi4gUmVtb3ZlIHVubmVjZXNz
-YXJ5IGNoZWNrIG9mIE5VTEwgcG9pbnRlci4NCj4gICAgIDMuIEZpeCB0eXBvLg0KPiB2MzogMS4g
-TW92ZSBtYXN0ZXJfZ2V0X3htaXRfc2xhdmUgdG8gbmV0ZGV2aWNlLmggYW5kIGNoYW5nZSB0aGUg
-ZmxhZ3MNCj4gYXJnLg0KPiB0byBib29sLg0KPiAgICAgMi4gU3BsaXQgaGVscGVyIGZ1bmN0aW9u
-cyBjb21taXQgdG8gbXVsdGlwbGUgY29tbWl0cyBmb3IgZWFjaA0KPiBib25kDQo+IG1vZGUuDQo+
-ICAgICAzLiBFeHRyYWN0IHJlZmNvdHJpbmcgY2hhbmdlcyB0byBzZXBlcmF0ZSBjb21taXRzLg0K
-PiB2MjogVGhlIGZpcnN0IHBhdGNoIHdhc24ndCBzZW50IGluIHYxLg0KPiB2MToNCj4gaHR0cHM6
-Ly9sb3JlLmtlcm5lbC5vcmcvbmV0ZGV2L2FjMzczNDU2LWI4MzgtMjljZi02NDVmLWIxZWExYTkz
-ZTNiMEB4eHh4eHh4eHgvVC8jdCANCj4gDQo+IE1hb3IgR290dGxpZWIgKDE2KToNCj4gICBuZXQv
-Y29yZTogSW50cm9kdWNlIG5ldGRldl9nZXRfeG1pdF9zbGF2ZQ0KPiAgIGJvbmRpbmc6IEV4cG9y
-dCBza2lwIHNsYXZlIGxvZ2ljIHRvIGZ1bmN0aW9uDQo+ICAgYm9uZGluZzogUmVuYW1lIHNsYXZl
-X2FyciB0byB1c2FibGVfc2xhdmVzDQo+ICAgYm9uZGluZy9hbGI6IEFkZCBoZWxwZXIgZnVuY3Rp
-b25zIHRvIGdldCB0aGUgeG1pdCBzbGF2ZQ0KPiAgIGJvbmRpbmc6IEFkZCBoZWxwZXIgZnVuY3Rp
-b24gdG8gZ2V0IHRoZSB4bWl0IHNsYXZlIGJhc2VkIG9uIGhhc2gNCj4gICBib25kaW5nOiBBZGQg
-aGVscGVyIGZ1bmN0aW9uIHRvIGdldCB0aGUgeG1pdCBzbGF2ZSBpbiByciBtb2RlDQo+ICAgYm9u
-ZGluZzogQWRkIGZ1bmN0aW9uIHRvIGdldCB0aGUgeG1pdCBzbGF2ZSBpbiBhY3RpdmUtYmFja3Vw
-IG1vZGUNCj4gICBib25kaW5nOiBBZGQgYXJyYXkgb2YgYWxsIHNsYXZlcw0KPiAgIGJvbmRpbmc6
-IEltcGxlbWVudCBuZG9fZ2V0X3htaXRfc2xhdmUNCj4gICBSRE1BOiBHcm91cCBjcmVhdGUgQUgg
-YXJndW1lbnRzIGluIHN0cnVjdA0KPiAgIFJETUEvY29yZTogQWRkIExBRyBmdW5jdGlvbmFsaXR5
-DQo+ICAgUkRNQS9jb3JlOiBHZXQgeG1pdCBzbGF2ZSBmb3IgTEFHDQo+ICAgbmV0L21seDU6IENo
-YW5nZSBsYWcgbXV0ZXggbG9jayB0byBzcGluIGxvY2sNCj4gICBuZXQvbWx4NTogQWRkIHN1cHBv
-cnQgdG8gZ2V0IGxhZyBwaHlzaWNhbCBwb3J0DQo+ICAgUkRNQS9tbHg1OiBSZWZhY3RvciBhZmZp
-bml0eSByZWxhdGVkIGNvZGUNCj4gICBSRE1BL21seDU6IFNldCBsYWcgdHggYWZmaW5pdHkgYWNj
-b3JkaW5nIHRvIHNsYXZlDQo+IA0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2NvcmUvTWFrZWZpbGUg
-ICAgICAgICAgICAgIHwgICAyICstDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvY29yZS9sYWcuYyAg
-ICAgICAgICAgICAgICAgfCAxNDEgKysrKysrKysrDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvY29y
-ZS92ZXJicy5jICAgICAgICAgICAgICAgfCAgNTggKystLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5k
-L2h3L2JueHRfcmUvaWJfdmVyYnMuYyAgICAgIHwgICA4ICstDQo+ICBkcml2ZXJzL2luZmluaWJh
-bmQvaHcvYm54dF9yZS9pYl92ZXJicy5oICAgICAgfCAgIDIgKy0NCj4gIGRyaXZlcnMvaW5maW5p
-YmFuZC9ody9lZmEvZWZhLmggICAgICAgICAgICAgICB8ICAgMyArLQ0KPiAgZHJpdmVycy9pbmZp
-bmliYW5kL2h3L2VmYS9lZmFfdmVyYnMuYyAgICAgICAgIHwgICA2ICstDQo+ICBkcml2ZXJzL2lu
-ZmluaWJhbmQvaHcvaG5zL2huc19yb2NlX2FoLmMgICAgICAgfCAgIDUgKy0NCj4gIGRyaXZlcnMv
-aW5maW5pYmFuZC9ody9obnMvaG5zX3JvY2VfZGV2aWNlLmggICB8ICAgNCArLQ0KPiAgZHJpdmVy
-cy9pbmZpbmliYW5kL2h3L21seDQvYWguYyAgICAgICAgICAgICAgIHwgIDExICstDQo+ICBkcml2
-ZXJzL2luZmluaWJhbmQvaHcvbWx4NC9tbHg0X2liLmggICAgICAgICAgfCAgIDIgKy0NCj4gIGRy
-aXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L2FoLmMgICAgICAgICAgICAgICB8ICAxNCArLQ0KPiAg
-ZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZ3NpLmMgICAgICAgICAgICAgIHwgIDM0ICsrLQ0K
-PiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWFpbi5jICAgICAgICAgICAgIHwgICAyICsN
-Cj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L21seDVfaWIuaCAgICAgICAgICB8ICAgMyAr
-LQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvcXAuYyAgICAgICAgICAgICAgIHwgMTIy
-ICsrKysrLS0tDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfcHJvdmlkZXIu
-YyAgfCAgIDkgKy0NCj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9vY3JkbWEvb2NyZG1hX2FoLmMg
-ICAgICB8ICAgMyArLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L29jcmRtYS9vY3JkbWFfYWgu
-aCAgICAgIHwgICAyICstDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvcWVkci92ZXJicy5jICAg
-ICAgICAgICAgfCAgIDQgKy0NCj4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9xZWRyL3ZlcmJzLmgg
-ICAgICAgICAgICB8ICAgMiArLQ0KPiAgLi4uL2luZmluaWJhbmQvaHcvdm13X3B2cmRtYS9wdnJk
-bWFfdmVyYnMuYyAgIHwgICA1ICstDQo+ICAuLi4vaW5maW5pYmFuZC9ody92bXdfcHZyZG1hL3B2
-cmRtYV92ZXJicy5oICAgfCAgIDIgKy0NCj4gIGRyaXZlcnMvaW5maW5pYmFuZC9zdy9yZG1hdnQv
-YWguYyAgICAgICAgICAgICB8ICAxMSArLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL3N3L3JkbWF2
-dC9haC5oICAgICAgICAgICAgIHwgICA0ICstDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvc3cvcnhl
-L3J4ZV92ZXJicy5jICAgICAgICAgfCAgIDkgKy0NCj4gIGRyaXZlcnMvbmV0L2JvbmRpbmcvYm9u
-ZF9hbGIuYyAgICAgICAgICAgICAgICB8ICAzOSArKy0NCj4gIGRyaXZlcnMvbmV0L2JvbmRpbmcv
-Ym9uZF9tYWluLmMgICAgICAgICAgICAgICB8IDI2OCArKysrKysrKysrKysrLS0tDQo+IC0tDQo+
-ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvbGFnLmMgfCAgNjYgKysr
-LS0NCj4gIGluY2x1ZGUvbGludXgvbWx4NS9kcml2ZXIuaCAgICAgICAgICAgICAgICAgICB8ICAg
-MiArDQo+ICBpbmNsdWRlL2xpbnV4L21seDUvbWx4NV9pZmMuaCAgICAgICAgICAgICAgICAgfCAg
-IDQgKy0NCj4gIGluY2x1ZGUvbGludXgvbWx4NS9xcC5oICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgMiArDQo+ICBpbmNsdWRlL2xpbnV4L25ldGRldmljZS5oICAgICAgICAgICAgICAgICAgICAg
-fCAgMTIgKw0KPiAgaW5jbHVkZS9uZXQvYm9uZF9hbGIuaCAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICA0ICsNCj4gIGluY2x1ZGUvbmV0L2JvbmRpbmcuaCAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMyArLQ0KPiAgaW5jbHVkZS9yZG1hL2liX3ZlcmJzLmggICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDEyICstDQo+ICBpbmNsdWRlL3JkbWEvbGFnLmggICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgMjMgKysNCj4gIG5ldC9jb3JlL2Rldi5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAyMiArKw0KPiAgMzggZmlsZXMgY2hhbmdlZCwgNjk2IGluc2VydGlvbnMoKyks
-IDIyOSBkZWxldGlvbnMoLSkNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2luZmluaWJh
-bmQvY29yZS9sYWcuYw0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvcmRtYS9sYWcuaA0K
-PiANCg==
+On Tue, 28 Apr 2020 16:22:51 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
+
+> On Tue, Apr 28, 2020 at 01:07:52PM -0600, Alex Williamson wrote:
+> > On Tue, 28 Apr 2020 14:49:57 -0300
+> > Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >   
+> > > On Tue, Apr 28, 2020 at 10:54:55AM -0600, Alex Williamson wrote:  
+> > > >  static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+> > > >  {
+> > > >  	struct vfio_pci_device *vdev = device_data;
+> > > > @@ -1253,8 +1323,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+> > > >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> > > >  	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
+> > > >  
+> > > > +	vma->vm_ops = &vfio_pci_mmap_ops;
+> > > > +
+> > > > +#if 1
+> > > > +	return 0;
+> > > > +#else
+> > > >  	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+> > > > -			       req_len, vma->vm_page_prot);
+> > > > +			       vma->vm_end - vma->vm_start, vma->vm_page_prot);    
+> > > 
+> > > The remap_pfn_range here is what tells get_user_pages this is a
+> > > non-struct page mapping:
+> > > 
+> > > 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
+> > > 
+> > > Which has to be set when the VMA is created, they shouldn't be
+> > > modified during fault.  
+> > 
+> > Aha, thanks Jason!  So fundamentally, pin_user_pages_remote() should
+> > never have been faulting in this vma since the pages are non-struct
+> > page backed.   
+> 
+> gup should not try to pin them.. I think the VM will still call fault
+> though, not sure from memory?
+
+Hmm, at commit 3faa52c03f44 the behavior is that I don't see a fault on
+pin, maybe that's a bug.  But trying to rebase to current top of tree,
+now my DMA mapping gets an -EFAULT, so something is still funky :-\
+
+> > Maybe I was just getting lucky before this commit.  For a
+> > VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
+> > error and the vma information that we setup in vfio_pci_mmap().  
+> 
+> I've written on this before, vfio should not be passing pages to the
+> iommu that it cannot pin eg it should not touch VM_PFNMAP vma's in the
+> first place.
+> 
+> It is a use-after-free security issue the way it is..
+
+Where is the user after free?  Here I'm trying to map device mmio space
+through the iommu, which we need to enable p2p when the user owns
+multiple devices.  The device is owned by the user, bound to vfio-pci,
+and can't be unbound while the user has it open.  The iommu mappings
+are torn down on release.  I guess I don't understand the problem.
+
+> > only need the fault handler to trigger for user access, which is what I
+> > see with this change.  That should work for me.
+> >   
+> > > Also the vma code above looked a little strange to me, if you do send
+> > > something like this cc me and I can look at it. I did some work like
+> > > this for rdma a while ago..  
+> > 
+> > Cool, I'll do that.  I'd like to be able to zap the vmas from user
+> > access at a later point and I have doubts that I'm holding the
+> > refs/locks that I need to for that.  Thanks,  
+> 
+> Check rdma_umap_ops, it does what you described (actually it replaces
+> them with 0 page, but along the way it zaps too).
+
+Ok, thanks,
+
+Alex
+
