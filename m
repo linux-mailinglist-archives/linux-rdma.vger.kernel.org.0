@@ -2,105 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94251BBC01
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 13:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7149D1BBC4C
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Apr 2020 13:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgD1LKc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 07:10:32 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2120 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726364AbgD1LKc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:10:32 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 27A9738E9E473AD7641C;
-        Tue, 28 Apr 2020 12:10:31 +0100 (IST)
-Received: from localhost (10.47.94.202) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 28 Apr
- 2020 12:10:30 +0100
-Date:   Tue, 28 Apr 2020 12:10:13 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+        id S1726566AbgD1LTL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Apr 2020 07:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726450AbgD1LTL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:19:11 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6780A206D6;
+        Tue, 28 Apr 2020 11:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588072751;
+        bh=IqAMOHRQi5uhfCVr5Lrx2IsDNQawBGQ/zPDlgP6XhKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vheSVMLeHPktCnH0uuVXXmloZpjo9DhbF26ZBwKvmo6GlxrDwlgBEb2OydFUFafHG
+         maiBV/+mWZavVHEDLeBgZpT6iG6c/qtVy8qZyRH1yHBsYv/GlvXZZ3qE2z4eqh1YQi
+         XYe4zXrGvSp2M+iTBC6VAjwC4A6ZQ1qGQkkJPUr8=
+Date:   Tue, 28 Apr 2020 14:19:07 +0300
+From:   Leon Romanovsky <leon@kernel.org>
 To:     liweihang <liweihang@huawei.com>
-CC:     kbuild test robot <lkp@intel.com>,
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
         Linuxarm <linuxarm@huawei.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH v3 for-next 1/5] RDMA/hns: Optimize PBL buffer
- allocation process
-Message-ID: <20200428121013.00001041@Huawei.com>
-In-Reply-To: <B82435381E3B2943AA4D2826ADEF0B3A0232A154@DGGEML522-MBX.china.huawei.com>
-References: <1587883377-22975-2-git-send-email-liweihang@huawei.com>
-        <202004280904.BP6w786k%lkp@intel.com>
-        <B82435381E3B2943AA4D2826ADEF0B3A0232A154@DGGEML522-MBX.china.huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "faisal.latif@intel.com" <faisal.latif@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Message-ID: <20200428111907.GI134660@unreal>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <20200427114734.GC134660@unreal>
+ <20200427115201.GN26002@ziepe.ca>
+ <20200427120337.GD134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.94.202]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 28 Apr 2020 16:12:39 +0800
-liweihang <liweihang@huawei.com> wrote:
+On Tue, Apr 28, 2020 at 08:00:29AM +0000, liweihang wrote:
+> On 2020/4/27 20:03, Leon Romanovsky wrote:
+> >>>>  /**
+> >>>>   * _ib_alloc_device - allocate an IB device struct
+> >>>>   * @size:size of structure to allocate
+> >>>> + * @name: unique string device name. This may include a '%' which will
+> >>> It looks like all drivers are setting "%" in their name and "name" can
+> >>> be changed to be "prefix".
+> >> Does hfi? I thought the name was forced there for some port swapped
+> >> reason?
+> > This patch doesn't touch HFI, nothing prohibits from us to make this
+> > conversion work for all drivers except HFI and for the HFI add some
+> > different callback. There is no need to make API harder just because
+> > one driver needs it.
+> >
+> > Thanks
+> >
+> >> Jason
+>
+> Hi Jason and Leon,
+>
+> I missed some codes related to assign_name() in this series including
+> hfi/qib as Shiraz pointed. And I found a "name" without a "%" in following
+> funtions in core/nldev.c, and ibdev_name will be used for rxe/siw later.
+>
+> 	static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+> 				  struct netlink_ext_ack *extack)
+> 	{
+> 		...
+>
+> 		nla_strlcpy(ibdev_name, tb[RDMA_NLDEV_ATTR_DEV_NAME],
+> 			    sizeof(ibdev_name));
+> 		if (strchr(ibdev_name, '%') || strlen(ibdev_name) == 0)
+> 			return -EINVAL;
+>
+> 		...
+> 	}
+>
+> I'm not familiar with these codes, but I think the judgment in assign_name()
+> is for the situaion like above.
+>
+> 	if (strchr(name, '%'))
+> 		ret = alloc_name(device, name);
+> 	else
+> 		ret = dev_set_name(&device->dev, name);
+>
+> So is it a better idea to keep using "name" instead of "prefix"?
 
-> On 2020/4/28 10:53, kbuild test robot wrote:
-> > Hi Weihang,
-> > 
-> > I love your patch! Perhaps something to improve:
-> > 
-> > [auto build test WARNING on rdma/for-next]
-> > [also build test WARNING on linus/master v5.7-rc3 next-20200424]
-> > [if your patch is applied to the wrong git tree, please drop us a note to help
-> > improve the system. BTW, we also suggest to use '--base' option to specify the
-> > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Weihang-Li/RDMA-hns-Refactor-process-of-buffer-allocation-and-calculation/20200428-015905
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-> > reproduce:
-> >         # apt-get install sparse
-> >         # sparse version: v0.6.1-191-gc51a0382-dirty
-> >         make ARCH=x86_64 allmodconfig
-> >         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > 
-> > 
-> > sparse warnings: (new ones prefixed by >>)
-> >   
-> >>> drivers/infiniband/hw/hns/hns_roce_mr.c:375:6: sparse: sparse: symbol 'hns_roce_mr_free' was not declared. Should it be static?  
-> > 
-> > Please review and possibly fold the followup patch.
-> > 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> >   
-> 
-> It will be used out of this file in later series, but it's better to add
-> a static currently. Will fix it, thanks.
+nldev_newlink() doesn't call to ib_alloc_device() and alloc_name(). The
+check pointed by you is for the user input.
 
-Alternative would be to declare it in the header at this stage.
-
-Jonathan
-
-
-> 
+>
+> Thanks
 > Weihang
-> 
-> 
-> _______________________________________________
-> Linuxarm mailing list
-> Linuxarm@huawei.com
-> http://hulk.huawei.com/mailman/listinfo/linuxarm
-
-
