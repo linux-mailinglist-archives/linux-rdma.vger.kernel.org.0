@@ -2,142 +2,242 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305331BE7F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 21:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326521BEBF2
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 00:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgD2T4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Apr 2020 15:56:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50842 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726871AbgD2T4o (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Apr 2020 15:56:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588190202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X6rk25Tv2imwj4OrlKEUTzABdfyr8dyAJgvrX//k5fs=;
-        b=i7ovjSpbkEGN6AQXFtzGRonGILEA1r0it3KyilArSKl5VoVin0pToGivkUklGs4V1gvgKA
-        zovAu8emtH8wKkp/19wLIzYAHRR5/UNB37mKeGqKrvZ2hxouiS/CHV4HnUt1QFGf5zx21I
-        D3n7dA7KSl6uZb/uj5vDuMCzFlMKK78=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-Jn-7UCXpM_6y8Jb0umYfuw-1; Wed, 29 Apr 2020 15:56:38 -0400
-X-MC-Unique: Jn-7UCXpM_6y8Jb0umYfuw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D5CC107ACCA;
-        Wed, 29 Apr 2020 19:56:35 +0000 (UTC)
-Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9425366062;
-        Wed, 29 Apr 2020 19:56:33 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 13:56:33 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-doc@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
-Message-ID: <20200429135633.626a8411@w520.home>
-In-Reply-To: <20200429002903.GZ26002@ziepe.ca>
-References: <20200211001536.1027652-7-jhubbard@nvidia.com>
-        <20200424121846.5ee2685f@w520.home>
-        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
-        <20200424141548.5afdd2bb@w520.home>
-        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
-        <20200428105455.30343fb4@w520.home>
-        <20200428174957.GV26002@ziepe.ca>
-        <20200428130752.75c153bd@w520.home>
-        <20200428192251.GW26002@ziepe.ca>
-        <20200428141223.5b1653db@w520.home>
-        <20200429002903.GZ26002@ziepe.ca>
+        id S1727095AbgD2WMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Apr 2020 18:12:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61512 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726961AbgD2WMO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Apr 2020 18:12:14 -0400
+IronPort-SDR: SH0RfqA29zhhZn0xVaaoSJNPGJEZ6UlpOZpwV0dueyzbtxiYMYGYtysItQDFb2BLDU2m49dyQE
+ ZfxKjQocHjNg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 15:12:13 -0700
+IronPort-SDR: i6FWu7k+SPEeYqptmKlyI59Zet9RWEhW9U+lAZccRVVqwq00p/erDU2EYjW+OWsL7li9RATmih
+ p8CW3uld67+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="367941822"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Apr 2020 15:12:13 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jTuw7-000HYB-CU; Thu, 30 Apr 2020 06:12:11 +0800
+Date:   Thu, 30 Apr 2020 06:11:19 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ dfb25edd972af23819efcded636d0df5ab37c38f
+Message-ID: <5ea9fb87.xbLk0HTQWEOBWYl0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 28 Apr 2020 21:29:03 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: dfb25edd972af23819efcded636d0df5ab37c38f  Merge branch 'mlx5_ib_qp_refactor_1' into rdma.git for-next
 
-> On Tue, Apr 28, 2020 at 02:12:23PM -0600, Alex Williamson wrote:
-> 
-> > > > Maybe I was just getting lucky before this commit.  For a
-> > > > VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
-> > > > error and the vma information that we setup in vfio_pci_mmap().    
-> > > 
-> > > I've written on this before, vfio should not be passing pages to the
-> > > iommu that it cannot pin eg it should not touch VM_PFNMAP vma's in the
-> > > first place.
-> > > 
-> > > It is a use-after-free security issue the way it is..  
-> > 
-> > Where is the user after free?  Here I'm trying to map device mmio space
-> > through the iommu, which we need to enable p2p when the user owns
-> > multiple devices.  
-> 
-> Yes, I gathered what the intent was..
-> 
-> > The device is owned by the user, bound to vfio-pci, and can't be
-> > unbound while the user has it open.  The iommu mappings are torn
-> > down on release.  I guess I don't understand the problem.  
-> 
-> For PFNMAP VMAs the lifecycle rule is basically that the PFN inside
-> the VMA can only be used inside the mmap_sem that read it. Ie you
-> cannot take a PFN outside the mmap_sem and continue to use it.
-> 
-> This is because the owner of the VMA owns the lifetime of that PFN,
-> and under the write side of the mmap_sem it can zap the PFN, or close
-> the VMA. Afterwards the VMA owner knows that there are no active
-> reference to the PFN in the system and can reclaim the PFN
-> 
-> ie the PFNMAP has no per-page pin counter. All lifetime revolves around
-> the mmap_sem and the vma.
-> 
-> What vfio does is take the PFN out of the mmap_sem and program it into
-> the iommu.
-> 
-> So when the VMA owner decides the PFN has no references, it actually
-> doesn't: vfio continues to access it beyond its permitted lifetime.
-> 
-> HW like mlx5 and GPUs have BAR pages which have security
-> properties. Once the PFN is returned to the driver the security
-> context of the PFN can be reset and re-assigned to another
-> process. Using VFIO a hostile user space can retain access to the BAR
-> page and upon its reassignment access a security context they were not
-> permitted to access.
-> 
-> This is why GUP does not return PFNMAP pages and vfio should not carry
-> a reference outside the mmap_sem. It breaks all the lifetime rules.
+elapsed time: 492m
 
-Thanks for the explanation.  I'm inferring that there is no solution to
-this, but why can't we use mmu notifiers to invalidate the iommu on zap
-or close?  I know that at least QEMU won't consider these sorts of
-mapping fatal, so we could possibly change the default and make support
-for such mappings opt-in, but I don't know if I'd break DPDK, or
-potentially users within QEMU that make use of p2p between devices.
-Thanks,
+configs tested: 183
+configs skipped: 0
 
-Alex
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+s390                                defconfig
+ia64                                defconfig
+ia64                        generic_defconfig
+m68k                          multi_defconfig
+sparc                               defconfig
+sh                  sh7785lcr_32bit_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                          tiger_defconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                       common_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+parisc               randconfig-a001-20200429
+m68k                 randconfig-a001-20200429
+alpha                randconfig-a001-20200429
+mips                 randconfig-a001-20200429
+nds32                randconfig-a001-20200429
+riscv                randconfig-a001-20200429
+nios2                randconfig-a001-20200429
+h8300                randconfig-a001-20200429
+c6x                  randconfig-a001-20200429
+sparc64              randconfig-a001-20200429
+microblaze           randconfig-a001-20200429
+s390                 randconfig-a001-20200430
+xtensa               randconfig-a001-20200430
+csky                 randconfig-a001-20200430
+openrisc             randconfig-a001-20200430
+sh                   randconfig-a001-20200430
+sh                   randconfig-a001-20200429
+csky                 randconfig-a001-20200429
+s390                 randconfig-a001-20200429
+xtensa               randconfig-a001-20200429
+openrisc             randconfig-a001-20200429
+i386                 randconfig-b002-20200429
+i386                 randconfig-b001-20200429
+x86_64               randconfig-b001-20200429
+i386                 randconfig-b003-20200429
+x86_64               randconfig-b002-20200429
+x86_64               randconfig-b003-20200429
+x86_64               randconfig-c001-20200430
+i386                 randconfig-c001-20200430
+i386                 randconfig-c002-20200430
+x86_64               randconfig-c002-20200430
+x86_64               randconfig-c003-20200430
+i386                 randconfig-c003-20200430
+x86_64               randconfig-d001-20200428
+i386                 randconfig-d002-20200428
+i386                 randconfig-d001-20200428
+x86_64               randconfig-d003-20200428
+i386                 randconfig-d003-20200428
+x86_64               randconfig-d001-20200429
+x86_64               randconfig-d002-20200429
+i386                 randconfig-d002-20200429
+i386                 randconfig-d001-20200429
+x86_64               randconfig-d003-20200429
+i386                 randconfig-d003-20200429
+x86_64               randconfig-e002-20200429
+i386                 randconfig-e003-20200429
+i386                 randconfig-e002-20200429
+x86_64               randconfig-e003-20200429
+i386                 randconfig-e001-20200429
+x86_64               randconfig-e001-20200429
+i386                 randconfig-f002-20200429
+i386                 randconfig-f003-20200429
+x86_64               randconfig-f003-20200429
+i386                 randconfig-f001-20200429
+x86_64               randconfig-f001-20200429
+x86_64               randconfig-h001-20200429
+i386                 randconfig-h003-20200429
+x86_64               randconfig-h003-20200429
+i386                 randconfig-h002-20200429
+i386                 randconfig-h001-20200429
+sparc                randconfig-a001-20200429
+ia64                 randconfig-a001-20200429
+powerpc              randconfig-a001-20200429
+arm                  randconfig-a001-20200429
+arc                  randconfig-a001-20200429
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                                allnoconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
