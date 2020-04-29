@@ -2,111 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802B91BE2CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 17:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C8E1BE391
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 18:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2Pdi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 29 Apr 2020 11:33:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8618 "EHLO mga14.intel.com"
+        id S1726526AbgD2QRe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Apr 2020 12:17:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10695 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgD2Pdi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:33:38 -0400
-IronPort-SDR: NCPOqmRNQEwt/lEYKO3OrRp6m/RsVEyDKp9PPeyf0xNxwsZDhSDKYBaicHC6bzCkHuZwqCcfcz
- uCDnK6PMB6NA==
+        id S1726481AbgD2QRe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Apr 2020 12:17:34 -0400
+IronPort-SDR: q78/y7tQULKu38g/XvH1F+KMdubLRG+lcXw1aeZp8QhnvPHhbSbt8DK1hxVxrOjEnwq05OVJBu
+ HCFpPMoXsfyw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:33:34 -0700
-IronPort-SDR: RJYX6NhL9qb6YXik0zGyrdsVjGAZts+z5OR23h/AT1O1RfL4r9BCr92aVLXAMEfP2p78jM7Zhd
- JTaLfbA5ZX7w==
-X-ExtLoop1: 1
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 09:17:33 -0700
+IronPort-SDR: v/zghgCruTKQN9QnAf5uDddXz2q7cC/sb9V5ojn4Y0q+B0FhlT6MIAGEIT9Rht++4spHqOls8R
+ fEVqdYmx6xwQ==
 X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
-   d="scan'208";a="459236582"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 08:33:33 -0700
-Received: from fmsmsx161.amr.corp.intel.com (10.18.125.9) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 29 Apr 2020 08:33:33 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.70]) by
- FMSMSX161.amr.corp.intel.com ([10.18.125.9]) with mapi id 14.03.0439.000;
- Wed, 29 Apr 2020 08:33:33 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     "Denis V. Lunev" <den@openvz.org>
-CC:     Konstantin Khorenko <khorenko@virtuozzo.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+   d="scan'208";a="246894211"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.206.199]) ([10.254.206.199])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 09:17:29 -0700
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] i40iw: remove bogus call to
- netdev_master_upper_dev_get
-Thread-Topic: [PATCH 1/1] i40iw: remove bogus call to
- netdev_master_upper_dev_get
-Thread-Index: AQHWHV8iCMr9rO8fnEWOWdKxb9e/t6iQNmwQ
-Date:   Wed, 29 Apr 2020 15:33:32 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7DCD5849C@fmsmsx124.amr.corp.intel.com>
-References: <20200428131511.11049-1-den@openvz.org>
-In-Reply-To: <20200428131511.11049-1-den@openvz.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <9DD61F30A802C4429A01CA4200E302A7DCD54BBA@fmsmsx124.amr.corp.intel.com>
+ <20200428000428.GP26002@ziepe.ca>
+ <9a875620-3f11-22ee-b908-59c8e49e3b24@intel.com>
+ <20200429135015.GA26002@ziepe.ca>
+ <5f5e104c-00fd-d08d-f2b2-f62f5f4950ff@intel.com>
+ <20200429145735.GB26002@ziepe.ca>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <cfacf892-ce28-7953-5b3d-f64f5a21bee6@intel.com>
+Date:   Wed, 29 Apr 2020 12:17:27 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200429145735.GB26002@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH 1/1] i40iw: remove bogus call to netdev_master_upper_dev_get
+On 4/29/2020 10:57 AM, Jason Gunthorpe wrote:
+> On Wed, Apr 29, 2020 at 10:33:19AM -0400, Dennis Dalessandro wrote:
+>>>> The issue is hfi1 calls into rvt_alloc_device() which then calls
+>>>> _ib_alloc_device(). We don't have the name set at that point. So the obvious
+>>>> thing to do is move the rvt_set_ibdev_name(). However there is a catch.
+>>>>
+>>>> The name gets set after allocating the device and the device table because
+>>>> we get the unit number as part of the xa_alloc_irq(hfi1_dev_table) call
+>>>> which needs the pointer to the devdata.
+>>>>
+>>>> One solution would be to pass in the pointer for the driver's dev table and
+>>>> let rvt_alloc_device() do the xa_alloc_irq().
+>>>
+>>> Just do:
+>>>
+>>> 	ret = xa_alloc_irq(&hfi1_dev_table, &unit, NULL, xa_limit_32b,
+>>> 			GFP_KERNEL);
+>>>           if (ret)
+>>>                   return ERR_PTR(ret);
+>>>
+>>> 	dd = (struct hfi1_devdata *)rvt_alloc_device(sizeof(*dd) + extra,
+>>> 						     nports, unit);
+>>> 	if (!dd) {
+>>> 		xa_erase(&hfi1_dev_table, unit);
+>>> 		return ERR_PTR(-ENOMEM);
+>>> 	}
+>>> 	xa_store(&hfi1_dev_table, unit, dd, GFP_KERNEL);
+>>
+>> That works too.
 > 
-> Local variable netdev is not used in these calls.
+> I don't understand why this xarray exists anyhow? Why can't the core
+> code assign the name with its internal algorithm?
 > 
-> It should be noted, that this change is required to work in bonded mode.
-> In the other case we would get the following assert:
->  "RTNL: assertion failed at net/core/dev.c (5665)"
-> with the calltrace as follows:
-> 	dump_stack+0x19/0x1b
-> 	netdev_master_upper_dev_get+0x61/0x70
-> 	i40iw_addr_resolve_neigh+0x1e8/0x220
-> 	i40iw_make_cm_node+0x296/0x700
-> 	? i40iw_find_listener.isra.10+0xcc/0x110
-> 	i40iw_receive_ilq+0x3d4/0x810
-> 	i40iw_puda_poll_completion+0x341/0x420
-> 	i40iw_process_ceq+0xa5/0x280
-> 	i40iw_ceq_dpc+0x1e/0x40
-> 	tasklet_action+0x83/0x140
-> 	__do_softirq+0x125/0x2bb
-> 	call_softirq+0x1c/0x30
-> 	do_softirq+0x65/0xa0
-> 	irq_exit+0x105/0x110
-> 	do_IRQ+0x56/0xf0
-> 	common_interrupt+0x16a/0x16a
-> 	? cpuidle_enter_state+0x57/0xd0
-> 	cpuidle_idle_call+0xde/0x230
-> 	arch_cpu_idle+0xe/0xc0
-> 	cpu_startup_entry+0x14a/0x1e0
-> 	start_secondary+0x1f7/0x270
-> 	start_cpu+0x5/0x14
+> There are several places that iterate over the xarray, but that
+> doesn't need a unit #, could be a linked list or use the core device
+> list.
 > 
-> Signed-off-by: Denis V. Lunev <den@openvz.org>
-> CC: Konstantin Khorenko <khorenko@virtuozzo.com>
-> CC: Faisal Latif <faisal.latif@intel.com>
-> CC: Shiraz Saleem <shiraz.saleem@intel.com>
-> CC: Doug Ledford <dledford@redhat.com>
-> CC: Jason Gunthorpe <jgg@ziepe.ca>
-> CC: linux-rdma@vger.kernel.org
-> CC: linux-kernel@vger.kernel.org
-> ---
->  drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
+> The only actual lookup in hfi1_reset_device() looks pointless, the
+> caller already has the dd??
 
-Looks right. Thanks!
+That's a fair point, the caller has the dev pointer which it uses to 
+find the dd. I'll take a look at getting rid of it.
 
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+-Denny
+
+
+
