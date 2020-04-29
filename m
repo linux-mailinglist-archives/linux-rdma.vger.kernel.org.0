@@ -2,128 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E165C1BE503
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 19:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305331BE7F2
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 21:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgD2RUU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Apr 2020 13:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726524AbgD2RUT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:20:19 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98844C03C1AE
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2020 10:20:19 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c63so2819131qke.2
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2020 10:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mpmSHkWxwgm/LhAcYo3SLWkH0ACT29klkaOxaqVeapg=;
-        b=BaftpZqbKcU3LSUdl2EAMo8xhJ6wB1ilnYyQomJV8QvAIrZ6woGMlhjQPBa4Pkuhj5
-         yx7FNiCccDVVyzMRl8IqarWuhPX/ynoe1ZQgHXorS18x/9Y/YqYHvmfRr91+CmRPZ9bD
-         0uR4D+wPBYCr9Jz0cnUfo0M+MM6/EXe2WkCSMjsa9Eo4IjWhTO0Kx5sqUgYdXLd1sRb0
-         jKdux+HfHqUdTRaXE5YzDuen1XJUNoKrmanc5lasHpkwas3+EqXjMn25UDw6A2P3HpD0
-         YIJVfNcsicp+J7iJVtSqwS7wnAHpLSDgI+kmQUaY7NIu4bs0pNz9yn4jQG8Ggw/9byYN
-         vNFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mpmSHkWxwgm/LhAcYo3SLWkH0ACT29klkaOxaqVeapg=;
-        b=PVPNxTuFmef7U7XBlJRKOPfSQUOeEIxlVC4NxDboYnov7+GFjqyqkznTUibYKHkKa+
-         /DKAKICjx8PiCYc54qBh3sU3ZblnC9mCXdNssUiEuLYnNEj44wl4i07Lz4TjedVZkkKd
-         9pkyi/RUx/tbM5FqgFgXxupySZjBtuVWiCc199F5ZBsvMTzwXfMKvvYhAjLiOY/sVlws
-         rL48lNmN1G5EnTE4lD+QBlT4VbWOv0F1NZdduLo60eBeQJc8cnD4hf8jAjpleM5JPaN+
-         7KrQITibGQ6qmNYLSb8zE2qTpVXtzmjvgPTKfUEwomu7Y4hlVWkHNLzGTzefGUXiA/Nx
-         X4Ag==
-X-Gm-Message-State: AGi0PubDRVkCF7vpHfc4HKHTQwdcNeU8bq7DMdoICqVIgZ6HpDPraXwM
-        uCHX7mJ/YzDen66gncKfLUA8ig==
-X-Google-Smtp-Source: APiQypLF04153S2p8VjAH6Hqezdn+VH4SbYIpT5qP9grOE7J2dD8zbHdFDcq4lHoEALrjdD8Yc830w==
-X-Received: by 2002:ae9:f507:: with SMTP id o7mr32525444qkg.262.1588180818856;
-        Wed, 29 Apr 2020 10:20:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x22sm10456093qtr.57.2020.04.29.10.20.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 10:20:18 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jTqNe-0000P8-1Y; Wed, 29 Apr 2020 14:20:18 -0300
-Date:   Wed, 29 Apr 2020 14:20:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com
-Subject: Re: [PATCH v13 19/25] block/rnbd: server: private header with server
- structs and functions
-Message-ID: <20200429172018.GG26002@ziepe.ca>
-References: <20200427141020.655-1-danil.kipnis@cloud.ionos.com>
- <20200427141020.655-20-danil.kipnis@cloud.ionos.com>
+        id S1726921AbgD2T4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Apr 2020 15:56:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50842 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726871AbgD2T4o (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Apr 2020 15:56:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588190202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6rk25Tv2imwj4OrlKEUTzABdfyr8dyAJgvrX//k5fs=;
+        b=i7ovjSpbkEGN6AQXFtzGRonGILEA1r0it3KyilArSKl5VoVin0pToGivkUklGs4V1gvgKA
+        zovAu8emtH8wKkp/19wLIzYAHRR5/UNB37mKeGqKrvZ2hxouiS/CHV4HnUt1QFGf5zx21I
+        D3n7dA7KSl6uZb/uj5vDuMCzFlMKK78=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-Jn-7UCXpM_6y8Jb0umYfuw-1; Wed, 29 Apr 2020 15:56:38 -0400
+X-MC-Unique: Jn-7UCXpM_6y8Jb0umYfuw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D5CC107ACCA;
+        Wed, 29 Apr 2020 19:56:35 +0000 (UTC)
+Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9425366062;
+        Wed, 29 Apr 2020 19:56:33 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 13:56:33 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-doc@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200429135633.626a8411@w520.home>
+In-Reply-To: <20200429002903.GZ26002@ziepe.ca>
+References: <20200211001536.1027652-7-jhubbard@nvidia.com>
+        <20200424121846.5ee2685f@w520.home>
+        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+        <20200424141548.5afdd2bb@w520.home>
+        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+        <20200428105455.30343fb4@w520.home>
+        <20200428174957.GV26002@ziepe.ca>
+        <20200428130752.75c153bd@w520.home>
+        <20200428192251.GW26002@ziepe.ca>
+        <20200428141223.5b1653db@w520.home>
+        <20200429002903.GZ26002@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427141020.655-20-danil.kipnis@cloud.ionos.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 04:10:14PM +0200, Danil Kipnis wrote:
-> From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> 
-> This header describes main structs and functions used by rnbd-server
-> module, namely structs for managing sessions from different clients
-> and mapped (opened) devices.
-> 
-> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
->  drivers/block/rnbd/rnbd-srv.h | 79 +++++++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
->  create mode 100644 drivers/block/rnbd/rnbd-srv.h
-> 
-> diff --git a/drivers/block/rnbd/rnbd-srv.h b/drivers/block/rnbd/rnbd-srv.h
-> new file mode 100644
-> index 000000000000..89218024325d
-> +++ b/drivers/block/rnbd/rnbd-srv.h
-> @@ -0,0 +1,79 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * RDMA Network Block Driver
-> + *
-> + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> + */
-> +#ifndef RNBD_SRV_H
-> +#define RNBD_SRV_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/idr.h>
-> +#include <linux/kref.h>
-> +
-> +#include "rtrs.h"
-> +#include "rnbd-proto.h"
-> +#include "rnbd-log.h"
-> +
-> +struct rnbd_srv_session {
-> +	/* Entry inside global sess_list */
-> +	struct list_head        list;
-> +	struct rtrs_srv		*rtrs;
-> +	char			sessname[NAME_MAX];
-> +	int			queue_depth;
-> +	struct bio_set		sess_bio_set;
-> +
-> +	spinlock_t              index_lock ____cacheline_aligned;
-> +	struct idr              index_idr;
+On Tue, 28 Apr 2020 21:29:03 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-No new users of idr, use xarray.
+> On Tue, Apr 28, 2020 at 02:12:23PM -0600, Alex Williamson wrote:
+> 
+> > > > Maybe I was just getting lucky before this commit.  For a
+> > > > VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
+> > > > error and the vma information that we setup in vfio_pci_mmap().    
+> > > 
+> > > I've written on this before, vfio should not be passing pages to the
+> > > iommu that it cannot pin eg it should not touch VM_PFNMAP vma's in the
+> > > first place.
+> > > 
+> > > It is a use-after-free security issue the way it is..  
+> > 
+> > Where is the user after free?  Here I'm trying to map device mmio space
+> > through the iommu, which we need to enable p2p when the user owns
+> > multiple devices.  
+> 
+> Yes, I gathered what the intent was..
+> 
+> > The device is owned by the user, bound to vfio-pci, and can't be
+> > unbound while the user has it open.  The iommu mappings are torn
+> > down on release.  I guess I don't understand the problem.  
+> 
+> For PFNMAP VMAs the lifecycle rule is basically that the PFN inside
+> the VMA can only be used inside the mmap_sem that read it. Ie you
+> cannot take a PFN outside the mmap_sem and continue to use it.
+> 
+> This is because the owner of the VMA owns the lifetime of that PFN,
+> and under the write side of the mmap_sem it can zap the PFN, or close
+> the VMA. Afterwards the VMA owner knows that there are no active
+> reference to the PFN in the system and can reclaim the PFN
+> 
+> ie the PFNMAP has no per-page pin counter. All lifetime revolves around
+> the mmap_sem and the vma.
+> 
+> What vfio does is take the PFN out of the mmap_sem and program it into
+> the iommu.
+> 
+> So when the VMA owner decides the PFN has no references, it actually
+> doesn't: vfio continues to access it beyond its permitted lifetime.
+> 
+> HW like mlx5 and GPUs have BAR pages which have security
+> properties. Once the PFN is returned to the driver the security
+> context of the PFN can be reset and re-assigned to another
+> process. Using VFIO a hostile user space can retain access to the BAR
+> page and upon its reassignment access a security context they were not
+> permitted to access.
+> 
+> This is why GUP does not return PFNMAP pages and vfio should not carry
+> a reference outside the mmap_sem. It breaks all the lifetime rules.
 
-Also no users of radix tree if there are any in here..
+Thanks for the explanation.  I'm inferring that there is no solution to
+this, but why can't we use mmu notifiers to invalidate the iommu on zap
+or close?  I know that at least QEMU won't consider these sorts of
+mapping fatal, so we could possibly change the default and make support
+for such mappings opt-in, but I don't know if I'd break DPDK, or
+potentially users within QEMU that make use of p2p between devices.
+Thanks,
 
-Jason
+Alex
+
