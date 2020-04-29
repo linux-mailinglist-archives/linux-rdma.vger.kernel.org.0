@@ -2,148 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B500B1BD16E
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 02:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9EB1BD769
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 10:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgD2Awo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Apr 2020 20:52:44 -0400
-Received: from mail-db8eur05on2061.outbound.protection.outlook.com ([40.107.20.61]:11297
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgD2Awn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Apr 2020 20:52:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NKnMX5Okg9t6N0wbMXPZs54KGuNzxJAmQBEU2KdwNxUwv36nffJ6nRqK6syEH/4h1nwqHCqFpRHrq703dNT99DQw1vepHfxpq4UmzYzh44fuWOuA9Gb3LeWTLMqDBTyMv+eWX7fopproJJSXNMYYMwmMVTcI55D+FQMNQMRYQY1uGwLRxoangquylVFsLH+mUHZ4sgBpDeuXLL68fWydoVijTPazUpAO0DgGIcTbMWFqDpcjTb6gP1fHON1wayVsICEFUBGQ9NK1BEa1prAtf+gbL5Q1iNSDIGM7KjUVoEd3ukin2maAwz/FUHRMqXOMO72ovq7L323SvZ6ZNAFOdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9wIYy5B93Wx2rgRVx6ayIjj+YmeNCsMz7ARSASxQxB0=;
- b=IT9MlMw1keRNAnPFas6cCjZMjlS5WiJCkicFj/OYA16zSypzEGHVUFJ5Sh40XGYLTNPbVG2rQfGrrl9VMmuJ2C+gMtB5uIYBqXB6Iwb+e0AIZW+aBSVIkL/xa2dhnzNIdD4W4NP79rcv14tQdYZvVHW0rG5BpqMAoRvWm4tfp6d7g78Yok7A4AVRmMQAPcxa2iJ2TgEEnMdKkKn/Mf9eZ5qoRnT6aJHl+4gM0viN1C0EJE35TE2OEKwkSwV3vWYqqm8AG2Qghnr3kjwXmejHPF2AnApEApGZekXv0rBeHAJrO0pZc2+A4upgufSsBKH/bL8Kc+8kkwDB7rbPXoBsHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9wIYy5B93Wx2rgRVx6ayIjj+YmeNCsMz7ARSASxQxB0=;
- b=YdVObayeyeloh6GAUoOFSupbmKfm/iiUCrHfRewxovcW26/+nGZQii7lObWf0lXJSilOWz7HYejMBuslQgqqYJjOD++6D4NU40SljRiHsC4/+Gv1GhpWGVX7lhXD1alNy976T7jOj1Zjgwi+hNSx7EebCUm7qJqy2AwSsuUmhts=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB6749.eurprd05.prod.outlook.com (2603:10a6:800:134::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Wed, 29 Apr
- 2020 00:52:40 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2937.020; Wed, 29 Apr 2020
- 00:52:39 +0000
-Date:   Tue, 28 Apr 2020 21:52:35 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Aharon Landau <aharonl@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 00/36] Refactor mlx5_ib_create_qp
-Message-ID: <20200429005235.GC13640@mellanox.com>
-References: <20200427154636.381474-1-leon@kernel.org>
+        id S1726701AbgD2Ihr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Apr 2020 04:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726699AbgD2Ihr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Apr 2020 04:37:47 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9635620731;
+        Wed, 29 Apr 2020 08:37:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588149466;
+        bh=gQATlOm3IBUtB029tWp/wY8w5JgJe69V++ew8TJI3B0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sq4k+a16SKzNJhEXtlSGKkK9Lef5a7FjNzqtj8D6+LQsw1KasIDfGkhhTvYCybwl/
+         aUGYp7R/QqYAyMDKPoL+UdXk3h9+vAQD7hotUuLPvyvtLlF+vKkPKJzIzwxNSNrXKh
+         28lU33JrJn7IYskhRWdhn0tOoHiAx++1icamKpHY=
+Date:   Wed, 29 Apr 2020 11:37:42 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     liweihang <liweihang@huawei.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "faisal.latif@intel.com" <faisal.latif@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Message-ID: <20200429083742.GA469920@unreal>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <20200427114734.GC134660@unreal>
+ <20200427115201.GN26002@ziepe.ca>
+ <20200427120337.GD134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
+ <20200428111907.GI134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A3E3@DGGEML522-MBX.china.huawei.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427154636.381474-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: BL0PR02CA0046.namprd02.prod.outlook.com
- (2603:10b6:207:3d::23) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR02CA0046.namprd02.prod.outlook.com (2603:10b6:207:3d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Wed, 29 Apr 2020 00:52:39 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jTaxn-00073U-Tv; Tue, 28 Apr 2020 21:52:35 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 77a985a6-5049-463d-07ae-08d7ebd79de1
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6749:|VI1PR05MB6749:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB6749A4AF28C6EC4BBAE42185CFAD0@VI1PR05MB6749.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 03883BD916
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(39850400004)(376002)(366004)(396003)(33656002)(66476007)(186003)(66556008)(6916009)(36756003)(86362001)(66946007)(2906002)(966005)(8936002)(478600001)(8676002)(107886003)(9786002)(26005)(9746002)(52116002)(54906003)(2616005)(316002)(1076003)(4326008)(5660300002)(24400500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vfUqG9aIdQ4+/JRA8BX6i3t5JDxHtsfwSIsMvyudGMFFNmn0gr8Lo/dGVs0tteD9rD9l1H4JompO0mnMv5DbO/cVdtKpgeTXxrKIM2woRjqoA9gwmau/CNh5W93ViJv+OXo82x1+QK0rkfYvbgagwMuHgTpH/ZD35d32Pucj6d93fZfXHqj3/gWXRTg9MG1P4PQ7dMfWsli7wk/IcEc9kTyYinGnaNr1OF3gVB7rkk2LFEs6XJTe2OWBVGtzoHR+Zd2uipFDhGctU42rs3baCT1OHwbeDh1aYeiykV4z3SMpmJaM7pvPCFweIswB9z3raYXiPex/76GCbK3iqcRVthy8vPDSCwFRC/5HWUTs75HNEziqae/Vfv8qN8A40FdCzwBtlfuAMv+UlfSjXpylJeTe+AmLoSw+qEqfkiy8Zmil7zDsqo3xzan2AtEdha7IV2KS4uw8c9kJ3Ce49+XN+P4IFDY+dJndhTz95DGfGNurNg+mJG/8DwiXYP/ZBXSN9rV8/NRT7Wg+TXkT/x4R+08sqM4bl20RBtljPYFAlsFEKFf0+NGZsIPxnYooRcPwUSiqQ6IseagxCUCSHooBxQ==
-X-MS-Exchange-AntiSpam-MessageData: CNElu7f3gNOYkI+CevB9A43ipp1L3EbtQDh8/SrTrUwBUlQauSzWrDSsWX+gPqi8rFO/ZV9LZygh1cJ7DTYDEBB/lLAqBL5WgvY7n9Pc2frqzv2nnYqSID9J8dy+bhYviK+VN9GWyjXXqobj7w9HBffLVpHh+XGigCqj8H7ybOP4kanm1VEZS/HdZR0iZanIrNJLj0Tf/A7At/s9Dkoyi3OiL7gy67E3aN1x8omJKFXzb+5AQ1zT1g73dKrMbSe+icsgxXmPJ76lW+VBM2ttrQRsOc1G6drgPpfH+OFyLttUWZ7JQMMX9oI6a8VCjb1gyRJUhh1I7kEQ9s1bJX8bHDvDZh2FuCpbLmewez/ZcaczPREk/4d3qdtlog5YBjU91rhUyw5k7R8VYJ8a5A1nslswEIshkrUbLDbEFaAFvTOzgPDUi/nUfk3fMZ1xKAqRB20k3dCQhsf0P39rqlM3rA2nms0Xs9iTcu4BeF1zsOQfjmWfEOJoYOf1fou/51WGlPERvFG6jSkGQ2TaGjO1JvHh+pID2VRV5QTbUrLO8xzObBFZpLrzqFD8IE0tHQU6/7DOdAJdXAhsFkJMls5vx1dRdatmVi3Tq9LgTf5mfclbNE0QtgqfSTTboW9CkFROSqY+G0GOxUXqVu1QcD2Eumgi48GU6ian3iwIW7wkLFKWLzYG9aeF1+pdqEgS+xM+IDhgcb1OLfJ3Eu/p7vvKgMGhNFTLZ3fyT9ncl6ULjt7J6gOZhEbNJzCsmtnJDDgqb1YQckPB9Lzeazo7zue9sF9W/jLxVa9BPk8yD80ygxw=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77a985a6-5049-463d-07ae-08d7ebd79de1
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2020 00:52:39.7159
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XOHxXhcFgxkhT7EaqpseHB9kEB2g+2PpCY1lmst1y7fAArklQcazj6mDfKa3wuvcWR+6ZbaXpH2g9yM1+1DTcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6749
+In-Reply-To: <B82435381E3B2943AA4D2826ADEF0B3A0232A3E3@DGGEML522-MBX.china.huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 06:46:00PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Changelog
-> v1: * Combined both series to easy apply
->     * Rebsed on top of rdma-next + mlx5-next
->     * Fixed create_qp flags check
-> v0: https://lore.kernel.org/lkml/20200420151105.282848-1-leon@kernel.org
->     https://lore.kernel.org/lkml/20200423190303.12856-1-leon@kernel.org
-> 
-> 
-> Hi,
-> 
-> This is first part of series which tries to return some sanity
-> to mlx5_ib_create_qp() function. Such refactoring is required
-> to make extension of that function with less worries of breaking
-> driver.
-> 
-> Extra goal of such refactoring is to ensure that QP is allocated
-> at the beginning of function and released at the end. It will allow
-> us to move QP allocation to be under IB/core responsibility.
-> 
-> It is based on previously sent [1] "[PATCH mlx5-next 00/24] Mass
-> conversion to light mlx5 command interface"
-> 
-> Thanks
-> 
-> [1]
-> https://lore.kernel.org/linux-rdma/20200420114136.264924-1-leon@kernel.org
-> 
-> Aharon Landau (1):
->   RDMA/mlx5: Verify that QP is created with RQ or SQ
-> 
-> Leon Romanovsky (35):
->   RDMA/mlx5: Organize QP types checks in one place
->   RDMA/mlx5: Delete impossible GSI port check
->   RDMA/mlx5: Perform check if QP creation flow is valid
->   RDMA/mlx5: Prepare QP allocation for future removal
->   RDMA/mlx5: Avoid setting redundant NULL for XRC QPs
->   RDMA/mlx5: Set QP subtype immediately when it is known
->   RDMA/mlx5: Separate create QP flows to be based on type
->   RDMA/mlx5: Split scatter CQE configuration for DCT QP
->   RDMA/mlx5: Update all DRIVER QP places to use QP subtype
->   RDMA/mlx5: Move DRIVER QP flags check into separate function
->   RDMA/mlx5: Remove second copy from user for non RSS RAW QPs
->   RDMA/mlx5: Initial separation of RAW_PACKET QP from common flow
->   RDMA/mlx5: Delete create QP flags obfuscation
->   RDMA/mlx5: Process create QP flags in one place
->   RDMA/mlx5: Use flags_en mechanism to mark QP created with WQE
->     signature
->   RDMA/mlx5: Change scatter CQE flag to be set like other vendor flags
->   RDMA/mlx5: Return all configured create flags through query QP
->   RDMA/mlx5: Process all vendor flags in one place
+On Tue, Apr 28, 2020 at 12:39:49PM +0000, liweihang wrote:
+> On 2020/4/28 19:19, Leon Romanovsky wrote:
+> > On Tue, Apr 28, 2020 at 08:00:29AM +0000, liweihang wrote:
+> >> On 2020/4/27 20:03, Leon Romanovsky wrote:
+> >>>>>>  /**
+> >>>>>>   * _ib_alloc_device - allocate an IB device struct
+> >>>>>>   * @size:size of structure to allocate
+> >>>>>> + * @name: unique string device name. This may include a '%' which will
+> >>>>> It looks like all drivers are setting "%" in their name and "name" can
+> >>>>> be changed to be "prefix".
+> >>>> Does hfi? I thought the name was forced there for some port swapped
+> >>>> reason?
+> >>> This patch doesn't touch HFI, nothing prohibits from us to make this
+> >>> conversion work for all drivers except HFI and for the HFI add some
+> >>> different callback. There is no need to make API harder just because
+> >>> one driver needs it.
+> >>>
+> >>> Thanks
+> >>>
+> >>>> Jason
+> >>
+> >> Hi Jason and Leon,
+> >>
+> >> I missed some codes related to assign_name() in this series including
+> >> hfi/qib as Shiraz pointed. And I found a "name" without a "%" in following
+> >> funtions in core/nldev.c, and ibdev_name will be used for rxe/siw later.
+> >>
+> >> 	static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+> >> 				  struct netlink_ext_ack *extack)
+> >> 	{
+> >> 		...
+> >>
+> >> 		nla_strlcpy(ibdev_name, tb[RDMA_NLDEV_ATTR_DEV_NAME],
+> >> 			    sizeof(ibdev_name));
+> >> 		if (strchr(ibdev_name, '%') || strlen(ibdev_name) == 0)
+> >> 			return -EINVAL;
+> >>
+> >> 		...
+> >> 	}
+> >>
+> >> I'm not familiar with these codes, but I think the judgment in assign_name()
+> >> is for the situaion like above.
+> >>
+> >> 	if (strchr(name, '%'))
+> >> 		ret = alloc_name(device, name);
+> >> 	else
+> >> 		ret = dev_set_name(&device->dev, name);
+> >>
+> >> So is it a better idea to keep using "name" instead of "prefix"?
+> >
+> > nldev_newlink() doesn't call to ib_alloc_device() and alloc_name(). The
+> > check pointed by you is for the user input.
+> >
+>
+> Hi Leon,
+>
+> nldev_newlink() will call "ops->newlink(ibdev_name, ndev)", and it point to
+> siw_newlink() in siw_main.c. And then it will call ib_alloc_device() and
+> ib_register_device().
+>
+> According to the code I pointed before, it seems that nldev_newlink()
+> expects users to input a name without '%', and then passes this name
+> to assign_name(). I think siw/rxe have to call ib_alloc_device() with
+> a name without '%', so we can't treat it as a prefix and add "_%d" to
+> it like for other drivers.
 
-I grabbed the 'part 1' of this into for-next
+The opposite is actually true.
 
-Thanks,
-Jason
+The reason why newlink checks for % is due to the expectation in
+alloc_name() to have a name with % for numbered devices, which is
+nice, but the better API will be to provide "prefix" and a flag
+if to append an index or not.
+
+Thanks
+
+>
+> >>
+> >> Thanks
+> >> Weihang
+> >
+>
