@@ -2,94 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FF81BE1E7
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802B91BE2CC
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Apr 2020 17:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgD2PBq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Apr 2020 11:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726481AbgD2PBq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Apr 2020 11:01:46 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DABC03C1AE
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2020 08:01:45 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id h124so2222234qke.11
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Apr 2020 08:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f920QRE5gz957Dg6YScbJ4EIs4w7vSsipmkT/Y9gXGA=;
-        b=LtnbleUL4kSUA3p5MEvvVKhLUh99ANiJxPrS6XRcQnot7zoHneHOxg+M5RHBkzDO2a
-         pk4SUPoT8OIwvNkskgV5mlOABJZpCqc2TTocIbaIiDbdQ8iIwSx/GJyjiySH5eb5fUJP
-         iJDfIhBfuXkpTOvFoZrnC93FOAidogi+HxWCSGm4i6pJMHfX6zsjYouiZKSCbAO4xHkU
-         95HHX349fwRUjhepmz/qwkTM1qHDpBWNhj/rHnoUCNKGJ/tADpKi4vfFwx8mAXH9kaJp
-         +/7D2OCM5HVQ5iFNobMMesXZjQmLHdYcIvXGGsiSyKol+Lu/nsMcsAj/kSlw6Pw2t22C
-         RZpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f920QRE5gz957Dg6YScbJ4EIs4w7vSsipmkT/Y9gXGA=;
-        b=B09EtoLs/xdHNR3nTERj4OzMEBjyErx/J+9QX/kX951tfU3/VXIFFrpZjkaXeNIY1x
-         o3g7/INEWWCUBmkNdahmdjuOZaHL8ZEdX1USgIpCjEBYIytsj5YPphXVl+odf6bxfnl1
-         zIAaq9hWcvkYiHxsMf+46mqgaJwcXm+WRPW6SVw4ZKM6N4MMw01uT2PgIpKgWsMY6/cr
-         cInSDsHaCDKumKIsZSbSw8c3tEdshwSzcF/UbjOe/5MptJvn6dbSqW7tln6F+/alA+ko
-         OwCtQ3DlkCViQeqSf0LMoVZVNehanboim2xMybnt/gut988nh6lE8nv0pBT5DMFbMASm
-         +s3w==
-X-Gm-Message-State: AGi0PubZCkFu8X+J1ft6SDrHd4p3Xr2MMY2aGqJknQPyA7+FyWfsfueZ
-        2Tcnz9UCI6/2uutC8ZVqQLnh6w==
-X-Google-Smtp-Source: APiQypKsU22FpXMqa+sWplMBvTTaL6Gl45tUrzqJXZDBiIcc4C2tOom+pXU6c8GBc5tErGio/YcfBg==
-X-Received: by 2002:ae9:ef85:: with SMTP id d127mr16079284qkg.385.1588172505162;
-        Wed, 29 Apr 2020 08:01:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t13sm15678201qkt.62.2020.04.29.08.01.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 08:01:44 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jToDX-0005uE-Ja; Wed, 29 Apr 2020 12:01:43 -0300
-Date:   Wed, 29 Apr 2020 12:01:43 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Maor Gottlieb <maorg@mellanox.com>
-Cc:     davem@davemloft.net, dledford@redhat.com, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
-        jiri@mellanox.com, dsahern@kernel.org, leonro@mellanox.com,
-        saeedm@mellanox.com, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, alexr@mellanox.com
-Subject: Re: [PATCH V6 mlx5-next 11/16] RDMA/core: Add LAG functionality
-Message-ID: <20200429150143.GC26002@ziepe.ca>
-References: <20200426071717.17088-1-maorg@mellanox.com>
- <20200426071717.17088-12-maorg@mellanox.com>
- <20200428231525.GY13640@mellanox.com>
- <20200428233009.GA31451@mellanox.com>
- <a7503b0d-68e7-3589-33fc-cf9b516d71b7@mellanox.com>
+        id S1726556AbgD2Pdi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 29 Apr 2020 11:33:38 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8618 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726519AbgD2Pdi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:33:38 -0400
+IronPort-SDR: NCPOqmRNQEwt/lEYKO3OrRp6m/RsVEyDKp9PPeyf0xNxwsZDhSDKYBaicHC6bzCkHuZwqCcfcz
+ uCDnK6PMB6NA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:33:34 -0700
+IronPort-SDR: RJYX6NhL9qb6YXik0zGyrdsVjGAZts+z5OR23h/AT1O1RfL4r9BCr92aVLXAMEfP2p78jM7Zhd
+ JTaLfbA5ZX7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
+   d="scan'208";a="459236582"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 08:33:33 -0700
+Received: from fmsmsx161.amr.corp.intel.com (10.18.125.9) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 29 Apr 2020 08:33:33 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.70]) by
+ FMSMSX161.amr.corp.intel.com ([10.18.125.9]) with mapi id 14.03.0439.000;
+ Wed, 29 Apr 2020 08:33:33 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     "Denis V. Lunev" <den@openvz.org>
+CC:     Konstantin Khorenko <khorenko@virtuozzo.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] i40iw: remove bogus call to
+ netdev_master_upper_dev_get
+Thread-Topic: [PATCH 1/1] i40iw: remove bogus call to
+ netdev_master_upper_dev_get
+Thread-Index: AQHWHV8iCMr9rO8fnEWOWdKxb9e/t6iQNmwQ
+Date:   Wed, 29 Apr 2020 15:33:32 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7DCD5849C@fmsmsx124.amr.corp.intel.com>
+References: <20200428131511.11049-1-den@openvz.org>
+In-Reply-To: <20200428131511.11049-1-den@openvz.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.106]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7503b0d-68e7-3589-33fc-cf9b516d71b7@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 12:01:07PM +0300, Maor Gottlieb wrote:
+> Subject: [PATCH 1/1] i40iw: remove bogus call to netdev_master_upper_dev_get
 > 
-> On 4/29/2020 2:30 AM, Jason Gunthorpe wrote:
-> > On Tue, Apr 28, 2020 at 08:15:25PM -0300, Jason Gunthorpe wrote:
-> > > On Sun, Apr 26, 2020 at 10:17:12AM +0300, Maor Gottlieb wrote:
-> > > > +int rdma_lag_get_ah_roce_slave(struct ib_device *device,
-> > > > +			       struct rdma_ah_attr *ah_attr,
-> > > > +			       struct net_device **xmit_slave)
-> > > Please do not use ** and also return int. The function should return
-> > > net_device directly and use ERR_PTR()
+> Local variable netdev is not used in these calls.
 > 
-> How about return NULL in failure as well (will add debug print)? Not fail
-> the flow if we didn't succeed to get the slave, let the lower driver to do
-> it if it would like to.
+> It should be noted, that this change is required to work in bonded mode.
+> In the other case we would get the following assert:
+>  "RTNL: assertion failed at net/core/dev.c (5665)"
+> with the calltrace as follows:
+> 	dump_stack+0x19/0x1b
+> 	netdev_master_upper_dev_get+0x61/0x70
+> 	i40iw_addr_resolve_neigh+0x1e8/0x220
+> 	i40iw_make_cm_node+0x296/0x700
+> 	? i40iw_find_listener.isra.10+0xcc/0x110
+> 	i40iw_receive_ilq+0x3d4/0x810
+> 	i40iw_puda_poll_completion+0x341/0x420
+> 	i40iw_process_ceq+0xa5/0x280
+> 	i40iw_ceq_dpc+0x1e/0x40
+> 	tasklet_action+0x83/0x140
+> 	__do_softirq+0x125/0x2bb
+> 	call_softirq+0x1c/0x30
+> 	do_softirq+0x65/0xa0
+> 	irq_exit+0x105/0x110
+> 	do_IRQ+0x56/0xf0
+> 	common_interrupt+0x16a/0x16a
+> 	? cpuidle_enter_state+0x57/0xd0
+> 	cpuidle_idle_call+0xde/0x230
+> 	arch_cpu_idle+0xe/0xc0
+> 	cpu_startup_entry+0x14a/0x1e0
+> 	start_secondary+0x1f7/0x270
+> 	start_cpu+0x5/0x14
+> 
+> Signed-off-by: Denis V. Lunev <den@openvz.org>
+> CC: Konstantin Khorenko <khorenko@virtuozzo.com>
+> CC: Faisal Latif <faisal.latif@intel.com>
+> CC: Shiraz Saleem <shiraz.saleem@intel.com>
+> CC: Doug Ledford <dledford@redhat.com>
+> CC: Jason Gunthorpe <jgg@ziepe.ca>
+> CC: linux-rdma@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
 
-A NULL return indicating success but 'not found' is fine.
+Looks right. Thanks!
 
-Jason
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
