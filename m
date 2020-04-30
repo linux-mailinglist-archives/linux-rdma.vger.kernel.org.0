@@ -2,86 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF121BF1B9
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 09:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E41C1BF1E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 09:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgD3Hm7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Apr 2020 03:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgD3Hm7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Apr 2020 03:42:59 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BF9C035494
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 00:42:58 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u16so712487wmc.5
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 00:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yj3aOOAITkSoQ9HT/kLSsxXrmoC54MHhQnwfKg+EFsA=;
-        b=Pm0gae2WWQGHGGGGOdaSVHtCmsA3TKcvgr8Nj2+qIsy2aELVcARV7qCd1ZjvJEtCOm
-         IbAmWIeKIhTLUxDSeh8VESrrbt3Ygn2crA0bwve3VtBx633ubS3cEfqPlO2wWQOY5Nyz
-         Tno8w9QwO+9xz9CppDJqIb4qnllco8yeygNgsc8FRmjR71xzM/6ubeb551WtgtYcTm+h
-         owYpjqttcka/D0/FP7xQIfATN3FEValTX9qyiPQNUpbr3A9MhvN0yejJ0SHcBcaxiOCt
-         okM0y78WXX4bpPirKvDRd6VJjGX935ZDzSQ7qMnfAFh15LDEfDtdum4d5oQTMSROTdIY
-         YCyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yj3aOOAITkSoQ9HT/kLSsxXrmoC54MHhQnwfKg+EFsA=;
-        b=RcahGxvgBI8imRRD6Opq8t7xG5NHW7fMMbtBMzM7DNfO5+ux6D9Gu+tkcn4wSiq+dB
-         YObb3S3R5H2uRoUaOkPicZf0jho53L9ID1sNARi7/uTR61UjJXpiXdowfvVYpwNUdMqR
-         zRbtedgQcJB4+qzpOK32uTz0ywD/CsgEGt65Gz+DJcWx/cAstoaD5tP98EahCvBshhPA
-         fDirq6ZcovgBMPuYV/Gx0tU0oY8pIQMUQGsgtwtelYxiZdJzt68qpnHx7c6IttYTPIlI
-         mZWn02xmw29pqM9WVyaJsyRJ3zHMTzuN0Ol5qJh+VWbG3C9vX2igORm0kcEQottUtp9E
-         z2kw==
-X-Gm-Message-State: AGi0Pub1VLPJaHGNX0Dc7LHSIbwZg/1loe9QWST12CHvOWzrmbUN35at
-        BIYHhiW/g40nFqWZdf7O1qbZrdeCRZg5G49ALiVu
-X-Google-Smtp-Source: APiQypLeP/hDfEhBONVBBPo4+ko5WjkMd4EvCY7nuPRLYRkKNJYDO0r9o+eolLYaXHwTLn8a3SMcctnUtcNSRYJt06E=
-X-Received: by 2002:a7b:c84f:: with SMTP id c15mr1403256wml.166.1588232577086;
- Thu, 30 Apr 2020 00:42:57 -0700 (PDT)
+        id S1726531AbgD3H4N convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 30 Apr 2020 03:56:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2124 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726510AbgD3H4N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:56:13 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 183FEC4B1EC3533719CE;
+        Thu, 30 Apr 2020 15:56:08 +0800 (CST)
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.242]) by
+ dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0487.000;
+ Thu, 30 Apr 2020 15:55:58 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "devesh.sharma@broadcom.com" <devesh.sharma@broadcom.com>,
+        "somnath.kotur@broadcom.com" <somnath.kotur@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "faisal.latif@intel.com" <faisal.latif@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aelior@marvell.com" <aelior@marvell.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "neescoba@cisco.com" <neescoba@cisco.com>,
+        "pkaustub@cisco.com" <pkaustub@cisco.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "pv-drivers@vmware.com" <pv-drivers@vmware.com>,
+        "monis@mellanox.com" <monis@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "markz@mellanox.com" <markz@mellanox.com>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>
+Subject: Re: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Topic: [PATCH for-next] RDMA/core: Assign the name of device when
+ allocating ib_device
+Thread-Index: AQHWG62Z7/BNGudzR0CivwFowafwZQ==
+Date:   Thu, 30 Apr 2020 07:55:58 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0232C8D0@DGGEML522-MBX.china.huawei.com>
+References: <1587893517-11824-1-git-send-email-liweihang@huawei.com>
+ <20200427114734.GC134660@unreal> <20200427115201.GN26002@ziepe.ca>
+ <20200427120337.GD134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A133@DGGEML522-MBX.china.huawei.com>
+ <20200428111907.GI134660@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A0232A3E3@DGGEML522-MBX.china.huawei.com>
+ <20200429083742.GA469920@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200427141020.655-1-danil.kipnis@cloud.ionos.com>
- <20200427141020.655-24-danil.kipnis@cloud.ionos.com> <20200429171804.GE26002@ziepe.ca>
-In-Reply-To: <20200429171804.GE26002@ziepe.ca>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Thu, 30 Apr 2020 09:42:46 +0200
-Message-ID: <CAHg0Huyvt1P1To+fxn3RZdGXJfnQXpNxJbpNxquqLw_KVtcDKA@mail.gmail.com>
-Subject: Re: [PATCH v13 23/25] block/rnbd: include client and server modules
- into kernel compilation
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 7:18 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Apr 27, 2020 at 04:10:18PM +0200, Danil Kipnis wrote:
-> > +rnbd-client-y := rnbd-clt.o \
-> > +               rnbd-common.o \
-> > +               rnbd-clt-sysfs.o
-> > +
-> > +rnbd-server-y := rnbd-srv.o \
-> > +               rnbd-common.o \
-> > +               rnbd-srv-dev.o \
-> > +               rnbd-srv-sysfs.o
->
-> keep lists of things sorted
+On 2020/4/29 16:37, Leon Romanovsky wrote:
+> On Tue, Apr 28, 2020 at 12:39:49PM +0000, liweihang wrote:
+>> On 2020/4/28 19:19, Leon Romanovsky wrote:
+>>> On Tue, Apr 28, 2020 at 08:00:29AM +0000, liweihang wrote:
+>>>> On 2020/4/27 20:03, Leon Romanovsky wrote:
+>>>>>>>>  /**
+>>>>>>>>   * _ib_alloc_device - allocate an IB device struct
+>>>>>>>>   * @size:size of structure to allocate
+>>>>>>>> + * @name: unique string device name. This may include a '%' which will
+>>>>>>> It looks like all drivers are setting "%" in their name and "name" can
+>>>>>>> be changed to be "prefix".
+>>>>>> Does hfi? I thought the name was forced there for some port swapped
+>>>>>> reason?
+>>>>> This patch doesn't touch HFI, nothing prohibits from us to make this
+>>>>> conversion work for all drivers except HFI and for the HFI add some
+>>>>> different callback. There is no need to make API harder just because
+>>>>> one driver needs it.
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>>> Jason
+>>>>
+>>>> Hi Jason and Leon,
+>>>>
+>>>> I missed some codes related to assign_name() in this series including
+>>>> hfi/qib as Shiraz pointed. And I found a "name" without a "%" in following
+>>>> funtions in core/nldev.c, and ibdev_name will be used for rxe/siw later.
+>>>>
+>>>> 	static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+>>>> 				  struct netlink_ext_ack *extack)
+>>>> 	{
+>>>> 		...
+>>>>
+>>>> 		nla_strlcpy(ibdev_name, tb[RDMA_NLDEV_ATTR_DEV_NAME],
+>>>> 			    sizeof(ibdev_name));
+>>>> 		if (strchr(ibdev_name, '%') || strlen(ibdev_name) == 0)
+>>>> 			return -EINVAL;
+>>>>
+>>>> 		...
+>>>> 	}
+>>>>
+>>>> I'm not familiar with these codes, but I think the judgment in assign_name()
+>>>> is for the situaion like above.
+>>>>
+>>>> 	if (strchr(name, '%'))
+>>>> 		ret = alloc_name(device, name);
+>>>> 	else
+>>>> 		ret = dev_set_name(&device->dev, name);
+>>>>
+>>>> So is it a better idea to keep using "name" instead of "prefix"?
+>>>
+>>> nldev_newlink() doesn't call to ib_alloc_device() and alloc_name(). The
+>>> check pointed by you is for the user input.
+>>>
+>>
+>> Hi Leon,
+>>
+>> nldev_newlink() will call "ops->newlink(ibdev_name, ndev)", and it point to
+>> siw_newlink() in siw_main.c. And then it will call ib_alloc_device() and
+>> ib_register_device().
+>>
+>> According to the code I pointed before, it seems that nldev_newlink()
+>> expects users to input a name without '%', and then passes this name
+>> to assign_name(). I think siw/rxe have to call ib_alloc_device() with
+>> a name without '%', so we can't treat it as a prefix and add "_%d" to
+>> it like for other drivers.
+> 
+> The opposite is actually true.
+> 
+> The reason why newlink checks for % is due to the expectation in
+> alloc_name() to have a name with % for numbered devices, which is
+> nice, but the better API will be to provide "prefix" and a flag
+> if to append an index or not.
+> 
+> Thanks
+> 
 
-Hi Jason, I understand you mean to sort the order of object files
-here, right? Is that the reason the kbuild robot couldn't find the
-rtrs.h include file?
+I see, thank you.
+
+>>
+>>>>
+>>>> Thanks
+>>>> Weihang
+>>>
+>>
+> 
+
