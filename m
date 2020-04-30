@@ -2,103 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F821BF727
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 13:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50951BFD0F
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 16:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgD3Lwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Apr 2020 07:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726127AbgD3Lwq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:52:46 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6114AC035495
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 04:52:46 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id s30so4664298qth.2
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 04:52:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/fTUSkMdSzNBeDil9gXpnKMgTkJNNuowlWAzviUzhIA=;
-        b=bJlp4btXQi+iluG8B26//lHBanaz65CntIaNXsKKlcTUDjPaV82WKf1RTHjgjUy5th
-         Cu6quUoPIe7vc1gQMGw2MJCsHVRaHXn79YGudPkz4kUhPWK8I2jiTK/V9WYUdA1Asnl7
-         xrTw/KUYFNOBfiNZJv+i7PzS7QZjdhQR8eARZObiFS4aR2WXgIPna8SlrCQpzcovMLsP
-         Yq+pnuXAx2FKMtpBaVU2U+pawAkkUtY5WWKHWmSv2aP676ZVbMasJ5Q8geDl0xHont4C
-         TFQpKSWPOpuRt7V6cwUVJOqcG9W3nQ8VJ/7Z7BxbmHaTgtKOqkU9rth5p46OVqgLcCze
-         5JyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/fTUSkMdSzNBeDil9gXpnKMgTkJNNuowlWAzviUzhIA=;
-        b=fuwOicuaNHjBJ1tAkNB2or7SWty/s3WH07hKHVIFnkDX76uhQY2IFxm76obwRYypwJ
-         prRyCojSoZHXzL66piviJqiMdevl7AnadG3zTDh3VuCwbHEMzMbaqjBjMJL7c9fXY5oP
-         YJu/f5N713itQ0K0/2g0f2yLz3yIxNALtI1M5qX0R0MnlJMXW6V+p3YGAmOsB02jbIvZ
-         FlKShKr73XGjfosqvVsuuf5XLr4v8QwN+p7pTBr2ghLDUo3cQQQNQlXev8VR3iIAi4t9
-         gHhWZ5IhXS55mk6tWJlGFgkwAFmfEZvfgjx8glVLjm5OSS4XpqYoK+cQL9X5S4dOIHzJ
-         +Xpw==
-X-Gm-Message-State: AGi0PuYGIq9zkvfG+5xqLjTDTRbEBKO8+dSnAOP2/WSMFluOISSUOWtI
-        EBkObd5NHTO3ouKNjBHVgF1NOA==
-X-Google-Smtp-Source: APiQypIaDDh9FjwXHlle2DW2f+wpfkBnJmXNWTEfE6Ts7tc+fy67bjtaZC+mEyYPDAqXjEKMkP92xw==
-X-Received: by 2002:ac8:3808:: with SMTP id q8mr3232836qtb.245.1588247565469;
-        Thu, 30 Apr 2020 04:52:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k128sm462688qke.125.2020.04.30.04.52.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 Apr 2020 04:52:44 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jU7kC-0006oW-5a; Thu, 30 Apr 2020 08:52:44 -0300
-Date:   Thu, 30 Apr 2020 08:52:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Subject: Re: [PATCH v13 23/25] block/rnbd: include client and server modules
- into kernel compilation
-Message-ID: <20200430115244.GM26002@ziepe.ca>
-References: <20200427141020.655-1-danil.kipnis@cloud.ionos.com>
- <20200427141020.655-24-danil.kipnis@cloud.ionos.com>
- <20200429171804.GE26002@ziepe.ca>
- <CAHg0Huyvt1P1To+fxn3RZdGXJfnQXpNxJbpNxquqLw_KVtcDKA@mail.gmail.com>
+        id S1728143AbgD3Nvk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Apr 2020 09:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728137AbgD3Nvj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:51:39 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F319824961;
+        Thu, 30 Apr 2020 13:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588254698;
+        bh=ObJKmAMaZ90P/+jAoEDbax6JYZEb2gDqjGuVWUG7W7g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hTUpHIfN/ew4mt2SDGfC/SJnZQK/Q6WYo2f4PRW3bOkkQCS/d3etn81CETJj3JUbR
+         8ChD9ci3B9WOG4My1Q6Jx/t3Z5TUcuS5aZpupUyS6QclLdNB0PO5TbfrW9GI7pWeIr
+         RyDzmcoEG4YVZTsTlwSgX4yBx1vIaulxn4IeWckw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 48/79] net/mlx5: Fix failing fw tracer allocation on s390
+Date:   Thu, 30 Apr 2020 09:50:12 -0400
+Message-Id: <20200430135043.19851-48-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
+References: <20200430135043.19851-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHg0Huyvt1P1To+fxn3RZdGXJfnQXpNxJbpNxquqLw_KVtcDKA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 09:42:46AM +0200, Danil Kipnis wrote:
-> On Wed, Apr 29, 2020 at 7:18 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Apr 27, 2020 at 04:10:18PM +0200, Danil Kipnis wrote:
-> > > +rnbd-client-y := rnbd-clt.o \
-> > > +               rnbd-common.o \
-> > > +               rnbd-clt-sysfs.o
-> > > +
-> > > +rnbd-server-y := rnbd-srv.o \
-> > > +               rnbd-common.o \
-> > > +               rnbd-srv-dev.o \
-> > > +               rnbd-srv-sysfs.o
-> >
-> > keep lists of things sorted
-> 
-> Hi Jason, I understand you mean to sort the order of object files
-> here, right? Is that the reason the kbuild robot couldn't find the
-> rtrs.h include file?
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-Probably not, you'll need to fix those kbuild things too
+[ Upstream commit a019b36123aec9700b21ae0724710f62928a8bc1 ]
 
-Jason
+On s390 FORCE_MAX_ZONEORDER is 9 instead of 11, thus a larger kzalloc()
+allocation as done for the firmware tracer will always fail.
+
+Looking at mlx5_fw_tracer_save_trace(), it is actually the driver itself
+that copies the debug data into the trace array and there is no need for
+the allocation to be contiguous in physical memory. We can therefor use
+kvzalloc() instead of kzalloc() and get rid of the large contiguous
+allcoation.
+
+Fixes: f53aaa31cce7 ("net/mlx5: FW tracer, implement tracer logic")
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+index 94d7b69a95c74..eb2e57ff08a60 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -935,7 +935,7 @@ struct mlx5_fw_tracer *mlx5_fw_tracer_create(struct mlx5_core_dev *dev)
+ 		return NULL;
+ 	}
+ 
+-	tracer = kzalloc(sizeof(*tracer), GFP_KERNEL);
++	tracer = kvzalloc(sizeof(*tracer), GFP_KERNEL);
+ 	if (!tracer)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -982,7 +982,7 @@ destroy_workqueue:
+ 	tracer->dev = NULL;
+ 	destroy_workqueue(tracer->work_queue);
+ free_tracer:
+-	kfree(tracer);
++	kvfree(tracer);
+ 	return ERR_PTR(err);
+ }
+ 
+@@ -1061,7 +1061,7 @@ void mlx5_fw_tracer_destroy(struct mlx5_fw_tracer *tracer)
+ 	mlx5_fw_tracer_destroy_log_buf(tracer);
+ 	flush_workqueue(tracer->work_queue);
+ 	destroy_workqueue(tracer->work_queue);
+-	kfree(tracer);
++	kvfree(tracer);
+ }
+ 
+ static int fw_tracer_event(struct notifier_block *nb, unsigned long action, void *data)
+-- 
+2.20.1
+
