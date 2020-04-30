@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB8D1C004F
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 17:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FF71C009E
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 17:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgD3P3p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Apr 2020 11:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35912 "EHLO mail.kernel.org"
+        id S1727943AbgD3Pmq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Apr 2020 11:42:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgD3P3p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:29:45 -0400
+        id S1727925AbgD3Pmq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Apr 2020 11:42:46 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAB982076D;
-        Thu, 30 Apr 2020 15:29:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1382E20661;
+        Thu, 30 Apr 2020 15:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588260584;
-        bh=+7stvbRXpQVUkXk15QehAQ5AasMDc5ML34h1TrM4Ekk=;
+        s=default; t=1588261365;
+        bh=VJCcJr4N81NQI8G4EjKpUpCGECv/xf0qF/Be5W7q0fs=;
         h=From:To:Cc:Subject:Date:From;
-        b=yL6DSAc/YwDwnCFockKSMMD+ZRZlQ79m/BvHrk+E6N0meTaTomUHQ38bAhAeLY7+r
-         BPJmpKUEk4pyzmSgxN8oAc6Jo1sZP6SyF8U7TkrLJpa+VaB1ILHUT0KvzfMCicF3QW
-         8BBJ5qfBFrUJWCFwgtyTb79ch04uxCHTSgRoMSlg=
+        b=mHC94ElOS/FwEHUKk8gOWom/+nxvs7rxWrCO1nEI8ecdYNHUjz+vhaOm4A/nXan08
+         9vRDQA4UTdYyVvsLDVutaoXG0gCan7d5ORPGiiiCePdYuVi/DgepaIo202HbxgxMrV
+         jCQhuPvzP98f4zZ7clw0jEamf0VGD5g1QEJpXjvc=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/ucma: Return stable IB device index as identifier
-Date:   Thu, 30 Apr 2020 18:29:39 +0300
-Message-Id: <20200430152939.77967-1-leon@kernel.org>
+Subject: [PATCH rdma-core 0/4] RDMA-CM unique device identifier
+Date:   Thu, 30 Apr 2020 18:42:33 +0300
+Message-Id: <20200430154237.78838-1-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,115 +40,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The librdmacm uses node_guid as identifier to correlate between
-IB devices and CMA devices. However FW resets cause to such
-"connection" to be lost and require from the user to restart
-its application.
+Hi,
 
-Extend UCMA to return IB device index, which is stable identifier.
+This series extends librdmacm to unique identify the IBV device
+connected to the CMA device.
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/ucma.c   | 16 +++++++++-------
- include/uapi/rdma/rdma_user_cm.h |  2 ++
- 2 files changed, 11 insertions(+), 7 deletions(-)
+https://github.com/linux-rdma/rdma-core/pull/749
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 99482dc5934b..d5723465478e 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -848,7 +848,7 @@ static ssize_t ucma_query_route(struct ucma_file *file,
- 	struct sockaddr *addr;
- 	int ret = 0;
- 
--	if (out_len < sizeof(resp))
-+	if (out_len < offsetof(struct rdma_ucm_query_route_resp, ibdev_index))
- 		return -ENOSPC;
- 
- 	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
-@@ -872,6 +872,7 @@ static ssize_t ucma_query_route(struct ucma_file *file,
- 		goto out;
- 
- 	resp.node_guid = (__force __u64) ctx->cm_id->device->node_guid;
-+	resp.ibdev_index = ctx->cm_id->device->index;
- 	resp.port_num = ctx->cm_id->port_num;
- 
- 	if (rdma_cap_ib_sa(ctx->cm_id->device, ctx->cm_id->port_num))
-@@ -883,8 +884,8 @@ static ssize_t ucma_query_route(struct ucma_file *file,
- 
- out:
- 	mutex_unlock(&ctx->mutex);
--	if (copy_to_user(u64_to_user_ptr(cmd.response),
--			 &resp, sizeof(resp)))
-+	if (copy_to_user(u64_to_user_ptr(cmd.response), &resp,
-+			 min_t(size_t, out_len, sizeof(resp))))
- 		ret = -EFAULT;
- 
- 	ucma_put_ctx(ctx);
-@@ -898,6 +899,7 @@ static void ucma_query_device_addr(struct rdma_cm_id *cm_id,
- 		return;
- 
- 	resp->node_guid = (__force __u64) cm_id->device->node_guid;
-+	resp->ibdev_index = cm_id->device->index;
- 	resp->port_num = cm_id->port_num;
- 	resp->pkey = (__force __u16) cpu_to_be16(
- 		     ib_addr_get_pkey(&cm_id->route.addr.dev_addr));
-@@ -910,7 +912,7 @@ static ssize_t ucma_query_addr(struct ucma_context *ctx,
- 	struct sockaddr *addr;
- 	int ret = 0;
- 
--	if (out_len < sizeof(resp))
-+	if (out_len < offsetof(struct rdma_ucm_query_addr_resp, ibdev_index))
- 		return -ENOSPC;
- 
- 	memset(&resp, 0, sizeof resp);
-@@ -925,7 +927,7 @@ static ssize_t ucma_query_addr(struct ucma_context *ctx,
- 
- 	ucma_query_device_addr(ctx->cm_id, &resp);
- 
--	if (copy_to_user(response, &resp, sizeof(resp)))
-+	if (copy_to_user(response, &resp, min_t(size_t, out_len, sizeof(resp))))
- 		ret = -EFAULT;
- 
- 	return ret;
-@@ -977,7 +979,7 @@ static ssize_t ucma_query_gid(struct ucma_context *ctx,
- 	struct sockaddr_ib *addr;
- 	int ret = 0;
- 
--	if (out_len < sizeof(resp))
-+	if (out_len < offsetof(struct rdma_ucm_query_addr_resp, ibdev_index))
- 		return -ENOSPC;
- 
- 	memset(&resp, 0, sizeof resp);
-@@ -1010,7 +1012,7 @@ static ssize_t ucma_query_gid(struct ucma_context *ctx,
- 						    &ctx->cm_id->route.addr.dst_addr);
- 	}
- 
--	if (copy_to_user(response, &resp, sizeof(resp)))
-+	if (copy_to_user(response, &resp, min_t(size_t, out_len, sizeof(resp))))
- 		ret = -EFAULT;
- 
- 	return ret;
-diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-index e545f2de1e13..14d48b462d91 100644
---- a/include/uapi/rdma/rdma_user_cm.h
-+++ b/include/uapi/rdma/rdma_user_cm.h
-@@ -168,6 +168,7 @@ struct rdma_ucm_query_route_resp {
- 	__u32 num_paths;
- 	__u8 port_num;
- 	__u8 reserved[3];
-+	__u32 ibdev_index;
- };
- 
- struct rdma_ucm_query_addr_resp {
-@@ -179,6 +180,7 @@ struct rdma_ucm_query_addr_resp {
- 	__u16 dst_size;
- 	struct __kernel_sockaddr_storage src_addr;
- 	struct __kernel_sockaddr_storage dst_addr;
-+	__u32 ibdev_index;
- };
- 
- struct rdma_ucm_query_path_resp {
--- 
+Thanks
+
+Leon Romanovsky (4):
+  Update kernel headers
+  libibverbs: Fix description of ibv_get_device_guid man page
+  libibverbs: Get stable IB device index
+  librdmacm: Rely on IB device index if available
+
+ debian/libibverbs1.symbols               |  2 +
+ kernel-headers/rdma/rdma_user_cm.h       |  2 +
+ libibverbs/CMakeLists.txt                |  2 +-
+ libibverbs/device.c                      |  7 ++++
+ libibverbs/libibverbs.map.in             |  5 +++
+ libibverbs/man/CMakeLists.txt            |  1 +
+ libibverbs/man/ibv_get_device_guid.3.md  |  4 +-
+ libibverbs/man/ibv_get_device_index.3.md | 40 ++++++++++++++++++
+ libibverbs/man/ibv_get_device_list.3.md  |  1 +
+ libibverbs/verbs.h                       |  9 ++++
+ librdmacm/cma.c                          | 53 +++++++++++++++++++-----
+ librdmacm/rdma_cma_abi.h                 |  2 +
+ 12 files changed, 114 insertions(+), 14 deletions(-)
+ create mode 100644 libibverbs/man/ibv_get_device_index.3.md
+
+--
 2.26.2
 
