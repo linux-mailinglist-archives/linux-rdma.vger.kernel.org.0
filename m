@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F0A1C00A0
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 17:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130581C00A6
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Apr 2020 17:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgD3Pmy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Apr 2020 11:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41376 "EHLO mail.kernel.org"
+        id S1727784AbgD3PnC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Apr 2020 11:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgD3Pmy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:42:54 -0400
+        id S1726343AbgD3PnB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Apr 2020 11:43:01 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8FB720661;
-        Thu, 30 Apr 2020 15:42:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A79E2076D;
+        Thu, 30 Apr 2020 15:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588261373;
-        bh=UBGsGMojVSJQd4VwAxI34VFl77HA+TkT0mTtbQb5JYQ=;
+        s=default; t=1588261380;
+        bh=aBMbBLxgKtpTincnThjQVBU2DYWKtjRT7uBNWR11Gxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SqJieov9rzdSI/pwAd1Y7GnWCBctLBBzEowVncP25wD0Wn38GxdAT9VnYRxl7gKgG
-         iMaQtBlxvb7Foft+YYyDpDJtw8cELfyKF+O8IzIMPlykVXxcUThwRc+URwPOg+MgCl
-         LACeQcmjR5lEC/2vB7yjgXQQycJzdW1E3TLe7xxA=
+        b=qsH4VzY96bs53yIwnemZ7I1jfFaHteUYNB7aotAp29End+d9+C01vt3DQjLaYuvES
+         MtV7Y+GitVNgEMB4v1H8LZRt+xm22pFFwnQYqYRt2aKvLg1q+AGA0hPIwRFzhqU8Dw
+         VEES8PFEhqjnlrEbDqyVtlaP8AxcQsYHM5eqsGq0=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-core 3/4] libibverbs: Get stable IB device index
-Date:   Thu, 30 Apr 2020 18:42:36 +0300
-Message-Id: <20200430154237.78838-4-leon@kernel.org>
+Subject: [PATCH rdma-core 4/4] librdmacm: Rely on IB device index if available
+Date:   Thu, 30 Apr 2020 18:42:37 +0300
+Message-Id: <20200430154237.78838-5-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200430154237.78838-1-leon@kernel.org>
 References: <20200430154237.78838-1-leon@kernel.org>
@@ -42,199 +42,180 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The kernel which supports query over netlink interface returns stable IB
-device index as part of it. This index much better identifier than sysfs
-name that can be renamed and/or disappear. Up till now, this index was
-used internally by libibverbs, but the next patch will rely on this API
-in the librdmacm code.
+For the kernels that support query over netlink, rely on the device
+index returned and not on node_guid which doesn't identify IB device
+reliably.
 
-The -1 as returned value means that kernel doesn't support indexes.
-
-Change-Id: I9cc8837496ef04abdf6e490ad29e0632a91d7e5f
+Change-Id: I2c6f2a2185cca626855a10ac0ea8f9fc7852902b
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- debian/libibverbs1.symbols               |  2 ++
- libibverbs/CMakeLists.txt                |  2 +-
- libibverbs/device.c                      |  7 +++++
- libibverbs/libibverbs.map.in             |  5 +++
- libibverbs/man/CMakeLists.txt            |  1 +
- libibverbs/man/ibv_get_device_guid.3.md  |  2 +-
- libibverbs/man/ibv_get_device_index.3.md | 40 ++++++++++++++++++++++++
- libibverbs/man/ibv_get_device_list.3.md  |  1 +
- libibverbs/verbs.h                       |  9 ++++++
- 9 files changed, 67 insertions(+), 2 deletions(-)
- create mode 100644 libibverbs/man/ibv_get_device_index.3.md
+ librdmacm/cma.c          | 53 +++++++++++++++++++++++++++++++---------
+ librdmacm/rdma_cma_abi.h |  2 ++
+ 2 files changed, 44 insertions(+), 11 deletions(-)
 
-diff --git a/debian/libibverbs1.symbols b/debian/libibverbs1.symbols
-index ec40b29b..10ca9bf3 100644
---- a/debian/libibverbs1.symbols
-+++ b/debian/libibverbs1.symbols
-@@ -6,6 +6,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
-  IBVERBS_1.6@IBVERBS_1.6 24
-  IBVERBS_1.7@IBVERBS_1.7 25
-  IBVERBS_1.8@IBVERBS_1.8 28
-+ IBVERBS_1.9@IBVERBS_1.9 30
-  (symver)IBVERBS_PRIVATE_25 25
-  ibv_ack_async_event@IBVERBS_1.0 1.1.6
-  ibv_ack_async_event@IBVERBS_1.1 1.1.6
-@@ -58,6 +59,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
-  ibv_get_cq_event@IBVERBS_1.1 1.1.6
-  ibv_get_device_guid@IBVERBS_1.0 1.1.6
-  ibv_get_device_guid@IBVERBS_1.1 1.1.6
-+ ibv_get_device_index@IBVERBS_1.9 30
-  ibv_get_device_list@IBVERBS_1.0 1.1.6
-  ibv_get_device_list@IBVERBS_1.1 1.1.6
-  ibv_get_device_name@IBVERBS_1.0 1.1.6
-diff --git a/libibverbs/CMakeLists.txt b/libibverbs/CMakeLists.txt
-index 43285489..a10bf103 100644
---- a/libibverbs/CMakeLists.txt
-+++ b/libibverbs/CMakeLists.txt
-@@ -21,7 +21,7 @@ configure_file("libibverbs.map.in"
+diff --git a/librdmacm/cma.c b/librdmacm/cma.c
+index 9855d0a8..ec6d2e72 100644
+--- a/librdmacm/cma.c
++++ b/librdmacm/cma.c
+@@ -74,6 +74,8 @@ do {						\
+ 	(req)->response = (uintptr_t) (resp);	\
+ } while (0)
 
- rdma_library(ibverbs "${CMAKE_CURRENT_BINARY_DIR}/libibverbs.map"
-   # See Documentation/versioning.md
--  1 1.8.${PACKAGE_VERSION}
-+  1 1.9.${PACKAGE_VERSION}
-   all_providers.c
-   cmd.c
-   cmd_ah.c
-diff --git a/libibverbs/device.c b/libibverbs/device.c
-index bc7df1b0..0427c74e 100644
---- a/libibverbs/device.c
-+++ b/libibverbs/device.c
-@@ -150,6 +150,13 @@ LATEST_SYMVER_FUNC(ibv_get_device_guid, 1_1, "IBVERBS_1.1",
- 	return htobe64(guid);
++#define UCMA_INVALID_IB_INDEX -1
++
+ struct cma_port {
+ 	uint8_t			link_layer;
+ };
+@@ -89,6 +91,7 @@ struct cma_device {
+ 	int		    max_qpsize;
+ 	uint8_t		    max_initiator_depth;
+ 	uint8_t		    max_responder_resources;
++	int		    ibv_idx;
+ };
+
+ struct cma_id_private {
+@@ -292,8 +295,10 @@ int ucma_init(void)
+ 		goto err2;
+ 	}
+
+-	for (i = 0; dev_list[i]; i++)
++	for (i = 0; dev_list[i]; i++) {
+ 		cma_dev_array[i].guid = ibv_get_device_guid(dev_list[i]);
++		cma_dev_array[i].ibv_idx = ibv_get_device_index(dev_list[i]);
++	}
+
+ 	cma_dev_cnt = dev_cnt;
+ 	ucma_set_af_ib_support();
+@@ -309,20 +314,31 @@ err1:
+ 	return ret;
  }
 
-+int ibv_get_device_index(struct ibv_device *device)
+-static struct ibv_context *ucma_open_device(__be64 guid)
++static bool match(struct cma_device *cma_dev, __be64 guid, uint32_t idx)
 +{
-+	struct verbs_sysfs_dev *sysfs_dev = verbs_get_device(device)->sysfs;
++	if (idx == UCMA_INVALID_IB_INDEX)
++		return cma_dev->guid == guid;
 +
-+	return sysfs_dev->ibdev_idx;
++	return cma_dev->ibv_idx == idx && cma_dev->guid == guid;
 +}
 +
- int ibv_get_fw_ver(char *value, size_t len, struct verbs_sysfs_dev *sysfs_dev)
++static struct ibv_context *ucma_open_device(struct cma_device *cma_dev)
  {
- 	/*
-diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
-index 5280cfe6..f0d79c78 100644
---- a/libibverbs/libibverbs.map.in
-+++ b/libibverbs/libibverbs.map.in
-@@ -126,6 +126,11 @@ IBVERBS_1.8 {
- 		ibv_reg_mr_iova2;
- } IBVERBS_1.7;
+ 	struct ibv_device **dev_list;
+ 	struct ibv_context *verbs = NULL;
+ 	int i;
 
-+IBVERBS_1.9 {
-+	global:
-+		ibv_get_device_index;
-+} IBVERBS_1.8;
-+
- /* If any symbols in this stanza change ABI then the entire staza gets a new symbol
-    version. See the top level CMakeLists.txt for this setting. */
+ 	dev_list = ibv_get_device_list(NULL);
+-	if (!dev_list) {
++	if (!dev_list)
+ 		return NULL;
+-	}
 
-diff --git a/libibverbs/man/CMakeLists.txt b/libibverbs/man/CMakeLists.txt
-index e1d5edf8..87f00185 100644
---- a/libibverbs/man/CMakeLists.txt
-+++ b/libibverbs/man/CMakeLists.txt
-@@ -32,6 +32,7 @@ rdma_man_pages(
-   ibv_get_async_event.3
-   ibv_get_cq_event.3
-   ibv_get_device_guid.3.md
-+  ibv_get_device_index.3.md
-   ibv_get_device_list.3.md
-   ibv_get_device_name.3.md
-   ibv_get_pkey_index.3.md
-diff --git a/libibverbs/man/ibv_get_device_guid.3.md b/libibverbs/man/ibv_get_device_guid.3.md
-index 6dc96001..376c7871 100644
---- a/libibverbs/man/ibv_get_device_guid.3.md
-+++ b/libibverbs/man/ibv_get_device_guid.3.md
-@@ -31,7 +31,7 @@ RDMA device *device*.
- order.
+ 	for (i = 0; dev_list[i]; i++) {
+-		if (ibv_get_device_guid(dev_list[i]) == guid) {
+-			verbs = ibv_open_device(dev_list[i]);
++		struct ibv_device *dev = dev_list[i];
++		uint32_t idx = ibv_get_device_index(dev);
++		__be64 guid = ibv_get_device_guid(dev);
++
++		if (match(cma_dev, guid, idx)) {
++			verbs = ibv_open_device(dev);
+ 			break;
+ 		}
+ 	}
+@@ -340,7 +356,7 @@ static int ucma_init_device(struct cma_device *cma_dev)
+ 	if (cma_dev->verbs)
+ 		return 0;
 
- # SEE ALSO
--
-+**ibv_get_device_index**(3),
- **ibv_get_device_list**(3),
- **ibv_get_device_name**(3),
- **ibv_open_device**(3)
-diff --git a/libibverbs/man/ibv_get_device_index.3.md b/libibverbs/man/ibv_get_device_index.3.md
-new file mode 100644
-index 00000000..69f00c4f
---- /dev/null
-+++ b/libibverbs/man/ibv_get_device_index.3.md
-@@ -0,0 +1,40 @@
-+---
-+date: ' 2020-04-22'
-+footer: libibverbs
-+header: "Libibverbs Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: IBV_GET_DEVICE_INDEX
-+---
-+
-+# NAME
-+
-+ibv_get_device_index - get an RDMA device index
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/verbs.h>
-+
-+int ibv_get_device_index(struct ibv_device *device);
-+```
-+
-+# DESCRIPTION
-+
-+**ibv_get_device_index()** returns stable IB device index as it is assigned by the kernel.
-+
-+# RETURN VALUE
-+
-+**ibv_get_device_index()** returns an index, or -1 if the kernel doesn't support device indexes.
-+
-+# SEE ALSO
-+
-+**ibv_get_device_name**(3),
-+**ibv_get_device_guid**(3),
-+**ibv_get_device_list**(3),
-+**ibv_open_device**(3)
-+
-+# AUTHOR
-+
-+Leon Romanovsky <leonro@mellanox.com>
-diff --git a/libibverbs/man/ibv_get_device_list.3.md b/libibverbs/man/ibv_get_device_list.3.md
-index 3d222f66..8f3995e4 100644
---- a/libibverbs/man/ibv_get_device_list.3.md
-+++ b/libibverbs/man/ibv_get_device_list.3.md
-@@ -88,6 +88,7 @@ recommended.
- **ibv_fork_init**(3),
- **ibv_get_device_guid**(3),
- **ibv_get_device_name**(3),
-+**ibv_get_device_index**(3),
- **ibv_open_device**(3)
+-	cma_dev->verbs = ucma_open_device(cma_dev->guid);
++	cma_dev->verbs = ucma_open_device(cma_dev);
+ 	if (!cma_dev->verbs)
+ 		return ERR(ENODEV);
 
- # AUTHOR
-diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-index 288985d5..b08b4c20 100644
---- a/libibverbs/verbs.h
-+++ b/libibverbs/verbs.h
-@@ -2202,6 +2202,15 @@ void ibv_free_device_list(struct ibv_device **list);
-  */
- const char *ibv_get_device_name(struct ibv_device *device);
+@@ -452,14 +468,15 @@ void rdma_destroy_event_channel(struct rdma_event_channel *channel)
+ 	free(channel);
+ }
 
-+/**
-+ * ibv_get_device_index - Return kernel device index
-+ *
-+ * Available for the kernel with support of IB device query
-+ * over netlink interface. For the unsupported kernels, the
-+ * relevant -1 will be returned.
-+ */
-+int ibv_get_device_index(struct ibv_device *device);
+-static int ucma_get_device(struct cma_id_private *id_priv, __be64 guid)
++static int ucma_get_device(struct cma_id_private *id_priv, __be64 guid,
++			   uint32_t idx)
+ {
+ 	struct cma_device *cma_dev;
+ 	int i, ret;
+
+ 	for (i = 0; i < cma_dev_cnt; i++) {
+ 		cma_dev = &cma_dev_array[i];
+-		if (cma_dev->guid == guid)
++		if (match(cma_dev, guid, idx))
+ 			goto match;
+ 	}
+
+@@ -701,6 +718,12 @@ static int ucma_query_addr(struct rdma_cm_id *id)
+ 	cmd.id = id_priv->handle;
+ 	cmd.option = UCMA_QUERY_ADDR;
+
++	/*
++	 * If kernel doesn't support ibdev_index, this field will
++	 * be left as is by the kernel.
++	 */
++	resp.ibdev_index = UCMA_INVALID_IB_INDEX;
 +
- /**
-  * ibv_get_device_guid - Return device's node GUID
-  */
+ 	ret = write(id->channel->fd, &cmd, sizeof cmd);
+ 	if (ret != sizeof cmd)
+ 		return (ret >= 0) ? ERR(ENODATA) : -1;
+@@ -711,7 +734,8 @@ static int ucma_query_addr(struct rdma_cm_id *id)
+ 	memcpy(&id->route.addr.dst_addr, &resp.dst_addr, resp.dst_size);
+
+ 	if (!id_priv->cma_dev && resp.node_guid) {
+-		ret = ucma_get_device(id_priv, resp.node_guid);
++		ret = ucma_get_device(id_priv, resp.node_guid,
++				      resp.ibdev_index);
+ 		if (ret)
+ 			return ret;
+ 		id->port_num = resp.port_num;
+@@ -826,6 +850,12 @@ static int ucma_query_route(struct rdma_cm_id *id)
+ 	id_priv = container_of(id, struct cma_id_private, id);
+ 	cmd.id = id_priv->handle;
+
++	/*
++	 * If kernel doesn't support ibdev_index, this field will
++	 * be left as is by the kernel.
++	 */
++	resp.ibdev_index = UCMA_INVALID_IB_INDEX;
++
+ 	ret = write(id->channel->fd, &cmd, sizeof cmd);
+ 	if (ret != sizeof cmd)
+ 		return (ret >= 0) ? ERR(ENODATA) : -1;
+@@ -855,7 +885,8 @@ static int ucma_query_route(struct rdma_cm_id *id)
+ 	       sizeof resp.dst_addr);
+
+ 	if (!id_priv->cma_dev && resp.node_guid) {
+-		ret = ucma_get_device(id_priv, resp.node_guid);
++		ret = ucma_get_device(id_priv, resp.node_guid,
++				      resp.ibdev_index);
+ 		if (ret)
+ 			return ret;
+ 		id_priv->id.port_num = resp.port_num;
+diff --git a/librdmacm/rdma_cma_abi.h b/librdmacm/rdma_cma_abi.h
+index ab4adb00..cceb516f 100644
+--- a/librdmacm/rdma_cma_abi.h
++++ b/librdmacm/rdma_cma_abi.h
+@@ -180,6 +180,7 @@ struct ucma_abi_query_route_resp {
+ 	__u32 num_paths;
+ 	__u8 port_num;
+ 	__u8 reserved[3];
++	__u32 ibdev_index;
+ };
+
+ struct ucma_abi_query_addr_resp {
+@@ -191,6 +192,7 @@ struct ucma_abi_query_addr_resp {
+ 	__u16 dst_size;
+ 	struct sockaddr_storage src_addr;
+ 	struct sockaddr_storage dst_addr;
++	__u32 ibdev_index;
+ };
+
+ struct ucma_abi_query_path_resp {
 --
 2.26.2
 
