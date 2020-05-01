@@ -2,149 +2,275 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415B71C0AE4
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 01:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D721C12B3
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 15:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgD3XNP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Apr 2020 19:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726817AbgD3XNP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Apr 2020 19:13:15 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6F8C035494
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 16:13:13 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id m67so7666896qke.12
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Apr 2020 16:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ydWMx7y7PGO+n7ekQ6dHaLd4bComoQSbKez50fuN6Xs=;
-        b=A/grnYCDXSiT03s/9v3h3VFcdtEMt2IZmWkDzRJFbcAZp9F8EJaO7FviZ6oeLSexGK
-         W+ZFRYJba+IsFK8WZbWbczRZvPcxa723QF6iICmCEBlDD2f3mXRUqOhr9KLUqaUjTQCL
-         0KxRs0fb645IVo2GrR6VivfTXBvLa9MCUsZf1Xb9HyxG7PV5rnfIUDxj2qGO2VEqPzv5
-         2kuyljULPiD88Xkk1o3/6SJYQEQwE50V5hqhUQoLJronp/erCZoFyWcRNnZmhmkQFxy3
-         yfbeU6hwYNG4tAw+2B19oyd/nX6EPTJoQaknHELUAavLS988YdBTjfkzNhV88GHZcNDC
-         MwGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ydWMx7y7PGO+n7ekQ6dHaLd4bComoQSbKez50fuN6Xs=;
-        b=ZUYCOPzEfXtAE/znUgGZo1X5PF1DwGvJ/QmP0uIkVLyM+bi0gWVr2K+y5zsQ2cmSLW
-         pbY9pHyT0PwhD0AQMx2+w/tgWAE7zRZXmkNoSkKtHH9E94NIXr/hXkLnKEFihvugb7v0
-         5ieI7lH7lvFhs9JvVN5msHbYam6ISqjURsUXtpy4Nv3o97A2en1HYWAz/DU95xaTCjZ4
-         APT3hXSbTllTl03cv5IBp7I9T/K5XGDIX2J8PAPyXJprIywlNcUutA0moxEE7tXPuel3
-         mPhPdFGZwTWiuckX0NDqo8icIq2j/IasGlBniXx5UQx7vm+UIfgusEFsLMkhnlUvnchO
-         SH+w==
-X-Gm-Message-State: AGi0PuZWAmR0WYNBMtWIJqjQy+5XffwYRLAxelI91JwXSAol3wAExV5w
-        wN+cqj6UR6wnx3GlFoLDkZlt1A==
-X-Google-Smtp-Source: APiQypJonSeaFgCFBM0Yuqj7upL8LGHePRRuUO6Qk4KOKEYXWm3rktywZ71r/4pHy2WE5v7a+XOVyg==
-X-Received: by 2002:a05:620a:814:: with SMTP id s20mr894938qks.417.1588288392719;
-        Thu, 30 Apr 2020 16:13:12 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id m7sm1364051qke.124.2020.04.30.16.13.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 Apr 2020 16:13:11 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jUIMh-00056R-8O; Thu, 30 Apr 2020 20:13:11 -0300
-Date:   Thu, 30 Apr 2020 20:13:11 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Aharon Landau <aharonl@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 00/36] Refactor mlx5_ib_create_qp
-Message-ID: <20200430231311.GA19436@ziepe.ca>
-References: <20200427154636.381474-1-leon@kernel.org>
+        id S1728720AbgEANQM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 May 2020 09:16:12 -0400
+Received: from mga04.intel.com ([192.55.52.120]:7894 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728586AbgEANQM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 1 May 2020 09:16:12 -0400
+IronPort-SDR: FeY5J+7SDn7QeVr6ol+scpRmJgnnXyH94FYK9xXUdHOZ9VpYtMQuPPpdcooYZVM2UL/p5pDboc
+ CRdUu6rMH5Eg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 06:16:11 -0700
+IronPort-SDR: 4Vuoo9wHenJ7oxDhxv8FGzaRiKv2/AbEcR5AOZtlX69Ov2FzOSzwrACXZ2c6LVcF6PB6plaZC8
+ PnA18OpN8UJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
+   d="scan'208";a="294815851"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 01 May 2020 06:16:09 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jUVWS-0002U9-TG; Fri, 01 May 2020 21:16:08 +0800
+Date:   Fri, 01 May 2020 21:16:01 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 0eacc574aae7300bf46c10c7116c3ba5825505b7
+Message-ID: <5eac2111.FLh/AMm3vs8xYDRU%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427154636.381474-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 06:46:00PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Changelog
-> v1: * Combined both series to easy apply
->     * Rebsed on top of rdma-next + mlx5-next
->     * Fixed create_qp flags check
-> v0: https://lore.kernel.org/lkml/20200420151105.282848-1-leon@kernel.org
->     https://lore.kernel.org/lkml/20200423190303.12856-1-leon@kernel.org
-> 
-> 
-> Hi,
-> 
-> This is first part of series which tries to return some sanity
-> to mlx5_ib_create_qp() function. Such refactoring is required
-> to make extension of that function with less worries of breaking
-> driver.
-> 
-> Extra goal of such refactoring is to ensure that QP is allocated
-> at the beginning of function and released at the end. It will allow
-> us to move QP allocation to be under IB/core responsibility.
-> 
-> It is based on previously sent [1] "[PATCH mlx5-next 00/24] Mass
-> conversion to light mlx5 command interface"
-> 
-> Thanks
-> 
-> [1]
-> https://lore.kernel.org/linux-rdma/20200420114136.264924-1-leon@kernel.org
-> 
-> Aharon Landau (1):
->   RDMA/mlx5: Verify that QP is created with RQ or SQ
-> 
-> Leon Romanovsky (35):
->   RDMA/mlx5: Organize QP types checks in one place
->   RDMA/mlx5: Delete impossible GSI port check
->   RDMA/mlx5: Perform check if QP creation flow is valid
->   RDMA/mlx5: Prepare QP allocation for future removal
->   RDMA/mlx5: Avoid setting redundant NULL for XRC QPs
->   RDMA/mlx5: Set QP subtype immediately when it is known
->   RDMA/mlx5: Separate create QP flows to be based on type
->   RDMA/mlx5: Split scatter CQE configuration for DCT QP
->   RDMA/mlx5: Update all DRIVER QP places to use QP subtype
->   RDMA/mlx5: Move DRIVER QP flags check into separate function
->   RDMA/mlx5: Remove second copy from user for non RSS RAW QPs
->   RDMA/mlx5: Initial separation of RAW_PACKET QP from common flow
->   RDMA/mlx5: Delete create QP flags obfuscation
->   RDMA/mlx5: Process create QP flags in one place
->   RDMA/mlx5: Use flags_en mechanism to mark QP created with WQE
->     signature
->   RDMA/mlx5: Change scatter CQE flag to be set like other vendor flags
->   RDMA/mlx5: Return all configured create flags through query QP
->   RDMA/mlx5: Process all vendor flags in one place
->   RDMA/mlx5: Delete unsupported QP types
->   RDMA/mlx5: Store QP type in the vendor QP structure
->   RDMA/mlx5: Promote RSS RAW QP attribute check in higher level
->   RDMA/mlx5: Combine copy of create QP command in RSS RAW QP
->   RDMA/mlx5: Remove second user copy in create_user_qp
->   RDMA/mlx5: Rely on existence of udata to separate kernel/user flows
->   RDMA/mlx5: Delete impossible inlen check
->   RDMA/mlx5: Globally parse DEVX UID
->   RDMA/mlx5: Separate XRC_TGT QP creation from common flow
->   RDMA/mlx5: Separate to user/kernel create QP flows
->   RDMA/mlx5: Reduce amount of duplication in QP destroy
->   RDMA/mlx5: Group all create QP parameters to simplify in-kernel
->     interfaces
->   RDMA/mlx5: Promote RSS RAW QP flags check to higher level
->   RDMA/mlx5: Handle udate outlen checks in one place
->   RDMA/mlx5: Copy response to the user in one place
->   RDMA/mlx5: Remove redundant destroy QP call
->   RDMA/mlx5: Consolidate into special function all create QP calls
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 0eacc574aae7300bf46c10c7116c3ba5825505b7  RDMA/mlx5: Verify that QP is created with RQ or SQ
 
-Part II applies too thanks
+elapsed time: 697m
 
-Jason
+configs tested: 216
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+m68k                       m5475evb_defconfig
+microblaze                    nommu_defconfig
+nios2                         3c120_defconfig
+ia64                        generic_defconfig
+um                                  defconfig
+s390                          debug_defconfig
+mips                malta_kvm_guest_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                       common_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+m68k                 randconfig-a001-20200501
+mips                 randconfig-a001-20200501
+nds32                randconfig-a001-20200501
+alpha                randconfig-a001-20200501
+parisc               randconfig-a001-20200501
+riscv                randconfig-a001-20200501
+parisc               randconfig-a001-20200430
+mips                 randconfig-a001-20200430
+m68k                 randconfig-a001-20200430
+riscv                randconfig-a001-20200430
+alpha                randconfig-a001-20200430
+nds32                randconfig-a001-20200430
+h8300                randconfig-a001-20200501
+nios2                randconfig-a001-20200501
+microblaze           randconfig-a001-20200501
+c6x                  randconfig-a001-20200501
+sparc64              randconfig-a001-20200501
+microblaze           randconfig-a001-20200430
+nios2                randconfig-a001-20200430
+h8300                randconfig-a001-20200430
+c6x                  randconfig-a001-20200430
+sparc64              randconfig-a001-20200430
+s390                 randconfig-a001-20200501
+xtensa               randconfig-a001-20200501
+sh                   randconfig-a001-20200501
+openrisc             randconfig-a001-20200501
+csky                 randconfig-a001-20200501
+i386                 randconfig-b001-20200430
+i386                 randconfig-b002-20200430
+x86_64               randconfig-b001-20200430
+i386                 randconfig-b003-20200430
+x86_64               randconfig-b002-20200430
+x86_64               randconfig-b003-20200430
+i386                 randconfig-b003-20200501
+x86_64               randconfig-b002-20200501
+i386                 randconfig-b001-20200501
+x86_64               randconfig-b003-20200501
+x86_64               randconfig-b001-20200501
+i386                 randconfig-b002-20200501
+x86_64               randconfig-c001-20200430
+i386                 randconfig-c001-20200430
+i386                 randconfig-c002-20200430
+x86_64               randconfig-c002-20200430
+x86_64               randconfig-c003-20200430
+i386                 randconfig-c003-20200430
+x86_64               randconfig-d002-20200430
+x86_64               randconfig-d001-20200430
+i386                 randconfig-d001-20200430
+i386                 randconfig-d003-20200430
+i386                 randconfig-d002-20200430
+x86_64               randconfig-d003-20200430
+x86_64               randconfig-d001-20200501
+i386                 randconfig-d003-20200501
+x86_64               randconfig-d003-20200501
+i386                 randconfig-d001-20200501
+x86_64               randconfig-d002-20200501
+i386                 randconfig-d002-20200501
+x86_64               randconfig-e002-20200430
+i386                 randconfig-e003-20200430
+x86_64               randconfig-e003-20200430
+i386                 randconfig-e002-20200430
+x86_64               randconfig-e001-20200430
+i386                 randconfig-e001-20200430
+x86_64               randconfig-e002-20200501
+x86_64               randconfig-e003-20200501
+i386                 randconfig-e003-20200501
+x86_64               randconfig-e001-20200501
+i386                 randconfig-e002-20200501
+i386                 randconfig-e001-20200501
+i386                 randconfig-f003-20200501
+x86_64               randconfig-f001-20200501
+x86_64               randconfig-f003-20200501
+i386                 randconfig-f001-20200501
+i386                 randconfig-f002-20200501
+x86_64               randconfig-f001-20200430
+i386                 randconfig-f002-20200430
+i386                 randconfig-f003-20200430
+i386                 randconfig-f001-20200430
+x86_64               randconfig-f003-20200430
+i386                 randconfig-g003-20200501
+i386                 randconfig-g002-20200501
+x86_64               randconfig-g002-20200501
+i386                 randconfig-g001-20200501
+x86_64               randconfig-a003-20200501
+x86_64               randconfig-a001-20200501
+i386                 randconfig-a003-20200501
+i386                 randconfig-a002-20200501
+i386                 randconfig-a001-20200501
+i386                 randconfig-h001-20200501
+i386                 randconfig-h002-20200501
+i386                 randconfig-h003-20200501
+x86_64               randconfig-h001-20200501
+x86_64               randconfig-h003-20200501
+ia64                 randconfig-a001-20200501
+arc                  randconfig-a001-20200501
+powerpc              randconfig-a001-20200501
+arm                  randconfig-a001-20200501
+sparc                randconfig-a001-20200501
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
