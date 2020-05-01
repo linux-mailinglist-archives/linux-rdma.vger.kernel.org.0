@@ -2,275 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D721C12B3
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 15:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13FD1C17A7
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 16:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbgEANQM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 May 2020 09:16:12 -0400
-Received: from mga04.intel.com ([192.55.52.120]:7894 "EHLO mga04.intel.com"
+        id S1729071AbgEAOYr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 May 2020 10:24:47 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43036 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgEANQM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 1 May 2020 09:16:12 -0400
-IronPort-SDR: FeY5J+7SDn7QeVr6ol+scpRmJgnnXyH94FYK9xXUdHOZ9VpYtMQuPPpdcooYZVM2UL/p5pDboc
- CRdUu6rMH5Eg==
+        id S1728840AbgEAOYq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 1 May 2020 10:24:46 -0400
+IronPort-SDR: V0n0bkQ1pxcIrZQcRRHbTV2fqsEVXnWPfc9do4hgCaYzOvbJw52u0/kxhycZSUfGlzr27eBIu5
+ unCOx5U/g4wQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 06:16:11 -0700
-IronPort-SDR: 4Vuoo9wHenJ7oxDhxv8FGzaRiKv2/AbEcR5AOZtlX69Ov2FzOSzwrACXZ2c6LVcF6PB6plaZC8
- PnA18OpN8UJw==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 07:24:42 -0700
+IronPort-SDR: zOaNdYO11+XZQaCIl1GflqhMCiQai0K1aX+aTLO1ivf5/8ehhE9ShWesKeZl2CNILjpT78v943
+ LF6kbCbSCeGg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="294815851"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 01 May 2020 06:16:09 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jUVWS-0002U9-TG; Fri, 01 May 2020 21:16:08 +0800
-Date:   Fri, 01 May 2020 21:16:01 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 0eacc574aae7300bf46c10c7116c3ba5825505b7
-Message-ID: <5eac2111.FLh/AMm3vs8xYDRU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="283189248"
+Received: from shatao-mobl.ccr.corp.intel.com (HELO [10.249.174.63]) ([10.249.174.63])
+  by fmsmga004.fm.intel.com with ESMTP; 01 May 2020 07:24:38 -0700
+Subject: Re: [PATCH v13 23/25] block/rnbd: include client and server modules
+ into kernel compilation
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        kbuild test robot <lkp@intel.com>
+Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>
+References: <20200427141020.655-24-danil.kipnis@cloud.ionos.com>
+ <202004292210.aw7c2Yi3%lkp@intel.com>
+ <CAHg0HuzGwonGEbRyN03RZ7TiD4NdFWmr+YR7u9EG4VHyTT7V4w@mail.gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <7faf09fa-f38d-f54f-bd28-b4c26c936846@intel.com>
+Date:   Fri, 1 May 2020 22:24:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAHg0HuzGwonGEbRyN03RZ7TiD4NdFWmr+YR7u9EG4VHyTT7V4w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 0eacc574aae7300bf46c10c7116c3ba5825505b7  RDMA/mlx5: Verify that QP is created with RQ or SQ
 
-elapsed time: 697m
 
-configs tested: 216
-configs skipped: 0
+On 4/30/2020 4:48 PM, Danil Kipnis wrote:
+> On Wed, Apr 29, 2020 at 5:01 PM kbuild test robot <lkp@intel.com> wrote:
+>> Hi Danil,
+>>
+>> I love your patch! Yet something to improve:
+>>
+>> [auto build test ERROR on block/for-next]
+>> [also build test ERROR on driver-core/driver-core-testing rdma/for-next linus/master v5.7-rc3 next-20200428]
+>> [if your patch is applied to the wrong git tree, please drop us a note to help
+>> improve the system. BTW, we also suggest to use '--base' option to specify the
+>> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Danil-Kipnis/RTRS-former-IBTRS-RDMA-Transport-Library-and-RNBD-former-IBNBD-RDMA-Network-Block-Device/20200428-080733
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+>> config: i386-allyesconfig (attached as .config)
+>> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+>> reproduce:
+>>          # save the attached .config to linux build tree
+>>          make ARCH=i386
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kbuild test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     In file included from drivers/block/rnbd/rnbd-clt.c:19:0:
+>>>> drivers/block/rnbd/rnbd-clt.h:19:10: fatal error: rtrs.h: No such file or directory
+>>      #include "rtrs.h"
+>>               ^~~~~~~~
+>>     compilation terminated.
+>> --
+>>     In file included from drivers/block/rnbd/rnbd-srv.c:15:0:
+>>>> drivers/block/rnbd/rnbd-srv.h:16:10: fatal error: rtrs.h: No such file or directory
+>>      #include "rtrs.h"
+>>               ^~~~~~~~
+>>     compilation terminated.
+>>
+>> vim +19 drivers/block/rnbd/rnbd-clt.h
+>>
+>> 9e3ecd2f9c364e6 Jack Wang 2020-04-27  18
+>> 9e3ecd2f9c364e6 Jack Wang 2020-04-27 @19  #include "rtrs.h"
+>> 9e3ecd2f9c364e6 Jack Wang 2020-04-27  20  #include "rnbd-proto.h"
+>> 9e3ecd2f9c364e6 Jack Wang 2020-04-27  21  #include "rnbd-log.h"
+>> 9e3ecd2f9c364e6 Jack Wang 2020-04-27  22
+>>
+>> :::::: The code at line 19 was first introduced by commit
+>> :::::: 9e3ecd2f9c364e67eaa3ad19424b0d7ad6daacaa block/rnbd: client: private header with client structs and functions
+>>
+>> :::::: TO: Jack Wang <jinpu.wang@cloud.ionos.com>
+>> :::::: CC: 0day robot <lkp@intel.com>
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Dear kbuild test robot, dear All,
+>
+> the mentioned branch with the attached config compiles without errors
+> on my machine. Does anybody knows how to reproduce this include file
+> not found error or why does it come up in the kbuild test compilation?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Danil,
 
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-m68k                       m5475evb_defconfig
-microblaze                    nommu_defconfig
-nios2                         3c120_defconfig
-ia64                        generic_defconfig
-um                                  defconfig
-s390                          debug_defconfig
-mips                malta_kvm_guest_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-m68k                             allmodconfig
-m68k                       bvme6000_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-xtensa                          iss_defconfig
-h8300                    h8300h-sim_defconfig
-xtensa                       common_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-microblaze                      mmu_defconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-mips                         tb0287_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                      chrp32_defconfig
-powerpc                             defconfig
-powerpc                       holly_defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-powerpc                           allnoconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                    amigaone_defconfig
-powerpc                    adder875_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                          g5_defconfig
-powerpc                     mpc512x_defconfig
-m68k                 randconfig-a001-20200501
-mips                 randconfig-a001-20200501
-nds32                randconfig-a001-20200501
-alpha                randconfig-a001-20200501
-parisc               randconfig-a001-20200501
-riscv                randconfig-a001-20200501
-parisc               randconfig-a001-20200430
-mips                 randconfig-a001-20200430
-m68k                 randconfig-a001-20200430
-riscv                randconfig-a001-20200430
-alpha                randconfig-a001-20200430
-nds32                randconfig-a001-20200430
-h8300                randconfig-a001-20200501
-nios2                randconfig-a001-20200501
-microblaze           randconfig-a001-20200501
-c6x                  randconfig-a001-20200501
-sparc64              randconfig-a001-20200501
-microblaze           randconfig-a001-20200430
-nios2                randconfig-a001-20200430
-h8300                randconfig-a001-20200430
-c6x                  randconfig-a001-20200430
-sparc64              randconfig-a001-20200430
-s390                 randconfig-a001-20200501
-xtensa               randconfig-a001-20200501
-sh                   randconfig-a001-20200501
-openrisc             randconfig-a001-20200501
-csky                 randconfig-a001-20200501
-i386                 randconfig-b001-20200430
-i386                 randconfig-b002-20200430
-x86_64               randconfig-b001-20200430
-i386                 randconfig-b003-20200430
-x86_64               randconfig-b002-20200430
-x86_64               randconfig-b003-20200430
-i386                 randconfig-b003-20200501
-x86_64               randconfig-b002-20200501
-i386                 randconfig-b001-20200501
-x86_64               randconfig-b003-20200501
-x86_64               randconfig-b001-20200501
-i386                 randconfig-b002-20200501
-x86_64               randconfig-c001-20200430
-i386                 randconfig-c001-20200430
-i386                 randconfig-c002-20200430
-x86_64               randconfig-c002-20200430
-x86_64               randconfig-c003-20200430
-i386                 randconfig-c003-20200430
-x86_64               randconfig-d002-20200430
-x86_64               randconfig-d001-20200430
-i386                 randconfig-d001-20200430
-i386                 randconfig-d003-20200430
-i386                 randconfig-d002-20200430
-x86_64               randconfig-d003-20200430
-x86_64               randconfig-d001-20200501
-i386                 randconfig-d003-20200501
-x86_64               randconfig-d003-20200501
-i386                 randconfig-d001-20200501
-x86_64               randconfig-d002-20200501
-i386                 randconfig-d002-20200501
-x86_64               randconfig-e002-20200430
-i386                 randconfig-e003-20200430
-x86_64               randconfig-e003-20200430
-i386                 randconfig-e002-20200430
-x86_64               randconfig-e001-20200430
-i386                 randconfig-e001-20200430
-x86_64               randconfig-e002-20200501
-x86_64               randconfig-e003-20200501
-i386                 randconfig-e003-20200501
-x86_64               randconfig-e001-20200501
-i386                 randconfig-e002-20200501
-i386                 randconfig-e001-20200501
-i386                 randconfig-f003-20200501
-x86_64               randconfig-f001-20200501
-x86_64               randconfig-f003-20200501
-i386                 randconfig-f001-20200501
-i386                 randconfig-f002-20200501
-x86_64               randconfig-f001-20200430
-i386                 randconfig-f002-20200430
-i386                 randconfig-f003-20200430
-i386                 randconfig-f001-20200430
-x86_64               randconfig-f003-20200430
-i386                 randconfig-g003-20200501
-i386                 randconfig-g002-20200501
-x86_64               randconfig-g002-20200501
-i386                 randconfig-g001-20200501
-x86_64               randconfig-a003-20200501
-x86_64               randconfig-a001-20200501
-i386                 randconfig-a003-20200501
-i386                 randconfig-a002-20200501
-i386                 randconfig-a001-20200501
-i386                 randconfig-h001-20200501
-i386                 randconfig-h002-20200501
-i386                 randconfig-h003-20200501
-x86_64               randconfig-h001-20200501
-x86_64               randconfig-h003-20200501
-ia64                 randconfig-a001-20200501
-arc                  randconfig-a001-20200501
-powerpc              randconfig-a001-20200501
-arm                  randconfig-a001-20200501
-sparc                randconfig-a001-20200501
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+The branch was generated by the bot, it may applied to a wrong base 
+tree, could you take a look?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+url:    https://github.com/0day-ci/linux/commits/Danil-Kipnis/RTRS-former-IBTRS-RDMA-Transport-Library-and-RNBD-former-IBNBD-RDMA-Network-Block-Device/20200428-080733
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+
+
+Best Regards,
+Rong Chen
