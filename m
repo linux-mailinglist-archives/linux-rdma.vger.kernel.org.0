@@ -2,156 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8001C181A
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 16:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716C51C1BBA
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 May 2020 19:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgEAOow (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 May 2020 10:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728914AbgEAOov (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 May 2020 10:44:51 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FFC061A0C
-        for <linux-rdma@vger.kernel.org>; Fri,  1 May 2020 07:44:50 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id v18so4817044qvx.9
-        for <linux-rdma@vger.kernel.org>; Fri, 01 May 2020 07:44:50 -0700 (PDT)
+        id S1729393AbgEARdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 May 2020 13:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729260AbgEARdY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 May 2020 13:33:24 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDAFC061A0C;
+        Fri,  1 May 2020 10:33:24 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f83so2557772qke.13;
+        Fri, 01 May 2020 10:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U5PjdaeI6wDSO7gdM3zjoZXmYp1q+jp147y29p4wfzk=;
-        b=WSaJ6f9mlX6vD9GW6hdUsSCHrqyxVZrj8VQbADFepWoMu+riIrRDlbxe2fXg39EBzE
-         x0sPGzykUtDIw9y8F1etfKcdCE6zLKITFVNf7PWP9CGCM1wRw4afh+zOcpJwRhyI/pSV
-         Z4dqRySdZO0gx0Az0U8CcLmDe2uJcbj6sj7cw8cUu0PGIYmB9fYVAX7HRUmWIXfnMYMZ
-         0gVH5jxfjS7SHwEHZ+3CUT0hVJlo1Qeu0Yli3BNO7HUqSqMz3PDsBYDxBzXXsGjnSioh
-         uzcGqtT/UHUIfAkbT1zaawUZsETjrLGUip/xd8XHDv5iyYsxihqmf1onzHBlGo8pNrbQ
-         NaAA==
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=sA3GZFbu5RP3AmAyeldIt+9yZ/WrLDNOZ31SEUtOAa8=;
+        b=L1y8yt0Q3Je8oCr5Nq7oGR3o3S8I72ZsCoVAwBsJEPpJIAUuJd9YGF9Rpo0QJcn0Ht
+         qEu2bDMjG9s4QX1I0iLSK27tuAxSZs+NktYv5xTO3csktnbGj4bLYfkkhoBFGJrSV69V
+         8qoQsfsO3MuMsoMgNW6QuLKW/PQfLfMzBUOFM9rc+HCp6ZkaUrgd1UE1tVLjF0QDoCy/
+         hvLp+6htksZGJidnEOl3VEYqYybOKx0E2FVmoFTBkeeIzJ1OLONwOYu8dcTofJ0lCHJM
+         NbbRPFdfn4LVhq3gk2SuWKQukjJk63S4TOvJ6zfdtFTvnsVzYP9u/ZqdqvqsA8aOJPoj
+         /MyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U5PjdaeI6wDSO7gdM3zjoZXmYp1q+jp147y29p4wfzk=;
-        b=RkZFeqCRu1XkR9lIMmLp7Mq5lnUzCjmD1cUVu0Pc5GV3BlP0/OAKfAFgX3cPGXdDcp
-         1G3mWVp85O8q3wqrDBdAPbDwMNo6BzK7xcYP+wndwQI1widuMVpKhiDOX8mq9YtP+rMy
-         WTAzxWas3LNrT+Fiu8tUZQMzPucJXAD0z7zdYrAWRIjnRjmNMZfFxz7HedEli34d7MvF
-         /3uR+AeXAYR/FU5lee3wM2V7jmTnBW3PhrbQbXbrhqFDrjlrb+nlRRn5dzFNenVoQe+R
-         froixk8lZx1YGMI2STSspuunkTmyuaDtZi2et34ykf2iG0j0qPVxyG5aoMdRPf+iHf4n
-         YFXg==
-X-Gm-Message-State: AGi0PuZ2qxj8qiPqCV+TEhWFi1N2zFDDD5ALAekwsRlKwpBdgbSxLTDL
-        83SdXwvsGxqyiRzzo20UdulHNg==
-X-Google-Smtp-Source: APiQypLxzTulW5VDBvswuNVdHxLVKhlwnSaXPY4brbLdxFwXbg3UVgvOUCx6csk4zv6d348AETjL1g==
-X-Received: by 2002:ad4:4dc8:: with SMTP id cw8mr2444533qvb.83.1588344289315;
-        Fri, 01 May 2020 07:44:49 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id f198sm2876635qke.46.2020.05.01.07.44.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 May 2020 07:44:48 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jUWuG-0001Yo-4D; Fri, 01 May 2020 11:44:48 -0300
-Date:   Fri, 1 May 2020 11:44:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Maor Gottlieb <maorg@mellanox.com>
-Cc:     davem@davemloft.net, dledford@redhat.com, j.vosburgh@gmail.com,
-        vfalico@gmail.com, andy@greyhouse.net, kuba@kernel.org,
-        jiri@mellanox.com, dsahern@kernel.org, leonro@mellanox.com,
-        saeedm@mellanox.com, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, alexr@mellanox.com
-Subject: Re: [PATCH V8 mlx5-next 00/16] Add support to get xmit slave
-Message-ID: <20200501144448.GO26002@ziepe.ca>
-References: <20200430192146.12863-1-maorg@mellanox.com>
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=sA3GZFbu5RP3AmAyeldIt+9yZ/WrLDNOZ31SEUtOAa8=;
+        b=JZmj4T1n0LS6Z+vAznfmexjEyq7Z9JgD3Czf4e/aVwKtldsyS0HtwwTjjD9ItFyg+p
+         90L5V4YR5UX9/hQJahWAxaL/MMBr7wVThD+2fMFqUqIbwZS1v1sH81dc8gM7awmkg3Fz
+         Ei5cV5rkSwRGpJeJ2Smsr/nlle7BjoDhQEfXcXuH6bxYtsLUunIS0CuE73P4mi8bmIMi
+         plQ3cWxhUSIDLltUvDUes21WSbOu+b7WQRzt+pzfLT7y2u5ZSndGSXii7X51yea57sEr
+         Qxe8+1IcLyG7UuNbnlAj4gA1k2ot2ezc2f10kZ6sidFqUqcK7umYQBvHqMIQTQDy6EXH
+         1o2A==
+X-Gm-Message-State: AGi0PuYj2V6lwiQjrpEgAuUOcRbiuJfBR7c7n9RBP6nAxglfOn7js1N8
+        hwYZgACCTz6zkuhSpMeOXwy9glru
+X-Google-Smtp-Source: APiQypI5tbyS8fbKTfYKT3w87bFY6r5JZcl9nVOlmjrjRE0bWyeuRnTANnmXkWQenZlDngukWKIxSA==
+X-Received: by 2002:a37:96c4:: with SMTP id y187mr2771597qkd.126.1588354403543;
+        Fri, 01 May 2020 10:33:23 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id g25sm2973301qkl.50.2020.05.01.10.33.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 May 2020 10:33:23 -0700 (PDT)
+Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 041HXLPc026700;
+        Fri, 1 May 2020 17:33:21 GMT
+Subject: [PATCH v1 0/7] RPC server tracepoints
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Fri, 01 May 2020 13:33:21 -0400
+Message-ID: <20200501172849.3798.75190.stgit@klimt.1015granger.net>
+User-Agent: StGit/0.22-20-geafe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430192146.12863-1-maorg@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 10:21:30PM +0300, Maor Gottlieb wrote:
-> Hi Dave,
-> 
-> This series is a combination of netdev and RDMA, so in order to avoid
-> conflicts, we would like to ask you to route this series through
-> mlx5-next shared branch. It is based on v5.7-rc2 tag.
-> 
-> 
-> The following series adds support to get the LAG master xmit slave by
-> introducing new .ndo - ndo_get_xmit_slave. Every LAG module can
-> implement it and it first implemented in the bond driver. 
-> This is follow-up to the RFC discussion [1].
-> 
-> The main motivation for doing this is for drivers that offload part
-> of the LAG functionality. For example, Mellanox Connect-X hardware
-> implements RoCE LAG which selects the TX affinity when the resources
-> are created and port is remapped when it goes down.
-> 
-> The first part of this patchset introduces the new .ndo and add the
-> support to the bonding module.
-> 
-> The second part adds support to get the RoCE LAG xmit slave by building
-> skb of the RoCE packet based on the AH attributes and call to the new
-> .ndo.
-> 
-> The third part change the mlx5 driver driver to set the QP's affinity
-> port according to the slave which found by the .ndo.
-> 
-> Thanks
-> 
-> [1]
-> https://lore.kernel.org/netdev/20200126132126.9981-1-maorg@xxxxxxxxxxxx/
+Hi-
 
-where did these xxxxx's come from?
+(cc: linux-nfs and linux-rdma)
 
-> Change log:
-> v8: Fix bad numbering of v7. 
-> v7: Change only in RDMA part:
-> 	- return slave and as output
-> 	- Don't hold lock while allocating skb.
->     In addition, reorder patches, so mlx5 patches are before RDMA.
-> v6: patch 1 - Fix commit message and add function description. 
->     patch 10 - Keep udata as function argument.
-> v5: patch 1 - Remove rcu lock.
->     patch 10 - Refactor patch that group the AH attributes in struct.
->     patch 11 - call the ndo while holding the rcu and initialize xmit_slave.
->     patch 12 - Store the xmit slave in rdma_ah_init_attr and qp_attr.
-> 
-> v4: 1. Rename master_get_xmit_slave to netdev_get_xmit_slave and move
-> the implementation to dev.c 
->     2. Remove unnecessary check of NULL pointer.
->     3. Fix typo.
-> v3: 1. Move master_get_xmit_slave to netdevice.h and change the flags
-> arg.
-> to bool.
->     2. Split helper functions commit to multiple commits for each bond
-> mode.
->     3. Extract refcotring changes to seperate commits.
-> v2: The first patch wasn't sent in v1.
-> v1:
-> https://lore.kernel.org/netdev/ac373456-b838-29cf-645f-b1ea1a93e3b0@xxxxxxxxx/T/#t 
-> 
-> Maor Gottlieb (16):
->   net/core: Introduce netdev_get_xmit_slave
->   bonding: Export skip slave logic to function
->   bonding: Rename slave_arr to usable_slaves
->   bonding/alb: Add helper functions to get the xmit slave
->   bonding: Add helper function to get the xmit slave based on hash
->   bonding: Add helper function to get the xmit slave in rr mode
->   bonding: Add function to get the xmit slave in active-backup mode
->   bonding: Add array of all slaves
->   bonding: Implement ndo_get_xmit_slave
->   net/mlx5: Change lag mutex lock to spin lock
->   net/mlx5: Add support to get lag physical port
->   RDMA: Group create AH arguments in struct
->   RDMA/core: Add LAG functionality
->   RDMA/core: Get xmit slave for LAG
->   RDMA/mlx5: Refactor affinity related code
->   RDMA/mlx5: Set lag tx affinity according to slave
+A mix of RPC-over-sockets and RPC-over-RDMA observability
+enhancements, along with one very interesting change:
 
-It seems fine to me too, Saeed, can you apply the net parts to the
-mlx5 shared branch with DaveM's ack? Thanks
+"SUNRPC: Move xpt_mutex into socket xpo_sendto methods"
 
-Jason
+I've changed svc_send() so that it no longer holds the transport
+mutex during the call to ->xpo_sendto. Instead, the socket
+sendto methods take that mutex, since they need to serialize
+sends on the socket. The RDMA sendto method does not need that
+serialization, so the mutex is not taken in svc_rdma_sendto.
+
+Performance results for that change are reported in the patch
+description.
+
+---
+
+Chuck Lever (7):
+      SUNRPC: svc_show_status() macro needs enum definitions
+      SUNRPC: Move xpt_mutex into socket xpo_sendto methods
+      svcrdma: Displayed remote IP address should match stored address
+      SUNRPC: Remove kernel memory address from svc_xprt tracepoints
+      SUNRPC: Tracepoint to record errors in svc_xpo_create()
+      SUNRPC: Trace a few more generic svc_xprt events
+      svcrdma: Add tracepoints to report ->xpo_accept failures
+
+
+ include/linux/sunrpc/svc_xprt.h            |  6 ++
+ include/trace/events/rpcrdma.h             | 36 ++++----
+ include/trace/events/sunrpc.h              | 95 ++++++++++++++++------
+ net/sunrpc/svc_xprt.c                      | 41 ++++------
+ net/sunrpc/svcsock.c                       | 37 ++++++---
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c | 35 ++++----
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c      |  9 +-
+ net/sunrpc/xprtrdma/svc_rdma_transport.c   | 55 +++++--------
+ net/sunrpc/xprtsock.c                      | 12 ++-
+ 9 files changed, 187 insertions(+), 139 deletions(-)
+
+--
+Chuck Lever
