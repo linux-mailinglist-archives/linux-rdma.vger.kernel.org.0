@@ -2,110 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE6C1C5810
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2020 16:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06291C60BE
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2020 21:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgEEOFa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 May 2020 10:05:30 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:56685 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgEEOF3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 May 2020 10:05:29 -0400
+        id S1728135AbgEETHI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 May 2020 15:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727857AbgEETHI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 May 2020 15:07:08 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406B4C061A0F;
+        Tue,  5 May 2020 12:07:08 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id f8so1221493plt.2;
+        Tue, 05 May 2020 12:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588687529; x=1620223529;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=7hRhq73jJ9OOmBNm5/PpXauR8em9GdTAQP+I78eBZuU=;
-  b=b45XMxcjPffLFiZ9I5e4s/LsxajI+9kjJkiWntP2k+C84MSHbzyJdsLd
-   bwoOWjtQVk/PHJaZ4Zai7nZEYmNw450eYH+M2ho74LGxzGOWi9R56hMST
-   lZ+N0z8T7vIiNk4DNsoMchN70WAPxEwBce5kpnbTSGEEFNbXXpQaEAmcg
-   c=;
-IronPort-SDR: UQwYJ5AWzT0/Skq46a+od4BC/ysXkhOBOBS9rjhAGoCpZu6TdbkbCstrN22pWLXaiDhSrXglE1
- shZcLN5omLWw==
-X-IronPort-AV: E=Sophos;i="5.73,355,1583193600"; 
-   d="scan'208";a="41371251"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 05 May 2020 14:05:27 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 75006A1F87;
-        Tue,  5 May 2020 14:05:26 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 14:05:25 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.26) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 14:05:23 +0000
-Subject: Re: Can't build rdma-core's azp image
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
- <20200407180658.GW20941@ziepe.ca>
- <67f9e08a-467c-34ce-e17e-816cb4bf03db@amazon.com>
- <ca41331c-3b53-fbb6-4543-bc960f796062@amazon.com>
- <20200417162150.GH26002@ziepe.ca>
- <519a9c33-fa1b-7439-fa6a-7a54b69bde0b@amazon.com>
- <20200505010906.GD26002@ziepe.ca>
- <fdb88249-dd6f-2cba-9c26-820456a0f011@amazon.com>
- <20200505132125.GE26002@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <fd87ec3e-d622-e213-8640-1f9d5e9d6ebd@amazon.com>
-Date:   Tue, 5 May 2020 17:05:18 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200505132125.GE26002@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.26]
-X-ClientProxiedBy: EX13D39UWB002.ant.amazon.com (10.43.161.116) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fWyOOrvUK77uA/msSZdDDnmybty7hQPcowq4Z58m++0=;
+        b=BPHouBLZVWeHaubUI19wpiMPuNtIWM6/YUERDUNe9MNgSmVVq0+cuxhz5bbxK3kGR/
+         UxcdfDx5R8f3MQ80bBtDEUMhM0+5IrSRG1k40tEN/KtDJEk+cwmfyVkJy8XAOFHr8iZV
+         F4yJrLmDlhHmTlklDWECl6sk8bPgMQ2UzPK0tbwjp46p+Zg9ks/sU6Oi6OCWWSH+iOB3
+         W0bCCNjZW9NvvDQZt7CCmoZ3WNfRiAeq9LraUzBiD/CEpqKX37b7yIu+KkT6Sg0vWC5i
+         0TcYCFn7ETDBN3JI4s/uaXI2hQlYqm7S+dmA9jFiQBQtqioeyCarQZr4EkFEIw6owo/M
+         F3dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fWyOOrvUK77uA/msSZdDDnmybty7hQPcowq4Z58m++0=;
+        b=nzv3F2dYOyGwxTUdlk87VcPVjNHiXWw9cPwe8cRrhqbv5jxXnXyRSghlIFt74mBQhV
+         oEyu3I4Kqi+exZraqiwzr4+wfWCaOqOQ+r3oW6IKOY9fW3QeLxQmsKb6G8OQ+HVfaCRH
+         yyxHWkZnjn1OBGv6L3Q8+gG8JQu4ABcBTIZoxmbSS2vgVIALt0M7sAtIcFn3kps2K1yH
+         16BM3Z4x312aO1qKCNvCSefWLEO9v8fins037atjsYvd6gVdxLTHrxjYOd6o8CN+9Hqt
+         LyWQSz4jPnvYQDhxL0pnnuv9HyjwGM+B+KH3kprvGiGb9OHSxzQ7TYUyItnHpDXxTkvx
+         pXjw==
+X-Gm-Message-State: AGi0PuYot68TqWr8+ASfoLiF0RvCl8HLHBbO0ASRhDxrSXn0/zDpFlwu
+        Bvkqj6eVWG4QgvKhKepp/vg=
+X-Google-Smtp-Source: APiQypIii3zV6Elp7IO251v6M6vB2QPxZ+fMr3HRaeN0DRbvD8NEebNCns+Io+5802VclUQUQzICSw==
+X-Received: by 2002:a17:90a:9e9:: with SMTP id 96mr4913003pjo.41.1588705627557;
+        Tue, 05 May 2020 12:07:07 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.156.195])
+        by smtp.gmail.com with ESMTPSA id 138sm2664906pfz.31.2020.05.05.12.07.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 May 2020 12:07:06 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     tony.luck@intel.com, fenghua.yu@intel.com, rspringer@google.com,
+        toddpoynor@google.com, benchan@chromium.org,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        akpm@linux-foundation.org, santosh.shilimkar@oracle.com,
+        davem@davemloft.net, kuba@kernel.org, jack@suse.cz,
+        jhubbard@nvidia.com, ira.weiny@intel.com, jglisse@redhat.com
+Cc:     inux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, tee-dev@lists.linaro.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [RFC] mm/gup.c: Updated return value of {get|pin}_user_pages_fast()
+Date:   Wed,  6 May 2020 00:44:19 +0530
+Message-Id: <1588706059-4208-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/05/2020 16:21, Jason Gunthorpe wrote:
-> On Tue, May 05, 2020 at 09:40:33AM +0300, Gal Pressman wrote:
->> On 05/05/2020 4:09, Jason Gunthorpe wrote:
->>> On Sun, Apr 19, 2020 at 09:37:45AM +0300, Gal Pressman wrote:
->>>> Unpacking libc6:arm64 (2.27-3ubuntu1) ...
->>>> dpkg: dependency problems prevent configuration of libc6:i386:
->>>>  libc6:i386 depends on libgcc1; however:
->>>>   Package libgcc-s1:i386 which provides libgcc1 is not configured yet.
->>>>
->>>> dpkg: error processing package libc6:i386 (--configure):
->>>>  dependency problems - leaving unconfigured
->>>> dpkg: dependency problems prevent configuration of libgcc-s1:ppc64el:
->>>>  libgcc-s1:ppc64el depends on libc6 (>= 2.17); however:
->>>>   Package libc6:ppc64el is not configured yet.
->>>>
->>>> dpkg: error processing package libgcc-s1:ppc64el (--configure):
->>>>  dependency problems - leaving unconfigured
->>>> Errors were encountered while processing:
->>>>  libc6:i386
->>>>  libgcc-s1:ppc64el
->>>> E: Sub-process /usr/bin/dpkg returned an error code (1)
->>>
->>> Wow, that is actually an APT bug... Must be from old age :O
->>>
->>> Ah we can hack around that with this:
->>>
->>> https://github.com/jgunthorpe/rdma-plumbing/pull/new/azp_fix
->>>
->>> Let me know if it works
->>>
->>> Now that github has docker hosting I wonder if we should try to host a
->>> copy of the docker image there.. Their docker hosting is a pain last I
->>> looked though..
->>
->> I've applied these patches and still got the same error :\.
-> 
-> It is because you rebased it on top of 9a68d672c3a835d..
-> 
-> 'cbuild: Adjust to the new clang CDN' is the better fix for that..
-> 
-> I rebased it on the github
+Currently {get|pin}_user_pages_fast() have 3 return value 0, -errno
+and no of pinned pages. The only case where these two functions will
+return 0, is for nr_pages <= 0, which doesn't find a valid use case.
+But if at all any, then a -ERRNO will be returned instead of 0, which
+means {get|pin}_user_pages_fast() will have 2 return values -errno &
+no of pinned pages.
 
-Thanks Jason, confirmed it's working.
+Update all the callers which deals with return value 0 accordingly.
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ arch/ia64/kernel/err_inject.c              | 2 +-
+ drivers/platform/goldfish/goldfish_pipe.c  | 2 +-
+ drivers/staging/gasket/gasket_page_table.c | 4 ++--
+ drivers/tee/tee_shm.c                      | 2 +-
+ mm/gup.c                                   | 6 +++---
+ net/rds/rdma.c                             | 2 +-
+ 6 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/ia64/kernel/err_inject.c b/arch/ia64/kernel/err_inject.c
+index 8b5b8e6b..fd72218 100644
+--- a/arch/ia64/kernel/err_inject.c
++++ b/arch/ia64/kernel/err_inject.c
+@@ -143,7 +143,7 @@ static DEVICE_ATTR(name, 0644, show_##name, store_##name)
+ 	int ret;
+ 
+ 	ret = get_user_pages_fast(virt_addr, 1, FOLL_WRITE, NULL);
+-	if (ret<=0) {
++	if (ret < 0) {
+ #ifdef ERR_INJ_DEBUG
+ 		printk("Virtual address %lx is not existing.\n",virt_addr);
+ #endif
+diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
+index 1ab207e..831449d 100644
+--- a/drivers/platform/goldfish/goldfish_pipe.c
++++ b/drivers/platform/goldfish/goldfish_pipe.c
+@@ -277,7 +277,7 @@ static int goldfish_pin_pages(unsigned long first_page,
+ 	ret = pin_user_pages_fast(first_page, requested_pages,
+ 				  !is_write ? FOLL_WRITE : 0,
+ 				  pages);
+-	if (ret <= 0)
++	if (ret < 0)
+ 		return -EFAULT;
+ 	if (ret < requested_pages)
+ 		*iter_last_page_size = PAGE_SIZE;
+diff --git a/drivers/staging/gasket/gasket_page_table.c b/drivers/staging/gasket/gasket_page_table.c
+index f6d7157..1d08e1d 100644
+--- a/drivers/staging/gasket/gasket_page_table.c
++++ b/drivers/staging/gasket/gasket_page_table.c
+@@ -489,11 +489,11 @@ static int gasket_perform_mapping(struct gasket_page_table *pg_tbl,
+ 			ret = get_user_pages_fast(page_addr - offset, 1,
+ 						  FOLL_WRITE, &page);
+ 
+-			if (ret <= 0) {
++			if (ret < 0) {
+ 				dev_err(pg_tbl->device,
+ 					"get user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
+ 					page_addr, offset, ret);
+-				return ret ? ret : -ENOMEM;
++				return ret;
+ 			}
+ 			++pg_tbl->num_active_pages;
+ 
+diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+index bd679b7..2706a1f 100644
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -230,7 +230,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
+ 	if (rc > 0)
+ 		shm->num_pages = rc;
+ 	if (rc != num_pages) {
+-		if (rc >= 0)
++		if (rc > 0)
+ 			rc = -ENOMEM;
+ 		ret = ERR_PTR(rc);
+ 		goto err;
+diff --git a/mm/gup.c b/mm/gup.c
+index 50681f0..8d293ed 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2760,7 +2760,7 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+ 	end = start + len;
+ 
+ 	if (end <= start)
+-		return 0;
++		return -EINVAL;
+ 	if (unlikely(!access_ok((void __user *)start, len)))
+ 		return -EFAULT;
+ 
+@@ -2805,8 +2805,8 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+  * calling get_user_pages().
+  *
+  * Returns number of pages pinned. This may be fewer than the number requested.
+- * If nr_pages is 0 or negative, returns 0. If no pages were pinned, returns
+- * -errno.
++ * If nr_pages is 0 or negative, returns -errno. If no pages were pinned,
++ * returns -errno.
+  */
+ int get_user_pages_fast(unsigned long start, int nr_pages,
+ 			unsigned int gup_flags, struct page **pages)
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index a7ae118..44b96e6 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -161,7 +161,7 @@ static int rds_pin_pages(unsigned long user_addr, unsigned int nr_pages,
+ 		gup_flags |= FOLL_WRITE;
+ 
+ 	ret = pin_user_pages_fast(user_addr, nr_pages, gup_flags, pages);
+-	if (ret >= 0 && ret < nr_pages) {
++	if (ret > 0 && ret < nr_pages) {
+ 		unpin_user_pages(pages, ret);
+ 		ret = -EFAULT;
+ 	}
+-- 
+1.9.1
+
