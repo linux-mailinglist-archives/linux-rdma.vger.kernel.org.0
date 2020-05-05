@@ -2,164 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C711C5352
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2020 12:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062941C5445
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 May 2020 13:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgEEKa2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 May 2020 06:30:28 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33670 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728238AbgEEKa2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 May 2020 06:30:28 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B4876AB07BAA4742809B;
-        Tue,  5 May 2020 18:30:25 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 5 May 2020 18:30:16 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 3/3] RDMA/hns: Combine enable flags of qp
-Date:   Tue, 5 May 2020 18:30:07 +0800
-Message-ID: <1588674607-25337-4-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1588674607-25337-1-git-send-email-liweihang@huawei.com>
-References: <1588674607-25337-1-git-send-email-liweihang@huawei.com>
+        id S1728233AbgEELTz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 5 May 2020 07:19:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9740 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725766AbgEELTz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 May 2020 07:19:55 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045B21iO113240
+        for <linux-rdma@vger.kernel.org>; Tue, 5 May 2020 07:19:54 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.82])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4v7wx3y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 05 May 2020 07:19:54 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 5 May 2020 11:19:53 -0000
+Received: from us1a3-smtp06.a3.dal06.isc4sb.com (10.146.103.243)
+        by smtp.notes.na.collabserv.com (10.106.227.105) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 5 May 2020 11:19:46 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp06.a3.dal06.isc4sb.com
+          with ESMTP id 2020050511194631-333310 ;
+          Tue, 5 May 2020 11:19:46 +0000 
+In-Reply-To: <20200428200043.GA930@chelsio.com>
+Subject: Re: Re: [RFC PATCH] RDMA/siw: Experimental e2e negotiation of GSO usage.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     faisal.latif@intel.com, shiraz.saleem@intel.com,
+        mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Date:   Tue, 5 May 2020 11:19:46 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200428200043.GA930@chelsio.com>,<20200415105135.GA8246@chelsio.com>
+ <20200414144822.2365-1-bmt@zurich.ibm.com>
+ <OFA289A103.141EDDE1-ON0025854B.003ED42A-0025854B.0041DBD8@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
+X-LLNOutbound: False
+X-Disclaimed: 59427
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20050511-9463-0000-0000-000003281068
+X-IBM-SpamModules-Scores: BY=0.129154; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.042408
+X-IBM-SpamModules-Versions: BY=3.00013032; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000294; SDB=6.01372279; UDB=6.00733266; IPR=6.01154647;
+ MB=3.00032012; MTD=3.00000008; XFM=3.00000015; UTC=2020-05-05 11:19:52
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-05-05 00:19:28 - 6.00011323
+x-cbparentid: 20050511-9464-0000-0000-0000194C10C4
+Message-Id: <OF0315D264.505117BA-ON0025855F.0039BD43-0025855F.003E3C2B@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-05_06:2020-05-04,2020-05-05 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
 
-It's easier to understand and maintain enable flags of qp using a single
-field in type of unsigned long than defining a field for every flags in
-the structure hns_roce_qp, and we can add new flags for features more
-conveniently in the future.
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  7 +++----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  2 +-
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 22 +++++++++++-----------
- 3 files changed, 15 insertions(+), 16 deletions(-)
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 04/28/2020 10:01PM
+>Cc: faisal.latif@intel.com, shiraz.saleem@intel.com,
+>mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
+>jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
+>nirranjan@chelsio.com
+>Subject: [EXTERNAL] Re: [RFC PATCH] RDMA/siw: Experimental e2e
+>negotiation of GSO usage.
+>
+>On Wednesday, April 04/15/20, 2020 at 11:59:21 +0000, Bernard Metzler
+>wrote:
+>Hi Bernard,
+>
+>The attached patches enables the GSO negotiation code in SIW with
+>few modifications, and also allows hardware iwarp drivers to
+>advertise
+>their max length(in 16/32/64KB granularity) that they can accept.
+>The logic is almost similar to how TCP SYN MSS announcements works
+>while
+>3-way handshake.
+>
+>Please see if this approach works better for softiwarp <=> hardiwarp
+>case.
+>
+>Thanks,
+>Krishna. 
+>
+Hi Krishna,
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 6ecdd7dd..b6ee875 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -132,8 +132,8 @@ enum {
- };
- 
- enum {
--	HNS_ROCE_SUPPORT_RQ_RECORD_DB = 1 << 0,
--	HNS_ROCE_SUPPORT_SQ_RECORD_DB = 1 << 1,
-+	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
-+	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
- };
- 
- enum {
-@@ -677,8 +677,7 @@ struct hns_roce_qp {
- 	struct hns_roce_wq	rq;
- 	struct hns_roce_db	rdb;
- 	struct hns_roce_db	sdb;
--	u8			rdb_en;
--	u8			sdb_en;
-+	unsigned long		en_flags;
- 	u32			doorbell_qpn;
- 	u32			sq_signal_bits;
- 	struct hns_roce_wq	sq;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 500b4c3..5d5aedd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3546,7 +3546,7 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
- 	roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_VLAN_ID_M,
- 		       V2_QPC_BYTE_24_VLAN_ID_S, 0xfff);
- 
--	if (hr_qp->rdb_en)
-+	if (hr_qp->en_flags & HNS_ROCE_QP_CAP_RQ_RECORD_DB)
- 		roce_set_bit(context->byte_68_rq_db,
- 			     V2_QPC_BYTE_68_RQ_RECORD_EN_S, 1);
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index d05d3cb..5b1ef08 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -822,8 +822,8 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 					  "Failed to map user SQ doorbell\n");
- 				goto err_out;
- 			}
--			hr_qp->sdb_en = 1;
--			resp->cap_flags |= HNS_ROCE_SUPPORT_SQ_RECORD_DB;
-+			hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
-+			resp->cap_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
- 		}
- 
- 		if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
-@@ -834,8 +834,8 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 					  "Failed to map user RQ doorbell\n");
- 				goto err_sdb;
- 			}
--			hr_qp->rdb_en = 1;
--			resp->cap_flags |= HNS_ROCE_SUPPORT_RQ_RECORD_DB;
-+			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
-+			resp->cap_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
- 		}
- 	} else {
- 		/* QP doorbell register address */
-@@ -852,13 +852,13 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 				goto err_out;
- 			}
- 			*hr_qp->rdb.db_record = 0;
--			hr_qp->rdb_en = 1;
-+			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
- 		}
- 	}
- 
- 	return 0;
- err_sdb:
--	if (udata && hr_qp->sdb_en)
-+	if (udata && hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
- 		hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
- err_out:
- 	return ret;
-@@ -871,12 +871,12 @@ static void free_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		udata, struct hns_roce_ucontext, ibucontext);
- 
- 	if (udata) {
--		if (hr_qp->rdb_en)
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_RQ_RECORD_DB)
- 			hns_roce_db_unmap_user(uctx, &hr_qp->rdb);
--		if (hr_qp->sdb_en)
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
- 			hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
- 	} else {
--		if (hr_qp->rdb_en)
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_RQ_RECORD_DB)
- 			hns_roce_free_db(hr_dev, &hr_qp->rdb);
- 	}
- }
-@@ -1249,10 +1249,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 	if (ibqp->uobject &&
- 	    (attr_mask & IB_QP_STATE) && new_state == IB_QPS_ERR) {
--		if (hr_qp->sdb_en == 1) {
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB) {
- 			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
- 
--			if (hr_qp->rdb_en == 1)
-+			if (hr_qp->en_flags & HNS_ROCE_QP_CAP_RQ_RECORD_DB)
- 				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
- 		} else {
- 			ibdev_warn(&hr_dev->ib_dev,
--- 
-2.8.1
+Thanks for providing this. I have a few comments:
+
+It would be good if we can look at patches inlined in the
+email body, as usual.
+
+Before further discussing a complex solution as suggested
+here, I would like to hear comments from other iWarp HW
+vendors on their capabilities regarding GSO frame acceptance
+and potential preferences. 
+
+The extension proposed here goes beyond what I initially sent
+as a proposed patch. From an siw point of view, it is straight
+forward to select using GSO or not, depending on the iWarp peer
+ability to process large frames. What is proposed here is a
+end-to-end negotiation of the actual frame size.
+
+A comment in the patch you sent suggests adding a module
+parameter. Module parameters are deprecated, and I removed any
+of those from siw when it went upstream. I don't think we can
+rely on that mechanism.
+
+siw has a compile time parameter (yes, that was a module
+parameter) which can set the maximum tx frame size (in multiples
+of MTU size). Any static setup of siw <-> Chelsio could make
+use of that as a work around.
+
+I wonder if it would be a better idea to look into an extension
+of the rdma netlink protocol, which would allow setting driver
+specific parameters per port, or even per QP.
+I assume there are more potential use cases for driver private
+extensions of the rdma netlink interface?
+
+Thanks a lot!
+Bernard.
 
