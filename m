@@ -2,100 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177E51C677B
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 07:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD2A1C6852
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 08:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgEFFcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 May 2020 01:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725796AbgEFFcT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 May 2020 01:32:19 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1F3520714;
-        Wed,  6 May 2020 05:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588743139;
-        bh=0a/MR5nokuh2cJqHQK1MkFW2yKgYcIwvRQIvyg7ZE4k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KvERTAX8wtk1LVkebSo1QVN0cl/HtlEcCoAruptmhjyfbVR0rK2UT9y1ZQxypaQON
-         CFebS7emMngg3kQ42MQ1EoUqWjbzeJWyRzx4rBcjAT358zDsETsv+3qR8rSONI3rN3
-         oTjiO0nKXzA9+QlNyRRqoQldnPMUMDcwnhTzb0EA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc v1] IB/core: Fix potential NULL pointer dereference in pkey cache
-Date:   Wed,  6 May 2020 08:32:13 +0300
-Message-Id: <20200506053213.566264-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1727904AbgEFGRT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 May 2020 02:17:19 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:57678 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725873AbgEFGRT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 May 2020 02:17:19 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B6409B257A0EA51397D2;
+        Wed,  6 May 2020 14:17:16 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
+ 14:17:09 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <tariqt@mellanox.com>, <davem@davemloft.net>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH net-next] net: mlx4: remove unneeded variable "err" in mlx4_en_get_rxfh()
+Date:   Wed, 6 May 2020 14:16:30 +0800
+Message-ID: <20200506061630.19010-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+Fix the following coccicheck warning:
 
-The IB core pkey cache is populated by procedure ib_cache_update().
-Initially, the pkey cache pointer is NULL. ib_cache_update allocates
-a buffer and populates it with the device's pkeys, via repeated calls
-to procedure ib_query_pkey().
+drivers/net/ethernet/mellanox/mlx4/en_ethtool.c:1238:5-8: Unneeded
+variable: "err". Return "0" on line 1252
 
-If there is a failure in populating the pkey buffer via ib_query_pkey(),
-ib_cache_update does not replace the old pkey buffer cache with the
-updated one -- it leaves the old cache as is.
-
-Since initially the pkey buffer cache is NULL, when calling
-ib_cache_update the first time, a failure in ib_query_pkey() will cause
-the pkey buffer cache pointer to remain NULL.
-
-In this situation, any calls subsequent to ib_get_cached_pkey(),
-ib_find_cached_pkey(), or ib_find_cached_pkey_exact() will try to
-dereference the NULL pkey cache pointer, causing a kernel panic.
-
-Fix this by checking the ib_cache_update() return value.
-
-Fixes: 8faea9fd4a39 ("RDMA/cache: Move the cache per-port data into the main ib_port_data")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
-Changelog:
-v1: I rewrote the patch to take care of ib_cache_update() return value.
-v0: https://lore.kernel.org/linux-rdma/20200426075811.129814-1-leon@kernel.org
----
- drivers/infiniband/core/cache.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 717b798cddad..1cbebfa374a5 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1553,10 +1553,17 @@ int ib_cache_setup_one(struct ib_device *device)
- 	if (err)
- 		return err;
-
--	rdma_for_each_port (device, p)
--		ib_cache_update(device, p, true);
-+	rdma_for_each_port (device, p) {
-+		err = ib_cache_update(device, p, true);
-+		if (err)
-+			goto out;
-+	}
-
- 	return 0;
-+
-+out:
-+	ib_cache_release_one(device);
-+	return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index 8a5ea2543670..216e6b2e9eed 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -1235,7 +1235,6 @@ static int mlx4_en_get_rxfh(struct net_device *dev, u32 *ring_index, u8 *key,
+ 	struct mlx4_en_priv *priv = netdev_priv(dev);
+ 	u32 n = mlx4_en_get_rxfh_indir_size(dev);
+ 	u32 i, rss_rings;
+-	int err = 0;
+ 
+ 	rss_rings = priv->prof->rss_rings ?: n;
+ 	rss_rings = rounddown_pow_of_two(rss_rings);
+@@ -1249,7 +1248,7 @@ static int mlx4_en_get_rxfh(struct net_device *dev, u32 *ring_index, u8 *key,
+ 		memcpy(key, priv->rss_key, MLX4_EN_RSS_KEY_SIZE);
+ 	if (hfunc)
+ 		*hfunc = priv->rss_hash_fn;
+-	return err;
++	return 0;
  }
-
- void ib_cache_release_one(struct ib_device *device)
---
-2.26.2
+ 
+ static int mlx4_en_set_rxfh(struct net_device *dev, const u32 *ring_index,
+-- 
+2.21.1
 
