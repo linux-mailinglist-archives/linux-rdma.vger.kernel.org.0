@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE3B1C6B95
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 10:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C051C6B99
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 10:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgEFIYy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 May 2020 04:24:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59886 "EHLO mail.kernel.org"
+        id S1728367AbgEFIZF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 May 2020 04:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727956AbgEFIYx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 May 2020 04:24:53 -0400
+        id S1727956AbgEFIZF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 May 2020 04:25:05 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4525E2073A;
-        Wed,  6 May 2020 08:24:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EA412073A;
+        Wed,  6 May 2020 08:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588753493;
-        bh=rB4OA+cYM09bEtzHkzDzdX5hcdfgB1/5uPcZNAxJwJQ=;
+        s=default; t=1588753503;
+        bh=3Prd8Kzy8cbISokUNqHAUMi2NypAyqs6KHQcT7hsteA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Os7hAEtDezIWY2JxZgqG2I/wECIWR+2FpoXJkcM6E/qimHFLZbGuLrPhJ9S4JOWUL
-         2RbT6SLF2O9JWWcCoyAFGrO13m1qWUHG/PKmExYqB1N3YEWGd3pXW4//2olfmES5cE
-         Yv7SI83LZYDYU69tCctO6IholT8Z2KYDQKSzvozY=
+        b=fvlTp0q+QcjusArsJ37yhTlC2f+bVPgytofOlxeyoLG+2aC1zdzgf44m26WFRn8da
+         Q91er+l/tYeQ8rfmrj3jVEwYhDrO/b+1KSld+O79WMkQQlC/uk7oDARWsyKTgqED0/
+         A/PuwwdhP/3WADE6xPOGgXPcyk/Q+EPGEIEsaQtY=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next v1 01/10] RDMA/core: Allow the ioctl layer to abort a fully created uobject
-Date:   Wed,  6 May 2020 11:24:35 +0300
-Message-Id: <20200506082444.14502-2-leon@kernel.org>
+Cc:     Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 02/10] IB/uverbs: Refactor related objects to use their own asynchronous event FD
+Date:   Wed,  6 May 2020 11:24:36 +0300
+Message-Id: <20200506082444.14502-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200506082444.14502-1-leon@kernel.org>
 References: <20200506082444.14502-1-leon@kernel.org>
@@ -40,426 +40,221 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Yishai Hadas <yishaih@mellanox.com>
 
-While creating a uobject every create reaches a point where the uobject is
-fully initialized. For ioctls that go on to copy_to_user this means they
-need to open code the destruction of a fully created uobject - ie the
-RDMA_REMOVE_DESTROY sort of flow.
-
-Open coding this creates bugs, eg the CQ does not properly flush the
-events list when it does its error unwind.
-
-Provide a uverbs_finalize_uobj_create() function which indicates that the
-uobject is fully initialized and that abort should call to to destroy_hw
-to destroy the uobj->object and related.
-
-Methods can call this function if they go on to have error cases after
-setting uobj->object. Once done those error cases can simply do return,
-without an error unwind.
+Refactor related objects to use their own asynchronous event FD.
+The ufile event FD will be the default in case an object won't have its own
+event FD.
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/rdma_core.c           | 28 +++++++++++++++----
- drivers/infiniband/core/rdma_core.h           |  4 +--
- drivers/infiniband/core/uverbs_cmd.c          |  2 +-
- drivers/infiniband/core/uverbs_ioctl.c        | 22 +++++++++++++--
- drivers/infiniband/core/uverbs_std_types_cq.c |  8 ++----
- drivers/infiniband/core/uverbs_std_types_mr.c | 12 ++------
- drivers/infiniband/hw/mlx5/devx.c             | 10 +++----
- drivers/infiniband/hw/mlx5/main.c             | 24 ++++------------
- drivers/infiniband/hw/mlx5/qos.c              | 13 ++++-----
- include/rdma/ib_verbs.h                       |  5 ++++
- include/rdma/uverbs_ioctl.h                   |  3 ++
- include/rdma/uverbs_std_types.h               |  2 +-
- include/rdma/uverbs_types.h                   |  3 +-
- 13 files changed, 76 insertions(+), 60 deletions(-)
+ drivers/infiniband/core/uverbs.h              |  3 ++-
+ drivers/infiniband/core/uverbs_cmd.c          | 24 ++++++++++++++++++-
+ drivers/infiniband/core/uverbs_main.c         | 16 ++++++-------
+ drivers/infiniband/core/uverbs_std_types_cq.c |  6 +++++
+ 4 files changed, 39 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 5128cb16bb48..9724e3de27f3 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -130,6 +130,17 @@ static int uverbs_destroy_uobject(struct ib_uobject *uobj,
- 	lockdep_assert_held(&ufile->hw_destroy_rwsem);
- 	assert_uverbs_usecnt(uobj, UVERBS_LOOKUP_WRITE);
+diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+index 7df71983212d..55b47f110183 100644
+--- a/drivers/infiniband/core/uverbs.h
++++ b/drivers/infiniband/core/uverbs.h
+@@ -142,7 +142,7 @@ struct ib_uverbs_file {
+ 	 * ucontext_lock held
+ 	 */
+ 	struct ib_ucontext		       *ucontext;
+-	struct ib_uverbs_async_event_file      *async_file;
++	struct ib_uverbs_async_event_file      *default_async_file;
+ 	struct list_head			list;
  
-+	if (reason == RDMA_REMOVE_ABORT_HWOBJ) {
-+		reason = RDMA_REMOVE_ABORT;
-+		ret = uobj->uapi_object->type_class->destroy_hw(uobj, reason,
-+								attrs);
-+		/*
-+		 * Drivers are not permitted to ignore RDMA_REMOVE_ABORT, see
-+		 * ib_is_destroy_retryable, cleanup_retryable == false here.
-+		 */
-+		WARN_ON(ret);
-+	}
-+
- 	if (reason == RDMA_REMOVE_ABORT) {
- 		WARN_ON(!list_empty(&uobj->list));
- 		WARN_ON(!uobj->context);
-@@ -647,11 +658,15 @@ void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
-  * object and anything else connected to uobj before calling this.
-  */
- void rdma_alloc_abort_uobject(struct ib_uobject *uobj,
--			      struct uverbs_attr_bundle *attrs)
-+			      struct uverbs_attr_bundle *attrs,
-+			      bool hw_obj_valid)
- {
- 	struct ib_uverbs_file *ufile = uobj->ufile;
- 
--	uverbs_destroy_uobject(uobj, RDMA_REMOVE_ABORT, attrs);
-+	uverbs_destroy_uobject(uobj,
-+			       hw_obj_valid ? RDMA_REMOVE_ABORT_HWOBJ :
-+					      RDMA_REMOVE_ABORT,
-+			       attrs);
- 
- 	/* Matches the down_read in rdma_alloc_begin_uobject */
- 	up_read(&ufile->hw_destroy_rwsem);
-@@ -766,7 +781,8 @@ int uverbs_uobject_fd_release(struct inode *inode, struct file *filp)
- 		 * method from being invoked. Meaning we can always get the
- 		 * write lock here, or we have a kernel bug.
- 		 */
--		WARN_ON(uverbs_try_lock_object(uobj, UVERBS_LOOKUP_WRITE));
-+		WARN_ON(uverbs_try_lock_object(uobj,
-+					       UVERBS_LOOKUP_WRITE));
- 		uverbs_destroy_uobject(uobj, RDMA_REMOVE_CLOSE, &attrs);
- 		up_read(&ufile->hw_destroy_rwsem);
- 	}
-@@ -921,8 +937,8 @@ uverbs_get_uobject_from_file(u16 object_id, enum uverbs_obj_access access,
- }
- 
- void uverbs_finalize_object(struct ib_uobject *uobj,
--			    enum uverbs_obj_access access, bool commit,
--			    struct uverbs_attr_bundle *attrs)
-+			    enum uverbs_obj_access access, bool hw_obj_valid,
-+			    bool commit, struct uverbs_attr_bundle *attrs)
- {
  	/*
- 	 * refcounts should be handled at the object level and not at the
-@@ -945,7 +961,7 @@ void uverbs_finalize_object(struct ib_uobject *uobj,
- 		if (commit)
- 			rdma_alloc_commit_uobject(uobj, attrs);
- 		else
--			rdma_alloc_abort_uobject(uobj, attrs);
-+			rdma_alloc_abort_uobject(uobj, attrs, hw_obj_valid);
- 		break;
- 	default:
- 		WARN_ON(true);
-diff --git a/drivers/infiniband/core/rdma_core.h b/drivers/infiniband/core/rdma_core.h
-index 33978e0f1262..2b529233e159 100644
---- a/drivers/infiniband/core/rdma_core.h
-+++ b/drivers/infiniband/core/rdma_core.h
-@@ -64,8 +64,8 @@ uverbs_get_uobject_from_file(u16 object_id, enum uverbs_obj_access access,
- 			     s64 id, struct uverbs_attr_bundle *attrs);
+@@ -180,6 +180,7 @@ struct ib_uverbs_mcast_entry {
  
- void uverbs_finalize_object(struct ib_uobject *uobj,
--			    enum uverbs_obj_access access, bool commit,
--			    struct uverbs_attr_bundle *attrs);
-+			    enum uverbs_obj_access access, bool hw_obj_valid,
-+			    bool commit, struct uverbs_attr_bundle *attrs);
- 
- int uverbs_output_written(const struct uverbs_attr_bundle *bundle, size_t idx);
- 
+ struct ib_uevent_object {
+ 	struct ib_uobject	uobject;
++	struct ib_uverbs_async_event_file *event_file;
+ 	/* List member for ib_uverbs_async_event_file list */
+ 	struct list_head	event_list;
+ 	u32			events_reported;
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 060b4ebbd2ba..7959f618b8a5 100644
+index 7959f618b8a5..1d147beaf4cc 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -311,7 +311,7 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
- 	return 0;
- 
- err_uobj:
--	rdma_alloc_abort_uobject(uobj, attrs);
-+	rdma_alloc_abort_uobject(uobj, attrs, false);
- err_ucontext:
- 	kfree(attrs->context);
- 	attrs->context = NULL;
-diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
-index 538affbc517e..42c5696f03bd 100644
---- a/drivers/infiniband/core/uverbs_ioctl.c
-+++ b/drivers/infiniband/core/uverbs_ioctl.c
-@@ -58,6 +58,7 @@ struct bundle_priv {
- 
- 	DECLARE_BITMAP(uobj_finalize, UVERBS_API_ATTR_BKEY_LEN);
- 	DECLARE_BITMAP(spec_finalize, UVERBS_API_ATTR_BKEY_LEN);
-+	DECLARE_BITMAP(uobj_hw_obj_valid, UVERBS_API_ATTR_BKEY_LEN);
- 
- 	/*
- 	 * Must be last. bundle ends in a flex array which overlaps
-@@ -230,7 +231,8 @@ static void uverbs_free_idrs_array(const struct uverbs_api_attr *attr_uapi,
- 
- 	for (i = 0; i != attr->len; i++)
- 		uverbs_finalize_object(attr->uobjects[i],
--				       spec->u2.objs_arr.access, commit, attrs);
-+				       spec->u2.objs_arr.access, false, commit,
-+				       attrs);
- }
- 
- static int uverbs_process_attr(struct bundle_priv *pbundle,
-@@ -502,7 +504,9 @@ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
- 
- 		uverbs_finalize_object(
- 			attr->obj_attr.uobject,
--			attr->obj_attr.attr_elm->spec.u.obj.access, commit,
-+			attr->obj_attr.attr_elm->spec.u.obj.access,
-+			test_bit(i, pbundle->uobj_hw_obj_valid),
-+			commit,
- 			&pbundle->bundle);
- 	}
- 
-@@ -590,6 +594,8 @@ static int ib_uverbs_cmd_verbs(struct ib_uverbs_file *ufile,
- 	       sizeof(pbundle->bundle.attr_present));
- 	memset(pbundle->uobj_finalize, 0, sizeof(pbundle->uobj_finalize));
- 	memset(pbundle->spec_finalize, 0, sizeof(pbundle->spec_finalize));
-+	memset(pbundle->uobj_hw_obj_valid, 0,
-+	       sizeof(pbundle->uobj_hw_obj_valid));
- 
- 	ret = ib_uverbs_run_method(pbundle, hdr->num_attrs);
- 	bundle_destroy(pbundle, ret == 0);
-@@ -784,3 +790,15 @@ int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
- 	}
- 	return uverbs_copy_to(bundle, idx, from, size);
- }
-+
-+/* Once called an abort will call through to the type's destroy_hw() */
-+void uverbs_finalize_uobj_create(const struct uverbs_attr_bundle *bundle,
-+				 u16 idx)
-+{
-+	struct bundle_priv *pbundle =
-+		container_of(bundle, struct bundle_priv, bundle);
-+
-+	__set_bit(uapi_bkey_attr(uapi_key_attr(idx)),
-+		  pbundle->uobj_hw_obj_valid);
-+}
-+EXPORT_SYMBOL(uverbs_finalize_uobj_create);
-diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-index da4110a0eea2..47b98b0e1464 100644
---- a/drivers/infiniband/core/uverbs_std_types_cq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-@@ -125,6 +125,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
- 	if (ret)
+@@ -1051,6 +1051,10 @@ static struct ib_ucq_object *create_cq(struct uverbs_attr_bundle *attrs,
  		goto err_free;
-+	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_CREATE_CQ_HANDLE);
  
  	obj->uevent.uobject.object = cq;
- 	obj->uevent.uobject.user_handle = user_handle;
-@@ -132,13 +133,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
++	obj->uevent.event_file = attrs->ufile->default_async_file;
++	if (obj->uevent.event_file)
++		uverbs_uobject_get(&obj->uevent.event_file->uobj);
++
+ 	memset(&resp, 0, sizeof resp);
+ 	resp.base.cq_handle = obj->uevent.uobject.id;
+ 	resp.base.cqe       = cq->cqe;
+@@ -1067,6 +1071,8 @@ static struct ib_ucq_object *create_cq(struct uverbs_attr_bundle *attrs,
+ 	return obj;
  
- 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_CQ_RESP_CQE, &cq->cqe,
- 			     sizeof(cq->cqe));
--	if (ret)
--		goto err_cq;
-+	return ret;
+ err_cb:
++	if (obj->uevent.event_file)
++		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ 	ib_destroy_cq_user(cq, uverbs_get_cleared_udata(attrs));
+ 	cq = NULL;
+ err_free:
+@@ -1460,6 +1466,9 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 	}
  
--	return 0;
--err_cq:
--	ib_destroy_cq_user(cq, uverbs_get_cleared_udata(attrs));
--	cq = NULL;
+ 	obj->uevent.uobject.object = qp;
++	obj->uevent.event_file = attrs->ufile->default_async_file;
++	if (obj->uevent.event_file)
++		uverbs_uobject_get(&obj->uevent.event_file->uobj);
+ 
+ 	memset(&resp, 0, sizeof resp);
+ 	resp.base.qpn             = qp->qp_num;
+@@ -1473,7 +1482,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 
+ 	ret = uverbs_response(attrs, &resp, sizeof(resp));
+ 	if (ret)
+-		goto err_cb;
++		goto err_uevent;
+ 
+ 	if (xrcd) {
+ 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
+@@ -1498,6 +1507,9 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 
+ 	rdma_alloc_commit_uobject(&obj->uevent.uobject, attrs);
+ 	return 0;
++err_uevent:
++	if (obj->uevent.event_file)
++		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ err_cb:
+ 	ib_destroy_qp_user(qp, uverbs_get_cleared_udata(attrs));
+ 
+@@ -2978,6 +2990,9 @@ static int ib_uverbs_ex_create_wq(struct uverbs_attr_bundle *attrs)
+ 	atomic_inc(&cq->usecnt);
+ 	wq->uobject = obj;
+ 	obj->uevent.uobject.object = wq;
++	obj->uevent.event_file = attrs->ufile->default_async_file;
++	if (obj->uevent.event_file)
++		uverbs_uobject_get(&obj->uevent.event_file->uobj);
+ 
+ 	memset(&resp, 0, sizeof(resp));
+ 	resp.wq_handle = obj->uevent.uobject.id;
+@@ -2996,6 +3011,8 @@ static int ib_uverbs_ex_create_wq(struct uverbs_attr_bundle *attrs)
+ 	return 0;
+ 
+ err_copy:
++	if (obj->uevent.event_file)
++		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ 	ib_destroy_wq(wq, uverbs_get_cleared_udata(attrs));
+ err_put_cq:
+ 	rdma_lookup_put_uobject(&cq->uobject->uevent.uobject,
+@@ -3481,6 +3498,9 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
+ 
+ 	obj->uevent.uobject.object = srq;
+ 	obj->uevent.uobject.user_handle = cmd->user_handle;
++	obj->uevent.event_file = attrs->ufile->default_async_file;
++	if (obj->uevent.event_file)
++		uverbs_uobject_get(&obj->uevent.event_file->uobj);
+ 
+ 	memset(&resp, 0, sizeof resp);
+ 	resp.srq_handle = obj->uevent.uobject.id;
+@@ -3505,6 +3525,8 @@ static int __uverbs_create_xsrq(struct uverbs_attr_bundle *attrs,
+ 	return 0;
+ 
+ err_copy:
++	if (obj->uevent.event_file)
++		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ 	ib_destroy_srq_user(srq, uverbs_get_cleared_udata(attrs));
+ 	/* It was released in ib_destroy_srq_user */
+ 	srq = NULL;
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index d52eb870533b..267904e41837 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -146,8 +146,7 @@ void ib_uverbs_release_ucq(struct ib_uverbs_completion_event_file *ev_file,
+ 
+ void ib_uverbs_release_uevent(struct ib_uevent_object *uobj)
+ {
+-	struct ib_uverbs_async_event_file *async_file =
+-		READ_ONCE(uobj->uobject.ufile->async_file);
++	struct ib_uverbs_async_event_file *async_file = uobj->event_file;
+ 	struct ib_uverbs_event *evt, *tmp;
+ 
+ 	if (!async_file)
+@@ -159,6 +158,7 @@ void ib_uverbs_release_uevent(struct ib_uevent_object *uobj)
+ 		kfree(evt);
+ 	}
+ 	spin_unlock_irq(&async_file->ev_queue.lock);
++	uverbs_uobject_put(&async_file->uobj);
+ }
+ 
+ void ib_uverbs_detach_umcast(struct ib_qp *qp,
+@@ -197,8 +197,8 @@ void ib_uverbs_release_file(struct kref *ref)
+ 	if (atomic_dec_and_test(&file->device->refcount))
+ 		ib_uverbs_comp_dev(file->device);
+ 
+-	if (file->async_file)
+-		uverbs_uobject_put(&file->async_file->uobj);
++	if (file->default_async_file)
++		uverbs_uobject_put(&file->default_async_file->uobj);
+ 	put_device(&file->device->dev);
+ 
+ 	if (file->disassociate_page)
+@@ -428,7 +428,7 @@ ib_uverbs_async_handler(struct ib_uverbs_async_event_file *async_file,
+ static void uverbs_uobj_event(struct ib_uevent_object *eobj,
+ 			      struct ib_event *event)
+ {
+-	ib_uverbs_async_handler(READ_ONCE(eobj->uobject.ufile->async_file),
++	ib_uverbs_async_handler(eobj->event_file,
+ 				eobj->uobject.user_handle, event->event,
+ 				&eobj->event_list, &eobj->events_reported);
+ }
+@@ -485,10 +485,10 @@ void ib_uverbs_init_async_event_file(
+ 
+ 	/* The first async_event_file becomes the default one for the file. */
+ 	mutex_lock(&uverbs_file->ucontext_lock);
+-	if (!uverbs_file->async_file) {
++	if (!uverbs_file->default_async_file) {
+ 		/* Pairs with the put in ib_uverbs_release_file */
+ 		uverbs_uobject_get(&async_file->uobj);
+-		smp_store_release(&uverbs_file->async_file, async_file);
++		smp_store_release(&uverbs_file->default_async_file, async_file);
+ 	}
+ 	mutex_unlock(&uverbs_file->ucontext_lock);
+ 
+@@ -1188,7 +1188,7 @@ static void ib_uverbs_free_hw_resources(struct ib_uverbs_device *uverbs_dev,
+ 		 */
+ 		mutex_unlock(&uverbs_dev->lists_mutex);
+ 
+-		ib_uverbs_async_handler(READ_ONCE(file->async_file), 0,
++		ib_uverbs_async_handler(READ_ONCE(file->default_async_file), 0,
+ 					IB_EVENT_DEVICE_FATAL, NULL, NULL);
+ 
+ 		uverbs_destroy_ufile_hw(file, RDMA_REMOVE_DRIVER_REMOVE);
+diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
+index 47b98b0e1464..59617c8b88ea 100644
+--- a/drivers/infiniband/core/uverbs_std_types_cq.c
++++ b/drivers/infiniband/core/uverbs_std_types_cq.c
+@@ -100,6 +100,10 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+ 		uverbs_uobject_get(ev_file_uobj);
+ 	}
+ 
++	obj->uevent.event_file = attrs->ufile->default_async_file;
++	if (obj->uevent.event_file)
++		uverbs_uobject_get(&obj->uevent.event_file->uobj);
++
+ 	if (attr.comp_vector >= attrs->ufile->device->num_comp_vectors) {
+ 		ret = -EINVAL;
+ 		goto err_event_file;
+@@ -138,6 +142,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
  err_free:
  	kfree(cq);
  err_event_file:
-diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
-index c1286a52dc84..a2722ef8496e 100644
---- a/drivers/infiniband/core/uverbs_std_types_mr.c
-+++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-@@ -136,21 +136,15 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
- 
- 	uobj->object = mr;
- 
-+	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_REG_DM_MR_HANDLE);
-+
- 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DM_MR_RESP_LKEY, &mr->lkey,
- 			     sizeof(mr->lkey));
- 	if (ret)
--		goto err_dereg;
-+		return ret;
- 
- 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DM_MR_RESP_RKEY,
- 			     &mr->rkey, sizeof(mr->rkey));
--	if (ret)
--		goto err_dereg;
--
--	return 0;
--
--err_dereg:
--	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
--
++	if (obj->uevent.event_file)
++		uverbs_uobject_put(&obj->uevent.event_file->uobj);
+ 	if (ev_file)
+ 		uverbs_uobject_put(ev_file_uobj);
  	return ret;
- }
- 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 1d7feed6d3cb..e11fa7cde254 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -2217,14 +2217,12 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_UMEM_REG)(
- 	obj->mdev = dev->mdev;
- 	uobj->object = obj;
- 	devx_obj_build_destroy_cmd(cmd.in, cmd.out, obj->dinbox, &obj->dinlen, &obj_id);
--	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_DEVX_UMEM_REG_OUT_ID, &obj_id, sizeof(obj_id));
--	if (err)
--		goto err_umem_destroy;
-+	uverbs_finalize_uobj_create(attrs, MLX5_IB_ATTR_DEVX_UMEM_REG_HANDLE);
- 
--	return 0;
-+	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_DEVX_UMEM_REG_OUT_ID, &obj_id,
-+			     sizeof(obj_id));
-+	return err;
- 
--err_umem_destroy:
--	mlx5_cmd_exec(obj->mdev, obj->dinbox, obj->dinlen, cmd.out, sizeof(cmd.out));
- err_umem_release:
- 	ib_umem_release(obj->umem);
- err_obj_free:
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 65790e2b442c..fef018a393b3 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6193,26 +6193,20 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_ALLOC)(
- 	mmap_offset = mlx5_entry_to_mmap_offset(entry);
- 	length = entry->rdma_entry.npages * PAGE_SIZE;
- 	uobj->object = entry;
-+	uverbs_finalize_uobj_create(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_HANDLE);
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_OFFSET,
- 			     &mmap_offset, sizeof(mmap_offset));
- 	if (err)
--		goto err;
-+		return err;
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_PAGE_ID,
- 			     &entry->page_idx, sizeof(entry->page_idx));
- 	if (err)
--		goto err;
-+		return err;
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_LENGTH,
- 			     &length, sizeof(length));
--	if (err)
--		goto err;
--
--	return 0;
--
--err:
--	rdma_user_mmap_entry_remove(&entry->rdma_entry);
- 	return err;
- }
- 
-@@ -6326,26 +6320,20 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_UAR_OBJ_ALLOC)(
- 	mmap_offset = mlx5_entry_to_mmap_offset(entry);
- 	length = entry->rdma_entry.npages * PAGE_SIZE;
- 	uobj->object = entry;
-+	uverbs_finalize_uobj_create(attrs, MLX5_IB_ATTR_UAR_OBJ_ALLOC_HANDLE);
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_UAR_OBJ_ALLOC_MMAP_OFFSET,
- 			     &mmap_offset, sizeof(mmap_offset));
- 	if (err)
--		goto err;
-+		return err;
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_UAR_OBJ_ALLOC_PAGE_ID,
- 			     &entry->page_idx, sizeof(entry->page_idx));
- 	if (err)
--		goto err;
-+		return err;
- 
- 	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_UAR_OBJ_ALLOC_MMAP_LENGTH,
- 			     &length, sizeof(length));
--	if (err)
--		goto err;
--
--	return 0;
--
--err:
--	rdma_user_mmap_entry_remove(&entry->rdma_entry);
- 	return err;
- }
- 
-diff --git a/drivers/infiniband/hw/mlx5/qos.c b/drivers/infiniband/hw/mlx5/qos.c
-index cac878a70edb..dce92554142a 100644
---- a/drivers/infiniband/hw/mlx5/qos.c
-+++ b/drivers/infiniband/hw/mlx5/qos.c
-@@ -69,17 +69,14 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_PP_OBJ_ALLOC)(
- 	if (err)
- 		goto err;
- 
--	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_PP_OBJ_ALLOC_INDEX,
--			     &pp_entry->index, sizeof(pp_entry->index));
--	if (err)
--		goto clean;
--
- 	pp_entry->mdev = dev->mdev;
- 	uobj->object = pp_entry;
--	return 0;
-+	uverbs_finalize_uobj_create(attrs, MLX5_IB_ATTR_PP_OBJ_ALLOC_HANDLE);
-+
-+	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_PP_OBJ_ALLOC_INDEX,
-+			     &pp_entry->index, sizeof(pp_entry->index));
-+	return err;
- 
--clean:
--	mlx5_rl_remove_rate_raw(dev->mdev, pp_entry->index);
- err:
- 	kfree(pp_entry);
- 	return err;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 4c488cade70f..40f304bc199c 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1463,6 +1463,11 @@ enum rdma_remove_reason {
- 	RDMA_REMOVE_DRIVER_REMOVE,
- 	/* uobj is being cleaned-up before being committed */
- 	RDMA_REMOVE_ABORT,
-+	/*
-+	 * uobj has been fully created, with the uobj->object set, but is being
-+	 * cleaned up before being comitted
-+	 */
-+	RDMA_REMOVE_ABORT_HWOBJ,
- };
- 
- struct ib_rdmacg_object {
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index 9f3b1e004046..5bd2b037e914 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -737,6 +737,9 @@ uverbs_attr_get_len(const struct uverbs_attr_bundle *attrs_bundle, u16 idx)
- 	return attr->ptr_attr.len;
- }
- 
-+void uverbs_finalize_uobj_create(const struct uverbs_attr_bundle *attrs_bundle,
-+				 u16 idx);
-+
- /*
-  * uverbs_attr_ptr_get_array_size() - Get array size pointer by a ptr
-  * attribute.
-diff --git a/include/rdma/uverbs_std_types.h b/include/rdma/uverbs_std_types.h
-index 1b28ce1aba07..d6784be27e4b 100644
---- a/include/rdma/uverbs_std_types.h
-+++ b/include/rdma/uverbs_std_types.h
-@@ -107,7 +107,7 @@ static inline void uobj_put_write(struct ib_uobject *uobj)
- static inline void uobj_alloc_abort(struct ib_uobject *uobj,
- 				    struct uverbs_attr_bundle *attrs)
- {
--	rdma_alloc_abort_uobject(uobj, attrs);
-+	rdma_alloc_abort_uobject(uobj, attrs, false);
- }
- 
- static inline struct ib_uobject *
-diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
-index f1cbdae67250..c15b298aa62f 100644
---- a/include/rdma/uverbs_types.h
-+++ b/include/rdma/uverbs_types.h
-@@ -139,7 +139,8 @@ void rdma_lookup_put_uobject(struct ib_uobject *uobj,
- struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
- 					    struct uverbs_attr_bundle *attrs);
- void rdma_alloc_abort_uobject(struct ib_uobject *uobj,
--			      struct uverbs_attr_bundle *attrs);
-+			      struct uverbs_attr_bundle *attrs,
-+			      bool hw_obj_valid);
- void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
- 			       struct uverbs_attr_bundle *attrs);
- 
 -- 
 2.26.2
 
