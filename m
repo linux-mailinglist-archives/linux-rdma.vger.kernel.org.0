@@ -2,109 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5771C1C7B25
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 22:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E505B1C7B4B
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 22:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbgEFUXb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 May 2020 16:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S1728747AbgEFUcI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 May 2020 16:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726885AbgEFUXa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 May 2020 16:23:30 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28767C061A10
-        for <linux-rdma@vger.kernel.org>; Wed,  6 May 2020 13:23:30 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id t8so1507159qvw.5
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2020 13:23:30 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728733AbgEFUcI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 May 2020 16:32:08 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0127DC061A0F
+        for <linux-rdma@vger.kernel.org>; Wed,  6 May 2020 13:32:08 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id j2so2730538qtr.12
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2020 13:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=PLct8H8ECvP/P4KfFI7cH6fd3M4Zp5H05eJnTKTr5g8=;
-        b=J5zEJX4X2mmPLS5YyEgzW6kCR+x+K5MsaR8QE0Vdoa7v/1wavYPFZ16tjvw58Ww7Nf
-         wj6XDDEN6tDV4hQK93SOwDYDIDINAmbbPVzDRAo4Z/4EiXW0gv9yw9nwnCdP/OvAbabc
-         nIN65vaQWVMZ0vB2Odf+8Jmzh3IxtVQDmpO/DIe0/IbiWe8a0CFAwu/4SAu0gIGkiwGd
-         +YZcoblwMlXj+peTk4yquXrbbUd1Y5t8afLHnIp/olo7bpj1QRQuP217UasshWycW68/
-         hRWZnwTV98qgXkzlpq2MMrRWZvA85YOHM2bYljCF2PvhTsFwj8C+OShZhqZSkbD5qpt3
-         sfSw==
+        bh=rdFmNlXRLUtf3P408y1G7uci4bk3HSyTfGrbZmNqExw=;
+        b=crTTa6AOuZxZBQ5i/8omouQZLEr0uo/w54uJXyLWdTtdF7jFSU1LVYTbokvlMoXFZp
+         CPdAiiqeHTRZZ85ZIVhSAUDq4AJ7SSKeosZM8bpdEduHQIZH5hA1FidN4edrqaX7qpQo
+         9M/+KwS8fTyLzg24KdBCP+XjLIQD+42Y1c6rvcKGOWhtGL2eGR7VWNscP+RMufZktSvN
+         vtKX7w8HPlNTz4/Q3o85An5S+sxaNxRk3DtMDMzVgSZHexo3Xb2WCrMvm5nGR9KK2zZT
+         Rv74huWFyf10Znc5kxbNfgHVWjVoTrLkUXyZcD56dG3/ktMcAY6MKPWsiKG/ciiBfJRL
+         IU6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PLct8H8ECvP/P4KfFI7cH6fd3M4Zp5H05eJnTKTr5g8=;
-        b=CYgVbPpd6BRrkAabaa+xCKkVFuJ3fHyBXt9ynH9qG/QW3SenLiaVzu23HatOxpc57H
-         IBHNChUvGeOaaZxmUnu7WKE+oyjZc/o3NJwFzqwvBCI8Evxp/bse9y9Wmr749Gd10yLT
-         0yU/+vZ5bWT0nz83Jxt5VncXqdaA7gmmIYbyhTb+GU5DIQxrbXidUVuKuyCyDz41vWV/
-         lsXnSJTpUNLjqZtzA10qTqK0MxCHIJvgp4LNTju5qfWQeYVXidKbUhCfvAS2pih9vJUs
-         xNs+sDjWpiN4aYOzdNCxkhAgVb7q79qC8mqEOUjg3ymwj8/L1dUUy4ZhkHmaejRZz0wA
-         D8PA==
-X-Gm-Message-State: AGi0PuYndC8tU07cwWDuXRZqo4+NRRPr/yrTSH7QVBP2TRKmwvwvzj8p
-        oww8NLquidsbXqa4LNFxW/n4Rg==
-X-Google-Smtp-Source: APiQypLAv1bx6J8cI0qtP4yk44iiYlqFI/i8y4DdyPjbJ7WO16ikzFspNyhmWY9JoDHp2r3QjLyp+w==
-X-Received: by 2002:a0c:c28b:: with SMTP id b11mr9609965qvi.112.1588796609287;
-        Wed, 06 May 2020 13:23:29 -0700 (PDT)
+        bh=rdFmNlXRLUtf3P408y1G7uci4bk3HSyTfGrbZmNqExw=;
+        b=iNn8tfSchWFnbLvWgrOCVDrWb/+EvypoJIRfKtb0s/c6FZjA049s6KffXdNPmIU/Ng
+         t0hfelQFS4CtDo5XL2DFvG6c5X/sHkqOGDmMi5hxKZKbk4cdWmQ6f/j4xHeUc6ugCujX
+         vnI0moXJgnr91VhTf7yu9d8D1daA0FDLHhqC362UJ44659l2lpDifBhsqQTyeNKZXUk4
+         hkAU2MPvdAgOQOdeXJEfDE+7/Oib+IUnWSi1zksLAkYetrPMLsNOF6/tXp7gpZMCilAS
+         +CuF3p0+VcOqPqkelTjGbIiyrVbT9tYLri+EhetxLSjUiu1s8hpIKMbBk2j9EgxwpzlG
+         Ftpw==
+X-Gm-Message-State: AGi0PuaFeEnS5F6eX1HHtNoypYjHu/LZ3Dxq+c8DBoBuGYHLHyyaQhpc
+        AGs/JEaKN62pUHalRGz1KNffMA==
+X-Google-Smtp-Source: APiQypIkQLkIs6t32a4QU/eyPLaW4gBPy6dBYWX2oEREUVyVEoScQD8dXLeiQFU3Ks7hA3ZcKe4FNQ==
+X-Received: by 2002:ac8:82f:: with SMTP id u44mr10164873qth.198.1588797127129;
+        Wed, 06 May 2020 13:32:07 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id i43sm630792qte.37.2020.05.06.13.23.28
+        by smtp.gmail.com with ESMTPSA id p24sm2704127qtp.59.2020.05.06.13.32.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 06 May 2020 13:23:28 -0700 (PDT)
+        Wed, 06 May 2020 13:32:06 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jWQZj-0000XF-Rt; Wed, 06 May 2020 17:23:27 -0300
-Date:   Wed, 6 May 2020 17:23:27 -0300
+        id 1jWQi6-0002Oc-5A; Wed, 06 May 2020 17:32:06 -0300
+Date:   Wed, 6 May 2020 17:32:06 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH rdma-next v3 0/5] Set flow_label and RoCEv2 UDP source
- port for datagram QP
-Message-ID: <20200506202327.GA1996@ziepe.ca>
-References: <20200504051935.269708-1-leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v4 for-next 0/5] RDMA/hns: Optimize PBL buffer allocation
+ process
+Message-ID: <20200506203206.GA9150@ziepe.ca>
+References: <1588071823-40200-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200504051935.269708-1-leon@kernel.org>
+In-Reply-To: <1588071823-40200-1-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 04, 2020 at 08:19:30AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Apr 28, 2020 at 07:03:38PM +0800, Weihang Li wrote:
+> Patch #1 and #2 aim to use MTR interfaces for PBL buffer instead of MTT,
+> and after this, MTT can be removed completely. Patch #3 and #5 refactor
+> buffer size calculation process for WQE and SRQ. #4 can be considered as a
+> preparation for #5, which just moves code of SRQ together to a more
+> suitable place.
 > 
-> Changelog:
->  v3: Rebased on latest rdma-nex, which includes HCA set capability patch
->  and LAG code and this is why new patch from Maor was added.
->  v2: https://lore.kernel.org/linux-rdma/20200413133703.932731-1-leon@kernel.org
->  Dropped patch "RDMA/cm: Set flow label of recv_wc based on primary
->  flow label", because it violates IBTA 13.5.4.3/13.5.4.4 sections.
->  v1: https://lore.kernel.org/lkml/20200322093031.918447-1-leon@kernel.org
->  Added extra patch to reduce amount of kzalloc/kfree calls in
->  the HCA set capability flow.
->  v0: https://lore.kernel.org/linux-rdma/20200318095300.45574-1-leon@kernel.org
-> --------------------------------
+> This series looks huge, but most of the modification is to replace and
+> remove old interfaces, and patch #4 also contribute a lot. Actually, the
+> original logic is not changed so much.
 > 
-> >From Mark:
+> Changes since v3:
+> - Fix a sparce warning about a function that should be static reported by
+>   kbuild test robot.
 > 
-> This series provide flow label and UDP source port definition in RoCE v2.
-> Those fields are used to create entropy for network routes (ECMP), load
-> balancers and 802.3ad link aggregation switching that are not aware of
-> RoCE headers.
+> Changes since v2:
+> - Just do a rebase to current for-next branch.
 > 
-> Thanks.
+> Changes since v1:
+> - Remove meaningless judgment of count in some inline functions in #3.
+> - Add more information into commit messages of #3 and #5.
 > 
-> Maor Gottlieb (1):
->   RDMA/core: Consider flow label when building skb
+> Xi Wang (4):
+>   RDMA/hns: Optimize PBL buffer allocation process
+>   RDMA/hns: Remove unused MTT functions
+>   RDMA/hns: Optimize WQE buffer size calculating process
+>   RDMA/hns: Optimize SRQ buffer size calculating process
 > 
-> Mark Zhang (4):
->   RDMA/core: Add hash functions to calculate RoCEv2 flowlabel and UDP
->     source port
->   RDMA/mlx5: Define RoCEv2 udp source port when set path
->   RDMA/cma: Initialize the flow label of CM's route path record
->   RDMA/mlx5: Set UDP source port based on the grh.flow_label
+> Yixian Liu (1):
+>   RDMA/hns: Move SRQ code to the reasonable place
+> 
+>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   43 -
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  110 +--
+>  drivers/infiniband/hw/hns/hns_roce_hem.c    |  105 ---
+>  drivers/infiniband/hw/hns/hns_roce_hem.h    |    6 -
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |   45 +-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  943 ++++++++++----------
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |   70 +-
+>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 1247 +++------------------------
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  313 +++----
+>  drivers/infiniband/hw/hns/hns_roce_srq.c    |   16 +-
+>  10 files changed, 767 insertions(+), 2131 deletions(-)
+
+Good diffstat there..
 
 Applied to for-next
 
