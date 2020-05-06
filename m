@@ -2,85 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED271C7354
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 16:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717171C75B4
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 18:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgEFOxa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 May 2020 10:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S1729994AbgEFQF5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 May 2020 12:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729148AbgEFOxa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 May 2020 10:53:30 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF76C061A0F
-        for <linux-rdma@vger.kernel.org>; Wed,  6 May 2020 07:53:30 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id b1so1692314qtt.1
-        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2020 07:53:30 -0700 (PDT)
+        with ESMTP id S1729418AbgEFQF4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 May 2020 12:05:56 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4FBC061A41
+        for <linux-rdma@vger.kernel.org>; Wed,  6 May 2020 09:05:54 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q7so2509346qkf.3
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2020 09:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Ae+RhHAxHwcngCNzcjpKqJDoevGOyT+27L5zeZk2JzQ=;
-        b=ocKx14IZ1HSo9zhoqQezz0IAQQzmYM6hoN381KppULHnbrsglcNiPxsIjtJyTWmhxA
-         U3cgoG0qiyBPCr8P4ga28DXbWl2NT32a4dQ1a7LWkZI9/DGELPXaTr4Qk13ImLe8Dy9Q
-         9fypaz6/mlkRVslYczFaOAkvqI41mcdRua0AvPbX6JuR97dhyDWtm8ZBZZ67Yol3l8Bk
-         m9PxnMnfTE2OAkbwpN3oNRnsYtdf58Pzy/U2R6nNPsP0dJOnTNS1uC6uI2tFn8gKxZNh
-         0RW9XQDTz4O2smqF7mOeGWiCgz76mcorWKPQ/xCPWCmFTIvQlSHp9b4Sy3HfZs6jPGxl
-         r6iw==
+        bh=nrpp2T2sh7pMsL3PvoDrM5y2fqkhAxlK1sJUOu9QA9o=;
+        b=Tr83kb/F9G2VBLcHu7x37pNyprDcqbHUZZYB0zOv2RBd+1BHPvHEVKPvXuZIqMslJt
+         WRxGZOJikpMi5eBYxtKo6yrCLuOJLq7J+DscjOjKTQnnrd1h3WeKKt2DEqB7XbQZtVAL
+         HjYOHAHRL+9QCK2KRb/fFvNSoqI3wQyv9hUkPCYhePvKjEIK1pVf4JsL1DBCueLXJJOL
+         n3UuzknRW57RSsLv47vAxS4EZIkUvB4yn9aPp6niVhcBLpY/PAfsvJL15u7Cnwdkb1Dd
+         2SzCfTuoD4Kp2AXjh5L2+oXey2AyrWZ8VC4q2ZxpUBuGIddwsFS8rNWnuZ5sOm5uYuVr
+         5Zbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ae+RhHAxHwcngCNzcjpKqJDoevGOyT+27L5zeZk2JzQ=;
-        b=dUJ6oQdLkoHM8QInX022YOBVfrEILQXyJxgX3xt3zmqxxcGvJzlLONCGmaAar+COPj
-         s9ex1eQkzWv++x0RBHefSw5lrN/jfyR7BdKru2RxBLkc3zwH2E3ufGmoWJZtACcygBw+
-         GgRIBDcILX2MYrIyIjKl3O9qxCxkjaxhxLj+wvoIpaWc3xAyP+D/YAj6dNYefdMHyEQU
-         IfhpXy+U7y4rQx8vYWWHyK2m2hr3nraICIJhltG7kAzHcryJ0mItVRpWKPQ/VdOi1bBx
-         1lCSh6IxZJ6GB59PzAPfWp5mPR45TvoUMTikMO34jqAsI/YujFbt/7jlXk+HmP2gNkNI
-         s/XQ==
-X-Gm-Message-State: AGi0PuaNYoyvp6aVLiiYYG7T8qKIScPlRv5Z5McvgVOdYiU/OgH9RVwW
-        QHmpvxOEDJe+bO1vlgR7PCdA/XutIwc=
-X-Google-Smtp-Source: APiQypKjTsX4A6RFxJvL0v9hCgWGF2wLkx5zWctNyJ/S8ZJs7B3PWLQDBY9YHWM0iwE13lzLLbjigg==
-X-Received: by 2002:ac8:582:: with SMTP id a2mr9209142qth.62.1588776808762;
-        Wed, 06 May 2020 07:53:28 -0700 (PDT)
+        bh=nrpp2T2sh7pMsL3PvoDrM5y2fqkhAxlK1sJUOu9QA9o=;
+        b=PCZizuOMH/jtHUAac5yLvuIkXAxyoapdCQG0CM151WMGPKbH4SumgaoZT7A7s8X5Cp
+         iIaD74qrxoWK9Cr7OTGdOO/vJp9xfxM2S6tN0IPEBbqYpY4x5dQm88s7fE0/Yu9PdA85
+         SMxsz9og7fsUI9cm/f+mXzVl+YBM38j4FdjHtn6A3L+q6j/5bGKTXeqPzhOVh2cmQ0Yx
+         A1aV6bwn0F2+OdQAOT6f8aaVPA7ioo46GtlUH/dkLaFBragU41U7lWL/Zm+O8qtjRrtL
+         oVNXagH5+SJvcHeNH5oTG6LfykkssTi5pqJzyNMuRBAFjYGXBMcqnREkUJy94Du24yym
+         e/Zw==
+X-Gm-Message-State: AGi0PublVHdEinEDml5SWK2lK3mVw40h1SgPbdiZewsg4x4+BVxtOzLB
+        K6ttk4zjInHSgEPwwdvB15k65A==
+X-Google-Smtp-Source: APiQypLzPtnV2MpsE+MV+xNWnkm78v9QYjriPWAQthkfamFRT+pYJFignvWriiKBLQ0XkQ6F6UKvgw==
+X-Received: by 2002:a05:620a:219a:: with SMTP id g26mr9661209qka.228.1588781153930;
+        Wed, 06 May 2020 09:05:53 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p2sm1798148qkm.41.2020.05.06.07.53.28
+        by smtp.gmail.com with ESMTPSA id q9sm1879221qkm.130.2020.05.06.09.05.53
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 06 May 2020 07:53:28 -0700 (PDT)
+        Wed, 06 May 2020 09:05:53 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jWLQN-0006LU-Mr; Wed, 06 May 2020 11:53:27 -0300
-Date:   Wed, 6 May 2020 11:53:27 -0300
+        id 1jWMYS-0002c7-Qa; Wed, 06 May 2020 13:05:52 -0300
+Date:   Wed, 6 May 2020 13:05:52 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] RDMA/mad: Remove snoop interface
-Message-ID: <20200506145327.GA24360@ziepe.ca>
-References: <20200413132408.931084-1-leon@kernel.org>
+        Bart Van Assche <bvanassche@acm.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        rds-devel@oss.oracle.com,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        target-devel@vger.kernel.org, Ursula Braun <ubraun@linux.ibm.com>
+Subject: Re: [PATCH rdma-next] RDMA: Allow ib_client's to fail when add() is
+ called
+Message-ID: <20200506160552.GA9993@ziepe.ca>
+References: <20200421172440.387069-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413132408.931084-1-leon@kernel.org>
+In-Reply-To: <20200421172440.387069-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:24:08PM +0300, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@mellanox.com>
+On Tue, Apr 21, 2020 at 08:24:40PM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> Snoop interface is not used. Remove it.
+> When a client is added it isn't allowed to fail, but all the client's have
+> various failure paths within their add routines.
 > 
-> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> This creates the very fringe condition where the client was added, failed
+> during add and didn't set the client_data. The core code will then still
+> call other client_data centric ops like remove(), rename(), get_nl_info(),
+> and get_net_dev_by_params() with NULL client_data - which is confusing and
+> unexpected.
+> 
+> If the add() callback fails, then do not call any more client ops for the
+> device, even remove.
+> 
+> Remove all the now redundant checks for NULL client_data in ops callbacks.
+> 
+> Update all the add() callbacks to return error codes
+> appropriately. EOPNOTSUPP is used for cases where the ULP does not support
+> the ib_device - eg because it only works with IB.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> Acked-by: Ursula Braun <ubraun@linux.ibm.com>
 > ---
->  drivers/infiniband/core/mad.c | 238 +---------------------------------
->  include/rdma/ib_mad.h         |  49 +------
->  2 files changed, 6 insertions(+), 281 deletions(-)
+>  drivers/infiniband/core/cm.c                  | 24 ++++++++++--------
+>  drivers/infiniband/core/cma.c                 | 23 +++++++++--------
+>  drivers/infiniband/core/device.c              | 16 ++++++++++--
+>  drivers/infiniband/core/mad.c                 | 17 ++++++++++---
+>  drivers/infiniband/core/multicast.c           | 12 ++++-----
+>  drivers/infiniband/core/sa_query.c            | 22 ++++++++--------
+>  drivers/infiniband/core/user_mad.c            | 22 ++++++++--------
+>  drivers/infiniband/core/uverbs_main.c         | 24 +++++++++---------
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c     | 15 ++++-------
+>  .../infiniband/ulp/opa_vnic/opa_vnic_vema.c   | 12 ++++-----
+>  drivers/infiniband/ulp/srp/ib_srp.c           | 21 ++++++++--------
+>  drivers/infiniband/ulp/srpt/ib_srpt.c         | 25 ++++++++-----------
+>  include/rdma/ib_verbs.h                       |  2 +-
+>  net/rds/ib.c                                  | 21 ++++++++++------
+>  net/smc/smc_ib.c                              | 10 +++-----
+>  15 files changed, 142 insertions(+), 124 deletions(-)
 
 Applied to for-next
 
-Thanks,
 Jason
