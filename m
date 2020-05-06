@@ -2,367 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235C01C7BFB
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 May 2020 23:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716EF1C7D97
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 00:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgEFVKP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 May 2020 17:10:15 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3051 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729600AbgEFVKN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 May 2020 17:10:13 -0400
-IronPort-SDR: Bs49ulX2BcVdkzya9bFiMhW1KfqxsiajsuoljPtUvS+dAWX5U9FkaheJP6fACA6VCLeBcrPvoA
- CbSXZQ7jS8Fg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 14:05:11 -0700
-IronPort-SDR: wVysK3oqRabzQb8Ea79YvrJLWkZ5AKpwSgmMGc1uI3slqRU25J+f/9i1/Bi3d50Z8T+tWVYGeS
- EpgrhUxfNxOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; 
-   d="scan'208";a="263703842"
-Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.86])
-  by orsmga006.jf.intel.com with ESMTP; 06 May 2020 14:05:11 -0700
-From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-To:     davem@davemloft.net, gregkh@linuxfoundation.org
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, jgg@ziepe.ca,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: [net-next v3 9/9] i40e: Register a virtbus device to provide RDMA
-Date:   Wed,  6 May 2020 14:05:05 -0700
-Message-Id: <20200506210505.507254-10-jeffrey.t.kirsher@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
-References: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
+        id S1729347AbgEFWtQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 May 2020 18:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgEFWtP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 May 2020 18:49:15 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C527AC061A0F
+        for <linux-rdma@vger.kernel.org>; Wed,  6 May 2020 15:49:15 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id o10so3128748qtr.6
+        for <linux-rdma@vger.kernel.org>; Wed, 06 May 2020 15:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Sltz2GFQ3je5M+cB4+v2C8CSzhZCj02rrIcrAXAiRL8=;
+        b=afOkihqJRcsgdleT8rt2IQfYVlOyU4hRUlzwZpHkV0q7Z5sTvo8kNfY6w9a1d3qQxa
+         qAyd7aUZJ0cuuI8M3J3u67hVVZWWw645Watg8JBuDyFxSCfYPvSYq4LwDNGAtFQizVHa
+         IhIIPwnAQcwvx+TCOQpRq0PPitktSiZBuLdfK2gd/ULYRa9pw11supwqoGAmZNRygVaK
+         gusgI1bPQACJ7fJSOa/+uXvoIH1sCsiHqRPL/LrIjHXd/pIve+e2zJqokNnl7IH9QeNn
+         PTi5EzKo2sPoXTPbgEdAQA1dvuFoEQcszicYGq9h9jFR2InTdDkMjPgtBhm+/sEmDy/P
+         sfIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Sltz2GFQ3je5M+cB4+v2C8CSzhZCj02rrIcrAXAiRL8=;
+        b=lWotj6dIW8m0RwsDnOTvOo1SH+4izD15aBjk9ooEMNsfwWmHpagnCUtAzlQxCNsLvq
+         AsF/ir2tW6pHBYmPSfOAc0ID3g1Gxe5w+dmLwYMq3qX8TF0r7q91ypu7SWIeGFPIzrT0
+         c4hg4lFd3d8mt9hIA6Il98ZaHzk0TYLgB94HOjbQYTlz8gr4o5GPi2a42M9vFKy9xh8j
+         hmAGRxPpN+6T+9xleA746/QRJgurLSs/dN02rp6fb0bfAwNdZZ9303Rsw9MdqxA19YL+
+         1LUCcYHyc4eeQZWrxl/tzUzW51xZDALbhkWDSnhoKTwS/teRVE6wmWwdf3bcaKnK+fCL
+         XpkQ==
+X-Gm-Message-State: AGi0PubCAVkTOI9YOio6/6MjamwZlSlhY3Ggrzm9LurF/L6BAjF0KaYB
+        9qxo9KrSWY6bnAgkQ1aM+Aqo0Q==
+X-Google-Smtp-Source: APiQypKBbE/Cd5m2clvjHcs/Gq3dPyjFgqJpefq0ndey6ZIIN6CXKzjOo9KLSrZq9RrvMc9ZPSKfRA==
+X-Received: by 2002:ac8:66d8:: with SMTP id m24mr10994979qtp.175.1588805355030;
+        Wed, 06 May 2020 15:49:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id x124sm2803770qkd.32.2020.05.06.15.49.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 06 May 2020 15:49:14 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jWSqn-00027n-SW; Wed, 06 May 2020 19:49:13 -0300
+Date:   Wed, 6 May 2020 19:49:13 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org, Mark Bloch <markb@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/2] Limit to raw Ethernet QPs for raw ETH
+ profile
+Message-ID: <20200506224913.GA8082@ziepe.ca>
+References: <20200506071602.7177-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506071602.7177-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shiraz Saleem <shiraz.saleem@intel.com>
+On Wed, May 06, 2020 at 10:16:00AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Hi,
+> 
+> This is a fix to restrict opening any other QP types except RAW_PACKET
+> if we are using raw ETH profile.
+> 
+> Thanks
+> 
+> Mark Bloch (2):
+>   RDMA/mlx5: Assign profile before calling stages
+>   RDMA/mlx5: Allow only raw Ethernet QPs when RoCE isn't enabled
+> 
+>  drivers/infiniband/hw/mlx5/ib_rep.h |  2 +-
+>  drivers/infiniband/hw/mlx5/main.c   |  3 ++-
+>  drivers/infiniband/hw/mlx5/qp.c     | 12 +++++++++---
+>  3 files changed, 12 insertions(+), 5 deletions(-)
 
-Register client virtbus device on the virtbus for the RDMA
-virtbus driver (irdma) to bind to. It allows to realize a
-single RDMA driver capable of working with multiple netdev
-drivers over multi-generation Intel HW supporting RDMA.
-There is also no load ordering dependencies between i40e and
-irdma.
+Applied to for-next, thanks
 
-Summary of changes:
-* Support to add/remove virtbus devices
-* Add 2 new client ops.
-	* i40e_client_device_register() which is called during RDMA
-	  probe() per PF. Validate client drv OPs and schedule service
-	  task to call open()
-	* i40e_client_device_unregister() called during RDMA remove()
-	  per PF. Call client close() and release_qvlist.
-* The global register/unregister calls exported for i40iw are retained
-  until i40iw is removed from the kernel.
-
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
----
- drivers/net/ethernet/intel/Kconfig            |   1 +
- drivers/net/ethernet/intel/i40e/i40e_client.c | 131 +++++++++++++++---
- include/linux/net/intel/i40e_client.h         |  15 ++
- 3 files changed, 127 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-index 1a5d51b0f294..7a61e9d5e36e 100644
---- a/drivers/net/ethernet/intel/Kconfig
-+++ b/drivers/net/ethernet/intel/Kconfig
-@@ -241,6 +241,7 @@ config I40E
- 	tristate "Intel(R) Ethernet Controller XL710 Family support"
- 	imply PTP_1588_CLOCK
- 	depends on PCI
-+	select VIRTUAL_BUS
- 	---help---
- 	  This driver supports Intel(R) Ethernet Controller XL710 Family of
- 	  devices.  For more information on how to identify your adapter, go
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
-index befd3018183f..fdce8af3ec4f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_client.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright(c) 2013 - 2018 Intel Corporation. */
- 
-+#include <linux/net/intel/i40e_client.h>
- #include <linux/list.h>
- #include <linux/errno.h>
- #include <linux/net/intel/i40e_client.h>
-@@ -30,11 +31,17 @@ static int i40e_client_update_vsi_ctxt(struct i40e_info *ldev,
- 				       bool is_vf, u32 vf_id,
- 				       u32 flag, u32 valid_flag);
- 
-+static int i40e_client_device_register(struct i40e_info *ldev);
-+
-+static void i40e_client_device_unregister(struct i40e_info *ldev);
-+
- static struct i40e_ops i40e_lan_ops = {
- 	.virtchnl_send = i40e_client_virtchnl_send,
- 	.setup_qvlist = i40e_client_setup_qvlist,
- 	.request_reset = i40e_client_request_reset,
- 	.update_vsi_ctxt = i40e_client_update_vsi_ctxt,
-+	.client_device_register = i40e_client_device_register,
-+	.client_device_unregister = i40e_client_device_unregister,
- };
- 
- /**
-@@ -275,6 +282,37 @@ void i40e_client_update_msix_info(struct i40e_pf *pf)
- 	cdev->lan_info.msix_entries = &pf->msix_entries[pf->iwarp_base_vector];
- }
- 
-+static void i40e_virtdev_release(struct virtbus_device *vdev)
-+{
-+	struct i40e_virtbus_device *i40e_vdev =
-+			container_of(vdev, struct i40e_virtbus_device, vdev);
-+
-+	kfree(i40e_vdev);
-+}
-+
-+static int i40e_init_client_virtdev(struct i40e_info *ldev)
-+{
-+	struct pci_dev *pdev = ldev->pcidev;
-+	struct i40e_virtbus_device *i40e_vdev;
-+	int ret;
-+
-+	i40e_vdev = kzalloc(sizeof(*i40e_vdev), GFP_KERNEL);
-+	if (!i40e_vdev)
-+		return -ENOMEM;
-+
-+	i40e_vdev->vdev.match_name = I40E_PEER_RDMA_NAME;
-+	i40e_vdev->vdev.dev.parent = &pdev->dev;
-+	i40e_vdev->vdev.release = i40e_virtdev_release;
-+	i40e_vdev->ldev = ldev;
-+	ldev->vdev = &i40e_vdev->vdev;
-+
-+	ret = virtbus_register_device(&i40e_vdev->vdev);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- /**
-  * i40e_client_add_instance - add a client instance struct to the instance list
-  * @pf: pointer to the board struct
-@@ -288,9 +326,6 @@ static void i40e_client_add_instance(struct i40e_pf *pf)
- 	struct netdev_hw_addr *mac = NULL;
- 	struct i40e_vsi *vsi = pf->vsi[pf->lan_vsi];
- 
--	if (!registered_client || pf->cinst)
--		return;
--
- 	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
- 	if (!cdev)
- 		return;
-@@ -310,11 +345,8 @@ static void i40e_client_add_instance(struct i40e_pf *pf)
- 	cdev->lan_info.fw_build = pf->hw.aq.fw_build;
- 	set_bit(__I40E_CLIENT_INSTANCE_NONE, &cdev->state);
- 
--	if (i40e_client_get_params(vsi, &cdev->lan_info.params)) {
--		kfree(cdev);
--		cdev = NULL;
--		return;
--	}
-+	if (i40e_client_get_params(vsi, &cdev->lan_info.params))
-+		goto free_cdev;
- 
- 	mac = list_first_entry(&cdev->lan_info.netdev->dev_addrs.list,
- 			       struct netdev_hw_addr, list);
-@@ -326,7 +358,17 @@ static void i40e_client_add_instance(struct i40e_pf *pf)
- 	cdev->client = registered_client;
- 	pf->cinst = cdev;
- 
--	i40e_client_update_msix_info(pf);
-+	cdev->lan_info.msix_count = pf->num_iwarp_msix;
-+	cdev->lan_info.msix_entries = &pf->msix_entries[pf->iwarp_base_vector];
-+
-+	if (i40e_init_client_virtdev(&cdev->lan_info))
-+		goto free_cdev;
-+
-+	return;
-+
-+free_cdev:
-+	kfree(cdev);
-+	pf->cinst = NULL;
- }
- 
- /**
-@@ -347,7 +389,7 @@ void i40e_client_del_instance(struct i40e_pf *pf)
-  **/
- void i40e_client_subtask(struct i40e_pf *pf)
- {
--	struct i40e_client *client = registered_client;
-+	struct i40e_client *client;
- 	struct i40e_client_instance *cdev;
- 	struct i40e_vsi *vsi = pf->vsi[pf->lan_vsi];
- 	int ret = 0;
-@@ -361,9 +403,11 @@ void i40e_client_subtask(struct i40e_pf *pf)
- 	    test_bit(__I40E_CONFIG_BUSY, pf->state))
- 		return;
- 
--	if (!client || !cdev)
-+	if (!cdev || !cdev->client)
- 		return;
- 
-+	client = cdev->client;
-+
- 	/* Here we handle client opens. If the client is down, and
- 	 * the netdev is registered, then open the client.
- 	 */
-@@ -424,16 +468,8 @@ int i40e_lan_add_device(struct i40e_pf *pf)
- 		 pf->hw.pf_id, pf->hw.bus.bus_id,
- 		 pf->hw.bus.device, pf->hw.bus.func);
- 
--	/* If a client has already been registered, we need to add an instance
--	 * of it to our new LAN device.
--	 */
--	if (registered_client)
--		i40e_client_add_instance(pf);
-+	i40e_client_add_instance(pf);
- 
--	/* Since in some cases register may have happened before a device gets
--	 * added, we can schedule a subtask to go initiate the clients if
--	 * they can be launched at probe time.
--	 */
- 	set_bit(__I40E_CLIENT_SERVICE_REQUESTED, pf->state);
- 	i40e_service_event_schedule(pf);
- 
-@@ -453,6 +489,8 @@ int i40e_lan_del_device(struct i40e_pf *pf)
- 	struct i40e_device *ldev, *tmp;
- 	int ret = -ENODEV;
- 
-+	virtbus_unregister_device(pf->cinst->lan_info.vdev);
-+
- 	/* First, remove any client instance. */
- 	i40e_client_del_instance(pf);
- 
-@@ -733,6 +771,59 @@ static int i40e_client_update_vsi_ctxt(struct i40e_info *ldev,
- 	return err;
- }
- 
-+static int i40e_client_device_register(struct i40e_info *ldev)
-+{
-+	struct i40e_client *client;
-+	struct i40e_pf *pf;
-+
-+	if (!ldev) {
-+		pr_err("Failed to reg client dev: ldev ptr NULL\n");
-+		return -EINVAL;
-+	}
-+
-+	client = ldev->client;
-+	pf = ldev->pf;
-+	if (!client) {
-+		pr_err("Failed to reg client dev: client ptr NULL\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!ldev->ops || !client->ops) {
-+		pr_err("Failed to reg client dev: client dev peer_ops/ops NULL\n");
-+		return -EINVAL;
-+	}
-+
-+	pf->cinst->client = ldev->client;
-+	set_bit(__I40E_CLIENT_SERVICE_REQUESTED, pf->state);
-+	i40e_service_event_schedule(pf);
-+
-+	return 0;
-+}
-+
-+static void i40e_client_device_unregister(struct i40e_info *ldev)
-+{
-+	struct i40e_pf *pf = ldev->pf;
-+	struct i40e_client_instance *cdev = pf->cinst;
-+
-+	while (test_and_set_bit(__I40E_SERVICE_SCHED, pf->state))
-+		usleep_range(500, 1000);
-+
-+	if (!cdev || !cdev->client || !cdev->client->ops ||
-+	    !cdev->client->ops->close) {
-+		dev_err(&pf->pdev->dev, "Cannot close client device\n");
-+		return;
-+	}
-+	cdev->client->ops->close(&cdev->lan_info, cdev->client, false);
-+	clear_bit(__I40E_CLIENT_INSTANCE_OPENED, &cdev->state);
-+	i40e_client_release_qvlist(&cdev->lan_info);
-+	pf->cinst->client = NULL;
-+	clear_bit(__I40E_SERVICE_SCHED, pf->state);
-+}
-+
-+/* Retain legacy global registration/unregistration calls till i40iw is
-+ * deprecated from the kernel. The irdma unified driver does not use these
-+ * exported symbols.
-+ */
- /**
-  * i40e_register_client - Register a i40e client driver with the L2 driver
-  * @client: pointer to the i40e_client struct
-diff --git a/include/linux/net/intel/i40e_client.h b/include/linux/net/intel/i40e_client.h
-index 72994baf4941..4a83648cf5fd 100644
---- a/include/linux/net/intel/i40e_client.h
-+++ b/include/linux/net/intel/i40e_client.h
-@@ -4,6 +4,9 @@
- #ifndef _I40E_CLIENT_H_
- #define _I40E_CLIENT_H_
- 
-+#include <linux/virtual_bus.h>
-+
-+#define I40E_PEER_RDMA_NAME	"intel,i40e,rdma"
- #define I40E_CLIENT_STR_LENGTH 10
- 
- /* Client interface version should be updated anytime there is a change in the
-@@ -84,6 +87,7 @@ struct i40e_info {
- 	u8 lanmac[6];
- 	struct net_device *netdev;
- 	struct pci_dev *pcidev;
-+	struct virtbus_device *vdev;
- 	u8 __iomem *hw_addr;
- 	u8 fid;	/* function id, PF id or VF id */
- #define I40E_CLIENT_FTYPE_PF 0
-@@ -97,6 +101,7 @@ struct i40e_info {
- 	struct i40e_qvlist_info *qvlist_info;
- 	struct i40e_params params;
- 	struct i40e_ops *ops;
-+	struct i40e_client *client;
- 
- 	u16 msix_count;	 /* number of msix vectors*/
- 	/* Array down below will be dynamically allocated based on msix_count */
-@@ -107,6 +112,11 @@ struct i40e_info {
- 	u32 fw_build;                   /* firmware build number */
- };
- 
-+struct i40e_virtbus_device {
-+	struct virtbus_device vdev;
-+	struct i40e_info *ldev;
-+};
-+
- #define I40E_CLIENT_RESET_LEVEL_PF   1
- #define I40E_CLIENT_RESET_LEVEL_CORE 2
- #define I40E_CLIENT_VSI_FLAG_TCP_ENABLE  BIT(1)
-@@ -132,6 +142,11 @@ struct i40e_ops {
- 			       struct i40e_client *client,
- 			       bool is_vf, u32 vf_id,
- 			       u32 flag, u32 valid_flag);
-+
-+	int (*client_device_register)(struct i40e_info *ldev);
-+
-+	void (*client_device_unregister)(struct i40e_info *ldev);
-+
- };
- 
- struct i40e_client_ops {
--- 
-2.26.2
-
+Jason
