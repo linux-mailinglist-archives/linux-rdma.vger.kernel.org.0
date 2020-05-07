@@ -2,73 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6891E1C87AE
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 13:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1FE1C88DD
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 13:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgEGLJs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 07:09:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51028 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725809AbgEGLJs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 07:09:48 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 81558BB68AC7B0BAF879;
-        Thu,  7 May 2020 19:09:46 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 19:09:36 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <tariqt@mellanox.com>, <davem@davemloft.net>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kuba@kernel.org>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH net-next] net: mlx4: remove unneeded variable "err" in mlx4_en_ethtool_add_mac_rule()
-Date:   Thu, 7 May 2020 19:08:57 +0800
-Message-ID: <20200507110857.38035-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726951AbgEGLuZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 07:50:25 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:13180 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbgEGLuY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 May 2020 07:50:24 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75eb3f5d03fa-3f90d; Thu, 07 May 2020 19:49:37 +0800 (CST)
+X-RM-TRANSID: 2ee75eb3f5d03fa-3f90d
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.146.193])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65eb3f5ce9a8-d2e33;
+        Thu, 07 May 2020 19:49:37 +0800 (CST)
+X-RM-TRANSID: 2ee65eb3f5ce9a8-d2e33
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     davem@davemloft.net, saeedm@mellanox.com, leon@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] net/mlx5e: Use IS_ERR() to check and simplify code
+Date:   Thu,  7 May 2020 19:50:10 +0800
+Message-Id: <20200507115010.10380-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix the following coccicheck warning:
+Use IS_ERR() and PTR_ERR() instead of PTR_ZRR_OR_ZERO()
+to simplify code, avoid redundant judgements.
 
-drivers/net/ethernet/mellanox/mlx4/en_ethtool.c:1396:5-8: Unneeded
-variable: "err". Return "0" on line 1411
-
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 216e6b2e9eed..b816154bc79a 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -1392,7 +1392,6 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
- 					struct mlx4_spec_list *spec_l2,
- 					unsigned char *mac)
- {
--	int err = 0;
- 	__be64 mac_msk = cpu_to_be64(MLX4_MAC_MASK << 16);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+index af4ebd295..00e7add0b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+@@ -93,9 +93,8 @@ static int mlx5e_route_lookup_ipv4(struct mlx5e_priv *priv,
+ 	}
  
- 	spec_l2->id = MLX4_NET_TRANS_RULE_ID_ETH;
-@@ -1407,7 +1406,7 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
+ 	rt = ip_route_output_key(dev_net(mirred_dev), fl4);
+-	ret = PTR_ERR_OR_ZERO(rt);
+-	if (ret)
+-		return ret;
++	if (IS_ERR(rt))
++		return PTR_ERR(rt);
  
- 	list_add_tail(&spec_l2->list, rule_list_h);
- 
--	return err;
-+	return 0;
- }
- 
- static int mlx4_en_ethtool_add_mac_rule_by_ipv4(struct mlx4_en_priv *priv,
+ 	if (mlx5_lag_is_multipath(mdev) && rt->rt_gw_family != AF_INET) {
+ 		ip_rt_put(rt);
 -- 
-2.21.1
+2.20.1.windows.1
+
+
 
