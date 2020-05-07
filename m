@@ -2,38 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293F71C8F19
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EA81C8FAE
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgEGO3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 10:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56880 "EHLO mail.kernel.org"
+        id S1728557AbgEGOdz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 10:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728502AbgEGO3T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 10:29:19 -0400
+        id S1728544AbgEGO31 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 10:29:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32ADE2073A;
-        Thu,  7 May 2020 14:29:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08B3D2073A;
+        Thu,  7 May 2020 14:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588861759;
-        bh=bBX5vsv5Qb1hWqXDmtdgS4cIpPpDSzw4sadAlQDqz0k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lJWHcn5ki5a4z885DFOvuCX/IT4hvT6trodNx1GXhA0VvAddmzaq6pOIvaaC3WoLK
-         e7Ac4+bLd63VS3uyxYgXeTnKF7zl/uSDfh5ZHxvS6maXhh3qgeSHWOkN8qs893Uomq
-         UCWAVtjqn3hip1hJIo+hOyJCv8QIcRmDnkUbZVjE=
+        s=default; t=1588861766;
+        bh=NEygi/XkXXH5h0c3mz86KPqt0SxdHMUDq3aHUMqj2T8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oGDtKRHrQME6ptzIQbnFgQBsK/f70wMmAJbXXpc4QzH5O29a8u14jjCOpe4PsK0vA
+         M3ngVUNBvjwzFo5vHqug7XQG263oRo7dUELZ4qglTx0PanTUbtVfyUIo/bOqMuYcLO
+         GBqZZ4uJOq8PD4d9L5nuojLM7ng8oC9P7j7lf4JE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alaa Hleihel <alaa@mellanox.com>,
+Cc:     Aharon Landau <aharonl@mellanox.com>,
         Maor Gottlieb <maorg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 01/20] RDMA/mlx4: Initialize ib_spec on the stack
-Date:   Thu,  7 May 2020 10:28:57 -0400
-Message-Id: <20200507142917.26612-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 07/20] RDMA/mlx5: Set GRH fields in query QP on RoCE
+Date:   Thu,  7 May 2020 10:29:03 -0400
+Message-Id: <20200507142917.26612-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200507142917.26612-1-sashal@kernel.org>
+References: <20200507142917.26612-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,40 +45,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Alaa Hleihel <alaa@mellanox.com>
+From: Aharon Landau <aharonl@mellanox.com>
 
-[ Upstream commit c08cfb2d8d78bfe81b37cc6ba84f0875bddd0d5c ]
+[ Upstream commit 2d7e3ff7b6f2c614eb21d0dc348957a47eaffb57 ]
 
-Initialize ib_spec on the stack before using it, otherwise we will have
-garbage values that will break creating default rules with invalid parsing
-error.
+GRH fields such as sgid_index, hop limit, et. are set in the QP context
+when QP is created/modified.
 
-Fixes: a37a1a428431 ("IB/mlx4: Add mechanism to support flow steering over IB links")
-Link: https://lore.kernel.org/r/20200413132235.930642-1-leon@kernel.org
-Signed-off-by: Alaa Hleihel <alaa@mellanox.com>
+Currently, when query QP is performed, we fill the GRH fields only if the
+GRH bit is set in the QP context, but this bit is not set for RoCE. Adjust
+the check so we will set all relevant data for the RoCE too.
+
+Since this data is returned to userspace, the below is an ABI regression.
+
+Fixes: d8966fcd4c25 ("IB/core: Use rdma_ah_attr accessor functions")
+Link: https://lore.kernel.org/r/20200413132028.930109-1-leon@kernel.org
+Signed-off-by: Aharon Landau <aharonl@mellanox.com>
 Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index a19d3ad14dc37..eac4ade456119 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -1606,8 +1606,9 @@ static int __mlx4_ib_create_default_rules(
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(pdefault_rules->rules_create_list); i++) {
-+		union ib_flow_spec ib_spec = {};
- 		int ret;
--		union ib_flow_spec ib_spec;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 4fc9278d0ddec..10f6ae4f8f3ff 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4887,7 +4887,9 @@ static void to_rdma_ah_attr(struct mlx5_ib_dev *ibdev,
+ 	rdma_ah_set_path_bits(ah_attr, path->grh_mlid & 0x7f);
+ 	rdma_ah_set_static_rate(ah_attr,
+ 				path->static_rate ? path->static_rate - 5 : 0);
+-	if (path->grh_mlid & (1 << 7)) {
 +
- 		switch (pdefault_rules->rules_create_list[i]) {
- 		case 0:
- 			/* no rule */
++	if (path->grh_mlid & (1 << 7) ||
++	    ah_attr->type == RDMA_AH_ATTR_TYPE_ROCE) {
+ 		u32 tc_fl = be32_to_cpu(path->tclass_flowlabel);
+ 
+ 		rdma_ah_set_grh(ah_attr, NULL,
 -- 
 2.20.1
 
