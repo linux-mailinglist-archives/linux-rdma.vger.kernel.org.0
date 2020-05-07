@@ -2,91 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462B81C81F3
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 07:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4991C8288
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 08:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbgEGF6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 01:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
+        id S1725857AbgEGG3s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 02:29:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbgEGF6T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 01:58:19 -0400
+        id S1725783AbgEGG3s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 02:29:48 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7005320753;
-        Thu,  7 May 2020 05:58:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DB9021835;
+        Thu,  7 May 2020 06:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588831099;
-        bh=fyTUPi8v8JClBMMEuAa7g8FvRzpq4i23J9BbQc/DiYs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DY3IIMTRrXnUGUKH7Y2yDxcgbQdiyK0FTUmHlaPHZHP1LSfBgYo2f0V0WW1BQRbzj
-         rHHTGFXGkvHfSgDf7HD7P7jUQSIIszUdr9zgIvvfXO1WITMc/Acs/m7WmaokEWlrby
-         BzVm9UCWDc+yA6LKUFZNxX9eUqPBikk6wDMomFwM=
-Date:   Thu, 7 May 2020 08:58:14 +0300
+        s=default; t=1588832987;
+        bh=sca3rWAhFzenaiyT5wR727McPP6gfJb62ZWaYzqpjc0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D/wEt9lW856vno9WBcxQlAADtadzSD48ynJI+SvLPnNQUbY5gyA3/Wz7762zyOHNo
+         dtl/mSEOdxNiyMiFBaOPJelnF3i4JGTnPkV4IbHqGOYwfQ/XpgcIJRBC8t14Z5CWDM
+         9gUgUoXAbzHpg+30exMPAdDeTrTZO/zero2WK+V8=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     jackm <jackm@dev.mellanox.co.il>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        ferasda@mellanox.com, mohammadkab@mellanox.com, moshet@mellanox.com
-Subject: Re: [PATCH rdma-rc v1] IB/core: Fix potential NULL pointer
- dereference in pkey cache
-Message-ID: <20200507055814.GC78674@unreal>
-References: <20200506053213.566264-1-leon@kernel.org>
- <20200506144344.GA8875@ziepe.ca>
- <20200506165608.GA4600@unreal>
- <20200506180936.GI26002@ziepe.ca>
- <20200506214123.0000121c@dev.mellanox.co.il>
- <20200506185737.GJ26002@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/core: Fix double put of resource
+Date:   Thu,  7 May 2020 09:29:42 +0300
+Message-Id: <20200507062942.98305-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506185737.GJ26002@ziepe.ca>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 06, 2020 at 03:57:37PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 06, 2020 at 09:41:23PM +0300, jackm wrote:
-> > On Wed, 6 May 2020 15:09:36 -0300
-> > Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > > > > > +out:
-> > > > > > +	ib_cache_release_one(device);
-> > > > > > +	return err;
-> > > > >
-> > > > > ib_cache_release_once can be called only once, and it is always
-> > > > > called by ib_device_release(), it should not be called here
-> > > >
-> > > > It doesn't sound right if we rely on ib_device_release() to unwind
-> > > > error in ib_cache_setup_one(). I don't think that we need to return
-> > > > from ib_cache_setup_one() without cleaning it.
-> > >
-> > > We do as ib_cache_release_one() cannot be called multiple times
-> > >
-> > > The general design of all this pre-registration stuff is that the
-> > > release function does the clean up and the individual functions should
-> > > not error unwind cleanup done in the unconditional release.
-> > >
-> > > Other schemes were too complicated
-> > >
-> > > Jason
-> >
-> > What about calling gid_table_release_one(device) instead of
-> > ib_cache_release_one(device) in the error flow ?
->
-> Why?
+From: Maor Gottlieb <maorg@mellanox.com>
 
-Because it doesn't look clean.
+Avoid decrease reference count of resource tracker object in the error
+flow of res_get_common_doit.
 
->
-> That is not the design, everything that is freed by release is defered
-> to release, even on error paths.
+Fixes: c5dfe0ea6ffa ("RDMA/nldev: Add resource tracker doit callback")
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/nldev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I'll resend now.
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 9eec26d10d7b..e16105be2eb2 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1292,11 +1292,10 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	has_cap_net_admin = netlink_capable(skb, CAP_NET_ADMIN);
+ 
+ 	ret = fill_func(msg, has_cap_net_admin, res, port);
+-
+-	rdma_restrack_put(res);
+ 	if (ret)
+ 		goto err_free;
+ 
++	rdma_restrack_put(res);
+ 	nlmsg_end(msg, nlh);
+ 	ib_device_put(device);
+ 	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
+-- 
+2.26.2
 
-Thanks
-
->
-> Jason
