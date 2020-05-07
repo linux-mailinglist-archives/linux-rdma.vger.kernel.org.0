@@ -2,35 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210EB1C9033
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329721C8E80
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgEGO1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 10:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S1727096AbgEGO1o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 10:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgEGO1a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 10:27:30 -0400
+        id S1727086AbgEGO1m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 10:27:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18CCC20857;
-        Thu,  7 May 2020 14:27:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4D482083B;
+        Thu,  7 May 2020 14:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588861649;
-        bh=jjPs3cCRxH2+vEM0vdqifEvxOrjpWanBt4ztyY19i1Q=;
+        s=default; t=1588861662;
+        bh=0YWd1KybDICAXW00MqaZR7V6phzPC/IofZcdh25NxOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NhsfnToYZjOG09t7yrBQKRvyiZHNsmhfeVyfFeypmULZs6QEqfzLMEzzTuWzESIKu
-         hN0eiIkzqA0/c5Sx/IOEZ8YFUX46PdcfhUevl0lx/LAM4H6kpjo4PcchL1xzGQU2Cj
-         UgxSVnZNxE7i/7tpw2HqSiFAdHB/PyjLL1HqPubQ=
+        b=2S/58gtOURtH7TE/8TaYx+8lNMlFc9l4M/yFp3N5sbrP3KB8eEYaxIAA1pKbzRCQ7
+         AYu/PQEbLRu4u8PtoLmiLX3KMIbNCSu7LfIj96Rhl/teo+gjNBqkwm32EEqOz2CS78
+         bs3FrBFsL3U3VtPsL8PJ+onpJ6RczCn0mx2I4o3s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+Cc:     Aharon Landau <aharonl@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 02/50] RDMA/siw: Fix potential siw_mem refcnt leak in siw_fastreg_mr()
-Date:   Thu,  7 May 2020 10:26:38 -0400
-Message-Id: <20200507142726.25751-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 12/50] RDMA/mlx5: Set GRH fields in query QP on RoCE
+Date:   Thu,  7 May 2020 10:26:48 -0400
+Message-Id: <20200507142726.25751-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200507142726.25751-1-sashal@kernel.org>
 References: <20200507142726.25751-1-sashal@kernel.org>
@@ -43,66 +45,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Aharon Landau <aharonl@mellanox.com>
 
-[ Upstream commit 6e051971b0e2eeb0ce7ec65d3cc8180450512d36 ]
+[ Upstream commit 2d7e3ff7b6f2c614eb21d0dc348957a47eaffb57 ]
 
-siw_fastreg_mr() invokes siw_mem_id2obj(), which returns a local reference
-of the siw_mem object to "mem" with increased refcnt.  When
-siw_fastreg_mr() returns, "mem" becomes invalid, so the refcount should be
-decreased to keep refcount balanced.
+GRH fields such as sgid_index, hop limit, et. are set in the QP context
+when QP is created/modified.
 
-The issue happens in one error path of siw_fastreg_mr(). When "base_mr"
-equals to NULL but "mem" is not NULL, the function forgets to decrease the
-refcnt increased by siw_mem_id2obj() and causes a refcnt leak.
+Currently, when query QP is performed, we fill the GRH fields only if the
+GRH bit is set in the QP context, but this bit is not set for RoCE. Adjust
+the check so we will set all relevant data for the RoCE too.
 
-Reorganize the flow so that the goto unwind can be used as expected.
+Since this data is returned to userspace, the below is an ABI regression.
 
-Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
-Link: https://lore.kernel.org/r/1586939949-69856-1-git-send-email-xiyuyang19@fudan.edu.cn
-Reported-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Fixes: d8966fcd4c25 ("IB/core: Use rdma_ah_attr accessor functions")
+Link: https://lore.kernel.org/r/20200413132028.930109-1-leon@kernel.org
+Signed-off-by: Aharon Landau <aharonl@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_qp_tx.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index ae92c8080967c..9f53aa4feb878 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -920,20 +920,27 @@ static int siw_fastreg_mr(struct ib_pd *pd, struct siw_sqe *sqe)
- {
- 	struct ib_mr *base_mr = (struct ib_mr *)(uintptr_t)sqe->base_mr;
- 	struct siw_device *sdev = to_siw_dev(pd->device);
--	struct siw_mem *mem = siw_mem_id2obj(sdev, sqe->rkey  >> 8);
-+	struct siw_mem *mem;
- 	int rv = 0;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 8fe149e808af1..245fef36ab4cb 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5545,7 +5545,9 @@ static void to_rdma_ah_attr(struct mlx5_ib_dev *ibdev,
+ 	rdma_ah_set_path_bits(ah_attr, path->grh_mlid & 0x7f);
+ 	rdma_ah_set_static_rate(ah_attr,
+ 				path->static_rate ? path->static_rate - 5 : 0);
+-	if (path->grh_mlid & (1 << 7)) {
++
++	if (path->grh_mlid & (1 << 7) ||
++	    ah_attr->type == RDMA_AH_ATTR_TYPE_ROCE) {
+ 		u32 tc_fl = be32_to_cpu(path->tclass_flowlabel);
  
- 	siw_dbg_pd(pd, "STag 0x%08x\n", sqe->rkey);
- 
--	if (unlikely(!mem || !base_mr)) {
-+	if (unlikely(!base_mr)) {
- 		pr_warn("siw: fastreg: STag 0x%08x unknown\n", sqe->rkey);
- 		return -EINVAL;
- 	}
-+
- 	if (unlikely(base_mr->rkey >> 8 != sqe->rkey  >> 8)) {
- 		pr_warn("siw: fastreg: STag 0x%08x: bad MR\n", sqe->rkey);
--		rv = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
-+
-+	mem = siw_mem_id2obj(sdev, sqe->rkey  >> 8);
-+	if (unlikely(!mem)) {
-+		pr_warn("siw: fastreg: STag 0x%08x unknown\n", sqe->rkey);
-+		return -EINVAL;
-+	}
-+
- 	if (unlikely(mem->pd != pd)) {
- 		pr_warn("siw: fastreg: PD mismatch\n");
- 		rv = -EINVAL;
+ 		rdma_ah_set_grh(ah_attr, NULL,
 -- 
 2.20.1
 
