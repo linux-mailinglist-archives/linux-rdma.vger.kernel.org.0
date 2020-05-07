@@ -2,118 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB56A1C830D
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28371C833E
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgEGHFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 03:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725819AbgEGHFj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 May 2020 03:05:39 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28155C061A10
-        for <linux-rdma@vger.kernel.org>; Thu,  7 May 2020 00:05:39 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l3so4403554edq.13
-        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2020 00:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Jt+syXVKRHjTFMpydHnrsHY4rldPaD+CJQDRL9eN6I=;
-        b=hQ0srGBNPx9CWNhbIY9XyjBl5Ay3lz/DUPkCQuSv1zWScjP/C5gDpv3/En1sXdzVkB
-         mPW3SYMuxZIO3wI3ArHadHCeQxZ9vqU+KiNyGW0Qm4Irdb/4T413hoZT3qCZXeh9b2Tu
-         uPhDgeoPjFjhSmguP2xiYppQthiUz5WE4kkGPht1U7jy6r9mZD/u7jV3DkRpO83bzTi9
-         OW1XwKY/OaWZkpJ5FZbeMnLRDtyO8mEk/AIpa4X6adhbBVtV75LdIwV9vShBZlIbNLDz
-         gDwGCGsWBqBaTA5JbJBQEcTK1urH0kDXkvZrmfly1+UMYfah+EURv2jJs+0ow+KotRuJ
-         3Nqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Jt+syXVKRHjTFMpydHnrsHY4rldPaD+CJQDRL9eN6I=;
-        b=LXFhKI6DM+9gbmCkx8odCxfULsCKJ9Tco0tjaqxsCjfBaspZX3Ypj/1h50WKAZnldr
-         2C77REzBVAA1jYGQGDn5pRSFPj7hzQ0A3tq9gJ5Cu34+yrPHRjH/Eq2B4sRzVRN2gYx0
-         mpobHvlWJt9DCdHGzvNlZiFdlf6dgXVzzxw2+YQF4Aw3W9Yl0K/eltFEudguFhuk12Sb
-         uT2R7iQNDRoYfI7ngq8vdUFf8sqnNCoir9L1MQt4p5MH0jDqokOPxSe+/lBBX5IlZIxz
-         ii6HLqLp8J+bnFlJVqSyyrSxr2tsDKmue2glhEzuYRF+GsX8psy8LhxYw134paiBG8ix
-         PHFQ==
-X-Gm-Message-State: AGi0PuZ6K+ZtnKCmad/wSCsR6bDPIp2JqgFEqUGjt2KR71ZSRyGNP6Lm
-        gg3tm6NOCGV3A+FM0SnDmYz2VvDBh/z+QPq8FfQhL7gDGTFUEQ==
-X-Google-Smtp-Source: APiQypKbfjJSJPYlyVhp+ehOthmZ7/xMJPQJCiyIgVKs72QdtNmT8//Uw/UumHwXlmqOm9Q3DUVHj45ZvvPAUqOqupw=
-X-Received: by 2002:aa7:d306:: with SMTP id p6mr10316811edq.35.1588835137732;
- Thu, 07 May 2020 00:05:37 -0700 (PDT)
+        id S1725819AbgEGHKT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 03:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgEGHKS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 03:10:18 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB0D32075E;
+        Thu,  7 May 2020 07:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588835418;
+        bh=mEF8VkusOZmamshiXDJp7/1CdUUkxNmxDUSaY67R3As=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QtlGZXc5oVWO8VGWjz0HloKsdG2aPVULvHWkdOov4a/cBWje9qSp5wta8jGEMcGRC
+         DRevNssTPFEolqIeDm0WGZnWtxpXdcUMgL1QGsNIiMCzkBPGVxE0bUlQZOWY+rmTF1
+         Tq/UAN9LGbyI0auVAUHj02Eukj8RvkS+/Zia7Zjw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc v2] IB/core: Fix potential NULL pointer dereference in pkey cache
+Date:   Thu,  7 May 2020 10:10:12 +0300
+Message-Id: <20200507071012.100594-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200504140115.15533-24-danil.kipnis@cloud.ionos.com> <202005060522.xI0z2eA6%lkp@intel.com>
-In-Reply-To: <202005060522.xI0z2eA6%lkp@intel.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 7 May 2020 09:05:26 +0200
-Message-ID: <CAMGffE=58PZSp3B14d_jCCKwPDr_YHoWxJs9gsmg-2Af60vnrw@mail.gmail.com>
-Subject: Re: [PATCH v14 23/25] block/rnbd: include client and server modules
- into kernel compilation
-To:     kbuild test robot <lkp@intel.com>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi, Kbuild test robot,
+From: Jack Morgenstein <jackm@dev.mellanox.co.il>
 
-On Tue, May 5, 2020 at 11:34 PM kbuild test robot <lkp@intel.com> wrote:
->
-> Hi Danil,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on block/for-next]
-> [also build test ERROR on driver-core/driver-core-testing rdma/for-next linus/master v5.7-rc4 next-20200505]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Danil-Kipnis/RTRS-former-IBTRS-RDMA-Transport-Library-and-RNBD-former-IBNBD-RDMA-Network-Block-Device/20200505-072234
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
-> config: c6x-allyesconfig (attached as .config)
-> compiler: c6x-elf-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=c6x
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from drivers/block/rnbd/rnbd-clt.c:19:
-> >> drivers/block/rnbd/rnbd-clt.h:19:10: fatal error: rtrs.h: No such file or directory
->       19 | #include <rtrs.h>
->          |          ^~~~~~~~
->    compilation terminated.
-> --
->    In file included from drivers/block/rnbd/rnbd-srv.c:15:
-> >> drivers/block/rnbd/rnbd-srv.h:16:10: fatal error: rtrs.h: No such file or directory
->       16 | #include <rtrs.h>
->          |          ^~~~~~~~
->    compilation terminated.
->
-> vim +19 drivers/block/rnbd/rnbd-clt.h
-looks somehow the "ccflags-y := -Idrivers/infiniband/ulp/rtrs " was
-ignored in your case
+The IB core pkey cache is populated by procedure ib_cache_update().
+Initially, the pkey cache pointer is NULL. ib_cache_update allocates
+a buffer and populates it with the device's pkeys, via repeated calls
+to procedure ib_query_pkey().
 
-We'll try to repro on ourside, can you also check on your side why
-ccflags is ignored?
+If there is a failure in populating the pkey buffer via ib_query_pkey(),
+ib_cache_update does not replace the old pkey buffer cache with the
+updated one -- it leaves the old cache as is.
 
-Thanks!
-Jinpu
+Since initially the pkey buffer cache is NULL, when calling
+ib_cache_update the first time, a failure in ib_query_pkey() will cause
+the pkey buffer cache pointer to remain NULL.
+
+In this situation, any calls subsequent to ib_get_cached_pkey(),
+ib_find_cached_pkey(), or ib_find_cached_pkey_exact() will try to
+dereference the NULL pkey cache pointer, causing a kernel panic.
+
+Fix this by checking the ib_cache_update() return value.
+
+Fixes: 8faea9fd4a39 ("RDMA/cache: Move the cache per-port data into the main ib_port_data")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Changelog:
+v2: Removed error unwinding
+v1: https://lore.kernel.org/linux-rdma/20200506053213.566264-1-leon@kernel.org
+ I rewrote the patch to take care of ib_cache_update() return value.
+v0: https://lore.kernel.org/linux-rdma/20200426075811.129814-1-leon@kernel.org
+---
+ drivers/infiniband/core/cache.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 717b798cddad..a670209bbce6 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -1553,8 +1553,11 @@ int ib_cache_setup_one(struct ib_device *device)
+ 	if (err)
+ 		return err;
+
+-	rdma_for_each_port (device, p)
+-		ib_cache_update(device, p, true);
++	rdma_for_each_port (device, p) {
++		err = ib_cache_update(device, p, true);
++		if (err)
++			return err;
++	}
+
+ 	return 0;
+ }
+--
+2.26.2
+
