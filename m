@@ -2,99 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D375A1C8D76
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D531C8E4F
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgEGOEH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 7 May 2020 10:04:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:24102 "EHLO mga07.intel.com"
+        id S1726074AbgEGO13 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 10:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgEGOEG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 10:04:06 -0400
-IronPort-SDR: d7LDCZBAKaNgicm17JVxcWiuZQiqLFdxIgeG+DtT613Xfzfn0biZvjSWXBcZBKNdfHNf/xWxoc
- SFUWH76cCxgQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 07:04:05 -0700
-IronPort-SDR: 0zPLsjjUtQT1m1L3DSg05Otkjpwgb29rQWpGc4SyeQREyY+ItAl78NRHcuYg7GSoxPSRinPVi2
- t2KoQRAh8NCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
-   d="scan'208";a="278608262"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by orsmga002.jf.intel.com with ESMTP; 07 May 2020 07:04:05 -0700
-Received: from fmsmsx119.amr.corp.intel.com (10.18.124.207) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 7 May 2020 07:04:05 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.70]) by
- FMSMSX119.amr.corp.intel.com ([169.254.14.63]) with mapi id 14.03.0439.000;
- Thu, 7 May 2020 07:04:04 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Bowers, AndrewX" <andrewx.bowers@intel.com>
-Subject: RE: [net-next v3 2/9] ice: Create and register virtual bus for RDMA
-Thread-Topic: [net-next v3 2/9] ice: Create and register virtual bus for RDMA
-Thread-Index: AQHWI+1r2JNfe9cvUUWx8AZJyUPthaicvW2A///jz2A=
-Date:   Thu, 7 May 2020 14:04:04 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7DCD6B850@fmsmsx124.amr.corp.intel.com>
-References: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
- <20200506210505.507254-3-jeffrey.t.kirsher@intel.com>
- <20200507081737.GC1024567@kroah.com>
-In-Reply-To: <20200507081737.GC1024567@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.107]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1725948AbgEGO13 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 10:27:29 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4F272083B;
+        Thu,  7 May 2020 14:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588861648;
+        bh=e0b9s7OdLWu3UwsM0eMiCMeu0kR0EfPAyMaj/JB6Kn0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=y43Hqv7n6ShLSM2r6jRu3EKehaMZ+XFMaK9OX7Zw5lwQUrMID4ybRcvYr4xDzflwx
+         TFnYfScoKnleAmg7z2fE5YdkF1/KrYWiy3PIkUBBQGL55ekV5eRzi88mLgslvzBv8j
+         RJZICRVCmXju7poUxCzJjmwbmFCuSg4pP6P2FDnI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alaa Hleihel <alaa@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 01/50] RDMA/mlx4: Initialize ib_spec on the stack
+Date:   Thu,  7 May 2020 10:26:37 -0400
+Message-Id: <20200507142726.25751-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [net-next v3 2/9] ice: Create and register virtual bus for RDMA
-> 
-> On Wed, May 06, 2020 at 02:04:58PM -0700, Jeff Kirsher wrote:
-> > From: Dave Ertman <david.m.ertman@intel.com>
-> >
-> > The RDMA block does not have its own PCI function, instead it must
-> > utilize the ice driver to gain access to the PCI device. Create a
-> > virtual bus device so the irdma driver can register a virtual bus
-> > driver to bind to it and receive device data. The device data contains
-> > all of the relevant information that the irdma peer will need to
-> > access this PF's IIDC API callbacks.
-> 
-> But there is no virtual bus driver in this patch!
+From: Alaa Hleihel <alaa@mellanox.com>
 
-Hi Greg - 
+[ Upstream commit c08cfb2d8d78bfe81b37cc6ba84f0875bddd0d5c ]
 
-The irdma driver is the virtbus driver that would bind to the virtual devices created
-in this netdev driver.
+Initialize ib_spec on the stack before using it, otherwise we will have
+garbage values that will break creating default rules with invalid parsing
+error.
 
-It is decoupled from this series as it was deemed in a prior discussion that irdma driver
-would go in a +1 cycle from net series to avoid conflicts. See discussion here --
-https://lore.kernel.org/netdev/46ed855e75f9eda89118bfad9c6f7b16dd372c71.camel@intel.com/
+Fixes: a37a1a428431 ("IB/mlx4: Add mechanism to support flow steering over IB links")
+Link: https://lore.kernel.org/r/20200413132235.930642-1-leon@kernel.org
+Signed-off-by: Alaa Hleihel <alaa@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/hw/mlx4/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The irdma driver is currently posted as an RFC series with its most recent submission here --
-https://lore.kernel.org/linux-rdma/20200417171251.1533371-1-jeffrey.t.kirsher@intel.com/
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 2f5d9b181848b..e5758eb0b7d27 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -1502,8 +1502,9 @@ static int __mlx4_ib_create_default_rules(
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(pdefault_rules->rules_create_list); i++) {
++		union ib_flow_spec ib_spec = {};
+ 		int ret;
+-		union ib_flow_spec ib_spec;
++
+ 		switch (pdefault_rules->rules_create_list[i]) {
+ 		case 0:
+ 			/* no rule */
+-- 
+2.20.1
 
-Shiraz
