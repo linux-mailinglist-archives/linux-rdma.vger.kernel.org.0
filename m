@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E020E1C8F04
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293F71C8F19
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 16:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgEGO2x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 10:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
+        id S1728531AbgEGO3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 10:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728304AbgEGO2w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 10:28:52 -0400
+        id S1728502AbgEGO3T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 10:29:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8157120936;
-        Thu,  7 May 2020 14:28:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32ADE2073A;
+        Thu,  7 May 2020 14:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588861732;
-        bh=eP/TXys0UfUpnKTlnjfl+s8J6xffSj+g54nOkXV7bp0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oz7rLtv3SW6qAZ8fqoBGzoDwbs3JFWqku/ejRj0PvgPO0/BfZ0f9bFrJhDnIbSXvl
-         wJ6YCPO5J7iPeUlgngvbvqUccKK3dwhHx88cP9Vny4pw/Xq8o0te6jQ6+iE4hoTW57
-         aqgYzrTn5yE0NXJtWZHrmAQB1foq5mkBj/6XxYn0=
+        s=default; t=1588861759;
+        bh=bBX5vsv5Qb1hWqXDmtdgS4cIpPpDSzw4sadAlQDqz0k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lJWHcn5ki5a4z885DFOvuCX/IT4hvT6trodNx1GXhA0VvAddmzaq6pOIvaaC3WoLK
+         e7Ac4+bLd63VS3uyxYgXeTnKF7zl/uSDfh5ZHxvS6maXhh3qgeSHWOkN8qs893Uomq
+         UCWAVtjqn3hip1hJIo+hOyJCv8QIcRmDnkUbZVjE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Alaa Hleihel <alaa@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 17/35] RDMA/core: Fix race between destroy and release FD object
-Date:   Thu,  7 May 2020 10:28:11 -0400
-Message-Id: <20200507142830.26239-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 01/20] RDMA/mlx4: Initialize ib_spec on the stack
+Date:   Thu,  7 May 2020 10:28:57 -0400
+Message-Id: <20200507142917.26612-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507142830.26239-1-sashal@kernel.org>
-References: <20200507142830.26239-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,57 +43,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Alaa Hleihel <alaa@mellanox.com>
 
-[ Upstream commit f0abc761bbb9418876cc4d1ebc473e4ea6352e42 ]
+[ Upstream commit c08cfb2d8d78bfe81b37cc6ba84f0875bddd0d5c ]
 
-The call to ->lookup_put() was too early and it caused an unlock of the
-read/write protection of the uobject after the FD was put. This allows a
-race:
+Initialize ib_spec on the stack before using it, otherwise we will have
+garbage values that will break creating default rules with invalid parsing
+error.
 
-     CPU1                                 CPU2
- rdma_lookup_put_uobject()
-   lookup_put_fd_uobject()
-     fput()
-				   fput()
-				     uverbs_uobject_fd_release()
-				       WARN_ON(uverbs_try_lock_object(uobj,
-					       UVERBS_LOOKUP_WRITE));
-   atomic_dec(usecnt)
-
-Fix the code by changing the order, first unlock and call to
-->lookup_put() after that.
-
-Fixes: 3832125624b7 ("IB/core: Add support for idr types")
-Link: https://lore.kernel.org/r/20200423060122.6182-1-leon@kernel.org
-Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: a37a1a428431 ("IB/mlx4: Add mechanism to support flow steering over IB links")
+Link: https://lore.kernel.org/r/20200413132235.930642-1-leon@kernel.org
+Signed-off-by: Alaa Hleihel <alaa@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/rdma_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx4/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 8e650e5efb51d..1c95fefa1f06e 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -689,7 +689,6 @@ void rdma_lookup_put_uobject(struct ib_uobject *uobj,
- 			     enum rdma_lookup_mode mode)
- {
- 	assert_uverbs_usecnt(uobj, mode);
--	uobj->uapi_object->type_class->lookup_put(uobj, mode);
- 	/*
- 	 * In order to unlock an object, either decrease its usecnt for
- 	 * read access or zero it in case of exclusive access. See
-@@ -706,6 +705,7 @@ void rdma_lookup_put_uobject(struct ib_uobject *uobj,
- 		break;
- 	}
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index a19d3ad14dc37..eac4ade456119 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -1606,8 +1606,9 @@ static int __mlx4_ib_create_default_rules(
+ 	int i;
  
-+	uobj->uapi_object->type_class->lookup_put(uobj, mode);
- 	/* Pairs with the kref obtained by type->lookup_get */
- 	uverbs_uobject_put(uobj);
- }
+ 	for (i = 0; i < ARRAY_SIZE(pdefault_rules->rules_create_list); i++) {
++		union ib_flow_spec ib_spec = {};
+ 		int ret;
+-		union ib_flow_spec ib_spec;
++
+ 		switch (pdefault_rules->rules_create_list[i]) {
+ 		case 0:
+ 			/* no rule */
 -- 
 2.20.1
 
