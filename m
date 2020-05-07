@@ -2,82 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A341C82F6
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB56A1C830D
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgEGHAM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 03:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGHAL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 03:00:11 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D41ED207DD;
-        Thu,  7 May 2020 07:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588834811;
-        bh=jEttYpxCR1pQOCpq/7bhNKiXaeKh7rbfeTCzjCdEEMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qcCX8/Pw+g4KEBJQzFzGBJz978QrAPH1SX+qhXTKNGlSNz1fkXtp3kY2wrhMaMicf
-         KYNFGHRRx+AV+DmtMShaBbx+bDHwvmCxsHkbVvmww6FZY/7TB1ypYPcf75ofW7iE1D
-         CR2NNyzqpAzdaY+eGgksLAZgBGlK9QQwfYemyvL8=
-Date:   Thu, 7 May 2020 09:00:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, jgg@ziepe.ca, parav@mellanox.com,
-        galpress@amazon.com, selvin.xavier@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, benve@cisco.com,
-        bharat@chelsio.com, xavier.huwei@huawei.com, yishaih@mellanox.com,
-        leonro@mellanox.com, mkalderon@marvell.com, aditr@vmware.com,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com
-Subject: Re: [net-next v3 0/9][pull request] 100GbE Intel Wired LAN Driver
- Updates 2020-05-05
-Message-ID: <20200507070008.GA841650@kroah.com>
-References: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
+        id S1725857AbgEGHFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 03:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725819AbgEGHFj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 May 2020 03:05:39 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28155C061A10
+        for <linux-rdma@vger.kernel.org>; Thu,  7 May 2020 00:05:39 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l3so4403554edq.13
+        for <linux-rdma@vger.kernel.org>; Thu, 07 May 2020 00:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Jt+syXVKRHjTFMpydHnrsHY4rldPaD+CJQDRL9eN6I=;
+        b=hQ0srGBNPx9CWNhbIY9XyjBl5Ay3lz/DUPkCQuSv1zWScjP/C5gDpv3/En1sXdzVkB
+         mPW3SYMuxZIO3wI3ArHadHCeQxZ9vqU+KiNyGW0Qm4Irdb/4T413hoZT3qCZXeh9b2Tu
+         uPhDgeoPjFjhSmguP2xiYppQthiUz5WE4kkGPht1U7jy6r9mZD/u7jV3DkRpO83bzTi9
+         OW1XwKY/OaWZkpJ5FZbeMnLRDtyO8mEk/AIpa4X6adhbBVtV75LdIwV9vShBZlIbNLDz
+         gDwGCGsWBqBaTA5JbJBQEcTK1urH0kDXkvZrmfly1+UMYfah+EURv2jJs+0ow+KotRuJ
+         3Nqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Jt+syXVKRHjTFMpydHnrsHY4rldPaD+CJQDRL9eN6I=;
+        b=LXFhKI6DM+9gbmCkx8odCxfULsCKJ9Tco0tjaqxsCjfBaspZX3Ypj/1h50WKAZnldr
+         2C77REzBVAA1jYGQGDn5pRSFPj7hzQ0A3tq9gJ5Cu34+yrPHRjH/Eq2B4sRzVRN2gYx0
+         mpobHvlWJt9DCdHGzvNlZiFdlf6dgXVzzxw2+YQF4Aw3W9Yl0K/eltFEudguFhuk12Sb
+         uT2R7iQNDRoYfI7ngq8vdUFf8sqnNCoir9L1MQt4p5MH0jDqokOPxSe+/lBBX5IlZIxz
+         ii6HLqLp8J+bnFlJVqSyyrSxr2tsDKmue2glhEzuYRF+GsX8psy8LhxYw134paiBG8ix
+         PHFQ==
+X-Gm-Message-State: AGi0PuZ6K+ZtnKCmad/wSCsR6bDPIp2JqgFEqUGjt2KR71ZSRyGNP6Lm
+        gg3tm6NOCGV3A+FM0SnDmYz2VvDBh/z+QPq8FfQhL7gDGTFUEQ==
+X-Google-Smtp-Source: APiQypKbfjJSJPYlyVhp+ehOthmZ7/xMJPQJCiyIgVKs72QdtNmT8//Uw/UumHwXlmqOm9Q3DUVHj45ZvvPAUqOqupw=
+X-Received: by 2002:aa7:d306:: with SMTP id p6mr10316811edq.35.1588835137732;
+ Thu, 07 May 2020 00:05:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
+References: <20200504140115.15533-24-danil.kipnis@cloud.ionos.com> <202005060522.xI0z2eA6%lkp@intel.com>
+In-Reply-To: <202005060522.xI0z2eA6%lkp@intel.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 7 May 2020 09:05:26 +0200
+Message-ID: <CAMGffE=58PZSp3B14d_jCCKwPDr_YHoWxJs9gsmg-2Af60vnrw@mail.gmail.com>
+Subject: Re: [PATCH v14 23/25] block/rnbd: include client and server modules
+ into kernel compilation
+To:     kbuild test robot <lkp@intel.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 06, 2020 at 02:04:56PM -0700, Jeff Kirsher wrote:
-> This series contains the initial implementation of the Virtual Bus,
-> virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
-> Virtual Bus.
-> 
-> The primary purpose of the Virtual bus is to put devices on it and hook the
-> devices up to drivers.  This will allow drivers, like the RDMA drivers, to
-> hook up to devices via this Virtual bus.
-> 
-> The associated irdma driver designed to use this new interface, is still
-> in RFC currently and was sent in a separate series.  A new RFC version
-> is expected later this week.
-> 
-> This series currently builds against net-next tree.
-> 
-> Revision history:
-> v2: Made changes based on community feedback, like Pierre-Louis's and
->     Jason's comments to update virtual bus interface.
-> v3: Updated the virtual bus interface based on feedback from Jason and
->     Greg KH.  Also updated the initial ice driver patch to handle the
->     virtual bus changes and changes requested by Jason and Greg KH.
-> 
-> The following are changes since commit f989d546a2d5a9f001f6f8be49d98c10ab9b1897:
->   erspan: Add type I version 0 support.
-> and are available in the git repository at:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jkirsher/next-queue 100GbE
+Hi, Kbuild test robot,
 
-pull request?
+On Tue, May 5, 2020 at 11:34 PM kbuild test robot <lkp@intel.com> wrote:
+>
+> Hi Danil,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on block/for-next]
+> [also build test ERROR on driver-core/driver-core-testing rdma/for-next linus/master v5.7-rc4 next-20200505]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Danil-Kipnis/RTRS-former-IBTRS-RDMA-Transport-Library-and-RNBD-former-IBNBD-RDMA-Network-Block-Device/20200505-072234
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+> config: c6x-allyesconfig (attached as .config)
+> compiler: c6x-elf-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=c6x
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from drivers/block/rnbd/rnbd-clt.c:19:
+> >> drivers/block/rnbd/rnbd-clt.h:19:10: fatal error: rtrs.h: No such file or directory
+>       19 | #include <rtrs.h>
+>          |          ^~~~~~~~
+>    compilation terminated.
+> --
+>    In file included from drivers/block/rnbd/rnbd-srv.c:15:
+> >> drivers/block/rnbd/rnbd-srv.h:16:10: fatal error: rtrs.h: No such file or directory
+>       16 | #include <rtrs.h>
+>          |          ^~~~~~~~
+>    compilation terminated.
+>
+> vim +19 drivers/block/rnbd/rnbd-clt.h
+looks somehow the "ccflags-y := -Idrivers/infiniband/ulp/rtrs " was
+ignored in your case
 
-Come on, give us a chance to review this mess please, give me a week or
-so.
+We'll try to repro on ourside, can you also check on your side why
+ccflags is ignored?
 
-greg k-h
+Thanks!
+Jinpu
