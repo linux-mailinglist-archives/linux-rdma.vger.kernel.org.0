@@ -2,62 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A811C94A0
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 17:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3F01C94F9
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 17:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgEGPQQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 11:16:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57721 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgEGPQP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 May 2020 11:16:15 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jWiFu-00019X-VP; Thu, 07 May 2020 15:16:11 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] RDMA/mlx5: remove duplicated assignment to variable rcqe_sz
-Date:   Thu,  7 May 2020 16:16:10 +0100
-Message-Id: <20200507151610.52636-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726467AbgEGPYq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 11:24:46 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:38110 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgEGPYq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 May 2020 11:24:46 -0400
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.61])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 30B3C6010D;
+        Thu,  7 May 2020 15:24:46 +0000 (UTC)
+Received: from us4-mdac16-11.ut7.mdlocal (unknown [10.7.65.208])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 2FB22800A4;
+        Thu,  7 May 2020 15:24:46 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.198])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 71F3B8005D;
+        Thu,  7 May 2020 15:24:45 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id D907C8005C;
+        Thu,  7 May 2020 15:24:44 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 7 May 2020
+ 16:24:36 +0100
+Subject: Re: [net-next v3 2/9] ice: Create and register virtual bus for RDMA
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
+CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Bowers, AndrewX" <andrewx.bowers@intel.com>,
+        Martin Habets <mhabets@solarflare.com>
+References: <20200506210505.507254-1-jeffrey.t.kirsher@intel.com>
+ <20200506210505.507254-3-jeffrey.t.kirsher@intel.com>
+ <20200507081737.GC1024567@kroah.com>
+ <9DD61F30A802C4429A01CA4200E302A7DCD6B850@fmsmsx124.amr.corp.intel.com>
+ <20200507150658.GA1886648@kroah.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <ef4bb479-1669-7611-81c8-cd21497d9103@solarflare.com>
+Date:   Thu, 7 May 2020 16:24:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <20200507150658.GA1886648@kroah.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25404.003
+X-TM-AS-Result: No-2.816400-8.000000-10
+X-TMASE-MatchedRID: 9zTThWtzImui6/VcDv9f0PZvT2zYoYOwC/ExpXrHizxTbQ95zRbWVuQS
+        CMu2pzo2V+Tv6DTyreybymr8/mqLG3ChPHB61wQjIwk7p1qp3JapE7BSysLIIlIxScKXZnK06q/
+        JR//r0aKEgl0njLljkkOYDRKaRR11Im+xW0g7UUOVOwZbcOalSzQAl7cHmp8GQ2acZEMNHfOjxY
+        yRBa/qJZj9/HNwzYskxx7l0wJgoV3dB/CxWTRRuwihQpoXbuXFjGW2NKvxCj9jYZ/NGxgT2CFrQ
+        BvXllNFLnAzKbHHg4wJviDLF0FH1OMHwvOdkGP9G7oA4Dt6vtMb5upnEBIKy43H+tbaVNuxooBB
+        8uyeEuspZK3gOa9uGmJwouYrZN4qaw+fkLqdalOeqD9WtJkSIw==
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.816400-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25404.003
+X-MDID: 1588865085-jKzinsEFD_cD
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 07/05/2020 16:06, Greg KH wrote:
+> I can't accept that this series is using a virtual bus properly without
+> actually using the virtual bus driver code, can you?
+I might be misunderstanding, but I *think* a hardware driver likeice is
+ the 'provider' of a virtbus, and it's only 'consumers' of it (like an
+ RDMA device talking to that ice instance) that are virtbus_drivers.
+Though tbh I'm not entirely happy either with a series that adds the
+ provider side but not any users... and either way, the documentation
+ *really* doesn't make it clear whether it works the way I think it does
+ or not.
 
-The variable rcqe_sz is being unnecessarily assigned twice, fix this
-by removing one of the duplicates.
-
-Addresses-Coverity: ("Evaluation order violation")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/mlx5/qp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index e5891d3da945..0d292d93f5e7 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2043,8 +2043,7 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	if ((qp->flags_en & MLX5_QP_FLAG_SCATTER_CQE) &&
- 	    (init_attr->qp_type == IB_QPT_RC ||
- 	     init_attr->qp_type == IB_QPT_UC)) {
--		int rcqe_sz = rcqe_sz =
--			mlx5_ib_get_cqe_size(init_attr->recv_cq);
-+		int rcqe_sz = mlx5_ib_get_cqe_size(init_attr->recv_cq);
- 
- 		MLX5_SET(qpc, qpc, cs_res,
- 			 rcqe_sz == 128 ? MLX5_RES_SCAT_DATA64_CQE :
--- 
-2.25.1
-
+-ed
