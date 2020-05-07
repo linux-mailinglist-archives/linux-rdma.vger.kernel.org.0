@@ -2,96 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28371C833E
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E641C8345
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 May 2020 09:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgEGHKT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 May 2020 03:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45572 "EHLO mail.kernel.org"
+        id S1725949AbgEGHNB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 May 2020 03:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgEGHKS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 May 2020 03:10:18 -0400
+        id S1725783AbgEGHNB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 May 2020 03:13:01 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB0D32075E;
-        Thu,  7 May 2020 07:10:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E247207DD;
+        Thu,  7 May 2020 07:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588835418;
-        bh=mEF8VkusOZmamshiXDJp7/1CdUUkxNmxDUSaY67R3As=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QtlGZXc5oVWO8VGWjz0HloKsdG2aPVULvHWkdOov4a/cBWje9qSp5wta8jGEMcGRC
-         DRevNssTPFEolqIeDm0WGZnWtxpXdcUMgL1QGsNIiMCzkBPGVxE0bUlQZOWY+rmTF1
-         Tq/UAN9LGbyI0auVAUHj02Eukj8RvkS+/Zia7Zjw=
+        s=default; t=1588835580;
+        bh=IwJ8TK7JJgivvABXQYUUWOlkINcESWWFm1SmQ0uE4YA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qOBZ7uJaKfC248MnOyKHiJMjaMvNULB8tk4Cms7kSAMMj4HMV7T0pMa5CCwQSncF/
+         D7Y4+R6X7VrFmYTBVC39ofjdRi9/i2fHDimgFFsHFytMEWvo8EbLjhfU9W/CdWd7zJ
+         cFxR6rpahsH4YG0ASk8IXMoYUN/cxmXHP5g4eXbY=
+Date:   Thu, 7 May 2020 10:12:56 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc v2] IB/core: Fix potential NULL pointer dereference in pkey cache
-Date:   Thu,  7 May 2020 10:10:12 +0300
-Message-Id: <20200507071012.100594-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     kbuild test robot <lkp@intel.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH v14 23/25] block/rnbd: include client and server modules
+ into kernel compilation
+Message-ID: <20200507071256.GD78674@unreal>
+References: <20200504140115.15533-24-danil.kipnis@cloud.ionos.com>
+ <202005060522.xI0z2eA6%lkp@intel.com>
+ <CAMGffE=58PZSp3B14d_jCCKwPDr_YHoWxJs9gsmg-2Af60vnrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMGffE=58PZSp3B14d_jCCKwPDr_YHoWxJs9gsmg-2Af60vnrw@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+On Thu, May 07, 2020 at 09:05:26AM +0200, Jinpu Wang wrote:
+> Hi, Kbuild test robot,
+>
+> On Tue, May 5, 2020 at 11:34 PM kbuild test robot <lkp@intel.com> wrote:
+> >
+> > Hi Danil,
+> >
+> > I love your patch! Yet something to improve:
+> >
+> > [auto build test ERROR on block/for-next]
+> > [also build test ERROR on driver-core/driver-core-testing rdma/for-next linus/master v5.7-rc4 next-20200505]
+> > [if your patch is applied to the wrong git tree, please drop us a note to help
+> > improve the system. BTW, we also suggest to use '--base' option to specify the
+> > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Danil-Kipnis/RTRS-former-IBTRS-RDMA-Transport-Library-and-RNBD-former-IBNBD-RDMA-Network-Block-Device/20200505-072234
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+> > config: c6x-allyesconfig (attached as .config)
+> > compiler: c6x-elf-gcc (GCC) 9.3.0
+> > reproduce:
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=c6x
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    In file included from drivers/block/rnbd/rnbd-clt.c:19:
+> > >> drivers/block/rnbd/rnbd-clt.h:19:10: fatal error: rtrs.h: No such file or directory
+> >       19 | #include <rtrs.h>
+> >          |          ^~~~~~~~
+> >    compilation terminated.
+> > --
+> >    In file included from drivers/block/rnbd/rnbd-srv.c:15:
+> > >> drivers/block/rnbd/rnbd-srv.h:16:10: fatal error: rtrs.h: No such file or directory
+> >       16 | #include <rtrs.h>
+> >          |          ^~~~~~~~
+> >    compilation terminated.
+> >
+> > vim +19 drivers/block/rnbd/rnbd-clt.h
+> looks somehow the "ccflags-y := -Idrivers/infiniband/ulp/rtrs " was
+> ignored in your case
+>
+> We'll try to repro on ourside, can you also check on your side why
+> ccflags is ignored?
 
-The IB core pkey cache is populated by procedure ib_cache_update().
-Initially, the pkey cache pointer is NULL. ib_cache_update allocates
-a buffer and populates it with the device's pkeys, via repeated calls
-to procedure ib_query_pkey().
+It should be ccflags-y := -I $(srctree)/drivers/infiniband/ulp/rtrs
 
-If there is a failure in populating the pkey buffer via ib_query_pkey(),
-ib_cache_update does not replace the old pkey buffer cache with the
-updated one -- it leaves the old cache as is.
+Thanks
 
-Since initially the pkey buffer cache is NULL, when calling
-ib_cache_update the first time, a failure in ib_query_pkey() will cause
-the pkey buffer cache pointer to remain NULL.
-
-In this situation, any calls subsequent to ib_get_cached_pkey(),
-ib_find_cached_pkey(), or ib_find_cached_pkey_exact() will try to
-dereference the NULL pkey cache pointer, causing a kernel panic.
-
-Fix this by checking the ib_cache_update() return value.
-
-Fixes: 8faea9fd4a39 ("RDMA/cache: Move the cache per-port data into the main ib_port_data")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
-Changelog:
-v2: Removed error unwinding
-v1: https://lore.kernel.org/linux-rdma/20200506053213.566264-1-leon@kernel.org
- I rewrote the patch to take care of ib_cache_update() return value.
-v0: https://lore.kernel.org/linux-rdma/20200426075811.129814-1-leon@kernel.org
----
- drivers/infiniband/core/cache.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 717b798cddad..a670209bbce6 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1553,8 +1553,11 @@ int ib_cache_setup_one(struct ib_device *device)
- 	if (err)
- 		return err;
-
--	rdma_for_each_port (device, p)
--		ib_cache_update(device, p, true);
-+	rdma_for_each_port (device, p) {
-+		err = ib_cache_update(device, p, true);
-+		if (err)
-+			return err;
-+	}
-
- 	return 0;
- }
---
-2.26.2
-
+>
+> Thanks!
+> Jinpu
