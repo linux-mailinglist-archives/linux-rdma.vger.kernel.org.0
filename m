@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337ED1CA77A
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2020 11:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD111CA779
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2020 11:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgEHJqZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 May 2020 05:46:25 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37264 "EHLO huawei.com"
+        id S1726950AbgEHJqY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 May 2020 05:46:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37296 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727051AbgEHJqY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1727071AbgEHJqY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Fri, 8 May 2020 05:46:24 -0400
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id AA25BFC80E24910E5F35;
+        by Forcepoint Email with ESMTP id B02E7E53389AD5B9EA9E;
         Fri,  8 May 2020 17:46:21 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 17:46:12 +0800
+ 14.3.487.0; Fri, 8 May 2020 17:46:13 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 8/9] RDMA/hns: Rename macro for defining hns hardware page size
-Date:   Fri, 8 May 2020 17:45:58 +0800
-Message-ID: <1588931159-56875-9-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next 9/9] RDMA/hns: Reserve one sge in order to avoid local length error
+Date:   Fri, 8 May 2020 17:45:59 +0800
+Message-ID: <1588931159-56875-10-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1588931159-56875-1-git-send-email-liweihang@huawei.com>
 References: <1588931159-56875-1-git-send-email-liweihang@huawei.com>
@@ -36,218 +36,128 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+From: Lijun Ou <oulijun@huawei.com>
 
-Rename the PAGE_ADDR_SHIFT as HNS_HW_PAGE_SHIFT to make code more
-readable.
+When rq/srq sge length is smaller than sq sge length, it will produce a
+local length error and may cause the bus to hang. Therefore, for rq wqe
+and srq wqe, one reserved sge pointing to a reserved mr is used to avoid
+this error.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_alloc.c  |  6 +++---
- drivers/infiniband/hw/hns/hns_roce_cq.c     |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_device.h | 10 ++++++----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_mr.c     |  6 +++---
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_srq.c    |  8 ++++----
- 7 files changed, 22 insertions(+), 20 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 2 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 9 +++++----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 4 +++-
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 5 +++--
+ drivers/infiniband/hw/hns/hns_roce_srq.c    | 2 +-
+ 5 files changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-index 365e7db..742aee8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-@@ -189,8 +189,8 @@ int hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size, u32 max_direct,
- 	u32 page_size;
- 	int i;
- 
--	/* The minimum shift of the page accessed by hw is PAGE_ADDR_SHIFT */
--	buf->page_shift = max_t(int, PAGE_ADDR_SHIFT, page_shift);
-+	/* The minimum shift of the page accessed by hw is HNS_HW_PAGE_SHIFT */
-+	buf->page_shift = max_t(int, HNS_HW_PAGE_SHIFT, page_shift);
- 
- 	page_size = 1 << buf->page_shift;
- 	buf->npages = DIV_ROUND_UP(size, page_size);
-@@ -261,7 +261,7 @@ int hns_roce_get_umem_bufs(struct hns_roce_dev *hr_dev, dma_addr_t *bufs,
- 	int idx = 0;
- 	u64 addr;
- 
--	if (page_shift < PAGE_ADDR_SHIFT) {
-+	if (page_shift < HNS_HW_PAGE_SHIFT) {
- 		dev_err(hr_dev->dev, "Failed to check umem page shift %d!\n",
- 			page_shift);
- 		return -EINVAL;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index d2d7074..6dd8dea 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -149,14 +149,14 @@ static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
- 	struct hns_roce_buf_attr buf_attr = {};
- 	int err;
- 
--	buf_attr.page_shift = hr_dev->caps.cqe_buf_pg_sz + PAGE_ADDR_SHIFT;
-+	buf_attr.page_shift = hr_dev->caps.cqe_buf_pg_sz + HNS_HW_PAGE_SHIFT;
- 	buf_attr.region[0].size = hr_cq->cq_depth * hr_dev->caps.cq_entry_sz;
- 	buf_attr.region[0].hopnum = hr_dev->caps.cqe_hop_num;
- 	buf_attr.region_count = 1;
- 	buf_attr.fixed_page = true;
- 
- 	err = hns_roce_mtr_create(hr_dev, &hr_cq->mtr, &buf_attr,
--				  hr_dev->caps.cqe_ba_pg_sz + PAGE_ADDR_SHIFT,
-+				  hr_dev->caps.cqe_ba_pg_sz + HNS_HW_PAGE_SHIFT,
- 				  udata, addr);
- 	if (err)
- 		ibdev_err(ibdev, "Failed to alloc CQ mtr, err %d\n", err);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 5564773..543c37a 100644
+index 543c37a..2f804c18 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -260,7 +260,9 @@ enum {
- #define HNS_ROCE_PORT_DOWN			0
- #define HNS_ROCE_PORT_UP			1
+@@ -66,6 +66,8 @@
+ #define HNS_ROCE_CQE_WCMD_EMPTY_BIT		0x2
+ #define HNS_ROCE_MIN_CQE_CNT			16
  
--#define PAGE_ADDR_SHIFT				12
-+/* The minimum page size is 4K for hardware */
-+#define HNS_HW_PAGE_SHIFT			12
-+#define HNS_HW_PAGE_SIZE			(1 << HNS_HW_PAGE_SHIFT)
++#define HNS_ROCE_RESERVED_SGE			1
++
+ #define HNS_ROCE_MAX_IRQ_NUM			128
  
- /* The minimum page count for hardware access page directly. */
- #define HNS_HW_DIRECT_PAGE_COUNT 2
-@@ -1079,16 +1081,16 @@ static inline dma_addr_t hns_roce_buf_page(struct hns_roce_buf *buf, int idx)
- 		return buf->page_list[idx].map;
- }
- 
--#define hr_hw_page_align(x)		ALIGN(x, 1 << PAGE_ADDR_SHIFT)
-+#define hr_hw_page_align(x)		ALIGN(x, 1 << HNS_HW_PAGE_SHIFT)
- 
- static inline u64 to_hr_hw_page_addr(u64 addr)
- {
--	return addr >> PAGE_ADDR_SHIFT;
-+	return addr >> HNS_HW_PAGE_SHIFT;
- }
- 
- static inline u32 to_hr_hw_page_shift(u32 page_shift)
- {
--	return page_shift - PAGE_ADDR_SHIFT;
-+	return page_shift - HNS_HW_PAGE_SHIFT;
- }
- 
- static inline u32 to_hr_hem_hopnum(u32 hopnum, u32 count)
+ #define HNS_ROCE_SGE_IN_WQE			2
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d137abc..e7ebe31 100644
+index e7ebe31..6877c1e 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5603,7 +5603,7 @@ static int alloc_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
- 	else
- 		eq->hop_num = hr_dev->caps.eqe_hop_num;
+@@ -629,7 +629,7 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
  
--	buf_attr.page_shift = hr_dev->caps.eqe_buf_pg_sz + PAGE_ADDR_SHIFT;
-+	buf_attr.page_shift = hr_dev->caps.eqe_buf_pg_sz + HNS_HW_PAGE_SHIFT;
- 	buf_attr.region[0].size = eq->entries * eq->eqe_size;
- 	buf_attr.region[0].hopnum = eq->hop_num;
- 	buf_attr.region_count = 1;
-@@ -5611,7 +5611,7 @@ static int alloc_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
+ 		wqe_idx = (hr_qp->rq.head + nreq) & (hr_qp->rq.wqe_cnt - 1);
  
- 	err = hns_roce_mtr_create(hr_dev, &eq->mtr, &buf_attr,
- 				  hr_dev->caps.eqe_ba_pg_sz +
--				  PAGE_ADDR_SHIFT, NULL, 0);
-+				  HNS_HW_PAGE_SHIFT, NULL, 0);
- 	if (err)
- 		dev_err(hr_dev->dev, "Failed to alloc EQE mtr, err %d\n", err);
+-		if (unlikely(wr->num_sge > hr_qp->rq.max_gs)) {
++		if (unlikely(wr->num_sge >= hr_qp->rq.max_gs)) {
+ 			ibdev_err(ibdev, "rq:num_sge=%d >= qp->sq.max_gs=%d\n",
+ 				  wr->num_sge, hr_qp->rq.max_gs);
+ 			ret = -EINVAL;
+@@ -649,6 +649,7 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 		if (i < hr_qp->rq.max_gs) {
+ 			dseg->lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
+ 			dseg->addr = 0;
++			dseg->len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
+ 		}
  
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index f727b18..3075e845 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -120,7 +120,7 @@ static int alloc_mr_pbl(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr,
+ 		/* rq support inline data */
+@@ -782,8 +783,8 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 		}
  
- 	mr->pbl_hop_num = is_fast ? 1 : hr_dev->caps.pbl_hop_num;
- 	buf_attr.page_shift = is_fast ? PAGE_SHIFT :
--			      hr_dev->caps.pbl_buf_pg_sz + PAGE_ADDR_SHIFT;
-+			      hr_dev->caps.pbl_buf_pg_sz + HNS_HW_PAGE_SHIFT;
- 	buf_attr.region[0].size = length;
- 	buf_attr.region[0].hopnum = mr->pbl_hop_num;
- 	buf_attr.region_count = 1;
-@@ -130,7 +130,7 @@ static int alloc_mr_pbl(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr,
- 	buf_attr.mtt_only = is_fast;
+ 		if (i < srq->max_gs) {
+-			dseg[i].len = 0;
+-			dseg[i].lkey = cpu_to_le32(0x100);
++			dseg[i].len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
++			dseg[i].lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
+ 			dseg[i].addr = 0;
+ 		}
  
- 	err = hns_roce_mtr_create(hr_dev, &mr->pbl_mtr, &buf_attr,
--				  hr_dev->caps.pbl_ba_pg_sz + PAGE_ADDR_SHIFT,
-+				  hr_dev->caps.pbl_ba_pg_sz + HNS_HW_PAGE_SHIFT,
- 				  udata, start);
- 	if (err)
- 		ibdev_err(ibdev, "failed to alloc pbl mtr, ret = %d.\n", err);
-@@ -819,7 +819,7 @@ static int mtr_alloc_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 	}
+@@ -5042,7 +5043,7 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
  
- 	/* must bigger than minimum hardware page shift */
--	if (best_pg_shift < PAGE_ADDR_SHIFT || all_pg_count < 1) {
-+	if (best_pg_shift < HNS_HW_PAGE_SHIFT || all_pg_count < 1) {
- 		ret = -EINVAL;
- 		ibdev_err(ibdev, "Failed to check mtr page shift %d count %d\n",
- 			  best_pg_shift, all_pg_count);
+ 	attr->srq_limit = limit_wl;
+ 	attr->max_wr = srq->wqe_cnt - 1;
+-	attr->max_sge = srq->max_gs;
++	attr->max_sge = srq->max_gs - HNS_ROCE_RESERVED_SGE;
+ 
+ out:
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 05bfe07..a135b09 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -92,7 +92,9 @@
+ #define HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ		PAGE_SIZE
+ #define HNS_ROCE_V2_PAGE_SIZE_SUPPORTED		0xFFFFF000
+ #define HNS_ROCE_V2_MAX_INNER_MTPT_NUM		2
+-#define HNS_ROCE_INVALID_LKEY			0x100
++#define HNS_ROCE_INVALID_LKEY			0x0
++#define HNS_ROCE_INVALID_SGE_LENGTH		0x80000000
++
+ #define HNS_ROCE_CMQ_TX_TIMEOUT			30000
+ #define HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE	2
+ #define HNS_ROCE_V2_RSV_QPS			8
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index b570759..c8334d7 100644
+index c8334d7..6e5df46 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -546,7 +546,7 @@ static int split_wqe_buf_region(struct hns_roce_dev *hr_dev,
- 	if (hr_qp->buff_size < 1)
+@@ -386,7 +386,8 @@ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
  		return -EINVAL;
- 
--	buf_attr->page_shift = PAGE_ADDR_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
-+	buf_attr->page_shift = HNS_HW_PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
- 	buf_attr->fixed_page = true;
- 	buf_attr->region_count = idx;
- 
-@@ -681,7 +681,7 @@ static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		goto err_inline;
  	}
- 	ret = hns_roce_mtr_create(hr_dev, &hr_qp->mtr, &buf_attr,
--				  PAGE_ADDR_SHIFT + hr_dev->caps.mtt_ba_pg_sz,
-+				  HNS_HW_PAGE_SHIFT + hr_dev->caps.mtt_ba_pg_sz,
- 				  udata, addr);
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to create WQE mtr, ret = %d.\n", ret);
+ 
+-	hr_qp->rq.max_gs = roundup_pow_of_two(max(1U, cap->max_recv_sge));
++	hr_qp->rq.max_gs = roundup_pow_of_two(max(1U, cap->max_recv_sge) +
++					      HNS_ROCE_RESERVED_SGE);
+ 
+ 	if (hr_dev->caps.max_rq_sg <= HNS_ROCE_SGE_IN_WQE)
+ 		hr_qp->rq.wqe_shift = ilog2(hr_dev->caps.max_rq_desc_sz);
+@@ -401,7 +402,7 @@ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+ 		hr_qp->rq_inl_buf.wqe_cnt = 0;
+ 
+ 	cap->max_recv_wr = cnt;
+-	cap->max_recv_sge = hr_qp->rq.max_gs;
++	cap->max_recv_sge = hr_qp->rq.max_gs - HNS_ROCE_RESERVED_SGE;
+ 
+ 	return 0;
+ }
 diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 6e5a2ad..03b76e6 100644
+index 03b76e6..3018c98 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_srq.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -187,7 +187,7 @@ static int alloc_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 						      HNS_ROCE_SGE_SIZE *
- 						      srq->max_gs)));
+@@ -297,7 +297,7 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	spin_lock_init(&srq->lock);
  
--	buf_attr.page_shift = hr_dev->caps.srqwqe_buf_pg_sz + PAGE_ADDR_SHIFT;
-+	buf_attr.page_shift = hr_dev->caps.srqwqe_buf_pg_sz + HNS_HW_PAGE_SHIFT;
- 	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
- 							 srq->wqe_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.srqwqe_hop_num;
-@@ -196,7 +196,7 @@ static int alloc_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 	srq->wqe_cnt = roundup_pow_of_two(init_attr->attr.max_wr + 1);
+-	srq->max_gs = init_attr->attr.max_sge;
++	srq->max_gs = init_attr->attr.max_sge + HNS_ROCE_RESERVED_SGE;
  
- 	err = hns_roce_mtr_create(hr_dev, &srq->buf_mtr, &buf_attr,
- 				  hr_dev->caps.srqwqe_ba_pg_sz +
--				  PAGE_ADDR_SHIFT, udata, addr);
-+				  HNS_HW_PAGE_SHIFT, udata, addr);
- 	if (err)
- 		ibdev_err(ibdev, "Failed to alloc SRQ buf mtr, err %d\n", err);
- 
-@@ -218,7 +218,7 @@ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 
- 	srq->idx_que.entry_shift = ilog2(HNS_ROCE_IDX_QUE_ENTRY_SZ);
- 
--	buf_attr.page_shift = hr_dev->caps.idx_buf_pg_sz + PAGE_ADDR_SHIFT;
-+	buf_attr.page_shift = hr_dev->caps.idx_buf_pg_sz + HNS_HW_PAGE_SHIFT;
- 	buf_attr.region[0].size = to_hr_hem_entries_size(srq->wqe_cnt,
- 					srq->idx_que.entry_shift);
- 	buf_attr.region[0].hopnum = hr_dev->caps.idx_hop_num;
-@@ -226,7 +226,7 @@ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 	buf_attr.fixed_page = true;
- 
- 	err = hns_roce_mtr_create(hr_dev, &idx_que->mtr, &buf_attr,
--				  hr_dev->caps.idx_ba_pg_sz + PAGE_ADDR_SHIFT,
-+				  hr_dev->caps.idx_ba_pg_sz + HNS_HW_PAGE_SHIFT,
- 				  udata, addr);
- 	if (err) {
- 		ibdev_err(ibdev, "Failed to alloc SRQ idx mtr, err %d\n", err);
+ 	if (udata) {
+ 		ret = ib_copy_from_udata(&ucmd, udata, sizeof(ucmd));
 -- 
 2.8.1
 
