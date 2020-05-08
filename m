@@ -2,127 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2F41CB8A3
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2020 21:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8061CB8B3
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 May 2020 21:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgEHTxC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 May 2020 15:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        id S1726797AbgEHT6k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 May 2020 15:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727822AbgEHTw7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 May 2020 15:52:59 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871A4C05BD0D
-        for <linux-rdma@vger.kernel.org>; Fri,  8 May 2020 12:52:58 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id s9so2064120qkm.6
-        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2020 12:52:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726767AbgEHT6k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 May 2020 15:58:40 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61805C061A0C
+        for <linux-rdma@vger.kernel.org>; Fri,  8 May 2020 12:58:40 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id 59so1392964qva.13
+        for <linux-rdma@vger.kernel.org>; Fri, 08 May 2020 12:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=+PiQ6ckxUTnSDo+AGLRh/Fg+o3k0O3ko3wY06x3JoKE=;
-        b=Ts3CIrENqZECosUV9ufuB6NplQ4bZIANry4cTq9ctiFl2W3eKhj5UpDDQOEaY6A2Yd
-         mNvqS8MpDNbFmXG47isv0LHHuWhU9DrWeNeUqpMHP3rRP+c5b6gcvtAg+8ZLRMd/gdoD
-         1i8v4D54gKF1JaotzplFLT3nMfQ5VKcTVTMjFomlH2d9ykBhs9YeoAV4r0fEyjl3TlPr
-         v2KDioACvLG1JOHWROC3jtqtFiE8v+6chVfwhJVwQ6LpHrO+DnmO5kWS3VjbGmk9WNEY
-         aeK1VQ7Ix6UqBc9nyw9EdxtaWdyBCOYz2f1ZZWBmiN42UGRN2WCkIjnAj9hWJy7yjUPW
-         HsMQ==
+        bh=8fjdVK7f+8aigodcAGlUvVOf1RKpAaK1SR2MV0cPRHk=;
+        b=SerDa9iQZ83WrkL915BvYV2YXa3azn5jCBvL+GuHfLmB+uvp5jiI9xM8ZkIqtZrAi7
+         pBDK7Jzswe0it1opDQQqu6SctIHaZ+C3in+UTP1mXx0Z+JtIf8VHPCVDwGjfGJBhGExO
+         HsIOwuCDDlQpa3DU5KTONkS8VgROsGsqlP2XBCwro+hwxoXejKF4dvXWtk3kxocjwgAg
+         Slhr/j8T41VSBdZmOOc4ntLhjVUyQWLEzfPUfsxa+Uf9uHgBfjPKSqdSfcZ/uqDZmWum
+         FgGR2k+k7PAfnz5OKKTJphYVs6pI4QiCDmJBZpKFVhlNByGshjBVdmlgrQVHSgy2jGVH
+         DOVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+PiQ6ckxUTnSDo+AGLRh/Fg+o3k0O3ko3wY06x3JoKE=;
-        b=Ko7bSRtTEiV5jGORD88YYrROfsLB9VpVSDBnFj2oy9WXPZ3xO4xyFf7imJ/WdPo2mP
-         tjseG+HUpbciSpqisnhD9/FODHIGkxkxPeH+B2iPMgR8zA31wJTbZbVF/OTk+Bv6TuPb
-         NlF39qjg8trngn1cSFcQKmPDCLmkG+8cZWnvWWBJF/sdud/5QBDdFwtVLjCoEZ+mdbWn
-         sTtTGZtoXBVX5pB79FcIhvqbKQFFBk20x1ZVytqcgbA5WJiS2hT0BiLtToEMo6PToBnx
-         TEmUTAjQoBmNZjoQKwEWH+B1SLR2Aycpyc5B271EDUIP1xhSOxXyDVCsm5Fshx+H2w1p
-         M63A==
-X-Gm-Message-State: AGi0PubrOXb3+28FlXTqB/sMqEJWoXUa/gF7/D34u3ujHtERIEB4qkj2
-        ufzKPz/WHBfUFqKOFoI6dFkvvw==
-X-Google-Smtp-Source: APiQypJ92/0qZ5iunL9hikarn4eDK0RllMv8mjTvIrEJ1zjbLNqAjWeKqDY9cc4vVlZEbqAojJlNqA==
-X-Received: by 2002:a37:a4d8:: with SMTP id n207mr4488919qke.354.1588967577470;
-        Fri, 08 May 2020 12:52:57 -0700 (PDT)
+        bh=8fjdVK7f+8aigodcAGlUvVOf1RKpAaK1SR2MV0cPRHk=;
+        b=SefEAYBWETp3TtHDvk1kuMa41EtVTBkS+ozx3ss7TK5DcZYdZztS2vsDIjelnhlfki
+         9jKUSgargo1Q94aaVI2R9uJL0NXZ/FTSGInR3Tc9JdQwKA2fzdnHi3t+dkEy/I89vaN0
+         jogMStUDgT+3oiYYh9KjI8UPaTa/GdUHSgPRnYgdWh/u9asZlafWgD4bv83N4N5dOiKY
+         x4KcwTn0B00WTKJhhId01DF1Cui2RbtQvEuZ4HP1i1rklap1+7z4CCgxqoY4QCEbsMeq
+         5M8u425mzk76TavlZbI5VZdyYlh+jaGmDcfNOR3fL5+mhDqX8kacDMFfpc/nlAzNCz27
+         D5hw==
+X-Gm-Message-State: AGi0Puab3qgOG5ROa3NeEybVIF89gOe+7K/srsSOX9Oe9yt4KC72fTWV
+        rsXNNqpkOIG9qmbFIIQZTml0hw==
+X-Google-Smtp-Source: APiQypIV9W4VqbD706RMPBHoU3J0Rlm8JP6X6d8XroY+EFRoHlJmbkNUXElgZMdBHJXnifk4YaIgVA==
+X-Received: by 2002:ad4:53a2:: with SMTP id j2mr4489976qvv.159.1588967919686;
+        Fri, 08 May 2020 12:58:39 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c4sm1945896qkf.120.2020.05.08.12.52.56
+        by smtp.gmail.com with ESMTPSA id 66sm1844186qtg.84.2020.05.08.12.58.39
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 12:52:56 -0700 (PDT)
+        Fri, 08 May 2020 12:58:39 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jX93I-0002SQ-9Q; Fri, 08 May 2020 16:52:56 -0300
-Date:   Fri, 8 May 2020 16:52:56 -0300
+        id 1jX98o-0002a3-Lx; Fri, 08 May 2020 16:58:38 -0300
+Date:   Fri, 8 May 2020 16:58:38 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 09/12] rdma: use __anon_inode_getfd
-Message-ID: <20200508195256.GA8912@ziepe.ca>
-References: <20200508153634.249933-1-hch@lst.de>
- <20200508153634.249933-10-hch@lst.de>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org,
+        Mark Bloch <markb@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [PATCH mlx5-next v1 1/4] {IB/net}/mlx5: Simplify don't trap code
+Message-ID: <20200508195838.GA9696@ziepe.ca>
+References: <20200504053012.270689-1-leon@kernel.org>
+ <20200504053012.270689-2-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508153634.249933-10-hch@lst.de>
+In-Reply-To: <20200504053012.270689-2-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 08, 2020 at 05:36:31PM +0200, Christoph Hellwig wrote:
-> Use __anon_inode_getfd instead of opencoding the logic using
-> get_unused_fd_flags + anon_inode_getfile.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/infiniband/core/rdma_core.c | 17 ++++-------------
->  1 file changed, 4 insertions(+), 13 deletions(-)
+On Mon, May 04, 2020 at 08:30:09AM +0300, Leon Romanovsky wrote:
+> +	flow_act->action &=
+> +		~MLX5_FLOW_CONTEXT_ACTION_FWD_NEXT_PRIO;
+> +	flow_act->action |= MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
+> +	handle = _mlx5_add_flow_rules(ft, spec, flow_act, dest, num_dest);
+> +	if (IS_ERR_OR_NULL(handle))
+> +		goto unlock;
 
- 
-> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> index 5128cb16bb485..541e5e06347f6 100644
-> --- a/drivers/infiniband/core/rdma_core.c
-> +++ b/drivers/infiniband/core/rdma_core.c
-> @@ -462,30 +462,21 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
->  	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release))
->  		return ERR_PTR(-EINVAL);
->  
-> -	new_fd = get_unused_fd_flags(O_CLOEXEC);
-> -	if (new_fd < 0)
-> -		return ERR_PTR(new_fd);
-> -
->  	uobj = alloc_uobj(attrs, obj);
->  	if (IS_ERR(uobj))
-> -		goto err_fd;
-> +		return uobj;
->  
->  	/* Note that uverbs_uobject_fd_release() is called during abort */
-> -	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
-> -				  fd_type->flags);
-> -	if (IS_ERR(filp)) {
-> -		uobj = ERR_CAST(filp);
-> +	new_fd = __anon_inode_getfd(fd_type->name, fd_type->fops, NULL,
-> +			fd_type->flags | O_CLOEXEC, &filp);
-> +	if (new_fd < 0)
->  		goto err_uobj;
+I never like seeing IS_ERR_OR_NULL()..
 
-This will conflict with a fix (83a267021221 'RDMA/core: Fix
-overwriting of uobj in case of error') that is going to go to -rc
-soon.
+In this case I see callers of mlx5_add_flow_rules() that crash if it
+returns NULL, so this can't be right.
 
-Also the above misses returning an ERR_PTR if __anon_inode_getfd fails, it
-returns a uobj that had been freed.. I suppose it should be something
-like
-
-if (new_fd < 0) {
-   uverbs_uobject_put(uobj);
-   return ERR_PTR(new_fd)
-}
-
-?
+Also, I don't see an obvious place where _mlx5_add_flow_rules()
+returns NULL, does it?
 
 Jason
