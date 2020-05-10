@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC861CCBB2
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB931CCBB4
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgEJO4N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 May 2020 10:56:13 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45490 "EHLO
+        id S1728600AbgEJO4X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 May 2020 10:56:23 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:58168 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728714AbgEJO4N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:56:13 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from yaminf@mellanox.com)
+        with ESMTP id S1728360AbgEJO4W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:56:22 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from yaminf@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 10 May 2020 17:56:07 +0300
 Received: from arch012.mtl.labs.mlnx. (arch012.mtl.labs.mlnx [10.7.13.12])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04AEu6eG007532;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04AEu6eH007532;
         Sun, 10 May 2020 17:56:06 +0300
 From:   Yamin Friedman <yaminf@mellanox.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Christoph Hellwig <hch@lst.de>
 Cc:     linux-rdma@vger.kernel.org, Yamin Friedman <yaminf@mellanox.com>
-Subject: [PATCH 1/4] infiniband/core: Add protection for shared CQs used by ULPs
-Date:   Sun, 10 May 2020 17:55:54 +0300
-Message-Id: <1589122557-88996-2-git-send-email-yaminf@mellanox.com>
+Subject: [PATCH 2/4] RDMA/core: Introduce shared CQ pool API
+Date:   Sun, 10 May 2020 17:55:55 +0300
+Message-Id: <1589122557-88996-3-git-send-email-yaminf@mellanox.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
 References: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
@@ -32,204 +32,354 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A pre-step for adding shared CQs. Add the infra-structure to prevent
-shared CQ users from altering the CQ configurations. For now all cqs are
-marked as private (non-shared). The core driver should use the new force
-functions to perform resize/destroy/moderation changes that are not
-allowed for users of shared CQs.
+Allow a ULP to ask the core to provide a completion queue based on a
+least-used search on a per-device CQ pools. The device CQ pools grow in a
+lazy fashion when more CQs are requested.
+
+This feature reduces the amount of interrupts when using many QPs.
+Using shared CQs allows for more effcient completion handling. It also
+reduces the amount of overhead needed for CQ contexts.
+
+Test setup:
+Intel(R) Xeon(R) Platinum 8176M CPU @ 2.10GHz servers.
+Running NVMeoF 4KB read IOs over ConnectX-5EX across Spectrum switch.
+TX-depth = 32. Number of cores refers to the initiator side. Four disks are
+accessed from each core. In the current case we have four CQs per core and
+in the shared case we have a single CQ per core. Until 14 cores there is no
+significant change in performance and the number of interrupts per second
+is less than a million in the current case.
+==================================================
+|Cores|Current KIOPs  |Shared KIOPs  |improvement|
+|-----|---------------|--------------|-----------|
+|14   |2188           |2620          |19.7%      |
+|-----|---------------|--------------|-----------|
+|20   |2063           |2308          |11.8%      |
+|-----|---------------|--------------|-----------|
+|28   |1933           |2235          |15.6%      |
+|=================================================
+|Cores|Current avg lat|Shared avg lat|improvement|
+|-----|---------------|--------------|-----------|
+|14   |817us          |683us         |16.4%      |
+|-----|---------------|--------------|-----------|
+|20   |1239us         |1108us        |10.6%      |
+|-----|---------------|--------------|-----------|
+|28   |1852us         |1601us        |13.5%      |
+========================================================
+|Cores|Current interrupts|Shared interrupts|improvement|
+|-----|------------------|-----------------|-----------|
+|14   |2131K/sec         |425K/sec         |80%        |
+|-----|------------------|-----------------|-----------|
+|20   |2267K/sec         |594K/sec         |73.8%      |
+|-----|------------------|-----------------|-----------|
+|28   |2370K/sec         |1057K/sec        |55.3%      |
+====================================================================
+|Cores|Current 99.99th PCTL lat|Shared 99.99th PCTL lat|improvement|
+|-----|------------------------|-----------------------|-----------|
+|14   |85Kus                   |9Kus                   |88%        |
+|-----|------------------------|-----------------------|-----------|
+|20   |6Kus                    |5.3Kus                 |14.6%      |
+|-----|------------------------|-----------------------|-----------|
+|28   |11.6Kus                 |9.5Kus                 |18%        |
+|===================================================================
+
+Performance improvement with 16 disks (16 CQs per core) is comparable.
 
 Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
 Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
 ---
- drivers/infiniband/core/cq.c    | 25 ++++++++++++++++++-------
- drivers/infiniband/core/verbs.c | 37 ++++++++++++++++++++++++++++++++++---
- include/rdma/ib_verbs.h         | 20 +++++++++++++++++++-
- 3 files changed, 71 insertions(+), 11 deletions(-)
+ drivers/infiniband/core/core_priv.h |   8 ++
+ drivers/infiniband/core/cq.c        | 145 ++++++++++++++++++++++++++++++++++++
+ drivers/infiniband/core/device.c    |   3 +-
+ include/rdma/ib_verbs.h             |  32 ++++++++
+ 4 files changed, 187 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 4f25b24..443a9cd 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -37,6 +37,7 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
- {
- 	struct dim *dim = container_of(w, struct dim, work);
- 	struct ib_cq *cq = dim->priv;
-+	int ret;
- 
- 	u16 usec = rdma_dim_prof[dim->profile_ix].usec;
- 	u16 comps = rdma_dim_prof[dim->profile_ix].comps;
-@@ -44,7 +45,10 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
- 	dim->state = DIM_START_MEASURE;
- 
- 	trace_cq_modify(cq, comps, usec);
--	cq->device->ops.modify_cq(cq, comps, usec);
-+	ret = rdma_set_cq_moderation_force(cq, comps, usec);
-+	if (ret)
-+		WARN_ONCE(1, "Failed set moderation for CQ 0x%p\n", cq);
-+
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index cf42acc..7fe9c13 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -191,6 +191,14 @@ static inline bool rdma_is_upper_dev_rcu(struct net_device *dev,
+ 	return netdev_has_upper_dev_all_rcu(dev, upper);
  }
  
- static void rdma_dim_init(struct ib_cq *cq)
-@@ -218,6 +222,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 	cq->cq_context = private;
++struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
++			     int cpu_hint, enum ib_poll_context poll_ctx);
++void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe);
++
++void ib_init_cq_pools(struct ib_device *dev);
++
++void ib_purge_cq_pools(struct ib_device *dev);
++
+ int addr_init(void);
+ void addr_cleanup(void);
+ 
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index 443a9cd..a86e893 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -6,8 +6,11 @@
+ #include <linux/err.h>
+ #include <linux/slab.h>
+ #include <rdma/ib_verbs.h>
++#include "core_priv.h"
+ 
+ #include <trace/events/rdma_core.h>
++/* Max size for shared CQ, may require tuning */
++#define IB_MAX_SHARED_CQ_SZ		4096
+ 
+ /* # of WCs to poll for with a single call to ib_poll_cq */
+ #define IB_POLL_BATCH			16
+@@ -223,6 +226,8 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
  	cq->poll_ctx = poll_ctx;
  	atomic_set(&cq->usecnt, 0);
-+	cq->cq_type = IB_CQ_PRIVATE;
+ 	cq->cq_type = IB_CQ_PRIVATE;
++	cq->cqe_used = 0;
++	cq->comp_vector = comp_vector;
  
  	cq->wc = kmalloc_array(IB_POLL_BATCH, sizeof(*cq->wc), GFP_KERNEL);
  	if (!cq->wc)
-@@ -300,12 +305,7 @@ struct ib_cq *__ib_alloc_cq_any(struct ib_device *dev, void *private,
- }
- EXPORT_SYMBOL(__ib_alloc_cq_any);
- 
--/**
-- * ib_free_cq_user - free a completion queue
-- * @cq:		completion queue to free.
-- * @udata:	User data or NULL for kernel object
-- */
--void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
-+static void _ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+@@ -309,6 +314,8 @@ static void _ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
  {
  	if (WARN_ON_ONCE(atomic_read(&cq->usecnt)))
  		return;
-@@ -333,4 +333,15 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- 	kfree(cq->wc);
- 	kfree(cq);
++	if (WARN_ON_ONCE(cq->cqe_used != 0))
++		return;
+ 
+ 	switch (cq->poll_ctx) {
+ 	case IB_POLL_DIRECT:
+@@ -345,3 +352,141 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ 		_ib_free_cq_user(cq, udata);
  }
-+
-+/**
-+ * ib_free_cq_user - free a completion queue
-+ * @cq:		completion queue to free.
-+ * @udata:	User data or NULL for kernel object
-+ */
-+void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
-+{
-+	if (!WARN_ON_ONCE(cq->cq_type != IB_CQ_PRIVATE))
-+		_ib_free_cq_user(cq, udata);
-+}
  EXPORT_SYMBOL(ib_free_cq_user);
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index bf0249f..39c012f 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1988,15 +1988,29 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
- }
- EXPORT_SYMBOL(__ib_create_cq);
- 
--int rdma_set_cq_moderation(struct ib_cq *cq, u16 cq_count, u16 cq_period)
-+static int _rdma_set_cq_moderation(struct ib_cq *cq, u16 cq_count,
-+				   u16 cq_period)
- {
- 	return cq->device->ops.modify_cq ?
- 		cq->device->ops.modify_cq(cq, cq_count,
- 					  cq_period) : -EOPNOTSUPP;
- }
 +
-+int rdma_set_cq_moderation(struct ib_cq *cq, u16 cq_count, u16 cq_period)
++static void ib_free_cq_force(struct ib_cq *cq)
 +{
-+	if (WARN_ON_ONCE(cq->cq_type != IB_CQ_PRIVATE))
-+		return -EOPNOTSUPP;
++	_ib_free_cq_user(cq, NULL);
++}
++
++void ib_init_cq_pools(struct ib_device *dev)
++{
++	int i;
++
++	spin_lock_init(&dev->cq_pools_lock);
++	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++)
++		INIT_LIST_HEAD(&dev->cq_pools[i]);
++}
++
++void ib_purge_cq_pools(struct ib_device *dev)
++{
++	struct ib_cq *cq, *n;
++	LIST_HEAD(tmp_list);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&dev->cq_pools_lock, flags);
++		list_splice_init(&dev->cq_pools[i], &tmp_list);
++		spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
++	}
++
++	list_for_each_entry_safe(cq, n, &tmp_list, pool_entry)
++		ib_free_cq_force(cq);
++}
++
++static int ib_alloc_cqs(struct ib_device *dev, int nr_cqes,
++			enum ib_poll_context poll_ctx)
++{
++	LIST_HEAD(tmp_list);
++	struct ib_cq *cq;
++	unsigned long flags;
++	int nr_cqs, ret, i;
++
++	/*
++	 * Allocated at least as many CQEs as requested, and otherwise
++	 * a reasonable batch size so that we can share CQs between
++	 * multiple users instead of allocating a larger number of CQs.
++	 */
++	nr_cqes = min(dev->attrs.max_cqe, max(nr_cqes, IB_MAX_SHARED_CQ_SZ));
++	nr_cqs = min_t(int, dev->num_comp_vectors, num_possible_cpus());
++	for (i = 0; i < nr_cqs; i++) {
++		cq = ib_alloc_cq(dev, NULL, nr_cqes, i, poll_ctx);
++		if (IS_ERR(cq)) {
++			ret = PTR_ERR(cq);
++			goto out_free_cqs;
++		}
++		list_add_tail(&cq->pool_entry, &tmp_list);
++	}
++
++	spin_lock_irqsave(&dev->cq_pools_lock, flags);
++	list_splice(&tmp_list, &dev->cq_pools[poll_ctx - 1]);
++	spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
++
++	return 0;
++
++out_free_cqs:
++	list_for_each_entry(cq, &tmp_list, pool_entry)
++		ib_free_cq(cq);
++	return ret;
++}
++
++struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
++			     int cpu_hint, enum ib_poll_context poll_ctx)
++{
++	static unsigned int default_comp_vector;
++	int vector, ret, num_comp_vectors;
++	struct ib_cq *cq, *found = NULL;
++	unsigned long flags;
++
++	if (poll_ctx > ARRAY_SIZE(dev->cq_pools) || poll_ctx == IB_POLL_DIRECT)
++		return ERR_PTR(-EINVAL);
++
++	num_comp_vectors = min_t(int, dev->num_comp_vectors,
++				 num_possible_cpus());
++	/* Project the affinty to the device completion vector range */
++	if (cpu_hint < 0)
++		vector = default_comp_vector++ % num_comp_vectors;
 +	else
-+		return _rdma_set_cq_moderation(cq, cq_count, cq_period);
++		vector = cpu_hint % num_comp_vectors;
++
++	/*
++	 * Find the least used CQ with correct affinity and
++	 * enough free CQ entries
++	 */
++	while (!found) {
++		spin_lock_irqsave(&dev->cq_pools_lock, flags);
++		list_for_each_entry(cq, &dev->cq_pools[poll_ctx - 1],
++				    pool_entry) {
++			if (vector != cq->comp_vector)
++				continue;
++			if (cq->cqe_used + nr_cqe > cq->cqe)
++				continue;
++			if (found && cq->cqe_used >= found->cqe_used)
++				continue;
++			found = cq;
++		}
++
++		if (found) {
++			found->cqe_used += nr_cqe;
++			spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
++
++			return found;
++		}
++		spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
++
++		/*
++		 * Didn't find a match or ran out of CQs in the device
++		 * pool, allocate a new array of CQs.
++		 */
++		ret = ib_alloc_cqs(dev, nr_cqe, poll_ctx);
++		if (ret)
++			return ERR_PTR(ret);
++	}
++
++	return found;
 +}
- EXPORT_SYMBOL(rdma_set_cq_moderation);
- 
--int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
-+int rdma_set_cq_moderation_force(struct ib_cq *cq, u16 cq_count, u16 cq_period)
++EXPORT_SYMBOL(ib_cq_pool_get);
++
++void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe)
 +{
-+	return _rdma_set_cq_moderation(cq, cq_count, cq_period);
++	unsigned long flags;
++
++	if (WARN_ON_ONCE(nr_cqe > cq->cqe_used))
++		return;
++
++	spin_lock_irqsave(&cq->device->cq_pools_lock, flags);
++	cq->cqe_used -= nr_cqe;
++	spin_unlock_irqrestore(&cq->device->cq_pools_lock, flags);
 +}
-+
-+static int _ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- {
- 	if (atomic_read(&cq->usecnt))
- 		return -EBUSY;
-@@ -2004,15 +2018,32 @@ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- 	rdma_restrack_del(&cq->res);
- 	cq->device->ops.destroy_cq(cq, udata);
- 	kfree(cq);
-+
- 	return 0;
++EXPORT_SYMBOL(ib_cq_pool_put);
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index d9f565a..30660a0 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -600,6 +600,7 @@ struct ib_device *_ib_alloc_device(size_t size)
+ 	mutex_init(&device->compat_devs_mutex);
+ 	init_completion(&device->unreg_completion);
+ 	INIT_WORK(&device->unregistration_work, ib_unregister_work);
++	ib_init_cq_pools(device);
+ 
+ 	return device;
  }
-+
-+int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
-+{
-+	if (WARN_ON_ONCE(cq->cq_type != IB_CQ_PRIVATE))
-+		return -EOPNOTSUPP;
-+	else
-+		return _ib_destroy_cq_user(cq, udata);
-+}
- EXPORT_SYMBOL(ib_destroy_cq_user);
- 
--int ib_resize_cq(struct ib_cq *cq, int cqe)
-+static int _ib_resize_cq(struct ib_cq *cq, int cqe)
- {
- 	return cq->device->ops.resize_cq ?
- 		cq->device->ops.resize_cq(cq, cqe, NULL) : -EOPNOTSUPP;
- }
-+
-+int ib_resize_cq(struct ib_cq *cq, int cqe)
-+{
-+	if (WARN_ON_ONCE(cq->cq_type != IB_CQ_PRIVATE))
-+		return -EOPNOTSUPP;
-+	else
-+		return _ib_resize_cq(cq, cqe);
-+}
- EXPORT_SYMBOL(ib_resize_cq);
- 
- /* Memory regions */
+@@ -1455,7 +1456,7 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
+ 	device_del(&ib_dev->dev);
+ 	ib_device_unregister_rdmacg(ib_dev);
+ 	ib_cache_cleanup_one(ib_dev);
+-
++	ib_purge_cq_pools(ib_dev);
+ 	/*
+ 	 * Drivers using the new flow may not call ib_dealloc_device except
+ 	 * in error unwind prior to registration success.
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 4c488ca..c889415 100644
+index c889415..2a939c0 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -1557,6 +1557,10 @@ enum ib_poll_context {
+@@ -1555,10 +1555,12 @@ enum ib_poll_context {
+ 	IB_POLL_SOFTIRQ,	   /* poll from softirq context */
+ 	IB_POLL_WORKQUEUE,	   /* poll from workqueue */
  	IB_POLL_UNBOUND_WORKQUEUE, /* poll from unbound workqueue */
++	IB_POLL_LAST,
  };
  
-+enum ib_cq_type {
-+	IB_CQ_PRIVATE,	/* CQ will be used by only one user */
-+};
-+
+ enum ib_cq_type {
+ 	IB_CQ_PRIVATE,	/* CQ will be used by only one user */
++	IB_CQ_SHARED,	/* CQ may be shared by multiple users*/
+ };
+ 
  struct ib_cq {
- 	struct ib_device       *device;
- 	struct ib_ucq_object   *uobject;
-@@ -1582,6 +1586,7 @@ struct ib_cq {
- 	 * Implementation details of the RDMA core, don't use in drivers:
- 	 */
- 	struct rdma_restrack_entry res;
-+	enum ib_cq_type cq_type;
- };
+@@ -1568,9 +1570,12 @@ struct ib_cq {
+ 	void                  (*event_handler)(struct ib_event *, void *);
+ 	void                   *cq_context;
+ 	int               	cqe;
++	int			cqe_used;
+ 	atomic_t          	usecnt; /* count number of work queues */
+ 	enum ib_poll_context	poll_ctx;
++	int                     comp_vector;
+ 	struct ib_wc		*wc;
++	struct list_head        pool_entry;
+ 	union {
+ 		struct irq_poll		iop;
+ 		struct work_struct	work;
+@@ -2699,6 +2704,10 @@ struct ib_device {
+ #endif
  
- struct ib_srq {
-@@ -3832,6 +3837,7 @@ static inline struct ib_cq *ib_alloc_cq_any(struct ib_device *dev,
-  * @cq: The CQ to free
-  *
-  * NOTE: for user cq use ib_free_cq_user with valid udata!
-+ * NOTE: this will fail for shared cqs
-  */
- static inline void ib_free_cq(struct ib_cq *cq)
- {
-@@ -3881,7 +3887,19 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
- int rdma_set_cq_moderation(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+ 	u32                          index;
++
++	spinlock_t                   cq_pools_lock;
++	struct list_head             cq_pools[IB_POLL_LAST - 1];
++
+ 	struct rdma_restrack_root *res;
  
- /**
-- * ib_destroy_cq_user - Destroys the specified CQ.
-+ * rdma_set_cq_moderation_force - Modifies moderation params of the CQ.
-+ * Meant for use in core driver to work for shared CQs.
-+ * @cq: The CQ to modify.
-+ * @cq_count: number of CQEs that will trigger an event
-+ * @cq_period: max period of time in usec before triggering an event
+ 	const struct uapi_definition   *driver_def;
+@@ -3967,6 +3976,29 @@ static inline int ib_req_notify_cq(struct ib_cq *cq,
+ 	return cq->device->ops.req_notify_cq(cq, flags);
+ }
+ 
++/*
++ * ib_cq_pool_get() - Find the least used completion queue that matches
++ *     a given cpu hint (or least used for wild card affinity)
++ *     and fits nr_cqe
++ * @dev:              rdma device
++ * @nr_cqe:           number of needed cqe entries
++ * @cpu_hint:	      cpu hint (-1) for wild-card assignment
++ * @poll_ctx:         cq polling context
 + *
++ * Finds a cq that satisfies @cpu_hint and @nr_cqe requirements and claim
++ * entries in it for us. In case there is no available cq, allocate a new cq
++ * with the requirements and add it to the device pool.
 + */
-+int rdma_set_cq_moderation_force(struct ib_cq *cq, u16 cq_count,
-+				 u16 cq_period);
++struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
++			     int cpu_hint, enum ib_poll_context poll_ctx);
 +
 +/**
-+ * ib_destroy_cq_user - Destroys the specified CQ. If the CQ is not
-+ * PRIVATE this function will fail.
-  * @cq: The CQ to destroy.
-  * @udata: Valid user data or NULL for kernel objects
-  */
++ * ib_cq_pool_put - Return a CQ taken from a shared pool.
++ * @cq: The CQ to return.
++ * @nr_cqe: The max number of cqes that the user had requested.
++ */
++void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe);
++
+ /**
+  * ib_req_ncomp_notif - Request completion notification when there are
+  *   at least the specified number of unreaped completions on the CQ.
 -- 
 1.8.3.1
 
