@@ -2,148 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793721CCB95
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B88D1CCBB0
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgEJOkt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 May 2020 10:40:49 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:10942 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728340AbgEJOkt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:40:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589121649; x=1620657649;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=QcUVNDnGRkN6XhdBTx4Q4slh1Mn/+JMcPpEMnQEvHS0=;
-  b=O3pNaFOwtyj1Cy8B2rDhxrRaMjhDleMJsxI3gYfVhixnD2T/3rh/tz9z
-   lqbMD62rlzv1DhVnAYuKKrd5Gdq6Q03pAxz5Ao+VezeUL5YrqReNdZQZ7
-   pa/ivmEx45Tpa6zTwhsrFs09yLftakcZTbA6ABB4sBtStwZxzTcrnrh0E
-   4=;
-IronPort-SDR: HRmKk1Tf49+AS0Dri3k/H2piP4X3B6UKnvQ4kVztRjQQedM8pniGVj20s10L7k7n3WkZK82p+w
- vIQPFBjRcNSw==
-X-IronPort-AV: E=Sophos;i="5.73,376,1583193600"; 
-   d="scan'208";a="43756880"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 10 May 2020 14:40:33 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 6174BA21AE;
-        Sun, 10 May 2020 14:40:32 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 14:40:31 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.65) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 14:40:27 +0000
-Subject: Re: [PATCH for-next 2/2] RDMA/efa: Report host information to the
- device
-To:     kbuild test robot <lkp@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Doug Ledford" <dledford@redhat.com>
-CC:     <kbuild-all@lists.01.org>, <linux-rdma@vger.kernel.org>,
-        "Alexander Matushevsky" <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>
-References: <20200510115918.46246-3-galpress@amazon.com>
- <202005102140.IhOTb4Th%lkp@intel.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <2b98035f-aa55-1b11-7012-fddca885ba4f@amazon.com>
-Date:   Sun, 10 May 2020 17:40:21 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <202005102140.IhOTb4Th%lkp@intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.65]
-X-ClientProxiedBy: EX13D29UWC002.ant.amazon.com (10.43.162.254) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+        id S1728849AbgEJO4K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 May 2020 10:56:10 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:58156 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726104AbgEJO4J (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:56:09 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from yaminf@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 10 May 2020 17:56:06 +0300
+Received: from arch012.mtl.labs.mlnx. (arch012.mtl.labs.mlnx [10.7.13.12])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04AEu6eF007532;
+        Sun, 10 May 2020 17:56:06 +0300
+From:   Yamin Friedman <yaminf@mellanox.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-rdma@vger.kernel.org, Yamin Friedman <yaminf@mellanox.com>
+Subject: [PATCH 0/4] Introducing RDMA shared CQ pool
+Date:   Sun, 10 May 2020 17:55:53 +0300
+Message-Id: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/05/2020 16:42, kbuild test robot wrote:
-> Hi Gal,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on rdma/for-next]
-> [also build test ERROR on v5.7-rc4 next-20200508]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Gal-Pressman/EFA-host-information/20200510-200519
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-> config: riscv-allyesconfig (attached as .config)
-> compiler: riscv64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=riscv 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/infiniband/hw/efa/efa_main.c: In function 'efa_set_host_info':
->>> drivers/infiniband/hw/efa/efa_main.c:214:21: error: 'LINUX_VERSION_CODE' undeclared (first use in this function)
->      214 |  hinf->kernel_ver = LINUX_VERSION_CODE;
->          |                     ^~~~~~~~~~~~~~~~~~
->    drivers/infiniband/hw/efa/efa_main.c:214:21: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> vim +/LINUX_VERSION_CODE +214 drivers/infiniband/hw/efa/efa_main.c
-> 
->    190	
->    191	static void efa_set_host_info(struct efa_dev *dev)
->    192	{
->    193		struct efa_admin_set_feature_resp resp = {};
->    194		struct efa_admin_set_feature_cmd cmd = {};
->    195		struct efa_admin_host_info *hinf;
->    196		u32 bufsz = sizeof(*hinf);
->    197		dma_addr_t hinf_dma;
->    198	
->    199		if (!efa_com_check_supported_feature_id(&dev->edev,
->    200							EFA_ADMIN_HOST_INFO))
->    201			return;
->    202	
->    203		/* Failures in host info set shall not disturb probe */
->    204		hinf = dma_alloc_coherent(&dev->pdev->dev, bufsz, &hinf_dma,
->    205					  GFP_KERNEL);
->    206		if (!hinf)
->    207			return;
->    208	
->    209		strlcpy(hinf->os_dist_str, utsname()->release,
->    210			min(sizeof(hinf->os_dist_str), sizeof(utsname()->release)));
->    211		hinf->os_type = EFA_ADMIN_OS_LINUX;
->    212		strlcpy(hinf->kernel_ver_str, utsname()->version,
->    213			min(sizeof(hinf->kernel_ver_str), sizeof(utsname()->version)));
->  > 214		hinf->kernel_ver = LINUX_VERSION_CODE;
->    215		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_BUS, dev->pdev->bus->number);
->    216		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_DEVICE,
->    217			PCI_SLOT(dev->pdev->devfn));
->    218		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_FUNCTION,
->    219			PCI_FUNC(dev->pdev->devfn));
->    220		EFA_SET(&hinf->spec_ver, EFA_ADMIN_HOST_INFO_SPEC_MAJOR,
->    221			EFA_COMMON_SPEC_VERSION_MAJOR);
->    222		EFA_SET(&hinf->spec_ver, EFA_ADMIN_HOST_INFO_SPEC_MINOR,
->    223			EFA_COMMON_SPEC_VERSION_MINOR);
->    224		EFA_SET(&hinf->flags, EFA_ADMIN_HOST_INFO_INTREE, 1);
->    225	
->    226		efa_com_set_feature_ex(&dev->edev, &resp, &cmd, EFA_ADMIN_HOST_INFO,
->    227				       hinf_dma, bufsz);
->    228	
->    229		dma_free_coherent(&dev->pdev->dev, bufsz, hinf, hinf_dma);
->    230	}
->    231	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+This is the fourth re-incarnation of the CQ pool patches proposed
+by Sagi and Christoph. I have started with the patches that Sagi last
+submitted and built the CQ pool as a new API for acquiring shared CQs.
 
-Thanks robot, I'm missing an #include <linux/version.h> in efa_main.c.
+Our ULPs often want to make smart decisions on completion vector
+affinitization when using multiple completion queues spread on
+multiple cpu cores. We can see examples for this in iser, srp, nvme-rdma.
+
+This patch set attempts to move this smartness to the rdma core by
+introducing per-device CQ pools that by definition spread
+across cpu cores. In addition, we completely make the completion
+queue allocation transparent to the ULP by adding affinity hints
+to create_qp which tells the rdma core to select (or allocate)
+a completion queue that has the needed affinity for it.
+
+This API gives us a similar approach to whats used in the networking
+stack where the device completion queues are hidden from the application.
+With the affinitization hints, we also do not compromise performance
+as the completion queue will be affinitized correctly.
+
+One thing that should be noticed is that now different ULPs using this
+API may share completion queues (given that they use the same polling context).
+However, even without this API they share interrupt vectors (and CPUs
+that are assigned to them). Thus aggregating consumers on less completion
+queues will result in better overall completion processing efficiency per
+completion event (or interrupt).
+
+An advantage of this method of using the CQ pool is that changes in the ULP
+driver are minimal (around 14 altered lines of code).
+
+The patch set convert nvme-rdma and nvmet-rdma to use the new API.
+
+Test setup:
+Intel(R) Xeon(R) Platinum 8176M CPU @ 2.10GHz servers.
+Running NVMeoF 4KB read IOs over ConnectX-5EX across Spectrum switch.
+TX-depth = 32. Number of cores refers to the initiator side. Four disks are
+accessed from each core. In the current case we have four CQs per core and
+in the shared case we have a single CQ per core. Until 14 cores there is no
+significant change in performance and the number of interrupts per second
+is less than a million in the current case.
+==================================================
+|Cores|Current KIOPs  |Shared KIOPs  |improvement|
+|-----|---------------|--------------|-----------|
+|14   |2188           |2620          |19.7%      |
+|-----|---------------|--------------|-----------|
+|20   |2063           |2308          |11.8%      |
+|-----|---------------|--------------|-----------|
+|28   |1933           |2235          |15.6%      |
+|=================================================
+|Cores|Current avg lat|Shared avg lat|improvement|
+|-----|---------------|--------------|-----------|
+|14   |817us          |683us         |16.4%      |
+|-----|---------------|--------------|-----------|
+|20   |1239us         |1108us        |10.6%      |
+|-----|---------------|--------------|-----------|
+|28   |1852us         |1601us        |13.5%      |
+========================================================
+|Cores|Current interrupts|Shared interrupts|improvement|
+|-----|------------------|-----------------|-----------|
+|14   |2131K/sec         |425K/sec         |80%        |
+|-----|------------------|-----------------|-----------|
+|20   |2267K/sec         |594K/sec         |73.8%      |
+|-----|------------------|-----------------|-----------|
+|28   |2370K/sec         |1057K/sec        |55.3%      |
+====================================================================
+|Cores|Current 99.99th PCTL lat|Shared 99.99th PCTL lat|improvement|
+|-----|------------------------|-----------------------|-----------|
+|14   |85Kus                   |9Kus                   |88%        |
+|-----|------------------------|-----------------------|-----------|
+|20   |6Kus                    |5.3Kus                 |14.6%      |
+|-----|------------------------|-----------------------|-----------|
+|28   |11.6Kus                 |9.5Kus                 |18%        |
+|===================================================================
+
+Performance improvement with 16 disks (16 CQs per core) is comparable.
+What we can see is that once we reach a couple million interrupts per
+second the Intel CPU can no longer sustain line rate and this feature
+mitigates that effect.
+
+Comments and feedback are welcome.
+
+Yamin Friedman (4):
+  infiniband/core: Add protection for shared CQs used by ULPs
+  RDMA/core: Introduce shared CQ pool API
+  nvme-rdma: use new shared CQ mechanism
+  nvmet-rdma: use new shared CQ mechanism
+
+ drivers/infiniband/core/core_priv.h |   8 ++
+ drivers/infiniband/core/cq.c        | 170 ++++++++++++++++++++++++++++++++++--
+ drivers/infiniband/core/device.c    |   3 +-
+ drivers/infiniband/core/verbs.c     |  37 +++++++-
+ drivers/nvme/host/rdma.c            |  65 +++++++++-----
+ drivers/nvme/target/rdma.c          |  14 +--
+ include/rdma/ib_verbs.h             |  52 ++++++++++-
+ 7 files changed, 308 insertions(+), 41 deletions(-)
+
+-- 
+1.8.3.1
+
