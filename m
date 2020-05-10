@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB931CCBB4
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC25B1CCBB1
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 May 2020 16:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728600AbgEJO4X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 May 2020 10:56:23 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:58168 "EHLO
+        id S1726104AbgEJO4K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 May 2020 10:56:10 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45493 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728360AbgEJO4W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:56:22 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from yaminf@mellanox.com)
+        with ESMTP id S1728360AbgEJO4J (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 May 2020 10:56:09 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from yaminf@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 10 May 2020 17:56:07 +0300
 Received: from arch012.mtl.labs.mlnx. (arch012.mtl.labs.mlnx [10.7.13.12])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04AEu6eH007532;
-        Sun, 10 May 2020 17:56:06 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04AEu6eI007532;
+        Sun, 10 May 2020 17:56:07 +0300
 From:   Yamin Friedman <yaminf@mellanox.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Christoph Hellwig <hch@lst.de>
 Cc:     linux-rdma@vger.kernel.org, Yamin Friedman <yaminf@mellanox.com>
-Subject: [PATCH 2/4] RDMA/core: Introduce shared CQ pool API
-Date:   Sun, 10 May 2020 17:55:55 +0300
-Message-Id: <1589122557-88996-3-git-send-email-yaminf@mellanox.com>
+Subject: [PATCH 3/4] nvme-rdma: use new shared CQ mechanism
+Date:   Sun, 10 May 2020 17:55:56 +0300
+Message-Id: <1589122557-88996-4-git-send-email-yaminf@mellanox.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
 References: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
@@ -32,354 +32,162 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Allow a ULP to ask the core to provide a completion queue based on a
-least-used search on a per-device CQ pools. The device CQ pools grow in a
-lazy fashion when more CQs are requested.
-
-This feature reduces the amount of interrupts when using many QPs.
-Using shared CQs allows for more effcient completion handling. It also
-reduces the amount of overhead needed for CQ contexts.
-
-Test setup:
-Intel(R) Xeon(R) Platinum 8176M CPU @ 2.10GHz servers.
-Running NVMeoF 4KB read IOs over ConnectX-5EX across Spectrum switch.
-TX-depth = 32. Number of cores refers to the initiator side. Four disks are
-accessed from each core. In the current case we have four CQs per core and
-in the shared case we have a single CQ per core. Until 14 cores there is no
-significant change in performance and the number of interrupts per second
-is less than a million in the current case.
-==================================================
-|Cores|Current KIOPs  |Shared KIOPs  |improvement|
-|-----|---------------|--------------|-----------|
-|14   |2188           |2620          |19.7%      |
-|-----|---------------|--------------|-----------|
-|20   |2063           |2308          |11.8%      |
-|-----|---------------|--------------|-----------|
-|28   |1933           |2235          |15.6%      |
-|=================================================
-|Cores|Current avg lat|Shared avg lat|improvement|
-|-----|---------------|--------------|-----------|
-|14   |817us          |683us         |16.4%      |
-|-----|---------------|--------------|-----------|
-|20   |1239us         |1108us        |10.6%      |
-|-----|---------------|--------------|-----------|
-|28   |1852us         |1601us        |13.5%      |
-========================================================
-|Cores|Current interrupts|Shared interrupts|improvement|
-|-----|------------------|-----------------|-----------|
-|14   |2131K/sec         |425K/sec         |80%        |
-|-----|------------------|-----------------|-----------|
-|20   |2267K/sec         |594K/sec         |73.8%      |
-|-----|------------------|-----------------|-----------|
-|28   |2370K/sec         |1057K/sec        |55.3%      |
-====================================================================
-|Cores|Current 99.99th PCTL lat|Shared 99.99th PCTL lat|improvement|
-|-----|------------------------|-----------------------|-----------|
-|14   |85Kus                   |9Kus                   |88%        |
-|-----|------------------------|-----------------------|-----------|
-|20   |6Kus                    |5.3Kus                 |14.6%      |
-|-----|------------------------|-----------------------|-----------|
-|28   |11.6Kus                 |9.5Kus                 |18%        |
-|===================================================================
-
-Performance improvement with 16 disks (16 CQs per core) is comparable.
+Has the driver use shared CQs providing ~10%-50% improvement as seen in the
+patch introducing shared CQs. Instead of opening a CQ on each core per NS
+connected, a CQ for each core will be provided by the core driver that will
+be shared between the QPs on that core reducing interrupt overhead.
 
 Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
 Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
 ---
- drivers/infiniband/core/core_priv.h |   8 ++
- drivers/infiniband/core/cq.c        | 145 ++++++++++++++++++++++++++++++++++++
- drivers/infiniband/core/device.c    |   3 +-
- include/rdma/ib_verbs.h             |  32 ++++++++
- 4 files changed, 187 insertions(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 65 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index cf42acc..7fe9c13 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -191,6 +191,14 @@ static inline bool rdma_is_upper_dev_rcu(struct net_device *dev,
- 	return netdev_has_upper_dev_all_rcu(dev, upper);
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index cac8a93..23eefd7 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -85,6 +85,7 @@ struct nvme_rdma_queue {
+ 	struct rdma_cm_id	*cm_id;
+ 	int			cm_error;
+ 	struct completion	cm_done;
++	int			cq_size;
+ };
+ 
+ struct nvme_rdma_ctrl {
+@@ -261,6 +262,7 @@ static int nvme_rdma_create_qp(struct nvme_rdma_queue *queue, const int factor)
+ 	init_attr.qp_type = IB_QPT_RC;
+ 	init_attr.send_cq = queue->ib_cq;
+ 	init_attr.recv_cq = queue->ib_cq;
++	init_attr.qp_context = queue;
+ 
+ 	ret = rdma_create_qp(queue->cm_id, dev->pd, &init_attr);
+ 
+@@ -389,6 +391,15 @@ static int nvme_rdma_dev_get(struct nvme_rdma_device *dev)
+ 	return NULL;
  }
  
-+struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
-+			     int cpu_hint, enum ib_poll_context poll_ctx);
-+void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe);
++static void nvme_rdma_free_cq(struct nvme_rdma_queue *queue)
++{
++	if (nvme_rdma_poll_queue(queue))
++		ib_free_cq(queue->ib_cq);
++	else {
++		ib_cq_pool_put(queue->ib_cq, queue->cq_size);
++	}
++}
 +
-+void ib_init_cq_pools(struct ib_device *dev);
-+
-+void ib_purge_cq_pools(struct ib_device *dev);
-+
- int addr_init(void);
- void addr_cleanup(void);
- 
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 443a9cd..a86e893 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -6,8 +6,11 @@
- #include <linux/err.h>
- #include <linux/slab.h>
- #include <rdma/ib_verbs.h>
-+#include "core_priv.h"
- 
- #include <trace/events/rdma_core.h>
-+/* Max size for shared CQ, may require tuning */
-+#define IB_MAX_SHARED_CQ_SZ		4096
- 
- /* # of WCs to poll for with a single call to ib_poll_cq */
- #define IB_POLL_BATCH			16
-@@ -223,6 +226,8 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 	cq->poll_ctx = poll_ctx;
- 	atomic_set(&cq->usecnt, 0);
- 	cq->cq_type = IB_CQ_PRIVATE;
-+	cq->cqe_used = 0;
-+	cq->comp_vector = comp_vector;
- 
- 	cq->wc = kmalloc_array(IB_POLL_BATCH, sizeof(*cq->wc), GFP_KERNEL);
- 	if (!cq->wc)
-@@ -309,6 +314,8 @@ static void _ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ static void nvme_rdma_destroy_queue_ib(struct nvme_rdma_queue *queue)
  {
- 	if (WARN_ON_ONCE(atomic_read(&cq->usecnt)))
- 		return;
-+	if (WARN_ON_ONCE(cq->cqe_used != 0))
-+		return;
+ 	struct nvme_rdma_device *dev;
+@@ -408,7 +419,7 @@ static void nvme_rdma_destroy_queue_ib(struct nvme_rdma_queue *queue)
+ 	 * the destruction of the QP shouldn't use rdma_cm API.
+ 	 */
+ 	ib_destroy_qp(queue->qp);
+-	ib_free_cq(queue->ib_cq);
++	nvme_rdma_free_cq(queue);
  
- 	switch (cq->poll_ctx) {
- 	case IB_POLL_DIRECT:
-@@ -345,3 +352,141 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
- 		_ib_free_cq_user(cq, udata);
+ 	nvme_rdma_free_ring(ibdev, queue->rsp_ring, queue->queue_size,
+ 			sizeof(struct nvme_completion), DMA_FROM_DEVICE);
+@@ -422,13 +433,35 @@ static int nvme_rdma_get_max_fr_pages(struct ib_device *ibdev)
+ 		     ibdev->attrs.max_fast_reg_page_list_len - 1);
  }
- EXPORT_SYMBOL(ib_free_cq_user);
-+
-+static void ib_free_cq_force(struct ib_cq *cq)
+ 
++static void nvme_rdma_create_cq(struct ib_device *ibdev,
++				struct nvme_rdma_queue *queue)
 +{
-+	_ib_free_cq_user(cq, NULL);
-+}
-+
-+void ib_init_cq_pools(struct ib_device *dev)
-+{
-+	int i;
-+
-+	spin_lock_init(&dev->cq_pools_lock);
-+	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++)
-+		INIT_LIST_HEAD(&dev->cq_pools[i]);
-+}
-+
-+void ib_purge_cq_pools(struct ib_device *dev)
-+{
-+	struct ib_cq *cq, *n;
-+	LIST_HEAD(tmp_list);
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&dev->cq_pools_lock, flags);
-+		list_splice_init(&dev->cq_pools[i], &tmp_list);
-+		spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
-+	}
-+
-+	list_for_each_entry_safe(cq, n, &tmp_list, pool_entry)
-+		ib_free_cq_force(cq);
-+}
-+
-+static int ib_alloc_cqs(struct ib_device *dev, int nr_cqes,
-+			enum ib_poll_context poll_ctx)
-+{
-+	LIST_HEAD(tmp_list);
-+	struct ib_cq *cq;
-+	unsigned long flags;
-+	int nr_cqs, ret, i;
++	int comp_vector, idx = nvme_rdma_queue_idx(queue);
++	enum ib_poll_context poll_ctx;
 +
 +	/*
-+	 * Allocated at least as many CQEs as requested, and otherwise
-+	 * a reasonable batch size so that we can share CQs between
-+	 * multiple users instead of allocating a larger number of CQs.
++	 * Spread I/O queues completion vectors according their queue index.
++	 * Admin queues can always go on completion vector 0.
 +	 */
-+	nr_cqes = min(dev->attrs.max_cqe, max(nr_cqes, IB_MAX_SHARED_CQ_SZ));
-+	nr_cqs = min_t(int, dev->num_comp_vectors, num_possible_cpus());
-+	for (i = 0; i < nr_cqs; i++) {
-+		cq = ib_alloc_cq(dev, NULL, nr_cqes, i, poll_ctx);
-+		if (IS_ERR(cq)) {
-+			ret = PTR_ERR(cq);
-+			goto out_free_cqs;
-+		}
-+		list_add_tail(&cq->pool_entry, &tmp_list);
++	comp_vector = idx == 0 ? idx : idx - 1;
++
++	/* Polling queues need direct cq polling context */
++	if (nvme_rdma_poll_queue(queue)) {
++		poll_ctx = IB_POLL_DIRECT;
++		queue->ib_cq = ib_alloc_cq(ibdev, queue, queue->cq_size,
++					   comp_vector, poll_ctx);
++	} else {
++		poll_ctx = IB_POLL_SOFTIRQ;
++		queue->ib_cq = ib_cq_pool_get(ibdev, queue->cq_size,
++					      comp_vector, poll_ctx);
 +	}
-+
-+	spin_lock_irqsave(&dev->cq_pools_lock, flags);
-+	list_splice(&tmp_list, &dev->cq_pools[poll_ctx - 1]);
-+	spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
-+
-+	return 0;
-+
-+out_free_cqs:
-+	list_for_each_entry(cq, &tmp_list, pool_entry)
-+		ib_free_cq(cq);
-+	return ret;
 +}
 +
-+struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
-+			     int cpu_hint, enum ib_poll_context poll_ctx)
-+{
-+	static unsigned int default_comp_vector;
-+	int vector, ret, num_comp_vectors;
-+	struct ib_cq *cq, *found = NULL;
-+	unsigned long flags;
-+
-+	if (poll_ctx > ARRAY_SIZE(dev->cq_pools) || poll_ctx == IB_POLL_DIRECT)
-+		return ERR_PTR(-EINVAL);
-+
-+	num_comp_vectors = min_t(int, dev->num_comp_vectors,
-+				 num_possible_cpus());
-+	/* Project the affinty to the device completion vector range */
-+	if (cpu_hint < 0)
-+		vector = default_comp_vector++ % num_comp_vectors;
-+	else
-+		vector = cpu_hint % num_comp_vectors;
-+
-+	/*
-+	 * Find the least used CQ with correct affinity and
-+	 * enough free CQ entries
-+	 */
-+	while (!found) {
-+		spin_lock_irqsave(&dev->cq_pools_lock, flags);
-+		list_for_each_entry(cq, &dev->cq_pools[poll_ctx - 1],
-+				    pool_entry) {
-+			if (vector != cq->comp_vector)
-+				continue;
-+			if (cq->cqe_used + nr_cqe > cq->cqe)
-+				continue;
-+			if (found && cq->cqe_used >= found->cqe_used)
-+				continue;
-+			found = cq;
-+		}
-+
-+		if (found) {
-+			found->cqe_used += nr_cqe;
-+			spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
-+
-+			return found;
-+		}
-+		spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
-+
-+		/*
-+		 * Didn't find a match or ran out of CQs in the device
-+		 * pool, allocate a new array of CQs.
-+		 */
-+		ret = ib_alloc_cqs(dev, nr_cqe, poll_ctx);
-+		if (ret)
-+			return ERR_PTR(ret);
-+	}
-+
-+	return found;
-+}
-+EXPORT_SYMBOL(ib_cq_pool_get);
-+
-+void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe)
-+{
-+	unsigned long flags;
-+
-+	if (WARN_ON_ONCE(nr_cqe > cq->cqe_used))
-+		return;
-+
-+	spin_lock_irqsave(&cq->device->cq_pools_lock, flags);
-+	cq->cqe_used -= nr_cqe;
-+	spin_unlock_irqrestore(&cq->device->cq_pools_lock, flags);
-+}
-+EXPORT_SYMBOL(ib_cq_pool_put);
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index d9f565a..30660a0 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -600,6 +600,7 @@ struct ib_device *_ib_alloc_device(size_t size)
- 	mutex_init(&device->compat_devs_mutex);
- 	init_completion(&device->unreg_completion);
- 	INIT_WORK(&device->unregistration_work, ib_unregister_work);
-+	ib_init_cq_pools(device);
+ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
+ {
+ 	struct ib_device *ibdev;
+ 	const int send_wr_factor = 3;			/* MR, SEND, INV */
+ 	const int cq_factor = send_wr_factor + 1;	/* + RECV */
+-	int comp_vector, idx = nvme_rdma_queue_idx(queue);
+-	enum ib_poll_context poll_ctx;
+ 	int ret, pages_per_mr;
  
- 	return device;
- }
-@@ -1455,7 +1456,7 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
- 	device_del(&ib_dev->dev);
- 	ib_device_unregister_rdmacg(ib_dev);
- 	ib_cache_cleanup_one(ib_dev);
+ 	queue->device = nvme_rdma_find_get_device(queue->cm_id);
+@@ -439,22 +472,10 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
+ 	}
+ 	ibdev = queue->device->dev;
+ 
+-	/*
+-	 * Spread I/O queues completion vectors according their queue index.
+-	 * Admin queues can always go on completion vector 0.
+-	 */
+-	comp_vector = idx == 0 ? idx : idx - 1;
 -
-+	ib_purge_cq_pools(ib_dev);
- 	/*
- 	 * Drivers using the new flow may not call ib_dealloc_device except
- 	 * in error unwind prior to registration success.
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index c889415..2a939c0 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1555,10 +1555,12 @@ enum ib_poll_context {
- 	IB_POLL_SOFTIRQ,	   /* poll from softirq context */
- 	IB_POLL_WORKQUEUE,	   /* poll from workqueue */
- 	IB_POLL_UNBOUND_WORKQUEUE, /* poll from unbound workqueue */
-+	IB_POLL_LAST,
- };
- 
- enum ib_cq_type {
- 	IB_CQ_PRIVATE,	/* CQ will be used by only one user */
-+	IB_CQ_SHARED,	/* CQ may be shared by multiple users*/
- };
- 
- struct ib_cq {
-@@ -1568,9 +1570,12 @@ struct ib_cq {
- 	void                  (*event_handler)(struct ib_event *, void *);
- 	void                   *cq_context;
- 	int               	cqe;
-+	int			cqe_used;
- 	atomic_t          	usecnt; /* count number of work queues */
- 	enum ib_poll_context	poll_ctx;
-+	int                     comp_vector;
- 	struct ib_wc		*wc;
-+	struct list_head        pool_entry;
- 	union {
- 		struct irq_poll		iop;
- 		struct work_struct	work;
-@@ -2699,6 +2704,10 @@ struct ib_device {
- #endif
- 
- 	u32                          index;
+-	/* Polling queues need direct cq polling context */
+-	if (nvme_rdma_poll_queue(queue))
+-		poll_ctx = IB_POLL_DIRECT;
+-	else
+-		poll_ctx = IB_POLL_SOFTIRQ;
+-
+ 	/* +1 for ib_stop_cq */
+-	queue->ib_cq = ib_alloc_cq(ibdev, queue,
+-				cq_factor * queue->queue_size + 1,
+-				comp_vector, poll_ctx);
++	queue->cq_size = cq_factor * queue->queue_size + 1;
 +
-+	spinlock_t                   cq_pools_lock;
-+	struct list_head             cq_pools[IB_POLL_LAST - 1];
-+
- 	struct rdma_restrack_root *res;
++	nvme_rdma_create_cq(ibdev, queue);
+ 	if (IS_ERR(queue->ib_cq)) {
+ 		ret = PTR_ERR(queue->ib_cq);
+ 		goto out_put_dev;
+@@ -484,7 +505,7 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
+ 	if (ret) {
+ 		dev_err(queue->ctrl->ctrl.device,
+ 			"failed to initialize MR pool sized %d for QID %d\n",
+-			queue->queue_size, idx);
++			queue->queue_size, nvme_rdma_queue_idx(queue));
+ 		goto out_destroy_ring;
+ 	}
  
- 	const struct uapi_definition   *driver_def;
-@@ -3967,6 +3976,29 @@ static inline int ib_req_notify_cq(struct ib_cq *cq,
- 	return cq->device->ops.req_notify_cq(cq, flags);
- }
+@@ -498,7 +519,7 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
+ out_destroy_qp:
+ 	rdma_destroy_qp(queue->cm_id);
+ out_destroy_ib_cq:
+-	ib_free_cq(queue->ib_cq);
++	nvme_rdma_free_cq(queue);
+ out_put_dev:
+ 	nvme_rdma_dev_put(queue->device);
+ 	return ret;
+@@ -1093,7 +1114,7 @@ static void nvme_rdma_error_recovery(struct nvme_rdma_ctrl *ctrl)
+ static void nvme_rdma_wr_error(struct ib_cq *cq, struct ib_wc *wc,
+ 		const char *op)
+ {
+-	struct nvme_rdma_queue *queue = cq->cq_context;
++	struct nvme_rdma_queue *queue = wc->qp->qp_context;
+ 	struct nvme_rdma_ctrl *ctrl = queue->ctrl;
  
-+/*
-+ * ib_cq_pool_get() - Find the least used completion queue that matches
-+ *     a given cpu hint (or least used for wild card affinity)
-+ *     and fits nr_cqe
-+ * @dev:              rdma device
-+ * @nr_cqe:           number of needed cqe entries
-+ * @cpu_hint:	      cpu hint (-1) for wild-card assignment
-+ * @poll_ctx:         cq polling context
-+ *
-+ * Finds a cq that satisfies @cpu_hint and @nr_cqe requirements and claim
-+ * entries in it for us. In case there is no available cq, allocate a new cq
-+ * with the requirements and add it to the device pool.
-+ */
-+struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
-+			     int cpu_hint, enum ib_poll_context poll_ctx);
-+
-+/**
-+ * ib_cq_pool_put - Return a CQ taken from a shared pool.
-+ * @cq: The CQ to return.
-+ * @nr_cqe: The max number of cqes that the user had requested.
-+ */
-+void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe);
-+
- /**
-  * ib_req_ncomp_notif - Request completion notification when there are
-  *   at least the specified number of unreaped completions on the CQ.
+ 	if (ctrl->ctrl.state == NVME_CTRL_LIVE)
+@@ -1481,7 +1502,7 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
+ {
+ 	struct nvme_rdma_qe *qe =
+ 		container_of(wc->wr_cqe, struct nvme_rdma_qe, cqe);
+-	struct nvme_rdma_queue *queue = cq->cq_context;
++	struct nvme_rdma_queue *queue = wc->qp->qp_context;
+ 	struct ib_device *ibdev = queue->device->dev;
+ 	struct nvme_completion *cqe = qe->data;
+ 	const size_t len = sizeof(struct nvme_completion);
 -- 
 1.8.3.1
 
