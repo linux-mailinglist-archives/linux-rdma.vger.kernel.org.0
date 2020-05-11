@@ -2,364 +2,371 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E811CDADB
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 15:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D411CDBDA
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 15:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbgEKNMo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 09:12:44 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:55953 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726687AbgEKNMn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 09:12:43 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from yishaih@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 11 May 2020 16:12:37 +0300
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04BDCbP7027912;
-        Mon, 11 May 2020 16:12:37 +0300
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 04BDCaV1012468;
-        Mon, 11 May 2020 16:12:37 +0300
-Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 04BDCaqx012467;
-        Mon, 11 May 2020 16:12:36 +0300
-From:   Yishai Hadas <yishaih@mellanox.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com,
-        Alexr@mellanox.com
-Subject: [PATCH RFC rdma-core] Verbs: Introduce import verbs for device, PD, MR
-Date:   Mon, 11 May 2020 16:12:08 +0300
-Message-Id: <1589202728-12365-1-git-send-email-yishaih@mellanox.com>
-X-Mailer: git-send-email 1.8.2.3
+        id S1730166AbgEKNxI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 09:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730154AbgEKNxH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 11 May 2020 09:53:07 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA05C061A0C
+        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2020 06:53:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g14so6925289wme.1
+        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2020 06:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ml+0dhlE47ybNde2wE+dR8jUXARotpJ1+sHEJH/rZMo=;
+        b=WhDxfnMRgmEXvtuhMvizZy1I32Ym64EyWYXxahY0oK95uqdHsopS7dnK9Q0kViOEmJ
+         A74TlsOCEEhnqvI2vPTDLPcqkhFWbC7gG8LufuVQduH+bzVwUPxIm8sQQHqiWKAo3oNS
+         58dMI2RgJxL0hfDL/bSQpdfLTvDodwc0R4Oj3nhyBNitTiv4buasGR/jByS1VpuQ5L3w
+         B7NEcRUG46t6TvaTz59DyaK4sfjgvYWCutdhMgn7qrgXWPvFQFMHbPdpXQVyMdt5yU3O
+         GHwe/oNTeXO2+hEJsCPeYzrb0ePfkMk8udKdCfRJrXnXds1DlM1c0qJUpAmad7gTNsUz
+         0qWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ml+0dhlE47ybNde2wE+dR8jUXARotpJ1+sHEJH/rZMo=;
+        b=S9wp1iL5ak+Si2EaXep7a51TODolG/ER2WsXwSAXWEu0Y6LJWleKTRwJBOSanUMc/b
+         Nxh8yuBY46YPrapIhBIiqMnYHv47FRpnCOPYVl7sH8XGhwdYij4Aqpzzdw8D9QX670Dn
+         RYvXky6DQYFG6hzCYB8CMa7fkExm15Nf+Oku9yguJXdLTsbKEGz6XCNT8ykRRmg/0xZG
+         b7s1c2tYhydvvCwjuSulEwGXmoIXjPpo+Bg4trU+XAMX9PsGVLxCa4TcT0YSKf8ufrYV
+         jJ6ew4ip0l1SwucnIEAfvDyJnK8eFnApFght5xH8VuWNQjUTdAB0CW/ICm8q1mau+ZBe
+         2V/w==
+X-Gm-Message-State: AGi0PuaY/U1mlxXMLmbSPevzC0C/v+ZEsBnNu1cbwUqkNIVXpSFySmU+
+        fuYviE8DOqTsFhdoMUcMi83E
+X-Google-Smtp-Source: APiQypKRlPRkP2CfAoWW4IYsemYqALShJF6s9761ucuUz9qYigcnRX0OHkH15nypJW7DNf4gTB6GCg==
+X-Received: by 2002:a1c:305:: with SMTP id 5mr16811139wmd.60.1589205184872;
+        Mon, 11 May 2020 06:53:04 -0700 (PDT)
+Received: from dkxps.local (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
+        by smtp.gmail.com with ESMTPSA id v205sm9220018wmg.11.2020.05.11.06.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 06:53:04 -0700 (PDT)
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com, pankaj.gupta@cloud.ionos.com
+Subject: [PATCH v15 00/25] RTRS (former IBTRS) RDMA Transport Library and RNBD (former IBNBD) RDMA Network Block Device
+Date:   Mon, 11 May 2020 15:51:06 +0200
+Message-Id: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Introduce import verbs for device, PD, MR, it enables processes to share
-their ibv_contxet and then share PD and MR that is associated with.
-
-A process is creating a device and then uses some of the Linux systems
-calls to dup its 'cmd_fd' member which lets other process to obtain
-owning on.
-
-Once other process obtains the 'cmd_fd' it can call ibv_import_device()
-which returns an ibv_contxet on the original RDMA device.
-
-On the imported device there is an option to import PD(s) and MR(s) to
-achieve a sharing on those objects.
-
-This is the responsibility of the application to coordinate between all
-ibv_context(s) that use the imported objects, such that once destroy is
-done no other process can touch the object except for unimport. All
-users of the context must collaborate to ensure this.
-
-A matching unimport verbs where introduced for PD and MR, for the device
-the ibv_close_device() API should be used.
-
-Detailed man pages are introduced as part of this RFC patch to clarify
-the expected usage and notes.
-
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
----
- libibverbs/man/CMakeLists.txt         |  5 +++
- libibverbs/man/ibv_import_device.3.md | 48 ++++++++++++++++++++
- libibverbs/man/ibv_import_mr.3.md     | 63 +++++++++++++++++++++++++++
- libibverbs/man/ibv_import_pd.3.md     | 56 ++++++++++++++++++++++++
- libibverbs/verbs.h                    | 56 ++++++++++++++++++++++++
- 5 files changed, 228 insertions(+)
- create mode 100644 libibverbs/man/ibv_import_device.3.md
- create mode 100644 libibverbs/man/ibv_import_mr.3.md
- create mode 100644 libibverbs/man/ibv_import_pd.3.md
-
-diff --git a/libibverbs/man/CMakeLists.txt b/libibverbs/man/CMakeLists.txt
-index e1d5edf8..9ebfeaac 100644
---- a/libibverbs/man/CMakeLists.txt
-+++ b/libibverbs/man/CMakeLists.txt
-@@ -36,6 +36,9 @@ rdma_man_pages(
-   ibv_get_device_name.3.md
-   ibv_get_pkey_index.3.md
-   ibv_get_srq_num.3.md
-+  ibv_import_device.3.md
-+  ibv_import_mr.3.md
-+  ibv_import_pd.3.md
-   ibv_inc_rkey.3.md
-   ibv_modify_qp.3
-   ibv_modify_qp_rate_limit.3
-@@ -97,6 +100,8 @@ rdma_alias_man_pages(
-   ibv_get_async_event.3 ibv_ack_async_event.3
-   ibv_get_cq_event.3 ibv_ack_cq_events.3
-   ibv_get_device_list.3 ibv_free_device_list.3
-+  ibv_import_mr.3 ibv_unimport_mr.3
-+  ibv_import_pd.3 ibv_unimport_pd.3
-   ibv_open_device.3 ibv_close_device.3
-   ibv_open_xrcd.3 ibv_close_xrcd.3
-   ibv_rate_to_mbps.3 mbps_to_ibv_rate.3
-diff --git a/libibverbs/man/ibv_import_device.3.md b/libibverbs/man/ibv_import_device.3.md
-new file mode 100644
-index 00000000..601b50a8
---- /dev/null
-+++ b/libibverbs/man/ibv_import_device.3.md
-@@ -0,0 +1,48 @@
-+---
-+date: 2020-5-3
-+footer: libibverbs
-+header: "Libibverbs Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: ibv_import_device
-+---
-+
-+# NAME
-+
-+ibv_import_device - import a device from a given comamnd FD
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/verbs.h>
-+
-+struct ibv_context *ibv_import_device(int cmd_fd);
-+
-+```
-+
-+
-+# DESCRIPTION
-+
-+**ibv_import_device()** returns an *ibv_context* pointer that is associated with the given
-+*cmd_fd*.
-+
-+The *cmd_fd* is obtained from the ibv_context cmd_fd member, which must be dup'd (eg by dup(), SCM_RIGHTS, etc)
-+before being passed to ibv_import_device().
-+
-+Once the *ibv_context* usage has been ended *ibv_close_device()* should be called.
-+This call may cleanup whatever is needed/opposite of the import including closing the command FD.
-+
-+# RETURN VALUE
-+
-+**ibv_import_device()** returns a pointer to the allocated RDMA context, or NULL if the request fails.
-+
-+# SEE ALSO
-+
-+**ibv_open_device**(3),
-+**ibv_close_device**(3),
-+
-+# AUTHOR
-+
-+Yishai Hadas <yishaih@mellanox.com>
-+
-diff --git a/libibverbs/man/ibv_import_mr.3.md b/libibverbs/man/ibv_import_mr.3.md
-new file mode 100644
-index 00000000..ca698a96
---- /dev/null
-+++ b/libibverbs/man/ibv_import_mr.3.md
-@@ -0,0 +1,63 @@
-+---
-+date: 2020-5-3
-+footer: libibverbs
-+header: "Libibverbs Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: ibv_import_mr ibv_unimport_mr
-+---
-+
-+# NAME
-+
-+ibv_import_mr - import an MR from a given ibv_context
-+ibv_unimport_mr - unimport an MR
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/verbs.h>
-+
-+struct ibv_mr *ibv_import_mr(struct ibv_pd *pd, uint32_t handle);
-+void ibv_unimport_mr(struct ibv_mr *mr)
-+
-+```
-+
-+
-+# DESCRIPTION
-+
-+**ibv_import_mr()** returns a Memory region (MR) that is associated with the given
-+*handle* in the RDMA context that assosicated with the given *pd*.
-+
-+The input *handle* value must be a valid kernel handle for an MR object in the given *context*.
-+The returned *ibv_mr* can be used in all verbs that use an MR.
-+
-+**ibv_unimport_mr()** un import the MR.
-+Once the MR usage has been ended ibv_dereg_mr() or ibv_unimport_mr() should be called.
-+The first one will go to the kernel to destroy the object once the second one way cleanup what
-+ever is needed/opposite of the import without calling the kernel.
-+
-+This is the responsibility of the application to coordinate between all ibv_context(s) that use this MR.
-+Once destroy is done no other process can touch the object except for unimport. All users of the context must
-+collaborate to ensure this.
-+
-+# RETURN VALUE
-+
-+**ibv_import_mr()** returns a pointer to the allocated MR, or NULL if the request fails.
-+
-+# NOTES
-+
-+The *addr* and the *length* fields in the imported MR are not applicable, NULL and zero is expected.
-+
-+# SEE ALSO
-+
-+**ibv_reg_mr**(3),
-+**ibv_reg_dm_mr**(3),
-+**ibv_reg_mr_iova**(3),
-+**ibv_reg_mr_iova2**(3),
-+**ibv_dereg_mr**(3),
-+
-+# AUTHOR
-+
-+Yishai Hadas <yishaih@mellanox.com>
-+
-diff --git a/libibverbs/man/ibv_import_pd.3.md b/libibverbs/man/ibv_import_pd.3.md
-new file mode 100644
-index 00000000..be1d079f
---- /dev/null
-+++ b/libibverbs/man/ibv_import_pd.3.md
-@@ -0,0 +1,56 @@
-+---
-+date: 2020-5-3
-+footer: libibverbs
-+header: "Libibverbs Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: ibv_import_pd, ibv_unimport_pd
-+---
-+
-+# NAME
-+
-+ibv_import_pd - import a PD from a given ibv_context
-+ibv_unimport_pd - unimport a PD
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/verbs.h>
-+
-+struct ibv_pd *ibv_import_pd(struct ibv_context *context, uint32_t handle);
-+void ibv_unimport_pd(struct ibv_pd *pd)
-+
-+```
-+
-+
-+# DESCRIPTION
-+
-+**ibv_import_pd()** returns a protection domain (PD) that is associated with the given
-+*handle* in the given *context*.
-+
-+The input *handle* value must be a valid kernel handle for a PD object in the given *context*.
-+The returned *ibv_pd* can be used in all verbs that get a protection domain.
-+
-+**ibv_unimport_pd()** unimport the PD.
-+Once the PD usage has been ended ibv_dealloc_pd() or ibv_unimport_pd() should be called.
-+The first one will go to the kernel to destroy the object once the second one way cleanup what
-+ever is needed/opposite of the import without calling the kernel.
-+
-+This is the responsibility of the application to coordinate between all ibv_context(s) that use this PD.
-+Once destroy is done no other process can touch the object except for unimport. All users of the context must
-+collaborate to ensure this.
-+
-+# RETURN VALUE
-+
-+**ibv_import_pd()** returns a pointer to the allocated PD, or NULL if the request fails.
-+
-+# SEE ALSO
-+
-+**ibv_alloc_pd**(3),
-+**ibv_dealloc_pd**(3),
-+
-+# AUTHOR
-+
-+Yishai Hadas <yishaih@mellanox.com>
-+
-diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-index 288985d5..8548a7dd 100644
---- a/libibverbs/verbs.h
-+++ b/libibverbs/verbs.h
-@@ -2033,6 +2033,12 @@ struct ibv_values_ex {
+Hi all,
  
- struct verbs_context {
- 	/*  "grows up" - new fields go here */
-+	void (*unimport_pd)(struct ibv_pd *pd);
-+	struct ibv_pd *(*import_pd)(struct ibv_context *context,
-+				    uint32_t pd_handle);
-+	void (*unimport_mr)(struct ibv_mr *mr);
-+	struct ibv_mr *(*import_mr)(struct ibv_pd *pd,
-+				    uint32_t mr_handle);
- 	int (*query_port)(struct ibv_context *context, uint8_t port_num,
- 			  struct ibv_port_attr *port_attr,
- 			  size_t port_attr_len);
-@@ -2217,6 +2223,12 @@ struct ibv_context *ibv_open_device(struct ibv_device *device);
-  */
- int ibv_close_device(struct ibv_context *context);
+Here is v15 of the RTRS (former IBTRS) RDMA Transport Library and the
+corresponding RNBD (former IBNBD) RDMA Network Block Device, which
+fixes the issues in Makefile in V14 reported-by
+the kbuild test robot (see changelog below). The patchset applies for
+kernel v5.7-rc5.
  
-+/**
-+ * ibv_import_device - Import device
-+ */
-+struct ibv_context *ibv_import_device(int cmd_fd);
-+
-+
- /**
-  * ibv_get_async_event - Get next async event
-  * @event: Pointer to use to return async event
-@@ -2546,6 +2558,50 @@ static inline int ibv_advise_mr(struct ibv_pd *pd,
- 	return vctx->advise_mr(pd, advice, flags, sg_list, num_sge);
- }
+Introduction
+-------------
  
-+static inline struct ibv_mr *ibv_import_mr(struct ibv_pd *pd,
-+					   uint32_t mr_handle)
-+{
-+	struct verbs_context *vctx;
-+
-+	vctx = verbs_get_ctx_op(pd->context, import_mr);
-+	if (!vctx) {
-+		errno = EOPNOTSUPP;
-+		return NULL;
-+	}
-+
-+	return vctx->import_mr(pd, mr_handle);
-+}
-+
-+static inline void ibv_unimport_mr(struct ibv_mr *mr)
-+{
-+	struct verbs_context *vctx;
-+
-+	vctx = verbs_get_ctx_op(mr->context, unimport_mr);
-+	vctx->unimport_mr(mr);
-+}
-+
-+static inline struct ibv_pd *ibv_import_pd(struct ibv_context *context,
-+					   uint32_t pd_handle)
-+{
-+	struct verbs_context *vctx;
-+
-+	vctx = verbs_get_ctx_op(context, import_pd);
-+	if (!vctx) {
-+		errno = EOPNOTSUPP;
-+		return NULL;
-+	}
-+
-+	return vctx->import_pd(context, pd_handle);
-+}
-+
-+static inline void ibv_unimport_pd(struct ibv_pd *pd)
-+{
-+	struct verbs_context *vctx;
-+
-+	vctx = verbs_get_ctx_op(pd->context, unimport_pd);
-+	vctx->unimport_pd(pd);
-+}
-+
- /**
-  * ibv_alloc_dm - Allocate device memory
-  * @context - Context DM will be attached to
+RTRS (RDMA Transport) is a reliable high speed transport library
+which allows for establishing connection between client and server
+machines via RDMA. It is based on RDMA-CM, so expect also to support RoCE
+and iWARP, but we mainly tested in IB environment. It is optimized to
+transfer (read/write) IO blocks in the sense that it follows the BIO
+semantics of providing the possibility to either write data from a
+scatter-gather list to the remote side or to request ("read") data
+transfer from the remote side into a given set of buffers.
+ 
+RTRS is multipath capable and provides I/O fail-over and load-balancing
+functionality, i.e. in RTRS terminology, an RTRS path is a set of RDMA
+connections and particular path is selected according to the load-balancing
+policy. It can be used for other components beside RNBD.
+ 
+Module parameter always_invalidate is introduced for the security problem
+discussed in LPC RDMA MC 2019. When always_invalidate=Y, on the server side we
+invalidate each rdma buffer before we hand it over to RNBD server and
+then pass it to the block layer. A new rkey is generated and registered for the
+buffer after it returns back from the block layer and RNBD server.
+The new rkey is sent back to the client along with the IO result.
+The procedure is the default behaviour of the driver. This invalidation and
+registration on each IO causes performance drop of up to 20%. A user of the
+driver may choose to load the modules with this mechanism switched off
+(always_invalidate=N), if he understands and can take the risk of a malicious
+client being able to corrupt memory of a server it is connected to. This might
+be a reasonable option in a scenario where all the clients and all the servers
+are located within a secure datacenter.
+ 
+RNBD (RDMA Network Block Device) is a pair of kernel modules
+(client and server) that allow for remote access of a block device on
+the server over RTRS protocol. After being mapped, the remote block
+devices can be accessed on the client side as local block devices.
+Internally RNBD uses RTRS as an RDMA transport library.
+ 
+Commits for kernel can be found here:
+   https://github.com/ionos-enterprise/ibnbd/commits/linux-5.7-rc5-ibnbd-v15
+ 
+Testing
+-------
+ 
+All the changes have been tested with our regression testsuite in our staging environment
+in IONOS data center. it's around 200 testcases, for both always_invalidate=N and
+always_invalidate=Y configurations.
+ 
+Changelog
+---------
+V15:
+ o Fix include statement in Makefile reported-by: kbuild test robot <lkp@intel.com>. Use  $(srctree) as suggested by Leon
+ o Fix resource deallocation order for rtrs_clt_stats
+ o Rebase to kernel 5.7-rc5
+v14:
+ o Fix ordering in Makefile as suggested by Jason Gunthorpe
+ o Switch from idr to xarray as suggested by Jason Gunthorpe
+ o Fix multiple issues Reported-by: kbuild test robot <lkp@intel.com>   
+  (https://www.spinics.net/lists/linux-rdma/msg91406.html)
+ o Rebase to kernel 5.7-rc4
+ * https://lore.kernel.org/linux-block/20200504140115.15533-1-danil.kipnis@cloud.ionos.com/
+v13:
+ o Rebased to linux-5.7-rc3
+ o Reviewed-by Bart van Assche added to the block part
+ * https://lore.kernel.org/linux-block/20200427141020.655-1-danil.kipnis@cloud.ionos.com/ 
+v12:
+ o Rebased to linux-5.7-rc1
+ o rtrs/rnbd: add release call back for kobject suggested by Bart & Jason
+ o rtrs-clt: drop reexport bio_map_kern, open-code it using bio_add_page
+ suggested by Christoph
+ o rnbd-srv: replace rwlock with RCU.
+ o rnbd-srv: get rid of sysfs_release_compl suggested by Bart.
+ o rnbd-clt: add a option to specify the destination port in map_device operation
+ suggested by Bart.
+ o rnbd-srv: remove io_cb use rnbd_endio directly
+ o Address other comments from Bart for naming/typo/comments/coding style/etc
+ * https://lore.kernel.org/linux-block/20200415092045.4729-1-danil.kipnis@cloud.ionos.com/
+v11:
+ o Rebased to linux-5.6-rc6
+ o rtrs-clt: use rcu_dereference_protected to avoid warning suggested by Jason
+ o rtrs-clt: get rid of the second cancel_delayed_work_sync(reconnect_work) call
+ suggested by Jason
+ o rtrs-clt: remove unneeded synchronize_rcu suggested by Jason
+ o rtrs-clt: removing the opened flag suggested by Jason
+ o rtrs-clt: postpone uevent until sysfs is created suggested by Jason
+ o rtrs-srv: postpone uevent until sysfs is created.
+ o rtrs: remove unnecessary module_get/put call suggested by Jason
+ o rtrs-clt: fix up error path in alloc_clt() reported by Jason
+ o rtrs: move kdocs to .c files suggested by Jason and Bart
+ o rtrs/rnbd: remove print during load/unload module reported by Jason
+ o rtrs/rnbd: add missing mutex_destroy
+ o rtrs: cleanup dead code
+ o rtrs-srv: fix error handling
+ o other misc cleanup
+ * https://lore.kernel.org/linux-block/20200320121657.1165-1-jinpu.wang@cloud.ionos.com/
+v10:
+ o Rebased to linux-5.6-rc5
+ o Collect Reviewed-by from Bart
+ o Update description in Kconfig for RNBD
+ o Address comments from Bart for naming/typo/comments/etc
+ o removal of rnbd_bio_map_kern by reexporting bio_map_kern suggested by Bart
+ o kill some inline wrappers suggested by Bart
+ o rtrs: use mutex more consistently reported by Leon
+ o rtrs/rnbd: remove prints for allocation failure suggested by Leon
+ o rtrs/rnbd: avoid typedefs for function callbacks suggested by Leon
+ o rtrs-srv: handle sq_full situation suggested by Jason
+ o rtrs-clt: remove useless get_cpu()/put_cpu() in __rtrs_get_permit suggested
+ by Jason and Bart.
+ o rtrs-srv: inline rtrs_srv_update_rdma_stats
+ o other minor cleanup
+ * https://lore.kernel.org/linux-block/20200311161240.30190-1-jinpu.wang@cloud.ionos.com/
+v9:
+ o Rebased to linux-5.6-rc2
+ o Update Date/Kernel version in Documentation
+ o Update description in Kconfig for RNBD
+ o rtrs-clt: inline rtrs_clt_decrease_inflight
+ o rtrs-clt: only track inflight for Min_inflight policy
+ * https://lore.kernel.org/linux-block/20200221104721.350-1-jinpuwang@gmail.com/
+v8:
+ o Rebased to linux-5.5-rc7
+ o Reviewed likey/unlikely usage, only keep the one in IO path suggested by Leon Romanovsky
+ o Reviewed inline usage, remove inline for functions longer than 5 lines of code suggested by Leon
+ o Removed 2 WARN_ON suggested by Leon
+ o Removed 2 empty lines between copyright suggested by Leon
+ o Makefile: remove compat include for upstream suggested by Leon
+ o rtrs-clt: remove module parameters suggested by Leon
+ o drop rnbd_clt_dev_is_mapped
+ o rnbd-clt: clean up rnbd_rerun_if_needed
+ o rtrs-srv: remove reset_all sysfs
+ o rtrs stats: remove wc_completion stats
+ o rtrs-clt: enhance doc for rtrs_clt_change_state
+ o rtrs-clt: remove unused rtrs_permit_from_pdu
+ * https://lore.kernel.org/linux-block/20200124204753.13154-1-jinpuwang@gmail.com/
+v7:
+ o Rebased to linux-5.5-rc6
+ o Implement code-style/readability/API/Documentation etc suggestions by Bart van Assche
+ o Make W=1 clean
+ o New benchmark results for Mellanox ConnectX-5
+ o second try adding MAINTAINERS entries in alphabetical order as Gal Pressman suggested
+ * https://lore.kernel.org/linux-block/20200116125915.14815-1-jinpuwang@gmail.com/
+v6:
+  o Rebased to linux-5.5-rc4
+  o Fix typo in my email address in first patch
+  o Cleanup copyright as suggested by Leon Romanovsky
+  o Remove 2 redudant kobject_del in error path as suggested by Leon Romanovsky
+  o Add MAINTAINERS entries in alphabetical order as Gal Pressman suggested
+  * https://lore.kernel.org/linux-block/20191230102942.18395-1-jinpuwang@gmail.com/
+v5:
+  o Fix the security problem pointed out by Jason
+  o Implement code-style/readability/API/etc suggestions by Bart van Assche
+  o Rename IBTRS and IBNBD to RTRS and RNBD accordingly
+  o Fileio mode support in rnbd-srv has been removed.
+  * https://lore.kernel.org/linux-block/20191220155109.8959-1-jinpuwang@gmail.com/
+v4:
+  o Protocol extended to transport IO priorities
+  o Support for Mellanox ConnectX-4/X-5
+  o Minor sysfs extentions (display access mode on server side)
+  o Bug fixes: cleaning up sysfs folders, race on deallocation of resources
+  o Style fixes
+  * https://lore.kernel.org/linux-block/20190620150337.7847-1-jinpuwang@gmail.com/
+v3:
+  o Sparse fixes:
+     - le32 -> le16 conversion
+     - pcpu and RCU wrong declaration
+     - sysfs: dynamically alloc array of sockaddr structures to reduce
+           size of a stack frame
+  o Rename sysfs folder on client and server sides to show source and
+    destination addresses of the connection, i.e.:
+           .../<session-name>/paths/<src@dst>/
+  o Remove external inclusions from Makefiles.
+  * https://lore.kernel.org/linux-block/20180606152515.25807-1-roman.penyaev@profitbricks.com/
+v2:
+  o IBNBD:
+     - No legacy request IO mode, only MQ is left.
+  o IBTRS:
+     - No FMR registration, only FR is left.
+  * https://lore.kernel.org/linux-block/20180518130413.16997-1-roman.penyaev@profitbricks.com/
+v1:
+  o IBTRS: load-balancing and IO fail-over using multipath features were added.
+  o Major parts of the code were rewritten, simplified and overall code
+    size was reduced by a quarter.
+  * https://lore.kernel.org/linux-block/20180202140904.2017-1-roman.penyaev@profitbricks.com/
+v0:
+  o Initial submission
+  * https://lore.kernel.org/linux-block/1490352343-20075-1-git-send-email-jinpu.wangl@profitbricks.com/
+ 
+As always, please review, share your comments, and consider to merge to
+upstream.
+ 
+Thanks.
+
+Jack Wang (25):
+  sysfs: export sysfs_remove_file_self()
+  RDMA/rtrs: public interface header to establish RDMA connections
+  RDMA/rtrs: private headers with rtrs protocol structs and helpers
+  RDMA/rtrs: core: lib functions shared between client and server
+    modules
+  RDMA/rtrs: client: private header with client structs and functions
+  RDMA/rtrs: client: main functionality
+  RDMA/rtrs: client: statistics functions
+  RDMA/rtrs: client: sysfs interface functions
+  RDMA/rtrs: server: private header with server structs and functions
+  RDMA/rtrs: server: main functionality
+  RDMA/rtrs: server: statistics functions
+  RDMA/rtrs: server: sysfs interface functions
+  RDMA/rtrs: include client and server modules into kernel compilation
+  RDMA/rtrs: a bit of documentation
+  block/rnbd: private headers with rnbd protocol structs and helpers
+  block/rnbd: client: private header with client structs and functions
+  block/rnbd: client: main functionality
+  block/rnbd: client: sysfs interface functions
+  block/rnbd: server: private header with server structs and functions
+  block/rnbd: server: main functionality
+  block/rnbd: server: functionality for IO submitting to block dev
+  block/rnbd: server: sysfs interface functions
+  block/rnbd: include client and server modules into kernel compilation
+  block/rnbd: a bit of documentation
+  MAINTAINERS: Add maintainers for RNBD/RTRS modules
+
+ Documentation/ABI/testing/sysfs-block-rnbd    |   46 +
+ .../ABI/testing/sysfs-class-rnbd-client       |  111 +
+ .../ABI/testing/sysfs-class-rnbd-server       |   50 +
+ .../ABI/testing/sysfs-class-rtrs-client       |  131 +
+ .../ABI/testing/sysfs-class-rtrs-server       |   53 +
+ MAINTAINERS                                   |   14 +
+ drivers/block/Kconfig                         |    2 +
+ drivers/block/Makefile                        |    1 +
+ drivers/block/rnbd/Kconfig                    |   28 +
+ drivers/block/rnbd/Makefile                   |   15 +
+ drivers/block/rnbd/README                     |   92 +
+ drivers/block/rnbd/rnbd-clt-sysfs.c           |  636 ++++
+ drivers/block/rnbd/rnbd-clt.c                 | 1729 ++++++++++
+ drivers/block/rnbd/rnbd-clt.h                 |  156 +
+ drivers/block/rnbd/rnbd-common.c              |   23 +
+ drivers/block/rnbd/rnbd-log.h                 |   41 +
+ drivers/block/rnbd/rnbd-proto.h               |  303 ++
+ drivers/block/rnbd/rnbd-srv-dev.c             |  134 +
+ drivers/block/rnbd/rnbd-srv-dev.h             |   92 +
+ drivers/block/rnbd/rnbd-srv-sysfs.c           |  215 ++
+ drivers/block/rnbd/rnbd-srv.c                 |  844 +++++
+ drivers/block/rnbd/rnbd-srv.h                 |   78 +
+ drivers/infiniband/Kconfig                    |    1 +
+ drivers/infiniband/ulp/Makefile               |    1 +
+ drivers/infiniband/ulp/rtrs/Kconfig           |   27 +
+ drivers/infiniband/ulp/rtrs/Makefile          |   15 +
+ drivers/infiniband/ulp/rtrs/README            |  213 ++
+ drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c  |  200 ++
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c  |  483 +++
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c        | 2994 +++++++++++++++++
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h        |  251 ++
+ drivers/infiniband/ulp/rtrs/rtrs-log.h        |   28 +
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h        |  399 +++
+ drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c  |   38 +
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c  |  320 ++
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c        | 2175 ++++++++++++
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h        |  148 +
+ drivers/infiniband/ulp/rtrs/rtrs.c            |  612 ++++
+ drivers/infiniband/ulp/rtrs/rtrs.h            |  195 ++
+ fs/sysfs/file.c                               |    1 +
+ 40 files changed, 12895 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-block-rnbd
+ create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-client
+ create mode 100644 Documentation/ABI/testing/sysfs-class-rnbd-server
+ create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-client
+ create mode 100644 Documentation/ABI/testing/sysfs-class-rtrs-server
+ create mode 100644 drivers/block/rnbd/Kconfig
+ create mode 100644 drivers/block/rnbd/Makefile
+ create mode 100644 drivers/block/rnbd/README
+ create mode 100644 drivers/block/rnbd/rnbd-clt-sysfs.c
+ create mode 100644 drivers/block/rnbd/rnbd-clt.c
+ create mode 100644 drivers/block/rnbd/rnbd-clt.h
+ create mode 100644 drivers/block/rnbd/rnbd-common.c
+ create mode 100644 drivers/block/rnbd/rnbd-log.h
+ create mode 100644 drivers/block/rnbd/rnbd-proto.h
+ create mode 100644 drivers/block/rnbd/rnbd-srv-dev.c
+ create mode 100644 drivers/block/rnbd/rnbd-srv-dev.h
+ create mode 100644 drivers/block/rnbd/rnbd-srv-sysfs.c
+ create mode 100644 drivers/block/rnbd/rnbd-srv.c
+ create mode 100644 drivers/block/rnbd/rnbd-srv.h
+ create mode 100644 drivers/infiniband/ulp/rtrs/Kconfig
+ create mode 100644 drivers/infiniband/ulp/rtrs/Makefile
+ create mode 100644 drivers/infiniband/ulp/rtrs/README
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.h
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-log.h
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-pri.h
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.h
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
+
 -- 
-2.18.1
+2.20.1
 
