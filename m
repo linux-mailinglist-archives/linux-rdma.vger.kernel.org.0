@@ -2,106 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0849C1CE13F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 19:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6671CE150
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 19:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730828AbgEKRH7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 13:07:59 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15926 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730629AbgEKRH6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 13:07:58 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eb985e60001>; Mon, 11 May 2020 10:05:43 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 11 May 2020 10:07:57 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 11 May 2020 10:07:57 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 May
- 2020 17:07:55 +0000
-Subject: Re: [PATCH 0/6] nouveau/hmm: add support for mapping large pages
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Jason Gunthorpe" <jgg@mellanox.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-References: <20200508192009.15302-1-rcampbell@nvidia.com>
- <20200508195910.GR16070@bombadil.infradead.org>
- <72422dca-e025-002a-4748-addfb392ffc4@nvidia.com>
- <20200509031726.GT16070@bombadil.infradead.org>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <04fed5a1-c777-8594-c869-8598da75c340@nvidia.com>
-Date:   Mon, 11 May 2020 10:07:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1730799AbgEKRLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 13:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730731AbgEKRLd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 13:11:33 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2860C061A0C
+        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2020 10:11:32 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id i68so8598265qtb.5
+        for <linux-rdma@vger.kernel.org>; Mon, 11 May 2020 10:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=73X0z/aAzZv5svPIqA/MB9e9/mU9i6rbNe3vZQTeY0o=;
+        b=ej76EXg9PlWQOGBWNTm+vUyz8fQhvUF3B5ph56ljC7rt338vGOBYi8lYarRg1QPTqN
+         82Zhe7OrQVG+KBjQ749iA9MWpd8LHwrwRyuHPwWW17DuL+IEjtPCZ1Y+tYROTqEIKlDg
+         Apiak9QJa4AQlZQFEv8nFeNwVZAJkHtz+IMLcWJjS5t1l2Cs760v3Yy1aURmYsbvDEQX
+         LahV6g2T+G7n2p/mpKlqf1rnJz42DnozNfoYwcaJ8suKm7Qn/HCqWgD93prsW5JSQf5x
+         tEEFooCFl2qCrtbtDGh+etrzbz7+pJITOFm+uMXzgR7+YPJIweEM+MJqWIAyyXKYtMu4
+         maQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=73X0z/aAzZv5svPIqA/MB9e9/mU9i6rbNe3vZQTeY0o=;
+        b=QecTZpbwfPpzD46n3R5S1kxWKgi0wvOsm3IbUdKCmK+Ex7Yxr5e3KTpgGINH0mev/F
+         G4TlDP1AP1Xf76rdN+0ch8pbXu51SMaT79Xgx0ng/Mw63vidm3RIQrBSLrmnPawjRppj
+         1oMgZV4TG1feNaza+U32HEvtnHp9vfXJzYAXObzTQhLTwt9sgDlRRTfqloL7Jf+DjX6E
+         XGwZ39dxPSst6DaReuGTbSJbdHpd08jhbXPBhpn3VObRxRNJM4jW/T0hbWeX35moJ6Q1
+         XaJbnRHj8fmhC7dG4xJdxAyORoUIAo9NEP0o3u6avL+YBcsTWJeGZu68/kKRCxpW7JjU
+         jggQ==
+X-Gm-Message-State: AGi0PuYDPnH/dh6fSZy9nsOw67F9aAKUxOkuqbb056WUinUIXa4Ai923
+        onTdi5D96lke2MOkxLyOFqOtqg2OfIg=
+X-Google-Smtp-Source: APiQypJHSTFDErViwMu6SpqgZhbTayi6npr1p/q0sGEnVEKK5xk6FM5Yj2u6REVBtfLLcXYiODURFg==
+X-Received: by 2002:ac8:a02:: with SMTP id b2mr16211196qti.95.1589217092139;
+        Mon, 11 May 2020 10:11:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id l15sm1084296qti.83.2020.05.11.10.11.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 11 May 2020 10:11:31 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jYBxi-0001Xj-Qb; Mon, 11 May 2020 14:11:30 -0300
+Date:   Mon, 11 May 2020 14:11:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Sadanand Warrier <sadanand.warrier@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Subject: Re: [PATCH v2 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
+ MTU's upper limit
+Message-ID: <20200511171130.GV26002@ziepe.ca>
+References: <20200323231152.64035.19274.stgit@awfm-01.aw.intel.com>
+ <20200323231511.64035.16923.stgit@awfm-01.aw.intel.com>
+ <20200327164924.GY20941@ziepe.ca>
+ <caa96e5b-b467-d52c-e75d-9c5da11702b9@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200509031726.GT16070@bombadil.infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589216743; bh=5oKgOrWxFtRItgwWbbX4dX3IJlUBjgRpH2Q5E+LjAio=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=OpPUg5qPadBLT2WMtDkFVSx1PU9l5XTlfujhBDah4+b+jb4sxdwysG11lCtk2/xjG
-         ZZc+yxggAmSqznAmdePCk698sDTG7bnEe7CwGuZUqbPtPyduUjLGGxIJn9t/ynp/8j
-         QGPR7nXHwb4C6S7TZTAmZuBI824KxdVOA0Sq5ufqsu0/fv78Q+wPKioP4bmhmrj665
-         5lOUd6gqS2CdhwER+fASC4KLsI9TbX1B2lF7M24Dtew5334lFke6chdhjkzH5GgSQ2
-         ybXwF8cXBiD7RQpF2G7PJ5s0VXLkOR3aRrlm0mFtq69KbAZBP0vgd8lrUSML0egUxV
-         MJc2OIDizYv7w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <caa96e5b-b467-d52c-e75d-9c5da11702b9@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 5/8/20 8:17 PM, Matthew Wilcox wrote:
-> On Fri, May 08, 2020 at 01:17:55PM -0700, Ralph Campbell wrote:
->> On 5/8/20 12:59 PM, Matthew Wilcox wrote:
->>> On Fri, May 08, 2020 at 12:20:03PM -0700, Ralph Campbell wrote:
->>>> hmm_range_fault() returns an array of page frame numbers and flags for
->>>> how the pages are mapped in the requested process' page tables. The PFN
->>>> can be used to get the struct page with hmm_pfn_to_page() and the page size
->>>> order can be determined with compound_order(page) but if the page is larger
->>>> than order 0 (PAGE_SIZE), there is no indication that the page is mapped
->>>> using a larger page size. To be fully general, hmm_range_fault() would need
->>>> to return the mapping size to handle cases like a 1GB compound page being
->>>> mapped with 2MB PMD entries. However, the most common case is the mapping
->>>> size the same as the underlying compound page size.
->>>> This series adds a new output flag to indicate this so that callers know it
->>>> is safe to use a large device page table mapping if one is available.
->>>> Nouveau and the HMM tests are updated to use the new flag.
->>>
->>> This explanation doesn't make any sense.  It doesn't matter how somebody
->>> else has it mapped; if it's a PMD-sized page, you can map it with a
->>> 2MB mapping.
->>
->> Sure, the I/O will work OK, but is it safe?
->> Copy on write isn't an issue? splitting a PMD in one process due to
->> mprotect of a shared page will cause other process' page tables to be split
->> the same way?
+On Mon, May 11, 2020 at 12:04:55PM -0400, Dennis Dalessandro wrote:
+> On 3/27/2020 12:49 PM, Jason Gunthorpe wrote:
+> > On Mon, Mar 23, 2020 at 07:15:12PM -0400, Dennis Dalessandro wrote:
+> > > @@ -240,13 +241,11 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
+> > >   		priv->broadcast->mcmember.flow_label = mcmember->flow_label;
+> > >   		priv->broadcast->mcmember.hop_limit = mcmember->hop_limit;
+> > >   		/* assume if the admin and the mcast are the same both can be changed */
+> > > +		mtu = rdma_mtu_enum_to_int(priv->ca,  priv->port,
+> > > +					   priv->broadcast->mcmember.mtu);
+> > >   		if (priv->mcast_mtu == priv->admin_mtu)
+> > > -			priv->admin_mtu =
+> > > -			priv->mcast_mtu =
+> > > -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
+> > > -		else
+> > > -			priv->mcast_mtu =
+> > > -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
+> > > +			priv->admin_mtu = IPOIB_UD_MTU(mtu);
+> > > +		priv->mcast_mtu = IPOIB_UD_MTU(mtu);
+> > 
+> > Er, how did this ever work? Does the OPA SM not use the 6 & 7 values
+> > for the mtu in the path record? Why is it being changed now?
 > 
-> Are you saying that if you call this function on an address range of a
-> process which has done COW of a single page in the middle of a THP,
-> you want to return with this flag clear, but if the THP is still intact,
-> you want to set this flag?
+> Prior to this patch series, we can only run AIP at a max mtu of 4K, even on
+> OPA devices. Therefore, we need a way to get the max physical mtu for the
+> underlying device.
 
-Correct. I want the GPU to see the same faults that the CPU would see when trying
-to access the same addresses. All faults, whether from CPU or GPU, end up calling
-handle_mm_fault() to handle the fault and update the GPU/CPU page tables.
+Well, a month later and I don't evern remember what this is about.
 
->> Recall that these are system memory pages that could be THPs, shmem, hugetlbfs,
->> mmap shared file pages, etc.
+> > > +/**
+> > > + * rdma_mtu_from_attr - Return the mtu of the port from the port attribute.
+> > > + * @device: Device
+> > > + * @port_num: Port number
+> > > + * @attr: port attribute
+> > > + *
+> > > + * Return the MTU size supported by the port as an integer value.
+> > > + */
+> > > +static inline int rdma_mtu_from_attr(struct ib_device *device, u8 port,
+> > > +				     struct ib_port_attr *attr)
+> > > +{
+> > > +	if (rdma_core_cap_opa_port(device, port))
+> > > +		return attr->phys_mtu;
+> > 
+> > Why not just always set this?
+> 
+> Because this is a new field and other vendor devices does not set it at all.
+
+Fix the other drivers to set it to the 'else' branch..
+
+Jason
