@@ -2,159 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D041CDA40
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 14:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617AA1CDA6F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 14:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgEKMlV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 08:41:21 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:48804 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729573AbgEKMlV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 08:41:21 -0400
+        id S1728367AbgEKMsM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 08:48:12 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:54711 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgEKMsM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 08:48:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589200881; x=1620736881;
+  t=1589201291; x=1620737291;
   h=subject:to:cc:references:from:message-id:date:
    mime-version:in-reply-to:content-transfer-encoding;
-  bh=PuTjKrvuWSBiMVAOZgYZI9h0FuBYAz0WBUsE6AgO4JI=;
-  b=VMM/rZRanZmeaAYVO8fzpOoMaajC7vbfil2okf+OdAzuKUs0uCRt1uD8
-   trNJHpQbQOfZBxQj8xfsxLTsYRh2pHL8i4du0bgI6OnIrem956pu++Xyi
-   0cBMHxXe16qW7UHYkHpjbEcDhZuiJ9JLLhYp1HuRkWN5omZhpKWBpysvH
-   w=;
-IronPort-SDR: oPEzh7OPi6Ug7sN0q57wjbp3WnkqmqUp7vETp1GtjlwvqJeeq6DbFcMl/k8cSIXOJ4eheLVCjG
- zxAQk1RJcW1A==
-X-IronPort-AV: E=Sophos;i="5.73,379,1583193600"; 
-   d="scan'208";a="29669544"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 11 May 2020 12:40:58 +0000
+  bh=uVPg/SoG6p6LREkJ54nRBJdoZ3bGNUQwTTMWL8yFLvc=;
+  b=Fs9K0NZ5t0d6cqGlwXzeMSBw/2aQpSJKCtLbPYsQWX4clPt1BRsYid6z
+   kIRvXEawL4M0h/4gIVtHa9g3w+SI9apBE13hp2/KUaZySfWoRl+76oT/d
+   +GERWwPH6wc8oyXG/vcGrTX5HoEcEFbSqLw3Ct/1FPnwxckhnMytfUK/o
+   A=;
+IronPort-SDR: E9I9qdMIHPAV2oEe4R1Uy2Nl9k66B0Cg3e0yRCAy1AKDgffsfYMiQG/Squ86RlRxQ96atanod3
+ CkOAFqjKwjsA==
+X-IronPort-AV: E=Sophos;i="5.73,380,1583193600"; 
+   d="scan'208";a="43933899"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 11 May 2020 12:48:09 +0000
 Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (Postfix) with ESMTPS id 908CEA1C9C;
-        Mon, 11 May 2020 12:40:56 +0000 (UTC)
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id C0AE2A18BF;
+        Mon, 11 May 2020 12:48:07 +0000 (UTC)
 Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 11 May 2020 12:40:55 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.200) by
+ id 15.0.1497.2; Mon, 11 May 2020 12:48:07 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.247) by
  EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 11 May 2020 12:40:49 +0000
+ id 15.0.1497.2; Mon, 11 May 2020 12:48:02 +0000
 Subject: Re: [PATCH for-next 2/2] RDMA/efa: Report host information to the
  device
 To:     Leon Romanovsky <leon@kernel.org>
-CC:     kbuild test robot <lkp@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Doug Ledford" <dledford@redhat.com>, <kbuild-all@lists.01.org>,
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
         <linux-rdma@vger.kernel.org>,
         Alexander Matushevsky <matua@amazon.com>,
         "Firas JahJah" <firasj@amazon.com>, Guy Tzalik <gtzalik@amazon.com>
-References: <20200510115918.46246-3-galpress@amazon.com>
- <202005102140.IhOTb4Th%lkp@intel.com>
- <2b98035f-aa55-1b11-7012-fddca885ba4f@amazon.com>
- <20200510151102.GC199306@unreal>
+References: <20200510115918.46246-1-galpress@amazon.com>
+ <20200510115918.46246-3-galpress@amazon.com> <20200510122949.GB199306@unreal>
+ <5612e79f-76e5-7f87-8321-5114d414015e@amazon.com>
+ <20200510151622.GD199306@unreal>
 From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <8ed8dac8-4ca5-2401-a51c-7dc40bc7c4de@amazon.com>
-Date:   Mon, 11 May 2020 15:40:35 +0300
+Message-ID: <2f15e2fb-22d2-2d8e-50f0-9fa7964f7104@amazon.com>
+Date:   Mon, 11 May 2020 15:47:57 +0300
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200510151102.GC199306@unreal>
+In-Reply-To: <20200510151622.GD199306@unreal>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D08UWC001.ant.amazon.com (10.43.162.110) To
+X-Originating-IP: [10.43.161.247]
+X-ClientProxiedBy: EX13D32UWB004.ant.amazon.com (10.43.161.36) To
  EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/05/2020 18:11, Leon Romanovsky wrote:
-> On Sun, May 10, 2020 at 05:40:21PM +0300, Gal Pressman wrote:
->> On 10/05/2020 16:42, kbuild test robot wrote:
->>> Hi Gal,
+On 10/05/2020 18:16, Leon Romanovsky wrote:
+> On Sun, May 10, 2020 at 04:05:45PM +0300, Gal Pressman wrote:
+>> On 10/05/2020 15:29, Leon Romanovsky wrote:
+>>> On Sun, May 10, 2020 at 02:59:18PM +0300, Gal Pressman wrote:
+>>>> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+>>>> index 96b104ab5415..efdeebc9ea9b 100644
+>>>> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+>>>> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+>>>> @@ -37,7 +37,7 @@ enum efa_admin_aq_feature_id {
+>>>>  	EFA_ADMIN_NETWORK_ATTR                      = 3,
+>>>>  	EFA_ADMIN_QUEUE_ATTR                        = 4,
+>>>>  	EFA_ADMIN_HW_HINTS                          = 5,
+>>>> -	EFA_ADMIN_FEATURES_OPCODE_NUM               = 8,
+>>>> +	EFA_ADMIN_HOST_INFO                         = 6,
+>>>>  };
+>>>>
+>>>>  /* QP transport type */
+>>>> @@ -799,6 +799,55 @@ struct efa_admin_mmio_req_read_less_resp {
+>>>>  	u32 reg_val;
+>>>>  };
+>>>>
+>>>> +enum efa_admin_os_type {
+>>>> +	EFA_ADMIN_OS_LINUX                          = 0,
+>>>> +	EFA_ADMIN_OS_WINDOWS                        = 1,
 >>>
->>> I love your patch! Yet something to improve:
->>>
->>> [auto build test ERROR on rdma/for-next]
->>> [also build test ERROR on v5.7-rc4 next-20200508]
->>> [if your patch is applied to the wrong git tree, please drop us a note to help
->>> improve the system. BTW, we also suggest to use '--base' option to specify the
->>> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->>>
->>> url:    https://github.com/0day-ci/linux/commits/Gal-Pressman/EFA-host-information/20200510-200519
->>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
->>> config: riscv-allyesconfig (attached as .config)
->>> compiler: riscv64-linux-gcc (GCC) 9.3.0
->>> reproduce:
->>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>         chmod +x ~/bin/make.cross
->>>         # save the attached .config to linux build tree
->>>         COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=riscv
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kbuild test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>    drivers/infiniband/hw/efa/efa_main.c: In function 'efa_set_host_info':
->>>>> drivers/infiniband/hw/efa/efa_main.c:214:21: error: 'LINUX_VERSION_CODE' undeclared (first use in this function)
->>>      214 |  hinf->kernel_ver = LINUX_VERSION_CODE;
->>>          |                     ^~~~~~~~~~~~~~~~~~
->>>    drivers/infiniband/hw/efa/efa_main.c:214:21: note: each undeclared identifier is reported only once for each function it appears in
->>>
->>> vim +/LINUX_VERSION_CODE +214 drivers/infiniband/hw/efa/efa_main.c
->>>
->>>    190
->>>    191	static void efa_set_host_info(struct efa_dev *dev)
->>>    192	{
->>>    193		struct efa_admin_set_feature_resp resp = {};
->>>    194		struct efa_admin_set_feature_cmd cmd = {};
->>>    195		struct efa_admin_host_info *hinf;
->>>    196		u32 bufsz = sizeof(*hinf);
->>>    197		dma_addr_t hinf_dma;
->>>    198
->>>    199		if (!efa_com_check_supported_feature_id(&dev->edev,
->>>    200							EFA_ADMIN_HOST_INFO))
->>>    201			return;
->>>    202
->>>    203		/* Failures in host info set shall not disturb probe */
->>>    204		hinf = dma_alloc_coherent(&dev->pdev->dev, bufsz, &hinf_dma,
->>>    205					  GFP_KERNEL);
->>>    206		if (!hinf)
->>>    207			return;
->>>    208
->>>    209		strlcpy(hinf->os_dist_str, utsname()->release,
->>>    210			min(sizeof(hinf->os_dist_str), sizeof(utsname()->release)));
->>>    211		hinf->os_type = EFA_ADMIN_OS_LINUX;
->>>    212		strlcpy(hinf->kernel_ver_str, utsname()->version,
->>>    213			min(sizeof(hinf->kernel_ver_str), sizeof(utsname()->version)));
->>>  > 214		hinf->kernel_ver = LINUX_VERSION_CODE;
->>>    215		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_BUS, dev->pdev->bus->number);
->>>    216		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_DEVICE,
->>>    217			PCI_SLOT(dev->pdev->devfn));
->>>    218		EFA_SET(&hinf->bdf, EFA_ADMIN_HOST_INFO_FUNCTION,
->>>    219			PCI_FUNC(dev->pdev->devfn));
->>>    220		EFA_SET(&hinf->spec_ver, EFA_ADMIN_HOST_INFO_SPEC_MAJOR,
->>>    221			EFA_COMMON_SPEC_VERSION_MAJOR);
->>>    222		EFA_SET(&hinf->spec_ver, EFA_ADMIN_HOST_INFO_SPEC_MINOR,
->>>    223			EFA_COMMON_SPEC_VERSION_MINOR);
->>>    224		EFA_SET(&hinf->flags, EFA_ADMIN_HOST_INFO_INTREE, 1);
->>>    225
->>>    226		efa_com_set_feature_ex(&dev->edev, &resp, &cmd, EFA_ADMIN_HOST_INFO,
->>>    227				       hinf_dma, bufsz);
->>>    228
->>>    229		dma_free_coherent(&dev->pdev->dev, bufsz, hinf, hinf_dma);
->>>    230	}
->>>    231
->>>
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>
+>>> Not used.
 >>
->> Thanks robot, I'm missing an #include <linux/version.h> in efa_main.c.
+>> That's the device interface..
 > 
-> I'm not so sure that you can use that header.
-> You need to use "#include <generated/utsrelease.h>" instead of
-> LINUX_VERSION.
+> It doesn't matter, we don't add code/defines that are not in use.
 
-Are you sure about that?
-I think <generated/utsrelease.h> is used for UTS_RELEASE define.
+First of all, that's not true, look at mlx5 device spec for example.
+It's 10k lines long and has many unused values..
+
+I don't think we should go as far as commits like 1759d322f4ba ("net/mlx5: Add
+hardware definitions for sub functions") which adds new commands interface
+without implementing it (nor does any following patch), but exposing the related
+bits directly in the scope of the feature that's being introduced is different.
+
+The driver version fields that you don't like are going to stay there as they're
+the device ABI, and IMHO "hiding" them as reserved has zero upsides and won't
+change the fact that they're unused.
