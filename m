@@ -2,45 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4161CE351
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 20:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D5F1CE358
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 20:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730999AbgEKSyw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 14:54:52 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:59726 "EHLO
+        id S1729453AbgEKS4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 14:56:15 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:5426 "EHLO
         stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729319AbgEKSyw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 14:54:52 -0400
-Received: from localhost ([10.193.186.242])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 04BIsg6e012988;
-        Mon, 11 May 2020 11:54:48 -0700
-Date:   Tue, 12 May 2020 00:24:42 +0530
+        with ESMTP id S1728808AbgEKS4P (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 14:56:15 -0400
+Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 04BIuBsX013006;
+        Mon, 11 May 2020 11:56:11 -0700
 From:   Potnuri Bharat Teja <bharat@chelsio.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>
-Subject: Re: [PATCH for-rc] RDMA/iw_cxgb4: Fix incorrect function parameters
-Message-ID: <20200511185440.GA12579@chelsio.com>
-References: <20200510184157.12466-1-bharat@chelsio.com>
- <20200511131135.GR26002@ziepe.ca>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Subject: [PATCH v1 for-rc] RDMA/iw_cxgb4: Fix incorrect function parameters
+Date:   Tue, 12 May 2020 00:26:08 +0530
+Message-Id: <20200511185608.5202-1-bharat@chelsio.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511131135.GR26002@ziepe.ca>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Monday, May 05/11/20, 2020 at 18:41:35 +0530, Jason Gunthorpe wrote:
-> On Mon, May 11, 2020 at 12:11:57AM +0530, Potnuri Bharat Teja wrote:
-> > Fixes the incorrect function parameters passed while reading TCB fields and
-> > completing cached SRQ buffers.
-> 
-> For a -rc fix you must explain what bad thing happens because of the
-> bug
-> 
-My bad. This patch fixes app segfults during connection teardown when SRQ is 
-used. Resending patch wit updated description.
+Commit '11a27e21', while reading TCB field in t4_tcb_get_field32() passes
+wrong mask parameter which leads the driver eventually to access illegal
+SRQ index while flushing the SRQ completions during connection teardown.
+Fixes kernel panic/app segfault due to incorrect function parameters passed
+while reading TCB fields and completing cached SRQ buffers.
+
+Fixes: 11a27e2121a5 ("iw_cxgb4: complete the cached SRQ buffers")
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+changelog:
+v1: updated commit description
+---
+ drivers/infiniband/hw/cxgb4/cm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index d69dece3b1d5..30e08bcc9afb 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2891,8 +2891,7 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
+ 			srqidx = ABORT_RSS_SRQIDX_G(
+ 					be32_to_cpu(req->srqidx_status));
+ 			if (srqidx) {
+-				complete_cached_srq_buffers(ep,
+-							    req->srqidx_status);
++				complete_cached_srq_buffers(ep, srqidx);
+ 			} else {
+ 				/* Hold ep ref until finish_peer_abort() */
+ 				c4iw_get_ep(&ep->com);
+@@ -3878,8 +3877,8 @@ static int read_tcb_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
+ 		return 0;
+ 	}
+ 
+-	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_W,
+-			TCB_RQ_START_S);
++	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_M,
++					  TCB_RQ_START_S);
+ cleanup:
+ 	pr_debug("ep %p tid %u %016x\n", ep, ep->hwtid, ep->srqe_idx);
+ 
+-- 
+2.24.0
+
