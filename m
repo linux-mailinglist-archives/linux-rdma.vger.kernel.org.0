@@ -2,98 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958291CE0D8
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 18:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0849C1CE13F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 19:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgEKQpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 12:45:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728711AbgEKQpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 11 May 2020 12:45:06 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 036EF20708;
-        Mon, 11 May 2020 16:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589215505;
-        bh=elAtUSL4B/XpPr2C/FfcE/naqM5sSqqshVqQv04qZ9Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nCD+IeFhrMBQhRyVoAeosusnc0n9byz+7cYdb7Tlt/lpeiLBFQmckEKZ3vJjKkWJJ
-         /S0nw7mqIkoGWwYpO5BWEWmBfp5uKOMPflwk4R4ED297PhDrBTT8/YjIyz7czREDmu
-         Rv09wRGL6EgguDwozfPyWS2gJNGKj8A2zKscCzqE=
-Date:   Mon, 11 May 2020 19:45:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yamin Friedman <yaminf@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/4] infiniband/core: Add protection for shared CQs used
- by ULPs
-Message-ID: <20200511164501.GE356445@unreal>
-References: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
- <1589122557-88996-2-git-send-email-yaminf@mellanox.com>
- <20200511043753.GA356445@unreal>
- <892bf273-b343-0ca5-ba96-b0c02bdb510d@mellanox.com>
+        id S1730828AbgEKRH7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 13:07:59 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15926 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730629AbgEKRH6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 May 2020 13:07:58 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eb985e60001>; Mon, 11 May 2020 10:05:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 11 May 2020 10:07:57 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 11 May 2020 10:07:57 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 May
+ 2020 17:07:55 +0000
+Subject: Re: [PATCH 0/6] nouveau/hmm: add support for mapping large pages
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+References: <20200508192009.15302-1-rcampbell@nvidia.com>
+ <20200508195910.GR16070@bombadil.infradead.org>
+ <72422dca-e025-002a-4748-addfb392ffc4@nvidia.com>
+ <20200509031726.GT16070@bombadil.infradead.org>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <04fed5a1-c777-8594-c869-8598da75c340@nvidia.com>
+Date:   Mon, 11 May 2020 10:07:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <892bf273-b343-0ca5-ba96-b0c02bdb510d@mellanox.com>
+In-Reply-To: <20200509031726.GT16070@bombadil.infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589216743; bh=5oKgOrWxFtRItgwWbbX4dX3IJlUBjgRpH2Q5E+LjAio=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=OpPUg5qPadBLT2WMtDkFVSx1PU9l5XTlfujhBDah4+b+jb4sxdwysG11lCtk2/xjG
+         ZZc+yxggAmSqznAmdePCk698sDTG7bnEe7CwGuZUqbPtPyduUjLGGxIJn9t/ynp/8j
+         QGPR7nXHwb4C6S7TZTAmZuBI824KxdVOA0Sq5ufqsu0/fv78Q+wPKioP4bmhmrj665
+         5lOUd6gqS2CdhwER+fASC4KLsI9TbX1B2lF7M24Dtew5334lFke6chdhjkzH5GgSQ2
+         ybXwF8cXBiD7RQpF2G7PJ5s0VXLkOR3aRrlm0mFtq69KbAZBP0vgd8lrUSML0egUxV
+         MJc2OIDizYv7w==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 11, 2020 at 02:59:44PM +0300, Yamin Friedman wrote:
->
-> On 5/11/2020 7:37 AM, Leon Romanovsky wrote:
-> > On Sun, May 10, 2020 at 05:55:54PM +0300, Yamin Friedman wrote:
-> > > A pre-step for adding shared CQs. Add the infra-structure to prevent
-> > > shared CQ users from altering the CQ configurations. For now all cqs are
-> > > marked as private (non-shared). The core driver should use the new force
-> > > functions to perform resize/destroy/moderation changes that are not
-> > > allowed for users of shared CQs.
-> > >
-> > > Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-> > > Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
-> > > ---
-> > >   drivers/infiniband/core/cq.c    | 25 ++++++++++++++++++-------
-> > >   drivers/infiniband/core/verbs.c | 37 ++++++++++++++++++++++++++++++++++---
-> > >   include/rdma/ib_verbs.h         | 20 +++++++++++++++++++-
-> > >   3 files changed, 71 insertions(+), 11 deletions(-)
-> > infiniband/core -> RDMA/core
-> Will fix.
-> >
-> > > diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-> > > index 4f25b24..443a9cd 100644
-> > > --- a/drivers/infiniband/core/cq.c
-> > > +++ b/drivers/infiniband/core/cq.c
-> > > @@ -37,6 +37,7 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
-> > >   {
-> > >   	struct dim *dim = container_of(w, struct dim, work);
-> > >   	struct ib_cq *cq = dim->priv;
-> > > +	int ret;
-> > >
-> > >   	u16 usec = rdma_dim_prof[dim->profile_ix].usec;
-> > >   	u16 comps = rdma_dim_prof[dim->profile_ix].comps;
-> > > @@ -44,7 +45,10 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
-> > >   	dim->state = DIM_START_MEASURE;
-> > >
-> > >   	trace_cq_modify(cq, comps, usec);
-> > > -	cq->device->ops.modify_cq(cq, comps, usec);
-> > > +	ret = rdma_set_cq_moderation_force(cq, comps, usec);
-> > > +	if (ret)
-> > > +		WARN_ONCE(1, "Failed set moderation for CQ 0x%p\n", cq);
-> > First WARN_ONCE(ret, ...), second no to pointer address print and third
-> > this dump stack won't help, because CQ moderation will fail for many
-> > reasons unrelated to the caller.
-> Would it be better to not include any warning for failed calls?
 
-At least for most of the places, the answer is yes, you are better to
-delete WARN_*s.
+On 5/8/20 8:17 PM, Matthew Wilcox wrote:
+> On Fri, May 08, 2020 at 01:17:55PM -0700, Ralph Campbell wrote:
+>> On 5/8/20 12:59 PM, Matthew Wilcox wrote:
+>>> On Fri, May 08, 2020 at 12:20:03PM -0700, Ralph Campbell wrote:
+>>>> hmm_range_fault() returns an array of page frame numbers and flags for
+>>>> how the pages are mapped in the requested process' page tables. The PFN
+>>>> can be used to get the struct page with hmm_pfn_to_page() and the page size
+>>>> order can be determined with compound_order(page) but if the page is larger
+>>>> than order 0 (PAGE_SIZE), there is no indication that the page is mapped
+>>>> using a larger page size. To be fully general, hmm_range_fault() would need
+>>>> to return the mapping size to handle cases like a 1GB compound page being
+>>>> mapped with 2MB PMD entries. However, the most common case is the mapping
+>>>> size the same as the underlying compound page size.
+>>>> This series adds a new output flag to indicate this so that callers know it
+>>>> is safe to use a large device page table mapping if one is available.
+>>>> Nouveau and the HMM tests are updated to use the new flag.
+>>>
+>>> This explanation doesn't make any sense.  It doesn't matter how somebody
+>>> else has it mapped; if it's a PMD-sized page, you can map it with a
+>>> 2MB mapping.
+>>
+>> Sure, the I/O will work OK, but is it safe?
+>> Copy on write isn't an issue? splitting a PMD in one process due to
+>> mprotect of a shared page will cause other process' page tables to be split
+>> the same way?
+> 
+> Are you saying that if you call this function on an address range of a
+> process which has done COW of a single page in the middle of a THP,
+> you want to return with this flag clear, but if the THP is still intact,
+> you want to set this flag?
 
-WARN_*s are good thing to catch programmers errors, something that can't
-be but happened. It is wrong to use them inform about the failures.
+Correct. I want the GPU to see the same faults that the CPU would see when trying
+to access the same addresses. All faults, whether from CPU or GPU, end up calling
+handle_mm_fault() to handle the fault and update the GPU/CPU page tables.
 
-Thanks
+>> Recall that these are system memory pages that could be THPs, shmem, hugetlbfs,
+>> mmap shared file pages, etc.
