@@ -2,107 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7151CDFCD
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 18:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B771CDFE3
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 May 2020 18:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729556AbgEKQAO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 May 2020 12:00:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:37205 "EHLO mga07.intel.com"
+        id S1730408AbgEKQE6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 May 2020 12:04:58 -0400
+Received: from mga18.intel.com ([134.134.136.126]:64550 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728089AbgEKQAN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 11 May 2020 12:00:13 -0400
-IronPort-SDR: T4AkVz9Y8TkDpNAlxkXy5hOZg3C63dtbuHZUwCsz7QgJtzEKfyJuzSghKj2ln3B3irW5hljx96
- hprdYsVBRCvg==
+        id S1730303AbgEKQE6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 11 May 2020 12:04:58 -0400
+IronPort-SDR: cV3TL5hHrsIRL3DSEG+b08aSi13G3PEjde31OHsunmyEY7LV7fFTqcDSZB91rx8/a38eUT6Isx
+ AiWcml1tdFJw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 09:00:13 -0700
-IronPort-SDR: EcAd1EIzjM1eEBxLChA9vLkDpeowyXTeVxADluTyoxHmGWxYT6mdQeVlTXE3sEJdfOwJX4tKrn
- R5kVLL8Ie9mw==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 09:04:57 -0700
+IronPort-SDR: L9uMwhmtMQgvckPDpiIxJMPVF+95H6Br6u5OG8e/SLPIq0kkVx1VhtuvQF4a6gqzGVzAqa6oLe
+ Rm2HsiNpapuQ==
 X-IronPort-AV: E=Sophos;i="5.73,380,1583222400"; 
-   d="scan'208";a="408963456"
+   d="scan'208";a="408965604"
 Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.232]) ([10.254.204.232])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 09:00:11 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 09:04:56 -0700
 Subject: Re: [PATCH v2 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
  MTU's upper limit
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, dledford@redhat.com,
-        Mike Marciniszyn <mike.marcinisyzn@intel.com>,
-        linux-rdma@vger.kernel.org,
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
         Sadanand Warrier <sadanand.warrier@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
+        Kaike Wan <kaike.wan@intel.com>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
 References: <20200323231152.64035.19274.stgit@awfm-01.aw.intel.com>
  <20200323231511.64035.16923.stgit@awfm-01.aw.intel.com>
- <20200324054536.GR650439@unreal>
- <a8a8176c-393c-5fbf-c2e1-14d9b20b71cd@intel.com>
-Message-ID: <bba6ec55-ce13-d520-153b-72e3556378b8@intel.com>
-Date:   Mon, 11 May 2020 12:00:10 -0400
+ <20200327164924.GY20941@ziepe.ca>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <caa96e5b-b467-d52c-e75d-9c5da11702b9@intel.com>
+Date:   Mon, 11 May 2020 12:04:55 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <a8a8176c-393c-5fbf-c2e1-14d9b20b71cd@intel.com>
+In-Reply-To: <20200327164924.GY20941@ziepe.ca>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/24/2020 9:46 AM, Dennis Dalessandro wrote:
-> On 3/24/2020 1:45 AM, Leon Romanovsky wrote:
->>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
->>> index babfdb0..da8d0d6 100644
->>> --- a/include/rdma/ib_verbs.h
->>> +++ b/include/rdma/ib_verbs.h
->>> @@ -462,6 +462,11 @@ enum ib_mtu {
->>>       IB_MTU_4096 = 5
->>>   };
->>>
->>> +enum opa_mtu {
->>> +    OPA_MTU_8192 = 6,
->>> +    OPA_MTU_10240 = 7
->>> +};
->>> +
->>>   static inline int ib_mtu_enum_to_int(enum ib_mtu mtu)
->>>   {
->>>       switch (mtu) {
->>> @@ -488,6 +493,28 @@ static inline enum ib_mtu ib_mtu_int_to_enum(int 
->>> mtu)
->>>           return IB_MTU_256;
->>>   }
->>>
->>> +static inline int opa_mtu_enum_to_int(enum opa_mtu mtu)
->>> +{
->>> +    switch (mtu) {
->>> +    case OPA_MTU_8192:
->>> +        return 8192;
->>> +    case OPA_MTU_10240:
->>> +        return 10240;
->>> +    default:
->>> +        return(ib_mtu_enum_to_int((enum ib_mtu)mtu));
->>> +    }
->>> +}
->>> +
->>> +static inline enum opa_mtu opa_mtu_int_to_enum(int mtu)
->>> +{
->>> +    if (mtu >= 10240)
->>> +        return OPA_MTU_10240;
->>> +    else if (mtu >= 8192)
->>> +        return OPA_MTU_8192;
->>> +    else
->>> +        return ((enum opa_mtu)ib_mtu_int_to_enum(mtu));
->>> +}
->>
->> Is it possible to include opa_port_info.h in the ib_verbs.h and leave all
->> those functions there?
+On 3/27/2020 12:49 PM, Jason Gunthorpe wrote:
+> On Mon, Mar 23, 2020 at 07:15:12PM -0400, Dennis Dalessandro wrote:
+>> @@ -240,13 +241,11 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
+>>   		priv->broadcast->mcmember.flow_label = mcmember->flow_label;
+>>   		priv->broadcast->mcmember.hop_limit = mcmember->hop_limit;
+>>   		/* assume if the admin and the mcast are the same both can be changed */
+>> +		mtu = rdma_mtu_enum_to_int(priv->ca,  priv->port,
+>> +					   priv->broadcast->mcmember.mtu);
+>>   		if (priv->mcast_mtu == priv->admin_mtu)
+>> -			priv->admin_mtu =
+>> -			priv->mcast_mtu =
+>> -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
+>> -		else
+>> -			priv->mcast_mtu =
+>> -			IPOIB_UD_MTU(ib_mtu_enum_to_int(priv->broadcast->mcmember.mtu));
+>> +			priv->admin_mtu = IPOIB_UD_MTU(mtu);
+>> +		priv->mcast_mtu = IPOIB_UD_MTU(mtu);
 > 
-> We can take a look at doing that.
+> Er, how did this ever work? Does the OPA SM not use the 6 & 7 values
+> for the mtu in the path record? Why is it being changed now?
 
-Seems like it will bring in a number of changes that doesn't really buy 
-us anything. We are only adding two inline functions and an enum here. 
-Not like it's a ton of stuff.
+Prior to this patch series, we can only run AIP at a max mtu of 4K, even 
+on OPA devices. Therefore, we need a way to get the max physical mtu for 
+the underlying device.
+
+> 
+>> +/**
+>> + * rdma_mtu_from_attr - Return the mtu of the port from the port attribute.
+>> + * @device: Device
+>> + * @port_num: Port number
+>> + * @attr: port attribute
+>> + *
+>> + * Return the MTU size supported by the port as an integer value.
+>> + */
+>> +static inline int rdma_mtu_from_attr(struct ib_device *device, u8 port,
+>> +				     struct ib_port_attr *attr)
+>> +{
+>> +	if (rdma_core_cap_opa_port(device, port))
+>> +		return attr->phys_mtu;
+> 
+> Why not just always set this?
+
+Because this is a new field and other vendor devices does not set it at all.
+
+Sorry for the delayed response this got lost in the shuffle.
 
 -Denny
-
