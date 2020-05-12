@@ -2,153 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513641CEED1
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 10:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE5F1CEEF4
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 10:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725889AbgELIIh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 04:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729116AbgELIIg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 May 2020 04:08:36 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5290920674;
-        Tue, 12 May 2020 08:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589270916;
-        bh=H9aabxf944ZHduaHOWJFmpMXz7GhPE6+nbahnAPAHxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ufSi3T7hCKsDXas2+7YcUestod+e1g1Zf96cHqWUzV6h/zUZF0ODmyQuSTEKaOHgV
-         i2Ur0kqu9bmRazH73eupaapoY3wjU3ronWMVW45PeHgxvLnv7giGyg3blfDuTJHhNV
-         7xbJgsls/J2wdFLeFToSDJ7ld1gpWSuhLRlpboBk=
-Date:   Tue, 12 May 2020 11:08:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yamin Friedman <yaminf@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 2/4] RDMA/core: Introduce shared CQ pool API
-Message-ID: <20200512080831.GH4814@unreal>
-References: <1589122557-88996-1-git-send-email-yaminf@mellanox.com>
- <1589122557-88996-3-git-send-email-yaminf@mellanox.com>
- <20200511050740.GB356445@unreal>
- <345890f8-52d6-1aef-dd63-b3115384def5@mellanox.com>
- <eada151f-b763-f300-fb60-8b38c9a7be2d@mellanox.com>
+        id S1725889AbgELIRX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 04:17:23 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59044 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgELIRW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 04:17:22 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C88Rh5158523;
+        Tue, 12 May 2020 08:17:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Wtx+Im5F71V8RatK2uIv9RRgCiFIudT/bKBzgs/sGXg=;
+ b=nok1386cXMS6Oe+Zkr8IKuydliXujlazuBGl2LfAdxEjgLc6SLo00Kb3IBJYW6C2WY7u
+ BTXT5SxRj/XX8WB4YisKBRnazxN3CND40C2XbwkKrcdDG4GoxGHQ6x8LfXCTtnOpNAcw
+ ALPRc0V8pClr7wevKzCuUicaejs3Hi8DD4qZI34JRNkAERQcZ6gPVOt6BERM4VM7VnVW
+ n7gxEm7DwFSVodq+b9XOZBOLFyTp+KraSV9oawPkp+KlwQdRDsmpTwJAe+9/HCB280t1
+ u/m73MBOYGNGcg8WPzXwv8aTMdaB/WEFvAGVOic+IgBz5LMoP8WH+BVpCyqWRxA5aFAU ww== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30x3gmhgnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 May 2020 08:17:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C8DvgB137018;
+        Tue, 12 May 2020 08:17:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30ydspya4k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 May 2020 08:17:14 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04C8HD7M010693;
+        Tue, 12 May 2020 08:17:13 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 May 2020 01:17:12 -0700
+Date:   Tue, 12 May 2020 11:17:06 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Zhu Yanjun <yanjunz@mellanox.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rxe: Return -EFAULT if copy_from_user() fails
+Message-ID: <20200512081706.GJ9365@kadam>
+References: <20200511183742.GB225608@mwanda>
+ <20200512062936.GE4814@unreal>
+ <20200512070203.GG4814@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eada151f-b763-f300-fb60-8b38c9a7be2d@mellanox.com>
+In-Reply-To: <20200512070203.GG4814@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005120070
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005120069
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 12, 2020 at 10:00:59AM +0300, Yamin Friedman wrote:
->
-> On 5/11/2020 3:08 PM, Yamin Friedman wrote:
-> >
-> > On 5/11/2020 8:07 AM, Leon Romanovsky wrote:
-> > > On Sun, May 10, 2020 at 05:55:55PM +0300, Yamin Friedman wrote:
-> > > > Allow a ULP to ask the core to provide a completion queue based on a
-> > > > least-used search on a per-device CQ pools. The device CQ pools
-> > > > grow in a
-> > > > lazy fashion when more CQs are requested.
-> > > >
-> > > > This feature reduces the amount of interrupts when using many QPs.
-> > > > Using shared CQs allows for more effcient completion handling. It also
-> > > > reduces the amount of overhead needed for CQ contexts.
-> > > >
-> > > > Test setup:
-> > > > Intel(R) Xeon(R) Platinum 8176M CPU @ 2.10GHz servers.
-> > > > Running NVMeoF 4KB read IOs over ConnectX-5EX across Spectrum switch.
-> > > > TX-depth = 32. Number of cores refers to the initiator side.
-> > > > Four disks are
-> > > > accessed from each core. In the current case we have four CQs
-> > > > per core and
-> > > > in the shared case we have a single CQ per core. Until 14 cores
-> > > > there is no
-> > > > significant change in performance and the number of interrupts
-> > > > per second
-> > > > is less than a million in the current case.
-> > > > ==================================================
-> > > > |Cores|Current KIOPs  |Shared KIOPs  |improvement|
-> > > > |-----|---------------|--------------|-----------|
-> > > > |14   |2188           |2620          |19.7%      |
-> > > > |-----|---------------|--------------|-----------|
-> > > > |20   |2063           |2308          |11.8%      |
-> > > > |-----|---------------|--------------|-----------|
-> > > > |28   |1933           |2235          |15.6%      |
-> > > > |=================================================
-> > > > |Cores|Current avg lat|Shared avg lat|improvement|
-> > > > |-----|---------------|--------------|-----------|
-> > > > |14   |817us          |683us         |16.4%      |
-> > > > |-----|---------------|--------------|-----------|
-> > > > |20   |1239us         |1108us        |10.6%      |
-> > > > |-----|---------------|--------------|-----------|
-> > > > |28   |1852us         |1601us        |13.5%      |
-> > > > ========================================================
-> > > > |Cores|Current interrupts|Shared interrupts|improvement|
-> > > > |-----|------------------|-----------------|-----------|
-> > > > |14   |2131K/sec         |425K/sec         |80%        |
-> > > > |-----|------------------|-----------------|-----------|
-> > > > |20   |2267K/sec         |594K/sec         |73.8%      |
-> > > > |-----|------------------|-----------------|-----------|
-> > > > |28   |2370K/sec         |1057K/sec        |55.3%      |
-> > > > ====================================================================
-> > > > |Cores|Current 99.99th PCTL lat|Shared 99.99th PCTL lat|improvement|
-> > > > |-----|------------------------|-----------------------|-----------|
-> > > > |14   |85Kus                   |9Kus |88%        |
-> > > > |-----|------------------------|-----------------------|-----------|
-> > > > |20   |6Kus                    |5.3Kus |14.6%      |
-> > > > |-----|------------------------|-----------------------|-----------|
-> > > > |28   |11.6Kus                 |9.5Kus |18%        |
-> > > > |===================================================================
-> > > >
-> > > > Performance improvement with 16 disks (16 CQs per core) is comparable.
-> > > >
-> > > > Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-> > > > Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
-> > > > ---
-> > > >   drivers/infiniband/core/core_priv.h |   8 ++
-> > > >   drivers/infiniband/core/cq.c        | 145
-> > > > ++++++++++++++++++++++++++++++++++++
-> > > >   drivers/infiniband/core/device.c    |   3 +-
-> > > >   include/rdma/ib_verbs.h             |  32 ++++++++
-> > > >   4 files changed, 187 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/core/core_priv.h
-> > > > b/drivers/infiniband/core/core_priv.h
-> > > > index cf42acc..7fe9c13 100644
-> > > > --- a/drivers/infiniband/core/core_priv.h
-> > > > +++ b/drivers/infiniband/core/core_priv.h
-> > > > @@ -191,6 +191,14 @@ static inline bool
-> > > > rdma_is_upper_dev_rcu(struct net_device *dev,
-> > > >       return netdev_has_upper_dev_all_rcu(dev, upper);
-> > > >   }
-> > > >
-> > > > +struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned
-> > > > int nr_cqe,
-> > > > +                 int cpu_hint, enum ib_poll_context poll_ctx);
-> > > > +void ib_cq_pool_put(struct ib_cq *cq, unsigned int nr_cqe);
-> > > > +
-> > > > +void ib_init_cq_pools(struct ib_device *dev);
-> > > > +
-> > > > +void ib_purge_cq_pools(struct ib_device *dev);
-> > > I don't know how next patches compile to you, but "core_priv.h" is wrong
-> > > place to put function declarations. You also put them here and in
-> > > ib_verbs.h
-> > > below.
+On Tue, May 12, 2020 at 10:02:03AM +0300, Leon Romanovsky wrote:
+> On Tue, May 12, 2020 at 09:29:36AM +0300, Leon Romanovsky wrote:
+> > On Mon, May 11, 2020 at 09:37:42PM +0300, Dan Carpenter wrote:
+> > > This function used to always return -EINVAL but we updated it to try
+> > > preserve the error codes.  Unfortunately the copy_to_user() is returning
+> > > the number of bytes remaining to be copied instead of a negative error
+> > > code.
 > > >
-> > > Also, it will be nice if you will use same naming convention like in
-> > > mr_pool.h
-> > I will remove the use of core_priv and look into refactoring the names.
-> Init_cq_pools and purge_cq_pools are not exported functions they are for
-> internal core use, is ib_verbs really the place for them?
+> > > Fixes: a3a974b4654d ("RDMA/rxe: Always return ERR_PTR from rxe_create_mmap_info()")
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > ---
+> > >  drivers/infiniband/sw/rxe/rxe_queue.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> >
+> > Thanks,
+> > Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Actually Yanjun is right and "err" can be removed.
+> 
+> Thanks
 
-I don't know, probably better to group them together because you
-will need to put ib_cq_pool_put/ib_cq_pool_get in the ib_verbs.h anyway.
+I don't know if the code you guys are looking at is older or newer than
+linux-next...  :P
 
-Thanks
+drivers/infiniband/sw/rxe/rxe_queue.c
+    39  int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+    40                   struct ib_udata *udata, struct rxe_queue_buf *buf,
+    41                   size_t buf_size, struct rxe_mmap_info **ip_p)
+    42  {
+    43          int err;
+                    ^^^
+
+    44          struct rxe_mmap_info *ip = NULL;
+    45  
+    46          if (outbuf) {
+    47                  ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
+    48                  if (IS_ERR(ip)) {
+    49                          err = PTR_ERR(ip);
+    50                          goto err1;
+                                ^^^^^^^^^
+    51                  }
+    52  
+    53                  err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+    54                  if (err)
+    55                          goto err2;
+                                ^^^^^^^^^
+    56  
+    57                  spin_lock_bh(&rxe->pending_lock);
+    58                  list_add(&ip->pending_mmaps, &rxe->pending_mmaps);
+    59                  spin_unlock_bh(&rxe->pending_lock);
+    60          }
+    61  
+    62          *ip_p = ip;
+    63  
+    64          return 0;
+    65  
+    66  err2:
+    67          kfree(ip);
+    68  err1:
+    69          return err;
+                       ^^^
+    70  }
+
+regards,
+dan carpenter
