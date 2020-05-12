@@ -2,272 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFCC1D00D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 23:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DFF1D0140
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 23:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgELVYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 17:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731334AbgELVYj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 May 2020 17:24:39 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19854C061A0C;
-        Tue, 12 May 2020 14:24:39 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id a136so6308189qkg.6;
-        Tue, 12 May 2020 14:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=k4aFKZu7Ir4BTmsKFh4XOyBP0EdUtSdQg2tscndZkEA=;
-        b=M+jVFcTcJSeCBnmcmEiK2kPUr7D/qnL8f2t9aTTtMIlMxdlSu7L9v4Pv61jB65Vzem
-         dEHHAc8E9SDeuJ0MW6wI1xVIwMtuyF4SXdRPH1sTzQ1NjrkH36bbyxyT+uaivj5B1BBR
-         xZJs3yug7nKmIPJ2p54fJQAU7zzBzuLDjoIuxQxhubxtAW0lgz5wRjaD9h5pHD+zI+Ba
-         YnwtVWXi+D6JYU04Z7q+58bHYvdVvjanyly9Ej7iIF87p7js/5kC777TWFBZ/T2SqUwv
-         ydaafYsM6d8u2ifOTFoX9ArOCGgloSgPj5FayY92rXvOlyiNUF/5NtXpMsTCv5TPbxLt
-         t3+g==
+        id S1731389AbgELVuH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 17:50:07 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:33308 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728313AbgELVuG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 17:50:06 -0400
+Received: by mail-pl1-f179.google.com with SMTP id t7so5986809plr.0
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 14:50:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=k4aFKZu7Ir4BTmsKFh4XOyBP0EdUtSdQg2tscndZkEA=;
-        b=dTDYNYh8azxqG0q/OOaeyWgVlchGVQayOj2KZBMFamezPrHhWJptGwZeHXMOtZbt6H
-         VVHBE358KLP+fjgrzEgnQSB1H39B678UJ65VoKd3NMcjNWyGSbb0tI++8HIAKU3wGq4B
-         205yd4LQ/cKUb8G+aN9PiGPkQlZk62gpUSUqyNrbhvDXbohrCcFH04rpQ/7zumnE2dO1
-         jp6fZQ5Vru8o7d1HwpfTFWzrcZUf5eVXS2YRL9oTW5wZPE9y/tnp4M31UUdW/prT0qQV
-         UG7EWRBFvwiY62kt6EeYL8O1RQmsmS0IjbVZKkgsaxDWYo5P2T/CiKpZDeY8NL/EWkuq
-         o6IA==
-X-Gm-Message-State: AGi0PuZLmKGKnbVQ6y6ZYydu51TxUF+13illxV6w4EphOQGlgiWPd6j6
-        HKjBB/PzhKgeqyZ3VGI012pkj6nn
-X-Google-Smtp-Source: APiQypI6Dv6llDwJwnfJOABbUlW+jI5qhq5LP/2DiJmSUuAsbm0PAEAruooW9loMHX/H9QfK/eVfjw==
-X-Received: by 2002:a05:620a:484:: with SMTP id 4mr12021090qkr.1.1589318677925;
-        Tue, 12 May 2020 14:24:37 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id u56sm5261914qtb.91.2020.05.12.14.24.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 May 2020 14:24:37 -0700 (PDT)
-Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 04CLOarv009963;
-        Tue, 12 May 2020 21:24:36 GMT
-Subject: [PATCH v2 29/29] NFSD: Fix improperly-formatted Doxygen comments
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     bfields@fieldses.org
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Tue, 12 May 2020 17:24:36 -0400
-Message-ID: <20200512212436.5826.37327.stgit@klimt.1015granger.net>
-In-Reply-To: <20200512211640.5826.77139.stgit@klimt.1015granger.net>
-References: <20200512211640.5826.77139.stgit@klimt.1015granger.net>
-User-Agent: StGit/0.22-31-g4b47
+        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=By1SypfjAju2cjO2b6lyDyDWiZbxucCg3oMquVnYZ2E=;
+        b=Sxb2uiWNR0VInb6vuxZKWCsR6IqCA6WziBN2jufqv9JX/sAy3TG/JSQv0id55HtojF
+         zfUtgsXuL4NjvmmTvT8m8/trfsp86fKj3Yd6o3FyZ5CGBtjdkltDc0aacWM60ZqKpm2v
+         RbFM7bk23CbvRaZ6PkDoYm5pzpAWF9NeTua6Wrspdgo2WmYablliAw2DE3RjejDAZ4Lw
+         kZVocjVhzmoZ6cvpb/jeqVj2ycI2v2Q7J/iJsrHcgJKlY6rcpVERxS1ot47/4aySPQ4j
+         lyl4LWgV0hLQfcnh0f7iL23Oi2HJTHudv9DqbB8591srl8X/28wSI18AI84M6sFHnQN0
+         NXOw==
+X-Gm-Message-State: AGi0PuYpAvWKPGnH5uKeFrhSF7C1PHteTmAINN36zg+jWGNkUn/hr2Pm
+        wHkjJ1Cw3cOYRcl/IP5ag0sA+oow
+X-Google-Smtp-Source: APiQypIhCFESgZZUGkOhTFuNg++F40T7lnMXxQW6Zc2HqKduX7ARlpPa/24nDI6PzVhRMdCChre4JA==
+X-Received: by 2002:a17:902:7481:: with SMTP id h1mr22046816pll.193.1589320205494;
+        Tue, 12 May 2020 14:50:05 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:d1a1:34bc:ea5:fadd? ([2601:647:4000:d7:d1a1:34bc:ea5:fadd])
+        by smtp.gmail.com with ESMTPSA id ce21sm13604973pjb.51.2020.05.12.14.50.03
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2020 14:50:04 -0700 (PDT)
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Subject: Mellanox ConnectX-3 and vfio
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <24881332-5456-5284-1c2c-074a1476ac87@acm.org>
+Date:   Tue, 12 May 2020 14:50:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-fs/nfsd/nfsctl.c:256: warning: Function parameter or member 'file' not described in 'write_unlock_ip'
-fs/nfsd/nfsctl.c:256: warning: Function parameter or member 'buf' not described in 'write_unlock_ip'
-fs/nfsd/nfsctl.c:256: warning: Function parameter or member 'size' not described in 'write_unlock_ip'
-fs/nfsd/nfsctl.c:295: warning: Function parameter or member 'file' not described in 'write_unlock_fs'
-fs/nfsd/nfsctl.c:295: warning: Function parameter or member 'buf' not described in 'write_unlock_fs'
-fs/nfsd/nfsctl.c:295: warning: Function parameter or member 'size' not described in 'write_unlock_fs'
-fs/nfsd/nfsctl.c:352: warning: Function parameter or member 'file' not described in 'write_filehandle'
-fs/nfsd/nfsctl.c:352: warning: Function parameter or member 'buf' not described in 'write_filehandle'
-fs/nfsd/nfsctl.c:352: warning: Function parameter or member 'size' not described in 'write_filehandle'
-fs/nfsd/nfsctl.c:434: warning: Function parameter or member 'file' not described in 'write_threads'
-fs/nfsd/nfsctl.c:434: warning: Function parameter or member 'buf' not described in 'write_threads'
-fs/nfsd/nfsctl.c:434: warning: Function parameter or member 'size' not described in 'write_threads'
-fs/nfsd/nfsctl.c:478: warning: Function parameter or member 'file' not described in 'write_pool_threads'
-fs/nfsd/nfsctl.c:478: warning: Function parameter or member 'buf' not described in 'write_pool_threads'
-fs/nfsd/nfsctl.c:478: warning: Function parameter or member 'size' not described in 'write_pool_threads'
-fs/nfsd/nfsctl.c:697: warning: Function parameter or member 'file' not described in 'write_versions'
-fs/nfsd/nfsctl.c:697: warning: Function parameter or member 'buf' not described in 'write_versions'
-fs/nfsd/nfsctl.c:697: warning: Function parameter or member 'size' not described in 'write_versions'
-fs/nfsd/nfsctl.c:858: warning: Function parameter or member 'file' not described in 'write_ports'
-fs/nfsd/nfsctl.c:858: warning: Function parameter or member 'buf' not described in 'write_ports'
-fs/nfsd/nfsctl.c:858: warning: Function parameter or member 'size' not described in 'write_ports'
-fs/nfsd/nfsctl.c:892: warning: Function parameter or member 'file' not described in 'write_maxblksize'
-fs/nfsd/nfsctl.c:892: warning: Function parameter or member 'buf' not described in 'write_maxblksize'
-fs/nfsd/nfsctl.c:892: warning: Function parameter or member 'size' not described in 'write_maxblksize'
-fs/nfsd/nfsctl.c:941: warning: Function parameter or member 'file' not described in 'write_maxconn'
-fs/nfsd/nfsctl.c:941: warning: Function parameter or member 'buf' not described in 'write_maxconn'
-fs/nfsd/nfsctl.c:941: warning: Function parameter or member 'size' not described in 'write_maxconn'
-fs/nfsd/nfsctl.c:1023: warning: Function parameter or member 'file' not described in 'write_leasetime'
-fs/nfsd/nfsctl.c:1023: warning: Function parameter or member 'buf' not described in 'write_leasetime'
-fs/nfsd/nfsctl.c:1023: warning: Function parameter or member 'size' not described in 'write_leasetime'
-fs/nfsd/nfsctl.c:1039: warning: Function parameter or member 'file' not described in 'write_gracetime'
-fs/nfsd/nfsctl.c:1039: warning: Function parameter or member 'buf' not described in 'write_gracetime'
-fs/nfsd/nfsctl.c:1039: warning: Function parameter or member 'size' not described in 'write_gracetime'
-fs/nfsd/nfsctl.c:1094: warning: Function parameter or member 'file' not described in 'write_recoverydir'
-fs/nfsd/nfsctl.c:1094: warning: Function parameter or member 'buf' not described in 'write_recoverydir'
-fs/nfsd/nfsctl.c:1094: warning: Function parameter or member 'size' not described in 'write_recoverydir'
-fs/nfsd/nfsctl.c:1125: warning: Function parameter or member 'file' not described in 'write_v4_end_grace'
-fs/nfsd/nfsctl.c:1125: warning: Function parameter or member 'buf' not described in 'write_v4_end_grace'
-fs/nfsd/nfsctl.c:1125: warning: Function parameter or member 'size' not described in 'write_v4_end_grace'
+Hi,
 
-fs/nfsd/nfs4proc.c:1164: warning: Function parameter or member 'nss' not described in 'nfsd4_interssc_connect'
-fs/nfsd/nfs4proc.c:1164: warning: Function parameter or member 'rqstp' not described in 'nfsd4_interssc_connect'
-fs/nfsd/nfs4proc.c:1164: warning: Function parameter or member 'mount' not described in 'nfsd4_interssc_connect'
-fs/nfsd/nfs4proc.c:1262: warning: Function parameter or member 'rqstp' not described in 'nfsd4_setup_inter_ssc'
-fs/nfsd/nfs4proc.c:1262: warning: Function parameter or member 'cstate' not described in 'nfsd4_setup_inter_ssc'
-fs/nfsd/nfs4proc.c:1262: warning: Function parameter or member 'copy' not described in 'nfsd4_setup_inter_ssc'
-fs/nfsd/nfs4proc.c:1262: warning: Function parameter or member 'mount' not described in 'nfsd4_setup_inter_ssc'
+When I tried to assign a ConnectX-3 HCA to Qemu using vfio, the
+following error message appeared in the kernel log:
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- fs/nfsd/nfs4proc.c |    7 +++----
- fs/nfsd/nfsctl.c   |   26 +++++++++++++-------------
- 2 files changed, 16 insertions(+), 17 deletions(-)
+[ 2238.319227] genirq: Flags mismatch irq 16. 00000000
+(vfio-intx(0000:01:00.0)) vs. 00000080 (ehci_hcd:usb1)
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 0e75f7fb5fec..ec1b28d08c1c 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -1155,7 +1155,7 @@ extern void nfs_sb_deactive(struct super_block *sb);
- 
- #define NFSD42_INTERSSC_MOUNTOPS "vers=4.2,addr=%s,sec=sys"
- 
--/**
-+/*
-  * Support one copy source server for now.
-  */
- static __be32
-@@ -1245,10 +1245,9 @@ nfsd4_interssc_disconnect(struct vfsmount *ss_mnt)
- 	mntput(ss_mnt);
- }
- 
--/**
-- * nfsd4_setup_inter_ssc
-- *
-+/*
-  * Verify COPY destination stateid.
-+ *
-  * Connect to the source server with NFSv4.1.
-  * Create the source struct file for nfsd_copy_range.
-  * Called with COPY cstate:
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index 3bb2db947d29..b48eac3bb72b 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -238,7 +238,7 @@ static inline struct net *netns(struct file *file)
- 	return file_inode(file)->i_sb->s_fs_info;
- }
- 
--/**
-+/*
-  * write_unlock_ip - Release all locks used by a client
-  *
-  * Experimental.
-@@ -277,7 +277,7 @@ static ssize_t write_unlock_ip(struct file *file, char *buf, size_t size)
- 	return nlmsvc_unlock_all_by_ip(sap);
- }
- 
--/**
-+/*
-  * write_unlock_fs - Release all locks on a local file system
-  *
-  * Experimental.
-@@ -327,7 +327,7 @@ static ssize_t write_unlock_fs(struct file *file, char *buf, size_t size)
- 	return error;
- }
- 
--/**
-+/*
-  * write_filehandle - Get a variable-length NFS file handle by path
-  *
-  * On input, the buffer contains a '\n'-terminated C string comprised of
-@@ -402,7 +402,7 @@ static ssize_t write_filehandle(struct file *file, char *buf, size_t size)
- 	return mesg - buf;	
- }
- 
--/**
-+/*
-  * write_threads - Start NFSD, or report the current number of running threads
-  *
-  * Input:
-@@ -452,7 +452,7 @@ static ssize_t write_threads(struct file *file, char *buf, size_t size)
- 	return scnprintf(buf, SIMPLE_TRANSACTION_LIMIT, "%d\n", rv);
- }
- 
--/**
-+/*
-  * write_pool_threads - Set or report the current number of threads per pool
-  *
-  * Input:
-@@ -661,7 +661,7 @@ static ssize_t __write_versions(struct file *file, char *buf, size_t size)
- 	return tlen + len;
- }
- 
--/**
-+/*
-  * write_versions - Set or report the available NFS protocol versions
-  *
-  * Input:
-@@ -811,7 +811,7 @@ static ssize_t __write_ports(struct file *file, char *buf, size_t size,
- 	return -EINVAL;
- }
- 
--/**
-+/*
-  * write_ports - Pass a socket file descriptor or transport name to listen on
-  *
-  * Input:
-@@ -867,7 +867,7 @@ static ssize_t write_ports(struct file *file, char *buf, size_t size)
- 
- int nfsd_max_blksize;
- 
--/**
-+/*
-  * write_maxblksize - Set or report the current NFS blksize
-  *
-  * Input:
-@@ -917,7 +917,7 @@ static ssize_t write_maxblksize(struct file *file, char *buf, size_t size)
- 							nfsd_max_blksize);
- }
- 
--/**
-+/*
-  * write_maxconn - Set or report the current max number of connections
-  *
-  * Input:
-@@ -998,7 +998,7 @@ static ssize_t nfsd4_write_time(struct file *file, char *buf, size_t size,
- 	return rv;
- }
- 
--/**
-+/*
-  * write_leasetime - Set or report the current NFSv4 lease time
-  *
-  * Input:
-@@ -1025,7 +1025,7 @@ static ssize_t write_leasetime(struct file *file, char *buf, size_t size)
- 	return nfsd4_write_time(file, buf, size, &nn->nfsd4_lease, nn);
- }
- 
--/**
-+/*
-  * write_gracetime - Set or report current NFSv4 grace period time
-  *
-  * As above, but sets the time of the NFSv4 grace period.
-@@ -1069,7 +1069,7 @@ static ssize_t __write_recoverydir(struct file *file, char *buf, size_t size,
- 							nfs4_recoverydir());
- }
- 
--/**
-+/*
-  * write_recoverydir - Set or report the pathname of the recovery directory
-  *
-  * Input:
-@@ -1101,7 +1101,7 @@ static ssize_t write_recoverydir(struct file *file, char *buf, size_t size)
- 	return rv;
- }
- 
--/**
-+/*
-  * write_v4_end_grace - release grace period for nfsd's v4.x lock manager
-  *
-  * Input:
+From linux/interrupt.h:
 
+	#define IRQF_SHARED		0x00000080
+
+In vfio_pci.c I found the following:
+
+	vdev->pci_2_3 = pci_intx_mask_supported(pdev);
+
+and in drivers/pci/quirks.c I found the following:
+
+static u16 mellanox_broken_intx_devs[] = {
+	PCI_DEVICE_ID_MELLANOX_HERMON_SDR,
+	PCI_DEVICE_ID_MELLANOX_HERMON_DDR,
+	PCI_DEVICE_ID_MELLANOX_HERMON_QDR,
+	PCI_DEVICE_ID_MELLANOX_HERMON_DDR_GEN2,
+	PCI_DEVICE_ID_MELLANOX_HERMON_QDR_GEN2,
+	PCI_DEVICE_ID_MELLANOX_HERMON_EN,
+	PCI_DEVICE_ID_MELLANOX_HERMON_EN_GEN2,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX_EN,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX_EN_T_GEN2,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX_EN_GEN2,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX_EN_5_GEN2,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX2,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX3,
+	PCI_DEVICE_ID_MELLANOX_CONNECTX3_PRO,
+};
+
+static void mellanox_check_broken_intx_masking(struct pci_dev *pdev)
+{
+	__be32 __iomem *fw_ver;
+	u16 fw_major;
+	u16 fw_minor;
+	u16 fw_subminor;
+	u32 fw_maj_min;
+	u32 fw_sub_min;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(mellanox_broken_intx_devs); i++) {
+		if (pdev->device == mellanox_broken_intx_devs[i]) {
+			pdev->broken_intx_masking = 1;
+			return;
+		}
+	}
+	[ ... ]
+}
+
+I think that code was added by commit d76d2fe05fd9 ("PCI: Convert
+Mellanox broken INTx quirks to be for listed devices only").
+
+Does anyone know whether the mellanox_broken_intx_devs[] table is
+up-to-date? I'm using a ConnectX-3 VPI adapter and have installed the
+latest firmware:
+
+# mstflint -d 01:00.0 q
+Image type:            FS2
+FW Version:            2.42.5000
+FW Release Date:       5.9.2017
+Product Version:       02.42.50.00
+Rom Info:              type=PXE version=3.4.752
+Device ID:             4099
+Description:           Node             Port1            Port2
+ Sys image
+GUIDs:                 [ ... ]
+MACs:                  [ ... ]
+VSD:
+PSID:                  MT_1090120019
+
+Thanks,
+
+Bart.
