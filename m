@@ -2,730 +2,416 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE1CFA26
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 18:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0481CFA3C
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 18:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgELQJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 12:09:24 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45651 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725851AbgELQJW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 12:09:22 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from israelr@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 12 May 2020 19:09:09 +0300
-Received: from rsws50.mtr.labs.mlnx. (rsws50.mtr.labs.mlnx [10.209.40.61])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04CG991G007817;
-        Tue, 12 May 2020 19:09:09 +0300
-From:   Israel Rukshin <israelr@mellanox.com>
-To:     sagi@grimberg.me, jgg@mellanox.com, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, leon@kernel.org
-Cc:     maxg@mellanox.com, sergeygo@mellanox.com,
-        Israel Rukshin <israelr@mellanox.com>
-Subject: [PATCH] IB/iser: Remove support for FMR memory registration
-Date:   Tue, 12 May 2020 19:08:59 +0300
-Message-Id: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
+        id S1727889AbgELQMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 12:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgELQMk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 12:12:40 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C901FC061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 09:12:39 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id x7so17787559oic.3
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 09:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bww7fgLkKXfMv4PRaAkrQzDwPtCU39Ajw7uoGNUPEx8=;
+        b=IFTHA2tGH4wZnxNRAUcfT8zYr0DM4ejTZAwt0QBnVPXV/VJ6Nv6Rm/Z4uxPHJf6EM9
+         o3blcr3tXN6xw0R+JJcCt118t8Siwgu0jYkJWW/6EIb4zkRegDQfgmFNm6UXfaQwXVZ2
+         ICEl8CUYDB9vwdSQcbawx4OpJypc3ygORsoTI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bww7fgLkKXfMv4PRaAkrQzDwPtCU39Ajw7uoGNUPEx8=;
+        b=Bsb+HiFvO+Lyw/ul9kwPvrf3/0RAOSHedtS9iQThZJ/i8wCI8FlmYfpOfxSB+3vxbm
+         crr7Ptq994dcy7wrINnUqNJp1k4Tq4qGYQ1HBSZ+UZlnY+mIIfH0FvnXWW0HyT0o5ZA7
+         jv8VBJVp5x7twxZRfKX+B5Eky6rgTa5Kb4kLkds72hDIaXhRFnbvlSqiFb+KhmE3Ahme
+         4LsZrNNcOo9Sg0joyZvJJL5Ck5rjoEnlryUcFoBcq6oSm+2xdaf8BTbRt0Xg/fPrl8/4
+         3kYof/2cfsLNUoxRAOfWAu6X0qN81S9Ftk4utmfRCr127y50dS+Pq3pAoWkXQkb0u2Js
+         LbFg==
+X-Gm-Message-State: AGi0PuYJhHY0ttkQaBzyi/DbwzoW0Mq4hxTYY72gj/AtjPhqdZm0M6hY
+        yHVZSqAGLblaDElZvR0tNk4vPZAlLPsTCqhEKZjWxQ==
+X-Google-Smtp-Source: APiQypJersL/YqDvlZr25aCAq1fwjpXeCzG4qwabGva1MCjtq3RE5tJM8ctElgeLrKI9mrxPFhV4nsqELGe9VpH6ZrM=
+X-Received: by 2002:aca:2113:: with SMTP id 19mr15372876oiz.128.1589299959079;
+ Tue, 12 May 2020 09:12:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
+ <20200512085944.222637-17-daniel.vetter@ffwll.ch> <CADnq5_NJTwkUszd-F2d4D+kD4c_+FKD8tuhVJ7VWHGxAyd8fCg@mail.gmail.com>
+ <20200512125841.GH206103@phenom.ffwll.local> <CADnq5_P3SQkH5D+a5bFBTu5eE2ws3O2wsNqnsP9rcvTQJP-nbA@mail.gmail.com>
+ <CAKMK7uFh0MT_mWb4W5jB55D+twLk6k=Xk4f575Q=AR5fSdE3iQ@mail.gmail.com>
+ <CADnq5_PR0fzab=U8KPSznDgw8twuKtgbBf3EGjoZB0UpyCorwg@mail.gmail.com>
+ <CAKMK7uFZAedfE20orA3dGyxTuR3Q_d2yYBb6N3BSCCQvhunM4Q@mail.gmail.com> <CADnq5_PsjZP+s7VzAYX4k3aArGm=E7PQG21A0oo5Dxx1pPGabQ@mail.gmail.com>
+In-Reply-To: <CADnq5_PsjZP+s7VzAYX4k3aArGm=E7PQG21A0oo5Dxx1pPGabQ@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 12 May 2020 18:12:27 +0200
+Message-ID: <CAKMK7uE+cvUUyiLqySDv0L=saW+fZCmArs3fqokuOV_pL8MGHQ@mail.gmail.com>
+Subject: Re: [RFC 16/17] drm/amdgpu: gpu recovery does full modesets
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-FMR is not supported on most recent RDMA devices (that use fast memory
-registration mechanism). Also, FMR was recently removed from NFS/RDMA
-ULP.
+On Tue, May 12, 2020 at 4:24 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> On Tue, May 12, 2020 at 9:45 AM Daniel Vetter <daniel.vetter@ffwll.ch> wr=
+ote:
+> >
+> > On Tue, May 12, 2020 at 3:29 PM Alex Deucher <alexdeucher@gmail.com> wr=
+ote:
+> > >
+> > > On Tue, May 12, 2020 at 9:17 AM Daniel Vetter <daniel.vetter@ffwll.ch=
+> wrote:
+> > > >
+> > > > On Tue, May 12, 2020 at 3:12 PM Alex Deucher <alexdeucher@gmail.com=
+> wrote:
+> > > > >
+> > > > > On Tue, May 12, 2020 at 8:58 AM Daniel Vetter <daniel@ffwll.ch> w=
+rote:
+> > > > > >
+> > > > > > On Tue, May 12, 2020 at 08:54:45AM -0400, Alex Deucher wrote:
+> > > > > > > On Tue, May 12, 2020 at 5:00 AM Daniel Vetter <daniel.vetter@=
+ffwll.ch> wrote:
+> > > > > > > >
+> > > > > > > > ...
+> > > > > > > >
+> > > > > > > > I think it's time to stop this little exercise.
+> > > > > > > >
+> > > > > > > > The lockdep splat, for the record:
+> > > > > > > >
+> > > > > > > > [  132.583381] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > > > > [  132.584091] WARNING: possible circular locking dependenc=
+y detected
+> > > > > > > > [  132.584775] 5.7.0-rc3+ #346 Tainted: G        W
+> > > > > > > > [  132.585461] --------------------------------------------=
+----------
+> > > > > > > > [  132.586184] kworker/2:3/865 is trying to acquire lock:
+> > > > > > > > [  132.586857] ffffc90000677c70 (crtc_ww_class_acquire){+.+=
+.}-{0:0}, at: drm_atomic_helper_suspend+0x38/0x120 [drm_kms_helper]
+> > > > > > > > [  132.587569]
+> > > > > > > >                but task is already holding lock:
+> > > > > > > > [  132.589044] ffffffff82318c80 (dma_fence_map){++++}-{0:0}=
+, at: drm_sched_job_timedout+0x25/0xf0 [gpu_sched]
+> > > > > > > > [  132.589803]
+> > > > > > > >                which lock already depends on the new lock.
+> > > > > > > >
+> > > > > > > > [  132.592009]
+> > > > > > > >                the existing dependency chain (in reverse or=
+der) is:
+> > > > > > > > [  132.593507]
+> > > > > > > >                -> #2 (dma_fence_map){++++}-{0:0}:
+> > > > > > > > [  132.595019]        dma_fence_begin_signalling+0x50/0x60
+> > > > > > > > [  132.595767]        drm_atomic_helper_commit+0xa1/0x180 [=
+drm_kms_helper]
+> > > > > > > > [  132.596567]        drm_client_modeset_commit_atomic+0x1e=
+a/0x250 [drm]
+> > > > > > > > [  132.597420]        drm_client_modeset_commit_locked+0x55=
+/0x190 [drm]
+> > > > > > > > [  132.598178]        drm_client_modeset_commit+0x24/0x40 [=
+drm]
+> > > > > > > > [  132.598948]        drm_fb_helper_restore_fbdev_mode_unlo=
+cked+0x4b/0xa0 [drm_kms_helper]
+> > > > > > > > [  132.599738]        drm_fb_helper_set_par+0x30/0x40 [drm_=
+kms_helper]
+> > > > > > > > [  132.600539]        fbcon_init+0x2e8/0x660
+> > > > > > > > [  132.601344]        visual_init+0xce/0x130
+> > > > > > > > [  132.602156]        do_bind_con_driver+0x1bc/0x2b0
+> > > > > > > > [  132.602970]        do_take_over_console+0x115/0x180
+> > > > > > > > [  132.603763]        do_fbcon_takeover+0x58/0xb0
+> > > > > > > > [  132.604564]        register_framebuffer+0x1ee/0x300
+> > > > > > > > [  132.605369]        __drm_fb_helper_initial_config_and_un=
+lock+0x36e/0x520 [drm_kms_helper]
+> > > > > > > > [  132.606187]        amdgpu_fbdev_init+0xb3/0xf0 [amdgpu]
+> > > > > > > > [  132.607032]        amdgpu_device_init.cold+0xe90/0x1677 =
+[amdgpu]
+> > > > > > > > [  132.607862]        amdgpu_driver_load_kms+0x5a/0x200 [am=
+dgpu]
+> > > > > > > > [  132.608697]        amdgpu_pci_probe+0xf7/0x180 [amdgpu]
+> > > > > > > > [  132.609511]        local_pci_probe+0x42/0x80
+> > > > > > > > [  132.610324]        pci_device_probe+0x104/0x1a0
+> > > > > > > > [  132.611130]        really_probe+0x147/0x3c0
+> > > > > > > > [  132.611939]        driver_probe_device+0xb6/0x100
+> > > > > > > > [  132.612766]        device_driver_attach+0x53/0x60
+> > > > > > > > [  132.613593]        __driver_attach+0x8c/0x150
+> > > > > > > > [  132.614419]        bus_for_each_dev+0x7b/0xc0
+> > > > > > > > [  132.615249]        bus_add_driver+0x14c/0x1f0
+> > > > > > > > [  132.616071]        driver_register+0x6c/0xc0
+> > > > > > > > [  132.616902]        do_one_initcall+0x5d/0x2f0
+> > > > > > > > [  132.617731]        do_init_module+0x5c/0x230
+> > > > > > > > [  132.618560]        load_module+0x2981/0x2bc0
+> > > > > > > > [  132.619391]        __do_sys_finit_module+0xaa/0x110
+> > > > > > > > [  132.620228]        do_syscall_64+0x5a/0x250
+> > > > > > > > [  132.621064]        entry_SYSCALL_64_after_hwframe+0x49/0=
+xb3
+> > > > > > > > [  132.621903]
+> > > > > > > >                -> #1 (crtc_ww_class_mutex){+.+.}-{3:3}:
+> > > > > > > > [  132.623587]        __ww_mutex_lock.constprop.0+0xcc/0x10=
+c0
+> > > > > > > > [  132.624448]        ww_mutex_lock+0x43/0xb0
+> > > > > > > > [  132.625315]        drm_modeset_lock+0x44/0x120 [drm]
+> > > > > > > > [  132.626184]        drmm_mode_config_init+0x2db/0x8b0 [dr=
+m]
+> > > > > > > > [  132.627098]        amdgpu_device_init.cold+0xbd1/0x1677 =
+[amdgpu]
+> > > > > > > > [  132.628007]        amdgpu_driver_load_kms+0x5a/0x200 [am=
+dgpu]
+> > > > > > > > [  132.628920]        amdgpu_pci_probe+0xf7/0x180 [amdgpu]
+> > > > > > > > [  132.629804]        local_pci_probe+0x42/0x80
+> > > > > > > > [  132.630690]        pci_device_probe+0x104/0x1a0
+> > > > > > > > [  132.631583]        really_probe+0x147/0x3c0
+> > > > > > > > [  132.632479]        driver_probe_device+0xb6/0x100
+> > > > > > > > [  132.633379]        device_driver_attach+0x53/0x60
+> > > > > > > > [  132.634275]        __driver_attach+0x8c/0x150
+> > > > > > > > [  132.635170]        bus_for_each_dev+0x7b/0xc0
+> > > > > > > > [  132.636069]        bus_add_driver+0x14c/0x1f0
+> > > > > > > > [  132.636974]        driver_register+0x6c/0xc0
+> > > > > > > > [  132.637870]        do_one_initcall+0x5d/0x2f0
+> > > > > > > > [  132.638765]        do_init_module+0x5c/0x230
+> > > > > > > > [  132.639654]        load_module+0x2981/0x2bc0
+> > > > > > > > [  132.640522]        __do_sys_finit_module+0xaa/0x110
+> > > > > > > > [  132.641372]        do_syscall_64+0x5a/0x250
+> > > > > > > > [  132.642203]        entry_SYSCALL_64_after_hwframe+0x49/0=
+xb3
+> > > > > > > > [  132.643022]
+> > > > > > > >                -> #0 (crtc_ww_class_acquire){+.+.}-{0:0}:
+> > > > > > > > [  132.644643]        __lock_acquire+0x1241/0x23f0
+> > > > > > > > [  132.645469]        lock_acquire+0xad/0x370
+> > > > > > > > [  132.646274]        drm_modeset_acquire_init+0xd2/0x100 [=
+drm]
+> > > > > > > > [  132.647071]        drm_atomic_helper_suspend+0x38/0x120 =
+[drm_kms_helper]
+> > > > > > > > [  132.647902]        dm_suspend+0x1c/0x60 [amdgpu]
+> > > > > > > > [  132.648698]        amdgpu_device_ip_suspend_phase1+0x83/=
+0xe0 [amdgpu]
+> > > > > > > > [  132.649498]        amdgpu_device_ip_suspend+0x1c/0x60 [a=
+mdgpu]
+> > > > > > > > [  132.650300]        amdgpu_device_gpu_recover.cold+0x4e6/=
+0xe64 [amdgpu]
+> > > > > > > > [  132.651084]        amdgpu_job_timedout+0xfb/0x150 [amdgp=
+u]
+> > > > > > > > [  132.651825]        drm_sched_job_timedout+0x8a/0xf0 [gpu=
+_sched]
+> > > > > > > > [  132.652594]        process_one_work+0x23c/0x580
+> > > > > > > > [  132.653402]        worker_thread+0x50/0x3b0
+> > > > > > > > [  132.654139]        kthread+0x12e/0x150
+> > > > > > > > [  132.654868]        ret_from_fork+0x27/0x50
+> > > > > > > > [  132.655598]
+> > > > > > > >                other info that might help us debug this:
+> > > > > > > >
+> > > > > > > > [  132.657739] Chain exists of:
+> > > > > > > >                  crtc_ww_class_acquire --> crtc_ww_class_mu=
+tex --> dma_fence_map
+> > > > > > > >
+> > > > > > > > [  132.659877]  Possible unsafe locking scenario:
+> > > > > > > >
+> > > > > > > > [  132.661416]        CPU0                    CPU1
+> > > > > > > > [  132.662126]        ----                    ----
+> > > > > > > > [  132.662847]   lock(dma_fence_map);
+> > > > > > > > [  132.663574]                                lock(crtc_ww_=
+class_mutex);
+> > > > > > > > [  132.664319]                                lock(dma_fenc=
+e_map);
+> > > > > > > > [  132.665063]   lock(crtc_ww_class_acquire);
+> > > > > > > > [  132.665799]
+> > > > > > > >                 *** DEADLOCK ***
+> > > > > > > >
+> > > > > > > > [  132.667965] 4 locks held by kworker/2:3/865:
+> > > > > > > > [  132.668701]  #0: ffff8887fb81c938 ((wq_completion)events=
+){+.+.}-{0:0}, at: process_one_work+0x1bc/0x580
+> > > > > > > > [  132.669462]  #1: ffffc90000677e58 ((work_completion)(&(&=
+sched->work_tdr)->work)){+.+.}-{0:0}, at: process_one_work+0x1bc/0x580
+> > > > > > > > [  132.670242]  #2: ffffffff82318c80 (dma_fence_map){++++}-=
+{0:0}, at: drm_sched_job_timedout+0x25/0xf0 [gpu_sched]
+> > > > > > > > [  132.671039]  #3: ffff8887b84a1748 (&adev->lock_reset){+.=
++.}-{3:3}, at: amdgpu_device_gpu_recover.cold+0x59e/0xe64 [amdgpu]
+> > > > > > > > [  132.671902]
+> > > > > > > >                stack backtrace:
+> > > > > > > > [  132.673515] CPU: 2 PID: 865 Comm: kworker/2:3 Tainted: G=
+        W         5.7.0-rc3+ #346
+> > > > > > > > [  132.674347] Hardware name: System manufacturer System Pr=
+oduct Name/PRIME X370-PRO, BIOS 4011 04/19/2018
+> > > > > > > > [  132.675194] Workqueue: events drm_sched_job_timedout [gp=
+u_sched]
+> > > > > > > > [  132.676046] Call Trace:
+> > > > > > > > [  132.676897]  dump_stack+0x8f/0xd0
+> > > > > > > > [  132.677748]  check_noncircular+0x162/0x180
+> > > > > > > > [  132.678604]  ? stack_trace_save+0x4b/0x70
+> > > > > > > > [  132.679459]  __lock_acquire+0x1241/0x23f0
+> > > > > > > > [  132.680311]  lock_acquire+0xad/0x370
+> > > > > > > > [  132.681163]  ? drm_atomic_helper_suspend+0x38/0x120 [drm=
+_kms_helper]
+> > > > > > > > [  132.682021]  ? cpumask_next+0x16/0x20
+> > > > > > > > [  132.682880]  ? module_assert_mutex_or_preempt+0x14/0x40
+> > > > > > > > [  132.683737]  ? __module_address+0x28/0xf0
+> > > > > > > > [  132.684601]  drm_modeset_acquire_init+0xd2/0x100 [drm]
+> > > > > > > > [  132.685466]  ? drm_atomic_helper_suspend+0x38/0x120 [drm=
+_kms_helper]
+> > > > > > > > [  132.686335]  drm_atomic_helper_suspend+0x38/0x120 [drm_k=
+ms_helper]
+> > > > > > > > [  132.687255]  dm_suspend+0x1c/0x60 [amdgpu]
+> > > > > > > > [  132.688152]  amdgpu_device_ip_suspend_phase1+0x83/0xe0 [=
+amdgpu]
+> > > > > > > > [  132.689057]  ? amdgpu_fence_process+0x4c/0x150 [amdgpu]
+> > > > > > > > [  132.689963]  amdgpu_device_ip_suspend+0x1c/0x60 [amdgpu]
+> > > > > > > > [  132.690893]  amdgpu_device_gpu_recover.cold+0x4e6/0xe64 =
+[amdgpu]
+> > > > > > > > [  132.691818]  amdgpu_job_timedout+0xfb/0x150 [amdgpu]
+> > > > > > > > [  132.692707]  drm_sched_job_timedout+0x8a/0xf0 [gpu_sched=
+]
+> > > > > > > > [  132.693597]  process_one_work+0x23c/0x580
+> > > > > > > > [  132.694487]  worker_thread+0x50/0x3b0
+> > > > > > > > [  132.695373]  ? process_one_work+0x580/0x580
+> > > > > > > > [  132.696264]  kthread+0x12e/0x150
+> > > > > > > > [  132.697154]  ? kthread_create_worker_on_cpu+0x70/0x70
+> > > > > > > > [  132.698057]  ret_from_fork+0x27/0x50
+> > > > > > > >
+> > > > > > > > Cc: linux-media@vger.kernel.org
+> > > > > > > > Cc: linaro-mm-sig@lists.linaro.org
+> > > > > > > > Cc: linux-rdma@vger.kernel.org
+> > > > > > > > Cc: amd-gfx@lists.freedesktop.org
+> > > > > > > > Cc: intel-gfx@lists.freedesktop.org
+> > > > > > > > Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> > > > > > > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > > > > > > > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > > > > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 ++++++++
+> > > > > > > >  1 file changed, 8 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/d=
+rivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > > > > > > > index 3584e29323c0..b3b84a0d3baf 100644
+> > > > > > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > > > > > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > > > > > > > @@ -2415,6 +2415,14 @@ static int amdgpu_device_ip_suspend_=
+phase1(struct amdgpu_device *adev)
+> > > > > > > >                 /* displays are handled separately */
+> > > > > > > >                 if (adev->ip_blocks[i].version->type =3D=3D=
+ AMD_IP_BLOCK_TYPE_DCE) {
+> > > > > > > >                         /* XXX handle errors */
+> > > > > > > > +
+> > > > > > > > +                       /*
+> > > > > > > > +                        * This is dm_suspend, which calls =
+modeset locks, and
+> > > > > > > > +                        * that a pretty good inversion aga=
+inst dma_fence_signal
+> > > > > > > > +                        * which gpu recovery is supposed t=
+o guarantee.
+> > > > > > > > +                        *
+> > > > > > > > +                        * Dont ask me how to fix this.
+> > > > > > > > +                        */
+> > > > > > >
+> > > > > > > We actually have a fix for this.  Will be out shortly.
+> > > > > >
+> > > > > > Spoilers? Solid way is to sidesteck the entire thing by avoidin=
+g to reset
+> > > > > > the display block entirely. Fixing the locking while still rese=
+tting the
+> > > > > > display is going to be really hard otoh ...
+> > > > >
+> > > > > There's no way to avoid that.  On dGPUs at least a full asic rese=
+t is
+> > > > > a full asic reset.  Mostly just skips the modeset and does the mi=
+nimum
+> > > > > amount necessary to get the display block into a good state for r=
+eset.
+> > > >
+> > > > But how do you restore the display afterwards? "[RFC 13/17]
+> > > > drm/scheduler: use dma-fence annotations in tdr work" earlier in th=
+e
+> > > > series has some ideas from me for at least
+> > > > some of the problems for tdr when the display gets reset along.
+> > > > Whacking the display while a modeset/flip/whatever is ongoing
+> > > > concurrently doesn't sound like a good idea, so not sure how you ca=
+n
+> > > > do that without taking the drm_modeset_locks. And once you do that,
+> > > > it's deadlock time.
+> > >
+> > > We cache the current display hw state and restore it after the reset
+> > > without going through the atomic interfaces so everything is back the
+> > > way it was before the reset.
+> >
+> > Hm this sounds interesting ... how do you make sure a concurrent
+> > atomic update doesn't trample over the same mmio registers while you
+> > do that dance?
+>
+> We take the dm->dc_lock across the reset.
 
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
----
- drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
- drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
- drivers/infiniband/ulp/iser/iser_memory.c    | 188 ++-------------------------
- drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +++---------------
- 4 files changed, 40 insertions(+), 372 deletions(-)
+Ok if that's an innermost lock and you don't do any dma_fence_wait()
+while holding that (or anything that somehow depends upon that again)
+I think that should work. From a quick look at current code in
+drm-next that seems to be the case. But would be good to check with my
+annotations whether everything is placed correctly (or maybe there's a
+bug in my annotations).
 
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
-index 029c001..1d77c7f 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.h
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
-@@ -65,7 +65,6 @@
- #include <linux/in6.h>
- 
- #include <rdma/ib_verbs.h>
--#include <rdma/ib_fmr_pool.h>
- #include <rdma/rdma_cm.h>
- 
- #define DRV_NAME	"iser"
-@@ -313,33 +312,6 @@ struct iser_comp {
- };
- 
- /**
-- * struct iser_reg_ops - Memory registration operations
-- *     per-device registration schemes
-- *
-- * @alloc_reg_res:     Allocate registration resources
-- * @free_reg_res:      Free registration resources
-- * @reg_mem:           Register memory buffers
-- * @unreg_mem:         Un-register memory buffers
-- * @reg_desc_get:      Get a registration descriptor for pool
-- * @reg_desc_put:      Get a registration descriptor to pool
-- */
--struct iser_reg_ops {
--	int            (*alloc_reg_res)(struct ib_conn *ib_conn,
--					unsigned cmds_max,
--					unsigned int size);
--	void           (*free_reg_res)(struct ib_conn *ib_conn);
--	int            (*reg_mem)(struct iscsi_iser_task *iser_task,
--				  struct iser_data_buf *mem,
--				  struct iser_reg_resources *rsc,
--				  struct iser_mem_reg *reg);
--	void           (*unreg_mem)(struct iscsi_iser_task *iser_task,
--				    enum iser_data_dir cmd_dir);
--	struct iser_fr_desc * (*reg_desc_get)(struct ib_conn *ib_conn);
--	void           (*reg_desc_put)(struct ib_conn *ib_conn,
--				       struct iser_fr_desc *desc);
--};
--
--/**
-  * struct iser_device - iSER device handle
-  *
-  * @ib_device:     RDMA device
-@@ -351,8 +323,6 @@ struct iser_reg_ops {
-  * @comps_used:    Number of completion contexts used, Min between online
-  *                 cpus and device max completion vectors
-  * @comps:         Dinamically allocated array of completion handlers
-- * @reg_ops:       Registration ops
-- * @remote_inv_sup: Remote invalidate is supported on this device
-  */
- struct iser_device {
- 	struct ib_device             *ib_device;
-@@ -362,26 +332,18 @@ struct iser_device {
- 	int                          refcount;
- 	int			     comps_used;
- 	struct iser_comp	     *comps;
--	const struct iser_reg_ops    *reg_ops;
--	bool                         remote_inv_sup;
- };
- 
- /**
-  * struct iser_reg_resources - Fast registration resources
-  *
-  * @mr:         memory region
-- * @fmr_pool:   pool of fmrs
-  * @sig_mr:     signature memory region
-- * @page_vec:   fast reg page list used by fmr pool
-  * @mr_valid:   is mr valid indicator
-  */
- struct iser_reg_resources {
--	union {
--		struct ib_mr             *mr;
--		struct ib_fmr_pool       *fmr_pool;
--	};
-+	struct ib_mr                     *mr;
- 	struct ib_mr                     *sig_mr;
--	struct iser_page_vec             *page_vec;
- 	u8				  mr_valid:1;
- };
- 
-@@ -403,7 +365,7 @@ struct iser_fr_desc {
-  * struct iser_fr_pool - connection fast registration pool
-  *
-  * @list:                list of fastreg descriptors
-- * @lock:                protects fmr/fastreg pool
-+ * @lock:                protects fastreg pool
-  * @size:                size of the pool
-  */
- struct iser_fr_pool {
-@@ -518,12 +480,6 @@ struct iscsi_iser_task {
- 	struct iser_data_buf         prot[ISER_DIRS_NUM];
- };
- 
--struct iser_page_vec {
--	u64 *pages;
--	int npages;
--	struct ib_mr fake_mr;
--};
--
- /**
-  * struct iser_global - iSER global context
-  *
-@@ -548,8 +504,6 @@ struct iser_global {
- extern unsigned int iser_max_sectors;
- extern bool iser_always_reg;
- 
--int iser_assign_reg_ops(struct iser_device *device);
--
- int iser_send_control(struct iscsi_conn *conn,
- 		      struct iscsi_task *task);
- 
-@@ -591,22 +545,17 @@ void iser_finalize_rdma_unaligned_sg(struct iscsi_iser_task *iser_task,
- 				     struct iser_data_buf *mem,
- 				     enum iser_data_dir cmd_dir);
- 
--int iser_reg_rdma_mem(struct iscsi_iser_task *task,
--		      enum iser_data_dir dir,
--		      bool all_imm);
--void iser_unreg_rdma_mem(struct iscsi_iser_task *task,
--			 enum iser_data_dir dir);
-+int iser_reg_mem_fastreg(struct iscsi_iser_task *task,
-+			 enum iser_data_dir dir,
-+			 bool all_imm);
-+void iser_unreg_mem_fastreg(struct iscsi_iser_task *task,
-+			    enum iser_data_dir dir);
- 
- int  iser_connect(struct iser_conn *iser_conn,
- 		  struct sockaddr *src_addr,
- 		  struct sockaddr *dst_addr,
- 		  int non_blocking);
- 
--void iser_unreg_mem_fmr(struct iscsi_iser_task *iser_task,
--			enum iser_data_dir cmd_dir);
--void iser_unreg_mem_fastreg(struct iscsi_iser_task *iser_task,
--			    enum iser_data_dir cmd_dir);
--
- int  iser_post_recvl(struct iser_conn *iser_conn);
- int  iser_post_recvm(struct iser_conn *iser_conn, int count);
- int  iser_post_send(struct ib_conn *ib_conn, struct iser_tx_desc *tx_desc,
-@@ -625,26 +574,12 @@ int  iser_initialize_task_headers(struct iscsi_task *task,
- 			struct iser_tx_desc *tx_desc);
- int iser_alloc_rx_descriptors(struct iser_conn *iser_conn,
- 			      struct iscsi_session *session);
--int iser_alloc_fmr_pool(struct ib_conn *ib_conn,
--			unsigned cmds_max,
--			unsigned int size);
--void iser_free_fmr_pool(struct ib_conn *ib_conn);
- int iser_alloc_fastreg_pool(struct ib_conn *ib_conn,
- 			    unsigned cmds_max,
- 			    unsigned int size);
- void iser_free_fastreg_pool(struct ib_conn *ib_conn);
- u8 iser_check_task_pi_status(struct iscsi_iser_task *iser_task,
- 			     enum iser_data_dir cmd_dir, sector_t *sector);
--struct iser_fr_desc *
--iser_reg_desc_get_fr(struct ib_conn *ib_conn);
--void
--iser_reg_desc_put_fr(struct ib_conn *ib_conn,
--		     struct iser_fr_desc *desc);
--struct iser_fr_desc *
--iser_reg_desc_get_fmr(struct ib_conn *ib_conn);
--void
--iser_reg_desc_put_fmr(struct ib_conn *ib_conn,
--		      struct iser_fr_desc *desc);
- 
- static inline struct iser_conn *
- to_iser_conn(struct ib_conn *ib_conn)
-diff --git a/drivers/infiniband/ulp/iser/iser_initiator.c b/drivers/infiniband/ulp/iser/iser_initiator.c
-index 4a7045b..27a6f75 100644
---- a/drivers/infiniband/ulp/iser/iser_initiator.c
-+++ b/drivers/infiniband/ulp/iser/iser_initiator.c
-@@ -72,7 +72,7 @@ static int iser_prepare_read_cmd(struct iscsi_task *task)
- 			return err;
- 	}
- 
--	err = iser_reg_rdma_mem(iser_task, ISER_DIR_IN, false);
-+	err = iser_reg_mem_fastreg(iser_task, ISER_DIR_IN, false);
- 	if (err) {
- 		iser_err("Failed to set up Data-IN RDMA\n");
- 		return err;
-@@ -126,8 +126,8 @@ static int iser_prepare_read_cmd(struct iscsi_task *task)
- 			return err;
- 	}
- 
--	err = iser_reg_rdma_mem(iser_task, ISER_DIR_OUT,
--				buf_out->data_len == imm_sz);
-+	err = iser_reg_mem_fastreg(iser_task, ISER_DIR_OUT,
-+				   buf_out->data_len == imm_sz);
- 	if (err != 0) {
- 		iser_err("Failed to register write cmd RDMA mem\n");
- 		return err;
-@@ -250,8 +250,8 @@ int iser_alloc_rx_descriptors(struct iser_conn *iser_conn,
- 	iser_conn->qp_max_recv_dtos_mask = session->cmds_max - 1; /* cmds_max is 2^N */
- 	iser_conn->min_posted_rx = iser_conn->qp_max_recv_dtos >> 2;
- 
--	if (device->reg_ops->alloc_reg_res(ib_conn, session->scsi_cmds_max,
--					   iser_conn->pages_per_mr))
-+	if (iser_alloc_fastreg_pool(ib_conn, session->scsi_cmds_max,
-+				    iser_conn->pages_per_mr))
- 		goto create_rdma_reg_res_failed;
- 
- 	if (iser_alloc_login_buf(iser_conn))
-@@ -293,7 +293,7 @@ int iser_alloc_rx_descriptors(struct iser_conn *iser_conn,
- rx_desc_alloc_fail:
- 	iser_free_login_buf(iser_conn);
- alloc_login_buf_fail:
--	device->reg_ops->free_reg_res(ib_conn);
-+	iser_free_fastreg_pool(ib_conn);
- create_rdma_reg_res_failed:
- 	iser_err("failed allocating rx descriptors / data buffers\n");
- 	return -ENOMEM;
-@@ -306,8 +306,7 @@ void iser_free_rx_descriptors(struct iser_conn *iser_conn)
- 	struct ib_conn *ib_conn = &iser_conn->ib_conn;
- 	struct iser_device *device = ib_conn->device;
- 
--	if (device->reg_ops->free_reg_res)
--		device->reg_ops->free_reg_res(ib_conn);
-+	iser_free_fastreg_pool(ib_conn);
- 
- 	rx_desc = iser_conn->rx_descs;
- 	for (i = 0; i < iser_conn->qp_max_recv_dtos; i++, rx_desc++)
-@@ -768,7 +767,7 @@ void iser_task_rdma_finalize(struct iscsi_iser_task *iser_task)
- 	int prot_count = scsi_prot_sg_count(iser_task->sc);
- 
- 	if (iser_task->dir[ISER_DIR_IN]) {
--		iser_unreg_rdma_mem(iser_task, ISER_DIR_IN);
-+		iser_unreg_mem_fastreg(iser_task, ISER_DIR_IN);
- 		iser_dma_unmap_task_data(iser_task,
- 					 &iser_task->data[ISER_DIR_IN],
- 					 DMA_FROM_DEVICE);
-@@ -779,7 +778,7 @@ void iser_task_rdma_finalize(struct iscsi_iser_task *iser_task)
- 	}
- 
- 	if (iser_task->dir[ISER_DIR_OUT]) {
--		iser_unreg_rdma_mem(iser_task, ISER_DIR_OUT);
-+		iser_unreg_mem_fastreg(iser_task, ISER_DIR_OUT);
- 		iser_dma_unmap_task_data(iser_task,
- 					 &iser_task->data[ISER_DIR_OUT],
- 					 DMA_TO_DEVICE);
-diff --git a/drivers/infiniband/ulp/iser/iser_memory.c b/drivers/infiniband/ulp/iser/iser_memory.c
-index 999ef7c..d4e057f 100644
---- a/drivers/infiniband/ulp/iser/iser_memory.c
-+++ b/drivers/infiniband/ulp/iser/iser_memory.c
-@@ -38,62 +38,13 @@
- #include <linux/scatterlist.h>
- 
- #include "iscsi_iser.h"
--static
--int iser_fast_reg_fmr(struct iscsi_iser_task *iser_task,
--		      struct iser_data_buf *mem,
--		      struct iser_reg_resources *rsc,
--		      struct iser_mem_reg *mem_reg);
--static
--int iser_fast_reg_mr(struct iscsi_iser_task *iser_task,
--		     struct iser_data_buf *mem,
--		     struct iser_reg_resources *rsc,
--		     struct iser_mem_reg *mem_reg);
--
--static const struct iser_reg_ops fastreg_ops = {
--	.alloc_reg_res	= iser_alloc_fastreg_pool,
--	.free_reg_res	= iser_free_fastreg_pool,
--	.reg_mem	= iser_fast_reg_mr,
--	.unreg_mem	= iser_unreg_mem_fastreg,
--	.reg_desc_get	= iser_reg_desc_get_fr,
--	.reg_desc_put	= iser_reg_desc_put_fr,
--};
--
--static const struct iser_reg_ops fmr_ops = {
--	.alloc_reg_res	= iser_alloc_fmr_pool,
--	.free_reg_res	= iser_free_fmr_pool,
--	.reg_mem	= iser_fast_reg_fmr,
--	.unreg_mem	= iser_unreg_mem_fmr,
--	.reg_desc_get	= iser_reg_desc_get_fmr,
--	.reg_desc_put	= iser_reg_desc_put_fmr,
--};
- 
- void iser_reg_comp(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	iser_err_comp(wc, "memreg");
- }
- 
--int iser_assign_reg_ops(struct iser_device *device)
--{
--	struct ib_device *ib_dev = device->ib_device;
--
--	/* Assign function handles  - based on FMR support */
--	if (ib_dev->ops.alloc_fmr && ib_dev->ops.dealloc_fmr &&
--	    ib_dev->ops.map_phys_fmr && ib_dev->ops.unmap_fmr) {
--		iser_info("FMR supported, using FMR for registration\n");
--		device->reg_ops = &fmr_ops;
--	} else if (ib_dev->attrs.device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS) {
--		iser_info("FastReg supported, using FastReg for registration\n");
--		device->reg_ops = &fastreg_ops;
--		device->remote_inv_sup = iser_always_reg;
--	} else {
--		iser_err("IB device does not support FMRs nor FastRegs, can't register memory\n");
--		return -1;
--	}
--
--	return 0;
--}
--
--struct iser_fr_desc *
-+static struct iser_fr_desc *
- iser_reg_desc_get_fr(struct ib_conn *ib_conn)
- {
- 	struct iser_fr_pool *fr_pool = &ib_conn->fr_pool;
-@@ -109,7 +60,7 @@ struct iser_fr_desc *
- 	return desc;
- }
- 
--void
-+static void
- iser_reg_desc_put_fr(struct ib_conn *ib_conn,
- 		     struct iser_fr_desc *desc)
- {
-@@ -121,44 +72,6 @@ struct iser_fr_desc *
- 	spin_unlock_irqrestore(&fr_pool->lock, flags);
- }
- 
--struct iser_fr_desc *
--iser_reg_desc_get_fmr(struct ib_conn *ib_conn)
--{
--	struct iser_fr_pool *fr_pool = &ib_conn->fr_pool;
--
--	return list_first_entry(&fr_pool->list,
--				struct iser_fr_desc, list);
--}
--
--void
--iser_reg_desc_put_fmr(struct ib_conn *ib_conn,
--		      struct iser_fr_desc *desc)
--{
--}
--
--static void iser_data_buf_dump(struct iser_data_buf *data,
--			       struct ib_device *ibdev)
--{
--	struct scatterlist *sg;
--	int i;
--
--	for_each_sg(data->sg, sg, data->dma_nents, i)
--		iser_dbg("sg[%d] dma_addr:0x%lX page:0x%p "
--			 "off:0x%x sz:0x%x dma_len:0x%x\n",
--			 i, (unsigned long)sg_dma_address(sg),
--			 sg_page(sg), sg->offset, sg->length, sg_dma_len(sg));
--}
--
--static void iser_dump_page_vec(struct iser_page_vec *page_vec)
--{
--	int i;
--
--	iser_err("page vec npages %d data length %lld\n",
--		 page_vec->npages, page_vec->fake_mr.length);
--	for (i = 0; i < page_vec->npages; i++)
--		iser_err("vec[%d]: %llx\n", i, page_vec->pages[i]);
--}
--
- int iser_dma_map_task_data(struct iscsi_iser_task *iser_task,
- 			    struct iser_data_buf *data,
- 			    enum iser_data_dir iser_dir,
-@@ -213,84 +126,9 @@ void iser_dma_unmap_task_data(struct iscsi_iser_task *iser_task,
- 	return 0;
- }
- 
--static int iser_set_page(struct ib_mr *mr, u64 addr)
--{
--	struct iser_page_vec *page_vec =
--		container_of(mr, struct iser_page_vec, fake_mr);
--
--	page_vec->pages[page_vec->npages++] = addr;
--
--	return 0;
--}
--
--static
--int iser_fast_reg_fmr(struct iscsi_iser_task *iser_task,
--		      struct iser_data_buf *mem,
--		      struct iser_reg_resources *rsc,
--		      struct iser_mem_reg *reg)
--{
--	struct ib_conn *ib_conn = &iser_task->iser_conn->ib_conn;
--	struct iser_device *device = ib_conn->device;
--	struct iser_page_vec *page_vec = rsc->page_vec;
--	struct ib_fmr_pool *fmr_pool = rsc->fmr_pool;
--	struct ib_pool_fmr *fmr;
--	int ret, plen;
--
--	page_vec->npages = 0;
--	page_vec->fake_mr.page_size = SZ_4K;
--	plen = ib_sg_to_pages(&page_vec->fake_mr, mem->sg,
--			      mem->dma_nents, NULL, iser_set_page);
--	if (unlikely(plen < mem->dma_nents)) {
--		iser_err("page vec too short to hold this SG\n");
--		iser_data_buf_dump(mem, device->ib_device);
--		iser_dump_page_vec(page_vec);
--		return -EINVAL;
--	}
--
--	fmr  = ib_fmr_pool_map_phys(fmr_pool, page_vec->pages,
--				    page_vec->npages, page_vec->pages[0]);
--	if (IS_ERR(fmr)) {
--		ret = PTR_ERR(fmr);
--		iser_err("ib_fmr_pool_map_phys failed: %d\n", ret);
--		return ret;
--	}
--
--	reg->sge.lkey = fmr->fmr->lkey;
--	reg->rkey = fmr->fmr->rkey;
--	reg->sge.addr = page_vec->fake_mr.iova;
--	reg->sge.length = page_vec->fake_mr.length;
--	reg->mem_h = fmr;
--
--	iser_dbg("fmr reg: lkey=0x%x, rkey=0x%x, addr=0x%llx,"
--		 " length=0x%x\n", reg->sge.lkey, reg->rkey,
--		 reg->sge.addr, reg->sge.length);
--
--	return 0;
--}
--
--/**
-- * Unregister (previosuly registered using FMR) memory.
-- * If memory is non-FMR does nothing.
-- */
--void iser_unreg_mem_fmr(struct iscsi_iser_task *iser_task,
--			enum iser_data_dir cmd_dir)
--{
--	struct iser_mem_reg *reg = &iser_task->rdma_reg[cmd_dir];
--
--	if (!reg->mem_h)
--		return;
--
--	iser_dbg("PHYSICAL Mem.Unregister mem_h %p\n", reg->mem_h);
--
--	ib_fmr_pool_unmap((struct ib_pool_fmr *)reg->mem_h);
--
--	reg->mem_h = NULL;
--}
--
- void iser_unreg_mem_fastreg(struct iscsi_iser_task *iser_task,
- 			    enum iser_data_dir cmd_dir)
- {
--	struct iser_device *device = iser_task->iser_conn->ib_conn.device;
- 	struct iser_mem_reg *reg = &iser_task->rdma_reg[cmd_dir];
- 	struct iser_fr_desc *desc;
- 	struct ib_mr_status mr_status;
-@@ -312,7 +150,7 @@ void iser_unreg_mem_fastreg(struct iscsi_iser_task *iser_task,
- 		ib_check_mr_status(desc->rsc.sig_mr, IB_MR_CHECK_SIG_STATUS,
- 				   &mr_status);
- 	}
--	device->reg_ops->reg_desc_put(&iser_task->iser_conn->ib_conn, desc);
-+	iser_reg_desc_put_fr(&iser_task->iser_conn->ib_conn, reg->mem_h);
- 	reg->mem_h = NULL;
- }
- 
-@@ -509,15 +347,14 @@ static int iser_fast_reg_mr(struct iscsi_iser_task *iser_task,
- 	if (use_dma_key)
- 		return iser_reg_dma(device, mem, reg);
- 
--	return device->reg_ops->reg_mem(task, mem, &desc->rsc, reg);
-+	return iser_fast_reg_mr(task, mem, &desc->rsc, reg);
- }
- 
--int iser_reg_rdma_mem(struct iscsi_iser_task *task,
--		      enum iser_data_dir dir,
--		      bool all_imm)
-+int iser_reg_mem_fastreg(struct iscsi_iser_task *task,
-+			 enum iser_data_dir dir,
-+			 bool all_imm)
- {
- 	struct ib_conn *ib_conn = &task->iser_conn->ib_conn;
--	struct iser_device *device = ib_conn->device;
- 	struct iser_data_buf *mem = &task->data[dir];
- 	struct iser_mem_reg *reg = &task->rdma_reg[dir];
- 	struct iser_fr_desc *desc = NULL;
-@@ -528,7 +365,7 @@ int iser_reg_rdma_mem(struct iscsi_iser_task *task,
- 		      scsi_get_prot_op(task->sc) == SCSI_PROT_NORMAL;
- 
- 	if (!use_dma_key) {
--		desc = device->reg_ops->reg_desc_get(ib_conn);
-+		desc = iser_reg_desc_get_fr(ib_conn);
- 		reg->mem_h = desc;
- 	}
- 
-@@ -549,15 +386,8 @@ int iser_reg_rdma_mem(struct iscsi_iser_task *task,
- 
- err_reg:
- 	if (desc)
--		device->reg_ops->reg_desc_put(ib_conn, desc);
-+		iser_reg_desc_put_fr(ib_conn, desc);
- 
- 	return err;
- }
- 
--void iser_unreg_rdma_mem(struct iscsi_iser_task *task,
--			 enum iser_data_dir dir)
--{
--	struct iser_device *device = task->iser_conn->ib_conn.device;
--
--	device->reg_ops->unreg_mem(task, dir);
--}
-diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
-index 127887c..c1f44c4 100644
---- a/drivers/infiniband/ulp/iser/iser_verbs.c
-+++ b/drivers/infiniband/ulp/iser/iser_verbs.c
-@@ -68,11 +68,12 @@ static void iser_event_handler(struct ib_event_handler *handler,
- static int iser_create_device_ib_res(struct iser_device *device)
- {
- 	struct ib_device *ib_dev = device->ib_device;
--	int ret, i, max_cqe;
-+	int i, max_cqe;
- 
--	ret = iser_assign_reg_ops(device);
--	if (ret)
--		return ret;
-+	if (!(ib_dev->attrs.device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS)) {
-+		iser_err("IB device does not support memory registrations\n");
-+		return -1;
-+	}
- 
- 	device->comps_used = min_t(int, num_online_cpus(),
- 				 ib_dev->num_comp_vectors);
-@@ -147,96 +148,6 @@ static void iser_free_device_ib_res(struct iser_device *device)
- 	device->pd = NULL;
- }
- 
--/**
-- * iser_alloc_fmr_pool - Creates FMR pool and page_vector
-- * @ib_conn: connection RDMA resources
-- * @cmds_max: max number of SCSI commands for this connection
-- * @size: max number of pages per map request
-- *
-- * Return: 0 on success, or errno code on failure
-- */
--int iser_alloc_fmr_pool(struct ib_conn *ib_conn,
--			unsigned cmds_max,
--			unsigned int size)
--{
--	struct iser_device *device = ib_conn->device;
--	struct iser_fr_pool *fr_pool = &ib_conn->fr_pool;
--	struct iser_page_vec *page_vec;
--	struct iser_fr_desc *desc;
--	struct ib_fmr_pool *fmr_pool;
--	struct ib_fmr_pool_param params;
--	int ret;
--
--	INIT_LIST_HEAD(&fr_pool->list);
--	spin_lock_init(&fr_pool->lock);
--
--	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
--	if (!desc)
--		return -ENOMEM;
--
--	page_vec = kmalloc(sizeof(*page_vec) + (sizeof(u64) * size),
--			   GFP_KERNEL);
--	if (!page_vec) {
--		ret = -ENOMEM;
--		goto err_frpl;
--	}
--
--	page_vec->pages = (u64 *)(page_vec + 1);
--
--	params.page_shift        = ilog2(SZ_4K);
--	params.max_pages_per_fmr = size;
--	/* make the pool size twice the max number of SCSI commands *
--	 * the ML is expected to queue, watermark for unmap at 50%  */
--	params.pool_size	 = cmds_max * 2;
--	params.dirty_watermark	 = cmds_max;
--	params.cache		 = 0;
--	params.flush_function	 = NULL;
--	params.access		 = (IB_ACCESS_LOCAL_WRITE  |
--				    IB_ACCESS_REMOTE_WRITE |
--				    IB_ACCESS_REMOTE_READ);
--
--	fmr_pool = ib_create_fmr_pool(device->pd, &params);
--	if (IS_ERR(fmr_pool)) {
--		ret = PTR_ERR(fmr_pool);
--		iser_err("FMR allocation failed, err %d\n", ret);
--		goto err_fmr;
--	}
--
--	desc->rsc.page_vec = page_vec;
--	desc->rsc.fmr_pool = fmr_pool;
--	list_add(&desc->list, &fr_pool->list);
--
--	return 0;
--
--err_fmr:
--	kfree(page_vec);
--err_frpl:
--	kfree(desc);
--
--	return ret;
--}
--
--/**
-- * iser_free_fmr_pool - releases the FMR pool and page vec
-- * @ib_conn: connection RDMA resources
-- */
--void iser_free_fmr_pool(struct ib_conn *ib_conn)
--{
--	struct iser_fr_pool *fr_pool = &ib_conn->fr_pool;
--	struct iser_fr_desc *desc;
--
--	desc = list_first_entry(&fr_pool->list,
--				struct iser_fr_desc, list);
--	list_del(&desc->list);
--
--	iser_info("freeing conn %p fmr pool %p\n",
--		  ib_conn, desc->rsc.fmr_pool);
--
--	ib_destroy_fmr_pool(desc->rsc.fmr_pool);
--	kfree(desc->rsc.page_vec);
--	kfree(desc);
--}
--
- static struct iser_fr_desc *
- iser_create_fastreg_desc(struct iser_device *device,
- 			 struct ib_pd *pd,
-@@ -667,13 +578,12 @@ static void iser_connect_error(struct rdma_cm_id *cma_id)
- 	u32 max_num_sg;
- 
- 	/*
--	 * FRs without SG_GAPS or FMRs can only map up to a (device) page per
--	 * entry, but if the first entry is misaligned we'll end up using two
--	 * entries (head and tail) for a single page worth data, so one
--	 * additional entry is required.
-+	 * FRs without SG_GAPS can only map up to a (device) page per entry,
-+	 * but if the first entry is misaligned we'll end up using two entries
-+	 * (head and tail) for a single page worth data, so one additional
-+	 * entry is required.
- 	 */
--	if ((attr->device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS) &&
--	    (attr->device_cap_flags & IB_DEVICE_SG_GAPS_REG))
-+	if (attr->device_cap_flags & IB_DEVICE_SG_GAPS_REG)
- 		reserved_mr_pages = 0;
- 	else
- 		reserved_mr_pages = 1;
-@@ -684,14 +594,8 @@ static void iser_connect_error(struct rdma_cm_id *cma_id)
- 		max_num_sg = attr->max_fast_reg_page_list_len;
- 
- 	sg_tablesize = DIV_ROUND_UP(max_sectors * SECTOR_SIZE, SZ_4K);
--	if (attr->device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS)
--		sup_sg_tablesize =
--			min_t(
--			 uint, ISCSI_ISER_MAX_SG_TABLESIZE,
--			 max_num_sg - reserved_mr_pages);
--	else
--		sup_sg_tablesize = ISCSI_ISER_MAX_SG_TABLESIZE;
--
-+	sup_sg_tablesize = min_t(uint, ISCSI_ISER_MAX_SG_TABLESIZE,
-+				 max_num_sg - reserved_mr_pages);
- 	iser_conn->scsi_sg_tablesize = min(sg_tablesize, sup_sg_tablesize);
- 	iser_conn->pages_per_mr =
- 		iser_conn->scsi_sg_tablesize + reserved_mr_pages;
-@@ -755,7 +659,7 @@ static void iser_route_handler(struct rdma_cm_id *cma_id)
- 	struct iser_cm_hdr req_hdr;
- 	struct iser_conn *iser_conn = (struct iser_conn *)cma_id->context;
- 	struct ib_conn *ib_conn = &iser_conn->ib_conn;
--	struct iser_device *device = ib_conn->device;
-+	struct ib_device *ib_dev = ib_conn->device->ib_device;
- 
- 	if (iser_conn->state != ISER_CONN_PENDING)
- 		/* bailout */
-@@ -766,14 +670,14 @@ static void iser_route_handler(struct rdma_cm_id *cma_id)
- 		goto failure;
- 
- 	memset(&conn_param, 0, sizeof conn_param);
--	conn_param.responder_resources = device->ib_device->attrs.max_qp_rd_atom;
-+	conn_param.responder_resources = ib_dev->attrs.max_qp_rd_atom;
- 	conn_param.initiator_depth     = 1;
- 	conn_param.retry_count	       = 7;
- 	conn_param.rnr_retry_count     = 6;
- 
- 	memset(&req_hdr, 0, sizeof(req_hdr));
- 	req_hdr.flags = ISER_ZBVA_NOT_SUP;
--	if (!device->remote_inv_sup)
-+	if (!iser_always_reg)
- 		req_hdr.flags |= ISER_SEND_W_INV_NOT_SUP;
- 	conn_param.private_data	= (void *)&req_hdr;
- 	conn_param.private_data_len = sizeof(struct iser_cm_hdr);
--- 
-1.8.3.1
+I still think something like I described in the drm/scheduler patch,
+which would allow us to take drm_modeset_locks in tdr path, would be a
+cleaner and more robust solution longer term. Forcing drivers to do
+their own modeset state looking just doesn't feel that awesome ... I
+guess that also depends upon how many other drivers have this problem.
 
+> > > IIRC, when we reset the reset of the
+> > > GPU, we disconnect the fences, and then re-attach them after a reset.
+> >
+> > Where is that code? Since I'm not sure how you can make that work
+> > without getting stuck in another kind of deadlock in tdr. But maybe
+> > the code has some clever trick to pull that off somehow.
+>
+> The GPU scheduler.  drm_sched_stop, drm_sched_resubmit_jobs, and
+> drm_sched_start.
+
+That seems to just be about the scheduler-internal fences. That
+tracking you kinda have to throw away and restart with a reset. But I
+don't think these are the fences visible to other places, like in
+dma_resv or drm_syncobj or wherever.
+-Daniel
+
+> Alex
+>
+>
+> > -Daniel
+> >
+> > >
+> > > Alex
+> > >
+> > > > -Daniel
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
