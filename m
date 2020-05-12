@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214651CF9FC
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 17:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE1CFA26
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 18:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgELP7V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 11:59:21 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:40687 "EHLO
+        id S1725924AbgELQJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 12:09:24 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45651 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726055AbgELP7V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 11:59:21 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from israelr@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 12 May 2020 18:59:01 +0300
+        with ESMTP id S1725851AbgELQJW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 12:09:22 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from israelr@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 12 May 2020 19:09:09 +0300
 Received: from rsws50.mtr.labs.mlnx. (rsws50.mtr.labs.mlnx [10.209.40.61])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04CFx12A019985;
-        Tue, 12 May 2020 18:59:01 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04CG991G007817;
+        Tue, 12 May 2020 19:09:09 +0300
 From:   Israel Rukshin <israelr@mellanox.com>
 To:     sagi@grimberg.me, jgg@mellanox.com, linux-rdma@vger.kernel.org,
         dledford@redhat.com, leon@kernel.org
 Cc:     maxg@mellanox.com, sergeygo@mellanox.com,
         Israel Rukshin <israelr@mellanox.com>
-Subject: [PATCH 1/4] IB/iser: Remove support for FMR memory registration
-Date:   Tue, 12 May 2020 18:58:59 +0300
-Message-Id: <1589299139-16088-1-git-send-email-israelr@mellanox.com>
+Subject: [PATCH] IB/iser: Remove support for FMR memory registration
+Date:   Tue, 12 May 2020 19:08:59 +0300
+Message-Id: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
 X-Mailer: git-send-email 1.8.4.3
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
