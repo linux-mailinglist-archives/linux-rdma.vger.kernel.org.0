@@ -2,252 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785741CFA9C
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 18:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47151CFBCB
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 19:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725950AbgELQ1Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 12:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgELQ1Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 12:27:16 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10A5C05BD09
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 09:27:15 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id v128so1915166oia.7
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 09:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MJbloyb8GeFV+8WTKCZZjFvi4tHQNahuAS+Pb3o2Kyk=;
-        b=YE9ZEB/csOO/qgzFHHZkD+kfc7F2OXh03OJ8P+gb/y34vODSSeNOtlafjQf9mkvp75
-         nYqfWl2OARG5rd4Cmhx1dVe8jvVR9/6+KZO4hv32d0sr8zCzIS96b3PZebL6xAWi2l30
-         aueBQw0FW2Mn2/EdEJItXdMN2tEisjXtwIGy0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MJbloyb8GeFV+8WTKCZZjFvi4tHQNahuAS+Pb3o2Kyk=;
-        b=uEgdkr95IHNkyZOTpnl9hIZ85gbgbM2qFtwoqBTqpLREYP0MEJbp2ApTLJZFh0TOnE
-         FfQN8uXMOieR9615+Lumi+6bV3AhQ9nlNAfmroi54UXtX06G0cVnpuPk8G0DNGT3S0eZ
-         EQfl1houFHVX2cP2WSpDW97SORhkVvRRjmAEuZGi99bqHGzF05+h1Vu3BrR+2W+BEt19
-         HPX0FJHr1HsA/0iceC8BrZlIhFjr9ucvJ2fyNDqKeDFoA8G9f+MIoMVrbzP98RLSGfO1
-         t5BFDwZCk+LSuZ4bzCdDRH0pbB/mBBRAjWCH07MmrVRFGaq5uYbfhdN/dN3XEEHX+Xxy
-         V7TQ==
-X-Gm-Message-State: AGi0PuZDQHiJSePwPrrbG3pqfY9iJ7tZBa6baMjIFM6q1knnovNjBI+S
-        FPImkmOESwMrE7YG6ZL8ECZ7s4Oxn0/7Cr90EI4rgg==
-X-Google-Smtp-Source: APiQypJU803JZeffGdUiKfSFxC4qEhXBDbbj5VZjPE9IPYrJYd5IqjMvmHgdml9yeEAH/819ES+YujXGuMcW2zkufnY=
-X-Received: by 2002:aca:3b41:: with SMTP id i62mr5799116oia.101.1589300834676;
- Tue, 12 May 2020 09:27:14 -0700 (PDT)
+        id S1728139AbgELRQi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 13:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726890AbgELRQi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 May 2020 13:16:38 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0302205ED;
+        Tue, 12 May 2020 17:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589303797;
+        bh=SS0M/SlQqI+Y1bhUmaexpW7pa3Ec+haCWgJf5iZwi1Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eQIosHg8e+SSpPlhGw+hqEE5an5/PH5ashdftLASo18cPY36oXXStblWE+SQ5ioVO
+         OZWHSoeGHQDnbzP2BR6Wrcct2NrYpyJelc0ulTGQznH+qk2FF0Rou7Hb+byDuCfk8y
+         Pqxz3mZgBHfjMy4wabST+xRha4Qn9l93lo3pUsv0=
+Date:   Tue, 12 May 2020 20:16:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Israel Rukshin <israelr@mellanox.com>
+Cc:     sagi@grimberg.me, jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, maxg@mellanox.com, sergeygo@mellanox.com
+Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
+Message-ID: <20200512171633.GO4814@unreal>
+References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
 MIME-Version: 1.0
-References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
- <20200512085944.222637-11-daniel.vetter@ffwll.ch> <879b127e-2180-bc59-f522-252416a7ac01@amd.com>
- <CAKMK7uF1c3R7DTsvRaBfzRVAx03Z+AiUnqdAzP=mt4d=KsoEgg@mail.gmail.com>
-In-Reply-To: <CAKMK7uF1c3R7DTsvRaBfzRVAx03Z+AiUnqdAzP=mt4d=KsoEgg@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 12 May 2020 18:27:03 +0200
-Message-ID: <CAKMK7uGUBqcwo56p3f+8B=ntvuYZ8WtKaFxAPJ_D=H7qdDsGqQ@mail.gmail.com>
-Subject: Re: [RFC 10/17] drm/amdgpu: s/GFP_KERNEL/GFP_ATOMIC in scheduler code
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 12, 2020 at 6:20 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrot=
-e:
+On Tue, May 12, 2020 at 07:08:59PM +0300, Israel Rukshin wrote:
+> FMR is not supported on most recent RDMA devices (that use fast memory
+> registration mechanism). Also, FMR was recently removed from NFS/RDMA
+> ULP.
 >
-> On Tue, May 12, 2020 at 5:56 PM Christian K=C3=B6nig
-> <christian.koenig@amd.com> wrote:
-> >
-> > Hui what? Of hand that doesn't looks correct to me.
->
-> It's not GFP_ATOMIC, it's just that GFP_ATOMIC is the only shotgun we
-> have to avoid direct reclaim. And direct reclaim might need to call
-> into your mmu notifier, which might need to wait on a fence, which is
-> never going to happen because your scheduler is stuck.
->
-> Note that all the explanations for the deadlocks and stuff I'm trying
-> to hunt here are in the other patches, the driver ones are more
-> informational, so I left these here rather bare-bones to shut up
-> lockdep so I can get through the entire driver and all major areas
-> (scheduler, reset, modeset code).
->
-> Now you can do something like GFP_NOFS, but the only reasons that
-> works is because the direct reclaim annotations
-> (fs_reclaim_acquire/release) only validates against __GFP_FS, and not
-> against any of the other flags. We should probably add some lockdep
-> annotations so that __GFP_RECLAIM is annotated against the
-> __mmu_notifier_invalidate_range_start_map lockdep map I've recently
-> added for mmu notifiers. End result (assuming I'm not mixing anything
-> up here, this is all rather tricky stuff): GFP_ATOMIC is the only kind
-> of memory allocation you can do.
->
-> > Why the heck should this be an atomic context? If that's correct
-> > allocating memory is the least of the problems we have.
->
-> It's not about atomic, it's !__GFP_RECLAIM. Which more or less is
-> GFP_ATOMIC. Correct fix is probably GFP_ATOMIC + a mempool for the
-> scheduler fixes so that if you can't allocate them for some reason,
-> you at least know that your scheduler should eventually retire retire
-> some of them, which you can then pick up from the mempool to guarantee
-> forward progress.
->
-> But I really didn't dig into details of the code, this was just a quick h=
-ack.
->
-> So sleeping and taking all kinds of locks (but not all, e.g.
-> dma_resv_lock and drm_modeset_lock are no-go) is still totally ok.
-> Just think
->
-> #define GFP_NO_DIRECT_RECLAIM GFP_ATOMIC
+> Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> ---
+>  drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
+>  drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
+>  drivers/infiniband/ulp/iser/iser_memory.c    | 188 ++-------------------------
+>  drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +++---------------
+>  4 files changed, 40 insertions(+), 372 deletions(-)
 
-Maybe slightly different take that's easier to understand: You've
-already made the observation that anything holding adev->notifier_lock
-isn't allowed to allocate memory (well GFP_ATOMIC is ok, like here).
+Can we do an extra step and remove FMR from srp too?
 
-Only thing I'm adding is that the situation is a lot worse. Plus the
-lockdep annotations to help us catch these issues.
--Daniel
-
-> Cheers, Daniel
->
-> >
-> > Regards,
-> > Christian.
-> >
-> > Am 12.05.20 um 10:59 schrieb Daniel Vetter:
-> > > My dma-fence lockdep annotations caught an inversion because we
-> > > allocate memory where we really shouldn't:
-> > >
-> > >       kmem_cache_alloc+0x2b/0x6d0
-> > >       amdgpu_fence_emit+0x30/0x330 [amdgpu]
-> > >       amdgpu_ib_schedule+0x306/0x550 [amdgpu]
-> > >       amdgpu_job_run+0x10f/0x260 [amdgpu]
-> > >       drm_sched_main+0x1b9/0x490 [gpu_sched]
-> > >       kthread+0x12e/0x150
-> > >
-> > > Trouble right now is that lockdep only validates against GFP_FS, whic=
-h
-> > > would be good enough for shrinkers. But for mmu_notifiers we actually
-> > > need !GFP_ATOMIC, since they can be called from any page laundering,
-> > > even if GFP_NOFS or GFP_NOIO are set.
-> > >
-> > > I guess we should improve the lockdep annotations for
-> > > fs_reclaim_acquire/release.
-> > >
-> > > Ofc real fix is to properly preallocate this fence and stuff it into
-> > > the amdgpu job structure. But GFP_ATOMIC gets the lockdep splat out o=
-f
-> > > the way.
-> > >
-> > > v2: Two more allocations in scheduler paths.
-> > >
-> > > Frist one:
-> > >
-> > >       __kmalloc+0x58/0x720
-> > >       amdgpu_vmid_grab+0x100/0xca0 [amdgpu]
-> > >       amdgpu_job_dependency+0xf9/0x120 [amdgpu]
-> > >       drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
-> > >       drm_sched_main+0xf9/0x490 [gpu_sched]
-> > >
-> > > Second one:
-> > >
-> > >       kmem_cache_alloc+0x2b/0x6d0
-> > >       amdgpu_sync_fence+0x7e/0x110 [amdgpu]
-> > >       amdgpu_vmid_grab+0x86b/0xca0 [amdgpu]
-> > >       amdgpu_job_dependency+0xf9/0x120 [amdgpu]
-> > >       drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
-> > >       drm_sched_main+0xf9/0x490 [gpu_sched]
-> > >
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: linaro-mm-sig@lists.linaro.org
-> > > Cc: linux-rdma@vger.kernel.org
-> > > Cc: amd-gfx@lists.freedesktop.org
-> > > Cc: intel-gfx@lists.freedesktop.org
-> > > Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > ---
-> > >   drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 2 +-
-> > >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c   | 2 +-
-> > >   drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c  | 2 +-
-> > >   3 files changed, 3 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/=
-drm/amd/amdgpu/amdgpu_fence.c
-> > > index d878fe7fee51..055b47241bb1 100644
-> > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-> > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-> > > @@ -143,7 +143,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, s=
-truct dma_fence **f,
-> > >       uint32_t seq;
-> > >       int r;
-> > >
-> > > -     fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_KERNEL);
-> > > +     fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_ATOMIC);
-> > >       if (fence =3D=3D NULL)
-> > >               return -ENOMEM;
-> > >
-> > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/dr=
-m/amd/amdgpu/amdgpu_ids.c
-> > > index fe92dcd94d4a..fdcd6659f5ad 100644
-> > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > > @@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm=
- *vm,
-> > >       if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_wait))
-> > >               return amdgpu_sync_fence(sync, ring->vmid_wait, false);
-> > >
-> > > -     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_K=
-ERNEL);
-> > > +     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_A=
-TOMIC);
-> > >       if (!fences)
-> > >               return -ENOMEM;
-> > >
-> > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/d=
-rm/amd/amdgpu/amdgpu_sync.c
-> > > index b87ca171986a..330476cc0c86 100644
-> > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
-> > > @@ -168,7 +168,7 @@ int amdgpu_sync_fence(struct amdgpu_sync *sync, s=
-truct dma_fence *f,
-> > >       if (amdgpu_sync_add_later(sync, f, explicit))
-> > >               return 0;
-> > >
-> > > -     e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_KERNEL);
-> > > +     e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_ATOMIC);
-> > >       if (!e)
-> > >               return -ENOMEM;
-> > >
-> >
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Thanks
