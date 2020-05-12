@@ -2,206 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90751CF123
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 11:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1801CF2E5
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 May 2020 12:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbgELJIz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 05:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S1729247AbgELKwF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 06:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729341AbgELJIw (ORCPT
+        by vger.kernel.org with ESMTP id S1726193AbgELKwF (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 May 2020 05:08:52 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAFCC061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 02:08:51 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f134so8706027wmf.1
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 02:08:51 -0700 (PDT)
+        Tue, 12 May 2020 06:52:05 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF606C061A0C
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 03:52:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e1so840506wrt.5
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 03:52:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jzP01IXQ5eGzmClfzRrzEt9a5pXaL37GUGmE/8HDFqg=;
-        b=ZpO+oii6BJ0922ZWi/doBJJdNU8MgvEFRJGPPrgqvjItQyjxIAEt6nldriLjMMSi6E
-         cbddUHWC+jMAlDoWDHnFidnZzW7kAgZtRQn4SlOFf8XMusi/It2bVulVLr2VvFLt+29A
-         b6wKDwd90FXsjiUfeuJIVZ2kW6M1QNATTTUqo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H7/1Er8ckyl9D2Gtk4dy895B+W3bpyoofvkGrUU9mEE=;
+        b=DNXmze+0w3AndKk+oS2+8sEWfXkJSZnoWcGk8mJegW44HayRawHQh2k7XaSpPQai11
+         P8QypOVy332HwAQeGE6NAVm70ScsVPgsuXg1pOoeCBpidcU7sJR/I8by5qDPgWjMLDoI
+         YTXgO3V8jPBu7WqHz+A8w4yLZJze8Kzpv0ApP6qBTQUG7GYyhDgvPY0gEVHrevID0CC2
+         nG9nGc2I0+1dJvZivVZByzfX/uSCagpcODa64zHAQ/aK1FBtN/lcCDU54E1as1qKe+lM
+         TbKtxB5zRL1iD5e39rkbXn7BAJ/tfnR/oRDyCfGNEqcAmtoCOiBkmQL/LtbSGrbem3eW
+         92Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=jzP01IXQ5eGzmClfzRrzEt9a5pXaL37GUGmE/8HDFqg=;
-        b=KXqxYHTNHb24PhvCV+6vw3stBzj4FwpX+JTM4ZEPNyt5LDy6EcZOTfPyxTtHlp2gl+
-         80O7qFyeLGi878USb3lcbsScooO/W6A1ovdYgLIYlgX+UhIbl83Sm53XH9UIThRgd5gQ
-         CAXHi9fuNYTmwK46BgFXQUBbdsX1OZ1L16+6EKsLqJDKVVRwAfOvxk1eDpXllWPBhJFo
-         o4Nm3kOmb/ieeAbUs8VgRibNmWTBmIQ79c+MGxZU14A9cQiEn9SLpOd/5i+3g2O2gJQm
-         FfjMBIvSWCgzQo6VDDne63k9rX6amO6H9AZZXqL6mS2hXhhIyr1t0SsbimRm9z0Cx9ch
-         8KzQ==
-X-Gm-Message-State: AGi0PuaSKS8RSfevGL+GRyIhHU2MdrvOPcrJzNpMpcTkbWKKIotZcVTf
-        CwRaXsPCuLDIEQoGKGi7NjzQvg==
-X-Google-Smtp-Source: APiQypIhpsRgAW4Qev4lJv2wjqsih/+HjYzRewf0be+k5nEHYH6mVDG9QApT/mcRCdYD95LJWrPJxQ==
-X-Received: by 2002:a1c:b604:: with SMTP id g4mr12839616wmf.103.1589274530333;
-        Tue, 12 May 2020 02:08:50 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z1sm30605053wmf.15.2020.05.12.02.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 02:08:49 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:08:47 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [RFC 02/17] dma-fence: basic lockdep annotations
-Message-ID: <20200512090847.GF206103@phenom.ffwll.local>
-Mail-Followup-To: Chris Wilson <chris@chris-wilson.co.uk>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
- <20200512085944.222637-3-daniel.vetter@ffwll.ch>
- <158927426244.15653.14406159524439944950@build.alporthouse.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H7/1Er8ckyl9D2Gtk4dy895B+W3bpyoofvkGrUU9mEE=;
+        b=qvwxS7iXcL2LC2n1124+lmB5OtZHbIDVcM8bOg7i980Fqjr6SPHCrlYTuMdfMD1/9Q
+         QJHszGAl3k9KqJccvAanZ4zJJfGOzHlsjKTdM38SFUZOejun2LGcTELoP676vUKGarAh
+         FIX3SB7k+N6gtAg1nJEiBak/greyPCQgPPE+RKA8s1awgHnlkeoz3Lq6HxWEQep7SVee
+         DdBgRdPmkzMSupnW/PEHEMTLB6Pz6GrHZ/fWAgfinAD7a1uOia9W19fxpCOfIBGT9ENy
+         KUcl/vp3cP3u/kmdnfT/OPYRNmXFVQ2y9o3U1uElto/SNc64sG3GEMGQnqMquhVwJh5F
+         8Y+g==
+X-Gm-Message-State: AGi0PuZfUu8DybQTtOsD2TkpLE4PomDEi7MhX0xxNxw8dwlHA3jDmnyX
+        SKsHchCuKDJjvpPHSkzkc+wHCDq0ytVKXgWWf9s=
+X-Google-Smtp-Source: APiQypIBFDuLOQRwVEcEjoVD0HYmVWuFYk/fL5mX++lrClk5NYX5KEtDMvRcf7bBOSG32q6aHUawxufP3oOLkX+L2k8=
+X-Received: by 2002:a5d:4284:: with SMTP id k4mr24009343wrq.284.1589280723186;
+ Tue, 12 May 2020 03:52:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <158927426244.15653.14406159524439944950@build.alporthouse.com>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+References: <1589202728-12365-1-git-send-email-yishaih@mellanox.com>
+ <a46dc0e5-7261-0bf1-9dff-1c62644c3c73@amazon.com> <ac69f0fa-e177-62c9-6fe8-5b0700d97712@dev.mellanox.co.il>
+ <1ada043f-b9c7-b961-d35b-9461f78ca9d2@amazon.com>
+In-Reply-To: <1ada043f-b9c7-b961-d35b-9461f78ca9d2@amazon.com>
+From:   Alex Rosenbaum <rosenbaumalex@gmail.com>
+Date:   Tue, 12 May 2020 13:51:50 +0300
+Message-ID: <CAFgAxU9Q79Xh_C_-ROXOJiGf_NAMqb0Hc0L4qay_hWB_7qcfNA@mail.gmail.com>
+Subject: Re: [PATCH RFC rdma-core] Verbs: Introduce import verbs for device,
+ PD, MR
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Yishai Hadas <yishaih@dev.mellanox.co.il>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        jgg@mellanox.com, Maor Gottlieb <maorg@mellanox.com>,
+        "Alex @ Mellanox" <Alexr@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 12, 2020 at 10:04:22AM +0100, Chris Wilson wrote:
-> Quoting Daniel Vetter (2020-05-12 09:59:29)
-> > Design is similar to the lockdep annotations for workers, but with
-> > some twists:
-> > 
-> > - We use a read-lock for the execution/worker/completion side, so that
-> >   this explicit annotation can be more liberally sprinkled around.
-> >   With read locks lockdep isn't going to complain if the read-side
-> >   isn't nested the same way under all circumstances, so ABBA deadlocks
-> >   are ok. Which they are, since this is an annotation only.
-> > 
-> > - We're using non-recursive lockdep read lock mode, since in recursive
-> >   read lock mode lockdep does not catch read side hazards. And we
-> >   _very_ much want read side hazards to be caught. For full details of
-> >   this limitation see
-> > 
-> >   commit e91498589746065e3ae95d9a00b068e525eec34f
-> >   Author: Peter Zijlstra <peterz@infradead.org>
-> >   Date:   Wed Aug 23 13:13:11 2017 +0200
-> > 
-> >       locking/lockdep/selftests: Add mixed read-write ABBA tests
-> > 
-> > - To allow nesting of the read-side explicit annotations we explicitly
-> >   keep track of the nesting. lock_is_held() allows us to do that.
-> > 
-> > - The wait-side annotation is a write lock, and entirely done within
-> >   dma_fence_wait() for everyone by default.
-> > 
-> > - To be able to freely annotate helper functions I want to make it ok
-> >   to call dma_fence_begin/end_signalling from soft/hardirq context.
-> >   First attempt was using the hardirq locking context for the write
-> >   side in lockdep, but this forces all normal spinlocks nested within
-> >   dma_fence_begin/end_signalling to be spinlocks. That bollocks.
-> > 
-> >   The approach now is to simple check in_atomic(), and for these cases
-> >   entirely rely on the might_sleep() check in dma_fence_wait(). That
-> >   will catch any wrong nesting against spinlocks from soft/hardirq
-> >   contexts.
-> > 
-> > The idea here is that every code path that's critical for eventually
-> > signalling a dma_fence should be annotated with
-> > dma_fence_begin/end_signalling. The annotation ideally starts right
-> > after a dma_fence is published (added to a dma_resv, exposed as a
-> > sync_file fd, attached to a drm_syncobj fd, or anything else that
-> > makes the dma_fence visible to other kernel threads), up to and
-> > including the dma_fence_wait(). Examples are irq handlers, the
-> > scheduler rt threads, the tail of execbuf (after the corresponding
-> > fences are visible), any workers that end up signalling dma_fences and
-> > really anything else. Not annotated should be code paths that only
-> > complete fences opportunistically as the gpu progresses, like e.g.
-> > shrinker/eviction code.
-> > 
-> > The main class of deadlocks this is supposed to catch are:
-> > 
-> > Thread A:
-> > 
-> >         mutex_lock(A);
-> >         mutex_unlock(A);
-> > 
-> >         dma_fence_signal();
-> > 
-> > Thread B:
-> > 
-> >         mutex_lock(A);
-> >         dma_fence_wait();
-> >         mutex_unlock(A);
-> > 
-> > Thread B is blocked on A signalling the fence, but A never gets around
-> > to that because it cannot acquire the lock A.
-> > 
-> > Note that dma_fence_wait() is allowed to be nested within
-> > dma_fence_begin/end_signalling sections. To allow this to happen the
-> > read lock needs to be upgraded to a write lock, which means that any
-> > other lock is acquired between the dma_fence_begin_signalling() call and
-> > the call to dma_fence_wait(), and still held, this will result in an
-> > immediate lockdep complaint. The only other option would be to not
-> > annotate such calls, defeating the point. Therefore these annotations
-> > cannot be sprinkled over the code entirely mindless to avoid false
-> > positives.
-> > 
-> > v2: handle soft/hardirq ctx better against write side and dont forget
-> > EXPORT_SYMBOL, drivers can't use this otherwise.
-> > 
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linaro-mm-sig@lists.linaro.org
-> > Cc: linux-rdma@vger.kernel.org
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: intel-gfx@lists.freedesktop.org
-> > Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Christian König <christian.koenig@amd.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >  drivers/dma-buf/dma-fence.c | 53 +++++++++++++++++++++++++++++++++++++
-> >  include/linux/dma-fence.h   | 12 +++++++++
-> >  2 files changed, 65 insertions(+)
-> > 
-> > diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-> > index 6802125349fb..d5c0fd2efc70 100644
-> > --- a/drivers/dma-buf/dma-fence.c
-> > +++ b/drivers/dma-buf/dma-fence.c
-> > @@ -110,6 +110,52 @@ u64 dma_fence_context_alloc(unsigned num)
-> >  }
-> >  EXPORT_SYMBOL(dma_fence_context_alloc);
-> >  
-> > +#ifdef CONFIG_LOCKDEP
-> > +struct lockdep_map     dma_fence_lockdep_map = {
-> > +       .name = "dma_fence_map"
-> > +};
-> 
-> Not another false global sharing lockmap.
+On Tue, May 12, 2020 at 11:24 AM Gal Pressman <galpress@amazon.com> wrote:
+>
+> On 11/05/2020 18:35, Yishai Hadas wrote:
+> > On 5/11/2020 5:31 PM, Gal Pressman wrote:
+> >> On 11/05/2020 16:12, Yishai Hadas wrote:
+> >>> Introduce import verbs for device, PD, MR, it enables processes to share
+> >>> their ibv_contxet and then share PD and MR that is associated with.
+> >>>
+> >>> A process is creating a device and then uses some of the Linux systems
+> >>> calls to dup its 'cmd_fd' member which lets other process to obtain
+> >>> owning on.
+> >>>
+> >>> Once other process obtains the 'cmd_fd' it can call ibv_import_device()
+> >>> which returns an ibv_contxet on the original RDMA device.
+> >>>
+> >>> On the imported device there is an option to import PD(s) and MR(s) to
+> >>> achieve a sharing on those objects.
+> >>>
+> >>> This is the responsibility of the application to coordinate between all
+> >>> ibv_context(s) that use the imported objects, such that once destroy is
+> >>> done no other process can touch the object except for unimport. All
+> >>> users of the context must collaborate to ensure this.
+> >>>
+> >>> A matching unimport verbs where introduced for PD and MR, for the device
+> >>> the ibv_close_device() API should be used.
+> >>>
+> >>> Detailed man pages are introduced as part of this RFC patch to clarify
+> >>> the expected usage and notes.
+> >>>
+> >>> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> >>
+> >> Hi Yishai,
+> >>
+> >> A few questions:
+> >> Can you please explain the use case? I remember there was a discussion on the
+> >> previous shared PD kernel submission (by Yuval and Shamir) but I'm not sure if
+> >> there was a conclusion.
+> >>
+> >
+> > The expected flow and use case are as follows.
+> >
+> > One process creates an ibv_context by calling ibv_open_device() and then enables
+> > owning of its 'cmd_fd' with other processes by some Linux system call, (see man
+> > page as part of this RFC for some alternatives). Then other process that owns
+> > this 'cmd_fd' will be able to have its own ibv_context for the same RDMA device
+> > by calling ibv_import_device().
+> >
+> > At that point those processes really work on same kernel context and PD(s),
+> > MR(s) and potentially other objects in the future can be shared by calling
+> > ibv_import_pd()/mr() assuming that the initiator process let's the other ones
+> > know the kernel handle value.
+> >
+> > Once a PD and MR which points to this PD were shared it enables a memory that
+> > was registered by one process to be used by others with the matching lkey/rkey
+> > for RDMA operations.
+>
+> Thanks Yishai.
+> Which type of applications need this kind of functionality?
 
-It's a global contract, it needs a global lockdep map. And yes a big
-reason for the motivation here is that i915-gem has a tremendous urge to
-just redefine all these global locks to fit to some local interpretation
-of what's going on.
+Any solution which is a single business logic based on multi-process
+design needs this.
+Example include NGINX, with TCP load balancing, sharing the RSS
+indirection table with RQ per process.
+HPC frameworks with multi-rank(process) solution on single hosts. UCX
+can share IB resources using the shared PD and can help dispatch data
+to multiple processes/MR's in single RDMA operation.
+Also, we have solutions in which the primary processes registered a
+large shared memory range, and each worker process spawned will create
+a private QP on the shared PD, and use the shared MR to save the
+registration time per-process.
 
-That doesn't make the resulting real&existing deadlocks go away.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> >> Could you please elaborate more how the process cleanup flow (e.g killed
+> >> process) is going to change? I know it's a very broad question but I'm just
+> >> trying to get the general idea.
+> >>
+> >
+> > For now the model in those suggested APIs is that cleanup will be done or
+> > explicitly by calling the relevant destroy command or alternatively once all
+> > processes that own the cmd_fd will be closed.
+> >
+> > From kernel side there is only one object and its ref count is not increased as
+> > part of the import_xxx() functions, see in the man pages some notes regarding
+> > this point.
+>
+> ACK.
+>
+> >> What's expected to happen in a case where we have two processes P1 & P2, both
+> >> use a shared PD, but separate MRs and QPs (created under the same shared PD).
+> >> Now when an RDMA read request arrives at P2's QP, but refers to an MR of P1
+> >> (which was not imported, but under the same PD), how would you expect the device
+> >> to handle that?
+> >>
+> >
+> > The processes are behaving almost like 2 threads each have a QP and an MR, if
+> > you mix them around it will work just like any buggy software.
+> > In this case I would expect the device to scatter to the MR that was pointed by
+> > the RDMA read request, any reason that it will behave differently ?
+>
+> I meant that the process is the RDMA read responder, not requester (although
+> it's very similar), are we OK with one process accessing memory of a different
+> process even though the MR isn't exported?
+>
+> I'm wondering whether there are any assumption about the "security" model of
+> this feature, or are both processes considered exactly the same. Especially
+> since both the kernel and the device aren't aware of the shared resources.
+
+The RDMA security model is bound to the protection domain, so once the
+application logic shared it's PD (via the 'handle') it shared extended
+the security scope.
+
+> It's a bit confusing that some of the resources are shared while others aren't
+> though all created using the same PD.
+
+In this RFC, the shared resource are only stateless resource. Just
+import the resource, based on handle, and you have access.
+Current design doesn't add any shared state for resources running on
+different process memory spaces, objects like QP, CQ, need user-space
+state shared to be really usable between processes ... hopefully some
+days we'll get their.
+
+Alex
