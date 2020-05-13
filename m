@@ -2,115 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A041D208B
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 23:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5D71D2094
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 23:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgEMVAv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 17:00:51 -0400
-Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:51208 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725977AbgEMVAu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 17:00:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id CA6F0182CED34;
-        Wed, 13 May 2020 21:00:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3871:3874:4250:4321:4385:5007:6742:6743:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14659:14721:21080:21627:21987:30012:30054:30059:30062:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: mist41_5dde648048f06
-X-Filterd-Recvd-Size: 3554
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 13 May 2020 21:00:44 +0000 (UTC)
-Message-ID: <0ee5acfaca4cf32d4efad162046b858981a4dae3.camel@perches.com>
-Subject: Re: [PATCH 20/33] ipv4: add ip_sock_set_recverr
-From:   Joe Perches <joe@perches.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Date:   Wed, 13 May 2020 14:00:43 -0700
-In-Reply-To: <20200513062649.2100053-21-hch@lst.de>
-References: <20200513062649.2100053-1-hch@lst.de>
-         <20200513062649.2100053-21-hch@lst.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1726015AbgEMVCw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 17:02:52 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57436 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgEMVCw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 17:02:52 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DKrGE5066369;
+        Wed, 13 May 2020 21:02:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=/3boRfPP9/nbgsqYwmPrKIYlI9iF/ok9lCvoAeyY0C8=;
+ b=oeTy6T3zpL4mid5izCz7pT+UpH2DE7F4GbmYlPnijWMIOmwl1oLne/oN8vZWIXNpwjqd
+ BOfjNNdQnghQVw32Y/8iDTTBJF5tQjKg8y2+AHV+myeNNb4vueg+1X0uKlF3NXoxjO/T
+ ekycOEODQ2IFMlRLc4iT774jd8MWSg8/OZ8yTtCyGdNaKj3WGtaELuumPpwdcYNRp02C
+ tKs/mxGz/G3trHiYHz+eh9PIRCY3rehwMfJHlUfPy5eVTP+JCIEPshTB0pKvsktVgp04
+ S73lasR+gRwRsXIl8YtzYsLKwK9psYtPLUboRfxnJbADGsAW5qRKYrzEOj9Pk4zusm+R Ww== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3100xwes3a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 May 2020 21:02:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04DL2avo119257;
+        Wed, 13 May 2020 21:02:46 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3100ymv2q0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 May 2020 21:02:46 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04DL2juF006783;
+        Wed, 13 May 2020 21:02:45 GMT
+Received: from dhcp-10-159-252-198.vpn.oracle.com (/10.159.252.198)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 May 2020 14:02:45 -0700
+Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Kaike Wan <kaike.wan@intel.com>,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+References: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
+ <1588876487-5781-2-git-send-email-divya.indi@oracle.com>
+ <20200508000809.GM26002@ziepe.ca>
+ <33fc99e2-e9fc-3c8c-e47f-41535f514c2d@oracle.com>
+ <20200513150021.GD29989@ziepe.ca>
+From:   Divya Indi <divya.indi@oracle.com>
+Message-ID: <c761da30-3663-4932-dd72-3501f15c0197@oracle.com>
+Date:   Wed, 13 May 2020 14:02:01 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200513150021.GD29989@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 suspectscore=11
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005130178
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9620 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 lowpriorityscore=0
+ suspectscore=11 mlxlogscore=999 clxscore=1015 cotscore=-2147483648
+ mlxscore=0 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005130177
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2020-05-13 at 08:26 +0200, Christoph Hellwig wrote:
-> Add a helper to directly set the IP_RECVERR sockopt from kernel space
-> without going through a fake uaccess.
+Hi Jason,
 
-This seems used only with true as the second arg.
-Is there reason to have that argument at all?
+Please find my comments inline - 
 
-> diff --git a/include/net/ip.h b/include/net/ip.h
-[]
-> @@ -767,5 +767,6 @@ static inline bool inetdev_valid_mtu(unsigned int mtu)
->  
->  void ip_sock_set_tos(struct sock *sk, int val);
->  void ip_sock_set_freebind(struct sock *sk, bool val);
-> +void ip_sock_set_recverr(struct sock *sk, bool val);
->  
->  #endif	/* _IP_H */
-> diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
-> index 0c40887a817f8..9abecc3195520 100644
-> --- a/net/ipv4/ip_sockglue.c
-> +++ b/net/ipv4/ip_sockglue.c
-> @@ -589,6 +589,16 @@ void ip_sock_set_freebind(struct sock *sk, bool val)
->  }
->  EXPORT_SYMBOL(ip_sock_set_freebind);
->  
-> +void ip_sock_set_recverr(struct sock *sk, bool val)
-> +{
-> +	lock_sock(sk);
-> +	inet_sk(sk)->recverr = val;
-> +	if (!val)
-> +		skb_queue_purge(&sk->sk_error_queue);
-> +	release_sock(sk);
-> +}
-> +EXPORT_SYMBOL(ip_sock_set_recverr);
-> +
->  /*
->   *	Socket option code for IP. This is the end of the line after any
->   *	TCP,UDP etc options on an IP socket.
-> diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
-> index 562ea36c96b0f..1b87b8a9ff725 100644
-> --- a/net/rxrpc/local_object.c
-> +++ b/net/rxrpc/local_object.c
-> @@ -171,13 +171,7 @@ static int rxrpc_open_socket(struct rxrpc_local *local, struct net *net)
->  		/* Fall through */
->  	case AF_INET:
->  		/* we want to receive ICMP errors */
-> -		opt = 1;
-> -		ret = kernel_setsockopt(local->socket, SOL_IP, IP_RECVERR,
-> -					(char *) &opt, sizeof(opt));
-> -		if (ret < 0) {
-> -			_debug("setsockopt failed");
-> -			goto error;
-> -		}
-> +		ip_sock_set_recverr(local->socket->sk, true);
->  
->  		/* we want to set the don't fragment bit */
->  		opt = IP_PMTUDISC_DO;
+On 5/13/20 8:00 AM, Jason Gunthorpe wrote:
+> On Mon, May 11, 2020 at 02:26:30PM -0700, Divya Indi wrote:
+>>>> @@ -1123,6 +1156,18 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+>>>>  
+>>>>  	send_buf = query->mad_buf;
+>>>>  
+>>>> +	/*
+>>>> +	 * Make sure the IB_SA_NL_QUERY_SENT flag is set before
+>>>> +	 * processing this query. If flag is not set, query can be accessed in
+>>>> +	 * another context while setting the flag and processing the query will
+>>>> +	 * eventually release it causing a possible use-after-free.
+>>>> +	 */
+>>> This comment doesn't really make sense, flags insige the memory being
+>>> freed inherently can't prevent use after free.
+>> I can definitely re-phrase here to make things clearer. But, the idea here is
+>> in the unlikely/rare case where a response for a query comes in before the flag has been
+>> set in ib_nl_make_request, we want to wait for the flag to be sent before proceeding. 
+>> The response handler will eventually release the query so this wait avoids that if the flag has not been set
+>> else 
+>> 	"query->flags |= IB_SA_NL_QUERY_SENT;" 
+>> will be accessing a query which was freed due to the above mentioned race.
+>>
+>> It is unlikely since getting a response => We have actually sent out the query to ibacm.
+>>
+>> How about this -
+>>
+>> "Getting a response is indicative of having sent out the query, but in an unlikely race when 
+>> the response comes in before setting IB_SA_NL_QUERY_SENT, we need to wait till the flag is set to
+>> avoid accessing a query that has been released."
+> It still makes no sense, a flag that is set before freeing the memory
+> is fundamentally useless to prevent races.
 
+Here the race is -
+
+1. ib_nl_send_msg()
+2. query->flags |= IB_SA_NL_QUERY_SENT
+3. return;
+
+-------------
+
+response_handler() {
+wait till flag is set.
+....
+kfree(query);
+
+}
+
+Here, if the response handler was called => Query was sent
+and flag should have been set. However if response handler kicks in
+before line 2, we want to wait and make sure the flag is set and
+then free the query.
+
+Ideally after ib_nl_send_msg, we should not be accessing the query
+because we can be getting a response/timeout asynchronously and cant be
+sure when. 
+
+The only places we access a query after it is successfully sent [response handler getting called
+=> sending was successful] -
+1. ib_nl_request_timeout
+2. While setting the flag.
+
+1. is taken care of because the request list access is protected by a lock
+and whoever gets the lock first deletes it from the request list and
+hence we can only have the response handler OR the timeout handler operate on the
+query.
+
+2. To handle this is why we wait in the response handler. Once the flag is
+set we are no longer accessing the query and hence safe to release it.
+
+I have modified the comment for v2 as follows -
+
+      /*
++        * In case of a quick response ie when a response comes in before
++        * setting IB_SA_NL_QUERY_SENT, we can have an unlikely race where the
++        * response handler will release the query, but we can still access the
++        * freed query while setting the flag.
++        * Hence, before proceeding and eventually releasing the query -
++        * wait till the flag is set. The flag should be set soon since getting
++        * a response is indicative of having successfully sent the query.
++        */
+
+
+Thanks,
+Divya
+
+>
+> Jason
