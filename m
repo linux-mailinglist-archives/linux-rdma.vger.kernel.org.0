@@ -2,94 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11751D1D9C
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 20:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733021D1DBC
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 20:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389455AbgEMShy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 14:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732218AbgEMShx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 14:37:53 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFA4B205CB;
-        Wed, 13 May 2020 18:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589395074;
-        bh=N0Mkr91uJ4WFqvYgVPvbeXAxf/CmnN7V/tGMkMy9eUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZoZ5HyPJwHw3fqJshTe600mvKEtOX5aa4xZjq30yWoixpbTVmcc9mPwTI+xJLJaxH
-         KeoBKJgab0H0zOhmif5fNLNMWaQKreDHBmi/YrBxq8h/g2r3/hS03F8O0NVJYif467
-         oJ0lUDFf9QBvrVK2Ss3LjJ7ETE2R8ht8l2KZs1+U=
-Date:   Wed, 13 May 2020 21:37:49 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        id S2390215AbgEMSnT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 14:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389724AbgEMSnS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 14:43:18 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EAFC061A0F
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 11:43:18 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f189so317188qkd.5
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 11:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NXrvQNeC1Xj02nUw5miKT8fMXE+WzxSqq6EctGKkuNI=;
+        b=nWD1ls946alpVxKN77zxbZUZ+HrnneaGobCxCRt9Tk0xSC4PPClNiqgypoIR+KfoIU
+         E5qbMtYATFCLpqLg6AJjVKw9p1ikx2kluRuRlUGk7YSSRedH6so1htbOO0ZdrXD0mpDX
+         5n+Xa1Gtncgceoo3FslAH6if/VZwBcZP86caVTGnJbVc3n3Ccj8Bpcyj3KSuvgbgpGz5
+         +WOcNCKg/sw14OrUMr2UfEJ4j4iTa3ycYdGXrQRpUwus6Z8o0sYQXJ8cSoQ2L7akZPqG
+         2C98jEGaAlMvyFiVjM+s6XBo3JAsLh0oBbUq5RA46aD7LxRjuP1yW8Fhf+EOtjDI6hN6
+         YKJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NXrvQNeC1Xj02nUw5miKT8fMXE+WzxSqq6EctGKkuNI=;
+        b=quKybNWTPzaS19yPcElOiiIr3g8ZQWpvoimB89NFl1f5VjhRIjs+8xRppCZx06W2nK
+         j2fSterOO0OzV3JSDeSvIgBDFW2zIn6mIe2U8UX+hqyv5umXNhpzi78/G9n1fq0YR3aJ
+         rsU5QU/ZOUJOtYGp60cAP58NwwOmxBzthaUAvlg47SAtYRyinReGWp5c8GlU+xT5B/Y2
+         bYefslLO6kgHFv0A+tNjmm9LXO7Jm4F+tiaRPXJ86qH/GeL3o8DEkuZWllQ4XyFc7B56
+         q7C3Cr/D9r1aqSXz5GpRi9hb2r+eJPawOmu3yoyIDB/Lj4sfYupHa3u9tot57mDqDwm3
+         lHJg==
+X-Gm-Message-State: AOAM532arW/ylcES6wKrTrVygN+Y0ou+/OCZZIp6obUJrbUFDuk5QV+8
+        UaeY/BbhEOyQ9ePrB/TQrwNdxpMi3To=
+X-Google-Smtp-Source: ABdhPJzgpvkBE4/Qkgv1I7UVhNmN6oXYlL2M9jIHRzZyiQC7ufYITkarA0NxI/DhgMaJZC05+rk3qA==
+X-Received: by 2002:a37:6656:: with SMTP id a83mr1062345qkc.395.1589395397522;
+        Wed, 13 May 2020 11:43:17 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id p137sm536595qke.60.2020.05.13.11.43.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 May 2020 11:43:17 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jYwLc-0000c2-He; Wed, 13 May 2020 15:43:16 -0300
+Date:   Wed, 13 May 2020 15:43:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] IB/mlx4: Replace zero-length array with flexible-array
-Message-ID: <20200513183749.GZ4814@unreal>
+Message-ID: <20200513184316.GA2217@ziepe.ca>
 References: <20200507185921.GA15146@embeddedor>
- <20200513183335.GB29202@ziepe.ca>
+ <20200509205151.209bdc9d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513183335.GB29202@ziepe.ca>
+In-Reply-To: <20200509205151.209bdc9d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 13, 2020 at 03:33:35PM -0300, Jason Gunthorpe wrote:
-> On Thu, May 07, 2020 at 01:59:21PM -0500, Gustavo A. R. Silva wrote:
+On Sat, May 09, 2020 at 08:51:50PM -0700, Jakub Kicinski wrote:
+> On Thu, 7 May 2020 13:59:21 -0500 Gustavo A. R. Silva wrote:
 > > The current codebase makes use of the zero-length array language
 > > extension to the C90 standard, but the preferred mechanism to declare
 > > variable-length types such as these ones is a flexible array member[1][2],
 > > introduced in C99:
-> >
+> > 
 > > struct foo {
 > >         int stuff;
 > >         struct boo array[];
 > > };
 > >
-> > By making use of the mechanism above, we will get a compiler warning
-> > in case the flexible array does not occur last in the structure, which
-> > will help us prevent some kind of undefined behavior bugs from being
-> > inadvertently introduced[3] to the codebase from now on.
-> >
-> > Also, notice that, dynamic memory allocations won't be affected by
-> > this change:
-> >
-> > "Flexible array members have incomplete type, and so the sizeof operator
-> > may not be applied. As a quirk of the original implementation of
-> > zero-length arrays, sizeof evaluates to zero."[1]
-> >
-> > sizeof(flexible-array-member) triggers a warning because flexible array
-> > members have incomplete type[1]. There are some instances of code in
-> > which the sizeof operator is being incorrectly/erroneously applied to
-> > zero-length arrays and the result is zero. Such instances may be hiding
-> > some bugs. So, this work (flexible-array member conversions) will also
-> > help to get completely rid of those sorts of issues.
-> >
-> > This issue was found with the help of Coccinelle.
-> >
-> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> > [2] https://github.com/KSPP/linux/issues/21
-> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> >
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >  include/linux/mlx4/qp.h |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Applied to for-next, thanks
+> > ...
+> 
+> Applied, thank you!
 
-Jason,
+Jakub,
 
-Please be cautious here, Jakub already applied this patch.
-https://lore.kernel.org/lkml/20200509205151.209bdc9d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+Please don't take RDMA patches in netdev unless it is a special
+case. There is alot of cross posting and they often get into both
+patchworks.
 
->
-> Jason
+Thanks,
+Jason
