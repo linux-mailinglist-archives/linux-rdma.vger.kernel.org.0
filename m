@@ -2,65 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6A91D253D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 04:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF5A1D214F
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 23:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgENC7M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 13 May 2020 22:59:12 -0400
-Received: from mail.srna.rs ([185.150.193.60]:58618 "EHLO mail.srna.rs"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbgENC7M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 22:59:12 -0400
-X-Greylist: delayed 17250 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 May 2020 22:59:11 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.srna.rs (Postfix) with ESMTP id BEF9D4955AE;
-        Wed, 13 May 2020 23:48:54 +0200 (CEST)
-Received: from mail.srna.rs ([127.0.0.1])
-        by localhost (mail.srna.rs [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id J5tYXjGr9Pke; Wed, 13 May 2020 23:48:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.srna.rs (Postfix) with ESMTP id EE2EA49ECC3;
-        Wed, 13 May 2020 23:35:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at srna.rs
-Received: from mail.srna.rs ([127.0.0.1])
-        by localhost (mail.srna.rs [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LNNfLRlarFVl; Wed, 13 May 2020 23:35:27 +0200 (CEST)
-Received: from [10.121.165.103] (unknown [185.189.113.54])
-        by mail.srna.rs (Postfix) with ESMTPSA id 1DE3A480458;
-        Wed, 13 May 2020 23:31:01 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1729439AbgEMVpf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 17:45:35 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16462 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729196AbgEMVpf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 17:45:35 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ebc6a720000>; Wed, 13 May 2020 14:45:22 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 13 May 2020 14:45:34 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 13 May 2020 14:45:34 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 May
+ 2020 21:45:32 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 13 May 2020 21:45:32 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ebc6a7c0001>; Wed, 13 May 2020 14:45:32 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH] mm/hmm/test: destroy xa_array instead of looping
+Date:   Wed, 13 May 2020 14:45:07 -0700
+Message-ID: <20200513214507.30592-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <dunja.pasalic@srna.rs>
-From:   dunja.pasalic@srna.rs
-Date:   Wed, 13 May 2020 14:32:24 -0700
-Reply-To: mariaschaefflergruppe@gmail.com
-X-Antivirus: avast! (VPS 200410-0, 04/09/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200513213103.1DE3A480458@mail.srna.rs>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589406322; bh=mUTdF1AVMZd0iSCg3E8fEbaYihKH2WAzpFyYOhyV/OU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=PFMTomRMAVJQ+UmxKAlAwof1dFot0qpMAJ1vATc+rjN6uEFZzlhYJjSuMLTODsPgc
+         K1PGvX4Bl+rKy4f/9/TuNUPRXrd8vGl4tU9aHkqJKDonNKUipJOOOgodwCMSd9YrMw
+         0krWiaadjXUzTUkp7oLKOHZCjMyG14aKfhQeB8UVeMwu87bAoRYJuiF7RseMI3/pjg
+         b9UQxFVFq45A+LHLKLIOTboyOgW1OKpwRmzNoQx6GCVok9yNkgqS9kavltRa4ARTUv
+         cqFpoLFZXI0zCycLGP/OhkT0QgR3adaoJhqku3WXCke7DZF2GZD3THkRh8Gtdqf+Cn
+         tifp6KhgVPa1g==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hallo,
+The test driver uses an xa_array to store virtual to physical address
+translations for a simulated hardware device. The MMU notifier
+invalidation callback is used to keep the table consistent with the CPU
+page table and is frequently called only for a page or two. However, if
+the test process exits unexpectedly or is killed, the range can be
+[0..ULONG_MAX] in which case calling xa_erase() for every possible PFN
+results in CPU timeouts. Munmap() can result in a large range being
+invalidated but in that case, the xa_array is likely to contain entries
+that need to be invalidated.
+Check for [0..ULONG_MAX] explicitly and just destroy the whole table.
 
-Ich bin Maria Elisabeth Schaeffler, eine deutsche Geschäftsfrau, Investorin und Geschäftsführerin der Schaeffler Gruppe. Ich bin einer der Eigentümer der Schaeffler Gruppe. Ich habe 25 Prozent meines persönlichen Vermögens für wohltätige Zwecke verschenkt. Und ich habe auch zugesagt, den Rest von 25% in diesem Jahr 2020 an Einzelpersonen zu verschenken. Ich habe beschlossen, Ihnen 1.000.000,00 Euro zu spenden. Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich für weitere Informationen.
-
-Sie können auch mehr über mich über den unten stehenden Link lesen
-
-https://en.wikipedia.org/wiki/Maria-Elisabeth_Schaeffler
-
-==========================================
-Herzliche Grüße,
-Frau Maria-Elisabeth Schaeffler,
-Vorsitzender
-Schaeffler Gruppe.
-E-Mail: mariaschaefflergruppe@gmail.com
-
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
 ---
-This email is free from viruses and malware because avast! Antivirus protection is active.
-https://www.avast.com/antivirus
+
+This patch is based on Jason Gunthorpe's hmm tree and should be folded
+into the ("mm/hmm/test: add selftest driver for HMM") patch once this
+patch is reviewed, etc.
+
+ lib/test_hmm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index 8b36c26b717b..b89852ec3c29 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -201,7 +201,13 @@ static void dmirror_do_update(struct dmirror *dmirror,=
+ unsigned long start,
+ 	 * The XArray doesn't hold references to pages since it relies on
+ 	 * the mmu notifier to clear page pointers when they become stale.
+ 	 * Therefore, it is OK to just clear the entry.
++	 * However, if the entire address space is being invalidated, it
++	 * takes too long to clear them one at a time so destroy the array.
+ 	 */
++	if (start =3D=3D 0 && end =3D=3D ULONG_MAX) {
++		xa_destroy(&dmirror->pt);
++		return;
++	}
+ 	for (pfn =3D start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++)
+ 		xa_erase(&dmirror->pt, pfn);
+ }
+--=20
+2.20.1
 
