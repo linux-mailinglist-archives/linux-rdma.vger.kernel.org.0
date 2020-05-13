@@ -2,114 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3931D097D
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 09:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7CB1D098A
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 09:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729834AbgEMHGH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 03:06:07 -0400
-Received: from mail-eopbgr60055.outbound.protection.outlook.com ([40.107.6.55]:30359
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729199AbgEMHGG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 03:06:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R9hbu/Qf0lj91l43jtiFeokYFOCrrZg/jGmel71HbSAXXwcVBrY5iZxC8t3mREvpvTYh3C9rRQiYbT2yffvvu3lLk5g78YF+sg0D4kD1zYrA+pkwf8u2rl5toaLpidDh9h0DFNsUc8nyGSjWyoBa4C9iNX4+hLfe2TYHOOHRF8UANqq8kRBTELRvCKNQ54QTndydZbtICpN+b/rYG+7Y/Z7nKE3mP3WumrwkKyfOwDb1LZIm9QxW+fz9qxnOrs8VQdWTZ8lycGuV7mnCZJkapIGmWoWT1o3wN4r3b/9sasZjhjBNPUjNAQ+l7ANP30KK/5GefXJdRQhbKI9+eRpPFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IG4hp87PDk/HTjQkIv8yKTmY7xBitvvjsj6pi0G/7BQ=;
- b=FKMAdEdGDkkjOtsJiJu4N78auZ+u0HsOkImfw4w/vf3j2Ul54TpFA4hAxnkV6dqtyd2RIS+XijhaDRbDUTPSKeJ/ta+0lGuC1rX6HqkMOcnMwoad/I9+9RXwsUSDdqJ3vJ3j60IxBXGZ73spM0PLEKs1SaU0lzVhmo8suvf1OzZV/bjqgHzqcl10aEzR6FPTeqBRw/pGtacc4nJJocubbt4iUwLfIcMi1QvvcVpQp4oGGINNdu1ECy0gcOven6IExMwMFQSWamw9ofdZd5Pyk4rWGsKFX8EKnBrb/OFEgxy9CReH8BmEO7T2tlCW3VOR3aRlMIqqaOzX4Fz/tHszpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IG4hp87PDk/HTjQkIv8yKTmY7xBitvvjsj6pi0G/7BQ=;
- b=ipEeSA00uu0T3FwxiMMeKLgggg4zCApWouAwVDIevGMV4QQsKhTeC6BentxCyyBUycTj5LXLeMYwBSqAgEgFoqynHFP6D3VeFRzWxKLrl9cc8aBg8TSD6OMPZ5PSdalbPxjunt//ZePniGJBpNqVrA4GDZo+xKGUGP6h8MLEDrU=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM6PR05MB5540.eurprd05.prod.outlook.com (2603:10a6:20b:5f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
- 2020 07:06:03 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.2979.033; Wed, 13 May 2020
- 07:06:03 +0000
-Date:   Wed, 13 May 2020 10:05:59 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 0/4] Add steering support for default miss
-Message-ID: <20200513070559.GP4814@unreal>
-References: <20200504053012.270689-1-leon@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504053012.270689-1-leon@kernel.org>
-X-ClientProxiedBy: AM4PR0101CA0047.eurprd01.prod.exchangelabs.com
- (2603:10a6:200:41::15) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
+        id S1730373AbgEMHIC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 03:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729189AbgEMHIB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 03:08:01 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8629C061A0C
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 00:07:59 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id z17so12634183oto.4
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 00:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=U5dnCZ5YNvHzHQjGscrcpq9MiALGgU67N8Jq5EBQuzw=;
+        b=OZiU+kRVCLk5/6W0St2OK5Xb+p5aH38bGDJXr1TsF9faLdtdBKQuGuJ7Zp5SiMdew7
+         euECR2vCo6+/20wE4jAyKXi43lO8iX735T4hub/MDAh5jbFqtfScDmRenqpoSLVd8NNf
+         g8jnREjHPAvO3tUS/62IwHmPFGNzojTApT+lE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=U5dnCZ5YNvHzHQjGscrcpq9MiALGgU67N8Jq5EBQuzw=;
+        b=V9mfcvFETfXJ4iihvUYhbr8twgD5n7FsuWT+dABbRibBTgZZcNh8YV2g4lLbnKQqu7
+         s+BlHge8lVOzdW00BoxleeSqOXdIU3+Ywfld8tSXtXpHAIhDHdgleaMfPkiMn88z6sf/
+         lwIRpTe9Crzq17urQRBn5l+2xWPHOfnDqvfvjpAyBYc1LPQPpdzxNzDOXq0CcErgl7pT
+         vJIORYavjiAaDBMkLYk8h+kewHriyZgiWhEkQnqwwrjVeauf6HYsGcybMesUV7TgMU5l
+         SPBhNDfPXPvBQszBO5CQ2Q8tDwT/gjwjcws3AmatyatGXo2bKuu1/Vlb64etKQD77wWR
+         QpIg==
+X-Gm-Message-State: AGi0PuYEuXcPtH6xEEBFH7GXQzke7AKngwsp4tTmw3+MGO21PBjTiwM8
+        +VsMP3Y1bpSAOmaTJYRQn2TVY4BGJos0MkhQZChGCA==
+X-Google-Smtp-Source: APiQypLDDUNEGNzAQQ9b8u81ZQsefjAzdi6bm0eh+UnIE80cVeBpyFUq2uSk3Y7c5QYPc5UTCXnFi072V/n20RqH3kg=
+X-Received: by 2002:a9d:7c92:: with SMTP id q18mr20636927otn.281.1589353679188;
+ Wed, 13 May 2020 00:07:59 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a00:a040:183:2d::a43) by AM4PR0101CA0047.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend Transport; Wed, 13 May 2020 07:06:02 +0000
-X-Originating-IP: [2a00:a040:183:2d::a43]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a0fa8612-4869-4410-2c9e-08d7f70c1949
-X-MS-TrafficTypeDiagnostic: AM6PR05MB5540:|AM6PR05MB5540:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB5540D69EB8114AA13FBA2097B0BF0@AM6PR05MB5540.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0402872DA1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s9IfP/Wyw4O5vKeMEEtCWd09N1IiVfr+8CmYyKNpaBoJDLzdhfb7YIiUSTgoNOK/oL4QEYjnnrsmh7MONKx+Lq+6ka/cWCcs8sVBBk2v4FVGuQLpfwpPDgkFBGo2LetgtdWUYZDEfPHxj1L7iP6S+QARqaJ7G5bi8D4IVkMGouN3YK0yTMSyY47zKrTMv2KdRAGlr+/dtXo+7G1e9acjHsZHGX0ilKTITjrrmSfOHjpQAlezR9NMZ2NLubFJmcIJWZYEZ8A9eeckPbJ7fC/TGAwuCc4SoKv+kDO7gqAvhnGWvTaqtcZudVz6e91t9dgQU3vezhYV/k3iy5aPwhLAPgDw2QQObWBTPgQWkt0z1mRZGkfheHocNvSEgNX/1gaYc0pod/4St1uUOkXnqG3seH8gAgUMUhHZxaSnAxpidWTAliYeAWBoW8OAGrdU+YGQNaL4FPmEjcvEQqy9COHPbPJz0KJLarfGyloya+G6aMWKBJchtwg96VmhKJBkPTxnNLZ1A5+tKc2gC0+PDbHdE0jWiLtm+5L1uzDcMOqUKRwHdZ1PyOm3F9z+IAi2SGnTBGexhutH12yy95Hc4CD6JONfGa09qcgJobPZWRLlhQ8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(33430700001)(16526019)(52116002)(8676002)(186003)(5660300002)(54906003)(8936002)(110136005)(1076003)(66476007)(4326008)(6636002)(66946007)(4744005)(966005)(86362001)(6666004)(107886003)(33440700001)(9686003)(316002)(6486002)(2906002)(33656002)(478600001)(66556008)(33716001)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: bdEQ+NQ+sGoKZEU5Tkhkqp5e+rhzer5ZFjO3rVaqBgnVG5xJzJVahyTcuMlBf7XFva8dyaBALYreF1oQR2efLDS0CsehQuQIJCFHcNBdL+2GAhOlWeo+4t1Ta8w9QnXAcyCZUvSRcj7ELGldHUzmd26lrARveENFpYAariaZFwR+UdWboWq8VOrtO0xOMI+k7LkuddPLpxlEHZXcXoZWXqzB3wJhBe7EllrQfCfj8TC/BlPqtBrDyhETRxmJyI4zuMj7irXWPuIDJjg2x473L4z2t3o10TTX9Ni/1abXLDajoqeBWZgnAmuCe3rZr9A+5RMjIrbA8CN9dTemUResFsxVuiZjtJW2LGIPoB0CAYOWMzkRUZxZwyadKGeptRtDo3OhpY1zidvfUrC6LmG91WanVHj1ijpm2SkOA7lSaAtBvBPAv+2ootrOZVtGEGsG2pwEyrckVhb4lTeceS0nnQffM3P0qiBV4e8d6Efsxh/gzNUdlvALGJEqPXKJtED2
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0fa8612-4869-4410-2c9e-08d7f70c1949
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 07:06:03.4317
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AJojLLXCGXYckqVBXLGTCcpkAfMEcQqHbonn0B7VGkyN/7KITD0cGE5Sf18QOBqVi+AoHfx+0ewoM6OTfAvHsA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5540
+References: <20200512085944.222637-1-daniel.vetter@ffwll.ch>
+ <20200512085944.222637-10-daniel.vetter@ffwll.ch> <6cfd324e-0443-3a12-6a2c-25a546c68643@gmail.com>
+In-Reply-To: <6cfd324e-0443-3a12-6a2c-25a546c68643@gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 13 May 2020 09:07:48 +0200
+Message-ID: <CAKMK7uEwrf=CqswANbKzF1veFER5mHPHcQxR1avLXJROOGpUvg@mail.gmail.com>
+Subject: Re: [RFC 09/17] drm/amdgpu: use dma-fence annotations in cs_submit()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 04, 2020 at 08:30:08AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Wed, May 13, 2020 at 9:02 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
 >
-> Changelog
-> v1:
->  * Rebased on latest rdma-next
->  * Removed attr_is_valid() check from flags
-> v0: https://lore.kernel.org/linux-rdma/20200413135220.934007-1-leon@kernel.org
+> Am 12.05.20 um 10:59 schrieb Daniel Vetter:
+> > This is a bit tricky, since ->notifier_lock is held while calling
+> > dma_fence_wait we must ensure that also the read side (i.e.
+> > dma_fence_begin_signalling) is on the same side. If we mix this up
+> > lockdep complaints, and that's again why we want to have these
+> > annotations.
+> >
+> > A nice side effect of this is that because of the fs_reclaim priming
+> > for dma_fence_enable lockdep now automatically checks for us that
+> > nothing in here allocates memory, without even running any userptr
+> > workloads.
+> >
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Cc: linux-rdma@vger.kernel.org
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: intel-gfx@lists.freedesktop.org
+> > Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_cs.c
+> > index 7653f62b1b2d..6db3f3c629b0 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+> > @@ -1213,6 +1213,7 @@ static int amdgpu_cs_submit(struct amdgpu_cs_pars=
+er *p,
+> >       struct amdgpu_job *job;
+> >       uint64_t seq;
+> >       int r;
+> > +     bool fence_cookie;
+> >
+> >       job =3D p->job;
+> >       p->job =3D NULL;
+> > @@ -1227,6 +1228,8 @@ static int amdgpu_cs_submit(struct amdgpu_cs_pars=
+er *p,
+> >        */
+> >       mutex_lock(&p->adev->notifier_lock);
+> >
+> > +     fence_cookie =3D dma_fence_begin_signalling();
+> > +
+> >       /* If userptr are invalidated after amdgpu_cs_parser_bos(), retur=
+n
+> >        * -EAGAIN, drmIoctl in libdrm will restart the amdgpu_cs_ioctl.
+> >        */
+> > @@ -1264,12 +1267,14 @@ static int amdgpu_cs_submit(struct amdgpu_cs_pa=
+rser *p,
+> >       amdgpu_vm_move_to_lru_tail(p->adev, &fpriv->vm);
+> >
+> >       ttm_eu_fence_buffer_objects(&p->ticket, &p->validated, p->fence);
+> > +     dma_fence_end_signalling(fence_cookie);
 >
-> -------------------------------------------------------------------------
-> Hi,
->
-> This code from Naor refactors the fs_core and adds steering support
-> for default miss functionality.
->
-> Thanks
->
-> Maor Gottlieb (4):
->   {IB/net}/mlx5: Simplify don't trap code
->   net/mlx5: Add support in forward to namespace
+> Mhm, this could come earlier in theory. E.g. after pushing the job to
+> the scheduler.
 
-Applied to mlx5-next with change of IS_ERR_OR_NULL().
+Yeah, I have not much clue about how amdgpu works :-) In practice it
+doesn't matter much, since the enclosing adev->notifier_lock is a lot
+more strict about what it allows than the dma_fence signalling fake
+lock.
+-Daniel
 
-19386660212d net/mlx5: Add support in forward to namespace
-8e14c75c999a {IB/net}/mlx5: Simplify don't trap code
+>
+> Christian.
+>
+> >       mutex_unlock(&p->adev->notifier_lock);
+> >
+> >       return 0;
+> >
+> >   error_abort:
+> >       drm_sched_job_cleanup(&job->base);
+> > +     dma_fence_end_signalling(fence_cookie);
+> >       mutex_unlock(&p->adev->notifier_lock);
+> >
+> >   error_unlock:
+>
 
-Thanks
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
