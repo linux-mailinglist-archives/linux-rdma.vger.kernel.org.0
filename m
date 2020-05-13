@@ -2,78 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBE61D14CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 15:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36A71D14EA
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 15:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgEMN1W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 09:27:22 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26090 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726001AbgEMN1W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 09:27:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589376441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OH0J8d3K3U+hQmWR8NPajZuhzGmc4mTANodrmCJL8cs=;
-        b=W8D3X2FEvV90NYW1xXTRbHOUGvHFuOmM91+lFiFTWjxhYeX5vOwbIZ+IpivEhgcKaOYcuq
-        OvgH10YEGzNMMTDQ1/aSpXcNLeZ8IKOWwMHYOnxOEaTspHzwQLYICk7acYiKrV5wo73BaR
-        cALbHJSViNleJgksLeim5LhiE3p8uhs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-iyWGfh95OW-O_Gj4FkwCgg-1; Wed, 13 May 2020 09:27:19 -0400
-X-MC-Unique: iyWGfh95OW-O_Gj4FkwCgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9855835B40;
-        Wed, 13 May 2020 13:27:16 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-59.rdu2.redhat.com [10.10.112.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 811E61C92D;
-        Wed, 13 May 2020 13:27:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200513062649.2100053-7-hch@lst.de>
-References: <20200513062649.2100053-7-hch@lst.de> <20200513062649.2100053-1-hch@lst.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        drbd-dev@lists.linbit.com, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
-        cluster-devel@redhat.com, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
-        linux-kernel@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 06/33] net: add sock_set_timestamps
-MIME-Version: 1.0
+        id S2387739AbgEMNbb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 09:31:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:7084 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387730AbgEMNbb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 09:31:31 -0400
+IronPort-SDR: TPeTcuhAO2aJStNDaN5nlDmzRfM1msMiGPFme9QIsEGGtbVUeuBMx7aGB73Ou/y/NHZ28Jq+Hy
+ zAVRDO+WSQbw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 06:31:28 -0700
+IronPort-SDR: uLaewi6hYXYMTHNE69oWSfdOkXEGmvkCdWVLrYY4edepSlAb7lCAvqpoNWIXNfkDbjMFBAYsan
+ d80IXMZo8/oQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,387,1583222400"; 
+   d="scan'208";a="298366300"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by orsmga008.jf.intel.com with ESMTP; 13 May 2020 06:31:16 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 13 May 2020 06:31:15 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 13 May 2020 06:31:15 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 13 May 2020 06:31:15 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 13 May 2020 06:31:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aYXpe8WYBdJlBflE7sijLmvDCjlHsSKgN+6sI4x8z37bjDfxTUAQNo67moL5j472xwVIZOpWdCoKWvehwSrh04L6YN21KjFA222pIbeqhHNswuuayT0CdsjaJtBC12F6be1UutmF7WAIzfUNfxuJ9yKRYR7CLsa6fnsdXII54NKNwF94PecdOVPerni7SeDIN4/5aFrFQnEiUKQegBS7gzxez5hI8/xK6mCL6/Xz/WLshcmCRksCojcoKMmDHe5vKCEAWLj82EGNvRgdv380eAoRbTsZCNDF5No63MCxyRA0oXN3yJHAebR87PyfYyPh0Oy5FUzP5/oJ3We54JvIAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1SiTV48yOv313VVIODyf+pqmRJ5G/P2Mg7hj54xbjQ=;
+ b=P7Jqf0pFM0K7pBNmmGrshYjqvPW0If1x0rPsTFwsQ99Qnu1UqaPaVJyvnObMKj2esD4IkkPvlp+D8M5bX+EcEN+DZ8FWDzgzoSlY3Dr4+qo3cIsTdIo2fS77RFLkoq+gBvtLQISwXwUmJhDRrIUnShv8k8iofuqm2q4+25kXJ+dtF0j8vzJ15s3ptT85PcKM42HdZt9fwC3SYdJ/TPKZnzLZBeNHUHk+J/v9yaVXyxD7rkyIwQPpkg1CyOZFq6AunnJARdec1WjchwlKdVt37oajKyez0VRfNh1914u485p6ZriJ8m2ccw5izmhNJEiFbTEk5ScG+5JFAUnf+SXUzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1SiTV48yOv313VVIODyf+pqmRJ5G/P2Mg7hj54xbjQ=;
+ b=VtomCObJ3N2Am9iIUo7vkOur8F6Fx7ywS59Q5v08am5zQgb44aG1AZOaoYdKcOFMKoBuptsiqxnEZMOII+q2Dg7l1Ryt/fdJDPUQ6t1KcWp5JoqJvfdOdWvSnRmFe9ehtU+HqdzE9mcbjrciGMpReuwheuksmZ9B25rMIQkX0L0=
+Received: from MW3PR11MB4665.namprd11.prod.outlook.com (2603:10b6:303:5d::12)
+ by MW3PR11MB4700.namprd11.prod.outlook.com (2603:10b6:303:2d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Wed, 13 May
+ 2020 13:31:13 +0000
+Received: from MW3PR11MB4665.namprd11.prod.outlook.com
+ ([fe80::29b3:892:eed1:2d0c]) by MW3PR11MB4665.namprd11.prod.outlook.com
+ ([fe80::29b3:892:eed1:2d0c%5]) with mapi id 15.20.2979.033; Wed, 13 May 2020
+ 13:31:13 +0000
+From:   "Wan, Kaike" <kaike.wan@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq when
+ the device is shut down
+Thread-Topic: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq when
+ the device is shut down
+Thread-Index: AQHWKAtYj9gYAc53PUOvXaZcprmNbqij88GAgABfNtCAAVWZgIAAXJJA
+Date:   Wed, 13 May 2020 13:31:12 +0000
+Message-ID: <MW3PR11MB4665565B9F972B131C31091FF4BF0@MW3PR11MB4665.namprd11.prod.outlook.com>
+References: <20200512030622.189865.65024.stgit@awfm-01.aw.intel.com>
+ <20200512031315.189865.15477.stgit@awfm-01.aw.intel.com>
+ <20200512055521.GA4814@unreal>
+ <MW3PR11MB4665BDCA7CA57498D631FF5EF4BE0@MW3PR11MB4665.namprd11.prod.outlook.com>
+ <20200513075845.GS4814@unreal>
+In-Reply-To: <20200513075845.GS4814@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [72.94.197.171]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 41745223-20ef-4957-49c0-08d7f741e7d4
+x-ms-traffictypediagnostic: MW3PR11MB4700:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB4700F3051E5093FBCF55846EF4BF0@MW3PR11MB4700.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-forefront-prvs: 0402872DA1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pJbi+bttq6Kyp2+M9mOblDFrxVkpuTK1xmjG3xssW8W1JFSA0tk1Nkg5tnsFwlVCqIZy4mnUB7zBcAlQIiPmucVQzQTiuxIQi5AWWn6TsAMWyZjwkol2AM612oU/Xq8FGBW6Ju4465aorBl298yj7zbmNHNhAF53xZtgwXFHacLl58wMbXRdXyqn8v7BoPgEFM1L+NfrIvhc16EAiDZ4q5xF0fr8NdhSLT1IJ6EJkUqyxV9TCYFCjLFVqf1PBiupZPJI8oQjjdvFh/F9rYOQ7e2f0T0nOt+W88zYgB1/NLGKDczoGObUHYJtnerHlrhweTt1cdSKOPRZvrWcSntN7mQm7WKBj3Sq7+xBAcKWv7HiFi9I8hqyyGM/zQY59egRBj7ZGTwFTbc4zsWhl8ZYKo5t0/3I1Y6/WlMYPnz7Rvuu24Sv6EkIQxiCUHNnsPqukj0wxatFj7cWg1rCkvRa3gZOlCjXCsfV0SiLw3fmXyi2zGGYIOR1Zz34v5hzujruHtpFTrvvowyTdx1Kg+WlvQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4665.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(33430700001)(33656002)(9686003)(55016002)(6506007)(186003)(5660300002)(316002)(8676002)(54906003)(53546011)(7696005)(26005)(33440700001)(8936002)(478600001)(76116006)(66446008)(66476007)(66556008)(66946007)(64756008)(86362001)(6916009)(71200400001)(2906002)(4326008)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: doVLXqh2ihVdZ0SkBEC0ztVX03ClG76uNKAfQtkPjZg02cWgYp6g8N+OAwxMyDN31Io+1jwdKvORLi15QMoUK5CorRyHos6hne/eQLHymQziyZ44anrJ4iRnIV+S75hHny1QRVdd9wYzfWhQC91fWFjYZAr70vq0d7UnHCPIGWw9nZjpGs7IOXGu1JEJJQFCBhYm12zjYl99q9qTIESOcQqazZiB9SfZWK3dNtwhCXKnJPqLBLFhvkY/XqIIY/3WgbbS/PIxAbA7DbH2J3s04AN3pNelNLCzVHVFqaRDUmt/cmgK9aEQ6KamBvLBAzVc3dv7t428OCYOB4OoNV2bPz97TLBEyIiRrNg4EVcUgIaBbpBYeHy//Jxeq/XZa5+7LOrqakJMGZKc7U/icH4JA/5/Z9e7bB522xGSPUbG7ZYKpak5jDBh2Xp77MuCFcdMjMZ55A4QttCjPghBkflXGxRArBWGT5LxCwVz7hLUnCo=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3124743.1589376425.1@warthog.procyon.org.uk>
-Date:   Wed, 13 May 2020 14:27:05 +0100
-Message-ID: <3124744.1589376425@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41745223-20ef-4957-49c0-08d7f741e7d4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2020 13:31:12.9682
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h8CHarIjN6N1dys6fqiF/Uwp/ROrMGlw702EfdQG1vQbTXeQ7Jp/F8OpkWxfMhkQgXwyF2c84QgdYOlKNA9K+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4700
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> wrote:
 
-> Add a helper to directly set the SO_TIMESTAMP* sockopts from kernel space
-> without going through a fake uaccess.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+> -----Original Message-----
+> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> owner@vger.kernel.org> On Behalf Of Leon Romanovsky
+> Sent: Wednesday, May 13, 2020 3:59 AM
+> To: Wan, Kaike <kaike.wan@intel.com>
+> Cc: Dalessandro, Dennis <dennis.dalessandro@intel.com>; jgg@ziepe.ca;
+> dledford@redhat.com; linux-rdma@vger.kernel.org; Marciniszyn, Mike
+> <mike.marciniszyn@intel.com>; stable@vger.kernel.org
+> Subject: Re: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq w=
+hen
+> the device is shut down
+>=20
+> On Tue, May 12, 2020 at 11:52:34AM +0000, Wan, Kaike wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > > owner@vger.kernel.org> On Behalf Of Leon Romanovsky
+> > > Sent: Tuesday, May 12, 2020 1:55 AM
+> > > To: Dalessandro, Dennis <dennis.dalessandro@intel.com>
+> > > Cc: jgg@ziepe.ca; dledford@redhat.com; linux-rdma@vger.kernel.org;
+> > > Marciniszyn, Mike <mike.marciniszyn@intel.com>;
+> > > stable@vger.kernel.org; Wan, Kaike <kaike.wan@intel.com>
+> > > Subject: Re: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy
+> > > hfi1_wq when the device is shut down
+> > >
+> > > On Mon, May 11, 2020 at 11:13:15PM -0400, Dennis Dalessandro wrote:
+> > > > From: Kaike Wan <kaike.wan@intel.com>
+> > > >
+> > > > The workqueue hfi1_wq is destroyed in function shutdown_device(),
+> > > > which is called by either shutdown_one() or remove_one(). The
+> > > > function
+> > > > shutdown_one() is called when the kernel is rebooted while
+> > > > remove_one() is called when the hfi1 driver is unloaded. When the
+> > > > kernel is rebooted, hfi1_wq is destroyed while all qps are still
+> > > > active, leading to a kernel crash:
+> > >
+> > > I was under impression that kernel reboot should follow same logic
+> > > as module removal. This is what graceful reboot will do anyway. Can
+> > > you please give me a link where I can read about difference in those
+> flows?
+> > >
+> > I used to think the same. However, by adding traces to the hfi driver, =
+I
+> found out that the shutdown function of the pci_driver was called when
+> typing "reboot"  while the remove function  of the pci_driver was called
+> when typing "modprobe -r hfi1".
+>=20
+> I took a look on what mlx5_core is doing in shutdown flow and it can be
+> summarized in the following:
+> 1. Drain workqueues
+> 2. Close PCI
+> 3. Don't release anything.
+>=20
+> So maybe you didn't flush the hfi1_wq?
+Will add the flush.
 
+Thanks,
+
+Kaike
+> >
+> >
+> >
