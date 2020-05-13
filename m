@@ -2,96 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733021D1DBC
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 20:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06421D1DBD
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 20:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390215AbgEMSnT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 14:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389724AbgEMSnS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 14:43:18 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EAFC061A0F
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 11:43:18 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f189so317188qkd.5
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 11:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NXrvQNeC1Xj02nUw5miKT8fMXE+WzxSqq6EctGKkuNI=;
-        b=nWD1ls946alpVxKN77zxbZUZ+HrnneaGobCxCRt9Tk0xSC4PPClNiqgypoIR+KfoIU
-         E5qbMtYATFCLpqLg6AJjVKw9p1ikx2kluRuRlUGk7YSSRedH6so1htbOO0ZdrXD0mpDX
-         5n+Xa1Gtncgceoo3FslAH6if/VZwBcZP86caVTGnJbVc3n3Ccj8Bpcyj3KSuvgbgpGz5
-         +WOcNCKg/sw14OrUMr2UfEJ4j4iTa3ycYdGXrQRpUwus6Z8o0sYQXJ8cSoQ2L7akZPqG
-         2C98jEGaAlMvyFiVjM+s6XBo3JAsLh0oBbUq5RA46aD7LxRjuP1yW8Fhf+EOtjDI6hN6
-         YKJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NXrvQNeC1Xj02nUw5miKT8fMXE+WzxSqq6EctGKkuNI=;
-        b=quKybNWTPzaS19yPcElOiiIr3g8ZQWpvoimB89NFl1f5VjhRIjs+8xRppCZx06W2nK
-         j2fSterOO0OzV3JSDeSvIgBDFW2zIn6mIe2U8UX+hqyv5umXNhpzi78/G9n1fq0YR3aJ
-         rsU5QU/ZOUJOtYGp60cAP58NwwOmxBzthaUAvlg47SAtYRyinReGWp5c8GlU+xT5B/Y2
-         bYefslLO6kgHFv0A+tNjmm9LXO7Jm4F+tiaRPXJ86qH/GeL3o8DEkuZWllQ4XyFc7B56
-         q7C3Cr/D9r1aqSXz5GpRi9hb2r+eJPawOmu3yoyIDB/Lj4sfYupHa3u9tot57mDqDwm3
-         lHJg==
-X-Gm-Message-State: AOAM532arW/ylcES6wKrTrVygN+Y0ou+/OCZZIp6obUJrbUFDuk5QV+8
-        UaeY/BbhEOyQ9ePrB/TQrwNdxpMi3To=
-X-Google-Smtp-Source: ABdhPJzgpvkBE4/Qkgv1I7UVhNmN6oXYlL2M9jIHRzZyiQC7ufYITkarA0NxI/DhgMaJZC05+rk3qA==
-X-Received: by 2002:a37:6656:: with SMTP id a83mr1062345qkc.395.1589395397522;
-        Wed, 13 May 2020 11:43:17 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id p137sm536595qke.60.2020.05.13.11.43.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 11:43:17 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jYwLc-0000c2-He; Wed, 13 May 2020 15:43:16 -0300
-Date:   Wed, 13 May 2020 15:43:16 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/mlx4: Replace zero-length array with flexible-array
-Message-ID: <20200513184316.GA2217@ziepe.ca>
-References: <20200507185921.GA15146@embeddedor>
- <20200509205151.209bdc9d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S2387492AbgEMSny (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 14:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732817AbgEMSny (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 14:43:54 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D068205CB;
+        Wed, 13 May 2020 18:43:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589395434;
+        bh=dnVyDkHOQiYhrjgAjq0NPR8MnfG+3kRGSUh+VJEBeqY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UKcKVxLJHaulK8ujBDmz9edzR5O0OPbY75uZQOzhxGtrt3WHrSjZPqOGVJQ9/dUrL
+         +kL5g5kUIGlkBTRAVfMX2kVOfNMPNNQDBGYhkU9PNXAmxLBf9NAF73EKZaJ+s1TMvH
+         UkfDSXcM/J0yKQTcZi3zdS5pnpheMRhbm5fBnV5s=
+Date:   Wed, 13 May 2020 21:43:49 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Israel Rukshin <israelr@mellanox.com>,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, maxg@mellanox.com,
+        sergeygo@mellanox.com, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
+Message-ID: <20200513184349.GA4814@unreal>
+References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
+ <20200512171633.GO4814@unreal>
+ <5b8b0b51-83e3-06c2-9b99-dec0862c0e5b@acm.org>
+ <20200512201303.GA19158@mellanox.com>
+ <98a0d1aa-6364-a2f1-37f6-9c69e1efaa0b@acm.org>
+ <20200512230625.GB19158@mellanox.com>
+ <b9dab6bf-d1b8-40c0-63ba-09eb3f4882f5@grimberg.me>
+ <20200513071855.GQ4814@unreal>
+ <be388f26-9b86-b826-5d4b-8dec201ea5ef@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200509205151.209bdc9d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <be388f26-9b86-b826-5d4b-8dec201ea5ef@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, May 09, 2020 at 08:51:50PM -0700, Jakub Kicinski wrote:
-> On Thu, 7 May 2020 13:59:21 -0500 Gustavo A. R. Silva wrote:
-> > The current codebase makes use of the zero-length array language
-> > extension to the C90 standard, but the preferred mechanism to declare
-> > variable-length types such as these ones is a flexible array member[1][2],
-> > introduced in C99:
-> > 
-> > struct foo {
-> >         int stuff;
-> >         struct boo array[];
-> > };
+On Wed, May 13, 2020 at 12:44:16PM -0400, Dennis Dalessandro wrote:
+> On 5/13/2020 3:18 AM, Leon Romanovsky wrote:
+> > On Tue, May 12, 2020 at 05:53:34PM -0700, Sagi Grimberg wrote:
+> > >
+> > > > > > > > > FMR is not supported on most recent RDMA devices (that use fast memory
+> > > > > > > > > registration mechanism). Also, FMR was recently removed from NFS/RDMA
+> > > > > > > > > ULP.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+> > > > > > > > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> > > > > > > > >    drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
+> > > > > > > > >    drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
+> > > > > > > > >    drivers/infiniband/ulp/iser/iser_memory.c    | 188 ++-------------------------
+> > > > > > > > >    drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +++---------------
+> > > > > > > > >    4 files changed, 40 insertions(+), 372 deletions(-)
+> > > > > > > >
+> > > > > > > > Can we do an extra step and remove FMR from srp too?
+> > > > > > >
+> > > > > > > Which HCA's will be affected by removing FMR support? Or in other words,
+> > > > > > > when did (Mellanox) HCA's start supporting fast memory registration? I'm
+> > > > > > > asking this because there is a tradition in the Linux kernel not to
+> > > > > > > remove support for old hardware unless it is pretty sure that nobody is
+> > > > > > > using that hardware anymore.
+> > > > > >
+> > > > > > We haven't entirely been following that in RDMA.. More like when
+> > > > > > people can't test any more it can go.
+> > > > > >
+> > > > > > For FMR the support was dropped in newer HW so AFAIK, nobody tests
+> > > > > > this and it just stands in the way of making FRWR work properly.
+> > > > > >
+> > > > > > Do the ULPs stop working or do they just run slower with some regular
+> > > > > > MR flow?
+> > > > >
+> > > > > I'm not sure. I do not have access to RDMA adapters that do not support
+> > > > > FRWR.
+> > > > >
+> > > > > A possible test is to check on websites for used products whether old
+> > > > > RDMA adapters are still available. Is the InfiniHost adapter one of the
+> > > > > adapters that supports FMR? It seems like that adapter is still easy to
+> > > > > find.
+> > > >
+> > > > I don't know - AFAIK nobody does any testing on those cards any
+> > > > more, and doesn't test the ULPs either.
+> > > >
+> > > > I know Leon has pushed to remove the mthca driver in the past.  At one
+> > > > point there was a suggestion that drivers that do not support FRWR
+> > > > should be dropped, but I don't remember if mthca is the last one or
+> > > > not.
+> > > >
+> > > > There has been a big push to purge useless old stuff, look at the
+> > > > entire arch removals for instance. The large RDMA drivers fall under
+> > > > the same logic, IMHO.
+> > >
+> > > I think we should remove this support, if there is a user of this
+> > > somewhere he can safely use iscsi. Let alone that iser uses the fmr
+> > > pools which leaves rkeys exposed for caching purposes. So I'd much
+> > > rather remove it than trying to fix it.
 > >
-> > ...
-> 
-> Applied, thank you!
+> > Agree, given the fact that no one is even going to try to fix.
+> >
+> > We don't see new contributors in this community who are not affiliated
+> > with RDMA companies and they are not testing and have no plans to test FMR.
+> >
+> > I feel that we can't even say if FMR and old cards work :).
+>
+> qib still works.
 
-Jakub,
+mlx4 works too :), I had in mind more older cards than qib, which was
+added to the kernel only ten years ago. For example mlx4 was added 13
+years ago an mthca before git era (>15 years).
 
-Please don't take RDMA patches in netdev unless it is a special
-case. There is alot of cross posting and they often get into both
-patchworks.
+Thanks
 
-Thanks,
-Jason
+>
+> -Denny
+>
