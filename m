@@ -2,58 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BFC1D0415
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 02:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3751D0534
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 05:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732168AbgEMA43 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 20:56:29 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40376 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731683AbgEMA43 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 20:56:29 -0400
-Received: by mail-pf1-f195.google.com with SMTP id x2so7229085pfx.7
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 17:56:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3NNZmBzbA5W8qkCUtwpAyc0bsZckfx0rZIzf6SPs+KI=;
-        b=hNoPkvHJoLIjfNPjsu8CLe3h6ng1nunvK3C1vsXXjctsq6aVnecQWHQsfFjQFczQav
-         ClvtY8n1SsGLMawKnPVBGwAh5Qyd+qLVqGyRiO0evBcvPUKDCmaAQxJcfGhSd6/a79+j
-         Ph5AVCP1+JSqU3/B4ROfSUt6UQhgKBnQ4zYz9QUm/I3PQ+IBp0wgFLjPWsp03vz/bpqB
-         nzhJv+hB5Ursp2lBPIPpVHtOlSFqhqYk9aNcMv7Kvooao3r62wF9ZdiOI4KRjpP/4mnV
-         Jw4I+48oozWteJBK56MZG0IK1OYpgjLsDTbpAg+VPij8k7WEj9Yl+ECyD4iNGtaMlV26
-         8zKQ==
-X-Gm-Message-State: AGi0PubYzC5eyOVKN/7KrwDk7sTjzOhdyUzHAeD9Cq6jLiuQplHey1GE
-        YzvqKy0Fsx9VL48KOUjfADM=
-X-Google-Smtp-Source: APiQypJRhGl0sOI7imjGm8F0ezB6ElinpBO68TIiRuqxPWG0CBqdNxTkRBQxp3qVqx15DNqOzbNjvQ==
-X-Received: by 2002:a63:e202:: with SMTP id q2mr20677151pgh.323.1589331388283;
-        Tue, 12 May 2020 17:56:28 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:fd29:b320:9d75:d158? ([2601:647:4802:9070:fd29:b320:9d75:d158])
-        by smtp.gmail.com with ESMTPSA id 3sm13166683pfo.27.2020.05.12.17.56.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 17:56:27 -0700 (PDT)
-Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
-To:     Israel Rukshin <israelr@mellanox.com>, jgg@mellanox.com,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org
-Cc:     maxg@mellanox.com, sergeygo@mellanox.com
-References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <6c20dd16-d5c9-b33b-1692-93f3a4f3bd52@grimberg.me>
-Date:   Tue, 12 May 2020 17:56:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.7.0
+        id S1727082AbgEMDCW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 23:02:22 -0400
+Received: from mga12.intel.com ([192.55.52.136]:61770 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725898AbgEMDCW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 May 2020 23:02:22 -0400
+IronPort-SDR: rsESHzbC/bIaRXruIF/qSvw7ryYL15JDU4elmcaEo7Y7QoFVBqVVrZo3sUxoTrUvjBS5qHVJYo
+ cycWi8LLU76Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 20:02:21 -0700
+IronPort-SDR: iiKYClioj0cXaTUOQSC6djt/h0uUoqKxNsA18N+mVKVmlrzys5Vzr3/bwKHxMNMzD4UFx7RgK1
+ qiEfKEL9DH4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,385,1583222400"; 
+   d="scan'208";a="341113744"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 12 May 2020 20:02:20 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jYhf1-000Be1-H6; Wed, 13 May 2020 11:02:19 +0800
+Date:   Wed, 13 May 2020 11:01:29 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ c8b1f340e54158662acfa41d6dee274846370282
+Message-ID: <5ebb6309.ayE0T2NmjrACRog5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks Max,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: c8b1f340e54158662acfa41d6dee274846370282  RDMA/iw_cxgb4: Fix incorrect function parameters
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+elapsed time: 558m
+
+configs tested: 121
+configs skipped: 6
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+m68k                        stmark2_defconfig
+arm                  colibri_pxa300_defconfig
+c6x                        evmc6457_defconfig
+powerpc                     powernv_defconfig
+mips                 decstation_r4k_defconfig
+arm                       aspeed_g4_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     ep8248e_defconfig
+openrisc                    or1ksim_defconfig
+h8300                     edosk2674_defconfig
+sh                           se7751_defconfig
+i386                                defconfig
+arm                           tegra_defconfig
+sh                            hp6xx_defconfig
+arm                              zx_defconfig
+m68k                         amcore_defconfig
+powerpc                      pmac32_defconfig
+arc                          axs103_defconfig
+arm64                            alldefconfig
+arm                        vexpress_defconfig
+m68k                        m5272c3_defconfig
+xtensa                         virt_defconfig
+arm                         axm55xx_defconfig
+arm                          prima2_defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200512
+i386                 randconfig-a005-20200512
+i386                 randconfig-a003-20200512
+i386                 randconfig-a001-20200512
+i386                 randconfig-a004-20200512
+i386                 randconfig-a002-20200512
+x86_64               randconfig-a016-20200512
+x86_64               randconfig-a012-20200512
+x86_64               randconfig-a015-20200512
+x86_64               randconfig-a013-20200512
+x86_64               randconfig-a014-20200512
+x86_64               randconfig-a011-20200512
+i386                 randconfig-a012-20200512
+i386                 randconfig-a016-20200512
+i386                 randconfig-a014-20200512
+i386                 randconfig-a011-20200512
+i386                 randconfig-a013-20200512
+i386                 randconfig-a015-20200512
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
