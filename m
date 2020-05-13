@@ -2,121 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6934E1D1B6E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 18:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6876E1D1C6A
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 19:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgEMQoW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 12:44:22 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44837 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgEMQoV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 12:44:21 -0400
-IronPort-SDR: EwYU17sjNqNmft4ChhauVyfMHByao/fAO/kOXQkf8j/0mk7coUn0pmlGVUwtIDuqsFynpJJ0yp
- 4ptbUwmpt3Ig==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 09:44:21 -0700
-IronPort-SDR: WBI5QqbYZ73SKTCyUjGkU+wcxh4PGRQsNMR9w/YiRdkD2soA3iztShTerG0OpEpvuy8yHAVq8A
- t6+qIYwAkWjQ==
-X-IronPort-AV: E=Sophos;i="5.73,388,1583222400"; 
-   d="scan'208";a="464191476"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.167]) ([10.254.205.167])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 09:44:18 -0700
-Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
-To:     Leon Romanovsky <leon@kernel.org>, Sagi Grimberg <sagi@grimberg.me>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Israel Rukshin <israelr@mellanox.com>,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, maxg@mellanox.com,
-        sergeygo@mellanox.com, Chuck Lever <chuck.lever@oracle.com>
-References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
- <20200512171633.GO4814@unreal> <5b8b0b51-83e3-06c2-9b99-dec0862c0e5b@acm.org>
- <20200512201303.GA19158@mellanox.com>
- <98a0d1aa-6364-a2f1-37f6-9c69e1efaa0b@acm.org>
- <20200512230625.GB19158@mellanox.com>
- <b9dab6bf-d1b8-40c0-63ba-09eb3f4882f5@grimberg.me>
- <20200513071855.GQ4814@unreal>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <be388f26-9b86-b826-5d4b-8dec201ea5ef@intel.com>
-Date:   Wed, 13 May 2020 12:44:16 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1732880AbgEMRjH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 13:39:07 -0400
+Received: from smtprelay0150.hostedemail.com ([216.40.44.150]:54324 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732694AbgEMRjG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 13:39:06 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 213E41802912F;
+        Wed, 13 May 2020 17:39:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3872:3874:4030:4321:4605:5007:6742:6743:7875:8603:8660:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12679:12740:12760:12895:13019:13069:13146:13148:13156:13228:13230:13311:13357:13439:14040:14659:14721:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: watch82_4eccc56996d20
+X-Filterd-Recvd-Size: 2964
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 13 May 2020 17:39:01 +0000 (UTC)
+Message-ID: <ecc165c33962d964d518c80de605af632eee0474.camel@perches.com>
+Subject: Re: remove kernel_setsockopt and kernel_getsockopt
+From:   Joe Perches <joe@perches.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
+        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
+Date:   Wed, 13 May 2020 10:38:59 -0700
+In-Reply-To: <20200513062649.2100053-1-hch@lst.de>
+References: <20200513062649.2100053-1-hch@lst.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200513071855.GQ4814@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/13/2020 3:18 AM, Leon Romanovsky wrote:
-> On Tue, May 12, 2020 at 05:53:34PM -0700, Sagi Grimberg wrote:
->>
->>>>>>>> FMR is not supported on most recent RDMA devices (that use fast memory
->>>>>>>> registration mechanism). Also, FMR was recently removed from NFS/RDMA
->>>>>>>> ULP.
->>>>>>>>
->>>>>>>> Signed-off-by: Israel Rukshin <israelr@mellanox.com>
->>>>>>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
->>>>>>>>    drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
->>>>>>>>    drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
->>>>>>>>    drivers/infiniband/ulp/iser/iser_memory.c    | 188 ++-------------------------
->>>>>>>>    drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +++---------------
->>>>>>>>    4 files changed, 40 insertions(+), 372 deletions(-)
->>>>>>>
->>>>>>> Can we do an extra step and remove FMR from srp too?
->>>>>>
->>>>>> Which HCA's will be affected by removing FMR support? Or in other words,
->>>>>> when did (Mellanox) HCA's start supporting fast memory registration? I'm
->>>>>> asking this because there is a tradition in the Linux kernel not to
->>>>>> remove support for old hardware unless it is pretty sure that nobody is
->>>>>> using that hardware anymore.
->>>>>
->>>>> We haven't entirely been following that in RDMA.. More like when
->>>>> people can't test any more it can go.
->>>>>
->>>>> For FMR the support was dropped in newer HW so AFAIK, nobody tests
->>>>> this and it just stands in the way of making FRWR work properly.
->>>>>
->>>>> Do the ULPs stop working or do they just run slower with some regular
->>>>> MR flow?
->>>>
->>>> I'm not sure. I do not have access to RDMA adapters that do not support
->>>> FRWR.
->>>>
->>>> A possible test is to check on websites for used products whether old
->>>> RDMA adapters are still available. Is the InfiniHost adapter one of the
->>>> adapters that supports FMR? It seems like that adapter is still easy to
->>>> find.
->>>
->>> I don't know - AFAIK nobody does any testing on those cards any
->>> more, and doesn't test the ULPs either.
->>>
->>> I know Leon has pushed to remove the mthca driver in the past.  At one
->>> point there was a suggestion that drivers that do not support FRWR
->>> should be dropped, but I don't remember if mthca is the last one or
->>> not.
->>>
->>> There has been a big push to purge useless old stuff, look at the
->>> entire arch removals for instance. The large RDMA drivers fall under
->>> the same logic, IMHO.
->>
->> I think we should remove this support, if there is a user of this
->> somewhere he can safely use iscsi. Let alone that iser uses the fmr
->> pools which leaves rkeys exposed for caching purposes. So I'd much
->> rather remove it than trying to fix it.
+On Wed, 2020-05-13 at 08:26 +0200, Christoph Hellwig wrote:
+> this series removes the kernel_setsockopt and kernel_getsockopt
+> functions, and instead switches their users to small functions that
+> implement setting (or in one case getting) a sockopt directly using
+> a normal kernel function call with type safety and all the other
+> benefits of not having a function call.
 > 
-> Agree, given the fact that no one is even going to try to fix.
+> In some cases these functions seem pretty heavy handed as they do
+> a lock_sock even for just setting a single variable, but this mirrors
+> the real setsockopt implementation - counter to that a few kernel
+> drivers just set the fields directly already.
 > 
-> We don't see new contributors in this community who are not affiliated
-> with RDMA companies and they are not testing and have no plans to test FMR.
+> Nevertheless the diffstat looks quite promising:
 > 
-> I feel that we can't even say if FMR and old cards work :).
+>  42 files changed, 721 insertions(+), 799 deletions(-)
 
-qib still works.
+trivia:
 
--Denny
+It might be useful to show overall object size change.
+
+More EXPORT_SYMBOL uses increase object size a little.
+
+And not sure it matters much except it reduces overall object
+size, but these patches remove (unnecessary) logging on error
+and that could be mentioned in the cover letter too.
+
+e.g.:
+
+-       ret = kernel_setsockopt(queue->sock, SOL_SOCKET, SO_LINGER,
+-                       (char *)&sol, sizeof(sol));
+-       if (ret) {
+-               dev_err(nctrl->device,
+-                       "failed to set SO_LINGER sock opt %d\n", ret);
+-               goto err_sock;
+-       }
++       sock_set_linger(queue->sock->sk, true, 0);
+
+
 
