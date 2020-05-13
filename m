@@ -2,115 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F131D132F
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 14:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEB71D134D
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 14:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732006AbgEMMvs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 08:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        id S1728887AbgEMMys (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 08:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731779AbgEMMvr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 08:51:47 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFFAC05BD09
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 05:51:46 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id z80so11601443qka.0
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 05:51:46 -0700 (PDT)
+        with ESMTP id S1728313AbgEMMyr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 08:54:47 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09925C061A0C
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 05:54:46 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j5so20774962wrq.2
+        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 05:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=I21hL7AkwUgdNPUI4l7KTQwvXQoa/NOyWUo4IiS5Zaw=;
-        b=m6ad7mNkFXWQP2LAar13cizth8P3iKliOem15ctBmD+RRB5NWWGZ4hVFaLb43OUHF4
-         dEfbKyHnbdTPvph0NO3q6QQG3feEsDR1NN/aDJiylAVOx6elqA7EySRBy4zgPJs7Fz0/
-         Wh3NuXdccvtT3AKlZIUnJi/oe7DjFVTOpq20lvPm5ktnPdoP012Lk/9j/pUDGJCnQSsG
-         TmFagaUtz3vbm20kiJmFo0AhIIm3asYdCe/QXnsQdcQLCh91UXycsxj5M4FwgjK5Th4v
-         OuuA5GD8cz9mUhRoZ9e54BvWpbbFTnY1KxAJWQ9Fh7pEfNmqL/JrbXuEeLjTtGaJiHKf
-         PtmA==
+         :content-disposition:in-reply-to;
+        bh=WsGW+BcapDfAt0upcHEJqwAxG4BGPPJOO76I/YUR6sM=;
+        b=HuG5ZpcB9J1+lh33ZfEBoitaCQ4uQkjRT9Z6FCFbyK1U8GztmBk4AQN6TIs2FKx1dk
+         20dZ2uhfRF9R+S4W379y4w0yIAl3c27466jKJCrI6Qatbp11n+ZTUC3kNOy9stS10w9U
+         +NK9EiAVl9fBCNuoVFrrD9/vXQn92ZHhHfqGH25Lp0uuU+nj0b34fBknwye9bzlWoBYS
+         +PAcpTyhEaeIyQDj92fN3aWFhw4/d2yAoda1DTZNtdh2xHpnN7wOSbG/jyMzkBsVbLod
+         1BTRj1hFPJ24mDKzbe6sHEcSp8quRoB1hLvV/d/Mz27QrZeSRmvyGBb2u93ZUxKAVR4f
+         0Qhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=I21hL7AkwUgdNPUI4l7KTQwvXQoa/NOyWUo4IiS5Zaw=;
-        b=ob8RIeWLx9/naSGVRmwnre1sEcgCYA+Zw9IVtDj9ARfB9zYsHeUnWRRYUxEkdzHzf/
-         SZL3jlLDqEA8P41SVdTV5b2ecOU700yrsinpQZpM+uiCTvelLSEk62bH+mst4lr0HOV8
-         4snOCWR8KZvSjAm8/YFegzKXIKHkMR3nr3xDqXiDMTXvFjkfXKFug/SnAXOHSV15DgZ1
-         8AN7QCcZFG/UoJ5OwTAzHrtMz1q1+b8z+RWxDQGltKKqA8FdubSMgNBC3LY6H6LWHnFK
-         +QbMo2oT7CcTAjdANQVZSlTQO39OmywNC5euOt37fFXFCpg2cwVdITPDn8elmEURtnbc
-         5dAA==
-X-Gm-Message-State: AGi0PuaPM3qmM//StCq6DOYQ8ILEPk4G0xNgYfOm/GvAiCcDM+6CCMKQ
-        pubNMIsDocBz+DUV65m/6yoOKw==
-X-Google-Smtp-Source: APiQypKy6izjhUbivG+/I6PWV8eR0peu4dabx2HIoItXGvYLmzKEIJJmSlJIMmuJWfJIdDxUx9gC8w==
-X-Received: by 2002:a37:61d8:: with SMTP id v207mr26564281qkb.146.1589374305465;
-        Wed, 13 May 2020 05:51:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t67sm13779002qka.17.2020.05.13.05.51.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 May 2020 05:51:44 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jYqrQ-0008K6-D9; Wed, 13 May 2020 09:51:44 -0300
-Date:   Wed, 13 May 2020 09:51:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 11/33] tcp: tcp_sock_set_nodelay
-Message-ID: <20200513125144.GC29989@ziepe.ca>
-References: <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-12-hch@lst.de>
+         :mime-version:content-disposition:in-reply-to;
+        bh=WsGW+BcapDfAt0upcHEJqwAxG4BGPPJOO76I/YUR6sM=;
+        b=gGRTrfnBF5RQH1Nad2/7ASIhDHNt8Xaukf0/OJz4Qi5JByse4OySPwEJgK0A4y6Fzm
+         VsJBSCWpz36BV9tqdepHgOzZnjnQU6OUUlW2OM85Kh96j4zG6yTHLPZY29ke5HqEBmL3
+         2PqBTpFemaxu8VylXFSWWdV7zSMswW054hart3j8dpZXUO9OQdNQIwpvuEXx61vqRLwp
+         /+cNaQSpm5fv5NdrSVo+5SrNDBgEVMGUMJqGAvHGiw7dILpDgpkegoslIN8j0Xcd7Syf
+         I158ZVDzaaz39+SpRY4mn1iWQ+LorslPuO16ei/cl77Hznj+kmFIrSN6BCHmxSJ6HvGH
+         LSrQ==
+X-Gm-Message-State: AGi0PubxdOE7QONK84V/6e6rN7GguUtNGgJrXcCwhbKebGhnMfrW3JNf
+        kunmueRWNRc/iuAeQG4gtUU=
+X-Google-Smtp-Source: APiQypIhLJGzjs8ev0tceCB8O2tj4xSj7UmAM9exEfy7hTmkJvdI0y75Icj2LsNOaJffmL4ZapZKcw==
+X-Received: by 2002:adf:e50d:: with SMTP id j13mr17893199wrm.383.1589374484770;
+        Wed, 13 May 2020 05:54:44 -0700 (PDT)
+Received: from kheib-workstation ([37.142.4.4])
+        by smtp.gmail.com with ESMTPSA id s14sm33899576wmh.18.2020.05.13.05.54.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 05:54:44 -0700 (PDT)
+Date:   Wed, 13 May 2020 15:54:41 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH for-rc] RDMA/srpt: Fix disabling device management
+Message-ID: <20200513125441.GA124733@kheib-workstation>
+References: <20200511222918.62576-1-kamalheib1@gmail.com>
+ <20200513072203.GR4814@unreal>
+ <20200513100204.GA92901@kheib-workstation>
+ <20200513102132.GW4814@unreal>
+ <20200513104536.GA120318@kheib-workstation>
+ <1e5e1e3b-7e18-50a0-6133-db76c39985be@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513062649.2100053-12-hch@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1e5e1e3b-7e18-50a0-6133-db76c39985be@amazon.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 13, 2020 at 08:26:26AM +0200, Christoph Hellwig wrote:
-> Add a helper to directly set the TCP_NODELAY sockopt from kernel space
-> without going through a fake uaccess.  Cleanup the callers to avoid
-> pointless wrappers now that this is a simple function call.
+On Wed, May 13, 2020 at 02:59:21PM +0300, Gal Pressman wrote:
+> On 13/05/2020 13:45, Kamal Heib wrote:
+> > On Wed, May 13, 2020 at 01:21:32PM +0300, Leon Romanovsky wrote:
+> >> On Wed, May 13, 2020 at 01:02:04PM +0300, Kamal Heib wrote:
+> >>> On Wed, May 13, 2020 at 10:22:03AM +0300, Leon Romanovsky wrote:
+> >>>> On Tue, May 12, 2020 at 01:29:18AM +0300, Kamal Heib wrote:
+> >>>>> Avoid disabling device management for devices that don't support
+> >>>>> Management datagrams (MADs) by checking if the "mad_agent" pointer is
+> >>>>> initialized before calling ib_modify_port, also change the error message
+> >>>>> to a warning and make it more informative.
+> >>>>>
+> >>>>> Fixes: 09f8a1486dca ("RDMA/srpt: Fix handling of SR-IOV and iWARP ports")
+> >>>>> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> >>>>> ---
+> >>>>>  drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++++--
+> >>>>>  1 file changed, 6 insertions(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> >>>>> index 7ed38d1cb997..7b21792ab6f7 100644
+> >>>>> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> >>>>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> >>>>> @@ -625,14 +625,18 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+> >>>>>  		.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP,
+> >>>>>  	};
+> >>>>>  	struct srpt_port *sport;
+> >>>>> +	int ret;
+> >>>>>  	int i;
+> >>>>>
+> >>>>>  	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
+> >>>>>  		sport = &sdev->port[i - 1];
+> >>>>>  		WARN_ON(sport->port != i);
+> >>>>> -		if (ib_modify_port(sdev->device, i, 0, &port_modify) < 0)
+> >>>>> -			pr_err("disabling MAD processing failed.\n");
+> >>>>>  		if (sport->mad_agent) {
+> >>>>> +			ret = ib_modify_port(sdev->device, i, 0, &port_modify);
+> >>>>> +			if (ret < 0)
+> >>>>> +				pr_warn("%s-%d: disabling device management failed (%d). Note: this is expected if SR-IOV is enabled.\n",
+> >>>>> +					dev_name(&sport->sdev->device->dev),
+> >>>>
+> >>>> The ib_modify_port() shouldn't be called if it expected to fail.
+> >>>>
+> >>>> Thanks
+> >>>
+> >>> OK, Do you know if there is a way to check if the created ib device is
+> >>> for VF to avoid calling ib_modify_port()?
+> >>
+> >> The "is_virtfn" field inside pci_dev will give this information,
+> >> but I don't know why it is expected to fail here.
+> >>
+> >> Thanks
+> >>
+> > 
+> > Looks like there a more trivial way, I mean checking if
+> > IB_DEVICE_VIRTUAL_FUNCTION cap is set, probably there is a need to make
+> > to sure that this cap is set for all providers when the IB device is
+> > created for a VF.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/drbd/drbd_int.h             |  7 ----
->  drivers/block/drbd/drbd_main.c            |  2 +-
->  drivers/block/drbd/drbd_receiver.c        |  4 +--
->  drivers/infiniband/sw/siw/siw_cm.c        | 24 +++-----------
->  drivers/nvme/host/tcp.c                   |  9 +-----
->  drivers/nvme/target/tcp.c                 | 12 ++-----
->  drivers/target/iscsi/iscsi_target_login.c | 15 ++-------
->  fs/cifs/connect.c                         | 10 ++----
->  fs/dlm/lowcomms.c                         |  8 ++---
->  fs/ocfs2/cluster/tcp.c                    | 20 ++----------
->  include/linux/tcp.h                       |  1 +
->  net/ceph/messenger.c                      | 11 ++-----
->  net/ipv4/tcp.c                            | 39 +++++++++++++++--------
->  net/rds/tcp.c                             | 11 +------
->  net/rds/tcp.h                             |  1 -
->  net/rds/tcp_listen.c                      |  2 +-
->  16 files changed, 49 insertions(+), 127 deletions(-)
+> It's not, I think this bit is used for ipoib stuff only or something?
 
-No problem with the siw change
+Yes, this cap is set only by the mlx5_ib driver for the IPoIB enhanced
+mode.
 
-Acked-by: Jason Gunthorpe <jgg@mellanox.com>
-
-Jason
+Thanks,
+Kamal
