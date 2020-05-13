@@ -2,88 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1A61D0395
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 02:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8D31D03A7
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 02:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731399AbgEMA1W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 May 2020 20:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S1729215AbgEMAfL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 May 2020 20:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731107AbgEMA1W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 20:27:22 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7676DC061A0C
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 17:27:22 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id b1so12034295qtt.1
-        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 17:27:22 -0700 (PDT)
+        with ESMTP id S1728131AbgEMAfK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 May 2020 20:35:10 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9278BC061A0E
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 17:35:10 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s186so13860733qkd.4
+        for <linux-rdma@vger.kernel.org>; Tue, 12 May 2020 17:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vQQlYV0mWhWFgdbtawFm7sLDmoe715+jr/GNcNFTAuo=;
-        b=ZQ2krf+nZRjRXOmdZhPnYzJh0H0hrw1Iuhl0GBDpEfY16TX7MOJtFez44RVtD/vlMr
-         MFOXWUg1V6sGoURmfJ92eWsK5PM8p13XGDlt1igUfabf7MUVVRojmQqzdmqSqrVMOazf
-         pglAlxjS2RJ7zv1adVMF46nzL3ndoAT5bjQtngZTkFYerFPZRUpJLWP9OWyuEk3BO47P
-         XespuqHuzZLxCesrrZDLU5mAnr67h1R0VHL/tGzEEtyh8fU/67arHez+06c3SNpMHYwS
-         SObcd9Kqsgu/96g2DVNAOeItVQv7EavRbRguQFLteBgvnI0+/YM4dLNJQCp/7pBd+Am5
-         OlGw==
+        bh=W0ZQEN7ga0dc2y953RKuwDFvWVmhQkwP4C140g0h9uM=;
+        b=TOxWqevyxw3M0QWnWOIOsqppeWkjkLyMF+AVscrFeMUBaHmTzGlwE3IYQMSgbYv/Ed
+         DJdfq+6d110SvsA3pceOgF75HPJzGhrqBc9p8KNXNImlaOHS2cbG8mQd1cWNmt+wGiZ3
+         5DT8jE8bodoe9o8CLsuvqXzdLXIn+44VoMWCrxikXWmD5yUIQ+MxwMLEFTZR/2Lq+Jh3
+         OIs+dTrQbShDSFIB1prGG8a8+K9xkyeK2WSUu0FozX980TOriWzz0Bxch3CzmaLGAsae
+         VJYNLPEh/+d78W44RJUNbSW7uAoL7zssbZ6y19uGTnVzrwDPX6oUrkSHn217VSSx+0JN
+         InHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vQQlYV0mWhWFgdbtawFm7sLDmoe715+jr/GNcNFTAuo=;
-        b=tkH7kJesBrXrH88wUoLXq0vNMHiRZbXBQ+G1mf1mMjGklWosPu3CCglHsl1nkudksB
-         lb22sfKxTI03iE5kcjWW2OpD4RGL0AmM23b3CR1M29cLgj2LN5cpMNwgu1aXGEJ0SO9M
-         2KedsX9ObB0dERyyXu3c+4tCaI4SRPo1j35g8gaIqtjelsEU8TkwQIbPDxIV99lLu6ZX
-         BPUHIy7PvSy6gbbuiV9GpoEBJZMVeB7nyvJ6vGNCV+CIl56ZAPsYLtDKT02vZc1WUmk3
-         w+T1+9qCLo+r9jZEZCpH1352ij9SRqdc76As3sauxaeh1JA2MQn+XrAMQjThJXkmt/ZM
-         Qzdg==
-X-Gm-Message-State: AGi0PuY3HuuFiRkTbwSsoz1KRWurViftN0SIHDLccEZBRNsjBz86kJs3
-        H/LPo5p1gqiB9B/p2+TJWu1umQ==
-X-Google-Smtp-Source: APiQypLypGsvf49kgtlsARmEEgyy+o9YjQA++60MlG4L/OnytoeV/AQYLRXbIkGcTQb6qIs0FQm56Q==
-X-Received: by 2002:aed:34c6:: with SMTP id x64mr25820808qtd.66.1589329641672;
-        Tue, 12 May 2020 17:27:21 -0700 (PDT)
+        bh=W0ZQEN7ga0dc2y953RKuwDFvWVmhQkwP4C140g0h9uM=;
+        b=qjmUXJHJLAV9Kq9tBFkKYwDJEOMGGwq56vkZEpIKkGLzEy5vughpuLOfQs61UhRmnp
+         hYgRFngTBQr7VFMPpeiYdy9rcf6RK/dWAlLjxO1zdWaKumfmi8/CIv5iVSD2wtxTs7Yk
+         VgaMo6l5TsEadw4qxtE9EaAicuVtKEITaD6xn+wUP+9f95N4q5gq9wHISXK5+9btQDPM
+         QTU4HKKRQTWhC6zO0GmoWBGm/LMrq6OWNSWa03/7ibDusvFOs24WUPl4QDlJXVKSGUTS
+         yMH4y77eAL3qgD6PqTgtlse2LmiUzA81aD7dNuoQ61jgA9JqBan1Om0NEbVQIh2G1gL/
+         t4nw==
+X-Gm-Message-State: AGi0PuZI+vD+Myi1msLP5bbPOM8sZAhxa87nSS6oZXq/SAWzGAfMROfo
+        lGc5fYuXNa2OeT8DPH7IUZRZpA==
+X-Google-Smtp-Source: APiQypJlsdFx0FTVDoPPXKE8IY8M+QewagBieVDSzBEMNEqhPQJ64DnQ4+BbfFKl9ULZx10d7hSN7w==
+X-Received: by 2002:a37:a2ca:: with SMTP id l193mr21616494qke.23.1589330109720;
+        Tue, 12 May 2020 17:35:09 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id z18sm13348254qti.47.2020.05.12.17.27.20
+        by smtp.gmail.com with ESMTPSA id t130sm8830732qka.14.2020.05.12.17.35.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 May 2020 17:27:21 -0700 (PDT)
+        Tue, 12 May 2020 17:35:09 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jYfF2-0002Uu-Cy; Tue, 12 May 2020 21:27:20 -0300
-Date:   Tue, 12 May 2020 21:27:20 -0300
+        id 1jYfMa-0005DH-PO; Tue, 12 May 2020 21:35:08 -0300
+Date:   Tue, 12 May 2020 21:35:08 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 0/3] RDMA/hns: Preparing for next generation of
- hip08
-Message-ID: <20200513002720.GA6166@ziepe.ca>
-References: <1588674607-25337-1-git-send-email-liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Danit Goldberg <danitg@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next 00/10] Various clean ups to ib_cm
+Message-ID: <20200513003508.GA20001@ziepe.ca>
+References: <20200506074701.9775-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588674607-25337-1-git-send-email-liweihang@huawei.com>
+In-Reply-To: <20200506074701.9775-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 05, 2020 at 06:30:04PM +0800, Weihang Li wrote:
-> Patch #1 add a macro HIP08_C for this new pci device, #2 and #3 adjust
-> codes about flags.
+On Wed, May 06, 2020 at 10:46:51AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Lang Cheng (1):
->   RDMA/hns: Combine enable flags of qp
+> >From Jason,
 > 
-> Weihang Li (2):
->   RDMA/hns: Extend capability flags for HIP08_C
+> These are intended to be no-functional change edits that tidy up the
+> code flow or coding style.
+> 
+> Thanks
+> 
+> Danit Goldberg (1):
+>   RDMA/cm: Remove unused store to ret in cm_rej_handler
+> 
+> Jason Gunthorpe (9):
+>   RDMA/addr: Mark addr_resolve as might_sleep()
+>   RDMA/cm: Remove return code from add_cm_id_to_port_list
+>   RDMA/cm: Pull duplicated code into cm_queue_work_unlock()
+>   RDMA/cm: Pass the cm_id_private into cm_cleanup_timewait
+>   RDMA/cm: Add a note explaining how the timewait is eventually freed
+>   RDMA/cm: Make find_remote_id() return a cm_id_private
+>   RDMA/cm: Remove the cm_free_id() wrapper function
+>   RDMA/cm: Remove needless cm_id variable
+>   RDMA/cm: Increment the refcount inside cm_find_listen()
 
-These two applied to for-next
+Applied to for-next
 
->   RDMA/hns: Add a macro for next generation of hip08
-
-This is just dead code, send it as part of something that uses it.
-
-Thanks,
 Jason
