@@ -2,62 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897491D0F1E
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 12:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1041D0EAE
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 12:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388174AbgEMKEj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 06:04:39 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10925 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732876AbgEMJrh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 05:47:37 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95ebbc226b8f-ccef9; Wed, 13 May 2020 17:47:19 +0800 (CST)
-X-RM-TRANSID: 2ee95ebbc226b8f-ccef9
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.144.88] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee85ebbc22539f-3d20b;
-        Wed, 13 May 2020 17:47:18 +0800 (CST)
-X-RM-TRANSID: 2ee85ebbc22539f-3d20b
-Subject: Re: [PATCH] net/mlx5e: Use IS_ERR() to check and simplify code
-To:     David Miller <davem@davemloft.net>
-Cc:     saeedm@mellanox.com, leon@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200507115010.10380-1-tangbin@cmss.chinamobile.com>
- <20200507.131834.1517984934609648952.davem@davemloft.net>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <febc1254-ad7f-f564-6607-9ac89f1fcf40@cmss.chinamobile.com>
-Date:   Wed, 13 May 2020 17:48:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1732935AbgEMJum (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 05:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732931AbgEMJuk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 05:50:40 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4594723128;
+        Wed, 13 May 2020 09:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589363439;
+        bh=6Kbr+u3ZpaS0c+vW2VIy+pExcklK1M4cFea8NXTd8Cw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BF9agn5890+DNO3IsSdc1YjYG79rf6c3fV0XTCWAq4vx/iRz4bhAYiGzyg53xEnEu
+         jiPC/qX7ZXqQMb8GNwqKfWonlzHL+ePRgvaddmkyDUUc8ZmxElSdu/04amX/Olu+It
+         75D9cnxPx4RryCv73PGix3EbtecJeUdmhi9t+AfY=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>
+Subject: [PATCH rdma-next 00/14] RAW format dumps through RDMAtool
+Date:   Wed, 13 May 2020 12:50:20 +0300
+Message-Id: <20200513095034.208385-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200507.131834.1517984934609648952.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi David:
+From: Leon Romanovsky <leonro@mellanox.com>
 
-On 2020/5/8 4:18, David Miller wrote:
-> From: Tang Bin <tangbin@cmss.chinamobile.com>
-> Date: Thu,  7 May 2020 19:50:10 +0800
->
->> Use IS_ERR() and PTR_ERR() instead of PTR_ZRR_OR_ZERO()
->> to simplify code, avoid redundant judgements.
->>
->> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> Saeed, please pick this up.
+From Maor:
 
-Does this mean the patch has been received and I just have to wait?
+Hi,
 
-Thanks,
+The following series adds support to get the RDMA resource data in RAW
+format. The main motivation for doing this is to enable vendors to return
+the entire QP/CQ/MR data without a need from the vendor to set each field
+separately.
 
-Tang Bin
+Thanks
 
+Maor Gottlieb (14):
+  net/mlx5: Export resource dump interface
+  net/mlx5: Add support in query QP, CQ and MKEY segments
+  RDMA/core: Fix double put of resource
+  RDMA/core: Allow to override device op
+  RDMA/core: Don't call fill_res_entry for PD
+  RDMA/core: Add restrack dummy ops
+  RDMA: Add dedicated MR resource tracker function
+  RDMA: Add a dedicated CQ resource tracker function
+  RDMA: Add a dedicated QP resource tracker function
+  RDMA: Add dedicated cm id resource tracker function
+  RDMA: Add support to dump resource tracker in RAW format
+  RDMA/mlx5: Add support to get QP resource in raw format
+  RDMA/mlx5: Add support to get CQ resource in RAW format
+  RDMA/mlx5: Add support to get MR resource in RAW format
 
+ drivers/infiniband/core/device.c              |  16 ++-
+ drivers/infiniband/core/nldev.c               | 136 ++++++++----------
+ drivers/infiniband/core/restrack.c            |  32 +++++
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   7 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |  11 +-
+ drivers/infiniband/hw/cxgb4/restrack.c        |  33 ++---
+ drivers/infiniband/hw/hns/hns_roce_device.h   |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c     |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_restrack.c |  17 +--
+ drivers/infiniband/hw/mlx5/main.c             |   6 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  11 +-
+ drivers/infiniband/hw/mlx5/restrack.c         | 105 +++++++++++---
+ .../mellanox/mlx5/core/diag/rsc_dump.c        |   6 +
+ .../mellanox/mlx5/core/diag/rsc_dump.h        |  33 +----
+ .../diag => include/linux/mlx5}/rsc_dump.h    |  25 ++--
+ include/rdma/ib_verbs.h                       |  13 +-
+ include/uapi/rdma/rdma_netlink.h              |   2 +
+ 17 files changed, 258 insertions(+), 201 deletions(-)
+ copy {drivers/net/ethernet/mellanox/mlx5/core/diag => include/linux/mlx5}/rsc_dump.h (68%)
+
+--
+2.26.2
 
