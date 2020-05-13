@@ -2,121 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC6D1D194F
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 17:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C00A1D1A7B
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 18:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732408AbgEMPZo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 11:25:44 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44288 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732383AbgEMPZo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 11:25:44 -0400
-Received: by mail-pf1-f195.google.com with SMTP id x13so2240138pfn.11
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 08:25:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ZqThxTfH9MdgUBsESWhA9ORDZgw8BFyezfAiWQaIKtM=;
-        b=UOmtFjce7p0TmS6TRvxKMYsurcnqTw3HS5MSAyQ4PrN2hCWJa7u/ixJJeF7SAqWrH4
-         0rZdy7uFmOfBV2h+4E6/TEruIgVSk9k09CHyvQc2mHmRe2gghgcc8Pzn3O1xz9rgu4cI
-         TIChWqtYGqBtHW0HH0iKwyGEyYonYtUSTVptPsql0OGzg5cATie4lHTNjX326BjzjykB
-         h3Zw99FqOl81dB7XpsOKDMXdy2tLD9hse8+2S4+VOT4u4D+6HuRriI5SwYMG3bBRcF5+
-         l5BWGPjSjrX5KAuSuomlH1CuLpOt6HFuyKPtTPKMmpX0FFJgNhDuwZZB/MgugjvZwi8e
-         TRGA==
-X-Gm-Message-State: AOAM532rp0AHT/y3RgOHvaHwb7ITs7dh1Q4jRFF5G/GLzsguKfxW4yHK
-        3FZL22JtHq3p0SuWg+Gc32A=
-X-Google-Smtp-Source: ABdhPJwQHrscBp0iwNvbWd7tFUnCgzu+QQGbqVhPp2+nt4Wh9fIvJmldW81azXnu0vwik9FCETGh+A==
-X-Received: by 2002:a62:77d1:: with SMTP id s200mr2962324pfc.128.1589383543209;
-        Wed, 13 May 2020 08:25:43 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:e13e:45d5:70d9:c74e? ([2601:647:4000:d7:e13e:45d5:70d9:c74e])
-        by smtp.gmail.com with ESMTPSA id gd17sm15747519pjb.21.2020.05.13.08.25.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 08:25:42 -0700 (PDT)
-Subject: Re: [PATCH for-rc] RDMA/srpt: Fix disabling device management
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Kamal Heib <kamalheib1@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Doug Ledford <dledford@redhat.com>
-References: <20200511222918.62576-1-kamalheib1@gmail.com>
- <20200513072203.GR4814@unreal> <20200513100204.GA92901@kheib-workstation>
- <20200513102132.GW4814@unreal> <20200513104536.GA120318@kheib-workstation>
- <20200513105045.GX4814@unreal> <20200513111435.GA121070@kheib-workstation>
- <20200513113118.GY4814@unreal> <20200513123837.GA123854@kheib-workstation>
- <20200513124334.GA29989@ziepe.ca>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <d3e729d7-97c0-607c-b1b3-80a2df47cbae@acm.org>
-Date:   Wed, 13 May 2020 08:25:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1730063AbgEMQDb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 12:03:31 -0400
+Received: from mail-eopbgr70072.outbound.protection.outlook.com ([40.107.7.72]:46724
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728354AbgEMQDa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 12:03:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XqJvRJkI1zWNXuW3vh/RvD3dwdpBL5uPxKzJZASQb9P/Sex4B+BQypmsdE2x3Ehxp9j8GEb+GpJw4D5V8Sv1oGctoO3WkvV2kwHEUSMg7DpYXw/EOQQUSq2RWt9oZiKVpFN9/VIivDORMBxnAT9erCnefvYdhCjbXJf/AhUFuj6BT+2R0egYMo7U7WWsyAvjiwrq6YZVSLiONAKx6pG7NqbHUDwIb6Bas0/JJT/BgXZ9k/disarc8DepkUug6cGu3iqZKDSl3D8Dcnkes23g37yJEaobfioQkXZhSZVpluaunBSiDnD1eKV0vv1bs07XLIo1mpJxxg+cLCXYgdoFIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ca2C9rT+YS4ILooNBsdwR3j2tPRrJK+WQEPCQd4H0k=;
+ b=LqFiRLBuefNNZ70Q8pJwPwpsUTGOEN6NB3BdHAph3GG2mFTWRT3lgYVtX2/Jw4sHx14/3MxUdzL5gqIPPxPkwHz8fYdjlsUn+4/T5hD9amN39EhcVlSciLgR2Bi4iTZLFbS+ajvXhtV9UEdYXVPMXv5TbelZiaPqFVJUqO5cRJ3rJ46pvGOk5+Rwk7Rm9iPnHXw5BPA/GKNqjr4wPBZ/hQcJWo1Q+Y2nH99wchGXrVES9OiG1hSB00SLsVa7orX3NT1gnYG+uLSBGmIQAIO5YtZ/CjNQtIZp7olag3MMj9A0q0AOH09etrx9AuUW0+5iX4NLz1vAHrgls09LynPygg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ca2C9rT+YS4ILooNBsdwR3j2tPRrJK+WQEPCQd4H0k=;
+ b=W7UgDg25gTBVMPXbxKHki6UhitIdwWaMW0qxvxOg2ZFGYCqhMLTtnUI2cKnt07szaGmOyzFR2GBRtzr7Us8bZBWKiQI6JKJFlNjF+xKV/GlpoYMg/hOTf/a5RjTh2bB4bZlcTin/erdkFiqoYaXj4VUfrq1y8p1Djeq+ImWmoF8=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+ by AM0PR05MB5875.eurprd05.prod.outlook.com (2603:10a6:208:12d::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Wed, 13 May
+ 2020 16:03:27 +0000
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4]) by AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4%5]) with mapi id 15.20.2979.033; Wed, 13 May 2020
+ 16:03:27 +0000
+Subject: Re: [PATCH 1/1] IB/srp: remove support for FMR memory registration
+To:     Bart Van Assche <bvanassche@acm.org>, jgg@mellanox.com,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org
+Cc:     sagi@grimberg.me, israelr@mellanox.com
+References: <20200513144930.150601-1-maxg@mellanox.com>
+ <b356d083-7c53-145c-bd30-38fe3b5a6510@acm.org>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <bc179a1a-863f-9ae4-954b-ca18db9c388f@mellanox.com>
+Date:   Wed, 13 May 2020 19:03:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200513124334.GA29989@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <b356d083-7c53-145c-bd30-38fe3b5a6510@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12)
+ To AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.0.0.3] (89.139.203.251) by FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Wed, 13 May 2020 16:03:25 +0000
+X-Originating-IP: [89.139.203.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: dd93456b-d444-471e-c7d8-08d7f7572be7
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5875:|AM0PR05MB5875:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB58751EFA13E1534E4E3A3600B6BF0@AM0PR05MB5875.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 0402872DA1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +7gjr0FwBUmgWoKCjluH2/kYgXq/WrIuv/i71l9j9862B7FJypJabIZ7qNEv9KrszXZwCGBzbKvEhm8gKdSFcPZPMLdda1lLvV/qNLVbEniZFGysdOxM3VjJVIt5cmNdrHjCMXRG4Yu8uibzMxu3OmAYjyxJ7NKdahhDEQTyYuFGoUSetFnl+rUYh2NFCEJOlF8VCM4jaurdi69Dv6j9VCf70btIunJXi2pKVmebGkNpQtvl6bWUU0Xq7yzFNFk7JpvW+YTSuvOz/iIHTzcN7oy8sIEPByKV24BeFbp0iPSerfxOe2FyhYjWdj7Xpkz9npEARx9G2+FFsv+aCtmN36+c+obv3gswMyfTFhhRQDzV0Y9ZekneoEXGH22rakDFl2aiBWSIhmpeHWNRmnuYi4z5n4OFZs9BJpYa2uDXV5oOEImhdCF6deUd222rJindkHazuvEjUe92SkJuk0eIM0XAF62FyEeov2y1xVEqBQssB5HvkiUWUQdlYWxhyzVSPn/0KuYbDsJvPXjGNu/1ofOq2weuDMyuJRXtVOhLjN9QBRvIvUZmGndNumNjiVtN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(33430700001)(8676002)(31686004)(16576012)(2616005)(107886003)(316002)(2906002)(52116002)(478600001)(53546011)(6486002)(8936002)(33440700001)(956004)(36756003)(66476007)(66556008)(5660300002)(31696002)(66946007)(186003)(16526019)(86362001)(26005)(4744005)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: trX2XcRuaOMLTE8uw1JaNnB+Vk8LNi7h66oH84mL4eYpM3/6055+c980IGvRShVHO9yUUJbucqINAUsk569VTEP4oeyRmBUBv+fdmSvygXRfLn7oSUIf0RzO3fPrXJW/S/Sa/NSWnAgjo2kjfrjm74R2dShosTbFrpcA478PjygbrRARBK22NWM9fPa3chJRMhXQvLObUQG2cbAW9hR6C0n/INxCQ8ktYaDPaQeZwzJItp1X/mUpsRpqpHRgTABMZK1JExneRp61JpTtjuBfZE3VCzASUSK6YcdZyuUebVYIGYfGtpYdS/u0brjUkwvjfoCT6sdmFMUnnq3/M8Wb6eHgom5h562s9E/AYVXpRHLvZZ2ves25uRUvP6twmCvmki7Yo/uHj934DeuOtdDYb9wVP+rwH2loeUIBwZQ9h277jlFiD8DgoYYh0Ye9t+wQ4+DjEbNdjD0yxCQ2rh9YAmAsJHfpPOOxaR6Ckocx+xy9qetQgdBzaRUZFQ4RPvuv
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd93456b-d444-471e-c7d8-08d7f7572be7
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 16:03:26.8989
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gleAAiZRGEfoQ9uxRnOa4sDVkdBr2T3Feb0DTVWeQoxr+rk7Flyq4BLgRfPFk61sj/R4BfMJfbxMkGk3D+mVOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5875
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-13 05:43, Jason Gunthorpe wrote:
-> On Wed, May 13, 2020 at 03:38:37PM +0300, Kamal Heib wrote:
->>>> Correct me if I'm wrong, Do you mean check the return value from
->>>> rdma_cap_ib_mad()?
->>>
->>> I think so.
->>>
->>> Thanks
->>
->> Well, this function will not help in the case of VFs, because the flag
->> that is checked in rdma_cap_ib_mad() is RDMA_CORE_CAP_IB_MAD which is
->> set almost for each create IB device as part of RDMA_CORE_PORT_IBA_IB or
->> RDMA_CORE_PORT_IBA_ROCE or RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP.
-> 
-> AFAIK this case only happens for mlx4 devices that use the GUID table
-> to emulate virtual IB ports. In this case there is no bit to control.
-> 
-> I didn't quite understand why srpt has this stuff, does it mean it is
-> broken on mlx4 vports? Why allow the failure?
 
-The commit message of the code that introduced the most recent
-IB_PORT_DEVICE_MGMT_SUP changes is as follows:
+On 5/13/2020 6:11 PM, Bart Van Assche wrote:
+> On 2020-05-13 07:49, Max Gurtovoy wrote:
+>> FMR is not supported on most recent RDMA devices (that use fast memory
+>> registration mechanism). Also, FMR was recently removed from NFS/RDMA
+>> ULP.
+> Please mention how this patch has been tested.
 
------------------------------------------------------------------------
-commit 09f8a1486dcaf69753961a6df6cffdaafc5ccbcb
-Author: Bart Van Assche <bvanassche@acm.org>
-Date:   Mon Sep 30 16:17:01 2019 -0700
+It was tested using loopback SRP connection on ConnectX-4 HCA and 
+ib_srpt target (rdma_cm connection establishment).
 
-RDMA/srpt: Fix handling of SR-IOV and iWARP ports
 
-Management datagrams (MADs) are not supported by SR-IOV VFs nor by iWARP
-ports. Support SR-IOV VFs and iWARP ports by only logging an error
-message if MAD handler registration fails.
------------------------------------------------------------------------
+>
+>> @@ -71,7 +71,7 @@
+>>   static unsigned int cmd_sg_entries;
+>>   static unsigned int indirect_sg_entries;
+>>   static bool allow_ext_sg;
+>> -static bool prefer_fr = true;
+>> +static bool prefer_fr;
+>>   static bool register_always = true;
+>>   static bool never_register;
+>>   static int topspin_workarounds = 1;
+> Is this change necessary?
 
-In other words, on my setup the ib_srpt driver was working find with SR-IOV.
+No. But why this should be set ?
 
-Bart.
+
+>
+> Thanks,
+>
+> Bart.
