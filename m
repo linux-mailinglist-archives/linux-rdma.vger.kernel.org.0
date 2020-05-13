@@ -2,101 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF371D1F9A
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 21:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A041D208B
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 23:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390034AbgEMTtK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 15:49:10 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46256 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732218AbgEMTtK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 15:49:10 -0400
-Received: by mail-pg1-f193.google.com with SMTP id p21so192049pgm.13
-        for <linux-rdma@vger.kernel.org>; Wed, 13 May 2020 12:49:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ucfG/cjt6FPeU/fwEWI0KmZZ91qDf3vcCIODa70eY64=;
-        b=LnTwxf+nFjoo3lvgeUR+k3tYM9RPdCDffg/DiM2kzFhfjJhlOtSJSZSpvDgTTKMuHt
-         nJsHe6TfaDvOukzP1OxwNDUXO3/ICxSDY9NEOV5Es5xOo0uJ5g9JQdE869Xn6OeXXRR+
-         z5XtYlZlKhrmboiRNKEWiCExFoYMSQxuHsRGxUhAL2NBcrxCGpcJdbKAQCNrAw2IsFE+
-         TdMYe70jbsksf493ASWQwErfdlfTuQXelGiw1SVhGv2BiYvS6yZ1EL2FR5Fnb6sLljkm
-         RsS94Wu4h/jce2PTGJ3F3uxDgLn1+ljWbSjRMq+CbM1FH9fmqrurxSt+usY2qfoMPwbb
-         M8yg==
-X-Gm-Message-State: AOAM530gV6XWhZvPWWbKgjkElUZl7KW8DDjqeTR8hOqPm0a715aQhCYb
-        +gbs7kTdCTEDKVa6iigbfL4=
-X-Google-Smtp-Source: ABdhPJx/9t29ctyFfAPIfl/Vpb7OuxwAe2LdXywjwnn/UtQB3GLIs0shlF1s2vMEEqZGMaTGhN2gtg==
-X-Received: by 2002:a63:1854:: with SMTP id 20mr872516pgy.257.1589399349511;
-        Wed, 13 May 2020 12:49:09 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:89b0:7138:eb9:79bf? ([2601:647:4000:d7:89b0:7138:eb9:79bf])
-        by smtp.gmail.com with ESMTPSA id w84sm304499pfc.116.2020.05.13.12.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 12:49:08 -0700 (PDT)
-Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
-To:     Leon Romanovsky <leon@kernel.org>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, maxg@mellanox.com,
-        sergeygo@mellanox.com, Chuck Lever <chuck.lever@oracle.com>
-References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
- <20200512171633.GO4814@unreal> <5b8b0b51-83e3-06c2-9b99-dec0862c0e5b@acm.org>
- <20200512201303.GA19158@mellanox.com>
- <98a0d1aa-6364-a2f1-37f6-9c69e1efaa0b@acm.org>
- <20200512230625.GB19158@mellanox.com>
- <b9dab6bf-d1b8-40c0-63ba-09eb3f4882f5@grimberg.me>
- <20200513071855.GQ4814@unreal>
- <be388f26-9b86-b826-5d4b-8dec201ea5ef@intel.com>
- <20200513184349.GA4814@unreal>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <bf17c39b-2e16-6e0b-0a5d-11177cbe3232@acm.org>
-Date:   Wed, 13 May 2020 12:49:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727097AbgEMVAv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 17:00:51 -0400
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:51208 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725977AbgEMVAu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 17:00:50 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id CA6F0182CED34;
+        Wed, 13 May 2020 21:00:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3871:3874:4250:4321:4385:5007:6742:6743:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14659:14721:21080:21627:21987:30012:30054:30059:30062:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: mist41_5dde648048f06
+X-Filterd-Recvd-Size: 3554
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 13 May 2020 21:00:44 +0000 (UTC)
+Message-ID: <0ee5acfaca4cf32d4efad162046b858981a4dae3.camel@perches.com>
+Subject: Re: [PATCH 20/33] ipv4: add ip_sock_set_recverr
+From:   Joe Perches <joe@perches.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
+        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
+Date:   Wed, 13 May 2020 14:00:43 -0700
+In-Reply-To: <20200513062649.2100053-21-hch@lst.de>
+References: <20200513062649.2100053-1-hch@lst.de>
+         <20200513062649.2100053-21-hch@lst.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200513184349.GA4814@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-13 11:43, Leon Romanovsky wrote:
-> mlx4 works too :), I had in mind more older cards than qib, which was
-> added to the kernel only ten years ago. For example mlx4 was added 13
-> years ago an mthca before git era (>15 years).
+On Wed, 2020-05-13 at 08:26 +0200, Christoph Hellwig wrote:
+> Add a helper to directly set the IP_RECVERR sockopt from kernel space
+> without going through a fake uaccess.
 
-Most of the pre-git patches are available in a git repository. This is
-the approach I use to view changes that predate the time when Linus
-switched to git:
-https://stackoverflow.com/questions/3264283/linux-kernel-historical-git-repository-with-full-history
+This seems used only with true as the second arg.
+Is there reason to have that argument at all?
 
-Bart.
+> diff --git a/include/net/ip.h b/include/net/ip.h
+[]
+> @@ -767,5 +767,6 @@ static inline bool inetdev_valid_mtu(unsigned int mtu)
+>  
+>  void ip_sock_set_tos(struct sock *sk, int val);
+>  void ip_sock_set_freebind(struct sock *sk, bool val);
+> +void ip_sock_set_recverr(struct sock *sk, bool val);
+>  
+>  #endif	/* _IP_H */
+> diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
+> index 0c40887a817f8..9abecc3195520 100644
+> --- a/net/ipv4/ip_sockglue.c
+> +++ b/net/ipv4/ip_sockglue.c
+> @@ -589,6 +589,16 @@ void ip_sock_set_freebind(struct sock *sk, bool val)
+>  }
+>  EXPORT_SYMBOL(ip_sock_set_freebind);
+>  
+> +void ip_sock_set_recverr(struct sock *sk, bool val)
+> +{
+> +	lock_sock(sk);
+> +	inet_sk(sk)->recverr = val;
+> +	if (!val)
+> +		skb_queue_purge(&sk->sk_error_queue);
+> +	release_sock(sk);
+> +}
+> +EXPORT_SYMBOL(ip_sock_set_recverr);
+> +
+>  /*
+>   *	Socket option code for IP. This is the end of the line after any
+>   *	TCP,UDP etc options on an IP socket.
+> diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
+> index 562ea36c96b0f..1b87b8a9ff725 100644
+> --- a/net/rxrpc/local_object.c
+> +++ b/net/rxrpc/local_object.c
+> @@ -171,13 +171,7 @@ static int rxrpc_open_socket(struct rxrpc_local *local, struct net *net)
+>  		/* Fall through */
+>  	case AF_INET:
+>  		/* we want to receive ICMP errors */
+> -		opt = 1;
+> -		ret = kernel_setsockopt(local->socket, SOL_IP, IP_RECVERR,
+> -					(char *) &opt, sizeof(opt));
+> -		if (ret < 0) {
+> -			_debug("setsockopt failed");
+> -			goto error;
+> -		}
+> +		ip_sock_set_recverr(local->socket->sk, true);
+>  
+>  		/* we want to set the don't fragment bit */
+>  		opt = IP_PMTUDISC_DO;
+
