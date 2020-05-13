@@ -2,114 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EBE1D09C9
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 09:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C991D09DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 09:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgEMHTA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 03:19:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
+        id S1730145AbgEMHWH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 May 2020 03:22:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729834AbgEMHTA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 May 2020 03:19:00 -0400
+        id S1729621AbgEMHWH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 May 2020 03:22:07 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E096206D6;
-        Wed, 13 May 2020 07:18:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 778B3206D6;
+        Wed, 13 May 2020 07:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589354340;
-        bh=PhkYopSfx33eRSeMz0704t7iTORw9tnYqJ6QNWxbav4=;
+        s=default; t=1589354527;
+        bh=Ixbs7+oR1AT+CVV/fnupdP3jsWRe2qWxWek+L5hw6FU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YieEwyWsO9Pds9gbp3zVFmZGl5PyU9nBJQDnrldHMZexdsIhHjdeHuWbNktKthnvg
-         pQp757+lkEbiBj0zVL4kFnbuD4ibw7lXmzrSRjCRO5ZK5ezBcrSqTi6pQ8o+9R4d2i
-         93emenOPgWJwVnnqqjYUnTn6BjHJsIuEa1dD7qUM=
-Date:   Wed, 13 May 2020 10:18:55 +0300
+        b=raBuFHLErBMwKJ9Sp//2XV1QQROXqXtIDk0oxhDaM4ha6bDn253YAGCt8+IUtjnj4
+         9pe+909Nm7P3OUNpJp9rmy2p9T/n99QaVhnnyWzYQw8nWFbrMCHn5tIERqF1Rm8/GV
+         ycmTz4sGNsVt6YzDahtN90Q7E37iZFMusxN5KGaE=
+Date:   Wed, 13 May 2020 10:22:03 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Israel Rukshin <israelr@mellanox.com>,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, maxg@mellanox.com,
-        sergeygo@mellanox.com, Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
-Message-ID: <20200513071855.GQ4814@unreal>
-References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
- <20200512171633.GO4814@unreal>
- <5b8b0b51-83e3-06c2-9b99-dec0862c0e5b@acm.org>
- <20200512201303.GA19158@mellanox.com>
- <98a0d1aa-6364-a2f1-37f6-9c69e1efaa0b@acm.org>
- <20200512230625.GB19158@mellanox.com>
- <b9dab6bf-d1b8-40c0-63ba-09eb3f4882f5@grimberg.me>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH for-rc] RDMA/srpt: Fix disabling device management
+Message-ID: <20200513072203.GR4814@unreal>
+References: <20200511222918.62576-1-kamalheib1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b9dab6bf-d1b8-40c0-63ba-09eb3f4882f5@grimberg.me>
+In-Reply-To: <20200511222918.62576-1-kamalheib1@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 12, 2020 at 05:53:34PM -0700, Sagi Grimberg wrote:
+On Tue, May 12, 2020 at 01:29:18AM +0300, Kamal Heib wrote:
+> Avoid disabling device management for devices that don't support
+> Management datagrams (MADs) by checking if the "mad_agent" pointer is
+> initialized before calling ib_modify_port, also change the error message
+> to a warning and make it more informative.
 >
-> > > > > > > FMR is not supported on most recent RDMA devices (that use fast memory
-> > > > > > > registration mechanism). Also, FMR was recently removed from NFS/RDMA
-> > > > > > > ULP.
-> > > > > > >
-> > > > > > > Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-> > > > > > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-> > > > > > >   drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
-> > > > > > >   drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
-> > > > > > >   drivers/infiniband/ulp/iser/iser_memory.c    | 188 ++-------------------------
-> > > > > > >   drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +++---------------
-> > > > > > >   4 files changed, 40 insertions(+), 372 deletions(-)
-> > > > > >
-> > > > > > Can we do an extra step and remove FMR from srp too?
-> > > > >
-> > > > > Which HCA's will be affected by removing FMR support? Or in other words,
-> > > > > when did (Mellanox) HCA's start supporting fast memory registration? I'm
-> > > > > asking this because there is a tradition in the Linux kernel not to
-> > > > > remove support for old hardware unless it is pretty sure that nobody is
-> > > > > using that hardware anymore.
-> > > >
-> > > > We haven't entirely been following that in RDMA.. More like when
-> > > > people can't test any more it can go.
-> > > >
-> > > > For FMR the support was dropped in newer HW so AFAIK, nobody tests
-> > > > this and it just stands in the way of making FRWR work properly.
-> > > >
-> > > > Do the ULPs stop working or do they just run slower with some regular
-> > > > MR flow?
-> > >
-> > > I'm not sure. I do not have access to RDMA adapters that do not support
-> > > FRWR.
-> > >
-> > > A possible test is to check on websites for used products whether old
-> > > RDMA adapters are still available. Is the InfiniHost adapter one of the
-> > > adapters that supports FMR? It seems like that adapter is still easy to
-> > > find.
-> >
-> > I don't know - AFAIK nobody does any testing on those cards any
-> > more, and doesn't test the ULPs either.
-> >
-> > I know Leon has pushed to remove the mthca driver in the past.  At one
-> > point there was a suggestion that drivers that do not support FRWR
-> > should be dropped, but I don't remember if mthca is the last one or
-> > not.
-> >
-> > There has been a big push to purge useless old stuff, look at the
-> > entire arch removals for instance. The large RDMA drivers fall under
-> > the same logic, IMHO.
+> Fixes: 09f8a1486dca ("RDMA/srpt: Fix handling of SR-IOV and iWARP ports")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
-> I think we should remove this support, if there is a user of this
-> somewhere he can safely use iscsi. Let alone that iser uses the fmr
-> pools which leaves rkeys exposed for caching purposes. So I'd much
-> rather remove it than trying to fix it.
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 7ed38d1cb997..7b21792ab6f7 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -625,14 +625,18 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+>  		.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP,
+>  	};
+>  	struct srpt_port *sport;
+> +	int ret;
+>  	int i;
+>
+>  	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
+>  		sport = &sdev->port[i - 1];
+>  		WARN_ON(sport->port != i);
+> -		if (ib_modify_port(sdev->device, i, 0, &port_modify) < 0)
+> -			pr_err("disabling MAD processing failed.\n");
+>  		if (sport->mad_agent) {
+> +			ret = ib_modify_port(sdev->device, i, 0, &port_modify);
+> +			if (ret < 0)
+> +				pr_warn("%s-%d: disabling device management failed (%d). Note: this is expected if SR-IOV is enabled.\n",
+> +					dev_name(&sport->sdev->device->dev),
 
-Agree, given the fact that no one is even going to try to fix.
-
-We don't see new contributors in this community who are not affiliated
-with RDMA companies and they are not testing and have no plans to test FMR.
-
-I feel that we can't even say if FMR and old cards work :).
+The ib_modify_port() shouldn't be called if it expected to fail.
 
 Thanks
+
+> +					sport->port, ret);
+>  			ib_unregister_mad_agent(sport->mad_agent);
+>  			sport->mad_agent = NULL;
+>  		}
+> --
+> 2.25.4
+>
