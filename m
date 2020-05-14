@@ -2,85 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48AC1D3221
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 16:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007E61D32B6
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 16:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgENOHF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 10:07:05 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:50588 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgENOHF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 10:07:05 -0400
-Received: by mail-pj1-f65.google.com with SMTP id t9so12612080pjw.0
-        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2020 07:07:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AkaQdQVHafEqHQdZP9VmMFcw3xEnNTdqMRa55YMlJRI=;
-        b=WpHljDnqpBFDvge7XLhXU0FpZALswPES7v6sIS4S7dnqyJ6OpLBAgPq9KMO+Tq+mSd
-         r0Eu6W7E7UFR867XEo+XMaG4pd5ya51Y/jU+IjZGNEidkP+YxvyxlIDIkbUPlxgkNDCo
-         EJ9AEdM2SkSLmj30nJ6XSHWoyL9zS9OzKuUco7uLdpirjwHAy9MQ/E62nQGJMx59N2nm
-         kAT4VsFk9zWZhkV8Ufzt3gZosUC4srrZ7lmgLp8DDJPKotMhcHpJDlDglMC1huDj5X+t
-         fW1nJl8gQMywDXFVKq4l9vLmRguca+UjVovKXJ+aw4w0DEuHrFlZxMvVRImYY8bOzJ9N
-         Kivg==
-X-Gm-Message-State: AOAM533AuoB8CYLvu/n/PQTk1c1bbKdB+/wUsTp2Fdi4dwZm16jdpZgY
-        WKZyP4KRuflM63DJ8KOHWBk=
-X-Google-Smtp-Source: ABdhPJxnYFqKcFVRQqbImSyZo4S0YFeBdhKwf5UBpZFd67q8mPmdJeF1S5d45F54vkYNmFWkEoEyVw==
-X-Received: by 2002:a17:902:b107:: with SMTP id q7mr4125205plr.177.1589465223689;
-        Thu, 14 May 2020 07:07:03 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:6c16:7f27:8c37:e02d? ([2601:647:4000:d7:6c16:7f27:8c37:e02d])
-        by smtp.gmail.com with ESMTPSA id l64sm2188316pgl.21.2020.05.14.07.07.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 07:07:02 -0700 (PDT)
-Subject: Re: [PATCH for-rc v2] RDMA/srpt: Fix disabling device management
-To:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-References: <20200514114720.141139-1-kamalheib1@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <f82cf85e-d945-a628-63b5-8306941dcfbe@acm.org>
-Date:   Thu, 14 May 2020 07:07:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727798AbgENOYW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 10:24:22 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30750 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726492AbgENOYW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 May 2020 10:24:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589466261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fGWHZrRoLExAS3mHwk8ufZ/s4MYBxFdJolCaEnLqA8M=;
+        b=OXJCh5GLUPv3k4SUBHt3EOoS6pcj0UXeOEj+luCmjZqmh9udrIAukKWN4wRIXhrk8SZgiq
+        3qezn7J2Rtb6PtKX5HRY5eYO4PDubZpacgbGxZhxmrzkcmCnLbqDe1mMnzi5ohEH16meoJ
+        HQgq42UtuWxXzvF1jYtaWz6pjKjh7EM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-gDkumX-iOmOMry4mSLa6sw-1; Thu, 14 May 2020 10:24:17 -0400
+X-MC-Unique: gDkumX-iOmOMry4mSLa6sw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B5F8800053;
+        Thu, 14 May 2020 14:24:13 +0000 (UTC)
+Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E42045D9CA;
+        Thu, 14 May 2020 14:24:04 +0000 (UTC)
+Date:   Thu, 14 May 2020 09:24:03 -0500
+From:   David Teigland <teigland@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Christine Caulfield <ccaulfie@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
+        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
+Subject: Re: is it ok to always pull in sctp for dlm, was: Re: [PATCH 27/33]
+ sctp: export sctp_setsockopt_bindx
+Message-ID: <20200514142403.GA1447@redhat.com>
+References: <20200513062649.2100053-1-hch@lst.de>
+ <20200513062649.2100053-28-hch@lst.de>
+ <20200513180058.GB2491@localhost.localdomain>
+ <20200514104040.GA12979@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200514114720.141139-1-kamalheib1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514104040.GA12979@lst.de>
+User-Agent: Mutt/1.8.3 (2017-05-23)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-14 04:47, Kamal Heib wrote:
-> Avoid disabling device management for devices that don't support
-> Management datagrams (MADs) by checking if the "mad_agent" pointer is
-> initialized before calling ib_modify_port, also fix the error flow in
-> srpt_refresh_port() to disable device management if
-> ib_register_mad_agent() fail.
+On Thu, May 14, 2020 at 12:40:40PM +0200, Christoph Hellwig wrote:
+> On Wed, May 13, 2020 at 03:00:58PM -0300, Marcelo Ricardo Leitner wrote:
+> > On Wed, May 13, 2020 at 08:26:42AM +0200, Christoph Hellwig wrote:
+> > > And call it directly from dlm instead of going through kernel_setsockopt.
+> > 
+> > The advantage on using kernel_setsockopt here is that sctp module will
+> > only be loaded if dlm actually creates a SCTP socket.  With this
+> > change, sctp will be loaded on setups that may not be actually using
+> > it. It's a quite big module and might expose the system.
+> > 
+> > I'm okay with the SCTP changes, but I'll defer to DLM folks to whether
+> > that's too bad or what for DLM.
+> 
+> So for ipv6 I could just move the helpers inline as they were trivial
+> and avoid that issue.  But some of the sctp stuff really is way too
+> big for that, so the only other option would be to use symbol_get.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Let's try symbol_get, having the sctp module always loaded caused problems
+last time it happened (almost nobody uses dlm with it.)
+Dave 
+
