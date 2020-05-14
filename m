@@ -2,94 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007E61D32B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 16:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935321D34A8
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 17:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgENOYW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 10:24:22 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30750 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726492AbgENOYW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 May 2020 10:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589466261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fGWHZrRoLExAS3mHwk8ufZ/s4MYBxFdJolCaEnLqA8M=;
-        b=OXJCh5GLUPv3k4SUBHt3EOoS6pcj0UXeOEj+luCmjZqmh9udrIAukKWN4wRIXhrk8SZgiq
-        3qezn7J2Rtb6PtKX5HRY5eYO4PDubZpacgbGxZhxmrzkcmCnLbqDe1mMnzi5ohEH16meoJ
-        HQgq42UtuWxXzvF1jYtaWz6pjKjh7EM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-gDkumX-iOmOMry4mSLa6sw-1; Thu, 14 May 2020 10:24:17 -0400
-X-MC-Unique: gDkumX-iOmOMry4mSLa6sw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B5F8800053;
-        Thu, 14 May 2020 14:24:13 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E42045D9CA;
-        Thu, 14 May 2020 14:24:04 +0000 (UTC)
-Date:   Thu, 14 May 2020 09:24:03 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Christine Caulfield <ccaulfie@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Subject: Re: is it ok to always pull in sctp for dlm, was: Re: [PATCH 27/33]
- sctp: export sctp_setsockopt_bindx
-Message-ID: <20200514142403.GA1447@redhat.com>
-References: <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-28-hch@lst.de>
- <20200513180058.GB2491@localhost.localdomain>
- <20200514104040.GA12979@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514104040.GA12979@lst.de>
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1726550AbgENPL6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 11:11:58 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53652 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbgENPL6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 11:11:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EF7Yx0156344;
+        Thu, 14 May 2020 15:11:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=W5qVfAEYN6DvUKh3fbVgysVbZ0iYZ+xqjITUo/qjVxk=;
+ b=vh56I13QxGTIITfiUHrhUTHX1C69DL5dswVXWOhJgt1GTxSGJu6UCC3OQCoelYFLUI42
+ 5AXk7SnDYRLjda1fNfMNfihjSHbionRzzdW1qz1etVbX9kBx/1/C1Y7hPStxkwPKdirL
+ JcNkyGEBnZlm/Vs7zeSbSV/+MvMUx9OOoseMSkF/8DdfZwCWKjpOsBmXbZw8NVSlBGUB
+ +8Umb+9fGHW/GxYrxJeuroTjqaigdWTMYxSjX82EfYekfZlOoc5wffgD5zcWa9GFiLGX
+ y1EWv/qTP5L4SL36wg8oKbgzd9VxUCWvn7271qWdh7nYvxK/61hz5gd15FKqsjlL754o Lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 3100xwk60e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 15:11:53 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EF8PYm047021;
+        Thu, 14 May 2020 15:11:52 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3100ygy1ny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 May 2020 15:11:52 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04EFBoxQ005948;
+        Thu, 14 May 2020 15:11:51 GMT
+Received: from ca-common-hq.us.oracle.com (/10.211.9.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 May 2020 08:11:46 -0700
+From:   Divya Indi <divya.indi@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kaike Wan <kaike.wan@intel.com>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Review Request
+Date:   Thu, 14 May 2020 08:11:23 -0700
+Message-Id: <1589469084-15125-1-git-send-email-divya.indi@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 suspectscore=2 adultscore=0 mlxscore=0 mlxlogscore=929
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 lowpriorityscore=0
+ suspectscore=2 mlxlogscore=951 clxscore=1015 cotscore=-2147483648
+ mlxscore=0 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140133
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 14, 2020 at 12:40:40PM +0200, Christoph Hellwig wrote:
-> On Wed, May 13, 2020 at 03:00:58PM -0300, Marcelo Ricardo Leitner wrote:
-> > On Wed, May 13, 2020 at 08:26:42AM +0200, Christoph Hellwig wrote:
-> > > And call it directly from dlm instead of going through kernel_setsockopt.
-> > 
-> > The advantage on using kernel_setsockopt here is that sctp module will
-> > only be loaded if dlm actually creates a SCTP socket.  With this
-> > change, sctp will be loaded on setups that may not be actually using
-> > it. It's a quite big module and might expose the system.
-> > 
-> > I'm okay with the SCTP changes, but I'll defer to DLM folks to whether
-> > that's too bad or what for DLM.
-> 
-> So for ipv6 I could just move the helpers inline as they were trivial
-> and avoid that issue.  But some of the sctp stuff really is way too
-> big for that, so the only other option would be to use symbol_get.
+[PATCH v2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
 
-Let's try symbol_get, having the sctp module always loaded caused problems
-last time it happened (almost nobody uses dlm with it.)
-Dave 
+Hi,
 
+This is the v2 of the patch that addresses the comments received for v1 -
+
+- Using atomic bit ops for setting and testing IB_SA_NL_QUERY_SENT.
+- Rewording and adding comments.
+
+
+Thanks,
+Divya
