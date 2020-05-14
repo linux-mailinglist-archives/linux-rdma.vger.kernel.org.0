@@ -2,44 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8241D3207
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 16:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48AC1D3221
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 16:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgENOCJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 10:02:09 -0400
-Received: from mail-pf1-f170.google.com ([209.85.210.170]:33668 "EHLO
-        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgENOCJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 10:02:09 -0400
-Received: by mail-pf1-f170.google.com with SMTP id x77so1363083pfc.0
-        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2020 07:02:07 -0700 (PDT)
+        id S1727119AbgENOHF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 10:07:05 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:50588 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgENOHF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 10:07:05 -0400
+Received: by mail-pj1-f65.google.com with SMTP id t9so12612080pjw.0
+        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2020 07:07:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=+uel9ExbS2NJJmk7+xmqf74dBJXQznmdSLUw2zgddsQ=;
-        b=lIfOjo1xXXjUNo+nG+fRoyoNst53WSQbFEywkKJNnQi4790AupdDPKjlVnkNBFKYBP
-         DblaQ7q4lEKVn3HdCSilv/CcxjZ3ns0fH4fKWR/vGQrliCvIe8DaTM2sfFDBoJVg26i/
-         e4syBUFzzPsGRuCSGAwSaCIz1IUptbrWJrUBtKNlMtu5/qhaCWRpUSdE4yfvw/lWGnWQ
-         bnGaWjuD0lBZt86uKNgzXAOy1zA5f3wRLQfsNsXGIEjo9aM1aWkfzmWqvmL4ieoTLdpX
-         +lWt1R3sl54ypfbkiJPqS/CwRtffULhdsepPDwJRIoYvzuO3IaA8GuhWpMDO0jlHlpsh
-         7NLQ==
-X-Gm-Message-State: AOAM530VHmvWmGMC70Mqo6Rwp8pYzeCNotSR2cIxEj9Va4WvLTYIcOZE
-        wieVrwejvFrYnpibfTTlAko=
-X-Google-Smtp-Source: ABdhPJyzGdTCvGh5Q78E19OP84c9Nbyki8Ru6B+bCiXYXdA7YAoINeFwr9DP4aHfIuOAKS1WNhd6gA==
-X-Received: by 2002:aa7:9532:: with SMTP id c18mr4616839pfp.255.1589464927094;
-        Thu, 14 May 2020 07:02:07 -0700 (PDT)
+        bh=AkaQdQVHafEqHQdZP9VmMFcw3xEnNTdqMRa55YMlJRI=;
+        b=WpHljDnqpBFDvge7XLhXU0FpZALswPES7v6sIS4S7dnqyJ6OpLBAgPq9KMO+Tq+mSd
+         r0Eu6W7E7UFR867XEo+XMaG4pd5ya51Y/jU+IjZGNEidkP+YxvyxlIDIkbUPlxgkNDCo
+         EJ9AEdM2SkSLmj30nJ6XSHWoyL9zS9OzKuUco7uLdpirjwHAy9MQ/E62nQGJMx59N2nm
+         kAT4VsFk9zWZhkV8Ufzt3gZosUC4srrZ7lmgLp8DDJPKotMhcHpJDlDglMC1huDj5X+t
+         fW1nJl8gQMywDXFVKq4l9vLmRguca+UjVovKXJ+aw4w0DEuHrFlZxMvVRImYY8bOzJ9N
+         Kivg==
+X-Gm-Message-State: AOAM533AuoB8CYLvu/n/PQTk1c1bbKdB+/wUsTp2Fdi4dwZm16jdpZgY
+        WKZyP4KRuflM63DJ8KOHWBk=
+X-Google-Smtp-Source: ABdhPJxnYFqKcFVRQqbImSyZo4S0YFeBdhKwf5UBpZFd67q8mPmdJeF1S5d45F54vkYNmFWkEoEyVw==
+X-Received: by 2002:a17:902:b107:: with SMTP id q7mr4125205plr.177.1589465223689;
+        Thu, 14 May 2020 07:07:03 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:6c16:7f27:8c37:e02d? ([2601:647:4000:d7:6c16:7f27:8c37:e02d])
-        by smtp.gmail.com with ESMTPSA id c10sm2430543pfm.50.2020.05.14.07.02.05
+        by smtp.gmail.com with ESMTPSA id l64sm2188316pgl.21.2020.05.14.07.07.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 07:02:06 -0700 (PDT)
-Subject: Re: [PATCH 6/8] RDMA/srp: remove support for FMR memory registration
-To:     Max Gurtovoy <maxg@mellanox.com>, jgg@mellanox.com,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org
-Cc:     sagi@grimberg.me, israelr@mellanox.com, shlomin@mellanox.com
-References: <20200514120305.189738-1-maxg@mellanox.com>
- <20200514120305.189738-7-maxg@mellanox.com>
+        Thu, 14 May 2020 07:07:02 -0700 (PDT)
+Subject: Re: [PATCH for-rc v2] RDMA/srpt: Fix disabling device management
+To:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+References: <20200514114720.141139-1-kamalheib1@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -64,12 +62,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <c1ef3df5-525d-d8c3-f84e-07bf3b6adc44@acm.org>
-Date:   Thu, 14 May 2020 07:02:05 -0700
+Message-ID: <f82cf85e-d945-a628-63b5-8306941dcfbe@acm.org>
+Date:   Thu, 14 May 2020 07:07:01 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200514120305.189738-7-maxg@mellanox.com>
+In-Reply-To: <20200514114720.141139-1-kamalheib1@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,9 +76,11 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-14 05:03, Max Gurtovoy wrote:
-> FMR is not supported on most recent RDMA devices (that use fast memory
-> registration mechanism). Also, FMR was recently removed from NFS/RDMA
-> ULP.
+On 2020-05-14 04:47, Kamal Heib wrote:
+> Avoid disabling device management for devices that don't support
+> Management datagrams (MADs) by checking if the "mad_agent" pointer is
+> initialized before calling ib_modify_port, also fix the error flow in
+> srpt_refresh_port() to disable device management if
+> ib_register_mad_agent() fail.
 
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
