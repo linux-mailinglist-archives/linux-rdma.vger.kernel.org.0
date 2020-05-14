@@ -2,104 +2,224 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF5A1D214F
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 May 2020 23:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AF01D26C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 07:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbgEMVpf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 May 2020 17:45:35 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16462 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729196AbgEMVpf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 May 2020 17:45:35 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ebc6a720000>; Wed, 13 May 2020 14:45:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 13 May 2020 14:45:34 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 13 May 2020 14:45:34 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 May
- 2020 21:45:32 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 13 May 2020 21:45:32 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ebc6a7c0001>; Wed, 13 May 2020 14:45:32 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Ralph Campbell" <rcampbell@nvidia.com>
-Subject: [PATCH] mm/hmm/test: destroy xa_array instead of looping
-Date:   Wed, 13 May 2020 14:45:07 -0700
-Message-ID: <20200513214507.30592-1-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725886AbgENFll (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 01:41:41 -0400
+Received: from mga06.intel.com ([134.134.136.31]:2841 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725831AbgENFlk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 May 2020 01:41:40 -0400
+IronPort-SDR: MrYE1c6DNFQyE69XxgjJ/BxBUEw4WF74BGh9WNkio/Tl8zwBkdb3BsSb/CncBPVBEpv6PgOwjX
+ kUX9GrWIIrUw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 22:41:40 -0700
+IronPort-SDR: Ougrc/DQ32q7lGv9+Z1Q02ALEjNvs2GNoUZZchbMyqJtVL6lgBo7Z0zgWqVg9Ts8KneJqTQU5i
+ zey0mKD+cIkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,390,1583222400"; 
+   d="scan'208";a="297911221"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 13 May 2020 22:41:38 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jZ6cj-0002L8-O4; Thu, 14 May 2020 13:41:37 +0800
+Date:   Thu, 14 May 2020 13:41:27 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 8c112a5f29a343f89072bed4b9fa176fea226798
+Message-ID: <5ebcda07.QVjE5RdkdZXY9W0r%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589406322; bh=mUTdF1AVMZd0iSCg3E8fEbaYihKH2WAzpFyYOhyV/OU=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=PFMTomRMAVJQ+UmxKAlAwof1dFot0qpMAJ1vATc+rjN6uEFZzlhYJjSuMLTODsPgc
-         K1PGvX4Bl+rKy4f/9/TuNUPRXrd8vGl4tU9aHkqJKDonNKUipJOOOgodwCMSd9YrMw
-         0krWiaadjXUzTUkp7oLKOHZCjMyG14aKfhQeB8UVeMwu87bAoRYJuiF7RseMI3/pjg
-         b9UQxFVFq45A+LHLKLIOTboyOgW1OKpwRmzNoQx6GCVok9yNkgqS9kavltRa4ARTUv
-         cqFpoLFZXI0zCycLGP/OhkT0QgR3adaoJhqku3WXCke7DZF2GZD3THkRh8Gtdqf+Cn
-         tifp6KhgVPa1g==
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The test driver uses an xa_array to store virtual to physical address
-translations for a simulated hardware device. The MMU notifier
-invalidation callback is used to keep the table consistent with the CPU
-page table and is frequently called only for a page or two. However, if
-the test process exits unexpectedly or is killed, the range can be
-[0..ULONG_MAX] in which case calling xa_erase() for every possible PFN
-results in CPU timeouts. Munmap() can result in a large range being
-invalidated but in that case, the xa_array is likely to contain entries
-that need to be invalidated.
-Check for [0..ULONG_MAX] explicitly and just destroy the whole table.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 8c112a5f29a343f89072bed4b9fa176fea226798  RDMA/mlx5: Add support in steering default miss
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+elapsed time: 483m
+
+configs tested: 165
+configs skipped: 13
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+h8300                     edosk2674_defconfig
+mips                     decstation_defconfig
+sh                          rsk7201_defconfig
+sh                               alldefconfig
+arm                            xcep_defconfig
+arm                         lubbock_defconfig
+m68k                       m5275evb_defconfig
+mips                        bcm63xx_defconfig
+powerpc                     pq2fads_defconfig
+arm                         bcm2835_defconfig
+arm                         vf610m4_defconfig
+sh                          sdk7786_defconfig
+arm                            hisi_defconfig
+arm                          exynos_defconfig
+arm                            mps2_defconfig
+s390                       zfcpdump_defconfig
+m68k                       m5249evb_defconfig
+m68k                          sun3x_defconfig
+sh                           se7619_defconfig
+mips                           mtx1_defconfig
+riscv                    nommu_virt_defconfig
+mips                        nlm_xlr_defconfig
+arm                         s3c2410_defconfig
+xtensa                           allyesconfig
+powerpc                      chrp32_defconfig
+arm                     eseries_pxa_defconfig
+xtensa                    xip_kc705_defconfig
+arm                           h3600_defconfig
+arm                         nhk8815_defconfig
+powerpc                    adder875_defconfig
+mips                 pnx8335_stb225_defconfig
+sh                   sh7770_generic_defconfig
+arm                            dove_defconfig
+mips                 decstation_r4k_defconfig
+arm                          moxart_defconfig
+sh                               allmodconfig
+sh                             espt_defconfig
+microblaze                          defconfig
+arm                         orion5x_defconfig
+mips                      pic32mzda_defconfig
+mips                  mips_paravirt_defconfig
+riscv                          rv32_defconfig
+powerpc                      ppc44x_defconfig
+mips                     loongson1b_defconfig
+arm                       aspeed_g5_defconfig
+sh                            migor_defconfig
+arm                         at91_dt_defconfig
+sh                           se7724_defconfig
+arc                             nps_defconfig
+sh                          rsk7203_defconfig
+arm                         assabet_defconfig
+arm                           h5000_defconfig
+m68k                                defconfig
+arm                           sama5_defconfig
+sh                        sh7785lcr_defconfig
+mips                        workpad_defconfig
+sh                           se7206_defconfig
+mips                          rm200_defconfig
+mips                    maltaup_xpa_defconfig
+mips                          ath25_defconfig
+sh                          rsk7264_defconfig
+m68k                        m5407c3_defconfig
+sh                ecovec24-romimage_defconfig
+sh                            titan_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200513
+i386                 randconfig-a005-20200513
+i386                 randconfig-a003-20200513
+i386                 randconfig-a001-20200513
+i386                 randconfig-a004-20200513
+i386                 randconfig-a002-20200513
+i386                 randconfig-a012-20200513
+i386                 randconfig-a016-20200513
+i386                 randconfig-a014-20200513
+i386                 randconfig-a011-20200513
+i386                 randconfig-a013-20200513
+i386                 randconfig-a015-20200513
+i386                 randconfig-a012-20200514
+i386                 randconfig-a016-20200514
+i386                 randconfig-a014-20200514
+i386                 randconfig-a011-20200514
+i386                 randconfig-a013-20200514
+i386                 randconfig-a015-20200514
+x86_64               randconfig-a005-20200513
+x86_64               randconfig-a003-20200513
+x86_64               randconfig-a006-20200513
+x86_64               randconfig-a004-20200513
+x86_64               randconfig-a001-20200513
+x86_64               randconfig-a002-20200513
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
-
-This patch is based on Jason Gunthorpe's hmm tree and should be folded
-into the ("mm/hmm/test: add selftest driver for HMM") patch once this
-patch is reviewed, etc.
-
- lib/test_hmm.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index 8b36c26b717b..b89852ec3c29 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -201,7 +201,13 @@ static void dmirror_do_update(struct dmirror *dmirror,=
- unsigned long start,
- 	 * The XArray doesn't hold references to pages since it relies on
- 	 * the mmu notifier to clear page pointers when they become stale.
- 	 * Therefore, it is OK to just clear the entry.
-+	 * However, if the entire address space is being invalidated, it
-+	 * takes too long to clear them one at a time so destroy the array.
- 	 */
-+	if (start =3D=3D 0 && end =3D=3D ULONG_MAX) {
-+		xa_destroy(&dmirror->pt);
-+		return;
-+	}
- 	for (pfn =3D start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++)
- 		xa_erase(&dmirror->pt, pfn);
- }
---=20
-2.20.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
