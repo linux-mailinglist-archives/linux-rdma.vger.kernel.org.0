@@ -2,246 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8623F1D2E03
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 13:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571F31D2EAB
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 13:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgENLRT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 07:17:19 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:27685 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgENLRT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 07:17:19 -0400
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 04EBH2rk023990;
-        Thu, 14 May 2020 04:17:03 -0700
-Date:   Thu, 14 May 2020 16:47:01 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     faisal.latif@intel.com, shiraz.saleem@intel.com,
-        mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com
-Subject: Re: Re: Re: [RFC PATCH] RDMA/siw: Experimental e2e negotiation of
- GSO usage.
-Message-ID: <20200514111700.GA26990@chelsio.com>
-References: <20200513034950.GA19121@chelsio.com>
- <20200507110651.GA19184@chelsio.com>
- <20200428200043.GA930@chelsio.com>
- <20200415105135.GA8246@chelsio.com>
- <20200414144822.2365-1-bmt@zurich.ibm.com>
- <OFA289A103.141EDDE1-ON0025854B.003ED42A-0025854B.0041DBD8@notes.na.collabserv.com>
- <OF0315D264.505117BA-ON0025855F.0039BD43-0025855F.003E3C2B@notes.na.collabserv.com>
- <OFF3B8551C.FB7A8965-ON00258565.0043E6E2-00258565.00550882@notes.na.collabserv.com>
- <OF8C4B32A9.212C6DC0-ON00258567.0031506F-00258567.003EBFFB@notes.na.collabserv.com>
+        id S1726094AbgENLrg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 07:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgENLrg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 07:47:36 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FBEC061A0C
+        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2020 04:47:36 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id z72so22599788wmc.2
+        for <linux-rdma@vger.kernel.org>; Thu, 14 May 2020 04:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Md/d9xv6u5osfLoKMSki97Zad3KhwieYdlVS16xKpag=;
+        b=HPW+lcG3eLOxHVqq1ICqIiyl6NPDHEyQApNYaHSbc3vfvgLEh8KouHzPbCkpsSsK0S
+         1H3nUjqtUppKwxSbmjEq08H85ZY/+O7t20STrHzVd53ihrS0Jo0/JLuX8Rak+lhAYbVb
+         0wvpUZCd/lstt3FaVy+EqSjahYARddFyG+rpGP9fLkImLN3SfjbKQ/25UsPiP8shhnL7
+         E+UnxXRglzwpNK/VNdgT5MFNFG6YI+D3OmcGJ0YZSiDJgcUayuhNIWV6fSBjUnRdjq8L
+         mXezMix6iEmVO2xNt0leyLS7iXsyPr5mfWpfPvpmtrOAyjnQJozjIjKzRsizHonmWIqJ
+         UoTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Md/d9xv6u5osfLoKMSki97Zad3KhwieYdlVS16xKpag=;
+        b=DQ6MfcnJwfu1bI2kOXDWfKMR/vfnDmueWqH3PsMS89Ck2vvs4xpGr9iDNIr04xnBJg
+         woRiF2I4a8ArnI+yYCtyzEh61R1gf7KdfYlGc9zUfso4hayYlfS/xnDg47JqeyJWqYTc
+         TqZDahBeyP/U9TwlJ97Ctku2Ybrc1BHoEWRE5Itd2tTfYHu2mVGY5HaaAde99uUehEmE
+         KlSCPI4jITtikDzCyPC0kOfu4vAiPkFwFElD/nQLuTm64dfejWapaqFaLBj0ZqDhRKTH
+         RQFxVRl9TO2wqZCMIWU//d9R+zC3i7YujOML/QDLQA6l/FdTtP9ztOV/WurkbetEIaQz
+         N2nw==
+X-Gm-Message-State: AOAM530Uqxg/jY1dfsLlumoMcBNi1Q0zPENjgC0w7OuYMGu5EeWpaNrg
+        PgQD7w+PT/ZKPspFuDQoZneSjct3
+X-Google-Smtp-Source: ABdhPJxioDJqq1OAQ7hSxtfaw8DOE6q3mwojbPQ4MLdgVspAj6+A+HySyuI6GHBVO18Dyb93lDwy/A==
+X-Received: by 2002:a1c:2e46:: with SMTP id u67mr82206wmu.156.1589456854677;
+        Thu, 14 May 2020 04:47:34 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([37.142.4.4])
+        by smtp.gmail.com with ESMTPSA id 60sm3764757wrp.92.2020.05.14.04.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 04:47:33 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc v2] RDMA/srpt: Fix disabling device management
+Date:   Thu, 14 May 2020 14:47:20 +0300
+Message-Id: <20200514114720.141139-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF8C4B32A9.212C6DC0-ON00258567.0031506F-00258567.003EBFFB@notes.na.collabserv.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wednesday, May 05/13/20, 2020 at 11:25:23 +0000, Bernard Metzler wrote:
-> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
-> 
-> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
-> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >Date: 05/13/2020 05:50AM
-> >Cc: faisal.latif@intel.com, shiraz.saleem@intel.com,
-> >mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
-> >jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >nirranjan@chelsio.com
-> >Subject: [EXTERNAL] Re: Re: Re: [RFC PATCH] RDMA/siw: Experimental
-> >e2e negotiation of GSO usage.
-> >
-> >On Monday, May 05/11/20, 2020 at 15:28:47 +0000, Bernard Metzler
-> >wrote:
-> >> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
-> >> 
-> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
-> >> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >> >Date: 05/07/2020 01:07PM
-> >> >Cc: faisal.latif@intel.com, shiraz.saleem@intel.com,
-> >> >mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
-> >> >jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >> >nirranjan@chelsio.com
-> >> >Subject: [EXTERNAL] Re: Re: [RFC PATCH] RDMA/siw: Experimental e2e
-> >> >negotiation of GSO usage.
-> >> >
-> >> >Hi Bernard,
-> >> >Thanks for the review comments. Replied in line.
-> >> >
-> >> >On Tuesday, May 05/05/20, 2020 at 11:19:46 +0000, Bernard Metzler
-> >> >wrote:
-> >> >> 
-> >> >> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote:
-> >-----
-> >> >> 
-> >> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
-> >> >> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >> >> >Date: 04/28/2020 10:01PM
-> >> >> >Cc: faisal.latif@intel.com, shiraz.saleem@intel.com,
-> >> >> >mkalderon@marvell.com, aelior@marvell.com, dledford@redhat.com,
-> >> >> >jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >> >> >nirranjan@chelsio.com
-> >> >> >Subject: [EXTERNAL] Re: [RFC PATCH] RDMA/siw: Experimental e2e
-> >> >> >negotiation of GSO usage.
-> >> >> >
-> >> >> >On Wednesday, April 04/15/20, 2020 at 11:59:21 +0000, Bernard
-> >> >Metzler
-> >> >> >wrote:
-> >> >> >Hi Bernard,
-> >> >> >
-> >> >> >The attached patches enables the GSO negotiation code in SIW
-> >with
-> >> >> >few modifications, and also allows hardware iwarp drivers to
-> >> >> >advertise
-> >> >> >their max length(in 16/32/64KB granularity) that they can
-> >accept.
-> >> >> >The logic is almost similar to how TCP SYN MSS announcements
-> >works
-> >> >> >while
-> >> >> >3-way handshake.
-> >> >> >
-> >> >> >Please see if this approach works better for softiwarp <=>
-> >> >hardiwarp
-> >> >> >case.
-> >> >> >
-> >> >> >Thanks,
-> >> >> >Krishna. 
-> >> >> >
-> >> >> Hi Krishna,
-> >> >> 
-> >> >> Thanks for providing this. I have a few comments:
-> >> >> 
-> >> >> It would be good if we can look at patches inlined in the
-> >> >> email body, as usual.
-> >> >Sure, will do that henceforth.
-> >> >> 
-> >> >> Before further discussing a complex solution as suggested
-> >> >> here, I would like to hear comments from other iWarp HW
-> >> >> vendors on their capabilities regarding GSO frame acceptance
-> >> >> and potential preferences. 
-> >> >> 
-> >> >> The extension proposed here goes beyond what I initially sent
-> >> >> as a proposed patch. From an siw point of view, it is straight
-> >> >> forward to select using GSO or not, depending on the iWarp peer
-> >> >> ability to process large frames. What is proposed here is a
-> >> >> end-to-end negotiation of the actual frame size.
-> >> >> 
-> >> >> A comment in the patch you sent suggests adding a module
-> >> >> parameter. Module parameters are deprecated, and I removed any
-> >> >> of those from siw when it went upstream. I don't think we can
-> >> >> rely on that mechanism.
-> >> >> 
-> >> >> siw has a compile time parameter (yes, that was a module
-> >> >> parameter) which can set the maximum tx frame size (in multiples
-> >> >> of MTU size). Any static setup of siw <-> Chelsio could make
-> >> >> use of that as a work around.
-> >> >> 
-> >> >> I wonder if it would be a better idea to look into an extension
-> >> >> of the rdma netlink protocol, which would allow setting driver
-> >> >> specific parameters per port, or even per QP.
-> >> >> I assume there are more potential use cases for driver private
-> >> >> extensions of the rdma netlink interface?
-> >> >
-> >> >I think, the only problem with "configuring FPDU length via rdma
-> >> >netlink" is the enduser might not feel comfortable in finding what
-> >> >adapter
-> >> >is installed at the remote endpoint and what length it supports.
-> >Any
-> >> >thoughts on simplify this?
-> >> 
-> >> Nope. This would be 'out of band' information.
-> >> 
-> >> So we seem to have 3 possible solutions to the problem:
-> >> 
-> >> (1) detect if the peer accepts FPDUs up to current GSO size,
-> >> this is what I initially proposed. (2) negotiate a max FPDU
-> >> size with the peer, this is what you are proposing, or (3)
-> >> explicitly set that max FPDU size per extended user interface.
-> >> 
-> >> My problem with (2) is the rather significant proprietary
-> >> extension of MPA, since spare bits code a max value negotiation.
-> >> 
-> >> I proposed (1) for its simplicity - just a single bit flag,
-> >> which de-/selects GSO size for FPDUs on TX. Since Chelsio
-> >> can handle _some_ larger (up to 16k, you said) sizes, (1)
-> >> might have to be extended to cap at hard coded max size.
-> >> Again, it would be good to know what other vendors limits
-> >> are.
-> >> 
-> >> Does 16k for siw  <-> Chelsio already yield a decent
-> >> performance win?
-> >yes, 3x performance gain with just 16K GSO, compared to GSO diabled
-> >case. where MTU size is 1500.
-> >
-> 
-> That is a lot. At the other hand, I would suggest to always
-> increase MTU size to max (9k) for adapters siw attaches to.
-> With a page size of 4k, anything below 4k MTU size hurts,
-> while 9k already packs two consecutive pages into one frame,
-> if aligned.
-> 
-> Would 16k still gain a significant performance win if we have
-> set max MTU size for the interface?
-> 
-> >Regarding the rdma netlink approach that you are suggesting, should
-> >it
-> >be similar like below(?):
-> >
-> >rdma link set iwp3s0f4/1 max_fpdu_len 102.1.1.6:16384,
-> >102.5.5.6:32768
-> >
-> >
-> >rdma link show iwp3s0f4/1 max_fpdu_len
-> >        102.1.1.6:16384
-> >        102.5.5.6:32768
-> >
-> >where "102.1.1.6" is the destination IP address(such that the same
-> >max
-> >fpdu length is taken for all the connections to this
-> >address/adapter).
-> >And "16384" is max fdpu length.
-> >
-> Yes, that would be one way of doing it. Unfortunately we
-> would end up with maintaining additional permanent in kernel
-> state per peer we ever configured.
-> 
-> So, would it make sense to combine it with the iwpmd,
-> which then may cache peers, while setting max_fpdu per
-> new connection? This would probably include extending the
-> proprietary port mapper protocol, to exchange local
-> preferences with the peer. Local capabilities might
-> be queried from the device (extending enum ib_mtu to
-> more than 4k, and using ibv_query_port()). And the
-> iw_cm_id to be extended to carry that extra parameter
-> down to the driver... Sounds complicated.
-If I understand you right, client/server advertises their Max FPDU len
-in Res field of PMReq/PMAccept frames.
-typedef struct iwpm_wire_msg {
-        __u8    magic;
-        __u8    pmtime;
-        __be16  reserved;
-Then after Portmapper negotiation, the fpdu len is propagated to SIW qp
-strucutre from userspace iwpmd.
-		
-If we weigh up the pros and cons of using PortMapper Res field vs MPA
-Res feild, then looks like using MPA is less complicated, considering
-the lines of changes and modules invovled in changes. Not sure my
-analysis is right here?
+Avoid disabling device management for devices that don't support
+Management datagrams (MADs) by checking if the "mad_agent" pointer is
+initialized before calling ib_modify_port, also fix the error flow in
+srpt_refresh_port() to disable device management if
+ib_register_mad_agent() fail.
 
-Between, looks like the existing SIW GSO code needs a logic to limit
-"c_tx->tcp_seglen" to 64K-1, as MPA len is only 16bit. Say, in future to
-best utilize 400G Ethernet, if Linux TCP stack has increased
-GSO_MAX_SIZE to 128K, then SIW will cast 18bit value to 16bit MPA len.
+Fixes: 09f8a1486dca ("RDMA/srpt: Fix handling of SR-IOV and iWARP ports")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thanks,
-Krishna.
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 7ed38d1cb997..7dfc0138b973 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -607,6 +607,11 @@ static int srpt_refresh_port(struct srpt_port *sport)
+ 			       dev_name(&sport->sdev->device->dev), sport->port,
+ 			       PTR_ERR(sport->mad_agent));
+ 			sport->mad_agent = NULL;
++			memset(&port_modify, 0, sizeof(port_modify));
++			port_modify.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP;
++			ib_modify_port(sport->sdev->device, sport->port, 0,
++				       &port_modify);
++
+ 		}
+ 	}
+ 
+@@ -630,9 +635,8 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+ 	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
+ 		sport = &sdev->port[i - 1];
+ 		WARN_ON(sport->port != i);
+-		if (ib_modify_port(sdev->device, i, 0, &port_modify) < 0)
+-			pr_err("disabling MAD processing failed.\n");
+ 		if (sport->mad_agent) {
++			ib_modify_port(sdev->device, i, 0, &port_modify);
+ 			ib_unregister_mad_agent(sport->mad_agent);
+ 			sport->mad_agent = NULL;
+ 		}
+-- 
+2.25.4
 
-> 
-> Thanks,
-> Bernard.
-> 
