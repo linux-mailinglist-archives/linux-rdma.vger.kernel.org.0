@@ -2,95 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0D31D3A8A
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 20:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050101D3D9F
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 21:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgENS5V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 14:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbgENS4j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 May 2020 14:56:39 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86DDB20727;
-        Thu, 14 May 2020 18:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589482598;
-        bh=dIwDnWBI3zdZPm70c3zyZlmhRIygOKZQKTDT8e1PHPk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dw2O1rYUD24KUj85XKvkTE4U/vl16Qsv2thPjlhteLL5sCfeXofGzjv66Teot5JB5
-         wAZgIGUjFBgYC/HW6wB3SfQTQIjJMK7vIfNViC/eeINHX5y5vmMnF7Uom6lJueludn
-         kNP2qX0HKYs+VnOz6tyWMTak/NSe3gIBvYfywpaA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tariq Toukan <tariqt@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 10/14] net/mlx4_core: Fix use of ENOSPC around mlx4_counter_alloc()
-Date:   Thu, 14 May 2020 14:56:21 -0400
-Message-Id: <20200514185625.21753-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200514185625.21753-1-sashal@kernel.org>
-References: <20200514185625.21753-1-sashal@kernel.org>
+        id S1727836AbgENTfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 15:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726128AbgENTfh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 May 2020 15:35:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5A3C061A0C;
+        Thu, 14 May 2020 12:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2cAIpvlCjeek2UlOhaJLhP9ft/jEX+ktFmYjxRqXe+8=; b=VKrUJVLC1QZKeaeXa89WwIPrud
+        xWN6tLhwKrf0IpJKq477Gsgmnmh5IAspTgAHgDcohLeDdrarSFbeKBc4Rw2VutH7Wdqvp+u4GJ57w
+        S0xlexgFqHGVwvMQi6/gLdhHcd2BhEAtEJoKic/a9cMDbNfSZrkHXscgCV9WUJWrinXP0EAaolivK
+        hCE8IgM4uAPNE59ZVrZ32j3gM0r62sSoSbqGvAOLM1yqh1PJXDV7uEOvyuE6GKFQZHwxYJw4fajs3
+        Axa1m0R1dUG8mD1OUgFnasRlFQOsu7tu4NrpejMq4uvEZ+5h/r1+/qUH0gkhEmZ3YbfFR3xYXvB1l
+        kED1vgQw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jZJdf-0003fM-JH; Thu, 14 May 2020 19:35:27 +0000
+Date:   Thu, 14 May 2020 12:35:27 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Christoph Hellwig' <hch@lst.de>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        'Joe Perches' <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+Subject: Re: [Ocfs2-devel] remove kernel_setsockopt and kernel_getsockopt
+Message-ID: <20200514193527.GB16070@bombadil.infradead.org>
+References: <20200513062649.2100053-1-hch@lst.de>
+ <ecc165c33962d964d518c80de605af632eee0474.camel@perches.com>
+ <756758e8f0e34e2e97db470609f5fbba@AcuMS.aculab.com>
+ <20200514101838.GA12548@lst.de>
+ <a76440f7305c4653877ff2abff499f4e@AcuMS.aculab.com>
+ <20200514103450.GA12901@lst.de>
+ <c2034daa0a23454abb5e5c5714807735@AcuMS.aculab.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2034daa0a23454abb5e5c5714807735@AcuMS.aculab.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Tariq Toukan <tariqt@mellanox.com>
+On Thu, May 14, 2020 at 11:11:34AM +0000, David Laight wrote:
+> From: 'Christoph Hellwig'
+> > Sent: 14 May 2020 11:35
+> > On Thu, May 14, 2020 at 10:26:41AM +0000, David Laight wrote:
+> > > From: Christoph Hellwig
+> > > > Only for those were we have users, and all those are covered.
+> > >
+> > > What do we tell all our users when our kernel SCTP code
+> > > no longer works?
+> > 
+> > We only care about in-tree modules, just like for every other interface
+> > in the kernel.
+> 
+> Even if our management agreed to release the code and the code
+> layout matched the kernel guidelines you still wouldn't want
+> two large drivers that implement telephony functionality
+> for hardware that very few people actually have.
 
-[ Upstream commit 40e473071dbad04316ddc3613c3a3d1c75458299 ]
-
-When ENOSPC is set the idx is still valid and gets set to the global
-MLX4_SINK_COUNTER_INDEX.  However gcc's static analysis cannot tell that
-ENOSPC is impossible from mlx4_cmd_imm() and gives this warning:
-
-drivers/net/ethernet/mellanox/mlx4/main.c:2552:28: warning: 'idx' may be
-used uninitialized in this function [-Wmaybe-uninitialized]
- 2552 |    priv->def_counter[port] = idx;
-
-Also, when ENOSPC is returned mlx4_allocate_default_counters should not
-fail.
-
-Fixes: 6de5f7f6a1fa ("net/mlx4_core: Allocate default counter per port")
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx4/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index f8ac0e69d14b7..b774ba64bd4b5 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -2295,6 +2295,7 @@ static int mlx4_allocate_default_counters(struct mlx4_dev *dev)
- 
- 		if (!err || err == -ENOSPC) {
- 			priv->def_counter[port] = idx;
-+			err = 0;
- 		} else if (err == -ENOENT) {
- 			err = 0;
- 			continue;
-@@ -2344,7 +2345,8 @@ int mlx4_counter_alloc(struct mlx4_dev *dev, u32 *idx)
- 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
- 		if (!err)
- 			*idx = get_param_l(&out_param);
--
-+		if (WARN_ON(err == -ENOSPC))
-+			err = -EINVAL;
- 		return err;
- 	}
- 	return __mlx4_counter_alloc(dev, idx);
--- 
-2.20.1
-
+Oh, good point, we'll change the policy for all modules and make every
+interface in the kernel stable from now on to cater to your special case.
