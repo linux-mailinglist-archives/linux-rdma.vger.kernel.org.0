@@ -2,123 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD65B1D313C
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 15:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365C11D31F4
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 May 2020 15:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgENN1w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 14 May 2020 09:27:52 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:56559 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726037AbgENN1v (ORCPT
+        id S1726550AbgENN5z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 09:57:55 -0400
+Received: from p3plsmtpa06-07.prod.phx3.secureserver.net ([173.201.192.108]:49957
+        "EHLO p3plsmtpa06-07.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbgENN5z (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 May 2020 09:27:51 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-113-XOFJDQnwOvSfGd4XKFaC9g-1; Thu, 14 May 2020 14:27:47 +0100
-X-MC-Unique: XOFJDQnwOvSfGd4XKFaC9g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 14 May 2020 14:27:46 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 14 May 2020 14:27:46 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>,
-        'Christoph Hellwig' <hch@lst.de>
-CC:     "'David S. Miller'" <davem@davemloft.net>,
-        'Jakub Kicinski' <kuba@kernel.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        'Alexey Kuznetsov' <kuznet@ms2.inr.ac.ru>,
-        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
-        "'Vlad Yasevich'" <vyasevich@gmail.com>,
-        'Neil Horman' <nhorman@tuxdriver.com>,
-        "'Jon Maloy'" <jmaloy@redhat.com>,
-        'Ying Xue' <ying.xue@windriver.com>,
-        "'drbd-dev@lists.linbit.com'" <drbd-dev@lists.linbit.com>,
-        "'linux-block@vger.kernel.org'" <linux-block@vger.kernel.org>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>,
-        "'linux-nvme@lists.infradead.org'" <linux-nvme@lists.infradead.org>,
-        "'target-devel@vger.kernel.org'" <target-devel@vger.kernel.org>,
-        "'linux-afs@lists.infradead.org'" <linux-afs@lists.infradead.org>,
-        "'linux-cifs@vger.kernel.org'" <linux-cifs@vger.kernel.org>,
-        "'cluster-devel@redhat.com'" <cluster-devel@redhat.com>,
-        "'ocfs2-devel@oss.oracle.com'" <ocfs2-devel@oss.oracle.com>,
-        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
-        "'linux-sctp@vger.kernel.org'" <linux-sctp@vger.kernel.org>,
-        "'ceph-devel@vger.kernel.org'" <ceph-devel@vger.kernel.org>,
-        "'rds-devel@oss.oracle.com'" <rds-devel@oss.oracle.com>,
-        "'linux-nfs@vger.kernel.org'" <linux-nfs@vger.kernel.org>
-Subject: RE: [PATCH 32/33] sctp: add sctp_sock_get_primary_addr
-Thread-Topic: [PATCH 32/33] sctp: add sctp_sock_get_primary_addr
-Thread-Index: AQHWKVDpRRlTTX4YZEat3HB6AYvqqainVRxwgAAtMyCAABBE4A==
-Date:   Thu, 14 May 2020 13:27:46 +0000
-Message-ID: <aff8f5ec8d6d44dbace63825af197086@AcuMS.aculab.com>
-References: <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-33-hch@lst.de>
- <20200513180302.GC2491@localhost.localdomain>
- <d112e18bfbdd40dfb219ed2c1f2082d4@AcuMS.aculab.com>
- <c66e0309572345f5b0f32d078701f2d7@AcuMS.aculab.com>
-In-Reply-To: <c66e0309572345f5b0f32d078701f2d7@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 14 May 2020 09:57:55 -0400
+X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 May 2020 09:57:55 EDT
+Received: from [192.168.0.78] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id ZEFvjVG1wo9BxZEFwjKHM4; Thu, 14 May 2020 06:50:36 -0700
+X-CMAE-Analysis: v=2.3 cv=YLzhNiOx c=1 sm=1 tr=0
+ a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
+ a=IkcTkHD0fZMA:10 a=CbDCq_QkAAAA:8 a=Z109AbiFsV3ZPQfyLloA:9 a=QEXdDO2ut3YA:10
+ a=1qrBK16LubpBFNPVNq2M:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH] IB/iser: Remove support for FMR memory registration
+To:     Max Gurtovoy <maxg@mellanox.com>,
+        Alexey Lyashkov <umka@cloudlinux.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Israel Rukshin <israelr@mellanox.com>, sagi@grimberg.me,
+        jgg@mellanox.com, linux-rdma@vger.kernel.org, dledford@redhat.com,
+        sergeygo@mellanox.com
+References: <1589299739-16570-1-git-send-email-israelr@mellanox.com>
+ <20200512171633.GO4814@unreal> <5b8b0b51-83e3-06c2-9b99-dec0862c0e5b@acm.org>
+ <49391e02-803b-f705-b00e-e48efd278759@mellanox.com>
+ <0C22D41B-89CD-4B2D-B514-8EA06F2233D7@cloudlinux.com>
+ <f6d970e6-2373-e070-40fb-9db82c136e4b@mellanox.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <a8cfa205-ec0e-bfd1-2d5c-0c76ae568326@talpey.com>
+Date:   Thu, 14 May 2020 09:50:35 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f6d970e6-2373-e070-40fb-9db82c136e4b@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfCOHFASTRqt8mY4OLIY5MMBcUMVoefFS2jGlwZehQzmZy/yehfI42YZiDrfpFuGyhjDMfhY38r6k/lSiZlcjqzJ/aYQergaSl1tOqKVYe05MQ53PoOUD
+ iEkUD7+w6ih2cSDi/F+9pXzYVGpepThD7w5QHJgCzO5dHlLR9273bqyMcGtS6b4ezzZlrG4tg9XbTHu5l9ylYa2lpDI7/42pVDq8FoyQVCulpbfdYyZPrCg/
+ OrPoJKXWb+w/c8yr3qQxyQrTCEElka0wCJgAOxoIVnouDR/b5jFhqH7FPvet6liP/NlGNigfuozoSCb0ewgzpZjsrbIKr/ocUDLkpxgvWEvqzbcowkMxMZiY
+ qKLwWPv+bns2A4d7QCsE1vmthHCbTxbRbaNJuj0Aj8rLT77mO0Zn096w/bRSbjqPo7obX6DYd5sBVvyg+iBZER1GCGY47g==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: David Laight
-> Sent: 14 May 2020 13:30
-> Subject: RE: [PATCH 32/33] sctp: add sctp_sock_get_primary_addr
+On 5/14/2020 6:50 AM, Max Gurtovoy wrote:
 > 
-> From: David Laight
-> > Sent: 14 May 2020 10:51
-> > From: Marcelo Ricardo Leitner
-> > > Sent: 13 May 2020 19:03
-> > >
-> > > On Wed, May 13, 2020 at 08:26:47AM +0200, Christoph Hellwig wrote:
-> > > > Add a helper to directly get the SCTP_PRIMARY_ADDR sockopt from kernel
-> > > > space without going through a fake uaccess.
-> > >
-> > > Same comment as on the other dlm/sctp patch.
-> >
-> > Wouldn't it be best to write sctp_[gs]etsockotp() that
-> > use a kernel buffer and then implement the user-space
-> > calls using a wrapper that does the copies to an on-stack
-> > (or malloced if big) buffer.
+> On 5/14/2020 1:09 PM, Alexey Lyashkov wrote:
+>> CX3 with fast registration isn’t stable enough.
+>> I was make this change for Lustre for year or two ago, but it was 
+>> reverted by serious bugs.
+>>
+> I'm not aware of any issues there.
 > 
-> Actually looking at __sys_setsockopt() it calls
-> BPF_CGROUP_RUN_PROG_SETSOCKOPT() which (by the look of it)
-> can copy the user buffer into malloc()ed memory and
-> cause set_fs(KERNEL_DS) be called.
+> You can always report it on the mailing list.
+
+Just as a data point, NFS/RDMA and SMB Direct both use FRWR exclusively,
+and have been working well at >>100K IOPS over CX3 and all others.
+
+Tom.
+
+
+>> Alex
+>>> 13 мая 2020 г., в 11:43, Max Gurtovoy <maxg@mellanox.com 
+>>> <mailto:maxg@mellanox.com>> написал(а):
+>>>
+>>>
+>>> On 5/12/2020 11:09 PM, Bart Van Assche wrote:
+>>>> On 2020-05-12 10:16, Leon Romanovsky wrote:
+>>>>> On Tue, May 12, 2020 at 07:08:59PM +0300, Israel Rukshin wrote:
+>>>>>> FMR is not supported on most recent RDMA devices (that use fast 
+>>>>>> memory
+>>>>>> registration mechanism). Also, FMR was recently removed from NFS/RDMA
+>>>>>> ULP.
+>>>>>>
+>>>>>> Signed-off-by: Israel Rukshin <israelr@mellanox.com 
+>>>>>> <mailto:israelr@mellanox.com>>
+>>>>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com 
+>>>>>> <mailto:maxg@mellanox.com>>
+>>>>>> ---
+>>>>>>  drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----------
+>>>>>>  drivers/infiniband/ulp/iser/iser_initiator.c |  19 ++-
+>>>>>>  drivers/infiniband/ulp/iser/iser_memory.c    | 188 
+>>>>>> ++-------------------------
+>>>>>>  drivers/infiniband/ulp/iser/iser_verbs.c     | 126 
+>>>>>> +++---------------
+>>>>>>  4 files changed, 40 insertions(+), 372 deletions(-)
+>>>>> Can we do an extra step and remove FMR from srp too?
+>>>> Which HCA's will be affected by removing FMR support? Or in other 
+>>>> words,
+>>>> when did (Mellanox) HCA's start supporting fast memory registration? 
+>>>> I'm
+>>>> asking this because there is a tradition in the Linux kernel not to
+>>>> remove support for old hardware unless it is pretty sure that nobody is
+>>>> using that hardware anymore.
+>>>
+>>> ConnectX-3 and above supports fast memory registrations.
+>>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Bart.
+>>
 > 
-> The only way to get rid of that set_fs() is to always
-> have the buffer in kernel memory when the underlying
-> setsockopt() code is called.
-
-And having started to try coding __sys_setsockopt()
-and then found the compat code I suspect that would
-be a whole lot more sane if the buffer was in kernel
-and it knew that at least (say) 64 bytes were allocated.
-
-The whole compat_alloc_user_space() 'crap' could probably go.
-
-Actually it looks like an application can avoid whatever
-checks BPF_CGROUP_RUN_PROG_SETSOCKOPT() is trying to do
-by using the 32bit compat ioctls.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> 
