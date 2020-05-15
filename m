@@ -2,125 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501881D51FE
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 16:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC011D53EE
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 17:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgEOOm0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 May 2020 10:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726293AbgEOOm0 (ORCPT
+        id S1726722AbgEOPOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 May 2020 11:14:17 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59635 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726188AbgEOPOR (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 15 May 2020 10:42:26 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2AC061A0C
-        for <linux-rdma@vger.kernel.org>; Fri, 15 May 2020 07:42:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k13so1744426wrx.3
-        for <linux-rdma@vger.kernel.org>; Fri, 15 May 2020 07:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Scx8qbRNnSb6mhI2P/ywwy75Y7A4v6dRsK17pDDWhOg=;
-        b=c91SCmGttOG3ObCpMk42ahE22FR47xfbS2luOS+DOg6a1Gmtzr4duy+mzrY+NEZgai
-         S2GMvKDoH6nB+kBJa01W4vv/D59CT3K6h/RRdOICXorE10wKM25OU0dx+5IT0cd/8DLp
-         NN0TPvzOgVPYYk5qZKgDoH3cd5fZy2CS4YJE16qa/VDT+TVIdhcWp6+M+S16GWaKDdFC
-         ROcxFsT85sTMA7Nfl727feLMmNXuxMwXhS0jvqKkkn6cGPoXEQAwWA8d67oDeqc69/Cd
-         +O1FoGUXWBZXHz2V4Rm7ir+yoxHA8RgNa36j6GkpNmvDbGWjgSqBHAVVVj+xZPN8P9rs
-         91pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Scx8qbRNnSb6mhI2P/ywwy75Y7A4v6dRsK17pDDWhOg=;
-        b=ref9AnVYPGirPfVjmJksyXJtwmGckbYpK79bpv1iYjlVNNSSPbcFwlulHGuLauv8Vd
-         ui+kL7eo0GfcjobSS3roTp50HK+6T0Lu40cyEe7o+1cdGjTw7lYENAxc6axOAeRo63lz
-         +X0sZKb/pkQex3JKvNH9/H/iog3TAGvU4Agnk2cdqqTKvvJkXJeMlWR8W9cBIDHhg4oC
-         UF6T5SS1vCmLTYBJjDCx3FuL+jJLmpCee7FOsBuNHFU49UAkHGvHJdEXXhVO1RSiNXx8
-         Q5DcQl/C9cJdm2YCU3qaxN00p7vy86axtrOvs36YHq29esr6WGIX9lpVyp3ArpVTKpV1
-         2wjw==
-X-Gm-Message-State: AOAM530EXZS4uVIbS4XNl/rLKgRVpvFbd79qzsIe2jcZ8xNN9eWiujjx
-        JaT19LEo6pps0Gj/e1o1WYcJumK7nJHD/myygFxh
-X-Google-Smtp-Source: ABdhPJyFvELd1j1z/UlmNGQZ8MKsuShu3Y1xEovb1pKCMtDZkj9bGkjryDuZB8CyYEIFl2HAOWoB3iqe5XzkSIR44rQ=
-X-Received: by 2002:adf:9010:: with SMTP id h16mr2806662wrh.412.1589553743506;
- Fri, 15 May 2020 07:42:23 -0700 (PDT)
+        Fri, 15 May 2020 11:14:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589555655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jFShFTg902A0q2PIFAj13bBAo+TkoHxdtSFzmSJaQc=;
+        b=e++cvvThyYv4aKsLluJBvO82fRXFgEx877eclifgT4+055dzJglDryNaw43IuJuqhzYM6+
+        vyESHyl+yVpeqyEKxC+Xmb3fWk6nqOeN+u6lCVfCyujUb/tuFw6xfmBgJzld4RUJ8g4KqE
+        G8KNOq0X7aIyEYv9hV9MOvkUloE/LNA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-LQVTQu0OPIyPDmXCi0pv9g-1; Fri, 15 May 2020 11:14:13 -0400
+X-MC-Unique: LQVTQu0OPIyPDmXCi0pv9g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03A5684B8A0;
+        Fri, 15 May 2020 15:14:10 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-95.rdu2.redhat.com [10.10.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D912F76E64;
+        Fri, 15 May 2020 15:13:59 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200514102919.GA12680@lst.de>
+References: <20200514102919.GA12680@lst.de> <20200513062649.2100053-30-hch@lst.de> <20200513062649.2100053-1-hch@lst.de> <3123534.1589375587@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        drbd-dev@lists.linbit.com, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
+        cluster-devel@redhat.com, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        linux-kernel@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 29/33] rxrpc_sock_set_min_security_level
 MIME-Version: 1.0
-References: <20200511135131.27580-1-danil.kipnis@cloud.ionos.com>
- <CAHg0HuyYO913MmHt7qi12T6mVXo9nabUs6GJyqRAGfWAdfPjCQ@mail.gmail.com> <e04fc798-ee25-53a5-fae0-5985306b55fd@kernel.dk>
-In-Reply-To: <e04fc798-ee25-53a5-fae0-5985306b55fd@kernel.dk>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Fri, 15 May 2020 16:42:12 +0200
-Message-ID: <CAHg0Hux7J3yieOiOxkqPOKNxj07T_hU-x2UF5Dt+uy9Kku4WsA@mail.gmail.com>
-Subject: Re: [PATCH v15 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <128581.1589555639.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 15 May 2020 16:13:59 +0100
+Message-ID: <128582.1589555639@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 15, 2020 at 3:53 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 5/15/20 4:29 AM, Danil Kipnis wrote:
-> > Hi Jens,
-> >
-> > we've fixed the kbuild cross-compile problem identified for our
-> > patches for 5.7-rc4. The block part has been reviewed by Bart van
-> > Assche (thanks a lot Bart), we also replaced idr by xarray there as
-> > Jason suggested. You planned to queue us
-> > for 5.7: https://www.spinics.net/lists/linux-rdma/msg88472.html. Could
-> > you please give Jason an OK to take this through the rdma tree, see
-> > https://www.spinics.net/lists/linux-rdma/msg91400.html?
->
-> My main worry isn't the current state of it, it's more how it's going
-> to be handled going forward. If you're definitely going to maintain
-> the upstream code in a suitable fashion, and not maintain an on-the-side
-> version that you push to clients, then I'm fine with it going upstream
-> and you can add my acked-by to the block part of the series.
->
-> But maintaining the upstream version as the canonical version is key
-> here.
-Thanks a lot for your reply. We only do maintain the upstream code: we
-have an extra compatibility layer which allows us to compile this code
-for older kernels still in use in our production and we plan
-to continue to do so in the future.
-The only real difference of this code to the one running in our production
-right now is the name of the driver: it is still "ibnbd" instead of current rnbd
-but we will switch to it for the new kernels and also for the older kernels as
-soon as our internal provisioning and monitoring infrastructure is prepared.
+Christoph Hellwig <hch@lst.de> wrote:
 
-@Jason Should I resent you the patchset with Acked-By Jens added?
+> > Looks good - but you do need to add this to Documentation/networking/r=
+xrpc.txt
+> > also, thanks.
+> =
 
+> That file doesn't exist, instead we now have a
+> cumentation/networking/rxrpc.rst in weird markup.
 
-On Fri, May 15, 2020 at 3:53 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 5/15/20 4:29 AM, Danil Kipnis wrote:
-> > Hi Jens,
-> >
-> > we've fixed the kbuild cross-compile problem identified for our
-> > patches for 5.7-rc4. The block part has been reviewed by Bart van
-> > Assche (thanks a lot Bart), we also replaced idr by xarray there as
-> > Jason suggested. You planned to queue us
-> > for 5.7: https://www.spinics.net/lists/linux-rdma/msg88472.html. Could
-> > you please give Jason an OK to take this through the rdma tree, see
-> > https://www.spinics.net/lists/linux-rdma/msg91400.html?
->
-> My main worry isn't the current state of it, it's more how it's going
-> to be handled going forward. If you're definitely going to maintain
-> the upstream code in a suitable fashion, and not maintain an on-the-side
-> version that you push to clients, then I'm fine with it going upstream
-> and you can add my acked-by to the block part of the series.
->
-> But maintaining the upstream version as the canonical version is key
-> here.
->
-> --
-> Jens Axboe
->
+Yeah - that's only in net/next thus far.
+
+> Where do you want this to be added, and with what text?  Remember I don'=
+t
+> really know what this thing does, I just provide a shortcut.
+
+The document itself describes what each rxrpc sockopt does.  Just look for
+RXRPC_MIN_SECURITY_LEVEL in there;-)
+
+Anyway, see the attached.  This also fixes a couple of errors in the doc t=
+hat
+I noticed.
+
+David
+---
+diff --git a/Documentation/networking/rxrpc.rst b/Documentation/networking=
+/rxrpc.rst
+index 5ad35113d0f4..68552b92dc44 100644
+--- a/Documentation/networking/rxrpc.rst
++++ b/Documentation/networking/rxrpc.rst
+@@ -477,7 +477,7 @@ AF_RXRPC sockets support a few socket options at the S=
+OL_RXRPC level:
+ 	 Encrypted checksum plus packet padded and first eight bytes of packet
+ 	 encrypted - which includes the actual packet length.
+ =
+
+-     (c) RXRPC_SECURITY_ENCRYPTED
++     (c) RXRPC_SECURITY_ENCRYPT
+ =
+
+ 	 Encrypted checksum plus entire packet padded and encrypted, including
+ 	 actual packet length.
+@@ -578,7 +578,7 @@ A client would issue an operation by:
+      This issues a request_key() to get the key representing the security
+      context.  The minimum security level can be set::
+ =
+
+-	unsigned int sec =3D RXRPC_SECURITY_ENCRYPTED;
++	unsigned int sec =3D RXRPC_SECURITY_ENCRYPT;
+ 	setsockopt(client, SOL_RXRPC, RXRPC_MIN_SECURITY_LEVEL,
+ 		   &sec, sizeof(sec));
+ =
+
+@@ -1090,6 +1090,15 @@ The kernel interface functions are as follows:
+      jiffies).  In the event of the timeout occurring, the call will be
+      aborted and -ETIME or -ETIMEDOUT will be returned.
+ =
+
++ (#) Apply the RXRPC_MIN_SECURITY_LEVEL sockopt to a socket from within i=
+n the
++     kernel::
++
++       int rxrpc_sock_set_min_security_level(struct sock *sk,
++					     unsigned int val);
++
++     This specifies the minimum security level required for calls on this
++     socket.
++
+ =
+
+ Configurable Parameters
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index 7dfcbd58da85..e313dae01674 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -57,7 +57,7 @@ int afs_open_socket(struct afs_net *net)
+ 	srx.transport.sin6.sin6_port	=3D htons(AFS_CM_PORT);
+ =
+
+ 	ret =3D rxrpc_sock_set_min_security_level(socket->sk,
+-			RXRPC_SECURITY_ENCRYPT);
++						RXRPC_SECURITY_ENCRYPT);
+ 	if (ret < 0)
+ 		goto error_2;
+ =
+
