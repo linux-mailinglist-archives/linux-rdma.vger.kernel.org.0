@@ -2,80 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82571D5C90
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2020 00:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67BE1D5C9E
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2020 01:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgEOWxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 May 2020 18:53:46 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8081 "EHLO
+        id S1726247AbgEOXGP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 May 2020 19:06:15 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8082 "EHLO
         cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgEOWxq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 May 2020 18:53:46 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85ebf1d70078-096e9; Sat, 16 May 2020 06:53:40 +0800 (CST)
-X-RM-TRANSID: 2ee85ebf1d70078-096e9
+        with ESMTP id S1726183AbgEOXGP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 May 2020 19:06:15 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85ebf206220e-0987f; Sat, 16 May 2020 07:06:11 +0800 (CST)
+X-RM-TRANSID: 2ee85ebf206220e-0987f
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.0.101] (unknown[112.1.172.85])
-        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95ebf1d73562-078b7;
-        Sat, 16 May 2020 06:53:40 +0800 (CST)
-X-RM-TRANSID: 2ee95ebf1d73562-078b7
-Subject: Re: [PATCH] net/mlx5e: Use IS_ERR() to check and simplify code
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200507115010.10380-1-tangbin@cmss.chinamobile.com>
- <20200507.131834.1517984934609648952.davem@davemloft.net>
- <febc1254-ad7f-f564-6607-9ac89f1fcf40@cmss.chinamobile.com>
- <295e31680acd83c4f66b9f928f1cab7e77e97529.camel@mellanox.com>
+Received: from localhost.localdomain (unknown[112.1.172.85])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25ebf205f232-0733c;
+        Sat, 16 May 2020 07:06:10 +0800 (CST)
+X-RM-TRANSID: 2ee25ebf205f232-0733c
 From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <d1dab359-4a2d-91c8-4985-107ae6566bb4@cmss.chinamobile.com>
-Date:   Sat, 16 May 2020 06:54:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+To:     saeedm@mellanox.com, davem@davemloft.net, leon@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH v2] net/mlx5e: Use IS_ERR() to check and simplify code
+Date:   Sat, 16 May 2020 07:06:33 +0800
+Message-Id: <20200515230633.2832-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-In-Reply-To: <295e31680acd83c4f66b9f928f1cab7e77e97529.camel@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Saeed：
+Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
+simplify code, avoid redundant judgements.
 
-On 2020/5/16 6:28, Saeed Mahameed wrote:
-> On Wed, 2020-05-13 at 17:48 +0800, Tang Bin wrote:
->> Hi David:
->>
->> On 2020/5/8 4:18, David Miller wrote:
->>> From: Tang Bin <tangbin@cmss.chinamobile.com>
->>> Date: Thu,  7 May 2020 19:50:10 +0800
->>>
->>>> Use IS_ERR() and PTR_ERR() instead of PTR_ZRR_OR_ZERO()
->                                              ^^^^^^^ typo
-Sorry for this mistake, sorry.
->>>> to simplify code, avoid redundant judgements.
->>>>
->>>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->>>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->>> Saeed, please pick this up.
->> Does this mean the patch has been received and I just have to wait?
->>
-> no, mlx5 patches normally go to net-next-mlx5 branch and usually
-> pulled into net-next once a week when i send my pull requests.
->
-> i will reply with "applied" when i apply this patch,
-> but for now please fix the typo.
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Changes from v1
+ - fix the commit message for typo.
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Got it, I will send v2 for you.
-
-Thanks,
-
-Tang Bin
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+index af4ebd295..00e7add0b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+@@ -93,9 +93,8 @@ static int mlx5e_route_lookup_ipv4(struct mlx5e_priv *priv,
+ 	}
+ 
+ 	rt = ip_route_output_key(dev_net(mirred_dev), fl4);
+-	ret = PTR_ERR_OR_ZERO(rt);
+-	if (ret)
+-		return ret;
++	if (IS_ERR(rt))
++		return PTR_ERR(rt);
+ 
+ 	if (mlx5_lag_is_multipath(mdev) && rt->rt_gw_family != AF_INET) {
+ 		ip_rt_put(rt);
+-- 
+2.20.1.windows.1
 
 
 
