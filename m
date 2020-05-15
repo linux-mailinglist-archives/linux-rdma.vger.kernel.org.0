@@ -2,82 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E581D49DA
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 11:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2146B1D4A22
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 11:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgEOJkh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 15 May 2020 05:40:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2135 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728030AbgEOJkg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 15 May 2020 05:40:36 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 063B684A8EF9AA0A3D30;
-        Fri, 15 May 2020 17:40:35 +0800 (CST)
-Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 15 May 2020 17:40:34 +0800
-Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.243]) by
- dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
- Fri, 15 May 2020 17:40:26 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: Questions about masked atomic
-Thread-Topic: Questions about masked atomic
-Thread-Index: AdYnm7vjyDIKjW3JQkW+0B8JTa36qA==
-Date:   Fri, 15 May 2020 09:40:26 +0000
-Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A02363499@DGGEML522-MBX.china.huawei.com>
-References: <B82435381E3B2943AA4D2826ADEF0B3A02359ED3@DGGEML522-MBX.china.huawei.com>
- <20200512113512.GK4814@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.40.168.149]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728040AbgEOJzG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 May 2020 05:55:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45156 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727927AbgEOJzG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 15 May 2020 05:55:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 306D9AD31;
+        Fri, 15 May 2020 09:55:06 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:55:01 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Orson Zhai <orsonzhai@gmail.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Orson Zhai <orson.unisoc@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: Re: [PATCH V2] dynamic_debug: Add an option to enable dynamic debug
+ for modules only
+Message-ID: <20200515095501.GU17734@linux-b0ei>
+References: <1587408228-10861-1-git-send-email-orson.unisoc@gmail.com>
+ <20200420191014.GE121146@unreal>
+ <CA+H2tpGgGtW_8Z8fV9to39JwA_KrcfAeBC+KN87v0xKnZHt2_w@mail.gmail.com>
+ <20200422142552.GA492196@unreal>
+ <CA+H2tpGR7tywhkexa31AD_FkhyxQgVq_L+b0DbvXzwr6yT8j9Q@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+H2tpGR7tywhkexa31AD_FkhyxQgVq_L+b0DbvXzwr6yT8j9Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/5/12 19:35, Leon Romanovsky wrote:
-> On Mon, May 11, 2020 at 01:54:48PM +0000, liweihang wrote:
->> Hi All,
->>
->> I have two questions about masked atomic (Masked Compare and Swap & MFetchAdd):
->>
->> 1. The kernel now supports masked atomic, but the it does not support atomic
->>    operation. Is the masked atomic valid in kernel currently?
-> 
-> Yes, it is valid, but probably has a very little real value for the kernel ULPs.
-> I see code in the RDS that uses atomics, but it says nothing to me, because
-> upstream RDS and version in-real-use are completely different.
-> 
->> 2. In the userspace, ofed does not have the corresponding opcode for the masked
->>    atomic (IB_WR_MASKED_ATOMIC_CMP_AND_SWP, IB_WR_MASKED_ATOMIC_FETCH_AND_ADD),
->>    and ibv_send_wr also has no related data segment for it. How to support it in
->>    userspace?
-> 
-> ibv_send_wr is not extensible, so the real solution will need to extend ibv_wr_post() [1]
-> with specific and new post builders.
-> 
-> Thanks
-> 
-> [1] https://github.com/linux-rdma/rdma-core/blob/master/libibverbs/man/ibv_wr_post.3.md
-> 
+On Thu 2020-04-23 00:02:48, Orson Zhai wrote:
+> On Wed, Apr 22, 2020 at 10:25 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Wed, Apr 22, 2020 at 09:06:08PM +0800, Orson Zhai wrote:
+> > > On Tue, Apr 21, 2020 at 3:10 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > My motivation came from the concept of GKI (Generic Kernel Image) in Android.
+> > > Google will release a common kernel image (binary) to all of the Android system
+> > > vendors in the world instead of letting them to build their owns as before.
+> > > Every SoC vendor's device drivers will be provided in kernel modules only.
+> > > By my patch, the driver owners could debug their modules in field (say
+> > > production releases)
+> > > without having to enable dynamic debug for the whole GKI.
+> >
+> > Will Google release that binary with CONFIG_DYNAMIC_DEBUG_CORE disabled?
+> >
+> In Google's plan, there will be only one GKI (no debug version) for
+> one Android version per kernel version per year.
 
-Hi Leon,
+Are there plans to use modules with debug messages enabled on production
+systems?
 
-Thanks for your response. May I ask another question:
+IMHO, the debug messages are primary needed during development and
+when fixing bugs. I am sure that developers will want to enable many
+more features that will help with debugging and which will be disabled
+on production systems.
 
-Why it's not encouraged to use atomic/extended atomic/masked atomic operations in kernel?
-Jason said that there seems no kernel users of extended atomic, is there any other reasons?
+I expect that Google will not release only the single binary. They
+should release also the sources and build configuration. Then
+developers might build their own versions with the needed debugging
+features enabled.
 
-Weihang
+Best Regards,
+Petr
