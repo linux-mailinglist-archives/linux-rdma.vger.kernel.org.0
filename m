@@ -2,48 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A9C1D41CE
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 01:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9451D4227
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 02:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbgENXoP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 May 2020 19:44:15 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40074 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728262AbgENXoP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 May 2020 19:44:15 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04ENav25022912;
-        Thu, 14 May 2020 23:43:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4VSSVYFMtKB6nhuT4ys68cZ+quQNnBan4qG3X81aHWE=;
- b=K1ymOkpu6dFTbnyILU5YoJeXa0iJ1TopyH551DJAjPcmtXv+VOWUtImcjbAy0vVW+tsz
- dA0TW2A0ByNd0o2RoZlJjDJT8LQmXVxgLWCK/W263a8UAVgh9Oi9J6VeVp1yFWHwi1gW
- /xCUf8eydfi4Vw4LSn6dLTGq95XwocUBNhQoJ6MA38gY9oJovcj2EAePu5FUxBcNm+Qz
- K3GR+KF1VafuAygheM/6O88vfWAueAN2YQpMmwA5lI4METoaDzxiXc8VNZxOg5l2n30j
- xb0nC63ur4SlxfzYCfdt0uL56Em9OOYOjBQZb5ZWGlSJNBrx5BultKyUv/52Rg4mm6VP KA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3100yg5qby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 May 2020 23:43:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04ENc801029208;
-        Thu, 14 May 2020 23:41:55 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 3100ydm0e8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 May 2020 23:41:55 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04ENfqYn016817;
-        Thu, 14 May 2020 23:41:52 GMT
-Received: from [10.74.106.88] (/10.74.106.88)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 May 2020 16:41:52 -0700
+        id S1727123AbgEOAhW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 May 2020 20:37:22 -0400
+Received: from mail-db8eur05on2065.outbound.protection.outlook.com ([40.107.20.65]:50209
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726374AbgEOAhV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 May 2020 20:37:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j745SQt+FKkgPyXZcjIQdkmEpUI+WaZZPAH1pLEOCh883VqNJ6CLfFB+uRvhVgaNR+Z+tsFHmPyU29GRzJfCprg5ozInqEShdV3Xl7nVU5mqnhDvX+ri/ydzLofA/hfDv7y+h552m4Oj7cy4TgK9L2ZJ6H3/uQFkYo5aUsJXP9QCXe4/x/+iLGn0lBoY7g6s50RuvFTGTiv6NgwoC7gtbdwBUsiin+npV8IAmtyidnRxejOAUOLMMDsXyRH2HKYXC+qGLpdw8ZcC/4bbnLX2SUOp2X0WNgTj6YgV7t6k+fmO9IFs0dnbzjCeNZXD6dHo9sU0DctMpEiy1EDcLUO5UQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cd8+j570AfAQwSIOXDHSkFj4L0yalt9YJiVxrxXB8CM=;
+ b=ChgsRheUpdAEC6+Gov+XczDPeQ0WEgR9UtbkDBJAkZQZXnB5iJYOucIGDuNUHBMuTHKJmjo5dyo+HikHTpRs++vZ7vyNGkbnXnq+mDTb4Qfugdv0T0qIV8Bb7EESooIfoR/ODc0xuOhpuMxDmvTxe0uPjDGC3/KoJZCDyGLCo7irPKD9j2v+0XsX2/n4a6zfeBIurR0uVxfgtWQatvddpSDLKLzXXdCN4XLQE+mV13zQhX9cOepJ/JlnGzKJc9u+ZZXjGM+YbhdP9SWqk7sKNk+iA2rK2Fte3kV5qu/P3gqvN0kq30RxPF49N43NoR1R1RNMjOkDC+N1wJ7voVlHCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cd8+j570AfAQwSIOXDHSkFj4L0yalt9YJiVxrxXB8CM=;
+ b=XtZNaZX548CcibmtBVmHO1Qtng7OiNSwN5RyrsHztagYrQjD8+pJRUk59eA/IUKSooGfJySpPEE25f6p5SB3REugIshpETVG6ml6TxpZ0SlySLOeATOtcjQodLze+m0y55cG4ue9SXHEnNDsxWLIXJapc8N5Zg11WmQ+Wp5Uc9Y=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+ by AM0PR05MB5905.eurprd05.prod.outlook.com (2603:10a6:208:131::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Fri, 15 May
+ 2020 00:37:15 +0000
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4]) by AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::408a:27c1:55f8:eed4%5]) with mapi id 15.20.3000.016; Fri, 15 May 2020
+ 00:37:15 +0000
 Subject: Re: [PATCH 0/8 v1] Remove FMR support from RDMA drivers
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Aron Silverton <aron.silverton@oracle.com>,
-        Max Gurtovoy <maxg@mellanox.com>
+To:     Sagi Grimberg <sagi@grimberg.me>, santosh.shilimkar@oracle.com,
+        Aron Silverton <aron.silverton@oracle.com>
 Cc:     bvanassche@acm.org, Jason Gunthorpe <jgg@mellanox.com>,
         linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org,
         israelr@mellanox.com, shlomin@mellanox.com
@@ -51,35 +48,52 @@ References: <20200514120305.189738-1-maxg@mellanox.com>
  <905E7E0C-1F87-4552-A7E3-5C49EDBED138@oracle.com>
  <5c48f60b-23b7-da64-6f37-f52de7bb625d@oracle.com>
  <479add48-6fdb-f925-c3b9-699c6aa4cfbf@grimberg.me>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <0ea6349f-1915-3493-3bd7-0bc8086c5b66@oracle.com>
-Date:   Thu, 14 May 2020 16:41:50 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
-MIME-Version: 1.0
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <1bd4bf77-b97b-3c6f-ce3a-4d5fc428f454@mellanox.com>
+Date:   Fri, 15 May 2020 03:37:11 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 In-Reply-To: <479add48-6fdb-f925-c3b9-699c6aa4cfbf@grimberg.me>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 phishscore=0
- adultscore=0 suspectscore=2 mlxscore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005140201
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- cotscore=-2147483648 mlxscore=0 suspectscore=2 spamscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005140201
+Content-Language: en-US
+X-ClientProxiedBy: AM4PR0302CA0029.eurprd03.prod.outlook.com
+ (2603:10a6:205:2::42) To AM0PR05MB5810.eurprd05.prod.outlook.com
+ (2603:10a6:208:11f::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.0.0.3] (89.139.203.251) by AM4PR0302CA0029.eurprd03.prod.outlook.com (2603:10a6:205:2::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend Transport; Fri, 15 May 2020 00:37:14 +0000
+X-Originating-IP: [89.139.203.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d8a44c7d-8bfd-4c7a-49bd-08d7f8681da2
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5905:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB59058C6AE7C53867124012DAB6BD0@AM0PR05MB5905.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04041A2886
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hESl4Y0c7BpM+kxuXDb2oWe/hQJiLxCffPdqtXQFWLBY2R7UQYnovA/Vc/oLqDAk4O2HL4aXOYxyC15raDHd8ET4x7o7Nvh1auva6IiQ+vWXwoDAH+cU0+cbCw1qDNSe2EENVY0HP2fJaHJJ3kjY/Tk4F+j/LfMQ0oiJ4g9j/vCro9qOx0lY121svLCzO9n3PpUWQaMk3tR1aoj7pKpZ8jRzQkRwYFsbKYvSqUtq+r95pK1jv2bYAtUwmHvRrRowS7lrUaxmt0r5T7O8hmblmXlvlLGwZvnw7H7Elybd4vpygTbTqEeNjJlW9EqSqf4GtSa5d9erXw0qM29l0dWzkipzPq2cht6a88AJyqxZjCPkxW5SdiZ7UJ943Gu4FnxGH/0nPbromGcdpZ5aONA5opG4nddZYBsZNTLa1L04irmcR1XAxGH3lLVeQFYyYpYeMxuLREoXquTf5mn8rjnFEVQlvYWOIKycqwHOkutQSZ5bAjUqIdCjmwTTAsqXfbUb
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(53546011)(16526019)(186003)(16576012)(316002)(5660300002)(107886003)(26005)(66946007)(2616005)(66556008)(66476007)(956004)(2906002)(6666004)(8936002)(6486002)(31686004)(52116002)(36756003)(86362001)(31696002)(110136005)(8676002)(4326008)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: fqsj8kEdj3Ehi1H3ZtPZj05TzuXKtPdyiM3+nDcUgsYWPxeDYR2olb7NJ54NuYnUxkKJvkWpM6PeQ2j4l0AlO407WrrYYjXDc1uV35TqqVP76ugcv3/NFgZVIZq37xJwDAt1oPYwqJcu01vztrR53TnoljqgQcGlooh+shXLnIi7sQ8Vj4VnfP7ArdqPX7c+iT3CzBvU61uoRQ7eNKqU8xvcqmmNnpDizkPdDVSk2/VEVVEWriiqUG3fM2+rH5wc0NCiCIuTG41QEsgHaD6fmbKdwMmGlYyS/fbnav5jp67HvkVwFQSz2nMBKy4EKx9A3rg8+3nflOrgOFl+y0pULWgcMQE/Nri/N+CI5eexDk3xghzgETxOqikaqv9TOW2PBh523tJadbdVDkQi0dppeC9ujVght3l6xeETClDn5PYUj1WRF231NxH1u2OLKty6j9FVYv6wfOwDVOAYWZGCGvLOnTxF0LVoKDGKC1tpeAOmja+Ov4Iow8aCHI05pmjK
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8a44c7d-8bfd-4c7a-49bd-08d7f8681da2
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2020 00:37:15.5455
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AN+l1qgq7EdgVqAJqayLgtI0eorpw3OPvAs0WBZhGI8hHVZH6dI/iWV/ol1YIoI7CrDXGZBTWPm3z5Nn2kdbAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5905
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/14/20 3:23 PM, Sagi Grimberg wrote:
-> 
+
+On 5/15/2020 1:23 AM, Sagi Grimberg wrote:
+>
 >>> +Santosh
 >>>
 >>> You probably meant to copy the RDS maintainer? Not sure if this 
@@ -95,8 +109,8 @@ On 5/14/20 3:23 PM, Sagi Grimberg wrote:
 >>>> This ancient
 >>>> mode is unsafe and not maintained/tested in the last few years. It 
 >>>> also doesn't
->>>> have any reasonable advantage over other memory registration methods 
->>>> such as
+>>>> have any reasonable advantage over other memory registration 
+>>>> methods such as
 >>>> FRWR (that is implemented in all the recent RDMA adapters). This 
 >>>> series should
 >>>> be reviewed and approved by the maintainer of the effected drivers 
@@ -105,48 +119,38 @@ On 5/14/20 3:23 PM, Sagi Grimberg wrote:
 >>>>
 >> I know the security issue has been brought up before and this plan of 
 >> removal of FMR support was on the cards
-> 
+>
 > Actually, what is unsafe is not necessarily fmrs, but rather the
 > fmr_pool interface. So Max, you can keep fmr if rds wants it, but
 > we can get rid of fmr pools.
 >
-Good point. We aren't using the fmr_pools.
-
 >> but on RDS at least on CX3 we
 >> got more throughput with FMR vs FRWR. And the reasons are well
 >> understood as well why its the case.
-> 
+>
 > Looking at the rds code, it seems that rds doesn't do any fast
 > registration at all, rkeys are long lived and are only invalidated (or
 > unmaped) when need recycling or when a socket is torn down...
-> 
+>
 > So I'm not clear exactly about the model here, but seems to me
 > its almost like rds needs something like phys_mr, which is static for
 > all of its lifetime. It seems that fmrs just create a hassle for
 > rds, unless I'm missing something...
-> 
+>
 > Having said that, it surely isn't the most secure behavior...
 > At least its not the global dma rkey...
 >
-There are couple of layers but you can see the FRWR code inside,
-net/rds/ib_frmr.c. The MR allocation as well as free/invalidation
-is managed from user-land instead of ULP data path. There are
-couple of cases where some use_once semantics does MR invalidation
-within kernel but thats only because userland indicated that MR
-key can be invalidated after issued RDMA ops is complete.
-
 >> Is it possible to keep core support still around so that HCA's which
 >> supports FMR, ULPs can still can leverage it if they want.
 >>  From RDS perspective, if the HCA like CX3 doesn't support both modes,
 >> code prefers FMR vs FRWR and hence the question.
-> 
+>
 > Max can start by removing fmr_pools, fmrs can stay as there is nothing
 > fundamentally wrong with them. And apparently there are still users.
 
-That will surely help if its an option. RDS don't use fmr_pools so no
-issues there.
+Ok we can start with this.
 
-Regards,
-Santosh
+Please review patches 5, 6, 7 that are stand alone.
 
+And I'll send a V2 for SRP/ISER/FMR_pool only.
 
