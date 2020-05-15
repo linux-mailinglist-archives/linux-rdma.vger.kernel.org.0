@@ -2,27 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3210D1D56A6
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 18:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32F31D598B
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 May 2020 20:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgEOQwS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 May 2020 12:52:18 -0400
-Received: from p3plsmtpa08-06.prod.phx3.secureserver.net ([173.201.193.107]:36714
-        "EHLO p3plsmtpa08-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgEOQwS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 15 May 2020 12:52:18 -0400
-Received: from [192.168.0.78] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id ZdZIj3dek3cFQZdZIjuv5y; Fri, 15 May 2020 09:52:17 -0700
-X-CMAE-Analysis: v=2.3 cv=arjM9hRV c=1 sm=1 tr=0
- a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
- a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=CbDCq_QkAAAA:8
- a=paghG1xD4p1AdRdQ23MA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=1qrBK16LubpBFNPVNq2M:22
-X-SECURESERVER-ACCT: tom@talpey.com
+        id S1726168AbgEOS7N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 May 2020 14:59:13 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:43278 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgEOS7M (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 May 2020 14:59:12 -0400
+Received: by mail-pf1-f193.google.com with SMTP id v63so1390742pfb.10
+        for <linux-rdma@vger.kernel.org>; Fri, 15 May 2020 11:59:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mi5Ws44klMsvwo3CXUUcYlZmMrtEbS+s6JeKUbgdKy8=;
+        b=aeE9HVeamx0uSODXnynh732GhC+LE/iZyBsHkg6Rh176gQCk1HUuSuYPUo0VYi9cZm
+         DPh9213B5fXyl+zuIkw4gRRnMWpjX2LBMQSv2CVC2PKkmiU5D4nKD5c1MBArRu1uoh/r
+         0D1RtlVYcj4/fHkJWh+pDyTBDUmAC8jW7/KMDTzVs9olZtig+0hy1mIAvhMFOmU0USOh
+         aXu38EwhMzPmu3mssBn+crQy2oKxxm6IpB5NRohTym845yacSo5oE3gSKcFd61mB1c60
+         wzMgWMss7Kl7KPDDtOLYVJs13gpgSRf7Spoys3xvEkOzlXVy0zBamaXfv7EHyen1hcjm
+         pgqg==
+X-Gm-Message-State: AOAM533q18+yEd7yz3g+uiXD8IKuuGRs8sh/Gp0a1v5jYgskO/2W4L72
+        +QgALg+bHVirPakvugOUzyg=
+X-Google-Smtp-Source: ABdhPJwMf2AdxczEVooecug/YGI9DTrFhWE/ySbOMve0uH5pntGFb0Z7Hdjyq5ojmkLT8Tr3rClg7A==
+X-Received: by 2002:a63:175c:: with SMTP id 28mr4234619pgx.44.1589569152231;
+        Fri, 15 May 2020 11:59:12 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:c811:dd1c:fe2d:bd2c? ([2601:647:4802:9070:c811:dd1c:fe2d:bd2c])
+        by smtp.gmail.com with ESMTPSA id k6sm2088899pju.44.2020.05.15.11.59.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 11:59:11 -0700 (PDT)
 Subject: Re: [PATCH 0/8 v1] Remove FMR support from RDMA drivers
-To:     santosh.shilimkar@oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+To:     Tom Talpey <tom@talpey.com>, santosh.shilimkar@oracle.com,
         Aron Silverton <aron.silverton@oracle.com>,
         Max Gurtovoy <maxg@mellanox.com>
 Cc:     bvanassche@acm.org, Jason Gunthorpe <jgg@mellanox.com>,
@@ -33,105 +46,27 @@ References: <20200514120305.189738-1-maxg@mellanox.com>
  <5c48f60b-23b7-da64-6f37-f52de7bb625d@oracle.com>
  <479add48-6fdb-f925-c3b9-699c6aa4cfbf@grimberg.me>
  <0ea6349f-1915-3493-3bd7-0bc8086c5b66@oracle.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <75f2cbe4-3a62-9b0e-93c7-fb076bf318bf@talpey.com>
-Date:   Fri, 15 May 2020 12:52:16 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ <75f2cbe4-3a62-9b0e-93c7-fb076bf318bf@talpey.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <53ac195c-dccd-3d30-9e11-f1389dc8332d@grimberg.me>
+Date:   Fri, 15 May 2020 11:59:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <0ea6349f-1915-3493-3bd7-0bc8086c5b66@oracle.com>
+In-Reply-To: <75f2cbe4-3a62-9b0e-93c7-fb076bf318bf@talpey.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfNf00vSZo4/+PdYUlB0Ci9dBmPYook8hWKLgn4gCN9QST2usN3kehialJ0Y3DULfk1xLPAtOOqI1wNLv9CL6eYL7DovuR14evHd7c0vGGfGD5Djfl3bt
- sEfYqAZvSXfqluA+i79t+T0WSUKB35lezquxfiQFXLiHmAop/eLLqhoUvfWXcKEpQhwOKn5kkvvARNCnwInmBh/vlPZBKeqqZFm5F5jRMcR2fjHnQ10OB9ms
- YWuZCddlzNDTteOeqi04E8y52HKXSziH3ZiwUvCmqASIhl0Wp/sLPGoSV4BIvnq9A04exCPBgBjDaVXKP9V1Qv6JzycBPgZtAeSWw/HHMpIQ/c6UtJ3sGs94
- W1EnbqbLKNP2Oy2vD3z9P+vcTFSZp7tLau3IuVcatSNzPm23/QGhWBJNsb54VdshiLqGvbpSkW3qqyrVkqToC883oaMXlgfbT1CC15dsUqNiQtlgmdeZDDmO
- b0Ugi7gM3sE7L0PH
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/14/2020 7:41 PM, santosh.shilimkar@oracle.com wrote:
-> On 5/14/20 3:23 PM, Sagi Grimberg wrote:
->>
->>>> +Santosh
->>>>
->>>> You probably meant to copy the RDS maintainer? Not sure if this 
->>>> should have
->>>> also been sent to netdev@vger.kernel.org.
->>>>
->>> Thanks Aron.
->>>
->>>>
->>>>> On May 14, 2020, at 7:02 AM, Max Gurtovoy <maxg@mellanox.com> wrote:
->>>>>
->>>>> This series removes the support for FMR mode to register memory. 
->>>>> This ancient
->>>>> mode is unsafe and not maintained/tested in the last few years. It 
->>>>> also doesn't
->>>>> have any reasonable advantage over other memory registration 
->>>>> methods such as
->>>>> FRWR (that is implemented in all the recent RDMA adapters). This 
->>>>> series should
->>>>> be reviewed and approved by the maintainer of the effected drivers 
->>>>> and I
->>>>> suggest to test it as well.
->>>>>
->>> I know the security issue has been brought up before and this plan of 
->>> removal of FMR support was on the cards
->>
->> Actually, what is unsafe is not necessarily fmrs, but rather the
->> fmr_pool interface. So Max, you can keep fmr if rds wants it, but
->> we can get rid of fmr pools.
->>
-> Good point. We aren't using the fmr_pools.
 
-It's not only the fmr_pools. The FMR API operates on a page granularity,
-so a sub-page registration, or a non-page-aligned one, ends up exposing
-data outside the buffer. This is done silently, and is a significant
-vulnerability for most upper layers.
+> It's not only the fmr_pools. The FMR API operates on a page granularity,
+> so a sub-page registration, or a non-page-aligned one, ends up exposing
+> data outside the buffer. This is done silently, and is a significant
+> vulnerability for most upper layers.
 
-Tom.
-
->>> but on RDS at least on CX3 we
->>> got more throughput with FMR vs FRWR. And the reasons are well
->>> understood as well why its the case.
->>
->> Looking at the rds code, it seems that rds doesn't do any fast
->> registration at all, rkeys are long lived and are only invalidated (or
->> unmaped) when need recycling or when a socket is torn down...
->>
->> So I'm not clear exactly about the model here, but seems to me
->> its almost like rds needs something like phys_mr, which is static for
->> all of its lifetime. It seems that fmrs just create a hassle for
->> rds, unless I'm missing something...
->>
->> Having said that, it surely isn't the most secure behavior...
->> At least its not the global dma rkey...
->>
-> There are couple of layers but you can see the FRWR code inside,
-> net/rds/ib_frmr.c. The MR allocation as well as free/invalidation
-> is managed from user-land instead of ULP data path. There are
-> couple of cases where some use_once semantics does MR invalidation
-> within kernel but thats only because userland indicated that MR
-> key can be invalidated after issued RDMA ops is complete.
-> 
->>> Is it possible to keep core support still around so that HCA's which
->>> supports FMR, ULPs can still can leverage it if they want.
->>>  From RDS perspective, if the HCA like CX3 doesn't support both modes,
->>> code prefers FMR vs FRWR and hence the question.
->>
->> Max can start by removing fmr_pools, fmrs can stay as there is nothing
->> fundamentally wrong with them. And apparently there are still users.
-> 
-> That will surely help if its an option. RDS don't use fmr_pools so no
-> issues there.
-> 
-> Regards,
-> Santosh
-> 
-> 
-> 
-> 
+You're right Tom, I forgot about that...
+I guess I'd vote to remove it altogether then...
