@@ -2,88 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179BE1D6DE4
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 00:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCAF1D6DE5
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 00:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgEQWwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 May 2020 18:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S1726680AbgEQWxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 May 2020 18:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgEQWwO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 May 2020 18:52:14 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30E9C061A0C
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:52:14 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id r3so3891766qve.1
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:52:14 -0700 (PDT)
+        with ESMTP id S1726591AbgEQWxO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 May 2020 18:53:14 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC22C061A0C
+        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:53:14 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id t25so6710830qtc.0
+        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:53:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Zgk4nyC2KPjArKxjtaQr9iDr77fcMNtcG0fq6rx6dJc=;
-        b=Xq5TnNSF3TbdBEyFtF+UHdXX7UNLagLgQCub2gdb+UwhT5gUZ2CI5k+R7E+tHJxG6A
-         H3rf7AvyKg5PjcWHo8f66RxRMItMJ0BeNTup+NMzPjlQ1ftD6zm45X7UE0BxObzZqNDV
-         bKHENVyDyZ4jvylTiHMvMJkcXcc8i/iw8SqeqjRJqNR1nAmkYsnCSr0DmBN15RoTzs5J
-         rYW/hGCdlnVndlw5SlBFDYxuDKNB2GjRw+Zn59RwLW/9DEBEbJ1N9S5u0OduofUA1ar0
-         HFbXNZIKJF/WXB4hnFxaMrk1lQz+asMxPyEu4nRUdrfspg2h8EVZjn4TA6Do7W1Dy427
-         zchQ==
+        bh=bLMGeFpMzHap5sgOAS1H3b3cAtNrQ3AAfCGbRF9dvJU=;
+        b=YNdZugZ57ESrx+WGCQkTlUcz+PnCmyuxRxBcYBdswYSmqPhKUcr5h7TJs4ruurwKjG
+         lZHkUGgdd044di7330tjOubSUHvWuR7Z9RpDALf3DN6d20GWIrxcmrtsrbykIrTasbfp
+         0cn9fr6WZdNSzsQJwrVkTKCrpZwcPfYeDEJnxML6NCAAAlXVGnQi65bx6TrhUClXALZX
+         ziZTRN8hLI86srvsC/DYwbh/AajvQzi370qAvj6PIL8COaJDknRkJiDj+RTBonN1Z25+
+         yz37P4BizYo2Zlw/D7FD2FrwfV4zgeUhbSTrdVJWYj9hXz9UN7I8x6BnpzL6AmsXXN9v
+         oLnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zgk4nyC2KPjArKxjtaQr9iDr77fcMNtcG0fq6rx6dJc=;
-        b=QxCzymNxcXUOKw55nHmNIvCJMsTNNIFDiuHZ1cEwPLfJTGHT3ymVWgI4EAXw6TUoqx
-         7oU0FDgAAujWDRs1BUqs4oamfw9bWiNQqS761fS5AH/uFWbA0zoM9ie5EioaXeKAquum
-         WSp9az8N6Mr8YwmkBoEzk9CY2tlQCd146x3Bq2xo/9xUCLd1frmbT/pzIZQoxBBjMgBH
-         GYaIdR01uTBSV4gqMRjd86zc5XOTc4dXYVEx0+6Fe6cCiA9WkhMCbgBmtS/D05HcM1BD
-         zKqa488kP/vo8GfJhxLVEVPduSx5Y0HGrwvaFsXToz1ArnNZlMVseBVI6CROBKB432JY
-         j54Q==
-X-Gm-Message-State: AOAM5319Nwe9EWXBWNJf3EJf7QCQcBFqwUchG/g2BkzC9VmSVPWf1f7l
-        A6dyY6mQ8OAq9m7kqrwVDaFgLWx2MkA=
-X-Google-Smtp-Source: ABdhPJwLv8gU7UxvDQ4ZIaSE0NAsxHpO6DcOOyHvfxI+9EF9C4iIp376yeBLv5XuEX3xox0AdjOY7Q==
-X-Received: by 2002:ad4:5284:: with SMTP id v4mr2419961qvr.167.1589755933933;
-        Sun, 17 May 2020 15:52:13 -0700 (PDT)
+        bh=bLMGeFpMzHap5sgOAS1H3b3cAtNrQ3AAfCGbRF9dvJU=;
+        b=e8h5AaNnNYXTV/TknJaNeVM2ZSL2TSt9JUhuHAgWxisv5pwO9C4eRGkLAZHiSbl/ui
+         I3TGh6KACuaGGJMiSppiB8xq1EQdWi0gEz/OzJJn7V3lOVwqVKrvoqlHM6EpqU6c0pW4
+         nsa3YIOY/o3smNEjVkhtMv+MZEiWt+BXrN3PK8haQYb5d2GZWiwLzi8cRxpooqSEdxw2
+         bHV+h5lJAIVU0Ny11MJzagcgcaRMbRpoWPI+eORuVimbJ6tr4o9Xg1P2SejTl5C1UKz/
+         kFGQN4GYpC7+EI6kD8bzbS3os2vuStw1x29Nv0TixkajkHb2VX4e8od+D3v/DULJv/Rw
+         TqLQ==
+X-Gm-Message-State: AOAM533OFBhG+Xmklpx8MmatpTTzeibkKCqvo1IhisK7JXKLSQgotj1j
+        POwYF800kWyIH5OD4SwxKapZxA==
+X-Google-Smtp-Source: ABdhPJzgBzQWSr2D4+U7G5+bpWCHEe1NvZiCfdgtSBEb7tujbik5p4m+nzNhcIrWlB5OaqaYrTvn/g==
+X-Received: by 2002:aed:374a:: with SMTP id i68mr13541190qtb.69.1589755993539;
+        Sun, 17 May 2020 15:53:13 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id n68sm5522702qkb.58.2020.05.17.15.52.13
+        by smtp.gmail.com with ESMTPSA id h134sm6953233qke.6.2020.05.17.15.53.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 17 May 2020 15:52:13 -0700 (PDT)
+        Sun, 17 May 2020 15:53:13 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jaS8i-000842-LZ; Sun, 17 May 2020 19:52:12 -0300
-Date:   Sun, 17 May 2020 19:52:12 -0300
+        id 1jaS9g-00088J-O2; Sun, 17 May 2020 19:53:12 -0300
+Date:   Sun, 17 May 2020 19:53:12 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 02/10] IB/uverbs: Refactor related objects
- to use their own asynchronous event FD
-Message-ID: <20200517225212.GA30888@ziepe.ca>
+Subject: Re: [PATCH rdma-next v1 03/10] IB/uverbs: Extend CQ to get its own
+ asynchronous event FD
+Message-ID: <20200517225312.GA31145@ziepe.ca>
 References: <20200506082444.14502-1-leon@kernel.org>
- <20200506082444.14502-3-leon@kernel.org>
+ <20200506082444.14502-4-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506082444.14502-3-leon@kernel.org>
+In-Reply-To: <20200506082444.14502-4-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 06, 2020 at 11:24:36AM +0300, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> index 7959f618b8a5..1d147beaf4cc 100644
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -1051,6 +1051,10 @@ static struct ib_ucq_object *create_cq(struct uverbs_attr_bundle *attrs,
->  		goto err_free;
+On Wed, May 06, 2020 at 11:24:37AM +0300, Leon Romanovsky wrote:
+> From: Yishai Hadas <yishaih@mellanox.com>
+> 
+> Extend CQ to get its own asynchronous event FD.
+> The event FD is an optional attribute, in case wasn't given the ufile
+> event FD will be used.
+> 
+> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>  drivers/infiniband/core/uverbs.h              | 18 ++++++++++++++++++
+>  drivers/infiniband/core/uverbs_std_types_cq.c |  9 ++++++---
+>  include/uapi/rdma/ib_user_ioctl_cmds.h        |  1 +
+>  3 files changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> index 55b47f110183..7241009045a5 100644
+> +++ b/drivers/infiniband/core/uverbs.h
+> @@ -293,6 +293,24 @@ static inline u32 make_port_cap_flags(const struct ib_port_attr *attr)
+>  	return res;
+>  }
 >  
->  	obj->uevent.uobject.object = cq;
-> +	obj->uevent.event_file = attrs->ufile->default_async_file;
+> +static inline struct ib_uverbs_async_event_file *
+> +ib_uverbs_get_async_event(struct uverbs_attr_bundle *attrs,
+> +			  u16 id)
+> +{
+> +	struct ib_uobject *async_ev_file_uobj;
+> +	struct ib_uverbs_async_event_file *async_ev_file;
+> +
+> +	async_ev_file_uobj = uverbs_attr_get_uobject(attrs, id);
+> +	if (IS_ERR(async_ev_file_uobj))
+> +		async_ev_file = attrs->ufile->default_async_file;
 
-default_async_file always has to be read with READ_ONCE since there is
-no locking.
-
-This repeating pattern should probably be in ia helper function like
-was introduced in patch 3 for the ioctl side.
+READ_ONCE here too
 
 Jason
