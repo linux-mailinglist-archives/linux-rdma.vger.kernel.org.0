@@ -2,180 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F385F1D6DEF
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 00:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AFA1D6DF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 01:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgEQW5u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 May 2020 18:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S1726703AbgEQXEX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 May 2020 19:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgEQW5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 May 2020 18:57:50 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FA3C061A0C
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:57:50 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id c24so6678410qtw.7
-        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 15:57:50 -0700 (PDT)
+        with ESMTP id S1726601AbgEQXEW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 May 2020 19:04:22 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8632BC061A0C
+        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 16:04:21 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id z9so3869123qvi.12
+        for <linux-rdma@vger.kernel.org>; Sun, 17 May 2020 16:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=/NfKJvdcpbojykgSWjQaTs1OulvP31aE/ip/4Uss/Cs=;
-        b=CV/ecqyk1Ql5cFQpeHaSM8d2bh9DAD29FZiypUnO+CUDXMGWyMOFwSpck2rqGt5GnB
-         5W4pmNb2Mt6mpH9loFHKejlU9PQz+mqS3tpAg2RSqrXJHFqSpAjU4knllENvtcD8L2h3
-         gjVFFsM1v/3STL1/kIh+rnlXYnKGv3j7ULjFuljAlPdYdBE0gY5kIZu+HMT90ZGD+zOS
-         QD2aBGSbN1r3A8cavWos6uNlcTATjK0u8Il0ObQDvvSkkFS3FTdy1mFL2cVYW3R6DUI7
-         NtfvU8c3ePgi70Nwj8ml0CPo0YJpKfvmwudf5ZsX5jVlXP8xMSxE6lWX75XpPdKj2skd
-         Q6tQ==
+        bh=YCr31ZrrZ9QfebhZsvfqB/z6Lo+xZgU04Qce2qDXnSM=;
+        b=cdKD+dG+1bixlgMqszyzhWsDJv+tpHVnooIW0GvWGJPRwBQB2kRo77F+DZSWG4LGzv
+         1RpJ/zCU27NKmqePANfDyzZokkpNP/ozrAjcYBcuDak7sCxdtqhJBPoJJvQx+AovQuqa
+         hyussl7dGRaNzSilBN3pEFnnx7U7ZLbOX7rH3PNwj8kOp9WoQYoqLcKnFZo5T1IVFkaf
+         liV60flv5muwOpBZq9YjOMGHg3hccRu+1nCN0jTWAHNOFkPjb5W6ZDJ9b3/vXgXPtPRA
+         MjzFPbAKQrUuGdZSrYscTrEOaRCpd5AM7g4FNStl/OUx/UTFRegIFGuX2VKhaR4veh6w
+         vWdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/NfKJvdcpbojykgSWjQaTs1OulvP31aE/ip/4Uss/Cs=;
-        b=Tn/lW0uwI1Fs+u2WO3qVpTImzh9EEzP4Gew4UP0zCHmctI4cv1vOBlevUF7wXifoAf
-         GiaypXKOCQtvUcRISsdvoWy7AYvKXKyV4PNl2koH0qjnwy5VO0+Hp5DdFByycs1utBf/
-         hGWcdI8ltmEpTH8n6wtnKD+8S8f2bon6xGA1l6noHNScwbI/amfyEFuBpNWd1d+CkDRj
-         TUeM6B7xv8cOwSKN/QZ8hfh/n5f+LvNjFoQ6oAdT0BwRCvDgHflMibjy3ySryiLZ0VqV
-         Mf5lJIHw5Aal+lrB0CGiWemLOXI5STQVKHhVG1TMo//OdCUw/ihBjIp/9Ipa9UdkQuty
-         +WXg==
-X-Gm-Message-State: AOAM5329eaA7zmswHIMmQZ2Qs78uu88wFMKNC+3m28shcPKv7uR1v/F7
-        mWFKYSwo9JVynP4witP4QoDfHw==
-X-Google-Smtp-Source: ABdhPJwdM6E/bY/Dv2cimFVLwZrgxPsjnoVgtL7W2nz/aaNStPiZkb+doVRyJeqHtVVNk4FP8A02UA==
-X-Received: by 2002:ac8:3f5d:: with SMTP id w29mr13560205qtk.192.1589756268414;
-        Sun, 17 May 2020 15:57:48 -0700 (PDT)
+        bh=YCr31ZrrZ9QfebhZsvfqB/z6Lo+xZgU04Qce2qDXnSM=;
+        b=WfqyfNidWTGmAbK4lpRZYTseYaz9X/BY05TvQUWvlJUCwIOZwwWWUPFvCrBGblt85P
+         cLnr6r3ezlvA6iVz+755cLnPYEy6NjXhOElzakmvll7TZA1gvcGqhbuK/WUVLM+kto+s
+         rUd7bzIukXat4TA0UUduuvqtQYHQUPq9LlNqRcYTPRsyDUlAYeLLzQh8j41S3M7ZndwG
+         Uy9qgOZ2iz60UNIkXR9+yfK8eZQA6IHZHibp/rosB1ixWvx057HF38ul0AyF8soeXpi6
+         qLT1URf7lBc2fHu534WeMoC801dV/WUX9jdgqh0zLeUo7yV+QDMUGy6Qy+rnuQXSeZ2Y
+         VgvQ==
+X-Gm-Message-State: AOAM533DCSyKN5ZwidyI2U1HEBzIuinfNrHKdvbIqx22V64n9285E7N1
+        mJ4JvL47D9EQh4OgOMSnuBT1mw==
+X-Google-Smtp-Source: ABdhPJzBhBEAxegzRqPIzehBYEvW9sxiV7ZrtBmDrPSmuwQ78UJjHk9wakmAfe7Azrc6Q78JKBJHQg==
+X-Received: by 2002:a0c:c603:: with SMTP id v3mr13705011qvi.82.1589756660765;
+        Sun, 17 May 2020 16:04:20 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z50sm8234084qta.18.2020.05.17.15.57.47
+        by smtp.gmail.com with ESMTPSA id 67sm42496qkg.51.2020.05.17.16.04.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 17 May 2020 15:57:47 -0700 (PDT)
+        Sun, 17 May 2020 16:04:20 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jaSE7-0008EK-DE; Sun, 17 May 2020 19:57:47 -0300
-Date:   Sun, 17 May 2020 19:57:47 -0300
+        id 1jaSKR-0008JP-R9; Sun, 17 May 2020 20:04:19 -0300
+Date:   Sun, 17 May 2020 20:04:19 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 06/10] IB/uverbs: Move QP, SRQ, WQ type and
- flags to UAPI
-Message-ID: <20200517225747.GA31510@ziepe.ca>
+Subject: Re: [PATCH rdma-next v1 07/10] IB/uverbs: Introduce create/destroy
+ SRQ commands over ioctl
+Message-ID: <20200517230419.GA31678@ziepe.ca>
 References: <20200506082444.14502-1-leon@kernel.org>
- <20200506082444.14502-7-leon@kernel.org>
+ <20200506082444.14502-8-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506082444.14502-7-leon@kernel.org>
+In-Reply-To: <20200506082444.14502-8-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 06, 2020 at 11:24:40AM +0300, Leon Romanovsky wrote:
-> From: Yishai Hadas <yishaih@mellanox.com>
-> 
-> These constants are going to be used in the ioctl interface in coming
-> patches so they are part of the UAPI, place them in the correct header
-> for clarity.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  include/rdma/ib_verbs.h                 | 43 ++++++++++++++-----------
->  include/uapi/rdma/ib_user_ioctl_verbs.h | 34 +++++++++++++++++++
->  2 files changed, 58 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index b8b5b5310529..9cf2d9d05c06 100644
-> +++ b/include/rdma/ib_verbs.h
-> @@ -1012,9 +1012,9 @@ enum ib_cq_notify_flags {
->  };
->  
->  enum ib_srq_type {
-> -	IB_SRQT_BASIC,
-> -	IB_SRQT_XRC,
-> -	IB_SRQT_TM,
-> +	IB_SRQT_BASIC = IB_UVERBS_SRQT_BASIC,
-> +	IB_SRQT_XRC = IB_UVERBS_SRQT_XRC,
-> +	IB_SRQT_TM = IB_UVERBS_SRQT_TM,
->  };
->  
->  static inline bool ib_srq_has_cq(enum ib_srq_type srq_type)
-> @@ -1083,16 +1083,16 @@ enum ib_qp_type {
->  	IB_QPT_SMI,
->  	IB_QPT_GSI,
->  
-> -	IB_QPT_RC,
-> -	IB_QPT_UC,
-> -	IB_QPT_UD,
-> +	IB_QPT_RC = IB_UVERBS_QPT_RC,
-> +	IB_QPT_UC = IB_UVERBS_QPT_UC,
-> +	IB_QPT_UD = IB_UVERBS_QPT_UD,
->  	IB_QPT_RAW_IPV6,
->  	IB_QPT_RAW_ETHERTYPE,
-> -	IB_QPT_RAW_PACKET = 8,
-> -	IB_QPT_XRC_INI = 9,
-> -	IB_QPT_XRC_TGT,
-> +	IB_QPT_RAW_PACKET = IB_UVERBS_QPT_RAW_PACKET,
-> +	IB_QPT_XRC_INI = IB_UVERBS_QPT_XRC_INI,
-> +	IB_QPT_XRC_TGT = IB_UVERBS_QPT_XRC_TGT,
->  	IB_QPT_MAX,
-> -	IB_QPT_DRIVER = 0xFF,
-> +	IB_QPT_DRIVER = IB_UVERBS_QPT_DRIVER,
->  	/* Reserve a range for qp types internal to the low level driver.
->  	 * These qp types will not be visible at the IB core layer, so the
->  	 * IB_QPT_MAX usages should not be affected in the core layer
-> @@ -1111,17 +1111,21 @@ enum ib_qp_type {
->  
->  enum ib_qp_create_flags {
->  	IB_QP_CREATE_IPOIB_UD_LSO		= 1 << 0,
-> -	IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK	= 1 << 1,
-> +	IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK	=
-> +		IB_UVERBS_QP_CREATE_BLOCK_MULTICAST_LOOPBACK,
->  	IB_QP_CREATE_CROSS_CHANNEL              = 1 << 2,
->  	IB_QP_CREATE_MANAGED_SEND               = 1 << 3,
->  	IB_QP_CREATE_MANAGED_RECV               = 1 << 4,
->  	IB_QP_CREATE_NETIF_QP			= 1 << 5,
->  	IB_QP_CREATE_INTEGRITY_EN		= 1 << 6,
->  	/* FREE					= 1 << 7, */
-> -	IB_QP_CREATE_SCATTER_FCS		= 1 << 8,
-> -	IB_QP_CREATE_CVLAN_STRIPPING		= 1 << 9,
-> +	IB_QP_CREATE_SCATTER_FCS		=
-> +		IB_UVERBS_QP_CREATE_SCATTER_FCS,
-> +	IB_QP_CREATE_CVLAN_STRIPPING		=
-> +		IB_UVERBS_QP_CREATE_CVLAN_STRIPPING,
->  	IB_QP_CREATE_SOURCE_QPN			= 1 << 10,
-> -	IB_QP_CREATE_PCI_WRITE_END_PADDING	= 1 << 11,
-> +	IB_QP_CREATE_PCI_WRITE_END_PADDING	=
-> +		IB_UVERBS_QP_CREATE_PCI_WRITE_END_PADDING,
->  	/* reserve bits 26-31 for low level drivers' internal use */
->  	IB_QP_CREATE_RESERVED_START		= 1 << 26,
->  	IB_QP_CREATE_RESERVED_END		= 1 << 31,
-> @@ -1626,7 +1630,7 @@ enum ib_raw_packet_caps {
->  };
->  
->  enum ib_wq_type {
-> -	IB_WQT_RQ
-> +	IB_WQT_RQ = IB_UVERBS_WQT_RQ,
->  };
->  
->  enum ib_wq_state {
-> @@ -1649,10 +1653,11 @@ struct ib_wq {
->  };
->  
->  enum ib_wq_flags {
-> -	IB_WQ_FLAGS_CVLAN_STRIPPING	= 1 << 0,
-> -	IB_WQ_FLAGS_SCATTER_FCS		= 1 << 1,
-> -	IB_WQ_FLAGS_DELAY_DROP		= 1 << 2,
-> -	IB_WQ_FLAGS_PCI_WRITE_END_PADDING = 1 << 3,
-> +	IB_WQ_FLAGS_CVLAN_STRIPPING	= IB_UVERBS_WQ_FLAGS_CVLAN_STRIPPING,
-> +	IB_WQ_FLAGS_SCATTER_FCS		= IB_UVERBS_WQ_FLAGS_SCATTER_FCS,
-> +	IB_WQ_FLAGS_DELAY_DROP		= IB_UVERBS_WQ_FLAGS_DELAY_DROP,
-> +	IB_WQ_FLAGS_PCI_WRITE_END_PADDING =
-> +				IB_UVERBS_WQ_FLAGS_PCI_WRITE_END_PADDING,
+On Wed, May 06, 2020 at 11:24:41AM +0300, Leon Romanovsky wrote:
+> diff --git a/drivers/infiniband/core/uverbs_std_types_srq.c b/drivers/infiniband/core/uverbs_std_types_srq.c
+> new file mode 100644
+> index 000000000000..d74601c47d95
+> +++ b/drivers/infiniband/core/uverbs_std_types_srq.c
+> @@ -0,0 +1,233 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> +/*
+> + * Copyright (c) 2020, Mellanox Technologies inc.  All rights reserved.
+> + */
+> +
+> +#include <rdma/uverbs_std_types.h>
+> +#include "rdma_core.h"
+> +#include "uverbs.h"
+> +
+> +static int uverbs_free_srq(struct ib_uobject *uobject,
+> +		    enum rdma_remove_reason why,
+> +		    struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct ib_srq *srq = uobject->object;
+> +	struct ib_uevent_object *uevent =
+> +		container_of(uobject, struct ib_uevent_object, uobject);
+> +	enum ib_srq_type srq_type = srq->srq_type;
+> +	int ret;
+> +
+> +	ret = ib_destroy_srq_user(srq, &attrs->driver_udata);
+> +	if (ib_is_destroy_retryable(ret, why, uobject))
+> +		return ret;
+> +
+> +	if (srq_type == IB_SRQT_XRC) {
+> +		struct ib_usrq_object *us =
+> +			container_of(uevent, struct ib_usrq_object, uevent);
 
-For flags that are not used by kernel ULPs, like these, it makes more
-sense to have the driver refer to the IB_UVERBS_* constant and remove
-this stuff from the ULP facing header. Probably as individual patches
+Why is this here? The uobject can't be something other than an
+ib_usrq_object, so the above uevent should be just
 
-Same above from the create flags I suppose
+        struct ib_usrq_object *us =
+			container_of(uobject, struct ib_usrq_object, uevent.object);
+
+And the other bits simplified
+
+> +static int UVERBS_HANDLER(UVERBS_METHOD_SRQ_CREATE)(
+> +	struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct ib_usrq_object *obj = container_of(
+> +		uverbs_attr_get_uobject(attrs, UVERBS_ATTR_CREATE_SRQ_HANDLE),
+> +		typeof(*obj), uevent.uobject);
+> +	struct ib_pd *pd =
+> +		uverbs_attr_get_obj(attrs, UVERBS_ATTR_CREATE_SRQ_PD_HANDLE);
+> +	struct ib_srq_init_attr attr = {};
+> +	struct ib_uobject *uninitialized_var(xrcd_uobj);
+
+Why do we need uninitalized_var? Looks like it should be fine to me
 
 Jason
