@@ -2,128 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4F91D6227
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 May 2020 17:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600641D650F
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2020 03:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgEPPhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 16 May 2020 11:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726695AbgEPPhB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 May 2020 11:37:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E25CC061A0C;
-        Sat, 16 May 2020 08:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TG5YZgmRlXVS7HvhJz7DOFxKZzjqL5DT1HxTsi4ato4=; b=RnggIlJMvxkkVJkInT4pqpaVSA
-        SmN+fQmJr6rXEhoA27zDDtoVe3MfLbqyOGnjbFroFdUEa2bz7T8LXqJhdZ04Kn8zUaw7zqnqucvEE
-        jylJg+5o3OTrPcU/9WnNB5DHJG6s2r/4zP/X7rBAVxQdC6M19CKb7CjJPN7ckvsf+3VEUSWXTjPOs
-        h4KyUBqEslvU/z84GxRvc0uH9xKOs7/moDDDKZUR3/JC6le8XeM7SlwM6eCF1D2ew/AfzjZ81WeGR
-        TID2vSDI6gItLhZe+n8N/K+Igbx6wbsz1MCCu7X4o5NOmt5PKestOUG7qfbgkfaJZ9h4Kw4hb2rBr
-        xNF175SA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZyrs-000842-U1; Sat, 16 May 2020 15:36:52 +0000
-Date:   Sat, 16 May 2020 08:36:52 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'David Howells' <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
-Subject: Re: [Ocfs2-devel] [PATCH 27/33] sctp: export sctp_setsockopt_bindx
-Message-ID: <20200516153652.GM16070@bombadil.infradead.org>
-References: <20200514062820.GC8564@lst.de>
- <20200513062649.2100053-1-hch@lst.de>
- <20200513062649.2100053-28-hch@lst.de>
- <20200513180058.GB2491@localhost.localdomain>
- <129070.1589556002@warthog.procyon.org.uk>
- <05d946ae948946158dbfcbc07939b799@AcuMS.aculab.com>
+        id S1726895AbgEQBXj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 May 2020 21:23:39 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11725 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgEQBXj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 May 2020 21:23:39 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec091cd0000>; Sat, 16 May 2020 18:22:22 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 16 May 2020 18:23:38 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 16 May 2020 18:23:38 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 17 May
+ 2020 01:23:38 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sun, 17 May 2020 01:23:38 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.48.175]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec092190001>; Sat, 16 May 2020 18:23:37 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     John Hubbard <jhubbard@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>
+Subject: [PATCH] rds: convert get_user_pages() --> pin_user_pages()
+Date:   Sat, 16 May 2020 18:23:36 -0700
+Message-ID: <20200517012336.382624-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05d946ae948946158dbfcbc07939b799@AcuMS.aculab.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589678542; bh=7TXMCvjqbZxuHVM5y97rS09KLJM6SOiZujb09twA/Dk=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=p0pBPkQo7mb5Cwoe2du0glhdJwKo1677mvVSBz22sE9cCQM3wGXIlE5laIOCpyHYr
+         3qa8VtddbcJJhPx9D+WMM0oxMHvZR38SI08df83Ab9p7pnBmsuhWAIpgl4xV3PBtFa
+         KmsStxBTAZzOOuN/qKmICrQuaqSOPsDArBzf7+rLWbiu9xXJ7/Wvc15sev8rRw/Nba
+         ogtop5i930W9FQEhrNP73FVSCcYjNYgM7sU1FXzygboz+d+uKyT0Z50TedeVRoiInM
+         xkgR8Yv5tGyF5UfbyoXwQE4no8zx1mhMLQRR9lUIB9qGCdxfwU6Yr11M/3oO8C1CXk
+         L0IYKYw6T1CYw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, May 16, 2020 at 03:11:40PM +0000, David Laight wrote:
-> From: David Howells
-> > Sent: 15 May 2020 16:20
-> > Christoph Hellwig <hch@lst.de> wrote:
-> > 
-> > > > The advantage on using kernel_setsockopt here is that sctp module will
-> > > > only be loaded if dlm actually creates a SCTP socket.  With this
-> > > > change, sctp will be loaded on setups that may not be actually using
-> > > > it. It's a quite big module and might expose the system.
-> > >
-> > > True.  Not that the intent is to kill kernel space callers of setsockopt,
-> > > as I plan to remove the set_fs address space override used for it.
-> > 
-> > For getsockopt, does it make sense to have the core kernel load optval/optlen
-> > into a buffer before calling the protocol driver?  Then the driver need not
-> > see the userspace pointer at all.
-> > 
-> > Similar could be done for setsockopt - allocate a buffer of the size requested
-> > by the user inside the kernel and pass it into the driver, then copy the data
-> > back afterwards.
-> 
-> Yes, it also simplifies all the compat code.
-> And there is a BPF test in setsockopt that also wants to
-> pass on a kernel buffer.
-> 
-> I'm willing to sit and write the patch.
-> Quoting from a post I made later on Friday.
-> 
-> Basically:
-> 
-> This patch sequence (to be written) does the following:
-> 
-> Patch 1: Change __sys_setsockopt() to allocate a kernel buffer,
->          copy the data into it then call set_fs(KERNEL_DS).
->          An on-stack buffer (say 64 bytes) will be used for
->          small transfers.
-> 
-> Patch 2: The same for __sys_getsockopt().
-> 
-> Patch 3: Compat setsockopt.
-> 
-> Patch 4: Compat getsockopt.
-> 
-> Patch 5: Remove the user copies from the global socket options code.
-> 
-> Patches 6 to n-1; Remove the user copies from the per-protocol code.
-> 
-> Patch n: Remove the set_fs(KERNEL_DS) from the entry points.
-> 
-> This should be bisectable.
+This code was using get_user_pages_fast(), in a "Case 2" scenario
+(DMA/RDMA), using the categorization from [1]. That means that it's
+time to convert the get_user_pages_fast() + put_page() calls to
+pin_user_pages_fast() + unpin_user_pages() calls.
 
-I appreciate your dedication to not publishing the source code to
-your kernel module, but Christoph's patch series is actually better.
-It's typesafe rather than passing void pointers around.
+There is some helpful background in [2]: basically, this is a small
+part of fixing a long-standing disconnect between pinning pages, and
+file systems' use of those pages.
+
+[1] Documentation/core-api/pin_user_pages.rst
+
+[2] "Explicit pinning of user-space pages":
+    https://lwn.net/Articles/807108/
+
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: rds-devel@oss.oracle.com
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+ net/rds/info.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/net/rds/info.c b/net/rds/info.c
+index 03f6fd56d237..e1d63563e81c 100644
+--- a/net/rds/info.c
++++ b/net/rds/info.c
+@@ -162,7 +162,6 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 	struct rds_info_lengths lens;
+ 	unsigned long nr_pages =3D 0;
+ 	unsigned long start;
+-	unsigned long i;
+ 	rds_info_func func;
+ 	struct page **pages =3D NULL;
+ 	int ret;
+@@ -193,7 +192,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 		ret =3D -ENOMEM;
+ 		goto out;
+ 	}
+-	ret =3D get_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
++	ret =3D pin_user_pages_fast(start, nr_pages, FOLL_WRITE, pages);
+ 	if (ret !=3D nr_pages) {
+ 		if (ret > 0)
+ 			nr_pages =3D ret;
+@@ -235,8 +234,7 @@ int rds_info_getsockopt(struct socket *sock, int optnam=
+e, char __user *optval,
+ 		ret =3D -EFAULT;
+=20
+ out:
+-	for (i =3D 0; pages && i < nr_pages; i++)
+-		put_page(pages[i]);
++	unpin_user_pages(pages, nr_pages);
+ 	kfree(pages);
+=20
+ 	return ret;
+
+base-commit: 3d1c1e5931ce45b3a3f309385bbc00c78e9951c6
+--=20
+2.26.2
+
