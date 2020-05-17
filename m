@@ -2,106 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61531D6C15
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2020 21:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7AF1D6C69
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 May 2020 21:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgEQTF7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 May 2020 15:05:59 -0400
-Received: from p3plsmtpa11-07.prod.phx3.secureserver.net ([68.178.252.108]:52560
-        "EHLO p3plsmtpa11-07.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726269AbgEQTF7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 17 May 2020 15:05:59 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 May 2020 15:05:59 EDT
-Received: from [192.168.0.78] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id aOUijLBRJiFEQaOUijvrFj; Sun, 17 May 2020 11:58:41 -0700
-X-CMAE-Analysis: v=2.3 cv=QvMgIm6d c=1 sm=1 tr=0
- a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
- a=IkcTkHD0fZMA:10 a=EHcmgxD4AAAA:20 a=VLKvWmZpXLvPKCahpf8A:9
- a=QEXdDO2ut3YA:10 a=bGBouMQXGW8eGej8sMnj:22 a=pHzHmUro8NiASowvMSCR:22
- a=n87TN5wuljxrRezIQYnT:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: Questions about masked atomic
-To:     Leon Romanovsky <leon@kernel.org>, liweihang <liweihang@huawei.com>
-Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <B82435381E3B2943AA4D2826ADEF0B3A02359ED3@DGGEML522-MBX.china.huawei.com>
- <20200512113512.GK4814@unreal>
- <B82435381E3B2943AA4D2826ADEF0B3A02363499@DGGEML522-MBX.china.huawei.com>
- <20200517131409.GA60005@unreal>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <1eedd4da-83eb-58ba-80ac-2e2c5d1c5b65@talpey.com>
-Date:   Sun, 17 May 2020 14:58:40 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200517131409.GA60005@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1726288AbgEQTiH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 May 2020 15:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgEQTiH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 May 2020 15:38:07 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C8EC061A0C;
+        Sun, 17 May 2020 12:38:07 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 14568128A2D8A;
+        Sun, 17 May 2020 12:38:07 -0700 (PDT)
+Date:   Sun, 17 May 2020 12:38:06 -0700 (PDT)
+Message-Id: <20200517.123806.1659008654334663086.davem@davemloft.net>
+To:     jhubbard@nvidia.com
+Cc:     linux-kernel@vger.kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Subject: Re: [PATCH] rds: convert get_user_pages() --> pin_user_pages()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200517012336.382624-1-jhubbard@nvidia.com>
+References: <20200517012336.382624-1-jhubbard@nvidia.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfBXAArkRQ9P9EL8IBAvmvJWQRiXyQedogkdCDBm/xgxVc2j9vv34fJ7VABMroxkg7+8tJgIcZ2du1mKaESiKtv5rfui6+ce2/ZKwI3AsIeZlK6T05jhy
- 5rKXPGjJ24m475NKwSiFR2Q/nABP7RTPvDyJM4qfVrpiadIEIsVfY4RHHHgJbN+ziVceqKdhPD/EISaMyTpGccALKQir63wHGcM4E3aw2JYrOJxBIgpgYalz
- SSe330ymWqDb7ivQ6N35RzHgcevsOJL6NmdniT2pZhCbb0QlhVyyKstt20EOaLeka0n5D+SQO+SWltOYW+jhvA==
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 17 May 2020 12:38:07 -0700 (PDT)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/17/2020 9:14 AM, Leon Romanovsky wrote:
-> On Fri, May 15, 2020 at 09:40:26AM +0000, liweihang wrote:
->> On 2020/5/12 19:35, Leon Romanovsky wrote:
->>> On Mon, May 11, 2020 at 01:54:48PM +0000, liweihang wrote:
->>>> Hi All,
->>>>
->>>> I have two questions about masked atomic (Masked Compare and Swap & MFetchAdd):
->>>>
->>>> 1. The kernel now supports masked atomic, but the it does not support atomic
->>>>     operation. Is the masked atomic valid in kernel currently?
->>>
->>> Yes, it is valid, but probably has a very little real value for the kernel ULPs.
->>> I see code in the RDS that uses atomics, but it says nothing to me, because
->>> upstream RDS and version in-real-use are completely different.
->>>
->>>> 2. In the userspace, ofed does not have the corresponding opcode for the masked
->>>>     atomic (IB_WR_MASKED_ATOMIC_CMP_AND_SWP, IB_WR_MASKED_ATOMIC_FETCH_AND_ADD),
->>>>     and ibv_send_wr also has no related data segment for it. How to support it in
->>>>     userspace?
->>>
->>> ibv_send_wr is not extensible, so the real solution will need to extend ibv_wr_post() [1]
->>> with specific and new post builders.
->>>
->>> Thanks
->>>
->>> [1] https://github.com/linux-rdma/rdma-core/blob/master/libibverbs/man/ibv_wr_post.3.md
->>>
->>
->> Hi Leon,
->>
->> Thanks for your response. May I ask another question:
->>
->> Why it's not encouraged to use atomic/extended atomic/masked atomic operations in kernel?
->> Jason said that there seems no kernel users of extended atomic, is there any other reasons?
+From: John Hubbard <jhubbard@nvidia.com>
+Date: Sat, 16 May 2020 18:23:36 -0700
+
+> This code was using get_user_pages_fast(), in a "Case 2" scenario
+> (DMA/RDMA), using the categorization from [1]. That means that it's
+> time to convert the get_user_pages_fast() + put_page() calls to
+> pin_user_pages_fast() + unpin_user_pages() calls.
 > 
-> I don't think that "it is not encouraged", the more accurate will be
-> "the IBTA atomics will give nothing to the kernel ULPs".
+> There is some helpful background in [2]: basically, this is a small
+> part of fixing a long-standing disconnect between pinning pages, and
+> file systems' use of those pages.
 > 
-> The atomic data is not necessary stored in the host memory, while ULPs
-> need it in the memory. It means that they anyway will need to do some
-> synchronization in the host and "cancel" any advantage of atomics if
-> they exist.
+> [1] Documentation/core-api/pin_user_pages.rst
+> 
+> [2] "Explicit pinning of user-space pages":
+>     https://lwn.net/Articles/807108/
+> 
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: rds-devel@oss.oracle.com
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Indeed, it is a common misconception by upper layer implementers that
-the atomicity is available to the responder CPU. In fact, atomics work
-only from the HCA that executes them, and the result is flushed to
-memory, non-atomically, at some later time. These limitations greatly
-reduce the motivation to use them at all, much less the exotic masked
-ones.
-
-I believe another reason they're not surfaced for kernel consumers is
-that there aren't any. Primarily, the kernel consumers are storage, and
-storage protocols stay far away from atomics.
-
-Tom.
+Applied to net-next, thanks.
