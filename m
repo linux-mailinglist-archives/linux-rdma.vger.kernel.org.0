@@ -2,216 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAE31D744B
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 11:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745291D745B
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 May 2020 11:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgERJoQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 May 2020 05:44:16 -0400
-Received: from mga18.intel.com ([134.134.136.126]:48307 "EHLO mga18.intel.com"
+        id S1726127AbgERJub (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 May 2020 05:50:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57590 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgERJoP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 May 2020 05:44:15 -0400
-IronPort-SDR: s/TDIWDC84BC/VQ85JJ9C9cUaKrBOiUMsXbzCxw25HuNqwu77gE++liRvtfpRS+gWVxwUcaPZT
- YKxymcGK+dEw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 02:44:15 -0700
-IronPort-SDR: 65uIjcnOxJ8E8bQgeGqqE9CwswRa6dv2v+fwo8GDVlyuYFULAtR9sgRzfBots2IYDxli1xMjQe
- SJel2IvgmFIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
-   d="scan'208";a="411195407"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 18 May 2020 02:44:13 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jacJh-000Ce7-8H; Mon, 18 May 2020 17:44:13 +0800
-Date:   Mon, 18 May 2020 17:43:34 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 41d5e318ccb34bded248a7a4c97264fdb1c8a42e
-Message-ID: <5ec258c6.lGiLsyJgMcJemqQ4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726040AbgERJub (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 May 2020 05:50:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 88A57B155;
+        Mon, 18 May 2020 09:50:31 +0000 (UTC)
+Date:   Mon, 18 May 2020 11:50:26 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Orson Zhai <orsonzhai@gmail.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Orson Zhai <orson.unisoc@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: Re: [PATCH V2] dynamic_debug: Add an option to enable dynamic debug
+ for modules only
+Message-ID: <20200518095026.GL7340@linux-b0ei>
+References: <1587408228-10861-1-git-send-email-orson.unisoc@gmail.com>
+ <20200420191014.GE121146@unreal>
+ <CA+H2tpGgGtW_8Z8fV9to39JwA_KrcfAeBC+KN87v0xKnZHt2_w@mail.gmail.com>
+ <20200422142552.GA492196@unreal>
+ <CA+H2tpGR7tywhkexa31AD_FkhyxQgVq_L+b0DbvXzwr6yT8j9Q@mail.gmail.com>
+ <20200515095501.GU17734@linux-b0ei>
+ <CA+H2tpFyAx9d-mvp=ZoS0NXm6YYC6DDV1Fu-RHLY=v82MP52Bg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CA+H2tpFyAx9d-mvp=ZoS0NXm6YYC6DDV1Fu-RHLY=v82MP52Bg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 41d5e318ccb34bded248a7a4c97264fdb1c8a42e  IB/uverbs: Introduce create/destroy QP commands over ioctl
+On Sat 2020-05-16 11:55:04, Orson Zhai wrote:
+> On Fri, May 15, 2020 at 5:55 PM Petr Mladek <pmladek@suse.com> wrote:
+> >
+> > On Thu 2020-04-23 00:02:48, Orson Zhai wrote:
+> > > On Wed, Apr 22, 2020 at 10:25 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Wed, Apr 22, 2020 at 09:06:08PM +0800, Orson Zhai wrote:
+> > > > > On Tue, Apr 21, 2020 at 3:10 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > My motivation came from the concept of GKI (Generic Kernel Image) in Android.
+> > > > > Google will release a common kernel image (binary) to all of the Android system
+> > > > > vendors in the world instead of letting them to build their owns as before.
+> > > > > Every SoC vendor's device drivers will be provided in kernel modules only.
+> > > > > By my patch, the driver owners could debug their modules in field (say
+> > > > > production releases)
+> > > > > without having to enable dynamic debug for the whole GKI.
+> > > >
+> > > > Will Google release that binary with CONFIG_DYNAMIC_DEBUG_CORE disabled?
+> > > >
+> > > In Google's plan, there will be only one GKI (no debug version) for
+> > > one Android version per kernel version per year.
+> >
+> > Are there plans to use modules with debug messages enabled on production
+> > systems?
+> 
+> Yes, but in a managed way. They are not being enabled directly to log buffer.
+> Users / FAEs (Field Application Engineer) might control to open or
+> close every single one on-the-fly.
 
-Warning in current branch:
+I see.
 
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:1196 rtrs_clt_failover_req() warn: inconsistent indenting
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:2890 rtrs_clt_request() warn: inconsistent indenting
+> > IMHO, the debug messages are primary needed during development and
+> > when fixing bugs. I am sure that developers will want to enable many
+> > more features that will help with debugging and which will be disabled
+> > on production systems.
+> 
+> I agree with you in general speaking.
+> For real production build we usually keep a few critical debugging
+> methods in case of some
+> potential bugs which are extremely hard to be found in production test.
+> Dynamic debug is one of these methods.
+> I assume it is widely used for maintenance to PC or server because I
+> can find it is enabled in some
+> popular Linux distribution configs.
 
-Warning ids grouped by kconfigs:
+Fair enough.
 
-recent_errors
-`-- i386-allyesconfig
-    |-- drivers-infiniband-ulp-rtrs-rtrs-clt.c-rtrs_clt_failover_req()-warn:inconsistent-indenting
-    `-- drivers-infiniband-ulp-rtrs-rtrs-clt.c-rtrs_clt_request()-warn:inconsistent-indenting
+Feel free to add:
 
-elapsed time: 573m
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-configs tested: 145
-configs skipped: 7
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-sh                             sh03_defconfig
-arm                         vf610m4_defconfig
-h8300                               defconfig
-mips                        workpad_defconfig
-powerpc                     ep8248e_defconfig
-sh                        dreamcast_defconfig
-mips                          ath79_defconfig
-m68k                                defconfig
-powerpc                     mpc5200_defconfig
-arm                        clps711x_defconfig
-mips                           xway_defconfig
-mips                        maltaup_defconfig
-arm                            hisi_defconfig
-arc                            hsdk_defconfig
-mips                      loongson3_defconfig
-arm                        oxnas_v6_defconfig
-c6x                        evmc6457_defconfig
-arm                           corgi_defconfig
-mips                     cu1000-neo_defconfig
-arm                          ixp4xx_defconfig
-arm                            mps2_defconfig
-arm                            pleb_defconfig
-h8300                            alldefconfig
-microblaze                      mmu_defconfig
-powerpc                      ppc44x_defconfig
-sh                                  defconfig
-mips                          rm200_defconfig
-mips                     loongson1c_defconfig
-alpha                               defconfig
-arm                          imote2_defconfig
-arm                       aspeed_g4_defconfig
-mips                        qi_lb60_defconfig
-powerpc                    gamecube_defconfig
-arm                           h5000_defconfig
-arm                          pxa910_defconfig
-sh                               j2_defconfig
-arm                          pcm027_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                           h3600_defconfig
-mips                malta_qemu_32r6_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                          lpd270_defconfig
-mips                     decstation_defconfig
-arm                          iop32x_defconfig
-mips                       lemote2f_defconfig
-parisc                              defconfig
-um                             i386_defconfig
-nds32                               defconfig
-arm                          moxart_defconfig
-um                               allyesconfig
-mips                          rb532_defconfig
-arm                            u300_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200518
-i386                 randconfig-a005-20200518
-i386                 randconfig-a001-20200518
-i386                 randconfig-a003-20200518
-i386                 randconfig-a004-20200518
-i386                 randconfig-a002-20200518
-x86_64               randconfig-a016-20200518
-x86_64               randconfig-a012-20200518
-x86_64               randconfig-a015-20200518
-x86_64               randconfig-a013-20200518
-x86_64               randconfig-a011-20200518
-x86_64               randconfig-a014-20200518
-i386                 randconfig-a012-20200518
-i386                 randconfig-a014-20200518
-i386                 randconfig-a016-20200518
-i386                 randconfig-a011-20200518
-i386                 randconfig-a015-20200518
-i386                 randconfig-a013-20200518
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Best Regards,
+Petr
