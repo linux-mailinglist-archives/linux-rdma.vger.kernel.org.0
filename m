@@ -2,95 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958911D9BE1
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 18:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22291D9C1B
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 18:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgESQAx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 12:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729211AbgESQAx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 12:00:53 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CC5C08C5C1
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 09:00:52 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id m185so4216965wme.3
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 09:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BmLSEBizF5QwZ0w8Jva6N+7I89XZ83pvn5mbF9AauMU=;
-        b=HUye97v9LyaMSqw+E/FpZNDbsO1SE7ChWSkscNuv36LxUKxH75OYus+P3faHzhBoqi
-         rj3XrNuC46MBLrShN1dnuZCq/p1g10z0xrFWbyR6ZQ4bI+jQOv6PxOzZWOBoxYPB4PYQ
-         qD02Ae2iMjJ03oj8UUmIxDfqXCnVUZkJCHfm11m7Uo7y2Cg0Hyhz1koszly6B0XEM+Ht
-         pXCSUG/KYJQ7z1PkuDcPE1AfAMCSqxeh5Gm7rdsvniueOTeOAgH00AMlcPh/qaVZdrE+
-         zqOSt+Gs4dMmsPNa+5nzpyXtscCz4Qf3qLQD23/WpAv1zrnUy/oEyN4BIF+uuiRqqEl3
-         fL8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BmLSEBizF5QwZ0w8Jva6N+7I89XZ83pvn5mbF9AauMU=;
-        b=oZZO5x79/oJdD504nNUoT8IUrnLEJCPLB0/ZF0K2guhT2pwXqzXgGzmwxL+6Hbc2Kq
-         BI632pZCXaGzHKuIoby2GecR952XX2istOnM50CCAcY/0yGryQv7OZnzH4MhQ9dokqwx
-         +ROSGK9h7bYQ9LgsbmmJcmY2DE/cWwvAoiRvNk9WKkqF5b9E7Fl5z5IroyU4ovOcRixL
-         ITmUQ9kLiT2fPRBiRDd/Pdho65BtJE/UpeQfjjhy5IvZrVACrBP7KcA04rl6DabybK0t
-         5q8iYHxvZRWu+u1VwgFoE5xkGgsSLZZy5a+UGNQCH+jTiMtAJ2oFZA+A7scKMDbWHV13
-         xPNA==
-X-Gm-Message-State: AOAM531omgSr2mDS6+yg0mfBhP6g4E6/oDSE7FGPCmryd0/MsBqCXVpx
-        wNHIr46NTJfpWZe/NPCtYW6Jh0hbRny1w10u1kdH
-X-Google-Smtp-Source: ABdhPJw/YCnRJY1GgnQdvj+SGYyFtn5wisFibQeDNsvksIsO3xMvENa+bKnM4fLCF0BfmetWSDDTVY4TjPINiLA/d9w=
-X-Received: by 2002:a1c:5402:: with SMTP id i2mr44858wmb.185.1589904051546;
- Tue, 19 May 2020 09:00:51 -0700 (PDT)
+        id S1729230AbgESQLJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 12:11:09 -0400
+Received: from fieldses.org ([173.255.197.46]:45050 "EHLO fieldses.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728953AbgESQLJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 May 2020 12:11:09 -0400
+Received: by fieldses.org (Postfix, from userid 2815)
+        id AD29E621B; Tue, 19 May 2020 12:11:08 -0400 (EDT)
+Date:   Tue, 19 May 2020 12:11:08 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 00/29] Possible NFSD patches for v5.8
+Message-ID: <20200519161108.GD25858@fieldses.org>
+References: <20200512211640.5826.77139.stgit@klimt.1015granger.net>
 MIME-Version: 1.0
-References: <CAHg0Huz39q9nWwTrtCY=SgU=T9oZJQdchx6c1LOPbSQiywzrqw@mail.gmail.com>
- <20200519154525.GA66801@mwanda>
-In-Reply-To: <20200519154525.GA66801@mwanda>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Tue, 19 May 2020 18:00:40 +0200
-Message-ID: <CAHg0HuzLo8jYtmkdvm2qJ_n2va61Xq-4NE3uxnHHpaUf9YESEw@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rtrs: Fix a couple off by one bugs in rtrs_srv_rdma_done()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200512211640.5826.77139.stgit@klimt.1015granger.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 19, 2020 at 5:45 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> These > comparisons should be >= to prevent accessing one element
-> beyond the end of the buffer.
->
-> Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index 658c8999cb0d..0b53b79b0e27 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -1213,8 +1213,8 @@ static void rtrs_srv_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
->
->                         msg_id = imm_payload >> sess->mem_bits;
->                         off = imm_payload & ((1 << sess->mem_bits) - 1);
-> -                       if (unlikely(msg_id > srv->queue_depth ||
-> -                                    off > max_chunk_size)) {
-> +                       if (unlikely(msg_id >= srv->queue_depth ||
-> +                                    off >= max_chunk_size)) {
->                                 rtrs_err(s, "Wrong msg_id %u, off %u\n",
->                                           msg_id, off);
->                                 close_sess(sess);
-> --
-> 2.26.2
->
+I'm getting a repeatable timeout failure on python 4.0 test WRT15.  In
+pynfs, run: 
 
-Thanks a lot, Dan!
-Acked-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+	./nfs4.0/testserver.py server:/export/path --rundeps --maketree WRT15
+
+Looks like it sends WRITE+GETATTR(FATTR4_SIZE) compounds with write
+offset 0 and write length taking on every value from 0 to 8192.
+
+Probably an xdr decoding bug of some kind?
+
+I don't see anything in the server logs.
+
+--b.
+
+On Tue, May 12, 2020 at 05:22:04PM -0400, Chuck Lever wrote:
+> Available to view:
+>   https://git.linux-nfs.org/?p=cel/cel-2.6.git;a=shortlog;h=refs/heads/nfsd-5.8
+> 
+> Pull from:
+>   git://git.linux-nfs.org/projects/cel/cel-2.6.git nfsd-5.8
+> 
+> Highlights of this series:
+> * Remove serialization of sending RPC/RDMA Replies
+> * Convert the TCP socket send path to use xdr_buf::bvecs (pre-requisite for RPC-on-TLS)
+> * Fix svcrdma backchannel sendto return code
+> * Convert a number of dprintk call sites to use tracepoints
+> * Fix the "suggest braces around empty body in an ‘else’ statement" warning
+> 
+> Changes since v1:
+> * Rebased on v5.7-rc5+
+> * Re-organized the series so changes interesting to linux-rdma appear together
+> * Addressed sparse warnings found by the kbuild test robot
+> * Included an additional minor clean-up: removal of the unused SVCRDMA_DEBUG macro
+> * Clarified several patch descriptions
+> 
+> ---
+> 
+> Chuck Lever (29):
+>       SUNRPC: Move xpt_mutex into socket xpo_sendto methods
+>       svcrdma: Clean up the tracing for rw_ctx_init errors
+>       svcrdma: Clean up handling of get_rw_ctx errors
+>       svcrdma: Trace page overruns when constructing RDMA Reads
+>       svcrdma: trace undersized Write chunks
+>       svcrdma: Fix backchannel return code
+>       svcrdma: Remove backchannel dprintk call sites
+>       svcrdma: Rename tracepoints that record header decoding errors
+>       svcrdma: Remove the SVCRDMA_DEBUG macro
+>       svcrdma: Displayed remote IP address should match stored address
+>       svcrdma: Add tracepoints to report ->xpo_accept failures
+>       SUNRPC: Remove kernel memory address from svc_xprt tracepoints
+>       SUNRPC: Tracepoint to record errors in svc_xpo_create()
+>       SUNRPC: Trace a few more generic svc_xprt events
+>       SUNRPC: Remove "#include <trace/events/skb.h>"
+>       SUNRPC: Add more svcsock tracepoints
+>       SUNRPC: Replace dprintk call sites in TCP state change callouts
+>       SUNRPC: Trace server-side rpcbind registration events
+>       SUNRPC: Rename svc_sock::sk_reclen
+>       SUNRPC: Restructure svc_tcp_recv_record()
+>       SUNRPC: Refactor svc_recvfrom()
+>       SUNRPC: Restructure svc_udp_recvfrom()
+>       SUNRPC: svc_show_status() macro should have enum definitions
+>       NFSD: Add tracepoints to NFSD's duplicate reply cache
+>       NFSD: Add tracepoints to the NFSD state management code
+>       NFSD: Add tracepoints for monitoring NFSD callbacks
+>       SUNRPC: Clean up request deferral tracepoints
+>       NFSD: Squash an annoying compiler warning
+>       NFSD: Fix improperly-formatted Doxygen comments
+> 
+> 
+>  fs/nfsd/nfs4callback.c                     |  37 +-
+>  fs/nfsd/nfs4proc.c                         |   7 +-
+>  fs/nfsd/nfs4state.c                        |  63 ++--
+>  fs/nfsd/nfscache.c                         |  57 +--
+>  fs/nfsd/nfsctl.c                           |  26 +-
+>  fs/nfsd/state.h                            |   7 -
+>  fs/nfsd/trace.h                            | 345 ++++++++++++++++++
+>  include/linux/sunrpc/svc.h                 |   1 +
+>  include/linux/sunrpc/svc_rdma.h            |   6 +-
+>  include/linux/sunrpc/svcsock.h             |   6 +-
+>  include/trace/events/rpcrdma.h             | 142 ++++++--
+>  include/trace/events/sunrpc.h              | 387 ++++++++++++++++++--
+>  net/sunrpc/svc.c                           |  19 +-
+>  net/sunrpc/svc_xprt.c                      |  41 +--
+>  net/sunrpc/svcsock.c                       | 393 ++++++++++-----------
+>  net/sunrpc/xprtrdma/svc_rdma_backchannel.c |  86 +----
+>  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c    |  21 +-
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c          |  92 ++---
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c   |  55 ++-
+>  19 files changed, 1221 insertions(+), 570 deletions(-)
+> 
+> --
+> Chuck Lever
