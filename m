@@ -2,121 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FC11D95CC
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 14:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB52B1D95D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 14:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgESMCV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 08:02:21 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34450 "EHLO
+        id S1728286AbgESMFO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 08:05:14 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36540 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbgESMCU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 08:02:20 -0400
+        with ESMTP id S1726949AbgESMFO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 08:05:14 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JBvCut112596;
-        Tue, 19 May 2020 12:02:17 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JC36kD118347;
+        Tue, 19 May 2020 12:05:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=TV4pyYsWRPe8RNrW0FmUhh/p3vgEJPRT8frZ7NnfWNM=;
- b=YwfQmGjeOV25s5LvcFUOYSEYWMAeG0dPM0CjAauHWFnzeqFZJ84zL+l5j2Tje26y3NCO
- dKrtO/Jhais/Fik9Yd9wPgwLEHs9qzHVWGQ7a4i3/92qq5S8fA+TjMhQTSK0A/etat7q
- 0lG47/dGq7UKDvU9Kg6bwK4nw0ViTOo9Vpuz3zUEDODKP5hGgoxAbOWl2xM0y8BCR/8O
- X7RTe+M/Wu4uarN6D7+mFO+p2wCgzz/4OxNc52QSkpz2Hf1Y75KRPI2LD40olDu/nbFU
- NnmjX/xTu+I2/NjFvITkDPuUBKEZ6xMQ+yLwzztAITRi5wkc2G94ny3kfiuL9I1K4Ml4 Ow== 
+ bh=2fpmY1k55WSq8WljHrbcXEhrjzL8/nsgsGqNUB8dwII=;
+ b=aYhuBfrFn8xwLyp/OcAgaRdEW0b8PIXIppoEPm5GvR0xkE8PlJnbandLn3Ca9Y0CjCGl
+ DK5+7NhRhKHq+aNUxnB+SUC96h7COSK+bwavR21391pOsfjIJvCTzneQ6P28JpzEUXtt
+ hek7HGWhL6FhpRbkPAYMLygopZbt+rSjKpMuW0wHj7s0SyBz9C7Qg0JShKKHJ6cDoAKw
+ fQIpcESIsL3RWqY3eA7kChyYGZEOxNX7sgGKqsh5mz80e5HtD4eL8BgCLsB98Dy4QpkY
+ DAU/A1g0gRhKCoOXcUM28F3d38pFvVYcoAxw/9oOJmqspvWXf9DwFlBIW1VmfmGDhGwl Jw== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3127kr4x0a-1
+        by userp2130.oracle.com with ESMTP id 3127kr4xee-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 May 2020 12:02:16 +0000
+        Tue, 19 May 2020 12:05:06 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JBqYlZ042693;
-        Tue, 19 May 2020 12:02:16 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 313gj1j69h-1
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JC2YY0084270;
+        Tue, 19 May 2020 12:03:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 313gj1j7b1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 May 2020 12:02:16 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JC2FRN025043;
-        Tue, 19 May 2020 12:02:15 GMT
+        Tue, 19 May 2020 12:03:05 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04JC34ho028158;
+        Tue, 19 May 2020 12:03:04 GMT
 Received: from mwanda (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 May 2020 05:02:14 -0700
-Date:   Tue, 19 May 2020 15:02:09 +0300
+        with ESMTP ; Tue, 19 May 2020 05:03:04 -0700
+Date:   Tue, 19 May 2020 15:02:56 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     jinpu.wang@cloud.ionos.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/rtrs: server: main functionality
-Message-ID: <20200519120209.GA42765@mwanda>
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/rtrs: Fix some signedness bugs in error handling
+Message-ID: <20200519120256.GC42765@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9625 signatures=668686
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 adultscore=0 bulkscore=0 suspectscore=3 mlxlogscore=989
+ mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005190108
+ definitions=main-2005190109
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9625 signatures=668686
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
  bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
- suspectscore=3 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ suspectscore=0 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005190108
+ engine=8.12.0-2004280000 definitions=main-2005190109
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Jack Wang,
+The problem is that "req->sg_cnt" is an unsigned int so if "nr" is
+negative, it gets type promoted to a high positive value and the
+condition is false.  This patch fixes it by handling negatives separately.
 
-The patch 9cb837480424: "RDMA/rtrs: server: main functionality" from
-May 11, 2020, leads to the following static checker warning:
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 7 +++----
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-	drivers/infiniband/ulp/rtrs/rtrs-srv.c:1224 rtrs_srv_rdma_done()
-	warn: array off by one? 'sess->mrs[msg_id]'
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 468fdd0d8713..17f99f0962d0 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1047,11 +1047,10 @@ static int rtrs_map_sg_fr(struct rtrs_clt_io_req *req, size_t count)
+ 
+ 	/* Align the MR to a 4K page size to match the block virt boundary */
+ 	nr = ib_map_mr_sg(req->mr, req->sglist, count, NULL, SZ_4K);
+-	if (unlikely(nr < req->sg_cnt)) {
+-		if (nr < 0)
+-			return nr;
++	if (nr < 0)
++		return -EINVAL;
++	if (unlikely(nr < req->sg_cnt))
+ 		return -EINVAL;
+-	}
+ 	ib_update_fast_reg_key(req->mr, ib_inc_rkey(req->mr->rkey));
+ 
+ 	return nr;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index ba8ab33b94a2..eefd149ce7a4 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -649,7 +649,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
+ 		}
+ 		nr = ib_map_mr_sg(mr, sgt->sgl, sgt->nents,
+ 				  NULL, max_chunk_size);
+-		if (nr < sgt->nents) {
++		if (nr < 0 || nr < sgt->nents) {
+ 			err = nr < 0 ? nr : -EINVAL;
+ 			goto dereg_mr;
+ 		}
+-- 
+2.26.2
 
-drivers/infiniband/ulp/rtrs/rtrs-srv.c
-  1207                  }
-  1208                  rtrs_from_imm(be32_to_cpu(wc->ex.imm_data),
-  1209                                 &imm_type, &imm_payload);
-  1210                  if (likely(imm_type == RTRS_IO_REQ_IMM)) {
-  1211                          u32 msg_id, off;
-  1212                          void *data;
-  1213  
-  1214                          msg_id = imm_payload >> sess->mem_bits;
-  1215                          off = imm_payload & ((1 << sess->mem_bits) - 1);
-  1216                          if (unlikely(msg_id > srv->queue_depth ||
-                                                    ^
-This should definitely be >=
-
-  1217                                       off > max_chunk_size)) {
-                                                 ^
-My only question is should "off" be >=.  I feel like probably it should
-but I'm not sure.
-
-  1218                                  rtrs_err(s, "Wrong msg_id %u, off %u\n",
-  1219                                            msg_id, off);
-  1220                                  close_sess(sess);
-  1221                                  return;
-  1222                          }
-  1223                          if (always_invalidate) {
-  1224                                  struct rtrs_srv_mr *mr = &sess->mrs[msg_id];
-                                                                 ^^^^^^^^^^^^^^^^^^
-  1225  
-  1226                                  mr->msg_off = off;
-  1227                                  mr->msg_id = msg_id;
-  1228                                  err = rtrs_srv_inv_rkey(con, mr);
-  1229                                  if (unlikely(err)) {
-  1230                                          rtrs_err(s, "rtrs_post_recv(), err: %d\n",
-  1231                                                    err);
-  1232                                          close_sess(sess);
-  1233                                          break;
-  1234                                  }
-  1235                          } else {
-  1236                                  data = page_address(srv->chunks[msg_id]) + off;
-  1237                                  process_io_req(con, data, msg_id, off);
-  1238                          }
-  1239                  } else if (imm_type == RTRS_HB_MSG_IMM) {
-  1240                          WARN_ON(con->c.cid);
-  1241                          rtrs_send_hb_ack(&sess->s);
-  1242                  } else if (imm_type == RTRS_HB_ACK_IMM) {
-
-regards,
-dan carpenter
