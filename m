@@ -2,182 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A571D8C1B
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 02:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3471F1D8D1C
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 03:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgESAUT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 May 2020 20:20:19 -0400
-Received: from mga02.intel.com ([134.134.136.20]:3344 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726284AbgESAUT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 May 2020 20:20:19 -0400
-IronPort-SDR: RAkON507uHT11MTbelpYhzvYXB2kTDprXKXUOHpP+WYyQmBRh7wMEBx0ok1htoKH16U0Dpp3zU
- Ewa8kHXm8iAg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 17:20:19 -0700
-IronPort-SDR: JqSrzpHze6U2R0ztUTbb8db1b8BPioUJolR2d5LnKnnrqjW05rcaLDbpqM5/11Y4hXavBgFvZC
- /zeH5kpceQFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,408,1583222400"; 
-   d="scan'208";a="465941482"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 18 May 2020 17:20:17 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1japzU-000DsM-UO; Tue, 19 May 2020 08:20:16 +0800
-Date:   Tue, 19 May 2020 08:19:49 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 23bbd5818e2b0d265aa1835e66f5055f63a8fa4c
-Message-ID: <5ec32625.SvAA6dXTeATDzzyG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726292AbgESB17 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 18 May 2020 21:27:59 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:45696 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726276AbgESB17 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 May 2020 21:27:59 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id D04CE4384A7156BAB296;
+        Tue, 19 May 2020 09:27:54 +0800 (CST)
+Received: from DGGEML421-HUB.china.huawei.com (10.1.199.38) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 19 May 2020 09:27:54 +0800
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.243]) by
+ dggeml421-hub.china.huawei.com ([10.1.199.38]) with mapi id 14.03.0487.000;
+ Tue, 19 May 2020 09:27:46 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Tom Talpey <tom@talpey.com>, Leon Romanovsky <leon@kernel.org>
+CC:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: Questions about masked atomic
+Thread-Topic: Questions about masked atomic
+Thread-Index: AdYnm7vjyDIKjW3JQkW+0B8JTa36qA==
+Date:   Tue, 19 May 2020 01:27:46 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A023661E4@DGGEML522-MBX.china.huawei.com>
+References: <B82435381E3B2943AA4D2826ADEF0B3A02359ED3@DGGEML522-MBX.china.huawei.com>
+ <20200512113512.GK4814@unreal>
+ <B82435381E3B2943AA4D2826ADEF0B3A02363499@DGGEML522-MBX.china.huawei.com>
+ <20200517131409.GA60005@unreal>
+ <1eedd4da-83eb-58ba-80ac-2e2c5d1c5b65@talpey.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 23bbd5818e2b0d265aa1835e66f5055f63a8fa4c  RDMA/srpt: Fix disabling device management
+On 2020/5/18 2:58, Tom Talpey wrote:
+> On 5/17/2020 9:14 AM, Leon Romanovsky wrote:
+>> On Fri, May 15, 2020 at 09:40:26AM +0000, liweihang wrote:
+>>> On 2020/5/12 19:35, Leon Romanovsky wrote:
+>>>> On Mon, May 11, 2020 at 01:54:48PM +0000, liweihang wrote:
+>>>>> Hi All,
+>>>>>
+>>>>> I have two questions about masked atomic (Masked Compare and Swap & MFetchAdd):
+>>>>>
+>>>>> 1. The kernel now supports masked atomic, but the it does not support atomic
+>>>>>     operation. Is the masked atomic valid in kernel currently?
+>>>>
+>>>> Yes, it is valid, but probably has a very little real value for the kernel ULPs.
+>>>> I see code in the RDS that uses atomics, but it says nothing to me, because
+>>>> upstream RDS and version in-real-use are completely different.
+>>>>
+>>>>> 2. In the userspace, ofed does not have the corresponding opcode for the masked
+>>>>>     atomic (IB_WR_MASKED_ATOMIC_CMP_AND_SWP, IB_WR_MASKED_ATOMIC_FETCH_AND_ADD),
+>>>>>     and ibv_send_wr also has no related data segment for it. How to support it in
+>>>>>     userspace?
+>>>>
+>>>> ibv_send_wr is not extensible, so the real solution will need to extend ibv_wr_post() [1]
+>>>> with specific and new post builders.
+>>>>
+>>>> Thanks
+>>>>
+>>>> [1] https://github.com/linux-rdma/rdma-core/blob/master/libibverbs/man/ibv_wr_post.3.md
+>>>>
+>>>
+>>> Hi Leon,
+>>>
+>>> Thanks for your response. May I ask another question:
+>>>
+>>> Why it's not encouraged to use atomic/extended atomic/masked atomic operations in kernel?
+>>> Jason said that there seems no kernel users of extended atomic, is there any other reasons?
+>>
+>> I don't think that "it is not encouraged", the more accurate will be
+>> "the IBTA atomics will give nothing to the kernel ULPs".
+>>
+>> The atomic data is not necessary stored in the host memory, while ULPs
+>> need it in the memory. It means that they anyway will need to do some
+>> synchronization in the host and "cancel" any advantage of atomics if
+>> they exist.
+> 
+> Indeed, it is a common misconception by upper layer implementers that
+> the atomicity is available to the responder CPU. In fact, atomics work
+> only from the HCA that executes them, and the result is flushed to
+> memory, non-atomically, at some later time. These limitations greatly
+> reduce the motivation to use them at all, much less the exotic masked
+> ones.
+> 
+> I believe another reason they're not surfaced for kernel consumers is
+> that there aren't any. Primarily, the kernel consumers are storage, and
+> storage protocols stay far away from atomics.
+> 
+> Tom.
+> 
 
-Warning in current branch:
+Hi Tom and Leon,
 
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:1196 rtrs_clt_failover_req() warn: inconsistent indenting
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:2890 rtrs_clt_request() warn: inconsistent indenting
+Thank you for the explanation, it helps me lot.
 
-Warning ids grouped by kconfigs:
-
-recent_errors
-`-- i386-allyesconfig
-    |-- drivers-infiniband-ulp-rtrs-rtrs-clt.c-rtrs_clt_failover_req()-warn:inconsistent-indenting
-    `-- drivers-infiniband-ulp-rtrs-rtrs-clt.c-rtrs_clt_request()-warn:inconsistent-indenting
-
-elapsed time: 619m
-
-configs tested: 111
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-m68k                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-sh                                  defconfig
-mips                          rm200_defconfig
-mips                     loongson1c_defconfig
-alpha                               defconfig
-arm                          imote2_defconfig
-c6x                        evmc6457_defconfig
-mips                 pnx8335_stb225_defconfig
-arc                              alldefconfig
-sh                          lboxre2_defconfig
-arm                         cm_x300_defconfig
-powerpc64                           defconfig
-mips                      pic32mzda_defconfig
-mips                            e55_defconfig
-parisc                            allnoconfig
-mips                    maltaup_xpa_defconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200518
-i386                 randconfig-a005-20200518
-i386                 randconfig-a001-20200518
-i386                 randconfig-a003-20200518
-i386                 randconfig-a004-20200518
-i386                 randconfig-a002-20200518
-x86_64               randconfig-a016-20200518
-x86_64               randconfig-a012-20200518
-x86_64               randconfig-a015-20200518
-x86_64               randconfig-a013-20200518
-x86_64               randconfig-a011-20200518
-x86_64               randconfig-a014-20200518
-i386                 randconfig-a012-20200518
-i386                 randconfig-a014-20200518
-i386                 randconfig-a016-20200518
-i386                 randconfig-a011-20200518
-i386                 randconfig-a015-20200518
-i386                 randconfig-a013-20200518
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Weihang
