@@ -2,94 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD371D9B7F
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 17:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4819D1D9B90
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 17:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgESPmQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 11:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728633AbgESPmQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 May 2020 11:42:16 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC70720657;
-        Tue, 19 May 2020 15:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589902935;
-        bh=SAUtnHbhRUvNQHA6UXyEPH+tMYYQxg6u5DOJzEquLKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gYhLcLMwyQL8Olf6gN9Egx1f9rCvTAa3We8KZNbNicrG7ysAiKgk56HhizrOtc6SD
-         HBHDxlAb7et8c9pTj0C+b+JXRNUZ9iFyFdG/Kdn6NhKUBs5W2kfo19l6BtILfuD7eU
-         MvT7vBCzYLzY1AFuO27CyZGKCYgRWDyi0P2t8brg=
-Date:   Tue, 19 May 2020 18:42:11 +0300
-From:   Leon Romanovsky <leon@kernel.org>
+        id S1728633AbgESPpl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 11:45:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52750 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbgESPpl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 11:45:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JFba9R137478;
+        Tue, 19 May 2020 15:45:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=N051ZBCa5vr/bo3pN8vlQTa8Ks4pH+TkFHzqVXxAw7Q=;
+ b=mRJoEAxJFFj9D3cNgTMNEHVxko9PvrqTS3UiRZe2m995gwFpsE4+dKTPjnBEv4A2Zvun
+ EM8RWYkb7RCFRFwyghQz0EUyELWgUAKEoHtzP8lhNzhbAtGPZdhmeiJ+l0xf8+yDiSXa
+ fLqjpyCNOxkCQNguro9HGx4hu6FL4apyxTc3WmrinbTm1IM6+5H4e+ORSO135gbDmSuV
+ boW8ihTm8FcaGE3EqdL6n3Ytj7Vo2bW9M520OAFF/LLJdjolj6Y3/MTz8sVoFyL71abX
+ 81madnE3i67gr6brPIXy65VLxPV3+TVYxUJRWlIbAhQINm5ScX/cfoiN0eoezd5MOIEn 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3128tne3yj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 May 2020 15:45:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JFdHDP123517;
+        Tue, 19 May 2020 15:45:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 312t34mqg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 May 2020 15:45:34 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JFjW9i012230;
+        Tue, 19 May 2020 15:45:32 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 May 2020 08:45:31 -0700
+Date:   Tue, 19 May 2020 18:45:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH 1/1] rnbd/rtrs: pass max segment size from blk user to
- the rdma library
-Message-ID: <20200519154211.GS188135@unreal>
-References: <e132ee19-ff55-c017-732c-284a3b20daf7@infradead.org>
- <20200519080136.885628-1-danil.kipnis@cloud.ionos.com>
- <20200519080136.885628-2-danil.kipnis@cloud.ionos.com>
- <20200519084812.GP188135@unreal>
- <CAHg0Huw9HiNz1jYcypiirbB6encMcBOuGMLDE+9m0wGp0B6VfA@mail.gmail.com>
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/rtrs: Fix a couple off by one bugs in
+ rtrs_srv_rdma_done()
+Message-ID: <20200519154525.GA66801@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHg0Huw9HiNz1jYcypiirbB6encMcBOuGMLDE+9m0wGp0B6VfA@mail.gmail.com>
+In-Reply-To: <CAHg0Huz39q9nWwTrtCY=SgU=T9oZJQdchx6c1LOPbSQiywzrqw@mail.gmail.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005190134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 cotscore=-2147483648 suspectscore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005190134
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:14:26AM +0200, Danil Kipnis wrote:
-> Hi Leon
->
-> On Tue, May 19, 2020 at 10:48 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, May 19, 2020 at 10:01:36AM +0200, Danil Kipnis wrote:
-> > > When Block Device Layer is disabled, BLK_MAX_SEGMENT_SIZE is undefined.
-> > > The rtrs is a transport library and should compile independently of the
-> > > block layer. The desired max segment size should be passed down by the
-> > > user.
-> > >
-> > > Introduce max_segment_size parameter for the rtrs_clt_open() call.
-> > >
-> > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > > ---
-> >
-> > Please, add fixes line.
-> I'm new to this for-next fix up procedure. What tree the commit I
-> should reference with the fixes line should come from? Should I split
-> this commit so that I can reference the commits which add separate
-> files in the original patchset here
-> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=for-next
-> ? And also if I have to fix yet another issue - how do I then
-> reference the commit this patch creates if applied?
-> Thank you!
+These > comparisons should be >= to prevent accessing one element
+beyond the end of the buffer.
 
-NP,
+Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You need to configure your email client to properly honor replies,
-e.g. add extra blank line between your reply and the email body.
-It will make your replies more clear.
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 658c8999cb0d..0b53b79b0e27 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1213,8 +1213,8 @@ static void rtrs_srv_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
+ 
+ 			msg_id = imm_payload >> sess->mem_bits;
+ 			off = imm_payload & ((1 << sess->mem_bits) - 1);
+-			if (unlikely(msg_id > srv->queue_depth ||
+-				     off > max_chunk_size)) {
++			if (unlikely(msg_id >= srv->queue_depth ||
++				     off >= max_chunk_size)) {
+ 				rtrs_err(s, "Wrong msg_id %u, off %u\n",
+ 					  msg_id, off);
+ 				close_sess(sess);
+-- 
+2.26.2
 
-Regarding fixes:
-1. There should not blank line between Fixes line and SOBs.
-2. You can use one Fixes line (use latest).
-3. Patches are usually divided for logical units.
-
-Thanks
-
->
-> >
-> > Thanks
