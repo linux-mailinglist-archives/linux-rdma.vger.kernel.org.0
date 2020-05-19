@@ -2,118 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6201D954E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 13:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FC11D95CC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 14:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbgESL34 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 07:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbgESL34 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 07:29:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583FC08C5C1
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 04:29:55 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id n18so3097112wmj.5
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 04:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8ZfvggmvQu85nIN1LaIoXlz/9OYnyPQMzR24y6/lbLM=;
-        b=BV69TgNyfOp7ZqcP3ZFgX7XYRnKuJ9Knrsxt/70a/rYvAEOk+6azknhcDduyBWI2S6
-         ei4vVgeFGDZu+xWYHnWH1XUYyfWaWg3HrCQFIl5fkNZG4AajgK1A8zg2PxqH0mcK5QkN
-         X/4EywONFwdSKjJHn/kFoYLQadtMn9lMkFWVJjB5uQBnqzwPb8PDaTcQ3CO+HyAZZTxO
-         dRvHc1504ytvTJ9dfow4zsCZC/VHn0NhqXYAphDZNy8Wa8KU0q8Tc0ccU+igZy4HeDxB
-         E786v+RcjUiQf1sbxoYE0QA2iHo3TsSZUv7auczVjxtsC0YrDCPDk+/prANiOniKV3fE
-         F7dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8ZfvggmvQu85nIN1LaIoXlz/9OYnyPQMzR24y6/lbLM=;
-        b=ujzKVt9vFICUcODJPd6bJAaDAMsb93gFPdlpQMEgnL1LnNGP2q77qA6xv5PIlU/+Pm
-         gYqllHrhOlFJMDdh+u6hlljA14GtSBUuNd3LaOQIGmHtTG7PrtvzlYd9AzBtUXU2QPDz
-         aW7ayot92yr05+aO0GmZS/pHTM21hEdrg9VUw889wfDNAUYX+Wj724A3zawxpocgdGfw
-         9FTOWBXnxJWsgtbjy10re5tAsZPkgT4uT5dgr+ju1sHH6pfqGYf4IXBVNVJpWgPh66u8
-         rAaoj0rD2nwf2OLX/CEGIna0zt+cPDYYGpEQuoW8vfbq/0YMBYyVa681RADSaLmKukGQ
-         GClg==
-X-Gm-Message-State: AOAM531EnFUlmRQVeMItrB5TS9yP14nUCg3IWPBtF+v1R7PjPua/k++3
-        +cxWCXc0+W3fbhl3UHzltAuw
-X-Google-Smtp-Source: ABdhPJx3xt6DGqbiQhh4L3B/c7SN2vEUehC//YMkBQU1F6d2WujaUpm9Vypwu+ikpf2Z4dDrczaXvw==
-X-Received: by 2002:a1c:c309:: with SMTP id t9mr4813047wmf.113.1589887794181;
-        Tue, 19 May 2020 04:29:54 -0700 (PDT)
-Received: from dkxps.fkb.profitbricks.net (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
-        by smtp.gmail.com with ESMTPSA id n9sm3635898wmj.5.2020.05.19.04.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 04:29:53 -0700 (PDT)
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-next@vger.kernel.org, axboe@kernel.dk, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     bvanassche@acm.org, leon@kernel.org, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, kbuild test robot <lkp@intel.com>
-Subject: [PATCH v2] rtrs-clt: silence kbuild test inconsistent intenting smatch warning
-Date:   Tue, 19 May 2020 13:29:36 +0200
-Message-Id: <20200519112936.928185-1-danil.kipnis@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728650AbgESMCV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 08:02:21 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34450 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726949AbgESMCU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 08:02:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JBvCut112596;
+        Tue, 19 May 2020 12:02:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=TV4pyYsWRPe8RNrW0FmUhh/p3vgEJPRT8frZ7NnfWNM=;
+ b=YwfQmGjeOV25s5LvcFUOYSEYWMAeG0dPM0CjAauHWFnzeqFZJ84zL+l5j2Tje26y3NCO
+ dKrtO/Jhais/Fik9Yd9wPgwLEHs9qzHVWGQ7a4i3/92qq5S8fA+TjMhQTSK0A/etat7q
+ 0lG47/dGq7UKDvU9Kg6bwK4nw0ViTOo9Vpuz3zUEDODKP5hGgoxAbOWl2xM0y8BCR/8O
+ X7RTe+M/Wu4uarN6D7+mFO+p2wCgzz/4OxNc52QSkpz2Hf1Y75KRPI2LD40olDu/nbFU
+ NnmjX/xTu+I2/NjFvITkDPuUBKEZ6xMQ+yLwzztAITRi5wkc2G94ny3kfiuL9I1K4Ml4 Ow== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3127kr4x0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 May 2020 12:02:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JBqYlZ042693;
+        Tue, 19 May 2020 12:02:16 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 313gj1j69h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 May 2020 12:02:16 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JC2FRN025043;
+        Tue, 19 May 2020 12:02:15 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 May 2020 05:02:14 -0700
+Date:   Tue, 19 May 2020 15:02:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     jinpu.wang@cloud.ionos.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] RDMA/rtrs: server: main functionality
+Message-ID: <20200519120209.GA42765@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9625 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 bulkscore=0 suspectscore=3 mlxlogscore=989
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005190108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9625 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=3 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005190108
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Kbuild test robot reports a smatch warning:
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:1196 rtrs_clt_failover_req() warn: inconsistent indenting
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:2890 rtrs_clt_request() warn: inconsistent indenting
+Hello Jack Wang,
 
-To get rid of the warning, move the while_each_path() macro to a newline.
-Rename the macro to end_each_path() to avoid the "while should follow close
-brace '}'" checkpatch error.
+The patch 9cb837480424: "RDMA/rtrs: server: main functionality" from
+May 11, 2020, leads to the following static checker warning:
 
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+	drivers/infiniband/ulp/rtrs/rtrs-srv.c:1224 rtrs_srv_rdma_done()
+	warn: array off by one? 'sess->mrs[msg_id]'
 
-Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Reported-by: kbuild test robot <lkp@intel.com>
----
- v1->v2 Add fixes line
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+drivers/infiniband/ulp/rtrs/rtrs-srv.c
+  1207                  }
+  1208                  rtrs_from_imm(be32_to_cpu(wc->ex.imm_data),
+  1209                                 &imm_type, &imm_payload);
+  1210                  if (likely(imm_type == RTRS_IO_REQ_IMM)) {
+  1211                          u32 msg_id, off;
+  1212                          void *data;
+  1213  
+  1214                          msg_id = imm_payload >> sess->mem_bits;
+  1215                          off = imm_payload & ((1 << sess->mem_bits) - 1);
+  1216                          if (unlikely(msg_id > srv->queue_depth ||
+                                                    ^
+This should definitely be >=
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 468fdd0d8713..0fa3a229d90e 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -734,7 +734,7 @@ struct path_it {
- 			  (it)->i < (it)->clt->paths_num;		\
- 	     (it)->i++)
- 
--#define while_each_path(it)						\
-+#define end_each_path(it)						\
- 	path_it_deinit(it);						\
- 	rcu_read_unlock();						\
- 	}
-@@ -1193,7 +1193,8 @@ static int rtrs_clt_failover_req(struct rtrs_clt *clt,
- 		/* Success path */
- 		rtrs_clt_inc_failover_cnt(alive_sess->stats);
- 		break;
--	} while_each_path(&it);
-+	}
-+	end_each_path(&it);
- 
- 	return err;
- }
-@@ -2887,7 +2888,8 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
- 		}
- 		/* Success path */
- 		break;
--	} while_each_path(&it);
-+	}
-+	end_each_path(&it);
- 
- 	return err;
- }
--- 
-2.25.1
+  1217                                       off > max_chunk_size)) {
+                                                 ^
+My only question is should "off" be >=.  I feel like probably it should
+but I'm not sure.
 
+  1218                                  rtrs_err(s, "Wrong msg_id %u, off %u\n",
+  1219                                            msg_id, off);
+  1220                                  close_sess(sess);
+  1221                                  return;
+  1222                          }
+  1223                          if (always_invalidate) {
+  1224                                  struct rtrs_srv_mr *mr = &sess->mrs[msg_id];
+                                                                 ^^^^^^^^^^^^^^^^^^
+  1225  
+  1226                                  mr->msg_off = off;
+  1227                                  mr->msg_id = msg_id;
+  1228                                  err = rtrs_srv_inv_rkey(con, mr);
+  1229                                  if (unlikely(err)) {
+  1230                                          rtrs_err(s, "rtrs_post_recv(), err: %d\n",
+  1231                                                    err);
+  1232                                          close_sess(sess);
+  1233                                          break;
+  1234                                  }
+  1235                          } else {
+  1236                                  data = page_address(srv->chunks[msg_id]) + off;
+  1237                                  process_io_req(con, data, msg_id, off);
+  1238                          }
+  1239                  } else if (imm_type == RTRS_HB_MSG_IMM) {
+  1240                          WARN_ON(con->c.cid);
+  1241                          rtrs_send_hb_ack(&sess->s);
+  1242                  } else if (imm_type == RTRS_HB_ACK_IMM) {
+
+regards,
+dan carpenter
