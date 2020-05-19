@@ -2,88 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876931DA5CA
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 01:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA821DA5D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 01:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbgESXrP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 19:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        id S1727998AbgESXwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 19:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgESXrO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 19:47:14 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684C7C061A0E
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 16:47:14 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id g20so511946qvb.9
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 16:47:14 -0700 (PDT)
+        with ESMTP id S1727941AbgESXwd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 19:52:33 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502C8C061A0F
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 16:52:33 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id i14so1815301qka.10
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 16:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=hab13sCBMoSFVDNe53Te5/um8u7Dvom/Oq5qeGy6LQM=;
-        b=Xhbw9rpuCFAsoXsARVsCZK+5mFgLakvRnkIHpbr4LPiEzmvAFLyiDyxRbU9Mkl9Tfe
-         73zROnHsRIGAQKxAXv5vA2bB+Mqm5m394G9/J23BDf/8WQGTOp/6wcKBy2SoClf1hE8n
-         CPJmIWUcNVVNK/QO/oUQckvWaQSs6cD3J+zf0ZvwZYNAAWHINHg4rKH8Ts6JpZVdQwET
-         dXiDnk2XP5PdM5lfJJldFqF3lgi12EFFkLAnQ4YVU0wRmjSr8MeUAgohtdLObAbCPMtL
-         fE28dcJgqERVB0truvko/CaxypXZzlRj+adKyQniVXkcKDWfHG7e52W70g1ZGmN6Ju8l
-         Evxg==
+        bh=0w5Q0s8R2YEA3g1NY8XrirtV4Lvn0PXi0qUKfjx3g8I=;
+        b=jGdRfWODW/6EjBqooVOhtZrJh6yxWrpPId4S+vwSV/ouSCf853YEfbk7nnJEzfRP9D
+         OJYu6vayBWJBkcm1NUWfQMVQDwvSpNUvxcwPnoP3QkpUmF+PSC66htu0+V0HiWLXpWaK
+         SvKJ5L7OSkHzBFtpx75tK8HW68Sq6teAhd9XZRxuVrdeFD/0ii9SBeghVb5WBbt3XHyd
+         rcDWFEVu8E8INPSLr9llyaqc1LUnAsDvY3Q4LpNhYv3pp268dxKKuC6CY8gM6ha0k5J9
+         ivrGgCTKUdreVEsLkKgB5lJSim+9dauzI07OE7lBn6/Zc0WW6ErIHjqVtKDqETcOgaqZ
+         gGNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hab13sCBMoSFVDNe53Te5/um8u7Dvom/Oq5qeGy6LQM=;
-        b=I2FOfbmk16mJIh8FHcHa4yuBk/Jm9Lkhyr1O00fUJ8mufIwzbmurI027KLVfM/Rq2v
-         /ZX2sL0SgzpfN4fafUipTHALKUkCdzFM3KhL70r4pOwZ0kz7FPWfu4Ygm8HoymVP1l0x
-         3+ylMncfBgH1ZfOkgWquCSKY94dtQlxwCBq7InsLopFTd9SNMyLrE08TQD2jFVkRpdeF
-         3wXKyc8hVeGgaqvk1rnGIz/vQOCiVRzUtjDY7iDeGXzXiF6vp8c0Wt43Wx+yyGaEAUN0
-         arCrKfFQuDd2NqdzGHwBEfK7bfp1K6SeArX9BhY+PtO6qqGbv7VdlhhDzZvUq1mxxd2W
-         27WA==
-X-Gm-Message-State: AOAM532GYQme0NlDlichTfGQPTyY8NWdwPdjwqFy73fo8uklagLB0N9o
-        xnKL1N2KwH4gAuTpcjX7TwPO8A==
-X-Google-Smtp-Source: ABdhPJzpAvhAglbfwjvqzAhBMICKgBROUjygpu/1kcwuj3g1+1V47CU1Z7d97GhpLB+Zon5+2NymcQ==
-X-Received: by 2002:a0c:a619:: with SMTP id s25mr2273937qva.21.1589932033719;
-        Tue, 19 May 2020 16:47:13 -0700 (PDT)
+        bh=0w5Q0s8R2YEA3g1NY8XrirtV4Lvn0PXi0qUKfjx3g8I=;
+        b=EyPM4uR+DSQTNez33+MPTK+ahVnBy6lLcFFf8PBVRPVbtiJLdIlxbGY5x26slvy7Rw
+         G8DT0vveh7t4HV4jxhJfZL575Qj4khMNQoqC/mJvmhND35o3mxm49wL5d0V77AkAgcTu
+         AGivC0Ls/a4ukBw8sECyh7xFObixjf15SBJeflZbzClWl4S5jW7By5nPBR5bOkGWVkaI
+         vikfGL7k+p4TVK0P8sl/ouzCfn8hLr6meRO5UzkzrCIGsNcYBtb/nPYguzwSgJD1Np1+
+         GdoCpeVTxgrJTw1uqFAR4v+Uh1E0hCE9fNDJ9/XGUhd4EBHDSoFavxOMseXHuVvGI/Cv
+         j7ng==
+X-Gm-Message-State: AOAM531xOqHf2B1OQ8judY2bNcAfQxiXHYqz4eRdAT2PhiQV1KsLXQtA
+        kMW5qcHnBNrbKjSicVxjC193Sw==
+X-Google-Smtp-Source: ABdhPJxEnvKvWp4JmgpC+vWG3nvTDPBBagW65uaps4SG5a24Zu4zPDQ8CAbK/+1jU8D7XBxg+INztQ==
+X-Received: by 2002:a37:b144:: with SMTP id a65mr2023826qkf.462.1589932352377;
+        Tue, 19 May 2020 16:52:32 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id q2sm845022qkn.116.2020.05.19.16.47.13
+        by smtp.gmail.com with ESMTPSA id y23sm1232277qta.37.2020.05.19.16.52.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 May 2020 16:47:13 -0700 (PDT)
+        Tue, 19 May 2020 16:52:32 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jbBx2-00081J-VC; Tue, 19 May 2020 20:47:12 -0300
-Date:   Tue, 19 May 2020 20:47:12 -0300
+        id 1jbC2B-0008Bd-IO; Tue, 19 May 2020 20:52:31 -0300
+Date:   Tue, 19 May 2020 20:52:31 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH v2] RDMA/rtrs: client: Fix function return on success
-Message-ID: <20200519234712.GE30609@ziepe.ca>
-References: <20200519163612.GA6043@embeddedor>
+Subject: Re: [PATCH] RDMA/siw: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200519235231.GA31402@ziepe.ca>
+References: <20200519233018.GA6105@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519163612.GA6043@embeddedor>
+In-Reply-To: <20200519233018.GA6105@embeddedor>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:36:12AM -0500, Gustavo A. R. Silva wrote:
-> Remove the if-statement and return the value contained in _err_,
-> unconditionally.
+On Tue, May 19, 2020 at 06:30:18PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of one-element arrays in the following
+> form:
 > 
-> Addresses-Coverity-ID: 1493753 ("Identical code for different branches")
-> Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+> struct something {
+>     int length;
+>     u8 data[1];
+> };
+> 
+> struct something *instance;
+> 
+> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+> instance->length = size;
+> memcpy(instance->data, source, size);
+> 
+> but the preferred mechanism to declare variable-length types such as
+> these ones is a flexible array member[1][2], introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on. So, replace
+> the one-element array with a flexible-array member.
+> 
+> Also, make use of the new struct_size() helper to properly calculate the
+> size of struct siw_pbl.
+> 
+> This issue was found with the help of Coccinelle and, audited and fixed
+> _manually_.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
 > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 > ---
-> Changes in v2:
->  - Return err, unconditionally. As suggested by Bart Van Assche.
->    Thanks, Bart.
+>  drivers/infiniband/sw/siw/siw.h     | 2 +-
+>  drivers/infiniband/sw/siw/siw_mem.c | 5 +----
+>  2 files changed, 2 insertions(+), 5 deletions(-)
 
 Applied to for-next, thanks
 
