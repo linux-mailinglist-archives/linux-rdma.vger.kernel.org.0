@@ -2,114 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF601D97DE
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 15:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FF21D9810
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 May 2020 15:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgESNfm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 09:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgESNfm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 09:35:42 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188D0C08C5C1
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 06:35:42 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id b91so11607774edf.3
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 06:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z1Dv3i/k7upzRwyNeFhQwiOindJlB20gpivaCGXYPIo=;
-        b=g3tTzskZJ7L3iLaULQsGfB7cYADhU6G07XzuAbZLfIb/yVn+JDV97cotIA2oLWwZIu
-         NrCNBdOwxb8YMZHi+XeKUtJcWFsHqnPdgI7kkfwGwGvgqe+uI7QFsk2t0NhMtz+ZAOiP
-         zg2UGKP8AE6maOb4iChm4prudVegau1U/rr3jQI50S85RaW18kBo4vkDyx+9avdsjVIa
-         mFVbejUKP3bHE2ANOXThWtggTazaGndM2J04StyHgqZOdRPbimjkIiwQ8ZJVR5D1Sdbg
-         EpmGkFfzEg66jJuwi1SnAxcOQ9XU3g/Koufun4RsqcC9nJsD7PAagmi/Irue/k2/S1GW
-         McPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z1Dv3i/k7upzRwyNeFhQwiOindJlB20gpivaCGXYPIo=;
-        b=oKFzQUsm8ck0xL2mYCpm0VGJf9avwDVFkLQjXtbGm0rz9UpZb97Qfyvot4OqFmr+ZL
-         1Rkg19GEOWj42iOCpfokabJ2FDnJRMVxgBrK15oySkWpHCz1/6FZIgqoRiO6LnrgVY2U
-         tdD+bS98m+7yO98p62GtlP0iVWRDTSSzjfeqxX8sDF5m/4MzzKEMEWijKI8V6Np88pfl
-         JRk+DYAE00ZfwmsqT+LrHjGUlYiiPyKhNjigfIj4/bDbsu60S5ot1hHW4v0cn2ZV4plY
-         sj1zlZmTudJL/VP5xNZ1QrwZdG5c2KjaHqn4o7rYYl3w8JBW28U1jkO4mj1OgOokcitP
-         Po7Q==
-X-Gm-Message-State: AOAM532o88O2szk9Rg1I8dSdUapKZCv4Io1IZaLe/2YaFvME9Yffp/hm
-        39wZmnrEDDWIcWZslffC0he7A9wouMGWK5SrfAOy98gw0HtFyg==
-X-Google-Smtp-Source: ABdhPJzcOTdQUdYRPbq0X6Em5XMmSF34oNnGihGM9/WmWVoOKnOCIHJnAbHyVIlZp22ViZz2A0lhWRgiynj9U7Qwhwo=
-X-Received: by 2002:a05:6402:68f:: with SMTP id f15mr18794299edy.89.1589895340543;
- Tue, 19 May 2020 06:35:40 -0700 (PDT)
+        id S1727904AbgESNnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 09:43:20 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31085 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726471AbgESNnT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 May 2020 09:43:19 -0400
+IronPort-SDR: QvBSdq0vnfPDQl1gosIN0i3D8uewPj5rOTbK4xUDXZeHujOhNOhT2gXOnINkWhz632hbhJm2JV
+ TzEOD00uVlqw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 06:43:18 -0700
+IronPort-SDR: NY1PTZKHTDl03Lvc+ZSWc3oKgIXzYPqZlUmGmNKyLKmXlXrWoxpynJkk0qpS+elQE1563nhURC
+ pwD56jBVC1pQ==
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="267888678"
+Received: from wdanilix-mobl.amr.corp.intel.com (HELO [10.254.202.253]) ([10.254.202.253])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 06:43:16 -0700
+Subject: Re: [PATCH 0/8 v1] Remove FMR support from RDMA drivers
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Max Gurtovoy <maxg@mellanox.com>, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org,
+        sagi@grimberg.me, israelr@mellanox.com, shlomin@mellanox.com,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+References: <20200514120305.189738-1-maxg@mellanox.com>
+ <f2efe2df-14db-4e15-3807-f81b799cc0ec@intel.com>
+ <20200518181035.GM24561@mellanox.com>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <03238a7d-d3f3-7859-deb9-dd0a04fbe9ed@intel.com>
+Date:   Tue, 19 May 2020 09:43:14 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CAMGffEkkUVV9b=iMhP4C=ndBRcePcTQMiF4h-Et1DFEKYPA6mg@mail.gmail.com>
- <20200519133223.GN2078@kadam>
-In-Reply-To: <20200519133223.GN2078@kadam>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 19 May 2020 15:35:29 +0200
-Message-ID: <CAMGffEnVdcUBsq21jHF7O1Fkiruy_Uz-cM6hKWprrFkTrY-Wbg@mail.gmail.com>
-Subject: Re: [PATCH v2] RDMA/rtrs: Fix some signedness bugs in error handling
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200518181035.GM24561@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 19, 2020 at 3:32 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> The problem is that "req->sg_cnt" is an unsigned int so if "nr" is
-> negative, it gets type promoted to a high positive value and the
-> condition is false.  This patch fixes it by handling negatives separately.
->
-> Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Thanks Dan,
-Reviewed-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
-> v2: propagate the correct error code instead of returning -EINVAL
->
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 7 +++----
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
->  2 files changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> index 468fdd0d8713..17f99f0962d0 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> @@ -1047,11 +1047,10 @@ static int rtrs_map_sg_fr(struct rtrs_clt_io_req *req, size_t count)
->
->         /* Align the MR to a 4K page size to match the block virt boundary */
->         nr = ib_map_mr_sg(req->mr, req->sglist, count, NULL, SZ_4K);
-> -       if (unlikely(nr < req->sg_cnt)) {
-> -               if (nr < 0)
-> -                       return nr;
-> +       if (nr < 0)
-> +               return nr;
-> +       if (unlikely(nr < req->sg_cnt))
->                 return -EINVAL;
-> -       }
->         ib_update_fast_reg_key(req->mr, ib_inc_rkey(req->mr->rkey));
->
->         return nr;
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index ba8ab33b94a2..eefd149ce7a4 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -649,7 +649,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
->                 }
->                 nr = ib_map_mr_sg(mr, sgt->sgl, sgt->nents,
->                                   NULL, max_chunk_size);
-> -               if (nr < sgt->nents) {
-> +               if (nr < 0 || nr < sgt->nents) {
->                         err = nr < 0 ? nr : -EINVAL;
->                         goto dereg_mr;
->                 }
-> --
-> 2.26.2
+On 5/18/2020 2:10 PM, Jason Gunthorpe wrote:
+> On Mon, May 18, 2020 at 11:20:04AM -0400, Dennis Dalessandro wrote:
+>> On 5/14/2020 8:02 AM, Max Gurtovoy wrote:
+>>> This series removes the support for FMR mode to register memory. This ancient
+>>> mode is unsafe and not maintained/tested in the last few years. It also doesn't
+>>> have any reasonable advantage over other memory registration methods such as
+>>> FRWR (that is implemented in all the recent RDMA adapters). This series should
+>>> be reviewed and approved by the maintainer of the effected drivers and I
+>>> suggest to test it as well.
+>>>
+>>> The tests that I made for this series (fio benchmarks and fio verify data):
+>>> 1. iSER initiator on ConnectX-4
+>>> 2. iSER initiator on ConnectX-3
+>>> 3. SRP initiator on ConnectX-4 (loopback to SRP target)
+>>> 4. SRP initiator on ConnectX-3
+>>>
+>>> Not tested:
+>>> 1. RDS
+>>> 2. mthca
+>>> 3. rdmavt
+>>
+>> This will effectively kill qib which uses rdmavt. It's gonna have to be a
+>> NAK from me.
+> 
+> Are you objecting the SRP and iSER changes too?
+
+No, just want to keep basic verbs support at least. NFS already dropped, 
+similarly we are ok with dropping it from SRP/iSER as a next step.
+
+-Denny
+
