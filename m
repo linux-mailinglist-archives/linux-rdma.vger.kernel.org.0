@@ -2,92 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51961DA636
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 02:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382051DA683
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 02:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgETAKr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 May 2020 20:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        id S1728053AbgETA0g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 May 2020 20:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgETAKr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 20:10:47 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D34C061A0E
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 17:10:46 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id fb16so547531qvb.5
-        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 17:10:46 -0700 (PDT)
+        with ESMTP id S1726178AbgETA0g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 May 2020 20:26:36 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C96C061A0F
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 17:26:36 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id m11so1948272qka.4
+        for <linux-rdma@vger.kernel.org>; Tue, 19 May 2020 17:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=1nnNMMnWgVyddSvx9CTHRp85r+Uj2T/EgMi8iim52iY=;
-        b=LVb/LnYEoZe/hqO2/o5y+SCwpWFlcD/OzI++bhVo7RKZq90uUz9gmoGH+/45X+MDte
-         9Itf5OW4Cc0+8iNIsEp9QldXccLCYOOXxe57Sm1cHCDdjlfkgY+6MWzPqdPE0N5W6sVJ
-         UngYpYZ+SFTMFjtCSYMyEMMwIJffklZXje5JNDyn8tYKYQ9YG5zlcqBdqHOfU0oQ9Uw9
-         sXxDcISZGRbopbiyyH/7otZAIWj0g9hDoVNxGs8EVQgDkvbjYdF0GJMDl1atusMM+kci
-         maK30q1hgpUahvg+JY+rRdll417il1WAMpgiGnih61Jo9t2HhRiV5twbf75SYKTXX2NG
-         LrQg==
+        bh=nE9yGKuHmyTdmxhrXXfxST6XxOah5ElttRSkoHJZ5qU=;
+        b=eTdF25Z3gw9qjHPYw1NkCgy5PcHufAe72jf5rpfeYRZbnWUzny5qGdsN86FOpL0vNc
+         KP2DPKDVL16AoIp1y7hkFUJz8uw9FXe1G36AXs+Tr7zz3BtyT49u2pi+lq3KGOfvD3ia
+         l3u/YTaVwqVV7dpZfJgFIXn8v1n9bt4ylSPVR/8+f3xsRNEDpyEP+03lQQCdrz8N6RMi
+         6AYOgx25V4i+EkPJOrghohywsxv4YuI3ZYzxvp0+24h1oWC/tQNaEVGH+Lss6NQx3/b9
+         Uy10SXfuNN0ZH5+WmyxbR2gpDkcYImsI99/+03RDz7YBx4L0qsx8WKKeCydSRd+nNcMM
+         N+Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1nnNMMnWgVyddSvx9CTHRp85r+Uj2T/EgMi8iim52iY=;
-        b=LyNQBZt3z+WwNWjeYzNl1ffG2qm/V0TstuBDZc1ewJNUq0NLmAPGD5ig0LtxRGMpvF
-         ik3y2U1Ckt/Gez6ord9h+uMpAY6e/nNFeSwRHR/szS8EpgWJpc77GwdcLhhOG5ccfkyB
-         1stMEdmW9OezHZkt3B0mSoY18m/I+KlHoRrgKDnKB6oYK9HiUg5XP8lJQI3CfxEEM4Y7
-         9cqHw0r2x/GYurXrhVsfPm2rg+HhwbwBckVrLNR5xX5RXxZyNuaQaa2+OcF7K4gE9JWJ
-         aZLpzXwaLMHqbOXHV3H7VUSo7zZU7tF6t6J4ILQOGNZCUaWrcmUjWnye92aIQGDoiaw5
-         ODNQ==
-X-Gm-Message-State: AOAM531Rk4WCs0VYn+Ul9fQ4My3IT8dl46SAv4BAgB1lSAh9AJmFapTg
-        pZf7gXdGthcboLJXuCCwVelZKg==
-X-Google-Smtp-Source: ABdhPJwsz5AKr0aQtHN738xGZhJMASG0JaA7L/CXolhH1cBCNFuWAt77YF/YQI1M6dbZTVO5OtyTrQ==
-X-Received: by 2002:a05:6214:42f:: with SMTP id a15mr2302980qvy.170.1589933446165;
-        Tue, 19 May 2020 17:10:46 -0700 (PDT)
+        bh=nE9yGKuHmyTdmxhrXXfxST6XxOah5ElttRSkoHJZ5qU=;
+        b=B4cJtSi8mDSqPZnhsQ6mb8UOdvWBdVMShc2e7NUOcYg62/sQuhIlgTG1rv3wTjpLNK
+         IFcQn2tutZ+3AXfNdQPLFqSZ+dWjGJrPMLm9itOR++8sdeLnj2SVR2BoXTFCrZBcbPsT
+         oml06SOOE0l/huXnddvnt0QC75u8cGyM0jFbEAs5VzvvVDoP4bgpbXyPrENQoOGE3DyM
+         dYaqLmYt3LLjxiJPcDNIQvDMJ6PjcFfYWiIw57HKRAEdJmRhR3CIBXHxz9us1nMqZsfM
+         vapw7RQx0M+uxndbtcOZReIM9i4dSQWNHBJPNqs1lhNNkUjEuYRyh6+xC6Wy0RIYC3aS
+         BvNA==
+X-Gm-Message-State: AOAM53276QAonxVClKttD6+fYaEh5IIlPLn8njGiOIrAVwq3svlCTn0O
+        egP8dP4pFRPUBI2bVl0odN9thQ==
+X-Google-Smtp-Source: ABdhPJyV40iO2ET5T/0qUojJK8xg7Xixyujhd49wVC+crumicEgK3ik5uVhjo+1eTNCC0zsjRROrHA==
+X-Received: by 2002:a05:620a:1e:: with SMTP id j30mr2238850qki.470.1589934395246;
+        Tue, 19 May 2020 17:26:35 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id d196sm959328qkg.16.2020.05.19.17.10.45
+        by smtp.gmail.com with ESMTPSA id 23sm912470qkf.68.2020.05.19.17.26.34
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 May 2020 17:10:45 -0700 (PDT)
+        Tue, 19 May 2020 17:26:34 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jbCJp-0003It-Am; Tue, 19 May 2020 21:10:45 -0300
-Date:   Tue, 19 May 2020 21:10:45 -0300
+        id 1jbCZ8-0003YU-Ed; Tue, 19 May 2020 21:26:34 -0300
+Date:   Tue, 19 May 2020 21:26:34 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
-Message-ID: <20200520001045.GA31189@ziepe.ca>
-References: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
- <1588876487-5781-2-git-send-email-divya.indi@oracle.com>
- <20200508000809.GM26002@ziepe.ca>
- <33fc99e2-e9fc-3c8c-e47f-41535f514c2d@oracle.com>
- <20200513150021.GD29989@ziepe.ca>
- <c761da30-3663-4932-dd72-3501f15c0197@oracle.com>
- <272dbe83-a72b-d38b-6993-d3bbda50a7d1@oracle.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq when
+ the device is shut down
+Message-ID: <20200520002634.GF31189@ziepe.ca>
+References: <20200512030622.189865.65024.stgit@awfm-01.aw.intel.com>
+ <20200512031315.189865.15477.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <272dbe83-a72b-d38b-6993-d3bbda50a7d1@oracle.com>
+In-Reply-To: <20200512031315.189865.15477.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 19, 2020 at 04:30:52PM -0700, Divya Indi wrote:
-> Hi Jason,
+On Mon, May 11, 2020 at 11:13:15PM -0400, Dennis Dalessandro wrote:
+> From: Kaike Wan <kaike.wan@intel.com>
 > 
-> I wanted to follow up to see if you got a chance to review the following reply?
+> The workqueue hfi1_wq is destroyed in function shutdown_device(), which
+> is called by either shutdown_one() or remove_one(). The function
+> shutdown_one() is called when the kernel is rebooted while remove_one()
+> is called when the hfi1 driver is unloaded. When the kernel is rebooted,
+> hfi1_wq is destroyed while all qps are still active, leading to a
+> kernel crash:
 
-Not yet, it still seems bad to be doing code like this.
+AFAIK the purpose of shutdown is to stop all in progress DMAs.
 
-If two threads are sharing memory they really need to use a
-refcount/kref not rely on some sketchy thing with flags. It is very
-hard to tell if the sketchy thing with flags is correct or not.
+If devices are wildly doing DMA during the shutdown process then all
+manner of things can fail, including kexecing into another kernel.
+
+Do you achive that with these shutdown handlers?
+
+It does make sense that the work queue would not be destroyed in
+shutdown, but I'm surprised it doesn't flush it?
 
 Jason
