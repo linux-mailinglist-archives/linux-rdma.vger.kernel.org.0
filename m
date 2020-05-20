@@ -2,247 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56151DBAE7
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 19:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41E11DBC63
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 20:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgETROx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 13:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETROx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 13:14:53 -0400
-X-Greylist: delayed 774 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 May 2020 10:14:53 PDT
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00::f03c:91ff:fe50:41d6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F54C061A0E;
-        Wed, 20 May 2020 10:14:52 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 79C801513; Wed, 20 May 2020 13:14:52 -0400 (EDT)
-Date:   Wed, 20 May 2020 13:14:52 -0400
-From:   Bruce Fields <bfields@fieldses.org>
-To:     Calum Mackay <calum.mackay@oracle.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 00/29] Possible NFSD patches for v5.8
-Message-ID: <20200520171452.GC19305@fieldses.org>
-References: <20200512211640.5826.77139.stgit@klimt.1015granger.net>
- <20200519161108.GD25858@fieldses.org>
- <81E97D7E-7B8D-4C64-844A-18EF0346C49C@oracle.com>
- <20200519212938.GG25858@fieldses.org>
- <470B6839-FBC6-49BA-B633-DD49D271FD42@oracle.com>
- <000ED881-6724-46EE-894E-57CD6DE10A15@oracle.com>
- <20200520164639.GA19305@fieldses.org>
- <1af614e5-9784-cb5e-52a6-dc13b1d04524@oracle.com>
+        id S1726819AbgETSMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 14:12:18 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:55248 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgETSMR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 14:12:17 -0400
+Received: by mail-il1-f197.google.com with SMTP id j69so3395977ila.21
+        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2020 11:12:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+ftmxr79gDcB9k8pr/AIQ9vrfM5009Yqd32Ubdl2t9g=;
+        b=atMCfX0GsUs4nhbQjHYMDlPhdglqvFosK+sS7zP0vIf0LiOr5AkXs2YRyiNy9ukr6R
+         WUWoG4S1KyEik74J3QvKLH9bz6X9jUmcrEUe4IafLo2cqnCSHb3lIADHRIh02g94DrAA
+         FAcwRzvfuU3JaC02KjPIGYes5ncDXVTXdbbzbNFCOlxTQjBJ0JGd1uuNtNZmpj9LLMEZ
+         j7J2M0D+SEZK7bqGvqw74OYZMfRATf8iwfAf32qBz7RC0GZhisxpRe94M/LSAW9uqB0P
+         6THwEHx0223ZpooGkRAmsuLd5NPMfNGml/0Pe7STN3roQ4WW289T4+FTmz4sUhi21m8P
+         btXQ==
+X-Gm-Message-State: AOAM530iuZyLtbomB+8PDkoUVknCaFxTniSAt6FK8EypKuDogg4M9/7r
+        QixJcV1mVSzU3CUO110AnHFJjOSRkxNRX1Nzb9QX9b4jFztT
+X-Google-Smtp-Source: ABdhPJzXSZ/EqbcKubHsOn2N59N7VYkouBS+q85pvXnoAF9hczJOPQFJMSNbnH6SCiHnOONuuEfDC4j+bzVTnG4BgLqkvmmC/T2T
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1af614e5-9784-cb5e-52a6-dc13b1d04524@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr4594960iow.70.1589998335872;
+ Wed, 20 May 2020 11:12:15 -0700 (PDT)
+Date:   Wed, 20 May 2020 11:12:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000000d71e05a6185662@google.com>
+Subject: general protection fault in unpin_user_pages
+From:   syzbot <syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, davem@davemloft.net,
+        jhubbard@nvidia.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 20, 2020 at 06:01:27PM +0100, Calum Mackay wrote:
-> On 20/05/2020 5:46 pm, Bruce Fields wrote:
-> >     Fix comments and version checks that refer to python 2
-> >     The minimum required version may actually be greater than 3.0, I'm not
-> >     sure.
-> 
-> for what it's worth, it requires at least v3.2, since it uses
-> os.fsencode(), which was introduced in that rev.
-> 
-> That doesn't contradict your statement, of course, and I've not
-> checked the rest of it.
+Hello,
 
-Thanks!  I've updated it to refer to 3.2.
+syzbot found the following crash on:
 
---b.
+HEAD commit:    dbfe7d74 rds: convert get_user_pages() --> pin_user_pages()
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10218e6e100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3df83be5e281f34b
+dashboard link: https://syzkaller.appspot.com/bug?extid=118ac0af4ac7f785a45b
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=117ca33a100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a9044a100000
 
-commit f7234d07ee81
-Author: J. Bruce Fields <bfields@redhat.com>
-Date:   Tue May 19 22:58:23 2020 -0400
+The bug was bisected to:
 
-    Fix comments and version checks that refer to python 2
-    
-    The minimum required version may actually be greater than 3.2, I'm not
-    sure.  I've been testing with 3.8.2.
-    
-    Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+commit dbfe7d74376e187f3c6eaff822e85176bc2cd06e
+Author: John Hubbard <jhubbard@nvidia.com>
+Date:   Sun May 17 01:23:36 2020 +0000
 
-diff --git a/nfs4.0/lib/rpc/rpc.py b/nfs4.0/lib/rpc/rpc.py
-index cc509965f8e7..6a13e856f3f0 100644
---- a/nfs4.0/lib/rpc/rpc.py
-+++ b/nfs4.0/lib/rpc/rpc.py
-@@ -1,6 +1,6 @@
- # rpc.py - based on RFC 1831
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.0/nfs4client.py b/nfs4.0/nfs4client.py
-index 5916dcc74139..f67c1e3695d6 100755
---- a/nfs4.0/nfs4client.py
-+++ b/nfs4.0/nfs4client.py
-@@ -9,8 +9,8 @@
- #
- 
- import sys
--if sys.hexversion < 0x02070000:
--    print("Requires python 2.7 or higher")
-+if sys.hexversion < 0x03020000:
-+    print("Requires python 3.2 or higher")
-     sys.exit(1)
- import os
- # Allow to be run stright from package root
-diff --git a/nfs4.0/nfs4lib.py b/nfs4.0/nfs4lib.py
-index 9adeb81daa95..a9a65d7a2f10 100644
---- a/nfs4.0/nfs4lib.py
-+++ b/nfs4.0/nfs4lib.py
-@@ -1,7 +1,7 @@
- #!/usr/bin/env python
- # nfs4lib.py - NFS4 library for Python
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.0/servertests/environment.py b/nfs4.0/servertests/environment.py
-index e7ef2b052833..fcaa0ebec075 100644
---- a/nfs4.0/servertests/environment.py
-+++ b/nfs4.0/servertests/environment.py
-@@ -1,7 +1,7 @@
- #
- # environment.py
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.0/testserver.py b/nfs4.0/testserver.py
-index 4f31f92a1e34..f28ba1bdb6d0 100755
---- a/nfs4.0/testserver.py
-+++ b/nfs4.0/testserver.py
-@@ -1,7 +1,7 @@
- #!/usr/bin/env python
- # nfs4stest.py - nfsv4 server tester
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-@@ -26,8 +26,8 @@
- 
- 
- import sys
--if sys.hexversion < 0x02070000:
--    print("Requires python 2.7 or higher")
-+if sys.hexversion < 0x03020000:
-+    print("Requires python 3.2 or higher")
-     sys.exit(1)
- import os
- # Allow to be run stright from package root
-diff --git a/nfs4.1/client41tests/environment.py b/nfs4.1/client41tests/environment.py
-index 25e7cb08ebb1..f84399b4a533 100644
---- a/nfs4.1/client41tests/environment.py
-+++ b/nfs4.1/client41tests/environment.py
-@@ -1,7 +1,7 @@
- #
- # environment.py
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.1/server41tests/environment.py b/nfs4.1/server41tests/environment.py
-index e7bcaa90904c..ef4db762ff08 100644
---- a/nfs4.1/server41tests/environment.py
-+++ b/nfs4.1/server41tests/environment.py
-@@ -1,7 +1,7 @@
- #
- # environment.py
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.1/testclient.py b/nfs4.1/testclient.py
-index 19bd148edde2..46b7abc1e0a5 100755
---- a/nfs4.1/testclient.py
-+++ b/nfs4.1/testclient.py
-@@ -1,7 +1,7 @@
- #!/usr/bin/env python
- # nfs4stest.py - nfsv4 server tester
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-@@ -23,8 +23,8 @@
- 
- import use_local # HACK so don't have to rebuild constantly
- import sys
--if sys.hexversion < 0x02070000:
--    print("Requires python 2.7 or higher")
-+if sys.hexversion < 0x03020000:
-+    print("Requires python 3.2 or higher")
-     sys.exit(1)
- import os
- 
-diff --git a/nfs4.1/testmod.py b/nfs4.1/testmod.py
-index 8c4ccdef5afa..6285758fe74d 100644
---- a/nfs4.1/testmod.py
-+++ b/nfs4.1/testmod.py
-@@ -1,6 +1,6 @@
- # testmod.py - run tests from a suite
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-diff --git a/nfs4.1/testserver.py b/nfs4.1/testserver.py
-index f3fcfe9b8851..0447ccd5da7c 100755
---- a/nfs4.1/testserver.py
-+++ b/nfs4.1/testserver.py
-@@ -1,7 +1,7 @@
- #!/usr/bin/env python
- # nfs4stest.py - nfsv4 server tester
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
-@@ -27,8 +27,8 @@
- 
- import use_local # HACK so don't have to rebuild constantly
- import sys
--if sys.hexversion < 0x02070000:
--    print("Requires python 2.7 or higher")
-+if sys.hexversion < 0x03020000:
-+    print("Requires python 3.2 or higher")
-     sys.exit(1)
- import os
- 
-diff --git a/showresults.py b/showresults.py
-index 0229a1e4d7b6..a39e1b9f7689 100755
---- a/showresults.py
-+++ b/showresults.py
-@@ -1,7 +1,7 @@
- #!/usr/bin/env python
- # showresults.py - redisplay results from nfsv4 server tester output file
- #
--# Requires python 2.7
-+# Requires python 3.2
- # 
- # Written by Fred Isaman <iisaman@citi.umich.edu>
- # Copyright (C) 2004 University of Michigan, Center for 
+    rds: convert get_user_pages() --> pin_user_pages()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10e3d84a100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=12e3d84a100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e3d84a100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com
+Fixes: dbfe7d74376e ("rds: convert get_user_pages() --> pin_user_pages()")
+
+RBP: 0000000000000004 R08: 0000000020000000 R09: 00007ffcb8e40031
+R10: 0000000020c35fff R11: 0000000000000246 R12: 0000000000401e40
+R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 7038 Comm: syz-executor593 Not tainted 5.7.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:unpin_user_pages+0x38/0x80 mm/gup.c:338
+Code: 56 d3 ff 31 ff 4c 89 e6 e8 a5 57 d3 ff 4d 85 e4 74 3f 49 bd 00 00 00 00 00 fc ff df 31 ed e8 ff 55 d3 ff 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 75 2b 48 8b 3b 48 83 c5 01 48 83 c3 08 e8 51 f8 ff
+RSP: 0018:ffffc90002537cc8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff819fdc9b
+RDX: 0000000000000000 RSI: ffffffff819fdcb1 RDI: 0000000000000007
+RBP: 0000000000000000 R08: ffff88809ff6e0c0 R09: ffffed1015ce7164
+R10: ffff8880ae738b1b R11: ffffed1015ce7163 R12: 0000000000000011
+R13: dffffc0000000000 R14: 0000000000000011 R15: 0000000020c35fff
+FS:  0000000000d95880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6870abd000 CR3: 000000009a8e7000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ rds_info_getsockopt+0x291/0x410 net/rds/info.c:237
+ rds_getsockopt+0x172/0x2d0 net/rds/af_rds.c:502
+ __sys_getsockopt+0x14b/0x2e0 net/socket.c:2172
+ __do_sys_getsockopt net/socket.c:2187 [inline]
+ __se_sys_getsockopt net/socket.c:2184 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2184
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x440559
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 14 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffcb8e48ea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00007ffcb8e48eb0 RCX: 0000000000440559
+RDX: 0000000000002710 RSI: 0000000000000114 RDI: 0000000000000003
+RBP: 0000000000000004 R08: 0000000020000000 R09: 00007ffcb8e40031
+R10: 0000000020c35fff R11: 0000000000000246 R12: 0000000000401e40
+R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace c9d832ffc8da59ec ]---
+RIP: 0010:unpin_user_pages+0x38/0x80 mm/gup.c:338
+Code: 56 d3 ff 31 ff 4c 89 e6 e8 a5 57 d3 ff 4d 85 e4 74 3f 49 bd 00 00 00 00 00 fc ff df 31 ed e8 ff 55 d3 ff 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 75 2b 48 8b 3b 48 83 c5 01 48 83 c3 08 e8 51 f8 ff
+RSP: 0018:ffffc90002537cc8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff819fdc9b
+RDX: 0000000000000000 RSI: ffffffff819fdcb1 RDI: 0000000000000007
+RBP: 0000000000000000 R08: ffff88809ff6e0c0 R09: ffffed1015ce7164
+R10: ffff8880ae738b1b R11: ffffed1015ce7163 R12: 0000000000000011
+R13: dffffc0000000000 R14: 0000000000000011 R15: 0000000020c35fff
+FS:  0000000000d95880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbc58039178 CR3: 000000009a8e7000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
