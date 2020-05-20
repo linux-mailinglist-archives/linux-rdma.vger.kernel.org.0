@@ -2,139 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BB31DB3AF
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761181DB436
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 14:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgETMhg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 08:37:36 -0400
-Received: from mail-am6eur05on2059.outbound.protection.outlook.com ([40.107.22.59]:64224
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726224AbgETMhd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 May 2020 08:37:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ECmlOBzdmcAmJtxWQQZ8fkFTSDU3MHxxJcS+K0vNee8S2i9yyZWcUvDhxBJ1EBobrdTO4EgAgvsdWU/Pbwu4hE1qhXJLNDXDAMWuQdO3mPxYrR7gUk8tFSS9jdYDHqm5+F2s2Xl3YbOoKe42psyZ5tWjSNRO2U0cI/P0se9SfDL8F4kua+hE7/KFQmkBNwCYIBwEUARgSHbC8qGtBSoTdFCqHTd0iaPkwAlQH0g9znt9V7cEg/6I3iuRVXEciHj/7L8vwLBnIoKCeoPsjAIX8sAifG61E2KQ7+jd+3qneNamBfODs9uKdYP+DFt8IHpv+5jBn7qrl0SqX6i36soZ2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JMCb91jfio1s4snBJWA8lNBqXU9myTBhHPqDJkaLqpY=;
- b=LvgwlaYcZf94OywIYlOzwyZnUdU7fgqjXFTK9txfPVbVODF2SQZZ2mJG/X3XP5Bs7GrriRcF9JSpaD/PAQUlP8zteCgJ2yNSZAFASyivEJIesIB84f723tNGCgXfxWVrIopMduk1UKmz7Dm8d2iEpDghhAmPemdq6RSZSAOF7y9IdqQ1DyjxQ5p1jF9tq4l0dY3eDdCNnR6vJgIuzEwofH2mTgw2/hAZ8DlCUKyFhbSZRZuub3DVFsz/V2LwFqMYQjBpYFROVMcE+t7EyHKKVHYs5/x96R25qYpQ0sGTRgyyWwn0OZHiHrhfxUxdH0/qI0nzPSUvYBNl3bfJKFLfxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JMCb91jfio1s4snBJWA8lNBqXU9myTBhHPqDJkaLqpY=;
- b=RXfb/ICE1oRDM7KwnUiwSXzPX32254AeQ5e1ZcG9m0WGsJ6+4SWO9P3VnY4/NiXag8ZOy8XejWZtyxuQY1eCwaoJBXDj5Q/8WIY0Uzt+Exs85soBY+dRC177pZwIEkkJlyh2tK89GKycw2mzLJBjR/S/foWvftxziPmxtIlEY2Q=
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB4862.eurprd05.prod.outlook.com (2603:10a6:803:61::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Wed, 20 May
- 2020 12:37:30 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 12:37:30 +0000
-Date:   Wed, 20 May 2020 09:37:26 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        dledford@redhat.com, davem@davemloft.net,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com, poswald@suse.com,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [RDMA RFC v6 14/16] RDMA/irdma: Add ABI definitions
-Message-ID: <20200520123726.GD24561@mellanox.com>
-References: <20200520070415.3392210-1-jeffrey.t.kirsher@intel.com>
- <20200520070415.3392210-15-jeffrey.t.kirsher@intel.com>
- <34ea2c1d-538c-bcb7-b312-62524f31a8dd@amazon.com>
- <20200520085228.GF2837844@kroah.com>
- <a0240054-7a5c-5698-d213-b2070756c846@amazon.com>
+        id S1726566AbgETMyk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 08:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgETMyj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 08:54:39 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AE1C061A0E
+        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2020 05:54:38 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id ee19so1213903qvb.11
+        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2020 05:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LhyHeyAm+9m4HfkQWcbuv4oOoc3dEWc7U4EmNHbG8rY=;
+        b=O7DAnPcIpe9Pp+CbrHjZtI7FxwzQR9mRoVeZrhoed4+0OczRVGs5jgil2g/MBlLyVF
+         /i/BIg3lCSU+X2Qj5MI9NfVhQE7dA+/tt90fh8oo3dWBB/ByATqqYqwP1AjHL6oCli4L
+         xScJC0nnHitfhgLIlUj4ddXBT2G/9kavhl0jkRjHJV2ffj+PCqZ4EhcpA0r2/8u9KdVz
+         7/DgKE37XSr4qnkDx4H5UlAhACDEELR4b3t0ev8LY7j8UfHFcoYPBYt0EWP5u2Uhgp5D
+         aZ257noNz9DQ8c+bqxwWiZDnht2Po4eVVweEKYZEUs8As4zK03VWxEZXu27zoHe2Karq
+         +9FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LhyHeyAm+9m4HfkQWcbuv4oOoc3dEWc7U4EmNHbG8rY=;
+        b=SUJLqgJr4mkyNFRh2TotS6/9+CiT17NNWZnQ60fbN7v6hNX10BBYEGQj6SPuU35WBg
+         YBCxgqNTj6FhUdRHVBfX5VrPaRPlhqDvzo9CL9xt58DbZdlaUn5zo26Tp7St6+GF1IWw
+         UrqkcJ5k6ZSYFAbMIgQ0XrOUl3pJl2d9t1bour0w+2TnSW/FnrZlSd3IqXbDZfLQqUoa
+         +MpD4yljKJ6055vXL39nIzDdnj60Q8Z9qelOwkUhI4jBailgRbSDcIZOvGhT0RttVhSe
+         YXXprJqSaq0y/bYEbpQuS5Icpmcj84FOdg31CmmKlADugOtFAfpzI9z1w1WxhAbgZAKa
+         lENg==
+X-Gm-Message-State: AOAM532vwXcyS9Cnp3ZKjJu1FduyjzEFV9vG+nVjenjn958zILGw/sau
+        u4DIhIRvYkhAfwJkYqM/uBNEtbQfsSc=
+X-Google-Smtp-Source: ABdhPJzY2k/OQktCjNAMtYKx2gTXP65mUS+djUzPv/mchRiFOk2Soe/Jv4V5FRWI5F3VisQGUkDy7g==
+X-Received: by 2002:a0c:ba99:: with SMTP id x25mr4675499qvf.119.1589979278178;
+        Wed, 20 May 2020 05:54:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t195sm901007qke.110.2020.05.20.05.54.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 May 2020 05:54:37 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jbOF3-000690-8a; Wed, 20 May 2020 09:54:37 -0300
+Date:   Wed, 20 May 2020 09:54:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com,
+        pierre-louis.bossart@linux.intel.com,
+        Fred Oh <fred.oh@linux.intel.com>
+Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
+ client
+Message-ID: <20200520125437.GH31189@ziepe.ca>
+References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
+ <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a0240054-7a5c-5698-d213-b2070756c846@amazon.com>
+In-Reply-To: <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR18CA0029.namprd18.prod.outlook.com
- (2603:10b6:208:23c::34) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR18CA0029.namprd18.prod.outlook.com (2603:10b6:208:23c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26 via Frontend Transport; Wed, 20 May 2020 12:37:29 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jbNyQ-0005pp-HJ; Wed, 20 May 2020 09:37:26 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f1b510e8-b200-481d-aca3-08d7fcba8f87
-X-MS-TrafficTypeDiagnostic: VI1PR05MB4862:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB4862C8B405BE6424B9CDBEC1CFB60@VI1PR05MB4862.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 04097B7F7F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b0mOIo+lvROjB4lqEa3xefgJtOZWqmVJdm1Qa2qN7mbdKjFPahKSyNE84Y+LWZzqJl1/EBjnYBbsU+o2adN1Y3XJccf45ZUObT1dt4C3+BLD8fH+ply7pcUBZwVff4wnGl3ZWVCCSYNFVNPeETK9Wm0GUkZKBDiQJgMY7jNXjc9gp1uyvOZxnV4qZwR37e8V04E3t9F6IpfI14ykjiWIky+LFOcmiY9SQnxzxO4MZ57s9pIJ9HwTQdFuI9jQDBNFsxSiUC3er4eANmgygEI8CNE9mQ7BySmnQv7QZ1d153FH37V45upmugqZ+ob2pT9KwrIT3IGGeZqiGaUl9UR0rZyKPLqD1QyVp1zR6SddQi32CXqx5YV1sSqf1UP2PWOo5dlEFgJbMVYA9+IrGS919TlpuhvVrd1xktZf+dvpc1vPu/ZOIT2yRRtUyldnpr0t/mnyYJJ7vJ1e1KDMyJmvcC6efKT0qxNRo+tZagOHbcEsQ2GWVYRimZGLSBqaoT0u
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(366004)(9786002)(66476007)(66556008)(9746002)(66946007)(316002)(2616005)(8676002)(478600001)(52116002)(86362001)(6916009)(4326008)(33656002)(53546011)(5660300002)(7416002)(36756003)(8936002)(1076003)(2906002)(54906003)(186003)(26005)(24400500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: aseLHBwZX41P2WQtwRjfglwn+BRuI9tI9XxzGq9w1rFUcXKjJIwYlb62K3eUYThhJaW7KAFu/luWzAL4VdI1u3FMGVFw+ATowePTAHl7ppyXH7Cuk2TUZhxZpJnSe2ADZQPPWMzLA3hECTaX9ZzHtNL6BE8qtV6zmrloGAEPGct1E1/5YRzlj+40F6Rj40LLhI8N2ndGVa0it3T8QCBpGTqKWuh9XzYqnsdpGsTXaoGjGm8QYwJH5sS0oKCZ+NH8XLIrw6zlYRpBF5AH4KvCtQuFo1tgosEGx6wlWGJ6N1wH+ccdeOPC7jjeOQA/SToJ7LyqIl+60rTrX+3FJFE5y2nkLrIr7wYTFtFkrmgojlPyK2UJrltG5qWaZLegWTElx9cT0WuQHev/Yt2jXqvHbH4rI9ky3L8Wg0bMdNYuWZ2CqahFGYb24KMr/EbVlo0apD/cvANlwhaJCvQPm7cGvi8uPmdIKGV3+HMSfclPTzs=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1b510e8-b200-481d-aca3-08d7fcba8f87
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 12:37:30.0683
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: go4OKJrB57a08WbhKXsMfJeaD2P8uGuGgw+0N2w34JrY2zGOiOpeH0+kuol7xbFlOrM/OFiEfX3K+hhbtnqqjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4862
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:02:35PM +0300, Gal Pressman wrote:
-> On 20/05/2020 11:52, Greg KH wrote:
-> > On Wed, May 20, 2020 at 10:54:25AM +0300, Gal Pressman wrote:
-> >> On 20/05/2020 10:04, Jeff Kirsher wrote:
-> >>> +struct i40iw_create_qp_resp {
-> >>> +   __u32 qp_id;
-> >>> +   __u32 actual_sq_size;
-> >>> +   __u32 actual_rq_size;
-> >>> +   __u32 i40iw_drv_opt;
-> >>> +   __u16 push_idx;
-> >>> +   __u8 lsmm;
-> >>> +   __u8 rsvd;
-> >>> +};
-> >>
-> >> This struct size should be 8 bytes aligned.
-> > 
-> > Aligned in what way?  Seems sane to me, what would you want it to look
-> > like instead?
+On Wed, May 20, 2020 at 12:02:25AM -0700, Jeff Kirsher wrote:
+> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > 
-> The uverbs ABI structs sizes are assumed to be padded to 8 bytes alignment, I
-> would expect the reserved field to be an array of 5 bytes as done in other
-> structs in this file (irdma_modify_qp_req for example).
-> Jason could correct me if I'm wrong?
+> A client in the SOF (Sound Open Firmware) context is a
+> device that needs to communicate with the DSP via IPC
+> messages. The SOF core is responsible for serializing the
+> IPC messages to the DSP from the different clients. One
+> example of an SOF client would be an IPC test client that
+> floods the DSP with test IPC messages to validate if the
+> serialization works as expected. Multi-client support will
+> also add the ability to split the existing audio cards
+> into multiple ones, so as to e.g. to deal with HDMI with a
+> dedicated client instead of adding HDMI to all cards.
+> 
+> This patch introduces descriptors for SOF client driver
+> and SOF client device along with APIs for registering
+> and unregistering a SOF client driver, sending IPCs from
+> a client device and accessing the SOF core debugfs root entry.
+> 
+> Along with this, add a couple of new members to struct
+> snd_sof_dev that will be used for maintaining the list of
+> clients.
 
-"it is complicated"
+If you want to use sound as the rational for virtual bus then drop the
+networking stuff and present a complete device/driver pairing based on
+this sound stuff instead.
 
-The udata structs must have alignment that is compatible with the core
-struct that prefixes them. Of course we have a mess here, and nothing
-is uniform.. 
+> +int sof_client_dev_register(struct snd_sof_dev *sdev,
+> +			    const char *name)
+> +{
+> +	struct sof_client_dev *cdev;
+> +	struct virtbus_device *vdev;
+> +	unsigned long time, timeout;
+> +	int ret;
+> +
+> +	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
+> +	if (!cdev)
+> +		return -ENOMEM;
+> +
+> +	cdev->sdev = sdev;
+> +	init_completion(&cdev->probe_complete);
+> +	vdev = &cdev->vdev;
+> +	vdev->match_name = name;
+> +	vdev->dev.parent = sdev->dev;
+> +	vdev->release = sof_client_virtdev_release;
+> +
+> +	/*
+> +	 * Register virtbus device for the client.
+> +	 * The error path in virtbus_register_device() calls put_device(),
+> +	 * which will free cdev in the release callback.
+> +	 */
+> +	ret = virtbus_register_device(vdev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* make sure the probe is complete before updating client list */
+> +	timeout = msecs_to_jiffies(SOF_CLIENT_PROBE_TIMEOUT_MS);
+> +	time = wait_for_completion_timeout(&cdev->probe_complete, timeout);
 
-In this case struct ib_uverbs_create_qp_resp has a '__u32
-driver_data[0]' aligned to 8 bytes thus the alignment of this struct
-can be 4 or 8.
+This seems bonkers - the whole point of something like virtual bus is
+to avoid madness like this.
 
-I generally don't recommend relying on this weird side effect, and
-encourage explicit padding when possible, but since the intent of this
-new driver is to be ABI compatible with the old driver, it should be
-kept the same.
+> +	if (!time) {
+> +		dev_err(sdev->dev, "error: probe of virtbus dev %s timed out\n",
+> +			name);
+> +		virtbus_unregister_device(vdev);
 
-The userspace has a number of static_asserts which are designed to
-automatically check these various cases. I assume Intel has revised
-the userspace to use the new struct names and tested it..
+Unregister does kfree? In general I've found that to be a bad idea,
+many drivers need to free up resources after unregistering from their
+subsystem.
+
+> +#define virtbus_dev_to_sof_client_dev(virtbus_dev) \
+> +	container_of(virtbus_dev, struct sof_client_dev, vdev)
+
+Use static inline
 
 Jason
-
