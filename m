@@ -2,161 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17C11DB108
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 13:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF851DB299
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 14:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgETLIH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 07:08:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13228 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgETLIG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 May 2020 07:08:06 -0400
-IronPort-SDR: Mt1B8oiSAnkHKDdy+eDtqSeCpqZ5a4Y4gqmbgJ75yk7cZ84dORPF4wRyOZ701c7K4cJq7GZ7UH
- ow8/E7yiwWQQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 04:08:05 -0700
-IronPort-SDR: QEbYhe/G0CwJSICRZSrL0CKehCBbpgtnzv/y6ZcjfV+NoiK4vzQKofFVHja9i3h4o8clF6g9p6
- rAhJAb28HhIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="466347503"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by fmsmga005.fm.intel.com with ESMTP; 20 May 2020 04:08:05 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 20 May 2020 04:08:05 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 May 2020 04:08:05 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 20 May 2020 04:08:05 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Wed, 20 May 2020 04:08:04 -0700
+        id S1726596AbgETMCG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 08:02:06 -0400
+Received: from mail-eopbgr20063.outbound.protection.outlook.com ([40.107.2.63]:6305
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726548AbgETMCF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 May 2020 08:02:05 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bTMmPQHgzsDYEeMEGE4tDrqUN7ZjIw2rOyuXHqzM1kiLMMYc6AU638QoDIT6WIEwCOzqO02JgkyxsoCvGB0VYcGSkecsnO2yFrkuC3A5eXtRa5T6sC8ggi3h7y0mD9ENB4uxLzvvC7rYSFtvHu3K/LqntrOhI72+ss3xnBLyOkiJ8T4z7656+KkNg39qIYmClr7Ix/BJLJQej6IHgM7wQYI/HPNkwXHWnVkKmctuyQPFrs/U6yeicsrYZXX+svoANvRhpC9pBaiDOVC8GTM2grsv/RtiY2UmPD4LqdXQJhdS7IbLUw0vqLNPm7j/FcIFFB0+tI24OJMAL3/T+GDhaA==
+ b=Hp6KhmZBjJRZ1G617q10WtrohSeelPBioRii+PmlmA+JM4vvEjCN0pfNT3npdXEAlwoCpw51+aEm0j3Cg6RUBKlQFuGOuNktDIxfV5Bvjyp5JjhjlleDqcKUMqoTSlI5QCpUE4lBm4c0KIabHf2Fq8cerlIFMZvVSGIcevbwnrwjDG14+9MU1kEqhInaXyuun4/nDDMtqYuYNRwA25hd0DkZFgQxisLaVGCHUNzn3UJ4xzyWNsmTn7WSTsjbV+WnolWA5+scQNfM9d41h3HhtUQI+rvZRO8dV+a5tX1EOrAHKxAAJCpiOuLM3MN5D3X09dfcSMk+KhU/X0AI0nITcQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u8jZegypNBg2fYQLMu+h1HSa0Hdm8V6MNWjkOtgY3ps=;
- b=IYLAaptvVkCEN+lBaxiqFpNsqVEPEXoxJnyhJC702wPdh2T7fibOFDB0Z4JZHZ1QpOzg59v+gTRSljDFiNj4A4PzOh1/yDSyGHGuitkpfsHcPxdW8ftkhkCXUhAO+1fZlEFo1UED4dkLxwZI2VtVF+kUI3AIwhwza5AuHrRhOdVDON81d6MjnoZeeY3cz3Jnym8pJ6w+L+G6biXrK/bk4kAc77OyW8SHO/4sxnh34MwuVCYZgZ1kmnmXdGFbuYBwPbWeZlGnBYNhm8l1RhPach/HpkJhc0jf/gC/rVUs0ZPlzyHjITQbqtiS09GR1WfapjqWmLGPxENSvgL94npeZQ==
+ bh=ikIxVh2/a2nZ71IgCx5xCzyjCGmZYJBcSibCX/4mNmY=;
+ b=CsxiJ7wWoNxh6et5zgXcj6NrxIlWaLFmabB/dDWGSGBG4w2DfMirXaxYrKaApbAb2JgDoHxKOYeIwtTtfORo8pi1Z+qopVbNtahiM+Y7dJURv+yo869vynIComN7Pxl8ENpo3AtQrh6QRqdPSLFOqYLNOhiSAkMa60i9U2XQzUsWEkGwdr4rFwoAB000JnlG7oMlReOerjxf7F/fuCKsE/VOibjDI9XCSt375VVTuooybuQp6hrclV/BciLKWs/QJKQbE11Ha/w66C5tcOOM0GCiNEBgiRqLaUnnI7Wp4W/WOM2rwzJj2KOGfakalhyXtGmH7XMwN9WDg55WV0Kyhw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u8jZegypNBg2fYQLMu+h1HSa0Hdm8V6MNWjkOtgY3ps=;
- b=hgIpPUf8XBYf0O85r6Z7Vx9jD97995bHcDMQG4S3nnOjC6g//IYTF7ZJrgqeLSYDbj/Xr63H3h5eyF6IZkkiG0za7wSzzPRvNxoLHxhZ4QkGzSRPdNrKe7hnHnLvHNgydgYiHIKlFco/VnO3ytayjWlx1sJRnRciXV9iTU1sHNI=
-Received: from MW3PR11MB4665.namprd11.prod.outlook.com (2603:10b6:303:5d::12)
- by MW3PR11MB4761.namprd11.prod.outlook.com (2603:10b6:303:53::15) with
+ bh=ikIxVh2/a2nZ71IgCx5xCzyjCGmZYJBcSibCX/4mNmY=;
+ b=f7rXv4ho6Y85ZtA0CL2uKrnBIzlIfXs09e/YY7cAdYCM0O0/HXJI66HbK0meohQQ4Bm3PElgDKUTq8oN4VwJQ+o7PmHCwpNKe2u/AoZHY4YaezyGGMUAQYUfiRZXKym+WZMMhr7kLwZ/7KuS7b8IITdgqZ+LNpq2ICSUsJZNIFM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=mellanox.com;
+Received: from DB3PR0502MB4011.eurprd05.prod.outlook.com (2603:10a6:8:9::11)
+ by DB3PR0502MB3945.eurprd05.prod.outlook.com (2603:10a6:8:3::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Wed, 20 May
- 2020 11:08:01 +0000
-Received: from MW3PR11MB4665.namprd11.prod.outlook.com
- ([fe80::4dbf:49cb:dc7a:5b3d]) by MW3PR11MB4665.namprd11.prod.outlook.com
- ([fe80::4dbf:49cb:dc7a:5b3d%7]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 11:08:01 +0000
-From:   "Wan, Kaike" <kaike.wan@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq when
- the device is shut down
-Thread-Topic: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq when
- the device is shut down
-Thread-Index: AQHWKAtYj9gYAc53PUOvXaZcprmNbqiwKosAgACxejA=
-Date:   Wed, 20 May 2020 11:08:01 +0000
-Message-ID: <MW3PR11MB46656C9E5A8EE58F229AE99CF4B60@MW3PR11MB4665.namprd11.prod.outlook.com>
-References: <20200512030622.189865.65024.stgit@awfm-01.aw.intel.com>
- <20200512031315.189865.15477.stgit@awfm-01.aw.intel.com>
- <20200520002634.GF31189@ziepe.ca>
-In-Reply-To: <20200520002634.GF31189@ziepe.ca>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Wed, 20 May
+ 2020 12:02:00 +0000
+Received: from DB3PR0502MB4011.eurprd05.prod.outlook.com
+ ([fe80::cce6:f0a5:7258:82e1]) by DB3PR0502MB4011.eurprd05.prod.outlook.com
+ ([fe80::cce6:f0a5:7258:82e1%6]) with mapi id 15.20.3000.034; Wed, 20 May 2020
+ 12:02:00 +0000
+Subject: Re: [PATCH V3 2/4] RDMA/core: Introduce shared CQ pool API
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+References: <1589892216-39283-1-git-send-email-yaminf@mellanox.com>
+ <1589892216-39283-3-git-send-email-yaminf@mellanox.com>
+ <CANjDDBgPQBOuBNQE=3PqsAtNgSzVbnDDt6wYNrS8iC-gAYzHJQ@mail.gmail.com>
+ <1e4eeb19-17a2-d281-24f1-fd79d34c7df2@mellanox.com>
+ <CANjDDBhenmz=k21BBhK91LwQ9OjgrdPUZx-Vvu2PvUpj0YvNAw@mail.gmail.com>
+From:   Yamin Friedman <yaminf@mellanox.com>
+Message-ID: <98c26ee4-742c-a6fc-bb1c-5134c3361dfd@mellanox.com>
+Date:   Wed, 20 May 2020 15:01:56 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+In-Reply-To: <CANjDDBhenmz=k21BBhK91LwQ9OjgrdPUZx-Vvu2PvUpj0YvNAw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [72.94.197.171]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: efc7532e-2692-4549-fca8-08d7fcae0f96
-x-ms-traffictypediagnostic: MW3PR11MB4761:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB4761EB84DB12E7D91BF9A3E4F4B60@MW3PR11MB4761.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 04097B7F7F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FV3whXdhbUVxC127XItwvvMmLXrl5DY2EQuaxOrBk3XI2AykH5j9zWRSkqBR4U78fN2SSIxkAMEydiOEPODjlxltFz5/jQFCOuHaG/qAG99o3N3PbMfnaUL5t3/wAkZfpX7ScTcpjPQ15mBpbyri7bcjMY6EiOHFWHAkz3pBDt51no5DXap3oNKk2NZ4qFB6eRlXeT5EvVcdUYtsT/ox88dCVADoSkawNw4byl3nw0rHfuZQvojfW2s7Px1JUVSkDQWf2V1oSigzwWnrehcXJHPCR7E+VauB6oWxDBXd0MkfDQUHt3t8dO38+ab4BhzK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4665.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(39860400002)(136003)(366004)(376002)(7696005)(2906002)(26005)(53546011)(316002)(8936002)(86362001)(8676002)(478600001)(55016002)(33656002)(9686003)(110136005)(4326008)(54906003)(5660300002)(6506007)(186003)(71200400001)(66946007)(66556008)(66446008)(64756008)(52536014)(66476007)(6636002)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: cmyIJRFwjYPNSDUeF271X6HBnbpOf3rOJXXNjDkuIcgMvxIqGPJtdSXdYYEgOoBH3dCoaysOrv/6/ZuPPO0XHOSzye5JodnrvgsQBekosyhseIeCYwluBLaCGxXn4AF70ApuLAjRVZLNhVc+8gDwScii8vX3pxv1sq8lltloUzIROLZYcUq3gc0lE2FEq6ZBMcBGYkqL6qRtIihZqRB6WxPLbh2oziQ64yMbw8oJJEe+jYQ/U4O3/mR9VBv6Jy11/9DvpTfRDkkTTP9cjf6GSopEzUTxRPuAXoLjIEToXYU7J1Kv5V0mqsMmkBc9uvj+IMXl58lesKyxkqXu0KhTSCnWoT6bMU6UyGdu59YMmtVg8sg8Zf5Apy8MELuktd9wk1a3eDz/JSdcOgbvAVG+bbx4B5d67r/80tUuGfBrdc4i3o+dWHIWYPe8u/cymDm6yesOhpizKghBQvZMpo4MvLaHf0hJk+jAMRICPa1a5vA=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: AM3PR03CA0056.eurprd03.prod.outlook.com
+ (2603:10a6:207:5::14) To DB3PR0502MB4011.eurprd05.prod.outlook.com
+ (2603:10a6:8:9::11)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: efc7532e-2692-4549-fca8-08d7fcae0f96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2020 11:08:01.1331
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.100.102.13] (93.172.45.15) by AM3PR03CA0056.eurprd03.prod.outlook.com (2603:10a6:207:5::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Wed, 20 May 2020 12:01:58 +0000
+X-Originating-IP: [93.172.45.15]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c005bf92-2225-4d9b-ce89-08d7fcb59a11
+X-MS-TrafficTypeDiagnostic: DB3PR0502MB3945:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB3PR0502MB39457F5C04ABD51A60E1D803B1B60@DB3PR0502MB3945.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04097B7F7F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iRkw18Bd8WGKe419tZzgEAxa1RoqzrTu4IS4IypAQ+RKwrEf5NFM81cny6wDYimdtGyvGHpD06nY5NBZnRwAX3yDZEhBL5esq4Ztaab1vYPehZfoXS/gkQWhKrOugIbs8SJdEVMHuc4FvdlsNFRKL0XQZItM2bYp899PadoBY2vi0o3Q/uOTvAulbrqco3j5W9GeZv+24aKMk4eC1hOsNUNu32UTPSNhEuMSvRMRTzljo1fNg88r9N9XdbuujVcwi6OFbrL2jc8DOBHwqjKT/8BVeEhnqUWh8xzRIrSZxCnci1H7KzNo4LakqeYIqFkMY6IUjH8BXm5gTE/Kg+7e3id+v0VG5Cav2PWL+DHL/UJvQhmDs5EXiGWs/GpqsdPc2rIRxlbSGv8TQ3KTaw8PjRDej1obqulQQPCFYHEZMpNXSkPixKxt5vpiB+xrjpPOnTRrOjxCHAK89ZzYJS8sfokq749HLaUhjfZlbNUHRISyJhSEkm89NPsEsbxf/epG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0502MB4011.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(478600001)(31696002)(6916009)(956004)(86362001)(4326008)(186003)(16576012)(16526019)(8936002)(2616005)(54906003)(36756003)(6486002)(53546011)(316002)(5660300002)(52116002)(66556008)(26005)(31686004)(2906002)(66476007)(66946007)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: b3v4HBYxUJdFvyVYlUmt3PP0YzT70VDBTGHKMdbLAUxHNqNMOvqy2IPb/+89/87g1TWA6mgN3LpzQjKmbumNZwxLg7JENYQ58msjNNlxlI+pOZrcwmj5G+CdSURLdxwS3Ya6Vy2MCuJ8VKxNOOVzCZN+iaqFiSqsloWOT6LkepwL5Xfg3zs6cvhgfAgYncpkiTcU6n2X+IbLGwksnqfLPrV2oZHXBKuj8x1kG2G+Nb63s3j6k++yyYKeMPYd4sokLa7xj9SdCVmdUDj70agOUOLAvjJy3H3TZ/CYuNJyAIQcQV01P6s5fga62xn9PlUhTigxR+KBma9odzBl6VJV7wUd2Fq8/qzjF+L9gs7izI4ZwdSDCX1Pj78dZMqHs9BtATnmbK8bTUwuZP3nD732Ycz0USpwtQGOp4z2aQHoZsxmmrpEnWwCBcBCIF6Cnm7MKxy7HINQ17tiLFxSzujtv3y3bOCv4EWvfkzsCCzEEa4=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c005bf92-2225-4d9b-ce89-08d7fcb59a11
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 12:02:00.2611
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xm0SWPdcq+AEzuIxpBJFbTkqf4l7pXjsi30Q+Gh+N1vzflc7iCJKgooQfvjE6TVa28CTgmAMnK73GpEcxazTug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4761
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b1qsJNW3ENkDlkT0nSc664yQRTseAgVya2deNMbkz3p7MYoQ5FXV8ugpKhqSDkRLelEoOfBFJeTbe9pmyzNBjw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0502MB3945
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+On 5/20/2020 1:50 PM, Devesh Sharma wrote:
+> On Wed, May 20, 2020 at 2:53 PM Yamin Friedman <yaminf@mellanox.com> wrote:
+>>
+>> On 5/20/2020 9:19 AM, Devesh Sharma wrote:
+>>>> +
+>>>> +static int ib_alloc_cqs(struct ib_device *dev, int nr_cqes,
+>>>> +                       enum ib_poll_context poll_ctx)
+>>>> +{
+>>>> +       LIST_HEAD(tmp_list);
+>>>> +       struct ib_cq *cq;
+>>>> +       unsigned long flags;
+>>>> +       int nr_cqs, ret, i;
+>>>> +
+>>>> +       /*
+>>>> +        * Allocated at least as many CQEs as requested, and otherwise
+>>>> +        * a reasonable batch size so that we can share CQs between
+>>>> +        * multiple users instead of allocating a larger number of CQs.
+>>>> +        */
+>>>> +       nr_cqes = min(dev->attrs.max_cqe, max(nr_cqes, IB_MAX_SHARED_CQ_SZ));
+>>>> +       nr_cqs = min_t(int, dev->num_comp_vectors, num_online_cpus());
+>>> No WARN() or return with failure as pointed by Leon and me. Has
+>>> anything else changes elsewhere?
+>> Hey Devesh,
+>>
+>> I am not sure what you are referring to, could you please clarify?
+>>
+> I thought on V2 Leon gave a comment "how this will work if
+> dev->num_comp_vectors" is 0.
+> there I had suggested to fail the pool creation and issue a
+> WARN_ONCE() or something.
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Tuesday, May 19, 2020 8:27 PM
-> To: Dalessandro, Dennis <dennis.dalessandro@intel.com>
-> Cc: dledford@redhat.com; linux-rdma@vger.kernel.org; Marciniszyn, Mike
-> <mike.marciniszyn@intel.com>; stable@vger.kernel.org; Wan, Kaike
-> <kaike.wan@intel.com>
-> Subject: Re: [PATCH for-rc or next 1/3] IB/hfi1: Do not destroy hfi1_wq w=
-hen
-> the device is shut down
->=20
-> On Mon, May 11, 2020 at 11:13:15PM -0400, Dennis Dalessandro wrote:
-> > From: Kaike Wan <kaike.wan@intel.com>
-> >
-> > The workqueue hfi1_wq is destroyed in function shutdown_device(),
-> > which is called by either shutdown_one() or remove_one(). The function
-> > shutdown_one() is called when the kernel is rebooted while
-> > remove_one() is called when the hfi1 driver is unloaded. When the
-> > kernel is rebooted, hfi1_wq is destroyed while all qps are still
-> > active, leading to a kernel crash:
->=20
-> AFAIK the purpose of shutdown is to stop all in progress DMAs.
->=20
-> If devices are wildly doing DMA during the shutdown process then all mann=
-er
-> of things can fail, including kexecing into another kernel.
->=20
-> Do you achive that with these shutdown handlers?
+I understood his comment to be regarding if the comp_vector itself is 0. 
+There should not be any issue with that case.
 
-We did try to shut down the hardware and will address some software issues =
-in next revision.
+As far as I am aware there must be a non-zero amount of comp_vectors for 
+the ib_dev otherwise we will not be able to get any indication for cqes. 
+I don't see any reason to add a special check here.
 
->=20
-> It does make sense that the work queue would not be destroyed in
-> shutdown, but I'm surprised it doesn't flush it?
-Will do.
+Thanks
 
-Kaike
+>>>> +       for (i = 0; i < nr_cqs; i++) {
+>>>> +               cq = ib_alloc_cq(dev, NULL, nr_cqes, i, poll_ctx);
+>>>> +               if (IS_ERR(cq)) {
+>>>> +                       ret = PTR_ERR(cq);
+>>>> +                       goto out_free_cqs;
+>>>> +               }
+>>>> +               cq->shared = true;
+>>>> +               list_add_tail(&cq->pool_entry, &tmp_list);
+>>>> +       }
+>>>> +
+>>>> +       spin_lock_irqsave(&dev->cq_pools_lock, flags);
+>>>> +       list_splice(&tmp_list, &dev->cq_pools[poll_ctx - 1]);
+>>>> +       spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
+>>>> +
+>>>> +       return 0;
+>>>> +
+>>>> +out_free_cqs:
+>>>> +       list_for_each_entry(cq, &tmp_list, pool_entry) {
+>>>> +               cq->shared = false;
+>>>> +               ib_free_cq(cq);
+>>>> +       }
+>>>> +       return ret;
+>>>> +}
+>>>> +
+>>>>
