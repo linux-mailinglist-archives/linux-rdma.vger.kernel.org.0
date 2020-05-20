@@ -2,140 +2,216 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41E11DBC63
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 20:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00B31DBCFA
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 20:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgETSMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 14:12:18 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:55248 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgETSMR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 14:12:17 -0400
-Received: by mail-il1-f197.google.com with SMTP id j69so3395977ila.21
-        for <linux-rdma@vger.kernel.org>; Wed, 20 May 2020 11:12:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+ftmxr79gDcB9k8pr/AIQ9vrfM5009Yqd32Ubdl2t9g=;
-        b=atMCfX0GsUs4nhbQjHYMDlPhdglqvFosK+sS7zP0vIf0LiOr5AkXs2YRyiNy9ukr6R
-         WUWoG4S1KyEik74J3QvKLH9bz6X9jUmcrEUe4IafLo2cqnCSHb3lIADHRIh02g94DrAA
-         FAcwRzvfuU3JaC02KjPIGYes5ncDXVTXdbbzbNFCOlxTQjBJ0JGd1uuNtNZmpj9LLMEZ
-         j7J2M0D+SEZK7bqGvqw74OYZMfRATf8iwfAf32qBz7RC0GZhisxpRe94M/LSAW9uqB0P
-         6THwEHx0223ZpooGkRAmsuLd5NPMfNGml/0Pe7STN3roQ4WW289T4+FTmz4sUhi21m8P
-         btXQ==
-X-Gm-Message-State: AOAM530iuZyLtbomB+8PDkoUVknCaFxTniSAt6FK8EypKuDogg4M9/7r
-        QixJcV1mVSzU3CUO110AnHFJjOSRkxNRX1Nzb9QX9b4jFztT
-X-Google-Smtp-Source: ABdhPJzXSZ/EqbcKubHsOn2N59N7VYkouBS+q85pvXnoAF9hczJOPQFJMSNbnH6SCiHnOONuuEfDC4j+bzVTnG4BgLqkvmmC/T2T
+        id S1726548AbgETShC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 14:37:02 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13139 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgETShB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 14:37:01 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec5787e0001>; Wed, 20 May 2020 11:35:42 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 20 May 2020 11:37:01 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 20 May 2020 11:37:01 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 May
+ 2020 18:36:58 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 20 May 2020 18:36:58 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec578c90005>; Wed, 20 May 2020 11:36:57 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Ben Skeggs" <bskeggs@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH] nouveau/hmm: fix migrate zero page to GPU
+Date:   Wed, 20 May 2020 11:36:52 -0700
+Message-ID: <20200520183652.21633-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr4594960iow.70.1589998335872;
- Wed, 20 May 2020 11:12:15 -0700 (PDT)
-Date:   Wed, 20 May 2020 11:12:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000000d71e05a6185662@google.com>
-Subject: general protection fault in unpin_user_pages
-From:   syzbot <syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, davem@davemloft.net,
-        jhubbard@nvidia.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589999742; bh=qnRRPm8US23d/hFk1NYbhQ7k/2eulBbsURi/MjGsi3Q=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=P6YVFEYpA241+7WHmIB7wmBoS+Y2AIkvac9gi6/5dug0MvAFiHSAmAbj/yM4zbrK4
+         I7H7eoCVLxoKOeEZ6DmCDPV0/Gycuai/nF72W9V+Ts1W1zwiqaiVZA6qBToKYvXGfP
+         t7gZlJafbWJgkgkj6x+jteZSD7orpinSfLRfm3HeI/QjyS3X6XuilImjWLvcS63BHh
+         IOUKKa43+VYpxsVMrVNHibTQ6UP9fGpYauRIycYpWnDhUeeycyAD615NOh3Zt9+xlf
+         2J3ofDPoxn130Q/HwgWQOMxNBjlWwgzpzsw5edXKvRoMIW8EVZnkCdcBkXNz4o9bGV
+         MANaeyPAkhiaQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+When calling OpenCL clEnqueueSVMMigrateMem() on a region of memory that
+is backed by pte_none() or zero pages, migrate_vma_setup() will fill the
+source PFN array with an entry indicating the source page is zero.
+Use this to optimize migration to device private memory by allocating
+GPU memory and zero filling it instead of failing to migrate the page.
 
-syzbot found the following crash on:
-
-HEAD commit:    dbfe7d74 rds: convert get_user_pages() --> pin_user_pages()
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10218e6e100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3df83be5e281f34b
-dashboard link: https://syzkaller.appspot.com/bug?extid=118ac0af4ac7f785a45b
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=117ca33a100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a9044a100000
-
-The bug was bisected to:
-
-commit dbfe7d74376e187f3c6eaff822e85176bc2cd06e
-Author: John Hubbard <jhubbard@nvidia.com>
-Date:   Sun May 17 01:23:36 2020 +0000
-
-    rds: convert get_user_pages() --> pin_user_pages()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10e3d84a100000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=12e3d84a100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e3d84a100000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com
-Fixes: dbfe7d74376e ("rds: convert get_user_pages() --> pin_user_pages()")
-
-RBP: 0000000000000004 R08: 0000000020000000 R09: 00007ffcb8e40031
-R10: 0000000020c35fff R11: 0000000000000246 R12: 0000000000401e40
-R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 7038 Comm: syz-executor593 Not tainted 5.7.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:unpin_user_pages+0x38/0x80 mm/gup.c:338
-Code: 56 d3 ff 31 ff 4c 89 e6 e8 a5 57 d3 ff 4d 85 e4 74 3f 49 bd 00 00 00 00 00 fc ff df 31 ed e8 ff 55 d3 ff 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 75 2b 48 8b 3b 48 83 c5 01 48 83 c3 08 e8 51 f8 ff
-RSP: 0018:ffffc90002537cc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff819fdc9b
-RDX: 0000000000000000 RSI: ffffffff819fdcb1 RDI: 0000000000000007
-RBP: 0000000000000000 R08: ffff88809ff6e0c0 R09: ffffed1015ce7164
-R10: ffff8880ae738b1b R11: ffffed1015ce7163 R12: 0000000000000011
-R13: dffffc0000000000 R14: 0000000000000011 R15: 0000000020c35fff
-FS:  0000000000d95880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6870abd000 CR3: 000000009a8e7000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rds_info_getsockopt+0x291/0x410 net/rds/info.c:237
- rds_getsockopt+0x172/0x2d0 net/rds/af_rds.c:502
- __sys_getsockopt+0x14b/0x2e0 net/socket.c:2172
- __do_sys_getsockopt net/socket.c:2187 [inline]
- __se_sys_getsockopt net/socket.c:2184 [inline]
- __x64_sys_getsockopt+0xba/0x150 net/socket.c:2184
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x440559
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 14 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcb8e48ea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
-RAX: ffffffffffffffda RBX: 00007ffcb8e48eb0 RCX: 0000000000440559
-RDX: 0000000000002710 RSI: 0000000000000114 RDI: 0000000000000003
-RBP: 0000000000000004 R08: 0000000020000000 R09: 00007ffcb8e40031
-R10: 0000000020c35fff R11: 0000000000000246 R12: 0000000000401e40
-R13: 0000000000401ed0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace c9d832ffc8da59ec ]---
-RIP: 0010:unpin_user_pages+0x38/0x80 mm/gup.c:338
-Code: 56 d3 ff 31 ff 4c 89 e6 e8 a5 57 d3 ff 4d 85 e4 74 3f 49 bd 00 00 00 00 00 fc ff df 31 ed e8 ff 55 d3 ff 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 75 2b 48 8b 3b 48 83 c5 01 48 83 c3 08 e8 51 f8 ff
-RSP: 0018:ffffc90002537cc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff819fdc9b
-RDX: 0000000000000000 RSI: ffffffff819fdcb1 RDI: 0000000000000007
-RBP: 0000000000000000 R08: ffff88809ff6e0c0 R09: ffffed1015ce7164
-R10: ffff8880ae738b1b R11: ffffed1015ce7163 R12: 0000000000000011
-R13: dffffc0000000000 R14: 0000000000000011 R15: 0000000020c35fff
-FS:  0000000000d95880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbc58039178 CR3: 000000009a8e7000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+This patch applies cleanly to Jason's Gunthorpe's hmm tree plus two
+patches I posted earlier. The first is queued in Ben Skegg's nouveau
+tree and the second is still pending review/not queued.
+[1] ("nouveau/hmm: map pages after migration")
+https://lore.kernel.org/linux-mm/20200304001339.8248-5-rcampbell@nvidia.com=
+/
+[2] ("nouveau/hmm: fix nouveau_dmem_chunk allocations")
+https://lore.kernel.org/lkml/20200421231107.30958-1-rcampbell@nvidia.com/
+
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 75 ++++++++++++++++++++++----
+ 1 file changed, 66 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouve=
+au/nouveau_dmem.c
+index cbc71567f9a5..e5c230d9ae24 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+@@ -56,6 +56,8 @@ enum nouveau_aper {
+ typedef int (*nouveau_migrate_copy_t)(struct nouveau_drm *drm, u64 npages,
+ 				      enum nouveau_aper, u64 dst_addr,
+ 				      enum nouveau_aper, u64 src_addr);
++typedef int (*nouveau_clear_page_t)(struct nouveau_drm *drm, u32 length,
++				      enum nouveau_aper, u64 dst_addr);
+=20
+ struct nouveau_dmem_chunk {
+ 	struct list_head list;
+@@ -67,6 +69,7 @@ struct nouveau_dmem_chunk {
+=20
+ struct nouveau_dmem_migrate {
+ 	nouveau_migrate_copy_t copy_func;
++	nouveau_clear_page_t clear_func;
+ 	struct nouveau_channel *chan;
+ };
+=20
+@@ -436,6 +439,52 @@ nvc0b5_migrate_copy(struct nouveau_drm *drm, u64 npage=
+s,
+ 	return 0;
+ }
+=20
++static int
++nvc0b5_migrate_clear(struct nouveau_drm *drm, u32 length,
++		     enum nouveau_aper dst_aper, u64 dst_addr)
++{
++	struct nouveau_channel *chan =3D drm->dmem->migrate.chan;
++	u32 launch_dma =3D (1 << 10) /* REMAP_ENABLE_TRUE */ |
++			 (1 << 8) /* DST_MEMORY_LAYOUT_PITCH. */ |
++			 (1 << 7) /* SRC_MEMORY_LAYOUT_PITCH. */ |
++			 (1 << 2) /* FLUSH_ENABLE_TRUE. */ |
++			 (2 << 0) /* DATA_TRANSFER_TYPE_NON_PIPELINED. */;
++	u32 remap =3D (4 <<  0) /* DST_X_CONST_A */ |
++		    (5 <<  4) /* DST_Y_CONST_B */ |
++		    (3 << 16) /* COMPONENT_SIZE_FOUR */ |
++		    (1 << 24) /* NUM_DST_COMPONENTS_TWO */;
++	int ret;
++
++	ret =3D RING_SPACE(chan, 12);
++	if (ret)
++		return ret;
++
++	switch (dst_aper) {
++	case NOUVEAU_APER_VRAM:
++		BEGIN_IMC0(chan, NvSubCopy, 0x0264, 0);
++			break;
++	case NOUVEAU_APER_HOST:
++		BEGIN_IMC0(chan, NvSubCopy, 0x0264, 1);
++		break;
++	default:
++		return -EINVAL;
++	}
++	launch_dma |=3D 0x00002000; /* DST_TYPE_PHYSICAL. */
++
++	BEGIN_NVC0(chan, NvSubCopy, 0x0700, 3);
++	OUT_RING(chan, 0);
++	OUT_RING(chan, 0);
++	OUT_RING(chan, remap);
++	BEGIN_NVC0(chan, NvSubCopy, 0x0408, 2);
++	OUT_RING(chan, upper_32_bits(dst_addr));
++	OUT_RING(chan, lower_32_bits(dst_addr));
++	BEGIN_NVC0(chan, NvSubCopy, 0x0418, 1);
++	OUT_RING(chan, length >> 3);
++	BEGIN_NVC0(chan, NvSubCopy, 0x0300, 1);
++	OUT_RING(chan, launch_dma);
++	return 0;
++}
++
+ static int
+ nouveau_dmem_migrate_init(struct nouveau_drm *drm)
+ {
+@@ -445,6 +494,7 @@ nouveau_dmem_migrate_init(struct nouveau_drm *drm)
+ 	case  VOLTA_DMA_COPY_A:
+ 	case TURING_DMA_COPY_A:
+ 		drm->dmem->migrate.copy_func =3D nvc0b5_migrate_copy;
++		drm->dmem->migrate.clear_func =3D nvc0b5_migrate_clear;
+ 		drm->dmem->migrate.chan =3D drm->ttm.chan;
+ 		return 0;
+ 	default:
+@@ -487,21 +537,28 @@ static unsigned long nouveau_dmem_migrate_copy_one(st=
+ruct nouveau_drm *drm,
+ 	unsigned long paddr;
+=20
+ 	spage =3D migrate_pfn_to_page(src);
+-	if (!spage || !(src & MIGRATE_PFN_MIGRATE))
++	if (!(src & MIGRATE_PFN_MIGRATE))
+ 		goto out;
+=20
+ 	dpage =3D nouveau_dmem_page_alloc_locked(drm);
+ 	if (!dpage)
+ 		goto out;
+=20
+-	*dma_addr =3D dma_map_page(dev, spage, 0, PAGE_SIZE, DMA_BIDIRECTIONAL);
+-	if (dma_mapping_error(dev, *dma_addr))
+-		goto out_free_page;
+-
+ 	paddr =3D nouveau_dmem_page_addr(dpage);
+-	if (drm->dmem->migrate.copy_func(drm, 1, NOUVEAU_APER_VRAM,
+-			paddr, NOUVEAU_APER_HOST, *dma_addr))
+-		goto out_dma_unmap;
++	if (spage) {
++		*dma_addr =3D dma_map_page(dev, spage, 0, page_size(spage),
++					 DMA_BIDIRECTIONAL);
++		if (dma_mapping_error(dev, *dma_addr))
++			goto out_free_page;
++		if (drm->dmem->migrate.copy_func(drm, page_size(spage),
++			NOUVEAU_APER_VRAM, paddr, NOUVEAU_APER_HOST, *dma_addr))
++			goto out_dma_unmap;
++	} else {
++		*dma_addr =3D DMA_MAPPING_ERROR;
++		if (drm->dmem->migrate.clear_func(drm, page_size(dpage),
++			NOUVEAU_APER_VRAM, paddr))
++			goto out_free_page;
++	}
+=20
+ 	*pfn =3D NVIF_VMM_PFNMAP_V0_V | NVIF_VMM_PFNMAP_V0_VRAM |
+ 		((paddr >> PAGE_SHIFT) << NVIF_VMM_PFNMAP_V0_ADDR_SHIFT);
+@@ -528,7 +585,7 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_d=
+rm *drm,
+ 	for (i =3D 0; addr < args->end; i++) {
+ 		args->dst[i] =3D nouveau_dmem_migrate_copy_one(drm, args->src[i],
+ 				dma_addrs + nr_dma, pfns + i);
+-		if (args->dst[i])
++		if (!dma_mapping_error(drm->dev->dev, dma_addrs[nr_dma]))
+ 			nr_dma++;
+ 		addr +=3D PAGE_SIZE;
+ 	}
+--=20
+2.20.1
+
