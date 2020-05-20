@@ -2,89 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE2D1DAE3F
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 11:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427081DAE48
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 11:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgETJCw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 05:02:52 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:2412 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgETJCw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 05:02:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589965372; x=1621501372;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=8cIcAxcp+Trh0U6FVJYZV8kWWba8qHeti+FQYohtJNA=;
-  b=e4BF0CG5+JQJu31SO1qRYHMCIBKmDV6KaxfexMi7VEkhP7aABcCPwd5P
-   73ofQD58lHKu8PlVByMZJGOIOQ+QvpHRTFW1LUf2CcRxSgNwXu3U2hh/J
-   pAancfLgjDao4vRXKE6+PwAlIiuZlv0r6YGKxi2ao47oRiJFlXnpZLMbd
-   4=;
-IronPort-SDR: dCmVcKib1nTJ+S+D12rGz69BOyHQnxFCHcUGjcA//3gGstdPGVboTRNZctCEuKvN/PZAIs/R09
- CZkqREn34kIg==
-X-IronPort-AV: E=Sophos;i="5.73,413,1583193600"; 
-   d="scan'208";a="36318333"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 May 2020 09:02:50 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id F15B2223539;
-        Wed, 20 May 2020 09:02:47 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 May 2020 09:02:47 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 May 2020 09:02:41 +0000
-Subject: Re: [RDMA RFC v6 14/16] RDMA/irdma: Add ABI definitions
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, <dledford@redhat.com>,
-        <jgg@mellanox.com>, <davem@davemloft.net>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <nhorman@redhat.com>, <sassmann@redhat.com>, <poswald@suse.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-References: <20200520070415.3392210-1-jeffrey.t.kirsher@intel.com>
- <20200520070415.3392210-15-jeffrey.t.kirsher@intel.com>
- <34ea2c1d-538c-bcb7-b312-62524f31a8dd@amazon.com>
- <20200520085228.GF2837844@kroah.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <a0240054-7a5c-5698-d213-b2070756c846@amazon.com>
-Date:   Wed, 20 May 2020 12:02:35 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1726486AbgETJEQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 05:04:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5110 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgETJEQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 May 2020 05:04:16 -0400
+IronPort-SDR: Dbo9DPz1sLfVMd7wiSGkJ6raeyoSDUIJnnzmBsr7zu5A7FLrVCD1ltGmYJF1q57KMAKymlbbNR
+ Mb/GR/a+CT9g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 02:04:15 -0700
+IronPort-SDR: S9e7qhJ6VpCfe/NB8PSRanUkzq54bAwa0qTg68uFHYZXa3KTsGYj+Dzxm8ecb0o2F6oW9rKidj
+ hmck4+EZ56yw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
+   d="scan'208";a="282622411"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 20 May 2020 02:04:14 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jbKe5-000Eir-MB; Wed, 20 May 2020 17:04:13 +0800
+Date:   Wed, 20 May 2020 17:03:15 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ bd25c8066fc2e0868228b3cb0563d6c1b65505b2
+Message-ID: <5ec4f253.XHU8ppGr/L0oFEhq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200520085228.GF2837844@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D05UWC004.ant.amazon.com (10.43.162.223) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 20/05/2020 11:52, Greg KH wrote:
-> On Wed, May 20, 2020 at 10:54:25AM +0300, Gal Pressman wrote:
->> On 20/05/2020 10:04, Jeff Kirsher wrote:
->>> +struct i40iw_create_qp_resp {
->>> +   __u32 qp_id;
->>> +   __u32 actual_sq_size;
->>> +   __u32 actual_rq_size;
->>> +   __u32 i40iw_drv_opt;
->>> +   __u16 push_idx;
->>> +   __u8 lsmm;
->>> +   __u8 rsvd;
->>> +};
->>
->> This struct size should be 8 bytes aligned.
-> 
-> Aligned in what way?  Seems sane to me, what would you want it to look
-> like instead?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: bd25c8066fc2e0868228b3cb0563d6c1b65505b2  RDMA/siw: Replace one-element array and use struct_size() helper
 
-The uverbs ABI structs sizes are assumed to be padded to 8 bytes alignment, I
-would expect the reserved field to be an array of 5 bytes as done in other
-structs in this file (irdma_modify_qp_req for example).
-Jason could correct me if I'm wrong?
+elapsed time: 480m
+
+configs tested: 98
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+mips                             allyesconfig
+m68k                             allyesconfig
+sparc                            allyesconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a006-20200519
+i386                 randconfig-a005-20200519
+i386                 randconfig-a001-20200519
+i386                 randconfig-a003-20200519
+i386                 randconfig-a004-20200519
+i386                 randconfig-a002-20200519
+i386                 randconfig-a012-20200519
+i386                 randconfig-a014-20200519
+i386                 randconfig-a016-20200519
+i386                 randconfig-a011-20200519
+i386                 randconfig-a015-20200519
+i386                 randconfig-a013-20200519
+x86_64               randconfig-a003-20200519
+x86_64               randconfig-a005-20200519
+x86_64               randconfig-a004-20200519
+x86_64               randconfig-a006-20200519
+x86_64               randconfig-a002-20200519
+x86_64               randconfig-a001-20200519
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
