@@ -2,126 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105241DBEF0
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 21:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8541B1DC0DE
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 23:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgETT5h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 15:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbgETT5P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 15:57:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BEEC061A0E;
-        Wed, 20 May 2020 12:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=jyyKSsv2ojCllyHR6oLPZbDWIQjSKqRL9iRFY8LVQRE=; b=eL+iZ/AUkTJIFFZXMSwHoGneON
-        zJJ1NeqUKJUTN+XZ+YXm8mTVN7Txrwu1Gg7XkE2Srm6yGK/RuXNS7Ili9ClBHEwqrRrtJoldNAgkP
-        Q496eI/2kvkExRHJ/CY36rhk/J2RxEB5WJ8ohluo/iBbAOgnuzGjM/nkv9M8dugc5PVDanmUGfXyQ
-        Qc+zVcyXwpHthxlOJQyWO4rDVd9GSOHiST7k6ZKisSXyDBJvJrDVrUe1KmJuP+c2G7wSi9ehhYxKS
-        QMTEF3YQ/vfSABacZbuuwH7F+qrL5jjbdwYKQMxaZyMxOKb22ANiCCHVZ0OMREzvwY/Lcshh6XMVj
-        uVa/SV0g==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbUpk-0003er-B6; Wed, 20 May 2020 19:56:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
-        netdev@vger.kernel.org, linux-sctp@vger.kernel.org,
-        ceph-devel@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH 33/33] net: remove kernel_setsockopt
-Date:   Wed, 20 May 2020 21:55:09 +0200
-Message-Id: <20200520195509.2215098-34-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520195509.2215098-1-hch@lst.de>
-References: <20200520195509.2215098-1-hch@lst.de>
+        id S1727830AbgETVFK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 17:05:10 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17456 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbgETVFK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 May 2020 17:05:10 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec59af60000>; Wed, 20 May 2020 14:02:46 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 20 May 2020 14:05:10 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 20 May 2020 14:05:10 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 May
+ 2020 21:05:09 +0000
+Subject: Re: [PATCH] nouveau/hmm: fix migrate zero page to GPU
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Ben Skeggs <bskeggs@redhat.com>
+References: <20200520183652.21633-1-rcampbell@nvidia.com>
+ <20200520192045.GH24561@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <0ef69e08-7f5d-7a3d-c657-55b3a8df1dfe@nvidia.com>
+Date:   Wed, 20 May 2020 14:05:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200520192045.GH24561@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590008566; bh=oNYfOayL5+NnABbnpFvMSS5jJdalJIc06Ghq09EUD4E=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=OXSTJKDHNXgUvcTtaCjRAbYfLocszE4i6M3tulp2GOmCgY+AtUmJn09EYEPdwMXak
+         qBNS1ru1cIpS5X+kjTGjaFfdmoHvtoZY5l3arAAiNRNiJI6/9fIRgnXyzXFfRNunfy
+         e7fys5XkFfg76pjban7f52m7QSu5jIJjzW6DyHYa19Z8otwsm6BAKxOEv4s6XnhwkR
+         sEElneYYy7Vr5vGMG9inFQ7oP1gdk7FgIeuEDL5HTIfhCmOQMRuqgDTQUQO22+9ASL
+         t2yLvPza0CZuQ4UjzRUItjyydP5yPzO8cb9kKfk3uINysnpUQ0GMWaSRYNUYgfph5z
+         qlsDmF8dXLmBA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-No users left.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/net.h |  2 --
- net/socket.c        | 31 -------------------------------
- 2 files changed, 33 deletions(-)
+On 5/20/20 12:20 PM, Jason Gunthorpe wrote:
+> On Wed, May 20, 2020 at 11:36:52AM -0700, Ralph Campbell wrote:
+>> When calling OpenCL clEnqueueSVMMigrateMem() on a region of memory that
+>> is backed by pte_none() or zero pages, migrate_vma_setup() will fill the
+>> source PFN array with an entry indicating the source page is zero.
+>> Use this to optimize migration to device private memory by allocating
+>> GPU memory and zero filling it instead of failing to migrate the page.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>>
+>> This patch applies cleanly to Jason's Gunthorpe's hmm tree plus two
+>> patches I posted earlier. The first is queued in Ben Skegg's nouveau
+>> tree and the second is still pending review/not queued.
+>> [1] ("nouveau/hmm: map pages after migration")
+>> https://lore.kernel.org/linux-mm/20200304001339.8248-5-rcampbell@nvidia.com/
+>> [2] ("nouveau/hmm: fix nouveau_dmem_chunk allocations")
+>> https://lore.kernel.org/lkml/20200421231107.30958-1-rcampbell@nvidia.com/
+> 
+> It would be best if it goes through Ben's tree if it doesn't have
+> conflicts with the hunks I have in the hmm tree.. Is it the case?
+> 
+> Jason
 
-diff --git a/include/linux/net.h b/include/linux/net.h
-index 74ef5d7315f70..e10f378194a59 100644
---- a/include/linux/net.h
-+++ b/include/linux/net.h
-@@ -303,8 +303,6 @@ int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
- 		   int flags);
- int kernel_getsockname(struct socket *sock, struct sockaddr *addr);
- int kernel_getpeername(struct socket *sock, struct sockaddr *addr);
--int kernel_setsockopt(struct socket *sock, int level, int optname, char *optval,
--		      unsigned int optlen);
- int kernel_sendpage(struct socket *sock, struct page *page, int offset,
- 		    size_t size, int flags);
- int kernel_sendpage_locked(struct sock *sk, struct page *page, int offset,
-diff --git a/net/socket.c b/net/socket.c
-index 81a98b6cbd087..976426d03f099 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -3624,37 +3624,6 @@ int kernel_getpeername(struct socket *sock, struct sockaddr *addr)
- }
- EXPORT_SYMBOL(kernel_getpeername);
- 
--/**
-- *	kernel_setsockopt - set a socket option (kernel space)
-- *	@sock: socket
-- *	@level: API level (SOL_SOCKET, ...)
-- *	@optname: option tag
-- *	@optval: option value
-- *	@optlen: option length
-- *
-- *	Returns 0 or an error.
-- */
--
--int kernel_setsockopt(struct socket *sock, int level, int optname,
--			char *optval, unsigned int optlen)
--{
--	mm_segment_t oldfs = get_fs();
--	char __user *uoptval;
--	int err;
--
--	uoptval = (char __user __force *) optval;
--
--	set_fs(KERNEL_DS);
--	if (level == SOL_SOCKET)
--		err = sock_setsockopt(sock, level, optname, uoptval, optlen);
--	else
--		err = sock->ops->setsockopt(sock, level, optname, uoptval,
--					    optlen);
--	set_fs(oldfs);
--	return err;
--}
--EXPORT_SYMBOL(kernel_setsockopt);
--
- /**
-  *	kernel_sendpage - send a &page through a socket (kernel space)
-  *	@sock: socket
--- 
-2.26.2
-
+I think there might be some merge conflicts even though it is semantically
+independent of the other changes. I guess since we are at 5.7-rc6 and not
+far from the merge window, I can rebase after 5.8-rc1 and resend.
+I posted this mostly to get some review and as a "heads up" of the issue.
