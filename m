@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DEA1DB5A9
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 15:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC101DB5B0
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 May 2020 15:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgETNxr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 May 2020 09:53:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56372 "EHLO huawei.com"
+        id S1726821AbgETNx6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 May 2020 09:53:58 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56380 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726801AbgETNxr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 May 2020 09:53:47 -0400
+        id S1726436AbgETNx6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 May 2020 09:53:58 -0400
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E3AEA9958A4A6F9104CB;
+        by Forcepoint Email with ESMTP id F1CB9BD4D83B06BECC4E;
         Wed, 20 May 2020 21:53:41 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-next 2/9] RDMA/hns: Add CQ flag instead of independent enable flag
-Date:   Wed, 20 May 2020 21:53:12 +0800
-Message-ID: <1589982799-28728-3-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next 3/9] RDMA/hns: Optimize post and poll process
+Date:   Wed, 20 May 2020 21:53:13 +0800
+Message-ID: <1589982799-28728-4-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1589982799-28728-1-git-send-email-liweihang@huawei.com>
 References: <1589982799-28728-1-git-send-email-liweihang@huawei.com>
@@ -38,97 +38,120 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Lang Cheng <chenglang@huawei.com>
 
-It's easier to understand and maintain enable flags of cq using a single
-field in type of u32 than defining a field for every flags in the structure
-hns_roce_cq, and we can add new flags for features more conveniently in the
-future.
+Add unlikely() and likely() to optimize main I/O process code.
 
 Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cq.c     | 10 +++++-----
- drivers/infiniband/hw/hns/hns_roce_device.h |  6 +++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  6 +++---
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index d2d7074..925fb77 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -186,8 +186,8 @@ static int alloc_cq_db(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
- 						   &hr_cq->db);
- 			if (err)
- 				return err;
--			hr_cq->db_en = 1;
--			resp->cap_flags |= HNS_ROCE_SUPPORT_CQ_RECORD_DB;
-+			hr_cq->flags |= HNS_ROCE_CQ_FLAG_RECORD_DB;
-+			resp->cap_flags |= HNS_ROCE_CQ_FLAG_RECORD_DB;
- 		}
- 	} else {
- 		if (has_db) {
-@@ -196,7 +196,7 @@ static int alloc_cq_db(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
- 				return err;
- 			hr_cq->set_ci_db = hr_cq->db.db_record;
- 			*hr_cq->set_ci_db = 0;
--			hr_cq->db_en = 1;
-+			hr_cq->flags |= HNS_ROCE_CQ_FLAG_RECORD_DB;
- 		}
- 		hr_cq->cq_db_l = hr_dev->reg_base + hr_dev->odb_offset +
- 				 DB_REG_OFFSET * hr_dev->priv_uar.index;
-@@ -210,10 +210,10 @@ static void free_cq_db(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
- {
- 	struct hns_roce_ucontext *uctx;
- 
--	if (!hr_cq->db_en)
-+	if (!(hr_cq->flags & HNS_ROCE_CQ_FLAG_RECORD_DB))
- 		return;
- 
--	hr_cq->db_en = 0;
-+	hr_cq->flags &= ~HNS_ROCE_CQ_FLAG_RECORD_DB;
- 	if (udata) {
- 		uctx = rdma_udata_to_drv_context(udata,
- 						 struct hns_roce_ucontext,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 4fcd608e..06bafa1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -135,8 +135,8 @@ enum {
- 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
- };
- 
--enum {
--	HNS_ROCE_SUPPORT_CQ_RECORD_DB = 1 << 0,
-+enum hns_roce_cq_flags {
-+	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
- };
- 
- enum hns_roce_qp_state {
-@@ -454,7 +454,7 @@ struct hns_roce_cq {
- 	struct ib_cq			ib_cq;
- 	struct hns_roce_mtr		mtr;
- 	struct hns_roce_db		db;
--	u8				db_en;
-+	u32				flags;
- 	spinlock_t			lock;
- 	u32				cq_depth;
- 	u32				cons_index;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 7d0556ef..36a9871 100644
+index 36a9871..1d5fdf6 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2905,9 +2905,9 @@ static void hns_roce_v2_write_cqc(struct hns_roce_dev *hr_dev,
- 	roce_set_field(cq_context->byte_40_cqe_ba, V2_CQC_BYTE_40_CQE_BA_M,
- 		       V2_CQC_BYTE_40_CQE_BA_S, (dma_handle >> (32 + 3)));
+@@ -187,15 +187,15 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 	int i;
  
--	if (hr_cq->db_en)
--		roce_set_bit(cq_context->byte_44_db_record,
--			     V2_CQC_BYTE_44_DB_RECORD_EN_S, 1);
-+	roce_set_bit(cq_context->byte_44_db_record,
-+		     V2_CQC_BYTE_44_DB_RECORD_EN_S,
-+		     (hr_cq->flags & HNS_ROCE_CQ_FLAG_RECORD_DB) ? 1 : 0);
+ 	if (wr->send_flags & IB_SEND_INLINE && valid_num_sge) {
+-		if (le32_to_cpu(rc_sq_wqe->msg_len) >
+-		    hr_dev->caps.max_sq_inline) {
++		if (unlikely(le32_to_cpu(rc_sq_wqe->msg_len) >
++			     hr_dev->caps.max_sq_inline)) {
+ 			ibdev_err(ibdev, "inline len(1-%d)=%d, illegal",
+ 				  rc_sq_wqe->msg_len,
+ 				  hr_dev->caps.max_sq_inline);
+ 			return -EINVAL;
+ 		}
  
- 	roce_set_field(cq_context->byte_44_db_record,
- 		       V2_CQC_BYTE_44_DB_RECORD_ADDR_M,
+-		if (wr->opcode == IB_WR_RDMA_READ) {
++		if (unlikely(wr->opcode == IB_WR_RDMA_READ)) {
+ 			ibdev_err(ibdev, "Not support inline data!\n");
+ 			return -EINVAL;
+ 		}
+@@ -526,7 +526,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 	spin_lock_irqsave(&qp->sq.lock, flags);
+ 
+ 	ret = check_send_valid(hr_dev, qp);
+-	if (ret) {
++	if (unlikely(ret)) {
+ 		*bad_wr = wr;
+ 		nreq = 0;
+ 		goto out;
+@@ -562,7 +562,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 		else if (ibqp->qp_type == IB_QPT_RC)
+ 			ret = set_rc_wqe(qp, wr, wqe, &sge_idx, owner_bit);
+ 
+-		if (ret) {
++		if (unlikely(ret)) {
+ 			*bad_wr = wr;
+ 			goto out;
+ 		}
+@@ -612,15 +612,15 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 	spin_lock_irqsave(&hr_qp->rq.lock, flags);
+ 
+ 	ret = check_recv_valid(hr_dev, hr_qp);
+-	if (ret) {
++	if (unlikely(ret)) {
+ 		*bad_wr = wr;
+ 		nreq = 0;
+ 		goto out;
+ 	}
+ 
+ 	for (nreq = 0; wr; ++nreq, wr = wr->next) {
+-		if (hns_roce_wq_overflow(&hr_qp->rq, nreq,
+-			hr_qp->ibqp.recv_cq)) {
++		if (unlikely(hns_roce_wq_overflow(&hr_qp->rq, nreq,
++						  hr_qp->ibqp.recv_cq))) {
+ 			ret = -ENOMEM;
+ 			*bad_wr = wr;
+ 			goto out;
+@@ -765,7 +765,7 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 		}
+ 
+ 		wqe_idx = find_empty_entry(&srq->idx_que, srq->wqe_cnt);
+-		if (wqe_idx < 0) {
++		if (unlikely(wqe_idx < 0)) {
+ 			ret = -ENOMEM;
+ 			*bad_wr = wr;
+ 			break;
+@@ -2984,7 +2984,7 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
+ 		wqe_buf += size;
+ 	}
+ 
+-	if (data_len) {
++	if (unlikely(data_len)) {
+ 		wc->status = IB_WC_LOC_LEN_ERR;
+ 		return -EAGAIN;
+ 	}
+@@ -3076,7 +3076,8 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
+ 			break;
+ 		}
+ 
+-	if (wc->status == IB_WC_SUCCESS || wc->status == IB_WC_WR_FLUSH_ERR)
++	if (likely(wc->status == IB_WC_SUCCESS ||
++		   wc->status == IB_WC_WR_FLUSH_ERR))
+ 		return;
+ 
+ 	ibdev_err(&hr_dev->ib_dev, "error cqe status 0x%x:\n", cqe_status);
+@@ -3171,7 +3172,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+ 	}
+ 
+ 	get_cqe_status(hr_dev, *cur_qp, cqe, wc);
+-	if (wc->status != IB_WC_SUCCESS)
++	if (unlikely(wc->status != IB_WC_SUCCESS))
+ 		return 0;
+ 
+ 	if (is_send) {
+@@ -3270,7 +3271,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+ 		    opcode == HNS_ROCE_V2_OPCODE_SEND_WITH_INV) &&
+ 		    (roce_get_bit(cqe->byte_4, V2_CQE_BYTE_4_RQ_INLINE_S))) {
+ 			ret = hns_roce_handle_recv_inl_wqe(cqe, cur_qp, wc);
+-			if (ret)
++			if (unlikely(ret))
+ 				return -EAGAIN;
+ 		}
+ 
 -- 
 2.8.1
 
