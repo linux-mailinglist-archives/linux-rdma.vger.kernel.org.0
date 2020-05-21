@@ -2,97 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32901DD4AF
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 19:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131701DD545
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 19:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgEURoB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 May 2020 13:44:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728542AbgEURoB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 May 2020 13:44:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AB41207F7;
-        Thu, 21 May 2020 17:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590083040;
-        bh=6nyP9nRABbr9I/+R+8UXncPfsESo3IVTz5PwLOZXbYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oP+78MBQZdAXiAp3ysB221UvjLOUd6vfKMJKlmeazoSG+cAcWSAEhfHEW49jnoAUQ
-         PLkSMVv6px48fpaC1JdmBUdKUGLUEodyiZTCN3nNphL9nXBbkAV9kdLQhUh2pwV3gQ
-         DW/5wIfuOqYSvJiepgHONkcH3VqKchhB8vK8hebU=
-Date:   Thu, 21 May 2020 19:43:58 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
-        "sriharsha.basavapatna@broadcom.com" 
-        <sriharsha.basavapatna@broadcom.com>,
-        "benve@cisco.com" <benve@cisco.com>,
-        "bharat@chelsio.com" <bharat@chelsio.com>,
-        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "mkalderon@marvell.com" <mkalderon@marvell.com>,
-        "aditr@vmware.com" <aditr@vmware.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>
-Subject: Re: [net-next v4 01/12] Implementation of Virtual Bus
-Message-ID: <20200521174358.GA3679752@kroah.com>
-References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
- <20200520070227.3392100-2-jeffrey.t.kirsher@intel.com>
- <c74808dc-0040-7cef-a0da-0da9caedddd9@mellanox.com>
+        id S1729988AbgEURu7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 May 2020 13:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728022AbgEURu6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 May 2020 13:50:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0110FC061A0E
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 10:50:58 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id f13so6647782edr.13
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 10:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=c5hk+YvDF+HNcyf9r7puwjNVcCKeuusQ28Ivdswl/wY=;
+        b=XZTMa4cmZBy3IafYJoqtED2R8GeVsYhpNul9KMyfu2JfcqXxrLTDs763L54yDeTfbe
+         yn9XviBnQKTkOJ6MkE/nQTcMS85uqcodkyiO25PfrTS9f4OpkviuvvJyXid346P7svS2
+         Zkcnwtqhq4x63LsWI5tw5dnfetHLKgr8k7c6Ut8rRMC94Sbv2x04eV9c32s89AGBLmoY
+         BjhXrZJJhY6Onlf6a2hHKYSxGY2urxrhmFELm5td093zmXU1k6+8ADP1mX6rM4uF3pVg
+         hy+1PVDHbwEInAKVpKPUde1VJlQBW6OoJ1FfJ2CmDNpEZqTBNMZDmI40TkA13sZM59Cv
+         7cWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=c5hk+YvDF+HNcyf9r7puwjNVcCKeuusQ28Ivdswl/wY=;
+        b=LF3NjF6tFJi0P8RiJQKsDdgOAc5Q/UaDQp9D6wtvm14/Qb/+xCSTc+/MUtzDydEh+h
+         gEVwJkBN48BTshhprB2u1LdCh43bT/bA1VkayGAF0m+xKzdb8xbQCxcS/Cv7NPbXAIo+
+         d/oxplx6VWTtQhm0XYzRfb9kd+JcDad7o0k07EwW3jaCezlt2HB0YJpg80RwKle5Zd/X
+         sMNrOjqd7Ki8xRPntAE1l39Hd1VHGmuMWWVhrVqSOXV9pcGabj255Hrk+8i4R57aXE/x
+         udxXJWYxQw5XQHk1IEf6EUKcCBp81okH+RGMlu6R0ZB2i1ySC/GFkVjL806nzUSi46B6
+         G+zw==
+X-Gm-Message-State: AOAM532OKQ32DFpvW8pf7aVj9u1SXlYqqBCeou28bDJK0gDQvkbBrKE4
+        KpORXUEmsT15HZ+H293MW1sD
+X-Google-Smtp-Source: ABdhPJzToo8f9DVO/kSz/quWW8eMz/WF+e6ERpzOVZ6UV+MrK6+EGUGO1015b1B48Aw27ecTnKSrpg==
+X-Received: by 2002:a05:6402:c2:: with SMTP id i2mr8768644edu.224.1590083456687;
+        Thu, 21 May 2020 10:50:56 -0700 (PDT)
+Received: from dkxps.fkb.profitbricks.net (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
+        by smtp.gmail.com with ESMTPSA id z12sm5358700edk.78.2020.05.21.10.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 10:50:55 -0700 (PDT)
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca
+Cc:     axboe@kernel.dk, bvanassche@acm.org, leon@kernel.org,
+        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        guoqing.jiang@cloud.ionos.com, Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] rnbd: fix compilation error when CONFIG_MODULES is disabled
+Date:   Thu, 21 May 2020 19:50:01 +0200
+Message-Id: <20200521175001.445208-1-danil.kipnis@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <86962843-e786-4a3f-0b85-1e06fbdbd76a@infradead.org>
+References: <86962843-e786-4a3f-0b85-1e06fbdbd76a@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c74808dc-0040-7cef-a0da-0da9caedddd9@mellanox.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 21, 2020 at 02:57:55PM +0000, Parav Pandit wrote:
-> Hi Greg, Jason,
-> 
-> On 5/20/2020 12:32 PM, Jeff Kirsher wrote:
-> > From: Dave Ertman <david.m.ertman@intel.com>
-> > 
-> 
-> > +static const
-> > +struct virtbus_dev_id *virtbus_match_id(const struct virtbus_dev_id *id,
-> > +					struct virtbus_device *vdev)
-> > +{
-> > +	while (id->name[0]) {
-> > +		if (!strcmp(vdev->match_name, id->name))
-> > +			return id;
-> 
-> Should we have VID, DID based approach instead of _any_ string chosen by
-> vendor drivers?
+module_is_live function is only defined when CONFIG_MODULES is enabled.
+Use try_module_get instead to check whether the module is being removed.
 
-No, because:
+When module unload and manuall unmapping is happening in parallel, we can
+try removing the symlink twice: rnbd_client_exit vs. rnbd_clt_unmap_dev_store.
 
-> This will required central place to define the VID, DID of the vdev in
-> vdev_ids.h to have unique ids.
+This is probably not the best way to deal with this race in general, but for
+now this fixes the compilation issue when CONFIG_MODULES is disabled and has
+no functional impact. Regression tests passed.
 
-That's not a good way to run things :)
+Fixes: 1eb54f8f5dd8 block/rnbd: client: sysfs interface functions
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+---
+ drivers/block/rnbd/rnbd-clt-sysfs.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Have the virtbus core create the "name", as it really doesn't matter
-what it is, just that it is unique, right?
+diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnbd-clt-sysfs.c
+index a4508fcc7ffe..73d7cb40abb3 100644
+--- a/drivers/block/rnbd/rnbd-clt-sysfs.c
++++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
+@@ -428,12 +428,14 @@ static struct attribute *rnbd_dev_attrs[] = {
+ void rnbd_clt_remove_dev_symlink(struct rnbd_clt_dev *dev)
+ {
+ 	/*
+-	 * The module_is_live() check is crucial and helps to avoid annoying
+-	 * sysfs warning raised in sysfs_remove_link(), when the whole sysfs
+-	 * path was just removed, see rnbd_close_sessions().
++	 * The module unload rnbd_client_exit path is racing with unmapping of the
++	 * last single device from the sysfs manually i.e. rnbd_clt_unmap_dev_store()
++	 * leading to a sysfs warning because of sysfs link already was removed already.
+ 	 */
+-	if (strlen(dev->blk_symlink_name) && module_is_live(THIS_MODULE))
++	if (strlen(dev->blk_symlink_name) && try_module_get(THIS_MODULE)) {
+ 		sysfs_remove_link(rnbd_devs_kobj, dev->blk_symlink_name);
++		module_put(THIS_MODULE);
++	}
+ }
+ 
+ static struct kobj_type rnbd_dev_ktype = {
 
-thanks,
+base-commit: f11e0ec55f0c80ff47693af2150bad5db0e20387
+-- 
+2.25.1
 
-greg k-h
