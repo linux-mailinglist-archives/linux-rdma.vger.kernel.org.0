@@ -2,84 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA9E1DD2E1
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 18:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32901DD4AF
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 19:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgEUQNG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 May 2020 12:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726938AbgEUQNG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 May 2020 12:13:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04F1C061A0E;
-        Thu, 21 May 2020 09:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Qvj+YhI/0PK/4MddY8tEV6SkdBBTdLqfKHDVigUBDOs=; b=WSGMIYzJbA1Y5BlqgYvxPpUM/2
-        rgTxmUggczJMNQXqI5xmzvVCMTlUBKh0dWmIyrnKrlY3aBa77YJZRMEQ6SgSekInCLR5v9Y1jfkXZ
-        LPF7wvoj8tfILnMGh6ZTnYk41SEj45tNlVFFPmqbKFRgkPKl2DkGeWZmoJ9DcAPsNHcpu7lmKgYFF
-        TFTQ9yPump0GJV92T8aAQf6E0Sgz9oDc2g/HEOeJu245f5QAS05XDpCu/mJb+h9HYr17FO+oi+P8X
-        z/LZid1jJec7DwDqGdqcW40abOS8zNgLaXuTCQT6fpm9KhoiZ3LKSHqpfml/dZuH38dxF4xIGIfKQ
-        xSt+C5HA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbnoc-0004rZ-5a; Thu, 21 May 2020 16:13:02 +0000
-Subject: Re: [PATCH v2] rnbd/rtrs: pass max segment size from blk user to the
- rdma library
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-next@vger.kernel.org, axboe@kernel.dk, dledford@redhat.com,
-        bvanassche@acm.org, leon@kernel.org, jinpu.wang@cloud.ionos.com
-References: <20200519084812.GP188135@unreal>
- <20200519111419.924170-1-danil.kipnis@cloud.ionos.com>
- <20200519234443.GB30609@ziepe.ca>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6de09fa5-5a4f-dec4-7101-8dd27ca4c764@infradead.org>
-Date:   Thu, 21 May 2020 09:12:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728576AbgEURoB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 May 2020 13:44:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728542AbgEURoB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 May 2020 13:44:01 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AB41207F7;
+        Thu, 21 May 2020 17:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590083040;
+        bh=6nyP9nRABbr9I/+R+8UXncPfsESo3IVTz5PwLOZXbYk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oP+78MBQZdAXiAp3ysB221UvjLOUd6vfKMJKlmeazoSG+cAcWSAEhfHEW49jnoAUQ
+         PLkSMVv6px48fpaC1JdmBUdKUGLUEodyiZTCN3nNphL9nXBbkAV9kdLQhUh2pwV3gQ
+         DW/5wIfuOqYSvJiepgHONkcH3VqKchhB8vK8hebU=
+Date:   Thu, 21 May 2020 19:43:58 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "selvin.xavier@broadcom.com" <selvin.xavier@broadcom.com>,
+        "sriharsha.basavapatna@broadcom.com" 
+        <sriharsha.basavapatna@broadcom.com>,
+        "benve@cisco.com" <benve@cisco.com>,
+        "bharat@chelsio.com" <bharat@chelsio.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "mkalderon@marvell.com" <mkalderon@marvell.com>,
+        "aditr@vmware.com" <aditr@vmware.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [net-next v4 01/12] Implementation of Virtual Bus
+Message-ID: <20200521174358.GA3679752@kroah.com>
+References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
+ <20200520070227.3392100-2-jeffrey.t.kirsher@intel.com>
+ <c74808dc-0040-7cef-a0da-0da9caedddd9@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20200519234443.GB30609@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c74808dc-0040-7cef-a0da-0da9caedddd9@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/19/20 4:44 PM, Jason Gunthorpe wrote:
-> On Tue, May 19, 2020 at 01:14:19PM +0200, Danil Kipnis wrote:
->> When Block Device Layer is disabled, BLK_MAX_SEGMENT_SIZE is undefined.
->> The rtrs is a transport library and should compile independently of the
->> block layer. The desired max segment size should be passed down by the
->> user.
->>
->> Introduce max_segment_size parameter for the rtrs_clt_open() call.
->>
->> Fixes: f7a7a5c228d4 ("block/rnbd: client: main functionality")
->> Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
->> Fixes: cb80329c9434 ("RDMA/rtrs: client: private header with client structs and functions")
->> Fixes: b5c27cdb094e ("RDMA/rtrs: public interface header to establish RDMA connections")
->>
->> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->> ---
->> v1->v2 Add Fixes lines.
+On Thu, May 21, 2020 at 02:57:55PM +0000, Parav Pandit wrote:
+> Hi Greg, Jason,
 > 
-> Applied to for-next, thanks
+> On 5/20/2020 12:32 PM, Jeff Kirsher wrote:
+> > From: Dave Ertman <david.m.ertman@intel.com>
+> > 
+> 
+> > +static const
+> > +struct virtbus_dev_id *virtbus_match_id(const struct virtbus_dev_id *id,
+> > +					struct virtbus_device *vdev)
+> > +{
+> > +	while (id->name[0]) {
+> > +		if (!strcmp(vdev->match_name, id->name))
+> > +			return id;
+> 
+> Should we have VID, DID based approach instead of _any_ string chosen by
+> vendor drivers?
 
-Hi Jason,
+No, because:
 
-Does your "for-next" feed into linux-next?
-I am still seeing this build error today (linux-next 20200521).
+> This will required central place to define the VID, DID of the vdev in
+> vdev_ids.h to have unique ids.
 
-thanks.
--- 
-~Randy
+That's not a good way to run things :)
 
+Have the virtbus core create the "name", as it really doesn't matter
+what it is, just that it is unique, right?
+
+thanks,
+
+greg k-h
