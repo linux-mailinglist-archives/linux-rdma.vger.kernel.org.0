@@ -2,114 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5011DD673
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 21:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740951DD7AC
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 May 2020 21:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbgEUS76 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 May 2020 14:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        id S1729780AbgEUTzh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 May 2020 15:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729555AbgEUS76 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 May 2020 14:59:58 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14A5C061A0E
-        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 11:59:56 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id k19so7412207edv.9
-        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 11:59:56 -0700 (PDT)
+        with ESMTP id S1728635AbgEUTzh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 May 2020 15:55:37 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06589C061A0E
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 12:55:37 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id l1so6514035qtp.6
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 12:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4Ywk6LfudhfW/QxS6TT/2iEiv5VyTiN0xpyOE7piVw4=;
-        b=i+fI4Gqf/Ohk+Vqa/qZmFeMmfSE5I8dtvu8vlQu9S59kga/51dcu3IcmgWYwKrOh44
-         997Kt2i7SYbF9JqEpHwzP1AIiobUzugYQVSJ7q+NiobOlM689uT3//6sdxkGqJyVeG1P
-         KBCsvIXDKeB0opXU5JA/ybuZ7Uc/+DS3UpzqFhKcz126TYpME8bPq+o8z+6wNL4Rm0ZC
-         J2iaAbQTBVWes6M6Kjg+tSLsn9Va9D8kLTHtjKi+8RAvzHCs1zMUvKktuMI5eno5wDNR
-         XEXvK1wt5ANk0SUlYXisqMnBXotOFNkdNP6cDk7RzBcyxtlEsUxgR42gUhk2VeMmPZFT
-         rPHQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SvU+q+Ni+fD6wE2TdElPNcO9Nx54szZTphr0DSdOk6Q=;
+        b=a1vyUj54aiBaNCw0njaZeD1YIPpWLgg65Kr0Tls2EHcfC9sDoA0mIuSVG6RGJlmb9l
+         rG25nI/kc0Cv38ADj3Qu1j35gUNf8cc/KwxnFVrMJ6FSx4SRL4PRHupWhJZafFSrqy7N
+         juny0KsQDc6a9nO0eBMaUvXJiZBgAz1k+XcxKJW7HPx/p9aDEj/4yQFwgpDRWSFjyQpc
+         GUEM4Srts2XKGqm1aTVIPBhUJb33eTbCFSi1nQE8L/eYfoBesfagC7VKxoKCXapDSOrH
+         2Xk8wIfJANkbGm0gzwWdfiv7mnBt4DbPWvy9FNodAiIzg8D1gpdC8i8sb4nYTjYndzHU
+         1jYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4Ywk6LfudhfW/QxS6TT/2iEiv5VyTiN0xpyOE7piVw4=;
-        b=ZcaM7WvgcXw1695Da4wGRYLolrY5E7knq1H7l4d+8GeYhvAnCyiYLRzVeKeBJd1tub
-         xiRo49R1CwwVnJKSlea7tdww3b8XvsJBwVenVFDVPiBYLnsoLY5QhgYK9YIkgbBVAAQ0
-         aQekvE3iV9x1E9hkVPpgZzpNSBrxWCjTjX2UDaI+/ystrXp3EpYYEVPFGZz7xeErG1au
-         Jn4vkrqnyfDKiWvzzSnWod6I0CYbO0H0H7aN+Z2ylxnY8a3ea9+VIhZF93Eue7kXtJoE
-         MzBO28Z9KiHyiQ1MDo1PTfnRgvmZxYa8z/KdSSWuI9WE9K5wh0qsyB9Fhgg9KiE+ZXTc
-         Df3Q==
-X-Gm-Message-State: AOAM532DevD8XKJLNU8V+MGOrss/UpX+krNK883tbztd8fMVS006q+B5
-        udObRtyy8R+489rX+4ATC7wd
-X-Google-Smtp-Source: ABdhPJx0d62NTCDUeOOm12GdNsFYQXlCIgeKz6/a2uCAOb9qssFSyy8B9j2Yq7mpSTZtypm9+6TF8g==
-X-Received: by 2002:a50:9f02:: with SMTP id b2mr102475edf.29.1590087595328;
-        Thu, 21 May 2020 11:59:55 -0700 (PDT)
-Received: from dkxps.local (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
-        by smtp.gmail.com with ESMTPSA id e9sm5493836edl.25.2020.05.21.11.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 11:59:54 -0700 (PDT)
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, rdunlap@infradead.org
-Cc:     axboe@kernel.dk, bvanassche@acm.org, leon@kernel.org,
-        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        guoqing.jiang@cloud.ionos.com
-Subject: [PATCH] rnbd: fix compilation error when CONFIG_MODULES is disabled
-Date:   Thu, 21 May 2020 20:59:09 +0200
-Message-Id: <20200521185909.457245-1-danil.kipnis@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ca0729a1-2e4d-670d-2519-a175b3035b28@infradead.org>
-References: <ca0729a1-2e4d-670d-2519-a175b3035b28@infradead.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SvU+q+Ni+fD6wE2TdElPNcO9Nx54szZTphr0DSdOk6Q=;
+        b=i3TJ8QdfQiyHHGChm414D3azCE1Xsu/bZSeTyepsO8jwaARe6k6uvd6zf6jbJumvfx
+         ypPvr9LwsHtq6vylmlGomJpehUmIx/gXddSckOBPgFSsb9TsxDj/MF0myvqY99BVwiMm
+         T7sopTyuFH1h3x+o4/GPMrx0JAQA0Kfn5XUdRJvS6TnBNj2jqNIqWj+50hvxzNYFEBb/
+         dqh4RusKRb+D8/MD0zopxHRacjHqivTQNo/oWp8vlDCYkk60GN0F+hYNpK7mgKTRvC1x
+         xDRAlPpFEZv4th0QA2xr5qExn/yyplV1vMlDBgeZ/LsvLihafqzfdfLa7TRyB8iMGPWO
+         iCRg==
+X-Gm-Message-State: AOAM533X+DOJSo7djEsD8M3kRovywMhC6bh0jYlTBF1Kprtw2kSmRaWJ
+        UxPv3fDsOaAAIVrGbgx06oahqhrPUbQ=
+X-Google-Smtp-Source: ABdhPJxJqd2iHioeO1vUXf5AbpqVHfDM0I12tuuOQ3gwehKg+InWj7Ui0YHZvlsSpqeiH9wDDr1Q4g==
+X-Received: by 2002:ac8:6bda:: with SMTP id b26mr13002685qtt.230.1590090936213;
+        Thu, 21 May 2020 12:55:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y129sm5683560qkc.1.2020.05.21.12.55.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 May 2020 12:55:35 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jbrHz-0002mZ-3q; Thu, 21 May 2020 16:55:35 -0300
+Date:   Thu, 21 May 2020 16:55:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 for-next 00/16] New hfi1 feature: Accelerated IP
+Message-ID: <20200521195535.GA10609@ziepe.ca>
+References: <20200511155337.173205.77558.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511155337.173205.77558.stgit@awfm-01.aw.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-module_is_live function is only defined when CONFIG_MODULES is enabled.
-Use try_module_get instead to check whether the module is being removed.
+On Mon, May 11, 2020 at 12:05:35PM -0400, Dennis Dalessandro wrote:
+> This patch series is an accelerated ipoib using the rdma netdev mechanism
+> already present in ipoib. A new device capability bit,
+> IB_DEVICE_RDMA_NETDEV_OPA, triggers ipoib to create a datagram QP using the
+> IB_QP_CREATE_NETDEV_USE.
+> 
+> The highlights include:
+> - Sharing send and receive resources with VNIC
+> - Allows for switching between connected mode and datagram mode
+> - Increases the maximum datagram MTU for opa devices to 10k
+> 
+> The same spreading capability exploited by VNIC is used here to vary
+> the receive context that receives the packet.
+> 
+> The patches are fully bisectable and stepwise implement the capability.
+> 
+> changes since v2
+> *Rebased ontop of latest rdma/for-next
+> 
+> Changes since v1
+> *Fix incorrect parameter to xa_find() in patch 9
+> *Address Erez comments and try to hide opa from ipoib in patch 7
+> *Fix some typos in RB lines
+> 
+> 
+> Gary Leshner (6):
+>       IB/hfi1: Add functions to transmit datagram ipoib packets
+>       IB/hfi1: Add the transmit side of a datagram ipoib RDMA netdev
+>       IB/hfi1: Remove module parameter for KDETH qpns
+>       IB/{rdmavt,hfi1}: Implement creation of accelerated UD QPs
+>       IB/{hfi1,ipoib,rdma}: Broadcast ping sent packets which exceeded mtu size
+>       IB/ipoib: Add capability to switch between datagram and connected mode
+> 
+> Grzegorz Andrejczuk (6):
+>       IB/hfi1: RSM rules for AIP
+>       IB/hfi1: Rename num_vnic_contexts as num_netdev_contexts
+>       IB/hfi1: Add interrupt handler functions for accelerated ipoib
+>       IB/hfi1: Add rx functions for dummy netdev
+>       IB/hfi1: Activate the dummy netdev
+>       IB/hfi1: Add packet histogram trace event
+> 
+> Kaike Wan (3):
+>       IB/hfi1: Add accelerated IP capability bit
+>       IB/ipoib: Increase ipoib Datagram mode MTU's upper limit
+>       IB/hfi1: Add functions to receive accelerated ipoib packets
+> 
+> Piotr Stankiewicz (1):
+>       IB/hfi1: Enable the transmit side of the datagram ipoib netdev
 
-When module unload and manuall unmapping is happening in parallel, we can
-try removing the symlink twice: rnbd_client_exit vs. rnbd_clt_unmap_dev_store.
+Applied to for-next
 
-This is probably not the best way to deal with this race in general, but for
-now this fixes the compilation issue when CONFIG_MODULES is disabled and has
-no functional impact. Regression tests passed.
-
-Fixes: 1eb54f8f5dd8 ("block/rnbd: client: sysfs interface functions")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
----
-v1->v2 Fix format of the "Fixes:" line
-       Add Acked-by Randy Runlap <rdunlap@infradead.org>
- drivers/block/rnbd/rnbd-clt-sysfs.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnbd-clt-sysfs.c
-index a4508fcc7ffe..73d7cb40abb3 100644
---- a/drivers/block/rnbd/rnbd-clt-sysfs.c
-+++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
-@@ -428,12 +428,14 @@ static struct attribute *rnbd_dev_attrs[] = {
- void rnbd_clt_remove_dev_symlink(struct rnbd_clt_dev *dev)
- {
- 	/*
--	 * The module_is_live() check is crucial and helps to avoid annoying
--	 * sysfs warning raised in sysfs_remove_link(), when the whole sysfs
--	 * path was just removed, see rnbd_close_sessions().
-+	 * The module unload rnbd_client_exit path is racing with unmapping of the
-+	 * last single device from the sysfs manually i.e. rnbd_clt_unmap_dev_store()
-+	 * leading to a sysfs warning because of sysfs link already was removed already.
- 	 */
--	if (strlen(dev->blk_symlink_name) && module_is_live(THIS_MODULE))
-+	if (strlen(dev->blk_symlink_name) && try_module_get(THIS_MODULE)) {
- 		sysfs_remove_link(rnbd_devs_kobj, dev->blk_symlink_name);
-+		module_put(THIS_MODULE);
-+	}
- }
- 
- static struct kobj_type rnbd_dev_ktype = {
--- 
-2.25.1
-
+Thanks,
+Jason
