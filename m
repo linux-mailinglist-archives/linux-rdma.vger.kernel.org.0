@@ -2,91 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DDB1DE28B
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 11:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147161DE3A4
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 12:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgEVJB6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 22 May 2020 05:01:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2147 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728424AbgEVJB6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 May 2020 05:01:58 -0400
-Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 32792694D0967CA2AA8F
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 17:01:56 +0800 (CST)
-Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.243]) by
- DGGEML402-HUB.china.huawei.com ([fe80::fca6:7568:4ee3:c776%31]) with mapi id
- 14.03.0487.000; Fri, 22 May 2020 17:01:46 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next 0/9] RDMA/hns: Various fixes and cleanups
-Thread-Topic: [PATCH for-next 0/9] RDMA/hns: Various fixes and cleanups
-Thread-Index: AQHWJR2R13RQ/ucvpES4423Q+u32DQ==
-Date:   Fri, 22 May 2020 09:01:46 +0000
-Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0236A86A@DGGEML522-MBX.china.huawei.com>
-References: <1588931159-56875-1-git-send-email-liweihang@huawei.com>
- <B82435381E3B2943AA4D2826ADEF0B3A0236A7A2@DGGEML522-MBX.china.huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.40.168.149]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728374AbgEVKBY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 06:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgEVKBW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 06:01:22 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F77C05BD43
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 03:01:22 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id n18so9251161wmj.5
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 03:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RyxHtd8t+Tnym6Rgfk/b1z6/xAgAd1SgDqjswJTBPeQ=;
+        b=HnPluOJFuyWZ2ZmEnp7WE34nWh83fzfZaugdRb/RgIp3B3UhhAIdNPCeePTwTkn32y
+         OTCuEppurSdXNLugm1Y+bu9BGs8PW/AhkWHQ1NBM4ECKgFTUA+KHgpqd8xXXRGCZw5J4
+         khAyW9C9LXtu9y7EvPqTpxXsYzMVmFPWcSWJa9OzGwG3wcyw0wN6qzA8pah3yWvZwEgS
+         YfefvBkrxQrAHM++e+EgghWkvd5/DaKlvevQYJU6vjcSnFAV+kd9P4vRBr+Q7nU/oGHy
+         KG4/MQJxpGMH9TajPB4/r+GGj0tiG+Xyrfn/BnwHykkZvfS3hrmUt2dpR7pzf5vCW7Ql
+         S4Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RyxHtd8t+Tnym6Rgfk/b1z6/xAgAd1SgDqjswJTBPeQ=;
+        b=lXmS2amQac1wW5pJQolehwRHpdkCswYqe4ZYNMRZ6KUlTxEV2oiRtTbaPBm6qgPcbz
+         2AZuMFZ+LgUW0rLfPHSjarbgMf4lCYShAISGB1pbQ84RSywHsgazsQXAOn0q9hTlFxK7
+         RB7plWDcKArXtiuu8D67SUQh+tts7MKWIXhqMeqPLgC8RjGkh4unoK38kyP80J+Bbr0y
+         wRMGRxjPZCLiDneNe+LxWY8n04dh2U3qlRjplqhQY67WDDMaKaiEQyodENnFUrzRCaow
+         m4driaFko/Xx+pKjCpsF2ogeVi8xUHe74iZmw5BNtFk7U4UMWCCZkCgTG6BxdyUxi0rC
+         t5LA==
+X-Gm-Message-State: AOAM532HmyOhnRrZ9JubL9OIOxo15Bma/aJXzOB6biT6Xsx0lSW0Y9II
+        A4kjIDg+x+ImN8VIUwPqWlDGhhsSkK//y4FyWpjV
+X-Google-Smtp-Source: ABdhPJyCVsG6wWaF1VxfaUETpoayuVhLjiFIiH8pDZdtkv+vqCyWpNVJcDDNCjYoo2AfDxsELPltZ6BD8lCKZrMMIM4=
+X-Received: by 2002:a1c:c242:: with SMTP id s63mr12990862wmf.180.1590141680757;
+ Fri, 22 May 2020 03:01:20 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20200522082833.1480551-1-haris.phnx@gmail.com>
+In-Reply-To: <20200522082833.1480551-1-haris.phnx@gmail.com>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Fri, 22 May 2020 12:01:10 +0200
+Message-ID: <CAHg0HuwK3FepXP06o-S_y6hukYmF3sMRgU+RweB6EMWdF3y9TQ@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rtrs: server: use already dereferenced rtrs_sess structure
+To:     haris iqbal <haris.phnx@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/5/22 15:39, liweihang wrote:
-> On 2020/5/8 17:46, Weihang Li wrote:
->> This series contains the following:
->> - #1 ~ #2 are fixes to solve issues found from previous versions.
->> - #3 ~ #5 are fixes for recent refactoring codes to 5.8.
->> - #6 ~ #9 are various cleanups.
->>
->> Lang Cheng (2):
->>   RDMA/hns: Fix cmdq parameter of querying pf timer resource
->>   RDMA/hns: Store mr len information into mr obj
->>
->> Lijun Ou (2):
->>   RDMA/hns: Bugfix for querying qkey
->>   RDMA/hns: Reserve one sge in order to avoid local length error
->>
->> Weihang Li (3):
->>   RDMA/hns: Fix wrong assignment of SRQ's max_wr
->>   RDMA/hns: Fix error with to_hr_hem_entries_count()
->>   RDMA/hns: Remove redundant memcpy()
->>
->> Wenpeng Liang (1):
->>   RDMA/hns: Fix assignment to ba_pg_sz of eqe
->>
->> Xi Wang (1):
->>   RDMA/hns: Rename macro for defining hns hardware page size
->>
->>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |  6 ++--
->>  drivers/infiniband/hw/hns/hns_roce_cq.c     |  4 +--
->>  drivers/infiniband/hw/hns/hns_roce_device.h | 15 +++++---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 53 ++++++++++++-----------------
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++-
->>  drivers/infiniband/hw/hns/hns_roce_mr.c     |  8 +++--
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  9 ++---
->>  drivers/infiniband/hw/hns/hns_roce_srq.c    | 10 +++---
->>  8 files changed, 56 insertions(+), 53 deletions(-)
->>
-> 
-> Hi Jason,
-> 
-> I notice that this series has been marked as "Accepted" on patchwork,
-> but I can't find them on your for-next branch. Maybe there is something
-> wrong :)
-> 
+On Fri, May 22, 2020 at 10:28 AM <haris.phnx@gmail.com> wrote:
+>
+> From: Md Haris Iqbal <haris.phnx@gmail.com>
+>
+> The rtrs_sess structure has already been extracted above from the
+> rtrs_srv_sess structure. Use that to avoid redundant dereferencing.
+>
+> Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+> Signed-off-by: Md Haris Iqbal <haris.phnx@gmail.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index 1fc6ece036ff..5ef8988ee75b 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -1822,13 +1822,13 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+>                 /*
+>                  * Sanity checks
+>                  */
+> -               if (con_num != sess->s.con_num || cid >= sess->s.con_num) {
+> +               if (con_num != s->con_num || cid >= s->con_num) {
+>                         rtrs_err(s, "Incorrect request: %d, %d\n",
+>                                   cid, con_num);
+>                         mutex_unlock(&srv->paths_mutex);
+>                         goto reject_w_econnreset;
+>                 }
+> -               if (sess->s.con[cid]) {
+> +               if (s->con[cid]) {
+>                         rtrs_err(s, "Connection already exists: %d\n",
+>                                   cid);
+>                         mutex_unlock(&srv->paths_mutex);
+> --
+> 2.25.1
+>
 
-Sorry, I just saw them on your branch.
+Acked-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 
-Thanks
-Weihang
+Thanks Haris.
