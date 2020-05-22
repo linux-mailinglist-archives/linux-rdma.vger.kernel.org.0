@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637121DEB0E
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 16:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1051DEA7C
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 16:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731118AbgEVO6G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 10:58:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51744 "EHLO mail.kernel.org"
+        id S1730924AbgEVOvL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 10:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730693AbgEVOub (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 May 2020 10:50:31 -0400
+        id S1730914AbgEVOvK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 May 2020 10:51:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F4EE22225;
-        Fri, 22 May 2020 14:50:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE3B6221FF;
+        Fri, 22 May 2020 14:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590159030;
-        bh=LoklJymqYyYNv+3Qr4zP0cMi41+UKRld97tLlQybKaQ=;
+        s=default; t=1590159069;
+        bh=6kVV4ZMdmQGY7iWp7IKfiscB6QlOrHGowsptdcBnKRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JHAsfbDQ3dDiu1xhyAB3OCJ/jvpoFHkWvBUnnRN3pqSdTbg45g3AMINmpy32YcHzJ
-         IvwDWdpye2ybz2w9yZEwN2MpHIqZQAcJMYdrxsyDGrXZ0Uq64c5XLmI6wYLOm5zOMB
-         9j2r9iEnk09jBCC6m2I9b2/MKaMwTNT6Mp0xzZlM=
+        b=pU+Y5ePHr2TqThWHJOyrAayMfAPiUMKCPrWdGLDjaI3haano0MqAUjRBj+Q493N3T
+         OuRuxI6Gp4AF1Hf9zmQ47h4ksFxjPwJ42s4QAyFI958zFZ4t4MMpi8s/1zKDSopKif
+         Iw3jyiCSRddkXRmJokfdQBfQlSy9AHIvZnqgytnk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Denis V. Lunev" <den@openvz.org>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 27/41] IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
-Date:   Fri, 22 May 2020 10:49:44 -0400
-Message-Id: <20200522144959.434379-27-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 22/32] IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
+Date:   Fri, 22 May 2020 10:50:34 -0400
+Message-Id: <20200522145044.434677-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200522144959.434379-1-sashal@kernel.org>
-References: <20200522144959.434379-1-sashal@kernel.org>
+In-Reply-To: <20200522145044.434677-1-sashal@kernel.org>
+References: <20200522145044.434677-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -89,7 +89,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 deletions(-)
 
 diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index bb78d3280acc..fa7a5ff498c7 100644
+index 2d6a378e8560..b1df93b69df4 100644
 --- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
 +++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
 @@ -1987,7 +1987,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
