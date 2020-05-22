@@ -2,127 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1423C1DEDE3
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 19:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A926E1DEE29
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 19:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgEVRK6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 13:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730306AbgEVRK5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 13:10:57 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3948EC061A0E
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 10:10:57 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f189so11414837qkd.5
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 10:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ekI5XPXMZlLYgIREK/4ZObBd8xLvApbBE4AcFTVJnl8=;
-        b=KFaOCYXnQe9ZxRBTt8aHeAWg+tbTdmZrtftzZy3dHGsY9n4OzWFWCdxmGQ0OToAXj4
-         pKMttYY+YeznQafL6kjaFfsSxdihG22hbB9Ak8PJCEYD4MBBoiKo7ZSTU6opjmgQpC9Y
-         BgVNDHF8kOCzWXGuXSjT+pu4pzBqeSnT7NSNGNqamZeX0hTFYnXaxUUmsGnI+EBYKGLZ
-         qndaeGc5jZS7iuq2jYsEo109PKEwVcajjOu/bDG0kRTManuOS66G+MIHu10Ux+ZTtXhM
-         U+FK2HTcX6Cz5nqXphP/FoJiaFdqkfd7vW5zOyqvIa0kBzG9BaVuYbOKXw504RWr/O9t
-         3mvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ekI5XPXMZlLYgIREK/4ZObBd8xLvApbBE4AcFTVJnl8=;
-        b=pkLuru3rLdMZLV8ebf5RZUNB9tWSM6PBrP0Z9CCnL4DPJn7zoSfdvcr0c3ERDjp19V
-         0De7xrwr+sh/CKFTlRn+NTtyEEdNn6H69XZ6b8UT+DfNUW4Og6rny+MyUcMbPix/ZILx
-         u85HQ42igCozLaT+IQSc1BZGLWigAhPvO4C30yDgiqjFszDpPwWwpfmXLQ/LIGOuU8eL
-         VppImXQWrConyz2SHP9UdkTPW5gVembxawM1YTceUK/KhTrAGVXD2JlIMgDQsokIIkPp
-         RBSzHyJum4+IXtNCYruCxHe2fHg1zxRrCFU6I86bZfnFPVUGxrw70M9iV/1Gd/hLXOnR
-         0GdA==
-X-Gm-Message-State: AOAM533nn0DeJKBJ+KZyUKEIQ+uHf/OU6wIN3DxvMbhVShUKuJ3C8emM
-        DeF3JL0K3ziLm4G+habgpC3YRlXkFMs=
-X-Google-Smtp-Source: ABdhPJw7wh06ILIAbiKKDEPB6686mei/PJCkVYuqcLlCOUTTm6edJZCO35UbzvypCLtB/bsz+K1D1A==
-X-Received: by 2002:a05:620a:1472:: with SMTP id j18mr14472491qkl.363.1590167456403;
-        Fri, 22 May 2020 10:10:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t74sm7656718qka.21.2020.05.22.10.10.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 May 2020 10:10:55 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jcBCB-0007Gw-5T; Fri, 22 May 2020 14:10:55 -0300
-Date:   Fri, 22 May 2020 14:10:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com,
-        Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200522171055.GK17583@ziepe.ca>
-References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
- <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
- <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
- <20200522145542.GI17583@ziepe.ca>
- <6e129db7-2a76-bc67-0e56-2abb4d9761a3@linux.intel.com>
+        id S1730678AbgEVRYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 13:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730554AbgEVRYY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 May 2020 13:24:24 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99B1E206C3;
+        Fri, 22 May 2020 17:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590168264;
+        bh=a7vJfJIAv9McskG7MZDFR7GaC4IPsDA22S6x57C80aw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PDQBVXzM3edo57feQ1Q6kuVojMeW8eF2BksdqpCP5yf9MqcGq8jC67OeHo8z4z/ea
+         1yG61ffQTc0AJlyKEz0Ns1YfcnEhqmuKinv8/8p+ENkrJJeQOiRoJeDVXI1+kc92Rv
+         +ucAsUy4pl/FogwkvUFeSGi+pNBUYN3G0cilZU14=
+Date:   Fri, 22 May 2020 10:24:20 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     wu000273@umn.edu
+Cc:     tariqt@mellanox.com, davem@davemloft.net,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kjlu@umn.edu
+Subject: Re: [PATCH] net/mlx4_core: fix a memory leak bug.
+Message-ID: <20200522102420.41c9637a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200522052348.1241-1-wu000273@umn.edu>
+References: <20200522052348.1241-1-wu000273@umn.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e129db7-2a76-bc67-0e56-2abb4d9761a3@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 22, 2020 at 10:33:20AM -0500, Pierre-Louis Bossart wrote:
-
-> > Maybe not great, but at least it is consistent with all the lifetime
-> > models and the operation of the driver core.
+On Fri, 22 May 2020 00:23:48 -0500 wu000273@umn.edu wrote:
+> From: Qiushi Wu <wu000273@umn.edu>
 > 
-> I agree your comments are valid ones, I just don't have a solution to be
-> fully compliant with these models and report failures of the driver probe
-> for a child device due to configuration issues (bad audio topology, etc).
-
-
-> My understanding is that errors on probe are explicitly not handled in the
-> driver core, see e.g. comments such as:
-
-Yes, but that doesn't really apply here...
- 
-> /*
->  * Ignore errors returned by ->probe so that the next driver can try
->  * its luck.
->  */
-> https://elixir.bootlin.com/linux/latest/source/drivers/base/dd.c#L636
+> In function mlx4_opreq_action(), pointer "mailbox" is not released,
+> when mlx4_cmd_box() return and error, causing a memory leak bug.
+> Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
+> free this pointer.
 > 
-> If somehow we could request the error to be reported then probably we
-> wouldn't need this complete/wait_for_completion mechanism as a custom
-> notification.
+> Fixes: fe6f700d6cbb7 ("Respond to operation request by firmware")
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 
-That is the same issue as the completion, a driver should not be
-making assumptions about ordering like this. For instance what if the
-current driver is in the initrd and the 2nd driver is in a module in
-the filesystem? It will not probe until the system boots more
-completely. 
-
-This is all stuff that is supposed to work properly.
-
-> Not at the moment, no. there are no failures reported in dmesg, and
-> the user does not see any card created. This is a silent error.
-
-Creating a partial non-function card until all the parts are loaded
-seems like the right way to surface an error like this.
-
-Or don't break the driver up in this manner if all the parts are really
-required just for it to function - quite strange place to get into.
-
-What happens if the user unplugs this sub driver once things start
-running?
-
-Jason
+Fixes tag: Fixes: fe6f700d6cbb7 ("Respond to operation request by firmware")
+Has these problem(s):
+	- Subject does not match target commit subject
+	  Just use
+		git log -1 --format='Fixes: %h ("%s")'
