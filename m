@@ -2,105 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12841DDF5A
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 07:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F8E1DDF71
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 07:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725894AbgEVFaS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 01:30:18 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:59184 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgEVFaS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 01:30:18 -0400
-X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 May 2020 01:30:17 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49Svzd2Jtcz9vJsF
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 05:23:57 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IO5onig7W8nP for <linux-rdma@vger.kernel.org>;
-        Fri, 22 May 2020 00:23:57 -0500 (CDT)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49Svzd0b6Yz9vJs4
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 00:23:57 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49Svzd0b6Yz9vJs4
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49Svzd0b6Yz9vJs4
-Received: by mail-il1-f198.google.com with SMTP id x20so7632998ilj.22
-        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 22:23:57 -0700 (PDT)
+        id S1727939AbgEVFjl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 01:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgEVFjl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 01:39:41 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A99FC061A0E
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 22:39:41 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x1so11565756ejd.8
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 22:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=gMkSYpaYiObsrUAVjFqJo6jrnyjpZK7kA9iCJfIjrqc=;
-        b=K46G5HlWLq1auBODxrIzWkUvSV1jUEIMLHROEWmKaZZxC32phG4tfLMl8okF/csdmU
-         Qb7d4/gZfZBmI5FFy/CTuhYTjf2XFyJn/Lz58hnRoh6IDboSeixagSp/3EOh9bqeKaXg
-         kNh+s14RC3ogRe/maSFJvzUAdyi3IpaZlrNBR3nc2ouwvsXXKD5XiI2OSsvOYtePv5y3
-         Li1xzhSOlRYK1iGyU3LvgGDwlSscEgxEHCUPo+9cK9a+h+2siKz4EJMGu0wqasrfgjlN
-         kPauEuxP8pTiLDeFVqoJ172uqZ0UMqu/r5aQes6a4/HmFAl+96BRgXKmuFVpqIqHDaWw
-         CxUg==
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CqYPjIYXrmaZh1pcb7Hru9zoJQGqnxH9Aw5pMpXidZM=;
+        b=aYQyOOGYpTK506neKROafbVlLAM6zZWflTaTxbOTlno9UdTylN2QDKgpzPOPDyFfTF
+         CmoRZ3VWFKuQDI3sZpQxxvEu5MwUfJJBUICT+V+2wdAdlKF3lc7d24impuPgDdfpG629
+         9FJ66bkZBb1gIsL+gwnVw2mxksHPRgd8DMOPM4qJL+6Gvg+DuZvIViNVocpSWoAVgEUW
+         fYoUahjTtCl23DzT7h4Dp66pnB1b+WNdClhsLoi6ADDMhqoZ/nbAdRq+eYAEkAn7vWLe
+         VeROqDTviZ/nzpcySbHjbAaHzDSW+oDsOjK3CL0RAPtnplFbF67tvK0iOQtGxuYgB9/P
+         T1VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gMkSYpaYiObsrUAVjFqJo6jrnyjpZK7kA9iCJfIjrqc=;
-        b=cr/affiH07i6zo7z+O5rpDY+B0qxkjXrvEn9dnurzt3Nos5WXVYhH0yg0j7fA82KNe
-         Hvbq9A3dLaerTaOTsyacLgkZU3WheJ9M6sFfartpwsgwD6t55Bn3H00geWx+wMH9yXOD
-         1tpUv4YLSJDscOt3326kuGEOkDGWUyJz0zzPcuONr+2BfLFZ5+0g/ODXieb5KBCE9TPj
-         E/5r4qaj47U6nm2usYhIQGKRWamTqJOvwGdsP/XW0VPU5Lq4cMsoFm4lZw+uyutU5Hma
-         qwLa1VKoRab/FUlNUgqAjS66vehQAav6cT+wxIzW54OekfS/2b0k1qh8oz/qRNdCs+IS
-         VLbQ==
-X-Gm-Message-State: AOAM530dNe1CD4KjVBt56EHLBAqpQUipWP7SY6gLKyBXNDCal1G4jzYo
-        2DY5vUoVNq2w+Viyx5yDOwGBX63fl8ndi1GXYq3AhsjYalfvE6Ewqx02PcprKjlo8ziYfHU0Jkh
-        2/fzDNmuwwtS0g0Sfj4XXdpjJzw==
-X-Received: by 2002:a05:6638:12d4:: with SMTP id v20mr6892437jas.96.1590125036283;
-        Thu, 21 May 2020 22:23:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9YKaP7wbCt6UDzTnd/OuhdJydO+ARIMKhGdek3jVG5RqkpTWXM/g1l8gx5w/z/sQO+Uq0Qg==
-X-Received: by 2002:a05:6638:12d4:: with SMTP id v20mr6892420jas.96.1590125036048;
-        Thu, 21 May 2020 22:23:56 -0700 (PDT)
-Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
-        by smtp.gmail.com with ESMTPSA id i10sm4042490ilp.28.2020.05.21.22.23.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CqYPjIYXrmaZh1pcb7Hru9zoJQGqnxH9Aw5pMpXidZM=;
+        b=lergyeEEnl0E6HAD4H3ytZqO/xXrkcAf3IqGzIE6tCkxs0WD9eSCIGRFVCuYA1uRLe
+         KAWBIkTO1DgDz4H4I+Be2yPiY7dlklJl9Eu2ec1Jh3kqmrgJt824hVyejfVaUpOiRXdN
+         NI/1tV7yW0uXnxpM0YPHfePRhP9P+a/EvRiHgOxHzFKRtGAJ7uaMFXUn7mRcqvKIaUA7
+         EuVpyI3LmhgEtJcANnSBr9486aEEO924K1sNrYcdK9U4Cvet8R6xi1owi9mo/4W7Cv8V
+         IwJwDhc0+KrUUtX9hpK+6Rrr/nR5y8K7R8DvGwBSxDnAdRuxR+U1qE7er7bqViXeRDAp
+         KqZg==
+X-Gm-Message-State: AOAM533rR7Uz5dOjvC0kNPFWLSN6LdMTRhyszfgHXf0Qiv+26HxDWFGS
+        YAHZqS+vWTJ4mVXQVhwZt+aqoh/mdUCg
+X-Google-Smtp-Source: ABdhPJy9uq8m2rKxx7uq0I34Kzy/WwnDjRO8dUM+LKlxkdxUSne7RB9jAb8jIaXI2nuz36i0IY94QQ==
+X-Received: by 2002:a17:906:e2d2:: with SMTP id gr18mr6423821ejb.312.1590125979781;
+        Thu, 21 May 2020 22:39:39 -0700 (PDT)
+Received: from dkxps.local (dslb-002-204-227-207.002.204.pools.vodafone-ip.de. [2.204.227.207])
+        by smtp.gmail.com with ESMTPSA id c12sm6845358ejm.36.2020.05.21.22.39.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 22:23:55 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     tariqt@mellanox.com
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kjlu@umn.edu,
-        wu000273@umn.edu
-Subject: [PATCH] net/mlx4_core: fix a memory leak bug.
-Date:   Fri, 22 May 2020 00:23:48 -0500
-Message-Id: <20200522052348.1241-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        Thu, 21 May 2020 22:39:39 -0700 (PDT)
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+To:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-next@vger.kernel.org, bvanassche@acm.org,
+        dledford@redhat.com, jgg@ziepe.ca
+Cc:     axboe@kernel.dk, danil.kipnis@cloud.ionos.com, lkp@intel.com,
+        jinpu.wang@cloud.ionos.com
+Subject: [PATCH] RDMA/rtrs: get rid of the do_next_path while_next_path macros
+Date:   Fri, 22 May 2020 07:39:24 +0200
+Message-Id: <20200522053924.528980-1-danil.kipnis@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200520191105.GK31189@ziepe.ca>
+References: <20200520191105.GK31189@ziepe.ca>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+The macros do_each_path/while_each_path lead to a smatch warning:
+drivers/infiniband/ulp/rtrs/rtrs-clt.c:1196 rtrs_clt_failover_req() warn: inconsistent indenting
+drivers/infiniband/ulp/rtrs/rtrs-clt.c:2890 rtrs_clt_request() warn: inconsistent indenting
 
-In function mlx4_opreq_action(), pointer "mailbox" is not released,
-when mlx4_cmd_box() return and error, causing a memory leak bug.
-Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
-free this pointer.
+Also checkpatch complains:
+ERROR: Macros with multiple statements should be enclosed in a do - while loop
 
-Fixes: fe6f700d6cbb7 ("Respond to operation request by firmware")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+The macros are used only in two places: for a normal IO path and for the
+failover path triggered after errors.
+
+Get rid of the macros and just use a for loop iterating over the list
+of paths in both places. It is easier to read and also less lines of code.
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 29 ++++++++++++--------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
-index 6e501af0e532..f6ff9620a137 100644
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
- 		if (err) {
- 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
- 				 err);
--			return;
-+			goto out;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 468fdd0d8713..45ea5aa5f406 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -727,18 +727,6 @@ struct path_it {
+ 	struct rtrs_clt_sess *(*next_path)(struct path_it *it);
+ };
+ 
+-#define do_each_path(path, clt, it) {					\
+-	path_it_init(it, clt);						\
+-	rcu_read_lock();						\
+-	for ((it)->i = 0; ((path) = ((it)->next_path)(it)) &&		\
+-			  (it)->i < (it)->clt->paths_num;		\
+-	     (it)->i++)
+-
+-#define while_each_path(it)						\
+-	path_it_deinit(it);						\
+-	rcu_read_unlock();						\
+-	}
+-
+ /**
+  * list_next_or_null_rr_rcu - get next list element in round-robin fashion.
+  * @head:	the head for the list.
+@@ -1177,7 +1165,10 @@ static int rtrs_clt_failover_req(struct rtrs_clt *clt,
+ 	int err = -ECONNABORTED;
+ 	struct path_it it;
+ 
+-	do_each_path(alive_sess, clt, &it) {
++	rcu_read_lock();
++	for (path_it_init(&it, clt);
++	     (alive_sess = it.next_path(&it)) && it.i < it.clt->paths_num;
++	     it.i++) {
+ 		if (unlikely(READ_ONCE(alive_sess->state) !=
+ 			     RTRS_CLT_CONNECTED))
+ 			continue;
+@@ -1193,7 +1184,9 @@ static int rtrs_clt_failover_req(struct rtrs_clt *clt,
+ 		/* Success path */
+ 		rtrs_clt_inc_failover_cnt(alive_sess->stats);
+ 		break;
+-	} while_each_path(&it);
++	}
++	path_it_deinit(&it);
++	rcu_read_unlock();
+ 
+ 	return err;
+ }
+@@ -2862,7 +2855,9 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
+ 		dma_dir = DMA_TO_DEVICE;
+ 	}
+ 
+-	do_each_path(sess, clt, &it) {
++	rcu_read_lock();
++	for (path_it_init(&it, clt);
++	     (sess = it.next_path(&it)) && it.i < it.clt->paths_num; it.i++) {
+ 		if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
+ 			continue;
+ 
+@@ -2887,7 +2882,9 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
  		}
- 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
- 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+ 		/* Success path */
+ 		break;
+-	} while_each_path(&it);
++	}
++	path_it_deinit(&it);
++	rcu_read_unlock();
+ 
+ 	return err;
+ }
 -- 
-2.17.1
+2.25.1
 
