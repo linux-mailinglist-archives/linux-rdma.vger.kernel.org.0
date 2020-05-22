@@ -2,163 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93A81DE7B4
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 15:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03BC1DE8EE
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 16:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgEVNJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 09:09:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45654 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729384AbgEVNJo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 May 2020 09:09:44 -0400
-IronPort-SDR: C++rkJrxxOf1rUb+KHj1DduoXYOqtPbRCQym8xClVRNtlHYlLAqCMGp5Crk1hc017p91Ba/DPs
- u/Yu0Qwd7kTQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 06:09:42 -0700
-IronPort-SDR: /cT1PMFWXzH9TY8TpMocY7ipKnrB1U20rBbAyPTczPY54gAt+znMMnu1V3h5/K+JRezB+EhzT3
- 7Ru28jfNaCcQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,421,1583222400"; 
-   d="scan'208";a="290102961"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 22 May 2020 06:09:41 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jc7Qi-00014f-KC; Fri, 22 May 2020 21:09:40 +0800
-Date:   Fri, 22 May 2020 21:09:30 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 189277f3814c36133f4ff0352f4b5194a38486b6
-Message-ID: <5ec7cf0a.cYt8jjdrWqiRCtqm%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729948AbgEVO2d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 10:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729868AbgEVO2d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 10:28:33 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C511C061A0E
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 07:28:33 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id p12so8364174qtn.13
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 07:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KhVHSvsx1IIcDHQmyE3Q1FWI6jS+mdIvVR2N/hzufVY=;
+        b=aF0VgOXTDmPeONhvEGOhpcSxKP0hKjBMDv6maxwoRJl4UCotqckxkUkC8dgWUJnbbR
+         ZS7BrsjxQBacCtyq5fUAhoipLjsYrKVKGNOllgdTrJvO8x9kw8XYuUsAlOhCrWefdD5v
+         E2c+0L7JXQC0wtzq2l5wx/yB3SeT30bDlNE0Fi20sluKVp+mwWIziK74S3Qf4vlPy3+T
+         LkPQM/Gv/pxpyz5rFHouPJmFG+8zqmqAdyrpAdimm2rihiklrbPcWo+volZr+aac3Ed9
+         wWps7sA63OaNr1muxm0PdwRdd9vZs/vvij7oRlkcwuEmtDxz6FYFKNUQpEzrEYSNGHLL
+         OJ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KhVHSvsx1IIcDHQmyE3Q1FWI6jS+mdIvVR2N/hzufVY=;
+        b=EE7V+WZN/9ioyin0RcBAgmYnoztAZiZIX+292R6lNpDOJsQhJIcNMvM9eBcIKkVQYn
+         eqbODngCEBpIeAhDvFwF97ujgekKlUSJr7LGn4Eyw5B87uC9tL0nWl19X+KsBsIYApqJ
+         +YfoV8nzIqeHyvtWdg3RovGjnRa2AlLn6TMGRlsRxJ8Cl3shGXSYOwkAOZ+tzPADxtMv
+         DgPmET7w92BJ1BT/rCx9mCBnyZVhoWBlYWOg6e8UdM3FnGSAinp5Ju1c9KUEFKyFW60e
+         uNzCe82NSATKmefTz4ce4i0FzJ1kdoR3d7UY2NI54+O/XQu2lWZek4Z/j1yDYUaOslln
+         kWtw==
+X-Gm-Message-State: AOAM5336sWZxkpa0K52XXpiInOQa8C149h1jPr4fvrSBybIJ3XCwmn2e
+        Qp8IehbswhH0B0RB8Lr9ctmy+EIfc10=
+X-Google-Smtp-Source: ABdhPJz/Rg8ZHEgAVPwqNxq2JjTyBL8EWzUvZKnPY7/KGHsC9s8VRMk4qyX62p1PVfgweAad21bRYg==
+X-Received: by 2002:ac8:4645:: with SMTP id f5mr15420873qto.379.1590157712396;
+        Fri, 22 May 2020 07:28:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id l184sm7354184qkf.84.2020.05.22.07.28.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 22 May 2020 07:28:31 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jc8f0-00031y-QZ; Fri, 22 May 2020 11:28:30 -0300
+Date:   Fri, 22 May 2020 11:28:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     liweihang <liweihang@huawei.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next 0/9] RDMA/hns: Various fixes and cleanups
+Message-ID: <20200522142830.GG17583@ziepe.ca>
+References: <1588931159-56875-1-git-send-email-liweihang@huawei.com>
+ <B82435381E3B2943AA4D2826ADEF0B3A0236A7A2@DGGEML522-MBX.china.huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <B82435381E3B2943AA4D2826ADEF0B3A0236A7A2@DGGEML522-MBX.china.huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
-branch HEAD: 189277f3814c36133f4ff0352f4b5194a38486b6  RDMA/mlx5: Fix NULL pointer dereference in destroy_prefetch_work
+On Fri, May 22, 2020 at 07:39:31AM +0000, liweihang wrote:
+> On 2020/5/8 17:46, Weihang Li wrote:
+> > This series contains the following:
+> > - #1 ~ #2 are fixes to solve issues found from previous versions.
+> > - #3 ~ #5 are fixes for recent refactoring codes to 5.8.
+> > - #6 ~ #9 are various cleanups.
+> > 
+> > Lang Cheng (2):
+> >   RDMA/hns: Fix cmdq parameter of querying pf timer resource
+> >   RDMA/hns: Store mr len information into mr obj
+> > 
+> > Lijun Ou (2):
+> >   RDMA/hns: Bugfix for querying qkey
+> >   RDMA/hns: Reserve one sge in order to avoid local length error
+> > 
+> > Weihang Li (3):
+> >   RDMA/hns: Fix wrong assignment of SRQ's max_wr
+> >   RDMA/hns: Fix error with to_hr_hem_entries_count()
+> >   RDMA/hns: Remove redundant memcpy()
+> > 
+> > Wenpeng Liang (1):
+> >   RDMA/hns: Fix assignment to ba_pg_sz of eqe
+> > 
+> > Xi Wang (1):
+> >   RDMA/hns: Rename macro for defining hns hardware page size
+> > 
+> >  drivers/infiniband/hw/hns/hns_roce_alloc.c  |  6 ++--
+> >  drivers/infiniband/hw/hns/hns_roce_cq.c     |  4 +--
+> >  drivers/infiniband/hw/hns/hns_roce_device.h | 15 +++++---
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 53 ++++++++++++-----------------
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++-
+> >  drivers/infiniband/hw/hns/hns_roce_mr.c     |  8 +++--
+> >  drivers/infiniband/hw/hns/hns_roce_qp.c     |  9 ++---
+> >  drivers/infiniband/hw/hns/hns_roce_srq.c    | 10 +++---
+> >  8 files changed, 56 insertions(+), 53 deletions(-)
+> > 
+> 
+> Hi Jason,
+> 
+> I notice that this series has been marked as "Accepted" on patchwork,
+> but I can't find them on your for-next branch. Maybe there is something
+> wrong :)
 
-elapsed time: 667m
+It is in the wip branch waiting on 0-day to test compile it
 
-configs tested: 104
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200521
-i386                 randconfig-a004-20200521
-i386                 randconfig-a006-20200521
-i386                 randconfig-a003-20200521
-i386                 randconfig-a002-20200521
-i386                 randconfig-a005-20200521
-x86_64               randconfig-a015-20200522
-x86_64               randconfig-a013-20200522
-x86_64               randconfig-a016-20200522
-x86_64               randconfig-a012-20200522
-x86_64               randconfig-a014-20200522
-x86_64               randconfig-a011-20200522
-i386                 randconfig-a013-20200522
-i386                 randconfig-a012-20200522
-i386                 randconfig-a015-20200522
-i386                 randconfig-a011-20200522
-i386                 randconfig-a016-20200522
-i386                 randconfig-a014-20200522
-i386                 randconfig-a013-20200521
-i386                 randconfig-a012-20200521
-i386                 randconfig-a015-20200521
-i386                 randconfig-a011-20200521
-i386                 randconfig-a016-20200521
-i386                 randconfig-a014-20200521
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
