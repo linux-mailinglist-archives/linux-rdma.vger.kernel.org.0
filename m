@@ -2,102 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F053A1DDC4B
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 02:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12841DDF5A
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 07:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgEVArp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 May 2020 20:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgEVAro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 May 2020 20:47:44 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB308C061A0E;
-        Thu, 21 May 2020 17:47:44 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id g79so3775992ybf.0;
-        Thu, 21 May 2020 17:47:44 -0700 (PDT)
+        id S1725894AbgEVFaS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 01:30:18 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:59184 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbgEVFaS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 01:30:18 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 May 2020 01:30:17 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49Svzd2Jtcz9vJsF
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 05:23:57 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IO5onig7W8nP for <linux-rdma@vger.kernel.org>;
+        Fri, 22 May 2020 00:23:57 -0500 (CDT)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49Svzd0b6Yz9vJs4
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 00:23:57 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49Svzd0b6Yz9vJs4
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49Svzd0b6Yz9vJs4
+Received: by mail-il1-f198.google.com with SMTP id x20so7632998ilj.22
+        for <linux-rdma@vger.kernel.org>; Thu, 21 May 2020 22:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o1achSWEeCebePnmfJCefzRB6hhApcsEC43Uj0PfEdo=;
-        b=WsGRWs81ne4GiEIj2AuIqikvp+lAWF+9c6fBO/yPPFiOxIHXJ/DrPBIMsGpTFaITpu
-         9i9UhHdmI5Avjonw3yqrBGbpCzvnrNWyoWx8wJl5tCPlriDkngednvKIudKH2d+WfEQw
-         h55ECOkkfEaKHhzsJVUDKS8uWQ4x4Js4Qwy1kvRuhBvMr2bYe9N168YuA0OuiyR28BGT
-         mG4pSBmtdc24n52sGqwScHBmyYhwYqVrp16anD7tQUJb178QRxctfifFkBt/dgG8F+5f
-         837fbBybst4L3Xxia67k5YB+sNG2kr+a7vmpGCs+Xw/FAV0rtV7r4hiPw3ZsgNa8UeKP
-         VvpA==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=gMkSYpaYiObsrUAVjFqJo6jrnyjpZK7kA9iCJfIjrqc=;
+        b=K46G5HlWLq1auBODxrIzWkUvSV1jUEIMLHROEWmKaZZxC32phG4tfLMl8okF/csdmU
+         Qb7d4/gZfZBmI5FFy/CTuhYTjf2XFyJn/Lz58hnRoh6IDboSeixagSp/3EOh9bqeKaXg
+         kNh+s14RC3ogRe/maSFJvzUAdyi3IpaZlrNBR3nc2ouwvsXXKD5XiI2OSsvOYtePv5y3
+         Li1xzhSOlRYK1iGyU3LvgGDwlSscEgxEHCUPo+9cK9a+h+2siKz4EJMGu0wqasrfgjlN
+         kPauEuxP8pTiLDeFVqoJ172uqZ0UMqu/r5aQes6a4/HmFAl+96BRgXKmuFVpqIqHDaWw
+         CxUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o1achSWEeCebePnmfJCefzRB6hhApcsEC43Uj0PfEdo=;
-        b=areGP3zWowwAnDd6KrlLOOS1LyKnlz2+CD1nrxCAUEKznfa+4mhBcSfv61I40lJGAK
-         c4QAvpkOsVNAJZyMPM6JRU0PI5npOTeGkfY+rp6maDPOlQrXstYMxNiwUb8Xd4aBqGZP
-         NjAyMnGGQiN0OVJHQT1V/QyChgighBODpmBeqmQlqGXV/5bgD+kv+ZkArvJq7XfSacTP
-         8LF4Uo+/GsRFjvGnncQe0UPwkKdrYRR1Bw8+Jg2Xlv+DZcUAX8Fncq51ChUjut+jtwDy
-         xRnNTeiXcHJXv+nT+ChSJ7w++yayUuuBmRVlcgmHTh3w+3HfpjaIvgOks7wNhZs+tBiZ
-         IoKQ==
-X-Gm-Message-State: AOAM532IkaXhhDg2nmhIXARbWExHRNx+S/Cc+qbWWOPPib4hy5M3sPS2
-        8Whz99uNa2vnlPuioksE12+coWFsueqMJ1t4g5Y=
-X-Google-Smtp-Source: ABdhPJzz46XpCwc5jovLm8lmHQ+AD9jyCkktAnl9vTJWUtMKYfZSqeYdgJlRvpqDlK57+i71ZO4Zm6KzcwysMIEomd0=
-X-Received: by 2002:a25:9d82:: with SMTP id v2mr19502909ybp.268.1590108463933;
- Thu, 21 May 2020 17:47:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200520183652.21633-1-rcampbell@nvidia.com> <20200520192045.GH24561@mellanox.com>
- <0ef69e08-7f5d-7a3d-c657-55b3a8df1dfe@nvidia.com>
-In-Reply-To: <0ef69e08-7f5d-7a3d-c657-55b3a8df1dfe@nvidia.com>
-From:   Ben Skeggs <skeggsb@gmail.com>
-Date:   Fri, 22 May 2020 10:47:32 +1000
-Message-ID: <CACAvsv6TYCaChfsp4LNcVUZ6b0f6F5vDiKqfpzRTVRnRM7373g@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH] nouveau/hmm: fix migrate zero page to GPU
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gMkSYpaYiObsrUAVjFqJo6jrnyjpZK7kA9iCJfIjrqc=;
+        b=cr/affiH07i6zo7z+O5rpDY+B0qxkjXrvEn9dnurzt3Nos5WXVYhH0yg0j7fA82KNe
+         Hvbq9A3dLaerTaOTsyacLgkZU3WheJ9M6sFfartpwsgwD6t55Bn3H00geWx+wMH9yXOD
+         1tpUv4YLSJDscOt3326kuGEOkDGWUyJz0zzPcuONr+2BfLFZ5+0g/ODXieb5KBCE9TPj
+         E/5r4qaj47U6nm2usYhIQGKRWamTqJOvwGdsP/XW0VPU5Lq4cMsoFm4lZw+uyutU5Hma
+         qwLa1VKoRab/FUlNUgqAjS66vehQAav6cT+wxIzW54OekfS/2b0k1qh8oz/qRNdCs+IS
+         VLbQ==
+X-Gm-Message-State: AOAM530dNe1CD4KjVBt56EHLBAqpQUipWP7SY6gLKyBXNDCal1G4jzYo
+        2DY5vUoVNq2w+Viyx5yDOwGBX63fl8ndi1GXYq3AhsjYalfvE6Ewqx02PcprKjlo8ziYfHU0Jkh
+        2/fzDNmuwwtS0g0Sfj4XXdpjJzw==
+X-Received: by 2002:a05:6638:12d4:: with SMTP id v20mr6892437jas.96.1590125036283;
+        Thu, 21 May 2020 22:23:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9YKaP7wbCt6UDzTnd/OuhdJydO+ARIMKhGdek3jVG5RqkpTWXM/g1l8gx5w/z/sQO+Uq0Qg==
+X-Received: by 2002:a05:6638:12d4:: with SMTP id v20mr6892420jas.96.1590125036048;
+        Thu, 21 May 2020 22:23:56 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id i10sm4042490ilp.28.2020.05.21.22.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 22:23:55 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     tariqt@mellanox.com
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kjlu@umn.edu,
+        wu000273@umn.edu
+Subject: [PATCH] net/mlx4_core: fix a memory leak bug.
+Date:   Fri, 22 May 2020 00:23:48 -0500
+Message-Id: <20200522052348.1241-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 21 May 2020 at 07:05, Ralph Campbell <rcampbell@nvidia.com> wrote:
->
->
-> On 5/20/20 12:20 PM, Jason Gunthorpe wrote:
-> > On Wed, May 20, 2020 at 11:36:52AM -0700, Ralph Campbell wrote:
-> >> When calling OpenCL clEnqueueSVMMigrateMem() on a region of memory that
-> >> is backed by pte_none() or zero pages, migrate_vma_setup() will fill the
-> >> source PFN array with an entry indicating the source page is zero.
-> >> Use this to optimize migration to device private memory by allocating
-> >> GPU memory and zero filling it instead of failing to migrate the page.
-> >>
-> >> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> >>
-> >> This patch applies cleanly to Jason's Gunthorpe's hmm tree plus two
-> >> patches I posted earlier. The first is queued in Ben Skegg's nouveau
-> >> tree and the second is still pending review/not queued.
-> >> [1] ("nouveau/hmm: map pages after migration")
-> >> https://lore.kernel.org/linux-mm/20200304001339.8248-5-rcampbell@nvidia.com/
-> >> [2] ("nouveau/hmm: fix nouveau_dmem_chunk allocations")
-> >> https://lore.kernel.org/lkml/20200421231107.30958-1-rcampbell@nvidia.com/
-> >
-> > It would be best if it goes through Ben's tree if it doesn't have
-> > conflicts with the hunks I have in the hmm tree.. Is it the case?
-> >
-> > Jason
->
-> I think there might be some merge conflicts even though it is semantically
-> independent of the other changes. I guess since we are at 5.7-rc6 and not
-> far from the merge window, I can rebase after 5.8-rc1 and resend.
-> I posted this mostly to get some review and as a "heads up" of the issue.
-Both look alright to me, and apply cleanly on top of my tree already,
-so I've got them locally.
+From: Qiushi Wu <wu000273@umn.edu>
 
-Ben.
+In function mlx4_opreq_action(), pointer "mailbox" is not released,
+when mlx4_cmd_box() return and error, causing a memory leak bug.
+Fix this issue by going to "out" label, mlx4_free_cmd_mailbox() can
+free this pointer.
 
-> _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+Fixes: fe6f700d6cbb7 ("Respond to operation request by firmware")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+---
+ drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+index 6e501af0e532..f6ff9620a137 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
+ 		if (err) {
+ 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
+ 				 err);
+-			return;
++			goto out;
+ 		}
+ 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
+ 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+-- 
+2.17.1
+
