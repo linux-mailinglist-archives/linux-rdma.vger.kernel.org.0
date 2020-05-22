@@ -2,132 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46941DEA5D
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 16:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFE61DEAAF
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 16:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730096AbgEVOyF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 10:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731063AbgEVOvj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 May 2020 10:51:39 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2B342145D;
-        Fri, 22 May 2020 14:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590159098;
-        bh=G02uOQXZHAtlp5iiuYiQJAEfyrr+0VCf29HFdP4vK7Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oH/g/x0F+9xXU5KDbvawZAJ4G6qhEINOOGgkbzRdOYoHFM6rGoqOB6etG2ko1HISJ
-         J/G3LMkWNAB51UDDaaph2OAw8nFyQqA1yLIbjtA0jfvVl9rSYXM5iYJx2ud2ZaexBU
-         AAo5zp5DOEWpHQX/J/vepqVU82hxs/ZiTYl1S5t0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Denis V. Lunev" <den@openvz.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 16/19] IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
-Date:   Fri, 22 May 2020 10:51:17 -0400
-Message-Id: <20200522145120.434921-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200522145120.434921-1-sashal@kernel.org>
-References: <20200522145120.434921-1-sashal@kernel.org>
+        id S1731375AbgEVOzu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 10:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731271AbgEVOzo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 10:55:44 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A44BC05BD43
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 07:55:44 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id n22so8422050qtv.12
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 07:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QJ37phwO+Zm3dA3dP+dCln73OoFdmwI2wd+G4MSZ9eY=;
+        b=LCg1FTqhmjkzGkPZ7IuQOhelRkUABkUmGIRl3tyS1ElD5u1+JVoUQ3rTjeME25qjSK
+         WehnVfGuvT1BkKU7rMspHg4j2MSykHh1X6ql90soNZhGDwJuaR4p/7lLoaLyANeC6Zun
+         WL5GC1SPSPiMerr2NnmbEPwAmJ/2zJYXrATYUdsGyMxi6+1cus4mnRX9ROMTROfXRgg1
+         yuBFhxJhAPf7OduQj0BVWXMk/0LeWy4GP+lVSvw98lzfmMMyT5doKAZDdNYaFjorn16l
+         ziygSgzFJekR/thDfe0ckQvBqY02UTPGX7xkpt/JOcfVWwDfyI6EK7bol308v+bMMo4/
+         S9YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QJ37phwO+Zm3dA3dP+dCln73OoFdmwI2wd+G4MSZ9eY=;
+        b=j6nLZ72ycDY9q4mhgI91/H93GwDJGkUAu+i419+KCmNnQi1EWlmIHxbVqw4mhMvA36
+         D1HIAxPO2rZ16CG/txuhvcwFINpr01UmUoGnaPSnC/+3WNljmjr8+nHbn+e+oxuh0Lqb
+         rLAOn9lWEjxJORC/TtMW4zNP0f2xFf5eK2WJJEo/p9g4zbeVfA3MM/kcxCd0EjhJ9hXz
+         SWZWNWtc2rO2VDWTBJ07vw76GG6F3Gbeug5mvQ/3oHnaNLH5cctTQooLZIvsolySo8BP
+         NQUwo77uVKW6OFTvFnLlzglkb0pQzjOQllJnkLYTqjxbo1QxHEUXNVKTXPjcAERoL66t
+         4sVg==
+X-Gm-Message-State: AOAM5307KoyQi6GqAXjvpY1/hk2RBOiTfT/2QFg3szZOR5mC+oHqtoHn
+        ootI1r5ve6YbH3U/JOAe9khd8w==
+X-Google-Smtp-Source: ABdhPJzIuVul3rsjIIpmrUHnLzd/o8ZLk2HG1kUBSnA9rmWUVRqYZSwm4RYSHXC4yNQJaNQzMI5hKA==
+X-Received: by 2002:ac8:6f5a:: with SMTP id n26mr17164573qtv.303.1590159343523;
+        Fri, 22 May 2020 07:55:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id o66sm1963579qka.60.2020.05.22.07.55.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 22 May 2020 07:55:43 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jc95K-0004qa-KL; Fri, 22 May 2020 11:55:42 -0300
+Date:   Fri, 22 May 2020 11:55:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com,
+        Fred Oh <fred.oh@linux.intel.com>
+Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
+ client
+Message-ID: <20200522145542.GI17583@ziepe.ca>
+References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
+ <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
+ <20200520125437.GH31189@ziepe.ca>
+ <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
+ <20200521233437.GF17583@ziepe.ca>
+ <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "Denis V. Lunev" <den@openvz.org>
+On Fri, May 22, 2020 at 09:29:57AM -0500, Pierre-Louis Bossart wrote:
+> 
+> > > > > +	ret = virtbus_register_device(vdev);
+> > > > > +	if (ret < 0)
+> > > > > +		return ret;
+> > > > > +
+> > > > > +	/* make sure the probe is complete before updating client list
+> > > > > */
+> > > > > +	timeout = msecs_to_jiffies(SOF_CLIENT_PROBE_TIMEOUT_MS);
+> > > > > +	time = wait_for_completion_timeout(&cdev->probe_complete,
+> > > > > timeout);
+> > > > 
+> > > > This seems bonkers - the whole point of something like virtual bus is
+> > > > to avoid madness like this.
+> > > 
+> > > Thanks for your review, Jason. The idea of the times wait here is to
+> > > make the registration of the virtbus devices synchronous so that the
+> > > SOF core device has knowledge of all the clients that have been able to
+> > > probe successfully. This part is domain-specific and it works very well
+> > > in the audio driver case.
+> > 
+> > This need to be hot plug safe. What if the module for this driver is
+> > not available until later in boot? What if the user unplugs the
+> > driver? What if the kernel runs probing single threaded?
+> > 
+> > It is really unlikely you can both have the requirement that things be
+> > synchronous and also be doing all the other lifetime details properly..
+> 
+> Can you suggest an alternate solution then?
 
-[ Upstream commit 856ec7f64688387b100b7083cdf480ce3ac41227 ]
+I don't even know what problem you are trying to solve.
 
-Local variable netdev is not used in these calls.
+> The complete/wait_for_completion is a simple mechanism to tell that the
+> action requested by the parent is done. Absent that, we can end-up in a
+> situation where the probe may fail, or the requested module does not exist,
+> and the parent knows nothing about the failure - so the system is in a
+> zombie state and users are frustrated. It's not great either, is it?
 
-It should be noted, that this change is required to work in bonded mode.
-Otherwise we would get the following assert:
+Maybe not great, but at least it is consistent with all the lifetime
+models and the operation of the driver core.
 
- "RTNL: assertion failed at net/core/dev.c (5665)"
+> This is not an hypothetical case, we've had this recurring problem when a
+> PCI device creates an audio card represented as a platform device. When the
+> card registration fails, typically due to configuration issues, the PCI
+> probe still completes. That's really confusing and the source of lots of
+> support questions. If we use these virtual bus extensions to stpo abusing
+> platform devices, it'd be really nice to make those unreported probe
+> failures go away.
 
-With the calltrace as follows:
-	dump_stack+0x19/0x1b
-	netdev_master_upper_dev_get+0x61/0x70
-	i40iw_addr_resolve_neigh+0x1e8/0x220
-	i40iw_make_cm_node+0x296/0x700
-	? i40iw_find_listener.isra.10+0xcc/0x110
-	i40iw_receive_ilq+0x3d4/0x810
-	i40iw_puda_poll_completion+0x341/0x420
-	i40iw_process_ceq+0xa5/0x280
-	i40iw_ceq_dpc+0x1e/0x40
-	tasklet_action+0x83/0x140
-	__do_softirq+0x125/0x2bb
-	call_softirq+0x1c/0x30
-	do_softirq+0x65/0xa0
-	irq_exit+0x105/0x110
-	do_IRQ+0x56/0xf0
-	common_interrupt+0x16a/0x16a
-	? cpuidle_enter_state+0x57/0xd0
-	cpuidle_idle_call+0xde/0x230
-	arch_cpu_idle+0xe/0xc0
-	cpu_startup_entry+0x14a/0x1e0
-	start_secondary+0x1f7/0x270
-	start_cpu+0x5/0x14
+I think you need to address this in some other way that is hot plug
+safe.
 
-Link: https://lore.kernel.org/r/20200428131511.11049-1-den@openvz.org
-Signed-off-by: Denis V. Lunev <den@openvz.org>
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
- 1 file changed, 8 deletions(-)
+Surely you can make this failure visible to users in some other way?
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index 771eb6bd0785..4321b9e3dbb4 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -1984,7 +1984,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 	struct rtable *rt;
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	__be32 dst_ipaddr = htonl(dst_ip);
- 	__be32 src_ipaddr = htonl(src_ip);
- 
-@@ -1994,9 +1993,6 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
- 		return rc;
- 	}
- 
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(&rt->dst, &dst_ipaddr);
- 
- 	rcu_read_lock();
-@@ -2062,7 +2058,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
- {
- 	struct neighbour *neigh;
- 	int rc = arpindex;
--	struct net_device *netdev = iwdev->netdev;
- 	struct dst_entry *dst;
- 	struct sockaddr_in6 dst_addr;
- 	struct sockaddr_in6 src_addr;
-@@ -2083,9 +2078,6 @@ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
- 		return rc;
- 	}
- 
--	if (netif_is_bond_slave(netdev))
--		netdev = netdev_master_upper_dev_get(netdev);
--
- 	neigh = dst_neigh_lookup(dst, dst_addr.sin6_addr.in6_u.u6_addr32);
- 
- 	rcu_read_lock();
--- 
-2.25.1
-
+Jason
