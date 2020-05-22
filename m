@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CB61DF14A
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 23:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCBE1DF14B
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 23:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731123AbgEVVdx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 17:33:53 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:54724 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731033AbgEVVdw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 17:33:52 -0400
-Received: by mail-pj1-f65.google.com with SMTP id s69so5537750pjb.4
-        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 14:33:52 -0700 (PDT)
+        id S1731140AbgEVVdz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 17:33:55 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:52721 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731130AbgEVVdy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 May 2020 17:33:54 -0400
+Received: by mail-pj1-f68.google.com with SMTP id a5so5545795pjh.2
+        for <linux-rdma@vger.kernel.org>; Fri, 22 May 2020 14:33:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4K9rHHICE3+inYoR2BYCilENf4wIRIaOf+lyZ8wD/kY=;
-        b=TtoHtuDmnWNeWTX1udhbDJeqs1XnLz5WbCwaKo+Nv+c0JgnO7YhYeRtIUhWhUAlxhK
-         ZwfQiZB8gaCkU25kVcYQsumlqcY4rE8RIZEyOj00Y/pTHm8crufOUWrK5y+H4oK/Jjum
-         BOY7gMsfCBjlPBmYoiPoN16BJJTU5bBnRE2Go0r9Hy39TlSe9A3kDfqZ5SjRZ3q8OP78
-         gtUqJjgfitcHd+tvh0uhxzicvekD+HEr84ASQzXiUcejLM/ZrxR5SPTPAcwCYAV9UVuK
-         xm34RPMWJe93TR+23EKoXcZV/SmAqhtuEH0dBC+/qs8S9cVnuLC618Vck89rfIKgZgqm
-         37XQ==
-X-Gm-Message-State: AOAM531UAQepnf5gbY9SvCk8PyuCaNew/QqUT8ogv59ym7goHR6nju+q
-        Wzl0MR/pgyDOdkjktzT5YHYn7a1i
-X-Google-Smtp-Source: ABdhPJxQLRdOvif77tOPMoeTTIELVGGxIrGCaJEU4vz67I/5f36v6hjZie4ANkuYdE5vk7m5L4oOfA==
-X-Received: by 2002:a17:90a:1485:: with SMTP id k5mr2140769pja.108.1590183231897;
-        Fri, 22 May 2020 14:33:51 -0700 (PDT)
+        bh=f98PTCIHfsRe/PVHZ+ofAlaoYmlI4YmDVK0u2K32q6M=;
+        b=LNGasCXvsn/kpY1IyKfyY3JOneMXjrrqrRD3OnRhrsz1htcrjBGDuARIfjrNwN+GJh
+         07WI0B41SD6ayvmh0iM5ZBvsaPO3xE36rDRY9EetI1lSUT0lJyEJcODN3cmR3ATh5JwQ
+         fkFJWdp5HUqr7j8xy0a6gL7lsadnqLFuJXrcD5jY0Srm/c2vs1rb/HbkyHQlVEKS5jri
+         TWRDR7Vi2Y+49vZ6mKhiykPYXqJ/F6x1vRCW+1MuiCcw+QRdc+DtpD+VAXEjVJ9SoDKN
+         D2Kbpb+H27/Gjsr/7KMCBooLb41tJU/IP9vhycleDepE9IuzZUtVE6Iw87BZTTu3iA54
+         mooA==
+X-Gm-Message-State: AOAM531h59nlsNOnuh0b4nmGXDbYzTaephcX3PNanFdS6EGlOfogRMY/
+        M9itzxAPUWHDvCMjdoRMbyg=
+X-Google-Smtp-Source: ABdhPJzE89u5Qfv0v5w20f7SkdOnhCSUCvX5h9m2hOEHRDsRVBkeebGxkYyJqMLlsI3etrkqjnveIg==
+X-Received: by 2002:a17:90a:36c9:: with SMTP id t67mr3586190pjb.17.1590183233610;
+        Fri, 22 May 2020 14:33:53 -0700 (PDT)
 Received: from localhost.localdomain ([2601:647:4000:d7:b874:274b:7df6:e61b])
-        by smtp.gmail.com with ESMTPSA id mn19sm7480755pjb.8.2020.05.22.14.33.50
+        by smtp.gmail.com with ESMTPSA id mn19sm7480755pjb.8.2020.05.22.14.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 14:33:51 -0700 (PDT)
+        Fri, 22 May 2020 14:33:52 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
@@ -40,9 +40,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Laurence Oberman <loberman@redhat.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH 2/4] RDMA/srpt: Make debug output more detailed
-Date:   Fri, 22 May 2020 14:33:39 -0700
-Message-Id: <20200522213341.16341-3-bvanassche@acm.org>
+Subject: [PATCH 3/4] RDMA/srpt: Reduce max_recv_sge to 1
+Date:   Fri, 22 May 2020 14:33:40 -0700
+Message-Id: <20200522213341.16341-4-bvanassche@acm.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200522213341.16341-1-bvanassche@acm.org>
 References: <20200522213341.16341-1-bvanassche@acm.org>
@@ -53,42 +53,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Since the session name by itself is not sufficient to uniquely identify a
-queue pair, include the queue pair number. Show the ASCII channel state
-name instead of the numeric value. This change makes the ib_srpt debug
-output more consistent.
+Since srpt_post_recv() always sets num_sge to 1, reduce the max_recv_sge
+parameter that is used at queue pair allocation time to 1.
 
 Cc: Laurence Oberman <loberman@redhat.com>
 Cc: Kamal Heib <kamalheib1@gmail.com>
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index a294630f2100..a39ad9fc4224 100644
+index a39ad9fc4224..1ad3cc7c553a 100644
 --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
 +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -214,8 +214,9 @@ static const char *get_ch_state_name(enum rdma_ch_state s)
-  */
- static void srpt_qp_event(struct ib_event *event, struct srpt_rdma_ch *ch)
- {
--	pr_debug("QP event %d on ch=%p sess_name=%s state=%d\n",
--		 event->event, ch, ch->sess_name, ch->state);
-+	pr_debug("QP event %d on ch=%p sess_name=%s-%d state=%s\n",
-+		 event->event, ch, ch->sess_name, ch->qp->qp_num,
-+		 get_ch_state_name(ch->state));
+@@ -1818,16 +1818,12 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
+ 	qp_init->cap.max_rdma_ctxs = sq_size / 2;
+ 	qp_init->cap.max_send_sge = min(attrs->max_send_sge,
+ 					SRPT_MAX_SG_PER_WQE);
+-	qp_init->cap.max_recv_sge = min(attrs->max_recv_sge,
+-					SRPT_MAX_SG_PER_WQE);
++	qp_init->cap.max_recv_sge = 1;
+ 	qp_init->port_num = ch->sport->port;
+-	if (sdev->use_srq) {
++	if (sdev->use_srq)
+ 		qp_init->srq = sdev->srq;
+-	} else {
++	else
+ 		qp_init->cap.max_recv_wr = ch->rq_size;
+-		qp_init->cap.max_recv_sge = min(attrs->max_recv_sge,
+-						SRPT_MAX_SG_PER_WQE);
+-	}
  
- 	switch (event->event) {
- 	case IB_EVENT_COMM_EST:
-@@ -1985,8 +1986,8 @@ static void __srpt_close_all_ch(struct srpt_port *sport)
- 	list_for_each_entry(nexus, &sport->nexus_list, entry) {
- 		list_for_each_entry(ch, &nexus->ch_list, list) {
- 			if (srpt_disconnect_ch(ch) >= 0)
--				pr_info("Closing channel %s because target %s_%d has been disabled\n",
--					ch->sess_name,
-+				pr_info("Closing channel %s-%d because target %s_%d has been disabled\n",
-+					ch->sess_name, ch->qp->qp_num,
- 					dev_name(&sport->sdev->device->dev),
- 					sport->port);
- 			srpt_close_ch(ch);
+ 	if (ch->using_rdma_cm) {
+ 		ret = rdma_create_qp(ch->rdma_cm.cm_id, sdev->pd, qp_init);
