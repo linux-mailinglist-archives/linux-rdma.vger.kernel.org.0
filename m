@@ -2,75 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A491DE793
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 15:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93A81DE7B4
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 May 2020 15:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgEVND3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 May 2020 09:03:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39682 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729292AbgEVND2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 May 2020 09:03:28 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D3EFDCC83B7AB3BDFD6E;
-        Fri, 22 May 2020 21:03:26 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 22 May 2020 21:03:16 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 4/4] RDMA/hns: Make the end of sge process more clear
-Date:   Fri, 22 May 2020 21:02:59 +0800
-Message-ID: <1590152579-32364-5-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1590152579-32364-1-git-send-email-liweihang@huawei.com>
-References: <1590152579-32364-1-git-send-email-liweihang@huawei.com>
+        id S1729399AbgEVNJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 May 2020 09:09:44 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45654 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729384AbgEVNJo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 May 2020 09:09:44 -0400
+IronPort-SDR: C++rkJrxxOf1rUb+KHj1DduoXYOqtPbRCQym8xClVRNtlHYlLAqCMGp5Crk1hc017p91Ba/DPs
+ u/Yu0Qwd7kTQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 06:09:42 -0700
+IronPort-SDR: /cT1PMFWXzH9TY8TpMocY7ipKnrB1U20rBbAyPTczPY54gAt+znMMnu1V3h5/K+JRezB+EhzT3
+ 7Ru28jfNaCcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,421,1583222400"; 
+   d="scan'208";a="290102961"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 22 May 2020 06:09:41 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jc7Qi-00014f-KC; Fri, 22 May 2020 21:09:40 +0800
+Date:   Fri, 22 May 2020 21:09:30 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 189277f3814c36133f4ff0352f4b5194a38486b6
+Message-ID: <5ec7cf0a.cYt8jjdrWqiRCtqm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
+branch HEAD: 189277f3814c36133f4ff0352f4b5194a38486b6  RDMA/mlx5: Fix NULL pointer dereference in destroy_prefetch_work
 
-Instead of i with the sge number of wr will make the comparision more
-clear, that is, when the sge number in wr is small than the maximum
-supported sge number in the queue, then a stop sge needed to be filled at
-the end of sges in wr.
+elapsed time: 667m
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+configs tested: 104
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+m68k                             allyesconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20200521
+i386                 randconfig-a004-20200521
+i386                 randconfig-a006-20200521
+i386                 randconfig-a003-20200521
+i386                 randconfig-a002-20200521
+i386                 randconfig-a005-20200521
+x86_64               randconfig-a015-20200522
+x86_64               randconfig-a013-20200522
+x86_64               randconfig-a016-20200522
+x86_64               randconfig-a012-20200522
+x86_64               randconfig-a014-20200522
+x86_64               randconfig-a011-20200522
+i386                 randconfig-a013-20200522
+i386                 randconfig-a012-20200522
+i386                 randconfig-a015-20200522
+i386                 randconfig-a011-20200522
+i386                 randconfig-a016-20200522
+i386                 randconfig-a014-20200522
+i386                 randconfig-a013-20200521
+i386                 randconfig-a012-20200521
+i386                 randconfig-a015-20200521
+i386                 randconfig-a011-20200521
+i386                 randconfig-a016-20200521
+i386                 randconfig-a014-20200521
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index e02afd2..d8b3d86 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -646,7 +646,7 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 			dseg++;
- 		}
- 
--		if (i < hr_qp->rq.max_gs) {
-+		if (wr->num_sge < hr_qp->rq.max_gs) {
- 			dseg->lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
- 			dseg->addr = 0;
- 			dseg->len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
-@@ -782,7 +782,7 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 			dseg[i].addr = cpu_to_le64(wr->sg_list[i].addr);
- 		}
- 
--		if (i < srq->max_gs) {
-+		if (wr->num_sge < srq->max_gs) {
- 			dseg[i].len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
- 			dseg[i].lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
- 			dseg[i].addr = 0;
--- 
-2.8.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
