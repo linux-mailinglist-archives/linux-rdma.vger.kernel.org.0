@@ -2,206 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A911DF788
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2020 15:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B661DF7B9
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2020 15:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbgEWNXY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 23 May 2020 09:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387763AbgEWNXY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 23 May 2020 09:23:24 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C57D620727;
-        Sat, 23 May 2020 13:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590240203;
-        bh=F1lEPg0QQmrbA+VxPvxB6bGLMn08GzSm+g3arTqa8+U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=geIumvFCSIeaLuxB5WAF08Kkmo/R5eYr6lRE0FvXKf5FIFOHWyJNqgK13rTJZOjcr
-         ZiCSDchS/qOf/dlnuDTOldiVqMEbZTeslSCvXGUb9+0/FS0XGJJuqwckN0LCV6xIs2
-         SlA9ueoLzonFOFFzlj1tmdALKgrw8VyYtmyrqjAQ=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next v1 9/9] RDMA/mlx5: Return ECE data after modify QP
-Date:   Sat, 23 May 2020 16:22:43 +0300
-Message-Id: <20200523132243.817936-10-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200523132243.817936-1-leon@kernel.org>
-References: <20200523132243.817936-1-leon@kernel.org>
+        id S2387833AbgEWNzc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 May 2020 09:55:32 -0400
+Received: from mail-eopbgr10086.outbound.protection.outlook.com ([40.107.1.86]:6769
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387529AbgEWNzb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 23 May 2020 09:55:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IP1vtXQreFIFCfp1TNRqBEo2MnOeeMU8qto5K7f4ftfBQRyOiMbAruvQusYCkj1ml+tYYIyMYVzn+cXzAzfmHzEL2g2u8K5sLLu3IFTmY7+wnjTJvxzNfRrUGZNxjc7kY87GJUHtcM8BN4wDJ3ALTBWnWkZtEKj6JtjIgVYIpDMYqsm2HRf/CUP993atvy4IdhAXtyf1i1zH9gXxV3DMR+2R6jYV0YqrZ0ABzkZGN1vbjb8yvkVdL5A5oLIIaWtA/BDL9wmbfAT3dpVY+T75V8f/rjOXT5GhcTjPitRLjB54PgjoATIISn9k0qyKzIXCeSTkfUDZBjS4KLcRd2LJTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u9dfr/dZ6JAyezGFdHMFlJHzYAXDP5v5NmcRgDK8N7U=;
+ b=LfPPDrKPTWzLifnmhx3cuB1Hle6VjUKiHrhZMXangyDvmVpixHKXYZote5+ru99h0iFFRMD6Q0oAkcvfMIhBkzytuBksXwj6b394pNvLliMTxKSTk5tuz8nY141b06NJ+AyfBADMp4J/ex1F+bxAvB0S4PD6pXv66tpE/j4K5BOx3Olra39NdWVRlhgCAkMdp1vne81W2IZGu93XTTr64BGNOAKMQFJnSiO/Mq0tGNnI6DrcogmEWUo7jDYMzD5vMzjdb7z5sPGvl7rwfi4oqezVs+++V2fUZTxRuh4UPK11O3hluWS9L5zFk0JluTAUiicoD4r+H4ucZOq2WjR73g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u9dfr/dZ6JAyezGFdHMFlJHzYAXDP5v5NmcRgDK8N7U=;
+ b=lY/ATgnu67N80rr+8HoqoexA8DrHN2ds8/4clNIuLbDjG6sKj/lKodF+HnNYXdT3SRpRBuX7Qwuk44Y+3JTrAb2FFd++93Ad3hPTFgomdYMxoY3uAl5LOm2VWQ574S5aL0OA30Mxh5F1nNcMWpzK0sgywrjjk6gmx7Uy8AYwftM=
+Authentication-Results: acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=none action=none header.from=mellanox.com;
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
+ by AM6PR05MB4904.eurprd05.prod.outlook.com (2603:10a6:20b:6::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Sat, 23 May
+ 2020 13:55:27 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.3021.027; Sat, 23 May 2020
+ 13:55:27 +0000
+Date:   Sat, 23 May 2020 16:55:23 +0300
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        linux-rdma@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: Re: [PATCH 1/4] RDMA/srp: Make the channel count configurable per
+ target
+Message-ID: <20200523135523.GA569407@unreal>
+References: <20200522213341.16341-1-bvanassche@acm.org>
+ <20200522213341.16341-2-bvanassche@acm.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522213341.16341-2-bvanassche@acm.org>
+X-ClientProxiedBy: AM4PR0701CA0010.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::20) To AM6PR05MB6408.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a00:a040:183:2d::a43) by AM4PR0701CA0010.eurprd07.prod.outlook.com (2603:10a6:200:42::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.9 via Frontend Transport; Sat, 23 May 2020 13:55:27 +0000
+X-Originating-IP: [2a00:a040:183:2d::a43]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ffc91c51-e438-44ac-fd1e-08d7ff20f2b8
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4904:
+X-Microsoft-Antispam-PRVS: <AM6PR05MB4904899DAF873A41531945C1B0B50@AM6PR05MB4904.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:328;
+X-Forefront-PRVS: 0412A98A59
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CovHzXaM2mkKNMPXl8X4cKGKwINszJNlw0Uvrtdxdc8kuUNt34qFqRBNn99oyyUqIt7LVoMkqT4rbveUGX4ZhD4Jvmav5MHkMHQyyB9LzySZM0qUHI087U8ROl/JRbHwTK3BrTVwMeEyu2FPO7odIdwZ8VDxFNQfQWXQfnCUh9vbc7N01acbiPdNrRei+Rd6dktdwpSwlhTHepEe+nbEDLy+D34nnTXqlUXVusgzCOdYz4Jmb0HCF8Nqt5RU4XWqUXrB9H5VxVzFkQi9lNuruLAg3KiLgpGwfVxjMEgMHMY7AKbXtqg0DMEcgOMqIukihWp9Ucz7WIWMWtXtmlF/0DHxc/tEkkbfBzF9+N0bBqZ+a7XaQecpk/lqD2GSfbAjJoftFXe25kDbXS5618CtiDgEvHZpxZYKf2Nnlx/JhCjfO15IjQSHh9h1yvMTLOuh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(39860400002)(346002)(376002)(136003)(366004)(396003)(186003)(16526019)(6666004)(6916009)(2906002)(8936002)(66556008)(33656002)(66946007)(66476007)(8676002)(4326008)(33716001)(478600001)(1076003)(54906003)(9686003)(6486002)(52116002)(316002)(86362001)(6496006)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: EjIJSXe1SCrzg5jeT1ycYvHt/YExtELA+EOQ8FUdWcqqboIqbUgbcPLbv+0Xd1fr7VqSHLBseh0S5Hymcn8/yHivfsLACz+KNG1GxIvViER5jVB9bsJk0v8Gz7W9Kku7l0Q0FyJL+hxefpjQvpv4Ry6sY7KObsuGsgAu8jC6IxckL6j1n3g69KLABuCMBfo9905+aX3WFVBOYoHGkTrcHPrTu0hOcI1r1v7BgbjF6uL+6v0l4uRPKLJIgli6F5euBFI0qwBEWbRKvhjoapLKahLKpNCU75V6FeuBg61yT3gCR0zNzGtFo/F0ViMpt2/T3EuuwVgIrSJJmj5naJtZJd1xjOOd0gdRb53oEgIH/Wk8mHyHzKaouBKZczF0BaF9A7SkyygNOJ654AnSJaTE7Zw0FVeN+y0S2pfq43qAaP3VUvRcXuF7bVJOiJdki3ob1pHGiVt7oo/wIwSMpgq/t3ZxSRGnnkADUc/R/5XHbG8FNn9Nwv8jbndAmG1VIH+1
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffc91c51-e438-44ac-fd1e-08d7ff20f2b8
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2020 13:55:27.4389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2DcEboeXfHIT9+CZBvIUqyd6Y8+lQbbQx9vp761OWFGWIdIUTKjY3JwHSID5ycitDhOLEdoAqkSoGl7CgKOfTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4904
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Fri, May 22, 2020 at 02:33:38PM -0700, Bart Van Assche wrote:
+> Increase the flexibility of the SRP initiator driver by making the channel
+> count configurable per target instead of only providing a kernel module
+> parameter for configuring the channel count.
+>
+> Cc: Laurence Oberman <loberman@redhat.com>
+> Cc: Kamal Heib <kamalheib1@gmail.com>
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>  drivers/infiniband/ulp/srp/ib_srp.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+> index 00b4f88b113e..d686c39710c0 100644
+> --- a/drivers/infiniband/ulp/srp/ib_srp.c
+> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
+> @@ -3424,6 +3424,7 @@ enum {
+>  	SRP_OPT_IP_DEST		= 1 << 16,
+>  	SRP_OPT_TARGET_CAN_QUEUE= 1 << 17,
+>  	SRP_OPT_MAX_IT_IU_SIZE  = 1 << 18,
+> +	SRP_OPT_CH_COUNT	= 1 << 19,
+>  };
+>
+>  static unsigned int srp_opt_mandatory[] = {
+> @@ -3457,6 +3458,7 @@ static const match_table_t srp_opt_tokens = {
+>  	{ SRP_OPT_IP_SRC,		"src=%s"		},
+>  	{ SRP_OPT_IP_DEST,		"dest=%s"		},
+>  	{ SRP_OPT_MAX_IT_IU_SIZE,	"max_it_iu_size=%d"	},
+> +	{ SRP_OPT_CH_COUNT,		"ch_count=%d",		},
 
-After users sets the ECE option, FW will return the
-agreed/supported bits through an output structures of
-modify QP stages for regular QPs or through create QP
-for the DCT.
+Why did you use %d and not %u?
 
-Reviewed-by: Mark Zhang <markz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/qp.c  | 40 +++++++++++++++++++++++++-------
- drivers/infiniband/hw/mlx5/qpc.c | 25 ++++++++++++++++++++
- include/uapi/rdma/mlx5-abi.h     |  2 ++
- 3 files changed, 59 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index b4a8ab80c2f4..ee56e6913679 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -3707,6 +3707,7 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 			       enum ib_qp_state cur_state,
- 			       enum ib_qp_state new_state,
- 			       const struct mlx5_ib_modify_qp *ucmd,
-+			       struct mlx5_ib_modify_qp_resp *resp,
- 			       struct ib_udata *udata)
- {
- 	static const u16 optab[MLX5_QP_NUM_STATE][MLX5_QP_NUM_STATE] = {
-@@ -3977,10 +3978,15 @@ static int __mlx5_ib_modify_qp(struct ib_qp *ibqp,
- 
- 		err = modify_raw_packet_qp(dev, qp, &raw_qp_param, tx_affinity);
- 	} else {
--		u32 ece = MLX5_CAP_GEN(dev->mdev, ece_support) ?
--				  ucmd->ece_options : 0;
-+		if (udata) {
-+			/* For the kernel flows, the resp will stay zero */
-+			resp->ece_options =
-+				MLX5_CAP_GEN(dev->mdev, ece_support) ?
-+					ucmd->ece_options : 0;
-+			resp->response_length = sizeof(*resp);
-+		}
- 		err = mlx5_core_qp_modify(dev, op, optpar, qpc, &base->mqp,
--					  &ece);
-+					  &resp->ece_options);
- 	}
- 
- 	if (err)
-@@ -4145,13 +4151,19 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		MLX5_SET(dctc, dctc, counter_set_id, set_id);
- 	} else if (cur_state == IB_QPS_INIT && new_state == IB_QPS_RTR) {
- 		struct mlx5_ib_modify_qp_resp resp = {};
--		u32 out[MLX5_ST_SZ_DW(create_dct_out)] = {0};
--		u32 min_resp_len = offsetof(typeof(resp), dctn) +
--				   sizeof(resp.dctn);
-+		u32 out[MLX5_ST_SZ_DW(create_dct_out)] = {};
-+		u32 min_resp_len = offsetofend(typeof(resp), dctn);
- 
- 		if (udata->outlen < min_resp_len)
- 			return -EINVAL;
--		resp.response_length = min_resp_len;
-+
-+		/*
-+		 * If we don't have enough space for the ECE options,
-+		 * simply indicate it with resp.response_length.
-+		 */
-+		resp.response_length = (udata->outlen < sizeof(resp)) ?
-+					       min_resp_len :
-+					       sizeof(resp);
- 
- 		required |= IB_QP_MIN_RNR_TIMER | IB_QP_AV | IB_QP_PATH_MTU;
- 		if (!is_valid_mask(attr_mask, required, 0))
-@@ -4169,6 +4181,7 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		if (err)
- 			return err;
- 		resp.dctn = qp->dct.mdct.mqp.qpn;
-+		resp.ece_options = MLX5_GET(create_dct_out, out, ece);
- 		err = ib_copy_to_udata(udata, &resp, resp.response_length);
- 		if (err) {
- 			mlx5_core_destroy_dct(dev, &qp->dct.mdct);
-@@ -4189,6 +4202,7 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		      int attr_mask, struct ib_udata *udata)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(ibqp->device);
-+	struct mlx5_ib_modify_qp_resp resp = {};
- 	struct mlx5_ib_qp *qp = to_mqp(ibqp);
- 	struct mlx5_ib_modify_qp ucmd = {};
- 	enum ib_qp_type qp_type;
-@@ -4296,7 +4310,17 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	}
- 
- 	err = __mlx5_ib_modify_qp(ibqp, attr, attr_mask, cur_state,
--				  new_state, &ucmd, udata);
-+				  new_state, &ucmd, &resp, udata);
-+
-+	/* resp.response_length is set in ECE supported flows only */
-+	if (!err && resp.response_length &&
-+	    udata->outlen >= resp.response_length)
-+		/*
-+		 * We don't check return value of the function below
-+		 * on purpose, because it is unclear how to unwind the
-+		 * error flow after QP was modified to the new state.
-+		 */
-+		ib_copy_to_udata(udata, &resp, resp.response_length);
- 
- out:
- 	mutex_unlock(&qp->mutex);
-diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
-index d61bc1a88925..c19d91d6dce8 100644
---- a/drivers/infiniband/hw/mlx5/qpc.c
-+++ b/drivers/infiniband/hw/mlx5/qpc.c
-@@ -341,6 +341,27 @@ static void mbox_free(struct mbox_info *mbox)
- 	kfree(mbox->out);
- }
- 
-+static int get_ece_from_mbox(void *out, u16 opcode)
-+{
-+	int ece = 0;
-+
-+	switch (opcode) {
-+	case MLX5_CMD_OP_INIT2RTR_QP:
-+		ece = MLX5_GET(init2rtr_qp_out, out, ece);
-+		break;
-+	case MLX5_CMD_OP_RTR2RTS_QP:
-+		ece = MLX5_GET(rtr2rts_qp_out, out, ece);
-+		break;
-+	case MLX5_CMD_OP_RTS2RTS_QP:
-+		ece = MLX5_GET(rts2rts_qp_out, out, ece);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ece;
-+}
-+
- static int modify_qp_mbox_alloc(struct mlx5_core_dev *dev, u16 opcode, int qpn,
- 				u32 opt_param_mask, void *qpc,
- 				struct mbox_info *mbox, u16 uid, u32 ece)
-@@ -438,6 +459,10 @@ int mlx5_core_qp_modify(struct mlx5_ib_dev *dev, u16 opcode, u32 opt_param_mask,
- 
- 	err = mlx5_cmd_exec(dev->mdev, mbox.in, mbox.inlen, mbox.out,
- 			    mbox.outlen);
-+
-+	if (ece)
-+		*ece = get_ece_from_mbox(mbox.out, opcode);
-+
- 	mbox_free(&mbox);
- 	return err;
- }
-diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
-index 24e29a678177..27905a0268c9 100644
---- a/include/uapi/rdma/mlx5-abi.h
-+++ b/include/uapi/rdma/mlx5-abi.h
-@@ -429,6 +429,8 @@ struct mlx5_ib_modify_qp {
- struct mlx5_ib_modify_qp_resp {
- 	__u32	response_length;
- 	__u32	dctn;
-+	__u32   ece_options;
-+	__u32   reserved;
- };
- 
- struct mlx5_ib_create_wq_resp {
--- 
-2.26.2
-
+Thanks
