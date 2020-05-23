@@ -2,68 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B0C1DF532
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2020 08:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A781DF583
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 May 2020 09:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387457AbgEWGXz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 23 May 2020 02:23:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42994 "EHLO mail.kernel.org"
+        id S2387641AbgEWHXV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 May 2020 03:23:21 -0400
+Received: from verein.lst.de ([213.95.11.211]:34128 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387443AbgEWGXz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 23 May 2020 02:23:55 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 236B72067B;
-        Sat, 23 May 2020 06:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590215034;
-        bh=+uJtASeDq4IEldmSgr/kHVVdZVTMLf6DB7JtL5P/OLM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CYCuIbQ18/2QMXV8/spW+LRarDB68gvA7+5jzKQGd/vLb7rW3tpo8pSkDNvklp8EX
-         x3ymn+VenMTWgEjBHDPWcTnp633mftkGcWLKEkbasEPOwdmuvP2GDmUFIr3/XmvEH7
-         86TNeTFdmHQXXsn1L0Rdu1Ld3THlnyghEIj5XVWQ=
-Date:   Sat, 23 May 2020 08:23:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200523062351.GD3156699@kroah.com>
-References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
- <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
- <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
+        id S2387622AbgEWHXV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 23 May 2020 03:23:21 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EB36D68BEB; Sat, 23 May 2020 09:23:16 +0200 (CEST)
+Date:   Sat, 23 May 2020 09:23:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        drbd-dev@lists.linbit.com, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
+        cluster-devel@redhat.com, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        linux-kernel@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, ocfs2-devel@oss.oracle.com
+Subject: Re: remove kernel_setsockopt and kernel_getsockopt v2
+Message-ID: <20200523072316.GA10575@lst.de>
+References: <20200520195509.2215098-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
+In-Reply-To: <20200520195509.2215098-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 22, 2020 at 09:29:57AM -0500, Pierre-Louis Bossart wrote:
-> This is not an hypothetical case, we've had this recurring problem when a
-> PCI device creates an audio card represented as a platform device. When the
-> card registration fails, typically due to configuration issues, the PCI
-> probe still completes.
+On Wed, May 20, 2020 at 09:54:36PM +0200, Christoph Hellwig wrote:
+> Hi Dave,
+> 
+> this series removes the kernel_setsockopt and kernel_getsockopt
+> functions, and instead switches their users to small functions that
+> implement setting (or in one case getting) a sockopt directly using
+> a normal kernel function call with type safety and all the other
+> benefits of not having a function call.
+> 
+> In some cases these functions seem pretty heavy handed as they do
+> a lock_sock even for just setting a single variable, but this mirrors
+> the real setsockopt implementation unlike a few drivers that just set
+> set the fields directly.
 
-Then fix that problem there.  The audio card should not be being created
-as a platform device, as that is not what it is.  And even if it was,
-the probe should not complete, it should clean up after itself and error
-out.
+Hi Dave and other maintainers,
 
-That's not a driver core issue, sounds like a subsystem error handling
-issue that needs to be resolved.
-
-thanks,
-
-greg k-h
+can you take a look at and potentially merge patches 1-30 while we
+discuss the sctp refactoring?  It would get a nice headstart by removing
+kernel_getsockopt and most kernel_setsockopt users, and for the next
+follow on I wouldn't need to spam lots of lists with 30+ patches again.
