@@ -2,86 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A351E1357
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7E71E135D
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391291AbgEYRW1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 13:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        id S2391312AbgEYRY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 13:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388230AbgEYRW1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:22:27 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089EC061A0E
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:22:27 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f83so17961529qke.13
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:22:27 -0700 (PDT)
+        with ESMTP id S2389428AbgEYRY4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:24:56 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5A8C05BD43
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:24:56 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id q8so1582504qkm.12
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ot+IcM8qPkKqAOCfj/m77ORc6vsqR0+D6xrRuetngZU=;
-        b=A3/X19Gz8RQI+F4DhJ5DIhogl9QufHNqYFw3fHHAE3QoLjfAjqCkZSFBpFFZgjDEc2
-         sTTRJd0MpXzPPTKat5qMRmXDpb0m79jNzErOdu6iM1s7TBvSw+pgKLKGugv+lTkjcHT1
-         ZEolZak1wQ7CCERVBTAjJo4xTiNtFlFn4bakh0P6XPmBxPGZ10atGOcnVw03GTbQbtDO
-         I7zeOLw4N7XtcX2zBaHs9AeJfaSd7wzxIU1sTDEVmRg4ucesNhnhkOJm5XLVqjCZaCRL
-         lJU4LPLtrogDn+XpWl6EbVlq123MOLmX0KFhNgOcJLnWLsFTJLwH/EKRDsasfqQjQJoH
-         wXOA==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=bvESvaLhhtdJGYqjlNfkZpxLTpkNUIrmn1w48gtvYac=;
+        b=T1py55mlsxBq628MiuFleZaRgFYOHjQ6EfTQhD+k4oVv+8/f18oDhYjFECMBxD4d00
+         ldCQ4gyeTwMuMwupGs4qyWt2k4Ub/Eit/LCdAKbn/+rRQSw5p+lIx4KKE4Mxhj6apM6N
+         KsTWKQUjSmfby8Oc1/B+7T6fTWD46YOMYFIj+7cfxI/8/z8ilH3jeyXSsf6B+u4JGC0p
+         BEaGO7mQ5euyrg56ziuWff04oTIIsdb7n1WYRsUfbf9SHTwIIXCgX6llBWT7jYb/ikI+
+         Ejkl52FUMjc/F58RXqVP7Bab1lH6EE0iOebK2MfHF0oI5x7sLBET/QIcIMbeeX1UjXVz
+         YSRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ot+IcM8qPkKqAOCfj/m77ORc6vsqR0+D6xrRuetngZU=;
-        b=ERimG/SJ+ZdPst4OZ24c3sUwrl68SfeAzwip/DsYNgOBhON1TqMRqOJ3f4Ljj4CgAK
-         cFGg/kzMoxK7XfMgVDOQ1kd29rWp/sVyKENBbIAXVonJW6YlNwPwGOldF2pomiE3k/hZ
-         l01i47bmWeLH67GFosfCJajlokNCsWVGA94TdEgg0sNUsFEp66gbbwIUPj5PpQ9D+y2t
-         N+NGbKu1ZU667c2kxV5y4w+ltkl86TwpT7lEI8S68BF/oYCnlS8PYzg+Pb0haQaIr7Hz
-         7o442uUJdUGuNKn/FhqW2mgkHlshlRNQe1rJNgWdRdWf6vt5y3UoWFpX1ShRQKM9Dv72
-         985w==
-X-Gm-Message-State: AOAM530oruWXtuYCW4w88FEVnOw9jmwU2FgoAxpuG0rt2Awb41Pv/V9t
-        rJcVn3wEvxr7PJ7OXhqJr3kz9+5GDO4=
-X-Google-Smtp-Source: ABdhPJx93FD6gE2VVWIQ/eIY6ZRFq03BiO1cXl3eXyunEk79p16Ky7ijvQ1fjUvF9cDJ+pqQj1p+nQ==
-X-Received: by 2002:a37:4351:: with SMTP id q78mr24385471qka.242.1590427346418;
-        Mon, 25 May 2020 10:22:26 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=bvESvaLhhtdJGYqjlNfkZpxLTpkNUIrmn1w48gtvYac=;
+        b=juuS1rJgKk4DVoTx710gqfr8ozwCIuyAGWgaM1Mo0n8MbVA+gR6wASegKbZvz8dEzN
+         ssuuK5PVVswbT8WbX6h+2x01nzr1d0+r8X57MARv27XY/IFT8xsLJO7zo6u2XnrfyEIG
+         8ZQ39ywpb9/NZf0Dycu4uSSV6olgMqQWWUPZLF3LbQNrKPfyO6iZb2L8STV1ODOFLXyA
+         53MI2cv4l9WPOcByFf1P5i83P0ufeEKYC85EeD1FFUL+C5sNAfnNx4tYC0ylWnHfRwpt
+         mKxIdqkW2o9fLfj6/+DldZAX7KryLmi8iqzlGylvZEQJrmAR8BtRvGYAMGE5Zq8TWOFK
+         jY5g==
+X-Gm-Message-State: AOAM531TZRj5QU/e9VsA9H8zE8xgq5QT6jPdKOSKGnQln3Vd4IkoKvcT
+        6oTHjkThVi0k7+xXx35S6XsFkg==
+X-Google-Smtp-Source: ABdhPJwt8/BoSl0QE3JQ+vOSP7+bsmhmZCSKZlIhbS5D0sBTW4rLQ/3vprWwjhtpvRzmPRVEbzhz8A==
+X-Received: by 2002:a37:ef0e:: with SMTP id j14mr15376918qkk.292.1590427495958;
+        Mon, 25 May 2020 10:24:55 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id s4sm13430084qkh.120.2020.05.25.10.22.26
+        by smtp.gmail.com with ESMTPSA id m13sm1361300qta.90.2020.05.25.10.24.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 May 2020 10:22:26 -0700 (PDT)
+        Mon, 25 May 2020 10:24:55 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jdGnx-0007a0-LA; Mon, 25 May 2020 14:22:25 -0300
-Date:   Mon, 25 May 2020 14:22:25 -0300
+        id 1jdGqN-0007ja-5w; Mon, 25 May 2020 14:24:55 -0300
+Date:   Mon, 25 May 2020 14:24:55 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 0/4] RDMA/hns: Misc cleanups
-Message-ID: <20200525172225.GA29081@ziepe.ca>
-References: <1590152579-32364-1-git-send-email-liweihang@huawei.com>
+To:     wu000273@umn.edu
+Cc:     aditr@vmware.com, pv-drivers@vmware.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjlu@umn.edu
+Subject: Re: [PATCH] RDMA: fix missing pci disable in pvrdma_pci_probe()
+Message-ID: <20200525172455.GA29516@ziepe.ca>
+References: <20200523030457.16160-1-wu000273@umn.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1590152579-32364-1-git-send-email-liweihang@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200523030457.16160-1-wu000273@umn.edu>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 22, 2020 at 09:02:55PM +0800, Weihang Li wrote:
-> This is another series of cleanups for kernel 5.8 if it's not too late.
+On Fri, May 22, 2020 at 10:04:57PM -0500, wu000273@umn.edu wrote:
+> From: Qiushi Wu <wu000273@umn.edu>
 > 
-> Lang Cheng (1):
->   RDMA/hns: Simplify process related to poll cq
+> In function pvrdma_pci_probe(), pdev was not disabled in one error
+> path. Thus replace the jump target “err_free_device” by
+> "err_disable_pdev".
 > 
-> Weihang Li (1):
->   RDMA/hns: Remove redundant type cast for general pointers
-> 
-> Wenpeng Liang (1):
->   RDMA/hns: Remove redundant parameters from free_srq/qp_wrid()
-> 
-> Yixian Liu (1):
->   RDMA/hns: Make the end of sge process more clear
+> Fixes: 29c8d9eba550 ("IB: Add vmw_pvrdma driver")
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+> ---
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Applied to for-next, thanks
 
