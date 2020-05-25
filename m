@@ -2,174 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EC11E1467
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 20:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41CC1E146F
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 20:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389511AbgEYSgu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 14:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        id S2389784AbgEYSit (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 14:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389311AbgEYSgt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 14:36:49 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68371C05BD43
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 11:36:49 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id a23so14387173qto.1
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 11:36:49 -0700 (PDT)
+        with ESMTP id S2389763AbgEYSit (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 14:38:49 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440F6C061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 11:38:49 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id f18so1460276qkh.1
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 11:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=dBNNLrsZGlwM47DpepdKHSQV4KNpjYEcR6uFWidIK+c=;
-        b=BazwyORd4omrvh5DADt7N8mqLMzi+RYjBVK2kPihaadkNXr9Is/rLQDfJO5Q/VeMGZ
-         XlvEE4bOuXysXlPGwIcRVecP4SnpQyeKRev18Y4ZkAs6lst+NPCglYJURCEfUqTCMD4v
-         d4FIdKZ9pAdL4B9FUtyw2jBTjuhBqzHCChe8o3MkkhMvwBxi9Um4/ZVdmu0ggKu2vawk
-         PNx/yPYZhnASgcRI+PifWTVuxkkGWBN4MejekhhBeeMm1LXgAmbElmSsr+OAJUwgROb1
-         rBGLGAXggDbJcugNER9HW64w4P98g/cNUgxhKT2JupBZ8W1di28pdRIs+MTO7ToMN7BC
-         cJ9g==
+        bh=6NdhVMHdlCcbJ2SGE48iM6uO3Xk3u7Wj29bzSQAwdeU=;
+        b=WK2wgcGilop1MwVzfyzGLWZUEjzrXDgLBjbs8KEXuVeuuEr8TgcnN3kPK3t/xueQuX
+         BxNvuya7TiczdhNqD3D4UkMrwre4PJqMyhVAV3k7+gLQsXhL4Ka8t6ZydKBFDLk03xRy
+         xM2KtWFXdU/LEEq2TbqmLybmbYTmu4zYSvPJ9uEt7gTIt5/vFzq6GZo9lFhvGAW+EH9d
+         9Dhv/II4C561tx98DEGTOHy89ufDQJeHgNFjOxtO0vRKIkxHXgvgTL5YLcZ86NEDxNYc
+         6IqkNlkXd1y9uHoRTvKMQsg3vwVgtGytqwj7T9SXqa61REsYL0tsVOUYllKmD7jR7i7/
+         4Pzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dBNNLrsZGlwM47DpepdKHSQV4KNpjYEcR6uFWidIK+c=;
-        b=fGSs7u2CZCa4zoKJA1cloeWW/D6y3b9Fa/WOys6AdybagCTWdZnHbHA9G3SkA0LN2P
-         KDtDjjmkpa8TR+Gn2UF6Yd4cZvphbnGm4XngVkzSnNwRjv9n9FJW+KnL6ue7VSaB3YpW
-         8pJno3Pg46g2epZxBlzlgHv9m4n1jGaBVWYlqYvCnKg5K65nWdF9Xa4tDM0PWZtdaNdL
-         poIaLJhbfAael1KTL9mHORzi/IxDOAdo+ypcJBzQh758QVQXDfU79c80GDymkPn3K0q/
-         iqkwlzmGzwemy2DlJZPOQuKtDmaRwEbzTT9oxpF4/SLbIU9K66+fcX9NcrW5pIKsch3Y
-         e8fQ==
-X-Gm-Message-State: AOAM533qEvR0iBYYV1Gs7VzVlJduoVQBKK9LnPEUH1+YIbeqyZ2z861K
-        CpD8XkOB4QediCvQAY2xM2JIuIiPSsI=
-X-Google-Smtp-Source: ABdhPJyVBT1RicyN2xE8hyRL3aL4JQsSy+eeZY75U2lWdtzDSnJF2GO8I+QXxg6GJjkQa3bQjLScCA==
-X-Received: by 2002:ac8:46d5:: with SMTP id h21mr28223881qto.91.1590431808437;
-        Mon, 25 May 2020 11:36:48 -0700 (PDT)
+        bh=6NdhVMHdlCcbJ2SGE48iM6uO3Xk3u7Wj29bzSQAwdeU=;
+        b=Z1BThQ/0UpGDWmA4h5EoxL4Rjix3fNFiClQHBR1f0US2jR8h6HL+IVfU0Y7YVkgnAL
+         196vxuucA67w1AptCH3MoCkbeY1NTam9iwSF7EC1Tb8/zcApCKN4W0/OwUL2pWAJ1YeG
+         /SoLS3qtWi7QW8px/cK0YhNaEtN3WRLPHphY8Z7BB7W7E0/7W/rIi8ghB57zqUBChnYu
+         6IXX7LkiNUSBUrfEwvo2YkpRWDd95Eci7BQanqMXK0ETt+X4+yLp0ij2r+iD39pPb8En
+         hdUup3bIZL4ED3ILJGKg3IBcMiHDiCAK6dfLthSH+VocBxKvsxTr3jLKutKm6JvssWX9
+         QvgA==
+X-Gm-Message-State: AOAM530/VbWSTw5BmIm+e1BH/3JhgxSH35lmoJoxlw49T9d6uPRWvlhI
+        Zag6JZMaJRsPbYxFc5iXnZYrPFLcs5U=
+X-Google-Smtp-Source: ABdhPJxNxahf01c1Cn1NeYhBsS6FvkXAyFcsjciv0ItmUEIRYkFm76LfaAT2xZFnJ0TlSxWQ73Onew==
+X-Received: by 2002:a05:620a:13e1:: with SMTP id h1mr27089277qkl.424.1590431928548;
+        Mon, 25 May 2020 11:38:48 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z14sm14322945qki.83.2020.05.25.11.36.47
+        by smtp.gmail.com with ESMTPSA id h77sm6174935qke.37.2020.05.25.11.38.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 May 2020 11:36:47 -0700 (PDT)
+        Mon, 25 May 2020 11:38:48 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jdHxv-0007Xl-9V; Mon, 25 May 2020 15:36:47 -0300
-Date:   Mon, 25 May 2020 15:36:47 -0300
+        id 1jdHzr-0007eL-KD; Mon, 25 May 2020 15:38:47 -0300
+Date:   Mon, 25 May 2020 15:38:47 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        target-devel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 7/7] RDMA/cma: Provide ECE reject reason
-Message-ID: <20200525183647.GI744@ziepe.ca>
-References: <20200413141538.935574-1-leon@kernel.org>
- <20200413141538.935574-8-leon@kernel.org>
- <20200525181417.GC24366@ziepe.ca>
- <20200525182242.GK10591@unreal>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        nirranjan@chelsio.com
+Subject: Re: [PATCH for-next] RDMA/iw_cxgb4: cleanup device debugfs entries
+ on ULD remove
+Message-ID: <20200525183847.GA29375@ziepe.ca>
+References: <20200524190814.17599-1-bharat@chelsio.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525182242.GK10591@unreal>
+In-Reply-To: <20200524190814.17599-1-bharat@chelsio.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 25, 2020 at 09:22:42PM +0300, Leon Romanovsky wrote:
-> On Mon, May 25, 2020 at 03:14:17PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Apr 13, 2020 at 05:15:38PM +0300, Leon Romanovsky wrote:
-> > > @@ -4223,7 +4223,7 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
-> > >  EXPORT_SYMBOL(rdma_notify);
-> > >
-> > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > > -		u8 private_data_len)
-> > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason)
-> > >  {
-> > >  	struct rdma_id_private *id_priv;
-> > >  	int ret;
-> > > @@ -4237,10 +4237,12 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > >  			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
-> > >  						private_data, private_data_len);
-> > >  		} else {
-> > > +			enum ib_cm_rej_reason r =
-> > > +				(reason) ?: IB_CM_REJ_CONSUMER_DEFINED;
-> > > +
-> > >  			trace_cm_send_rej(id_priv);
-> > > -			ret = ib_send_cm_rej(id_priv->cm_id.ib,
-> > > -					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
-> > > -					     0, private_data, private_data_len);
-> > > +			ret = ib_send_cm_rej(id_priv->cm_id.ib, r, NULL, 0,
-> > > +					     private_data, private_data_len);
-> > >  		}
-> > >  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
-> > >  		ret = iw_cm_reject(id_priv->cm_id.iw,
-> > > diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-> > > index d41598954cc4..99482dc5934b 100644
-> > > +++ b/drivers/infiniband/core/ucma.c
-> > > @@ -1178,12 +1178,17 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
-> > >  	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
-> > >  		return -EFAULT;
-> > >
-> > > +	if (cmd.reason &&
-> > > +	    cmd.reason != RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
-> > > +		return -EINVAL;
-> >
-> > It would be clearer to set cmd.reason to IB_CM_REJ_CONSUMER_DEFINED at
-> > this point..
-> >
-> > if (!cmd.reason)
-> >    cmd.reason = IB_CM_REJ_CONSUMER_DEFINED
-> >
-> > if (cmd.reason != IB_CM_REJ_CONSUMER_DEFINED && cmd.reason !=
-> >     RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
-> >    return -EINVAL
-> >
-> > Esaier to follow and no reason userspace shouldn't be able to
-> > explicitly specifiy the reason's that it is allowed to use.
-> >
-> >
-> > > index 8d961d8b7cdb..f8781b132f62 100644
-> > > +++ b/include/rdma/rdma_cm.h
-> > > @@ -324,11 +324,12 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-> > >   */
-> > >  int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event);
-> > >
-> > > +
-> > >  /**
-> >
-> > Extra hunk?
-> >
-> > >   * rdma_reject - Called to reject a connection request or response.
-> > >   */
-> > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > > -		u8 private_data_len);
-> > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason);
-> > >
-> > >  /**
-> > >   * rdma_disconnect - This function disconnects the associated QP and
-> > > diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-> > > index c4ca1412bcf9..e545f2de1e13 100644
-> > > +++ b/include/uapi/rdma/rdma_user_cm.h
-> > > @@ -78,6 +78,10 @@ enum rdma_ucm_port_space {
-> > >  	RDMA_PS_UDP   = 0x0111,
-> > >  };
-> > >
-> > > +enum rdma_ucm_reject_reason {
-> > > +	RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED = 35
-> > > +};
-> >
-> > not sure we need ABI defines for IBTA constants?
+On Mon, May 25, 2020 at 12:38:14AM +0530, Potnuri Bharat Teja wrote:
+> Remove device specific debugfs entries immediately if LLD detaches a
+> particular ULD device in case of fatal PCI errors.
 > 
-> Do you want to give an option to write any number?
-> Right now, I'm enforcing only allowed by IBTA reason
-> and which is used in user space.
+> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> ---
+>  drivers/infiniband/hw/cxgb4/device.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-no, just the allowed numbers, just wondering if we need constants for
-fixed IBTA values .. 
+Applied to for-next, thanks
 
 Jason
