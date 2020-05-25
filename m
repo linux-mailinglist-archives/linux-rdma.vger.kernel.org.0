@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA831E1356
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5901E1358
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391289AbgEYRW1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 13:22:27 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:41898 "EHLO
+        id S2391296AbgEYRW3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 13:22:29 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:44585 "EHLO
         mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388230AbgEYRW1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:22:27 -0400
-Received: by mail-pl1-f194.google.com with SMTP id a13so7683424pls.8
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:22:26 -0700 (PDT)
+        with ESMTP id S2388230AbgEYRW2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:22:28 -0400
+Received: by mail-pl1-f194.google.com with SMTP id bh7so766989plb.11
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:22:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HhAPnQrHX3/PcCvPRKRSrGzu3ZqP3FWjJECBy4unszE=;
-        b=Zv9MaHfozxH0woxWgyYMOIcN7cQ7xjmaCNAqGlIwrsBu2tj2z0lOj5WfOOcTY6hoff
-         wvMHxiVY8a+n56I4kSefOlJmHX5Bdem3fcQuw1IVfclqwR8g5anT0+IxjHecbqL2JDg6
-         13l/7ND0Rt4F2AXQYYq/ThoOaMLdwjqQ6GfR7oVTpcH8kLZGObnW+VFP7kPAUsXDnpZx
-         YzvXye6Qow9QEHFdaZRbJXxvuEog8gsuGp0PX0iya3euznERidSEHZE2G6o+Jfz3V8ET
-         RVTIkSx3YOL+lO/ju0wFrjFbACa1Te6Fp1hxD22QEXhMn9cpm1Dt6N9RyuPGEG0aHlZr
-         Bj0Q==
-X-Gm-Message-State: AOAM530eMairz4xWFF0nVuQFTEdloM9OQiuEsmCmzA3JmVQzgeVFS21K
-        BR2OnrFnG/e09ImqQH4NZ3c=
-X-Google-Smtp-Source: ABdhPJwYOooy6S7ZupH/K5HuJWJXofYBKBG8FAtgUXGcsS4HN3C5s8G1d3FEq9fG+KDt18+f0WZThQ==
-X-Received: by 2002:a17:90a:8c8e:: with SMTP id b14mr20291852pjo.222.1590427346051;
-        Mon, 25 May 2020 10:22:26 -0700 (PDT)
+        bh=4K9rHHICE3+inYoR2BYCilENf4wIRIaOf+lyZ8wD/kY=;
+        b=IUSrCffmKVbIgMdQJxlC/PYBhKJ4lc65dBVaLj7z+7mcVyB8TKpkGumrhYA4iPicx4
+         b24DNryWMUas1LJDrKaAE8H1Qm++SIxUj5LswszjpJkvrPKKH8NXF9L3kHkDE655QS6L
+         xbOHzk/QA6EyXJWozeawjM4NkfOwRpkHYsOgl5pgApf5a7cSoMlvBwwC9Ie9cUg+zGIS
+         NhAbSHeQFC6WxZMy3Xeu0Kb2oghsUP4fp4m2bHa4Sjk+g/uN5YOtZBHVMzp+HTvcjiCC
+         jAsHQjzXYkip1TWcoSyKHNN3LgcIzbC4k6u2fo+Li5XvkwnFYBlyxvY6Ao8sD/E7dO8Q
+         8Rvg==
+X-Gm-Message-State: AOAM530bW4MCmkanti+eVZFjoDpUi70wv+dEqCgn07M1C833f7hiLAKW
+        iDkrVJ0ZHdaabxAgcz94/+M3WBrL
+X-Google-Smtp-Source: ABdhPJzXoZnjDwcGcNeUlW9igsqPStaCBMP4UDBrw0DXP1z8b9HokIjD5bUKy76SR+4W2RLGG9nt9A==
+X-Received: by 2002:a17:90b:3705:: with SMTP id mg5mr20374657pjb.24.1590427347585;
+        Mon, 25 May 2020 10:22:27 -0700 (PDT)
 Received: from localhost.localdomain ([2601:647:4000:d7:2590:9462:ff8a:101f])
-        by smtp.gmail.com with ESMTPSA id p9sm3213238pff.71.2020.05.25.10.22.24
+        by smtp.gmail.com with ESMTPSA id p9sm3213238pff.71.2020.05.25.10.22.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 10:22:25 -0700 (PDT)
+        Mon, 25 May 2020 10:22:26 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
@@ -40,9 +40,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Laurence Oberman <loberman@redhat.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH v2 1/4] RDMA/srp: Make the channel count configurable per target
-Date:   Mon, 25 May 2020 10:22:09 -0700
-Message-Id: <20200525172212.14413-2-bvanassche@acm.org>
+Subject: [PATCH v2 2/4] RDMA/srpt: Make debug output more detailed
+Date:   Mon, 25 May 2020 10:22:10 -0700
+Message-Id: <20200525172212.14413-3-bvanassche@acm.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200525172212.14413-1-bvanassche@acm.org>
 References: <20200525172212.14413-1-bvanassche@acm.org>
@@ -53,67 +53,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Increase the flexibility of the SRP initiator driver by making the channel
-count configurable per target instead of only providing a kernel module
-parameter for configuring the channel count.
+Since the session name by itself is not sufficient to uniquely identify a
+queue pair, include the queue pair number. Show the ASCII channel state
+name instead of the numeric value. This change makes the ib_srpt debug
+output more consistent.
 
 Cc: Laurence Oberman <loberman@redhat.com>
 Cc: Kamal Heib <kamalheib1@gmail.com>
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 00b4f88b113e..4018c4abf2e2 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3424,6 +3424,7 @@ enum {
- 	SRP_OPT_IP_DEST		= 1 << 16,
- 	SRP_OPT_TARGET_CAN_QUEUE= 1 << 17,
- 	SRP_OPT_MAX_IT_IU_SIZE  = 1 << 18,
-+	SRP_OPT_CH_COUNT	= 1 << 19,
- };
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index a294630f2100..a39ad9fc4224 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -214,8 +214,9 @@ static const char *get_ch_state_name(enum rdma_ch_state s)
+  */
+ static void srpt_qp_event(struct ib_event *event, struct srpt_rdma_ch *ch)
+ {
+-	pr_debug("QP event %d on ch=%p sess_name=%s state=%d\n",
+-		 event->event, ch, ch->sess_name, ch->state);
++	pr_debug("QP event %d on ch=%p sess_name=%s-%d state=%s\n",
++		 event->event, ch, ch->sess_name, ch->qp->qp_num,
++		 get_ch_state_name(ch->state));
  
- static unsigned int srp_opt_mandatory[] = {
-@@ -3457,6 +3458,7 @@ static const match_table_t srp_opt_tokens = {
- 	{ SRP_OPT_IP_SRC,		"src=%s"		},
- 	{ SRP_OPT_IP_DEST,		"dest=%s"		},
- 	{ SRP_OPT_MAX_IT_IU_SIZE,	"max_it_iu_size=%d"	},
-+	{ SRP_OPT_CH_COUNT,		"ch_count=%u",		},
- 	{ SRP_OPT_ERR,			NULL 			}
- };
- 
-@@ -3758,6 +3760,14 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			target->max_it_iu_size = token;
- 			break;
- 
-+		case SRP_OPT_CH_COUNT:
-+			if (match_int(args, &token) || token < 1) {
-+				pr_warn("bad channel count %s\n", p);
-+				goto out;
-+			}
-+			target->ch_count = token;
-+			break;
-+
- 		default:
- 			pr_warn("unknown parameter or missing value '%s' in target creation request\n",
- 				p);
-@@ -3921,11 +3931,12 @@ static ssize_t srp_create_target(struct device *dev,
- 		goto out;
- 
- 	ret = -ENOMEM;
--	target->ch_count = max_t(unsigned, num_online_nodes(),
--				 min(ch_count ? :
--				     min(4 * num_online_nodes(),
--					 ibdev->num_comp_vectors),
--				     num_online_cpus()));
-+	if (target->ch_count == 0)
-+		target->ch_count = max_t(unsigned, num_online_nodes(),
-+					 min(ch_count ? :
-+					     min(4 * num_online_nodes(),
-+						 ibdev->num_comp_vectors),
-+					     num_online_cpus()));
- 	target->ch = kcalloc(target->ch_count, sizeof(*target->ch),
- 			     GFP_KERNEL);
- 	if (!target->ch)
+ 	switch (event->event) {
+ 	case IB_EVENT_COMM_EST:
+@@ -1985,8 +1986,8 @@ static void __srpt_close_all_ch(struct srpt_port *sport)
+ 	list_for_each_entry(nexus, &sport->nexus_list, entry) {
+ 		list_for_each_entry(ch, &nexus->ch_list, list) {
+ 			if (srpt_disconnect_ch(ch) >= 0)
+-				pr_info("Closing channel %s because target %s_%d has been disabled\n",
+-					ch->sess_name,
++				pr_info("Closing channel %s-%d because target %s_%d has been disabled\n",
++					ch->sess_name, ch->qp->qp_num,
+ 					dev_name(&sport->sdev->device->dev),
+ 					sport->port);
+ 			srpt_close_ch(ch);
