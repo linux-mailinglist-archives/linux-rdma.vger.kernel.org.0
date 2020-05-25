@@ -2,140 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFD61E13B3
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DC11E13B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388487AbgEYRv7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 13:51:59 -0400
-Received: from mail-vi1eur05on2047.outbound.protection.outlook.com ([40.107.21.47]:54958
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388336AbgEYRv6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 May 2020 13:51:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PJybmeeXRk6z937VRU1TcItvhTtY79Hukhe2gzdoHaKm8luvimdyU7JCfNgTbeLfGLC/NslTQjr6Sa8y4U2/NnvVXVf8r2HgCvZvHICi96jdVQRwzBo3KyFYHpuiL8uCU1wV/Z6n4x+MYRBvNiB0TzPHITkoy6WIrDFhdX5c5H/dvVWCyXFKdN7hZF6VxlqNHdyyEz/2Oy/8osC2tolBhIEUA8qYRq1IKy5f2x+u8Z7rfq2+9i8HaXmSaSB1ROCLCKnKzLTyfpCfl1Btn5QWPKojpIcX0aDsBk0w0dH4FfA9K5surr/xovSTvMbJv39IBV75zzo2vMzzlEHLdeDjjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eQKY+09g87v8TYrNYQGbKPD5U9WIjQsJ97GnqHcyTwM=;
- b=I9Pk2Ii+QkoizZFoYc7p7k5hSVQFlWtbnxrx1/Ku5CQAcArQVdS0RGcQ3i/rZx39i/AxyOMAN8hMEeFQPZl7uDsMa/OEXhOZfP1qFPu2RlWP2N/M/VMnJ1pkzs8jVQe27wWmteB9USR/P5yGfEWC/1X0qA39zu4YEyRIH8lO5O/FiR/zyL2nCaonFBErGMbifJtSmbuyDtdLVyNHJBQ/duXvFVKNioKNUetjO4ViUTPVE806iOEP/YdkU0HXjQrtFjYKhiGbD4hGyzDPSdA4b6exgwUExIMIYblMCigzNvT/yD7IzOswgjF7cQXvAl8RLH4b5QTOAnxJzq+d+S4C3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eQKY+09g87v8TYrNYQGbKPD5U9WIjQsJ97GnqHcyTwM=;
- b=VQfxVqwcGshe2K+bBAYhImYulvJgkvGr4MhoAAltfcA5bHKshCrYancL4tAMcl9tz5IjebEAwfoEp9ciss/OQWSQN0mjay/hpD6l7yh5j39rkt1yI4WUXU2NQ82H3Ivm9heVy52XXE6EcKXLEaxby9UDeRrbTQLhSY5zhI7MXTY=
-Authentication-Results: acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM6PR05MB6614.eurprd05.prod.outlook.com (2603:10a6:20b:af::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Mon, 25 May
- 2020 17:51:55 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.3021.029; Mon, 25 May 2020
- 17:51:54 +0000
-Date:   Mon, 25 May 2020 20:51:52 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        linux-rdma@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: Re: [PATCH v2 4/4] RDMA/srpt: Increase max_send_sge
-Message-ID: <20200525175152.GI10591@unreal>
-References: <20200525172212.14413-1-bvanassche@acm.org>
- <20200525172212.14413-5-bvanassche@acm.org>
+        id S2389056AbgEYR6P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 13:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388621AbgEYR6P (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:58:15 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03973C061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:58:14 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z9so8302716qvi.12
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U/UDfcLT6vDz7pTR3v3gZEfqU5cQ92Hzitksv06ps7A=;
+        b=S6ZWuNKHG4o6U/MGyadmPKI1ISRpV9ZCgLzYiHchSAealOgXW6aeCSAEugqkL/b/1g
+         cyHzNSSGI5/G5zDIdlOsLLuTlqnws/VZp1RBqrjq3AKifzIXE5iiYaoFwMedb/nv3ROS
+         HkQH1jD+danazKdGXFq1Me2EuYL2b9c8cFw/kNTSjCie8gHGO6gsPrejn8lRf40JdNXT
+         MxPhbaAuU6Ya9kN3QLGandBnGIurIGuZ3XgF8YHZNj9EI6Vn9LCZq6oAV3Mt8uF9HxEa
+         UN468pfIBnqHT/6jyjW6nYFgRKxcEch3dwZnfA5UNwDlNKWcFnAx6J3Vp/nhijLJ3T2s
+         AoUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U/UDfcLT6vDz7pTR3v3gZEfqU5cQ92Hzitksv06ps7A=;
+        b=PtttIutRh5h5QKUaVZZJYSUU5CzC+JmF5/gBsr9mhVrIJHzjnXDgY7zOR6ZShVJgEE
+         1MNYkHrsP0LzBCZOdbd07tw7vvB/mpbA8I4LEIINqVqveMVDZ2/ezqnCTpCycrpmV/D7
+         I4eiegpOuuehrmKq6O1YHCBlGx9hOXDlvEuJb7bwaVtkl5t2loJ8drb8QP/S4Kdh/2yT
+         BvMt6OZKbub4/ijJ+nsQsMvrk7Q4JmxarP/JAfPg9QzSoJ7ImBq21fI00urEEitpC4Sn
+         cZitllFvxqIirA8WKtgOXQPHZxrzOJtNAG/NQDW6Ru2Oo9hx9zTXpcmoECgylSsGMhBj
+         E+Xw==
+X-Gm-Message-State: AOAM531LKRBNP3Jfe9QHgHrkn3rWuW31fOeDEUXtbp3kZIEBG1LENNnF
+        uOvmJ/Fq1vvigcNIEaUJa5ejDg==
+X-Google-Smtp-Source: ABdhPJypGQodIqm0k6HEPZRXBSPFjfWTH73dOEHtDP/wXJIKHSYaOZ44pstgWgio/VnmPwqMJTvJQQ==
+X-Received: by 2002:a0c:a993:: with SMTP id a19mr16551381qvb.57.1590429493265;
+        Mon, 25 May 2020 10:58:13 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x36sm2858227qtd.97.2020.05.25.10.58.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 May 2020 10:58:12 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jdHMa-0006ex-AW; Mon, 25 May 2020 14:58:12 -0300
+Date:   Mon, 25 May 2020 14:58:12 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v2 5/7] RDMA/cm: Send and receive ECE parameter
+ over the wire
+Message-ID: <20200525175812.GB24366@ziepe.ca>
+References: <20200413141538.935574-1-leon@kernel.org>
+ <20200413141538.935574-6-leon@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525172212.14413-5-bvanassche@acm.org>
-X-ClientProxiedBy: AM0PR02CA0082.eurprd02.prod.outlook.com
- (2603:10a6:208:154::23) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a00:a040:183:2d::a43) by AM0PR02CA0082.eurprd02.prod.outlook.com (2603:10a6:208:154::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Mon, 25 May 2020 17:51:54 +0000
-X-Originating-IP: [2a00:a040:183:2d::a43]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cfefa32c-b467-46a6-c7af-08d800d44fe3
-X-MS-TrafficTypeDiagnostic: AM6PR05MB6614:
-X-Microsoft-Antispam-PRVS: <AM6PR05MB661458E5A07F10C8CE9FFA56B0B30@AM6PR05MB6614.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:561;
-X-Forefront-PRVS: 0414DF926F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mNvmwHjhdQNxgnWoGR/82H5l+yTA0yJXPRRtMd73GUjia4Qs1Q+8/9n+cfVu0N8JIWwCImfmRTgGqNnFjOBSeAk3RQ8qhibpFipZcYc/WOxqFLJscTPSi82pknwm5r7aFYG6egr2wFS1zloL1g7x4uBT6NzQdnQZLapLmnHqeswY1gvvL92WdWqAf0Xy5w7FIZm65q1iA3K3/nEqSESmf+EWJ5h09cYlU+2Zvht9hW1neX+za6XM/IjQW12cMF8VGhNE4oY1yvWOTGWaxeiHqgls0xC45FH4q4+qd01HYcU1illpOk4A9ZYzTouGt2ri
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(39860400002)(136003)(396003)(346002)(366004)(376002)(6496006)(52116002)(6486002)(5660300002)(66946007)(316002)(66476007)(478600001)(54906003)(9686003)(66556008)(8676002)(86362001)(1076003)(186003)(16526019)(33716001)(33656002)(6916009)(4326008)(2906002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KrEp7GO4SVO1I2zrXWqSX8df+QFdHpSQKCivUosETb0MQcvbgS4MKDWEF4qkzqkHzIVWlcS99gJWxAOOVww0XoTFy7X9lbnbpDtTC1DwcyeHNBS+sZd96OBAKq+6WOCOehjPXrRBsJMoJ7/DGr5+Vf/ns7GESYX1Tzg9bD4xsIuRzFfO4+Q91R9Lr7uKEpsLmzVbdZuFllju8LZlYeHLulErZMIxcHUSuch7/J/qqymoqSnumXEFZcKgqrufGL7J8fg+hOmJOQFfYE2+bl6G0n4qdKGRnDEfNHNSJot7BMI6+j+QZpsZch2xpQGOrTCqAVpDvBuuKmQJvqQ+7+QR2NYQv435APxX6I8D3ZmXHJhwfTOj5HYqsastpIYT53Ye5hgPYcecObt+MDJIOfleSGPMGngFC3N5pYgIlGoR6S1NAV9AI3nb+iuWHy8xI3igXzEo5BbwaZA9CWu+uz3gZs9v8PWgW70UBvisefv8SNwmrCr/3raqFsLDrqUY3Gzo8w3w95xzf9zHlF6P6m3T1w==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfefa32c-b467-46a6-c7af-08d800d44fe3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2020 17:51:54.8228
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /qk7il2tiGA+6w4vI0leIKb3+/BxYv2vfa6fMP2H3mr0Zjni1legwDuxBHqw9XSDqsMClOQacy7BEr5S7VhqEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6614
+In-Reply-To: <20200413141538.935574-6-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 25, 2020 at 10:22:12AM -0700, Bart Van Assche wrote:
-> The ib_srpt driver limits max_send_sge to 16. Since that is a workaround
-> for an mlx4 bug that has been fixed, increase max_send_sge. For mlx4, do
-> not use the value advertised by the driver (32) since that causes QP's
-> to transition to the error status.
+On Mon, Apr 13, 2020 at 05:15:36PM +0300, Leon Romanovsky wrote:
+> @@ -2204,6 +2220,12 @@ static void cm_format_rep(struct cm_rep_msg *rep_msg,
+>  		IBA_SET(CM_REP_LOCAL_EE_CONTEXT_NUMBER, rep_msg, param->qp_num);
+>  	}
+>  
+> +	IBA_SET(CM_REP_VENDOR_ID_L, rep_msg, param->ece.vendor_id & 0xFF);
+> +	IBA_SET(CM_REP_VENDOR_ID_M, rep_msg,
+> +		(param->ece.vendor_id >> 8) & 0xFF);
+> +	IBA_SET(CM_REP_VENDOR_ID_H, rep_msg,
+> +		(param->ece.vendor_id >> 16) & 0xFF);
 
-Bart,
+I'm pretty sure the & 0xFF isn't needed?
 
-How are you avoiding mlx4 bug in this patch?
-Isn't "attrs->max_send_sge" come from driver as is?
+> diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+> index ed2c17046ee1..b67cdd2ef187 100644
+> +++ b/drivers/infiniband/core/ucma.c
+> @@ -362,7 +362,6 @@ static int ucma_event_handler(struct rdma_cm_id *cm_id,
+>  
+>  	uevent->resp.ece.vendor_id = event->ece.vendor_id;
+>  	uevent->resp.ece.attr_mod = event->ece.attr_mod;
+> -
+>  	if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
+>  		if (!ctx->backlog) {
+>  			ret = -ENOMEM;
 
-Thanks
+Extra hunk?
 
->
-> See also commit f95ccffc715b ("IB/mlx4: Use 4K pages for kernel QP's WQE
-> buffer").
->
-> Cc: Laurence Oberman <loberman@redhat.com>
-> Cc: Kamal Heib <kamalheib1@gmail.com>
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
->  drivers/infiniband/ulp/srpt/ib_srpt.h | 5 -----
->  2 files changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index 1ad3cc7c553a..86e4c87e7ec2 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -1816,8 +1816,7 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
->  	 */
->  	qp_init->cap.max_send_wr = min(sq_size / 2, attrs->max_qp_wr);
->  	qp_init->cap.max_rdma_ctxs = sq_size / 2;
-> -	qp_init->cap.max_send_sge = min(attrs->max_send_sge,
-> -					SRPT_MAX_SG_PER_WQE);
-> +	qp_init->cap.max_send_sge = attrs->max_send_sge;
->  	qp_init->cap.max_recv_sge = 1;
->  	qp_init->port_num = ch->sport->port;
->  	if (sdev->use_srq)
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> index 2e1a69840857..f31c349d07a1 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> @@ -105,11 +105,6 @@ enum {
->  	SRP_CMD_ACA = 0x4,
->
->  	SRPT_DEF_SG_TABLESIZE = 128,
-> -	/*
-> -	 * An experimentally determined value that avoids that QP creation
-> -	 * fails due to "swiotlb buffer is full" on systems using the swiotlb.
-> -	 */
-> -	SRPT_MAX_SG_PER_WQE = 16,
->
->  	MIN_SRPT_SQ_SIZE = 16,
->  	DEF_SRPT_SQ_SIZE = 4096,
+Jason
