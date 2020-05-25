@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16321E14AE
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 21:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EB31E1765
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 23:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389488AbgEYTPh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 15:15:37 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46607 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389460AbgEYTPg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 15:15:36 -0400
-Received: by mail-pf1-f196.google.com with SMTP id 131so757938pfv.13
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 12:15:36 -0700 (PDT)
+        id S1731572AbgEYVv2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 17:51:28 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:34979 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgEYVv2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 17:51:28 -0400
+Received: by mail-pl1-f196.google.com with SMTP id q16so7857373plr.2
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 14:51:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=rnHJ1spPJBxhJ9i/HBbETpr1SazWwnsUGJZ0qaa4pE4=;
-        b=PIpLQ3XpNWmgQrnSFu6VCdry6xtJ8VWx3QPjP/hByWXT/tqAdLB6numE6mWYJn+2zB
-         McuPmAgK8qngs0r8hW4AQY9E4ShOyTBe9Mfq1i0gQ05yAEly8Upw2tBIP9GnLLrM2EfE
-         JqMK4jXoslajBDV7IIpKqUZxUGC5ovHwPB3tHDfdyJtv0kWIdMXpoaFCJiYvOM/CsK1T
-         S/+gGD5Ri7KsllJVD1472YdjPT3h7lipbXaV1UivSZgVMzGPX5p2/Iw7SGlt29aY+VGb
-         VMAwTARu0hKcZhpl37MbdaIJ6zCPrgQ6JEY3NAz6Zh1ix1Vf6Qox5EykKyQ6hPavv436
-         5a5A==
-X-Gm-Message-State: AOAM532354kxx7rNsxEXP5jRLnLr/QHS8bNGc4DmdpKXaLrfr9Ni7h5D
-        yj1HPcN5AD8vW3fYs/AAQBc=
-X-Google-Smtp-Source: ABdhPJzRKHqYmwGAx6nAbpO8kuUIHSVvDIBJrjAcSFWREZSYMjwQp+drVFbm02dneZb/BGDJzdVIfg==
-X-Received: by 2002:a63:3c11:: with SMTP id j17mr28554565pga.70.1590434135699;
-        Mon, 25 May 2020 12:15:35 -0700 (PDT)
+        bh=EuP+pTFuPE0WA/1Sr39EKekdI5+u4nlfxIoyagijYx4=;
+        b=sQYkKXCJpneyavrMzaK7+t+Rs1WdgRqSb+xl+6xgy4rUNP47IEqnJMROILP8sdcAuN
+         jXrAHgs78hhZAMXtUt4QVa2RL89eGzXD1FC0dcQGzCgDeHmaOHShGyoFLOZICWj7yTei
+         wq/FmHlshg1EDigQsyMvBcs9Wc35DGqYQpTCEw0RkgHqHsXreGyoyzulZF4hrMnFByKg
+         4ZV+L7b3ERAs6NrEoOkTiByqiUQwvazDqK0VFd7UJRSYSCsHzqZhyzOiSCN9u3WySNnC
+         vTy4W6xQiyNOdz3HEnAig5yyIgAlPM7uaJmBB+euVWsSXzW9PrjC++5LviSV7draOr2G
+         Za+A==
+X-Gm-Message-State: AOAM530eFafbkV5lccUW/8MTZOVDZ+M2fStqdo+qk4dQ0optwcK8MPDA
+        j3E2xUh5mp22mx6RNukI/4A=
+X-Google-Smtp-Source: ABdhPJxqy8mlV7qBMkxSc1UMs+PnU29lYdunnwLYKwXkSnAB3OhYoXLAuwQDAtXR1ztZij06ETk8Fg==
+X-Received: by 2002:a17:90a:9604:: with SMTP id v4mr22346258pjo.198.1590443487783;
+        Mon, 25 May 2020 14:51:27 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:2590:9462:ff8a:101f? ([2601:647:4000:d7:2590:9462:ff8a:101f])
-        by smtp.gmail.com with ESMTPSA id i66sm13033703pfe.135.2020.05.25.12.15.33
+        by smtp.gmail.com with ESMTPSA id i8sm12213935pgr.82.2020.05.25.14.51.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 12:15:34 -0700 (PDT)
+        Mon, 25 May 2020 14:51:27 -0700 (PDT)
 Subject: Re: [PATCH v2 4/4] RDMA/srpt: Increase max_send_sge
+From:   Bart Van Assche <bvanassche@acm.org>
 To:     Leon Romanovsky <leonro@mellanox.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
         linux-rdma@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
         Kamal Heib <kamalheib1@gmail.com>
 References: <20200525172212.14413-1-bvanassche@acm.org>
  <20200525172212.14413-5-bvanassche@acm.org> <20200525175152.GI10591@unreal>
-From:   Bart Van Assche <bvanassche@acm.org>
+ <8633b4b8-fb7d-8034-e2ac-789ec61f4c67@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
  LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
@@ -65,12 +66,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <8633b4b8-fb7d-8034-e2ac-789ec61f4c67@acm.org>
-Date:   Mon, 25 May 2020 12:15:32 -0700
+Message-ID: <0ca86214-372d-eefe-d259-d50d1e18f096@acm.org>
+Date:   Mon, 25 May 2020 14:51:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200525175152.GI10591@unreal>
+In-Reply-To: <8633b4b8-fb7d-8034-e2ac-789ec61f4c67@acm.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,33 +80,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-25 10:51, Leon Romanovsky wrote:
-> On Mon, May 25, 2020 at 10:22:12AM -0700, Bart Van Assche wrote:
->> The ib_srpt driver limits max_send_sge to 16. Since that is a workaround
->> for an mlx4 bug that has been fixed, increase max_send_sge. For mlx4, do
->> not use the value advertised by the driver (32) since that causes QP's
->> to transition to the error status.
+On 2020-05-25 12:15, Bart Van Assche wrote:
+> On 2020-05-25 10:51, Leon Romanovsky wrote:
+>> On Mon, May 25, 2020 at 10:22:12AM -0700, Bart Van Assche wrote:
+>>> The ib_srpt driver limits max_send_sge to 16. Since that is a workaround
+>>> for an mlx4 bug that has been fixed, increase max_send_sge. For mlx4, do
+>>> not use the value advertised by the driver (32) since that causes QP's
+>>> to transition to the error status.
+>>
+>> How are you avoiding mlx4 bug in this patch?
+>> Isn't "attrs->max_send_sge" come from driver as is?
 > 
-> How are you avoiding mlx4 bug in this patch?
-> Isn't "attrs->max_send_sge" come from driver as is?
+> Hi Leon,
+> 
+> Development of this patch started considerable time ago - before the
+> ib_srpt driver was converted to the RDMA R/W API. Before that conversion
+> the ib_srpt driver was using attrs->max_send_sge limit for both RDMA
+> writes and RDMA reads, which is wrong. Hence the need for the
+> "max_sge_delta" parameter (max_send_sge = 32 and max_sge_rd = 30 for
+> mlx4). The following code from drivers/infiniband/core/rw.c selects the
+> proper limit:
+> 
+>        u32 max_sge = dir == DMA_TO_DEVICE ? qp->max_write_sge :
+>                      qp->max_read_sge;
+> 
+> The following code in drivers/infiniband/core/verbs.c sets these limits:
+> 
+>         qp->max_write_sge = qp_init_attr->cap.max_send_sge;
+>         qp->max_read_sge = min_t(u32, qp_init_attr->cap.max_send_sge,
+>                                  device->attrs.max_sge_rd);
 
-Hi Leon,
-
-Development of this patch started considerable time ago - before the
-ib_srpt driver was converted to the RDMA R/W API. Before that conversion
-the ib_srpt driver was using attrs->max_send_sge limit for both RDMA
-writes and RDMA reads, which is wrong. Hence the need for the
-"max_sge_delta" parameter (max_send_sge = 32 and max_sge_rd = 30 for
-mlx4). The following code from drivers/infiniband/core/rw.c selects the
-proper limit:
-
-       u32 max_sge = dir == DMA_TO_DEVICE ? qp->max_write_sge :
-                     qp->max_read_sge;
-
-The following code in drivers/infiniband/core/verbs.c sets these limits:
-
-        qp->max_write_sge = qp_init_attr->cap.max_send_sge;
-        qp->max_read_sge = min_t(u32, qp_init_attr->cap.max_send_sge,
-                                 device->attrs.max_sge_rd);
+The commit message should be shortened to the following: "The ib_srpt
+driver limits max_send_sge to 16. Since that is a workaround
+for an mlx4 bug that has been fixed, increase max_send_sge. See also
+commit f95ccffc715b ("IB/mlx4: Use 4K pages for kernel QP's WQE buffer")."
 
 Bart.
