@@ -2,101 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA871E11A8
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1D81E11C4
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 17:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403976AbgEYPZ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 11:25:59 -0400
-Received: from mail-am6eur05on2065.outbound.protection.outlook.com ([40.107.22.65]:30016
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404122AbgEYPZ6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 May 2020 11:25:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KJVkspIs5l8ogSmhele7YfYJ+fgc8T7dqn+i7mk73UDARhXvybPE/A/AR2tbGW+dTFDZ0doDqTLBhpuvP5z8oM9nN7StzxU3rtWzW7g/kKBPfUQEXg/GEk/vXNo11UHdBH34vXR0RhYNW2qPSENvbgRA0IdRq8Iy7gC3fg3WeMbECkUtwluWQIjSPm5UY8grJwWIuNdBU09B9b8dw5ekd3ykpAu52gqvMKgQg4jhOJoOFHd/TObNf6NYnp7thFnqc5K8bMTQZz+WSx7cXaUJyG2gIT9KbGbRgVm692W0Ah1TCd2itWHfXXWKdbnKdSKZSg9RFGsgXKmfrK/nCDNaQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bpJ3DiZBKpTdjMHi4XaETzN5BNYtL4khqVnDzZS/j/g=;
- b=PwLZfz7r/IcBhl+7nqWrcn6cQwYp2YYYgRW9f1lLT1Gt/W2RT/JbDgwdXRV0fKkrKb4gjIL55WempZButTC8CZZSbL/04fv93FBD+VJP9mxu41ltpfnm1UpezzJNVLl+wkf2IZFV4SN4xniVemSlioz2YhQomyBh0oML0ZCpFQ/c0mcu+zWGS0FedemR8bNeWqDufJrkOmOyty8mwDXnCr89EanK+ZT3fEgUrf2h4Zzw9/9j1VkL++VNqkeUjwdjpb3shRtK6vmWYis/2cWsR9J8ERl1bLqzjrO5oWnQ+Hw2gdrMyQrC6JHFWAJmJDg44qzFLev5JPQ21PPtXGhhNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bpJ3DiZBKpTdjMHi4XaETzN5BNYtL4khqVnDzZS/j/g=;
- b=CcB632Vic05AaXzNAsODjoHmtsWY7kIbUlbNfWiYMkhXbOR0e5+Vuu0s6z9GMbBd9OtSAlbhESttPSYE+Av3SkDhUFue6eaHRV2A30kbi2iTnAhCHEm19aGJyy/ClZG5VgV7pSX8a0Y9g6w1XKOYYGGpoKr2K4u3n4xDFKfAkcs=
-Authentication-Results: mellanox.com; dkim=none (message not signed)
- header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
- by AM0PR05MB5188.eurprd05.prod.outlook.com (2603:10a6:208:f7::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Mon, 25 May
- 2020 15:25:52 +0000
-Received: from AM0PR05MB5873.eurprd05.prod.outlook.com
- ([fe80::9c3f:57ee:7cd2:a4f4]) by AM0PR05MB5873.eurprd05.prod.outlook.com
- ([fe80::9c3f:57ee:7cd2:a4f4%5]) with mapi id 15.20.3021.029; Mon, 25 May 2020
- 15:25:52 +0000
-Subject: Re: [PATCH mlx5-next 01/14] net/mlx5: Export resource dump interface
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>
-References: <20200513095034.208385-1-leon@kernel.org>
- <20200513095034.208385-2-leon@kernel.org> <20200525142439.GA20904@ziepe.ca>
-From:   Maor Gottlieb <maorg@mellanox.com>
-Message-ID: <418ffabb-c8d4-5999-e450-c527220d9784@mellanox.com>
-Date:   Mon, 25 May 2020 18:25:31 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-In-Reply-To: <20200525142439.GA20904@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM4PR0902CA0023.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::33) To AM0PR05MB5873.eurprd05.prod.outlook.com
- (2603:10a6:208:125::25)
+        id S2404174AbgEYPbM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 11:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404147AbgEYPbM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 11:31:12 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C399FC08C5C0
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 08:31:10 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id d7so14053411ote.6
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 08:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bAUJzoc7IqUjSn+yo0peq2R8rxLuXszL8v1+SHoHNg4=;
+        b=Tr5Is/tFfhBcNvoJFDbRu5Ln8A76+CnG+YDW2gJrWDvyNGkCXJ7tLlLksMoNneiC/G
+         JQcpPGhoKYZL1sU8qtPMsxurg5u2WpN3lkX8GcIcMGy67IE5X9Z/KXbl7mWg/wzgEVa5
+         0YNI55NOQ1RqN/Ren3NRDgb8W+ScMuN+eyqoU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bAUJzoc7IqUjSn+yo0peq2R8rxLuXszL8v1+SHoHNg4=;
+        b=MR1wCv/3jSit1ZExVFGlHyYqlMcNUnvSfSMpoO6PVreuzc8GbuPuMCh1I1NvDFzN73
+         ayJEKxTDip80yTtXRKp2kCD8orCR34WdqRpnZFNPWPGbyYNuAkRgV9J/2GGwc7STKu7N
+         rgAe8RMsO0UJGf+wtUvLmNK/cU9OZWc6WDtnesjAmDizg4F5hpspIyRUyiRIu7/xUyvY
+         skX62jeU90x8WQW9nMNPWGmNBrlFLFdcZjGP2xPKALBgqYvAQM2V4JmRF3ChNlXudbgX
+         XWkV+xGKSVy4pSUT0q0GKUsju8lqRJnhK9EvNd8jk1mhgasynOrdRp1P6sexRPmiOyZM
+         TNhw==
+X-Gm-Message-State: AOAM531NPdycjGzU2m5itrRQvtZjld4zyKbCbfiR8et74Ehe9rserQ5B
+        D2ZN8mA8Hj9CNVCkSCAJVgLg40/JAhtQLFCSIha60Q==
+X-Google-Smtp-Source: ABdhPJzkcrR3yAMwEAELXE9cys4iQedV/n7q7FwrzlUwqN0x19DN2aghlSLeBpaRXuxxoHbrXZYQHIFlGr+0T8f9mVM=
+X-Received: by 2002:a9d:768a:: with SMTP id j10mr5068453otl.188.1590420670094;
+ Mon, 25 May 2020 08:31:10 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.100.102.6] (93.173.18.107) by AM4PR0902CA0023.eurprd09.prod.outlook.com (2603:10a6:200:9b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Mon, 25 May 2020 15:25:43 +0000
-X-Originating-IP: [93.173.18.107]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 09b2c635-158b-4108-618b-08d800bfe8f2
-X-MS-TrafficTypeDiagnostic: AM0PR05MB5188:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB51889D802913C84A968B717AD3B30@AM0PR05MB5188.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-Forefront-PRVS: 0414DF926F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fd11nF5mkfqhFuSkAoa1nImK101tIuH2jozapNRROo24CHlod4X6CdM62pWPX+BmXy8yTi9TVDCe4FMQRehfQhqKZuM2idhISd7Veyg84tKCDzXvz+0e4al9t0yfEdz2UTDvJXQ4pqyP1WAvOWZz3n3mPTrgiqGOysQ+72zluJZfyN62tE34BRU5ebXpIQ9Gh1JlZhD6gZXdo/AT7Hq5KZNAyK5R9ymn0nZUQX/gRPkn+S408Y5sBf13g11nI7U3Wbsi/udUzK/R5Ke39xmpXLro9kHpxrJ6OcuLL63tGgobIFMpi6SLCxoKzRpKJ7sH5GkPNJpcqQIzaoKv1LavqHFnNqCekjkEiUPbo1FPZJKsuQES0Amav8Xl5KIfz9LV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5873.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(5660300002)(8676002)(2616005)(66556008)(4744005)(66476007)(66946007)(956004)(4326008)(110136005)(8936002)(6666004)(36756003)(478600001)(31686004)(53546011)(2906002)(6486002)(16526019)(54906003)(86362001)(186003)(316002)(52116002)(26005)(16576012)(107886003)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Gx5Jy088KNSdh02za+KyT8fAdJsTFD50LdCOFMKukQ14Xa5TtTAoN6mlMkn/p4Q3P4grxSly5fnEhTIfPTX3GLXj0G5tLJlmBNGWx+/Nl84NnN9671mHJPxiRMZNgskUHGFSM/pAW+tf2eIv9VfKcPymzfuhTnLpnRXIZIG1VXTgxVmANuNhBW7SOGw7rfjltq0BlR6gpY0fdUhCJVrC48OmYHD5r2A6/DHNjUWAMwCk2PQ4I/gzqip1MXjAclqNDMU4ioSWpg0M9QIHOHoB/xZLN5L/HJQRt4mX7gITSUC9LltG/g+Yd8SnZA4hEC4Dm4WQM67Pz/6QrLzJTbu45bo04IoaNQ/vptjtnVJ6NuYJPlaXwo53xi4l9kNg+nYz4uP/2H0TBgEVWye8OuV6Vfh10Zyn/9oaunohBXvzhQysnDIpmkhqh6tS378HUAlDHegP8V957N1f8CGzFXPuyyRBVmTQwi+zsjoUhEwqkvLOhv9lDD0Hm6g6pWaJSIEJ
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09b2c635-158b-4108-618b-08d800bfe8f2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2020 15:25:52.1356
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M8LtCBHAQgx1Pi3EzW8Ppab6JCiZSgJpgZHF+FheGa8seSi/XJxw+XDfOpvJJlU0MU145bNKVdzZ4hyqtwiTKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5188
+References: <20200512085944.222637-1-daniel.vetter@ffwll.ch> <20200512085944.222637-9-daniel.vetter@ffwll.ch>
+In-Reply-To: <20200512085944.222637-9-daniel.vetter@ffwll.ch>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 25 May 2020 17:30:59 +0200
+Message-ID: <CAKMK7uHXjFcVZuV-gF-mGYZVG8CbosoxWKN5MKV+rBXwEr3JZw@mail.gmail.com>
+Subject: Re: [RFC 08/17] drm/scheduler: use dma-fence annotations in main thread
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Qiang Yu <yuq825@gmail.com>, Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <Steven.Price@arm.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        "Anholt, Eric" <eric@anholt.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 5/25/2020 5:24 PM, Jason Gunthorpe wrote:
-> On Wed, May 13, 2020 at 12:50:21PM +0300, Leon Romanovsky wrote:
->> From: Maor Gottlieb <maorg@mellanox.com>
->>
->> Export some of the resource dump API, so it could be
->> used by the mlx5_ib driver as well.
-> This description doesn't really match the patch, is this other stuff
-> dead code?
+On Tue, May 12, 2020 at 11:00 AM Daniel Vetter <daniel.vetter@ffwll.ch> wro=
+te:
 >
-> Jason
+> If the scheduler rt thread gets stuck on a mutex that we're holding
+> while waiting for gpu workloads to complete, we have a problem.
+>
+> Add dma-fence annotations so that lockdep can check this for us.
+>
+> I've tried to quite carefully review this, and I think it's at the
+> right spot. But obviosly no expert on drm scheduler.
+>
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
 
-It is used in later patch, I can clarify it better in the commit message.
+Adding a bunch more people from drivers using the drm/scheduler (so
+that's maintainers for etnaviv, lima, panfrost, and v3d on top of
+amdgpu folks arlready on cc). Any takes or testing on this and well
+the entire series very much appreciated, there's also another patch to
+anotate the tdr work in this series. Plus ofc the prep work.
+
+Thanks, Daniel
+
+> ---
+>  drivers/gpu/drm/scheduler/sched_main.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/sch=
+eduler/sched_main.c
+> index 2f319102ae9f..06a736e506ad 100644
+> --- a/drivers/gpu/drm/scheduler/sched_main.c
+> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> @@ -763,9 +763,12 @@ static int drm_sched_main(void *param)
+>         struct sched_param sparam =3D {.sched_priority =3D 1};
+>         struct drm_gpu_scheduler *sched =3D (struct drm_gpu_scheduler *)p=
+aram;
+>         int r;
+> +       bool fence_cookie;
+>
+>         sched_setscheduler(current, SCHED_FIFO, &sparam);
+>
+> +       fence_cookie =3D dma_fence_begin_signalling();
+> +
+>         while (!kthread_should_stop()) {
+>                 struct drm_sched_entity *entity =3D NULL;
+>                 struct drm_sched_fence *s_fence;
+> @@ -823,6 +826,9 @@ static int drm_sched_main(void *param)
+>
+>                 wake_up(&sched->job_scheduled);
+>         }
+> +
+> +       dma_fence_end_signalling(fence_cookie);
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.26.2
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
