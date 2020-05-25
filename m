@@ -2,132 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020EF1E1170
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 17:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA871E11A8
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 17:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391041AbgEYPO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 11:14:28 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:36461 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390998AbgEYPO1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 11:14:27 -0400
-Received: by mail-pl1-f196.google.com with SMTP id bg4so2281859plb.3
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 08:14:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pQIaqg6vOScDn8TuMxQJdAT5NeQRfEOse6mbkGyRrts=;
-        b=Kmqlp/0TvDp3zbgC3MNgCi/2UHH222Lj24HjWuujfEBSsNj60GqggVYr82yW3PxGnq
-         UTLiW/dhv2upV0ym2H9vDt0bjNqqxbVNLZkM5l1+ciFIM5ZizOwwcx8EgzQEoNoG5F9d
-         Ujxebb10uMKBoa1ZrUTms+W1mJ+UhEuIbwrof6ExdrCumeO7gNSoJAHHCcYQUImyL8xM
-         uAhY1N5FTb5BWKtOJQjSejZl5aVr0OvlnNxGyABms6tDW6tHlNH1UmEg/Asv/KyrPAJ3
-         J/+qKzjRwqYFrE7C8cjlKjXbbVmzZqVxuEhMT4hOPV406pePLRPMux76tro8b3vlyaZ7
-         AqbQ==
-X-Gm-Message-State: AOAM530DfY6UJT5WUmZSZOF7C9ywu/t0/2lB/kM++iKB72vW8bpreOVZ
-        OoakgMJBeiAjPkFpuUgVSdLyOKpZ
-X-Google-Smtp-Source: ABdhPJzGRQoeDvWrF63J2Zd7zLSFY1OksIBE4yBc7bhIRxiNfKPS2gUfY5fHgRPzZUx5sFa+PwvgCw==
-X-Received: by 2002:a17:902:8f96:: with SMTP id z22mr28312360plo.24.1590419665258;
-        Mon, 25 May 2020 08:14:25 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:2590:9462:ff8a:101f? ([2601:647:4000:d7:2590:9462:ff8a:101f])
-        by smtp.gmail.com with ESMTPSA id w14sm11896544pgo.75.2020.05.25.08.14.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 08:14:24 -0700 (PDT)
-Subject: Re: [PATCH V3 2/4] RDMA/core: Introduce shared CQ pool API
-To:     Yamin Friedman <yaminf@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org
-References: <1589892216-39283-1-git-send-email-yaminf@mellanox.com>
- <1589892216-39283-3-git-send-email-yaminf@mellanox.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <dcbddbce-2f30-06a4-383a-c4f41b39f2de@acm.org>
-Date:   Mon, 25 May 2020 08:14:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <1589892216-39283-3-git-send-email-yaminf@mellanox.com>
-Content-Type: text/plain; charset=utf-8
+        id S2403976AbgEYPZ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 11:25:59 -0400
+Received: from mail-am6eur05on2065.outbound.protection.outlook.com ([40.107.22.65]:30016
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404122AbgEYPZ6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 May 2020 11:25:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJVkspIs5l8ogSmhele7YfYJ+fgc8T7dqn+i7mk73UDARhXvybPE/A/AR2tbGW+dTFDZ0doDqTLBhpuvP5z8oM9nN7StzxU3rtWzW7g/kKBPfUQEXg/GEk/vXNo11UHdBH34vXR0RhYNW2qPSENvbgRA0IdRq8Iy7gC3fg3WeMbECkUtwluWQIjSPm5UY8grJwWIuNdBU09B9b8dw5ekd3ykpAu52gqvMKgQg4jhOJoOFHd/TObNf6NYnp7thFnqc5K8bMTQZz+WSx7cXaUJyG2gIT9KbGbRgVm692W0Ah1TCd2itWHfXXWKdbnKdSKZSg9RFGsgXKmfrK/nCDNaQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bpJ3DiZBKpTdjMHi4XaETzN5BNYtL4khqVnDzZS/j/g=;
+ b=PwLZfz7r/IcBhl+7nqWrcn6cQwYp2YYYgRW9f1lLT1Gt/W2RT/JbDgwdXRV0fKkrKb4gjIL55WempZButTC8CZZSbL/04fv93FBD+VJP9mxu41ltpfnm1UpezzJNVLl+wkf2IZFV4SN4xniVemSlioz2YhQomyBh0oML0ZCpFQ/c0mcu+zWGS0FedemR8bNeWqDufJrkOmOyty8mwDXnCr89EanK+ZT3fEgUrf2h4Zzw9/9j1VkL++VNqkeUjwdjpb3shRtK6vmWYis/2cWsR9J8ERl1bLqzjrO5oWnQ+Hw2gdrMyQrC6JHFWAJmJDg44qzFLev5JPQ21PPtXGhhNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bpJ3DiZBKpTdjMHi4XaETzN5BNYtL4khqVnDzZS/j/g=;
+ b=CcB632Vic05AaXzNAsODjoHmtsWY7kIbUlbNfWiYMkhXbOR0e5+Vuu0s6z9GMbBd9OtSAlbhESttPSYE+Av3SkDhUFue6eaHRV2A30kbi2iTnAhCHEm19aGJyy/ClZG5VgV7pSX8a0Y9g6w1XKOYYGGpoKr2K4u3n4xDFKfAkcs=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
+ by AM0PR05MB5188.eurprd05.prod.outlook.com (2603:10a6:208:f7::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Mon, 25 May
+ 2020 15:25:52 +0000
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::9c3f:57ee:7cd2:a4f4]) by AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::9c3f:57ee:7cd2:a4f4%5]) with mapi id 15.20.3021.029; Mon, 25 May 2020
+ 15:25:52 +0000
+Subject: Re: [PATCH mlx5-next 01/14] net/mlx5: Export resource dump interface
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>
+References: <20200513095034.208385-1-leon@kernel.org>
+ <20200513095034.208385-2-leon@kernel.org> <20200525142439.GA20904@ziepe.ca>
+From:   Maor Gottlieb <maorg@mellanox.com>
+Message-ID: <418ffabb-c8d4-5999-e450-c527220d9784@mellanox.com>
+Date:   Mon, 25 May 2020 18:25:31 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
+In-Reply-To: <20200525142439.GA20904@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM4PR0902CA0023.eurprd09.prod.outlook.com
+ (2603:10a6:200:9b::33) To AM0PR05MB5873.eurprd05.prod.outlook.com
+ (2603:10a6:208:125::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.100.102.6] (93.173.18.107) by AM4PR0902CA0023.eurprd09.prod.outlook.com (2603:10a6:200:9b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Mon, 25 May 2020 15:25:43 +0000
+X-Originating-IP: [93.173.18.107]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 09b2c635-158b-4108-618b-08d800bfe8f2
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5188:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB51889D802913C84A968B717AD3B30@AM0PR05MB5188.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-Forefront-PRVS: 0414DF926F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fd11nF5mkfqhFuSkAoa1nImK101tIuH2jozapNRROo24CHlod4X6CdM62pWPX+BmXy8yTi9TVDCe4FMQRehfQhqKZuM2idhISd7Veyg84tKCDzXvz+0e4al9t0yfEdz2UTDvJXQ4pqyP1WAvOWZz3n3mPTrgiqGOysQ+72zluJZfyN62tE34BRU5ebXpIQ9Gh1JlZhD6gZXdo/AT7Hq5KZNAyK5R9ymn0nZUQX/gRPkn+S408Y5sBf13g11nI7U3Wbsi/udUzK/R5Ke39xmpXLro9kHpxrJ6OcuLL63tGgobIFMpi6SLCxoKzRpKJ7sH5GkPNJpcqQIzaoKv1LavqHFnNqCekjkEiUPbo1FPZJKsuQES0Amav8Xl5KIfz9LV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5873.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(5660300002)(8676002)(2616005)(66556008)(4744005)(66476007)(66946007)(956004)(4326008)(110136005)(8936002)(6666004)(36756003)(478600001)(31686004)(53546011)(2906002)(6486002)(16526019)(54906003)(86362001)(186003)(316002)(52116002)(26005)(16576012)(107886003)(31696002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Gx5Jy088KNSdh02za+KyT8fAdJsTFD50LdCOFMKukQ14Xa5TtTAoN6mlMkn/p4Q3P4grxSly5fnEhTIfPTX3GLXj0G5tLJlmBNGWx+/Nl84NnN9671mHJPxiRMZNgskUHGFSM/pAW+tf2eIv9VfKcPymzfuhTnLpnRXIZIG1VXTgxVmANuNhBW7SOGw7rfjltq0BlR6gpY0fdUhCJVrC48OmYHD5r2A6/DHNjUWAMwCk2PQ4I/gzqip1MXjAclqNDMU4ioSWpg0M9QIHOHoB/xZLN5L/HJQRt4mX7gITSUC9LltG/g+Yd8SnZA4hEC4Dm4WQM67Pz/6QrLzJTbu45bo04IoaNQ/vptjtnVJ6NuYJPlaXwo53xi4l9kNg+nYz4uP/2H0TBgEVWye8OuV6Vfh10Zyn/9oaunohBXvzhQysnDIpmkhqh6tS378HUAlDHegP8V957N1f8CGzFXPuyyRBVmTQwi+zsjoUhEwqkvLOhv9lDD0Hm6g6pWaJSIEJ
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09b2c635-158b-4108-618b-08d800bfe8f2
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2020 15:25:52.1356
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M8LtCBHAQgx1Pi3EzW8Ppab6JCiZSgJpgZHF+FheGa8seSi/XJxw+XDfOpvJJlU0MU145bNKVdzZ4hyqtwiTKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5188
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-19 05:43, Yamin Friedman wrote:
-> +	/*
-> +	 * Allocated at least as many CQEs as requested, and otherwise
-           ^^^^^^^^^
-           allocate?
 
-> +	spin_lock_irqsave(&dev->cq_pools_lock, flags);
-> +	list_splice(&tmp_list, &dev->cq_pools[poll_ctx - 1]);
-> +	spin_unlock_irqrestore(&dev->cq_pools_lock, flags);
+On 5/25/2020 5:24 PM, Jason Gunthorpe wrote:
+> On Wed, May 13, 2020 at 12:50:21PM +0300, Leon Romanovsky wrote:
+>> From: Maor Gottlieb <maorg@mellanox.com>
+>>
+>> Export some of the resource dump API, so it could be
+>> used by the mlx5_ib driver as well.
+> This description doesn't really match the patch, is this other stuff
+> dead code?
+>
+> Jason
 
-Please add a WARN_ONCE() or WARN_ON_ONCE() statement that checks that
-poll_ctx >= 1.
-
-> +struct ib_cq *ib_cq_pool_get(struct ib_device *dev, unsigned int nr_cqe,
-> +			     int comp_vector_hint,
-> +			     enum ib_poll_context poll_ctx)
-> +{
-> +	static unsigned int default_comp_vector;
-> +	int vector, ret, num_comp_vectors;
-> +	struct ib_cq *cq, *found = NULL;
-> +	unsigned long flags;
-> +
-> +	if (poll_ctx > ARRAY_SIZE(dev->cq_pools) || poll_ctx == IB_POLL_DIRECT)
-> +		return ERR_PTR(-EINVAL);
-
-How about changing this into the following?
-
-	if ((unsigned)(poll_ctx - 1) >= ARRAY_SIZE(dev->cq_pools))
-		return ...;
-
-I think that change will make this code easier to verify.
-
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 1659131..d40604a 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -1555,6 +1555,7 @@ enum ib_poll_context {
->  	IB_POLL_SOFTIRQ,	   /* poll from softirq context */
->  	IB_POLL_WORKQUEUE,	   /* poll from workqueue */
->  	IB_POLL_UNBOUND_WORKQUEUE, /* poll from unbound workqueue */
-> +	IB_POLL_LAST,
->  };
-
-Please consider changing IB_POLL_LAST into IB_POLL_LAST =
-IB_POLL_UNBOUND_WORKQUEUE. Otherwise the compiler will produce annoying
-warnings on switch statements that do not handle IB_POLL_LAST explicitly.
-
-Thanks,
-
-Bart.
+It is used in later patch, I can clarify it better in the commit message.
