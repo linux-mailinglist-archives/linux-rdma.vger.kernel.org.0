@@ -2,177 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8291D1E0F1A
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 15:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC60C1E0FA3
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 15:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403784AbgEYNJO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 09:09:14 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:53957 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388757AbgEYNJN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 May 2020 09:09:13 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 5A568CB0;
-        Mon, 25 May 2020 09:09:12 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute7.internal (MEProxy); Mon, 25 May 2020 09:09:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=znu.io; h=
-        mime-version:message-id:in-reply-to:references:date:from:to
-        :subject:content-type; s=fm3; bh=34Dvjx1N6yLXISqrs7B9XCGeqLIuc2A
-        oLH794rYeSFQ=; b=HvQFhavCEp1cqBh84htkKpKXDYfiTTAfodD2BzJE7QWdHUo
-        nb3jCrJKDw7vjqXFuhvUC2/2/MPE9/7JrhZoqvHefXX4KpVQyeQUSJQdFOPxtXb9
-        5Fy87PKw8Rs0Q6ds08sMKAnazhH+omYcGWA5cTSd6+s5OK74RF1/LKntUkcTDAoF
-        hLggAXI6wleS277FeuehWTajLxp3Y9fI0uzulM+3ZfSzBFRq0P090sQUeD9HWQjX
-        ISrOc5LEYXdRemZoxCIb6vUxSXVGh8jknzr0JvPCkB3AeFVEmOC/Ysf7xpDxytos
-        E4DmHv8AcV/WgTtd1Dmt1NIqSeU4DhlfHXgA63A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=34Dvjx
-        1N6yLXISqrs7B9XCGeqLIuc2AoLH794rYeSFQ=; b=JEh2bWZgqroDEVDgq9l2r3
-        Zgc85Gs43hxHGK1gQIV2Hu00qjwc9hORQMJ+zxd/1BG3wBmKwSkV4S7TT5MSg6ju
-        ssIYvLHOfNqztGKHHJRqAJ7C0SD3l7zkyvXLypF+nleGaP78E51wjnXokJm1hBsW
-        j9TzLYAazas01cNxIjOUZ3UBapL9d4+UYha9/uIY/ExYHHqMMGiq6KpDLmYdfV+R
-        QhOaPCNPCQra0+Tmyn0M+E6fwXqbkvLlzqgCppMh9tvqwuOWmagxzVFvn98WS6rF
-        x3B/ULRIfH5if3uVBTxNJjtFTvb3qE9uICcYAB6qC63UadZQNjX1c1kR6PaKl3hw
-        ==
-X-ME-Sender: <xms:d8PLXm8nqxvvw59v-XaI60vQ0k5b7CUIQJKcPBEnqjO7JSWCpmPe5w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvtddgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdffrghv
-    ihguucgkrghriiihtghkihdfuceouggrvhgvseiinhhurdhioheqnecuggftrfgrthhtvg
-    hrnhepheekhfeltddtffefvefgueeuvefgveeiudefvdduheehtdfggfekgfeuveefuefh
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvh
-    gvseiinhhurdhioh
-X-ME-Proxy: <xmx:d8PLXmugl3G7aKQcRBLWhfzKV-yAGYPuSe-X_HrL5BARxC8iWHFO8A>
-    <xmx:d8PLXsDHszvI9ETBwqqsuziKVYL9l36jkqAvO59glKNxQmar-WQOrw>
-    <xmx:d8PLXuf45do-GH--YYb9SyH1BZ8dNCJaO3fzXi36RtCSBQdJ3d54Cg>
-    <xmx:d8PLXhZx6Q68KcjaLyvfmwDFIDCNwkZ8aeluEWHSJ-7I25EmMEaD-w>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6E5DEE00B0; Mon, 25 May 2020 09:09:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-dev0-488-g9249dd4-fm-20200522.001-g9249dd48
-Mime-Version: 1.0
-Message-Id: <ad6e4e63-9328-4341-8148-d6831316a855@www.fastmail.com>
-In-Reply-To: <DBAPR05MB7093D9F64237F31DB615DA20CEB30@DBAPR05MB7093.eurprd05.prod.outlook.com>
-References: <38bdd48f-d1ca-4bce-9c9c-30925b158664@www.fastmail.com>
- <DBAPR05MB7093D9F64237F31DB615DA20CEB30@DBAPR05MB7093.eurprd05.prod.outlook.com>
-Date:   Mon, 25 May 2020 09:08:51 -0400
-From:   "David Zarzycki" <dave@znu.io>
-To:     "Vladimir Koushnir" <vladimirk@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: opensm and virt_enabled?
-Content-Type: text/plain
+        id S2390802AbgEYNlW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 09:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388794AbgEYNlV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 09:41:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677CCC061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 06:41:20 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s1so17431883qkf.9
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 06:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gPDO3X5exveNuQB33sqGwYFDtLpn1MHpqh7qgx9Ds0U=;
+        b=YWisdnilIhfDrM+E+SxMXaOOM3S8J0owofy6L63tPMKNlQpTOnDBXaJIGIpfLVuv8e
+         RPwFtQIUH3v7EOrCTGWLmLB0H7YbUEomLIfmYte8O6ZPx64QjusgkIxmiTn0/Veefq7M
+         pGEt8yH0t/vwgIpSl+RtDysE0yr6nJS4JK3YSde04NTeyPjZmiEOJpHUKytYk9YebMaP
+         ZBwTqRWOlcbPbyxbCtPg/99VSLhwlIy3blfpxEsFWPNLZqUxUrAIQcRPOOcELjbAp/DY
+         UMb0QDSHWVMTyUFW5IIroZvxqvroUZ4aOu//kLYALqNBVGf71IaS4QGAehurQ0LEWc+H
+         VK9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gPDO3X5exveNuQB33sqGwYFDtLpn1MHpqh7qgx9Ds0U=;
+        b=lVCWMdiGh8+9r1/SmgDyF2lcnze59GTvz3Ev5us0KEB4hyTn/NKHmbmi3GW6/mkgas
+         yhCObjCeXh+vsvDRcPdCPoseOHSzkNakeiCNEPu6E2/ajfRWafSOhFIbRL5GICyDoKtT
+         AgOn4RJPpr5Fwe+uhWNs3RYEZP+ZJNtUB6i+IiPCb2f+XEjzas/9Q8nrAxLvmNzUior8
+         UH0vBDOG87b280S7tVdHwzIlwDUOY8t/TKUTqjaW0EZPPtKH/5JDXJByH8Sa5nSG8BXT
+         tS8RU8ecTnWUA0c4EfguSVQ6f95Mq2t8TygnjEfF1jo8yz6D0EwcwcyeAGYDo3tjWAFg
+         QMLQ==
+X-Gm-Message-State: AOAM533BRi+pgnMhfz45TMeUDvKUoyplT8rwBXT6hteH2jzNpHb4XI5V
+        qk8bz2lj8byUNAZONTm1KnKUzA==
+X-Google-Smtp-Source: ABdhPJztwwj2Lmnes/knDFhWm/x9ekYq2TGHNL3KtgNw4hZnEPBap7aZFzv7gZ3WmAGU8iH6kzNbLg==
+X-Received: by 2002:a37:2dc4:: with SMTP id t187mr3763851qkh.166.1590414079640;
+        Mon, 25 May 2020 06:41:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r15sm2718512qtt.42.2020.05.25.06.41.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 May 2020 06:41:19 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jdDLy-0000hA-Jv; Mon, 25 May 2020 10:41:18 -0300
+Date:   Mon, 25 May 2020 10:41:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@linuxfoundation.org>
+Subject: Re: [PATCH 0/6] nouveau/hmm: add support for mapping large pages
+Message-ID: <20200525134118.GA2536@ziepe.ca>
+References: <20200508192009.15302-1-rcampbell@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508192009.15302-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Vladimir,
+On Fri, May 08, 2020 at 12:20:03PM -0700, Ralph Campbell wrote:
+> hmm_range_fault() returns an array of page frame numbers and flags for
+> how the pages are mapped in the requested process' page tables. The PFN
+> can be used to get the struct page with hmm_pfn_to_page() and the page size
+> order can be determined with compound_order(page) but if the page is larger
+> than order 0 (PAGE_SIZE), there is no indication that the page is mapped
+> using a larger page size. To be fully general, hmm_range_fault() would need
+> to return the mapping size to handle cases like a 1GB compound page being
+> mapped with 2MB PMD entries. However, the most common case is the mapping
+> size the same as the underlying compound page size.
+> This series adds a new output flag to indicate this so that callers know it
+> is safe to use a large device page table mapping if one is available.
+> Nouveau and the HMM tests are updated to use the new flag.
+> 
+> Note that this series depends on a patch queued in Ben Skeggs' nouveau
+> tree ("nouveau/hmm: map pages after migration") and the patches queued
+> in Jason's HMM tree.
+> There is also a patch outstanding ("nouveau/hmm: fix nouveau_dmem_chunk
+> allocations") that is independent of the above and could be applied
+> before or after.
 
-Thanks. I found it. Is this opensm closed source? I apparently wrongly assumed that this opensm would be in the source drop of MLNX OFED.
+Did Christoph and Matt's remarks get addressed here?
 
-Dave
+I think ODP could use something like this, currently it checks every
+page to get back to the huge page size and this flag would optimze
+that
 
-On Mon, May 25, 2020, at 8:41 AM, Vladimir Koushnir wrote:
-> Hello,
-> 
-> "virt_enabled 2" is supported by MLNX subnet manager that is available 
-> via UFM/MLNX OFED/MLNX Infiniband switch OS (MLNX OS).
-> 
-> Regards,
-> Vladimir
-> -----Original Message-----
-> From: linux-rdma-owner@vger.kernel.org 
-> <linux-rdma-owner@vger.kernel.org> On Behalf Of David Zarzycki
-> Sent: Monday, May 25, 2020 3:30 PM
-> To: linux-rdma@vger.kernel.org
-> Subject: opensm and virt_enabled?
-> 
-> Hello,
-> 
-> I'm trying to track how to enable "virt_enabled 2" in opensm. Various 
-> Mellanox docs refer to this change in opensm behavior in order to 
-> support their socket direct cards. That being said, when I search the 
-> opensm source and source history, I cannot find any reference this flag 
-> ever existing. What am I missing?
-> 
-> For reference, I've connected two ConnectX-6 cards point to point. One 
-> of the cards is "socket direct" but the aux card stays "down" despite 
-> the link being up (see below).
-> 
-> Thanks for any help,
-> Dave
-> 
-> 
-> CA 'ibp2s0f0'
->         CA type: MT4123
->         Number of ports: 1
->         Firmware version: 20.27.2008
->         Hardware version: 0
->         Node GUID: 0x0c42a10300609810
->         System image GUID: 0x0c42a10300609810
->         Port 1:
->                 State: Active
->                 Physical state: LinkUp
->                 Rate: 100
->                 Base lid: 2
->                 LMC: 0
->                 SM lid: 1
->                 Capability mask: 0x2659e848
->                 Port GUID: 0x0c42a10300609810
->                 Link layer: InfiniBand
-> CA 'ibp3s0f0'
->         CA type: MT4123
->         Number of ports: 1
->         Firmware version: 20.27.2008
->         Hardware version: 0
->         Node GUID: 0x0c42a10300609814
->         System image GUID: 0x0c42a10300609810
->         Port 1:
->                 State: Down
->                 Physical state: LinkUp
->                 Rate: 100
->                 Base lid: 65535
->                 LMC: 0
->                 SM lid: 1
->                 Capability mask: 0x2649e848
->                 Port GUID: 0x0c42a10300609814
->                 Link layer: InfiniBand
-> CA 'ibp2s0f1'
->         CA type: MT4123
->         Number of ports: 1
->         Firmware version: 20.27.2008
->         Hardware version: 0
->         Node GUID: 0x0c42a10300609811
->         System image GUID: 0x0c42a10300609810
->         Port 1:
->                 State: Down
->                 Physical state: Disabled
->                 Rate: 10
->                 Base lid: 65535
->                 LMC: 0
->                 SM lid: 0
->                 Capability mask: 0x2659e848
->                 Port GUID: 0x0c42a10300609811
->                 Link layer: InfiniBand
-> CA 'ibp3s0f1'
->         CA type: MT4123
->         Number of ports: 1
->         Firmware version: 20.27.2008
->         Hardware version: 0
->         Node GUID: 0x0c42a10300609815
->         System image GUID: 0x0c42a10300609810
->         Port 1:
->                 State: Down
->                 Physical state: Disabled
->                 Rate: 10
->                 Base lid: 65535
->                 LMC: 0
->                 SM lid: 0
->                 Capability mask: 0x2649e848
->                 Port GUID: 0x0c42a10300609815
->                 Link layer: InfiniBand
->
+Jason
