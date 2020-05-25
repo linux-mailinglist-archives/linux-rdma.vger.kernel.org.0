@@ -2,94 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8048B1E1311
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 18:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565A41E132A
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 19:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389244AbgEYQzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 12:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        id S2389318AbgEYRGu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 13:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388465AbgEYQzH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 12:55:07 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB655C05BD43
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 09:55:06 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id f89so8265732qva.3
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 09:55:06 -0700 (PDT)
+        with ESMTP id S2389112AbgEYRGt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 13:06:49 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E51C061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:06:49 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b6so17955707qkh.11
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 10:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vIhfX/nLxz4zC4XGXmvwEIkgcpXWnXVmLpEPqcDbepU=;
-        b=XOCr/N5ndAnUb/ExUIV5beBvtjSHcKHsFrRinxaFMrP8qaXvIQ5FsIHrXyMd/eEwYV
-         rfdhXJMevDmM16Kp6tCm+8rUwOOApSJdKq6ouF/BouBSn6FnJi+CVBbWDK5uZWuz5tV2
-         Ms/09dnTA6/yEKhm945A1dsIXiSlm3TNFjsmBY89mz31r7ceRRS6hPYxyTJeiNGTPE6l
-         loAOlqlSszNcvoWSysHP42jVLIIBj3AZrpDsOMoNRplGZKXMPBLrot31JTfpPLnsW98G
-         qT7RJcYj9j9UTOmkp+JKbAKtcSy0qVcxpVxoNeolNs5JvE8Nqp1VBHmdDLSWZsU/ac9n
-         BSOQ==
+        bh=+IoqxRzlr0y/QgIfk0kzJKKCEPSb5pYNah9Y6aOeFIg=;
+        b=dRLMlhi1f6SS7NhhHmgBPB0lzP6/d5TPrJJdQybXk18RjxeMwgxAJWTwVvDueOF6dM
+         9DNaRrQLzRH6cTWauGwAk/J1brSHtPzVSvA7xaWVI/fZGfufCDdi0xxxW9xbDDb0uBEM
+         4RqAar2a8/7rpL851eD8ysb5T0Ug/jI2bgM4ODDYngZdJNH6B7iFy9LPPgo4pbLcg30o
+         0eNzpgLEjeIBQXa6VcYfHalh22kgg4uxJP5ANN4pv7HTCX6UOY4wpY4XrrBHqKyfKvIG
+         wmJ0j0KxA9DA/EWxF9cVPnbcmXmKYdcKrJA3L1WOnFxNky/Sb7dG3b+yMb7NF1fBxw8c
+         CqIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vIhfX/nLxz4zC4XGXmvwEIkgcpXWnXVmLpEPqcDbepU=;
-        b=UKf3UfJRoXVErm5MZVojY5pDnLsLUgcgDjRQm+kYBNCdXIlHXHsXo+YkyLKCkkV658
-         yxQkCVUUy/ru6dkgLm/eIlnvwDDrNQBCp/8ZVTPwopgCZcU/H4+aPC2kRqfCDRKxGmH0
-         WCdJR8KzaIg6aS0lMOx94m31WjFGZ25DydFIHOijf+SFyMXLfma/MllgMRIuF8gsWYqQ
-         7pL9CAj7YE6S34XXX2yB+mzOBElgO67kaayk9TnZxLPfxV+INRWC0Ex/aIFudJwIN3bP
-         pQSzr2ddYkItksNM6BvakzQwNANGRavOudUTjKlIelx+R5Ge522wcbkNHA7F+Dr/PTpj
-         tYGA==
-X-Gm-Message-State: AOAM530D4U2lRxOR58+QbZNypbUE1mZusSaIi5zSMNS8K5kZIJRZORAX
-        GkCGia0Gtj+qrAIhC6mT4dBaCw==
-X-Google-Smtp-Source: ABdhPJxK1zEVfqxlpD/QX2DC0R9zcVQLTgTCktLoTl0G8UJMEQnX8szc+AwgIdZ7U2gZu4tPRlCzIA==
-X-Received: by 2002:a0c:a98d:: with SMTP id a13mr492750qvb.157.1590425706038;
-        Mon, 25 May 2020 09:55:06 -0700 (PDT)
+        bh=+IoqxRzlr0y/QgIfk0kzJKKCEPSb5pYNah9Y6aOeFIg=;
+        b=bwgmddocLXRQg0pgidTTaxhUyycj+2iN2zzITZvdicfSQUPtQ/sBjRouqmVHfFYtYK
+         m2UGTFbTwiZTqt4uhENVTu1lHxvo0gh6oBzfXOJADllg8ZjOx1pSGceGBmceHT19mH+l
+         sT0Fz+YJUDwP4AMN5RvvXxTEbsjoMGLOWx6cCuCddLzKkT4VlwVMMqlHJCGZVXConTwG
+         sMwmlA1Wxu8NrmSj75taQPePS9AgwTCwf/RycVro6xHnN4/i/JkL0gcb3cOVorFGNR1g
+         +DuDt6UsupI2BpP6zP2jcFALVMmmt453cVUhtUy7mt9bBbTzZDfpVZvPS2NqkypdnYhq
+         tniQ==
+X-Gm-Message-State: AOAM531v/HXQHP36pVBxmfefFnq6KGQc1WV3AkYnDb+ExrabatvHv8hF
+        +QEzRHtex+Kz4egbVMAYE7jt7A==
+X-Google-Smtp-Source: ABdhPJxHG5zBFWOsC7vsgLXDKctOFJ9RannJoj9q0cQk5NmepD7KFgkKyVGwjmaSJRD8fUuf8fH5iw==
+X-Received: by 2002:ae9:f50f:: with SMTP id o15mr28837943qkg.177.1590426408954;
+        Mon, 25 May 2020 10:06:48 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id u205sm2265383qka.81.2020.05.25.09.55.05
+        by smtp.gmail.com with ESMTPSA id d17sm2050652qke.101.2020.05.25.10.06.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 May 2020 09:55:05 -0700 (PDT)
+        Mon, 25 May 2020 10:06:48 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jdGNU-0003gc-U8; Mon, 25 May 2020 13:55:04 -0300
-Date:   Mon, 25 May 2020 13:55:04 -0300
+        id 1jdGYp-0004FU-UM; Mon, 25 May 2020 14:06:47 -0300
+Date:   Mon, 25 May 2020 14:06:47 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200525165504.GF744@ziepe.ca>
-References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
- <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
- <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
- <20200523062351.GD3156699@kroah.com>
- <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 2/9] RDMA/hns: Add CQ flag instead of
+ independent enable flag
+Message-ID: <20200525170647.GA16200@ziepe.ca>
+References: <1589982799-28728-1-git-send-email-liweihang@huawei.com>
+ <1589982799-28728-3-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
+In-Reply-To: <1589982799-28728-3-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, May 23, 2020 at 02:41:51PM -0500, Pierre-Louis Bossart wrote:
+On Wed, May 20, 2020 at 09:53:12PM +0800, Weihang Li wrote:
+> +	roce_set_bit(cq_context->byte_44_db_record,
+> +		     V2_CQC_BYTE_44_DB_RECORD_EN_S,
+> +		     (hr_cq->flags & HNS_ROCE_CQ_FLAG_RECORD_DB) ? 1 : 0);
 
-> If yes, that's yet another problem... During the PCI probe, we start a
-> workqueue and return success to avoid blocking everything. And only 'later'
-> do we actually create the card. So that's two levels of probe that cannot
-> report a failure. I didn't come up with this design, IIRC this is due to
-> audio-DRM dependencies and it's been used for 10+ years.
+It seems like the if expression should be inside the roce_set_bit
+macro (just cast to bool) as something called 'bit' should have that
+safety built in.
 
-I think there are more tools now than 10 years ago, maybe it is time
-to revisit designs like this - clearly something is really wrong with
-it based on your explanations.
+Also, if someone wants a project, all this endless stuff should be
+using genmask and field_prep instead of this home grown stuff.
 
 Jason
