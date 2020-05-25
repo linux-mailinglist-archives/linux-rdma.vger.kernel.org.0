@@ -2,117 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EB31E1765
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 23:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81D91E182F
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 01:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731572AbgEYVv2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 17:51:28 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:34979 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgEYVv2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 17:51:28 -0400
-Received: by mail-pl1-f196.google.com with SMTP id q16so7857373plr.2
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 14:51:28 -0700 (PDT)
+        id S1725783AbgEYXVb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 19:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgEYXVb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 19:21:31 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA5BC061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 16:21:30 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u188so1517344wmu.1
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 16:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4IkvcZK53cLFIR1R0tvHhGF7OIPJ0Oyo42pp68Rb0o0=;
+        b=CiaB+aqrL5DdmOc2bnxZnQgtrrrczsW8HUZnAmYRXGi86+AdKZi/weSGgzUKp6gG/d
+         CRUHbuM6E+ff7DPeIv0FAHm+Vs/0eCHY7R31X8B8t4mh4YXB6S28UcshqW+4pOs08FgE
+         hXRtuViPOcvNySgRrVLi/1oK8wb8g0LuPb2hYa7vYpbSwWzjzrktQ7X8UbjnYiBCtS2a
+         ZKHqU1xSqVuqj+kwnfZmz4fq77QvtLt7sG3Sr38kdkbfZ6rD0l03pV5PHU/lyo/dbNYS
+         BNDeqsuVlxJumt/3lljGqZpcqZe2htgfLavWt96ETAqKk2+KJLZcnzck44Icme5zeE0J
+         Y8OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=EuP+pTFuPE0WA/1Sr39EKekdI5+u4nlfxIoyagijYx4=;
-        b=sQYkKXCJpneyavrMzaK7+t+Rs1WdgRqSb+xl+6xgy4rUNP47IEqnJMROILP8sdcAuN
-         jXrAHgs78hhZAMXtUt4QVa2RL89eGzXD1FC0dcQGzCgDeHmaOHShGyoFLOZICWj7yTei
-         wq/FmHlshg1EDigQsyMvBcs9Wc35DGqYQpTCEw0RkgHqHsXreGyoyzulZF4hrMnFByKg
-         4ZV+L7b3ERAs6NrEoOkTiByqiUQwvazDqK0VFd7UJRSYSCsHzqZhyzOiSCN9u3WySNnC
-         vTy4W6xQiyNOdz3HEnAig5yyIgAlPM7uaJmBB+euVWsSXzW9PrjC++5LviSV7draOr2G
-         Za+A==
-X-Gm-Message-State: AOAM530eFafbkV5lccUW/8MTZOVDZ+M2fStqdo+qk4dQ0optwcK8MPDA
-        j3E2xUh5mp22mx6RNukI/4A=
-X-Google-Smtp-Source: ABdhPJxqy8mlV7qBMkxSc1UMs+PnU29lYdunnwLYKwXkSnAB3OhYoXLAuwQDAtXR1ztZij06ETk8Fg==
-X-Received: by 2002:a17:90a:9604:: with SMTP id v4mr22346258pjo.198.1590443487783;
-        Mon, 25 May 2020 14:51:27 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:2590:9462:ff8a:101f? ([2601:647:4000:d7:2590:9462:ff8a:101f])
-        by smtp.gmail.com with ESMTPSA id i8sm12213935pgr.82.2020.05.25.14.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 14:51:27 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] RDMA/srpt: Increase max_send_sge
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Leon Romanovsky <leonro@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        linux-rdma@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-References: <20200525172212.14413-1-bvanassche@acm.org>
- <20200525172212.14413-5-bvanassche@acm.org> <20200525175152.GI10591@unreal>
- <8633b4b8-fb7d-8034-e2ac-789ec61f4c67@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <0ca86214-372d-eefe-d259-d50d1e18f096@acm.org>
-Date:   Mon, 25 May 2020 14:51:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4IkvcZK53cLFIR1R0tvHhGF7OIPJ0Oyo42pp68Rb0o0=;
+        b=pRo1Y4kacfh+oX+1mQSPIapIH1SA86+qTeWK6h7EHUWnJYXZHn6GtZjHkvXu6W0XTM
+         x34bl6f5XLl3Xnw4hX2qoCtx2Iq4Ux4KRI2FCD+HAMGuXeqYdfL97ovunwGLvmQBW2fb
+         hZkxEwi6VwG8jl7lqp3ZAPkn2qZcXW86E4NoVESHGIMrTk5ttWblMY3dtejmUHBrA5kC
+         /thBiVIjOpigx7XLO/z3komioCcGiNdDhLx2EsfxFGih2pHM2OL/j20MlVL9gVkl96UB
+         TB1LM06GNhcvC1iyV/k9WdKWCo72uhJYD3Nq82BxGxXEhc1K1w+mENkrU+SdQPdU4BBV
+         iG8Q==
+X-Gm-Message-State: AOAM531+ZFgGRJRLV5Nwy0lBKeca3K4hVB85e0G88agYzSNFz55+dcG6
+        ry6CYMMCzTzx7bwO4I5c1gs=
+X-Google-Smtp-Source: ABdhPJzb5gP5d+TaUJOiEyrShGovJ8aD6StOBab4F1kIMiPbyGovL0SJqPR9MKFoKPbt4uJcyR7UqA==
+X-Received: by 2002:a1c:ed0b:: with SMTP id l11mr29073585wmh.31.1590448889213;
+        Mon, 25 May 2020 16:21:29 -0700 (PDT)
+Received: from kheib-workstation ([37.142.6.100])
+        by smtp.gmail.com with ESMTPSA id t7sm13674776wrq.41.2020.05.25.16.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 16:21:28 -0700 (PDT)
+Date:   Tue, 26 May 2020 02:21:25 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next 04/14] RDMA/core: Allow to override device op
+Message-ID: <20200525232125.GA177080@kheib-workstation>
+References: <20200513095034.208385-1-leon@kernel.org>
+ <20200513095034.208385-5-leon@kernel.org>
+ <20200525142641.GA20978@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <8633b4b8-fb7d-8034-e2ac-789ec61f4c67@acm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525142641.GA20978@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-05-25 12:15, Bart Van Assche wrote:
-> On 2020-05-25 10:51, Leon Romanovsky wrote:
->> On Mon, May 25, 2020 at 10:22:12AM -0700, Bart Van Assche wrote:
->>> The ib_srpt driver limits max_send_sge to 16. Since that is a workaround
->>> for an mlx4 bug that has been fixed, increase max_send_sge. For mlx4, do
->>> not use the value advertised by the driver (32) since that causes QP's
->>> to transition to the error status.
->>
->> How are you avoiding mlx4 bug in this patch?
->> Isn't "attrs->max_send_sge" come from driver as is?
+On Mon, May 25, 2020 at 11:26:41AM -0300, Jason Gunthorpe wrote:
+> On Wed, May 13, 2020 at 12:50:24PM +0300, Leon Romanovsky wrote:
+> > From: Maor Gottlieb <maorg@mellanox.com>
+> > 
+> > Current device ops implementation allows only two stages "set"/"not set"
+> > and requires caller to check if function pointer exists before
+> > calling it.
+> > 
+> > In order to simplify this repetitive task, let's give an option to
+> > overwrite those pointers. This will allow us to set dummy functions
+> > for the specific function pointers.
+> > 
+> > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/core/device.c | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > index d9f565a779df..9486e60b42cc 100644
+> > --- a/drivers/infiniband/core/device.c
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -2542,11 +2542,10 @@ EXPORT_SYMBOL(ib_get_net_dev_by_params);
+> >  void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+> >  {
+> >  	struct ib_device_ops *dev_ops = &dev->ops;
+> > -#define SET_DEVICE_OP(ptr, name)                                               \
+> > -	do {                                                                   \
+> > -		if (ops->name)                                                 \
+> > -			if (!((ptr)->name))				       \
+> > -				(ptr)->name = ops->name;                       \
+> > +#define SET_DEVICE_OP(ptr, name)					\
+> > +	do {								\
+> > +		if (ops->name)						\
+> > +			(ptr)->name = ops->name;			\
+> >  	} while (0)
 > 
-> Hi Leon,
+> Did you carefully check every driver to be sure it is OK with this?
 > 
-> Development of this patch started considerable time ago - before the
-> ib_srpt driver was converted to the RDMA R/W API. Before that conversion
-> the ib_srpt driver was using attrs->max_send_sge limit for both RDMA
-> writes and RDMA reads, which is wrong. Hence the need for the
-> "max_sge_delta" parameter (max_send_sge = 32 and max_sge_rd = 30 for
-> mlx4). The following code from drivers/infiniband/core/rw.c selects the
-> proper limit:
+> Maybe Kamal remembers why it was like this?
 > 
->        u32 max_sge = dir == DMA_TO_DEVICE ? qp->max_write_sge :
->                      qp->max_read_sge;
-> 
-> The following code in drivers/infiniband/core/verbs.c sets these limits:
-> 
->         qp->max_write_sge = qp_init_attr->cap.max_send_sge;
->         qp->max_read_sge = min_t(u32, qp_init_attr->cap.max_send_sge,
->                                  device->attrs.max_sge_rd);
+> Jason
 
-The commit message should be shortened to the following: "The ib_srpt
-driver limits max_send_sge to 16. Since that is a workaround
-for an mlx4 bug that has been fixed, increase max_send_sge. See also
-commit f95ccffc715b ("IB/mlx4: Use 4K pages for kernel QP's WQE buffer")."
+The idea was to set a specific op only once by the provider when there
+is a valid function for the op, this was done to make sure that if
+the op isn't supported by the provider then it will be set to NULL.
 
-Bart.
+I think it will be more cleaner from the provider point of view to
+see which ops are supported or not supported in the provider code. by
+overriding the ops in the core this will make things more confusing.
+
+Thanks,
+Kamal
