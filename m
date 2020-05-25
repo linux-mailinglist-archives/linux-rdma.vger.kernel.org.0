@@ -2,182 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372221E0E96
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 14:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DFE1E0ECA
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 May 2020 14:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390509AbgEYMlg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 08:41:36 -0400
-Received: from mail-eopbgr70058.outbound.protection.outlook.com ([40.107.7.58]:60270
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390488AbgEYMlf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 May 2020 08:41:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UEnJXJm5cLaDswCK7ySYMlG6CbsqhYBdpo4Ub0CocB/viYoQyddQ9z+jiaCuLpC9pbbVI1zOpblAqR00J4EW4y4dH/AjUQVd+FzdorJB/RrOJu+Jl3uTzo3LBBsj10fNFtjQlY9i0t9BzaMfjHdnyAfxStnfk3MfHU5Kz1b3GQPokohv5gHWXKarvQK7gnTC8jPzBGuq1Cj8ySw6Cral5MLXgelYpEPEJXlT4G4AEb5sWjNar+iMzpRqJSiG9lFEc+j4q4nTEf9H1jG6APIJoM+erPk+jZu/xzFPmJcpQx5Fwg+i36tAia8YmuydaNlJgvixSblm7RQbZWZUCnMcKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3qG2ukZwy+YQyL8oHFk3sbYpqxPurCarljFKU/Y4rjQ=;
- b=Ay7azBhSCbbvkCfMFkqQgoNMlkNxc0EBhLFqOMs9WZX+ICw6fscGVlc01DpfAffhe2wJWGYYzggupQhA820CU5C+VnKPgocPl0DnYQTme1qHGTssSeM2qmnm+Pj+52hfOpJG8HHaGhc4zxF3zH9nhYGpH39O63ViANEJubAd+RnxQmAnagwLgUll7wDmMFagNGUZSSaXn3sdOTisH2VlxJrSqEY2+nDMJmMmqAo7Y/OmjVJBTrAJep/00v4hPBsx5+F1hbGJnzqGFK8q9TnAcyMkZRCduWwALcC2JH1WjNbTCZ6LS8kPk2iONT5uGUFRp/FXWM+VBC8Yt0vz+VbaAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3qG2ukZwy+YQyL8oHFk3sbYpqxPurCarljFKU/Y4rjQ=;
- b=DCBVxqF1YQ1N53E85W+j2Mzu4shFscXnOpPo91cMO2vJE7Z9XMNOe7qVMevUaidFX7iEGfKXpHNbBcwIzUuG4gx54uKhwCtWgydL+lw1otXHB56t5seiui1xuoZsnfEdddj+PiHbQycMmsj7BpD7pfLcJK1ZrgWw+NGwE/bt+aM=
-Received: from DBAPR05MB7093.eurprd05.prod.outlook.com (2603:10a6:10:18d::10)
- by DBAPR05MB6920.eurprd05.prod.outlook.com (2603:10a6:10:181::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Mon, 25 May
- 2020 12:41:32 +0000
-Received: from DBAPR05MB7093.eurprd05.prod.outlook.com
- ([fe80::319e:1e82:f23:270b]) by DBAPR05MB7093.eurprd05.prod.outlook.com
- ([fe80::319e:1e82:f23:270b%8]) with mapi id 15.20.3021.029; Mon, 25 May 2020
- 12:41:31 +0000
-From:   Vladimir Koushnir <vladimirk@mellanox.com>
-To:     David Zarzycki <dave@znu.io>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: opensm and virt_enabled?
-Thread-Topic: opensm and virt_enabled?
-Thread-Index: AQHWMpBJPHTTcI7LbEipEi1RIaPPmai4vgsw
-Date:   Mon, 25 May 2020 12:41:31 +0000
-Message-ID: <DBAPR05MB7093D9F64237F31DB615DA20CEB30@DBAPR05MB7093.eurprd05.prod.outlook.com>
-References: <38bdd48f-d1ca-4bce-9c9c-30925b158664@www.fastmail.com>
-In-Reply-To: <38bdd48f-d1ca-4bce-9c9c-30925b158664@www.fastmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: znu.io; dkim=none (message not signed)
- header.d=none;znu.io; dmarc=none action=none header.from=mellanox.com;
-x-originating-ip: [89.138.221.107]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d2124dd0-92b2-4570-edcd-08d800a8f3bb
-x-ms-traffictypediagnostic: DBAPR05MB6920:
-x-microsoft-antispam-prvs: <DBAPR05MB692082816085FC676752B0F3CEB30@DBAPR05MB6920.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0414DF926F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gq/ZtOJGvOTJ2eTM08mxIWV4kw7e9gkvqggFR1yfeZTDLoFl++A8/2zOmrtWdhAgH4rxyqNY+mXVbh3ulFfIlyg8vog+oSetr3Mr0TnTTFZc6tRs8qwKzGjKIBfrUkziVQLODbkM1sUkeLCDQKZ42A8bWrcPuR/Yvt6rGKjSpmtrBNQyYnduisKq2Tbpj+h41r9grmgG+QHIuH1JMeAB9tbFGMoU4VJ42AL9qOqiZL5B+axny9V4usNUmBk2qj6Zo0HPxqsk2Ld3cMWtIaPGjEc3jRGDGSRYhP9yiIbnDEopWGuDEjqs3wfAPN5Y1EeWb5jgyCusdE8iYHlCGqvWRQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR05MB7093.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(366004)(346002)(376002)(5660300002)(8676002)(26005)(76116006)(53546011)(6506007)(64756008)(66476007)(66446008)(33656002)(66556008)(52536014)(66946007)(8936002)(7116003)(110136005)(86362001)(7696005)(478600001)(9686003)(55016002)(186003)(316002)(71200400001)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: MpAGPA5Rbxaac4AVEESx8gVYwSTfX98CGDR956n/9pQ4hF2NwQfvKpsMqObGtYBaYMlrnz1X1lRRjcoXiEsZGVb2ZWDfmyZRFR68d0NZYhsHnj3wb/v1PthuHng1j3W3qxdREQ/hu6x65u0L4jHReFxadC67u3f7K7USqWPJIkQnzdIPQfoctBjc4ecQ2EG5StrCHtZTJtz2gjP4xVFYZH+bpvnSVSIVyR/9/txAF94yIbVRx5akMoIojiXQeISKLYjrQL3nsg4iOqjR0USqXrvQY8/t6LQmDCMKP7FL6bp96fbsIT+2u0CiCgrXwDq8w8vZ+gAANkxfh3SD1GY52FSzXb3yweVq+Mw4x3ctB2BIuaB6DIwB3vgWFnWhLmR+iHMz2cl8QnC/7g1BaLcOy/CCvTUZhjrOnGF5T0ZmyfYX0oKLBtgq50CawrMNLx/TIg5/8iJfamx1g9DZ3b5KIdOpEmRAIEUIDy0gyaYFntGJdRdb6uyB/ez1+4YInayW
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2390624AbgEYMzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 08:55:01 -0400
+Received: from mout.web.de ([212.227.15.14]:43775 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390571AbgEYMzA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 May 2020 08:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590411288;
+        bh=M9yBPW4J5kHHK9/CQq3Pu5sFNGWYQGDAVq4xUV+feQ0=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=gsRm+oXuRX66bcmF28vx6qZx0b1HOpfh5Xu/cK4FrwnmfBeyZyrfsg3UxOQqDsiF5
+         goX5R0wUyoz8Rtchme9YWld+HwL2g2EKhND4DQhmkkC9AmHO0B9m5R4q75pTpbpBNb
+         osrZb8sV7Acr5ZMfCOqX+ZWUUdwkgPkZakG63Jbs=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.135.186.124]) by smtp.web.de (mrweb001
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lw1CH-1iy5fZ2vLJ-017ltv; Mon, 25
+ May 2020 14:54:48 +0200
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kangjie Lu <kjlu@umn.edu>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH] RDMA/core: Complete exception handling in add_port()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
+ +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
+ mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
+ lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
+ YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
+ GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
+ rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
+ 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
+ jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
+ BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
+ cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
+ Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
+ g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
+ OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
+ CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
+ LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
+ sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
+ kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
+ i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
+ g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
+ q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
+ NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
+ nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
+ 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
+ 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
+ wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
+ riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
+ DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
+ fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
+ 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
+ xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
+ qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
+ Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
+ Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
+ +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
+ hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
+ /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
+ tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
+ qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
+ Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
+ x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
+ pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
+To:     Qiushi Wu <wu000273@umn.edu>, linux-rdma@vger.kernel.org
+Message-ID: <4bf45476-ad99-042b-d0ea-3c97bb429a98@web.de>
+Date:   Mon, 25 May 2020 14:54:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2124dd0-92b2-4570-edcd-08d800a8f3bb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2020 12:41:31.5515
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bNbLHMf0LSN3Q2Ked243VpnXfd9IRyNfVdn1f1G8WFqMSiVcoGOBDcjgSBH0ixs3Rrme79sXuw60JycEq2pBzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR05MB6920
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XWEJDnQQEdU1pBpaXAjtd6ZJ0lRQJVLklhjEPa1gLLduDI/O3vy
+ nerCDUxTzQ3bFaqr//ONJTM67Syp3TuXHEmCaGoNtW+NW2oWois5BhMTKNzWTn+WkjXHaNG
+ 0SBt0eeq+WI+/Qp6CB3TNIJL7VNlkaIh4SvkkGQaMnXDNMSO0fHf+LOPOdT2lb+AFPjoOBF
+ 78f1/fBvHRd7Tftf5OVRw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IBw59SqexQY=:ITZZK87Pp5qt50xOA2xZPU
+ 2VpWE0mYYAOiE5vr4HjKKypO4z8B/zJDG1SI/uLd5cz2ZO4+UrOOhX2KO/hZpO12uTKU8Sy1z
+ G2tALNANVaQU5jh4I5LjDTybTKYxcuGPDRuPfzzgPooUVkHs8pHP2nxUsDnFruWjcHUerm9Kt
+ Z0voqZsKuydSVqd2hGPbRIjkdNoHguVOFqlt2Ud9embHnuMBOX9OizvNpj3l36+ExabVzs/Rq
+ s6S7Te2kzFsgORvtP+UG1HykKHz4vV5KToTfXq1/b1OtZ+3qzXgf6jVpr9xgCjWUkbMjjfUXq
+ ZRCb/sWXA/C4DZK9kw+Hie0w8psH5K4eFh3MlOmp5J5bSqYH2TC4HKRnTtTEaOMeC7bLnah6r
+ 5WARqSUaTGa0RXkv7RpKqEO4mFuq5k5jlXvlkrBP1TVtZgvE2nVs0vqBX0G+r3VRHBe9jvJ/W
+ 3iEvqWyk2dBro3i4yLgluWya/hnKVTrc3Sne+uM9ecWrL7MkPiRaGPt9Ajn1U6IG9MtckQivc
+ /Gmxj8vKqFlixnpK0CzFMQtbvVMuc6u3IHDpTBgJMt22vTnVgoK3Pc/AFp2dC3mAhLIu2WaBk
+ dGkJawjGz1nAugPunG7Hy/glFEd+/0PSDi+V3USSSr0yrI29oyA8l8D5Xb8wnMjH42RBbaII1
+ CC2pabXi9LHIJox4VKFtc+9f0P1O/YdMr8ncgAK08oQAcxZ/JRDaDM0EH3ung+dc8yh4wdAgi
+ hLNKRaOT3QenMSY8NRwiPwMGzq8uRnbtldPP7cm/47UMkVso8OXq9rv1ivqC98hEw+JJXalOM
+ dXWRZ0oyhcpqU5uv7n4MOn9pv6JApc9kuUD4tRQ+p24LMhAoJIYuRvfw0+izPrHof4im6FqF7
+ l+KkTN1mtC0kxBZ/I1Jql+3V7BH5WQRXIdmg6EO8FuBSdhT39/m6uLUxKzMOdmLuqq725CCRt
+ OMmJVtIU2wZsppkgdoKkl6c919PladdzxDl+nLEWVqtRISCjK5Vk6eAQ5mkr/7Seq4z5UbC+c
+ DcopNAEbmzUz37K9KgRZGYeSASzNpN6kKr2nJtrNN0inztrpjwtgwy5IkHIbaY5w/DvnSYs4+
+ 90iKhpCDJwmsmeOXp00+YtSaXI8bYt3a4d7m/GKn+3M1ClsIq7zq8U2G+l5Jl/Rg8FScvGq4F
+ sSU25U6pQF95iIsNPl+tWudvfiixsUX2+2VV6qyCVNBy+XWk4SNKH2dO5fPQKPqYvVRWCuarw
+ WfWsFre8DW2iG0+Y/
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+> In function add_port(), pointer p is not released in error paths.
 
-"virt_enabled 2" is supported by MLNX subnet manager that is available via =
-UFM/MLNX OFED/MLNX Infiniband switch OS (MLNX OS).
+1. I would prefer to describe that an ib_port data structure was not relea=
+sed
+   in some error cases.
+   How relevant can its size be here?
+
+
+> Fix this issue by adding a kfree(p) into the end of error path.
+
+2. I suggest to improve also this change description.
+
+3. I find an other subject more appropriate.
+
+
+=E2=80=A6
+> +++ b/drivers/infiniband/core/sysfs.c
+> @@ -1202,6 +1202,7 @@  static int add_port(struct ib_core_device *corede=
+v, int port_num)
+>
+>  err_put:
+>  	kobject_put(&p->kobj);
+> +	kfree(p);
+>  	return ret;
+>  }
+
+4. I recommend to add also the label =E2=80=9Cfree_port=E2=80=9D before th=
+e missed function call.
+
+   Another source code place should be accordingly adjusted then.
+
+ 	ret =3D kobject_init_and_add(&p->kobj, &port_type,
+ 				   coredev->ports_kobj,
+ 				   "%d", port_num);
+-	if (ret) {
+-		kfree(p);
+-		return ret;
+-	}
++	if (ret)
++		goto free_port;
+
+
+5. Will a similar adjustment be needed for the data structure member =E2=
+=80=9Cgid_attr_group=E2=80=9D
+   according to the desired complete exception handling?
 
 Regards,
-Vladimir
------Original Message-----
-From: linux-rdma-owner@vger.kernel.org <linux-rdma-owner@vger.kernel.org> O=
-n Behalf Of David Zarzycki
-Sent: Monday, May 25, 2020 3:30 PM
-To: linux-rdma@vger.kernel.org
-Subject: opensm and virt_enabled?
-
-Hello,
-
-I'm trying to track how to enable "virt_enabled 2" in opensm. Various Mella=
-nox docs refer to this change in opensm behavior in order to support their =
-socket direct cards. That being said, when I search the opensm source and s=
-ource history, I cannot find any reference this flag ever existing. What am=
- I missing?
-
-For reference, I've connected two ConnectX-6 cards point to point. One of t=
-he cards is "socket direct" but the aux card stays "down" despite the link =
-being up (see below).
-
-Thanks for any help,
-Dave
-
-
-CA 'ibp2s0f0'
-        CA type: MT4123
-        Number of ports: 1
-        Firmware version: 20.27.2008
-        Hardware version: 0
-        Node GUID: 0x0c42a10300609810
-        System image GUID: 0x0c42a10300609810
-        Port 1:
-                State: Active
-                Physical state: LinkUp
-                Rate: 100
-                Base lid: 2
-                LMC: 0
-                SM lid: 1
-                Capability mask: 0x2659e848
-                Port GUID: 0x0c42a10300609810
-                Link layer: InfiniBand
-CA 'ibp3s0f0'
-        CA type: MT4123
-        Number of ports: 1
-        Firmware version: 20.27.2008
-        Hardware version: 0
-        Node GUID: 0x0c42a10300609814
-        System image GUID: 0x0c42a10300609810
-        Port 1:
-                State: Down
-                Physical state: LinkUp
-                Rate: 100
-                Base lid: 65535
-                LMC: 0
-                SM lid: 1
-                Capability mask: 0x2649e848
-                Port GUID: 0x0c42a10300609814
-                Link layer: InfiniBand
-CA 'ibp2s0f1'
-        CA type: MT4123
-        Number of ports: 1
-        Firmware version: 20.27.2008
-        Hardware version: 0
-        Node GUID: 0x0c42a10300609811
-        System image GUID: 0x0c42a10300609810
-        Port 1:
-                State: Down
-                Physical state: Disabled
-                Rate: 10
-                Base lid: 65535
-                LMC: 0
-                SM lid: 0
-                Capability mask: 0x2659e848
-                Port GUID: 0x0c42a10300609811
-                Link layer: InfiniBand
-CA 'ibp3s0f1'
-        CA type: MT4123
-        Number of ports: 1
-        Firmware version: 20.27.2008
-        Hardware version: 0
-        Node GUID: 0x0c42a10300609815
-        System image GUID: 0x0c42a10300609810
-        Port 1:
-                State: Down
-                Physical state: Disabled
-                Rate: 10
-                Base lid: 65535
-                LMC: 0
-                SM lid: 0
-                Capability mask: 0x2649e848
-                Port GUID: 0x0c42a10300609815
-                Link layer: InfiniBand
+Markus
