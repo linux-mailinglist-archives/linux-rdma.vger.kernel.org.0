@@ -2,120 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5E51E2597
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 17:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C4F1E28CD
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgEZPic (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 May 2020 11:38:32 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23531 "EHLO mga02.intel.com"
+        id S1728138AbgEZR1O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 May 2020 13:27:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727898AbgEZPic (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 May 2020 11:38:32 -0400
-IronPort-SDR: +hCaHGnw0NBw4ZjGsLV9yODUabXZXQ8wUK41XLdYAuCFK0eCT2FquQsteCiluLxohIUHmTMEY/
- QNbFkp2hCTBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 08:38:30 -0700
-IronPort-SDR: 6n3vswvKbJC9/dgzgMH6TvLrbbmsmPJIQfhYStK9OEQvj69eRGlskcz8py5qT4MKlF/kI13DQv
- P1TxbhKX5chA==
-X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
-   d="scan'208";a="442123584"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.2]) ([10.254.205.2])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 08:38:27 -0700
-Subject: Re: [PATCH 0/8 v1] Remove FMR support from RDMA drivers
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>, bvanassche@acm.org,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, sagi@grimberg.me,
-        israelr@mellanox.com, shlomin@mellanox.com,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-References: <20200514120305.189738-1-maxg@mellanox.com>
- <f2efe2df-14db-4e15-3807-f81b799cc0ec@intel.com>
- <20200518181035.GM24561@mellanox.com>
- <03238a7d-d3f3-7859-deb9-dd0a04fbe9ed@intel.com>
- <20200519135352.GV24561@mellanox.com> <20200519141927.GR188135@unreal>
- <774b4d00-ab2e-6f1a-eaa6-a7afadc3c44d@intel.com>
- <20200519143030.GA23839@mellanox.com>
- <5563b8da-faf3-1af5-33d0-fe5a6d7291a1@intel.com>
- <20200523220821.GB744@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <2254dc01-541c-3576-06c3-2a145bc04157@intel.com>
-Date:   Tue, 26 May 2020 11:38:26 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1726954AbgEZR1O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 May 2020 13:27:14 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A341204EF;
+        Tue, 26 May 2020 17:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590514033;
+        bh=7a+WZ/xL/ursh7kQsnMs68raB8SbOIvw7bGotEmX/Ro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XBZbnxflL7+Bb9x9/wsSJQ72Hz89FQQd1pW3rThAKZIYjYezQw53OgF6rVZIIvwvW
+         Bbt4HhJKwH5voMXcFeDpeOaiAbTAz6oq6crCMaszsdP0X/hUusLo79UUz7PCq1OHqM
+         4OVdw3bOtiHoIy1p3xZenhVQSR37UQ4waNfFSx+0=
+Date:   Tue, 26 May 2020 20:27:09 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Support TX port affinity for VF
+ drivers in LAG mode
+Message-ID: <20200526172709.GF100179@unreal>
+References: <20200526143457.218840-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200523220821.GB744@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526143457.218840-1-leon@kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/23/2020 6:08 PM, Jason Gunthorpe wrote:
-> On Tue, May 19, 2020 at 10:37:07AM -0400, Dennis Dalessandro wrote:
->> On 5/19/2020 10:30 AM, Jason Gunthorpe wrote:
->>> On Tue, May 19, 2020 at 10:26:37AM -0400, Dennis Dalessandro wrote:
->>>> On 5/19/2020 10:19 AM, Leon Romanovsky wrote:
->>>>> On Tue, May 19, 2020 at 10:53:52AM -0300, Jason Gunthorpe wrote:
->>>>>> On Tue, May 19, 2020 at 09:43:14AM -0400, Dennis Dalessandro wrote:
->>>>>>> On 5/18/2020 2:10 PM, Jason Gunthorpe wrote:
->>>>>>>> On Mon, May 18, 2020 at 11:20:04AM -0400, Dennis Dalessandro wrote:
->>>>>>>>> On 5/14/2020 8:02 AM, Max Gurtovoy wrote:
->>>>>>>>>> This series removes the support for FMR mode to register memory. This ancient
->>>>>>>>>> mode is unsafe and not maintained/tested in the last few years. It also doesn't
->>>>>>>>>> have any reasonable advantage over other memory registration methods such as
->>>>>>>>>> FRWR (that is implemented in all the recent RDMA adapters). This series should
->>>>>>>>>> be reviewed and approved by the maintainer of the effected drivers and I
->>>>>>>>>> suggest to test it as well.
->>>>>>>>>>
->>>>>>>>>> The tests that I made for this series (fio benchmarks and fio verify data):
->>>>>>>>>> 1. iSER initiator on ConnectX-4
->>>>>>>>>> 2. iSER initiator on ConnectX-3
->>>>>>>>>> 3. SRP initiator on ConnectX-4 (loopback to SRP target)
->>>>>>>>>> 4. SRP initiator on ConnectX-3
->>>>>>>>>>
->>>>>>>>>> Not tested:
->>>>>>>>>> 1. RDS
->>>>>>>>>> 2. mthca
->>>>>>>>>> 3. rdmavt
->>>>>>>>>
->>>>>>>>> This will effectively kill qib which uses rdmavt. It's gonna have to be a
->>>>>>>>> NAK from me.
->>>>>>>>
->>>>>>>> Are you objecting the SRP and iSER changes too?
->>>>>>>
->>>>>>> No, just want to keep basic verbs support at least. NFS already dropped,
->>>>>>> similarly we are ok with dropping it from SRP/iSER as a next step.
->>>>>>
->>>>>> So you see a major user in RDS for qib?
->>>>>
->>>>> Didn't we agree to drop it from RDS too?
->>>>>
->>>>
->>>> Just basic verbs application support is enough for qib I think. I don't see
->>>> any major use of RDS.
->>>
->>> Well, once the in-kernel users of an API are gone that API will be
->>> purged. This is standard kernel policy.
->>>
->>> So you can't NAK this series on the grounds you want to keep an API
->>> without users, presumably for out of tree modules...
->>>
->>
->> Maybe I need to look at this again. I thought it would kill off user access
->> as well. We don't need any kernel ULPs.
-> 
-> Did you make a conclusion? Seems like everyone else is in agreement
-> here, if Max resends a v2 I'm inclined to take it unless RDS objects.
-> 
-> I did not think FMR or FRWR were available from userspace at all.
+On Tue, May 26, 2020 at 05:34:57PM +0300, Leon Romanovsky wrote:
+> From: Mark Zhang <markz@mellanox.com>
+>
+> The mlx5 VF driver doesn't set QP tx port affinity because it doesn't
+> know if the lag is active or not, since the "lag_active" works only for
+> PF interfaces. In this case for VF interfaces only one lag is used
+> which brings performance issue.
+>
+> Add a lag_tx_port_affinity CAP bit; When it is enabled and
+> "num_lag_ports > 1", then driver always set QP tx affinity, regardless
+> of lag state.
+>
+> Signed-off-by: Mark Zhang <markz@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c    | 2 +-
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 7 +++++++
+>  drivers/infiniband/hw/mlx5/qp.c      | 3 ++-
+>  3 files changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index 570c519ca530..4719da201382 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -1984,7 +1984,7 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
+>  	context->lib_caps = req.lib_caps;
+>  	print_lib_caps(dev, context->lib_caps);
+>
+> -	if (dev->lag_active) {
+> +	if (mlx5_ib_lag_should_assign_affinity(dev)) {
+>  		u8 port = mlx5_core_native_port_num(dev->mdev) - 1;
+>
+>  		atomic_set(&context->tx_port_affinity,
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index b486139b08ce..0f5a713ac2a9 100644
+> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -1553,4 +1553,11 @@ static inline bool mlx5_ib_can_use_umr(struct mlx5_ib_dev *dev,
+>
+>  int mlx5_ib_enable_driver(struct ib_device *dev);
+>  int mlx5_ib_test_wc(struct mlx5_ib_dev *dev);
+> +
+> +static inline bool mlx5_ib_lag_should_assign_affinity(struct mlx5_ib_dev *dev)
+> +{
+> +	return dev->lag_active ||
+> +		(MLX5_CAP_GEN(dev->mdev, num_lag_ports) &&
+> +		 MLX5_CAP_GEN(dev->mdev, lag_tx_port_affinity));
+> +}
 
-Yeah, looked it over again and agree it's OK. No issues here now. Thanks 
-for checking.
+We did some investigation offline and it seems that this line should be
+changed to be
+ +static inline bool mlx5_ib_lag_should_assign_affinity(struct mlx5_ib_dev *dev)
+ +{
+ +	return dev->lag_active ||
+ +		(MLX5_CAP_GEN(dev->mdev, num_lag_ports) > 1 &&
+ +		 MLX5_CAP_GEN(dev->mdev, lag_tx_port_affinity));
+ +}
 
--Denny
+Thanks
 
-
+>  #endif /* MLX5_IB_H */
+> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+> index 1988a0375696..9364a7a76ac2 100644
+> --- a/drivers/infiniband/hw/mlx5/qp.c
+> +++ b/drivers/infiniband/hw/mlx5/qp.c
+> @@ -3653,7 +3653,8 @@ static unsigned int get_tx_affinity(struct ib_qp *qp,
+>  	struct mlx5_ib_qp_base *qp_base;
+>  	unsigned int tx_affinity;
+>
+> -	if (!(dev->lag_active && qp_supports_affinity(qp)))
+> +	if (!(mlx5_ib_lag_should_assign_affinity(dev) &&
+> +	      qp_supports_affinity(qp)))
+>  		return 0;
+>
+>  	if (mqp->flags & MLX5_IB_QP_CREATE_SQPN_QP1)
+> --
+> 2.26.2
+>
