@@ -2,141 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD371E20EF
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 13:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E67C1E2104
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 13:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbgEZLer (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 May 2020 07:34:47 -0400
-Received: from mail-eopbgr40072.outbound.protection.outlook.com ([40.107.4.72]:50550
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        id S1731945AbgEZLjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 May 2020 07:39:40 -0400
+Received: from mail-eopbgr60043.outbound.protection.outlook.com ([40.107.6.43]:22080
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726325AbgEZLer (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 May 2020 07:34:47 -0400
+        id S1731446AbgEZLjk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 May 2020 07:39:40 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hg7OHtzJ94PNxkxfxbXS4xHGjDNSPJLywghrAp4rAUEUvDh5O7awGZ2WuXm8EkAsUXzSSChMl9VUMOtePC+a/pXoCHAlbG/HWQWSdle2SHGe3yK2BfZBrNV0wwRccOXlqTS5DC0TYD/6f66oPY5m4AMCKpi7aJ5ESR+Vxx05KmUNNKOsH3rkJ1qCIqmeoLXPznTSrPSwDFuBgK9G0O/C8KRoEWSQtYWFmyg19FAERZJpdD5VTK/O59v3UEcOzMYjMHaK3tz2p1Osgm39dOTamouhv+VW9IPHzqSZutXmyD8SRg5U7g2LO/k0oUfc0J2MzLAhPPH8GN9pv4cn+fW5ew==
+ b=R8InYo4w3z/Zuzoo40+/1HuAS7crO/lfZ3VE2AtRpJr5VzHFjt6yPPScHU1RmhdMiYR0Xal8Z5wp/A+gyMwCo3Qizj1QIE+v+bYGKzxKyCsOmxuZseOWTOYF/8i+aEyccsBy2Di+ymGupBorS+dghIF66c859Klcn+4cr7O6HgvOHtlaYe512r08fChk6bllCsd3Ik8pNfSzb+Q65lGAezkkYj+vyMQGaznRtJce2sjPDeT/ztt2LTJ7+CYYtaj5y4/BvqjIbLph2mcY18ewU8G5TEKFHhUhCy/Ji6XoEpdfXXOyFo2/App5TzdolTMEAHrQZit3mHD7ZnN/JSgeJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I5TrDQmFninneD/5s9zTgEpe3nZ5R0K0SDrq68I1PdE=;
- b=b8CfG6cyWnYBkyKr3FGe+J04g2QmR1gy2NBf6JgYoQfSEBvOY6lI0vPhZWDqxyiFwHrIviISAb72WOpQBOGghclWlynLygR6Cxm2/h0IklKA9ZOUCzjili9ckJqtrlno/dpnaPSXtv93dpzGshXFYmLfu49xOI8my18QV4YySA4uTXlTn+n7Z9FM6PE93PYDdmlBmtUcMI5RY/BgUeIerb5TqTI1wkpq2pNKOHT17LbBN6PJFng1RCKvV0Of80PK4ZjRejCOvzH6Gnc6oz7m6f9PHD5ZW6nwJarvYy73zJ817/4odDaKJu3wAPlI57gj74wJ026V4/4yqVzAWvdyNw==
+ bh=l9KfwhR9kDNa/U5rYY/OLui064dMqwthP0vfYXoeJag=;
+ b=WDiW31lC3B49WN4jtDnHhQjH1XWnj12X7gkFMgiuBUfG959kIRWsn0d7RZyF5KStgQM1YFgUsNoJuRFMimGb5iYMM4pCyPwFzSqLt6kZdArI/TWwy9YP87aSv67hRFY7/YUfmC3HmIwgBDPP4G04LBeCQA4DWG+iEeciFEpo6hJSflzhNBSyZUEfGNIANhTnDt8P5yF99eGJPjzw1LwzAZ24aTcOhi7sSy0tY3RK/H7yjDENFjEIxPtk0PlM60reri+1iZzG99eXprfkMq48jaTAWN8Wsg7rSaapB65i5m2KY70oWAXp6nD0AK3OcT6ZGPDaGh2HPJhjk+vtrv6WJA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I5TrDQmFninneD/5s9zTgEpe3nZ5R0K0SDrq68I1PdE=;
- b=PRCuYmnE5WZBRW1ddv620g07xCsI9enz1wjEHrNSi4Zm16tyzfuoXMzCQvjw4Lga5u05+hw2YXdC36moOuVJ4RG26qs+qQXybIt3lhh5jxHoaEI/4jOZEhNz4r1gSDZlw6snLAiD0ytFzwewqmTOZma7swCQ9lY9W7Br0giUaBQ=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM6PR05MB4984.eurprd05.prod.outlook.com (2603:10a6:20b:4::27) with
+ bh=l9KfwhR9kDNa/U5rYY/OLui064dMqwthP0vfYXoeJag=;
+ b=d3u8P/GvmWfLqNoifIk8ToJHeHodcnmWo1I/sIBeKoVaTHryMXPCFv0Cx2I5KYC+LBtTQwsjnHf0z2JXr0jdya7JWuGF50KTOc7/zvepSVs5rg45GfRw5HCyEHGLqNSSODk4BHcP+/sQwaWB3Ie3Fm0+igOcrsPfoZAqaKkBv4Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=mellanox.com;
+Received: from DB3PR0502MB4011.eurprd05.prod.outlook.com (2603:10a6:8:9::11)
+ by DB3PR0502MB4059.eurprd05.prod.outlook.com (2603:10a6:8:4::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Tue, 26 May
- 2020 11:34:42 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::1466:c39b:c016:3301%4]) with mapi id 15.20.3021.029; Tue, 26 May 2020
- 11:34:41 +0000
-Date:   Tue, 26 May 2020 14:36:28 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        target-devel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v3 6/6] RDMA/cma: Provide ECE reject reason
-Message-ID: <20200526113628.GC100179@unreal>
-References: <20200526103304.196371-1-leon@kernel.org>
- <20200526103304.196371-7-leon@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526103304.196371-7-leon@kernel.org>
-X-ClientProxiedBy: AM0PR02CA0010.eurprd02.prod.outlook.com
- (2603:10a6:208:3e::23) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
+ 2020 11:39:37 +0000
+Received: from DB3PR0502MB4011.eurprd05.prod.outlook.com
+ ([fe80::cce6:f0a5:7258:82e1]) by DB3PR0502MB4011.eurprd05.prod.outlook.com
+ ([fe80::cce6:f0a5:7258:82e1%6]) with mapi id 15.20.3021.029; Tue, 26 May 2020
+ 11:39:37 +0000
+Subject: Re: [PATCH V3 2/4] RDMA/core: Introduce shared CQ pool API
+To:     Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Or Gerlitz <ogerlitz@mellanox.com>, linux-rdma@vger.kernel.org
+References: <1589892216-39283-1-git-send-email-yaminf@mellanox.com>
+ <1589892216-39283-3-git-send-email-yaminf@mellanox.com>
+ <20200525164215.GA3226@ziepe.ca> <20200525164713.GF10591@unreal>
+From:   Yamin Friedman <yaminf@mellanox.com>
+Message-ID: <ce3205eb-44f6-f2b8-6b19-4547092f6a88@mellanox.com>
+Date:   Tue, 26 May 2020 14:39:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+In-Reply-To: <20200525164713.GF10591@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR01CA0089.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::30) To DB3PR0502MB4011.eurprd05.prod.outlook.com
+ (2603:10a6:8:9::11)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a00:a040:183:2d::a43) by AM0PR02CA0010.eurprd02.prod.outlook.com (2603:10a6:208:3e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27 via Frontend Transport; Tue, 26 May 2020 11:34:41 +0000
-X-Originating-IP: [2a00:a040:183:2d::a43]
+Received: from [10.100.102.13] (93.172.45.15) by AM0PR01CA0089.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Tue, 26 May 2020 11:39:36 +0000
+X-Originating-IP: [93.172.45.15]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 215cd39b-a6c9-482f-d29a-08d80168c803
-X-MS-TrafficTypeDiagnostic: AM6PR05MB4984:
+X-MS-Office365-Filtering-Correlation-Id: f8be696d-287d-43f6-a466-08d80169780b
+X-MS-TrafficTypeDiagnostic: DB3PR0502MB4059:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB49842207410BAB993BC722C8B0B00@AM6PR05MB4984.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-Microsoft-Antispam-PRVS: <DB3PR0502MB40594B9072DA57C5224AC1D8B1B00@DB3PR0502MB4059.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-Forefront-PRVS: 041517DFAB
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0K5I3zBIGTHL+8rCzAvDlRh9wz18l9yRjspFzVPMd9jO7ASPn5VAjyWdw6rg/eXKHC/yKwsBayg2EiFek9Tp+awO6BdYr5QIJ9YoxbdkPikoj3cOApg3IMfyH5olFVYu+QpvAb4/XoYUHgdNYMitjB5hr9+wLjQHjmdiQePUG87sdh6gcbXTSc5DIaHGiSKZMSe5e8npSTAqa6cIgZYxu0yttw2Bqaaw7iJq+Lcvmp7dvoJCE7/yUP0ll13xPGLJQJweECHoFEkFGka2O5HRHlhHi/cgJZkoy6tCj2rN5YletPA7K/+cTm5kAnsPeLLh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(366004)(136003)(39860400002)(396003)(376002)(346002)(4326008)(6496006)(8676002)(9686003)(16526019)(186003)(6486002)(33656002)(52116002)(8936002)(1076003)(33716001)(6666004)(478600001)(110136005)(316002)(66946007)(2906002)(86362001)(66476007)(54906003)(66556008)(7416002)(5660300002)(6636002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GcV+0B5o+BRIR5LF+ZmyfObcaug4qX5iSlYkDIdzRiTrrYsgCZIlFsnObH/uKJUuW4tYj3Rk8Bg+3N2RcPnIg49Y+ENne95uJzjodEgvA2a7vfJlChbjz1WVJ00VT1ZeLid/ESbbTAWIvUqbmUfUQI/as/aQIQ6DKpxSSgw5v+PwDaDKLBzDwUAJHiirESJlNsiIaLUlXkzbQXyfsg7C5EsY5OkxTSGfROvYQzFPJYkCTj0qwa2nfP4y6LFLL4StSDTLKOsUOp45N5pT88XGqYnAnDyNqIRz1oDpoxNREgTD8R/dJuS9c9LvYqG2b3POH3rl/8wWhBIn2RY1hgjdn7WnbE8TQT58J4UK7M5srGNUXHX0YKgdoIsB2lfO2bHDSWLRHQUzvlzvX6prUMCrZWkjT3KglEnzyvpBh4qaDHJx4CH1acPDW+8lLYs+B92yx6x8s935iQghnpUIzRbsfu1OMZAyIXZM7RVJczLtPsJVdov+iKf3sEkwAK/1oxRpFY4MhtoyVbxQthQfpSS6Rg==
+X-Microsoft-Antispam-Message-Info: 9bc8wK1loKKYYp2kpJJoPM9aWHfsxcq47rKIURhPM0/EoD8uchTpmjp62dbt/tx/ch3adnCnpUNDY4jM3uwqgIDAv25rSKu3ZiYB0beASivJnRtKTBGjHPabUbB5SdCfkaTTeELhf8izc75Eaud6l+xYQyi5q4kwkteaCijVdtZFDK5WtcZOvVIKtzw5qRZeb9k7THb2ULMm0grdfsCxs+gaRgVlTwZgX1uSb1kHO/vUWmXb129Tyf82HPzB/x2Ta0m+SYi2f+3jWWRjOyxSrHjUs/mQleMa+I4Btl8cBRgsSgQ58evF+NccQMKCHVc9AGau8r1Dc39x49muj5Om+dLPs9nvPgdSXFle5a6RcMS3MkGdGDbfnLAXG1P1oBGW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0502MB4011.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(54906003)(31686004)(110136005)(2616005)(956004)(26005)(16576012)(66946007)(316002)(478600001)(2906002)(6666004)(16526019)(66556008)(66476007)(186003)(8936002)(36756003)(86362001)(4326008)(52116002)(6486002)(5660300002)(8676002)(53546011)(31696002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: IX5GE0Xe3Mox2zOA3kTaQqDDc51kljjvI7QszrBx7VJjuj2M1da2NCvfRFKgm4gX/zsjRcT0J7Kt0/6l21tzgjts6stvGZXW7kPIdGL27XWI+sIRsbTzSyVeom+O8knHST0y5NwtvrwBxb2KHLRl/zJyk0wy+DC3i8Y01+RuqergS2AdtGc/FEhSmXoxlGrBomSamEDiTFdwpvMzJ0EZum2vgoXOj8dOR0pA93uLMvanrNIbZZEdu7ANuyM5Iio1bGQr5LyeP3L+nAWNbUPOqiX9SUD37TXwxYxVZwcslQkDmodbWd/25C/8XeDVWLDU0QoxaLn6p0wnJ2yNPOU/7/bVTyttkY154HT8jlPsKvpEGWRV+gYOltRQPHKQheE540tgglPk7TrSrXecUynxhli3trek8LA4JENJXcJ4wZGAplJVkU31dkoxWtOPoGO0Z4gFl0snDIm/N7TmxpY5FYU+l3eGdf9DXnVFXihGoS4=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 215cd39b-a6c9-482f-d29a-08d80168c803
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 11:34:41.9024
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8be696d-287d-43f6-a466-08d80169780b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 11:39:37.2696
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h2/K7CFHfV0q+nDYKHQaEiMNOYatK/iXMdNZutpwHw5+ux2XVtZQzUz3hmto3izbSqMbeqbJY578Yr7X+wx0EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4984
+X-MS-Exchange-CrossTenant-UserPrincipalName: USg7TZBaEyLpRdMjABVBMzSAUOwslJxM1hgRgCW1+XKbWcf81LkR9E84y4mwmfKMC9KB5m2SwJbX/YTWj/xVmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0502MB4059
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 26, 2020 at 01:33:04PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+
+On 5/25/2020 7:47 PM, Leon Romanovsky wrote:
+> On Mon, May 25, 2020 at 01:42:15PM -0300, Jason Gunthorpe wrote:
+>> On Tue, May 19, 2020 at 03:43:34PM +0300, Yamin Friedman wrote:
+>>
+>>> +void ib_cq_pool_init(struct ib_device *dev)
+>>> +{
+>>> +	int i;
+>> I generally rather see unsigned types used for unsigned values
+>>
+>>> +
+>>> +	spin_lock_init(&dev->cq_pools_lock);
+>>> +	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++)
+>>> +		INIT_LIST_HEAD(&dev->cq_pools[i]);
+>>> +}
+>>> +
+>>> +void ib_cq_pool_destroy(struct ib_device *dev)
+>>> +{
+>>> +	struct ib_cq *cq, *n;
+>>> +	int i;
+>>> +
+>>> +	for (i = 0; i < ARRAY_SIZE(dev->cq_pools); i++) {
+>>> +		list_for_each_entry_safe(cq, n, &dev->cq_pools[i],
+>>> +					 pool_entry) {
+>>> +			cq->shared = false;
+>>> +			ib_free_cq_user(cq, NULL);
+>> WARN_ON cqe_used == 0?
+> An opposite is better - WARN_ON(cqe_used).
 >
-> IBTA declares "vendor option not supported" reject reason in REJ
-> messages if passive side doesn't want to accept proposed ECE options.
+> <...>
+
+Is this check really necessary as we are closing the device?
+
 >
-> Due to the fact that ECE is managed by userspace, there is a need to let
-> users to provide such rejected reason.
+>>> @@ -1418,6 +1418,7 @@ int ib_register_device(struct ib_device *device, const char *name)
+>>>   		device->ops.dealloc_driver = dealloc_fn;
+>>>   		return ret;
+>>>   	}
+>>> +	ib_cq_pool_init(device);
+>>>   	ib_device_put(device);
+>> This look like wrong placement, it should be done before enable_device
+>> as enable_device triggers ULPs t start using the device and they might
+>> start allocating using this API.
+>>
+>>>   	return 0;
+>>> @@ -1446,6 +1447,7 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
+>>>   	if (!refcount_read(&ib_dev->refcount))
+>>>   		goto out;
+>>>
+>>> +	ib_cq_pool_destroy(ib_dev);
+>>>   	disable_device(ib_dev);
+>> similar issue, should be after disable_device as ULPs are still
+>> running here
+> Sorry, this were my mistakes. I suggested to Yamin to put it here.
 >
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/cma.c           |  9 ++++-----
->  drivers/infiniband/core/ucma.c          | 15 ++++++++++++++-
->  drivers/infiniband/ulp/isert/ib_isert.c |  4 ++--
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c  |  2 +-
->  drivers/infiniband/ulp/srpt/ib_srpt.c   |  3 ++-
->  drivers/nvme/target/rdma.c              |  3 ++-
->  include/rdma/rdma_cm.h                  |  2 +-
->  include/uapi/rdma/rdma_user_cm.h        |  3 ++-
->  net/rds/ib_cm.c                         |  4 +++-
->  9 files changed, 31 insertions(+), 14 deletions(-)
+> Thanks
 
-For some reason didn't get the failure in CI, this small fixup is
-needed.
+I will move them to the suggest location.
 
-commit af02a4a50ec0d18fe9bfb86b96411dfb42054f97 (HEAD -> rdma-next)
-Author: Leon Romanovsky <leon@kernel.org>
-Date:   Tue May 26 14:34:34 2020 +0300
-
-    fixup! RDMA/cma: Provide ECE reject reason
-
-    Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index 30a0a9adaddd..d84765f66d49 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -18,6 +18,7 @@
- #include <asm/unaligned.h>
-
- #include <rdma/ib_verbs.h>
-+#include <rdma/ib_cm.h>
- #include <rdma/rdma_cm.h>
- #include <rdma/rw.h>
+Thanks
 
