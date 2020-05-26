@@ -2,121 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81D91E182F
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 01:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC46E1E187D
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 02:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgEYXVb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 May 2020 19:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
+        id S1728888AbgEZAbN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 May 2020 20:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgEYXVb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 19:21:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA5BC061A0E
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 16:21:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u188so1517344wmu.1
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 16:21:30 -0700 (PDT)
+        with ESMTP id S1726350AbgEZAbN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 May 2020 20:31:13 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20936C05BD43
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 17:31:12 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id p4so8709711qvr.10
+        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 17:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4IkvcZK53cLFIR1R0tvHhGF7OIPJ0Oyo42pp68Rb0o0=;
-        b=CiaB+aqrL5DdmOc2bnxZnQgtrrrczsW8HUZnAmYRXGi86+AdKZi/weSGgzUKp6gG/d
-         CRUHbuM6E+ff7DPeIv0FAHm+Vs/0eCHY7R31X8B8t4mh4YXB6S28UcshqW+4pOs08FgE
-         hXRtuViPOcvNySgRrVLi/1oK8wb8g0LuPb2hYa7vYpbSwWzjzrktQ7X8UbjnYiBCtS2a
-         ZKHqU1xSqVuqj+kwnfZmz4fq77QvtLt7sG3Sr38kdkbfZ6rD0l03pV5PHU/lyo/dbNYS
-         BNDeqsuVlxJumt/3lljGqZpcqZe2htgfLavWt96ETAqKk2+KJLZcnzck44Icme5zeE0J
-         Y8OA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=c4nWWXi8qCXT9b5o9GmVwjoEsDaKwahe7vf3tGdNZwE=;
+        b=ZuhdvUk7sfvXRz7F/zug9z1Ai7NHAh6QTWSHAlrthly+E40qyNby2MBcN3J5zTcaJq
+         qhxLhCyDuPQM3S4wCNwm8DlOKBcLPdH/d7LCkdG4ByrcPomg2WSxYh+Iq2Si6UfKN25H
+         DKYH1/QdsGxp1B31R6qCgVWOz7P/qPTBUi0IFz5TgFfRgFEu4FbFcopVrtY/NVZb77fe
+         Dhb95g0gYo/IB3YQ87cD2gnpWvnr7UOSovzkjkWYpAeOBIxWvgmxhWm09C306C6sgJMK
+         SBAHugwgLhgR8kDfvdjYQE8T6nQNboRCt/zi64uE+qXpWPW2B+FxnR93C2/IZmS1oF2Y
+         0eog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4IkvcZK53cLFIR1R0tvHhGF7OIPJ0Oyo42pp68Rb0o0=;
-        b=pRo1Y4kacfh+oX+1mQSPIapIH1SA86+qTeWK6h7EHUWnJYXZHn6GtZjHkvXu6W0XTM
-         x34bl6f5XLl3Xnw4hX2qoCtx2Iq4Ux4KRI2FCD+HAMGuXeqYdfL97ovunwGLvmQBW2fb
-         hZkxEwi6VwG8jl7lqp3ZAPkn2qZcXW86E4NoVESHGIMrTk5ttWblMY3dtejmUHBrA5kC
-         /thBiVIjOpigx7XLO/z3komioCcGiNdDhLx2EsfxFGih2pHM2OL/j20MlVL9gVkl96UB
-         TB1LM06GNhcvC1iyV/k9WdKWCo72uhJYD3Nq82BxGxXEhc1K1w+mENkrU+SdQPdU4BBV
-         iG8Q==
-X-Gm-Message-State: AOAM531+ZFgGRJRLV5Nwy0lBKeca3K4hVB85e0G88agYzSNFz55+dcG6
-        ry6CYMMCzTzx7bwO4I5c1gs=
-X-Google-Smtp-Source: ABdhPJzb5gP5d+TaUJOiEyrShGovJ8aD6StOBab4F1kIMiPbyGovL0SJqPR9MKFoKPbt4uJcyR7UqA==
-X-Received: by 2002:a1c:ed0b:: with SMTP id l11mr29073585wmh.31.1590448889213;
-        Mon, 25 May 2020 16:21:29 -0700 (PDT)
-Received: from kheib-workstation ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id t7sm13674776wrq.41.2020.05.25.16.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 16:21:28 -0700 (PDT)
-Date:   Tue, 26 May 2020 02:21:25 +0300
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 04/14] RDMA/core: Allow to override device op
-Message-ID: <20200525232125.GA177080@kheib-workstation>
-References: <20200513095034.208385-1-leon@kernel.org>
- <20200513095034.208385-5-leon@kernel.org>
- <20200525142641.GA20978@ziepe.ca>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c4nWWXi8qCXT9b5o9GmVwjoEsDaKwahe7vf3tGdNZwE=;
+        b=PUF+iTxyiVdQb/lLjR4DM9jdlMrMwHLbx5SEJu/DsJh8D1u1zZ0GrNhIaVOKN0t9NI
+         uvgbU+PE5CuNSF78SEvvoU3jxGMGQ0YSkZyrlGkEXDNV7i50aEKVUxIkpav4qig+Zl6k
+         xH3lGtget+z6TEsK0fB3OQNbXpD/FEMtfxGoOuaV9TxEuBwKPt0GL1XJonq1rBgMImjK
+         UOzU9AP5fQ+YMDLsi2D9DAU6sk1IguOHJ39Oyyk8NAgppsY3Vkn08TRCrVS9NvWjzMKv
+         R9i6tW0NXkmCkueZOoHys/iUa1GRh2B6b7Xs8jxWpwiuwiZPdd2qnFMK51KYTirL2xmu
+         /hzg==
+X-Gm-Message-State: AOAM533vgTLj+rCCJNbUSD+yaC6wjQIgzaAVgPnbg8r2y9VjEq/FkuDZ
+        RWKTvZKb/Qo6ocC/yyYxBdh7yg==
+X-Google-Smtp-Source: ABdhPJzxmy9Zc1nX8eync6kzxizMe3npjopcMH0OSdMUFzKfRkwzMRyC1VFYMIWlBlyT3HBB07pfaw==
+X-Received: by 2002:a0c:fb0e:: with SMTP id c14mr3846688qvp.63.1590453071286;
+        Mon, 25 May 2020 17:31:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id v69sm11854642qkb.96.2020.05.25.17.31.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 May 2020 17:31:10 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jdNUs-0001vu-5D; Mon, 25 May 2020 21:31:10 -0300
+Date:   Mon, 25 May 2020 21:31:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Divya Indi <divya.indi@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Kaike Wan <kaike.wan@intel.com>,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH] IB/sa: Resolving use-after-free in ib_nl_send_msg.
+Message-ID: <20200526003110.GJ744@ziepe.ca>
+References: <1589469084-15125-1-git-send-email-divya.indi@oracle.com>
+ <1589469084-15125-2-git-send-email-divya.indi@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525142641.GA20978@ziepe.ca>
+In-Reply-To: <1589469084-15125-2-git-send-email-divya.indi@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 25, 2020 at 11:26:41AM -0300, Jason Gunthorpe wrote:
-> On Wed, May 13, 2020 at 12:50:24PM +0300, Leon Romanovsky wrote:
-> > From: Maor Gottlieb <maorg@mellanox.com>
-> > 
-> > Current device ops implementation allows only two stages "set"/"not set"
-> > and requires caller to check if function pointer exists before
-> > calling it.
-> > 
-> > In order to simplify this repetitive task, let's give an option to
-> > overwrite those pointers. This will allow us to set dummy functions
-> > for the specific function pointers.
-> > 
-> > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> >  drivers/infiniband/core/device.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> > index d9f565a779df..9486e60b42cc 100644
-> > --- a/drivers/infiniband/core/device.c
-> > +++ b/drivers/infiniband/core/device.c
-> > @@ -2542,11 +2542,10 @@ EXPORT_SYMBOL(ib_get_net_dev_by_params);
-> >  void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
-> >  {
-> >  	struct ib_device_ops *dev_ops = &dev->ops;
-> > -#define SET_DEVICE_OP(ptr, name)                                               \
-> > -	do {                                                                   \
-> > -		if (ops->name)                                                 \
-> > -			if (!((ptr)->name))				       \
-> > -				(ptr)->name = ops->name;                       \
-> > +#define SET_DEVICE_OP(ptr, name)					\
-> > +	do {								\
-> > +		if (ops->name)						\
-> > +			(ptr)->name = ops->name;			\
-> >  	} while (0)
-> 
-> Did you carefully check every driver to be sure it is OK with this?
-> 
-> Maybe Kamal remembers why it was like this?
-> 
-> Jason
+On Thu, May 14, 2020 at 08:11:24AM -0700, Divya Indi wrote:
+>  static void ib_nl_set_path_rec_attrs(struct sk_buff *skb,
+>  				     struct ib_sa_query *query)
+>  {
+> @@ -889,6 +904,15 @@ static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
+>  		spin_lock_irqsave(&ib_nl_request_lock, flags);
+>  		list_del(&query->list);
+>  		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+> +	} else {
+> +		set_bit(IB_SA_NL_QUERY_SENT, (unsigned long *)&query->flags);
+> +
+> +		/*
+> +		 * If response is received before this flag was set
+> +		 * someone is waiting to process the response and release the
+> +		 * query.
+> +		 */
+> +		wake_up(&wait_queue);
+>  	}
 
-The idea was to set a specific op only once by the provider when there
-is a valid function for the op, this was done to make sure that if
-the op isn't supported by the provider then it will be set to NULL.
+As far as I can see the issue here is that the request is put into the
+ib_nl_request_list before it is really ready to be in that list, eg
+ib_nl_send_msg() has actually completed and ownership of the memory
+has been transfered.
 
-I think it will be more cleaner from the provider point of view to
-see which ops are supported or not supported in the provider code. by
-overriding the ops in the core this will make things more confusing.
+It appears to me the reason for this is simply because a spinlock is
+used for the ib_nl_request_lock and it cannot be held across
+ib_nl_send_msg().
 
-Thanks,
-Kamal
+Convert that lock to a mutex and move the list_add to after the
+success of ib_nl_send_msg() and this bug should be fixed without
+adding jaunty atomics or a wait queue.
+
+This is a 'racy error unwind' bug class...
+
+Jason
