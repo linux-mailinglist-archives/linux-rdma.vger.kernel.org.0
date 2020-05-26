@@ -2,153 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B6C1E1AD1
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 07:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DAB1E1AD6
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 07:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgEZFt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 May 2020 01:49:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
+        id S1726207AbgEZFxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 May 2020 01:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725959AbgEZFt6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 May 2020 01:49:58 -0400
+        id S1725771AbgEZFxq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 May 2020 01:53:46 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C532B20776;
-        Tue, 26 May 2020 05:49:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09F7F2071A;
+        Tue, 26 May 2020 05:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590472197;
-        bh=U88K5T1Zan4Jq/FR3aweJOo6lgnXrRGiQiUYK8qSWuY=;
+        s=default; t=1590472425;
+        bh=AAdM7uhlBSU5ehs+9+mlt1qY+8zr0MbM3yvoY6VYgn8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rRJNuw2+b7VWIzP/J6gScT6Tv4ulqUEsQI+kD+X820P6QDx8gVU8cgvwsH+VHyYhl
-         D+M2lo6nz517/zzthJX84a1owGlSbalvc+ayu+QzJchs88UWXR0s9gPCm6bp3L1lly
-         dgfqmwmgROoDeqwe0kqNaNzLdg1tYK7K6qXPL7PQ=
-Date:   Tue, 26 May 2020 08:49:52 +0300
+        b=H7URmxayETQ2F1eyS8MzEuql1AF55+Z3pKjFmlaTAJeqVZvg603ZM9ts8AU+MSRXM
+         JIiLxYmc+50wZvQLnXKDAxMFBwF4m3SfYFmIjTfeZ95ZbWq5U7zVPC8WZqyt45hat4
+         OO25n1sk2yzkVZ80C1RN6w/EY2w6wRVs9o2pYTKc=
+Date:   Tue, 26 May 2020 08:53:42 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        target-devel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v2 7/7] RDMA/cma: Provide ECE reject reason
-Message-ID: <20200526054952.GO10591@unreal>
-References: <20200413141538.935574-1-leon@kernel.org>
- <20200413141538.935574-8-leon@kernel.org>
- <20200525181417.GC24366@ziepe.ca>
- <20200525182242.GK10591@unreal>
- <20200525183647.GI744@ziepe.ca>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next 04/14] RDMA/core: Allow to override device op
+Message-ID: <20200526055342.GP10591@unreal>
+References: <20200513095034.208385-1-leon@kernel.org>
+ <20200513095034.208385-5-leon@kernel.org>
+ <20200525142641.GA20978@ziepe.ca>
+ <20200525232125.GA177080@kheib-workstation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525183647.GI744@ziepe.ca>
+In-Reply-To: <20200525232125.GA177080@kheib-workstation>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 25, 2020 at 03:36:47PM -0300, Jason Gunthorpe wrote:
-> On Mon, May 25, 2020 at 09:22:42PM +0300, Leon Romanovsky wrote:
-> > On Mon, May 25, 2020 at 03:14:17PM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Apr 13, 2020 at 05:15:38PM +0300, Leon Romanovsky wrote:
-> > > > @@ -4223,7 +4223,7 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
-> > > >  EXPORT_SYMBOL(rdma_notify);
-> > > >
-> > > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > > > -		u8 private_data_len)
-> > > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason)
-> > > >  {
-> > > >  	struct rdma_id_private *id_priv;
-> > > >  	int ret;
-> > > > @@ -4237,10 +4237,12 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > > >  			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
-> > > >  						private_data, private_data_len);
-> > > >  		} else {
-> > > > +			enum ib_cm_rej_reason r =
-> > > > +				(reason) ?: IB_CM_REJ_CONSUMER_DEFINED;
-> > > > +
-> > > >  			trace_cm_send_rej(id_priv);
-> > > > -			ret = ib_send_cm_rej(id_priv->cm_id.ib,
-> > > > -					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
-> > > > -					     0, private_data, private_data_len);
-> > > > +			ret = ib_send_cm_rej(id_priv->cm_id.ib, r, NULL, 0,
-> > > > +					     private_data, private_data_len);
-> > > >  		}
-> > > >  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
-> > > >  		ret = iw_cm_reject(id_priv->cm_id.iw,
-> > > > diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-> > > > index d41598954cc4..99482dc5934b 100644
-> > > > +++ b/drivers/infiniband/core/ucma.c
-> > > > @@ -1178,12 +1178,17 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
-> > > >  	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
-> > > >  		return -EFAULT;
-> > > >
-> > > > +	if (cmd.reason &&
-> > > > +	    cmd.reason != RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
-> > > > +		return -EINVAL;
+On Tue, May 26, 2020 at 02:21:25AM +0300, Kamal Heib wrote:
+> On Mon, May 25, 2020 at 11:26:41AM -0300, Jason Gunthorpe wrote:
+> > On Wed, May 13, 2020 at 12:50:24PM +0300, Leon Romanovsky wrote:
+> > > From: Maor Gottlieb <maorg@mellanox.com>
 > > >
-> > > It would be clearer to set cmd.reason to IB_CM_REJ_CONSUMER_DEFINED at
-> > > this point..
+> > > Current device ops implementation allows only two stages "set"/"not set"
+> > > and requires caller to check if function pointer exists before
+> > > calling it.
 > > >
-> > > if (!cmd.reason)
-> > >    cmd.reason = IB_CM_REJ_CONSUMER_DEFINED
+> > > In order to simplify this repetitive task, let's give an option to
+> > > overwrite those pointers. This will allow us to set dummy functions
+> > > for the specific function pointers.
 > > >
-> > > if (cmd.reason != IB_CM_REJ_CONSUMER_DEFINED && cmd.reason !=
-> > >     RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
-> > >    return -EINVAL
+> > > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > ---
+> > >  drivers/infiniband/core/device.c | 9 ++++-----
+> > >  1 file changed, 4 insertions(+), 5 deletions(-)
 > > >
-> > > Esaier to follow and no reason userspace shouldn't be able to
-> > > explicitly specifiy the reason's that it is allowed to use.
-> > >
-> > >
-> > > > index 8d961d8b7cdb..f8781b132f62 100644
-> > > > +++ b/include/rdma/rdma_cm.h
-> > > > @@ -324,11 +324,12 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-> > > >   */
-> > > >  int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event);
-> > > >
-> > > > +
-> > > >  /**
-> > >
-> > > Extra hunk?
-> > >
-> > > >   * rdma_reject - Called to reject a connection request or response.
-> > > >   */
-> > > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> > > > -		u8 private_data_len);
-> > > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason);
-> > > >
-> > > >  /**
-> > > >   * rdma_disconnect - This function disconnects the associated QP and
-> > > > diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-> > > > index c4ca1412bcf9..e545f2de1e13 100644
-> > > > +++ b/include/uapi/rdma/rdma_user_cm.h
-> > > > @@ -78,6 +78,10 @@ enum rdma_ucm_port_space {
-> > > >  	RDMA_PS_UDP   = 0x0111,
-> > > >  };
-> > > >
-> > > > +enum rdma_ucm_reject_reason {
-> > > > +	RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED = 35
-> > > > +};
-> > >
-> > > not sure we need ABI defines for IBTA constants?
+> > > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > > index d9f565a779df..9486e60b42cc 100644
+> > > --- a/drivers/infiniband/core/device.c
+> > > +++ b/drivers/infiniband/core/device.c
+> > > @@ -2542,11 +2542,10 @@ EXPORT_SYMBOL(ib_get_net_dev_by_params);
+> > >  void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+> > >  {
+> > >  	struct ib_device_ops *dev_ops = &dev->ops;
+> > > -#define SET_DEVICE_OP(ptr, name)                                               \
+> > > -	do {                                                                   \
+> > > -		if (ops->name)                                                 \
+> > > -			if (!((ptr)->name))				       \
+> > > -				(ptr)->name = ops->name;                       \
+> > > +#define SET_DEVICE_OP(ptr, name)					\
+> > > +	do {								\
+> > > +		if (ops->name)						\
+> > > +			(ptr)->name = ops->name;			\
+> > >  	} while (0)
 > >
-> > Do you want to give an option to write any number?
-> > Right now, I'm enforcing only allowed by IBTA reason
-> > and which is used in user space.
+> > Did you carefully check every driver to be sure it is OK with this?
+> >
+> > Maybe Kamal remembers why it was like this?
+> >
+> > Jason
 >
-> no, just the allowed numbers, just wondering if we need constants for
-> fixed IBTA values ..
+> The idea was to set a specific op only once by the provider when there
+> is a valid function for the op, this was done to make sure that if
+> the op isn't supported by the provider then it will be set to NULL.
 
-I will take a look.
+This is not changed.
+
+>
+> I think it will be more cleaner from the provider point of view to
+> see which ops are supported or not supported in the provider code. by
+> overriding the ops in the core this will make things more confusing.
+
+Actually the patch does quite opposite, set defaults by IB/core and
+overwrite it by the provider later and not vice versa. The IB/core
+won't overwrite defined by the provider ops. From provider point of view
+no change.
 
 Thanks
 
 >
-> Jason
+> Thanks,
+> Kamal
