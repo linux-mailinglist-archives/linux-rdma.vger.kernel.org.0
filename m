@@ -2,111 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E971E1AB0
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 07:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B6C1E1AD1
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 May 2020 07:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgEZFUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 May 2020 01:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgEZFUe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 May 2020 01:20:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37443C03E96B
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 22:20:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r7so2399914wro.1
-        for <linux-rdma@vger.kernel.org>; Mon, 25 May 2020 22:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=zgRGqPWFACxtLji7QENFAvWGb9sS86YebxHqcxZ06Ms=;
-        b=VnRaQ0z8/nfrX1FwyzbakQI+e6mEqMFvRHDHnu675GAjNRtx+s7u1t7cAsFWN/rmng
-         1XCXEWQ7LZwt2K9Q/eTDbo0z1877ODDp+A/bh9WIQ3PJkfUPlJLUK1e7wbQ5nsSjxFOO
-         AvnPQ4crg1UXRp8+qaLVII+6abJlgVRX5xSmQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=zgRGqPWFACxtLji7QENFAvWGb9sS86YebxHqcxZ06Ms=;
-        b=GXNwG8rT+lbUxEt9FfbpoJoCPg/CkeU2SM3xOi5b7C1d9LY4WEkE1+WkebNv/VqteQ
-         EBf4CE9jPAo0Pi/7N2yBcoQB5FyNeJtGGLz0YdR8x8eoYM9PgxPNKe2WwPEX6J0sxKqW
-         OtBiJaSjA+m5uiOtuF6R9EC+LEPbHP7VCdl+hlTs38TGcJT/tilalEBUO6EgrJsBSxFu
-         5mKELoYG8fEUjGxEgqHeHLNumy823UvLwk8kKXrLDQ2v6s0Sh6X15K234gAxrnEnyLVy
-         PyISyETvgNwSXRdbx74+2i63oYyOcxTOzhl0zIovnsgkXwObEZDaORJRwauJjAgSoV1e
-         pqDw==
-X-Gm-Message-State: AOAM532hjZQeZJOWkmjgyUsCOiWwDdM+bhFTuFeA87dpCXKRp2TDkAnL
-        HIG489HO3IiChlAdPkFlOmqWIQK0phB/chfIy2evskAjPjaXwUoN5yICoGn0taGC5inolieQYlR
-        LeKtuoVcc4aNeyfiUlSX4YmgWRHjkFqEtM3dZdBPpuq5n8oe2zKIqNZ1yMxVP19uWYUVjqQhw4O
-        Cl4AY=
-X-Google-Smtp-Source: ABdhPJy1hvkNPTMM2+FZUF06Ot55yXbtwVkygMs8maiY4UodVwBU4ilAyYjQ3LCYoOlnUSCOobBRTQ==
-X-Received: by 2002:a5d:4bc5:: with SMTP id l5mr14894547wrt.104.1590470432488;
-        Mon, 25 May 2020 22:20:32 -0700 (PDT)
-Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 40sm19807069wrc.15.2020.05.25.22.20.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 May 2020 22:20:32 -0700 (PDT)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com
-Cc:     devesh.sharma@broadcom.com, leon@kernel.org
-Subject: [PATCH for-next 2/2] RDMA/bnxt_re: update ABI to pass wqe-mode to user space
-Date:   Tue, 26 May 2020 01:20:02 -0400
-Message-Id: <1590470402-32590-3-git-send-email-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1590470402-32590-1-git-send-email-devesh.sharma@broadcom.com>
-References: <1590470402-32590-1-git-send-email-devesh.sharma@broadcom.com>
+        id S1726689AbgEZFt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 May 2020 01:49:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbgEZFt6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 May 2020 01:49:58 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C532B20776;
+        Tue, 26 May 2020 05:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590472197;
+        bh=U88K5T1Zan4Jq/FR3aweJOo6lgnXrRGiQiUYK8qSWuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rRJNuw2+b7VWIzP/J6gScT6Tv4ulqUEsQI+kD+X820P6QDx8gVU8cgvwsH+VHyYhl
+         D+M2lo6nz517/zzthJX84a1owGlSbalvc+ayu+QzJchs88UWXR0s9gPCm6bp3L1lly
+         dgfqmwmgROoDeqwe0kqNaNzLdg1tYK7K6qXPL7PQ=
+Date:   Tue, 26 May 2020 08:49:52 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        target-devel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v2 7/7] RDMA/cma: Provide ECE reject reason
+Message-ID: <20200526054952.GO10591@unreal>
+References: <20200413141538.935574-1-leon@kernel.org>
+ <20200413141538.935574-8-leon@kernel.org>
+ <20200525181417.GC24366@ziepe.ca>
+ <20200525182242.GK10591@unreal>
+ <20200525183647.GI744@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525183647.GI744@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Changing ucontext ABI response structure to pass wqe_mode
-to user library.
-A flag in comp_mask has been set to indicate presence of
-wqe_mode.
+On Mon, May 25, 2020 at 03:36:47PM -0300, Jason Gunthorpe wrote:
+> On Mon, May 25, 2020 at 09:22:42PM +0300, Leon Romanovsky wrote:
+> > On Mon, May 25, 2020 at 03:14:17PM -0300, Jason Gunthorpe wrote:
+> > > On Mon, Apr 13, 2020 at 05:15:38PM +0300, Leon Romanovsky wrote:
+> > > > @@ -4223,7 +4223,7 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
+> > > >  EXPORT_SYMBOL(rdma_notify);
+> > > >
+> > > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+> > > > -		u8 private_data_len)
+> > > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason)
+> > > >  {
+> > > >  	struct rdma_id_private *id_priv;
+> > > >  	int ret;
+> > > > @@ -4237,10 +4237,12 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+> > > >  			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
+> > > >  						private_data, private_data_len);
+> > > >  		} else {
+> > > > +			enum ib_cm_rej_reason r =
+> > > > +				(reason) ?: IB_CM_REJ_CONSUMER_DEFINED;
+> > > > +
+> > > >  			trace_cm_send_rej(id_priv);
+> > > > -			ret = ib_send_cm_rej(id_priv->cm_id.ib,
+> > > > -					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
+> > > > -					     0, private_data, private_data_len);
+> > > > +			ret = ib_send_cm_rej(id_priv->cm_id.ib, r, NULL, 0,
+> > > > +					     private_data, private_data_len);
+> > > >  		}
+> > > >  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+> > > >  		ret = iw_cm_reject(id_priv->cm_id.iw,
+> > > > diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+> > > > index d41598954cc4..99482dc5934b 100644
+> > > > +++ b/drivers/infiniband/core/ucma.c
+> > > > @@ -1178,12 +1178,17 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
+> > > >  	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
+> > > >  		return -EFAULT;
+> > > >
+> > > > +	if (cmd.reason &&
+> > > > +	    cmd.reason != RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
+> > > > +		return -EINVAL;
+> > >
+> > > It would be clearer to set cmd.reason to IB_CM_REJ_CONSUMER_DEFINED at
+> > > this point..
+> > >
+> > > if (!cmd.reason)
+> > >    cmd.reason = IB_CM_REJ_CONSUMER_DEFINED
+> > >
+> > > if (cmd.reason != IB_CM_REJ_CONSUMER_DEFINED && cmd.reason !=
+> > >     RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
+> > >    return -EINVAL
+> > >
+> > > Esaier to follow and no reason userspace shouldn't be able to
+> > > explicitly specifiy the reason's that it is allowed to use.
+> > >
+> > >
+> > > > index 8d961d8b7cdb..f8781b132f62 100644
+> > > > +++ b/include/rdma/rdma_cm.h
+> > > > @@ -324,11 +324,12 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
+> > > >   */
+> > > >  int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event);
+> > > >
+> > > > +
+> > > >  /**
+> > >
+> > > Extra hunk?
+> > >
+> > > >   * rdma_reject - Called to reject a connection request or response.
+> > > >   */
+> > > >  int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+> > > > -		u8 private_data_len);
+> > > > +		u8 private_data_len, enum rdma_ucm_reject_reason reason);
+> > > >
+> > > >  /**
+> > > >   * rdma_disconnect - This function disconnects the associated QP and
+> > > > diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+> > > > index c4ca1412bcf9..e545f2de1e13 100644
+> > > > +++ b/include/uapi/rdma/rdma_user_cm.h
+> > > > @@ -78,6 +78,10 @@ enum rdma_ucm_port_space {
+> > > >  	RDMA_PS_UDP   = 0x0111,
+> > > >  };
+> > > >
+> > > > +enum rdma_ucm_reject_reason {
+> > > > +	RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED = 35
+> > > > +};
+> > >
+> > > not sure we need ABI defines for IBTA constants?
+> >
+> > Do you want to give an option to write any number?
+> > Right now, I'm enforcing only allowed by IBTA reason
+> > and which is used in user space.
+>
+> no, just the allowed numbers, just wondering if we need constants for
+> fixed IBTA values ..
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
- include/uapi/rdma/bnxt_re-abi.h          | 5 ++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+I will take a look.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index e1dbdf0..153708d 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3935,6 +3935,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.max_cqd = dev_attr->max_cq_wqes;
- 	resp.rsvd    = 0;
- 
-+	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
-+	resp.mode = rdev->chip_ctx->modes.wqe_mode;
-+
- 	rc = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
- 	if (rc) {
- 		ibdev_err(ibdev, "Failed to copy user context");
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index dc52e3c..52205ed 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -49,7 +49,8 @@
- #define BNXT_RE_CHIP_ID0_CHIP_MET_SFT		0x18
- 
- enum {
--	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL
-+	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL,
-+	BNXT_RE_UCNTX_CMASK_HAVE_MODE = 0x02ULL
- };
- 
- struct bnxt_re_uctx_resp {
-@@ -62,6 +63,8 @@ struct bnxt_re_uctx_resp {
- 	__aligned_u64 comp_mask;
- 	__u32 chip_id0;
- 	__u32 chip_id1;
-+	__u32 mode;
-+	__u32 rsvd1; /* padding */
- };
- 
- /*
--- 
-1.8.3.1
+Thanks
 
+>
+> Jason
