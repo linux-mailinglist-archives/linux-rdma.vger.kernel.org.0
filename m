@@ -2,99 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C311E33E7
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 02:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850D01E350F
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 03:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgE0AAW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 May 2020 20:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgE0AAV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 May 2020 20:00:21 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6367DC061A0F;
-        Tue, 26 May 2020 17:00:20 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f189so22681122qkd.5;
-        Tue, 26 May 2020 17:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RQpblavivf0sa4vg0uiYY3iKvNyBsJZUzHQgN1h/lmg=;
-        b=aaeWpMouXtx2LFJPHuT+FhiG16wyYp5gdnnR45cu9Vgyz0kg2oyzoPgRcNU6GyU5mi
-         QS4/WKZNXmjM+/UrYB8S0j0OVs72k5xpORCqh3ebm4Z+etOjApSkpMCqPlVwu5grm7dT
-         PZA88BgqtxVg8sNWl7M1NIJBWMpqvxaXU2BLh+3KZfhk0vyOiWgUyfPOcD6iRKPfhy19
-         5AhA4bnJVa4nEQMdL/3klVMj4rTG1nJ+ixDGtD1fFACc0u5H70+Mdr0DOWALqUGWF+PW
-         n0YwNsztpfQzGNEGC3QVsfm5vli+G1wu7G+71Bwp6+0eSpEVf7+H6jBf/7bVTPdBb+xM
-         0URg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RQpblavivf0sa4vg0uiYY3iKvNyBsJZUzHQgN1h/lmg=;
-        b=BKfKdkWm+a3PA90QVo151xKaCr4wR1kXRbPiFzxdxBUqhzxtx2op4z6j1ZaKcGw7hL
-         2kkl4ejOXrA628im40k1EKOTOfPMU9Dwl2hhpXesPXmEP0QmmeBSpCukUNK5EbuC6QQP
-         MwkdCP7y2omk/5o497cFqNI1aV/T1iPTeOoKuaQxtZe1BfnTY3YUCFodi8FDVPEHUPIo
-         hQiBOlTYLewsUZMlBbpsiVxsxqmhbXVg/wssaBdoi12eYeYdxhx0GS9sGYlR3lRnPbvM
-         0BX3kZ1ri+C54BAPRMwRFaq6p2Kp2kQ+adwmxkbG2tAHoAr0vhS8LQt7dRMrF4taRYo+
-         KMIg==
-X-Gm-Message-State: AOAM530R5VyP1N6eFs93ba72l4C9bBYBCHrCh+rroIXt25+A4+IewYR8
-        o3XUf2WQoBX61h53FSatR0Nj75HK
-X-Google-Smtp-Source: ABdhPJxzJI4xai9rTGV2j1EnGCQ8x7MUDQw7Z6Y71HI8eaXBIgwB4HOqgdgGs5VeGYx008xNjrfllw==
-X-Received: by 2002:a05:620a:13d7:: with SMTP id g23mr1418122qkl.136.1590537619658;
-        Tue, 26 May 2020 17:00:19 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:85b5:c99:767e:c12? ([2601:282:803:7700:85b5:c99:767e:c12])
-        by smtp.googlemail.com with ESMTPSA id r7sm1123275qtc.25.2020.05.26.17.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 17:00:18 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next 0/4] RAW format dumps through RDMAtool
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-References: <20200520102539.458983-1-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <acfe3236-0ab9-53ae-eb3b-7ff8a510e599@gmail.com>
-Date:   Tue, 26 May 2020 18:00:17 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200520102539.458983-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
+        id S1727040AbgE0B5Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 26 May 2020 21:57:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33186 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726962AbgE0B5P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 May 2020 21:57:15 -0400
+IronPort-SDR: 6Fji7UMXKzC2nLSfIl+KXmYDR4zlps7X8ooQ5A3xSH+SGNA1xTBIgijK3hnWY2QzeZ7jnqML+/
+ G6nDafT8oQjQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 18:57:15 -0700
+IronPort-SDR: wfAreKOQ2WR3TSypPbWRXW3FQmgaEgWzzC/fOcfibO7ebg63SGD2QGilS0ifnw+zZIVCNzFt+T
+ Ct2qy6UDcbhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
+   d="scan'208";a="256629084"
+Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
+  by fmsmga008.fm.intel.com with ESMTP; 26 May 2020 18:57:15 -0700
+Received: from fmsmsx101.amr.corp.intel.com (10.18.124.199) by
+ FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 26 May 2020 18:57:14 -0700
+Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.63]) by
+ fmsmsx101.amr.corp.intel.com ([169.254.1.249]) with mapi id 14.03.0439.000;
+ Tue, 26 May 2020 18:57:14 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "poswald@suse.com" <poswald@suse.com>
+Subject: RE: [RDMA RFC v6 01/16] RDMA/irdma: Add driver framework definitions
+Thread-Topic: [RDMA RFC v6 01/16] RDMA/irdma: Add driver framework
+ definitions
+Thread-Index: AQHWLnTiP10E/Z+6SEyWSLona0rC/KixCEuAgAI+WsA=
+Date:   Wed, 27 May 2020 01:57:14 +0000
+Message-ID: <9DD61F30A802C4429A01CA4200E302A7EE040448@fmsmsx124.amr.corp.intel.com>
+References: <20200520070415.3392210-1-jeffrey.t.kirsher@intel.com>
+ <20200520070415.3392210-2-jeffrey.t.kirsher@intel.com>
+ <20200520072609.GE2365898@kroah.com>
+In-Reply-To: <20200520072609.GE2365898@kroah.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.1.200.106]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/20/20 4:25 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+
+> Subject: Re: [RDMA RFC v6 01/16] RDMA/irdma: Add driver framework definitions
 > 
-> Hi,
+> On Wed, May 20, 2020 at 12:04:00AM -0700, Jeff Kirsher wrote:
+> > From: Mustafa Ismail <mustafa.ismail@intel.com>
+> >
+> > Register irdma as a platform driver capable of supporting platform
+> > devices from multi-generation RDMA capable Intel HW. Establish the
+> > interface with all supported netdev peer devices and initialize HW.
 > 
-> The following series adds support to get the RDMA resource data in RAW
-> format. The main motivation for doing this is to enable vendors to
-> return the entire QP/CQ/MR data without a need from the vendor to set
-> each field separately.
+> Um, this changelog text does not match up with the actual patch at all :(
 > 
-> User-space part of the kernel series [1].
+> {sigh}
 > 
-> Thanks
-> 
-> [1] https://lore.kernel.org/linux-rdma/20200513095034.208385-1-leon@kernel.org
-> 
-> Maor Gottlieb (4):
->   rdma: Refactor res_qp_line
->   rdma: Add support to get QP in raw format
->   rdma: Add support to get CQ in raw format
->   rdma: Add support to get MR in raw format
+> And Intel developers wonder why I'm grumpy these days...
 > 
 
-The set depends on UAPI files not visible in either Dave or Linus' tree
-yet. We moved rdma uapi files under rdma/include/uapi/ and as I recall
-the expectation is that you submit updates with your patches once they
-are accepted and that the headers are in sync with Linus' tree once the
-code arrives there.
+Apologies :(
