@@ -2,116 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40791E3AF6
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 09:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9C51E3BC6
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgE0HvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 03:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729052AbgE0HvH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 03:51:07 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B04C061A0F;
-        Wed, 27 May 2020 00:51:07 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q24so1164448pjd.1;
-        Wed, 27 May 2020 00:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
-        b=XmeGLa0EtTmu/2gSfi5c1sXBVVRgeLyoAEq8SYefdqXVvWWvvDqkvjb5c0GRxLaam0
-         IPOGn+/AI9uCkUQDuodifGbYvT0nB21tjPxt7rcb/xMOfxvUihM8QPdZrzScsq9HUbyD
-         uYE5zrQD99iTXQno+528dOCLB4oaD48/TmPeoARY9h2KDXV5UnvV/7YIY/OUzYaGca+7
-         WbgZM9dKTugi95NNUuo4ZADrHP49F29Fe+38KuUHP1SggGJwZkQQNsK22HhOXeIN0EJQ
-         ASm1MvGxC8/PqQ2LR24mKtVNw+708lyqi9770tCxMGKWUIjbPLDaJyeIPmplQQHpDEOs
-         ntyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
-        b=EjgvLoqGijmR7OxIZYJfbvaLwq9i45K6XuMKB9HHvBm++D+wV4RlRYWusEP/doVkOs
-         XSloW+ZESO6IBYBUHLBr8bd1rDTCsxJ98JLC2oyCGODYUgfdTLl4mTuJx0RZOIExFMK8
-         3AgCuJQVbnl1nYvYJzjnoQ623xNz5zDpr9p0Px0H/Nvvzf4B+IbKAA2TPzNDQZb7bbfK
-         e5Oo/o+o0a4Ma0xnWTabNhDTsIPU+B0Oi0vnR+Yk7SLxiSqIfc0LWE94kwP3qYL2PIU4
-         RHmSyf9ZjLt2O7owxXWNGJD7oPdtIU2lJDqrQI6byK3Ok5uUDlMsMlLsDS5fDpV3rtXU
-         M1yQ==
-X-Gm-Message-State: AOAM533+2EW9ahqD1MuHxw8B5tufOcLLgv5RD34sWlPKpDdEiaGPH31/
-        PmU2JDFRvhFV+nHXn7QOnt0=
-X-Google-Smtp-Source: ABdhPJxr8ZxmDGZ+hM3kVqELCR7QP1gaFkHTm7tIQeOayjhIS9dRSFDLUX0jX/fgqWbW+MmD4eDv0g==
-X-Received: by 2002:a17:90a:2586:: with SMTP id k6mr3595800pje.121.1590565866882;
-        Wed, 27 May 2020 00:51:06 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 206sm1341234pfy.97.2020.05.27.00.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 00:51:06 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] net/mlx5e: Don't use err uninitialized in mlx5e_attach_decap
-Date:   Wed, 27 May 2020 00:50:22 -0700
-Message-Id: <20200527075021.3457912-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.27.0.rc0
+        id S2387866AbgE0IRp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 04:17:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34484 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387835AbgE0IRp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 04:17:45 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R828PC095552;
+        Wed, 27 May 2020 08:17:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=gugubNejoCMtl+eqY6O431jnnbLH20ChLaQRQ8pFt8M=;
+ b=IUVqhVJvWlUd73sw6DN8iKxZkAnC2Os7d+PxH6KrTGEWqJe7EhJDNalxXlUh8bxGHcLn
+ fHLKmPMOd2AoaOT2K3iLr6llqjki4XdpY64M3RLWK8xeY6YJav4D/7qInUePSBOcfExZ
+ GKuvReRYCkpdkPjzQ3TNbwQQLXEA1vSKnRnYV9GNkMtfehJRAlTe7D99XUF1rp0Bg57Z
+ dlpC4ndJFUz/ZX9mLpSZLcNypYcXRXZkLWDSUeSunl8CQbkmqkZ1JWCg/WwJfYVFzE8Q
+ H2J7Nof4vYWvRqDoe7Ti9sIz9NimAqmcj512y5cARiPwws/lW948r3STBTi9tCDR7LtY Ig== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 318xe1e1n3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 May 2020 08:17:44 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04R832EI114316;
+        Wed, 27 May 2020 08:17:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 317ddqcay1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 May 2020 08:17:43 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04R8Hhkq011717;
+        Wed, 27 May 2020 08:17:43 GMT
+Received: from oracle.com (/73.15.177.101)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 27 May 2020 01:17:43 -0700
+From:   rao.shoaib@oracle.com
+To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rao.shoaib@oracle.com
+Cc:     Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+Subject: [PATCH net-next] rds: transport module should be auto loaded when transport is set
+Date:   Wed, 27 May 2020 01:17:42 -0700
+Message-Id: <20200527081742.25718-1-rao.shoaib@oracle.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005270062
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9633 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005270062
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Clang warns:
+From: Rao Shoaib <rao.shoaib@oracle.com>
 
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:6: warning:
-variable 'err' is used uninitialized whenever 'if' condition is false
-[-Wsometimes-uninitialized]
-        if (IS_ERR(d->pkt_reformat)) {
-            ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3718:6: note:
-uninitialized use occurs here
-        if (err)
-            ^~~
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:2: note: remove the
-'if' if its condition is always true
-        if (IS_ERR(d->pkt_reformat)) {
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3670:9: note: initialize
-the variable 'err' to silence this warning
-        int err;
-               ^
-                = 0
-1 warning generated.
+This enhancement auto loads transport module when the transport
+is set via SO_RDS_TRANSPORT socket option.
 
-It is not wrong, err is only ever initialized in if statements but this
-one is not in one. Initialize err to 0 to fix this.
+Orabug: 31032127
 
-Fixes: 14e6b038afa0 ("net/mlx5e: Add support for hw decapsulation of MPLS over UDP")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1037
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+Signed-off-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/rds.h |  2 +-
+ net/rds/transport.c      | 26 +++++++++++++++++---------
+ 2 files changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index fdb7d2686c35..6d0d4896fe0c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -3667,7 +3667,7 @@ static int mlx5e_attach_decap(struct mlx5e_priv *priv,
- 	struct mlx5e_decap_entry *d;
- 	struct mlx5e_decap_key key;
- 	uintptr_t hash_key;
--	int err;
-+	int err = 0;
+diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
+index cba368e55863..7273c681e6c1 100644
+--- a/include/uapi/linux/rds.h
++++ b/include/uapi/linux/rds.h
+@@ -64,7 +64,7 @@
  
- 	parse_attr = attr->parse_attr;
- 	if (sizeof(parse_attr->eth) > MLX5_CAP_ESW(priv->mdev, max_encap_header_size)) {
-
-base-commit: d3d9065ad99d0d8d732c950cc0a37a7883cd0c60
+ /* supported values for SO_RDS_TRANSPORT */
+ #define	RDS_TRANS_IB	0
+-#define	RDS_TRANS_IWARP	1
++#define	RDS_TRANS_GAP	1
+ #define	RDS_TRANS_TCP	2
+ #define RDS_TRANS_COUNT	3
+ #define	RDS_TRANS_NONE	(~0)
+diff --git a/net/rds/transport.c b/net/rds/transport.c
+index 46f709a4b577..f8001ec80867 100644
+--- a/net/rds/transport.c
++++ b/net/rds/transport.c
+@@ -38,6 +38,12 @@
+ #include "rds.h"
+ #include "loop.h"
+ 
++static char * const rds_trans_modules[] = {
++	[RDS_TRANS_IB] = "rds_rdma",
++	[RDS_TRANS_GAP] = NULL,
++	[RDS_TRANS_TCP] = "rds_tcp",
++};
++
+ static struct rds_transport *transports[RDS_TRANS_COUNT];
+ static DECLARE_RWSEM(rds_trans_sem);
+ 
+@@ -110,18 +116,20 @@ struct rds_transport *rds_trans_get(int t_type)
+ {
+ 	struct rds_transport *ret = NULL;
+ 	struct rds_transport *trans;
+-	unsigned int i;
+ 
+ 	down_read(&rds_trans_sem);
+-	for (i = 0; i < RDS_TRANS_COUNT; i++) {
+-		trans = transports[i];
+-
+-		if (trans && trans->t_type == t_type &&
+-		    (!trans->t_owner || try_module_get(trans->t_owner))) {
+-			ret = trans;
+-			break;
+-		}
++	trans = transports[t_type];
++	if (!trans) {
++		up_read(&rds_trans_sem);
++		if (rds_trans_modules[t_type])
++			request_module(rds_trans_modules[t_type]);
++		down_read(&rds_trans_sem);
++		trans = transports[t_type];
+ 	}
++	if (trans && trans->t_type == t_type &&
++	    (!trans->t_owner || try_module_get(trans->t_owner)))
++		ret = trans;
++
+ 	up_read(&rds_trans_sem);
+ 
+ 	return ret;
 -- 
-2.27.0.rc0
+2.16.6
 
