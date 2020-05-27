@@ -2,52 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA93A1E44CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 15:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9241E44E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 15:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389053AbgE0N5o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 09:57:44 -0400
-Received: from msa13.plala.or.jp ([60.36.166.13]:51587 "EHLO msa13.plala.or.jp"
+        id S2389013AbgE0N6T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 09:58:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388594AbgE0N5n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 May 2020 09:57:43 -0400
-X-Greylist: delayed 2931 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 09:57:43 EDT
-Received: from mwebp13 ([172.23.13.133]) by msa13.plala.or.jp with ESMTP
-          id <20200527135742.YYSM25516.msa13.plala.or.jp@mwebp13>;
-          Wed, 27 May 2020 22:57:42 +0900
-Date:   Wed, 27 May 2020 22:57:42 +0900
-From:   "Mrs.Judith Rice" <hamurafujimi@tmail.plala.or.jp>
-Reply-To: jonesevansje@gmail.com
-Message-ID: <20200527225742.6DSZ4.1020.root@mwebp13>
-Subject: Spende
+        id S2389091AbgE0N6S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 May 2020 09:58:18 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34134208C3;
+        Wed, 27 May 2020 13:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590587897;
+        bh=fFPA0K02yuhpsOujQX4dpnN+Uaj87fjy3IaWpkVclYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZCayY+a4E0iLfsGRm0vArSZEoU+XvOnm7YS7OCAoYgjRR7IYRDhDof/6nVZu2ucuZ
+         W2/N6lbgLzUugnD1g/aAfzGR52QhRz33CEVr5vIQo/D/hEjunkpka6tZVwSyCAaQzq
+         HNiMlz9Pmsp/NBQKcYjqv6yvHQoh/DbQukAJvAQs=
+Date:   Wed, 27 May 2020 16:58:13 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Max Gurtovoy <maxg@mellanox.com>
+Cc:     jgg@mellanox.com, dledford@redhat.com, galpress@amazon.com,
+        dennis.dalessandro@intel.com, netdev@vger.kernel.org,
+        sagi@grimberg.me, linux-rdma@vger.kernel.org, bvanassche@acm.org,
+        santosh.shilimkar@oracle.com, tom@talpey.com,
+        aron.silverton@oracle.com, israelr@mellanox.com, oren@mellanox.com,
+        shlomin@mellanox.com, vladimirk@mellanox.com
+Subject: Re: [PATCH 1/9] RDMA/mlx5: Remove FMR leftovers
+Message-ID: <20200527135813.GF349682@unreal>
+References: <20200527094634.24240-1-maxg@mellanox.com>
+ <20200527094634.24240-2-maxg@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Transfer-Encoding: 7bit
-X-Priority: 3 (Normal)
-Sensitivity: Normal
-X-VirusScan: Outbound; mvir-ac13; Wed, 27 May 2020 22:57:42 +0900
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527094634.24240-2-maxg@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Attn:
+On Wed, May 27, 2020 at 12:46:26PM +0300, Max Gurtovoy wrote:
+> From: Gal Pressman <galpress@amazon.com>
+>
+> Remove a few leftovers from FMR functionality which are no longer used.
+>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 8 --------
+>  1 file changed, 8 deletions(-)
 
-Es tut uns leid, dass wir Sie aufgrund eines Mismanagent of Beneficaries-Fonds von unseren ernannten Zonal Managern versp&#228;tet kontaktiert haben. Bitte beachten Sie, dass Sie qualifiziert sind, die Zahlung von 900.000,00 USD an der ATM-Karte mit neunhunderttausend Dollar zu erhalten.
 
-Als Entsch&#228;digung von WORLD BANK / IWF (Internationaler W&#228;hrungsfonds) f&#252;r die automatisch &#252;ber einen E-Mail-Wahlautomaten gezogenen, die in der Vergangenheit noch nicht abgeschlossene Transaktionen hatten.
-
-F&#252;r weitere Informationen kontaktieren Sie bitte Rev.EVANS JONES ( jonesevansje@gmail.com )
-
-Bitte senden Sie ihm Ihre pers&#246;nlichen Daten wie:
-
-Vollst&#228;ndiger Name:
-Wohnanschrift:
-Telefonnummer:
-Herkunftsland:
-
-Gr&#252;&#223;e,
-Mrs. Judith Rice
-
-Spende
+Thanks,
+Acked-by: Leon Romanovsky <leonro@mellanox.com>
