@@ -2,110 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C54C1E4649
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 16:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818141E460C
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 16:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388894AbgE0OpE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 10:45:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:54217 "EHLO mga04.intel.com"
+        id S2389318AbgE0Og6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 10:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388356AbgE0OpE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 May 2020 10:45:04 -0400
-IronPort-SDR: PTQURh6rKttCQ8AVE4ZKvNld3EDDraFxi6GEX9ODVmnoOQ55iRYRw+KQErjvupd6VW2NQOXsFP
- Jk6bVZJ+o0NA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 07:45:03 -0700
-IronPort-SDR: OtwnxPNxSmHczI5y7ictvpQ5bh36kD5GZa4Az9rPhj5aUykRKMs6MgV55/P3mKY+gUH8dqvSZz
- 6L6TY1wTgDPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,441,1583222400"; 
-   d="scan'208";a="468763162"
-Received: from vmgould-mobl.amr.corp.intel.com (HELO [10.252.133.103]) ([10.252.133.103])
-  by fmsmga006.fm.intel.com with ESMTP; 27 May 2020 07:45:02 -0700
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-To:     Greg KH <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>
-References: <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
- <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
- <20200523062351.GD3156699@kroah.com>
- <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
- <20200524063519.GB1369260@kroah.com>
- <fe44419b-924c-b183-b761-78771b7d506d@linux.intel.com>
- <s5h5zcistpb.wl-tiwai@suse.de> <20200527071733.GB52617@kroah.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <76007750-e0ec-4bc1-d6ae-96677584a51c@linux.intel.com>
-Date:   Wed, 27 May 2020 09:05:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2389308AbgE0Og6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 May 2020 10:36:58 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF662207D8;
+        Wed, 27 May 2020 14:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590590217;
+        bh=ZKanhQJK0P/djH+WNpQI7TX6FSFCpbdAlBTPqGNAsog=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YSD+ZGCItrXkd1UID3bNMcDqtjMYtcaWkWR/jbiZi+m6f00sd5fV2w2LtxMDmqNVx
+         nn9JF+KjKberrBy+2S0xaU79c9o95nS1uUTTAC8qQy7puJvTVh72gh1HgPweYrUXGQ
+         fG2LQN5mleXFZtua1j9s0LsOSQep5IedKWhcFSzc=
+Date:   Wed, 27 May 2020 09:41:52 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] IB/core: Use sizeof_field() helper
+Message-ID: <20200527144152.GA22605@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200527071733.GB52617@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Make use of the sizeof_field() helper instead of an open-coded version.
 
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/core/sa_query.c     | 8 ++++----
+ drivers/infiniband/core/uverbs_cmd.c   | 2 +-
+ drivers/infiniband/core/uverbs_ioctl.c | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
->>>>> If yes, that's yet another problem... During the PCI probe, we start a
->>>>> workqueue and return success to avoid blocking everything.
->>>>
->>>> That's crazy.
->>>>
->>>>> And only 'later' do we actually create the card. So that's two levels
->>>>> of probe that cannot report a failure. I didn't come up with this
->>>>> design, IIRC this is due to audio-DRM dependencies and it's been used
->>>>> for 10+ years.
->>>>
->>>> Then if the probe function fails, it needs to unwind everything itself
->>>> and unregister the device with the PCI subsystem so that things work
->>>> properly.  If it does not do that today, that's a bug.
->>>>
->>>> What kind of crazy dependencies cause this type of "requirement"?
->>>
->>> I think it is related to the request_module("i915") in
->>> snd_hdac_i915_init(), and possibly other firmware download.
->>>
->>> Adding Takashi for more details.
->>
->> Right, there are a few levels of complexity there.  The HD-audio
->> PCI controller driver, for example, is initialized in an async way
->> with a work.  It loads the firmware files with
->> request_firmware_nowait() and also binds itself as a component master
->> with the DRM graphics driver via component framework.
->>
->> Currently it has no way to unwind the PCI binding itself at the error
->> path, though.  In theory it should be possible to unregister the PCI
->> from the driver itself in the work context, but it failed in the
->> earlier experiments, hence the driver sets itself in a disabled state
->> instead.  Maybe worth to try again.
->>
->> But, to be noted, all belonging sub-devices aren't instantiated but
->> deleted at the error path.  Only the main PCI binding is kept in a
->> disabled state just as a place holder until it's unbound explicitly.
-> 
-> Ok, that's good to hear.  But platform devices should never be showing
-> up as a child of a PCI device.  In the "near future" when we get the
-> virtual bus code merged, we can convert any existing users like this to
-> the new code.
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 5c878646ff62a..8f70c5c38ab7c 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -190,7 +190,7 @@ static u32 tid;
+ 
+ #define PATH_REC_FIELD(field) \
+ 	.struct_offset_bytes = offsetof(struct sa_path_rec, field),	\
+-	.struct_size_bytes   = sizeof((struct sa_path_rec *)0)->field,	\
++	.struct_size_bytes   = sizeof_field(struct sa_path_rec, field),	\
+ 	.field_name          = "sa_path_rec:" #field
+ 
+ static const struct ib_field path_rec_table[] = {
+@@ -292,7 +292,7 @@ static const struct ib_field path_rec_table[] = {
+ 	.struct_offset_bytes = \
+ 		offsetof(struct sa_path_rec, field), \
+ 	.struct_size_bytes   = \
+-		sizeof((struct sa_path_rec *)0)->field,	\
++		sizeof_field(struct sa_path_rec, field),	\
+ 	.field_name          = "sa_path_rec:" #field
+ 
+ static const struct ib_field opa_path_rec_table[] = {
+@@ -552,7 +552,7 @@ static const struct ib_field service_rec_table[] = {
+ 
+ #define CLASSPORTINFO_REC_FIELD(field) \
+ 	.struct_offset_bytes = offsetof(struct ib_class_port_info, field),	\
+-	.struct_size_bytes   = sizeof((struct ib_class_port_info *)0)->field,	\
++	.struct_size_bytes   = sizeof_field(struct ib_class_port_info, field),	\
+ 	.field_name          = "ib_class_port_info:" #field
+ 
+ static const struct ib_field ib_classport_info_rec_table[] = {
+@@ -630,7 +630,7 @@ static const struct ib_field ib_classport_info_rec_table[] = {
+ 	.struct_offset_bytes =\
+ 		offsetof(struct opa_class_port_info, field),	\
+ 	.struct_size_bytes   = \
+-		sizeof((struct opa_class_port_info *)0)->field,	\
++		sizeof_field(struct opa_class_port_info, field),	\
+ 	.field_name          = "opa_class_port_info:" #field
+ 
+ static const struct ib_field opa_classport_info_rec_table[] = {
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 4859ac0df17c7..2067a939788bd 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3741,7 +3741,7 @@ static int ib_uverbs_ex_modify_cq(struct uverbs_attr_bundle *attrs)
+ #define UAPI_DEF_WRITE_IO(req, resp)                                           \
+ 	.write.has_resp = 1 +                                                  \
+ 			  BUILD_BUG_ON_ZERO(offsetof(req, response) != 0) +    \
+-			  BUILD_BUG_ON_ZERO(sizeof(((req *)0)->response) !=    \
++			  BUILD_BUG_ON_ZERO(sizeof_field(req, response) !=    \
+ 					    sizeof(u64)),                      \
+ 	.write.req_size = sizeof(req), .write.resp_size = sizeof(resp)
+ 
+diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
+index 42c5696f03bd7..2d882c02387c1 100644
+--- a/drivers/infiniband/core/uverbs_ioctl.c
++++ b/drivers/infiniband/core/uverbs_ioctl.c
+@@ -137,7 +137,7 @@ EXPORT_SYMBOL(_uverbs_alloc);
+ static bool uverbs_is_attr_cleared(const struct ib_uverbs_attr *uattr,
+ 				   u16 len)
+ {
+-	if (uattr->len > sizeof(((struct ib_uverbs_attr *)0)->data))
++	if (uattr->len > sizeof_field(struct ib_uverbs_attr, data))
+ 		return ib_is_buffer_cleared(u64_to_user_ptr(uattr->data) + len,
+ 					    uattr->len - len);
+ 
+-- 
+2.26.2
 
-yes that's the plan. It'll be however more than a 1:1 replacement, i.e. 
-we want to use this opportunity to split existing cards into separate 
-ones when it makes sense to do so. There's really no rationale for 
-having code to deal with HDMI in each machine driver when we could have 
-a single driver for HDMI. That's really what drove us to suggest this 
-patchset based on the virtual bus: removal of platform devices + 
-repartition.
