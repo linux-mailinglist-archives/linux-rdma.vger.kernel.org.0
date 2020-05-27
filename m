@@ -2,127 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317E71E3A2F
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 09:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5551E3AB1
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 09:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387397AbgE0HRh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 03:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387395AbgE0HRg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 May 2020 03:17:36 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E57C207ED;
-        Wed, 27 May 2020 07:17:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590563856;
-        bh=dbCiVcOZ3jW/HX4+nny+dgvdKPl1ec5YfDTKSi7itfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NzCszPNqpgaMVG0p1VFWA+T1SALHZ7AaX7xMtVKCCOP0dIupH9laAOCVzNZcGoaQj
-         15ZnixSKDy12dgjE4UtsbzL5n+ZZ+BFru1evK4h6zQR2qNDtseO/Yfa/C0cPRY9q9E
-         jlK3B8eHmRsbgV+ng3jQBX02uj2c1JBJ567j6yOA=
-Date:   Wed, 27 May 2020 09:17:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200527071733.GB52617@kroah.com>
-References: <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
- <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
- <20200523062351.GD3156699@kroah.com>
- <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
- <20200524063519.GB1369260@kroah.com>
- <fe44419b-924c-b183-b761-78771b7d506d@linux.intel.com>
- <s5h5zcistpb.wl-tiwai@suse.de>
+        id S2387506AbgE0HgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 03:36:07 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:29330 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387536AbgE0HgH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 03:36:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590564968; x=1622100968;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ZpV6nqPXEnK3XDw4Ye12hpBe7OFM9m4S5fuoOTgsH/A=;
+  b=Ky3DImhrXtyhbXu28cvjObWYaUibtW7wNba8qHLsWsNNH2QXIj7PvIkG
+   hrNy3Du9RO3betvLgBspfacd4gn1TtmkYXkZQ18ksg80R4ZnWQ+aOt4UO
+   IngHMyPhr1l4zjW6D1mS+sPQNl9S7ndDoR1RAyQBVHHhuJPBZ2cfXRNqe
+   o=;
+IronPort-SDR: J2vFCmNLY/JyZohkLmLur2TyyB8WxMOVlZ698wY3TvySfS5jVFaWvdtFsIQPJRoP7T2W6lB0ry
+ 3YuK4NlcwP9w==
+X-IronPort-AV: E=Sophos;i="5.73,440,1583193600"; 
+   d="scan'208";a="32535841"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 27 May 2020 07:35:55 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 3FA0AA219A;
+        Wed, 27 May 2020 07:35:54 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 27 May 2020 07:35:53 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.26) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 27 May 2020 07:35:50 +0000
+Subject: Re: Can't build rdma-core's azp image
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
+ <98b72450-1422-39ec-2f31-52a7dbaa57ea@amazon.com>
+ <20200526192335.GO744@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <9f697fea-30e0-2a1f-3c9c-a2ae0100a8df@amazon.com>
+Date:   Wed, 27 May 2020 10:35:45 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h5zcistpb.wl-tiwai@suse.de>
+In-Reply-To: <20200526192335.GO744@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.26]
+X-ClientProxiedBy: EX13D34UWC001.ant.amazon.com (10.43.162.112) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 26, 2020 at 03:37:36PM +0200, Takashi Iwai wrote:
-> On Tue, 26 May 2020 15:15:26 +0200,
-> Pierre-Louis Bossart wrote:
-> > 
-> > 
-> > 
-> > On 5/24/20 1:35 AM, Greg KH wrote:
-> > > On Sat, May 23, 2020 at 02:41:51PM -0500, Pierre-Louis Bossart wrote:
-> > >>
-> > >>
-> > >> On 5/23/20 1:23 AM, Greg KH wrote:
-> > >>> On Fri, May 22, 2020 at 09:29:57AM -0500, Pierre-Louis Bossart wrote:
-> > >>>> This is not an hypothetical case, we've had this recurring problem when a
-> > >>>> PCI device creates an audio card represented as a platform device. When the
-> > >>>> card registration fails, typically due to configuration issues, the PCI
-> > >>>> probe still completes.
-> > >>>
-> > >>> Then fix that problem there.  The audio card should not be being created
-> > >>> as a platform device, as that is not what it is.  And even if it was,
-> > >>> the probe should not complete, it should clean up after itself and error
-> > >>> out.
-> > >>
-> > >> Did you mean 'the PCI probe should not complete and error out'?
-> > >
-> > > Yes.
-> > >
-> > >> If yes, that's yet another problem... During the PCI probe, we start a
-> > >> workqueue and return success to avoid blocking everything.
-> > >
-> > > That's crazy.
-> > >
-> > >> And only 'later' do we actually create the card. So that's two levels
-> > >> of probe that cannot report a failure. I didn't come up with this
-> > >> design, IIRC this is due to audio-DRM dependencies and it's been used
-> > >> for 10+ years.
-> > >
-> > > Then if the probe function fails, it needs to unwind everything itself
-> > > and unregister the device with the PCI subsystem so that things work
-> > > properly.  If it does not do that today, that's a bug.
-> > >
-> > > What kind of crazy dependencies cause this type of "requirement"?
-> > 
-> > I think it is related to the request_module("i915") in
-> > snd_hdac_i915_init(), and possibly other firmware download.
-> > 
-> > Adding Takashi for more details.
+On 26/05/2020 22:23, Jason Gunthorpe wrote:
+> On Tue, May 26, 2020 at 09:25:30AM +0300, Gal Pressman wrote:
+>> On 07/04/2020 18:47, Gal Pressman wrote:
+>>> I'm trying to build the azp image and it fails with the following error [1].
+>>> Anyone has an idea what went wrong?
+>>
+>> azp build broke again :(.
+>>
+>> The last step
+>> Step 4/4 : RUN apt-get update && apt-get install -y --no-install-recommends libgcc-s1:i386 libgcc-s1:ppc64el && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends abi-compliance-checker abi-dumper ca-certificates clang-10 cmake cython3 debhelper dh-python dh-systemd dpkg-dev fakeroot gcc-10 gcc-9-aarch64-linux-gnu gcc-9-powerpc64le-linux-gnu git libc6-dev libc6-dev:arm64 libc6-dev:i386 libc6-dev:ppc64el libgcc-10-dev:i386 libgcc-9-dev:arm64 libgcc-9-dev:ppc64el libnl-3-dev libnl-3-dev:arm64 libnl-3-dev:i386 libnl-3-dev:ppc64el libnl-route-3-dev libnl-route-3-dev:arm64 libnl-route-3-dev:i386 libnl-route-3-dev:ppc64el libsystemd-dev libsystemd-dev:arm64 libsystemd-dev:i386 libsystemd-dev:ppc64el libudev-dev libudev-dev:arm64 libudev-dev:i386 libudev-dev:ppc64el lintian make ninja-build pandoc pkg-config python3 python3-dev python3-docutils python3-yaml sparse valgrind && apt-get clean && rm -rf /usr/share/doc/ /usr/lib/debug /var/lib/apt/lists/
+>>
+>> Fails with
+>> W: https://apt.llvm.org/focal/pool/main/l/llvm-toolchain-10/libllvm10_10.0.1~++20200519100828+f79cd71e145-1~exp1~20200519201452.38_amd64.deb: No system certificates available. Try installing ca-certificates.
+>> E: Could not configure 'libc6:arm64'.
+>> E: Could not perform immediate configuration on 'libgcc-s1:arm64'. Please see man 5 apt.conf under APT::Immediate-Configure for details. (2)
 > 
-> Right, there are a few levels of complexity there.  The HD-audio
-> PCI controller driver, for example, is initialized in an async way
-> with a work.  It loads the firmware files with
-> request_firmware_nowait() and also binds itself as a component master
-> with the DRM graphics driver via component framework.
-> 
-> Currently it has no way to unwind the PCI binding itself at the error
-> path, though.  In theory it should be possible to unregister the PCI
-> from the driver itself in the work context, but it failed in the
-> earlier experiments, hence the driver sets itself in a disabled state
-> instead.  Maybe worth to try again.
-> 
-> But, to be noted, all belonging sub-devices aren't instantiated but
-> deleted at the error path.  Only the main PCI binding is kept in a
-> disabled state just as a place holder until it's unbound explicitly.
+> couldn't reproduce
 
-Ok, that's good to hear.  But platform devices should never be showing
-up as a child of a PCI device.  In the "near future" when we get the
-virtual bus code merged, we can convert any existing users like this to
-the new code.
-
-thanks,
-
-greg k-h
+Maybe you have a cached image or something?
+I just set up a clean instance and it reproduces immediately.
