@@ -2,89 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FC91E384B
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 07:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA29B1E3896
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 07:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725267AbgE0Fgt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 01:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725265AbgE0Fgt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 01:36:49 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBF5C061A0F
-        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2020 22:36:49 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id c8so4254752iob.6
-        for <linux-rdma@vger.kernel.org>; Tue, 26 May 2020 22:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+33IHvHg9l9gswl7fI7C4X9FRLy830LMkChW6WC/cUA=;
-        b=BlD5XN1AAhRm9KFXZllVNUp5NRjWd856tepnKGFe93hHXC0ZnbgQg/ExbE8pVmi08U
-         Zzh4GxHsmcaDU5ZcIll8xc2pk3pt5SiF9reQGXArOJJF1i8QMQMKDRmj8L/xdkBeZMiX
-         s8g/lKfQlTBDfPEw4PKLAv93WN0YBk8Kd9KS4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+33IHvHg9l9gswl7fI7C4X9FRLy830LMkChW6WC/cUA=;
-        b=ASBg9hgmPZy6Z9SF9Nkl8LGqfcAtvjHgkGSelWnOZVfMz4QS7vY1E6MuAPD2/vI0kG
-         TpO0QkCn4e3Ef8P30+ymggevQNRCutlVmswfv4CDiG13RTPK1iDI1d7ZOLsSKdRyAFY3
-         srDsdG47KPMNlPC54ZXermvwRYzHv71YNDNso3fVxZZ6Rpfd5w4W0CitI1RLsY4sh3x4
-         OlQcoa9LyL0PZjAGBzCbwrsbh+4kkck0KxRjPxafA1A3PYrq0DT4tlXCBlZzY5hEhx9O
-         lUU4Vaqcv4VJl3u8DVNFgMcP2Psvdxu/zqa4dQut2MafgsYB/i5I2qZ0UhPOAgiwvXET
-         LJXA==
-X-Gm-Message-State: AOAM531tX2BJEyX62hhWarlI2swdTU9Kv32Iifgs/trqdV4HAbOln1xp
-        70FF8z9LngaLdfM78CNBJlt2EJKf+3C71HUn2b8S3f+u7cM=
-X-Google-Smtp-Source: ABdhPJyeOWxouJKZtHyIhmfw9QLGcnQzy1s9KW1gpD//pKWXJGjAzZk28VAJnqybup+WQdT9ko0RRtqZYexXfjgIeYY=
-X-Received: by 2002:a02:3b4b:: with SMTP id i11mr4269773jaf.16.1590557808236;
- Tue, 26 May 2020 22:36:48 -0700 (PDT)
+        id S1727027AbgE0FuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 01:50:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725819AbgE0FuU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 May 2020 01:50:20 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E004207E8;
+        Wed, 27 May 2020 05:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590558620;
+        bh=z2g+C55nLsuQUoqxCTZzTS0mknYe3uKWyT/Q3D41G00=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tguKClg0VK7MffzMyd3y/SL9ukl2Gu9ALYfR/GiEAdgshUtMsVn68nWS7YfVG7Otr
+         W4u6aJwWjnT9YQrv/q85qRPg40uw4hoEABxb8luilz2RL9du6jbg/QZ2jP+PpADq77
+         H+teTtLtxtp8+zp65fy0tny58C7Z0sS+g2DySSW8=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next v1] RDMA/mlx5: Support TX port affinity for VF drivers in LAG mode
+Date:   Wed, 27 May 2020 08:50:14 +0300
+Message-Id: <20200527055014.355093-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1590470402-32590-1-git-send-email-devesh.sharma@broadcom.com> <20200526193141.GT24561@mellanox.com>
-In-Reply-To: <20200526193141.GT24561@mellanox.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 27 May 2020 11:06:11 +0530
-Message-ID: <CANjDDBh9o1VM9-4tS1tpXj23Euyhu-JWsB76p94q4aNs79R5uA@mail.gmail.com>
-Subject: Re: [PATCH for-next 0/2]: Broadcom's driver update
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 27, 2020 at 1:01 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> On Tue, May 26, 2020 at 01:20:00AM -0400, Devesh Sharma wrote:
-> > This series is mainly focused on adding driver fast path
-> > changes to support variable sized wqe support. There are
-> > two patches.
-> >
-> > The first patch is a big patch and contain core changes to
-> > support the feature. Since the change is related to fast
-> > path, the patch is not splitted into multiple patches.
-> > We want to push all related changes in one go.
->
-> That makes no sense, everyone else splits their patches.
-I agree with both you and Leon about the size of the patch and there
-is a guideline of sending smaller patches. I will have to see which
-all parts I can split and re-send. I was not sure about the
-functionality of the driver wrt each patch which comes out as a result
-of split. These changes are quite closely woven. I will try though and
-send a V2. Thanks
->
-> > The second patch is relatively few lines and changes the
-> > ABI.
-> >
-> > The corresponding library changes will follow short after
-> > this patch series.
->
-> You have to open a PR on rdma-core before any uapi changes should be
-> merged.
-Yeah sure, I will open that.
->
-> Jason
+From: Mark Zhang <markz@mellanox.com>
+
+The mlx5 VF driver doesn't set QP tx port affinity because it doesn't
+know if the lag is active or not, since the "lag_active" works only for
+PF interfaces. In this case for VF interfaces only one lag is used
+which brings performance issue.
+
+Add a lag_tx_port_affinity CAP bit; When it is enabled and
+"num_lag_ports > 1", then driver always set QP tx affinity, regardless
+of lag state.
+
+Signed-off-by: Mark Zhang <markz@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Changelog
+v1:
+ * Fixed wrong check of num_lag_ports.
+v0: https://lore.kernel.org/linux-rdma/20200526143457.218840-1-leon@kernel.org
+---
+ drivers/infiniband/hw/mlx5/main.c    | 2 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 7 +++++++
+ drivers/infiniband/hw/mlx5/qp.c      | 3 ++-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 570c519ca530..4719da201382 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -1984,7 +1984,7 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
+ 	context->lib_caps = req.lib_caps;
+ 	print_lib_caps(dev, context->lib_caps);
+
+-	if (dev->lag_active) {
++	if (mlx5_ib_lag_should_assign_affinity(dev)) {
+ 		u8 port = mlx5_core_native_port_num(dev->mdev) - 1;
+
+ 		atomic_set(&context->tx_port_affinity,
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index b486139b08ce..236c5c4a3637 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1553,4 +1553,11 @@ static inline bool mlx5_ib_can_use_umr(struct mlx5_ib_dev *dev,
+
+ int mlx5_ib_enable_driver(struct ib_device *dev);
+ int mlx5_ib_test_wc(struct mlx5_ib_dev *dev);
++
++static inline bool mlx5_ib_lag_should_assign_affinity(struct mlx5_ib_dev *dev)
++{
++	return dev->lag_active ||
++		(MLX5_CAP_GEN(dev->mdev, num_lag_ports) > 1 &&
++		 MLX5_CAP_GEN(dev->mdev, lag_tx_port_affinity));
++}
+ #endif /* MLX5_IB_H */
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 1988a0375696..9364a7a76ac2 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -3653,7 +3653,8 @@ static unsigned int get_tx_affinity(struct ib_qp *qp,
+ 	struct mlx5_ib_qp_base *qp_base;
+ 	unsigned int tx_affinity;
+
+-	if (!(dev->lag_active && qp_supports_affinity(qp)))
++	if (!(mlx5_ib_lag_should_assign_affinity(dev) &&
++	      qp_supports_affinity(qp)))
+ 		return 0;
+
+ 	if (mqp->flags & MLX5_IB_QP_CREATE_SQPN_QP1)
+--
+2.26.2
+
