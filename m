@@ -2,81 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5551E3AB1
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 09:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40791E3AF6
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 09:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387506AbgE0HgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 03:36:07 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:29330 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387536AbgE0HgH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 03:36:07 -0400
+        id S1729308AbgE0HvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 03:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729052AbgE0HvH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 03:51:07 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B04C061A0F;
+        Wed, 27 May 2020 00:51:07 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q24so1164448pjd.1;
+        Wed, 27 May 2020 00:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590564968; x=1622100968;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ZpV6nqPXEnK3XDw4Ye12hpBe7OFM9m4S5fuoOTgsH/A=;
-  b=Ky3DImhrXtyhbXu28cvjObWYaUibtW7wNba8qHLsWsNNH2QXIj7PvIkG
-   hrNy3Du9RO3betvLgBspfacd4gn1TtmkYXkZQ18ksg80R4ZnWQ+aOt4UO
-   IngHMyPhr1l4zjW6D1mS+sPQNl9S7ndDoR1RAyQBVHHhuJPBZ2cfXRNqe
-   o=;
-IronPort-SDR: J2vFCmNLY/JyZohkLmLur2TyyB8WxMOVlZ698wY3TvySfS5jVFaWvdtFsIQPJRoP7T2W6lB0ry
- 3YuK4NlcwP9w==
-X-IronPort-AV: E=Sophos;i="5.73,440,1583193600"; 
-   d="scan'208";a="32535841"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 27 May 2020 07:35:55 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 3FA0AA219A;
-        Wed, 27 May 2020 07:35:54 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 May 2020 07:35:53 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.26) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 May 2020 07:35:50 +0000
-Subject: Re: Can't build rdma-core's azp image
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-References: <05382c9f-a58d-ba5a-02cd-c25aa3604e52@amazon.com>
- <98b72450-1422-39ec-2f31-52a7dbaa57ea@amazon.com>
- <20200526192335.GO744@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <9f697fea-30e0-2a1f-3c9c-a2ae0100a8df@amazon.com>
-Date:   Wed, 27 May 2020 10:35:45 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
+        b=XmeGLa0EtTmu/2gSfi5c1sXBVVRgeLyoAEq8SYefdqXVvWWvvDqkvjb5c0GRxLaam0
+         IPOGn+/AI9uCkUQDuodifGbYvT0nB21tjPxt7rcb/xMOfxvUihM8QPdZrzScsq9HUbyD
+         uYE5zrQD99iTXQno+528dOCLB4oaD48/TmPeoARY9h2KDXV5UnvV/7YIY/OUzYaGca+7
+         WbgZM9dKTugi95NNUuo4ZADrHP49F29Fe+38KuUHP1SggGJwZkQQNsK22HhOXeIN0EJQ
+         ASm1MvGxC8/PqQ2LR24mKtVNw+708lyqi9770tCxMGKWUIjbPLDaJyeIPmplQQHpDEOs
+         ntyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVQfYsDAh0Z24p4AneVfNcvrH/seQIrLDjjV5CDfqUA=;
+        b=EjgvLoqGijmR7OxIZYJfbvaLwq9i45K6XuMKB9HHvBm++D+wV4RlRYWusEP/doVkOs
+         XSloW+ZESO6IBYBUHLBr8bd1rDTCsxJ98JLC2oyCGODYUgfdTLl4mTuJx0RZOIExFMK8
+         3AgCuJQVbnl1nYvYJzjnoQ623xNz5zDpr9p0Px0H/Nvvzf4B+IbKAA2TPzNDQZb7bbfK
+         e5Oo/o+o0a4Ma0xnWTabNhDTsIPU+B0Oi0vnR+Yk7SLxiSqIfc0LWE94kwP3qYL2PIU4
+         RHmSyf9ZjLt2O7owxXWNGJD7oPdtIU2lJDqrQI6byK3Ok5uUDlMsMlLsDS5fDpV3rtXU
+         M1yQ==
+X-Gm-Message-State: AOAM533+2EW9ahqD1MuHxw8B5tufOcLLgv5RD34sWlPKpDdEiaGPH31/
+        PmU2JDFRvhFV+nHXn7QOnt0=
+X-Google-Smtp-Source: ABdhPJxr8ZxmDGZ+hM3kVqELCR7QP1gaFkHTm7tIQeOayjhIS9dRSFDLUX0jX/fgqWbW+MmD4eDv0g==
+X-Received: by 2002:a17:90a:2586:: with SMTP id k6mr3595800pje.121.1590565866882;
+        Wed, 27 May 2020 00:51:06 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id 206sm1341234pfy.97.2020.05.27.00.51.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 00:51:06 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] net/mlx5e: Don't use err uninitialized in mlx5e_attach_decap
+Date:   Wed, 27 May 2020 00:50:22 -0700
+Message-Id: <20200527075021.3457912-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0
 MIME-Version: 1.0
-In-Reply-To: <20200526192335.GO744@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.26]
-X-ClientProxiedBy: EX13D34UWC001.ant.amazon.com (10.43.162.112) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26/05/2020 22:23, Jason Gunthorpe wrote:
-> On Tue, May 26, 2020 at 09:25:30AM +0300, Gal Pressman wrote:
->> On 07/04/2020 18:47, Gal Pressman wrote:
->>> I'm trying to build the azp image and it fails with the following error [1].
->>> Anyone has an idea what went wrong?
->>
->> azp build broke again :(.
->>
->> The last step
->> Step 4/4 : RUN apt-get update && apt-get install -y --no-install-recommends libgcc-s1:i386 libgcc-s1:ppc64el && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends abi-compliance-checker abi-dumper ca-certificates clang-10 cmake cython3 debhelper dh-python dh-systemd dpkg-dev fakeroot gcc-10 gcc-9-aarch64-linux-gnu gcc-9-powerpc64le-linux-gnu git libc6-dev libc6-dev:arm64 libc6-dev:i386 libc6-dev:ppc64el libgcc-10-dev:i386 libgcc-9-dev:arm64 libgcc-9-dev:ppc64el libnl-3-dev libnl-3-dev:arm64 libnl-3-dev:i386 libnl-3-dev:ppc64el libnl-route-3-dev libnl-route-3-dev:arm64 libnl-route-3-dev:i386 libnl-route-3-dev:ppc64el libsystemd-dev libsystemd-dev:arm64 libsystemd-dev:i386 libsystemd-dev:ppc64el libudev-dev libudev-dev:arm64 libudev-dev:i386 libudev-dev:ppc64el lintian make ninja-build pandoc pkg-config python3 python3-dev python3-docutils python3-yaml sparse valgrind && apt-get clean && rm -rf /usr/share/doc/ /usr/lib/debug /var/lib/apt/lists/
->>
->> Fails with
->> W: https://apt.llvm.org/focal/pool/main/l/llvm-toolchain-10/libllvm10_10.0.1~++20200519100828+f79cd71e145-1~exp1~20200519201452.38_amd64.deb: No system certificates available. Try installing ca-certificates.
->> E: Could not configure 'libc6:arm64'.
->> E: Could not perform immediate configuration on 'libgcc-s1:arm64'. Please see man 5 apt.conf under APT::Immediate-Configure for details. (2)
-> 
-> couldn't reproduce
+Clang warns:
 
-Maybe you have a cached image or something?
-I just set up a clean instance and it reproduces immediately.
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:6: warning:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Wsometimes-uninitialized]
+        if (IS_ERR(d->pkt_reformat)) {
+            ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3718:6: note:
+uninitialized use occurs here
+        if (err)
+            ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3712:2: note: remove the
+'if' if its condition is always true
+        if (IS_ERR(d->pkt_reformat)) {
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:3670:9: note: initialize
+the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+1 warning generated.
+
+It is not wrong, err is only ever initialized in if statements but this
+one is not in one. Initialize err to 0 to fix this.
+
+Fixes: 14e6b038afa0 ("net/mlx5e: Add support for hw decapsulation of MPLS over UDP")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1037
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index fdb7d2686c35..6d0d4896fe0c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -3667,7 +3667,7 @@ static int mlx5e_attach_decap(struct mlx5e_priv *priv,
+ 	struct mlx5e_decap_entry *d;
+ 	struct mlx5e_decap_key key;
+ 	uintptr_t hash_key;
+-	int err;
++	int err = 0;
+ 
+ 	parse_attr = attr->parse_attr;
+ 	if (sizeof(parse_attr->eth) > MLX5_CAP_ESW(priv->mdev, max_encap_header_size)) {
+
+base-commit: d3d9065ad99d0d8d732c950cc0a37a7883cd0c60
+-- 
+2.27.0.rc0
+
