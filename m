@@ -2,90 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B641E4CA0
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C651E4DF3
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 21:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388861AbgE0SBW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 14:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S1729171AbgE0TO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 15:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388238AbgE0SBV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 14:01:21 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AA2C03E97D
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 11:01:21 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id 18so25023064iln.9
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 11:01:21 -0700 (PDT)
+        with ESMTP id S1728025AbgE0TO2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 15:14:28 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB761C08C5C3
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 12:14:26 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id j3so25188245ilk.11
+        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 12:14:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=247gUuoarQGDzfxQzwAAi0kM5fnBksq5KV5Xjg+xsLQ=;
-        b=SgtBQvCyOYwUitRLdNCLawoWuP90+hA+5n1iVEEgDPvJ/8AacXd8zCk9J7IwrMA7Mq
-         IPATJgcAaAVUtU7iHfGCeh+M14ZeMMNitSAN4xgbmeXzpWgPAqde5xvGqboxB18NG5K/
-         6/Ics5YVcHd6/CxwvAwLbtOM6DnCHjjlXUvop2OmUbBHeWnRHptGsaGfkaUICMAYHgaR
-         2cNWLXrafqtH/eDvEb2OXccdbkHPCUY3/Tw9IAQ7kB0KimeQA6ZtHs8JSIfrxxCc/jNe
-         /adz0DaLp6xruOCsVgcVxMBZ4uLhGGEsd035ykHsbwRHQH0Gyx/5i+KE3Cy2zE9Z4MyI
-         91LQ==
+        bh=6gQSEGMWPgkGGVyHG9Pe+5fUPTmNwG1QJK7jkF0ZgaY=;
+        b=f2+bfCz5l3s2mc0xZ3f2Pq3WNIRwZ8/K67kflMCF9lRfWG7wXe314goLmBz5B0Cd60
+         +5vJVT0dTUlySipyBR16irIcNP5wMDuUMy1RkgvXzms9Wb+oEtNLdKXLWMsusauMh+xZ
+         NvgnYCDf3lgOevnvYhzKPhv4lszdeNDNo4nIbGDDXy2uvj+nCnHj/hIGINnlzaHpVnXz
+         U2Mhbx0uzLlIHEMjPHZVWXi0epD+kk0mf41r3vnhMeWCo7aOEN2h0PZpzy6BNLO2CdJg
+         4CXuHrITF4Ep7CvoDtfk7R317k4qcgw8oCXy50U5YmzOtUeC08H68OHTNLpfOoE9BdNN
+         BAzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=247gUuoarQGDzfxQzwAAi0kM5fnBksq5KV5Xjg+xsLQ=;
-        b=Y4el2Q+GAx9lxpnZdF96kzcdsv4rxhPmEWTBnsu+CrDhWxr50bNYRy6/xtI7lq8jNa
-         zurwVGjxqYyqYclgP5A3YdphiaDI+NwtpoXo2Spb/kDYg1NLXlMGv9LFFylNAUZLQK4U
-         HK/YIIEJ27HnpejG1R8+pmWmCigXwuYtj2Ysmeh8JE9gWDktEU8ezz+lCWU7T+CTV6wi
-         MhK7XwutoGuSMWZDaFsFZFbsZKKdnDrLfIe0mDBygWzdviRCgaoQ6qdI3e5zU22crw3Y
-         Jf24mI3kNdoxN0pDVbwRQKh/DJK5R9ZgylhASD6b+zIuGRWmrPOslRxrlrsXBTLd+00j
-         bocQ==
-X-Gm-Message-State: AOAM531iYqLzXs1IYZ1i81fhfC0DgM2xpO6y0oQsnvrOsK0OJHI40D3w
-        vKg0V8GdIHPP36bzobVGe3v9yg==
-X-Google-Smtp-Source: ABdhPJzp20LKRffIUH5c5oNkmsM93LPx1jH1IqKF2QQFCyqRa36nPqnSYU4K+GVoQqCzPttZZ0LD2w==
-X-Received: by 2002:a92:1fc7:: with SMTP id f68mr3331959ilf.133.1590602480734;
-        Wed, 27 May 2020 11:01:20 -0700 (PDT)
+        bh=6gQSEGMWPgkGGVyHG9Pe+5fUPTmNwG1QJK7jkF0ZgaY=;
+        b=L37YuTcetaSj6I7Zbu+bPcZRtfJjFOTe0Q9Bni+DvcG0IwnEzv1UUuOq2y2Gg0wpyV
+         umLCoAbufaRGEaygQogkjY1KUWFn8Wc4Ah8VwzNnl5QdFdDoCfaIzleRgFpwXKJyGGFL
+         tFE3k4Af4uMZjoSzeTpr5jGZw9VSy2OVESaBUYRkl5Qlaebn04HLd67v29HzLkuMoJTR
+         nJhNfabKZDiLm+iMOwpsw0PF5rpenTI/c53m4lBieayQ0av62XKJQBY1OQONZp/UYrjP
+         jy/Jt6DRnzYgorAbruYLmqdX1OrLBrKi1FQ54sQnXmkwEUD80Q9hIxpIfeoRy9i31k0h
+         VfbA==
+X-Gm-Message-State: AOAM532xrCqc0DijKktxWmlQCXDsAxtCo+B7FzMqfZRMP/xUDUzTHVQE
+        c1c9TF/A6V9EZ+IYVcilksiALA==
+X-Google-Smtp-Source: ABdhPJygidZnbAa0eGY1UJRtoYPZNdP08x0hWzTxRx7yxq441Lory3g22et2VwaQetBDV6SZ86g0Yg==
+X-Received: by 2002:a92:d147:: with SMTP id t7mr4292743ilg.151.1590606865912;
+        Wed, 27 May 2020 12:14:25 -0700 (PDT)
 Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id e184sm812798iof.44.2020.05.27.11.01.19
+        by smtp.gmail.com with ESMTPSA id g21sm666621ioc.14.2020.05.27.12.14.25
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 May 2020 11:01:19 -0700 (PDT)
+        Wed, 27 May 2020 12:14:25 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1je0Mh-0006WC-2o; Wed, 27 May 2020 15:01:19 -0300
-Date:   Wed, 27 May 2020 15:01:19 -0300
+        id 1je1VQ-0005Pm-Hp; Wed, 27 May 2020 16:14:24 -0300
+Date:   Wed, 27 May 2020 16:14:24 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markz@mellanox.com>,
-        Aharon Landau <aharonl@mellanox.com>,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next] IB/mlx5: Fix DEVX support for
- MLX5_CMD_OP_INIT2INIT_QP command
-Message-ID: <20200527180119.GA25028@ziepe.ca>
-References: <20200527135703.482501-1-leon@kernel.org>
+        Leon Romanovsky <leonro@mellanox.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        target-devel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v3 0/6] Add Enhanced Connection Established
+ (ECE)
+Message-ID: <20200527191424.GA20778@ziepe.ca>
+References: <20200526103304.196371-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527135703.482501-1-leon@kernel.org>
+In-Reply-To: <20200526103304.196371-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 27, 2020 at 04:57:03PM +0300, Leon Romanovsky wrote:
-> From: Mark Zhang <markz@mellanox.com>
+On Tue, May 26, 2020 at 01:32:58PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> The commit citied in the Fixes line wasn't complete and solved
-> only part of the problems. Update the mlx5_ib to properly support
-> MLX5_CMD_OP_INIT2INIT_QP command in the DEVX, that is required when
-> modify the QP tx_port_affinity.
+> Changelog:
+>  v3:
+>  * Rebased on top of ebd6e96b33a2 RDMA/ipoib: Remove can_sleep parameter from iboib_mcast_alloc
+>  * Updated rdma_reject patch to include newly added RTR ulp
+>  * Remove empty hunks added by rebase
+>  * Changed signature of rdma_reject so kernel users will provide reason by themselves
+>  * Squashed UAPI patch to other patches which add functionality
+>  * Removed define of the IBTA reason from UAPI
+>  v2: https://lore.kernel.org/linux-rdma/20200413141538.935574-1-leon@kernel.org/
+>  * Rebased on latest rdma-next and removed already accepted patches.
+>  * Updated all rdma_reject in-kernel users to provide reject reason.
+>  v1: Dropped field_avail patch in favor of mass conversion to use function
+>      which already exists in the kernel code.
+>  https://lore.kernel.org/lkml/20200310091438.248429-1-leon@kernel.org
+>  v0: https://lore.kernel.org/lkml/20200305150105.207959-1-leon@kernel.org
 > 
-> Fixes: 819f7427bafd ("RDMA/mlx5: Add init2init as a modify command")
-> Signed-off-by: Mark Zhang <markz@mellanox.com>
-> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/devx.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Enhanced Connection Established or ECE is new negotiation scheme
+> introduced in IBTA v1.4 to exchange extra information about nodes
+> capabilities and later negotiate them at the connection establishment
+> phase.
+> 
+> The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
+> to carry two fields, one new and another gained new functionality:
+>  * VendorID is a new field that indicates that common subset of vendor
+>    option bits are supported as indicated by that VendorID.
+>  * AttributeModifier already exists, but overloaded to indicate which
+>    vendor options are supported by this VendorID.
+> 
+> This is kernel part of such functionality which is responsible to get data
+> from librdmacm and properly create and handle RDMA-CM messages.
+> 
+> Thanks
+> 
+> Leon Romanovsky (6):
+>   RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+>   RDMA/ucma: Extend ucma_connect to receive ECE parameters
+>   RDMA/ucma: Deliver ECE parameters through UCMA events
+>   RDMA/cm: Send and receive ECE parameter over the wire
+>   RDMA/cma: Connect ECE to rdma_accept
+>   RDMA/cma: Provide ECE reject reason
 
 Applied to for-next, thanks
 
