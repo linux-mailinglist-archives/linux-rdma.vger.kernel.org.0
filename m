@@ -2,103 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172291E3C1C
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 10:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D5B1E3DDB
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 May 2020 11:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387859AbgE0IfA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 04:35:00 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:49897 "EHLO
+        id S1729184AbgE0Jqm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 05:46:42 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:58140 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388074AbgE0IfA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 04:35:00 -0400
-Received: from Internal Mail-Server by MTLPINE2 (envelope-from yaminf@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 27 May 2020 11:34:57 +0300
-Received: from arch012.mtl.labs.mlnx. (arch012.mtl.labs.mlnx [10.7.13.12])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04R8YvRZ003290;
-        Wed, 27 May 2020 11:34:57 +0300
-From:   Yamin Friedman <yaminf@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leonro@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Yamin Friedman <yaminf@mellanox.com>
-Subject: [PATCH V4 4/4] nvmet-rdma: use new shared CQ mechanism
-Date:   Wed, 27 May 2020 11:34:55 +0300
-Message-Id: <1590568495-101621-5-git-send-email-yaminf@mellanox.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1590568495-101621-1-git-send-email-yaminf@mellanox.com>
-References: <1590568495-101621-1-git-send-email-yaminf@mellanox.com>
+        with ESMTP id S1725939AbgE0Jqm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 05:46:42 -0400
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 27 May 2020 12:46:35 +0300
+Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 04R9kYih009430;
+        Wed, 27 May 2020 12:46:34 +0300
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     jgg@mellanox.com, dledford@redhat.com, leon@kernel.org,
+        galpress@amazon.com, dennis.dalessandro@intel.com,
+        netdev@vger.kernel.org, sagi@grimberg.me,
+        linux-rdma@vger.kernel.org, bvanassche@acm.org,
+        santosh.shilimkar@oracle.com, tom@talpey.com
+Cc:     aron.silverton@oracle.com, israelr@mellanox.com, oren@mellanox.com,
+        shlomin@mellanox.com, vladimirk@mellanox.com,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH 0/9 v2] Remove FMR support from RDMA drivers
+Date:   Wed, 27 May 2020 12:46:25 +0300
+Message-Id: <20200527094634.24240-1-maxg@mellanox.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Has the driver use shared CQs providing ~10%-20% improvement when multiple
-disks are used. Instead of opening a CQ for each QP per controller, a CQ
-for each core will be provided by the RDMA core driver that will be shared
-between the QPs on that core reducing interrupt overhead.
+This series removes the support for FMR mode to register memory. This ancient
+mode is unsafe (rkeys that are usually exposed for caching purposes and the API
+is limited to page granularity mappings) and not maintained/tested in the last
+few years. It also doesn't have any reasonable advantage over other memory
+registration methods such as FRWR (that is implemented in all the recent RDMA
+adapters). This series should be reviewed and approved by the maintainer of the
+effected drivers and I suggest to test it as well.
 
-Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/nvme/target/rdma.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+The tests that I made for this series (fio benchmarks and fio verify data):
+1. iSER initiator on ConnectX-4
+2. iSER initiator on ConnectX-3
+3. SRP initiator on ConnectX-4 (loopback to SRP target)
+4. SRP initiator on ConnectX-3
 
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index fd47de0..50e4c40 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -588,7 +588,7 @@ static void nvmet_rdma_read_data_done(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	struct nvmet_rdma_rsp *rsp =
- 		container_of(wc->wr_cqe, struct nvmet_rdma_rsp, read_cqe);
--	struct nvmet_rdma_queue *queue = cq->cq_context;
-+	struct nvmet_rdma_queue *queue = wc->qp->qp_context;
- 
- 	WARN_ON(rsp->n_rdma <= 0);
- 	atomic_add(rsp->n_rdma, &queue->sq_wr_avail);
-@@ -793,7 +793,7 @@ static void nvmet_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	struct nvmet_rdma_cmd *cmd =
- 		container_of(wc->wr_cqe, struct nvmet_rdma_cmd, cqe);
--	struct nvmet_rdma_queue *queue = cq->cq_context;
-+	struct nvmet_rdma_queue *queue = wc->qp->qp_context;
- 	struct nvmet_rdma_rsp *rsp;
- 
- 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
-@@ -995,9 +995,8 @@ static int nvmet_rdma_create_queue_ib(struct nvmet_rdma_queue *queue)
- 	 */
- 	nr_cqe = queue->recv_queue_size + 2 * queue->send_queue_size;
- 
--	queue->cq = ib_alloc_cq(ndev->device, queue,
--			nr_cqe + 1, comp_vector,
--			IB_POLL_WORKQUEUE);
-+	queue->cq = ib_cq_pool_get(ndev->device, nr_cqe + 1, comp_vector,
-+				   IB_POLL_WORKQUEUE);
- 	if (IS_ERR(queue->cq)) {
- 		ret = PTR_ERR(queue->cq);
- 		pr_err("failed to create CQ cqe= %d ret= %d\n",
-@@ -1056,7 +1055,7 @@ static int nvmet_rdma_create_queue_ib(struct nvmet_rdma_queue *queue)
- err_destroy_qp:
- 	rdma_destroy_qp(queue->cm_id);
- err_destroy_cq:
--	ib_free_cq(queue->cq);
-+	ib_cq_pool_put(queue->cq, nr_cqe + 1);
- 	goto out;
- }
- 
-@@ -1066,7 +1065,8 @@ static void nvmet_rdma_destroy_queue_ib(struct nvmet_rdma_queue *queue)
- 	if (queue->cm_id)
- 		rdma_destroy_id(queue->cm_id);
- 	ib_destroy_qp(queue->qp);
--	ib_free_cq(queue->cq);
-+	ib_cq_pool_put(queue->cq, queue->recv_queue_size + 2 *
-+		       queue->send_queue_size + 1);
- }
- 
- static void nvmet_rdma_free_queue(struct nvmet_rdma_queue *queue)
+Not tested:
+1. RDS
+2. mthca
+3. rdmavt
+
+Changes from V1:
+ - added "RDMA/mlx5: Remove FMR leftovers" (from GalP)
+ - rebased on top of "Linux 5.7-rc7"
+ - added "Reviewed-by" Bart signature for SRP
+
+Gal Pressman (1):
+  RDMA/mlx5: Remove FMR leftovers
+
+Israel Rukshin (1):
+  RDMA/iser: Remove support for FMR memory registration
+
+Max Gurtovoy (7):
+  RDMA/mlx4: remove FMR support for memory registration
+  RDMA/rds: remove FMR support for memory registration
+  RDMA/mthca: remove FMR support for memory registration
+  RDMA/rdmavt: remove FMR memory registration
+  RDMA/srp: remove support for FMR memory registration
+  RDMA/core: remove FMR pool API
+  RDMA/core: remove FMR device ops
+
+ Documentation/driver-api/infiniband.rst      |   3 -
+ Documentation/infiniband/core_locking.rst    |   2 -
+ drivers/infiniband/core/Makefile             |   2 +-
+ drivers/infiniband/core/device.c             |   4 -
+ drivers/infiniband/core/fmr_pool.c           | 494 ---------------------------
+ drivers/infiniband/core/verbs.c              |  48 ---
+ drivers/infiniband/hw/mlx4/main.c            |  10 -
+ drivers/infiniband/hw/mlx4/mlx4_ib.h         |  16 -
+ drivers/infiniband/hw/mlx4/mr.c              |  93 -----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h         |   8 -
+ drivers/infiniband/hw/mthca/mthca_dev.h      |  10 -
+ drivers/infiniband/hw/mthca/mthca_mr.c       | 262 +-------------
+ drivers/infiniband/hw/mthca/mthca_provider.c |  86 -----
+ drivers/infiniband/sw/rdmavt/mr.c            | 154 ---------
+ drivers/infiniband/sw/rdmavt/mr.h            |  15 -
+ drivers/infiniband/sw/rdmavt/vt.c            |   4 -
+ drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +----
+ drivers/infiniband/ulp/iser/iser_initiator.c |  19 +-
+ drivers/infiniband/ulp/iser/iser_memory.c    | 188 +---------
+ drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +------
+ drivers/infiniband/ulp/srp/ib_srp.c          | 222 +-----------
+ drivers/infiniband/ulp/srp/ib_srp.h          |  27 +-
+ drivers/net/ethernet/mellanox/mlx4/mr.c      | 183 ----------
+ include/linux/mlx4/device.h                  |  21 +-
+ include/rdma/ib_fmr_pool.h                   |  93 -----
+ include/rdma/ib_verbs.h                      |  45 ---
+ net/rds/Makefile                             |   2 +-
+ net/rds/ib.c                                 |  14 +-
+ net/rds/ib.h                                 |   1 -
+ net/rds/ib_cm.c                              |   4 +-
+ net/rds/ib_fmr.c                             | 269 ---------------
+ net/rds/ib_mr.h                              |  12 -
+ net/rds/ib_rdma.c                            |  16 +-
+ 33 files changed, 77 insertions(+), 2455 deletions(-)
+ delete mode 100644 drivers/infiniband/core/fmr_pool.c
+ delete mode 100644 include/rdma/ib_fmr_pool.h
+ delete mode 100644 net/rds/ib_fmr.c
+
 -- 
 1.8.3.1
 
