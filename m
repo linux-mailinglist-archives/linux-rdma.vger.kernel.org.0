@@ -2,62 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CB61E6924
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 20:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C521E6B96
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 21:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405730AbgE1SML (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 14:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
+        id S1728694AbgE1TsE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 15:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405688AbgE1SMK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 14:12:10 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127E2C08C5C6;
-        Thu, 28 May 2020 11:12:09 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8FA40129191D0;
-        Thu, 28 May 2020 11:12:06 -0700 (PDT)
-Date:   Thu, 28 May 2020 11:12:05 -0700 (PDT)
-Message-Id: <20200528.111205.608949763790224771.davem@davemloft.net>
-To:     hch@lst.de
-Cc:     kuba@kernel.org, edumazet@google.com, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com,
-        drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        ceph-devel@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net
-Subject: Re: remove most callers of kernel_setsockopt v3
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200528051236.620353-1-hch@lst.de>
-References: <20200528051236.620353-1-hch@lst.de>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 28 May 2020 11:12:07 -0700 (PDT)
+        with ESMTP id S1728692AbgE1TqE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 15:46:04 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5116C08C5CB
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2020 12:46:00 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id dh1so13497429qvb.13
+        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2020 12:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vv27fdAaO6yeM0dPvx+TtJjfYzQQ3+W2/2SVCKpX4Ww=;
+        b=hJa/Ot7PdWGL4Y5FGaaWUGwO4lutheiCFJyZrxehKE2STd5S3RTzEHD5fyGjb2n2rB
+         jA7IvYZxJ9xkqzzlRoDp32ZrtUY7sHJQvbzsPyRm0oqHg0UprvkpgIXD/ny7WbHdAIFC
+         rrt2TIa3MsIynAYTT3Va+GXncwLDUN61L1/ropTwwSRyPaQrfLYwn6XrBs5zDgYodqeT
+         leulPD2wmvv4hKfOq2FtdVXzcB7UaYo9vKpwwbFzUa5tRhnTNvpUPHjs/40SarAruzTq
+         HSjSaDFtT58rIhjAS7BWO7nJ7kGkyfr0IcZ9GUv4nL41Paa3fbIK7i6AATIPbhLygKM/
+         dKCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vv27fdAaO6yeM0dPvx+TtJjfYzQQ3+W2/2SVCKpX4Ww=;
+        b=s68NE8DkNF+8u+gI5jM10oLhX83QAUrTNEcq/IeCjRhEsGgwotg1PA0gA8E/MJy858
+         puUYdhoIhQaDJ8zNyXJEH8mxu0NGxqWHllsrJ8WcL/wGdNnlC2dArDx9Nd4efkDFiTzp
+         ZaTVhw05mynoGI1E92aT19ySDefbq6n3kC0CraiBec/CPFDGS2Lfy8gbrK7DYunox+WW
+         iz/BFzSx8jCYHyoz6dpvlGWA/m8PwWceueKNzq8fngn35DItQTze/cWF9jftk0D/c8r0
+         X+C83UMyEN9iOn32vIAkwU87iKzDWrVN5t0GLr1r8g8V4BcK8cRUGAcjPs6/vKLzj7Hq
+         BmOA==
+X-Gm-Message-State: AOAM530SDIg1oVlfvP2py7wlx6tUuri1hKeNB1+3guLgM7sEE4qZciUk
+        qXbva33XkMeIc/1yFiE6aQnkTXb22OI=
+X-Google-Smtp-Source: ABdhPJzhcbLKLPGqJ8edmBiq9jseWokk5HgD+3ATMRag7u4UARpesaPFJDnr/gJ9bFzCzsmiLP0buA==
+X-Received: by 2002:ad4:5a53:: with SMTP id ej19mr4622151qvb.79.1590695159410;
+        Thu, 28 May 2020 12:45:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id k20sm6264990qtu.16.2020.05.28.12.45.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 28 May 2020 12:45:57 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jeOTT-0006gc-UG; Thu, 28 May 2020 16:45:55 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Ariel Elior <aelior@marvell.com>, aron.silverton@oracle.com,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Michal Kalderon <mkalderon@marvell.com>, oren@mellanox.com,
+        Sagi Grimberg <sagi@grimberg.me>, santosh.shilimkar@oracle.com,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>, shlomin@mellanox.com,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        vladimirk@mellanox.com, Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH v3 00/13] Remove FMR support from RDMA drivers
+Date:   Thu, 28 May 2020 16:45:42 -0300
+Message-Id: <0-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
-Date: Thu, 28 May 2020 07:12:08 +0200
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-> this series removes most callers of the kernel_setsockopt functions, and
-> instead switches their users to small functions that implement setting a
-> sockopt directly using a normal kernel function call with type safety and
-> all the other benefits of not having a function call.
-> 
-> In some cases these functions seem pretty heavy handed as they do
-> a lock_sock even for just setting a single variable, but this mirrors
-> the real setsockopt implementation unlike a few drivers that just set
-> set the fields directly.
- ...
+This series removes the support for FMR mode to register memory. This
+ancient mode is unsafe (rkeys that are usually exposed for caching
+purposes and the API is limited to page granularity mappings) and not
+maintained/tested in the last few years. It also doesn't have any
+reasonable advantage over other memory registration methods such as
+FRWR (that is implemented in all the recent RDMA adapters). This series
+should be reviewed and approved by the maintainer of the effected drivers
+and I suggest to test it as well.
 
-Series applied, thanks Christoph.
+Changes from V2:
+ - Removed more occurances of _fmr
+ - Remove max_map_per_fmr device attribute
+ - Remove max_fmr device attribute
+ - Remove additional dead code from bnxt_re and i40iw
+ - Revised RDS to not use ib_fmr_attr or other fmr things
+ - Rebased on RDMA for-next
+Changes from V1:
+ https://lore.kernel.org/linux-rdma/20200527094634.24240-1-maxg@mellanox.com/
+ - added "RDMA/mlx5: Remove FMR leftovers" (from GalP)
+ - rebased on top of "Linux 5.7-rc7"
+ - added "Reviewed-by" Bart signature for SRP
+
+Cc: shlomin@mellanox.com
+Cc: vladimirk@mellanox.com
+Cc: oren@mellanox.com
+
+Gal Pressman (1):
+  RDMA/mlx5: Remove FMR leftovers
+
+Israel Rukshin (1):
+  RDMA/iser: Remove support for FMR memory registration
+
+Jason Gunthorpe (4):
+  RDMA/bnxt_re: Remove FMR leftovers
+  RDMA/i40iw: Remove FMR leftovers
+  RDMA: Remove 'max_fmr'
+  RDMA: Remove 'max_map_per_fmr'
+
+Max Gurtovoy (7):
+  RDMA/srp: Remove support for FMR memory registration
+  RDMA/rds: Remove FMR support for memory registration
+  RDMA/core: Remove FMR pool API
+  RDMA/mlx4: Remove FMR support for memory registration
+  RDMA/mthca: Remove FMR support for memory registration
+  RDMA/rdmavt: Remove FMR memory registration
+  RDMA/core: Remove FMR device ops
+
+ Documentation/driver-api/infiniband.rst      |   3 -
+ Documentation/infiniband/core_locking.rst    |   2 -
+ drivers/infiniband/core/Makefile             |   2 +-
+ drivers/infiniband/core/device.c             |   4 -
+ drivers/infiniband/core/fmr_pool.c           | 494 -------------------
+ drivers/infiniband/core/uverbs_cmd.c         |   2 -
+ drivers/infiniband/core/verbs.c              |  48 --
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c     |   3 -
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h     |   6 -
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c     |   3 -
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h     |   2 -
+ drivers/infiniband/hw/hfi1/verbs.c           |   1 -
+ drivers/infiniband/hw/i40iw/i40iw.h          |   9 -
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c    |   1 -
+ drivers/infiniband/hw/i40iw/i40iw_verbs.h    |   1 -
+ drivers/infiniband/hw/mlx4/main.c            |  11 -
+ drivers/infiniband/hw/mlx4/mlx4_ib.h         |  16 -
+ drivers/infiniband/hw/mlx4/mr.c              |  93 ----
+ drivers/infiniband/hw/mlx5/main.c            |   1 -
+ drivers/infiniband/hw/mlx5/mlx5_ib.h         |   8 -
+ drivers/infiniband/hw/mthca/mthca_dev.h      |  10 -
+ drivers/infiniband/hw/mthca/mthca_mr.c       | 262 +---------
+ drivers/infiniband/hw/mthca/mthca_provider.c |  96 ----
+ drivers/infiniband/hw/mthca/mthca_provider.h |  23 -
+ drivers/infiniband/hw/ocrdma/ocrdma.h        |   1 -
+ drivers/infiniband/hw/ocrdma/ocrdma_hw.c     |   1 -
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  |   2 -
+ drivers/infiniband/hw/qedr/main.c            |   1 -
+ drivers/infiniband/hw/qedr/qedr.h            |   1 -
+ drivers/infiniband/hw/qedr/verbs.c           |   2 -
+ drivers/infiniband/hw/qib/qib_verbs.c        |   1 -
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c |   1 -
+ drivers/infiniband/sw/rdmavt/mr.c            | 155 ------
+ drivers/infiniband/sw/rdmavt/mr.h            |  15 -
+ drivers/infiniband/sw/rdmavt/vt.c            |   4 -
+ drivers/infiniband/sw/siw/siw.h              |   2 -
+ drivers/infiniband/sw/siw/siw_main.c         |   1 -
+ drivers/infiniband/sw/siw/siw_verbs.c        |   1 -
+ drivers/infiniband/ulp/iser/iscsi_iser.h     |  79 +--
+ drivers/infiniband/ulp/iser/iser_initiator.c |  19 +-
+ drivers/infiniband/ulp/iser/iser_memory.c    | 188 +------
+ drivers/infiniband/ulp/iser/iser_verbs.c     | 126 +----
+ drivers/infiniband/ulp/srp/ib_srp.c          | 222 +--------
+ drivers/infiniband/ulp/srp/ib_srp.h          |  27 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c    |   2 -
+ drivers/net/ethernet/mellanox/mlx4/mr.c      | 183 -------
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c   |   1 -
+ drivers/net/ethernet/qlogic/qed/qed_rdma.h   |   1 -
+ include/linux/mlx4/device.h                  |  22 +-
+ include/linux/qed/qed_rdma_if.h              |   1 -
+ include/rdma/ib_fmr_pool.h                   |  93 ----
+ include/rdma/ib_verbs.h                      |  61 ---
+ net/rds/Makefile                             |   2 +-
+ net/rds/ib.c                                 |  22 +-
+ net/rds/ib.h                                 |   2 -
+ net/rds/ib_cm.c                              |   4 +-
+ net/rds/ib_fmr.c                             | 269 ----------
+ net/rds/ib_frmr.c                            |   4 +-
+ net/rds/ib_mr.h                              |  14 +-
+ net/rds/ib_rdma.c                            |  28 +-
+ 60 files changed, 88 insertions(+), 2571 deletions(-)
+ delete mode 100644 drivers/infiniband/core/fmr_pool.c
+ delete mode 100644 include/rdma/ib_fmr_pool.h
+ delete mode 100644 net/rds/ib_fmr.c
+
+-- 
+2.26.2
+
