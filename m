@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF6E1E5F71
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 14:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A47E1E5F57
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 14:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389109AbgE1MCH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 08:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
+        id S2389438AbgE1MA4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 08:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389063AbgE1L5m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 May 2020 07:57:42 -0400
+        id S2389134AbgE1L56 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 28 May 2020 07:57:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 531D920DD4;
-        Thu, 28 May 2020 11:57:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6B1121841;
+        Thu, 28 May 2020 11:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590667062;
-        bh=PRrxJNePypOa7RjsrGgEC4LoK0Qb1/BQRsFjdZmdxjg=;
+        s=default; t=1590667077;
+        bh=Vho3X4SlojrRpDQKsIKr9+hH4AijZe7EkMFl0mNlBcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3H8b3zIMrwhU8QxCX0lEzx+GcP3aH3WhG1oCrY0vY8VTgTyheKr60j0dSBsRZVKY
-         gVCY4U3B/R569NsD8+qg6dxElq76+WBjXCBQBb9JpfW+8Z8W7kvgUj4XxD5FLi7cti
-         ICfWZSlFIDpyZ3TvuhEJkb5llUUlsifEHxI9S9tI=
+        b=u6ziUw2KHp98jOsk2AF3VtMx7yl3DPYbH1gQWt86tdnSY/Cu11eO+IpbS3mwgp8lV
+         RjQqFOeptEqhZ0t5/4/0dujzRCv2CYaLbNHPZi5xY2jJOFiTPO9shWP3x6dFQh44f2
+         2Vf9ZzV/NA0casl3y1KD4f52ZYYF9z8RWGLDf09I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Moshe Shemesh <moshe@mellanox.com>,
@@ -30,12 +30,12 @@ Cc:     Moshe Shemesh <moshe@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 15/17] net/mlx5: Add command entry handling completion
-Date:   Thu, 28 May 2020 07:57:22 -0400
-Message-Id: <20200528115724.1406376-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 11/13] net/mlx5: Add command entry handling completion
+Date:   Thu, 28 May 2020 07:57:42 -0400
+Message-Id: <20200528115744.1406533-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200528115724.1406376-1-sashal@kernel.org>
-References: <20200528115724.1406376-1-sashal@kernel.org>
+In-Reply-To: <20200528115744.1406533-1-sashal@kernel.org>
+References: <20200528115744.1406533-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -70,10 +70,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 15 insertions(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index 300456684728..a686082762df 100644
+index 950ea980808b..6ae9a1987371 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -835,6 +835,7 @@ static void cmd_work_handler(struct work_struct *work)
+@@ -804,6 +804,7 @@ static void cmd_work_handler(struct work_struct *work)
  	int alloc_ret;
  	int cmd_mode;
  
@@ -81,7 +81,7 @@ index 300456684728..a686082762df 100644
  	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
  	down(sem);
  	if (!ent->page_queue) {
-@@ -953,6 +954,11 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
+@@ -922,6 +923,11 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
  	struct mlx5_cmd *cmd = &dev->cmd;
  	int err;
  
@@ -93,7 +93,7 @@ index 300456684728..a686082762df 100644
  	if (cmd->mode == CMD_MODE_POLLING || ent->polling) {
  		wait_for_completion(&ent->done);
  	} else if (!wait_for_completion_timeout(&ent->done, timeout)) {
-@@ -960,12 +966,17 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
+@@ -929,12 +935,17 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
  		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
  	}
  
@@ -111,7 +111,7 @@ index 300456684728..a686082762df 100644
  	}
  	mlx5_core_dbg(dev, "err %d, delivery status %s(%d)\n",
  		      err, deliv_status_to_str(ent->status), ent->status);
-@@ -1001,6 +1012,7 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
+@@ -970,6 +981,7 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
  	ent->token = token;
  	ent->polling = force_polling;
  
@@ -119,7 +119,7 @@ index 300456684728..a686082762df 100644
  	if (!callback)
  		init_completion(&ent->done);
  
-@@ -1020,6 +1032,8 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
+@@ -989,6 +1001,8 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
  	err = wait_func(dev, ent);
  	if (err == -ETIMEDOUT)
  		goto out;
@@ -129,10 +129,10 @@ index 300456684728..a686082762df 100644
  	ds = ent->ts2 - ent->ts1;
  	op = MLX5_GET(mbox_in, in->first.data, opcode);
 diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index ae64fced188d..dc89a964c1f3 100644
+index 32d445315128..983cd796cbb3 100644
 --- a/include/linux/mlx5/driver.h
 +++ b/include/linux/mlx5/driver.h
-@@ -902,6 +902,7 @@ struct mlx5_cmd_work_ent {
+@@ -841,6 +841,7 @@ struct mlx5_cmd_work_ent {
  	struct delayed_work	cb_timeout_work;
  	void		       *context;
  	int			idx;
