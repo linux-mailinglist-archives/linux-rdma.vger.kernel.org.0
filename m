@@ -2,76 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7321E59EB
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 09:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381641E5AE2
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 10:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgE1HzO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 03:55:14 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5300 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725901AbgE1HzO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 May 2020 03:55:14 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E437587AD107F6AD0F4C;
-        Thu, 28 May 2020 15:55:12 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 28 May 2020 15:55:06 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-CC:     YueHaibing <yuehaibing@huawei.com>, <linux-rdma@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] IB/hfi1: Remove set but not used variable 'priv'
-Date:   Thu, 28 May 2020 07:59:46 +0000
-Message-ID: <20200528075946.123480-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726939AbgE1Iel (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 04:34:41 -0400
+Received: from mail.15d01.mspz2.gob.ec ([190.11.24.171]:56098 "EHLO
+        mail.15d01.mspz2.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727040AbgE1Iel (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 04:34:41 -0400
+X-Greylist: delayed 360 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 04:34:40 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTP id 803783000C1CBF;
+        Thu, 28 May 2020 03:39:21 -0500 (-05)
+Received: from mail.15d01.mspz2.gob.ec ([127.0.0.1])
+        by localhost (mail.15d01.mspz2.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id b0SbZWHYo0mB; Thu, 28 May 2020 03:39:21 -0500 (-05)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTP id 2384431545DA82;
+        Thu, 28 May 2020 03:39:21 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.15d01.mspz2.gob.ec 2384431545DA82
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=15d01.mspz2.gob.ec;
+        s=45104620-481F-11EA-A09D-9DF8C0EB5A2C; t=1590655161;
+        bh=zLTonXbKn6LYrnOZVETw9C2bepTvRzI70GQOlIiRCC0=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=nJN3ZtKWvFXUhY4et97xdGKsrkc5pP44j05liMy4SytM1RuDiJjh5rR37BJq1/Rcq
+         yCQKlB/i6TS53uvbjb58tlr9hi2yBe01sbqz3ZVZ7/2Hr2lK0xlkXKQpgA0oJuH+OD
+         6FfLhyF1rBCl782mUHFPl+Y2lojZk3rRiXI5fQ9wPedzjwSrhuCcSxPP9L7p7hP9En
+         JsPHy2zZwGTCAMco6OPGF4QxvIalfqGWFquoyisS3ktAFKKCRn2qhMl4CFWQD2KJe1
+         j4LEuGP19xS12GuQB4e48DtGbe4jh2AE+sMX6yzBhawx+rJt76XcjVmNh0ioJ6VD4u
+         z+fOC0L3GQjzg==
+X-Virus-Scanned: amavisd-new at 15d01.mspz2.gob.ec
+Received: from mail.15d01.mspz2.gob.ec ([127.0.0.1])
+        by localhost (mail.15d01.mspz2.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zpXRyv07gTVS; Thu, 28 May 2020 03:39:21 -0500 (-05)
+Received: from [10.98.65.230] (unknown [105.12.3.29])
+        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTPSA id CA84D3002EDCCD;
+        Thu, 28 May 2020 03:38:25 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <consuelo.sayavedra@15d01.mspz2.gob.ec>
+From:   ''Tayeb Souami'' <consuelo.sayavedra@15d01.mspz2.gob.ec>
+Date:   Thu, 28 May 2020 10:20:10 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200528083826.CA84D3002EDCCD@mail.15d01.mspz2.gob.ec>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-drivers/infiniband/hw/hfi1/netdev_rx.c: In function 'hfi1_netdev_free':
-drivers/infiniband/hw/hfi1/netdev_rx.c:374:27: warning:
- variable 'priv' set but not used [-Wunused-but-set-variable]
+Lieber Freund,
 
-It is never used, so can be removed, then null check before
-kfree is unneeded.
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
+Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
+f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
+il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
+meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
+und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
+Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
+ spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
+ou Tube Seite unten.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/hfi1/netdev_rx.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-index 58af6a454761..bd6546b52159 100644
---- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-+++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-@@ -371,14 +371,9 @@ int hfi1_netdev_alloc(struct hfi1_devdata *dd)
- 
- void hfi1_netdev_free(struct hfi1_devdata *dd)
- {
--	struct hfi1_netdev_priv *priv;
--
--	if (dd->dummy_netdev) {
--		priv = hfi1_netdev_priv(dd->dummy_netdev);
--		dd_dev_info(dd, "hfi1 netdev freed\n");
--		kfree(dd->dummy_netdev);
--		dd->dummy_netdev = NULL;
--	}
-+	dd_dev_info(dd, "hfi1 netdev freed\n");
-+	kfree(dd->dummy_netdev);
-+	dd->dummy_netdev = NULL;
- }
- 
- /**
+UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
 
 
+Das ist dein Spendencode: [TS530342018]
 
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+ E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
+
+Gr=C3=BC=C3=9Fe
+Herr Tayeb Souami
