@@ -2,81 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381641E5AE2
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 10:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB221E5D56
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 12:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgE1Iel (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 04:34:41 -0400
-Received: from mail.15d01.mspz2.gob.ec ([190.11.24.171]:56098 "EHLO
-        mail.15d01.mspz2.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbgE1Iel (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 04:34:41 -0400
-X-Greylist: delayed 360 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 04:34:40 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTP id 803783000C1CBF;
-        Thu, 28 May 2020 03:39:21 -0500 (-05)
-Received: from mail.15d01.mspz2.gob.ec ([127.0.0.1])
-        by localhost (mail.15d01.mspz2.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id b0SbZWHYo0mB; Thu, 28 May 2020 03:39:21 -0500 (-05)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTP id 2384431545DA82;
-        Thu, 28 May 2020 03:39:21 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.15d01.mspz2.gob.ec 2384431545DA82
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=15d01.mspz2.gob.ec;
-        s=45104620-481F-11EA-A09D-9DF8C0EB5A2C; t=1590655161;
-        bh=zLTonXbKn6LYrnOZVETw9C2bepTvRzI70GQOlIiRCC0=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=nJN3ZtKWvFXUhY4et97xdGKsrkc5pP44j05liMy4SytM1RuDiJjh5rR37BJq1/Rcq
-         yCQKlB/i6TS53uvbjb58tlr9hi2yBe01sbqz3ZVZ7/2Hr2lK0xlkXKQpgA0oJuH+OD
-         6FfLhyF1rBCl782mUHFPl+Y2lojZk3rRiXI5fQ9wPedzjwSrhuCcSxPP9L7p7hP9En
-         JsPHy2zZwGTCAMco6OPGF4QxvIalfqGWFquoyisS3ktAFKKCRn2qhMl4CFWQD2KJe1
-         j4LEuGP19xS12GuQB4e48DtGbe4jh2AE+sMX6yzBhawx+rJt76XcjVmNh0ioJ6VD4u
-         z+fOC0L3GQjzg==
-X-Virus-Scanned: amavisd-new at 15d01.mspz2.gob.ec
-Received: from mail.15d01.mspz2.gob.ec ([127.0.0.1])
-        by localhost (mail.15d01.mspz2.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zpXRyv07gTVS; Thu, 28 May 2020 03:39:21 -0500 (-05)
-Received: from [10.98.65.230] (unknown [105.12.3.29])
-        by mail.15d01.mspz2.gob.ec (Postfix) with ESMTPSA id CA84D3002EDCCD;
-        Thu, 28 May 2020 03:38:25 -0500 (-05)
-Content-Type: text/plain; charset="utf-8"
+        id S2387913AbgE1Kpt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 06:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387902AbgE1Kpt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 28 May 2020 06:45:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73F19207D3;
+        Thu, 28 May 2020 10:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590662748;
+        bh=Ue2F8Srr3xnS800AxSipqkHzBXEszGzZ7bGmOn5Al+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n03+AcCPHH5Mprg0wvNevEOV/ofdK/gRsDEomWR3Eak0jVVISflY7Pi3WpkJoQRd8
+         acCHSb95BdR7GuBaUJcZNos5ygLgzwYDsCfSVbwZFY8MUeJmKukLDJiVP59IlqPCz+
+         6I+2mssBCDVGcj3SnOaKgkq6PUo1x1ppSM5dHPCc=
+Date:   Thu, 28 May 2020 12:45:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, pierre-louis.bossart@linux.intel.com,
+        Fred Oh <fred.oh@linux.intel.com>
+Subject: Re: [net-next v4 11/12] ASoC: SOF: Create client driver for IPC test
+Message-ID: <20200528104545.GA3115014@kroah.com>
+References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
+ <20200520070227.3392100-12-jeffrey.t.kirsher@intel.com>
+ <20200520125611.GI31189@ziepe.ca>
+ <b51ee1d61dbfbb8914d29338918ba49bff1b4b75.camel@linux.intel.com>
+ <20200528001207.GR744@ziepe.ca>
+ <d44a50f6a8af0162a5ff1a6d483adebf16d11256.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
-To:     Recipients <consuelo.sayavedra@15d01.mspz2.gob.ec>
-From:   ''Tayeb Souami'' <consuelo.sayavedra@15d01.mspz2.gob.ec>
-Date:   Thu, 28 May 2020 10:20:10 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20200528083826.CA84D3002EDCCD@mail.15d01.mspz2.gob.ec>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d44a50f6a8af0162a5ff1a6d483adebf16d11256.camel@linux.intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Lieber Freund,
+On Wed, May 27, 2020 at 06:40:05PM -0700, Ranjani Sridharan wrote:
+> On Wed, 2020-05-27 at 21:12 -0300, Jason Gunthorpe wrote:
+> > On Wed, May 27, 2020 at 01:18:35PM -0700, Ranjani Sridharan wrote:
+> > > On Wed, 2020-05-20 at 09:56 -0300, Jason Gunthorpe wrote:
+> > > > On Wed, May 20, 2020 at 12:02:26AM -0700, Jeff Kirsher wrote:
+> > > > > +static const struct virtbus_dev_id sof_ipc_virtbus_id_table[]
+> > > > > = {
+> > > > > +	{"sof-ipc-test"},
+> > > > > +	{},
+> > > > > +};
+> > > > > +
+> > > > > +static struct sof_client_drv sof_ipc_test_client_drv = {
+> > > > > +	.name = "sof-ipc-test-client-drv",
+> > > > > +	.type = SOF_CLIENT_IPC,
+> > > > > +	.virtbus_drv = {
+> > > > > +		.driver = {
+> > > > > +			.name = "sof-ipc-test-virtbus-drv",
+> > > > > +		},
+> > > > > +		.id_table = sof_ipc_virtbus_id_table,
+> > > > > +		.probe = sof_ipc_test_probe,
+> > > > > +		.remove = sof_ipc_test_remove,
+> > > > > +		.shutdown = sof_ipc_test_shutdown,
+> > > > > +	},
+> > > > > +};
+> > > > > +
+> > > > > +module_sof_client_driver(sof_ipc_test_client_drv);
+> > > > > +
+> > > > > +MODULE_DESCRIPTION("SOF IPC Test Client Driver");
+> > > > > +MODULE_LICENSE("GPL v2");
+> > > > > +MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
+> > > > > +MODULE_ALIAS("virtbus:sof-ipc-test");
+> > > > 
+> > > > Usually the MODULE_ALIAS happens automatically rhough the struct
+> > > > virtbus_dev_id - is something missing in the enabling patches?
+> > > 
+> > > Hi Jason,
+> > > 
+> > > Without the MODULE_ALIAS,  the driver never probes when the virtual
+> > > bus
+> > > device is registered. The MODULE_ALIAS is not different from the
+> > > ones
+> > > we typically have in the platform drivers. Could you please give me
+> > > some pointers on what you think might be missing?
+> > 
+> > Look at how the stuff in include/linux/mod_devicetable.h works and do
+> > the same for virtbus
+> It looks like include/linux/mod_devicetable.h has everything needed for
+> virtbus already.
+> > 
+> > Looks like you push a MODALIAS= uevent when creating the device and
+> > the generic machinery does the rest based on the matching table, once
+> > mod_devicetable.h and related is updated. But it has been a long time
+> > since I looked at this..
+> 
+> This is also done with uevent callback in the bus_type definition for
+> the virtual_bus.
+> 
+> Is your expectation that with the above changes, we should not be
+> needing the MODULE_ALIAS() in the driver?
 
-Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
-Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
-f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
-il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
-meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
-und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
-Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
- spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
-ou Tube Seite unten.
+Yes, it should not be needed if you did everything properly in
+mod_devicetable.h
 
-UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
+thanks,
 
-
-Das ist dein Spendencode: [TS530342018]
-
-
-Antworten Sie mit dem SPENDE-CODE an diese
-
- E-Mail:Tayebsouam.spende@gmail.com
-
-Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
-
-Gr=C3=BC=C3=9Fe
-Herr Tayeb Souami
+greg k-h
