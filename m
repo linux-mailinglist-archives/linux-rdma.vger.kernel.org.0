@@ -2,76 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889601E5238
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 02:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CA51E523A
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 02:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgE1A3H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 May 2020 20:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgE1A3H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 20:29:07 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DC1C05BD1E
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 17:29:06 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id be9so21765193edb.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 May 2020 17:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=aO/SngNHfFkwTADCKbGKV4o2+E9bek8s3yykrCMSRT0=;
-        b=F8vFwLAemEeWC8gvCHuwRrDRfaj1L8Psh43WhFoS9LPMiPgsrR+a8PtwQ51fNjeR/f
-         rwkZv9zqV8qfKj2b2PFUNPZPck3xz3Zk0qyHyNAO6aG7mkksxsxpuIdseMk7Y5cec3CT
-         x7tegVvmf+GhoMc30Tn5rIVWmK8h5/fYPcvRMEl1oHK31lfYS687BGM5RnoSLaqCyxIY
-         G5EodJd2HPR2Hmd2ApZ/U9CQdb8tyrDnzACBLZRJw3q4Diov3ipgdHb4Vxv7EIGuwzaO
-         JEqwJxCGH66BnOvhtwS3CVvao/pO0RcCeHxKTHHuNOWziOEW0rLgYF2x9kGVLtXcdoIV
-         0hlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=aO/SngNHfFkwTADCKbGKV4o2+E9bek8s3yykrCMSRT0=;
-        b=iel/Q9C7a/+ruVZ2mE3J8qeYvj0TMcRPPlx6JJYKIRt4kW52ZvH3UdkmLjvaQC0suP
-         K460jp9nhZWaNI9PDENJRIPq4ZthMX4ioJ/jFeaBgryvXBBpYCY7J9sUoyIqY7W3nUDh
-         Rkr23auGfk66sB9EOFk3/x2PA1v8ayBbjRVeSBBo74rb3+QjIlwcHGU3H1loakV+PI8w
-         dHYQ/bGnxFNOh22KSRq/3OjgRuEb5UpiOKX4V19fiWbbLPeudcvk/nY7/EK0irq5xDig
-         VB5Fz5P7MOQyZ7K9zKWsd/w4EeIACwrPOGUgFSNL5xwEdTm5xoPjFanCdNEUhcxrKdi1
-         YSfA==
-X-Gm-Message-State: AOAM531MKUURAVyrr8pw3s8dyGGE+JD8Bto/MJWLfVJeUA+F3x6j7BFl
-        Azu0w+d2cSM4PcUWEgu1vijmsp/SAElZpxzg0DLTfin8MH/loQ==
-X-Google-Smtp-Source: ABdhPJzTub0w38/d83srKTzCooRnqyXSvwM+z/iZaLRnHAet6NNxdqhmhQYspUk5AaLKU9mrcWLXg/NE98Pk9zuICvY=
-X-Received: by 2002:a50:f182:: with SMTP id x2mr628224edl.336.1590625745137;
- Wed, 27 May 2020 17:29:05 -0700 (PDT)
+        id S1725294AbgE1Aai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 May 2020 20:30:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47959 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725267AbgE1Aai (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 May 2020 20:30:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590625837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kJI7bSeRmdZCxn+5Qeb3iCtQcSP6aUjTfq9vdrY4srs=;
+        b=FJgMGxmDu5NhT8tJKvDZ/5V7V3IU4nf57Fb7dPWFQMM2Mm/DQ3HxjGV7hGYjLxs1d296LC
+        XVpMJLJzGv37zbEZv5ZItVDNhuCKBSKR45wvAengGPDoTo/X24GzBOO0ZWNXDa1nPUFbM2
+        +QKHIazvRj7E4i9M3riD7PVNBuSOJ8w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-vVWDQ3VZNTuQxxERdefMyA-1; Wed, 27 May 2020 20:30:33 -0400
+X-MC-Unique: vVWDQ3VZNTuQxxERdefMyA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FEE91801804;
+        Thu, 28 May 2020 00:30:31 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (unknown [10.10.110.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C02862932;
+        Thu, 28 May 2020 00:30:30 +0000 (UTC)
+Message-ID: <d60491181553cc89708e40901122399c702ebe63.camel@redhat.com>
+Subject: Re: [PATCH rdma-next v1] IB/ipoib: Fix double free of skb in case
+ of multicast traffic in CM mode
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Valentine Fatiev <valentinef@mellanox.com>,
+        Alaa Hleihel <alaa@mellanox.com>,
+        Alex Vesker <valex@mellanox.com>,
+        Erez Shitrit <erezsh@mellanox.com>, linux-rdma@vger.kernel.org
+Date:   Wed, 27 May 2020 20:30:28 -0400
+In-Reply-To: <20200528001623.GC24561@mellanox.com>
+References: <20200527134705.480068-1-leon@kernel.org>
+         <9cd656241bf31f454a72731de7509a7244353193.camel@redhat.com>
+         <20200528001623.GC24561@mellanox.com>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31)
 MIME-Version: 1.0
-From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
-Date:   Wed, 27 May 2020 17:28:55 -0700
-Message-ID: <CAOc41xFrFtXzJcJPZXm6g-qRmkQAb84f-PNwhsYbiqDhydJXhQ@mail.gmail.com>
-Subject: read/set the RoCEv2 UDP source port with libibverbs
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-2nkdSFL1MFoCVVq67n9W"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+--=-2nkdSFL1MFoCVVq67n9W
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm trying to send data from an embedded device to a Mellanox
-ConnectX-5 without the RDMA connection manager (libibverbs only) using
-RoCEv2.
+On Wed, 2020-05-27 at 21:16 -0300, Jason Gunthorpe wrote:
+> > This seems like a pretty important fix that should go to for-rc, not
+> > for-next.
+> >=20
+> > Regardless, looks good to me.
+> > Acked-by: Doug Ledford <dledford@redhat.com>
+>=20
+> Sure, it looks reasonable for -rc, but the crash is not so common
 
-In Annex 17 (RoCE v2) page 21 it implies both transmitted packets (eg
-SEND FIRST/MIDDLE/LAST) and receiver packets (ACK/NACK) must have the
-same UDP source port:
+Yeah, it's not that easy to trigger, but it's an oops when you do ;-)
 
-  "Consequently, RoCEv2 endnodes set this field so that packets in a
-sequence that has ordering constraints (e.g. packets from a connected
-QP) will all carry a constant value."
+> Applied to for-rc, thanks
 
-It's unclear whether this is a strict protocol requirement but I'm
-trying to access/control that parameter that the card selects to
-transmit ACK packets to the sender.
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-Is there a way to do that from libibverbs ?
+--=-2nkdSFL1MFoCVVq67n9W
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Thanks
-Dimitris
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl7PBiQACgkQuCajMw5X
+L90tEBAAuKKS75GHVfICti1BLMZZasRJGxjGLSCZq9kBTRsCAbRnQd2kJ5wGEmvM
+Vj54IELGMJjX9cJUCa7p+DyVgl7L5P4OdP3eeOiQVoYNzlGTwbvQ3mshkIbiHvbO
+PoVvKcq/PXlVwXxfqsBCqDQzeYQ7MjcHLhOoiKt4Av4C+vdJdhbgOiz8OtLMummh
+BNaz7/38BbfEXXhCzo5WrGiKaCR96JjtlSsQMeqC1gQdG3SlCxZG/+duvnDK5D7n
+Ce9FJoyEyrPAdJto3+jHsthVOMp0G67g7hVyC7DwnDT2OKAYNYhTQQrFrhSvXsc/
+egyLlgQLEmZ6uj3YVDS0QGcjfJOikoRmr6EkFbAfc5SrYI3XsnIOpDxidLGBSjW3
+s1PMcLy/r1RS/hjfDMaU0DQYnsNHrVizBnos09MEYria/phkfib7KHGvGFJyUEWX
+/3r/cBnumSLCxf99k1mLaJVSIJnyOHcATrvcgqVKL+i+Ma3A59StYWKTKAzSDqW/
+IAw33u21snXf/nkSkiWpB0FstojhuQnmAd6dZhIcuGjOBmaBJNX1iVYx3BlGbSL7
+opRFbwPqBTK5pOAYGDcCXTK9aioOAmc352J6PQDjLROh6LVj401DHdaRTFPmBWOJ
+sxQdr/ozE4bkxQAMWuNaJNYle2yaexgZn5I4MH2XCZfCvE38/fM=
+=V3mF
+-----END PGP SIGNATURE-----
+
+--=-2nkdSFL1MFoCVVq67n9W--
+
