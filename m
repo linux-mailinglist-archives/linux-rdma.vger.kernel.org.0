@@ -2,163 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871611E54EB
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 06:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0331E5654
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 07:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgE1ENo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 00:13:44 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49469 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgE1ENo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 May 2020 00:13:44 -0400
-IronPort-SDR: JwEjPIX2xEA1YUBEon8Nr4R4QoJ1ZjRAXShk+0g7UESz1wKm8kI1BR54YsEz4w3yoS3/jQWuXe
- 3klLe0LqWzMA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 21:13:43 -0700
-IronPort-SDR: 1zFmXNKPil5p2zGuFnBbNWDSjAnY6RXwDt15O5xJMZGMXKSev02WrrlrBYuQ/Pqoa7XmJkKF5X
- qZxMAZ7VfQhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
-   d="scan'208";a="414463564"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 27 May 2020 21:13:41 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1je9vJ-000IvP-Ag; Thu, 28 May 2020 12:13:41 +0800
-Date:   Thu, 28 May 2020 12:13:33 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- c85f4abe66bea0b5db8d28d55da760c4fe0a0301
-Message-ID: <5ecf3a6d.yE4tKTL3F1zCJHcU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727916AbgE1FRV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 01:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgE1FNM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 01:13:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213F7C08C5C3;
+        Wed, 27 May 2020 22:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=WsnuuUW/8mNG5XgJndzFDlP4ZHaqtmjvrkyJ/evyN2A=; b=c3NXta7lrMrelp/uYGPfAaa966
+        8FvaQiUf4V98AHB/jCXkfgscBXsFw4O9RoTBbXu69lPUnRpW3L2lwaDhI1JL+c/R+6XC6W1GP/2Wd
+        Cr4aoUNeG+SLIrHNMVjQElvuPUT3WovkTfWaKM44g5p1RhzGtTs19UBh1G8RjOAlg/SRr7CE/PHSp
+        /VVyQt3mSNfWkIGTPN2D+XOMLXnvrbD240ABfnwZp6A9pchmZaJjxwV7O2Div5+NEmg5/VzVz3ZJl
+        MGiO7dqDADVjXVznEmvy0cfLpsTpyGFeUSCFflDRpysUfHCGVw+a/f/NB96VbC/aiG2e20C2e2oeE
+        TiQCXfnQ==;
+Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jeAqN-0001QR-LQ; Thu, 28 May 2020 05:12:40 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, ceph-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net
+Subject: remove most callers of kernel_setsockopt v3
+Date:   Thu, 28 May 2020 07:12:08 +0200
+Message-Id: <20200528051236.620353-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
-branch HEAD: c85f4abe66bea0b5db8d28d55da760c4fe0a0301  RDMA/core: Fix double destruction of uobject
+Hi Dave,
 
-elapsed time: 482m
+this series removes most callers of the kernel_setsockopt functions, and
+instead switches their users to small functions that implement setting a
+sockopt directly using a normal kernel function call with type safety and
+all the other benefits of not having a function call.
 
-configs tested: 104
-configs skipped: 3
+In some cases these functions seem pretty heavy handed as they do
+a lock_sock even for just setting a single variable, but this mirrors
+the real setsockopt implementation unlike a few drivers that just set
+set the fields directly.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-mips                malta_kvm_guest_defconfig
-arm                         socfpga_defconfig
-nds32                             allnoconfig
-mips                          malta_defconfig
-arc                              alldefconfig
-arm                         orion5x_defconfig
-m68k                            mac_defconfig
-arc                     nsimosci_hs_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200527
-i386                 randconfig-a004-20200527
-i386                 randconfig-a003-20200527
-i386                 randconfig-a006-20200527
-i386                 randconfig-a002-20200527
-i386                 randconfig-a005-20200527
-x86_64               randconfig-a006-20200527
-x86_64               randconfig-a002-20200527
-x86_64               randconfig-a005-20200527
-x86_64               randconfig-a003-20200527
-x86_64               randconfig-a004-20200527
-x86_64               randconfig-a001-20200527
-i386                 randconfig-a013-20200527
-i386                 randconfig-a015-20200527
-i386                 randconfig-a012-20200527
-i386                 randconfig-a011-20200527
-i386                 randconfig-a016-20200527
-i386                 randconfig-a014-20200527
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+Changes since v2:
+ - drop the separately merged kernel_getopt_removal
+ - drop the sctp patches, as there is conflicting cleanup going on
+ - add an additional ACK for the rxrpc changes
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Changes since v1:
+ - use ->getname for sctp sockets in dlm
+ - add a new ->bind_add struct proto method for dlm/sctp
+ - switch the ipv6 and remaining sctp helpers to inline function so that
+   the ipv6 and sctp modules are not pulled in by any module that could
+   potentially use ipv6 or sctp connections
+ - remove arguments to various sock_* helpers that are always used with
+   the same constant arguments
