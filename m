@@ -2,235 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4656A1E6B88
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 21:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF851E6C64
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 May 2020 22:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728729AbgE1Tqu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 May 2020 15:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbgE1TqL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 15:46:11 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACD6C008638
-        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2020 12:46:07 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f18so116988qkh.1
-        for <linux-rdma@vger.kernel.org>; Thu, 28 May 2020 12:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DvqrFc5us5AENcnTjWi7Qvd28BVKjzHbaD6hAjCwCcw=;
-        b=jT502ZWeRUKl36e62GyqgPc7+4DvXpdV7yFSipOhkKrUwRNc0wsIQfw6519+BmgIfm
-         F/a6KN0uIBXFZXhZtmT64vVslm+HbXDTLl4O3dSWHUQxCCESahu3qOET7qEGA7Mzuodp
-         x+fBzaLrXQLUetFPSNCoKUH/jQawj1KHKzXR1gE97uLv/6su8RXPOHTIdE58nTOskrE1
-         Q7zWNucYQ3vysm9YNERn+PPpr6u0sGGOb3e2qJQX6CWe8jXoCQ2EAeUQxo6BT+cFAaG4
-         8ONNVmUQV8hkrYIKMpl1wO1kckmMdqjB+xQR7OjKoLdr1YY0Cj7Whmk/JK+uv3eNdccR
-         VVqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DvqrFc5us5AENcnTjWi7Qvd28BVKjzHbaD6hAjCwCcw=;
-        b=XyDGio0sqoAUShUDNhRASF14tZPabKNeOBodrPF6/gq6SF7VHdbX6hMW7/xTVQ0X81
-         nGXwRtJjxMIckm9jQtktvwS6Mr8XYGN3neH7cUX39iUAvcommW6X//J7NXDSsLHvA25N
-         7qtH0X1wfjrTBpIMTo+Jl45NW4zKNQuURXoo6cZI7KWzr9lpmuti5MSPUbKoh1oFWSFU
-         LCkTsAmL8Igd5aGvK3Y2WF8H6bYXk/oYiAAN6b2yhZc36CPOaTEuVZKT3Wthxhvz2b5u
-         ZZAkKdIky5LGl0GJt1MZjXxsVsn+KFmDLNEVFuZgEd/qj+Ku/Y8B22Jq9z6lZk5EWEs9
-         ytUw==
-X-Gm-Message-State: AOAM532P5EiaeXwLDHek2RB6kkLS+RzaaXM0jbT/kIKZc9kVAYpddz+K
-        ka+9rTyYkk9mwIaKruPAVvpyTXEiKa4=
-X-Google-Smtp-Source: ABdhPJxU0xkrYQdgIkToONbqR7fBeqL94pYQ6sbl1O7xo/HJTNTBrMBIGYm9VZhQ3NBTwXXTS4EYIw==
-X-Received: by 2002:a05:620a:749:: with SMTP id i9mr3312130qki.276.1590695166174;
-        Thu, 28 May 2020 12:46:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l2sm3150qtc.80.2020.05.28.12.45.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 May 2020 12:45:57 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jeOTU-0006iU-JH; Thu, 28 May 2020 16:45:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Michal Kalderon <mkalderon@marvell.com>, oren@mellanox.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>, shlomin@mellanox.com,
-        vladimirk@mellanox.com
-Subject: [PATCH v3 13/13] RDMA: Remove 'max_map_per_fmr'
-Date:   Thu, 28 May 2020 16:45:55 -0300
-Message-Id: <13-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
-In-Reply-To: <0-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
-References: 
+        id S2406991AbgE1UVm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 May 2020 16:21:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57550 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406966AbgE1UVl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 May 2020 16:21:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SKBfvb120316;
+        Thu, 28 May 2020 20:21:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=eWfOLK+JWOjw/sInZQyPb6SBSNK+JbSeG6TrByezY/k=;
+ b=v7oeBN8rWa8IubPcqVl8LeXQmGsoyWF0mqZqamu3Rn4dsBVkEsfq9b63qTOyHGOi9vFS
+ QwKJGHWJJoG5YMxiewd2IwLt3U7d1bWJWf4Vax4bqMyz1mEj9k+AG2XMH+GXEwnvsvk7
+ 5qqOaof13r+U9EtTnTPB5wKTMjk6rN/ZKJmJsPJEadpaEgPcvc6JlOUUO5yVVlQ6T94K
+ 2u3r5T+ZatcwVy9Uy8GGF1/K6bQOxBmmeBX6lHnbk/mzuVwA9PYm56e3dycTE8XEgbkz
+ ruk0lyk/WhyUxIITlCS5LpRgDjBUhykdEBx6c98W/dtCtL4x4IgxY0vHUXZPJOrBZIoV +A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 316u8r74gt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 May 2020 20:21:38 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04SK7e1n148116;
+        Thu, 28 May 2020 20:21:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 317j5wanwp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 May 2020 20:21:37 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04SKLa7f031371;
+        Thu, 28 May 2020 20:21:36 GMT
+Received: from [10.74.106.237] (/10.74.106.237)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 May 2020 13:21:35 -0700
+Subject: Re: [PATCH v3 03/13] RDMA/rds: Remove FMR support for memory
+ registration
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     aron.silverton@oracle.com, Max Gurtovoy <maxg@mellanox.com>,
+        oren@mellanox.com, shlomin@mellanox.com, vladimirk@mellanox.com
+References: <3-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <27824c0c-06ba-40dd-34c2-2888fe8db5c8@oracle.com>
+Date:   Thu, 28 May 2020 13:21:33 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005280132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9635 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 suspectscore=0
+ phishscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005280132
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+On 5/28/20 12:45 PM, Jason Gunthorpe wrote:
+> From: Max Gurtovoy <maxg@mellanox.com>
+> 
+> Use FRWR method for memory registration by default and remove the ancient
+> and unsafe FMR method.
+> 
+> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
-Now that FMR support is gone, this attribute can be deleted from all
-places.
+> ---
+>   net/rds/Makefile  |   2 +-
+>   net/rds/ib.c      |  20 ++--
+>   net/rds/ib.h      |   2 -
+>   net/rds/ib_cm.c   |   4 +-
+>   net/rds/ib_fmr.c  | 269 ----------------------------------------------
+>   net/rds/ib_frmr.c |   4 +-
+>   net/rds/ib_mr.h   |  14 +--
+>   net/rds/ib_rdma.c |  28 ++---
+>   8 files changed, 21 insertions(+), 322 deletions(-)
+>   delete mode 100644 net/rds/ib_fmr.c
+> 
+Patch looks accurate to me Jason/Max. I wanted to get few regression
+tests run with it before providing the ack. Will send a note once
+its tested ok.
 
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc: Faisal Latif <faisal.latif@intel.com>
-Cc: Shiraz Saleem <shiraz.saleem@intel.com>
-Cc: Leon Romanovsky <leonro@mellanox.com>
-Cc: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Devesh Sharma <devesh.sharma@broadcom.com>
-Cc: Michal Kalderon <mkalderon@marvell.com>
----
- drivers/infiniband/core/uverbs_cmd.c         |  1 -
- drivers/infiniband/hw/hfi1/verbs.c           |  1 -
- drivers/infiniband/hw/i40iw/i40iw_verbs.c    |  1 -
- drivers/infiniband/hw/mlx5/main.c            |  1 -
- drivers/infiniband/hw/mthca/mthca_provider.c | 10 ----------
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  |  1 -
- drivers/infiniband/hw/qedr/verbs.c           |  1 -
- drivers/infiniband/hw/qib/qib_verbs.c        |  1 -
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c |  1 -
- include/rdma/ib_verbs.h                      |  1 -
- 10 files changed, 19 deletions(-)
-
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 56d207405dbd1c..b48b3f6e632d46 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -356,7 +356,6 @@ static void copy_query_dev_fields(struct ib_ucontext *ucontext,
- 	resp->max_mcast_qp_attach	= attr->max_mcast_qp_attach;
- 	resp->max_total_mcast_qp_attach	= attr->max_total_mcast_qp_attach;
- 	resp->max_ah			= attr->max_ah;
--	resp->max_map_per_fmr		= attr->max_map_per_fmr;
- 	resp->max_srq			= attr->max_srq;
- 	resp->max_srq_wr		= attr->max_srq_wr;
- 	resp->max_srq_sge		= attr->max_srq_sge;
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index 43ddced15951b7..30865635b44991 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -1361,7 +1361,6 @@ static void hfi1_fill_device_attr(struct hfi1_devdata *dd)
- 	rdi->dparms.props.max_cq = hfi1_max_cqs;
- 	rdi->dparms.props.max_ah = hfi1_max_ahs;
- 	rdi->dparms.props.max_cqe = hfi1_max_cqes;
--	rdi->dparms.props.max_map_per_fmr = 32767;
- 	rdi->dparms.props.max_pd = hfi1_max_pds;
- 	rdi->dparms.props.max_qp_rd_atom = HFI1_MAX_RDMA_ATOMIC;
- 	rdi->dparms.props.max_qp_init_rd_atom = 255;
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index 1b6fb13809619d..19af29a48c5593 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -83,7 +83,6 @@ static int i40iw_query_device(struct ib_device *ibdev,
- 	props->max_qp_rd_atom = I40IW_MAX_IRD_SIZE;
- 	props->max_qp_init_rd_atom = props->max_qp_rd_atom;
- 	props->atomic_cap = IB_ATOMIC_NONE;
--	props->max_map_per_fmr = 1;
- 	props->max_fast_reg_page_list_len = I40IW_MAX_PAGES_PER_FMR;
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 6557c83391614c..d5b3cffd5a8409 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -999,7 +999,6 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
- 	props->max_mcast_qp_attach = MLX5_CAP_GEN(mdev, max_qp_mcg);
- 	props->max_total_mcast_qp_attach = props->max_mcast_qp_attach *
- 					   props->max_mcast_grp;
--	props->max_map_per_fmr = INT_MAX; /* no limit in ConnectIB */
- 	props->max_ah = INT_MAX;
- 	props->hca_core_clock = MLX5_CAP_GEN(mdev, device_frequency_khz);
- 	props->timestamp_mask = 0x7FFFFFFFFFFFFFFFULL;
-diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-index de2124a8ee2be6..9fa2f9164a47b6 100644
---- a/drivers/infiniband/hw/mthca/mthca_provider.c
-+++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-@@ -118,16 +118,6 @@ static int mthca_query_device(struct ib_device *ibdev, struct ib_device_attr *pr
- 	props->max_mcast_qp_attach = MTHCA_QP_PER_MGM;
- 	props->max_total_mcast_qp_attach = props->max_mcast_qp_attach *
- 					   props->max_mcast_grp;
--	/*
--	 * If Sinai memory key optimization is being used, then only
--	 * the 8-bit key portion will change.  For other HCAs, the
--	 * unused index bits will also be used for FMR remapping.
--	 */
--	if (mdev->mthca_flags & MTHCA_FLAG_SINAI_OPT)
--		props->max_map_per_fmr = 255;
--	else
--		props->max_map_per_fmr =
--			(1 << (32 - ilog2(mdev->limits.num_mpts))) - 1;
- 
- 	err = 0;
-  out:
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-index 890e3fd41d2199..d11c74390a1242 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-@@ -99,7 +99,6 @@ int ocrdma_query_device(struct ib_device *ibdev, struct ib_device_attr *attr,
- 	attr->max_mw = dev->attr.max_mw;
- 	attr->max_pd = dev->attr.max_pd;
- 	attr->atomic_cap = 0;
--	attr->max_map_per_fmr = 0;
- 	attr->max_qp_rd_atom =
- 	    min(dev->attr.max_ord_per_qp, dev->attr.max_ird_per_qp);
- 	attr->max_qp_init_rd_atom = dev->attr.max_ord_per_qp;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index ca88006eaa667c..9b9e802663674c 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -145,7 +145,6 @@ int qedr_query_device(struct ib_device *ibdev,
- 	attr->max_mw = qattr->max_mw;
- 	attr->max_pd = qattr->max_pd;
- 	attr->atomic_cap = dev->atomic_cap;
--	attr->max_map_per_fmr = 16;
- 	attr->max_qp_init_rd_atom =
- 	    1 << (fls(qattr->max_qp_req_rd_atomic_resc) - 1);
- 	attr->max_qp_rd_atom =
-diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
-index 7508abb6a0fa1e..7acf9ba5358a41 100644
---- a/drivers/infiniband/hw/qib/qib_verbs.c
-+++ b/drivers/infiniband/hw/qib/qib_verbs.c
-@@ -1460,7 +1460,6 @@ static void qib_fill_device_attr(struct qib_devdata *dd)
- 	rdi->dparms.props.max_cq = ib_qib_max_cqs;
- 	rdi->dparms.props.max_cqe = ib_qib_max_cqes;
- 	rdi->dparms.props.max_ah = ib_qib_max_ahs;
--	rdi->dparms.props.max_map_per_fmr = 32767;
- 	rdi->dparms.props.max_qp_rd_atom = QIB_MAX_RDMA_ATOMIC;
- 	rdi->dparms.props.max_qp_init_rd_atom = 255;
- 	rdi->dparms.props.max_srq = ib_qib_max_srqs;
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-index 71f82339446c29..b8a77ce1159086 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-@@ -322,7 +322,6 @@ int usnic_ib_query_device(struct ib_device *ibdev,
- 	props->max_mcast_grp = 0;
- 	props->max_mcast_qp_attach = 0;
- 	props->max_total_mcast_qp_attach = 0;
--	props->max_map_per_fmr = 0;
- 	/* Owned by Userspace
- 	 * max_qp_wr, max_sge, max_sge_rd, max_cqe */
- 	mutex_unlock(&us_ibdev->usdev_lock);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index a84f91c2816add..4926508bbd9be9 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -430,7 +430,6 @@ struct ib_device_attr {
- 	int			max_mcast_qp_attach;
- 	int			max_total_mcast_qp_attach;
- 	int			max_ah;
--	int			max_map_per_fmr;
- 	int			max_srq;
- 	int			max_srq_wr;
- 	int			max_srq_sge;
--- 
-2.26.2
-
+Regards,
+Santosh
