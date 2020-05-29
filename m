@@ -2,142 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D854E1E7ED9
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2020 15:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4801E7FF5
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2020 16:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgE2Neo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 May 2020 09:34:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59265 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbgE2Nen (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 May 2020 09:34:43 -0400
-IronPort-SDR: vcDZTYIGcvYaYu08piN6SfhGb6b9GCPIx3dch9obX5zIVMF4LTX+krZO3PgCS8TSr6b8dbG8ip
- O4CTBQlOm8wg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2020 06:34:42 -0700
-IronPort-SDR: Z6Hbs3H2YsnEPwDEjLEuqNWfNkrmnyWLTl58a0QkOYsuFQ5CvejQsycf9ABbyFQfq32JjiD6wM
- ocTsh2MMCHoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,448,1583222400"; 
-   d="scan'208";a="271216833"
-Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
-  by orsmga006.jf.intel.com with ESMTP; 29 May 2020 06:34:42 -0700
-Received: from orsmsx122.amr.corp.intel.com (10.22.225.227) by
- ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 29 May 2020 06:34:42 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- ORSMSX122.amr.corp.intel.com (10.22.225.227) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 29 May 2020 06:34:42 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 29 May 2020 06:34:41 -0700
+        id S1727027AbgE2OQF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 May 2020 10:16:05 -0400
+Received: from mail-eopbgr140078.outbound.protection.outlook.com ([40.107.14.78]:12862
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726593AbgE2OQE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 May 2020 10:16:04 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oAWSVQyAx7Pdsz7oUFrfs04ilbsCjam6DvxkmMC6jrh6kt2ZNHahK9ESj2/ssWekhR/ZLMH0+QXcq0ZzU1iUde8jdAFRE7AO0TKDjZh/W3y+7Qe+v86wl4lrbvawf8JXgrV4asHWTB+5cPx66/6+OqPxalyangNw66eHnuGxoEA6GZ+Jtmmep5CpvAmgk3WqNKTlY1RxQfQR9x6R/0dVP54L1zkH8L9wtprz0wNxPVGXpxNSNTmazeKiYF4bYC5qbTiAzSeW9aDZYQ3MdPztvf9v0TclzUfDa5Jn5poxCM7/VtbhsRfRNmswkUhxueumFortlafEqv6zDJFIKvDjnw==
+ b=iJQxbMVT/hbGRZDnXFEg+sBzfy00eXcXPDIWldFrXodfvxPbwdHnM0y3zoDFjbh9eDSicYaZ9A4ljmCg1vzGDpa7dImuDXgyyG78zl2XEkfzQz6YB7NlFIjXIeE89zZfU7rOYYY8aMZI8vigPMwkq2NlZTkuJtaqH7m11gHbSVVLJxJg5qXksEOpQSABAV+PlfkWGzERtv20K7lYuzpSAlmDuiwYZX7ij/yJ6tuuBox/iEXb2/VEcxRlKwu2+kzdNaVOCIATuSwDCDE/qlGQMfJZ9WKNLDfcKT+ePlNRzjUBmByhNrSq4OMskkJeNzahbptwVgDFYk9ptHl3Lpwt4w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uw/frJ3dpTzq20kTp5YJXclz7XUIeqE6EYoRC5xztH4=;
- b=lM1mUk4xk50B9lpPfypMpNC71Wf8beZEozE6T/XS2VG9xmKyoh9ZsEc+o1ubhusONAdcd/MSXekGTzYYpd4PqsNnaUOD4L/2OLoPc4brdQXZLJ2TRtfd/IUw/DWIESnh+0iok/bNQSTP02r3dTRHbXeKLOfEFraYcdHk6zpiOfXh77uXeb9nQEKoy77ALwJgrDiDwOldGC4teI3eEY7vYMNW3iZcAkHt29Tgjsgauov8IEdMzPEDfT2vrgcTvkZgV1k9Yp+6oH5zGsZkAofPqLT7OMY17pS8PjwlntODZUoaOSytpY23QVrdX1YVzjEzF2tPaeMR1u4ddhhWMwn42g==
+ bh=RBQL55MA2lg4kJGjy+0KzdCTo2QOZh+3nmd6IStSn+k=;
+ b=XbaOXiSFeJlOr3N3CdxBR2TZc4qbeiq3Vi5dwuIGCPYCarRrPcEDGYS9rh0sdcvQrfUU4ngiWF7RtFWzqlzcv4CYYUn08VMe7yxjMUJPHGVR8uBmXo+s/9eqOzhzyJWHv4qPS1dalCntqiRzTypWzwyYLuRgZR30/WGx6dbMIv886jpnlRBdT1+Ea50pvLyOem1NCanxjEZz3gOSFSlR9MaZVcPhezjojMr6vInK/QCiqofsC2n6AHNngLgvaydj0Bmcu1AMcjRXgGD8YPpHBPzmDgtyzzISIURzoykdmwuyACrHcSvK3tI09txN+0Hz1Hc1kcjlKJ66fs2bsH7LUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uw/frJ3dpTzq20kTp5YJXclz7XUIeqE6EYoRC5xztH4=;
- b=CuWCSVvdrrzQeADku0A+ZvhBDsw02g4CJk7/J00ixqTmQRLJooFKqDNLUlgWJ2RGaQVPJhicCwrwiLCvdRkH5okbz812FyCzdLJUYpzSPdInXvdzYuL+do2hKtKKVcxnd3yJygyEWcZ5tJTwgBk0soV3gXDZrPAN+DPnv6vHZWM=
-Received: from BY5PR11MB3958.namprd11.prod.outlook.com (2603:10b6:a03:18e::19)
- by BY5PR11MB4008.namprd11.prod.outlook.com (2603:10b6:a03:186::16) with
+ bh=RBQL55MA2lg4kJGjy+0KzdCTo2QOZh+3nmd6IStSn+k=;
+ b=qElBwbQO2+9gv5TwKqQ6JuV8EZJ0Ab3v/7KpwNXv6h13ZVJ2clARO625dOPKukjiaQ7SUu96kbDEvBdOnu+hQUp1rt9yBx1hnVFUeDdvSMTMoW470QPtcc0If23DQ1JgcrR6Tru/hzAOKsTufvQb/fvO5LO0I4XbZKyGf2IxcGg=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB5344.eurprd05.prod.outlook.com (2603:10a6:803:a5::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Fri, 29 May
- 2020 13:34:06 +0000
-Received: from BY5PR11MB3958.namprd11.prod.outlook.com
- ([fe80::3989:158:8990:7125]) by BY5PR11MB3958.namprd11.prod.outlook.com
- ([fe80::3989:158:8990:7125%6]) with mapi id 15.20.3045.018; Fri, 29 May 2020
- 13:34:06 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        "Andrejczuk, Grzegorz" <grzegorz.andrejczuk@intel.com>
-CC:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "Vishwanathapura, Niranjana" <niranjana.vishwanathapura@intel.com>,
-        "Kacprowski, Andrzej" <Andrzej.Kacprowski@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH] IB/hfi1: Fix an error code in hfi1_vnic_init()
-Thread-Topic: [PATCH] IB/hfi1: Fix an error code in hfi1_vnic_init()
-Thread-Index: AQHWNaC6wvf9hJ7CpE+SvKSLWbzsSqi/D6IA
-Date:   Fri, 29 May 2020 13:34:06 +0000
-Message-ID: <BY5PR11MB3958CF61BB1F59A6F6B5234D868F0@BY5PR11MB3958.namprd11.prod.outlook.com>
-References: <20200529100302.GC1304852@mwanda>
-In-Reply-To: <20200529100302.GC1304852@mwanda>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.136.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 17ff7123-6ca8-4f5f-c48e-08d803d4f5e4
-x-ms-traffictypediagnostic: BY5PR11MB4008:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB4008BF34238406AF9F649A90868F0@BY5PR11MB4008.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-forefront-prvs: 04180B6720
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FsGdE0U1L9u60YIHY+OVQs/mZmWrD1oLsZvXqicMz4r3qpXp6Z+8M/3xuk27QbI9Z1j0P1cYyF03+RnCI3v10DK6o1cGQqhqPzMnjglTlRjpVBckvG666UWgIRttXQ0vXH8iSKwCJAhUvHz/85ojKPHwlrmYzYz9BxsGLRR2TDskhyVYqzaeYnpBWOqKklcVEr6eeaCca6C1MVQWOk8/SI3NvlnFx6UJdnjpzGZ6EsRBBcT+x4fPpyz9UYPOvJ4t3JT5ZOqv5JRZnY+hZZlyA0PYWHFaeu5Sg15DsDtUbYmpdhH9Bb+8lBYmMkbg2G0z
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3958.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(39860400002)(376002)(346002)(366004)(66556008)(6506007)(66476007)(71200400001)(66946007)(7696005)(55016002)(76116006)(8676002)(4326008)(186003)(8936002)(5660300002)(52536014)(26005)(4744005)(110136005)(86362001)(64756008)(2906002)(66446008)(478600001)(316002)(54906003)(33656002)(9686003)(6636002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 3OBwvPaKw+4oPpvIx0/9b3IdSek4FBSkm6dG/mivI+dbpQ5+1PTunY4fRBqqiCZ8UORrGzyp4rmKV9tZiQRmlh2bmBKjlJDIAQg+xVzdi7ThhhUSeUXaqB6bYkkwB9oJze0aKkn+oA6lDPy4G2CDQ4Ogk19g/tBEWwvlrTStH6EKRNeEsl3AbhAMUXYyNSHzTIfxndABmAvM4lDd8SibHcMeb1TT4APUKY0JNDybhC35Lcn54LMV/mAv0Flm1rk3gYCEdJZdLbTdZG1C+41/2oEf2lhL7bSqIDvOypBLS4bN9nnXZI51bppejh4O6H2Olr2GBbG2vvC50AJTDu664NfUMGr7WHaSLudXDbRg2gk/3PM7EnMpOAqTu34hh+xd06Kmu1ZmayBdleRG1uQf6sAMM4x9LLVv0qWlLPWbwbdQyy5+dWfZBrecf52Lde5MjpVrmjuflzkemSBisYfTHH2lkN4aOphcFWTilpyqFi537TsloBgsc2gxz9stZiX0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2020 14:16:01 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3045.018; Fri, 29 May 2020
+ 14:16:01 +0000
+Date:   Fri, 29 May 2020 11:15:56 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20200529141556.GA30959@ziepe.ca>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR03CA0017.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::22) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17ff7123-6ca8-4f5f-c48e-08d803d4f5e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 May 2020 13:34:06.4296
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0017.namprd03.prod.outlook.com (2603:10b6:208:23a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Fri, 29 May 2020 14:15:59 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jefng-000856-5j; Fri, 29 May 2020 11:15:56 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d5062a09-1b13-4e77-8dba-08d803dacff0
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5344:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB5344E65AC66924D263627C83CF8F0@VI1PR05MB5344.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:556;
+X-Forefront-PRVS: 04180B6720
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JCrgZ0GYeYCdQncX8EJHHK2EIdftSZhT1X/symwpspn2Q2a9qv2nISJDMuaMVZqoGRtyAXkgiMw+CyK7flgNX7fZtXaxda61Dzg3xivXOx/7VQCFuj/cd+huqsC3aXwXi9/IB6BKPQRRKV6LcVuGqt2ej8g2pkzzoHjZvo+GVKOykd0aQa6aqTUBM0lgFAL+hkEDmHYg/stFvf7+7JZDh8yKZz3dFmdwtSg3c3MspDNP8lEAFFmKKqvKotjpuQoA6hr2Qg01+nkNd4ENeS3w3ewKnAdCSarsNEAykIVOw7wfioAdxBjXsTk8mi5XaO0KmTWBSax71E7EfHiAegvysukOQE9I55VlCOrlXEpug2sybDYepGO0XZZG1gtN8aeTc4TVaO8Iw/bHpQ83rL1BE14Fj/j9iUxoC6yJIMaFpTk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(44144004)(110136005)(8936002)(5660300002)(9686003)(9786002)(4326008)(186003)(26005)(9746002)(36756003)(33656002)(1076003)(8676002)(2906002)(66476007)(478600001)(66946007)(21480400003)(86362001)(316002)(83380400001)(66556008)(24400500001)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: fA3IZQhKHw5yYV+jhqVyMAvI/grwG/1vxxEXQ9o8XeYapzsFOFSsN/Dm8fvXz0GwD/TD5LEOtXfUsJ6VjDVVjp8kj9Qes+m1hiusvgU1P+VeHio682DPAYspkyLxSDnnstBHXK08muJiuHVLsz+ZJ7+aaKoQgfPhVioImVvuez0vlGfH8uOGMvn7URwBNhyF1vHWbc2qhvaSY32NUwxSGzdouZvLfwBur6ofuQIaaWkGEe5+Iv1nblM/jic57TU2BZ89bgeC5tCgVYKEXH0ERvir+uofcoDM0HCMahg8X64eD7bBKhQbrF2NWIx8caaGFRI41YN24Tj1/EbJMnNfZpgHAvzVGxsmWgVmE1B0iEQ26YreSpLybfB/D7lS4AHW4gBEwxadawBtZZCPg2qT0gSFs3iUAwILo9lQzUtiZLyETgG7CHotHENrEnr0eAGHtf96d5wtPJwgLuyryqieTcVi/IyWVb89RopOjf+aiwo=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5062a09-1b13-4e77-8dba-08d803dacff0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2020 14:16:00.8262
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pe0nNjptBN1pyXkBrvA7CsIgEtz4eFSqynaKTe1sx6izzs14/KxHVIWLWWjJywV/vs1U8nVEN4Um0iDdejayKKKkKvfCeIJLPWDTdtUebIY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4008
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZfmOUsXW/vichIpvhVAyrrwllTQklFIXw0KH+l2EwiS16K4LU7WZqd/76LQKXqhgaT60ruWqpwLDhflOBIVa0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5344
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Dan Carpenter <dan.carpenter@oracle.com>
-> diff --git a/drivers/infiniband/hw/hfi1/vnic_main.c
-> b/drivers/infiniband/hw/hfi1/vnic_main.c
-> index b183c56b7b6a4..f89d0cb1c7204 100644
-> --- a/drivers/infiniband/hw/hfi1/vnic_main.c
-> +++ b/drivers/infiniband/hw/hfi1/vnic_main.c
-> @@ -512,7 +512,8 @@ static int hfi1_vnic_init(struct hfi1_vnic_vport_info
-> *vinfo)
->  			goto txreq_fail;
->  	}
->=20
-> -	if (hfi1_netdev_rx_init(dd)) {
-> +	rc =3D hfi1_netdev_rx_init(dd);
-> +	if (rc) {
->  		dd_dev_err(dd, "Unable to initialize netdev contexts\n");
->  		goto alloc_fail;
->  	}
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Dan,
+Hi Linus,
 
-This is definitely wrong, but another call to  hfi1_netdev_rx_init() exists=
- in hfi1_vnic_up()  that needs to be fixed.
+Third rc pull request
 
-Can you address that too?
+Nothing profound here, just a last set of long standing bug fixes for 5.7
 
-Mike
+The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
+
+  Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to 1acba6a817852d4aa7916d5c4f2c82f702ee9224:
+
+  IB/ipoib: Fix double free of skb in case of multicast traffic in CM mode (2020-05-27 21:14:09 -0300)
+
+----------------------------------------------------------------
+Third RDMA 5.7 rc pull request
+
+A few bug fixes:
+
+- Incorrect error unwind in qib and pvrdma
+
+- User triggerable NULL pointer crash in mlx5 with ODP prefetch
+
+- syzkaller RCU race in uverbs
+
+- Rare double free crash in ipoib
+
+----------------------------------------------------------------
+Jason Gunthorpe (1):
+      RDMA/core: Fix double destruction of uobject
+
+Kaike Wan (1):
+      IB/qib: Call kobject_put() when kobject_init_and_add() fails
+
+Maor Gottlieb (1):
+      RDMA/mlx5: Fix NULL pointer dereference in destroy_prefetch_work
+
+Qiushi Wu (1):
+      RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()
+
+Valentine Fatiev (1):
+      IB/ipoib: Fix double free of skb in case of multicast traffic in CM mode
+
+ drivers/infiniband/core/rdma_core.c            | 20 +++++++++++++-------
+ drivers/infiniband/hw/mlx5/mr.c                |  1 +
+ drivers/infiniband/hw/qib/qib_sysfs.c          |  9 +++++----
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  2 +-
+ drivers/infiniband/ulp/ipoib/ipoib.h           |  4 ++++
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c        | 15 +++++++++------
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c        |  9 +++++++--
+ drivers/infiniband/ulp/ipoib/ipoib_main.c      | 10 ++++++----
+ include/rdma/uverbs_std_types.h                |  2 +-
+ 9 files changed, 47 insertions(+), 25 deletions(-)
+
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl7RGRkACgkQOG33FX4g
+mxoOgg//Wj7EALhpAMobWu5ubtuDlm66hwTTEMXo0dpRRi31pnf7+SJ7EXr9XrL3
+HwqDmKQMzhPJFd73C4+SUVIdrdZDba7ZVylCBtPMH0Rw5WclrFT35JEEW62M9HHV
+YAk3hB4Fc+Tn4k8L8jdFRLB2bMYDqPqqhR0GKegx7OVo2pVTb2ZnSG5wYbdAH2A9
+h090Gtfhhdp3r0E8mfShxeNbuJYrk8RgadjgEUQq7eM2kZJmtLTeie2IZ0wbkbmy
+I/AGJs+stLvS2MCK6k+KHne5HLXrWHTpT46fT0vCyKg/1fKs5XUWbQvmSOXt4Wzu
+yzi8e5PeirUlPqwqrPObiP2uLbo8Eij1rGw3gJ1NLUkjZxKP53TlO4qVDuWTGn40
+Ud/fHuhzeI/iKD8DitUpIDCEGjuC/93vw1ly1HkH12GV+FkVSWZ2N/sLYcH2OLED
+x5GNR7oqe1F3DP21Ilghin/822EEwFrd345119Jgf8szYI6b4AhJhadV2Q5UwEyX
+P7zVk0mxuq3WzZf3gJBHQfaD9pGxgg44KnLkwi76S4mh/lEn9AkArFKVs9PfLLqG
+9LoBJue2OXG23YPYhx49h9oV7PXPLRTMu35GOJ5HkscvYwo3LGJYA4PIApsFydi1
+UaSL+9FCtQ7JpENY+YUjBRuLPR6hGnW8RAWoYKyf9bRpQ58ACdY=
+=to3N
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
