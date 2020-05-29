@@ -2,168 +2,364 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4801E7FF5
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2020 16:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330D51E80FF
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 May 2020 16:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgE2OQF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 May 2020 10:16:05 -0400
-Received: from mail-eopbgr140078.outbound.protection.outlook.com ([40.107.14.78]:12862
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726593AbgE2OQE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 May 2020 10:16:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iJQxbMVT/hbGRZDnXFEg+sBzfy00eXcXPDIWldFrXodfvxPbwdHnM0y3zoDFjbh9eDSicYaZ9A4ljmCg1vzGDpa7dImuDXgyyG78zl2XEkfzQz6YB7NlFIjXIeE89zZfU7rOYYY8aMZI8vigPMwkq2NlZTkuJtaqH7m11gHbSVVLJxJg5qXksEOpQSABAV+PlfkWGzERtv20K7lYuzpSAlmDuiwYZX7ij/yJ6tuuBox/iEXb2/VEcxRlKwu2+kzdNaVOCIATuSwDCDE/qlGQMfJZ9WKNLDfcKT+ePlNRzjUBmByhNrSq4OMskkJeNzahbptwVgDFYk9ptHl3Lpwt4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBQL55MA2lg4kJGjy+0KzdCTo2QOZh+3nmd6IStSn+k=;
- b=XbaOXiSFeJlOr3N3CdxBR2TZc4qbeiq3Vi5dwuIGCPYCarRrPcEDGYS9rh0sdcvQrfUU4ngiWF7RtFWzqlzcv4CYYUn08VMe7yxjMUJPHGVR8uBmXo+s/9eqOzhzyJWHv4qPS1dalCntqiRzTypWzwyYLuRgZR30/WGx6dbMIv886jpnlRBdT1+Ea50pvLyOem1NCanxjEZz3gOSFSlR9MaZVcPhezjojMr6vInK/QCiqofsC2n6AHNngLgvaydj0Bmcu1AMcjRXgGD8YPpHBPzmDgtyzzISIURzoykdmwuyACrHcSvK3tI09txN+0Hz1Hc1kcjlKJ66fs2bsH7LUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBQL55MA2lg4kJGjy+0KzdCTo2QOZh+3nmd6IStSn+k=;
- b=qElBwbQO2+9gv5TwKqQ6JuV8EZJ0Ab3v/7KpwNXv6h13ZVJ2clARO625dOPKukjiaQ7SUu96kbDEvBdOnu+hQUp1rt9yBx1hnVFUeDdvSMTMoW470QPtcc0If23DQ1JgcrR6Tru/hzAOKsTufvQb/fvO5LO0I4XbZKyGf2IxcGg=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5344.eurprd05.prod.outlook.com (2603:10a6:803:a5::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Fri, 29 May
- 2020 14:16:01 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3045.018; Fri, 29 May 2020
- 14:16:01 +0000
-Date:   Fri, 29 May 2020 11:15:56 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20200529141556.GA30959@ziepe.ca>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR03CA0017.namprd03.prod.outlook.com
- (2603:10b6:208:23a::22) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1726907AbgE2Oya convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 29 May 2020 10:54:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3150 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726901AbgE2Oy3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 May 2020 10:54:29 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04TEXEpX086798
+        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2020 10:54:27 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31as1b245p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 29 May 2020 10:54:26 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 29 May 2020 14:54:24 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 29 May 2020 14:54:15 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020052914541423-481199 ;
+          Fri, 29 May 2020 14:54:14 +0000 
+In-Reply-To: <12-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        "Ariel Elior" <aelior@marvell.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@intel.com>,
+        "Devesh Sharma" <devesh.sharma@broadcom.com>,
+        "Max Gurtovoy" <maxg@mellanox.com>,
+        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
+        "Michal Kalderon" <mkalderon@marvell.com>, oren@mellanox.com,
+        "Selvin Xavier" <selvin.xavier@broadcom.com>, shlomin@mellanox.com,
+        vladimirk@mellanox.com
+Date:   Fri, 29 May 2020 14:54:14 +0000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0017.namprd03.prod.outlook.com (2603:10b6:208:23a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Fri, 29 May 2020 14:15:59 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jefng-000856-5j; Fri, 29 May 2020 11:15:56 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d5062a09-1b13-4e77-8dba-08d803dacff0
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5344:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB5344E65AC66924D263627C83CF8F0@VI1PR05MB5344.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:556;
-X-Forefront-PRVS: 04180B6720
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JCrgZ0GYeYCdQncX8EJHHK2EIdftSZhT1X/symwpspn2Q2a9qv2nISJDMuaMVZqoGRtyAXkgiMw+CyK7flgNX7fZtXaxda61Dzg3xivXOx/7VQCFuj/cd+huqsC3aXwXi9/IB6BKPQRRKV6LcVuGqt2ej8g2pkzzoHjZvo+GVKOykd0aQa6aqTUBM0lgFAL+hkEDmHYg/stFvf7+7JZDh8yKZz3dFmdwtSg3c3MspDNP8lEAFFmKKqvKotjpuQoA6hr2Qg01+nkNd4ENeS3w3ewKnAdCSarsNEAykIVOw7wfioAdxBjXsTk8mi5XaO0KmTWBSax71E7EfHiAegvysukOQE9I55VlCOrlXEpug2sybDYepGO0XZZG1gtN8aeTc4TVaO8Iw/bHpQ83rL1BE14Fj/j9iUxoC6yJIMaFpTk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(44144004)(110136005)(8936002)(5660300002)(9686003)(9786002)(4326008)(186003)(26005)(9746002)(36756003)(33656002)(1076003)(8676002)(2906002)(66476007)(478600001)(66946007)(21480400003)(86362001)(316002)(83380400001)(66556008)(24400500001)(2700100001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: fA3IZQhKHw5yYV+jhqVyMAvI/grwG/1vxxEXQ9o8XeYapzsFOFSsN/Dm8fvXz0GwD/TD5LEOtXfUsJ6VjDVVjp8kj9Qes+m1hiusvgU1P+VeHio682DPAYspkyLxSDnnstBHXK08muJiuHVLsz+ZJ7+aaKoQgfPhVioImVvuez0vlGfH8uOGMvn7URwBNhyF1vHWbc2qhvaSY32NUwxSGzdouZvLfwBur6ofuQIaaWkGEe5+Iv1nblM/jic57TU2BZ89bgeC5tCgVYKEXH0ERvir+uofcoDM0HCMahg8X64eD7bBKhQbrF2NWIx8caaGFRI41YN24Tj1/EbJMnNfZpgHAvzVGxsmWgVmE1B0iEQ26YreSpLybfB/D7lS4AHW4gBEwxadawBtZZCPg2qT0gSFs3iUAwILo9lQzUtiZLyETgG7CHotHENrEnr0eAGHtf96d5wtPJwgLuyryqieTcVi/IyWVb89RopOjf+aiwo=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5062a09-1b13-4e77-8dba-08d803dacff0
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2020 14:16:00.8262
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZfmOUsXW/vichIpvhVAyrrwllTQklFIXw0KH+l2EwiS16K4LU7WZqd/76LQKXqhgaT60ruWqpwLDhflOBIVa0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5344
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <12-v3-f58e6669d5d3+2cf-fmr_removal_jgg@mellanox.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
+X-KeepSent: 78FEA9FD:1742AE45-00258577:0051870C;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 62691
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20052914-1429-0000-0000-000002153B00
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000259
+X-IBM-SpamModules-Versions: BY=3.00013187; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01383825; UDB=6.00740078; IPR=6.01166097;
+ MB=3.00032375; MTD=3.00000008; XFM=3.00000015; UTC=2020-05-29 14:54:22
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-05-29 08:17:51 - 6.00011419
+x-cbparentid: 20052914-1430-0000-0000-0000D0703DC0
+Message-Id: <OF78FEA9FD.1742AE45-ON00258577.0051870C-00258577.0051DEBC@notes.na.collabserv.com>
+Subject: Re:  [PATCH v3 12/13] RDMA: Remove 'max_fmr'
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-29_07:2020-05-28,2020-05-29 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---oyUTqETQ0mS9luUI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Hi Linus,
+>To: linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 05/28/2020 09:46PM
+>Cc: "Ariel Elior" <aelior@marvell.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, "Dennis Dalessandro"
+><dennis.dalessandro@intel.com>, "Devesh Sharma"
+><devesh.sharma@broadcom.com>, "Max Gurtovoy" <maxg@mellanox.com>,
+>"Mike Marciniszyn" <mike.marciniszyn@intel.com>, "Michal Kalderon"
+><mkalderon@marvell.com>, oren@mellanox.com, "Selvin Xavier"
+><selvin.xavier@broadcom.com>, shlomin@mellanox.com,
+>vladimirk@mellanox.com
+>Subject: [EXTERNAL] [PATCH v3 12/13] RDMA: Remove 'max_fmr'
+>
+>From: Jason Gunthorpe <jgg@mellanox.com>
+>
+>Now that FMR support is gone, this attribute can be deleted from all
+>places.
+>
+>Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+>Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>Cc: Bernard Metzler <bmt@zurich.ibm.com>
+>Cc: Selvin Xavier <selvin.xavier@broadcom.com>
+>Cc: Devesh Sharma <devesh.sharma@broadcom.com>
+>Cc: Michal Kalderon <mkalderon@marvell.com>
+>Cc: Ariel Elior <aelior@marvell.com>
+>Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
+>Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
+>---
+> drivers/infiniband/core/uverbs_cmd.c        | 1 -
+> drivers/infiniband/hw/ocrdma/ocrdma.h       | 1 -
+> drivers/infiniband/hw/ocrdma/ocrdma_hw.c    | 1 -
+> drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 1 -
+> drivers/infiniband/hw/qedr/main.c           | 1 -
+> drivers/infiniband/hw/qedr/qedr.h           | 1 -
+> drivers/infiniband/hw/qedr/verbs.c          | 1 -
+> drivers/infiniband/sw/rdmavt/mr.c           | 1 -
+> drivers/infiniband/sw/siw/siw.h             | 2 --
+> drivers/infiniband/sw/siw/siw_main.c        | 1 -
+> drivers/infiniband/sw/siw/siw_verbs.c       | 1 -
+> drivers/net/ethernet/qlogic/qed/qed_rdma.c  | 1 -
+> drivers/net/ethernet/qlogic/qed/qed_rdma.h  | 1 -
+> include/linux/qed/qed_rdma_if.h             | 1 -
+> include/rdma/ib_verbs.h                     | 1 -
+> net/rds/ib.c                                | 2 +-
+> 16 files changed, 1 insertion(+), 17 deletions(-)
+>
+>diff --git a/drivers/infiniband/core/uverbs_cmd.c
+>b/drivers/infiniband/core/uverbs_cmd.c
+>index 2067a939788bd5..56d207405dbd1c 100644
+>--- a/drivers/infiniband/core/uverbs_cmd.c
+>+++ b/drivers/infiniband/core/uverbs_cmd.c
+>@@ -356,7 +356,6 @@ static void copy_query_dev_fields(struct
+>ib_ucontext *ucontext,
+> 	resp->max_mcast_qp_attach	= attr->max_mcast_qp_attach;
+> 	resp->max_total_mcast_qp_attach	= attr->max_total_mcast_qp_attach;
+> 	resp->max_ah			= attr->max_ah;
+>-	resp->max_fmr			= attr->max_fmr;
+> 	resp->max_map_per_fmr		= attr->max_map_per_fmr;
+> 	resp->max_srq			= attr->max_srq;
+> 	resp->max_srq_wr		= attr->max_srq_wr;
+>diff --git a/drivers/infiniband/hw/ocrdma/ocrdma.h
+>b/drivers/infiniband/hw/ocrdma/ocrdma.h
+>index 7baedc74e39d7e..fcfe0e82197a24 100644
+>--- a/drivers/infiniband/hw/ocrdma/ocrdma.h
+>+++ b/drivers/infiniband/hw/ocrdma/ocrdma.h
+>@@ -98,7 +98,6 @@ struct ocrdma_dev_attr {
+> 	u64 max_mr_size;
+> 	u32 max_num_mr_pbl;
+> 	int max_mw;
+>-	int max_fmr;
+> 	int max_map_per_fmr;
+> 	int max_pages_per_frmr;
+> 	u16 max_ord_per_qp;
+>diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+>b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+>index d82d3ec3649ea0..e07bf0b2209a4c 100644
+>--- a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+>+++ b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+>@@ -1190,7 +1190,6 @@ static void ocrdma_get_attr(struct ocrdma_dev
+>*dev,
+> 	attr->max_mr = rsp->max_mr;
+> 	attr->max_mr_size = ((u64)rsp->max_mr_size_hi << 32) |
+> 			      rsp->max_mr_size_lo;
+>-	attr->max_fmr = 0;
+> 	attr->max_pages_per_frmr = rsp->max_pages_per_frmr;
+> 	attr->max_num_mr_pbl = rsp->max_num_mr_pbl;
+> 	attr->max_cqe = rsp->max_cq_cqes_per_cq &
+>diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+>b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+>index 10e34389459592..890e3fd41d2199 100644
+>--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+>+++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+>@@ -99,7 +99,6 @@ int ocrdma_query_device(struct ib_device *ibdev,
+>struct ib_device_attr *attr,
+> 	attr->max_mw = dev->attr.max_mw;
+> 	attr->max_pd = dev->attr.max_pd;
+> 	attr->atomic_cap = 0;
+>-	attr->max_fmr = 0;
+> 	attr->max_map_per_fmr = 0;
+> 	attr->max_qp_rd_atom =
+> 	    min(dev->attr.max_ord_per_qp, dev->attr.max_ird_per_qp);
+>diff --git a/drivers/infiniband/hw/qedr/main.c
+>b/drivers/infiniband/hw/qedr/main.c
+>index dcdc85a1ab2540..ccaedfd53e49e2 100644
+>--- a/drivers/infiniband/hw/qedr/main.c
+>+++ b/drivers/infiniband/hw/qedr/main.c
+>@@ -632,7 +632,6 @@ static int qedr_set_device_attr(struct qedr_dev
+>*dev)
+> 	attr->max_mr_size = qed_attr->max_mr_size;
+> 	attr->max_cqe = min_t(u64, qed_attr->max_cqe, QEDR_MAX_CQES);
+> 	attr->max_mw = qed_attr->max_mw;
+>-	attr->max_fmr = qed_attr->max_fmr;
+> 	attr->max_mr_mw_fmr_pbl = qed_attr->max_mr_mw_fmr_pbl;
+> 	attr->max_mr_mw_fmr_size = qed_attr->max_mr_mw_fmr_size;
+> 	attr->max_pd = qed_attr->max_pd;
+>diff --git a/drivers/infiniband/hw/qedr/qedr.h
+>b/drivers/infiniband/hw/qedr/qedr.h
+>index 5488dbd59d3c15..fdf90ecb26990f 100644
+>--- a/drivers/infiniband/hw/qedr/qedr.h
+>+++ b/drivers/infiniband/hw/qedr/qedr.h
+>@@ -103,7 +103,6 @@ struct qedr_device_attr {
+> 	u64	max_mr_size;
+> 	u32	max_cqe;
+> 	u32	max_mw;
+>-	u32	max_fmr;
+> 	u32	max_mr_mw_fmr_pbl;
+> 	u64	max_mr_mw_fmr_size;
+> 	u32	max_pd;
+>diff --git a/drivers/infiniband/hw/qedr/verbs.c
+>b/drivers/infiniband/hw/qedr/verbs.c
+>index d6b94a71357323..ca88006eaa667c 100644
+>--- a/drivers/infiniband/hw/qedr/verbs.c
+>+++ b/drivers/infiniband/hw/qedr/verbs.c
+>@@ -145,7 +145,6 @@ int qedr_query_device(struct ib_device *ibdev,
+> 	attr->max_mw = qattr->max_mw;
+> 	attr->max_pd = qattr->max_pd;
+> 	attr->atomic_cap = dev->atomic_cap;
+>-	attr->max_fmr = qattr->max_fmr;
+> 	attr->max_map_per_fmr = 16;
+> 	attr->max_qp_init_rd_atom =
+> 	    1 << (fls(qattr->max_qp_req_rd_atomic_resc) - 1);
+>diff --git a/drivers/infiniband/sw/rdmavt/mr.c
+>b/drivers/infiniband/sw/rdmavt/mr.c
+>index ddb0c0d771c257..60864e5ca7cb67 100644
+>--- a/drivers/infiniband/sw/rdmavt/mr.c
+>+++ b/drivers/infiniband/sw/rdmavt/mr.c
+>@@ -97,7 +97,6 @@ int rvt_driver_mr_init(struct rvt_dev_info *rdi)
+> 		RCU_INIT_POINTER(rdi->lkey_table.table[i], NULL);
+> 
+> 	rdi->dparms.props.max_mr = rdi->lkey_table.max;
+>-	rdi->dparms.props.max_fmr = rdi->lkey_table.max;
+> 	return 0;
+> }
+> 
+>diff --git a/drivers/infiniband/sw/siw/siw.h
+>b/drivers/infiniband/sw/siw/siw.h
+>index 5a58a1cc7a7e84..e9753831ac3f33 100644
+>--- a/drivers/infiniband/sw/siw/siw.h
+>+++ b/drivers/infiniband/sw/siw/siw.h
+>@@ -30,7 +30,6 @@
+> #define SIW_MAX_MR (SIW_MAX_QP * 10)
+> #define SIW_MAX_PD SIW_MAX_QP
+> #define SIW_MAX_MW 0 /* to be set if MW's are supported */
+>-#define SIW_MAX_FMR SIW_MAX_MR
+> #define SIW_MAX_SRQ SIW_MAX_QP
+> #define SIW_MAX_SRQ_WR (SIW_MAX_QP_WR * 10)
+> #define SIW_MAX_CONTEXT SIW_MAX_PD
+>@@ -59,7 +58,6 @@ struct siw_dev_cap {
+> 	int max_mr;
+> 	int max_pd;
+> 	int max_mw;
+>-	int max_fmr;
+> 	int max_srq;
+> 	int max_srq_wr;
+> 	int max_srq_sge;
+>diff --git a/drivers/infiniband/sw/siw/siw_main.c
+>b/drivers/infiniband/sw/siw/siw_main.c
+>index 5cd40fb9e20ce5..a0b8cc643c5cfc 100644
+>--- a/drivers/infiniband/sw/siw/siw_main.c
+>+++ b/drivers/infiniband/sw/siw/siw_main.c
+>@@ -413,7 +413,6 @@ static struct siw_device
+>*siw_device_create(struct net_device *netdev)
+> 	sdev->attrs.max_mr = SIW_MAX_MR;
+> 	sdev->attrs.max_pd = SIW_MAX_PD;
+> 	sdev->attrs.max_mw = SIW_MAX_MW;
+>-	sdev->attrs.max_fmr = SIW_MAX_FMR;
+> 	sdev->attrs.max_srq = SIW_MAX_SRQ;
+> 	sdev->attrs.max_srq_wr = SIW_MAX_SRQ_WR;
+> 	sdev->attrs.max_srq_sge = SIW_MAX_SGE;
+>diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
+>b/drivers/infiniband/sw/siw/siw_verbs.c
+>index aeb842bc7a1ee9..987e2ba05dbc06 100644
+>--- a/drivers/infiniband/sw/siw/siw_verbs.c
+>+++ b/drivers/infiniband/sw/siw/siw_verbs.c
+>@@ -136,7 +136,6 @@ int siw_query_device(struct ib_device *base_dev,
+>struct ib_device_attr *attr,
+> 	attr->max_cq = sdev->attrs.max_cq;
+> 	attr->max_cqe = sdev->attrs.max_cqe;
+> 	attr->max_fast_reg_page_list_len = SIW_MAX_SGE_PBL;
+>-	attr->max_fmr = sdev->attrs.max_fmr;
+> 	attr->max_mr = sdev->attrs.max_mr;
+> 	attr->max_mw = sdev->attrs.max_mw;
+> 	attr->max_mr_size = ~0ull;
+>diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+>b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+>index 38b1f402f7ed29..5dc18a4bdda4a8 100644
+>--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+>+++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+>@@ -499,7 +499,6 @@ static void qed_rdma_init_devinfo(struct qed_hwfn
+>*p_hwfn,
+> 		dev->max_cqe = QED_RDMA_MAX_CQE_16_BIT;
+> 
+> 	dev->max_mw = 0;
+>-	dev->max_fmr = QED_RDMA_MAX_FMR;
+> 	dev->max_mr_mw_fmr_pbl = (PAGE_SIZE / 8) * (PAGE_SIZE / 8);
+> 	dev->max_mr_mw_fmr_size = dev->max_mr_mw_fmr_pbl * PAGE_SIZE;
+> 	dev->max_pkey = QED_RDMA_MAX_P_KEY;
+>diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+>b/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+>index 3689fe3e593542..dfaa2f552627f7 100644
+>--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+>+++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.h
+>@@ -45,7 +45,6 @@
+> #include "qed_iwarp.h"
+> #include "qed_roce.h"
+> 
+>-#define QED_RDMA_MAX_FMR                    (RDMA_MAX_TIDS)
+> #define QED_RDMA_MAX_P_KEY                  (1)
+> #define QED_RDMA_MAX_WQE                    (0x7FFF)
+> #define QED_RDMA_MAX_SRQ_WQE_ELEM           (0x7FFF)
+>diff --git a/include/linux/qed/qed_rdma_if.h
+>b/include/linux/qed/qed_rdma_if.h
+>index 74efca15fde7dd..c90276cda5c162 100644
+>--- a/include/linux/qed/qed_rdma_if.h
+>+++ b/include/linux/qed/qed_rdma_if.h
+>@@ -91,7 +91,6 @@ struct qed_rdma_device {
+> 	u64 max_mr_size;
+> 	u32 max_cqe;
+> 	u32 max_mw;
+>-	u32 max_fmr;
+> 	u32 max_mr_mw_fmr_pbl;
+> 	u64 max_mr_mw_fmr_size;
+> 	u32 max_pd;
+>diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+>index d275ca1e97b7d3..a84f91c2816add 100644
+>--- a/include/rdma/ib_verbs.h
+>+++ b/include/rdma/ib_verbs.h
+>@@ -430,7 +430,6 @@ struct ib_device_attr {
+> 	int			max_mcast_qp_attach;
+> 	int			max_total_mcast_qp_attach;
+> 	int			max_ah;
+>-	int			max_fmr;
+> 	int			max_map_per_fmr;
+> 	int			max_srq;
+> 	int			max_srq_wr;
+>diff --git a/net/rds/ib.c b/net/rds/ib.c
+>index 6c43b3e4c73618..deecbdcdae84ef 100644
+>--- a/net/rds/ib.c
+>+++ b/net/rds/ib.c
+>@@ -217,7 +217,7 @@ static int rds_ib_add_one(struct ib_device
+>*device)
+> 	}
+> 
+> 	rdsdebug("RDS/IB: max_mr = %d, max_wrs = %d, max_sge = %d,
+>max_1m_mrs = %d, max_8k_mrs = %d\n",
+>-		 device->attrs.max_fmr, rds_ibdev->max_wrs, rds_ibdev->max_sge,
+>+		 device->attrs.max_mr, rds_ibdev->max_wrs, rds_ibdev->max_sge,
+> 		 rds_ibdev->max_1m_mrs, rds_ibdev->max_8k_mrs);
+> 
+> 	pr_info("RDS/IB: %s: added\n", device->name);
+>-- 
+>2.26.2
+>
+>
 
-Third rc pull request
+Thank you, Jason.
 
-Nothing profound here, just a last set of long standing bug fixes for 5.7
+Regarding the siw driver part of it, this looks good.
+siw never implemented the 'classical' fast memory registration,
+but only supporting the more recent FRWR way, which stays intact.
+With that, we remove only the leftovers of a never implemented
+functionality. So, for siw there is nothing to test.
 
-The following changes since commit b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce:
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
 
-  Linux 5.7-rc6 (2020-05-17 16:48:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to 1acba6a817852d4aa7916d5c4f2c82f702ee9224:
-
-  IB/ipoib: Fix double free of skb in case of multicast traffic in CM mode (2020-05-27 21:14:09 -0300)
-
-----------------------------------------------------------------
-Third RDMA 5.7 rc pull request
-
-A few bug fixes:
-
-- Incorrect error unwind in qib and pvrdma
-
-- User triggerable NULL pointer crash in mlx5 with ODP prefetch
-
-- syzkaller RCU race in uverbs
-
-- Rare double free crash in ipoib
-
-----------------------------------------------------------------
-Jason Gunthorpe (1):
-      RDMA/core: Fix double destruction of uobject
-
-Kaike Wan (1):
-      IB/qib: Call kobject_put() when kobject_init_and_add() fails
-
-Maor Gottlieb (1):
-      RDMA/mlx5: Fix NULL pointer dereference in destroy_prefetch_work
-
-Qiushi Wu (1):
-      RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()
-
-Valentine Fatiev (1):
-      IB/ipoib: Fix double free of skb in case of multicast traffic in CM mode
-
- drivers/infiniband/core/rdma_core.c            | 20 +++++++++++++-------
- drivers/infiniband/hw/mlx5/mr.c                |  1 +
- drivers/infiniband/hw/qib/qib_sysfs.c          |  9 +++++----
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |  2 +-
- drivers/infiniband/ulp/ipoib/ipoib.h           |  4 ++++
- drivers/infiniband/ulp/ipoib/ipoib_cm.c        | 15 +++++++++------
- drivers/infiniband/ulp/ipoib/ipoib_ib.c        |  9 +++++++--
- drivers/infiniband/ulp/ipoib/ipoib_main.c      | 10 ++++++----
- include/rdma/uverbs_std_types.h                |  2 +-
- 9 files changed, 47 insertions(+), 25 deletions(-)
-
---oyUTqETQ0mS9luUI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl7RGRkACgkQOG33FX4g
-mxoOgg//Wj7EALhpAMobWu5ubtuDlm66hwTTEMXo0dpRRi31pnf7+SJ7EXr9XrL3
-HwqDmKQMzhPJFd73C4+SUVIdrdZDba7ZVylCBtPMH0Rw5WclrFT35JEEW62M9HHV
-YAk3hB4Fc+Tn4k8L8jdFRLB2bMYDqPqqhR0GKegx7OVo2pVTb2ZnSG5wYbdAH2A9
-h090Gtfhhdp3r0E8mfShxeNbuJYrk8RgadjgEUQq7eM2kZJmtLTeie2IZ0wbkbmy
-I/AGJs+stLvS2MCK6k+KHne5HLXrWHTpT46fT0vCyKg/1fKs5XUWbQvmSOXt4Wzu
-yzi8e5PeirUlPqwqrPObiP2uLbo8Eij1rGw3gJ1NLUkjZxKP53TlO4qVDuWTGn40
-Ud/fHuhzeI/iKD8DitUpIDCEGjuC/93vw1ly1HkH12GV+FkVSWZ2N/sLYcH2OLED
-x5GNR7oqe1F3DP21Ilghin/822EEwFrd345119Jgf8szYI6b4AhJhadV2Q5UwEyX
-P7zVk0mxuq3WzZf3gJBHQfaD9pGxgg44KnLkwi76S4mh/lEn9AkArFKVs9PfLLqG
-9LoBJue2OXG23YPYhx49h9oV7PXPLRTMu35GOJ5HkscvYwo3LGJYA4PIApsFydi1
-UaSL+9FCtQ7JpENY+YUjBRuLPR6hGnW8RAWoYKyf9bRpQ58ACdY=
-=to3N
------END PGP SIGNATURE-----
-
---oyUTqETQ0mS9luUI--
