@@ -2,84 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E80D1E96B4
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 May 2020 11:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394AC1E96B8
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 May 2020 11:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgEaJyT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 May 2020 05:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
+        id S1727119AbgEaJ6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 May 2020 05:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgEaJyT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 31 May 2020 05:54:19 -0400
+        id S1725813AbgEaJ6O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 31 May 2020 05:58:14 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 085412074A;
-        Sun, 31 May 2020 09:54:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9F7B2074A;
+        Sun, 31 May 2020 09:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590918858;
-        bh=4m7HOsug07LFaYIyeow+HFv69pdRoOmL95sw67lXfu0=;
+        s=default; t=1590919093;
+        bh=WKlTbhhBd7wKH27CXuH8GVYuTDCmhWm1qtCyl1lamfc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oi8ftw3z7Ta5TNXdReZQq9bCaXOIC1Qm8yi0F8Gi8frI4yA5QoH5mwTrUDn5drk1b
-         HeBaVhm10mqnqrqCrZd6frdYg8s3/06IyMBvKPU7HZYVHz6/qdmtcGdiZGHInbmv1K
-         hfu4gT7d7Z9qdJm520HEdnqXDSvsJiXqhqvpj+hk=
-Date:   Sun, 31 May 2020 12:54:14 +0300
+        b=Vv+oB/fXbPfSzEEQVURPCVzVHcxc1PYRWoZETsB5wgM0XzVldROeYs1KdDJMN/eXa
+         6CsBT3zzWvSoNE2VqDmiFoj664xqo2Mpm6EFGh1wG2dhbae5ICXbG46d3G8LqQ5MpA
+         QTfBzN+SYag9OWxaUx44RKbVlb5VbYKMXmmh6Cdc=
+Date:   Sun, 31 May 2020 12:58:10 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 11/11] RDMA/mlx5: Add support to get MR
- resource in RAW format
-Message-ID: <20200531095414.GE66309@unreal>
-References: <20200527135408.480878-1-leon@kernel.org>
- <20200527135408.480878-12-leon@kernel.org>
- <20200529233121.GA3296@ziepe.ca>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH net-next] mlx5: Restore err assignment in mlx5_mdev_init
+Message-ID: <20200531095810.GF66309@unreal>
+References: <20200530055447.1028004-1-natechancellor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200529233121.GA3296@ziepe.ca>
+In-Reply-To: <20200530055447.1028004-1-natechancellor@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 29, 2020 at 08:31:21PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 27, 2020 at 04:54:08PM +0300, Leon Romanovsky wrote:
-> > From: Maor Gottlieb <maorg@mellanox.com>
-> >
-> > Add support to get MR (mkey) resource dump in RAW format.
-> >
-> > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/hw/mlx5/restrack.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/hw/mlx5/restrack.c b/drivers/infiniband/hw/mlx5/restrack.c
-> > index 9e1389b8dd9f..834886536127 100644
-> > +++ b/drivers/infiniband/hw/mlx5/restrack.c
-> > @@ -116,7 +116,8 @@ int mlx5_ib_fill_res_mr_entry(struct sk_buff *msg,
-> >  	struct nlattr *table_attr;
-> >
-> >  	if (raw)
-> > -		return -EOPNOTSUPP;
-> > +		return fill_res_raw(msg, mr->dev, MLX5_SGMT_TYPE_PRM_QUERY_MKEY,
-> > +				    mlx5_mkey_to_idx(mr->mmkey.key));
+On Fri, May 29, 2020 at 10:54:48PM -0700, Nathan Chancellor wrote:
+> Clang warns:
 >
-> None of the raw functions actually share any code with the non raw
-> part, why are the in the same function? In fact all the implemenations
-> just call some other function for raw.
+> drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:6: warning: variable
+> 'err' is used uninitialized whenever 'if' condition is true
+> [-Wsometimes-uninitialized]
+>         if (!priv->dbg_root) {
+>             ^~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/main.c:1303:9: note:
+> uninitialized use occurs here
+>         return err;
+>                ^~~
+> drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:2: note: remove the
+> 'if' if its condition is always false
+>         if (!priv->dbg_root) {
+>         ^~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/main.c:1259:9: note: initialize
+> the variable 'err' to silence this warning
+>         int err;
+>                ^
+>                 = 0
+> 1 warning generated.
 >
-> To me this looks like they should should all be a new op
-> 'fill_raw_res_mr_entry' and drop the 'bool'
-
-I don't think that this is right approach, we already created ops per-objects
-o remove API multiplexing. Extra de-duplication will create too much ops
-without any real benefit.
-
-I can agree with you that "bool" is better to be named as "flags", but
-not sure that it should be done now.
-
-Thanks
-
+> This path previously returned -ENOMEM, restore that error code so that
+> it is not uninitialized.
 >
-> Jason
+> Fixes: 810cbb25549b ("net/mlx5: Add missing mutex destroy")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1042
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/main.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> index df46b1fce3a7..ac68445fde2d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> @@ -1277,6 +1277,7 @@ static int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx)
+>  					    mlx5_debugfs_root);
+>  	if (!priv->dbg_root) {
+>  		dev_err(dev->device, "mlx5_core: error, Cannot create debugfs dir, aborting\n");
+> +		err = -ENOMEM;
+>  		goto err_dbg_root;
+                ^^^^^^^^^^^^^^^^^^ this is wrong.
+Failure to create debugfs should never fail the driver.
+
+>  	}
+>
+>
+> base-commit: c0cc73b79123e67b212bd537a7af88e52c9fbeac
+> --
+> 2.27.0.rc0
+>
