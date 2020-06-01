@@ -2,95 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F354B1EA826
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 19:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF661EA866
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 19:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgFARIt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jun 2020 13:08:49 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:41674 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgFARIt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 13:08:49 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051H8Nop021991;
-        Mon, 1 Jun 2020 17:08:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=rW/vixdOKIhDeBp+EUAywPZVYPFaGU5tDxCG/HyrZlg=;
- b=pFQ8ylCZx5wu+4rYuYO8C7JpfGpfC1mxrsO3SoO8kAueWMWJaorG3HjuzjRiXm77oygE
- oi722IkIVYONt9YRM+jqLuTUmM18e5JiVkKNPpRPMcgCoZitM6oMs7x9tNR3Eie/GL5d
- oIks4q2gAQXR+rDt+HWSCx2HG/3hHe+rocHwS+tJMKysstqrKestqVG4qVsN9zkX+X2k
- L5gmlG/GaNGLDJEGVTTFymNXXnixqrvQguIZxqzl8raXlxsN41Aky28Hr71CtjpidHv8
- H+u3yTVVi4i9LG5YY3LPkc2q+4HorE3FSNV3BGEIJeJt0QneY0sllgdsGfdSBgMVNkxa nw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31bfekytcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 01 Jun 2020 17:08:47 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051H3FSt073584;
-        Mon, 1 Jun 2020 17:08:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 31c1dvtxa7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Jun 2020 17:08:46 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 051H8jTh011560;
-        Mon, 1 Jun 2020 17:08:45 GMT
-Received: from [10.159.235.19] (/10.159.235.19)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Jun 2020 10:08:45 -0700
-Subject: Re: [PATCH net-next] rds: transport module should be auto loaded when
- transport is set
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
-References: <20200527081742.25718-1-rao.shoaib@oracle.com>
- <20200531100833.GI66309@unreal>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <c2631a65-c4f9-2913-8a24-08a2de5ac1d3@oracle.com>
-Date:   Mon, 1 Jun 2020 10:08:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726944AbgFAR15 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jun 2020 13:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727994AbgFAR14 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 13:27:56 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7506C05BD43
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2020 10:27:55 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c12so9778494qkk.13
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2020 10:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rP96bP6VHS9TeHJeGdUoDEYfJkP4LQceFnB5HubYOzw=;
+        b=P6RwgixOqC5RlNfT20WL62Ws8X15jXEXiYG64uhAbucpL33u5vtJoUEQ+vhWwb/BLg
+         nPUbefHIHHz4vloQwBdHF42RLvCON4P9RY+a6+HcHOB3dtnff1ucgwzuvmrMc8POyPYd
+         2DF11x97dgLv6p6caGHu3EQtYFhUa42OvErXkxSJrSroVv7SFeQdUJvuF/OxEFO15Kbp
+         dtcJAwBUaReA3EKXLqvi8v2keF0+bM1KofZ/ZIT7bet5v0VK+LcjfCQXgJCJgWIqAxKC
+         Y9pEUXySMbKyDrhL5xjwRwFIXN7GuiMJB7GeTDACsWKs3i2WKUvgSpuQlsVl6Ka6DAtq
+         l+zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rP96bP6VHS9TeHJeGdUoDEYfJkP4LQceFnB5HubYOzw=;
+        b=cTjQ6y6Puop+8LX0t8DAS8CHkT41FYU0tmKB8nQ5LIUJFKnkmadkiw43csGULHpOvd
+         J89Y9G3DWzLxpPymsM3WKumq3X8footE67WVtkE8/LAlm7oSUrBFynxYI3T/pa0K17KI
+         NMSYFOom9t/JvH3QovJeidt/NfPbvQSwDd3tfrB+04iKMHxj3VgnQE/LOwlQHtm5/cYa
+         hjMAbRFtiFusEXaYJ3vX/zWU/2iAhUgwvtQnZZoBQVFW6MAuQoaCuJRUO2t7uai/nmho
+         PCq6Jc9POOxnJ7h2F51Zo1p19xX8tYlDSNjfpQKeOdqHpyDA1rjRrxqqmwDFKKqHl8yW
+         l2tw==
+X-Gm-Message-State: AOAM531mzxCt1W29YR+Dkv3z5+Bm26n8O1UQ4TP1ByWeV/Iu4oxl62DA
+        UTifm4ycCbSwVd+ZOuwg05Lcsg==
+X-Google-Smtp-Source: ABdhPJy7SpZKGc58CsHzwAOBldOQ4MAAWziUZt1G+tpGs58ZA+wKk+DQJiAKvZg5YfHWsky8RXbvJQ==
+X-Received: by 2002:a37:a08e:: with SMTP id j136mr16395613qke.415.1591032474756;
+        Mon, 01 Jun 2020 10:27:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id o3sm15575276qkj.97.2020.06.01.10.27.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 01 Jun 2020 10:27:54 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jfoE5-0000fL-JB; Mon, 01 Jun 2020 14:27:53 -0300
+Date:   Mon, 1 Jun 2020 14:27:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Lijun Ou <oulijun@huawei.com>, Xi Wang <wangxi11@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/hns: Uninitialized variable in
+ modify_qp_init_to_rtr()
+Message-ID: <20200601172753.GA2538@ziepe.ca>
+References: <20200529083918.GA1298465@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200531100833.GI66309@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006010126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006010127
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529083918.GA1298465@mwanda>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, May 29, 2020 at 11:39:18AM +0300, Dan Carpenter wrote:
+> The "dmac" variable is used before it is initialized.
+> 
+> Fixes: 494c3b312255 ("RDMA/hns: Refactor the QP context filling process related to WQE buffer configure")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 5/31/20 3:08 AM, Leon Romanovsky wrote:
-> On Wed, May 27, 2020 at 01:17:42AM -0700, rao.shoaib@oracle.com wrote:
->> From: Rao Shoaib <rao.shoaib@oracle.com>
->>
->> This enhancement auto loads transport module when the transport
->> is set via SO_RDS_TRANSPORT socket option.
->>
->> Orabug: 31032127
-> I think that it is internal to Oracle and should not be in the commit
-> message.
->
-> Thanks
+Applied to for-next, thanks
 
-There are logs that have internals bug numbers mentioned in them. I do 
-agree with you and will take the bug number out.
-
-Thanks for the comment.
-
-Shoaib
-
+Jason
