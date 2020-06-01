@@ -2,111 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237931EA3CF
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 14:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8DC1EA3D3
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 14:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgFAM0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jun 2020 08:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
+        id S1726133AbgFAM10 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jun 2020 08:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgFAM0t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 08:26:49 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FF2C061A0E
-        for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2020 05:26:48 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id i68so7450775qtb.5
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2020 05:26:48 -0700 (PDT)
+        with ESMTP id S1725838AbgFAM1Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 08:27:25 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214F1C061A0E
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2020 05:27:25 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w1so8776167qkw.5
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2020 05:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=L5HBZef8rW+3rS1Wf6w+fkABsfR9QDkKriEf9aIYvug=;
-        b=Xc3MmKKHmKJeN9/5X1HCEmfWDGw2boEeW6Y7F8qaByTAL9jeGhjH12YjwB0Ruupiug
-         uF08s/DpRexYeK+ulezY8je+GmN3T3rGYCLuxmbAXdd8lL21ebDN4PNV+N2L7TaLSKIc
-         G8+7FJrDcT2FNyuRFB5YOUVVPDhqw5uattZg15sntBq4N39rnkqLK2XnZNVvVA9XMi+J
-         hk/u2ZCghsAwy4XwkWGqTExJTDONaiYAJU8g3SSB4p6GoSBrk1HbtNUxIJyYMP727vGl
-         cYSJII1yFZJy22a9L/rhAH3gEKzT8XhPc8HIoYlvQjG9UDAU0jCFaGegmgPPs79mKysy
-         fPuw==
+        bh=PKVdNwhkp7XsfYsgOqc49jOrL5d1+RDMlh1791f6yRY=;
+        b=iy+gJs/uZZBIe8fICOF2ugnxZ9qIHKiwm+R3k074+kDaSKC0+LW0fIkO/+T/Xo2dZ3
+         PHM4G+5w8oLLS7J2RqsTv1r0F8SrWs6Tqwr1RqHUBQqYKhWQ4m3FoAQKSLtyYiwJ/9wr
+         vpudvsBzBzttfJTkIraknWe43pZ+MOXX341ObdBAye1cXqgGWPdeNO6Rc7Khax0Zbitt
+         QZOrPIAGor/9NcQS9Xt651wqc78mGY4jIdSp57scD/SXtTemBNrhWHDwVBzRGsTo5Wyr
+         SEQQrUncdzk+MAQt496LZThit+ilNEHBWcfoBc6aifEL6D0KYY2SvUrB+WwDkboszH/i
+         n6Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L5HBZef8rW+3rS1Wf6w+fkABsfR9QDkKriEf9aIYvug=;
-        b=s3k4XX2NPcA0QEqXQZGxDmvTkkzNWDrJt4JD5b6XhpGppAcNtlHgxWNNmovzLsHvc6
-         DwCFTDSsaN70qJFW//fzarBMCPx6eG2+lCZL8de8yI/nr0hkZKYweSznVp8D8N9Xc1Zr
-         p4hwcSUdlflMWTcDRX86bGeCpG6Jl2sSarl2FbDtn2FNqZ4OsnjWhrwn4rvxGJ7Vrj2+
-         Zq/4vgc4R5G73HgY1MFhKbRuuDpbRUEqq8Ln+tb1BckUzVqrFM3tQoIjYw0zzTw7Ai8e
-         O2Cl+h//QXKfridsTsV3cmhuT6AF4gbkWzUzamxNmI26i+GKWDCmaQlTPdrmREnplkf1
-         b9Ig==
-X-Gm-Message-State: AOAM531HAna1Z0frHHU9F+hV3VQ0/n9DkmWGdlIrQE11fWzlhgrKaYM9
-        VitjALGmVjnpmNo5I8/JFkTmnQ==
-X-Google-Smtp-Source: ABdhPJxRN8IgRI0mV9jBEi+R0gjBN6Ynis1+oJLf0i6CizXtJaU9SFMRFJDv/BPPE68bPuP5X4guvw==
-X-Received: by 2002:ac8:775b:: with SMTP id g27mr21781330qtu.217.1591014408100;
-        Mon, 01 Jun 2020 05:26:48 -0700 (PDT)
+        bh=PKVdNwhkp7XsfYsgOqc49jOrL5d1+RDMlh1791f6yRY=;
+        b=iplxDJKp2+CiKdi5nG4RJCXOQHpiYr67TGyvK5HifS/ljk/oYAkb2zCe5I7ZwfmowQ
+         6nG2x+KIA5xsJbSIpAND0MTKKgfReX4CYA5yfDAw5V7y/TsCPUB1/6B2h9/utfx+jKaP
+         X09jiuhtvHvEUPGR8Wl7fMtB3TKrFM0Bfh07kWtR6tC/iTbGj5CX4BDbxqc2V8GTWafi
+         7208F4CAwPgoIqYY8iV9zkafv6P7gHRfCzj8yWEw0dx1s0gKpCTh9FraFdpje73cs9qB
+         WUL1IwE2NIRbc6yH7/7qAVyO6vhSBaoEV/mjG1lAuXueLW/HxuWmdsYVZiF/wRzP10XP
+         4zRg==
+X-Gm-Message-State: AOAM532WtvqAUq4rwr6FvKAdwDZPxfuunXyNOM+V4A7TRYvK/PzoVrkK
+        dsKJWXPsG8erczdmMwi5EkhZ39DcSGI=
+X-Google-Smtp-Source: ABdhPJzBcvuaFvFWy86YzAUof85bQx0g1z7uniGfW2txq+d6j+CNtyXWTb+BcNpPQlLegs6BdE/2XA==
+X-Received: by 2002:a37:9c91:: with SMTP id f139mr20445965qke.371.1591014444227;
+        Mon, 01 Jun 2020 05:27:24 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id p11sm15128609qtq.75.2020.06.01.05.26.47
+        by smtp.gmail.com with ESMTPSA id n13sm16852613qtb.20.2020.06.01.05.27.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 01 Jun 2020 05:26:47 -0700 (PDT)
+        Mon, 01 Jun 2020 05:27:23 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jfjWg-0002UL-KI; Mon, 01 Jun 2020 09:26:46 -0300
-Date:   Mon, 1 Jun 2020 09:26:46 -0300
+        id 1jfjXH-0002V7-EH; Mon, 01 Jun 2020 09:27:23 -0300
+Date:   Mon, 1 Jun 2020 09:27:23 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 11/11] RDMA/mlx5: Add support to get MR
- resource in RAW format
-Message-ID: <20200601122646.GA4872@ziepe.ca>
-References: <20200527135408.480878-1-leon@kernel.org>
- <20200527135408.480878-12-leon@kernel.org>
- <20200529233121.GA3296@ziepe.ca>
- <20200531095414.GE66309@unreal>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] IB/hfi1: Fix hfi1_netdev_rx_init() error handling
+Message-ID: <20200601122723.GB4872@ziepe.ca>
+References: <BY5PR11MB3958CF61BB1F59A6F6B5234D868F0@BY5PR11MB3958.namprd11.prod.outlook.com>
+ <20200530140224.GA1330098@mwanda>
+ <20200531100512.GH66309@unreal>
+ <20200531173655.GT22511@kadam>
+ <20200601042433.GA34024@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200531095414.GE66309@unreal>
+In-Reply-To: <20200601042433.GA34024@unreal>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 31, 2020 at 12:54:14PM +0300, Leon Romanovsky wrote:
-> On Fri, May 29, 2020 at 08:31:21PM -0300, Jason Gunthorpe wrote:
-> > On Wed, May 27, 2020 at 04:54:08PM +0300, Leon Romanovsky wrote:
-> > > From: Maor Gottlieb <maorg@mellanox.com>
+On Mon, Jun 01, 2020 at 07:24:33AM +0300, Leon Romanovsky wrote:
+> On Sun, May 31, 2020 at 08:36:55PM +0300, Dan Carpenter wrote:
+> > On Sun, May 31, 2020 at 01:05:12PM +0300, Leon Romanovsky wrote:
+> > > On Sat, May 30, 2020 at 05:02:24PM +0300, Dan Carpenter wrote:
+> > > > The hfi1_vnic_up() function doesn't check whether hfi1_netdev_rx_init()
+> > > > returns errors.  In hfi1_vnic_init() we need to change the code to
+> > > > preserve the error code instead of returning success.
+> > > >
+> > > > Fixes: 2280740f01ae ("IB/hfi1: Virtual Network Interface Controller (VNIC) HW support")
+> > > > Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > v2: Add error handling in hfi1_vnic_up() and add second fixes tag
+> > > >
+> > > >  drivers/infiniband/hw/hfi1/vnic_main.c | 11 +++++++++--
+> > > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/hw/hfi1/vnic_main.c b/drivers/infiniband/hw/hfi1/vnic_main.c
+> > > > index b183c56b7b6a4..03f8be8e9488e 100644
+> > > > +++ b/drivers/infiniband/hw/hfi1/vnic_main.c
+> > > > @@ -457,13 +457,19 @@ static int hfi1_vnic_up(struct hfi1_vnic_vport_info *vinfo)
+> > > >  	if (rc < 0)
+> > > >  		return rc;
+> > > >
+> > > > -	hfi1_netdev_rx_init(dd);
+> > > > +	rc = hfi1_netdev_rx_init(dd);
+> > > > +	if (rc < 0)
+> > > > +		goto err_remove;
 > > >
-> > > Add support to get MR (mkey) resource dump in RAW format.
+> > > Why did you check for the negative value here and didn't check below?
 > > >
-> > > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > >  drivers/infiniband/hw/mlx5/restrack.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/mlx5/restrack.c b/drivers/infiniband/hw/mlx5/restrack.c
-> > > index 9e1389b8dd9f..834886536127 100644
-> > > +++ b/drivers/infiniband/hw/mlx5/restrack.c
-> > > @@ -116,7 +116,8 @@ int mlx5_ib_fill_res_mr_entry(struct sk_buff *msg,
-> > >  	struct nlattr *table_attr;
-> > >
-> > >  	if (raw)
-> > > -		return -EOPNOTSUPP;
-> > > +		return fill_res_raw(msg, mr->dev, MLX5_SGMT_TYPE_PRM_QUERY_MKEY,
-> > > +				    mlx5_mkey_to_idx(mr->mmkey.key));
 > >
-> > None of the raw functions actually share any code with the non raw
-> > part, why are the in the same function? In fact all the implemenations
-> > just call some other function for raw.
+> > I just copied the pattern in the nearest code.  I didn't realize until
+> > now that it was different in both functions...  The checking isn't done
+> > consistently in this file.
 > >
-> > To me this looks like they should should all be a new op
-> > 'fill_raw_res_mr_entry' and drop the 'bool'
+> > I can resend on Tuesday though if you want.
 > 
-> I don't think that this is right approach, we already created ops per-objects
-> o remove API multiplexing. Extra de-duplication will create too much ops
-> without any real benefit.
+> I imagine that Jason will fix it once he will apply the patch.
 
-If there is no code sharing then they should not be in the same
-function at all. More ops is not really a problem.
+If someone from hfi says which is the right one, sure..
 
 Jason
