@@ -2,136 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E8F1EA5D2
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 16:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00781EA603
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 16:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgFAO2u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jun 2020 10:28:50 -0400
-Received: from mail-eopbgr40040.outbound.protection.outlook.com ([40.107.4.40]:30670
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727866AbgFAO2u (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 1 Jun 2020 10:28:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VfEOjwPWhMOJLQfTH9twZdxK4jmxJH1NPLBvekB/HfpOR4rQYyHTbqyoyDbpoJvX11ihzeOe9UP1KR9bYqMMcnjIyP3PtmrZaDIj249JWAhL1UQfth8fwfZeltHDyaqKTXwHKVT1m+UTajwicDCVKdFnAeL9K+Bufi89ct4ho39ikHnuDJ40JfhhykqybIcRUrRAWLZupDygF+u5agMeiPMEvJ5eC3PuS44ABxAo09qI8hTSv0WWTMs+KC2n6HiWIoRSnhMo3CHPHj8zLAb1HDhiz0dg7gyvo4cJnMbkkli4NMmJrLRzl/aGzqo8EgWakyG5R2VjsJdjh/QWZGHuRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BnxLJs1CSFChl9uZhst9BYasFuWTh/SAXRcw206g9ok=;
- b=nn+8zym0pBfkPDQlU6BTcYyP0rEq7A+pOmvW0WXpJQ2D/Rf2hvKtXbKN9fqkXgVwKbq2FoJWLgF6F6tX2eKLknOesuiyvSY8D3HKIWQj5i1pqQKy58+KGGZiACSzZ4DpXYwnyTCtUuBGbRmtrjdak81JzmgmY7UXeVun9UqHsNEmGMO0uJ0OQNwBOpuG/CSIEApSsXvX7dR3ETXqmzBDA7KzwjZa5y0tSXql4KBOgo36A0YFIF+bVBhIc0jN9UdvMRgLqJIriDBMWRR4RkistTCzhPP1woP3h34VutKhbB+9L8vzz598o4NqJjpS1P0swPW8+MjgFBfFX7lBP13s1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BnxLJs1CSFChl9uZhst9BYasFuWTh/SAXRcw206g9ok=;
- b=akpz3jx2aPLTUYOPnFh+mg/yItDS4AE7eweHLUsxNFXoVUHI6DqYC8H4R+5z5UdviuTXesuc6PAftllyuNrPeQboljp8ElyIj2qQFNf0kPbAhA85eRUpuSmOumPkqOgKau1QYOVfA3aqwM5m28tjUyxL5hfHMD5Wk/rvgIQRPDI=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB6670.eurprd05.prod.outlook.com (2603:10a6:800:141::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Mon, 1 Jun
- 2020 14:28:44 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
- 14:28:44 +0000
-Date:   Mon, 1 Jun 2020 11:28:40 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "poswald@suse.com" <poswald@suse.com>
-Subject: Re: [RDMA RFC v6 00/16] Intel RDMA Driver Updates 2020-05-19
-Message-ID: <20200601142840.GE4962@mellanox.com>
-References: <20200520070415.3392210-1-jeffrey.t.kirsher@intel.com>
- <20200521141247.GQ24561@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7EE04047F@fmsmsx124.amr.corp.intel.com>
- <20200527050855.GB349682@unreal>
- <9DD61F30A802C4429A01CA4200E302A7EE045C3B@fmsmsx124.amr.corp.intel.com>
+        id S1726128AbgFAOij (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jun 2020 10:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgFAOij (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 10:38:39 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00::f03c:91ff:fe50:41d6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE57C05BD43;
+        Mon,  1 Jun 2020 07:38:39 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 2CFC23158; Mon,  1 Jun 2020 10:38:38 -0400 (EDT)
+Date:   Mon, 1 Jun 2020 10:38:38 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v4 00/33] Possible NFSD patches for v5.8
+Message-ID: <20200601143838.GA11647@fieldses.org>
+References: <20200530131711.10117.74063.stgit@klimt.1015granger.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7EE045C3B@fmsmsx124.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR17CA0028.namprd17.prod.outlook.com
- (2603:10b6:208:15e::41) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0028.namprd17.prod.outlook.com (2603:10b6:208:15e::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Mon, 1 Jun 2020 14:28:43 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jflQe-0006R2-Mw; Mon, 01 Jun 2020 11:28:40 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 968d4146-5b7a-4ba1-3ab0-08d806381679
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6670:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB667008F0FC5469431C93EA78CF8A0@VI1PR05MB6670.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0421BF7135
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lhZqsarE4wrbYlsyVSgkLcsH55rVZF5pnm2FvNBstnALpsrL5idDgwyb0N2Ra2yfV9IoEqO2Ils6HOW2bQB/beBzncCsWwbexEkOeUPEuEOzlrppBjffsLK36Lb9qdi+gdE6OASO5bZ5RMi3gGTM2+afnjJ5fB8GSShLqCN1y2MhNJ/3I4XBdLgShZcHmNaDTqCjJWQxh4XsPRnBpsE414KsmnLcxLejQtkq2J9RncsBBflq9gfTF3SpKJGLV0eu/l2UODCtuiXf6lBnjJlR1YBooDhV5df4rUESNYWyHU3LXrHOsP2xGE1uNdNS/CHQN4FnvimmERjujnykbfrXZTLd1W/hM0DVd4w/KMqizk//cChkRP5M92RxCrFBFwDi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(54906003)(1076003)(316002)(86362001)(7416002)(478600001)(26005)(186003)(36756003)(9746002)(9786002)(66556008)(66476007)(66946007)(2906002)(2616005)(4326008)(33656002)(15650500001)(5660300002)(83380400001)(8936002)(8676002)(6916009)(24400500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Yl8jSFpqQ9R6A02t8nx51IcE5LmlQ4L+0smoF394OqDgmptyAKPD5eKB5Rb+eSFj68NY5aBQbaNMTYJYGORa1637L34BpAYqLFv4QmAeMazqJ4qDMXlEq/4IlEwKD266AZfEU0YeBe6kkc10cidHB0tVrQHSIuJg2+AuZFRTyigkYYorxENm8odgxZcQw1Bx+pSXpyOOZL42VgVvftFGw0+RznZ2NZoy3RF3dxwpSsWguxrSAMCdPKnO5ijZJ5C2PvHTuqFG9ajo43e8XcznMynezhRpQQWT89UDhnLxImSHnZq6SeAI1odrHQViqpqDawP1PRXZn+18BCE8ZOKhfmDruDyWbs2MwEvEELlIAOgYSyNPUBL6h914n+KiX2WmkhxIEWf+WTk4CgOEd/k0AQ1sTnXM6i/7MomHk46NB8D7TfUZSpWDxgmJV7NZGX5CyE+DZYOXIWMY/oTmDben2pLwhJXAX5muBUDHLp+7FvU=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 968d4146-5b7a-4ba1-3ab0-08d806381679
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 14:28:44.2791
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JuIKT+KHT7/4MX0CKotsidOUz4qcYgF6lg0RrQwxjl0RGGDdb0/SQZOyPD8x7UZHqaFkz0IweheYeK+azPN6Mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6670
+In-Reply-To: <20200530131711.10117.74063.stgit@klimt.1015granger.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 29, 2020 at 03:21:05PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RDMA RFC v6 00/16] Intel RDMA Driver Updates 2020-05-19
-> > 
+On Sat, May 30, 2020 at 09:28:03AM -0400, Chuck Lever wrote:
+> Hi Bruce-
 > 
-> [......]
+> To address merge conflicts with Anna's tree, I've rebased this
+> series on v5.7-rc6 plus ("SUNRPC: Split the xdr_buf event class").
+> Only two commits were changed by this rebase:
 > 
-> > 
-> > I'm looking on it and see static assignments, to by dynamic you will need "to play"
-> > with hw_shifts/hw_masks later, but you don't. What am I missing?
-> > 
-> > +	for (i = 0; i < IRDMA_MAX_SHIFTS; ++i)
-> > +		dev->hw_shifts[i] = i40iw_shifts[i];
-> > +
-> > +	for (i = 0; i < IRDMA_MAX_MASKS; ++i)
-> > +		dev->hw_masks[i] = i40iw_masks[i];
-> > 
-> > >
-> > > we still need to use the custom macro FLD_LS_64 without FIELD_PREP in
-> > > this case as FIELD_PREP expects compile time constants.
-> > > +#define FLD_LS_64(dev, val, field)	\
-> > > +	(((u64)(val) << (dev)->hw_shifts[field ## _S]) &
-> > > +(dev)->hw_masks[field ## _M])
-> > > And the shifts are still required for these fields which causes a bit
-> > > of inconsistency
-> > >
+>       SUNRPC: Move xpt_mutex into socket xpo_sendto methods
+>       SUNRPC: Add more svcsock tracepoints
 > 
-> 
-> The device hw_masks/hw_shifts array store masks/shifts of those
-> descriptor fields that have same name across HW generations but
-> differ in some attribute such as field width. Yes they are statically assigned,
-> initialized with values from i40iw_masks and icrdma_masks, depending on
-> the HW generation. We can even use GENMASK for the values in
-> i40iw_masks[] , icrdma_masks[] but FIELD_PREP cant be used on
-> dev->hw_masks[]
+> Feel free to make use of this version, or ignore it. :-)
 
-So compute the shift and mask when building i40iw_shifts array using
-the compile time constant?
+Linus generally seems to prefer handling minor conflict resolutions
+himself over maintainers rebasing.
 
-Jason
+--b.
+
+> 
+> 
+> Available to view:
+>  https://git.linux-nfs.org/?p=cel/cel-2.6.git;a=shortlog;h=refs/heads/nfsd-5.8
+> 
+> Pull from this topic branch:
+>  git://git.linux-nfs.org/projects/cel/cel-2.6.git nfsd-5.8
+> 
+> Highlights of this series:
+> * Remove serialization of sending RPC/RDMA Replies
+> * Convert the TCP socket send path to use xdr_buf::bvecs (pre-requisite for RPC-on-TLS)
+> * Fix svcrdma backchannel sendto return code
+> * Convert a number of dprintk call sites to use tracepoints
+> * Fix the "suggest braces around empty body in an 'else' statement" warning
+> 
+> 
+> Changes since v3:
+> * Rebased on v5.7-rc6 + ("SUNRPC: Split the xdr_buf event class")
+> 
+> Changes since v2:
+> * Rebased on v5.7-rc6
+> * Fixed a logic error that left XPT_DATA unset on return from svc_tcp_recvfrom()
+> * Broke down "SUNRPC: Refactor svc_recvfrom()" to separate clean ups from logic changes
+> * Some superfluous clean-ups have been redacted
+> * Add separate tracepoints for error cases (eg, tcp_recv and tcp_recv_err)
+> 
+> Changes since v1:
+> * Rebased on v5.7-rc5+
+> * Re-organized the series so changes interesting to linux-rdma appear together
+> * Addressed sparse warnings found by the kbuild test robot
+> * Included an additional minor clean-up: removal of the unused SVCRDMA_DEBUG macro
+> * Clarified several patch descriptions
+> 
+> ---
+> 
+> Chuck Lever (33):
+>       SUNRPC: Split the xdr_buf event class
+>       SUNRPC: Move xpt_mutex into socket xpo_sendto methods
+>       svcrdma: Clean up the tracing for rw_ctx_init errors
+>       svcrdma: Clean up handling of get_rw_ctx errors
+>       svcrdma: Trace page overruns when constructing RDMA Reads
+>       svcrdma: trace undersized Write chunks
+>       svcrdma: Fix backchannel return code
+>       svcrdma: Remove backchannel dprintk call sites
+>       svcrdma: Rename tracepoints that record header decoding errors
+>       svcrdma: Remove the SVCRDMA_DEBUG macro
+>       svcrdma: Displayed remote IP address should match stored address
+>       svcrdma: Add tracepoints to report ->xpo_accept failures
+>       SUNRPC: Remove kernel memory address from svc_xprt tracepoints
+>       SUNRPC: Tracepoint to record errors in svc_xpo_create()
+>       SUNRPC: Trace a few more generic svc_xprt events
+>       SUNRPC: Remove "#include <trace/events/skb.h>"
+>       SUNRPC: Add more svcsock tracepoints
+>       SUNRPC: Replace dprintk call sites in TCP state change callouts
+>       SUNRPC: Trace server-side rpcbind registration events
+>       SUNRPC: Rename svc_sock::sk_reclen
+>       SUNRPC: Restructure svc_tcp_recv_record()
+>       SUNRPC: Replace dprintk() call sites in TCP receive path
+>       SUNRPC: Refactor recvfrom path dealing with incomplete TCP receives
+>       SUNRPC: Clean up svc_release_skb() functions
+>       SUNRPC: Refactor svc_recvfrom()
+>       SUNRPC: Restructure svc_udp_recvfrom()
+>       SUNRPC: svc_show_status() macro should have enum definitions
+>       NFSD: Add tracepoints to NFSD's duplicate reply cache
+>       NFSD: Add tracepoints to the NFSD state management code
+>       NFSD: Add tracepoints for monitoring NFSD callbacks
+>       SUNRPC: Clean up request deferral tracepoints
+>       NFSD: Squash an annoying compiler warning
+>       NFSD: Fix improperly-formatted Doxygen comments
+> 
+> 
+>  fs/nfsd/nfs4callback.c                     |  37 +-
+>  fs/nfsd/nfs4proc.c                         |   7 +-
+>  fs/nfsd/nfs4state.c                        |  63 ++--
+>  fs/nfsd/nfscache.c                         |  57 +--
+>  fs/nfsd/nfsctl.c                           |  26 +-
+>  fs/nfsd/state.h                            |   7 -
+>  fs/nfsd/trace.h                            | 345 +++++++++++++++++
+>  include/linux/sunrpc/svc.h                 |   1 +
+>  include/linux/sunrpc/svc_rdma.h            |   6 +-
+>  include/linux/sunrpc/svc_xprt.h            |   6 +
+>  include/linux/sunrpc/svcsock.h             |   6 +-
+>  include/trace/events/rpcrdma.h             | 142 +++++--
+>  include/trace/events/sunrpc.h              | 419 +++++++++++++++++++--
+>  net/sunrpc/svc.c                           |  19 +-
+>  net/sunrpc/svc_xprt.c                      |  52 +--
+>  net/sunrpc/svcsock.c                       | 407 ++++++++++----------
+>  net/sunrpc/xprtrdma/svc_rdma_backchannel.c | 121 ++----
+>  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c    |  21 +-
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c          |  92 ++---
+>  net/sunrpc/xprtrdma/svc_rdma_sendto.c      |  10 +-
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c   |  55 ++-
+>  net/sunrpc/xprtsock.c                      |  12 +-
+>  22 files changed, 1321 insertions(+), 590 deletions(-)
+> 
+> --
+> Chuck Lever
