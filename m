@@ -2,113 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09731EA567
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 15:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E3D1EA56C
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 15:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgFAN4r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jun 2020 09:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S1726073AbgFAN5Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jun 2020 09:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgFAN4r (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 09:56:47 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF46C05BD43
-        for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2020 06:56:46 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id v79so9022937qkb.10
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2020 06:56:46 -0700 (PDT)
+        with ESMTP id S1726017AbgFAN5Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 09:57:25 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3028C05BD43
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Jun 2020 06:57:24 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c185so9063938qke.7
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Jun 2020 06:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=ntTQh6WltJCEpegt7h2c57+gIBfSY5EOmHIEsgHmRIU=;
-        b=CNZwg+F26lNY1SXnZVmmSMZ1s3wURI5mydV600unahy2nf+Sq43rl1GEyJ2sG1aE5Y
-         uPKF4mQ7lvFBncydxzKWwkxXxDQ1nc5wt46auLeL+KYtST6DJ7gK9nUm4DS6oWOEOwZG
-         lnWKlgexrnInnplLafYvwuyHLAJ3V00DSDkU1AtgvEf0u9f8eGJELuBolKTi61jtYRjZ
-         GQX+GDBr2EuChpxPCQU3xcoXmDfq3Gj3qp8naHWHOgVbeeNJfF1n8iW0sxVlHkFFDdie
-         5lhWeWOCWwIA+getqlMHXxUDE9+vLGxNcrco9FlkaeiopKti4FP5+rQVztySlLJ2slOF
-         PPXQ==
+        bh=n54U2lwa0cvcl+i8m+i2vrVzdhJrXQ5YxgiDnXtT9Fg=;
+        b=OIHcqRFX3lbedwvIvP1dT4hBezYEDSz1+QQUsDgkB60EPV+Rt1I5zgE4ghfuQ3Vkti
+         IEf+y4xU5Q3CvdEmtvvW0jqX5gT+VFwx3+5jVoppx7N6gQi1LY2hAHBaf/FXnZnPIh0p
+         nEOPvXMj6VVM5KqrHXU50NCLBRJLo7N3tPmbd2Si/nuD0siwTNWJgVfU1w2pRfydGc2a
+         +vh5pvoa3P38eou/a4K+5v/xS2K6VlQ1NeyAGvOm6jb/DPm2TVcEiXz5Ws7cHR5YdHYN
+         TpPN3EVqCoIHwkUva6FXCkk4LGhP2QEvT2pX+kGhyjtB3MpIf7heQ1y/+RaiEGcNFVAu
+         c6NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ntTQh6WltJCEpegt7h2c57+gIBfSY5EOmHIEsgHmRIU=;
-        b=PCcm0v9aA6sjTF0d9zK1THmaAFA4NcVmWbDUq6RQ9/gdbiTTWZZCVQ2jomMWI3dZ20
-         /2z5TYftvQDxSCg8wX7gemB06hqQcNlKmOvz77Ph2A1iAxZ2DQ0CtAfjm9GDhZYoLmwM
-         TvIhp5HdlYBMya0xoM+5aQu8+Rw3Pk2uQvneC7mqh+5Qc3+OKUZQr/nvxgVAqQRBUe/F
-         UBzKTTBuR8oYp8+nKKsIZUJEiftd5NJyFAwgE4O6HIytlIhySmBxli1HIHDDJD+PXGV1
-         6Brd4r0Ga1qjcNOeizBjK1SODnJGkHh/MCkdAb3ivV/wReVv6zIVzewsTaMdwy0zhpCX
-         N7Bw==
-X-Gm-Message-State: AOAM532BIQwp5wPMPmYrLhBnpSc88wm0SuuKrBGU5nzWxa5/DiSwji+f
-        aDWtN8CfkGRH2CLZB7fHi0aNaQ==
-X-Google-Smtp-Source: ABdhPJxDT/YlICzGv8LgIeCF6lFgoL6j+xKq2z+DcM5OIioTXwPBgw7wCBUAW/nOX+6QKfh1IlKWxA==
-X-Received: by 2002:a37:b547:: with SMTP id e68mr2119990qkf.127.1591019806061;
-        Mon, 01 Jun 2020 06:56:46 -0700 (PDT)
+        bh=n54U2lwa0cvcl+i8m+i2vrVzdhJrXQ5YxgiDnXtT9Fg=;
+        b=jo5pdJq1fJPqXTZKTpFb0pjoVnnfThWeTqzA+SQYmlmyoA5uITkihcTrRrzl3uQS4F
+         alDr1jy7OKGKPwPO2QrgbIHVJSgXtpe8Mag/mOtQuxbg/C9aVIfNdu8sEY0qUfoyig3L
+         8LaVYyfGPHVR8KMaxkacwpGOwhN7yIz3BfDKz6pqVKSS+ukrdUWy209kE3BP7dH5np9B
+         Osisd3OTGpphKn16ZOr+IFuhzlQ8/SDHxfxh2pVRwHyDkOntG6oWUzxXfHPcOWvLu+UF
+         ABl0KnWNPaheOyfagz+6OcbaQrsy4yXwK6N+puJxDHdydfjG/1ePaUlppn1XLddnQ2uW
+         z4/w==
+X-Gm-Message-State: AOAM532FQaDiG+y3PnAvR/GNkhU05b3VgG449lALMHp9+sWmKgma+Ur5
+        0Vi0ZTzqo52npnV1LHplBtw9xQ==
+X-Google-Smtp-Source: ABdhPJwskiAqvnZjYEPWiNtrbmxDMErZBOfD4F6Y8Oc1vXFvTbDIR11Iq3JNWynIgdxVYZrEAIIRYQ==
+X-Received: by 2002:a05:620a:8da:: with SMTP id z26mr5615486qkz.461.1591019844160;
+        Mon, 01 Jun 2020 06:57:24 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j22sm14545311qke.117.2020.06.01.06.56.45
+        by smtp.gmail.com with ESMTPSA id v2sm15426016qtq.8.2020.06.01.06.57.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 01 Jun 2020 06:56:45 -0700 (PDT)
+        Mon, 01 Jun 2020 06:57:23 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jfkvl-0004UF-0T; Mon, 01 Jun 2020 10:56:45 -0300
-Date:   Mon, 1 Jun 2020 10:56:45 -0300
+        id 1jfkwM-0004V5-UW; Mon, 01 Jun 2020 10:57:22 -0300
+Date:   Mon, 1 Jun 2020 10:57:22 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "Dan Carpenter (dan.carpenter@oracle.com)" <dan.carpenter@oracle.com>
-Subject: Re: [PATCH -next] IB/hfi1: Remove set but not used variable 'priv'
-Message-ID: <20200601135644.GD4872@ziepe.ca>
-References: <20200528075946.123480-1-yuehaibing@huawei.com>
- <MN2PR11MB396654BC46500F828609C6A3868E0@MN2PR11MB3966.namprd11.prod.outlook.com>
- <86634519-3dd8-0c6a-a8d2-19f4b986fd3d@intel.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Sadanand Warrier <sadanand.warrier@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH v3 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
+ MTU's upper limit
+Message-ID: <20200601135722.GE4872@ziepe.ca>
+References: <20200511155337.173205.77558.stgit@awfm-01.aw.intel.com>
+ <20200511160618.173205.23053.stgit@awfm-01.aw.intel.com>
+ <20200527040350.GA3118979@ubuntu-s3-xlarge-x86>
+ <9e9147ad-6d7c-9381-72f3-dc2f3d0723fd@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86634519-3dd8-0c6a-a8d2-19f4b986fd3d@intel.com>
+In-Reply-To: <9e9147ad-6d7c-9381-72f3-dc2f3d0723fd@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 09:45:52AM -0400, Dennis Dalessandro wrote:
-> On 5/28/2020 7:25 AM, Marciniszyn, Mike wrote:
-> > > From: YueHaibing <yuehaibing@huawei.com>
-> > > Sent: Thursday, May 28, 2020 4:00 AM
-> > > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> > >   drivers/infiniband/hw/hfi1/netdev_rx.c | 11 +++--------
-> > >   1 file changed, 3 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > > b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > > index 58af6a454761..bd6546b52159 100644
-> > > +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > > @@ -371,14 +371,9 @@ int hfi1_netdev_alloc(struct hfi1_devdata *dd)
-> > > 
-> > >   void hfi1_netdev_free(struct hfi1_devdata *dd)
-> > >   {
-> > > -struct hfi1_netdev_priv *priv;
-> > > -
-> > > -if (dd->dummy_netdev) {
-> > > -priv = hfi1_netdev_priv(dd->dummy_netdev);
-> > > -dd_dev_info(dd, "hfi1 netdev freed\n");
-> > > -kfree(dd->dummy_netdev);
-> > > -dd->dummy_netdev = NULL;
-> > > -}
-> > > +dd_dev_info(dd, "hfi1 netdev freed\n");
-> > > +kfree(dd->dummy_netdev);
-> > 
-> > Dan Carpenter has reported kfree() should be free_netdev()...
-> > 
-> > Mike
-> > 
-> 
-> I'm OK with this patch going in and then adding a separate one to fix the
-> kfree. Or this one can be touched up to include that as well.
+On Mon, Jun 01, 2020 at 09:48:47AM -0400, Dennis Dalessandro wrote:
 
-Please resend it with both things fixed
+> They should probably all be in "enum ib_mtu". Jason any issues with us donig
+> that? I can't for certain recall the real reason they were kept separate in
+> the first place.
+
+It is probably OK
 
 Jason
