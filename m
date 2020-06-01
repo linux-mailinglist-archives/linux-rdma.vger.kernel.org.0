@@ -2,148 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00781EA603
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 16:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B9A1EA80E
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Jun 2020 18:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgFAOij (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Jun 2020 10:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbgFAOij (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 10:38:39 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00::f03c:91ff:fe50:41d6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE57C05BD43;
-        Mon,  1 Jun 2020 07:38:39 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 2CFC23158; Mon,  1 Jun 2020 10:38:38 -0400 (EDT)
-Date:   Mon, 1 Jun 2020 10:38:38 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v4 00/33] Possible NFSD patches for v5.8
-Message-ID: <20200601143838.GA11647@fieldses.org>
-References: <20200530131711.10117.74063.stgit@klimt.1015granger.net>
+        id S1726067AbgFAQ7f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Jun 2020 12:59:35 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50022 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgFAQ7f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Jun 2020 12:59:35 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051GvqAh186931;
+        Mon, 1 Jun 2020 16:59:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Co6TBpPBWOOIua0C6lZXDzHL7YHL+4VljOm7wRvuiLg=;
+ b=kga5LbBEWrNccNtyM17rbBxrbjpe+8Tm+f3KCySn/nrzpvuSU6l3HNgmsfcyCPnAtUgn
+ 9rHTGEIBvkEDYwnqp+dHe4AFXS2oVj2yYDPIwub7Ko8Q8UqEFtww0zt+hYANubXySdYW
+ vOD0iGs2MJSjQm3F1i5PJEW4aiBWg5Pzm9DXpZmJqCBuZ1ZNVjmL3vZ3MtWwSCwmCV+Q
+ cOLfzHajLEuP4oYSDkbzeHFK8uY8zag2/GWsdKmDGgCMjft9n890WSRAbRbFWCffxrsJ
+ KNuoVNSEXbkyCVlK8cGMXk5fd3zW0up1UNkLpkOaBsMDkQrILKXb66fwJvqVavcWHrxK /g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 31bewqqv48-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 01 Jun 2020 16:59:33 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051GrLti068866;
+        Mon, 1 Jun 2020 16:59:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 31c12msumk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Jun 2020 16:59:32 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 051GxVhT006744;
+        Mon, 1 Jun 2020 16:59:32 GMT
+Received: from [10.159.235.19] (/10.159.235.19)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 01 Jun 2020 09:59:31 -0700
+Subject: Re: [PATCH net-next] rds: transport module should be auto loaded when
+ transport is set
+To:     David Miller <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        somasundaram.krishnasamy@oracle.com
+References: <20200527081742.25718-1-rao.shoaib@oracle.com>
+ <20200529.164107.1817677145426311890.davem@davemloft.net>
+From:   Rao Shoaib <rao.shoaib@oracle.com>
+Message-ID: <4f86d778-1f6b-d533-c062-c78daa257829@oracle.com>
+Date:   Mon, 1 Jun 2020 09:59:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200530131711.10117.74063.stgit@klimt.1015granger.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200529.164107.1817677145426311890.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006010125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=0 impostorscore=0 cotscore=-2147483648
+ lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006010125
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, May 30, 2020 at 09:28:03AM -0400, Chuck Lever wrote:
-> Hi Bruce-
-> 
-> To address merge conflicts with Anna's tree, I've rebased this
-> series on v5.7-rc6 plus ("SUNRPC: Split the xdr_buf event class").
-> Only two commits were changed by this rebase:
-> 
->       SUNRPC: Move xpt_mutex into socket xpo_sendto methods
->       SUNRPC: Add more svcsock tracepoints
-> 
-> Feel free to make use of this version, or ignore it. :-)
 
-Linus generally seems to prefer handling minor conflict resolutions
-himself over maintainers rebasing.
+On 5/29/20 4:41 PM, David Miller wrote:
+> From: rao.shoaib@oracle.com
+> Date: Wed, 27 May 2020 01:17:42 -0700
+>
+>> diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
+>> index cba368e55863..7273c681e6c1 100644
+>> --- a/include/uapi/linux/rds.h
+>> +++ b/include/uapi/linux/rds.h
+>> @@ -64,7 +64,7 @@
+>>   
+>>   /* supported values for SO_RDS_TRANSPORT */
+>>   #define	RDS_TRANS_IB	0
+>> -#define	RDS_TRANS_IWARP	1
+>> +#define	RDS_TRANS_GAP	1
+>>   #define	RDS_TRANS_TCP	2
+>>   #define RDS_TRANS_COUNT	3
+>>   #define	RDS_TRANS_NONE	(~0)
+> You can't break user facing UAPI like this, sorry.
 
---b.
+I was hoping that this could be considered an exception as IWARP has 
+been deprecated for almost a decade and there is no current product 
+using it. With the change any old binary will continue to work, a new 
+compilation fill fail so that the code can be examined, otherwise we 
+will never be able to reuse this number.
 
-> 
-> 
-> Available to view:
->  https://git.linux-nfs.org/?p=cel/cel-2.6.git;a=shortlog;h=refs/heads/nfsd-5.8
-> 
-> Pull from this topic branch:
->  git://git.linux-nfs.org/projects/cel/cel-2.6.git nfsd-5.8
-> 
-> Highlights of this series:
-> * Remove serialization of sending RPC/RDMA Replies
-> * Convert the TCP socket send path to use xdr_buf::bvecs (pre-requisite for RPC-on-TLS)
-> * Fix svcrdma backchannel sendto return code
-> * Convert a number of dprintk call sites to use tracepoints
-> * Fix the "suggest braces around empty body in an 'else' statement" warning
-> 
-> 
-> Changes since v3:
-> * Rebased on v5.7-rc6 + ("SUNRPC: Split the xdr_buf event class")
-> 
-> Changes since v2:
-> * Rebased on v5.7-rc6
-> * Fixed a logic error that left XPT_DATA unset on return from svc_tcp_recvfrom()
-> * Broke down "SUNRPC: Refactor svc_recvfrom()" to separate clean ups from logic changes
-> * Some superfluous clean-ups have been redacted
-> * Add separate tracepoints for error cases (eg, tcp_recv and tcp_recv_err)
-> 
-> Changes since v1:
-> * Rebased on v5.7-rc5+
-> * Re-organized the series so changes interesting to linux-rdma appear together
-> * Addressed sparse warnings found by the kbuild test robot
-> * Included an additional minor clean-up: removal of the unused SVCRDMA_DEBUG macro
-> * Clarified several patch descriptions
-> 
-> ---
-> 
-> Chuck Lever (33):
->       SUNRPC: Split the xdr_buf event class
->       SUNRPC: Move xpt_mutex into socket xpo_sendto methods
->       svcrdma: Clean up the tracing for rw_ctx_init errors
->       svcrdma: Clean up handling of get_rw_ctx errors
->       svcrdma: Trace page overruns when constructing RDMA Reads
->       svcrdma: trace undersized Write chunks
->       svcrdma: Fix backchannel return code
->       svcrdma: Remove backchannel dprintk call sites
->       svcrdma: Rename tracepoints that record header decoding errors
->       svcrdma: Remove the SVCRDMA_DEBUG macro
->       svcrdma: Displayed remote IP address should match stored address
->       svcrdma: Add tracepoints to report ->xpo_accept failures
->       SUNRPC: Remove kernel memory address from svc_xprt tracepoints
->       SUNRPC: Tracepoint to record errors in svc_xpo_create()
->       SUNRPC: Trace a few more generic svc_xprt events
->       SUNRPC: Remove "#include <trace/events/skb.h>"
->       SUNRPC: Add more svcsock tracepoints
->       SUNRPC: Replace dprintk call sites in TCP state change callouts
->       SUNRPC: Trace server-side rpcbind registration events
->       SUNRPC: Rename svc_sock::sk_reclen
->       SUNRPC: Restructure svc_tcp_recv_record()
->       SUNRPC: Replace dprintk() call sites in TCP receive path
->       SUNRPC: Refactor recvfrom path dealing with incomplete TCP receives
->       SUNRPC: Clean up svc_release_skb() functions
->       SUNRPC: Refactor svc_recvfrom()
->       SUNRPC: Restructure svc_udp_recvfrom()
->       SUNRPC: svc_show_status() macro should have enum definitions
->       NFSD: Add tracepoints to NFSD's duplicate reply cache
->       NFSD: Add tracepoints to the NFSD state management code
->       NFSD: Add tracepoints for monitoring NFSD callbacks
->       SUNRPC: Clean up request deferral tracepoints
->       NFSD: Squash an annoying compiler warning
->       NFSD: Fix improperly-formatted Doxygen comments
-> 
-> 
->  fs/nfsd/nfs4callback.c                     |  37 +-
->  fs/nfsd/nfs4proc.c                         |   7 +-
->  fs/nfsd/nfs4state.c                        |  63 ++--
->  fs/nfsd/nfscache.c                         |  57 +--
->  fs/nfsd/nfsctl.c                           |  26 +-
->  fs/nfsd/state.h                            |   7 -
->  fs/nfsd/trace.h                            | 345 +++++++++++++++++
->  include/linux/sunrpc/svc.h                 |   1 +
->  include/linux/sunrpc/svc_rdma.h            |   6 +-
->  include/linux/sunrpc/svc_xprt.h            |   6 +
->  include/linux/sunrpc/svcsock.h             |   6 +-
->  include/trace/events/rpcrdma.h             | 142 +++++--
->  include/trace/events/sunrpc.h              | 419 +++++++++++++++++++--
->  net/sunrpc/svc.c                           |  19 +-
->  net/sunrpc/svc_xprt.c                      |  52 +--
->  net/sunrpc/svcsock.c                       | 407 ++++++++++----------
->  net/sunrpc/xprtrdma/svc_rdma_backchannel.c | 121 ++----
->  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c    |  21 +-
->  net/sunrpc/xprtrdma/svc_rdma_rw.c          |  92 ++---
->  net/sunrpc/xprtrdma/svc_rdma_sendto.c      |  10 +-
->  net/sunrpc/xprtrdma/svc_rdma_transport.c   |  55 ++-
->  net/sunrpc/xprtsock.c                      |  12 +-
->  22 files changed, 1321 insertions(+), 590 deletions(-)
-> 
-> --
-> Chuck Lever
+If the above is not acceptable I can revert this part of the change.
+
+Shoaib
+
