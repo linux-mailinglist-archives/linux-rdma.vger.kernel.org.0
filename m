@@ -2,108 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923841EB630
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 09:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11F51EB834
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 11:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbgFBHHf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jun 2020 03:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
+        id S1726630AbgFBJRI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jun 2020 05:17:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:47446 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbgFBHHf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Jun 2020 03:07:35 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B70CC206A2;
-        Tue,  2 Jun 2020 07:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591081654;
-        bh=AjDDp09H2m0/LzdcmPzwitXY+/pj+EurwKu7YmvdHsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CGt3enTeWTtwcBJEjHxnDtuUPaYRQlxKJRIKIgDxZaK8W9I+z7+bUAw/qBmqQmljK
-         eSCA25RCBwOU8IrJ0kFcm2juCW7W/avLftkb9ML2p/zrh3xwyjtmtPVUCFTixLGFxp
-         cKAh4+hNY/G6VY480wqZ+PGPhH/G1aNEORHPg+Kc=
-Date:   Tue, 2 Jun 2020 10:07:30 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] mlx5: Restore err assignment in mlx5_mdev_init
-Message-ID: <20200602070730.GA12686@unreal>
-References: <20200530055447.1028004-1-natechancellor@gmail.com>
- <20200531095810.GF66309@unreal>
- <20200602040748.GA1435528@ubuntu-n2-xlarge-x86>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602040748.GA1435528@ubuntu-n2-xlarge-x86>
+        id S1726139AbgFBJRH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Jun 2020 05:17:07 -0400
+IronPort-SDR: 2mN2UP+5DYwxn5upqVhb2xj1+l3/5I5dEv3Qz6GydjAMPEi0vdAQuUMo8RT+ZT+/C3OurkGVJa
+ ZXmEr/uWWLwA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 02:17:05 -0700
+IronPort-SDR: x/s6TqMkfFCMf6Elj0L0Y8lX5QW2JWx9MUk5QQCfVZssNH9dEg0ZyETqw7Bb3OWNT1BFwpyD/P
+ Tvjal8T4d0iQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,463,1583222400"; 
+   d="scan'208";a="416118065"
+Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
+  by orsmga004.jf.intel.com with ESMTP; 02 Jun 2020 02:16:55 -0700
+From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Brian King <brking@us.ibm.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jim Gill <jgill@vmware.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>
+Cc:     linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+Subject: [PATCH 00/15] forward MSIx vector enable error code in pci_alloc_irq_vectors_affinity
+Date:   Tue,  2 Jun 2020 11:16:17 +0200
+Message-Id: <20200602091617.31395-1-piotr.stankiewicz@intel.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 09:07:48PM -0700, Nathan Chancellor wrote:
-> On Sun, May 31, 2020 at 12:58:10PM +0300, Leon Romanovsky wrote:
-> > On Fri, May 29, 2020 at 10:54:48PM -0700, Nathan Chancellor wrote:
-> > > Clang warns:
-> > >
-> > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:6: warning: variable
-> > > 'err' is used uninitialized whenever 'if' condition is true
-> > > [-Wsometimes-uninitialized]
-> > >         if (!priv->dbg_root) {
-> > >             ^~~~~~~~~~~~~~~
-> > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1303:9: note:
-> > > uninitialized use occurs here
-> > >         return err;
-> > >                ^~~
-> > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:2: note: remove the
-> > > 'if' if its condition is always false
-> > >         if (!priv->dbg_root) {
-> > >         ^~~~~~~~~~~~~~~~~~~~~~
-> > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1259:9: note: initialize
-> > > the variable 'err' to silence this warning
-> > >         int err;
-> > >                ^
-> > >                 = 0
-> > > 1 warning generated.
-> > >
-> > > This path previously returned -ENOMEM, restore that error code so that
-> > > it is not uninitialized.
-> > >
-> > > Fixes: 810cbb25549b ("net/mlx5: Add missing mutex destroy")
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1042
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > index df46b1fce3a7..ac68445fde2d 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > @@ -1277,6 +1277,7 @@ static int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx)
-> > >  					    mlx5_debugfs_root);
-> > >  	if (!priv->dbg_root) {
-> > >  		dev_err(dev->device, "mlx5_core: error, Cannot create debugfs dir, aborting\n");
-> > > +		err = -ENOMEM;
-> > >  		goto err_dbg_root;
-> >                 ^^^^^^^^^^^^^^^^^^ this is wrong.
-> > Failure to create debugfs should never fail the driver.
->
-> Fair enough, could you guys deal with this then to make sure it gets
-> fixed properly? It appears to be introduced in 11f3b84d7068 ("net/mlx5:
-> Split mdev init and pci init").
+The primary objective of this patch series is to change the behaviour
+of pci_alloc_irq_vectors_affinity such that it forwards the MSI-X enable
+error code when appropriate. In the process, though, it was pointed out
+that there are multiple places in the kernel which check/ask for message
+signalled interrupts (MSI or MSI-X), which spawned the first patch adding
+PCI_IRQ_MSI_TYPES. Finally the rest of the chain converts all users to
+take advantage of PCI_IRQ_MSI_TYPES or PCI_IRQ_ALL_TYPES, as
+appropriate.
 
-Thanks, I will send it today.
+Piotr Stankiewicz (15):
+  PCI: add shorthand define for message signalled interrupt types
+  PCI/MSI: forward MSIx vector enable error code in
+    pci_alloc_irq_vectors_affinity
+  PCI: use PCI_IRQ_MSI_TYPES where appropriate
+  ahci: use PCI_IRQ_MSI_TYPES where appropriate
+  crypto: inside-secure - use PCI_IRQ_MSI_TYPES where appropriate
+  dmaengine: dw-edma: use PCI_IRQ_MSI_TYPES  where appropriate
+  drm/amdgpu: use PCI_IRQ_MSI_TYPES where appropriate
+  IB/qib: Use PCI_IRQ_MSI_TYPES where appropriate
+  media: ddbridge: use PCI_IRQ_MSI_TYPES where appropriate
+  vmw_vmci: use PCI_IRQ_ALL_TYPES where appropriate
+  mmc: sdhci: use PCI_IRQ_MSI_TYPES where appropriate
+  amd-xgbe: use PCI_IRQ_MSI_TYPES where appropriate
+  aquantia: atlantic: use PCI_IRQ_ALL_TYPES where appropriate
+  net: hns3: use PCI_IRQ_MSI_TYPES where appropriate
+  scsi: use PCI_IRQ_MSI_TYPES and PCI_IRQ_ALL_TYPES where appropriate
 
->
-> > >  	}
-> > >
-> > >
-> > > base-commit: c0cc73b79123e67b212bd537a7af88e52c9fbeac
-> > > --
-> > > 2.27.0.rc0
-> > >
+ Documentation/PCI/msi-howto.rst                           | 5 +++--
+ drivers/ata/ahci.c                                        | 2 +-
+ drivers/crypto/inside-secure/safexcel.c                   | 2 +-
+ drivers/dma/dw-edma/dw-edma-pcie.c                        | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c                   | 8 ++++----
+ drivers/infiniband/hw/qib/qib_pcie.c                      | 2 +-
+ drivers/media/pci/ddbridge/ddbridge-main.c                | 2 +-
+ drivers/misc/vmw_vmci/vmci_guest.c                        | 3 +--
+ drivers/mmc/host/sdhci-pci-gli.c                          | 3 +--
+ drivers/mmc/host/sdhci-pci-o2micro.c                      | 3 +--
+ drivers/net/ethernet/amd/xgbe/xgbe-pci.c                  | 2 +-
+ drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c      | 4 +---
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 3 +--
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 2 +-
+ drivers/pci/msi.c                                         | 4 ++--
+ drivers/pci/pcie/portdrv_core.c                           | 4 ++--
+ drivers/pci/switch/switchtec.c                            | 3 +--
+ drivers/scsi/ipr.c                                        | 2 +-
+ drivers/scsi/vmw_pvscsi.c                                 | 2 +-
+ include/linux/pci.h                                       | 4 ++--
+ 20 files changed, 28 insertions(+), 34 deletions(-)
+
+-- 
+2.17.2
+
