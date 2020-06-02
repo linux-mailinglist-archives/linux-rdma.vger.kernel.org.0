@@ -2,127 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082211EB419
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 06:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B55E1EB5B6
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 08:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725793AbgFBEHw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jun 2020 00:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgFBEHw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jun 2020 00:07:52 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AB4C061A0E;
-        Mon,  1 Jun 2020 21:07:52 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id k15so6432992otp.8;
-        Mon, 01 Jun 2020 21:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KMSPv9lovPpFYq/LUSFG6QcTM2yJAf6mkVnhkUqAWFE=;
-        b=WMxPxSbb+ih0evnuvt75qFV3j8/ZNo5BoD18gBSZrmuRB4x6eae1MSmhNbPveib8Cb
-         vG9YA93T4cM2T9KxFOrqXQPSCswFTfrBHeDT7K3csLywYfYJnG1bK47kH2B5IkpfFDTv
-         7AclSnVyGL3RM659NhBjQiWSNH6AszZr3hagD+SFuyd8BmUHP9tGbUz9BSOUdZ/CHCrz
-         2oCtAI3pdEMUiiEjNiDZFonC6ESR4R17iOsexI1pf0Fi2tNzAdohkOdFU0pRIkgbwvsv
-         0SF2prYH888MMi3xOuUOIPJjBhTu6bzXuN4Hr1FkGzc9TpENlMzHGozAyZ/90+5ihXpv
-         aQJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KMSPv9lovPpFYq/LUSFG6QcTM2yJAf6mkVnhkUqAWFE=;
-        b=EB6aK9FeAjo2vR6xrTbgun8JicTEpDkdnQmhHpVsdKvUySIuQJl5c3Ahi0YCLDlB6D
-         tOl+3U12mwcYg6egUP3jKwmpgpS+Su8wktK/2yfmO/EVm6lsAKovgRxQEZzNAVzHKoab
-         /KdxFxLgRE/wt5TnJRiED3ERi7EGuC8PX/sVtpg2J4VAT/DV0Z04eXO21RubgDzm9MMF
-         wTNiGKF6tjY0lodyhirmAMq0F/vbdMDsdOtw969k2GSuzhW3DXSqypJnI20padt8OieE
-         AEyqPigDLq9PST3o9N0N3pgnGlPqV22Tx6l2ZHCNqtilTEQ4w3ovkUMSF+bcF8uWbFYx
-         3lxQ==
-X-Gm-Message-State: AOAM531gIxYA9n+J/pJRWxqNPdDh5UW8LcrsqP1DN/mlWR8R6JCUmJip
-        kGYLvoxQQfUhJ0u5WKrGYEc=
-X-Google-Smtp-Source: ABdhPJzXrPxUYjRIUy87NNVlcUO9m5FQh/SjJVEgeC1PytNMgZBHluBrkNXvuWeXy4XPqPBswW9+Jw==
-X-Received: by 2002:a9d:1d43:: with SMTP id m61mr19800887otm.190.1591070871042;
-        Mon, 01 Jun 2020 21:07:51 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id v1sm418926ooi.13.2020.06.01.21.07.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 21:07:50 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 21:07:48 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] mlx5: Restore err assignment in mlx5_mdev_init
-Message-ID: <20200602040748.GA1435528@ubuntu-n2-xlarge-x86>
-References: <20200530055447.1028004-1-natechancellor@gmail.com>
- <20200531095810.GF66309@unreal>
+        id S1725937AbgFBGRD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jun 2020 02:17:03 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:34478 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbgFBGRD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Jun 2020 02:17:03 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CDB40BC41E81E25A4047;
+        Tue,  2 Jun 2020 14:16:54 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 2 Jun 2020
+ 14:16:44 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <sadanand.warrier@intel.com>, <grzegorz.andrejczuk@intel.com>,
+        <yuehaibing@huawei.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dan.carpenter@oracle.com>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] IB/hfi1: Use free_netdev() in hfi1_netdev_free()
+Date:   Tue, 2 Jun 2020 14:16:35 +0800
+Message-ID: <20200602061635.31224-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200601135644.GD4872@ziepe.ca>
+References: <20200601135644.GD4872@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200531095810.GF66309@unreal>
+Content-Type: text/plain
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 31, 2020 at 12:58:10PM +0300, Leon Romanovsky wrote:
-> On Fri, May 29, 2020 at 10:54:48PM -0700, Nathan Chancellor wrote:
-> > Clang warns:
-> >
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:6: warning: variable
-> > 'err' is used uninitialized whenever 'if' condition is true
-> > [-Wsometimes-uninitialized]
-> >         if (!priv->dbg_root) {
-> >             ^~~~~~~~~~~~~~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1303:9: note:
-> > uninitialized use occurs here
-> >         return err;
-> >                ^~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:2: note: remove the
-> > 'if' if its condition is always false
-> >         if (!priv->dbg_root) {
-> >         ^~~~~~~~~~~~~~~~~~~~~~
-> > drivers/net/ethernet/mellanox/mlx5/core/main.c:1259:9: note: initialize
-> > the variable 'err' to silence this warning
-> >         int err;
-> >                ^
-> >                 = 0
-> > 1 warning generated.
-> >
-> > This path previously returned -ENOMEM, restore that error code so that
-> > it is not uninitialized.
-> >
-> > Fixes: 810cbb25549b ("net/mlx5: Add missing mutex destroy")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1042
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > index df46b1fce3a7..ac68445fde2d 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > @@ -1277,6 +1277,7 @@ static int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx)
-> >  					    mlx5_debugfs_root);
-> >  	if (!priv->dbg_root) {
-> >  		dev_err(dev->device, "mlx5_core: error, Cannot create debugfs dir, aborting\n");
-> > +		err = -ENOMEM;
-> >  		goto err_dbg_root;
->                 ^^^^^^^^^^^^^^^^^^ this is wrong.
-> Failure to create debugfs should never fail the driver.
+dummy_netdev shold be freed by free_netdev() instead of
+kfree(). Also remove unneeded variable 'priv'
 
-Fair enough, could you guys deal with this then to make sure it gets
-fixed properly? It appears to be introduced in 11f3b84d7068 ("net/mlx5:
-Split mdev init and pci init").
+Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/infiniband/hw/hfi1/netdev_rx.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> >  	}
-> >
-> >
-> > base-commit: c0cc73b79123e67b212bd537a7af88e52c9fbeac
-> > --
-> > 2.27.0.rc0
-> >
+diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+index 58af6a454761..63688e85e8da 100644
+--- a/drivers/infiniband/hw/hfi1/netdev_rx.c
++++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+@@ -371,12 +371,9 @@ int hfi1_netdev_alloc(struct hfi1_devdata *dd)
+ 
+ void hfi1_netdev_free(struct hfi1_devdata *dd)
+ {
+-	struct hfi1_netdev_priv *priv;
+-
+ 	if (dd->dummy_netdev) {
+-		priv = hfi1_netdev_priv(dd->dummy_netdev);
+ 		dd_dev_info(dd, "hfi1 netdev freed\n");
+-		kfree(dd->dummy_netdev);
++		free_netdev(dd->dummy_netdev);
+ 		dd->dummy_netdev = NULL;
+ 	}
+ }
+-- 
+2.17.1
+
+
