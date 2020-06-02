@@ -2,116 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE351EC1B5
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 20:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6170F1EC1FB
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jun 2020 20:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgFBSTq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jun 2020 14:19:46 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60708 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgFBSTq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jun 2020 14:19:46 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052IIjFK004155;
-        Tue, 2 Jun 2020 18:19:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=hF0mObcKC8h/H6oayYNtykI3tyzQC1i6+1e5jPnZVGI=;
- b=vgGbsJR8kBPoY7pxdUrWwekDDQjOtq9qR2z+pycVaNZMrKsJBwnwhXXifROaBBh0eHAi
- lh9qL08fL9nIJAj/VquZNsUa19xaPp53IWKn90j7D6rI+41nN9B9jwf2EyGE+lggf9Tx
- Qg3yw8Bw+4uFfcblxIh8FYvONFFvUAmTqI6+vvwx3qa9wmM9miw1/YvFxPmtH9WZpKcQ
- lkIw5Ruxn3PARSCaH6ibFw02nox5hjUsBsv2fcQYTOFHnqOR3UZBVdpfwF5HPmwQLHuE
- zptX/asHmz7Z9+liAoQWkJl0bcW4iV5/xvud7THtY9hj9fhgBQHmZ0WwYLKqjhWfVFjV 0w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 31bewqwhqj-1
+        id S1727826AbgFBSjQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Jun 2020 14:39:16 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33058 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgFBSjP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jun 2020 14:39:15 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052IWQaw023483;
+        Tue, 2 Jun 2020 18:39:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=xtfXkYTOk8D7WL7U+lHQ9ITr5AwuMgBCV1KLh2eKvPQ=;
+ b=ajoYi9Pb635zGxmx5JfLm/UDp3nYiRhRDzWUvYeKfgRoDz2vjc13BnoCNQarr2zn+qIY
+ S/jxiz+0DR6JLp6pQznnv54mibGN/TjK3fPm/Bn1ho54HsxEbMQv78THZ5GE5THbeV0A
+ J22418WCD2HXW3TkkKe1ufOTIZvnHUlxY0k5dT6L3blh2ouJYWJjgB2WTkcw1WBZtRzX
+ C13B2svLq2Cdj9Bd4hJMFIEfqDoAp7n22C78KNER9wn1R4EWhBSEdG98463TbNA7qTj+
+ HvRUx9ZU8fqQQaWZ3KmMECLIQqfsEE27pl0/7KGtwT37AWecl1R5cFMGGq3NnmW33A2h sg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 31bfem5gk3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 18:19:42 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052IJHAa105411;
-        Tue, 2 Jun 2020 18:19:41 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 31c1dxppdc-1
+        Tue, 02 Jun 2020 18:39:06 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052IXwVs106339;
+        Tue, 2 Jun 2020 18:39:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 31c25pq0hu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 18:19:41 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 052IJeS7027641;
-        Tue, 2 Jun 2020 18:19:40 GMT
-Received: from [10.159.248.29] (/10.159.248.29)
+        Tue, 02 Jun 2020 18:39:05 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 052Id4F9006513;
+        Tue, 2 Jun 2020 18:39:04 GMT
+Received: from kadam (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 11:19:40 -0700
-Subject: Re: [PATCH net-next] rds: transport module should be auto loaded when
- transport is set
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, somasundaram.krishnasamy@oracle.com
-References: <20200527081742.25718-1-rao.shoaib@oracle.com>
- <20200529.164107.1817677145426311890.davem@davemloft.net>
- <4f86d778-1f6b-d533-c062-c78daa257829@oracle.com>
- <20200602061715.GA56352@unreal>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <0237090f-ba68-f689-782f-3993b89fae15@oracle.com>
-Date:   Tue, 2 Jun 2020 11:19:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        with ESMTP ; Tue, 02 Jun 2020 11:39:04 -0700
+Date:   Tue, 2 Jun 2020 21:38:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>, mike.marciniszyn@intel.com,
+        dledford@redhat.com, jgg@ziepe.ca, sadanand.warrier@intel.com,
+        grzegorz.andrejczuk@intel.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] IB/hfi1: Use free_netdev() in hfi1_netdev_free()
+Message-ID: <20200602183856.GY22511@kadam>
+References: <20200601135644.GD4872@ziepe.ca>
+ <20200602061635.31224-1-yuehaibing@huawei.com>
+ <75257c20-3cf2-7ecc-0d66-e1f4155ba105@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200602061715.GA56352@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75257c20-3cf2-7ecc-0d66-e1f4155ba105@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020133
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2 spamscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006020134
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=0 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006020133
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=2
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006020134
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Jun 02, 2020 at 11:30:13AM -0400, Dennis Dalessandro wrote:
+> On 6/2/2020 2:16 AM, YueHaibing wrote:
+> > dummy_netdev shold be freed by free_netdev() instead of
+> > kfree(). Also remove unneeded variable 'priv'
+> > 
+> > Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> > ---
+> >   drivers/infiniband/hw/hfi1/netdev_rx.c | 5 +----
+> >   1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+> > index 58af6a454761..63688e85e8da 100644
+> > --- a/drivers/infiniband/hw/hfi1/netdev_rx.c
+> > +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+> > @@ -371,12 +371,9 @@ int hfi1_netdev_alloc(struct hfi1_devdata *dd)
+> >   void hfi1_netdev_free(struct hfi1_devdata *dd)
+> >   {
+> > -	struct hfi1_netdev_priv *priv;
+> > -
+> >   	if (dd->dummy_netdev) {
+> > -		priv = hfi1_netdev_priv(dd->dummy_netdev);
+> >   		dd_dev_info(dd, "hfi1 netdev freed\n");
+> > -		kfree(dd->dummy_netdev);
+> > +		free_netdev(dd->dummy_netdev);
+> >   		dd->dummy_netdev = NULL;
+> >   	}
+> >   }
+> > 
+> 
+> For the kfree->free_netdev, you probably want to add:
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-On 6/1/20 11:17 PM, Leon Romanovsky wrote:
-> On Mon, Jun 01, 2020 at 09:59:30AM -0700, Rao Shoaib wrote:
->> On 5/29/20 4:41 PM, David Miller wrote:
->>> From: rao.shoaib@oracle.com
->>> Date: Wed, 27 May 2020 01:17:42 -0700
->>>
->>>> diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
->>>> index cba368e55863..7273c681e6c1 100644
->>>> --- a/include/uapi/linux/rds.h
->>>> +++ b/include/uapi/linux/rds.h
->>>> @@ -64,7 +64,7 @@
->>>>    /* supported values for SO_RDS_TRANSPORT */
->>>>    #define	RDS_TRANS_IB	0
->>>> -#define	RDS_TRANS_IWARP	1
->>>> +#define	RDS_TRANS_GAP	1
->>>>    #define	RDS_TRANS_TCP	2
->>>>    #define RDS_TRANS_COUNT	3
->>>>    #define	RDS_TRANS_NONE	(~0)
->>> You can't break user facing UAPI like this, sorry.
->> I was hoping that this could be considered an exception as IWARP has been
->> deprecated for almost a decade and there is no current product using it.
->> With the change any old binary will continue to work, a new compilation fill
->> fail so that the code can be examined, otherwise we will never be able to
->> reuse this number.
->>
->> If the above is not acceptable I can revert this part of the change.
-> Nothing prohibits you from adding the following lines:
->
-> + /* don't use RDS_TRANS_IWARP - it is deprecated */
-> + #define  RDS_TRANS_GAP RDS_TRANS_IWARP
+YueHaibing wasn't on the CC list when I sent forwarded that kbuild bot
+email.  Forget about it.  Let's just apply this.
 
-Correct. That is what I was planning on doing in case I could not get 
-rid of RDS_TRANS_IWARP. I will resubmit the patch.
+regards,
+dan carpenter
 
-Shoaib
-
->
->> Shoaib
->>
