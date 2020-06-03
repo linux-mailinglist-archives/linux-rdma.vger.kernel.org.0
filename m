@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBC81ECC8A
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 11:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131F31ECC8E
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 11:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgFCJ0V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 05:26:21 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10946 "EHLO mga11.intel.com"
+        id S1726159AbgFCJ0f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 05:26:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55506 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgFCJ0U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:26:20 -0400
-IronPort-SDR: HEOzsoyVrcoVu9mlrLzeTLhAyqDPxIZWf4Jr5NgX0fwzOqvx3/2J4t+/lrDUf4JKkw+FEpk7JL
- d6yZa3WZHa+g==
+        id S1725954AbgFCJ0f (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Jun 2020 05:26:35 -0400
+IronPort-SDR: mlG2YPyI9NY4uYubR2zrVOeUhK4CJMAr4hxPx+zZqaDSRZsLioG59MT82aJ8oiLsMu3PVO7nyL
+ O3/A4+7/yCdw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 02:26:18 -0700
-IronPort-SDR: nmqgvkBOGLnfoD8UG7++1dLN+zlOfpE294s7psOEUriFnJ5N0HjuXxky8f54ID1lxC/cywg8gW
- tAQ1CapIjG9g==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 02:26:18 -0700
+IronPort-SDR: vsEgDKi/nc7TY3fsvNGh6vpy0YlK1KfvdrVcKKu1fNBzk+DITVJteVp76Fw5yT0RDXlYd9oIIS
+ B8MUyxgcb5Gg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="470987140"
+   d="scan'208";a="445034429"
 Received: from lkp-server01.sh.intel.com (HELO dad89584b564) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Jun 2020 02:26:16 -0700
+  by orsmga005.jf.intel.com with ESMTP; 03 Jun 2020 02:26:16 -0700
 Received: from kbuild by dad89584b564 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jgPf6-00004V-4k; Wed, 03 Jun 2020 09:26:16 +0000
-Date:   Wed, 03 Jun 2020 17:25:40 +0800
+        id 1jgPf6-00004T-3G; Wed, 03 Jun 2020 09:26:16 +0000
+Date:   Wed, 03 Jun 2020 17:25:53 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 87d9e568496aeb519f1da61f54ac0dcb8d37561e
-Message-ID: <5ed76c94.im16kMbIMrkFAxZa%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 193ba03141bb987c3af985f6479840030fec0534
+Message-ID: <5ed76ca1.3bu6wNYzvhkdIGez%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,15 +43,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
-branch HEAD: 87d9e568496aeb519f1da61f54ac0dcb8d37561e  RDMA/hns: Uninitialized variable in modify_qp_init_to_rtr()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 193ba03141bb987c3af985f6479840030fec0534  IB/hfi1: Use free_netdev() in hfi1_netdev_free()
 
 i386-tinyconfig vmlinux size:
 
 +-------+------------------------------------+---------------------------------------------------------------------------+
 | DELTA |               SYMBOL               |                                  COMMIT                                   |
 +-------+------------------------------------+---------------------------------------------------------------------------+
-|  +455 | TOTAL                              | 8f3d9f354286..87d9e568496a (ALL COMMITS)                                  |
+|  +455 | TOTAL                              | 8f3d9f354286..193ba03141bb (ALL COMMITS)                                  |
 |  +456 | TOTAL                              | eafd47fc200e Merge tag 'v5.7-rc6' into rdma.git for-next                  |
 |  +379 | TEXT                               | eafd47fc200e Merge tag 'v5.7-rc6' into rdma.git for-next                  |
 |   +72 | DATA                               | eafd47fc200e Merge tag 'v5.7-rc6' into rdma.git for-next                  |
@@ -166,8 +166,8 @@ i386-tinyconfig vmlinux size:
 
 elapsed time: 482m
 
-configs tested: 114
-configs skipped: 8
+configs tested: 118
+configs skipped: 6
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -205,15 +205,21 @@ sh                        edosk7705_defconfig
 arm                              alldefconfig
 sh                          rsk7203_defconfig
 powerpc                     pq2fads_defconfig
-s390                             allyesconfig
 powerpc                     mpc83xx_defconfig
 sh                            migor_defconfig
 powerpc                  mpc885_ads_defconfig
 riscv                            alldefconfig
 sh                        sh7785lcr_defconfig
 arm                          lpd270_defconfig
-s390                             alldefconfig
-c6x                        evmc6472_defconfig
+arm                          prima2_defconfig
+s390                              allnoconfig
+mips                              allnoconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+powerpc                  storcenter_defconfig
+mips                  decstation_64_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                     magicpanelr2_defconfig
 sh                          rsk7264_defconfig
 sh                          kfr2r09_defconfig
 m68k                       m5208evb_defconfig
@@ -224,7 +230,6 @@ i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
@@ -253,7 +258,6 @@ sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
 mips                             allyesconfig
-mips                              allnoconfig
 mips                             allmodconfig
 parisc                            allnoconfig
 parisc                              defconfig
@@ -266,7 +270,7 @@ riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
-s390                              allnoconfig
+s390                             allyesconfig
 s390                             allmodconfig
 s390                                defconfig
 sparc                            allyesconfig
@@ -275,9 +279,9 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
+um                               allmodconfig
 um                                allnoconfig
 um                                  defconfig
-um                               allmodconfig
 um                               allyesconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
