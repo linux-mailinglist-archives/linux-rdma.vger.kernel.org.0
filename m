@@ -2,86 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB831ECAA9
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 09:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540911ECBEC
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 10:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725866AbgFCHiH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 03:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgFCHiH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 03:38:07 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB1BC05BD43
-        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 00:38:06 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o15so1058557ejm.12
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 00:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tFydyjUpfq+0K/C3Y8lf+32iB1pzaQikvNiIt68CK9Q=;
-        b=Bm19RYDUAafBYzpHdFkLbMW7odaHE8E7hxYf5dbq1+bad3JJv2lUakWkhPborpbIuz
-         0bVBxru8WZyPbprEvKbjtkjzZ4nlal38ZAL3xQoZF5Dgjgd6Fj4uQuxV8H0QlEK6rcsX
-         NRrZT9+MxZizSjJtF8hyWmM3DTvMoZ1v/hQC/ZxM6msRZJp15SgIL3kc5LwNjzYpj96p
-         uhNH4E4fUVN6yJFEdPlgzpKNagQZVGfc/87ihtgEqYRLDYFVSunra3MuEsVp0VBuu3dF
-         JIMUgn3X6zn78wEBl2i9k6rNHcaZO38euiGDTh1j/uKdVbTojdYEqDzUv9fXm0MDGAZ6
-         OHeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tFydyjUpfq+0K/C3Y8lf+32iB1pzaQikvNiIt68CK9Q=;
-        b=DIKFXt9fkx8X42NFZOQb5AvBPzn7vx7rvObkv/9u8Ezo3TrrLuYb4CRLz2Dzd5wBy2
-         wrr0ejy8qsbr1D04OhkaFcN4I1t6IQq+RQ+LFez4BISh8vrLJYJtepXC4F5YK6J3ICXY
-         7KPfrv6GIVgdLr6LXzTAVd/3N5aBcskuaI1zgczX6e6zEEyYCRG37/hoLigbioFP5das
-         Lpr7IB4YZslbASdYYYk78+q24defY0kHJ4ItALToQnB5IqkM9Hkv/hzo3YJ0F6y1bLFE
-         LdB2RC7RtI4DL1gSFaS7LHFYtPgMapaiek3CBbP7vVd1JUVBAo80IEv9pAlUzv23kyOz
-         EkLg==
-X-Gm-Message-State: AOAM532AmrNKPLyGHlN4CFDPjj9FwEFDTOPy84VEpk2CeHjbDxZm7chc
-        kgFn8Vp2Ooy0zWTR6dxne0HN1CdHpF/6IUsq2YnSPQ==
-X-Google-Smtp-Source: ABdhPJzcTonodO5jPqQ1DFykZMVDG2UzJfD/TN+9abqjIFtc002NBrDkqBHKt+2rHgS+Z+W4/e1ZBM9xrYGHq6ViRVs=
-X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr25613457ejk.478.1591169884839;
- Wed, 03 Jun 2020 00:38:04 -0700 (PDT)
+        id S1726011AbgFCIyI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 04:54:08 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51626 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgFCIyI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 04:54:08 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0538kShS010894
+        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 08:54:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : from : subject :
+ message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=4CyeZg2PFTV0/j6ryEHgI2gem2Vm0ihJk+LFe9H15Ls=;
+ b=EzXsvpTS2ZZAHIRqz9jSiDAH0yNqqpLB8qgoHBBXyObQfXGDOnwGBoEheTRBxdmsAw21
+ dHvvxJi52y0f87Cai3mvu/GnuuPFKmYq3PPS7pKryGoFRle760Fg/PJQ5q3FL8gO4K63
+ WOiPD+THwS/l6CA+bExSBpiimliWNyxm2IqV9oTrqH/nIYSNiC9nvqxl4W4Xm80+T0nD
+ g131AhUBoGJJNE/oyfox7ch9lkanxswAMLbexVdDAhSHJeqYhSVEZT9ysa6g+XN/cypL
+ eRyjBRbUFVPcKd20lBbfRvQtkel0aOQb8US4KMwWzIYrY1983aJ9mXXlphmd8TINCTpV Mg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31bfem8342-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 08:54:06 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0538m1Ap152350
+        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 08:54:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31dju2wntq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 08:54:06 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0538s5m2023713
+        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 08:54:05 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 01:54:04 -0700
+To:     linux-rdma@vger.kernel.org
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Subject: A question about cm_destroy_id()
+Organization: Oracle Corporation
+Message-ID: <8d6802a1-1706-0c01-78bf-0cdd3fea0881@oracle.com>
+Date:   Wed, 3 Jun 2020 16:53:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <6c58097c2310a57a987959660a8612467d8bd96c.camel@cloud.ionos.com>
- <20200602195015.GD6578@ziepe.ca> <CAD+HZHX+RXs-Hxr-pV2Ufy-dJi22eJtH6MkNc1ZUmYXS9Pu91g@mail.gmail.com>
-In-Reply-To: <CAD+HZHX+RXs-Hxr-pV2Ufy-dJi22eJtH6MkNc1ZUmYXS9Pu91g@mail.gmail.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 3 Jun 2020 09:37:53 +0200
-Message-ID: <CAMGffEkz3jEHKKr2Dxa1M2sfcnC6Sqr0v4fyoEWxRDhjhEf-=w@mail.gmail.com>
-Subject: Re: Race condition between / wrong load order of ib_umad and ib_ipoib
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org,
-        Benjamin Drung <benjamin.drung@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=731
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030069
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ mlxlogscore=785 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030069
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+Suppose the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is
+called.  Then it calls cm_send_rej_locked().  In cm_send_rej_locked(),
+it calls cm_enter_timewait() and the state is changed to IB_CM_TIMEWAIT.
+Now back to cm_destroy_id(), it breaks from the switch statement.  And
+the next call is WARN_ON(cm_id->state != IB_CM_IDLE).  The cm_id state
+is IB_CM_TIMEWAIT so it will log a warning.  Is the warning intended in
+this case?
 
-Thanks for your reply.
-> On Tue, Jun 02, 2020 at 05:11:31PM +0200, Benjamin Drung wrote:
-> > Hi,
-> >
-> > after a kernel upgrade to version 4.19 (in-house built with Mellanox
-> > OFED drivers), some of our systems fail to bring up their IPoIB devices
-> > on boot. Different HCAs are affected (e.g. MT4099 and MT26428). We are
-> > using rdma-core on Debian and have IPoIB devices (like `ib0.dddd`)
-> > configured in `/etc/network/interfaces`. Big cluster seem to be more
-> > affected than smaller ones. In case of the failure, we see this kernel
-> > message:
-> >
-> > ```
-> > ib0.dddd: P_Key 0xdddd is not found
-> > ```
->
-> I think this means you are missing some IPoIB bug fixes?
+Thanks.
 
-Could you point to me which bugfixes are you talking about? I will
-look into backporting to our MLNX-OFED 4.5.
 
-Regards,
-Jinpu
+-- 
+K. Poon
+ka-cheong.poon@oracle.com
+
+
