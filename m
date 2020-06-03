@@ -2,178 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B5C1ECD57
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 12:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7B61ECDA1
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 12:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgFCKR6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 06:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgFCKR5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 06:17:57 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C866C08C5C0
-        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 03:17:57 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d128so1424703wmc.1
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 03:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=faL3WMD45X3eLpTE7c3WIWQehhZEPMB49mY1nPPajMs=;
-        b=SOIMdNOHKDQkAwUMHqXBh1be3JzNvedoFA1epnNyIjP826usyGTT/FkTXmRsl30Sg0
-         bOdFunuv2wX2rI7Wvddvf9ZJ1ecxCodWMPdSVi13mRGwxuumcG22P1qNVt40V56YGjXL
-         n0HxsohEDJ82sqiWVQVGVw+WdefY0ob1swU1/UVEE76YZdsf4GwcCtCsbNkrHYsK1x4P
-         XsrpNFsH7jfkxa7jgFW4aQgUtCm4ETZLy0FjocuXTJZTbG5kJ4u5UwkeEMREV+fEGGa1
-         jyhI/Oe/2vV0cUViSE714rvKKLOlGi/H5DbI77GEX5RPW3UmUfgA3aBfI8lassMWUAgI
-         IIgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=faL3WMD45X3eLpTE7c3WIWQehhZEPMB49mY1nPPajMs=;
-        b=rIyGp34f8vBg7zNr9YtfROAcrrsGYE/+F2z4KbsPsG9fIDAOPh6cMXJDs9p06OMI4j
-         ESdDLagh7y8b7ttRuClOCInrkaq2YWgbId7NyLrujdi3yuvDDIi5F7CbbJW0B8//KugO
-         iQC3+oLxH3dY2h3ki7f9Tyy7shGNCDGpwjj5lrzVSLHb1UWP9nz9xGYEhZnbNJX5exhp
-         j0/M+yHJHL7TzySu3zz2f9B2UI8I001Xsggt2dn+FRBF58VZ+jNPpTyyOuR+0V2lHTLv
-         3BM8nMBRBiSpQWT4tCnHI++VX8lhcIhwkfol/mBypcM0qEGjVuyQM9GPX6CBGilIjGsw
-         RyTA==
-X-Gm-Message-State: AOAM530AW7pkEz5ttZ32rF+JIEIwwR8noSOH5lElUvSfSODkgfu7Motc
-        ZdLaCn9aDe18CAjG0GlCLnTcQ5geMn4=
-X-Google-Smtp-Source: ABdhPJyvkkTqNi/eSeYDJ658JTc5NqQhRQTqVVtm1mAHRgblRpNUt2bu0t/4Aze1b616nAlMkVMnkQ==
-X-Received: by 2002:a7b:ce15:: with SMTP id m21mr8113414wmc.117.1591179475779;
-        Wed, 03 Jun 2020 03:17:55 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id s5sm2263159wme.37.2020.06.03.03.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 03:17:55 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Zhu Yanjun <yanjunz@mellanox.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-rc] RDMA/rxe: Fix QP cleanup flow
-Date:   Wed,  3 Jun 2020 13:17:38 +0300
-Message-Id: <20200603101738.159637-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        id S1725936AbgFCKeo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 06:34:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37288 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgFCKeo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 06:34:44 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053AWftE190825;
+        Wed, 3 Jun 2020 10:34:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=+K29LhdQYv+upXE0bZAc0K2Rc0ly+aoA/w5eTyFD4Sc=;
+ b=brwBWdFkJu//I660zn8AxWtm8x/R57XokP7PKpmYpG782jv5s3nVQEfwinNX+pwY1GT/
+ XiZQCqCiVis7vMpeqd9rDOPwywaaWFXLghg0WHy7EXed/+aLa02BfEwY13VnGd9m5iB+
+ 2Hu3XHQaLOA+QnF0kQzcJn4hLefm5hcPyJwoYYhyfsIuDhbxZ7zzvf9ZWDsw2zo5Y8hy
+ mS76clTOPURN0RMkZ6ucCWhOXfJVggU3NrDPGT+8e4w9zgfAYPp/g8nprTaSYG1ndGUA
+ Sg0QH3cNvINJn5Bzvou/3WEwCJ9gUxHRb19sjpfPgf6Q9taeAnJ6JxdM2JY/LDL78xKK gQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 31bfem8ga7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 03 Jun 2020 10:34:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053ATIqg025252;
+        Wed, 3 Jun 2020 10:34:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 31c1dyswwg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Jun 2020 10:34:40 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 053AYdx5008768;
+        Wed, 3 Jun 2020 10:34:39 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 03:34:39 -0700
+Date:   Wed, 3 Jun 2020 13:34:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     vuhuong@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5: E-switch, Offloads shift ACL programming
+ during enable/disable vport
+Message-ID: <20200603103433.GD1845750@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=759
+ spamscore=0 bulkscore=0 adultscore=0 suspectscore=3 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=3
+ mlxlogscore=801 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030082
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Avoid releasing the socket associated with each QP in rxe_qp_cleanup()
-which can sleep and move it to rxe_destroy_qp() instead, after doing
-this there is no need for the execute_work that used to avoid calling
-rxe_qp_cleanup() directly. also check that the socket is valid in
-rxe_skb_tx_dtor() to avoid use-after-free.
+Hello Vu Pham,
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Fixes: bb3ffb7ad48a ("RDMA/rxe: Fix rxe_qp_cleanup()")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_net.c   | 14 ++++++++++++--
- drivers/infiniband/sw/rxe/rxe_qp.c    | 22 ++++++----------------
- drivers/infiniband/sw/rxe/rxe_verbs.h |  3 ---
- 3 files changed, 18 insertions(+), 21 deletions(-)
+The patch 748da30b376e: "net/mlx5: E-switch, Offloads shift ACL
+programming during enable/disable vport" from Oct 28, 2019, leads to
+the following static checker warning:
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 312c2fc961c0..298ccd3fd3e2 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -411,8 +411,18 @@ int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc)
- static void rxe_skb_tx_dtor(struct sk_buff *skb)
- {
- 	struct sock *sk = skb->sk;
--	struct rxe_qp *qp = sk->sk_user_data;
--	int skb_out = atomic_dec_return(&qp->skb_out);
-+	struct rxe_qp *qp;
-+	int skb_out;
-+
-+	if (!sk)
-+		return;
-+
-+	qp = sk->sk_user_data;
-+
-+	if (!qp)
-+		return;
-+
-+	skb_out = atomic_dec_return(&qp->skb_out);
- 
- 	if (unlikely(qp->need_req_skb &&
- 		     skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW))
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 6c11c3aeeca6..89dac6c1111c 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -787,6 +787,7 @@ void rxe_qp_destroy(struct rxe_qp *qp)
- 	if (qp_type(qp) == IB_QPT_RC) {
- 		del_timer_sync(&qp->retrans_timer);
- 		del_timer_sync(&qp->rnr_nak_timer);
-+		sk_dst_reset(qp->sk->sk);
- 	}
- 
- 	rxe_cleanup_task(&qp->req.task);
-@@ -798,12 +799,15 @@ void rxe_qp_destroy(struct rxe_qp *qp)
- 		__rxe_do_task(&qp->comp.task);
- 		__rxe_do_task(&qp->req.task);
- 	}
-+
-+	kernel_sock_shutdown(qp->sk, SHUT_RDWR);
-+	sock_release(qp->sk);
- }
- 
- /* called when the last reference to the qp is dropped */
--static void rxe_qp_do_cleanup(struct work_struct *work)
-+void rxe_qp_cleanup(struct rxe_pool_entry *arg)
- {
--	struct rxe_qp *qp = container_of(work, typeof(*qp), cleanup_work.work);
-+	struct rxe_qp *qp = container_of(arg, typeof(*qp), pelem);
- 
- 	rxe_drop_all_mcast_groups(qp);
- 
-@@ -828,19 +832,5 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
- 		qp->resp.mr = NULL;
- 	}
- 
--	if (qp_type(qp) == IB_QPT_RC)
--		sk_dst_reset(qp->sk->sk);
--
- 	free_rd_atomic_resources(qp);
--
--	kernel_sock_shutdown(qp->sk, SHUT_RDWR);
--	sock_release(qp->sk);
--}
--
--/* called when the last reference to the qp is dropped */
--void rxe_qp_cleanup(struct rxe_pool_entry *arg)
--{
--	struct rxe_qp *qp = container_of(arg, typeof(*qp), pelem);
--
--	execute_in_process_context(rxe_qp_do_cleanup, &qp->cleanup_work);
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 92de39c4a7c1..339debaf095f 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -35,7 +35,6 @@
- #define RXE_VERBS_H
- 
- #include <linux/interrupt.h>
--#include <linux/workqueue.h>
- #include <rdma/rdma_user_rxe.h>
- #include "rxe_pool.h"
- #include "rxe_task.h"
-@@ -285,8 +284,6 @@ struct rxe_qp {
- 	struct timer_list rnr_nak_timer;
- 
- 	spinlock_t		state_lock; /* guard requester and completer */
--
--	struct execute_work	cleanup_work;
- };
- 
- enum rxe_mem_state {
--- 
-2.25.4
+	drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c:1979 esw_create_uplink_offloads_acl_tables()
+	error: 'vport' dereferencing possible ERR_PTR()
 
+drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+  1970  static int esw_create_uplink_offloads_acl_tables(struct mlx5_eswitch *esw)
+  1971  {
+  1972          struct mlx5_vport *vport;
+  1973          int err;
+  1974  
+  1975          if (esw_use_vport_metadata(esw))
+  1976                  esw->flags |= MLX5_ESWITCH_VPORT_MATCH_METADATA;
+  1977  
+  1978          vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_UPLINK);
+
+No error checking.
+
+  1979          err = esw_vport_create_offloads_acl_tables(esw, vport);
+  1980          if (err)
+  1981                  esw->flags &= ~MLX5_ESWITCH_VPORT_MATCH_METADATA;
+  1982          return err;
+  1983  }
+
+regards,
+dan carpenter
