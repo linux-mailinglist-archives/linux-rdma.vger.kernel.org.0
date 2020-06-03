@@ -2,81 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AD81ECEEE
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 13:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E761ECF1D
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgFCLsZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 07:48:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:60814 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgFCLsY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:48:24 -0400
-IronPort-SDR: MPFyheC/1UhhEtAUid5w3x2OQUY4lZiupPVAL0JUo9EEBKYon6DRzzFNtrdyE/3B2O6ABTNHgh
- cvsbalSIkSBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2020 04:48:24 -0700
-IronPort-SDR: zUZHYsd0TDlM9cjrE/FJRPZRRO6pKkaLB9JY2BX8SQQR/Cs5KfnFghUZP+qXjqZUGRtKTtvHYf
- zHqlyGvDBLeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,467,1583222400"; 
-   d="scan'208";a="269051814"
-Received: from gklab-125-110.igk.intel.com ([10.91.125.110])
-  by orsmga003.jf.intel.com with ESMTP; 03 Jun 2020 04:48:21 -0700
-From:   Piotr Stankiewicz <piotr.stankiewicz@intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Cc:     Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/15] IB/qib: Use PCI_IRQ_MSI_TYPES where appropriate
-Date:   Wed,  3 Jun 2020 13:48:17 +0200
-Message-Id: <20200603114819.13377-1-piotr.stankiewicz@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
-References: <20200603114212.12525-1-piotr.stankiewicz@intel.com>
+        id S1725884AbgFCLze (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 07:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgFCLze (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 07:55:34 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8682CC08C5C0
+        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 04:55:34 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id r16so917561qvm.6
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 04:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L6DOEGFopsWDRRBi2ATbcjnn/6qt7fblZkSHMrN4xUk=;
+        b=gWfIuecpWdWvblLEytU5YsYqlJckjKRTpJXOWBguY8PH/AK6cpiaY4dRTVwy4SlC4w
+         oOTblJIqTBkw+V9oPUTze53E2GeemHDlMyrbrq2gDyUzlgqbMJ51qwIe13LDJt/0h9dK
+         jnuQG+22CY/1Yf2HdUdZvYOpdpSEYXt1gozZsnnBiQbepfdAjvfAjZcOUuDrscuXroX4
+         ST/eADk5pI9c3v6PQVKwIoqaO9nc7UrKBdQP5k3MG3wLRhmERyudDwySGyifJHBfqJWt
+         CzDTt1Hd7/H8zsJBWkbBrFoZLZnh5rBI190tlwFvAR1WeCLUNgpg4TGp7SlgFRo0QtZp
+         Olig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L6DOEGFopsWDRRBi2ATbcjnn/6qt7fblZkSHMrN4xUk=;
+        b=MNSBCM3NN+jMScLjAMNBEGQzTTd9xaBaUsVo3/E0/Nu1PU9HdeWMGn9o3pAqdPlMwA
+         YaLKzqZTqg/3uBc4Hw3JQQe/fmVAMF4pISRcOnTRzG8aEG4zQVM1maBiq4qB8NLpZ3Ru
+         HICIn1Mga7FjQIMSEqDHSK3Kit7iPltvoWNgx6521K5mQ6DhZCdHskG5ArvKiZlag4HN
+         /sJYrsBx4ais8SnxOj1EizrBD1F4jngYrffa4r8ulUdHDGJKy0a2osNxBTrxVeyOCAta
+         CwTEodGcdA7BTN5iRsCHchxdxAhQisY90/3tcs15sKDio+tJx+Cd8mUvSv3YY7MEsE86
+         jq2w==
+X-Gm-Message-State: AOAM533a2galtbceqkqxeTZ9I5N9Q+cn3Dz2c9PJhz5mtt23GaqmEQdw
+        0DcoE4YPz/2cJ9hoD0F1duLoEzdFBq8=
+X-Google-Smtp-Source: ABdhPJzMxdvZgBJMAm6pwCXjk4d2XlaS3ez5wd2E2ITFoj3wa+EZVqjsHC9XAZQ5cHw6w3gBQqf6ew==
+X-Received: by 2002:a0c:ed27:: with SMTP id u7mr6279917qvq.128.1591185333764;
+        Wed, 03 Jun 2020 04:55:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id h8sm1638274qto.0.2020.06.03.04.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 04:55:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jgRzY-000itT-Gr; Wed, 03 Jun 2020 08:55:32 -0300
+Date:   Wed, 3 Jun 2020 08:55:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: A question about cm_destroy_id()
+Message-ID: <20200603115532.GG6578@ziepe.ca>
+References: <8d6802a1-1706-0c01-78bf-0cdd3fea0881@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d6802a1-1706-0c01-78bf-0cdd3fea0881@oracle.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Seeing as there is shorthand available to use when asking for any type
-of interrupt, or any type of message signalled interrupt, leverage it.
+On Wed, Jun 03, 2020 at 04:53:57PM +0800, Ka-Cheong Poon wrote:
+> Suppose the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is
+> called.  Then it calls cm_send_rej_locked().  In cm_send_rej_locked(),
+> it calls cm_enter_timewait() and the state is changed to IB_CM_TIMEWAIT.
+> Now back to cm_destroy_id(), it breaks from the switch statement.  And
+> the next call is WARN_ON(cm_id->state != IB_CM_IDLE).  The cm_id state
+> is IB_CM_TIMEWAIT so it will log a warning.  Is the warning intended in
+> this case?
 
-Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
----
- drivers/infiniband/hw/qib/qib_pcie.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Yes the warning is intended, most likely the break should be changed
+to goto retest
 
-diff --git a/drivers/infiniband/hw/qib/qib_pcie.c b/drivers/infiniband/hw/qib/qib_pcie.c
-index 3dc6ce033319..caff44d2c12c 100644
---- a/drivers/infiniband/hw/qib/qib_pcie.c
-+++ b/drivers/infiniband/hw/qib/qib_pcie.c
-@@ -213,7 +213,7 @@ int qib_pcie_params(struct qib_devdata *dd, u32 minw, u32 *nent)
- 	u16 linkstat, speed;
- 	int nvec;
- 	int maxvec;
--	unsigned int flags = PCI_IRQ_MSIX | PCI_IRQ_MSI;
-+	unsigned int flags;
- 
- 	if (!pci_is_pcie(dd->pcidev)) {
- 		qib_dev_err(dd, "Can't find PCI Express capability!\n");
-@@ -225,7 +225,9 @@ int qib_pcie_params(struct qib_devdata *dd, u32 minw, u32 *nent)
- 	}
- 
- 	if (dd->flags & QIB_HAS_INTX)
--		flags |= PCI_IRQ_LEGACY;
-+		flags = PCI_IRQ_ALL_TYPES;
-+	else
-+		flags = PCI_IRQ_MSI_TYPES;
- 	maxvec = (nent && *nent) ? *nent : 1;
- 	nvec = pci_alloc_irq_vectors(dd->pcidev, 1, maxvec, flags);
- 	if (nvec < 0)
--- 
-2.17.2
-
+Jason
