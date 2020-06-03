@@ -2,88 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8491EC64C
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 02:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB831ECAA9
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 09:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgFCAgL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Jun 2020 20:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S1725866AbgFCHiH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 03:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728123AbgFCAgJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Jun 2020 20:36:09 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9102BC08C5C1
-        for <linux-rdma@vger.kernel.org>; Tue,  2 Jun 2020 17:36:08 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d27so630450qtg.4
-        for <linux-rdma@vger.kernel.org>; Tue, 02 Jun 2020 17:36:08 -0700 (PDT)
+        with ESMTP id S1725840AbgFCHiH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 03:38:07 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB1BC05BD43
+        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 00:38:06 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o15so1058557ejm.12
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 00:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZDyu11+uzJ9R+6JCcZBH8+VKsi1c+9TLG+xONMv+Rm4=;
-        b=S8qECI/akVQWNTmF1OlK/qSV0xbddTynf0excoMRnoWTuQYOrMZ41fk/m6beJ1GD6+
-         2RpqWdKWzZdrFPFsDxBUpUt4ZjP2keuRW9t2lsjRPs4eHHHknWj93boD4/oxb9lwkojN
-         XfdQdMx4A+PXVd9ml9kyj++gVsaRL4ktNvOIWmWyNzzpx5gSTb3NdCegU+Mj65zQQisk
-         CUujStwVfb4ecmDvAabeRoeUzq3a0nKH0tVHed6UP6Hh0Qr8rpHMkS/D5a4ZhfAI/AUr
-         HfYHDXJf5oWzsIitW/bwP4mxd3V+Jqde2ikX3vk+0j4Q1Wez7lltlh+zS2/VaeIVA8i0
-         yYDw==
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tFydyjUpfq+0K/C3Y8lf+32iB1pzaQikvNiIt68CK9Q=;
+        b=Bm19RYDUAafBYzpHdFkLbMW7odaHE8E7hxYf5dbq1+bad3JJv2lUakWkhPborpbIuz
+         0bVBxru8WZyPbprEvKbjtkjzZ4nlal38ZAL3xQoZF5Dgjgd6Fj4uQuxV8H0QlEK6rcsX
+         NRrZT9+MxZizSjJtF8hyWmM3DTvMoZ1v/hQC/ZxM6msRZJp15SgIL3kc5LwNjzYpj96p
+         uhNH4E4fUVN6yJFEdPlgzpKNagQZVGfc/87ihtgEqYRLDYFVSunra3MuEsVp0VBuu3dF
+         JIMUgn3X6zn78wEBl2i9k6rNHcaZO38euiGDTh1j/uKdVbTojdYEqDzUv9fXm0MDGAZ6
+         OHeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZDyu11+uzJ9R+6JCcZBH8+VKsi1c+9TLG+xONMv+Rm4=;
-        b=eLv6EIkQf73X+rSjlgBGWXZFpbn8S5iwyndOvtgn0cmuDLi86pJmzQgi65hmkDotYR
-         bx0KSu3dqSsIRxQlq/4Ijh1mStmg/zd/68dRxQ+shLKEGtiV4xDFSukP1uA4UEu3P3nt
-         a+EpO69E2z8uXnBR19FSgW82H9ES6ZfA/uJBHGFP9uAVbGglINKpRZvUtu70EUQN9cPz
-         M7BLIE+cNeMOguMr+o77btvBvEE7FXXdx8EDPCqQ5b/IDApN32/wJXNqIMl8iz6DShfP
-         ud/RCXKfmZB7PoEjbcyvmD406PUwv+8h/LrL5jA8rtZY+f7KtEsXLf4cnk8H3IzU76LB
-         bkOw==
-X-Gm-Message-State: AOAM531uCdZHV87WyH8lEnFn07EtB9rV4f74T2Te6RUZnogoFs2Q8AdZ
-        1pM5UA7Dyh5CSHkBRkWxcfRwTg==
-X-Google-Smtp-Source: ABdhPJw+NP9vqZzh5B4ezhB8Uc90ff1uDKVcWJiS5ZWSOvk4f8fyWHsBExI+P/HHGJdm566y5qdL5g==
-X-Received: by 2002:aed:3aa3:: with SMTP id o32mr31597656qte.364.1591144567614;
-        Tue, 02 Jun 2020 17:36:07 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m53sm530387qtb.64.2020.06.02.17.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 17:36:06 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jgHO2-000YYG-8d; Tue, 02 Jun 2020 21:36:06 -0300
-Date:   Tue, 2 Jun 2020 21:36:06 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
-        dledford@redhat.com, sadanand.warrier@intel.com,
-        grzegorz.andrejczuk@intel.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] IB/hfi1: Use free_netdev() in hfi1_netdev_free()
-Message-ID: <20200603003606.GA132773@ziepe.ca>
-References: <20200601135644.GD4872@ziepe.ca>
- <20200602061635.31224-1-yuehaibing@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tFydyjUpfq+0K/C3Y8lf+32iB1pzaQikvNiIt68CK9Q=;
+        b=DIKFXt9fkx8X42NFZOQb5AvBPzn7vx7rvObkv/9u8Ezo3TrrLuYb4CRLz2Dzd5wBy2
+         wrr0ejy8qsbr1D04OhkaFcN4I1t6IQq+RQ+LFez4BISh8vrLJYJtepXC4F5YK6J3ICXY
+         7KPfrv6GIVgdLr6LXzTAVd/3N5aBcskuaI1zgczX6e6zEEyYCRG37/hoLigbioFP5das
+         Lpr7IB4YZslbASdYYYk78+q24defY0kHJ4ItALToQnB5IqkM9Hkv/hzo3YJ0F6y1bLFE
+         LdB2RC7RtI4DL1gSFaS7LHFYtPgMapaiek3CBbP7vVd1JUVBAo80IEv9pAlUzv23kyOz
+         EkLg==
+X-Gm-Message-State: AOAM532AmrNKPLyGHlN4CFDPjj9FwEFDTOPy84VEpk2CeHjbDxZm7chc
+        kgFn8Vp2Ooy0zWTR6dxne0HN1CdHpF/6IUsq2YnSPQ==
+X-Google-Smtp-Source: ABdhPJzcTonodO5jPqQ1DFykZMVDG2UzJfD/TN+9abqjIFtc002NBrDkqBHKt+2rHgS+Z+W4/e1ZBM9xrYGHq6ViRVs=
+X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr25613457ejk.478.1591169884839;
+ Wed, 03 Jun 2020 00:38:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602061635.31224-1-yuehaibing@huawei.com>
+References: <6c58097c2310a57a987959660a8612467d8bd96c.camel@cloud.ionos.com>
+ <20200602195015.GD6578@ziepe.ca> <CAD+HZHX+RXs-Hxr-pV2Ufy-dJi22eJtH6MkNc1ZUmYXS9Pu91g@mail.gmail.com>
+In-Reply-To: <CAD+HZHX+RXs-Hxr-pV2Ufy-dJi22eJtH6MkNc1ZUmYXS9Pu91g@mail.gmail.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Wed, 3 Jun 2020 09:37:53 +0200
+Message-ID: <CAMGffEkz3jEHKKr2Dxa1M2sfcnC6Sqr0v4fyoEWxRDhjhEf-=w@mail.gmail.com>
+Subject: Re: Race condition between / wrong load order of ib_umad and ib_ipoib
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org,
+        Benjamin Drung <benjamin.drung@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 02:16:35PM +0800, YueHaibing wrote:
-> dummy_netdev shold be freed by free_netdev() instead of
-> kfree(). Also remove unneeded variable 'priv'
-> 
-> Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> ---
->  drivers/infiniband/hw/hfi1/netdev_rx.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+Hi Jason,
 
-Applied to for-next, thanks
+Thanks for your reply.
+> On Tue, Jun 02, 2020 at 05:11:31PM +0200, Benjamin Drung wrote:
+> > Hi,
+> >
+> > after a kernel upgrade to version 4.19 (in-house built with Mellanox
+> > OFED drivers), some of our systems fail to bring up their IPoIB devices
+> > on boot. Different HCAs are affected (e.g. MT4099 and MT26428). We are
+> > using rdma-core on Debian and have IPoIB devices (like `ib0.dddd`)
+> > configured in `/etc/network/interfaces`. Big cluster seem to be more
+> > affected than smaller ones. In case of the failure, we see this kernel
+> > message:
+> >
+> > ```
+> > ib0.dddd: P_Key 0xdddd is not found
+> > ```
+>
+> I think this means you are missing some IPoIB bug fixes?
 
-Jason
+Could you point to me which bugfixes are you talking about? I will
+look into backporting to our MLNX-OFED 4.5.
+
+Regards,
+Jinpu
