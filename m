@@ -2,93 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441D11ED0F2
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 15:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5248C1ED142
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 15:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgFCNfp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 09:35:45 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53236 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgFCNfp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 09:35:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053DWUs4103221
-        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 13:35:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id; s=corp-2020-01-29;
- bh=xYoFnHnvClOci2PtFpL4SoSPiEq3QPGnXmz0v1ujty0=;
- b=U/EUw749g24y8TgcAz8bSrfwSb/v6sxxAU47n4lwdlpuKQ5gT6rczB1g7OJu1nUe+nFX
- OjK8SfFoi7PQJ1EFq9/WVUCcnyyNijjzkVBYWqUFdoR5EhYANnl8otRC59tw20Y3xecC
- 65liQ5NEZTqBydYfg53UhRq2xlWiP0n/u/h9bcdV5VYsmC9Q+xSMXhMKPKTwt3z58VJk
- gK7ea8e8IjqQqo+rKCL7mdZ7e8rF3+MdfmcRfFX/8ru23cnM6eQHP2pIr+ZNOXb8NSdi
- qGZugxVX1trpt8ie0yyUQBVYwGDGQvwJDSSqrKmijBrRHzYo1XGYAjVogUzhXITldT/c TA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31bfem98uw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 13:35:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053DO15L082672
-        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 13:33:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31c25s54sx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 13:33:43 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 053DXgYS025761
-        for <linux-rdma@vger.kernel.org>; Wed, 3 Jun 2020 13:33:42 GMT
-Received: from ca-dev40.us.oracle.com (/10.129.135.27)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Jun 2020 06:33:42 -0700
-From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-To:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/cm: Spurious WARNING triggered in cm_destroy_id()
-Date:   Wed,  3 Jun 2020 06:33:38 -0700
-Message-Id: <1591191218-9446-1-git-send-email-ka-cheong.poon@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=1 spamscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006030106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006030107
+        id S1726099AbgFCNtB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 09:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726086AbgFCNsw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 09:48:52 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB121C0085C8
+        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 06:48:49 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 202so1367285lfe.5
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Jun 2020 06:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=LImzFWfFZ5MGhzJT1qzCsgEXVo7xW37sUIdrDLCKiXHQE0/Tq0rYX6Af/ld5dvlhmE
+         opFt8B8vUrhAfyxGIRs7eIQZmnu+cHCt7Dz4gEu/fnBWHDlMa8iVHDbM7XgqJUtNcgor
+         I4Oj1yGJ3ygOniFn6Dr+FHDS5BV48N/ldz+eBwWbR5/ADnYCL6KuztRZu9mrKJOxMODU
+         fmVICwwGmTYXXsgICTxE6unupuMdGq6+YZvkWKysZVLYK3Wwxrg7U2ecMo3WGycHWcU1
+         w35jxyjuynpm30G3kj/I18A4vO2Y2WN0kfTajUkGc1Xe9t84eQuWhnB4AGlAS8dbrawc
+         iC3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=iI0VCVDgEicek0XPJmt3Ahjx8B8BAFAjsRVXnTJySJXNmI5S55ju/DeSfcejp6dNK1
+         MXlCzRMgxgrZCKli5T5a4q37IM2PpD/xcG/Oy1TRA41qt3S4duHr4tDfuZsb3I75NUYR
+         BkOKXfkoglz88cSsCY1MxwW8gIlBinfSCd2DcG7+iBZaUMOcNSl5AUVj8ePU/Wdj4qfL
+         ujq2h5djnYqUQ8FgWhtE65YyL2aD+1KyNGtRT89HDZyyrxAwwqtRjIDgJo8La6B9NR9c
+         pTLneSSZYpp4DnpL0yln30qdAysBW2zoVz4Y6D4MpG8vu4AYtaaLihfqI07weOOXVAzJ
+         1x4A==
+X-Gm-Message-State: AOAM533eTUsvrxJyGMOrdn4kBDG2xpYMGWFbPstTtHqe6C9+amToUKrN
+        I4gKR7DpoNbtyDVbx54xbblYsPsDjJ7FiUuCmY31KEuuc9k=
+X-Google-Smtp-Source: ABdhPJzc66PsPJ7uf2JiXrqj7zfh07Ra5BpBms0TPKeexmxkWkfXYY+ch/Os+E85wJbdOE6Lm+0ANdybV/7KRG4HAcU=
+X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr2566308lfd.29.1591192127287;
+ Wed, 03 Jun 2020 06:48:47 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: susanjones.wife@gmail.com
+Received: by 2002:a19:a405:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:48:46 -0700 (PDT)
+From:   "Mrs.Susan Jones" <joneswife.susan@gmail.com>
+Date:   Wed, 3 Jun 2020 14:48:46 +0100
+X-Google-Sender-Auth: aH2vam-ZraP3yG1gz3ryctMgTE4
+Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ@mail.gmail.com>
+Subject: HELLO: I AM MRS SUSAN JONES
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Suppose the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is
-called.  Then it calls cm_send_rej_locked().  In cm_send_rej_locked(),
-it calls cm_enter_timewait() and the state is changed to
-IB_CM_TIMEWAIT.  Now back to cm_destroy_id(), it breaks from the
-switch statement.  And the next call is WARN_ON(cm_id->state !=
-IB_CM_IDLE).  This triggers a spurious warning.  Instead, the code
-should goto retest after returning from cm_send_rej_locked().
-
-Signed-off-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
----
- drivers/infiniband/core/cm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 17f14e0..1c2bf18 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1076,7 +1076,9 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 	case IB_CM_REP_SENT:
- 	case IB_CM_MRA_REP_RCVD:
- 		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
--		/* Fall through */
-+		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_CONSUMER_DEFINED, NULL,
-+				   0, NULL, 0);
-+		goto retest;
- 	case IB_CM_MRA_REQ_SENT:
- 	case IB_CM_REP_RCVD:
- 	case IB_CM_MRA_REP_SENT:
 -- 
-1.8.3.1
+OUR GOLDEN OPPORTUNITY
 
+Hello Dear Friend,
+
+Complement of the day, i hope you are doing great today. However, I am
+Mrs.Susan Jones, an auditor with one of the new generation banks here
+in Burkina Faso.
+
+I am writing you this letter based on the latest development at my
+Department. i discovered some abandoned huge amount of money, Ten
+Million, Five hundred thousand  United States Dollars.($10.500.000).
+Now I am only contacting you as a foreigner because this money cannot
+be approved to a local bank account here, but can only be approved to
+any foreign account and foreign beneficiary because the money is in US
+dollars
+
+This will be  a legitimate transaction once you accept to build trust
+with me and follow simple instruction doing the transfer process,
+until the total sum transfer out of the bank here to your own bank
+account any where in the world, and I agreed to share the total money
+50/50 with you once you successful confirmed it in your bank account.
+But any expenses doing the transfer process will be deduct from the
+amount before sharing, If you are interested to work with me and
+provide a good receiving bank account, get back to me as soon as
+possible with the following details below.
+
+Your full name
+Your Profession
+Your direct mobile phone number
+Your Scanned International passport or any of your identity
+
+NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
+AVOID TIME WASTED.
+
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank for the claim and
+transfer of the fund into your bank account as the  new beneficial.
+
+I am waiting to hear from you soon
+
+Yours
+Mrs.Susan Jones
