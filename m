@@ -2,97 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670D51ED355
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 17:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FC71ED564
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jun 2020 19:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgFCP3H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Jun 2020 11:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgFCP3G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 11:29:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DE7C08C5C0
-        for <linux-rdma@vger.kernel.org>; Wed,  3 Jun 2020 08:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ScFMdV2Z8LCxdHq9mBB24jrXvESyG26CqkFOcoDuAY8=; b=ku9emOttAuZ9ETjz+/BxvVDgny
-        stYCubjYGUL2d7O+cZeLyuEE1xTQ0JT3faZyFmOi7WDSdJuN8UrdezhdplTpEWSYZyXjftLXcCAoN
-        CIe8d4tOpb8MTMjjLWz/v+EQI8euKZOI27U/OxpQqPKMkAWGHxybtflYNA1cb2o/sOYyBTeSGpus9
-        ia3FjrkWB18e15d6WnH++gSEa8EJc5Y5dOSmIvXD2J2koaXE5OaolnDJYjvkG3MnqI0gCszeN40lo
-        pbrvWmvvrzIKN9kJaQPks8HXTc7LgLKmbTI02sefwuZtBK+l3ITxtyRi8gTXEHu66Gfh70AH1WvmF
-        Qg7WPcAQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jgVKB-0004kW-7L; Wed, 03 Jun 2020 15:29:03 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-rdma@vger.kernel.org, Paul Blakey <paulb@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH] net/mlx5: Improve tuple ID allocation
-Date:   Wed,  3 Jun 2020 08:29:01 -0700
-Message-Id: <20200603152901.17985-1-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
+        id S1726207AbgFCRxc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Jun 2020 13:53:32 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:44690 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgFCRxa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Jun 2020 13:53:30 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053Hooiq168693;
+        Wed, 3 Jun 2020 17:53:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=xKDI9HOgvqsdKul9Kh945N/ueriDG+wJa0TtbjNh6NM=;
+ b=uW9WwiN6skELua9f0OvxoolkqXac22G1btA1VNpF+AdpCU9lQbrs7iL6SwXJjshRowNu
+ dLGvO4yb5o/QS/aGE1u9jw01bXIY1ExuoQjyjB8gbHrAEv/t24u3PHQJ52agMtMD+PEy
+ l1az3RY51dfo4qLCDUpKn+HxXo9mUcppwKgyyKF2BGkXgQpDhFXn24BMkZDjM77ZR4WX
+ g9GvzYx+DKfrYB+pg4h8WFB5ldVxWf3ZJhKiX/UC/gdmA69nx3LiDejMBLSlgZu9w/+q
+ yWGAPwFuGvtH2LJW8Bs9ZoZvuaWbbMqrMMSGFxukS7h2KPBj97YWISvHkPcqxVwRFeXq 9Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 31bewr2qr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 03 Jun 2020 17:53:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053HrKi6083739;
+        Wed, 3 Jun 2020 17:53:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 31c1e0d9av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Jun 2020 17:53:25 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 053HrOvq025737;
+        Wed, 3 Jun 2020 17:53:24 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 10:53:23 -0700
+Date:   Wed, 3 Jun 2020 20:53:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Vu Pham <vuhuong@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Bloch <markb@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Roi Dayan <roid@mellanox.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] net/mlx5: E-Switch, Fix an Oops error handling code
+Message-ID: <20200603175316.GC18931@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 suspectscore=2 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=2 impostorscore=0 cotscore=-2147483648
+ lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006030138
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+The error handling dereferences "vport".  There is nothing we can do if
+it is an error pointer except returning the error code.
 
-There's no need to use a temporary variable; the XArray is designed to
-write directly into the object being allocated.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: 133dcfc577ea ("net/mlx5: E-Switch, Alloc and free unique metadata for match")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-index 4eb305af0106..63d392a8043d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-@@ -57,7 +57,7 @@ struct mlx5_ct_flow {
- struct mlx5_ct_zone_rule {
- 	struct mlx5_flow_handle *rule;
- 	struct mlx5_esw_flow_attr attr;
--	int tupleid;
-+	u32 tupleid;
- 	bool nat;
- };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
+index 4e55d7225a265..857f6193f3b14 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c
+@@ -301,8 +301,7 @@ int mlx5_esw_acl_ingress_vport_bond_update(struct mlx5_eswitch *esw, u16 vport_n
  
-@@ -484,7 +484,6 @@ mlx5_tc_ct_entry_add_rule(struct mlx5_tc_ct_priv *ct_priv,
- 	struct mlx5_esw_flow_attr *attr = &zone_rule->attr;
- 	struct mlx5_eswitch *esw = ct_priv->esw;
- 	struct mlx5_flow_spec *spec = NULL;
--	u32 tupleid;
- 	int err;
- 
- 	zone_rule->nat = nat;
-@@ -494,17 +493,16 @@ mlx5_tc_ct_entry_add_rule(struct mlx5_tc_ct_priv *ct_priv,
- 		return -ENOMEM;
- 
- 	/* Get tuple unique id */
--	err = xa_alloc(&ct_priv->tuple_ids, &tupleid, zone_rule,
-+	err = xa_alloc(&ct_priv->tuple_ids, &zone_rule->tupleid, zone_rule,
- 		       XA_LIMIT(1, TUPLE_ID_MAX), GFP_KERNEL);
- 	if (err) {
- 		netdev_warn(ct_priv->netdev,
- 			    "Failed to allocate tuple id, err: %d\n", err);
- 		goto err_xa_alloc;
+ 	if (WARN_ON_ONCE(IS_ERR(vport))) {
+ 		esw_warn(esw->dev, "vport(%d) invalid!\n", vport_num);
+-		err = PTR_ERR(vport);
+-		goto out;
++		return PTR_ERR(vport);
  	}
--	zone_rule->tupleid = tupleid;
  
- 	err = mlx5_tc_ct_entry_create_mod_hdr(ct_priv, attr, flow_rule,
--					      tupleid, nat);
-+					      zone_rule->tupleid, nat);
- 	if (err) {
- 		ct_dbg("Failed to create ct entry mod hdr");
- 		goto err_mod_hdr;
+ 	esw_acl_ingress_ofld_rules_destroy(esw, vport);
 -- 
 2.26.2
 
