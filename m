@@ -2,58 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F8F1EDF1D
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2020 10:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27131EDF90
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jun 2020 10:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgFDIMf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726912AbgFDIMf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 4 Jun 2020 04:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgFDIMe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jun 2020 04:12:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89ACBC05BD1E
+        with ESMTP id S1726867AbgFDIMf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Jun 2020 04:12:35 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B73C03E96E
         for <linux-rdma@vger.kernel.org>; Thu,  4 Jun 2020 01:12:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r7so5066939wro.1
+Received: by mail-wr1-x444.google.com with SMTP id t18so5045217wru.6
         for <linux-rdma@vger.kernel.org>; Thu, 04 Jun 2020 01:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wjYKgl1BXaEH8GQKLg8VxMrSCY/k0US00QhIRvYYPEA=;
-        b=kyBPPaRamy/HmHh5JRj3lm6cSO9mrjCTe6nPVNXWZl7sLcwpFLZH03d7IXCaDQAbU9
-         bWT+/fuJcxKCIvQeAz+7/CPD/m6BbEWAbJlfzQwnsSAN+AsbvA8QndXdYZFwQO0ucpeW
-         +N5wby58BJfSZKsnQFztX13ktrN76Zl77KJZw=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CdFnY1g4TiO7TC07GhFyr/JbIyM/VV8gIgkQFmLlHDQ=;
+        b=E/pgUYI2SY0xaGSewMfnWU5m8fnHDao7z+E7QBf31znuNz2UmnVw8X4hz5J+Pz1dU+
+         aLdb+YCMIJuRPgJ3X1a4V5egheABOcDbYfV7ZXg66Rhzcni1oFNwjMZqwC2tNLCdA8d2
+         X6YoGl1DDs7upjvieXVFaK7T0OJ5RiE807N3M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wjYKgl1BXaEH8GQKLg8VxMrSCY/k0US00QhIRvYYPEA=;
-        b=bmilnok+F9LhsHB59PMotQuSVTZr1dR6NeUvwges9wnaXtAKhQzpPMox9qgkJirVps
-         h/abHq99s+nvptbu0/ZCw0wk/lvnRVj3BisNE9+fXySR0oc0R8qfHavdyKdUkL9kz/ND
-         Yw0yVwEE+e4tnq1ZjJfVoGyMj16E2OislWGL4ipjOk3H+ps58hA/eFJ00375lJriJqSl
-         QuaSPFUSekIPfT4b36HRnifrG6FXHmNrgSaFk5pFzX5WEnEk04X8b7ah7MAowH+/4U8J
-         AKDw6yzyymi9FSsFLGSsK3CBu/zQ286TMmKBZWDwwmX+JclxoKufRVqi7FSkA4E+J6Ac
-         HT4g==
-X-Gm-Message-State: AOAM532CT5zV7DaAvSapgBB7stV8GWkqH2iTs3gSyGaUa+D2n3VuYORB
-        UKwAhHlB3db+aFHHuXe6rwk8vA==
-X-Google-Smtp-Source: ABdhPJwck51N31CTXP+8yfy3JqBTy0FFs7zaLP/6w37Ug1NNs626RcdqKC1IFsIertUA5A07+TX4Qw==
-X-Received: by 2002:adf:aa97:: with SMTP id h23mr3419463wrc.251.1591258352295;
-        Thu, 04 Jun 2020 01:12:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CdFnY1g4TiO7TC07GhFyr/JbIyM/VV8gIgkQFmLlHDQ=;
+        b=TFZzHaykRjtbXV7lIWJ+9za8nUqh4yXbK00EV0i7hbWM4wMyo9St1ZFln6mhq9ZL1W
+         BnQqlgpkphnjJAp13om76fN9jfbZgCZhwqTkzw42+vkPruOUXjpWy6CjLRQ+GTincHxK
+         rGO0J5QG3G1S+9jLuyehVwQwWMARPthaiAWs2pryGEFUpeo5C0hH4iK8+l/J2vA/Qnzt
+         SYIG811YFZmqbOO3G+sHegVRok6Su1UYRsAtvIoWyaVUtdCLkHumEbcUnlhr+E0qfXl3
+         fMl35BQM/5pFled2JOGgwfoReZyi8Uf+StzY/23bojQ6k6TFNM09H/mLy9/U4W07Dq6U
+         S4sw==
+X-Gm-Message-State: AOAM532MPeqMfyr3mqh+4Ia5w5dKirkJbIIUW6qwAkg+KpSpNEeVVJga
+        lKYaXQse9PXZ3GzDrAIBGsxxkE8cqk0=
+X-Google-Smtp-Source: ABdhPJzIRvuD8WMXGKIijFhhfc+ctkeCbHFIpWW5UM3euiKyXNUz7hZchjZUK8wCqpLkRmBOh919xg==
+X-Received: by 2002:a5d:5389:: with SMTP id d9mr3447032wrv.77.1591258353390;
+        Thu, 04 Jun 2020 01:12:33 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f11sm6873305wrj.2.2020.06.04.01.12.31
+        by smtp.gmail.com with ESMTPSA id f11sm6873305wrj.2.2020.06.04.01.12.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 01:12:31 -0700 (PDT)
+        Thu, 04 Jun 2020 01:12:32 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
         amd-gfx@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 00/18] dma-fence lockdep annotations, round 2
-Date:   Thu,  4 Jun 2020 10:12:06 +0200
-Message-Id: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>, linux-mm@kvack.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 01/18] mm: Track mmu notifiers in fs_reclaim_acquire/release
+Date:   Thu,  4 Jun 2020 10:12:07 +0200
+Message-Id: <20200604081224.863494-2-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -62,76 +69,139 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
+fs_reclaim_acquire/release nicely catch recursion issues when
+allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
+to use to keep the excessive caches in check). For mmu notifier
+recursions we do have lockdep annotations since 23b68395c7c7
+("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
 
-Still very much early stuff, still very much looking for initial thoughts
-and maybe some ideas how this could all be rolled out across drivers.
+But these only fire if a path actually results in some pte
+invalidation - for most small allocations that's very rarely the case.
+The other trouble is that pte invalidation can happen any time when
+__GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
+choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
+recursion.
 
-Full intro probably best from the RFC cover letter:
+I was pondering whether we should just do the general annotation, but
+there's always the risk for false positives. Plus I'm assuming that
+the core fs and io code is a lot better reviewed and tested than
+random mmu notifier code in drivers. Hence why I decide to only
+annotate for that specific case.
 
-https://lore.kernel.org/amd-gfx/20200512085944.222637-1-daniel.vetter@ffwll.ch/
+Furthermore even if we'd create a lockdep map for direct reclaim, we'd
+still need to explicit pull in the mmu notifier map - there's a lot
+more places that do pte invalidation than just direct reclaim, these
+two contexts arent the same.
 
-Changes since last time around:
+Note that the mmu notifiers needing their own independent lockdep map
+is also the reason we can't hold them from fs_reclaim_acquire to
+fs_reclaim_release - it would nest with the acquistion in the pte
+invalidation code, causing a lockdep splat. And we can't remove the
+annotations from pte invalidation and all the other places since
+they're called from many other places than page reclaim. Hence we can
+only do the equivalent of might_lock, but on the raw lockdep map.
 
-- might_sleep annotation has landed already, I split that out as a
-  stand-alone
+With this we can also remove the lockdep priming added in 66204f1d2d1b
+("mm/mmu_notifiers: prime lockdep") since the new annotations are
+strictly more powerful.
 
-- now with an mm patch to improve direct reclaim annotations for mmu
-  notifiers. This allows us to very easily catch issues in that area, no
-  more need for exaustive testing and luck to make sure we're not leaving
-  a GFP_NOFS or GPF_NOIO around which should be a GFP_ATOMIC
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: linux-mm@kvack.org
+Cc: linux-rdma@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Christian König <christian.koenig@amd.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+---
+This is part of a gpu lockdep annotation series simply because it
+really helps to catch issues where gpu subsystem locks and primitives
+can deadlock with themselves through allocations and mmu notifiers.
+But aside from that motivation it should be completely free-standing,
+and can land through -mm/-rdma/-hmm or any other tree really whenever.
+-Daniel
+---
+ mm/mmu_notifier.c |  7 -------
+ mm/page_alloc.c   | 23 ++++++++++++++---------
+ 2 files changed, 14 insertions(+), 16 deletions(-)
 
-- kerneldoc that explains all the reasoning behind the annotations and
-  priming, hopefully
-
-Driver patches still largely just meant as examples to illustrate usage,
-but from various irc chats I think discussing them is really useful to
-gain clarity on the exact places the annotations should be put.
-
-Cheers, Daniel
-
-Daniel Vetter (18):
-  mm: Track mmu notifiers in fs_reclaim_acquire/release
-  dma-buf: minor doc touch-ups
-  dma-fence: basic lockdep annotations
-  dma-fence: prime lockdep annotations
-  drm/vkms: Annotate vblank timer
-  drm/vblank: Annotate with dma-fence signalling section
-  drm/atomic-helper: Add dma-fence annotations
-  drm/amdgpu: add dma-fence annotations to atomic commit path
-  drm/scheduler: use dma-fence annotations in main thread
-  drm/amdgpu: use dma-fence annotations in cs_submit()
-  drm/amdgpu: s/GFP_KERNEL/GFP_ATOMIC in scheduler code
-  drm/amdgpu: DC also loves to allocate stuff where it shouldn't
-  drm/amdgpu/dc: Stop dma_resv_lock inversion in commit_tail
-  drm/scheduler: use dma-fence annotations in tdr work
-  drm/amdgpu: use dma-fence annotations for gpu reset code
-  Revert "drm/amdgpu: add fbdev suspend/resume on gpu reset"
-  drm/amdgpu: gpu recovery does full modesets
-  drm/i915: Annotate dma_fence_work
-
- Documentation/driver-api/dma-buf.rst          |  18 +-
- drivers/dma-buf/dma-buf.c                     |   6 +-
- drivers/dma-buf/dma-fence.c                   | 202 ++++++++++++++++++
- drivers/dma-buf/dma-resv.c                    |   4 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |   5 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |  22 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c     |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c       |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c      |   2 +-
- drivers/gpu/drm/amd/amdgpu/atom.c             |   2 +-
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  18 +-
- drivers/gpu/drm/amd/display/dc/core/dc.c      |   4 +-
- drivers/gpu/drm/drm_atomic_helper.c           |  16 ++
- drivers/gpu/drm/drm_vblank.c                  |   8 +-
- drivers/gpu/drm/i915/i915_sw_fence_work.c     |   3 +
- drivers/gpu/drm/scheduler/sched_main.c        |  11 +
- drivers/gpu/drm/vkms/vkms_crtc.c              |   8 +-
- include/linux/dma-fence.h                     |  13 ++
- mm/mmu_notifier.c                             |   7 -
- mm/page_alloc.c                               |  23 +-
- 20 files changed, 341 insertions(+), 35 deletions(-)
-
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index 06852b896fa6..5d578b9122f8 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -612,13 +612,6 @@ int __mmu_notifier_register(struct mmu_notifier *subscription,
+ 	lockdep_assert_held_write(&mm->mmap_sem);
+ 	BUG_ON(atomic_read(&mm->mm_users) <= 0);
+ 
+-	if (IS_ENABLED(CONFIG_LOCKDEP)) {
+-		fs_reclaim_acquire(GFP_KERNEL);
+-		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
+-		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+-		fs_reclaim_release(GFP_KERNEL);
+-	}
+-
+ 	if (!mm->notifier_subscriptions) {
+ 		/*
+ 		 * kmalloc cannot be called under mm_take_all_locks(), but we
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 13cc653122b7..f8a222db4a53 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -57,6 +57,7 @@
+ #include <trace/events/oom.h>
+ #include <linux/prefetch.h>
+ #include <linux/mm_inline.h>
++#include <linux/mmu_notifier.h>
+ #include <linux/migrate.h>
+ #include <linux/hugetlb.h>
+ #include <linux/sched/rt.h>
+@@ -4124,7 +4125,7 @@ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_fla
+ static struct lockdep_map __fs_reclaim_map =
+ 	STATIC_LOCKDEP_MAP_INIT("fs_reclaim", &__fs_reclaim_map);
+ 
+-static bool __need_fs_reclaim(gfp_t gfp_mask)
++static bool __need_reclaim(gfp_t gfp_mask)
+ {
+ 	gfp_mask = current_gfp_context(gfp_mask);
+ 
+@@ -4136,10 +4137,6 @@ static bool __need_fs_reclaim(gfp_t gfp_mask)
+ 	if (current->flags & PF_MEMALLOC)
+ 		return false;
+ 
+-	/* We're only interested __GFP_FS allocations for now */
+-	if (!(gfp_mask & __GFP_FS))
+-		return false;
+-
+ 	if (gfp_mask & __GFP_NOLOCKDEP)
+ 		return false;
+ 
+@@ -4158,15 +4155,23 @@ void __fs_reclaim_release(void)
+ 
+ void fs_reclaim_acquire(gfp_t gfp_mask)
+ {
+-	if (__need_fs_reclaim(gfp_mask))
+-		__fs_reclaim_acquire();
++	if (__need_reclaim(gfp_mask)) {
++		if (!(gfp_mask & __GFP_FS))
++			__fs_reclaim_acquire();
++
++		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
++		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
++
++	}
+ }
+ EXPORT_SYMBOL_GPL(fs_reclaim_acquire);
+ 
+ void fs_reclaim_release(gfp_t gfp_mask)
+ {
+-	if (__need_fs_reclaim(gfp_mask))
+-		__fs_reclaim_release();
++	if (__need_reclaim(gfp_mask)) {
++		if (!(gfp_mask & __GFP_FS))
++			__fs_reclaim_release();
++	}
+ }
+ EXPORT_SYMBOL_GPL(fs_reclaim_release);
+ #endif
 -- 
 2.26.2
 
