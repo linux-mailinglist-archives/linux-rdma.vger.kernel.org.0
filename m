@@ -2,86 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36BD1EF5C6
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2020 12:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10751EF6AA
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2020 13:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgFEKwR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Jun 2020 06:52:17 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52440 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgFEKwR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Jun 2020 06:52:17 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055AqDkr143594;
-        Fri, 5 Jun 2020 10:52:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=TcLjO/5VIHquUf07QKX+TVc1IEAD3WCGP7IiHK1yH78=;
- b=kz4BzrY0xfgyLif/aSfMHiXxWbUBS0FlAYlPIhVDblQHAxV4HycDK0tRPIDAiNgkVpNK
- SHxcjwhPpdaIoqbqoUxHD+ocqOAgAKxDWaCMgIkeeAPl+d+McnHICGLzaav2oICe6YZj
- sEReDcSwjVLWTMDjXtv3G5dZTgJzmPhfH7UtKZhuciLxihnrewdy5TO3YwM4IXwOwYfm
- 2iRrJKztkmt0MeBEAejqJpQMtbnOxiPaukl5KF1iqapkg/TFpaUF5YCR5HiRPU5qFlK4
- lPz6Tut0pv6KFUneAtaqCb48g0AwiQTKIQHZmdBIWgz6WvfSpARCD8+Zp+XGCKiUG1Pi tA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31f924296p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 05 Jun 2020 10:52:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 055Am7Qq105927;
-        Fri, 5 Jun 2020 10:52:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 31f9274y4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jun 2020 10:52:12 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 055AqB14024050;
-        Fri, 5 Jun 2020 10:52:11 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Jun 2020 03:52:10 -0700
-Date:   Fri, 5 Jun 2020 13:52:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Vu Pham <vuhuong@mellanox.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH] net/mlx5: E-Switch, Fix some error pointer dereferences
-Message-ID: <20200605105203.GK22511@kadam>
-References: <20200603175436.GD18931@mwanda>
- <20200604103255.GA8834@unreal>
+        id S1726350AbgFELqZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Jun 2020 07:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726324AbgFELqZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Jun 2020 07:46:25 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD5BC08C5C2
+        for <linux-rdma@vger.kernel.org>; Fri,  5 Jun 2020 04:46:25 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id s1so9267658qkf.9
+        for <linux-rdma@vger.kernel.org>; Fri, 05 Jun 2020 04:46:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iyGf3V6jAp5ZNIZ09j882B9dYRBoDmMZI6f6MZVzSqU=;
+        b=PPOKqK1Mpp1wrmMjN+yqaRbT6z7r3EbGxtrRFajNTMt9PHMghgqNzgL9pGdQcpHIAE
+         0DVMbOU2kxL1hC3qy0dUltajv7QTaaRhIaIDwAd0xvf5qwhubpZC0LZf/blrdwznW5vV
+         I5XYwvA1jJFNaC4w6Ns/6D7fIbAKpHOfbNx5BptFa0gROoRg83qrhwRMkocv2Xiyl0kI
+         lbzVrYFpT/kspqvvPQ1fRWpEe3ujBlMvcxQpLda++SrxtrN201HXdNM8ky1CMcKaTCyT
+         7YzqzI7JgDDeQfY5pZZf3tpuVoboTpFNbtiVmQWftEylQBkFZ8HwfqUz6yJZx6Hqbu68
+         9qEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iyGf3V6jAp5ZNIZ09j882B9dYRBoDmMZI6f6MZVzSqU=;
+        b=HoaivPxjM4bAQ0LU+brZPdCjYfQT5AJ/3vOcAKXz7v7ImCgGXHfSDEAvbw1UKqxwYc
+         ViCq12QGjv7bXDPPOLcCSwMhrI9PITtOqUiVRkUs/ad48141dhgPUJSuZIZNytDg+9oi
+         6r0Dd49sh1wZCff3rHEEq3SCVm12Dg7JUZFxjmk276qVxcfhxHhebqETb+l8SmKbn23M
+         qkmNQR5qDgrKTzfJ60EUYw3hRYjecKOU+0vbqo1DxV5gE9gShqlCdQCfg+W9jDFq1llk
+         wWaBTZWgYq9A53nFdbT8OlV/Jt4E1UrGqOv9ZYdgwh4xX4uTy7CUcq17eVKTRRyOgNRP
+         yX1w==
+X-Gm-Message-State: AOAM530+z4JnK+c+Fjhpwjk+qcrq5HYQYd4pTCcRuCSCFJDCvVliWk81
+        Vvm3ng1wwUcV3FWruOJBwIvY7w==
+X-Google-Smtp-Source: ABdhPJzIzM5xjqCh9INfMzgN+usRKZ0PzGsWKSBI2t8KUOcihpgbikJjYflnI1YUSO8zpQZgiZW9hA==
+X-Received: by 2002:a05:620a:1525:: with SMTP id n5mr9426712qkk.328.1591357584373;
+        Fri, 05 Jun 2020 04:46:24 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 195sm6645125qkg.74.2020.06.05.04.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 04:46:23 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jhAnm-0025SU-D8; Fri, 05 Jun 2020 08:46:22 -0300
+Date:   Fri, 5 Jun 2020 08:46:22 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        syzbot <syzbot+407fd358a932bbf639c6@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: general protection fault in kobject_get (2)
+Message-ID: <20200605114622.GR6578@ziepe.ca>
+References: <0000000000009a6d4305a60d2c6b@google.com>
+ <20200520055641.GA2242221@kroah.com>
+ <20200605042648.GP2667@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200604103255.GA8834@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=969 bulkscore=0
- suspectscore=0 mlxscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006050083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9642 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0 bulkscore=0
- lowpriorityscore=0 cotscore=-2147483648 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006050083
+In-Reply-To: <20200605042648.GP2667@sol.localdomain>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 01:32:55PM +0300, Leon Romanovsky wrote:
-> + netdev
+On Thu, Jun 04, 2020 at 09:26:48PM -0700, Eric Biggers wrote:
+> On Wed, May 20, 2020 at 07:56:41AM +0200, Greg KH wrote:
+> > On Tue, May 19, 2020 at 09:53:16PM -0700, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following crash on:
+> > > 
+> > > HEAD commit:    d00f26b6 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+> > > git tree:       net-next
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1316343c100000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=26d0bd769afe1a2c
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=407fd358a932bbf639c6
+> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > 
+> > > Unfortunately, I don't have any reproducer for this crash yet.
+> > > 
+> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > Reported-by: syzbot+407fd358a932bbf639c6@syzkaller.appspotmail.com
+> > > 
+> > > general protection fault, probably for non-canonical address 0xdffffc0000000013: 0000 [#1] PREEMPT SMP KASAN
+> > > KASAN: null-ptr-deref in range [0x0000000000000098-0x000000000000009f]
+> > > CPU: 1 PID: 16682 Comm: syz-executor.3 Not tainted 5.7.0-rc4-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > RIP: 0010:kobject_get+0x30/0x150 lib/kobject.c:640
+> > > Code: 53 e8 d4 7e c6 fd 4d 85 e4 0f 84 a2 00 00 00 e8 c6 7e c6 fd 49 8d 7c 24 3c 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 e7 00 00 00
+> > > RSP: 0018:ffffc9000772f240 EFLAGS: 00010203
+> > > RAX: dffffc0000000000 RBX: ffffffff85acfca0 RCX: ffffc9000fc67000
+> > > RDX: 0000000000000013 RSI: ffffffff83acadfa RDI: 000000000000009c
+> > > RBP: 0000000000000060 R08: ffff8880a8dfa4c0 R09: ffffed100a03f403
+> > > R10: ffff8880501fa017 R11: ffffed100a03f402 R12: 0000000000000060
+> > > R13: ffffc9000772f3c0 R14: ffff88805d1ec4e8 R15: ffff88805d1ec580
+> > > FS:  00007f1ebed26700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00000000004d88f0 CR3: 00000000a86c4000 CR4: 00000000001406e0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > Call Trace:
+> > >  get_device+0x20/0x30 drivers/base/core.c:2620
+> > >  __ib_get_client_nl_info+0x1d4/0x2a0 drivers/infiniband/core/device.c:1863
+> > >  ib_get_client_nl_info+0x30/0x180 drivers/infiniband/core/device.c:1883
+> > >  nldev_get_chardev+0x52b/0xa40 drivers/infiniband/core/nldev.c:1625
+> > >  rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
+> > >  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+> > >  rdma_nl_rcv+0x586/0x900 drivers/infiniband/core/netlink.c:259
+> > >  netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+> > >  netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
+> > >  netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
+> > >  sock_sendmsg_nosec net/socket.c:652 [inline]
+> > >  sock_sendmsg+0xcf/0x120 net/socket.c:672
+> > >  ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
+> > >  ___sys_sendmsg+0x100/0x170 net/socket.c:2406
+> > >  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+> > >  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+> > >  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> > > RIP: 0033:0x45c829
+> > > Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> > > RSP: 002b:00007f1ebed25c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> > > RAX: ffffffffffffffda RBX: 00000000004ff720 RCX: 000000000045c829
+> > > RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
+> > > RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+> > > R13: 00000000000009ad R14: 00000000004d5f10 R15: 00007f1ebed266d4
+> > > Modules linked in:
+> > > RIP: 0010:kobject_get+0x30/0x150 lib/kobject.c:640
+> > > Code: 53 e8 d4 7e c6 fd 4d 85 e4 0f 84 a2 00 00 00 e8 c6 7e c6 fd 49 8d 7c 24 3c 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 e7 00 00 00
+> > > RSP: 0018:ffffc9000772f240 EFLAGS: 00010203
+> > > RAX: dffffc0000000000 RBX: ffffffff85acfca0 RCX: ffffc9000fc67000
+> > > RDX: 0000000000000013 RSI: ffffffff83acadfa RDI: 000000000000009c
+> > > RBP: 0000000000000060 R08: ffff8880a8dfa4c0 R09: ffffed100a03f403
+> > > R10: ffff8880501fa017 R11: ffffed100a03f402 R12: 0000000000000060
+> > > R13: ffffc9000772f3c0 R14: ffff88805d1ec4e8 R15: ffff88805d1ec580
+> > > FS:  00007f1ebed26700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 000000000073fad4 CR3: 00000000a86c4000 CR4: 00000000001406e0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > 
+> > Looks like an IB/rdma issue, poke those developers please :)
+> > 
 > 
+> If you want people to receive your email, you need to send it to them.
+> 
+> +Cc linux-rdma and maintainers of drivers/infiniband/.
 
-This is sort of useless.  What's netdev going to do with a patch they
-can't apply?  I assumed that mellanox was going to take this through
-their tree...
+I think this is probably fixed by commit 11a0ae4c4bff ("RDMA: Allow
+ib_client's to fail when add() is called")
 
-Should I resend the other mlx5 patch as well?
+#syz fix: RDMA: Allow ib_client's to fail when add() is called
 
-regards,
-dan carpenter
-
+Jason
