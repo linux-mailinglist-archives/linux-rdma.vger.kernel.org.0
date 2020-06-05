@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852141EF7BA
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2020 14:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99B31EF7DA
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2020 14:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgFEM3I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Jun 2020 08:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57722 "EHLO mail.kernel.org"
+        id S1726817AbgFEMZf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Jun 2020 08:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgFEMZy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:25:54 -0400
+        id S1726793AbgFEMZe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Jun 2020 08:25:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDD5020820;
-        Fri,  5 Jun 2020 12:25:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40B0A2075B;
+        Fri,  5 Jun 2020 12:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591359953;
-        bh=pjo0c5vMkfJpXdHLBcrQ+TcIYnFUhNg/gR8QjobW3WY=;
+        s=default; t=1591359934;
+        bh=l4goMsgBlX7Qdo2R6HC4NAyX8/LlC3Ade5FePF2ZsME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t6pXtG0Nk8BmER2YZCLtaFxzhNbrWsGpxRDS+eHnO1fi8/jF2oBUQXKRkE6S8UXns
-         jGidTaLI1aYJ1BTfJAhMZqCKnJ6hO3tdEUQtYdrO5KYiTC4lGoI647fgOzYWsCS6G/
-         NyDxeX4l4V8GNsrbahOhTLnuEtzOLNXTCR2vOLIk=
+        b=KKO48Us345OfDmSot9pl9Gj3z0XcLzDYdJW6DbYpx/rMME6NQPh/hK8aw8WsztMGa
+         nf9g/d4wrNwZSFs3kGg9BY6WmCQNVZz5LBj86z4AQJ+yitd0pfZoGinZReU+BcqwgQ
+         fGSGPp4zDFuju//w8qwBmhhQi+tg/0GR48nXTtpc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mark Bloch <markb@mellanox.com>, Dexuan Cui <decui@microsoft.com>,
@@ -30,12 +30,12 @@ Cc:     Mark Bloch <markb@mellanox.com>, Dexuan Cui <decui@microsoft.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/14] net/mlx5: Fix crash upon suspend/resume
-Date:   Fri,  5 Jun 2020 08:25:37 -0400
-Message-Id: <20200605122540.2882539-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 13/17] net/mlx5: Fix crash upon suspend/resume
+Date:   Fri,  5 Jun 2020 08:25:12 -0400
+Message-Id: <20200605122517.2882338-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200605122540.2882539-1-sashal@kernel.org>
-References: <20200605122540.2882539-1-sashal@kernel.org>
+In-Reply-To: <20200605122517.2882338-1-sashal@kernel.org>
+References: <20200605122517.2882338-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 7dcdda9ca351..e4a690128b3a 100644
+index 4a08e4eef283..20e12e14cfa8 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1554,6 +1554,22 @@ static void shutdown(struct pci_dev *pdev)
+@@ -1552,6 +1552,22 @@ static void shutdown(struct pci_dev *pdev)
  	mlx5_pci_disable_device(dev);
  }
  
@@ -91,7 +91,7 @@ index 7dcdda9ca351..e4a690128b3a 100644
  static const struct pci_device_id mlx5_core_pci_table[] = {
  	{ PCI_VDEVICE(MELLANOX, PCI_DEVICE_ID_MELLANOX_CONNECTIB) },
  	{ PCI_VDEVICE(MELLANOX, 0x1012), MLX5_PCI_DEV_IS_VF},	/* Connect-IB VF */
-@@ -1597,6 +1613,8 @@ static struct pci_driver mlx5_core_driver = {
+@@ -1595,6 +1611,8 @@ static struct pci_driver mlx5_core_driver = {
  	.id_table       = mlx5_core_pci_table,
  	.probe          = init_one,
  	.remove         = remove_one,
