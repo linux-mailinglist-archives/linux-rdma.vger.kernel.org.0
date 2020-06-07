@@ -2,53 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589C11F0167
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jun 2020 23:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B05F1F0A1C
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2020 07:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgFEVPa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Jun 2020 17:15:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58796 "EHLO mail.kernel.org"
+        id S1726230AbgFGFNR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Jun 2020 01:13:17 -0400
+Received: from m12-17.163.com ([220.181.12.17]:46121 "EHLO m12-17.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728533AbgFEVPQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:15:16 -0400
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591391716;
-        bh=KsA5/eoO5bcA2oE6HJOuUDNy5txaV/ZnJBGEp3uGcK8=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=eY43VEk0m8ZGH1PRELRqwlm9pfYgXissAD96oNb6HMaY97Hzs22xlaIvK2C11ZnRu
-         ItO4oofKFTgVCWbemcmDvaKP3oxrNubE+bGjG/0lw9D6M5XwcxDAxPiXzYWgssWhnG
-         ZXJkRIJlFhjDWZxHoq0/AHgPz/Y0cCv2o0Ju8iGE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200604195131.GA362249@ziepe.ca>
-References: <20200604195131.GA362249@ziepe.ca>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200604195131.GA362249@ziepe.ca>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: fba97dc7fc76b2c9a909fa0b3786d30a9899f5cf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 242b23319809e05170b3cc0d44d3b4bd202bb073
-Message-Id: <159139171609.26946.18224052473915997990.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Jun 2020 21:15:16 +0000
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1725998AbgFGFNR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Jun 2020 01:13:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ZO7p3
+        p3ByhDzJyx816+feQ76oRubAg/S9uBFNb4/ZaI=; b=ViwkInPN9yZ3I6zBq2zvC
+        INV8dy7zX/9LpEe94fjX00paYYHfuE0PGBvURdqzDnpf/JzDO4yqeOHJlmAnrbxX
+        QLVI6tqQ5AJg6bxJXVE72fKpnha11rrtN2y3F6PC+7NzALK+g2ryXBMQxqyh3T2z
+        hfpEGa2gZEXcS8jzLBzXlU=
+Received: from localhost.localdomain (unknown [125.82.15.164])
+        by smtp13 (Coremail) with SMTP id EcCowAAnDTdQd9xeHoO6GA--.62079S4;
+        Sun, 07 Jun 2020 13:12:49 +0800 (CST)
+From:   Hu Haowen <xianfengting221@163.com>
+To:     saeedm@mellanox.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hu Haowen <xianfengting221@163.com>
+Subject: [PATCH] net/mlx5: Add a missing macro undefinition
+Date:   Sun,  7 Jun 2020 13:12:40 +0800
+Message-Id: <20200607051241.5375-1-xianfengting221@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAAnDTdQd9xeHoO6GA--.62079S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZrW8Ar43Ar1xXw18WryrCrg_yoWfJFb_Kw
+        1DZF13Wa1DArnIkr1Igrs8KFW0kw1qg39agFW7KFWYy3W29r1xJ34xW34SqF1rWFWIyFZr
+        tF12yayYv34UWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU88wI3UUUUU==
+X-Originating-IP: [125.82.15.164]
+X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/1tbiWxE8AFSInEs9XQAAsd
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Thu, 4 Jun 2020 16:51:31 -0300:
+The macro ODP_CAP_SET_MAX is only used in function handle_hca_cap_odp()
+in file main.c, so it should be undefined when there are no more uses
+of it.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Signed-off-by: Hu Haowen <xianfengting221@163.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/242b23319809e05170b3cc0d44d3b4bd202bb073
-
-Thank you!
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index df46b1fce3a7..1143297eccaa 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -489,6 +489,8 @@ static int handle_hca_cap_odp(struct mlx5_core_dev *dev, void *set_ctx)
+ 	ODP_CAP_SET_MAX(dev, dc_odp_caps.read);
+ 	ODP_CAP_SET_MAX(dev, dc_odp_caps.atomic);
+ 
++#undef ODP_CAP_SET_MAX
++
+ 	if (!do_set)
+ 		return 0;
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.25.1
+
+
