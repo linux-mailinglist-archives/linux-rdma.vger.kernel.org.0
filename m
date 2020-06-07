@@ -2,59 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6631F0A44
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2020 08:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6C41F0A4C
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jun 2020 08:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgFGGkU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Jun 2020 02:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53482 "EHLO mail.kernel.org"
+        id S1726309AbgFGG4B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Jun 2020 02:56:01 -0400
+Received: from m12-16.163.com ([220.181.12.16]:39553 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgFGGkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 7 Jun 2020 02:40:20 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FF772064C;
-        Sun,  7 Jun 2020 06:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591512019;
-        bh=RRwJimd7kmJm6Hg1bzv9pEXiMtElkAwFIGNRS+ev+FI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aIwZ768V6HAzoTG12w+rJeiKZBhKuN9t3aMLh3u76ySBgE9VE8BvzPoKaC/0voJzN
-         hamT6R1h4P6Zmu39PiJgoqWgB3Qy12z8uRM/vcDPy9VzJVuvOoLDCV8hHmOhB2ZRXy
-         +CbhJ5B4CE9BXqnshMxESn6iNQBE70Lk8v6+IVuo=
-Date:   Sun, 7 Jun 2020 09:40:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S1726192AbgFGG4B (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Jun 2020 02:56:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=UlSCv
+        JGb20Iir5IHscJG+4tQo9hliZ3Ic/DMrTbtMX4=; b=iQrU6mfQJpLRuR1mWSbvr
+        YO80x50jlwSo2bav/eGk1OKRpiEFo+1O5PcuCh38ZGn2qJ0zdbBhCnmrpOvjPuFN
+        errUHPqFpNmb+cHbI4JxfGgKCx7lADKnS9EueoFHr3cgiN6vuFeZ/DBkq6F9RRSU
+        hZzxHjSfujohMhvaHBVxjg=
+Received: from [192.168.0.3] (unknown [125.82.15.164])
+        by smtp12 (Coremail) with SMTP id EMCowACXmQVmj9xeqp+iHA--.6551S2;
+        Sun, 07 Jun 2020 14:55:37 +0800 (CST)
+Subject: Re: [PATCH] net/mlx5: Add a missing macro undefinition
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     saeedm@mellanox.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/mlx5: remove duplicated assignment to
- resp.response_length
-Message-ID: <20200607064016.GF164174@unreal>
-References: <20200604143902.56021-1-colin.king@canonical.com>
+References: <20200607051241.5375-1-xianfengting221@163.com>
+ <20200607063635.GD164174@unreal>
+From:   Hu Haowen <xianfengting221@163.com>
+Message-ID: <c96f7991-3858-4351-9804-4482e7689cd7@163.com>
+Date:   Sun, 7 Jun 2020 14:55:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604143902.56021-1-colin.king@canonical.com>
+In-Reply-To: <20200607063635.GD164174@unreal>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: EMCowACXmQVmj9xeqp+iHA--.6551S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF47Jr18WFW3WFy3tF1UWrg_yoWfuFX_uw
+        1xZwn7Za1DWF4FvF4xGFW5uFyUGrWUGr4rWr1Yq395Cw1Yya9rCw1kuryfZF15ZrWYyFnr
+        C3Z0vFy5Z347ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Vq2tUUUUU==
+X-Originating-IP: [125.82.15.164]
+X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/xtbBDwE8AFPAMKM3EAAAsV
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 03:39:02PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The assignment to resp.response_length is never read since it is being
-> updated again on the next statement. The assignment is redundant so
-> removed it.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/infiniband/hw/mlx5/qp.c | 2 --
->  1 file changed, 2 deletions(-)
->
 
-Thanks,
-Acked-by: Leon Romanovsky <leonro@mellanox.com>
+On 2020/6/7 2:36 PM, Leon Romanovsky wrote:
+> On Sun, Jun 07, 2020 at 01:12:40PM +0800, Hu Haowen wrote:
+>> The macro ODP_CAP_SET_MAX is only used in function handle_hca_cap_odp()
+>> in file main.c, so it should be undefined when there are no more uses
+>> of it.
+>>
+>> Signed-off-by: Hu Haowen <xianfengting221@163.com>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx5/core/main.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+> "should be undefined" is s little bit over statement, but overall
+> the patch is good.
+
+
+Sorry for my strong tone, but my idea is that every macro which is
+defined and used just in a single function, is supposed to be undefined
+at the end of its final use, so that you won't get into trouble next
+time if you define a macro with the same name as this one.
+
+
+>
+> Fixes: fca22e7e595f ("net/mlx5: ODP support for XRC transport is not enabled by default in FW")
+>
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+
