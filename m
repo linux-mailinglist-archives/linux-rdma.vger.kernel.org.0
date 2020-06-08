@@ -2,41 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD21C1F29D7
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920441F2E87
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbgFHXVh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jun 2020 19:21:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
+        id S1729095AbgFHXM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jun 2020 19:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729163AbgFHXVe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:34 -0400
+        id S1729085AbgFHXMY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:12:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 785F120B80;
-        Mon,  8 Jun 2020 23:21:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06A7C208C7;
+        Mon,  8 Jun 2020 23:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658494;
-        bh=2ved1gwBbFnsvB8In8AxS051g4Ygu+m7vTx5SAx02eg=;
+        s=default; t=1591657944;
+        bh=1APZRQmaZ94RwQ1cAvwgySx9/rkDQcEWWledK+r1HSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VE5zVnWUAwZ9H6CP2lZjdqNb/Q9iqlj059LGaT/kbfYgHg/42xpOqJ3LNPGbm7Cxa
-         WmdaUlkG6NSSpapP/TC1BixY2q+xVv9JpM/v+/rpiQ6zHss6ZrEII/ZahPxmtqx3bm
-         x1rPwhpjizl/vgcZYxd5UBvx6ABF0fJmq8SpsanM=
+        b=mRN5rnbmbKWlM10fJD3bnsquRGyu0uhXHh08+EFQrsZKyfrXfDo8DG0DY0IKRkjae
+         mYCAtfaf2dqljTKn6deWnbeWlv+zbHY4MpmKMqhyKAUrBlZnrNGJsww8pLt7PiYw8w
+         T+RzibRFuZny+tfiOFUeHRhtauFM6EVvOWYjDYYo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Erez Shitrit <erezsh@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 127/175] net/mlx5e: IPoIB, Drop multicast packets that this interface sent
-Date:   Mon,  8 Jun 2020 19:18:00 -0400
-Message-Id: <20200608231848.3366970-127-sashal@kernel.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Subject: [PATCH AUTOSEL 5.6 009/606] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
+Date:   Mon,  8 Jun 2020 19:02:14 -0400
+Message-Id: <20200608231211.3363633-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
-References: <20200608231848.3366970-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,71 +47,150 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Erez Shitrit <erezsh@mellanox.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit 8b46d424a743ddfef8056d5167f13ee7ebd1dcad ]
+commit 7dba92037baf3fa00b4880a31fd532542264994c upstream.
 
-After enabled loopback packets for IPoIB, we need to drop these packets
-that this HCA has replicated and came back to the same interface that
-sent them.
+Returning the error code via a 'int *ret' when the function returns a
+pointer is very un-kernely and causes gcc 10's static analysis to choke:
 
-Fixes: 4c6c615e3f30 ("net/mlx5e: IPoIB, Add PKEY child interface nic profile")
-Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-Reviewed-by: Alex Vesker <valex@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+net/rds/message.c: In function ‘rds_message_map_pages’:
+net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  358 |   return ERR_PTR(ret);
+
+Use a typical ERR_PTR return instead.
+
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ net/rds/message.c | 19 ++++++-------------
+ net/rds/rdma.c    | 12 ++++++++----
+ net/rds/rds.h     |  3 +--
+ net/rds/send.c    |  6 ++++--
+ 4 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index c4eed5bbcd45..066bada4ccd1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1428,6 +1428,7 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 50f13f1d4ae0..2d43e13d6dd5 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -308,26 +308,20 @@ struct rds_message *rds_message_alloc(unsigned int extra_len, gfp_t gfp)
+ /*
+  * RDS ops use this to grab SG entries from the rm's sg pool.
+  */
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret)
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents)
+ {
+ 	struct scatterlist *sg_first = (struct scatterlist *) &rm[1];
+ 	struct scatterlist *sg_ret;
  
- #ifdef CONFIG_MLX5_CORE_IPOIB
+-	if (WARN_ON(!ret))
+-		return NULL;
+-
+ 	if (nents <= 0) {
+ 		pr_warn("rds: alloc sgs failed! nents <= 0\n");
+-		*ret = -EINVAL;
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
  
-+#define MLX5_IB_GRH_SGID_OFFSET 8
- #define MLX5_IB_GRH_DGID_OFFSET 24
- #define MLX5_GID_SIZE           16
+ 	if (rm->m_used_sgs + nents > rm->m_total_sgs) {
+ 		pr_warn("rds: alloc sgs failed! total %d used %d nents %d\n",
+ 			rm->m_total_sgs, rm->m_used_sgs, nents);
+-		*ret = -ENOMEM;
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	}
  
-@@ -1441,6 +1442,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	struct net_device *netdev;
- 	struct mlx5e_priv *priv;
- 	char *pseudo_header;
-+	u32 flags_rqpn;
- 	u32 qpn;
- 	u8 *dgid;
- 	u8 g;
-@@ -1462,7 +1464,8 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	tstamp = &priv->tstamp;
- 	stats = &priv->channel_stats[rq->ix].rq;
+ 	sg_ret = &sg_first[rm->m_used_sgs];
+@@ -343,7 +337,6 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	unsigned int i;
+ 	int num_sgs = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	int extra_bytes = num_sgs * sizeof(struct scatterlist);
+-	int ret;
  
--	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
-+	flags_rqpn = be32_to_cpu(cqe->flags_rqpn);
-+	g = (flags_rqpn >> 28) & 3;
- 	dgid = skb->data + MLX5_IB_GRH_DGID_OFFSET;
- 	if ((!g) || dgid[0] != 0xff)
- 		skb->pkt_type = PACKET_HOST;
-@@ -1471,9 +1474,15 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	else
- 		skb->pkt_type = PACKET_MULTICAST;
+ 	rm = rds_message_alloc(extra_bytes, GFP_NOWAIT);
+ 	if (!rm)
+@@ -352,10 +345,10 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	set_bit(RDS_MSG_PAGEVEC, &rm->m_flags);
+ 	rm->m_inc.i_hdr.h_len = cpu_to_be32(total_len);
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+-	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-	if (!rm->data.op_sg) {
++	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++	if (IS_ERR(rm->data.op_sg)) {
+ 		rds_message_put(rm);
+-		return ERR_PTR(ret);
++		return ERR_CAST(rm->data.op_sg);
+ 	}
  
--	/* TODO: IB/ipoib: Allow mcast packets from other VFs
--	 * 68996a6e760e5c74654723eeb57bf65628ae87f4
-+	/* Drop packets that this interface sent, ie multicast packets
-+	 * that the HCA has replicated.
- 	 */
-+	if (g && (qpn == (flags_rqpn & 0xffffff)) &&
-+	    (memcmp(netdev->dev_addr + 4, skb->data + MLX5_IB_GRH_SGID_OFFSET,
-+		    MLX5_GID_SIZE) == 0)) {
-+		skb->dev = NULL;
-+		return;
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index 585e6b3b69ce..554ea7f0277f 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -664,9 +664,11 @@ int rds_cmsg_rdma_args(struct rds_sock *rs, struct rds_message *rm,
+ 	op->op_odp_mr = NULL;
+ 
+ 	WARN_ON(!nr_pages);
+-	op->op_sg = rds_message_alloc_sgs(rm, nr_pages, &ret);
+-	if (!op->op_sg)
++	op->op_sg = rds_message_alloc_sgs(rm, nr_pages);
++	if (IS_ERR(op->op_sg)) {
++		ret = PTR_ERR(op->op_sg);
+ 		goto out_pages;
 +	}
  
- 	skb_pull(skb, MLX5_IB_GRH_BYTES);
+ 	if (op->op_notify || op->op_recverr) {
+ 		/* We allocate an uninitialized notifier here, because
+@@ -905,9 +907,11 @@ int rds_cmsg_atomic(struct rds_sock *rs, struct rds_message *rm,
+ 	rm->atomic.op_silent = !!(args->flags & RDS_RDMA_SILENT);
+ 	rm->atomic.op_active = 1;
+ 	rm->atomic.op_recverr = rs->rs_recverr;
+-	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1, &ret);
+-	if (!rm->atomic.op_sg)
++	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1);
++	if (IS_ERR(rm->atomic.op_sg)) {
++		ret = PTR_ERR(rm->atomic.op_sg);
+ 		goto err;
++	}
  
+ 	/* verify 8 byte-aligned */
+ 	if (args->local_addr & 0x7) {
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index e4a603523083..b8b7ad766046 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -852,8 +852,7 @@ rds_conn_connecting(struct rds_connection *conn)
+ 
+ /* message.c */
+ struct rds_message *rds_message_alloc(unsigned int nents, gfp_t gfp);
+-struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
+-					  int *ret);
++struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents);
+ int rds_message_copy_from_user(struct rds_message *rm, struct iov_iter *from,
+ 			       bool zcopy);
+ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned int total_len);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 82dcd8b84fe7..68e2bdb08fd0 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1274,9 +1274,11 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 
+ 	/* Attach data to the rm */
+ 	if (payload_len) {
+-		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
+-		if (!rm->data.op_sg)
++		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
++		if (IS_ERR(rm->data.op_sg)) {
++			ret = PTR_ERR(rm->data.op_sg);
+ 			goto out;
++		}
+ 		ret = rds_message_copy_from_user(rm, &msg->msg_iter, zcopy);
+ 		if (ret)
+ 			goto out;
 -- 
 2.25.1
 
