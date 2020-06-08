@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE3F1F288D
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 01:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3946A1F2CBE
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732157AbgFHXyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jun 2020 19:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        id S1730579AbgFIA1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jun 2020 20:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387503AbgFHXYS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:24:18 -0400
+        id S1730289AbgFHXQh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:16:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FE9620C56;
-        Mon,  8 Jun 2020 23:24:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2157120823;
+        Mon,  8 Jun 2020 23:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658658;
-        bh=nXchnZb0VQVMifgHuWErdeP223POR9zgseAnk9BTKs8=;
+        s=default; t=1591658197;
+        bh=OK2NHAg48HW6FBRqhKzU70isoJaQpL16CRC437CTNJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D2U7mW06FVe6UmYNcnx9rEndibkhVc+CC+c8l07TvjEBMtFyUpCURunBYYVT5f8Ox
-         AXYuWf6BZAj7+LlDqbd1ekBYW1AKh4VYcEL70Vk/xyoxfdHEl0F0fn9ii5nOPLiRjl
-         IL8ePWBQVgkmqiyX2vjlBuzMevMImtagYQSvPzhc=
+        b=AZE7ufmSPo4bmnctMUxwghaIQ1PdCWmkZ2ik1q1tXmwcZRnraHRE/Hsq04x7p5rhV
+         Br62OCY4SwBPLKa1xW+WSP/RtfLCveDAkJ3ouzBWUoqtCGkiX7Oky0hhjTweEChEzQ
+         pFlZUjk25yn3/72It/+jKZgsDVeGaGWDfkFRN4pI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Erez Shitrit <erezsh@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 075/106] net/mlx5e: IPoIB, Drop multicast packets that this interface sent
-Date:   Mon,  8 Jun 2020 19:22:07 -0400
-Message-Id: <20200608232238.3368589-75-sashal@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 217/606] net/mlx5: Add command entry handling completion
+Date:   Mon,  8 Jun 2020 19:05:42 -0400
+Message-Id: <20200608231211.3363633-217-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
-References: <20200608232238.3368589-1-sashal@kernel.org>
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,71 +45,101 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Erez Shitrit <erezsh@mellanox.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-[ Upstream commit 8b46d424a743ddfef8056d5167f13ee7ebd1dcad ]
+[ Upstream commit 17d00e839d3b592da9659c1977d45f85b77f986a ]
 
-After enabled loopback packets for IPoIB, we need to drop these packets
-that this HCA has replicated and came back to the same interface that
-sent them.
+When FW response to commands is very slow and all command entries in
+use are waiting for completion we can have a race where commands can get
+timeout before they get out of the queue and handled. Timeout
+completion on uninitialized command will cause releasing command's
+buffers before accessing it for initialization and then we will get NULL
+pointer exception while trying access it. It may also cause releasing
+buffers of another command since we may have timeout completion before
+even allocating entry index for this command.
+Add entry handling completion to avoid this race.
 
-Fixes: 4c6c615e3f30 ("net/mlx5e: IPoIB, Add PKEY child interface nic profile")
-Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-Reviewed-by: Alex Vesker <valex@mellanox.com>
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
 Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 14 ++++++++++++++
+ include/linux/mlx5/driver.h                   |  1 +
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 044687a1f27c..9d86e49a7f44 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1314,6 +1314,7 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index cede5bdfd598..d695b75bc0af 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -861,6 +861,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 	int alloc_ret;
+ 	int cmd_mode;
  
- #ifdef CONFIG_MLX5_CORE_IPOIB
++	complete(&ent->handling);
+ 	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
+ 	down(sem);
+ 	if (!ent->page_queue) {
+@@ -978,6 +979,11 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
+ 	struct mlx5_cmd *cmd = &dev->cmd;
+ 	int err;
  
-+#define MLX5_IB_GRH_SGID_OFFSET 8
- #define MLX5_IB_GRH_DGID_OFFSET 24
- #define MLX5_GID_SIZE           16
- 
-@@ -1327,6 +1328,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	struct net_device *netdev;
- 	struct mlx5e_priv *priv;
- 	char *pseudo_header;
-+	u32 flags_rqpn;
- 	u32 qpn;
- 	u8 *dgid;
- 	u8 g;
-@@ -1347,7 +1349,8 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	priv = mlx5i_epriv(netdev);
- 	tstamp = &priv->tstamp;
- 
--	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
-+	flags_rqpn = be32_to_cpu(cqe->flags_rqpn);
-+	g = (flags_rqpn >> 28) & 3;
- 	dgid = skb->data + MLX5_IB_GRH_DGID_OFFSET;
- 	if ((!g) || dgid[0] != 0xff)
- 		skb->pkt_type = PACKET_HOST;
-@@ -1356,9 +1359,15 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	else
- 		skb->pkt_type = PACKET_MULTICAST;
- 
--	/* TODO: IB/ipoib: Allow mcast packets from other VFs
--	 * 68996a6e760e5c74654723eeb57bf65628ae87f4
-+	/* Drop packets that this interface sent, ie multicast packets
-+	 * that the HCA has replicated.
- 	 */
-+	if (g && (qpn == (flags_rqpn & 0xffffff)) &&
-+	    (memcmp(netdev->dev_addr + 4, skb->data + MLX5_IB_GRH_SGID_OFFSET,
-+		    MLX5_GID_SIZE) == 0)) {
-+		skb->dev = NULL;
-+		return;
++	if (!wait_for_completion_timeout(&ent->handling, timeout) &&
++	    cancel_work_sync(&ent->work)) {
++		ent->ret = -ECANCELED;
++		goto out_err;
 +	}
+ 	if (cmd->mode == CMD_MODE_POLLING || ent->polling) {
+ 		wait_for_completion(&ent->done);
+ 	} else if (!wait_for_completion_timeout(&ent->done, timeout)) {
+@@ -985,12 +991,17 @@ static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
+ 		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
+ 	}
  
- 	skb_pull(skb, MLX5_IB_GRH_BYTES);
++out_err:
+ 	err = ent->ret;
  
+ 	if (err == -ETIMEDOUT) {
+ 		mlx5_core_warn(dev, "%s(0x%x) timeout. Will cause a leak of a command resource\n",
+ 			       mlx5_command_str(msg_to_opcode(ent->in)),
+ 			       msg_to_opcode(ent->in));
++	} else if (err == -ECANCELED) {
++		mlx5_core_warn(dev, "%s(0x%x) canceled on out of queue timeout.\n",
++			       mlx5_command_str(msg_to_opcode(ent->in)),
++			       msg_to_opcode(ent->in));
+ 	}
+ 	mlx5_core_dbg(dev, "err %d, delivery status %s(%d)\n",
+ 		      err, deliv_status_to_str(ent->status), ent->status);
+@@ -1026,6 +1037,7 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
+ 	ent->token = token;
+ 	ent->polling = force_polling;
+ 
++	init_completion(&ent->handling);
+ 	if (!callback)
+ 		init_completion(&ent->done);
+ 
+@@ -1045,6 +1057,8 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
+ 	err = wait_func(dev, ent);
+ 	if (err == -ETIMEDOUT)
+ 		goto out;
++	if (err == -ECANCELED)
++		goto out_free;
+ 
+ 	ds = ent->ts2 - ent->ts1;
+ 	op = MLX5_GET(mbox_in, in->first.data, opcode);
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 277a51d3ec40..b596353a3a12 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -761,6 +761,7 @@ struct mlx5_cmd_work_ent {
+ 	struct delayed_work	cb_timeout_work;
+ 	void		       *context;
+ 	int			idx;
++	struct completion	handling;
+ 	struct completion	done;
+ 	struct mlx5_cmd        *cmd;
+ 	struct work_struct	work;
 -- 
 2.25.1
 
