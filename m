@@ -2,43 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920441F2E87
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8121F2DF1
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729095AbgFHXM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jun 2020 19:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
+        id S1727860AbgFIAhv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jun 2020 20:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729085AbgFHXMY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:12:24 -0400
+        id S1727829AbgFHXNi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:13:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06A7C208C7;
-        Mon,  8 Jun 2020 23:12:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8E2C20B80;
+        Mon,  8 Jun 2020 23:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657944;
-        bh=1APZRQmaZ94RwQ1cAvwgySx9/rkDQcEWWledK+r1HSI=;
+        s=default; t=1591658017;
+        bh=dJ1hCS/0idj37Jg+kplr64FvDLejwmC8xrXgcbyyO7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRN5rnbmbKWlM10fJD3bnsquRGyu0uhXHh08+EFQrsZKyfrXfDo8DG0DY0IKRkjae
-         mYCAtfaf2dqljTKn6deWnbeWlv+zbHY4MpmKMqhyKAUrBlZnrNGJsww8pLt7PiYw8w
-         T+RzibRFuZny+tfiOFUeHRhtauFM6EVvOWYjDYYo=
+        b=Mq5w/Nzre5XkqQxl12nVgav4v+WlfgXAmgTWFb1N13JFQlUI/kDgQb0XATrPhwI/E
+         76PT9G7Rre+oCweJ46oV/vsTjJt++uEKcTG/78K3oFUWjiC30iyoKnQom6ScXzL/eX
+         n+cARVNm9tlW3x/vkQgXLhqM9KvaeB4HG2U/kGHs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 5.6 009/606] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
-Date:   Mon,  8 Jun 2020 19:02:14 -0400
-Message-Id: <20200608231211.3363633-9-sashal@kernel.org>
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 071/606] RDMA/uverbs: Do not discard the IB_EVENT_DEVICE_FATAL event
+Date:   Mon,  8 Jun 2020 19:03:16 -0400
+Message-Id: <20200608231211.3363633-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -49,148 +47,112 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-commit 7dba92037baf3fa00b4880a31fd532542264994c upstream.
+commit c485b19d52c4ba269dfd027945dee81755fdd530 upstream.
 
-Returning the error code via a 'int *ret' when the function returns a
-pointer is very un-kernely and causes gcc 10's static analysis to choke:
+The commit below moved all of the destruction to the disassociate step and
+cleaned up the event channel during destroy_uobj.
 
-net/rds/message.c: In function ‘rds_message_map_pages’:
-net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
-  358 |   return ERR_PTR(ret);
+However, when ib_uverbs_free_hw_resources() pushes IB_EVENT_DEVICE_FATAL
+and then immediately goes to destroy all uobjects this causes
+ib_uverbs_free_event_queue() to discard the queued event if userspace
+hasn't already read() it.
 
-Use a typical ERR_PTR return instead.
+Unlike all other event queues async FD needs to defer the
+ib_uverbs_free_event_queue() until FD release. This still unregisters the
+handler from the IB device during disassociation.
 
+Fixes: 3e032c0e92aa ("RDMA/core: Make ib_uverbs_async_event_file into a uobject")
+Link: https://lore.kernel.org/r/20200507063348.98713-2-leon@kernel.org
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rds/message.c | 19 ++++++-------------
- net/rds/rdma.c    | 12 ++++++++----
- net/rds/rds.h     |  3 +--
- net/rds/send.c    |  6 ++++--
- 4 files changed, 19 insertions(+), 21 deletions(-)
+ drivers/infiniband/core/rdma_core.c           |  3 ++-
+ drivers/infiniband/core/uverbs.h              |  1 +
+ drivers/infiniband/core/uverbs_main.c         |  2 +-
+ .../core/uverbs_std_types_async_fd.c          | 26 ++++++++++++++++++-
+ 4 files changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/net/rds/message.c b/net/rds/message.c
-index 50f13f1d4ae0..2d43e13d6dd5 100644
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -308,26 +308,20 @@ struct rds_message *rds_message_alloc(unsigned int extra_len, gfp_t gfp)
- /*
-  * RDS ops use this to grab SG entries from the rm's sg pool.
-  */
--struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
--					  int *ret)
-+struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents)
- {
- 	struct scatterlist *sg_first = (struct scatterlist *) &rm[1];
- 	struct scatterlist *sg_ret;
+diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+index 177333d8bcda..bf8e149d3191 100644
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -459,7 +459,8 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
+ 	struct ib_uobject *uobj;
+ 	struct file *filp;
  
--	if (WARN_ON(!ret))
--		return NULL;
--
- 	if (nents <= 0) {
- 		pr_warn("rds: alloc sgs failed! nents <= 0\n");
--		*ret = -EINVAL;
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
+-	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release))
++	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
++		    fd_type->fops->release != &uverbs_async_event_release))
+ 		return ERR_PTR(-EINVAL);
  
- 	if (rm->m_used_sgs + nents > rm->m_total_sgs) {
- 		pr_warn("rds: alloc sgs failed! total %d used %d nents %d\n",
- 			rm->m_total_sgs, rm->m_used_sgs, nents);
--		*ret = -ENOMEM;
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 	}
+ 	new_fd = get_unused_fd_flags(O_CLOEXEC);
+diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+index 7df71983212d..2673cb1cd655 100644
+--- a/drivers/infiniband/core/uverbs.h
++++ b/drivers/infiniband/core/uverbs.h
+@@ -219,6 +219,7 @@ void ib_uverbs_init_event_queue(struct ib_uverbs_event_queue *ev_queue);
+ void ib_uverbs_init_async_event_file(struct ib_uverbs_async_event_file *ev_file);
+ void ib_uverbs_free_event_queue(struct ib_uverbs_event_queue *event_queue);
+ void ib_uverbs_flow_resources_free(struct ib_uflow_resources *uflow_res);
++int uverbs_async_event_release(struct inode *inode, struct file *filp);
  
- 	sg_ret = &sg_first[rm->m_used_sgs];
-@@ -343,7 +337,6 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
- 	unsigned int i;
- 	int num_sgs = DIV_ROUND_UP(total_len, PAGE_SIZE);
- 	int extra_bytes = num_sgs * sizeof(struct scatterlist);
--	int ret;
+ int ib_alloc_ucontext(struct uverbs_attr_bundle *attrs);
+ int ib_init_ucontext(struct uverbs_attr_bundle *attrs);
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 17fc25db0311..cb5b59123d8f 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -346,7 +346,7 @@ const struct file_operations uverbs_async_event_fops = {
+ 	.owner	 = THIS_MODULE,
+ 	.read	 = ib_uverbs_async_event_read,
+ 	.poll    = ib_uverbs_async_event_poll,
+-	.release = uverbs_uobject_fd_release,
++	.release = uverbs_async_event_release,
+ 	.fasync  = ib_uverbs_async_event_fasync,
+ 	.llseek	 = no_llseek,
+ };
+diff --git a/drivers/infiniband/core/uverbs_std_types_async_fd.c b/drivers/infiniband/core/uverbs_std_types_async_fd.c
+index 82ec0806b34b..462deb506b16 100644
+--- a/drivers/infiniband/core/uverbs_std_types_async_fd.c
++++ b/drivers/infiniband/core/uverbs_std_types_async_fd.c
+@@ -26,10 +26,34 @@ static int uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
+ 		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
  
- 	rm = rds_message_alloc(extra_bytes, GFP_NOWAIT);
- 	if (!rm)
-@@ -352,10 +345,10 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
- 	set_bit(RDS_MSG_PAGEVEC, &rm->m_flags);
- 	rm->m_inc.i_hdr.h_len = cpu_to_be32(total_len);
- 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
--	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
--	if (!rm->data.op_sg) {
-+	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
-+	if (IS_ERR(rm->data.op_sg)) {
- 		rds_message_put(rm);
--		return ERR_PTR(ret);
-+		return ERR_CAST(rm->data.op_sg);
- 	}
+ 	ib_unregister_event_handler(&event_file->event_handler);
+-	ib_uverbs_free_event_queue(&event_file->ev_queue);
+ 	return 0;
+ }
  
- 	for (i = 0; i < rm->data.op_nents; ++i) {
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index 585e6b3b69ce..554ea7f0277f 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -664,9 +664,11 @@ int rds_cmsg_rdma_args(struct rds_sock *rs, struct rds_message *rm,
- 	op->op_odp_mr = NULL;
- 
- 	WARN_ON(!nr_pages);
--	op->op_sg = rds_message_alloc_sgs(rm, nr_pages, &ret);
--	if (!op->op_sg)
-+	op->op_sg = rds_message_alloc_sgs(rm, nr_pages);
-+	if (IS_ERR(op->op_sg)) {
-+		ret = PTR_ERR(op->op_sg);
- 		goto out_pages;
-+	}
- 
- 	if (op->op_notify || op->op_recverr) {
- 		/* We allocate an uninitialized notifier here, because
-@@ -905,9 +907,11 @@ int rds_cmsg_atomic(struct rds_sock *rs, struct rds_message *rm,
- 	rm->atomic.op_silent = !!(args->flags & RDS_RDMA_SILENT);
- 	rm->atomic.op_active = 1;
- 	rm->atomic.op_recverr = rs->rs_recverr;
--	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1, &ret);
--	if (!rm->atomic.op_sg)
-+	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1);
-+	if (IS_ERR(rm->atomic.op_sg)) {
-+		ret = PTR_ERR(rm->atomic.op_sg);
- 		goto err;
-+	}
- 
- 	/* verify 8 byte-aligned */
- 	if (args->local_addr & 0x7) {
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index e4a603523083..b8b7ad766046 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -852,8 +852,7 @@ rds_conn_connecting(struct rds_connection *conn)
- 
- /* message.c */
- struct rds_message *rds_message_alloc(unsigned int nents, gfp_t gfp);
--struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
--					  int *ret);
-+struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents);
- int rds_message_copy_from_user(struct rds_message *rm, struct iov_iter *from,
- 			       bool zcopy);
- struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned int total_len);
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 82dcd8b84fe7..68e2bdb08fd0 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1274,9 +1274,11 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 
- 	/* Attach data to the rm */
- 	if (payload_len) {
--		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
--		if (!rm->data.op_sg)
-+		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
-+		if (IS_ERR(rm->data.op_sg)) {
-+			ret = PTR_ERR(rm->data.op_sg);
- 			goto out;
-+		}
- 		ret = rds_message_copy_from_user(rm, &msg->msg_iter, zcopy);
- 		if (ret)
- 			goto out;
++int uverbs_async_event_release(struct inode *inode, struct file *filp)
++{
++	struct ib_uverbs_async_event_file *event_file;
++	struct ib_uobject *uobj = filp->private_data;
++	int ret;
++
++	if (!uobj)
++		return uverbs_uobject_fd_release(inode, filp);
++
++	event_file =
++		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
++
++	/*
++	 * The async event FD has to deliver IB_EVENT_DEVICE_FATAL even after
++	 * disassociation, so cleaning the event list must only happen after
++	 * release. The user knows it has reached the end of the event stream
++	 * when it sees IB_EVENT_DEVICE_FATAL.
++	 */
++	uverbs_uobject_get(uobj);
++	ret = uverbs_uobject_fd_release(inode, filp);
++	ib_uverbs_free_event_queue(&event_file->ev_queue);
++	uverbs_uobject_put(uobj);
++	return ret;
++}
++
+ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_METHOD_ASYNC_EVENT_ALLOC,
+ 	UVERBS_ATTR_FD(UVERBS_ATTR_ASYNC_EVENT_ALLOC_FD_HANDLE,
 -- 
 2.25.1
 
