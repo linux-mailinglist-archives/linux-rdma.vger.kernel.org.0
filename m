@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52C91F2DCB
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E977B1F3041
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 02:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgFHXNl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33498 "EHLO mail.kernel.org"
+        id S1728605AbgFIA5c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jun 2020 20:57:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729530AbgFHXNj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:39 -0400
+        id S1728265AbgFHXIv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:08:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1151320C09;
-        Mon,  8 Jun 2020 23:13:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CF4E21475;
+        Mon,  8 Jun 2020 23:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658018;
-        bh=eQL/+0ePE1H1rx1MzZmNKPOckAY08l+N/zU64kPQEBc=;
+        s=default; t=1591657731;
+        bh=oFIdwIPcbSh6WjyfTNz2t9h1mlmA98OxWyFA46v78Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOWsZUlglupL7r1XrSwkAFWcOcdcTd/CpexrCDHc/j3RA+lOXAsR/NZqueRDUlc7p
-         L1vPoM1nIT0wZNN74PaxIBPO8Qal+ySmOmIExF3gHD8nXEgXkFlQrS8ReXph6YilUN
-         INcZJFPAKie5aneB5jC71Ex7wxCKQ0jMTDFnRVGc=
+        b=AYe+7FSqRXpY6YsctQaifpSRtMogA1eMZzVPVqMl1GwL9W28tucxa26OlXgyLdM8G
+         7glcAxO5Ncom+3iuS1M5R+FTVqtoia1cG/FCLh9Grw/SqcRZk5FKJzi5VnluMT58jG
+         y21DT7En6uE8V6iGoyELbo1tAgnznFkbpbX+eg3c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 072/606] RDMA/uverbs: Move IB_EVENT_DEVICE_FATAL to destroy_uobj
-Date:   Mon,  8 Jun 2020 19:03:17 -0400
-Message-Id: <20200608231211.3363633-72-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 122/274] net/mlx4_core: Add missing iounmap() in error path
+Date:   Mon,  8 Jun 2020 19:03:35 -0400
+Message-Id: <20200608230607.3361041-122-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,88 +45,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit ccfdbaa5cf4601b9b71601893029dcc9245c002b upstream.
+[ Upstream commit c90af587a9eee697e2d89683113707cada70116a ]
 
-When multiple async FDs were allowed to exist the idea was for all
-broadcast events to be delivered to all async FDs, however
-IB_EVENT_DEVICE_FATAL was missed.
+This fixes the following coccicheck warning:
 
-Instead of having ib_uverbs_free_hw_resources() special case the global
-async_fd, have it cause the event during the uobject destruction. Every
-async fd is now a uobject so simply generate the IB_EVENT_DEVICE_FATAL
-while destroying the async fd uobject. This ensures every async FD gets a
-copy of the event.
+drivers/net/ethernet/mellanox/mlx4/crdump.c:200:2-8: ERROR: missing iounmap;
+ioremap on line 190 and execution via conditional on line 198
 
-Fixes: d680e88e2013 ("RDMA/core: Add UVERBS_METHOD_ASYNC_EVENT_ALLOC")
-Link: https://lore.kernel.org/r/20200507063348.98713-3-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7ef19d3b1d5e ("devlink: report error once U32_MAX snapshot ids have been used")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/uverbs.h                    |  3 +++
- drivers/infiniband/core/uverbs_main.c               | 10 +++-------
- drivers/infiniband/core/uverbs_std_types_async_fd.c |  4 ++++
- 3 files changed, 10 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/crdump.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index 2673cb1cd655..3d189c7ee59e 100644
---- a/drivers/infiniband/core/uverbs.h
-+++ b/drivers/infiniband/core/uverbs.h
-@@ -228,6 +228,9 @@ void ib_uverbs_release_ucq(struct ib_uverbs_completion_event_file *ev_file,
- 			   struct ib_ucq_object *uobj);
- void ib_uverbs_release_uevent(struct ib_uevent_object *uobj);
- void ib_uverbs_release_file(struct kref *ref);
-+void ib_uverbs_async_handler(struct ib_uverbs_async_event_file *async_file,
-+			     __u64 element, __u64 event,
-+			     struct list_head *obj_list, u32 *counter);
- 
- void ib_uverbs_comp_handler(struct ib_cq *cq, void *cq_context);
- void ib_uverbs_cq_event_handler(struct ib_event *event, void *context_ptr);
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index cb5b59123d8f..1bab8de14757 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -386,10 +386,9 @@ void ib_uverbs_comp_handler(struct ib_cq *cq, void *cq_context)
- 	kill_fasync(&ev_queue->async_queue, SIGIO, POLL_IN);
- }
- 
--static void
--ib_uverbs_async_handler(struct ib_uverbs_async_event_file *async_file,
--			__u64 element, __u64 event, struct list_head *obj_list,
--			u32 *counter)
-+void ib_uverbs_async_handler(struct ib_uverbs_async_event_file *async_file,
-+			     __u64 element, __u64 event,
-+			     struct list_head *obj_list, u32 *counter)
- {
- 	struct ib_uverbs_event *entry;
- 	unsigned long flags;
-@@ -1187,9 +1186,6 @@ static void ib_uverbs_free_hw_resources(struct ib_uverbs_device *uverbs_dev,
- 		 */
- 		mutex_unlock(&uverbs_dev->lists_mutex);
- 
--		ib_uverbs_async_handler(READ_ONCE(file->async_file), 0,
--					IB_EVENT_DEVICE_FATAL, NULL, NULL);
--
- 		uverbs_destroy_ufile_hw(file, RDMA_REMOVE_DRIVER_REMOVE);
- 		kref_put(&file->ref, ib_uverbs_release_file);
- 
-diff --git a/drivers/infiniband/core/uverbs_std_types_async_fd.c b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-index 462deb506b16..61899eaf1f91 100644
---- a/drivers/infiniband/core/uverbs_std_types_async_fd.c
-+++ b/drivers/infiniband/core/uverbs_std_types_async_fd.c
-@@ -26,6 +26,10 @@ static int uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
- 		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
- 
- 	ib_unregister_event_handler(&event_file->event_handler);
-+
-+	if (why == RDMA_REMOVE_DRIVER_REMOVE)
-+		ib_uverbs_async_handler(event_file, 0, IB_EVENT_DEVICE_FATAL,
-+					NULL, NULL);
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx4/crdump.c b/drivers/net/ethernet/mellanox/mlx4/crdump.c
+index 73eae80e1cb7..ac5468b77488 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/crdump.c
++++ b/drivers/net/ethernet/mellanox/mlx4/crdump.c
+@@ -197,6 +197,7 @@ int mlx4_crdump_collect(struct mlx4_dev *dev)
+ 	err = devlink_region_snapshot_id_get(devlink, &id);
+ 	if (err) {
+ 		mlx4_err(dev, "crdump: devlink get snapshot id err %d\n", err);
++		iounmap(cr_space);
+ 		return err;
+ 	}
  
 -- 
 2.25.1
