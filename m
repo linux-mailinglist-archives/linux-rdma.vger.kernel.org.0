@@ -2,165 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAA81F2171
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jun 2020 23:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE3F1F288D
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 01:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgFHVWr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Jun 2020 17:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgFHVWq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Jun 2020 17:22:46 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F1EC08C5C2;
-        Mon,  8 Jun 2020 14:22:46 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id b18so14906408oti.1;
-        Mon, 08 Jun 2020 14:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wW8D/dSScjtqwaMeYYSqLpcYbiXjnjq+RVvdaEoSPKg=;
-        b=pH67onXKnkmvjnr7kTdmSi6Uzwy0roBDOYeXmG6zC7hP7OzMaXitW9M1K8phN51a9G
-         TTKgsjMlSf4ptU8tmEA3CoRwCvBdbHg2jNimQQgG0ZWXoZ15t826vTTeNF9nVOowoGbD
-         GgBXqH8k/ht6kmgSlqpkRfSIpxSag1DRxLuM43rZaQIptFsBuMGzEPAR56O7HyBC3AIr
-         lAi3Q4ke+IaJGDeYTXsvzOozZK8lRsydY5KEbzA/FHzSLLVl8COj0HK5DLgPsT9qlEhy
-         REUTa9QleLU8oFNH8y6Mz6xoFNoDIe9x6YSBoFr4sJi/RIGkmyG83kGaNnvJY6I93Qpa
-         1jcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wW8D/dSScjtqwaMeYYSqLpcYbiXjnjq+RVvdaEoSPKg=;
-        b=o3HtGnPRanoG2W2+QUbxBx2Cm3pZbLRWRR+iqocsB/d/t8l1Ho4yjjo8FsWEe1CS0w
-         mspMTrHyUtzP8GIL9KpfwPQNexWZ1VQUaMhvcaVbQt21S8nwqZwBMk4WI8mqZuDeCp6d
-         VDY59J7g2gznxnU9PGcNiidf/sPHEoBuOZPiWDuG8qyvMMSAo+9JHcp82ONxsDCtU/6Q
-         73lQFWzqZbiV2xwHzLeJuGi7Xrp4vc7+B8NgDjckQ3/a3ofWgG5QGk9RYyZ2el9M4chi
-         O6R9/iUHeXweFzCDUw/e3nQRCOamQ+D63v7+aDgCE2Bs5vDN8D6QfoKZQOk7B08Gt5I2
-         PKOw==
-X-Gm-Message-State: AOAM53253LEnFq19NgjD37FoxpIHRxYq1GthkcyOfqPVflr/7UTUJ98I
-        CgefymW++8N0lHCnoLbvIz0=
-X-Google-Smtp-Source: ABdhPJxqSR1gGUtivubbaRfehqrabRImW2oEhG335ChW6vi9VqUVtQNFJBheN9jpjiT1dHVCoDDJZQ==
-X-Received: by 2002:a9d:67c1:: with SMTP id c1mr12662793otn.27.1591651365554;
-        Mon, 08 Jun 2020 14:22:45 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id r65sm592355oie.13.2020.06.08.14.22.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 14:22:44 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 14:22:43 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Vu Pham <vuhuong@mellanox.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH net] net/mlx5: Don't fail driver on failure to create
- debugfs
-Message-ID: <20200608212243.GA2072362@ubuntu-n2-xlarge-x86>
-References: <20200602122837.161519-1-leon@kernel.org>
- <20200602192724.GA672@Ryzen-9-3900X.localdomain>
- <20200603183436.GA2565136@ubuntu-n2-xlarge-x86>
- <cf22654ba1e726c3f3d1acf7eff2bc167de810c7.camel@mellanox.com>
+        id S1732157AbgFHXyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Jun 2020 19:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387503AbgFHXYS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:24:18 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FE9620C56;
+        Mon,  8 Jun 2020 23:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591658658;
+        bh=nXchnZb0VQVMifgHuWErdeP223POR9zgseAnk9BTKs8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=D2U7mW06FVe6UmYNcnx9rEndibkhVc+CC+c8l07TvjEBMtFyUpCURunBYYVT5f8Ox
+         AXYuWf6BZAj7+LlDqbd1ekBYW1AKh4VYcEL70Vk/xyoxfdHEl0F0fn9ii5nOPLiRjl
+         IL8ePWBQVgkmqiyX2vjlBuzMevMImtagYQSvPzhc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Erez Shitrit <erezsh@mellanox.com>,
+        Alex Vesker <valex@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 075/106] net/mlx5e: IPoIB, Drop multicast packets that this interface sent
+Date:   Mon,  8 Jun 2020 19:22:07 -0400
+Message-Id: <20200608232238.3368589-75-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
+References: <20200608232238.3368589-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf22654ba1e726c3f3d1acf7eff2bc167de810c7.camel@mellanox.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 04:44:00AM +0000, Saeed Mahameed wrote:
-> On Wed, 2020-06-03 at 11:34 -0700, Nathan Chancellor wrote:
-> > On Tue, Jun 02, 2020 at 12:27:24PM -0700, Nathan Chancellor wrote:
-> > > On Tue, Jun 02, 2020 at 03:28:37PM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@mellanox.com>
-> > > > 
-> > > > Clang warns:
-> > > > 
-> > > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:6: warning:
-> > > > variable
-> > > > 'err' is used uninitialized whenever 'if' condition is true
-> > > > [-Wsometimes-uninitialized]
-> > > >         if (!priv->dbg_root) {
-> > > >             ^~~~~~~~~~~~~~~
-> > > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1303:9: note:
-> > > > uninitialized use occurs here
-> > > >         return err;
-> > > >                ^~~
-> > > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1278:2: note:
-> > > > remove the
-> > > > 'if' if its condition is always false
-> > > >         if (!priv->dbg_root) {
-> > > >         ^~~~~~~~~~~~~~~~~~~~~~
-> > > > drivers/net/ethernet/mellanox/mlx5/core/main.c:1259:9: note:
-> > > > initialize
-> > > > the variable 'err' to silence this warning
-> > > >         int err;
-> > > >                ^
-> > > >                 = 0
-> > > > 1 warning generated.
-> > > > 
-> > > > The check of returned value of debugfs_create_dir() is wrong
-> > > > because
-> > > > by the design debugfs failures should never fail the driver and
-> > > > the
-> > > > check itself was wrong too. The kernel compiled without
-> > > > CONFIG_DEBUG_FS
-> > > > will return ERR_PTR(-ENODEV) and not NULL as expected.
-> > > > 
-> > > > Fixes: 11f3b84d7068 ("net/mlx5: Split mdev init and pci init")
-> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1042
-> > > > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > > 
-> > > Thanks! That's what I figured it should be.
-> > > 
-> > > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > 
-> > > > ---
-> > > > Original discussion:
-> > > > https://lore.kernel.org/lkml/20200530055447.1028004-1-natechancellor@gmail.com
-> > > > ---
-> > > >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 5 -----
-> > > >  1 file changed, 5 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > > b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > > index df46b1fce3a7..110e8d277d15 100644
-> > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > > > @@ -1275,11 +1275,6 @@ static int mlx5_mdev_init(struct
-> > > > mlx5_core_dev *dev, int profile_idx)
-> > > > 
-> > > >  	priv->dbg_root = debugfs_create_dir(dev_name(dev->device),
-> > > >  					    mlx5_debugfs_root);
-> > > > -	if (!priv->dbg_root) {
-> > > > -		dev_err(dev->device, "mlx5_core: error, Cannot create
-> > > > debugfs dir, aborting\n");
-> > > > -		goto err_dbg_root;
-> > 
-> > Actually, this removes the only use of err_dbg_root, so that should
-> > be
-> > removed at the same time.
-> > 
-> 
-> Fixed this up and applied to net-next-mlx5, 
-> Thanks!
-> 
+From: Erez Shitrit <erezsh@mellanox.com>
 
-Hi Saeed,
+[ Upstream commit 8b46d424a743ddfef8056d5167f13ee7ebd1dcad ]
 
-I see this warning in mainline now, is this something you were planning
-to have merged this cycle or next? I see it in several configs so it
-would be nice if it could be resolved this one, since it was introduced
-by a patch in this cycle even though the core issue has been around for
-a few months.
+After enabled loopback packets for IPoIB, we need to drop these packets
+that this HCA has replicated and came back to the same interface that
+sent them.
 
-Cheers,
-Nathan
+Fixes: 4c6c615e3f30 ("net/mlx5e: IPoIB, Add PKEY child interface nic profile")
+Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
+Reviewed-by: Alex Vesker <valex@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index 044687a1f27c..9d86e49a7f44 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -1314,6 +1314,7 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
+ 
+ #ifdef CONFIG_MLX5_CORE_IPOIB
+ 
++#define MLX5_IB_GRH_SGID_OFFSET 8
+ #define MLX5_IB_GRH_DGID_OFFSET 24
+ #define MLX5_GID_SIZE           16
+ 
+@@ -1327,6 +1328,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
+ 	struct net_device *netdev;
+ 	struct mlx5e_priv *priv;
+ 	char *pseudo_header;
++	u32 flags_rqpn;
+ 	u32 qpn;
+ 	u8 *dgid;
+ 	u8 g;
+@@ -1347,7 +1349,8 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
+ 	priv = mlx5i_epriv(netdev);
+ 	tstamp = &priv->tstamp;
+ 
+-	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
++	flags_rqpn = be32_to_cpu(cqe->flags_rqpn);
++	g = (flags_rqpn >> 28) & 3;
+ 	dgid = skb->data + MLX5_IB_GRH_DGID_OFFSET;
+ 	if ((!g) || dgid[0] != 0xff)
+ 		skb->pkt_type = PACKET_HOST;
+@@ -1356,9 +1359,15 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
+ 	else
+ 		skb->pkt_type = PACKET_MULTICAST;
+ 
+-	/* TODO: IB/ipoib: Allow mcast packets from other VFs
+-	 * 68996a6e760e5c74654723eeb57bf65628ae87f4
++	/* Drop packets that this interface sent, ie multicast packets
++	 * that the HCA has replicated.
+ 	 */
++	if (g && (qpn == (flags_rqpn & 0xffffff)) &&
++	    (memcmp(netdev->dev_addr + 4, skb->data + MLX5_IB_GRH_SGID_OFFSET,
++		    MLX5_GID_SIZE) == 0)) {
++		skb->dev = NULL;
++		return;
++	}
+ 
+ 	skb_pull(skb, MLX5_IB_GRH_BYTES);
+ 
+-- 
+2.25.1
+
