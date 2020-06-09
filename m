@@ -2,95 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B901F3FB8
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 17:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EBC1F3FE4
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 17:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgFIPom (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jun 2020 11:44:42 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46518 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728903AbgFIPol (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 11:44:41 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059FaxxL057615;
-        Tue, 9 Jun 2020 15:44:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GC6aPT5hAt4URZMa3rOo5BoBeN+vVqf9KIXgG4/G2fA=;
- b=I08Q47WFZ3i5Blm491cA3QLwvA/AGXX6COgYK0oGzOF5GSf3af5wu57xQD5PoFPBHgHQ
- P73V5lsUhXGxuG+CwwD6gCUSgN3PpqAHzmWcwCrispdHlsSMlhn+XAh3ZT4B0jJGw+Yw
- csuLKtjngPavbXzNM6ZXV5HxgMAyog/frDdeK2OG+eCjW8PpELlB0hxRA2v7DQjlIV4z
- NCmUePZhmjvomx3AExA6OlmQhK5dy/JBwbmXRPyhwKj31Nr+pEheMqMdaYPxNpVbc3Al
- zoUl3NcuRUYSOhgbXGqODgrKXfSpPtHhRxD/QN8/PHAs5wEYTjxOPPKIwnLeKZE3ICMe zQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31g33m5hy1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 09 Jun 2020 15:44:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059FbtpF069165;
-        Tue, 9 Jun 2020 15:44:36 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 31gn2wweu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Jun 2020 15:44:36 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 059FiYeK019014;
-        Tue, 9 Jun 2020 15:44:35 GMT
-Received: from dhcp-10-159-155-165.vpn.oracle.com (/10.159.155.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 09 Jun 2020 08:44:34 -0700
-Subject: Re: Review Request
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        id S1730925AbgFIPyC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jun 2020 11:54:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4236 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730603AbgFIPyB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Jun 2020 11:54:01 -0400
+IronPort-SDR: gBmHGsHiu4t0KZjjxRmGC9mk1B6ysSkZe0OctVOX0qX01fKX0KhQ/1Dy5qJf0YQNGMizcUKRkM
+ DmL3V/84xjLA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 08:54:00 -0700
+IronPort-SDR: geHkTrUZMj15qOc12rlaH2e0SMypdb98/seukcAPFvrRVbaK2xehJqdF8spQYw3AZkNENu0UOS
+ BL6dIwvL++hQ==
+X-IronPort-AV: E=Sophos;i="5.73,492,1583222400"; 
+   d="scan'208";a="447168863"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.203.173]) ([10.254.203.173])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2020 08:53:58 -0700
+Subject: Re: [PATCH 02/17] drivers: infiniband: Fix trivial spelling
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <20200609070352.GK164174@unreal>
-From:   Divya Indi <divya.indi@oracle.com>
-Message-ID: <c4a8fffe-b963-7627-7f39-a14b16dbe312@oracle.com>
-Date:   Tue, 9 Jun 2020 08:44:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        Jiri Kosina <trivial@kernel.org>,
+        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200609124610.3445662-3-kieran.bingham+renesas@ideasonboard.com>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <8909aaf3-027d-17ed-d887-6bffe5c04366@intel.com>
+Date:   Tue, 9 Jun 2020 11:53:56 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200609070352.GK164174@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200609124610.3445662-3-kieran.bingham+renesas@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 adultscore=0 mlxlogscore=943 spamscore=0 suspectscore=11
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006090118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=11 adultscore=0
- spamscore=0 cotscore=-2147483648 malwarescore=0 phishscore=0 mlxscore=0
- clxscore=1015 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=973 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006090118
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks Leon, Noted!
+On 6/9/2020 8:45 AM, Kieran Bingham wrote:
+> The word 'descriptor' is misspelled throughout the tree.
+> 
+> Fix it up accordingly:
+>      decriptors -> descriptors
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+>   drivers/infiniband/hw/hfi1/iowait.h      | 2 +-
+>   drivers/infiniband/hw/hfi1/verbs_txreq.h | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/iowait.h b/drivers/infiniband/hw/hfi1/iowait.h
+> index 07847cb72169..d580aa17ae37 100644
+> --- a/drivers/infiniband/hw/hfi1/iowait.h
+> +++ b/drivers/infiniband/hw/hfi1/iowait.h
+> @@ -399,7 +399,7 @@ static inline void iowait_get_priority(struct iowait *w)
+>    * @wait_head: the wait queue
+>    *
+>    * This function is called to insert an iowait struct into a
+> - * wait queue after a resource (eg, sdma decriptor or pio
+> + * wait queue after a resource (eg, sdma descriptor or pio
+>    * buffer) is run out.
+>    */
+>   static inline void iowait_queue(bool pkts_sent, struct iowait *w,
+> diff --git a/drivers/infiniband/hw/hfi1/verbs_txreq.h b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+> index bfa6e081cb56..d2d526c5a756 100644
+> --- a/drivers/infiniband/hw/hfi1/verbs_txreq.h
+> +++ b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+> @@ -91,7 +91,7 @@ static inline struct verbs_txreq *get_txreq(struct hfi1_ibdev *dev,
+>   	tx->mr = NULL;
+>   	tx->sde = priv->s_sde;
+>   	tx->psc = priv->s_sendcontext;
+> -	/* so that we can test if the sdma decriptors are there */
+> +	/* so that we can test if the sdma descriptors are there */
+>   	tx->txreq.num_desc = 0;
+>   	/* Set the header type */
+>   	tx->phdr.hdr.hdr_type = priv->hdr_type;
+> 
 
-On 6/9/20 12:03 AM, Leon Romanovsky wrote:
-> On Mon, Jun 08, 2020 at 07:46:15AM -0700, Divya Indi wrote:
->> [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
->>
->> Hi,
->>
->> Please review the patch that follows.
-> Please read Documentation/process/submitting-patches.rst
-> 14) The canonical patch format
->
-> You don't need an extra email "Review request" and Changelog should be
-> put inside the patch itself under "---" marker.
->
-> Thanks
+Thanks
+
+Acked-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
