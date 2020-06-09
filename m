@@ -2,137 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FC01F39FB
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 13:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344821F3B17
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 14:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgFILmb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jun 2020 07:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728116AbgFILm0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 07:42:26 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D85CC05BD1E
-        for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2020 04:42:26 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n141so20413912qke.2
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jun 2020 04:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T7UWzrg6IFJEbQM0ITdQA37PoFS/aYRgz3NK79JHalU=;
-        b=E6yuZULJji00wmYUNOpoJRPPlBydmBJ8ilBcxOYaUs8PJJBCfKVj+FDuXJc6V6XtqT
-         muLnU3+yOoAJ4/2kr7VPBE3ER5Xtuu2/ATqDEZBCJZBCwqRDiBtZ7kuSMu79tuD+Oc9p
-         uiIWEH+urBo1AvzvOSOMHpMM5cgzxdqw4CiagigLWFHlyidVjEudgHwLsLPhiWi/iZOq
-         MI2/pJKrtFIw+D+p9wIYrjwMkF1o7fJ/BZdlU+MUXGysfzOdQ4v8ckp84wlP84wyznVx
-         DRYBgoMbtj5v6Wqx6HXoXZPx+2rU9aiXS2Df0lS9+16kWSNnaGB1Lhv8AtHbvuWSxJHJ
-         W6Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T7UWzrg6IFJEbQM0ITdQA37PoFS/aYRgz3NK79JHalU=;
-        b=tyTIiY2Rcz05D5vC+ZRiKjuHCBzHqcf4bDZ4IP92yIEUPwdQqAFA7GQMHTqCGmPrcb
-         deN5znGvPNWkprmQ5jB1tFjTQCurJ0I23hdMpxIOMsPLo24pEI9DqoZyjEEAYbwypNB3
-         VaiYIhw0RBu/3br1eMszsG4y3lk8i+nALuXlSbm4753qnImUgewE2DVngxVDYGkoS1s9
-         Oaw0dfRL8+AAQ53WL2i7kHg3NJiqvcgpQgJyx6zVnCeSoKzQwU6SazFxnKOdwNLsF0op
-         eAjFnXqPwLx48LTgX4U1gJ/3T+N7arp4u4c/klTrYCyfAcHUUvLZjeyFeLBbMkD3ms++
-         45Bw==
-X-Gm-Message-State: AOAM5312Tvc3e+PuMTENSbYF/bbfM0C8aWRFUosgBr13uJK+fkI4sM1W
-        hMyp63Nkt3Guk7+cnLb41AE9ZA==
-X-Google-Smtp-Source: ABdhPJyNaZEgWzhGpmN5bi7JbIDO7IQmgJCu80QseIlucSkDVah1JamHGLN7GUC2vE3KVfe3yb33PA==
-X-Received: by 2002:a37:4b88:: with SMTP id y130mr26950313qka.80.1591702945695;
-        Tue, 09 Jun 2020 04:42:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id o3sm10496727qkj.97.2020.06.09.04.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 04:42:24 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jice8-004i2I-Bp; Tue, 09 Jun 2020 08:42:24 -0300
-Date:   Tue, 9 Jun 2020 08:42:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Maor Gottlieb <maorg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 11/11] RDMA/mlx5: Add support to get MR
- resource in RAW format
-Message-ID: <20200609114224.GT6578@ziepe.ca>
-References: <20200527135408.480878-12-leon@kernel.org>
- <20200529233121.GA3296@ziepe.ca>
- <20200531095414.GE66309@unreal>
- <20200601122646.GA4872@ziepe.ca>
- <20200602062118.GC56352@unreal>
- <20200602122702.GB6578@ziepe.ca>
- <20200602132303.GC55778@unreal>
- <703aa4a6-9c00-34f8-ce5e-5eb54180ed70@mellanox.com>
- <20200608114654.GS6578@ziepe.ca>
- <7840e2c7-8e9a-834d-b199-b1ebfa31fee3@mellanox.com>
+        id S1727831AbgFIMqV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jun 2020 08:46:21 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54132 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727005AbgFIMqU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 08:46:20 -0400
+Received: from Q.local (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 69A37291;
+        Tue,  9 Jun 2020 14:46:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1591706776;
+        bh=e3OIMaowMErPAcp8NkPKang2PFc5JcVtp2mzp1SGQas=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EOdFenfdoWi99kjLMHynj4J1fzXhK70x9pvPJKGRwe+u9s7ClkH6rqbqST2T0r5e5
+         rd2CXOXDlipTFhHia9lb8Zg7V4PjvCiyTFMXq9uTY1o2DVNqSQeMO1a0klpHPm0VND
+         3avMiOPNyTukk9rgiob/Q4qsq6cY/3qW7k1hOjx8=
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
+        netdev@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
+Subject: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
+Date:   Tue,  9 Jun 2020 13:45:53 +0100
+Message-Id: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7840e2c7-8e9a-834d-b199-b1ebfa31fee3@mellanox.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 11:27:08AM +0300, Maor Gottlieb wrote:
-> 
-> On 6/8/2020 2:46 PM, Jason Gunthorpe wrote:
-> > On Sun, Jun 07, 2020 at 11:47:11AM +0300, Maor Gottlieb wrote:
-> > > On 6/2/2020 4:23 PM, Leon Romanovsky wrote:
-> > > > On Tue, Jun 02, 2020 at 09:27:02AM -0300, Jason Gunthorpe wrote:
-> > > > > On Tue, Jun 02, 2020 at 09:21:18AM +0300, Leon Romanovsky wrote:
-> > > > > > On Mon, Jun 01, 2020 at 09:26:46AM -0300, Jason Gunthorpe wrote:
-> > > > > > > On Sun, May 31, 2020 at 12:54:14PM +0300, Leon Romanovsky wrote:
-> > > > > > > > On Fri, May 29, 2020 at 08:31:21PM -0300, Jason Gunthorpe wrote:
-> > > > > > > > > On Wed, May 27, 2020 at 04:54:08PM +0300, Leon Romanovsky wrote:
-> > > > > > > > > > From: Maor Gottlieb <maorg@mellanox.com>
-> > > > > > > > > > 
-> > > > > > > > > > Add support to get MR (mkey) resource dump in RAW format.
-> > > > > > > > > > 
-> > > > > > > > > > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> > > > > > > > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > > > > > > > > >    drivers/infiniband/hw/mlx5/restrack.c | 3 ++-
-> > > > > > > > > >    1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > > > > > > 
-> > > > > > > > > > diff --git a/drivers/infiniband/hw/mlx5/restrack.c b/drivers/infiniband/hw/mlx5/restrack.c
-> > > > > > > > > > index 9e1389b8dd9f..834886536127 100644
-> > > > > > > > > > +++ b/drivers/infiniband/hw/mlx5/restrack.c
-> > > > > > > > > > @@ -116,7 +116,8 @@ int mlx5_ib_fill_res_mr_entry(struct sk_buff *msg,
-> > > > > > > > > >    	struct nlattr *table_attr;
-> > > > > > > > > > 
-> > > > > > > > > >    	if (raw)
-> > > > > > > > > > -		return -EOPNOTSUPP;
-> > > > > > > > > > +		return fill_res_raw(msg, mr->dev, MLX5_SGMT_TYPE_PRM_QUERY_MKEY,
-> > > > > > > > > > +				    mlx5_mkey_to_idx(mr->mmkey.key));
-> > > > > > > > > None of the raw functions actually share any code with the non raw
-> > > > > > > > > part, why are the in the same function? In fact all the implemenations
-> > > > > > > > > just call some other function for raw.
-> > > > > > > > > 
-> > > > > > > > > To me this looks like they should should all be a new op
-> > > > > > > > > 'fill_raw_res_mr_entry' and drop the 'bool'
-> > > > > > > > I don't think that this is right approach, we already created ops per-objects
-> > > > > > > > o remove API multiplexing. Extra de-duplication will create too much ops
-> > > > > > > > without any real benefit.
-> > > > > > > If there is no code sharing then they should not be in the same
-> > > > > > > function at all. More ops is not really a problem.
-> > > > > > Logically they are the same, user asks to get object property, driver returns.
-> > > > > I'm starting to think it is also a mistake to have the same netlink op
-> > > > > and trigger it by an inbound attribute. Are there other examples of
-> > > > > that in netlink? Feels wrong
-> > > > I have no idea, don't see it in devlink.c
-> > > Jason, do you mean trigger the raw by inbound attribute? I don't see a
-> > > reason why not do that. Netlink attributes used for input and
-> > > output.
-> > What examples do you have where the input attribute completely changes
-> > the output format?
-> > 
-> > Jason
-> 
-> I don't have. Anyway I am planning to send v2 with new netlink ops.
+I wouldn't normally go through spelling fixes, but I caught sight of
+this typo twice, and then foolishly grepped the tree for it, and saw how
+pervasive it was.
 
-Well, I think you need to look at the netlink interface side too.
+so here I am ... fixing a typo globally... but with an addition in
+scripts/spelling.txt so it shouldn't re-appear ;-)
 
-Jason
+Cc: linux-arm-kernel@lists.infradead.org (moderated list:TI DAVINCI MACHINE SUPPORT)
+Cc: linux-kernel@vger.kernel.org (open list)
+Cc: linux-pm@vger.kernel.org (open list:DEVICE FREQUENCY EVENT (DEVFREQ-EVENT))
+Cc: linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM)
+Cc: dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Cc: linux-rdma@vger.kernel.org (open list:HFI1 DRIVER)
+Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
+Cc: linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
+Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
+Cc: linux-scsi@vger.kernel.org (open list:IBM Power Virtual FC Device Drivers)
+Cc: linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+Cc: linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
+Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND NET DRIVERS)
+Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+
+
+Kieran Bingham (17):
+  arch: arm: mach-davinci: Fix trivial spelling
+  drivers: infiniband: Fix trivial spelling
+  drivers: gpio: Fix trivial spelling
+  drivers: mtd: nand: raw: Fix trivial spelling
+  drivers: net: Fix trivial spelling
+  drivers: scsi: Fix trivial spelling
+  drivers: usb: Fix trivial spelling
+  drivers: gpu: drm: Fix trivial spelling
+  drivers: regulator: Fix trivial spelling
+  drivers: input: joystick: Fix trivial spelling
+  drivers: infiniband: Fix trivial spelling
+  drivers: devfreq: Fix trivial spelling
+  include: dynamic_debug.h: Fix trivial spelling
+  kernel: trace: Fix trivial spelling
+  mm: Fix trivial spelling
+  regulator: gpio: Fix trivial spelling
+  scripts/spelling.txt: Add descriptors correction
+
+ arch/arm/mach-davinci/board-da830-evm.c  | 2 +-
+ drivers/devfreq/devfreq-event.c          | 4 ++--
+ drivers/gpio/TODO                        | 2 +-
+ drivers/gpu/drm/drm_dp_helper.c          | 2 +-
+ drivers/infiniband/hw/hfi1/iowait.h      | 2 +-
+ drivers/infiniband/hw/hfi1/ipoib_tx.c    | 2 +-
+ drivers/infiniband/hw/hfi1/verbs_txreq.h | 2 +-
+ drivers/input/joystick/spaceball.c       | 2 +-
+ drivers/mtd/nand/raw/mxc_nand.c          | 2 +-
+ drivers/mtd/nand/raw/nand_bbt.c          | 2 +-
+ drivers/net/wan/lmc/lmc_main.c           | 2 +-
+ drivers/net/wireless/ath/ath10k/usb.c    | 2 +-
+ drivers/net/wireless/ath/ath6kl/usb.c    | 2 +-
+ drivers/net/wireless/cisco/airo.c        | 2 +-
+ drivers/regulator/fixed.c                | 2 +-
+ drivers/regulator/gpio-regulator.c       | 2 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c           | 2 +-
+ drivers/scsi/ibmvscsi/ibmvscsi.c         | 2 +-
+ drivers/scsi/qla2xxx/qla_inline.h        | 2 +-
+ drivers/scsi/qla2xxx/qla_iocb.c          | 6 +++---
+ drivers/usb/core/of.c                    | 2 +-
+ include/drm/drm_dp_helper.h              | 2 +-
+ include/linux/dynamic_debug.h            | 2 +-
+ kernel/trace/trace_events.c              | 2 +-
+ mm/balloon_compaction.c                  | 4 ++--
+ scripts/spelling.txt                     | 1 +
+ 26 files changed, 30 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
+
