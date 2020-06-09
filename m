@@ -2,72 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B441F3AF6
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 14:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE261F3B32
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 14:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgFIMqn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jun 2020 08:46:43 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54342 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729599AbgFIMql (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 08:46:41 -0400
-Received: from Q.local (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7AE0118DB;
-        Tue,  9 Jun 2020 14:46:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591706797;
-        bh=yUDqaHQhhkfOJfrOhGeYQXYgQdqAUyO9Sr1tp6uX60I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IBCBcaXwIMaM66OViixlYA8SyKxFiFbHL9Yri62GKuhsNOJMRe3zBQt9R3Yw2k9UH
-         fJbDUt4Fru0lRk8QWRxEw90O39W+HKkA8erw4s8brfvYT/+37xP8PiD26J+pdxPZkT
-         ZtEH/kPqZDllya2EHmEFhOWf6eXB5ZjMII/eppaU=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiri Kosina <trivial@kernel.org>,
-        linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 11/17] drivers: infiniband: Fix trivial spelling
-Date:   Tue,  9 Jun 2020 13:46:04 +0100
-Message-Id: <20200609124610.3445662-12-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+        id S1727920AbgFIMzh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jun 2020 08:55:37 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:56324 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726903AbgFIMzh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Jun 2020 08:55:37 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 4D1554C855
+        for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2020 12:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1591707334; x=
+        1593521735; bh=bu9LcH/TQyTsicUZ+Cd6YZb+Z6fz71eQ+9kt7bQ/CUw=; b=Y
+        wVoaZgjaRxBvdxWfmyBbbfU9hAcZlZo48YfgRZsit0s4U+Ck/XzrTTXTrETsXeZ/
+        P/sO46QLmqXV1Da/WZU9n1tnIZxJn7+/SqhktIWrfNhje0a47xV0majyARe6b+Lt
+        QVbFzKuyvaRLjU3cmnCuB5FDGR9+rS2FGiuOke/jsc=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Df4DdE-TvmLA for <linux-rdma@vger.kernel.org>;
+        Tue,  9 Jun 2020 15:55:34 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 51402412C9
+        for <linux-rdma@vger.kernel.org>; Tue,  9 Jun 2020 15:55:34 +0300 (MSK)
+Received: from localhost.localdomain (10.199.2.62) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 9 Jun
+ 2020 15:55:33 +0300
+From:   <m.malygin@yadro.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <s.kojushev@yadro.com>, <linux@yadro.com>,
+        Mikhail Malygin <m.malygin@yadro.com>
+Subject: [PATCH] rdma_rxe: Prevent access to wr->next ptr afrer wr is posted to send queue
+Date:   Tue, 9 Jun 2020 15:54:12 +0300
+Message-ID: <20200609125411.13268-1-m.malygin@yadro.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.2.62]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The word 'descriptor' is misspelled throughout the tree.
+From: Mikhail Malygin <m.malygin@yadro.com>
 
-Fix it up accordingly:
-    decriptors -> descriptors
+rxe_post_send_kernel() iterates over linked list of wr's, until the wr->next ptr is NULL.
+However it we've got an interrupt after last wr is posted, control may be returned
+to the code after send completion callback is executed and wr memory is freed.
+As a result, wr->next pointer may contain incorrect value leading to panic.
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Signed-off-by: Mikhail Malygin <m.malygin@yadro.com>
+Signed-off-by: Sergey Kojushev <s.kojushev@yadro.com>
 ---
- drivers/infiniband/hw/hfi1/ipoib_tx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 883cb9d48022..175290c56db9 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -364,7 +364,7 @@ static struct ipoib_txreq *hfi1_ipoib_send_dma_common(struct net_device *dev,
- 	if (unlikely(!tx))
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index b8a22af724e8..a539b11b4f9b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -684,6 +684,7 @@ static int rxe_post_send_kernel(struct rxe_qp *qp, const struct ib_send_wr *wr,
+ 	unsigned int mask;
+ 	unsigned int length = 0;
+ 	int i;
++	struct ib_send_wr *next;
  
--	/* so that we can test if the sdma decriptors are there */
-+	/* so that we can test if the sdma descriptors are there */
- 	tx->txreq.num_desc = 0;
- 	tx->priv = priv;
- 	tx->txq = txp->txq;
+ 	while (wr) {
+ 		mask = wr_opcode_mask(wr->opcode, qp);
+@@ -700,6 +701,8 @@ static int rxe_post_send_kernel(struct rxe_qp *qp, const struct ib_send_wr *wr,
+ 			break;
+ 		}
+ 
++		next = READ_ONCE(wr->next);
++
+ 		length = 0;
+ 		for (i = 0; i < wr->num_sge; i++)
+ 			length += wr->sg_list[i].length;
+@@ -710,7 +713,7 @@ static int rxe_post_send_kernel(struct rxe_qp *qp, const struct ib_send_wr *wr,
+ 			*bad_wr = wr;
+ 			break;
+ 		}
+-		wr = wr->next;
++		wr = next;
+ 	}
+ 
+ 	rxe_run_task(&qp->req.task, 1);
 -- 
-2.25.1
+2.21.0
 
