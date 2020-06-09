@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344821F3B17
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B921F3B12
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jun 2020 14:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgFIMqV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Jun 2020 08:46:21 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54132 "EHLO
+        id S1728229AbgFIMr4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Jun 2020 08:47:56 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54176 "EHLO
         perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgFIMqU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 08:46:20 -0400
+        with ESMTP id S1727928AbgFIMqX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Jun 2020 08:46:23 -0400
 Received: from Q.local (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 69A37291;
-        Tue,  9 Jun 2020 14:46:15 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 787005A7;
+        Tue,  9 Jun 2020 14:46:17 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591706776;
-        bh=e3OIMaowMErPAcp8NkPKang2PFc5JcVtp2mzp1SGQas=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EOdFenfdoWi99kjLMHynj4J1fzXhK70x9pvPJKGRwe+u9s7ClkH6rqbqST2T0r5e5
-         rd2CXOXDlipTFhHia9lb8Zg7V4PjvCiyTFMXq9uTY1o2DVNqSQeMO1a0klpHPm0VND
-         3avMiOPNyTukk9rgiob/Q4qsq6cY/3qW7k1hOjx8=
+        s=mail; t=1591706777;
+        bh=F3Ya/6PQv1SlRbTx4KyzibdoKoXxwCzeytd+fhCKwkY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SDySORNGnG1mum/ZNj+SeAgtP5e5qLE7lerIUS6G8lIW0rlzBn5tg0A04g0h50g08
+         VgXqzuAxVGnCEwaxszxwGexbdxm5jEDbH64LPNeWS8UZkp/3JS1M/kXr4VKNHm1S4b
+         85JaNNvIoSy80En3mX8pTLj77i5VWuUqfTYYIwR0=
 From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
 Cc:     linux-renesas-soc@vger.kernel.org,
         Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
-        netdev@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
-Subject: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
-Date:   Tue,  9 Jun 2020 13:45:53 +0100
-Message-Id: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jiri Kosina <trivial@kernel.org>,
+        linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 02/17] drivers: infiniband: Fix trivial spelling
+Date:   Tue,  9 Jun 2020 13:45:55 +0100
+Message-Id: <20200609124610.3445662-3-kieran.bingham+renesas@ideasonboard.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
+References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -44,78 +45,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I wouldn't normally go through spelling fixes, but I caught sight of
-this typo twice, and then foolishly grepped the tree for it, and saw how
-pervasive it was.
+The word 'descriptor' is misspelled throughout the tree.
 
-so here I am ... fixing a typo globally... but with an addition in
-scripts/spelling.txt so it shouldn't re-appear ;-)
+Fix it up accordingly:
+    decriptors -> descriptors
 
-Cc: linux-arm-kernel@lists.infradead.org (moderated list:TI DAVINCI MACHINE SUPPORT)
-Cc: linux-kernel@vger.kernel.org (open list)
-Cc: linux-pm@vger.kernel.org (open list:DEVICE FREQUENCY EVENT (DEVFREQ-EVENT))
-Cc: linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM)
-Cc: dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-Cc: linux-rdma@vger.kernel.org (open list:HFI1 DRIVER)
-Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
-Cc: linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
-Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
-Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
-Cc: linux-scsi@vger.kernel.org (open list:IBM Power Virtual FC Device Drivers)
-Cc: linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
-Cc: linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
-Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND NET DRIVERS)
-Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
-
-
-Kieran Bingham (17):
-  arch: arm: mach-davinci: Fix trivial spelling
-  drivers: infiniband: Fix trivial spelling
-  drivers: gpio: Fix trivial spelling
-  drivers: mtd: nand: raw: Fix trivial spelling
-  drivers: net: Fix trivial spelling
-  drivers: scsi: Fix trivial spelling
-  drivers: usb: Fix trivial spelling
-  drivers: gpu: drm: Fix trivial spelling
-  drivers: regulator: Fix trivial spelling
-  drivers: input: joystick: Fix trivial spelling
-  drivers: infiniband: Fix trivial spelling
-  drivers: devfreq: Fix trivial spelling
-  include: dynamic_debug.h: Fix trivial spelling
-  kernel: trace: Fix trivial spelling
-  mm: Fix trivial spelling
-  regulator: gpio: Fix trivial spelling
-  scripts/spelling.txt: Add descriptors correction
-
- arch/arm/mach-davinci/board-da830-evm.c  | 2 +-
- drivers/devfreq/devfreq-event.c          | 4 ++--
- drivers/gpio/TODO                        | 2 +-
- drivers/gpu/drm/drm_dp_helper.c          | 2 +-
+Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+---
  drivers/infiniband/hw/hfi1/iowait.h      | 2 +-
- drivers/infiniband/hw/hfi1/ipoib_tx.c    | 2 +-
  drivers/infiniband/hw/hfi1/verbs_txreq.h | 2 +-
- drivers/input/joystick/spaceball.c       | 2 +-
- drivers/mtd/nand/raw/mxc_nand.c          | 2 +-
- drivers/mtd/nand/raw/nand_bbt.c          | 2 +-
- drivers/net/wan/lmc/lmc_main.c           | 2 +-
- drivers/net/wireless/ath/ath10k/usb.c    | 2 +-
- drivers/net/wireless/ath/ath6kl/usb.c    | 2 +-
- drivers/net/wireless/cisco/airo.c        | 2 +-
- drivers/regulator/fixed.c                | 2 +-
- drivers/regulator/gpio-regulator.c       | 2 +-
- drivers/scsi/ibmvscsi/ibmvfc.c           | 2 +-
- drivers/scsi/ibmvscsi/ibmvscsi.c         | 2 +-
- drivers/scsi/qla2xxx/qla_inline.h        | 2 +-
- drivers/scsi/qla2xxx/qla_iocb.c          | 6 +++---
- drivers/usb/core/of.c                    | 2 +-
- include/drm/drm_dp_helper.h              | 2 +-
- include/linux/dynamic_debug.h            | 2 +-
- kernel/trace/trace_events.c              | 2 +-
- mm/balloon_compaction.c                  | 4 ++--
- scripts/spelling.txt                     | 1 +
- 26 files changed, 30 insertions(+), 29 deletions(-)
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/infiniband/hw/hfi1/iowait.h b/drivers/infiniband/hw/hfi1/iowait.h
+index 07847cb72169..d580aa17ae37 100644
+--- a/drivers/infiniband/hw/hfi1/iowait.h
++++ b/drivers/infiniband/hw/hfi1/iowait.h
+@@ -399,7 +399,7 @@ static inline void iowait_get_priority(struct iowait *w)
+  * @wait_head: the wait queue
+  *
+  * This function is called to insert an iowait struct into a
+- * wait queue after a resource (eg, sdma decriptor or pio
++ * wait queue after a resource (eg, sdma descriptor or pio
+  * buffer) is run out.
+  */
+ static inline void iowait_queue(bool pkts_sent, struct iowait *w,
+diff --git a/drivers/infiniband/hw/hfi1/verbs_txreq.h b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+index bfa6e081cb56..d2d526c5a756 100644
+--- a/drivers/infiniband/hw/hfi1/verbs_txreq.h
++++ b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+@@ -91,7 +91,7 @@ static inline struct verbs_txreq *get_txreq(struct hfi1_ibdev *dev,
+ 	tx->mr = NULL;
+ 	tx->sde = priv->s_sde;
+ 	tx->psc = priv->s_sendcontext;
+-	/* so that we can test if the sdma decriptors are there */
++	/* so that we can test if the sdma descriptors are there */
+ 	tx->txreq.num_desc = 0;
+ 	/* Set the header type */
+ 	tx->phdr.hdr.hdr_type = priv->hdr_type;
 -- 
 2.25.1
 
