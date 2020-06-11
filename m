@@ -2,144 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E9A1F63AF
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2020 10:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6C41F63E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jun 2020 10:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgFKIeg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Jun 2020 04:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S1726945AbgFKIoj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Jun 2020 04:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgFKIeg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jun 2020 04:34:36 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A000C08C5C3
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jun 2020 01:34:34 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x6so5172915wrm.13
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jun 2020 01:34:34 -0700 (PDT)
+        with ESMTP id S1726748AbgFKIoj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Jun 2020 04:44:39 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F640C03E96F;
+        Thu, 11 Jun 2020 01:44:38 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l12so5587440ejn.10;
+        Thu, 11 Jun 2020 01:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QepdUMREFHwlEXMSFJDNAoF8iHTQk6RVQGlxwgtSrqY=;
-        b=E74LG/P+ZUE+YX56Cn6Zjyn3Qy68LzAK09BYAfg4YVk4oZ+KoKLm9RShaZSnfhXsyb
-         lY/VAxAlqoD8wTaWeNQg/oJboc+vBicFQYrjFpdGQgCMIStdwNU8BV2ZJqMlutdLuJxA
-         smQ33DorgG243Y/dKZ/bnO59viWQm2qRYJC1o=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dyB5ymhOUYfsgOuYaL4XbtnTAmjSGqLiWLGp+voTc2A=;
+        b=Sa24oVhm/8B5xet7EPJ4/MRwMG9pCgrKFGMqAe3SONnDQUnX4heXuYfBy5Ixt58MP5
+         xjjCuE9m7IUwOAsEmYdy8mbACsq2ex8qXKLfczqSxYCfwJbSI+6PJBqh8vUW9xg74HL4
+         8+ydyRFDyYemLFmoTytWTRwnnavoxsUZB6EtJIvtRkxgAoeIWTVXRWWnjygpyEWRdzYA
+         VRtw3i2qGtGG92v9Ovzc6livvwR7v46V6KBGa9jwd7GEuXFpzXJTg+jT04dsEwCaoR7t
+         n3QN951JwnOBhY4ynwkHV7DILiUf0gpnlpRa0g+KSCpO9fScPk4MODUv6SwFnIJkVAVT
+         eEjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=QepdUMREFHwlEXMSFJDNAoF8iHTQk6RVQGlxwgtSrqY=;
-        b=YBIlULZbIrvZZyfPGknHyV9Gs2TaP3UKJ/voNjW7NXipyU7urq1vnF6J4uVm5dM1wc
-         JKQltpkUMoAtpqR7cZ+8l9ILJTeEh7wqTweatMglK4OjrbWSa+jZVjrGfwFTvhYj7g27
-         5jWpkpkaQNDGa43VRC/FZCzwXMutOe5qTUpchciL/Kc13jHP8+RQbL8AQM3pw/AigWBa
-         7jq33q32hKZ92m+KjzBbObmqdC6mCsSR4V7X2GbZZruzXiaY2ecnBjlW84J016Sn2uVG
-         khy4fIg320VP2v+uy26eetOg26uJ2Xv7e1YKYKUBFz7aE8/dIo7uTBrMZBLSogdoDg0K
-         iVgQ==
-X-Gm-Message-State: AOAM530wi3xi7ZiPBn2hWMzuyqq0VaF1jPHQVYFqR9899O6mcUvuAikm
-        kxX9WsM0mu/dZDr+NSpY6tOgiw==
-X-Google-Smtp-Source: ABdhPJyPA+yFpnitoMF+MT8lLFomHpWx5gnHcG6eF5i3QAznWQkNqQBZVRnRMVL64cHRAoNHAdiHsw==
-X-Received: by 2002:a5d:42cd:: with SMTP id t13mr8054435wrr.355.1591864473075;
-        Thu, 11 Jun 2020 01:34:33 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b14sm2955283wmj.47.2020.06.11.01.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 01:34:32 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 10:34:30 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dyB5ymhOUYfsgOuYaL4XbtnTAmjSGqLiWLGp+voTc2A=;
+        b=GtijtW8VoHKp9EaBJ9+eiSf3x7sryTme24zo8iLNu7FZUK15Rfq32sNJT/uXcXZWXf
+         O8DB/N0Hrx+9cDYC8hEYKa/0G8AhdCAXTQ21qP2lbHVyqNKUVivNzlDa97E7w4QUzuCi
+         rJYCvsYmgQ8OA5OnnmDwwq/Wh56WZA+0AZ6eeQsGotjq13d4CL3e91YxjCqe1iw8GzUs
+         U3+CPC88vujg5gN2IptrGQyMCwdEyjCQnU9hYEZ9HjgHJpndti4p39i4c5fCDi17fAUO
+         4xMl5Bto1FkbaTKEMGcPRg5zsQm7AHg8FKxctIlUBVoZRUR45tHZK1LFhV2nRLIXsvnN
+         VoPg==
+X-Gm-Message-State: AOAM530TsI8xQw+i1KQMxxHELOszOgwxk3bIAvuHSPJe4WJgMhiG3Z8V
+        s4IraL8fqLTmPYDGs59J080GNuaN7LMi4iO0qPo=
+X-Google-Smtp-Source: ABdhPJyyvbmpR5itDPokp01aqVx37qiEbG+AaFyU2VF1ZF4GEMP/3/UQqu5mG6cuNL9hhOQyiLsMvAEgTVF/k/3e5Ck=
+X-Received: by 2002:a17:906:c9d6:: with SMTP id hk22mr7161397ejb.101.1591865077473;
+ Thu, 11 Jun 2020 01:44:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-4-daniel.vetter@ffwll.ch> <159186243606.1506.4437341616828968890@build.alporthouse.com>
+In-Reply-To: <159186243606.1506.4437341616828968890@build.alporthouse.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Thu, 11 Jun 2020 18:44:26 +1000
+Message-ID: <CAPM=9ty6r1LuXAH_rf98GH0R9yN3x8xzKPjZG3QyvokpQBR-Hg@mail.gmail.com>
+Subject: Re: [PATCH 03/18] dma-fence: basic lockdep annotations
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         linux-rdma@vger.kernel.org,
         Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         Thomas Hellstrom <thomas.hellstrom@intel.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200611083430.GD20149@phenom.ffwll.local>
-Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 09:30:12AM +0200, Thomas Hellström (Intel) wrote:
-> 
-> On 6/4/20 10:12 AM, Daniel Vetter wrote:
-> > Two in one go:
-> > - it is allowed to call dma_fence_wait() while holding a
-> >    dma_resv_lock(). This is fundamental to how eviction works with ttm,
-> >    so required.
-> > 
-> > - it is allowed to call dma_fence_wait() from memory reclaim contexts,
-> >    specifically from shrinker callbacks (which i915 does), and from mmu
-> >    notifier callbacks (which amdgpu does, and which i915 sometimes also
-> >    does, and probably always should, but that's kinda a debate). Also
-> >    for stuff like HMM we really need to be able to do this, or things
-> >    get real dicey.
-> > 
-> > Consequence is that any critical path necessary to get to a
-> > dma_fence_signal for a fence must never a) call dma_resv_lock nor b)
-> > allocate memory with GFP_KERNEL. Also by implication of
-> > dma_resv_lock(), no userspace faulting allowed. That's some supremely
-> > obnoxious limitations, which is why we need to sprinkle the right
-> > annotations to all relevant paths.
-> > 
-> > The one big locking context we're leaving out here is mmu notifiers,
-> > added in
-> > 
-> > commit 23b68395c7c78a764e8963fc15a7cfd318bf187f
-> > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Date:   Mon Aug 26 22:14:21 2019 +0200
-> > 
-> >      mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end
-> > 
-> > that one covers a lot of other callsites, and it's also allowed to
-> > wait on dma-fences from mmu notifiers. But there's no ready-made
-> > functions exposed to prime this, so I've left it out for now.
-> > 
-> > v2: Also track against mmu notifier context.
-> > 
-> > v3: kerneldoc to spec the cross-driver contract. Note that currently
-> > i915 throws in a hard-coded 10s timeout on foreign fences (not sure
-> > why that was done, but it's there), which is why that rule is worded
-> > with SHOULD instead of MUST.
-> > 
-> > Also some of the mmu_notifier/shrinker rules might surprise SoC
-> > drivers, I haven't fully audited them all. Which is infeasible anyway,
-> > we'll need to run them with lockdep and dma-fence annotations and see
-> > what goes boom.
-> > 
-> > v4: A spelling fix from Mika
-> > 
+On Thu, 11 Jun 2020 at 18:01, Chris Wilson <chris@chris-wilson.co.uk> wrote=
+:
+>
+> Quoting Daniel Vetter (2020-06-04 09:12:09)
+> > Design is similar to the lockdep annotations for workers, but with
+> > some twists:
+> >
+> > - We use a read-lock for the execution/worker/completion side, so that
+> >   this explicit annotation can be more liberally sprinkled around.
+> >   With read locks lockdep isn't going to complain if the read-side
+> >   isn't nested the same way under all circumstances, so ABBA deadlocks
+> >   are ok. Which they are, since this is an annotation only.
+> >
+> > - We're using non-recursive lockdep read lock mode, since in recursive
+> >   read lock mode lockdep does not catch read side hazards. And we
+> >   _very_ much want read side hazards to be caught. For full details of
+> >   this limitation see
+> >
+> >   commit e91498589746065e3ae95d9a00b068e525eec34f
+> >   Author: Peter Zijlstra <peterz@infradead.org>
+> >   Date:   Wed Aug 23 13:13:11 2017 +0200
+> >
+> >       locking/lockdep/selftests: Add mixed read-write ABBA tests
+> >
+> > - To allow nesting of the read-side explicit annotations we explicitly
+> >   keep track of the nesting. lock_is_held() allows us to do that.
+> >
+> > - The wait-side annotation is a write lock, and entirely done within
+> >   dma_fence_wait() for everyone by default.
+> >
+> > - To be able to freely annotate helper functions I want to make it ok
+> >   to call dma_fence_begin/end_signalling from soft/hardirq context.
+> >   First attempt was using the hardirq locking context for the write
+> >   side in lockdep, but this forces all normal spinlocks nested within
+> >   dma_fence_begin/end_signalling to be spinlocks. That bollocks.
+> >
+> >   The approach now is to simple check in_atomic(), and for these cases
+> >   entirely rely on the might_sleep() check in dma_fence_wait(). That
+> >   will catch any wrong nesting against spinlocks from soft/hardirq
+> >   contexts.
+> >
+> > The idea here is that every code path that's critical for eventually
+> > signalling a dma_fence should be annotated with
+> > dma_fence_begin/end_signalling. The annotation ideally starts right
+> > after a dma_fence is published (added to a dma_resv, exposed as a
+> > sync_file fd, attached to a drm_syncobj fd, or anything else that
+> > makes the dma_fence visible to other kernel threads), up to and
+> > including the dma_fence_wait(). Examples are irq handlers, the
+> > scheduler rt threads, the tail of execbuf (after the corresponding
+> > fences are visible), any workers that end up signalling dma_fences and
+> > really anything else. Not annotated should be code paths that only
+> > complete fences opportunistically as the gpu progresses, like e.g.
+> > shrinker/eviction code.
+> >
+> > The main class of deadlocks this is supposed to catch are:
+> >
+> > Thread A:
+> >
+> >         mutex_lock(A);
+> >         mutex_unlock(A);
+> >
+> >         dma_fence_signal();
+> >
+> > Thread B:
+> >
+> >         mutex_lock(A);
+> >         dma_fence_wait();
+> >         mutex_unlock(A);
+> >
+> > Thread B is blocked on A signalling the fence, but A never gets around
+> > to that because it cannot acquire the lock A.
+> >
+> > Note that dma_fence_wait() is allowed to be nested within
+> > dma_fence_begin/end_signalling sections. To allow this to happen the
+> > read lock needs to be upgraded to a write lock, which means that any
+> > other lock is acquired between the dma_fence_begin_signalling() call an=
+d
+> > the call to dma_fence_wait(), and still held, this will result in an
+> > immediate lockdep complaint. The only other option would be to not
+> > annotate such calls, defeating the point. Therefore these annotations
+> > cannot be sprinkled over the code entirely mindless to avoid false
+> > positives.
+> >
+> > v2: handle soft/hardirq ctx better against write side and dont forget
+> > EXPORT_SYMBOL, drivers can't use this otherwise.
+> >
+> > v3: Kerneldoc.
+> >
+> > v4: Some spelling fixes from Mika
+> >
 > > Cc: Mika Kuoppala <mika.kuoppala@intel.com>
 > > Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
 > > Cc: linux-media@vger.kernel.org
@@ -149,55 +172,17 @@ On Thu, Jun 11, 2020 at 09:30:12AM +0200, Thomas Hellström (Intel) wrote:
 > > Cc: intel-gfx@lists.freedesktop.org
 > > Cc: Chris Wilson <chris@chris-wilson.co.uk>
 > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Christian König <christian.koenig@amd.com>
+> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
 > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >   Documentation/driver-api/dma-buf.rst |  6 ++++
-> >   drivers/dma-buf/dma-fence.c          | 41 ++++++++++++++++++++++++++++
-> >   drivers/dma-buf/dma-resv.c           |  4 +++
-> >   include/linux/dma-fence.h            |  1 +
-> >   4 files changed, 52 insertions(+)
-> 
-> I still have my doubts about allowing fence waiting from within shrinkers.
-> IMO ideally they should use a trywait approach, in order to allow memory
-> allocation during command submission for drivers that
-> publish fences before command submission. (Since early reservation object
-> release requires that).
+>
+> Introducing a global lockmap that cannot capture the rules correctly,
 
-Yeah it is a bit annoying, e.g. for drm/scheduler I think we'll end up
-with a mempool to make sure it can handle it's allocations.
+Can you document the rules all drivers should be following then,
+because from here it looks to get refactored every version of i915,
+and it would be nice if we could all aim for the same set of things
+roughly. We've already had enough problems with amdgpu vs i915 vs
+everyone else with fences, if this stops that in the future then I'd
+rather we have that than just some unwritten rules per driver and
+untestable.
 
-> But since drivers are already waiting from within shrinkers and I take your
-> word for HMM requiring this,
-
-Yeah the big trouble is HMM and mmu notifiers. That's the really awkward
-one, the shrinker one is a lot less established.
-
-I do wonder whether the mmu notifier constraint should only be set when
-mmu notifiers are enabled, since on a bunch of arm-soc gpu drivers that
-stuff just doesn't matter. But I expect that sooner or later these arm
-gpus will show up in bigger arm cores, where you might want to have kvm
-and maybe device virtualization and stuff, and then you need mmu
-notifiers.
-
-Plus having a very clear and consistent cross-driver api contract is imo
-better than leaving this up to drivers and then having incompatible
-assumptions.
-
-I've pinged a bunch of armsoc gpu driver people and ask them how much this
-hurts, so that we have a clear answer. On x86 I don't think we have much
-of a choice on this, with userptr in amd and i915 and hmm work in nouveau
-(but nouveau I think doesn't use dma_fence in there). I think it'll take
-us a while to really bottom out on this specific question here.
--Daniel
-
-
-> 
-> Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
-> 
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Dave.
