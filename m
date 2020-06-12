@@ -2,154 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9F11F7DB7
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 21:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6D21F7DD4
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 21:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgFLTl2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jun 2020 15:41:28 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41762 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgFLTl1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jun 2020 15:41:27 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CJdrGj017722;
-        Fri, 12 Jun 2020 19:41:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- message-id : date : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=SCP5ZVqb8S94hNxCjiZ28A5hvOtl6mmUnaIVoAgXd7g=;
- b=UGnhLo4qk+io9M6/kdi8S2bSBLXFLV1zjOlWVVRvHlSBhNKOYLaf9yxttrnM1TwAgo4h
- ec1BQb8att9rCqAt0uASW8w+CyKg8oHKU0XL/bdem90g1+3WDVpVefHdOcvATBBJ/Cw1
- NHZX0SaYBtZ2/d4+0/Lc6dN7lxRRChko87RxQWiPeDqaeZmJCnRt8gf+xXCk6lGIlSFF
- fFPobq6yRKEwJTXnAvitm3k1hpJGEUjaggHvNKRCOvwUmWtlNEhInuRXmbojtuSEBljR
- Li8MghxIIYKHEshY02fS0Qc/tuDWDkYiQH15hEBkExJV/CkKrglfxkkPEuirvtaWHSNe 3g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31g3sneh8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 19:41:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CJeQ2V029572;
-        Fri, 12 Jun 2020 19:41:20 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 31mg2q810u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 19:41:20 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05CJfICW009003;
-        Fri, 12 Jun 2020 19:41:18 GMT
-Received: from ib0.gerd.us.oracle.com (/10.211.52.79)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Jun 2020 12:41:17 -0700
-From:   Gerd Rausch <gerd.rausch@oracle.com>
-Subject: [PATCH 2.6.26-4.14] IB/ipoib: Arm "send_cq" to process completions in
- due time
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <alexander.levin@microsoft.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1726329AbgFLTyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jun 2020 15:54:39 -0400
+Received: from mta-p6.oit.umn.edu ([134.84.196.206]:41436 "EHLO
+        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgFLTyi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jun 2020 15:54:38 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49kBJY3gV5z9xN6l
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 19:54:37 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7pb2iZgS1kln for <linux-rdma@vger.kernel.org>;
+        Fri, 12 Jun 2020 14:54:37 -0500 (CDT)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49kBJY25dZz9xN6V
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 14:54:37 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49kBJY25dZz9xN6V
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49kBJY25dZz9xN6V
+Received: by mail-io1-f72.google.com with SMTP id c5so6782851iok.18
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 12:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KVNEopejGTcquUzpholqEMyuQDrUJhXxHJx5sPEa/is=;
+        b=RGOBe2C5HrCbXKC28ByOVDr8j1J4cDTQVN3GtugZW/o2E/sTrXC2FAn2Lk8+CtNMuZ
+         ha15zgGasOcZbIvJvOozIp7UgqDsRSaVG1wzN/BQfypCHL9W1pVzKHTN8to0+GkuFCnQ
+         TCFD5V9BozUfF+LzG4SmyF2wHJIr0BLzsb9Reorp5i7wX2WCKGyWbYJz14S0B/pD5tOH
+         Ax7Mpy7cgAmw3Tt2JSk9SIPVmXUZCHkJYAB3BBpkUB9nV16E81pyiEBogtswlNu3jVLU
+         oTuDp9vhjjfYUrFi5/YLhhFmSOJJY6AwqUEK+GO9UGLHd5GZgkneSsmtZAD5d4xfJybK
+         UjKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KVNEopejGTcquUzpholqEMyuQDrUJhXxHJx5sPEa/is=;
+        b=S/PzpmbRdDwwd0+fwzwPa+zzmprOEBtdOw/QHtavoacqq9fCTPmEsUxYL39uZEN174
+         A47qWKC9aebEt51/r7lSq75eeizwZ0S1ypgYa8kmT0VhHtWCQ6ijECoHERbSsuHEbSC0
+         ttHfdNObWlv6arjTDEghGSPO7njnguOBdkim6DiSGim2fPrraGBjgw30cXHkFSt4KUiW
+         dHPmcJBTUotmO5eUdZDEGRF+QdQNEOJ/xHvgPH9nmaTARG9yMSFjuioIKncKkWYEGqmG
+         HhGlSQ3GcfaH+AQj57iVGOehDIECbFx23o6+m+xLGC1yyy6+d/Cvci8yybIJuWwkY7Jb
+         0X1A==
+X-Gm-Message-State: AOAM5314P71gHJUVnmFQrykAg05mgNNcTokiMmrVesBpdaP03/FS6LpI
+        rXA/47EyWeWsHkHIYfIg4qyFlxzm3btVzPLf4C9Tr1BiLAjdmB8qwV2iby/IRWdknxfUbt4K1Az
+        yYcnNhVjbsEjnHYfilJEcmNN5Jw==
+X-Received: by 2002:a05:6e02:6c9:: with SMTP id p9mr13783914ils.185.1591991676901;
+        Fri, 12 Jun 2020 12:54:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJv1BxyuEFAefrdvOCv2COicwn4idUnD3ytLomV6kVXKtkyonUXgIPxGUe+T5+I9OVlVjvzA==
+X-Received: by 2002:a05:6e02:6c9:: with SMTP id p9mr13783908ils.185.1591991676748;
+        Fri, 12 Jun 2020 12:54:36 -0700 (PDT)
+Received: from piston-t1.hsd1.mn.comcast.net ([2601:445:4380:5b90:79cf:2597:a8f1:4c97])
+        by smtp.googlemail.com with ESMTPSA id c1sm3479728ilh.35.2020.06.12.12.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 12:54:36 -0700 (PDT)
+From:   Aditya Pakki <pakki001@umn.edu>
+To:     pakki001@umn.edu
+Cc:     kjlu@umn.edu, wu000273@umn.edu,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Hal Rosenstock <hal.rosenstock@gmail.com>,
-        linux-rdma@vger.kernel.org
-Message-ID: <322533b0-17de-b6b2-7da4-f99c7dfce3a8@oracle.com>
-Date:   Fri, 12 Jun 2020 12:41:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/rvt: Fix potential memory leak caused by rvt_alloc_rq
+Date:   Fri, 12 Jun 2020 14:54:26 -0500
+Message-Id: <20200612195426.54133-1-pakki001@umn.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006120142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006120142
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This issue appears to only exist in Linux versions
-2.6.26 through 4.14 inclusively:
+In case of failure of alloc_ud_wq_attr, the memory allocated by
+rvt_alloc_rq() is not freed. The patch fixes this issue by
+calling rvt_free_rq().
 
-With the introduction of commit
-f56bcd8013566 ("IPoIB: Use separate CQ for UD send completions")
-
-work completions are only processed once there are
-more than 17 outstanding TX work requests.
-
-Unfortunately, that also delays the processing of the
-completion handler and holds on to references
-held by the "skb" since "dev_kfree_skb_any"
-won't be called for a very long time.
-
-E.g. we've observed "nf_conntrack_cleanup_net_list" spin
-     around for hours until "net->ct.count" goes down to zero
-     on a sufficiently idle interface.
-
-This fix arms the TX CQ after those "poll_tx" loops,
-in order for "ipoib_send_comp_handler" to do its thing:
-
-While it's obvious that processing completions one-by-one
-is more costly than doing so in bulk,
-holding on to "skb" resources for a potentially unlimited
-amount of time appears to be a less favorable trade-off.
-
-This issue appears to no longer exist in Linux-4.15
-and younger, because the following commit does
-call "ib_req_notify_cq" on "send_cq":
-8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
-
-Fixes: f56bcd8013566 ("IPoIB: Use separate CQ for UD send completions")
-
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_ib.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/rdmavt/qp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-index 18f732aa15101..b26b31b9e455e 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-@@ -491,8 +491,13 @@ static void drain_tx_cq(struct net_device *dev)
- 	struct ipoib_dev_priv *priv = netdev_priv(dev);
- 
- 	netif_tx_lock(dev);
--	while (poll_tx(priv))
--		; /* nothing */
-+
-+	do {
-+		while (poll_tx(priv))
-+			; /* nothing */
-+	} while (ib_req_notify_cq(priv->send_cq,
-+				  IB_CQ_NEXT_COMP |
-+				  IB_CQ_REPORT_MISSED_EVENTS) > 0);
- 
- 	if (netif_queue_stopped(dev))
- 		mod_timer(&priv->poll_timer, jiffies + 1);
-@@ -628,9 +633,14 @@ void ipoib_send(struct net_device *dev, struct sk_buff *skb,
- 		++priv->tx_head;
- 	}
- 
--	if (unlikely(priv->tx_outstanding > MAX_SEND_CQE))
--		while (poll_tx(priv))
--			; /* nothing */
-+	if (unlikely(priv->tx_outstanding > MAX_SEND_CQE)) {
-+		do {
-+			while (poll_tx(priv))
-+				; /* nothing */
-+		} while (ib_req_notify_cq(priv->send_cq,
-+					  IB_CQ_NEXT_COMP |
-+					  IB_CQ_REPORT_MISSED_EVENTS) > 0);
-+	}
- }
- 
- static void __ipoib_reap_ah(struct net_device *dev)
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 511b72809e14..17ea7da73bf9 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1203,6 +1203,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 			qp->s_flags = RVT_S_SIGNAL_REQ_WR;
+ 		err = alloc_ud_wq_attr(qp, rdi->dparms.node);
+ 		if (err) {
++			rvt_free_rq(&qp->r_rq);
+ 			ret = (ERR_PTR(err));
+ 			goto bail_driver_priv;
+ 		}
 -- 
-2.24.1
+2.25.1
 
