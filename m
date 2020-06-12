@@ -2,109 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7AD1F7B2D
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 17:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9F11F7DB7
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 21:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgFLP4z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 12 Jun 2020 11:56:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10972 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726089AbgFLP4z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:56:55 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CF2PYs117703
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 11:56:54 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.113])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31mb8mbcep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 11:56:54 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 12 Jun 2020 15:56:54 -0000
-Received: from us1b3-smtp03.a3dr.sjc01.isc4sb.com (10.122.7.173)
-        by smtp.notes.na.collabserv.com (10.122.47.56) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 12 Jun 2020 15:56:49 -0000
-Received: from us1b3-mail163.a3dr.sjc03.isc4sb.com ([10.160.174.69])
-          by us1b3-smtp03.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2020061215564932-572896 ;
-          Fri, 12 Jun 2020 15:56:49 +0000 
-In-Reply-To: <20200611170542.GY6578@ziepe.ca>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     "Tom Seewald" <tseewald@gmail.com>, linux-rdma@vger.kernel.org,
-        "Doug Ledford" <dledford@redhat.com>
-Date:   Fri, 12 Jun 2020 15:56:49 +0000
+        id S1726283AbgFLTl2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jun 2020 15:41:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41762 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgFLTl1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jun 2020 15:41:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CJdrGj017722;
+        Fri, 12 Jun 2020 19:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=SCP5ZVqb8S94hNxCjiZ28A5hvOtl6mmUnaIVoAgXd7g=;
+ b=UGnhLo4qk+io9M6/kdi8S2bSBLXFLV1zjOlWVVRvHlSBhNKOYLaf9yxttrnM1TwAgo4h
+ ec1BQb8att9rCqAt0uASW8w+CyKg8oHKU0XL/bdem90g1+3WDVpVefHdOcvATBBJ/Cw1
+ NHZX0SaYBtZ2/d4+0/Lc6dN7lxRRChko87RxQWiPeDqaeZmJCnRt8gf+xXCk6lGIlSFF
+ fFPobq6yRKEwJTXnAvitm3k1hpJGEUjaggHvNKRCOvwUmWtlNEhInuRXmbojtuSEBljR
+ Li8MghxIIYKHEshY02fS0Qc/tuDWDkYiQH15hEBkExJV/CkKrglfxkkPEuirvtaWHSNe 3g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31g3sneh8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Jun 2020 19:41:20 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CJeQ2V029572;
+        Fri, 12 Jun 2020 19:41:20 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 31mg2q810u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jun 2020 19:41:20 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05CJfICW009003;
+        Fri, 12 Jun 2020 19:41:18 GMT
+Received: from ib0.gerd.us.oracle.com (/10.211.52.79)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 12 Jun 2020 12:41:17 -0700
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Subject: [PATCH 2.6.26-4.14] IB/ipoib: Arm "send_cq" to process completions in
+ due time
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <alexander.levin@microsoft.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Hal Rosenstock <hal.rosenstock@gmail.com>,
+        linux-rdma@vger.kernel.org
+Message-ID: <322533b0-17de-b6b2-7da4-f99c7dfce3a8@oracle.com>
+Date:   Fri, 12 Jun 2020 12:41:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20200611170542.GY6578@ziepe.ca>,<20200611142355.GX6578@ziepe.ca>
- <20200611113539.GV6578@ziepe.ca> <20200610175008.GU6578@ziepe.ca>
- <20200610174717.15932-1-tseewald@gmail.com>
- <OF2F6FD798.5AF6086F-ON00258584.00329A25-00258584.0038EE32@notes.na.collabserv.com>
- <OFE9B278DF.7F90B863-ON00258584.004CDA7A-00258584.004DFD42@notes.na.collabserv.com>
- <OFD3ED6A67.BCC6E1B8-ON00258584.00526201-00258584.0052F73E@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
-X-KeepSent: 6E70C247:92CAB7FF-00258585:00560750;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 19475
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 20061215-7691-0000-0000-00000D2C3F7A
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.001976
-X-IBM-SpamModules-Versions: BY=3.00013274; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01390504; UDB=6.00744034; IPR=6.01172771;
- MB=3.00032560; MTD=3.00000008; XFM=3.00000015; UTC=2020-06-12 15:56:52
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-06-12 10:33:05 - 6.00011474
-x-cbparentid: 20061215-7692-0000-0000-00001D78419C
-Message-Id: <OF6E70C247.92CAB7FF-ON00258585.00560750-00258585.00579977@notes.na.collabserv.com>
-Subject: RE: Re: [PATCH next] siw: Fix pointer-to-int-cast warning in siw_rx_pbl()
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-11_23:2020-06-11,2020-06-11 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006120142
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006120142
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+This issue appears to only exist in Linux versions
+2.6.26 through 4.14 inclusively:
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 06/11/2020 07:05PM
->Cc: "Tom Seewald" <tseewald@gmail.com>, linux-rdma@vger.kernel.org,
->"Doug Ledford" <dledford@redhat.com>
->Subject: [EXTERNAL] Re: Re: [PATCH next] siw: Fix pointer-to-int-cast
->warning in siw_rx_pbl()
->
->On Thu, Jun 11, 2020 at 03:06:12PM +0000, Bernard Metzler wrote:
->> >> It initially comes from the scatterlist provided by the
->> >> kernel user via drivers .map_mr_sg() method. There we get a
->> >> dma_addr_t describing the users buffer.
->> >
->> >For the SW dma maps you have to convert the dma_addr_t to a kva
->using
->> >kmap, it cannot just be casted.
->> >
->> True for a real dma addr. But here the user initially came
->> with an address it got from dma_virt_ops.dma_virt_map_page(),
->> which provides the virtual address of the page referenced,
->> casted to dma_addr_t.
->
->Oh, that's curiously broken on highmem systems, but OK siw is fine
->with it like that, though I think it would have been better to have
->some helper function connected to dma_virt do this cast.
->
->Jason
->
-With that, lets take Tom's simple patch for now.
+With the introduction of commit
+f56bcd8013566 ("IPoIB: Use separate CQ for UD send completions")
 
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+work completions are only processed once there are
+more than 17 outstanding TX work requests.
+
+Unfortunately, that also delays the processing of the
+completion handler and holds on to references
+held by the "skb" since "dev_kfree_skb_any"
+won't be called for a very long time.
+
+E.g. we've observed "nf_conntrack_cleanup_net_list" spin
+     around for hours until "net->ct.count" goes down to zero
+     on a sufficiently idle interface.
+
+This fix arms the TX CQ after those "poll_tx" loops,
+in order for "ipoib_send_comp_handler" to do its thing:
+
+While it's obvious that processing completions one-by-one
+is more costly than doing so in bulk,
+holding on to "skb" resources for a potentially unlimited
+amount of time appears to be a less favorable trade-off.
+
+This issue appears to no longer exist in Linux-4.15
+and younger, because the following commit does
+call "ib_req_notify_cq" on "send_cq":
+8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
+
+Fixes: f56bcd8013566 ("IPoIB: Use separate CQ for UD send completions")
+
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+index 18f732aa15101..b26b31b9e455e 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+@@ -491,8 +491,13 @@ static void drain_tx_cq(struct net_device *dev)
+ 	struct ipoib_dev_priv *priv = netdev_priv(dev);
+ 
+ 	netif_tx_lock(dev);
+-	while (poll_tx(priv))
+-		; /* nothing */
++
++	do {
++		while (poll_tx(priv))
++			; /* nothing */
++	} while (ib_req_notify_cq(priv->send_cq,
++				  IB_CQ_NEXT_COMP |
++				  IB_CQ_REPORT_MISSED_EVENTS) > 0);
+ 
+ 	if (netif_queue_stopped(dev))
+ 		mod_timer(&priv->poll_timer, jiffies + 1);
+@@ -628,9 +633,14 @@ void ipoib_send(struct net_device *dev, struct sk_buff *skb,
+ 		++priv->tx_head;
+ 	}
+ 
+-	if (unlikely(priv->tx_outstanding > MAX_SEND_CQE))
+-		while (poll_tx(priv))
+-			; /* nothing */
++	if (unlikely(priv->tx_outstanding > MAX_SEND_CQE)) {
++		do {
++			while (poll_tx(priv))
++				; /* nothing */
++		} while (ib_req_notify_cq(priv->send_cq,
++					  IB_CQ_NEXT_COMP |
++					  IB_CQ_REPORT_MISSED_EVENTS) > 0);
++	}
+ }
+ 
+ static void __ipoib_reap_ah(struct net_device *dev)
+-- 
+2.24.1
 
