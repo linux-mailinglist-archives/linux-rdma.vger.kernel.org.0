@@ -2,466 +2,211 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9021F7454
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 09:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8119E1F7550
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jun 2020 10:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgFLHGc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Jun 2020 03:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgFLHGb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Jun 2020 03:06:31 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B8FC03E96F
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 00:06:30 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l10so8571365wrr.10
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Jun 2020 00:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3ZgTCc/fU4tnqok1uch8rRux2b1Vp1CdrO7qEhYAKHA=;
-        b=M8FYTVVXmAx2Kb9qIlbeCPy1hIW4ja6SQi/yrNQGogj8hZD2SHMYPktLEB/Z6+2dkr
-         3m6CCD48rzptP3uzzObM/6nAlF0Mg7CsE8AuNZdJKLpyiUztvbm7jsYjXvHLf8PNMd7G
-         fY0BU3WUN8MjzOwqqAD3Askw5tFgFQwPggWmE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3ZgTCc/fU4tnqok1uch8rRux2b1Vp1CdrO7qEhYAKHA=;
-        b=cB9pwWR9FNDiyEJwZX9cpAlvhAOexgx27qcvVN7Rva0evc287zzhQ3T5Cd966QThrf
-         xB4QNXbjX+G9uX/xGYRfeM3hB/3Pkj5SbFkJg5CsABczd8oYlx9M6C6ZO5RV+4aLDWBy
-         Rwi745dUJcOK5lEJavSrLqo2FN0XZbK12ktqjUKVeoEV0aPhNpvyCRwXG+WlXN+jKzAG
-         UqWwUUksXlFgcCsJR9If+qW6e2OIp2QgAKO2j3CmWGk/EP4JgZuxNJdbkKZdOVQCff4E
-         25Ey9DEnigLrNas623APV+syymy/ZVELjz6o5tfmlzJ9Kej4RGrfmd5ZOLXHdAJeFfTc
-         KMWg==
-X-Gm-Message-State: AOAM5329c3b/iOi7EckYoDQ6eyRuR0exHGie75o6IB7z1fO2x/lZhFLb
-        fzTFrnWWIm+AZT8zBoQTAqdtjw==
-X-Google-Smtp-Source: ABdhPJwTvBQ3qicRUkHUG49ZkoVL/W8P5KSO002B4A6GD8A0LWxApth9T9UbJVjSguGfQJBKen0UUg==
-X-Received: by 2002:adf:e78a:: with SMTP id n10mr13947788wrm.114.1591945588982;
-        Fri, 12 Jun 2020 00:06:28 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p1sm8275672wrx.44.2020.06.12.00.06.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 00:06:28 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH] dma-fence: basic lockdep annotations
-Date:   Fri, 12 Jun 2020 09:06:23 +0200
-Message-Id: <20200612070623.1778466-1-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200604081224.863494-4-daniel.vetter@ffwll.ch>
-References: <20200604081224.863494-4-daniel.vetter@ffwll.ch>
+        id S1726335AbgFLIbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Jun 2020 04:31:21 -0400
+Received: from mail-vi1eur05on2045.outbound.protection.outlook.com ([40.107.21.45]:6155
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726324AbgFLIbV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Jun 2020 04:31:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e/W8ThfPQdYeEEOWZ/LoFm7hJyr8BGUT6+00e/a77PMc6/mJoXo7ENZNbZStV55zT9w+2Hp60FKpzbZCnG7LZuSe/MY1P92n4rKPgwwWCXOfVHXJO+Bdp7YMyFqBr5ji+09HZghCrStJ9o/MSqDZu9kCuHzzilKA47rURtrsvSfHJ6TOgEXZ0XFJY+xGuHzpByw0uYqS7IKCUMtF+1vBFShVe53iFA29sXDW0BxeeRTTLpCs6/ySjIUBG5+v1RMsKCia76by5GfdkLVENRycW+AfqI/Rlk5BDlUIWreX3yEPCjxDCEHCsgwEKfdvz/9ZUl3A8ZzicCsfcRJx6JPTbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCNo0M4LIPxXcgitgvCKTRLLhZ870+8uhmbFAUKec2o=;
+ b=ZC5W8e8Nv9uAu4dg8MGOwGmzBbkSNJtRZUphi2hwropH4uSrYOv9nKDPmcQZEFo3zYoLSzdeu5qRUYmZd2erA+MSguyzNppl2rB1GTSj7fc4RGdpv/mkeeB3p9BMNUJgVCW1QQ9PS3kWNuaB08qwCnkB3KCKJ7I3X/K9A43uo/HS2DhehDQkZUg05n9qzr1eK/DMRv1iXDJ3NBLIdJNIjZUkEEWlFwWoVy63UAU0AYf1GxEywVEf0BsnRtJ3MjIDfnbIqNy3PgWP/c0nERLRtOKFs7RMtDC098kzXYtedRg2JZLSvEY7QsHfiwu7xakuD//56ZQjHcYEDB22AXNk0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCNo0M4LIPxXcgitgvCKTRLLhZ870+8uhmbFAUKec2o=;
+ b=f2QL64sFUAbzp3LWasdGPPb3QCdSotbouvZXcvhz2rqCXfNbOIk82iwX7FMdYbzSgNKGxCfYh28eEqz/fEFNdMUiDXgekJP6LTL7CBQJ8iiqagat0lAnXi0aYkmv4j6XULe3wQlk6WsexUITgJB/kEAd1h6buoCur1Y0ZrEp6JQ=
+Received: from AM6PR05MB6263.eurprd05.prod.outlook.com (2603:10a6:20b:5::31)
+ by AM6PR05MB6390.eurprd05.prod.outlook.com (2603:10a6:20b:ba::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.19; Fri, 12 Jun
+ 2020 08:31:17 +0000
+Received: from AM6PR05MB6263.eurprd05.prod.outlook.com
+ ([fe80::6dad:73a3:a3af:c829]) by AM6PR05MB6263.eurprd05.prod.outlook.com
+ ([fe80::6dad:73a3:a3af:c829%6]) with mapi id 15.20.3088.025; Fri, 12 Jun 2020
+ 08:31:17 +0000
+From:   Yanjun Zhu <yanjunz@mellanox.com>
+To:     Kamal Heib <kamalheib1@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: RE: [PATCH for-rc] RDMA/rxe: Fix QP cleanup flow
+Thread-Topic: [PATCH for-rc] RDMA/rxe: Fix QP cleanup flow
+Thread-Index: AQHWOZBBHnUsw5bvPkOqgA8JjBE7FKjUtHGw
+Date:   Fri, 12 Jun 2020 08:31:16 +0000
+Message-ID: <AM6PR05MB6263D5C7548FFA67E4BCD29ED8810@AM6PR05MB6263.eurprd05.prod.outlook.com>
+References: <20200603101738.159637-1-kamalheib1@gmail.com>
+In-Reply-To: <20200603101738.159637-1-kamalheib1@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=mellanox.com;
+x-originating-ip: [118.201.220.138]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9786f4f2-d46c-443e-0526-08d80eaaf9d3
+x-ms-traffictypediagnostic: AM6PR05MB6390:
+x-microsoft-antispam-prvs: <AM6PR05MB6390A55CA1D0D5163470D690D8810@AM6PR05MB6390.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:209;
+x-forefront-prvs: 0432A04947
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dWkMBxDsxXSuosdK5ef24Hg2goQjG4UoPuV337PlI/mdf+m8QEWFUuAk9va0J0uAqAz8F1lgOtn3d5YzcIMM1yhtqRxCmZp7DRC/7evgweJ5RZbH/MtbbfVQCAsENtKN7JdAk1wCHqf27t0Aua/AL2OdsYGDSer05e67OryTS1CCAkjZeRvdA4QajxhmqWhGzgGfBW9wbA67w+hENuF3jyF9XQkPcKHfYng+0A96QWu4hQrPL1QA7UIpfIPx+Lt5drOsOI42F5q+2aYrwDQCffvKv6aJwS5ht5KcV2hMpm2k0CSutFhkIjvnph+BSXLJQxqEKvRVEN3fT7QKWXk5bw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6263.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(8936002)(6506007)(316002)(4326008)(54906003)(9686003)(110136005)(53546011)(26005)(7696005)(186003)(55016002)(5660300002)(66946007)(66476007)(66446008)(71200400001)(83380400001)(64756008)(76116006)(66556008)(52536014)(2906002)(478600001)(33656002)(8676002)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: cT7t6wm+jilwTSmDPqmD248aRGg7qbWAbtlLA0uANc+Mgs+YEpvgqvOJ3e/vjfJ6HSsQFVeCfYAAUcvSbVCvoL6U/+oVcsfClfTQzhoh8n3W6IH3xTF7i4RoliUMCJvN+3wkl8dAj1MY0tpXokio24IUMKQx/J1UlaY9U7cA7sAMiPCF4bt/4H4fw2VYrwhwuiKaUbGyLozcX3UOH03G/k9BI+tKwBbSykyAhccJjrJelNN1hIKmLe7mb/FKgIBGhv+NGo9KfRrQ0icu6xm640jsx91fwURtFk58gNuTJNbgw0rABQv4XtpkgZouahdTFl4PQlHfmS9GsCl4R5pjrh7Iilp5MBnFxaIiritwPJ1dKlmBR7EOamHtISMgn1zo4cbwkD50Pu38aQ2nq65I32EvX9H7SCsKvNoZ73gKMRZX4nAdaX3erl5OvmAykU4nIEdRv+aBFxzsGqzhtZ8CwcLD4891K6i30o2wldrG7VGeCaVfqgUdVRycGnWVr1LD
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9786f4f2-d46c-443e-0526-08d80eaaf9d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 08:31:16.9741
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uX9ShIACsI36bOeVrK6FNijgJZuzTnb5qXWBSA9mh1JRyLch1WBTmmtJYRlHVMydDnMAx7nn9U5eKVLYGYMiIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6390
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Design is similar to the lockdep annotations for workers, but with
-some twists:
 
-- We use a read-lock for the execution/worker/completion side, so that
-  this explicit annotation can be more liberally sprinkled around.
-  With read locks lockdep isn't going to complain if the read-side
-  isn't nested the same way under all circumstances, so ABBA deadlocks
-  are ok. Which they are, since this is an annotation only.
 
-- We're using non-recursive lockdep read lock mode, since in recursive
-  read lock mode lockdep does not catch read side hazards. And we
-  _very_ much want read side hazards to be caught. For full details of
-  this limitation see
+-----Original Message-----
+From: Kamal Heib <kamalheib1@gmail.com>=20
+Sent: Wednesday, June 3, 2020 6:18 PM
+To: linux-rdma@vger.kernel.org
+Cc: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>; Yan=
+jun Zhu <yanjunz@mellanox.com>; Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc] RDMA/rxe: Fix QP cleanup flow
 
-  commit e91498589746065e3ae95d9a00b068e525eec34f
-  Author: Peter Zijlstra <peterz@infradead.org>
-  Date:   Wed Aug 23 13:13:11 2017 +0200
+Avoid releasing the socket associated with each QP in rxe_qp_cleanup() whic=
+h can sleep and move it to rxe_destroy_qp() instead, after doing this there=
+ is no need for the execute_work that used to avoid calling
+rxe_qp_cleanup() directly. also check that the socket is valid in
+rxe_skb_tx_dtor() to avoid use-after-free.
 
-      locking/lockdep/selftests: Add mixed read-write ABBA tests
-
-- To allow nesting of the read-side explicit annotations we explicitly
-  keep track of the nesting. lock_is_held() allows us to do that.
-
-- The wait-side annotation is a write lock, and entirely done within
-  dma_fence_wait() for everyone by default.
-
-- To be able to freely annotate helper functions I want to make it ok
-  to call dma_fence_begin/end_signalling from soft/hardirq context.
-  First attempt was using the hardirq locking context for the write
-  side in lockdep, but this forces all normal spinlocks nested within
-  dma_fence_begin/end_signalling to be spinlocks. That bollocks.
-
-  The approach now is to simple check in_atomic(), and for these cases
-  entirely rely on the might_sleep() check in dma_fence_wait(). That
-  will catch any wrong nesting against spinlocks from soft/hardirq
-  contexts.
-
-The idea here is that every code path that's critical for eventually
-signalling a dma_fence should be annotated with
-dma_fence_begin/end_signalling. The annotation ideally starts right
-after a dma_fence is published (added to a dma_resv, exposed as a
-sync_file fd, attached to a drm_syncobj fd, or anything else that
-makes the dma_fence visible to other kernel threads), up to and
-including the dma_fence_wait(). Examples are irq handlers, the
-scheduler rt threads, the tail of execbuf (after the corresponding
-fences are visible), any workers that end up signalling dma_fences and
-really anything else. Not annotated should be code paths that only
-complete fences opportunistically as the gpu progresses, like e.g.
-shrinker/eviction code.
-
-The main class of deadlocks this is supposed to catch are:
-
-Thread A:
-
-	mutex_lock(A);
-	mutex_unlock(A);
-
-	dma_fence_signal();
-
-Thread B:
-
-	mutex_lock(A);
-	dma_fence_wait();
-	mutex_unlock(A);
-
-Thread B is blocked on A signalling the fence, but A never gets around
-to that because it cannot acquire the lock A.
-
-Note that dma_fence_wait() is allowed to be nested within
-dma_fence_begin/end_signalling sections. To allow this to happen the
-read lock needs to be upgraded to a write lock, which means that any
-other lock is acquired between the dma_fence_begin_signalling() call and
-the call to dma_fence_wait(), and still held, this will result in an
-immediate lockdep complaint. The only other option would be to not
-annotate such calls, defeating the point. Therefore these annotations
-cannot be sprinkled over the code entirely mindless to avoid false
-positives.
-
-Originally I hope that the cross-release lockdep extensions would
-alleviate the need for explicit annotations:
-
-https://lwn.net/Articles/709849/
-
-But there's a few reasons why that's not an option:
-
-- It's not happening in upstream, since it got reverted due to too
-  many false positives:
-
-	commit e966eaeeb623f09975ef362c2866fae6f86844f9
-	Author: Ingo Molnar <mingo@kernel.org>
-	Date:   Tue Dec 12 12:31:16 2017 +0100
-
-	    locking/lockdep: Remove the cross-release locking checks
-
-	    This code (CONFIG_LOCKDEP_CROSSRELEASE=y and CONFIG_LOCKDEP_COMPLETIONS=y),
-	    while it found a number of old bugs initially, was also causing too many
-	    false positives that caused people to disable lockdep - which is arguably
-	    a worse overall outcome.
-
-- cross-release uses the complete() call to annotate the end of
-  critical sections, for dma_fence that would be dma_fence_signal().
-  But we do not want all dma_fence_signal() calls to be treated as
-  critical, since many are opportunistic cleanup of gpu requests. If
-  these get stuck there's still the main completion interrupt and
-  workers who can unblock everyone. Automatically annotating all
-  dma_fence_signal() calls would hence cause false positives.
-
-- cross-release had some educated guesses for when a critical section
-  starts, like fresh syscall or fresh work callback. This would again
-  cause false positives without explicit annotations, since for
-  dma_fence the critical sections only starts when we publish a fence.
-
-- Furthermore there can be cases where a thread never does a
-  dma_fence_signal, but is still critical for reaching completion of
-  fences. One example would be a scheduler kthread which picks up jobs
-  and pushes them into hardware, where the interrupt handler or
-  another completion thread calls dma_fence_signal(). But if the
-  scheduler thread hangs, then all the fences hang, hence we need to
-  manually annotate it. cross-release aimed to solve this by chaining
-  cross-release dependencies, but the dependency from scheduler thread
-  to the completion interrupt handler goes through hw where
-  cross-release code can't observe it.
-
-In short, without manual annotations and careful review of the start
-and end of critical sections, cross-relese dependency tracking doesn't
-work. We need explicit annotations.
-
-v2: handle soft/hardirq ctx better against write side and dont forget
-EXPORT_SYMBOL, drivers can't use this otherwise.
-
-v3: Kerneldoc.
-
-v4: Some spelling fixes from Mika
-
-v5: Amend commit message to explain in detail why cross-release isn't
-the solution.
-
-v6: Pull out misplaced .rst hunk.
-
-Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
-Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Mika Kuoppala <mika.kuoppala@intel.com>
-Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-rdma@vger.kernel.org
-Cc: amd-gfx@lists.freedesktop.org
-Cc: intel-gfx@lists.freedesktop.org
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Fixes: bb3ffb7ad48a ("RDMA/rxe: Fix rxe_qp_cleanup()")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- Documentation/driver-api/dma-buf.rst |   6 +
- drivers/dma-buf/dma-fence.c          | 161 +++++++++++++++++++++++++++
- include/linux/dma-fence.h            |  12 ++
- 3 files changed, 179 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_net.c   | 14 ++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_qp.c    | 22 ++++++----------------
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  3 ---
+ 3 files changed, 18 insertions(+), 21 deletions(-)
 
-diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
-index 7fb7b661febd..05d856131140 100644
---- a/Documentation/driver-api/dma-buf.rst
-+++ b/Documentation/driver-api/dma-buf.rst
-@@ -133,6 +133,12 @@ DMA Fences
- .. kernel-doc:: drivers/dma-buf/dma-fence.c
-    :doc: DMA fences overview
- 
-+DMA Fence Signalling Annotations
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rx=
+e/rxe_net.c
+index 312c2fc961c0..298ccd3fd3e2 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -411,8 +411,18 @@ int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_bu=
+ff *skb, u32 *crc)  static void rxe_skb_tx_dtor(struct sk_buff *skb)  {
+ 	struct sock *sk =3D skb->sk;
+-	struct rxe_qp *qp =3D sk->sk_user_data;
+-	int skb_out =3D atomic_dec_return(&qp->skb_out);
++	struct rxe_qp *qp;
++	int skb_out;
 +
-+.. kernel-doc:: drivers/dma-buf/dma-fence.c
-+   :doc: fence signalling annotation
-+
- DMA Fences Functions Reference
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-index 656e9ac2d028..0005bc002529 100644
---- a/drivers/dma-buf/dma-fence.c
-+++ b/drivers/dma-buf/dma-fence.c
-@@ -110,6 +110,160 @@ u64 dma_fence_context_alloc(unsigned num)
- }
- EXPORT_SYMBOL(dma_fence_context_alloc);
- 
-+/**
-+ * DOC: fence signalling annotation
-+ *
-+ * Proving correctness of all the kernel code around &dma_fence through code
-+ * review and testing is tricky for a few reasons:
-+ *
-+ * * It is a cross-driver contract, and therefore all drivers must follow the
-+ *   same rules for lock nesting order, calling contexts for various functions
-+ *   and anything else significant for in-kernel interfaces. But it is also
-+ *   impossible to test all drivers in a single machine, hence brute-force N vs.
-+ *   N testing of all combinations is impossible. Even just limiting to the
-+ *   possible combinations is infeasible.
-+ *
-+ * * There is an enormous amount of driver code involved. For render drivers
-+ *   there's the tail of command submission, after fences are published,
-+ *   scheduler code, interrupt and workers to process job completion,
-+ *   and timeout, gpu reset and gpu hang recovery code. Plus for integration
-+ *   with core mm with have &mmu_notifier, respectively &mmu_interval_notifier,
-+ *   and &shrinker. For modesetting drivers there's the commit tail functions
-+ *   between when fences for an atomic modeset are published, and when the
-+ *   corresponding vblank completes, including any interrupt processing and
-+ *   related workers. Auditing all that code, across all drivers, is not
-+ *   feasible.
-+ *
-+ * * Due to how many other subsystems are involved and the locking hierarchies
-+ *   this pulls in there is extremely thin wiggle-room for driver-specific
-+ *   differences. &dma_fence interacts with almost all of the core memory
-+ *   handling through page fault handlers via &dma_resv, dma_resv_lock() and
-+ *   dma_resv_unlock(). On the other side it also interacts through all
-+ *   allocation sites through &mmu_notifier and &shrinker.
-+ *
-+ * Furthermore lockdep does not handle cross-release dependencies, which means
-+ * any deadlocks between dma_fence_wait() and dma_fence_signal() can't be caught
-+ * at runtime with some quick testing. The simplest example is one thread
-+ * waiting on a &dma_fence while holding a lock::
-+ *
-+ *     lock(A);
-+ *     dma_fence_wait(B);
-+ *     unlock(A);
-+ *
-+ * while the other thread is stuck trying to acquire the same lock, which
-+ * prevents it from signalling the fence the previous thread is stuck waiting
-+ * on::
-+ *
-+ *     lock(A);
-+ *     unlock(A);
-+ *     dma_fence_signal(B);
-+ *
-+ * By manually annotating all code relevant to signalling a &dma_fence we can
-+ * teach lockdep about these dependencies, which also helps with the validation
-+ * headache since now lockdep can check all the rules for us::
-+ *
-+ *    cookie = dma_fence_begin_signalling();
-+ *    lock(A);
-+ *    unlock(A);
-+ *    dma_fence_signal(B);
-+ *    dma_fence_end_signalling(cookie);
-+ *
-+ * For using dma_fence_begin_signalling() and dma_fence_end_signalling() to
-+ * annotate critical sections the following rules need to be observed:
-+ *
-+ * * All code necessary to complete a &dma_fence must be annotated, from the
-+ *   point where a fence is accessible to other threads, to the point where
-+ *   dma_fence_signal() is called. Un-annotated code can contain deadlock issues,
-+ *   and due to the very strict rules and many corner cases it is infeasible to
-+ *   catch these just with review or normal stress testing.
-+ *
-+ * * &struct dma_resv deserves a special note, since the readers are only
-+ *   protected by rcu. This means the signalling critical section starts as soon
-+ *   as the new fences are installed, even before dma_resv_unlock() is called.
-+ *
-+ * * The only exception are fast paths and opportunistic signalling code, which
-+ *   calls dma_fence_signal() purely as an optimization, but is not required to
-+ *   guarantee completion of a &dma_fence. The usual example is a wait IOCTL
-+ *   which calls dma_fence_signal(), while the mandatory completion path goes
-+ *   through a hardware interrupt and possible job completion worker.
-+ *
-+ * * To aid composability of code, the annotations can be freely nested, as long
-+ *   as the overall locking hierarchy is consistent. The annotations also work
-+ *   both in interrupt and process context. Due to implementation details this
-+ *   requires that callers pass an opaque cookie from
-+ *   dma_fence_begin_signalling() to dma_fence_end_signalling().
-+ *
-+ * * Validation against the cross driver contract is implemented by priming
-+ *   lockdep with the relevant hierarchy at boot-up. This means even just
-+ *   testing with a single device is enough to validate a driver, at least as
-+ *   far as deadlocks with dma_fence_wait() against dma_fence_signal() are
-+ *   concerned.
-+ */
-+#ifdef CONFIG_LOCKDEP
-+struct lockdep_map	dma_fence_lockdep_map = {
-+	.name = "dma_fence_map"
-+};
-+
-+/**
-+ * dma_fence_begin_signalling - begin a critical DMA fence signalling section
-+ *
-+ * Drivers should use this to annotate the beginning of any code section
-+ * required to eventually complete &dma_fence by calling dma_fence_signal().
-+ *
-+ * The end of these critical sections are annotated with
-+ * dma_fence_end_signalling().
-+ *
-+ * Returns:
-+ *
-+ * Opaque cookie needed by the implementation, which needs to be passed to
-+ * dma_fence_end_signalling().
-+ */
-+bool dma_fence_begin_signalling(void)
-+{
-+	/* explicitly nesting ... */
-+	if (lock_is_held_type(&dma_fence_lockdep_map, 1))
-+		return true;
-+
-+	/* rely on might_sleep check for soft/hardirq locks */
-+	if (in_atomic())
-+		return true;
-+
-+	/* ... and non-recursive readlock */
-+	lock_acquire(&dma_fence_lockdep_map, 0, 0, 1, 1, NULL, _RET_IP_);
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(dma_fence_begin_signalling);
-+
-+/**
-+ * dma_fence_end_signalling - end a critical DMA fence signalling section
-+ *
-+ * Closes a critical section annotation opened by dma_fence_begin_signalling().
-+ */
-+void dma_fence_end_signalling(bool cookie)
-+{
-+	if (cookie)
++	if (!sk)
 +		return;
 +
-+	lock_release(&dma_fence_lockdep_map, _RET_IP_);
-+}
-+EXPORT_SYMBOL(dma_fence_end_signalling);
++	qp =3D sk->sk_user_data;
 +
-+void __dma_fence_might_wait(void)
-+{
-+	bool tmp;
++	if (!qp)
++		return;
 +
-+	tmp = lock_is_held_type(&dma_fence_lockdep_map, 1);
-+	if (tmp)
-+		lock_release(&dma_fence_lockdep_map, _THIS_IP_);
-+	lock_map_acquire(&dma_fence_lockdep_map);
-+	lock_map_release(&dma_fence_lockdep_map);
-+	if (tmp)
-+		lock_acquire(&dma_fence_lockdep_map, 0, 0, 1, 1, NULL, _THIS_IP_);
-+}
-+#endif
++	skb_out =3D atomic_dec_return(&qp->skb_out);
+=20
+ 	if (unlikely(qp->need_req_skb &&
+ 		     skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW)) diff --git a/drivers/infin=
+iband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 6c11c3aeeca6..89dac6c1111c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -787,6 +787,7 @@ void rxe_qp_destroy(struct rxe_qp *qp)
+ 	if (qp_type(qp) =3D=3D IB_QPT_RC) {
+ 		del_timer_sync(&qp->retrans_timer);
+ 		del_timer_sync(&qp->rnr_nak_timer);
++		sk_dst_reset(qp->sk->sk);
+ 	}
+=20
+ 	rxe_cleanup_task(&qp->req.task);
+@@ -798,12 +799,15 @@ void rxe_qp_destroy(struct rxe_qp *qp)
+ 		__rxe_do_task(&qp->comp.task);
+ 		__rxe_do_task(&qp->req.task);
+ 	}
 +
-+
- /**
-  * dma_fence_signal_locked - signal completion of a fence
-  * @fence: the fence to signal
-@@ -170,14 +324,19 @@ int dma_fence_signal(struct dma_fence *fence)
++	kernel_sock_shutdown(qp->sk, SHUT_RDWR);
++	sock_release(qp->sk);
+ }
+=20
+ /* called when the last reference to the qp is dropped */ -static void rxe=
+_qp_do_cleanup(struct work_struct *work)
++void rxe_qp_cleanup(struct rxe_pool_entry *arg)
  {
- 	unsigned long flags;
- 	int ret;
-+	bool tmp;
- 
- 	if (!fence)
- 		return -EINVAL;
- 
-+	tmp = dma_fence_begin_signalling();
-+
- 	spin_lock_irqsave(fence->lock, flags);
- 	ret = dma_fence_signal_locked(fence);
- 	spin_unlock_irqrestore(fence->lock, flags);
- 
-+	dma_fence_end_signalling(tmp);
-+
- 	return ret;
+-	struct rxe_qp *qp =3D container_of(work, typeof(*qp), cleanup_work.work);
++	struct rxe_qp *qp =3D container_of(arg, typeof(*qp), pelem);
+=20
+ 	rxe_drop_all_mcast_groups(qp);
+=20
+@@ -828,19 +832,5 @@ static void rxe_qp_do_cleanup(struct work_struct *work=
+)
+ 		qp->resp.mr =3D NULL;
+ 	}
+=20
+-	if (qp_type(qp) =3D=3D IB_QPT_RC)
+-		sk_dst_reset(qp->sk->sk);
+-
+ 	free_rd_atomic_resources(qp);
+-
+-	kernel_sock_shutdown(qp->sk, SHUT_RDWR);
+-	sock_release(qp->sk);
+-}
+-
+-/* called when the last reference to the qp is dropped */ -void rxe_qp_cle=
+anup(struct rxe_pool_entry *arg) -{
+-	struct rxe_qp *qp =3D container_of(arg, typeof(*qp), pelem);
+-
+-	execute_in_process_context(rxe_qp_do_cleanup, &qp->cleanup_work);
  }
- EXPORT_SYMBOL(dma_fence_signal);
-@@ -210,6 +369,8 @@ dma_fence_wait_timeout(struct dma_fence *fence, bool intr, signed long timeout)
- 
- 	might_sleep();
- 
-+	__dma_fence_might_wait();
-+
- 	trace_dma_fence_wait_start(fence);
- 	if (fence->ops->wait)
- 		ret = fence->ops->wait(fence, intr, timeout);
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3347c54f3a87..3f288f7db2ef 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -357,6 +357,18 @@ dma_fence_get_rcu_safe(struct dma_fence __rcu **fencep)
- 	} while (1);
- }
- 
-+#ifdef CONFIG_LOCKDEP
-+bool dma_fence_begin_signalling(void);
-+void dma_fence_end_signalling(bool cookie);
-+#else
-+static inline bool dma_fence_begin_signalling(void)
-+{
-+	return true;
-+}
-+static inline void dma_fence_end_signalling(bool cookie) {}
-+static inline void __dma_fence_might_wait(void) {}
-+#endif
-+
- int dma_fence_signal(struct dma_fence *fence);
- int dma_fence_signal_locked(struct dma_fence *fence);
- signed long dma_fence_default_wait(struct dma_fence *fence,
--- 
-2.26.2
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/=
+rxe/rxe_verbs.h
+index 92de39c4a7c1..339debaf095f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -35,7 +35,6 @@
+ #define RXE_VERBS_H
+=20
+ #include <linux/interrupt.h>
+-#include <linux/workqueue.h>
+ #include <rdma/rdma_user_rxe.h>
+ #include "rxe_pool.h"
+ #include "rxe_task.h"
+@@ -285,8 +284,6 @@ struct rxe_qp {
+ 	struct timer_list rnr_nak_timer;
+=20
+ 	spinlock_t		state_lock; /* guard requester and completer */
+-
+-	struct execute_work	cleanup_work;
+ };
+=20
+ enum rxe_mem_state {
+--
+2.25.4
 
