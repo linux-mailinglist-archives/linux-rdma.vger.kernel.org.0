@@ -2,125 +2,241 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB44E1F867E
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2020 06:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1901F874C
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jun 2020 08:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725385AbgFNELw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Jun 2020 00:11:52 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:57784 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725265AbgFNELw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Jun 2020 00:11:52 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49l1Hq4Wh7z9vLGg
-        for <linux-rdma@vger.kernel.org>; Sun, 14 Jun 2020 04:11:51 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PJkkXbKXsrtF for <linux-rdma@vger.kernel.org>;
-        Sat, 13 Jun 2020 23:11:51 -0500 (CDT)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725379AbgFNGmC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Jun 2020 02:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725265AbgFNGmB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 14 Jun 2020 02:42:01 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49l1Hq2r9Vz9vKly
-        for <linux-rdma@vger.kernel.org>; Sat, 13 Jun 2020 23:11:51 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49l1Hq2r9Vz9vKly
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49l1Hq2r9Vz9vKly
-Received: by mail-io1-f69.google.com with SMTP id v14so9029475iob.11
-        for <linux-rdma@vger.kernel.org>; Sat, 13 Jun 2020 21:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KC6zFgxNsc5i6RYHX88wWeIzq9Ejx9oIVhgo1IScugw=;
-        b=IqQlDriTeCK4A5zHXVVSnvggbs/sTiwYUzOMpnAbR67ctwGU+H7IEcpgGMJkGQAo7S
-         yXaR8M0lY+w/P0bGqQcL9/btZhNGRpsAfgklUHzQzDnm14Tn8GEhbjSa2YREXHBH7v5I
-         LV1mZRP8v7O9Fm3jImg+WpnZuK7KAUFjtkXkHBSJ2ZzXu25WuHy92XDtqpSuKUozVO3t
-         ryAHD9+6RjI9beD79g4Q6A22JZHUB6MeqyQ6xlV1vYpqZXWjyoe6+yZ6syFuv3uJdA2n
-         HEoTRiYMyX+E5xAacYxCjFH5BN2OKM5NgdXJhu5/zEuYOtAbFXzwxlv66uoMEFD8+Ui/
-         oxAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KC6zFgxNsc5i6RYHX88wWeIzq9Ejx9oIVhgo1IScugw=;
-        b=IxvVLb9V0K7OowuZBHxss1aLpFlIf8nHHIhl+zMbXsKyLxZqiGXOCaHN4NCiw9w3ig
-         jmasM+yteSjGo/Pu5pO5qVEVAPJTEu1t2Nw16pqz57XZnG0ClyU8ql8wQeC0aqQFOSrE
-         EEVTN/JqKuW+pGOREhWbcaZDHbU0MUEkuHA8Cx6MWd41mmDKnEWSk5A9/AJZDn8nKleK
-         bPUEiulfc84eKZEAcanzCwHRNOFYSH+JSx/BDbG7OjWgXOjThl1Gq/6peIibQbl96x3C
-         sqp34FN5Y4Fafx/Nz33EPdtNST4fHd9StxV8pSVl2rWTGgujE0pH1GrwsviX1pNIfSA2
-         fHzw==
-X-Gm-Message-State: AOAM5330ypjWd3lD4BlUBlwyWlDnUzjmHVVS9MHWSn8qUA5OTho9mD0H
-        LuXwl1vyxRmWrjD6v5yDJwEIOBYf8X6xemrX+qk7u82Rr83pKcz/xcabcIy2VXdhOXMHUd6WXOn
-        WBWFdDnQFRjIuKE+FJY/61kyzLw==
-X-Received: by 2002:a02:7707:: with SMTP id g7mr15392326jac.141.1592107910965;
-        Sat, 13 Jun 2020 21:11:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtCRdKzwjxRQ0dPkIx/477rD6VMwHukV6xzi3GW4hTAEOEmvtzJgyDAPGOuSoS2l0ICeb2EA==
-X-Received: by 2002:a02:7707:: with SMTP id g7mr15392311jac.141.1592107910725;
-        Sat, 13 Jun 2020 21:11:50 -0700 (PDT)
-Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:49fa:9c47:e40b:9c40])
-        by smtp.gmail.com with ESMTPSA id h14sm5708734ilo.10.2020.06.13.21.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 21:11:50 -0700 (PDT)
-From:   Aditya Pakki <pakki001@umn.edu>
-To:     pakki001@umn.edu
-Cc:     kjlu@umn.edu, wu000273@umn.edu,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 94558206D7;
+        Sun, 14 Jun 2020 06:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592116920;
+        bh=mnAFWP4PsuyztgglwUiPObo4Mp168az8uOclib+Sb7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g0wPmcK1cvU6iJL0V/3BSt6DRWJaTfO0mallMz09wGX+4nNv3I/69dGxl3BMRJrWD
+         XB7VZlbdlqSPmhh9EXAqbq+tCMW4yGQ2MBCpNsiRCjo7TkCr4CPldJk2LncBL0io9Q
+         FoLpwOaaPynbIf/CAZxf+ZPiRb9LWEunzR/WrZUQ=
+Date:   Sun, 14 Jun 2020 09:41:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Divya Indi <divya.indi@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] RDMA/rvt: Fix potential memory leak caused by rvt_alloc_rq
-Date:   Sat, 13 Jun 2020 23:11:48 -0500
-Message-Id: <20200614041148.131983-1-pakki001@umn.edu>
-X-Mailer: git-send-email 2.25.1
+        Kaike Wan <kaike.wan@intel.com>,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
+Message-ID: <20200614064156.GB2132762@unreal>
+References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
+ <1591627576-920-2-git-send-email-divya.indi@oracle.com>
+ <20200609070026.GJ164174@unreal>
+ <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In case of failure of alloc_ud_wq_attr(), the memory allocated by
-rvt_alloc_rq() is not freed. Fix it by calling rvt_free_rq() using
-the existing clean-up code.
+On Tue, Jun 09, 2020 at 07:45:21AM -0700, Divya Indi wrote:
+> Hi Leon,
+>
+> Thanks for taking the time to review.
+>
+> Please find my comments inline -
+>
+> On 6/9/20 12:00 AM, Leon Romanovsky wrote:
+> > On Mon, Jun 08, 2020 at 07:46:16AM -0700, Divya Indi wrote:
+> >> Commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
+> >> -
+> >> 1. Adds the query to the request list before ib_nl_snd_msg.
+> >> 2. Removes ib_nl_send_msg from within the spinlock which also makes it
+> >> possible to allocate memory with GFP_KERNEL.
+> >>
+> >> However, if there is a delay in sending out the request (For
+> >> eg: Delay due to low memory situation) the timer to handle request timeout
+> >> might kick in before the request is sent out to ibacm via netlink.
+> >> ib_nl_request_timeout may release the query causing a use after free situation
+> >> while accessing the query in ib_nl_send_msg.
+> >>
+> >> Call Trace for the above race:
+> >>
+> >> [<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
+> >> [<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
+> >> [<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
+> >> [<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
+> >> [<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
+> >> [rds_rdma]
+> >> [<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
+> >> [rds_rdma]
+> >> [<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
+> >> [<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
+> >> [<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
+> >> [<ffffffff810a02f9>] process_one_work+0x169/0x4a0
+> >> [<ffffffff810a0b2b>] worker_thread+0x5b/0x560
+> >> [<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
+> >> [<ffffffff810a68fb>] kthread+0xcb/0xf0
+> >> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+> >> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+> >> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+> >> [<ffffffff816f25a7>] ret_from_fork+0x47/0x90
+> >> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+> >> ....
+> >> RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
+> >>
+> >> To resolve the above issue -
+> >> 1. Add the req to the request list only after the request has been sent out.
+> >> 2. To handle the race where response comes in before adding request to
+> >> the request list, send(rdma_nl_multicast) and add to list while holding the
+> >> spinlock - request_lock.
+> >> 3. Use GFP_NOWAIT for rdma_nl_multicast since it is called while holding
+> >> a spinlock. In case of memory allocation failure, request will go out to SA.
+> >>
+> >> Signed-off-by: Divya Indi <divya.indi@oracle.com>
+> >> Fixes: 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
+> >> before sending")
+> > Author SOB should be after "Fixes" line.
+>
+> My bad. Noted.
+>
+> >
+> >> ---
+> >>  drivers/infiniband/core/sa_query.c | 34 +++++++++++++++++-----------------
+> >>  1 file changed, 17 insertions(+), 17 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+> >> index 74e0058..042c99b 100644
+> >> --- a/drivers/infiniband/core/sa_query.c
+> >> +++ b/drivers/infiniband/core/sa_query.c
+> >> @@ -836,6 +836,9 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
+> >>  	void *data;
+> >>  	struct ib_sa_mad *mad;
+> >>  	int len;
+> >> +	unsigned long flags;
+> >> +	unsigned long delay;
+> >> +	int ret;
+> >>
+> >>  	mad = query->mad_buf->mad;
+> >>  	len = ib_nl_get_path_rec_attrs_len(mad->sa_hdr.comp_mask);
+> >> @@ -860,35 +863,32 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
+> >>  	/* Repair the nlmsg header length */
+> >>  	nlmsg_end(skb, nlh);
+> >>
+> >> -	return rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_mask);
+> >> +	spin_lock_irqsave(&ib_nl_request_lock, flags);
+> >> +	ret =  rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, GFP_NOWAIT);
+> > It is hard to be convinced that this is correct solution. The mix of
+> > gfp_flags and GFP_NOWAIT at the same time and usage of
+> > ib_nl_request_lock to protect lists and suddenly rdma_nl_multicast() too
+> > makes this code unreadable/non-maintainable.
+>
+> Prior to 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
+> before sending"), we had ib_nl_send_msg under the spinlock ib_nl_request_lock.
+>
+> ie we had -
+>
+> 1. Get spinlock - ib_nl_request_lock
+> 2. ib_nl_send_msg
+> 	2.a) rdma_nl_multicast
+> 3. Add request to the req list
+> 4. Arm the timer if needed.
+> 5. Release spinlock
+>
+> However, ib_nl_send_msg involved a memory allocation using GFP_KERNEL.
+> hence, was moved out of the spinlock. In addition, req was now being
+> added prior to ib_nl_send_msg [To handle the race where response can
+> come in before we get a chance to add the request back to the list].
+>
+> This introduced another race resulting in use-after-free.[Described in the commit.]
+>
+> To resolve this, sending out the request and adding it to list need to
+> happen while holding the request_lock.
+> To ensure minimum allocations while holding the lock, instead of having
+> the entire ib_nl_send_msg under the lock, we only have rdma_nl_multicast
+> under this spinlock.
+>
+> However, do you think it would be a good idea to split ib_nl_send_msg
+> into 2 functions -
+> 1. Prepare the req/query [Outside the spinlock]
+> 2. Sending the req - rdma_nl_multicast [while holding spinlock]
+>
+> Would this be more intuitive?
 
-Fixes: d310c4bf8aea ("IB/{rdmavt, hfi1, qib}: Remove AH refcount for UD QPs")
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
----
-v1: Fix incorrect order of  rvt_free_rq and free_ud_wq_attr.
-Suggested by Dennis Dalessandro.
----
- drivers/infiniband/sw/rdmavt/qp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+While it is always good idea to minimize the locked period. It still
+doesn't answer concern about mixing gfp_flags and direct GFP_NOWAIT.
+For example if user provides GFP_ATOMIC, the GFP_NOWAIT allocation will
+cause a trouble because latter is more lax than first one.
 
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 511b72809e14..7db35dd6ad74 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -1204,7 +1204,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
- 		err = alloc_ud_wq_attr(qp, rdi->dparms.node);
- 		if (err) {
- 			ret = (ERR_PTR(err));
--			goto bail_driver_priv;
-+			goto bail_rq_rvt;
- 		}
- 
- 		if (init_attr->create_flags & IB_QP_CREATE_NETDEV_USE)
-@@ -1314,9 +1314,11 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
- 	rvt_free_qpn(&rdi->qp_dev->qpn_table, qp->ibqp.qp_num);
- 
- bail_rq_wq:
--	rvt_free_rq(&qp->r_rq);
- 	free_ud_wq_attr(qp);
- 
-+bail_rq_rvt:
-+	rvt_free_rq(&qp->r_rq);
-+
- bail_driver_priv:
- 	rdi->driver_f.qp_priv_free(rdi, qp);
- 
--- 
-2.25.1
+Thanks
 
+>
+> >> +	if (!ret) {
+> > Please use kernel coding style.
+> >
+> > if (ret) {
+> >   spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+> >   return ret;
+> >   }
+> >
+> >  ....
+>
+> Noted. Will make this change.
+>
+> >
+> >> +		/* Put the request on the list.*/
+> >> +		delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
+> >> +		query->timeout = delay + jiffies;
+> >> +		list_add_tail(&query->list, &ib_nl_request_list);
+> >> +		/* Start the timeout if this is the only request */
+> >> +		if (ib_nl_request_list.next == &query->list)
+> >> +			queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
+> >> +	}
+> >> +	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+> >> +
+> >> +	return ret;
+> >>  }
+> >>
+> >>  static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
+> >>  {
+> >> -	unsigned long flags;
+> >> -	unsigned long delay;
+> >>  	int ret;
+> >>
+> >>  	INIT_LIST_HEAD(&query->list);
+> >>  	query->seq = (u32)atomic_inc_return(&ib_nl_sa_request_seq);
+> >>
+> >> -	/* Put the request on the list first.*/
+> >> -	spin_lock_irqsave(&ib_nl_request_lock, flags);
+> >> -	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
+> >> -	query->timeout = delay + jiffies;
+> >> -	list_add_tail(&query->list, &ib_nl_request_list);
+> >> -	/* Start the timeout if this is the only request */
+> >> -	if (ib_nl_request_list.next == &query->list)
+> >> -		queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
+> >> -	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+> >> -
+> >>  	ret = ib_nl_send_msg(query, gfp_mask);
+> >>  	if (ret) {
+> >>  		ret = -EIO;
+> >> -		/* Remove the request */
+> >> -		spin_lock_irqsave(&ib_nl_request_lock, flags);
+> >> -		list_del(&query->list);
+> >> -		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+> >>  	}
+> > Brackets should be removed too.
+> Noted.
+> >>  	return ret;
+> >> --
+> >> 1.8.3.1
+> >>
