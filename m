@@ -2,88 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D80D1F9F71
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 20:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2D11F9FAF
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 20:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbgFOSjP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 14:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
+        id S1730976AbgFOSxJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 14:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729847AbgFOSjO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 14:39:14 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ED0C05BD43
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:39:14 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id k22so13436533qtm.6
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:39:14 -0700 (PDT)
+        with ESMTP id S1729124AbgFOSxI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 14:53:08 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688A3C061A0E
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:53:07 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id y1so13471518qtv.12
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=B8I0m7QO2EsHmHEbaNmg1LU0cMkLA+PHBa4u0Nmnmbo=;
-        b=eWlnvOxcru0L75I+4qv/8OYbNlG8YuBT4Gu+sDiUpPwgFyKe1ZeOkJHV6H8XGJRCI9
-         UtzRh52j0YKsZExwLa7ZuV1Z96qg2J9jg+lBswWZpnyk5/EBfsZ0OGgBilm9kaaQaACn
-         9jiVMzP7Vufkp60RbfNdeiyBiyEXrHGmM80UL3oyVF5k4ATPD3MKU8aCLACL+pGsuWmE
-         /WgYJsJsBKhulZ3iCDkj4UXoXt0bX/3rNUc37tLZJY+RPGnEGdfgQDKYlISdgiBQ0nH5
-         0PgniI8N9pigckAgx2CJgvZOrzQ1Ai/iOvrtGI8VWVwM0B0Yr6A8HXbkMo4+CYNdMmUo
-         9Zcg==
+        bh=Ayg2PAVSdmz/HOuWjmsjRtknRgEi2PoT2Jiq5tkLESY=;
+        b=bKs8NVLrmAgH/ZaYWHDU+EKGek1aWcrqpXD0PlUZpXQALE6CFs6rGcHU/BVssPF5Ve
+         okM8Gz/G0JL3WnQWVXNqLEIY17Y5crhX2oTRyvfVde1jXzE4yrM//m15FcZfuo9npSYL
+         PDDJV5yEM1b7ZdgyUCI4CVm49beS1WgsONfgobvkIeEzWLbyMSSxF/8sAu3iVBHPIT0R
+         ntYH0uftulq51nj34p5oJYHWgtB0XC8YEAWaBJzbkDW3uxVGZ5aQbCE1YcCT/7wY2I4N
+         efyp7jjSBCdGk5SThCaZ2Cs5EuHYbQbaYbDc4XE9+/Ktz1dDMt+sknTQTAY047Bltgzu
+         hg0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=B8I0m7QO2EsHmHEbaNmg1LU0cMkLA+PHBa4u0Nmnmbo=;
-        b=WmkyGwaZLwyJf6xGcakK+ddLeFaaPnwxn9HoXjhJY+7aEGVhll+vWHyV9wYvd8iETh
-         1gRBXdXFwBBfjZUc9HY30ZN6BlTG8va1sDn8q3dVpMJvjBya3iYdn6yndvIiRTUW2Zlb
-         UPfkgXTdQfnjhgVNloSl1kQP4/63xe/l2rWgGzJGAldfbLJ0PavQNWf+rG07BgADZZcI
-         Y9lMyKxEPKZsM5wtwh0NYcOVOKZl2OTR3fxE15WvXZ8W5CFpq0QeOkcKZVO6UfDVkvB7
-         JvcInfaPcxK79/sunf2MaORADu/qs3FPHmJIer8NtsDUT5F/9DoE3tPvhh0zeXC3G3TK
-         RpYw==
-X-Gm-Message-State: AOAM533n38VsNgrYyPdeKjv8H3sngURGagp58ISDarcrWUAY8NYC+CFC
-        5x9Lmc8e3se53JT1ak0UAhK0ZA==
-X-Google-Smtp-Source: ABdhPJxd0jQCbh7ytNk27pMD5nGFBIEilfvEopkBcZdlLFh/MISEKWXAO1ilvKClc6CkokzphV3Raw==
-X-Received: by 2002:aed:21c8:: with SMTP id m8mr17571534qtc.224.1592246353470;
-        Mon, 15 Jun 2020 11:39:13 -0700 (PDT)
+        bh=Ayg2PAVSdmz/HOuWjmsjRtknRgEi2PoT2Jiq5tkLESY=;
+        b=EKtg4R1TZP/4AXbHcncH50gIYUb3QC90rRFbiAcEpoHlz75ahY9+w1E9NW4PERkTHN
+         jwTN73PUDJMYiWJj+nM+h6p2XXPkjZk/2lp00F3iguRlLOm2KHEdwEk89w6H0irnsv66
+         +Hqjl90rPHKauwmNzhm8qlMgyOAEvQV1aBGbQV2QAPwFDD+oTLaAqy+eZK4zhqxPZAzw
+         QoGGTct/r5ThCWOwvkzuyTPupA0Ef+4I96RGP3H63WG3GxhOyJu98a0rqkf8itr2BXGu
+         7ENE+Y1TqjrgaLlO4SoYdosgD3QNe7sZ7+nnWf+LKigyp3EKsJfAUgfF0ESYyf5CGC2F
+         K0cg==
+X-Gm-Message-State: AOAM531bHGCkmAvWmiUIaBG6WOy2bSPLEQjX3snUR5qBE29MCTYRq5Dh
+        +xrBrjepnpQOQ/F0Op0bcLpzmQ==
+X-Google-Smtp-Source: ABdhPJy0NxdkqsFdIXa7ZqslMtxjBjlZ0/L3TKNg3Afl/Ryuh1tnaF0jOJ4s1/e/43z3m5P4tpQpCg==
+X-Received: by 2002:aed:3e8f:: with SMTP id n15mr17265955qtf.147.1592247185959;
+        Mon, 15 Jun 2020 11:53:05 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b26sm13479710qta.84.2020.06.15.11.39.12
+        by smtp.gmail.com with ESMTPSA id b74sm11341305qkc.17.2020.06.15.11.53.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 11:39:12 -0700 (PDT)
+        Mon, 15 Jun 2020 11:53:05 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jku0m-008iiI-6H; Mon, 15 Jun 2020 15:39:12 -0300
-Date:   Mon, 15 Jun 2020 15:39:12 -0300
+        id 1jkuEC-008j2a-Du; Mon, 15 Jun 2020 15:53:04 -0300
+Date:   Mon, 15 Jun 2020 15:53:04 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/mlx5: remove duplicated assignment to
- resp.response_length
-Message-ID: <20200615183912.GA2078450@ziepe.ca>
-References: <20200604143902.56021-1-colin.king@canonical.com>
+To:     Tom Seewald <tseewald@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH] [next] RDMA/mlx5: Fix -Wformat warning in
+ check_ucmd_data()
+Message-ID: <20200615185304.GA2079722@ziepe.ca>
+References: <20200605023012.9527-1-tseewald@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200604143902.56021-1-colin.king@canonical.com>
+In-Reply-To: <20200605023012.9527-1-tseewald@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 03:39:02PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jun 04, 2020 at 09:30:12PM -0500, Tom Seewald wrote:
+> Variables of type size_t should use %zu rather than %lu [1]. The variables
+> "inlen", "ucmd", "last", and "size" are all size_t, so use the correct
+> format specifiers.
 > 
-> The assignment to resp.response_length is never read since it is being
-> updated again on the next statement. The assignment is redundant so
-> removed it.
+> [1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html
 > 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Tom Seewald <tseewald@gmail.com>
 > Acked-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/infiniband/hw/mlx5/qp.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/infiniband/hw/mlx5/qp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to for-rc, with a fixes line
+Applied to for-rc with a Fixes line
 
 Thanks,
 Jason
