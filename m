@@ -2,118 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF4B1F9847
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 15:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C21F9911
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 15:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgFONVP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 09:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729965AbgFONVO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 09:21:14 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C244CC061A0E;
-        Mon, 15 Jun 2020 06:21:14 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id o5so17730076iow.8;
-        Mon, 15 Jun 2020 06:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=SjNLJ91cqhULMfUPkTYp0OY2T4Mkc4LkzZDNbiHB4Nc=;
-        b=RZRksO3ycfjFO3RdOXuk4Sqo3hGvAP0JdBG1HwHx0N7aMiwfdfwhqtpHhBrfFgw5Rf
-         Z24Gc+8gNSnayDv08TDxtrv8oHiZouCQGV4bqy7ate9Jq6Zm2FtY+DPmCEGLrod91UkI
-         RcksliCk0ZOnLSrdH4+galCNZdAGNi7DRreCgZ9VwvixC8AjWn91YYYdNYXyhjRmOD8g
-         GW7tdRDzoETsJnAbFGqCbqQLuRfXEHDG1/ykIOQyzCmZA0OK/CGz/ZnOfrDk23Xvy7LE
-         izXj32JRf6CGPyDkgWokdsXRtp41PqOwp2F84RBCIUJmWOEgUZoFCd9xCLisRYwGs1Vr
-         GnDA==
+        id S1730498AbgFONh7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 09:37:59 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:45888 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730167AbgFONh7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 09:37:59 -0400
+Received: by mail-pl1-f195.google.com with SMTP id d8so6818491plo.12;
+        Mon, 15 Jun 2020 06:37:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=SjNLJ91cqhULMfUPkTYp0OY2T4Mkc4LkzZDNbiHB4Nc=;
-        b=C9zFCf1DwrygloAxrXFCfKMPAYpMkkutLTZqZ2o/xqFGaU46tsaDpjhphqX9WnuuVu
-         HTLoPWhe+qw19jwPb9h3ZrV1kamEpLo9X2NaynU4UGV6BCPep1c50auPVJp8ZJ126U+r
-         1EvVgfInbAIgTmPtsiaeX0Ks+Zua1sdkiPpSF4jAhoyhxirYDh09fT5/Dj/73+XzOstw
-         bn+BPkWx7RlaitDKRGqOPWF88zGWmnP01J2VDpKc7jj8BkFLF84J9WPntPp0ErgULLsz
-         aRNfgcRG4F3jjcrUnUDdyOPwcin9Be+szkVVyk3Ejey6JL2ljxM5cJDLqPUjWaUhHZ8I
-         9NDw==
-X-Gm-Message-State: AOAM532n39YQAC33aG0mLxxGAODNfwLheHJ9P32dbocO6UmQCRcBH9yo
-        NQSFkpHhM+2C8xaAPR7oH3g=
-X-Google-Smtp-Source: ABdhPJzEqhCJ0I+jhP7ALxkXT4AJX7Ap4ce+fcHr0aiFji2tihBExiJWNW532uyhMnt5GkS5Mv8XMw==
-X-Received: by 2002:a6b:630d:: with SMTP id p13mr27599094iog.145.1592227274182;
-        Mon, 15 Jun 2020 06:21:14 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id n4sm8106768ioc.8.2020.06.15.06.21.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2020 06:21:13 -0700 (PDT)
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 05FDLDbi018444;
-        Mon, 15 Jun 2020 13:21:13 GMT
-Subject: [PATCH v1 5/5] xprtrdma: Fix handling of RDMA_ERROR replies
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     anna.schumaker@netapp.com
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Mon, 15 Jun 2020 09:21:13 -0400
-Message-ID: <20200615132113.11800.52604.stgit@manet.1015granger.net>
-In-Reply-To: <20200615131642.11800.27486.stgit@manet.1015granger.net>
-References: <20200615131642.11800.27486.stgit@manet.1015granger.net>
-User-Agent: StGit/0.22-38-gfb18
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wpyxJv/PM1wE2X/LCvdaNR8aTZBt1o2wUTKPmTumIZU=;
+        b=CSsXKd73Eu0wUabrIH+cLvboO+tmwivYcj1kgyWxe9rm8bqcfjaCIeCXJC35lTqBH6
+         WSVQiWXSsjjlrfcyapo1Vv7biiw12vJ0VPlfijiITfjG2ilAqvKrxYjEJ4KxPauiS/CJ
+         uP6v096yyHIazQafmIhsjylYBMQb7OFMKX8Y/nNxIoBj+6SaOsAVaiKlGEbsgeVYwENJ
+         qN/9BZV3b95KHTGCKw/FuOoqcrCSb1XXvPFHfZVR62LXfC+tJGpw2F6QaTxO+FA+uDhL
+         A3vC2LJwIK9BBihD2OWxnFAB6Ru1tIp+SOXg+pF14YxsAGQdZvTTrHIjR3ofnHN51vUf
+         tLow==
+X-Gm-Message-State: AOAM531MZuy3vCDbiOzBgsMXXtucnr32BJSDknEOzu3YXwjcoDZRRB3s
+        WDopc4e1dOR7vQkCMjH5kIc8XTZf
+X-Google-Smtp-Source: ABdhPJyr/l0oRGL6uU3APS2OcIqbEqYfER6YeVxPtUFty159+MQPg+GUVoGGRpPJ2VVLgigRmJJ6VQ==
+X-Received: by 2002:a17:902:eed4:: with SMTP id h20mr922321plb.134.1592228277890;
+        Mon, 15 Jun 2020 06:37:57 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id e12sm14177046pfj.137.2020.06.15.06.37.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 06:37:57 -0700 (PDT)
+Subject: Re: [PATCH] IB/srpt: Fix a potential null pointer dereference
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20200615091220.6439-1-jingxiangfeng@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <7366b608-4474-cfaa-c465-957fd2d2366d@acm.org>
+Date:   Mon, 15 Jun 2020 06:37:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200615091220.6439-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The RPC client currently doesn't handle ERR_CHUNK replies correctly.
-rpcrdma_complete_rqst() incorrectly passes a negative number to
-xprt_complete_rqst() as the number of bytes copied. Instead, set
-task->tk_status to the error value, and return zero bytes copied.
+On 2020-06-15 02:12, Jing Xiangfeng wrote:
+> In srpt_cm_req_recv(), it is possible that sdev is NULL,
+> so we should test sdev before using it.
+> 
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 98552749d71c..72053254bf84 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2143,7 +2143,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  			    const struct srp_login_req *req,
+>  			    const char *src_addr)
+>  {
+> -	struct srpt_port *sport = &sdev->port[port_num - 1];
+> +	struct srpt_port *sport;
+>  	struct srpt_nexus *nexus;
+>  	struct srp_login_rsp *rsp = NULL;
+>  	struct srp_login_rej *rej = NULL;
+> @@ -2162,6 +2162,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  	if (WARN_ON(!sdev || !req))
+>  		return -EINVAL;
+>  
+> +	sport = &sdev->port[port_num - 1];
+>  	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+>  
 
-In these cases, return -EIO rather than -EREMOTEIO. The RPC client's
-finite state machine doesn't know what to do with -EREMOTEIO.
+Please remove the (!sdev || !req) check instead of making the above
+change. It's easy to show that both pointers are always valid.
 
-Additional clean ups:
-- Don't double-count RDMA_ERROR replies
-- Remove a stale comment
+Thanks,
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Cc: <stable@kernel.vger.org>
----
- net/sunrpc/xprtrdma/rpc_rdma.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-index 2081c8fbfa48..935bbef2f7be 100644
---- a/net/sunrpc/xprtrdma/rpc_rdma.c
-+++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-@@ -1349,8 +1349,7 @@ rpcrdma_decode_error(struct rpcrdma_xprt *r_xprt, struct rpcrdma_rep *rep,
- 			be32_to_cpup(p), be32_to_cpu(rep->rr_xid));
- 	}
- 
--	r_xprt->rx_stats.bad_reply_count++;
--	return -EREMOTEIO;
-+	return -EIO;
- }
- 
- /* Perform XID lookup, reconstruction of the RPC reply, and
-@@ -1387,13 +1386,11 @@ void rpcrdma_complete_rqst(struct rpcrdma_rep *rep)
- 	spin_unlock(&xprt->queue_lock);
- 	return;
- 
--/* If the incoming reply terminated a pending RPC, the next
-- * RPC call will post a replacement receive buffer as it is
-- * being marshaled.
-- */
- out_badheader:
- 	trace_xprtrdma_reply_hdr(rep);
- 	r_xprt->rx_stats.bad_reply_count++;
-+	rqst->rq_task->tk_status = status;
-+	status = 0;
- 	goto out;
- }
- 
-
+Bart.
