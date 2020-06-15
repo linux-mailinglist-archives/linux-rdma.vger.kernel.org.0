@@ -2,161 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDAC1F90DF
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 09:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267371F9179
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 10:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgFOH7f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 03:59:35 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:17450 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgFOH7e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 03:59:34 -0400
+        id S1728180AbgFOIcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 04:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728162AbgFOIcM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 04:32:12 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3B2C061A0E;
+        Mon, 15 Jun 2020 01:32:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j10so16123714wrw.8;
+        Mon, 15 Jun 2020 01:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592207973; x=1623743973;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8gRzcZdZxOifiUg2ZlIhXK0X9+vVaabD868Pf7514is=;
-  b=Qx5GYXVfLH7OrzsSd+4rI+vfFqju1SZKWNX6VE1771aXsIqXway/vdwZ
-   wu49c1fO1dVnLns7FXST+85MoecO3H4dLMb4h7f0r6ecHinjk2DfQPrhP
-   TMs4MNLXx9ZajgVYwsjl7SZGHipAzXTeGHRSQpSkOucKvkqx0AkV/n+PC
-   Q=;
-IronPort-SDR: ucL1tlWvTPMVZqQKL+IEDJYBnimw1AIbgDEcIdEBbIP15ModwzXKR68IbFqH1FkspyogDXaHUj
- PFM6laOFnyOQ==
-X-IronPort-AV: E=Sophos;i="5.73,514,1583193600"; 
-   d="scan'208";a="36259990"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 15 Jun 2020 07:59:32 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 42742A04EA;
-        Mon, 15 Jun 2020 07:59:32 +0000 (UTC)
-Received: from EX13D19EUA004.ant.amazon.com (10.43.165.28) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 07:59:31 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D19EUA004.ant.amazon.com (10.43.165.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 07:59:30 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.1.213.14) by
- mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 15 Jun 2020 07:59:27 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        "Yossi Leybovich" <sleybo@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Move provider specific attributes to ucontext allocation response
-Date:   Mon, 15 Jun 2020 10:59:20 +0300
-Message-ID: <20200615075920.58936-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9KYL3/QNGdUfmk+FO2Zw/YosA4y8k6PjID3Uf7sVNdc=;
+        b=QtOkR5jfF7lmmFdPdljqkdC04VnCGOnahNDsT9a2uCWPfLVGqPGebsOQohqZdJmAvO
+         Q9kerB0b+T23muU/+2Yiydhh1mVDK5jhtS+tyjRqZlsLxmrPjIJOM01J96eIryeRw3nd
+         HrsdmS5De7fOFhuWQNR80hKHSC0jWry8ZtylyDvAKaoglk7CLsNrmf8vGjGn6y6BEuUZ
+         TCF59RiuSsjizZdHIMC3UqT6ThWx8GgWALJXvI9zMYNkRTAJsji+c1Js19VKRUJKuGHh
+         4Dtn9I7UI/WUhNNY7JUZzJ4mgyOTLNMtDgEWW/KBcp4EbsVrQe9+ab2yD4mtTQmFIT/7
+         qEfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9KYL3/QNGdUfmk+FO2Zw/YosA4y8k6PjID3Uf7sVNdc=;
+        b=uHr9qGJNEOGO9zak3KydO4LhcXVxtaspA4i0E1XCIum4pWR478zw1ISswd92PujOFT
+         j4aSVdstlfDL2f0o5wxnvmVRzkQV+JgkKH5r5WRB5eV4ecks/lCTETdG67TbsbB6Q0k1
+         nUN3txmb5em/UYyHD4WRPhfqhRVQ/bftvXkJG8Jc2d2pfPToWjt383LzQp0u1QQ6v1Cx
+         i45L+TGV8JDpQPO1MmOmmEl/RF/n1IBFcaSIRnmU+qKKhsocXdroe3qcfgB1JEmZf8xU
+         9d2M2aSL0yge45AEiJm8jH+yFk55eiF3wY1Ea0JSwfWFKFe6wG+xPBSOSp03LAzANZm7
+         9hSg==
+X-Gm-Message-State: AOAM5311LLKGeF8fMCvHlrBA6uR8332qLumU24ZRWb0qqhYrdQLyNdlJ
+        MeFSav1uDugAKpCRj6uticY=
+X-Google-Smtp-Source: ABdhPJxLXnD+PnWZMq7OsnU4Mxg6o2Ccm3rgVEepbhXZzGk1RDZts5KG01u8CP0K7rsYZGJjSKF1qg==
+X-Received: by 2002:a5d:428e:: with SMTP id k14mr27402732wrq.21.1592209930738;
+        Mon, 15 Jun 2020 01:32:10 -0700 (PDT)
+Received: from net.saheed (54006BB0.dsl.pool.telekom.hu. [84.0.107.176])
+        by smtp.gmail.com with ESMTPSA id z206sm21954745wmg.30.2020.06.15.01.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 01:32:10 -0700 (PDT)
+From:   refactormyself@gmail.com
+To:     helgaas@kernel.org
+Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>,
+        bjorn@helgaas.com, skhan@linuxfoundation.org,
+        linux-pci@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Don Brace <don.brace@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        Russell Currey <ruscur@russell.cc>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8 v2] PCI: Align return values of PCIe capability and PCI accessors
+Date:   Mon, 15 Jun 2020 09:32:17 +0200
+Message-Id: <20200615073225.24061-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Provider specific attributes which are necessary for the userspace
-functionality should be part of the alloc ucontext response, not query
-device. This way a userspace provider could work without issuing a query
-device verb call. However, the fields will remain in the query device
-ABI in order to maintain backwards compatibility.
+From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
 
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
-PR was sent:
-https://github.com/linux-rdma/rdma-core/pull/775
----
- drivers/infiniband/hw/efa/efa_verbs.c | 10 ++++++++++
- include/uapi/rdma/efa-abi.h           | 23 ++++++++++++++++++++++-
- 2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 08313f7c73bc..519cc959acfe 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1520,11 +1520,21 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
- 
- 	ucontext->uarn = result.uarn;
- 
-+	resp.comp_mask |= EFA_ALLOC_UCONTEXT_RESP_DEV_ATTR;
- 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE;
- 	resp.cmds_supp_udata_mask |= EFA_USER_CMDS_SUPP_UDATA_CREATE_AH;
- 	resp.sub_cqs_per_cq = dev->dev_attr.sub_cqs_per_cq;
- 	resp.inline_buf_size = dev->dev_attr.inline_buf_size;
- 	resp.max_llq_size = dev->dev_attr.max_llq_size;
-+	resp.max_sq_sge = dev->dev_attr.max_sq_sge;
-+	resp.max_rq_sge = dev->dev_attr.max_rq_sge;
-+	resp.max_sq_wr = dev->dev_attr.max_sq_depth;
-+	resp.max_rq_wr = dev->dev_attr.max_rq_depth;
-+	resp.max_rdma_size = dev->dev_attr.max_rdma_size;
-+	resp.max_wr_rdma_sge = dev->dev_attr.max_wr_rdma_sge;
-+
-+	if (is_rdma_read_cap(dev))
-+		resp.device_caps |= EFA_ALLOC_UCONTEXT_DEVICE_CAPS_RDMA_READ;
- 
- 	if (udata && udata->outlen) {
- 		err = ib_copy_to_udata(udata, &resp,
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index 53b6e2036a9b..12df5c1659b6 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
- /*
-- * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef EFA_ABI_USER_H
-@@ -20,6 +20,14 @@
-  * hex bit offset of the field.
-  */
- 
-+enum {
-+	EFA_ALLOC_UCONTEXT_RESP_DEV_ATTR = 1 << 0,
-+};
-+
-+enum {
-+	EFA_ALLOC_UCONTEXT_DEVICE_CAPS_RDMA_READ = 1 << 0,
-+};
-+
- enum efa_ibv_user_cmds_supp_udata {
- 	EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE = 1 << 0,
- 	EFA_USER_CMDS_SUPP_UDATA_CREATE_AH    = 1 << 1,
-@@ -31,6 +39,14 @@ struct efa_ibv_alloc_ucontext_resp {
- 	__u16 sub_cqs_per_cq;
- 	__u16 inline_buf_size;
- 	__u32 max_llq_size; /* bytes */
-+	__u32 max_sq_wr;
-+	__u32 max_rq_wr;
-+	__u16 max_sq_sge;
-+	__u16 max_rq_sge;
-+	__u32 max_rdma_size;
-+	__u32 device_caps;
-+	__u16 max_wr_rdma_sge;
-+	__u8 reserved_130[2];
- };
- 
- struct efa_ibv_alloc_pd_resp {
-@@ -96,6 +112,11 @@ enum {
- 
- struct efa_ibv_ex_query_device_resp {
- 	__u32 comp_mask;
-+	/*
-+	 * Attributes which are required for userspace provider functionality
-+	 * should be in alloc ucontext response, the following fields have been
-+	 * moved.
-+	 */
- 	__u32 max_sq_wr;
- 	__u32 max_rq_wr;
- 	__u16 max_sq_sge;
+PATCH 1/8 to 7/8:
+PCIBIOS_ error codes have positive values and they are passed down the
+call heirarchy from accessors. For functions which are meant to return
+only a negative value on failure, passing on this value is a bug.
+To mitigate this, call pcibios_err_to_errno() before passing on return
+value from PCIe capability accessors call heirarchy. This function
+converts any positive PCIBIOS_ error codes to negative generic error
+values.
 
-base-commit: fba97dc7fc76b2c9a909fa0b3786d30a9899f5cf
+PATCH 8/8:
+The PCIe capability accessors can return 0, -EINVAL, or any PCIBIOS_ error
+code. The pci accessor on the other hand can only return 0 or any PCIBIOS_
+error code.This inconsistency among these accessor makes it harder for
+callers to check for errors.
+Return PCIBIOS_BAD_REGISTER_NUMBER instead of -EINVAL in all PCIe
+capability accessors.
+
+MERGING:
+These may all be merged via the PCI tree, since it is a collection of
+similar fixes. This way they all get merged at once.
+
+Version 2:
+* cc to maintainers and mailing lists
+* Edit the Subject to conform with previous style
+* reorder "Signed by" and "Suggested by"
+* made spelling corrections
+* fixed redundant initialisation in PATCH 3/8
+* include missing call to pcibios_err_to_errno() in PATCH 6/8 and 7/8
+
+
+Bolarinwa Olayemi Saheed (8):
+  dmaengine: ioatdma: Convert PCIBIOS_* errors to generic -E* errors
+  IB/hfi1: Convert PCIBIOS_* errors to generic -E* errors
+  IB/hfi1: Convert PCIBIOS_* errors to generic -E* errors
+  PCI: Convert PCIBIOS_* errors to generic -E* errors
+  scsi: smartpqi: Convert PCIBIOS_* errors to generic -E* errors
+  PCI/AER: Convert PCIBIOS_* errors to generic -E* errors
+  PCI/AER: Convert PCIBIOS_* errors to generic -E* errors
+  PCI: Align return values of PCIe capability and PCI accessorss
+
+ drivers/dma/ioat/init.c               |  4 ++--
+ drivers/infiniband/hw/hfi1/pcie.c     | 18 +++++++++++++-----
+ drivers/pci/access.c                  |  8 ++++----
+ drivers/pci/pci.c                     | 10 ++++++++--
+ drivers/pci/pcie/aer.c                | 12 ++++++++++--
+ drivers/scsi/smartpqi/smartpqi_init.c |  6 +++++-
+ 6 files changed, 42 insertions(+), 16 deletions(-)
+
 -- 
-2.27.0
+2.18.2
 
