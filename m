@@ -2,73 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BA21F9E8C
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 19:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D80D1F9F71
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 20:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgFORcf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 13:32:35 -0400
-Received: from sonic301-3.consmr.mail.bf2.yahoo.com ([74.6.129.42]:38821 "EHLO
-        sonic301-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731183AbgFORcf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:32:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592242354; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=a1qPeJnsgR5d6Xf2FeiK+qLxCdL2WXC40YTXT8A9hy9X+YRUkqNtQBo3aI2GWCpg6EkHz6MG61bCMUh+iwjMPDq7Tlx22WIOwZ9II76tEfUTd2S95p0gScShqw9d/sPw8j0dV+swHMzMPS/PE/WqeuTAKQB75rK7N1Q0LiV1/+UphRVXkG+iIWZkdnCdlFPc6wOW2WGt8AB+E/5DMELOtXqnd4ocNtzRZ2k76VzTtAojFE7/oT7O6EsCtP+G56+8K69t5fwAcTX765BoCYuy1qEVdFfbUh4i9YmS6J6Tbbc6gl62mbmfZn8e7znWax0mLgKepOuAgrFBPKFkyfnS8Q==
-X-YMail-OSG: AjE6pkEVM1kNHBgCKC6tIuRaPfOX9h2SF7fkvjvAmN8bkpnIVLOkLZUc0LfLfr9
- bRNvuL3DCjpbasAw8jkZ0q1sr_SxgQ5L4_NKII2.ymXI2dWo.kVwcpmn.dyCCn_LceW5GcDgNjoa
- XIayuBMHhbwoPQJX3XeWEJaHvvU3fcykcu_zG_tL9QYtJa9weHhGd9hUrI0zgL7tF70mpbRabS2W
- 8EHmstrQOc037EkiYAKhWThI4lZtVT.46AZ_bcrv_MZc8pZopnqwOaZgq2P2boPWdQ14XlBfbQsx
- bf4YCxBxZJCsuzEJzJLv8ZXMu.ncmDBOnntP_73sr61kvAD.LygezY8LynMAahcH8C1bXON8CipZ
- wgTDqlUXrFNRcmrc5SFJHnxf.N4OPsCwt.s4w_gBAdynQ8bwydqSv8nxqU1TnJpe4LREs51Djz2R
- 4ckdJMOiZO5amNqxWz.2_h61grILpfC.CmtJv9Ws.0iU9mfU98q8FCtwxBV2Jq.w9seSofrONecj
- 5dB1OKbhRalJFNPnihJSOl8X08dKEtE6v8yh.SaLkVyelte7EP24xFn9xmK5MyTqUC4MEmuh5ty1
- sJAxGLkPTSufPR5v.Y3vD.gtxyrnrzTBV8UD1H2H3ul8l.s2yZrUuBK_79c8I3SpUEIlh8xCo3rQ
- ifES63ImS1QAkspkrHAK91WXkOEjAsOBQAAda8C7RroAzw6C94RRD4LTSPOG8BGHw6D5XPAXp8mF
- c8nBzcyzlbFdgGRjgD90PfkMJxUKqNpU8Typb7_SiBWBxAsHiu4AkLI3wfOsGPvex7pNJZvjF8m3
- rFeEAqeb0vJsRHR6Xn3pUgRRTw2f0lUsZi.UpTsWamlmJhmvG9hnd_a4OOrx4EuwELV7plZOwVRN
- 61Eh7K8o3JNN7LwQrrPzOTQysXGLewaopus2gcBPIuq6aBLzeU8s5CLzl4W0JDfY_ZXo5XIQdjRz
- 8VfpK26_gLDvcFrAeKv0WQvoCzebSh6mltu2CCnSHjgc3i9OQ9MtkwVYecPku__axSMYJmBELK8g
- npGNZBmuc7hJQ2JF_DHAM9weFvqPHEnEyT7ITwVK6qoyDBdgPKEERhFTQS3wJ_CiUpXWHR5aCEJv
- lFSRc8ihpWjejG1BraRpDp77GybrfXfqJZ2Hu2JKZj2zpeEt0DzhJaj2XaEwlEyVLS7EOZw0HdG8
- 9TNiVnnoZuBA_1giiIpqwti3dkmNZYH1w5jIrNq9zBuLCWpl76AwO5a2qxGkQ3qpyjnC5oi8Ue2Q
- wE624C45621PL38mw0JeDw9LRzzKWuPLIEX4GNMtgmQM1RHnRYwJrI9Vxgp6crUA9g1w-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Mon, 15 Jun 2020 17:32:34 +0000
-Date:   Mon, 15 Jun 2020 17:32:33 +0000 (UTC)
-From:   Ms lisa Hugh <lisahugh531@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <1271891906.798134.1592242353602@mail.yahoo.com>
-Subject: BUSINESS FROM(Ms Lisa hugh).
+        id S1731368AbgFOSjP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 14:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729847AbgFOSjO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 14:39:14 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ED0C05BD43
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:39:14 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id k22so13436533qtm.6
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B8I0m7QO2EsHmHEbaNmg1LU0cMkLA+PHBa4u0Nmnmbo=;
+        b=eWlnvOxcru0L75I+4qv/8OYbNlG8YuBT4Gu+sDiUpPwgFyKe1ZeOkJHV6H8XGJRCI9
+         UtzRh52j0YKsZExwLa7ZuV1Z96qg2J9jg+lBswWZpnyk5/EBfsZ0OGgBilm9kaaQaACn
+         9jiVMzP7Vufkp60RbfNdeiyBiyEXrHGmM80UL3oyVF5k4ATPD3MKU8aCLACL+pGsuWmE
+         /WgYJsJsBKhulZ3iCDkj4UXoXt0bX/3rNUc37tLZJY+RPGnEGdfgQDKYlISdgiBQ0nH5
+         0PgniI8N9pigckAgx2CJgvZOrzQ1Ai/iOvrtGI8VWVwM0B0Yr6A8HXbkMo4+CYNdMmUo
+         9Zcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B8I0m7QO2EsHmHEbaNmg1LU0cMkLA+PHBa4u0Nmnmbo=;
+        b=WmkyGwaZLwyJf6xGcakK+ddLeFaaPnwxn9HoXjhJY+7aEGVhll+vWHyV9wYvd8iETh
+         1gRBXdXFwBBfjZUc9HY30ZN6BlTG8va1sDn8q3dVpMJvjBya3iYdn6yndvIiRTUW2Zlb
+         UPfkgXTdQfnjhgVNloSl1kQP4/63xe/l2rWgGzJGAldfbLJ0PavQNWf+rG07BgADZZcI
+         Y9lMyKxEPKZsM5wtwh0NYcOVOKZl2OTR3fxE15WvXZ8W5CFpq0QeOkcKZVO6UfDVkvB7
+         JvcInfaPcxK79/sunf2MaORADu/qs3FPHmJIer8NtsDUT5F/9DoE3tPvhh0zeXC3G3TK
+         RpYw==
+X-Gm-Message-State: AOAM533n38VsNgrYyPdeKjv8H3sngURGagp58ISDarcrWUAY8NYC+CFC
+        5x9Lmc8e3se53JT1ak0UAhK0ZA==
+X-Google-Smtp-Source: ABdhPJxd0jQCbh7ytNk27pMD5nGFBIEilfvEopkBcZdlLFh/MISEKWXAO1ilvKClc6CkokzphV3Raw==
+X-Received: by 2002:aed:21c8:: with SMTP id m8mr17571534qtc.224.1592246353470;
+        Mon, 15 Jun 2020 11:39:13 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b26sm13479710qta.84.2020.06.15.11.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 11:39:12 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jku0m-008iiI-6H; Mon, 15 Jun 2020 15:39:12 -0300
+Date:   Mon, 15 Jun 2020 15:39:12 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/mlx5: remove duplicated assignment to
+ resp.response_length
+Message-ID: <20200615183912.GA2078450@ziepe.ca>
+References: <20200604143902.56021-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1271891906.798134.1592242353602.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16119 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604143902.56021-1-colin.king@canonical.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jun 04, 2020 at 03:39:02PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The assignment to resp.response_length is never read since it is being
+> updated again on the next statement. The assignment is redundant so
+> removed it.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Acked-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/qp.c | 2 --
+>  1 file changed, 2 deletions(-)
 
+Applied to for-rc, with a fixes line
 
-Dear Friend,
-
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
-
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
-
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
+Thanks,
+Jason
