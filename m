@@ -2,86 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2D11F9FAF
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 20:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13E91F9FCF
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Jun 2020 20:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgFOSxJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 14:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        id S1731409AbgFOS6b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 14:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729124AbgFOSxI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 14:53:08 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688A3C061A0E
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:53:07 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id y1so13471518qtv.12
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:53:07 -0700 (PDT)
+        with ESMTP id S1731384AbgFOS60 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Jun 2020 14:58:26 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD46BC08C5C4
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:58:24 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id c14so16756314qka.11
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Jun 2020 11:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Ayg2PAVSdmz/HOuWjmsjRtknRgEi2PoT2Jiq5tkLESY=;
-        b=bKs8NVLrmAgH/ZaYWHDU+EKGek1aWcrqpXD0PlUZpXQALE6CFs6rGcHU/BVssPF5Ve
-         okM8Gz/G0JL3WnQWVXNqLEIY17Y5crhX2oTRyvfVde1jXzE4yrM//m15FcZfuo9npSYL
-         PDDJV5yEM1b7ZdgyUCI4CVm49beS1WgsONfgobvkIeEzWLbyMSSxF/8sAu3iVBHPIT0R
-         ntYH0uftulq51nj34p5oJYHWgtB0XC8YEAWaBJzbkDW3uxVGZ5aQbCE1YcCT/7wY2I4N
-         efyp7jjSBCdGk5SThCaZ2Cs5EuHYbQbaYbDc4XE9+/Ktz1dDMt+sknTQTAY047Bltgzu
-         hg0A==
+        bh=ogzWVexVKpi+yf06GApbiQKLooA3A6vya/Qu53dz5sI=;
+        b=B79KaIJ0c/ww8HMtAlyFH2XjxV7yynKBJIWwJHZ+zW3YLHuCCz9Bbiwsd2WzFuQLPj
+         AFf5Hg0Lqd/XvxHRpc9Uh/4vnlvXaITDgihFpq8wunarv4UVftdSwWHlY7Zs6O9gurGh
+         IE5GaopbWKe7DlaPUx/EPeh0He+mTIL/wqUz367myp2ljsairUj+5vVlWMjYvyLYdFxp
+         yylSrzx5rdvX7s5Lrdyjcy+vzWB+YunSNoTcuzE3AgfFM4I5Skeao2I26rxVl1af8CRx
+         y19r67M7mx7zcJG+Kyz2nHe2SegGgVU7ADSwtl1Rh91OJTnONTAEuipSUQQypIEpgb9A
+         T36g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Ayg2PAVSdmz/HOuWjmsjRtknRgEi2PoT2Jiq5tkLESY=;
-        b=EKtg4R1TZP/4AXbHcncH50gIYUb3QC90rRFbiAcEpoHlz75ahY9+w1E9NW4PERkTHN
-         jwTN73PUDJMYiWJj+nM+h6p2XXPkjZk/2lp00F3iguRlLOm2KHEdwEk89w6H0irnsv66
-         +Hqjl90rPHKauwmNzhm8qlMgyOAEvQV1aBGbQV2QAPwFDD+oTLaAqy+eZK4zhqxPZAzw
-         QoGGTct/r5ThCWOwvkzuyTPupA0Ef+4I96RGP3H63WG3GxhOyJu98a0rqkf8itr2BXGu
-         7ENE+Y1TqjrgaLlO4SoYdosgD3QNe7sZ7+nnWf+LKigyp3EKsJfAUgfF0ESYyf5CGC2F
-         K0cg==
-X-Gm-Message-State: AOAM531bHGCkmAvWmiUIaBG6WOy2bSPLEQjX3snUR5qBE29MCTYRq5Dh
-        +xrBrjepnpQOQ/F0Op0bcLpzmQ==
-X-Google-Smtp-Source: ABdhPJy0NxdkqsFdIXa7ZqslMtxjBjlZ0/L3TKNg3Afl/Ryuh1tnaF0jOJ4s1/e/43z3m5P4tpQpCg==
-X-Received: by 2002:aed:3e8f:: with SMTP id n15mr17265955qtf.147.1592247185959;
-        Mon, 15 Jun 2020 11:53:05 -0700 (PDT)
+        bh=ogzWVexVKpi+yf06GApbiQKLooA3A6vya/Qu53dz5sI=;
+        b=BFZNh9NpWnB80JtR68GWLA3YteLufEej0r8Lfe064Xl1MvSLv5RTn7N0HH7rGMUi4a
+         mjIf29NFHByPEJcEj2ER1Iw8aIVI3JPolBDWXRTDe5xjyzKXyjpzKWuuY9VZXZZ8fj2g
+         1dIYnH1yxfEaGHQSePAUcy5V1hweNBBfxC+DxgVADiuEHTFT89pIbdDK3q4lSasW3ED8
+         h2cdqZ3E6cUK+wikYLIfVx4FL9dYhJPDfTzrx1Y4iSh9h5CynNIu/BJVPbi16B+ObZBp
+         njJUJ5v3t4GZ8gHCuwuyxC5U2HHxBFMARUWk/2qcYvTH8M3wgsEslHDQ+oQ9Y0sO+dsQ
+         tUHw==
+X-Gm-Message-State: AOAM533qbkDG2caQKRI1f9zQIjpJLDBuBgZ6atsCFZ22aLe+NpT2pZjH
+        ylTdzgFpEEzP6aD1Zfs6uzT/XA==
+X-Google-Smtp-Source: ABdhPJygSobk4Dm93WtmDBaO2t3cPn7PZD+tDnBnapk86ninzx0O9WOhG6qnekVgX9A+5fj3vrdD7Q==
+X-Received: by 2002:a37:812:: with SMTP id 18mr17402635qki.296.1592247503264;
+        Mon, 15 Jun 2020 11:58:23 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b74sm11341305qkc.17.2020.06.15.11.53.04
+        by smtp.gmail.com with ESMTPSA id m13sm13228785qta.90.2020.06.15.11.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 11:53:05 -0700 (PDT)
+        Mon, 15 Jun 2020 11:58:22 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jkuEC-008j2a-Du; Mon, 15 Jun 2020 15:53:04 -0300
-Date:   Mon, 15 Jun 2020 15:53:04 -0300
+        id 1jkuJK-008kGo-AN; Mon, 15 Jun 2020 15:58:22 -0300
+Date:   Mon, 15 Jun 2020 15:58:22 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tom Seewald <tseewald@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH] [next] RDMA/mlx5: Fix -Wformat warning in
- check_ucmd_data()
-Message-ID: <20200615185304.GA2079722@ziepe.ca>
-References: <20200605023012.9527-1-tseewald@gmail.com>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
+        netdev@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
+Subject: Re: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
+Message-ID: <20200615185822.GA2084429@ziepe.ca>
+References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200605023012.9527-1-tseewald@gmail.com>
+In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 09:30:12PM -0500, Tom Seewald wrote:
-> Variables of type size_t should use %zu rather than %lu [1]. The variables
-> "inlen", "ucmd", "last", and "size" are all size_t, so use the correct
-> format specifiers.
+On Tue, Jun 09, 2020 at 01:45:53PM +0100, Kieran Bingham wrote:
+> I wouldn't normally go through spelling fixes, but I caught sight of
+> this typo twice, and then foolishly grepped the tree for it, and saw how
+> pervasive it was.
 > 
-> [1] https://www.kernel.org/doc/html/latest/core-api/printk-formats.html
+> so here I am ... fixing a typo globally... but with an addition in
+> scripts/spelling.txt so it shouldn't re-appear ;-)
 > 
-> Signed-off-by: Tom Seewald <tseewald@gmail.com>
-> Acked-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/qp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Cc: linux-arm-kernel@lists.infradead.org (moderated list:TI DAVINCI MACHINE SUPPORT)
+> Cc: linux-kernel@vger.kernel.org (open list)
+> Cc: linux-pm@vger.kernel.org (open list:DEVICE FREQUENCY EVENT (DEVFREQ-EVENT))
+> Cc: linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM)
+> Cc: dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+> Cc: linux-rdma@vger.kernel.org (open list:HFI1 DRIVER)
+> Cc: linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)...)
+> Cc: linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+> Cc: netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+> Cc: ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER)
+> Cc: linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS))
+> Cc: linux-scsi@vger.kernel.org (open list:IBM Power Virtual FC Device Drivers)
+> Cc: linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT))
+> Cc: linux-usb@vger.kernel.org (open list:USB SUBSYSTEM)
+> Cc: virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND NET DRIVERS)
+> Cc: linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+> 
+> 
+> Kieran Bingham (17):
+>   arch: arm: mach-davinci: Fix trivial spelling
+>   drivers: infiniband: Fix trivial spelling
+>   drivers: infiniband: Fix trivial spelling
 
-Applied to for-rc with a Fixes line
+I took these two RDMA patches and merged them, thanks
 
-Thanks,
 Jason
