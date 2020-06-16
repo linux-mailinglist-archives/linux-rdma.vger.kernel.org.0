@@ -2,91 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389451FABAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 10:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9AF1FABB9
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 10:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgFPIx2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 04:53:28 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:29886 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgFPIx2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 04:53:28 -0400
+        id S1725710AbgFPI62 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 04:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbgFPI61 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 04:58:27 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E7DC03E96A
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 01:58:26 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id x25so6715950edr.8
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 01:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592297608; x=1623833608;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=9k/S37mQcLkwcJqroMlWZpRbvQs+IFwYaNsdcYsBvM0=;
-  b=E1gEPh7UiH3+s1GIkUwBFUoeMEj4cXoIRfajV7KxiMkkXpDLR7p02kO7
-   UOO6a72rrDz8a2EibyjMN5Twg1PbVp2K93nSiV9w1wShX4nrhmgddOe4g
-   1NaKwGbEnG3Frl9B34Yw2jXAPz8qAXlp4ztfNb3IwBcjjFHdmCNuLIGoT
-   M=;
-IronPort-SDR: tbR2jULcTn8DJuTNS7gcOK+rt64nIaVIF59Rlj+MJPpcFc7n8nkJVsPjK73ImezFXh81B8Iswb
- Ha+QfyO/W1cQ==
-X-IronPort-AV: E=Sophos;i="5.73,518,1583193600"; 
-   d="scan'208";a="52583261"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 16 Jun 2020 08:53:22 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 3349AA1ED5;
-        Tue, 16 Jun 2020 08:53:21 +0000 (UTC)
-Received: from EX13D19EUB001.ant.amazon.com (10.43.166.229) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 08:53:20 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.53) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 08:53:16 +0000
-Subject: Re: [PATCH for-next] RDMA/efa: Move provider specific attributes to
- ucontext allocation response
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20200615075920.58936-1-galpress@amazon.com>
- <20200616063045.GC2141420@unreal>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <cba7128b-c427-bc26-5f43-69a22463debc@amazon.com>
-Date:   Tue, 16 Jun 2020 11:53:11 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lr8s79ZPnHwzGuxTYYQcZkdM3p8jL4frhAFE1iQpmnQ=;
+        b=jEXmWfAk3NES54doQp9xW6JGO6Xr1e0fqrW6uhDpIQky6aUN2tVRyDT2Ynu2TplQtP
+         U1BA5VgJkAFimGCxtP9Xh3MD88bbZGqdQC5EzIRlKS+5QS9B97bBnF6TQrLrFBlIXLdc
+         LkqIPCyPEab+gl9NmUR/KZVFKkOyH4nUuzpr/ibXWGMGvoRcy4pxngedCqvZwlYcGh2z
+         gSmfQJ5H0vWZvYJ/KTPO1uAdJMknkEB1p0Dn94Vx80PypN9be+ZsaMFdKENWgu5Ultrj
+         JB0mTXGSTwwwFVQjFwf1YSp01DyskeyiWVezrY+1x6Rd50M4+ip8DUAw/CZ0SxgZ61Gr
+         MfGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=lr8s79ZPnHwzGuxTYYQcZkdM3p8jL4frhAFE1iQpmnQ=;
+        b=Fas80zLq1s2cVBi2XDfmIj00Lt0VF0sFmwVgkCXUIJ0SwVzqZIT/0T2fYrLqo9ASBd
+         b3G41Vy+5dj1/AJx4JqWF7rVsZ6twlbvOcF5+gkRTeo8tsaHrzD1ywOkenNe+SW9P33D
+         0aU3Hd5X8FmUmwnjHDIwq1uvRTbBZ1DzWT9tspPNRW/FbIuLDnYzwAtyErOEhULesJUV
+         HTAf+CY4Ee7cThCZnPDmm9r2jERFFxcx5vdAp+EyYcaAN3ADswGYAD9x6b3PS9FV/WjX
+         tf+xGf4q/mQpWc9iFFZaQO4nVvKjx/YtheEtfNoExLqchHuWcCrWBs8+zhKJiydf+XXy
+         kcsg==
+X-Gm-Message-State: AOAM532Pi+54hVmXdzPwnL/6Wyx4kjbOM4WVFeN91M+9+/xesltV7uc2
+        RQvZuPJd+b60NSyzaSH2TS2nEYVi9vSAvbSgwcE=
+X-Google-Smtp-Source: ABdhPJxka+hSGbM+qACEYNaqDePpdvYdXAG/S+i/mKYokbTlb8TS72WMwkfx1GA0u77gWNnefyTE4UAWBu4Lw9nXT5o=
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr1604255edq.294.1592297904787;
+ Tue, 16 Jun 2020 01:58:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200616063045.GC2141420@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D35UWB002.ant.amazon.com (10.43.161.154) To
- EX13D19EUB001.ant.amazon.com (10.43.166.229)
+Received: by 2002:a50:8045:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 01:58:24
+ -0700 (PDT)
+Reply-To: gh727530@gmail.com
+From:   george howard <edemhoegbesso@gmail.com>
+Date:   Tue, 16 Jun 2020 10:58:24 +0200
+Message-ID: <CAPM9i6-Ng1KYf7=F0_UpHAvzTx=Y2MHbZ0SCKvfJfdU9UbL1nw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16/06/2020 9:30, Leon Romanovsky wrote:
-> On Mon, Jun 15, 2020 at 10:59:20AM +0300, Gal Pressman wrote:
->> Provider specific attributes which are necessary for the userspace
->> functionality should be part of the alloc ucontext response, not query
->> device. This way a userspace provider could work without issuing a query
->> device verb call. However, the fields will remain in the query device
->> ABI in order to maintain backwards compatibility.
-> 
-> I don't really understand why "should be ..."? Device properties exposed
-> here are per-device and will be equal to all ucontexts, so instead of
-> doing one very fast system call, you are "punishing" every ucontext
-> call.
+Hoi
 
-I talked about it with Jason in the past, the query device verb is intended to
-follow the IBA verb, alloc ucontext should return driver specific data that's
-required to operate the user space provider.
-A query device call should not be mandatory to load the provider.
+Mijn naam is George Howard. Ik ben advocaat van beroep. ik
+zou u willen aanbieden
+het dichtste familielid van mijn cli=C3=ABnt. Ze erven de som van (8.5
+Miljoen US dollars)
+Dollars die mijn klant op de bank achterliet voordat hij stierf.
 
-Whether it's done through query device/ucontext response, both happen for each
-new context call. With this patch, we gather all needed data in one system call
-instead of two.
+Mijn klant is een burger van uw land die bij zijn vrouw is
+is omgekomen bij een auto-ongeluk
+en enige zoon. Ik heb recht op 50% van het totale fonds, 50% daarvan
+voor jou zijn.
+Neem hier contact op met mijn priv=C3=A9-e-mailadres voor meer
+Informatie: gh727530@gmail.com
 
-> What is wrong with calling one query_device before allocating any
-> ucontext? What are you trying to achieve and what will it give?
-
-How can you call query device without allocating a context?
+Bij voorbaat dank,
+Meneer George Howard,
