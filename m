@@ -2,77 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9AF1FABB9
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 10:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80931FACEB
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 11:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725710AbgFPI62 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 04:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgFPI61 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 04:58:27 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E7DC03E96A
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 01:58:26 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id x25so6715950edr.8
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 01:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=lr8s79ZPnHwzGuxTYYQcZkdM3p8jL4frhAFE1iQpmnQ=;
-        b=jEXmWfAk3NES54doQp9xW6JGO6Xr1e0fqrW6uhDpIQky6aUN2tVRyDT2Ynu2TplQtP
-         U1BA5VgJkAFimGCxtP9Xh3MD88bbZGqdQC5EzIRlKS+5QS9B97bBnF6TQrLrFBlIXLdc
-         LkqIPCyPEab+gl9NmUR/KZVFKkOyH4nUuzpr/ibXWGMGvoRcy4pxngedCqvZwlYcGh2z
-         gSmfQJ5H0vWZvYJ/KTPO1uAdJMknkEB1p0Dn94Vx80PypN9be+ZsaMFdKENWgu5Ultrj
-         JB0mTXGSTwwwFVQjFwf1YSp01DyskeyiWVezrY+1x6Rd50M4+ip8DUAw/CZ0SxgZ61Gr
-         MfGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=lr8s79ZPnHwzGuxTYYQcZkdM3p8jL4frhAFE1iQpmnQ=;
-        b=Fas80zLq1s2cVBi2XDfmIj00Lt0VF0sFmwVgkCXUIJ0SwVzqZIT/0T2fYrLqo9ASBd
-         b3G41Vy+5dj1/AJx4JqWF7rVsZ6twlbvOcF5+gkRTeo8tsaHrzD1ywOkenNe+SW9P33D
-         0aU3Hd5X8FmUmwnjHDIwq1uvRTbBZ1DzWT9tspPNRW/FbIuLDnYzwAtyErOEhULesJUV
-         HTAf+CY4Ee7cThCZnPDmm9r2jERFFxcx5vdAp+EyYcaAN3ADswGYAD9x6b3PS9FV/WjX
-         tf+xGf4q/mQpWc9iFFZaQO4nVvKjx/YtheEtfNoExLqchHuWcCrWBs8+zhKJiydf+XXy
-         kcsg==
-X-Gm-Message-State: AOAM532Pi+54hVmXdzPwnL/6Wyx4kjbOM4WVFeN91M+9+/xesltV7uc2
-        RQvZuPJd+b60NSyzaSH2TS2nEYVi9vSAvbSgwcE=
-X-Google-Smtp-Source: ABdhPJxka+hSGbM+qACEYNaqDePpdvYdXAG/S+i/mKYokbTlb8TS72WMwkfx1GA0u77gWNnefyTE4UAWBu4Lw9nXT5o=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr1604255edq.294.1592297904787;
- Tue, 16 Jun 2020 01:58:24 -0700 (PDT)
+        id S1726261AbgFPJlS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 05:41:18 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:47870 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728114AbgFPJlR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Jun 2020 05:41:17 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05G9dwoH000858;
+        Tue, 16 Jun 2020 02:41:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=gH+ZTDtiXgOA/7szRYfmSpILjgf7GQrBJ8O9hR0N5Yw=;
+ b=YKLZMMYDC6KX7zXwXJXGMBtm0Bbnsym4FcA21Gk6FgEZ7157DSMj6FlWo6rNA6ziOdux
+ LZYk1RQFmFfBOjEYhJJyyM7Wbbzt/1bOD6NzpOhAUPYJx1t+aXRfGecfTkqtisxGdkxh
+ RQ9ERPPJdF+llpE90+/QhlXv13N9U8b480GoZJbSlskbdbJ2JRC0LQnLpg2ZduP/WqJc
+ SKBurZhdm1gLGzCgLxhUrg1S34kdIChjI9bLfp8+kilSV6BYPn+z4L8AXkQ4U3u2knUg
+ 1zmoWxWH/HiPwyT9jk3uJ6Y6bMDuOTHHfNSkrefomIHlwMco6fJjS9XAZ07I+QsSWxdP 1g== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 31mv5qjdmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 16 Jun 2020 02:41:15 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Jun
+ 2020 02:41:14 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Jun
+ 2020 02:41:14 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Jun 2020 02:41:14 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id A7D393F703F;
+        Tue, 16 Jun 2020 02:41:12 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <jgg@ziepe.ca>, <dledford@redhat.com>, <ariel.elior@marvell.com>,
+        <michal.kalderon@marvell.com>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH rdma] RDMA/qedr: Fix KASAN: use-after-free in ucma_event_handler+0x532
+Date:   Tue, 16 Jun 2020 12:34:08 +0300
+Message-ID: <20200616093408.17827-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-Received: by 2002:a50:8045:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 01:58:24
- -0700 (PDT)
-Reply-To: gh727530@gmail.com
-From:   george howard <edemhoegbesso@gmail.com>
-Date:   Tue, 16 Jun 2020 10:58:24 +0200
-Message-ID: <CAPM9i6-Ng1KYf7=F0_UpHAvzTx=Y2MHbZ0SCKvfJfdU9UbL1nw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-16_03:2020-06-15,2020-06-16 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hoi
+Private data passed to iwarp_cm_handler is copied for
+connection request / response, but ignored otherwise.
+If junk is passed, it is stored in the event and used later
+in the event processing.
+Driver passed old junk pointer during connection close
+which lead to a use-after-free on event processing.
+Set private data to NULL for events that don 't have private
+data.
 
-Mijn naam is George Howard. Ik ben advocaat van beroep. ik
-zou u willen aanbieden
-het dichtste familielid van mijn cli=C3=ABnt. Ze erven de som van (8.5
-Miljoen US dollars)
-Dollars die mijn klant op de bank achterliet voordat hij stierf.
+BUG: KASAN: use-after-free in ucma_event_handler+0x532/0x560 [rdma_ucm]
+kernel: Read of size 4 at addr ffff8886caa71200 by task kworker/u128:1/5250
+kernel:
+kernel: Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+kernel: Call Trace:
+kernel: dump_stack+0x8c/0xc0
+kernel: print_address_description.constprop.0+0x1b/0x210
+kernel: ? ucma_event_handler+0x532/0x560 [rdma_ucm]
+kernel: ? ucma_event_handler+0x532/0x560 [rdma_ucm]
+kernel: __kasan_report.cold+0x1a/0x33
+kernel: ? ucma_event_handler+0x532/0x560 [rdma_ucm]
+kernel: kasan_report+0xe/0x20
+kernel: check_memory_region+0x130/0x1a0
+kernel: memcpy+0x20/0x50
+kernel: ucma_event_handler+0x532/0x560 [rdma_ucm]
+kernel: ? __rpc_execute+0x608/0x620 [sunrpc]
+kernel: cma_iw_handler+0x212/0x330 [rdma_cm]
+kernel: ? iw_conn_req_handler+0x6e0/0x6e0 [rdma_cm]
+kernel: ? enqueue_timer+0x86/0x140
+kernel: ? _raw_write_lock_irq+0xd0/0xd0
+kernel: cm_work_handler+0xd3d/0x1070 [iw_cm]
 
-Mijn klant is een burger van uw land die bij zijn vrouw is
-is omgekomen bij een auto-ongeluk
-en enige zoon. Ik heb recht op 50% van het totale fonds, 50% daarvan
-voor jou zijn.
-Neem hier contact op met mijn priv=C3=A9-e-mailadres voor meer
-Informatie: gh727530@gmail.com
+Fixes: e411e0587e0d ("RDMA/qedr: Add iWARP connection management functions")
+Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+---
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Bij voorbaat dank,
-Meneer George Howard,
+diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+index 792eecd206b6..97fc7dd353b0 100644
+--- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
++++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+@@ -150,8 +150,17 @@ qedr_iw_issue_event(void *context,
+ 	if (params->cm_info) {
+ 		event.ird = params->cm_info->ird;
+ 		event.ord = params->cm_info->ord;
+-		event.private_data_len = params->cm_info->private_data_len;
+-		event.private_data = (void *)params->cm_info->private_data;
++		/* Only connect_request and reply have valid private data
++		 * the rest of the events this may be left overs from
++		 * connection establishment. CONNECT_REQUEST is issued via
++		 * qedr_iw_mpa_request
++		 */
++		if (event_type == IW_CM_EVENT_CONNECT_REPLY) {
++			event.private_data_len =
++				params->cm_info->private_data_len;
++			event.private_data =
++				(void *)params->cm_info->private_data;
++		}
+ 	}
+ 
+ 	if (ep->cm_id)
+-- 
+2.14.5
+
