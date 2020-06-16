@@ -2,101 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2D31FBEDE
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 21:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C592F1FBEDB
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 21:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730912AbgFPTVU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 15:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbgFPTU4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 15:20:56 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAB4C061573
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 12:20:55 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q2so1155163qkb.2
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 12:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sy4Vk3XIq+g3R+EaE80k0CE3FKg1J6tytjvtAtDVzoc=;
-        b=FeY0n1Hsl13QQlJqeeuEKvewYecj8I5zja2busongYGdPXwJ16G+02wos3Icqn6dK0
-         GbVsDl4899r3NfKrXKC7rf5wfdYjXoirR2PxJWkv4ytuTS6EZDJmhv6vrsa07yJmh4Zv
-         PKwLNxsD3LFuziL8LQZ87NF2qmltx9ivGSbvlOlqPlq252eMqu/Xy/75KjcboI9Z8UoA
-         4G8MGnoMwas6DS/Xz2rpapPpka0GpxlroMvmlsaZvbdn2548RHidKbZDNQ8Jf82ceCNI
-         t1NjyqcVCmv3bLrD/spJqBhdLX+SBgk6ATOZziEw42wqx7Lk4fQkSovaj+1rvjXOKEmv
-         Ed1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sy4Vk3XIq+g3R+EaE80k0CE3FKg1J6tytjvtAtDVzoc=;
-        b=kBVYdmkaXp6tOaLXP7+AuuXk5w9rlNX/NLHyRqXb4TTCoawLNfcGHifsqqFtfXLWse
-         tMy9xUmJ2gAxicXlILWaK4qYcEoNsQ5LXxK1UeqIwA4MXr5YXtrV7A3cXgDQFNH0Rc2W
-         hWT49w3qTzlpNvBQNbcuQb4xOe3AJLsifCBsVJQDX3fZ9V135xzFnNOHhZia+mJP5MyD
-         FrL7eCkuJ6sue7HD4ylbQoiuJ0SYjds9zycOFpTZp5ACSh8lK0EZSfQa91rivJ6vI8XS
-         k257jz4zKOGtlHmJv9CiAQUlQeqUiFvMEvksKZBWcLZF7Nptd0/ckB01qnnkjLytB+L8
-         C4nA==
-X-Gm-Message-State: AOAM530LnW+77AdpYbEmOkuSqx4esK4uQkkVAHciAhtaBsv3wgX1atPj
-        Q83qsol8wNfulnSWmEYF2qYkIg==
-X-Google-Smtp-Source: ABdhPJyOu4ElVhV4T+kIAm8Da9sSC7z+IFVy3wnYQPdsWfxscc3QZL1mhVieEr5QyhhtfqIhm0w65Q==
-X-Received: by 2002:a37:9b0d:: with SMTP id d13mr22446855qke.351.1592335255177;
-        Tue, 16 Jun 2020 12:20:55 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 126sm15165657qkj.89.2020.06.16.12.20.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 12:20:54 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jlH8g-009Ehz-5h; Tue, 16 Jun 2020 16:20:54 -0300
-Date:   Tue, 16 Jun 2020 16:20:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc] RDMA/core: Check that type_attrs is not NULL
- prior access
-Message-ID: <20200616192054.GE6578@ziepe.ca>
-References: <20200616105813.2428412-1-leon@kernel.org>
+        id S1730842AbgFPTVL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 15:21:11 -0400
+Received: from mga01.intel.com ([192.55.52.88]:8705 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730769AbgFPTVA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:21:00 -0400
+IronPort-SDR: KgVAs35SFecEVkRkvLbTdL0iH88xTE3eDqmRr49bUU8HKYDfbu5QRy3Xu71V/8bJa7D2fBdYgD
+ hGU4mt1KoW9g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 12:20:59 -0700
+IronPort-SDR: kZSGt3HvOWfGalsxmklyQHNgZyEzZK60wW8pY+Ot5Hm7acUEUh8u5nQVjjAF2HySl1B1wx2/EW
+ aKiDJv8ToMVQ==
+X-IronPort-AV: E=Sophos;i="5.73,519,1583222400"; 
+   d="scan'208";a="449954218"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.207.107]) ([10.254.207.107])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 12:20:58 -0700
+Subject: Re: [PATCH v2] RDMA/rvt: Fix potential memory leak caused by
+ rvt_alloc_rq
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     kjlu@umn.edu, wu000273@umn.edu,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200614041148.131983-1-pakki001@umn.edu>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <f2f0815a-7567-2f0a-a55b-d7684a5ce331@intel.com>
+Date:   Tue, 16 Jun 2020 15:20:56 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616105813.2428412-1-leon@kernel.org>
+In-Reply-To: <20200614041148.131983-1-pakki001@umn.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 01:58:13PM +0300, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> index 38de4942c682..16b86635d752 100644
-> +++ b/drivers/infiniband/core/rdma_core.c
-> @@ -470,40 +470,41 @@ static struct ib_uobject *
->  alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
->  		       struct uverbs_attr_bundle *attrs)
->  {
-> -	const struct uverbs_obj_fd_type *fd_type =
-> -		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
-> +	const struct uverbs_obj_fd_type *fd_type;
->  	int new_fd;
->  	struct ib_uobject *uobj;
->  	struct file *filp;
+On 6/14/2020 12:11 AM, Aditya Pakki wrote:
+> In case of failure of alloc_ud_wq_attr(), the memory allocated by
+> rvt_alloc_rq() is not freed. Fix it by calling rvt_free_rq() using
+> the existing clean-up code.
 > 
-> +	uobj = alloc_uobj(attrs, obj);
-> +	if (IS_ERR(uobj))
-> +		return uobj;
+> Fixes: d310c4bf8aea ("IB/{rdmavt, hfi1, qib}: Remove AH refcount for UD QPs")
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> ---
+> v1: Fix incorrect order of  rvt_free_rq and free_ud_wq_attr.
+> Suggested by Dennis Dalessandro.
+> ---
+>   drivers/infiniband/sw/rdmavt/qp.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+> index 511b72809e14..7db35dd6ad74 100644
+> --- a/drivers/infiniband/sw/rdmavt/qp.c
+> +++ b/drivers/infiniband/sw/rdmavt/qp.c
+> @@ -1204,7 +1204,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+>   		err = alloc_ud_wq_attr(qp, rdi->dparms.node);
+>   		if (err) {
+>   			ret = (ERR_PTR(err));
+> -			goto bail_driver_priv;
+> +			goto bail_rq_rvt;
+>   		}
+>   
+>   		if (init_attr->create_flags & IB_QP_CREATE_NETDEV_USE)
+> @@ -1314,9 +1314,11 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+>   	rvt_free_qpn(&rdi->qp_dev->qpn_table, qp->ibqp.qp_num);
+>   
+>   bail_rq_wq:
+> -	rvt_free_rq(&qp->r_rq);
+>   	free_ud_wq_attr(qp);
+>   
+> +bail_rq_rvt:
+> +	rvt_free_rq(&qp->r_rq);
 > +
-> +	fd_type =
-> +		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
->  	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
-> -		    fd_type->fops->release != &uverbs_async_event_release))
-> +		    fd_type->fops->release != &uverbs_async_event_release)) {
-> +		uverbs_uobject_put(uobj);
->  		return ERR_PTR(-EINVAL);
-> +	}
+>   bail_driver_priv:
+>   	rdi->driver_f.qp_priv_free(rdi, qp);
+>   
+> 
 
-I feel like this is a bit cleaner with a goto unwind ?
+Cool thanks.
 
-Jason
+Acked-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
