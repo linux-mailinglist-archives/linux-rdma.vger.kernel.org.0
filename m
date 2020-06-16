@@ -2,83 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB951FB251
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF4E1FB355
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 16:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbgFPNkP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 09:40:15 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54406 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726799AbgFPNkO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jun 2020 09:40:14 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 30CD69563536617106AF;
-        Tue, 16 Jun 2020 21:40:11 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 16 Jun 2020 21:40:04 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-rc] RDMA/hns: Fix an cmd queue issue when resetting
-Date:   Tue, 16 Jun 2020 21:39:38 +0800
-Message-ID: <1592314778-52822-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1728869AbgFPODg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 10:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728763AbgFPODe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 10:03:34 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181E7C061573
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 07:03:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id i16so15498606qtr.7
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 07:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ACKmBaR/A6cd2bCSsY4TtDQZawJ/fZLCB0tgBEPjspc=;
+        b=JoF0U+peCbZufnRfaFh6A4pof9X8sa1MBKLTnYIP+89/zaw+EP4HHniqmBUW5AScGm
+         Y8GA6Xi2WuB46bzTTANvJZdOlv9bKvMD+xD08VrV9dHTNqfGhbnbLn9HIn2Mszd8KmUK
+         OhezAFhDuBNqQBCyOt+6mi6RsvFHR5OoHs52Fq+7Yzt2gj8V1b/zL9sAhRbKFuqSQdTy
+         ctYZ7sRFGWxfhXc5Ragkj8PRBGCzvqT18atAtvfrFnhh3cWHQ/VMVHfEUCDPrsxcRfI2
+         w9RIe1AIOOp0ueN9oT/fM8/fzyQa3cv53uQVVxAN8Ky5DoampTaKtDj8Brku2j0IgqjM
+         d+8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ACKmBaR/A6cd2bCSsY4TtDQZawJ/fZLCB0tgBEPjspc=;
+        b=r0s+gOxXRLIuqGWwD/mIAXmBRV45W9W5Uq5jlrLRjv+IEgZ6JkU8BiZjm40h7hptH3
+         46doeh6xsq/mgP2JOKRLdkAfaU4KECYMdIFVh7Wwxg4x0Y8cuTngJk3QM5e3rDnWu5UM
+         /nyZPXYYxv7ubCe4Znyk5tJVlUUv4kLDOjiddaUVGpoigAcRTgC4oq3Sg4T1Aq8EA0lV
+         fYA4rGED9kBTP492NVCwSvVh9y0OirFzh18g/8cCKvQMhRwV9hSxeZ8ybk8+3mwv/Imp
+         6RJFZhY2Y35jmO2GBAkRSbAPkmJpgFO0g19JUkuvf8Mz/pYKqLd81BnWJ9mvjb605CBv
+         rQKw==
+X-Gm-Message-State: AOAM5322dAxOw/mJuIgYqfETWIZp8Btam+BvbbTZqYdprhS4nKg/aK/x
+        OhGWSC1b0P8CVgCzCg7Q2b4k/0E2JNSr+Q==
+X-Google-Smtp-Source: ABdhPJz/5FxqA5KyTqiINYpqdpo6LlQBtlB3VGul5eQwf3j/YT7G4vSamcCo2VgU7i8LEHtW2cptaw==
+X-Received: by 2002:aed:3ec4:: with SMTP id o4mr21909873qtf.357.1592316213120;
+        Tue, 16 Jun 2020 07:03:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m53sm15843384qtb.64.2020.06.16.07.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 07:03:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jlCBX-0094t2-Rc; Tue, 16 Jun 2020 11:03:31 -0300
+Date:   Tue, 16 Jun 2020 11:03:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tom Seewald <tseewald@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH next] siw: Fix pointer-to-int-cast warning in siw_rx_pbl()
+Message-ID: <20200616140331.GA2163432@ziepe.ca>
+References: <20200610174717.15932-1-tseewald@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200610174717.15932-1-tseewald@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+On Wed, Jun 10, 2020 at 12:47:17PM -0500, Tom Seewald wrote:
+> The variable buf_addr is type dma_addr_t, which may not be the same size
+> as a pointer.  To ensure it is the correct size, cast to a uintptr_t.
+> 
+> Signed-off-by: Tom Seewald <tseewald@gmail.com>
+> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+>  drivers/infiniband/sw/siw/siw_qp_rx.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-If a IMP reset caused by some hardware errors and hns RoCE driver reset
-occurred at the same time, there is a possiblity that the IMP will stop
-dealing with command and users can't use the hardware. The logs are as
-follows:
+Applied to for-rc, thanks
 
-[17223.382506] hns3 0000:fd:00.1: cleaned 0, need to clean 1
-[17223.382515] hns3 0000:fd:00.1: firmware version query failed -11
-[17223.382516] hns3 0000:fd:00.1: Cmd queue init failed
-[17223.382523] hns3 0000:fd:00.1: Upgrade reset level
-[17223.382529] hns3 0000:fd:00.1: global reset interrupt
-
-The hns NIC driver divides the reset process into 3 status: initialization,
-hardware resetting and softwaring restting. RoCE driver gets reset status
-by interfaces provided by NIC driver and commands will not be sent to the
-IMP if the driver is in any above status. The main reason for this issue is
-that there is a time gap between status 1 and 2, if the RoCE driver sends
-commands to the IMP during this gap, the IMP will stop working because it
-is not ready.
-
-To eliminate the time gap, the hns NIC driver has added a new interface in
-commit a4de02287abb9 ("net: hns3: provide .get_cmdq_stat interface for the
-client"), so RoCE driver can ensure that no commands will be sent during
-resetting.
-
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index bb86754c..dd01a51 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -910,7 +910,7 @@ static int hns_roce_v2_rst_process_cmd(struct hns_roce_dev *hr_dev)
- 	instance_stage = handle->rinfo.instance_state;
- 	reset_stage = handle->rinfo.reset_state;
- 	reset_cnt = ops->ae_dev_reset_cnt(handle);
--	hw_resetting = ops->get_hw_reset_stat(handle);
-+	hw_resetting = ops->get_cmdq_stat(handle);
- 	sw_resetting = ops->ae_dev_resetting(handle);
- 
- 	if (reset_cnt != hr_dev->reset_cnt)
--- 
-2.8.1
-
+Jason
