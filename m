@@ -2,299 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987401FBD61
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 19:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B691FBE56
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 20:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgFPR5E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 13:57:04 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35778 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgFPR5E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 13:57:04 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GHVSjq095031;
-        Tue, 16 Jun 2020 17:56:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Z9J/IPljIUbKCuF3YBQjI7FBhBW8FVH498X9WVzfaec=;
- b=Y7PwRYNHsMDH51jPZ8vSGNJUEt1QzMEpm6FdwujxPFUX/sgT44XqduF2Y++vCG7WmCv7
- UsHAfbqWPUg340SsTmetGFtQNeMWkCfBAvUksFnbFo89pUWxMn93ZobPijH1aPhdVpVm
- 9GKP/SC1p8t4R7fwMwQCZDf2nqqRZzZxqoTZE6OEQhyCgU0LH6/R9yNOIpeHHvqUQDiM
- F8qJ09H8MD7GnSF/3O+kPO5XlETfKxvkupTGZs8lySq5mVfyKUhnrHgg686htg9YGO54
- an0qnYII9lBXFBO5t4lelGbACc1ATR9R50w4LG6XGaIuB/PUP5BOB2cSz34tXEabFzmu fQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31p6e608ys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Jun 2020 17:56:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GHrJ6H091181;
-        Tue, 16 Jun 2020 17:56:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31p6s7jvme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jun 2020 17:56:57 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05GHutn5029176;
-        Tue, 16 Jun 2020 17:56:56 GMT
-Received: from dhcp-10-159-228-201.vpn.oracle.com (/10.159.228.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jun 2020 10:56:55 -0700
-Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
+        id S1727114AbgFPSmf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 14:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726881AbgFPSme (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 14:42:34 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536A0C061573
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 11:42:34 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m2so16733355otr.12
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 11:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fn4ehCG3pFeb0sf+XQjAjxNV4HnRu1zeAZ03qDqSGLU=;
+        b=TMIXWavEcgNLMiErIzR/M/QAAvkh9oQoUF847arZZvocgtMF8TmfwlFDprVx8F2hrb
+         11hcFdVXFq2a2gv2xuSkHBk56tVEMcU0xdWigQjOcodzOumMpNYyL6vP97sYQ4Q5AukS
+         YPkNt+rFy5VrBGnPdg72VNlILdpJaJGUlEgAuBqMgqoRAoqWWVAIF6+C41YrcwcUQWvM
+         LYsidFr9aRThJH3pekg79ob40OX0aFMXedHO/0AeWC97OJBiLRR8A3c9Ec5nj7QrLdxy
+         +koxhYmSYGR34tcWcU5lm09L4AZpspK/wfZKCqWfW5ufs/4ndKek3l19RFnDHiEQ5Iq8
+         Z4kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fn4ehCG3pFeb0sf+XQjAjxNV4HnRu1zeAZ03qDqSGLU=;
+        b=LBcLT3r0r8De+LoVSQ5rivwcatHHT3fAHgjZbdA3OP1KxdtR8rVBKdGtMsw1FFBEp4
+         Kp64ljZzhYvo7ID7o2/lq8+BOfMqF3c9Qn80LwkuMLFoFaNvI+HIwYnHYkQM85DNpMfW
+         1lne41v7mBn0Yz1tOLxmDmRmwncRN4rCK4WUMhvrhhyqMy7iEpKVGFBQpucdZcNjmNz5
+         gdSJBr4/czMq3xRc8Lmf4xn2S0m1VEjbLQjHIY9Tw2Taacm/CmsY3DbXHVxHrAqJEID8
+         2afkUx0k3v0V+bK9D08ZetFKa+nhHisF3WPLjmja4/1fk02blfY9y0U6JfO/Bg9QoeuE
+         Patg==
+X-Gm-Message-State: AOAM532WyA33R7MBzHf5WMT/Bppc5p/miSGNeHZBC1ZksqJ9ySmydI4Q
+        5DcAIIJFKp7B2albiOKx1bs=
+X-Google-Smtp-Source: ABdhPJzHsQVA/tvAyZjXV5NGkPqv+a4ED8ir9Z4DfWruYol8sHBDspsj+CoSUHls0kvHAn153ObTOQ==
+X-Received: by 2002:a05:6830:20c9:: with SMTP id z9mr3943350otq.30.1592332953611;
+        Tue, 16 Jun 2020 11:42:33 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id b16sm4191936ooj.17.2020.06.16.11.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 11:42:33 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 11:42:31 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <1591627576-920-2-git-send-email-divya.indi@oracle.com>
- <20200609070026.GJ164174@unreal>
- <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
- <20200614064156.GB2132762@unreal>
-From:   Divya Indi <divya.indi@oracle.com>
-Message-ID: <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
-Date:   Tue, 16 Jun 2020 10:56:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Sadanand Warrier <sadanand.warrier@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH v3 for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
+ MTU's upper limit
+Message-ID: <20200616184231.GA3734396@ubuntu-n2-xlarge-x86>
+References: <20200511155337.173205.77558.stgit@awfm-01.aw.intel.com>
+ <20200511160618.173205.23053.stgit@awfm-01.aw.intel.com>
+ <20200527040350.GA3118979@ubuntu-s3-xlarge-x86>
+ <9e9147ad-6d7c-9381-72f3-dc2f3d0723fd@intel.com>
+ <20200601135722.GE4872@ziepe.ca>
+ <20200616005650.GA1347657@ubuntu-n2-xlarge-x86>
+ <20200616062534.GB2141420@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20200614064156.GB2132762@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
- suspectscore=13 mlxlogscore=999 phishscore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006160125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
- mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
- suspectscore=13 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006160124
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616062534.GB2141420@unreal>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon,
-
-Please find my comments inline -
-
-On 6/13/20 11:41 PM, Leon Romanovsky wrote:
-> On Tue, Jun 09, 2020 at 07:45:21AM -0700, Divya Indi wrote:
->> Hi Leon,
->>
->> Thanks for taking the time to review.
->>
->> Please find my comments inline -
->>
->> On 6/9/20 12:00 AM, Leon Romanovsky wrote:
->>> On Mon, Jun 08, 2020 at 07:46:16AM -0700, Divya Indi wrote:
->>>> Commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
->>>> -
->>>> 1. Adds the query to the request list before ib_nl_snd_msg.
->>>> 2. Removes ib_nl_send_msg from within the spinlock which also makes it
->>>> possible to allocate memory with GFP_KERNEL.
->>>>
->>>> However, if there is a delay in sending out the request (For
->>>> eg: Delay due to low memory situation) the timer to handle request timeout
->>>> might kick in before the request is sent out to ibacm via netlink.
->>>> ib_nl_request_timeout may release the query causing a use after free situation
->>>> while accessing the query in ib_nl_send_msg.
->>>>
->>>> Call Trace for the above race:
->>>>
->>>> [<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
->>>> [<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
->>>> [<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
->>>> [<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
->>>> [<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
->>>> [rds_rdma]
->>>> [<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
->>>> [rds_rdma]
->>>> [<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
->>>> [<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
->>>> [<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
->>>> [<ffffffff810a02f9>] process_one_work+0x169/0x4a0
->>>> [<ffffffff810a0b2b>] worker_thread+0x5b/0x560
->>>> [<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
->>>> [<ffffffff810a68fb>] kthread+0xcb/0xf0
->>>> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
->>>> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
->>>> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
->>>> [<ffffffff816f25a7>] ret_from_fork+0x47/0x90
->>>> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
->>>> ....
->>>> RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
->>>>
->>>> To resolve the above issue -
->>>> 1. Add the req to the request list only after the request has been sent out.
->>>> 2. To handle the race where response comes in before adding request to
->>>> the request list, send(rdma_nl_multicast) and add to list while holding the
->>>> spinlock - request_lock.
->>>> 3. Use GFP_NOWAIT for rdma_nl_multicast since it is called while holding
->>>> a spinlock. In case of memory allocation failure, request will go out to SA.
->>>>
->>>> Signed-off-by: Divya Indi <divya.indi@oracle.com>
->>>> Fixes: 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
->>>> before sending")
->>> Author SOB should be after "Fixes" line.
->> My bad. Noted.
->>
->>>> ---
->>>>  drivers/infiniband/core/sa_query.c | 34 +++++++++++++++++-----------------
->>>>  1 file changed, 17 insertions(+), 17 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
->>>> index 74e0058..042c99b 100644
->>>> --- a/drivers/infiniband/core/sa_query.c
->>>> +++ b/drivers/infiniband/core/sa_query.c
->>>> @@ -836,6 +836,9 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
->>>>  	void *data;
->>>>  	struct ib_sa_mad *mad;
->>>>  	int len;
->>>> +	unsigned long flags;
->>>> +	unsigned long delay;
->>>> +	int ret;
->>>>
->>>>  	mad = query->mad_buf->mad;
->>>>  	len = ib_nl_get_path_rec_attrs_len(mad->sa_hdr.comp_mask);
->>>> @@ -860,35 +863,32 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
->>>>  	/* Repair the nlmsg header length */
->>>>  	nlmsg_end(skb, nlh);
->>>>
->>>> -	return rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_mask);
->>>> +	spin_lock_irqsave(&ib_nl_request_lock, flags);
->>>> +	ret =  rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, GFP_NOWAIT);
->>> It is hard to be convinced that this is correct solution. The mix of
->>> gfp_flags and GFP_NOWAIT at the same time and usage of
->>> ib_nl_request_lock to protect lists and suddenly rdma_nl_multicast() too
->>> makes this code unreadable/non-maintainable.
->> Prior to 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
->> before sending"), we had ib_nl_send_msg under the spinlock ib_nl_request_lock.
->>
->> ie we had -
->>
->> 1. Get spinlock - ib_nl_request_lock
->> 2. ib_nl_send_msg
->> 	2.a) rdma_nl_multicast
->> 3. Add request to the req list
->> 4. Arm the timer if needed.
->> 5. Release spinlock
->>
->> However, ib_nl_send_msg involved a memory allocation using GFP_KERNEL.
->> hence, was moved out of the spinlock. In addition, req was now being
->> added prior to ib_nl_send_msg [To handle the race where response can
->> come in before we get a chance to add the request back to the list].
->>
->> This introduced another race resulting in use-after-free.[Described in the commit.]
->>
->> To resolve this, sending out the request and adding it to list need to
->> happen while holding the request_lock.
->> To ensure minimum allocations while holding the lock, instead of having
->> the entire ib_nl_send_msg under the lock, we only have rdma_nl_multicast
->> under this spinlock.
->>
->> However, do you think it would be a good idea to split ib_nl_send_msg
->> into 2 functions -
->> 1. Prepare the req/query [Outside the spinlock]
->> 2. Sending the req - rdma_nl_multicast [while holding spinlock]
->>
->> Would this be more intuitive?
-> While it is always good idea to minimize the locked period. It still
-> doesn't answer concern about mixing gfp_flags and direct GFP_NOWAIT.
-> For example if user provides GFP_ATOMIC, the GFP_NOWAIT allocation will
-> cause a trouble because latter is more lax than first one.
-
-Makes sense, and we do have callers passing GFP_ATOMIC with gfp_mask.
-
-However, in this case when we fail to send the request to ibacm,
-we then fallback to sending it to the SA with gfp_mask. So, the
-request will eventually go out with GFP_ATOMIC to SA. From the
-caller perspective the request will not fail due to memory pressure.
-
--------
-send_mad(...gfp_mask)
-	- send to ibacm with GFP_NOWAIT
-	- If fails, send to SA with gfp_mask
--------
-
-So, using GFP_NOWAIT may not cause trouble here. 
-
-The other option might be to use GFP_NOWAIT conditionally ie
-(only use GFP_NOWAIT when GFP_ATOMIC is not specified in gfp_mask else
-use GFP_ATOMIC). Eventual goal being to not have a blocking memory allocation.
-
-Your thoughts? 
-
-Really appreciate your feedback. Thanks!
-
-
-Regards,
-Divya
-
->
+On Tue, Jun 16, 2020 at 09:25:34AM +0300, Leon Romanovsky wrote:
+> On Mon, Jun 15, 2020 at 05:56:50PM -0700, Nathan Chancellor wrote:
+> > On Mon, Jun 01, 2020 at 10:57:22AM -0300, Jason Gunthorpe wrote:
+> > > On Mon, Jun 01, 2020 at 09:48:47AM -0400, Dennis Dalessandro wrote:
+> > >
+> > > > They should probably all be in "enum ib_mtu". Jason any issues with us donig
+> > > > that? I can't for certain recall the real reason they were kept separate in
+> > > > the first place.
+> > >
+> > > It is probably OK
+> > >
+> > > Jason
+> >
+> > I don't mind taking a wack at this if you guys are too busy (I'm rather
+> > tired of seeing the warning across all of my builds). However, I am
+> > wondering how far should this be unwound? Should 'enum opa_mtu' be
+> > collapsed into 'enum ib_mtu' and then all of the opa conversion
+> > functions be eliminated in favor of the ib ones? It looks like
+> > OPA_MTU_8192 and OPA_MTU_10240 are used in a few places within
+> > drivers/infiniband/hw/hfi1, should all of those instances be converted
+> > over to IB_MTU_* and the defines at the top of
+> > drivers/infiniband/hw/hfi1/hfi.h be eliminated?
+> 
+> We rather keep separation due to logic separation.
+> 
+> While ib_* defines come from IBTA and interoperable across different
+> devices and vendors, opa_* definitions are Intel proprietary ones used
+> for the product that was canceled.
+> 
 > Thanks
->
->>>> +	if (!ret) {
->>> Please use kernel coding style.
->>>
->>> if (ret) {
->>>   spin_unlock_irqrestore(&ib_nl_request_lock, flags);
->>>   return ret;
->>>   }
->>>
->>>  ....
->> Noted. Will make this change.
->>
->>>> +		/* Put the request on the list.*/
->>>> +		delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
->>>> +		query->timeout = delay + jiffies;
->>>> +		list_add_tail(&query->list, &ib_nl_request_list);
->>>> +		/* Start the timeout if this is the only request */
->>>> +		if (ib_nl_request_list.next == &query->list)
->>>> +			queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
->>>> +	}
->>>> +	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
->>>> +
->>>> +	return ret;
->>>>  }
->>>>
->>>>  static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
->>>>  {
->>>> -	unsigned long flags;
->>>> -	unsigned long delay;
->>>>  	int ret;
->>>>
->>>>  	INIT_LIST_HEAD(&query->list);
->>>>  	query->seq = (u32)atomic_inc_return(&ib_nl_sa_request_seq);
->>>>
->>>> -	/* Put the request on the list first.*/
->>>> -	spin_lock_irqsave(&ib_nl_request_lock, flags);
->>>> -	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
->>>> -	query->timeout = delay + jiffies;
->>>> -	list_add_tail(&query->list, &ib_nl_request_list);
->>>> -	/* Start the timeout if this is the only request */
->>>> -	if (ib_nl_request_list.next == &query->list)
->>>> -		queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
->>>> -	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
->>>> -
->>>>  	ret = ib_nl_send_msg(query, gfp_mask);
->>>>  	if (ret) {
->>>>  		ret = -EIO;
->>>> -		/* Remove the request */
->>>> -		spin_lock_irqsave(&ib_nl_request_lock, flags);
->>>> -		list_del(&query->list);
->>>> -		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
->>>>  	}
->>> Brackets should be removed too.
->> Noted.
->>>>  	return ret;
->>>> --
->>>> 1.8.3.1
->>>>
+> 
+> >
+> > Cheers,
+> > Nathan
+
+Fair enough, could someone take care of properly fixing the warning that
+was introduced by this patch then? I can send a patch that just adds an
+explicit cast but that looks like an eye sore to me. Otherwise, I am not
+familiar enough with this code to know what is an appropriate fix or
+not.
+
+Cheers,
+Nathan
