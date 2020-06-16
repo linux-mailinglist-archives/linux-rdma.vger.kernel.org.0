@@ -2,86 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9631FA493
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 01:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C36B1FA543
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 02:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgFOXlS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Jun 2020 19:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOXlR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:41:17 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B32D20714;
-        Mon, 15 Jun 2020 23:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592264477;
-        bh=4B3zxx0t4t/cAMnTcb1CgWAE+WyO6z4UCRqXbi4xzFg=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=AxBMUE88327gyD7AWPGhve+Wh8ybmWBfw1Vr5OWesrVIVG7NxKRQswpbnAXtofFbO
-         sLu3+N4jgXfA/ewD0/dj0zcDJeqxyFwsdjQymufuXtNvL6JVXHeVeKRAOTHmv+8yXX
-         grzN41FYi/g6IrCDmey/eZzzF6h2ijQ5jvrYbNpA=
-Date:   Tue, 16 Jun 2020 00:41:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-gpio@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-rdma@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-In-Reply-To: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200609124610.3445662-1-kieran.bingham+renesas@ideasonboard.com>
-Subject: Re: [PATCH 00/17] spelling.txt: /decriptors/descriptors/
-Message-Id: <159226447507.27673.16785893373246037922.b4-ty@kernel.org>
+        id S1726553AbgFPAvb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Jun 2020 20:51:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6326 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726386AbgFPAvb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Jun 2020 20:51:31 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C57CDF8AAA548630529D;
+        Tue, 16 Jun 2020 08:51:27 +0800 (CST)
+Received: from [10.166.215.157] (10.166.215.157) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 16 Jun
+ 2020 08:51:25 +0800
+Subject: Re: [PATCH] IB/srpt: Fix a potential null pointer dereference
+To:     Bart Van Assche <bvanassche@acm.org>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>
+References: <20200615091220.6439-1-jingxiangfeng@huawei.com>
+ <7366b608-4474-cfaa-c465-957fd2d2366d@acm.org>
+CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+Message-ID: <5EE8178C.9090005@huawei.com>
+Date:   Tue, 16 Jun 2020 08:51:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
+MIME-Version: 1.0
+In-Reply-To: <7366b608-4474-cfaa-c465-957fd2d2366d@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.157]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 9 Jun 2020 13:45:53 +0100, Kieran Bingham wrote:
-> I wouldn't normally go through spelling fixes, but I caught sight of
-> this typo twice, and then foolishly grepped the tree for it, and saw how
-> pervasive it was.
-> 
-> so here I am ... fixing a typo globally... but with an addition in
-> scripts/spelling.txt so it shouldn't re-appear ;-)
-> 
-> [...]
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+On 2020/6/15 21:37, Bart Van Assche wrote:
+> On 2020-06-15 02:12, Jing Xiangfeng wrote:
+>> In srpt_cm_req_recv(), it is possible that sdev is NULL,
+>> so we should test sdev before using it.
+>>
+>> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+>> ---
+>>   drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> index 98552749d71c..72053254bf84 100644
+>> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+>> @@ -2143,7 +2143,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>>   			    const struct srp_login_req *req,
+>>   			    const char *src_addr)
+>>   {
+>> -	struct srpt_port *sport = &sdev->port[port_num - 1];
+>> +	struct srpt_port *sport;
+>>   	struct srpt_nexus *nexus;
+>>   	struct srp_login_rsp *rsp = NULL;
+>>   	struct srp_login_rej *rej = NULL;
+>> @@ -2162,6 +2162,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>>   	if (WARN_ON(!sdev || !req))
+>>   		return -EINVAL;
+>>
+>> +	sport = &sdev->port[port_num - 1];
+>>   	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+>>
+>
+> Please remove the (!sdev || !req) check instead of making the above
+> change. It's easy to show that both pointers are always valid.
 
-Thanks!
+OK, I will send a v2 with this change.
 
-[1/2] regulator: Fix trivial spelling
-      commit: d3f3723387f97118c337689fc73e4199fb4331ce
-[2/2] regulator: gpio: Fix trivial spelling
-      commit: 1f0b740004f09d2f1b716fd6c2fdca81004ded05
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Thanks
+>
+> Thanks,
+>
+> Bart.
+> .
+>
