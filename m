@@ -2,156 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540281FAECA
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 12:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBBA1FAFD8
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 14:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgFPK6v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 06:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728269AbgFPK6v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Jun 2020 06:58:51 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBAAE20786;
-        Tue, 16 Jun 2020 10:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592305130;
-        bh=E2fBSMSU5uZcCxn/1uWI5B3kEQC/l3+q95AWZkDObVo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YyBEPd03A6wuVlQRCfY+l4LGJTWauHUFU8sU/hW+m+PKPE6hNdup5sgLpNPDdPeN7
-         jlGJqvUC/ZYRJ0nXiHK5ZaZn2u+0n/2uNz50l05CLEmnGMCrdj+N/7MMDNbjwyRWdh
-         hUFjzBfov+5P45oNZvACAoR8cLFqc5IU7uSZ6mkI=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/core: Check that type_attrs is not NULL prior access
-Date:   Tue, 16 Jun 2020 13:58:13 +0300
-Message-Id: <20200616105813.2428412-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728250AbgFPMHZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 08:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbgFPMHY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 08:07:24 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98257C08C5C2
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 05:07:23 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f185so2790443wmf.3
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 05:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NYym/pSqjIIqScGqLo5Ww0j4iD30dp97jCKjhc4AWYU=;
+        b=knLx2ZpGdX4oGShLggmffytfxEgf558C1PyxfucnfPmqi/xmuLtoOEgBytunObB1zg
+         ZIjY/LiV9KQ+0li0viBzy2fcKzZ1o4sgXX7wZfRUllT6FFVlgV9x+uZ64EdChlO5GbtO
+         OQSl+XuHY2To5OLz8zVi8cT8LCc/rp6ZyX0ag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=NYym/pSqjIIqScGqLo5Ww0j4iD30dp97jCKjhc4AWYU=;
+        b=sy2Gq4VKDlMq+kvBQleau+yyUKed6hJm70It/5+dPva8Jk1v5aRV1afXDA7zAiLARX
+         Rcnnlz0oMvuM9b4q5ovye/sgnMjhjGt8UUieuJ+20IooF/F1gUh+WlmMXLII+N05nSgO
+         zDmYv9E9gfJy6F2xHaLmDmlOhAXctQ3TusxxAteH/W34KR4ZWH4W6wdlrY54vXUh4Syu
+         SMJqnuUAKFG5yg8agbtTgLs461+69JEpAoHEPFKH5LXcUuiowm7eX9s5sc3pFl53H504
+         pxCv1K82osA5o9w9zRfDGQw8xLhnQebdOrXMPPssgFoqIkCnYV70Cz94o5oPpA3HbZZk
+         c+7g==
+X-Gm-Message-State: AOAM533uX/vCiqTVz4RSPCLsT0HoiVlOM6UNDzqegVEI34pLMofi6WOm
+        p/Kk680qpbcdPcRAWTHB8G+ozw==
+X-Google-Smtp-Source: ABdhPJzmf+2Tj55YA8oon0+fo0R23Li5LnD45uflCXtBTtCgHH7dL0b7di5HNdwrzpMTAQLZ6BjvLA==
+X-Received: by 2002:a05:600c:2116:: with SMTP id u22mr2832332wml.97.1592309242285;
+        Tue, 16 Jun 2020 05:07:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a15sm28830028wra.86.2020.06.16.05.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 05:07:21 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 14:07:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media@vger.kernel.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200616120719.GL20149@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media@vger.kernel.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-5-daniel.vetter@ffwll.ch>
+ <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
+ <20200611083430.GD20149@phenom.ffwll.local>
+ <20200611141515.GW6578@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611141515.GW6578@ziepe.ca>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+Hi Jason,
 
-In disassociate flow, the type_attrs is set to be NULL, which is in
-implicit way is checked in alloc_uobj() in "if (!attrs->context)" flow.
-Change the logic to rely on that check, that will fix the following kernel
-splat.
+Somehow this got stuck somewhere in the mail queues, only popped up just
+now ...
 
- BUG: kernel NULL pointer dereference, address: 0000000000000018
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP PTI
- CPU: 3 PID: 2743 Comm: python3 Not tainted 5.7.0-rc6-for-upstream-perf-2020-05-23_19-04-38-5 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
- RIP: 0010:alloc_begin_fd_uobject+0x18/0xf0 [ib_uverbs]
- Code: 89 43 48 eb 97 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 41 55 49 89 f5 41 54 55 48 89 fd 53 48 83 ec 08 48 8b 1f <48> 8b 43 18 48 8b 80 80 00 00 00 48 3d 20 10 33 a0 74 1c 48 3d 30
- RSP: 0018:ffffc90001127b70 EFLAGS: 00010282
- RAX: ffffffffa0339fe0 RBX: 0000000000000000 RCX: 8000000000000007
- RDX: fffffffffffffffb RSI: ffffc90001127d28 RDI: ffff88843fe1f600
- RBP: ffff88843fe1f600 R08: ffff888461eb06d8 R09: ffff888461eb06f8
- R10: ffff888461eb0700 R11: 0000000000000000 R12: ffff88846a5f6450
- R13: ffffc90001127d28 R14: ffff88845d7d6ea0 R15: ffffc90001127cb8
- FS: 00007f469bff1540(0000) GS:ffff88846f980000(0000) knlGS:0000000000000000
- CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000018 CR3: 0000000450018003 CR4: 0000000000760ee0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
- ? xa_store+0x28/0x40
- rdma_alloc_begin_uobject+0x4f/0x90 [ib_uverbs]
- ib_uverbs_create_comp_channel+0x87/0xf0 [ib_uverbs]
- ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xb1/0xf0 [ib_uverbs]
- ib_uverbs_cmd_verbs.isra.8+0x96d/0xae0 [ib_uverbs]
- ? get_page_from_freelist+0x3bb/0xf70
- ? _copy_to_user+0x22/0x30
- ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
- ? __wake_up_common_lock+0x87/0xc0
- ib_uverbs_ioctl+0xbc/0x130 [ib_uverbs]
- ksys_ioctl+0x83/0xc0
- ? ksys_write+0x55/0xd0
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x48/0x130
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7f469ac43267
+On Thu, Jun 11, 2020 at 11:15:15AM -0300, Jason Gunthorpe wrote:
+> On Thu, Jun 11, 2020 at 10:34:30AM +0200, Daniel Vetter wrote:
+> > > I still have my doubts about allowing fence waiting from within shrinkers.
+> > > IMO ideally they should use a trywait approach, in order to allow memory
+> > > allocation during command submission for drivers that
+> > > publish fences before command submission. (Since early reservation object
+> > > release requires that).
+> > 
+> > Yeah it is a bit annoying, e.g. for drm/scheduler I think we'll end up
+> > with a mempool to make sure it can handle it's allocations.
+> > 
+> > > But since drivers are already waiting from within shrinkers and I take your
+> > > word for HMM requiring this,
+> > 
+> > Yeah the big trouble is HMM and mmu notifiers. That's the really awkward
+> > one, the shrinker one is a lot less established.
+> 
+> I really question if HW that needs something like DMA fence should
+> even be using mmu notifiers - the best use is HW that can fence the
+> DMA directly without having to get involved with some command stream
+> processing.
+> 
+> Or at the very least it should not be a generic DMA fence but a
+> narrowed completion tied only into the same GPU driver's command
+> completion processing which should be able to progress without
+> blocking.
 
-Fixes: 849e149063bd ("RDMA/core: Do not allow alloc_commit to fail")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/rdma_core.c | 31 +++++++++++++++--------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+The problem with gpus is that these completions leak across the board like
+mad. Both internally within memory managers (made a lot worse with p2p
+direct access to vram), and through uapi.
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 38de4942c682..16b86635d752 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -470,40 +470,41 @@ static struct ib_uobject *
- alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
- 		       struct uverbs_attr_bundle *attrs)
- {
--	const struct uverbs_obj_fd_type *fd_type =
--		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
-+	const struct uverbs_obj_fd_type *fd_type;
- 	int new_fd;
- 	struct ib_uobject *uobj;
- 	struct file *filp;
+Many gpus still have a very hard time preempting, so doing an overall
+switch in drivers/gpu to a memory management model where that is required
+is not a very realistic option.  And minimally you need either preempt
+(still takes a while, but a lot faster generally than waiting for work to
+complete) or hw faults (just a bunch of tlb flushes plus virtual indexed
+caches, so just the caveat of that for a gpu, which has lots and big tlbs
+and caches). So preventing the completion leaks within the kernel is I
+think unrealistic, except if we just say "well sorry, run on windows,
+mkay" for many gpu workloads. Or more realistic "well sorry, run on the
+nvidia blob with nvidia hw".
 
-+	uobj = alloc_uobj(attrs, obj);
-+	if (IS_ERR(uobj))
-+		return uobj;
-+
-+	fd_type =
-+		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
- 	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
--		    fd_type->fops->release != &uverbs_async_event_release))
-+		    fd_type->fops->release != &uverbs_async_event_release)) {
-+		uverbs_uobject_put(uobj);
- 		return ERR_PTR(-EINVAL);
-+	}
+The userspace side we can somewhat isolate, at least for pure compute
+workloads. But the thing is drivers/gpu is a continum from tiny socs
+(where dma_fence is a very nice model) to huge compute stuff (where it's
+maybe not the nicest, but hey hw sucks so still neeeded). Doing full on
+break in uapi somewhere in there is at least a bit awkward, e.g. some of
+the media codec code on intel runs all the way from the smallest intel soc
+to the big transcode servers.
 
- 	new_fd = get_unused_fd_flags(O_CLOEXEC);
--	if (new_fd < 0)
-+	if (new_fd < 0) {
-+		uverbs_uobject_put(uobj);
- 		return ERR_PTR(new_fd);
--
--	uobj = alloc_uobj(attrs, obj);
--	if (IS_ERR(uobj))
--		goto err_fd;
-+	}
+So the current status quo is "total mess, every driver defines their own
+rules". All I'm trying to do is some common rules here, do make this mess
+slightly more manageable and overall reviewable and testable.
 
- 	/* Note that uverbs_uobject_fd_release() is called during abort */
- 	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
- 				  fd_type->flags);
- 	if (IS_ERR(filp)) {
- 		uverbs_uobject_put(uobj);
--		uobj = ERR_CAST(filp);
--		goto err_fd;
-+		put_unused_fd(new_fd);
-+		return ERR_CAST(filp);
- 	}
--	uobj->object = filp;
+I have no illusions that this is fundamentally pretty horrible, and the
+leftover wiggle room for writing memory manager is barely more than a
+hairline. Just not seeing how other options are better.
 
-+	uobj->object = filp;
- 	uobj->id = new_fd;
- 	return uobj;
--
--err_fd:
--	put_unused_fd(new_fd);
--	return uobj;
- }
+> The intent of notifiers was never to endlessly block while vast
+> amounts of SW does work.
+> 
+> Going around and switching everything in a GPU to GFP_ATOMIC seems
+> like bad idea.
 
- struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
---
-2.26.2
+It's not everyone, or at least not everywhere, it's some fairly limited
+cases. Also, even if we drop the mmu_notifier on the floor, then we're
+stuck with shrinkers and GFP_NOFS. Still need a mempool of some sorts to
+guarantee you get out of a bind, so not much better.
 
+At least that's my current understanding of where we are across all
+drivers.
+
+> > I've pinged a bunch of armsoc gpu driver people and ask them how much this
+> > hurts, so that we have a clear answer. On x86 I don't think we have much
+> > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
+> > (but nouveau I think doesn't use dma_fence in there). 
+> 
+> Right, nor will RDMA ODP. 
+
+Hm, what's the context here? I thought RDMA side you really don't want
+dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
+here.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
