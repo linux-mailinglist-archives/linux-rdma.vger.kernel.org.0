@@ -2,185 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBBA1FAFD8
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 14:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B667D1FAFE0
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 14:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgFPMHZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 08:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgFPMHY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 08:07:24 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98257C08C5C2
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 05:07:23 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f185so2790443wmf.3
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 05:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NYym/pSqjIIqScGqLo5Ww0j4iD30dp97jCKjhc4AWYU=;
-        b=knLx2ZpGdX4oGShLggmffytfxEgf558C1PyxfucnfPmqi/xmuLtoOEgBytunObB1zg
-         ZIjY/LiV9KQ+0li0viBzy2fcKzZ1o4sgXX7wZfRUllT6FFVlgV9x+uZ64EdChlO5GbtO
-         OQSl+XuHY2To5OLz8zVi8cT8LCc/rp6ZyX0ag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=NYym/pSqjIIqScGqLo5Ww0j4iD30dp97jCKjhc4AWYU=;
-        b=sy2Gq4VKDlMq+kvBQleau+yyUKed6hJm70It/5+dPva8Jk1v5aRV1afXDA7zAiLARX
-         Rcnnlz0oMvuM9b4q5ovye/sgnMjhjGt8UUieuJ+20IooF/F1gUh+WlmMXLII+N05nSgO
-         zDmYv9E9gfJy6F2xHaLmDmlOhAXctQ3TusxxAteH/W34KR4ZWH4W6wdlrY54vXUh4Syu
-         SMJqnuUAKFG5yg8agbtTgLs461+69JEpAoHEPFKH5LXcUuiowm7eX9s5sc3pFl53H504
-         pxCv1K82osA5o9w9zRfDGQw8xLhnQebdOrXMPPssgFoqIkCnYV70Cz94o5oPpA3HbZZk
-         c+7g==
-X-Gm-Message-State: AOAM533uX/vCiqTVz4RSPCLsT0HoiVlOM6UNDzqegVEI34pLMofi6WOm
-        p/Kk680qpbcdPcRAWTHB8G+ozw==
-X-Google-Smtp-Source: ABdhPJzmf+2Tj55YA8oon0+fo0R23Li5LnD45uflCXtBTtCgHH7dL0b7di5HNdwrzpMTAQLZ6BjvLA==
-X-Received: by 2002:a05:600c:2116:: with SMTP id u22mr2832332wml.97.1592309242285;
-        Tue, 16 Jun 2020 05:07:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id a15sm28830028wra.86.2020.06.16.05.07.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 05:07:21 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 14:07:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200616120719.GL20149@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
- <20200611083430.GD20149@phenom.ffwll.local>
- <20200611141515.GW6578@ziepe.ca>
+        id S1726052AbgFPMIx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 08:08:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbgFPMIx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Jun 2020 08:08:53 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4196E2074D;
+        Tue, 16 Jun 2020 12:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592309332;
+        bh=Mg11qQB7ESq6nNysFeavutlOj+KhMphPo0hap2y+mLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hcv615ee4MKh3s2KMJYZzsQiDo0PubwzQ0nQENKckyV489L7GKxqH/ah8Mr9sOm51
+         KCAyd60kBAnGrM6Q0coZJ/4F/k23SaEjW3gzIxK/vIsrdZ2evf8uw/q5J4BOa1VOS3
+         5JylxKRfVO9eZGKI1999GURP1oLTpMmLFNNN7jrA=
+Date:   Tue, 16 Jun 2020 14:08:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Gerd Rausch <gerd.rausch@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Sasha Levin <alexander.levin@microsoft.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Hal Rosenstock <hal.rosenstock@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2.6.26-4.14] IB/ipoib: Arm "send_cq" to process
+ completions in due time
+Message-ID: <20200616120847.GB3542686@kroah.com>
+References: <322533b0-17de-b6b2-7da4-f99c7dfce3a8@oracle.com>
+ <20200612195511.GA6578@ziepe.ca>
+ <631c9e79-34e8-cc89-99bc-11fd6bc929e4@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200611141515.GW6578@ziepe.ca>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+In-Reply-To: <631c9e79-34e8-cc89-99bc-11fd6bc929e4@oracle.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
-
-Somehow this got stuck somewhere in the mail queues, only popped up just
-now ...
-
-On Thu, Jun 11, 2020 at 11:15:15AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 11, 2020 at 10:34:30AM +0200, Daniel Vetter wrote:
-> > > I still have my doubts about allowing fence waiting from within shrinkers.
-> > > IMO ideally they should use a trywait approach, in order to allow memory
-> > > allocation during command submission for drivers that
-> > > publish fences before command submission. (Since early reservation object
-> > > release requires that).
+On Fri, Jun 12, 2020 at 01:44:55PM -0700, Gerd Rausch wrote:
+> Hi Jason,
+> 
+> On 12/06/2020 12.55, Jason Gunthorpe wrote:
+> > On Fri, Jun 12, 2020 at 12:41:16PM -0700, Gerd Rausch wrote:
+> >> This issue appears to no longer exist in Linux-4.15
+> >> and younger, because the following commit does
+> >> call "ib_req_notify_cq" on "send_cq":
+> >> 8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
 > > 
-> > Yeah it is a bit annoying, e.g. for drm/scheduler I think we'll end up
-> > with a mempool to make sure it can handle it's allocations.
-> > 
-> > > But since drivers are already waiting from within shrinkers and I take your
-> > > word for HMM requiring this,
-> > 
-> > Yeah the big trouble is HMM and mmu notifiers. That's the really awkward
-> > one, the shrinker one is a lot less established.
+> > I'm not really clear what you want to happen to this patch - are you
+> > proposing a stable patch that is not just a backport? Why can't you
+> > backport the fix above instead?
 > 
-> I really question if HW that needs something like DMA fence should
-> even be using mmu notifiers - the best use is HW that can fence the
-> DMA directly without having to get involved with some command stream
-> processing.
-> 
-> Or at the very least it should not be a generic DMA fence but a
-> narrowed completion tied only into the same GPU driver's command
-> completion processing which should be able to progress without
-> blocking.
+> I considered backporting commit 8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
+> with all the dependencies it may have a considerably higher risk
+> than just arming the TX CQ.
 
-The problem with gpus is that these completions leak across the board like
-mad. Both internally within memory managers (made a lot worse with p2p
-direct access to vram), and through uapi.
+90% of the time when we apply a patch that does NOT match the upstream
+tree, it has a bug in it and needs to have another fix or something
+else.
 
-Many gpus still have a very hard time preempting, so doing an overall
-switch in drivers/gpu to a memory management model where that is required
-is not a very realistic option.  And minimally you need either preempt
-(still takes a while, but a lot faster generally than waiting for work to
-complete) or hw faults (just a bunch of tlb flushes plus virtual indexed
-caches, so just the caveat of that for a gpu, which has lots and big tlbs
-and caches). So preventing the completion leaks within the kernel is I
-think unrealistic, except if we just say "well sorry, run on windows,
-mkay" for many gpu workloads. Or more realistic "well sorry, run on the
-nvidia blob with nvidia hw".
+So please, if at all possible, stick to the upstream tree, so
+backporting the current patches are the best thing to do.
 
-The userspace side we can somewhat isolate, at least for pure compute
-workloads. But the thing is drivers/gpu is a continum from tiny socs
-(where dma_fence is a very nice model) to huge compute stuff (where it's
-maybe not the nicest, but hey hw sucks so still neeeded). Doing full on
-break in uapi somewhere in there is at least a bit awkward, e.g. some of
-the media codec code on intel runs all the way from the smallest intel soc
-to the big transcode servers.
+thanks,
 
-So the current status quo is "total mess, every driver defines their own
-rules". All I'm trying to do is some common rules here, do make this mess
-slightly more manageable and overall reviewable and testable.
-
-I have no illusions that this is fundamentally pretty horrible, and the
-leftover wiggle room for writing memory manager is barely more than a
-hairline. Just not seeing how other options are better.
-
-> The intent of notifiers was never to endlessly block while vast
-> amounts of SW does work.
-> 
-> Going around and switching everything in a GPU to GFP_ATOMIC seems
-> like bad idea.
-
-It's not everyone, or at least not everywhere, it's some fairly limited
-cases. Also, even if we drop the mmu_notifier on the floor, then we're
-stuck with shrinkers and GFP_NOFS. Still need a mempool of some sorts to
-guarantee you get out of a bind, so not much better.
-
-At least that's my current understanding of where we are across all
-drivers.
-
-> > I've pinged a bunch of armsoc gpu driver people and ask them how much this
-> > hurts, so that we have a clear answer. On x86 I don't think we have much
-> > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
-> > (but nouveau I think doesn't use dma_fence in there). 
-> 
-> Right, nor will RDMA ODP. 
-
-Hm, what's the context here? I thought RDMA side you really don't want
-dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
-here.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+greg k-h
