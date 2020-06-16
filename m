@@ -2,107 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FCD1FB507
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 16:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98B41FBBDC
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Jun 2020 18:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgFPOxP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Jun 2020 10:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727804AbgFPOxO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 10:53:14 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAF0C061573
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 07:53:14 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id e2so9591074qvw.7
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 07:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H9Q21GJcnralnv81ky+DYZCuyhzGkXe+xlvLrhcRUVI=;
-        b=cDN3DzBNq5d3CrdALYsiOTFh73YRcI8lQ7uTSznJPv8dAJPnHjJPQR57lcTVwcL/Fu
-         tV3NTbV5GNoBVgT5Y9FK7M+PwBjksAzlKvZZnxf+Qkd/PqTbrIdNSIbQI4xY6GgG5IkN
-         2i29pdJFycDxjY2QVTv0QiEB95VIbTnGIGt0UTkJ1Csd3R+WgZXFN5sle6nrM8u0InPD
-         03ylAeGN5+aJZmvaChOTyf6V/AGcN+wyw9nUErW3py9ORSzNIR2Kd+m+VbjIZ7U5Y8CF
-         +bk0T6Aw1wPbeMExKzclzBgPz36VephSSjSjX1HFVeLmX9lSoGuhN4yVL+U6sHPpHMa8
-         lzug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H9Q21GJcnralnv81ky+DYZCuyhzGkXe+xlvLrhcRUVI=;
-        b=iyx4/rZ1ZG7576B5RMbDo2Nml2JRxkR0hZDvNrpRkcNvA1hl570giZuPStORqus6v3
-         7dvogefcKfpm1A4fib15Wht/ye474K7mpMlwfYpWpkPmPyvvXoXREtYfj3TlAF9eFRBt
-         sU7hxL/aNPYCbwUMuEbzVDB7rRtaM3nWhww5WP43p2YNCUn/ehkXOLuR+HGg16dmEI/K
-         Q6tum1Tgn4EBhhgyVi9ZPxvMcL+CNCbKi3oXgDLNr3YrxF/JPLyzOyB82Ita9e410ndu
-         D7Z/ULRfcgzuZW0Hz/AkDssZbX54F9NOHMAh4WAipUTs45/DzkRtWceaPYTiST1/+c2Y
-         3lqA==
-X-Gm-Message-State: AOAM5313hbpnQ34MrTW4ZnQQaOJAiQXTiI67mKrNJ9NIBD0yZvGhk9Kv
-        /AJ8yczXzb8hRozKgRG5YF9cOg==
-X-Google-Smtp-Source: ABdhPJzP5DGSQb5Sh+luEoCiwZvsmX+7FP3MYwRCXpBsltvvGKDh3l1qc0mmf+FYXhbSQFkMBoXxZQ==
-X-Received: by 2002:a0c:e9cd:: with SMTP id q13mr2731630qvo.23.1592319193724;
-        Tue, 16 Jun 2020 07:53:13 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id g9sm14433034qtq.66.2020.06.16.07.53.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 07:53:13 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jlCxc-0096j7-MB; Tue, 16 Jun 2020 11:53:12 -0300
-Date:   Tue, 16 Jun 2020 11:53:12 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-media@vger.kernel.org,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200616145312.GC6578@ziepe.ca>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
- <20200611083430.GD20149@phenom.ffwll.local>
- <20200611141515.GW6578@ziepe.ca>
- <20200616120719.GL20149@phenom.ffwll.local>
+        id S1728928AbgFPQfv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Jun 2020 12:35:51 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54012 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728860AbgFPQfu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Jun 2020 12:35:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GGQrx9089581;
+        Tue, 16 Jun 2020 16:35:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ip4b+FZyoDVVIBKT0t/xWD91viY5gnfYLTwg/R5nzJM=;
+ b=DsphQnoHJ9q7/x+tiaqJCw6V290Lur0ot6eNIAd9oNquv4RGiNRrEtWqLlgWZ1Gv7c0V
+ 0FJj6M+EBZ57cOOsjJ0A9DAqh1ZXEhj/2qffevrUjajjm+yL19EHjVK2C7Eg8ypusSv2
+ Wq60Bvnd25kRjjOnhG3SvJ/ojwagVodIj18zCLcC3ygAQFP/BlEDNLBZvg6+xKmpCbZC
+ f5GO981/GWWNMB//Bo7LOZEAvMOTsRciBr8AGI5S3965W/V4REXtnibz+p+sWqrBWfFv
+ h+Flnt/jiqqydGpcTcvBYqP4mD3tiWyxvQo3ZMWz5L4INCVCGsaFK4Syi2C7q6cySaBw rw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 31p6e7yvte-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Jun 2020 16:35:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GGT5Aw016512;
+        Tue, 16 Jun 2020 16:35:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 31p6s7fmc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jun 2020 16:35:42 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05GGZf1R026320;
+        Tue, 16 Jun 2020 16:35:41 GMT
+Received: from ib0.gerd.us.oracle.com (/10.211.52.79)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Jun 2020 09:35:40 -0700
+Subject: Re: [PATCH 2.6.26-4.14] IB/ipoib: Arm "send_cq" to process
+ completions in due time
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Sasha Levin <alexander.levin@microsoft.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Hal Rosenstock <hal.rosenstock@gmail.com>,
+        linux-rdma@vger.kernel.org
+References: <322533b0-17de-b6b2-7da4-f99c7dfce3a8@oracle.com>
+ <20200612195511.GA6578@ziepe.ca>
+ <631c9e79-34e8-cc89-99bc-11fd6bc929e4@oracle.com>
+ <20200616120847.GB3542686@kroah.com>
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+Message-ID: <16760723-e9ac-88b7-0b95-170e43abee2b@oracle.com>
+Date:   Tue, 16 Jun 2020 09:35:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616120719.GL20149@phenom.ffwll.local>
+In-Reply-To: <20200616120847.GB3542686@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006160117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0
+ cotscore=-2147483648 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006160117
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:07:19PM +0200, Daniel Vetter wrote:
-> > > I've pinged a bunch of armsoc gpu driver people and ask them how much this
-> > > hurts, so that we have a clear answer. On x86 I don't think we have much
-> > > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
-> > > (but nouveau I think doesn't use dma_fence in there). 
-> > 
-> > Right, nor will RDMA ODP. 
+Hi,
+
+On 16/06/2020 05.08, Greg Kroah-Hartman wrote:
+>> I considered backporting commit 8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
+>> with all the dependencies it may have a considerably higher risk
+>> than just arming the TX CQ.
 > 
-> Hm, what's the context here? I thought RDMA side you really don't want
-> dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
-> here.
+> 90% of the time when we apply a patch that does NOT match the upstream
+> tree, it has a bug in it and needs to have another fix or something
+> else.
+> 
+> So please, if at all possible, stick to the upstream tree, so
+> backporting the current patches are the best thing to do.
+> 
 
-rdma does not use dma_fence at all, and though it is hard to tell, I
-didn't notice a dma_fence in the nouveau invalidation call path.
+Jason,
 
-At the very least I think there should be some big warning that
-dma_fence in notifiers should be avoided.
+With Mellanox writing and fixing the vast majority of the code found
+in IB/IPoIB, do you or one of your colleagues want to look into this?
 
-Ie it is strange that the new totally-not-a-gpu drivers use dma_fence,
-they surely don't have the same constraints as the existing GPU world,
-and it would be annoying to see dma_fence notifiers spring up in them
+It would be considerably less error-prone if the authors of that code
+did that more risky work of backporting.
 
-Jason
+AFAIK, Mellanox also has the regression tests to ensure that everything
+still works after this re-write as it did before.
+
+Thanks,
+
+ Gerd
+
