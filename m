@@ -2,167 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983151FC615
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 08:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10231FC65C
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 08:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgFQGSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 02:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgFQGSc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 02:18:32 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA014206F1;
-        Wed, 17 Jun 2020 06:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592374711;
-        bh=9LvlpLeZGmzDK2qHm5KRUGh6NmPphpw+r1v7be3xiFY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qp3Nl9NwKNzUk2VoI57myrOCFmo+a3HxQUBT7BfSpQChkcjZPXRU8p/YsrG1P4CXb
-         it1chsI8KXJyu79YZ73NtARmjA+1MYFO9zlfKPyD4Afnzz8InwMOVljT4U7d2dwR/+
-         44d5eOEYYJWBtOm/yvHl8ajGKUdl6cyzeDB9U3z4=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next v1] RDMA/core: Check that type_attrs is not NULL prior access
-Date:   Wed, 17 Jun 2020 09:18:26 +0300
-Message-Id: <20200617061826.2625359-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726495AbgFQGtC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 02:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726271AbgFQGtC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 02:49:02 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C851C061573
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 23:49:02 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x202so829657oix.11
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Jun 2020 23:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A5ZhuFAutHEAeCHrC5mjvXu1Iq0NUc7YMfX/IRu3ZyA=;
+        b=OIOD71wghmL3BJ+4LTxzheuNdBbWNpLdKTVng8Cfhv9Fc+rfz1Bmpja7NkfffcXZ5t
+         F6agC8t3Bl3XSNz2wvhQVeG89txiQ4Fg0oTmf4NqMRP+P7i0aE2AqATgmZ8aSvLna89q
+         jo8UfjgpSF4gK32/sAugm1Q4Ddzgv8tjJWzGc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A5ZhuFAutHEAeCHrC5mjvXu1Iq0NUc7YMfX/IRu3ZyA=;
+        b=XcK4uj/SidHpts41OPIK0eZQoNjbS068B5HfOSNDTvPYcLAvkbpQyXiZAuNwxkkwc3
+         ZVyycmR7UcwYI+7b+OENOwsbpviBpibzSkudwtpyilLBA83cnTRDVX79dP6MCg2XHczg
+         Yv2YDSy1xcxXgaiWEX2nfFawKZx3ey5XlPgovAaDtwRw6TLvXxx6nMHIPDbkyYZCP6kX
+         0d8y2rgHjMRHMNo8lWS4yPaSPQ0FXDGflH8WhukPZKfJoCK4pI/Djl6hZK9OiEKvNwB2
+         f+g7je2zwoaSkZ5kN1Jwc1ArksP+xH8XcGWna57S4C0xZIzEd9XFyyjRaMrAUPwt9Zln
+         +3nA==
+X-Gm-Message-State: AOAM530/AgPwUMOEN94IF9TADVpZF4nDA8mQ6QQpDywoZC9uAy3gSfMM
+        w/1vMFF+e6JJ/LRjSLFDSf7NvHHhO+DwP/5NRY64yg==
+X-Google-Smtp-Source: ABdhPJwGAcimp20dQiWfb4LYQbPcyitWuj+om1jev4TmvwlxEdnrUo68m+2HSkZsaPumvrGpeUMSVFkd4tAKg9ZB6PA=
+X-Received: by 2002:aca:ad97:: with SMTP id w145mr6315470oie.128.1592376541438;
+ Tue, 16 Jun 2020 23:49:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-5-daniel.vetter@ffwll.ch> <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
+ <20200611083430.GD20149@phenom.ffwll.local> <20200611141515.GW6578@ziepe.ca> <20200616120719.GL20149@phenom.ffwll.local>
+In-Reply-To: <20200616120719.GL20149@phenom.ffwll.local>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 17 Jun 2020 08:48:50 +0200
+Message-ID: <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep annotations
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Jun 16, 2020 at 2:07 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Hi Jason,
+>
+> Somehow this got stuck somewhere in the mail queues, only popped up just
+> now ...
+>
+> On Thu, Jun 11, 2020 at 11:15:15AM -0300, Jason Gunthorpe wrote:
+> > On Thu, Jun 11, 2020 at 10:34:30AM +0200, Daniel Vetter wrote:
+> > > > I still have my doubts about allowing fence waiting from within shrinkers.
+> > > > IMO ideally they should use a trywait approach, in order to allow memory
+> > > > allocation during command submission for drivers that
+> > > > publish fences before command submission. (Since early reservation object
+> > > > release requires that).
+> > >
+> > > Yeah it is a bit annoying, e.g. for drm/scheduler I think we'll end up
+> > > with a mempool to make sure it can handle it's allocations.
+> > >
+> > > > But since drivers are already waiting from within shrinkers and I take your
+> > > > word for HMM requiring this,
+> > >
+> > > Yeah the big trouble is HMM and mmu notifiers. That's the really awkward
+> > > one, the shrinker one is a lot less established.
+> >
+> > I really question if HW that needs something like DMA fence should
+> > even be using mmu notifiers - the best use is HW that can fence the
+> > DMA directly without having to get involved with some command stream
+> > processing.
+> >
+> > Or at the very least it should not be a generic DMA fence but a
+> > narrowed completion tied only into the same GPU driver's command
+> > completion processing which should be able to progress without
+> > blocking.
+>
+> The problem with gpus is that these completions leak across the board like
+> mad. Both internally within memory managers (made a lot worse with p2p
+> direct access to vram), and through uapi.
+>
+> Many gpus still have a very hard time preempting, so doing an overall
+> switch in drivers/gpu to a memory management model where that is required
+> is not a very realistic option.  And minimally you need either preempt
+> (still takes a while, but a lot faster generally than waiting for work to
+> complete) or hw faults (just a bunch of tlb flushes plus virtual indexed
+> caches, so just the caveat of that for a gpu, which has lots and big tlbs
+> and caches). So preventing the completion leaks within the kernel is I
+> think unrealistic, except if we just say "well sorry, run on windows,
+> mkay" for many gpu workloads. Or more realistic "well sorry, run on the
+> nvidia blob with nvidia hw".
+>
+> The userspace side we can somewhat isolate, at least for pure compute
+> workloads. But the thing is drivers/gpu is a continum from tiny socs
+> (where dma_fence is a very nice model) to huge compute stuff (where it's
+> maybe not the nicest, but hey hw sucks so still neeeded). Doing full on
+> break in uapi somewhere in there is at least a bit awkward, e.g. some of
+> the media codec code on intel runs all the way from the smallest intel soc
+> to the big transcode servers.
+>
+> So the current status quo is "total mess, every driver defines their own
+> rules". All I'm trying to do is some common rules here, do make this mess
+> slightly more manageable and overall reviewable and testable.
+>
+> I have no illusions that this is fundamentally pretty horrible, and the
+> leftover wiggle room for writing memory manager is barely more than a
+> hairline. Just not seeing how other options are better.
 
-In disassociate flow, the type_attrs is set to be NULL, which is in
-implicit way is checked in alloc_uobj() in "if (!attrs->context)" flow.
-Change the logic to rely on that check, that will fix the following kernel
-splat.
+So bad news is that gpu's are horrible, but I think if you don't have
+to review gpu drivers it's substantially better. If you do have hw
+with full device page fault support, then there's no need to ever
+install a dma_fence. Punching out device ptes and flushing caches is
+all that's needed. That is also the plan we have, for the workloads
+and devices where that's possible.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000018
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP PTI
- CPU: 3 PID: 2743 Comm: python3 Not tainted 5.7.0-rc6-for-upstream-perf-2020-05-23_19-04-38-5 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
- RIP: 0010:alloc_begin_fd_uobject+0x18/0xf0 [ib_uverbs]
- Code: 89 43 48 eb 97 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 41 55 49 89 f5 41 54 55 48 89 fd 53 48 83 ec 08 48 8b 1f <48> 8b 43 18 48 8b 80 80 00 00 00 48 3d 20 10 33 a0 74 1c 48 3d 30
- RSP: 0018:ffffc90001127b70 EFLAGS: 00010282
- RAX: ffffffffa0339fe0 RBX: 0000000000000000 RCX: 8000000000000007
- RDX: fffffffffffffffb RSI: ffffc90001127d28 RDI: ffff88843fe1f600
- RBP: ffff88843fe1f600 R08: ffff888461eb06d8 R09: ffff888461eb06f8
- R10: ffff888461eb0700 R11: 0000000000000000 R12: ffff88846a5f6450
- R13: ffffc90001127d28 R14: ffff88845d7d6ea0 R15: ffffc90001127cb8
- FS: 00007f469bff1540(0000) GS:ffff88846f980000(0000) knlGS:0000000000000000
- CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000018 CR3: 0000000450018003 CR4: 0000000000760ee0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
- ? xa_store+0x28/0x40
- rdma_alloc_begin_uobject+0x4f/0x90 [ib_uverbs]
- ib_uverbs_create_comp_channel+0x87/0xf0 [ib_uverbs]
- ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xb1/0xf0 [ib_uverbs]
- ib_uverbs_cmd_verbs.isra.8+0x96d/0xae0 [ib_uverbs]
- ? get_page_from_freelist+0x3bb/0xf70
- ? _copy_to_user+0x22/0x30
- ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
- ? __wake_up_common_lock+0x87/0xc0
- ib_uverbs_ioctl+0xbc/0x130 [ib_uverbs]
- ksys_ioctl+0x83/0xc0
- ? ksys_write+0x55/0xd0
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x48/0x130
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7f469ac43267
+Now my understanding for rdma is that if you don't have hw page fault
+support, then the only other object is to more or less permanently pin
+the memory. So again, dma_fence are completely useless, since it's
+entirely up to userspace when a given piece of registered memory isn't
+needed anymore, and the entire problem boils down to how much do we
+allow random userspace to just pin (system or device) memory. Or at
+least I don't really see any other solution.
 
-Fixes: 849e149063bd ("RDMA/core: Do not allow alloc_commit to fail")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
-Changelog:
-v1:
- * Write with error unwind flow instead of direct return
-v0:
-https://lore.kernel.org/linux-rdma/20200616105813.2428412-1-leon@kernel.org
----
- drivers/infiniband/core/rdma_core.c | 36 +++++++++++++++++------------
- 1 file changed, 21 insertions(+), 15 deletions(-)
+On the other end we have simpler devices like video input/output.
+Those always need pinned memory, but through hw design it's limited in
+how much you can pin (generally max resolution times a limited set of
+buffers to cycle through). Just including that memory pinning
+allowance as part of device access makes sense.
 
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 38de4942c682..3027cd2fb247 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -470,40 +470,46 @@ static struct ib_uobject *
- alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
- 		       struct uverbs_attr_bundle *attrs)
- {
--	const struct uverbs_obj_fd_type *fd_type =
--		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
-+	const struct uverbs_obj_fd_type *fd_type;
- 	int new_fd;
--	struct ib_uobject *uobj;
-+	struct ib_uobject *uobj, *ret;
- 	struct file *filp;
+It's only gpus (I think) which are in this awkward in-between spot
+where dynamic memory management really is much wanted, but the hw
+kinda sucks. Aside, about 10+ years ago we had a similar problem with
+gpu hw, but for security: Many gpu didn't have any kinds of page
+tables to isolate different clients from each another. drivers/gpu
+fixed this by parsing&validating what userspace submitted to make sure
+it's only every accessing its own buffers. Most gpus have become
+reasonable nowadays and do have proper per-process pagetables (gpu
+process, not the pasid stuff), but even today there's still some of
+the old model left in some of the smallest SoC.
 
-+	uobj = alloc_uobj(attrs, obj);
-+	if (IS_ERR(uobj))
-+		return uobj;
-+
-+	fd_type =
-+		container_of(obj->type_attrs, struct uverbs_obj_fd_type, type);
- 	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release &&
--		    fd_type->fops->release != &uverbs_async_event_release))
--		return ERR_PTR(-EINVAL);
-+		    fd_type->fops->release != &uverbs_async_event_release)) {
-+		ret = ERR_PTR(-EINVAL);
-+		goto err_fd;
-+	}
+tldr; of all this: gpus kinda suck sometimes, but  that's also not news :-/
 
- 	new_fd = get_unused_fd_flags(O_CLOEXEC);
--	if (new_fd < 0)
--		return ERR_PTR(new_fd);
--
--	uobj = alloc_uobj(attrs, obj);
--	if (IS_ERR(uobj))
-+	if (new_fd < 0) {
-+		ret = ERR_PTR(new_fd);
- 		goto err_fd;
-+	}
+Cheers, Daniel
 
- 	/* Note that uverbs_uobject_fd_release() is called during abort */
- 	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
- 				  fd_type->flags);
- 	if (IS_ERR(filp)) {
--		uverbs_uobject_put(uobj);
--		uobj = ERR_CAST(filp);
--		goto err_fd;
-+		ret = ERR_CAST(filp);
-+		goto err_getfile;
- 	}
- 	uobj->object = filp;
+> > The intent of notifiers was never to endlessly block while vast
+> > amounts of SW does work.
+> >
+> > Going around and switching everything in a GPU to GFP_ATOMIC seems
+> > like bad idea.
+>
+> It's not everyone, or at least not everywhere, it's some fairly limited
+> cases. Also, even if we drop the mmu_notifier on the floor, then we're
+> stuck with shrinkers and GFP_NOFS. Still need a mempool of some sorts to
+> guarantee you get out of a bind, so not much better.
+>
+> At least that's my current understanding of where we are across all
+> drivers.
+>
+> > > I've pinged a bunch of armsoc gpu driver people and ask them how much this
+> > > hurts, so that we have a clear answer. On x86 I don't think we have much
+> > > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
+> > > (but nouveau I think doesn't use dma_fence in there).
+> >
+> > Right, nor will RDMA ODP.
+>
+> Hm, what's the context here? I thought RDMA side you really don't want
+> dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
+> here.
+> -Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
- 	uobj->id = new_fd;
- 	return uobj;
 
--err_fd:
-+err_getfile:
- 	put_unused_fd(new_fd);
--	return uobj;
-+err_fd:
-+	uverbs_uobject_put(uobj);
-+	return ret;
- }
 
- struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
---
-2.26.2
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
