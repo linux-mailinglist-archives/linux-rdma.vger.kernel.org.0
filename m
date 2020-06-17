@@ -2,122 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A29C1FD0FC
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 17:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA781FD11F
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 17:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgFQP3n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 11:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S1726809AbgFQPgl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 11:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgFQP3m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 11:29:42 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB3C0613ED
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:29:42 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id x16so1220726qvr.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:29:42 -0700 (PDT)
+        with ESMTP id S1726758AbgFQPgl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 11:36:41 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773E8C06174E
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:36:41 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c185so2402485qke.7
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:36:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=v5BdIMSU0SgDrZuQSRW4xvIrY4rZ7WnbUK5J5TOXFb0=;
-        b=X4atcg3QCitKJdCOr5ja2tE2bUBLSFF91J0CzDtXnsV5WejCzsk2eajJzTjXjsFLTA
-         5s+gkYE18Kz4f7uWFKMYMARjm17DhKgqFhDle7hMjPDQJSHTF3vHPDJzf/g8gfXm1XCc
-         xS0VLL2kkFYRGpHsv6IKsvfpDgxixqoGb1C7eZAdpsByKmZrD/PLYevp7FEa9NQdLxHk
-         yZFftabPuFhyEj1G7fMasvfilN4m93P/kXM+Vvvx/r/xyhIpvBM0x0Ha3wX71m2O7A/a
-         L0H0SGP2pZKrl4si0m+rtOCOCb+j5CVmE5xryjAmjELn7Uqp0ivvBvKuiMRBNAyyx2kG
-         itRw==
+        bh=Dbk/1jSQdwOR1Cb8Zc/nPFu1ivkGyHkghRgO8SztVXU=;
+        b=pPYxfQnED654JAVK2LdD6AVZx1QEwmZWhfPNyjlCoZhlM8sa3qhXCMxdrkGp8142Wh
+         DtxDsN23q/ulr9S6Y+1zzbf4jW3Z9dFZ/0YeayffUabFyka3Lgzx1eZXTLkiMhDDey4m
+         UogpKXsYTqdsBfQ9jP80lmHPG88L/pOrXMY+hIwSyhlang0aR6IJI0e02qxnv5evApUG
+         wlbgjC0zyYMskDH5xBlAMv2HN3yxwGDVgiytjBX39gVlIvRoyMO8EnURVPVhyOd9ZKvk
+         PLNlzpxiRwOl2sWlKYsD+uA62RXOFH5aU5DpBmm4K9sf7EOL/+Ls4Akpz2DpLoheFhEe
+         +l3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=v5BdIMSU0SgDrZuQSRW4xvIrY4rZ7WnbUK5J5TOXFb0=;
-        b=ZBaYxY3soqZonTZGqqa4azrANlekur0+sxKOMh1HWA/nCxmzgSXwadWTg6RdwJALGU
-         b1oQLsaEh/Xyjpetaw4gmGz99Xuz/jOLZAkmdpq69oLiEXrnqrNVHLXKQeGhrOlX2XgO
-         +sQevOvn+3x4Y7H8Sdk4J7E+h91lbmxiFZxMBeiUWfhpA5Ast0DqjBRWQD6kaM5hlaEn
-         qz3R9Mg9sgm8CBDNjWvNDRnWPGuDccnWTiTLvg5vTBVrM16WEmdsT8yZiQAEmG5i70Ty
-         DfZF/ne3+wTBB4GGhabdLRSWCpjw7x0O1N3yT+ZfwQOCn6pSWf1Bs84MQpNDJtGgvUmY
-         JWGA==
-X-Gm-Message-State: AOAM531fRJRqdO0vgk+f9st3tfWMMJZdypbTmyXoEEuDb8Eb7jG3MKN3
-        0TXMrjsww4OBfKVvOVbUx2ioIQ==
-X-Google-Smtp-Source: ABdhPJyWaY8mWagCAPiiX7EhWCqcjbxUamRd5/mDpg63tRR7xxsYdOaA9ycSUwn3S5FVu3UfHzBj0g==
-X-Received: by 2002:a0c:f388:: with SMTP id i8mr8163963qvk.224.1592407781973;
-        Wed, 17 Jun 2020 08:29:41 -0700 (PDT)
+        bh=Dbk/1jSQdwOR1Cb8Zc/nPFu1ivkGyHkghRgO8SztVXU=;
+        b=JZ3HMXwTcfvwqpnvGwjqlyRfU4WynfDKtv2gbGmLmXS0uXjMPynkiOBly4KgaOKR54
+         xkvRDRjHknuRUCWOcqb6Uy3ztZX0k5FEWI1lzh52V9n4NZEvSQm3YNn1Tuz2m4ZbYIqA
+         avLJum1SFzuTuqhZeXeX2K87cy/lmV2BJz+sEQIeDfZjR0+Fc33mZk1V2b8MiMZLj2hu
+         1xzJqf8h+tqu9/Mas5TdQ/RCNXA1kUiPDVNTYz7uTjUMcw/AwfprVR+YsrguxfMtH47p
+         nWJzNcpdcQWJBvwDbcW7nCJUAV/7aKcNIqVIdKIkD9EmhYTH5v1kRmaw/pw6hXFlVFOM
+         C+eg==
+X-Gm-Message-State: AOAM531RNB/ilfPX1xW+Va4j6IHmqhEWKJ7l8PcIXWyorbI1BNQQ2V9c
+        NoOq7FsGqzj/NE5+L4lwlrS08A==
+X-Google-Smtp-Source: ABdhPJxKyVnemogejXmn4cJcqyCy/SptnP/oz0wNctUYLem8ceHnPoVsFkwirnsuXQEsJCERqk/k7g==
+X-Received: by 2002:a05:620a:9d8:: with SMTP id y24mr25406506qky.274.1592408199997;
+        Wed, 17 Jun 2020 08:36:39 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id y13sm204954qto.23.2020.06.17.08.29.41
+        by smtp.gmail.com with ESMTPSA id e16sm198959qtc.71.2020.06.17.08.36.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 08:29:41 -0700 (PDT)
+        Wed, 17 Jun 2020 08:36:39 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jla0S-009d9h-Uc; Wed, 17 Jun 2020 12:29:40 -0300
-Date:   Wed, 17 Jun 2020 12:29:40 -0300
+        id 1jla7C-009dI1-Th; Wed, 17 Jun 2020 12:36:38 -0300
+Date:   Wed, 17 Jun 2020 12:36:38 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200617152940.GG6578@ziepe.ca>
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
- <20200611083430.GD20149@phenom.ffwll.local>
- <20200611141515.GW6578@ziepe.ca>
- <20200616120719.GL20149@phenom.ffwll.local>
- <20200616145312.GC6578@ziepe.ca>
- <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Alexander Matushevsky <matua@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/efa: Move provider specific attributes to
+ ucontext allocation response
+Message-ID: <20200617153638.GH6578@ziepe.ca>
+References: <20200615075920.58936-1-galpress@amazon.com>
+ <20200616063045.GC2141420@unreal>
+ <cba7128b-c427-bc26-5f43-69a22463debc@amazon.com>
+ <20200616093835.GB2383158@unreal>
+ <f6773480-5954-b58b-21f0-f5ee4ec7238b@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
+In-Reply-To: <f6773480-5954-b58b-21f0-f5ee4ec7238b@amazon.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 09:57:54AM +0200, Daniel Vetter wrote:
-
-> > At the very least I think there should be some big warning that
-> > dma_fence in notifiers should be avoided.
+On Tue, Jun 16, 2020 at 08:44:37PM +0300, Gal Pressman wrote:
+> On 16/06/2020 12:38, Leon Romanovsky wrote:
+> > On Tue, Jun 16, 2020 at 11:53:11AM +0300, Gal Pressman wrote:
+> >> On 16/06/2020 9:30, Leon Romanovsky wrote:
+> >>> On Mon, Jun 15, 2020 at 10:59:20AM +0300, Gal Pressman wrote:
+> >>>> Provider specific attributes which are necessary for the userspace
+> >>>> functionality should be part of the alloc ucontext response, not query
+> >>>> device. This way a userspace provider could work without issuing a query
+> >>>> device verb call. However, the fields will remain in the query device
+> >>>> ABI in order to maintain backwards compatibility.
+> >>>
+> >>> I don't really understand why "should be ..."? Device properties exposed
+> >>> here are per-device and will be equal to all ucontexts, so instead of
+> >>> doing one very fast system call, you are "punishing" every ucontext
+> >>> call.
+> >>
+> >> I talked about it with Jason in the past, the query device verb is intended to
+> >> follow the IBA verb, alloc ucontext should return driver specific data that's
+> >> required to operate the user space provider.
+> >> A query device call should not be mandatory to load the provider.
+> > 
+> > Why? query_device is declared as mandatory verb for any provider, so
+> > anyway all in-the-tree RDMA drivers will have such verb.
 > 
-> Yeah I'm working on documentation, and also the notifiers here
-> hopefully make it clear it's massive pain. I think we could even make
-> a hard rule that dma_fence in mmu notifier outside of drivers/gpu is a
-> bug/misfeature.
+> I don't think the concern here is if the verb exists or not, my understanding is
+> that query device should be used for IBA query device attributes, not other
+> provider specific stuff.
+> Jason, want to chime in with your thoughts?
 
-Yep!
- 
-> Might be a good idea to add a MAINTAINERS entry with a K: regex
-> pattern, so that you can catch such modifiers. We do already have such
-> a pattern for dma-fence, to catch abuse. So if you want I could type
-> up a documentation patch for this, get your and others acks and the
-> dri-devel folks would enforce that the dma_fence_wait madness doesn't
-> leak beyond drivers/gpu
+query_device should be used to implement the ibverb query_device and
+query_device_ex
 
-It seems like the best thing
- 
-> Oded has agreed to remove the dma-fence usage, since they really don't
-> need it (and all the baggage that comes with it), plain old completion
-> is enough for their use. This use is also why I added the regex to
-> MAINTAINERS, so that in the future we can catch people who try to use
-> dma_fence because it looks cute and useful, and are completely
-> oblivious to all the pain and headaches involved.
+It should only return rdma-core defined common stuff because that is
+what that verb does - there is no reason to return driver specific
+things as there is nothing the driver can do with it.
 
-This is good!
+The only exception might be some provider specific query_device dv
+that needs more information.
 
-Thanks,
-Jason 
+query_device should not be used as some two-part
+create_context. Information related only to create_context that is not
+already exposed to query_device should not be added to query_device
+only for create_context's use.
+
+Similarly, information in query_device should not be duplicated into
+create_context just to save a system call.
+
+Jason
