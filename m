@@ -2,109 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1996C1FCB83
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 12:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8C31FCBB2
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 13:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgFQK5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 06:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+        id S1725894AbgFQLE3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 07:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726271AbgFQK5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 06:57:50 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30281C061573
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 03:57:50 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id n24so1854777ejd.0
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 03:57:50 -0700 (PDT)
+        with ESMTP id S1725554AbgFQLE2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 07:04:28 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E1CC061573
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 04:04:27 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id z206so1027106lfc.6
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 04:04:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O+YfS0ttnLCfsNiE+e6ILMV8mORupQjGd84VFFvianI=;
-        b=hq1X9t5NU9g+T8dqEMPWoeuhUYPrzb8ZUmYbMzwy4FI4rfrVVLdlFySkqTREG3PLI0
-         wNVUGKOJ0OxjUvRg2ZBUobKmc+VBEVPWS+AEHaahxXnm7ZfKSYo/th/tRNSB5XQ3NpXP
-         OdxD+wllo1sBFq+bhFbwUOZwsJu4qN6icSbcUD4RFAxNUIcitmewso6zYrJCTCo86QDd
-         WP8Cx1+FKbZrF1FvSj5+GrtGT04ikVSD8iUhIMaHh0SslF7y6vlJ1v6QvlwqB1BITd61
-         Tu8hZ3yonJ/wHqoCc5f5iFzL64k5Y6XKW9ZRbTBq1bZdMm4ZVuPkb8E3eQimd0oqyItS
-         ZHdQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=92dP5bDd4DMLDtAElZCC+zyR1bMknOEMBXlUeB3qUHc=;
+        b=TJGRTb/Sz4xkeOxooFOZzjqJXMelBFg5u8Cu7kkcMwI1OtevYLvjEn1QOdDy3YeEl5
+         Ebi3yC/8JhCWJ3RR6v3ZQaF2M8QlYelUhJ7x1NTSarJ+QZHD5yjyuAQMs8M2BnSA8+Zz
+         WD/3RGqLR+XdEanD8hvY3uLXa36mNCf5NAEEqRfsq8E1H9UsuQA9kqpKJhvhnr7kDfLD
+         iDu4NTOFgvrIO+CGUCF5AuXeCjF45cN7tqm221wnyz3YPeLfD6Jo7LDUW8VGDGWuLJ1/
+         vl8F0LlLZS22wIqLpyG+3XkZo7JobdFTzp+7T4PTVdBmu5cJJ7Qd3bOusF8UQzQVKM2q
+         8usQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O+YfS0ttnLCfsNiE+e6ILMV8mORupQjGd84VFFvianI=;
-        b=UTn0Kt84TP1L4iSiEsVl+rRUBTCSUTWzmhP3AExCbsfBrNVIPesUOA5FXGsUmrsXEC
-         bBjXQalcu0oRo4IFqvospqPzBIR+UCyreTAGp2h1jWmRYWmaoFsNAKRj7NdIN6A9P7XJ
-         PLODqxVxRjQ864RslnRx8UaoyOkoWmIU1vmPPlYPu0ghTiKE37aBY6Vaw9lPfLUchf5l
-         9Dlwsc733/o15dE16VbWxVAFZPViyDrbRzVWsujtnZcrXF3UOe0MHIPLMOr/EFPN64bK
-         6ir9QhKyBKetbc3FOJmQs1l2C/U1d+0DGMWJRL9TD3Ld4bGZc/0yUCLlXR78PvQton3E
-         s89A==
-X-Gm-Message-State: AOAM532zx1Kp3UbTwVFzu+DR4jBFb7jcxPlenYOPo+fP7XQIiQ4YFKJ4
-        e3LZWUJQKt/Wji+eO7RGpL4TbyRsxSkYOR0HZv+7tA==
-X-Google-Smtp-Source: ABdhPJzP5nSfdYRuYpEBQ/kGmSwqj8HneuDENIWgcYcvcj33ZChZis6j7fB5yVbc7y6wZYu1jv0Oqs9v/fPP9L+hdIE=
-X-Received: by 2002:a17:906:7802:: with SMTP id u2mr7177417ejm.478.1592391468871;
- Wed, 17 Jun 2020 03:57:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=92dP5bDd4DMLDtAElZCC+zyR1bMknOEMBXlUeB3qUHc=;
+        b=GDWc4Jvn8ZedNt3Q0q4yr314eJT0S1POQqVeh2y20WAjbTtbwtmlx699S2KPYvbKow
+         tFs+zEf0dcEvp2bpWwONd4X7Vhg+LdkeaSsg+nJZDGYznml8usCRCHke3hiSgVGdXaXS
+         jmYWksBE/a01Tv0F3MMn2vNxnkCt2SxJGCzrdf7w22VzuiJhY5kDVOaU4Q0qMQhY/EJR
+         NLt1dofWPrX2xZs3+T0JzlIdNuzTbGjrnJ9y7sTirRctxW5zTUvzgHEfvyI3TI/TMKbe
+         MQoGlfViNAzeIJcyRZQaVl359Qg9v2KZXt8qzpESbjy4r9R+7We71KgjttLxFlUDI8SP
+         aEEg==
+X-Gm-Message-State: AOAM5302R14WIJmqAOG+U7NIYX/qjQZZnnfBpoa4t+LtixGV308pVtyG
+        JBTxcE9DB4tBQ1AMF87e8O4HnMz+rdCuqdzHaqxeWneCcwQ=
+X-Google-Smtp-Source: ABdhPJzYcjMfPdmD+LYbBOZal0mM8Y1fZ4+1uCt6IFvhqOobrb0VqL8XGnDSmHvw6CumuwoP29kcbNDklZecgVA4+PQ=
+X-Received: by 2002:a19:d06:: with SMTP id 6mr4216984lfn.214.1592391866004;
+ Wed, 17 Jun 2020 04:04:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
-In-Reply-To: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 17 Jun 2020 12:57:38 +0200
-Message-ID: <CAMGffEnQ6acML7ze2dC6PH5m3E6gy00ohsWf=cQQOFG-NNUWvw@mail.gmail.com>
-Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
- late_initcall level
-To:     haris.iqbal@cloud.ionos.com
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel test robot <rong.a.chen@intel.com>
+From:   Vladimir Chukov <vladimir.chukov@cloud.ionos.com>
+Date:   Wed, 17 Jun 2020 13:04:15 +0200
+Message-ID: <CAL94vcd2bHKHZaw7wsRMMyk1FCq+nRFR-XD2W0ueG_dgOyVFew@mail.gmail.com>
+Subject: [BUG report] rdma-ndd: wrong NodeDescription for second device
+To:     linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Haris,
+Description: rdma-ndd sets correct NodeDescription for device which
+was initialised first; for the second device description in sysfs is
+set correctly, but saquery  to that node  will return default
+"NodeDescription.........MT4119 ConnectX5   Mellanox Technologies"
 
-Thanks for patch, a few comments inline
-On Wed, Jun 17, 2020 at 12:37 PM <haris.iqbal@cloud.ionos.com> wrote:
->
-> From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
->
-> Fixes: 2de6c8de192b ("block/rnbd: server: main functionality")
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-This part should be the last after commit message.
-The subject sounds better maybe: block/rnbd: Delay the initialization
-of rnbd_server module to late_initcall level
->
-> The rnbd_server module's communication manager initialization depends on the
-> registration of the "network namespace subsystem" of the RDMA CM agent module.
-> As such, when the kernel is configured to load the rnbd_server and the RDMA
-> cma module during initialization; and if the rnbd_server module is initialized
-> before RDMA cma module, a null ptr dereference occurs during the RDMA bind
-> operation.
-would be better to include the call trace here.
-> This patch delays the initialization of the rnbd_server module to the
-> late_initcall level, since RDMA cma module uses module_init which puts it into
-> the device_initcall level.
+How to reproduce: initramfs-tools 0.130+ (default for buster) - loads
+mlx5_core/mlx5_ib in initramfs, ports 1 and 2 are connected to
+different fabrics (not to the same switch), as a result very close gap
+between mlx5_0 and mlx5_1 netlink events. Then use saquery <lid of the
+second port> -C mlx5_1
 
-With the comments addressed:
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/block/rnbd/rnbd-srv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-> index 86e61523907b..213df05e5994 100644
-> --- a/drivers/block/rnbd/rnbd-srv.c
-> +++ b/drivers/block/rnbd/rnbd-srv.c
-> @@ -840,5 +840,5 @@ static void __exit rnbd_srv_cleanup_module(void)
->         rnbd_srv_destroy_sysfs_files();
->  }
->
-> -module_init(rnbd_srv_init_module);
-> +late_initcall(rnbd_srv_init_module);
->  module_exit(rnbd_srv_cleanup_module);
-> --
-> 2.25.1
->
+Workarounds: blacklist mlx5_core and mlx5_ib in initramfs OR connect
+both ports to the same fabric OR restart OpenSM (will re-read sysfs)
+Non-effective workarounds: systemd rdma-ndd.timer, systemd rdma-ndd
+ExecStartPre sleep
+
+Information about your system:
+Linux distribution and version: Debian 10.1
+Linux kernel and version: 4.19.118-2+deb10u1
+InfiniBand hardware and firmware version: MT4119, 16.27.2008
+OpenSM version: 3.3.20, 3.3.21
+
+--
+Vladimir
