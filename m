@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB8A1FC7D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E187C1FC7D3
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgFQHqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 03:46:37 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37739 "EHLO
+        id S1726495AbgFQHqg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 03:46:36 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37746 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726331AbgFQHqg (ORCPT
+        with ESMTP id S1726565AbgFQHqg (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:36 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
         with SMTP; 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kT0h017650;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kT1T017653;
         Wed, 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTDD007191;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTMX007195;
         Wed, 17 Jun 2020 10:46:29 +0300
 Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kTvG007189;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kTSE007194;
         Wed, 17 Jun 2020 10:46:29 +0300
 From:   Yishai Hadas <yishaih@mellanox.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com
-Subject: [PATCH rdma-core 08/13] mlx5: Implement the import/unimport PD verbs
-Date:   Wed, 17 Jun 2020 10:45:51 +0300
-Message-Id: <1592379956-7043-9-git-send-email-yishaih@mellanox.com>
+Subject: [PATCH rdma-core 09/13] verbs: Introduce ibv_import/unimport_mr() verbs
+Date:   Wed, 17 Jun 2020 10:45:52 +0300
+Message-Id: <1592379956-7043-10-git-send-email-yishaih@mellanox.com>
 X-Mailer: git-send-email 1.8.2.3
 In-Reply-To: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
 References: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
@@ -36,143 +36,279 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement the import/unimport PD verbs based on their definition as
-described in the man page.
+Introduce ibv_import/unimport_mr() verbs, this enables an application which
+previously imported the device and an associated PD to import an MR that
+is associated with.
 
-It uses the query PD KABI to retrieve the original PD properties based
-on its given handle.
+A detailed man page as part of this patch describes the expected usage
+and flow.
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 ---
- providers/mlx5/mlx5.c  |  2 ++
- providers/mlx5/mlx5.h  |  3 +++
- providers/mlx5/verbs.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 57 insertions(+), 2 deletions(-)
+ debian/libibverbs1.symbols        |  2 ++
+ libibverbs/driver.h               |  3 ++
+ libibverbs/dummy_ops.c            | 15 ++++++++++
+ libibverbs/libibverbs.map.in      |  2 ++
+ libibverbs/man/CMakeLists.txt     |  2 ++
+ libibverbs/man/ibv_import_mr.3.md | 63 +++++++++++++++++++++++++++++++++++++++
+ libibverbs/verbs.c                | 16 ++++++++++
+ libibverbs/verbs.h                | 10 +++++++
+ 8 files changed, 113 insertions(+)
+ create mode 100644 libibverbs/man/ibv_import_mr.3.md
 
-diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
-index dbd86c0..4067204 100644
---- a/providers/mlx5/mlx5.c
-+++ b/providers/mlx5/mlx5.c
-@@ -148,6 +148,7 @@ static const struct verbs_context_ops mlx5_ctx_common_ops = {
- 	.destroy_wq = mlx5_destroy_wq,
- 	.free_dm = mlx5_free_dm,
- 	.get_srq_num = mlx5_get_srq_num,
-+	.import_pd = mlx5_import_pd,
- 	.modify_cq = mlx5_modify_cq,
- 	.modify_flow_action_esp = mlx5_modify_flow_action_esp,
- 	.modify_qp_rate_limit = mlx5_modify_qp_rate_limit,
-@@ -159,6 +160,7 @@ static const struct verbs_context_ops mlx5_ctx_common_ops = {
- 	.query_rt_values = mlx5_query_rt_values,
- 	.read_counters = mlx5_read_counters,
- 	.reg_dm_mr = mlx5_reg_dm_mr,
-+	.unimport_pd = mlx5_unimport_pd,
- 	.alloc_null_mr = mlx5_alloc_null_mr,
- 	.free_context = mlx5_free_context,
+diff --git a/debian/libibverbs1.symbols b/debian/libibverbs1.symbols
+index ee32bf4..abc27d8 100644
+--- a/debian/libibverbs1.symbols
++++ b/debian/libibverbs1.symbols
+@@ -68,6 +68,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
+  ibv_get_pkey_index@IBVERBS_1.5 20
+  ibv_get_sysfs_path@IBVERBS_1.0 1.1.6
+  ibv_import_device@IBVERBS_1.10 31
++ ibv_import_mr@IBVERBS_1.10 31
+  ibv_import_pd@IBVERBS_1.10 31
+  ibv_init_ah_from_wc@IBVERBS_1.1 1.1.6
+  ibv_modify_qp@IBVERBS_1.0 1.1.6
+@@ -103,6 +104,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
+  ibv_resize_cq@IBVERBS_1.0 1.1.6
+  ibv_resize_cq@IBVERBS_1.1 1.1.6
+  ibv_resolve_eth_l2_from_gid@IBVERBS_1.1 1.2.0
++ ibv_unimport_mr@IBVERBS_1.10 31
+  ibv_unimport_pd@IBVERBS_1.10 31
+  ibv_wc_status_str@IBVERBS_1.1 1.1.6
+  mbps_to_ibv_rate@IBVERBS_1.1 1.1.8
+diff --git a/libibverbs/driver.h b/libibverbs/driver.h
+index fbf63f3..0edff0b 100644
+--- a/libibverbs/driver.h
++++ b/libibverbs/driver.h
+@@ -311,6 +311,8 @@ struct verbs_context_ops {
+ 	void (*free_context)(struct ibv_context *context);
+ 	int (*free_dm)(struct ibv_dm *dm);
+ 	int (*get_srq_num)(struct ibv_srq *srq, uint32_t *srq_num);
++	struct ibv_mr *(*import_mr)(struct ibv_pd *pd,
++				    uint32_t mr_handle);
+ 	struct ibv_pd *(*import_pd)(struct ibv_context *context,
+ 				    uint32_t pd_handle);
+ 	int (*modify_cq)(struct ibv_cq *cq, struct ibv_modify_cq_attr *attr);
+@@ -363,6 +365,7 @@ struct verbs_context_ops {
+ 	int (*rereg_mr)(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+ 			void *addr, size_t length, int access);
+ 	int (*resize_cq)(struct ibv_cq *cq, int cqe);
++	void (*unimport_mr)(struct ibv_mr *mr);
+ 	void (*unimport_pd)(struct ibv_pd *pd);
  };
-diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
-index bce8aa2..f2344c5 100644
---- a/providers/mlx5/mlx5.h
-+++ b/providers/mlx5/mlx5.h
-@@ -1023,6 +1023,9 @@ int mlx5_advise_mr(struct ibv_pd *pd,
- 		   uint32_t flags,
- 		   struct ibv_sge *sg_list,
- 		   uint32_t num_sges);
-+struct ibv_pd *mlx5_import_pd(struct ibv_context *context,
-+			      uint32_t pd_handle);
-+void mlx5_unimport_pd(struct ibv_pd *pd);
- int mlx5_qp_fill_wr_pfns(struct mlx5_qp *mqp,
- 			 const struct ibv_qp_init_attr_ex *attr,
- 			 const struct mlx5dv_qp_init_attr *mlx5_attr);
-diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
-index 0bdb34f..b2c54ba 100644
---- a/providers/mlx5/verbs.c
-+++ b/providers/mlx5/verbs.c
-@@ -556,26 +556,39 @@ static int mlx5_dealloc_parent_domain(struct mlx5_parent_domain *mparent_domain)
- 	return 0;
+ 
+diff --git a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c
+index 9d6d2af..ac5b4ec 100644
+--- a/libibverbs/dummy_ops.c
++++ b/libibverbs/dummy_ops.c
+@@ -287,6 +287,13 @@ static int get_srq_num(struct ibv_srq *srq, uint32_t *srq_num)
+ 	return EOPNOTSUPP;
  }
  
--int mlx5_free_pd(struct ibv_pd *pd)
-+static int _mlx5_free_pd(struct ibv_pd *pd, bool unimport)
++static struct ibv_mr *import_mr(struct ibv_pd *pd,
++				uint32_t mr_handle)
++{
++	errno = EOPNOTSUPP;
++	return NULL;
++}
++
+ static  struct ibv_pd *import_pd(struct ibv_context *context,
+ 				 uint32_t pd_handle)
  {
- 	int ret;
- 	struct mlx5_parent_domain *mparent_domain = to_mparent_domain(pd);
- 	struct mlx5_pd *mpd = to_mpd(pd);
- 
--	if (mparent_domain)
-+	if (mparent_domain) {
-+		if (unimport)
-+			return EINVAL;
-+
- 		return mlx5_dealloc_parent_domain(mparent_domain);
-+	}
- 
- 	if (atomic_load(&mpd->refcount) > 1)
- 		return EBUSY;
- 
-+	if (unimport)
-+		goto end;
-+
- 	ret = ibv_cmd_dealloc_pd(pd);
- 	if (ret)
- 		return ret;
- 
-+end:
- 	free(mpd);
- 	return 0;
+@@ -457,6 +464,10 @@ static int resize_cq(struct ibv_cq *cq, int cqe)
+ 	return EOPNOTSUPP;
  }
  
-+int mlx5_free_pd(struct ibv_pd *pd)
++static void unimport_mr(struct ibv_mr *mr)
 +{
-+	return _mlx5_free_pd(pd, false);
 +}
 +
- struct ibv_mr *mlx5_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
- 			   uint64_t hca_va, int acc)
+ static void unimport_pd(struct ibv_pd *pd)
  {
-@@ -706,6 +719,43 @@ int mlx5_advise_mr(struct ibv_pd *pd,
- 	return ibv_cmd_advise_mr(pd, advice, flags, sg_list, num_sge);
+ }
+@@ -515,6 +526,7 @@ const struct verbs_context_ops verbs_dummy_ops = {
+ 	free_context,
+ 	free_dm,
+ 	get_srq_num,
++	import_mr,
+ 	import_pd,
+ 	modify_cq,
+ 	modify_flow_action_esp,
+@@ -541,6 +553,7 @@ const struct verbs_context_ops verbs_dummy_ops = {
+ 	req_notify_cq,
+ 	rereg_mr,
+ 	resize_cq,
++	unimport_mr,
+ 	unimport_pd,
+ };
+ 
+@@ -633,6 +646,7 @@ void verbs_set_ops(struct verbs_context *vctx,
+ 	SET_PRIV_OP_IC(ctx, free_context);
+ 	SET_OP(vctx, free_dm);
+ 	SET_OP(vctx, get_srq_num);
++	SET_PRIV_OP_IC(vctx, import_mr);
+ 	SET_PRIV_OP_IC(vctx, import_pd);
+ 	SET_OP(vctx, modify_cq);
+ 	SET_OP(vctx, modify_flow_action_esp);
+@@ -659,6 +673,7 @@ void verbs_set_ops(struct verbs_context *vctx,
+ 	SET_OP(ctx, req_notify_cq);
+ 	SET_PRIV_OP(ctx, rereg_mr);
+ 	SET_PRIV_OP(ctx, resize_cq);
++	SET_PRIV_OP_IC(vctx, unimport_mr);
+ 	SET_PRIV_OP_IC(vctx, unimport_pd);
+ 
+ #undef SET_OP
+diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
+index d356e63..5f52a9e 100644
+--- a/libibverbs/libibverbs.map.in
++++ b/libibverbs/libibverbs.map.in
+@@ -134,7 +134,9 @@ IBVERBS_1.9 {
+ IBVERBS_1.10 {
+ 	global:
+ 		ibv_import_device;
++		ibv_import_mr;
+ 		ibv_import_pd;
++		ibv_unimport_mr;
+ 		ibv_unimport_pd;
+ } IBVERBS_1.9;
+ 
+diff --git a/libibverbs/man/CMakeLists.txt b/libibverbs/man/CMakeLists.txt
+index 422d6fd..2cbb3cf 100644
+--- a/libibverbs/man/CMakeLists.txt
++++ b/libibverbs/man/CMakeLists.txt
+@@ -38,6 +38,7 @@ rdma_man_pages(
+   ibv_get_pkey_index.3.md
+   ibv_get_srq_num.3.md
+   ibv_import_device.3.md
++  ibv_import_mr.3.md
+   ibv_import_pd.3.md
+   ibv_inc_rkey.3.md
+   ibv_modify_qp.3
+@@ -101,6 +102,7 @@ rdma_alias_man_pages(
+   ibv_get_cq_event.3 ibv_ack_cq_events.3
+   ibv_get_device_list.3 ibv_free_device_list.3
+   ibv_import_pd.3 ibv_unimport_pd.3
++  ibv_import_mr.3 ibv_unimport_mr.3
+   ibv_open_device.3 ibv_close_device.3
+   ibv_open_xrcd.3 ibv_close_xrcd.3
+   ibv_rate_to_mbps.3 mbps_to_ibv_rate.3
+diff --git a/libibverbs/man/ibv_import_mr.3.md b/libibverbs/man/ibv_import_mr.3.md
+new file mode 100644
+index 0000000..546c034
+--- /dev/null
++++ b/libibverbs/man/ibv_import_mr.3.md
+@@ -0,0 +1,63 @@
++---
++date: 2020-5-3
++footer: libibverbs
++header: "Libibverbs Programmer's Manual"
++layout: page
++license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
++section: 3
++title: ibv_import_mr ibv_unimport_mr
++---
++
++# NAME
++
++ibv_import_mr - import an MR from a given ibv_pd
++
++ibv_unimport_mr - unimport an MR
++
++# SYNOPSIS
++
++```c
++#include <infiniband/verbs.h>
++
++struct ibv_mr *ibv_import_mr(struct ibv_pd *pd, uint32_t mr_handle);
++void ibv_unimport_mr(struct ibv_mr *mr)
++
++```
++
++
++# DESCRIPTION
++
++**ibv_import_mr()** returns a Memory region (MR) that is associated with the given
++*mr_handle* in the RDMA context that assosicated with the given *pd*.
++
++The input *mr_handle* value must be a valid kernel handle for an MR object in the assosicated RDMA context.
++
++**ibv_unimport_mr()** un import the MR.
++Once the MR usage has been ended ibv_dereg_mr() or ibv_unimport_mr() should be called.
++The first one will go to the kernel to destroy the object once the second one way cleanup what
++ever is needed/opposite of the import without calling the kernel.
++
++This is the responsibility of the application to coordinate between all ibv_context(s) that use this MR.
++Once destroy is done no other process can touch the object except for unimport. All users of the context must
++collaborate to ensure this.
++
++# RETURN VALUE
++
++**ibv_import_mr()** returns a pointer to the allocated MR, or NULL if the request fails.
++
++# NOTES
++
++The *addr* field in the imported MR is not applicable, NULL value is expected.
++
++# SEE ALSO
++
++**ibv_reg_mr**(3),
++**ibv_reg_dm_mr**(3),
++**ibv_reg_mr_iova**(3),
++**ibv_reg_mr_iova2**(3),
++**ibv_dereg_mr**(3),
++
++# AUTHOR
++
++Yishai Hadas <yishaih@mellanox.com>
++
+diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+index 9380146..84658a8 100644
+--- a/libibverbs/verbs.c
++++ b/libibverbs/verbs.c
+@@ -366,6 +366,22 @@ void ibv_unimport_pd(struct ibv_pd *pd)
  }
  
-+struct ibv_pd *mlx5_import_pd(struct ibv_context *context,
-+			      uint32_t pd_handle)
+ 
++/**
++ * ibv_import_mr - Import a memory region
++ */
++struct ibv_mr *ibv_import_mr(struct ibv_pd *pd, uint32_t mr_handle)
 +{
-+	DECLARE_COMMAND_BUFFER(cmd,
-+			       UVERBS_OBJECT_PD,
-+			       MLX5_IB_METHOD_PD_QUERY,
-+			       2);
-+
-+	struct mlx5_pd *pd;
-+	int ret;
-+
-+	pd = calloc(1, sizeof *pd);
-+	if (!pd)
-+		return NULL;
-+
-+	fill_attr_in_obj(cmd, MLX5_IB_ATTR_QUERY_PD_HANDLE, pd_handle);
-+	fill_attr_out_ptr(cmd, MLX5_IB_ATTR_QUERY_PD_RESP_PDN, &pd->pdn);
-+
-+	ret = execute_ioctl(context, cmd);
-+	if (ret) {
-+		free(pd);
-+		return NULL;
-+	}
-+
-+	pd->ibv_pd.context = context;
-+	pd->ibv_pd.handle = pd_handle;
-+	atomic_init(&pd->refcount, 1);
-+
-+	return &pd->ibv_pd;
++	return get_ops(pd->context)->import_mr(pd, mr_handle);
 +}
 +
-+void mlx5_unimport_pd(struct ibv_pd *pd)
++/**
++ * ibv_unimport_mr - Unimport a memory region
++ */
++void ibv_unimport_mr(struct ibv_mr *mr)
 +{
-+	if (_mlx5_free_pd(pd, true))
-+		assert(false);
++	get_ops(mr->context)->unimport_mr(mr);
 +}
 +
- struct ibv_mw *mlx5_alloc_mw(struct ibv_pd *pd, enum ibv_mw_type type)
- {
- 	struct ibv_mw *mw;
+ LATEST_SYMVER_FUNC(ibv_rereg_mr, 1_1, "IBVERBS_1.1",
+ 		   int,
+ 		   struct ibv_mr *mr, int flags,
+diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
+index 632ddb9..d009d7c 100644
+--- a/libibverbs/verbs.h
++++ b/libibverbs/verbs.h
+@@ -2243,6 +2243,16 @@ struct ibv_pd *ibv_import_pd(struct ibv_context *context,
+ void ibv_unimport_pd(struct ibv_pd *pd);
+ 
+ /**
++ * ibv_import_mr - Import a memory region
++ */
++struct ibv_mr *ibv_import_mr(struct ibv_pd *pd, uint32_t mr_handle);
++
++/**
++ * ibv_unimport_mr - Unimport a memory region
++ */
++void ibv_unimport_mr(struct ibv_mr *mr);
++
++/**
+  * ibv_get_async_event - Get next async event
+  * @event: Pointer to use to return async event
+  *
 -- 
 1.8.3.1
 
