@@ -2,32 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518271FC7D7
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A721FC7D9
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbgFQHqi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 03:46:38 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37747 "EHLO
+        id S1726355AbgFQHqk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 03:46:40 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37756 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726542AbgFQHqg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:36 -0400
+        with ESMTP id S1726629AbgFQHqk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:40 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
         with SMTP; 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTwU017656;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTh1017660;
         Wed, 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTew007199;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTVU007205;
         Wed, 17 Jun 2020 10:46:29 +0300
 Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kTTJ007198;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kTLP007203;
         Wed, 17 Jun 2020 10:46:29 +0300
 From:   Yishai Hadas <yishaih@mellanox.com>
 To:     linux-rdma@vger.kernel.org
-Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com
-Subject: [PATCH rdma-core 10/13] mlx5: Implement the import/unimport MR verbs
-Date:   Wed, 17 Jun 2020 10:45:53 +0300
-Message-Id: <1592379956-7043-11-git-send-email-yishaih@mellanox.com>
+Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com,
+        Edward Srouji <edwards@mellanox.com>
+Subject: [PATCH rdma-core 11/13] pyverbs: Support verbs import APIs
+Date:   Wed, 17 Jun 2020 10:45:54 +0300
+Message-Id: <1592379956-7043-12-git-send-email-yishaih@mellanox.com>
 X-Mailer: git-send-email 1.8.2.3
 In-Reply-To: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
 References: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
@@ -36,167 +37,309 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement the import/unimport MR verbs based on their definition as
-described in the man page.
+From: Edward Srouji <edwards@mellanox.com>
 
-It uses the query MR KABI to retrieve the original MR properties based
-on its given handle.
+Importing a device, PD and MR enables processes to share their context
+and then share PDs and MRs that is associated with.
+This commit supports importing/unimporting a device, PD and MR by
+wrapping the relevant verbs in the current Context, PD and MR objects.
 
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Reviewed-by: Ido Kalir <idok@mellanox.com>
+Signed-off-by: Edward Srouji <edwards@mellanox.com>
 ---
- libibverbs/cmd_mr.c          | 35 +++++++++++++++++++++++++++++++++++
- libibverbs/driver.h          |  3 +++
- libibverbs/libibverbs.map.in |  1 +
- providers/mlx5/mlx5.c        |  2 ++
- providers/mlx5/mlx5.h        |  3 +++
- providers/mlx5/verbs.c       | 24 ++++++++++++++++++++++++
- 6 files changed, 68 insertions(+)
+ pyverbs/device.pyx     | 12 ++++++++--
+ pyverbs/libibverbs.pxd |  5 +++++
+ pyverbs/mr.pxd         |  1 +
+ pyverbs/mr.pyx         | 60 +++++++++++++++++++++++++++++++++++++++++---------
+ pyverbs/pd.pxd         |  1 +
+ pyverbs/pd.pyx         | 37 +++++++++++++++++++++++++------
+ 6 files changed, 96 insertions(+), 20 deletions(-)
 
-diff --git a/libibverbs/cmd_mr.c b/libibverbs/cmd_mr.c
-index cb729b6..6984948 100644
---- a/libibverbs/cmd_mr.c
-+++ b/libibverbs/cmd_mr.c
-@@ -85,3 +85,38 @@ int ibv_cmd_dereg_mr(struct verbs_mr *vmr)
- 		return ret;
- 	return 0;
- }
-+
-+int ibv_cmd_query_mr(struct ibv_pd *pd, struct verbs_mr *vmr,
-+		     uint32_t mr_handle)
-+{
-+	DECLARE_FBCMD_BUFFER(cmd, UVERBS_OBJECT_MR,
-+			     UVERBS_METHOD_QUERY_MR,
-+			     5, NULL);
-+	struct ibv_mr *mr = &vmr->ibv_mr;
-+	uint64_t iova;
-+	int ret;
-+
-+	fill_attr_in_obj(cmd, UVERBS_ATTR_QUERY_MR_HANDLE, mr_handle);
-+	fill_attr_out_ptr(cmd, UVERBS_ATTR_QUERY_MR_RESP_LKEY,
-+			  &mr->lkey);
-+	fill_attr_out_ptr(cmd, UVERBS_ATTR_QUERY_MR_RESP_RKEY,
-+			  &mr->rkey);
-+	fill_attr_out_ptr(cmd, UVERBS_ATTR_QUERY_MR_RESP_LENGTH,
-+			  &mr->length);
-+	/* The iova may be used down the road, let's have it ready from kernel */
-+	fill_attr_out_ptr(cmd, UVERBS_ATTR_QUERY_MR_RESP_IOVA,
-+			  &iova);
-+
-+	ret = execute_ioctl(pd->context, cmd);
-+	if (ret)
-+		return ret;
-+
-+	mr->handle  = mr_handle;
-+	mr->context = pd->context;
-+	mr->pd = pd;
-+	mr->addr = NULL;
-+
-+	vmr->mr_type = IBV_MR_TYPE_IMPORTED_MR;
-+	return 0;
-+}
-+
-diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-index 0edff0b..094891d 100644
---- a/libibverbs/driver.h
-+++ b/libibverbs/driver.h
-@@ -80,6 +80,7 @@ enum ibv_gid_type {
- enum ibv_mr_type {
- 	IBV_MR_TYPE_MR,
- 	IBV_MR_TYPE_NULL_MR,
-+	IBV_MR_TYPE_IMPORTED_MR,
- };
+diff --git a/pyverbs/device.pyx b/pyverbs/device.pyx
+index 88cd906..95e112b 100755
+--- a/pyverbs/device.pyx
++++ b/pyverbs/device.pyx
+@@ -87,6 +87,9 @@ cdef class Context(PyverbsCM):
+             * *cmid*
+               A CMID object. If not None, it means that the device was already
+               opened by a CMID class, and only a pointer assignment is missing.
++            * *cmd_fd*
++              A command FD. If passed, the device will be imported from the
++              given cmd_fd using ibv_import_device.
+         :return: None
+         """
+         cdef int count
+@@ -107,10 +110,16 @@ cdef class Context(PyverbsCM):
+         self.name = kwargs.get('name')
+         provider_attr = kwargs.get('attr')
+         cmid = kwargs.get('cmid')
++        cmd_fd = kwargs.get('cmd_fd')
+         if cmid is not None:
+             self.context = cmid.id.verbs
+             cmid.ctx = self
+             return
++        if cmd_fd is not None:
++            self.context = v.ibv_import_device(cmd_fd)
++            if self.context == NULL:
++                raise PyverbsRDMAErrno('Failed to import device')
++            return
  
- struct verbs_mr {
-@@ -476,6 +477,8 @@ int ibv_cmd_rereg_mr(struct verbs_mr *vmr, uint32_t flags, void *addr,
- 		     size_t cmd_sz, struct ib_uverbs_rereg_mr_resp *resp,
- 		     size_t resp_sz);
- int ibv_cmd_dereg_mr(struct verbs_mr *vmr);
-+int ibv_cmd_query_mr(struct ibv_pd *pd, struct verbs_mr *vmr,
-+		     uint32_t mr_handle);
- int ibv_cmd_advise_mr(struct ibv_pd *pd,
- 		      enum ibv_advise_mr_advice advice,
- 		      uint32_t flags,
-diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
-index 5f52a9e..0d4f820 100644
---- a/libibverbs/libibverbs.map.in
-+++ b/libibverbs/libibverbs.map.in
-@@ -197,6 +197,7 @@ IBVERBS_PRIVATE_@IBVERBS_PABI_VERSION@ {
- 		ibv_cmd_query_context;
- 		ibv_cmd_query_device;
- 		ibv_cmd_query_device_ex;
-+		ibv_cmd_query_mr;
- 		ibv_cmd_query_port;
- 		ibv_cmd_query_qp;
- 		ibv_cmd_query_srq;
-diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
-index 4067204..2413387 100644
---- a/providers/mlx5/mlx5.c
-+++ b/providers/mlx5/mlx5.c
-@@ -148,6 +148,7 @@ static const struct verbs_context_ops mlx5_ctx_common_ops = {
- 	.destroy_wq = mlx5_destroy_wq,
- 	.free_dm = mlx5_free_dm,
- 	.get_srq_num = mlx5_get_srq_num,
-+	.import_mr = mlx5_import_mr,
- 	.import_pd = mlx5_import_pd,
- 	.modify_cq = mlx5_modify_cq,
- 	.modify_flow_action_esp = mlx5_modify_flow_action_esp,
-@@ -160,6 +161,7 @@ static const struct verbs_context_ops mlx5_ctx_common_ops = {
- 	.query_rt_values = mlx5_query_rt_values,
- 	.read_counters = mlx5_read_counters,
- 	.reg_dm_mr = mlx5_reg_dm_mr,
-+	.unimport_mr = mlx5_unimport_mr,
- 	.unimport_pd = mlx5_unimport_pd,
- 	.alloc_null_mr = mlx5_alloc_null_mr,
- 	.free_context = mlx5_free_context,
-diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
-index f2344c5..654c164 100644
---- a/providers/mlx5/mlx5.h
-+++ b/providers/mlx5/mlx5.h
-@@ -1023,6 +1023,9 @@ int mlx5_advise_mr(struct ibv_pd *pd,
- 		   uint32_t flags,
- 		   struct ibv_sge *sg_list,
- 		   uint32_t num_sges);
-+struct ibv_mr *mlx5_import_mr(struct ibv_pd *pd,
-+			      uint32_t mr_handle);
-+void mlx5_unimport_mr(struct ibv_mr *mr);
- struct ibv_pd *mlx5_import_pd(struct ibv_context *context,
- 			      uint32_t pd_handle);
- void mlx5_unimport_pd(struct ibv_pd *pd);
-diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
-index b2c54ba..972b783 100644
---- a/providers/mlx5/verbs.c
-+++ b/providers/mlx5/verbs.c
-@@ -756,6 +756,30 @@ void mlx5_unimport_pd(struct ibv_pd *pd)
- 		assert(false);
- }
+         if self.name is None:
+             raise PyverbsUserError('Device name must be provided')
+@@ -152,8 +161,7 @@ cdef class Context(PyverbsCM):
+                             self.xrcds, self.vars])
+             rc = v.ibv_close_device(self.context)
+             if rc != 0:
+-                raise PyverbsRDMAErrno('Failed to close device {dev}'.
+-                                       format(dev=self.device.name))
++                raise PyverbsRDMAErrno(f'Failed to close device {self.name}')
+             self.context = NULL
  
-+struct ibv_mr *mlx5_import_mr(struct ibv_pd *pd,
-+			      uint32_t mr_handle)
-+{
-+	struct mlx5_mr *mr;
-+	int ret;
+     @property
+diff --git a/pyverbs/libibverbs.pxd b/pyverbs/libibverbs.pxd
+index 4beb434..1aaf3f6 100755
+--- a/pyverbs/libibverbs.pxd
++++ b/pyverbs/libibverbs.pxd
+@@ -596,6 +596,11 @@ cdef extern from 'infiniband/verbs.h':
+     void ibv_wr_start(ibv_qp_ex *qp)
+     int ibv_wr_complete(ibv_qp_ex *qp)
+     void ibv_wr_abort(ibv_qp_ex *qp)
++    ibv_context *ibv_import_device(int cmd_fd)
++    ibv_mr *ibv_import_mr(ibv_pd *pd, uint32_t handle)
++    void ibv_unimport_mr(ibv_mr *mr)
++    ibv_pd *ibv_import_pd(ibv_context *context, uint32_t handle)
++    void ibv_unimport_pd(ibv_pd *pd)
+ 
+ 
+ cdef extern from 'infiniband/driver.h':
+diff --git a/pyverbs/mr.pxd b/pyverbs/mr.pxd
+index 82ae79f..7c3bb8e 100644
+--- a/pyverbs/mr.pxd
++++ b/pyverbs/mr.pxd
+@@ -14,6 +14,7 @@ cdef class MR(PyverbsCM):
+     cdef object is_huge
+     cdef object is_user_addr
+     cdef void *buf
++    cdef object _is_imported
+     cpdef read(self, length, offset)
+ 
+ cdef class MWBindInfo(PyverbsCM):
+diff --git a/pyverbs/mr.pyx b/pyverbs/mr.pyx
+index b7b2196..da566cb 100644
+--- a/pyverbs/mr.pyx
++++ b/pyverbs/mr.pyx
+@@ -27,7 +27,7 @@ cdef class MR(PyverbsCM):
+     MR class represents ibv_mr. Buffer allocation in done in the c'tor. Freeing
+     it is done in close().
+     """
+-    def __init__(self, PD pd not None, length, access, address=None):
++    def __init__(self, PD pd not None, length=0, access=0, address=None, **kwargs):
+         """
+         Allocate a user-level buffer of length <length> and register a Memory
+         Region of the given length and access flags.
+@@ -37,6 +37,11 @@ cdef class MR(PyverbsCM):
+         :param address: Memory address to register (Optional). If it's not
+                         provided, a memory will be allocated in the class
+                         initialization.
++        :param kwargs: Arguments:
++            * *handle*
++                A valid kernel handle for a MR object in the given PD.
++                If passed, the MR will be imported and associated with the
++                context that is associated with the given PD using ibv_import_mr.
+         :return: The newly created MR on success
+         """
+         super().__init__()
+@@ -52,7 +57,20 @@ cdef class MR(PyverbsCM):
+             # uintptr_t is guaranteed to be large enough to hold any pointer.
+             # In order to safely cast addr to void*, it is firstly cast to uintptr_t.
+             self.buf = <void*><uintptr_t>address
+-        else:
 +
-+	mr = calloc(1, sizeof *mr);
-+	if (!mr)
-+		return NULL;
++        mr_handle = kwargs.get('handle')
++        # If a MR handle is passed import MR and finish
++        if mr_handle is not None:
++            self.mr = v.ibv_import_mr(pd.pd, mr_handle)
++            if self.mr == NULL:
++                raise PyverbsRDMAErrno('Failed to import MR')
++            self._is_imported = True
++            self.pd = pd
++            pd.add_ref(self)
++            return
 +
-+	ret = ibv_cmd_query_mr(pd, &mr->vmr, mr_handle);
-+	if (ret) {
-+		free(mr);
-+		return NULL;
-+	}
++        # Allocate a buffer
++        if not address:
+             if self.is_huge:
+                 # Rounding up to multiple of HUGE_PAGE_SIZE
+                 self.mmap_length = length + (HUGE_PAGE_SIZE - length % HUGE_PAGE_SIZE) \
+@@ -77,6 +95,10 @@ cdef class MR(PyverbsCM):
+         self.logger.debug('Registered ibv_mr. Length: {l}, access flags {a}'.
+                           format(l=length, a=access))
+ 
++    def unimport(self):
++        v.ibv_unimport_mr(self.mr)
++        self.close()
 +
-+	return &mr->vmr.ibv_mr;
-+}
+     def __dealloc__(self):
+         self.close()
+ 
+@@ -86,21 +108,24 @@ cdef class MR(PyverbsCM):
+         MR may be deleted directly or indirectly by closing its context, which
+         leaves the Python PD object without the underlying C object, so during
+         destruction, need to check whether or not the C object exists.
++        In case of an imported MR no deregistration will be done, it's left
++        for the original MR, in order to prevent double dereg by the GC.
+         :return: None
+         """
+         if self.mr != NULL:
+             self.logger.debug('Closing MR')
+-            rc = v.ibv_dereg_mr(self.mr)
+-            if rc != 0:
+-                raise PyverbsRDMAError('Failed to dereg MR', rc)
++            if not self._is_imported:
++                rc = v.ibv_dereg_mr(self.mr)
++                if rc != 0:
++                    raise PyverbsRDMAError('Failed to dereg MR', rc)
++                if not self.is_user_addr:
++                    if self.is_huge:
++                        munmap(self.buf, self.mmap_length)
++                    else:
++                        free(self.buf)
+             self.mr = NULL
+             self.pd = None
+-        if not self.is_user_addr:
+-            if self.is_huge:
+-                munmap(self.buf, self.mmap_length)
+-            else:
+-                free(self.buf)
+-        self.buf = NULL
++            self.buf = NULL
+ 
+     def write(self, data, length):
+         """
+@@ -144,6 +169,19 @@ cdef class MR(PyverbsCM):
+     def length(self):
+         return self.mr.length
+ 
++    @property
++    def handle(self):
++        return self.mr.handle
 +
-+void mlx5_unimport_mr(struct ibv_mr *ibmr)
-+{
-+	free(to_mmr(ibmr));
-+}
++    def __str__(self):
++        print_format = '{:22}: {:<20}\n'
++        return 'MR\n' + \
++               print_format.format('lkey', self.lkey) + \
++               print_format.format('rkey', self.rkey) + \
++               print_format.format('length', self.length) + \
++               print_format.format('buf', <uintptr_t>self.buf) + \
++               print_format.format('handle', self.handle)
 +
- struct ibv_mw *mlx5_alloc_mw(struct ibv_pd *pd, enum ibv_mw_type type)
- {
- 	struct ibv_mw *mw;
+ 
+ cdef class MWBindInfo(PyverbsCM):
+     def __init__(self, MR mr not None, addr, length, mw_access_flags):
+diff --git a/pyverbs/pd.pxd b/pyverbs/pd.pxd
+index ae4324a..94d453e 100644
+--- a/pyverbs/pd.pxd
++++ b/pyverbs/pd.pxd
+@@ -19,6 +19,7 @@ cdef class PD(PyverbsCM):
+     cdef object ahs
+     cdef object qps
+     cdef object parent_domains
++    cdef object _is_imported
+ 
+ cdef class ParentDomainInitAttr(PyverbsObject):
+     cdef v.ibv_parent_domain_init_attr init_attr
+diff --git a/pyverbs/pd.pyx b/pyverbs/pd.pyx
+index d54c4f8..2a35d11 100755
+--- a/pyverbs/pd.pyx
++++ b/pyverbs/pd.pyx
+@@ -20,19 +20,31 @@ from pyverbs.qp cimport QP
+ 
+ 
+ cdef class PD(PyverbsCM):
+-    def __init__(self, object creator not None):
++    def __init__(self, object creator not None, **kwargs):
+         """
+         Initializes a PD object. A reference for the creating Context is kept
+         so that Python's GC will destroy the objects in the right order.
+         :param creator: The Context/CMID object creating the PD
++        :param kwargs: Arguments:
++            * *handle*
++                A valid kernel handle for a PD object in the given creator
++                (Context). If passed, the PD will be imported and associated
++                with the given handle in the given context using ibv_import_pd.
+         """
+         super().__init__()
++        pd_handle = kwargs.get('handle')
+         if issubclass(type(creator), Context):
+             # Check if the ibv_pd* was initialized by an inheriting class
+             if self.pd == NULL:
+-                self.pd = v.ibv_alloc_pd((<Context>creator).context)
++                if pd_handle is not None:
++                    self.pd = v.ibv_import_pd((<Context>creator).context, pd_handle)
++                    self._is_imported = True
++                    err_str = 'Failed to import PD'
++                else:
++                    self.pd = v.ibv_alloc_pd((<Context>creator).context)
++                    err_str = 'Failed to allocate PD'
+                 if self.pd == NULL:
+-                    raise PyverbsRDMAErrno('Failed to allocate PD')
++                    raise PyverbsRDMAErrno(err_str)
+             self.ctx = creator
+         elif issubclass(type(creator), CMID):
+             cmid = <CMID>creator
+@@ -43,7 +55,7 @@ cdef class PD(PyverbsCM):
+             raise PyverbsUserError('Cannot create PD from {type}'
+                                    .format(type=type(creator)))
+         self.ctx.add_ref(self)
+-        self.logger.debug('PD: Allocated ibv_pd')
++        self.logger.debug('Created PD')
+         self.srqs = weakref.WeakSet()
+         self.mrs = weakref.WeakSet()
+         self.mws = weakref.WeakSet()
+@@ -68,6 +80,10 @@ cdef class PD(PyverbsCM):
+             raise PyverbsRDMAError('Failed to advise MR', rc)
+         return rc
+ 
++    def unimport(self):
++        v.ibv_unimport_pd(self.pd)
++        self.close()
++
+     def __dealloc__(self):
+         """
+         Closes the inner PD.
+@@ -81,15 +97,18 @@ cdef class PD(PyverbsCM):
+         PD may be deleted directly or indirectly by closing its context, which
+         leaves the Python PD object without the underlying C object, so during
+         destruction, need to check whether or not the C object exists.
++        In case of an imported PD no deallocation will be done, it's left for
++        the original PD, in order to prevent double dealloc by the GC.
+         :return: None
+         """
+         if self.pd != NULL:
+             self.logger.debug('Closing PD')
+             close_weakrefs([self.parent_domains, self.qps, self.ahs, self.mws,
+                             self.mrs, self.srqs])
+-            rc = v.ibv_dealloc_pd(self.pd)
+-            if rc != 0:
+-                raise PyverbsRDMAError('Failed to dealloc PD', rc)
++            if not self._is_imported:
++                rc = v.ibv_dealloc_pd(self.pd)
++                if rc != 0:
++                    raise PyverbsRDMAError('Failed to dealloc PD', rc)
+             self.pd = NULL
+             self.ctx = None
+ 
+@@ -109,6 +128,10 @@ cdef class PD(PyverbsCM):
+         else:
+             raise PyverbsError('Unrecognized object type')
+ 
++    @property
++    def handle(self):
++        return self.pd.handle
++
+ 
+ cdef void *pd_alloc(v.ibv_pd *pd, void *pd_context, size_t size,
+                   size_t alignment, v.uint64_t resource_type):
 -- 
 1.8.3.1
 
