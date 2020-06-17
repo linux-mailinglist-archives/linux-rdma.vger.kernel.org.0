@@ -2,55 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990521FD0F1
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 17:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A29C1FD0FC
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 17:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgFQP2i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 11:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        id S1726905AbgFQP3n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 11:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFQP2i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 11:28:38 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE56FC06174E
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id w9so1819425qtv.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
+        with ESMTP id S1726848AbgFQP3m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 11:29:42 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB3C0613ED
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:29:42 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id x16so1220726qvr.3
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=YWvFZzs3KP9lJjMgLteUxWcl0AN5fcCF6bv79uFgihI=;
-        b=fPvsZiRmvOrvrQ4yxrTzKd5CSIveZ17z50EpolEl+pPAK7HUWF0QJZmXtSGVDOakfw
-         7DHwzIzE2lNcGxpAtO8aw08z/gM8Y21yy9DIXMANO2ubUa3TWdA4GmPrzu72SDfRdvmF
-         BClIRqEbNJmDflVkgdFD+OnXmF0SaCCsk8z9/TyDuufHGuZdnpCUVgkaPeljCUzfOGUP
-         iou8x9GwNeXqpb+7LiV1ym/MPlGBad5o331/0hIUNzTl2FFPtmlIOP+y+IRR8Ia8Spm0
-         VHrOAMJcFDHzlMiG7WUr4U2IvrrqHhxtahUa25x/jrfaWVB1Q09VlgzgQNmhTWG78o/m
-         b3Ng==
+        bh=v5BdIMSU0SgDrZuQSRW4xvIrY4rZ7WnbUK5J5TOXFb0=;
+        b=X4atcg3QCitKJdCOr5ja2tE2bUBLSFF91J0CzDtXnsV5WejCzsk2eajJzTjXjsFLTA
+         5s+gkYE18Kz4f7uWFKMYMARjm17DhKgqFhDle7hMjPDQJSHTF3vHPDJzf/g8gfXm1XCc
+         xS0VLL2kkFYRGpHsv6IKsvfpDgxixqoGb1C7eZAdpsByKmZrD/PLYevp7FEa9NQdLxHk
+         yZFftabPuFhyEj1G7fMasvfilN4m93P/kXM+Vvvx/r/xyhIpvBM0x0Ha3wX71m2O7A/a
+         L0H0SGP2pZKrl4si0m+rtOCOCb+j5CVmE5xryjAmjELn7Uqp0ivvBvKuiMRBNAyyx2kG
+         itRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YWvFZzs3KP9lJjMgLteUxWcl0AN5fcCF6bv79uFgihI=;
-        b=elMjCd89MUlR9ntpWVzb5EhxSQF5wXu0NWt1KmQmmYNYd/9JzJfVhSOURRO4d+7iJv
-         2FjKrXc4DLCin+i/pXXI06//fKkGEIU2+s8CS2LwcGT+z4v5IetLc/aYjhUVRxWM/I7Q
-         E/8pXBEj+Kekt80M5xnHndsOBiE252q5uEAWYKgMiDhKZmlRxqG+Rx1cGjSXFcp01reh
-         OTw50TBYj3dDNfFc2tqndMfCnzbx8igl14VIKeVXjutkDjd2P9DSASOGoZCe+CkrcTdp
-         OhG6rDSNijBF0IUZE5OqZJaOtCyG5HcaFK1mkefyNopAq4Q8v6VMFN/m8UQZnLwn8G53
-         3kPw==
-X-Gm-Message-State: AOAM532ztJzT7tZjr1EuKSexwlgqGBcS1HJp+0V/7GbIwngvF6wq+T9Y
-        HroYc+08x5xP69zexrWYHmikOA==
-X-Google-Smtp-Source: ABdhPJzZDttOnjxPbTFDeZHyWDfba0peOY2A/3G4231dt912/147Xnlp7RMkFB2VSf50LuX5ZTAibw==
-X-Received: by 2002:ac8:468a:: with SMTP id g10mr27323795qto.6.1592407717080;
-        Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
+        bh=v5BdIMSU0SgDrZuQSRW4xvIrY4rZ7WnbUK5J5TOXFb0=;
+        b=ZBaYxY3soqZonTZGqqa4azrANlekur0+sxKOMh1HWA/nCxmzgSXwadWTg6RdwJALGU
+         b1oQLsaEh/Xyjpetaw4gmGz99Xuz/jOLZAkmdpq69oLiEXrnqrNVHLXKQeGhrOlX2XgO
+         +sQevOvn+3x4Y7H8Sdk4J7E+h91lbmxiFZxMBeiUWfhpA5Ast0DqjBRWQD6kaM5hlaEn
+         qz3R9Mg9sgm8CBDNjWvNDRnWPGuDccnWTiTLvg5vTBVrM16WEmdsT8yZiQAEmG5i70Ty
+         DfZF/ne3+wTBB4GGhabdLRSWCpjw7x0O1N3yT+ZfwQOCn6pSWf1Bs84MQpNDJtGgvUmY
+         JWGA==
+X-Gm-Message-State: AOAM531fRJRqdO0vgk+f9st3tfWMMJZdypbTmyXoEEuDb8Eb7jG3MKN3
+        0TXMrjsww4OBfKVvOVbUx2ioIQ==
+X-Google-Smtp-Source: ABdhPJyWaY8mWagCAPiiX7EhWCqcjbxUamRd5/mDpg63tRR7xxsYdOaA9ycSUwn3S5FVu3UfHzBj0g==
+X-Received: by 2002:a0c:f388:: with SMTP id i8mr8163963qvk.224.1592407781973;
+        Wed, 17 Jun 2020 08:29:41 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id f127sm210137qkb.55.2020.06.17.08.28.35
+        by smtp.gmail.com with ESMTPSA id y13sm204954qto.23.2020.06.17.08.29.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 08:28:35 -0700 (PDT)
+        Wed, 17 Jun 2020 08:29:41 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jlZzP-009d7z-9q; Wed, 17 Jun 2020 12:28:35 -0300
-Date:   Wed, 17 Jun 2020 12:28:35 -0300
+        id 1jla0S-009d9h-Uc; Wed, 17 Jun 2020 12:29:40 -0300
+Date:   Wed, 17 Jun 2020 12:29:40 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Daniel Vetter <daniel@ffwll.ch>
 Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
@@ -71,50 +71,53 @@ Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?=
         Mika Kuoppala <mika.kuoppala@intel.com>
 Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
  annotations
-Message-ID: <20200617152835.GF6578@ziepe.ca>
+Message-ID: <20200617152940.GG6578@ziepe.ca>
 References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
  <20200604081224.863494-5-daniel.vetter@ffwll.ch>
  <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
  <20200611083430.GD20149@phenom.ffwll.local>
  <20200611141515.GW6578@ziepe.ca>
  <20200616120719.GL20149@phenom.ffwll.local>
- <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+ <20200616145312.GC6578@ziepe.ca>
+ <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+In-Reply-To: <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 08:48:50AM +0200, Daniel Vetter wrote:
+On Wed, Jun 17, 2020 at 09:57:54AM +0200, Daniel Vetter wrote:
 
-> Now my understanding for rdma is that if you don't have hw page fault
-> support,
+> > At the very least I think there should be some big warning that
+> > dma_fence in notifiers should be avoided.
+> 
+> Yeah I'm working on documentation, and also the notifiers here
+> hopefully make it clear it's massive pain. I think we could even make
+> a hard rule that dma_fence in mmu notifier outside of drivers/gpu is a
+> bug/misfeature.
 
-The RDMA ODP feature is restartable HW page faulting just like nouveau
-has. The classical MR feature doesn't have this. Only mlx5 HW supports
-ODP today.
+Yep!
+ 
+> Might be a good idea to add a MAINTAINERS entry with a K: regex
+> pattern, so that you can catch such modifiers. We do already have such
+> a pattern for dma-fence, to catch abuse. So if you want I could type
+> up a documentation patch for this, get your and others acks and the
+> dri-devel folks would enforce that the dma_fence_wait madness doesn't
+> leak beyond drivers/gpu
 
-> It's only gpus (I think) which are in this awkward in-between spot
-> where dynamic memory management really is much wanted, but the hw
-> kinda sucks. Aside, about 10+ years ago we had a similar problem with
-> gpu hw, but for security: Many gpu didn't have any kinds of page
-> tables to isolate different clients from each another. drivers/gpu
-> fixed this by parsing&validating what userspace submitted to make sure
-> it's only every accessing its own buffers. Most gpus have become
-> reasonable nowadays and do have proper per-process pagetables (gpu
-> process, not the pasid stuff), but even today there's still some of
-> the old model left in some of the smallest SoC.
+It seems like the best thing
+ 
+> Oded has agreed to remove the dma-fence usage, since they really don't
+> need it (and all the baggage that comes with it), plain old completion
+> is enough for their use. This use is also why I added the regex to
+> MAINTAINERS, so that in the future we can catch people who try to use
+> dma_fence because it looks cute and useful, and are completely
+> oblivious to all the pain and headaches involved.
 
-But I still don't understand why a dma fence is needed inside the GPU
-driver itself in the notifier.
+This is good!
 
-Surely the GPU driver can block and release the notifier directly from
-its own command processing channel?
-
-Why does this fence and all it entails need to leak out across
-drivers?
-
-Jason
+Thanks,
+Jason 
