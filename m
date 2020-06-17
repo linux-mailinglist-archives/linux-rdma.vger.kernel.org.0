@@ -2,131 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB5D1FD3B8
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 19:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340431FD449
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 20:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgFQRt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 13:49:59 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:16402 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQRt6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 13:49:58 -0400
+        id S1727815AbgFQSUv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 14:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727805AbgFQSUt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 14:20:49 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76C1C06174E
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 11:20:49 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b7so2553287pju.0
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 11:20:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592416198; x=1623952198;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=j4nk5OciIL+cVgI3AHdUjfJsbXg5KBUkq96NqMmSZV0=;
-  b=PDvFiWRL2101RqJsI8s94fuc8U1ZwbtMoq7Rch6wK95OmRoaDwBWgl5Y
-   1zdMn6BgjCJEdhD7ENGvMYifR9xdDLX+vxZHGQzSjOJ3vQqDyUlExjBaR
-   z00QMMdEq09tzUYqJdfoadHMfqoWp/21ldr0SgO/Y/gq0JbNIGBx+VYky
-   M=;
-IronPort-SDR: mWMrtAu2zhTGdGDFToCQGEn9bE1586Dc5xQDjX9bU2I77NLnZVYjE+tiE6e/L+2TSSgIiri6d3
- rEa1iG+6UsDQ==
-X-IronPort-AV: E=Sophos;i="5.73,523,1583193600"; 
-   d="scan'208";a="36868527"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 17 Jun 2020 17:49:56 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id 58684A2793;
-        Wed, 17 Jun 2020 17:49:55 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 17 Jun 2020 17:49:54 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.90) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 17 Jun 2020 17:49:49 +0000
-Subject: Re: [PATCH for-next] RDMA/efa: Move provider specific attributes to
- ucontext allocation response
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20200615075920.58936-1-galpress@amazon.com>
- <20200616063045.GC2141420@unreal>
- <cba7128b-c427-bc26-5f43-69a22463debc@amazon.com>
- <20200616093835.GB2383158@unreal>
- <f6773480-5954-b58b-21f0-f5ee4ec7238b@amazon.com>
- <20200617153638.GH6578@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <ff3413c8-ca1e-e864-aba5-fa6abe491a8d@amazon.com>
-Date:   Wed, 17 Jun 2020 20:49:43 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/F7REkPrgeXXvQ0zNlTC/5dXxmcC09g58BpZtoxKLoQ=;
+        b=U0/zqPyi/8oXSh6aamKeKQiCjOZ0AvF6r5lpUqnkBgYEk0dlOfa8cDYUhk3i2PcXB3
+         cAcSbtsS5Ma6bpU4S6hqmeoFc1Mzw09KtWIfZ6xWs+zBKVjaMlF3/iaLr1N8g4ZOwoSB
+         kiKijZzdBxPDdAN69Vxks4XVwMCrfI/x1lWfUhdq4n79BVcYbGpcrrUFjiQ7eUi/dK2t
+         5RrcXJ9cX5DuwStBATY92eUjTl7EFKKquMJ2HPo0IF9tpeQT2oKFzeXYZXwSeAQE284l
+         GbYY44PzQUBy6uu+h3mOAID+o3AvhEhQT1Q60MXKB91PjjsyFZnopnlzbaS28P+5KsqL
+         puaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/F7REkPrgeXXvQ0zNlTC/5dXxmcC09g58BpZtoxKLoQ=;
+        b=uPNGx7j7Y6DI63NuitTdSNhTKeidlojxW2KFvRnxgP4FtzmdpYdSVhHUKx/Rx9hLO7
+         PZu7NUqi1TXAgiXoGkTaLbpI+/tlCs8nz7K6MGPInN6yuRFg3y/mbRBT/XmXYlWJXsRe
+         Rhqy7tDB7X3waDDqiVuofOs7HXGaHmIwfciC1Qml6yM602fOuBgX1qMgx0SJcRGV2v/j
+         DDjqj60ltiRGdVDulHU+jBEp1gXOsy5EqYX+siJMIFN8KFzABDlAaITgzggQbqDJixf6
+         TZ0NyR0JLfOX6ad8LO8OeGW/UqhQVjK5itO89SKPGP4Cf3gznG6jnphWClsdQ4rqtXEk
+         dKrA==
+X-Gm-Message-State: AOAM533r+LPmrqDcqUI6iv+HvU61Km0Ih3n8LM4LydXe+0FESALaSOtE
+        UiLA6c8wG/1aqdkjle92oIAWnw==
+X-Google-Smtp-Source: ABdhPJy5Sbz1FV1SOlfn4yS8ZBiNWRRiJ9tN4izIrjMQpz9k3iJyajwK1iRNPVVbokwgydvo6yR7TQ==
+X-Received: by 2002:a17:90a:65c5:: with SMTP id i5mr301551pjs.155.1592418049249;
+        Wed, 17 Jun 2020 11:20:49 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id u14sm527381pfk.211.2020.06.17.11.20.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 11:20:48 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jlcg2-009iGN-Nv; Wed, 17 Jun 2020 15:20:46 -0300
+Date:   Wed, 17 Jun 2020 15:20:46 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     haris.iqbal@cloud.ionos.com, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com, dledford@redhat.com,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
+ late_initcall level
+Message-ID: <20200617182046.GI6578@ziepe.ca>
+References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
+ <20200617112811.GL2383158@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20200617153638.GH6578@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13P01UWA001.ant.amazon.com (10.43.160.213) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617112811.GL2383158@unreal>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 17/06/2020 18:36, Jason Gunthorpe wrote:
-> On Tue, Jun 16, 2020 at 08:44:37PM +0300, Gal Pressman wrote:
->> On 16/06/2020 12:38, Leon Romanovsky wrote:
->>> On Tue, Jun 16, 2020 at 11:53:11AM +0300, Gal Pressman wrote:
->>>> On 16/06/2020 9:30, Leon Romanovsky wrote:
->>>>> On Mon, Jun 15, 2020 at 10:59:20AM +0300, Gal Pressman wrote:
->>>>>> Provider specific attributes which are necessary for the userspace
->>>>>> functionality should be part of the alloc ucontext response, not query
->>>>>> device. This way a userspace provider could work without issuing a query
->>>>>> device verb call. However, the fields will remain in the query device
->>>>>> ABI in order to maintain backwards compatibility.
->>>>>
->>>>> I don't really understand why "should be ..."? Device properties exposed
->>>>> here are per-device and will be equal to all ucontexts, so instead of
->>>>> doing one very fast system call, you are "punishing" every ucontext
->>>>> call.
->>>>
->>>> I talked about it with Jason in the past, the query device verb is intended to
->>>> follow the IBA verb, alloc ucontext should return driver specific data that's
->>>> required to operate the user space provider.
->>>> A query device call should not be mandatory to load the provider.
->>>
->>> Why? query_device is declared as mandatory verb for any provider, so
->>> anyway all in-the-tree RDMA drivers will have such verb.
->>
->> I don't think the concern here is if the verb exists or not, my understanding is
->> that query device should be used for IBA query device attributes, not other
->> provider specific stuff.
->> Jason, want to chime in with your thoughts?
+On Wed, Jun 17, 2020 at 02:28:11PM +0300, Leon Romanovsky wrote:
+> On Wed, Jun 17, 2020 at 04:07:32PM +0530, haris.iqbal@cloud.ionos.com wrote:
+> > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> >
+> > Fixes: 2de6c8de192b ("block/rnbd: server: main functionality")
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> >
+> > The rnbd_server module's communication manager initialization depends on the
+> > registration of the "network namespace subsystem" of the RDMA CM agent module.
+> > As such, when the kernel is configured to load the rnbd_server and the RDMA
+> > cma module during initialization; and if the rnbd_server module is initialized
+> > before RDMA cma module, a null ptr dereference occurs during the RDMA bind
+> > operation.
+> > This patch delays the initialization of the rnbd_server module to the
+> > late_initcall level, since RDMA cma module uses module_init which puts it into
+> > the device_initcall level.
+> >  drivers/block/rnbd/rnbd-srv.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+> > index 86e61523907b..213df05e5994 100644
+> > +++ b/drivers/block/rnbd/rnbd-srv.c
+> > @@ -840,5 +840,5 @@ static void __exit rnbd_srv_cleanup_module(void)
+> >  	rnbd_srv_destroy_sysfs_files();
+> >  }
+> >
+> > -module_init(rnbd_srv_init_module);
+> > +late_initcall(rnbd_srv_init_module);
 > 
-> query_device should be used to implement the ibverb query_device and
-> query_device_ex
-> 
-> It should only return rdma-core defined common stuff because that is
-> what that verb does - there is no reason to return driver specific
-> things as there is nothing the driver can do with it.
-> 
-> The only exception might be some provider specific query_device dv
-> that needs more information.
-> 
-> query_device should not be used as some two-part
-> create_context. Information related only to create_context that is not
-> already exposed to query_device should not be added to query_device
-> only for create_context's use.
-> 
-> Similarly, information in query_device should not be duplicated into
-> create_context just to save a system call.
+> I don't think that this is correct change. Somehow nvme-rdma works:
+> module_init(nvme_rdma_init_module);
+> -> nvme_rdma_init_module
+>  -> nvmf_register_transport(&nvme_rdma_transport);
+>   -> nvme_rdma_create_ctrl
+>    -> nvme_rdma_setup_ctrl
+>     -> nvme_rdma_configure_admin_queue
+>      -> nvme_rdma_alloc_queue
+>       -> rdma_create_id
 
-That makes sense.
-To clarify, the "duplicated" fields in this patch are moved to the ucontext
-allocation, where they originally belong as all of them are necessary for the
-provider's functionality.
-Future fields such as these will only be added to alloc_ucontext, not both, so
-there's no duplication.
+If it does work, it is by luck.
 
-Otherwise, future extensions will either have to be added to query_device, which
-is the wrong place, just to be consistent with the existing code. Or we add them
-to the ucontext response, where they belong, and end up with some hybrid
-solution where different fields are gathered from different places (yuck :\).
+Keep in mind all this only matters for kernels without modules.
 
-We got it wrong the first place but it's a two way door, let's fix it.
+Maybe cma should be upgraded to subsystem_init ? That is a bit tricky
+too as it needs the ib_client stuff working
+
+Jason
