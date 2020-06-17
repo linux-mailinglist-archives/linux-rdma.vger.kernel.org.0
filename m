@@ -2,124 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1A21FCF3A
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 16:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990521FD0F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 17:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgFQOP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 10:15:26 -0400
-Received: from mail-eopbgr00064.outbound.protection.outlook.com ([40.107.0.64]:60469
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726328AbgFQOPZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:15:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LEmal/4m5Z+M2Is2HfNwfYvBHoy1sNw8bnbImt/ahdpDRiv4Y7RhV/Ja1g1I4QOn0n+rhzCEj0kEasHi0f03Kevi/xYAt+nvV/eHHCRqON9fZmqn2l0zuddYC7D+VFzkAzafFV3rxB834e8xKc6ezI26ce5jBlK3SMXUK9GQ0vV0jtpy5lVTaZUboY4QOu9UxJOFgnq/F8Dw2pcEcS07gp6pNatEB5aOjeYk4ZXNRxb1nWUxzw8jUFf8wzQQXmqh0+3zYLSb9kXe/K7CKZhrpYnyT6//vmBd8e08OhtlEYKNw4pI+o3DnEWNveV3r+ie5myoOuhs8oJpfOsUk9KJVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7IwNIe25D4JG+hdkfguAp3DwI57IaM0mAArJ4lI7D6s=;
- b=TmDsC72V2amx776MtW7jUwjf95ncHQkCyhXtt/Uya5ds160lBu9M3LMW88l8dylG5I7gGjA97C6hfcPa/OGpLVpDpgnHmjaBd3YfTd/b2TZiTk7PUaG+DMoCpG3xCHKQawFGDCMy4nEYVFAfE8+kePM9VBOimOiz1VFqI4M+wnJu9wh7EnMkrYcNcIUAAdumDiUZHLh2ci3ZYwJgo0RlTkNIffQil6vqMkySAQlVSnabcNYN9fDxY1xHKLLIs5FsCdrl8/dPKUtqUd+gyF4/qDtv3TkFCGQLqByqOL+yLaNg3T9Dfitcrb7p+mp7zOJyJygvv+WUAjQHW7H4tHaKDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7IwNIe25D4JG+hdkfguAp3DwI57IaM0mAArJ4lI7D6s=;
- b=LfbBAMs6ubhMJk4c3jGsszqu3ikylK+cM/TzgjelHPK5qeoKkwACPtmXuln5uwsAV4ev9+VlhCsD4sTd9EggAU+4aLvn31Idqqu2NbRYHfkAMDORYMHIM40RZX0TEk4abOEblWQwgxbwDiA6kA8gBjzBempeWwo58n3mS5Nld2g=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=mellanox.com;
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
- by AM0PR05MB4612.eurprd05.prod.outlook.com (2603:10a6:208:ae::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Wed, 17 Jun
- 2020 14:15:21 +0000
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::d05d:35af:3f2f:9110]) by AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::d05d:35af:3f2f:9110%5]) with mapi id 15.20.3109.021; Wed, 17 Jun 2020
- 14:15:21 +0000
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix integrity enabled QP creation
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
-        Linux-nvme <linux-nvme@lists.infradead.org>
-References: <20200617130230.2846915-1-leon@kernel.org>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <f9bc344e-1dd0-d36a-78fc-7ccfe7f45044@mellanox.com>
-Date:   Wed, 17 Jun 2020 17:15:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-In-Reply-To: <20200617130230.2846915-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR10CA0066.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::19) To AM0PR05MB5810.eurprd05.prod.outlook.com
- (2603:10a6:208:11f::18)
+        id S1726758AbgFQP2i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 11:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQP2i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 11:28:38 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE56FC06174E
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w9so1819425qtv.3
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YWvFZzs3KP9lJjMgLteUxWcl0AN5fcCF6bv79uFgihI=;
+        b=fPvsZiRmvOrvrQ4yxrTzKd5CSIveZ17z50EpolEl+pPAK7HUWF0QJZmXtSGVDOakfw
+         7DHwzIzE2lNcGxpAtO8aw08z/gM8Y21yy9DIXMANO2ubUa3TWdA4GmPrzu72SDfRdvmF
+         BClIRqEbNJmDflVkgdFD+OnXmF0SaCCsk8z9/TyDuufHGuZdnpCUVgkaPeljCUzfOGUP
+         iou8x9GwNeXqpb+7LiV1ym/MPlGBad5o331/0hIUNzTl2FFPtmlIOP+y+IRR8Ia8Spm0
+         VHrOAMJcFDHzlMiG7WUr4U2IvrrqHhxtahUa25x/jrfaWVB1Q09VlgzgQNmhTWG78o/m
+         b3Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YWvFZzs3KP9lJjMgLteUxWcl0AN5fcCF6bv79uFgihI=;
+        b=elMjCd89MUlR9ntpWVzb5EhxSQF5wXu0NWt1KmQmmYNYd/9JzJfVhSOURRO4d+7iJv
+         2FjKrXc4DLCin+i/pXXI06//fKkGEIU2+s8CS2LwcGT+z4v5IetLc/aYjhUVRxWM/I7Q
+         E/8pXBEj+Kekt80M5xnHndsOBiE252q5uEAWYKgMiDhKZmlRxqG+Rx1cGjSXFcp01reh
+         OTw50TBYj3dDNfFc2tqndMfCnzbx8igl14VIKeVXjutkDjd2P9DSASOGoZCe+CkrcTdp
+         OhG6rDSNijBF0IUZE5OqZJaOtCyG5HcaFK1mkefyNopAq4Q8v6VMFN/m8UQZnLwn8G53
+         3kPw==
+X-Gm-Message-State: AOAM532ztJzT7tZjr1EuKSexwlgqGBcS1HJp+0V/7GbIwngvF6wq+T9Y
+        HroYc+08x5xP69zexrWYHmikOA==
+X-Google-Smtp-Source: ABdhPJzZDttOnjxPbTFDeZHyWDfba0peOY2A/3G4231dt912/147Xnlp7RMkFB2VSf50LuX5ZTAibw==
+X-Received: by 2002:ac8:468a:: with SMTP id g10mr27323795qto.6.1592407717080;
+        Wed, 17 Jun 2020 08:28:37 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id f127sm210137qkb.55.2020.06.17.08.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 08:28:35 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jlZzP-009d7z-9q; Wed, 17 Jun 2020 12:28:35 -0300
+Date:   Wed, 17 Jun 2020 12:28:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200617152835.GF6578@ziepe.ca>
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-5-daniel.vetter@ffwll.ch>
+ <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
+ <20200611083430.GD20149@phenom.ffwll.local>
+ <20200611141515.GW6578@ziepe.ca>
+ <20200616120719.GL20149@phenom.ffwll.local>
+ <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.0.0.3] (89.139.203.251) by AM0PR10CA0066.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Wed, 17 Jun 2020 14:15:20 +0000
-X-Originating-IP: [89.139.203.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4c821d36-feaa-44bd-e2e1-08d812c8de86
-X-MS-TrafficTypeDiagnostic: AM0PR05MB4612:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB4612141E699159133DA7A211B69A0@AM0PR05MB4612.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 04371797A5
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tO40BeOcgPBdaB0R7SMeuNLwayY+NHHFfOuWuSZkDpana4vAD925dXGnItFBlSbbclflOmL+j14QkFhUAf0vmLrx1/DbyvAdISXXVPdqpQiQ//UO86f/wVzXMBXm5H3PAkdZEWPXFIDjVeDs4zlzCO7Gviq5wW677ZQAxH8J+sN/WR4Z7dQMZ9bCAANLG42HpfTYiALTzIzkdm0vM30UqAsTHG81s6es7bEbSw0fjjCmTbuI8fr+yJs5Xpr8Tv0rOIKpn0zW9iYrLgX/NO4vHWd/zy0V7eP6bqUparlm+9oMz+9L8w+BZpQ0xWlhZr2SeHXo4fM6Hd76ssjdQYG5gmGieCcEFqLxNpPTePJ/65JQLilgIO/4jsUIQMzOVMaX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(54906003)(110136005)(478600001)(8936002)(6486002)(16576012)(8676002)(66556008)(5660300002)(6636002)(316002)(4326008)(66476007)(2906002)(31686004)(53546011)(66946007)(36756003)(31696002)(26005)(6666004)(83380400001)(956004)(2616005)(52116002)(186003)(16526019)(86362001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GBrohvk0mMUD41Hjf7M2tecf8BA19u8k/WYx7VQRwsK5J4NJfIx15lFj0WdoN/pA5ezVWK3jY0KGvU8EazY9mKbVUCDLqxGpfhnZrbM+0GvsWJQr4dGJkewJbLqajUihoBimQ/fMthCCnacGSCrEew4QuOSrn5H3s3AdKFqEGOjnKgi8F5C673UgDrQxVfHkGV2tpyrB3nMtHwZDF0/bjCCB3w4orqq+7oOlcaIMyHVL053+gDkeHmPDvSl13LtJ+/zjVdDNJLQHPCfoJPGVWSX1/V3SCiiQF4q0tsQh5kB5X+lTwbpG+6Mvg3EwtBkjkMnQEeSSqzoQwuYoSb6AZphgFa0iPOqwLQJEyTPdcvOyUyAvg5bFyS20lnrw1Z9g/TOO0yQJ8xE5hD8ibir4UxPlqyVJ9prb00o+koV25VVa9XGyv7+Rx5ifk7gCOsTgQS3x7znRx3SHo0ekk1wYxM/DfbZvGl9oQEL9fBYKTKgcDr67cT6lwp5n761Capi6
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c821d36-feaa-44bd-e2e1-08d812c8de86
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2020 14:15:21.0195
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LYVjj4WVkEX+EX+kXmYtGHTzFxfbMzc5LIu442hSenQdviiYEOEHsiNg0bkX+XZwi1eXnOf1EG0lQ6whY/swFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4612
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+ adding the NVMe mailing list in case someone find issues with 
-NVMe/RDMA on 5.8-rc1
+On Wed, Jun 17, 2020 at 08:48:50AM +0200, Daniel Vetter wrote:
 
-On 6/17/2020 4:02 PM, Leon Romanovsky wrote:
-> From: Max Gurtovoy <maxg@mellanox.com>
->
-> create_flags checks was refactored and broke the creation on integrity
-> enabled QPs and actually broke the NVMe/RDMA and iSER ULP's when using
-> mlx5 driven devices.
->
-> Fixes: 2978975ce7f1 ("RDMA/mlx5: Process create QP flags in one place")
-> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->   drivers/infiniband/hw/mlx5/qp.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-> index aff412b513ae..fe6af6bed02d 100644
-> --- a/drivers/infiniband/hw/mlx5/qp.c
-> +++ b/drivers/infiniband/hw/mlx5/qp.c
-> @@ -2668,6 +2668,9 @@ static int process_create_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
->   	if (qp_type == IB_QPT_RAW_PACKET && attr->rwq_ind_tbl)
->   		return (create_flags) ? -EINVAL : 0;
->
-> +	process_create_flag(dev, &create_flags,
-> +			    IB_QP_CREATE_INTEGRITY_EN,
-> +			    MLX5_CAP_GEN(mdev, sho), qp);
->   	process_create_flag(dev, &create_flags,
->   			    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK,
->   			    MLX5_CAP_GEN(mdev, block_lb_mc), qp);
-> --
-> 2.26.2
->
+> Now my understanding for rdma is that if you don't have hw page fault
+> support,
+
+The RDMA ODP feature is restartable HW page faulting just like nouveau
+has. The classical MR feature doesn't have this. Only mlx5 HW supports
+ODP today.
+
+> It's only gpus (I think) which are in this awkward in-between spot
+> where dynamic memory management really is much wanted, but the hw
+> kinda sucks. Aside, about 10+ years ago we had a similar problem with
+> gpu hw, but for security: Many gpu didn't have any kinds of page
+> tables to isolate different clients from each another. drivers/gpu
+> fixed this by parsing&validating what userspace submitted to make sure
+> it's only every accessing its own buffers. Most gpus have become
+> reasonable nowadays and do have proper per-process pagetables (gpu
+> process, not the pasid stuff), but even today there's still some of
+> the old model left in some of the smallest SoC.
+
+But I still don't understand why a dma fence is needed inside the GPU
+driver itself in the notifier.
+
+Surely the GPU driver can block and release the notifier directly from
+its own command processing channel?
+
+Why does this fence and all it entails need to leak out across
+drivers?
+
+Jason
