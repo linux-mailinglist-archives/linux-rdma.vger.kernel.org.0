@@ -2,192 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB121FC7D6
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1AD1FC80B
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgFQHqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 03:46:37 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37765 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726634AbgFQHqg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:36 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
-        with SMTP; 17 Jun 2020 10:46:29 +0300
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTHI017666;
-        Wed, 17 Jun 2020 10:46:29 +0300
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kT9j007216;
-        Wed, 17 Jun 2020 10:46:29 +0300
-Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kTTQ007214;
-        Wed, 17 Jun 2020 10:46:29 +0300
-From:   Yishai Hadas <yishaih@mellanox.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com,
-        Edward Srouji <edwards@mellanox.com>
-Subject: [PATCH rdma-core 13/13] tests: Add a shared PD Pyverbs test
-Date:   Wed, 17 Jun 2020 10:45:56 +0300
-Message-Id: <1592379956-7043-14-git-send-email-yishaih@mellanox.com>
-X-Mailer: git-send-email 1.8.2.3
-In-Reply-To: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
-References: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
+        id S1726583AbgFQH6H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 03:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgFQH6G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:58:06 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B0CC061573
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 00:58:06 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id s21so981314oic.9
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 00:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X+Qtu+2ZAyZXkh/oo1Lz6E9/PFmVPHRpkYwfH9QQzoY=;
+        b=Rnq7BerEC1NJ+s3KJhsfuws9Kg+j4pWFkQJLmI518tzrC8znQHM1y1XOVL+e9QQvGC
+         mOcEQIpeKlQI3Ch0XEzDajgEy3Ss5YB513C5XhgrGC29v//2jcdDFh59xMl7mJC4egNc
+         wZOOJ+JmjjXVx9gZJsvcArI7aR28zLTWFwR6Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X+Qtu+2ZAyZXkh/oo1Lz6E9/PFmVPHRpkYwfH9QQzoY=;
+        b=d+WPSaqr9akYb+gde1cQ+SLBbGzx65qM7u6DEoe99Qm1ZDASygtmHjagy0JnmUjAJq
+         Ghppvfli10GzgEWcf/fY8eEdus1h3PzHoMRU9LLJKq1JSjnQivCKYybbyHmAbkoWa3cS
+         zpZ5F5x+vrqU9jfptrklsyik3vGOGjT3K7VXbwbRy/+22K/Sh7R/JBUOlBXP9ZJBx+SV
+         4YME6147YN5BHSHqYaIDIPTbf+Vo1bA+eC4R2vY6KjmEQNa13LojWzNCisPxqrxYv8Pm
+         t/bwhwSdGKDpbLTYGX53mhHuGIJudlCv1Omz/62gdKuplO4rKmm50sQQx34EJhM8UV8t
+         dGBA==
+X-Gm-Message-State: AOAM5301qD76vgwT+Gk6WeALuB31p6nyS4zp05vnlF5ELaECIzKkwb5/
+        lrocZgT3xHqVS/24qoisQvPEuYd5K3rjTOOJTe2uWQ==
+X-Google-Smtp-Source: ABdhPJyg/qc6FJuRZYZqNNd5IMYVmnKGSrITOouFVSzC2Mh6TfEGJcQ4YwgOLOvW4cWrgZZvjXq69o3dCj+ez8idqyo=
+X-Received: by 2002:aca:ed42:: with SMTP id l63mr6006514oih.101.1592380685425;
+ Wed, 17 Jun 2020 00:58:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-5-daniel.vetter@ffwll.ch> <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
+ <20200611083430.GD20149@phenom.ffwll.local> <20200611141515.GW6578@ziepe.ca>
+ <20200616120719.GL20149@phenom.ffwll.local> <20200616145312.GC6578@ziepe.ca>
+In-Reply-To: <20200616145312.GC6578@ziepe.ca>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 17 Jun 2020 09:57:54 +0200
+Message-ID: <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep annotations
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Edward Srouji <edwards@mellanox.com>
+On Wed, Jun 17, 2020 at 9:27 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jun 16, 2020 at 02:07:19PM +0200, Daniel Vetter wrote:
+> > > > I've pinged a bunch of armsoc gpu driver people and ask them how much this
+> > > > hurts, so that we have a clear answer. On x86 I don't think we have much
+> > > > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
+> > > > (but nouveau I think doesn't use dma_fence in there).
+> > >
+> > > Right, nor will RDMA ODP.
+> >
+> > Hm, what's the context here? I thought RDMA side you really don't want
+> > dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
+> > here.
+>
+> rdma does not use dma_fence at all, and though it is hard to tell, I
+> didn't notice a dma_fence in the nouveau invalidation call path.
 
-The test creates a client and server sides of RC resources.  Then the
-server resources are imported and used for RDMA write traffic.
+Nouveau for compute has hw page faults. It doesn't have hw page faults
+for non-compute fixed function blocks afaik, so there's a hybrid model
+going on. But nouveau also doesn't support userspace memory (instead
+of driver-allocated buffer objects) for these fixed function blocks,
+so no need to have a dma_fence_wait in there.
 
-Reviewed-by: Ido Kalir <idok@mellanox.com>
-Signed-off-by: Edward Srouji <edwards@mellanox.com>
----
- tests/CMakeLists.txt    |  1 +
- tests/base.py           | 11 ++++--
- tests/test_shared_pd.py | 95 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 105 insertions(+), 2 deletions(-)
- create mode 100644 tests/test_shared_pd.py
+> At the very least I think there should be some big warning that
+> dma_fence in notifiers should be avoided.
 
-diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 1708fb9..33ffc78 100644
---- a/tests/CMakeLists.txt
-+++ b/tests/CMakeLists.txt
-@@ -25,6 +25,7 @@ rdma_python_test(tests
-   test_qpex.py
-   test_rdmacm.py
-   test_relaxed_ordering.py
-+  test_shared_pd.py
-   utils.py
-   )
- 
-diff --git a/tests/base.py b/tests/base.py
-index 5a98d7f..db9a6ec 100755
---- a/tests/base.py
-+++ b/tests/base.py
-@@ -244,10 +244,17 @@ class BaseResources(object):
-         :param ib_port: IB port of the device to use (default: 1)
-         :param gid_index: Which GID index to use (default: 0)
-         """
--        self.ctx = Context(name=dev_name)
-+        self.dev_name = dev_name
-         self.gid_index = gid_index
--        self.pd = PD(self.ctx)
-         self.ib_port = ib_port
-+        self.create_context()
-+        self.create_pd()
-+
-+    def create_context(self):
-+        self.ctx = Context(name=self.dev_name)
-+
-+    def create_pd(self):
-+        self.pd = PD(self.ctx)
- 
- 
- class TrafficResources(BaseResources):
-diff --git a/tests/test_shared_pd.py b/tests/test_shared_pd.py
-new file mode 100644
-index 0000000..e533074
---- /dev/null
-+++ b/tests/test_shared_pd.py
-@@ -0,0 +1,95 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2020 Mellanox Technologies, Inc. All rights reserved. See COPYING file
-+"""
-+Test module for Shared PD.
-+"""
-+import unittest
-+import errno
-+import os
-+
-+from tests.test_qpex import QpExRCRDMAWrite
-+from tests.base import RDMATestCase
-+from pyverbs.device import Context
-+from pyverbs.pd import PD
-+from pyverbs.mr import MR
-+import pyverbs.enums as e
-+import tests.utils as u
-+
-+
-+def get_import_res_class(base_class):
-+    """
-+    This function creates a class that inherits base_class of any BaseResources
-+    type. Its purpose is to behave exactly as base_class does, except for the
-+    objects creation, which instead of creating context, PD and MR, it imports
-+    them. Hence the returned class must be initialized with (cmd_fd, pd_handle,
-+    mr_handle, mr_addr, **kwargs), while kwargs are the arguments needed
-+    (if any) for base_class. In addition it has unimport_resources() method
-+    which unimprot all the resources and closes the imported PD object.
-+    :param base_class: The base resources class to inherit from
-+    :return: ImportResources(cmd_fd, pd_handle, mr_handle, mr_addr, **kwargs)
-+             class
-+    """
-+    class ImportResources(base_class):
-+        def __init__(self, cmd_fd, pd_handle, mr_handle, mr_addr=None, **kwargs):
-+            self.cmd_fd = cmd_fd
-+            self.pd_handle = pd_handle
-+            self.mr_handle = mr_handle
-+            self.mr_addr = mr_addr
-+            super(ImportResources, self).__init__(**kwargs)
-+
-+        def create_context(self):
-+            try:
-+                self.ctx = Context(cmd_fd=self.cmd_fd)
-+            except u.PyverbsRDMAError as ex:
-+                if ex.error_code in [errno.EOPNOTSUPP, errno.EPROTONOSUPPORT]:
-+                    raise unittest.SkipTest('Importing a device is not supported')
-+                raise ex
-+
-+        def create_pd(self):
-+            self.pd = PD(self.ctx, handle=self.pd_handle)
-+
-+        def create_mr(self):
-+            self.mr = MR(self.pd, handle=self.mr_handle, address=self.mr_addr)
-+
-+        def unimport_resources(self):
-+            self.mr.unimport()
-+            self.pd.unimport()
-+            self.pd.close()
-+
-+    return ImportResources
-+
-+
-+class SharedPDTestCase(RDMATestCase):
-+    def setUp(self):
-+        super().setUp()
-+        self.iters = 10
-+        self.server_res = None
-+        self.imported_res = []
-+
-+    def tearDown(self):
-+        for res in self.imported_res:
-+            res.unimport_resources()
-+        super().tearDown()
-+
-+    def test_imported_rc_ex_rdma_write(self):
-+        setup_params = {'dev_name': self.dev_name, 'ib_port': self.ib_port,
-+                        'gid_index': self.gid_index}
-+        self.server_res = QpExRCRDMAWrite(**setup_params)
-+        cmd_fd_dup = os.dup(self.server_res.ctx.cmd_fd)
-+        import_cls = get_import_res_class(QpExRCRDMAWrite)
-+        server_import = import_cls(
-+            cmd_fd_dup, self.server_res.pd.handle, self.server_res.mr.handle,
-+            # The imported MR's address is NULL, so using the address of the
-+            # "main" MR object to be able to validate the message
-+            self.server_res.mr.buf,
-+            **setup_params)
-+        self.imported_res.append(server_import)
-+        client = QpExRCRDMAWrite(**setup_params)
-+        client.pre_run(server_import.psn, server_import.qpn)
-+        server_import.pre_run(client.psn, client.qpn)
-+        client.rkey = server_import.mr.rkey
-+        server_import.rkey = client.mr.rkey
-+        client.raddr = server_import.mr.buf
-+        server_import.raddr = client.mr.buf
-+        u.rdma_traffic(client, server_import, self.iters, self.gid_index,
-+                       self.ib_port, send_op=e.IBV_QP_EX_WITH_RDMA_WRITE)
+Yeah I'm working on documentation, and also the notifiers here
+hopefully make it clear it's massive pain. I think we could even make
+a hard rule that dma_fence in mmu notifier outside of drivers/gpu is a
+bug/misfeature.
+
+Might be a good idea to add a MAINTAINERS entry with a K: regex
+pattern, so that you can catch such modifiers. We do already have such
+a pattern for dma-fence, to catch abuse. So if you want I could type
+up a documentation patch for this, get your and others acks and the
+dri-devel folks would enforce that the dma_fence_wait madness doesn't
+leak beyond drivers/gpu
+
+> Ie it is strange that the new totally-not-a-gpu drivers use dma_fence,
+> they surely don't have the same constraints as the existing GPU world,
+> and it would be annoying to see dma_fence notifiers spring up in them
+
+If you mean drivers/misc/habanalabs, that's going to get taken care of:
+
+
+commit ed65bfd9fd86dec3772570b0320ca85b9fb69f2e
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon May 11 11:11:42 2020 +0200
+
+    habanalabs: don't set default fence_ops->wait
+
+    It's the default.
+
+    Also so much for "we're not going to tell the graphics people how to
+    review their code", dma_fence is a pretty core piece of gpu driver
+    infrastructure. And it's very much uapi relevant, including piles of
+    corresponding userspace protocols and libraries for how to pass these
+    around.
+
+    Would be great if habanalabs would not use this (from a quick look
+    it's not needed at all), since open source the userspace and playing
+    by the usual rules isn't on the table. If that's not possible (because
+    it's actually using the uapi part of dma_fence to interact with gpu
+    drivers) then we have exactly what everyone promised we'd want to
+    avoid.
+
+    Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+    Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+    Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+
+Oded has agreed to remove the dma-fence usage, since they really don't
+need it (and all the baggage that comes with it), plain old completion
+is enough for their use. This use is also why I added the regex to
+MAINTAINERS, so that in the future we can catch people who try to use
+dma_fence because it looks cute and useful, and are completely
+oblivious to all the pain and headaches involved.
+
+Cheers, Daniel
 -- 
-1.8.3.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
