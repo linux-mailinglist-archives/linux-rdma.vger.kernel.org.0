@@ -2,87 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049171FD480
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 20:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4018B1FD528
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 21:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgFQSY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 14:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727795AbgFQSYO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 14:24:14 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28C7C06174E
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 11:24:14 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d8so1307615plo.12
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 11:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xvbq06xb8rcHDasNPx3O6hTHbslpfoh+riHjhZc++Ks=;
-        b=WSLMCKM9ohtqSjMVQAbj8K1EAqWViQgK5qGsYkx3lqhl4SsxwYlRNFiMWoOk2e/+22
-         zbFaMYhRiSmM6eMiCRg8pVMnNvBNXK4RWHAEyeSxi1yul8/hoKqqDvYCbK4MJMaUDIp8
-         dPW7u7MTXphGIS/lQQK1TTO+1xUR9WezeUktbJn90euKvKx8q2ojaylC5nuI1hd4V9Vh
-         wtgE1cx4svZZDf92ll3QVr+I4cvK9FEfJ17p/5L/qNhvs9lrf33cvYerJdTG+R9G5cGw
-         v9PZqBGUocA8ZmLvw+z3PCKOn4YYh3CH80/GsBlNE3wl4MqQ/Wk7DLhl0/f5pMepE3sL
-         y2YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xvbq06xb8rcHDasNPx3O6hTHbslpfoh+riHjhZc++Ks=;
-        b=TnHZMVBEcWGQYfz+PzGAa0ibW7FncBiiShyUe5Z/CCeeb7CrXFN2DW+Sxb2efXA4J5
-         3B5poKEF+7QnjA5p9gNX5X5acOhDSvpB0l70qygMg7F+9+Oe/DzcH2GDsoOZAzR9PZE9
-         mkx+ENBdCGW5Bc3ptIhqGsKHqbx70RjCBmsAffN5gQdd4KNAA5T8IEX9wz6MgqFhHTYp
-         5cxC57xBSzkiRBb0CUfTvHKUdsSIOOogcjptEpY04zqbpHUF/1AYDY/UVgmt8DMXoXLb
-         AQP8+CU8gfXtWkLGiDTiU3jRgiJTUj/9wM4Ps1Y8Xj9BnG5RqfQcUgpnOWVU43xNf7dK
-         cjvw==
-X-Gm-Message-State: AOAM531HoTCDsXOWkwbvIyBhJ7UeeiV0G48qIvGLNc6tSJzuuJrEyK2i
-        l1zDGrJg1dejRchPkUNTqBUSjQ==
-X-Google-Smtp-Source: ABdhPJx+VO5TVkCBs3OrjZcmKB/+bOvx9qgai2d0KOQdclTJeyiQZlq7//E9CmjSCqRbW8mzyMdeUA==
-X-Received: by 2002:a17:90a:df0c:: with SMTP id gp12mr363670pjb.148.1592418252950;
-        Wed, 17 Jun 2020 11:24:12 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id h8sm516409pfo.67.2020.06.17.11.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 11:24:12 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jlcjK-009iJG-KI; Wed, 17 Jun 2020 15:24:10 -0300
-Date:   Wed, 17 Jun 2020 15:24:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
-Message-ID: <20200617182410.GK6578@ziepe.ca>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <1591627576-920-2-git-send-email-divya.indi@oracle.com>
- <20200609070026.GJ164174@unreal>
- <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
- <20200614064156.GB2132762@unreal>
- <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
+        id S1726987AbgFQTIE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 15:08:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726906AbgFQTIC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:08:02 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 240342088E;
+        Wed, 17 Jun 2020 19:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592420881;
+        bh=zObMcRLeOUfbu/V5bsZiiqQOocrI/fHerF5td2V/bZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YTtEm5b8L2i8K4MeM/VwX/SFNP5e7LPolNakd5wgNJ0wU6r9Aw6P7cc9ydCjKvrbE
+         OlWCkaOSjiDzRmjXJ8YUXnJQNmG9S9xRaBM97r31M7PNXj/IlBFgyDFce/81b6BAf9
+         Qomtk3LnR9PSCeDxUJyrcBp/UrkniHwSVAERbZHg=
+Date:   Wed, 17 Jun 2020 22:07:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     haris.iqbal@cloud.ionos.com, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com, dledford@redhat.com,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
+ late_initcall level
+Message-ID: <20200617190756.GA2721989@unreal>
+References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
+ <20200617112811.GL2383158@unreal>
+ <20200617182046.GI6578@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
+In-Reply-To: <20200617182046.GI6578@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:56:53AM -0700, Divya Indi wrote:
-> The other option might be to use GFP_NOWAIT conditionally ie
-> (only use GFP_NOWAIT when GFP_ATOMIC is not specified in gfp_mask else
-> use GFP_ATOMIC). Eventual goal being to not have a blocking memory allocation.
+On Wed, Jun 17, 2020 at 03:20:46PM -0300, Jason Gunthorpe wrote:
+> On Wed, Jun 17, 2020 at 02:28:11PM +0300, Leon Romanovsky wrote:
+> > On Wed, Jun 17, 2020 at 04:07:32PM +0530, haris.iqbal@cloud.ionos.com wrote:
+> > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > >
+> > > Fixes: 2de6c8de192b ("block/rnbd: server: main functionality")
+> > > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > >
+> > > The rnbd_server module's communication manager initialization depends on the
+> > > registration of the "network namespace subsystem" of the RDMA CM agent module.
+> > > As such, when the kernel is configured to load the rnbd_server and the RDMA
+> > > cma module during initialization; and if the rnbd_server module is initialized
+> > > before RDMA cma module, a null ptr dereference occurs during the RDMA bind
+> > > operation.
+> > > This patch delays the initialization of the rnbd_server module to the
+> > > late_initcall level, since RDMA cma module uses module_init which puts it into
+> > > the device_initcall level.
+> > >  drivers/block/rnbd/rnbd-srv.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+> > > index 86e61523907b..213df05e5994 100644
+> > > +++ b/drivers/block/rnbd/rnbd-srv.c
+> > > @@ -840,5 +840,5 @@ static void __exit rnbd_srv_cleanup_module(void)
+> > >  	rnbd_srv_destroy_sysfs_files();
+> > >  }
+> > >
+> > > -module_init(rnbd_srv_init_module);
+> > > +late_initcall(rnbd_srv_init_module);
+> >
+> > I don't think that this is correct change. Somehow nvme-rdma works:
+> > module_init(nvme_rdma_init_module);
+> > -> nvme_rdma_init_module
+> >  -> nvmf_register_transport(&nvme_rdma_transport);
+> >   -> nvme_rdma_create_ctrl
+> >    -> nvme_rdma_setup_ctrl
+> >     -> nvme_rdma_configure_admin_queue
+> >      -> nvme_rdma_alloc_queue
+> >       -> rdma_create_id
+>
+> If it does work, it is by luck.
 
-This is probably safest for now, unless you can audit all callers and
-see if they can switch to GFP_NOWAIT as well
+I didn't check every ULP, but it seems that all ULPs use the same
+module_init.
 
-Jason
+>
+> Keep in mind all this only matters for kernels without modules.
+
+Can it be related to the fact that other ULPs call to ib_register_client()
+before calling to rdma-cm? RNBD does not have such call.
+
+>
+> Maybe cma should be upgraded to subsystem_init ? That is a bit tricky
+> too as it needs the ib_client stuff working.
+
+It can work, but makes me wonder if it is last change in this area,
+every time we touch *_initcall(), we break something else.
+
+I'm not proposing this, but just loudly wondering, do we really need rdma-cm
+as a separate module? Can we bring it to be part of ib_core?
+
+Thanks
+
+>
+> Jason
