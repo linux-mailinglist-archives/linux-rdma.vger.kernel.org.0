@@ -2,70 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D2F1FCE08
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 15:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530E21FCF11
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 16:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgFQNCf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 09:02:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726270AbgFQNCf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:02:35 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BBCB207DD;
-        Wed, 17 Jun 2020 13:02:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592398955;
-        bh=M6fugjqciBVY2bzoL8f21JnnFhUA+Cm7C9N/arRWUHo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=H2cSzjAyJ2pblvIS5JzjbxmQz3o/z/d5C99VGcngtRA1GTtGsDr+I+nl4iVgx7w6T
-         vJe0U5ax6aAWE8CYHs3PlVu4tEoruNanEleluqo17tGpjaKbHFywG1yE00MKeaw5FW
-         7rhrKTZmIGojhZCmlLqTEMLq7Bdf+dFCCHPn9F6s=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Max Gurtovoy <maxg@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Fix integrity enabled QP creation
-Date:   Wed, 17 Jun 2020 16:02:30 +0300
-Message-Id: <20200617130230.2846915-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726851AbgFQOEr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 10:04:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52724 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725894AbgFQOEr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:04:47 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5B33BB4F90B46736D7A0;
+        Wed, 17 Jun 2020 22:04:44 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 17 Jun 2020 22:04:37 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
+Date:   Wed, 17 Jun 2020 22:08:03 +0800
+Message-ID: <20200617140803.181333-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Max Gurtovoy <maxg@mellanox.com>
+The callers pass the pointer '&req' or 'private_data' to
+srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
+'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
+sdev and req are always valid. So we remove unnecessary WARN_ON.
 
-create_flags checks was refactored and broke the creation on integrity
-enabled QPs and actually broke the NVMe/RDMA and iSER ULP's when using
-mlx5 driven devices.
-
-Fixes: 2978975ce7f1 ("RDMA/mlx5: Process create QP flags in one place")
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 ---
- drivers/infiniband/hw/mlx5/qp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index aff412b513ae..fe6af6bed02d 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2668,6 +2668,9 @@ static int process_create_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	if (qp_type == IB_QPT_RAW_PACKET && attr->rwq_ind_tbl)
- 		return (create_flags) ? -EINVAL : 0;
-
-+	process_create_flag(dev, &create_flags,
-+			    IB_QP_CREATE_INTEGRITY_EN,
-+			    MLX5_CAP_GEN(mdev, sho), qp);
- 	process_create_flag(dev, &create_flags,
- 			    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK,
- 			    MLX5_CAP_GEN(mdev, block_lb_mc), qp);
---
-2.26.2
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index ef7fcd3..0fa65c6 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2156,9 +2156,6 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 
+ 	WARN_ON_ONCE(irqs_disabled());
+ 
+-	if (WARN_ON(!sdev || !req))
+-		return -EINVAL;
+-
+ 	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+ 
+ 	pr_info("Received SRP_LOGIN_REQ with i_port_id %pI6, t_port_id %pI6 and it_iu_len %d on port %d (guid=%pI6); pkey %#04x\n",
+-- 
+1.8.3.1
 
