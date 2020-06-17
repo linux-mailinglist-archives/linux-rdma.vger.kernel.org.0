@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40AA1FC7D2
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85E71FC7CD
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgFQHqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 03:46:35 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37714 "EHLO
+        id S1726496AbgFQHqc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 03:46:32 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37713 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726511AbgFQHqc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:32 -0400
+        with ESMTP id S1725901AbgFQHqb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:31 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
         with SMTP; 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSi6017637;
-        Wed, 17 Jun 2020 10:46:28 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kThG017640;
+        Wed, 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSge007173;
-        Wed, 17 Jun 2020 10:46:28 +0300
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kTAq007177;
+        Wed, 17 Jun 2020 10:46:29 +0300
 Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kSUV007172;
-        Wed, 17 Jun 2020 10:46:28 +0300
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kT1s007176;
+        Wed, 17 Jun 2020 10:46:29 +0300
 From:   Yishai Hadas <yishaih@mellanox.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com
-Subject: [PATCH rdma-core 04/13] verbs: Handle async FD on an imported device
-Date:   Wed, 17 Jun 2020 10:45:47 +0300
-Message-Id: <1592379956-7043-5-git-send-email-yishaih@mellanox.com>
+Subject: [PATCH rdma-core 05/13] mlx5: Refactor mlx5_alloc_context()
+Date:   Wed, 17 Jun 2020 10:45:48 +0300
+Message-Id: <1592379956-7043-6-git-send-email-yishaih@mellanox.com>
 X-Mailer: git-send-email 1.8.2.3
 In-Reply-To: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
 References: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
@@ -36,231 +36,411 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-An imported device needs to allocate its own async FD to be able to get
-events on its private created objects.
+This patch refactors mlx5_alloc_context() by splitting its functionality
+to few parts, init context, get context command, set context, uninit
+context.
 
-This patch use ibv_cmd_alloc_async_fd() to achieve that by forcing any
-applicable event's object (e.g QP, SRC, etc.) upon its creation to use
-the ioctl interface as now the context async FD becomes a mandatory
-attribute.
+As part of splitting, cleaned up some redundant outlen checks.
 
-From symmetric reasons we moved ibv_cmd_alloc_async_fd() to be called as
-part of ibv_open_device() in case wasn't allocated yet (i.e. ioctl flow).
+The above is some preparation step to enable implementing
+mlx5_import_context() by sharing the applicable parts.
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 ---
- libibverbs/cmd_cq.c     |  9 +++++++--
- libibverbs/cmd_device.c |  5 +----
- libibverbs/cmd_qp.c     |  4 ++++
- libibverbs/cmd_srq.c    |  4 ++++
- libibverbs/cmd_wq.c     |  4 ++++
- libibverbs/device.c     | 15 +++++++++++++++
- libibverbs/driver.h     |  1 +
- libibverbs/ibverbs.h    |  1 +
- 8 files changed, 37 insertions(+), 6 deletions(-)
+ providers/mlx5/mlx5.c | 272 ++++++++++++++++++++++++++++----------------------
+ 1 file changed, 153 insertions(+), 119 deletions(-)
 
-diff --git a/libibverbs/cmd_cq.c b/libibverbs/cmd_cq.c
-index 1ac5ca5..5412660 100644
---- a/libibverbs/cmd_cq.c
-+++ b/libibverbs/cmd_cq.c
-@@ -31,6 +31,7 @@
-  */
+diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
+index 23afda8..e5ed17e 100644
+--- a/providers/mlx5/mlx5.c
++++ b/providers/mlx5/mlx5.c
+@@ -1270,17 +1270,17 @@ repeat:
  
- #include <infiniband/cmd_write.h>
-+#include "ibverbs.h"
- 
- static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
- 			      struct ibv_comp_channel *channel, int comp_vector,
-@@ -38,6 +39,7 @@ static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
- 			      struct ibv_command_buffer *link)
+ static void adjust_uar_info(struct mlx5_device *mdev,
+ 			    struct mlx5_context *context,
+-			    struct mlx5_alloc_ucontext_resp resp)
++			    struct mlx5_ib_alloc_ucontext_resp *resp)
  {
- 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_CQ, UVERBS_METHOD_CQ_CREATE, 8, link);
-+	struct verbs_ex_private *priv = get_priv(context);
- 	struct ib_uverbs_attr *handle;
- 	struct ib_uverbs_attr *async_fd_attr;
- 	uint32_t resp_cqe;
-@@ -54,8 +56,11 @@ static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
- 		fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_CQ_COMP_CHANNEL, channel->fd);
- 	fill_attr_in_uint32(cmdb, UVERBS_ATTR_CREATE_CQ_COMP_VECTOR, comp_vector);
- 	async_fd_attr = fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_CQ_EVENT_FD, context->async_fd);
--	/* Prevent fallback to the 'write' mode if kernel doesn't support it */
--	attr_optional(async_fd_attr);
-+	if (priv->imported)
-+		fallback_require_ioctl(cmdb);
-+	else
-+		/* Prevent fallback to the 'write' mode if kernel doesn't support it */
-+		attr_optional(async_fd_attr);
+-	if (!resp.log_uar_size && !resp.num_uars_per_page) {
++	if (!resp->log_uar_size && !resp->num_uars_per_page) {
+ 		/* old kernel */
+ 		context->uar_size = mdev->page_size;
+ 		context->num_uars_per_page = 1;
+ 		return;
+ 	}
  
- 	if (flags) {
- 		fallback_require_ex(cmdb);
-diff --git a/libibverbs/cmd_device.c b/libibverbs/cmd_device.c
-index 4de59c0..648cc0b 100644
---- a/libibverbs/cmd_device.c
-+++ b/libibverbs/cmd_device.c
-@@ -99,7 +99,7 @@ int ibv_cmd_query_port(struct ibv_context *context, uint8_t port_num,
- 	return 0;
+-	context->uar_size = 1 << resp.log_uar_size;
+-	context->num_uars_per_page = resp.num_uars_per_page;
++	context->uar_size = 1 << resp->log_uar_size;
++	context->num_uars_per_page = resp->num_uars_per_page;
  }
  
--static int cmd_alloc_async_fd(struct ibv_context *context)
-+int ibv_cmd_alloc_async_fd(struct ibv_context *context)
- {
- 	DECLARE_COMMAND_BUFFER(cmdb, UVERBS_OBJECT_ASYNC_EVENT,
- 			       UVERBS_METHOD_ASYNC_EVENT_ALLOC, 1);
-@@ -153,9 +153,6 @@ static int cmd_get_context(struct verbs_context *context_ex,
- 		return 0;
- 	}
- 	case SUCCESS:
--		ret = cmd_alloc_async_fd(context);
--		if (ret)
--			return ret;
- 		break;
- 	default:
- 		return ret;
-diff --git a/libibverbs/cmd_qp.c b/libibverbs/cmd_qp.c
-index a11bb98..567984d 100644
---- a/libibverbs/cmd_qp.c
-+++ b/libibverbs/cmd_qp.c
-@@ -76,6 +76,7 @@ static int ibv_icmd_create_qp(struct ibv_context *context,
- 			      struct ibv_command_buffer *link)
- {
- 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_QP, UVERBS_METHOD_QP_CREATE, 15, link);
-+	struct verbs_ex_private *priv = get_priv(context);
- 	struct ib_uverbs_attr *handle;
- 	uint32_t qp_num;
- 	uint32_t pd_handle;
-@@ -172,6 +173,9 @@ static int ibv_icmd_create_qp(struct ibv_context *context,
- 	fill_attr_in_ptr(cmdb, UVERBS_ATTR_CREATE_QP_CAP, &attr_ex->cap);
- 	fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_QP_EVENT_FD, context->async_fd);
+ bool mlx5dv_is_supported(struct ibv_device *device)
+@@ -1299,117 +1299,105 @@ mlx5dv_open_device(struct ibv_device *device, struct mlx5dv_context_attr *attr)
+ 	return verbs_open_device(device, attr);
+ }
  
-+	if (priv->imported)
-+		fallback_require_ioctl(cmdb);
+-static struct verbs_context *mlx5_alloc_context(struct ibv_device *ibdev,
++static int get_uar_info(struct mlx5_device *mdev,
++			int *tot_uuars, int *low_lat_uuars)
++{
++	*tot_uuars = get_total_uuars(mdev->page_size);
++	if (*tot_uuars < 0) {
++		errno = -*tot_uuars;
++		return -1;
++	}
 +
- 	if (attr_ex->sq_sig_all)
- 		create_flags |= IB_UVERBS_QP_CREATE_SQ_SIG_ALL;
- 
-diff --git a/libibverbs/cmd_srq.c b/libibverbs/cmd_srq.c
-index 4e63046..dfaaa6a 100644
---- a/libibverbs/cmd_srq.c
-+++ b/libibverbs/cmd_srq.c
-@@ -53,6 +53,7 @@ static int ibv_icmd_create_srq(struct ibv_pd *pd, struct verbs_srq *vsrq,
- 			       struct ibv_command_buffer *link)
- {
- 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_SRQ, UVERBS_METHOD_SRQ_CREATE, 13, link);
-+	struct verbs_ex_private *priv = get_priv(pd->context);
- 	struct ib_uverbs_attr *handle;
- 	uint32_t max_wr;
- 	uint32_t max_sge;
-@@ -107,6 +108,9 @@ static int ibv_icmd_create_srq(struct ibv_pd *pd, struct verbs_srq *vsrq,
- 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_SRQ_RESP_MAX_WR, &max_wr);
- 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_SRQ_RESP_MAX_SGE, &max_sge);
- 
-+	if (priv->imported)
-+		fallback_require_ioctl(cmdb);
++	*low_lat_uuars = get_num_low_lat_uuars(*tot_uuars);
++	if (*low_lat_uuars < 0) {
++		errno = -*low_lat_uuars;
++		return -1;
++	}
 +
- 	switch (execute_ioctl_fallback(srq->context, create_srq, cmdb, &ret)) {
- 	case TRY_WRITE: {
- 		if (attr_ex->srq_type == IBV_SRQT_BASIC && abi_ver > 5) {
-diff --git a/libibverbs/cmd_wq.c b/libibverbs/cmd_wq.c
-index d233c3a..855fc04 100644
---- a/libibverbs/cmd_wq.c
-+++ b/libibverbs/cmd_wq.c
-@@ -31,6 +31,7 @@
-  */
- 
- #include <infiniband/cmd_write.h>
-+#include "ibverbs.h"
- 
- static int ibv_icmd_create_wq(struct ibv_context *context,
- 			      struct ibv_wq_init_attr *wq_init_attr,
-@@ -38,6 +39,7 @@ static int ibv_icmd_create_wq(struct ibv_context *context,
- 			      struct ibv_command_buffer *link)
++	if (*low_lat_uuars > *tot_uuars - 1) {
++		errno = ENOMEM;
++		return -1;
++	}
++
++	return 0;
++}
++
++static void mlx5_uninit_context(struct mlx5_context *context)
++{
++	close_debug_file(context);
++
++	verbs_uninit_context(&context->ibv_ctx);
++	free(context);
++}
++
++static struct mlx5_context *mlx5_init_context(struct ibv_device *ibdev,
+ 						int cmd_fd,
+ 						void *private_data)
  {
- 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_WQ, UVERBS_METHOD_WQ_CREATE, 13, link);
-+	struct verbs_ex_private *priv = get_priv(context);
- 	struct ib_uverbs_attr *handle;
- 	uint32_t max_wr;
- 	uint32_t max_sge;
-@@ -62,6 +64,8 @@ static int ibv_icmd_create_wq(struct ibv_context *context,
- 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_WQ_RESP_MAX_SGE, &max_sge);
- 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_WQ_RESP_WQ_NUM, &wq_num);
- 
-+	if (priv->imported)
-+		fallback_require_ioctl(cmdb);
- 	fallback_require_ex(cmdb);
- 
- 	switch (execute_ioctl_fallback(context, create_wq, cmdb, &ret)) {
-diff --git a/libibverbs/device.c b/libibverbs/device.c
-index 0a8403d..595af82 100644
---- a/libibverbs/device.c
-+++ b/libibverbs/device.c
-@@ -344,6 +344,7 @@ struct ibv_context *verbs_open_device(struct ibv_device *device, void *private_d
- 	struct verbs_device *verbs_device = verbs_get_device(device);
- 	int cmd_fd;
- 	struct verbs_context *context_ex;
+-	struct mlx5_context	       *context;
+-	struct mlx5_alloc_ucontext	req;
+-	struct mlx5_alloc_ucontext_resp resp;
+-	int				i;
+-	int				page_size;
+-	int				tot_uuars;
+-	int				low_lat_uuars;
+-	int				gross_uuars;
+-	int				j;
+-	struct mlx5_device	       *mdev = to_mdev(ibdev);
+-	struct verbs_context	       *v_ctx;
+-	struct ibv_port_attr		port_attr;
+-	struct ibv_device_attr_ex	device_attr;
+-	int				k;
+-	int				bfi;
+-	int				num_sys_page_map;
+-	struct mlx5dv_context_attr      *ctx_attr = private_data;
+-	bool				always_devx = false;
++	struct mlx5dv_context_attr *ctx_attr = private_data;
++	struct mlx5_device *mdev = to_mdev(ibdev);
++	struct mlx5_context *context;
++	int low_lat_uuars;
++	int tot_uuars;
 +	int ret;
  
- 	/*
- 	 * We'll only be doing writes, but we need O_RDWR in case the
-@@ -363,6 +364,13 @@ struct ibv_context *verbs_open_device(struct ibv_device *device, void *private_d
+ 	if (ctx_attr && ctx_attr->comp_mask) {
+ 		errno = EINVAL;
+ 		return NULL;
+ 	}
+ 
++	ret = get_uar_info(mdev, &tot_uuars, &low_lat_uuars);
++	if (ret)
++		return NULL;
++
+ 	context = verbs_init_and_alloc_context(ibdev, cmd_fd, context, ibv_ctx,
+ 					       RDMA_DRIVER_MLX5);
+ 	if (!context)
  		return NULL;
  
- 	set_lib_ops(context_ex);
-+	if (context_ex->context.async_fd == -1) {
-+		ret = ibv_cmd_alloc_async_fd(&context_ex->context);
-+		if (ret) {
-+			ibv_close_device(&context_ex->context);
-+			return NULL;
+-	v_ctx = &context->ibv_ctx;
+-	page_size = mdev->page_size;
+-	mlx5_single_threaded = single_threaded_app();
+-
+ 	open_debug_file(context);
+ 	set_debug_mask();
+ 	set_freeze_on_error();
+ 	if (gethostname(context->hostname, sizeof(context->hostname)))
+ 		strcpy(context->hostname, "host_unknown");
+ 
+-	tot_uuars = get_total_uuars(page_size);
+-	if (tot_uuars < 0) {
+-		errno = -tot_uuars;
+-		goto err_free;
+-	}
+-
+-	low_lat_uuars = get_num_low_lat_uuars(tot_uuars);
+-	if (low_lat_uuars < 0) {
+-		errno = -low_lat_uuars;
+-		goto err_free;
+-	}
+-
+-	if (low_lat_uuars > tot_uuars - 1) {
+-		errno = ENOMEM;
+-		goto err_free;
+-	}
+-
+-	memset(&req, 0, sizeof(req));
+-	memset(&resp, 0, sizeof(resp));
+-
+-	req.total_num_bfregs = tot_uuars;
+-	req.num_low_latency_bfregs = low_lat_uuars;
+-	req.max_cqe_version = MLX5_CQE_VERSION_V1;
+-	req.lib_caps |= (MLX5_LIB_CAP_4K_UAR | MLX5_LIB_CAP_DYN_UAR);
+-	if (ctx_attr && ctx_attr->flags) {
+-
+-		if (!check_comp_mask(ctx_attr->flags,
+-				     MLX5DV_CONTEXT_FLAGS_DEVX)) {
+-			errno = EINVAL;
+-			goto err_free;
+-		}
+-
+-		req.flags = MLX5_IB_ALLOC_UCTX_DEVX;
+-	} else {
+-		req.flags = MLX5_IB_ALLOC_UCTX_DEVX;
+-		always_devx = true;
+-	}
++	mlx5_single_threaded = single_threaded_app();
++	context->tot_uuars = tot_uuars;
++	context->low_lat_uuars = low_lat_uuars;
+ 
+-retry_open:
+-	if (mlx5_cmd_get_context(context, &req, sizeof(req), &resp,
+-				 sizeof(resp))) {
+-		if (always_devx) {
+-			req.flags &= ~MLX5_IB_ALLOC_UCTX_DEVX;
+-			always_devx = false;
+-			memset(&resp, 0, sizeof(resp));
+-			goto retry_open;
+-		} else {
+-			goto err_free;
+-		}
+-	}
++	return context;
++}
+ 
+-	context->max_num_qps		= resp.qp_tab_size;
+-	context->bf_reg_size		= resp.bf_reg_size;
+-	context->tot_uuars		= resp.tot_bfregs;
+-	context->low_lat_uuars		= low_lat_uuars;
+-	context->cache_line_size	= resp.cache_line_size;
+-	context->max_sq_desc_sz = resp.max_sq_desc_sz;
+-	context->max_rq_desc_sz = resp.max_rq_desc_sz;
+-	context->max_send_wqebb	= resp.max_send_wqebb;
+-	context->num_ports	= resp.num_ports;
+-	context->max_recv_wr	= resp.max_recv_wr;
+-	context->max_srq_recv_wr = resp.max_srq_recv_wr;
+-	context->num_dyn_bfregs = resp.num_dyn_bfregs;
+-
+-	if (resp.comp_mask & MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_DUMP_FILL_MKEY) {
+-		context->dump_fill_mkey = resp.dump_fill_mkey;
++static int mlx5_set_context(struct mlx5_context *context,
++			    struct mlx5_ib_alloc_ucontext_resp *resp)
++{
++	struct verbs_context *v_ctx = &context->ibv_ctx;
++	struct ibv_port_attr port_attr = {};
++	struct ibv_device_attr_ex device_attr = {};
++	int cmd_fd = v_ctx->context.cmd_fd;
++	struct mlx5_device *mdev = to_mdev(v_ctx->context.device);
++	struct ibv_device *ibdev = v_ctx->context.device;
++	int page_size = mdev->page_size;
++	int num_sys_page_map;
++	int gross_uuars;
++	int bfi;
++	int i, k, j;
++
++	context->max_num_qps = resp->qp_tab_size;
++	context->bf_reg_size = resp->bf_reg_size;
++	context->cache_line_size = resp->cache_line_size;
++	context->max_sq_desc_sz = resp->max_sq_desc_sz;
++	context->max_rq_desc_sz = resp->max_rq_desc_sz;
++	context->max_send_wqebb	= resp->max_send_wqebb;
++	context->num_ports = resp->num_ports;
++	context->max_recv_wr = resp->max_recv_wr;
++	context->max_srq_recv_wr = resp->max_srq_recv_wr;
++	context->num_dyn_bfregs = resp->num_dyn_bfregs;
++
++	if (resp->comp_mask & MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_DUMP_FILL_MKEY) {
++		context->dump_fill_mkey = resp->dump_fill_mkey;
+ 		/* Have the BE value ready to be used in data path */
+-		context->dump_fill_mkey_be = htobe32(resp.dump_fill_mkey);
++		context->dump_fill_mkey_be = htobe32(resp->dump_fill_mkey);
+ 	} else {
+ 		/* kernel driver will never return MLX5_INVALID_LKEY for
+ 		 * dump_fill_mkey
+@@ -1418,19 +1406,18 @@ retry_open:
+ 		context->dump_fill_mkey_be = htobe32(MLX5_INVALID_LKEY);
+ 	}
+ 
+-	context->cqe_version = resp.cqe_version;
+-
++	context->cqe_version = resp->cqe_version;
+ 	adjust_uar_info(mdev, context, resp);
+ 
+-	context->cmds_supp_uhw = resp.cmds_supp_uhw;
++	context->cmds_supp_uhw = resp->cmds_supp_uhw;
+ 	context->vendor_cap_flags = 0;
+ 	list_head_init(&context->dyn_uar_bf_list);
+ 	list_head_init(&context->dyn_uar_nc_list);
+ 	list_head_init(&context->dyn_uar_qp_shared_list);
+ 	list_head_init(&context->dyn_uar_qp_dedicated_list);
+ 
+-	if (resp.eth_min_inline)
+-		context->eth_min_inline_size = (resp.eth_min_inline == MLX5_USER_INLINE_MODE_NONE) ?
++	if (resp->eth_min_inline)
++		context->eth_min_inline_size = (resp->eth_min_inline == MLX5_USER_INLINE_MODE_NONE) ?
+ 						0 : MLX5_ETH_L2_INLINE_HEADER_SIZE;
+ 	else
+ 		context->eth_min_inline_size = MLX5_ETH_L2_INLINE_HEADER_SIZE;
+@@ -1452,7 +1439,8 @@ retry_open:
+ 	context->prefer_bf = get_always_bf();
+ 	context->shut_up_bf = get_shut_up_bf();
+ 
+-	if (context->tot_uuars) {
++	if (resp->tot_bfregs) {
++		context->tot_uuars = resp->tot_bfregs;
+ 		gross_uuars = context->tot_uuars / MLX5_NUM_NON_FP_BFREGS_PER_UAR * NUM_BFREGS_PER_UAR;
+ 		context->bfs = calloc(gross_uuars, sizeof(*context->bfs));
+ 		if (!context->bfs) {
+@@ -1461,8 +1449,8 @@ retry_open:
+ 		}
+ 		context->flags |= MLX5_CTX_FLAGS_NO_KERN_DYN_UAR;
+ 	} else {
+-		context->qp_max_dedicated_uuars = low_lat_uuars;
+-		context->qp_max_shared_uuars = tot_uuars - low_lat_uuars;
++		context->qp_max_dedicated_uuars = context->low_lat_uuars;
++		context->qp_max_shared_uuars = context->tot_uuars - context->low_lat_uuars;
+ 		goto bf_done;
+ 	}
+ 
+@@ -1490,9 +1478,9 @@ retry_open:
+ 				if (bfi)
+ 					context->bfs[bfi].buf_size = context->bf_reg_size / 2;
+ 				context->bfs[bfi].uuarn = bfi;
+-				context->bfs[bfi].uar_mmap_offset = get_uar_mmap_offset(i,
+-											page_size,
+-											uar_type_to_cmd(context->uar[i].type));
++				context->bfs[bfi].uar_mmap_offset =
++					get_uar_mmap_offset(i, page_size,
++							uar_type_to_cmd(context->uar[i].type));
+ 			}
+ 		}
+ 	}
+@@ -1500,23 +1488,16 @@ retry_open:
+ bf_done:
+ 
+ 	context->hca_core_clock = NULL;
+-	if (resp.response_length + sizeof(resp.ibv_resp) >=
+-	    offsetof(struct mlx5_alloc_ucontext_resp, hca_core_clock_offset) +
+-	    sizeof(resp.hca_core_clock_offset) &&
+-	    resp.comp_mask & MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_CORE_CLOCK_OFFSET) {
+-		context->core_clock.offset = resp.hca_core_clock_offset;
++	if (resp->comp_mask & MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_CORE_CLOCK_OFFSET) {
++		context->core_clock.offset = resp->hca_core_clock_offset;
+ 		mlx5_map_internal_clock(mdev, &v_ctx->context);
+ 	}
+ 
+ 	context->clock_info_page = NULL;
+-	if (resp.response_length + sizeof(resp.ibv_resp) >=
+-	    offsetof(struct mlx5_alloc_ucontext_resp, clock_info_versions) +
+-	    sizeof(resp.clock_info_versions) &&
+-	    (resp.clock_info_versions & (1 << MLX5_IB_CLOCK_INFO_V1))) {
++	if ((resp->clock_info_versions & (1 << MLX5_IB_CLOCK_INFO_V1)))
+ 		mlx5_map_clock_info(mdev, &v_ctx->context);
+-	}
+ 
+-	context->flow_action_flags = resp.flow_action_flags;
++	context->flow_action_flags = resp->flow_action_flags;
+ 
+ 	mlx5_read_env(ibdev, context);
+ 
+@@ -1531,7 +1512,6 @@ bf_done:
+ 			goto err_free;
+ 	}
+ 
+-	memset(&device_attr, 0, sizeof(device_attr));
+ 	if (!mlx5_query_device_ex(&v_ctx->context, NULL, &device_attr,
+ 				  sizeof(struct ibv_device_attr_ex))) {
+ 		context->cached_device_cap_flags =
+@@ -1553,7 +1533,7 @@ bf_done:
+ 						    MLX5_IB_UAPI_UAR_ALLOC_TYPE_NC);
+ 	context->cq_uar_reg = context->cq_uar ? context->cq_uar->uar : context->uar[0].reg;
+ 
+-	return v_ctx;
++	return 0;
+ 
+ err_free_bf:
+ 	free(context->bfs);
+@@ -1563,10 +1543,64 @@ err_free:
+ 		if (context->uar[i].reg)
+ 			munmap(context->uar[i].reg, page_size);
+ 	}
+-	close_debug_file(context);
+ 
+-	verbs_uninit_context(&context->ibv_ctx);
+-	free(context);
++	return -1;
++}
++
++static struct verbs_context *mlx5_alloc_context(struct ibv_device *ibdev,
++						int cmd_fd,
++						void *private_data)
++{
++	struct mlx5_context	       *context;
++	struct mlx5_alloc_ucontext	req = {};
++	struct mlx5_alloc_ucontext_resp resp = {};
++	struct mlx5dv_context_attr      *ctx_attr = private_data;
++	bool				always_devx = false;
++	int ret;
++
++	context = mlx5_init_context(ibdev, cmd_fd, NULL);
++	if (!context)
++		return NULL;
++
++	req.total_num_bfregs = context->tot_uuars;
++	req.num_low_latency_bfregs = context->low_lat_uuars;
++	req.max_cqe_version = MLX5_CQE_VERSION_V1;
++	req.lib_caps |= (MLX5_LIB_CAP_4K_UAR | MLX5_LIB_CAP_DYN_UAR);
++	if (ctx_attr && ctx_attr->flags) {
++
++		if (!check_comp_mask(ctx_attr->flags,
++				     MLX5DV_CONTEXT_FLAGS_DEVX)) {
++			errno = EINVAL;
++			goto err;
++		}
++
++		req.flags = MLX5_IB_ALLOC_UCTX_DEVX;
++	} else {
++		req.flags = MLX5_IB_ALLOC_UCTX_DEVX;
++		always_devx = true;
++	}
++
++retry_open:
++	if (mlx5_cmd_get_context(context, &req, sizeof(req), &resp,
++				 sizeof(resp))) {
++		if (always_devx) {
++			req.flags &= ~MLX5_IB_ALLOC_UCTX_DEVX;
++			always_devx = false;
++			memset(&resp, 0, sizeof(resp));
++			goto retry_open;
++		} else {
++			goto err;
 +		}
 +	}
- 
- 	return &context_ex->context;
++
++	ret = mlx5_set_context(context, &resp.drv_payload);
++	if (ret)
++		goto err;
++
++	return &context->ibv_ctx;
++
++err:
++	mlx5_uninit_context(context);
+ 	return NULL;
  }
-@@ -381,6 +389,7 @@ static struct ibv_context *verbs_import_device(int cmd_fd)
- 	struct ibv_device **dev_list;
- 	struct ibv_context *ctx = NULL;
- 	struct stat st;
-+	int ret;
- 	int i;
  
- 	if (fstat(cmd_fd, &st) || !S_ISCHR(st.st_mode)) {
-@@ -418,7 +427,13 @@ static struct ibv_context *verbs_import_device(int cmd_fd)
- 
- 	set_lib_ops(context_ex);
- 
-+	context_ex->priv->imported = true;
- 	ctx = &context_ex->context;
-+	ret = ibv_cmd_alloc_async_fd(ctx);
-+	if (ret) {
-+		ibv_close_device(ctx);
-+		ctx = NULL;
-+	}
- out:
- 	ibv_free_device_list(dev_list);
- 	return ctx;
-diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-index 52ecbfe..98a1b24 100644
---- a/libibverbs/driver.h
-+++ b/libibverbs/driver.h
-@@ -446,6 +446,7 @@ int ibv_cmd_query_device_ex(struct ibv_context *context,
- int ibv_cmd_query_port(struct ibv_context *context, uint8_t port_num,
- 		       struct ibv_port_attr *port_attr,
- 		       struct ibv_query_port *cmd, size_t cmd_size);
-+int ibv_cmd_alloc_async_fd(struct ibv_context *context);
- int ibv_cmd_alloc_pd(struct ibv_context *context, struct ibv_pd *pd,
- 		     struct ibv_alloc_pd *cmd, size_t cmd_size,
- 		     struct ib_uverbs_alloc_pd_resp *resp, size_t resp_size);
-diff --git a/libibverbs/ibverbs.h b/libibverbs/ibverbs.h
-index 4b9b88f..6703c10 100644
---- a/libibverbs/ibverbs.h
-+++ b/libibverbs/ibverbs.h
-@@ -74,6 +74,7 @@ struct verbs_ex_private {
- 	uint32_t driver_id;
- 	bool use_ioctl_write;
- 	struct verbs_context_ops ops;
-+	bool imported;
- };
- 
- static inline struct verbs_ex_private *get_priv(struct ibv_context *ctx)
 -- 
 1.8.3.1
 
