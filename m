@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2D71FC7CE
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40AA1FC7D2
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 09:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgFQHqd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 03:46:33 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37712 "EHLO
+        id S1726600AbgFQHqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 03:46:35 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37714 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726542AbgFQHqb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:31 -0400
+        with ESMTP id S1726511AbgFQHqc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 03:46:32 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
-        with SMTP; 17 Jun 2020 10:46:28 +0300
+        with SMTP; 17 Jun 2020 10:46:29 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSBc017634;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSi6017637;
         Wed, 17 Jun 2020 10:46:28 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSof007169;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 05H7kSge007173;
         Wed, 17 Jun 2020 10:46:28 +0300
 Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kSHZ007168;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 05H7kSUV007172;
         Wed, 17 Jun 2020 10:46:28 +0300
 From:   Yishai Hadas <yishaih@mellanox.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     jgg@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com
-Subject: [PATCH rdma-core 03/13] verbs: Introduce ibv_import_device() verb
-Date:   Wed, 17 Jun 2020 10:45:46 +0300
-Message-Id: <1592379956-7043-4-git-send-email-yishaih@mellanox.com>
+Subject: [PATCH rdma-core 04/13] verbs: Handle async FD on an imported device
+Date:   Wed, 17 Jun 2020 10:45:47 +0300
+Message-Id: <1592379956-7043-5-git-send-email-yishaih@mellanox.com>
 X-Mailer: git-send-email 1.8.2.3
 In-Reply-To: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
 References: <1592379956-7043-1-git-send-email-yishaih@mellanox.com>
@@ -36,242 +36,231 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Introduce ibv_import_device(), it enable a process to get an ibv_context
-that is associated with a given command FD that it owns.
+An imported device needs to allocate its own async FD to be able to get
+events on its private created objects.
 
-A process is creating a device and then uses some of the Linux systems
-calls to dup its 'cmd_fd' member and lets other process to obtain owning
-on.
+This patch use ibv_cmd_alloc_async_fd() to achieve that by forcing any
+applicable event's object (e.g QP, SRC, etc.) upon its creation to use
+the ioctl interface as now the context async FD becomes a mandatory
+attribute.
 
-Once other process obtains the 'cmd_fd' it can call ibv_import_device()
-which returns an ibv_contxet on the original RDMA device.
-
-A detailed man page as part of this patch describes the expected usage
-and flow.
+From symmetric reasons we moved ibv_cmd_alloc_async_fd() to be called as
+part of ibv_open_device() in case wasn't allocated yet (i.e. ioctl flow).
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 ---
- debian/libibverbs1.symbols            |  2 ++
- libibverbs/CMakeLists.txt             |  2 +-
- libibverbs/device.c                   | 55 +++++++++++++++++++++++++++++++++++
- libibverbs/driver.h                   |  2 ++
- libibverbs/libibverbs.map.in          |  5 ++++
- libibverbs/man/CMakeLists.txt         |  1 +
- libibverbs/man/ibv_import_device.3.md | 48 ++++++++++++++++++++++++++++++
- libibverbs/verbs.h                    |  5 ++++
- 8 files changed, 119 insertions(+), 1 deletion(-)
- create mode 100644 libibverbs/man/ibv_import_device.3.md
+ libibverbs/cmd_cq.c     |  9 +++++++--
+ libibverbs/cmd_device.c |  5 +----
+ libibverbs/cmd_qp.c     |  4 ++++
+ libibverbs/cmd_srq.c    |  4 ++++
+ libibverbs/cmd_wq.c     |  4 ++++
+ libibverbs/device.c     | 15 +++++++++++++++
+ libibverbs/driver.h     |  1 +
+ libibverbs/ibverbs.h    |  1 +
+ 8 files changed, 37 insertions(+), 6 deletions(-)
 
-diff --git a/debian/libibverbs1.symbols b/debian/libibverbs1.symbols
-index 10ca9bf..e636c1d 100644
---- a/debian/libibverbs1.symbols
-+++ b/debian/libibverbs1.symbols
-@@ -7,6 +7,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
-  IBVERBS_1.7@IBVERBS_1.7 25
-  IBVERBS_1.8@IBVERBS_1.8 28
-  IBVERBS_1.9@IBVERBS_1.9 30
-+ IBVERBS_1.10@IBVERBS_1.10 31
-  (symver)IBVERBS_PRIVATE_25 25
-  ibv_ack_async_event@IBVERBS_1.0 1.1.6
-  ibv_ack_async_event@IBVERBS_1.1 1.1.6
-@@ -66,6 +67,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
-  ibv_get_device_name@IBVERBS_1.1 1.1.6
-  ibv_get_pkey_index@IBVERBS_1.5 20
-  ibv_get_sysfs_path@IBVERBS_1.0 1.1.6
-+ ibv_import_device@IBVERBS_1.10 31
-  ibv_init_ah_from_wc@IBVERBS_1.1 1.1.6
-  ibv_modify_qp@IBVERBS_1.0 1.1.6
-  ibv_modify_qp@IBVERBS_1.1 1.1.6
-diff --git a/libibverbs/CMakeLists.txt b/libibverbs/CMakeLists.txt
-index 7e4668e..06a590f 100644
---- a/libibverbs/CMakeLists.txt
-+++ b/libibverbs/CMakeLists.txt
-@@ -21,7 +21,7 @@ configure_file("libibverbs.map.in"
+diff --git a/libibverbs/cmd_cq.c b/libibverbs/cmd_cq.c
+index 1ac5ca5..5412660 100644
+--- a/libibverbs/cmd_cq.c
++++ b/libibverbs/cmd_cq.c
+@@ -31,6 +31,7 @@
+  */
  
- rdma_library(ibverbs "${CMAKE_CURRENT_BINARY_DIR}/libibverbs.map"
-   # See Documentation/versioning.md
--  1 1.9.${PACKAGE_VERSION}
-+  1 1.10.${PACKAGE_VERSION}
-   all_providers.c
-   cmd.c
-   cmd_ah.c
-diff --git a/libibverbs/device.c b/libibverbs/device.c
-index 629832e..0a8403d 100644
---- a/libibverbs/device.c
-+++ b/libibverbs/device.c
-@@ -374,6 +374,61 @@ LATEST_SYMVER_FUNC(ibv_open_device, 1_1, "IBVERBS_1.1",
- 	return verbs_open_device(device, NULL);
+ #include <infiniband/cmd_write.h>
++#include "ibverbs.h"
+ 
+ static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
+ 			      struct ibv_comp_channel *channel, int comp_vector,
+@@ -38,6 +39,7 @@ static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
+ 			      struct ibv_command_buffer *link)
+ {
+ 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_CQ, UVERBS_METHOD_CQ_CREATE, 8, link);
++	struct verbs_ex_private *priv = get_priv(context);
+ 	struct ib_uverbs_attr *handle;
+ 	struct ib_uverbs_attr *async_fd_attr;
+ 	uint32_t resp_cqe;
+@@ -54,8 +56,11 @@ static int ibv_icmd_create_cq(struct ibv_context *context, int cqe,
+ 		fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_CQ_COMP_CHANNEL, channel->fd);
+ 	fill_attr_in_uint32(cmdb, UVERBS_ATTR_CREATE_CQ_COMP_VECTOR, comp_vector);
+ 	async_fd_attr = fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_CQ_EVENT_FD, context->async_fd);
+-	/* Prevent fallback to the 'write' mode if kernel doesn't support it */
+-	attr_optional(async_fd_attr);
++	if (priv->imported)
++		fallback_require_ioctl(cmdb);
++	else
++		/* Prevent fallback to the 'write' mode if kernel doesn't support it */
++		attr_optional(async_fd_attr);
+ 
+ 	if (flags) {
+ 		fallback_require_ex(cmdb);
+diff --git a/libibverbs/cmd_device.c b/libibverbs/cmd_device.c
+index 4de59c0..648cc0b 100644
+--- a/libibverbs/cmd_device.c
++++ b/libibverbs/cmd_device.c
+@@ -99,7 +99,7 @@ int ibv_cmd_query_port(struct ibv_context *context, uint8_t port_num,
+ 	return 0;
  }
  
-+static struct ibv_context *verbs_import_device(int cmd_fd)
-+{
-+	struct verbs_device *verbs_device = NULL;
-+	struct verbs_context *context_ex;
-+	struct ibv_device **dev_list;
-+	struct ibv_context *ctx = NULL;
-+	struct stat st;
-+	int i;
+-static int cmd_alloc_async_fd(struct ibv_context *context)
++int ibv_cmd_alloc_async_fd(struct ibv_context *context)
+ {
+ 	DECLARE_COMMAND_BUFFER(cmdb, UVERBS_OBJECT_ASYNC_EVENT,
+ 			       UVERBS_METHOD_ASYNC_EVENT_ALLOC, 1);
+@@ -153,9 +153,6 @@ static int cmd_get_context(struct verbs_context *context_ex,
+ 		return 0;
+ 	}
+ 	case SUCCESS:
+-		ret = cmd_alloc_async_fd(context);
+-		if (ret)
+-			return ret;
+ 		break;
+ 	default:
+ 		return ret;
+diff --git a/libibverbs/cmd_qp.c b/libibverbs/cmd_qp.c
+index a11bb98..567984d 100644
+--- a/libibverbs/cmd_qp.c
++++ b/libibverbs/cmd_qp.c
+@@ -76,6 +76,7 @@ static int ibv_icmd_create_qp(struct ibv_context *context,
+ 			      struct ibv_command_buffer *link)
+ {
+ 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_QP, UVERBS_METHOD_QP_CREATE, 15, link);
++	struct verbs_ex_private *priv = get_priv(context);
+ 	struct ib_uverbs_attr *handle;
+ 	uint32_t qp_num;
+ 	uint32_t pd_handle;
+@@ -172,6 +173,9 @@ static int ibv_icmd_create_qp(struct ibv_context *context,
+ 	fill_attr_in_ptr(cmdb, UVERBS_ATTR_CREATE_QP_CAP, &attr_ex->cap);
+ 	fill_attr_in_fd(cmdb, UVERBS_ATTR_CREATE_QP_EVENT_FD, context->async_fd);
+ 
++	if (priv->imported)
++		fallback_require_ioctl(cmdb);
 +
-+	if (fstat(cmd_fd, &st) || !S_ISCHR(st.st_mode)) {
-+		errno = EINVAL;
-+		return NULL;
-+	}
+ 	if (attr_ex->sq_sig_all)
+ 		create_flags |= IB_UVERBS_QP_CREATE_SQ_SIG_ALL;
+ 
+diff --git a/libibverbs/cmd_srq.c b/libibverbs/cmd_srq.c
+index 4e63046..dfaaa6a 100644
+--- a/libibverbs/cmd_srq.c
++++ b/libibverbs/cmd_srq.c
+@@ -53,6 +53,7 @@ static int ibv_icmd_create_srq(struct ibv_pd *pd, struct verbs_srq *vsrq,
+ 			       struct ibv_command_buffer *link)
+ {
+ 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_SRQ, UVERBS_METHOD_SRQ_CREATE, 13, link);
++	struct verbs_ex_private *priv = get_priv(pd->context);
+ 	struct ib_uverbs_attr *handle;
+ 	uint32_t max_wr;
+ 	uint32_t max_sge;
+@@ -107,6 +108,9 @@ static int ibv_icmd_create_srq(struct ibv_pd *pd, struct verbs_srq *vsrq,
+ 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_SRQ_RESP_MAX_WR, &max_wr);
+ 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_SRQ_RESP_MAX_SGE, &max_sge);
+ 
++	if (priv->imported)
++		fallback_require_ioctl(cmdb);
 +
-+	dev_list = ibv_get_device_list(NULL);
-+	if (!dev_list) {
-+		errno = ENODEV;
-+		return NULL;
-+	}
-+
-+	for (i = 0; dev_list[i]; ++i) {
-+		if (verbs_get_device(dev_list[i])->sysfs->sysfs_cdev ==
-+					st.st_rdev) {
-+			verbs_device = verbs_get_device(dev_list[i]);
-+			break;
+ 	switch (execute_ioctl_fallback(srq->context, create_srq, cmdb, &ret)) {
+ 	case TRY_WRITE: {
+ 		if (attr_ex->srq_type == IBV_SRQT_BASIC && abi_ver > 5) {
+diff --git a/libibverbs/cmd_wq.c b/libibverbs/cmd_wq.c
+index d233c3a..855fc04 100644
+--- a/libibverbs/cmd_wq.c
++++ b/libibverbs/cmd_wq.c
+@@ -31,6 +31,7 @@
+  */
+ 
+ #include <infiniband/cmd_write.h>
++#include "ibverbs.h"
+ 
+ static int ibv_icmd_create_wq(struct ibv_context *context,
+ 			      struct ibv_wq_init_attr *wq_init_attr,
+@@ -38,6 +39,7 @@ static int ibv_icmd_create_wq(struct ibv_context *context,
+ 			      struct ibv_command_buffer *link)
+ {
+ 	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_WQ, UVERBS_METHOD_WQ_CREATE, 13, link);
++	struct verbs_ex_private *priv = get_priv(context);
+ 	struct ib_uverbs_attr *handle;
+ 	uint32_t max_wr;
+ 	uint32_t max_sge;
+@@ -62,6 +64,8 @@ static int ibv_icmd_create_wq(struct ibv_context *context,
+ 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_WQ_RESP_MAX_SGE, &max_sge);
+ 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_CREATE_WQ_RESP_WQ_NUM, &wq_num);
+ 
++	if (priv->imported)
++		fallback_require_ioctl(cmdb);
+ 	fallback_require_ex(cmdb);
+ 
+ 	switch (execute_ioctl_fallback(context, create_wq, cmdb, &ret)) {
+diff --git a/libibverbs/device.c b/libibverbs/device.c
+index 0a8403d..595af82 100644
+--- a/libibverbs/device.c
++++ b/libibverbs/device.c
+@@ -344,6 +344,7 @@ struct ibv_context *verbs_open_device(struct ibv_device *device, void *private_d
+ 	struct verbs_device *verbs_device = verbs_get_device(device);
+ 	int cmd_fd;
+ 	struct verbs_context *context_ex;
++	int ret;
+ 
+ 	/*
+ 	 * We'll only be doing writes, but we need O_RDWR in case the
+@@ -363,6 +364,13 @@ struct ibv_context *verbs_open_device(struct ibv_device *device, void *private_d
+ 		return NULL;
+ 
+ 	set_lib_ops(context_ex);
++	if (context_ex->context.async_fd == -1) {
++		ret = ibv_cmd_alloc_async_fd(&context_ex->context);
++		if (ret) {
++			ibv_close_device(&context_ex->context);
++			return NULL;
 +		}
 +	}
-+
-+	if (!verbs_device) {
-+		errno = ENODEV;
-+		goto out;
+ 
+ 	return &context_ex->context;
+ }
+@@ -381,6 +389,7 @@ static struct ibv_context *verbs_import_device(int cmd_fd)
+ 	struct ibv_device **dev_list;
+ 	struct ibv_context *ctx = NULL;
+ 	struct stat st;
++	int ret;
+ 	int i;
+ 
+ 	if (fstat(cmd_fd, &st) || !S_ISCHR(st.st_mode)) {
+@@ -418,7 +427,13 @@ static struct ibv_context *verbs_import_device(int cmd_fd)
+ 
+ 	set_lib_ops(context_ex);
+ 
++	context_ex->priv->imported = true;
+ 	ctx = &context_ex->context;
++	ret = ibv_cmd_alloc_async_fd(ctx);
++	if (ret) {
++		ibv_close_device(ctx);
++		ctx = NULL;
 +	}
-+
-+	if (!verbs_device->ops->import_context) {
-+		errno = EOPNOTSUPP;
-+		goto out;
-+	}
-+
-+	context_ex = verbs_device->ops->import_context(&verbs_device->device, cmd_fd);
-+	if (!context_ex)
-+		goto out;
-+
-+	set_lib_ops(context_ex);
-+
-+	ctx = &context_ex->context;
-+out:
-+	ibv_free_device_list(dev_list);
-+	return ctx;
-+}
-+
-+struct ibv_context *ibv_import_device(int cmd_fd)
-+{
-+	return verbs_import_device(cmd_fd);
-+}
-+
- void verbs_uninit_context(struct verbs_context *context_ex)
- {
- 	free(context_ex->priv);
+ out:
+ 	ibv_free_device_list(dev_list);
+ 	return ctx;
 diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-index de81955..52ecbfe 100644
+index 52ecbfe..98a1b24 100644
 --- a/libibverbs/driver.h
 +++ b/libibverbs/driver.h
-@@ -209,6 +209,8 @@ struct verbs_device_ops {
- 	struct verbs_context *(*alloc_context)(struct ibv_device *device,
- 					       int cmd_fd,
- 					       void *private_data);
-+	struct verbs_context *(*import_context)(struct ibv_device *device,
-+						int cmd_fd);
+@@ -446,6 +446,7 @@ int ibv_cmd_query_device_ex(struct ibv_context *context,
+ int ibv_cmd_query_port(struct ibv_context *context, uint8_t port_num,
+ 		       struct ibv_port_attr *port_attr,
+ 		       struct ibv_query_port *cmd, size_t cmd_size);
++int ibv_cmd_alloc_async_fd(struct ibv_context *context);
+ int ibv_cmd_alloc_pd(struct ibv_context *context, struct ibv_pd *pd,
+ 		     struct ibv_alloc_pd *cmd, size_t cmd_size,
+ 		     struct ib_uverbs_alloc_pd_resp *resp, size_t resp_size);
+diff --git a/libibverbs/ibverbs.h b/libibverbs/ibverbs.h
+index 4b9b88f..6703c10 100644
+--- a/libibverbs/ibverbs.h
++++ b/libibverbs/ibverbs.h
+@@ -74,6 +74,7 @@ struct verbs_ex_private {
+ 	uint32_t driver_id;
+ 	bool use_ioctl_write;
+ 	struct verbs_context_ops ops;
++	bool imported;
+ };
  
- 	struct verbs_device *(*alloc_device)(struct verbs_sysfs_dev *sysfs_dev);
- 	void (*uninit_device)(struct verbs_device *device);
-diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
-index f0d79c7..a60991e 100644
---- a/libibverbs/libibverbs.map.in
-+++ b/libibverbs/libibverbs.map.in
-@@ -131,6 +131,11 @@ IBVERBS_1.9 {
- 		ibv_get_device_index;
- } IBVERBS_1.8;
- 
-+IBVERBS_1.10 {
-+	global:
-+		ibv_import_device;
-+} IBVERBS_1.9;
-+
- /* If any symbols in this stanza change ABI then the entire staza gets a new symbol
-    version. See the top level CMakeLists.txt for this setting. */
- 
-diff --git a/libibverbs/man/CMakeLists.txt b/libibverbs/man/CMakeLists.txt
-index 87f0018..58ad832 100644
---- a/libibverbs/man/CMakeLists.txt
-+++ b/libibverbs/man/CMakeLists.txt
-@@ -37,6 +37,7 @@ rdma_man_pages(
-   ibv_get_device_name.3.md
-   ibv_get_pkey_index.3.md
-   ibv_get_srq_num.3.md
-+  ibv_import_device.3.md
-   ibv_inc_rkey.3.md
-   ibv_modify_qp.3
-   ibv_modify_qp_rate_limit.3
-diff --git a/libibverbs/man/ibv_import_device.3.md b/libibverbs/man/ibv_import_device.3.md
-new file mode 100644
-index 0000000..601b50a
---- /dev/null
-+++ b/libibverbs/man/ibv_import_device.3.md
-@@ -0,0 +1,48 @@
-+---
-+date: 2020-5-3
-+footer: libibverbs
-+header: "Libibverbs Programmer's Manual"
-+layout: page
-+license: 'Licensed under the OpenIB.org BSD license (FreeBSD Variant) - See COPYING.md'
-+section: 3
-+title: ibv_import_device
-+---
-+
-+# NAME
-+
-+ibv_import_device - import a device from a given comamnd FD
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/verbs.h>
-+
-+struct ibv_context *ibv_import_device(int cmd_fd);
-+
-+```
-+
-+
-+# DESCRIPTION
-+
-+**ibv_import_device()** returns an *ibv_context* pointer that is associated with the given
-+*cmd_fd*.
-+
-+The *cmd_fd* is obtained from the ibv_context cmd_fd member, which must be dup'd (eg by dup(), SCM_RIGHTS, etc)
-+before being passed to ibv_import_device().
-+
-+Once the *ibv_context* usage has been ended *ibv_close_device()* should be called.
-+This call may cleanup whatever is needed/opposite of the import including closing the command FD.
-+
-+# RETURN VALUE
-+
-+**ibv_import_device()** returns a pointer to the allocated RDMA context, or NULL if the request fails.
-+
-+# SEE ALSO
-+
-+**ibv_open_device**(3),
-+**ibv_close_device**(3),
-+
-+# AUTHOR
-+
-+Yishai Hadas <yishaih@mellanox.com>
-+
-diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-index 18bc9b0..67ec946 100644
---- a/libibverbs/verbs.h
-+++ b/libibverbs/verbs.h
-@@ -2227,6 +2227,11 @@ struct ibv_context *ibv_open_device(struct ibv_device *device);
- int ibv_close_device(struct ibv_context *context);
- 
- /**
-+ * ibv_import_device - Import device
-+ */
-+struct ibv_context *ibv_import_device(int cmd_fd);
-+
-+/**
-  * ibv_get_async_event - Get next async event
-  * @event: Pointer to use to return async event
-  *
+ static inline struct verbs_ex_private *get_priv(struct ibv_context *ctx)
 -- 
 1.8.3.1
 
