@@ -2,93 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1901FCC24
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 13:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECFC1FCC46
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jun 2020 13:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgFQLUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 07:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFQLUM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Jun 2020 07:20:12 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD87C061573
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 04:20:12 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d7so1036567lfi.12
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jun 2020 04:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qpWcaSj0KP2kiGtVu2ablP/Gn0hxrZxzkrs2BV3CPok=;
-        b=LQHa4HPrk0asmAotG0YqMJ1e1v96FOJgdRQzKgOhO8XNzzhwRw2Nrwc+3N0/Imtl6w
-         TNsPVTLCMYB4A2uijslsb/KaGo8x6O0Vowm1LabNKOGzWkFpco7LzrfjlbCq8MqUl8LW
-         2hoPUqM0iGBjqtg4fdhfLhkmjydqcJ7vv+sVgFjzctyLLEs1DMdILiwRRh0DLGelmtKU
-         yLMJfpxoxyGloEsMCzSsXqZPRj4BR/suLkrJfP+NwATK9fYGn/mTrW5f4TQWo6r1+JdL
-         AfxpHu81o0/nhtVBCvN8H3Dmqd/XyHxLtzQ3qteF+0f0TqeEAE3qBCEVLGESUCGiT7eg
-         jeBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qpWcaSj0KP2kiGtVu2ablP/Gn0hxrZxzkrs2BV3CPok=;
-        b=PcHHWRei1fnnHeckACxE6YkqOGi6I2LKJnsyXBs2Lxtyc2BzvEIfgeti8ivTTjF1bG
-         oep9aDB+2IU3s5Y8h32ff4PjGDejT8fWOgCfDK7GZG9CVmM0PiKrbG5dTxwBa2VZaasX
-         Lk8ewLWayEl1Q4nAtiMo/DWnl6MtQxwLPzMIxpTJdY6QyxDdZY3CIVH1lUFjaae14FQ3
-         cgLJi/8f6072Z/fGYFJ2UnXOu5ftTsp+wonC1eA0Mqym4ihiR0QQx2fS5fR8B3FQ81e1
-         mDbZLK8l5hBAiKjdOniqxPabaMCipGMQjkYDLXJQvurNtPscDSX5/DTiWqDKQs1y1BxR
-         SKpw==
-X-Gm-Message-State: AOAM530L2KaoG4hEqh/946gpa3fzBuhMbatVfKeA2zVnTKZpWYQKSWuT
-        MCDNlH5dKQuU7MNAFtNKgt13IDZl/QOUqzAI5BCnh2BJ8gU=
-X-Google-Smtp-Source: ABdhPJw9fGUOGK79oobbD6MA49IjZ0uE95is+rsBP9saZf5EUjUEQ5Bhsrv7qw/vmIjr6Tf451zgkF5RPAHn4mPVJI8=
-X-Received: by 2002:a19:4945:: with SMTP id l5mr4335208lfj.12.1592392810683;
- Wed, 17 Jun 2020 04:20:10 -0700 (PDT)
+        id S1726494AbgFQL2Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 07:28:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgFQL2Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:28:16 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A74E620CC7;
+        Wed, 17 Jun 2020 11:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592393295;
+        bh=uMUZtfAmMrhJAMLssv8rVjKEsFdEfwWGE0KmDSJhEVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rt0fZJ7CclIEeHetVWCKpS0DwLEW/RxYBD8ARjNXAmK/ontpPUlNt0F9GIlorUJkg
+         O71hjLOkOhNitALg+hnC5m7huitZIqvP0mOE2MxAeSGcOJQbnQTvQtu4zTFI6/SC45
+         88mNuj8pVwECX3MZky9O7jsBaPVZYkDZDZCd41tk=
+Date:   Wed, 17 Jun 2020 14:28:11 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     haris.iqbal@cloud.ionos.com
+Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        dledford@redhat.com, jgg@ziepe.ca,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
+ late_initcall level
+Message-ID: <20200617112811.GL2383158@unreal>
+References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
 MIME-Version: 1.0
-References: <CAL94vcd2bHKHZaw7wsRMMyk1FCq+nRFR-XD2W0ueG_dgOyVFew@mail.gmail.com>
- <20200617111710.GK2383158@unreal>
-In-Reply-To: <20200617111710.GK2383158@unreal>
-From:   Vladimir Chukov <vladimir.chukov@cloud.ionos.com>
-Date:   Wed, 17 Jun 2020 13:19:59 +0200
-Message-ID: <CAL94vcdNjdCOBWVKq_r3TK0Ok=uqs4kWU+gKWk4-RTvVyXMWww@mail.gmail.com>
-Subject: Re: [BUG report] rdma-ndd: wrong NodeDescription for second device
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I'm seeing the default description:
-
-sudo saquery 134 -C mlx5_1
-NodeRecord dump:
-lid.....................134
-reserved................0x0
-base_version............0x1
-class_version...........0x1
-node_type...............Channel Adapter
-num_ports...............1
-sys_guid................0x98039b03006c7912
-node_guid...............0x98039b03006c7913
-port_guid...............0x98039b03006c7913
-partition_cap...........0x80
-device_id...............0x1017
-revision................0x0
-port_num................1
-vendor_id...............0x2C9
-NodeDescription.........MT4119 ConnectX5   Mellanox Technologies
-
-Thanks,
-
-On Wed, Jun 17, 2020 at 1:17 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Wed, Jun 17, 2020 at 04:07:32PM +0530, haris.iqbal@cloud.ionos.com wrote:
+> From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 >
-> On Wed, Jun 17, 2020 at 01:04:15PM +0200, Vladimir Chukov wrote:
-> > Description: rdma-ndd sets correct NodeDescription for device which
-> > was initialised first; for the second device description in sysfs is
-> > set correctly, but saquery  to that node  will return default
-> > "NodeDescription.........MT4119 ConnectX5   Mellanox Technologies"
+> Fixes: 2de6c8de192b ("block/rnbd: server: main functionality")
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 >
-> What do you see for the second device in NodeDescription?
+> The rnbd_server module's communication manager initialization depends on the
+> registration of the "network namespace subsystem" of the RDMA CM agent module.
+> As such, when the kernel is configured to load the rnbd_server and the RDMA
+> cma module during initialization; and if the rnbd_server module is initialized
+> before RDMA cma module, a null ptr dereference occurs during the RDMA bind
+> operation.
+> This patch delays the initialization of the rnbd_server module to the
+> late_initcall level, since RDMA cma module uses module_init which puts it into
+> the device_initcall level.
+> ---
+>  drivers/block/rnbd/rnbd-srv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Thanks
+> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+> index 86e61523907b..213df05e5994 100644
+> --- a/drivers/block/rnbd/rnbd-srv.c
+> +++ b/drivers/block/rnbd/rnbd-srv.c
+> @@ -840,5 +840,5 @@ static void __exit rnbd_srv_cleanup_module(void)
+>  	rnbd_srv_destroy_sysfs_files();
+>  }
+>
+> -module_init(rnbd_srv_init_module);
+> +late_initcall(rnbd_srv_init_module);
+
+I don't think that this is correct change. Somehow nvme-rdma works:
+module_init(nvme_rdma_init_module);
+-> nvme_rdma_init_module
+ -> nvmf_register_transport(&nvme_rdma_transport);
+  -> nvme_rdma_create_ctrl
+   -> nvme_rdma_setup_ctrl
+    -> nvme_rdma_configure_admin_queue
+     -> nvme_rdma_alloc_queue
+      -> rdma_create_id
+
+>  module_exit(rnbd_srv_cleanup_module);
+> --
+> 2.25.1
+>
