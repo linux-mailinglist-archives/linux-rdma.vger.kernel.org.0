@@ -2,86 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC971FF427
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 16:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A51FF501
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 16:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgFROD5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Jun 2020 10:03:57 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41074 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730294AbgFRODz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 10:03:55 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 10so2829147pfx.8;
-        Thu, 18 Jun 2020 07:03:55 -0700 (PDT)
+        id S1730829AbgFROmp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jun 2020 10:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbgFROml (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 10:42:41 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EB7C06174E
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 07:42:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a6so4381416wrm.4
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 07:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pdYzXGFouE6m4FSIkgrBziaqe3C5lzqdVFEvi65td6k=;
+        b=Yv00WEyiSIg66gxJEUUQwcy2Tlc1E6Wc6zvKRDzYUlRDO6iCWLetHtRbnLoDvvQlXe
+         zOvWWpAvNNuvZIWHgr0fKWDsU8iNkZKTU9Ci4Vt8EkYVQUyV00qvQSrVYglPeqw2m8hn
+         YqvRGf3NKI0NMSmp82ufCgdaCILt0ba9vFJX0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1WN3ZnREZD5mqi8HO9H+H34Iu3eMNBHfeSJB4E/zR+M=;
-        b=dQAvWbzQ0azWoU0hn8ksocV8vqrPCfJh0DuOlWUvM2DyoCXeFrVBtE5k8aGHvnHfZO
-         2ZC08y+8tW3OEZNNdFKPv26RknJCbyUjz3D1AEd1m+ugrwHI7/C48CHFKt/wgr7ZNG+f
-         rMOApomfJV1UfrcBoXpFYyW06vbyHkMTjXzSPyyRFWxldcn1oVY8xWeTuxRnYu2UTi8A
-         wR9Ri1wD3GmiRq30z1PHlzrKL3u7Hb6EEk9JJcOnc9kb/oP6aQRLlSLUZ7/UgPfGbCqu
-         OYDUvlLbSzNsSyDWlKNmVgh3Igclrl8cA2+jvCmcs4OM7h/QVy9dkNOwF/+nL4kT5iqo
-         eqFg==
-X-Gm-Message-State: AOAM532sURYNj2uxBbhZc5Oa4rA1NJElXa3piQd/+vlzdwuaZPO8wj+q
-        kVrrfunjxMQKmUlpGVXqfB4vexTF
-X-Google-Smtp-Source: ABdhPJzbhwbwQOEUu3YJw6YezVA/RUpvZiw+gzIegGMyl/FadwacdffeWBUE8cH6Ocg4N6Sg/YgkoQ==
-X-Received: by 2002:a63:5406:: with SMTP id i6mr3323164pgb.155.1592489034924;
-        Thu, 18 Jun 2020 07:03:54 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id h9sm2537716pjs.50.2020.06.18.07.03.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 07:03:54 -0700 (PDT)
-Subject: Re: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20200617140803.181333-1-jingxiangfeng@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <3d0354bc-e859-740a-f2d8-362604377f86@acm.org>
-Date:   Thu, 18 Jun 2020 07:03:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=pdYzXGFouE6m4FSIkgrBziaqe3C5lzqdVFEvi65td6k=;
+        b=WY+GD9il6Ja6DqTcNcJAqzq2x4e4zBzqJWVXTvC29sDn5Q75cTXgnRiuoUAZt99evA
+         OkfVH5ykBg4/SNUdE2dcaaG0HpqIwnxmuYKxsgScomQLKoJp8iNhNKcJxOQkvMXMtT5l
+         MSsdqsTRGLmJ06EWd4eCMNaSBvwN4pKGbt0EkFS+NB6o8/grmL6rHxGKVQhrSgs4J436
+         nspRyVfOqQCwJ+DSe+PPoVm9XjAf+WfqCW/2y2mum4+gpbcfUCdUEO2fXhQTapfkS6gW
+         tLqtKNmoAOzFc7uSztROQJ7GcP6BOKVynSUWqA7/c+gP4w4h4QynAOlUS5tWRIv3T4tX
+         1R9g==
+X-Gm-Message-State: AOAM531PNYzFWlz0vfMIB92NDOJwIbeFXVdgPkY4cAF1+5VQu7UiiCB/
+        w3g6WX21tesb1Om7ZXNH6b+zxQ==
+X-Google-Smtp-Source: ABdhPJxnVXjNFjlZjZjkcFFWafgkcwR6ZwnMtNAx31PJPXgT9P8/Pv/85bqfzuCJe/q/lkXd/e/Xbg==
+X-Received: by 2002:adf:cf0c:: with SMTP id o12mr4325124wrj.265.1592491359458;
+        Thu, 18 Jun 2020 07:42:39 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g25sm3649693wmh.18.2020.06.18.07.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 07:42:38 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 16:42:36 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200618144236.GR20149@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-5-daniel.vetter@ffwll.ch>
+ <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
+ <20200611083430.GD20149@phenom.ffwll.local>
+ <20200611141515.GW6578@ziepe.ca>
+ <20200616120719.GL20149@phenom.ffwll.local>
+ <20200616145312.GC6578@ziepe.ca>
+ <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
+ <20200617152940.GG6578@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200617140803.181333-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617152940.GG6578@ziepe.ca>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-06-17 07:08, Jing Xiangfeng wrote:
-> The callers pass the pointer '&req' or 'private_data' to
-> srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
-> 'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
-> sdev and req are always valid. So we remove unnecessary WARN_ON.
+On Wed, Jun 17, 2020 at 12:29:40PM -0300, Jason Gunthorpe wrote:
+> On Wed, Jun 17, 2020 at 09:57:54AM +0200, Daniel Vetter wrote:
+> 
+> > > At the very least I think there should be some big warning that
+> > > dma_fence in notifiers should be avoided.
+> > 
+> > Yeah I'm working on documentation, and also the notifiers here
+> > hopefully make it clear it's massive pain. I think we could even make
+> > a hard rule that dma_fence in mmu notifier outside of drivers/gpu is a
+> > bug/misfeature.
+> 
+> Yep!
+>
+> > Might be a good idea to add a MAINTAINERS entry with a K: regex
+> > pattern, so that you can catch such modifiers. We do already have such
+> > a pattern for dma-fence, to catch abuse. So if you want I could type
+> > up a documentation patch for this, get your and others acks and the
+> > dri-devel folks would enforce that the dma_fence_wait madness doesn't
+> > leak beyond drivers/gpu
+> 
+> It seems like the best thing
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Just thought about where to best put this, and I think including it as
+another paragraph in the next round of this series makes the most sense.
+You'll get cc'ed for acking when that happens - might take a while since
+there's a lot of details here all over to sort out.
+-Daniel
+
+>  
+> > Oded has agreed to remove the dma-fence usage, since they really don't
+> > need it (and all the baggage that comes with it), plain old completion
+> > is enough for their use. This use is also why I added the regex to
+> > MAINTAINERS, so that in the future we can catch people who try to use
+> > dma_fence because it looks cute and useful, and are completely
+> > oblivious to all the pain and headaches involved.
+> 
+> This is good!
+> 
+> Thanks,
+> Jason 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
