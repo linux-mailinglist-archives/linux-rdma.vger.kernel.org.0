@@ -2,143 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB831FF07E
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 13:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583F11FF22C
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 14:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgFRLah (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Jun 2020 07:30:37 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:6828 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728048AbgFRLae (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 07:30:34 -0400
+        id S1729557AbgFRMpP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jun 2020 08:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727779AbgFRMpO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 08:45:14 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5C2C06174E
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 05:45:14 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w1so5318849qkw.5
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 05:45:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592479834; x=1624015834;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xU6RxusWjCtJ5Tvgka/7M0S0XHQ0/7WlIk2DoPFba6k=;
-  b=MVtDJMqoNmFk6xpibkchiiABTT8tBKajygltdrYfG8kRBasQdFJqcSVI
-   9VSREOnywwGPM3e7blHtik4f9hb1zD/MJ27Sy0cjVUkUMrXqgTwCiRa4j
-   9wAFgFcvVxlHIZt3DkY5I51XEyqnpcuJt2uestggN9bncvtUdyBDUCkDa
-   A=;
-IronPort-SDR: m6ltjXFaX2YXvyHe/SUpFbeDgaaIyAK+YaT9iJe+g1hzt5JPtBszswiadfFzOEStscgQ/66eSk
- dHRhKe5qodLw==
-X-IronPort-AV: E=Sophos;i="5.73,526,1583193600"; 
-   d="scan'208";a="44981843"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 18 Jun 2020 11:30:32 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 9752CC06EE;
-        Thu, 18 Jun 2020 11:30:31 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 18 Jun 2020 11:30:30 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.34) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 18 Jun 2020 11:30:26 +0000
-Subject: Re: [PATCH for-next] RDMA/efa: Move provider specific attributes to
- ucontext allocation response
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "Firas JahJah" <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20200615075920.58936-1-galpress@amazon.com>
- <20200616063045.GC2141420@unreal>
- <cba7128b-c427-bc26-5f43-69a22463debc@amazon.com>
- <20200616093835.GB2383158@unreal>
- <f6773480-5954-b58b-21f0-f5ee4ec7238b@amazon.com>
- <20200617153638.GH6578@ziepe.ca>
- <ff3413c8-ca1e-e864-aba5-fa6abe491a8d@amazon.com>
-Message-ID: <626dd909-a766-9973-7a44-f174176641ea@amazon.com>
-Date:   Thu, 18 Jun 2020 14:30:20 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V4kGWrB/4NpCEqmTSHvjNx3cJ/f+aB86aF35sneU7DY=;
+        b=ddnpjIUtX+ABPwwnvSp+MnhDJnXzv/8dNxlb2pbPjFkv9bROktCOkv0qrpt5mCc8oi
+         zH2mjC9PWAfxRBXebZUM9YojQy06qfxL8wvelNJXuPkqiT/DnvJaolYYBwBBfH9DO9/z
+         fUawUo8Zsj/XMplaUcxx4PO2BZGKTNPveOPxY1lid5eSQ7tYFFoZPNO+HBbVmUOwAFMu
+         +xQqqUlVnKJT0IO26rNcuhiIw2T5gvjB4sogHh/RU/bRYIOA7ZtMPBduyso/yFx7tDId
+         DpMvmGVFJNztgUAVJVKiMJHTfnGjCKgiP+BEILv47CU/dAUn3fPmnRGxvWdhecyYYLJd
+         vlOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V4kGWrB/4NpCEqmTSHvjNx3cJ/f+aB86aF35sneU7DY=;
+        b=ZE60WPAdWDDV454YfmNRHSPhl0DO2A/SI3/Aavh6CEmzFclAvQt8l8Umey7Clu51cj
+         7C/EI7Sgzhi/Elbe+GghnBp4FgS8+fZ0hED1FxsL+cbP/oMxhI87LEBUhnJ580u63Y0w
+         UdiwCvi2/RC2zDf5J2cYnyMXH7JBVQCH5vFz2MbWHUq/4Z/VU9AaJYJUU0IurylpRh5k
+         a6NOkvIDWZHBeVNI+kO2ZIGsJkOGS/0Z+ETMC1AzUmDCyqtFCSVY1+V8R/q0/cCHFjn6
+         EldCEujw7ZL0H7opUBGotj7240aEc6NkPjZkmosJEtIoYpIBjMjSUC5AdpP/uHMDxVha
+         AC6g==
+X-Gm-Message-State: AOAM530XZXp2TXYZIU9xNBDQ7lzYm7rkX70gC3mhgqCYMUHJy9Njciug
+        Es1yhEtU2xGPayD9FswIqX6fTZ+4j3VC7g==
+X-Google-Smtp-Source: ABdhPJzc/pVgX5tEDAUlJHv0ISXhCU6NCh9xxRXEFp2NAAct/1FKMDqN45tSs9XzIa4idvcgitgzMg==
+X-Received: by 2002:a37:8a43:: with SMTP id m64mr3389111qkd.37.1592484313430;
+        Thu, 18 Jun 2020 05:45:13 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id x54sm3284542qta.42.2020.06.18.05.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 05:45:12 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jltum-00A2SN-49; Thu, 18 Jun 2020 09:45:08 -0300
+Date:   Thu, 18 Jun 2020 09:45:08 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH rdma-rc] RDMA/core: Annotate CMA unlock helper routine
+Message-ID: <20200618124508.GA2392687@ziepe.ca>
+References: <20200611130045.1994026-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ff3413c8-ca1e-e864-aba5-fa6abe491a8d@amazon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D27UWB003.ant.amazon.com (10.43.161.195) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611130045.1994026-1-leon@kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 17/06/2020 20:49, Gal Pressman wrote:
-> On 17/06/2020 18:36, Jason Gunthorpe wrote:
->> On Tue, Jun 16, 2020 at 08:44:37PM +0300, Gal Pressman wrote:
->>> On 16/06/2020 12:38, Leon Romanovsky wrote:
->>>> On Tue, Jun 16, 2020 at 11:53:11AM +0300, Gal Pressman wrote:
->>>>> On 16/06/2020 9:30, Leon Romanovsky wrote:
->>>>>> On Mon, Jun 15, 2020 at 10:59:20AM +0300, Gal Pressman wrote:
->>>>>>> Provider specific attributes which are necessary for the userspace
->>>>>>> functionality should be part of the alloc ucontext response, not query
->>>>>>> device. This way a userspace provider could work without issuing a query
->>>>>>> device verb call. However, the fields will remain in the query device
->>>>>>> ABI in order to maintain backwards compatibility.
->>>>>>
->>>>>> I don't really understand why "should be ..."? Device properties exposed
->>>>>> here are per-device and will be equal to all ucontexts, so instead of
->>>>>> doing one very fast system call, you are "punishing" every ucontext
->>>>>> call.
->>>>>
->>>>> I talked about it with Jason in the past, the query device verb is intended to
->>>>> follow the IBA verb, alloc ucontext should return driver specific data that's
->>>>> required to operate the user space provider.
->>>>> A query device call should not be mandatory to load the provider.
->>>>
->>>> Why? query_device is declared as mandatory verb for any provider, so
->>>> anyway all in-the-tree RDMA drivers will have such verb.
->>>
->>> I don't think the concern here is if the verb exists or not, my understanding is
->>> that query device should be used for IBA query device attributes, not other
->>> provider specific stuff.
->>> Jason, want to chime in with your thoughts?
->>
->> query_device should be used to implement the ibverb query_device and
->> query_device_ex
->>
->> It should only return rdma-core defined common stuff because that is
->> what that verb does - there is no reason to return driver specific
->> things as there is nothing the driver can do with it.
->>
->> The only exception might be some provider specific query_device dv
->> that needs more information.
->>
->> query_device should not be used as some two-part
->> create_context. Information related only to create_context that is not
->> already exposed to query_device should not be added to query_device
->> only for create_context's use.
->>
->> Similarly, information in query_device should not be duplicated into
->> create_context just to save a system call.
+On Thu, Jun 11, 2020 at 04:00:45PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> That makes sense.
-> To clarify, the "duplicated" fields in this patch are moved to the ucontext
-> allocation, where they originally belong as all of them are necessary for the
-> provider's functionality.
-> Future fields such as these will only be added to alloc_ucontext, not both, so
-> there's no duplication.
+> Fix the following sparse error by adding annotation
+> to cm_queue_work_unlock() that it releases cm_id_priv->lock lock.
 > 
-> Otherwise, future extensions will either have to be added to query_device, which
-> is the wrong place, just to be consistent with the existing code. Or we add them
-> to the ucontext response, where they belong, and end up with some hybrid
-> solution where different fields are gathered from different places (yuck :\).
+>  drivers/infiniband/core/cm.c:936:24: warning: context imbalance in
+>  'cm_queue_work_unlock' - unexpected unlock
 > 
-> We got it wrong the first place but it's a two way door, let's fix it.
+> Fixes: e83f195aa45c ("RDMA/cm: Pull duplicated code into cm_queue_work_unlock()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/core/cm.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Uhh.. We can't really get rid of the query device call as the provider needs the
-max_qp attribute in order to allocate the QP table properly.
+Applied to for-rc
 
-I still think we should move the fields to keep things clean, but I can drop
-this change if you prefer to avoid the churn. The provider will always call
-query device on context initialization and gather different fields from
-different system calls.
-
-Thoughts?
+Thanks,
+Jason
