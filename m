@@ -2,34 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A7E1FE520
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 04:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3091FE4E7
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 04:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbgFRBSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 21:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49284 "EHLO mail.kernel.org"
+        id S1730122AbgFRCVp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 22:21:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729436AbgFRBR7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:17:59 -0400
+        id S1728710AbgFRBSg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:18:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6C11221ED;
-        Thu, 18 Jun 2020 01:17:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4B0221D82;
+        Thu, 18 Jun 2020 01:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443078;
-        bh=ENwQaP6raiAviYta8LkKJFZWMDOkBRB+CQ9P1wDuPN4=;
+        s=default; t=1592443115;
+        bh=s92cz/KclSxPalblzdGD4uhIFYB5I4LCbjOIdDePFDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stlHjkoUCHERgxKOYRR/ztfx9/vwiNu5yx347QyS0D7bOIht8ZnOFyAq26rnbPVr0
-         3dYoX5R7I2OaAWJc0ZtRT8NHZWy4KSSwyL8b22dW+241bdSFxyLu+nLK04kyey0io/
-         DSPxMpV5e/xxu55N3ZDvFF/43wnJdU7LVaeUDIf8=
+        b=nBcEg+WlICR3rwl1rFl/RkiOf1x8mRdjkFVGNasob/qmuW+dphrGIhbOVZVxP4p/9
+         ZdcRQeOmi9L4H3QXc8FflQH+VZTlwqq9oYQS/s7sFn3G88R9TFBbqo07gioCkKFR+u
+         9lbd+R8Y44mGOJaX7glsO84z/NMZy26ZPbmiPLgI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>, Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 065/266] RDMA/core: Fix several reference count leaks.
-Date:   Wed, 17 Jun 2020 21:13:10 -0400
-Message-Id: <20200618011631.604574-65-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 091/266] RDMA/mlx5: Fix udata response upon SRQ creation
+Date:   Wed, 17 Jun 2020 21:13:36 -0400
+Message-Id: <20200618011631.604574-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -42,61 +44,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Yishai Hadas <yishaih@mellanox.com>
 
-[ Upstream commit 0b8e125e213204508e1b3c4bdfe69713280b7abd ]
+[ Upstream commit cf26deff9036cd3270af562dbec545239e5c7f07 ]
 
-kobject_init_and_add() takes reference even when it fails.  If this
-function returns an error, kobject_put() must be called to properly clean
-up the memory associated with the object. Previous
-commit b8eb718348b8 ("net-sysfs: Fix reference count leak in
-rx|netdev_queue_add_kobject") fixed a similar problem.
+Fix udata response upon SRQ creation to use the UAPI structure (i.e.
+mlx5_ib_create_srq_resp). It did not zero the reserved field in userspace.
 
-Link: https://lore.kernel.org/r/20200528030231.9082-1-wu000273@umn.edu
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Link: https://lore.kernel.org/r/20200406173540.1466477-1-leon@kernel.org
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/sysfs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/mlx5/srq.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 7a50cedcef1f..091cca9d88ed 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -1060,8 +1060,7 @@ static int add_port(struct ib_core_device *coredev, int port_num)
- 				   coredev->ports_kobj,
- 				   "%d", port_num);
- 	if (ret) {
--		kfree(p);
--		return ret;
-+		goto err_put;
- 	}
+diff --git a/drivers/infiniband/hw/mlx5/srq.c b/drivers/infiniband/hw/mlx5/srq.c
+index 4e7fde86c96b..c29c1f7da4a1 100644
+--- a/drivers/infiniband/hw/mlx5/srq.c
++++ b/drivers/infiniband/hw/mlx5/srq.c
+@@ -310,12 +310,18 @@ int mlx5_ib_create_srq(struct ib_srq *ib_srq,
+ 	srq->msrq.event = mlx5_ib_srq_event;
+ 	srq->ibsrq.ext.xrc.srq_num = srq->msrq.srqn;
  
- 	p->gid_attr_group = kzalloc(sizeof(*p->gid_attr_group), GFP_KERNEL);
-@@ -1074,8 +1073,7 @@ static int add_port(struct ib_core_device *coredev, int port_num)
- 	ret = kobject_init_and_add(&p->gid_attr_group->kobj, &gid_attr_type,
- 				   &p->kobj, "gid_attrs");
- 	if (ret) {
--		kfree(p->gid_attr_group);
--		goto err_put;
-+		goto err_put_gid_attrs;
- 	}
+-	if (udata)
+-		if (ib_copy_to_udata(udata, &srq->msrq.srqn, sizeof(__u32))) {
++	if (udata) {
++		struct mlx5_ib_create_srq_resp resp = {
++			.srqn = srq->msrq.srqn,
++		};
++
++		if (ib_copy_to_udata(udata, &resp, min(udata->outlen,
++				     sizeof(resp)))) {
+ 			mlx5_ib_dbg(dev, "copy to user failed\n");
+ 			err = -EFAULT;
+ 			goto err_core;
+ 		}
++	}
  
- 	if (device->ops.process_mad && is_full_dev) {
-@@ -1406,8 +1404,10 @@ int ib_port_register_module_stat(struct ib_device *device, u8 port_num,
+ 	init_attr->attr.max_wr = srq->msrq.max - 1;
  
- 		ret = kobject_init_and_add(kobj, ktype, &port->kobj, "%s",
- 					   name);
--		if (ret)
-+		if (ret) {
-+			kobject_put(kobj);
- 			return ret;
-+		}
- 	}
- 
- 	return 0;
 -- 
 2.25.1
 
