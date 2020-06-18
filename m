@@ -2,93 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B111FFAEC
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 20:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC8D1FFE8A
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 01:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgFRSSZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Jun 2020 14:18:25 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10818 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgFRSSY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 14:18:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eebafe30000>; Thu, 18 Jun 2020 11:18:11 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 18 Jun 2020 11:18:24 -0700
+        id S1726835AbgFRXU1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jun 2020 19:20:27 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:55825 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729187AbgFRXUX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Jun 2020 19:20:23 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eebf6b40000>; Fri, 19 Jun 2020 07:20:21 +0800
+Received: from HKMAIL101.nvidia.com ([10.18.16.10])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 18 Jun 2020 16:20:21 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 18 Jun 2020 11:18:24 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun
- 2020 18:18:19 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 18 Jun 2020 18:18:19 +0000
+        by hkpgpgate102.nvidia.com on Thu, 18 Jun 2020 16:20:21 -0700
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun
+ 2020 23:20:13 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 18 Jun 2020 23:20:13 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QBxdbOwn10zrOClp7Ysv3d9rGi9mZ5LwIt5ef3SEb0nwIHYlrGJwwkZtsSANg9ZM63+bFSbDVMcT0B9LYS/oDbtde0A/SJzPGUXtYQC9tHPhEucbrF1nFOOkB0FujFPdpotR/CHAEJjt1Pa6CHBYuFfoja55L/qmV2uwiA0QtK2QZdbQbtWnQvTCD0+2Anuodxy7O+DB4p9MuSzV2a2paDKifg89qb2EKgUdS6SFdSGHopCy5PVxQCZavZ8G9y96rL/hsFS8+T8PRqHgrOizZcOYEAGQXus5n7Oz1hXp7H1MF/cyAjzAkU6x/bYjpo67qdDNkACg3ZRn/ltU9eFKfA==
+ b=QZo219A19umjy3FjFMDLMG55/lycmvCiLA8nX+51olpFVZ5MFzUU/xVD0fx9y6eBdGIbnDR9n58/vmB7lKj3pX/s5UlG+IXrmZK82tzd1fzF3tq+wFYwatewp75yOvFJ46AYMh4sO99lz9Q2D4slYMDv8KxWKIOG4yCTepepdGOewNJvKFfA7oTbE4y/BSZ8vstM3SZYR5u5dSiwsLsR6K14GtSCwZHMTLRjv8mu3CseuJhwNzo9L4lZLnmGLvai95/cyNK6jIog4j2GHegOhrQj4pA7WFLQyxqL98O5FHLNHKOzlJBPy003UIdA3ysuzjsGzVpP54TWSe18c3me0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WLb6w+bYy5CdwxMrMA9IyHu8AP65Z2988HtOGFxhLXI=;
- b=JZzxLmYOG6O5zd6nfTfL5v2kjssCZK38Ia5EPOKYWiTBWOS6fNnANwDOfqS5N1dwAQN6NGE+7PKaL2r67dmyEozHf1PtRAI3UN7leZzkqTbITlI0AWXgcuLBa9rqCo8t+4zpc7xaDATyhwaz0Sp/Mtci42N1c4m+Dl/G8Ioax3EFXuK2zCyGxr33eMeQOcWCg1zlnMlFAGJJFWk7bTlsdRv2x0GAt+yuwspuYbDHaWnTeK20PDUv9oxSuTo1dEItKsjSFCZ1Zz//jJoRPbOSwbWdWQuln3LVNVWfJMJfSpYOHEAP7C0NcuGy58E7FuhFMfubqVjAOvSMC9jExoilqw==
+ bh=WBTMiUkp9Nsn+SM4xzrm+RCQG/tiH5PnaM7kMVRM89E=;
+ b=Kh1MJWH0bc8kWgII/qKslb8qIqTuU3B54XGWwDiY2VGLcWax0r7s/wq07mLFeHhZ0lFMNJEpbC/A+XLLjjUGDci1B+vlRehpKIKbqpkyVyJmeqzDcEy7Z7yMLMeF6xvbWzkP3poqaaoZE8Fbm/FZ4UrAFq1vHmiK5PJWMHNigp1yl/w+laYQNNvmrT4OnemTZRz9Eu70hCGOmoY001yNtN1DlinrnE2h7CALGLYSKm1oroQ49C5IJfvFbKtF7NbEqQfzwN7yZsO0X6bus7du4M43W2TsuXrV1GL7ntbEkLkyWRcOCrhi6Gzs1LzRjy+gs65iYwZ35dpyJbdICMqksg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4267.namprd12.prod.outlook.com (2603:10b6:5:21e::16) with
+ by DM6PR12MB3020.namprd12.prod.outlook.com (2603:10b6:5:11f::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Thu, 18 Jun
- 2020 18:18:18 +0000
+ 2020 23:20:11 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3109.021; Thu, 18 Jun 2020
- 18:18:17 +0000
-Date:   Thu, 18 Jun 2020 15:18:16 -0300
+ 23:20:11 +0000
+Date:   Thu, 18 Jun 2020 20:20:09 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-CC:     <bvanassche@acm.org>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
-Message-ID: <20200618181816.GA2453631@mellanox.com>
-References: <20200617140803.181333-1-jingxiangfeng@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 08/11] RDMA: Add support to dump resource
+ tracker in RAW format
+Message-ID: <20200618232009.GA2487227@mellanox.com>
+References: <20200616104006.2425549-1-leon@kernel.org>
+ <20200616104006.2425549-9-leon@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200617140803.181333-1-jingxiangfeng@huawei.com>
+In-Reply-To: <20200616104006.2425549-9-leon@kernel.org>
 X-NVConfidentiality: public
-X-ClientProxiedBy: BL0PR05CA0001.namprd05.prod.outlook.com
- (2603:10b6:208:91::11) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR15CA0017.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::30) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR05CA0001.namprd05.prod.outlook.com (2603:10b6:208:91::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.10 via Frontend Transport; Thu, 18 Jun 2020 18:18:17 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jlz7A-00AIJP-2G; Thu, 18 Jun 2020 15:18:16 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0017.namprd15.prod.outlook.com (2603:10b6:208:1b4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Thu, 18 Jun 2020 23:20:11 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jm3pJ-00ARFm-M6; Thu, 18 Jun 2020 20:20:09 -0300
 X-NVConfidentiality: public
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a824ce9-cc1b-46a9-dbbc-08d813b3f912
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4267:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB42670244D2B8828547B5A3AEC29B0@DM6PR12MB4267.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Office365-Filtering-Correlation-Id: 500fca56-3e3c-459c-d5b4-08d813de25cb
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3020:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB302056E67A2BA302CAA5BDFEC29B0@DM6PR12MB3020.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
 X-Forefront-PRVS: 0438F90F17
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aPpfp2ktCYKLLDr63Bbats2vU0dS3XmY7rK4tETSqDT+HzYozlbippoQx3332eaIfLnBpfR/iFardr2g4vd8CoBXxDABQid6wflYYfNb0BjaFqhX2F1g9AOTuV4UTnbUKsLBUykGijJ729XmE64mXQExZO7AzsYvPxossWDE6hCk8COlipiUmj9x0tAIeRRKGo2w7S+07I25fnUIGoPROPRJM5T4GTyN30k58GhISArFWeu+cifwnGq1dNDV5UkevA5LktnGJjKZOoMOLKZiObx23uoWi/mU+1CHxb1hyb9a4mIgA/Yd4tYXwNrpStTw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(396003)(346002)(39860400002)(136003)(366004)(9746002)(36756003)(9786002)(66476007)(66556008)(66946007)(33656002)(8676002)(4744005)(9686003)(1076003)(6916009)(426003)(8936002)(2906002)(83380400001)(26005)(86362001)(186003)(316002)(5660300002)(4326008)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: gpY3cUEPdQmzC/jnhv90ChsZeaYBZekHkkiRE8uESgUtW7AQpaxMP4ClqAdYObUJqlhHnbKqAcF+vvtlw3pUMkv1aMo1YVBjPwObAjmGtilH1K22dzEAQsf5Y+b7McmHg414EAi48H8vfh9Pgn+L38BhF5nnXV6Z/dmMIZsDvQvduCqxIIf3dE47OcxVOPFTC775hsBgsRnpyle9SPUSXA2aPEnndl4diRlCzUMnxcK9M+pTEJEa0xZcK3EtRyuVFh6bhpo7o/pxfCB5SltpHQa2NMWW0Opsn45PlXhXjLSaUqt3kEphIzZ3OPjkxtTgSCK3YSARRkH7tB/O5rC5Hj4AXe3IUI80Qivj+Jk+YhcBz5Ej6yMmu4vEYc/4EdLctPTLLmiDAj6Cfi67FcolZHG2zN3jaRnx2czPFJ3G+1PPVU3UIPynlCb/6nCxnp9mzm9svWD8sl+d01EZNdN/25hwJOe0AtKOk6poqnCwFj0=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a824ce9-cc1b-46a9-dbbc-08d813b3f912
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 18:18:17.3210
+X-Microsoft-Antispam-Message-Info: tiWWWhrwZX1Y8MdXZLzVxtFlLvGzFKszvo/Gc9WSXwGtRVbvfPnKPIJpO5D8hULJv9cGiqWL2yerpXp5wmV+E3BPyQ6JQhlOQUiOYllmTXjz1xE04SFIgh2GxCR7Xrb1ak1/FBHrNOQGbgJvkuEPXbgzCoWZhLPuSqOt49f7jmEVxTp9gGPL4kFDt91wZU2l9SM+03/IlFqPXKe3M1jJB5LYgD4pzTxG5IwFP0yVxLwt2CmFS0dugoHBnPEwA2sgjB9uRIFZ/z781OMrnAbEKb0Xu3XMbBaWYE37b28WmSqrgVeBEo3vElmHBB7mSacg4XurDnfYbEOYryo1bmx0Pw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(396003)(366004)(136003)(39860400002)(346002)(66476007)(66946007)(86362001)(66556008)(5660300002)(33656002)(4326008)(9746002)(6916009)(9786002)(36756003)(426003)(478600001)(9686003)(2906002)(316002)(1076003)(26005)(186003)(8936002)(54906003)(83380400001)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: dUPsIlLIpmrY9EUu4900YI5t8nkM8VGa6ymY48lY1xqpRiZTCMkpkgKCO+f/AvGD4ydkSek3wbuHHj1XYG0L0n0cOzdz/pZ5DegCkM1dwOuNjlBmPTZtG4PB9Ivez9xGOCNYPzyRgP/b/ZZGScdI77qkiDDjjTPUliNuh7ROjJuCNlVNuovi4ZyhFubn4TOLBH2BbeIDke4KbWyXsZBkS38BZG4MJhxKryOO/dM9hDGRb8ho1MVkv4wKYTDAvd3kx2qFrfI5+tYAFGN0PpHBrD+Gqbf4gTqB4THQ7u1LJjy5RGKkhzdJkVDa2WdQm9RfguXee1T+JiA/XxjYq7gd4PcjuAjhMMB/sv8/XvfL1/nQoUI7a1+bu/v/1YdKWQxBQEa7bFiRIwWqu3cm/MCHoEFVJacXq54pWdIUiKs/8J+TWYCsF8TzB1ALEXty4tgPF9Erj6hjKtujfZmWTXrCJ9wXe7pZkpL0/IoT2yJBzHU=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 500fca56-3e3c-459c-d5b4-08d813de25cb
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 23:20:11.4376
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OFJy6XgZea60rzQWMIUIhydZ9zFePkmGh49JT4bbPwz2Jjdou+sxEF9jmgn4i7rj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4267
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6vMCGCKRh6EMYmrJyRi/vQ4/6rE5tID/6uyDP9EC8gN9WAcfV/lVl8ZyMXLvUN1Q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3020
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592504291; bh=WLb6w+bYy5CdwxMrMA9IyHu8AP65Z2988HtOGFxhLXI=;
+        t=1592522421; bh=WBTMiUkp9Nsn+SM4xzrm+RCQG/tiH5PnaM7kMVRM89E=;
         h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
          ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
          Subject:Message-ID:References:Content-Type:Content-Disposition:
@@ -106,29 +108,73 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=hYziZV/9ilafgNV1zTzTSLDe/36ughC23oCNJ+QSrlq8EJnMEJ+Xuah6LqhJ2h0LF
-         hlcPdkj/tMt7Bj814/v7YCYycjx73WU2FVsjVNbxtOoefM6nKX2Pm01CdhHn29mQBC
-         KpuyZ5anc1plT7EP3UJHmR0+njKhCf09JBCOq437SxhnOcPlkcOLVUxa04isyv6Yef
-         WNsT9QfJIQyrCZpX6Ey01vcO5P8c1WouoYQN5naL+i72Sn8TkzD1LJRJ7U3MeDOtKK
-         ZBKjonbTXNEF4QsreKkYq5fFuBvgvbNI3WinTAY+giSrbRXQE/RFZrzGCYfu7AH9JH
-         fP4kSrynyW/PQ==
+        b=mPAIvKyTZtP229nttxYaA1WSRs0iJYaqa+sqctAhTZs2fP2pk3N90FV0HYufKlEAj
+         D/phzNdEv1hQiOPF7u3a14xSGLhabtggWB2x/Uo9iuBnZmQvbv02OUt/kiLK6KpmwW
+         MEkTAqt8tXwllgvcUzUQ97+L2nwoQRwTlHmL094uYlq2hDRYkhi25rl7cObYDHz5QX
+         3zB7FiFycBwSvw36atdyXANV9nDxZSTo+79uIBaQBuHTMwX34gIbsc7X4J/4n/yz6x
+         cgP98zmmxTlxF4kD7TFaW/2JadbPTQPbg8UagkZ9387G96RblWkiul1NOPkpb6AtYj
+         duMhMx3rbXlAQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 10:08:03PM +0800, Jing Xiangfeng wrote:
-> The callers pass the pointer '&req' or 'private_data' to
-> srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
-> 'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
-> sdev and req are always valid. So we remove unnecessary WARN_ON.
-> 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ---
->  1 file changed, 3 deletions(-)
+On Tue, Jun 16, 2020 at 01:40:03PM +0300, Leon Romanovsky wrote:
 
-Applied to for-next, thanks
+> +static int fill_res_qp_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> +			     struct rdma_restrack_entry *res, uint32_t port,
+> +			     bool raw)
+> +{
+> +	struct ib_qp *qp = container_of(res, struct ib_qp, res);
+> +	struct ib_device *dev = qp->device;
+> +	int ret;
+> +
+> +	if (port && port != qp->port)
+> +		return -EAGAIN;
+> +
+> +	/* In create_qp() port is not set yet */
+> +	if (qp->port && nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, qp->port))
+> +		return -EINVAL;
+> +
+> +	ret = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LQPN, qp->qp_num);
+> +	if (ret)
+> +		goto err;
+> +
+>  	if (!rdma_is_kernel_res(res) &&
+>  	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, qp->pd->res.id))
+>  		goto err;
+>  
+> -	if (fill_res_name_pid(msg, res))
+> +	ret = fill_res_name_pid(msg, res);
+> +	if (ret)
+>  		goto err;
+>  
+> -	if (dev->ops.fill_res_qp_entry)
+> -		return dev->ops.fill_res_qp_entry(msg, qp);
+> -	return 0;
+> +	if (!raw)
+> +		return fill_res_qp_entry_query(msg, res, dev, qp);
+
+Are you sure the RAW query should duplicate all the stuff the normal
+query does? Shouldn't the raw query return only the raw blob?
+
+The rest seems fine, but this is rather odd?
+
+> @@ -1252,9 +1291,11 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+>  		goto err_get;
+>  	}
+>  
+> -	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
+> -			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, fe->nldev_cmd),
+> -			0, 0);
+> +	nlh = nlmsg_put(
+> +		msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
+> +		RDMA_NL_GET_TYPE(RDMA_NL_NLDEV,
+> +				 (raw ? fe->nldev_cmd_raw : fe->nldev_cmd)),
+> +		0, 0);
+
+Isn't this ternary just RMDA_NL_GET_OP(nlh->nlmsg_type) ?
+
+and I suppose RDMA_NL_GET_TYPE should be named MAKE_TYPE?
 
 Jason
