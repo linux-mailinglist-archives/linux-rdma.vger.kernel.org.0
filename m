@@ -2,38 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074211FE20B
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 03:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9481FE0BA
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 03:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbgFRB6i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 21:58:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59592 "EHLO mail.kernel.org"
+        id S1730417AbgFRBt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 21:49:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729068AbgFRBYt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:24:49 -0400
+        id S1731874AbgFRB1b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:27:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAFBB21927;
-        Thu, 18 Jun 2020 01:24:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AEA4221ED;
+        Thu, 18 Jun 2020 01:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443489;
-        bh=I6xtW/C29jKr+Sxh28IcwGqum2+CjTHubDmIj/WsSI8=;
+        s=default; t=1592443651;
+        bh=AU2ypAdhvOt8W49P3pntcXxIhRzmgOcEWKQzI+HrWoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZB0ypnytsOEQyofV6448IC1CaH3QYybRZS6K2uEre+xdSW1geaQK9ucRqCBvhlTAD
-         cNS8i5yeaFux2z/47V629b3TRZCdeBeYNEG/8HMZSz0C4pME8Te7AzwpsUH2eyJJCq
-         fhSj2XcujHnOVoBg8PT6W+ketoknRehVeZepcSbs=
+        b=KtdilklWdBomltDyCu6bJZ9NpbLIUzCu+Kk8SR0k/SSVndL7JuWbK34R8F9CCL7OE
+         48UQknSYtj8QOopPs1IdOfTFZhciIBqXoklMF2nIHPem0mZcRYfUSEI3x3EF4+G+P/
+         f6KogGOYQTuusEuLgsoOMiWam/FDp7a28Se54xBk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+Cc:     Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 117/172] RDMA/iw_cxgb4: cleanup device debugfs entries on ULD remove
-Date:   Wed, 17 Jun 2020 21:21:23 -0400
-Message-Id: <20200618012218.607130-117-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 071/108] IB/cma: Fix ports memory leak in cma_configfs
+Date:   Wed, 17 Jun 2020 21:25:23 -0400
+Message-Id: <20200618012600.608744-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
-References: <20200618012218.607130-1-sashal@kernel.org>
+In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
+References: <20200618012600.608744-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,33 +44,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Maor Gottlieb <maorg@mellanox.com>
 
-[ Upstream commit 49ea0c036ede81f126f1a9389d377999fdf5c5a1 ]
+[ Upstream commit 63a3345c2d42a9b29e1ce2d3a4043689b3995cea ]
 
-Remove device specific debugfs entries immediately if LLD detaches a
-particular ULD device in case of fatal PCI errors.
+The allocated ports structure in never freed. The free function should be
+called by release_cma_ports_group, but the group is never released since
+we don't remove its default group.
 
-Link: https://lore.kernel.org/r/20200524190814.17599-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Remove default groups when device group is deleted.
+
+Fixes: 045959db65c6 ("IB/cma: Add configfs for rdma_cm")
+Link: https://lore.kernel.org/r/20200521072650.567908-1-leon@kernel.org
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/cma_configfs.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
-index c13c0ba30f63..af974a257086 100644
---- a/drivers/infiniband/hw/cxgb4/device.c
-+++ b/drivers/infiniband/hw/cxgb4/device.c
-@@ -945,6 +945,7 @@ void c4iw_dealloc(struct uld_ctx *ctx)
- static void c4iw_remove(struct uld_ctx *ctx)
- {
- 	pr_debug("c4iw_dev %p\n", ctx->dev);
-+	debugfs_remove_recursive(ctx->dev->debugfs_root);
- 	c4iw_unregister_device(ctx->dev);
- 	c4iw_dealloc(ctx);
+diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
+index 54076a3e8007..ac47e8a1dfbf 100644
+--- a/drivers/infiniband/core/cma_configfs.c
++++ b/drivers/infiniband/core/cma_configfs.c
+@@ -319,8 +319,21 @@ static struct config_group *make_cma_dev(struct config_group *group,
+ 	return ERR_PTR(err);
  }
+ 
++static void drop_cma_dev(struct config_group *cgroup, struct config_item *item)
++{
++	struct config_group *group =
++		container_of(item, struct config_group, cg_item);
++	struct cma_dev_group *cma_dev_group =
++		container_of(group, struct cma_dev_group, device_group);
++
++	configfs_remove_default_groups(&cma_dev_group->ports_group);
++	configfs_remove_default_groups(&cma_dev_group->device_group);
++	config_item_put(item);
++}
++
+ static struct configfs_group_operations cma_subsys_group_ops = {
+ 	.make_group	= make_cma_dev,
++	.drop_item	= drop_cma_dev,
+ };
+ 
+ static struct config_item_type cma_subsys_type = {
 -- 
 2.25.1
 
