@@ -2,87 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7D81FE64D
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 04:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D0A1FEC0F
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 09:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgFRCcj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 22:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729442AbgFRBPJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 880F8221EB;
-        Thu, 18 Jun 2020 01:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442909;
-        bh=8dWe8dNHmHjFruy6tr76/ZHDAnAMRcZD/e9OgpgnMeI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PoFdzrhR+ZS7JKtwQW+pROHz69+WHZnOQhWT+HMqMs+vCXXegeI3NiuiCYOOzgLfV
-         YXaz0QaKa+ncxckr3qKX8wZr2PW5DblR0EiQngSh4HjpseQEMiDCfu1wjS3yAArR1y
-         mWRnKV1x/qxZWT3yvvwdMOH+85Sxh3N6MBtXsgqE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 328/388] RDMA/cm: Spurious WARNING triggered in cm_destroy_id()
-Date:   Wed, 17 Jun 2020 21:07:05 -0400
-Message-Id: <20200618010805.600873-328-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1727930AbgFRHPZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Jun 2020 03:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbgFRHPZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Jun 2020 03:15:25 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3290C06174E
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 00:15:24 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id k11so5257312ejr.9
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Jun 2020 00:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tmh04dD341/4y/Q6EOkdu66A1LqqXnqRiut/2G8UYas=;
+        b=T9tcIiazvXOIzaWbeWAkuWgpEgvx/IgnpjJzNuBfJpOE4i9qArcEH9IsBxJaG2XQwV
+         BORjKTU3K3br1VcHBJTuWXsQpmi667sT08+aAhWHyyvieM3L5D1XfSV2CuL3RLg+20Sc
+         fZ5pBWkOL7ozyH8oUWw0uL5TI2YvhjDr1bwLvPVlYG5FGAWL/1nOOHqV22aMqnnHt5vz
+         YV1iWoo0qs0ozwEJOIBxjUIgc9Dtv1Qa+8tBmzLmDfvZFQCYB/18JKn+Rb4QShbfOoZD
+         EsAFEv0tgGXhI4gESnQh+iNRzZDQaqVJjnIaKHqSqc1GLDKKeJG+VkXlcGB7phTeZWYr
+         g75w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tmh04dD341/4y/Q6EOkdu66A1LqqXnqRiut/2G8UYas=;
+        b=tRaoBD1vvafOcs/SgTzPhbXg6zP3zIltjDFKbMMQ8NnuDSefCGwWIs2U4Z7p9S1Iyl
+         BGxA1jiz9qwnex8zBlKI+PmB5YObvpiiGeDi8lL3oMuSEU/EiICBpURAZoymj3Y2dlYA
+         qFzR+kB8knXJpCj2oXBtFl9KI3WPYOTqPJP7UcBfxsAD55VQOsWI56bNfmpmQnbCThJA
+         WZpMi+su9Et+QlcJDl030JTonbzUOdrOHVofISXQiOkU52a8Juz1/VioQJhVTkVSCCtN
+         HJWQQyCo/BiNWq8pFHkPho7qUKHdumao2qZE4KpEr+1Ost8ab5rp5K6MD8UmLV8fYeih
+         9wOA==
+X-Gm-Message-State: AOAM532LE5WJMkZ1w5KbaLIROrhRnOj9vG4P8jgquj6Fi5C0RsBx6UBy
+        MNw/XY2sAiE1MZA1EPngrA7HLKL0MBTmqnx1l3fQWw==
+X-Google-Smtp-Source: ABdhPJwqXBbLFNwiqirZz4Yo7tTmOFl33ltJt3uENJjGedlgB/bXJhjJ7nVoxpId2lUkStS4UQ33XMZ+Pl9w5UdsQbw=
+X-Received: by 2002:a17:906:7103:: with SMTP id x3mr2507724ejj.363.1592464523567;
+ Thu, 18 Jun 2020 00:15:23 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
+ <20200617112811.GL2383158@unreal> <20200617182046.GI6578@ziepe.ca>
+ <20200617190756.GA2721989@unreal> <20200617192642.GL6578@ziepe.ca>
+In-Reply-To: <20200617192642.GL6578@ziepe.ca>
+From:   Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Date:   Thu, 18 Jun 2020 07:15:12 +0530
+Message-ID: <CAJpMwygeJ7uaNUKxhsF-bx=ufchkx7M6G0E237=-0C7GwJ3yog@mail.gmail.com>
+Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
+ late_initcall level
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>, dledford@redhat.com,
+        kernel test robot <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+(Apologies for multiple emails. Was having trouble with an extension,
+cause of which emails did not get delivered to the mailing list.
+Resolved now.)
 
-[ Upstream commit fba97dc7fc76b2c9a909fa0b3786d30a9899f5cf ]
+> Somehow nvme-rdma works:
 
-If the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is called, it
-calls cm_send_rej_locked().
+I think that's because the callchain during the nvme_rdma_init_module
+initialization stops at "nvmf_register_transport()". Here only the
+"struct nvmf_transport_ops nvme_rdma_transport" is registered, which
+contains the function "nvme_rdma_create_ctrl()". I tested this in my
+local setup and during kernel boot, that's the extent of the
+callchain.
+The ".create_ctrl"; which now points to "nvme_rdma_create_ctrl()" is
+called later from "nvmf_dev_write()". I am not sure when this is
+called, probably when the "discover" happens from the client side or
+during the server config. I am trying to test this to confirm, will
+send more details once I am done.
+Am I missing something here?
 
-In cm_send_rej_locked(), it calls cm_enter_timewait() and the state is
-changed to IB_CM_TIMEWAIT.
 
-Now back to cm_destroy_id(), it breaks from the switch statement, and the
-next call is WARN_ON(cm_id->state != IB_CM_IDLE).
+> If the rdma_create_id() is not on a callchain from module_init then you don't have a problem.
 
-This triggers a spurious warning. Instead, the code should goto retest
-after returning from cm_send_rej_locked() to move the state to IDLE.
+I am a little confused. I thought the problem occurs from a call to
+either "rdma_resolve_addr()" which calls "rdma_bind_addr()",
+or a direct call to "rdma_bind_addr()" as in rtrs case.
+In both the cases, a call to "rdma_create_id()" is needed before this.
 
-Fixes: 67b3c8dceac6 ("RDMA/cm: Make sure the cm_id is in the IB_CM_IDLE state in destroy")
-Link: https://lore.kernel.org/r/1591191218-9446-1-git-send-email-ka-cheong.poon@oracle.com
-Signed-off-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/core/cm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 17f14e0eafe4..1c2bf18cda9f 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1076,7 +1076,9 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 	case IB_CM_REP_SENT:
- 	case IB_CM_MRA_REP_RCVD:
- 		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
--		/* Fall through */
-+		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_CONSUMER_DEFINED, NULL,
-+				   0, NULL, 0);
-+		goto retest;
- 	case IB_CM_MRA_REQ_SENT:
- 	case IB_CM_REP_RCVD:
- 	case IB_CM_MRA_REP_SENT:
+> Similarly they are supposed to be created from the client attachment.
+I am a beginner in terms of concepts here. Did you mean when a client
+tries to establish the first connection to an rdma server?
+
+
+On Thu, Jun 18, 2020 at 12:56 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Jun 17, 2020 at 10:07:56PM +0300, Leon Romanovsky wrote:
+> > On Wed, Jun 17, 2020 at 03:20:46PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Jun 17, 2020 at 02:28:11PM +0300, Leon Romanovsky wrote:
+> > > > On Wed, Jun 17, 2020 at 04:07:32PM +0530, haris.iqbal@cloud.ionos.com wrote:
+> > > > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > > > >
+> > > > > Fixes: 2de6c8de192b ("block/rnbd: server: main functionality")
+> > > > > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > > > >
+> > > > > The rnbd_server module's communication manager initialization depends on the
+> > > > > registration of the "network namespace subsystem" of the RDMA CM agent module.
+> > > > > As such, when the kernel is configured to load the rnbd_server and the RDMA
+> > > > > cma module during initialization; and if the rnbd_server module is initialized
+> > > > > before RDMA cma module, a null ptr dereference occurs during the RDMA bind
+> > > > > operation.
+> > > > > This patch delays the initialization of the rnbd_server module to the
+> > > > > late_initcall level, since RDMA cma module uses module_init which puts it into
+> > > > > the device_initcall level.
+> > > > >  drivers/block/rnbd/rnbd-srv.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+> > > > > index 86e61523907b..213df05e5994 100644
+> > > > > +++ b/drivers/block/rnbd/rnbd-srv.c
+> > > > > @@ -840,5 +840,5 @@ static void __exit rnbd_srv_cleanup_module(void)
+> > > > >         rnbd_srv_destroy_sysfs_files();
+> > > > >  }
+> > > > >
+> > > > > -module_init(rnbd_srv_init_module);
+> > > > > +late_initcall(rnbd_srv_init_module);
+> > > >
+> > > > I don't think that this is correct change. Somehow nvme-rdma works:
+> > > > module_init(nvme_rdma_init_module);
+> > > > -> nvme_rdma_init_module
+> > > >  -> nvmf_register_transport(&nvme_rdma_transport);
+> > > >   -> nvme_rdma_create_ctrl
+> > > >    -> nvme_rdma_setup_ctrl
+> > > >     -> nvme_rdma_configure_admin_queue
+> > > >      -> nvme_rdma_alloc_queue
+> > > >       -> rdma_create_id
+> > >
+> > > If it does work, it is by luck.
+> >
+> > I didn't check every ULP, but it seems that all ULPs use the same
+> > module_init.
+> >
+> > >
+> > > Keep in mind all this only matters for kernels without modules.
+> >
+> > Can it be related to the fact that other ULPs call to ib_register_client()
+> > before calling to rdma-cm? RNBD does not have such call.
+>
+> If the rdma_create_id() is not on a callchain from module_init then
+> you don't have a problem.
+>
+> nvme has a bug here, IIRC. It is not OK to create RDMA CM IDs outside
+> a client - CM IDs are supposed to be cleaned up when the client is
+> removed.
+>
+> Similarly they are supposed to be created from the client attachment.
+>
+> Though listening CM IDs unbound to any device may change that
+> slightly, I think it is probably best practice to create the listening
+> ID only if a client is bound.
+>
+> Most probably that is the best way to fix rnbd
+>
+> > I'm not proposing this, but just loudly wondering, do we really need rdma-cm
+> > as a separate module? Can we bring it to be part of ib_core?
+>
+> No idea.. It doesn't help this situation at least
+>
+> Jason
+
+
+
 -- 
-2.25.1
 
+Regards
+-Haris
