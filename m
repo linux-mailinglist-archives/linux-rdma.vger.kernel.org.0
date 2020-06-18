@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC4D1FE6C3
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 04:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7D81FE64D
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jun 2020 04:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgFRCgU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Jun 2020 22:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43468 "EHLO mail.kernel.org"
+        id S1729518AbgFRCcj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Jun 2020 22:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbgFRBN6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:13:58 -0400
+        id S1729442AbgFRBPJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB436221F1;
-        Thu, 18 Jun 2020 01:13:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 880F8221EB;
+        Thu, 18 Jun 2020 01:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442837;
-        bh=r+sGKsCZdJ6ItZ8zWIiODoB6JpSbLYt8qmx53pm6jdY=;
+        s=default; t=1592442909;
+        bh=8dWe8dNHmHjFruy6tr76/ZHDAnAMRcZD/e9OgpgnMeI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fbfnFGRP0qn5v+2EEER51ha004HaA8Eqg0X+VJCWtYFkJldX+01Vj7hlg+u9wqjNG
-         BeqnrlOnKk5uS+3+hMlVJ76qfiLs/0NbjdQMmY8qQTqX1//xPbAJ81O6te5VQGW3J8
-         MlLx7FKijU3dvpw0zba4lm8CgLwficXsd++G1Oow=
+        b=PoFdzrhR+ZS7JKtwQW+pROHz69+WHZnOQhWT+HMqMs+vCXXegeI3NiuiCYOOzgLfV
+         YXaz0QaKa+ncxckr3qKX8wZr2PW5DblR0EiQngSh4HjpseQEMiDCfu1wjS3yAArR1y
+         mWRnKV1x/qxZWT3yvvwdMOH+85Sxh3N6MBtXsgqE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+Cc:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 271/388] RDMA/iw_cxgb4: cleanup device debugfs entries on ULD remove
-Date:   Wed, 17 Jun 2020 21:06:08 -0400
-Message-Id: <20200618010805.600873-271-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 328/388] RDMA/cm: Spurious WARNING triggered in cm_destroy_id()
+Date:   Wed, 17 Jun 2020 21:07:05 -0400
+Message-Id: <20200618010805.600873-328-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,33 +43,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
 
-[ Upstream commit 49ea0c036ede81f126f1a9389d377999fdf5c5a1 ]
+[ Upstream commit fba97dc7fc76b2c9a909fa0b3786d30a9899f5cf ]
 
-Remove device specific debugfs entries immediately if LLD detaches a
-particular ULD device in case of fatal PCI errors.
+If the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is called, it
+calls cm_send_rej_locked().
 
-Link: https://lore.kernel.org/r/20200524190814.17599-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+In cm_send_rej_locked(), it calls cm_enter_timewait() and the state is
+changed to IB_CM_TIMEWAIT.
+
+Now back to cm_destroy_id(), it breaks from the switch statement, and the
+next call is WARN_ON(cm_id->state != IB_CM_IDLE).
+
+This triggers a spurious warning. Instead, the code should goto retest
+after returning from cm_send_rej_locked() to move the state to IDLE.
+
+Fixes: 67b3c8dceac6 ("RDMA/cm: Make sure the cm_id is in the IB_CM_IDLE state in destroy")
+Link: https://lore.kernel.org/r/1591191218-9446-1-git-send-email-ka-cheong.poon@oracle.com
+Signed-off-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/cm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
-index 599340c1f0b8..541dbcf22d0e 100644
---- a/drivers/infiniband/hw/cxgb4/device.c
-+++ b/drivers/infiniband/hw/cxgb4/device.c
-@@ -953,6 +953,7 @@ void c4iw_dealloc(struct uld_ctx *ctx)
- static void c4iw_remove(struct uld_ctx *ctx)
- {
- 	pr_debug("c4iw_dev %p\n", ctx->dev);
-+	debugfs_remove_recursive(ctx->dev->debugfs_root);
- 	c4iw_unregister_device(ctx->dev);
- 	c4iw_dealloc(ctx);
- }
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 17f14e0eafe4..1c2bf18cda9f 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1076,7 +1076,9 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 	case IB_CM_REP_SENT:
+ 	case IB_CM_MRA_REP_RCVD:
+ 		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
+-		/* Fall through */
++		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_CONSUMER_DEFINED, NULL,
++				   0, NULL, 0);
++		goto retest;
+ 	case IB_CM_MRA_REQ_SENT:
+ 	case IB_CM_REP_RCVD:
+ 	case IB_CM_MRA_REP_SENT:
 -- 
 2.25.1
 
