@@ -2,133 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937022007FE
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 13:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A45200893
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 14:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731887AbgFSLjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jun 2020 07:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731869AbgFSLjh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jun 2020 07:39:37 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D3BC0613EF
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 04:39:37 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c185so8548205qke.7
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 04:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5lQCYSoi4FC78xGjLBeogrhLOaSlungd8A2lT6c416A=;
-        b=GpTji/yhJTYfywss1k5am+JyELnNZlvvM8qP/Uyg3OD7x7MqDitwSWfgM3HPj0UhUM
-         CmGRkgXfDHKjJbk/G94ThGo65HoXLKpYTHWId62kC64177gtGxTII+K1ZYz1wipOiAHJ
-         eNgWeTmTaG/jDKlMWG2mJATpUK5rAwHHXT5FR/exkvaSA9MSXlfn3hlOUhTW2ZxS/H4F
-         HEmI2H47vtMrMdfYBePKTzq7Q28TCNQpdwQLKytMyWVDkIDxh7YsNl1xg+jdzcXMR0cI
-         rZrwuwfz+8JvRuJ/hZc0oTCMz+QMnazKQOTVrKsL2AkwHyGJfWycuxP+cVSimTbDO1fJ
-         9CVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5lQCYSoi4FC78xGjLBeogrhLOaSlungd8A2lT6c416A=;
-        b=I5YnWm8CiVFHaUKDpOpw18Q+Tvz7RH86CMZUt2SZRnMKLehOu7Dp9VbH0TGHfZa98g
-         O4dGmdjVi8KWPzFh1A9NFFbMmJ5o38e9bwfNeC1Cuk/pxtFoqEdZ9k44T6rCWkc8rRzn
-         r72+eKgNAaH26hwgBwb6YydkLekqkLJgBORC+Za5mqu53omfLgHFxhbKgVxubo4aU44y
-         WXOtMYYM3MByRaQWtQ5s7JFzrPZm2akJAk6mKg+Hav2ic44gBrYq7UWPdoscy6sJhImQ
-         bUf4tl/f1OVXrSXJj5/auLyrbpXqff14CMsTuEuObZNDmR9WNO0aftIDas+zmQyK+fvo
-         Py5Q==
-X-Gm-Message-State: AOAM531PqIPTvbbmJACkrzFroJ3Rflgxc9uHJ+xEh4baWgwJGS/Z5+oN
-        KTagKGu7TRq82sImPM3ILQ/K9w==
-X-Google-Smtp-Source: ABdhPJyvT5Fp9eB5e8a01kFzBtsDczKSLoT1L7Q5mintxsSice/gNXkvAdcFjnB+DRsdXJvj32xdRg==
-X-Received: by 2002:a37:6191:: with SMTP id v139mr2946071qkb.213.1592566776171;
-        Fri, 19 Jun 2020 04:39:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id o6sm6016053qtd.59.2020.06.19.04.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 04:39:35 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jmFMs-00AiVa-OZ; Fri, 19 Jun 2020 08:39:34 -0300
-Date:   Fri, 19 Jun 2020 08:39:34 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200619113934.GN6578@ziepe.ca>
-References: <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
- <20200611083430.GD20149@phenom.ffwll.local>
- <20200611141515.GW6578@ziepe.ca>
- <20200616120719.GL20149@phenom.ffwll.local>
- <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
- <20200617152835.GF6578@ziepe.ca>
- <20200618150051.GS20149@phenom.ffwll.local>
- <20200618172338.GM6578@ziepe.ca>
- <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1732884AbgFSMYw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jun 2020 08:24:52 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:25766 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732980AbgFSMYp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Jun 2020 08:24:45 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eecae880000>; Fri, 19 Jun 2020 20:24:40 +0800
+Received: from HKMAIL104.nvidia.com ([10.18.16.13])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 19 Jun 2020 05:24:40 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate102.nvidia.com on Fri, 19 Jun 2020 05:24:40 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Jun
+ 2020 12:24:35 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 19 Jun 2020 12:24:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l646lrU8jhJoj3KO5/qRfGv274fX1U8v+mz6wHf4sfgZqGHhtN2b6Nimc1bVEBfSo2ve7lc999+menY42ey79fPk/x7avgYcmtl9kEU6X5vKt0O40rIDt0NIN9mL/0PiEAxmV3iT2QwD0KsjebNtvnp6qh+Jl8toM+MKQOZGWN7AjvZFEVV52/caCzFPyreWcfTtCMPg8uYClgEeEwD7i70CNrNBr0zYYJbENnB5pj1/T1wrX7205QPc2jatLB1lbRpMGA6XQF7IkP7FUOeRPFQg0srVQ7pJ0RdC/ZQ8h43HZfhKDzG8wHDBssckBAla1x3MjtVWlbXKfebNuxr3Lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tMjsf6SU3aNOljpBWeDfL95al3UN1h0Pf4CqEWHbQkw=;
+ b=DcctrW0y0wKczGv7ZZGKR+UEebCBesAXgC8lwqVu6IjHchd2MIRCb73G2nPZ5wRKkLtCk2t7R6EFhYKhipYFJqYUpt+Ulem/VkTcdhG0wxS238HQYz2FHOPuyUjSPnSadD0c7d031xIXnXfjr+3FvqguWe7HAIhsieJrU3HtmpOwSlMQSZDsLKZRt8wpXrZXRX6wws2PCB8w68LcdsQzk0LuoQAkMtyL3AKp0EOHt4QCsB/HcpJKixFTTONfEzKBkuqr1ymBDqR7kKxSNJ2f1t2ox4qmHH/q+9lIlRpbyfQbZ4OEfX7+rsePX4MgNXbvHRRu3jy0siBx2ajb4S805g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1146.namprd12.prod.outlook.com (2603:10b6:3:73::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Fri, 19 Jun
+ 2020 12:24:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3109.021; Fri, 19 Jun 2020
+ 12:24:32 +0000
+Date:   Fri, 19 Jun 2020 09:24:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Guo Fan <guofan5@huawei.com>
+CC:     <leon@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] IB/mad: fix possible memory leak in
+ ib_mad_post_receive_mads()
+Message-ID: <20200619122430.GA2562811@mellanox.com>
+References: <20200612063824.180611-1-guofan5@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
+In-Reply-To: <20200612063824.180611-1-guofan5@huawei.com>
+X-NVConfidentiality: public
+X-ClientProxiedBy: MN2PR15CA0016.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::29) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0016.namprd15.prod.outlook.com (2603:10b6:208:1b4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Fri, 19 Jun 2020 12:24:31 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jmG4M-00AkiG-3x; Fri, 19 Jun 2020 09:24:30 -0300
+X-NVConfidentiality: public
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a4e9f720-5084-46cb-36cd-08d8144bb7bd
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1146:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB114683DF0EA78494FF63D61EC2980@DM5PR12MB1146.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
+X-Forefront-PRVS: 0439571D1D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QQFvPXIjbSoobrjiGHgN79R9r6yCmkkVTd7ATHgA5SOidzCFg9ILRAl6aPTc9BedVTK18yYiYMSdkNOnD0THehKxYEs5Sd7YNWD1N+ZZe7T3o8nIq/jGDHaXqcI2ETO6fzCZsgSChenuovVIdcfXnxfsecXgSHTzKlXL1seBI7UC+mlIiOZyJGM6eOwjbsheo1fzcGiXj2onWDUkDUvvJ1ecWPP2um6qVk1pl7Ypz9+2TLxrlGZb5CsLP3W33RSS9wHKfuePzbbtdgDA/hE/2X30cl1/HjYY6tVVy3z5MHkKPfLxgGSBdMw/oz65/xsW6/e+ErC/IG24w0eVaddP7g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(366004)(376002)(396003)(136003)(39860400002)(4326008)(1076003)(426003)(2906002)(186003)(4744005)(8936002)(9786002)(9746002)(36756003)(316002)(33656002)(5660300002)(26005)(66476007)(66946007)(6916009)(9686003)(66556008)(8676002)(86362001)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 3pgWskPjdXEJr7zCEOCS454u4eESqs3h2LBqnvIFPhqJ0HqbmXa4dNNZF6d2CEXmfCs4Ko2O+uJ5b0/qJjNlCoKfoFp1CfRQqusC1YixK2x24TRRccR1bUNYD+6tk3Huz3A3GUv7KxwCk0h8QXtwd1pja9SI1I1B+7E8g9ng+yni0Gq1Dmt3Yv8MA4ko8pahiHRs8SKOk4cDiNAawyvGMjxOORmfggKi15WSgMwXZ/r6VSB1FN22T8Kx2zxLm+WKzSnenjRgskcfBTiOeMpCN7r21UQGU70Uu7zkcX+m3NoQF+6M6vALTzEPHssKz4+UJMkq37y1Qp2tgrMTzEFg3qT0S0iqMD2YxQ82uUS3KfXPosWFAnFmVfmd6pkkG+0907UNxmWzbIsa3IuzY4FrpTX+UOCYBb+YI4YXsyXwoJIiB8jWNH1nwoIR+9vGSK5RJlMm1N+jFUbDXBIcrsXYDptP37uAw9ZXB0INOedC3nA=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4e9f720-5084-46cb-36cd-08d8144bb7bd
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2020 12:24:31.9253
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0mis2LjVCK5644F9sLHbBkNtq2LlL3zWpDy1AXuY4FmioxWDQyy/0XOYik6Ugle/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1146
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592569480; bh=tMjsf6SU3aNOljpBWeDfL95al3UN1h0Pf4CqEWHbQkw=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-NVConfidentiality:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-NVConfidentiality:
+         X-Originating-IP:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-Forefront-PRVS:X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=IAborRMc0UohlvNr3Y3kJfMkL7Y+33EokU0Hsb+sLAXpZ/ncOkGqn+Kmnf2f2d4Jj
+         1r+7Mft0t4HRPn+VkoOXq45+J3SRSVQWlXSENsjmPkc6OAm6aW+bMhy74xQWYnlpNB
+         pX13OOLS3GtBky98ECsL4HaXJ4pztGVNKUVino0Ch79CYBXuBVfuwD8iribmho6JfL
+         GLZPMLW9P52a5BU2UP2RWRc+JeO/67mel94Zu5+8QyBoJVDX4VXA6MCE9pagsRCnR6
+         RUvdM2G7BrSVv1NoKiiEwLpsX4NvE8QTdyyicskdzxhoK8GZwU5J9+8qLXpYNADIX6
+         UkIsGjJS5J7vA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 09:22:09AM +0200, Daniel Vetter wrote:
-> > As I've understood GPU that means you need to show that the commands
-> > associated with the buffer have completed. This is all local stuff
-> > within the driver, right? Why use fence (other than it already exists)
+On Fri, Jun 12, 2020 at 02:38:24PM +0800, Guo Fan wrote:
+> From: Fan Guo <guofan5@huawei.com>
 > 
-> Because that's the end-of-dma thing. And it's cross-driver for the
-> above reasons, e.g.
-> - device A renders some stuff. Userspace gets dma_fence A out of that
-> (well sync_file or one of the other uapi interfaces, but you get the
-> idea)
-> - userspace (across process or just different driver) issues more
-> rendering for device B, which depends upon the rendering done on
-> device A. So dma_fence A is an dependency and will block this dma
-> operation. Userspace (and the kernel) gets dma_fence B out of this
-> - because unfortunate reasons, the same rendering on device B also
-> needs a userptr buffer, which means that dma_fence B is also the one
-> that the mmu_range_notifier needs to wait on before it can tell core
-> mm that it can go ahead and release those pages
+> If ib_dma_mapping_error() returns non-zero value, ib_mad_post_receive_mads
+> will jump out of loops and return -ENOMEM without freeing mad_priv. We fix
+> this memory-leak problem by freeing mad_priv in this case.
+> 
+> Fixes: 2c34e68f4261 ("IB/mad: Check and handle potential DMA mapping errors")
+> Signed-off-by: Fan Guo <guofan5@huawei.com>
+> ---
+>  drivers/infiniband/core/mad.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-I was afraid you'd say this - this is complete madness for other DMA
-devices to borrow the notifier hook of the first device!
-
-What if the first device is a page faulting device and doesn't call
-dma_fence??
-
-It you are going to treat things this way then the mmu notifier really
-needs to be part of the some core DMA buf, and not randomly sprinkled
-in drivers
-
-But really this is what page pinning is supposed to be used for, the
-MM behavior when it blocks on a pinned page is less invasive than if
-it stalls inside a mmu notifier.
-
-You can mix it, use mmu notififers to keep track if the buffer is
-still live, but when you want to trigger DMA then pin the pages and
-keep them pinned until DMA is done. The pin protects things (well,
-fork is still a problem)
-
-Do not need to wait on dma_fence in notifiers.
+Applied to for-rc, thanks
 
 Jason
