@@ -2,153 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351A8201B7C
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 21:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5C5201B92
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 21:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389860AbgFSTlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jun 2020 15:41:16 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40889 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389792AbgFSTlO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:41:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592595672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Klk9Yg7QmsaodI3YdZuK3PWnbqv8FErJIsczXrZ686s=;
-        b=C0YzxdT6VqYL6kr/KedXDzDQLqE/c7aTqcUJPMPUdyLY6JABsPSU8PvsdhYyTtbdKeZtfg
-        Txq87EdgkFbcEnH63feHJoYh5BX3AP2rf7JKatCOd2uT4KTB5tIlFEQybKqbh1dy2w2RmT
-        93PAQj2uB4v8oScs6uUWkAo9otRt2tE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-kZZ2RrShMPqb7khPp6FD2g-1; Fri, 19 Jun 2020 15:41:05 -0400
-X-MC-Unique: kZZ2RrShMPqb7khPp6FD2g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA8D41800D42;
-        Fri, 19 Jun 2020 19:41:00 +0000 (UTC)
-Received: from redhat.com (ovpn-112-200.rdu2.redhat.com [10.10.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8665619D7B;
-        Fri, 19 Jun 2020 19:40:58 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 15:40:56 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200619194056.GA13117@redhat.com>
-References: <20200618172338.GM6578@ziepe.ca>
- <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
- <20200619113934.GN6578@ziepe.ca>
- <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
- <20200619151551.GP6578@ziepe.ca>
- <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
- <20200619172308.GQ6578@ziepe.ca>
- <20200619180935.GA10009@redhat.com>
- <CADnq5_Pw_85Kzh1of=MbDi4g9POeF3jO4AJ7p2FjY5XZW0=vsQ@mail.gmail.com>
- <86f7f5e5-81a0-5429-5a6e-0d3b0860cfae@amd.com>
+        id S2389877AbgFSTrq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jun 2020 15:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389005AbgFSTrp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jun 2020 15:47:45 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7105FC06174E
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 12:47:45 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id dr13so11375072ejc.3
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 12:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=smYPDQlyaB2OxrfvWXA7GNtcjNtptBGh8BB4i7rze08gQDxM/eyAbclbiQ69pvrcq9
+         8/6OqgjUWE9xw70saPFHGJ3s071ebUTm3Ea1zaaKIYgEMkMtW2CAzPFYrI9nxOtJ/Wqp
+         yU5SVnEbAjpETo6nPw5FspYtrwzsHVS+qmnbDgHJhL8zn07+Hw8d23yhPILdafZR+Udz
+         L0fAw7HG2d0k4Ac2tLqbSNtubb9m+YUrE/9ubHeCnLBFK787WHv4TCIKvnripc+MEMq9
+         uslSUoS+32vRgMtBgXHYINDjcGU34v3DS8IMJQvN+u5UZXDWYgHGCuCLAOJtspJ53lcx
+         rL4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=l0hdGSQ7I7rjrgu5PPqqiPvJJBD02jGkSdEwgUSKgIDgn/3F37rx5fZGamP+rpt8JP
+         W8MLutjMGqAnVUl2YqKbFL7JkO463GsGyByFgLwWZMiKlD89gEMKrUCGK5FncK2isbzR
+         YfX5oQrtRMxuKxiFHvxJ43ZGveAVdOEX0fVL+hU7MZRC03Hh3pWT6DdV+8Uu/jAsTu1h
+         bwSwtqmwWXwdCnBajXn36yLDiZVCiDXVlLuFg6vw5BNgrevGUjHkE7xgg17SqjSDp1Wg
+         aQavujmWJBBRKnIc9XyPumVuktCVTfTxUWfzPJMTlfWaiVNPp3uS+ONNek9AYSqy6CDR
+         Ao2Q==
+X-Gm-Message-State: AOAM533FTZtrABS0vG+aOw08SIU1jLop7XSEOYxMMB/cf3X6oQSOo4y0
+        x7oBj/CfTq0WaecRHCOtCGd2fNlh1/sk5QpyxXI=
+X-Google-Smtp-Source: ABdhPJyTbJIxVOavmn0AcVM525FL1QCWeFiPUFRXd6wxnJjQ8o9RFRxP5GpRZJk4km6wzNwOW7lEcwOwEdiov9EJrYs=
+X-Received: by 2002:a17:906:a459:: with SMTP id cb25mr564813ejb.234.1592596064262;
+ Fri, 19 Jun 2020 12:47:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86f7f5e5-81a0-5429-5a6e-0d3b0860cfae@amd.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by 2002:a50:e8f:0:0:0:0:0 with HTTP; Fri, 19 Jun 2020 12:47:43 -0700 (PDT)
+Reply-To: sylviajones046@gmail.com
+From:   Sylvia Robinson <lori.j.robinson.us@gmail.com>
+Date:   Fri, 19 Jun 2020 20:47:43 +0100
+Message-ID: <CAO0nU=e528LN0Jvqhw_Y7cyTLpMv3n2Jjk5EKnS03yJSQYK8YA@mail.gmail.com>
+Subject: Kei te kite koe i taku karere i tukuna e ahau ki a koe?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 03:30:32PM -0400, Felix Kuehling wrote:
-> 
-> Am 2020-06-19 um 3:11 p.m. schrieb Alex Deucher:
-> > On Fri, Jun 19, 2020 at 2:09 PM Jerome Glisse <jglisse@redhat.com> wrote:
-> >> On Fri, Jun 19, 2020 at 02:23:08PM -0300, Jason Gunthorpe wrote:
-> >>> On Fri, Jun 19, 2020 at 06:19:41PM +0200, Daniel Vetter wrote:
-> >>>
-> >>>> The madness is only that device B's mmu notifier might need to wait
-> >>>> for fence_B so that the dma operation finishes. Which in turn has to
-> >>>> wait for device A to finish first.
-> >>> So, it sound, fundamentally you've got this graph of operations across
-> >>> an unknown set of drivers and the kernel cannot insert itself in
-> >>> dma_fence hand offs to re-validate any of the buffers involved?
-> >>> Buffers which by definition cannot be touched by the hardware yet.
-> >>>
-> >>> That really is a pretty horrible place to end up..
-> >>>
-> >>> Pinning really is right answer for this kind of work flow. I think
-> >>> converting pinning to notifers should not be done unless notifier
-> >>> invalidation is relatively bounded.
-> >>>
-> >>> I know people like notifiers because they give a bit nicer performance
-> >>> in some happy cases, but this cripples all the bad cases..
-> >>>
-> >>> If pinning doesn't work for some reason maybe we should address that?
-> >> Note that the dma fence is only true for user ptr buffer which predate
-> >> any HMM work and thus were using mmu notifier already. You need the
-> >> mmu notifier there because of fork and other corner cases.
-> >>
-> >> For nouveau the notifier do not need to wait for anything it can update
-> >> the GPU page table right away. Modulo needing to write to GPU memory
-> >> using dma engine if the GPU page table is in GPU memory that is not
-> >> accessible from the CPU but that's never the case for nouveau so far
-> >> (but i expect it will be at one point).
-> >>
-> >>
-> >> So i see this as 2 different cases, the user ptr case, which does pin
-> >> pages by the way, where things are synchronous. Versus the HMM cases
-> >> where everything is asynchronous.
-> >>
-> >>
-> >> I probably need to warn AMD folks again that using HMM means that you
-> >> must be able to update the GPU page table asynchronously without
-> >> fence wait. The issue for AMD is that they already update their GPU
-> >> page table using DMA engine. I believe this is still doable if they
-> >> use a kernel only DMA engine context, where only kernel can queue up
-> >> jobs so that you do not need to wait for unrelated things and you can
-> >> prioritize GPU page table update which should translate in fast GPU
-> >> page table update without DMA fence.
-> > All devices which support recoverable page faults also have a
-> > dedicated paging engine for the kernel driver which the driver already
-> > makes use of.  We can also update the GPU page tables with the CPU.
-> 
-> We have a potential problem with CPU updating page tables while the GPU
-> is retrying on page table entries because 64 bit CPU transactions don't
-> arrive in device memory atomically.
-> 
-> We are using SDMA for page table updates. This currently goes through a
-> the DRM GPU scheduler to a special SDMA queue that's used by kernel-mode
-> only. But since it's based on the DRM GPU scheduler, we do use dma-fence
-> to wait for completion.
-
-Yeah my worry is mostly that some cross dma fence leak into it but
-it should never happen realy, maybe there is a way to catch if it
-does and print a warning.
-
-So yes you can use dma fence, as long as they do not have cross-dep.
-Another expectation is that they complete quickly and usualy page
-table update do.
-
-Cheers,
-Jérôme
 
