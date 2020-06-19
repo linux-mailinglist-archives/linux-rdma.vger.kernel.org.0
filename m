@@ -2,84 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A652016E5
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 18:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99F7201963
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jun 2020 19:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387827AbgFSOq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Jun 2020 10:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
+        id S2391976AbgFSRXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Jun 2020 13:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388832AbgFSOqV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jun 2020 10:46:21 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB30C0613EE
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 07:46:20 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id k18so2677qke.4
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 07:46:20 -0700 (PDT)
+        with ESMTP id S1725788AbgFSRXK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Jun 2020 13:23:10 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0FDC0613EE
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 10:23:10 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l6so6022285qkc.6
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Jun 2020 10:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+s6pkBRDM30YuGdJhldYKeWDIO48yG6flkbbQQFbzXo=;
-        b=cVyekK6gNaex1l33w5CHjg7QMVi68Sw9rhx+fP+2dHuJ9VuuQAjQuvPC0embsAEdll
-         pL39qxS6t4Z72V7EuzIFUxGRiUy0R9xd48CMucaUVTTfLG6KJuB1lp1lfDG99zhzwayW
-         RiNI4sAMzD5UAnCVeEJWJkrrLXz2X5a1+EHq7MfcAf4QEvRW11cPPhA2vSJJXwgq8+AN
-         wSG6JToEpWDGOJRIkVr0GSgtT9FzIJgJ3aJeeIbBu9wiiXvhrQHVX2R98vmzUHyZ8cjv
-         lNeHlLryFxqhdOjBqQ+153TWRlnSTkOAXNDtxCU6bs6aX/NcBxp1dDa0Y7/0d+TcX9er
-         bwfQ==
+        bh=rta7XgSy0ckbOhf+G5R08zHN2raoo0kZf2xw2Sh0l/k=;
+        b=jQ8P3pnIGa3vZkblMbXH41QZ61fe/Sb9vA5uPOR3SMNdZKsu0blkPtrxpS3aWVoNKr
+         DxLMI5S5juOldxRe7+RlT3GajySSEpNFCHak6ENUR11aQ3nJENjJ+AjGwVIg3GcU1gtL
+         AFg4tJnhN/LzdKUCOPE+zScs2pSCySWCm6gLf1r8dvVDgTF8uLAu4b0cSB8SVQcBr9IO
+         hvo365OipT4dztwxdexoBi2dZXF91j/xcy5DKKz/ErbusQM/iZVWPTDKzHQRUnZ5G+PQ
+         1Vw552gg3QCopo/fc6PBC9ArUokmC/IBfhMuddzwZFS3/FrWylp92kucX6mn/XCcEkQF
+         2/SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+s6pkBRDM30YuGdJhldYKeWDIO48yG6flkbbQQFbzXo=;
-        b=ocqbR94E1RdDMMMRSSnhyd1adA8TNjV8Y4Ck0vPrTfOpcykMLxOLUzcJ3/r8c5a2iv
-         axBNwwyitrj1uwirnoMuQGut6wp5kZx9B/gtCnSa+1i13hd7xee/3+6UIuFYn1RNQ8LY
-         6iKuRwks5YjT8eJHdxxJnj3UtmlY8gbDgmQwKVJwEqGNqtwoTJMexL5tWGoLvrShYPvp
-         HnfRVg7quoo+IRhOSfCjgRp/4VfZuCpgpu4I847jbs5ijBxKiRKtX367MoTJCnq1zG7h
-         LLhQHbiQgj8yXjgXdnIZNXTRNDNIoV0tnOyruUe7I/0f94SHkfnMfO1g/uLlUBTQOzst
-         5UDw==
-X-Gm-Message-State: AOAM532vVZkMfVdLsJ206Awbh3/IP7TI+HlrF9t8zbn6oYxflfaApLtZ
-        Y+XFXYPyDeaj+Uphgv1Y5fEl9rzRe17GHQ==
-X-Google-Smtp-Source: ABdhPJygwoh996Fm9/gdg5XwxRwtTBWoa4pQqIYXEJJKN05JlUNfo4ySIZl5kXOYWSFVrRj4BFCHdg==
-X-Received: by 2002:a05:620a:205e:: with SMTP id d30mr3855514qka.450.1592577979603;
-        Fri, 19 Jun 2020 07:46:19 -0700 (PDT)
+        bh=rta7XgSy0ckbOhf+G5R08zHN2raoo0kZf2xw2Sh0l/k=;
+        b=mbzKdCqzI5MKsVmZsEgMlhhfih+RqCoZNJ7DHx+h8GIVlBzjH5duff0iGMlqf621mN
+         HgBLcVU/gzw+haG86xEhyQ5M1rkZrOWXhNg7Jek1hAHZm0nc59GaYhSQdk3p+3sjyIEH
+         sf1zmmbbzeU7m6yvJyRKhCoydZs/cq35/UfWEUAsRf7rkwVTGVA3eWEsAd4oQQ6x7e8q
+         8OqrcIav9/u9HeZICx4BDre39uPNIvZ5A+RNJmY7lDOhaWtw/6HoKk4fZXuYWSnYWy6x
+         be5gfNVdgPG6GxbEkHQNgXYJpSwPdELkq0rZP1h3U4+MW3ADkUezg9/oTKcPX+TmboP1
+         j/pg==
+X-Gm-Message-State: AOAM533y4wyTSEayv75NvOfCMSINm8cEEyFUbyfIdd5+XZE2USSwxnFH
+        JoSYdoLT/pH2YvJZkCUKgrb2Zw==
+X-Google-Smtp-Source: ABdhPJzDMW9WT5FfWlenUCjhHpgpjiA2TJ2PiIGS5w9RkI8RANL7HnmArRn+HLKwhDBh+PaKr6DrLw==
+X-Received: by 2002:ae9:ed0d:: with SMTP id c13mr4076677qkg.181.1592587389664;
+        Fri, 19 Jun 2020 10:23:09 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 6sm6469489qkl.26.2020.06.19.07.46.19
+        by smtp.gmail.com with ESMTPSA id z77sm7263705qka.59.2020.06.19.10.23.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 07:46:19 -0700 (PDT)
+        Fri, 19 Jun 2020 10:23:08 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jmIHa-00AoSr-JK; Fri, 19 Jun 2020 11:46:18 -0300
-Date:   Fri, 19 Jun 2020 11:46:18 -0300
+        id 1jmKjM-00ArZ4-2Z; Fri, 19 Jun 2020 14:23:08 -0300
+Date:   Fri, 19 Jun 2020 14:23:08 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Bo YU <tsu.yubo@gmail.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        ledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/rtrs: fix potential resources leaks
-Message-ID: <20200619144618.GO6578@ziepe.ca>
-References: <20200619131017.pr7eoca2bzdtlbk4@debian.debian-2>
- <CAMGffEntL4XkF6bCuhUDP+AOBO4mpKK1pTe3NgPUW86ySyy7Wg@mail.gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200619172308.GQ6578@ziepe.ca>
+References: <20200616120719.GL20149@phenom.ffwll.local>
+ <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+ <20200617152835.GF6578@ziepe.ca>
+ <20200618150051.GS20149@phenom.ffwll.local>
+ <20200618172338.GM6578@ziepe.ca>
+ <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
+ <20200619113934.GN6578@ziepe.ca>
+ <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
+ <20200619151551.GP6578@ziepe.ca>
+ <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMGffEntL4XkF6bCuhUDP+AOBO4mpKK1pTe3NgPUW86ySyy7Wg@mail.gmail.com>
+In-Reply-To: <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 03:16:57PM +0200, Jinpu Wang wrote:
-> Hi, Bo,
-> On Fri, Jun 19, 2020 at 3:10 PM Bo YU <tsu.yubo@gmail.com> wrote:
-> >
-> > Dev is returned from allocation function kzalloc but it does not
-> > free it in out_err path.
-> If allocation failed, kzalloc return NULL, nothing to free.
+On Fri, Jun 19, 2020 at 06:19:41PM +0200, Daniel Vetter wrote:
 
-You should re-organize this to not confuse coverity.
+> The madness is only that device B's mmu notifier might need to wait
+> for fence_B so that the dma operation finishes. Which in turn has to
+> wait for device A to finish first.
 
-IS_ERR_OR_NULL should rarely be used and is the problem here
+So, it sound, fundamentally you've got this graph of operations across
+an unknown set of drivers and the kernel cannot insert itself in
+dma_fence hand offs to re-validate any of the buffers involved?
+Buffers which by definition cannot be touched by the hardware yet.
+
+That really is a pretty horrible place to end up..
+
+Pinning really is right answer for this kind of work flow. I think
+converting pinning to notifers should not be done unless notifier
+invalidation is relatively bounded. 
+
+I know people like notifiers because they give a bit nicer performance
+in some happy cases, but this cripples all the bad cases..
+
+If pinning doesn't work for some reason maybe we should address that?
+
+> Full disclosure: We are aware that we've designed ourselves into an
+> impressive corner here, and there's lots of talks going on about
+> untangling the dma synchronization from the memory management
+> completely. But
+
+I think the documenting is really important: only GPU should be using
+this stuff and driving notifiers this way. Complete NO for any
+totally-not-a-GPU things in drivers/accel for sure.
 
 Jason
