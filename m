@@ -2,122 +2,283 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B90202A6A
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jun 2020 14:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBADB202B1F
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jun 2020 16:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729945AbgFUMAG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Jun 2020 08:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729869AbgFUMAF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 21 Jun 2020 08:00:05 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 245B82480F;
-        Sun, 21 Jun 2020 12:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592740804;
-        bh=d3ycEt54SmUgWiOyU7hW9s03woY3XIbzNXSiVvPsR1k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=zsktmFgmmk0RuqOs66RPQOyTayM6VIYOzM0frww+y56DoH1el3Xi9ym/TcsIwk+4D
-         47qndLqi5Zwi8SX1SkjOi2YBE7C/aJGWiKFgxy1si6fMgAkt3wtdDoTXY5m7W59ELl
-         ZrYh04oFE2WQcnAXVCffaAQzpXdc1GIN59PE+6Vg=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Protect from kernel crash if XRC_TGT doesn't have udata
-Date:   Sun, 21 Jun 2020 14:59:59 +0300
-Message-Id: <20200621115959.60126-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+        id S1730242AbgFUOmE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Jun 2020 10:42:04 -0400
+Received: from mail-eopbgr40085.outbound.protection.outlook.com ([40.107.4.85]:51397
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730147AbgFUOmE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 21 Jun 2020 10:42:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WP5E9d7AKjkDapVmiL0cku5KbNPbE3tgcCDRQYO5Nat0yxxbCE4UrZJBSpA/4WOwxUePSjO0L6i35M6REDLGATCGGAR5OXNdVXfCw5HzVFraJsQ+xBlahPWZN98OFwpsW5yoekLsa22HC9qI97re0WgRqpg8dLNn97LpFKD8ft5c/JhRcjEAj9LW5tV/RsKLFiRjaiCWNslSbtOfpLY95LONiAm0XRHyBU2OW/moMwJ5YoK0e9Wq7BduErnQxGn8Us10Yww73Jo3zTGIPwD3ccqT+LcVUxmn/yIYahId+XN1eCRqsNmkMqRH0LjFurbII7jEOI4LoPIw4rUZekUmhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4NrjZO8SMJbH1DqCZ1gU2mzukhT/HUDGXiiJoJ7bQY4=;
+ b=RQIyQ8bIOib2/mH5nB0SL+Bz8KXgLdlTMhObn72E+2fLCEeLuGwj7Rf+r9ClHwN5YCuQM2/4ZBDw/EPSjgdDtTQyHRzHFg0YuRYGRdlxlEQVfvt2bEV74ClZTwd8ApjrsKko1+749YEwUVPxfzMicfDUkN77FZuwCFI8tlwTJ/J1ws9NdODpr0bj8QtIi82jI0KWNOWE/gw9Lf4QiIz1o4hme5aL3mZmXKhUyWCFE/yOe6miFs20jf+1GoXuFnir+/UcgFMoxuB4i79P0cLB2aDed5i7bSi0pcWkGmFhsErORxkZwxDXXN+ZXA7j4bzIiBouB4mo+HRa5jMIg54k7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4NrjZO8SMJbH1DqCZ1gU2mzukhT/HUDGXiiJoJ7bQY4=;
+ b=WbcWk1a8cwYFYy/yV5xHpzO9rkYaX+K1I9AZHSjsOMUTYgyuE29nASkv7ijnqBOIbv1/SV9VoWwqXhZ6cMA9F+hu9IgM62Q734K3A1XAgY4Qpd0gcZGwdX7CfDzbFm+Tfl+shTq6AflCTb1w8esC6CyetsV85SUktpV6egWUu9s=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=mellanox.com;
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com (2603:10a6:208:125::25)
+ by AM0PR05MB5940.eurprd05.prod.outlook.com (2603:10a6:208:12f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Sun, 21 Jun
+ 2020 14:42:00 +0000
+Received: from AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::8dee:a7a1:5eb4:903d]) by AM0PR05MB5873.eurprd05.prod.outlook.com
+ ([fe80::8dee:a7a1:5eb4:903d%5]) with mapi id 15.20.3109.025; Sun, 21 Jun 2020
+ 14:41:59 +0000
+Subject: Re: [PATCH rdma-next 2/2] RDMA/core: Optimize XRC target lookup
+To:     Jack Wang <xjtuwjp@gmail.com>, Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org
+References: <20200621104110.53509-1-leon@kernel.org>
+ <20200621104110.53509-3-leon@kernel.org>
+ <CAD+HZHUnW53ni=16=XL6hY1AHoNtsa88_V5P+XOHb55Fm83zZQ@mail.gmail.com>
+From:   Maor Gottlieb <maorg@mellanox.com>
+Message-ID: <481b4111-55d8-6c49-2c1c-e15d39ba1129@mellanox.com>
+Date:   Sun, 21 Jun 2020 17:41:55 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
+In-Reply-To: <CAD+HZHUnW53ni=16=XL6hY1AHoNtsa88_V5P+XOHb55Fm83zZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM4PR0101CA0064.eurprd01.prod.exchangelabs.com
+ (2603:10a6:200:41::32) To AM0PR05MB5873.eurprd05.prod.outlook.com
+ (2603:10a6:208:125::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.100.102.11] (93.173.18.107) by AM4PR0101CA0064.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Sun, 21 Jun 2020 14:41:58 +0000
+X-Originating-IP: [93.173.18.107]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7f4a988d-3ccf-46e5-87e7-08d815f14112
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5940:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB59401D82A58507795A7D216ED3960@AM0PR05MB5940.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-Forefront-PRVS: 04410E544A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CHf1kSlyrZM/4+frJ5DWBVY+4dsziqgqt7LBbDq+1SPOaqzZt40UeAjOnAC63jxc2yFV950Npj1thgkEsuUqHbrBhW7NGQ4T+yGg04s7F6D71cTK0PGHcji/pf2lGM7yYTFXl89aMOcuZhx9wYJ2Wn5rV5Zk8FwwKIiMrkI1nDSDbEDienUG6gmS+XbAMw4APbcuGyQhZCCmSyuIzjJTtzomIjAcTxlD0XliddtraK2ZJYNmRtfGKnFNI67vv8NFch+lvuJbsKVgF+8um8MC2uH4RL0EDM/Yg2k0P/Nib2fxrVQxGnb7IqTFHVDGahVoXxFQESiAZlyYHrTLRuNORz2cs68APFWJSUeyXUmScxrVRixJfigUQrattmhebdCF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5873.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(346002)(376002)(39860400002)(366004)(6666004)(5660300002)(31686004)(54906003)(66476007)(8936002)(8676002)(66946007)(316002)(16576012)(110136005)(6486002)(66556008)(16526019)(26005)(31696002)(2906002)(36756003)(186003)(86362001)(4326008)(478600001)(53546011)(52116002)(956004)(2616005)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: wpU1GcP0hi6mGJxlrlsqYlzcgupeOOwH8T/opTW/VAlROC1HvN3AxeymsDUSMFTGKysURdKUbu5RpPfJJD/aEhGi7314yFch6Wb2Zfc0GFi0ZT5PAArbVx+N76I6pOO+dRzld/ZSJiVFT+Uh4NEuBSLAVxrDsZ0P7bzDo+mPVo0F23sc44fWLUFgVDfr7hSC4eIfQ8LxESqjHWuyQVm2TFiSH2JJaD/BiqQizXuKGRAXJv34V9xzCNcrhOv5z2nv3wrSVTirDi3vm2UOp9bygkJhEJcf9uWukECQKO4L+8Oz5TPBny7WaczyF/GVHQbuPtB9QhxXzwWmeA9sb+RiHeLMrVln303CsxSSSjaxi3azhhb5n0x6JtPDb8ysmbXRGqQr2+bnUJ+i1QMHG5r3HZ7YXkiuLgQT8ZEzoyrpzjIL9V83+cCH5DQl0W3jqe+fmsJUYxKKsKufDnXKTsOW+9aM327I1MYWCtCK9CtgOzqMe5dTGEOVrKphJJ6pm7P3
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f4a988d-3ccf-46e5-87e7-08d815f14112
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2020 14:41:59.7749
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NRXQ8v+ZiFf9klc011UOkvghAJl94L52W7V0WYXZig1w2N7rLUIFRcAUTVJT2UhxXk/3KO5SVA0QcF1BNZO1hg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5940
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
 
-[  316.938373] BUG: kernel NULL pointer dereference, address: 0000000000000030
-[  316.941956] #PF: supervisor read access in kernel mode
-[  316.942692] #PF: error_code(0x0000) - not-present page
-[  316.943415] PGD 0 P4D 0
-[  316.943820] Oops: 0000 [#1] SMP PTI
-[  316.944338] CPU: 2 PID: 1592 Comm: python3 Not tainted 5.7.0-rc6+ #1
-[  316.945214] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 0
-4/01/2014
-[  316.946732] RIP: 0010:create_qp+0x39e/0xae0 [mlx5_ib]
-[  316.947443] Code: c0 0d 00 00 bf 10 01 00 00 e8 be a9 e4 e0 48 85 c0 49 89 c2 0f 84 0c 07 00 00 41 8b 85 74 63 01 0
-0 0f c8 a9 00 00 00 10 74 0a <41> 8b 46 30 0f c8 41 89 42 14 41 8b 52 18 41 0f b6 4a 1c 0f ca 89
-[  316.949880] RSP: 0018:ffffc9000067f8b0 EFLAGS: 00010206
-[  316.950681] RAX: 0000000010170000 RBX: ffff888441313000 RCX: 0000000000000000
-[  316.951750] RDX: 0000000000000200 RSI: 0000000000000000 RDI: ffff88845b1d4400
-[  316.952857] RBP: ffffc9000067fa60 R08: 0000000000000200 R09: ffff88845b1d4200
-[  316.953970] R10: ffff88845b1d4200 R11: ffff888441313000 R12: ffffc9000067f950
-[  316.955054] R13: ffff88846ac00140 R14: 0000000000000000 R15: ffff88846c2bc000
-[  316.956189] FS:  00007faa1a3c0540(0000) GS:ffff88846fd00000(0000) knlGS:0000000000000000
-[  316.957478] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  316.958378] CR2: 0000000000000030 CR3: 0000000446dca003 CR4: 0000000000760ea0
-[  316.959497] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  316.960609] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  316.961721] PKRU: 55555554
-[  316.962221] Call Trace:
-[  316.962686]  ? __switch_to_asm+0x40/0x70
-[  316.963352]  ? __switch_to_asm+0x34/0x70
-[  316.964018]  mlx5_ib_create_qp+0x897/0xfa0 [mlx5_ib]
-[  316.964875]  ib_create_qp+0x9e/0x300 [ib_core]
-[  316.965657]  create_qp+0x92d/0xb20 [ib_uverbs]
-[  316.966397]  ? ib_uverbs_cq_event_handler+0x30/0x30 [ib_uverbs]
-[  316.967325]  ? release_resource+0x30/0x30
-[  316.968002]  ib_uverbs_create_qp+0xc4/0xe0 [ib_uverbs]
-[  316.968834]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc8/0xf0 [ib_uverbs]
-[  316.970049]  ib_uverbs_run_method+0x223/0x770 [ib_uverbs]
-[  316.970925]  ? track_pfn_remap+0xa7/0x100
-[  316.971635]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
-[  316.972542]  ? remap_pfn_range+0x358/0x490
-[  316.973248]  ib_uverbs_cmd_verbs.isra.6+0x19b/0x370 [ib_uverbs]
-[  316.974188]  ? rdma_umap_priv_init+0x82/0xe0 [ib_core]
-[  316.975035]  ? vm_mmap_pgoff+0xec/0x120
-[  316.975695]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
-[  316.976489]  ksys_ioctl+0x92/0xb0
-[  316.977098]  __x64_sys_ioctl+0x16/0x20
-[  316.977746]  do_syscall_64+0x48/0x130
-[  316.978377]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  316.979187] RIP: 0033:0x7faa19012267
-[  316.979803] Code: b3 66 90 48 8b 05 19 3c 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 3b 2c 00 f7 d8 64 89 01 48
-[  316.982520] RSP: 002b:00007ffc43961e18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[  316.983771] RAX: ffffffffffffffda RBX: 00007ffc43961e98 RCX: 00007faa19012267
-[  316.984905] RDX: 00007ffc43961e80 RSI: 00000000c0181b01 RDI: 0000000000000003
-[  316.986037] RBP: 00007ffc43961e60 R08: 0000000000000005 R09: 000055e723996840
-[  316.987148] R10: 0000000000001000 R11: 0000000000000246 R12: 000055e723996980
-[  316.988277] R13: 00007ffc43961e60 R14: 00007ffc43962158 R15: 00007faa11da3e00
-[  316.989396] Modules linked in: ib_srp scsi_transport_srp rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdm
-a_cm iw_cm ib_umad ib_ipoib ib_cm mlx5_ib ib_uverbs ib_core mlx5_core mlxfw
-[  316.991910] CR2: 0000000000000030
-[  316.992511] ---[ end trace 56565abe20776836 ]---
+On 6/21/2020 2:34 PM, Jack Wang wrote:
+>
+> Hi
+>
+>
+> Leon Romanovsky <leon@kernel.org <mailto:leon@kernel.org>>于2020年6月21日 
+> 周日12:42写道：
+>
+>     From: Maor Gottlieb <maorg@mellanox.com <mailto:maorg@mellanox.com>>
+>
+>     Replace the mutex with read write semaphore and use xarray instead
+>     of linked list for XRC target QPs. This will give faster XRC target
+>     lookup. In addition, when QP is closed, don't insert it back to the
+>     xarray if the destroy command failed
+>
+> Just curious, why not use RCU,xarray is RCU friendly?
+>
+> Thanks
 
-Fixes: e383085c2425 ("RDMA/mlx5: Set ECE options during QP create")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index a7fcb00e37a5..f939c9b769f0 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1862,7 +1862,7 @@ static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	if (!in)
- 		return -ENOMEM;
- 
--	if (MLX5_CAP_GEN(mdev, ece_support))
-+	if (MLX5_CAP_GEN(mdev, ece_support) && ucmd)
- 		MLX5_SET(create_qp_in, in, ece, ucmd->ece_options);
- 	qpc = MLX5_ADDR_OF(create_qp_in, in, qpc);
- 
--- 
-2.26.2
-
+The lock protects against parallel close and open of the same XRC target 
+QP and not the access to the xarray. In addition RCU can't be taken 
+since there is a sleepable function that called under the lock, using 
+SRCU locking shceme looks overkill for me in this case.
+>
+>
+>
+>     Signed-off-by: Maor Gottlieb <maorg@mellanox.com
+>     <mailto:maorg@mellanox.com>>
+>     Signed-off-by: Leon Romanovsky <leonro@mellanox.com
+>     <mailto:leonro@mellanox.com>>
+>     ---
+>      drivers/infiniband/core/verbs.c | 50
+>     +++++++++++++++------------------
+>      include/rdma/ib_verbs.h         |  5 ++--
+>      2 files changed, 24 insertions(+), 31 deletions(-)
+>
+>     diff --git a/drivers/infiniband/core/verbs.c
+>     b/drivers/infiniband/core/verbs.c
+>     index d66a0ad62077..ef980124f7e6 100644
+>     --- a/drivers/infiniband/core/verbs.c
+>     +++ b/drivers/infiniband/core/verbs.c
+>     @@ -1090,13 +1090,6 @@ static void
+>     __ib_shared_qp_event_handler(struct ib_event *event, void *context)
+>     spin_unlock_irqrestore(&qp->device->qp_open_list_lock, flags);
+>      }
+>
+>     -static void __ib_insert_xrcd_qp(struct ib_xrcd *xrcd, struct
+>     ib_qp *qp)
+>     -{
+>     -       mutex_lock(&xrcd->tgt_qp_mutex);
+>     -       list_add(&qp->xrcd_list, &xrcd->tgt_qp_list);
+>     -       mutex_unlock(&xrcd->tgt_qp_mutex);
+>     -}
+>     -
+>      static struct ib_qp *__ib_open_qp(struct ib_qp *real_qp,
+>                                       void (*event_handler)(struct
+>     ib_event *, void *),
+>                                       void *qp_context)
+>     @@ -1139,16 +1132,15 @@ struct ib_qp *ib_open_qp(struct ib_xrcd *xrcd,
+>             if (qp_open_attr->qp_type != IB_QPT_XRC_TGT)
+>                     return ERR_PTR(-EINVAL);
+>
+>     -       qp = ERR_PTR(-EINVAL);
+>     -       mutex_lock(&xrcd->tgt_qp_mutex);
+>     -       list_for_each_entry(real_qp, &xrcd->tgt_qp_list, xrcd_list) {
+>     -               if (real_qp->qp_num == qp_open_attr->qp_num) {
+>     -                       qp = __ib_open_qp(real_qp,
+>     qp_open_attr->event_handler,
+>     -  qp_open_attr->qp_context);
+>     -                       break;
+>     -               }
+>     +       down_read(&xrcd->tgt_qps_rwsem);
+>     +       real_qp = xa_load(&xrcd->tgt_qps, qp_open_attr->qp_num);
+>     +       if (!real_qp) {
+>     +               up_read(&xrcd->tgt_qps_rwsem);
+>     +               return ERR_PTR(-EINVAL);
+>             }
+>     -       mutex_unlock(&xrcd->tgt_qp_mutex);
+>     +       qp = __ib_open_qp(real_qp, qp_open_attr->event_handler,
+>     +                         qp_open_attr->qp_context);
+>     +       up_read(&xrcd->tgt_qps_rwsem);
+>             return qp;
+>      }
+>      EXPORT_SYMBOL(ib_open_qp);
+>     @@ -1157,6 +1149,7 @@ static struct ib_qp
+>     *create_xrc_qp_user(struct ib_qp *qp,
+>                                             struct ib_qp_init_attr
+>     *qp_init_attr)
+>      {
+>             struct ib_qp *real_qp = qp;
+>     +       int err;
+>
+>             qp->event_handler = __ib_shared_qp_event_handler;
+>             qp->qp_context = qp;
+>     @@ -1172,7 +1165,12 @@ static struct ib_qp
+>     *create_xrc_qp_user(struct ib_qp *qp,
+>             if (IS_ERR(qp))
+>                     return qp;
+>
+>     -       __ib_insert_xrcd_qp(qp_init_attr->xrcd, real_qp);
+>     +       err = xa_err(xa_store(&qp_init_attr->xrcd->tgt_qps,
+>     real_qp->qp_num,
+>     +                             real_qp, GFP_KERNEL));
+>     +       if (err) {
+>     +               ib_close_qp(qp);
+>     +               return ERR_PTR(err);
+>     +       }
+>             return qp;
+>      }
+>
+>     @@ -1888,21 +1886,18 @@ static int __ib_destroy_shared_qp(struct
+>     ib_qp *qp)
+>
+>             real_qp = qp->real_qp;
+>             xrcd = real_qp->xrcd;
+>     -
+>     -       mutex_lock(&xrcd->tgt_qp_mutex);
+>     +       down_write(&xrcd->tgt_qps_rwsem);
+>             ib_close_qp(qp);
+>             if (atomic_read(&real_qp->usecnt) == 0)
+>     -               list_del(&real_qp->xrcd_list);
+>     +               xa_erase(&xrcd->tgt_qps, real_qp->qp_num);
+>             else
+>                     real_qp = NULL;
+>     -       mutex_unlock(&xrcd->tgt_qp_mutex);
+>     +       up_write(&xrcd->tgt_qps_rwsem);
+>
+>             if (real_qp) {
+>                     ret = ib_destroy_qp(real_qp);
+>                     if (!ret)
+>                             atomic_dec(&xrcd->usecnt);
+>     -               else
+>     -                       __ib_insert_xrcd_qp(xrcd, real_qp);
+>             }
+>
+>             return 0;
+>     @@ -2308,8 +2303,8 @@ struct ib_xrcd *ib_alloc_xrcd_user(struct
+>     ib_device *device,
+>                     xrcd->device = device;
+>                     xrcd->inode = inode;
+>                     atomic_set(&xrcd->usecnt, 0);
+>     -               mutex_init(&xrcd->tgt_qp_mutex);
+>     -               INIT_LIST_HEAD(&xrcd->tgt_qp_list);
+>     +               init_rwsem(&xrcd->tgt_qps_rwsem);
+>     +               xa_init(&xrcd->tgt_qps);
+>             }
+>
+>             return xrcd;
+>     @@ -2318,19 +2313,18 @@ EXPORT_SYMBOL(ib_alloc_xrcd_user);
+>
+>      int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata
+>     *udata)
+>      {
+>     +       unsigned long index;
+>             struct ib_qp *qp;
+>             int ret;
+>
+>             if (atomic_read(&xrcd->usecnt))
+>                     return -EBUSY;
+>
+>     -       while (!list_empty(&xrcd->tgt_qp_list)) {
+>     -               qp = list_entry(xrcd->tgt_qp_list.next, struct
+>     ib_qp, xrcd_list);
+>     +       xa_for_each(&xrcd->tgt_qps, index, qp) {
+>                     ret = ib_destroy_qp(qp);
+>                     if (ret)
+>                             return ret;
+>             }
+>     -       mutex_destroy(&xrcd->tgt_qp_mutex);
+>
+>             return xrcd->device->ops.dealloc_xrcd(xrcd, udata);
+>      }
+>     diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+>     index f785a4f1e58b..9b973b3b6f4c 100644
+>     --- a/include/rdma/ib_verbs.h
+>     +++ b/include/rdma/ib_verbs.h
+>     @@ -1568,9 +1568,8 @@ struct ib_xrcd {
+>             struct ib_device       *device;
+>             atomic_t                usecnt; /* count all exposed
+>     resources */
+>             struct inode           *inode;
+>     -
+>     -       struct mutex            tgt_qp_mutex;
+>     -       struct list_head        tgt_qp_list;
+>     +       struct rw_semaphore     tgt_qps_rwsem;
+>     +       struct xarray           tgt_qps;
+>      };
+>
+>      struct ib_ah {
+>     -- 
+>     2.26.2
+>
