@@ -2,113 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0683203DD1
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 19:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02FE203E4C
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729822AbgFVRZd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 13:25:33 -0400
-Received: from mail-am6eur05on2069.outbound.protection.outlook.com ([40.107.22.69]:28225
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729605AbgFVRZc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:25:32 -0400
+        id S1730215AbgFVRsK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 13:48:10 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:29007 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730038AbgFVRsJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jun 2020 13:48:09 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef0eed60000>; Tue, 23 Jun 2020 01:48:06 +0800
+Received: from HKMAIL101.nvidia.com ([10.18.16.10])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 10:48:06 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate102.nvidia.com on Mon, 22 Jun 2020 10:48:06 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
+ 2020 17:48:01 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 22 Jun 2020 17:48:01 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BidjBoC05sbSiqzs+vPodYnpohx+pSlgRVmf+4Xk8WdsCrmjCJwSPqyb7Lnmp4oyNU87a1StokNt/K/uvbcz/ICfXOjPFH1Q1K1SU8xOycweUjiyRlsgYaBsCq30NkrS6rcMls79ICPoH3wXKtkIlLdwaEcg9JtsDy6bmil6gT5ExTQlwAjqHZ4eFy99L64r5qTN2jN1YjAbNYUW8VvsejYPVXLKc+Vvr2Z1rcVG88UqgEH1xrlpM0BAv54WULypHLvR8BeEfgrWHLdGDNrwzVJanZZVzsZtUdJFskHa3K7F4k4VB83twCO6YKOy2GC8LA9gwX+D1AXdOMhrFJ5e6Q==
+ b=SqSaaeoauvXnk6RgxOEn39/AAqRCsix0aXjWZ/HWaqiqNt/0zob6Foa3xJ3HwYcAOuyJYCd48qZCxU8HDh7i4h/cMY3UKLuTrn8IDXaQEnVguGneA6Hfo6LwObEZuQQh2vBuym64fcUf6MIwvluf9kBYz9vDGOeQtNEH4w8Easwa2DKAUzOReV0VsToNn/QDj4mhEiILRoVCUt73pWuAlvyN0CK1lYsl1poTqo4bssBTPUaPlvSrJBUjF6hlcWHeXGO3gXO6MrEF2ZzH52lq0JPLb0Ta76noAzeRdXKMje6NJeJhjaaOHci8LSBMLn/JMKJaesw0i1Bu9zFssycZFA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IJNzHWIAGB/ZM5J6dWwHzLGD/KdUAdGK9R9F2lPT4dM=;
- b=XsOTkFV8CFkkZ6XK25FMTszw9wkEzMT7ix9BzdupgXGyILoyRObpp3kZPxbCRLCKkTzBBRYA1ZuhJFIJg5yEg4/zvNgl45BGiJlifgf4MuPdkAqxsdt5o09McZfIouko3vXLapYdxkXs9MmkX8KrUmir3B6RNT9s5+laMdGVgUjREOc6DExqGMQzopdbn2/hohV/o7qU87F/9iMP8/hwW4Ozh/nSizcqxDAZ4TUG8QURGi14V5VYIXw1bNzZgB6NHnzbywwcmk/I0eRQIfV4EhKX31c0KA0lFbMGu/N2xWZQSOKe1AY4go2IncascO0aFveOtSCQO0emumj0WPYgmQ==
+ bh=1eksFY+CqnjhKo8xOqwz6VzSION81QScvaA7TwAtSxk=;
+ b=beiCHpbGfHzJgm8qybkJmiIWDW5DC29KGO8etycCvik6ONq3TiPHZ4V2WAVD5xOu3VOS2kf30CPraQ0X17ARenAZCk4/mom61jJG/CidL/yAa86IadVXAed1tDYnZQDMQy9VMcCvXytY2GvvMY01jBbFcoAeSgaqrA57NsHpy18S7c2P/y2KWCqqaKsTbsEDDXGoB9+c5N3VQlaRt3rzr5OE5rbTNVdaxNbkDtUdT/COrKhuBlIth5ITPwomRjsg2Bq9UtIncaQ8lEyABcb3SNj0yJv2V/0e3g+ZFP1LXygdxFLjelz4Ni12dW5kQPHAOb1Aq6K0AIBHRpu8FKj8tg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IJNzHWIAGB/ZM5J6dWwHzLGD/KdUAdGK9R9F2lPT4dM=;
- b=AHreMLCPbnm4ixyjorZujudym73z9zFa5t6fKdx8eNyUn8VcEr5xGZIFOoirvKtOC/lJ0zgLf25SituELBPSG+HUpjrCcv0X8FDiakxXuQzN9xm+LlsCq1DykUJ+LKiVxDO9OpqvFyPqo+SlCr5Q7rgWKpJbUVbbKgLZaFzRwXs=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5840.eurprd05.prod.outlook.com (2603:10a6:803:d4::26) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+ by BY5PR12MB4147.namprd12.prod.outlook.com (2603:10b6:a03:205::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Mon, 22 Jun
- 2020 17:25:28 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3109.027; Mon, 22 Jun 2020
- 17:25:28 +0000
-Date:   Mon, 22 Jun 2020 14:25:20 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH 09/16] mm/hmm: add output flag for compound page mapping
-Message-ID: <20200622172520.GB2874652@mellanox.com>
-References: <20200619215649.32297-1-rcampbell@nvidia.com>
- <20200619215649.32297-10-rcampbell@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
+ 2020 17:47:58 +0000
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::e1bb:1f91:bd87:9c6b]) by BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::e1bb:1f91:bd87:9c6b%7]) with mapi id 15.20.3109.027; Mon, 22 Jun 2020
+ 17:47:58 +0000
+Date:   Mon, 22 Jun 2020 14:47:52 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Mark Zhang <markz@mellanox.com>, <linux-rdma@vger.kernel.org>,
+        Majd Dibbiny <majd@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-rc] RDMA/counter: Query a counter before release
+Message-ID: <20200622174752.GA2884277@mellanox.com>
+References: <20200621110000.56059-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200619215649.32297-10-rcampbell@nvidia.com>
-X-ClientProxiedBy: MN2PR15CA0041.namprd15.prod.outlook.com
- (2603:10b6:208:237::10) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+In-Reply-To: <20200621110000.56059-1-leon@kernel.org>
+X-NVConfidentiality: public
+X-ClientProxiedBy: MN2PR18CA0016.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::21) To BY5PR12MB3827.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ab::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (193.47.165.251) by MN2PR15CA0041.namprd15.prod.outlook.com (2603:10b6:208:237::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 17:25:27 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jnQC8-00C3wZ-8l; Mon, 22 Jun 2020 14:25:20 -0300
+Received: from mlx.ziepe.ca (193.47.165.251) by MN2PR18CA0016.namprd18.prod.outlook.com (2603:10b6:208:23c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 17:47:58 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jnQXw-00C6LO-VI; Mon, 22 Jun 2020 14:47:52 -0300
+X-NVConfidentiality: public
 X-Originating-IP: [193.47.165.251]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3134e947-9a82-4c8f-04e2-08d816d14191
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5840:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB58402F157DC5E574D8756A7CCF970@VI1PR05MB5840.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 2dcd9157-4716-461d-2289-08d816d46689
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4147:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB41470FDD6C397CD01447D75DC2970@BY5PR12MB4147.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
 X-Forefront-PRVS: 0442E569BC
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KURyjSz4ScoQ2r1vTkfJwETpG2699tok/nQPEwqwao8SWGZiNF4RtVi8/ZgorLCxaYzGLDeTJ5rEUpl+sp6vv5iXSNXO9CiHkuNq5bYSzRW3nWinjmNBEV/zydM4B87kEDPCiN6YlgyWIXOFAtRJan6DwCP3a2sIf5SXQh/xUK6aFi5ny/lWJbkp0gabgf4PcO+pO1Yp0TP2rXhOG2OikuLDJxPvJlZ4RrVeU+AWyqxRD76Yag9dYFAz0H0OvInOBXZbZA8JqyWrWWlQMqN4H8JR2lGqcbzEir49a7xxisc8Rcgw8lsNNbmFSM7OXD1JulQugMtzPUfzT8KjKtTqGg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(426003)(316002)(66946007)(7416002)(2616005)(26005)(83380400001)(8676002)(6916009)(9786002)(9746002)(8936002)(4326008)(86362001)(478600001)(5660300002)(186003)(66476007)(66556008)(1076003)(54906003)(36756003)(33656002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: auwP/K2/suirbaFq/+Ec6A/S1e43ilx2TcfbDnbBeAEtPfNtefX9/cNPSOno22Mkoj8bkS4OJJAN6+zdPyfFiYFgrZIlb7Q7wwKHZBm9QDsMe7fy4/dCOOzap4wi/229u/cmtSVzMlbIoTvlbKCUdZVvEYifWY2MQ2Ehl7S5QEsRJ7ZKTaUM+IVv/seJeXsGHA6d8ndoIKThlVH0yoDGgwJtIFW1yd5boShyBZBCfCSLhFr0J7XwFPQPbb228fXL5/pQ291V9kIKo0hHYb0DT1NFNGafdTohbL/L9+mgvtQGmfHvkjITOcav/h9j4OzmgAheLsjiZla7QZ6IFU9lbcmtocFZl+0nqjxliivOz66iygs7BVKhGnA+UTwGOWDDpeCicjS1NaXsHPsSktqK2hI4JDLqOoTmaSJc2Cl5wMygul6nNlT19IQRhspzN4CUVr4C3zlaD5qjA1w/ec5z3NYma5gwyA1N9m4Sguf2HQHj9tPgZOpt/bEjL2asx5ye
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3134e947-9a82-4c8f-04e2-08d816d14191
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 17:25:28.5349
+X-Microsoft-Antispam-Message-Info: xYFuT3H3zYVKruxCYXCaeJlimnlyS8hk/XM/GCSp+PkdURZ9d1zpCW5BKotEvyhV15JaYrQ1tvgs9XJLN9Wxa2U7gAwSmeVS2dcr941JDGQnnqyxOksZ0h5F9iM/6PyXkzCoZ+wm6560g9HJmahzfmGd5Q8T7NX5FbpxflHvwi5zpgzNugZvx/xvBZqXIZmx2KPcaoiSRrXdw+QaCfPjQFk4+OPd2ZraqUAr4H8gLcJdPXARmePUbhpzcj5pnT6tN8C8jvVy1iabzB4k6nasmSqD0jwYJ6IquIaOhazo2CuAkDdFuIfb1tS5vXlAPcPw31Hgb99VM6rktlvYHmp6aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(136003)(376002)(39860400002)(366004)(396003)(83380400001)(26005)(54906003)(8676002)(316002)(2906002)(1076003)(9686003)(186003)(478600001)(5660300002)(4326008)(4744005)(66946007)(426003)(66556008)(36756003)(8936002)(86362001)(9786002)(33656002)(6916009)(9746002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: NSW1/i3iMLyl/LHlHBt+zsL8z4pxytbYX6w8WBIMZB0r9bB3oEl5AcT4dE40gV7dJAWw4jPshQMXg4UogWkwQ8f4/JeOtWNgDpi9lRhAzHl8QnCkMtF4R/H0Ft4TVUecefWMmlWBcWJICaW2r6QNIqBwxe0dXJ7p5x1F8+4ewOd9zTNSEbcnp11o9OYast54WWuEnj1lI/hT65bfmE5rxySkiQjE/gA4DmXNFUr5kUOO+JQ99O78kHN0YPtZ3Ah4HhXFFT8ilvdkT2HTwcjDqEXd+gaTVXbztsxWPBOgTxJhvXYq6I5wMmlQbwH14IaZkya0PgYyF0oGmAvYEmI9H3Y8VTDZ/jajDtTUOMz9I6zI22HTmzvRAHTphjRuDfB6IULdfWHZgGkhl59NXU2Klk/0WGynntYpFBGcBSufnQWkAyUYKucQyTwmJVaveePJUS83mmNZfMo44faUMMxmnv4B1bpXmbuE1LTe2RS/gNDS44xgyXunttHxEczyZdNX
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dcd9157-4716-461d-2289-08d816d46689
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 17:47:58.8692
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XLaqU3Mz045KbGCunZn5Pp17GrFk3RaX8kCi9hJjR6Q0SroMn75wv8FcER3sciLPxo60baC6tHNHmyPmwpIMNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5840
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5kw1h5JQjSUgI63vpBc7ADHSEcWIcTStnVECLnx6rjFR0zUCpb6UVKrj/kH5LzG6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4147
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592848086; bh=1eksFY+CqnjhKo8xOqwz6VzSION81QScvaA7TwAtSxk=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-NVConfidentiality:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-NVConfidentiality:
+         X-Originating-IP:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-Forefront-PRVS:X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=WUulK6Q1V6IfvaphE9SxFOuJ92G/LGsJfkjd6ylLTOv1nURrMkrefo0qn8sPLz7mh
+         Cpg+pzsnmG5dJ+Ba2TH0VGHXO8KBSmvOV7cYna55mLGBFN9/PH1grWugangyd+/U5f
+         Ra+tzh0ZTn5SUR15tpYS4s88Dh1pKL274iU4kzZHr+ovVyiD3GRI2fT1kw2zwW8Wo5
+         +mlcNlKvhbzfrsgPG6zwuL5V+yXBWDAsKC+ig3ibkgTeOCwS5BB3MWoT0++rFcR8BA
+         xLtdDMRSk7pFLQruPd2dB1/ecFnmxvjbpOq9Q4tGCUDhIOw6xCjwJN5OA4zYlgVUN8
+         iaAGdac8EahMA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 02:56:42PM -0700, Ralph Campbell wrote:
-> hmm_range_fault() returns an array of page frame numbers and flags for
-> how the pages are mapped in the requested process' page tables. The PFN
-> can be used to get the struct page with hmm_pfn_to_page() and the page size
-> order can be determined with compound_order(page) but if the page is larger
-> than order 0 (PAGE_SIZE), there is no indication that the page is mapped
-> using a larger page size. To be fully general, hmm_range_fault() would need
-> to return the mapping size to handle cases like a 1GB compound page being
-> mapped with 2MB PMD entries. However, the most common case is the mapping
-> size is the same as the underlying compound page size.
-> Add a new output flag to indicate this so that callers know it is safe to
-> use a large device page table mapping if one is available.
+On Sun, Jun 21, 2020 at 02:00:00PM +0300, Leon Romanovsky wrote:
+> From: Mark Zhang <markz@mellanox.com>
+> 
+> Query a dynamically-allocated counter before release it, to update it's
+> hwcounters and log all of them into history data. Otherwise all values
+> of these hwcounters will be lost.
+> 
+> Fixes: f34a55e497e8 ("RDMA/core: Get sum value of all counters when perform a sysfs stat read")
+> Signed-off-by: Mark Zhang <markz@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/core/counters.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-But what size should the caller use?
-
-You already explained that the caller cannot use compound_ordet() to
-get the size, so what should it be?
-
-Probably this needs to be two flags, PUD and PMD, and the caller should
-use the PUD and PMD sizes to figure out how big it is?
+Applied to for-rc, thanks
 
 Jason
