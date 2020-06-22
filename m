@@ -2,121 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6FA2041BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D7320424F
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 23:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgFVUPx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 16:15:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31709 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728361AbgFVUPw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 16:15:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592856951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TSUweuZT4DKGDzPl0W0mgX7uetKvmHq3b3GY3r5obEQ=;
-        b=AvujDWVv1fJT1dJn+N4SkW5GMmDU7IzbCKKcFRWYUi39vcyRdTrOXRiPgl3E7M3zge/VvR
-        ZkRQMMmnk1YvVdlxpk+BsrqFbmZI7D1S3R3L9QdDGE/3EqgrbhDjYqVmFyvP22lTRRtz4m
-        8LgSdLETYuzgVcOxuBQArD3DxdwY2O0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-f7cc3XQuNW-UeEjQYsAiCA-1; Mon, 22 Jun 2020 16:15:47 -0400
-X-MC-Unique: f7cc3XQuNW-UeEjQYsAiCA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03BD218FF665;
-        Mon, 22 Jun 2020 20:15:45 +0000 (UTC)
-Received: from redhat.com (ovpn-119-159.rdu2.redhat.com [10.10.119.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8972560F89;
-        Mon, 22 Jun 2020 20:15:42 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 16:15:40 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200622201540.GB9708@redhat.com>
-References: <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
- <20200619151551.GP6578@ziepe.ca>
- <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
- <20200619172308.GQ6578@ziepe.ca>
- <20200619180935.GA10009@redhat.com>
- <20200619181849.GR6578@ziepe.ca>
- <56008d64-772d-5757-6136-f20591ef71d2@amd.com>
- <20200619195538.GT6578@ziepe.ca>
- <20200619203147.GC13117@redhat.com>
- <20200622114617.GU6578@ziepe.ca>
+        id S1728867AbgFVVBC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 17:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728545AbgFVVBC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 17:01:02 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10119C061573;
+        Mon, 22 Jun 2020 14:01:02 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id a14so2352911qvq.6;
+        Mon, 22 Jun 2020 14:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=oZhUO+ZAaIMz3+KVR/ZsD5Vnn8OCWHlT+c5p4J2GXmo=;
+        b=BTi8eZROL1LcDkJ4uLRlZdAIoXl8jcYZf7bnV8iBInVhZtQLd3dXEAxJcm3tv0qsGO
+         yuYLshN7DwhGzBHZIU3OV7L5InV/AauvqFAEkv5UVBam2tS5lrHSTNkiGHxYsGxmlgRQ
+         Mt3XQ/ul84gJdFlRt3vgS6CxgetYO0Ov3bvZ+jeB7eV0RRgMFI3bdfOoPblOq77fJ4ey
+         LiOyEJlt0gbmaDXk9TtrNtpJunOi8UivkvRhoY2WLmE0riqPRSYfos0wGhTPfUWn3UoZ
+         3QDqkjwmk3UfWOV2us72TocdVoHA8iHceRg3Xj37+MGHAdngYws1tDYlTq7uNuHJV/na
+         8emQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=oZhUO+ZAaIMz3+KVR/ZsD5Vnn8OCWHlT+c5p4J2GXmo=;
+        b=ZaaWWEonhELQiGDeHc1xZcnXFR+8+vVLbe4drTD4pfiEvxsWyPZfkrvlcjfdyNhiyx
+         4+fefGYk4oVso+ZIAevuc1QWUzjA1alLjOzLCvsWoxCs6S9F6ObAWTw9y2SNl7P3JUgM
+         /9nEddNt1M85CiCG90UWSYeqqWIzYkuMvX1Sx7M9QxSJG2qtpBe3GWjptTeUrTCoeNXN
+         i/2iuDQ0NH2gsje861v0ekrD1IqtYQ6lZ2WrYm5vKw/shTk3CoERjGDfmkiQ3c5rx+IV
+         4gTB2VjF+XUXHTXnLE1xFsD4vb/Gx/AdSDuVTfSc6aGjbIqRf3/VHjZpCdVf+3XedKGq
+         OOwQ==
+X-Gm-Message-State: AOAM533YNLWj7E9FB7D6OvZ9JrTMcVccK1BupTS+MJ5+N73ubfEWokCc
+        WNtb2bAzPW2ygbcPL5Jhy1Y9n/mq
+X-Google-Smtp-Source: ABdhPJyk0C+T/nli67Z/9FBnFa0CIWcvptUBcfPJ9nEHxasA2SsnI/Y/XV8eJTVEShIIFolyNJiH/w==
+X-Received: by 2002:a05:6214:313:: with SMTP id i19mr23536569qvu.183.1592859661195;
+        Mon, 22 Jun 2020 14:01:01 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id o8sm3151298qkh.100.2020.06.22.14.01.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Jun 2020 14:01:00 -0700 (PDT)
+Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 05ML0xEr018803;
+        Mon, 22 Jun 2020 21:00:59 GMT
+Subject: [PATCH v1 0/6] Refactor path that sends error responses
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Mon, 22 Jun 2020 17:00:59 -0400
+Message-ID: <20200622205906.2144.43930.stgit@klimt.1015granger.net>
+User-Agent: StGit/0.22-31-g4b47
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200622114617.GU6578@ziepe.ca>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 08:46:17AM -0300, Jason Gunthorpe wrote:
-> On Fri, Jun 19, 2020 at 04:31:47PM -0400, Jerome Glisse wrote:
-> > Not doable as page refcount can change for things unrelated to GUP, with
-> > John changes we can identify GUP and we could potentialy copy GUPed page
-> > instead of COW but this can potentialy slow down fork() and i am not sure
-> > how acceptable this would be. Also this does not solve GUP against page
-> > that are already in fork tree ie page P0 is in process A which forks,
-> > we now have page P0 in process A and B. Now we have process A which forks
-> > again and we have page P0 in A, B, and C. Here B and C are two branches
-> > with root in A. B and/or C can keep forking and grow the fork tree.
-> 
-> For a long time now RDMA has broken COW pages when creating user DMA
-> regions.
-> 
-> The problem has been that fork re-COW's regions that had their COW
-> broken.
-> 
-> So, if you break the COW upon mapping and prevent fork (and others)
-> from copying DMA pinned then you'd cover the cases.
+There are currently two paths in the server's RPC/RDMA implementation
+for sending error responses. De-duplicate these two into one set of
+helpers.
 
-I am not sure we want to prevent COW for pinned GUP pages, this would
-change current semantic and potentialy break/slow down existing apps.
+---
 
-Anyway i think we focus too much on fork/COW, it is just an unfixable
-broken corner cases, mmu notifier allows you to avoid it. Forcing real
-copy on fork would likely be seen as regression by most people.
+Chuck Lever (6):
+      svcrdma: Fix page leak in svc_rdma_recv_read_chunk()
+      svcrdma: Remove save_io_pages() call from send_error_msg()
+      svcrdma: Add @rctxt parameter to svc_rdma_send_error() functions
+      svcrdma: Add a @status parameter to svc_rdma_send_error_msg()
+      svcrdma: Eliminate return value for svc_rdma_send_error_msg()
+      svcrdma: Make svc_rdma_send_error_msg() a global function
 
 
-> > Semantic was change with 17839856fd588f4ab6b789f482ed3ffd7c403e1f to some
-> > what "fix" that but GUP fast is still succeptible to this.
-> 
-> Ah, so everyone breaks the COW now, not just RDMA..
-> 
-> What do you mean 'GUP fast is still succeptible to this' ?
+ include/linux/sunrpc/svc_rdma.h         |  4 ++
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |  9 +--
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c   | 85 +++++++++++++++++--------
+ 3 files changed, 68 insertions(+), 30 deletions(-)
 
-Not all GUP fast path are updated (intentionaly) __get_user_pages_fast()
-for instance still keeps COW intact. People using GUP should really knows
-what they are doing.
-
-Cheers,
-Jérôme
-
+--
+Chuck Lever
