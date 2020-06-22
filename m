@@ -2,85 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA2F203A2F
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 17:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FE3203BEE
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 18:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgFVPAU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 11:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729484AbgFVPAU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 11:00:20 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3842C061573
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 08:00:19 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id p15so8052339qvr.9
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 08:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7qWHsC1j+rzytW5kRDQGFmoYRD1aIZmL/Kv0s0SNR6w=;
-        b=YL0a1NQJXLrRL8yKCfMAe/47DWKGBphODWARq7MM9OXVK0o513cDS7pcD9Z8EgCj8E
-         1zGC3nL8BsvIqH7SP1O8W2TZOZNS1GCfMZric6FfsR8YJy3ZfT/bEodq61fYAKzXpcdI
-         wZx+G57vC5bYmceE+gieKZFsu5ccOXAjpzC/mDEI7K37tRPDLzVqJewIGq4Ej+InPEtP
-         Jov68nuKluJUF8J/N56fmAKQz/1KOMUWQeBXZhLVVRDVPMms44j2gLYBJouGg2uzZZZB
-         KGtOOsZueJTo7Mbpf6PV/9V5y3wo90um6XcTxw1MzNdL1z5jr32zWO7Hea2nRHWwkQUp
-         UCRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7qWHsC1j+rzytW5kRDQGFmoYRD1aIZmL/Kv0s0SNR6w=;
-        b=X0EMN2TwsP9rxwV5AKloVhL2X22AEMJbz8Ox1B6kIBXfWKjV/lSOcxQrNfC3hf1Uu2
-         ZPjEIrKntr0mkc62nEW1wcik9mAnFExjM9W3aVY3r1icZj2ETBR4Kno/cSUuouAiE3EO
-         iXy9ZDBROhi8qHjXWAJfHppFMsqvtWppQJ1gT4GcjUddY8bkH+jMiiq+k6KwGU3QYKyH
-         CtiCw4xPF0eAIXA9kLtGJvbmpNS12HviW8IKFx8ncoEXbglQ1C0caSC4mHKHUmOt8/ss
-         XfpxbgNVEQK40n2VS+Hc4LYqhuXGglC/a/dIxC3vIvPmYUs3dtkFbR8Dk2Zq3kfRLcc4
-         t/Kw==
-X-Gm-Message-State: AOAM531pqWpPNTSC4Nc9IyMbCSiW7gjjccaBRypCty5u86iaqvf4JkPL
-        TWdv/TTYaxhabIWEIN+YIRYdXg==
-X-Google-Smtp-Source: ABdhPJyTNT72NG7ud9VRMg9gCZT0idzwPQsN5KAs4LjYU1Hf66xUwDITX+WFZ3FF7LTT5B6lw80/Gw==
-X-Received: by 2002:ad4:4763:: with SMTP id d3mr22435258qvx.232.1592838019158;
-        Mon, 22 Jun 2020 08:00:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l19sm14069098qtq.13.2020.06.22.08.00.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 08:00:18 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jnNvm-00BxjT-6E; Mon, 22 Jun 2020 12:00:18 -0300
-Date:   Mon, 22 Jun 2020 12:00:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Colton Lewis <colton.w.lewis@protonmail.com>
-Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com
-Subject: Re: Fwd: [PATCH] infiniband: correct trivial kernel-doc
- inconsistencies
-Message-ID: <20200622150018.GV6578@ziepe.ca>
-References: <5373936.DvuYhMxLoT@laptop.coltonlewis.name>
+        id S1729716AbgFVQCu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 12:02:50 -0400
+Received: from sonic302-21.consmr.mail.ne1.yahoo.com ([66.163.186.147]:43464
+        "EHLO sonic302-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729605AbgFVQCW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592841741; bh=cK2qy9Lv5SAgMg9nAvfVmkJPj46H3ss3vOVyjpHm6Nk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=imnMzKvnrwdEkzevY9v55JCHWrS7mFcRp2xLflBpdsWBX5v32iTt1Jwj292Sqyxc6zTWfVf6UW3RltjDxv8H8ZAxxFg96tpPBoXA2f/GRkfTuiNcUr3yDzOGiHeT9IqR//B+9C8c9YoGDJPnAeuuKcQvLl1HS8J+STK4/r0WZ3jbtWFF0MKDjydg+AbeXShoRDHqwsqAaAi7D9jDq8wNDWBIR81puaAh7APGDPK32RqjpFS85hxXrbmotW59Gm/gC9SoLB52q4udtwMI++FS4HYmIHt+kUh9tNcMAsNUvFYo0HWMN59EiLf7lYGm/4AR40adfmghUfkmt4dYpTZmZQ==
+X-YMail-OSG: AhKkJLAVM1lDQ3XPPTTJWpEw.A_YPk4v7tBrtMEv9XTYrBN0vKxPyUyPokZyCLH
+ 0NPJEnbM.Ixt5u0eXkMwZesEBqS.rCtCLJgnod2Yg.I9TXOm0suNzcmJ92mBaA3mHgRFUusjI.6E
+ 3Gu4LEq019.le8uhDgpgUZ.YgtmiKAQJK6Bd4WPLqozbdEc8urSPipLpvwJTvKec65xmptWyRiVv
+ 5wejfhjut7ltVV2EWvbGnxpPsKrHXW63gZY0z7W.qC8yTTTM6xXIAPM6OYdYDYNn.6t5yJFWlC1P
+ OIdbZEYbWLsjaYGAZ3nhw68imywZs7JgVqTzxfR4ZQQxpuo3K8t9CM9O0hpOCt10FP__XXwyrmrD
+ TCoCE7B_Edu3G.zjOUn_rksR4jYB.m1Rp.1vZ_bLxnQwCiAul5Wqfj8PNdUGzT.zvxnBCUVqWq9J
+ 8hXM6oMyn8gklCF.R8KCTVo6NRJRq4thjGWIexrpJEGu0QolvkJTIALFEd6_slAReLmAOEup3xKy
+ .77XY9y0L2WZlQcf1QY4ryEv90HkLK9R59Zd1MxuC8qefRgY6y6xUFmVBWO8SDJCCjnQpB48PRDP
+ pRTSfD8hEjxrcMoyLQRR8ik6SRBEuL1N.zoJ2juJT7TtdJItukcqyaFlw7VOC6cm49vWb13NtnZ0
+ gQ2bWEWTG5v0uAlc54_ulltpKs.Fgm6hkagBtyzunEJ52PGAuturV.LPWyLoBYPiB1KC1HlV8gI8
+ yJqtTplsyPL2eALndgi_xv5WXRslUdVun50zfx9iDK5v_kT1lyZrnl7BpPa5N7roHYs5FCR3fGlt
+ 00HJ7sf.lnan3Im8PEbT96k38NwI6o6wqQk3XTx1x0TOib38VwKLgaWNY916uiRI1upzFCMVqmW6
+ hKW.i_z2qDWeeQaZVyBhDmfLTpSCKpEZXqJt.HWEa0uB7F6lyRoT1rQEzhMY_zbISz6YbRmtNDlq
+ VLlEzjYA6uILpMVD7EkmwXGP0XOJgDIix93HShigByDXDbmOlbnVPelpKvxPRFg3gnhpf.0Rc47i
+ 08Ic.liUMCD9zHGFCga9cXgoGaM8kFbRyDB3CB8uLHuuV8rIwOstkm24RLt0t3H1wtfuP85AC7r8
+ v042NbRsPX1Mj80LTxFt.KStV8ND4Dc1.IiPBslhVUpEA9f2YrGnkjCHG4.U4j0M0U489djAouYX
+ y9F8lECiGIH30pwUi5p9NUzViYBtaTM7ID67rbGjIKdkEdFs14rCm3KSzct0U2izLUB1NerwsRiF
+ IQWasnNhp61WOxqpf4zyo6bEJMCV1B8QkTG.8HvHCcJtAwYQhWHkE5SwAzxSGopkwGBC4.Xf9
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Mon, 22 Jun 2020 16:02:21 +0000
+Date:   Mon, 22 Jun 2020 16:02:19 +0000 (UTC)
+From:   Karim Zakari <kariim1960z@gmail.com>
+Reply-To: kzakari04@gmail.com
+Message-ID: <1507214802.1850985.1592841739314@mail.yahoo.com>
+Subject: URGENT REPLY.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5373936.DvuYhMxLoT@laptop.coltonlewis.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1507214802.1850985.1592841739314.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 02:07:38AM +0000, Colton Lewis wrote:
-> Can someone please accept or comment on this patch?
-> 
-> 
-> Subject: [PATCH] infiniband: correct trivial kernel-doc inconsistencies
-> Date: Thursday, June 11, 2020, 1:45:06 AM CDT
-> From: Colton Lewis <colton.w.lewis@protonmail.com>
-> To: dledford@redhat.com
-> CC: trivial@kernel.org, Colton Lewis <colton.w.lewis@protonmail.com>
 
-Patches that are not sent to linux-rdma@vger.kernel.org won't get
-applied..
 
-Applied to rmda for-next
+Good-Day Friend,
 
-Thanks,
-Jason
+ Hope you are doing great Today. I have a proposed business deal worthy (US$16.5 Million Dollars) that will benefit both parties. This is legitimate' legal and your personality will not be compromised.
+
+Waiting for your response for more details, As you are willing to execute this business opportunity with me.
+
+Sincerely Yours,
+Mr. Karim Zakari.
