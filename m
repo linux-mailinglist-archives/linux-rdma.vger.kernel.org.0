@@ -2,109 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C69E2036B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 14:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67F72036F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 14:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbgFVM3S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 08:29:18 -0400
-Received: from mail-eopbgr20081.outbound.protection.outlook.com ([40.107.2.81]:65166
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        id S1728126AbgFVMjz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 08:39:55 -0400
+Received: from mail-eopbgr60066.outbound.protection.outlook.com ([40.107.6.66]:35809
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728101AbgFVM3R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:29:17 -0400
+        id S1726889AbgFVMjy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:39:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OJsUWZiSs1t+5lVfrNS/7kGXSIESZFgB1LSVNSRUHaA56GEPlaXcitGgQZ0SYecTR70F9ocsNFLS8GQ4mICDl0vxg5m5PDJUu71sGzaQVDkqsj6tzaajqkdIJuBw20NjMW9JFUcnQW8VmnXmQxBo421fuoMPxCCK9cbnDvQW06mEzuH8h65tNQ3oRKZjp7yUjhNAZ92phX233I2qQS2tr0vx8d4H+AS8L1K15yJxQSKWnuxvtsK1I1ugHYjjDNPPVuVT/pKlxmMvk30HSwumQUSKEOfnECfm0rAPPj6Y31cOC+WP5tHupqon2a2zhRho6E0Le6V0Y8WuzjTiZjVkZg==
+ b=AP0fIm8eIL6gBjbXpBT2M1dc0zOUDdqi8tBmcGBJTKOM4RJxGyEPdmBL+X8ODzJdV3IShu1wH2GgrOM7zPAtUkL/yfDw7DowuheyVpF6ZeHt1C0IU/ryN4xtOK3zVZFCUnKuG0tRBPhl3ni7DyWBD956kVif0EjzOt2pd8z+PlbzKjhwbVdvAF3SKqaWBk7TRQpUlIO+paxcErBmxQEVkLKZbIFMEnXiriihLcpIO1cTOIZZo1wkDXmMvG4OW0xNlwxvfvtL+QijZZT7OS+ZImMURBM1d72iDH6r8+Dyl9rsvuMcn0LsZC29KtmyH8T4ypBqsTDrbfMBw4JnSOb9JA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BT+22sNesJ/2/I78BgwmaxFP9y/Dxt0G5juQu0R7KLI=;
- b=YgTxoedAo/4wT1SudYT0JXShMEL4mcn0LiQkbtvBx0FYf74dEl1aAcKF7Q7MI44ngL3Y8v0PlbeWXfVNHxTOABQrpCpF6WwXi0Cd9Wvc+meNSOdUHJ5PU4Bfr31pMLlpVu6BQur9J01GluysW5kiSH+ux84PECYA+yDipPnW4jG2z9cXyR1ApOqPE+dnD6iKLsvNmugtHX3pmYz84Lh+prZTf40ZdLNoOISsLx3LlTEonsxriOGDpa2qbq5+YzB1HiRbHBgqqruYmgZpx0d+9uzDlptOerE9kfX7ZpfQGfalt9Ny9ZnAu7WgaxFma8LhNpKHaI5EXOtlOlbewDsR1Q==
+ bh=p1K3W9D2CAIdaMZ2eJJRaCFYV5/wZE+UtaAcLp9SRgs=;
+ b=T9EEnKTezHSS1HLgHSzQnTrwJhI/gEafwyffNFvEAgSn9xwFfnZotJ4xXxmnlVs52qH/eqlIsBUA4H1b2zuaoeTP0CPayKTRQPNnayHPbY0ZfwIM2JufHbIm9cEfp49wM+6vvFDXO6SZIhMrjPrp+Kidfdx/TAKJGzVCtEx6NHgq+UwCOJExkxsuBB/D7scTcz5WQpEB2+i8wS0Jfi7UZyFr94z5eU3Wnh4mEVNZLeS6cl565jUpI1gBbthcyfZSKMV2a/qWzkA8gWq2CXjhmWPmfn4NyLJEyJDRFBW29hKH3cP33NSXc8sziB0pQFnS3UyJ3KevnZgmLvZDRwQjAg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BT+22sNesJ/2/I78BgwmaxFP9y/Dxt0G5juQu0R7KLI=;
- b=Jcwq67ukxfSpIfFyJpYKlvPT1LzPRytRz+/1uuoTyzg9MOIKjuAqzZE4rH9lsSuHSK5p1ZbOALlZ8xvBBdUE4Qr0vL5T2K7KtPEXIud+p/G6Ii1zmYtEeZhkynyv67s3JWXykvmSl8xUvrOcr19RTjZJl5SxxzAsASM9LM0ryBI=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
+ bh=p1K3W9D2CAIdaMZ2eJJRaCFYV5/wZE+UtaAcLp9SRgs=;
+ b=pOaARyiZTEmm72NN0IdoN3cfSQp5FIJ1SGJv/d1SRevkRsh8Ni070O+5nwkdvkwM3QaQQvL1lBP5bV5fdjyIpyBKTp7FmyRAMWVoO1PJCT3vtwDIeVFglUivOZfKxmV/QoJa0ziSvdRBFQOGEH1bJKVoLtJmJ4Kiztp99sUMldM=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=mellanox.com;
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5566.eurprd05.prod.outlook.com (2603:10a6:803:9c::19) with
+ by VI1PR05MB4702.eurprd05.prod.outlook.com (2603:10a6:802:5b::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Mon, 22 Jun
- 2020 12:29:14 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.25; Mon, 22 Jun
+ 2020 12:39:50 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3109.027; Mon, 22 Jun 2020
- 12:29:14 +0000
-Date:   Mon, 22 Jun 2020 09:29:10 -0300
+ 12:39:50 +0000
+Date:   Mon, 22 Jun 2020 09:39:47 -0300
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 2/2] RDMA/core: Optimize XRC target lookup
-Message-ID: <20200622122910.GB2590509@mellanox.com>
-References: <20200621104110.53509-1-leon@kernel.org>
- <20200621104110.53509-3-leon@kernel.org>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH 00/16] mm/hmm/nouveau: THP mapping and migration
+Message-ID: <20200622123947.GC2590509@mellanox.com>
+References: <20200619215649.32297-1-rcampbell@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200621104110.53509-3-leon@kernel.org>
-X-ClientProxiedBy: BL0PR02CA0011.namprd02.prod.outlook.com
- (2603:10b6:207:3c::24) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+In-Reply-To: <20200619215649.32297-1-rcampbell@nvidia.com>
+X-ClientProxiedBy: BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0011.namprd02.prod.outlook.com (2603:10b6:207:3c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 12:29:13 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jnLZW-00BsvS-Mx; Mon, 22 Jun 2020 09:29:10 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 12:39:50 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jnLjn-00Bt6R-52; Mon, 22 Jun 2020 09:39:47 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0955e81e-696f-4667-0658-08d816a7df73
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5566:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB556696BC08DA4691D227AE38CF970@VI1PR05MB5566.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Office365-Filtering-Correlation-Id: 751cebd9-7b35-46be-0431-08d816a95b0a
+X-MS-TrafficTypeDiagnostic: VI1PR05MB4702:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB470271E4FEB6E385D7F352E4CF970@VI1PR05MB4702.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-Forefront-PRVS: 0442E569BC
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Skd0a0GXtFJsCstyFJT9BBgn/QeVvE96MYCfJKKAQTbGxITY+pf+MxlvvdLdPPNaDOQQDhMj1x+89tPCvZqfYvj4/z+tdefqZFf79i1Daw5HcgpdJanmDHewf8epPishGG56Zx434hDeAxnKdJbifrRJY61DIo/okMM+1RmHOlkexwKtcKhTrONQi7W3n9R1t5z74J15jUpw4T4sAOJOFAMLW2US7xpl/jUsaJSiCkwWqEjlWgiYoATn44zLX8K0uAm7vLKdBF4H0wfVur/LaMAg9+co9r9xytJ+dEAVjGzNblgmoknswRBSVH9pN4bsPCuRCjbZHQvfCiKFJTBUCA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(4326008)(26005)(36756003)(8936002)(186003)(5660300002)(6916009)(8676002)(2616005)(4744005)(426003)(9786002)(9746002)(33656002)(86362001)(66946007)(66476007)(66556008)(2906002)(316002)(1076003)(54906003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: loBdClUodBVzYyTuDzRpnTck30Ubfbh3VBUpl7pSCfIMd82jgm80B28Hxp27SOgHFQ2FR4qcxB8C/rvCblL1BImkDFhWK2zN5hHS+uV5K9SEVoMGFgBqaK2jfGgqBWUVqD/nr5jodZ3iZXyEPyYCVteSUPxftl8i38t2ezeBv6/D7NE9lF9+D8gc25D7I4jTKfJ7VTDJcO521pCFjilMpJmXdpqx2pjC9+YWcnUf8Ahc2+WvV2826LcLR0sWxR09TS+ZKm9AuGNIq79dyJrLEYuFEpBtvKuVxtK9KczB+qZWxwxB1f1DfSS+3L6ro5fdF7jc7as/RdUqj1bUfksUQJtXPjCUWVIcwRnmU5fCf07Pgn3pfGfbd5oFTj10xq3gXv9XoUGXZxMFR314V9QiPQb6zvvkoy5iz2alV5A0w6z5Yi7cplWHUeuPgIRaO5nX5k48RB9KrxHoEzSVDokdasnKoVoIP2tay0TrZCt8enQ=
+X-Microsoft-Antispam-Message-Info: pMHw3hZKMymfaINzJj5CBQbB3lHLKD46VbCUtqy53Q69xeSoFrISsbudZYm57hKL9HTQ2aqcIF/xfOa/FUUzMRf1xqfNVpWhzzFzCC8Y3H8SKYuYThujhsTqUEbMAsyApFS0NAqn27AEC9b/g1IxXXtQ8MsiWJ8BrhtJhZ/WFz3vmNXBPmvidh4CmFzVmjzXhuighDOD15Fj6fiPd9zWPx3ekdsBnzLBPW7p/aZiCYNJWwMnXFrRMkShLdH5alaODiJ9a3i6xajnJzKgxdzxP1hqDSYpCpnXRRDjTHMexH5qIlPaTJdu8JFhRosCuiIOysewn81ExFVDOQA9JUhkJw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(366004)(376002)(396003)(39860400002)(8936002)(6916009)(186003)(26005)(1076003)(316002)(426003)(4326008)(8676002)(54906003)(83380400001)(2906002)(33656002)(5660300002)(9746002)(9786002)(36756003)(86362001)(2616005)(66476007)(66946007)(66556008)(478600001)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tLNNxONQZO6jW+hpHfyZgIH4ekJEEY76iBbMYz/8FNO3wxQPzfWFq3Odq7G4TWT6ABx+FHBvHZwmz8kx3UjhKDksB7vj94wbWU+LQDYv0V5WvLaMkJQsXGFSj3jgmu7hDEXxHrbgpdUW5i93VB3NguMA1Oa4MKTWBVD8jNQNkdG3X/X8EP3XTWb4LgFI58kENa4x4U6n/zUmPWQvERH971WippoG425mD9tdpWq4Qo5C3n5urcpRbQurRf2Sj1MURdQfEwb10irvDYfWPCdshUbE3q6gLfPsJrOHez+yAa4MJ2J3wTZBNXjbbdvV/0zycr4BL5Drtu25Dx62pSSuqMnOC39+AVXTYMPIlqTdkuT+pmNmjbuAPnAiPG6ouIWKI/Ngt/m+ZDclKT1Zw5GJ0DOW66kV5Uiu8BuQzWygmNy016o7AQ8Gjy9qcA6Ud3PA39PjkQc+DEXPdvBkHvPXO5OWwC/i8tM0ja7JpaZPGP8=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0955e81e-696f-4667-0658-08d816a7df73
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 12:29:13.9430
+X-MS-Exchange-CrossTenant-Network-Message-Id: 751cebd9-7b35-46be-0431-08d816a95b0a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 12:39:50.8090
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rqkzYX0zWEOciT9/0bLfDJgbNHztQ2eHZUjphj7RnRordlaL68NNZExelEiDXbdMIexzM6oNKtE6bwa+yvc73w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5566
+X-MS-Exchange-CrossTenant-UserPrincipalName: NLiVITWOJzttNzWnX+aFlNoYNmvhsxk0rQ5aLv4lUo/rd3WlD+tL/RYu4y/qiU7gmFVLwyBOB+qC4ZS5L4BP1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4702
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 01:41:10PM +0300, Leon Romanovsky wrote:
-> @@ -2318,19 +2313,18 @@ EXPORT_SYMBOL(ib_alloc_xrcd_user);
->  
->  int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata)
->  {
-> +	unsigned long index;
->  	struct ib_qp *qp;
->  	int ret;
->  
->  	if (atomic_read(&xrcd->usecnt))
->  		return -EBUSY;
->  
-> -	while (!list_empty(&xrcd->tgt_qp_list)) {
-> -		qp = list_entry(xrcd->tgt_qp_list.next, struct ib_qp, xrcd_list);
-> +	xa_for_each(&xrcd->tgt_qps, index, qp) {
->  		ret = ib_destroy_qp(qp);
->  		if (ret)
->  			return ret;
->  	}
+On Fri, Jun 19, 2020 at 02:56:33PM -0700, Ralph Campbell wrote:
+> These patches apply to linux-5.8.0-rc1. Patches 1-3 should probably go
+> into 5.8, the others can be queued for 5.9. Patches 4-6 improve the HMM
+> self tests. Patch 7-8 prepare nouveau for the meat of this series which
+> adds support and testing for compound page mapping of system memory
+> (patches 9-11) and compound page migration to device private memory
+> (patches 12-16). Since these changes are split across mm core, nouveau,
+> and testing, I'm guessing Jason Gunthorpe's HMM tree would be appropriate.
 
-Why doesn't this need to hold the tgt_qps_rwsem? 
+You need to break this up into parts that go where they need to
+go. Nouveau rc changes should go to DRM or some series needs to
+explain the linkage
+
+> Ralph Campbell (16):
+>   mm: fix migrate_vma_setup() src_owner and normal pages
+>   nouveau: fix migrate page regression
+>   nouveau: fix mixed normal and device private page migration
+>   mm/hmm: fix test timeout on slower machines
+>   mm/hmm/test: remove redundant page table invalidate
+>   mm/hmm: test mixed normal and device private migrations
+>   nouveau: make nvkm_vmm_ctor() and nvkm_mmu_ptp_get() static
+>   nouveau/hmm: fault one page at a time
+>   mm/hmm: add output flag for compound page mapping
+>   nouveau/hmm: support mapping large sysmem pages
+>   hmm: add tests for HMM_PFN_COMPOUND flag
+>   mm/hmm: optimize migrate_vma_setup() for holes
+
+Order things so it is hmm, test, noeveau
+
+>   mm: support THP migration to device private memory
+>   mm/thp: add THP allocation helper
+>   mm/hmm/test: add self tests for THP migration
+>   nouveau: support THP migration to private memory
+
+This is another series, you should split it even if it has to go
+through the hmm tree
 
 Jason
