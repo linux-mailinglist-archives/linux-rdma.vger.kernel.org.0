@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1F220333D
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 11:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DB020335B
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jun 2020 11:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgFVJXu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 05:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        id S1726070AbgFVJbx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 05:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgFVJXu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 05:23:50 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945B6C061794
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 02:23:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q5so3494364wru.6
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 02:23:49 -0700 (PDT)
+        with ESMTP id S1725819AbgFVJbw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 05:31:52 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AD8C061794
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 02:31:51 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id r9so14177311wmh.2
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 02:31:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=arDlHfH9mXRdOjy1S+M6wMmFsjcdcTsSs0GVyiEzDOQ=;
-        b=NRDaGFVkR5lArEnt/LmY46pvJZIwteT/LaQMkoL3ht3ZUWL5k19Pyhw7nJn7AkBeSq
-         /VaXnqXHv3iyaOifoxEcHkmw6j+1W/54XeT+g0M0j//NJYL92AYHPzcKhoUXQvMLdgHu
-         2alv9p1DAlACgujd5gyux3kB1+oE41LiRiSFTdz3FUGNUSEjg6UWizwCFdpvID84ybqw
-         cJuTIIWFf51UbUG1kc/rUPWdIaj7SpT2cPnZVCwSkh0JRO4TpdH3SWYApjKG01fP+10s
-         ruNac5jORzMQLVnkAypo8RoZLj20/4nPK5HgmGg1AkUv99mdliFWVac3Ciz8jGLEwqbb
-         cocA==
+        bh=YLWgkgrgynaQs324bfzM58o2pA3MybQmz35lA2dR2Q0=;
+        b=XBvqquNjZMJdjZBlCHZamwf80vYzsodrlpmbFpbMsIX4q5wlFesdXbi72FKs4pvDok
+         JrI+Q0iXTqYqLYteoNgFFbX5Erq9ceBt9qLqTsyT9Jr39NzRHc+szQbph1uvgmIlRmnU
+         MYXyDYhAy4fMORORvnzI7q9U6i4h/EnnqAVLOtRDkj47wsIcE3kTA2JSyHLB57K8Bklp
+         reW6gzLjSkX6JPQDJINEpxw4smMg9HKwOy/qiCFJxwXYdP30I8rAxzYwMVhIgF3B2fWv
+         8gXejkCMDlPix4HT13RwTlTDnOpPg9hxF75Lm+8AijLJcFjwUcio6573A+9yXX+m/RXJ
+         NIMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=arDlHfH9mXRdOjy1S+M6wMmFsjcdcTsSs0GVyiEzDOQ=;
-        b=Of2NfqjEcQtnhOM8nzSjqmAdrL1emSooYuQ8R38xkmffDB11EwK7ibhCuZ3Nr9SKXS
-         gyDwThrD9400QdWNoeXC1W/JmvZlh981xJuU3MvVCzRiF71XDGIZXLhU9S10dGmk4AIM
-         ZaxEJAj9aRlVdOAgQG8zmg0eDTxbHhKo8ZuzEk44aOAMOqNkO7J7jqgcBP9VyQ42XCfN
-         RMcaBniwXkBmX9PLnlr3X4AOMcB8HYlQRkskc6WIuB/6QTUua2BQULGlgiqtNYJtjfQr
-         L4H261xv50VB4iPOaum6oFfnncADZ4dgWYHifMvvOk4Fxmc0atQkxBwyozyhAIlNk0oE
-         gv4w==
-X-Gm-Message-State: AOAM532MV2cVm3Q24dIAr/MnB1FdGYhiyhCMIN8fKk4XIHZD6b5/LTGh
-        WHpdEbIG1BjYz6OdMLNnd1rFomac
-X-Google-Smtp-Source: ABdhPJycUM5qnRz9NruBEKIXNb/0pIUO9xnRYHOYsawSqP54b9kSe++inaPScPrR5drCcQ6brNbcow==
-X-Received: by 2002:a05:6000:90:: with SMTP id m16mr18734277wrx.191.1592817828194;
-        Mon, 22 Jun 2020 02:23:48 -0700 (PDT)
+        bh=YLWgkgrgynaQs324bfzM58o2pA3MybQmz35lA2dR2Q0=;
+        b=Cfg7UY/qbL1NcTpChiAbqEitz7OaUHR5/Eq7rLq1pFV/472uuoHrZhwZLb4pjnQjRO
+         kuy2LQFxPZyMDLMkeUgfkc+Vl9unbetwBoSSrAq1n8Q5CvwrLnbRGu7T30iGJ5VQDEoI
+         r2oPE6lVnjIYEIQ+faELGdluAopp6QPeMouKe0D5G3xK6H4H6RHTPSYAzUCFCNReb50V
+         jlwwkWNCndh22wMeC4g7KUhAQF0ez1v4YuCG9vUyaT4EWby+9tJiDSA7L/4Tumt2uki5
+         XBUgPpzC2VvugLRRkfcqsU2n/slCxHYhtLuw1OR9axfYtTReiFLHBiRx3eWxURpVw51Q
+         Hz1g==
+X-Gm-Message-State: AOAM530X/TEpC/cOJpcKapddHJ8LYW5pLO/KYgwBymoW1q3AmgTethxo
+        7CGAZjSyeosWEuIfk8Lph35wStrg
+X-Google-Smtp-Source: ABdhPJzksAVGgF1CW1H/dkIjtcu2ou+WBMATlEimxgtC8eQ+sdhXwfzjFIy/JvexL2tqaYTki8IGnw==
+X-Received: by 2002:a1c:2d54:: with SMTP id t81mr18651161wmt.154.1592818309644;
+        Mon, 22 Jun 2020 02:31:49 -0700 (PDT)
 Received: from kheib-workstation.redhat.com ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id i15sm16943962wre.93.2020.06.22.02.23.47
+        by smtp.gmail.com with ESMTPSA id 104sm17394726wrl.25.2020.06.22.02.31.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 02:23:47 -0700 (PDT)
+        Mon, 22 Jun 2020 02:31:49 -0700 (PDT)
 From:   Kamal Heib <kamalheib1@gmail.com>
 To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+Cc:     Zhu Yanjun <yanjunz@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next] RDMA/ipoib: Return void from ipoib_mcast_stop_thread()
-Date:   Mon, 22 Jun 2020 12:22:56 +0300
-Message-Id: <20200622092256.6931-1-kamalheib1@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Remove unused rxe_mem_map_pages
+Date:   Mon, 22 Jun 2020 12:31:31 +0300
+Message-Id: <20200622093131.9238-1-kamalheib1@gmail.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,49 +63,80 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The return value from ipoib_mcast_stop_thread() is always 0 - change it
-to be void.
+This function is not in use - delete it.
 
 Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- drivers/infiniband/ulp/ipoib/ipoib.h           | 2 +-
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 4 +---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h |  3 --
+ drivers/infiniband/sw/rxe/rxe_mr.c  | 44 -----------------------------
+ 2 files changed, 47 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
-index 9a3379c49541..15f519ce7e0b 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib.h
-+++ b/drivers/infiniband/ulp/ipoib/ipoib.h
-@@ -527,7 +527,7 @@ void ipoib_mcast_send(struct net_device *dev, u8 *daddr, struct sk_buff *skb);
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 775c23becaec..238d6a357aac 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -132,9 +132,6 @@ struct rxe_mem *lookup_mem(struct rxe_pd *pd, int access, u32 key,
  
- void ipoib_mcast_restart_task(struct work_struct *work);
- void ipoib_mcast_start_thread(struct net_device *dev);
--int ipoib_mcast_stop_thread(struct net_device *dev);
-+void ipoib_mcast_stop_thread(struct net_device *dev);
+ int mem_check_range(struct rxe_mem *mem, u64 iova, size_t length);
  
- void ipoib_mcast_dev_down(struct net_device *dev);
- void ipoib_mcast_dev_flush(struct net_device *dev);
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 9bfa514473d5..86e4ed64e4e2 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -680,15 +680,13 @@ void ipoib_mcast_start_thread(struct net_device *dev)
- 	spin_unlock_irqrestore(&priv->lock, flags);
+-int rxe_mem_map_pages(struct rxe_dev *rxe, struct rxe_mem *mem,
+-		      u64 *page, int num_pages, u64 iova);
+-
+ void rxe_mem_cleanup(struct rxe_pool_entry *arg);
+ 
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index e83c7b518bfa..a63cb5fac01f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -587,47 +587,3 @@ struct rxe_mem *lookup_mem(struct rxe_pd *pd, int access, u32 key,
+ 
+ 	return mem;
  }
- 
--int ipoib_mcast_stop_thread(struct net_device *dev)
-+void ipoib_mcast_stop_thread(struct net_device *dev)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
- 
- 	ipoib_dbg_mcast(priv, "stopping multicast thread\n");
- 
- 	cancel_delayed_work_sync(&priv->mcast_task);
+-
+-int rxe_mem_map_pages(struct rxe_dev *rxe, struct rxe_mem *mem,
+-		      u64 *page, int num_pages, u64 iova)
+-{
+-	int i;
+-	int num_buf;
+-	int err;
+-	struct rxe_map **map;
+-	struct rxe_phys_buf *buf;
+-	int page_size;
+-
+-	if (num_pages > mem->max_buf) {
+-		err = -EINVAL;
+-		goto err1;
+-	}
+-
+-	num_buf		= 0;
+-	page_size	= 1 << mem->page_shift;
+-	map		= mem->map;
+-	buf		= map[0]->buf;
+-
+-	for (i = 0; i < num_pages; i++) {
+-		buf->addr = *page++;
+-		buf->size = page_size;
+-		buf++;
+-		num_buf++;
+-
+-		if (num_buf == RXE_BUF_PER_MAP) {
+-			map++;
+-			buf = map[0]->buf;
+-			num_buf = 0;
+-		}
+-	}
+-
+-	mem->iova	= iova;
+-	mem->va		= iova;
+-	mem->length	= num_pages << mem->page_shift;
+-	mem->state	= RXE_MEM_STATE_VALID;
 -
 -	return 0;
- }
- 
- static int ipoib_mcast_leave(struct net_device *dev, struct ipoib_mcast *mcast)
+-
+-err1:
+-	return err;
+-}
 -- 
 2.25.4
 
