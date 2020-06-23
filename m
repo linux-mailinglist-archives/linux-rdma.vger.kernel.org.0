@@ -2,170 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD08820583D
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 19:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D04A205834
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 19:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732961AbgFWRGE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jun 2020 13:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732408AbgFWRGE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 13:06:04 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34D5C061573
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 10:06:03 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id rk21so6000799ejb.2
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 10:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vMxT7cX2X2rczc7YLv40ENChlI/f1PdJoDYIHhDc298=;
-        b=hOY22Vo9ltCw4cc9sz094t1VBD6gDr8/uBf6glEGxlZjBIVwvFYCM+QsI97CwV5bpD
-         mgxH6jyII+OKssj9qvd+2mh5vqetjwQhscNYVBobKpR4UhP87WKZmVYrCB4/MryagjZr
-         LxOTi2mW8s96U6HP2YPVyvSBXxyfQl1yur+mRRTp8P/JUk5gum2g/NElgGihotZThcy2
-         cZ3TM3bE7zUQgP7yOMHnXu81pxLhwCdgf6PHT7+qGpLL1xVLHEGpfEjbBvYrvw5xB/Kn
-         LCi5Xg+FUtjMzMWfM3sam3myp128BFOdkA6X8EpjQ0UcaUFefZLZ9pUCdI8+lchhpTLI
-         yP+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vMxT7cX2X2rczc7YLv40ENChlI/f1PdJoDYIHhDc298=;
-        b=to4ApTYL9ZLqHYdfQMUWpqnHCTAy1pFsBU0kaZPlH1AyRDm0pZV02al3utet+TKp0q
-         RUXQy2cqMej30svOHc7ZkE/JmOaZ5Krwf+vAo5vSiLOAiQl7T1OlQ7NCP0P7P4rIh+IV
-         yTWMnsz3LawdKgXi9A0RZO9FYWsoFeTPl2sQmvAgjXSlUK1jxeaTdAjQvjoeEFMQRqbW
-         HussPznctK/FgLLMIoZfjcCkZx3eFNLeGaw8LJhgZG0fdRY2cxKY3cEMYE2nuJgZ1jHx
-         iskcpHfyQGgPzIv1o232BdWzrQ7ioolDIUavMi1FQ9/3oe1HBdiSSVxO/euT4vh+5XKx
-         c0CQ==
-X-Gm-Message-State: AOAM531iyjk99t8TyXbC04oHvGdO7JlKzLBR5dSZYPjEu+KMDbbIc8/H
-        bAkZDfkDDtWvK4SbNhslFIhLlIplCXgFLhRmq6eF1Q==
-X-Google-Smtp-Source: ABdhPJxhlyLlLEC19v3KYDdthGs/w3KYM9NA6wGXoX5kRl5bYCDFa6Ym6IMFXHONZ/H2nm2M2W/uiAaHlYjMhIBAWAE=
-X-Received: by 2002:a17:906:edb3:: with SMTP id sa19mr14573113ejb.21.1592931962079;
- Tue, 23 Jun 2020 10:06:02 -0700 (PDT)
+        id S1728916AbgFWRE1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 13:04:27 -0400
+Received: from mail-eopbgr20054.outbound.protection.outlook.com ([40.107.2.54]:13189
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733043AbgFWREW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:04:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ism7TNWVI4Bo7tv1Fo4uqLAOprJgTu5gZtBGoiDUP7/i21eYY+2GlwiP5buPR8tFwH5IyzJARQQW987evMcjAm/5QxTCtICY4aqEI/AST9OP/q+3gTCRaGLZckWWBkqXiSMYAU4lRnNFrtvBDZImjmR3GjTcIuttEx8ewU3gE/0OK7DnFVX3v+yc6bYI/Mc3M7yERXwO462JbbpFlaPiJKCAN+seoIv4HRgzkOr9Cne/4+Od5c7yKgUN3Fhdr3hhM9L/OxzRaweGOXpcuEQVIW8dZOTZKxY7zPbDoupQ3KIHDJioXD3T2h2Fng+n6zm9HlywY58yUXCt+Ypga3Zl0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nmL5LUrvGNv+E+YzcrkzJ9/zwWMeTn3ON9VMJEaHw7U=;
+ b=G0iP0vhTfHb5EjK5FpdxJZaYAQAgmyvolEH/hraPbskudDX3jQhhEDQledWHhyw2c95/QpW20uMHY2u1JolW2advVxiNg2cgUf53PiraE+J4swWdcHusi5yR6vTm5uf0j6YW+EYnbwyGRPAc1yPg+aAeYZrg3spwDzdrVRTQvNcd3COjnrap43lWoiDaZlE5jv4kBzYvX0l29dYGqw3q9immy4iO1NyS7PxwaycUienrWPuwrGJYtB8XIwekMUFIvBh8NtVXnzbhXZUIHcDuJYVQlmBoYtOfyqnELy/Ubel/RIuW4o436XFXNyvdSldK79UOBC7bQfcFefWLDv64oA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nmL5LUrvGNv+E+YzcrkzJ9/zwWMeTn3ON9VMJEaHw7U=;
+ b=eeU6cLhHg23/d/f/3AY18DjaQMZ57ZcUd4YKhnpcUpEx7HMY7lJbzdMsxcMR6KpqQ6PZ2oBoyj6Ivh0eNcZwNkLN/VbAbZVL6KGzj+rOrGN35eUrLG22wZx9fjHSa+ySxj4r0d0EWgzE7LfTeWRVxjY1/sEcK7OuqcCklXerjX4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB4783.eurprd05.prod.outlook.com (2603:10a6:802:5b::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Tue, 23 Jun
+ 2020 17:04:17 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3131.020; Tue, 23 Jun 2020
+ 17:04:17 +0000
+Date:   Tue, 23 Jun 2020 14:04:10 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>
+Subject: Re: [PATCH rdma-next v3 00/11] RAW format dumps through RDMAtool
+Message-ID: <20200623170410.GI2874652@mellanox.com>
+References: <20200623113043.1228482-1-leon@kernel.org>
+ <20200623141957.GG2874652@mellanox.com>
+ <20200623142727.GB184720@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623142727.GB184720@unreal>
+X-ClientProxiedBy: BL0PR01CA0020.prod.exchangelabs.com (2603:10b6:208:71::33)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
 MIME-Version: 1.0
-References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
- <20200617112811.GL2383158@unreal> <20200617182046.GI6578@ziepe.ca>
- <20200617190756.GA2721989@unreal> <20200617192642.GL6578@ziepe.ca>
- <CAJpMwygeJ7uaNUKxhsF-bx=ufchkx7M6G0E237=-0C7GwJ3yog@mail.gmail.com>
- <CAJpMwyjJSu4exkTAoFLhY-ubzNQLp6nWqq83k6vWn1Uw3eaK_Q@mail.gmail.com>
- <CAJpMwygqz20=H7ovSL0nSWLbVpMv-KLOgYO=nRCLv==OC8sgHw@mail.gmail.com>
- <20200623121721.GZ6578@ziepe.ca> <CAJpMwyj_Fa6AhYXcGh4kS79Vd2Dy3N7B5-9XhKHn4qWDo-HVjw@mail.gmail.com>
- <20200623142400.GB6578@ziepe.ca>
-In-Reply-To: <20200623142400.GB6578@ziepe.ca>
-From:   Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Date:   Tue, 23 Jun 2020 17:05:51 +0530
-Message-ID: <CAJpMwygDGpzmhzeYcy=14sBneSriBcRT6B2sO1rubkQLRKnOjA@mail.gmail.com>
-Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
- late_initcall level
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>, dledford@redhat.com,
-        kernel test robot <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (193.47.165.251) by BL0PR01CA0020.prod.exchangelabs.com (2603:10b6:208:71::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Tue, 23 Jun 2020 17:04:17 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jnmLC-00CxEv-L4; Tue, 23 Jun 2020 14:04:10 -0300
+X-Originating-IP: [193.47.165.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e2d614cb-c1f3-4ff8-3281-08d8179776c9
+X-MS-TrafficTypeDiagnostic: VI1PR05MB4783:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB47831EC3CA44BB748A2AE3CACF940@VI1PR05MB4783.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:820;
+X-Forefront-PRVS: 04433051BF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fY685WE4JUX4qJ5DjnhUtTBfbjEpwNA/rcS1+6fGIOsvd9atpj1cUNOEEBFJK46XEmWjs0OPP5zic0iFmBHHVDhDKgOCWZHqbyGmJZHY4QsEJmp5icXOO5bMDI5dMYd93m7e7IfRRNsu2yg/E0Y5YElxNEqDKi2iQCtKIiXNZnQ07i0EhqmFTj6lICTosX+DgPBbXfMarrYyaShgQpTdgDYbggEKcyKd8MEplKPaLhX9OwRgzwY1Zxi/UPmsr9iWX3NmOebDDERXJ0eMAZ1eJiPa07IoeQin5709foFHDg459Rxf26Z0T2HAvV+YpBbZVQ0KWEYfdHa3uAlKanvJZ5b9gu4yfsr7Oxe6yDqVxL6sLALXHwGQO4tmie2dMYJ60MgobgyPfKLe9rvUvqun6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(136003)(346002)(396003)(376002)(366004)(316002)(26005)(33656002)(54906003)(66556008)(66476007)(66946007)(86362001)(5660300002)(426003)(4326008)(966005)(478600001)(186003)(6916009)(1076003)(2906002)(2616005)(9746002)(9786002)(8676002)(36756003)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: XxS354DRTz65+C9xvsPakQnR5cYP8pNF+zH2zb+XdIkuCFCdcpk7M1LWbKqIH0d/MdeqhxQO1JvClDD2t3OftrDZQkdUFG6UXBDzebd2WC0d6Y6ZpCG+zijHQkqpVUbM1QS0EjIn5+Y87TOshDSEaRJrdf8tTqsLAt4UjhhEbhm6/tlP0Bf5DRjsaP1crblYZpJMIZ7Xo9SXZ/Hx0c7CV86amVrhwsMjTKt5RBdBZngteJK5E/zxsHmmCrUZi9QX218mHR8ms2+vzCsLmHn3jo8sRuKJ6EhEj+Ly0BFUQPyi+mapg5l8UVjznd1LcpOEMzxhQ8boU38KD4jEQLE0mGg2KTIlpTI9Wylrn4s5nQaxZAOd6eepyM1BJBeXK2SmP9+HMs3DcdIud3L3XOVTzeBzf9flA6s1/qAEefYz5FZ6c7YqzU6jAUI7fHoejvBGF3U0Y6I/Pn+vI84enh2yw/oC5lR2G0x6JomFqtivRk4kl7rKG2170dwwu1EeXhat
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2d614cb-c1f3-4ff8-3281-08d8179776c9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 17:04:17.5011
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rs5dK6/ivAS8kTfPfABdV6i+DkkR81/0hcgtOxe2ZObTJnCdj5E2N6W8ewt8ieA0oRhCal4Nh4HM6xouphKKFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4783
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 7:54 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jun 23, 2020 at 07:15:03PM +0530, Haris Iqbal wrote:
-> > On Tue, Jun 23, 2020 at 5:47 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Jun 23, 2020 at 05:27:27PM +0300, Leon Romanovsky wrote:
+> On Tue, Jun 23, 2020 at 11:19:57AM -0300, Jason Gunthorpe wrote:
+> > On Tue, Jun 23, 2020 at 02:30:32PM +0300, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@mellanox.com>
 > > >
-> > > On Tue, Jun 23, 2020 at 03:20:27PM +0530, Haris Iqbal wrote:
-> > > > Hi Jason and Leon,
-> > > >
-> > > > Did you get a chance to look into my previous email?
+> > > Changelog:
+> > > v3:
+> > >  * Rewrote query interface in patch "RDMA: Add support to dump resource
+> > >    tracker in RAW format"
+> > > v2:
+> > > https://lore.kernel.org/linux-rdma/20200616104006.2425549-1-leon@kernel.org
+> > >  * Converted to specific nldev ops for RAW.
+> > >  * Rebased on top of v5.8-rc1.
+> > > v1:
+> > > https://lore.kernel.org/linux-rdma/20200527135408.480878-1-leon@kernel.org
+> > >  * Maor dropped controversial change to dummy interface.
+> > > v0:
+> > > https://lore.kernel.org/linux-rdma/20200513095034.208385-1-leon@kernel.org
 > > >
-> > > Was there a question?
-> >
-> > Multiple actually :)
-> >
 > > >
-> > > Jason
+> > > Hi,
+> > >
+> > > The following series adds support to get the RDMA resource data in RAW
+> > > format. The main motivation for doing this is to enable vendors to return
+> > > the entire QP/CQ/MR data without a need from the vendor to set each
+> > > field separately.
+> > >
+> > > Thanks
+> > >
+> > >
+> > > Maor Gottlieb (11):
+> > >   net/mlx5: Export resource dump interface
+> > >   net/mlx5: Add support in query QP, CQ and MKEY segments
 > >
-> > In response to your emails,
-> >
-> > > Somehow nvme-rdma works:
-> >
-> > I think that's because the callchain during the nvme_rdma_init_module
-> > initialization stops at "nvmf_register_transport()". Here only the
-> > "struct nvmf_transport_ops nvme_rdma_transport" is registered, which
-> > contains the function "nvme_rdma_create_ctrl()". I tested this in my
-> > local setup and during kernel boot, that's the extent of the
-> > callchain.
-> > The ".create_ctrl"; which now points to "nvme_rdma_create_ctrl()" is
-> > called later from "nvmf_dev_write()". I am not sure when this is
-> > called, probably when the "discover" happens from the client side or
-> > during the server config.
-> >
-> > It seems that the "rdma_bind_addr()" is called by the nvme rdma
-> > module; but during the following events
-> > 1) When a discover happens from the client side. Call trace for that looks like,
-> > [ 1098.409398] nvmf_dev_write
-> > [ 1098.409403] nvmf_create_ctrl
-> > [ 1098.414568] nvme_rdma_create_ctrl
-> > [ 1098.415009] nvme_rdma_setup_ctrl
-> > [ 1098.415010] nvme_rdma_configure_admin_queue
-> > [ 1098.415010] nvme_rdma_alloc_queue
-> > [ 1098.415032] rdma_resolve_addr
-> > [ 1098.415032] cma_bind_addr
-> > [ 1098.415033] rdma_bind_addr
-> >
-> > 2) When a connect happens from the client side. Call trace is the same
-> > as above, plus "nvme_rdma_alloc_queue()" is called n number of times;
-> > n being the number of IO queues being created.
-> >
-> > On the server side, when an nvmf port is enabled, that also triggers a
-> > call to "rdma_bind_addr()", but that is not from the nvme rdma module.
-> > may be nvme target rdma? (not sure).
-> >
-> > Does this make sense or am I missing something here?
->
-> It make sense, delaying creating and CM ID's until user space starts
-> will solve this init time problme
+> > It looks OK can you apply these too the shared branch?
+> 
+> Thanks, applied.
+> 
+> 608ca553c9a2 net/mlx5: Add support in query QP, CQ and MKEY segments
+> d63cc24933c7 net/mlx5: Export resource dump interface
 
-Right, and the patch is trying to achieve the delay by changing the
-init level to "late_initcall()"
+Applied to for-next, thanks
 
->
-> >
-> > > If the rdma_create_id() is not on a callchain from module_init then you don't have a problem.
-> >
-> > I am a little confused. I thought the problem occurs from a call to
-> > either "rdma_resolve_addr()" which calls "rdma_bind_addr()",
-> > or a direct call to "rdma_bind_addr()" as in rtrs case.
-> > In both the cases, a call to "rdma_create_id()" is needed before this.
->
-> Right rdma_create_id() must precede anything that has problems, and it
-> should not be done from module_init.
-
-I understand this, but I am not sure why that is; as in why it should
-not be done from module_init?
-
-Also, about one of your previous statements,
-
-> It is not OK to create RDMA CM IDs outside
-> a client - CM IDs are supposed to be cleaned up when the client is
-> removed.
->
-> Similarly they are supposed to be created from the client attachment.
-
-This again is a little confusing to me, since what I've observed in
-nvmt is, when a server port is created, the "rdma_bind_addr()"
-function is called.
-And this goes well with the server/target and client/initiator model,
-where the server has to get ready and start listening before a client
-can initiate a connection.
-What am I missing here?
-
->
-> Jason
-
--- 
-
-Regards
--Haris
+Jason
