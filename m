@@ -2,38 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9CF204FEA
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 13:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D31B20504F
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 13:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732426AbgFWLBU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jun 2020 07:01:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        id S1732353AbgFWLPl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 07:15:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732455AbgFWLBR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:01:17 -0400
+        id S1732444AbgFWLPl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:15:41 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3EF320768;
-        Tue, 23 Jun 2020 11:01:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73EEF20768;
+        Tue, 23 Jun 2020 11:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592910077;
-        bh=qrjXtEurLagvKmQk1eXxgrMEV8qKfQSP4ySC2G/Awf0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d3UV3U/WJvu/1VkpGwje2mSblagH5dXN5jeo8++Hnx52BwVGAZO4j+wwTd1Zz5vvH
-         FXW50QUAKt5dA4rg6PXzglE+xAJLwx7DcGDy/ndC3/F/h30xlinyl0w2lTgZHESZ8v
-         qpsX/A657k7z5eTclTadTe+d/hLy7Nsis+eltyn0=
+        s=default; t=1592910940;
+        bh=sSEBg7BS4y97VRPaHvgWbcjFCc8lTAXrVTlmmCEIUkY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QFGkKOfHyz681beKaAD5o5TugB8sHaSA6CJ3p3bIfbR79l0J8B6VPADlLkG37Vr0c
+         SsJcLxae+pp7HqEkUWkEPQtf5HExZBkoSRMvdJEZZExycIybnk8n/4iJ9Dmqfbd4WA
+         ntWBxw4B1EXkCBwvxaTtOWtbg7aimwCMi+XVf1eI=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Michael Guralnik <michaelgur@mellanox.com>,
-        Feras Daoud <ferasda@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 2/2] RDMA/ipoib: Handle user-supplied address when creating child
-Date:   Tue, 23 Jun 2020 14:01:05 +0300
-Message-Id: <20200623110105.1225750-3-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next v1 0/2] Convert XRC to use xarray
+Date:   Tue, 23 Jun 2020 14:15:29 +0300
+Message-Id: <20200623111531.1227013-1-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623110105.1225750-1-leon@kernel.org>
-References: <20200623110105.1225750-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -41,42 +40,26 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael Guralnik <michaelgur@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Use the address supplied by user when creating a child interface.
+Changelog:
+v1: Changed ib_dealloc_xrcd_user() do not iterate over tgt list, because
+it is expected to be empty.
+v0: https://lore.kernel.org/lkml/20200621104110.53509-1-leon@kernel.org
+Two small patches to simplify and improve XRC logic.
 
-Previously, the address requested by the user was ignored and overridden
-with parent's GID and the random QP number assigned to the child.
+Thanks
 
-Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
-Reviewed-by: Feras Daoud <ferasda@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Maor Gottlieb (2):
+  RDMA: Clean ib_alloc_xrcd() and reuse it to allocate XRC domain
+  RDMA/core: Optimize XRC target lookup
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 3cfb682b91b0..a9f1174f7320 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1892,8 +1892,15 @@ static void ipoib_child_init(struct net_device *ndev)
- 
- 	priv->max_ib_mtu = ppriv->max_ib_mtu;
- 	set_bit(IPOIB_FLAG_SUBINTERFACE, &priv->flags);
--	memcpy(priv->dev->dev_addr, ppriv->dev->dev_addr, INFINIBAND_ALEN);
--	memcpy(&priv->local_gid, &ppriv->local_gid, sizeof(priv->local_gid));
-+	if (memchr_inv(priv->dev->dev_addr, 0, INFINIBAND_ALEN))
-+		memcpy(&priv->local_gid, priv->dev->dev_addr + 4,
-+		       sizeof(priv->local_gid));
-+	else {
-+		memcpy(priv->dev->dev_addr, ppriv->dev->dev_addr,
-+		       INFINIBAND_ALEN);
-+		memcpy(&priv->local_gid, &ppriv->local_gid,
-+		       sizeof(priv->local_gid));
-+	}
- }
- 
- static int ipoib_ndo_init(struct net_device *ndev)
--- 
+ drivers/infiniband/core/uverbs_cmd.c | 12 ++---
+ drivers/infiniband/core/verbs.c      | 76 +++++++++++++---------------
+ drivers/infiniband/hw/mlx5/main.c    | 24 +++------
+ include/rdma/ib_verbs.h              | 27 +++++-----
+ 4 files changed, 59 insertions(+), 80 deletions(-)
+
+--
 2.26.2
 
