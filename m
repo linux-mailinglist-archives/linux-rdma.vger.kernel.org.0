@@ -2,197 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7D7205051
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 13:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C73520508C
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 13:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbgFWLPp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jun 2020 07:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732443AbgFWLPo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:15:44 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DBC720768;
-        Tue, 23 Jun 2020 11:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592910943;
-        bh=ttTezd0vE05kg0FGFPa7xavUg8cTy61SuVsWoUYTlH4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qm/XDCMsgrKCilStS6xh5KAxs2sQD7md3DK7evuq7qlDUpB12FszuDG8I8S4CopJd
-         zNnT0TQUKDTzoHITk7R6quhTyvOkoF0xwjqD7j2j14VTPErh07n7/qb6SW9LGfKvSe
-         bPbztmJ54teDWlSA3GVc3ZlwqlGQeky88sauvGok=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 2/2] RDMA/core: Optimize XRC target lookup
-Date:   Tue, 23 Jun 2020 14:15:31 +0300
-Message-Id: <20200623111531.1227013-3-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623111531.1227013-1-leon@kernel.org>
-References: <20200623111531.1227013-1-leon@kernel.org>
+        id S1732514AbgFWLRc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 07:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732508AbgFWLQw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 07:16:52 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A54C061799
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 04:16:51 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h5so20116258wrc.7
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 04:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=E6E/hlNpiM6PnoAOVZ+7voPc9wpxPmWA12rEiYoj/bAUsYe0AJbyTzI9pZwPUUDdPP
+         2sshPYcb9oIsA99JTikTl0u76qfHNPIW2jIbz6C+DLselDK71HuKa++SqaGTSZ4p4+te
+         gTQ9UTEVmk4+r2eFXVbrvBf8ptXVBuknudxlYS3vrFAv18ZetPr28ECYav3lG+E2L5JM
+         St9yzES6OGBMLQpZbQAQLmSOp9Akg+wflxGB71dvTLo/TJoexQV6LE+g+JoBlfC2QAg7
+         b+ja973yyVQOwbfrTF90BaaIQGUXchEhek4sdIUmlBpL8Ak1D79EOMoTbcuGCplWvTHT
+         W4hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=gHUV4Ht++Wvdj8VzNAHggVBkqBqcXZ6aPTzzYXRu2Atv/mNfGow41sqagGDGXqNXlQ
+         9gGb0AYDAU8TeedEkSTfZIGHvF+c4s1SPCvUZmjrb+6wbmBM0UM0OJMAyP127V5f3N/J
+         iw59ZKLVQfK9PffBYpxgzlgvnc6p4eh3LhSUwD8kpelzAGz5qnfAU30k24SrVejszpAW
+         RtgsnPIVzZVvY6oARQSvvFon2lr9nf402uEs8kP0lq6jGdS5wGWE2aT+U96vn9CG1ywy
+         8Jh/VZ7zlv8w5yeYOdT9Hv3JRe4aM/jk2n4B/VPtAN30uK7PPAiOYJecUKg8IgBg8MNi
+         IYFA==
+X-Gm-Message-State: AOAM530GLi4tz8b6pVP/vos4PkYuG2PBHbQpcYFmWsyraILYaHbh/ulu
+        o6WVHX6rRo9AAg/x7Sl0zBbxrHNTd1JEfJTnTJ4=
+X-Google-Smtp-Source: ABdhPJzZ1QWBbLEVEJDiR8ozgNL3BKht/bHhiiCQZFbEUfR5i8VLBKqhwlX7a4NXmF6FqxDOEk5UW9nntOQTLpvDlps=
+X-Received: by 2002:a5d:62d1:: with SMTP id o17mr24071305wrv.162.1592911009833;
+ Tue, 23 Jun 2020 04:16:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a1c:f002:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:16:49
+ -0700 (PDT)
+Reply-To: sarahkoffi389@yahoo.co.jp
+From:   Sarah Koffi <paulwiliam782@gmail.com>
+Date:   Tue, 23 Jun 2020 12:16:49 +0100
+Message-ID: <CAHqcnY16ZzcoYpU31SEco0sXeb2W5Dq2VVpzQr8ZENW9eKiFTA@mail.gmail.com>
+Subject: Greetings From Mrs. Sarah Koffi
+To:     sarahkoffi389@yahoo.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+Greetings From Mrs. Sarah Koffi
 
-Replace the mutex with read write semaphore and use xarray instead
-of linked list for XRC target QPs. This will give faster XRC target
-lookup. In addition, when QP is closed, don't insert it back to the
-xarray if the destroy command failed.
+I'm contacting you based on your good profiles I read and for a good
+reasons, I am in search of a property to buy in your country as I
+intended to come over to your
+country for investment, Though I have not meet with you before but I
+believe that one has to risk confiding in someone to succeed sometimes
+in life.
 
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/verbs.c | 57 ++++++++++++---------------------
- include/rdma/ib_verbs.h         |  5 ++-
- 2 files changed, 23 insertions(+), 39 deletions(-)
+My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
+Federal Government of Sudan and he has a personal Oil firm in Bentiu
+Oil zone town and Upper
+Nile city. What I have experience physically, I don't wish to
+experience it again in my life due to the recent civil Ethnic war
+cause by our President Mr. Salva Kiir
+and the rebel leader Mr Riek Machar, I have been Under United Nation
+refuge camp in chad to save my life and that of my little daughter.
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index d66a0ad62077..1ccbe43e33cd 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1090,13 +1090,6 @@ static void __ib_shared_qp_event_handler(struct ib_event *event, void *context)
- 	spin_unlock_irqrestore(&qp->device->qp_open_list_lock, flags);
- }
- 
--static void __ib_insert_xrcd_qp(struct ib_xrcd *xrcd, struct ib_qp *qp)
--{
--	mutex_lock(&xrcd->tgt_qp_mutex);
--	list_add(&qp->xrcd_list, &xrcd->tgt_qp_list);
--	mutex_unlock(&xrcd->tgt_qp_mutex);
--}
--
- static struct ib_qp *__ib_open_qp(struct ib_qp *real_qp,
- 				  void (*event_handler)(struct ib_event *, void *),
- 				  void *qp_context)
-@@ -1139,16 +1132,15 @@ struct ib_qp *ib_open_qp(struct ib_xrcd *xrcd,
- 	if (qp_open_attr->qp_type != IB_QPT_XRC_TGT)
- 		return ERR_PTR(-EINVAL);
- 
--	qp = ERR_PTR(-EINVAL);
--	mutex_lock(&xrcd->tgt_qp_mutex);
--	list_for_each_entry(real_qp, &xrcd->tgt_qp_list, xrcd_list) {
--		if (real_qp->qp_num == qp_open_attr->qp_num) {
--			qp = __ib_open_qp(real_qp, qp_open_attr->event_handler,
--					  qp_open_attr->qp_context);
--			break;
--		}
-+	down_read(&xrcd->tgt_qps_rwsem);
-+	real_qp = xa_load(&xrcd->tgt_qps, qp_open_attr->qp_num);
-+	if (!real_qp) {
-+		up_read(&xrcd->tgt_qps_rwsem);
-+		return ERR_PTR(-EINVAL);
- 	}
--	mutex_unlock(&xrcd->tgt_qp_mutex);
-+	qp = __ib_open_qp(real_qp, qp_open_attr->event_handler,
-+			  qp_open_attr->qp_context);
-+	up_read(&xrcd->tgt_qps_rwsem);
- 	return qp;
- }
- EXPORT_SYMBOL(ib_open_qp);
-@@ -1157,6 +1149,7 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
- 					struct ib_qp_init_attr *qp_init_attr)
- {
- 	struct ib_qp *real_qp = qp;
-+	int err;
- 
- 	qp->event_handler = __ib_shared_qp_event_handler;
- 	qp->qp_context = qp;
-@@ -1172,7 +1165,12 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
- 	if (IS_ERR(qp))
- 		return qp;
- 
--	__ib_insert_xrcd_qp(qp_init_attr->xrcd, real_qp);
-+	err = xa_err(xa_store(&qp_init_attr->xrcd->tgt_qps, real_qp->qp_num,
-+			      real_qp, GFP_KERNEL));
-+	if (err) {
-+		ib_close_qp(qp);
-+		return ERR_PTR(err);
-+	}
- 	return qp;
- }
- 
-@@ -1888,21 +1886,18 @@ static int __ib_destroy_shared_qp(struct ib_qp *qp)
- 
- 	real_qp = qp->real_qp;
- 	xrcd = real_qp->xrcd;
--
--	mutex_lock(&xrcd->tgt_qp_mutex);
-+	down_write(&xrcd->tgt_qps_rwsem);
- 	ib_close_qp(qp);
- 	if (atomic_read(&real_qp->usecnt) == 0)
--		list_del(&real_qp->xrcd_list);
-+		xa_erase(&xrcd->tgt_qps, real_qp->qp_num);
- 	else
- 		real_qp = NULL;
--	mutex_unlock(&xrcd->tgt_qp_mutex);
-+	up_write(&xrcd->tgt_qps_rwsem);
- 
- 	if (real_qp) {
- 		ret = ib_destroy_qp(real_qp);
- 		if (!ret)
- 			atomic_dec(&xrcd->usecnt);
--		else
--			__ib_insert_xrcd_qp(xrcd, real_qp);
- 	}
- 
- 	return 0;
-@@ -2308,8 +2303,8 @@ struct ib_xrcd *ib_alloc_xrcd_user(struct ib_device *device,
- 		xrcd->device = device;
- 		xrcd->inode = inode;
- 		atomic_set(&xrcd->usecnt, 0);
--		mutex_init(&xrcd->tgt_qp_mutex);
--		INIT_LIST_HEAD(&xrcd->tgt_qp_list);
-+		init_rwsem(&xrcd->tgt_qps_rwsem);
-+		xa_init(&xrcd->tgt_qps);
- 	}
- 
- 	return xrcd;
-@@ -2318,20 +2313,10 @@ EXPORT_SYMBOL(ib_alloc_xrcd_user);
- 
- int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata)
- {
--	struct ib_qp *qp;
--	int ret;
--
- 	if (atomic_read(&xrcd->usecnt))
- 		return -EBUSY;
- 
--	while (!list_empty(&xrcd->tgt_qp_list)) {
--		qp = list_entry(xrcd->tgt_qp_list.next, struct ib_qp, xrcd_list);
--		ret = ib_destroy_qp(qp);
--		if (ret)
--			return ret;
--	}
--	mutex_destroy(&xrcd->tgt_qp_mutex);
--
-+	WARN_ON(!xa_empty(&xrcd->tgt_qps));
- 	return xrcd->device->ops.dealloc_xrcd(xrcd, udata);
- }
- EXPORT_SYMBOL(ib_dealloc_xrcd_user);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index f785a4f1e58b..9b973b3b6f4c 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1568,9 +1568,8 @@ struct ib_xrcd {
- 	struct ib_device       *device;
- 	atomic_t		usecnt; /* count all exposed resources */
- 	struct inode	       *inode;
--
--	struct mutex		tgt_qp_mutex;
--	struct list_head	tgt_qp_list;
-+	struct rw_semaphore	tgt_qps_rwsem;
-+	struct xarray		tgt_qps;
- };
- 
- struct ib_ah {
--- 
-2.26.2
+Though, I do not know how you will feel to my proposal, but the truth
+is that I sneaked into Chad our neighboring country where I am living
+now as a refugee.
+I escaped with my little daughter when the rebels bust into our house
+and killed my husband as one of the big oil dealers in the country,
+ever since then, I have being on the run.
 
+I left my country and move to Chad our neighboring country with the
+little ceasefire we had, due to the face to face peace meeting accord
+coordinated by the US Secretary of State, Mr John Kerry and United
+Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
+and the rebel leader Mr Riek Machar to stop this war.
+
+I want to solicit for your partnership with trust to invest the $8
+million dollars deposited by my late husband in Bank because my life
+is no longer safe in our country, since the rebels are looking for the
+families of all the oil business men in the country to kill, saying
+that they are they one that is milking the country dry.
+
+I will offer you 20% of the total fund for your help while I will
+partner with you for the investment in your country.
+If I get your reply.
+
+I will wait to hear from you so as to give you details.With love from
+
+ i need you to contact me here sarahkoffi389@yahoo.co.jp
+
+Mrs. Sarah Koffi
