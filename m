@@ -2,132 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEE42044F2
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 02:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5062044F4
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 02:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgFWAFa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 20:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731328AbgFWAF3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 20:05:29 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78695C061795
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 17:05:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id z1so14125630qtn.2
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 17:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZARmJJ7xCkdZZ2t8wNh4/tQvVIlLfUoBxGbPVnLj1no=;
-        b=ZqLlsVf823WvkS6Pxei8NiC2W2IIsAJoQA2urO7e9M3j3n78WU8zuiQnBC/Hh13LQ7
-         W82cIEkI8yK1kig27JBpN1A+kBTvdyfep2zqFSsRZ3bneYMoHddrECdeOHAhBx3jAggE
-         8oQvGlZO4VuJSft8Izl2Bf/u/NJdZDmJmyKoVRcHZq2TKwggLrrOlhDeM/ysxoX7/Me3
-         dqRCX3t0aoqiPb12yGgusjNMnEL8ewMvbu4zIi2lDYR1tedgzPmqU85hNdNt9mW7kpmp
-         xuKIYdmxHb1ZwHUACc5P3GQ4w7GIm5gpp47skdgCpNYwfEX9eupQQgKd/elWzUh05kv2
-         mhag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZARmJJ7xCkdZZ2t8wNh4/tQvVIlLfUoBxGbPVnLj1no=;
-        b=d/w+U4w75LgQ8akY5ZrFF4Wi7uu9E+egw+8OBU74uiytr8dQsjr7sX7rs9sGqEb3WO
-         s+uFP+yHRDTaNgzRWSC6U3T6G7sSJtPvjdZG2iH8aDIjXItie5nk/3NNC7I5Lf8gAWmP
-         YOhTvvUlpzzQiyIE2hgfAIqgCfZgpimPwBPssIgmUWyc49afh1+e3Uq8r1UXyEq9WtZO
-         wLxsgw/12DPlzoE5nYirjjsXtirSt3fm17rEC8sRJ33+IZb+Wn4ylZzasAjLDUF3yrf8
-         OIZIE681+v0c2hdUMRnW45yLTEhk9hsIt28XBso/6pZdBPY7haFRP5udXhLKNMRhiHJK
-         WFew==
-X-Gm-Message-State: AOAM532v48qgwtFyk+7rKVrg0xEwXTTh4f4SNpbRsqaRaQx6gX6C+S0S
-        /+k6lZue9NNG4ljepSmWo8/EPA==
-X-Google-Smtp-Source: ABdhPJybLGEC9Vkbo3afR1e0rkiE4Uqi81y09rG7Z316acKAzGcUboScxSHByPFqPGL4yR3GT9b3Ew==
-X-Received: by 2002:ac8:279a:: with SMTP id w26mr18731669qtw.309.1592870726664;
-        Mon, 22 Jun 2020 17:05:26 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id n143sm1204192qkn.94.2020.06.22.17.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 17:05:26 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jnWRJ-00CHPu-Cd; Mon, 22 Jun 2020 21:05:25 -0300
-Date:   Mon, 22 Jun 2020 21:05:25 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200623000525.GX6578@ziepe.ca>
-References: <20200618172338.GM6578@ziepe.ca>
- <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
- <20200619113934.GN6578@ziepe.ca>
- <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
- <20200619151551.GP6578@ziepe.ca>
- <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
- <20200619172308.GQ6578@ziepe.ca>
- <20200619180935.GA10009@redhat.com>
- <20200619181849.GR6578@ziepe.ca>
- <20200619201011.GB13117@redhat.com>
+        id S1731328AbgFWAFt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 20:05:49 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1181 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730926AbgFWAFs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 20:05:48 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef147010000>; Mon, 22 Jun 2020 17:04:17 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 17:05:48 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 17:05:48 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Jun
+ 2020 00:05:37 +0000
+Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
+To:     Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>
+CC:     Zi Yan <ziy@nvidia.com>, <nouveau@lists.freedesktop.org>,
+        <linux-rdma@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Ben Skeggs" <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Shuah Khan" <shuah@kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+References: <20200619215649.32297-1-rcampbell@nvidia.com>
+ <20200619215649.32297-14-rcampbell@nvidia.com>
+ <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com>
+ <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
+ <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com>
+ <a5f502f8-70cd-014b-8066-bbaeb8024a29@nvidia.com>
+ <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com>
+ <CAHbLzkqe50+KUsRH92O4Be2PjuwAYGw9nK+d-73syxi2Xnf9-Q@mail.gmail.com>
+ <CAHbLzko=BqtPhxgf7f1bKKqoQxK9XCCPdp4YdL80K_uXFfcETQ@mail.gmail.com>
+ <fa056e5e-ca87-aef1-e66e-58e8ebe5403e@nvidia.com>
+ <CAHbLzkrR4-s+ye1F3XDV_0q+iyZOcyMQNHTggDY3Mn_e2yOZ7g@mail.gmail.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <a778dcec-045b-85c0-2dd3-ac700e4208c5@nvidia.com>
+Date:   Mon, 22 Jun 2020 17:05:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619201011.GB13117@redhat.com>
+In-Reply-To: <CAHbLzkrR4-s+ye1F3XDV_0q+iyZOcyMQNHTggDY3Mn_e2yOZ7g@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592870657; bh=IA8mI4tfaBJxUgdhsoSHZFGwUF4W2ZhqAAMGQmxEIl4=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=kDjjdpQVEXSCa1TVNS3nDCYjLWqibG2+YvLVRnC85jVyJRI0lg4KOgtV0fUM/zHvp
+         bq08OhMU+8HtsZ6x5EHNuV5kWKgkKvyMV44et2nJplHf4YHhvPhTvGQIJaWerpC+41
+         Pi+C8uPb0TwrAYswxeDcJPhcnMrLV0NKq+CxnXHpFddgrZLWeqnYpMUCwB8InfL+BN
+         Umrl89mxiAYNClyOq3gkal3n2pTblO/PWBKSv4a/Kn7WhQXRu94BIoWa1SnHXUVtKm
+         z2JVcvaD2FgztdxtTabvzfJkNS2Ydd4NtjBRcKnwPDX8CXt5Jtxz/Z61zoCZ5G4HBJ
+         duaFbikzI4X0Q==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 04:10:11PM -0400, Jerome Glisse wrote:
- 
-> Maybe we can audit how user ptr buffer are use today and see if
-> we can define a usage pattern that would allow to cut corner in
-> kernel. For instance we could use mmu notifier just to block CPU
-> pte update while we do GUP and thus never wait on dma fence.
 
-The DMA fence is the main problem, if you can think of a way to avoid
-it then it would be great!
- 
-> Then GPU driver just keep the GUP pin around until they are done
-> with the page. They can also use the mmu notifier to keep a flag
-> so that the driver know if it needs to redo a GUP ie:
-> 
-> The notifier path:
->    GPU_mmu_notifier_start_callback(range)
->         gpu_lock_cpu_pagetable(range)
->         for_each_bo_in(bo, range) {
->             bo->need_gup = true;
->         }
->         gpu_unlock_cpu_pagetable(range)
+On 6/22/20 4:54 PM, Yang Shi wrote:
+> On Mon, Jun 22, 2020 at 4:02 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>>
+>> On 2020-06-22 15:33, Yang Shi wrote:
+>>> On Mon, Jun 22, 2020 at 3:30 PM Yang Shi <shy828301@gmail.com> wrote:
+>>>> On Mon, Jun 22, 2020 at 2:53 PM Zi Yan <ziy@nvidia.com> wrote:
+>>>>> On 22 Jun 2020, at 17:31, Ralph Campbell wrote:
+>>>>>> On 6/22/20 1:10 PM, Zi Yan wrote:
+>>>>>>> On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
+>>>>>>>> On 6/21/20 4:20 PM, Zi Yan wrote:
+>>>>>>>>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
+>> ...
+>>>>> Ying(cc=E2=80=99d) developed the code to swapout and swapin THP in on=
+e piece: https://lore.kernel.org/linux-mm/20181207054122.27822-1-ying.huang=
+@intel.com/.
+>>>>> I am not sure whether the patchset makes into mainstream or not. It c=
+ould be a good technical reference
+>>>>> for swapping in device private pages, although swapping in pages from=
+ disk and from device private
+>>>>> memory are two different scenarios.
+>>>>>
+>>>>> Since the device private memory swapin impacts core mm performance, w=
+e might want to discuss your patches
+>>>>> with more people, like the ones from Ying=E2=80=99s patchset, in the =
+next version.
+>>>>
+>>>> I believe Ying will give you more insights about how THP swap works.
+>>>>
+>>>> But, IMHO device memory migration (migrate to system memory) seems
+>>>> like THP CoW more than swap.
+>>
+>>
+>> A fine point: overall, the desired behavior is "migrate", not CoW.
+>> That's important. Migrate means that you don't leave a page behind, even
+>> a read-only one. And that's exactly how device private migration is
+>> specified.
+>>
+>> We should try to avoid any erosion of clarity here. Even if somehow
+>> (really?) the underlying implementation calls this THP CoW, the actual
+>> goal is to migrate pages over to the device (and back).
+>>
+>>
+>>>>
+>>>> When migrating in:
+>>>
+>>> Sorry for my fat finger, hit sent button inadvertently, let me finish h=
+ere.
+>>>
+>>> When migrating in:
+>>>
+>>>           - if THP is enabled: allocate THP, but need handle allocation
+>>> failure by falling back to base page
+>>>           - if THP is disabled: fallback to base page
+>>>
+>>
+>> OK, but *all* page entries (base and huge/large pages) need to be cleare=
+d,
+>> when migrating to device memory, unless I'm really confused here.
+>> So: not CoW.
+>=20
+> I realized the comment caused more confusion. I apologize for the
+> confusion. Yes, the trigger condition for swap/migration and CoW are
+> definitely different. Here I mean the fault handling part of migrating
+> into system memory.
+>=20
+> Swap-in just needs to handle the base page case since THP swapin is
+> not supported in upstream yet and the PMD is split in swap-out phase
+> (see shrink_page_list).
+>=20
+> The patch adds THP migration support to device memory, but you need to
+> handle migrate in (back to system memory) case correctly. The fault
+> handling should look like THP CoW fault handling behavior (before
+> 5.8):
+>      - if THP is enabled: allocate THP, fallback if allocation is failed
+>      - if THP is disabled: fallback to base page
+>=20
+> Swap fault handling doesn't look like the above. So, I said it seems
+> like more THP CoW (fault handling part only before 5.8). I hope I
+> articulate my mind.
+>=20
+> However, I didn't see such fallback is handled. It looks if THP
+> allocation is failed, it just returns SIGBUS; and no check about THP
+> status if I read the patches correctly. The THP might be disabled for
+> the specific vma or system wide before migrating from device memory
+> back to system memory.
 
-So some kind of invalidation tracking? But this doesn't solve COW and
-Fork problem?
+You are correct, the patch wasn't handling the fallback case.
+I'll add that in the next version.
 
-> > It is kind of unrelated to HMM, it just shouldn't be using mmu
-> > notifiers to replace page pinning..
-> 
-> Well my POV is that if you abide by rules HMM defined then you do
-> not need to pin pages. The rule is asynchronous device page table
-> update.
-
-I think one of the hmm rules is to not block notifiers for a long
-time, which these scheme seem to violate already.
-
-Pinning for a long time is less bad than blocing notifiers for a long
-time, IMHO
-
-Jason
+>>
+>> thanks,
+>> --
+>> John Hubbard
+>> NVIDIA
