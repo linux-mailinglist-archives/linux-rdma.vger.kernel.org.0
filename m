@@ -2,161 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A41204778
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 04:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295502049E0
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 08:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgFWCv3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 22:51:29 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8474 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731434AbgFWCv3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:51:29 -0400
-IronPort-SDR: 4fbRkBhI0456nAQ2Bh7NG9bIu3yjvSMzVHIXGINkMdblffyF5QwuUh4Xsfw0xXUIFpbwy05fjw
- +XLsug8z7FCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="143920307"
-X-IronPort-AV: E=Sophos;i="5.75,269,1589266800"; 
-   d="scan'208";a="143920307"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 19:51:27 -0700
-IronPort-SDR: stMi4x4u0lGE9oF6INyqSIVVZASuHoTY6RLBNhZfKd1cGfjSj+eDTH/4My3zENuLBHRiWuxxoE
- C4MywkOnf8rQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,269,1589266800"; 
-   d="scan'208";a="275201085"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by orsmga003.jf.intel.com with ESMTP; 22 Jun 2020 19:51:24 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-        Zi Yan <ziy@nvidia.com>, <nouveau@lists.freedesktop.org>,
-        <linux-rdma@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
-References: <20200619215649.32297-1-rcampbell@nvidia.com>
-        <20200619215649.32297-14-rcampbell@nvidia.com>
-        <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com>
-        <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
-        <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com>
-        <a5f502f8-70cd-014b-8066-bbaeb8024a29@nvidia.com>
-        <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com>
-        <CAHbLzkqe50+KUsRH92O4Be2PjuwAYGw9nK+d-73syxi2Xnf9-Q@mail.gmail.com>
-        <CAHbLzko=BqtPhxgf7f1bKKqoQxK9XCCPdp4YdL80K_uXFfcETQ@mail.gmail.com>
-        <fa056e5e-ca87-aef1-e66e-58e8ebe5403e@nvidia.com>
-        <CAHbLzkrR4-s+ye1F3XDV_0q+iyZOcyMQNHTggDY3Mn_e2yOZ7g@mail.gmail.com>
-        <a778dcec-045b-85c0-2dd3-ac700e4208c5@nvidia.com>
-Date:   Tue, 23 Jun 2020 10:51:23 +0800
-In-Reply-To: <a778dcec-045b-85c0-2dd3-ac700e4208c5@nvidia.com> (Ralph
-        Campbell's message of "Mon, 22 Jun 2020 17:05:37 -0700")
-Message-ID: <87zh8uze8k.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1730395AbgFWG1P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 02:27:15 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36982 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730645AbgFWG1N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 02:27:13 -0400
+Received: by mail-io1-f70.google.com with SMTP id d71so5393061iog.4
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 23:27:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gZ4kRg/lsKbtR4x7IDRCO8QC7n8viAfM9eVMzkEuu4M=;
+        b=b0Nf2Eq6oBCqmNdKm4sU3P3aonoE6DluVX/1spFJrw/YfYJuQZ8SROqfVvdUx7IPFn
+         ar8DcL6atbuDZ+0klmBAFaNz+gwhY6kWAIPjkx2/Kx/mCEl9hjJWXAZQrw02BYGW1lWX
+         vrHrcF6fxO7ujGx3qipyn4/R9SBi92aRIDzxEZbleC8N6Su9h+sPmn81MGeALuA0bN6y
+         LJ6H8wPSf/4hUYdAUU1D+JJpY24R6ysAqoxoJaxxvfB/s/Nca5Gy9ZsFZQQJ/vsZqFPY
+         P58wFMySEaVrQwPKp7iMOIPBTBSS9kamqE8u32RUMrPYz+vlz+RAbp2Qkx7VdBi0h9mh
+         erPg==
+X-Gm-Message-State: AOAM530/A65jSRbg71D+oRr8Lwxs01fYalQAPjVBvSm3d5VvyeF0ap8Q
+        BKbK/EnXxYxzA8gIvF0KrKln74jQmxfKWfxwEzFnKGOn0b9H
+X-Google-Smtp-Source: ABdhPJygsyK2Vg7E/T4BB9XKQGhiLjySMxeGIWjnVsQ3Y7mdHOw/zPYzo7vHaRR9JfmtztW9YO4105Fq0nDfS+tKwBuZ72HPfz4C
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:958e:: with SMTP id a14mr23593863ioo.157.1592893631204;
+ Mon, 22 Jun 2020 23:27:11 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 23:27:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000d958105a8ba73bf@google.com>
+Subject: possible deadlock in rds_wake_sk_sleep (3)
+From:   syzbot <syzbot+4670352c72e1f1994dc3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ralph Campbell <rcampbell@nvidia.com> writes:
+Hello,
 
-> On 6/22/20 4:54 PM, Yang Shi wrote:
->> On Mon, Jun 22, 2020 at 4:02 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>>
->>> On 2020-06-22 15:33, Yang Shi wrote:
->>>> On Mon, Jun 22, 2020 at 3:30 PM Yang Shi <shy828301@gmail.com> wrote:
->>>>> On Mon, Jun 22, 2020 at 2:53 PM Zi Yan <ziy@nvidia.com> wrote:
->>>>>> On 22 Jun 2020, at 17:31, Ralph Campbell wrote:
->>>>>>> On 6/22/20 1:10 PM, Zi Yan wrote:
->>>>>>>> On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
->>>>>>>>> On 6/21/20 4:20 PM, Zi Yan wrote:
->>>>>>>>>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
->>> ...
->>>>>> Ying(cc’d) developed the code to swapout and swapin THP in one piece: https://lore.kernel.org/linux-mm/20181207054122.27822-1-ying.huang@intel.com/.
->>>>>> I am not sure whether the patchset makes into mainstream or not. It could be a good technical reference
->>>>>> for swapping in device private pages, although swapping in pages from disk and from device private
->>>>>> memory are two different scenarios.
->>>>>>
->>>>>> Since the device private memory swapin impacts core mm performance, we might want to discuss your patches
->>>>>> with more people, like the ones from Ying’s patchset, in the next version.
->>>>>
->>>>> I believe Ying will give you more insights about how THP swap works.
->>>>>
->>>>> But, IMHO device memory migration (migrate to system memory) seems
->>>>> like THP CoW more than swap.
->>>
->>>
->>> A fine point: overall, the desired behavior is "migrate", not CoW.
->>> That's important. Migrate means that you don't leave a page behind, even
->>> a read-only one. And that's exactly how device private migration is
->>> specified.
->>>
->>> We should try to avoid any erosion of clarity here. Even if somehow
->>> (really?) the underlying implementation calls this THP CoW, the actual
->>> goal is to migrate pages over to the device (and back).
->>>
->>>
->>>>>
->>>>> When migrating in:
->>>>
->>>> Sorry for my fat finger, hit sent button inadvertently, let me finish here.
->>>>
->>>> When migrating in:
->>>>
->>>>           - if THP is enabled: allocate THP, but need handle allocation
->>>> failure by falling back to base page
->>>>           - if THP is disabled: fallback to base page
->>>>
->>>
->>> OK, but *all* page entries (base and huge/large pages) need to be cleared,
->>> when migrating to device memory, unless I'm really confused here.
->>> So: not CoW.
->>
->> I realized the comment caused more confusion. I apologize for the
->> confusion. Yes, the trigger condition for swap/migration and CoW are
->> definitely different. Here I mean the fault handling part of migrating
->> into system memory.
->>
->> Swap-in just needs to handle the base page case since THP swapin is
->> not supported in upstream yet and the PMD is split in swap-out phase
->> (see shrink_page_list).
->>
->> The patch adds THP migration support to device memory, but you need to
->> handle migrate in (back to system memory) case correctly. The fault
->> handling should look like THP CoW fault handling behavior (before
->> 5.8):
->>      - if THP is enabled: allocate THP, fallback if allocation is failed
->>      - if THP is disabled: fallback to base page
->>
->> Swap fault handling doesn't look like the above. So, I said it seems
->> like more THP CoW (fault handling part only before 5.8). I hope I
->> articulate my mind.
->>
->> However, I didn't see such fallback is handled. It looks if THP
->> allocation is failed, it just returns SIGBUS; and no check about THP
->> status if I read the patches correctly. The THP might be disabled for
->> the specific vma or system wide before migrating from device memory
->> back to system memory.
->
-> You are correct, the patch wasn't handling the fallback case.
-> I'll add that in the next version.
+syzbot found the following crash on:
 
-For fallback, you need to split the THP in device firstly.  Because you
-will migrate a base page instead a whole THP now.
+HEAD commit:    cb8e59cc Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=155e8915100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a16ddbc78955e3a9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4670352c72e1f1994dc3
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-Best Regards,
-Huang, Ying
+Unfortunately, I don't have any reproducer for this crash yet.
 
->>>
->>> thanks,
->>> --
->>> John Hubbard
->>> NVIDIA
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4670352c72e1f1994dc3@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.7.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.0/13525 is trying to acquire lock:
+ffff88808bdab658 (&rs->rs_recv_lock){..--}-{2:2}, at: rds_wake_sk_sleep+0x1f/0xe0 net/rds/af_rds.c:109
+
+but task is already holding lock:
+ffff888050ad2900 (&rm->m_rs_lock){..-.}-{2:2}, at: rds_send_remove_from_sock+0x35a/0xa00 net/rds/send.c:628
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&rm->m_rs_lock){..-.}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x8c/0xbf kernel/locking/spinlock.c:159
+       rds_message_purge net/rds/message.c:138 [inline]
+       rds_message_put net/rds/message.c:180 [inline]
+       rds_message_put+0x1d5/0xd90 net/rds/message.c:173
+       rds_inc_put+0x13a/0x1a0 net/rds/recv.c:82
+       rds_clear_recv_queue+0x14a/0x350 net/rds/recv.c:770
+       rds_release+0x102/0x3f0 net/rds/af_rds.c:73
+       __sock_release+0xcd/0x280 net/socket.c:605
+       sock_close+0x18/0x20 net/socket.c:1278
+       __fput+0x33e/0x880 fs/file_table.c:281
+       task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+       tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+       exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
+       prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+       syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
+       do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
+       entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+-> #0 (&rs->rs_recv_lock){..--}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:2496 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+       validate_chain kernel/locking/lockdep.c:3218 [inline]
+       __lock_acquire+0x2a9c/0x4a70 kernel/locking/lockdep.c:4380
+       lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4959
+       __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+       _raw_read_lock_irqsave+0x93/0xd0 kernel/locking/spinlock.c:231
+       rds_wake_sk_sleep+0x1f/0xe0 net/rds/af_rds.c:109
+       rds_send_remove_from_sock+0xc1/0xa00 net/rds/send.c:634
+       rds_send_path_drop_acked+0x303/0x3d0 net/rds/send.c:710
+       rds_tcp_write_space+0x1a7/0x658 net/rds/tcp_send.c:198
+       tcp_new_space net/ipv4/tcp_input.c:5226 [inline]
+       tcp_check_space+0x178/0x730 net/ipv4/tcp_input.c:5237
+       tcp_data_snd_check net/ipv4/tcp_input.c:5247 [inline]
+       tcp_rcv_established+0x17dc/0x1d90 net/ipv4/tcp_input.c:5654
+       tcp_v4_do_rcv+0x605/0x8b0 net/ipv4/tcp_ipv4.c:1629
+       sk_backlog_rcv include/net/sock.h:996 [inline]
+       __release_sock+0x134/0x3a0 net/core/sock.c:2548
+       release_sock+0x54/0x1b0 net/core/sock.c:3064
+       rds_send_xmit+0x1487/0x2510 net/rds/send.c:422
+       rds_sendmsg+0x273d/0x3100 net/rds/send.c:1381
+       sock_sendmsg_nosec net/socket.c:652 [inline]
+       sock_sendmsg+0xcf/0x120 net/socket.c:672
+       ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
+       ___sys_sendmsg+0x100/0x170 net/socket.c:2406
+       __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+       do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+       entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&rm->m_rs_lock);
+                               lock(&rs->rs_recv_lock);
+                               lock(&rm->m_rs_lock);
+  lock(&rs->rs_recv_lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.0/13525:
+ #0: ffff888064497020 (k-sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1576 [inline]
+ #0: ffff888064497020 (k-sk_lock-AF_INET){+.+.}-{0:0}, at: tcp_sock_set_cork+0x16/0x90 net/ipv4/tcp.c:2829
+ #1: ffff8880644972c8 (k-clock-AF_INET){++.-}-{2:2}, at: rds_tcp_write_space+0x25/0x658 net/rds/tcp_send.c:184
+ #2: ffff888050ad2900 (&rm->m_rs_lock){..-.}-{2:2}, at: rds_send_remove_from_sock+0x35a/0xa00 net/rds/send.c:628
+
+stack backtrace:
+CPU: 1 PID: 13525 Comm: syz-executor.0 Not tainted 5.7.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1827
+ check_prev_add kernel/locking/lockdep.c:2496 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+ validate_chain kernel/locking/lockdep.c:3218 [inline]
+ __lock_acquire+0x2a9c/0x4a70 kernel/locking/lockdep.c:4380
+ lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4959
+ __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+ _raw_read_lock_irqsave+0x93/0xd0 kernel/locking/spinlock.c:231
+ rds_wake_sk_sleep+0x1f/0xe0 net/rds/af_rds.c:109
+ rds_send_remove_from_sock+0xc1/0xa00 net/rds/send.c:634
+ rds_send_path_drop_acked+0x303/0x3d0 net/rds/send.c:710
+ rds_tcp_write_space+0x1a7/0x658 net/rds/tcp_send.c:198
+ tcp_new_space net/ipv4/tcp_input.c:5226 [inline]
+ tcp_check_space+0x178/0x730 net/ipv4/tcp_input.c:5237
+ tcp_data_snd_check net/ipv4/tcp_input.c:5247 [inline]
+ tcp_rcv_established+0x17dc/0x1d90 net/ipv4/tcp_input.c:5654
+ tcp_v4_do_rcv+0x605/0x8b0 net/ipv4/tcp_ipv4.c:1629
+ sk_backlog_rcv include/net/sock.h:996 [inline]
+ __release_sock+0x134/0x3a0 net/core/sock.c:2548
+ release_sock+0x54/0x1b0 net/core/sock.c:3064
+ rds_send_xmit+0x1487/0x2510 net/rds/send.c:422
+ rds_sendmsg+0x273d/0x3100 net/rds/send.c:1381
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e6/0x810 net/socket.c:2352
+ ___sys_sendmsg+0x100/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45ca59
+Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f6d9be39c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000005019e0 RCX: 000000000045ca59
+RDX: 0000000000000040 RSI: 0000000020000240 RDI: 0000000000000004
+RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000a1d R14: 00000000004cd008 R15: 00007f6d9be3a6d4
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
