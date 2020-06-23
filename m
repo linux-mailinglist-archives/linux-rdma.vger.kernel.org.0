@@ -2,191 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4769C2056FC
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 18:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD08820583D
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 19:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733003AbgFWQSE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jun 2020 12:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
+        id S1732961AbgFWRGE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 13:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732981AbgFWQSD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 12:18:03 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC8AC061573
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 09:18:02 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id i16so15814969qtr.7
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 09:18:02 -0700 (PDT)
+        with ESMTP id S1732408AbgFWRGE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 13:06:04 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34D5C061573
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 10:06:03 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id rk21so6000799ejb.2
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jun 2020 10:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SowX6r/DrbyMyIPo7bbmN6dCO4WOaZBpx8lXkNiYwRQ=;
-        b=q5PXizvouRcfNA2W9Djqc/Z84L8gq+5xyPGe7rkAVVUXYo0XRUHAEI4yVuKgTSfgc9
-         RoYCG4UkEgCC9vVO+IYyrz7JORXpNUWmlzMkIni2Vfw9kxBsp2K+YgamdfZElTJuJZTW
-         bbafUUDUQEhd51JcrBKUA9xHz8S+ZvnGFC/bx4j/zd/tIY4JT4nqabnA6jtnfro4Yx69
-         YevfddRvEKhgwHMyV0hQh6x3L1BXH3reCRQkEUr6zmcuCWOBikrw37RohUhW9xkrCqv7
-         nLIezDVzEaNlXEnFqrM5wDtOVHCyOyKL9todYtNNNUOatrNgrkdDPEXpNyPANNjAfT9T
-         s5yg==
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vMxT7cX2X2rczc7YLv40ENChlI/f1PdJoDYIHhDc298=;
+        b=hOY22Vo9ltCw4cc9sz094t1VBD6gDr8/uBf6glEGxlZjBIVwvFYCM+QsI97CwV5bpD
+         mgxH6jyII+OKssj9qvd+2mh5vqetjwQhscNYVBobKpR4UhP87WKZmVYrCB4/MryagjZr
+         LxOTi2mW8s96U6HP2YPVyvSBXxyfQl1yur+mRRTp8P/JUk5gum2g/NElgGihotZThcy2
+         cZ3TM3bE7zUQgP7yOMHnXu81pxLhwCdgf6PHT7+qGpLL1xVLHEGpfEjbBvYrvw5xB/Kn
+         LCi5Xg+FUtjMzMWfM3sam3myp128BFOdkA6X8EpjQ0UcaUFefZLZ9pUCdI8+lchhpTLI
+         yP+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SowX6r/DrbyMyIPo7bbmN6dCO4WOaZBpx8lXkNiYwRQ=;
-        b=iD8WewKoOp7YRSrRX34qDlrZO3m4cYckkhQPr1uL58C8a9KNu2a2jj0jSng/sx9rkd
-         4QmhUVON+mnfAlSPvIFamBOEPXIQKn/B4X3gNdos8N5G/EcEerMbhiWNL2hPd8pXAqB7
-         ezXN2HtfrrEI7QmVLlAjKgQMa6BzuhjhWJdxrjLjjbUGqBM+qUEXYKudSnugei6GMOr+
-         gG6Dx0KFX4ZX0bAa4JPEjAe3bfqslGvCz9eoTzmv1oImjg1xUnixzW3smwXD1MplYv94
-         SPLa1XopGuMKe93WXPCchKUzRkNfsex8PlHbvSbR9LpU2cgshHU83/fHKuBRA78yHPwX
-         ZX4A==
-X-Gm-Message-State: AOAM530hSsyll91+UebRYTkkIc6y3A3Ra0lN9FBVF6SHuphe+1ge/JyX
-        gSy9y9vRXwekvGnDxtCwyWGRDw==
-X-Google-Smtp-Source: ABdhPJy2/MUFYS3DJu96XPGFYPvGEfp9/cvT3JQEnV1SM172gUGWrPZ+0/Xawft3xZIbg4oUrttvEg==
-X-Received: by 2002:ac8:4448:: with SMTP id m8mr22935603qtn.4.1592929081912;
-        Tue, 23 Jun 2020 09:18:01 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id d140sm966654qkc.22.2020.06.23.09.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 09:18:01 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 12:17:54 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas_os@shipmail.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] mm: Track mmu notifiers in fs_reclaim_acquire/release
-Message-ID: <20200623161754.GA1140@lca.pw>
-References: <20200604081224.863494-2-daniel.vetter@ffwll.ch>
- <20200610194101.1668038-1-daniel.vetter@ffwll.ch>
- <20200621174205.GB1398@lca.pw>
- <CAKMK7uFZAFVmceoYvqPovOifGw_Y8Ey-OMy6wioMjwPWhu9dDg@mail.gmail.com>
- <20200621200103.GV20149@phenom.ffwll.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vMxT7cX2X2rczc7YLv40ENChlI/f1PdJoDYIHhDc298=;
+        b=to4ApTYL9ZLqHYdfQMUWpqnHCTAy1pFsBU0kaZPlH1AyRDm0pZV02al3utet+TKp0q
+         RUXQy2cqMej30svOHc7ZkE/JmOaZ5Krwf+vAo5vSiLOAiQl7T1OlQ7NCP0P7P4rIh+IV
+         yTWMnsz3LawdKgXi9A0RZO9FYWsoFeTPl2sQmvAgjXSlUK1jxeaTdAjQvjoeEFMQRqbW
+         HussPznctK/FgLLMIoZfjcCkZx3eFNLeGaw8LJhgZG0fdRY2cxKY3cEMYE2nuJgZ1jHx
+         iskcpHfyQGgPzIv1o232BdWzrQ7ioolDIUavMi1FQ9/3oe1HBdiSSVxO/euT4vh+5XKx
+         c0CQ==
+X-Gm-Message-State: AOAM531iyjk99t8TyXbC04oHvGdO7JlKzLBR5dSZYPjEu+KMDbbIc8/H
+        bAkZDfkDDtWvK4SbNhslFIhLlIplCXgFLhRmq6eF1Q==
+X-Google-Smtp-Source: ABdhPJxhlyLlLEC19v3KYDdthGs/w3KYM9NA6wGXoX5kRl5bYCDFa6Ym6IMFXHONZ/H2nm2M2W/uiAaHlYjMhIBAWAE=
+X-Received: by 2002:a17:906:edb3:: with SMTP id sa19mr14573113ejb.21.1592931962079;
+ Tue, 23 Jun 2020 10:06:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200621200103.GV20149@phenom.ffwll.local>
+References: <20200617103732.10356-1-haris.iqbal@cloud.ionos.com>
+ <20200617112811.GL2383158@unreal> <20200617182046.GI6578@ziepe.ca>
+ <20200617190756.GA2721989@unreal> <20200617192642.GL6578@ziepe.ca>
+ <CAJpMwygeJ7uaNUKxhsF-bx=ufchkx7M6G0E237=-0C7GwJ3yog@mail.gmail.com>
+ <CAJpMwyjJSu4exkTAoFLhY-ubzNQLp6nWqq83k6vWn1Uw3eaK_Q@mail.gmail.com>
+ <CAJpMwygqz20=H7ovSL0nSWLbVpMv-KLOgYO=nRCLv==OC8sgHw@mail.gmail.com>
+ <20200623121721.GZ6578@ziepe.ca> <CAJpMwyj_Fa6AhYXcGh4kS79Vd2Dy3N7B5-9XhKHn4qWDo-HVjw@mail.gmail.com>
+ <20200623142400.GB6578@ziepe.ca>
+In-Reply-To: <20200623142400.GB6578@ziepe.ca>
+From:   Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Date:   Tue, 23 Jun 2020 17:05:51 +0530
+Message-ID: <CAJpMwygDGpzmhzeYcy=14sBneSriBcRT6B2sO1rubkQLRKnOjA@mail.gmail.com>
+Subject: Re: [PATCH] Delay the initialization of rnbd_server module to
+ late_initcall level
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jinpu Wang <jinpu.wang@cloud.ionos.com>, dledford@redhat.com,
+        kernel test robot <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 10:01:03PM +0200, Daniel Vetter wrote:
-> On Sun, Jun 21, 2020 at 08:07:08PM +0200, Daniel Vetter wrote:
-> > On Sun, Jun 21, 2020 at 7:42 PM Qian Cai <cai@lca.pw> wrote:
+On Tue, Jun 23, 2020 at 7:54 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jun 23, 2020 at 07:15:03PM +0530, Haris Iqbal wrote:
+> > On Tue, Jun 23, 2020 at 5:47 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > > >
-> > > On Wed, Jun 10, 2020 at 09:41:01PM +0200, Daniel Vetter wrote:
-> > > > fs_reclaim_acquire/release nicely catch recursion issues when
-> > > > allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
-> > > > to use to keep the excessive caches in check). For mmu notifier
-> > > > recursions we do have lockdep annotations since 23b68395c7c7
-> > > > ("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
+> > > On Tue, Jun 23, 2020 at 03:20:27PM +0530, Haris Iqbal wrote:
+> > > > Hi Jason and Leon,
 > > > >
-> > > > But these only fire if a path actually results in some pte
-> > > > invalidation - for most small allocations that's very rarely the case.
-> > > > The other trouble is that pte invalidation can happen any time when
-> > > > __GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
-> > > > choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
-> > > > recursion.
-> > > >
-> > > > I was pondering whether we should just do the general annotation, but
-> > > > there's always the risk for false positives. Plus I'm assuming that
-> > > > the core fs and io code is a lot better reviewed and tested than
-> > > > random mmu notifier code in drivers. Hence why I decide to only
-> > > > annotate for that specific case.
-> > > >
-> > > > Furthermore even if we'd create a lockdep map for direct reclaim, we'd
-> > > > still need to explicit pull in the mmu notifier map - there's a lot
-> > > > more places that do pte invalidation than just direct reclaim, these
-> > > > two contexts arent the same.
-> > > >
-> > > > Note that the mmu notifiers needing their own independent lockdep map
-> > > > is also the reason we can't hold them from fs_reclaim_acquire to
-> > > > fs_reclaim_release - it would nest with the acquistion in the pte
-> > > > invalidation code, causing a lockdep splat. And we can't remove the
-> > > > annotations from pte invalidation and all the other places since
-> > > > they're called from many other places than page reclaim. Hence we can
-> > > > only do the equivalent of might_lock, but on the raw lockdep map.
-> > > >
-> > > > With this we can also remove the lockdep priming added in 66204f1d2d1b
-> > > > ("mm/mmu_notifiers: prime lockdep") since the new annotations are
-> > > > strictly more powerful.
-> > > >
-> > > > v2: Review from Thomas Hellstrom:
-> > > > - unbotch the fs_reclaim context check, I accidentally inverted it,
-> > > >   but it didn't blow up because I inverted it immediately
-> > > > - fix compiling for !CONFIG_MMU_NOTIFIER
-> > > >
-> > > > Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > Cc: Jason Gunthorpe <jgg@mellanox.com>
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: linux-rdma@vger.kernel.org
-> > > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > > > Cc: Christian König <christian.koenig@amd.com>
-> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > Did you get a chance to look into my previous email?
 > > >
-> > > Replying the right patch here...
+> > > Was there a question?
+> >
+> > Multiple actually :)
+> >
 > > >
-> > > Reverting this commit [1] fixed the lockdep warning below while applying
-> > > some memory pressure.
-> > >
-> > > [1] linux-next cbf7c9d86d75 ("mm: track mmu notifiers in fs_reclaim_acquire/release")
-> > 
-> > Hm, then I'm confused because
-> > - there's not mmut notifier lockdep map in the splat at a..
-> > - the patch is supposed to not change anything for fs_reclaim (but the
-> > interim version got that wrong)
-> > - looking at the paths it's kmalloc vs kswapd, both places I totally
-> > expect fs_reflaim to be used.
-> > 
-> > But you're claiming reverting this prevents the lockdep splat. If
-> > that's right, then my reasoning above is broken somewhere. Someone
-> > less blind than me having an idea?
-> > 
-> > Aside this is the first email I've typed, until I realized the first
-> > report was against the broken patch and that looked like a much more
-> > reasonable explanation (but didn't quite match up with the code
-> > paths).
-> 
-> Below diff should undo the functional change in my patch. Can you pls test
-> whether the lockdep splat is really gone with that? Might need a lot of
-> testing and memory pressure to be sure, since all these reclaim paths
-> aren't very deterministic.
+> > > Jason
+> >
+> > In response to your emails,
+> >
+> > > Somehow nvme-rdma works:
+> >
+> > I think that's because the callchain during the nvme_rdma_init_module
+> > initialization stops at "nvmf_register_transport()". Here only the
+> > "struct nvmf_transport_ops nvme_rdma_transport" is registered, which
+> > contains the function "nvme_rdma_create_ctrl()". I tested this in my
+> > local setup and during kernel boot, that's the extent of the
+> > callchain.
+> > The ".create_ctrl"; which now points to "nvme_rdma_create_ctrl()" is
+> > called later from "nvmf_dev_write()". I am not sure when this is
+> > called, probably when the "discover" happens from the client side or
+> > during the server config.
+> >
+> > It seems that the "rdma_bind_addr()" is called by the nvme rdma
+> > module; but during the following events
+> > 1) When a discover happens from the client side. Call trace for that looks like,
+> > [ 1098.409398] nvmf_dev_write
+> > [ 1098.409403] nvmf_create_ctrl
+> > [ 1098.414568] nvme_rdma_create_ctrl
+> > [ 1098.415009] nvme_rdma_setup_ctrl
+> > [ 1098.415010] nvme_rdma_configure_admin_queue
+> > [ 1098.415010] nvme_rdma_alloc_queue
+> > [ 1098.415032] rdma_resolve_addr
+> > [ 1098.415032] cma_bind_addr
+> > [ 1098.415033] rdma_bind_addr
+> >
+> > 2) When a connect happens from the client side. Call trace is the same
+> > as above, plus "nvme_rdma_alloc_queue()" is called n number of times;
+> > n being the number of IO queues being created.
+> >
+> > On the server side, when an nvmf port is enabled, that also triggers a
+> > call to "rdma_bind_addr()", but that is not from the nvme rdma module.
+> > may be nvme target rdma? (not sure).
+> >
+> > Does this make sense or am I missing something here?
+>
+> It make sense, delaying creating and CM ID's until user space starts
+> will solve this init time problme
 
-No, this patch does not help but reverting the whole patch still fixed
-the splat.
+Right, and the patch is trying to achieve the delay by changing the
+init level to "late_initcall()"
 
-> -Daniel
-> 
-> ---
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d807587c9ae6..27ea763c6155 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4191,11 +4191,6 @@ void fs_reclaim_acquire(gfp_t gfp_mask)
->  		if (gfp_mask & __GFP_FS)
->  			__fs_reclaim_acquire();
->  
-> -#ifdef CONFIG_MMU_NOTIFIER
-> -		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
-> -		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
-> -#endif
-> -
->  	}
->  }
->  EXPORT_SYMBOL_GPL(fs_reclaim_acquire);
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+>
+> >
+> > > If the rdma_create_id() is not on a callchain from module_init then you don't have a problem.
+> >
+> > I am a little confused. I thought the problem occurs from a call to
+> > either "rdma_resolve_addr()" which calls "rdma_bind_addr()",
+> > or a direct call to "rdma_bind_addr()" as in rtrs case.
+> > In both the cases, a call to "rdma_create_id()" is needed before this.
+>
+> Right rdma_create_id() must precede anything that has problems, and it
+> should not be done from module_init.
+
+I understand this, but I am not sure why that is; as in why it should
+not be done from module_init?
+
+Also, about one of your previous statements,
+
+> It is not OK to create RDMA CM IDs outside
+> a client - CM IDs are supposed to be cleaned up when the client is
+> removed.
+>
+> Similarly they are supposed to be created from the client attachment.
+
+This again is a little confusing to me, since what I've observed in
+nvmt is, when a server port is created, the "rdma_bind_addr()"
+function is called.
+And this goes well with the server/target and client/initiator model,
+where the server has to get ready and start listening before a client
+can initiate a connection.
+What am I missing here?
+
+>
+> Jason
+
+-- 
+
+Regards
+-Haris
