@@ -2,164 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D522044CE
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 01:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22882044EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jun 2020 02:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbgFVXzP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Jun 2020 19:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
+        id S1731387AbgFWACg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Jun 2020 20:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730227AbgFVXzO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 19:55:14 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED98BC061573;
-        Mon, 22 Jun 2020 16:55:13 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p20so19700983ejd.13;
-        Mon, 22 Jun 2020 16:55:13 -0700 (PDT)
+        with ESMTP id S1730994AbgFWACf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Jun 2020 20:02:35 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4189BC061795
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 17:02:34 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id o38so5445041qtf.6
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Jun 2020 17:02:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NjMcZXprv/nOI4forFhKBTk/9F1/kItqecbA0f3zzT8=;
-        b=MK3YZsIqGYoDjbxLtQy2a2wo4ruMmS1w9QUl9/b2H1N34YqISWMm4seVahEk6vXpOI
-         SgBWMKclzauV/+pl9tGCeOaTNW0t2+0vC53zrCUIN6UO6sMVq+xOis8Nnm32NMx8suxR
-         UhCmTiQTZQhtWbpw2vcER4mouZPvsT8VZEXNEeATbbrxzozgbjOPBthCdAw+infZucxe
-         zkUG4Enjj+ZXGXRDXzuhcOIhk127PUmHwYCqIOvVFSxdxnzVTp8DEZ/aH2mR5XH5+Ans
-         xmUT27IlXZQdKBsq/7FrGNFly2GxAGf/6aYN5rJVJtKl2tow0KSBSoBWJGhErIvYIYDX
-         NbSg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fL1wENgZCNwSv3s/JTNbtGHYfJcNOvZphPgobRgCX+0=;
+        b=jOiz5xhY4H9RrA31ewUoMb6lWoSEJluMNJ4pFLIyuL2C/PAw2cU4NhHZPSbOtneWmY
+         ozUMm9lxePnw9yOjxx4YXvXCK3kITgyY6VI+mhuSl9fkmcyIppyhy/Jz6vVv/4LKzuRn
+         Gb8qhMwxyR4RKm7f3IBCU6P9IiqbHgwNX0yoHpJ3PAkHDvus22DcgqWtCXRMKvuPd80+
+         GtMIE29iM9uSkrK/mkJM41mZz+r3jtg9ekirUsyx5erxi/e/W0HuUH+SRS8iBijVSbYY
+         gVUrM+bjvjO7k15tkl2NlzpoPMdsvYPWVTdqh0sfLGGUDdoylYfcONvUD2B6N+OO84GZ
+         lj3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NjMcZXprv/nOI4forFhKBTk/9F1/kItqecbA0f3zzT8=;
-        b=iz8GU/l3NxK4TsbnTMNwgaDarjy1L9LOGjCR1pcHIW/nTG4WNpeeE7TAhYUbu6wuCm
-         j+cbnoAsfvgJzEeTObyt4Q2DpldZl23ZdnDwMO3kYK7W6BxSGnzTA6x1TLX915SDrhYg
-         wLpoxne/F6L6EHOME3y+DuGZlJ8lnHZXpsDgmG9DAD5FUggUq0B6OeaSZJs0PhR6vClK
-         QycyLbO+3gtBloZl3ItHDLLrqlBE9WMoj9qtvvm2eVqBbre9ytmQuMXPRYRuUhuuRih6
-         bCNDbByNXWAJmDgDhIyYA45mlHwdJ4c8oRMvj36BIWUzBjJs/NA8IwHO0fz/V6NR4NFB
-         A/uw==
-X-Gm-Message-State: AOAM530HVXwuEnhUsIEiN6Mn6VPfp0ajpHrXzUrEeEBvx1WidJPfkSt9
-        OLgH+2G1IBsF8ewUrsocW+J1umsjnbzATn8s0xY=
-X-Google-Smtp-Source: ABdhPJwQzUdtQVA8N+epe6jO74BqD4xLZlDw/rWnWRA1sAy4igezZryH7Kv9srM9ru85/edGlgH35lOeiLAECSYhKcc=
-X-Received: by 2002:a17:906:2b81:: with SMTP id m1mr17303645ejg.488.1592870112660;
- Mon, 22 Jun 2020 16:55:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fL1wENgZCNwSv3s/JTNbtGHYfJcNOvZphPgobRgCX+0=;
+        b=i+ONEsYI4JP6SJky8btKT3QbnjRSILr37Mz+bfkUieh4CTjrABh/b/BXmx+IXIZVfC
+         TmjGVCnG0UR8OVHNV0N8hsruRrO9+b/UKJwt/dk0qt5kCclB2ou6n1BNtfjrgaGeIRc5
+         lwgp6D1/Jgb0QlNWZJVRwh/TI1L4lYE4nz9KV7G+7dZAi/5N+a93xhBb2/BTYpGiu0WH
+         HTWCWPHqIC4hJrnfbq5TgiOHR0DJkp8SHp9YymnQvIEmCV/DuiKm4ZxAIASYmoFm13Qy
+         2lDqLcNip/9diJJihFucVX0BA7y1xdsUdd2PT6NAZIPEBPq0R3ZJpC+yOWL/co/mI3zX
+         5Bjg==
+X-Gm-Message-State: AOAM532oBeHpqRfPH9tYA5U2th77wFAsLyF++jzs5i52FQpfZEJVlifs
+        yhRSDeayREVSKVzwTYko5/7vfA==
+X-Google-Smtp-Source: ABdhPJyCyWWM03fNzzwWcrkorPAde8ZwkJyT1NwEy7u+QyW/bvUE+EE8dkCWV5n1HdRyI+PQxXYPRQ==
+X-Received: by 2002:ac8:70da:: with SMTP id g26mr17916678qtp.333.1592870553204;
+        Mon, 22 Jun 2020 17:02:33 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d186sm6145604qkb.110.2020.06.22.17.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:02:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jnWOV-00CHMM-GL; Mon, 22 Jun 2020 21:02:31 -0300
+Date:   Mon, 22 Jun 2020 21:02:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     Felix Kuehling <felix.kuehling@amd.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200623000231.GW6578@ziepe.ca>
+References: <20200619151551.GP6578@ziepe.ca>
+ <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
+ <20200619172308.GQ6578@ziepe.ca>
+ <20200619180935.GA10009@redhat.com>
+ <20200619181849.GR6578@ziepe.ca>
+ <56008d64-772d-5757-6136-f20591ef71d2@amd.com>
+ <20200619195538.GT6578@ziepe.ca>
+ <20200619203147.GC13117@redhat.com>
+ <20200622114617.GU6578@ziepe.ca>
+ <20200622201540.GB9708@redhat.com>
 MIME-Version: 1.0
-References: <20200619215649.32297-1-rcampbell@nvidia.com> <20200619215649.32297-14-rcampbell@nvidia.com>
- <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com> <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
- <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com> <a5f502f8-70cd-014b-8066-bbaeb8024a29@nvidia.com>
- <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com> <CAHbLzkqe50+KUsRH92O4Be2PjuwAYGw9nK+d-73syxi2Xnf9-Q@mail.gmail.com>
- <CAHbLzko=BqtPhxgf7f1bKKqoQxK9XCCPdp4YdL80K_uXFfcETQ@mail.gmail.com> <fa056e5e-ca87-aef1-e66e-58e8ebe5403e@nvidia.com>
-In-Reply-To: <fa056e5e-ca87-aef1-e66e-58e8ebe5403e@nvidia.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 22 Jun 2020 16:54:45 -0700
-Message-ID: <CAHbLzkrR4-s+ye1F3XDV_0q+iyZOcyMQNHTggDY3Mn_e2yOZ7g@mail.gmail.com>
-Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Ralph Campbell <rcampbell@nvidia.com>,
-        nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622201540.GB9708@redhat.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 4:02 PM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 2020-06-22 15:33, Yang Shi wrote:
-> > On Mon, Jun 22, 2020 at 3:30 PM Yang Shi <shy828301@gmail.com> wrote:
-> >> On Mon, Jun 22, 2020 at 2:53 PM Zi Yan <ziy@nvidia.com> wrote:
-> >>> On 22 Jun 2020, at 17:31, Ralph Campbell wrote:
-> >>>> On 6/22/20 1:10 PM, Zi Yan wrote:
-> >>>>> On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
-> >>>>>> On 6/21/20 4:20 PM, Zi Yan wrote:
-> >>>>>>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
-> ...
-> >>> Ying(cc=E2=80=99d) developed the code to swapout and swapin THP in on=
-e piece: https://lore.kernel.org/linux-mm/20181207054122.27822-1-ying.huang=
-@intel.com/.
-> >>> I am not sure whether the patchset makes into mainstream or not. It c=
-ould be a good technical reference
-> >>> for swapping in device private pages, although swapping in pages from=
- disk and from device private
-> >>> memory are two different scenarios.
-> >>>
-> >>> Since the device private memory swapin impacts core mm performance, w=
-e might want to discuss your patches
-> >>> with more people, like the ones from Ying=E2=80=99s patchset, in the =
-next version.
-> >>
-> >> I believe Ying will give you more insights about how THP swap works.
-> >>
-> >> But, IMHO device memory migration (migrate to system memory) seems
-> >> like THP CoW more than swap.
->
->
-> A fine point: overall, the desired behavior is "migrate", not CoW.
-> That's important. Migrate means that you don't leave a page behind, even
-> a read-only one. And that's exactly how device private migration is
-> specified.
->
-> We should try to avoid any erosion of clarity here. Even if somehow
-> (really?) the underlying implementation calls this THP CoW, the actual
-> goal is to migrate pages over to the device (and back).
->
->
-> >>
-> >> When migrating in:
-> >
-> > Sorry for my fat finger, hit sent button inadvertently, let me finish h=
-ere.
-> >
-> > When migrating in:
-> >
-> >          - if THP is enabled: allocate THP, but need handle allocation
-> > failure by falling back to base page
-> >          - if THP is disabled: fallback to base page
-> >
->
-> OK, but *all* page entries (base and huge/large pages) need to be cleared=
-,
-> when migrating to device memory, unless I'm really confused here.
-> So: not CoW.
+On Mon, Jun 22, 2020 at 04:15:40PM -0400, Jerome Glisse wrote:
+> On Mon, Jun 22, 2020 at 08:46:17AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Jun 19, 2020 at 04:31:47PM -0400, Jerome Glisse wrote:
+> > > Not doable as page refcount can change for things unrelated to GUP, with
+> > > John changes we can identify GUP and we could potentialy copy GUPed page
+> > > instead of COW but this can potentialy slow down fork() and i am not sure
+> > > how acceptable this would be. Also this does not solve GUP against page
+> > > that are already in fork tree ie page P0 is in process A which forks,
+> > > we now have page P0 in process A and B. Now we have process A which forks
+> > > again and we have page P0 in A, B, and C. Here B and C are two branches
+> > > with root in A. B and/or C can keep forking and grow the fork tree.
+> > 
+> > For a long time now RDMA has broken COW pages when creating user DMA
+> > regions.
+> > 
+> > The problem has been that fork re-COW's regions that had their COW
+> > broken.
+> > 
+> > So, if you break the COW upon mapping and prevent fork (and others)
+> > from copying DMA pinned then you'd cover the cases.
+> 
+> I am not sure we want to prevent COW for pinned GUP pages, this would
+> change current semantic and potentialy break/slow down existing apps.
 
-I realized the comment caused more confusion. I apologize for the
-confusion. Yes, the trigger condition for swap/migration and CoW are
-definitely different. Here I mean the fault handling part of migrating
-into system memory.
+Isn't that basically exactly what 17839856fd588 does? It looks like it
+uses the same approach RDMA does by sticking FOLL_WRITE even though it
+is a read action.
 
-Swap-in just needs to handle the base page case since THP swapin is
-not supported in upstream yet and the PMD is split in swap-out phase
-(see shrink_page_list).
+After that change the reamining bug is that fork can re-establish a
+COW./
 
-The patch adds THP migration support to device memory, but you need to
-handle migrate in (back to system memory) case correctly. The fault
-handling should look like THP CoW fault handling behavior (before
-5.8):
-    - if THP is enabled: allocate THP, fallback if allocation is failed
-    - if THP is disabled: fallback to base page
+> Anyway i think we focus too much on fork/COW, it is just an unfixable
+> broken corner cases, mmu notifier allows you to avoid it. Forcing real
+> copy on fork would likely be seen as regression by most people.
 
-Swap fault handling doesn't look like the above. So, I said it seems
-like more THP CoW (fault handling part only before 5.8). I hope I
-articulate my mind.
+If you don't copy the there are data corruption bugs though. Real apps
+probably don't hit a problem here as they are not forking while GUP's
+are active (RDMA excluded, which does do this)
 
-However, I didn't see such fallback is handled. It looks if THP
-allocation is failed, it just returns SIGBUS; and no check about THP
-status if I read the patches correctly. The THP might be disabled for
-the specific vma or system wide before migrating from device memory
-back to system memory.
+I think that implementing page pinning by blocking mmu notifiers for
+the duration of the pin is a particularly good idea either, that
+actually seems a lot worse than just having the pin in the first
+place.
 
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
+Particularly if it is only being done to avoid corner case bugs that
+already afflict other GUP cases :(
+
+> > What do you mean 'GUP fast is still succeptible to this' ?
+> 
+> Not all GUP fast path are updated (intentionaly) __get_user_pages_fast()
+
+Sure, that is is the 'raw' accessor
+
+Jason
