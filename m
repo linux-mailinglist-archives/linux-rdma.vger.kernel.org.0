@@ -2,35 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B520718F
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2020 12:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19886207192
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2020 12:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388770AbgFXKyf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Jun 2020 06:54:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35018 "EHLO mail.kernel.org"
+        id S2388985AbgFXKyp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Jun 2020 06:54:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727100AbgFXKyf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:54:35 -0400
+        id S1727100AbgFXKyp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Jun 2020 06:54:45 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B3772088E;
-        Wed, 24 Jun 2020 10:54:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B31DE2084D;
+        Wed, 24 Jun 2020 10:54:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592996074;
-        bh=Y4HcdjWHPK/OFEXdcioLMzjrSrGEyukBlNOf2+zew8I=;
+        s=default; t=1592996084;
+        bh=XYpIqFF9X3x5HTziqBx/4GtLO15CnQxtnGvsFR+fiHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tDMwB3sjA7oBXWgCQxt25DQlaQlhZlDOtobEO77Fm8WE5ilxCdyos7vF0tIO7yyDw
-         oishM05oCOEbCVRVG+iQpEpwoedhojNCM4xkP6jt7r6Teu1GVJsklh+1vJzg6tSRAU
-         w1xX01y9H/dcdiWYvsY3Qv1mxKaJJgnGKRja2lss=
+        b=w9+i/wRT6HScbj881AQi4FsuPiDJdov7AVSq7ViZIoSwZjwltgy+GPAzafi900nYl
+         BgdQ1STDtwDbNLu5yKngML9Otkr4ZotZY6ARLzi6YiJuJKYdT1HerMXcWlhGaQSgiH
+         LDKwjrXxWu6A4/a4euSBuXvN6V3m7K8KPcDix2So=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next 3/5] RDMA: Move XRCD to be under ib_core responsibility
-Date:   Wed, 24 Jun 2020 13:54:20 +0300
-Message-Id: <20200624105422.1452290-4-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next 4/5] RDMA/core: Delete not-used create RWQ table function
+Date:   Wed, 24 Jun 2020 13:54:21 +0300
+Message-Id: <20200624105422.1452290-5-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200624105422.1452290-1-leon@kernel.org>
 References: <20200624105422.1452290-1-leon@kernel.org>
@@ -43,277 +42,80 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Update the code to allocate and free ib_xrcd structure in the
-ib_core instead of inside drivers.
+The RWQ table is used for RSS uverbs and not in used for the kernel
+consumers, delete ib_create_rwq_ind_table() routine that is not
+called at all.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/device.c     |  1 +
- drivers/infiniband/core/verbs.c      | 30 ++++++++++++++--------
- drivers/infiniband/hw/mlx4/main.c    | 37 +++++++++++-----------------
- drivers/infiniband/hw/mlx5/main.c    |  2 ++
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  5 ++--
- drivers/infiniband/hw/mlx5/qp.c      | 34 +++++++------------------
- include/rdma/ib_verbs.h              |  6 ++---
- 7 files changed, 52 insertions(+), 63 deletions(-)
+ drivers/infiniband/core/verbs.c | 39 ---------------------------------
+ include/rdma/ib_verbs.h         |  3 ---
+ 2 files changed, 42 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 257e8a667977..b15fa3fa09ac 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2688,6 +2688,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_OBJ_SIZE(dev_ops, ib_pd);
- 	SET_OBJ_SIZE(dev_ops, ib_srq);
- 	SET_OBJ_SIZE(dev_ops, ib_ucontext);
-+	SET_OBJ_SIZE(dev_ops, ib_xrcd);
- }
- EXPORT_SYMBOL(ib_set_device_ops);
- 
 diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 61debe056912..6a2becd624c3 100644
+index 6a2becd624c3..65c9118a931c 100644
 --- a/drivers/infiniband/core/verbs.c
 +++ b/drivers/infiniband/core/verbs.c
-@@ -2294,20 +2294,28 @@ struct ib_xrcd *ib_alloc_xrcd_user(struct ib_device *device,
- 				   struct inode *inode, struct ib_udata *udata)
- {
- 	struct ib_xrcd *xrcd;
-+	int ret;
- 
- 	if (!device->ops.alloc_xrcd)
- 		return ERR_PTR(-EOPNOTSUPP);
- 
--	xrcd = device->ops.alloc_xrcd(device, udata);
--	if (!IS_ERR(xrcd)) {
--		xrcd->device = device;
--		xrcd->inode = inode;
--		atomic_set(&xrcd->usecnt, 0);
--		init_rwsem(&xrcd->tgt_qps_rwsem);
--		xa_init(&xrcd->tgt_qps);
--	}
-+	xrcd = rdma_zalloc_drv_obj(device, ib_xrcd);
-+	if (!xrcd)
-+		return ERR_PTR(-ENOMEM);
- 
-+	xrcd->device = device;
-+	xrcd->inode = inode;
-+	atomic_set(&xrcd->usecnt, 0);
-+	init_rwsem(&xrcd->tgt_qps_rwsem);
-+	xa_init(&xrcd->tgt_qps);
-+
-+	ret = device->ops.alloc_xrcd(xrcd, udata);
-+	if (ret)
-+		goto err;
- 	return xrcd;
-+err:
-+	kfree(xrcd);
-+	return ERR_PTR(ret);
+@@ -2412,45 +2412,6 @@ int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
  }
- EXPORT_SYMBOL(ib_alloc_xrcd_user);
+ EXPORT_SYMBOL(ib_modify_wq);
  
-@@ -2317,8 +2325,10 @@ int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata)
- 		return -EBUSY;
- 
- 	WARN_ON(!xa_empty(&xrcd->tgt_qps));
--	return xrcd->device->ops.dealloc_xrcd(xrcd, udata);
+-/*
+- * ib_create_rwq_ind_table - Creates a RQ Indirection Table.
+- * @device: The device on which to create the rwq indirection table.
+- * @ib_rwq_ind_table_init_attr: A list of initial attributes required to
+- * create the Indirection Table.
+- *
+- * Note: The life time of ib_rwq_ind_table_init_attr->ind_tbl is not less
+- *	than the created ib_rwq_ind_table object and the caller is responsible
+- *	for its memory allocation/free.
+- */
+-struct ib_rwq_ind_table *ib_create_rwq_ind_table(struct ib_device *device,
+-						 struct ib_rwq_ind_table_init_attr *init_attr)
+-{
+-	struct ib_rwq_ind_table *rwq_ind_table;
+-	int i;
+-	u32 table_size;
+-
+-	if (!device->ops.create_rwq_ind_table)
+-		return ERR_PTR(-EOPNOTSUPP);
+-
+-	table_size = (1 << init_attr->log_ind_tbl_size);
+-	rwq_ind_table = device->ops.create_rwq_ind_table(device,
+-							 init_attr, NULL);
+-	if (IS_ERR(rwq_ind_table))
+-		return rwq_ind_table;
+-
+-	rwq_ind_table->ind_tbl = init_attr->ind_tbl;
+-	rwq_ind_table->log_ind_tbl_size = init_attr->log_ind_tbl_size;
+-	rwq_ind_table->device = device;
+-	rwq_ind_table->uobject = NULL;
+-	atomic_set(&rwq_ind_table->usecnt, 0);
+-
+-	for (i = 0; i < table_size; i++)
+-		atomic_inc(&rwq_ind_table->ind_tbl[i]->usecnt);
+-
+-	return rwq_ind_table;
 -}
-+	xrcd->device->ops.dealloc_xrcd(xrcd, udata);
-+	kfree(xrcd);
-+	return 0;
-+ }
- EXPORT_SYMBOL(ib_dealloc_xrcd_user);
- 
- /**
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 6471f47bd365..0ad584a3b8d6 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -1219,56 +1219,47 @@ static void mlx4_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- 	mlx4_pd_free(to_mdev(pd->device)->dev, to_mpd(pd)->pdn);
- }
- 
--static struct ib_xrcd *mlx4_ib_alloc_xrcd(struct ib_device *ibdev,
--					  struct ib_udata *udata)
-+static int mlx4_ib_alloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
- {
--	struct mlx4_ib_xrcd *xrcd;
-+	struct mlx4_ib_dev *dev = to_mdev(ibxrcd->device);
-+	struct mlx4_ib_xrcd *xrcd = to_mxrcd(ibxrcd);
- 	struct ib_cq_init_attr cq_attr = {};
- 	int err;
- 
--	if (!(to_mdev(ibdev)->dev->caps.flags & MLX4_DEV_CAP_FLAG_XRC))
--		return ERR_PTR(-ENOSYS);
+-EXPORT_SYMBOL(ib_create_rwq_ind_table);
 -
--	xrcd = kmalloc(sizeof *xrcd, GFP_KERNEL);
--	if (!xrcd)
--		return ERR_PTR(-ENOMEM);
-+	if (!(dev->dev->caps.flags & MLX4_DEV_CAP_FLAG_XRC))
-+		return -EOPNOTSUPP;
- 
--	err = mlx4_xrcd_alloc(to_mdev(ibdev)->dev, &xrcd->xrcdn);
-+	err = mlx4_xrcd_alloc(dev->dev, &xrcd->xrcdn);
- 	if (err)
--		goto err1;
-+		return err;
- 
--	xrcd->pd = ib_alloc_pd(ibdev, 0);
-+	xrcd->pd = ib_alloc_pd(ibxrcd->device, 0);
- 	if (IS_ERR(xrcd->pd)) {
- 		err = PTR_ERR(xrcd->pd);
- 		goto err2;
- 	}
- 
- 	cq_attr.cqe = 1;
--	xrcd->cq = ib_create_cq(ibdev, NULL, NULL, xrcd, &cq_attr);
-+	xrcd->cq = ib_create_cq(ibxrcd->device, NULL, NULL, xrcd, &cq_attr);
- 	if (IS_ERR(xrcd->cq)) {
- 		err = PTR_ERR(xrcd->cq);
- 		goto err3;
- 	}
- 
--	return &xrcd->ibxrcd;
-+	return 0;
- 
- err3:
- 	ib_dealloc_pd(xrcd->pd);
- err2:
--	mlx4_xrcd_free(to_mdev(ibdev)->dev, xrcd->xrcdn);
--err1:
--	kfree(xrcd);
--	return ERR_PTR(err);
-+	mlx4_xrcd_free(dev->dev, xrcd->xrcdn);
-+	return err;
- }
- 
--static int mlx4_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
-+static void mlx4_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
- {
- 	ib_destroy_cq(to_mxrcd(xrcd)->cq);
- 	ib_dealloc_pd(to_mxrcd(xrcd)->pd);
- 	mlx4_xrcd_free(to_mdev(xrcd->device)->dev, to_mxrcd(xrcd)->xrcdn);
--	kfree(xrcd);
--
--	return 0;
- }
- 
- static int add_gid_entry(struct ib_qp *ibqp, union ib_gid *gid)
-@@ -2609,6 +2600,8 @@ static const struct ib_device_ops mlx4_ib_dev_mw_ops = {
- static const struct ib_device_ops mlx4_ib_dev_xrc_ops = {
- 	.alloc_xrcd = mlx4_ib_alloc_xrcd,
- 	.dealloc_xrcd = mlx4_ib_dealloc_xrcd,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_xrcd, mlx4_ib_xrcd, ibxrcd),
- };
- 
- static const struct ib_device_ops mlx4_ib_dev_fs_ops = {
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 8b0b1f95af2f..a6d5c35a2845 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6676,6 +6676,8 @@ static const struct ib_device_ops mlx5_ib_dev_mw_ops = {
- static const struct ib_device_ops mlx5_ib_dev_xrc_ops = {
- 	.alloc_xrcd = mlx5_ib_alloc_xrcd,
- 	.dealloc_xrcd = mlx5_ib_dealloc_xrcd,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_xrcd, mlx5_ib_xrcd, ibxrcd),
- };
- 
- static const struct ib_device_ops mlx5_ib_dev_dm_ops = {
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index d84f56517caa..726386fe4440 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1223,9 +1223,8 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
- 			const struct ib_wc *in_wc, const struct ib_grh *in_grh,
- 			const struct ib_mad *in, struct ib_mad *out,
- 			size_t *out_mad_size, u16 *out_mad_pkey_index);
--struct ib_xrcd *mlx5_ib_alloc_xrcd(struct ib_device *ibdev,
--				   struct ib_udata *udata);
--int mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
-+int mlx5_ib_alloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
-+void mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
- int mlx5_ib_get_buf_offset(u64 addr, int page_shift, u32 *offset);
- int mlx5_query_ext_port_caps(struct mlx5_ib_dev *dev, u8 port);
- int mlx5_query_mad_ifc_smp_attr_node_info(struct ib_device *ibdev,
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index f939c9b769f0..0ae73f4e28a3 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -4700,41 +4700,25 @@ int mlx5_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	return err;
- }
- 
--struct ib_xrcd *mlx5_ib_alloc_xrcd(struct ib_device *ibdev,
--				   struct ib_udata *udata)
-+int mlx5_ib_alloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
- {
--	struct mlx5_ib_dev *dev = to_mdev(ibdev);
--	struct mlx5_ib_xrcd *xrcd;
--	int err;
-+	struct mlx5_ib_dev *dev = to_mdev(ibxrcd->device);
-+	struct mlx5_ib_xrcd *xrcd = to_mxrcd(ibxrcd);
-+	int ret;
- 
- 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
--		return ERR_PTR(-ENOSYS);
--
--	xrcd = kmalloc(sizeof(*xrcd), GFP_KERNEL);
--	if (!xrcd)
--		return ERR_PTR(-ENOMEM);
--
--	err = mlx5_cmd_xrcd_alloc(dev->mdev, &xrcd->xrcdn, 0);
--	if (err) {
--		kfree(xrcd);
--		return ERR_PTR(-ENOMEM);
--	}
-+		return -EOPNOTSUPP;
- 
--	return &xrcd->ibxrcd;
-+	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &xrcd->xrcdn, 0);
-+	return ret;
- }
- 
--int mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
-+void mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(xrcd->device);
- 	u32 xrcdn = to_mxrcd(xrcd)->xrcdn;
--	int err;
- 
--	err = mlx5_cmd_xrcd_dealloc(dev->mdev, xrcdn, 0);
--	if (err)
--		mlx5_ib_warn(dev, "failed to dealloc xrcdn 0x%x\n", xrcdn);
--
--	kfree(xrcd);
--	return 0;
-+	mlx5_cmd_xrcd_dealloc(dev->mdev, xrcdn, 0);
- }
- 
- static void mlx5_ib_wq_event(struct mlx5_core_qp *core_qp, int type)
+ /*
+  * ib_destroy_rwq_ind_table - Destroys the specified Indirection Table.
+  * @wq_ind_table: The Indirection Table to destroy.
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 7160662899bb..f1a5c89466aa 100644
+index f1a5c89466aa..6e2cb69fe90b 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -2494,9 +2494,8 @@ struct ib_device_ops {
- 	void (*dealloc_mw)(struct ib_mw *mw);
- 	int (*attach_mcast)(struct ib_qp *qp, union ib_gid *gid, u16 lid);
- 	int (*detach_mcast)(struct ib_qp *qp, union ib_gid *gid, u16 lid);
--	struct ib_xrcd *(*alloc_xrcd)(struct ib_device *device,
--				      struct ib_udata *udata);
--	int (*dealloc_xrcd)(struct ib_xrcd *xrcd, struct ib_udata *udata);
-+	int (*alloc_xrcd)(struct ib_xrcd *xrcd, struct ib_udata *udata);
-+	void (*dealloc_xrcd)(struct ib_xrcd *xrcd, struct ib_udata *udata);
- 	struct ib_flow *(*create_flow)(struct ib_qp *qp,
- 				       struct ib_flow_attr *flow_attr,
- 				       int domain, struct ib_udata *udata);
-@@ -2656,6 +2655,7 @@ struct ib_device_ops {
- 	DECLARE_RDMA_OBJ_SIZE(ib_pd);
- 	DECLARE_RDMA_OBJ_SIZE(ib_srq);
- 	DECLARE_RDMA_OBJ_SIZE(ib_ucontext);
-+	DECLARE_RDMA_OBJ_SIZE(ib_xrcd);
- };
+@@ -4430,9 +4430,6 @@ struct ib_wq *ib_create_wq(struct ib_pd *pd,
+ int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
+ int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *attr,
+ 		 u32 wq_attr_mask);
+-struct ib_rwq_ind_table *ib_create_rwq_ind_table(struct ib_device *device,
+-						 struct ib_rwq_ind_table_init_attr*
+-						 wq_ind_table_init_attr);
+ int ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
  
- struct ib_core_device {
+ int ib_map_mr_sg(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
 -- 
 2.26.2
 
