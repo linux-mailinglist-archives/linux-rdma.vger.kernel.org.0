@@ -2,219 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B345B20687F
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2020 01:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551B52069F8
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jun 2020 04:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387790AbgFWXfe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Jun 2020 19:35:34 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:37950 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387717AbgFWXfe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:35:34 -0400
-X-Greylist: delayed 1979 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Jun 2020 19:35:31 EDT
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 7EAF41A8342;
-        Wed, 24 Jun 2020 08:31:36 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jnrS3-0000sh-12; Wed, 24 Jun 2020 08:31:35 +1000
-Date:   Wed, 24 Jun 2020 08:31:35 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas_os@shipmail.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] mm: Track mmu notifiers in fs_reclaim_acquire/release
-Message-ID: <20200623223134.GC2005@dread.disaster.area>
-References: <20200604081224.863494-2-daniel.vetter@ffwll.ch>
- <20200610194101.1668038-1-daniel.vetter@ffwll.ch>
- <20200621174205.GB1398@lca.pw>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200621174205.GB1398@lca.pw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=8nJEP1OIZ-IA:10 a=nTHF0DUjJn0A:10 a=WwJGiR1sAAAA:8 a=Z4Rwk6OoAAAA:8
-        a=CbDCq_QkAAAA:8 a=37rDS-QxAAAA:8 a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8
-        a=zd2uoN0lAAAA:8 a=7-415B0cAAAA:8 a=YFjDoilscawXd35iVQoA:9
-        a=wPNLvfGTeEIA:10 a=Ke8zcFn7cQlxtk25vvl_:22 a=HkZW87K1Qel5hWWM3VKY:22
-        a=1qrBK16LubpBFNPVNq2M:22 a=k1Nq6YrhK2t884LQW06G:22
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S2388001AbgFXCP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Jun 2020 22:15:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41704 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387985AbgFXCP1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Jun 2020 22:15:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05O22VJ7188934;
+        Wed, 24 Jun 2020 02:15:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=e0+MzToXCC9v1nNJLhO5p8forogNppI9KUbriWiSc0E=;
+ b=hekE31OzPMWiCF253CguXL+AiExgYX7o7jOrwUw6r/7elcc+1tX6/lHQtF8N8qGi3gLj
+ RtXgOJf7fD/5UWQgdaOb4Xs7dCmQzZfBVr+/WvcAI7tKDcHt8AeOT6pl5ZQGcYutwkUG
+ iHnPdDoghRTWIL79nxXuAUf7JxkE73DIZncuEgpTcVhzmJuSQpnAxravZO1IqKNyEsoZ
+ TzJ94VMqZ2WOvQcnJzdM5aHjZWvRrpoWRdQaOkqxZ8+ozZJuBGiRLg4qE7yRDpW34J1g
+ wubN5t5QwtjZzv+RSaC+C5d+2EJjUAXL6MrvQIJ58wkuWyPxW+9+g+4mxZU9jlJRxeGk KQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31uustg9y9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Jun 2020 02:15:22 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05O24AAM139408;
+        Wed, 24 Jun 2020 02:13:21 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31uur6m21u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 02:13:21 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05O2DIF7010266;
+        Wed, 24 Jun 2020 02:13:18 GMT
+Received: from ca-common-hq.us.oracle.com (/10.211.9.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 24 Jun 2020 02:13:17 +0000
+From:   Divya Indi <divya.indi@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kaike Wan <kaike.wan@intel.com>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Divya Indi <divya.indi@oracle.com>
+Subject: [PATCH v4] IB/sa: Resolving use-after-free in ib_nl_send_msg
+Date:   Tue, 23 Jun 2020 19:13:09 -0700
+Message-Id: <1592964789-14533-1-git-send-email-divya.indi@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 malwarescore=0
+ suspectscore=2 mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006240012
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ cotscore=-2147483648 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
+ suspectscore=2 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006240012
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 01:42:05PM -0400, Qian Cai wrote:
-> On Wed, Jun 10, 2020 at 09:41:01PM +0200, Daniel Vetter wrote:
-> > fs_reclaim_acquire/release nicely catch recursion issues when
-> > allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
-> > to use to keep the excessive caches in check). For mmu notifier
-> > recursions we do have lockdep annotations since 23b68395c7c7
-> > ("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
-> > 
-> > But these only fire if a path actually results in some pte
-> > invalidation - for most small allocations that's very rarely the case.
-> > The other trouble is that pte invalidation can happen any time when
-> > __GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
-> > choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
-> > recursion.
-> > 
-> > I was pondering whether we should just do the general annotation, but
-> > there's always the risk for false positives. Plus I'm assuming that
-> > the core fs and io code is a lot better reviewed and tested than
-> > random mmu notifier code in drivers. Hence why I decide to only
-> > annotate for that specific case.
-> > 
-> > Furthermore even if we'd create a lockdep map for direct reclaim, we'd
-> > still need to explicit pull in the mmu notifier map - there's a lot
-> > more places that do pte invalidation than just direct reclaim, these
-> > two contexts arent the same.
-> > 
-> > Note that the mmu notifiers needing their own independent lockdep map
-> > is also the reason we can't hold them from fs_reclaim_acquire to
-> > fs_reclaim_release - it would nest with the acquistion in the pte
-> > invalidation code, causing a lockdep splat. And we can't remove the
-> > annotations from pte invalidation and all the other places since
-> > they're called from many other places than page reclaim. Hence we can
-> > only do the equivalent of might_lock, but on the raw lockdep map.
-> > 
-> > With this we can also remove the lockdep priming added in 66204f1d2d1b
-> > ("mm/mmu_notifiers: prime lockdep") since the new annotations are
-> > strictly more powerful.
-> > 
-> > v2: Review from Thomas Hellstrom:
-> > - unbotch the fs_reclaim context check, I accidentally inverted it,
-> >   but it didn't blow up because I inverted it immediately
-> > - fix compiling for !CONFIG_MMU_NOTIFIER
-> > 
-> > Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Jason Gunthorpe <jgg@mellanox.com>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-rdma@vger.kernel.org
-> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Christian König <christian.koenig@amd.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> 
-> Replying the right patch here...
-> 
-> Reverting this commit [1] fixed the lockdep warning below while applying
-> some memory pressure.
-> 
-> [1] linux-next cbf7c9d86d75 ("mm: track mmu notifiers in fs_reclaim_acquire/release")
-> 
-> [  190.455003][  T369] WARNING: possible circular locking dependency detected
-> [  190.487291][  T369] 5.8.0-rc1-next-20200621 #1 Not tainted
-> [  190.512363][  T369] ------------------------------------------------------
-> [  190.543354][  T369] kswapd3/369 is trying to acquire lock:
-> [  190.568523][  T369] ffff889fcf694528 (&xfs_nondir_ilock_class){++++}-{3:3}, at: xfs_reclaim_inode+0xdf/0x860
-> spin_lock at include/linux/spinlock.h:353
-> (inlined by) xfs_iflags_test_and_set at fs/xfs/xfs_inode.h:166
-> (inlined by) xfs_iflock_nowait at fs/xfs/xfs_inode.h:249
-> (inlined by) xfs_reclaim_inode at fs/xfs/xfs_icache.c:1127
-> [  190.614359][  T369]
-> [  190.614359][  T369] but task is already holding lock:
-> [  190.647763][  T369] ffffffffb50ced00 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30
-> __fs_reclaim_acquire at mm/page_alloc.c:4200
-> [  190.687845][  T369]
-> [  190.687845][  T369] which lock already depends on the new lock.
-> [  190.687845][  T369]
-> [  190.734890][  T369]
-> [  190.734890][  T369] the existing dependency chain (in reverse order) is:
-> [  190.775991][  T369]
-> [  190.775991][  T369] -> #1 (fs_reclaim){+.+.}-{0:0}:
-> [  190.808150][  T369]        fs_reclaim_acquire+0x77/0x80
-> [  190.832152][  T369]        slab_pre_alloc_hook.constprop.52+0x20/0x120
-> slab_pre_alloc_hook at mm/slab.h:507
-> [  190.862173][  T369]        kmem_cache_alloc+0x43/0x2a0
-> [  190.885602][  T369]        kmem_zone_alloc+0x113/0x3ef
-> kmem_zone_alloc at fs/xfs/kmem.c:129
-> [  190.908702][  T369]        xfs_inode_item_init+0x1d/0xa0
-> xfs_inode_item_init at fs/xfs/xfs_inode_item.c:639
-> [  190.934461][  T369]        xfs_trans_ijoin+0x96/0x100
-> xfs_trans_ijoin at fs/xfs/libxfs/xfs_trans_inode.c:34
-> [  190.961530][  T369]        xfs_setattr_nonsize+0x1a6/0xcd0
+Commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
+-
+1. Adds the query to the request list before ib_nl_snd_msg.
+2. Moves ib_nl_send_msg out of spinlock, hence safe to use gfp_mask as is.
 
-OK, this patch has royally screwed something up if this path thinks
-it can enter memory reclaim. This path is inside a transaction, so
-it is running under PF_MEMALLOC_NOFS context, so should *never*
-enter memory reclaim.
+However, if there is a delay in sending out the request (For
+eg: Delay due to low memory situation) the timer to handle request timeout
+might kick in before the request is sent out to ibacm via netlink.
+ib_nl_request_timeout may release the query causing a use after free situation
+while accessing the query in ib_nl_send_msg.
 
-I'd suggest that whatever mods were made to fs_reclaim_acquire by
-this patch broke it's basic functionality....
+Call Trace for the above race:
 
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 13cc653122b7..7536faaaa0fd 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -57,6 +57,7 @@
-> >  #include <trace/events/oom.h>
-> >  #include <linux/prefetch.h>
-> >  #include <linux/mm_inline.h>
-> > +#include <linux/mmu_notifier.h>
-> >  #include <linux/migrate.h>
-> >  #include <linux/hugetlb.h>
-> >  #include <linux/sched/rt.h>
-> > @@ -4124,7 +4125,7 @@ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_fla
-> >  static struct lockdep_map __fs_reclaim_map =
-> >  	STATIC_LOCKDEP_MAP_INIT("fs_reclaim", &__fs_reclaim_map);
-> >  
-> > -static bool __need_fs_reclaim(gfp_t gfp_mask)
-> > +static bool __need_reclaim(gfp_t gfp_mask)
-> >  {
-> >  	gfp_mask = current_gfp_context(gfp_mask);
+[<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
+[<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
+[<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
+[<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
+[<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
+[rds_rdma]
+[<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
+[rds_rdma]
+[<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
+[<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
+[<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
+[<ffffffff810a02f9>] process_one_work+0x169/0x4a0
+[<ffffffff810a0b2b>] worker_thread+0x5b/0x560
+[<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
+[<ffffffff810a68fb>] kthread+0xcb/0xf0
+[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
+[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+[<ffffffff816f25a7>] ret_from_fork+0x47/0x90
+[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
+....
+RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
 
-This is applies the per-task memory allocation context flags to the
-mask that is checked here.
+To resolve the above issue -
+1. Add the req to the request list only after the request has been sent out.
+2. To handle the race where response comes in before adding request to
+the request list, send(rdma_nl_multicast) and add to list while holding the
+spinlock - request_lock.
+3. Use non blocking memory allocation flags for rdma_nl_multicast since it is
+called while holding a spinlock.
 
-> > @@ -4136,10 +4137,6 @@ static bool __need_fs_reclaim(gfp_t gfp_mask)
-> >  	if (current->flags & PF_MEMALLOC)
-> >  		return false;
-> >  
-> > -	/* We're only interested __GFP_FS allocations for now */
-> > -	if (!(gfp_mask & __GFP_FS))
-> > -		return false;
-> > -
-> >  	if (gfp_mask & __GFP_NOLOCKDEP)
-> >  		return false;
-> >  
-> > @@ -4158,15 +4155,25 @@ void __fs_reclaim_release(void)
-> >  
-> >  void fs_reclaim_acquire(gfp_t gfp_mask)
-> >  {
-> > -	if (__need_fs_reclaim(gfp_mask))
-> > -		__fs_reclaim_acquire();
-> > +	if (__need_reclaim(gfp_mask)) {
-> > +		if (gfp_mask & __GFP_FS)
-> > +			__fs_reclaim_acquire();
+Fixes: 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
+before sending")
 
-.... and they have not been applied in this path. There's your
-breakage.
+Signed-off-by: Divya Indi <divya.indi@oracle.com>
+---
+v1:
+- Use flag IB_SA_NL_QUERY_SENT to prevent the use-after-free.
 
-For future reference, please post anything that changes NOFS
-allocation contexts or behaviours to linux-fsdevel, as filesystem
-developers need to know about proposed changes to infrastructure
-that is critical to the correct functioning of filesystems...
+v2:
+- Use atomic bit ops for setting and testing IB_SA_NL_QUERY_SENT.
+- Rewording and adding comments.
 
-Cheers,
+v3:
+- Change approach and remove usage of IB_SA_NL_QUERY_SENT.
+- Add req to request list only after the request has been sent out.
+- Send and add to list while holding the spinlock (request_lock).
+- Overide gfp_mask and use GFP_NOWAIT for rdma_nl_multicast since we
+  need non blocking memory allocation while holding spinlock.
 
-Dave.
+v4:
+- Formatting changes.
+- Use GFP_NOWAIT conditionally - Only when GFP_ATOMIC is not provided by caller.
+---
+ drivers/infiniband/core/sa_query.c | 41 ++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 74e0058..9066d48 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -836,6 +836,10 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
+ 	void *data;
+ 	struct ib_sa_mad *mad;
+ 	int len;
++	unsigned long flags;
++	unsigned long delay;
++	gfp_t gfp_flag;
++	int ret;
+ 
+ 	mad = query->mad_buf->mad;
+ 	len = ib_nl_get_path_rec_attrs_len(mad->sa_hdr.comp_mask);
+@@ -860,36 +864,39 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
+ 	/* Repair the nlmsg header length */
+ 	nlmsg_end(skb, nlh);
+ 
+-	return rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_mask);
+-}
++	gfp_flag = ((gfp_mask & GFP_ATOMIC) == GFP_ATOMIC) ? GFP_ATOMIC :
++		GFP_NOWAIT;
+ 
+-static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
+-{
+-	unsigned long flags;
+-	unsigned long delay;
+-	int ret;
++	spin_lock_irqsave(&ib_nl_request_lock, flags);
++	ret =  rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_flag);
+ 
+-	INIT_LIST_HEAD(&query->list);
+-	query->seq = (u32)atomic_inc_return(&ib_nl_sa_request_seq);
++	if (ret)
++		goto out;
+ 
+-	/* Put the request on the list first.*/
+-	spin_lock_irqsave(&ib_nl_request_lock, flags);
++	/* Put the request on the list.*/
+ 	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
+ 	query->timeout = delay + jiffies;
+ 	list_add_tail(&query->list, &ib_nl_request_list);
+ 	/* Start the timeout if this is the only request */
+ 	if (ib_nl_request_list.next == &query->list)
+ 		queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
++
++out:
+ 	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+ 
++	return ret;
++}
++
++static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
++{
++	int ret;
++
++	INIT_LIST_HEAD(&query->list);
++	query->seq = (u32)atomic_inc_return(&ib_nl_sa_request_seq);
++
+ 	ret = ib_nl_send_msg(query, gfp_mask);
+-	if (ret) {
++	if (ret)
+ 		ret = -EIO;
+-		/* Remove the request */
+-		spin_lock_irqsave(&ib_nl_request_lock, flags);
+-		list_del(&query->list);
+-		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+-	}
+ 
+ 	return ret;
+ }
 -- 
-Dave Chinner
-david@fromorbit.com
+1.8.3.1
+
