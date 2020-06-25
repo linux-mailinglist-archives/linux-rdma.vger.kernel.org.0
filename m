@@ -2,171 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD2B20A55D
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2020 21:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BFB20A5A3
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jun 2020 21:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390556AbgFYTAs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Jun 2020 15:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390431AbgFYTAs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:00:48 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F90620679;
-        Thu, 25 Jun 2020 19:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593111647;
-        bh=YkfmNwRTqOcDyN/i3vS+1r+tulnHjjdBmDirQ+SLQ6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K1lbL3iVZT7SpBv0OEozOH0fVRO8/BuAfb9RFc8HtvswzuDfoaC6xqbpPi+WXBqrU
-         cAv8xiWw27C2V9eZ6RlnrKZgkDs7dEkpa8txpq+TVjXtVI4O94xD8sQAKj6z3w+dX+
-         nCS+6WlJ0QgvlsO0WP45hjJ63EaQEgcFJ56TfJHg=
-Date:   Thu, 25 Jun 2020 22:00:43 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v4] IB/sa: Resolving use-after-free in ib_nl_send_msg
-Message-ID: <20200625190043.GF1446285@unreal>
-References: <1592964789-14533-1-git-send-email-divya.indi@oracle.com>
- <20200625100904.GE1446285@unreal>
- <372b8c22-bac9-e737-bd54-0d9e2901de65@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <372b8c22-bac9-e737-bd54-0d9e2901de65@oracle.com>
+        id S2406007AbgFYTTq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Jun 2020 15:19:46 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37070 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406068AbgFYTTq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jun 2020 15:19:46 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PJHxJi072486;
+        Thu, 25 Jun 2020 19:19:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=5TZTNYjgptrC+k0dSj4JgnxfE/delMSPMsMeSXROSxM=;
+ b=hKU/qhTv7+9uisksq9nz3cyLr7afXyJ5p5rNXIZuxBK5lMRGqIVKrSFzRZwJYURJ5lYq
+ TtfnMAWxeeKC/Ahr5/PMatHhBcfa/8d71K+lU2otqecO+hcAiDUxVjV5vt/uMYCr2UcF
+ Rs/mdkNvYD0D7M+YJxvVYPxKBXd3Mig60ALqZjGh31gS1qbQ9jZev0ss1K9PCJEws8Bv
+ xFCY8tC8B6ptWDEhF85yFmwpE/zThEW2ItnTp0S6ts7yiORFJ8RDx3eSE0wYy2/G7wg6
+ LjIA916cpfdeGJF7Gr5dOcxPagKmOyp12aEC706C5tzIHRpWxrVACFWpCw3ogKl2l80q RQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 31uusu2ct3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Jun 2020 19:19:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PJJSjI131800;
+        Thu, 25 Jun 2020 19:19:41 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 31uurt0v57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 19:19:41 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05PJJec4025591;
+        Thu, 25 Jun 2020 19:19:40 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 25 Jun 2020 19:19:40 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
+Subject: Re: [PATCH] xprtrdma: Ensure connect worker is awoken after connect
+ error
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200621145934.4069.31886.stgit@manet.1015granger.net>
+Date:   Thu, 25 Jun 2020 15:19:39 -0400
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0E2AA9D9-2503-462C-952D-FC0DD5111BD1@oracle.com>
+References: <20200621145934.4069.31886.stgit@manet.1015granger.net>
+To:     Dan Aloni <dan@kernelim.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+X-Mailer: Apple Mail (2.3445.104.14)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=2 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 bulkscore=0
+ cotscore=-2147483648 malwarescore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ spamscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250114
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 10:11:07AM -0700, Divya Indi wrote:
-> Hi Leon,
->
-> Please find my comments inline -
->
-> On 6/25/20 3:09 AM, Leon Romanovsky wrote:
-> > On Tue, Jun 23, 2020 at 07:13:09PM -0700, Divya Indi wrote:
-> >> Commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
-> >> -
-> >> 1. Adds the query to the request list before ib_nl_snd_msg.
-> >> 2. Moves ib_nl_send_msg out of spinlock, hence safe to use gfp_mask as is.
-> >>
-> >> However, if there is a delay in sending out the request (For
-> >> eg: Delay due to low memory situation) the timer to handle request timeout
-> >> might kick in before the request is sent out to ibacm via netlink.
-> >> ib_nl_request_timeout may release the query causing a use after free situation
-> >> while accessing the query in ib_nl_send_msg.
-> >>
-> >> Call Trace for the above race:
-> >>
-> >> [<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
-> >> [<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
-> >> [<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
-> >> [<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
-> >> [<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
-> >> [rds_rdma]
-> >> [<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
-> >> [rds_rdma]
-> >> [<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
-> >> [<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
-> >> [<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
-> >> [<ffffffff810a02f9>] process_one_work+0x169/0x4a0
-> >> [<ffffffff810a0b2b>] worker_thread+0x5b/0x560
-> >> [<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
-> >> [<ffffffff810a68fb>] kthread+0xcb/0xf0
-> >> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-> >> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-> >> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-> >> [<ffffffff816f25a7>] ret_from_fork+0x47/0x90
-> >> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-> >> ....
-> >> RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
-> >>
-> >> To resolve the above issue -
-> >> 1. Add the req to the request list only after the request has been sent out.
-> >> 2. To handle the race where response comes in before adding request to
-> >> the request list, send(rdma_nl_multicast) and add to list while holding the
-> >> spinlock - request_lock.
-> >> 3. Use non blocking memory allocation flags for rdma_nl_multicast since it is
-> >> called while holding a spinlock.
-> >>
-> >> Fixes: 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
-> >> before sending")
-> >>
-> >> Signed-off-by: Divya Indi <divya.indi@oracle.com>
-> >> ---
-> >> v1:
-> >> - Use flag IB_SA_NL_QUERY_SENT to prevent the use-after-free.
-> >>
-> >> v2:
-> >> - Use atomic bit ops for setting and testing IB_SA_NL_QUERY_SENT.
-> >> - Rewording and adding comments.
-> >>
-> >> v3:
-> >> - Change approach and remove usage of IB_SA_NL_QUERY_SENT.
-> >> - Add req to request list only after the request has been sent out.
-> >> - Send and add to list while holding the spinlock (request_lock).
-> >> - Overide gfp_mask and use GFP_NOWAIT for rdma_nl_multicast since we
-> >>   need non blocking memory allocation while holding spinlock.
-> >>
-> >> v4:
-> >> - Formatting changes.
-> >> - Use GFP_NOWAIT conditionally - Only when GFP_ATOMIC is not provided by caller.
-> >> ---
-> >>  drivers/infiniband/core/sa_query.c | 41 ++++++++++++++++++++++----------------
-> >>  1 file changed, 24 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-> >> index 74e0058..9066d48 100644
-> >> --- a/drivers/infiniband/core/sa_query.c
-> >> +++ b/drivers/infiniband/core/sa_query.c
-> >> @@ -836,6 +836,10 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
-> >>  	void *data;
-> >>  	struct ib_sa_mad *mad;
-> >>  	int len;
-> >> +	unsigned long flags;
-> >> +	unsigned long delay;
-> >> +	gfp_t gfp_flag;
-> >> +	int ret;
-> >>
-> >>  	mad = query->mad_buf->mad;
-> >>  	len = ib_nl_get_path_rec_attrs_len(mad->sa_hdr.comp_mask);
-> >> @@ -860,36 +864,39 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
-> >>  	/* Repair the nlmsg header length */
-> >>  	nlmsg_end(skb, nlh);
-> >>
-> >> -	return rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_mask);
-> >> -}
-> >> +	gfp_flag = ((gfp_mask & GFP_ATOMIC) == GFP_ATOMIC) ? GFP_ATOMIC :
-> >> +		GFP_NOWAIT;
-> > I would say that the better way will be to write something like this:
-> > gfp_flag |= GFP_NOWAIT;
->
-> You mean gfp_flag = gfp_mask|GFP_NOWAIT? [We dont want to modify the gfp_mask sent by caller]
->
-> #define GFP_ATOMIC      (__GFP_HIGH|__GFP_ATOMIC|__GFP_KSWAPD_RECLAIM)
-> #define GFP_KERNEL      (__GFP_RECLAIM | __GFP_IO | __GFP_FS)
-> #define GFP_NOWAIT      (__GFP_KSWAPD_RECLAIM)
->
-> If a caller passes GFP_KERNEL, "gfp_mask|GFP_NOWAIT" will still have __GFP_RECLAIM,
-> __GFP_IO and __GFP_FS set which is not suitable for using under spinlock.
+Anna, please drop this one. It appears to trigger a particularly nasty
+use-after-free. I'll follow up with a more complete fix soon.
 
-Ahh, sorry I completely forgot about spinlock part.
+(Yes, a wake-up on connect errors is indeed necessary... but the connect
+worker needs to be re-organized to deal properly with it).
 
-Thanks
 
->
-> Thanks,
-> Divya
->
-> >
-> > Thanks
+> On Jun 21, 2020, at 10:59 AM, Chuck Lever <chuck.lever@oracle.com> =
+wrote:
+>=20
+> From: Dan Aloni <dan@kernelim.com>
+>=20
+> The connect worker sleeps waiting for either successful connection
+> establishment or an error. Commit e28ce90083f0 ("xprtrdma: kmalloc
+> rpcrdma_ep separate from rpcrdma_xprt") mistakenly removed the
+> wake-up in cases when connection establishment fails.
+>=20
+> Fixes: e28ce90083f0 ("xprtrdma: kmalloc rpcrdma_ep separate from =
+rpcrdma_xprt")
+> Signed-off-by: Dan Aloni <dan@kernelim.com>
+> [ cel: rebased on recent fixes to 5.8-rc; patch description rewritten =
+]
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+> net/sunrpc/xprtrdma/verbs.c |    1 +
+> 1 file changed, 1 insertion(+)
+>=20
+> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+> index 2198c8ec8dff..54c6809bf06e 100644
+> --- a/net/sunrpc/xprtrdma/verbs.c
+> +++ b/net/sunrpc/xprtrdma/verbs.c
+> @@ -296,6 +296,7 @@ rpcrdma_cm_event_handler(struct rdma_cm_id *id, =
+struct rdma_cm_event *event)
+> 		ep->re_connect_status =3D -ECONNABORTED;
+> disconnected:
+> 		rpcrdma_force_disconnect(ep);
+> +		wake_up_all(&ep->re_connect_wait);
+> 		return rpcrdma_ep_put(ep);
+> 	default:
+> 		break;
+>=20
+
+--
+Chuck Lever
+
+
+
