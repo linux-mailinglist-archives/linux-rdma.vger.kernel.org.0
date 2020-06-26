@@ -2,280 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9DB20B8A8
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 20:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B489F20B92E
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 21:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgFZSwG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jun 2020 14:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
+        id S1725906AbgFZTQN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jun 2020 15:16:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:32707 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgFZSwF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Jun 2020 14:52:05 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDAD02075A;
-        Fri, 26 Jun 2020 18:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593197524;
-        bh=E5ZeGIaQ4TvxmK01qXTN6ia+aVwiHoFFaYZso3L47YA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n790PbLzROZKWoZhFf+3iV0hWLyb/W4bEQ791+kAAwLaVp5omcjYgtmZzdRV/vQeO
-         QC8lhrpHholCaSmgheL1iCtiGerP/zLk6/3Qqyo8gLLZtwT+jHx0pydM3LZfATP8MY
-         GQG89aRpEKi6nyQJjU12vDJcIx8SPa8rhTc3PTCw=
-Date:   Fri, 26 Jun 2020 13:52:02 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     refactormyself@gmail.com
-Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        dmaengine@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        Russell Currey <ruscur@russell.cc>,
-        Sam Bobroff <sbobroff@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8 v2] PCI: Align return values of PCIe capability and
- PCI accessors
-Message-ID: <20200626185202.GA2923565@bjorn-Precision-5520>
+        id S1725780AbgFZTQM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Jun 2020 15:16:12 -0400
+IronPort-SDR: R0LiI3prC39tbQY/PU1H6cwLZBdPr5K8Ouq14WrkukdnPNt8iaP5DO3GBrBJZna1Zqer1gVRYQ
+ rnadXa1LyXhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9664"; a="206962523"
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="206962523"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2020 12:16:11 -0700
+IronPort-SDR: Hv92bWRIsr8OMOUEftkUaJYZaF1VbwinCWoN0bSSJCu57IB/NaoKWN+3j5iTeAhEaybA8FiP0N
+ 5bDiLSAURnYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,284,1589266800"; 
+   d="scan'208";a="479916296"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Jun 2020 12:16:10 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 26 Jun 2020 12:16:04 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 26 Jun 2020 12:16:03 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 26 Jun 2020 12:16:03 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 26 Jun 2020 12:16:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=la33yntRInkkCPKJd3jQckUgM12p5dp4bTFLEFiDgnpakLvfvaej6UZA4TGD0ZNCFpu2ek+1vt5F3uSBeW5xN+d/jxD80lQYzewi3cSS0XdQLYSk5QmJiydJsP54EWkSPjqE/HO+GHnoL3ow/nFmdEMZXOLTbveR3PHL9sO3AufJN+h8MTGd1RDM/ule6C2DMb1B5QvEHM8k20G8Khki5z1iyKwkYdX9hVAWymKoeGb9SZrRLC+q9PKTe08pS3sqUjkp9PhhKVaXpuF3cMMyIm6sUi8CYXY1ixJUjBu82thDN8qjeX06IEA2u0unsIRhRHD9Y1J7dGpF6RjFEGZ1vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9NwSoHrNodcilh4EnpPiGtBVwpAmrNAtQwRYPzkOODE=;
+ b=EpQt0Qeb/jfKR8lEkw7B0rMZ2JASRG7FSETYPPW1dE2xbw88dx8WxQqnvJsAn1PSuXlTBQKf47ieipfAacD2uDchP6ntP7iswfYg7lWk7esVBOkh6KhUAz/QK+egAbwtWTulwjPDfi/I+OKscXVXNfQW3YLJbUNyGN72yr6G6mX9jsuUSBsPAncy+Q5Z0O2QV5Dbpn8ppeyPJFgYgpz/ZOze6MZ+bX09deJ9Xtxrp6gG5FYrsD8bJGNLvPXYfIBiNEL1bjq0X1IsImUiysPWdVf2u8fbYomu2CXjuu+ILyzy1dw0OoxLalW+/x6EWQAqa+n3YSGXo/jaIuoTDO/A8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9NwSoHrNodcilh4EnpPiGtBVwpAmrNAtQwRYPzkOODE=;
+ b=qE2bhIwkBfaDiVzwxeyxTHXGeBWDdkcRzyRDtMNJwxNp80Xm7TDIwCbbmd2z4t5/tUu4cdQFAo6Dd/lDTzgS6b98WrKa03YeRczX4cb6g12g01qIhiPamc729NfyueKsLL/JDePoHZUk6/dHKQUDd0Q2e6EfVz4EQkX1DetOWSU=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MWHPR11MB1487.namprd11.prod.outlook.com (2603:10b6:301:b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Fri, 26 Jun
+ 2020 19:16:02 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::ed68:a00b:2bb0:21cf]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::ed68:a00b:2bb0:21cf%8]) with mapi id 15.20.3131.025; Fri, 26 Jun 2020
+ 19:16:02 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Doug Ledford" <dledford@redhat.com>
+Subject: RE: CFP for RDMA minisummit at virtual LPC 2020
+Thread-Topic: RE: CFP for RDMA minisummit at virtual LPC 2020
+Thread-Index: AdZL6+GwSe/z/08iTdmJAMFoOy4kfw==
+Date:   Fri, 26 Jun 2020 19:16:02 +0000
+Message-ID: <MW3PR11MB455515AF0D14A0C07360AFCDE5930@MW3PR11MB4555.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.136.213]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2f61118d-a01b-46c0-6e3d-08d81a055db5
+x-ms-traffictypediagnostic: MWHPR11MB1487:
+x-microsoft-antispam-prvs: <MWHPR11MB1487069771CCC1CEDFF821B8E5930@MWHPR11MB1487.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0446F0FCE1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OFLMNMDfIkvhCCHmq+mJesmP8uH2+0qvPbLMcXM9Evmnf0Ho/SeRps0FE9VHoxbVGRJ55xgRBPUjJ0AIfoek9u9QTfNMg4TngCP0LX0bAMsqUXVHVB5RdyRQSR0a+mtkgHrWvbMklCIzL4ZgabRcapjAI9PUJDlaYfDoX5X7LQP82+EjkjLIqqKbIg3+5z/lJkZiSBOZ2dwYSIfMMTRLXofQ0BZtWYlRnFDrsXaSrsUQz8UceF3IHG1K8U7mbYNcX47bB/1Z4wExzTAha4P/TL8akiH1+uzaQTC9BBFjGsIhy4XqTFvIsjUUX47ES9Um
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(6506007)(54906003)(9686003)(52536014)(26005)(55016002)(4744005)(7696005)(8676002)(76116006)(66446008)(66556008)(8936002)(5660300002)(64756008)(66476007)(66946007)(4326008)(186003)(71200400001)(6916009)(86362001)(2906002)(33656002)(478600001)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: X3+p5/9kUZ25SeMn2y/PUghNwRgfKaxkPxpNdHasUoO5ajkFF4X6A+B37J3V4Nnd/fTzhWCfwxxFBYzY6igF1l5klUXYVioFASFZPZFqq6KtBGJDjIQK1GBmpwFg3nxvJdiQAfej6foQaJibysnzrAyLHaxI0b1RlgoKt5/pFFvkvGYSC4/ZILM4pOT3Re7BDSZctBVigO3s26esXi1OCoreiCKDXqN4VR9uhmm0h38MUMi2hqMTBJAqKNExQyD40xNy8rrplFZf9n5GCKjH9N/Aqq7huv7b8YvzrdpKgil+IC/sbDbjOiPj0PK62lgS/gCnV7WAnbQQKyWCBznbk8aule8MrOsRTFRJXUxu8H+/vaTXO6SM8w9mTUcc4kDgjKxzx7mSUiNytXlrBywulM0/TDOldfDXnysTSsDjZoKaXmCWbr4WhisJbyA12q06NmP8l/I5hzHE8ParC32Fg1Fk8MLfBqqgN15FRVNkH254vXmN33Ng1WxhW66YAj2r
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615073225.24061-1-refactormyself@gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f61118d-a01b-46c0-6e3d-08d81a055db5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2020 19:16:02.1169
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: G3XcrG8OHbaezyE0HsUIod9MA4FwyR9lmLnzCKmzT+w74yP4om8LiZiNuvs2Kg5rMTFMam26I+V3SDHhtvKHmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1487
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 09:32:17AM +0200, refactormyself@gmail.com wrote:
-> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
-> 
-> 
-> PATCH 1/8 to 7/8:
-> PCIBIOS_ error codes have positive values and they are passed down the
-> call heirarchy from accessors. For functions which are meant to return
-> only a negative value on failure, passing on this value is a bug.
-> To mitigate this, call pcibios_err_to_errno() before passing on return
-> value from PCIe capability accessors call heirarchy. This function
-> converts any positive PCIBIOS_ error codes to negative generic error
-> values.
-> 
-> PATCH 8/8:
-> The PCIe capability accessors can return 0, -EINVAL, or any PCIBIOS_ error
-> code. The pci accessor on the other hand can only return 0 or any PCIBIOS_
-> error code.This inconsistency among these accessor makes it harder for
-> callers to check for errors.
-> Return PCIBIOS_BAD_REGISTER_NUMBER instead of -EINVAL in all PCIe
-> capability accessors.
-> 
-> MERGING:
-> These may all be merged via the PCI tree, since it is a collection of
-> similar fixes. This way they all get merged at once.
-> 
-> Version 2:
-> * cc to maintainers and mailing lists
-> * Edit the Subject to conform with previous style
-> * reorder "Signed by" and "Suggested by"
-> * made spelling corrections
-> * fixed redundant initialisation in PATCH 3/8
-> * include missing call to pcibios_err_to_errno() in PATCH 6/8 and 7/8
-> 
-> 
-> Bolarinwa Olayemi Saheed (8):
->   dmaengine: ioatdma: Convert PCIBIOS_* errors to generic -E* errors
->   IB/hfi1: Convert PCIBIOS_* errors to generic -E* errors
->   IB/hfi1: Convert PCIBIOS_* errors to generic -E* errors
->   PCI: Convert PCIBIOS_* errors to generic -E* errors
->   scsi: smartpqi: Convert PCIBIOS_* errors to generic -E* errors
->   PCI/AER: Convert PCIBIOS_* errors to generic -E* errors
->   PCI/AER: Convert PCIBIOS_* errors to generic -E* errors
->   PCI: Align return values of PCIe capability and PCI accessorss
-> 
->  drivers/dma/ioat/init.c               |  4 ++--
->  drivers/infiniband/hw/hfi1/pcie.c     | 18 +++++++++++++-----
->  drivers/pci/access.c                  |  8 ++++----
->  drivers/pci/pci.c                     | 10 ++++++++--
->  drivers/pci/pcie/aer.c                | 12 ++++++++++--
->  drivers/scsi/smartpqi/smartpqi_init.c |  6 +++++-
->  6 files changed, 42 insertions(+), 16 deletions(-)
+> Hi,
+>
+> I will be short.
+>
+> Please send me/Jason/Doug/"mailing list" the topics which you would like =
+to discuss at RDMA minisummit at LPC 2020 which will be virtual this year.
+>=20
+> Thanks
 
-Since these are really fixing a single PCI API problem, not individual
-driver-related problems, I squashed the pcibios_err_to_errno() patches
-together (except IB/hfi1, since Jason will take those separately) and
-applied them to pci/misc, thanks!
+We would like to have discussion on RDMA and PCI peer-to-peer for GPU appli=
+cations, using DMABUF.=20
 
-The squashed patch as applied is:
+Thanks,
 
-commit d20df83b66cc ("PCI: Convert PCIe capability PCIBIOS errors to errno")
-Author: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
-Date:   Mon Jun 15 09:32:18 2020 +0200
-
-    PCI: Convert PCIe capability PCIBIOS errors to errno
-    
-    The PCI config accessors (pci_read_config_word(), et al) return
-    PCIBIOS_SUCCESSFUL (zero) or positive error values like
-    PCIBIOS_FUNC_NOT_SUPPORTED.
-    
-    The PCIe capability accessors (pcie_capability_read_word(), et al)
-    similarly return PCIBIOS errors, but some callers assume they return
-    generic errno values like -EINVAL.
-    
-    For example, the Myri-10G probe function returns a positive PCIBIOS error
-    if the pcie_capability_clear_and_set_word() in pcie_set_readrq() fails:
-    
-      myri10ge_probe
-        status = pcie_set_readrq
-          return pcie_capability_clear_and_set_word
-        if (status)
-          return status
-    
-    A positive return from a PCI driver probe function would cause a "Driver
-    probe function unexpectedly returned" warning from local_pci_probe()
-    instead of the desired probe failure.
-    
-    Convert PCIBIOS errors to generic errno for all callers of:
-    
-      pcie_capability_read_word
-      pcie_capability_read_dword
-      pcie_capability_write_word
-      pcie_capability_write_dword
-      pcie_capability_set_word
-      pcie_capability_set_dword
-      pcie_capability_clear_word
-      pcie_capability_clear_dword
-      pcie_capability_clear_and_set_word
-      pcie_capability_clear_and_set_dword
-    
-    that check the return code for anything other than zero.
-    
-    [bhelgaas: commit log, squash together]
-    Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-    Link: https://lore.kernel.org/r/20200615073225.24061-1-refactormyself@gmail.com
-    Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
-    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-
-diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
-index 58d13564f88b..9a6a9ec3cf48 100644
---- a/drivers/dma/ioat/init.c
-+++ b/drivers/dma/ioat/init.c
-@@ -1195,13 +1195,13 @@ static int ioat3_dma_probe(struct ioatdma_device *ioat_dma, int dca)
- 	/* disable relaxed ordering */
- 	err = pcie_capability_read_word(pdev, IOAT_DEVCTRL_OFFSET, &val16);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 
- 	/* clear relaxed ordering enable */
- 	val16 &= ~IOAT_DEVCTRL_ROE;
- 	err = pcie_capability_write_word(pdev, IOAT_DEVCTRL_OFFSET, val16);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 
- 	if (ioat_dma->cap & IOAT_CAP_DPS)
- 		writeb(ioat_pending_level + 1,
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index ce096272f52b..45c51aff9c03 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5688,6 +5688,7 @@ EXPORT_SYMBOL(pcie_get_readrq);
- int pcie_set_readrq(struct pci_dev *dev, int rq)
- {
- 	u16 v;
-+	int ret;
- 
- 	if (rq < 128 || rq > 4096 || !is_power_of_2(rq))
- 		return -EINVAL;
-@@ -5706,8 +5707,10 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
- 
- 	v = (ffs(rq) - 8) << 12;
- 
--	return pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
-+	ret = pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
- 						  PCI_EXP_DEVCTL_READRQ, v);
-+
-+	return pcibios_err_to_errno(ret);
- }
- EXPORT_SYMBOL(pcie_set_readrq);
- 
-@@ -5738,6 +5741,7 @@ EXPORT_SYMBOL(pcie_get_mps);
- int pcie_set_mps(struct pci_dev *dev, int mps)
- {
- 	u16 v;
-+	int ret;
- 
- 	if (mps < 128 || mps > 4096 || !is_power_of_2(mps))
- 		return -EINVAL;
-@@ -5747,8 +5751,10 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
- 		return -EINVAL;
- 	v <<= 5;
- 
--	return pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
-+	ret = pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
- 						  PCI_EXP_DEVCTL_PAYLOAD, v);
-+
-+	return pcibios_err_to_errno(ret);
- }
- EXPORT_SYMBOL(pcie_set_mps);
- 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 3acf56683915..2dbc1fd2910b 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -224,20 +224,25 @@ int pcie_aer_is_native(struct pci_dev *dev)
- 
- int pci_enable_pcie_error_reporting(struct pci_dev *dev)
- {
-+	int rc;
-+
- 	if (!pcie_aer_is_native(dev))
- 		return -EIO;
- 
--	return pcie_capability_set_word(dev, PCI_EXP_DEVCTL, PCI_EXP_AER_FLAGS);
-+	rc = pcie_capability_set_word(dev, PCI_EXP_DEVCTL, PCI_EXP_AER_FLAGS);
-+	return pcibios_err_to_errno(rc);
- }
- EXPORT_SYMBOL_GPL(pci_enable_pcie_error_reporting);
- 
- int pci_disable_pcie_error_reporting(struct pci_dev *dev)
- {
-+	int rc;
-+
- 	if (!pcie_aer_is_native(dev))
- 		return -EIO;
- 
--	return pcie_capability_clear_word(dev, PCI_EXP_DEVCTL,
--					  PCI_EXP_AER_FLAGS);
-+	rc = pcie_capability_clear_word(dev, PCI_EXP_DEVCTL, PCI_EXP_AER_FLAGS);
-+	return pcibios_err_to_errno(rc);
- }
- EXPORT_SYMBOL_GPL(pci_disable_pcie_error_reporting);
- 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index cd157f11eb22..bd38c8cea56e 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -7423,8 +7423,12 @@ static int pqi_ctrl_init_resume(struct pqi_ctrl_info *ctrl_info)
- static inline int pqi_set_pcie_completion_timeout(struct pci_dev *pci_dev,
- 	u16 timeout)
- {
--	return pcie_capability_clear_and_set_word(pci_dev, PCI_EXP_DEVCTL2,
-+	int rc;
-+
-+	rc = pcie_capability_clear_and_set_word(pci_dev, PCI_EXP_DEVCTL2,
- 		PCI_EXP_DEVCTL2_COMP_TIMEOUT, timeout);
-+
-+	return pcibios_err_to_errno(rc);
- }
- 
- static int pqi_pci_init(struct pqi_ctrl_info *ctrl_info)
-
-
+Jianxin
