@@ -2,119 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7894420ABF9
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 07:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3429320AC07
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 08:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgFZF5I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jun 2020 01:57:08 -0400
-Received: from mail-db8eur05on2075.outbound.protection.outlook.com ([40.107.20.75]:11712
+        id S1728156AbgFZGAP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jun 2020 02:00:15 -0400
+Received: from mail-db8eur05on2067.outbound.protection.outlook.com ([40.107.20.67]:6064
         "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726392AbgFZF5I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Jun 2020 01:57:08 -0400
+        id S1725801AbgFZGAO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Jun 2020 02:00:14 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FNgclOOOlaksgS4ORsqSRdnucKhPpvF4ByftS6SrEfp/VG5W9Jt+bVyFXJxR9iu3hWLlibZlqNt2t/f3xObhHbjxMFWMMy2tND5kiB+sxNAYUAASwWbwuAceOaOAmWQHlBYTVAtHYXA1+m1nekQuXllnBA1FSqdmOkEt5OWpM7HD/RpEYEXGvuRPBxzP5uexVfH33EOCaj+LL8kHzlQp0wdTBUgTbseXpoqmTkwA55W6AUyNVwPugPZHRVuOUrQ/IJDfn/+mAjiw7ZixvelvwnC3UlpqAxY/k8TcaIpuoNiWz32h856peMo7dUVCD5nLOVJGhe6ln0SuQBRuM7jAtw==
+ b=JFIdenhuQWVaXBQmXAinTspCue+jM63xWtcgYomx1wj4cvajfRS5OkQVmPUStBBxoBK2EjiAqRtRQ1muxWvRTBC3CvCAlWjmHdClRU2MMlIMoBvrJUElszHWivxfIY6UI/hclzj+0d0ZtBwRHTu7b3g5jx5VN5cd5zY4EVO6Kl+dy1Uye9vmWs1A8JX33U7nf1mwcANwGtUd7zWsjexs5LsXM8MQN+Vd1fuA0TiwGeT5KheA8ylluiWqHibFU1bY6rPoxeXHr1fweZ3Y14Ks+umjh3A0T0+3UxCNQ1VPP/h9VTOl3h44VsPaPmX5A7t+xDKRmSOf9Hl8v4mlphiVYQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=buldbIEvs0F2XEjp2KUhKYjmXUkWroDHI6gv9bYxyUM=;
- b=b4LJFLDG+ea+BbproDKkd67/i2y4XZBgEDZNEuNsPcr0GEPAU1OoLXXPyabZ1ToVHHeK+8ErjdsIOYB3uj53wn/ALK2CWtcheTqb4YrfSsqQDVCrxvUch9NdEr6VmFfPs8U/Vkb32xIb4dLH157f6zpXxlzdAeY9YO18ac57Lgih8fwPllirDUxPbCJAZkCjf7Im29tLJqgXvqokx7kyHW6FfbnhkkQ+xkYU0J9oJ6vlRIi9jNl10lIEZ0Qln05i6v89iXplHCfYrQwCou6EJ/F7RBcJwFRK4dL3MhCZmAmNGls8VPNo5OVeIiiJhSz7lzl5cS46kOs9zIkE4Uspkw==
+ bh=noPbSr6cFO/4LRp7fiuaKhuFSprsb75eQLZJB3q9ykk=;
+ b=aO475bM5KYlIXkdpjYQ9k0g08q3lMfu9BaEt4qQFO6cPuMNmftO9PCveBBV56306j0qt2d5DyKDorVkzdcsrrsOTDLcoaypkF/sl9xideTexHQ0CfylInCw2wr0lv3CjQW/evqd3qJcrQuJXB8qAVdpcdaTLtpLWnovPzpJMDdn4GBfzc0Aa1zoicJ8Uf6X0Y1lCit/LHHatMyxlP4wNPrlcjDJJOh+v6Yv6njk/BrSV77ShODJSFLgiOfMsTnv/84gyN01no+JR+Ba9TH+j0EyxE1ic8y1LQQvrLTBuwoj6SeztbXmq+qPUxCb+Tes/TAU9sjW7msgiCFKJsp4CcA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=buldbIEvs0F2XEjp2KUhKYjmXUkWroDHI6gv9bYxyUM=;
- b=Jf/O7EeI98wbfkM8Tpfu+705bEl6RAuScxCeMa1YDWRAM/FRVwuZXmHC2QPsH+OGXBoNeSsvlMFiNO3b1Q5jfJfI8Lhbj+Iw0+7VdUEqGYqwMz7rQmPOG3DoFPghdVScl1NWTSQjT1oBJpXUaxdMZk6nEAyNwh51K9g5e6n7EYE=
+ bh=noPbSr6cFO/4LRp7fiuaKhuFSprsb75eQLZJB3q9ykk=;
+ b=P4+KEUnGVW8777cHcP7VUOhOlfdPAfBp0yDSdq5n2anZVEzCOB6GZnu5t21BlcJH77Lx2G8cdSN8FsKvBZBCD18Djtl2C3sF3Fwg3EaF7ampU42XfYaSPFqbs+O2dgIoKb6GKNYcTAfL4UWJFzzvdN1O/gP+JTTGh6sqT9Wu7KI=
 Authentication-Results: mellanox.com; dkim=none (message not signed)
  header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
 Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
  by VI1PR0501MB2445.eurprd05.prod.outlook.com (2603:10a6:800:6a::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Fri, 26 Jun
- 2020 05:57:04 +0000
+ 2020 06:00:11 +0000
 Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
  ([fe80::2405:4594:97a:13c]) by VI1PR05MB5102.eurprd05.prod.outlook.com
  ([fe80::2405:4594:97a:13c%2]) with mapi id 15.20.3131.020; Fri, 26 Jun 2020
- 05:57:04 +0000
+ 06:00:10 +0000
 From:   Saeed Mahameed <saeedm@mellanox.com>
 To:     Saeed Mahameed <saeedm@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH mlx5-next 0/3] mlx5 next updates 2020-06-25
-Date:   Thu, 25 Jun 2020 22:56:12 -0700
-Message-Id: <20200626055612.99645-1-saeedm@mellanox.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@mellanox.com>
+Subject: [PATCH mlx5-next 1/3] net/mlx5: Avoid RDMA file inclusion in core driver
+Date:   Thu, 25 Jun 2020 22:59:41 -0700
+Message-Id: <20200626055943.99943-1-saeedm@mellanox.com>
 X-Mailer: git-send-email 2.26.2
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0079.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::20) To VI1PR05MB5102.eurprd05.prod.outlook.com
+X-ClientProxiedBy: BY5PR04CA0025.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::35) To VI1PR05MB5102.eurprd05.prod.outlook.com
  (2603:10a6:803:5e::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from smtp.office365.com (73.15.39.150) by BYAPR11CA0079.namprd11.prod.outlook.com (2603:10b6:a03:f4::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Fri, 26 Jun 2020 05:57:03 +0000
+Received: from smtp.office365.com (73.15.39.150) by BY5PR04CA0025.namprd04.prod.outlook.com (2603:10b6:a03:1d0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Fri, 26 Jun 2020 06:00:09 +0000
 X-Mailer: git-send-email 2.26.2
 X-Originating-IP: [73.15.39.150]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1c7a670c-6e6e-4e63-bc41-08d81995c06d
+X-MS-Office365-Filtering-Correlation-Id: 5dfd5c27-e1ad-4ea9-6e3b-08d819962f78
 X-MS-TrafficTypeDiagnostic: VI1PR0501MB2445:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0501MB2445353FFBF4B2721127D460BE930@VI1PR0501MB2445.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-Microsoft-Antispam-PRVS: <VI1PR0501MB244535A7FCB9230BE6FA33A3BE930@VI1PR0501MB2445.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:605;
 X-Forefront-PRVS: 0446F0FCE1
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uQPD4wiEwcfg4pQIRgW5MoRapPcNDCUS8PrZD4WC9W9SlUDzdS02p6CZM5cp+7GaCUnLJTumq4wwGb1yin6bWAZQdqwwUXpTnOGsNNR5zBWhyrn4uHTkGkK8RmVJ16j8wi5gYjz/6SFm/lkt5rk1VnDTelsSIryIRjZ8lBCcR+Lq7rQq86ukT6Bxfh26MdBjxZMQqazTGAkAK3ksDMUvuwLK8SqNjdMcTBPoSevFfpOn6ug323T3RlkdaUUbT66SoWlxPTx9r9UjrHuhG9MXUqDDzBOhQd+IwK4PYMU7YDl/AInfMsmdbxf7YyqJkkjCxnRrUGrsw/m04KiFRvqCvXFzU2LXNIwPTfl2XlLNW3V6pjd/ls3FMm7ev0mMnEEd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(396003)(346002)(136003)(4326008)(8676002)(8936002)(52116002)(6486002)(186003)(1076003)(36756003)(26005)(4744005)(2906002)(83380400001)(66556008)(86362001)(6666004)(6512007)(110136005)(66476007)(5660300002)(16526019)(316002)(6506007)(6636002)(450100002)(66946007)(2616005)(478600001)(956004)(54420400002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: IUcscVdfOYm23c8vZFaevQiwZP1AWASQuHBFwKu7x9sd8/j7zmVKb0OiDjrG3iJRGDOImuGCJwZtk+cdyf/dqmw0CBml3tiL+ZM5r3BVh97KGMRLkTkWVnkYkDLmlgz7fw8XmO+i4xUCegQuQ1RzF+lHDPEmgtQhk4raj7Xaz8/Lk6sTPPekQBVh5A5t0mtMmJMIj+9IFdLONbitEjSvm7fdUPxolCs1q6C2acj21qFx3WFF8gGWr80mMw/LddrZrs5CRDqZtzoN6/MMh6sL1bY0ExEDGVCrpFvKaJE93MLZQO2c9/ak9nR0a5q9tJkC9r6H88yY/hoOOPR09t6f1R5avmkZ9oFAzGcfevfe2MpQXyuqw92spU0o43s/8Yj5fyvEtFbq4QnAEKVDYT+Wj/gVOfP4uHo364oFvEgkz7HIphDL/CbKbtd4kzU1yhu7NK1iVL80qjTT0Z1rDQ6vfgpHFqbQ+6nisHqXThQtyB4=
+X-Microsoft-Antispam-Message-Info: yV9oE+76vKhac3kDkXZ6g9B1UXFeu7ZCN7+lRFy71nhl7fTI1L+nwg/tCAugjHriR2cqDp/pI06stWBz308v49IwjGxQ7q8GzyyX2xfh4dfFbC3HQB8AOElJ65YgTZKL0Kj6oIWhPzXrLX2eLkrWZs9tvmikspW2b4I2d1TLjrwsZm0mLr/t9gg5KDD+jmZBBAn3xALRHR3UW5GCyvHhtUH4/C9aMSgMy9KjLJ5o1mn3d5kd7oFXRqSCMUIFiG5oQ0E77V3SvMDG70ZMWXUzQInlqbYAUEShJ+M4H13WReRGFjOdB1EiVen+hze/9fUya0kAsiY9J0BdrvMAV6anlDrVfxzYjPQ/pSFqxYA1KfPRa8m8RHftz8PD8wPGmQ4T
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(396003)(346002)(136003)(4326008)(8676002)(8936002)(52116002)(6486002)(186003)(1076003)(36756003)(107886003)(26005)(4744005)(2906002)(83380400001)(66556008)(86362001)(6666004)(6512007)(110136005)(66476007)(5660300002)(16526019)(316002)(6506007)(6636002)(450100002)(66946007)(2616005)(478600001)(956004)(54420400002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: U3aJr+/UDtga8YlifcoNxhFDXC4V9+gf5g36qQWhjckww/L2mekhHBExQBpx3su2OToc8+kTioa1IHuUSkC6+FIv632Cnsh3giyEq7KEFqt+/QAY0RnqxIVYqVj1xna86DnUT6oFn7l87eIfV5I4oX9NwDEHnpP0hjjWYUlMqi/FHh+P/aduSfquxRY/kAYCqfNp6yK9DJS066U5X3VTz81wmF2mtTNj/dYvoAB0hSZI6dRx6OOrjsV17fS4foMusx7MSL96MmzWZH65O4KGYpHVyfKZSF0hJOLnJo/n4ReClBoOuRRBaVaG+wG0UiDSNKMJZ3pe0laxWvaZZOONYdU2Zy7hg2DVS/Z/guIF4KVlkr6w8tHijeSbfcMngvFKI9V9Q9ifeteq1NDpi5G6UnR3yAWJhhYlVWZPFdbt1tStYp4TaLA0PG5CmPuGJFLlxeOqiusxS4RWwrxadfyn3lJ8BegxAfpmxORe3ywMot8=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c7a670c-6e6e-4e63-bc41-08d81995c06d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dfd5c27-e1ad-4ea9-6e3b-08d819962f78
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB5102.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 05:57:04.7080
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 06:00:10.8633
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9OYf1AsT2fykRbhvYSSx5dYCH04WhQYSmbr0twkJkoz4LeklFJfach4p6imqP5cHPMMUQqeMre4bcYoV0NHitQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: wiC1TSoU8knou5nlcNH7LNcL9iYsch9EEF7/kyo5Em+8y2Yer7k1jT8L7zMgcLAXgccQTDFm3079iPcoRDcKyQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2445
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This small patchset includes 3 patches to mlx5-next branch.
+From: Parav Pandit <parav@mellanox.com>
 
-1) Include directives cleanup from Parav.
-2) TLS Hardware layouts improvements from Tariq.
+mlx5 cq.h does not depend on RDMA verbs.
+Remove RDMA verbs file inclusion.
 
-Thanks,
-Saeed.
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+---
+ include/linux/mlx5/cq.h | 1 -
+ 1 file changed, 1 deletion(-)
 
---
-
-Parav Pandit (2):
-  net/mlx5: Avoid RDMA file inclusion in core driver
-  net/mlx5: Avoid eswitch header inclusion in fs core layer
-
-Tariq Toukan (1):
-  net/mlx5: kTLS, Improve TLS params layout structures
-
- drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h  |  2 +-
- .../ethernet/mellanox/mlx5/core/en_accel/ktls.h    |  2 +-
- .../ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c | 14 +++++++++-----
- .../mellanox/mlx5/core/en_accel/tls_rxtx.c         |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.h  | 10 ----------
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |  1 -
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.h  | 10 ++++++++++
- include/linux/mlx5/cq.h                            |  1 -
- include/linux/mlx5/device.h                        |  9 +++++++++
- include/linux/mlx5/mlx5_ifc.h                      |  5 +----
- include/linux/mlx5/qp.h                            |  2 +-
- 11 files changed, 33 insertions(+), 25 deletions(-)
-
+diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
+index b5a9399e07ee..7bfb67363434 100644
+--- a/include/linux/mlx5/cq.h
++++ b/include/linux/mlx5/cq.h
+@@ -33,7 +33,6 @@
+ #ifndef MLX5_CORE_CQ_H
+ #define MLX5_CORE_CQ_H
+ 
+-#include <rdma/ib_verbs.h>
+ #include <linux/mlx5/driver.h>
+ #include <linux/refcount.h>
+ 
 -- 
 2.26.2
 
