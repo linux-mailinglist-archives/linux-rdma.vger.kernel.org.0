@@ -2,56 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C8020A8D2
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 01:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DD420ABA5
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 07:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391006AbgFYX0n convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 25 Jun 2020 19:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
+        id S1725945AbgFZFAf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jun 2020 01:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390973AbgFYX0m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Jun 2020 19:26:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A778C08C5C1;
-        Thu, 25 Jun 2020 16:26:42 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 39736154CEC44;
-        Thu, 25 Jun 2020 16:26:42 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 16:26:41 -0700 (PDT)
-Message-Id: <20200625.162641.1460713778895823529.davem@davemloft.net>
-To:     rao.shoaib@oracle.com
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        leon@kernel.org, ka-cheong.poon@oracle.com,
-        haakon.bugge@oracle.com, somasundaram.krishnasamy@oracle.com
-Subject: Re: [PATCH v2] rds: transport module should be auto loaded when
- transport is set
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200625204600.24174-1-rao.shoaib@oracle.com>
-References: <20200625204600.24174-1-rao.shoaib@oracle.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 25 Jun 2020 16:26:42 -0700 (PDT)
+        with ESMTP id S1725306AbgFZFAf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jun 2020 01:00:35 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E96C08C5C1;
+        Thu, 25 Jun 2020 22:00:35 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c139so7721977qkg.12;
+        Thu, 25 Jun 2020 22:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZVo5w/ZKX78dj3eulXXhuEpFvG8FT3AZePc5ir676VM=;
+        b=a8fhX7PosmYTxVaj0Ju89ay9QciM6cW5OE1/9ImtD6BZoZxxGsBRStdIn6F1FkXOcK
+         8VnUs2G3P2RI/+d3FmC4EJ3ff9dJtjQf1P3t0BW1jT7mnKQJ0tXOvbKtG2QrN8TssJj4
+         ofKfxKEJbjjCS5jZehb+AqHTkqWfnP5usSELUdHIy5iLpjsl5g+V1Yaqs2k6s6wiI1wB
+         dggzLIG+n2uJTFKBzVShc6icj9C8Pf1QwfP7ByETEg9yTeL9b/D6UXRBJtS3mz3m/+7E
+         rXXZt80XX1srDFySmxAFZrbGtAVF8PF7Nw0Lf4VbcURHeuLIi+Hr5nU/efrybpIaRMXu
+         utbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZVo5w/ZKX78dj3eulXXhuEpFvG8FT3AZePc5ir676VM=;
+        b=iiTQIluChB7YbIvcvTezw7QlgRd1So02jUDYGJW7yCqW0tGN5fvGcrLJYircbWZPeo
+         liodcH05/Rmnd1cI8iMOlQLwxb3Xiq6tA5VLiQ41hnfW5YJuRyltCe/qWu40GIiYeqnK
+         EtSGgO2Ry/jcq3wTuJecWS5gh6aqUVZchMXcX91I8ghKGsThu+Ff3cMvwbJGBIKuMWTW
+         D+m9P1y/wrVhfBTzFC6bpNydFbeOJezmDcTxsjK6tbAvjxRQYHsfb5bX8+s9qBXJdmkG
+         Ujb1V9boaKN9rae0f5dkvulriJOhu9EKC/ABaCxLx7fv/1CoLGUqjQQYNW+NOpjqNMYJ
+         BJzg==
+X-Gm-Message-State: AOAM530eUQhd3ZNbPP5RastNdyBsWGvaJ2EqXubV62EKCgAQHiPvwnqf
+        mLowT6ThNe0/RxvKIkyUSXkFFlE1
+X-Google-Smtp-Source: ABdhPJxAQHcCPSfIPekWCKhMnVzAtA7pXypis8Q7OfpcnQCbZP7x5fqnf0vzgmXk9JCiY5oaEBtzSg==
+X-Received: by 2002:a05:620a:1223:: with SMTP id v3mr999636qkj.468.1593147634295;
+        Thu, 25 Jun 2020 22:00:34 -0700 (PDT)
+Received: from ?IPv6:2600:6c55:4b80:150f:edd7:a07c:7610:ce94? ([2600:6c55:4b80:150f:edd7:a07c:7610:ce94])
+        by smtp.googlemail.com with ESMTPSA id c189sm7990902qkb.8.2020.06.25.22.00.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jun 2020 22:00:33 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next v1 1/4] rdma: update uapi headers
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Maor Gottlieb <maorg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20200624104012.1450880-1-leon@kernel.org>
+ <20200624104012.1450880-2-leon@kernel.org> <20200625081554.GB1446285@unreal>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <3de842b7-37cb-b487-6e79-2685c24aba5a@gmail.com>
+Date:   Thu, 25 Jun 2020 22:00:31 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200625081554.GB1446285@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: rao.shoaib@oracle.com
-Date: Thu, 25 Jun 2020 13:46:00 -0700
-
-> From: Rao Shoaib <rao.shoaib@oracle.com>
+On 6/25/20 1:15 AM, Leon Romanovsky wrote:
+> On Wed, Jun 24, 2020 at 01:40:09PM +0300, Leon Romanovsky wrote:
+>> From: Maor Gottlieb <maorg@mellanox.com>
+>>
+>> Update rdma_netlink.h file upto kernel commit ba1f4991cc55
+>> ("RDMA: Add support to dump resource tracker in RAW format")
 > 
-> This enhancement auto loads transport module when the transport
-> is set via SO_RDS_TRANSPORT socket option.
+> David,
 > 
-> Reviewed-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-> Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
-> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
-> Signed-off-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+> The SHA was changed because of the rebase on top of our testing branch.
+> 65959522f806 RDMA: Add support to dump resource tracker in RAW format
+> 
+> Do you want me to resend the series?
+> 
 
-Applied, thanks.
+no need just for that; I can fix before applying.
