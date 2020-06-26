@@ -2,137 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C8C20B469
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 17:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA8920B78A
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 19:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgFZPWo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jun 2020 11:22:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45716 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgFZPWn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jun 2020 11:22:43 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QFC1fC137807;
-        Fri, 26 Jun 2020 15:22:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=VRXjSgwILCb0XZqesktrKdC3K2n3l6DDbQpIiLTByoI=;
- b=jDKtJBQKKVRi10mA7pxTeIGNrG6cybgBawUpSs0AVLO8My8kjuuhg+u/zr1CmyOfqt/q
- pfzpHuM0XorsqoQjgkMnD7x/3YQkO7E+2iUQdcmEEpgpOzJZYbzSe0uKug67MKhVD+ya
- Rmul9NsI7Ci/rJgWV+WXLItu/hLMZnEkyBAG0nM8tM7vMR3a37COTW6YL3x3zPxHCkhl
- 2zAIOmAZ3ISPcGK7c9a0zwHREcj9kIuXi5VqCPopXwYNoki15CUQ/lDYMlQabhn8WuB6
- z/g//BpFy5p/j1RGzSadMc7j2qauO9VQkevKti9igmtwqP7w+y96bDJI2g3T29sJcNvh RQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31uusu6phm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 26 Jun 2020 15:22:41 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QFDYBh111843;
-        Fri, 26 Jun 2020 15:22:40 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 31uuru9vt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Jun 2020 15:22:40 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05QFMdY4000438;
-        Fri, 26 Jun 2020 15:22:39 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 26 Jun 2020 15:22:39 +0000
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: [PATCH] xprtrdma: fix EP destruction logic
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20200626151052.6cckaquyu7k3nd6b@gmail.com>
-Date:   Fri, 26 Jun 2020 11:22:37 -0400
-Cc:     linux-rdma@vger.kernel.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <9A5CDAC4-69AF-45F2-8574-F749499CA500@oracle.com>
-References: <0E2AA9D9-2503-462C-952D-FC0DD5111BD1@oracle.com>
- <20200626071034.34805-1-dan@kernelim.com>
- <FEB41A86-87EB-44BD-BEC4-6EAB3723B426@oracle.com>
- <20200626151052.6cckaquyu7k3nd6b@gmail.com>
-To:     Dan Aloni <dan@kernelim.com>
-X-Mailer: Apple Mail (2.3445.104.14)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9664 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006260107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9664 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- cotscore=-2147483648 malwarescore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- spamscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006260107
+        id S1725890AbgFZRtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jun 2020 13:49:18 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:57671 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgFZRtR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Jun 2020 13:49:17 -0400
+Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef6351a0000>; Sat, 27 Jun 2020 01:49:14 +0800
+Received: from HKMAIL103.nvidia.com ([10.18.16.12])
+  by hkpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 26 Jun 2020 10:49:14 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate101.nvidia.com on Fri, 26 Jun 2020 10:49:14 -0700
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Jun
+ 2020 17:49:14 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 26 Jun 2020 17:49:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RL89Aru1cSQ14dY3NVzQpkRBZ0eMpz45zmMpoRLoFxRYVoYkrxeBWKwC2dUxstanVt5c74YUdrs3vfkYljTG97bGOnh6DaEV2uC7r3xPul2+BfPd851AlCTzRlbibn4N5wNyk02ppz+e9L8yTMlNSue3uo1niql7pbYL/Bdj3F1jrYRgOS7RQ6DbdvvliM+4qdVUf9hwsqjy7+Eg93kTfexhYI1ZESAorm7WNj3VUJoaipPGjEcuVx6gIOCkokNhtHSj1M0Na88GsKOwKkfsIGFatNnNGZ4oyQYZGxM9TL9c0olQrbfjEAicEST5EIuClmxEgOFZ/EGzfVqbfaNOtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WwjAMJPB8EnpExtIAD3KWTMe7wQjgAxsoGy0J/cxs4M=;
+ b=gtrm0HF6sdBUxlvXWkFjOMtmqL1dMewx6AL7esbXi1hX01ofoYaT6SXh534wjXQDqQtlIVNCxB0L/izn0lA51C9Fyyy4fomfMxpw2Vw9rrlYvoynlzGwCuE3acAaaZ055mIgFOFEiA3BP0OIFtx97XEx14FR30t/jBvuqhWp8CRsf62OgykP3syFC5/hng+rsrfRUh184GGTIwZFulDEOM+pKAUaka4Pt/47xeDFwVY04xbKMxK988/Di++ueVLTrjNcw+rA8Mw9tw/OvfLHzaeFKQ8q33KkB2Ss/VrK36n1hYsHpAI7ZXNOIxKup4e5fjrKu7VbtbmhEIINKSltdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1883.namprd12.prod.outlook.com (2603:10b6:3:113::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Fri, 26 Jun
+ 2020 17:49:11 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3131.025; Fri, 26 Jun 2020
+ 17:49:11 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     Hillf Danton <hdanton@sina.com>,
+        <syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com>
+Subject: [PATCH] RDMA/core: Fix bogus WARN_ON during ib_unregister_device_queued()
+Date:   Fri, 26 Jun 2020 14:49:10 -0300
+Message-ID: <0-v1-a36d512e0a99+762-syz_dealloc_driver_jgg@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: YT1PR01CA0095.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::34) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0095.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Fri, 26 Jun 2020 17:49:11 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1josTO-000CLP-2F; Fri, 26 Jun 2020 14:49:10 -0300
+X-Originating-IP: [206.223.160.26]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9f8e9dab-b9ce-497e-1d1d-08d819f93be0
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1883:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB18834896019DBFE0EDFD9648C2930@DM5PR12MB1883.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0446F0FCE1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w2rD1OFV8lo/p4g3CDDUy3vl31fOsZi397vNRqHzVuRSvwNbGCOUGWis+ORl9CG3KYXTEKoL1A38hmC5d/Sc+5YMIvY2K9bSY4IHvB1ovJmfs79UeJTM51eqRos5p1yASaJ2IH21y1NY6nEBKAn4/n0rJ0i3ZXPqUwz2r3oMFNeszXQvnj544L+WQ5T63jdPX1VnJl6I66Nyfdy51PK+1qgKU8rOrtm5kRNghv1W/Nb44jmf8v0GTnqYRZwyb2XpUeYh/UR77066oJgGVL7Rlm26puR08Enwdc/NlhshS/fqQmXUCBZGJI204yVLFXO77Z/wPRZVyj5KtjMvdRyj9trOk1655qexItmjEElvkbVYBbaTkznWiiwSFiNicUvf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(39860400002)(136003)(346002)(366004)(2616005)(316002)(426003)(8936002)(5660300002)(66556008)(86362001)(66476007)(9786002)(8676002)(6916009)(9746002)(4326008)(478600001)(26005)(83380400001)(66946007)(186003)(2906002)(36756003)(4216001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: YuFG2pcNoMKRkx6d7lf9nCi5+H0oIq6oLDSmoHl3YNQaoUrMJ6jvcJVFzzWYuM/XkhEwbMhgbWFecNTuO1Zr6cvpURv20KqVs2i7k6zLIdtzFSyBUN3HQItk97lMgQ6jiRu963NWjsEjjpRFy6Av9+RYsoILLKEUvICAFzwN42tTCf6oo7YwB6ofdBqVlTU0rqJ4at3dpKGsn4QAX05I50oRYIhpjrkJr7W/Ok3ReB6wiJtSHc9xIYiJZrc3QWVwEXjPtUJLK4XWXwpAp8jInv9ozwbHOmhPdzuYxwtN2LuoWyJX1HFXuVUeaL1tq9t9IurTxj+dUbQ6tDVjRCZRw2oxJ3rdpsbO/WTvsIHup8sonlSxBDqYRrmrXqyO4yjBuEedW+KCZ2SWAPIMLZzCAqk+r0Y9LOiuBUqvxyeR6drirKZ4oe7wwXVPol0O644AxwkwJFrOZi/Okd+8BEbyEQZcuB4zKLfCE12hlltBLtSVzvQnngArJwBh+KoJ0mef
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f8e9dab-b9ce-497e-1d1d-08d819f93be0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 17:49:11.6078
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lnWZawFAs2Sg6W5V6tWb55V8wpsIy5vxu/3DanzNqKWDakmP3D4b4LKTyNBp+oof
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1883
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593193754; bh=7+/Ulcx2v/or+zejbuHjg0jYb9EwN1aZpP8mENr9Lh8=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:From:To:CC:
+         Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-Forefront-PRVS:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=KtDjlwajG0s//P+d8t4PbRxeBuZBuqsRaoUWJNCvJa2QiCla0FVGC3aV92X1i1E1p
+         Vniz3H6RJ6146uRLL70WUKYUYLpRQbO1pspsS7MBcb2OSFJ4DYxVklNuz8dzX1zRbE
+         uOYYczYxVU4dtb/oIi6F9SQQxsSjwwc/Axv+pwG67w080TquYm2xA/KH9/NtjSShFR
+         TaCByvppKwMDPjhqR9zTW4emXmXlHxM9ByVll+gZxtiX4UjbQiqnNYsdRiFDpRAMze
+         2248YeJ0rHn915nC7Eyxcie/WkuwGJxkITDUau9J19twnrkouExFW0Li+91oFCy4D0
+         Y2NTbKuj9390w==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+ib_unregister_device_queued() can only be used by drivers using the new
+dealloc_device callback flow, and it has a safety WARN_ON to ensure
+drivers are using it properly.
 
+However, if unregister and register are raced there is a special
+destruction path that maintains the uniform error h andling semantic of
+'caller does ib_dealloc_device() on failure'. This requires disabling the
+dealloc_device callback which triggers the WARN_ON.
 
-> On Jun 26, 2020, at 11:10 AM, Dan Aloni <dan@kernelim.com> wrote:
-> 
-> On Fri, Jun 26, 2020 at 08:56:41AM -0400, Chuck Lever wrote:
->>> On Jun 26, 2020, at 3:10 AM, Dan Aloni <dan@kernelim.com> wrote:
-> [..]
->>> - Add a mutex in `rpcrdma_ep_destroy` to guard against concurrent calls
->>> to `rpcrdma_xprt_disconnect` coming from either `rpcrdma_xprt_connect`
->>> or `xprt_rdma_close`.
->> 
->> NAK. The RPC client provides appropriate exclusion, please let's not
->> add more serialization that can introduce further deadlocks.
-> 
-> It appeared to me that this exclusion does not works well. As for my
-> considerations, if I am not mistaken from analyzing crashes I've
-> seen:
-> 
->   -> xprt_autoclose (running on xprtiod)
->     -> xprt->ops->close
->       -> xprt_rdma_close
->         -> rpcrdma_xprt_disconnect
-> 
-> and:
-> 
->    -> xprt_rdma_connect_worker (running on xprtiod)
->      -> rpcrdma_xprt_connect
-> 	-> rpcrdma_xprt_disconnect
-> 
-> I understand the rationale or at least the aim that `close` and
-> `connect` ops should not be concurrent on the same `xprt`, however:
-> 
-> * `xprt_force_disconnect`, is called from various places, queues
->  a call to `xprt_autoclose` to the background on `xprtiod` workqueue item,
->  conditioned that `!XPRT_LOCKED` which is the case for connect that went
->  to the background.
-> * `xprt_rdma_connect` also sends `xprt_rdma_connect_worker` as an `xprtiod`
->  workqueue item, unconditionally.
-> 
-> So we have two work items that can run in parallel, and I don't see
-> clear gating on this from the code.
+Instead of using NULL to disable the callback use a special function
+pointer so the WARN_ON does not trigger.
 
-If close and connect are being called concurrently on the same xprt,
-then there is a bug in the generic RPC xprt code. I don't believe
-that to be the case here.
+Reported-by: syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/infiniband/core/device.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-If xprtrdma invokes force_disconnect during connect processing,
-XPRT_LOCKED should be held and the close should be delayed.
+As outlined by Hillf, seems like it is OK.
 
-
-> Maybe there's a simpler fix for this. Perhaps a
-> `cancel_delayed_work_sync(&r_xprt->rx_connect_worker);` is appropriate
-> in `xprt_rdma_close`?
-
-There are simpler, less deadlock-prone, and more justifiable fixes.
-Please stand by, I will take care of this today.
-
---
-Chuck Lever
-
-
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/dev=
+ice.c
+index 1335ed1f1e4a25..40cf07129f662b 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1339,6 +1339,10 @@ static int enable_device_and_get(struct ib_device *d=
+evice)
+ 	return ret;
+ }
+=20
++static void prevent_dealloc_device(struct ib_device *ib_dev)
++{
++}
++
+ /**
+  * ib_register_device - Register an IB device with IB core
+  * @device: Device to register
+@@ -1409,11 +1413,11 @@ int ib_register_device(struct ib_device *device, co=
+nst char *name)
+ 		 * possibility for a parallel unregistration along with this
+ 		 * error flow. Since we have a refcount here we know any
+ 		 * parallel flow is stopped in disable_device and will see the
+-		 * NULL pointers, causing the responsibility to
++		 * special dealloc_driver pointer, causing the responsibility to
+ 		 * ib_dealloc_device() to revert back to this thread.
+ 		 */
+ 		dealloc_fn =3D device->ops.dealloc_driver;
+-		device->ops.dealloc_driver =3D NULL;
++		device->ops.dealloc_driver =3D prevent_dealloc_device;
+ 		ib_device_put(device);
+ 		__ib_unregister_device(device);
+ 		device->ops.dealloc_driver =3D dealloc_fn;
+@@ -1462,7 +1466,8 @@ static void __ib_unregister_device(struct ib_device *=
+ib_dev)
+ 	 * Drivers using the new flow may not call ib_dealloc_device except
+ 	 * in error unwind prior to registration success.
+ 	 */
+-	if (ib_dev->ops.dealloc_driver) {
++	if (ib_dev->ops.dealloc_driver &&
++	    ib_dev->ops.dealloc_driver !=3D prevent_dealloc_device) {
+ 		WARN_ON(kref_read(&ib_dev->dev.kobj.kref) <=3D 1);
+ 		ib_dealloc_device(ib_dev);
+ 	}
+--=20
+2.27.0
 
