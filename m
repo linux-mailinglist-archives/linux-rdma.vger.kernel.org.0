@@ -2,83 +2,337 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713C120ACDF
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 09:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1AD20B1CC
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jun 2020 14:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgFZHRO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Jun 2020 03:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgFZHRN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jun 2020 03:17:13 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833D8C08C5C1
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Jun 2020 00:17:13 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id dg28so6127790edb.3
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Jun 2020 00:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernelim-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j2FC27MBBGa0/xsyI8Up7exypmUEz8tF6/l3prA2KqQ=;
-        b=lx5NuSPv6MNsQp3ZHF9kln+kfUIuHEIMMG4ywIOOT2yzmHIkjAV1WrW45vbOmz8U//
-         twaL4xtau+CNzk6GZEBD58GC6r814qC2JrWEja0hhqxOpHlhSDEiUJrNLGI/n8cucurH
-         0LWJwIAOxGDYnWB3izLPWPN7KxMHKRUEVVZ3dFox4sFgtkHTFbLnkBRvGf0VQg08Gsin
-         2eouwZ9YoblwUYdiO7T7QT4sqV++fnEDHKOX7Y8tO84N1v5t7OLirGJo3VUS9KZg21pf
-         +tEYe/fzno/NIbGJesrZqI3JttkI0kG01ftpph8iIZUsXFBhcX/gjFRgpFFUcwPeH3oI
-         vVcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j2FC27MBBGa0/xsyI8Up7exypmUEz8tF6/l3prA2KqQ=;
-        b=Agls/z56LdtNWmWBoV3SlIVol6O4WC2hILdVGCi5QN6Ck6REr+mSd6PWgaQxO02lrX
-         hkjWY7ZcPrhNxa7LLrPLKFTY5udagPcwvkPztidAQ1kAQJOSt0ugCL35m+nh4+e+jeAH
-         /FWnsVmCMQgbn/M3zGmH3LbyqP6M06L9DkzFDpdUSQY/xEkf92gsO7rAAKMWguv2IDzS
-         hK7vPgwpVqRX5L81ixvuA/6M4/IBDCLR9/1lG8UAzJfyNVztr5JaeaHO1oC4NAnOigou
-         lnB+5Yn5F0agOkP/GIwRJKZH5dClzdkYT43xMBDhKAMJiHmw+0G6wIVma/yiFt1ek+L8
-         y0sQ==
-X-Gm-Message-State: AOAM532RAnqvskiMuEB1UW6iDyDZhr8w4Zk5bJlKZkOtHiMTomq+coCY
-        1MRlCzZtdh/vjGMFKWN9Mlo2Kg==
-X-Google-Smtp-Source: ABdhPJwglpoPiZfP1P4R4TPz3WwcXatVfOyQ0a034zt3lXitShVmRi1a93cCzAcRh7cJMjTYeNLINg==
-X-Received: by 2002:aa7:d692:: with SMTP id d18mr151293edr.73.1593155832148;
-        Fri, 26 Jun 2020 00:17:12 -0700 (PDT)
-Received: from gmail.com ([141.226.169.176])
-        by smtp.gmail.com with ESMTPSA id r6sm20485966edx.83.2020.06.26.00.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 00:17:11 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 10:17:08 +0300
-From:   Dan Aloni <dan@kernelim.com>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] xprtrdma: Ensure connect worker is awoken after connect
- error
-Message-ID: <20200626071708.ppfgasctnfqrlglx@gmail.com>
-References: <20200621145934.4069.31886.stgit@manet.1015granger.net>
- <0E2AA9D9-2503-462C-952D-FC0DD5111BD1@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0E2AA9D9-2503-462C-952D-FC0DD5111BD1@oracle.com>
+        id S1725853AbgFZM4t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Jun 2020 08:56:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58616 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgFZM4t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Jun 2020 08:56:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QCqNLa060632;
+        Fri, 26 Jun 2020 12:56:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=DIznYym8E7Ehl/1d0NTtnal4dVfQP2/AA3ex9x//Tbo=;
+ b=OuS1Xy8ZYSxHbcyXYbJ8A4I6ioHRebT1VAnVQ2Tye4zIFdH4U93ktab11jRSGqb7ygom
+ c9t9PG/oRDqA8mGFRX3u2KH0/sPu6QJtJAuY2TUx42xzCh5W9OlFa3XRRIzwuGRbFSyK
+ nYVMZTF5uEiMNX+3+Sz4YBbwiDdBeLCuJT1Z9WYcsaDEJ2x1Jl1v+E+eEBAk5J9VxK/9
+ m8oMYy1rTBYsciVMq8xkSSA5ayUblmKZUX7Jwgzeip7XBVUMzR9P4sqA8Lawh0I8R6fD
+ Xk5geqPH/D6SLnjXutPD7cn36P3Ex3oZ7YvzdJd4VeFQqaqW7h2oOcgZW2M6mTU/Qhsn hQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31uusu5wf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Jun 2020 12:56:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QCsKbX096925;
+        Fri, 26 Jun 2020 12:56:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31uuramqrg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 12:56:44 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05QCuhj1021277;
+        Fri, 26 Jun 2020 12:56:43 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Jun 2020 12:56:43 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
+Subject: Re: [PATCH] xprtrdma: fix EP destruction logic
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200626071034.34805-1-dan@kernelim.com>
+Date:   Fri, 26 Jun 2020 08:56:41 -0400
+Cc:     linux-rdma@vger.kernel.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <FEB41A86-87EB-44BD-BEC4-6EAB3723B426@oracle.com>
+References: <0E2AA9D9-2503-462C-952D-FC0DD5111BD1@oracle.com>
+ <20200626071034.34805-1-dan@kernelim.com>
+To:     Dan Aloni <dan@kernelim.com>
+X-Mailer: Apple Mail (2.3445.104.14)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 malwarescore=0
+ suspectscore=1 mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
+ cotscore=-2147483648 malwarescore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ spamscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260090
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 03:19:39PM -0400, Chuck Lever wrote:
-> Anna, please drop this one. It appears to trigger a particularly nasty
-> use-after-free. I'll follow up with a more complete fix soon.
-> 
-> (Yes, a wake-up on connect errors is indeed necessary... but the connect
-> worker needs to be re-organized to deal properly with it).
 
-After sending that patch I also noticed more issues with the management
-of the EP context. The decref inside the CM handler caused freeing of
-the EP while connect path still held a reference to it. A KASAN-enabled
-kernel revealed this easily. I've sent just now a more comprehensive
-patch to deal with this.
 
--- 
-Dan Aloni
+> On Jun 26, 2020, at 3:10 AM, Dan Aloni <dan@kernelim.com> wrote:
+>=20
+> This fixes various issues found when testing disconnections and other
+> various fault injections under a KASAN-enabled kernel.
+>=20
+> - Swap the names of `rpcrdma_ep_destroy` and `rpcrdma_ep_put` to
+>  reflect what the functions are doing.
+> - In the cleanup of `rpcrdma_ep_create` do `kfree` on the EP only for
+>  the case where no one knows about it, and avoid a double free (what
+>  `rpcrdma_ep_destroy` did, followed by `kfree`). No need to set
+>  `r_xprt->rx_ep` to NULL because we are doing that only in the success
+>  path.
+> - Don't up the EP ref in `RDMA_CM_EVENT_ESTABLISHED` but do it sooner
+>  before `rdma_connect`. This is needed so that an early wake up of
+>  `wait_event_interruptible` in `rpcrdma_xprt_connect` in case of
+>  a failure does not see a freed EP.
+> - Still try to follow the rule that the last decref of EP performs
+>  `rdma_destroy_id(id)`.
+> - Only path to disengage an EP is `rpcrdma_xprt_disconnect`, whether =
+it
+>  is actually connected or not. This makes the error paths of
+>  `rpcrdma_xprt_connect` clearer.
+> - Add a mutex in `rpcrdma_ep_destroy` to guard against concurrent =
+calls
+>  to `rpcrdma_xprt_disconnect` coming from either =
+`rpcrdma_xprt_connect`
+>  or `xprt_rdma_close`.
+
+NAK. The RPC client provides appropriate exclusion, please let's not
+add more serialization that can introduce further deadlocks.
+
+There are already patches pending in this area that make some of these
+changes, starting with
+
+https://marc.info/?l=3Dlinux-nfs&m=3D159222724808832&w=3D2
+
+Yesterday, I found the other problems you mentioned above after I was
+finally able to get my server to REJECT connection attempts. I'll submit
+patches to clean all this up once I have tested them.
+
+
+> Signed-off-by: Dan Aloni <dan@kernelim.com>
+> ---
+> net/sunrpc/xprtrdma/transport.c |  2 ++
+> net/sunrpc/xprtrdma/verbs.c     | 50 ++++++++++++++++++++++-----------
+> net/sunrpc/xprtrdma/xprt_rdma.h |  1 +
+> 3 files changed, 37 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/net/sunrpc/xprtrdma/transport.c =
+b/net/sunrpc/xprtrdma/transport.c
+> index 0c4af7f5e241..50c28be6b694 100644
+> --- a/net/sunrpc/xprtrdma/transport.c
+> +++ b/net/sunrpc/xprtrdma/transport.c
+> @@ -350,6 +350,8 @@ xprt_setup_rdma(struct xprt_create *args)
+> 	xprt_rdma_format_addresses(xprt, sap);
+>=20
+> 	new_xprt =3D rpcx_to_rdmax(xprt);
+> +	mutex_init(&new_xprt->rx_flush);
+> +
+> 	rc =3D rpcrdma_buffer_create(new_xprt);
+> 	if (rc) {
+> 		xprt_rdma_free_addresses(xprt);
+> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+> index 2ae348377806..c66871bbb894 100644
+> --- a/net/sunrpc/xprtrdma/verbs.c
+> +++ b/net/sunrpc/xprtrdma/verbs.c
+> @@ -84,7 +84,7 @@ static void rpcrdma_rep_destroy(struct rpcrdma_rep =
+*rep);
+> static void rpcrdma_reps_unmap(struct rpcrdma_xprt *r_xprt);
+> static void rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt);
+> static void rpcrdma_mrs_destroy(struct rpcrdma_xprt *r_xprt);
+> -static int rpcrdma_ep_destroy(struct rpcrdma_ep *ep);
+> +static int rpcrdma_ep_put(struct rpcrdma_ep *ep);
+> static struct rpcrdma_regbuf *
+> rpcrdma_regbuf_alloc(size_t size, enum dma_data_direction direction,
+> 		     gfp_t flags);
+> @@ -99,6 +99,9 @@ static void rpcrdma_xprt_drain(struct rpcrdma_xprt =
+*r_xprt)
+> {
+> 	struct rdma_cm_id *id =3D r_xprt->rx_ep->re_id;
+>=20
+> +	if (!id->qp)
+> +		return;
+> +
+> 	/* Flush Receives, then wait for deferred Reply work
+> 	 * to complete.
+> 	 */
+> @@ -266,7 +269,6 @@ rpcrdma_cm_event_handler(struct rdma_cm_id *id, =
+struct rdma_cm_event *event)
+> 		xprt_force_disconnect(xprt);
+> 		goto disconnected;
+> 	case RDMA_CM_EVENT_ESTABLISHED:
+> -		kref_get(&ep->re_kref);
+> 		ep->re_connect_status =3D 1;
+> 		rpcrdma_update_cm_private(ep, &event->param.conn);
+> 		trace_xprtrdma_inline_thresh(ep);
+> @@ -289,7 +291,8 @@ rpcrdma_cm_event_handler(struct rdma_cm_id *id, =
+struct rdma_cm_event *event)
+> 		ep->re_connect_status =3D -ECONNABORTED;
+> disconnected:
+> 		xprt_force_disconnect(xprt);
+> -		return rpcrdma_ep_destroy(ep);
+> +		wake_up_all(&ep->re_connect_wait);
+> +		return rpcrdma_ep_put(ep);
+> 	default:
+> 		break;
+> 	}
+> @@ -345,11 +348,11 @@ static struct rdma_cm_id =
+*rpcrdma_create_id(struct rpcrdma_xprt *r_xprt,
+> 	return ERR_PTR(rc);
+> }
+>=20
+> -static void rpcrdma_ep_put(struct kref *kref)
+> +static void rpcrdma_ep_destroy(struct kref *kref)
+> {
+> 	struct rpcrdma_ep *ep =3D container_of(kref, struct rpcrdma_ep, =
+re_kref);
+>=20
+> -	if (ep->re_id->qp) {
+> +	if (ep->re_id && ep->re_id->qp) {
+> 		rdma_destroy_qp(ep->re_id);
+> 		ep->re_id->qp =3D NULL;
+> 	}
+> @@ -373,9 +376,9 @@ static void rpcrdma_ep_put(struct kref *kref)
+>  *     %0 if @ep still has a positive kref count, or
+>  *     %1 if @ep was destroyed successfully.
+>  */
+> -static int rpcrdma_ep_destroy(struct rpcrdma_ep *ep)
+> +static int rpcrdma_ep_put(struct rpcrdma_ep *ep)
+> {
+> -	return kref_put(&ep->re_kref, rpcrdma_ep_put);
+> +	return kref_put(&ep->re_kref, rpcrdma_ep_destroy);
+> }
+>=20
+> static int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
+> @@ -492,11 +495,12 @@ static int rpcrdma_ep_create(struct rpcrdma_xprt =
+*r_xprt)
+> 	return 0;
+>=20
+> out_destroy:
+> -	rpcrdma_ep_destroy(ep);
+> +	rpcrdma_ep_put(ep);
+> 	rdma_destroy_id(id);
+> +	return rc;
+> +
+> out_free:
+> 	kfree(ep);
+> -	r_xprt->rx_ep =3D NULL;
+> 	return rc;
+> }
+>=20
+> @@ -510,6 +514,7 @@ int rpcrdma_xprt_connect(struct rpcrdma_xprt =
+*r_xprt)
+> {
+> 	struct rpc_xprt *xprt =3D &r_xprt->rx_xprt;
+> 	struct rpcrdma_ep *ep;
+> +	struct rdma_cm_id *id;
+> 	int rc;
+>=20
+> retry:
+> @@ -518,6 +523,7 @@ int rpcrdma_xprt_connect(struct rpcrdma_xprt =
+*r_xprt)
+> 	if (rc)
+> 		return rc;
+> 	ep =3D r_xprt->rx_ep;
+> +	id =3D ep->re_id;
+>=20
+> 	ep->re_connect_status =3D 0;
+> 	xprt_clear_connected(xprt);
+> @@ -529,7 +535,10 @@ int rpcrdma_xprt_connect(struct rpcrdma_xprt =
+*r_xprt)
+> 	if (rc)
+> 		goto out;
+>=20
+> -	rc =3D rdma_connect(ep->re_id, &ep->re_remote_cma);
+> +	/* =46rom this point on, CM events can discard our EP */
+> +	kref_get(&ep->re_kref);
+> +
+> +	rc =3D rdma_connect(id, &ep->re_remote_cma);
+> 	if (rc)
+> 		goto out;
+>=20
+> @@ -546,14 +555,17 @@ int rpcrdma_xprt_connect(struct rpcrdma_xprt =
+*r_xprt)
+>=20
+> 	rc =3D rpcrdma_reqs_setup(r_xprt);
+> 	if (rc) {
+> -		rpcrdma_xprt_disconnect(r_xprt);
+> +		ep->re_connect_status =3D rc;
+> 		goto out;
+> 	}
+> +
+> 	rpcrdma_mrs_create(r_xprt);
+> +	trace_xprtrdma_connect(r_xprt, 0);
+> +	return rc;
+>=20
+> out:
+> -	if (rc)
+> -		ep->re_connect_status =3D rc;
+> +	ep->re_connect_status =3D rc;
+> +	rpcrdma_xprt_disconnect(r_xprt);
+> 	trace_xprtrdma_connect(r_xprt, rc);
+> 	return rc;
+> }
+> @@ -570,12 +582,15 @@ int rpcrdma_xprt_connect(struct rpcrdma_xprt =
+*r_xprt)
+>  */
+> void rpcrdma_xprt_disconnect(struct rpcrdma_xprt *r_xprt)
+> {
+> -	struct rpcrdma_ep *ep =3D r_xprt->rx_ep;
+> +	struct rpcrdma_ep *ep;
+> 	struct rdma_cm_id *id;
+> 	int rc;
+>=20
+> +	mutex_lock(&r_xprt->rx_flush);
+> +
+> +	ep =3D r_xprt->rx_ep;
+> 	if (!ep)
+> -		return;
+> +		goto out;
+>=20
+> 	id =3D ep->re_id;
+> 	rc =3D rdma_disconnect(id);
+> @@ -587,10 +602,13 @@ void rpcrdma_xprt_disconnect(struct rpcrdma_xprt =
+*r_xprt)
+> 	rpcrdma_mrs_destroy(r_xprt);
+> 	rpcrdma_sendctxs_destroy(r_xprt);
+>=20
+> -	if (rpcrdma_ep_destroy(ep))
+> +	if (rpcrdma_ep_put(ep))
+> 		rdma_destroy_id(id);
+>=20
+> 	r_xprt->rx_ep =3D NULL;
+> +
+> +out:
+> +	mutex_unlock(&r_xprt->rx_flush);
+> }
+>=20
+> /* Fixed-size circular FIFO queue. This implementation is wait-free =
+and
+> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h =
+b/net/sunrpc/xprtrdma/xprt_rdma.h
+> index 0a16fdb09b2c..288645a9437f 100644
+> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
+> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
+> @@ -417,6 +417,7 @@ struct rpcrdma_xprt {
+> 	struct delayed_work	rx_connect_worker;
+> 	struct rpc_timeout	rx_timeout;
+> 	struct rpcrdma_stats	rx_stats;
+> +	struct mutex            rx_flush;
+> };
+>=20
+> #define rpcx_to_rdmax(x) container_of(x, struct rpcrdma_xprt, rx_xprt)
+> --=20
+> 2.25.4
+>=20
+
+--
+Chuck Lever
+
+
+
