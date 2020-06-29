@@ -2,214 +2,300 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7398520D851
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 22:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C13620D642
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 22:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387492AbgF2TiF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 15:38:05 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:52934 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387479AbgF2Th7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:37:59 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef9f8050000>; Mon, 29 Jun 2020 22:17:41 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 29 Jun 2020 07:17:41 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Mon, 29 Jun 2020 07:17:41 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 29 Jun
- 2020 14:17:41 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.55) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 29 Jun 2020 14:17:41 +0000
+        id S1731809AbgF2TSg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 15:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731869AbgF2TRm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 15:17:42 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2062f.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e1a::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E73C02E2F5
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jun 2020 07:30:20 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tm6oMebc6DLzGg8ZQiwfobSMbZxQWsy+LC+Q/IVueEcsAH26SnM+GMf7cQz2Q7TnDJdnHX0tVpm72n6barrZKvagjyo+lFYetRxAZqNZmR5vBS0gg3s1fmyvSuZWGjcX9PdDMG/kEU0zePypntvmXXVwwwZKoEPWYfEPprXMqwgk+ulA2bmOQUCGJyUXZp7rQ/HyxcMbzbCMUfPSvxphMMlluSIoOw3rKWDYLnUEIwi5Djh1L2gUsLMg7RwwRYtQIVt6V++PRHrQMM/yjG8wfs6HQlkPii+/S8IWbZHA6ij5mMzHAXXS85SLm5h+JO/mnY/914r5kOnXl9NT3dM5Ow==
+ b=C8bO3zB+JzXUbZaKkSTXYwyU4NvEgf30XndLx4T+Cq+E6jB3ZJ0pLBAV/jPf2qqatwkreoJ3qwc3h8CRa4mZ5HmvV2bOWoRS027f8hTFWh0kzPOXorTDnT1FFW9LMkX6R6Bu767S43eo3fmQMtza3l1DlBIn3TvNwyuk3kzw80U19Ox6dF+FD4F0KTPU1GgwKMpFRCHQf+1N4gUMtSdLUnJ0qna8a0sOIiRboi9zca0zhBtTIancDAv33ozK5pzgpasQRv/o4jq0bFL3jCGsOXWgreHG/BoSS6jHrRb7g3pOYtcGQfcgCBKfWeEnQUr3tCt4U688d4wl1iwD9iW5jQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9T4kKwtuWxM8emLqgtOzDH90iXrg66I3lbFSG+kFxY=;
- b=Z4fHoQffHCsU5xoKpQeLkK8EnXP340Ey8dCAlFART+KmTAczvSqPyWQnNQ8LeFxoSpMZvUIy7bDukjXDGnoTPIih4GoL0gv1RYMVchVODQOq912Ly+K3fttK36FR4nQuzb3gbml2XeemBZlFlw6ozDbHGcwO7aoUD2nHLyoBoQqShPbdF+msGD3B+4ND7h9kycA2p9a5oT3eghrAsTirUHNZ9ti06INVbAZBTHoq4zG3UcrF53rSqJsdQe/8n//NPoKmG36AxdNrv66EjJtBLYsqIB2V/7Ub2kLnD+fHUgcdK0TM93Aq4WrHUldJa8RDOwV5feVZ/foFI5Iy6Kr0mQ==
+ bh=FM274cJFTNqdiSZzZUEQHO8nw0eVfTTdJT8BWxrojtM=;
+ b=H3M9Gb7BBU3cBnr3Io7bnLEimUnqwl5Bxb9+fpPFr08YYPEkiO8qlBAz1/VLq6iQAPJeSyzfue2OFW14qHVl3vKINQGsDfNaHUxoWNL2jtWGTf8on2jMNRA+va9yfeLqd0r5w2ko0pr5qBcGU27fvXKtaHUOnt8UWBYBIeh+Y6/vPzJs11xxaQDNHNJvFe/mbIOxRo5iKckpCLvoYP4cSVdK/q5tTaa/Lp1LLxRsX1LyQPbCkJjk5LLJuGLoAeYNCBWUCEuS1zaSsWTepKLVpEYIjrf2k/6nO0HHpAFZgTiMmgjkGm+QlE5YEv+7cOqDqZgDbwhC1Gqc+lu/VFjO5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4012.namprd12.prod.outlook.com (2603:10b6:5:1cc::19) with
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FM274cJFTNqdiSZzZUEQHO8nw0eVfTTdJT8BWxrojtM=;
+ b=JTLeF/uDZkejdN30ISFHwzuLvA4gQhj54TGofJ0q4zrxC39HQiIjDOXPUkBHDQzXQ+SfOCa4KE396sd3x/hgfZXNb6vVkCakgazXS56nXRXWC2DLY+IaGbPr9p7OwaVw9LA/JrGJyZBhGtfhyNCmfzDtWcGWl+UwmgO1cXXxc+E=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR0502MB3696.eurprd05.prod.outlook.com (2603:10a6:803:2::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Mon, 29 Jun
- 2020 14:17:38 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3131.027; Mon, 29 Jun 2020
- 14:17:38 +0000
-Date:   Mon, 29 Jun 2020 11:17:35 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     <santosh.shilimkar@oracle.com>
-CC:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+274094e62023782eeb17@syzkaller.appspotmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: general protection fault in rds_ib_add_one
-Message-ID: <20200629141735.GA264799@nvidia.com>
-References: <20200224103913.2776-1-hdanton@sina.com>
- <8c0a6d58-fd96-ded0-d5ad-a8ffc8d7a620@oracle.com>
-Content-Type: text/plain; charset="us-ascii"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.24; Mon, 29 Jun
+ 2020 14:30:16 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3131.026; Mon, 29 Jun 2020
+ 14:30:16 +0000
+Date:   Mon, 29 Jun 2020 11:30:12 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/ucma: Put a lock around every call to the rdma_cm
+ layer
+Message-ID: <20200629143012.GH23821@mellanox.com>
+References: <20200218210432.GA31966@ziepe.ca>
+ <20200219060701.GG1075@sol.localdomain>
+ <20200219202221.GN23930@mellanox.com>
+ <20200307204153.GJ15444@sol.localdomain>
+ <20200309193012.GA13183@mellanox.com>
+ <20200627225734.GL7065@sol.localdomain>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8c0a6d58-fd96-ded0-d5ad-a8ffc8d7a620@oracle.com>
-X-ClientProxiedBy: MN2PR15CA0002.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::15) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+In-Reply-To: <20200627225734.GL7065@sol.localdomain>
+X-ClientProxiedBy: MN2PR10CA0016.namprd10.prod.outlook.com
+ (2603:10b6:208:120::29) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0002.namprd15.prod.outlook.com (2603:10b6:208:1b4::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Mon, 29 Jun 2020 14:17:37 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jpubH-0016u6-VP; Mon, 29 Jun 2020 11:17:35 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0016.namprd10.prod.outlook.com (2603:10b6:208:120::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Mon, 29 Jun 2020 14:30:16 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jpunU-00174n-9V; Mon, 29 Jun 2020 11:30:12 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 12656af7-2c4d-4577-4ec2-08d81c372cf1
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4012:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4012D3159965D52B1F072C0BC26E0@DM6PR12MB4012.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 457b5813-0a2d-4b26-afcf-08d81c38f11b
+X-MS-TrafficTypeDiagnostic: VI1PR0502MB3696:
+X-Microsoft-Antispam-PRVS: <VI1PR0502MB36962DA3F5F32E9385B3D1EFCF6E0@VI1PR0502MB3696.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-Forefront-PRVS: 044968D9E1
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MWwIm9Ncj4w2Hm9sEwqYIZZbNWIml+nTfyQbswtmjpj5PnyZd6So9fQ3dS/FJqIohUBP2WsLnYC6/d0/pZq9s4JewbJih200i4uzWtIKlfLKRKRMpn+RH+uGSnp1mhFG61XTPpvkJt/oXZvkr87b0thxcinEf7gdxJ440ahkYKz+OXcWbZA9h7xjVRowY3SeZl3WIDmCcR4Qvj9bfcMuXBGptkA98pi6BT6Gpy9F4YesjjkXDpsiAndLWwNe22CfAI6vwrEXurkV5MWjt2+2AppKbSbOk64L2tGEjqDezgSVMw44Xe/61yBNg0Ej59QpByEkqjT5jJpSCw3PoZ12OE2QChOs5KAJ6jX/ShAUHvAjO6to0uHXrA2D6Z5Cj2r9vn5gSH9J+3gVHECUsR3mD0DI2S6rFl2OHgxXwbMwNUFgIMgZgtrYZ8bkVZQM6nw4xpXlKU4ZWtd06u0tOBtlJ1dDwEs54zC4yrf12Hx1T74=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39860400002)(9746002)(9786002)(83380400001)(53546011)(83080400001)(2906002)(7416002)(478600001)(33656002)(36756003)(5660300002)(2616005)(966005)(4326008)(6916009)(54906003)(26005)(66556008)(66946007)(66476007)(8676002)(86362001)(1076003)(186003)(8936002)(316002)(426003)(27376004)(99710200001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 5LB6YUswrAkxJQcn7zHgaf2b9YfsxbLWUToDUaUT0JESwxeu1/6i4yt4nCkWGaCH3On5xQE3kEnhmaPXiLbSQ85ujWmqx520xnQO5iL3qiDB0VydmrBFO02Ao7ckYeoQY3dJlWzdjTCqgkba1CXbUXFK49voMcxQEGUqFACsTUErTemZ7Hd+oQzTHjnSjOgCEWGHxjXSjlNZxJf+zrA903XGFENDsbk1fpXr1fXsqRGz+QMqbIHk6PjgKsZZG8+06hMVIX1mFKIkXU8OfR1DuCcLQef8frXxtYBh2iDT1dc5POqjJIs/s9bBQ1wiS+Enn/JIHOScc7ypt22K+hgdjXHKpA6sfAuU08M3+oNxqc0c8G89hdoKsDra8hma5IjU8RkPS9OEOYXndysSAArhSJ6oxw+VX4/czdvxSq1EM+KRQkDiive36xjRLnsIvKmsxKSvYmzm9iRLZslOzHkS5Rlr1urXUVTAyoR9l8Ty2cM=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12656af7-2c4d-4577-4ec2-08d81c372cf1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: 8vcPNTwLxylNk5F7Ti9E5GdgS0/MV3KUnmBx+y3VI75JRRLKm5T83OQ1cJTclMpf1GjTxCFbC5uD56NSTgGwdxLNfhL1QKXdWrSWqT6217DVXSwHZZYoiqXGvViFD2mdHvEaMNBFqQ55AwegJxfTXpIUjYDjH1rZVHgn8PHRia621z+46bt6iUR5IluWFuUzjdMzxrevOZ4t2JVaXUD4UKzh2TYC+9c1MYzLxk97KzvDXXMogtmYQ712nw+0ZOZAWOuTIY0K0CQ062SAYaayYD/n/vVm1DvTLiqotnMow3lKHdHzcBgJcylpPN+W448TGWneH/5nmr2geQC2TQXJav/73ug/ZZbeNn5X7/5vt/lQ5xa07ozW+4e5fm/4keyYK+qLr9xPKMk6VOFhSp4iQnr7Cgyf2iS2utfS2MhebBCUbOGwAvUjyTW36SYhP/L+HXc+TN9tNCZ5SL59PMl2Pw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(9786002)(9746002)(4326008)(2906002)(66946007)(478600001)(186003)(966005)(66476007)(66556008)(5660300002)(26005)(33656002)(1076003)(36756003)(83380400001)(6916009)(86362001)(426003)(8676002)(8936002)(83080400001)(2616005)(316002)(99710200001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: S6E2pnuvjSjOQo16HeHwNhTXexryke5MX0alHkRdsB4yYmvxK386HbT/oDFrMVqjGS+Nt58wwK3zMZZ+ptnNHgJafCt+S4z0BfGqI1fLfTzUlKAb7S6GGDMZXihLVPsMlFYOpQCmpH5Lb8i8/2hTmpXeCd2RC88ZT280+yeyCXBpzGgSU0+gXy6syB1nDFrlvosfcccuf1Qw4yr+R3ZrJUOXJaiaYez1MCxkO9INWKYWQEhK6H8gJF0AtJJTxaZQPBW5cw+DFqtWfx8wBmPwDMlhP3NYr1Jejv4c5VY7p2R+6YScdQGbix/7CVVPOC9O87m/djJMXoz1YRn25enDHgPENb556Il6ZD0uAWDXPWXAVaJzc/2Y9KC1FiwRmBn8lf0YCjITA40rYGXJ+mUaoH7i8hdNyMCN51oMPHfvDNjGufuphZLIQD4RUi2zAcidu6dXnTNAsvXM7SxVg9zVyX2O5Wm3dzUaZY2hk1hXUFA=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 457b5813-0a2d-4b26-afcf-08d81c38f11b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB4141.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2020 14:17:38.1272
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2020 14:30:16.4973
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mpjRZzQ1Qj1NDNtri2l/zjwIBVgaEo5QDYYcOcouxQt2B89HjhyuBLYye3dmO81I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4012
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593440261; bh=s9T4kKwtuWxM8emLqgtOzDH90iXrg66I3lbFSG+kFxY=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-Forefront-PRVS:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=APaCQTKdBxVfVeqTDugWheHhaxk+HxZqCGb7zZPHQkvZ96DPGm9LBIoNblPa3w5gB
-         dywBWRlamJjYWRbZTPqsFxAkn7RvFecPkOJJYj+TeoLk9lNeCVLB6fOvK1wIMKLSft
-         fDpNgZgTaXmPH1ycW9bBwEVQIzmIO2TePV8QarGGa/10o0yoplfHtPbWSdvLg8xfX1
-         FPxrHsOiHTDED0++L4JmiZxPKUj5CnzPjJFq3feZzoZtFV87DCTNO9+MOZna/u9Yhg
-         Z1O4cv36qJ24nuftpdM6i0UiU7jsQuCbFShaqnmh6JsdCle2iS89mOmqhiKWDkpnJj
-         PPzv2VAcCwqsQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: NoHdTYbGAR13JiOw4r62uQsw6X83Wljy3P4KDQhvgbibv/RSos+qtjfU+MgTuXu4p3cW0o64DSgmGc8Ox8OZ/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0502MB3696
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 09:51:01AM -0800, santosh.shilimkar@oracle.com wrote:
-> On 2/24/20 2:39 AM, Hillf Danton wrote:
-> > 
-> > On Mon, 24 Feb 2020 00:38:13 -0800
-> > > syzbot found the following crash on:
-> > > 
-> > > HEAD commit:    b0dd1eb2 Merge branch 'akpm' (patches from Andrew)
-> > > git tree:       upstream
-> > > console output: https://urldefense.com/v3/__https://syzkaller.appspot.com/x/log.txt?x=13db9de9e00000__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauXTR6PmUg$
-> > > kernel config:  https://urldefense.com/v3/__https://syzkaller.appspot.com/x/.config?x=a6001be4097ab13c__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauUIjkEraA$
-> > > dashboard link: https://urldefense.com/v3/__https://syzkaller.appspot.com/bug?extid=274094e62023782eeb17__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauXEUExfYg$
-> > > compiler:       clang version 10.0.0 (https://urldefense.com/v3/__https://github.com/llvm/llvm-project/__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauUcUeVf2A$  c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> > > syz repro:      https://urldefense.com/v3/__https://syzkaller.appspot.com/x/repro.syz?x=10ad6a7ee00000__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauX2w5ISoA$
-> > > C reproducer:   https://urldefense.com/v3/__https://syzkaller.appspot.com/x/repro.c?x=13da7a29e00000__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauUf3qIVeQ$
-> > > 
-> > > Bisection is inconclusive: the first bad commit could be any of:
-> 
-> [...]
-> 
-> > > 868df536 Merge branch 'odp_fixes' into rdma.git for-next
-> > > 
-> > > bisection log:  https://urldefense.com/v3/__https://syzkaller.appspot.com/x/bisect.txt?x=1542127ee00000__;!!GqivPVa7Brio!O9xt2mwp7Vb5SndsHmi1c7ynTdDMNXebFTWfSklgQdlUqRdC218qPSAXMuDUauVrB3NY9g$
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+274094e62023782eeb17@syzkaller.appspotmail.com
-> > > 
-> > > batman_adv: batadv0: Interface activated: batadv_slave_1
-> > > infiniband syz1: set active
-> > > infiniband syz1: added vlan0
-> > > general protection fault, probably for non-canonical address 0xdffffc0000000086: 0000 [#1] PREEMPT SMP KASAN
-> > > KASAN: null-ptr-deref in range [0x0000000000000430-0x0000000000000437]
-> > > CPU: 0 PID: 8852 Comm: syz-executor043 Not tainted 5.6.0-rc2-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > RIP: 0010:dev_to_node include/linux/device.h:663 [inline]
-> > > RIP: 0010:rds_ib_add_one+0x81/0xe50 net/rds/ib.c:140
-> > > Code: b7 a8 06 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 f7 e8 0e e4 1d fa bb 30 04 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 f0 0a 00 00 8b 1b 48 c7 c0 28 0c 09 89 48
-> > > RSP: 0018:ffffc90003087298 EFLAGS: 00010202
-> > > RAX: 0000000000000086 RBX: 0000000000000430 RCX: 0000000000000000
-> > > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-> > > RBP: ffffc900030872f0 R08: ffffffff87964c3c R09: ffffed1014fd109c
-> > > R10: ffffed1014fd109c R11: 0000000000000000 R12: 0000000000000000
-> > > R13: dffffc0000000000 R14: ffff8880a7e886a8 R15: ffff8880a7e88000
-> > > FS:  0000000000c3d880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00007f0318ed0000 CR3: 00000000a3167000 CR4: 00000000001406f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >   add_client_context+0x482/0x660 drivers/infiniband/core/device.c:681
-> > >   enable_device_and_get+0x15b/0x370 drivers/infiniband/core/device.c:1316
-> > >   ib_register_device+0x124d/0x15b0 drivers/infiniband/core/device.c:1382
-> > >   rxe_register_device+0x3f6/0x530 drivers/infiniband/sw/rxe/rxe_verbs.c:1231
-> > >   rxe_add+0x1373/0x14f0 drivers/infiniband/sw/rxe/rxe.c:302
-> > >   rxe_net_add+0x79/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:539
-> > >   rxe_newlink+0x31/0x90 drivers/infiniband/sw/rxe/rxe.c:318
-> > >   nldev_newlink+0x403/0x4a0 drivers/infiniband/core/nldev.c:1538
-> > >   rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
-> > >   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-> > >   rdma_nl_rcv+0x701/0xa20 drivers/infiniband/core/netlink.c:259
-> > >   netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
-> > >   netlink_unicast+0x766/0x920 net/netlink/af_netlink.c:1328
-> > >   netlink_sendmsg+0xa2b/0xd40 net/netlink/af_netlink.c:1917
-> > >   sock_sendmsg_nosec net/socket.c:652 [inline]
-> > >   sock_sendmsg net/socket.c:672 [inline]
-> > >   ____sys_sendmsg+0x4f7/0x7f0 net/socket.c:2343
-> > >   ___sys_sendmsg net/socket.c:2397 [inline]
-> > >   __sys_sendmsg+0x1ed/0x290 net/socket.c:2430
-> > >   __do_sys_sendmsg net/socket.c:2439 [inline]
-> > >   __se_sys_sendmsg net/socket.c:2437 [inline]
-> > >   __x64_sys_sendmsg+0x7f/0x90 net/socket.c:2437
-> > >   do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
-> > >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > 
-> > Fall back to NUMA_NO_NODE if needed.
-> > 
-> > +++ b/net/rds/ib.c
-> > @@ -137,7 +137,8 @@ static void rds_ib_add_one(struct ib_dev
-> >   		return;
-> >   	rds_ibdev = kzalloc_node(sizeof(struct rds_ib_device), GFP_KERNEL,
-> > -				 ibdev_to_node(device));
-> > +				 device->dev.parent ?
-> > +				 ibdev_to_node(device) : NUMA_NO_NODE);
-> >   	if (!rds_ibdev)
-> >   		return;
-> > 
-> This seems good. Can you please post it as properly formatted patch ?
+On Sat, Jun 27, 2020 at 03:57:34PM -0700, Eric Biggers wrote:
+ 
+> Hi Jason, here's my latest list (updated today) of bugs that are probably in
+> drivers/infiniband/:
 
-Reminder please, this still shows in the dashboards?
+Thanks, lets see:
+ 
+> Title:              general protection fault in rds_ib_add_one
+> Last occurred:      1 day ago
+> Reported:           124 days ago
+> Branches:           Mainline and others
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=15f96d171c64999196ac7db3de107f24b9182a8e
+> Original thread:    https://lore.kernel.org/lkml/000000000000b9b7d4059f4e4ac7@google.com/T/#u
+> 
+> This bug has a C reproducer.
+> 
+> The original thread for this bug received 5 replies; the last was 117 days ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+274094e62023782eeb17@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000b9b7d4059f4e4ac7@google.com
 
-Jason
+This is RDS, Hillif and Santos were handling it.. I pinged the thread
+
+ 
+> Title:              WARNING in srp_remove_one
+> Last occurred:      0 days ago
+> Reported:           118 days ago
+> Branches:           Mainline and others
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=16a5827f8f6f6ef0967e6492ffb2e2ca54c8c0fb
+> Original thread:    https://lore.kernel.org/lkml/000000000000144d79059fc9415d@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> No one replied to the original thread for this bug.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+687bc62a84a6a2a3555a@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000144d79059fc9415d@google.com
+
+This is *probably* the 'sysfs problem'
+
+I have a good guess what this is, but I really need to see a
+reproduction on it before trying to fix it. I can probably make the
+odds of hitting this much higher with a patch, but syzkaller would
+have to chew on that patch for a while to find a reproduction..
+
+> Title:              WARNING in ib_uverbs_remove_one
+> Last occurred:      0 days ago
+> Reported:           99 days ago
+> Branches:           Mainline and others
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=7d092a26c44ac45dc0a59a1a0474be064db8fa66
+> Original thread:    https://lore.kernel.org/lkml/000000000000c3a75205a14cb8c9@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> No one replied to the original thread for this bug.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+d3f37b9458fe8281d078@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000c3a75205a14cb8c9@google.com
+
+This is *probably* the 'sysfs problem'
+
+> Title:              WARNING in ib_free_port_attrs
+> Last occurred:      1 day ago
+> Reported:           117 days ago
+> Branches:           Mainline and others
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=4ec089798f282f2d2c3219151e420ed1ba10120d
+> Original thread:    https://lore.kernel.org/lkml/000000000000460717059fd83734@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> The original thread for this bug received 1 reply, 116 days ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+e909641b84b5bc17ad8b@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000460717059fd83734@google.com
+
+This is *probably* the 'sysfs problem', but not as clear
+
+> Title:              WARNING in ib_umad_kill_port
+> Last occurred:      1 day ago
+> Reported:           82 days ago
+> Branches:           Mainline and others
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=4ecc18c71d37b62b131aee8184a642ae5d2d21a6
+> Original thread:    https://lore.kernel.org/lkml/00000000000075245205a2997f68@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> The original thread for this bug has received 8 replies; the last was 79 days
+> ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/00000000000075245205a2997f68@google.com
+
+This is *probably* the 'sysfs problem'
+
+> Title:              KASAN: use-after-free Write in addr_resolve
+> Last occurred:      20 days ago
+> Reported:           17 days ago
+> Branches:           Mainline
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=e0a96faaf6799220954d5f5d8ec6fa0c386f85ac
+> Original thread:    https://lore.kernel.org/lkml/000000000000eb293205a7bdd19a@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> No one has replied to the original thread for this bug yet.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+08092148130652a6faae@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000eb293205a7bdd19a@google.com
+
+I think I have a fix for this
+
+> Title:              KASAN: use-after-free Read in addr_handler (2)
+> Last occurred:      17 days ago
+> Reported:           17 days ago
+> Branches:           Mainline
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=cfd37bf8b5d2768b6b87e7b4c3a588a06ea6284a
+> Original thread:    https://lore.kernel.org/lkml/000000000000107b4605a7bdce7d@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> The original thread for this bug has received 2 replies; the last was 20 hours
+> ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+a929647172775e335941@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please reply to the original
+> thread, which had activity only 20 hours ago.  For the git send-email command to
+> use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
+> instructions" at https://lore.kernel.org/r/000000000000107b4605a7bdce7d@google.com
+
+Probably a dup of the above
+
+> Title:              KASAN: use-after-free Read in ib_uverbs_remove_one
+> Last occurred:      33 days ago
+> Reported:           30 days ago
+> Branches:           linux-next
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=f1a3b9d9350867a50d642b8e2cee217569b8adca
+> Original thread:    https://lore.kernel.org/lkml/00000000000095442505a6b63551@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> The original thread for this bug has received 2 replies; the last was 28 days
+> ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+478fd0d54412b8759e0d@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/00000000000095442505a6b63551@google.com
+
+Couldn't figure it out.
+
+> Title:              WARNING in ib_unregister_device_queued
+> Last occurred:      51 days ago
+> Reported:           62 days ago
+> Branches:           net
+> Dashboard link:     https://syzkaller.appspot.com/bug?id=979c332b27ca869bd26c337574ef068908c1da3c
+> Original thread:    https://lore.kernel.org/lkml/000000000000aa012505a431c7d9@google.com/T/#u
+> 
+> Unfortunately, this bug does not have a reproducer.
+> 
+> The original thread for this bug has received 2 replies; the last was 60 days
+> ago.
+> 
+> If you fix this bug, please add the following tag to the commit:
+>     Reported-by: syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com
+> 
+> If you send any email or patch for this bug, please consider replying to the
+> original thread.  For the git send-email command to use, or tips on how to reply
+> if the thread isn't in your mailbox, see the "Reply instructions" at
+> https://lore.kernel.org/r/000000000000aa012505a431c7d9@google.com
+
+Fix sent
+
+Jason 
