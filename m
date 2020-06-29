@@ -2,56 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6A120DF39
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 23:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB48620DF8B
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 23:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389336AbgF2UdU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 16:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        id S2389381AbgF2Uhs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 16:37:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389177AbgF2UdT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:33:19 -0400
+        id S2389516AbgF2Uhi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:37:38 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4D1F2067D;
-        Mon, 29 Jun 2020 20:33:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BEAC206C0;
+        Mon, 29 Jun 2020 20:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593462799;
-        bh=4rUMvl4W+0dTlzq+q81WLdOeKcSLdHqIVJI5237I3mc=;
+        s=default; t=1593463057;
+        bh=A4qAEegdjdQF8sCEmQmfqgvlXcb7Q9mSn6ORmJRVuCw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zgQrY5/yuwgMl4OySz99JGe3vZZdkHkdDFboCp/7XRCGy5s3VI8JveZcakEMjpnyZ
-         +ej3yGrDl9TqTFMBsKP1sNIruwADprfk1hvX5x/+dXy1K+WpGjMUt4qfyawUu2hkb3
-         a9ZQe/FHOQS0Xyv5l33V6AFubacuKFaULEyBzn3c=
-Date:   Mon, 29 Jun 2020 21:33:17 +0100
+        b=wJxETq24q/IH4x86y58c6ypIbomeeuhOtJm3NmGD6GBjkCxRwx9OtlydfMX4u/uJs
+         ECzx/4oubZgluqZaTi0E+vGtNaa0Pgt/cvtWDYvdUBdfpllzpJfq3PkyJvfoHmMqGY
+         cGHP+MZgy1982CN7bA6mY8zUldXRTeTaEuZF7mpc=
+Date:   Mon, 29 Jun 2020 21:37:35 +0100
 From:   Mark Brown <broonie@kernel.org>
 To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         davem@davemloft.net, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200629203317.GM5499@sirena.org.uk>
-References: <20200520125437.GH31189@ziepe.ca>
- <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
- <20200521233437.GF17583@ziepe.ca>
- <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
- <20200523062351.GD3156699@kroah.com>
- <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
- <20200524063519.GB1369260@kroah.com>
- <fe44419b-924c-b183-b761-78771b7d506d@linux.intel.com>
- <s5h5zcistpb.wl-tiwai@suse.de>
- <20200527071733.GB52617@kroah.com>
+        sassmann@redhat.com, pierre-louis.bossart@linux.intel.com,
+        Fred Oh <fred.oh@linux.intel.com>
+Subject: Re: [net-next v4 11/12] ASoC: SOF: Create client driver for IPC test
+Message-ID: <20200629203735.GN5499@sirena.org.uk>
+References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
+ <20200520070227.3392100-12-jeffrey.t.kirsher@intel.com>
+ <20200520125611.GI31189@ziepe.ca>
+ <b51ee1d61dbfbb8914d29338918ba49bff1b4b75.camel@linux.intel.com>
+ <20200528001207.GR744@ziepe.ca>
+ <d44a50f6a8af0162a5ff1a6d483adebf16d11256.camel@linux.intel.com>
+ <20200528104545.GA3115014@kroah.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TxukmIqg3MmZ0Kmh"
+        protocol="application/pgp-signature"; boundary="LvAn5G4Ewe70kJ1i"
 Content-Disposition: inline
-In-Reply-To: <20200527071733.GB52617@kroah.com>
+In-Reply-To: <20200528104545.GA3115014@kroah.com>
 X-Cookie: Real programs don't eat cache.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
@@ -60,38 +55,35 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---TxukmIqg3MmZ0Kmh
+--LvAn5G4Ewe70kJ1i
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 27, 2020 at 09:17:33AM +0200, Greg KH wrote:
+On Thu, May 28, 2020 at 12:45:45PM +0200, Greg KH wrote:
+> On Wed, May 27, 2020 at 06:40:05PM -0700, Ranjani Sridharan wrote:
 
-> Ok, that's good to hear.  But platform devices should never be showing
-> up as a child of a PCI device.  In the "near future" when we get the
-> virtual bus code merged, we can convert any existing users like this to
-> the new code.
+> > Is your expectation that with the above changes, we should not be
+> > needing the MODULE_ALIAS() in the driver?
 
-What are we supposed to do with things like PCI attached FPGAs and ASICs
-in that case?  They can have host visible devices with physical
-resources like MMIO ranges and interrupts without those being split up
-neatly as PCI subfunctions - the original use case for MFD was such
-ASICs, there's a few PCI drivers in there now.  Adding support for those
-into virtual bus would make it even more of a cut'n'paste of the
-platform bus than it already is.
+> Yes, it should not be needed if you did everything properly in
+> mod_devicetable.h
 
---TxukmIqg3MmZ0Kmh
+It will also need a MODULE_DEVICE_TABLE() on _virtbus_id_table[] -
+MODULE_ALIAS() is functioning as a single entry one of those.
+
+--LvAn5G4Ewe70kJ1i
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl76UAwACgkQJNaLcl1U
-h9DGrwf/dbx5iLf+Ih3TFEH8p4lVh+RAmaAC6LIvz+LoKryJqiE3ZNcSM5/4GPZx
-C1f4Daud6UOLeFeB7mYI+soHS4RAf5GZ2BOFKBVdJrpDXGALgPQQ7pWTwMioV/BH
-9a4gDpBDoEq9BExzZaJmUArvp2o4az9wmP6se2CNV24ofaW1ZAb6HjxYMslnRPeX
-VaaW93oRtNqFwnU9gOdkeGE7xzz5ZQ2t44bCh9e/3sLw3YExSXEJ+uvsIKbbIiSj
-AehNFW46JeKU9IwZtx6wSjKDbAaxNb1mSQWqArkLYcYuwpFHvGMwDt2OpteNcCpI
-580QPw5rS5wmLtwVZgmI95OAhxaTJQ==
-=/tbf
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl76UQ4ACgkQJNaLcl1U
+h9BWAAf/fRxdGsXNZnoBwgtAPs2zyhokytXeuAyzCVRg9clh0PNlvvgPTMgQePc5
+XPp7Cku1999W0UXEAnSoXnLNBoW+7lmH4OpreZMXzTO7PaIHCdlcccVC5k/jk2rR
+lywNHnVyMUqm6p09DYc8utJyCE6xwtXjRegSAKpRVsj5gnfjMW9NvTjrlbxyTaWB
+lRQTgF9QTgbK1Dlvn50cs4pcDQ8SfyzeJ4C4AnJmXBA2LCYC6rtJD8ugQBfk4Ufh
+l0HnlUl/4cVtXCqRyuXAISz2xlgfoOhjtKvUN7MD15WSzn9InWSiiVVbfjRc5Ful
+Ggx7NtT4i2whG6ED0af4oUY7m7j5GA==
+=x4u3
 -----END PGP SIGNATURE-----
 
---TxukmIqg3MmZ0Kmh--
+--LvAn5G4Ewe70kJ1i--
