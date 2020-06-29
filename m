@@ -2,51 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB48620DF8B
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 23:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E95320E1C6
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 23:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389381AbgF2Uhs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 16:37:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S2389777AbgF2U7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 16:59:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389516AbgF2Uhi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jun 2020 16:37:38 -0400
+        id S2389610AbgF2U7N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Jun 2020 16:59:13 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BEAC206C0;
-        Mon, 29 Jun 2020 20:37:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEF0E206F1;
+        Mon, 29 Jun 2020 20:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593463057;
-        bh=A4qAEegdjdQF8sCEmQmfqgvlXcb7Q9mSn6ORmJRVuCw=;
+        s=default; t=1593464352;
+        bh=VR65r4FkcTnO0p6gPR+7EyK7Y7dTKwlSpV8Y/vR5Q/8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wJxETq24q/IH4x86y58c6ypIbomeeuhOtJm3NmGD6GBjkCxRwx9OtlydfMX4u/uJs
-         ECzx/4oubZgluqZaTi0E+vGtNaa0Pgt/cvtWDYvdUBdfpllzpJfq3PkyJvfoHmMqGY
-         cGHP+MZgy1982CN7bA6mY8zUldXRTeTaEuZF7mpc=
-Date:   Mon, 29 Jun 2020 21:37:35 +0100
+        b=rt+31gnhKhhk+MqHAEyRpSj4qKy8mh0Cr8Pkm9+3OkOTD+kbfNuJ+qMWz96LLBqZW
+         Zlhp5rihhVG/0oZTTstSgKSQU12tZno4+phGf28uxoEqnFI43DfD4i2asH11jzPD/Q
+         S77FbENZWxRlgf78qLXr5LAjv+nFS1gUQuKoXTp0=
+Date:   Mon, 29 Jun 2020 21:59:10 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, pierre-louis.bossart@linux.intel.com,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com,
         Fred Oh <fred.oh@linux.intel.com>
-Subject: Re: [net-next v4 11/12] ASoC: SOF: Create client driver for IPC test
-Message-ID: <20200629203735.GN5499@sirena.org.uk>
+Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
+ client
+Message-ID: <20200629205910.GO5499@sirena.org.uk>
 References: <20200520070227.3392100-1-jeffrey.t.kirsher@intel.com>
- <20200520070227.3392100-12-jeffrey.t.kirsher@intel.com>
- <20200520125611.GI31189@ziepe.ca>
- <b51ee1d61dbfbb8914d29338918ba49bff1b4b75.camel@linux.intel.com>
- <20200528001207.GR744@ziepe.ca>
- <d44a50f6a8af0162a5ff1a6d483adebf16d11256.camel@linux.intel.com>
- <20200528104545.GA3115014@kroah.com>
+ <20200520070227.3392100-11-jeffrey.t.kirsher@intel.com>
+ <20200520125437.GH31189@ziepe.ca>
+ <08fa562783e8a47f857d7f96859ab3617c47e81c.camel@linux.intel.com>
+ <20200521233437.GF17583@ziepe.ca>
+ <7abfbda8-2b4b-5301-6a86-1696d4898525@linux.intel.com>
+ <20200522145542.GI17583@ziepe.ca>
+ <6e129db7-2a76-bc67-0e56-2abb4d9761a3@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LvAn5G4Ewe70kJ1i"
+        protocol="application/pgp-signature"; boundary="zBPbvmIlJjvpbu6L"
 Content-Disposition: inline
-In-Reply-To: <20200528104545.GA3115014@kroah.com>
+In-Reply-To: <6e129db7-2a76-bc67-0e56-2abb4d9761a3@linux.intel.com>
 X-Cookie: Real programs don't eat cache.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
@@ -55,35 +57,58 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---LvAn5G4Ewe70kJ1i
+--zBPbvmIlJjvpbu6L
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 28, 2020 at 12:45:45PM +0200, Greg KH wrote:
-> On Wed, May 27, 2020 at 06:40:05PM -0700, Ranjani Sridharan wrote:
+On Fri, May 22, 2020 at 10:33:20AM -0500, Pierre-Louis Bossart wrote:
+> On 5/22/20 9:55 AM, Jason Gunthorpe wrote:
 
-> > Is your expectation that with the above changes, we should not be
-> > needing the MODULE_ALIAS() in the driver?
+> > Maybe not great, but at least it is consistent with all the lifetime
+> > models and the operation of the driver core.
 
-> Yes, it should not be needed if you did everything properly in
-> mod_devicetable.h
+> I agree your comments are valid ones, I just don't have a solution to be
+> fully compliant with these models and report failures of the driver probe
+> for a child device due to configuration issues (bad audio topology, etc).
 
-It will also need a MODULE_DEVICE_TABLE() on _virtbus_id_table[] -
-MODULE_ALIAS() is functioning as a single entry one of those.
+> My understanding is that errors on probe are explicitly not handled in the
+> driver core, see e.g. comments such as:
 
---LvAn5G4Ewe70kJ1i
+It's just not an error for a child device to not instantiate, we don't
+even know if the driver is loaded yet.  The parent really should not
+care if the child is there or not.
+
+> > > PCI device creates an audio card represented as a platform device. When the
+> > > card registration fails, typically due to configuration issues, the PCI
+> > > probe still completes. That's really confusing and the source of lots of
+> > > support questions. If we use these virtual bus extensions to stpo abusing
+> > > platform devices, it'd be really nice to make those unreported probe
+> > > failures go away.
+
+> > I think you need to address this in some other way that is hot plug
+> > safe.
+
+> > Surely you can make this failure visible to users in some other way?
+
+> Not at the moment, no. there are no failures reported in dmesg, and the user
+> does not see any card created. This is a silent error.
+
+If we're failing to do something we should report it.  This includes
+deferred probe failures.
+
+--zBPbvmIlJjvpbu6L
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl76UQ4ACgkQJNaLcl1U
-h9BWAAf/fRxdGsXNZnoBwgtAPs2zyhokytXeuAyzCVRg9clh0PNlvvgPTMgQePc5
-XPp7Cku1999W0UXEAnSoXnLNBoW+7lmH4OpreZMXzTO7PaIHCdlcccVC5k/jk2rR
-lywNHnVyMUqm6p09DYc8utJyCE6xwtXjRegSAKpRVsj5gnfjMW9NvTjrlbxyTaWB
-lRQTgF9QTgbK1Dlvn50cs4pcDQ8SfyzeJ4C4AnJmXBA2LCYC6rtJD8ugQBfk4Ufh
-l0HnlUl/4cVtXCqRyuXAISz2xlgfoOhjtKvUN7MD15WSzn9InWSiiVVbfjRc5Ful
-Ggx7NtT4i2whG6ED0af4oUY7m7j5GA==
-=x4u3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl76Vh0ACgkQJNaLcl1U
+h9DwOwf+ObKC0aouXliS3999VTEqRR7fUh9j3rNU8fltTUx60q7nD/GFAVyemiAB
+8tctlZT8zed7lcw9i1pQfDHls/T9f2EQy5uG/bJyTxwBirFXsjCrdI8lmjYs00gR
+i/sQ6fdeJ8IWptXGdYMN5/nGBYFfYKAXPy9Ne43RlLWHGrPUWWg6iGHz9bGi0cMQ
+d6XSSJlLjUH1sdB+DIYNZpEB82yjWYpWstDIgOSZVyXWaB03+4DmramvN7HHOiD2
+8YnlFNPYc2GQacJTiRoOpXJAUvqab5b/tGrFyLdPFtXB6J2vZfJdCGB/fmmDqgZD
+fLmTzjGq+8s+/Anxyi+0T1rNwf3O4w==
+=BEZq
 -----END PGP SIGNATURE-----
 
---LvAn5G4Ewe70kJ1i--
+--zBPbvmIlJjvpbu6L--
