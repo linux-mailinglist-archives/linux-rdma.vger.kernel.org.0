@@ -2,242 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF3520D443
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 21:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4AA20D464
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 21:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgF2TGr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:47 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9636 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730789AbgF2TGj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:06:39 -0400
-IronPort-SDR: mz8Q2zCl+i3/prfpgKcIU6H/j8V9zgz+O5BHQ2wcIDrs4xpo71ywRFYsfoh0GuxG0D41JlaecT
- c/5i1F//ifew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="125645698"
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="125645698"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 10:20:11 -0700
-IronPort-SDR: JD1ApKSWcfD2wIDSYSmsTowU3SpmYYlXgFvecUG1sQw7TGDnaYOoFBSdtT5kUDUTw40qjCou5K
- kvKnPoLpc9xQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,295,1589266800"; 
-   d="scan'208";a="320698825"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Jun 2020 10:20:11 -0700
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [RFC PATCH v2 3/3] RDMA/uverbs: Add uverbs command for dma-buf based MR registration
-Date:   Mon, 29 Jun 2020 10:31:43 -0700
-Message-Id: <1593451903-30959-4-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
-References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
+        id S1730846AbgF2TIB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 15:08:01 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42158 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730534AbgF2THn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 15:07:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05THrpFC099171;
+        Mon, 29 Jun 2020 17:57:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Th9j2rJrwRXpmODdSGs/DYnq7ge1mBicBNf2nmL5+hQ=;
+ b=oiiMJsjVeyrusyP+g5xhhQBGTMSz1eLGLgwdMSaVlX7aORXZZE3ETqp+x2NGqDfbetB5
+ AYyo3bKLPTzHO9qDOeInSRPQ9ED9Oh6nHYUsFNkJnnn/HD3wdVnVdnZpGsvkUiJ+byvE
+ 2gYblhBq65MfTT8P7YFB3tfUoZTYJy+cm2237x/W3wcmHezuOUpMwRjDoqA7uG1dpnMN
+ 9CMCFDBsJaiDKD0K+DVF966Kw6KYO5IlqBHTMQ+OX8jqvtq3GQB3VsU47AKSwAH8YLYa
+ ssTTMCvqPQbKoGwLCImBrAwkFjwI3laNctnPsGNGxrhK0YXfbbuV70Nf1MXCJk0ygkfc Qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 31wwhrfypa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 29 Jun 2020 17:57:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05THbhDE023867;
+        Mon, 29 Jun 2020 17:55:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 31xg1vd4fx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Jun 2020 17:55:36 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05THtZir019722;
+        Mon, 29 Jun 2020 17:55:36 GMT
+Received: from [192.168.1.7] (/73.15.177.101)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 29 Jun 2020 17:55:35 +0000
+Subject: Re: [PATCH v1] rds: If one path needs re-connection, check all and
+ re-connect
+To:     David Miller <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        ka-cheong.poon@oracle.com, david.edmondson@oracle.com
+References: <20200626183438.20188-1-rao.shoaib@oracle.com>
+ <20200626.163100.603726050168307590.davem@davemloft.net>
+From:   Rao Shoaib <rao.shoaib@oracle.com>
+Message-ID: <ba7da46b-a84d-142f-90e2-6b0be6899fbf@oracle.com>
+Date:   Mon, 29 Jun 2020 10:55:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200626.163100.603726050168307590.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ phishscore=0 priorityscore=1501 clxscore=1015 cotscore=-2147483648
+ mlxscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006290113
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add uverbs command for registering user memory region associated
-with a dma-buf file descriptor.
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
----
- drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++++++++++++++
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++++
- 2 files changed, 126 insertions(+)
+On 6/26/20 4:31 PM, David Miller wrote:
+> From: rao.shoaib@oracle.com
+> Date: Fri, 26 Jun 2020 11:34:38 -0700
+>
+>> +/* Check connectivity of all paths
+>> + */
+>> +void rds_check_all_paths(struct rds_connection *conn)
+>> +{
+>> +	int i = 0;
+>> +
+>> +	do {
+>> +		rds_conn_path_connect_if_down(&conn->c_path[i]);
+>> +	} while (++i < conn->c_npaths);
+>> +}
+> Please code this loop in a more canonial way:
+>
+> 	int i;
+>
+> 	for (i = 0; i < conn->c_npaths, i++)
+> 		rds_conn_path_connect_if_down(&conn->c_path[i]);
+>
+> Thank you.
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
-index c1286a5..2c9ff7c 100644
---- a/drivers/infiniband/core/uverbs_std_types_mr.c
-+++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-+ * Copyright (c) 2020, Intel Corporation.  All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-@@ -154,6 +155,85 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
- 	return ret;
- }
- 
-+static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uobject *uobj =
-+		uverbs_attr_get_uobject(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
-+	struct ib_pd *pd =
-+		uverbs_attr_get_obj(attrs, UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE);
-+	struct ib_device *ib_dev = pd->device;
-+
-+	u64 addr, length, hca_va;
-+	u32 fd;
-+	u32 access_flags;
-+	struct ib_mr *mr;
-+	int ret;
-+
-+	if (!ib_dev->ops.reg_user_mr)
-+		return -EOPNOTSUPP;
-+
-+	ret = uverbs_copy_from(&addr, attrs, UVERBS_ATTR_REG_DMABUF_MR_ADDR);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_from(&length, attrs,
-+			       UVERBS_ATTR_REG_DMABUF_MR_LENGTH);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_from(&hca_va, attrs,
-+			       UVERBS_ATTR_REG_DMABUF_MR_HCA_VA);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_from(&fd, attrs,
-+			       UVERBS_ATTR_REG_DMABUF_MR_FD);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_flags32(&access_flags, attrs,
-+				 UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-+				 IB_ACCESS_SUPPORTED);
-+	if (ret)
-+		return ret;
-+
-+	ret = ib_check_mr_access(access_flags);
-+	if (ret)
-+		return ret;
-+
-+	mr = pd->device->ops.reg_user_mr(pd, addr, length, hca_va,
-+					   (int)(s32)fd, access_flags,
-+					   &attrs->driver_udata);
-+	if (IS_ERR(mr))
-+		return PTR_ERR(mr);
-+
-+	mr->device  = pd->device;
-+	mr->pd      = pd;
-+	mr->type    = IB_MR_TYPE_USER;
-+	mr->uobject = uobj;
-+	atomic_inc(&pd->usecnt);
-+
-+	uobj->object = mr;
-+
-+	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-+			     &mr->lkey, sizeof(mr->lkey));
-+	if (ret)
-+		goto err_dereg;
-+
-+	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-+			     &mr->rkey, sizeof(mr->rkey));
-+	if (ret)
-+		goto err_dereg;
-+
-+	return 0;
-+
-+err_dereg:
-+	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
-+
-+	return ret;
-+}
-+
- DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_METHOD_ADVISE_MR,
- 	UVERBS_ATTR_IDR(UVERBS_ATTR_ADVISE_MR_PD_HANDLE,
-@@ -200,6 +280,37 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
- 			    UVERBS_ATTR_TYPE(u32),
- 			    UA_MANDATORY));
- 
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_REG_DMABUF_MR,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
-+			UVERBS_OBJECT_MR,
-+			UVERBS_ACCESS_NEW,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
-+			UVERBS_OBJECT_PD,
-+			UVERBS_ACCESS_READ,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_ADDR,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_HCA_VA,
-+			   UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_FD,
-+			   UVERBS_ATTR_TYPE(u32),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-+			     enum ib_access_flags),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-+			    UVERBS_ATTR_TYPE(u32),
-+			    UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-+			    UVERBS_ATTR_TYPE(u32),
-+			    UA_MANDATORY));
-+
- DECLARE_UVERBS_NAMED_METHOD_DESTROY(
- 	UVERBS_METHOD_MR_DESTROY,
- 	UVERBS_ATTR_IDR(UVERBS_ATTR_DESTROY_MR_HANDLE,
-@@ -210,6 +321,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
- DECLARE_UVERBS_NAMED_OBJECT(
- 	UVERBS_OBJECT_MR,
- 	UVERBS_TYPE_ALLOC_IDR(uverbs_free_mr),
-+	&UVERBS_METHOD(UVERBS_METHOD_REG_DMABUF_MR),
- 	&UVERBS_METHOD(UVERBS_METHOD_DM_MR_REG),
- 	&UVERBS_METHOD(UVERBS_METHOD_MR_DESTROY),
- 	&UVERBS_METHOD(UVERBS_METHOD_ADVISE_MR));
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index d4ddbe4..31aacbf 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-+ * Copyright (c) 2020, Intel Corporation. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-@@ -161,6 +162,7 @@ enum uverbs_methods_mr {
- 	UVERBS_METHOD_DM_MR_REG,
- 	UVERBS_METHOD_MR_DESTROY,
- 	UVERBS_METHOD_ADVISE_MR,
-+	UVERBS_METHOD_REG_DMABUF_MR,
- };
- 
- enum uverbs_attrs_mr_destroy_ids {
-@@ -174,6 +176,18 @@ enum uverbs_attrs_advise_mr_cmd_attr_ids {
- 	UVERBS_ATTR_ADVISE_MR_SGE_LIST,
- };
- 
-+enum uverbs_attrs_reg_dmabuf_mr_cmd_attr_ids {
-+	UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
-+	UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
-+	UVERBS_ATTR_REG_DMABUF_MR_ADDR,
-+	UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
-+	UVERBS_ATTR_REG_DMABUF_MR_HCA_VA,
-+	UVERBS_ATTR_REG_DMABUF_MR_FD,
-+	UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-+	UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-+	UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-+};
-+
- enum uverbs_attrs_create_counters_cmd_attr_ids {
- 	UVERBS_ATTR_CREATE_COUNTERS_HANDLE,
- };
--- 
-1.8.3.1
+This was coded in this unusual way because the code is agnostic to the 
+underlying transport. Unfortunately, IB transport does not 
+initialize/use this field where as TCP does and counts starting from one.
+
+If this is not acceptable, I would have to introduce a check for the 
+transport or deal with zero count separately.
+
+Let me know.
+
+Regards,
+
+Shoaib
+
+
 
