@@ -2,151 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C1320D10A
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 20:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E795B20D256
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 20:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgF2SiC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 14:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        id S1728033AbgF2Ssb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 14:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727928AbgF2Sh6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 14:37:58 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FE9C02F02D;
-        Mon, 29 Jun 2020 07:58:57 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id h18so7762254qvl.3;
-        Mon, 29 Jun 2020 07:58:57 -0700 (PDT)
+        with ESMTP id S1728009AbgF2Sro (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 14:47:44 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7C3C031C4B
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jun 2020 10:27:53 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id d27so13462275qtg.4
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jun 2020 10:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=/7ALjZmMhPiK2bUZpUhyi04sGW2Du1Oy+/g9ThZu2tA=;
-        b=coD1YD9552dXMDfaNeV/cduKkpIQsFqmw5abIRPL4wuCL6pMv6dWwEYtrUVZpO3XCW
-         OVp9OrZaz5S3LJQvn9EkOkmnMf6snGtnyh7gM4NAIuyfGXSliuamb0hRRVz4v1bnb9Yi
-         9GpU+VVmG00EOycch7flF5rFeRt5sxCkK+dzA1YuUt6kU9zn8FX0LazeRqpf3G78wzQC
-         HDYu7y41mo7ZkHdgenPNBomx5u6IUUY6BdMKE56OG+WnQYaYcvVdJ3mIK/9yOmq87I71
-         FJvQkrag3CZ8mEItw87tqefFZmqp+RNrGSt5WDqTweJ51T2loPaw9Ba3bDuOeOdyd0fb
-         sjsQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I+h1WtSND1gZmFF1Lpj+XH5zZAhc+/M8o2aQRQdjh50=;
+        b=vN4jQV/XHQ40iIH2MPATkDhQ9XYk5JOA4Cu18nURwdyM7Ht8324JB4h7QnrcbHSh0R
+         uKKcYQU4Tmo37sWRyrYkZhvqqYzG/9ZXo5l9eyiCVc19l9Dbr/LHunoO8LapcliqcnSD
+         3LhMUJkZ297hLPjw3jyZJv+TWE7c2KvXMhEaZDDuaFMIGXEHIumNwmEWUiJ862xyVmqm
+         MJAfw/iY0wlRX2S10wNuLITTVXcfVN3BLWNyw66SBI6+zrw+HQX3JlHnLtj6AqxbmY24
+         n6CHFe1Ehezl1qZ1Vka9N9dQ4cSLMzyuhl7Gu4Yq6Oi447DXbCbTo6nObrKVcHTc25Se
+         S9Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=/7ALjZmMhPiK2bUZpUhyi04sGW2Du1Oy+/g9ThZu2tA=;
-        b=c5DNv0iqNQQXk1ctW8XK8Y6S/b9HwHyS4I62kYpTeNZEuuFpa/6v2TDUOhOSY8BUDk
-         mlaYGCUjVuQMzeq9F3ubhsorJvLbMHLBpkCyxUoXaCsXdBE4qTC0u6CkrOO5vmCKJvDO
-         tE9Hqoez6AkDw06VwAevFDpmoAPPuWWuskoP5FMr/r4LfOtUjV0EBHBCYsaWi4oDYlz5
-         ZJW3Xa7OfJtL9hgKFunoPfoajf+Lf9Pf0ek7m+LPhOI+2ngXNfTWOe39ldQIxFM7vGHd
-         9rCl3okY8w9w7QHpqGQYHzwLouJ31ri/m6CypXDwKxJZOVNFywPMT0juoHTl3Mz+DWq8
-         pvbA==
-X-Gm-Message-State: AOAM531IiLBJEjlCFRPa4pLlO1O5UvZWLf+GBsbDE+76DOb0PM5nORE/
-        DX/qa9ni4cpdbjHTesA4m2dIkNON
-X-Google-Smtp-Source: ABdhPJxP6p1gONdceAjyIf5JgerLUqs7yVCkVfKV3N5uulh4nzHOX7lWMIBMssk8arrOXjNY87FaOQ==
-X-Received: by 2002:a0c:fc02:: with SMTP id z2mr2102823qvo.1.1593442736422;
-        Mon, 29 Jun 2020 07:58:56 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id x19sm18960973qtc.36.2020.06.29.07.58.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Jun 2020 07:58:56 -0700 (PDT)
-Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 05TEwtkG006251;
-        Mon, 29 Jun 2020 14:58:55 GMT
-Subject: [PATCH v1 4/6] svcrdma: Introduce Send completion IDs
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Mon, 29 Jun 2020 10:58:55 -0400
-Message-ID: <20200629145855.15100.8619.stgit@klimt.1015granger.net>
-In-Reply-To: <20200629145528.15100.77805.stgit@klimt.1015granger.net>
-References: <20200629145528.15100.77805.stgit@klimt.1015granger.net>
-User-Agent: StGit/0.22-31-g4b47
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I+h1WtSND1gZmFF1Lpj+XH5zZAhc+/M8o2aQRQdjh50=;
+        b=qTwjw5NJ32AcoyVTc/3rejQbJYYoSrSxOPZpCGx5m8mJ0MHncs5fSI4PVKjTDpQB2c
+         dfuN7X1/b5ds9TjHD/Mw57M05UV6GqNqbZw5nniVfQAV44g4WfXs2vIW1xOZUZ/cg1VE
+         HK9QGSh+xgKfDnUK7tHhz2MLto6M1W6s3sgd3agWEwemM+zOgJfUSoftIT9UXPX4abJ8
+         RvYQJoZIzrKv1hNIywyHwu3pk2PIFRzagR1GMgpnHOqHWrZbiygyxKBpa8RpH7Z+DXKj
+         Jn5EmJYYkC96cvLerWwV+gsHpWousCJQlEdqR/x19tIHJWlkYiD1n4KUwD9LFQUXH+80
+         LsLA==
+X-Gm-Message-State: AOAM532COV1FCR8BuYvo5Rh6wl8gPAC4Oac5kwF1sNaqwuWf02fOjuV3
+        N6ZhPoVxPfwWrd+BfB9Rs7qPfBR+uQU+pVwRkP2yDg==
+X-Google-Smtp-Source: ABdhPJwBDrl7Z6joBJSwfnK/ZIszLge5SHZULmIYamE/+wcJ4SgCb9HG2qDHpPbGVSJJDzFUwOdk4bos+M1tWqEEmog=
+X-Received: by 2002:ac8:260b:: with SMTP id u11mr17039578qtu.380.1593451672211;
+ Mon, 29 Jun 2020 10:27:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <000000000000107b4605a7bdce7d@google.com> <20200614085321.8740-1-hdanton@sina.com>
+ <20200627130205.16900-1-hdanton@sina.com> <20200627222527.GC25301@ziepe.ca> <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
+In-Reply-To: <CACT4Y+ab1q7fON3rkj+FHODPQXDGyP5c0tJt7gbrpmsAAYRb1g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 29 Jun 2020 19:27:40 +0200
+Message-ID: <CACT4Y+Zjw=ru-Sqs-V7cP0Exgu7g0jWBXcPeVKnLqpbkS-wDRg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in addr_handler (2)
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        syzkaller <syzkaller@googlegroups.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+a929647172775e335941@syzkaller.appspotmail.com>,
+        chuck.lever@oracle.com, Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        parav@mellanox.com, Markus Elfring <Markus.Elfring@web.de>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Set up a completion ID in each svc_rdma_send_ctxt. The ID is used
-to match an incoming Send completion to a transport and to a
-previous ib_post_send().
+On Mon, Jun 29, 2020 at 4:42 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Sun, Jun 28, 2020 at 12:25 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Sat, Jun 27, 2020 at 09:02:05PM +0800, Hillf Danton wrote:
+> > > > So, to hit this syzkaller one of these must have happened:
+> > > >  1) rdma_addr_cancel() didn't work and the process_one_work() is still
+> > > >     runnable/running
+> > >
+> > > What syzbot reported indicates that the kworker did survive not only
+> > > canceling work but the handler_mutex, despite it's a sync cancel that
+> > > waits for the work to complete.
+> >
+> > The syzbot report doesn't confirm that the cancel work was actaully
+> > called.
+> >
+> > The most likely situation is that it was skipped because of the state
+> > mangling the patch fixes..
+> >
+> > > >  2) The state changed away from RDMA_CM_ADDR_QUERY without doing
+> > > >     rdma_addr_cancel()
+> > >
+> > > The cancel does cover the query state in the reported case, and have
+> > > difficult time working out what's in the patch below preventing the
+> > > work from going across the line the sync cancel draws. That's the
+> > > question we can revisit once there is a reproducer available.
+> >
+> > rdma-cm never seems to get reproducers from syzkaller
+>
+> +syzkaller mailing list
+>
+> Hi Jason,
+>
+> Wonder if there is some systematic issue. Let me double check.
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/linux/sunrpc/svc_rdma.h       |    2 ++
- include/trace/events/rpcrdma.h        |    2 +-
- net/sunrpc/xprtrdma/svc_rdma_sendto.c |   15 ++++++++++++---
- 3 files changed, 15 insertions(+), 4 deletions(-)
+By scanning bugs at:
+https://syzkaller.appspot.com/upstream
+https://syzkaller.appspot.com/upstream/fixed
 
-diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-index c3c1e46f510f..c91e00bc937e 100644
---- a/include/linux/sunrpc/svc_rdma.h
-+++ b/include/linux/sunrpc/svc_rdma.h
-@@ -151,6 +151,8 @@ struct svc_rdma_recv_ctxt {
- 
- struct svc_rdma_send_ctxt {
- 	struct list_head	sc_list;
-+	struct rpc_rdma_cid	sc_cid;
-+
- 	struct ib_send_wr	sc_send_wr;
- 	struct ib_cqe		sc_cqe;
- 	struct xdr_buf		sc_hdrbuf;
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index df49ae5d447b..782a4d826a4b 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -1863,7 +1863,7 @@ TRACE_EVENT(svcrdma_post_send,
- 	)
- );
- 
--DEFINE_SENDCOMP_EVENT(send);
-+DEFINE_COMPLETION_EVENT(svcrdma_wc_send);
- 
- TRACE_EVENT(svcrdma_post_recv,
- 	TP_PROTO(
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 38d8f0ee35ec..c720dcf56231 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -122,6 +122,13 @@ svc_rdma_next_send_ctxt(struct list_head *list)
- 					sc_list);
- }
- 
-+static void svc_rdma_send_cid_init(struct svcxprt_rdma *rdma,
-+				   struct rpc_rdma_cid *cid)
-+{
-+	cid->ci_queue_id = rdma->sc_sq_cq->res.id;
-+	cid->ci_completion_id = atomic_inc_return(&rdma->sc_completion_ids);
-+}
-+
- static struct svc_rdma_send_ctxt *
- svc_rdma_send_ctxt_alloc(struct svcxprt_rdma *rdma)
- {
-@@ -144,6 +151,8 @@ svc_rdma_send_ctxt_alloc(struct svcxprt_rdma *rdma)
- 	if (ib_dma_mapping_error(rdma->sc_pd->device, addr))
- 		goto fail2;
- 
-+	svc_rdma_send_cid_init(rdma, &ctxt->sc_cid);
-+
- 	ctxt->sc_send_wr.next = NULL;
- 	ctxt->sc_send_wr.wr_cqe = &ctxt->sc_cqe;
- 	ctxt->sc_send_wr.sg_list = ctxt->sc_sges;
-@@ -268,14 +277,14 @@ static void svc_rdma_wc_send(struct ib_cq *cq, struct ib_wc *wc)
- {
- 	struct svcxprt_rdma *rdma = cq->cq_context;
- 	struct ib_cqe *cqe = wc->wr_cqe;
--	struct svc_rdma_send_ctxt *ctxt;
-+	struct svc_rdma_send_ctxt *ctxt =
-+		container_of(cqe, struct svc_rdma_send_ctxt, sc_cqe);
- 
--	trace_svcrdma_wc_send(wc);
-+	trace_svcrdma_wc_send(wc, &ctxt->sc_cid);
- 
- 	atomic_inc(&rdma->sc_sq_avail);
- 	wake_up(&rdma->sc_send_wait);
- 
--	ctxt = container_of(cqe, struct svc_rdma_send_ctxt, sc_cqe);
- 	svc_rdma_send_ctxt_put(rdma, ctxt);
- 
- 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
+I found a significant number of bugs that I would qualify as "rdma-cm"
+and that have reproducers. Here is an incomplete list (I did not get
+to the end):
 
+https://syzkaller.appspot.com/bug?id=b8febdb3c7c8c1f1b606fb903cee66b21b2fd02f
+https://syzkaller.appspot.com/bug?id=d5222b3e1659e0aea19df562c79f216515740daa
+https://syzkaller.appspot.com/bug?id=c600e111223ce0a20e5f2fb4e9a4ebdff54d7fa6
+https://syzkaller.appspot.com/bug?id=a9796acbdecc1b2ba927578917755899c63c48af
+https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
+https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
+https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
+https://syzkaller.appspot.com/bug?id=56b60fb3340c5995373fe5b8eae9e8722a012fc4
+https://syzkaller.appspot.com/bug?id=38d36d1b26b4299bf964d50af4d79688d39ab960
+https://syzkaller.appspot.com/bug?id=25e00dd59f31783f233185cb60064b0ab645310f
+https://syzkaller.appspot.com/bug?id=2f38d7e5312fdd0acc979c5e26ef2ef8f3370996
+
+Do you mean some specific subset of bugs by "rdma-cm"? If yes, what is
+that subset?
