@@ -2,113 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4AA20D464
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 21:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2D920D2C8
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jun 2020 21:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgF2TIB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Jun 2020 15:08:01 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42158 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgF2THn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 15:07:43 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05THrpFC099171;
-        Mon, 29 Jun 2020 17:57:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Th9j2rJrwRXpmODdSGs/DYnq7ge1mBicBNf2nmL5+hQ=;
- b=oiiMJsjVeyrusyP+g5xhhQBGTMSz1eLGLgwdMSaVlX7aORXZZE3ETqp+x2NGqDfbetB5
- AYyo3bKLPTzHO9qDOeInSRPQ9ED9Oh6nHYUsFNkJnnn/HD3wdVnVdnZpGsvkUiJ+byvE
- 2gYblhBq65MfTT8P7YFB3tfUoZTYJy+cm2237x/W3wcmHezuOUpMwRjDoqA7uG1dpnMN
- 9CMCFDBsJaiDKD0K+DVF966Kw6KYO5IlqBHTMQ+OX8jqvtq3GQB3VsU47AKSwAH8YLYa
- ssTTMCvqPQbKoGwLCImBrAwkFjwI3laNctnPsGNGxrhK0YXfbbuV70Nf1MXCJk0ygkfc Qw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 31wwhrfypa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 29 Jun 2020 17:57:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05THbhDE023867;
-        Mon, 29 Jun 2020 17:55:36 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 31xg1vd4fx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jun 2020 17:55:36 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05THtZir019722;
-        Mon, 29 Jun 2020 17:55:36 GMT
-Received: from [192.168.1.7] (/73.15.177.101)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 29 Jun 2020 17:55:35 +0000
-Subject: Re: [PATCH v1] rds: If one path needs re-connection, check all and
- re-connect
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        ka-cheong.poon@oracle.com, david.edmondson@oracle.com
-References: <20200626183438.20188-1-rao.shoaib@oracle.com>
- <20200626.163100.603726050168307590.davem@davemloft.net>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <ba7da46b-a84d-142f-90e2-6b0be6899fbf@oracle.com>
-Date:   Mon, 29 Jun 2020 10:55:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727073AbgF2Sv6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Jun 2020 14:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729709AbgF2Svy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Jun 2020 14:51:54 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4F2C031C40
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jun 2020 11:51:55 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y2so18335636ioy.3
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Jun 2020 11:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CCIipEx24qQGQawiu9O28g+b/pGnrcz4jo+bEDeLSx0=;
+        b=HEUh4Hn/lBp1dAbzazQ3lzJahX7uSM2zWL/uHaZLJdORUNyEzcvyTBijotu/L7WjDP
+         PmDYFGD4ImtUwvBPAqCiK/j6e7BwbaDW9T0u+YSDigaUqEqj7og0VZXqyzdznblxQ8HR
+         aZ477TcfRGdUgMcVZ2pjEeroN0egS9wVIm4N+4gN1wvQ83e9eVMLyPf0RSqeWQtIFHhi
+         w66eu5XULPWzMuCwaWqS6WHnhQENwxevw99GQoqcfo4PHhMkvCpphtGhxCId6lVD2jTG
+         Fdig/12nSg1NV41N87WTwtLG7kkcLrcOorE2qVz/R/DOxY4H2oi6Jp9ZEYDzRLia4ja2
+         /9Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CCIipEx24qQGQawiu9O28g+b/pGnrcz4jo+bEDeLSx0=;
+        b=WwUk087/6ZwNzG8vjtGKLAEQ0bKGDVnGYyQcUlxtfOWwau6+MBgGnN2gYoKe1Lubo0
+         XKWphgrEKVss2+5RcdvpZgNzaFN+P+0skmmkBu36Ju5v0FC2HqbNN/NSnJX9Ysb6ZC0b
+         Wrjtv+1bswgAzQtSE2kK9p8RobZGJHcXIYFeHtV6zuCMh77ujBS3dZXooEjzFAZ+vQH4
+         bEFooxDG9/UoKpGfoDQqvmOA48SiNcFi40ZHApmY9naPji+BIpvXZiBgTCrAvJWMMKPt
+         vEaQiFWch5oxDA5kObwRApkXNCT+PIngh9OGRhou0SWLGoMzjYiqyUrLJzpZKhEb3FiP
+         Ca4w==
+X-Gm-Message-State: AOAM532WyCPRxmGt+9UqLj+3TBJXhE/irjuUDp6ZanDdXRCle/v1TfSk
+        /9iiNS1yLp+CmKjTGTWjMqVYI/4j0GHBDQ==
+X-Google-Smtp-Source: ABdhPJwxxsEVuMXUzFdkmZo9eQb/kPp4Meuup1+AAcsG6GxwoJadDMeVO0BKcGaMaxplqAj7VGjQbw==
+X-Received: by 2002:a02:70d4:: with SMTP id f203mr19770290jac.74.1593456714392;
+        Mon, 29 Jun 2020 11:51:54 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id o193sm378658ila.79.2020.06.29.11.51.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 11:51:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jpysi-001BIx-Im; Mon, 29 Jun 2020 15:51:52 -0300
+Date:   Mon, 29 Jun 2020 15:51:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Message-ID: <20200629185152.GD25301@ziepe.ca>
+References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200626.163100.603726050168307590.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9667 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- phishscore=0 priorityscore=1501 clxscore=1015 cotscore=-2147483648
- mlxscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0
- spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006290113
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 10:31:40AM -0700, Jianxin Xiong wrote:
 
-On 6/26/20 4:31 PM, David Miller wrote:
-> From: rao.shoaib@oracle.com
-> Date: Fri, 26 Jun 2020 11:34:38 -0700
->
->> +/* Check connectivity of all paths
->> + */
->> +void rds_check_all_paths(struct rds_connection *conn)
->> +{
->> +	int i = 0;
->> +
->> +	do {
->> +		rds_conn_path_connect_if_down(&conn->c_path[i]);
->> +	} while (++i < conn->c_npaths);
->> +}
-> Please code this loop in a more canonial way:
->
-> 	int i;
->
-> 	for (i = 0; i < conn->c_npaths, i++)
-> 		rds_conn_path_connect_if_down(&conn->c_path[i]);
->
-> Thank you.
+> ZONE_DEVICE is a new zone for device memory in the memory management
+> subsystem. It allows pages from device memory being described with
+> specialized page structures. As the result, calls like get_user_pages()
+> can succeed, but what can be done with these page structures may be
 
-This was coded in this unusual way because the code is agnostic to the 
-underlying transport. Unfortunately, IB transport does not 
-initialize/use this field where as TCP does and counts starting from one.
+get_user_pages() does not succeed with ZONE_DEVICE_PAGEs
 
-If this is not acceptable, I would have to introduce a check for the 
-transport or deal with zero count separately.
+> Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+> and ZONE_DEVICE to support shared virtual address space and page
+> migration between system memory and device memory. HMM doesn't support
+> pinning device memory because pages located on device must be able to
+> migrate to system memory when accessed by CPU. Peer-to-peer access
+> is possible if the peer can handle page fault. For RDMA, that means
+> the NIC must support on-demand paging.
 
-Let me know.
+peer-peer access is currently not possible with hmm_range_fault().
 
-Regards,
+> This patch series adds dma-buf importer role to the RDMA driver in
+> attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+> chosen for a few reasons: first, the API is relatively simple and allows
+> a lot of flexibility in implementing the buffer manipulation ops.
+> Second, it doesn't require page structure. Third, dma-buf is already
+> supported in many GPU drivers. However, we are aware that existing GPU
+> drivers don't allow pinning device memory via the dma-buf interface.
 
-Shoaib
+So.. this patch doesn't really do anything new? We could just make a
+MR against the DMA buf mmap and get to the same place?
 
+> Pinning and mapping a dma-buf would cause the backing storage to migrate
+> to system RAM. This is due to the lack of knowledge about whether the
+> importer can perform peer-to-peer access and the lack of resource limit
+> control measure for GPU. For the first part, the latest dma-buf driver
+> has a peer-to-peer flag for the importer, but the flag is currently tied
+> to dynamic mapping support, which requires on-demand paging support from
+> the NIC to work.
 
+ODP for DMA buf?
 
+> There are a few possible ways to address these issues, such as
+> decoupling peer-to-peer flag from dynamic mapping, allowing more
+> leeway for individual drivers to make the pinning decision and
+> adding GPU resource limit control via cgroup. We would like to get
+> comments on this patch series with the assumption that device memory
+> pinning via dma-buf is supported by some GPU drivers, and at the
+> same time welcome open discussions on how to address the
+> aforementioned issues as well as GPU-NIC peer-to-peer access
+> solutions in general.
+
+These seem like DMA buf problems, not RDMA problems, why are you
+asking these questions with a RDMA patch set? The usual DMA buf people
+are not even Cc'd here.
+
+> This is the second version of the patch series. Here are the changes
+> from the previous version:
+> * Instead of adding new device method for dma-buf specific registration,
+> existing method is extended to accept an extra parameter.
+
+I think the comment was the extra parameter should have been a umem or
+maybe a new umem_description struct, not blindly adding a fd as a
+parameter and a wack of EOPNOTSUPPS
+
+> This series is organized as follows. The first patch adds the common
+> code for importing dma-buf from a file descriptor and pinning and
+> mapping the dma-buf pages. Patch 2 extends the reg_user_mr() method
+> of the ib_device structure to accept dma-buf file descriptor as an extra
+> parameter. Vendor drivers are updated with the change. Patch 3 adds a
+> new uverbs command for registering dma-buf based memory region.
+
+The ioctl stuff seems OK, but this doesn't seem to bring any new
+functionality?
+
+Jason
