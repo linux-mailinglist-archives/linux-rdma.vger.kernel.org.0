@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F5420F1CB
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 11:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377DD20F1CC
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 11:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732050AbgF3Jjf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 05:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39254 "EHLO mail.kernel.org"
+        id S1731616AbgF3Jjg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 05:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731616AbgF3Jjd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jun 2020 05:39:33 -0400
+        id S1732049AbgF3Jjg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jun 2020 05:39:36 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77991206A1;
-        Tue, 30 Jun 2020 09:39:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAABB20775;
+        Tue, 30 Jun 2020 09:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593509972;
-        bh=CI2lMuXPQZBVrunhSLNUQudIeEbHRLr8J1BPeSzgZsE=;
+        s=default; t=1593509975;
+        bh=tWqsgKO8qkEARP9YxEV7Z0xYcoULDGAMWo4bpFFb4Jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xwj7qr5l4mwLLMX5LjtzB3FGDutF6AzuEuoJSPERzoq/6VY7L1DUYX1wJUj/DK1mC
-         xUWr9XI2zvB4Me1BOFvXr5Kg5jldOnx0mJ9A06TffNwuVA2+24oHi6ALAU8lk+hBCi
-         8bEDS2NBFZqym3qwuSTEaYP2E+Ll21cdJx25ly0Y=
+        b=n2Lra1JLHKFkpiLlQcHtwF9qp9yy5OF5WmkXMI6zBxf9DBCTrMOxH9M/f0axDMhKe
+         M2YMgQRNfQJ2ZHBHHzlAvdFQp+Vdqqv7zDgkCnMrPlp0JAytaYGW0yc7RDKl+s8sbE
+         GKA7H180hNB8HI83/JvRH+GXEyxT/dKAvdStXc6U=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 4/7] RDMA/mlx5: Refactor mlx5_ib_alloc_ucontext() response
-Date:   Tue, 30 Jun 2020 12:39:13 +0300
-Message-Id: <20200630093916.332097-5-leon@kernel.org>
+Subject: [PATCH rdma-next v1 5/7] RDMA/mlx5: Implement the query ucontext functionality
+Date:   Tue, 30 Jun 2020 12:39:14 +0300
+Message-Id: <20200630093916.332097-6-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200630093916.332097-1-leon@kernel.org>
 References: <20200630093916.332097-1-leon@kernel.org>
@@ -42,268 +42,112 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yishai Hadas <yishaih@mellanox.com>
 
-Refactor mlx5_ib_alloc_ucontext() to set its response fields in a
-cleaner way.
-
-It includes,
-- Move the relevant code to a self contained function.
-- Calculate the response length once and drop redundant code all around.
-- Reuse previously set ucontext fields once preparing the response.
-
-The self contained function will be used in next patch as part of
-implementing the query ucontext functionality.
+Implement the query ucontext functionality by returning the original
+ucontext data as part of an extra mlx5 attribute that holds the driver
+UAPI response.
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 196 ++++++++++++++----------------
- 1 file changed, 93 insertions(+), 103 deletions(-)
+ drivers/infiniband/core/uverbs_ioctl.c   |  1 +
+ drivers/infiniband/hw/mlx5/main.c        | 35 ++++++++++++++++++++++++
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h |  4 +++
+ 3 files changed, 40 insertions(+)
 
+diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
+index 2d882c02387c..ef04a261097f 100644
+--- a/drivers/infiniband/core/uverbs_ioctl.c
++++ b/drivers/infiniband/core/uverbs_ioctl.c
+@@ -790,6 +790,7 @@ int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
+ 	}
+ 	return uverbs_copy_to(bundle, idx, from, size);
+ }
++EXPORT_SYMBOL(uverbs_copy_to_struct_or_zero);
+ 
+ /* Once called an abort will call through to the type's destroy_hw() */
+ void uverbs_finalize_uobj_create(const struct uverbs_attr_bundle *bundle,
 diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 9dbc87c540e4..1c1f1bfb83f1 100644
+index 1c1f1bfb83f1..79cd7db4d32a 100644
 --- a/drivers/infiniband/hw/mlx5/main.c
 +++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1765,6 +1765,92 @@ static void mlx5_ib_dealloc_transport_domain(struct mlx5_ib_dev *dev, u32 tdn,
- 	mlx5_ib_disable_lb(dev, true, false);
+@@ -1990,6 +1990,29 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
+ 	return err;
  }
  
-+static int set_ucontext_resp(struct ib_ucontext *uctx,
-+			     struct mlx5_ib_alloc_ucontext_resp *resp)
++static int mlx5_ib_query_ucontext(struct ib_ucontext *ibcontext,
++				  struct uverbs_attr_bundle *attrs)
 +{
-+	struct ib_device *ibdev = uctx->device;
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	struct mlx5_ib_ucontext *context = to_mucontext(uctx);
-+	struct mlx5_bfreg_info *bfregi = &context->bfregi;
-+	int err;
++	struct mlx5_ib_alloc_ucontext_resp uctx_resp = {};
++	int ret;
 +
-+	if (MLX5_CAP_GEN(dev->mdev, dump_fill_mkey)) {
-+		err = mlx5_cmd_dump_fill_mkey(dev->mdev,
-+					      &resp->dump_fill_mkey);
-+		if (err)
-+			return err;
-+		resp->comp_mask |=
-+			MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_DUMP_FILL_MKEY;
-+	}
++	ret = set_ucontext_resp(ibcontext, &uctx_resp);
++	if (ret)
++		return ret;
 +
-+	resp->qp_tab_size = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp);
-+	if (dev->wc_support)
-+		resp->bf_reg_size = 1 << MLX5_CAP_GEN(dev->mdev,
-+						      log_bf_reg_size);
-+	resp->cache_line_size = cache_line_size();
-+	resp->max_sq_desc_sz = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_sq);
-+	resp->max_rq_desc_sz = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_rq);
-+	resp->max_send_wqebb = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp_sz);
-+	resp->max_recv_wr = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp_sz);
-+	resp->max_srq_recv_wr = 1 << MLX5_CAP_GEN(dev->mdev, log_max_srq_sz);
-+	resp->cqe_version = context->cqe_version;
-+	resp->log_uar_size = MLX5_CAP_GEN(dev->mdev, uar_4k) ?
-+				MLX5_ADAPTER_PAGE_SHIFT : PAGE_SHIFT;
-+	resp->num_uars_per_page = MLX5_CAP_GEN(dev->mdev, uar_4k) ?
-+					MLX5_CAP_GEN(dev->mdev,
-+						     num_of_uars_per_page) : 1;
++	uctx_resp.response_length =
++		min_t(size_t,
++		      uverbs_attr_get_len(attrs,
++				MLX5_IB_ATTR_QUERY_CONTEXT_RESP_UCTX),
++		      sizeof(uctx_resp));
 +
-+	if (mlx5_accel_ipsec_device_caps(dev->mdev) &
-+				MLX5_ACCEL_IPSEC_CAP_DEVICE) {
-+		if (mlx5_get_flow_namespace(dev->mdev,
-+				MLX5_FLOW_NAMESPACE_EGRESS))
-+			resp->flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM;
-+		if (mlx5_accel_ipsec_device_caps(dev->mdev) &
-+				MLX5_ACCEL_IPSEC_CAP_REQUIRED_METADATA)
-+			resp->flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_REQ_METADATA;
-+		if (MLX5_CAP_FLOWTABLE(dev->mdev, flow_table_properties_nic_receive.ft_field_support.outer_esp_spi))
-+			resp->flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_SPI_STEERING;
-+		if (mlx5_accel_ipsec_device_caps(dev->mdev) &
-+				MLX5_ACCEL_IPSEC_CAP_TX_IV_IS_ESN)
-+			resp->flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_TX_IV_IS_ESN;
-+		/* MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_FULL_OFFLOAD is currently always 0 */
-+	}
-+
-+	resp->tot_bfregs = bfregi->lib_uar_dyn ? 0 :
-+			bfregi->total_num_bfregs - bfregi->num_dyn_bfregs;
-+	resp->num_ports = dev->num_ports;
-+	resp->cmds_supp_uhw |= MLX5_USER_CMDS_SUPP_UHW_QUERY_DEVICE |
-+				      MLX5_USER_CMDS_SUPP_UHW_CREATE_AH;
-+
-+	if (mlx5_ib_port_link_layer(ibdev, 1) == IB_LINK_LAYER_ETHERNET) {
-+		mlx5_query_min_inline(dev->mdev, &resp->eth_min_inline);
-+		resp->eth_min_inline++;
-+	}
-+
-+	if (dev->mdev->clock_info)
-+		resp->clock_info_versions = BIT(MLX5_IB_CLOCK_INFO_V1);
-+
-+	/*
-+	 * We don't want to expose information from the PCI bar that is located
-+	 * after 4096 bytes, so if the arch only supports larger pages, let's
-+	 * pretend we don't support reading the HCA's core clock. This is also
-+	 * forced by mmap function.
-+	 */
-+	if (PAGE_SIZE <= 4096) {
-+		resp->comp_mask |=
-+			MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_CORE_CLOCK_OFFSET;
-+		resp->hca_core_clock_offset =
-+			offsetof(struct mlx5_init_seg,
-+				 internal_timer_h) % PAGE_SIZE;
-+	}
-+
-+	if (MLX5_CAP_GEN(dev->mdev, ece_support))
-+		resp->comp_mask |= MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_ECE;
-+
-+	resp->num_dyn_bfregs = bfregi->num_dyn_bfregs;
-+	return 0;
++	ret = uverbs_copy_to_struct_or_zero(attrs,
++					MLX5_IB_ATTR_QUERY_CONTEXT_RESP_UCTX,
++					&uctx_resp,
++					sizeof(uctx_resp));
++	return ret;
 +}
 +
- static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 				  struct ib_udata *udata)
+ static void mlx5_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
  {
-@@ -1772,14 +1858,12 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
- 	struct mlx5_ib_alloc_ucontext_req_v2 req = {};
- 	struct mlx5_ib_alloc_ucontext_resp resp = {};
--	struct mlx5_core_dev *mdev = dev->mdev;
- 	struct mlx5_ib_ucontext *context = to_mucontext(uctx);
- 	struct mlx5_bfreg_info *bfregi;
- 	int ver;
- 	int err;
- 	size_t min_req_v2 = offsetof(struct mlx5_ib_alloc_ucontext_req_v2,
- 				     max_cqe_version);
--	u32 dump_fill_mkey;
- 	bool lib_uar_4k;
- 	bool lib_uar_dyn;
+ 	struct mlx5_ib_ucontext *context = to_mucontext(ibcontext);
+@@ -6375,6 +6398,16 @@ ADD_UVERBS_ATTRIBUTES_SIMPLE(
+ 	UVERBS_ATTR_FLAGS_IN(MLX5_IB_ATTR_CREATE_FLOW_ACTION_FLAGS,
+ 			     enum mlx5_ib_uapi_flow_action_flags));
  
-@@ -1808,37 +1892,6 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 	if (req.num_low_latency_bfregs > req.total_num_bfregs - 1)
- 		return -EINVAL;
++ADD_UVERBS_ATTRIBUTES_SIMPLE(
++	mlx5_ib_query_context,
++	UVERBS_OBJECT_DEVICE,
++	UVERBS_METHOD_QUERY_CONTEXT,
++	UVERBS_ATTR_PTR_OUT(
++		MLX5_IB_ATTR_QUERY_CONTEXT_RESP_UCTX,
++		UVERBS_ATTR_STRUCT(struct mlx5_ib_alloc_ucontext_resp,
++				   dump_fill_mkey),
++		UA_MANDATORY));
++
+ static const struct uapi_definition mlx5_ib_defs[] = {
+ 	UAPI_DEF_CHAIN(mlx5_ib_devx_defs),
+ 	UAPI_DEF_CHAIN(mlx5_ib_flow_defs),
+@@ -6383,6 +6416,7 @@ static const struct uapi_definition mlx5_ib_defs[] = {
+ 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_FLOW_ACTION,
+ 				&mlx5_ib_flow_action),
+ 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DM, &mlx5_ib_dm),
++	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DEVICE, &mlx5_ib_query_context),
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(MLX5_IB_OBJECT_VAR,
+ 				UAPI_DEF_IS_OBJ_SUPPORTED(var_is_supported)),
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(MLX5_IB_OBJECT_UAR),
+@@ -6616,6 +6650,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
+ 	.query_pkey = mlx5_ib_query_pkey,
+ 	.query_qp = mlx5_ib_query_qp,
+ 	.query_srq = mlx5_ib_query_srq,
++	.query_ucontext = mlx5_ib_query_ucontext,
+ 	.read_counters = mlx5_ib_read_counters,
+ 	.reg_user_mr = mlx5_ib_reg_user_mr,
+ 	.req_notify_cq = mlx5_ib_arm_cq,
+diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+index 8e316ef896b5..496309e8a856 100644
+--- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
++++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+@@ -228,6 +228,10 @@ enum mlx5_ib_flow_matcher_methods {
+ 	MLX5_IB_METHOD_FLOW_MATCHER_DESTROY,
+ };
  
--	resp.qp_tab_size = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp);
--	if (dev->wc_support)
--		resp.bf_reg_size = 1 << MLX5_CAP_GEN(dev->mdev, log_bf_reg_size);
--	resp.cache_line_size = cache_line_size();
--	resp.max_sq_desc_sz = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_sq);
--	resp.max_rq_desc_sz = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_rq);
--	resp.max_send_wqebb = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp_sz);
--	resp.max_recv_wr = 1 << MLX5_CAP_GEN(dev->mdev, log_max_qp_sz);
--	resp.max_srq_recv_wr = 1 << MLX5_CAP_GEN(dev->mdev, log_max_srq_sz);
--	resp.cqe_version = min_t(__u8,
--				 (__u8)MLX5_CAP_GEN(dev->mdev, cqe_version),
--				 req.max_cqe_version);
--	resp.log_uar_size = MLX5_CAP_GEN(dev->mdev, uar_4k) ?
--				MLX5_ADAPTER_PAGE_SHIFT : PAGE_SHIFT;
--	resp.num_uars_per_page = MLX5_CAP_GEN(dev->mdev, uar_4k) ?
--					MLX5_CAP_GEN(dev->mdev, num_of_uars_per_page) : 1;
--	resp.response_length = min(offsetof(typeof(resp), response_length) +
--				   sizeof(resp.response_length), udata->outlen);
--
--	if (mlx5_accel_ipsec_device_caps(dev->mdev) & MLX5_ACCEL_IPSEC_CAP_DEVICE) {
--		if (mlx5_get_flow_namespace(dev->mdev, MLX5_FLOW_NAMESPACE_EGRESS))
--			resp.flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM;
--		if (mlx5_accel_ipsec_device_caps(dev->mdev) & MLX5_ACCEL_IPSEC_CAP_REQUIRED_METADATA)
--			resp.flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_REQ_METADATA;
--		if (MLX5_CAP_FLOWTABLE(dev->mdev, flow_table_properties_nic_receive.ft_field_support.outer_esp_spi))
--			resp.flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_SPI_STEERING;
--		if (mlx5_accel_ipsec_device_caps(dev->mdev) & MLX5_ACCEL_IPSEC_CAP_TX_IV_IS_ESN)
--			resp.flow_action_flags |= MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_TX_IV_IS_ESN;
--		/* MLX5_USER_ALLOC_UCONTEXT_FLOW_ACTION_FLAGS_ESP_AES_GCM_FULL_OFFLOAD is currently always 0 */
--	}
--
- 	lib_uar_4k = req.lib_caps & MLX5_LIB_CAP_4K_UAR;
- 	lib_uar_dyn = req.lib_caps & MLX5_LIB_CAP_DYN_UAR;
- 	bfregi = &context->bfregi;
-@@ -1887,87 +1940,24 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
- 	if (err)
- 		goto out_devx;
++enum mlx5_ib_device_query_context_attrs {
++	MLX5_IB_ATTR_QUERY_CONTEXT_RESP_UCTX = (1U << UVERBS_ID_NS_SHIFT),
++};
++
+ #define MLX5_IB_DW_MATCH_PARAM 0x80
  
--	if (MLX5_CAP_GEN(dev->mdev, dump_fill_mkey)) {
--		err = mlx5_cmd_dump_fill_mkey(dev->mdev, &dump_fill_mkey);
--		if (err)
--			goto out_mdev;
--	}
--
- 	INIT_LIST_HEAD(&context->db_page_list);
- 	mutex_init(&context->db_page_mutex);
- 
--	resp.tot_bfregs = lib_uar_dyn ? 0 : req.total_num_bfregs;
--	resp.num_ports = dev->num_ports;
--
--	if (offsetofend(typeof(resp), cqe_version) <= udata->outlen)
--		resp.response_length += sizeof(resp.cqe_version);
--
--	if (offsetofend(typeof(resp), cmds_supp_uhw) <= udata->outlen) {
--		resp.cmds_supp_uhw |= MLX5_USER_CMDS_SUPP_UHW_QUERY_DEVICE |
--				      MLX5_USER_CMDS_SUPP_UHW_CREATE_AH;
--		resp.response_length += sizeof(resp.cmds_supp_uhw);
--	}
--
--	if (offsetofend(typeof(resp), eth_min_inline) <= udata->outlen) {
--		if (mlx5_ib_port_link_layer(ibdev, 1) == IB_LINK_LAYER_ETHERNET) {
--			mlx5_query_min_inline(dev->mdev, &resp.eth_min_inline);
--			resp.eth_min_inline++;
--		}
--		resp.response_length += sizeof(resp.eth_min_inline);
--	}
--
--	if (offsetofend(typeof(resp), clock_info_versions) <= udata->outlen) {
--		if (mdev->clock_info)
--			resp.clock_info_versions = BIT(MLX5_IB_CLOCK_INFO_V1);
--		resp.response_length += sizeof(resp.clock_info_versions);
--	}
--
--	/*
--	 * We don't want to expose information from the PCI bar that is located
--	 * after 4096 bytes, so if the arch only supports larger pages, let's
--	 * pretend we don't support reading the HCA's core clock. This is also
--	 * forced by mmap function.
--	 */
--	if (offsetofend(typeof(resp), hca_core_clock_offset) <= udata->outlen) {
--		if (PAGE_SIZE <= 4096) {
--			resp.comp_mask |=
--				MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_CORE_CLOCK_OFFSET;
--			resp.hca_core_clock_offset =
--				offsetof(struct mlx5_init_seg, internal_timer_h) % PAGE_SIZE;
--		}
--		resp.response_length += sizeof(resp.hca_core_clock_offset);
--	}
--
--	if (offsetofend(typeof(resp), log_uar_size) <= udata->outlen)
--		resp.response_length += sizeof(resp.log_uar_size);
--
--	if (offsetofend(typeof(resp), num_uars_per_page) <= udata->outlen)
--		resp.response_length += sizeof(resp.num_uars_per_page);
--
--	if (offsetofend(typeof(resp), num_dyn_bfregs) <= udata->outlen) {
--		resp.num_dyn_bfregs = bfregi->num_dyn_bfregs;
--		resp.response_length += sizeof(resp.num_dyn_bfregs);
--	}
--
--	if (offsetofend(typeof(resp), dump_fill_mkey) <= udata->outlen) {
--		if (MLX5_CAP_GEN(dev->mdev, dump_fill_mkey)) {
--			resp.dump_fill_mkey = dump_fill_mkey;
--			resp.comp_mask |=
--				MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_DUMP_FILL_MKEY;
--		}
--		resp.response_length += sizeof(resp.dump_fill_mkey);
--	}
-+	context->cqe_version = min_t(__u8,
-+				 (__u8)MLX5_CAP_GEN(dev->mdev, cqe_version),
-+				 req.max_cqe_version);
- 
--	if (MLX5_CAP_GEN(dev->mdev, ece_support))
--		resp.comp_mask |= MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_ECE;
-+	err = set_ucontext_resp(uctx, &resp);
-+	if (err)
-+		goto out_mdev;
- 
-+	resp.response_length = min(udata->outlen, sizeof(resp));
- 	err = ib_copy_to_udata(udata, &resp, resp.response_length);
- 	if (err)
- 		goto out_mdev;
- 
- 	bfregi->ver = ver;
- 	bfregi->num_low_latency_bfregs = req.num_low_latency_bfregs;
--	context->cqe_version = resp.cqe_version;
- 	context->lib_caps = req.lib_caps;
- 	print_lib_caps(dev, context->lib_caps);
- 
+ struct mlx5_ib_match_params {
 -- 
 2.26.2
 
