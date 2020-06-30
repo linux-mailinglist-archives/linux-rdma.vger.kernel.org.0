@@ -2,146 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C6620FA85
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 19:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70E720FAA3
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 19:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733106AbgF3R1N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 13:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
+        id S1729096AbgF3Rei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 13:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732658AbgF3R1M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jun 2020 13:27:12 -0400
+        with ESMTP id S1726120AbgF3Rei (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jun 2020 13:34:38 -0400
 Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F116FC061755
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 10:27:11 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x9so18498677ila.3
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 10:27:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70B8C061755
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 10:34:37 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id e18so7796172ilr.7
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 10:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=P/6ggX/DjO7JyGRB7ILRQXrlpUGxsT78zYZwYWr0lA0=;
-        b=FRiG9jl4akAaLUI0ni0jYoUFNyKPc1muVrGYFyS8YLrPAzq6ooxogL2dX0RGjQXsQs
-         CQfiZDFUkWzofbrpqWC4Yf9FooQuS+kGlNr7OwDpLVljuM+juCT4M/y9+d7rj2WKMRdU
-         ZHIK/kRNeaRYOHTJAhA3/Us4aWRc16JzHewGGT9fMwJICvupDRw0NQwmkisCic3DLn98
-         6EYNm+4/Cm2BghYPJ84iUZoeaiUQ9/ekSTJj1crv8FW060J/nWm79b7iLNsynAcDZlBd
-         LNWMwIxJ2zajN+zoESQx221TRczAewa5ahK/H83phUR0+47MTrL7Z4yx9A0iqFiBl6Tn
-         ngfQ==
+        bh=gL8EyU9UQnezCYstU0/XScATbm4WCiRKQBl+0jLmsH4=;
+        b=lvKR7J55s3TIK2bfiJvXktOD2cH5uoxL/C3qQ6sN9HXyn81R/zvil0/Qxwp4x6MzvC
+         8xSmVjZKvQboMIxjBnNrz9NmjftcYf4Rc9HHMtbwhS9b3lTdvdt8Q0xJGFesFOu20pda
+         thYPTQ2ZU27NdB04Lz4OZXNFhXBABuP46PgyR01yKuAw/5tQO96YaeTDgQHFy1OqI3Dv
+         aeAhaZbcoMqPtl6Z41tHI8uqVCYhZYzb8tcMn310P3NaW0nr43kBr+MErbLeQYRnq79n
+         KE66YKlIQ7+tqPIY+VBiknFfYI67pgpKNwSN1xYWsxXpaDnZMNMz8QcEmU6Ss4KeyWDD
+         hBQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=P/6ggX/DjO7JyGRB7ILRQXrlpUGxsT78zYZwYWr0lA0=;
-        b=P/1mcfYOw+rrzLD6JDknNPt7cuTBmg255HvcVGCgPZRYZDilBhT1V0NyiZiOGGqk2D
-         WMuGz+nIvPS9eX1+TU8L4SwzchFNmkamaooo9xuuybBXI49sk5Ecrg9wNZb6kkrfHNAP
-         VR5Y0XCP5YXe+L5adlvhwTLt6ukIkb9VUlujqKEB8uUx6fAIBeTm0NBwKDKKCbuSy0xt
-         b+bdJAbpUdjmcn5xu95kVeUZdCpxf5rWsroFrmV3hCrw57UuDA7bi0fwbcNiATCg4S94
-         cZR2lITvkO1V6Cx7FpbPb0y6ocAi0/PBt+VQpLr6CPpl0Wrqnh+PH14vChaJ3aKesNRz
-         OUng==
-X-Gm-Message-State: AOAM532KXjCri0uAS+cBxQT5EOEETPeIRwZPH6E71pfwaLMTKZB5Anpb
-        JqASqYDofY0P5KmdqPciLtbOBw==
-X-Google-Smtp-Source: ABdhPJzRBdOcavVEwFGxrZQi79JeB/m+Y89BJkfTn6HtUTZ61xR8um/46wrWwphQNYlZ0iTIajXYjQ==
-X-Received: by 2002:a92:7792:: with SMTP id s140mr3585647ilc.66.1593538031396;
-        Tue, 30 Jun 2020 10:27:11 -0700 (PDT)
+        bh=gL8EyU9UQnezCYstU0/XScATbm4WCiRKQBl+0jLmsH4=;
+        b=nnCUNtp6RCoGe+gQ4hlgMxeeUTHdErivI2PXvC/DGOt6ctq2/DZmQmWb+aPXRLOnSe
+         JtmUruSM+tql2Hhh8aiv0PZzCo6LLEJkS9xBXoZm2xnjZDakWWqY6llUZRARptrm4wmu
+         A2tNHSLkps1PydcB6BfkBWd/9vVcN5asyOJaZrR1TbiNouA0KLXxFP4tM6Ku6t411XyN
+         3c9d/SQJ43tCtG6wo8+eqBK+SoPlrZuVwOYwv7QYKII/QriIqZpvhR3jOlhnyftw6en6
+         ODeG2y7+gBAAaCh9W2rf+XIBFXmVGZ0FexJAkvnDh3CAnRN/0MvZqUTuRUX2lzxzj8Vc
+         yusQ==
+X-Gm-Message-State: AOAM530YPKMeR/xBNQ6HCQ40w0fPiVhwEWKWJvn61yrsT4EApMJNSiZz
+        Zd4txZ/j4H9ygGtzLDybSWzdrg==
+X-Google-Smtp-Source: ABdhPJz5Hr5g3EnLwk/E4ksVpppNsJbCj9ndjvy8jygJo3RI2iUOzJyPNOp1Ej52zqExFLvbb/xb8w==
+X-Received: by 2002:a05:6e02:606:: with SMTP id t6mr3659189ils.181.1593538477075;
+        Tue, 30 Jun 2020 10:34:37 -0700 (PDT)
 Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id z9sm1936501ilb.41.2020.06.30.10.27.10
+        by smtp.gmail.com with ESMTPSA id a10sm1934607iln.20.2020.06.30.10.34.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 10:27:10 -0700 (PDT)
+        Tue, 30 Jun 2020 10:34:36 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.93)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jqK2I-001vsb-1W; Tue, 30 Jun 2020 14:27:10 -0300
-Date:   Tue, 30 Jun 2020 14:27:10 -0300
+        id 1jqK9T-001vwy-CD; Tue, 30 Jun 2020 14:34:35 -0300
+Date:   Tue, 30 Jun 2020 14:34:35 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>,
-        lee.jones@linaro.org
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200630172710.GJ25301@ziepe.ca>
-References: <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
- <20200524063519.GB1369260@kroah.com>
- <fe44419b-924c-b183-b761-78771b7d506d@linux.intel.com>
- <s5h5zcistpb.wl-tiwai@suse.de>
- <20200527071733.GB52617@kroah.com>
- <20200629203317.GM5499@sirena.org.uk>
- <20200629225959.GF25301@ziepe.ca>
- <20200630103141.GA5272@sirena.org.uk>
- <20200630113245.GG25301@ziepe.ca>
- <936d8b1cbd7a598327e1b247441fa055d7083cb6.camel@linux.intel.com>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Message-ID: <20200630173435.GK25301@ziepe.ca>
+References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
+ <20200629185152.GD25301@ziepe.ca>
+ <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <936d8b1cbd7a598327e1b247441fa055d7083cb6.camel@linux.intel.com>
+In-Reply-To: <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 10:24:04AM -0700, Ranjani Sridharan wrote:
-> On Tue, 2020-06-30 at 08:32 -0300, Jason Gunthorpe wrote:
-> > On Tue, Jun 30, 2020 at 11:31:41AM +0100, Mark Brown wrote:
-> > > On Mon, Jun 29, 2020 at 07:59:59PM -0300, Jason Gunthorpe wrote:
-> > > > On Mon, Jun 29, 2020 at 09:33:17PM +0100, Mark Brown wrote:
-> > > > > On Wed, May 27, 2020 at 09:17:33AM +0200, Greg KH wrote:
-> > > > > > Ok, that's good to hear.  But platform devices should never
-> > > > > > be showing
-> > > > > > up as a child of a PCI device.  In the "near future" when we
-> > > > > > get the
-> > > > > > virtual bus code merged, we can convert any existing users
-> > > > > > like this to
-> > > > > > the new code.
-> > > > > What are we supposed to do with things like PCI attached FPGAs
-> > > > > and ASICs
-> > > > > in that case?  They can have host visible devices with physical
-> > > > > resources like MMIO ranges and interrupts without those being
-> > > > > split up
-> > > > > neatly as PCI subfunctions - the original use case for MFD was
-> > > > > such
-> > > > > ASICs, there's a few PCI drivers in there now. 
-> > > > Greg has been pretty clear that MFD shouldn't have been used on
-> > > > top of
-> > > > PCI drivers.
-> > > 
-> > > The proposed bus lacks resource handling, an equivalent of
-> > > platform_get_resource() and friends for example, which would be
-> > > needed
-> > > for use with physical devices.  Both that and the name suggest that
-> > > it's
-> > > for virtual devices.
+On Tue, Jun 30, 2020 at 05:21:33PM +0000, Xiong, Jianxin wrote:
+> > > Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+> > > and ZONE_DEVICE to support shared virtual address space and page
+> > > migration between system memory and device memory. HMM doesn't support
+> > > pinning device memory because pages located on device must be able to
+> > > migrate to system memory when accessed by CPU. Peer-to-peer access is
+> > > possible if the peer can handle page fault. For RDMA, that means the
+> > > NIC must support on-demand paging.
 > > 
-> > Resource handling is only useful if the HW has a hard distinction
-> > between it's functional blocks. This scheme is intended for devices
-> > where that doesn't exist. The driver that attaches to the PCI device
-> > and creates the virtual devices is supposed to provide SW
-> > abstractions
-> > for the other drivers to sit on.
-> >  
-> > I'm not sure why we are calling it virtual bus.
-> Hi Jason,
+> > peer-peer access is currently not possible with hmm_range_fault().
 > 
-> We're addressing the naming in the next version as well. We've had
-> several people reject the name virtual bus and we've narrowed in on
-> "ancillary bus" for the new name suggesting that we have the core
-> device that is attached to the primary bus and one or more sub-devices
-> that are attached to the ancillary bus. Please let us know what you
-> think of it.
+> Currently hmm_range_fault() always sets the cpu access flag and device
+> private pages are migrated to the system RAM in the fault handler. However, 
+> it's possible to have a modified code flow to keep the device private page info
+> for use with peer to peer access.
 
-It is sufficiently vauge
+Sort of, but only within the same device, RDMA or anything else
+generic can't reach inside a DEVICE_PRIVATE and extract anything
+useful.
 
-I wonder if SW_MFD might me more apt though? Based on Mark's remarks
-current MFD is 'hw' MFD where the created platform_devices expect a
-MMIO pass through, while this is a MFD a device-specific SW
-interfacing layer.
+> > So.. this patch doesn't really do anything new? We could just make a MR against the DMA buf mmap and get to the same place?
+> 
+> That's right, the patch alone is just half of the story. The functionality
+> depends on availability of dma-buf exporter that can pin the device
+> memory.
 
-MFD really is the best name for this kind of functionality,
-understanding how it is different from the current MFD might also help
-justify why it exists and give it a name.
+Well, what do you want to happen here? The RDMA parts are reasonable,
+but I don't want to add new functionality without a purpose - the
+other parts need to be settled out first.
+
+The need for the dynamic mapping support for even the current DMA Buf
+hacky P2P users is really too bad. Can you get any GPU driver to
+support non-dynamic mapping?
+
+> > > migrate to system RAM. This is due to the lack of knowledge about
+> > > whether the importer can perform peer-to-peer access and the lack of
+> > > resource limit control measure for GPU. For the first part, the latest
+> > > dma-buf driver has a peer-to-peer flag for the importer, but the flag
+> > > is currently tied to dynamic mapping support, which requires on-demand
+> > > paging support from the NIC to work.
+> > 
+> > ODP for DMA buf?
+> 
+> Right.
+
+Hum. This is not actually so hard to do. The whole dma buf proposal
+would make a lot more sense if the 'dma buf MR' had to be the dynamic
+kind and the driver had to provide the faulting. It would not be so
+hard to change mlx5 to be able to work like this, perhaps. (the
+locking might be a bit tricky though)
+
+> > > There are a few possible ways to address these issues, such as
+> > > decoupling peer-to-peer flag from dynamic mapping, allowing more
+> > > leeway for individual drivers to make the pinning decision and adding
+> > > GPU resource limit control via cgroup. We would like to get comments
+> > > on this patch series with the assumption that device memory pinning
+> > > via dma-buf is supported by some GPU drivers, and at the same time
+> > > welcome open discussions on how to address the aforementioned issues
+> > > as well as GPU-NIC peer-to-peer access solutions in general.
+> > 
+> > These seem like DMA buf problems, not RDMA problems, why are you asking these questions with a RDMA patch set? The usual DMA buf
+> > people are not even Cc'd here.
+> 
+> The intention is to have people from both RDMA and DMA buffer side to
+> comment. Sumit Semwal is the DMA buffer maintainer according to the
+> MAINTAINERS file. I agree more people could be invited to the discussion.
+> Just added Christian Koenig to the cc-list.
+
+Would be good to have added the drm lists too
+
+> If the umem_description you mentioned is for information used to create the
+> umem (e.g. a structure for all the parameters), then this would work better.
+
+It would make some more sense, and avoid all these weird EOPNOTSUPPS.
 
 Jason
