@@ -2,540 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2706620F282
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 12:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E767F20F2BF
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 12:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732432AbgF3KTR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 06:19:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732329AbgF3KTN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jun 2020 06:19:13 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7AF820760;
-        Tue, 30 Jun 2020 10:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593512352;
-        bh=FWqzhXs7kUZM4jrgQQJAA/fKgLo8va1JMl0Cx0breIs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQEN95aKD2gMwtuaZnBO/7dnQ3wazyCoQMShORV839ttElDWNFt2+pRzkv4bElKU0
-         HcyTzBHqKiHNfoBrP+v/J2K+KHskly9ZWvkGla20SOFu0ApTOzNsEHRvZCo5nWAO/M
-         MjJJTiFGQ/hjxaFdJEweVRTiNLzkS28nCIj978RA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next v1 4/4] RDMA/core: Convert RWQ table logic to ib_core allocation scheme
-Date:   Tue, 30 Jun 2020 13:18:55 +0300
-Message-Id: <20200630101855.368895-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200630101855.368895-1-leon@kernel.org>
-References: <20200630101855.368895-1-leon@kernel.org>
+        id S1732315AbgF3Kbg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 06:31:36 -0400
+Received: from mail-vi1eur05on2077.outbound.protection.outlook.com ([40.107.21.77]:46304
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732238AbgF3Kbf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jun 2020 06:31:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WdlXaGPUenyEYAx59fLKCbxKpxeEecy4eAB0qGpo458gr6zCg5KDHD5hAg/mrFg66MRdgiATg2AUPEb6y4xa0/4o15JPVqkREHNiREbNaaeSkPZImCNr8C2evmqia1AIw7A6ti0q+TqRIjNTNbt1mszXn1E3aX4sgUEsw/iYJvi5qvou91sZkFAbgXp6clKI+lTZqw5WOkzA5gZXXvQqbV5/NG8JHOVU8FImck+kNY8OCbyIFTxrwlE3gkTws/b9jvsucN6KPhebboyShK5Kg9S5UbXOwTvXOnTbcnZkjfCGwfQ7+F6EXO7Xcaz58zCME4iIpUthk9+0+wfpQs4P9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nyRDwz6Y7iddc06Mjo2SiVeWdOVJG/EK3z5NxujWFUk=;
+ b=ZPSEpkOz+C284iiPWvK8kZsefR8QKcu50bE2Z8N0ogsuBIE+V+CHJXBWsyluo++GhCngPZo6CQiSNjlpWnr5DLcDa3VA3XFlgmu/Rz/FxpBXYLgd4khV9n9SJKeeD9iwOaC9rh5KKMsSItifUCTvln7GukMz2AABpObsvsHPygvwE50YOBRCXs7RuB6bcfj1IzbmldxsUL7l9uDXCvY7K1dNbgvDWYpNv0lVVpqt7vuHSuk/Mp+2PFtphG/uh/SeGmZA4SLwUjhrteM8BKTYooupzQg7zK11KNY8BEIVokhwwiysDo8ZAK/VDnDjzy+7VsFPfSAGZFhpO4Du6vJLhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nyRDwz6Y7iddc06Mjo2SiVeWdOVJG/EK3z5NxujWFUk=;
+ b=UaLwgJ0ZdYN2UtClPKVibP0XuRA5adwViv/lNV9SUMZmdcdB7d0xN15EqZDr+ty0aundx0iYMRstlwffDCvhK80TbNhCMonnvkgF8pkJPtNcVmzZIooeiA7JBG5rm8I/mht25wbF81GH0m+wdoAgmlQbqKHt1AP7OgsMHmtALNo=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
+ by AM6PR05MB4902.eurprd05.prod.outlook.com (2603:10a6:20b:10::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Tue, 30 Jun
+ 2020 10:31:31 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::15f4:b130:d907:ce72]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::15f4:b130:d907:ce72%6]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
+ 10:31:31 +0000
+Date:   Tue, 30 Jun 2020 13:31:29 +0300
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Alaa Hleihel <alaa@mellanox.com>
+Cc:     jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        Edward Srouji <edwards@mellanox.com>,
+        Honggang Li <honli@redhat.com>
+Subject: Re: [PATCH rdma-core] redhat: Fix the condition for pyverbs
+ enablement on Fedora 32 and up
+Message-ID: <20200630103129.GF17857@unreal>
+References: <20200628145003.13705-1-alaa@mellanox.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200628145003.13705-1-alaa@mellanox.com>
+X-ClientProxiedBy: AM4PR07CA0020.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::33) To AM6PR05MB6408.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (213.57.247.131) by AM4PR07CA0020.eurprd07.prod.outlook.com (2603:10a6:205:1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.12 via Frontend Transport; Tue, 30 Jun 2020 10:31:30 +0000
+X-Originating-IP: [213.57.247.131]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 956c1c1b-e396-4a97-bb12-08d81ce0c123
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4902:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB4902539ADB615D1AB6A82473B06F0@AM6PR05MB4902.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:883;
+X-Forefront-PRVS: 0450A714CB
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1aey3gJm1BPsJXh2dLXjWySRx1/pGi3VBJNHs2TTOd39YvjSfhPUj8MxRTaZE/aTPW2m5BlolJaxwbR4dTs2vu6uC4wll9PcdKY7FRozyjFc7+Q8e55+rv0ankJnKwD6YarUHUK0rVs3Wlk8JBfMINzMAnBzppuef2WwqDfbRIVgkWTzItVrP7PvnS8NA9I+g470MazoYfkMl3cotC5fCjKSEYrwQ0SKjttXz0DJG7eWg9roqKOrqUQJj29zOO3uNBJTbFryuMScMFLzFU9Y+/aYjEJTlBuF08LaNq9RT7Q0UZPYhKqzCUEiDy21c8J8P/Q84jKqVgOwGK4htRhbnUwAXBx7/JZW+fs388Sr+UlyFiVl9kQZEOMXCOAbamWVJVfin5zSVYDeevFeoBz+Nw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(366004)(1076003)(52116002)(6496006)(33656002)(9686003)(66476007)(33716001)(66946007)(66556008)(2906002)(86362001)(54906003)(4744005)(5660300002)(966005)(498600001)(6636002)(956004)(83380400001)(8676002)(26005)(8936002)(4326008)(186003)(6486002)(16526019)(6862004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: S95CRrTW9PJkX8L1pHTpJ0pTQyAZYnjZ2A1kusOp7Pa89BFokxLM/UaxwrroJTZRngo4V2MtQvz5eYORaY7sUkapPEDcLBPACduymY9g+w5piQGWnPA8hrNMuZaDmDjAq2Po1eratxcvHRViaJKbW8HjIWZXzY1IJpK5d8PhE8FlMfteZXa8uoquNxx/al7lWbElfSlc+VDJ5zj046y/E+3vclqaGiUmRgGSQnS+1J1hDQh46HaddTq0RWf6W0EaxY09Uyyg/57Nwmfa/bxwV12BpXA3uJTKCV331YubAKJ8yOulnqjvZ0EbG073dUqoUzEXOLpwpqmzaHM81VSBZBT1fkI8pzJrLj2aKDBwxv4v7fYWbb22oBCLTPka0/5HD8NLY9oQqY3s5QjCYOACvu0NKXh6yxTU3wUl37aUQNMNH+DqOUBoDxkuerDpWpuSy+NY0yC4cDSWBtSVOBa7QPBvwSlO8btLEuNP8LeJiDKKpWMYKfh5bzn1x3aDAa+0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 956c1c1b-e396-4a97-bb12-08d81ce0c123
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6408.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2020 10:31:31.3660
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cY5jeBe39tza9bTZsrroucLhfhpA4iUD+kRkz+RynoRcW2v/jbkH+77QS8nS7C3Y/ob/T8ixcawbxuEIOyLGiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4902
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Sun, Jun 28, 2020 at 05:50:03PM +0300, Alaa Hleihel wrote:
+> The cited commit enabled pyverbs build by default for Fedora 32 and up.
+> However, it broke enalbing pyverbs build when passing '--with pyverbs' flag.
+>
+> Fix the condition so that now the behavior for Fedora 32 and up will be:
+>  * Default: pyverbs enabled.
+>  * --with pyverbs: pyverbs enabled.
+>  * --without pyverbs: pyverbs disabled.
+>
+> Fixes: 07b304b75186 ("redhat: Build pyverbs for Fedora greater than release 31")
+> Signed-off-by: Alaa Hleihel <alaa@mellanox.com>
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> Tested-by: Edward Srouji <edwards@mellanox.com>
+> CC: Honggang Li <honli@redhat.com>
+> ---
+>  redhat/rdma-core.spec | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Move struct ib_rwq_ind_table allocation to ib_core.
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/device.c           |  1 +
- drivers/infiniband/core/uverbs_cmd.c       | 37 ++++++++++++-------
- drivers/infiniband/core/uverbs_std_types.c | 16 +++++---
- drivers/infiniband/core/verbs.c            | 23 ------------
- drivers/infiniband/hw/mlx4/main.c          |  4 +-
- drivers/infiniband/hw/mlx4/mlx4_ib.h       | 12 +++---
- drivers/infiniband/hw/mlx4/qp.c            | 40 ++++++--------------
- drivers/infiniband/hw/mlx5/main.c          |  3 ++
- drivers/infiniband/hw/mlx5/mlx5_ib.h       |  8 ++--
- drivers/infiniband/hw/mlx5/qp.c            | 43 +++++++++-------------
- include/rdma/ib_verbs.h                    | 11 +++---
- 11 files changed, 85 insertions(+), 113 deletions(-)
+I'll wait for the results of this PR and merge it.
+https://github.com/linux-rdma/rdma-core/pull/784
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index b15fa3fa09ac..85d921c8e2b5 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2686,6 +2686,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_OBJ_SIZE(dev_ops, ib_cq);
- 	SET_OBJ_SIZE(dev_ops, ib_mw);
- 	SET_OBJ_SIZE(dev_ops, ib_pd);
-+	SET_OBJ_SIZE(dev_ops, ib_rwq_ind_table);
- 	SET_OBJ_SIZE(dev_ops, ib_srq);
- 	SET_OBJ_SIZE(dev_ops, ib_ucontext);
- 	SET_OBJ_SIZE(dev_ops, ib_xrcd);
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index a5301f3d3059..a83d11d1e3ee 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3090,13 +3090,13 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_uverbs_ex_create_rwq_ind_table cmd;
- 	struct ib_uverbs_ex_create_rwq_ind_table_resp  resp = {};
--	struct ib_uobject		  *uobj;
-+	struct ib_uobject *uobj;
- 	int err;
- 	struct ib_rwq_ind_table_init_attr init_attr = {};
- 	struct ib_rwq_ind_table *rwq_ind_tbl;
--	struct ib_wq	**wqs = NULL;
-+	struct ib_wq **wqs = NULL;
- 	u32 *wqs_handles = NULL;
--	struct ib_wq	*wq = NULL;
-+	struct ib_wq *wq = NULL;
- 	int i, j, num_read_wqs;
- 	u32 num_wq_handles;
- 	struct uverbs_req_iter iter;
-@@ -3151,17 +3151,15 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
- 		goto put_wqs;
- 	}
- 
--	init_attr.log_ind_tbl_size = cmd.log_ind_tbl_size;
--	init_attr.ind_tbl = wqs;
--
--	rwq_ind_tbl = ib_dev->ops.create_rwq_ind_table(ib_dev, &init_attr,
--						       &attrs->driver_udata);
--
--	if (IS_ERR(rwq_ind_tbl)) {
--		err = PTR_ERR(rwq_ind_tbl);
-+	rwq_ind_tbl = rdma_zalloc_drv_obj(ib_dev, ib_rwq_ind_table);
-+	if (!rwq_ind_tbl) {
-+		err = -ENOMEM;
- 		goto err_uobj;
- 	}
- 
-+	init_attr.log_ind_tbl_size = cmd.log_ind_tbl_size;
-+	init_attr.ind_tbl = wqs;
-+
- 	rwq_ind_tbl->ind_tbl = wqs;
- 	rwq_ind_tbl->log_ind_tbl_size = init_attr.log_ind_tbl_size;
- 	rwq_ind_tbl->uobject = uobj;
-@@ -3169,6 +3167,12 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
- 	rwq_ind_tbl->device = ib_dev;
- 	atomic_set(&rwq_ind_tbl->usecnt, 0);
- 
-+	err = ib_dev->ops.create_rwq_ind_table(rwq_ind_tbl, &init_attr,
-+					       &rwq_ind_tbl->ind_tbl_num,
-+					       &attrs->driver_udata);
-+	if (err)
-+		goto err_create;
-+
- 	for (i = 0; i < num_wq_handles; i++)
- 		atomic_inc(&wqs[i]->usecnt);
- 
-@@ -3190,7 +3194,13 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
- 	return 0;
- 
- err_copy:
--	ib_destroy_rwq_ind_table(rwq_ind_tbl);
-+	for (i = 0; i < num_wq_handles; i++)
-+		atomic_dec(&wqs[i]->usecnt);
-+
-+	if (ib_dev->ops.destroy_rwq_ind_table)
-+		ib_dev->ops.destroy_rwq_ind_table(rwq_ind_tbl);
-+err_create:
-+	kfree(rwq_ind_tbl);
- err_uobj:
- 	uobj_alloc_abort(uobj, attrs);
- put_wqs:
-@@ -4018,8 +4028,7 @@ const struct uapi_definition uverbs_def_write_intf[] = {
- 			IB_USER_VERBS_EX_CMD_DESTROY_RWQ_IND_TBL,
- 			ib_uverbs_ex_destroy_rwq_ind_table,
- 			UAPI_DEF_WRITE_I(
--				struct ib_uverbs_ex_destroy_rwq_ind_table),
--			UAPI_DEF_METHOD_NEEDS_FN(destroy_rwq_ind_table))),
-+				struct ib_uverbs_ex_destroy_rwq_ind_table))),
- 
- 	DECLARE_UVERBS_OBJECT(
- 		UVERBS_OBJECT_WQ,
-diff --git a/drivers/infiniband/core/uverbs_std_types.c b/drivers/infiniband/core/uverbs_std_types.c
-index e4994cc4cc51..13c6b3066e4f 100644
---- a/drivers/infiniband/core/uverbs_std_types.c
-+++ b/drivers/infiniband/core/uverbs_std_types.c
-@@ -82,12 +82,21 @@ static int uverbs_free_rwq_ind_tbl(struct ib_uobject *uobject,
- {
- 	struct ib_rwq_ind_table *rwq_ind_tbl = uobject->object;
- 	struct ib_wq **ind_tbl = rwq_ind_tbl->ind_tbl;
--	int ret;
-+	u32 table_size = (1 << rwq_ind_tbl->log_ind_tbl_size);
-+	int ret = 0, i;
-+
-+	if (atomic_read(&rwq_ind_tbl->usecnt))
-+		ret = -EBUSY;
- 
--	ret = ib_destroy_rwq_ind_table(rwq_ind_tbl);
- 	if (ib_is_destroy_retryable(ret, why, uobject))
- 		return ret;
- 
-+	for (i = 0; i < table_size; i++)
-+		atomic_dec(&ind_tbl[i]->usecnt);
-+
-+	if (rwq_ind_tbl->device->ops.destroy_rwq_ind_table)
-+		rwq_ind_tbl->device->ops.destroy_rwq_ind_table(rwq_ind_tbl);
-+	kfree(rwq_ind_tbl);
- 	kfree(ind_tbl);
- 	return ret;
- }
-@@ -258,9 +267,6 @@ const struct uapi_definition uverbs_def_obj_intf[] = {
- 				      UAPI_DEF_OBJ_NEEDS_FN(dealloc_mw)),
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_FLOW,
- 				      UAPI_DEF_OBJ_NEEDS_FN(destroy_flow)),
--	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
--		UVERBS_OBJECT_RWQ_IND_TBL,
--		UAPI_DEF_OBJ_NEEDS_FN(destroy_rwq_ind_table)),
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_XRCD,
- 				      UAPI_DEF_OBJ_NEEDS_FN(dealloc_xrcd)),
- 	{}
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index c41e3fdef5d6..be4c6ee3804a 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2412,29 +2412,6 @@ int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- }
- EXPORT_SYMBOL(ib_modify_wq);
- 
--/*
-- * ib_destroy_rwq_ind_table - Destroys the specified Indirection Table.
-- * @wq_ind_table: The Indirection Table to destroy.
--*/
--int ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *rwq_ind_table)
--{
--	int err, i;
--	u32 table_size = (1 << rwq_ind_table->log_ind_tbl_size);
--	struct ib_wq **ind_tbl = rwq_ind_table->ind_tbl;
--
--	if (atomic_read(&rwq_ind_table->usecnt))
--		return -EBUSY;
--
--	err = rwq_ind_table->device->ops.destroy_rwq_ind_table(rwq_ind_table);
--	if (!err) {
--		for (i = 0; i < table_size; i++)
--			atomic_dec(&ind_tbl[i]->usecnt);
--	}
--
--	return err;
--}
--EXPORT_SYMBOL(ib_destroy_rwq_ind_table);
--
- int ib_check_mr_status(struct ib_mr *mr, u32 check_mask,
- 		       struct ib_mr_status *mr_status)
- {
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 0ad584a3b8d6..88a3a9a88bee 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -2585,9 +2585,11 @@ static const struct ib_device_ops mlx4_ib_dev_ops = {
- static const struct ib_device_ops mlx4_ib_dev_wq_ops = {
- 	.create_rwq_ind_table = mlx4_ib_create_rwq_ind_table,
- 	.create_wq = mlx4_ib_create_wq,
--	.destroy_rwq_ind_table = mlx4_ib_destroy_rwq_ind_table,
- 	.destroy_wq = mlx4_ib_destroy_wq,
- 	.modify_wq = mlx4_ib_modify_wq,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_rwq_ind_table, mlx4_ib_rwq_ind_table,
-+			   ib_rwq_ind_tbl),
- };
- 
- static const struct ib_device_ops mlx4_ib_dev_mw_ops = {
-diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-index 5fbe766aef6b..2730a0f65f47 100644
---- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-+++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-@@ -366,6 +366,10 @@ struct mlx4_ib_ah {
- 	union mlx4_ext_av       av;
- };
- 
-+struct mlx4_ib_rwq_ind_table {
-+	struct ib_rwq_ind_table ib_rwq_ind_tbl;
-+};
-+
- /****************************************/
- /* alias guid support */
- /****************************************/
-@@ -893,11 +897,9 @@ void mlx4_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
- int mlx4_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- 		      u32 wq_attr_mask, struct ib_udata *udata);
- 
--struct ib_rwq_ind_table
--*mlx4_ib_create_rwq_ind_table(struct ib_device *device,
--			      struct ib_rwq_ind_table_init_attr *init_attr,
--			      struct ib_udata *udata);
--int mlx4_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
-+int mlx4_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 u32 *ind_tbl_num, struct ib_udata *udata);
- int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
- 				       int *num_of_mtts);
- 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index cf51e3cbd969..5795bfc1a512 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4340,34 +4340,32 @@ void mlx4_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata)
- 	kfree(qp);
- }
- 
--struct ib_rwq_ind_table
--*mlx4_ib_create_rwq_ind_table(struct ib_device *device,
--			      struct ib_rwq_ind_table_init_attr *init_attr,
--			      struct ib_udata *udata)
-+int mlx4_ib_create_rwq_ind_table(struct ib_rwq_ind_table *rwq_ind_table,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 u32 *ind_tbl_num, struct ib_udata *udata)
- {
--	struct ib_rwq_ind_table *rwq_ind_table;
- 	struct mlx4_ib_create_rwq_ind_tbl_resp resp = {};
- 	unsigned int ind_tbl_size = 1 << init_attr->log_ind_tbl_size;
-+	struct ib_device *device = rwq_ind_table->device;
- 	unsigned int base_wqn;
- 	size_t min_resp_len;
--	int i;
--	int err;
-+	int i, err = 0;
- 
- 	if (udata->inlen > 0 &&
- 	    !ib_is_udata_cleared(udata, 0,
- 				 udata->inlen))
--		return ERR_PTR(-EOPNOTSUPP);
-+		return -EOPNOTSUPP;
- 
- 	min_resp_len = offsetof(typeof(resp), reserved) + sizeof(resp.reserved);
- 	if (udata->outlen && udata->outlen < min_resp_len)
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 
- 	if (ind_tbl_size >
- 	    device->attrs.rss_caps.max_rwq_indirection_table_size) {
- 		pr_debug("log_ind_tbl_size = %d is bigger than supported = %d\n",
- 			 ind_tbl_size,
- 			 device->attrs.rss_caps.max_rwq_indirection_table_size);
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
- 	base_wqn = init_attr->ind_tbl[0]->wq_num;
-@@ -4375,39 +4373,23 @@ struct ib_rwq_ind_table
- 	if (base_wqn % ind_tbl_size) {
- 		pr_debug("WQN=0x%x isn't aligned with indirection table size\n",
- 			 base_wqn);
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
- 	for (i = 1; i < ind_tbl_size; i++) {
- 		if (++base_wqn != init_attr->ind_tbl[i]->wq_num) {
- 			pr_debug("indirection table's WQNs aren't consecutive\n");
--			return ERR_PTR(-EINVAL);
-+			return -EINVAL;
- 		}
- 	}
- 
--	rwq_ind_table = kzalloc(sizeof(*rwq_ind_table), GFP_KERNEL);
--	if (!rwq_ind_table)
--		return ERR_PTR(-ENOMEM);
--
- 	if (udata->outlen) {
- 		resp.response_length = offsetof(typeof(resp), response_length) +
- 					sizeof(resp.response_length);
- 		err = ib_copy_to_udata(udata, &resp, resp.response_length);
--		if (err)
--			goto err;
- 	}
- 
--	return rwq_ind_table;
--
--err:
--	kfree(rwq_ind_table);
--	return ERR_PTR(err);
--}
--
--int mlx4_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl)
--{
--	kfree(ib_rwq_ind_tbl);
--	return 0;
-+	return err;
- }
- 
- struct mlx4_ib_drain_cqe {
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index a6d5c35a2845..682ba1b6f34a 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6844,6 +6844,9 @@ static const struct ib_device_ops mlx5_ib_dev_common_roce_ops = {
- 	.destroy_wq = mlx5_ib_destroy_wq,
- 	.get_netdev = mlx5_ib_get_netdev,
- 	.modify_wq = mlx5_ib_modify_wq,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_rwq_ind_table, mlx5_ib_rwq_ind_table,
-+			   ib_rwq_ind_tbl),
- };
- 
- static int mlx5_ib_stage_common_roce_init(struct mlx5_ib_dev *dev)
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 726386fe4440..c4a285e1950d 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1272,10 +1272,10 @@ struct ib_wq *mlx5_ib_create_wq(struct ib_pd *pd,
- void mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
- int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- 		      u32 wq_attr_mask, struct ib_udata *udata);
--struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
--						      struct ib_rwq_ind_table_init_attr *init_attr,
--						      struct ib_udata *udata);
--int mlx5_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
-+int mlx5_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 u32 *ind_tbl_num, struct ib_udata *udata);
-+void mlx5_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
- struct ib_dm *mlx5_ib_alloc_dm(struct ib_device *ibdev,
- 			       struct ib_ucontext *context,
- 			       struct ib_dm_alloc_attr *attr,
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 0ae73f4e28a3..3124c80169fb 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -5063,12 +5063,13 @@ void mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata)
- 	kfree(rwq);
- }
- 
--struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
--						      struct ib_rwq_ind_table_init_attr *init_attr,
--						      struct ib_udata *udata)
-+int mlx5_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 u32 *ind_tbl_num, struct ib_udata *udata)
- {
--	struct mlx5_ib_dev *dev = to_mdev(device);
--	struct mlx5_ib_rwq_ind_table *rwq_ind_tbl;
-+	struct mlx5_ib_rwq_ind_table *rwq_ind_tbl =
-+		to_mrwq_ind_table(ib_rwq_ind_table);
-+	struct mlx5_ib_dev *dev = to_mdev(ib_rwq_ind_table->device);
- 	int sz = 1 << init_attr->log_ind_tbl_size;
- 	struct mlx5_ib_create_rwq_ind_tbl_resp resp = {};
- 	size_t min_resp_len;
-@@ -5081,30 +5082,24 @@ struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
- 	if (udata->inlen > 0 &&
- 	    !ib_is_udata_cleared(udata, 0,
- 				 udata->inlen))
--		return ERR_PTR(-EOPNOTSUPP);
-+		return -EOPNOTSUPP;
- 
- 	if (init_attr->log_ind_tbl_size >
- 	    MLX5_CAP_GEN(dev->mdev, log_max_rqt_size)) {
- 		mlx5_ib_dbg(dev, "log_ind_tbl_size = %d is bigger than supported = %d\n",
- 			    init_attr->log_ind_tbl_size,
- 			    MLX5_CAP_GEN(dev->mdev, log_max_rqt_size));
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
- 	min_resp_len = offsetof(typeof(resp), reserved) + sizeof(resp.reserved);
- 	if (udata->outlen && udata->outlen < min_resp_len)
--		return ERR_PTR(-EINVAL);
--
--	rwq_ind_tbl = kzalloc(sizeof(*rwq_ind_tbl), GFP_KERNEL);
--	if (!rwq_ind_tbl)
--		return ERR_PTR(-ENOMEM);
-+		return -EINVAL;
- 
- 	inlen = MLX5_ST_SZ_BYTES(create_rqt_in) + sizeof(u32) * sz;
- 	in = kvzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		err = -ENOMEM;
--		goto err;
--	}
-+	if (!in)
-+		return -ENOMEM;
- 
- 	rqtc = MLX5_ADDR_OF(create_rqt_in, in, rqt_context);
- 
-@@ -5118,12 +5113,10 @@ struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
- 	MLX5_SET(create_rqt_in, in, uid, rwq_ind_tbl->uid);
- 
- 	err = mlx5_core_create_rqt(dev->mdev, in, inlen, &rwq_ind_tbl->rqtn);
--	kvfree(in);
--
- 	if (err)
- 		goto err;
- 
--	rwq_ind_tbl->ib_rwq_ind_tbl.ind_tbl_num = rwq_ind_tbl->rqtn;
-+	*ind_tbl_num = rwq_ind_tbl->rqtn;
- 	if (udata->outlen) {
- 		resp.response_length = offsetof(typeof(resp), response_length) +
- 					sizeof(resp.response_length);
-@@ -5132,24 +5125,22 @@ struct ib_rwq_ind_table *mlx5_ib_create_rwq_ind_table(struct ib_device *device,
- 			goto err_copy;
- 	}
- 
--	return &rwq_ind_tbl->ib_rwq_ind_tbl;
-+	kvfree(in);
-+	return 0;
- 
- err_copy:
- 	mlx5_cmd_destroy_rqt(dev->mdev, rwq_ind_tbl->rqtn, rwq_ind_tbl->uid);
- err:
--	kfree(rwq_ind_tbl);
--	return ERR_PTR(err);
-+	kvfree(in);
-+	return err;
- }
- 
--int mlx5_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl)
-+void mlx5_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl)
- {
- 	struct mlx5_ib_rwq_ind_table *rwq_ind_tbl = to_mrwq_ind_table(ib_rwq_ind_tbl);
- 	struct mlx5_ib_dev *dev = to_mdev(ib_rwq_ind_tbl->device);
- 
- 	mlx5_cmd_destroy_rqt(dev->mdev, rwq_ind_tbl->rqtn, rwq_ind_tbl->uid);
--
--	kfree(rwq_ind_tbl);
--	return 0;
- }
- 
- int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 6e2cb69fe90b..ed948946e443 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2526,11 +2526,10 @@ struct ib_device_ops {
- 	void (*destroy_wq)(struct ib_wq *wq, struct ib_udata *udata);
- 	int (*modify_wq)(struct ib_wq *wq, struct ib_wq_attr *attr,
- 			 u32 wq_attr_mask, struct ib_udata *udata);
--	struct ib_rwq_ind_table *(*create_rwq_ind_table)(
--		struct ib_device *device,
--		struct ib_rwq_ind_table_init_attr *init_attr,
--		struct ib_udata *udata);
--	int (*destroy_rwq_ind_table)(struct ib_rwq_ind_table *wq_ind_table);
-+	int (*create_rwq_ind_table)(struct ib_rwq_ind_table *ib_rwq_ind_table,
-+				    struct ib_rwq_ind_table_init_attr *init_attr,
-+				    u32 *ind_tbl_num, struct ib_udata *udata);
-+	void (*destroy_rwq_ind_table)(struct ib_rwq_ind_table *wq_ind_table);
- 	struct ib_dm *(*alloc_dm)(struct ib_device *device,
- 				  struct ib_ucontext *context,
- 				  struct ib_dm_alloc_attr *attr,
-@@ -2653,6 +2652,7 @@ struct ib_device_ops {
- 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
- 	DECLARE_RDMA_OBJ_SIZE(ib_mw);
- 	DECLARE_RDMA_OBJ_SIZE(ib_pd);
-+	DECLARE_RDMA_OBJ_SIZE(ib_rwq_ind_table);
- 	DECLARE_RDMA_OBJ_SIZE(ib_srq);
- 	DECLARE_RDMA_OBJ_SIZE(ib_ucontext);
- 	DECLARE_RDMA_OBJ_SIZE(ib_xrcd);
-@@ -4430,7 +4430,6 @@ struct ib_wq *ib_create_wq(struct ib_pd *pd,
- int ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
- int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *attr,
- 		 u32 wq_attr_mask);
--int ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
- 
- int ib_map_mr_sg(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
- 		 unsigned int *sg_offset, unsigned int page_size);
--- 
-2.26.2
-
+Thanks
