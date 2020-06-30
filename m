@@ -2,92 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B4920F43A
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 14:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7D720F478
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 14:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387508AbgF3MNz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 08:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60436 "EHLO mail.kernel.org"
+        id S1732803AbgF3MVx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 08:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387472AbgF3MNz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:13:55 -0400
+        id S1732221AbgF3MVw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:21:52 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE92B2073E;
-        Tue, 30 Jun 2020 12:13:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93A2920672;
+        Tue, 30 Jun 2020 12:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593519234;
-        bh=F02qHmmLoyKU3NlCqf/heEhvUxmk+Z5U/MXoDWHciHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lvwYfGx8bfBi+X8FB9R4C7HqTAFjHH9qXyBZz9lizc9J7emeV06HrUDCKYYbtuWc5
-         PNV/HktE6ZW8e85TB8ul6UCD/7gNGHuQssRNnrsKIRZXUQPck2oIvtOybahTPm1e1C
-         PxAPAYHOxAnFDv9cyQZAaX2W6zdzlMPI/15IdZrk=
-Date:   Tue, 30 Jun 2020 15:13:51 +0300
+        s=default; t=1593519712;
+        bh=eA8tWE6SkC6ABO+njv6uNW/zXgo2oRixNXpGw01lz2c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HMQeMPAFh5ejK/pjLuXhUCCIhslIsRFHlD3lNvpjkSjtqWzTcor97zQbedDlQlIpa
+         sXQo+9U1yz2itmfND9JtwJ97KP+fmAI+CLruANFBuwHbwokzjUITY1jmcNtWec9r0/
+         eXCKoWK80m0qnIQhehrRfG8vh3J5wNiSbTI1YPBs=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next 5/5] RDMA/core: Convert RWQ table logic to
- ib_core allocation scheme
-Message-ID: <20200630121351.GI17857@unreal>
-References: <20200624105422.1452290-1-leon@kernel.org>
- <20200624105422.1452290-6-leon@kernel.org>
- <20200629153907.GA269101@nvidia.com>
- <20200630072137.GC17857@unreal>
- <20200630113729.GC23676@nvidia.com>
- <20200630115224.GH17857@unreal>
- <20200630120630.GD23676@nvidia.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix legacy IPoIB QP initialization
+Date:   Tue, 30 Jun 2020 15:21:47 +0300
+Message-Id: <20200630122147.445847-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630120630.GD23676@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 09:06:30AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 30, 2020 at 02:52:24PM +0300, Leon Romanovsky wrote:
-> > On Tue, Jun 30, 2020 at 08:37:29AM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jun 30, 2020 at 10:21:37AM +0300, Leon Romanovsky wrote:
-> > > > On Mon, Jun 29, 2020 at 12:39:07PM -0300, Jason Gunthorpe wrote:
-> > > > > On Wed, Jun 24, 2020 at 01:54:22PM +0300, Leon Romanovsky wrote:
-> > > > > > @@ -4018,8 +4028,7 @@ const struct uapi_definition uverbs_def_write_intf[] = {
-> > > > > >  			IB_USER_VERBS_EX_CMD_DESTROY_RWQ_IND_TBL,
-> > > > > >  			ib_uverbs_ex_destroy_rwq_ind_table,
-> > > > > >  			UAPI_DEF_WRITE_I(
-> > > > > > -				struct ib_uverbs_ex_destroy_rwq_ind_table),
-> > > > > > -			UAPI_DEF_METHOD_NEEDS_FN(destroy_rwq_ind_table))),
-> > > > > > +				struct ib_uverbs_ex_destroy_rwq_ind_table))),
-> > > > >
-> > > > > Removing these is kind of troublesome.. This misses the one for ioctl:
-> > > > >
-> > > > >         UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
-> > > > >                 UVERBS_OBJECT_RWQ_IND_TBL,
-> > > > >                 UAPI_DEF_OBJ_NEEDS_FN(destroy_rwq_ind_table)),
-> > > >
-> > > > I will remove, but it seems that we have some gap here, I would expect
-> > > > any sort of compilation error for mlx4.
-> > >
-> > > Why would there be a compilation error?
-> >
-> > I would expect BUILD_BUG_ON_ZERO() is thrown if ibdev_fn == NULL
->
-> ??
->
-> > > And it should not be removed, it needs to be reworked to point to some
-> > > other function I suppose.
-> >
-> > Why?
->
-> The destroy function should not be registered at all if rwq_ind is not
-> supported by the driver - this is the methodlogy.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-And here comes mlx4 case that needs create() call but doesn't need
-destroy(), because it will be empty after this refactoring.
+Legacy IPoIB sets IB_QP_CREATE_NETIF_QP QP create flag and because
+mlx5 doesn't use this flag, the process_create_flags() failed to
+create IPoIB QPs.
 
-Thanks
+Fixes: 2978975ce7f1 ("RDMA/mlx5: Process create QP flags in one place")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/qp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->
-> Jason
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index f939c9b769f0..b316c9cafbc5 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -2668,6 +2668,10 @@ static int process_create_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 	if (qp_type == IB_QPT_RAW_PACKET && attr->rwq_ind_tbl)
+ 		return (create_flags) ? -EINVAL : 0;
+ 
++	process_create_flag(dev, &create_flags, IB_QP_CREATE_NETIF_QP,
++			    mlx5_get_flow_namespace(dev->mdev,
++						    MLX5_FLOW_NAMESPACE_BYPASS),
++			    qp);
+ 	process_create_flag(dev, &create_flags,
+ 			    IB_QP_CREATE_INTEGRITY_EN,
+ 			    MLX5_CAP_GEN(mdev, sho), qp);
+-- 
+2.26.2
+
