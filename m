@@ -2,333 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4956620FC6F
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 21:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD77720FC91
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 21:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgF3TFI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 15:05:08 -0400
-Received: from mga07.intel.com ([134.134.136.100]:36706 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726158AbgF3TFH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:05:07 -0400
-IronPort-SDR: YHbhNdJL8qyeqBh8RJ9MvYJ9ozTrV1AdTgGtHbcHB7suSuCWCR24FhrubeW4C6Xx6xeuyeXt31
- c06dCkW3V1qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="211410556"
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="211410556"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 12:05:05 -0700
-IronPort-SDR: G9Az++t69Rg8T3AqfCLBAXWTAc/YO2SW1NXwpoDbaX+MxjpgCPdyHeGl3H5oP74k0LAJtkrIwQ
- +KyhAJ3w4dWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
-   d="scan'208";a="481030302"
-Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Jun 2020 12:05:04 -0700
-Received: from orsmsx114.amr.corp.intel.com (10.22.240.10) by
- ORSMSX110.amr.corp.intel.com (10.22.240.8) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 30 Jun 2020 12:05:04 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- ORSMSX114.amr.corp.intel.com (10.22.240.10) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 30 Jun 2020 12:05:04 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 30 Jun 2020 12:05:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E9ht8IMrtPDG/cORCg8b/vYme0jjMBclY1lnBQ7kUGOovpa7bq+FS+nrmKaPJkWqR2PQQNQ/REr9J/uY46s5BC3GIMyMq+5mKMVrgK2cXnx6hVUA1VP/u70TCxB1QumbaI/sWblZxdBW69KZzrMAqTasrYLfAFMtIMacjPW+dW6oKuKuIGnj5IdtTn/dp226xdGxsesy3ZMesp74l7IvHmT5ORowIFZ5j5UPEq0hRSULxWPGf52+CASPxcaXoRCf0k6R756g6RlBM2JKu1B4ITyidc049k3biJlJDlxF5adjvb1tAORL54JxfdQAXHrze6L88+1C/9HwmATOJqDL7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3inuTWc8YNyxky1aB6sboNGNowkgJp5O3LeU5/ufcyQ=;
- b=UVOdxXCeoSW/sbferEXyFbDsmxYt+sNY6q7EYZZ31GD/eJccI6Sbi4ybNWpJjrBZ++Ak2zGLeo+HfqFcjgqSha8DgGK5Vmjdpbxofw0puddzXkx/EaWCh2JCh02r1xuFDNyfw/MEP1rj+a6cntYF44JMTWhOFAyrl9ZbVUaKafRDklc8zRntiA+0sB0QmnkRMOpJfNnNFTAKLIYzJCBuKZO777ld92AzdYV1EjcitmUmY8E/xgl9N+1aMU9YCNXjJ1Gk4tSnr3pwYCfxPKi5LKa06qsScrIWhobEi+sj7Fu7skPal/jLcMetfVXZ1/3pIyvO8Oje2gYFa1sZoFLe5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3inuTWc8YNyxky1aB6sboNGNowkgJp5O3LeU5/ufcyQ=;
- b=Gbd76le2R/1hiUHevnM1ygXAcBb8lR0GxFK9AEWPrQirkpZUpOhe4DvmGtkGzyjYONVakurOYvTjyeCEn6LnyD8QOSxKp9e/4EY3HRv/eANjN2VM2DcOiuYA24Ktt64kmfojqfQy5Ngn9xhaliNV7RcHk+4Xg2dnoxUmIzlUduo=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MWHPR11MB1983.namprd11.prod.outlook.com (2603:10b6:300:112::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Tue, 30 Jun
- 2020 19:05:02 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::ed68:a00b:2bb0:21cf]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::ed68:a00b:2bb0:21cf%8]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 19:05:02 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1726389AbgF3TRD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 15:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgF3TRC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jun 2020 15:17:02 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0BFC061755
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 12:17:02 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id i18so18793093ilk.10
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Jun 2020 12:17:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3Z8G4sY/3BGmyIjcdbfqV1osL+GlJtPN7I10BAIUxWU=;
+        b=k1v79OlGEmtKhJ5piARsXMeK1rd/NK3yT/drkmMqpD3sXC7KYiKNDNNbQU+r+V8P4C
+         CjGTxiqMrI3i1arOaNM1SxAIw27Nf3eW/fM3T1Wt70BrgGjUbjaUzNNquHHMMcMrvRxo
+         Z1WI44Y3ZJ2/0oiL2+dhywTrG4XZSiNWCu2ho2lds0SEwWVpCix7WIVkmTgRV3qSbaVz
+         AR0RbFd8IkNo4iwvYwvkXhbLFHgIqYJvTY1+HOPAUDIM7hLWg3aEP7mug/XM8kOhqY7q
+         7PjvYb6sWZwyugTZGz5nOG+I5I9rsvncG7r0CNQ8/E4focEU5U6iRJreMTB6yiYhIoct
+         jbUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3Z8G4sY/3BGmyIjcdbfqV1osL+GlJtPN7I10BAIUxWU=;
+        b=R3yGDFBDbxzXn8Eg9K1kSkBx6jXBDGMcaQcv+etF/9msci5fa/fLLW7TOan8v/k/0s
+         rW8LQAA/A7/1DLXvm1TTt7GUfnhVvqTsG8L/f/VOYLA6YgoKAdn79/eXZL9a/WdLRa1n
+         iVQXGkNyNBm5FmrftX7JKeTcF6XJQ0x8snf5+5M+PpCAZIWP1SaeoNEjCjPOqC0ZqZWP
+         AXy1wuSaZbpzt3Tpe+x/0DK42cgNRLtXfy5lxwFRaXTJDYt5Mqb0NaJrrl9GCa0v1NC9
+         G+8gSXIXg34wZ/OHXxPQuw7sYyo5v1WjA9H2qHg0m2TNikubaEuRCa1m1Xs0aKd80qnd
+         zLYA==
+X-Gm-Message-State: AOAM5331TLN/b+WBmi0hUSugqW2cfvRXLwv7YA/QLug11sggwdvyoBNW
+        3kYJzFVPpQme9LlzY41SBCpGvg==
+X-Google-Smtp-Source: ABdhPJzW4EQndHUYdS2/xV0eFxNWR3D/TY/epRvvziYytNeMu+qD0CnLv9714Fptw+qZ4z2bgWiF/A==
+X-Received: by 2002:a92:4a09:: with SMTP id m9mr4283864ilf.79.1593544621848;
+        Tue, 30 Jun 2020 12:17:01 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id y2sm1815038iox.22.2020.06.30.12.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 12:17:01 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jqLka-0026er-89; Tue, 30 Jun 2020 16:17:00 -0300
+Date:   Tue, 30 Jun 2020 16:17:00 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Leon Romanovsky <leon@kernel.org>,
         "Vetter, Daniel" <daniel.vetter@intel.com>,
         Christian Koenig <christian.koenig@amd.com>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: RE: [RFC PATCH v2 3/3] RDMA/uverbs: Add uverbs command for dma-buf
- based MR registration
-Thread-Topic: [RFC PATCH v2 3/3] RDMA/uverbs: Add uverbs command for dma-buf
- based MR registration
-Thread-Index: AQHWTjmgdCm64aggH0CREKOfboOpjKjxhi0w
-Date:   Tue, 30 Jun 2020 19:05:02 +0000
-Message-ID: <MW3PR11MB455545E6FD3E74A87C4442FAE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Message-ID: <20200630191700.GL25301@ziepe.ca>
 References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
- <1593451903-30959-4-git-send-email-jianxin.xiong@intel.com>
-In-Reply-To: <1593451903-30959-4-git-send-email-jianxin.xiong@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.136.195]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 63a4a9a5-3087-4fda-45db-08d81d287e22
-x-ms-traffictypediagnostic: MWHPR11MB1983:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1983FF13C5B88EB6FD3F8E59E56F0@MWHPR11MB1983.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:229;
-x-forefront-prvs: 0450A714CB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: P/KIi85RV3veX8aaX9XCMTumixyzTUDkUXJ1Z0jsuIflUbNcuW10Ot0vSgOwPNS8mMTHx35+895JB24R53mOUyQr2AlakxxORxjTGVMq4/c1/a/NZo5JX1A4zPd/hBg/6BqSB3ayogxgqFHtc8ofq9pcEOIITeGvreFdjOVKszBVsWAHEYePvARTbtsw5tYf18/F7UimUFAweHUyd8KIvfC26jCxDs3aJkrbLYvmQ0leMe+IdxzTPlgl54oSY5bl9lbu2oGGic/LwmZ7RTpVqvQplbEO5aGShzHj1doW7R7xajZ5AIUDXqFh8nMgg8cZJe6ZIteYHM3Qn96vBQjK+Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39860400002)(9686003)(2906002)(55016002)(5660300002)(71200400001)(8676002)(83380400001)(6916009)(8936002)(4326008)(86362001)(316002)(478600001)(26005)(76116006)(33656002)(7696005)(66556008)(66476007)(52536014)(66946007)(64756008)(186003)(66446008)(6506007)(53546011)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Fr/O+b/AkBGk8gQrr04dzNBzP5qc3IYNqYTQy1lh52Wec9yCKJq7ZPuDmuvzpzKtA8QPdHcsXF+gglfEsHlMwe7qZfTCpFGi4OIm5GUFPRoUi/Ma68GXCkXzeWIm0ZTkIWcm9iCFcbM1Xgmb9s4WLq2PMqlkJtr/j7LVj9DgXCFx9/ikZ5nGVRuiA1TL22L35C03A6y/5r6nDIGWpPb1TJQ+GbzMSDYPi/HVUShcgsIEHf9DoKtjhFM/bm23PscaPsoSHpuVmGQHco+9WpcKhqJERF4+PpnAOARna+GcidM90O5aqgyrWunSDzuHxRFAU2AUW/YJotHX0bc04LF1JHo1OpLYP5tu7u9iYF15LNfISchOlBBeKvQUKRfcctkTLNv2RGTUNV8omo/rsFzD6LF9D2iGUXKi8W0sAt+9p1IiHlg9Fl2o+BZ08qdApjkvpl9J/CJcl74pKluZfjyPB5yPct1ZUSkKCPI2ZSST/sked5tJnrVSxmn2gUwkjlcb
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <20200629185152.GD25301@ziepe.ca>
+ <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630173435.GK25301@ziepe.ca>
+ <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63a4a9a5-3087-4fda-45db-08d81d287e22
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 19:05:02.4071
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YmTlm9UQXH5YLqvvjGgTICBZz4AstGLOzL+9eng9C5e83Q+HDrQLA5Lf4eQOr7kvUiuZ+TGctYFZSD6ZflIcGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1983
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Cc'd drm people.
+On Tue, Jun 30, 2020 at 06:46:17PM +0000, Xiong, Jianxin wrote:
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Tuesday, June 30, 2020 10:35 AM
+> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> > Cc: linux-rdma@vger.kernel.org; Doug Ledford <dledford@redhat.com>; Sumit Semwal <sumit.semwal@linaro.org>; Leon Romanovsky
+> > <leon@kernel.org>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig <christian.koenig@amd.com>
+> > Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+> > 
+> > On Tue, Jun 30, 2020 at 05:21:33PM +0000, Xiong, Jianxin wrote:
+> > > > > Heterogeneous Memory Management (HMM) utilizes
+> > > > > mmu_interval_notifier and ZONE_DEVICE to support shared virtual
+> > > > > address space and page migration between system memory and device
+> > > > > memory. HMM doesn't support pinning device memory because pages
+> > > > > located on device must be able to migrate to system memory when
+> > > > > accessed by CPU. Peer-to-peer access is possible if the peer can
+> > > > > handle page fault. For RDMA, that means the NIC must support on-demand paging.
+> > > >
+> > > > peer-peer access is currently not possible with hmm_range_fault().
+> > >
+> > > Currently hmm_range_fault() always sets the cpu access flag and device
+> > > private pages are migrated to the system RAM in the fault handler.
+> > > However, it's possible to have a modified code flow to keep the device
+> > > private page info for use with peer to peer access.
+> > 
+> > Sort of, but only within the same device, RDMA or anything else generic can't reach inside a DEVICE_PRIVATE and extract anything useful.
+> 
+> But pfn is supposed to be all that is needed.
 
-> -----Original Message-----
-> From: Xiong, Jianxin <jianxin.xiong@intel.com>
-> Sent: Monday, June 29, 2020 10:32 AM
-> To: linux-rdma@vger.kernel.org
-> Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Doug Ledford <dledford@redh=
-at.com>; Jason Gunthorpe <jgg@ziepe.ca>; Sumit Semwal
-> <sumit.semwal@linaro.org>; Leon Romanovsky <leon@kernel.org>; Vetter, Dan=
-iel <daniel.vetter@intel.com>
-> Subject: [RFC PATCH v2 3/3] RDMA/uverbs: Add uverbs command for dma-buf b=
-ased MR registration
->=20
-> Add uverbs command for registering user memory region associated with a d=
-ma-buf file descriptor.
->=20
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> ---
->  drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++++++++=
-++++++
->  include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++++
->  2 files changed, 126 insertions(+)
->=20
-> diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infi=
-niband/core/uverbs_std_types_mr.c
-> index c1286a5..2c9ff7c 100644
-> --- a/drivers/infiniband/core/uverbs_std_types_mr.c
-> +++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation.  All rights reserved.
->   *
->   * This software is available to you under a choice of one of two
->   * licenses.  You may choose to be licensed under the terms of the GNU @=
-@ -154,6 +155,85 @@ static int
-> UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
->  	return ret;
->  }
->=20
-> +static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
-> +	struct uverbs_attr_bundle *attrs)
-> +{
-> +	struct ib_uobject *uobj =3D
-> +		uverbs_attr_get_uobject(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
-> +	struct ib_pd *pd =3D
-> +		uverbs_attr_get_obj(attrs, UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE);
-> +	struct ib_device *ib_dev =3D pd->device;
-> +
-> +	u64 addr, length, hca_va;
-> +	u32 fd;
-> +	u32 access_flags;
-> +	struct ib_mr *mr;
-> +	int ret;
-> +
-> +	if (!ib_dev->ops.reg_user_mr)
-> +		return -EOPNOTSUPP;
-> +
-> +	ret =3D uverbs_copy_from(&addr, attrs, UVERBS_ATTR_REG_DMABUF_MR_ADDR);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D uverbs_copy_from(&length, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_LENGTH);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D uverbs_copy_from(&hca_va, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_HCA_VA);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D uverbs_copy_from(&fd, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_FD);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D uverbs_get_flags32(&access_flags, attrs,
-> +				 UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-> +				 IB_ACCESS_SUPPORTED);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D ib_check_mr_access(access_flags);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mr =3D pd->device->ops.reg_user_mr(pd, addr, length, hca_va,
-> +					   (int)(s32)fd, access_flags,
-> +					   &attrs->driver_udata);
-> +	if (IS_ERR(mr))
-> +		return PTR_ERR(mr);
-> +
-> +	mr->device  =3D pd->device;
-> +	mr->pd      =3D pd;
-> +	mr->type    =3D IB_MR_TYPE_USER;
-> +	mr->uobject =3D uobj;
-> +	atomic_inc(&pd->usecnt);
-> +
-> +	uobj->object =3D mr;
-> +
-> +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-> +			     &mr->lkey, sizeof(mr->lkey));
-> +	if (ret)
-> +		goto err_dereg;
-> +
-> +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-> +			     &mr->rkey, sizeof(mr->rkey));
-> +	if (ret)
-> +		goto err_dereg;
-> +
-> +	return 0;
-> +
-> +err_dereg:
-> +	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
-> +
-> +	return ret;
-> +}
-> +
->  DECLARE_UVERBS_NAMED_METHOD(
->  	UVERBS_METHOD_ADVISE_MR,
->  	UVERBS_ATTR_IDR(UVERBS_ATTR_ADVISE_MR_PD_HANDLE,
-> @@ -200,6 +280,37 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
->  			    UVERBS_ATTR_TYPE(u32),
->  			    UA_MANDATORY));
->=20
-> +DECLARE_UVERBS_NAMED_METHOD(
-> +	UVERBS_METHOD_REG_DMABUF_MR,
-> +	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
-> +			UVERBS_OBJECT_MR,
-> +			UVERBS_ACCESS_NEW,
-> +			UA_MANDATORY),
-> +	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
-> +			UVERBS_OBJECT_PD,
-> +			UVERBS_ACCESS_READ,
-> +			UA_MANDATORY),
-> +	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_ADDR,
-> +			   UVERBS_ATTR_TYPE(u64),
-> +			   UA_MANDATORY),
-> +	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
-> +			   UVERBS_ATTR_TYPE(u64),
-> +			   UA_MANDATORY),
-> +	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_HCA_VA,
-> +			   UVERBS_ATTR_TYPE(u64),
-> +			   UA_MANDATORY),
-> +	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_FD,
-> +			   UVERBS_ATTR_TYPE(u32),
-> +			   UA_MANDATORY),
-> +	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-> +			     enum ib_access_flags),
-> +	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-> +			    UVERBS_ATTR_TYPE(u32),
-> +			    UA_MANDATORY),
-> +	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-> +			    UVERBS_ATTR_TYPE(u32),
-> +			    UA_MANDATORY));
-> +
->  DECLARE_UVERBS_NAMED_METHOD_DESTROY(
->  	UVERBS_METHOD_MR_DESTROY,
->  	UVERBS_ATTR_IDR(UVERBS_ATTR_DESTROY_MR_HANDLE,
-> @@ -210,6 +321,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
->  DECLARE_UVERBS_NAMED_OBJECT(
->  	UVERBS_OBJECT_MR,
->  	UVERBS_TYPE_ALLOC_IDR(uverbs_free_mr),
-> +	&UVERBS_METHOD(UVERBS_METHOD_REG_DMABUF_MR),
->  	&UVERBS_METHOD(UVERBS_METHOD_DM_MR_REG),
->  	&UVERBS_METHOD(UVERBS_METHOD_MR_DESTROY),
->  	&UVERBS_METHOD(UVERBS_METHOD_ADVISE_MR));
-> diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/i=
-b_user_ioctl_cmds.h
-> index d4ddbe4..31aacbf 100644
-> --- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-> +++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
->   *
->   * This software is available to you under a choice of one of two
->   * licenses.  You may choose to be licensed under the terms of the GNU @=
-@ -161,6 +162,7 @@ enum uverbs_methods_mr {
->  	UVERBS_METHOD_DM_MR_REG,
->  	UVERBS_METHOD_MR_DESTROY,
->  	UVERBS_METHOD_ADVISE_MR,
-> +	UVERBS_METHOD_REG_DMABUF_MR,
->  };
->=20
->  enum uverbs_attrs_mr_destroy_ids {
-> @@ -174,6 +176,18 @@ enum uverbs_attrs_advise_mr_cmd_attr_ids {
->  	UVERBS_ATTR_ADVISE_MR_SGE_LIST,
->  };
->=20
-> +enum uverbs_attrs_reg_dmabuf_mr_cmd_attr_ids {
-> +	UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
-> +	UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
-> +	UVERBS_ATTR_REG_DMABUF_MR_ADDR,
-> +	UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
-> +	UVERBS_ATTR_REG_DMABUF_MR_HCA_VA,
-> +	UVERBS_ATTR_REG_DMABUF_MR_FD,
-> +	UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
-> +	UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-> +	UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-> +};
-> +
->  enum uverbs_attrs_create_counters_cmd_attr_ids {
->  	UVERBS_ATTR_CREATE_COUNTERS_HANDLE,
->  };
-> --
-> 1.8.3.1
+Needed for what? The PFN of the DEVICE_PRIVATE pages is useless for
+anything.
 
+> > Well, what do you want to happen here? The RDMA parts are
+> > reasonable, but I don't want to add new functionality without a
+> > purpose - the other parts need to be settled out first.
+> 
+> At the RDMA side, we mainly want to check if the changes are
+> acceptable. For example, the part about adding 'fd' to the device
+> ops and the ioctl interface. All the previous comments are very
+> helpful for us to refine the patch so that we can be ready when GPU
+> side support becomes available.
+
+Well, I'm not totally happy with the way the umem and the fd is
+handled so roughly and incompletely..
+
+> > Hum. This is not actually so hard to do. The whole dma buf
+> > proposal would make a lot more sense if the 'dma buf MR' had to be
+> > the dynamic kind and the driver had to provide the faulting. It
+> > would not be so hard to change mlx5 to be able to work like this,
+> > perhaps. (the locking might be a bit tricky though)
+> 
+> The main issue is that not all NICs support ODP.
+
+Sure, but there is lots of infrastructure work here to be done on dma
+buf, having a correct consumer in the form of ODP might be helpful to
+advance it.
+
+Jason
