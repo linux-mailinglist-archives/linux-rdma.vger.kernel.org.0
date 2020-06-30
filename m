@@ -2,206 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56C420FD35
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 21:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052AE20FD6F
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jun 2020 22:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgF3T6X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Jun 2020 15:58:23 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17403 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728888AbgF3T6R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Jun 2020 15:58:17 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efb99260003>; Tue, 30 Jun 2020 12:57:26 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 30 Jun 2020 12:58:16 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 30 Jun 2020 12:58:16 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 30 Jun
- 2020 19:58:08 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 30 Jun 2020 19:58:08 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5efb994f0006>; Tue, 30 Jun 2020 12:58:07 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH v2 5/5] hmm: add tests for HMM_PFN_PMD flag
-Date:   Tue, 30 Jun 2020 12:57:37 -0700
-Message-ID: <20200630195737.8667-6-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200630195737.8667-1-rcampbell@nvidia.com>
-References: <20200630195737.8667-1-rcampbell@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
+        id S1729096AbgF3UI4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Jun 2020 16:08:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:26661 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726642AbgF3UIz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Jun 2020 16:08:55 -0400
+IronPort-SDR: ZTzdRDFjdhDAdbFpG2WjIQB6BzT5mWyeImuzBPZEStDN6XVA6BvbI6Ygs/iG9/47SD8LqVLzyS
+ 9yMKa1/PkU8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="133824799"
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="133824799"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2020 13:08:53 -0700
+IronPort-SDR: Z09R2WEjP+pQ+umDTqvA1TFHI6skQzEOQvdgmfQcBpwOksHlrsGgTiMXoM5IxWCtPW0HtxsvXJ
+ ZjylQO6gJ2mw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,298,1589266800"; 
+   d="scan'208";a="355880623"
+Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
+  by orsmga001.jf.intel.com with ESMTP; 30 Jun 2020 13:08:53 -0700
+Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
+ ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 30 Jun 2020 13:08:53 -0700
+Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 30 Jun 2020 13:08:52 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 30 Jun 2020 13:08:52 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 30 Jun 2020 13:08:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ibeFoc3eERfXirbi+R8XN4WnO2C0nAKlHqYqEga9UOBM/9BqtERcxhctG8y9CCHk0lF7w0ramiPvhKdzkmw52xi94OZfkE8CVkb7I9tvDTsL9kez0ZCrx/+hg+qDPVKkaVKGuRuLt/9TTlmNpTjuQQ/CKH1S8ig9u3pYEb1X0r5TVN3Bbmr8+wqxpFmNZK/OE0XiEBrFvxdSfFOW444NvQJJn1iLxS0YaIREe+N6+MsJFTmxTGL9jqvOTeiuuMZtZYHpapHQS0DYIqigF+brXyIISsGs4sj1zYCoRqsYX6XEK0pwp70/b1kPsrPH2snJGwe5in8K7GRAdVI9EQiWXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8KG/74OqfhKkJgqJDTxALbGpa9FztQThvmjNIx6EsCU=;
+ b=YkWa+q0L31k+509nl5q/TJe1nQnpExRzma2/WQEACE3uz2Y5+WN5uOiUAm3CJMN2keUUgTzx91VDeNZD0eMV7Ax3ApKiMpYWWfITf+JfQgc1Ox63q9nqHLObIqhVhWlqlTDAfiLyM/qWXCYkTxfL354omefNjAsxEepALVoqj+SswqV6/KWN3LOpwDnAgJvYAOcj3hlIe9/IfuMELY2HSV7DZiSRzfsNC8LBkIsdx08v06ePCXeeNwx17hjLf8ERaVlcvn6Gdu1TkXnWVmariCeleTndRDqKU8sP61dULtSugVc5lP9qjtvNNxDxbuHXBP0jy4qxRndM6MEDEzuvjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8KG/74OqfhKkJgqJDTxALbGpa9FztQThvmjNIx6EsCU=;
+ b=dlwhrsfQlSjS9JxRjjqMEaV3Geh8yERNRBPxF1HqDo9GABJKFnTWU0G20xFwiB9iI2ArQ5jTS0DuWy/dZ+ZnIqOYLEPBSOkkUaKoapRCakDTxGS0l+8GleIuZKeJ+irU36vQopsW9RUfy1kKXREEZKsL0O9PFRwQ6GAgtEI+a1c=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MWHPR11MB1310.namprd11.prod.outlook.com (2603:10b6:300:28::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Tue, 30 Jun
+ 2020 20:08:46 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::ed68:a00b:2bb0:21cf]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::ed68:a00b:2bb0:21cf%8]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
+ 20:08:46 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: RE: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Thread-Topic: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Thread-Index: AQHWTjmKZPnzyjUH+EiOzVuDukOX/Kjv8EEAgAFgqNCAABwVgIAACtwwgAARwQCAAAePEA==
+Date:   Tue, 30 Jun 2020 20:08:46 +0000
+Message-ID: <MW3PR11MB4555223B6D3C6E4829795798E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
+ <20200629185152.GD25301@ziepe.ca>
+ <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630173435.GK25301@ziepe.ca>
+ <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630191700.GL25301@ziepe.ca>
+In-Reply-To: <20200630191700.GL25301@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.136.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4329e27c-c962-4718-a827-08d81d316579
+x-ms-traffictypediagnostic: MWHPR11MB1310:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB13103632EFAC27A8C04D70B6E56F0@MWHPR11MB1310.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0450A714CB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 58K1WtKMYAmo6EuIv/fhkJaWJA8owqPebHOeaDtZ+SgMkjLb6/UvPE4qAe/rIQWVuIzEdgWF8qH6AdtOsVsjewGwbNG3SqByOikFqqIuVFU4QIna1sWXBrY/e/c6DFJeTsxW76T/4gWqHp9jvUi7vis8YbSNBHZxiSHAY27NEmeJ6ROTCSxgKe/9DEZ3ByiynaYSTPWOqx6ALhDbqbeQgnE7brB7HO0x1E3hXV/HXn1BhOs7LtNKt4DjRXAy4yNDyrSKiYuqpxblnqZAyDw77sPkOsJLZGiK2Wb2ztIVtdDQ2gO3Vr2ZZMvzZNRGgnoCCmN7vlXDkQDKf0eq4WEmug==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(396003)(136003)(376002)(55016002)(7696005)(9686003)(53546011)(6506007)(478600001)(71200400001)(86362001)(316002)(54906003)(83380400001)(4326008)(186003)(52536014)(8676002)(5660300002)(76116006)(66946007)(66446008)(64756008)(66556008)(66476007)(33656002)(2906002)(26005)(8936002)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bdTj1G6lFjN2tICCqgdZ9sK4WcTYtqugcom3VxNyY5SdH0hk2BCPfRirDb/GVubTvwEmWHPb++1AojGN3whKHO5AXNoNGQd0Y3e/MAEBLo1moj8z/M8IJDbA+siuEg7M2wurqTdEzSBK93F1NT0MZoZ88CkDGfAvLA5U1ENoQEFRMR0M12Fp8kX6XHMBiqVhoXe2O1FSXmNyf7c6CedkTrZQzr5z6hE9zuDkEsra/ElkETzHSa9x4zF6ih9ML7biEr/5l5L4QlaVLCBE6ae6R5ogFzGXBhXC+9cBtVf7FT8q5pO6swkJ/QuDRbC9p1jLQuVqgox79jB0YEUTRLKWJwpjQqlI7ig4p4hVtJrnLCazYvWZCEOVBoAQnwLHzoJqIDseZaIoHohkhEbmsHPk+Bdqmp6rdZJwjUh7+BoXLq0QCYhuGkTWuS04e9hWVr9aSwNML+oll+U4V3Iw6ZLEtEhfi1oxyUNcLGiZtpVzx7n7/hOEh7CAdSnWp5bErvsr
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593547046; bh=xuRfNJ36q0LnGXZex5ovQdfiNn+iM2/aFxAzu26EyNY=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=IP4I+UsioFZBLvnRoozRSTgj3AkNCNg7sQ19NgqKnBZ7E02H2ArJ8qhpeblyEPs1k
-         N5QwP8OqGmCC3q+YgmfXEKkLY2Au0Mn9iRv2V0ovRKQKIMKWUvAfMoAPk3Y5/gra4F
-         DKrR5XJWn5XNp8nNBFYQ0seQWW1KWLih0lKov6AOkk4EUlsJ5XlJxUBvTJP4oVaUcJ
-         Kv9xeaZSH/wQ47mzGbAKhnMcR2Jxi5Qt3e6RUYz1Mq+qudm/B+keCu88HL89AjvUmw
-         xYKuFWr6iyl8mAKIjyHFnQoqJ2u4k8kul9ODB88dk5V6NrYXUdcR5TsgW4hVv/eKHP
-         cw8q9U8O/zN7Q==
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4329e27c-c962-4718-a827-08d81d316579
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2020 20:08:46.4924
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Uyv/Isdl4WXin+pjwEXwBTXkPbFnwkYCcQu8Tv+2PHVGJr3XZkjA31hAyKurv2LUT2ttJyEo0viHSolcWBQPPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1310
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a sanity test for hmm_range_fault() returning the HMM_PFN_PMD
-flag.
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Tuesday, June 30, 2020 12:17 PM
+> To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> Cc: linux-rdma@vger.kernel.org; Doug Ledford <dledford@redhat.com>; Sumit=
+ Semwal <sumit.semwal@linaro.org>; Leon Romanovsky
+> <leon@kernel.org>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Ko=
+enig <christian.koenig@amd.com>; dri-
+> devel@lists.freedesktop.org
+> Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+>=20
+> > >
+> > > On Tue, Jun 30, 2020 at 05:21:33PM +0000, Xiong, Jianxin wrote:
+> > > > > > Heterogeneous Memory Management (HMM) utilizes
+> > > > > > mmu_interval_notifier and ZONE_DEVICE to support shared
+> > > > > > virtual address space and page migration between system memory
+> > > > > > and device memory. HMM doesn't support pinning device memory
+> > > > > > because pages located on device must be able to migrate to
+> > > > > > system memory when accessed by CPU. Peer-to-peer access is
+> > > > > > possible if the peer can handle page fault. For RDMA, that mean=
+s the NIC must support on-demand paging.
+> > > > >
+> > > > > peer-peer access is currently not possible with hmm_range_fault()=
+.
+> > > >
+> > > > Currently hmm_range_fault() always sets the cpu access flag and
+> > > > device private pages are migrated to the system RAM in the fault ha=
+ndler.
+> > > > However, it's possible to have a modified code flow to keep the
+> > > > device private page info for use with peer to peer access.
+> > >
+> > > Sort of, but only within the same device, RDMA or anything else gener=
+ic can't reach inside a DEVICE_PRIVATE and extract anything
+> useful.
+> >
+> > But pfn is supposed to be all that is needed.
+>=20
+> Needed for what? The PFN of the DEVICE_PRIVATE pages is useless for anyth=
+ing.
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
- lib/test_hmm.c                         |  4 ++
- lib/test_hmm_uapi.h                    |  4 ++
- tools/testing/selftests/vm/hmm-tests.c | 76 ++++++++++++++++++++++++++
- 3 files changed, 84 insertions(+)
+Hmm. I thought the pfn corresponds to the address in the BAR range. I could=
+ be
+wrong here.=20
 
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index a2a82262b97b..a0c081641f78 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -766,6 +766,10 @@ static void dmirror_mkentry(struct dmirror *dmirror, s=
-truct hmm_range *range,
- 		*perm |=3D HMM_DMIRROR_PROT_WRITE;
- 	else
- 		*perm |=3D HMM_DMIRROR_PROT_READ;
-+	if (entry & HMM_PFN_PMD)
-+		*perm |=3D HMM_DMIRROR_PROT_PMD;
-+	if (entry & HMM_PFN_PUD)
-+		*perm |=3D HMM_DMIRROR_PROT_PUD;
- }
-=20
- static bool dmirror_snapshot_invalidate(struct mmu_interval_notifier *mni,
-diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
-index 67b3b2e6ff5d..670b4ef2a5b6 100644
---- a/lib/test_hmm_uapi.h
-+++ b/lib/test_hmm_uapi.h
-@@ -40,6 +40,8 @@ struct hmm_dmirror_cmd {
-  * HMM_DMIRROR_PROT_NONE: unpopulated PTE or PTE with no access
-  * HMM_DMIRROR_PROT_READ: read-only PTE
-  * HMM_DMIRROR_PROT_WRITE: read/write PTE
-+ * HMM_DMIRROR_PROT_PMD: PMD sized page is fully mapped by same permission=
-s
-+ * HMM_DMIRROR_PROT_PUD: PUD sized page is fully mapped by same permission=
-s
-  * HMM_DMIRROR_PROT_ZERO: special read-only zero page
-  * HMM_DMIRROR_PROT_DEV_PRIVATE_LOCAL: Migrated device private page on the
-  *					device the ioctl() is made
-@@ -51,6 +53,8 @@ enum {
- 	HMM_DMIRROR_PROT_NONE			=3D 0x00,
- 	HMM_DMIRROR_PROT_READ			=3D 0x01,
- 	HMM_DMIRROR_PROT_WRITE			=3D 0x02,
-+	HMM_DMIRROR_PROT_PMD			=3D 0x04,
-+	HMM_DMIRROR_PROT_PUD			=3D 0x08,
- 	HMM_DMIRROR_PROT_ZERO			=3D 0x10,
- 	HMM_DMIRROR_PROT_DEV_PRIVATE_LOCAL	=3D 0x20,
- 	HMM_DMIRROR_PROT_DEV_PRIVATE_REMOTE	=3D 0x30,
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftes=
-ts/vm/hmm-tests.c
-index 79db22604019..b533dd08da1d 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -1291,6 +1291,82 @@ TEST_F(hmm2, snapshot)
- 	hmm_buffer_free(buffer);
- }
-=20
-+/*
-+ * Test the hmm_range_fault() HMM_PFN_PMD flag for large pages that
-+ * should be mapped by a large page table entry.
-+ */
-+TEST_F(hmm, compound)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	int *ptr;
-+	unsigned char *m;
-+	int ret;
-+	long pagesizes[4];
-+	int n, idx;
-+	unsigned long i;
-+
-+	/* Skip test if we can't allocate a hugetlbfs page. */
-+
-+	n =3D gethugepagesizes(pagesizes, 4);
-+	if (n <=3D 0)
-+		return;
-+	for (idx =3D 0; --n > 0; ) {
-+		if (pagesizes[n] < pagesizes[idx])
-+			idx =3D n;
-+	}
-+	size =3D ALIGN(TWOMEG, pagesizes[idx]);
-+	npages =3D size >> self->page_shift;
-+
-+	buffer =3D malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
-+
-+	buffer->ptr =3D get_hugepage_region(size, GHR_STRICT);
-+	if (buffer->ptr =3D=3D NULL) {
-+		free(buffer);
-+		return;
-+	}
-+
-+	buffer->size =3D size;
-+	buffer->mirror =3D malloc(npages);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	/* Initialize the pages the device will snapshot in buffer->ptr. */
-+	for (i =3D 0, ptr =3D buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] =3D i;
-+
-+	/* Simulate a device snapshotting CPU pagetables. */
-+	ret =3D hmm_dmirror_cmd(self->fd, HMM_DMIRROR_SNAPSHOT, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device saw. */
-+	m =3D buffer->mirror;
-+	for (i =3D 0; i < npages; ++i)
-+		ASSERT_EQ(m[i], HMM_DMIRROR_PROT_WRITE |
-+				HMM_DMIRROR_PROT_PMD);
-+
-+	/* Make the region read-only. */
-+	ret =3D mprotect(buffer->ptr, size, PROT_READ);
-+	ASSERT_EQ(ret, 0);
-+
-+	/* Simulate a device snapshotting CPU pagetables. */
-+	ret =3D hmm_dmirror_cmd(self->fd, HMM_DMIRROR_SNAPSHOT, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device saw. */
-+	m =3D buffer->mirror;
-+	for (i =3D 0; i < npages; ++i)
-+		ASSERT_EQ(m[i], HMM_DMIRROR_PROT_READ |
-+				HMM_DMIRROR_PROT_PMD);
-+
-+	free_hugepage_region(buffer->ptr);
-+	buffer->ptr =3D NULL;
-+	hmm_buffer_free(buffer);
-+}
-+
- /*
-  * Test two devices reading the same memory (double mapped).
-  */
---=20
-2.20.1
+>=20
+> > > Well, what do you want to happen here? The RDMA parts are
+> > > reasonable, but I don't want to add new functionality without a
+> > > purpose - the other parts need to be settled out first.
+> >
+> > At the RDMA side, we mainly want to check if the changes are
+> > acceptable. For example, the part about adding 'fd' to the device ops
+> > and the ioctl interface. All the previous comments are very helpful
+> > for us to refine the patch so that we can be ready when GPU side
+> > support becomes available.
+>=20
+> Well, I'm not totally happy with the way the umem and the fd is handled s=
+o roughly and incompletely..
 
+Yes, this feedback is very helpful. Will work on improving the code.
+
+>=20
+> > > Hum. This is not actually so hard to do. The whole dma buf proposal
+> > > would make a lot more sense if the 'dma buf MR' had to be the
+> > > dynamic kind and the driver had to provide the faulting. It would
+> > > not be so hard to change mlx5 to be able to work like this, perhaps.
+> > > (the locking might be a bit tricky though)
+> >
+> > The main issue is that not all NICs support ODP.
+>=20
+> Sure, but there is lots of infrastructure work here to be done on dma buf=
+, having a correct consumer in the form of ODP might be helpful to
+> advance it.
+
+Good point. Thanks.
+
+>=20
+> Jason
