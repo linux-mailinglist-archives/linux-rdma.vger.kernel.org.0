@@ -2,116 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C1B2111B7
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2020 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43653211374
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jul 2020 21:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729465AbgGARP1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jul 2020 13:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729328AbgGARP1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jul 2020 13:15:27 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E2AC08C5C1
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Jul 2020 10:15:27 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id r12so14503530ilh.4
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jul 2020 10:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XxnIxtjRpDkvkw51GDJVMxPTPGtFOykolSOKsxdLZrI=;
-        b=iMvRepgl7G2zNXZ76Hr/JM0kvklKj2OppBxjxki23srGIrq6ioLxbixoQwwF7o1gQ3
-         mc8DiDRPkO9ZyXHbNZ0Jh4v2uQwXQA2gROyeb/mgI4mJFKsKttQ9NEbiEMzptwBUStYL
-         2W8vWBjzv+7LD4ciLeUZbm8WPBdaSb/yTwUFHpFfhvlOPA8eFvPChumv6qX/xUZWJaS7
-         WExrJXqm1XpHR8IWSlASm6a0MgLkfL0lsNNB5/u0oF0nfUb5jMsYAMMqMDqNPbWIUoUy
-         CDrBg1oCeaG5p8JYa2fTsFbABglV5FY6TMeSOyvHrYsOn6LQ9x16PZAKJJggXGpO9L2h
-         Bmyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XxnIxtjRpDkvkw51GDJVMxPTPGtFOykolSOKsxdLZrI=;
-        b=pOb0eZt1yPriJtxLM2oeSrKp3aiPg0o4RmRTgXH/IfQl61DHHpHDEghXoc+8lVXjgu
-         vwMyDjbv2LSao3tjPgOPAGiUX4AhHHw1w/BbxhCNYJzsQW3KhwZkFgpU0HBrumDy3vCR
-         v7cLwuQF/5kcm7/E+3AyYfyLE4a343YJouAo7oKtR+rK6Tf9UUSHhpqDhprB1rmwDxzO
-         KJwn6OyFxgUXyGpo6vBweCrJaSZPM/OaSELjHod0dWXEtL52bGcmxAxSWQz1OsHxILmX
-         E2yuvcQ4F559ReZXqXrTPLKeEUMEch7qrLAQc5nUOFWmHeZhdSXXeiKQmtGlHKwOkdG1
-         6G1g==
-X-Gm-Message-State: AOAM531Gn3f4QLVVkz1cFBnLnLCsi7xWM84UyaqGWVRIQo15KnB+5fTC
-        kjDfyBKFAfhSJFuTi8/6EnQCQA==
-X-Google-Smtp-Source: ABdhPJxhHTHmbob6OQdYcormvVS6B2LDFca749np99vHRxmGD/Dd5URAcW/wKfoHCWMGpgIuDlfENA==
-X-Received: by 2002:a92:844b:: with SMTP id l72mr9137016ild.19.1593623725989;
-        Wed, 01 Jul 2020 10:15:25 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id t6sm3162260ioi.20.2020.07.01.10.15.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 10:15:25 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jqgKS-002ans-8p; Wed, 01 Jul 2020 14:15:24 -0300
-Date:   Wed, 1 Jul 2020 14:15:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
-Message-ID: <20200701171524.GN25301@ziepe.ca>
-References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
- <20200629185152.GD25301@ziepe.ca>
- <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20200630173435.GK25301@ziepe.ca>
- <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <9b4fa0c2-1661-6011-c552-e37b05f35938@amd.com>
- <20200701123904.GM25301@ziepe.ca>
- <34077a9f-7924-fbb3-04d9-cd20243f815c@amd.com>
- <CAKMK7uFf3_a+BN8CM7G8mNQPNtVBorouB+R5kxbbmFSB9XbeSg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFf3_a+BN8CM7G8mNQPNtVBorouB+R5kxbbmFSB9XbeSg@mail.gmail.com>
+        id S1726324AbgGATXt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jul 2020 15:23:49 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:36008 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgGATXs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jul 2020 15:23:48 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 061JMEK3103547;
+        Wed, 1 Jul 2020 19:23:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=siJdK4QK5aSRhtorv9v4f8AGZi4rxo+SzwUUzhRWE/8=;
+ b=f5LPid/xW/fa9QLd0wU+oJW11LIUHCD7uvOg0nkmMhc2nIRgOc+aqaCam7FDFcGFcwlx
+ mUKIFy6iFUR2cYKDVti7c6+LJjgMgicFy/O0cXnJiY3vQQak6M9y0KaNC3LK9lOhvbbY
+ i6xR+VV08A4YiQXcsCulOPYRWLMiX02ALiNjQG3mHeBhbilcj/9ytqwrv5Zkndtrhnyr
+ 117mLJHUySOWKQlqC0Z4XvydBBJNcIAQNA1EOFKfhLtEQrZ9yawKfIJDrPMdO9/bK0hy
+ r3xge/EENgqX6Yj6L1YmwAQnZerTmik80NSMWwTU5BXIKszdnJ0RKezGFT0L6p/h9/I/ gg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31wxrncewa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 01 Jul 2020 19:23:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 061JMcTU023930;
+        Wed, 1 Jul 2020 19:23:47 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31xfvudkd6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Jul 2020 19:23:47 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 061JNkpe020046;
+        Wed, 1 Jul 2020 19:23:46 GMT
+Received: from oracle.com (/10.159.143.226)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 01 Jul 2020 19:23:45 +0000
+From:   rao.shoaib@oracle.com
+To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     rao.shoaib@oracle.com, ka-cheong.poon@oracle.com,
+        david.edmondson@oracle.com
+Subject: [PATCH v1] rds: If one path needs re-connection, check all and re-connect
+Date:   Wed,  1 Jul 2020 12:23:38 -0700
+Message-Id: <20200701192338.11695-1-rao.shoaib@oracle.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9669 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010135
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9669 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
+ lowpriorityscore=0 suspectscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010135
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 05:42:21PM +0200, Daniel Vetter wrote:
-> > >> All you need is the ability to stop wait for ongoing accesses to end and
-> > >> make sure that new ones grab a new mapping.
-> > > Swap and flush isn't a general HW ability either..
-> > >
-> > > I'm unclear how this could be useful, it is guarenteed to corrupt
-> > > in-progress writes?
-> > >
-> > > Did you mean pause, swap and resume? That's ODP.
-> >
-> > Yes, something like this. And good to know, never heard of ODP.
-> 
-> Hm I thought ODP was full hw page faults at an individual page
-> level,
+From: Rao Shoaib <rao.shoaib@oracle.com>
 
-Yes
+In testing with mprds enabled, Oracle Cluster nodes after reboot were
+not able to communicate with others nodes and so failed to rejoin
+the cluster. Peers with lower IP address initiated connection but the
+node could not respond as it choose a different path and could not
+initiate a connection as it had a higher IP address.
 
-> and this stop&resume is for the entire nic. Under the hood both apply
-> back-pressure on the network if a transmission can't be received,
-> but
+With this patch, when a node sends out a packet and the selected path
+is down, all other paths are also checked and any down paths are
+re-connected.
 
-NIC's don't do stop and resume, blocking the Rx pipe is very
-problematic and performance destroying.
+Reviewed-by: Ka-cheong Poon <ka-cheong.poon@oracle.com>
+Reviewed-by: David Edmondson <david.edmondson@oracle.com>
+Signed-off-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+---
+ net/rds/connection.c | 11 +++++++++++
+ net/rds/rds.h        |  7 +++++++
+ net/rds/send.c       |  3 ++-
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
-The strategy for something like ODP is more complex, and so far no NIC
-has deployed it at any granularity larger than per-page.
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index ed7f2133acc2..f2fcab182095 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -905,6 +905,17 @@ void rds_conn_path_connect_if_down(struct rds_conn_path *cp)
+ }
+ EXPORT_SYMBOL_GPL(rds_conn_path_connect_if_down);
+ 
++/* Check connectivity of all paths
++ */
++void rds_check_all_paths(struct rds_connection *conn)
++{
++	int i = 0;
++
++	do {
++		rds_conn_path_connect_if_down(&conn->c_path[i]);
++	} while (++i < conn->c_npaths);
++}
++
+ void rds_conn_connect_if_down(struct rds_connection *conn)
+ {
+ 	WARN_ON(conn->c_trans->t_mp_capable);
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index 6019b0c004a9..106e862996b9 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -778,6 +778,7 @@ void rds_conn_drop(struct rds_connection *conn);
+ void rds_conn_path_drop(struct rds_conn_path *cpath, bool destroy);
+ void rds_conn_connect_if_down(struct rds_connection *conn);
+ void rds_conn_path_connect_if_down(struct rds_conn_path *cp);
++void rds_check_all_paths(struct rds_connection *conn);
+ void rds_for_each_conn_info(struct socket *sock, unsigned int len,
+ 			  struct rds_info_iterator *iter,
+ 			  struct rds_info_lengths *lens,
+@@ -822,6 +823,12 @@ rds_conn_path_up(struct rds_conn_path *cp)
+ 	return atomic_read(&cp->cp_state) == RDS_CONN_UP;
+ }
+ 
++static inline int
++rds_conn_path_down(struct rds_conn_path *cp)
++{
++	return atomic_read(&cp->cp_state) == RDS_CONN_DOWN;
++}
++
+ static inline int
+ rds_conn_up(struct rds_connection *conn)
+ {
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 68e2bdb08fd0..9a529a01cdc6 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1340,7 +1340,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 		goto out;
+ 	}
+ 
+-	rds_conn_path_connect_if_down(cpath);
++	if (rds_conn_path_down(cpath))
++		rds_check_all_paths(conn);
+ 
+ 	ret = rds_cong_wait(conn->c_fcong, dport, nonblock, rs);
+ 	if (ret) {
+-- 
+2.16.6
 
-> So since Jason really doesn't like dma_fence much I think for rdma
-> synchronous it is. And it shouldn't really matter, since waiting for a
-> small transaction to complete at rdma wire speed isn't really that
-> long an operation. 
-
-Even if DMA fence were to somehow be involved, how would it look?
-
-Jason
