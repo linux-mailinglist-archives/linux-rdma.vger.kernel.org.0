@@ -2,118 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336C321234E
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 14:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C05212424
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 15:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728953AbgGBM1i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 08:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgGBM1i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jul 2020 08:27:38 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5F5C08C5C1
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Jul 2020 05:27:38 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r12so16803339ilh.4
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jul 2020 05:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KbXF3rVnE9Y+VvMzTuHkqkyR4wyjUs/wKLmuVOcm6+0=;
-        b=gP3cBBNSsS80JZ9P5WC6YNQZ7v0N/xYCN2O+TyWeFsxablR8ZFXbLP4q37u6ltcfHR
-         CUSk25nlb5msSP3XQUmNiPsyAR2mBpSFEso6szQhgfM2ptS3Ia1K+6kTRTOBl1RDtrjF
-         d1Q/DOyk4kNSzS5hMLx9n6xKDPB+nE12lAGqg/wOyVDjn9ceKJ48fDXA2rjCloEONxvS
-         2nRThEbBdg2vDGJjjZjk0WDQ+PTBGVJJKcGDDYx/jtSsjVdSY5ERqe/lDink9KKM0QOc
-         /lckCOfIP7rbu9cSQdZW3jq5yygjJ07SeWmdoDo5CD5OGpc7+V+J+ppvEmcFYKv4DfBM
-         mg2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KbXF3rVnE9Y+VvMzTuHkqkyR4wyjUs/wKLmuVOcm6+0=;
-        b=YJ1SARX/SwxaVGc/AfeT8YDVep2ec9P/eG1DMw54ruprcg6XmMy+6w5kDFtCbKjRKj
-         qIU6SUbr8BEYbtQllgHJQZ8/lP74qWyLco56YwjUDEgNYDhyvp3GXsedws0lxKsY+6jB
-         v7QKrNDF0SlUlVC4LoqIn6H8WA1HWe1XN4nptA8BLkxK6lcJm+ZijUOIjBEOEGkAOD89
-         9uAxF/lgMnOTHfrZ0R7g7q9oc/qG6vHpdPV/C9H3N+tI4VPNCukkXo/Pc1yJAlqvVKIw
-         VP+vbUXXMw/uuAaMcMSKY0VhNx1pErpcF8D6vBcC9x8FAk19ixBM3o/h53x4hIyBwRjV
-         xgKw==
-X-Gm-Message-State: AOAM5322/gJWlXcc0TszWq5qkcXMEmOSmY32eGqE0OhbQkF/nwoASJOB
-        eOzIp47ime6bknMwFobCkXKPdA==
-X-Google-Smtp-Source: ABdhPJy97My/0BHrvS8CjsBg5Hl5wpr2Xfxh8eavaInlBkgzXSCZgRpkLqT4lq3H4wuhX4XIGaiFuA==
-X-Received: by 2002:a92:bb55:: with SMTP id w82mr12721102ili.146.1593692857820;
-        Thu, 02 Jul 2020 05:27:37 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d77sm5062859ill.67.2020.07.02.05.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 05:27:37 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jqyJU-002qqy-B3; Thu, 02 Jul 2020 09:27:36 -0300
-Date:   Thu, 2 Jul 2020 09:27:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
-Message-ID: <20200702122736.GR25301@ziepe.ca>
-References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
- <20200629185152.GD25301@ziepe.ca>
- <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20200630173435.GK25301@ziepe.ca>
- <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20200630191700.GL25301@ziepe.ca>
- <MW3PR11MB4555223B6D3C6E4829795798E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
-MIME-Version: 1.0
+        id S1728253AbgGBNIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 09:08:21 -0400
+Received: from mail-eopbgr140085.outbound.protection.outlook.com ([40.107.14.85]:45318
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726289AbgGBNIU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:08:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZHJTSQySR02rpWIihnucPPdcy60NabUypK2T33YqKolGojQhlDGDMgydD2puH0LYXX9AyPelbMMJWqR8ir+e7unG79A6bJHZti5laQaH3rgWhyfVYO41SlfJRNaIB/YBGWs+0DOF/OCBLHKeUqPTQnXMzLa4m83Anivb4/p7GalF6Bh+8cfNJHvLXnq4+fzmlr+iGprua1JSrOH1XloW5IBjZlTBAULP/8rdf6ye/YvsDJ5WkDheqSSW9jxwHXmwWCvitxSCT42wdE3vyQMknwx9a+cxL/64KXP0vC+VltA0dS4mAmGyQ3wKeiFcA0qX6kUyLL9NHBndd1NBdHivRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
+ b=AuM27LcMgcTU6fZ7QBJGQnQGuyB1kMnbWVW1a/HUNm9u9oMwZOHW7Jdp6n77d7kuAvxxVwP2Cvsgh6+sZFEbH8T5U+8nElWLo405/URZysPZtIum+4kHzxddSdpIc0DO4k//yYIBAzap08u0kM/zja+ybCpjwyGHVnKVWGiZ8OYe/ejTXi8Lta0zcZsEVDFdLXuyl9MRX9NPIHNbE/6NO0MV0FEiknhtiH1fHY+Di3YaUZOsVcMcXfRiOmUHH3LvhVZO1usvzJvjLhSVMYD1XJWwIAbfRm8ruKUnV3VCgYW2PIym7PMmYtFhjOZDDWsnvdBsxC5Mp2pPwe/0dPx7Wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
+ b=dqkOLlTBye7GpJQXrfMNaInk7CIbrdwdpwJfJxT3BUGFu+KoiyMwvyjeR6crGmJXHY+QlPAOf6htSdNNINjpiqhne3WVdg3T37JwgyYoW3b/XZZmQQQylgVyZYaxUH6jpYqedOz5x8s11I1+2zcJvOqFsEpaKBRB9UWWnlHwAQQ=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR0501MB2334.eurprd05.prod.outlook.com (2603:10a6:800:24::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Thu, 2 Jul
+ 2020 13:08:16 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3153.027; Thu, 2 Jul 2020
+ 13:08:16 +0000
+Date:   Thu, 2 Jul 2020 10:08:09 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/6] Cleanup mlx5_ib main file
+Message-ID: <20200702130809.GU23821@mellanox.com>
+References: <20200702081809.423482-1-leon@kernel.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MW3PR11MB4555223B6D3C6E4829795798E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+In-Reply-To: <20200702081809.423482-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR02CA0064.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::41) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (193.47.165.251) by BL0PR02CA0064.namprd02.prod.outlook.com (2603:10b6:207:3d::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 13:08:16 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jqywj-002rl8-4p; Thu, 02 Jul 2020 10:08:09 -0300
+X-Originating-IP: [193.47.165.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
+X-MS-TrafficTypeDiagnostic: VI1PR0501MB2334:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0501MB2334089CDD6981B1813D4E63CF6D0@VI1PR0501MB2334.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Forefront-PRVS: 0452022BE1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Iq/IvOwWOU8zVSjr2r7dWBDOJPUk94RPyVpddFIhIHQDmFe0LeZFs2oT2rfb/AJYljmKfQ95CULOD2ZSqyBgkT7MomMPh2GhF5dAl3iiqiqyzXjekzl4PzPnVZwOMBe8hV+R66JmFm6EJdCJk8RAla6s5FT+ZRAf90FEGchhWBabUY7e2zxQMMQXOyUl+fTFDCsz0SurdV7ltEQUT14E9Hhub7ax7EibP/H6GaP1QCn1o1h+kn0WzPKn7/CnxRp719tWxfgulcVbuS2cn11RQmFwzLaNBcyo44+p9WUGYVgSazJViMZAuBMS2A9J7BYosQBoej6pUs42iR9QlN4Lpq6DumoINJSdU3VBb/2+qGA1Rq2/s4KZ26eWNcWNNGztEVL335Yt8rkApxFB9r9/vQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(376002)(396003)(136003)(6916009)(107886003)(8676002)(4326008)(426003)(2616005)(33656002)(54906003)(966005)(9746002)(9786002)(36756003)(8936002)(186003)(478600001)(26005)(66476007)(66556008)(5660300002)(316002)(4744005)(1076003)(2906002)(66946007)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: W99Li2/HiKNDJRMe1yiIb27puQKxSfdzG3kIwOExR0gG+ccJ7GJ1lxp11PWxGoDkIj1htuwzE6RvIwVx0v2otHN/gjz450PrRJuiuvufOU93LY//qghx0lJbeVgKtase4q1lkHc5NU9YFk/2qASg55yEgUSA8vWflFZWcAWoJnWMk+6VIu7+D25176Zb7gcJoExWiHIRYziWqZp4Zu5a/jQso4o6oEZA8HUnJZf846rcFABpPBV9LxIR1AE4FqwFKN1mSltfXpYzGshiDTGw6fLWGxYr2bbnax3V/jcwi6GB8fTLXyquBNhpLyEE9WaR9OXwTWykjKtIMkEUra1PvxuDTZiR3zl63zmBm/1ILKbdxeupe/ODUpqskbUJ+IJFNsTxdN9TIIYeGbN5KL4rUxsZ8D/fSKquKYe2DJVspAEjqdcg5/GhFrH5feRI+uHMa/mQxo5VYCcddJvqtM7In4MEal21wJv5QagpBI7Af/FtT8tLnrzrbyhjAuLmRFvo
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB4141.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 13:08:16.2146
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7wA6zmfBaLbCc8vso6oPJ6ex6mjfwsG0eZnnM2GGcD4PXmzR6rAlc+AO0qQqA6eEeMAOiEyou4wmSqrs3d6kDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2334
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:08:46PM +0000, Xiong, Jianxin wrote:
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Tuesday, June 30, 2020 12:17 PM
-> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; Doug Ledford <dledford@redhat.com>; Sumit Semwal <sumit.semwal@linaro.org>; Leon Romanovsky
-> > <leon@kernel.org>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig <christian.koenig@amd.com>; dri-
-> > devel@lists.freedesktop.org
-> > Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
-> > 
-> > > >
-> > > > On Tue, Jun 30, 2020 at 05:21:33PM +0000, Xiong, Jianxin wrote:
-> > > > > > > Heterogeneous Memory Management (HMM) utilizes
-> > > > > > > mmu_interval_notifier and ZONE_DEVICE to support shared
-> > > > > > > virtual address space and page migration between system memory
-> > > > > > > and device memory. HMM doesn't support pinning device memory
-> > > > > > > because pages located on device must be able to migrate to
-> > > > > > > system memory when accessed by CPU. Peer-to-peer access is
-> > > > > > > possible if the peer can handle page fault. For RDMA, that means the NIC must support on-demand paging.
-> > > > > >
-> > > > > > peer-peer access is currently not possible with hmm_range_fault().
-> > > > >
-> > > > > Currently hmm_range_fault() always sets the cpu access flag and
-> > > > > device private pages are migrated to the system RAM in the fault handler.
-> > > > > However, it's possible to have a modified code flow to keep the
-> > > > > device private page info for use with peer to peer access.
-> > > >
-> > > > Sort of, but only within the same device, RDMA or anything else generic can't reach inside a DEVICE_PRIVATE and extract anything
-> > useful.
-> > >
-> > > But pfn is supposed to be all that is needed.
-> > 
-> > Needed for what? The PFN of the DEVICE_PRIVATE pages is useless for anything.
+On Thu, Jul 02, 2020 at 11:18:03AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> Hmm. I thought the pfn corresponds to the address in the BAR range. I could be
-> wrong here. 
+> Over the years, the main.c file grew above all imagination and was >8K
+> LOC of the code. This caused to a huge burden while I started to work on
+> ib_flow allocation patches.
+> 
+> This series implements long standing "internal" wish to move flow logic
+> from the main to separate file.
+> 
+> Based on
+> https://lore.kernel.org/linux-rdma/20200630101855.368895-4-leon@kernel.org
 
-No, DEVICE_PRIVATE is a dummy pfn to empty address space.
+Isn't this the series you said to drop? Can this be applied
+independently?
 
 Jason
