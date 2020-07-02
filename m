@@ -2,73 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2D8211ECF
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 10:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E8F211F7A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 11:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgGBI3p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 04:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726980AbgGBI3p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:29:45 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6C4F20899;
-        Thu,  2 Jul 2020 08:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593678585;
-        bh=sxbbjMBwXKAWwy9HwdH3BFNCd1dwyprJIjiWujRDivQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P8jVTyJDcxjMnwOAvPvok5tmj+b67GOp8BWjISQRxzV1I2T2DC8/s0tg9oSBo/KSX
-         kDDdOKh7mp2qVpYPs8lFoxJ/NSsZr6Tljn7Cqp8/n0NaEauaj+cf2wE5uhTUjbG4p4
-         qeH4nwQQTjFlZJJy5Lr3NpjHcCCt0HFQU2BfeiH8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Mark Zhang <markz@mellanox.com>, linux-rdma@vger.kernel.org,
-        Majd Dibbiny <majd@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-next 3/3] RDMA/counter: Allow manually bind QPs with different pids to same counter
-Date:   Thu,  2 Jul 2020 11:29:33 +0300
-Message-Id: <20200702082933.424537-4-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200702082933.424537-1-leon@kernel.org>
-References: <20200702082933.424537-1-leon@kernel.org>
+        id S1726362AbgGBJJl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 05:09:41 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6805 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726089AbgGBJJl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:09:41 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 261584EB6E99CFD40B6F;
+        Thu,  2 Jul 2020 17:09:40 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 17:09:32 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>, Tariq Toukan <tariqt@mellanox.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>
+Subject: [PATCH net-next] mlx4: Mark PM functions as __maybe_unused
+Date:   Thu, 2 Jul 2020 17:19:46 +0800
+Message-ID: <20200702091946.5144-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+In certain configurations without power management support, the
+following warnings happen:
 
-In manual mode allow bind user QPs with different pids to same counter,
-since this is allowed in auto mode.
-Bind kernel QPs and user QPs to the same counter are not allowed.
+drivers/net/ethernet/mellanox/mlx4/main.c:4388:12:
+ warning: 'mlx4_resume' defined but not used [-Wunused-function]
+ 4388 | static int mlx4_resume(struct device *dev_d)
+      |            ^~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx4/main.c:4373:12: warning:
+ 'mlx4_suspend' defined but not used [-Wunused-function]
+ 4373 | static int mlx4_suspend(struct device *dev_d)
+      |            ^~~~~~~~~~~~
+      
+Mark these functions as __maybe_unused to make it clear to the
+compiler that this is going to happen based on the configuration,
+which is the standard for these types of functions.
 
-Fixes: 1bd8e0a9d0fd ("RDMA/counter: Allow manual mode configuration support")
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 0e3e206a3e12 ("mlx4: use generic power management")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/infiniband/core/counters.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 104df52e9bdb..636166880442 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -473,7 +473,7 @@ int rdma_counter_bind_qpn(struct ib_device *dev, u8 port,
- 		goto err;
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 4cae7db8d49c..954c22c79f6b 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -4370,7 +4370,7 @@ static const struct pci_error_handlers mlx4_err_handler = {
+ 	.resume		= mlx4_pci_resume,
+ };
  
--	if (counter->res.task != qp->res.task) {
-+	if (rdma_is_kernel_res(&counter->res) != rdma_is_kernel_res(&qp->res)) {
- 		ret = -EINVAL;
- 		goto err_task;
- 	}
--- 
-2.26.2
+-static int mlx4_suspend(struct device *dev_d)
++static int __maybe_unused mlx4_suspend(struct device *dev_d)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
+@@ -4385,7 +4385,7 @@ static int mlx4_suspend(struct device *dev_d)
+ 	return 0;
+ }
+ 
+-static int mlx4_resume(struct device *dev_d)
++static int __maybe_unused mlx4_resume(struct device *dev_d)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
 
