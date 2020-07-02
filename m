@@ -2,97 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A0F212337
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 14:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336C321234E
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgGBMUg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 08:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728808AbgGBMUf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:20:35 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCAE52084C;
-        Thu,  2 Jul 2020 12:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593692435;
-        bh=JRsQWQIRvil2lzfm5RzIfgVh20V7WVMTAsQvShOnTa8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wpVtyDSV5qRz/q/2V/M7zlrr/Ot31NlQJ+rN14P2AYrR/FUjyVIJ7WDtNYUfWAzmw
-         KmomDtfuDqZVkCApnf7C+Io8hDb0ReoG78BHqmuhcpHRU0pJF4TAcsMUcIGWFubeV+
-         2oSq64H9vOjMX36sTu8fbnq+9PPWAiIq+y65vYOc=
-Date:   Thu, 2 Jul 2020 13:20:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>,
-        lee.jones@linaro.org
-Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
- client
-Message-ID: <20200702122032.GD4483@sirena.org.uk>
-References: <20200629203317.GM5499@sirena.org.uk>
- <20200629225959.GF25301@ziepe.ca>
- <20200630103141.GA5272@sirena.org.uk>
- <20200630113245.GG25301@ziepe.ca>
- <936d8b1cbd7a598327e1b247441fa055d7083cb6.camel@linux.intel.com>
- <20200630172710.GJ25301@ziepe.ca>
- <20200701095049.GA5988@sirena.org.uk>
- <20200701233250.GP25301@ziepe.ca>
- <20200702111522.GA4483@sirena.org.uk>
- <20200702121147.GQ25301@ziepe.ca>
+        id S1728953AbgGBM1i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 08:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgGBM1i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jul 2020 08:27:38 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5F5C08C5C1
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Jul 2020 05:27:38 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id r12so16803339ilh.4
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jul 2020 05:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KbXF3rVnE9Y+VvMzTuHkqkyR4wyjUs/wKLmuVOcm6+0=;
+        b=gP3cBBNSsS80JZ9P5WC6YNQZ7v0N/xYCN2O+TyWeFsxablR8ZFXbLP4q37u6ltcfHR
+         CUSk25nlb5msSP3XQUmNiPsyAR2mBpSFEso6szQhgfM2ptS3Ia1K+6kTRTOBl1RDtrjF
+         d1Q/DOyk4kNSzS5hMLx9n6xKDPB+nE12lAGqg/wOyVDjn9ceKJ48fDXA2rjCloEONxvS
+         2nRThEbBdg2vDGJjjZjk0WDQ+PTBGVJJKcGDDYx/jtSsjVdSY5ERqe/lDink9KKM0QOc
+         /lckCOfIP7rbu9cSQdZW3jq5yygjJ07SeWmdoDo5CD5OGpc7+V+J+ppvEmcFYKv4DfBM
+         mg2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KbXF3rVnE9Y+VvMzTuHkqkyR4wyjUs/wKLmuVOcm6+0=;
+        b=YJ1SARX/SwxaVGc/AfeT8YDVep2ec9P/eG1DMw54ruprcg6XmMy+6w5kDFtCbKjRKj
+         qIU6SUbr8BEYbtQllgHJQZ8/lP74qWyLco56YwjUDEgNYDhyvp3GXsedws0lxKsY+6jB
+         v7QKrNDF0SlUlVC4LoqIn6H8WA1HWe1XN4nptA8BLkxK6lcJm+ZijUOIjBEOEGkAOD89
+         9uAxF/lgMnOTHfrZ0R7g7q9oc/qG6vHpdPV/C9H3N+tI4VPNCukkXo/Pc1yJAlqvVKIw
+         VP+vbUXXMw/uuAaMcMSKY0VhNx1pErpcF8D6vBcC9x8FAk19ixBM3o/h53x4hIyBwRjV
+         xgKw==
+X-Gm-Message-State: AOAM5322/gJWlXcc0TszWq5qkcXMEmOSmY32eGqE0OhbQkF/nwoASJOB
+        eOzIp47ime6bknMwFobCkXKPdA==
+X-Google-Smtp-Source: ABdhPJy97My/0BHrvS8CjsBg5Hl5wpr2Xfxh8eavaInlBkgzXSCZgRpkLqT4lq3H4wuhX4XIGaiFuA==
+X-Received: by 2002:a92:bb55:: with SMTP id w82mr12721102ili.146.1593692857820;
+        Thu, 02 Jul 2020 05:27:37 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d77sm5062859ill.67.2020.07.02.05.27.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 05:27:37 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jqyJU-002qqy-B3; Thu, 02 Jul 2020 09:27:36 -0300
+Date:   Thu, 2 Jul 2020 09:27:36 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Message-ID: <20200702122736.GR25301@ziepe.ca>
+References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
+ <20200629185152.GD25301@ziepe.ca>
+ <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630173435.GK25301@ziepe.ca>
+ <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630191700.GL25301@ziepe.ca>
+ <MW3PR11MB4555223B6D3C6E4829795798E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NtwzykIc2mflq5ck"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702121147.GQ25301@ziepe.ca>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <MW3PR11MB4555223B6D3C6E4829795798E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Jun 30, 2020 at 08:08:46PM +0000, Xiong, Jianxin wrote:
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Tuesday, June 30, 2020 12:17 PM
+> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> > Cc: linux-rdma@vger.kernel.org; Doug Ledford <dledford@redhat.com>; Sumit Semwal <sumit.semwal@linaro.org>; Leon Romanovsky
+> > <leon@kernel.org>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig <christian.koenig@amd.com>; dri-
+> > devel@lists.freedesktop.org
+> > Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+> > 
+> > > >
+> > > > On Tue, Jun 30, 2020 at 05:21:33PM +0000, Xiong, Jianxin wrote:
+> > > > > > > Heterogeneous Memory Management (HMM) utilizes
+> > > > > > > mmu_interval_notifier and ZONE_DEVICE to support shared
+> > > > > > > virtual address space and page migration between system memory
+> > > > > > > and device memory. HMM doesn't support pinning device memory
+> > > > > > > because pages located on device must be able to migrate to
+> > > > > > > system memory when accessed by CPU. Peer-to-peer access is
+> > > > > > > possible if the peer can handle page fault. For RDMA, that means the NIC must support on-demand paging.
+> > > > > >
+> > > > > > peer-peer access is currently not possible with hmm_range_fault().
+> > > > >
+> > > > > Currently hmm_range_fault() always sets the cpu access flag and
+> > > > > device private pages are migrated to the system RAM in the fault handler.
+> > > > > However, it's possible to have a modified code flow to keep the
+> > > > > device private page info for use with peer to peer access.
+> > > >
+> > > > Sort of, but only within the same device, RDMA or anything else generic can't reach inside a DEVICE_PRIVATE and extract anything
+> > useful.
+> > >
+> > > But pfn is supposed to be all that is needed.
+> > 
+> > Needed for what? The PFN of the DEVICE_PRIVATE pages is useless for anything.
+> 
+> Hmm. I thought the pfn corresponds to the address in the BAR range. I could be
+> wrong here. 
 
---NtwzykIc2mflq5ck
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No, DEVICE_PRIVATE is a dummy pfn to empty address space.
 
-On Thu, Jul 02, 2020 at 09:11:47AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jul 02, 2020 at 12:15:22PM +0100, Mark Brown wrote:
-
-> > These are very much physical devices often with distinct IPs in distinct
-> > address ranges and so on, it's just that those addresses happen not to
-> > be on buses it is sensible to memory map.
-
-> But platform bus is all about memmory mapping, so how does the
-> subdevice learn the address range and properly share the underlying
-> transport?
-
-Hard coding, some out of band mechanism or using an unparented register
-region (the resource the code is fine, it's not going to actually look
-at the registers described).
-
---NtwzykIc2mflq5ck
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl790RAACgkQJNaLcl1U
-h9C8Ygf+Kxu/BiRuIl0FHMQzvFHOP8VbBGznBp2reGiFb41xqw2HK3BDOthnGqmA
-LOAbPcshGN13wVeoNl2iiSdKVFAl74Mhx+RyfFlP43mNLeNkcd9uZYiFQR7Pfc3w
-N4Vmp51ryxDeLW9KlOn6hRG562TcAyJZ4M7cj5COcKkACuE6UpUtsupa3SHTdTgy
-8EayY2evuCHE91Oh2FTVrYSPDabTkApc0fvn1lsMK/dFXUDGwFc7gGdaOEaLmZfH
-X13v0ATFlWHkQfI++Jx76sy3cutCvqN4bpdt1nHk/6B6zY2qNPWZ/Yv1+QdypnrJ
-b9l3NJwW7f/pSYDG8x0Z8KzulshfQA==
-=n1Ak
------END PGP SIGNATURE-----
-
---NtwzykIc2mflq5ck--
+Jason
