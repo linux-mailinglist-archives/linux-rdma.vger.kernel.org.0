@@ -2,76 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2278212130
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 12:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054FF2121EC
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 13:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgGBK1W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 06:27:22 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:34790 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728485AbgGBK1V (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:27:21 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A965DD26198CC5F5A182;
-        Thu,  2 Jul 2020 18:27:19 +0800 (CST)
-Received: from [10.174.178.65] (10.174.178.65) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 2 Jul 2020
- 18:27:12 +0800
-Subject: Re: [PATCH net-next] mlx4: Mark PM functions as __maybe_unused
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>, Tariq Toukan <tariqt@mellanox.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20200702091946.5144-1-weiyongjun1@huawei.com>
- <20200702093601.GB4837@unreal>
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-Message-ID: <8c2f2afc-7aab-f8d5-e53b-6d1f1a446773@huawei.com>
-Date:   Thu, 2 Jul 2020 18:27:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728257AbgGBLP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 07:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgGBLP0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:15:26 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39A572070C;
+        Thu,  2 Jul 2020 11:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593688524;
+        bh=T46/s05JJaZY2ZsHB2+vCYi4rc2Z76kKYeyjd9/b608=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gYGVYjx2o+x8wg68Phh08ojPd0/BADKrvWSBawDOYoPfijtZHJ8u0lX3jtYM9Xffv
+         QDVI9AS8f47OCMoW7Q6Z0lofKG1JRc0mHxla4MXRXPpIWec/M02j21S73Ok0S1lDur
+         VZmQf/hsuT3k/qSXB5KFReklPLuh7eO1OGar5s2g=
+Date:   Thu, 2 Jul 2020 12:15:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>,
+        lee.jones@linaro.org
+Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF
+ client
+Message-ID: <20200702111522.GA4483@sirena.org.uk>
+References: <s5h5zcistpb.wl-tiwai@suse.de>
+ <20200527071733.GB52617@kroah.com>
+ <20200629203317.GM5499@sirena.org.uk>
+ <20200629225959.GF25301@ziepe.ca>
+ <20200630103141.GA5272@sirena.org.uk>
+ <20200630113245.GG25301@ziepe.ca>
+ <936d8b1cbd7a598327e1b247441fa055d7083cb6.camel@linux.intel.com>
+ <20200630172710.GJ25301@ziepe.ca>
+ <20200701095049.GA5988@sirena.org.uk>
+ <20200701233250.GP25301@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200702093601.GB4837@unreal>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.65]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+Content-Disposition: inline
+In-Reply-To: <20200701233250.GP25301@ziepe.ca>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2020/7/2 17:36, Leon Romanovsky wrote:
-> On Thu, Jul 02, 2020 at 05:19:46PM +0800, Wei Yongjun wrote:
->> In certain configurations without power management support, the
->> following warnings happen:
->>
->> drivers/net/ethernet/mellanox/mlx4/main.c:4388:12:
->>  warning: 'mlx4_resume' defined but not used [-Wunused-function]
->>  4388 | static int mlx4_resume(struct device *dev_d)
->>       |            ^~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx4/main.c:4373:12: warning:
->>  'mlx4_suspend' defined but not used [-Wunused-function]
->>  4373 | static int mlx4_suspend(struct device *dev_d)
->>       |            ^~~~~~~~~~~~
->>
->> Mark these functions as __maybe_unused to make it clear to the
->> compiler that this is going to happen based on the configuration,
->> which is the standard for these types of functions.
->>
->> Fixes: 0e3e206a3e12 ("mlx4: use generic power management")
-> 
-> I can't find this SHA-1, where did you get it?
+On Wed, Jul 01, 2020 at 08:32:50PM -0300, Jason Gunthorpe wrote:
+> On Wed, Jul 01, 2020 at 10:50:49AM +0100, Mark Brown wrote:
 
-It is in the net-next tree.
+> > Another part of this is that there's not a clean cut over between MMIO
+> > and not using any hardware resources at all - for example a device might
+> > be connected over I2C but use resources to distribute interrupts to
+> > subdevices.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=0e3e206a3e12
+> How does the subdevice do anything if it only received an interrupt?
 
-> And why doesn't mlx5 need this change?
-> 
-> Fixes: 86a3e5d02c20 ("net/mlx4_core: Add PCI calls for suspend/resume")
-> 
-> Thanks
-> 
+Via some bus that isn't memory mapped like I2C or SPI.
+
+> That sounds rather more like virtual bus's use case..
+
+These are very much physical devices often with distinct IPs in distinct
+address ranges and so on, it's just that those addresses happen not to
+be on buses it is sensible to memory map.
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl79wckACgkQJNaLcl1U
+h9CHqwf9FtZW3uRoi7muHR8kqXkUw0BLi3DH3/wixl7IIJS7enYClmelX0TnUHCW
+KCS2vc3hU1RKNFLComkzWs6rQoY8extTzFMvz56nHSoxzAY8oMDRyqiR1uRJB30l
+FCbvGaZg/m/q0rMpsGG7prF17Kf5e3JzRTPMWR2mTeZARDpkftWeFwAPBeAqD2vv
+YopwSL5iwcxzpxS7S8hhQP3oyLr+MXSgiSbhBt0uIfBtXrpJkuxGWQXOS/JePmUm
+1M7S4XTtVOD0vtdG796x/LZfYQ8edWuKS6p+FfZhRES0y6t8j0OettPiWr+SC85c
+e7AXbLy/51pqnBAJI8bAPjlGWzYiyw==
+=vMGu
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
