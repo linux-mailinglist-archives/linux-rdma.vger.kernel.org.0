@@ -2,62 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9453C21173C
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 02:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE8D211DE4
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 10:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgGBAfa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jul 2020 20:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgGBAfa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jul 2020 20:35:30 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3774CC08C5C1;
-        Wed,  1 Jul 2020 17:35:30 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A713314D45696;
-        Wed,  1 Jul 2020 17:35:29 -0700 (PDT)
-Date:   Wed, 01 Jul 2020 17:35:28 -0700 (PDT)
-Message-Id: <20200701.173528.2292418258068703456.davem@davemloft.net>
-To:     rao.shoaib@oracle.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        ka-cheong.poon@oracle.com, david.edmondson@oracle.com
-Subject: Re: [PATCH v1] rds: If one path needs re-connection, check all and
- re-connect
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200701192338.11695-1-rao.shoaib@oracle.com>
-References: <20200701192338.11695-1-rao.shoaib@oracle.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 01 Jul 2020 17:35:29 -0700 (PDT)
+        id S1726445AbgGBISP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 04:18:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726042AbgGBISO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:18:14 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EE6D20720;
+        Thu,  2 Jul 2020 08:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593677894;
+        bh=2dOO5kQOu2YXuUzo51sbC8QuexLQG37+CB+Iz14e9SA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ey1aQpYxoNOTb3Yq3n1wkmMCa+xlzZrdYnYZkI7mWQ8Qd+B8Uls0BoczPWIfBCDyJ
+         1xKdnetMiJ+Hx+ao8P2el6LpNOQ09t7ntAkHe0CWxDFvb/cTwqhA0OY/MQmSWZcP2a
+         CltTgvV/S9FS4E0k+vnHLyJhkJ970JhO7kueyF3c=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next 0/6] Cleanup mlx5_ib main file
+Date:   Thu,  2 Jul 2020 11:18:03 +0300
+Message-Id: <20200702081809.423482-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: rao.shoaib@oracle.com
-Date: Wed,  1 Jul 2020 12:23:38 -0700
+From: Leon Romanovsky <leonro@mellanox.com>
 
-> From: Rao Shoaib <rao.shoaib@oracle.com>
-> 
-> In testing with mprds enabled, Oracle Cluster nodes after reboot were
-> not able to communicate with others nodes and so failed to rejoin
-> the cluster. Peers with lower IP address initiated connection but the
-> node could not respond as it choose a different path and could not
-> initiate a connection as it had a higher IP address.
-> 
-> With this patch, when a node sends out a packet and the selected path
-> is down, all other paths are also checked and any down paths are
-> re-connected.
-> 
-> Reviewed-by: Ka-cheong Poon <ka-cheong.poon@oracle.com>
-> Reviewed-by: David Edmondson <david.edmondson@oracle.com>
-> Signed-off-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
-> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+Over the years, the main.c file grew above all imagination and was >8K
+LOC of the code. This caused to a huge burden while I started to work on
+ib_flow allocation patches.
 
-Applied.
+This series implements long standing "internal" wish to move flow logic
+from the main to separate file.
+
+Based on
+https://lore.kernel.org/linux-rdma/20200630101855.368895-4-leon@kernel.org
+
+Thanks
+
+Leon Romanovsky (6):
+  RDMA/mlx5: Limit the scope of mlx5_ib_enable_driver function
+  RDMA/mlx5: Separate restrack callbacks initialization from main.c
+  RDMA/mlx5: Separate counters from main.c
+  RDMA/mlx5: Separate flow steering logic from main.c
+  RDMA/mlx5: Cleanup DEVX initialization flow
+  RDMA/mlx5: Delete one-time used functions
+
+ drivers/infiniband/hw/mlx5/Makefile   |    3 +-
+ drivers/infiniband/hw/mlx5/cmd.c      |   12 -
+ drivers/infiniband/hw/mlx5/cmd.h      |    1 -
+ drivers/infiniband/hw/mlx5/counters.c |  709 +++++
+ drivers/infiniband/hw/mlx5/counters.h |   17 +
+ drivers/infiniband/hw/mlx5/devx.c     |  102 +-
+ drivers/infiniband/hw/mlx5/devx.h     |   45 +
+ drivers/infiniband/hw/mlx5/flow.c     |  765 -----
+ drivers/infiniband/hw/mlx5/fs.c       | 2514 +++++++++++++++
+ drivers/infiniband/hw/mlx5/fs.h       |   29 +
+ drivers/infiniband/hw/mlx5/main.c     | 4112 +++++--------------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h  |   76 +-
+ drivers/infiniband/hw/mlx5/qp.c       |    1 +
+ drivers/infiniband/hw/mlx5/qp.h       |    1 +
+ drivers/infiniband/hw/mlx5/restrack.c |   29 +-
+ drivers/infiniband/hw/mlx5/restrack.h |   13 +
+ 16 files changed, 4184 insertions(+), 4245 deletions(-)
+ create mode 100644 drivers/infiniband/hw/mlx5/counters.c
+ create mode 100644 drivers/infiniband/hw/mlx5/counters.h
+ create mode 100644 drivers/infiniband/hw/mlx5/devx.h
+ delete mode 100644 drivers/infiniband/hw/mlx5/flow.c
+ create mode 100644 drivers/infiniband/hw/mlx5/fs.c
+ create mode 100644 drivers/infiniband/hw/mlx5/fs.h
+ create mode 100644 drivers/infiniband/hw/mlx5/restrack.h
+
+--
+2.26.2
+
