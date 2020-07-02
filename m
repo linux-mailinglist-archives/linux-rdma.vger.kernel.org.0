@@ -2,84 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E8F211F7A
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 11:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB2621200B
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 11:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgGBJJl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 05:09:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6805 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726089AbgGBJJl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:09:41 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 261584EB6E99CFD40B6F;
-        Thu,  2 Jul 2020 17:09:40 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 17:09:32 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>, Tariq Toukan <tariqt@mellanox.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next] mlx4: Mark PM functions as __maybe_unused
-Date:   Thu, 2 Jul 2020 17:19:46 +0800
-Message-ID: <20200702091946.5144-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726555AbgGBJgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 05:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726475AbgGBJgF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:36:05 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E32A20760;
+        Thu,  2 Jul 2020 09:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593682565;
+        bh=M4Ip9Xi6j29k90rtJdYsp/qDfZss+ZwZqpmQqMK9gsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hhzbx65hHJto1xxHZkkSVSHj9Std5XFTJhAtcZdTDKbgu+dV0Zr7Gw5Ug5Kjbd1BX
+         opkbChqhXbpJ57eX8tOIE1zGq9ZnejVQQPCDPk9YtWlRq1hvtXY/qjKvmLgyUXQe0y
+         iwO9Dk85vCubCQWxkyMMueQV9k4JeW6OcGJioewc=
+Date:   Thu, 2 Jul 2020 12:36:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Hulk Robot <hulkci@huawei.com>, Tariq Toukan <tariqt@mellanox.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] mlx4: Mark PM functions as __maybe_unused
+Message-ID: <20200702093601.GB4837@unreal>
+References: <20200702091946.5144-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702091946.5144-1-weiyongjun1@huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In certain configurations without power management support, the
-following warnings happen:
+On Thu, Jul 02, 2020 at 05:19:46PM +0800, Wei Yongjun wrote:
+> In certain configurations without power management support, the
+> following warnings happen:
+>
+> drivers/net/ethernet/mellanox/mlx4/main.c:4388:12:
+>  warning: 'mlx4_resume' defined but not used [-Wunused-function]
+>  4388 | static int mlx4_resume(struct device *dev_d)
+>       |            ^~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx4/main.c:4373:12: warning:
+>  'mlx4_suspend' defined but not used [-Wunused-function]
+>  4373 | static int mlx4_suspend(struct device *dev_d)
+>       |            ^~~~~~~~~~~~
+>
+> Mark these functions as __maybe_unused to make it clear to the
+> compiler that this is going to happen based on the configuration,
+> which is the standard for these types of functions.
+>
+> Fixes: 0e3e206a3e12 ("mlx4: use generic power management")
 
-drivers/net/ethernet/mellanox/mlx4/main.c:4388:12:
- warning: 'mlx4_resume' defined but not used [-Wunused-function]
- 4388 | static int mlx4_resume(struct device *dev_d)
-      |            ^~~~~~~~~~~
-drivers/net/ethernet/mellanox/mlx4/main.c:4373:12: warning:
- 'mlx4_suspend' defined but not used [-Wunused-function]
- 4373 | static int mlx4_suspend(struct device *dev_d)
-      |            ^~~~~~~~~~~~
-      
-Mark these functions as __maybe_unused to make it clear to the
-compiler that this is going to happen based on the configuration,
-which is the standard for these types of functions.
+I can't find this SHA-1, where did you get it?
+And why doesn't mlx5 need this change?
 
-Fixes: 0e3e206a3e12 ("mlx4: use generic power management")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx4/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Fixes: 86a3e5d02c20 ("net/mlx4_core: Add PCI calls for suspend/resume")
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index 4cae7db8d49c..954c22c79f6b 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -4370,7 +4370,7 @@ static const struct pci_error_handlers mlx4_err_handler = {
- 	.resume		= mlx4_pci_resume,
- };
- 
--static int mlx4_suspend(struct device *dev_d)
-+static int __maybe_unused mlx4_suspend(struct device *dev_d)
- {
- 	struct pci_dev *pdev = to_pci_dev(dev_d);
- 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
-@@ -4385,7 +4385,7 @@ static int mlx4_suspend(struct device *dev_d)
- 	return 0;
- }
- 
--static int mlx4_resume(struct device *dev_d)
-+static int __maybe_unused mlx4_resume(struct device *dev_d)
- {
- 	struct pci_dev *pdev = to_pci_dev(dev_d);
- 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
-
+Thanks
