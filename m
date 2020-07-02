@@ -2,106 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C05212424
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 15:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4F221242A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jul 2020 15:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgGBNIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jul 2020 09:08:21 -0400
-Received: from mail-eopbgr140085.outbound.protection.outlook.com ([40.107.14.85]:45318
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726289AbgGBNIU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:08:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZHJTSQySR02rpWIihnucPPdcy60NabUypK2T33YqKolGojQhlDGDMgydD2puH0LYXX9AyPelbMMJWqR8ir+e7unG79A6bJHZti5laQaH3rgWhyfVYO41SlfJRNaIB/YBGWs+0DOF/OCBLHKeUqPTQnXMzLa4m83Anivb4/p7GalF6Bh+8cfNJHvLXnq4+fzmlr+iGprua1JSrOH1XloW5IBjZlTBAULP/8rdf6ye/YvsDJ5WkDheqSSW9jxwHXmwWCvitxSCT42wdE3vyQMknwx9a+cxL/64KXP0vC+VltA0dS4mAmGyQ3wKeiFcA0qX6kUyLL9NHBndd1NBdHivRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
- b=AuM27LcMgcTU6fZ7QBJGQnQGuyB1kMnbWVW1a/HUNm9u9oMwZOHW7Jdp6n77d7kuAvxxVwP2Cvsgh6+sZFEbH8T5U+8nElWLo405/URZysPZtIum+4kHzxddSdpIc0DO4k//yYIBAzap08u0kM/zja+ybCpjwyGHVnKVWGiZ8OYe/ejTXi8Lta0zcZsEVDFdLXuyl9MRX9NPIHNbE/6NO0MV0FEiknhtiH1fHY+Di3YaUZOsVcMcXfRiOmUHH3LvhVZO1usvzJvjLhSVMYD1XJWwIAbfRm8ruKUnV3VCgYW2PIym7PMmYtFhjOZDDWsnvdBsxC5Mp2pPwe/0dPx7Wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nMInviAA8cs4uNL2+Oy/Dp9w9d3NwX0J1zGCYu8nKoU=;
- b=dqkOLlTBye7GpJQXrfMNaInk7CIbrdwdpwJfJxT3BUGFu+KoiyMwvyjeR6crGmJXHY+QlPAOf6htSdNNINjpiqhne3WVdg3T37JwgyYoW3b/XZZmQQQylgVyZYaxUH6jpYqedOz5x8s11I1+2zcJvOqFsEpaKBRB9UWWnlHwAQQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR0501MB2334.eurprd05.prod.outlook.com (2603:10a6:800:24::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Thu, 2 Jul
- 2020 13:08:16 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3153.027; Thu, 2 Jul 2020
- 13:08:16 +0000
-Date:   Thu, 2 Jul 2020 10:08:09 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/6] Cleanup mlx5_ib main file
-Message-ID: <20200702130809.GU23821@mellanox.com>
-References: <20200702081809.423482-1-leon@kernel.org>
+        id S1726343AbgGBNKF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jul 2020 09:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgGBNKF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jul 2020 09:10:05 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60C9C08C5C1
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Jul 2020 06:10:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a6so28272844wrm.4
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jul 2020 06:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UR/7Hkhx2r/d/gKW2/boZAe2A2TsRBFJsaypFWCnjfA=;
+        b=j3adNWOmm9OJqEGS2O9PeDyCmA1jAP+F/x7OmYtHmqcdn/TU3rqS6kW/wjACWmrEU4
+         Sgf15nmX7IdC3oDzWtoiguuTPp+ySpmGl252B4edHUbSQqhDcdj57dcKSjOEwhgqYiuA
+         JJM1I5aZ0hLWzbcrRKcWMqG8LIq1j65ljC4q0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UR/7Hkhx2r/d/gKW2/boZAe2A2TsRBFJsaypFWCnjfA=;
+        b=tA43qH/RHZKrkm3ifOA4OXDm+UK7Lu3mkz49mVF/C1kt0m1Ia+KSOe9GzGl94/Z/Ww
+         6n5OiecwwW3B/7VKG7xGFBmnvTnh4Uw3p3Z1WpEIEJ26fV16nIj5zR1sjuHkjthhaiB8
+         BR01BXW4XLfqN3Tqe3HLOPClQoXaf6r0Lp0pSAFIZz0cu/+vPaKZQA4o3X1IFbrCMTGI
+         ZxZ7q/Vvi0mYZU4I3eUPyhNPdHYSjE7ImZNnHUU6j2mD/WGfP4tu1S5k3zh6z0SuKXBW
+         gey4gT3KlE91mOXJ45HEy/7EbBqwkdwYsedhaU9bhKyBWSN9o6K8h2XWUnoLxjoRWuR8
+         w3Tw==
+X-Gm-Message-State: AOAM533TxN950F4GJXXEtAExQ1rIQlwgdn2yx+r0JQKz10ZBQ+CG0YJU
+        YQNY+JdoZF89BW3o/2DsGPLBBA==
+X-Google-Smtp-Source: ABdhPJz5sHpauaSEGudHIeVnkv/lyj4qN+JXLcy9j5vScVcBpcWq+e74oDRTa9tb4xhlMCyK7l3lyA==
+X-Received: by 2002:a5d:4c8a:: with SMTP id z10mr31028666wrs.384.1593695403555;
+        Thu, 02 Jul 2020 06:10:03 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c206sm11123057wmf.36.2020.07.02.06.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 06:10:02 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 15:10:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Subject: Re: [RFC PATCH v2 0/3] RDMA: add dma-buf support
+Message-ID: <20200702131000.GW3278063@phenom.ffwll.local>
+References: <1593451903-30959-1-git-send-email-jianxin.xiong@intel.com>
+ <20200629185152.GD25301@ziepe.ca>
+ <MW3PR11MB4555A99038FA0CFC3ED80D3DE56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20200630173435.GK25301@ziepe.ca>
+ <MW3PR11MB45553FA6D144BF1053571D98E56F0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <9b4fa0c2-1661-6011-c552-e37b05f35938@amd.com>
+ <20200701123904.GM25301@ziepe.ca>
+ <34077a9f-7924-fbb3-04d9-cd20243f815c@amd.com>
+ <CAKMK7uFf3_a+BN8CM7G8mNQPNtVBorouB+R5kxbbmFSB9XbeSg@mail.gmail.com>
+ <20200701171524.GN25301@ziepe.ca>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702081809.423482-1-leon@kernel.org>
-X-ClientProxiedBy: BL0PR02CA0064.namprd02.prod.outlook.com
- (2603:10b6:207:3d::41) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (193.47.165.251) by BL0PR02CA0064.namprd02.prod.outlook.com (2603:10b6:207:3d::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 13:08:16 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jqywj-002rl8-4p; Thu, 02 Jul 2020 10:08:09 -0300
-X-Originating-IP: [193.47.165.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
-X-MS-TrafficTypeDiagnostic: VI1PR0501MB2334:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0501MB2334089CDD6981B1813D4E63CF6D0@VI1PR0501MB2334.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Iq/IvOwWOU8zVSjr2r7dWBDOJPUk94RPyVpddFIhIHQDmFe0LeZFs2oT2rfb/AJYljmKfQ95CULOD2ZSqyBgkT7MomMPh2GhF5dAl3iiqiqyzXjekzl4PzPnVZwOMBe8hV+R66JmFm6EJdCJk8RAla6s5FT+ZRAf90FEGchhWBabUY7e2zxQMMQXOyUl+fTFDCsz0SurdV7ltEQUT14E9Hhub7ax7EibP/H6GaP1QCn1o1h+kn0WzPKn7/CnxRp719tWxfgulcVbuS2cn11RQmFwzLaNBcyo44+p9WUGYVgSazJViMZAuBMS2A9J7BYosQBoej6pUs42iR9QlN4Lpq6DumoINJSdU3VBb/2+qGA1Rq2/s4KZ26eWNcWNNGztEVL335Yt8rkApxFB9r9/vQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(376002)(396003)(136003)(6916009)(107886003)(8676002)(4326008)(426003)(2616005)(33656002)(54906003)(966005)(9746002)(9786002)(36756003)(8936002)(186003)(478600001)(26005)(66476007)(66556008)(5660300002)(316002)(4744005)(1076003)(2906002)(66946007)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: W99Li2/HiKNDJRMe1yiIb27puQKxSfdzG3kIwOExR0gG+ccJ7GJ1lxp11PWxGoDkIj1htuwzE6RvIwVx0v2otHN/gjz450PrRJuiuvufOU93LY//qghx0lJbeVgKtase4q1lkHc5NU9YFk/2qASg55yEgUSA8vWflFZWcAWoJnWMk+6VIu7+D25176Zb7gcJoExWiHIRYziWqZp4Zu5a/jQso4o6oEZA8HUnJZf846rcFABpPBV9LxIR1AE4FqwFKN1mSltfXpYzGshiDTGw6fLWGxYr2bbnax3V/jcwi6GB8fTLXyquBNhpLyEE9WaR9OXwTWykjKtIMkEUra1PvxuDTZiR3zl63zmBm/1ILKbdxeupe/ODUpqskbUJ+IJFNsTxdN9TIIYeGbN5KL4rUxsZ8D/fSKquKYe2DJVspAEjqdcg5/GhFrH5feRI+uHMa/mQxo5VYCcddJvqtM7In4MEal21wJv5QagpBI7Af/FtT8tLnrzrbyhjAuLmRFvo
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4da8e0e0-972f-4253-5a9d-08d81e88fbb5
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB4141.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 13:08:16.2146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7wA6zmfBaLbCc8vso6oPJ6ex6mjfwsG0eZnnM2GGcD4PXmzR6rAlc+AO0qQqA6eEeMAOiEyou4wmSqrs3d6kDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2334
+In-Reply-To: <20200701171524.GN25301@ziepe.ca>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:18:03AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Wed, Jul 01, 2020 at 02:15:24PM -0300, Jason Gunthorpe wrote:
+> On Wed, Jul 01, 2020 at 05:42:21PM +0200, Daniel Vetter wrote:
+> > > >> All you need is the ability to stop wait for ongoing accesses to end and
+> > > >> make sure that new ones grab a new mapping.
+> > > > Swap and flush isn't a general HW ability either..
+> > > >
+> > > > I'm unclear how this could be useful, it is guarenteed to corrupt
+> > > > in-progress writes?
+> > > >
+> > > > Did you mean pause, swap and resume? That's ODP.
+> > >
+> > > Yes, something like this. And good to know, never heard of ODP.
+> > 
+> > Hm I thought ODP was full hw page faults at an individual page
+> > level,
 > 
-> Over the years, the main.c file grew above all imagination and was >8K
-> LOC of the code. This caused to a huge burden while I started to work on
-> ib_flow allocation patches.
+> Yes
 > 
-> This series implements long standing "internal" wish to move flow logic
-> from the main to separate file.
+> > and this stop&resume is for the entire nic. Under the hood both apply
+> > back-pressure on the network if a transmission can't be received,
+> > but
 > 
-> Based on
-> https://lore.kernel.org/linux-rdma/20200630101855.368895-4-leon@kernel.org
+> NIC's don't do stop and resume, blocking the Rx pipe is very
+> problematic and performance destroying.
+> 
+> The strategy for something like ODP is more complex, and so far no NIC
+> has deployed it at any granularity larger than per-page.
+> 
+> > So since Jason really doesn't like dma_fence much I think for rdma
+> > synchronous it is. And it shouldn't really matter, since waiting for a
+> > small transaction to complete at rdma wire speed isn't really that
+> > long an operation. 
+> 
+> Even if DMA fence were to somehow be involved, how would it look?
 
-Isn't this the series you said to drop? Can this be applied
-independently?
+Well above you're saying it would be performance destroying, but let's
+pretend that's not a problem :-) Also, I have no clue about rdma, so this
+is really just the flow we have on the gpu side.
 
-Jason
+0. rdma driver maintains a list of all dma-buf that it has mapped
+somewhere and is currently using for transactions
+
+1. rdma driver gets a dma_buf->notify_move callback on one of these
+buffers. To handle that it:
+	1. stops hw access somehow at the rx
+	2. flushes caches and whatever else is needed
+	3. moves the unmapped buffer on a special list or marks it in some
+	different way as unavailable
+	4. launch the kthread/work_struct to fix everything back up
+
+2. dma-buf export (gpu driver) can now issue the commands to move the
+buffer around
+
+3. rdma driver worker gets busy to restart rx:
+	1. lock all dma-buf that are currently in use (dma_resv_lock).
+	thanks to ww_mutex deadlock avoidance this is possible
+	2. for any buffers which have been marked as unavailable in 1.3
+	grab a new mapping (which might now be in system memory, or again
+	peer2peer but different address)
+	3. restart hw and rx
+	4. unlock all dma-buf locks (dma_resv_unlock)
+
+There is a minor problem because step 2 only queues up the entire buffer
+moves behind a pile of dma_fence, and atm we haven't made it absolutely
+clear who's responsible for waiting for those to complete. For gpu drivers
+it's the importer since gpu drivers don't have big qualms about
+dma_fences, so 3.2. would perhaps also include a dma_fence_wait to make
+sure the buffer move has actually completed.
+
+Above flow is more or less exactly what happens for gpu workloads where we
+can preempt running computations. Instead of stopping rx we preempt the
+compute job and remove it from the scheduler queues, and instead of
+restarting rx we just put the compute job back onto the scheduler queue as
+eligible for gpu time. Otherwise it's exactly the same stuff.
+
+Of course if you only have a single compute job and too many such
+interruptions, then performance is going to tank. Don't do that, instead
+make sure you have enough vram or system memory or whatever :-)
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
