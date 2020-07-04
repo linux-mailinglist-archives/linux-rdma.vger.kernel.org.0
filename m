@@ -2,177 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8457D214291
-	for <lists+linux-rdma@lfdr.de>; Sat,  4 Jul 2020 03:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2A82143F2
+	for <lists+linux-rdma@lfdr.de>; Sat,  4 Jul 2020 06:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgGDB3h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jul 2020 21:29:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33309 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbgGDB3g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 3 Jul 2020 21:29:36 -0400
-IronPort-SDR: FYlWOn4+pnkHe45fluIXd5Zzxetu9neraOQa66zpOay24ywIVQefZ9mV2c5drMohpwoJBJCqtW
- xbhhFg8qBz4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9671"; a="165280235"
-X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
-   d="scan'208";a="165280235"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 18:29:36 -0700
-IronPort-SDR: 065OL/Cql9wcrCIn1Ek1c8ypPv1h36cxmEACty6RI1wdHlmp2H/phNjcD+98qvRnaHEcp6BpYU
- rBSNFcxMU0Bg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
-   d="scan'208";a="482143291"
-Received: from lkp-server01.sh.intel.com (HELO 6dc8ab148a5d) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Jul 2020 18:29:35 -0700
-Received: from kbuild by 6dc8ab148a5d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jrWzm-0000Uv-Fn; Sat, 04 Jul 2020 01:29:34 +0000
-Date:   Sat, 04 Jul 2020 09:28:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- f427f4d6214c183c474eeb46212d38e6c7223d6a
-Message-ID: <5effdb3c.2P8OtYNTJcaEhcrg%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725849AbgGDESt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 4 Jul 2020 00:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgGDESt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 4 Jul 2020 00:18:49 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262FDC061794
+        for <linux-rdma@vger.kernel.org>; Fri,  3 Jul 2020 21:18:49 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id k22so16669258oib.0
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jul 2020 21:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ITDoUL+45ihEP40EjfKo4ZSQMgUg6E+/sz33XQMAeEo=;
+        b=UGlBRUfYyUy+n9S54Dr4D2U+Wncdw0QhMSOjnYv6gk/Gnr8xZQXJt6bM0HOZAK1toE
+         ofcuwI+nPgM21srcZa164TEfX4Uvf/pFNJ4s0sV01IgTN0TIL5jETBwvo5MQ89Oyd8sI
+         impkviM65veoh/fachJfsixTZp2ZZMGY+ZYjF/91PdDytjHlvi6vW0gKqtDEcIt7ZGb0
+         bRzClbi9OuS3Qm+f9VHCel7v2Rtt1iYeN+csYhZJJ+CE7gcViNT7WykD6RL0+siY/UQ7
+         kJrLgJVtKV3QAI+5hXr/CXLmyxsEaJKAdVivVBgRKzpqjAc40tduwZSpDH1EDEfLt2Nv
+         bReg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ITDoUL+45ihEP40EjfKo4ZSQMgUg6E+/sz33XQMAeEo=;
+        b=gGQnbVxJ5nrvvBNcM6I34TnrBMOnxMVoRlSwmDmb3rRMXNjjLyL/AOia2PNug3CMV/
+         IlgRzmknogLIGYZ+6a020of0+wYIfYfKxrl/IRXUGPT90ljEnB+eR/BIp3A7q8PBjrkt
+         zZ59sQt+E5mM3Zq+nXsCDD/K7GLpz90RjHJSTsYcpM0b5U5kKEnrzNpG8H34TqYLj9zT
+         msz93RUeA4sT9oC0nRjfQWdoEZPFYC+aKW1SbeI/MN5mA2m4SNLci3qC2CZl3GghME0j
+         xJ19gRxMw1pD830cejo2/I721Cwaslnt+S7SmH3qTrqb3eQ5BV/P1hhs0donXvq3yDCR
+         6kkQ==
+X-Gm-Message-State: AOAM531w1nVsPxTJKW6IUQyryDMqY+ytTY9LxpE6mAZVLIEOJI/enbaW
+        uqbX9V259DGVREVhElnbJ4lK18Cki/pXVEfMpiXESg==
+X-Google-Smtp-Source: ABdhPJwjpNqTP54bOGGs3NNyw3/0kc1UBeeyMQHQOAaYHQ8ziS9FSSaWo0Gl4iHW137eCH7MbHxcnJDCfFZ2xb/JkNs=
+X-Received: by 2002:aca:bed5:: with SMTP id o204mr8084640oif.169.1593836327538;
+ Fri, 03 Jul 2020 21:18:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200703153428.173758-1-kamalheib1@gmail.com> <20200703153428.173758-5-kamalheib1@gmail.com>
+In-Reply-To: <20200703153428.173758-5-kamalheib1@gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Sat, 4 Jul 2020 12:18:36 +0800
+Message-ID: <CAD=hENe8ZDWRVXzhm6u_fB0c=BQP4+uSWBW4cBdgKkMQidKnUw@mail.gmail.com>
+Subject: Re: [PATCH for-next 4/4] RDMA/rxe: Remove rxe_link_layer()
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Zhu Yanjun <yanjunz@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: f427f4d6214c183c474eeb46212d38e6c7223d6a  IB/sa: Resolv use-after-free in ib_nl_make_request()
+On Fri, Jul 3, 2020 at 11:35 PM Kamal Heib <kamalheib1@gmail.com> wrote:
+>
+> Instead of
 
-elapsed time: 1798m
+return
 
-configs tested: 115
-configs skipped: 8
+returning?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                       aspeed_g4_defconfig
-m68k                       m5249evb_defconfig
-arm                            mmp2_defconfig
-sh                            shmin_defconfig
-powerpc                      pmac32_defconfig
-parisc                           allmodconfig
-arm                          pxa3xx_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      ppc6xx_defconfig
-mips                          ath25_defconfig
-ia64                             allyesconfig
-arm                           efm32_defconfig
-sh                               alldefconfig
-powerpc                    mvme5100_defconfig
-mips                          rb532_defconfig
-xtensa                          iss_defconfig
-h8300                               defconfig
-powerpc                  mpc885_ads_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                        dreamcast_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                      tqm8xx_defconfig
-mips                     loongson1b_defconfig
-powerpc                    gamecube_defconfig
-arm                        trizeps4_defconfig
-mips                  maltasmvp_eva_defconfig
-ia64                        generic_defconfig
-s390                              allnoconfig
-microblaze                    nommu_defconfig
-parisc                generic-64bit_defconfig
-mips                        jmr3927_defconfig
-mips                 decstation_r4k_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200701
-i386                 randconfig-a001-20200701
-i386                 randconfig-a006-20200701
-i386                 randconfig-a005-20200701
-i386                 randconfig-a004-20200701
-i386                 randconfig-a003-20200701
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allyesconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ IB_LINK_LAYER_ETHERNET from rxe_link_layer return it
+> directly from get_link_layer callback and remove rxe_link_layer().
+>
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h   | 1 -
+>  drivers/infiniband/sw/rxe/rxe_net.c   | 5 -----
+>  drivers/infiniband/sw/rxe/rxe_verbs.c | 4 +---
+>  3 files changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 0688928cf2b1..39dc3bfa5d5d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -142,7 +142,6 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb);
+>  struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+>                                 int paylen, struct rxe_pkt_info *pkt);
+>  int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc);
+> -enum rdma_link_layer rxe_link_layer(struct rxe_dev *rxe, unsigned int port_num);
+>  const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
+>  struct device *rxe_dma_device(struct rxe_dev *rxe);
+>  int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 312c2fc961c0..0c3808611f95 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -520,11 +520,6 @@ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num)
+>         return rxe->ndev->name;
+>  }
+>
+> -enum rdma_link_layer rxe_link_layer(struct rxe_dev *rxe, unsigned int port_num)
+> -{
+> -       return IB_LINK_LAYER_ETHERNET;
+> -}
+> -
+>  int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+>  {
+>         int err;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index ee80b8862db8..a3cf9bbe818d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -141,9 +141,7 @@ static int rxe_modify_port(struct ib_device *dev,
+>  static enum rdma_link_layer rxe_get_link_layer(struct ib_device *dev,
+>                                                u8 port_num)
+>  {
+> -       struct rxe_dev *rxe = to_rdev(dev);
+> -
+> -       return rxe_link_layer(rxe, port_num);
+> +       return IB_LINK_LAYER_ETHERNET;
+>  }
+>
+>  static int rxe_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+> --
+> 2.25.4
+>
