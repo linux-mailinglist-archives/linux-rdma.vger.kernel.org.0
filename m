@@ -2,98 +2,249 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B467214E68
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 20:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C059214FEE
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 23:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgGESOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Jul 2020 14:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        id S1728601AbgGEVpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Jul 2020 17:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgGESOl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Jul 2020 14:14:41 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AE3C061794;
-        Sun,  5 Jul 2020 11:14:41 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 6so2125408qtt.0;
-        Sun, 05 Jul 2020 11:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GIreVTA9iB/LiEwX5eX3Id+ZA6LegG5/LPJAdXTSiLo=;
-        b=aFRXkn+gl/5LDeXVtACZ++CLgZGQgZVEZ+lWXFf0hwl23rd2STQGDjuBsh5UeCWuSg
-         SFhb6+xZdmN3kAh5r0wG0/4D0Rp1+cnPRROR2Mk+5S9gYFZwJY7jTk9I+pPCDg6bsYQS
-         /+e0EWquNjwKG63CMOoYPAw1SOnQ7FCmFk1abwKm5zLtTZvp96kWWgctM5zzMG+h98A1
-         z23cms9ivIgazWxsuuCwlEQIVI09DS/EAlDarCavImwtkfrZW7N2/PpE249d7W4kF2ur
-         NsrgMdCBX8qpQDHMS00cOFfhxLzwt/ZO2iyNXpRolt1rCxOMYtQn9HnLLiFvpF9UoaJ0
-         Rugg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GIreVTA9iB/LiEwX5eX3Id+ZA6LegG5/LPJAdXTSiLo=;
-        b=DSvbUGTI74L75do6XS51ZXfG+R8OM0CIH+m/wDDiV2/UEM6xF/anjWxqYrlSHPNDLF
-         zmp77UN1tdjs9Ow42EsFLi8eSUcZk1jJryzDYItJmOYKuQQku61herbTjb/6ypmsXkYh
-         dcUkl064dZyqKdtgK0MZWVjpcNIMLMC6aaovOdxDxhVYCV4TAGXTd/zG6u54TvaIbGkp
-         V3a1beqj/3gC4ANQ+SKbrpcFME+InJv6MDfXHTGtviiX7e0d9hlcm3JAm55r83Li/Xx/
-         u4v1GO24g7nSnZgpfyx+dWhPJjZem2Qd62vm3dnaJlZc27P1b+EubYcdoac21UNdFJt5
-         s5Qw==
-X-Gm-Message-State: AOAM532AWjekzpoMsf/qgcszjrMT5jGYtAU64RpkGs/iv43N3WbByOuM
-        TEN0gaTb/52YMGHmnSvNY6oS4FQZ
-X-Google-Smtp-Source: ABdhPJzCmZeanB6erjqmg+g3PP/SDAzYs5pBtaNFqWXVAiyBoy0FU6N4WY+gFVjTVGlweeuiIZI2oA==
-X-Received: by 2002:ac8:4806:: with SMTP id g6mr42823257qtq.213.1593972880680;
-        Sun, 05 Jul 2020 11:14:40 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:f517:b957:b896:7107? ([2601:282:803:7700:f517:b957:b896:7107])
-        by smtp.googlemail.com with ESMTPSA id p7sm16478215qki.61.2020.07.05.11.14.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jul 2020 11:14:40 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v1 0/4] RAW format dumps through RDMAtool
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20200624104012.1450880-1-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <974f4012-d730-c44f-af2b-cb25797f2f47@gmail.com>
-Date:   Sun, 5 Jul 2020 12:14:38 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        with ESMTP id S1728047AbgGEVpq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Jul 2020 17:45:46 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7304C061794
+        for <linux-rdma@vger.kernel.org>; Sun,  5 Jul 2020 14:45:45 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 7F219BC127;
+        Sun,  5 Jul 2020 21:45:39 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     aditr@vmware.com, pv-drivers@vmware.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: VMWare PVRDMA driver
+Date:   Sun,  5 Jul 2020 23:45:28 +0200
+Message-Id: <20200705214528.28561-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <20200624104012.1450880-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/24/20 4:40 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Changelog:
-> v1:
->  * Kernel part was accepted, so this series has correct SHA for the
->    kernel header update patch.
->  * Aligned implementation to the final kernel solution of query
->    interface.
-> v0:
-> https://lore.kernel.org/linux-rdma/20200520102539.458983-1-leon@kernel.org
-> 
-> -----------------------------------------------------------------------------
-> 
-> Hi,
-> 
-> The following series adds support to get the RDMA resource data in RAW
-> format. The main motivation for doing this is to enable vendors to
-> return the entire QP/CQ/MR data without a need from the vendor to set
-> each field separately.
-> 
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-applied to iproute2-next. Thanks
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+          If both the HTTP and HTTPS versions
+          return 200 OK and serve the same content:
+            Replace HTTP with HTTPS.
 
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See https://lkml.org/lkml/2020/6/26/837
+
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h          | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cmd.c      | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c       | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h  | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c     | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_misc.c     | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c       | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c       | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_ring.h     | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c      | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c    | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h    | 2 +-
+ 13 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+index c142f5e7f25f..862d6c2e8b87 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cmd.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cmd.c
+index 4a78c537d8a1..7d585e0bd56d 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cmd.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cmd.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+index 4f6cc0de7ef9..05be5c7d1fce 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+index 86a6c054ea26..34522b23dc82 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
+index bf51357ea3aa..a2dc768a34af 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+index 780fd2dfc07e..12f2e19a21a0 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_misc.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_misc.c
+index 7944c58ded0e..e3f2b516b300 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_misc.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_misc.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
+index b039f1f00e05..4f6cffcd21f2 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+index afcc2abcf55c..c27554b0c3c5 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_ring.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_ring.h
+index 8b558ae234c8..2a99bbb40ca5 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_ring.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_ring.h
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c
+index d330decfb80a..6c54beb9c164 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
+index ccbded2d26ce..0029598ff949 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index 267702226f10..ad4d51ab8cc9 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -8,7 +8,7 @@
+  * will be useful, but WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED
+  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+  * See the GNU General Public License version 2 for more details at
+- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
++ * https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program available in the file COPYING in the main
+-- 
+2.27.0
 
