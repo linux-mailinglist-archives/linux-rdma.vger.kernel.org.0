@@ -2,123 +2,264 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E157214BE0
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 12:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D235B214C0B
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 13:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgGEKnf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Jul 2020 06:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgGEKne (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Jul 2020 06:43:34 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E62C061794
-        for <linux-rdma@vger.kernel.org>; Sun,  5 Jul 2020 03:43:34 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g75so36139380wme.5
-        for <linux-rdma@vger.kernel.org>; Sun, 05 Jul 2020 03:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X3yQZiHbkQ7MpMtQaZKlRpcknRq/3peMVAfQV2P504A=;
-        b=tgdcPh3LUZCuUnSlO8k/idQB/S+q/nV3dEMibt5O7mxAEhF2PPR7svuVGdcZ2EVN6H
-         Y6FiDSf6i7CJTExmXtGgjAc4/Ge2BEWNQShxq38VB8BScYnN1rEqzSDzMkk9ij8JQkjv
-         BYa+GYQVTJITz4xS/C8gFPn/1tLet7pKX37ZDbOJ9HSgGCu7p2tpaZPqUh8T2ClnHBtM
-         0D/36yY6CI8nLtg0MEvVyLJEogEpmmP9gxiFB488Ky3Ywu81rl2sdLruac7G64zbVpp8
-         4DVTo156ax3W6wfc7lMDJWGxA1uRI0tTYOhGudnZfvt/yr6MTONiHlEX9vQaM8mfLBJZ
-         RkAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X3yQZiHbkQ7MpMtQaZKlRpcknRq/3peMVAfQV2P504A=;
-        b=Rxd83XDJLJhBjF/iY0SHowlr/oidPGZacYzuW+YsHBUUK6QpL6Q6HU7V+nCDR3jHSW
-         TTE4MVbAwkp9QUgJm2pdXjhPyJeKiaKLc87zoPYGwNTlXNUCCmhkQ+l88LKMQntMfTwf
-         7/Ig7DjrqINEGXn5OKxKIW1o+3NRH1DvzpBYT3ueyp5z8fTOMeRm7J8Pn0HhgZ9aDYm7
-         0vMWQyTzR+hIUFVRCuThR6ImsAT3arEGNnArKB+40bTcBLvSOwq7qE1X3v6GbnLGq2hg
-         +/jwYQthxSbaVi18hPcO0noFyhIfzN8PjZwFiEf1tjGMvj+3jcZSs49CsccqkxFRqPby
-         hFfg==
-X-Gm-Message-State: AOAM533X3qr3D9SkmdKxYWhF808BWo9WzSk44k8RHHYRtiNA2fYYYJnr
-        MfmxvZhsnjCohWoyoYuxGJlqnviDki4=
-X-Google-Smtp-Source: ABdhPJwvS2gwvxg5V1PbWzTlD2m/c9xkrPydMUrGPZ4BjfUPh9H1fmjY/2AlOdV2Ng6MqQ1e0sobGQ==
-X-Received: by 2002:a1c:7315:: with SMTP id d21mr18950782wmb.108.1593945812774;
-        Sun, 05 Jul 2020 03:43:32 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id 51sm14828083wrc.44.2020.07.05.03.43.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Jul 2020 03:43:32 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Zhu Yanjun <yanjunz@mellanox.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next v1 4/4] RDMA/rxe: Remove rxe_link_layer()
-Date:   Sun,  5 Jul 2020 13:43:13 +0300
-Message-Id: <20200705104313.283034-5-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200705104313.283034-1-kamalheib1@gmail.com>
-References: <20200705104313.283034-1-kamalheib1@gmail.com>
+        id S1726480AbgGELeM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Jul 2020 07:34:12 -0400
+Received: from mga12.intel.com ([192.55.52.136]:6653 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726454AbgGELeL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 5 Jul 2020 07:34:11 -0400
+IronPort-SDR: IjXJ6M7FW/afbNvwqAwypZJx6Z4NmYODYVX3PsmABcfwVEqc0EIlFHhm+xfTv4yaP5fa3F70ZE
+ X8qKCp8RxgjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9672"; a="126903596"
+X-IronPort-AV: E=Sophos;i="5.75,314,1589266800"; 
+   d="scan'208";a="126903596"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2020 04:33:56 -0700
+IronPort-SDR: TYSZs1mWVNODdqJaBR0zEVU9yYDskcaPWbfTbp4IkWr7LmDJ1MGespHHml4izxvI2pCJuwc3/u
+ pCQu1PV0ROeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,314,1589266800"; 
+   d="scan'208";a="322937062"
+Received: from lkp-server01.sh.intel.com (HELO 6dc8ab148a5d) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 05 Jul 2020 04:33:54 -0700
+Received: from kbuild by 6dc8ab148a5d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1js2u9-0001jy-Sa; Sun, 05 Jul 2020 11:33:53 +0000
+Date:   Sun, 05 Jul 2020 19:33:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ a544571d44090992ab2d68ddd93418258bd13eef
+Message-ID: <5f01ba8d.6nfNdypTPpqvxLS9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Instead of returning IB_LINK_LAYER_ETHERNET from rxe_link_layer, return it
-directly from get_link_layer callback and remove rxe_link_layer().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: a544571d44090992ab2d68ddd93418258bd13eef  RDMA/mlx5: Introduce ODP prefetch counter
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+elapsed time: 2871m
+
+configs tested: 202
+configs skipped: 23
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                       aspeed_g4_defconfig
+m68k                       m5249evb_defconfig
+arm                            mmp2_defconfig
+sh                            shmin_defconfig
+powerpc                      pmac32_defconfig
+parisc                           allmodconfig
+sh                                  defconfig
+arm                          moxart_defconfig
+arm                            qcom_defconfig
+arm                          iop32x_defconfig
+h8300                       h8s-sim_defconfig
+arc                        nsim_700_defconfig
+c6x                        evmc6472_defconfig
+m68k                        m5272c3_defconfig
+arc                        nsimosci_defconfig
+powerpc                     pq2fads_defconfig
+mips                      malta_kvm_defconfig
+arm                          ep93xx_defconfig
+openrisc                 simple_smp_defconfig
+arm                         cm_x300_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                         tb0219_defconfig
+sh                               j2_defconfig
+arm                          lpd270_defconfig
+h8300                     edosk2674_defconfig
+nios2                         10m50_defconfig
+arm                          pxa3xx_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          ath25_defconfig
+arm                         assabet_defconfig
+arm                      jornada720_defconfig
+xtensa                         virt_defconfig
+sh                          landisk_defconfig
+m68k                        stmark2_defconfig
+sh                           se7780_defconfig
+arm                           efm32_defconfig
+sh                               alldefconfig
+powerpc                    mvme5100_defconfig
+mips                          rb532_defconfig
+xtensa                          iss_defconfig
+h8300                               defconfig
+powerpc                  mpc885_ads_defconfig
+arm                   milbeaut_m10v_defconfig
+sh                        dreamcast_defconfig
+openrisc                    or1ksim_defconfig
+arm                             pxa_defconfig
+powerpc                      mgcoge_defconfig
+arm                         bcm2835_defconfig
+mips                        maltaup_defconfig
+m68k                            mac_defconfig
+sh                     magicpanelr2_defconfig
+sh                         apsh4a3a_defconfig
+arc                           tb10x_defconfig
+ia64                         bigsur_defconfig
+powerpc                     mpc5200_defconfig
+s390                          debug_defconfig
+ia64                                defconfig
+s390                             alldefconfig
+nios2                               defconfig
+arm                        clps711x_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                     powernv_defconfig
+arm                         s3c6400_defconfig
+m68k                          atari_defconfig
+arm                           u8500_defconfig
+mips                    maltaup_xpa_defconfig
+arm                              zx_defconfig
+powerpc                          g5_defconfig
+arc                          axs103_defconfig
+powerpc                      tqm8xx_defconfig
+mips                     loongson1b_defconfig
+powerpc                    gamecube_defconfig
+arm                        trizeps4_defconfig
+arm                         ebsa110_defconfig
+powerpc                       ppc64_defconfig
+m68k                       bvme6000_defconfig
+sh                     sh7710voipgw_defconfig
+mips                           xway_defconfig
+ia64                              allnoconfig
+arm                         vf610m4_defconfig
+arm                          tango4_defconfig
+mips                     cu1000-neo_defconfig
+alpha                            allyesconfig
+powerpc                      ppc44x_defconfig
+powerpc                          alldefconfig
+arm                           stm32_defconfig
+arc                            hsdk_defconfig
+mips                        jmr3927_defconfig
+powerpc                          allyesconfig
+mips                         db1xxx_defconfig
+arm                         lubbock_defconfig
+mips                        vocore2_defconfig
+mips                      pic32mzda_defconfig
+sh                           se7619_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                  storcenter_defconfig
+m68k                            q40_defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                     nsimosci_hs_defconfig
+sh                              ul2_defconfig
+arm                          pxa168_defconfig
+powerpc                          allmodconfig
+ia64                        generic_defconfig
+um                             i386_defconfig
+arm                           sunxi_defconfig
+powerpc                      chrp32_defconfig
+mips                 pnx8335_stb225_defconfig
+riscv                             allnoconfig
+sh                         ecovec24_defconfig
+parisc                generic-64bit_defconfig
+mips                 decstation_r4k_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+nios2                            allyesconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                              defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+powerpc                             defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200701
+i386                 randconfig-a001-20200701
+i386                 randconfig-a006-20200701
+i386                 randconfig-a005-20200701
+i386                 randconfig-a004-20200701
+i386                 randconfig-a003-20200701
+x86_64               randconfig-a012-20200701
+x86_64               randconfig-a016-20200701
+x86_64               randconfig-a014-20200701
+x86_64               randconfig-a011-20200701
+x86_64               randconfig-a015-20200701
+x86_64               randconfig-a013-20200701
+i386                 randconfig-a011-20200701
+i386                 randconfig-a015-20200701
+i386                 randconfig-a014-20200701
+i386                 randconfig-a016-20200701
+i386                 randconfig-a012-20200701
+i386                 randconfig-a013-20200701
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+s390                             allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc                            allyesconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h   | 1 -
- drivers/infiniband/sw/rxe/rxe_net.c   | 5 -----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 4 +---
- 3 files changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 0688928cf2b1..39dc3bfa5d5d 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -142,7 +142,6 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb);
- struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
- 				int paylen, struct rxe_pkt_info *pkt);
- int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc);
--enum rdma_link_layer rxe_link_layer(struct rxe_dev *rxe, unsigned int port_num);
- const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
- struct device *rxe_dma_device(struct rxe_dev *rxe);
- int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid);
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 312c2fc961c0..0c3808611f95 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -520,11 +520,6 @@ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num)
- 	return rxe->ndev->name;
- }
- 
--enum rdma_link_layer rxe_link_layer(struct rxe_dev *rxe, unsigned int port_num)
--{
--	return IB_LINK_LAYER_ETHERNET;
--}
--
- int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
- {
- 	int err;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index ee80b8862db8..a3cf9bbe818d 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -141,9 +141,7 @@ static int rxe_modify_port(struct ib_device *dev,
- static enum rdma_link_layer rxe_get_link_layer(struct ib_device *dev,
- 					       u8 port_num)
- {
--	struct rxe_dev *rxe = to_rdev(dev);
--
--	return rxe_link_layer(rxe, port_num);
-+	return IB_LINK_LAYER_ETHERNET;
- }
- 
- static int rxe_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
--- 
-2.25.4
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
