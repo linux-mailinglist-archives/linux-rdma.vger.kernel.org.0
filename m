@@ -2,15 +2,15 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D08214B28
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 10:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7E4214B2B
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Jul 2020 10:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgGEIVR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Jul 2020 04:21:17 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33109 "EHLO
+        id S1726494AbgGEI05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Jul 2020 04:26:57 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:34045 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726582AbgGEIVR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Jul 2020 04:21:17 -0400
+        with ESMTP id S1726280AbgGEI05 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Jul 2020 04:26:57 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
         with SMTP; 5 Jul 2020 11:20:05 +0300
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
