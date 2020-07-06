@@ -2,137 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA872161B8
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 00:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BC82161CF
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 01:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgGFWyh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jul 2020 18:54:37 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19816 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGFWyg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 18:54:36 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f03ab430000>; Mon, 06 Jul 2020 15:52:51 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 06 Jul 2020 15:54:36 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 06 Jul 2020 15:54:36 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Jul
- 2020 22:54:30 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 6 Jul 2020 22:54:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n0Mp3fEMj8QP6UnBfK9XNVowRveRJEfZNvcOY+3mSVmfSdSagSqTLio7I1YBf0G77W4jsqqpd4zXhI4l2oM8jEeqWJ9XvE8WOXhY7e/qzIQ8w+OyGXwfusIU6VckHQ7QqgKNhGlMySLR7H1fGABIQd+qSefruiq7VZ7FIy6o6hfJxij1K9bGUoXRyi+PUqwIpfweXTOj3WPU1jAPVPSz9PJQfXLbEoKzeKalrwjTt3VB/0NYK/8nrdKayJI20mB/MXa+WtcgKMpKxmWXWTKVJrJPuGXkqzmZgYeqpc03Zs9MK03Fa3GSWwAxFPZ5zUEXBs0aQXqmwc7g7qWjvtUEJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ranq94tKhhpKCT5xpsb6BJITX1uR1bjIuP0ZEvuKhHk=;
- b=PQ18PNaEeAJ8glB060TPFZ5pZhqnS9MjGVcmcVRnlBPqMThS/Q81zuE9y7EaQSo1wpMK7h47uMN8RvLVUgv1Vb7tq/cb6U5Ry7qdMP2ZXpBkuY8q5omcXXtv5RHONAySXeEAZIK3xZ1RsD4W7RpQzZRvuxcUcSYvwcFpM4qikRXltnm9KOHAQcK6zDoYZYiz00FeITKR92baqsntoAC8vyM+CU8AoAH20Cg5JVo9FT7fUDwuDFfLXwr5QHr716XvGipA0OaWGyiTiuvjr8BCYzbKoo+72q60NKfGACnD+7BccvuEpp89tL5LZS5QJwLDqnvALai5PGzIQOxdu9foPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2812.namprd12.prod.outlook.com (2603:10b6:5:44::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.29; Mon, 6 Jul
- 2020 22:54:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
- 22:54:29 +0000
-Date:   Mon, 6 Jul 2020 19:54:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        "Yishai Hadas" <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 0/7] Introduce UAPIs to query UCONTEXT, PD
- and MR properties
-Message-ID: <20200706225427.GA1282671@nvidia.com>
-References: <20200630093916.332097-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200630093916.332097-1-leon@kernel.org>
-X-ClientProxiedBy: YTOPR0101CA0034.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:15::47) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727120AbgGFXDL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jul 2020 19:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbgGFXDK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 19:03:10 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D5DC061755
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Jul 2020 16:03:10 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id d15so36775517edm.10
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jul 2020 16:03:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JWkCpXScroA2bJSzEtEb5Yx/DaaZTadHtRitzt1JbJk=;
+        b=eXzmxyzyTT3PIK+pxOidovOVfpJwX+le2BRxAUkRTWin6it3WIFK6+a3Nh3PY9r2cL
+         6LwABLQoQkv0i5ezZNuB9pyxD87PPyrhRSxxcjWma7McZv6RZsY6v7H9XXyEJcJ7Iu2i
+         WochK5aSwsbj36ltziyCCaBhG/RFsGfcGOn6zctvErPW6YLxzwNwoU24kee291+fZI64
+         oBoW9loEU+VXjqO9Dl4LQzfCIGfNdKrFfH9vk6kCZjDuLV0aiKcdE3vMoER6YzuYjz22
+         hQqID/+mDEJBh2fBiFYQtEZ92u8r/BSMPVgBBSNf1Z4++h9mIExY7zsepa1PDFM+0adg
+         /4zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JWkCpXScroA2bJSzEtEb5Yx/DaaZTadHtRitzt1JbJk=;
+        b=fT/AOfssj1O4F9kAhwRhMAiNttZecwoBA6qQnZWnkNOTzis5zOSjlx7no11fAQzmfb
+         FMRscNXb58MbOGNAYFSoBDZdQH8Bsbho4CXMMrymJZe/NpGLai53s+UxXhrc18VBl+a2
+         NWh0PKZELmDm8xYoU5Uzz0zw1fX6bXT/fmA800WX6/1os4XWBkGu5gwSvaJppFkN0G/c
+         kqTTBV8RbUioQzL7GxLto66VpqIABBTw/twjdMXjPMqHeYzq4ZMhWmhVHrgx0i+0Xt7q
+         pAd+ErmjBXlPWqpjCP5ebQLnXmBlq0+t2GIQS78gkXFS26RrUHTpw8kEG2+x7RaRf5tt
+         3wrw==
+X-Gm-Message-State: AOAM530HiFWiniVdgXXp1ilGPHy5Xz5+s3Zi5Acw0M4JfLXLdmBS787v
+        a93irTU+QpIjUvvEBw0RRoz21K97UF38pWVoMviwAA==
+X-Google-Smtp-Source: ABdhPJyVuFki/ZtPZ4Ma9OT4MWhdXP1IudP5hfiY2MCbZVdr2Z7zP+1YqvmsEtc5UN/mvfl81WhK9wDNaeYvf62GYO8=
+X-Received: by 2002:aa7:d043:: with SMTP id n3mr60634615edo.102.1594076588926;
+ Mon, 06 Jul 2020 16:03:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YTOPR0101CA0034.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21 via Frontend Transport; Mon, 6 Jul 2020 22:54:28 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jsa0J-005Nh4-AZ; Mon, 06 Jul 2020 19:54:27 -0300
-X-Originating-IP: [206.223.160.26]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d20e7584-7bf8-4ee8-92e0-08d821ff89ed
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2812:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB28128507A17D90E7DAC7EC29C2690@DM6PR12MB2812.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1122;
-X-Forefront-PRVS: 04569283F9
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +eWSfcLxvG9ksrnF649uIBOQNBLolHjWvTqKy6oK4zHCVQ9xjkrkCHAshtrE1RgEeorpKAAnCjkgbMEzkD3PnSD3ftRDdmgehTUnY6CkcJ6vNTxzO+hcYXREU1Hee9nBP/eprqkSLesMmhZ7sf4Ve+QOv5AmcFGB7ujXj9m4oHvYVwRNdM7OysYD34b0WGAvwIHp3qmz5ricxHfeZtDsOD6Ew0c5y++xvyrgNrtxcHVLNXiJ3wq4zRAYrqsS9sVDcfgrrLou7Imb2/tIQZwH1ZmrYHX0prm/ASYEmQTBSa3ctMbXWPlOD37sYvWlpimXtgWLcWLKqq+sODlQE/jRuQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(316002)(54906003)(4326008)(66946007)(66556008)(1076003)(2616005)(4744005)(66476007)(5660300002)(6916009)(2906002)(86362001)(186003)(36756003)(426003)(33656002)(26005)(478600001)(8936002)(8676002)(9746002)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: kNRUh9x5gWaByzHm9kOBl+6Ettzvv2bguH/btIX+tGHiGsHI12Sff8N7v4hAU7hDZh3RU37ORzzSOeu6LzGIjbEm786CsrpIGd2kEmbqeFmh1FgHoYycU+8D7bf8zK7IvISBEEpx+YluFJnEo+VgX/OTmnLg8ygk0jPS+zOalvzIPHzPB5nFsZp0mzWqzonnVCj+NMBmWjiluYer0UpBWsz2KcK7xVOeOpRqPb2SyKesbnkrFb/wQRGWkmKP2bsM7QmXqho5auImiG7YrDJaRwyYdtn3oZDWfmtVivhtT3LWkSo+hHZSw9oc7cgljr89VPtZnnPmXJ5PFOd0QdftCX2939zZS+liZsuTaacjPfFRm3CsfEIr23uI1/i61K5DHfJvkVKEpgZYYd7p1h862lsTtzT0YDqfWJikIlT5DKVmVcgIDDUaZ6kwoWTHt7iYP4tpqxXTqlA0OsdtFgINAjn6x0hXDWlKeXbniLyHqkYtBAyDVOUEiv86M2bWDZ4F
-X-MS-Exchange-CrossTenant-Network-Message-Id: d20e7584-7bf8-4ee8-92e0-08d821ff89ed
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2020 22:54:28.8889
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4sETLi+z6M3hR7LDlQBnh/54Nq0w+5eZQNwDWNJJSATcBws8tZ0Zxc23r6Qe+bCj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2812
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594075971; bh=ranq94tKhhpKCT5xpsb6BJITX1uR1bjIuP0ZEvuKhHk=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-Forefront-PRVS:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=LX1wv+HLpiCam4bzBIPfyXnDvHwRTpbeNA3yuvnwJaVTLSFxJDX6NlI3FElj/u9O/
-         QpeQ5GQOyQis6DE4Lb+dPwF8FysjiSUOIKbRLRlQFXWjbueOpPa7nO9t0CQ2Uqcyjv
-         07T7uYLS7cMIfjain5U7WtiG/jphB6yT8rWHoWCFqLooMxn4ssCpLu3eXEcRerTZeE
-         x8KUc1AtU7jJzHQ8CiGqse1UfRLjhCEkZEiahTgcGD2ZS2vP3WQT5wYytX7OGpKgAi
-         jMcGNdEUcjT/zvgomMHrV0Pt3+2Tajt/a+YgPp5vD+ljtIEOYzoJxVYLrl3uRl+EWu
-         Yg+qdKSV74bqw==
+References: <57185aae-e1c9-4380-7801-234a13deebae@linux.intel.com>
+ <20200524063519.GB1369260@kroah.com> <fe44419b-924c-b183-b761-78771b7d506d@linux.intel.com>
+ <s5h5zcistpb.wl-tiwai@suse.de> <20200527071733.GB52617@kroah.com>
+ <20200629203317.GM5499@sirena.org.uk> <20200629225959.GF25301@ziepe.ca>
+ <20200630103141.GA5272@sirena.org.uk> <20200630113245.GG25301@ziepe.ca>
+ <936d8b1cbd7a598327e1b247441fa055d7083cb6.camel@linux.intel.com>
+ <20200701065915.GF2044019@kroah.com> <8b88749c197f07c7c70273614dd6ee8840b2b14d.camel@linux.intel.com>
+In-Reply-To: <8b88749c197f07c7c70273614dd6ee8840b2b14d.camel@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 6 Jul 2020 16:02:57 -0700
+Message-ID: <CAPcyv4g9xCMh5cQF0qbObpHX5ckMK_SWPO12BcXF2ijn8MnckA@mail.gmail.com>
+Subject: Re: [net-next v4 10/12] ASoC: SOF: Introduce descriptors for SOF client
+To:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>, nhorman@redhat.com,
+        sassmann@redhat.com, Fred Oh <fred.oh@linux.intel.com>,
+        lee.jones@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 12:39:09PM +0300, Leon Romanovsky wrote:
-> Yishai Hadas (7):
->   IB/uverbs: Enable CQ ioctl commands by default
->   IB/uverbs: Set IOVA on IB MR in uverbs layer
->   IB/uverbs: Expose UAPI to query ucontext
->   RDMA/mlx5: Refactor mlx5_ib_alloc_ucontext() response
->   RDMA/mlx5: Implement the query ucontext functionality
->   RDMA/mlx5: Introduce UAPI to query PD attributes
->   IB/uverbs: Expose UAPI to query MR
+On Thu, Jul 2, 2020 at 6:44 AM Ranjani Sridharan
+<ranjani.sridharan@linux.intel.com> wrote:
+[..]
+> > > Hi Jason,
+> > >
+> > > We're addressing the naming in the next version as well. We've had
+> > > several people reject the name virtual bus and we've narrowed in on
+> > > "ancillary bus" for the new name suggesting that we have the core
+> > > device that is attached to the primary bus and one or more sub-
+> > > devices
+> > > that are attached to the ancillary bus. Please let us know what you
+> > > think of it.
+> >
+> > I'm thinking that the primary person who keeps asking you to create
+> > this
+> > "virtual bus" was not upset about that name, nor consulted, so why
+> > are
+> > you changing this?  :(
+> >
+> > Right now this feels like the old technique of "keep throwing crap at
+> > a
+> > maintainer until they get so sick of it that they do the work
+> > themselves..."
+>
+> Hi Greg,
+>
+> It wasnt our intention to frustrate you with the name change but in the
+> last exchange you had specifically asked for signed-off-by's from other
+> Intel developers. In that process, one of the recent feedback from some
+> of them was about the name being misleading and confusing.
+>
+> If you feel strongly about the keeping name "virtual bus", please let
+> us know and we can circle back with them again.
 
-Applied to for-next, thanks
+Hey Greg,
 
-Jason
+Feel free to blame me for the naming thrash it was part of my internal
+review feedback trying to crispen the definition of this facility. I
+was expecting the next revision to come with the internal reviewed-by
+and an explanation of all the items that were changed during that
+review.
+
+Ranjani, is the next rev ready to go out with the review items
+identified? Let's just proceed with the current direction of the
+review tags that Greg asked for, name changes and all, and iterate the
+next details on the list with the new patches in hand.
