@@ -2,165 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286C5215713
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2020 14:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9D82156FE
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2020 14:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729066AbgGFMNu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jul 2020 08:13:50 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:15196 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727896AbgGFMNu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 08:13:50 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066C6QrS010544;
-        Mon, 6 Jul 2020 05:13:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=5TP/tubfFp3zO7rxzv4CzmJz3VlQpDquZ9NurPQvnGk=;
- b=L1HbRw6TUrb0pv0TQ41lpLhZyzu/RWlFEerMNpg9lmr91ZzOX7rhNSUxaX5+HNtSXuYp
- uwoGGs6JDj7YFmPG2cRKCPWIm8AuTVeFv8BsbX1j4JstR/821FkhHxMUr3kQmXHvKIA8
- Y9rIZpmJQLqVLAJAr7t5DehbviE1v4ruRZ873hqX1p5WLziR08sR0cSC1VKN5934QkmT
- qxMCkRzMLbYuPeQzBokdl8cNY42CdYQN0LzzIU0AeDxGVhqQB3Ze9dO2X13DmIbSC5TB
- qKy0jbZKs7Y8pKzg/7oLi0Z3B5Z7lgK6PBhn6UsSJwpzUgc9gcKKE9XJnfFnim/TRMLy FA== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 322s9n68xs-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 05:13:47 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 6 Jul
- 2020 05:13:43 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 6 Jul 2020 05:13:43 -0700
-Received: from lb-tlvb-ybason.il.qlogic.org (unknown [10.5.221.176])
-        by maili.marvell.com (Postfix) with ESMTP id DE5D03F703F;
-        Mon,  6 Jul 2020 05:13:41 -0700 (PDT)
-From:   Yuval Basson <ybason@marvell.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, Yuval Basson <ybason@marvell.com>,
-        "Michal Kalderon" <mkalderon@marvell.com>
-Subject: [PATCH rdma-next] RDMA/qedr: SRQ's bug fixes
-Date:   Mon, 6 Jul 2020 14:13:52 +0300
-Message-ID: <20200706111352.21667-1-ybason@marvell.com>
-X-Mailer: git-send-email 2.14.5
+        id S1728892AbgGFMEW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jul 2020 08:04:22 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:52998 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgGFMEV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 08:04:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594037061; x=1625573061;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Y/PIIs/vC+z/31HpfEFQfy8mSRAqh8hnzcN+FHFqxjs=;
+  b=dSNkjQnEtwnEt2zz+5Il+1zHCyt1LCdbegT1uVlOmfaC+KwBjO6fBluy
+   KUhJTtFyXvk+f7gY9DfWOjLQqFzjyyZs/NfP80RNQHoFD98ITqpJGpXvE
+   hAVcCk6oQbaxcIT7MtTeRe1LaA3gEA8xgfmapieZ3NxqgIGtGXuUGSkbx
+   0=;
+IronPort-SDR: XlT3uPjBaFGOdcqZuesWvDE1OeCEYVi6zjk1vvwqfr109QFMiTy4dl66A7eSDwe/WQHFQs/wUx
+ E0YjykOEoWNA==
+X-IronPort-AV: E=Sophos;i="5.75,318,1589241600"; 
+   d="scan'208";a="56360705"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 06 Jul 2020 12:04:19 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 92274A2350;
+        Mon,  6 Jul 2020 12:04:17 +0000 (UTC)
+Received: from EX13D40UWC004.ant.amazon.com (10.43.162.175) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 12:04:17 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D40UWC004.ant.amazon.com (10.43.162.175) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 12:04:17 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.1.213.24) by
+ mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 6 Jul 2020 12:04:09 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        "VMware PV-Drivers" <pv-drivers@vmware.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Zhu Yanjun <yanjunz@mellanox.com>,
+        "Bernard Metzler" <bmt@zurich.ibm.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next 0/3] Allocate MR cleanups
+Date:   Mon, 6 Jul 2020 15:03:40 +0300
+Message-ID: <20200706120343.10816-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-06_09:2020-07-06,2020-07-06 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-QP's with the same SRQ, working on different CQs and running in parallel
-on different CPUs could lead to a race when maintaining the SRQ consumer
-count, and leads to FW running out of SRQs. Update the consumer atomically.
-Make sure the wqe_prod is updated after the sge_prod due to FW
-requirements.
+The allocate MR functionality is limited to kernel users, there is no
+reason to pass a redundant udata parameter.
+In addition, a small cleanup was added to the MR allocation function to
+keep the main flow unindented.
 
-Fixes: 3491c9e799fb9 ("RDMA/qedr: Add support for kernel mode SRQ's")
-Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-Signed-off-by: Yuval Basson <ybason@marvell.com>
----
- drivers/infiniband/hw/qedr/qedr.h  |  4 ++--
- drivers/infiniband/hw/qedr/verbs.c | 23 ++++++++++++-----------
- 2 files changed, 14 insertions(+), 13 deletions(-)
+Gal Pressman (3):
+  RDMA/core: Check for error instead of success in alloc MR function
+  RDMA/core: Remove ib_alloc_mr_user function
+  RDMA: Remove the udata parameter from alloc_mr callback
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index fdf90ec..aa33202 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -344,10 +344,10 @@ struct qedr_srq_hwq_info {
- 	u32 wqe_prod;
- 	u32 sge_prod;
- 	u32 wr_prod_cnt;
--	u32 wr_cons_cnt;
-+	atomic_t wr_cons_cnt;
- 	u32 num_elems;
- 
--	u32 *virt_prod_pair_addr;
-+	struct rdma_srq_producers *virt_prod_pair_addr;
- 	dma_addr_t phy_prod_pair_addr;
- };
- 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 9b9e802..394adbd 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1510,6 +1510,7 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
- 	srq->dev = dev;
- 	hw_srq = &srq->hw_srq;
- 	spin_lock_init(&srq->lock);
-+	atomic_set(&hw_srq->wr_cons_cnt, 0);
- 
- 	hw_srq->max_wr = init_attr->attr.max_wr;
- 	hw_srq->max_sges = init_attr->attr.max_sge;
-@@ -3686,7 +3687,7 @@ static u32 qedr_srq_elem_left(struct qedr_srq_hwq_info *hw_srq)
- 	 * count and consumer count and subtract it from max
- 	 * work request supported so that we get elements left.
- 	 */
--	used = hw_srq->wr_prod_cnt - hw_srq->wr_cons_cnt;
-+	used = hw_srq->wr_prod_cnt - (u32)atomic_read(&hw_srq->wr_cons_cnt);
- 
- 	return hw_srq->max_wr - used;
- }
-@@ -3701,7 +3702,6 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
- 	unsigned long flags;
- 	int status = 0;
- 	u32 num_sge;
--	u32 offset;
- 
- 	spin_lock_irqsave(&srq->lock, flags);
- 
-@@ -3714,7 +3714,8 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
- 		if (!qedr_srq_elem_left(hw_srq) ||
- 		    wr->num_sge > srq->hw_srq.max_sges) {
- 			DP_ERR(dev, "Can't post WR  (%d,%d) || (%d > %d)\n",
--			       hw_srq->wr_prod_cnt, hw_srq->wr_cons_cnt,
-+			       hw_srq->wr_prod_cnt,
-+			       atomic_read(&hw_srq->wr_cons_cnt),
- 			       wr->num_sge, srq->hw_srq.max_sges);
- 			status = -ENOMEM;
- 			*bad_wr = wr;
-@@ -3748,22 +3749,22 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
- 			hw_srq->sge_prod++;
- 		}
- 
--		/* Flush WQE and SGE information before
-+		/* Update WQE and SGE information before
- 		 * updating producer.
- 		 */
--		wmb();
-+		dma_wmb();
- 
- 		/* SRQ producer is 8 bytes. Need to update SGE producer index
- 		 * in first 4 bytes and need to update WQE producer in
- 		 * next 4 bytes.
- 		 */
--		*srq->hw_srq.virt_prod_pair_addr = hw_srq->sge_prod;
--		offset = offsetof(struct rdma_srq_producers, wqe_prod);
--		*((u8 *)srq->hw_srq.virt_prod_pair_addr + offset) =
--			hw_srq->wqe_prod;
-+		srq->hw_srq.virt_prod_pair_addr->sge_prod = hw_srq->sge_prod;
-+		/* Make sure sge producer is updated first */
-+		barrier();
-+		srq->hw_srq.virt_prod_pair_addr->wqe_prod = hw_srq->wqe_prod;
- 
- 		/* Flush producer after updating it. */
--		wmb();
-+		dma_wmb();
- 		wr = wr->next;
- 	}
- 
-@@ -4182,7 +4183,7 @@ static int process_resp_one_srq(struct qedr_dev *dev, struct qedr_qp *qp,
- 	} else {
- 		__process_resp_one(dev, qp, cq, wc, resp, wr_id);
- 	}
--	srq->hw_srq.wr_cons_cnt++;
-+	atomic_inc(&srq->hw_srq.wr_cons_cnt);
- 
- 	return 1;
- }
+ drivers/infiniband/core/verbs.c               | 36 +++++++++----------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  2 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |  2 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |  2 +-
+ drivers/infiniband/hw/cxgb4/mem.c             |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  3 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |  2 +-
+ drivers/infiniband/hw/mlx4/mr.c               |  2 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  2 +-
+ drivers/infiniband/hw/mlx5/mr.c               |  2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |  2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  2 +-
+ drivers/infiniband/hw/qedr/verbs.h            |  2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |  2 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  2 +-
+ drivers/infiniband/sw/rdmavt/mr.c             |  2 +-
+ drivers/infiniband/sw/rdmavt/mr.h             |  2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  2 +-
+ drivers/infiniband/sw/siw/siw_verbs.c         |  2 +-
+ drivers/infiniband/sw/siw/siw_verbs.h         |  2 +-
+ include/rdma/ib_verbs.h                       | 12 ++-----
+ 24 files changed, 43 insertions(+), 50 deletions(-)
+
 -- 
-1.8.3.1
+2.27.0
 
