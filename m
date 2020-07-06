@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FA9215735
+	by mail.lfdr.de (Postfix) with ESMTP id E01F5215736
 	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2020 14:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgGFM11 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jul 2020 08:27:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55132 "EHLO mail.kernel.org"
+        id S1729125AbgGFM1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jul 2020 08:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729107AbgGFM11 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:27:27 -0400
+        id S1729107AbgGFM1a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 6 Jul 2020 08:27:30 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDDEA206E6;
-        Mon,  6 Jul 2020 12:27:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 307C0206E6;
+        Mon,  6 Jul 2020 12:27:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594038446;
-        bh=+NP2KYRLJjcdk6QwKPJBDJ5a0z0LlyP0x8qUEk4k/Nk=;
+        s=default; t=1594038449;
+        bh=S90AcrniT/VOj92e3p6NcLdBUou1te8Gx4eu3KNxAxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NDZ6mgiJYPnBiuj700byoyju2QI1q7ZCG6c9E4BSLfR1psvOKdu1wojsVCu3lLm9f
-         e3HyN7u90keqarGiVrW8WuKQhyiKPM2m03YNbJ/x8hxNlWWV0OmsKnoeKGTl666Hlt
-         Oc5iFj1tGZSTeOGVJygeHmIla0LoDFkYD1fI7RLY=
+        b=U9G7c1pScJ490ycxxLgSEDxptcmBuKIwiEGvuJQW0wiMpQFRuThPc89cNHlgYcfq1
+         czw/DXhnBdu8yJU12qBPYkOBWMGN2BP1LecmzUxH5Q8uI7yJDw803ksDG0TAWALN3/
+         Fe6xxvpU7zf7xdKViPS1blGS9OtOSY+18XLkx2G0=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v2 1/3] RDMA/mlx5: Get XRCD number directly for the internal use
-Date:   Mon,  6 Jul 2020 15:27:14 +0300
-Message-Id: <20200706122716.647338-2-leon@kernel.org>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v2 2/3] RDMA/core: Clean ib_alloc_xrcd() and reuse it to allocate XRC domain
+Date:   Mon,  6 Jul 2020 15:27:15 +0300
+Message-Id: <20200706122716.647338-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200706122716.647338-1-leon@kernel.org>
 References: <20200706122716.647338-1-leon@kernel.org>
@@ -40,190 +40,148 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Maor Gottlieb <maorg@mellanox.com>
 
-The mlx5_ib creates XRC domain and uses for creating internal SRQ.
-However all that is needed is XRCD number and not full blown
-ib_xrcd objects.
+ib_alloc_xrcd already does the required initialization, so move
+the uverbs to call it and save code duplication, while cleaning
+the function argument lists of that function.
 
-Update the code to get and store the number only.
-
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/main.c    | 39 ++++++++++------------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  4 +--
- drivers/infiniband/hw/mlx5/qp.c      | 10 +++----
- drivers/infiniband/hw/mlx5/srq.c     |  4 +--
- 4 files changed, 23 insertions(+), 34 deletions(-)
+ drivers/infiniband/core/uverbs_cmd.c | 12 +++---------
+ drivers/infiniband/core/verbs.c      | 24 ++++++++++++++++++------
+ include/rdma/ib_verbs.h              | 18 +++---------------
+ 3 files changed, 24 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 47a0c091eea5..324a98c77ad5 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -5016,6 +5016,9 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
- 	dev = container_of(devr, struct mlx5_ib_dev, devr);
- 	ibdev = &dev->ib_dev;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 557644dcc923..68c9a0210220 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -614,17 +614,11 @@ static int ib_uverbs_open_xrcd(struct uverbs_attr_bundle *attrs)
+ 	}
  
-+	if (!MLX5_CAP_GEN(dev->mdev, xrc))
-+		return -EOPNOTSUPP;
-+
- 	mutex_init(&devr->mutex);
- 
- 	devr->p0 = rdma_zalloc_drv_obj(ibdev, ib_pd);
-@@ -5043,34 +5046,19 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
- 	if (ret)
- 		goto err_create_cq;
- 
--	devr->x0 = mlx5_ib_alloc_xrcd(&dev->ib_dev, NULL);
--	if (IS_ERR(devr->x0)) {
--		ret = PTR_ERR(devr->x0);
-+	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &devr->xrcdn0, 0);
-+	if (ret)
- 		goto error2;
--	}
--	devr->x0->device = &dev->ib_dev;
--	devr->x0->inode = NULL;
--	atomic_set(&devr->x0->usecnt, 0);
--	mutex_init(&devr->x0->tgt_qp_mutex);
--	INIT_LIST_HEAD(&devr->x0->tgt_qp_list);
- 
--	devr->x1 = mlx5_ib_alloc_xrcd(&dev->ib_dev, NULL);
--	if (IS_ERR(devr->x1)) {
--		ret = PTR_ERR(devr->x1);
-+	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &devr->xrcdn1, 0);
-+	if (ret)
- 		goto error3;
--	}
--	devr->x1->device = &dev->ib_dev;
--	devr->x1->inode = NULL;
--	atomic_set(&devr->x1->usecnt, 0);
--	mutex_init(&devr->x1->tgt_qp_mutex);
--	INIT_LIST_HEAD(&devr->x1->tgt_qp_list);
- 
- 	memset(&attr, 0, sizeof(attr));
- 	attr.attr.max_sge = 1;
- 	attr.attr.max_wr = 1;
- 	attr.srq_type = IB_SRQT_XRC;
- 	attr.ext.cq = devr->c0;
--	attr.ext.xrc.xrcd = devr->x0;
- 
- 	devr->s0 = rdma_zalloc_drv_obj(ibdev, ib_srq);
- 	if (!devr->s0) {
-@@ -5081,13 +5069,11 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
- 	devr->s0->device	= &dev->ib_dev;
- 	devr->s0->pd		= devr->p0;
- 	devr->s0->srq_type      = IB_SRQT_XRC;
--	devr->s0->ext.xrc.xrcd	= devr->x0;
- 	devr->s0->ext.cq	= devr->c0;
- 	ret = mlx5_ib_create_srq(devr->s0, &attr, NULL);
- 	if (ret)
- 		goto err_create;
- 
--	atomic_inc(&devr->s0->ext.xrc.xrcd->usecnt);
- 	atomic_inc(&devr->s0->ext.cq->usecnt);
- 	atomic_inc(&devr->p0->usecnt);
- 	atomic_set(&devr->s0->usecnt, 0);
-@@ -5129,9 +5115,9 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
- err_create:
- 	kfree(devr->s0);
- error4:
--	mlx5_ib_dealloc_xrcd(devr->x1, NULL);
-+	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- error3:
--	mlx5_ib_dealloc_xrcd(devr->x0, NULL);
-+	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
- error2:
- 	mlx5_ib_destroy_cq(devr->c0, NULL);
- err_create_cq:
-@@ -5145,14 +5131,17 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
- 
- static void destroy_dev_resources(struct mlx5_ib_resources *devr)
- {
-+	struct mlx5_ib_dev *dev;
- 	int port;
- 
-+	dev = container_of(devr, struct mlx5_ib_dev, devr);
-+
- 	mlx5_ib_destroy_srq(devr->s1, NULL);
- 	kfree(devr->s1);
- 	mlx5_ib_destroy_srq(devr->s0, NULL);
- 	kfree(devr->s0);
--	mlx5_ib_dealloc_xrcd(devr->x0, NULL);
--	mlx5_ib_dealloc_xrcd(devr->x1, NULL);
-+	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
-+	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
- 	mlx5_ib_destroy_cq(devr->c0, NULL);
- 	kfree(devr->c0);
- 	mlx5_ib_dealloc_pd(devr->p0, NULL);
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 26545e88709d..7ec8c506af9f 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -730,8 +730,8 @@ struct mlx5_ib_port_resources {
- 
- struct mlx5_ib_resources {
- 	struct ib_cq	*c0;
--	struct ib_xrcd	*x0;
--	struct ib_xrcd	*x1;
-+	u32 xrcdn0;
-+	u32 xrcdn1;
- 	struct ib_pd	*p0;
- 	struct ib_srq	*s0;
- 	struct ib_srq	*s1;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index f939c9b769f0..f97e99ee9242 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2035,15 +2035,15 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	switch (init_attr->qp_type) {
- 	case IB_QPT_XRC_INI:
- 		MLX5_SET(qpc, qpc, cqn_rcv, to_mcq(devr->c0)->mcq.cqn);
--		MLX5_SET(qpc, qpc, xrcd, to_mxrcd(devr->x1)->xrcdn);
-+		MLX5_SET(qpc, qpc, xrcd, devr->xrcdn1);
- 		MLX5_SET(qpc, qpc, srqn_rmpn_xrqn, to_msrq(devr->s0)->msrq.srqn);
- 		break;
- 	default:
- 		if (init_attr->srq) {
--			MLX5_SET(qpc, qpc, xrcd, to_mxrcd(devr->x0)->xrcdn);
-+			MLX5_SET(qpc, qpc, xrcd, devr->xrcdn0);
- 			MLX5_SET(qpc, qpc, srqn_rmpn_xrqn, to_msrq(init_attr->srq)->msrq.srqn);
- 		} else {
--			MLX5_SET(qpc, qpc, xrcd, to_mxrcd(devr->x1)->xrcdn);
-+			MLX5_SET(qpc, qpc, xrcd, devr->xrcdn1);
- 			MLX5_SET(qpc, qpc, srqn_rmpn_xrqn, to_msrq(devr->s1)->msrq.srqn);
+ 	if (!xrcd) {
+-		xrcd = ib_dev->ops.alloc_xrcd(ib_dev, &attrs->driver_udata);
++		xrcd = ib_alloc_xrcd_user(ib_dev, inode, &attrs->driver_udata);
+ 		if (IS_ERR(xrcd)) {
+ 			ret = PTR_ERR(xrcd);
+ 			goto err;
  		}
+-
+-		xrcd->inode   = inode;
+-		xrcd->device  = ib_dev;
+-		atomic_set(&xrcd->usecnt, 0);
+-		mutex_init(&xrcd->tgt_qp_mutex);
+-		INIT_LIST_HEAD(&xrcd->tgt_qp_list);
+ 		new_xrcd = 1;
  	}
-@@ -2183,11 +2183,11 @@ static int create_kernel_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 		MLX5_SET(qpc, qpc, no_sq, 1);
  
- 	if (attr->srq) {
--		MLX5_SET(qpc, qpc, xrcd, to_mxrcd(devr->x0)->xrcdn);
-+		MLX5_SET(qpc, qpc, xrcd, devr->xrcdn0);
- 		MLX5_SET(qpc, qpc, srqn_rmpn_xrqn,
- 			 to_msrq(attr->srq)->msrq.srqn);
- 	} else {
--		MLX5_SET(qpc, qpc, xrcd, to_mxrcd(devr->x1)->xrcdn);
-+		MLX5_SET(qpc, qpc, xrcd, devr->xrcdn1);
- 		MLX5_SET(qpc, qpc, srqn_rmpn_xrqn,
- 			 to_msrq(devr->s1)->msrq.srqn);
+@@ -663,7 +657,7 @@ static int ib_uverbs_open_xrcd(struct uverbs_attr_bundle *attrs)
  	}
-diff --git a/drivers/infiniband/hw/mlx5/srq.c b/drivers/infiniband/hw/mlx5/srq.c
-index 6d1ff13d2283..7e10cbcb6d5c 100644
---- a/drivers/infiniband/hw/mlx5/srq.c
-+++ b/drivers/infiniband/hw/mlx5/srq.c
-@@ -274,10 +274,10 @@ int mlx5_ib_create_srq(struct ib_srq *ib_srq,
- 	if (srq->wq_sig)
- 		in.flags |= MLX5_SRQ_FLAG_WQ_SIG;
  
--	if (init_attr->srq_type == IB_SRQT_XRC)
-+	if (init_attr->srq_type == IB_SRQT_XRC && init_attr->ext.xrc.xrcd)
- 		in.xrcd = to_mxrcd(init_attr->ext.xrc.xrcd)->xrcdn;
- 	else
--		in.xrcd = to_mxrcd(dev->devr.x0)->xrcdn;
-+		in.xrcd = dev->devr.xrcdn0;
+ err_dealloc_xrcd:
+-	ib_dealloc_xrcd(xrcd, uverbs_get_cleared_udata(attrs));
++	ib_dealloc_xrcd_user(xrcd, uverbs_get_cleared_udata(attrs));
  
- 	if (init_attr->srq_type == IB_SRQT_TM) {
- 		in.tm_log_list_size =
+ err:
+ 	uobj_alloc_abort(&obj->uobject, attrs);
+@@ -701,7 +695,7 @@ int ib_uverbs_dealloc_xrcd(struct ib_uobject *uobject, struct ib_xrcd *xrcd,
+ 	if (inode && !atomic_dec_and_test(&xrcd->usecnt))
+ 		return 0;
+ 
+-	ret = ib_dealloc_xrcd(xrcd, &attrs->driver_udata);
++	ret = ib_dealloc_xrcd_user(xrcd, &attrs->driver_udata);
+ 
+ 	if (ib_is_destroy_retryable(ret, why, uobject)) {
+ 		atomic_inc(&xrcd->usecnt);
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 732548152d22..b0cb5fa8f808 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2289,17 +2289,24 @@ int ib_detach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid)
+ }
+ EXPORT_SYMBOL(ib_detach_mcast);
+ 
+-struct ib_xrcd *__ib_alloc_xrcd(struct ib_device *device, const char *caller)
++/**
++ * ib_alloc_xrcd_user - Allocates an XRC domain.
++ * @device: The device on which to allocate the XRC domain.
++ * @inode: inode to connect XRCD
++ * @udata: Valid user data or NULL for kernel object
++ */
++struct ib_xrcd *ib_alloc_xrcd_user(struct ib_device *device,
++				   struct inode *inode, struct ib_udata *udata)
+ {
+ 	struct ib_xrcd *xrcd;
+ 
+ 	if (!device->ops.alloc_xrcd)
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+-	xrcd = device->ops.alloc_xrcd(device, NULL);
++	xrcd = device->ops.alloc_xrcd(device, udata);
+ 	if (!IS_ERR(xrcd)) {
+ 		xrcd->device = device;
+-		xrcd->inode = NULL;
++		xrcd->inode = inode;
+ 		atomic_set(&xrcd->usecnt, 0);
+ 		mutex_init(&xrcd->tgt_qp_mutex);
+ 		INIT_LIST_HEAD(&xrcd->tgt_qp_list);
+@@ -2307,9 +2314,14 @@ struct ib_xrcd *__ib_alloc_xrcd(struct ib_device *device, const char *caller)
+ 
+ 	return xrcd;
+ }
+-EXPORT_SYMBOL(__ib_alloc_xrcd);
++EXPORT_SYMBOL(ib_alloc_xrcd_user);
+ 
+-int ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
++/**
++ * ib_dealloc_xrcd_user - Deallocates an XRC domain.
++ * @xrcd: The XRC domain to deallocate.
++ * @udata: Valid user data or NULL for kernel object
++ */
++int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata)
+ {
+ 	struct ib_qp *qp;
+ 	int ret;
+@@ -2327,7 +2339,7 @@ int ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata)
+ 
+ 	return xrcd->device->ops.dealloc_xrcd(xrcd, udata);
+ }
+-EXPORT_SYMBOL(ib_dealloc_xrcd);
++EXPORT_SYMBOL(ib_dealloc_xrcd_user);
+ 
+ /**
+  * ib_create_wq - Creates a WQ associated with the specified protection
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3a9eb61b4de0..19cebedb7bbc 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4332,21 +4332,9 @@ int ib_attach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid);
+  */
+ int ib_detach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid);
+ 
+-/**
+- * ib_alloc_xrcd - Allocates an XRC domain.
+- * @device: The device on which to allocate the XRC domain.
+- * @caller: Module name for kernel consumers
+- */
+-struct ib_xrcd *__ib_alloc_xrcd(struct ib_device *device, const char *caller);
+-#define ib_alloc_xrcd(device) \
+-	__ib_alloc_xrcd((device), KBUILD_MODNAME)
+-
+-/**
+- * ib_dealloc_xrcd - Deallocates an XRC domain.
+- * @xrcd: The XRC domain to deallocate.
+- * @udata: Valid user data or NULL for kernel object
+- */
+-int ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
++struct ib_xrcd *ib_alloc_xrcd_user(struct ib_device *device,
++				   struct inode *inode, struct ib_udata *udata);
++int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata);
+ 
+ static inline int ib_check_mr_access(int flags)
+ {
 -- 
 2.26.2
 
