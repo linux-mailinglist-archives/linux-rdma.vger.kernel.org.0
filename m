@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F7E215D2E
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2020 19:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57835215D30
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jul 2020 19:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgGFR2i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jul 2020 13:28:38 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:4786 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729413AbgGFR2i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 13:28:38 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066HAKIW023186;
-        Mon, 6 Jul 2020 10:28:36 -0700
+        id S1729647AbgGFR2k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jul 2020 13:28:40 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:25336 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729413AbgGFR2k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jul 2020 13:28:40 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066H9tbX002189;
+        Mon, 6 Jul 2020 10:28:38 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=o0tIFuWCR3kCWpUKvgrK2e8IVQJNQvbZZb5dEWcjx6E=;
- b=VcgUxQzVe8Lxzx6ABBpRKhq2BBv7nVQnDGlw8JcoRuQELrbqYpPrwkODZXvLjWhLkoac
- 6+x4YTJkoUZ7+9i9j8Xypbb60gRFoFIviaCvLjPXX59DjicdpOtNthIeSCXVmHjOBTEm
- wSCnOEXhM1TH+mvNIzhQSzlV9rgb+6sRjCX/zDc24OgocUeREN6x6tVh7HirJI5ZvvtT
- pqhtDxxh0IYg/Q2R167vg5WtgdjHwjDdsJ8kiv74sTkBVrCg1pR7/VlMvnv1H2X8AMEP
- aZCEtv59+BPuILeb0BgThmcGqJMMy3xn75+FebzM2f1viovNfQFTlPnHBXN2LcTAqH4u OQ== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 322s9n7beb-1
+ content-type; s=pfpt0818; bh=9i9s/DULR2bqtHxpc3tBRAWG7zIShyiLhGo/MvXlGXk=;
+ b=ycrd0kkvx1Dr+F8FN8UJZMr+JK0SebJ+hFK+KKT36imXc9V9hS7nUYNwXoBjeu8WmHVy
+ AjeEKT1XCVXA+FWBRoOAma+4jTHDjFqqcmtlqQ+cHSBntYvei9rVrxl6j6e+kqkaK+YV
+ N8QpPej7clHwKpZujLIPBH3vV826nRiIXXxawNf2j4eJiDknP475wnb+Bfg/Gx3lAm7J
+ zxLkvX/X9g1AfQgBX2Ezw7/AHtVMh5Azdsf1Ep+QDY6c3WxzIkA6Oh3ssguw6WK8zGGk
+ G0ULo7Y1wWywoS5JzCgZyTtuxyf5PTNpUJuJbQIgNrPKO+fW6h+iEAMwwda801cTb6+2 +w== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 322q4pr24s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 10:28:36 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 6 Jul
- 2020 10:28:34 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 6 Jul 2020 10:28:34 -0700
+        Mon, 06 Jul 2020 10:28:38 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 6 Jul
+ 2020 10:28:37 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 6 Jul 2020 10:28:37 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 3EA4B3F703F;
-        Mon,  6 Jul 2020 10:28:32 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 07B023F703F;
+        Mon,  6 Jul 2020 10:28:34 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <jgg@ziepe.ca>, <dledford@redhat.com>, <aelior@marvell.com>,
         <ybason@marvell.com>, <mkalderon@marvell.com>
 CC:     <linux-rdma@vger.kernel.org>,
         Michal Kalderon <michal.kalderon@marvell.com>,
-        Yuval Bason <yuval.bason@marvell.com>
-Subject: [PATCH rdma-next 1/2] RDMA/qedr: Add EDPM mode type for user-fw compatibility
-Date:   Mon, 6 Jul 2020 20:28:16 +0300
-Message-ID: <20200706172817.14503-2-michal.kalderon@marvell.com>
+        Ariel Elior <ariel.elior@marvell.com>
+Subject: [PATCH rdma-next 2/2] RDMA/qedr: Add EDPM max size to alloc ucontext response
+Date:   Mon, 6 Jul 2020 20:28:17 +0300
+Message-ID: <20200706172817.14503-3-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
 In-Reply-To: <20200706172817.14503-1-michal.kalderon@marvell.com>
 References: <20200706172817.14503-1-michal.kalderon@marvell.com>
@@ -56,104 +56,77 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In older FW versions the completion flag was treated as the ack flag
-in edpm messages.
-commit ff937b916eb6 ("qed: Add EDPM mode type for user-fw compatibility")
-exposed the FW option of setting which mode the QP is in by
-adding a flag to the qedr <-> qed API.
+User space should receive the maximum edpm size from kernel
+driver, similar to other edpm/ldpm related limits.
+Add an additional parameter to the alloc_ucontext_resp
+structure for the edpm maximum size.
 
-This patch adds the qedr <-> libqedr interface so that the libqedr
-can set the flag appropriately and qedr can pass it down to FW.
-Flag is added for backward compatibility with libqedr.
+In addition, pass an indication from user-space to kernel
+(and not just kernel to user) that the DPM sizes are supported.
 
-For older libs, this flag didn't exist and therefore set to zero.
+This is for supporting backward-forward compatibility between driver and
+lib for everything related to DPM transaction and limit sizes.
 
-Fixes: ac1b36e55a51 ("qedr: Add support for user context verbs")
-Signed-off-by: Yuval Bason <yuval.bason@marvell.com>
+This should have been part of commit mentioned in Fixes tag.
+Fixes: 93a3d05f9d68 ("RDMA/qedr: Add kernel capability flags for dpm
+enabled mode")
+Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/hw/qedr/qedr.h  |  1 +
- drivers/infiniband/hw/qedr/verbs.c | 11 ++++++++---
- include/uapi/rdma/qedr-abi.h       |  4 ++--
- 3 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/qedr/verbs.c | 9 ++++++---
+ include/uapi/rdma/qedr-abi.h       | 5 ++++-
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index fdf90ecb2699..13d5eafb553f 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -235,6 +235,7 @@ struct qedr_ucontext {
- 	u32 dpi_size;
- 	u16 dpi;
- 	bool db_rec;
-+	u8 edpm_mode;
- };
- 
- union db_prod32 {
 diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 9b9e80266367..fbb0c66c7f2c 100644
+index fbb0c66c7f2c..f03178866b50 100644
 --- a/drivers/infiniband/hw/qedr/verbs.c
 +++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -275,7 +275,8 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 			DP_ERR(dev, "Problem copying data from user space\n");
- 			return -EFAULT;
- 		}
--
-+		ctx->edpm_mode = !!(ureq.context_flags &
-+				    QEDR_ALLOC_UCTX_EDPM_MODE);
- 		ctx->db_rec = !!(ureq.context_flags & QEDR_ALLOC_UCTX_DB_REC);
- 	}
+@@ -320,9 +320,12 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ 				  QEDR_DPM_TYPE_ROCE_LEGACY |
+ 				  QEDR_DPM_TYPE_ROCE_EDPM_MODE;
  
-@@ -316,7 +317,8 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 		uresp.dpm_flags = QEDR_DPM_TYPE_IWARP_LEGACY;
- 	else
- 		uresp.dpm_flags = QEDR_DPM_TYPE_ROCE_ENHANCED |
--				  QEDR_DPM_TYPE_ROCE_LEGACY;
-+				  QEDR_DPM_TYPE_ROCE_LEGACY |
-+				  QEDR_DPM_TYPE_ROCE_EDPM_MODE;
+-	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
+-	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
+-	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
++	if (!!(ureq.context_flags & QEDR_SUPPORT_DPM_SIZES)) {
++		uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
++		uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
++		uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
++		uresp.edpm_limit_size = QEDR_EDPM_MAX_SIZE;
++	}
  
- 	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
- 	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
-@@ -1750,7 +1752,7 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	struct qed_rdma_create_qp_out_params out_params;
- 	struct qedr_pd *pd = get_qedr_pd(ibpd);
- 	struct qedr_create_qp_uresp uresp;
--	struct qedr_ucontext *ctx = NULL;
-+	struct qedr_ucontext *ctx = pd ? pd->uctx : NULL;
- 	struct qedr_create_qp_ureq ureq;
- 	int alloc_and_init = rdma_protocol_roce(&dev->ibdev, 1);
- 	int rc = -EINVAL;
-@@ -1788,6 +1790,9 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 		in_params.rq_pbl_ptr = qp->urq.pbl_tbl->pa;
- 	}
- 
-+	if (ctx)
-+		SET_FIELD(in_params.flags, QED_ROCE_EDPM_MODE, ctx->edpm_mode);
-+
- 	qp->qed_qp = dev->ops->rdma_create_qp(dev->rdma_ctx,
- 					      &in_params, &out_params);
- 
+ 	uresp.wids_enabled = 1;
+ 	uresp.wid_count = oparams.wid_count;
 diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
-index a0b83c9d4498..b261c9fca07b 100644
+index b261c9fca07b..11fb8e150c64 100644
 --- a/include/uapi/rdma/qedr-abi.h
 +++ b/include/uapi/rdma/qedr-abi.h
-@@ -39,7 +39,7 @@
- 
+@@ -40,7 +40,8 @@
  /* user kernel communication data structures. */
  enum qedr_alloc_ucontext_flags {
--	QEDR_ALLOC_UCTX_RESERVED	= 1 << 0,
-+	QEDR_ALLOC_UCTX_EDPM_MODE	= 1 << 0,
- 	QEDR_ALLOC_UCTX_DB_REC		= 1 << 1
+ 	QEDR_ALLOC_UCTX_EDPM_MODE	= 1 << 0,
+-	QEDR_ALLOC_UCTX_DB_REC		= 1 << 1
++	QEDR_ALLOC_UCTX_DB_REC		= 1 << 1,
++	QEDR_SUPPORT_DPM_SIZES		= 1 << 2,
  };
  
-@@ -56,7 +56,7 @@ enum qedr_rdma_dpm_type {
- 	QEDR_DPM_TYPE_ROCE_ENHANCED	= 1 << 0,
- 	QEDR_DPM_TYPE_ROCE_LEGACY	= 1 << 1,
- 	QEDR_DPM_TYPE_IWARP_LEGACY	= 1 << 2,
--	QEDR_DPM_TYPE_RESERVED		= 1 << 3,
-+	QEDR_DPM_TYPE_ROCE_EDPM_MODE	= 1 << 3,
- 	QEDR_DPM_SIZES_SET		= 1 << 4,
+ struct qedr_alloc_ucontext_req {
+@@ -50,6 +51,7 @@ struct qedr_alloc_ucontext_req {
+ 
+ #define QEDR_LDPM_MAX_SIZE	(8192)
+ #define QEDR_EDPM_TRANS_SIZE	(64)
++#define QEDR_EDPM_MAX_SIZE	(ROCE_REQ_MAX_INLINE_DATA_SIZE)
+ 
+ enum qedr_rdma_dpm_type {
+ 	QEDR_DPM_TYPE_NONE		= 0,
+@@ -77,6 +79,7 @@ struct qedr_alloc_ucontext_resp {
+ 	__u16 ldpm_limit_size;
+ 	__u8 edpm_trans_size;
+ 	__u8 reserved;
++	__u16 edpm_limit_size;
  };
  
+ struct qedr_alloc_pd_ureq {
 -- 
 2.14.5
 
