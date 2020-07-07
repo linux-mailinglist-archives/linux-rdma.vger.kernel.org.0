@@ -2,288 +2,682 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C709E216D9D
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 15:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DB3216DAA
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 15:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGGNXj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 09:23:39 -0400
-Received: from mail-eopbgr140059.outbound.protection.outlook.com ([40.107.14.59]:24581
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726805AbgGGNXi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Jul 2020 09:23:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lOkbgryuAdd+FxN+J1Ls+8CXPqbZDRjiNLOSLahK7yqKBMcRaph5Oe0Uay4g6Phy9jN0qaKPfcPZMI9kWakrkPpmkMsvZpirRxo43kx7+h80s8F2IZauae5RahGqrueNrdkUYvJDgR7q3dXVMlVZxAmspFu3DBx4U8f6zckQrBkKNOVMdDfu/q7Nl9Q25tOegCJ6qKxWSYxBcb5kYBCSSWFBcG2rEMYHH50Xy4fKqWuXBf1NgLixcVOzIAGslbgdemLKGtm3Wu9FvOOg2VTlMo40+3W2hIibJGkgA4OCmzISTLbM5oxJ5hQEW1BKdsf8VJpfiRUz84O6RJBjeMUSaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HlC/VTEsTJ4O1zN3B/44+1s9eGisBL3TT5G7Y6oiWHI=;
- b=fQPESraPXdZtkAy8nEBGXyYveYl3bvsoYWdpb0UIMk5zlOBntGhBVMaZ6dVRf+oCnsSzIZViV+gj9c1KTCBdtCCzeHhRUhsYm5x1SpPKowRAQldksJolTEuMgumPqDA8D/AMA0pvax0h3mc3jlS9XcFmoliTFNiQ/AdokDRVov76hGsfwCoi49mUQGEiObB+oDGXmNoV+Kr0qtnAxajrz/Md0ixQfZWvMy6DoRr8UZNiGvHrI2zAPUDWNPU2RAdK0X8xJiQfnexoa7rZyUmbMcKzwFAAgtI63yAv6WEPgaoVTvGg0NIwAlYUpkJufIG+mm7vuISgUFEmE9ZKlvvxQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HlC/VTEsTJ4O1zN3B/44+1s9eGisBL3TT5G7Y6oiWHI=;
- b=Nmz9+FUf3ITFC28ORsrRfKemhQDF8zL3cr23FQF5kVJPvyUyffcM5bVogjVBDhOASRbqeSGRVUyrRjrU8bX/ie/1jlZcKkSOzAJTS/xzdSclU4qUnpuK+jjb0teYquuV3jagN4JoPapgg6BEjB+wV8Otz5aJdRtnL150wBtdtfs=
-Authentication-Results: chelsio.com; dkim=none (message not signed)
- header.d=none;chelsio.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
- by AM0PR05MB6243.eurprd05.prod.outlook.com (2603:10a6:208:12f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Tue, 7 Jul
- 2020 13:23:33 +0000
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::d05d:35af:3f2f:9110]) by AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::d05d:35af:3f2f:9110%5]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
- 13:23:33 +0000
-Subject: Re: iSERT SQ overflow with single target and multi luns
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-References: <20200707123641.GA22620@chelsio.com>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <58258370-dcb2-4745-ec87-8a65b594075d@mellanox.com>
-Date:   Tue, 7 Jul 2020 16:23:30 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-In-Reply-To: <20200707123641.GA22620@chelsio.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR04CA0097.eurprd04.prod.outlook.com
- (2603:10a6:208:be::38) To AM0PR05MB5810.eurprd05.prod.outlook.com
- (2603:10a6:208:11f::18)
+        id S1726951AbgGGN1E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 09:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgGGN1D (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Jul 2020 09:27:03 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25B74206E2;
+        Tue,  7 Jul 2020 13:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594128422;
+        bh=ZJIKVWZ/XHJlGgxf2nVI3xeGmOYHkQYKNkiSZvNNcCM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lWVsvN4RMLqXIXpwc1XsFA3ATs/bjh/oguPg/5XgFFpRik896/HzKVGFGJ7jCuKAW
+         baL0tbMK2YvxptJ3H6KcKV5zoJBCC2mKPMWucO02xz2cBGsCBAKNENGOSWzf9/Uqwo
+         gg4fF/2UKrhL5SgkPeA8dxm1NbxHiU0Z5iUocICg=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-next v2] RDMA: Clean MW allocation and free flows
+Date:   Tue,  7 Jul 2020 16:26:56 +0300
+Message-Id: <20200707132656.1154403-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.0.0.10] (46.116.90.232) by AM0PR04CA0097.eurprd04.prod.outlook.com (2603:10a6:208:be::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21 via Frontend Transport; Tue, 7 Jul 2020 13:23:32 +0000
-X-Originating-IP: [46.116.90.232]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a8df3285-b9c9-4273-5a46-08d82278f266
-X-MS-TrafficTypeDiagnostic: AM0PR05MB6243:
-X-Microsoft-Antispam-PRVS: <AM0PR05MB6243BB9975D1BDDE771915C6B6660@AM0PR05MB6243.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0457F11EAF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UsRS/wLEvv/v5uOmgXP+IEr2V1eP4pYT5SlDe87xCbVWdNJxh8vlFm7DWHj1OS0SM2EMV/eYuIFzMnbxIZ9q+QsqD1NTuIskaFYWEy5GavQ257J0yeUa3K1Rbr2ipdklxajZpb5iWcT2zTe6b/rv1meKR7ccKs4MIhX3vhyelUwrAn6E8mdYXQ6WbGhJ+XdYDxRkOnPKyYAWBlslT9saJpQ8ru3o1A10bv5/2WPqh2biqUM6h3EHA6AGl3gLgz3OXpxe7jNqeHrM6foMYBSdz+Su9NnIJrUcisbD5FUe0smIQ/3Wo+FV3icLqOxrxoNb3ELZCSRutV9TVQ9VjOZD++QP1YJp323BxT1LgjZKrH3LuYDouWICpCrX1Vgd6Uf/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(26005)(83380400001)(31686004)(4326008)(8936002)(110136005)(16526019)(16576012)(54906003)(2906002)(186003)(6486002)(2616005)(53546011)(956004)(5660300002)(8676002)(498600001)(86362001)(52116002)(36756003)(66476007)(66946007)(31696002)(66556008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: SiPmicBltYR4g4v3eio48/V9jyI9otYj2bCxnIIQtMrVnhuxywwz/xqtGeAxrR9tQfeXateJSB3OCAY2uXeGyHQQpMIZZbkmiHMbHXAgt6/BadwZbkzJ8/tEOPJGjwBfrpd1VkV9t/W4pllx04r2PFeh/rbdAnR5R5C73Gvbv1fG5Igedeo2QXtH9UMu1qeTmrr8tiIwupuUTt6zqL+7V49PkqPLOc5Mqni7Zm6QZ2mWJuwppb8h6d5GFmVPXmM3VStIfHkQlqhjugPXyZtf9xWcJ3sTStvT/B7344As1FPyH0kaJNnGHjhC9yycYQpPvi2lfcsZwTLYoKjkJdYaTJz25ytroT05dqnq5xtotADB9vemTd5UUjgN1ey2TegqI2UEuZkYr+y0YMYrpaFRa4Lko+4vcIgyZkelmfjRJlE9AfmlkcuEEXLYz3eOVK17F9jffqzReaA11sg8ZdYkZlbURbYf0zd3fEB7xx76ECc=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8df3285-b9c9-4273-5a46-08d82278f266
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB5810.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 13:23:33.3607
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6UmgcMf9tyz3rCQvgokoE4xzxzn81yzkMlqiw/KLw4fAHaxYH847lxR9J/bJpGICn8evOkfykuV5aAUiHGGzqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6243
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Krishna,
+From: Leon Romanovsky <leonro@mellanox.com>
 
-thanks for debugging this.
+Move allocation and destruction of memory windows under ib_core
+responsibility and clean drivers to ensure that no updates to MW
+ib_core structures are done in driver layer.
 
-please try the following untested patch:
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Changelog:
+v2: Changed the way of how rkey is assigned.
+v1: https://lore.kernel.org/linux-rdma/20200630101855.368895-3-leon@kernel.org
+---
+ drivers/infiniband/core/device.c            |  1 +
+ drivers/infiniband/core/uverbs.h            |  2 +-
+ drivers/infiniband/core/uverbs_cmd.c        | 26 ++++++++-----
+ drivers/infiniband/core/uverbs_main.c       | 10 ++---
+ drivers/infiniband/core/uverbs_std_types.c  |  3 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h      |  5 +--
+ drivers/infiniband/hw/cxgb4/mem.c           | 35 ++++++-----------
+ drivers/infiniband/hw/cxgb4/provider.c      |  4 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h |  5 +--
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +
+ drivers/infiniband/hw/hns/hns_roce_mr.c     | 31 +++++----------
+ drivers/infiniband/hw/mlx4/main.c           |  2 +
+ drivers/infiniband/hw/mlx4/mlx4_ib.h        |  5 +--
+ drivers/infiniband/hw/mlx4/mr.c             | 33 +++++-----------
+ drivers/infiniband/hw/mlx5/main.c           |  2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h        |  5 +--
+ drivers/infiniband/hw/mlx5/mr.c             | 42 ++++++++-------------
+ include/rdma/ib_verbs.h                     |  6 +--
+ 18 files changed, 91 insertions(+), 128 deletions(-)
 
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index b2d617e599a1..cb61542af03f 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2689,6 +2689,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_OBJ_SIZE(dev_ops, ib_ah);
+ 	SET_OBJ_SIZE(dev_ops, ib_counters);
+ 	SET_OBJ_SIZE(dev_ops, ib_cq);
++	SET_OBJ_SIZE(dev_ops, ib_mw);
+ 	SET_OBJ_SIZE(dev_ops, ib_pd);
+ 	SET_OBJ_SIZE(dev_ops, ib_srq);
+ 	SET_OBJ_SIZE(dev_ops, ib_ucontext);
+diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+index 53a10479958b..072bfe4e1b5b 100644
+--- a/drivers/infiniband/core/uverbs.h
++++ b/drivers/infiniband/core/uverbs.h
+@@ -242,7 +242,7 @@ int ib_uverbs_dealloc_xrcd(struct ib_uobject *uobject, struct ib_xrcd *xrcd,
+ 			   enum rdma_remove_reason why,
+ 			   struct uverbs_attr_bundle *attrs);
 
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c 
-b/drivers/infiniband/ulp/isert/ib_isert.c
-index b7df38e..49f5f05 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -119,7 +119,7 @@
-  {
-         struct isert_device *device = isert_conn->device;
-         struct ib_qp_init_attr attr;
--       int ret;
-+       int ret, factor;
+-int uverbs_dealloc_mw(struct ib_mw *mw);
++void uverbs_dealloc_mw(struct ib_mw *mw);
+ void ib_uverbs_detach_umcast(struct ib_qp *qp,
+ 			     struct ib_uqp_object *uobj);
 
-         memset(&attr, 0, sizeof(struct ib_qp_init_attr));
-         attr.event_handler = isert_qp_event_callback;
-@@ -128,7 +128,9 @@
-         attr.recv_cq = comp->cq;
-         attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS + 1;
-         attr.cap.max_recv_wr = ISERT_QP_MAX_RECV_DTOS + 1;
--       attr.cap.max_rdma_ctxs = ISCSI_DEF_XMIT_CMDS_MAX;
-+       factor = rdma_rw_mr_factor(device->ib_device, cma_id->port_num,
-+                                  ISCSI_ISER_MAX_SG_TABLESIZE);
-+       attr.cap.max_rdma_ctxs = ISCSI_DEF_XMIT_CMDS_MAX * factor;
-         attr.cap.max_send_sge = device->ib_device->attrs.max_send_sge;
-         attr.cap.max_recv_sge = 1;
-         attr.sq_sig_type = IB_SIGNAL_REQ_WR;
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.h 
-b/drivers/infiniband/ulp/isert/ib_isert.h
-index 3b296ba..c9ccf1d 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.h
-+++ b/drivers/infiniband/ulp/isert/ib_isert.h
-@@ -63,7 +63,8 @@
-                 (ISER_RX_PAYLOAD_SIZE + sizeof(u64) + sizeof(struct 
-ib_sge) + \
-                  sizeof(struct ib_cqe) + sizeof(bool)))
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 68c9a0210220..c160306c48f0 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -890,7 +890,7 @@ static int ib_uverbs_dereg_mr(struct uverbs_attr_bundle *attrs)
+ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
+ {
+ 	struct ib_uverbs_alloc_mw      cmd;
+-	struct ib_uverbs_alloc_mw_resp resp;
++	struct ib_uverbs_alloc_mw_resp resp = {};
+ 	struct ib_uobject             *uobj;
+ 	struct ib_pd                  *pd;
+ 	struct ib_mw                  *mw;
+@@ -916,21 +916,24 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
+ 		goto err_put;
+ 	}
 
--#define ISCSI_ISER_SG_TABLESIZE                256
-+/* Maximum support is 16MB I/O size */
-+#define ISCSI_ISER_MAX_SG_TABLESIZE    4096
+-	mw = pd->device->ops.alloc_mw(pd, cmd.mw_type, &attrs->driver_udata);
+-	if (IS_ERR(mw)) {
+-		ret = PTR_ERR(mw);
++	mw = rdma_zalloc_drv_obj(ib_dev, ib_mw);
++	if (!mw) {
++		ret = -ENOMEM;
+ 		goto err_put;
+ 	}
 
-  enum isert_desc_type {
-         ISCSI_TX_CONTROL,
+-	mw->device  = pd->device;
+-	mw->pd      = pd;
++	mw->device = ib_dev;
++	mw->pd = pd;
+ 	mw->uobject = uobj;
+-	atomic_inc(&pd->usecnt);
+-
+ 	uobj->object = mw;
++	mw->type = cmd.mw_type;
 
+-	memset(&resp, 0, sizeof(resp));
+-	resp.rkey      = mw->rkey;
++	ret = pd->device->ops.alloc_mw(mw, &attrs->driver_udata);
++	if (ret)
++		goto err_alloc;
++
++	atomic_inc(&pd->usecnt);
++	resp.rkey = mw->rkey;
+ 	resp.mw_handle = uobj->id;
 
-On 7/7/2020 3:36 PM, Krishnamraju Eraparaju wrote:
-> Looks like the commit 07173c3e(block: enable multipage bvecs) has
-> uncovered iSER SQ sizing issue.
->
-> Here is how I hit the issue:
-> Created two luns under single target, then run the below script on each
-> lun(parallelly).
->
->    while [ 1 ]
->    do
->    iozone -i 0 -i 1 -I -+d -s 100000 -r 16384 -w
->    done
->
->
-> Then failures like below are logged in dmesg output, due to iw_cxgb4 SQ
-> getting full at iSER target.
->     "isert: isert_rdma_rw_ctx_post: Cmd: 00000000cb75342a failed to post
-> RDMA res"
->
->
-> This issue won't occur if luns are created on seperate targets.
-> Also, the issue won't occur if I revert the multipage bvecs(07173c3e)
-> changes at initator.
->
->
-> Currently SQ is being sized this way:
-> attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS:138 +1 +
-> (ISCSI_DEF_XMIT_CMDS_MAX:128 * factor:3) = 523.
-> I tried increaseing the SQ size and observed that the issue is not
-> occuring when attr.cap.max_send_wr is 562.
->
->
-> Looks like the avg length of RDMA READ/WRITE operations has increased
-> after "multipage bvecs" changes.
-> Queueing many large sized RDMA READ/WRITE WRs may cause backpressure and
-> increases the chances of SQ getting full at provider driver.
-> Notice the length(0x7f000 & 0x2000) of each RDMA READ operation below,
-> for Before and After case.
->
-> Before "multipage bvecs" RDMA READ:
-> [  +0.001903] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x78]
-> [  +0.000007] iser: iser_fast_reg_mr: lkey=0x8a41 rkey=0x8a41
-> addr=0x446166000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:120 READ tags
-> RKEY:0X8A41 VA:0X446166000
-> [  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6f]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x13b51 rkey=0x13b51
-> addr=0x443b25000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:111 READ tags
-> RKEY:0X13B51 VA:0X443B25000
-> [  +0.000022] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xe]
-> [  +0.000001] iser: iser_fast_reg_mr: lkey=0xa371 rkey=0xa371
-> addr=0x4461a4000 length=0x2000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:14 READ tags
-> RKEY:0XA371 VA:0X4461A4000
-> [  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x79]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x12f4f rkey=0x12f4f
-> addr=0x4461a9000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:121 READ tags
-> RKEY:0X12F4F VA:0X4461A9000
-> [  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0xe040 rkey=0xe040
-> addr=0x447e67000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
-> RKEY:0XE040 VA:0X447E67000
-> [  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7b]
-> [  +0.000001] iser: iser_fast_reg_mr: lkey=0xb149 rkey=0xb149
-> addr=0x3d0366000 length=0x2000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:123 READ tags
-> RKEY:0XB149 VA:0X3D0366000
-> [  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xb]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x1014c rkey=0x1014c
-> addr=0x3d0368000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:11 READ tags
-> RKEY:0X1014C VA:0X3D0368000
-> [  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x62]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x7c3b rkey=0x7c3b
-> addr=0x3d03e7000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:98 READ tags
-> RKEY:0X7C3B VA:0X3D03E7000
-> [  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x11]
-> [  +0.000001] iser: iser_fast_reg_mr: lkey=0x11752 rkey=0x11752
-> addr=0x3d6de6000 length=0x2000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:17 READ tags
-> RKEY:0X11752 VA:0X3D6DE6000
-> [  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x77]
->
->
-> After "multipage bvecs" RDMA READ:
-> [  +0.002455] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
-> [  +0.000006] iser: iser_fast_reg_mr: lkey=0x7991 rkey=0x7991
-> addr=0x3d2819000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
-> RKEY:0X7991 VA:0X3D2819000
-> [  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7e]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x8c9b rkey=0x8c9b
-> addr=0x3d2898000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:126 READ tags
-> RKEY:0X8C9B VA:0X3D2898000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7f]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x856d rkey=0x856d
-> addr=0x3d2917000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:127 READ tags
-> RKEY:0X856D VA:0X3D2917000
-> [  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x1]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0x9b55 rkey=0x9b55
-> addr=0x3d2999000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:1 READ tags
-> RKEY:0X9B55 VA:0X3D2999000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x2]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0x86cf rkey=0x86cf
-> addr=0x3d2018000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:2 READ tags
-> RKEY:0X86CF VA:0X3D2018000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x3]
-> [  +0.000003] iser: iser_fast_reg_mr: lkey=0x8062 rkey=0x8062
-> addr=0x3d2097000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:3 READ tags
-> RKEY:0X8062 VA:0X3D2097000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x4]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0xc34b rkey=0xc34b
-> addr=0x3d2116000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:4 READ tags
-> RKEY:0XC34B VA:0X3D2116000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x5]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0x8b6d rkey=0x8b6d
-> addr=0x3d2195000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:5 READ tags
-> RKEY:0X8B6D VA:0X3D2195000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0xce56 rkey=0xce56
-> addr=0x3d0e14000 length=0x7f000
-> [  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:6 READ tags
-> RKEY:0XCE56 VA:0X3D0E14000
-> [  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7]
-> [  +0.000002] iser: iser_fast_reg_mr: lkey=0xba45 rkey=0xba45
-> addr=0x3d0e93000 length=0x7f000
-> [  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:7 READ tags
-> RKEY:0XBA45 VA:0X3D0E93000
-> [  +0.000002] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x8]
->
-> Hence, I feel iSER target SQ is undersized and needs to be sized
-> properly to hold max possible entries. I might be wrong.
->
-> Please take a look.
->
-> Thanks,
-> Krishna.
+ 	ret = uverbs_response(attrs, &resp, sizeof(resp));
+@@ -943,6 +946,9 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
+
+ err_copy:
+ 	uverbs_dealloc_mw(mw);
++	mw = NULL;
++err_alloc:
++	kfree(mw);
+ err_put:
+ 	uobj_put_obj_read(pd);
+ err_free:
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 69e4755cc04b..706c972ea3a1 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -102,15 +102,13 @@ struct ib_ucontext *ib_uverbs_get_ucontext_file(struct ib_uverbs_file *ufile)
+ }
+ EXPORT_SYMBOL(ib_uverbs_get_ucontext_file);
+
+-int uverbs_dealloc_mw(struct ib_mw *mw)
++void uverbs_dealloc_mw(struct ib_mw *mw)
+ {
+ 	struct ib_pd *pd = mw->pd;
+-	int ret;
+
+-	ret = mw->device->ops.dealloc_mw(mw);
+-	if (!ret)
+-		atomic_dec(&pd->usecnt);
+-	return ret;
++	mw->device->ops.dealloc_mw(mw);
++	atomic_dec(&pd->usecnt);
++	kfree(mw);
+ }
+
+ static void ib_uverbs_release_dev(struct device *device)
+diff --git a/drivers/infiniband/core/uverbs_std_types.c b/drivers/infiniband/core/uverbs_std_types.c
+index 08c39cfb1bd9..e4994cc4cc51 100644
+--- a/drivers/infiniband/core/uverbs_std_types.c
++++ b/drivers/infiniband/core/uverbs_std_types.c
+@@ -72,7 +72,8 @@ static int uverbs_free_mw(struct ib_uobject *uobject,
+ 			  enum rdma_remove_reason why,
+ 			  struct uverbs_attr_bundle *attrs)
+ {
+-	return uverbs_dealloc_mw((struct ib_mw *)uobject->object);
++	uverbs_dealloc_mw((struct ib_mw *)uobject->object);
++	return 0;
+ }
+
+ static int uverbs_free_rwq_ind_tbl(struct ib_uobject *uobject,
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index 2b2b009b371a..72edf9a762ef 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -983,10 +983,9 @@ struct ib_mr *c4iw_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+ 			    u32 max_num_sg);
+ int c4iw_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ 		   unsigned int *sg_offset);
+-int c4iw_dealloc_mw(struct ib_mw *mw);
++void c4iw_dealloc_mw(struct ib_mw *mw);
+ void c4iw_dealloc(struct uld_ctx *ctx);
+-struct ib_mw *c4iw_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			    struct ib_udata *udata);
++int c4iw_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
+ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start,
+ 					   u64 length, u64 virt, int acc,
+ 					   struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
+index 73936c3341b7..87bc54ade550 100644
+--- a/drivers/infiniband/hw/cxgb4/mem.c
++++ b/drivers/infiniband/hw/cxgb4/mem.c
+@@ -611,30 +611,23 @@ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	return ERR_PTR(err);
+ }
+
+-struct ib_mw *c4iw_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			    struct ib_udata *udata)
++int c4iw_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ {
++	struct c4iw_mw *mhp = to_c4iw_mw(ibmw);
+ 	struct c4iw_dev *rhp;
+ 	struct c4iw_pd *php;
+-	struct c4iw_mw *mhp;
+ 	u32 mmid;
+ 	u32 stag = 0;
+ 	int ret;
+
+-	if (type != IB_MW_TYPE_1)
+-		return ERR_PTR(-EINVAL);
++	if (ibmw->type != IB_MW_TYPE_1)
++		return -EINVAL;
+
+-	php = to_c4iw_pd(pd);
++	php = to_c4iw_pd(ibmw->pd);
+ 	rhp = php->rhp;
+-	mhp = kzalloc(sizeof(*mhp), GFP_KERNEL);
+-	if (!mhp)
+-		return ERR_PTR(-ENOMEM);
+-
+ 	mhp->wr_waitp = c4iw_alloc_wr_wait(GFP_KERNEL);
+-	if (!mhp->wr_waitp) {
+-		ret = -ENOMEM;
+-		goto free_mhp;
+-	}
++	if (!mhp->wr_waitp)
++		return -ENOMEM;
+
+ 	mhp->dereg_skb = alloc_skb(SGE_MAX_WR_LEN, GFP_KERNEL);
+ 	if (!mhp->dereg_skb) {
+@@ -645,18 +638,19 @@ struct ib_mw *c4iw_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+ 	ret = allocate_window(&rhp->rdev, &stag, php->pdid, mhp->wr_waitp);
+ 	if (ret)
+ 		goto free_skb;
++
+ 	mhp->rhp = rhp;
+ 	mhp->attr.pdid = php->pdid;
+ 	mhp->attr.type = FW_RI_STAG_MW;
+ 	mhp->attr.stag = stag;
+ 	mmid = (stag) >> 8;
+-	mhp->ibmw.rkey = stag;
++	ibmw->rkey = stag;
+ 	if (xa_insert_irq(&rhp->mrs, mmid, mhp, GFP_KERNEL)) {
+ 		ret = -ENOMEM;
+ 		goto dealloc_win;
+ 	}
+ 	pr_debug("mmid 0x%x mhp %p stag 0x%x\n", mmid, mhp, stag);
+-	return &(mhp->ibmw);
++	return 0;
+
+ dealloc_win:
+ 	deallocate_window(&rhp->rdev, mhp->attr.stag, mhp->dereg_skb,
+@@ -665,12 +659,10 @@ struct ib_mw *c4iw_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+ 	kfree_skb(mhp->dereg_skb);
+ free_wr_wait:
+ 	c4iw_put_wr_wait(mhp->wr_waitp);
+-free_mhp:
+-	kfree(mhp);
+-	return ERR_PTR(ret);
++	return ret;
+ }
+
+-int c4iw_dealloc_mw(struct ib_mw *mw)
++void c4iw_dealloc_mw(struct ib_mw *mw)
+ {
+ 	struct c4iw_dev *rhp;
+ 	struct c4iw_mw *mhp;
+@@ -684,9 +676,6 @@ int c4iw_dealloc_mw(struct ib_mw *mw)
+ 			  mhp->wr_waitp);
+ 	kfree_skb(mhp->dereg_skb);
+ 	c4iw_put_wr_wait(mhp->wr_waitp);
+-	pr_debug("ib_mw %p mmid 0x%x ptr %p\n", mw, mmid, mhp);
+-	kfree(mhp);
+-	return 0;
+ }
+
+ struct ib_mr *c4iw_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
+index 1d3ff59e4060..7ec74e2fa885 100644
+--- a/drivers/infiniband/hw/cxgb4/provider.c
++++ b/drivers/infiniband/hw/cxgb4/provider.c
+@@ -508,8 +508,10 @@ static const struct ib_device_ops c4iw_dev_ops = {
+ 	.query_qp = c4iw_ib_query_qp,
+ 	.reg_user_mr = c4iw_reg_user_mr,
+ 	.req_notify_cq = c4iw_arm_cq,
+-	INIT_RDMA_OBJ_SIZE(ib_pd, c4iw_pd, ibpd),
++
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, c4iw_cq, ibcq),
++	INIT_RDMA_OBJ_SIZE(ib_mw, c4iw_mw, ibmw),
++	INIT_RDMA_OBJ_SIZE(ib_pd, c4iw_pd, ibpd),
+ 	INIT_RDMA_OBJ_SIZE(ib_srq, c4iw_srq, ibsrq),
+ 	INIT_RDMA_OBJ_SIZE(ib_ucontext, c4iw_ucontext, ibucontext),
+ };
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 2a932b75a33d..c5a7dd4b7b6a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -1201,9 +1201,8 @@ int hns_roce_hw_destroy_mpt(struct hns_roce_dev *hr_dev,
+ 			    unsigned long mpt_index);
+ unsigned long key_to_hw_index(u32 key);
+
+-struct ib_mw *hns_roce_alloc_mw(struct ib_pd *pd, enum ib_mw_type,
+-				struct ib_udata *udata);
+-int hns_roce_dealloc_mw(struct ib_mw *ibmw);
++int hns_roce_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
++void hns_roce_dealloc_mw(struct ib_mw *ibmw);
+
+ void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf);
+ int hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size, u32 max_direct,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 5907cfd878a6..45f7353bd348 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -454,6 +454,8 @@ static const struct ib_device_ops hns_roce_dev_mr_ops = {
+ static const struct ib_device_ops hns_roce_dev_mw_ops = {
+ 	.alloc_mw = hns_roce_alloc_mw,
+ 	.dealloc_mw = hns_roce_dealloc_mw,
++
++	INIT_RDMA_OBJ_SIZE(ib_mw, hns_roce_mw, ibmw),
+ };
+
+ static const struct ib_device_ops hns_roce_dev_frmr_ops = {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 2af52edd221f..848babe2a760 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -589,28 +589,22 @@ static int hns_roce_mw_enable(struct hns_roce_dev *hr_dev,
+ 	return ret;
+ }
+
+-struct ib_mw *hns_roce_alloc_mw(struct ib_pd *ib_pd, enum ib_mw_type type,
+-				struct ib_udata *udata)
++int hns_roce_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ {
+-	struct hns_roce_dev *hr_dev = to_hr_dev(ib_pd->device);
+-	struct hns_roce_mw *mw;
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
++	struct hns_roce_mw *mw = to_hr_mw(ibmw);
+ 	unsigned long index = 0;
+ 	int ret;
+
+-	mw = kmalloc(sizeof(*mw), GFP_KERNEL);
+-	if (!mw)
+-		return ERR_PTR(-ENOMEM);
+-
+ 	/* Allocate a key for mw from bitmap */
+ 	ret = hns_roce_bitmap_alloc(&hr_dev->mr_table.mtpt_bitmap, &index);
+ 	if (ret)
+-		goto err_bitmap;
++		return ret;
+
+ 	mw->rkey = hw_index_to_key(index);
+
+-	mw->ibmw.rkey = mw->rkey;
+-	mw->ibmw.type = type;
+-	mw->pdn = to_hr_pd(ib_pd)->pdn;
++	ibmw->rkey = mw->rkey;
++	mw->pdn = to_hr_pd(ibmw->pd)->pdn;
+ 	mw->pbl_hop_num = hr_dev->caps.pbl_hop_num;
+ 	mw->pbl_ba_pg_sz = hr_dev->caps.pbl_ba_pg_sz;
+ 	mw->pbl_buf_pg_sz = hr_dev->caps.pbl_buf_pg_sz;
+@@ -619,26 +613,19 @@ struct ib_mw *hns_roce_alloc_mw(struct ib_pd *ib_pd, enum ib_mw_type type,
+ 	if (ret)
+ 		goto err_mw;
+
+-	return &mw->ibmw;
++	return 0;
+
+ err_mw:
+ 	hns_roce_mw_free(hr_dev, mw);
+-
+-err_bitmap:
+-	kfree(mw);
+-
+-	return ERR_PTR(ret);
++	return ret;
+ }
+
+-int hns_roce_dealloc_mw(struct ib_mw *ibmw)
++void hns_roce_dealloc_mw(struct ib_mw *ibmw)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
+ 	struct hns_roce_mw *mw = to_hr_mw(ibmw);
+
+ 	hns_roce_mw_free(hr_dev, mw);
+-	kfree(mw);
+-
+-	return 0;
+ }
+
+ static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 5e7910a517da..0ad584a3b8d6 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -2593,6 +2593,8 @@ static const struct ib_device_ops mlx4_ib_dev_wq_ops = {
+ static const struct ib_device_ops mlx4_ib_dev_mw_ops = {
+ 	.alloc_mw = mlx4_ib_alloc_mw,
+ 	.dealloc_mw = mlx4_ib_dealloc_mw,
++
++	INIT_RDMA_OBJ_SIZE(ib_mw, mlx4_ib_mw, ibmw),
+ };
+
+ static const struct ib_device_ops mlx4_ib_dev_xrc_ops = {
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 38e87a700a2a..9c23073d6161 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -725,9 +725,8 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int access_flags,
+ 				  struct ib_udata *udata);
+ int mlx4_ib_dereg_mr(struct ib_mr *mr, struct ib_udata *udata);
+-struct ib_mw *mlx4_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			       struct ib_udata *udata);
+-int mlx4_ib_dealloc_mw(struct ib_mw *mw);
++int mlx4_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
++void mlx4_ib_dealloc_mw(struct ib_mw *mw);
+ struct ib_mr *mlx4_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+ 			       u32 max_num_sg);
+ int mlx4_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index 1d5ef0de12c9..cf68d63ea30b 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -610,47 +610,34 @@ int mlx4_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 	return 0;
+ }
+
+-struct ib_mw *mlx4_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			       struct ib_udata *udata)
++int mlx4_ib_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ {
+-	struct mlx4_ib_dev *dev = to_mdev(pd->device);
+-	struct mlx4_ib_mw *mw;
++	struct mlx4_ib_dev *dev = to_mdev(ibmw->device);
++	struct mlx4_ib_mw *mw = to_mmw(ibmw);
+ 	int err;
+
+-	mw = kmalloc(sizeof(*mw), GFP_KERNEL);
+-	if (!mw)
+-		return ERR_PTR(-ENOMEM);
+-
+-	err = mlx4_mw_alloc(dev->dev, to_mpd(pd)->pdn,
+-			    to_mlx4_type(type), &mw->mmw);
++	err = mlx4_mw_alloc(dev->dev, to_mpd(ibmw->pd)->pdn,
++			    to_mlx4_type(ibmw->type), &mw->mmw);
+ 	if (err)
+-		goto err_free;
++		return err;
+
+ 	err = mlx4_mw_enable(dev->dev, &mw->mmw);
+ 	if (err)
+ 		goto err_mw;
+
+-	mw->ibmw.rkey = mw->mmw.key;
+-
+-	return &mw->ibmw;
++	ibmw->rkey = mw->mmw.key;
++	return 0;
+
+ err_mw:
+ 	mlx4_mw_free(dev->dev, &mw->mmw);
+-
+-err_free:
+-	kfree(mw);
+-
+-	return ERR_PTR(err);
++	return err;
+ }
+
+-int mlx4_ib_dealloc_mw(struct ib_mw *ibmw)
++void mlx4_ib_dealloc_mw(struct ib_mw *ibmw)
+ {
+ 	struct mlx4_ib_mw *mw = to_mmw(ibmw);
+
+ 	mlx4_mw_free(to_mdev(ibmw->device)->dev, &mw->mmw);
+-	kfree(mw);
+-
+-	return 0;
+ }
+
+ struct ib_mr *mlx4_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 2da592054a3f..24717a5a930a 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -6666,6 +6666,8 @@ static const struct ib_device_ops mlx5_ib_dev_sriov_ops = {
+ static const struct ib_device_ops mlx5_ib_dev_mw_ops = {
+ 	.alloc_mw = mlx5_ib_alloc_mw,
+ 	.dealloc_mw = mlx5_ib_dealloc_mw,
++
++	INIT_RDMA_OBJ_SIZE(ib_mw, mlx5_ib_mw, ibmw),
+ };
+
+ static const struct ib_device_ops mlx5_ib_dev_xrc_ops = {
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 88e30ff77c16..63cf7d3b2043 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1195,9 +1195,8 @@ int mlx5_ib_advise_mr(struct ib_pd *pd,
+ 		      struct ib_sge *sg_list,
+ 		      u32 num_sge,
+ 		      struct uverbs_attr_bundle *attrs);
+-struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			       struct ib_udata *udata);
+-int mlx5_ib_dealloc_mw(struct ib_mw *mw);
++int mlx5_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
++void mlx5_ib_dealloc_mw(struct ib_mw *mw);
+ int mlx5_ib_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
+ 		       int page_shift, int flags);
+ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 3e6f2f9c6655..64744fc3a47f 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1973,12 +1973,11 @@ struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
+ 				  max_num_meta_sg);
+ }
+
+-struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+-			       struct ib_udata *udata)
++int mlx5_ib_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ {
+-	struct mlx5_ib_dev *dev = to_mdev(pd->device);
++	struct mlx5_ib_dev *dev = to_mdev(ibmw->device);
+ 	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+-	struct mlx5_ib_mw *mw = NULL;
++	struct mlx5_ib_mw *mw = to_mmw(ibmw);
+ 	u32 *in = NULL;
+ 	void *mkc;
+ 	int ndescs;
+@@ -1991,21 +1990,20 @@ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+
+ 	err = ib_copy_from_udata(&req, udata, min(udata->inlen, sizeof(req)));
+ 	if (err)
+-		return ERR_PTR(err);
++		return err;
+
+ 	if (req.comp_mask || req.reserved1 || req.reserved2)
+-		return ERR_PTR(-EOPNOTSUPP);
++		return -EOPNOTSUPP;
+
+ 	if (udata->inlen > sizeof(req) &&
+ 	    !ib_is_udata_cleared(udata, sizeof(req),
+ 				 udata->inlen - sizeof(req)))
+-		return ERR_PTR(-EOPNOTSUPP);
++		return -EOPNOTSUPP;
+
+ 	ndescs = req.num_klms ? roundup(req.num_klms, 4) : roundup(1, 4);
+
+-	mw = kzalloc(sizeof(*mw), GFP_KERNEL);
+ 	in = kzalloc(inlen, GFP_KERNEL);
+-	if (!mw || !in) {
++	if (!in) {
+ 		err = -ENOMEM;
+ 		goto free;
+ 	}
+@@ -2014,11 +2012,11 @@ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+
+ 	MLX5_SET(mkc, mkc, free, 1);
+ 	MLX5_SET(mkc, mkc, translations_octword_size, ndescs);
+-	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
++	MLX5_SET(mkc, mkc, pd, to_mpd(ibmw->pd)->pdn);
+ 	MLX5_SET(mkc, mkc, umr_en, 1);
+ 	MLX5_SET(mkc, mkc, lr, 1);
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_KLMS);
+-	MLX5_SET(mkc, mkc, en_rinval, !!((type == IB_MW_TYPE_2)));
++	MLX5_SET(mkc, mkc, en_rinval, !!((ibmw->type == IB_MW_TYPE_2)));
+ 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+
+ 	err = mlx5_ib_create_mkey(dev, &mw->mmkey, in, inlen);
+@@ -2026,17 +2024,15 @@ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+ 		goto free;
+
+ 	mw->mmkey.type = MLX5_MKEY_MW;
+-	mw->ibmw.rkey = mw->mmkey.key;
++	ibmw->rkey = mw->mmkey.key;
+ 	mw->ndescs = ndescs;
+
+ 	resp.response_length = min(offsetof(typeof(resp), response_length) +
+ 				   sizeof(resp.response_length), udata->outlen);
+ 	if (resp.response_length) {
+ 		err = ib_copy_to_udata(udata, &resp, resp.response_length);
+-		if (err) {
+-			mlx5_core_destroy_mkey(dev->mdev, &mw->mmkey);
+-			goto free;
+-		}
++		if (err)
++			goto free_mkey;
+ 	}
+
+ 	if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING)) {
+@@ -2048,21 +2044,19 @@ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+ 	}
+
+ 	kfree(in);
+-	return &mw->ibmw;
++	return 0;
+
+ free_mkey:
+ 	mlx5_core_destroy_mkey(dev->mdev, &mw->mmkey);
+ free:
+-	kfree(mw);
+ 	kfree(in);
+-	return ERR_PTR(err);
++	return err;
+ }
+
+-int mlx5_ib_dealloc_mw(struct ib_mw *mw)
++void mlx5_ib_dealloc_mw(struct ib_mw *mw)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(mw->device);
+ 	struct mlx5_ib_mw *mmw = to_mmw(mw);
+-	int err;
+
+ 	if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING)) {
+ 		xa_erase(&dev->odp_mkeys, mlx5_base_mkey(mmw->mmkey.key));
+@@ -2073,11 +2067,7 @@ int mlx5_ib_dealloc_mw(struct ib_mw *mw)
+ 		synchronize_srcu(&dev->odp_srcu);
+ 	}
+
+-	err = mlx5_core_destroy_mkey(dev->mdev, &mmw->mmkey);
+-	if (err)
+-		return err;
+-	kfree(mmw);
+-	return 0;
++	mlx5_core_destroy_mkey(dev->mdev, &mmw->mmkey);
+ }
+
+ int mlx5_ib_check_mr_status(struct ib_mr *ibmr, u32 check_mask,
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 5060159a2c2c..884ae36f1521 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2490,9 +2490,8 @@ struct ib_device_ops {
+ 			 unsigned int *sg_offset);
+ 	int (*check_mr_status)(struct ib_mr *mr, u32 check_mask,
+ 			       struct ib_mr_status *mr_status);
+-	struct ib_mw *(*alloc_mw)(struct ib_pd *pd, enum ib_mw_type type,
+-				  struct ib_udata *udata);
+-	int (*dealloc_mw)(struct ib_mw *mw);
++	int (*alloc_mw)(struct ib_mw *mw, struct ib_udata *udata);
++	void (*dealloc_mw)(struct ib_mw *mw);
+ 	int (*attach_mcast)(struct ib_qp *qp, union ib_gid *gid, u16 lid);
+ 	int (*detach_mcast)(struct ib_qp *qp, union ib_gid *gid, u16 lid);
+ 	int (*alloc_xrcd)(struct ib_xrcd *xrcd, struct ib_udata *udata);
+@@ -2652,6 +2651,7 @@ struct ib_device_ops {
+ 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
++	DECLARE_RDMA_OBJ_SIZE(ib_mw);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_pd);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_srq);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_ucontext);
+--
+2.26.2
+
