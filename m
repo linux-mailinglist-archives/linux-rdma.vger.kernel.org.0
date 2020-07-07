@@ -2,93 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA62216CA0
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 14:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB20F216CEE
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 14:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgGGMPy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 08:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725944AbgGGMPy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Jul 2020 08:15:54 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67DC920708;
-        Tue,  7 Jul 2020 12:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594124154;
-        bh=RPYVNo/RBcC/PvgjnjycqEtelKEA3vP+6156hy2sTyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MJPS5hnu6yzdi7KQ39emV/grapzuXCp8q5ZbgDUCAxJ0JIAecTh9XJhEoUwTACEKt
-         4U10erXXnVfleNSMZ17soH0ldp0KXZNeM+UouI1m5FXBgMZm4VAOywPk7TuxpsW0yo
-         hDzWCOqfuNrMvyvbOQ9cpApsNVSI0Gq5Ok2VHS6g=
-Date:   Tue, 7 Jul 2020 15:15:50 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Lijun Ou <oulijun@huawei.com>,
-        linux-rdma@vger.kernel.org,
+        id S1728020AbgGGMhE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 08:37:04 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:41104 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgGGMhE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 08:37:04 -0400
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 067CagjR008197;
+        Tue, 7 Jul 2020 05:36:43 -0700
+Date:   Tue, 7 Jul 2020 18:06:42 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Sagi Grimberg <sagi@grimberg.me>, Max Gurtovoy <maxg@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>,
         Potnuri Bharat Teja <bharat@chelsio.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 2/4] RDMA: Clean MW allocation and free flows
-Message-ID: <20200707121550.GL207186@unreal>
-References: <20200630101855.368895-1-leon@kernel.org>
- <20200630101855.368895-3-leon@kernel.org>
- <20200706230416.GA1283287@nvidia.com>
- <20200707044203.GI207186@unreal>
- <20200707112109.GL23676@nvidia.com>
+        krishna2@chelsio.com
+Subject: iSERT SQ overflow with single target and multi luns
+Message-ID: <20200707123641.GA22620@chelsio.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707112109.GL23676@nvidia.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 08:21:09AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jul 07, 2020 at 07:42:03AM +0300, Leon Romanovsky wrote:
-> > On Mon, Jul 06, 2020 at 08:04:16PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jun 30, 2020 at 01:18:53PM +0300, Leon Romanovsky wrote:
-> > > > @@ -916,21 +916,24 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
-> > > >  		goto err_put;
-> > > >  	}
-> > > >
-> > > > -	mw = pd->device->ops.alloc_mw(pd, cmd.mw_type, &attrs->driver_udata);
-> > > > -	if (IS_ERR(mw)) {
-> > > > -		ret = PTR_ERR(mw);
-> > > > +	mw = rdma_zalloc_drv_obj(ib_dev, ib_mw);
-> > > > +	if (!mw) {
-> > > > +		ret = -ENOMEM;
-> > > >  		goto err_put;
-> > > >  	}
-> > > >
-> > > > -	mw->device  = pd->device;
-> > > > -	mw->pd      = pd;
-> > > > +	mw->device = ib_dev;
-> > > > +	mw->pd = pd;
-> > > >  	mw->uobject = uobj;
-> > > > -	atomic_inc(&pd->usecnt);
-> > > > -
-> > > >  	uobj->object = mw;
-> > > > +	mw->type = cmd.mw_type;
-> > > >
-> > > > -	memset(&resp, 0, sizeof(resp));
-> > > > -	resp.rkey      = mw->rkey;
-> > > > +	ret = pd->device->ops.alloc_mw(mw, &mw->rkey, &attrs->driver_udata);
-> > >
-> > > Why the strange &mw->rkey ? Can't the drivers just do mw->rkey = foo ?
-> >
-> > We can, if we want to allow drivers set fields in ib_* structures that
-> > there passed as part of alloc_* flows.
->
-> This is better than passing weird loose pointers around
+Looks like the commit 07173c3e(block: enable multipage bvecs) has
+uncovered iSER SQ sizing issue.
 
-I don't think that it is right approach, but I'll change.
+Here is how I hit the issue:
+Created two luns under single target, then run the below script on each
+lun(parallelly).
 
-Thanks
+  while [ 1 ]
+  do
+  iozone -i 0 -i 1 -I -+d -s 100000 -r 16384 -w
+  done
 
->
-> Jason
+
+Then failures like below are logged in dmesg output, due to iw_cxgb4 SQ
+getting full at iSER target.
+   "isert: isert_rdma_rw_ctx_post: Cmd: 00000000cb75342a failed to post
+RDMA res"
+
+
+This issue won't occur if luns are created on seperate targets.
+Also, the issue won't occur if I revert the multipage bvecs(07173c3e)
+changes at initator.
+
+
+Currently SQ is being sized this way:
+attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS:138 +1 +
+(ISCSI_DEF_XMIT_CMDS_MAX:128 * factor:3) = 523.
+I tried increaseing the SQ size and observed that the issue is not
+occuring when attr.cap.max_send_wr is 562.
+
+
+Looks like the avg length of RDMA READ/WRITE operations has increased
+after "multipage bvecs" changes.
+Queueing many large sized RDMA READ/WRITE WRs may cause backpressure and
+increases the chances of SQ getting full at provider driver.
+Notice the length(0x7f000 & 0x2000) of each RDMA READ operation below,
+for Before and After case.
+
+Before "multipage bvecs" RDMA READ:
+[  +0.001903] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x78]
+[  +0.000007] iser: iser_fast_reg_mr: lkey=0x8a41 rkey=0x8a41
+addr=0x446166000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:120 READ tags
+RKEY:0X8A41 VA:0X446166000
+[  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6f]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x13b51 rkey=0x13b51
+addr=0x443b25000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:111 READ tags
+RKEY:0X13B51 VA:0X443B25000
+[  +0.000022] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xe]
+[  +0.000001] iser: iser_fast_reg_mr: lkey=0xa371 rkey=0xa371
+addr=0x4461a4000 length=0x2000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:14 READ tags
+RKEY:0XA371 VA:0X4461A4000
+[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x79]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x12f4f rkey=0x12f4f
+addr=0x4461a9000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:121 READ tags
+RKEY:0X12F4F VA:0X4461A9000
+[  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0xe040 rkey=0xe040
+addr=0x447e67000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
+RKEY:0XE040 VA:0X447E67000
+[  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7b]
+[  +0.000001] iser: iser_fast_reg_mr: lkey=0xb149 rkey=0xb149
+addr=0x3d0366000 length=0x2000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:123 READ tags
+RKEY:0XB149 VA:0X3D0366000
+[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xb]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x1014c rkey=0x1014c
+addr=0x3d0368000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:11 READ tags
+RKEY:0X1014C VA:0X3D0368000
+[  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x62]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x7c3b rkey=0x7c3b
+addr=0x3d03e7000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:98 READ tags
+RKEY:0X7C3B VA:0X3D03E7000
+[  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x11]
+[  +0.000001] iser: iser_fast_reg_mr: lkey=0x11752 rkey=0x11752
+addr=0x3d6de6000 length=0x2000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:17 READ tags
+RKEY:0X11752 VA:0X3D6DE6000
+[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x77]
+
+
+After "multipage bvecs" RDMA READ:
+[  +0.002455] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
+[  +0.000006] iser: iser_fast_reg_mr: lkey=0x7991 rkey=0x7991
+addr=0x3d2819000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
+RKEY:0X7991 VA:0X3D2819000
+[  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7e]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x8c9b rkey=0x8c9b
+addr=0x3d2898000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:126 READ tags
+RKEY:0X8C9B VA:0X3D2898000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7f]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x856d rkey=0x856d
+addr=0x3d2917000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:127 READ tags
+RKEY:0X856D VA:0X3D2917000
+[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x1]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0x9b55 rkey=0x9b55
+addr=0x3d2999000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:1 READ tags
+RKEY:0X9B55 VA:0X3D2999000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x2]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0x86cf rkey=0x86cf
+addr=0x3d2018000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:2 READ tags
+RKEY:0X86CF VA:0X3D2018000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x3]
+[  +0.000003] iser: iser_fast_reg_mr: lkey=0x8062 rkey=0x8062
+addr=0x3d2097000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:3 READ tags
+RKEY:0X8062 VA:0X3D2097000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x4]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0xc34b rkey=0xc34b
+addr=0x3d2116000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:4 READ tags
+RKEY:0XC34B VA:0X3D2116000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x5]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0x8b6d rkey=0x8b6d
+addr=0x3d2195000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:5 READ tags
+RKEY:0X8B6D VA:0X3D2195000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0xce56 rkey=0xce56
+addr=0x3d0e14000 length=0x7f000
+[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:6 READ tags
+RKEY:0XCE56 VA:0X3D0E14000
+[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7]
+[  +0.000002] iser: iser_fast_reg_mr: lkey=0xba45 rkey=0xba45
+addr=0x3d0e93000 length=0x7f000
+[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:7 READ tags
+RKEY:0XBA45 VA:0X3D0E93000
+[  +0.000002] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x8]
+
+Hence, I feel iSER target SQ is undersized and needs to be sized
+properly to hold max possible entries. I might be wrong.
+
+Please take a look.
+
+Thanks,
+Krishna.
