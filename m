@@ -2,145 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CEA21755A
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 19:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D6D217670
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 20:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgGGRmW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 13:42:22 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14833 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgGGRmW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 13:42:22 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f04b3930001>; Tue, 07 Jul 2020 10:40:35 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 07 Jul 2020 10:42:21 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 07 Jul 2020 10:42:21 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Jul
- 2020 17:42:16 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.54) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 7 Jul 2020 17:42:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U4w7MVbJHwUPpgWm5wkHogYZt7wlAGjYwBpWjJvU6y3LXq6LFaP4BXzWnC7kTYYKHcrAXpklyCeaVJ9HkY41xmI+gw4y58rxazHVDWOdpQIXx0bvhSBa09R8MIMMlB9+WF1nujkMwZZgDa7xeIXOX4J/MPpajIpVusfZZvwSiQBZeI779rfeCV2wWarFI/u8p43zgOnlLBLm3Q4o0QoQW91ye+gmY/E4ozMg3oD0iHkI8ADp0rNEd+6HvRQF2ZbfLqjoBR5GHGX70MQdaJEYfurVZKoyfA/ANgBklbdwBS9IR9xcBPxFL64ZdCttKucV3K1h2V7L4CJDhpnsoKHsXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OdlcqmDyGw/FyngFq+8wXQBr17ypoGE14YqiGKaP3fk=;
- b=eJyI1DYwAjdFZjjIbwmcDDkAjMFoMNupCAEyaMVhMZjv5GNS7bvlDthnu+945XOoh/mWhFesi88Sx1jgLByWI0+dCLp789Wj0ZJXXrTpkj8K6AZirKtm6Vd3GCLeEpy9i61ifmKK4dh6KyxwPRv4MAPkyRp14Qdwv3KXR6lUJxQrqdNYmPvza7X0xy+7TAq6GTn6n7uqAd7t1Eax6v+anpBATk7lvkcvch8l47ITyoaw4aKQMuvJUgQh3qjOWDqaf+YUXjOQCsHrdUFaccad9M8z4ZegyCvZssNQVJxBWDokR9Ialbw4G2jDTs23bASN797yAOTiCG1TSOvrI51cLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3307.namprd12.prod.outlook.com (2603:10b6:5:15d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Tue, 7 Jul
- 2020 17:42:14 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
- 17:42:14 +0000
-Date:   Tue, 7 Jul 2020 14:42:13 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/6] Cleanup mlx5_ib main file
-Message-ID: <20200707174213.GA1397024@nvidia.com>
-References: <20200702081809.423482-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200702081809.423482-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR17CA0006.namprd17.prod.outlook.com
- (2603:10b6:208:15e::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1728284AbgGGSSl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 14:18:41 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:63326 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728029AbgGGSSl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 14:18:41 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067IBKqq015266;
+        Tue, 7 Jul 2020 11:18:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=w/0XgIbkfHZzJn0FI8Qowu4uSIGhaHoY6UwMvkDC2Qo=;
+ b=CyDXbzpZC7DsdtQn6PA5h/ZbA/y93q9i/epGN7CxhoHBfniNF0M/L+L7W0vb4WkC38QH
+ ++PvN1dwKDtUncGNsvYNPUtvvFM4Hs8D2LuEZIF5302xNUMyaTINmwgjIL7rn/IS6ypD
+ 34Yv8Nmj63BizSkznphbHtlN7ytEvZfUCABt2vzdETJxGlOcflM2ipyHRuG56IU9eo7p
+ Y9uwVfxhLJWI9DAPW1hh1I9KcxVudY466xVh6RghqqTNKU2ZC1QUC19zKMVcRsKNTyTz
+ tAyuQHH8flXWxYAIVof33O+UXY7G+gk/Q+73OSnv97cpvkXPKLuC3NVr9FfSBENc7AsV AA== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 322s9ncbpn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 11:18:39 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 7 Jul
+ 2020 11:18:37 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Jul 2020 11:18:37 -0700
+Received: from lb-tlvb-ybason.il.qlogic.org (unknown [10.5.221.176])
+        by maili.marvell.com (Postfix) with ESMTP id 517A23F703F;
+        Tue,  7 Jul 2020 11:18:36 -0700 (PDT)
+From:   Yuval Basson <ybason@marvell.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, Yuval Basson <ybason@marvell.com>,
+        "Michal Kalderon" <mkalderon@marvell.com>
+Subject: [PATCH v2 rdma-next] RDMA/qedr: SRQ's bug fixes
+Date:   Tue, 7 Jul 2020 20:18:47 +0300
+Message-ID: <20200707171847.29352-1-ybason@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0006.namprd17.prod.outlook.com (2603:10b6:208:15e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.24 via Frontend Transport; Tue, 7 Jul 2020 17:42:14 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jsrbh-005rt5-6j; Tue, 07 Jul 2020 14:42:13 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a8715dc-3e77-41d8-0283-08d8229d15c1
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3307:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB33079ABF0281A75BD00DECCBC2660@DM6PR12MB3307.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UMEsjU7Yax6XE1aUjMmGq0J5FQyzIGzrjXbvhBSRbCaD+kj1PpquBx8jN87o530oQyQ1gHKEuzJR/tRl0CYc7DPHLvI20f8DLnIQUx7KC9pdDy13SlY/scjttwmgWssKAQ6mxZU10YcR2FQliZWThF/A5EHtRT7EOarHtXr2AXX0zp5w/pO07ze8E9t/IKwXvkRJMCRv1+b79P1JG7xiVQZUcT1NEjrDvUJ0HQaf0FeAp3wrKdkz9pCcxikwSPRKKQsDOVogCW10dN3ZHRzI9cNaI+y654IxvZ8MKCrIEo/4ApPqDG32Aa8Wa7HUm2t5w+xowyA4zppLoh4XdI9NM4A1xnU596/GRSueOHlNu4iBXN+qg9W7C3vIyCviPPGNJ6kHDGVGs0YA41OgUwgOYg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(316002)(86362001)(1076003)(54906003)(36756003)(83380400001)(426003)(66946007)(66476007)(6916009)(8936002)(2616005)(186003)(26005)(5660300002)(8676002)(66556008)(478600001)(33656002)(2906002)(4326008)(966005)(9746002)(4744005)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: +08wdR0U60GUzauIUhp2EFLI0Mx6VCi4pURgaK6yItNSw4XvqV48/rNFRu7fkRAdo5LYSfYqJ+8dZadX8wf3qLyec6NGiiZyKfVVncsbKhPI6irdNHGJfoT9Lry3beqpxGArAVHFNXRFelhhSn4SKW6x3FRzbUjWwUr6h6eKN8/bVwVCRm4sISYrG8+dNEui+VIK2pcU80/bcYOW1pFK/zCVTRBZZS55hQ9a3yz17MGvu9GyoEpYPoMUK0UP76i7mL1qXmSfcwVxy9iHpcbPI3oIZoDbR8JWbn9yaFlBLAlWuS8N1Zx3SXTL9IQBWGZqWuRnqzUbHD7Wy14UAeD6UNFm9PAitMhFjwmwotyI8G47OYxpoMSJGGVgrRpixHB0nH/KMX/dcUWMKOlQiVU2ypNhaQWH6wEknxpS+c7ocZ9+uPuglDkRk0T+ESv/kS51v4BGeggVW4azax6FICE224mIvGhiHUm4pja1Bkx1HI0=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8715dc-3e77-41d8-0283-08d8229d15c1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 17:42:14.5224
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5Bt16LrQf3Nqo/Gyo2pS62bojW7g0YID6U3YChLYoIgHDHSZf3jzDyvB2AsWXqbV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3307
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594143635; bh=OdlcqmDyGw/FyngFq+8wXQBr17ypoGE14YqiGKaP3fk=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=bO15WCWEXMM0hYgNqdic1kiX/hphzneE+LNCsvfjGdi8HRJR1XWmpStnZoEZqumvd
-         nzUOMBfBv28thqspqWQqohV5npwoUgOo4Gby6IGFaLZpLpUSnxquPeDAMiXxTQYz/7
-         psmKynRPDmk4DSIjRtvk0v0DQSY+9sYJYuoJTywf/aooI7DVE2XEdHTTt3bWmO9d6i
-         3116MNeoPAntf25HLbefauElxWGc7/PhBLgT24o0YJli5JEmQwKkf9PRJNI8dNgeSd
-         6FY6dDsSRh96MNBDBNJCLtReq/yOi6DsyCntbvVlMnZ4JIlHL+GPwJV+F4CpPCRCl9
-         znxbrJSNqKT1Q==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_10:2020-07-07,2020-07-07 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:18:03AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Over the years, the main.c file grew above all imagination and was >8K
-> LOC of the code. This caused to a huge burden while I started to work on
-> ib_flow allocation patches.
-> 
-> This series implements long standing "internal" wish to move flow logic
-> from the main to separate file.
-> 
-> Based on
-> https://lore.kernel.org/linux-rdma/20200630101855.368895-4-leon@kernel.org
-> 
-> Thanks
-> 
-> Leon Romanovsky (6):
->   RDMA/mlx5: Limit the scope of mlx5_ib_enable_driver function
->   RDMA/mlx5: Separate restrack callbacks initialization from main.c
->   RDMA/mlx5: Separate counters from main.c
->   RDMA/mlx5: Separate flow steering logic from main.c
->   RDMA/mlx5: Cleanup DEVX initialization flow
->   RDMA/mlx5: Delete one-time used functions
+QP's with the same SRQ, working on different CQs and running in parallel
+on different CPUs could lead to a race when maintaining the SRQ consumer
+count, and leads to FW running out of SRQs. Update the consumer atomically.
+Make sure the wqe_prod is updated after the sge_prod due to FW
+requirements.
 
-Applied to for-next, thanks
+Fixes: 3491c9e799fb9 ("RDMA/qedr: Add support for kernel mode SRQ's")
+Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
+Signed-off-by: Yuval Basson <ybason@marvell.com>
 
-Jason
+Changes in v2:
+ Replace barrier() with dma_wmb()
+ Remove redundant dma_wmb()
+---
+ drivers/infiniband/hw/qedr/qedr.h  |  4 ++--
+ drivers/infiniband/hw/qedr/verbs.c | 23 +++++++++++------------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
+index fdf90ec..aa33202 100644
+--- a/drivers/infiniband/hw/qedr/qedr.h
++++ b/drivers/infiniband/hw/qedr/qedr.h
+@@ -344,10 +344,10 @@ struct qedr_srq_hwq_info {
+ 	u32 wqe_prod;
+ 	u32 sge_prod;
+ 	u32 wr_prod_cnt;
+-	u32 wr_cons_cnt;
++	atomic_t wr_cons_cnt;
+ 	u32 num_elems;
+ 
+-	u32 *virt_prod_pair_addr;
++	struct rdma_srq_producers *virt_prod_pair_addr;
+ 	dma_addr_t phy_prod_pair_addr;
+ };
+ 
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 9b9e802..444537b 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1510,6 +1510,7 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
+ 	srq->dev = dev;
+ 	hw_srq = &srq->hw_srq;
+ 	spin_lock_init(&srq->lock);
++	atomic_set(&hw_srq->wr_cons_cnt, 0);
+ 
+ 	hw_srq->max_wr = init_attr->attr.max_wr;
+ 	hw_srq->max_sges = init_attr->attr.max_sge;
+@@ -3686,7 +3687,7 @@ static u32 qedr_srq_elem_left(struct qedr_srq_hwq_info *hw_srq)
+ 	 * count and consumer count and subtract it from max
+ 	 * work request supported so that we get elements left.
+ 	 */
+-	used = hw_srq->wr_prod_cnt - hw_srq->wr_cons_cnt;
++	used = hw_srq->wr_prod_cnt - (u32)atomic_read(&hw_srq->wr_cons_cnt);
+ 
+ 	return hw_srq->max_wr - used;
+ }
+@@ -3701,7 +3702,6 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 	unsigned long flags;
+ 	int status = 0;
+ 	u32 num_sge;
+-	u32 offset;
+ 
+ 	spin_lock_irqsave(&srq->lock, flags);
+ 
+@@ -3714,7 +3714,8 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		if (!qedr_srq_elem_left(hw_srq) ||
+ 		    wr->num_sge > srq->hw_srq.max_sges) {
+ 			DP_ERR(dev, "Can't post WR  (%d,%d) || (%d > %d)\n",
+-			       hw_srq->wr_prod_cnt, hw_srq->wr_cons_cnt,
++			       hw_srq->wr_prod_cnt,
++			       atomic_read(&hw_srq->wr_cons_cnt),
+ 			       wr->num_sge, srq->hw_srq.max_sges);
+ 			status = -ENOMEM;
+ 			*bad_wr = wr;
+@@ -3748,22 +3749,20 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 			hw_srq->sge_prod++;
+ 		}
+ 
+-		/* Flush WQE and SGE information before
++		/* Update WQE and SGE information before
+ 		 * updating producer.
+ 		 */
+-		wmb();
++		dma_wmb();
+ 
+ 		/* SRQ producer is 8 bytes. Need to update SGE producer index
+ 		 * in first 4 bytes and need to update WQE producer in
+ 		 * next 4 bytes.
+ 		 */
+-		*srq->hw_srq.virt_prod_pair_addr = hw_srq->sge_prod;
+-		offset = offsetof(struct rdma_srq_producers, wqe_prod);
+-		*((u8 *)srq->hw_srq.virt_prod_pair_addr + offset) =
+-			hw_srq->wqe_prod;
++		srq->hw_srq.virt_prod_pair_addr->sge_prod = hw_srq->sge_prod;
++		/* Make sure sge producer is updated first */
++		dma_wmb();
++		srq->hw_srq.virt_prod_pair_addr->wqe_prod = hw_srq->wqe_prod;
+ 
+-		/* Flush producer after updating it. */
+-		wmb();
+ 		wr = wr->next;
+ 	}
+ 
+@@ -4182,7 +4181,7 @@ static int process_resp_one_srq(struct qedr_dev *dev, struct qedr_qp *qp,
+ 	} else {
+ 		__process_resp_one(dev, qp, cq, wc, resp, wr_id);
+ 	}
+-	srq->hw_srq.wr_cons_cnt++;
++	atomic_inc(&srq->hw_srq.wr_cons_cnt);
+ 
+ 	return 1;
+ }
+-- 
+1.8.3.1
+
