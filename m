@@ -2,86 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7742421657B
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 06:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B143216580
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 06:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgGGEmH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 00:42:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59294 "EHLO mail.kernel.org"
+        id S1726889AbgGGEpX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 00:45:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgGGEmH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:42:07 -0400
+        id S1726961AbgGGEpX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Jul 2020 00:45:23 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A89320722;
-        Tue,  7 Jul 2020 04:42:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 416F520722;
+        Tue,  7 Jul 2020 04:45:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594096927;
-        bh=bQpnQ2uTZkpgq7Gg9wQbmaBW4ss9ca3tI4dt8+ry6Vo=;
+        s=default; t=1594097122;
+        bh=Smu4vU6x/gfF1uuZL8wjEYy4f7mtHyg2YFq9A4xr24E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=myeRfIfyajqz82/9FK9IA9m3hj0pOZY0slySRuewculywgxkODqy8I7UlLDXl5fjT
-         cb2rqWnI6jGZVMfeDBUXewgi26s4PDctmrInXBQ7DavrV1UFKbwAS9XyndcK/yzDIx
-         GeenlJX68JpsShGwWc0NYze6VtGFMYZNhdzGthiI=
-Date:   Tue, 7 Jul 2020 07:42:03 +0300
+        b=fS2CZMURMPhozlQiTpsMcl5HpdeO8/SnR4svxguhX+o0zSQfYSxZw4SXKSzJfB86Q
+         zjn+XBaov7UsnFhl/sVTCppxcW0gpXXpJogFOCLa9VPQRIPk955rf7gbOr9i7F9DGX
+         3BFTh+q55Puuog2waENLGT8gSmAUDvRj5AZTbPaM=
+Date:   Tue, 7 Jul 2020 07:45:19 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Lijun Ou <oulijun@huawei.com>,
-        linux-rdma@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 2/4] RDMA: Clean MW allocation and free flows
-Message-ID: <20200707044203.GI207186@unreal>
-References: <20200630101855.368895-1-leon@kernel.org>
- <20200630101855.368895-3-leon@kernel.org>
- <20200706230416.GA1283287@nvidia.com>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     jgg@ziepe.ca, dledford@redhat.com, aelior@marvell.com,
+        ybason@marvell.com, mkalderon@marvell.com,
+        linux-rdma@vger.kernel.org, Ariel Elior <ariel.elior@marvell.com>
+Subject: Re: [PATCH v2 rdma-next 2/2] RDMA/qedr: Add EDPM max size to alloc
+ ucontext response
+Message-ID: <20200707044519.GJ207186@unreal>
+References: <20200706193214.19942-1-michal.kalderon@marvell.com>
+ <20200706193214.19942-3-michal.kalderon@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200706230416.GA1283287@nvidia.com>
+In-Reply-To: <20200706193214.19942-3-michal.kalderon@marvell.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 08:04:16PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 30, 2020 at 01:18:53PM +0300, Leon Romanovsky wrote:
-> > @@ -916,21 +916,24 @@ static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
-> >  		goto err_put;
-> >  	}
-> >
-> > -	mw = pd->device->ops.alloc_mw(pd, cmd.mw_type, &attrs->driver_udata);
-> > -	if (IS_ERR(mw)) {
-> > -		ret = PTR_ERR(mw);
-> > +	mw = rdma_zalloc_drv_obj(ib_dev, ib_mw);
-> > +	if (!mw) {
-> > +		ret = -ENOMEM;
-> >  		goto err_put;
-> >  	}
-> >
-> > -	mw->device  = pd->device;
-> > -	mw->pd      = pd;
-> > +	mw->device = ib_dev;
-> > +	mw->pd = pd;
-> >  	mw->uobject = uobj;
-> > -	atomic_inc(&pd->usecnt);
-> > -
-> >  	uobj->object = mw;
-> > +	mw->type = cmd.mw_type;
-> >
-> > -	memset(&resp, 0, sizeof(resp));
-> > -	resp.rkey      = mw->rkey;
-> > +	ret = pd->device->ops.alloc_mw(mw, &mw->rkey, &attrs->driver_udata);
+On Mon, Jul 06, 2020 at 10:32:14PM +0300, Michal Kalderon wrote:
+> User space should receive the maximum edpm size from kernel
+> driver, similar to other edpm/ldpm related limits.
+> Add an additional parameter to the alloc_ucontext_resp
+> structure for the edpm maximum size.
 >
-> Why the strange &mw->rkey ? Can't the drivers just do mw->rkey = foo ?
+> In addition, pass an indication from user-space to kernel
+> (and not just kernel to user) that the DPM sizes are supported.
+>
+> This is for supporting backward-forward compatibility between driver and
+> lib for everything related to DPM transaction and limit sizes.
+>
+> This should have been part of commit mentioned in Fixes tag.
+> Fixes: 93a3d05f9d68 ("RDMA/qedr: Add kernel capability flags for dpm
+> enabled mode")
+> Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> ---
+>  drivers/infiniband/hw/qedr/verbs.c | 9 ++++++---
+>  include/uapi/rdma/qedr-abi.h       | 6 +++++-
+>  2 files changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+> index fbb0c66c7f2c..f03178866b50 100644
+> --- a/drivers/infiniband/hw/qedr/verbs.c
+> +++ b/drivers/infiniband/hw/qedr/verbs.c
+> @@ -320,9 +320,12 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+>  				  QEDR_DPM_TYPE_ROCE_LEGACY |
+>  				  QEDR_DPM_TYPE_ROCE_EDPM_MODE;
+>
+> -	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
+> -	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
+> -	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
+> +	if (!!(ureq.context_flags & QEDR_SUPPORT_DPM_SIZES)) {
 
-We can, if we want to allow drivers set fields in ib_* structures that
-there passed as part of alloc_* flows. It doesn't feel right to me to
-mix different layers.
+"!!" is not needed here.
 
 Thanks
 
+> +		uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
+> +		uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
+> +		uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
+> +		uresp.edpm_limit_size = QEDR_EDPM_MAX_SIZE;
+> +	}
 >
-> Jason
+>  	uresp.wids_enabled = 1;
+>  	uresp.wid_count = oparams.wid_count;
+> diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
+> index b261c9fca07b..bf7333b2b5d7 100644
+> --- a/include/uapi/rdma/qedr-abi.h
+> +++ b/include/uapi/rdma/qedr-abi.h
+> @@ -40,7 +40,8 @@
+>  /* user kernel communication data structures. */
+>  enum qedr_alloc_ucontext_flags {
+>  	QEDR_ALLOC_UCTX_EDPM_MODE	= 1 << 0,
+> -	QEDR_ALLOC_UCTX_DB_REC		= 1 << 1
+> +	QEDR_ALLOC_UCTX_DB_REC		= 1 << 1,
+> +	QEDR_SUPPORT_DPM_SIZES		= 1 << 2,
+>  };
+>
+>  struct qedr_alloc_ucontext_req {
+> @@ -50,6 +51,7 @@ struct qedr_alloc_ucontext_req {
+>
+>  #define QEDR_LDPM_MAX_SIZE	(8192)
+>  #define QEDR_EDPM_TRANS_SIZE	(64)
+> +#define QEDR_EDPM_MAX_SIZE	(ROCE_REQ_MAX_INLINE_DATA_SIZE)
+>
+>  enum qedr_rdma_dpm_type {
+>  	QEDR_DPM_TYPE_NONE		= 0,
+> @@ -77,6 +79,8 @@ struct qedr_alloc_ucontext_resp {
+>  	__u16 ldpm_limit_size;
+>  	__u8 edpm_trans_size;
+>  	__u8 reserved;
+> +	__u16 edpm_limit_size;
+> +	__u8 padding[6];
+>  };
+>
+>  struct qedr_alloc_pd_ureq {
+> --
+> 2.14.5
+>
