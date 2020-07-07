@@ -2,60 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F28216D79
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C48216D8A
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 15:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgGGNJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 09:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGNJq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 09:09:46 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF59C061755
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2020 06:09:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z13so45076198wrw.5
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2020 06:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ecfWyONlEDs9k0M6+TT9u76Wc/nr2pVhj2iAIsymiGw=;
-        b=LG3Hwvg89M4BxcOHQG4lSAhu0k0CVWdS46iJDO0BGGgrSQlRcCZ+p3uDyCemzJtytW
-         7zwRGMHc4c5qq+YvJBXiTOz8pvfxwREACUe/nFQC9BiDqaFYgBsm/z/Nd2sHhFx4R+55
-         RZrgkykuTMQZvFlEom/Yz6oF86hs+wvcyN+jwCoBwVzGos7bvCwVOkOPf33j9ouTrHmp
-         ilAB2DRpnsq+mGCdDsDhcFPQuBSU8fGrWytoLmj9IvlCv2g6LkZ4GqNfmfH7sMypuz+c
-         VuGGjs5A/i8KWHxCQcoAn8cPtCWIe3e6RTVDiCafRcv3pdtYohWYqUgoVQmJj+7LGB/7
-         FGrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ecfWyONlEDs9k0M6+TT9u76Wc/nr2pVhj2iAIsymiGw=;
-        b=mDL0af9V+UhMprTFB1DZiRdcRiCu5lrMcFGXRr7NN8YjqfG42/S2fXaFYOduN2yJyx
-         /z8ndBQSgOMnCi7eBk0eRhfHxeDirJALwXUQ0hMyPZxTzvBvB9pW+Kb6LWCliDGTGLdg
-         DvkZQY+vkIkvTApKuyCNGV6Jt0jjSGOzelep3OJWkanQ3Iw+nu+MBG8681+HoKWg5ouQ
-         8q/jlwy3gQzpXWXRlis5B7qhP0hl/O5ySfQHQuK7cKnS3ve0FKho+OOAfxDo7qmwJ0kQ
-         0kjQC/IuqFGYAj3HKesV1Nchr5sZunXIyK+0E03OR9Dx+eq/IFZOP/Lcad+md/nd4Y+R
-         6yNQ==
-X-Gm-Message-State: AOAM533TmnlgCVcNYq0pzTur25ieTNI9JYQ1QFCuioNlajA8aaBU9CUG
-        QiXKbl6/bT624O+4eXVvFptfr5WV35c=
-X-Google-Smtp-Source: ABdhPJxSFS88qIkr+VR3dSI6LcXRIy5qaJKOaTXn/Fu+oqcx08+ufQDNhTnqxn1sl24UCEDFyg2NzQ==
-X-Received: by 2002:a5d:504b:: with SMTP id h11mr52599317wrt.160.1594127384165;
-        Tue, 07 Jul 2020 06:09:44 -0700 (PDT)
-Received: from localhost.localdomain ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id r8sm941599wrp.40.2020.07.07.06.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 06:09:43 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-rc] RDMA/siw: Fix reporting vendor_part_id
-Date:   Tue,  7 Jul 2020 16:09:31 +0300
-Message-Id: <20200707130931.444724-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        id S1727064AbgGGNP7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 09:15:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgGGNP6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Jul 2020 09:15:58 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 640742075B;
+        Tue,  7 Jul 2020 13:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594127758;
+        bh=MaphCiqMCAcv/7HIRD7elKhsP5r80jyqeJ2IlQWWTYQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eKJ1KBo9rcnB7ZHCv/YbR7F2zJoeGIxXC74OHL/aQy/qQgWmdPvEucoHCv+GRaboT
+         iaRo8F88VyQYdL1w2Twl4kzL2Aovfr2TSyJLy3O5R65wAzd/JsCgQbd/82xoXM5QiN
+         lb+71WRbqtsIlNatLLbZrh3iYAtjzxm06f0jLaFw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH rdma-rc v1] RDMA/mlx5: Use xa_lock_irq when access to SRQ table
+Date:   Tue,  7 Jul 2020 16:15:51 +0300
+Message-Id: <20200707131551.1153207-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -63,36 +39,141 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Move the initialization of the vendor_part_id to be before calling
-ib_register_device(), this is needed because the query_device() callback
-is called from the context of ib_register_device() before initializing
-the vendor_part_id, so the reported value is wrong.
+From: Maor Gottlieb <maorg@mellanox.com>
 
-Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+SRQ table is accessed both from interrupt and process context,
+therefore we must use xa_lock_irq.
+
+ [ 9878.321379] --------------------------------
+ [ 9878.322349] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+ [ 9878.323667] kworker/u17:9/8573 [HC0[0]:SC0[0]:HE1:SE1] takes:
+ [ 9878.324894] ffff8883e3503d30 (&xa->xa_lock#13){?...}-{2:2}, at:
+mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.326816] {IN-HARDIRQ-W} state was registered at:
+ [ 9878.327905]   lock_acquire+0xb9/0x3a0
+ [ 9878.328720]   _raw_spin_lock+0x25/0x30
+ [ 9878.329475]   srq_event_notifier+0x2b/0xc0 [mlx5_ib]
+ [ 9878.330433]   notifier_call_chain+0x45/0x70
+ [ 9878.331393]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.332530]   forward_event+0x36/0xc0 [mlx5_core]
+ [ 9878.333558]   notifier_call_chain+0x45/0x70
+ [ 9878.334418]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.335498]   mlx5_eq_async_int+0xc5/0x160 [mlx5_core]
+ [ 9878.336543]   notifier_call_chain+0x45/0x70
+ [ 9878.337354]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.338337]   mlx5_irq_int_handler+0x19/0x30 [mlx5_core]
+ [ 9878.339369]   __handle_irq_event_percpu+0x43/0x2a0
+ [ 9878.340382]   handle_irq_event_percpu+0x30/0x70
+ [ 9878.341252]   handle_irq_event+0x34/0x60
+ [ 9878.342020]   handle_edge_irq+0x7c/0x1b0
+ [ 9878.342788]   do_IRQ+0x60/0x110
+ [ 9878.343482]   ret_from_intr+0x0/0x2a
+ [ 9878.344251]   default_idle+0x34/0x160
+ [ 9878.344996]   do_idle+0x1ec/0x220
+ [ 9878.345682]   cpu_startup_entry+0x19/0x20
+ [ 9878.346511]   start_secondary+0x153/0x1a0
+ [ 9878.347328]   secondary_startup_64+0xa4/0xb0
+ [ 9878.348226] irq event stamp: 20907
+ [ 9878.348953] hardirqs last  enabled at (20907): [<ffffffff819f0eb4>]
+_raw_spin_unlock_irq+0x24/0x30
+ [ 9878.350599] hardirqs last disabled at (20906): [<ffffffff819f0cbf>]
+_raw_spin_lock_irq+0xf/0x40
+ [ 9878.352300] softirqs last  enabled at (20746): [<ffffffff81c002c9>]
+__do_softirq+0x2c9/0x436
+ [ 9878.353859] softirqs last disabled at (20681): [<ffffffff81139543>]
+irq_exit+0xb3/0xc0
+ [ 9878.355365]
+ [ 9878.355365] other info that might help us debug this:
+ [ 9878.356703]  Possible unsafe locking scenario:
+ [ 9878.356703]
+ [ 9878.357941]        CPU0
+ [ 9878.358522]        ----
+ [ 9878.359109]   lock(&xa->xa_lock#13);
+ [ 9878.359875]   <Interrupt>
+ [ 9878.360504]     lock(&xa->xa_lock#13);
+ [ 9878.361315]
+ [ 9878.361315]  *** DEADLOCK ***
+ [ 9878.361315]
+ [ 9878.362632] 2 locks held by kworker/u17:9/8573:
+ [ 9878.374883]  #0: ffff888295218d38
+((wq_completion)mlx5_ib_page_fault){+.+.}-{0:0}, at:
+process_one_work+0x1f1/0x5f0
+ [ 9878.376728]  #1: ffff888401647e78
+((work_completion)(&pfault->work)){+.+.}-{0:0}, at:
+process_one_work+0x1f1/0x5f0
+ [ 9878.378550]
+ [ 9878.378550] stack backtrace:
+ [ 9878.379489] CPU: 0 PID: 8573 Comm: kworker/u17:9 Tainted: G
+O      5.7.0_for_upstream_min_debug_2020_06_14_11_31_46_41 #1
+ [ 9878.381730] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+ [ 9878.383940] Workqueue: mlx5_ib_page_fault mlx5_ib_eqe_pf_action
+[mlx5_ib]
+ [ 9878.385239] Call Trace:
+ [ 9878.385822]  dump_stack+0x71/0x9b
+ [ 9878.386519]  mark_lock+0x4f2/0x590
+ [ 9878.387263]  ? print_shortest_lock_dependencies+0x200/0x200
+ [ 9878.388362]  __lock_acquire+0xa00/0x1eb0
+ [ 9878.389133]  lock_acquire+0xb9/0x3a0
+ [ 9878.389854]  ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.390796]  _raw_spin_lock+0x25/0x30
+ [ 9878.391533]  ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.392455]  mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.393351]  mlx5_ib_eqe_pf_action+0x257/0xa30 [mlx5_ib]
+ [ 9878.394337]  ? process_one_work+0x209/0x5f0
+ [ 9878.395150]  process_one_work+0x27b/0x5f0
+ [ 9878.395939]  ? __schedule+0x280/0x7e0
+ [ 9878.396683]  worker_thread+0x2d/0x3c0
+ [ 9878.397424]  ? process_one_work+0x5f0/0x5f0
+ [ 9878.398249]  kthread+0x111/0x130
+ [ 9878.398926]  ? kthread_park+0x90/0x90
+ [ 9878.399709]  ret_from_fork+0x24/0x30
+
+Fixes: b02a29eb8841 ("mlx5: Convert mlx5_srq_table to XArray")
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/sw/siw/siw_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changelog:
+v1:
+ * I left Fixes as before to make sure that it is taken properly to stable@.
+ * xa_lock_irqsave -> xa_lock_irq
+v0: https://lore.kernel.org/linux-rdma/20200707110612.882962-2-leon@kernel.org
+---
+ drivers/infiniband/hw/mlx5/srq_cmd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index a0b8cc643c5c..ed60c9e4643e 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -67,12 +67,13 @@ static int siw_device_register(struct siw_device *sdev, const char *name)
- 	static int dev_id = 1;
- 	int rv;
- 
-+	sdev->vendor_part_id = dev_id++;
-+
- 	rv = ib_register_device(base_dev, name);
- 	if (rv) {
- 		pr_warn("siw: device registration error %d\n", rv);
- 		return rv;
- 	}
--	sdev->vendor_part_id = dev_id++;
- 
- 	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->netdev->dev_addr);
- 
--- 
-2.25.4
+diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
+index 6f5eadc4d183..11699c1f7ba0 100644
+--- a/drivers/infiniband/hw/mlx5/srq_cmd.c
++++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
+@@ -83,11 +83,11 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
+ 	struct mlx5_srq_table *table = &dev->srq_table;
+ 	struct mlx5_core_srq *srq;
+
+-	xa_lock(&table->array);
++	xa_lock_irq(&table->array);
+ 	srq = xa_load(&table->array, srqn);
+ 	if (srq)
+ 		refcount_inc(&srq->common.refcount);
+-	xa_unlock(&table->array);
++	xa_unlock_irq(&table->array);
+
+ 	return srq;
+ }
+@@ -655,11 +655,11 @@ static int srq_event_notifier(struct notifier_block *nb,
+ 	eqe = data;
+ 	srqn = be32_to_cpu(eqe->data.qp_srq.qp_srq_n) & 0xffffff;
+
+-	xa_lock(&table->array);
++	xa_lock_irq(&table->array);
+ 	srq = xa_load(&table->array, srqn);
+ 	if (srq)
+ 		refcount_inc(&srq->common.refcount);
+-	xa_unlock(&table->array);
++	xa_unlock_irq(&table->array);
+
+ 	if (!srq)
+ 		return NOTIFY_OK;
+--
+2.26.2
 
