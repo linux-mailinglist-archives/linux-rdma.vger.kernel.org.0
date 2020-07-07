@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42992178BE
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 22:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAA12178C0
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 22:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgGGUM6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 16:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S1728649AbgGGUM7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 16:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728649AbgGGUM5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 16:12:57 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA34C061755
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2020 13:12:57 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so38532398wrs.0
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2020 13:12:57 -0700 (PDT)
+        with ESMTP id S1728291AbgGGUM6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 16:12:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603FBC061755
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2020 13:12:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id q5so46563695wru.6
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2020 13:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wWJo4Xms9xJyKH8uRObCjerwfD0/w2Bq7w9d1Tdqg68=;
-        b=UOX4Dtrl9QRt0mnhEULXYaIhXEcwlQEl9dJZ6AKauST0v8/sueYjVcBr1H9gpshANp
-         D7Leh7Gl+2NKEN7rDuk7xlozsQQmDcFZg1uLXs+bi5cvrSo2PcRAIgbCNAj4hEOLHs4E
-         nH2oRdO8AAwxZVQ6SAlDyIBsQf7zFeXKTjhnM=
+        bh=ufMaQijpZxkwPwAr9gZMUr6WxEnpa6HiMV9RcHXuTwM=;
+        b=Jc8+1Bt4+yZ+72JwlaX/4LbCarKqgHkIvMH8RXH7ParTT0qyrwu7nDaqDYvK5TmYnN
+         f4YXcswUT94xoP4KTTwyVIX0vAJHBeBnSm8VbvKA2lXaWW1d860dZpnC30Qwi8DKO7xS
+         utUL879Q+0s6m0mBrBxYl8jOBXFwz6oarUdxM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wWJo4Xms9xJyKH8uRObCjerwfD0/w2Bq7w9d1Tdqg68=;
-        b=bAAS3HXFYhp5BvpejPNI015337DYtfnJ/XIwiUC+PU1B6QEJwioWxK076GwKhUMFPY
-         A7lH9YTCiZ3XrBvXQ8SfL987YYiEyFg0d0HMPL+IG5idc0D5inc/zjy19QhS98UlqCE5
-         4R/FRD7BVDik7lrgt3CK0eGuScuOEWDBWZmxvD86S+JnK0zJZVve3Z1YDGskv6TpnE8+
-         2OUsOB9on3v9HKlOnNsfgJ1jd2ZAdde74Kf+KQ+cALmqNcnbICpLZYtOUlSslcwynAg2
-         eKV7ZpHFH4fnX46FG5RJrHc5zFX186tRdOau4uX0n5MyLj1z1sBkYdND2BmX1bvVHYZJ
-         xQJg==
-X-Gm-Message-State: AOAM533T7Gob2TsfmAPVbQOrUorLnL6cqcpZaU0INPKS94Mk07d54Ry/
-        EoEweKej2EfrjFmHmOvqYCFBJQ==
-X-Google-Smtp-Source: ABdhPJxDsyfr4zDexGLiiFYSg/7wzAGNH9tBkAAtd+Zc++yr8EV6rRAt45326uR5zE2Phg7PZ7uGVw==
-X-Received: by 2002:a5d:4751:: with SMTP id o17mr32057251wrs.345.1594152776092;
-        Tue, 07 Jul 2020 13:12:56 -0700 (PDT)
+        bh=ufMaQijpZxkwPwAr9gZMUr6WxEnpa6HiMV9RcHXuTwM=;
+        b=R0e9+iaojrMzcsCzkrPmesAS/DUup8dmTZyfs6wPlXBrgBpk8jjQV+nDtBobqV1kRX
+         c2iABl9TjvGfxDyLX9Ki6LytQZOTbQ5qNCcwNWIt/jkjRbzUixoGxPYed91kZjsytznK
+         AOMyPaih+Ga/u27uByVbXNfwsfFv6d3ss8U3JKWUBzKicoAmozVzNKLrqGHmimaeYx+r
+         YjW8wnADiMtGMS39kIomddvKN9jg5VFTtCRWtfnt9RCIVoSzkooHSAqJ5wDUV8MnEKmm
+         C3dLXGMYKqi3tWs2tQAUp0WFS5aGx4GqTRbcp4yodBNO9FfGlCXbZmwt0JQGNsLnp1v8
+         P20g==
+X-Gm-Message-State: AOAM530v8ilBLN/VYaoYTerwnoGO+isIyh2P/Dwd8faJYaR11EJ6TGXe
+        Ms+oviRK9COJjIUrpJw/HkcdOw==
+X-Google-Smtp-Source: ABdhPJwuWb6pVb4wr6EdtDvBXcWINsi7MUjr5wmIW0V0ekFf31STAKNgPJW5XI7gRyMNJ5yiOX8/jA==
+X-Received: by 2002:adf:8b5a:: with SMTP id v26mr54731394wra.165.1594152777136;
+        Tue, 07 Jul 2020 13:12:57 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q7sm2515262wra.56.2020.07.07.13.12.55
+        by smtp.gmail.com with ESMTPSA id q7sm2515262wra.56.2020.07.07.13.12.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 13:12:55 -0700 (PDT)
+        Tue, 07 Jul 2020 13:12:56 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         linux-rdma@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH 12/25] drm/rcar-du: Annotate dma-fence critical section in commit path
-Date:   Tue,  7 Jul 2020 22:12:16 +0200
-Message-Id: <20200707201229.472834-13-daniel.vetter@ffwll.ch>
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH 13/25] drm/tegra: Annotate dma-fence critical section in commit path
+Date:   Tue,  7 Jul 2020 22:12:17 +0200
+Message-Id: <20200707201229.472834-14-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
 References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
@@ -65,37 +65,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ends right after drm_atomic_helper_commit_hw_done(), absolutely
-nothing fancy going on here.
+Again ends just after drm_atomic_helper_commit_hw_done(), but with the
+twist that we need to make sure we're only annotate the custom
+version. And not the other clause which just calls
+drm_atomic_helper_commit_tail_rpm(), which is already annotated.
 
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc: linux-renesas-soc@vger.kernel.org
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-tegra@vger.kernel.org
 ---
- drivers/gpu/drm/rcar-du/rcar_du_kms.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/tegra/drm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_kms.c b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-index 482329102f19..42c5dc588435 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-@@ -391,6 +391,7 @@ static void rcar_du_atomic_commit_tail(struct drm_atomic_state *old_state)
- 	struct drm_crtc_state *crtc_state;
- 	struct drm_crtc *crtc;
- 	unsigned int i;
-+	bool fence_cookie = dma_fence_begin_signalling();
+diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
+index ba9d1c3e7cac..9aea8fe48db3 100644
+--- a/drivers/gpu/drm/tegra/drm.c
++++ b/drivers/gpu/drm/tegra/drm.c
+@@ -65,11 +65,14 @@ static void tegra_atomic_commit_tail(struct drm_atomic_state *old_state)
+ 	struct tegra_drm *tegra = drm->dev_private;
  
- 	/*
- 	 * Store RGB routing to DPAD0 and DPAD1, the hardware will be configured
-@@ -417,6 +418,7 @@ static void rcar_du_atomic_commit_tail(struct drm_atomic_state *old_state)
- 	drm_atomic_helper_commit_modeset_enables(dev, old_state);
- 
- 	drm_atomic_helper_commit_hw_done(old_state);
-+	dma_fence_end_signalling(fence_cookie);
- 	drm_atomic_helper_wait_for_flip_done(dev, old_state);
- 
- 	drm_atomic_helper_cleanup_planes(dev, old_state);
+ 	if (tegra->hub) {
++		bool fence_cookie = dma_fence_begin_signalling();
++
+ 		drm_atomic_helper_commit_modeset_disables(drm, old_state);
+ 		tegra_display_hub_atomic_commit(drm, old_state);
+ 		drm_atomic_helper_commit_planes(drm, old_state, 0);
+ 		drm_atomic_helper_commit_modeset_enables(drm, old_state);
+ 		drm_atomic_helper_commit_hw_done(old_state);
++		dma_fence_end_signalling(fence_cookie);
+ 		drm_atomic_helper_wait_for_vblanks(drm, old_state);
+ 		drm_atomic_helper_cleanup_planes(drm, old_state);
+ 	} else {
 -- 
 2.27.0
 
