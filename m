@@ -2,265 +2,543 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7300A2174F2
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 19:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD49C217540
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 19:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgGGRQt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 13:16:49 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:51343 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgGGRQt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 13:16:49 -0400
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 067HGTlZ008745;
-        Tue, 7 Jul 2020 10:16:30 -0700
-Date:   Tue, 7 Jul 2020 22:46:29 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Nirranjan Kirubaharan <nirranjan@chelsio.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        krishna2@chelsio.com
-Subject: Re: iSERT SQ overflow with single target and multi luns
-Message-ID: <20200707171627.GA2352@chelsio.com>
-References: <20200707123641.GA22620@chelsio.com>
- <58258370-dcb2-4745-ec87-8a65b594075d@mellanox.com>
+        id S1728430AbgGGReR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 13:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727834AbgGGReR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:34:17 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F9DA2075B;
+        Tue,  7 Jul 2020 17:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594143256;
+        bh=f0q+fslE607Ea3NuW4EsZfKmqJJ0GPRtpX8NvcJW62I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DB4DZWfOXSx86zq70rbz3xg78Vn+gS1jsLM2Xf5txSIbwxMYu4w61Dh5sa02w3EY3
+         l0QJuuCteAnabkzPzyQbyVPmd67EQUYUPgoIXqfIz+389VXilwKvnI340/Zfga82cp
+         YyILu+Sc77RwRJogW4YigUTjuNJbcFleIEtEbC9c=
+Date:   Tue, 7 Jul 2020 12:39:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] IB/hfi1: Use fallthrough pseudo-keyword
+Message-ID: <20200707173942.GA29814@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <58258370-dcb2-4745-ec87-8a65b594075d@mellanox.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Max,
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Thanks for the quick response!
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-I just tested your patch, it's working without any issue.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/hw/hfi1/chip.c     |    8 ++++----
+ drivers/infiniband/hw/hfi1/firmware.c |   16 ----------------
+ drivers/infiniband/hw/hfi1/mad.c      |    9 ++++-----
+ drivers/infiniband/hw/hfi1/pio.c      |    2 +-
+ drivers/infiniband/hw/hfi1/pio_copy.c |   12 ++++++------
+ drivers/infiniband/hw/hfi1/platform.c |   10 +++++-----
+ drivers/infiniband/hw/hfi1/qp.c       |    2 +-
+ drivers/infiniband/hw/hfi1/qsfp.c     |    4 ++--
+ drivers/infiniband/hw/hfi1/rc.c       |   25 ++++++++++++-------------
+ drivers/infiniband/hw/hfi1/sdma.c     |    9 ++++-----
+ drivers/infiniband/hw/hfi1/tid_rdma.c |    4 ++--
+ drivers/infiniband/hw/hfi1/uc.c       |    8 ++++----
+ 12 files changed, 45 insertions(+), 64 deletions(-)
 
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 15f9c635f292..132f1df6f23b 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -7320,7 +7320,7 @@ static u16 link_width_to_bits(struct hfi1_devdata *dd, u16 width)
+ 	default:
+ 		dd_dev_info(dd, "%s: invalid width %d, using 4\n",
+ 			    __func__, width);
+-		/* fall through */
++		fallthrough;
+ 	case 4: return OPA_LINK_WIDTH_4X;
+ 	}
+ }
+@@ -7380,7 +7380,7 @@ static void get_link_widths(struct hfi1_devdata *dd, u16 *tx_width,
+ 			dd_dev_err(dd,
+ 				   "%s: unexpected max rate %d, using 25Gb\n",
+ 				   __func__, (int)max_rate);
+-			/* fall through */
++			fallthrough;
+ 		case 1:
+ 			dd->pport[0].link_speed_active = OPA_LINK_SPEED_25G;
+ 			break;
+@@ -12882,7 +12882,7 @@ static u32 chip_to_opa_lstate(struct hfi1_devdata *dd, u32 chip_lstate)
+ 		dd_dev_err(dd,
+ 			   "Unknown logical state 0x%x, reporting IB_PORT_DOWN\n",
+ 			   chip_lstate);
+-		/* fall through */
++		fallthrough;
+ 	case LSTATE_DOWN:
+ 		return IB_PORT_DOWN;
+ 	case LSTATE_INIT:
+@@ -12901,7 +12901,7 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
+ 	default:
+ 		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
+ 			   chip_pstate);
+-		/* fall through */
++		fallthrough;
+ 	case PLS_DISABLED:
+ 		return IB_PORTPHYSSTATE_DISABLED;
+ 	case PLS_OFFLINE:
+diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
+index 2b57ba70ddd6..0e83d4b61e46 100644
+--- a/drivers/infiniband/hw/hfi1/firmware.c
++++ b/drivers/infiniband/hw/hfi1/firmware.c
+@@ -1868,11 +1868,8 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 									2;
+ 				break;
+ 			case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 				pcfgcache->config_tables[table_type].num_table =
+ 							table_length_dwords;
+@@ -1890,15 +1887,10 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 			/* metadata table */
+ 			switch (table_type) {
+ 			case PLATFORM_CONFIG_SYSTEM_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_PORT_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 				break;
+ 			default:
+@@ -2027,15 +2019,10 @@ static int get_platform_fw_field_metadata(struct hfi1_devdata *dd, int table,
+ 
+ 	switch (table) {
+ 	case PLATFORM_CONFIG_SYSTEM_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_PORT_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 		if (field && field < platform_config_table_limits[table])
+ 			src_ptr =
+@@ -2138,11 +2125,8 @@ int get_platform_config_field(struct hfi1_devdata *dd,
+ 			pcfgcache->config_tables[table_type].table;
+ 		break;
+ 	case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 		src_ptr = pcfgcache->config_tables[table_type].table;
+ 
+diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
+index 7073f237a949..3222e3acb79c 100644
+--- a/drivers/infiniband/hw/hfi1/mad.c
++++ b/drivers/infiniband/hw/hfi1/mad.c
+@@ -721,7 +721,7 @@ static int check_mkey(struct hfi1_ibport *ibp, struct ib_mad_hdr *mad,
+ 			/* Bad mkey not a violation below level 2 */
+ 			if (ibp->rvp.mkeyprot < 2)
+ 				break;
+-			/* fall through */
++			fallthrough;
+ 		case IB_MGMT_METHOD_SET:
+ 		case IB_MGMT_METHOD_TRAP_REPRESS:
+ 			if (ibp->rvp.mkey_violations != 0xFFFF)
+@@ -1272,7 +1272,7 @@ static int set_port_states(struct hfi1_pportdata *ppd, struct opa_smp *smp,
+ 	case IB_PORT_NOP:
+ 		if (phys_state == IB_PORTPHYSSTATE_NOP)
+ 			break;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case IB_PORT_DOWN:
+ 		if (phys_state == IB_PORTPHYSSTATE_NOP) {
+ 			link_state = HLS_DN_DOWNDEF;
+@@ -2300,7 +2300,6 @@ static int __subn_set_opa_vl_arb(struct opa_smp *smp, u32 am, u8 *data,
+ 	 * can be changed from the default values
+ 	 */
+ 	case OPA_VLARB_PREEMPT_ELEMENTS:
+-		/* FALLTHROUGH */
+ 	case OPA_VLARB_PREEMPT_MATRIX:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		break;
+@@ -4170,7 +4169,7 @@ static int subn_get_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
+ 			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
+ 		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
+ 			return IB_MAD_RESULT_SUCCESS;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		ret = reply((struct ib_mad_hdr *)smp);
+@@ -4240,7 +4239,7 @@ static int subn_set_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
+ 			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
+ 		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
+ 			return IB_MAD_RESULT_SUCCESS;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		ret = reply((struct ib_mad_hdr *)smp);
+diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+index 79126b2b14ab..ff864f6f0266 100644
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -86,7 +86,7 @@ void pio_send_control(struct hfi1_devdata *dd, int op)
+ 	switch (op) {
+ 	case PSC_GLOBAL_ENABLE:
+ 		reg |= SEND_CTRL_SEND_ENABLE_SMASK;
+-	/* Fall through */
++		fallthrough;
+ 	case PSC_DATA_VL_ENABLE:
+ 		mask = 0;
+ 		for (i = 0; i < ARRAY_SIZE(dd->vld); i++)
+diff --git a/drivers/infiniband/hw/hfi1/pio_copy.c b/drivers/infiniband/hw/hfi1/pio_copy.c
+index 03024cec78dd..b12e4665c9ab 100644
+--- a/drivers/infiniband/hw/hfi1/pio_copy.c
++++ b/drivers/infiniband/hw/hfi1/pio_copy.c
+@@ -191,22 +191,22 @@ static inline void jcopy(u8 *dest, const u8 *src, u32 n)
+ 	switch (n) {
+ 	case 7:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 6:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 5:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 4:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 3:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		*dest++ = *src++;
+ 		/* fall through */
+diff --git a/drivers/infiniband/hw/hfi1/platform.c b/drivers/infiniband/hw/hfi1/platform.c
+index 36593f2efe26..4642d6ceb890 100644
+--- a/drivers/infiniband/hw/hfi1/platform.c
++++ b/drivers/infiniband/hw/hfi1/platform.c
+@@ -668,8 +668,8 @@ static u8 aoc_low_power_setting(struct hfi1_pportdata *ppd)
+ 
+ 	/* active optical cables only */
+ 	switch ((cache[QSFP_MOD_TECH_OFFS] & 0xF0) >> 4) {
+-	case 0x0 ... 0x9: /* fallthrough */
+-	case 0xC: /* fallthrough */
++	case 0x0 ... 0x9: fallthrough;
++	case 0xC: fallthrough;
+ 	case 0xE:
+ 		/* active AOC */
+ 		power_class = get_qsfp_power_class(cache[QSFP_MOD_PWR_OFFS]);
+@@ -899,8 +899,8 @@ static int tune_qsfp(struct hfi1_pportdata *ppd,
+ 
+ 		*ptr_tuning_method = OPA_PASSIVE_TUNING;
+ 		break;
+-	case 0x0 ... 0x9: /* fallthrough */
+-	case 0xC: /* fallthrough */
++	case 0x0 ... 0x9: fallthrough;
++	case 0xC: fallthrough;
+ 	case 0xE:
+ 		ret = tune_active_qsfp(ppd, ptr_tx_preset, ptr_rx_preset,
+ 				       ptr_total_atten);
+@@ -909,7 +909,7 @@ static int tune_qsfp(struct hfi1_pportdata *ppd,
+ 
+ 		*ptr_tuning_method = OPA_ACTIVE_TUNING;
+ 		break;
+-	case 0xD: /* fallthrough */
++	case 0xD: fallthrough;
+ 	case 0xF:
+ 	default:
+ 		dd_dev_warn(ppd->dd, "%s: Unknown/unsupported cable\n",
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index 0c2ae9f7b3e8..b1175c514cd8 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -312,7 +312,7 @@ int hfi1_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe, bool *call_send)
+ 	switch (qp->ibqp.qp_type) {
+ 	case IB_QPT_RC:
+ 		hfi1_setup_tid_rdma_wqe(qp, wqe);
+-		/* fall through */
++		fallthrough;
+ 	case IB_QPT_UC:
+ 		if (wqe->length > 0x80000000U)
+ 			return -EINVAL;
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.c b/drivers/infiniband/hw/hfi1/qsfp.c
+index b5966991d647..8386c84c2d92 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.c
++++ b/drivers/infiniband/hw/hfi1/qsfp.c
+@@ -231,7 +231,7 @@ static int i2c_bus_write(struct hfi1_devdata *dd, struct hfi1_i2c_bus *i2c,
+ 		break;
+ 	case 2:
+ 		offset_bytes[1] = (offset >> 8) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		num_msgs = 2;
+ 		offset_bytes[0] = offset & 0xff;
+@@ -279,7 +279,7 @@ static int i2c_bus_read(struct hfi1_devdata *dd, struct hfi1_i2c_bus *bus,
+ 		break;
+ 	case 2:
+ 		offset_bytes[1] = (offset >> 8) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		num_msgs = 2;
+ 		offset_bytes[0] = offset & 0xff;
+diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
+index f1734e5e9ac4..1bb5f57152d3 100644
+--- a/drivers/infiniband/hw/hfi1/rc.c
++++ b/drivers/infiniband/hw/hfi1/rc.c
+@@ -141,7 +141,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 	case OP(RDMA_READ_RESPONSE_ONLY):
+ 		e = &qp->s_ack_queue[qp->s_tail_ack_queue];
+ 		release_rdma_sge_mr(e);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(ATOMIC_ACKNOWLEDGE):
+ 		/*
+ 		 * We can increment the tail pointer now that the last
+@@ -160,7 +160,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 			qp->s_acked_ack_queue = next;
+ 		qp->s_tail_ack_queue = next;
+ 		trace_hfi1_rsp_make_rc_ack(qp, e->psn);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_ONLY):
+ 	case OP(ACKNOWLEDGE):
+ 		/* Check for no next entry in the queue. */
+@@ -267,7 +267,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 
+ 	case OP(RDMA_READ_RESPONSE_FIRST):
+ 		qp->s_ack_state = OP(RDMA_READ_RESPONSE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_READ_RESPONSE_MIDDLE):
+ 		ps->s_txreq->ss = &qp->s_ack_rdma_sge;
+ 		ps->s_txreq->mr = qp->s_ack_rdma_sge.sge.mr;
+@@ -881,8 +881,7 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 				goto bail;
+ 			}
+ 			qp->s_num_rd_atomic++;
+-
+-			/* FALLTHROUGH */
++			fallthrough;
+ 		case IB_WR_OPFN:
+ 			if (newreq && !(qp->s_flags & RVT_S_UNLIMITED_CREDIT))
+ 				qp->s_lsn++;
+@@ -946,10 +945,10 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		 * See restart_rc().
+ 		 */
+ 		qp->s_len = restart_sge(&qp->s_sge, wqe, qp->s_psn, pmtu);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_FIRST):
+ 		qp->s_state = OP(SEND_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		bth2 = mask_psn(qp->s_psn++);
+ 		ss = &qp->s_sge;
+@@ -991,10 +990,10 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		 * See restart_rc().
+ 		 */
+ 		qp->s_len = restart_sge(&qp->s_sge, wqe, qp->s_psn, pmtu);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_FIRST):
+ 		qp->s_state = OP(RDMA_WRITE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		bth2 = mask_psn(qp->s_psn++);
+ 		ss = &qp->s_sge;
+@@ -2901,7 +2900,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 		if (!ret)
+ 			goto rnr_nak;
+ 		qp->r_rcv_len = 0;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 	case OP(RDMA_WRITE_MIDDLE):
+ send_middle:
+@@ -2941,7 +2940,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 			goto no_immediate_data;
+ 		if (opcode == OP(SEND_ONLY_WITH_INVALIDATE))
+ 			goto send_last_inv;
+-		/* FALLTHROUGH -- for SEND_ONLY_WITH_IMMEDIATE */
++		fallthrough;	/* for SEND_ONLY_WITH_IMMEDIATE */
+ 	case OP(SEND_LAST_WITH_IMMEDIATE):
+ send_last_imm:
+ 		wc.ex.imm_data = ohdr->u.imm_data;
+@@ -2957,7 +2956,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 		goto send_last;
+ 	case OP(RDMA_WRITE_LAST):
+ 		copy_last = rvt_is_user_qp(qp);
+-		/* fall through */
++		fallthrough;
+ 	case OP(SEND_LAST):
+ no_immediate_data:
+ 		wc.wc_flags = 0;
+@@ -3010,7 +3009,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 
+ 	case OP(RDMA_WRITE_ONLY):
+ 		copy_last = rvt_is_user_qp(qp);
+-		/* fall through */
++		fallthrough;
+ 	case OP(RDMA_WRITE_FIRST):
+ 	case OP(RDMA_WRITE_ONLY_WITH_IMMEDIATE):
+ 		if (unlikely(!(qp->qp_access_flags & IB_ACCESS_REMOTE_WRITE)))
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index c93ea021cf49..04575c9afd61 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -2584,7 +2584,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 			 * 7220, e.g.
+ 			 */
+ 			ss->go_s99_running = 1;
+-			/* fall through -- and start dma engine */
++			fallthrough;	/* and start dma engine */
+ 		case sdma_event_e10_go_hw_start:
+ 			/* This reference means the state machine is started */
+ 			sdma_get(&sde->state);
+@@ -2726,7 +2726,6 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 		case sdma_event_e70_go_idle:
+ 			break;
+ 		case sdma_event_e85_link_down:
+-			/* fall through */
+ 		case sdma_event_e80_hw_freeze:
+ 			sdma_set_state(sde, sdma_state_s80_hw_freeze);
+ 			atomic_dec(&sde->dd->sdma_unfreeze_count);
+@@ -3007,7 +3006,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 		case sdma_event_e60_hw_halted:
+ 			need_progress = 1;
+ 			sdma_err_progress_check_schedule(sde);
+-			/* fall through */
++			fallthrough;
+ 		case sdma_event_e90_sw_halted:
+ 			/*
+ 			* SW initiated halt does not perform engines
+@@ -3021,7 +3020,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 			break;
+ 		case sdma_event_e85_link_down:
+ 			ss->go_s99_running = 0;
+-			/* fall through */
++			fallthrough;
+ 		case sdma_event_e80_hw_freeze:
+ 			sdma_set_state(sde, sdma_state_s80_hw_freeze);
+ 			atomic_dec(&sde->dd->sdma_unfreeze_count);
+@@ -3252,7 +3251,7 @@ void _sdma_txreq_ahgadd(
+ 		tx->num_desc++;
+ 		tx->descs[2].qw[0] = 0;
+ 		tx->descs[2].qw[1] = 0;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case SDMA_AHG_APPLY_UPDATE2:
+ 		tx->num_desc++;
+ 		tx->descs[1].qw[0] = 0;
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 243b4ba0b6f6..62b6c1bf267d 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -3227,7 +3227,7 @@ bool hfi1_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
+ 	case IB_WR_RDMA_READ:
+ 		if (prev->wr.opcode != IB_WR_TID_RDMA_WRITE)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case IB_WR_TID_RDMA_READ:
+ 		switch (prev->wr.opcode) {
+ 		case IB_WR_RDMA_READ:
+@@ -5067,7 +5067,7 @@ int hfi1_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		if (priv->s_state == TID_OP(WRITE_REQ))
+ 			hfi1_tid_rdma_restart_req(qp, wqe, &bth2);
+ 		priv->s_state = TID_OP(WRITE_DATA);
+-		/* fall through */
++		fallthrough;
+ 
+ 	case TID_OP(WRITE_DATA):
+ 		/*
+diff --git a/drivers/infiniband/hw/hfi1/uc.c b/drivers/infiniband/hw/hfi1/uc.c
+index 0c77f18120ed..1fb918399da0 100644
+--- a/drivers/infiniband/hw/hfi1/uc.c
++++ b/drivers/infiniband/hw/hfi1/uc.c
+@@ -216,7 +216,7 @@ int hfi1_make_uc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 
+ 	case OP(SEND_FIRST):
+ 		qp->s_state = OP(SEND_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		len = qp->s_len;
+ 		if (len > pmtu) {
+@@ -241,7 +241,7 @@ int hfi1_make_uc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 
+ 	case OP(RDMA_WRITE_FIRST):
+ 		qp->s_state = OP(RDMA_WRITE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		len = qp->s_len;
+ 		if (len > pmtu) {
+@@ -414,7 +414,7 @@ void hfi1_uc_rcv(struct hfi1_packet *packet)
+ 			goto no_immediate_data;
+ 		else if (opcode == OP(SEND_ONLY_WITH_IMMEDIATE))
+ 			goto send_last_imm;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		/* Check for invalid length PMTU or posted rwqe len. */
+ 		/*
+@@ -515,7 +515,7 @@ void hfi1_uc_rcv(struct hfi1_packet *packet)
+ 			wc.ex.imm_data = ohdr->u.rc.imm_data;
+ 			goto rdma_last_imm;
+ 		}
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		/* Check for invalid length PMTU or posted rwqe len. */
+ 		if (unlikely(tlen != (hdrsize + pmtu + 4)))
 
-Just for reference, here is what I observed with Chelsio iWARP adapter,
-after applying your patch:
-
-attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS:138 +1 + (rdma_ctxs:4096 *
-factor:3) = 12427
-
-
-rdma_ctxs:4096 comes from  ==>
-rdma_rw_mr_factor(ISCSI_ISER_MAX_SG_TABLESIZE:4096)=32 *
-ISCSI_DEF_XMIT_CMDS_MAX:128     where mr_pages is 128
-
-
-Finally, 12427 size got capped to 8190 due to "dev->attrs.max_qp_wr" in
-rdma_rw_init_qp().
-
-So final value of attr.cap.max_send_wr is 8190 for Chelsio adapters.
-
-
-
-Thanks,
-Krishna.
-On Tuesday, July 07/07/20, 2020 at 16:23:30 +0300, Max Gurtovoy wrote:
-> Hi Krishna,
-> 
-> thanks for debugging this.
-> 
-> please try the following untested patch:
-> 
-> 
-> diff --git a/drivers/infiniband/ulp/isert/ib_isert.c
-> b/drivers/infiniband/ulp/isert/ib_isert.c
-> index b7df38e..49f5f05 100644
-> --- a/drivers/infiniband/ulp/isert/ib_isert.c
-> +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-> @@ -119,7 +119,7 @@
->  {
->         struct isert_device *device = isert_conn->device;
->         struct ib_qp_init_attr attr;
-> -       int ret;
-> +       int ret, factor;
-> 
->         memset(&attr, 0, sizeof(struct ib_qp_init_attr));
->         attr.event_handler = isert_qp_event_callback;
-> @@ -128,7 +128,9 @@
->         attr.recv_cq = comp->cq;
->         attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS + 1;
->         attr.cap.max_recv_wr = ISERT_QP_MAX_RECV_DTOS + 1;
-> -       attr.cap.max_rdma_ctxs = ISCSI_DEF_XMIT_CMDS_MAX;
-> +       factor = rdma_rw_mr_factor(device->ib_device, cma_id->port_num,
-> +                                  ISCSI_ISER_MAX_SG_TABLESIZE);
-> +       attr.cap.max_rdma_ctxs = ISCSI_DEF_XMIT_CMDS_MAX * factor;
->         attr.cap.max_send_sge = device->ib_device->attrs.max_send_sge;
->         attr.cap.max_recv_sge = 1;
->         attr.sq_sig_type = IB_SIGNAL_REQ_WR;
-> diff --git a/drivers/infiniband/ulp/isert/ib_isert.h
-> b/drivers/infiniband/ulp/isert/ib_isert.h
-> index 3b296ba..c9ccf1d 100644
-> --- a/drivers/infiniband/ulp/isert/ib_isert.h
-> +++ b/drivers/infiniband/ulp/isert/ib_isert.h
-> @@ -63,7 +63,8 @@
->                 (ISER_RX_PAYLOAD_SIZE + sizeof(u64) + sizeof(struct
-> ib_sge) + \
->                  sizeof(struct ib_cqe) + sizeof(bool)))
-> 
-> -#define ISCSI_ISER_SG_TABLESIZE                256
-> +/* Maximum support is 16MB I/O size */
-> +#define ISCSI_ISER_MAX_SG_TABLESIZE    4096
-> 
->  enum isert_desc_type {
->         ISCSI_TX_CONTROL,
-> 
-> 
-> On 7/7/2020 3:36 PM, Krishnamraju Eraparaju wrote:
-> >Looks like the commit 07173c3e(block: enable multipage bvecs) has
-> >uncovered iSER SQ sizing issue.
-> >
-> >Here is how I hit the issue:
-> >Created two luns under single target, then run the below script on each
-> >lun(parallelly).
-> >
-> >   while [ 1 ]
-> >   do
-> >   iozone -i 0 -i 1 -I -+d -s 100000 -r 16384 -w
-> >   done
-> >
-> >
-> >Then failures like below are logged in dmesg output, due to iw_cxgb4 SQ
-> >getting full at iSER target.
-> >    "isert: isert_rdma_rw_ctx_post: Cmd: 00000000cb75342a failed to post
-> >RDMA res"
-> >
-> >
-> >This issue won't occur if luns are created on seperate targets.
-> >Also, the issue won't occur if I revert the multipage bvecs(07173c3e)
-> >changes at initator.
-> >
-> >
-> >Currently SQ is being sized this way:
-> >attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS:138 +1 +
-> >(ISCSI_DEF_XMIT_CMDS_MAX:128 * factor:3) = 523.
-> >I tried increaseing the SQ size and observed that the issue is not
-> >occuring when attr.cap.max_send_wr is 562.
-> >
-> >
-> >Looks like the avg length of RDMA READ/WRITE operations has increased
-> >after "multipage bvecs" changes.
-> >Queueing many large sized RDMA READ/WRITE WRs may cause backpressure and
-> >increases the chances of SQ getting full at provider driver.
-> >Notice the length(0x7f000 & 0x2000) of each RDMA READ operation below,
-> >for Before and After case.
-> >
-> >Before "multipage bvecs" RDMA READ:
-> >[  +0.001903] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x78]
-> >[  +0.000007] iser: iser_fast_reg_mr: lkey=0x8a41 rkey=0x8a41
-> >addr=0x446166000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:120 READ tags
-> >RKEY:0X8A41 VA:0X446166000
-> >[  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6f]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x13b51 rkey=0x13b51
-> >addr=0x443b25000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:111 READ tags
-> >RKEY:0X13B51 VA:0X443B25000
-> >[  +0.000022] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xe]
-> >[  +0.000001] iser: iser_fast_reg_mr: lkey=0xa371 rkey=0xa371
-> >addr=0x4461a4000 length=0x2000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:14 READ tags
-> >RKEY:0XA371 VA:0X4461A4000
-> >[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x79]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x12f4f rkey=0x12f4f
-> >addr=0x4461a9000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:121 READ tags
-> >RKEY:0X12F4F VA:0X4461A9000
-> >[  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0xe040 rkey=0xe040
-> >addr=0x447e67000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
-> >RKEY:0XE040 VA:0X447E67000
-> >[  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7b]
-> >[  +0.000001] iser: iser_fast_reg_mr: lkey=0xb149 rkey=0xb149
-> >addr=0x3d0366000 length=0x2000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:123 READ tags
-> >RKEY:0XB149 VA:0X3D0366000
-> >[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0xb]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x1014c rkey=0x1014c
-> >addr=0x3d0368000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:11 READ tags
-> >RKEY:0X1014C VA:0X3D0368000
-> >[  +0.000007] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x62]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x7c3b rkey=0x7c3b
-> >addr=0x3d03e7000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:98 READ tags
-> >RKEY:0X7C3B VA:0X3D03E7000
-> >[  +0.000021] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x11]
-> >[  +0.000001] iser: iser_fast_reg_mr: lkey=0x11752 rkey=0x11752
-> >addr=0x3d6de6000 length=0x2000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:17 READ tags
-> >RKEY:0X11752 VA:0X3D6DE6000
-> >[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x77]
-> >
-> >
-> >After "multipage bvecs" RDMA READ:
-> >[  +0.002455] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7d]
-> >[  +0.000006] iser: iser_fast_reg_mr: lkey=0x7991 rkey=0x7991
-> >addr=0x3d2819000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:125 READ tags
-> >RKEY:0X7991 VA:0X3D2819000
-> >[  +0.000005] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7e]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x8c9b rkey=0x8c9b
-> >addr=0x3d2898000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:126 READ tags
-> >RKEY:0X8C9B VA:0X3D2898000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7f]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x856d rkey=0x856d
-> >addr=0x3d2917000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:127 READ tags
-> >RKEY:0X856D VA:0X3D2917000
-> >[  +0.000004] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x1]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0x9b55 rkey=0x9b55
-> >addr=0x3d2999000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:1 READ tags
-> >RKEY:0X9B55 VA:0X3D2999000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x2]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0x86cf rkey=0x86cf
-> >addr=0x3d2018000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:2 READ tags
-> >RKEY:0X86CF VA:0X3D2018000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x3]
-> >[  +0.000003] iser: iser_fast_reg_mr: lkey=0x8062 rkey=0x8062
-> >addr=0x3d2097000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:3 READ tags
-> >RKEY:0X8062 VA:0X3D2097000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x4]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0xc34b rkey=0xc34b
-> >addr=0x3d2116000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:4 READ tags
-> >RKEY:0XC34B VA:0X3D2116000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x5]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0x8b6d rkey=0x8b6d
-> >addr=0x3d2195000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:5 READ tags
-> >RKEY:0X8B6D VA:0X3D2195000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x6]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0xce56 rkey=0xce56
-> >addr=0x3d0e14000 length=0x7f000
-> >[  +0.000000] iser: iser_prepare_read_cmd: Cmd itt:6 READ tags
-> >RKEY:0XCE56 VA:0X3D0E14000
-> >[  +0.000003] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x7]
-> >[  +0.000002] iser: iser_fast_reg_mr: lkey=0xba45 rkey=0xba45
-> >addr=0x3d0e93000 length=0x7f000
-> >[  +0.000001] iser: iser_prepare_read_cmd: Cmd itt:7 READ tags
-> >RKEY:0XBA45 VA:0X3D0E93000
-> >[  +0.000002] iser: iscsi_iser_task_xmit: ctask xmit [cid 0 itt 0x8]
-> >
-> >Hence, I feel iSER target SQ is undersized and needs to be sized
-> >properly to hold max possible entries. I might be wrong.
-> >
-> >Please take a look.
-> >
-> >Thanks,
-> >Krishna.
