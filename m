@@ -2,152 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D163E2178C3
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 22:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B412178C5
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 22:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgGGUNB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 16:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S1728706AbgGGUNC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 16:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgGGUNA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 16:13:00 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F44C08C5DC
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2020 13:13:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 17so473609wmo.1
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2020 13:13:00 -0700 (PDT)
+        with ESMTP id S1728693AbgGGUNB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jul 2020 16:13:01 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913FAC08C5DC
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Jul 2020 13:13:01 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s10so46550656wrw.12
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Jul 2020 13:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7j8mgacEyozwm1WPaRaxgcPUZx0GeX2tcfd/ShNWJFU=;
-        b=ivUu0QERHV+mzPbbu0k22gU9nEIQPE6zDSZF3Ml70xt9+GeTBIFI05sEsGiR5mEjpD
-         L3oswsJTwOx5oLP4k/silGMZZJlwF/hdu8/vDJ8RRrjRaksLuQflFH5QLIVPRGEikHjt
-         PLx1iYscrqxNjgoQ2zdIhQTW9oydXmtK284y4=
+        bh=y1VbY5ZB/L6W9r0Bvi97djdXHD1/JVCuEPc3nxQDtTg=;
+        b=LR4PlS7gyq2GSGWIRhk4IPyybwdSoLRvHe+WFW+jhPBv5lNTmi6seJwHISY0CmTie7
+         1i/ph6/DDjBC8Qsa6egY5ZnqeTfFNDNk3kLXXj9T1G31UXZUU+e/4yj4fR4u4tVxqUCf
+         7zSzmWfrfWk92EDswnhtEzhq2gyUqgAQQxH1g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7j8mgacEyozwm1WPaRaxgcPUZx0GeX2tcfd/ShNWJFU=;
-        b=rqt4/5fK4N63q8qUaIPWKuZoz+E5vvlOA1GLDAodYgJTOh157HnnbWwSzcyrXGShPB
-         uWKu32TM8FCVuA4/ppgnFoFz+xgxa2tRNZhW5XS5f07n6+dxA6fXqJte4/raahPFx0na
-         g/sYjXtMbMBQeKBKcc2FM3rSM8q4kANpUya7vmuHpRK2f9YkhaIoQzA9NybzjdZQ9mhn
-         V78lekz05w5KMkoPFZAbsw+2sYPOwIOGKIDRgDbb0Ku2Jnv55w0CpX8dB5osTBUR/x6X
-         lk8d+VlUY3AVqI5Le0SK/nja7lc9EerznL+HABfjzFJjYqYWhLpNxwA67GTc9BkldCEQ
-         aetg==
-X-Gm-Message-State: AOAM531I7g8aas9ouR+KzD+JN/LlwTO8HZCeTmq0BLj+bDVFY/xD+D5h
-        Nf2TZVmiS6geSLg31yYh69jhAA==
-X-Google-Smtp-Source: ABdhPJzOJJTuxoaWiMt7I2GriiW2xfr9u6BzNcL3JMkG+3RSZ9rHjuqdWeuvLwwOiNSfmz0qsJZ1lA==
-X-Received: by 2002:a1c:2602:: with SMTP id m2mr6089251wmm.50.1594152779172;
-        Tue, 07 Jul 2020 13:12:59 -0700 (PDT)
+        bh=y1VbY5ZB/L6W9r0Bvi97djdXHD1/JVCuEPc3nxQDtTg=;
+        b=G1oismhDBdjM1ODz9jk6x7DBg4BafWz0rP9MH1kn8f/zAepg5h1LYhbQ3eml83ymMU
+         GjUHGYfuEc3aoJX7rfvqV0C+aPhf7g10eTZgn0NnafxLlxR1EUDNDGda7yMjo/lFb2mC
+         f3E1rHgeKkthvGiO1LbVKZGYZ+d2oTAXHC5FIyafMJ8TdWlQWtX8K3CN32C3GxfzWPet
+         xLfWNojo//NE1+edfETS7y/e/IxuHR6Nx1aKMpRiCaNZtxJ4Ueo4j2lHQKZI68ayGood
+         7dUYNsETKA+kyFE1TnM2Aewu0nzsXBJQ/tm80Hk2ydqrkoHcaaySCq4b/DnAOE58oJzO
+         d83g==
+X-Gm-Message-State: AOAM530xA6ri875un2N5LYy5lno2N2v1W+09CKz1HOh5qsLlSCRqjjzD
+        vuElNWPVMg9tFQCcI/VGdast6VyCeiM=
+X-Google-Smtp-Source: ABdhPJzGrQ2RgMrK/l+05vdZJ29xKjThN5zLPU4hxr+GDdUU7CiSnj5b5zHZxNDIQZnGaFx+fLeNvQ==
+X-Received: by 2002:a5d:4051:: with SMTP id w17mr53069228wrp.183.1594152780339;
+        Tue, 07 Jul 2020 13:13:00 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q7sm2515262wra.56.2020.07.07.13.12.58
+        by smtp.gmail.com with ESMTPSA id q7sm2515262wra.56.2020.07.07.13.12.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 13:12:58 -0700 (PDT)
+        Tue, 07 Jul 2020 13:12:59 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         linux-rdma@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: [PATCH 15/25] drm/tilcdc: Use standard drm_atomic_helper_commit
-Date:   Tue,  7 Jul 2020 22:12:19 +0200
-Message-Id: <20200707201229.472834-16-daniel.vetter@ffwll.ch>
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 16/25] drm/atomic-helper: Add dma-fence annotations
+Date:   Tue,  7 Jul 2020 22:12:20 +0200
+Message-Id: <20200707201229.472834-17-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
 References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Gives us proper nonblocking support for free, and a pile of other
-things. The tilcdc code is simply old enough that it was never
-converted over, but was stuck forever with the copypasta from when it
-was initially merged.
+This is a bit disappointing since we need to split the annotations
+over all the different parts.
 
-The riskiest thing with this conversion is maybe that there's an issue
-with the vblank handling or vblank event handling, which will upset
-the modern commit support in atomic helpers. But from a cursory review
-drm_crtc_vblank_on/off is called in the right places, and the event
-handling also seems to exist (albeit with much hand-rolling and
-probably some races, could perhaps be converted over to
-drm_crtc_arm_vblank_event without any real loss).
+I was considering just leaking the critical section into the
+->atomic_commit_tail callback of each driver. But that would mean we
+need to pass the fence_cookie into each driver (there's a total of 13
+implementations of this hook right now), so bad flag day. And also a
+bit leaky abstraction.
 
-Motivated by me not having to hand-roll the dma-fence annotations for
-this.
+Hence just do it function-by-function.
 
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-rdma@vger.kernel.org
+Cc: amd-gfx@lists.freedesktop.org
+Cc: intel-gfx@lists.freedesktop.org
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Christian König <christian.koenig@amd.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Jyri Sarha <jsarha@ti.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
 ---
- drivers/gpu/drm/tilcdc/tilcdc_drv.c | 47 +----------------------------
- 1 file changed, 1 insertion(+), 46 deletions(-)
+ drivers/gpu/drm/drm_atomic_helper.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-index 0d74a6443263..4f5fc3e87383 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-@@ -87,55 +87,10 @@ static int tilcdc_atomic_check(struct drm_device *dev,
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index c6bf9722b51b..f67ee513a7cc 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -1550,6 +1550,7 @@ EXPORT_SYMBOL(drm_atomic_helper_wait_for_flip_done);
+ void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
+ {
+ 	struct drm_device *dev = old_state->dev;
++	bool fence_cookie = dma_fence_begin_signalling();
+ 
+ 	drm_atomic_helper_commit_modeset_disables(dev, old_state);
+ 
+@@ -1561,6 +1562,8 @@ void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
+ 
+ 	drm_atomic_helper_commit_hw_done(old_state);
+ 
++	dma_fence_end_signalling(fence_cookie);
++
+ 	drm_atomic_helper_wait_for_vblanks(dev, old_state);
+ 
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+@@ -1580,6 +1583,7 @@ EXPORT_SYMBOL(drm_atomic_helper_commit_tail);
+ void drm_atomic_helper_commit_tail_rpm(struct drm_atomic_state *old_state)
+ {
+ 	struct drm_device *dev = old_state->dev;
++	bool fence_cookie = dma_fence_begin_signalling();
+ 
+ 	drm_atomic_helper_commit_modeset_disables(dev, old_state);
+ 
+@@ -1592,6 +1596,8 @@ void drm_atomic_helper_commit_tail_rpm(struct drm_atomic_state *old_state)
+ 
+ 	drm_atomic_helper_commit_hw_done(old_state);
+ 
++	dma_fence_end_signalling(fence_cookie);
++
+ 	drm_atomic_helper_wait_for_vblanks(dev, old_state);
+ 
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+@@ -1607,6 +1613,9 @@ static void commit_tail(struct drm_atomic_state *old_state)
+ 	ktime_t start;
+ 	s64 commit_time_ms;
+ 	unsigned int i, new_self_refresh_mask = 0;
++	bool fence_cookie;
++
++	fence_cookie = dma_fence_begin_signalling();
+ 
+ 	funcs = dev->mode_config.helper_private;
+ 
+@@ -1635,6 +1644,8 @@ static void commit_tail(struct drm_atomic_state *old_state)
+ 		if (new_crtc_state->self_refresh_active)
+ 			new_self_refresh_mask |= BIT(i);
+ 
++	dma_fence_end_signalling(fence_cookie);
++
+ 	if (funcs && funcs->atomic_commit_tail)
+ 		funcs->atomic_commit_tail(old_state);
+ 	else
+@@ -1790,6 +1801,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 			     bool nonblock)
+ {
+ 	int ret;
++	bool fence_cookie;
+ 
+ 	if (state->async_update) {
+ 		ret = drm_atomic_helper_prepare_planes(dev, state);
+@@ -1812,6 +1824,8 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	if (ret)
+ 		return ret;
+ 
++	fence_cookie = dma_fence_begin_signalling();
++
+ 	if (!nonblock) {
+ 		ret = drm_atomic_helper_wait_for_fences(dev, state, true);
+ 		if (ret)
+@@ -1849,6 +1863,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	 */
+ 
+ 	drm_atomic_state_get(state);
++	dma_fence_end_signalling(fence_cookie);
+ 	if (nonblock)
+ 		queue_work(system_unbound_wq, &state->commit_work);
+ 	else
+@@ -1857,6 +1872,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	return 0;
+ 
+ err:
++	dma_fence_end_signalling(fence_cookie);
+ 	drm_atomic_helper_cleanup_planes(dev, state);
  	return ret;
  }
- 
--static int tilcdc_commit(struct drm_device *dev,
--		  struct drm_atomic_state *state,
--		  bool async)
--{
--	int ret;
--
--	ret = drm_atomic_helper_prepare_planes(dev, state);
--	if (ret)
--		return ret;
--
--	ret = drm_atomic_helper_swap_state(state, true);
--	if (ret) {
--		drm_atomic_helper_cleanup_planes(dev, state);
--		return ret;
--	}
--
--	/*
--	 * Everything below can be run asynchronously without the need to grab
--	 * any modeset locks at all under one condition: It must be guaranteed
--	 * that the asynchronous work has either been cancelled (if the driver
--	 * supports it, which at least requires that the framebuffers get
--	 * cleaned up with drm_atomic_helper_cleanup_planes()) or completed
--	 * before the new state gets committed on the software side with
--	 * drm_atomic_helper_swap_state().
--	 *
--	 * This scheme allows new atomic state updates to be prepared and
--	 * checked in parallel to the asynchronous completion of the previous
--	 * update. Which is important since compositors need to figure out the
--	 * composition of the next frame right after having submitted the
--	 * current layout.
--	 */
--
--	drm_atomic_helper_commit_modeset_disables(dev, state);
--
--	drm_atomic_helper_commit_planes(dev, state, 0);
--
--	drm_atomic_helper_commit_modeset_enables(dev, state);
--
--	drm_atomic_helper_wait_for_vblanks(dev, state);
--
--	drm_atomic_helper_cleanup_planes(dev, state);
--
--	return 0;
--}
--
- static const struct drm_mode_config_funcs mode_config_funcs = {
- 	.fb_create = drm_gem_fb_create,
- 	.atomic_check = tilcdc_atomic_check,
--	.atomic_commit = tilcdc_commit,
-+	.atomic_commit = drm_atomic_helper_commit,
- };
- 
- static void modeset_init(struct drm_device *dev)
 -- 
 2.27.0
 
