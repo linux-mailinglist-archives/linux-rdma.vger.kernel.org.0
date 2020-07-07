@@ -2,180 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE28D21727E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 17:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DF6217290
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jul 2020 17:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgGGPeR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jul 2020 11:34:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:50260 "EHLO mga07.intel.com"
+        id S1728314AbgGGPhX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jul 2020 11:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728036AbgGGPeR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:34:17 -0400
-IronPort-SDR: 7n4p6H0KxqWoc8UIpI5GKUs+SQtfJaGVQd2dp7mdyg2D1vte1yapC6hZsSfFQzcF6Nw480byof
- pjV2ygBIu6Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="212585389"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="212585389"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 08:34:15 -0700
-IronPort-SDR: 2Oc9yBVcm/TdgeOR8rGHyWgg2AOIJXeVV8LgshO75+7PKDO+GWJUDS3WE6SFtHMcLPinAKXder
- 24BjyioYh+NA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="388541271"
-Received: from lkp-server01.sh.intel.com (HELO f2047cb89c8e) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Jul 2020 08:34:14 -0700
-Received: from kbuild by f2047cb89c8e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jspbp-0000GN-LR; Tue, 07 Jul 2020 15:34:13 +0000
-Date:   Tue, 07 Jul 2020 23:33:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 28ad5f65c314ffdd5888d6afa61772d3032a332c
-Message-ID: <5f0495da.VFfNagkcaKyCKoyU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728246AbgGGPhX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:37:23 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2417A206F6;
+        Tue,  7 Jul 2020 15:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594136242;
+        bh=GOErlGGphj9PiHoO31Lwnox/KyRMld47W8W4+191Y1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L7ZjzdbiUmIadeFFj9LLQ/0dl23ayW2MMHpsTmTXS4JiNuS3yMM53F8X/6AnGJjKi
+         BSKDP3eetCl24bYdxBHgbNIATIOzS2VBg0VOlqWAAcoKIdNM0GvwCGPgd2rQ1xQ7U0
+         j6IzhUmzBzYAO2iixcW2uKA9LnZ0i6Ld0093xBeI=
+Date:   Tue, 7 Jul 2020 18:37:18 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc v1] RDMA/mlx5: Use xa_lock_irq when access to SRQ
+ table
+Message-ID: <20200707153718.GO207186@unreal>
+References: <20200707131551.1153207-1-leon@kernel.org>
+ <20200707134258.GL25523@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200707134258.GL25523@casper.infradead.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 28ad5f65c314ffdd5888d6afa61772d3032a332c  RDMA: Move XRCD to be under ib_core responsibility
+On Tue, Jul 07, 2020 at 02:42:58PM +0100, Matthew Wilcox wrote:
+> On Tue, Jul 07, 2020 at 04:15:51PM +0300, Leon Romanovsky wrote:
+> > +++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
+> > @@ -83,11 +83,11 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
+> >  	struct mlx5_srq_table *table = &dev->srq_table;
+> >  	struct mlx5_core_srq *srq;
+> >
+> > -	xa_lock(&table->array);
+> > +	xa_lock_irq(&table->array);
+> >  	srq = xa_load(&table->array, srqn);
+> >  	if (srq)
+> >  		refcount_inc(&srq->common.refcount);
+> > -	xa_unlock(&table->array);
+> > +	xa_unlock_irq(&table->array);
+>
+> This one is correct.
+>
+> > @@ -655,11 +655,11 @@ static int srq_event_notifier(struct notifier_block *nb,
+> >  	eqe = data;
+> >  	srqn = be32_to_cpu(eqe->data.qp_srq.qp_srq_n) & 0xffffff;
+> >
+> > -	xa_lock(&table->array);
+> > +	xa_lock_irq(&table->array);
+> >  	srq = xa_load(&table->array, srqn);
+> >  	if (srq)
+> >  		refcount_inc(&srq->common.refcount);
+> > -	xa_unlock(&table->array);
+> > +	xa_unlock_irq(&table->array);
+>
+> This one is not.  srq_event_notifier() is called in irq context, always,
+> so leave it as xa_lock() / xa_unlock().
+>
+> You could switch to a less-locked model, which would look something like this:
+>
+> 	rcu_read_lock();
+> 	srq = xa_load(&table->array, srqn);
+> 	if (srq && !refcount_inc_not_zero(&srq->common.refcount))
+> 		srq = NULL;
+> 	rcu_read_unlock();
+>
+> Then you wouldn't need to disable irqs while accessing the array.
+> But you would need to rcu-free the srqs.
 
-elapsed time: 791m
+Thanks for your feedback,
+At this point of time, we don't need rcu_* optimization, it is not
+bottleneck yet :).
 
-configs tested: 118
-configs skipped: 5
+Thanks
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-openrisc                         alldefconfig
-mips                           ip27_defconfig
-sh                          kfr2r09_defconfig
-powerpc                      mgcoge_defconfig
-sh                           se7750_defconfig
-sh                        edosk7705_defconfig
-powerpc                     mpc5200_defconfig
-arm                          tango4_defconfig
-arm                  colibri_pxa270_defconfig
-xtensa                           alldefconfig
-sh                          rsk7203_defconfig
-arm                          moxart_defconfig
-arm                           corgi_defconfig
-arm                       netwinder_defconfig
-arm                          pxa3xx_defconfig
-m68k                         apollo_defconfig
-powerpc64                           defconfig
-arm                       aspeed_g5_defconfig
-sh                          sdk7786_defconfig
-mips                       bmips_be_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-openrisc                            defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a001-20200707
-i386                 randconfig-a002-20200707
-i386                 randconfig-a006-20200707
-i386                 randconfig-a004-20200707
-i386                 randconfig-a005-20200707
-i386                 randconfig-a003-20200707
-x86_64               randconfig-a012-20200707
-x86_64               randconfig-a016-20200707
-x86_64               randconfig-a014-20200707
-x86_64               randconfig-a011-20200707
-x86_64               randconfig-a015-20200707
-x86_64               randconfig-a013-20200707
-i386                 randconfig-a011-20200707
-i386                 randconfig-a014-20200707
-i386                 randconfig-a015-20200707
-i386                 randconfig-a016-20200707
-i386                 randconfig-a012-20200707
-i386                 randconfig-a013-20200707
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allyesconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
