@@ -2,111 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4734218FF3
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 20:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF1F2191E1
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 22:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgGHSt1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jul 2020 14:49:27 -0400
-Received: from mail-eopbgr140083.outbound.protection.outlook.com ([40.107.14.83]:8078
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725953AbgGHSt0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:49:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YXJ9fhNkGS4rqWakpyb4g0gjQAKaywtv5X6Mbv02caTUgYpqXbbjZYY2345LRG0OW3NxxgXNO1J83XwU54PZXcGw1vsMv0X9+pJmOpLqplylH9KLXzRz3W8sPwqYFNHp9QlHkKX++76OuBwopSoo/lUu8Go35d6bnrlhTFQclAWe4bKERd3YqW/7Xnw8WB5LMt3yBWbapVSz1YQmxAH62dkZxtkx+CdR12IngwYQdg3X4Hr9d9PeDoHoPrGoet2i5uFI7miP/Q9YOPErNLPgYPG8l+HklBGVchrKDmsHiIAv1DIMJQtmfpHkVPGaOYxVjXrMTf4qjgvMRqQM3C0g5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wqDG+9iHIvNv5PlPXUVmtIxeeG0vbFr26l9Bo+MenXM=;
- b=BfRsqKP8aBV2/iLRW3tlyKo18t2rkQRZVNcB6dgaYdhG67O0jszhJo13qh8tsA3T1xiYfECKbSSv6JUPQ1aWq3y7lJatFBHS2QGbkjDit+t3cdON1PtBTs+Kh2yALmDW3QFX77zIrH+NaJlGdNX+SZBjCKlUdHbzJeHD2Ltap3ohRp492csEtdV8HFCuwhaMO0QJ3xkc9w5Mg+Jv7EXkEfSFvwbB9fL9ExH7ei60reNzfoaVxmusYT9ZHs7vphYz7AavHhxE6Yhor+9b1ttemOaND7zHrutZpoJqNiDaxhKi/8ApX8Z5GnaF5muVIx62r1HV4Pv3T8CVVQMHTSkssw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wqDG+9iHIvNv5PlPXUVmtIxeeG0vbFr26l9Bo+MenXM=;
- b=nOMYNkoI6H+ZYPq63I5JGzG2ruagAfulqCF120XPppyvB7at2G761ghvfQ/2koCmqoWCBvULpuaPqMfDySMiEX+rf/0XSj0VqOkURiFj3b6tuZeq04HZA2MfM2XEF1Q/tMigKcRhzYNrvaVu+6eCo6VySJZjXLykdy9oZj0yQKo=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM6PR05MB6006.eurprd05.prod.outlook.com (2603:10a6:20b:af::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.27; Wed, 8 Jul
- 2020 18:49:23 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::15f4:b130:d907:ce72]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::15f4:b130:d907:ce72%6]) with mapi id 15.20.3153.029; Wed, 8 Jul 2020
- 18:49:23 +0000
-Date:   Wed, 8 Jul 2020 21:49:19 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 2/2] RDMA/core: Update write interface to use
- automatic object lifetime
-Message-ID: <20200708184919.GC1276673@unreal>
-References: <20200708110554.1270613-1-leon@kernel.org>
- <20200708110554.1270613-3-leon@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708110554.1270613-3-leon@kernel.org>
-X-ClientProxiedBy: AM0PR04CA0053.eurprd04.prod.outlook.com
- (2603:10a6:208:1::30) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
+        id S1726065AbgGHUzV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jul 2020 16:55:21 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:39220 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726006AbgGHUzU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jul 2020 16:55:20 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068KkBWO031159;
+        Wed, 8 Jul 2020 13:55:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=dkMSx1vCqlfD2PnMA5zZJBpogHoJvw1YSQj3D3KDVC0=;
+ b=QGwlwUKreuC/7gv0w6VdnmFYJI/gThcslezYzIHJhvm29DeJlcNy37D9esx/iQL5qFYf
+ pSiRlyEV/hxf38o+cOXdPuzH0rNZ6eW20lM7XF0HDk8ya3dvaeuImZf6F/OUlRfB7a4k
+ w8qWwfACorlWrEv8Irvo3WGIz9FoU2ZSm5Mg2OL94JlH9Mn78CuMBoKOPdaq9FKJ7pbB
+ /9wfmRZ7FOEV9vSBp4Ko2VAbuu1n1Yh1I+/RWdfyyEoX8BvKPCg5bE0erS5G+Jl0h2q8
+ JKMNpRfaLLzid1N67y31RnyxW/1Zfi5zMu6B51xJ5tyMLTUKl5KqI5qGTh0om8w5bLST VQ== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 325k080jah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 13:55:18 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 8 Jul
+ 2020 13:55:16 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 8 Jul 2020 13:55:17 -0700
+Received: from lb-tlvb-ybason.il.qlogic.org (unknown [10.5.221.176])
+        by maili.marvell.com (Postfix) with ESMTP id B8E553F7045;
+        Wed,  8 Jul 2020 13:55:15 -0700 (PDT)
+From:   Yuval Basson <ybason@marvell.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, Yuval Basson <ybason@marvell.com>,
+        "Michal Kalderon" <mkalderon@marvell.com>
+Subject: [PATCH v3 rdma-next] RDMA/qedr: SRQ's bug fixes
+Date:   Wed, 8 Jul 2020 22:55:26 +0300
+Message-ID: <20200708195526.31040-1-ybason@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (213.57.247.131) by AM0PR04CA0053.eurprd04.prod.outlook.com (2603:10a6:208:1::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Wed, 8 Jul 2020 18:49:22 +0000
-X-Originating-IP: [213.57.247.131]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5cf2373d-df5e-4f4f-4118-08d8236fa156
-X-MS-TrafficTypeDiagnostic: AM6PR05MB6006:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB6006E54C161406CA9A08D9BEB0670@AM6PR05MB6006.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-Forefront-PRVS: 04583CED1A
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tQ8Ndd9hpAEg3dzrQCp7TnIaIfBuPHnkkOti0idDvRxhkI0H40RQA4MvS4MxPsRCuD2QnCSgtYVycyHrRslHYY1I+W+ppIFJoIMigUQuHgCnwrQt6ycsm/Ae8natIQucqpPr6IQY4XfScaNdFcjZgijEkGZpDzpxknW+uqG4QNq6TH3/DlpOl+2LaH6keS6qTio+yud6cxhH83OqI7g1zikiiOOP4DRdFvV/qJpRfaLZQ4NzY1VJF8hgtd0wDstkXd8qXmCYn3tesQLXoTcOJFv8eC6U23lKaRAkKQe6IBKVhi+WxfTaW7eBX1KfYRq/rTg8fFfFjNuXHjjHmwadbg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(376002)(346002)(39860400002)(366004)(396003)(136003)(83380400001)(2906002)(33656002)(956004)(8936002)(1076003)(33716001)(4744005)(15650500001)(9686003)(16526019)(6496006)(6636002)(186003)(52116002)(66946007)(478600001)(8676002)(5660300002)(6666004)(86362001)(26005)(4326008)(66556008)(110136005)(66476007)(6486002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: A3y5kjLGEx4VdOehZqwHMvWJxlWNf1GFIKSrbrVTgz4pOxvOA7VGJP39LBUFyjVSFVfHVCV1PK/S3FuOvXw4Q0OTbKA3zOlNRXH0Xw8LzJWDfd27M6I+U1+Q2kQeW/Drum4oHt+rdeRJZ4xHaI8prkYQs/nD0zLytt0FGrRIZ8ApZYLh7NS1VzVpm2dLNVGv5YiYxgVuBC/GkE9dE3TwAv9Epvau/da1sGkc47aWUBn1GISPoQqOysf69d4b1+tjnlNH3U9KcHzqFIM7bVxBcb/HSU4Mc3YY6VohL+c6fXKsh2iMnQRin8YuWXqfU3O2gxCTk+jT/paTMtEW6nbfI7PgJmC1gm0t5wIODqvQxclUX6ZkSMfinro+Sf3p/spqfoQjML5TSTrXfY23HK+fz3zKvAJvraoWR0RVbGhM+v9dHMfkjSGs1Ezmk3jQt6Yb9WlihKrU1pmo5BnyXEBIJkMSs4sxo375ei0a4h9pPmpCZnkcAvtXGv8TmhlYNH9u
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cf2373d-df5e-4f4f-4118-08d8236fa156
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6408.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2020 18:49:22.9690
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S5W7ox2M5LJ9YPuDNjsSHsx2HSnuZYxIS+opLencPPp0uXnzSJpkfT1ZmvxrW/Q1U1PUCLsNVFIdyptcDtQM6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6006
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_17:2020-07-08,2020-07-08 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 02:05:54PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
->
-> The automatic object lifetime model allows us to change write() interface
-> to have same logic as ioctl() path. Update the create/alloc functions to be
-> in the following format, so code flow will be the same:
->  * Allocate objects
->  * Initialize them
->  * Call to the drivers, this is last step that is allowed to fail
->  * Finalize object
->  * Return response and allow to core code to handle abort/commit
->    respectively.
->
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/uverbs_cmd.c | 299 ++++++++-------------------
->  1 file changed, 90 insertions(+), 209 deletions(-)
+QP's with the same SRQ, working on different CQs and running in parallel
+on different CPUs could lead to a race when maintaining the SRQ consumer
+count, and leads to FW running out of SRQs. Update the consumer atomically.
+Make sure the wqe_prod is updated after the sge_prod due to FW
+requirements.
 
-Please drop this patch, I came to realization that create_cq() can be
-simplfied much more, I'll send v1 after will get results from the
-verification.
+Fixes: 3491c9e799fb9 ("RDMA/qedr: Add support for kernel mode SRQ's")
+Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
+Signed-off-by: Yuval Basson <ybason@marvell.com>
 
-Thanks
+---
+Change in v3:
+ *Replace changelog
+
+Changes in v2:
+* Change barrier() to dma_wmb()
+* Remove redundant dma_wmb()
+
+ drivers/infiniband/hw/qedr/qedr.h  |  4 ++--
+ drivers/infiniband/hw/qedr/verbs.c | 23 +++++++++++------------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
+index fdf90ec..aa33202 100644
+--- a/drivers/infiniband/hw/qedr/qedr.h
++++ b/drivers/infiniband/hw/qedr/qedr.h
+@@ -344,10 +344,10 @@ struct qedr_srq_hwq_info {
+ 	u32 wqe_prod;
+ 	u32 sge_prod;
+ 	u32 wr_prod_cnt;
+-	u32 wr_cons_cnt;
++	atomic_t wr_cons_cnt;
+ 	u32 num_elems;
+ 
+-	u32 *virt_prod_pair_addr;
++	struct rdma_srq_producers *virt_prod_pair_addr;
+ 	dma_addr_t phy_prod_pair_addr;
+ };
+ 
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 9b9e802..444537b 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1510,6 +1510,7 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
+ 	srq->dev = dev;
+ 	hw_srq = &srq->hw_srq;
+ 	spin_lock_init(&srq->lock);
++	atomic_set(&hw_srq->wr_cons_cnt, 0);
+ 
+ 	hw_srq->max_wr = init_attr->attr.max_wr;
+ 	hw_srq->max_sges = init_attr->attr.max_sge;
+@@ -3686,7 +3687,7 @@ static u32 qedr_srq_elem_left(struct qedr_srq_hwq_info *hw_srq)
+ 	 * count and consumer count and subtract it from max
+ 	 * work request supported so that we get elements left.
+ 	 */
+-	used = hw_srq->wr_prod_cnt - hw_srq->wr_cons_cnt;
++	used = hw_srq->wr_prod_cnt - (u32)atomic_read(&hw_srq->wr_cons_cnt);
+ 
+ 	return hw_srq->max_wr - used;
+ }
+@@ -3701,7 +3702,6 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 	unsigned long flags;
+ 	int status = 0;
+ 	u32 num_sge;
+-	u32 offset;
+ 
+ 	spin_lock_irqsave(&srq->lock, flags);
+ 
+@@ -3714,7 +3714,8 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		if (!qedr_srq_elem_left(hw_srq) ||
+ 		    wr->num_sge > srq->hw_srq.max_sges) {
+ 			DP_ERR(dev, "Can't post WR  (%d,%d) || (%d > %d)\n",
+-			       hw_srq->wr_prod_cnt, hw_srq->wr_cons_cnt,
++			       hw_srq->wr_prod_cnt,
++			       atomic_read(&hw_srq->wr_cons_cnt),
+ 			       wr->num_sge, srq->hw_srq.max_sges);
+ 			status = -ENOMEM;
+ 			*bad_wr = wr;
+@@ -3748,22 +3749,20 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 			hw_srq->sge_prod++;
+ 		}
+ 
+-		/* Flush WQE and SGE information before
++		/* Update WQE and SGE information before
+ 		 * updating producer.
+ 		 */
+-		wmb();
++		dma_wmb();
+ 
+ 		/* SRQ producer is 8 bytes. Need to update SGE producer index
+ 		 * in first 4 bytes and need to update WQE producer in
+ 		 * next 4 bytes.
+ 		 */
+-		*srq->hw_srq.virt_prod_pair_addr = hw_srq->sge_prod;
+-		offset = offsetof(struct rdma_srq_producers, wqe_prod);
+-		*((u8 *)srq->hw_srq.virt_prod_pair_addr + offset) =
+-			hw_srq->wqe_prod;
++		srq->hw_srq.virt_prod_pair_addr->sge_prod = hw_srq->sge_prod;
++		/* Make sure sge producer is updated first */
++		dma_wmb();
++		srq->hw_srq.virt_prod_pair_addr->wqe_prod = hw_srq->wqe_prod;
+ 
+-		/* Flush producer after updating it. */
+-		wmb();
+ 		wr = wr->next;
+ 	}
+ 
+@@ -4182,7 +4181,7 @@ static int process_resp_one_srq(struct qedr_dev *dev, struct qedr_qp *qp,
+ 	} else {
+ 		__process_resp_one(dev, qp, cq, wc, resp, wr_id);
+ 	}
+-	srq->hw_srq.wr_cons_cnt++;
++	atomic_inc(&srq->hw_srq.wr_cons_cnt);
+ 
+ 	return 1;
+ }
+-- 
+1.8.3.1
+
