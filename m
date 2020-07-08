@@ -2,81 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893052187DC
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 14:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E082188CA
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgGHMmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jul 2020 08:42:50 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:35726 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgGHMmu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jul 2020 08:42:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594212170; x=1625748170;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=isVgfoV2yYhdnmK1vsfgbEyDHnYtI8sjoMaUdEHBkkY=;
-  b=aI2k874vxfO7Irdiaf2e4wSlLOxYMry7GmF6sNVCPJ3c86JpSlxvS2Nd
-   kGbqBiJEIQS/penySUjvJplKZOD2hC5pqe0MX1CKGL03Qk1wPrOUbTQTh
-   GLu94cMBwpmUUEE4lEfim2j94uT8vBn7Kqe1vfUk4xgofVl7uo0xh8JrQ
-   Y=;
-IronPort-SDR: 60CP2Ri9gzLqEDS9aiRHhnzrIMepgx45AFRVSaFbmJ7VRTcN9ATJro8ZFEhM2h+FxbOi5q/qUG
- mF7lZ5DQVNGg==
-X-IronPort-AV: E=Sophos;i="5.75,327,1589241600"; 
-   d="scan'208";a="40680995"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Jul 2020 12:42:47 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 8F9F628ABDC;
-        Wed,  8 Jul 2020 12:42:44 +0000 (UTC)
-Received: from EX13D19EUB001.ant.amazon.com (10.43.166.229) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Jul 2020 12:42:43 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.140) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Jul 2020 12:42:40 +0000
-Subject: Re: Question about IB_QP_CUR_STATE
-To:     liweihang <liweihang@huawei.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Linuxarm <linuxarm@huawei.com>
-References: <876ca1eb8667461a9d2e0effb8ee3934@huawei.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <881488e6-03d8-1e01-076c-5c901d84a44a@amazon.com>
-Date:   Wed, 8 Jul 2020 15:42:34 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1729470AbgGHNS1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jul 2020 09:18:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17018 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729404AbgGHNS1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jul 2020 09:18:27 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068D2RCA106547;
+        Wed, 8 Jul 2020 09:18:17 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325dxe9ryn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 09:18:16 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 068D34YN107846;
+        Wed, 8 Jul 2020 09:18:15 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325dxe9rvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 09:18:14 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068DHqDE031516;
+        Wed, 8 Jul 2020 13:18:10 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3251w8gbx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 13:18:09 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068DI7C955836784
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 13:18:07 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFF504204C;
+        Wed,  8 Jul 2020 13:18:07 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F63642042;
+        Wed,  8 Jul 2020 13:18:05 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.85.75.251])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  8 Jul 2020 13:18:05 +0000 (GMT)
+Date:   Wed, 8 Jul 2020 18:48:03 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, kvm-ppc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH 0/5] mm/migrate: avoid device private invalidations
+Message-ID: <20200708131803.GB7902@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20200706222347.32290-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <876ca1eb8667461a9d2e0effb8ee3934@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.140]
-X-ClientProxiedBy: EX13D17UWC002.ant.amazon.com (10.43.162.61) To
- EX13D19EUB001.ant.amazon.com (10.43.166.229)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706222347.32290-1-rcampbell@nvidia.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 cotscore=-2147483648 mlxscore=0
+ phishscore=0 clxscore=1011 adultscore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007080091
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 08/07/2020 12:41, liweihang wrote:
-> Hi all,
-> 
-> I'm a little confused about the role of IB_QP_CUR_STATE in the enumeration
-> ib_qp_attr_mask.
-> 
-> In manual page of ibv_modify_qp(), comments of cur_qp_state is "Assume this
-> is the current QP state". Why we need to get current qp state from users
-> instead of drivers?
-> 
-> For example, why the users are allowed to modify qp from RTR to RTS again
-> even if the qp's state in driver and hardware has already been RTS.
-> 
-> I would be appretiate it if someone can help with this.
-> 
-> Weihang
-> 
+On Mon, Jul 06, 2020 at 03:23:42PM -0700, Ralph Campbell wrote:
+> The goal for this series is to avoid device private memory TLB
+> invalidations when migrating a range of addresses from system
+> memory to device private memory and some of those pages have already
+> been migrated. The approach taken is to introduce a new mmu notifier
+> invalidation event type and use that in the device driver to skip
+> invalidation callbacks from migrate_vma_setup(). The device driver is
+> also then expected to handle device MMU invalidations as part of the
+> migrate_vma_setup(), migrate_vma_pages(), migrate_vma_finalize() process.
+> Note that this is opt-in. A device driver can simply invalidate its MMU
+> in the mmu notifier callback and not handle MMU invalidations in the
+> migration sequence.
 
-Talking about IB_QP_CUR_STATE, I see many drivers filling it in their query QP
-callback although it should only be used in modify operations.. Is there a
-reason not to remove it?
+In the kvmppc secure guest usecase,
+
+1. We ensure that we don't issue migrate_vma() calls for pages that have
+already been migrated to the device side (which is actually secure memory
+for us that is managed by Ultravisor firmware)
+
+2. The page table mappings on the device side (secure memory) are managed
+transparent to the kernel by the Ultravisor firmware.
+
+Hence I assume that no specific action would be required by the kvmppc
+usecase due to this patchset. In fact, we never registered for this
+mmu notifier events.
+
+Regards,
+Bharata.
