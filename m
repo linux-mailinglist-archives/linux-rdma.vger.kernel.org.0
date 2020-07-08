@@ -2,95 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D410021877C
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 14:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893052187DC
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jul 2020 14:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729169AbgGHMdj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jul 2020 08:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729252AbgGHMdc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jul 2020 08:33:32 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065AAC08E88C
-        for <linux-rdma@vger.kernel.org>; Wed,  8 Jul 2020 05:33:31 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v6so33105450iob.4
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jul 2020 05:33:30 -0700 (PDT)
+        id S1728965AbgGHMmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jul 2020 08:42:50 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:35726 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728803AbgGHMmu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jul 2020 08:42:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
-        b=CtDA46Te1kJYGFqAkgr9Vub/YrG6WB2S+VlEURQEEM4x6m9sjli+Jz/yotFRmV/AMR
-         T/h2d+e8At09eChsFX2C+mUFLH+FsdwAy78KAtzHqTPpG69rhvmbmMUpZSALFUdgKxT3
-         rKV4TF8A0J+Za5tWsTPtObTKnCJJSeTUvLM0KCUCLapZUiUA/CE0qJguNsnmAcBYT7Bw
-         PUSSiRKtit7eL05YbTu8d4vZk3Rk52mtpEQs926eluhEg6IUrqIesfOKILheZFFzZp0P
-         0kRnPxRkSyAb2gIupk6cQmoDhkGW5ga2ONIfRh7Ui0T+vXHI9OfE4hLpnUDNkQjQgdsE
-         pxTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
-        b=ktHS8YDLftK007m1wBg5f3UxUjyfkT9xpZrBc3ATIzRxmNOBJyE5HEfZDXn77i+TWE
-         nJMR5sUTJHhtWLii//qj1b1HNkCKpNxVE3Tr9Dmem9WSmLl655X0tAQF1s09lXKchaEa
-         BFCVmuB6KOoprXsj6VS0aBNA0TYjah/WiRBQR+gUaD1FZdc50skSDTMPrF5hqhdlTSZE
-         Dyi6JtEGeMug0uXU4aKpH5cGyN1X7erJ6IjE53sIzHrf0/oiPZE7FliqsTYu9M6fpsDk
-         OPqnqgODxyZq3yOzJc51x/3UsrtvfQ66WDduemJyW0dNYezA7wvsotxdQqpE/Q1HiSay
-         PVAg==
-X-Gm-Message-State: AOAM532LKmYFHGgBBoW6lPCY6svDMlKRSp/+JiB+NYw4yI7ReX6PUF83
-        6qgxLwkSpzxOBpQ4SEU1NfjpVCkayVuMLA3Y/QtHlFmOuL8=
-X-Google-Smtp-Source: ABdhPJy69qBRFRW2d2u+0xyGHVfmVbQRW6SQ4gKLQIvGwSNWfhZDhNcIlxNh+7AirNZFy3An0aJSkt25Q8y7juQZu8o=
-X-Received: by 2002:a05:6638:12c7:: with SMTP id v7mr64754290jas.56.1594211609022;
- Wed, 08 Jul 2020 05:33:29 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594212170; x=1625748170;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=isVgfoV2yYhdnmK1vsfgbEyDHnYtI8sjoMaUdEHBkkY=;
+  b=aI2k874vxfO7Irdiaf2e4wSlLOxYMry7GmF6sNVCPJ3c86JpSlxvS2Nd
+   kGbqBiJEIQS/penySUjvJplKZOD2hC5pqe0MX1CKGL03Qk1wPrOUbTQTh
+   GLu94cMBwpmUUEE4lEfim2j94uT8vBn7Kqe1vfUk4xgofVl7uo0xh8JrQ
+   Y=;
+IronPort-SDR: 60CP2Ri9gzLqEDS9aiRHhnzrIMepgx45AFRVSaFbmJ7VRTcN9ATJro8ZFEhM2h+FxbOi5q/qUG
+ mF7lZ5DQVNGg==
+X-IronPort-AV: E=Sophos;i="5.75,327,1589241600"; 
+   d="scan'208";a="40680995"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Jul 2020 12:42:47 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 8F9F628ABDC;
+        Wed,  8 Jul 2020 12:42:44 +0000 (UTC)
+Received: from EX13D19EUB001.ant.amazon.com (10.43.166.229) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Jul 2020 12:42:43 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.140) by
+ EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Jul 2020 12:42:40 +0000
+Subject: Re: Question about IB_QP_CUR_STATE
+To:     liweihang <liweihang@huawei.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Linuxarm <linuxarm@huawei.com>
+References: <876ca1eb8667461a9d2e0effb8ee3934@huawei.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <881488e6-03d8-1e01-076c-5c901d84a44a@amazon.com>
+Date:   Wed, 8 Jul 2020 15:42:34 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a05:6602:1582:0:0:0:0 with HTTP; Wed, 8 Jul 2020 05:33:28
- -0700 (PDT)
-Reply-To: mmsafiatou057@gmail.com
-From:   "Mrs. Safitaou Zoungrana" <richardlaurentdr@gmail.com>
-Date:   Wed, 8 Jul 2020 12:33:28 +0000
-Message-ID: <CALJAiTVXhrKZYOHVoupnx6hmXXD0i2k4MOSO6HW+mj1BAydXhA@mail.gmail.com>
-Subject: My Dear Beloved One,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <876ca1eb8667461a9d2e0effb8ee3934@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.140]
+X-ClientProxiedBy: EX13D17UWC002.ant.amazon.com (10.43.162.61) To
+ EX13D19EUB001.ant.amazon.com (10.43.166.229)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-My Dear Beloved One,
+On 08/07/2020 12:41, liweihang wrote:
+> Hi all,
+> 
+> I'm a little confused about the role of IB_QP_CUR_STATE in the enumeration
+> ib_qp_attr_mask.
+> 
+> In manual page of ibv_modify_qp(), comments of cur_qp_state is "Assume this
+> is the current QP state". Why we need to get current qp state from users
+> instead of drivers?
+> 
+> For example, why the users are allowed to modify qp from RTR to RTS again
+> even if the qp's state in driver and hardware has already been RTS.
+> 
+> I would be appretiate it if someone can help with this.
+> 
+> Weihang
+> 
 
-I greet you in the name of God almighty the givers of all good things
-in life. Please kindly pardon me for any inconvenience this letter may
-cost you because I know it may come to you as a surprise as we have no
-previous correspondence.  I sent this mail praying for it to reach you
-in good health, since I myself are in a very critical health condition
-in which I sleep every night without knowing if I may be alive to see
-the next day.
-
-I am Mrs. Safiatou Zoungrana,  the wife of late Engineer Ralph
-Alphonso Zoungrana from Paris France but based here in Burkina Faso
-West Africa since eight years ago as a business woman dealing with
-gold exportation and Sales. We have been married for years before his
-sudden death although we were childless. I have been diagnosed with
-ovarian cancer and I have been battling with the sickness when my late
-lovely husband of a blessed memory was alive. May his soul rest in
-peace, Amen.
-
-My late Husband left the sum of =E2=82=AC7.900.000.00 Seven Million Nine
-Hundred Thousand Euros in a fix/suspense account in one of the prime
-bank here in Burkina Faso. Recently, my Doctor told me that I have few
-days to live due to the cancer problem. The one that disturbs me most
-is my blood pressure sickness.
-
-Having known my health condition I decided to seek for your kind
-assistance to transfer this fund into your account and you will use it
-to establish an orphanage home in my name. I will give you more
-details about the project as soon as I receive your reply in my
-private email (mmsafiatou057@gmail.com) to handle this project because
-I do not want to state all here until I see your reply, desire and
-commitment to handle this project.
-
-My Regards to your family.
-Mrs. Safiatou Zoungrana.
+Talking about IB_QP_CUR_STATE, I see many drivers filling it in their query QP
+callback although it should only be used in modify operations.. Is there a
+reason not to remove it?
