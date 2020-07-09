@@ -2,96 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C03219A18
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 09:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BED219A25
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 09:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgGIHg4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Jul 2020 03:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39310 "EHLO
+        id S1726187AbgGIHkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Jul 2020 03:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgGIHg4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 03:36:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2619C08C5CE
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 00:36:55 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f2so1216789wrp.7
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 00:36:55 -0700 (PDT)
+        with ESMTP id S1726006AbgGIHkM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 03:40:12 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84561C061A0B
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 00:40:12 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id y10so1271453eje.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 00:40:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KKtQly4ao6B6nwRWEDkHlPwVhDZwmTFzlBzK230IGUs=;
-        b=q1a8xJM/Q9Wj785BtNlEuDFVR1eQk54JebnUrlGorLvEHVMtqdFOuaGKrTYCsphJ1h
-         jdn7d6bEOoYqm6Dc8k5LjNzJMPs7sqOYl93W/0yr7CIrm1h2/Lv3g+fhNpsEY21yKMZh
-         ju/lEovQ160zqDVi53k34kcqcJLZdTHFacxSS0a8W4cpfdDptcuxHSPlubyxOMMuaSBC
-         zAyYruzxGOJbmMUqmjN2Chf/XWhBZgAcu1tmI7ShCPPddj04M/M8Yf8LAduuKxgJQlTV
-         rIzd0KYtUf5G7qRV/73bX9CHJ9uhQaanPFGitTqRJCgzv1EMfeBg/7UHJHVTRmYqPihB
-         A8cg==
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CuRebjxaWGPl8OYcv/lw0tglT7YFwjGd4qsQqyYClo4=;
+        b=IaDPKQwp7aOZC5/v2XaAOBhOHts2n5oBUbCJa44CmX80FR2UIdJQHKE0TXNFucBCxp
+         EQKz2cVY0OBSGlX3TRvNV2UbGEK3a2Grh2yA8xgk3mpOW8PGJJF23QcBvhsymIjrXxyE
+         V6o60Vk2DeZL49aMFoKvSbbBBGkk1ViafC2mTQGMSMXlk2Nm3HvR+iBr2+jhd9v0T1mS
+         Yzd4avNeZvA0LHVu93b11hjlbpNyuoHY3JTImoe4+f9Wz9BejEaFOxyrx3f94U3br+RH
+         2kukP6SOrppPaKz2DhN8NDhz2WzdlripUtTSTklBkNGA491xl5X450MRE8sCTSK/y+vb
+         TGkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KKtQly4ao6B6nwRWEDkHlPwVhDZwmTFzlBzK230IGUs=;
-        b=CaSPvT6cPOl7vsy0mjW+VbQKpXQGo7GKy16cGKrslpaZrSXzpmaXOV2GcdHlSmhfEs
-         0If9caun9pwvrc+RLVx2WFnwVtJDlPCAgTPfEc/U8EA4uWAi3Tm1kDD0iUUyZPcVuab6
-         LhWhEwBP/9plVvfdr1hJ86/fh45bcWuCfjm/C37kvfvo3UuNFb7n3381Uh1BxeJ5xBlp
-         aPDmnQXDAH6maixTfBrWTXV1/rL24Kp2KDKTSZTHELk8DxLZcKXOfAL5/BpCoFBYRfV8
-         TP9fRRy50d5E/OEN0tOAkeQdOh2yK2VNZM93KrQpCai5eTWkRXgNNmeyMgCwBG7gFacW
-         V4aw==
-X-Gm-Message-State: AOAM532UF6w/kUuB9yLzPew6twQPXpOM/7zy2cLEVMbWF6hEly50dDsO
-        PH4NekKdYsuBvBmYuX8PtnCtSZaBkccNDSA5eKc5kQ==
-X-Google-Smtp-Source: ABdhPJwOIE8GoaZZk1aSRinMLKGhWIbTpQIZ0IBDLoLaRN5k6dzJvrX8BOXeDjMLQXA3ybdstuq5y6Y6MSCOm3lN/7s=
-X-Received: by 2002:adf:f9c8:: with SMTP id w8mr60764235wrr.354.1594280214366;
- Thu, 09 Jul 2020 00:36:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CuRebjxaWGPl8OYcv/lw0tglT7YFwjGd4qsQqyYClo4=;
+        b=P4KWgTT50um1EXT+UwYu+ClkFHE8ux0drE4BqLj6R3R/cgae14agwYaxhzsuJWKTHM
+         wgKdcfWdX24OHohTMIXEplSk+wGqW/F50qT/6o7bTBH2TDMC5A91u0qS1q9FFnB6FgjX
+         2RRIFpd+FKPugumsQorNnQPX+O6UAFAhcanHxslwJViUpLLvq8+770eELFfFxp/V4Uwu
+         irk5DzR7PmmaHE9U4pTK9KqiRp3VzOOeZR0IXhCWKb528lrjsLfwh/qAd/LIlLRsJZ8E
+         UZkXVJaZYmbnmpmseq13f1Kg3jDjy1fOeyG/0JAzJ3rNqgMcfrezVzAo18APU7QqOjaX
+         916Q==
+X-Gm-Message-State: AOAM533YyzXYbKzdqkh4oHxxXUuynruQw9YmSlVoJnTSajJ9pNmKxFbg
+        s2bPTk3gcIua93LJv8Wi8f+Etg==
+X-Google-Smtp-Source: ABdhPJws2bfI6HytF+Dia+dN0EDohnSOFhZKzEidpKPYhh4xaahaoocAxfeBEVIt+Zh4yyuH9FO9aA==
+X-Received: by 2002:a17:906:8392:: with SMTP id p18mr58569317ejx.24.1594280411248;
+        Thu, 09 Jul 2020 00:40:11 -0700 (PDT)
+Received: from [10.0.0.57] ([141.226.209.119])
+        by smtp.googlemail.com with ESMTPSA id kt4sm1247257ejb.48.2020.07.09.00.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 00:40:10 -0700 (PDT)
+Subject: Re: [PATCH V1 rdma-core 00/13] verbs: Introduce import verbs for
+ device, PD, MR
+To:     linux-rdma@vger.kernel.org
+Cc:     Yishai Hadas <yishaih@mellanox.com>, jgg@mellanox.com,
+        maorg@mellanox.com
+References: <1593937189-8744-1-git-send-email-yishaih@mellanox.com>
+From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
+Message-ID: <0dcee502-85af-0876-f4ed-dc7601fa60d9@dev.mellanox.co.il>
+Date:   Thu, 9 Jul 2020 10:40:08 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200707201229.472834-1-daniel.vetter@ffwll.ch> <20200707201229.472834-4-daniel.vetter@ffwll.ch>
-In-Reply-To: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
-From:   Daniel Stone <daniel@fooishbar.org>
-Date:   Thu, 9 Jul 2020 08:36:43 +0100
-Message-ID: <CAPj87rO4mm-+sQbP07cgM8-=b6Q8Jbh5G0FsV8rwYx2hnEzPkA@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH 03/25] dma-buf.rst: Document why idenfinite
- fences are a bad idea
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1593937189-8744-1-git-send-email-yishaih@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+On 7/5/2020 11:19 AM, Yishai Hadas wrote:
+> This series Introduces import verbs for device, PD, MR which enables processes
+> to share their ibv_context and then share PD(s) and MR(s) that are associated
+> with.
+> 
+> This functionality enables utilizing and optimizing some application flows, few
+> examples below.
+> 
+> Any solution which is a single business logic based on multi-process design
+> needs this. Example include NGINX, with TCP load balancing, sharing the RSS
+> indirection table with RQ per process. HPC frameworks with multi-rank (process)
+> solution on single hosts. UCX can share IB resources using the shared PD and
+> can help dispatch data to multiple processes/MR's in single RDMA operation.
+> Also, there are use cases when a primary processes registered a large shared
+> memory range, and each worker process spawned will create a private QP on the
+> shared PD, and use the shared MR to save the registration time per-process.
+> 
+> As part of this series was added also some pyverbs stuff to support and
+> demonstrate some usage of the APIs.
+> 
+> The verbs APIs were introduced in the mailing list by the below RFC [1], the
+> matching kernel series was sent to rdma-next,
+> 
+> PR: https://github.com/linux-rdma/rdma-core/pull/776
+> [1] https://patchwork.kernel.org/patch/11540665/
+> 
+> Changes from V0:
+> - Replace ordering of patches #3 and #4 to prevent incomplete functionality.
+> - Added some note as part of ibv_import_device() to explain why it's safe
+>    for dissociated flow.
+> - Improve man pages in some places.
+> - Drop the IOVA attribute setting which was not really in use.
+> - Fix some style notes.
+> - Refer in commit messages to ioctl command instead of KABI.
+> 
+> Yishai
+> 
+> Edward Srouji (3):
+>    pyverbs: Support verbs import APIs
+>    Documentation: Add usage example for verbs import
+>    tests: Add a shared PD Pyverbs test
+> 
+> Yishai Hadas (10):
+>    Update kernel headers
+>    verbs: Close async_fd only when it was previously created
+>    verbs: Enhance async FD usage
+>    verbs: Introduce ibv_import_device() verb
+>    mlx5: Refactor mlx5_alloc_context()
+>    mlx5: Implement the import device functionality
+>    verbs: Introduce ibv_import/unimport_pd() verbs
+>    mlx5: Implement the import/unimport PD verbs
+>    verbs: Introduce ibv_import/unimport_mr() verbs
+>    mlx5: Implement the import/unimport MR verbs
+> 
+>   Documentation/pyverbs.md                   |  40 ++++
+>   debian/libibverbs1.symbols                 |   5 +
+>   kernel-headers/rdma/ib_user_ioctl_cmds.h   |  15 ++
+>   kernel-headers/rdma/mlx5_user_ioctl_cmds.h |  14 ++
+>   kernel-headers/rdma/rdma_netlink.h         |   8 +
+>   kernel-headers/rdma/rdma_user_ioctl_cmds.h |   2 +-
+>   libibverbs/cmd_cq.c                        |   9 +-
+>   libibverbs/cmd_device.c                    |  32 ++-
+>   libibverbs/cmd_mr.c                        |  31 +++
+>   libibverbs/cmd_qp.c                        |   4 +
+>   libibverbs/cmd_srq.c                       |   4 +
+>   libibverbs/cmd_wq.c                        |   4 +
+>   libibverbs/device.c                        |  73 ++++++-
+>   libibverbs/driver.h                        |  14 ++
+>   libibverbs/dummy_ops.c                     |  30 +++
+>   libibverbs/ibverbs.h                       |   1 +
+>   libibverbs/libibverbs.map.in               |   7 +
+>   libibverbs/man/CMakeLists.txt              |   5 +
+>   libibverbs/man/ibv_import_device.3.md      |  48 +++++
+>   libibverbs/man/ibv_import_mr.3.md          |  64 ++++++
+>   libibverbs/man/ibv_import_pd.3.md          |  59 ++++++
+>   libibverbs/verbs.c                         |  30 +++
+>   libibverbs/verbs.h                         |  26 +++
+>   providers/mlx5/mlx5.c                      | 319 ++++++++++++++++++-----------
+>   providers/mlx5/mlx5.h                      |   6 +
+>   providers/mlx5/verbs.c                     |  78 ++++++-
+>   pyverbs/device.pyx                         |  12 +-
+>   pyverbs/libibverbs.pxd                     |   5 +
+>   pyverbs/mr.pxd                             |   1 +
+>   pyverbs/mr.pyx                             |  60 +++++-
+>   pyverbs/pd.pxd                             |   1 +
+>   pyverbs/pd.pyx                             |  37 +++-
+>   tests/CMakeLists.txt                       |   1 +
+>   tests/base.py                              |  11 +-
+>   tests/test_shared_pd.py                    |  95 +++++++++
+>   35 files changed, 999 insertions(+), 152 deletions(-)
+>   create mode 100644 libibverbs/man/ibv_import_device.3.md
+>   create mode 100644 libibverbs/man/ibv_import_mr.3.md
+>   create mode 100644 libibverbs/man/ibv_import_pd.3.md
+>   create mode 100644 tests/test_shared_pd.py
+> 
 
-On Tue, 7 Jul 2020 at 21:13, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> Comes up every few years, gets somewhat tedious to discuss, let's
-> write this down once and for all.
+The PR was merged.
 
-Thanks for writing this up! I wonder if any of the notes from my reply
-to the previous-version thread would be helpful to more explicitly
-encode the carrot of dma-fence's positive guarantees, rather than just
-the stick of 'don't do this'. ;) Either way, this is:
-Acked-by: Daniel Stone <daniels@collabora.com>
-
-> What I'm not sure about is whether the text should be more explicit in
-> flat out mandating the amdkfd eviction fences for long running compute
-> workloads or workloads where userspace fencing is allowed.
-
-... or whether we just say that you can never use dma-fence in
-conjunction with userptr.
-
-Cheers,
-Daniel
+Thanks,
+Yishai
