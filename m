@@ -2,140 +2,294 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CC4219A38
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 09:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18C9219A57
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 10:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgGIHwV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Jul 2020 03:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
+        id S1726193AbgGIIBi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Jul 2020 04:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgGIHwV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 03:52:21 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DDFC061A0B
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 00:52:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so1288140wrp.2
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 00:52:20 -0700 (PDT)
+        with ESMTP id S1726116AbgGIIBh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 04:01:37 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED0BC061A0B
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 01:01:37 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l2so852945wmf.0
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 01:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vXgT6RRirIs9vOBxNCexqhs644sbUqmDyiATQNLIZbg=;
-        b=Icl1ZFwM/BdAnsf8QEusvKajGxL6WtxrEVa6WVdvI0tXEJu+yGu+Tl1+T+Lq9+Ltfx
-         di7HE1NfD4T165TQhEz0gJRB8zahiuPoX1NT8Y3az+zqO2iQBJbIilY17qjFmJymrNXu
-         Qv5/nR4nRnQ9Ht2scGKvCZAsXkwg4z4Ch2M5c=
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wPEKO17fBNbXJyPSCAVpwUnC3PkfwFuxmEDaZ9gwODo=;
+        b=H9Mg8FF/C3LejA1hSHhUetOBUTIDTpSQIJoqn2yAMPVkKoZwkVVSnXxB0k22MA7EKV
+         unF65oIKPw4Uiu5g/Anh5f7g+PDmRby9oCmbsOHB9YBDpPvS9FJ3ECNosCV6GygY4MLd
+         ttqarB8Aua7ulT3McqvtlQbVICIpBzvT/zyFc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=vXgT6RRirIs9vOBxNCexqhs644sbUqmDyiATQNLIZbg=;
-        b=cNqbl7C5WbLd+8MeUo9NhL/tCGiAqN88Z7NufZ1tvw45B119oRTM69ALEaBKe+jWC8
-         kfruuI/mGBJKBwmKAfxsXWOq2t7/CrLLDpqtg9/e07r+BEIsNrDLCKkC9F6EmbudjGJy
-         ebqLr4tp1h1gPZ0Tep6Twa06z4PWnWD820x0wIbMiaxrNGqh/4CmUD8W+xgyle1pDavF
-         /PFAUH/mFME+zAM6TUf+jnqoloZSTEZql4qES/+YhptUoHxAnsjG40s4rnTKhaZq8MI5
-         GlnntBz6PF8JK92NpLb56PWz+rS2kif2SXtQtrzHXoSJf57/l8baQm8m74sukzWUONEh
-         oBuA==
-X-Gm-Message-State: AOAM532QKxcc1K5lKmFEcYNYi10yWI6p+kVRe1OTSkETQ6AJ1yN2P48l
-        2or3/+69q6wwQB+cPNsZB976dw==
-X-Google-Smtp-Source: ABdhPJzMhhfOQP1SZlv1tfEvaf51xgSXmeFIfxfR93qhGPvCNOG/Wm/4jNQxGEgUdKBWYOlZaCggsw==
-X-Received: by 2002:a5d:55d1:: with SMTP id i17mr59080956wrw.190.1594281139547;
-        Thu, 09 Jul 2020 00:52:19 -0700 (PDT)
+        bh=wPEKO17fBNbXJyPSCAVpwUnC3PkfwFuxmEDaZ9gwODo=;
+        b=PuNmlC6N9XxVF/2wmuUDQahrnbEsWeEeMwvezwOM5BZEny203ysOJqoKXX7uwL483F
+         EkAK5yA78y3o2ty0U0zBh1I+JQHXVvtwodwQ7ExrNeD+2lvvHWfMYLhGpARiqUx0A6ZW
+         VHYsK+6KoWu4TJtFsO15AorC+WjyXEvbfso4zX43cHWNcR59ydPQbHe+C9dhivij7UAI
+         MKvh/TJ/QxPD+i+C5qGfNfXYhov0I5x8t/ahq83IGxl3xnSzIBmCr+Ze0csy+Anlc5sa
+         WepKQpE/8BLjpIe+i60sx9yS4RRAT+M7YUVsJwWMGhffO6E/2RLtRD3ou/i4CMhej9Fb
+         G+wg==
+X-Gm-Message-State: AOAM5336AdhvztvVP/hn/2/bRAQrS2hmYxKPsn9oF/0ej8IRt5TwZYkZ
+        5nlVtFcRoYaYV+mnYGlmcCLJpA==
+X-Google-Smtp-Source: ABdhPJxaGar9wBX5KuatHiiRZfnlQdi0Nr0flZvS0LRfCmwQgqjIK2KzG5SZr4KXVx+roe0qP8KQrw==
+X-Received: by 2002:a1c:9650:: with SMTP id y77mr12826424wmd.101.1594281696018;
+        Thu, 09 Jul 2020 01:01:36 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f16sm3433990wmf.17.2020.07.09.00.52.18
+        by smtp.gmail.com with ESMTPSA id j16sm4220057wrt.7.2020.07.09.01.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 00:52:18 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 09:52:16 +0200
+        Thu, 09 Jul 2020 01:01:35 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 10:01:33 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Daniel Stone <daniel@fooishbar.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
         linux-rdma <linux-rdma@vger.kernel.org>,
         Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         DRI Development <dri-devel@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
         "moderated list:DMA BUFFER SHARING FRAMEWORK" 
         <linaro-mm-sig@lists.linaro.org>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 01/25] dma-fence: basic lockdep annotations
-Message-ID: <20200709075216.GM3278063@phenom.ffwll.local>
-References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
- <20200707201229.472834-2-daniel.vetter@ffwll.ch>
- <20c0a95b-8367-4f26-d058-1cb265255283@amd.com>
- <CAKMK7uFe7Pz4=UUkkunBms8vUrzwEpWJmScOMLO4KdADM43vnw@mail.gmail.com>
- <CAPj87rNXneE+Vry4aSV11=Qv2mbUsFjCLmNzRmx-Oeqj=u9dyw@mail.gmail.com>
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [Intel-gfx] [PATCH 03/18] dma-fence: basic lockdep annotations
+Message-ID: <20200709080133.GN3278063@phenom.ffwll.local>
+Mail-Followup-To: Daniel Stone <daniel@fooishbar.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
+ <20200604081224.863494-4-daniel.vetter@ffwll.ch>
+ <159186243606.1506.4437341616828968890@build.alporthouse.com>
+ <CAPM=9ty6r1LuXAH_rf98GH0R9yN3x8xzKPjZG3QyvokpQBR-Hg@mail.gmail.com>
+ <CAPj87rM0S2OPssf+WA+pjanT-0Om3yuUM1zUJCv4qTx5VYE=Fw@mail.gmail.com>
+ <159255511144.7737.12635440776531222029@build.alporthouse.com>
+ <CAKMK7uHEwj6jiZkRZ5PaCUNWcuU9oE4KYm4XHZwHnFzEuChZ7w@mail.gmail.com>
+ <159255801588.7737.4425728073225310839@build.alporthouse.com>
+ <20200619094309.GT20149@phenom.ffwll.local>
+ <CAPj87rOMzBUBWv7kJRvbX3tor-v=3=ZuGeRu0Ws8BOJ=OxX3XA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPj87rNXneE+Vry4aSV11=Qv2mbUsFjCLmNzRmx-Oeqj=u9dyw@mail.gmail.com>
+In-Reply-To: <CAPj87rOMzBUBWv7kJRvbX3tor-v=3=ZuGeRu0Ws8BOJ=OxX3XA@mail.gmail.com>
 X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 08:32:41AM +0100, Daniel Stone wrote:
+On Thu, Jul 09, 2020 at 08:29:21AM +0100, Daniel Stone wrote:
 > Hi,
+> Jumping in after a couple of weeks where I've paged most everything
+> out of my brain ...
 > 
-> On Wed, 8 Jul 2020 at 16:13, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > On Wed, Jul 8, 2020 at 4:57 PM Christian König <christian.koenig@amd.com> wrote:
-> > > Could we merge this controlled by a separate config option?
+> On Fri, 19 Jun 2020 at 10:43, Daniel Vetter <daniel@ffwll.ch> wrote:
+> > On Fri, Jun 19, 2020 at 10:13:35AM +0100, Chris Wilson wrote:
+> > > > The proposed patches might very well encode the wrong contract, that's
+> > > > all up for discussion. But fundamentally questioning that we need one
+> > > > is missing what upstream is all about.
 > > >
-> > > This way we could have the checks upstream without having to fix all the
-> > > stuff before we do this?
+> > > Then I have not clearly communicated, as my opinion is not that
+> > > validation is worthless, but that the implementation is enshrining a
+> > > global property on a low level primitive that prevents it from being
+> > > used elsewhere. And I want to replace completion [chains] with fences, and
+> > > bio with fences, and closures with fences, and what other equivalencies
+> > > there are in the kernel. The fence is as central a locking construct as
+> > > struct completion and deserves to be a foundational primitive provided
+> > > by kernel/ used throughout all drivers for discrete problem domains.
+> > >
+> > > This is narrowing dma_fence whereby adding
+> > >       struct lockdep_map *dma_fence::wait_map
+> > > and annotating linkage, allows you to continue to specify that all
+> > > dma_fence used for a particular purpose must follow common rules,
+> > > without restricting the primitive for uses outside of this scope.
 > >
-> > Since it's fully opt-in annotations nothing blows up if we don't merge
-> > any annotations. So we could start merging the first 3 patches. After
-> > that the fun starts ...
+> > Somewhere else in this thread I had discussions with Jason Gunthorpe about
+> > this topic. It might maybe change somewhat depending upon exact rules, but
+> > his take is very much "I don't want dma_fence in rdma". Or pretty close to
+> > that at least.
 > >
-> > My rough idea was that first I'd try to tackle display, thus far
-> > there's 2 actual issues in drivers:
-> > - amdgpu has some dma_resv_lock in commit_tail, plus a kmalloc. I
-> > think those should be fairly easy to fix (I'd try a stab at them even)
-> > - vmwgfx has a full on locking inversion with dma_resv_lock in
-> > commit_tail, and that one is functional. Not just reading something
-> > which we can safely assume to be invariant anyway (like the tmz flag
-> > for amdgpu, or whatever it was).
+> > Similar discussions with habanalabs, they're using dma_fence internally
+> > without any of the uapi. Discussion there has also now concluded that it's
+> > best if they remove them, and simply switch over to a wait_queue or
+> > completion like every other driver does.
 > >
-> > I've done a pile more annotations patches for other atomic drivers
-> > now, so hopefully that flushes out any remaining offenders here. Since
-> > some of the annotations are in helper code worst case we might need a
-> > dev->mode_config.broken_atomic_commit flag to disable them. At least
-> > for now I have 0 plans to merge any of these while there's known
-> > unsolved issues. Maybe if some drivers take forever to get fixed we
-> > can then apply some duct-tape for the atomic helper annotation patch.
-> > Instead of a flag we can also copypasta the atomic_commit_tail hook,
-> > leaving the annotations out and adding a huge warning about that.
+> > The next round of the patches already have a paragraph to at least
+> > somewhat limit how non-gpu drivers use dma_fence. And I guess actual
+> > consensus might be pointing even more strongly at dma_fence being solely
+> > something for gpus and closely related subsystem (maybe media) for syncing
+> > dma-buf access.
+> >
+> > So dma_fence as general replacement for completion chains I think just
+> > wont happen.
+> >
+> > What might make sense is if e.g. the lockdep annotations could be reused,
+> > at least in design, for wait_queue or completion or anything else
+> > really. I do think that has a fair chance compared to the automagic
+> > cross-release annotations approach, which relied way too heavily on
+> > guessing where barriers are. My experience from just a bit of playing
+> > around with these patches here and discussing them with other driver
+> > maintainers is that accurately deciding where critical sections start and
+> > end is a job for humans only. And if you get it wrong, you will have a
+> > false positive.
+> >
+> > And you're indeed correct that if we'd do annotations for completions and
+> > wait queues, then that would need to have a class per semantically
+> > equivalent user, like we have lockdep classes for mutexes, not just one
+> > overall.
+> >
+> > But dma_fence otoh is something very specific, which comes with very
+> > specific rules attached - it's not a generic wait_queue at all. Originally
+> > it did start out as one even, but it is a very specialized wait_queue.
+> >
+> > So there's imo two cases:
+> >
+> > - Your completion is entirely orthogonal of dma_fences, and can never ever
+> >   block a dma_fence. Don't use dma_fence for this, and no problem. It's
+> >   just another wait_queue somewhere.
+> >
+> > - Your completion can eventually, maybe through lots of convolutions and
+> >   depdencies, block a dma_fence. In that case full dma_fence rules apply,
+> >   and the only thing you can do with a custom annotation is make the rules
+> >   even stricter. E.g. if a sub-timeline in the scheduler isn't allowed to
+> >   take certain scheduler locks. But the userspace visible/published fence
+> >   do take them, maybe as part of command submission or retirement.
+> >   Entirely hypotethical, no idea any driver actually needs this.
 > 
-> How about an opt-in drm_driver DRIVER_DEADLOCK_HAPPY flag? At first
-> this could just disable the annotations and nothing else, but as we
-> see the annotations gaining real-world testing and maturity, we could
-> eventually make it taint the kernel.
+> I don't claim to understand the implementation of i915's scheduler and
+> GEM handling, and it seems like there's some public context missing
+> here. But to me, the above is a good statement of what I (and a lot of
+> other userspace) have been relying on - that dma-fence is a very
+> tightly scoped thing which is very predictable but in extremis.
+> 
+> It would be great to have something like this enshrined in dma-fence
+> documentation, visible to both kernel and external users. The
+> properties we've so far been assuming for the graphics pipeline -
+> covering production & execution of vertex/fragment workloads on the
+> GPU, framebuffer display, and to the extent this is necessary
+> involving compute - are something like this:
+> 
+> A single dma-fence with no dependencies represents (the tail of) a
+> unit of work, which has been all but committed to the hardware. Once
+> committed to the hardware, this work will complete (successfully or in
+> error) in bounded time. The unit of work referred to by a dma-fence
+> may carry dependencies on other dma-fences, which must of course be
+> subject to the same restrictions as above. No action from any
+> userspace component is required to ensure that the completion occurs.
+> 
+> The cases I know of which legitimately blow holes in this are:
+>   - the work is scheduled but GPU execution resource contention
+> prevents it from completion, e.g. something on a higher-priority
+> context repeatedly gets scheduled in front of it - this is OK because
+> by definition it's what should happen
+>   - the work is scheduled but CPU execution resource contention
+> prevents it from completion, e.g. the DRM scheduler does not get to
+> trigger the hardware to execute the work - this is OK because at this
+> point we have a big system-wide problem
+>   - the work is scheduled but non-execution resource contention
+> prevents it from making progress, e.g. VRAM contention and/or a paging
+> storm - this is OK because again we have a larger problem here and we
+> can't reasonably expect the driver to solve this
+>   - the work is executed but execution does not complete due to the
+> nature of the work, e.g. a chain of work contains a hostile compute
+> shader which does not complete in any reasonable time - this is OK
+> because we require TDR; even without a smart compositor detecting
+> based on fence waits that the work is unsuitable and should not hold
+> up other work, the driver will probably ban the context and lock it
+> out anyway
+> 
+> The first three are general system resource-overload cases, no
+> different from the CPU-side equivalent where it's up to the admin to
+> impose ulimits to prevent forkbombs or runaway memory usage, or up to
+> the user to run fewer Electron apps. The last one is more difficult,
+> because we can't solve the halting problem to know ahead of time that
+> the user has submitted an infinite workload, so we have to live with
+> that as a real hazard and mitigate it where we can (by returning -EIO
+> and killing the app from inside Mesa).
+> 
+> If repurposing dma-fence for non-graphics uses (like general-purpose
+> compute or driver-internal tracking for things other than GPU
+> workloads) makes it more difficult to guarantee the above properties,
+> then I don't want to do it. Maybe the answer is that dma-fence gets
+> split into its core infrastructure which can be used for completion
+> chains, with actual dma-fence being layered above generic completion
+> APIs: other-completion-API can consume fences, but fences _cannot_
+> consume non-fence things.
+> 
+> This does force a split between graphics (GL/Vulkan/display) workloads
+> and compute (CL/oneAPI/HSA/CUDA), which I get is really difficult to
+> resolve in the driver. But the two are hard split anyway: graphics
+> requires upfront and explicit buffer management, in return dangling
+> the carrot that you can pipeline your workloads and expect completion
+> in reasonable time. General-purpose compute lets you go far more YOLO
+> on resource access, including full userptr SVM, but the flipside is
+> that your execution time might be measured in weeks; as a result you
+> don't get to do execution pipelining because even if you could, it's
+> not a big enough win relative to your execution time to be worth the
+> extra driver and system complexity. I don't think there's a reasonable
+> lowest common denominator between the two that we can try to reuse a
+> generic model for both, because you make too many compromises to try
+> to fit conflicting interests.
+> 
+> In the pre-syncobj days, we did look at what we called 'empty fences'
+> or 'future fences' with the ChromeOS team: a synchronisation object
+> which wasn't backed by a promise of completion as dma-fence is, but
+> instead by the meta-promise (from userspace) of a promise of
+> completion. Ultimately it never became a real thing for the same
+> reason that swsync isn't either; it needed so much special-case
+> handling and so many disclaimers and opt-ins everywhere that by the
+> end, we weren't sure why we were trying to shoehorn it into dma-fence
+> apart from dma-fence already existing - but by removing all its
+> guarantees, we also removed all its usefulness as a primitive.
 
-You can do that pretty much per-driver, since the annotations are pretty
-much per-driver. No annotations in your code, no lockdep splat. Only if
-there's some dma_fence_begin/end_signalling() calls is there even the
-chance of a problem.
+New series has a patch which tries to at least somewhat summarize this
+entire problem, and why it just doesn't work. Doesn't contain yet the full
+proposed solution, but maybe that's best for a follow-up patch. Anyway
+probably best if we poke holes at that text there.
 
-E.g. this round has the i915 patch dropped and *traraaaa* intel-gfx-ci is
-happy (or well at least a lot happier, there's some noise in there that's
-probably not from my stuff).
+Between the preepmt ctx fence in amdgpu and userspace fences or gpu futex
+or whatever you want to call it, I do think we can make the compute side
+happy. The sad puppy face comes a bit from vulkan, since vulkan would
+really like the same execution model, but because it needs to integrate
+with the overall dma-fence based compositor stack, it can't.
 
-So I guess if amd wants this, we could do an DRM_AMDGPU_MOAR_LOCKDEP
-Kconfig or similar. I haven't tested, but I think as long as we don't
-merge any of the amdgpu specific patches, there's no splat in amdgpu. So
-with that I think that's plenty enough opt-in for each driver. The only
-problem is a bit shared helper code like atomic helpers and drm scheduler.
-There we might need some opt-out (I don't think merging makes sense when
-most of the users are still broken).
+I think even that is solveable, if we have vulkan-based compositors and a
+completely new set of protocols and uapi from client all the way down to
+display. That makes it about as bad as a flag day as atomic+modifiers.
+
+Also the only reason why the kms driver can then suddenly import a
+userspace fence, while nothing else in the kernel can allow such
+dependencies is fairly simple: Framebuffers are pinned, which breaks the
+dependency loops in the memory manager, and so avoids all the troubles in
+a slightly different form.
+
+And of course we'd need a timeout in case userspace just screwed up
+somehow.
 -Daniel
+
+> 
+> Cheers,
+> Daniel
+
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
