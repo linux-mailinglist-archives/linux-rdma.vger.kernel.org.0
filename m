@@ -2,170 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BED219A25
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 09:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CC4219A38
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jul 2020 09:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgGIHkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Jul 2020 03:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        id S1726194AbgGIHwV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Jul 2020 03:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgGIHkM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 03:40:12 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84561C061A0B
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 00:40:12 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id y10so1271453eje.1
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 00:40:12 -0700 (PDT)
+        with ESMTP id S1726183AbgGIHwV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jul 2020 03:52:21 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DDFC061A0B
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Jul 2020 00:52:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z2so1288140wrp.2
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jul 2020 00:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CuRebjxaWGPl8OYcv/lw0tglT7YFwjGd4qsQqyYClo4=;
-        b=IaDPKQwp7aOZC5/v2XaAOBhOHts2n5oBUbCJa44CmX80FR2UIdJQHKE0TXNFucBCxp
-         EQKz2cVY0OBSGlX3TRvNV2UbGEK3a2Grh2yA8xgk3mpOW8PGJJF23QcBvhsymIjrXxyE
-         V6o60Vk2DeZL49aMFoKvSbbBBGkk1ViafC2mTQGMSMXlk2Nm3HvR+iBr2+jhd9v0T1mS
-         Yzd4avNeZvA0LHVu93b11hjlbpNyuoHY3JTImoe4+f9Wz9BejEaFOxyrx3f94U3br+RH
-         2kukP6SOrppPaKz2DhN8NDhz2WzdlripUtTSTklBkNGA491xl5X450MRE8sCTSK/y+vb
-         TGkA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vXgT6RRirIs9vOBxNCexqhs644sbUqmDyiATQNLIZbg=;
+        b=Icl1ZFwM/BdAnsf8QEusvKajGxL6WtxrEVa6WVdvI0tXEJu+yGu+Tl1+T+Lq9+Ltfx
+         di7HE1NfD4T165TQhEz0gJRB8zahiuPoX1NT8Y3az+zqO2iQBJbIilY17qjFmJymrNXu
+         Qv5/nR4nRnQ9Ht2scGKvCZAsXkwg4z4Ch2M5c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CuRebjxaWGPl8OYcv/lw0tglT7YFwjGd4qsQqyYClo4=;
-        b=P4KWgTT50um1EXT+UwYu+ClkFHE8ux0drE4BqLj6R3R/cgae14agwYaxhzsuJWKTHM
-         wgKdcfWdX24OHohTMIXEplSk+wGqW/F50qT/6o7bTBH2TDMC5A91u0qS1q9FFnB6FgjX
-         2RRIFpd+FKPugumsQorNnQPX+O6UAFAhcanHxslwJViUpLLvq8+770eELFfFxp/V4Uwu
-         irk5DzR7PmmaHE9U4pTK9KqiRp3VzOOeZR0IXhCWKb528lrjsLfwh/qAd/LIlLRsJZ8E
-         UZkXVJaZYmbnmpmseq13f1Kg3jDjy1fOeyG/0JAzJ3rNqgMcfrezVzAo18APU7QqOjaX
-         916Q==
-X-Gm-Message-State: AOAM533YyzXYbKzdqkh4oHxxXUuynruQw9YmSlVoJnTSajJ9pNmKxFbg
-        s2bPTk3gcIua93LJv8Wi8f+Etg==
-X-Google-Smtp-Source: ABdhPJws2bfI6HytF+Dia+dN0EDohnSOFhZKzEidpKPYhh4xaahaoocAxfeBEVIt+Zh4yyuH9FO9aA==
-X-Received: by 2002:a17:906:8392:: with SMTP id p18mr58569317ejx.24.1594280411248;
-        Thu, 09 Jul 2020 00:40:11 -0700 (PDT)
-Received: from [10.0.0.57] ([141.226.209.119])
-        by smtp.googlemail.com with ESMTPSA id kt4sm1247257ejb.48.2020.07.09.00.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2020 00:40:10 -0700 (PDT)
-Subject: Re: [PATCH V1 rdma-core 00/13] verbs: Introduce import verbs for
- device, PD, MR
-To:     linux-rdma@vger.kernel.org
-Cc:     Yishai Hadas <yishaih@mellanox.com>, jgg@mellanox.com,
-        maorg@mellanox.com
-References: <1593937189-8744-1-git-send-email-yishaih@mellanox.com>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <0dcee502-85af-0876-f4ed-dc7601fa60d9@dev.mellanox.co.il>
-Date:   Thu, 9 Jul 2020 10:40:08 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vXgT6RRirIs9vOBxNCexqhs644sbUqmDyiATQNLIZbg=;
+        b=cNqbl7C5WbLd+8MeUo9NhL/tCGiAqN88Z7NufZ1tvw45B119oRTM69ALEaBKe+jWC8
+         kfruuI/mGBJKBwmKAfxsXWOq2t7/CrLLDpqtg9/e07r+BEIsNrDLCKkC9F6EmbudjGJy
+         ebqLr4tp1h1gPZ0Tep6Twa06z4PWnWD820x0wIbMiaxrNGqh/4CmUD8W+xgyle1pDavF
+         /PFAUH/mFME+zAM6TUf+jnqoloZSTEZql4qES/+YhptUoHxAnsjG40s4rnTKhaZq8MI5
+         GlnntBz6PF8JK92NpLb56PWz+rS2kif2SXtQtrzHXoSJf57/l8baQm8m74sukzWUONEh
+         oBuA==
+X-Gm-Message-State: AOAM532QKxcc1K5lKmFEcYNYi10yWI6p+kVRe1OTSkETQ6AJ1yN2P48l
+        2or3/+69q6wwQB+cPNsZB976dw==
+X-Google-Smtp-Source: ABdhPJzMhhfOQP1SZlv1tfEvaf51xgSXmeFIfxfR93qhGPvCNOG/Wm/4jNQxGEgUdKBWYOlZaCggsw==
+X-Received: by 2002:a5d:55d1:: with SMTP id i17mr59080956wrw.190.1594281139547;
+        Thu, 09 Jul 2020 00:52:19 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f16sm3433990wmf.17.2020.07.09.00.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 00:52:18 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 09:52:16 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Daniel Stone <daniel@fooishbar.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 01/25] dma-fence: basic lockdep annotations
+Message-ID: <20200709075216.GM3278063@phenom.ffwll.local>
+References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
+ <20200707201229.472834-2-daniel.vetter@ffwll.ch>
+ <20c0a95b-8367-4f26-d058-1cb265255283@amd.com>
+ <CAKMK7uFe7Pz4=UUkkunBms8vUrzwEpWJmScOMLO4KdADM43vnw@mail.gmail.com>
+ <CAPj87rNXneE+Vry4aSV11=Qv2mbUsFjCLmNzRmx-Oeqj=u9dyw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1593937189-8744-1-git-send-email-yishaih@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPj87rNXneE+Vry4aSV11=Qv2mbUsFjCLmNzRmx-Oeqj=u9dyw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/5/2020 11:19 AM, Yishai Hadas wrote:
-> This series Introduces import verbs for device, PD, MR which enables processes
-> to share their ibv_context and then share PD(s) and MR(s) that are associated
-> with.
+On Thu, Jul 09, 2020 at 08:32:41AM +0100, Daniel Stone wrote:
+> Hi,
 > 
-> This functionality enables utilizing and optimizing some application flows, few
-> examples below.
+> On Wed, 8 Jul 2020 at 16:13, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > On Wed, Jul 8, 2020 at 4:57 PM Christian König <christian.koenig@amd.com> wrote:
+> > > Could we merge this controlled by a separate config option?
+> > >
+> > > This way we could have the checks upstream without having to fix all the
+> > > stuff before we do this?
+> >
+> > Since it's fully opt-in annotations nothing blows up if we don't merge
+> > any annotations. So we could start merging the first 3 patches. After
+> > that the fun starts ...
+> >
+> > My rough idea was that first I'd try to tackle display, thus far
+> > there's 2 actual issues in drivers:
+> > - amdgpu has some dma_resv_lock in commit_tail, plus a kmalloc. I
+> > think those should be fairly easy to fix (I'd try a stab at them even)
+> > - vmwgfx has a full on locking inversion with dma_resv_lock in
+> > commit_tail, and that one is functional. Not just reading something
+> > which we can safely assume to be invariant anyway (like the tmz flag
+> > for amdgpu, or whatever it was).
+> >
+> > I've done a pile more annotations patches for other atomic drivers
+> > now, so hopefully that flushes out any remaining offenders here. Since
+> > some of the annotations are in helper code worst case we might need a
+> > dev->mode_config.broken_atomic_commit flag to disable them. At least
+> > for now I have 0 plans to merge any of these while there's known
+> > unsolved issues. Maybe if some drivers take forever to get fixed we
+> > can then apply some duct-tape for the atomic helper annotation patch.
+> > Instead of a flag we can also copypasta the atomic_commit_tail hook,
+> > leaving the annotations out and adding a huge warning about that.
 > 
-> Any solution which is a single business logic based on multi-process design
-> needs this. Example include NGINX, with TCP load balancing, sharing the RSS
-> indirection table with RQ per process. HPC frameworks with multi-rank (process)
-> solution on single hosts. UCX can share IB resources using the shared PD and
-> can help dispatch data to multiple processes/MR's in single RDMA operation.
-> Also, there are use cases when a primary processes registered a large shared
-> memory range, and each worker process spawned will create a private QP on the
-> shared PD, and use the shared MR to save the registration time per-process.
-> 
-> As part of this series was added also some pyverbs stuff to support and
-> demonstrate some usage of the APIs.
-> 
-> The verbs APIs were introduced in the mailing list by the below RFC [1], the
-> matching kernel series was sent to rdma-next,
-> 
-> PR: https://github.com/linux-rdma/rdma-core/pull/776
-> [1] https://patchwork.kernel.org/patch/11540665/
-> 
-> Changes from V0:
-> - Replace ordering of patches #3 and #4 to prevent incomplete functionality.
-> - Added some note as part of ibv_import_device() to explain why it's safe
->    for dissociated flow.
-> - Improve man pages in some places.
-> - Drop the IOVA attribute setting which was not really in use.
-> - Fix some style notes.
-> - Refer in commit messages to ioctl command instead of KABI.
-> 
-> Yishai
-> 
-> Edward Srouji (3):
->    pyverbs: Support verbs import APIs
->    Documentation: Add usage example for verbs import
->    tests: Add a shared PD Pyverbs test
-> 
-> Yishai Hadas (10):
->    Update kernel headers
->    verbs: Close async_fd only when it was previously created
->    verbs: Enhance async FD usage
->    verbs: Introduce ibv_import_device() verb
->    mlx5: Refactor mlx5_alloc_context()
->    mlx5: Implement the import device functionality
->    verbs: Introduce ibv_import/unimport_pd() verbs
->    mlx5: Implement the import/unimport PD verbs
->    verbs: Introduce ibv_import/unimport_mr() verbs
->    mlx5: Implement the import/unimport MR verbs
-> 
->   Documentation/pyverbs.md                   |  40 ++++
->   debian/libibverbs1.symbols                 |   5 +
->   kernel-headers/rdma/ib_user_ioctl_cmds.h   |  15 ++
->   kernel-headers/rdma/mlx5_user_ioctl_cmds.h |  14 ++
->   kernel-headers/rdma/rdma_netlink.h         |   8 +
->   kernel-headers/rdma/rdma_user_ioctl_cmds.h |   2 +-
->   libibverbs/cmd_cq.c                        |   9 +-
->   libibverbs/cmd_device.c                    |  32 ++-
->   libibverbs/cmd_mr.c                        |  31 +++
->   libibverbs/cmd_qp.c                        |   4 +
->   libibverbs/cmd_srq.c                       |   4 +
->   libibverbs/cmd_wq.c                        |   4 +
->   libibverbs/device.c                        |  73 ++++++-
->   libibverbs/driver.h                        |  14 ++
->   libibverbs/dummy_ops.c                     |  30 +++
->   libibverbs/ibverbs.h                       |   1 +
->   libibverbs/libibverbs.map.in               |   7 +
->   libibverbs/man/CMakeLists.txt              |   5 +
->   libibverbs/man/ibv_import_device.3.md      |  48 +++++
->   libibverbs/man/ibv_import_mr.3.md          |  64 ++++++
->   libibverbs/man/ibv_import_pd.3.md          |  59 ++++++
->   libibverbs/verbs.c                         |  30 +++
->   libibverbs/verbs.h                         |  26 +++
->   providers/mlx5/mlx5.c                      | 319 ++++++++++++++++++-----------
->   providers/mlx5/mlx5.h                      |   6 +
->   providers/mlx5/verbs.c                     |  78 ++++++-
->   pyverbs/device.pyx                         |  12 +-
->   pyverbs/libibverbs.pxd                     |   5 +
->   pyverbs/mr.pxd                             |   1 +
->   pyverbs/mr.pyx                             |  60 +++++-
->   pyverbs/pd.pxd                             |   1 +
->   pyverbs/pd.pyx                             |  37 +++-
->   tests/CMakeLists.txt                       |   1 +
->   tests/base.py                              |  11 +-
->   tests/test_shared_pd.py                    |  95 +++++++++
->   35 files changed, 999 insertions(+), 152 deletions(-)
->   create mode 100644 libibverbs/man/ibv_import_device.3.md
->   create mode 100644 libibverbs/man/ibv_import_mr.3.md
->   create mode 100644 libibverbs/man/ibv_import_pd.3.md
->   create mode 100644 tests/test_shared_pd.py
-> 
+> How about an opt-in drm_driver DRIVER_DEADLOCK_HAPPY flag? At first
+> this could just disable the annotations and nothing else, but as we
+> see the annotations gaining real-world testing and maturity, we could
+> eventually make it taint the kernel.
 
-The PR was merged.
+You can do that pretty much per-driver, since the annotations are pretty
+much per-driver. No annotations in your code, no lockdep splat. Only if
+there's some dma_fence_begin/end_signalling() calls is there even the
+chance of a problem.
 
-Thanks,
-Yishai
+E.g. this round has the i915 patch dropped and *traraaaa* intel-gfx-ci is
+happy (or well at least a lot happier, there's some noise in there that's
+probably not from my stuff).
+
+So I guess if amd wants this, we could do an DRM_AMDGPU_MOAR_LOCKDEP
+Kconfig or similar. I haven't tested, but I think as long as we don't
+merge any of the amdgpu specific patches, there's no splat in amdgpu. So
+with that I think that's plenty enough opt-in for each driver. The only
+problem is a bit shared helper code like atomic helpers and drm scheduler.
+There we might need some opt-out (I don't think merging makes sense when
+most of the users are still broken).
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
