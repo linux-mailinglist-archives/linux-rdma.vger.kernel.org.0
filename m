@@ -2,170 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2592021AF35
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 08:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E42A21B2FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 12:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgGJGPD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jul 2020 02:15:03 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29764 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgGJGPD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:15:03 -0400
-IronPort-SDR: BsoLvSFjSOQBJNjmLTMXjnxATJZ1j2qgqVHRbFqhtre12QlqmMbHsOubCsghmfNxMZUDkKddxS
- ixEVkZMQz3NQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="147247725"
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="147247725"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 23:15:01 -0700
-IronPort-SDR: IBvFSRbBDJ4i410wFcehWoqkrZj6xMStOrFB2Ytmj1kniMtihDsZdUcr9yNHA9UqmwZiJP69f3
- 7HPWnsY+I74Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="389389767"
-Received: from lkp-server02.sh.intel.com (HELO 0fc60ea15964) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Jul 2020 23:15:00 -0700
-Received: from kbuild by 0fc60ea15964 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jtmJH-000034-Na; Fri, 10 Jul 2020 06:14:59 +0000
-Date:   Fri, 10 Jul 2020 14:14:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 0a03715068794e4b524f66ebbf412ab1f2933f3f
-Message-ID: <5f080745.ZCO81flrZ7nwvcAR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726725AbgGJKLW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 10 Jul 2020 06:11:22 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2574 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726496AbgGJKLW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jul 2020 06:11:22 -0400
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 4D86F3FFE3DB53409F17;
+        Fri, 10 Jul 2020 18:11:21 +0800 (CST)
+Received: from dggema702-chm.china.huawei.com (10.3.20.66) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 10 Jul 2020 18:11:20 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema702-chm.china.huawei.com (10.3.20.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 10 Jul 2020 18:11:20 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Fri, 10 Jul 2020 18:11:20 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: Question about IB_QP_CUR_STATE
+Thread-Topic: Question about IB_QP_CUR_STATE
+Thread-Index: AQHWVQvzdhZOnKQSQUeecEiJVm3Vfg==
+Date:   Fri, 10 Jul 2020 10:11:20 +0000
+Message-ID: <3cfb41bfa2cb4d5cb508a572dbb5e6c7@huawei.com>
+References: <876ca1eb8667461a9d2e0effb8ee3934@huawei.com>
+ <881488e6-03d8-1e01-076c-5c901d84a44a@amazon.com>
+ <20200708154434.GA1276673@unreal>
+ <a738e3f3-e2bc-a670-7292-8025c78e210d@amazon.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: 0a03715068794e4b524f66ebbf412ab1f2933f3f  RDMA/mlx5: Set PD pointers for the error flow unwind
+On 2020/7/9 14:14, Gal Pressman wrote:
+> On 08/07/2020 18:44, Leon Romanovsky wrote:
+>> On Wed, Jul 08, 2020 at 03:42:34PM +0300, Gal Pressman wrote:
+>>> On 08/07/2020 12:41, liweihang wrote:
+>>>> Hi all,
+>>>>
+>>>> I'm a little confused about the role of IB_QP_CUR_STATE in the enumeration
+>>>> ib_qp_attr_mask.
+>>>>
+>>>> In manual page of ibv_modify_qp(), comments of cur_qp_state is "Assume this
+>>>> is the current QP state". Why we need to get current qp state from users
+>>>> instead of drivers?
+>>>>
+>>>> For example, why the users are allowed to modify qp from RTR to RTS again
+>>>> even if the qp's state in driver and hardware has already been RTS.
+>>>>
+>>>> I would be appretiate it if someone can help with this.
+>>>>
+>>>> Weihang
+>>>>
+>>>
+>>> Talking about IB_QP_CUR_STATE, I see many drivers filling it in their query QP
+>>> callback although it should only be used in modify operations.. Is there a
+>>> reason not to remove it?
+>>
+>> IBTA section "11.2.5.3 QUERY QUEUE PAIR" has line about IB_QP_CUR_STATE.
+>> It is one of output modifiers.
+>>
+>> Thanks
+>>
+> 
+> It says the current QP state should be returned, that's what qp_state field is used for.
+> According to the man pages:
+> 
+> libibverbs/man/ibv_query_qp.3:
+>                enum ibv_qp_state       qp_state;            /* Current QP state */
+>                enum ibv_qp_state       cur_qp_state;        /* Current QP state - irrelevant for ibv_query_qp */
+> 
 
-elapsed time: 800m
+Hi Gal and Leon,
 
-configs tested: 108
-configs skipped: 8
+Thanks for your reply, as Gal said, I can't find the reason why the IBTA use
+cur_qp_state either. I'll take a closer look at the protocol.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-mips                         rt305x_defconfig
-sh                                  defconfig
-nios2                            alldefconfig
-m68k                         apollo_defconfig
-mips                        omega2p_defconfig
-powerpc                     mpc512x_defconfig
-arm                        spear6xx_defconfig
-m68k                       m5249evb_defconfig
-arm                        multi_v7_defconfig
-powerpc                       holly_defconfig
-x86_64                              defconfig
-arm                         ebsa110_defconfig
-csky                                defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      ep88xc_defconfig
-arm                         at91_dt_defconfig
-m68k                          hp300_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc64                           defconfig
-um                             i386_defconfig
-openrisc                         allyesconfig
-sh                        edosk7705_defconfig
-m68k                          atari_defconfig
-sh                             espt_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200709
-i386                 randconfig-a001-20200709
-i386                 randconfig-a006-20200709
-i386                 randconfig-a005-20200709
-i386                 randconfig-a004-20200709
-i386                 randconfig-a003-20200709
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Weihang
