@@ -2,172 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A975A21B796
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7D121B7B4
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgGJOCt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jul 2020 10:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728378AbgGJOCs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jul 2020 10:02:48 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDF3C08C5DC
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2020 07:02:47 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id 12so4874115oir.4
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2020 07:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xTQ5MsJnerH24IzbOibKIVgALQbQ6fBLEFDFGaudNHc=;
-        b=WU2W6d+TZkpC2bQ5QGHyZU588I4aYRy0pgR/0jf5dsrsdUKzG7CHHQbdXmPQGYQqUL
-         nasfBbJ4/UbxjUPNH17KzLPCu8/hid/VouoHAy2Rs5LX3JMX0PseWupYbCGix+YrbFIN
-         0G929NaZD66foWbG+h37GXj5alNoKzzHEG+Eg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xTQ5MsJnerH24IzbOibKIVgALQbQ6fBLEFDFGaudNHc=;
-        b=eK+OAJShJgz1ZpfXQGHZfD6mvihKczirL0DREXKx/+DFrKc/pJnmg8hQ+WvXZokde6
-         rLtvZioHcmm1z8+jlXGm8RNh8mzRwC2VWiDJEZb+GE6w1EX5ww1D4DSbgukAvSBmoe8z
-         DtiTgHsFfmnYBXdOgF9iChxNnEGx3rxGmiotQyAXm8kRWD0S/GziOFW4OvDUz3+tXhFK
-         PpuKqzB7Ich8p+BZRTiLcyCkCwTUTWpdlmG1SBkJC3ttl4wHUatPY/Xu7Q00gGGu+xan
-         2EIteL/BCHZin7GkTGAOtXZdy6fwJkOyf07rl8QNgaeFOtiFFtyex2mapyQpqBqpYJPR
-         X1qQ==
-X-Gm-Message-State: AOAM530AwoG7sfdupmlZuieGktfFD6UZlT7+GR5XBIcZ5RISWhJkjmai
-        YH6Bx0FiO+/i6fiD3hUIZkh1Xk/jG1GPRYMTGQEUXQ==
-X-Google-Smtp-Source: ABdhPJz9ueO/NwCXWq4u05bld/A1Jzmv30JDZLkssowFodTQImkU08xp+BW6yONjBlhlRH0STky3grfq96MK+YXxz58=
-X-Received: by 2002:aca:cc8e:: with SMTP id c136mr4296478oig.128.1594389767031;
- Fri, 10 Jul 2020 07:02:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
- <20200707201229.472834-3-daniel.vetter@ffwll.ch> <20200709080911.GP3278063@phenom.ffwll.local>
- <20200710124357.GB23821@mellanox.com> <5c163d74-4a28-1d74-be86-099b4729a2e0@amd.com>
- <20200710125453.GC23821@mellanox.com> <4f4a2cf7-f505-8494-1461-bd467870481e@amd.com>
- <20200710134826.GD23821@mellanox.com>
-In-Reply-To: <20200710134826.GD23821@mellanox.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 10 Jul 2020 16:02:35 +0200
-Message-ID: <CAKMK7uGSUULTmL=bDXty6U4e37dzLHzu7wgUyOxo2CvR9KvXGg@mail.gmail.com>
-Subject: Re: [PATCH 02/25] dma-fence: prime lockdep annotations
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@intel.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1728444AbgGJODD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jul 2020 10:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728433AbgGJODD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:03:03 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50E99207D0;
+        Fri, 10 Jul 2020 14:03:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594389782;
+        bh=EiWpEdXorboEZ/c2VyqXgUAQPbieeRfB4g9GB9AIYaY=;
+        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
+         From;
+        b=DJUNfWLA6CFCUDPRmerr33ac73ePqHIRpn97F3PgEGKodpySHH0bB2sM585CqkwTO
+         ER+Bm4RNaP7k6ZbhQ9zP/LENXyGxKWDspkNdnMfFki6wSzB9krog0KE5lbfTNoHiV1
+         uMLKj+0DKKxNmMFx6CAgP609Jv9e9SGxcjEJ0otg=
+Date:   Fri, 10 Jul 2020 14:03:01 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     Kaike Wan <kaike.wan@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org
+Cc:     <stable@vger.kernel.org>
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH for-rc v2 1/2] IB/hfi1: Do not destroy hfi1_wq when the device is shut down
+In-Reply-To: <20200623204047.107638.77646.stgit@awfm-01.aw.intel.com>
+References: <20200623204047.107638.77646.stgit@awfm-01.aw.intel.com>
+Message-Id: <20200710140302.50E99207D0@mail.kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 3:48 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> On Fri, Jul 10, 2020 at 03:01:10PM +0200, Christian K=C3=B6nig wrote:
-> > Am 10.07.20 um 14:54 schrieb Jason Gunthorpe:
-> > > On Fri, Jul 10, 2020 at 02:48:16PM +0200, Christian K=C3=B6nig wrote:
-> > > > Am 10.07.20 um 14:43 schrieb Jason Gunthorpe:
-> > > > > On Thu, Jul 09, 2020 at 10:09:11AM +0200, Daniel Vetter wrote:
-> > > > > > Hi Jason,
-> > > > > >
-> > > > > > Below the paragraph I've added after our discussions around dma=
--fences
-> > > > > > outside of drivers/gpu. Good enough for an ack on this, or want=
- something
-> > > > > > changed?
-> > > > > >
-> > > > > > Thanks, Daniel
-> > > > > >
-> > > > > > > + * Note that only GPU drivers have a reasonable excuse for b=
-oth requiring
-> > > > > > > + * &mmu_interval_notifier and &shrinker callbacks at the sam=
-e time as having to
-> > > > > > > + * track asynchronous compute work using &dma_fence. No driv=
-er outside of
-> > > > > > > + * drivers/gpu should ever call dma_fence_wait() in such con=
-texts.
-> > > > > I was hoping we'd get to 'no driver outside GPU should even use
-> > > > > dma_fence()'
-> > > > My last status was that V4L could come use dma_fences as well.
-> > > I'm sure lots of places *could* use it, but I think I understood that
-> > > it is a bad idea unless you have to fit into the DRM uAPI?
-> >
-> > It would be a bit questionable if you use the container objects we came=
- up
-> > with in the DRM subsystem outside of it.
-> >
-> > But using the dma_fence itself makes sense for everything which could d=
-o
-> > async DMA in general.
->
-> dma_fence only possibly makes some sense if you intend to expose the
-> completion outside a single driver.
->
-> The prefered kernel design pattern for this is to connect things with
-> a function callback.
->
-> So the actual use case of dma_fence is quite narrow and tightly linked
-> to DRM.
->
-> I don't think we should spread this beyond DRM, I can't see a reason.
+Hi
 
-Yeah v4l has a legit reason to use dma_fence, android wants that
-there. There's even been patches proposed years ago, but never landed
-because android is using some vendor hack horror show for camera
-drivers right now.
+[This is an automated email]
 
-But there is an effort going on to fix that (under the libcamera
-heading), and I expect that once we have that, it'll want dma_fence
-support. So outright excluding everyone from dma_fence is a bit too
-much. They definitely shouldn't be used though for entirely
-independent stuff.
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: 8d3e71136a08 ("IB/{hfi1, qib}: Add handling of kernel restart").
 
-> > > You are better to do something contained in the single driver where
-> > > locking can be analyzed.
-> > >
-> > > > I'm not 100% sure, but wouldn't MMU notifier + dma_fence be a valid=
- use case
-> > > > for things like custom FPGA interfaces as well?
-> > > I don't think we should expand the list of drivers that use this
-> > > technique.
-> > > Drivers that can't suspend should pin memory, not use blocked
-> > > notifiers to created pinned memory.
-> >
-> > Agreed totally, it's a complete pain to maintain even for the GPU drive=
-rs.
-> >
-> > Unfortunately that doesn't change users from requesting it. So I'm pret=
-ty
-> > sure we are going to see more of this.
->
-> Kernel maintainers need to say no.
->
-> The proper way to do DMA on no-faulting hardware is page pinning.
->
-> Trying to improve performance of limited HW by using sketchy
-> techniques at the cost of general system stability should be a NAK.
+The bot has tested the following trees: v5.7.6, v5.4.49, v4.19.130, v4.14.186, v4.9.228.
 
-Well that's pretty much gpu drivers, all the horrors for a bit more speed :=
--)
+v5.7.6: Build OK!
+v5.4.49: Build OK!
+v4.19.130: Failed to apply! Possible dependencies:
+    09e71899b9cf5 ("IB/hfi1: Prepare for new HFI1 MSIx API")
+    24c5bfeaf1e66 ("IB/hfi1: Add the TID second leg ACK packet builder")
+    3ca633f1ff7b1 ("IB/hfi1: Right size user_sdma sequence numbers and related variables")
+    572f0c3301138 ("IB/hfi1: Add the dual leg code")
+    57f97e96625fe ("IB/hfi1: Get the hfi1_devdata structure as early as possible")
+    5da0fc9dbf891 ("IB/hfi1: Prepare resource waits for dual leg")
+    6eb4eb10fb0d1 ("IB/hfi1: Make the MSIx resource allocation a bit more flexible")
+    829eaee5d09a7 ("IB/hfi1: Add TID RDMA retry timer")
+    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
+    c54a73d8202a3 ("IB/hfi1: Rework file list in Makefile")
+    f01b4d5a43da4 ("IB/hfi1: OPFN interface")
 
-On the text itself, should I upgrade to "must not" instead of "should
-not"? Or more needed?
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+v4.14.186: Failed to apply! Possible dependencies:
+    05cb18fda926d ("IB/hfi1: Update HFI to use the latest PCI API")
+    09e71899b9cf5 ("IB/hfi1: Prepare for new HFI1 MSIx API")
+    1b311f8931cfe ("IB/hfi1: Add tx_opcode_stats like the opcode_stats")
+    2d9544aacf9e6 ("IB/hfi1: Insure int mask for in-kernel receive contexts is clear")
+    442e55661db1d ("IB/hfi1: Extend input hdr tracing for packet type")
+    473291b3ea0e1 ("IB/hfi1: Fix for early release of sdma context")
+    5d18ee67d4c17 ("IB/{hfi1, rdmavt, qib}: Implement CQ completion vector support")
+    6eb4eb10fb0d1 ("IB/hfi1: Make the MSIx resource allocation a bit more flexible")
+    70324739ac5e0 ("IB/hfi1: Remove INTx support and simplify MSIx usage")
+    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
+    a74d5307caba4 ("IB/hfi1: Rework fault injection machinery")
+    b5de809ef6f6c ("IB/hfi1: Show fault stats in both TX and RX directions")
+    c54a73d8202a3 ("IB/hfi1: Rework file list in Makefile")
+    cc9a97ea2c74e ("IB/hfi1: Do not allocate PIO send contexts for VNIC")
+    d108c60d3d55e ("IB/hfi1: Set in_use_ctxts bits for user ctxts only")
+    e9777ad4399c2 ("IB/{hfi1, rdmavt}: Fix memory leak in hfi1_alloc_devdata() upon failure")
+
+v4.9.228: Failed to apply! Possible dependencies:
+    0181ce31b2602 ("IB/hfi1: Add receive fault injection feature")
+    1bb0d7b781b1c ("IB/hfi1: Code reuse with memdup_copy")
+    2280740f01aee ("IB/hfi1: Virtual Network Interface Controller (VNIC) HW support")
+    6e768f0682e26 ("IB/hfi1: Optimize devdata cachelines")
+    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
+    b7481944b06e9 ("IB/hfi1: Show statistics counters under IB stats interface")
+    cc9a97ea2c74e ("IB/hfi1: Do not allocate PIO send contexts for VNIC")
+    d108c60d3d55e ("IB/hfi1: Set in_use_ctxts bits for user ctxts only")
+    d295dbeb2a0c9 ("IB/hf1: User context locking is inconsistent")
+    d4829ea6035b8 ("IB/hfi1: OPA_VNIC RDMA netdev support")
+    ec8a142327f85 ("IB/hfi1: Force logical link down")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
