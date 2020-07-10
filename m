@@ -2,270 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A2B21B3DE
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 13:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2933A21B513
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 14:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgGJLRH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jul 2020 07:17:07 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:32782 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgGJLRF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jul 2020 07:17:05 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06ABGvgX080122;
-        Fri, 10 Jul 2020 06:16:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594379817;
-        bh=noeWvFkchYrfPNl0thRbJcPCr9ohgOakyewHajyzR9U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qab6VSavbYu/t5lrVd2WT67f03Z30NdpsXXhyJwLaUEPB2lnibrpg/N2X5dN8uZsP
-         of0xufhX4OcUtTmOXpcoZY/sSv4vjr2uBVZZNaFRYBt2i84w1Y1Osr1CnvfuMDT4LR
-         5VixpviPqVUBrgM6nGs1Y30AvpNm0YZj4MCZoL8Q=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06ABGvLA046155
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 10 Jul 2020 06:16:57 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 10
- Jul 2020 06:16:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 10 Jul 2020 06:16:57 -0500
-Received: from [10.1.3.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06ABGoLq010175;
-        Fri, 10 Jul 2020 06:16:55 -0500
-Subject: Re: [PATCH] drm/tilcdc: Use standard drm_atomic_helper_commit
+        id S1726725AbgGJMaj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jul 2020 08:30:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:42882 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726664AbgGJMaj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jul 2020 08:30:39 -0400
+IronPort-SDR: ODehUNdGJs4nVO609EFbS6cGcQn+JCWiIS/qDxMM7fgZ13HCUem4HuTqdurJ4N43yJ8Z3ccl+1
+ R2v9hS6WuHvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="213074042"
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="213074042"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 05:30:37 -0700
+IronPort-SDR: cftD1yfh/1nQA1PDZMmZn1DC4qquNxaY/8BnGAe2+5lxp8nPb91koWGednsCdzSMuEPYsc/Mkl
+ 0PHDoh3FWFCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="484163756"
+Received: from dedwards-mobl.ger.corp.intel.com (HELO [10.249.32.130]) ([10.249.32.130])
+  by fmsmga006.fm.intel.com with ESMTP; 10 Jul 2020 05:30:33 -0700
+Subject: Re: [PATCH 1/2] dma-buf.rst: Document why indefinite fences are a bad
+ idea
 To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
         DRI Development <dri-devel@lists.freedesktop.org>
-CC:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        <linux-rdma@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-References: <20200707201229.472834-16-daniel.vetter@ffwll.ch>
- <20200708142050.530240-1-daniel.vetter@ffwll.ch>
-From:   Jyri Sarha <jsarha@ti.com>
-Autocrypt: addr=jsarha@ti.com; prefer-encrypt=mutual; keydata=
- xsFNBFbdWt8BEADnCIkQrHIvAmuDcDzp1h2pO9s22nacEffl0ZyzIS//ruiwjMfSnuzhhB33
- fNEWzMjm7eqoUBi1BUAQIReS6won0cXIEXFg9nDYQ3wNTPyh+VRjBvlb/gRJlf4MQnJDTGDP
- S5i63HxYtOfjPMSsUSu8NvhbzayNkN5YKspJDu1cK5toRtyUn1bMzUSKDHfwpdmuCDgXZSj2
- t+z+c6u7yx99/j4m9t0SVlaMt00p1vJJ3HJ2Pkm3IImWvtIfvCmxnOsK8hmwgNQY6PYK1Idk
- puSRjMIGLqjZo071Z6dyDe08zv6DWL1fMoOYbAk/H4elYBaqEsdhUlDCJxZURcheQUnOMYXo
- /kg+7TP6RqjcyXoGgqjfkqlf3hYKmyNMq0FaYmUAfeqCWGOOy3PPxR/IiACezs8mMya1XcIK
- Hk/5JAGuwsqT80bvDFAB2XfnF+fNIie/n5SUHHejJBxngb9lFE90BsSfdcVwzNJ9gVf/TOJc
- qJEHuUx0WPi0taO7hw9+jXV8KTHp6CQPmDSikEIlW7/tJmVDBXQx8n4RMUk4VzjE9Y/m9kHE
- UVJ0bJYzMqECMTAP6KgzgkQCD7n8OzswC18PrK69ByGFpcm664uCAa8YiMuX92MnesKMiYPQ
- z1rvR5riXZdplziIRjFRX+68fvhPverrvjNVmzz0bAFwfVjBsQARAQABzRpKeXJpIFNhcmhh
- IDxqc2FyaGFAdGkuY29tPsLBeAQTAQIAIgUCVt1a3wIbAwYLCQgHAwIGFQgCCQoLBBYCAwEC
- HgECF4AACgkQkDazUNfWGUEVVhAAmFL/21tUhZECrDrP9FWuAUuDvg+1CgrrqBj7ZxKtMaiz
- qTcZwZdggp8bKlFaNrmsyrBsuPlAk99f7ToxufqbV5l/lAT3DdIkjb4nwN4rJkxqSU3PaUnh
- mDMKIAp6bo1N9L+h82LE6CjI89W4ydQp5i+cOeD/kbdxbHHvxgNwrv5x4gg1JvEQLVnUSHva
- R2kx7u2rlnq7OOyh9vU0MUq7U5enNNqdBjjBTeaOwa5xb3S2Cc9dR10mpFiy+jSSkuFOjPpc
- fLfr/s03NGqbZ4aXvZCGjCw4jclpTJkuWPKO+Gb+a/3oJ4qpGN9pJ+48n2Tx9MdSrR4aaXHi
- EYMrbYQz9ICJ5V80P5+yCY5PzCvqpkizP6vtKvRSi8itzsglauMZGu6GwGraMJNBgu5u+HIZ
- nfRtJO1AAiwuupOHxe1nH05c0zBJaEP4xJHyeyDsMDh+ThwbGwQmAkrLJZtOd3rTmqlJXnuj
- sfgQlFyC68t1YoMHukz9LHzg02xxBCaLb0KjslfwuDUTPrWtcDL1a5hccksrkHx7k9crVFA1
- o6XWsOPGKRHOGvYyo3TU3CRygXysO41UnGG40Q3B5R8RMwRHV925LOQIwEGF/6Os8MLgFXCb
- Lv3iJtan+PBdqO1Bv3u2fXUMbYgQ3v7jHctB8nHphwSwnHuGN7FAmto+SxzotE3OwU0EVt1a
- 3wEQAMHwOgNaIidGN8UqhSJJWDEfF/SPSCrsd3WsJklanbDlUCB3WFP2EB4k03JroIRvs7/V
- VMyITLQvPoKgaECbDS5U20r/Po/tmaAOEgC7m1VaWJUUEXhjYQIw7t/tSdWlo5XxZIcO4LwO
- Kf0S4BPrQux6hDLIFL8RkDH/8lKKc44ZnSLoF1gyjc5PUt6iwgGJRRkOD8gGxCv1RcUsu1xU
- U9lHBxdWdPmMwyXiyui1Vx7VJJyD55mqc7+qGrpDHG9yh3pUm2IWp7jVt/qw9+OE9dVwwhP9
- GV2RmBpDmB3oSFpk7lNvLJ11VPixl+9PpmRlozMBO00wA1W017EpDHgOm8XGkq++3wsFNOmx
- 6p631T2WuIthdCSlZ2kY32nGITWn4d8L9plgb4HnDX6smrMTy1VHVYX9vsHXzbqffDszQrHS
- wFo5ygKhbGNXO15Ses1r7Cs/XAZk3PkFsL78eDBHbQd+MveApRB7IyfffIz7pW1R1ZmCrmAg
- Bn36AkDXJTgUwWqGyJMd+5GHEOg1UPjR5Koxa4zFhj1jp1Fybn1t4N11cmEmWh0aGgI/zsty
- g/qtGRnFEywBbzyrDEoV4ZJy2Q5pnZohVhpbhsyETeYKQrRnMk/dIPWg6AJx38Cl4P9PK1JX
- 8VK661BG8GXsXJ3uZbPSu6K0+FiJy09N4IW7CPJNABEBAAHCwV8EGAECAAkFAlbdWt8CGwwA
- CgkQkDazUNfWGUFOfRAA5K/z9DXVEl2kkuMuIWkgtuuLQ7ZwqgxGP3dMA5z3Iv/N+VNRGbaw
- oxf+ZkTbJHEE/dWclj1TDtpET/t6BJNLaldLtJ1PborQH+0jTmGbsquemKPgaHeSU8vYLCdc
- GV/Rz+3FN0/fRdmoq2+bIHght4T6KZJ6jsrnBhm7y6gzjMOiftH6M5GXPjU0/FsU09qsk/af
- jbwLETaea0mlWMrLd9FC2KfVITA/f/YG2gqtUUF9WlizidyctWJqSTZn08MdzaoPItIkRUTv
- 6Bv6rmFn0daWkHt23BLd0ZP7e7pON1rqNVljWjWQ/b/E/SzeETrehgiyDr8pP+CLlC+vSQxi
- XtjhWjt1ItFLXxb4/HLZbb/L4gYX7zbZ3NwkON6Ifn3VU7UwqxGLmKfUwu/mFV+DXif1cKSS
- v6vWkVQ6Go9jPsSMFxMXPA5317sZZk/v18TAkIiwFqda3/SSjwc3e8Y76/DwPvUQd36lEbva
- uBrUXDDhCoiZnjQaNz/J+o9iYjuMTpY1Wp+igjIretYr9+kLvGsoPo/kTPWyiuh/WiFU2d6J
- PMCGFGhodTS5qmQA6IOuazek1qSZIl475u3E2uG98AEX/kRhSzgpsbvADPEUPaz75uvlmOCX
- tv+Sye9QT4Z1QCh3lV/Zh4GlY5lt4MwYnqFCxroK/1LpkLgdyQ4rRVw=
-Message-ID: <ae71125b-6496-a0e7-3424-9fe69cc3734f@ti.com>
-Date:   Fri, 10 Jul 2020 14:16:50 +0300
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-rdma@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Stone <daniels@collabora.com>,
+        Jesse Natalie <jenatali@microsoft.com>,
+        Steve Pronovost <spronovo@microsoft.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
+ <20200709123339.547390-1-daniel.vetter@ffwll.ch>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Message-ID: <42dafd6d-cd8e-2de9-4d34-47aff76f5640@linux.intel.com>
+Date:   Fri, 10 Jul 2020 14:30:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200708142050.530240-1-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
+In-Reply-To: <20200709123339.547390-1-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thank you Daniel,
-Now this works perfectly, all while I was on vacation.
+Op 09-07-2020 om 14:33 schreef Daniel Vetter:
+> Comes up every few years, gets somewhat tedious to discuss, let's
+> write this down once and for all.
+>
+> What I'm not sure about is whether the text should be more explicit in
+> flat out mandating the amdkfd eviction fences for long running compute
+> workloads or workloads where userspace fencing is allowed.
+>
+> v2: Now with dot graph!
+>
+> v3: Typo (Dave Airlie)
 
-On 08/07/2020 17:20, Daniel Vetter wrote:
-> Gives us proper nonblocking support for free, and a pile of other
-> things. The tilcdc code is simply old enough that it was never
-> converted over, but was stuck forever with the copypasta from when it
-> was initially merged.
-> 
-> The riskiest thing with this conversion is maybe that there's an issue
-> with the vblank handling or vblank event handling, which will upset
-> the modern commit support in atomic helpers. But from a cursory review
-> drm_crtc_vblank_on/off is called in the right places, and the event
-> handling also seems to exist (albeit with much hand-rolling and
-> probably some races, could perhaps be converted over to
-> drm_crtc_arm_vblank_event without any real loss).
-> 
-> Motivated by me not having to hand-roll the dma-fence annotations for
-> this.
-> 
-> v2: Clear out crtc_state->event when we're handling the event, to
-> avoid upsetting the helpers (reported by Jyri).
-> 
-> v3: Also send out even whent the crtc is getting disabled. Tilcdc looks a
-> bit like conversion to simple display helpers would work out really
-> nice.
-> 
+For first 5 patches, and patch 16, 17:
 
-Probably. Should take a closer looks some day when I have time.
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 
+> Acked-by: Christian König <christian.koenig@amd.com>
+> Acked-by: Daniel Stone <daniels@collabora.com>
+> Cc: Jesse Natalie <jenatali@microsoft.com>
+> Cc: Steve Pronovost <spronovo@microsoft.com>
+> Cc: Jason Ekstrand <jason@jlekstrand.net>
+> Cc: Felix Kuehling <Felix.Kuehling@amd.com>
+> Cc: Mika Kuoppala <mika.kuoppala@intel.com>
+> Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Christian König <christian.koenig@amd.com>
 > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Jyri Sarha <jsarha@ti.com>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-
-Tested-by: Jyri Sarha <jsarha@ti.com>
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
-
-> --
-> From logs looks like we're not stuck when disabling the display, so I
-> hacked in a bit of code for that too. Like mentioned above, tilcdc
-> looks like a perfect candidate for simple display helpers, I think
-> that would simplify a _lot_ of code here.
-> -Daniel
 > ---
->  drivers/gpu/drm/tilcdc/tilcdc_crtc.c  | 13 ++++++++
->  drivers/gpu/drm/tilcdc/tilcdc_drv.c   | 47 +--------------------------
->  drivers/gpu/drm/tilcdc/tilcdc_plane.c |  8 +++--
->  3 files changed, 19 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> index e9dd5e5cb4e7..1856962411c7 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> @@ -537,6 +537,18 @@ static void tilcdc_crtc_atomic_disable(struct drm_crtc *crtc,
->  	tilcdc_crtc_disable(crtc);
->  }
+>  Documentation/driver-api/dma-buf.rst | 70 ++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>
+> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
+> index f8f6decde359..100bfd227265 100644
+> --- a/Documentation/driver-api/dma-buf.rst
+> +++ b/Documentation/driver-api/dma-buf.rst
+> @@ -178,3 +178,73 @@ DMA Fence uABI/Sync File
+>  .. kernel-doc:: include/linux/sync_file.h
+>     :internal:
 >  
-> +static void tilcdc_crtc_atomic_flush(struct drm_crtc *crtc,
-> +				     struct drm_crtc_state *old_state)
-> +{
-> +	if (!crtc->state->event)
-> +		return;
+> +Indefinite DMA Fences
+> +~~~~~~~~~~~~~~~~~~~~
 > +
-> +	spin_lock_irq(&crtc->dev->event_lock);
-> +	drm_crtc_send_vblank_event(crtc, crtc->state->event);
-> +	crtc->state->event = NULL;
-> +	spin_unlock_irq(&crtc->dev->event_lock);
-> +}
+> +At various times &dma_fence with an indefinite time until dma_fence_wait()
+> +finishes have been proposed. Examples include:
 > +
->  void tilcdc_crtc_shutdown(struct drm_crtc *crtc)
->  {
->  	tilcdc_crtc_off(crtc, true);
-> @@ -822,6 +834,7 @@ static const struct drm_crtc_helper_funcs tilcdc_crtc_helper_funcs = {
->  	.atomic_check	= tilcdc_crtc_atomic_check,
->  	.atomic_enable	= tilcdc_crtc_atomic_enable,
->  	.atomic_disable	= tilcdc_crtc_atomic_disable,
-> +	.atomic_flush	= tilcdc_crtc_atomic_flush,
->  };
->  
->  void tilcdc_crtc_set_panel_info(struct drm_crtc *crtc,
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> index 0d74a6443263..4f5fc3e87383 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> @@ -87,55 +87,10 @@ static int tilcdc_atomic_check(struct drm_device *dev,
->  	return ret;
->  }
->  
-> -static int tilcdc_commit(struct drm_device *dev,
-> -		  struct drm_atomic_state *state,
-> -		  bool async)
-> -{
-> -	int ret;
-> -
-> -	ret = drm_atomic_helper_prepare_planes(dev, state);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = drm_atomic_helper_swap_state(state, true);
-> -	if (ret) {
-> -		drm_atomic_helper_cleanup_planes(dev, state);
-> -		return ret;
-> -	}
-> -
-> -	/*
-> -	 * Everything below can be run asynchronously without the need to grab
-> -	 * any modeset locks at all under one condition: It must be guaranteed
-> -	 * that the asynchronous work has either been cancelled (if the driver
-> -	 * supports it, which at least requires that the framebuffers get
-> -	 * cleaned up with drm_atomic_helper_cleanup_planes()) or completed
-> -	 * before the new state gets committed on the software side with
-> -	 * drm_atomic_helper_swap_state().
-> -	 *
-> -	 * This scheme allows new atomic state updates to be prepared and
-> -	 * checked in parallel to the asynchronous completion of the previous
-> -	 * update. Which is important since compositors need to figure out the
-> -	 * composition of the next frame right after having submitted the
-> -	 * current layout.
-> -	 */
-> -
-> -	drm_atomic_helper_commit_modeset_disables(dev, state);
-> -
-> -	drm_atomic_helper_commit_planes(dev, state, 0);
-> -
-> -	drm_atomic_helper_commit_modeset_enables(dev, state);
-> -
-> -	drm_atomic_helper_wait_for_vblanks(dev, state);
-> -
-> -	drm_atomic_helper_cleanup_planes(dev, state);
-> -
-> -	return 0;
-> -}
-> -
->  static const struct drm_mode_config_funcs mode_config_funcs = {
->  	.fb_create = drm_gem_fb_create,
->  	.atomic_check = tilcdc_atomic_check,
-> -	.atomic_commit = tilcdc_commit,
-> +	.atomic_commit = drm_atomic_helper_commit,
->  };
->  
->  static void modeset_init(struct drm_device *dev)
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> index 0d09b31ae759..2f681a713815 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
-> @@ -83,9 +83,11 @@ static void tilcdc_plane_atomic_update(struct drm_plane *plane,
->  	if (WARN_ON(!state->fb || !state->crtc->state))
->  		return;
->  
-> -	tilcdc_crtc_update_fb(state->crtc,
-> -			      state->fb,
-> -			      state->crtc->state->event);
-> +	if (tilcdc_crtc_update_fb(state->crtc,
-> +				  state->fb,
-> +				  state->crtc->state->event) == 0) {
-> +		state->crtc->state->event = NULL;
-> +	}
->  }
->  
->  static const struct drm_plane_helper_funcs plane_helper_funcs = {
-> 
+> +* Future fences, used in HWC1 to signal when a buffer isn't used by the display
+> +  any longer, and created with the screen update that makes the buffer visible.
+> +  The time this fence completes is entirely under userspace's control.
+> +
+> +* Proxy fences, proposed to handle &drm_syncobj for which the fence has not yet
+> +  been set. Used to asynchronously delay command submission.
+> +
+> +* Userspace fences or gpu futexes, fine-grained locking within a command buffer
+> +  that userspace uses for synchronization across engines or with the CPU, which
+> +  are then imported as a DMA fence for integration into existing winsys
+> +  protocols.
+> +
+> +* Long-running compute command buffers, while still using traditional end of
+> +  batch DMA fences for memory management instead of context preemption DMA
+> +  fences which get reattached when the compute job is rescheduled.
+> +
+> +Common to all these schemes is that userspace controls the dependencies of these
+> +fences and controls when they fire. Mixing indefinite fences with normal
+> +in-kernel DMA fences does not work, even when a fallback timeout is included to
+> +protect against malicious userspace:
+> +
+> +* Only the kernel knows about all DMA fence dependencies, userspace is not aware
+> +  of dependencies injected due to memory management or scheduler decisions.
+> +
+> +* Only userspace knows about all dependencies in indefinite fences and when
+> +  exactly they will complete, the kernel has no visibility.
+> +
+> +Furthermore the kernel has to be able to hold up userspace command submission
+> +for memory management needs, which means we must support indefinite fences being
+> +dependent upon DMA fences. If the kernel also support indefinite fences in the
+> +kernel like a DMA fence, like any of the above proposal would, there is the
+> +potential for deadlocks.
+> +
+> +.. kernel-render:: DOT
+> +   :alt: Indefinite Fencing Dependency Cycle
+> +   :caption: Indefinite Fencing Dependency Cycle
+> +
+> +   digraph "Fencing Cycle" {
+> +      node [shape=box bgcolor=grey style=filled]
+> +      kernel [label="Kernel DMA Fences"]
+> +      userspace [label="userspace controlled fences"]
+> +      kernel -> userspace [label="memory management"]
+> +      userspace -> kernel [label="Future fence, fence proxy, ..."]
+> +
+> +      { rank=same; kernel userspace }
+> +   }
+> +
+> +This means that the kernel might accidentally create deadlocks
+> +through memory management dependencies which userspace is unaware of, which
+> +randomly hangs workloads until the timeout kicks in. Workloads, which from
+> +userspace's perspective, do not contain a deadlock.  In such a mixed fencing
+> +architecture there is no single entity with knowledge of all dependencies.
+> +Thefore preventing such deadlocks from within the kernel is not possible.
+> +
+> +The only solution to avoid dependencies loops is by not allowing indefinite
+> +fences in the kernel. This means:
+> +
+> +* No future fences, proxy fences or userspace fences imported as DMA fences,
+> +  with or without a timeout.
+> +
+> +* No DMA fences that signal end of batchbuffer for command submission where
+> +  userspace is allowed to use userspace fencing or long running compute
+> +  workloads. This also means no implicit fencing for shared buffers in these
+> +  cases.
 
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
