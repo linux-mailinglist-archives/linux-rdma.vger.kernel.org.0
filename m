@@ -2,106 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7D121B7B4
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B5F21B7C8
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgGJODD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jul 2020 10:03:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728433AbgGJODD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:03:03 -0400
-Received: from localhost (unknown [137.135.114.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50E99207D0;
-        Fri, 10 Jul 2020 14:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594389782;
-        bh=EiWpEdXorboEZ/c2VyqXgUAQPbieeRfB4g9GB9AIYaY=;
-        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
-         From;
-        b=DJUNfWLA6CFCUDPRmerr33ac73ePqHIRpn97F3PgEGKodpySHH0bB2sM585CqkwTO
-         ER+Bm4RNaP7k6ZbhQ9zP/LENXyGxKWDspkNdnMfFki6wSzB9krog0KE5lbfTNoHiV1
-         uMLKj+0DKKxNmMFx6CAgP609Jv9e9SGxcjEJ0otg=
-Date:   Fri, 10 Jul 2020 14:03:01 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     Kaike Wan <kaike.wan@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org
-Cc:     <stable@vger.kernel.org>
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH for-rc v2 1/2] IB/hfi1: Do not destroy hfi1_wq when the device is shut down
-In-Reply-To: <20200623204047.107638.77646.stgit@awfm-01.aw.intel.com>
-References: <20200623204047.107638.77646.stgit@awfm-01.aw.intel.com>
-Message-Id: <20200710140302.50E99207D0@mail.kernel.org>
+        id S1727820AbgGJOGF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jul 2020 10:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgGJOGE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jul 2020 10:06:04 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8874DC08C5CE
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2020 07:06:04 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id e11so5301961qkm.3
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jul 2020 07:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=pvmdFI2AGfZJlO6x/TXlOljUa8Gk5ZnU6HDh2u7HTNM=;
+        b=hVbbexFfEQdDHQ2wmL3Ky4bvfutu4muDfwl8sObPRB9aUxjWlYW7SQxBDQCw3k9ThX
+         +zeexdyJKExi59xyjUXwvEwxF9llCe0oXO0va3P0RUB81z4EzCcCBGVNlB2jWQZ5bAH+
+         GPCSMTGIAZ3Lsjq8fpHbWuL4peWguEPHQ5QHFfQA04bTRUV4CzLzXW5M7x6Wgj1ckdcF
+         ejq+9z7u1ngtjC12tRsxWUxl6p0Q1+qJS/ft+85aC5Jph6Edl1MVxrmK5cvLke+fSGyD
+         zeF17o/6JjDIsqVuB5NNjNsYA7nN9HPy5UKEHsmWciwyQN8LyppEZKm9zHE71DKk/hcx
+         BVdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=pvmdFI2AGfZJlO6x/TXlOljUa8Gk5ZnU6HDh2u7HTNM=;
+        b=J+FCn0opDuNPdhM+loB3Oe2Agb3f4xzovwDVdH/nG7IbfRhXYvDfZRYYHEuvJcArNN
+         wpE6Siz6yDkTpEpKja8Xzls+bjk3N7CYay8mqB7l795K4QTrGtLm+Iz+udlK0VsjMGnv
+         r1J8YFl+/P6BK8xBvffEjyrGX+xIFo9YjEAr9UKSmviAGX0tNL03kDTa7nMXJORGmaGU
+         3KhwBxnIac4Vs65Mf/9Va0qv0xkHysdJifaSZyj7gyylaFKNCKXLDAbkZ6vjbqJF5L8v
+         ntCZuGXtVJ7bbr9ltJ/Oa3iMOLvFWuLjjgxfa0ULrfIN0sj2jpGzxM8RtV8lYh3F4nyO
+         pzGg==
+X-Gm-Message-State: AOAM530VCNj2ZMTm2p3sLLPZtS7MUo1brTUN4QOFUYm4i1UJL/h26Nmr
+        WMdr4ufzZVlyGaqdjjmx710=
+X-Google-Smtp-Source: ABdhPJxG942/WNkp1Lqix5hR5mlaH61GYK21Kzj5rcS/qjR28uB9acI9bClgdZPtPhjKW9i2r/+FGQ==
+X-Received: by 2002:a05:620a:571:: with SMTP id p17mr54520422qkp.482.1594389963752;
+        Fri, 10 Jul 2020 07:06:03 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id j45sm7112380qtk.31.2020.07.10.07.06.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jul 2020 07:06:03 -0700 (PDT)
+Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 06AE61dt012314;
+        Fri, 10 Jul 2020 14:06:02 GMT
+Subject: [PATCH RFC 0/3] IB CM tracepoints
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     aron.silverton@oracle.com
+Date:   Fri, 10 Jul 2020 10:06:01 -0400
+Message-ID: <20200710135812.14749.4630.stgit@klimt.1015granger.net>
+User-Agent: StGit/0.22-31-g4b47
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi
+Hi-
 
-[This is an automated email]
+This is a Request For Comments.
 
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: 8d3e71136a08 ("IB/{hfi1, qib}: Add handling of kernel restart").
+Oracle has an interest in a common observability infrastructure in
+the RDMA core and ULPs. One alternative for this infrastructure is
+to introduce static tracepoints that can also be used as hooks for
+eBPF scripts, replacing infrastructure that is based on printk.
 
-The bot has tested the following trees: v5.7.6, v5.4.49, v4.19.130, v4.14.186, v4.9.228.
+As an addendum to tracepoints already in NFS/RDMA and parts of the
+RDMA core, this series takes that approach as a strawman. Feedback
+is welcome!
 
-v5.7.6: Build OK!
-v5.4.49: Build OK!
-v4.19.130: Failed to apply! Possible dependencies:
-    09e71899b9cf5 ("IB/hfi1: Prepare for new HFI1 MSIx API")
-    24c5bfeaf1e66 ("IB/hfi1: Add the TID second leg ACK packet builder")
-    3ca633f1ff7b1 ("IB/hfi1: Right size user_sdma sequence numbers and related variables")
-    572f0c3301138 ("IB/hfi1: Add the dual leg code")
-    57f97e96625fe ("IB/hfi1: Get the hfi1_devdata structure as early as possible")
-    5da0fc9dbf891 ("IB/hfi1: Prepare resource waits for dual leg")
-    6eb4eb10fb0d1 ("IB/hfi1: Make the MSIx resource allocation a bit more flexible")
-    829eaee5d09a7 ("IB/hfi1: Add TID RDMA retry timer")
-    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
-    c54a73d8202a3 ("IB/hfi1: Rework file list in Makefile")
-    f01b4d5a43da4 ("IB/hfi1: OPFN interface")
+---
 
-v4.14.186: Failed to apply! Possible dependencies:
-    05cb18fda926d ("IB/hfi1: Update HFI to use the latest PCI API")
-    09e71899b9cf5 ("IB/hfi1: Prepare for new HFI1 MSIx API")
-    1b311f8931cfe ("IB/hfi1: Add tx_opcode_stats like the opcode_stats")
-    2d9544aacf9e6 ("IB/hfi1: Insure int mask for in-kernel receive contexts is clear")
-    442e55661db1d ("IB/hfi1: Extend input hdr tracing for packet type")
-    473291b3ea0e1 ("IB/hfi1: Fix for early release of sdma context")
-    5d18ee67d4c17 ("IB/{hfi1, rdmavt, qib}: Implement CQ completion vector support")
-    6eb4eb10fb0d1 ("IB/hfi1: Make the MSIx resource allocation a bit more flexible")
-    70324739ac5e0 ("IB/hfi1: Remove INTx support and simplify MSIx usage")
-    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
-    a74d5307caba4 ("IB/hfi1: Rework fault injection machinery")
-    b5de809ef6f6c ("IB/hfi1: Show fault stats in both TX and RX directions")
-    c54a73d8202a3 ("IB/hfi1: Rework file list in Makefile")
-    cc9a97ea2c74e ("IB/hfi1: Do not allocate PIO send contexts for VNIC")
-    d108c60d3d55e ("IB/hfi1: Set in_use_ctxts bits for user ctxts only")
-    e9777ad4399c2 ("IB/{hfi1, rdmavt}: Fix memory leak in hfi1_alloc_devdata() upon failure")
-
-v4.9.228: Failed to apply! Possible dependencies:
-    0181ce31b2602 ("IB/hfi1: Add receive fault injection feature")
-    1bb0d7b781b1c ("IB/hfi1: Code reuse with memdup_copy")
-    2280740f01aee ("IB/hfi1: Virtual Network Interface Controller (VNIC) HW support")
-    6e768f0682e26 ("IB/hfi1: Optimize devdata cachelines")
-    a2f7bbdc2dba0 ("IB/hfi1: Rework the IRQ API to be more flexible")
-    b7481944b06e9 ("IB/hfi1: Show statistics counters under IB stats interface")
-    cc9a97ea2c74e ("IB/hfi1: Do not allocate PIO send contexts for VNIC")
-    d108c60d3d55e ("IB/hfi1: Set in_use_ctxts bits for user ctxts only")
-    d295dbeb2a0c9 ("IB/hf1: User context locking is inconsistent")
-    d4829ea6035b8 ("IB/hfi1: OPA_VNIC RDMA netdev support")
-    ec8a142327f85 ("IB/hfi1: Force logical link down")
+Chuck Lever (3):
+      RDMA/core: Move the rdma_show_ib_cm_event() macro
+      RDMA/cm: Replace pr_debug() call sites with tracepoints
+      RDMA/cm: Add tracepoints to track MAD send operations
 
 
-NOTE: The patch will not be queued to stable trees until it is upstream.
+ drivers/infiniband/core/Makefile   |   2 +-
+ drivers/infiniband/core/cm.c       | 102 ++++---
+ drivers/infiniband/core/cm_trace.c |  15 ++
+ drivers/infiniband/core/cm_trace.h | 414 +++++++++++++++++++++++++++++
+ 4 files changed, 476 insertions(+), 57 deletions(-)
+ create mode 100644 drivers/infiniband/core/cm_trace.c
+ create mode 100644 drivers/infiniband/core/cm_trace.h
 
-How should we proceed with this patch?
-
--- 
-Thanks
-Sasha
+--
+Chuck Lever
