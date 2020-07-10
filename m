@@ -2,99 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEF221B850
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903A621B872
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jul 2020 16:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgGJOWM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jul 2020 10:22:12 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35054 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgGJOWM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jul 2020 10:22:12 -0400
-Received: by mail-pf1-f193.google.com with SMTP id a14so2616155pfi.2;
-        Fri, 10 Jul 2020 07:22:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7SIXlpAXx0wpVcBxcMkU7bAmZodmCHuwo8UHYSirZoI=;
-        b=oWCjwyJm4P3cpSiArzfQ+sTNIBrD0dDO+6m8Mngwf3xGUEWtDkUWOUN1LLCFhxpotr
-         oCMhD/y2MgsxA3EbGmc+sJ87tEhi9/4nEF6ErYk2mnm9LDTjgHgR2Niy/SNNvc3LYOIT
-         mY5U/HbcN7Au0cuYNJRs3I+0aBEEmBl0ij6i/MUtjhrmkyXA11vLc+PjjkXJtMCKKKiH
-         AJ15Qd3+3Sk0f7NCi5s2nn4dYmGiWpdEcAj7OxSye97g0axHgvXfVLiH0Ih5U+TwrGtr
-         lAf7VNYFHGU7mdffZVUybcyBt6ltzkKi7WdEQ7+GW2xXCQs7oPOF2NF1xP5hz74+8f2G
-         pqCg==
-X-Gm-Message-State: AOAM5334UIRAqdShlFZrCR9WaWVME+idLKymmXPTha12+Lz4yQMIgd2L
-        fKcCdejaB3lhprznUlldNdSo8Yii
-X-Google-Smtp-Source: ABdhPJwK7lvSEMlkpzVRBaQ5keRj52NCsAFXjMjxkZ4Uf8Btagq7Gh6EoaQDRBkCDhhxfx9fDB+l6Q==
-X-Received: by 2002:a62:64ce:: with SMTP id y197mr42002874pfb.19.1594390930716;
-        Fri, 10 Jul 2020 07:22:10 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id b6sm6138563pfp.0.2020.07.10.07.22.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 07:22:09 -0700 (PDT)
-Subject: Re: [PATCH] SCSI RDMA PROTOCOL (SRP) TARGET: Replace HTTP links with
- HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200709194820.27032-1-grandmaster@al2klimov.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <3d230abd-752e-8ac1-e18d-b64561b409ff@acm.org>
-Date:   Fri, 10 Jul 2020 07:22:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728518AbgGJOX5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jul 2020 10:23:57 -0400
+Received: from mail-eopbgr130079.outbound.protection.outlook.com ([40.107.13.79]:59518
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728493AbgGJOX4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:23:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oh89sztPYZ+0BG8IiCrSx/Iq8Eq1nXjGauB9lnldukmNwIcGfPbMl0g7kyUx3/RjVWeB0RM79082aiB8BIR94sVisA//GlXuUjVQpugWjiowg0y83pTDETxbiWMH27hfgrdRr5YVZXW2/GbBl3/kC1U7jXa44gqTllkquySTHQIf2wG2PZ5Iiuh+R0FtZioF65hBc6RWZV57kLKVyI/LJRngrmHsAJ/WYYSYJTPUdBVlDTo6LnhXkye6yR+/cY1R69WJliN32VKkQtTUf/AIcHtDYrwYzFDTNOEhX0nQGMZ1o83S6TlYH1cMaVTQU1nSOHX3RLzBZui+0KW/5Fszcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JFytuY/EUc+LqnEc77x9oWQqtc40rlGKmYy91akT1SY=;
+ b=RXUrNj42ZJCGfeaPHENanBd7w1DS3gJOOq3LvGH9qSG7/RApCXPUAE3xJO6aDorpjPGp2AoITdEj1Ag0BJpZM0SIBNpguTJhJZVQUJ/TmkhLoOorxTh2aIk1yD3/LL4MGHqlqIGWm0LNGXWk5TTgpye4qt6CVevbcC/6CbQAmdQLEyx+OREtADeplyOwbLlIxf2UaHae6uURiu4WDLdTzRD9LhPOvJ4TD55elHJZwpV2LQXy/aYeHfkXg/5a5uxOe3jFBMvCRJRSdeFdBNY081WLkiIyDtbreXqVCMOIEC68fhcoCkLbIQcLeswTGeEbnQBh39sgKTyw1rKIkxWqlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JFytuY/EUc+LqnEc77x9oWQqtc40rlGKmYy91akT1SY=;
+ b=mA0M4MBUoBxBwLHtPVcGHxYa3oKbpbQyWnit3rpp0HRCCuQSOcNgwbtafymAFu01faQQ9VTIudxbJcZRy3ZTtt8MYpDJAUi5sMKcpeO3MUa+uJW3605hxAAWuSgL0n847kqNFzEfWBPukn0Uhwoh4V6q6MRkbP36BMAO0ZcHOHg=
+Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+ by VI1PR05MB5583.eurprd05.prod.outlook.com (2603:10a6:803:99::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Fri, 10 Jul
+ 2020 14:23:51 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::848b:fcd0:efe3:189e%7]) with mapi id 15.20.3174.022; Fri, 10 Jul 2020
+ 14:23:51 +0000
+Date:   Fri, 10 Jul 2020 11:23:47 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        kernel test robot <lkp@intel.com>,
+        Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH 02/25] dma-fence: prime lockdep annotations
+Message-ID: <20200710142347.GE23821@mellanox.com>
+References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
+ <20200707201229.472834-3-daniel.vetter@ffwll.ch>
+ <20200709080911.GP3278063@phenom.ffwll.local>
+ <20200710124357.GB23821@mellanox.com>
+ <5c163d74-4a28-1d74-be86-099b4729a2e0@amd.com>
+ <20200710125453.GC23821@mellanox.com>
+ <4f4a2cf7-f505-8494-1461-bd467870481e@amd.com>
+ <20200710134826.GD23821@mellanox.com>
+ <CAKMK7uGSUULTmL=bDXty6U4e37dzLHzu7wgUyOxo2CvR9KvXGg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGSUULTmL=bDXty6U4e37dzLHzu7wgUyOxo2CvR9KvXGg@mail.gmail.com>
+X-ClientProxiedBy: BL1PR13CA0060.namprd13.prod.outlook.com
+ (2603:10b6:208:257::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-In-Reply-To: <20200709194820.27032-1-grandmaster@al2klimov.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0060.namprd13.prod.outlook.com (2603:10b6:208:257::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.9 via Frontend Transport; Fri, 10 Jul 2020 14:23:51 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@mellanox.com>)      id 1jttwJ-008I6d-H5; Fri, 10 Jul 2020 11:23:47 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 765aa671-94f1-4fce-ce18-08d824dcde35
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5583:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB558313F48966B67B238810F0CF650@VI1PR05MB5583.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 046060344D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sJ3mBl5qubWb0h+JRWVh2IO4BddLMQv+Br478jHO0mdF+Gmj7sFN1+udP6Lb8Zqggj0yJZLqE2FGhKfGNdrRc6lbK6Vdu/Jkixz8onYhPqxxSRDD7VYlbF2Rasc2AMoZ5TcM6+LQ4MoXQ9+uKIOXBCb7chk1QBdTOSaPuajkI+FEWFE4PoaCGjogbXe2zQIdJImpdqbLzeq5QuBRpcI1DXW9Cm9DLTaz14gWccVdj3W3SanXwt8Zik5eJhxr9qKOupN3IILpho6HhWW/Wfh0VaQyqEVZeh7TYaPHu1EEJI3nhOiamGPfD+ZpiqHiwmhbJLJRLiwiRNQpyQrWpa+96Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39860400002)(5660300002)(86362001)(36756003)(7416002)(26005)(6916009)(316002)(478600001)(83380400001)(2616005)(186003)(1076003)(2906002)(8936002)(426003)(4326008)(54906003)(66476007)(66946007)(66556008)(9746002)(8676002)(9786002)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cppyrSEFdAgkQ1i7W9q/voX0DbtbyyOVjwrEIOo4B7uYYODS8hmJEImRWNNtUiiOZNbaGtDnkKXCJRabgq7Bp4V5pamVdLqGNBMZzoizlzvRIc4PSgtdlF+13VePfAl+oWKQk9qlVh9blVl6PeuQYddj/USevZucky7iGVoqrg2GZ5DN2jMpZhpOaAXMbPu2PunbQ5KcLnjeYp1oJ5ZFWvNgBeIsmktajZlGxvfjkOhMNcqpA0LNpCo5GIpwIT52tIiYKLwRLQ0phw422o6y72JoJWSAwKGLaxj+zVWRs9pmtw6lHvYZwCwaoBSM2OZQeoLsZ7j0uncXth5RBLfm+/2Bv3rmRL42O8pmdQQ2NsxdQPoCFIy/30Yb5MD2tdELN2LR1o4k3i7R1AdJsyZqLM5BvRmDpRJbdg3Nwu/FEhp378GOFB8T6hAOnKknTA8vl95ONAs2NyV2N0CubuBtYkdKjh39nFGqTwJCU9QwM2Q=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 765aa671-94f1-4fce-ce18-08d824dcde35
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB4141.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 14:23:51.4197
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zwF71M+iqtNMffEf9NDildz9GQ391BR6YYfGlkhI/j0w0yOozGHG4f48p0kC5CNi1e2iLtFsRIITXUxwN0ma/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5583
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-07-09 12:48, Alexander A. Klimov wrote:
-> diff --git a/drivers/infiniband/ulp/srpt/Kconfig b/drivers/infiniband/ulp/srpt/Kconfig
-> index 4b5d9b792cfa..f63b34d9ae32 100644
-> --- a/drivers/infiniband/ulp/srpt/Kconfig
-> +++ b/drivers/infiniband/ulp/srpt/Kconfig
-> @@ -10,4 +10,4 @@ config INFINIBAND_SRPT
->  	  that supports the RDMA protocol. Currently the RDMA protocol is
->  	  supported by InfiniBand and by iWarp network hardware. More
->  	  information about the SRP protocol can be found on the website
-> -	  of the INCITS T10 technical committee (http://www.t10.org/).
-> +	  of the INCITS T10 technical committee (https://www.t10.org/).
+On Fri, Jul 10, 2020 at 04:02:35PM +0200, Daniel Vetter wrote:
 
-It is not clear to me how modifying an URL in a Kconfig file helps to
-reduce the attack surface on kernel devs?
+> > dma_fence only possibly makes some sense if you intend to expose the
+> > completion outside a single driver.
+> >
+> > The prefered kernel design pattern for this is to connect things with
+> > a function callback.
+> >
+> > So the actual use case of dma_fence is quite narrow and tightly linked
+> > to DRM.
+> >
+> > I don't think we should spread this beyond DRM, I can't see a reason.
+> 
+> Yeah v4l has a legit reason to use dma_fence, android wants that
+> there. 
 
-Thanks,
+'legit' in the sense the v4l is supposed to trigger stuff in DRM when
+V4L DMA completes? I would still see that as part of DRM
 
-Bart.
+Or is it building a parallel DRM like DMA completion graph?
 
+> > Trying to improve performance of limited HW by using sketchy
+> > techniques at the cost of general system stability should be a NAK.
+>
+> Well that's pretty much gpu drivers, all the horrors for a bit more speed :-)
+> 
+> On the text itself, should I upgrade to "must not" instead of "should
+> not"? Or more needed?
 
+Fundamentally having some unknowable graph of dependencies where parts
+of the graph can be placed in critical regions like notifiers is a
+complete maintenance nightmare.
+
+I think building systems like this should be discouraged :\
+
+Jason
