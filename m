@@ -2,137 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D173821C380
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Jul 2020 12:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA9B21C886
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2020 12:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgGKKFM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Jul 2020 06:05:12 -0400
-Received: from mout.web.de ([217.72.192.78]:48899 "EHLO mout.web.de"
+        id S1728675AbgGLK0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Jul 2020 06:26:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726628AbgGKKFK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:05:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1594461893;
-        bh=oAB672Lav14N4Vgw/LehsEYrm2ioXvtEboTuKTDs2tM=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=czzoSMMDGlSq5mdNWRWJ+/w0DyqDsEFZ2a3Q+mQycMtXdrnUgSMgB3KgyQ90jJN8y
-         7+YlXeC+ajeBk5zngfucMcy3Qvw1t3QXdXDl5jUU2SouA5Civ4i9IM7s0zN3ITbYRm
-         +ytQCedJRHYiXykzDdniZL0xGDiuverJHFoApNkY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.133.101.136]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LuLt5-1kv84I2p0h-011lbN; Sat, 11
- Jul 2020 12:04:53 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Benvenuti <benve@cisco.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>
-Subject: Re: [PATCH] RDMA/usnic: switch from 'pci_' to 'dma_' API
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-To:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
-        linux-rdma@vger.kernel.org
-Message-ID: <e0f440ce-7f0d-efbe-5419-763a97aad68a@web.de>
-Date:   Sat, 11 Jul 2020 12:04:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727777AbgGLK0t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 12 Jul 2020 06:26:49 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66B612070B;
+        Sun, 12 Jul 2020 10:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594549608;
+        bh=MSAxG0BnsfkpsXvgNmEKqSoUhvQj0M8DK4MUAhX6vRY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gygbo8SjdYM4YXTOE0OIs4Dj0ip6Zb0jr1RmrhXHgz2kT+cFyW0H0NZgmqxko78fB
+         rijNBAIgq5WvcVPAlk68yNfRHACKWdwisxsCkHc1we6xhvxaOLtgI+Ghg73o1nbYq0
+         H/EBjoX1QsYER9inbuWF7+YG6D/2lSDD9EMBHkoE=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH rdma-rc v2] RDMA/mlx5: Use xa_lock_irq when access to SRQ table
+Date:   Sun, 12 Jul 2020 13:26:41 +0300
+Message-Id: <20200712102641.15210-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sVp10qkhMXnDk+mYX5gXAe36om9+FDML3yARHw6Fl0eLZuxy0+g
- iLtSIj1Gc7mByedKQRX/3WAlfQa5oLjlLLveKXc4XnHvlufY7SYxxBDmlMu1THdrk02zBqw
- qgAEZypM2EUiHb5fBXE24Nvb3L6HPhpOlALssEtLUopUnjSbCxYsEMTPH+SrgApNNOLxeWn
- DWgsQubyqzJEPeHmRyNKQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+p6JbBxeNf0=:F/NqvLvAov8/uUtCXjWJ6h
- cNxG0HWUPYaf+Asdb+wrbWX7ZishXWX0lE1ml7JwqwGyeRyzZrlqH9TJmKdBsUtfKNe1mlkwR
- y49pNr9Jupz4/cTYaVdYzN4XZJh3Zou2eOdqSjyyGwC86ftvvnAHAxadhKzGq0vYqW5VAQeQ3
- 0VNVr9TSfInznz5G2NKWjuws5MxRP7DXxU+ZUqxWQghgoeOCIgoR8HdxopdhEks139UiL6wOe
- S+UyVegc3KZGlWlPr2bPfVIZefBo3p5YdnusS+YewlxXCguLMdktE15G4Q9qnAT5CmlCI4XcJ
- nMCBbOCMnhMQSsSKjNV0Cr2X2wuSoePi55+6sJ1b5lCkGDKgpUey2SinoagEmaKjVhWmnaK5s
- GhrnlIrQKwYco2qHTOwoHe3D5YrOUKVWRQPgw3KX0U6VJRtsjHPwBfYcnWw+W9w7Yg4CXK7ak
- jjdItP6Yw/YIEwQqhvsxSBV1lF5WUERaGXGTNGYjfin1T/6et0EVRctzOL7BFpqOXOf4nHm0b
- iT3J0Eblmf79LVdDTqIksP6xaRJTsCmoQcgcXNuyBAd03lW7N7d/IM2sdhMiTSj+Kwrxxp1/6
- +Y0Fqx42v/GRtq7rK4ap6bqttAtFrHYQdjiW/BSD27syUq5i2L1ylT6GWrN/1krJqFgBnbiLp
- 5PEj3iLeUhRH6LHQMhJJrou3aQMukOgVL0kegdIUS44zzwzc2tLqTLNF1slBL2PJdxJDI4AXL
- DSm7uiMNooS6hiUdY7K2Jeben32q9+3NAFkz6AmlEbwsK+BxriX4+48vlTRMTKgdVXjGVhaiB
- YmW+D+yIcvFQnE9LQDZrJwwKIuZwvaMw7KbRpZSAUbo2i1vmNl/7GR8vgUMeraBhkm74LYvYV
- 9/MHGWP0VBW5BhVG1Zuaxj4qVKig358wgkO2wHKrRDQQ1sZ3hfC/40KxIPav7lKWtupozkfqB
- rrsMtfTwN9kq3YEcKTYmZgXMm5w+zlNMtgIRjFat9aeWSwv3SR/RZxnyU7IBRRn5ddZEyGLym
- wk/UCsD9pb1DXQsRopLM9yEOt0NNXDJ46j/Y5jipb0pBGgg0aLCodRclHUjeJRQKjB7k9vqRC
- jWQUHLyTJrGN2UDY3A02ZxszLyLdfAlj8/113wSHxVeTQQQ7Bky49X2rEay4JQnahB0cgz7v/
- 9ZcP6FKor9loWKy7d9BH19pFT7FE8LS0Q8eWM4t9u14Z9ZzCRw2C2iSzeqZ4IVvdAMDBZ4j+a
- /39PJkZr60y/aDhVf/dUTvrUOAgk//rDjRp3MDA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> The wrappers in include/linux/pci-dma-compat.h should go away.
->
-> The patch has been generated with the coccinelle script bellow.
+From: Maor Gottlieb <maorg@mellanox.com>
 
-* I suggest to avoid a typo in a word at the sentence end.
+SRQ table is accessed both from interrupt and process context,
+therefore we must use xa_lock_irq.
 
-* The script for the semantic patch language could be a bit nicer
-  by the application of disjunctions instead of separate SmPL rules.
-  Would you become interested in any further adjustments?
+ [ 9878.321379] --------------------------------
+ [ 9878.322349] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+ [ 9878.323667] kworker/u17:9/8573 [HC0[0]:SC0[0]:HE1:SE1] takes:
+ [ 9878.324894] ffff8883e3503d30 (&xa->xa_lock#13){?...}-{2:2}, at:
+mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.326816] {IN-HARDIRQ-W} state was registered at:
+ [ 9878.327905]   lock_acquire+0xb9/0x3a0
+ [ 9878.328720]   _raw_spin_lock+0x25/0x30
+ [ 9878.329475]   srq_event_notifier+0x2b/0xc0 [mlx5_ib]
+ [ 9878.330433]   notifier_call_chain+0x45/0x70
+ [ 9878.331393]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.332530]   forward_event+0x36/0xc0 [mlx5_core]
+ [ 9878.333558]   notifier_call_chain+0x45/0x70
+ [ 9878.334418]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.335498]   mlx5_eq_async_int+0xc5/0x160 [mlx5_core]
+ [ 9878.336543]   notifier_call_chain+0x45/0x70
+ [ 9878.337354]   __atomic_notifier_call_chain+0x69/0x100
+ [ 9878.338337]   mlx5_irq_int_handler+0x19/0x30 [mlx5_core]
+ [ 9878.339369]   __handle_irq_event_percpu+0x43/0x2a0
+ [ 9878.340382]   handle_irq_event_percpu+0x30/0x70
+ [ 9878.341252]   handle_irq_event+0x34/0x60
+ [ 9878.342020]   handle_edge_irq+0x7c/0x1b0
+ [ 9878.342788]   do_IRQ+0x60/0x110
+ [ 9878.343482]   ret_from_intr+0x0/0x2a
+ [ 9878.344251]   default_idle+0x34/0x160
+ [ 9878.344996]   do_idle+0x1ec/0x220
+ [ 9878.345682]   cpu_startup_entry+0x19/0x20
+ [ 9878.346511]   start_secondary+0x153/0x1a0
+ [ 9878.347328]   secondary_startup_64+0xa4/0xb0
+ [ 9878.348226] irq event stamp: 20907
+ [ 9878.348953] hardirqs last  enabled at (20907): [<ffffffff819f0eb4>]
+_raw_spin_unlock_irq+0x24/0x30
+ [ 9878.350599] hardirqs last disabled at (20906): [<ffffffff819f0cbf>]
+_raw_spin_lock_irq+0xf/0x40
+ [ 9878.352300] softirqs last  enabled at (20746): [<ffffffff81c002c9>]
+__do_softirq+0x2c9/0x436
+ [ 9878.353859] softirqs last disabled at (20681): [<ffffffff81139543>]
+irq_exit+0xb3/0xc0
+ [ 9878.355365]
+ [ 9878.355365] other info that might help us debug this:
+ [ 9878.356703]  Possible unsafe locking scenario:
+ [ 9878.356703]
+ [ 9878.357941]        CPU0
+ [ 9878.358522]        ----
+ [ 9878.359109]   lock(&xa->xa_lock#13);
+ [ 9878.359875]   <Interrupt>
+ [ 9878.360504]     lock(&xa->xa_lock#13);
+ [ 9878.361315]
+ [ 9878.361315]  *** DEADLOCK ***
+ [ 9878.361315]
+ [ 9878.362632] 2 locks held by kworker/u17:9/8573:
+ [ 9878.374883]  #0: ffff888295218d38
+((wq_completion)mlx5_ib_page_fault){+.+.}-{0:0}, at:
+process_one_work+0x1f1/0x5f0
+ [ 9878.376728]  #1: ffff888401647e78
+((work_completion)(&pfault->work)){+.+.}-{0:0}, at:
+process_one_work+0x1f1/0x5f0
+ [ 9878.378550]
+ [ 9878.378550] stack backtrace:
+ [ 9878.379489] CPU: 0 PID: 8573 Comm: kworker/u17:9 Tainted: G
+O      5.7.0_for_upstream_min_debug_2020_06_14_11_31_46_41 #1
+ [ 9878.381730] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+ [ 9878.383940] Workqueue: mlx5_ib_page_fault mlx5_ib_eqe_pf_action
+[mlx5_ib]
+ [ 9878.385239] Call Trace:
+ [ 9878.385822]  dump_stack+0x71/0x9b
+ [ 9878.386519]  mark_lock+0x4f2/0x590
+ [ 9878.387263]  ? print_shortest_lock_dependencies+0x200/0x200
+ [ 9878.388362]  __lock_acquire+0xa00/0x1eb0
+ [ 9878.389133]  lock_acquire+0xb9/0x3a0
+ [ 9878.389854]  ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.390796]  _raw_spin_lock+0x25/0x30
+ [ 9878.391533]  ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.392455]  mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
+ [ 9878.393351]  mlx5_ib_eqe_pf_action+0x257/0xa30 [mlx5_ib]
+ [ 9878.394337]  ? process_one_work+0x209/0x5f0
+ [ 9878.395150]  process_one_work+0x27b/0x5f0
+ [ 9878.395939]  ? __schedule+0x280/0x7e0
+ [ 9878.396683]  worker_thread+0x2d/0x3c0
+ [ 9878.397424]  ? process_one_work+0x5f0/0x5f0
+ [ 9878.398249]  kthread+0x111/0x130
+ [ 9878.398926]  ? kthread_park+0x90/0x90
+ [ 9878.399709]  ret_from_fork+0x24/0x30
 
+Fixes: b02a29eb8841 ("mlx5: Convert mlx5_srq_table to XArray")
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+v2:
+ * Dropped wrong hunk
+v1:
+https://lore.kernel.org/linux-rdma/20200707131551.1153207-1-leon@kernel.org
+ * I left Fixes as before to make sure that it is taken properly to stable@.
+ * xa_lock_irqsave -> xa_lock_irq
+v0:
+https://lore.kernel.org/linux-rdma/20200707110612.882962-2-leon@kernel.org
+---
+ drivers/infiniband/hw/mlx5/srq_cmd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-=E2=80=A6
->@@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
+index 6f5eadc4d183..37aaacebd3f2 100644
+--- a/drivers/infiniband/hw/mlx5/srq_cmd.c
++++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
+@@ -83,11 +83,11 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
+ 	struct mlx5_srq_table *table = &dev->srq_table;
+ 	struct mlx5_core_srq *srq;
 
-I find the last function parameter questionable.
-An other flag was specified in a corresponding diff hunk.
+-	xa_lock(&table->array);
++	xa_lock_irq(&table->array);
+ 	srq = xa_load(&table->array, srqn);
+ 	if (srq)
+ 		refcount_inc(&srq->common.refcount);
+-	xa_unlock(&table->array);
++	xa_unlock_irq(&table->array);
 
-Regards,
-Markus
+ 	return srq;
+ }
+--
+2.26.2
+
