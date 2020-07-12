@@ -2,96 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB49421C9DB
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2020 16:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B32021CACA
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jul 2020 19:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgGLOdM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 12 Jul 2020 10:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728786AbgGLOdM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Jul 2020 10:33:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1574C061794
-        for <linux-rdma@vger.kernel.org>; Sun, 12 Jul 2020 07:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XfAGWHscjqU5UdFyf7uI9KuxXHXIqASbBjUC15OhGbc=; b=dz1pk1nWolyuO22wjGeed+gGyN
-        YM0H5BdZaNe2K/kJRz1tJQ/hs/m7wGzEjl2+4rXeFe9OM4bWfl7LyEGV3AVSFH1qy4gsbkYXqIGzH
-        NAkCRuRxjJ+VDW+2WHh74izW+5QKF9h+uoCNcZCsr7ESLcQi9Fu409WicfEfsJcgGKtokjANZpZLD
-        j/s5OcCvB2EYBqXOV0NF/szO/ppyTPazTs7hmzP5vo1FQ83aImAoF12cbZTVPCgU6ZFojUx+1T9+0
-        9KYhHPLy2J9WiUdFGt5z3YyxWCBTndl4PGb3tbPYiwYtuBg6kdeQ8gAivhc33+vPUAkSrphKaDyNZ
-        s6hHM+oQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jud2Q-0003wa-6F; Sun, 12 Jul 2020 14:33:06 +0000
-Date:   Sun, 12 Jul 2020 15:33:06 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1729393AbgGLRkW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Jul 2020 13:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729365AbgGLRkV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 12 Jul 2020 13:40:21 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1F882063A;
+        Sun, 12 Jul 2020 17:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594575621;
+        bh=n0L0L6/ApR3QKbHijWxeL6f5uKpPoWVTkiWED8W1imM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mg88J7rxY8OEEf38gtog2X6yi6tJV7OPrTUy5vBACcfW9841D7a0XMAunyODGhFSz
+         dXmf9TMcc8Ad44phYEK2DCrjdZTAo/SNe0QJf62hF5BMvlaxJCyK8e7tFmcnE5EamA
+         8RfUiD0GzLSiBnKgpN3atLn7SXI5VpbYe24rnEHI=
+Date:   Sun, 12 Jul 2020 20:40:16 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc v2] RDMA/mlx5: Use xa_lock_irq when access to SRQ
- table
-Message-ID: <20200712143306.GT12769@casper.infradead.org>
-References: <20200712102641.15210-1-leon@kernel.org>
+        Daria Velikovsky <daria@mellanox.com>,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Init dest_type when create flow
+Message-ID: <20200712174016.GC7287@unreal>
+References: <20200707110259.882276-1-leon@kernel.org>
+ <20200710194644.GA2130282@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200712102641.15210-1-leon@kernel.org>
+In-Reply-To: <20200710194644.GA2130282@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 01:26:41PM +0300, Leon Romanovsky wrote:
-> Fixes: b02a29eb8841 ("mlx5: Convert mlx5_srq_table to XArray")
-> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
-> v2:
->  * Dropped wrong hunk
-> v1:
-> https://lore.kernel.org/linux-rdma/20200707131551.1153207-1-leon@kernel.org
->  * I left Fixes as before to make sure that it is taken properly to stable@.
->  * xa_lock_irqsave -> xa_lock_irq
+On Fri, Jul 10, 2020 at 04:46:44PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 07, 2020 at 02:02:59PM +0300, Leon Romanovsky wrote:
+> > From: Daria Velikovsky <daria@mellanox.com>
+> >
+> > When using action drop dest_type was never assigned to any value.
+> > Add initialization of dest_type to -1 since 0 is valid.
+> >
+> > Fixes: f29de9eee782 ("RDMA/mlx5: Add support for drop action in DV steering")
+> > Signed-off-by: Daria Velikovsky <daria@mellanox.com>
+> > Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >  Based on
+> > https://lore.kernel.org/lkml/20200702081809.423482-1-leon@kernel.org
+> >  drivers/infiniband/hw/mlx5/fs.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+> > index 0d8abb7c3cdf..1a7e6226f11a 100644
+> > +++ b/drivers/infiniband/hw/mlx5/fs.c
+> > @@ -1903,7 +1903,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
+> >  	struct mlx5_flow_context flow_context = {.flow_tag =
+> >  		MLX5_FS_DEFAULT_FLOW_TAG};
+> >  	u32 *offset_attr, offset = 0, counter_id = 0;
+> > -	int dest_id, dest_type, inlen, len, ret, i;
+> > +	int dest_id, dest_type = -1, inlen, len, ret, i;
+>
+> I think this should be done inside get_dests() - it is pretty ugly to
+> have an function with an output pointer that is only filled sometimes
+> on success.
 
-But it won't be taken properly to stable.  It's true that that's the
-earliest version that this applies to, but as far as I can tell the
-underlying bug is there a lot earlier.  It doesn't appear to be there
-in e126ba97dba9edeb6fafa3665b5f8497fc9cdf8c as the cq->lock is taken
-irqsafe in mlx5_ib_poll_cq() before calling mlx5_poll_one() which calls
-handle_responder() which calls mlx5_core_get_srq(), but it was there
-before b02a29eb8841.  I think it's up to you to figure out which version
-this bug was introduced in, because stable still cares about trees before
-5.2 (which is when b02a29eb8841 was introduced).  You'll also have to
-produce a patch for those earlier kernels.
+This was original patch which I rewrote because don't like the approach
+when function changes fields when it doesn't need to change. I prefer
+the current approach where caller has explicitly decided which default
+value he wants.
 
-> v0:
-> https://lore.kernel.org/linux-rdma/20200707110612.882962-2-leon@kernel.org
-> ---
->  drivers/infiniband/hw/mlx5/srq_cmd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
-> index 6f5eadc4d183..37aaacebd3f2 100644
-> --- a/drivers/infiniband/hw/mlx5/srq_cmd.c
-> +++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
-> @@ -83,11 +83,11 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
->  	struct mlx5_srq_table *table = &dev->srq_table;
->  	struct mlx5_core_srq *srq;
-> 
-> -	xa_lock(&table->array);
-> +	xa_lock_irq(&table->array);
->  	srq = xa_load(&table->array, srqn);
->  	if (srq)
->  		refcount_inc(&srq->common.refcount);
-> -	xa_unlock(&table->array);
-> +	xa_unlock_irq(&table->array);
-> 
->  	return srq;
->  }
-> --
-> 2.26.2
-> 
+Thanks
+
+>
+> Jason
