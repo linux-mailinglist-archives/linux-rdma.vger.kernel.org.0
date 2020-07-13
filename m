@@ -2,159 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E374121D549
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2020 13:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7A521D78D
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jul 2020 15:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgGMLxe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Jul 2020 07:53:34 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:50067 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727890AbgGMLxd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:53:33 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0c4b390000>; Mon, 13 Jul 2020 19:53:31 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 13 Jul 2020 04:53:31 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Mon, 13 Jul 2020 04:53:31 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
- 2020 11:53:21 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.51) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 13 Jul 2020 11:53:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bq9eLYa628PoZtacijg/ovurNHnV2KQv2cJtpor07Bta8avmN/HRN/xE8o94wv6/J6wq3GaiTLzmdvuRQLSt7nRxUkmUa3Ps5fyws6KHDownjlzM7c2jq7rWDvS9yrFfVFl5DUCZSsxg5qSj2GrXeL8BlTgh2/oWV/nCu1LWnPtP8uf0u2DBrb435RiUb8OZ+LyAlf4tkj2lVQf3KWVoE010ZTE3Hkf5OEgthHj9H9iXgk9vn5DxfToZ6Tx+nhAQdlfBbdgdNexUMpi5jWZhPboOet4ZVK3rnBRvRNo5LaZuBIzibjkbg5Mrn7azbkPEI31y33l+C/hTPCDBl2YViQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c4bUokQoCCuSv04XOMPC4vefV1My9jloTHXQ0QD8+tc=;
- b=bWLk+RARMplwUSpmbz7qxnrCt/ZhQEnCjfq7bvk1s4c4iELhRHtcbmYFRRypzazzYcvuk/utPbrmsI3Gs35cw8plRndV7JGnMbjIWtrwayAikQgPrZcfX+4RXQAd94ojmR9ky1jKDzus63zi8bBxdjhgQEVNTMgnZL1bq46iCG3cDsb+8V/G0ys2gH21gX+Fmd1oaC5Nihl4cdpQpNWS5lyZbl3ekpEcOCt4GSQ2h5jkj1l/dd/AJBsH4ZObxpticCbpFZT9HVYy/8ikoGmCBChTI62KHMugvMkqPOwGeKkwSyS34yycLQH6HqM5auNL53y8Yofg5oXO/EF6Zz0JIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1148.namprd12.prod.outlook.com (2603:10b6:3:74::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Mon, 13 Jul
- 2020 11:53:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
- 11:53:16 +0000
-Date:   Mon, 13 Jul 2020 08:53:13 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Daria Velikovsky <daria@mellanox.com>,
-        <linux-rdma@vger.kernel.org>, Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Init dest_type when create flow
-Message-ID: <20200713115313.GA2021234@nvidia.com>
-References: <20200707110259.882276-1-leon@kernel.org>
- <20200710194644.GA2130282@nvidia.com> <20200712174016.GC7287@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200712174016.GC7287@unreal>
-X-ClientProxiedBy: MN2PR16CA0033.namprd16.prod.outlook.com
- (2603:10b6:208:134::46) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729970AbgGMNuf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Jul 2020 09:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729969AbgGMNue (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Jul 2020 09:50:34 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1131FC08C5DB
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2020 06:50:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w34so9961711qte.1
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jul 2020 06:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vlrDlUYUKGml5UggZTrPldaeCrJJpueT2vaP2F68WPk=;
+        b=CMkxtAGi5opCIFDLDXatbH+st+eB5Ijn5qpYvzvMWfQ90tknvaEy3MWVjkhemIW8eG
+         U5/7yxTthqhhWaMF/SpDUkLPGfC8wmS+ZoPJxCjfWU4vs+KvgGotLhm8u/F79uArh6vf
+         1Ds0opoMWMhCcpz6uuq1Ant+g33AgkPod8rY6ovOdjQnv8ZkjVJBbP5HvcAIVonbgi6+
+         940mziew1e1lRJYw16UpuD1W1jd+ofNNjVqHZvyIf8Dxe0jyq4mjBrXTtjfA4Gy45JyL
+         mxhnBofUAvf8q4M4qCdC5UnJ4rTOMRmGIXxgyz/SWGDdf5yxktbW9ueC4//mrcduf65f
+         sCDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vlrDlUYUKGml5UggZTrPldaeCrJJpueT2vaP2F68WPk=;
+        b=jzN+qPYeKEv+dCvoMwd3mYtangbCYAzu4P8sArXk455Z8PHJ51DVhexnjFAvkZTGEn
+         6Y7Di4bDVBF58qeYRCC/MgqU0QS3A8lqddOKjzPpypNRIWe4oYNrVuO60mqjFZzPqZN9
+         cCDu2xkcQlFUalYSwAEdrBHCCk9On067vGzZP1NXfsXdOTxL/m7dMC3d7yPeOatfo2ax
+         ANcbg3Npg9wI+4exJFkm6unypKYSEZ93D3S00CDna/xTxMOv2NdFXeL3CdUHjR6qp1dG
+         IXVK8zN7i0wPrhKd1Hm+E56jdkmJlW98XVICwvm5lg42weDZaUmC93rAK1u6DU19p0Qt
+         hUVQ==
+X-Gm-Message-State: AOAM530y6LhyGQUpVNjYmb6jPDtBOhN+55vuiCKq/qA+BLm+wrYuRr7p
+        Pina2TypqydJAsffsCC9ZZuPnA==
+X-Google-Smtp-Source: ABdhPJwLXMUyr7KJNqN8opqxSnS0V/qOb48twXlcI7xQ5LwDgvA+ZzNgxKc5tOh2DjVsaADIqEy1Gw==
+X-Received: by 2002:ac8:4588:: with SMTP id l8mr85227289qtn.189.1594648232276;
+        Mon, 13 Jul 2020 06:50:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id a185sm18070623qkg.3.2020.07.13.06.50.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:50:31 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1juyql-009hrJ-6b; Mon, 13 Jul 2020 10:50:31 -0300
+Date:   Mon, 13 Jul 2020 10:50:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Bart Van Assche <bvanassche@acm.org>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] SCSI RDMA PROTOCOL (SRP) TARGET: Replace HTTP links with
+ HTTPS ones
+Message-ID: <20200713135031.GA25301@ziepe.ca>
+References: <20200709194820.27032-1-grandmaster@al2klimov.de>
+ <3d230abd-752e-8ac1-e18d-b64561b409ff@acm.org>
+ <8fca4633-41ad-7e86-2354-36381bf5c734@al2klimov.de>
+ <bf85e454-cccc-37ef-d55f-d44a5c5c51df@acm.org>
+ <c6b97005-e4c7-0a46-37eb-b5bb187ee919@al2klimov.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0033.namprd16.prod.outlook.com (2603:10b6:208:134::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Mon, 13 Jul 2020 11:53:15 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jux1F-009fxZ-TP; Mon, 13 Jul 2020 08:53:13 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8eb4167a-2a10-4c8b-e232-08d827235375
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1148:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB11488C5C8F029A6A787C52F5C2600@DM5PR12MB1148.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IswCqaFt+IB/5K+dxise7E1BcPzzTXQ32ZKe6a6VNptLvXhcqrmLSy2a2Gi91w5PweAUmRgixxFCDk8mCGi3P+/tBRyGJfFAEWwY9DofCwRO1dzHuOC+8TCUKD7qmXAFfyrGm/xrZDZRA1GkxRSP9nybXlevZhzvnvSAGslzn8QYxglf6Rm7fzdUbMCRjJq/wX85YUqsud6BV/HkImYfGpvlvW/8aKpaYfIES2Pi9Ewl71BjqxGel87tA6w166h/LfTWh1iHdrDdZ6L6RKyJhEj3jVV06EPhC1F0QUu7lRSBOdOsPLKTmdGcXziQDrf0ghap4ZX3UrE2DwyffdhU39QgJM2ONNlIeNcA7yiOWN0cVqBt+FKET0kOQp1uTP7Vps4Np981WTh+yvT2GipfKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(39860400002)(346002)(136003)(366004)(396003)(86362001)(83380400001)(26005)(5660300002)(186003)(6916009)(2616005)(2906002)(426003)(33656002)(66946007)(54906003)(478600001)(66476007)(8936002)(66556008)(8676002)(9786002)(1076003)(316002)(9746002)(966005)(4326008)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: p/bUcweGDLuFJM0P8WxlIqcw7wIZ1mXd269gNf8RFXYpCY9OrhLSvWAX3jH58EDkXqZY4Un7Bwps9QKOllFBT/i8ZretaQd8V8XhsuarMSZ/ZBjDwrZWWyUzpcz3YbW9ZKwH3/UWfjquC9GYiKMSEqMSNlO+iGtcpgPg2qQKeOX4AziL7+GVz43rpAODNh6/C3zLhIye5Z8F/w3piMAcu+de5dMeYbsrX1bFlT63MvZZPe/YEb5GVpsrO23f2Z456R0KTxuQs7Gei/+1deQM/n8QJlcErNNZGWHab6VoXi3fJAxHwBCxa69BxE7S1gSlKwlZL7VyJlMbEXghc4dqc+IVtv/s7G8OgmzyeSJEA4PMPkJU+OFyAe+Ksn09scQ7HwN9Vd5zK/iBi2J1pa1TRWEQ9Fw6gpWUrr4VCI/Af57NnRepvaV4Zp0IKTwB4o8/KPrwcCVXn7uje+JTrQRBvwVWyT4QU24+z4nnQ8JSrHA=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8eb4167a-2a10-4c8b-e232-08d827235375
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2020 11:53:16.6079
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YWPIZo+D+U8MBCaBDL5AstrHawzhP4GvzH9xs3Ax5m6Wv1tw3k06wZSQEEcS+QdB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1148
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594641211; bh=c4bUokQoCCuSv04XOMPC4vefV1My9jloTHXQ0QD8+tc=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=jNRD2OmaN8WRkvE0cHdbN/gFOJvatHCme+9659sZVu03g4f5iZ9+ODbp7UZ3VlWzf
-         kN/TVRfAuT3Kojo3740/jwYc0uGnyVjujwG955INV9XOKlh0Wozn5T8aolNZLcGuVv
-         A8Yv8EVO1b0ODivkCbGXK7/kO7s9W5KGeeKOfbc98/TEJZ+R24Pl2Ycpd0sd865omw
-         Nm3wEGkAufpTv/ifwXpOWc1ljstNuuucXKlcX8OhEHlkIIC14EaB8o189f7cfSBIjD
-         HUyAy2DEo+0tTp1STHRN357svkZcMS3C3edqESTt9r/j9zdsLMb0yrHIM+1Ig/d4dZ
-         E9wFf+OHr0f/g==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6b97005-e4c7-0a46-37eb-b5bb187ee919@al2klimov.de>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 08:40:16PM +0300, Leon Romanovsky wrote:
-> On Fri, Jul 10, 2020 at 04:46:44PM -0300, Jason Gunthorpe wrote:
-> > On Tue, Jul 07, 2020 at 02:02:59PM +0300, Leon Romanovsky wrote:
-> > > From: Daria Velikovsky <daria@mellanox.com>
-> > >
-> > > When using action drop dest_type was never assigned to any value.
-> > > Add initialization of dest_type to -1 since 0 is valid.
-> > >
-> > > Fixes: f29de9eee782 ("RDMA/mlx5: Add support for drop action in DV steering")
-> > > Signed-off-by: Daria Velikovsky <daria@mellanox.com>
-> > > Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > >  Based on
-> > > https://lore.kernel.org/lkml/20200702081809.423482-1-leon@kernel.org
-> > >  drivers/infiniband/hw/mlx5/fs.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-> > > index 0d8abb7c3cdf..1a7e6226f11a 100644
-> > > +++ b/drivers/infiniband/hw/mlx5/fs.c
-> > > @@ -1903,7 +1903,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
-> > >  	struct mlx5_flow_context flow_context = {.flow_tag =
-> > >  		MLX5_FS_DEFAULT_FLOW_TAG};
-> > >  	u32 *offset_attr, offset = 0, counter_id = 0;
-> > > -	int dest_id, dest_type, inlen, len, ret, i;
-> > > +	int dest_id, dest_type = -1, inlen, len, ret, i;
-> >
-> > I think this should be done inside get_dests() - it is pretty ugly to
-> > have an function with an output pointer that is only filled sometimes
-> > on success.
+On Sun, Jul 12, 2020 at 10:15:29PM +0200, Alexander A. Klimov wrote:
 > 
-> This was original patch which I rewrote because don't like the approach
-> when function changes fields when it doesn't need to change. I prefer
-> the current approach where caller has explicitly decided which default
-> value he wants.
+> 
+> Am 12.07.20 um 21:52 schrieb Bart Van Assche:
+> > On 2020-07-10 11:12, Alexander A. Klimov wrote:
+> > > Am 10.07.20 um 16:22 schrieb Bart Van Assche:
+> > > > On 2020-07-09 12:48, Alexander A. Klimov wrote:
+> > > > > diff --git a/drivers/infiniband/ulp/srpt/Kconfig b/drivers/infiniband/ulp/srpt/Kconfig
+> > > > > index 4b5d9b792cfa..f63b34d9ae32 100644
+> > > > > +++ b/drivers/infiniband/ulp/srpt/Kconfig
+> > > > > @@ -10,4 +10,4 @@ config INFINIBAND_SRPT
+> > > > >          that supports the RDMA protocol. Currently the RDMA protocol is
+> > > > >          supported by InfiniBand and by iWarp network hardware. More
+> > > > >          information about the SRP protocol can be found on the website
+> > > > > -      of the INCITS T10 technical committee (http://www.t10.org/).
+> > > > > +      of the INCITS T10 technical committee (https://www.t10.org/).
+> > > > 
+> > > > It is not clear to me how modifying an URL in a Kconfig file helps to
+> > > > reduce the attack surface on kernel devs?
+> > > 
+> > > Not on all, just on the ones who open it.
+> > 
+> > Is changing every single HTTP URL in the kernel into a HTTPS URL the best
+> > solution? Is this the only solution? Has it been considered to recommend
+> > kernel developers who are concerned about MITM attacks to install a browser
+> > extension like HTTPS Everywhere instead?
+> I've installed that addon myself.
+> But IMAO it's just a workaround which is (not available to all browsers, not
+> installed by default in any of them and) not even 100% secure unless you
+> tick a particular checkbox.
+> 
+> Anyway the majority of maintainers and Torvalds himself agree with my
+> solution.
+> 
+> I mean, just look at
+> git log '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' \
+> 
+> Or (better) wait for v5.9-rc1 (and all the yet just applied patches it will
+> consist of) *and then* run the command.
 
-How is it a "default value" ? The function's job is to fill dest_type,
-it should fill it correctly or fail
+Well, if you are going to do this please send just one patch for all
+of drivers/infiniband/ and include/rdma
+
+I don't need to see it broken up any more than that
 
 Jason
