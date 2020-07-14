@@ -2,224 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91DE21F87B
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 19:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7921F985
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 20:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgGNRqu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 13:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
+        id S1728364AbgGNSeh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 14:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728733AbgGNRqu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 13:46:50 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE9BC061794
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 10:46:49 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id rk21so23471405ejb.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 10:46:49 -0700 (PDT)
+        with ESMTP id S1726817AbgGNSeg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 14:34:36 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DFEC061755
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z13so23976004wrw.5
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jlekstrand-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NB5nytNOxsJJioGL1Jixv5ej+NnEMHWRKbTcnkeqcug=;
-        b=bSqLibnaW/T58mL9feuhhYVqPsWXPihE0fwbIoqc39uqy6e+2BiUPZkGhVblD9R7Au
-         akO6EH8cfrhK7Yf9kbjdwsNm/6+fhjEZ3TpbUP5BDyMVe2hVLNAK+Py5VsTtpjhiRqXo
-         ghR+N/exkc4TPT4gAJesMOByGNpGxPZIDqXuQtW22DePJpZrEUFaDJWQNwfKaTT1ZgpI
-         kyFzzeT1Vdif9Pe+iniC0KvvcPEJ8tLHRT3UovOz0N1Lfoe1dkguuagsdB3lgAtjM0cO
-         SOxzOeMDOR+S7GSg8nxtewQSGNLBtatjVg9+jrdz2gjSMDz1GJxtFthbxYF5QEAXZJJS
-         fZ/g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E57L4Yz4N4WKiMjEMD+183sT+62ICJV/rOkOHFAoG/8=;
+        b=QXU0bRghfoh4ZrBkeFWORL8xMtqTyf+Lx8A1TquVb8EbJf3UwrIQtzxvrdk4437FxO
+         7n5mCDe5ovNrTVGH1CBI+HaMSLAvYFSq6ORmDk9hYUxKcwS2kVkO+6fi82jTCjhlYbBu
+         +kIt7usu9pSjWG+SKAJw9dROtPORMxjojxCmSrx5+iPGGBlj5Z9qtqYitUsP3meDS+ow
+         nxz3Io1W5xyYO9/skJ8e2uKPtPmMNAeoF+OqkDpyk5KfqmDBEo1cs5GS8x/ZKk1/4SOG
+         yK/YwT+uhjOUpP4W42buot85qfi/b42p7ap+scY3OJt18sdMQag8N5XKncR/D3W3fzK/
+         z/yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NB5nytNOxsJJioGL1Jixv5ej+NnEMHWRKbTcnkeqcug=;
-        b=FOB07j6+TUeRC/YVSUqOCzQs0K179Pmn8Q1eANQf5IusARrf8I605pGx7bLAl5xtAC
-         QXVGzdcrilnP2GQcj1Ya5IB4L7w9VyVvawWFY/FNEjcQr3jVwCglnCCjLl7MTQ09W680
-         sfQKzQjSdZc2sbBcthfvSWtrZjjJanHeEeRbj6ZwzHWKXbBSbMHA7upkzsFUXm5b36Si
-         MvyJyVNuZTiC9mJqXpLYiU9DmnMIjDwWAttUt4WBpHvgigZ8jwcNeJ6H+vt0pNK2xasH
-         MfeDGydYZJOgmwh5LMXxtloxUSEwl+2IUt3xWm3Jdht4CDM6EMcw/3orgrTkIVemgq2a
-         JoAQ==
-X-Gm-Message-State: AOAM5311qhOvSrg0rvYi00OG2oXzejnY+XM18kof3QbAG34Jxu7BLTP/
-        aIFW8VxoKkLC7QYBzSkZeytX/xuNNKFIWmzxOsivEg==
-X-Google-Smtp-Source: ABdhPJx0c4bCwqzJhlZQg26rtFZ2ogbu3hjGv1Go+aM7VrNiOmfc9AqYjZOFezTtwnrBkWcWaFJT4975ZoMq1Diy5+w=
-X-Received: by 2002:a17:906:26c3:: with SMTP id u3mr5380567ejc.483.1594748808337;
- Tue, 14 Jul 2020 10:46:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E57L4Yz4N4WKiMjEMD+183sT+62ICJV/rOkOHFAoG/8=;
+        b=kuAfLhqtwKvX4FMsbYTnCG1DV2Oj7Sos7jg9HN8mFAhZXNrVIPnQsdwW0jeeLI3M0h
+         kd1Bdsr0m6dFA5JpN0PIdk1yuPRDKfYQT5IqtyzvYtBloCu1P7mz5sR+KJdpkyL0JoLJ
+         NKjgH3P/JO94JBDgHFKtzroNxjc/1fQVolmF33iohJYkmGJy6syMaBkkCwOSrm+tpFYz
+         dyg6228x56Lysl0RZlduFQdwi5R8hCCMKD63KMp7m/aJgo1f3XrrrVZo7Co+qQXyAH3Q
+         JmqHZlODSabnyZy+PWWAIW4h65xRV0qqrbriLGCM182ZFBqJ7xBoQBUHBzuy9VdJ0nAz
+         sNWQ==
+X-Gm-Message-State: AOAM533qrQ1CUnT7EiOOxYNMWZVnO9HTCW0Igjr+WCpbmi73pyyVnXMK
+        Zd32TtGMEmF//XbKLtFLnsWgbU95LnU=
+X-Google-Smtp-Source: ABdhPJxiVRh+oiK3S+aNyA6wJt7esCs2R/NAXCsEKvvON6XlpWCUJDRAHDQEOdQJvChqBUZhRehe4w==
+X-Received: by 2002:adf:dfcd:: with SMTP id q13mr7337423wrn.295.1594751674619;
+        Tue, 14 Jul 2020 11:34:34 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([37.142.6.100])
+        by smtp.gmail.com with ESMTPSA id 190sm5728982wmb.15.2020.07.14.11.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 11:34:34 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next v1 0/7] RDMA: Remove query_pkey from iwarp providers
+Date:   Tue, 14 Jul 2020 21:34:07 +0300
+Message-Id: <20200714183414.61069-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch> <20200709123339.547390-1-daniel.vetter@ffwll.ch>
-In-Reply-To: <20200709123339.547390-1-daniel.vetter@ffwll.ch>
-From:   Jason Ekstrand <jason@jlekstrand.net>
-Date:   Tue, 14 Jul 2020 12:46:37 -0500
-Message-ID: <CAOFGe95aevRvreikoUPksZ83GskdOzuzVMkyKmbQPNiHzbjjhg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dma-buf.rst: Document why indefinite fences are a bad idea
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Stone <daniels@collabora.com>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, linaro-mm-sig@lists.linaro.org,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This matches my understanding for what it's worth.  In my little bit
-of synchronization work in drm, I've gone out of my way to ensure we
-can maintain this constraint.
+This patch set does the following:
+1- Avoid exposing the pkeys sysfs entries for iwarp providers.
+2- Avoid allocating the pkey cache for iwarp providers.
+3- Remove the requirement by RDMA core to implement query_pkey
+   by all providers.
+4- Remove the implementation of query_pkey callback from iwarp providers.
 
-Acked-by: Jason Ekstrand <jason@jlekstrand.net>
+v1: Patch #1: Move the free of the pkey_group to the right place.
 
-On Thu, Jul 9, 2020 at 7:33 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote=
-:
->
-> Comes up every few years, gets somewhat tedious to discuss, let's
-> write this down once and for all.
->
-> What I'm not sure about is whether the text should be more explicit in
-> flat out mandating the amdkfd eviction fences for long running compute
-> workloads or workloads where userspace fencing is allowed.
->
-> v2: Now with dot graph!
->
-> v3: Typo (Dave Airlie)
->
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Acked-by: Daniel Stone <daniels@collabora.com>
-> Cc: Jesse Natalie <jenatali@microsoft.com>
-> Cc: Steve Pronovost <spronovo@microsoft.com>
-> Cc: Jason Ekstrand <jason@jlekstrand.net>
-> Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-> Cc: Mika Kuoppala <mika.kuoppala@intel.com>
-> Cc: Thomas Hellstrom <thomas.hellstrom@intel.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
->  Documentation/driver-api/dma-buf.rst | 70 ++++++++++++++++++++++++++++
->  1 file changed, 70 insertions(+)
->
-> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-=
-api/dma-buf.rst
-> index f8f6decde359..100bfd227265 100644
-> --- a/Documentation/driver-api/dma-buf.rst
-> +++ b/Documentation/driver-api/dma-buf.rst
-> @@ -178,3 +178,73 @@ DMA Fence uABI/Sync File
->  .. kernel-doc:: include/linux/sync_file.h
->     :internal:
->
-> +Indefinite DMA Fences
-> +~~~~~~~~~~~~~~~~~~~~
-> +
-> +At various times &dma_fence with an indefinite time until dma_fence_wait=
-()
-> +finishes have been proposed. Examples include:
-> +
-> +* Future fences, used in HWC1 to signal when a buffer isn't used by the =
-display
-> +  any longer, and created with the screen update that makes the buffer v=
-isible.
-> +  The time this fence completes is entirely under userspace's control.
-> +
-> +* Proxy fences, proposed to handle &drm_syncobj for which the fence has =
-not yet
-> +  been set. Used to asynchronously delay command submission.
-> +
-> +* Userspace fences or gpu futexes, fine-grained locking within a command=
- buffer
-> +  that userspace uses for synchronization across engines or with the CPU=
-, which
-> +  are then imported as a DMA fence for integration into existing winsys
-> +  protocols.
-> +
-> +* Long-running compute command buffers, while still using traditional en=
-d of
-> +  batch DMA fences for memory management instead of context preemption D=
-MA
-> +  fences which get reattached when the compute job is rescheduled.
-> +
-> +Common to all these schemes is that userspace controls the dependencies =
-of these
-> +fences and controls when they fire. Mixing indefinite fences with normal
-> +in-kernel DMA fences does not work, even when a fallback timeout is incl=
-uded to
-> +protect against malicious userspace:
-> +
-> +* Only the kernel knows about all DMA fence dependencies, userspace is n=
-ot aware
-> +  of dependencies injected due to memory management or scheduler decisio=
-ns.
-> +
-> +* Only userspace knows about all dependencies in indefinite fences and w=
-hen
-> +  exactly they will complete, the kernel has no visibility.
-> +
-> +Furthermore the kernel has to be able to hold up userspace command submi=
-ssion
-> +for memory management needs, which means we must support indefinite fenc=
-es being
-> +dependent upon DMA fences. If the kernel also support indefinite fences =
-in the
-> +kernel like a DMA fence, like any of the above proposal would, there is =
-the
-> +potential for deadlocks.
-> +
-> +.. kernel-render:: DOT
-> +   :alt: Indefinite Fencing Dependency Cycle
-> +   :caption: Indefinite Fencing Dependency Cycle
-> +
-> +   digraph "Fencing Cycle" {
-> +      node [shape=3Dbox bgcolor=3Dgrey style=3Dfilled]
-> +      kernel [label=3D"Kernel DMA Fences"]
-> +      userspace [label=3D"userspace controlled fences"]
-> +      kernel -> userspace [label=3D"memory management"]
-> +      userspace -> kernel [label=3D"Future fence, fence proxy, ..."]
-> +
-> +      { rank=3Dsame; kernel userspace }
-> +   }
-> +
-> +This means that the kernel might accidentally create deadlocks
-> +through memory management dependencies which userspace is unaware of, wh=
-ich
-> +randomly hangs workloads until the timeout kicks in. Workloads, which fr=
-om
-> +userspace's perspective, do not contain a deadlock.  In such a mixed fen=
-cing
-> +architecture there is no single entity with knowledge of all dependencie=
-s.
-> +Thefore preventing such deadlocks from within the kernel is not possible=
-.
-> +
-> +The only solution to avoid dependencies loops is by not allowing indefin=
-ite
-> +fences in the kernel. This means:
-> +
-> +* No future fences, proxy fences or userspace fences imported as DMA fen=
-ces,
-> +  with or without a timeout.
-> +
-> +* No DMA fences that signal end of batchbuffer for command submission wh=
-ere
-> +  userspace is allowed to use userspace fencing or long running compute
-> +  workloads. This also means no implicit fencing for shared buffers in t=
-hese
-> +  cases.
-> --
-> 2.27.0
->
+Kamal Heib (7):
+  RDMA/core: Expose pkeys sysfs files only if pkey_tbl_len is set
+  RDMA/core: Allocate the pkey cache only if the pkey_tbl_len is set
+  RDMA/core: Remove query_pkey from the mandatory ops
+  RDMA/siw: Remove the query_pkey callback
+  RDMA/cxgb4: Remove the query_pkey callback
+  RDMA/i40iw: Remove the query_pkey callback
+  RDMA/qedr: Remove the query_pkey callback
+
+ drivers/infiniband/core/cache.c           | 45 ++++++++++------
+ drivers/infiniband/core/device.c          |  4 +-
+ drivers/infiniband/core/sysfs.c           | 64 ++++++++++++++++-------
+ drivers/infiniband/hw/cxgb4/provider.c    | 11 ----
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 19 -------
+ drivers/infiniband/hw/qedr/main.c         |  3 +-
+ drivers/infiniband/hw/qedr/verbs.c        |  1 -
+ drivers/infiniband/sw/siw/siw_main.c      |  1 -
+ drivers/infiniband/sw/siw/siw_verbs.c     |  9 ----
+ drivers/infiniband/sw/siw/siw_verbs.h     |  1 -
+ 10 files changed, 77 insertions(+), 81 deletions(-)
+
+-- 
+2.25.4
+
