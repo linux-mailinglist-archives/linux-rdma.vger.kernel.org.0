@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3112A21F986
+	by mail.lfdr.de (Postfix) with ESMTP id C35F221F987
 	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 20:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgGNSei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 14:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S1729091AbgGNSek (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 14:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgGNSei (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 14:34:38 -0400
+        with ESMTP id S1726817AbgGNSej (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 14:34:39 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF27BC061755
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:37 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k6so23984041wrn.3
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F2EC061755
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:39 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so23987394wrs.11
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 11:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vvGkLwWeuJtAW6VGduH8+m4dkLZrSU0VWJlGtY5Rjdo=;
-        b=XLMIg4L0kf+P7Xzh+G03+uqineK514OfchMxCkRlLJGREcdeV0lSXXsSi4A3UqJTlf
-         7di4mzE/JA4yI+EtcrE/M4AYOiHNYIT5Pu8GBqeHL5e3CxzTet5N/U4YtH1jcnCPMTRz
-         Ip9AlJH9gbDErTku9qai0+YrVqJ7EqYxvf9WcvRUw1b5CTQE8k01RZgZLhhlsKDhS6cY
-         HyTxb8wPWHT7GC5F8AMpUfaC7Rd0BmvqyZhGPYtFG4w+T10JVbZn5XcoTue63AANHxXD
-         LltqNjIfltcf49neXSY98/UMGOasDYPzTmPywviUK8pDg3yQYn8pOOQA9GeD97/svCxY
-         zNeQ==
+        bh=+xwtCoElLLo1FXG9Vaq9b+0G1RX76SWaOSLyZ61U0N8=;
+        b=q5SYHakPgoW937h4DMo9t7FSkZMAg4Xy5/v6GK3/EUIHvzlHYuviDLL4hOG/JE2/Qb
+         +UsYn/npY8QjzeKXovcjJYkPHHiiyQN+YXPuabeXgU4Un67mk/G9KgqD9s7mpbaqhk78
+         /h6AFG1ooy7LkJILtanQCVIUtyNld0kKT4lJ9xwB+KNxex8yGNIlB8lEeOFf9pv8GOXF
+         5zoZv1wE4lUfsfv6CPOeDUaGGzpCYhrxgf3aJG+z/ElIhVAy0ksJuyupjtE3WTv127MA
+         6tx8bRgqNdKEKCUwhjXcRw76DIv/DBSdAC/XGlRiIiepl2azpkWX1Rkg5GkYIoaL+F5E
+         juqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vvGkLwWeuJtAW6VGduH8+m4dkLZrSU0VWJlGtY5Rjdo=;
-        b=pg9wypdtLbdQQVPI7w4EfHO8icmzO1w5GSTctkb/EFu5QXPlycoqf9KPs2OQrtN1HT
-         2ZFNxpe1YgX7O81PsW58MeQeTT6Qd2zO1bHGg6qdIqwnl0cC+vhgtSzafHnqrh+iJuSy
-         ewY7xqf3JZgf5nbJ7Qa0IRD9g5YPNhs50G8IJEihpLrr5DFwRYDJGkbm1QRXW4QQOjrp
-         rqBFwR9FLVbKyfS4iwu7BHFiK4GilKZV/NTRsK6LVzRTp/ibSdR4b9OKT9uu/3aO2zbP
-         sLQIV0Szv9O3sn7nzax8DegvkACJR3IPmPAOetBtjpjGOMn7MpI9LygyGu3BHfW6V4Px
-         +Nsw==
-X-Gm-Message-State: AOAM532LYdKTGXrypqDCK148/92pvPii5xXC+UBuZY/mU1S/Qw4vjgEx
-        P+Qdw63MJZKUU3MO010zyV+7VEH+JF4=
-X-Google-Smtp-Source: ABdhPJzzoB13rQgqDbNCLj3Vyd1v8vYO99CAsRaR1gKSgF34cG6H3ZauJpMzHr88BbYdc6S0J5qRyg==
-X-Received: by 2002:a5d:6107:: with SMTP id v7mr7239570wrt.174.1594751676317;
-        Tue, 14 Jul 2020 11:34:36 -0700 (PDT)
+        bh=+xwtCoElLLo1FXG9Vaq9b+0G1RX76SWaOSLyZ61U0N8=;
+        b=UEcqsb6bW2oduFkseNRAuZBv2LLSGM4hUL5dPQQ2ZCboJHWuZXsFNvEoh71FYQ3l28
+         g8QLQI47/jSBUrzC5AZ+XSv5fTkn902R4q+B3gAPoViz7olVbGW0vIB73s3UbOBc9RuO
+         RAJuqOVRKpjB3D09X71fgNsI1nqcTgZW6YV2GMxbmuDlmmPzEa+Z58W9sRVo8BupAPO5
+         12UFwoxJRLjnC1YtoGGQjLP6q3sbg6uB9DLKeLvxNrxW/6mg+bnNhoLHRjxw9oFvr+pt
+         em7yTdxZgyRPFXAsOZvkK4AnU17jGB2L7hQhfToD9GMXXsWvHm3aeC8htILkLXp09ofy
+         md4Q==
+X-Gm-Message-State: AOAM530xJO/5cKbzacNkLMXs54S9rL5YTgZJpWueVWu+71PsOIqLRMA1
+        R7DFkdKEuZLsBHDBfxa9S5JEFODi2cA=
+X-Google-Smtp-Source: ABdhPJybQ4SgQu1ky7nNUYT5cq8HnPD/2a8OsyEndUXgP16bPMeZ9328tYNpzacIr5Bots7FNsHKSA==
+X-Received: by 2002:a5d:40ca:: with SMTP id b10mr7969642wrq.56.1594751678040;
+        Tue, 14 Jul 2020 11:34:38 -0700 (PDT)
 Received: from kheib-workstation.redhat.com ([37.142.6.100])
-        by smtp.gmail.com with ESMTPSA id 190sm5728982wmb.15.2020.07.14.11.34.34
+        by smtp.gmail.com with ESMTPSA id 190sm5728982wmb.15.2020.07.14.11.34.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 11:34:35 -0700 (PDT)
+        Tue, 14 Jul 2020 11:34:37 -0700 (PDT)
 From:   Kamal Heib <kamalheib1@gmail.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -55,9 +55,9 @@ Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next v1 1/7] RDMA/core: Expose pkeys sysfs files only if pkey_tbl_len is set
-Date:   Tue, 14 Jul 2020 21:34:08 +0300
-Message-Id: <20200714183414.61069-2-kamalheib1@gmail.com>
+Subject: [PATCH for-next v1 2/7] RDMA/core: Allocate the pkey cache only if the pkey_tbl_len is set
+Date:   Tue, 14 Jul 2020 21:34:09 +0300
+Message-Id: <20200714183414.61069-3-kamalheib1@gmail.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200714183414.61069-1-kamalheib1@gmail.com>
 References: <20200714183414.61069-1-kamalheib1@gmail.com>
@@ -68,123 +68,108 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Expose the pkeys sysfs files only if the pkey_tbl_len is set by the
-providers.
+Allocate the pkey cache only if the pkey_tbl_len is set by the provider,
+also add checks to avoid accessing the pkey cache when it not
+initialized.
 
 Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- drivers/infiniband/core/sysfs.c | 64 ++++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 20 deletions(-)
+ drivers/infiniband/core/cache.c | 45 +++++++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index defe9cd4c5ee..38507e5529ba 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -58,7 +58,7 @@ struct ib_port {
- 	struct ib_device      *ibdev;
- 	struct gid_attr_group *gid_attr_group;
- 	struct attribute_group gid_group;
--	struct attribute_group pkey_group;
-+	struct attribute_group *pkey_group;
- 	struct attribute_group *pma_table;
- 	struct attribute_group *hw_stats_ag;
- 	struct rdma_hw_stats   *hw_stats;
-@@ -681,11 +681,16 @@ static void ib_port_release(struct kobject *kobj)
- 		kfree(p->gid_group.attrs);
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index a670209bbce6..ffad73bb40ff 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -1054,7 +1054,7 @@ int ib_get_cached_pkey(struct ib_device *device,
+ 
+ 	cache = device->port_data[port_num].cache.pkey;
+ 
+-	if (index < 0 || index >= cache->table_len)
++	if (!cache || index < 0 || index >= cache->table_len)
+ 		ret = -EINVAL;
+ 	else
+ 		*pkey = cache->table[index];
+@@ -1099,6 +1099,10 @@ int ib_find_cached_pkey(struct ib_device *device,
+ 	read_lock_irqsave(&device->cache_lock, flags);
+ 
+ 	cache = device->port_data[port_num].cache.pkey;
++	if (!cache) {
++		ret = -EINVAL;
++		goto err;
++	}
+ 
+ 	*index = -1;
+ 
+@@ -1117,6 +1121,7 @@ int ib_find_cached_pkey(struct ib_device *device,
+ 		ret = 0;
  	}
  
--	if (p->pkey_group.attrs) {
--		for (i = 0; (a = p->pkey_group.attrs[i]); ++i)
--			kfree(a);
-+	if (p->pkey_group) {
-+		if (p->pkey_group->attrs) {
-+			for (i = 0; (a = p->pkey_group->attrs[i]); ++i)
-+				kfree(a);
-+
-+			kfree(p->pkey_group->attrs);
-+		}
++err:
+ 	read_unlock_irqrestore(&device->cache_lock, flags);
  
--		kfree(p->pkey_group.attrs);
-+		kfree(p->pkey_group);
-+		p->pkey_group = NULL;
+ 	return ret;
+@@ -1139,6 +1144,10 @@ int ib_find_exact_cached_pkey(struct ib_device *device,
+ 	read_lock_irqsave(&device->cache_lock, flags);
+ 
+ 	cache = device->port_data[port_num].cache.pkey;
++	if (!cache) {
++		ret = -EINVAL;
++		goto err;
++	}
+ 
+ 	*index = -1;
+ 
+@@ -1149,6 +1158,7 @@ int ib_find_exact_cached_pkey(struct ib_device *device,
+ 			break;
+ 		}
+ 
++err:
+ 	read_unlock_irqrestore(&device->cache_lock, flags);
+ 
+ 	return ret;
+@@ -1425,23 +1435,26 @@ ib_cache_update(struct ib_device *device, u8 port, bool enforce_security)
+ 			goto err;
  	}
  
- 	kfree(p);
-@@ -1118,17 +1123,26 @@ static int add_port(struct ib_core_device *coredev, int port_num)
- 	if (ret)
- 		goto err_free_gid_type;
- 
--	p->pkey_group.name  = "pkeys";
--	p->pkey_group.attrs = alloc_group_attrs(show_port_pkey,
--						attr.pkey_tbl_len);
--	if (!p->pkey_group.attrs) {
+-	pkey_cache = kmalloc(struct_size(pkey_cache, table,
+-					 tprops->pkey_tbl_len),
+-			     GFP_KERNEL);
+-	if (!pkey_cache) {
 -		ret = -ENOMEM;
--		goto err_remove_gid_type;
-+	if (attr.pkey_tbl_len) {
-+		p->pkey_group = kzalloc(sizeof(*p->pkey_group), GFP_KERNEL);
-+		if (!p->pkey_group) {
+-		goto err;
+-	}
++	if (tprops->pkey_tbl_len) {
++		pkey_cache = kmalloc(struct_size(pkey_cache, table,
++						 tprops->pkey_tbl_len),
++				     GFP_KERNEL);
++		if (!pkey_cache) {
 +			ret = -ENOMEM;
-+			goto err_remove_gid_type;
++			goto err;
 +		}
-+
-+		p->pkey_group->name  = "pkeys";
-+		p->pkey_group->attrs = alloc_group_attrs(show_port_pkey,
-+							 attr.pkey_tbl_len);
-+		if (!p->pkey_group->attrs) {
-+			ret = -ENOMEM;
-+			goto err_free_pkey_group;
-+		}
-+
-+		ret = sysfs_create_group(&p->kobj, p->pkey_group);
-+		if (ret)
-+			goto err_free_pkey;
+ 
+-	pkey_cache->table_len = tprops->pkey_tbl_len;
++		pkey_cache->table_len = tprops->pkey_tbl_len;
+ 
+-	for (i = 0; i < pkey_cache->table_len; ++i) {
+-		ret = ib_query_pkey(device, port, i, pkey_cache->table + i);
+-		if (ret) {
+-			dev_warn(&device->dev,
+-				 "ib_query_pkey failed (%d) for index %d\n",
+-				 ret, i);
+-			goto err;
++		for (i = 0; i < pkey_cache->table_len; ++i) {
++			ret = ib_query_pkey(device, port, i,
++					    pkey_cache->table + i);
++			if (ret) {
++				dev_warn(&device->dev,
++					 "ib_query_pkey failed (%d) for index %d\n",
++					 ret, i);
++				goto err;
++			}
+ 		}
  	}
  
--	ret = sysfs_create_group(&p->kobj, &p->pkey_group);
--	if (ret)
--		goto err_free_pkey;
- 
- 	if (device->ops.init_port && is_full_dev) {
- 		ret = device->ops.init_port(device, port_num, &p->kobj);
-@@ -1150,14 +1164,23 @@ static int add_port(struct ib_core_device *coredev, int port_num)
- 	return 0;
- 
- err_remove_pkey:
--	sysfs_remove_group(&p->kobj, &p->pkey_group);
-+	if (p->pkey_group)
-+		sysfs_remove_group(&p->kobj, p->pkey_group);
- 
- err_free_pkey:
--	for (i = 0; i < attr.pkey_tbl_len; ++i)
--		kfree(p->pkey_group.attrs[i]);
-+	if (p->pkey_group) {
-+		for (i = 0; i < attr.pkey_tbl_len; ++i)
-+			kfree(p->pkey_group->attrs[i]);
- 
--	kfree(p->pkey_group.attrs);
--	p->pkey_group.attrs = NULL;
-+		kfree(p->pkey_group->attrs);
-+		p->pkey_group->attrs = NULL;
-+	}
-+
-+err_free_pkey_group:
-+	if (p->pkey_group) {
-+		kfree(p->pkey_group);
-+		p->pkey_group = NULL;
-+	}
- 
- err_remove_gid_type:
- 	sysfs_remove_group(&p->gid_attr_group->kobj,
-@@ -1317,7 +1340,8 @@ void ib_free_port_attrs(struct ib_core_device *coredev)
- 
- 		if (port->pma_table)
- 			sysfs_remove_group(p, port->pma_table);
--		sysfs_remove_group(p, &port->pkey_group);
-+		if (port->pkey_group)
-+			sysfs_remove_group(p, port->pkey_group);
- 		sysfs_remove_group(p, &port->gid_group);
- 		sysfs_remove_group(&port->gid_attr_group->kobj,
- 				   &port->gid_attr_group->ndev);
 -- 
 2.25.4
 
