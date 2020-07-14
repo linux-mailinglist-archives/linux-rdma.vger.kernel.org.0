@@ -2,66 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBA921E8B4
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 08:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BD021E8C5
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 09:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgGNG5l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 02:57:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7302 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725853AbgGNG5l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:57:41 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 7F2D9418D66DC7410684;
-        Tue, 14 Jul 2020 14:57:38 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 14:57:32 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <stable@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     <sashal@kernel.org>, <gregkh@linuxfoundation.org>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>, <hal.rosenstock@gmail.com>,
-        <yangyingliang@huawei.com>
-Subject: [PATCH stable-4.14] IB/umem: fix reference count leak in ib_umem_odp_get()
-Date:   Tue, 14 Jul 2020 14:56:39 +0000
-Message-ID: <20200714145639.1381719-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1725876AbgGNHCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 03:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725853AbgGNHCH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:02:07 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55C03221ED;
+        Tue, 14 Jul 2020 07:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594710127;
+        bh=2Yab0a4jpaZQwce+LRFW73IQunzNBQlta6nkIC3Ul5A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XMql7cy+W6wYz+ne4+TjQleeJnkCTsyRava04squKaY7yMwkf04tMOsoxrG5GN14K
+         ZVJrG9qDiLDbg9E3qiUEmAZftgJ8X9GYuWaSNtqWT6drWJSe50hTrK0BACjPW2Z2ow
+         v9KbUCOXZlrsMQ//AV7Dnr/krGbN0BVmoYnIxOKM=
+Date:   Tue, 14 Jul 2020 10:02:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sasha Levin <alexander.levin@microsoft.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Hal Rosenstock <hal.rosenstock@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2.6.26-4.14] IB/ipoib: Arm "send_cq" to process
+ completions in due time
+Message-ID: <20200714070201.GG7287@unreal>
+References: <322533b0-17de-b6b2-7da4-f99c7dfce3a8@oracle.com>
+ <20200612195511.GA6578@ziepe.ca>
+ <631c9e79-34e8-cc89-99bc-11fd6bc929e4@oracle.com>
+ <20200616120847.GB3542686@kroah.com>
+ <16760723-e9ac-88b7-0b95-170e43abee2b@oracle.com>
+ <20200617050341.GG2383158@unreal>
+ <20200713145344.GB3767483@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713145344.GB3767483@kroah.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add missing mmput() on error path to avoid ref-count leak.
+On Mon, Jul 13, 2020 at 04:53:44PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jun 17, 2020 at 08:03:41AM +0300, Leon Romanovsky wrote:
+> > On Tue, Jun 16, 2020 at 09:35:38AM -0700, Gerd Rausch wrote:
+> > > Hi,
+> > >
+> > > On 16/06/2020 05.08, Greg Kroah-Hartman wrote:
+> > > >> I considered backporting commit 8966e28d2e40c ("IB/ipoib: Use NAPI in UD/TX flows")
+> > > >> with all the dependencies it may have a considerably higher risk
+> > > >> than just arming the TX CQ.
+> > > >
+> > > > 90% of the time when we apply a patch that does NOT match the upstream
+> > > > tree, it has a bug in it and needs to have another fix or something
+> > > > else.
+> > > >
+> > > > So please, if at all possible, stick to the upstream tree, so
+> > > > backporting the current patches are the best thing to do.
+> > > >
+> > >
+> > > Jason,
+> > >
+> > > With Mellanox writing and fixing the vast majority of the code found
+> > > in IB/IPoIB, do you or one of your colleagues want to look into this?
+> > >
+> > > It would be considerably less error-prone if the authors of that code
+> > > did that more risky work of backporting.
+> > >
+> > > AFAIK, Mellanox also has the regression tests to ensure that everything
+> > > still works after this re-write as it did before.
+> >
+> > Please approach your Mellanox FAE representatives, they will know how to
+> > handle it internally.
+>
+> Ah, so you all don't care about any IB fixes for 4.14 and older kernels
+> anymore?  If so, great, please let us know so we will not do any
+> backporting anymore, that will save us time!
 
-This problem is introduced by 79bb5b7ee177 ("RDMA/umem: Fix missing mmap_sem in get umem ODP call")
-and resolved by f27a0d50a4bc ("RDMA/umem: Use umem->owning_mm inside ODP").
-So, it's only needed in stable-4.14 and stable-4.19.
+Greg,
 
-Fixes: 79bb5b7ee177 ("RDMA/umem: Fix missing mmap_sem in get umem ODP call")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/infiniband/core/umem_odp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is not what I said. As a Mellanox employee, I can't commit for any
+internal resources, the FAE path is a standard way for our customers
+to get proper attention.
 
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index eeafdc0beec7..08ef654ea9b8 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -347,7 +347,8 @@ int ib_umem_odp_get(struct ib_ucontext *context, struct ib_umem *umem,
- 		vma = find_vma(mm, ib_umem_start(umem));
- 		if (!vma || !is_vm_hugetlb_page(vma)) {
- 			up_read(&mm->mmap_sem);
--			return -EINVAL;
-+			ret_val = -EINVAL;
-+			goto out_mm;
- 		}
- 		h = hstate_vma(vma);
- 		umem->page_shift = huge_page_shift(h);
--- 
-2.25.1
+Thanks
 
+>
+> thanks,
+>
+> greg k-h
