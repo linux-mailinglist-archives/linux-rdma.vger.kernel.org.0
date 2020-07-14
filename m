@@ -2,179 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D18921ED7D
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 11:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D0B21ED8B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 12:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgGNJ7d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 05:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgGNJ7c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 05:59:32 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1752DC061755
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 02:59:32 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id e4so13490157oib.1
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 02:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P8l6FryZA/keVvXZxlVWCIThf2OhcjulZofupovGm64=;
-        b=JjXl30BetKudJTECMqXFHImpbHoIMJwSlaxINv3XDnK+9+Tr9N4ASZCG80YQJhQQYs
-         T3mQ1QXsNczwOdwVusg9i/jHB3mHw1vkbHHqnTVRescmoWMv79nbDTyGZqLouvo7PVY5
-         Ny7CdSKe4B5cGITJ2pqyXTuhrBe67YunCv/+M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P8l6FryZA/keVvXZxlVWCIThf2OhcjulZofupovGm64=;
-        b=MMvEZyBqfHckdK/iqt5TxfjYRYK28jcZIbYhylIm9z6q0v4q0eS4HYLrwA27wmAPj8
-         3GKB61hNBneGldvZKV+0IUy+UKxDQXXsIJlYKMqLcmXZOD8wFcKkDPOK5HwdK98CUCGU
-         4GbGxcKEk3yuAn7vhQHgOnDeuNchNtozWUMpcK/MRhfga0t8CYIQ3lR/E+X3X23IS1DJ
-         OUcV75Z8nctlc9OccdaRwaXmwbZl6+YPuZK4Pfbm5tbsxphcMVSq6quvnqKvyOQQqVo5
-         QwSvu0HexBg2Rop124w7C/txnF41s69tlKn9hqYEnwD2gNs1HK3DaZLfC5IERcjZ/CQE
-         j2nQ==
-X-Gm-Message-State: AOAM530+7V78lJAcXnpFcu+Jn/q/HkBxnSGCg6R+zfDEd2zV/5DgpHAd
-        RPchu/J7S5A+k5XGRpWdU9Pk5sl2Ixp1I0ufs2lysA==
-X-Google-Smtp-Source: ABdhPJxzz/S8lATGQ/0IMYNwtQjDlAlFcSobX9FbPzm4XdALVWpg/Y5C8vwjamXN8Z0EGUWFlRHk8Cbz+tDX12mNXeA=
-X-Received: by 2002:aca:cc8e:: with SMTP id c136mr2959277oig.128.1594720771402;
- Tue, 14 Jul 2020 02:59:31 -0700 (PDT)
+        id S1726889AbgGNKC6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 06:02:58 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37392 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgGNKC5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 06:02:57 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EA2sPJ172771;
+        Tue, 14 Jul 2020 10:02:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=4mYmn1l/yj85RidUm9ymNcpIijGi2NYXt4YolYKFXfo=;
+ b=lwwz+i9MKL6BnBvgcY192Ov/cAzav0mjSwwZQCte5O5+RQHCpXAB1b3oj6fqliI2X08c
+ vJLhMF9yJsx0rAbpiiTDk9UX+rcml6YcFcUTnCEaFRoDmNZMt04CI4jcVuKKBpDgm8gv
+ hDe3qn6UoL+0+qBxR0dDY4gfCIr8c5KzdmCxRhxi6u04/WM0d1Wl5WTWEC2i88l8CLCc
+ cjvSzSHwP7Oj9QVAAYH27N/g8gQoWFqnP/WjxUY0Ryq87nJq80kxv3ttJ0M87tKgOYPg
+ MpCQ+LLx7WW9T49hoC4ksj7cKXkgI5qAJvRjhWcwv4BaoTCZFURtHMQNDcetZ8rP6kBe Wg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32762ncbd2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 10:02:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06E9verV065481;
+        Tue, 14 Jul 2020 10:00:52 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 327q6ryfnn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 10:00:51 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06EA0oTm025570;
+        Tue, 14 Jul 2020 10:00:50 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 03:00:50 -0700
+Date:   Tue, 14 Jul 2020 13:00:44 +0300
+From:   <dan.carpenter@oracle.com>
+To:     paulb@mellanox.com
+Cc:     Paul Blakey <paulb@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5e: CT: Save ct entries tuples in hashtables
+Message-ID: <20200714100044.GA280741@mwanda>
 MIME-Version: 1.0
-References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
- <20200707201229.472834-5-daniel.vetter@ffwll.ch> <20200712222716.4rhvj7hryiecjthv@smtp.gmail.com>
- <20200714095717.njwk2u4tkgro54jn@smtp.gmail.com>
-In-Reply-To: <20200714095717.njwk2u4tkgro54jn@smtp.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 14 Jul 2020 11:59:20 +0200
-Message-ID: <CAKMK7uGu4N2oe04N=haUodmVCLi6HnqFDORkObx8EPUQrEJ+MQ@mail.gmail.com>
-Subject: Re: [PATCH 04/25] drm/vkms: Annotate vblank timer
-To:     Melissa Wen <melissa.srw@gmail.com>
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Trevor Woerner <twoerner@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=3
+ phishscore=0 malwarescore=0 mlxlogscore=977 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ clxscore=1011 priorityscore=1501 mlxlogscore=967 lowpriorityscore=0
+ bulkscore=0 suspectscore=3 phishscore=0 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140076
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:57 AM Melissa Wen <melissa.srw@gmail.com> wrote:
->
-> On 07/12, Rodrigo Siqueira wrote:
-> > Hi,
-> >
-> > Everything looks fine to me, I just noticed that the amdgpu patches did
-> > not apply smoothly, however it was trivial to fix the issues.
-> >
-> > Reviewed-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> >
-> > Melissa,
-> > Since you are using vkms regularly, could you test this patch and revie=
-w
-> > it? Remember to add your Tested-by when you finish.
-> >
-> Hi,
->
-> I've applied the patch series, ran some tests on vkms, and found no
-> issues. I mean, things have remained stable.
->
-> Tested-by: Melissa Wen <melissa.srw@gmail.com>
+Hello Paul Blakey,
 
-Did you test with CONFIG_PROVE_LOCKING enabled in the kernel .config?
-Without that enabled, there's not really any change here, but with
-that enabled there might be some lockdep splats in dmesg indicating a
-problem.
+The patch bc562be9674b: "net/mlx5e: CT: Save ct entries tuples in
+hashtables" from Mar 29, 2020, leads to the following static checker
+warning:
 
-Thanks, Daniel
->
-> > Thanks
-> >
-> > On 07/07, Daniel Vetter wrote:
-> > > This is needed to signal the fences from page flips, annotate it
-> > > accordingly. We need to annotate entire timer callback since if we ge=
-t
-> > > stuck anywhere in there, then the timer stops, and hence fences stop.
-> > > Just annotating the top part that does the vblank handling isn't
-> > > enough.
-> > >
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: linaro-mm-sig@lists.linaro.org
-> > > Cc: linux-rdma@vger.kernel.org
-> > > Cc: amd-gfx@lists.freedesktop.org
-> > > Cc: intel-gfx@lists.freedesktop.org
-> > > Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> > > Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > ---
-> > >  drivers/gpu/drm/vkms/vkms_crtc.c | 8 +++++++-
-> > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/=
-vkms_crtc.c
-> > > index ac85e17428f8..a53a40848a72 100644
-> > > --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> > > +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> > > @@ -1,5 +1,7 @@
-> > >  // SPDX-License-Identifier: GPL-2.0+
-> > >
-> > > +#include <linux/dma-fence.h>
-> > > +
-> > >  #include <drm/drm_atomic.h>
-> > >  #include <drm/drm_atomic_helper.h>
-> > >  #include <drm/drm_probe_helper.h>
-> > > @@ -14,7 +16,9 @@ static enum hrtimer_restart vkms_vblank_simulate(st=
-ruct hrtimer *timer)
-> > >     struct drm_crtc *crtc =3D &output->crtc;
-> > >     struct vkms_crtc_state *state;
-> > >     u64 ret_overrun;
-> > > -   bool ret;
-> > > +   bool ret, fence_cookie;
-> > > +
-> > > +   fence_cookie =3D dma_fence_begin_signalling();
-> > >
-> > >     ret_overrun =3D hrtimer_forward_now(&output->vblank_hrtimer,
-> > >                                       output->period_ns);
-> > > @@ -49,6 +53,8 @@ static enum hrtimer_restart vkms_vblank_simulate(st=
-ruct hrtimer *timer)
-> > >                     DRM_DEBUG_DRIVER("Composer worker already queued\=
-n");
-> > >     }
-> > >
-> > > +   dma_fence_end_signalling(fence_cookie);
-> > > +
-> > >     return HRTIMER_RESTART;
-> > >  }
-> > >
-> > > --
-> > > 2.27.0
-> > >
-> >
-> > --
-> > Rodrigo Siqueira
-> > https://siqueira.tech
->
->
+	drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c:246 mlx5_tc_ct_rule_to_tuple_nat()
+	error: buffer overflow 'tuple->ip.src_v6.in6_u.u6_addr32' 4 <= 7
 
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+   229  
+   230                  offset = act->mangle.offset;
+   231                  val = act->mangle.val;
+   232                  switch (act->mangle.htype) {
+   233                  case FLOW_ACT_MANGLE_HDR_TYPE_IP4:
+   234                          if (offset == offsetof(struct iphdr, saddr))
+   235                                  tuple->ip.src_v4 = cpu_to_be32(val);
+   236                          else if (offset == offsetof(struct iphdr, daddr))
+   237                                  tuple->ip.dst_v4 = cpu_to_be32(val);
+   238                          else
+   239                                  return -EOPNOTSUPP;
+   240                          break;
+   241  
+   242                  case FLOW_ACT_MANGLE_HDR_TYPE_IP6:
+   243                          ip6_offset = (offset - offsetof(struct ipv6hdr, saddr));
+   244                          ip6_offset /= 4;
+   245                          if (ip6_offset < 8)
+                                    ^^^^^^^^^^^^^^
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+   246                                  tuple->ip.src_v6.s6_addr32[ip6_offset] = cpu_to_be32(val);
+                                                         ^^^^^^^^^^^^^^^^^^^^^
+This is a 4 element array.
+
+   247                          else
+   248                                  return -EOPNOTSUPP;
+   249                          break;
+   250  
+   251                  case FLOW_ACT_MANGLE_HDR_TYPE_TCP:
+   252                          if (offset == offsetof(struct tcphdr, source))
+   253                                  tuple->port.src = cpu_to_be16(val);
+   254                          else if (offset == offsetof(struct tcphdr, dest))
+   255                                  tuple->port.dst = cpu_to_be16(val);
+   256                          else
+   257                                  return -EOPNOTSUPP;
+   258                          break;
+
+regards,
+dan carpenter
