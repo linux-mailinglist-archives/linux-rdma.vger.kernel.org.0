@@ -2,142 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970AA21EC6B
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 11:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA7521EC73
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 11:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgGNJNk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 05:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgGNJNk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 05:13:40 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3346C061755
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 02:13:39 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o2so4232402wmh.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jul 2020 02:13:39 -0700 (PDT)
+        id S1725905AbgGNJPL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 05:15:11 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:43484 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725833AbgGNJPI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:15:08 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06E9AOd6001939;
+        Tue, 14 Jul 2020 02:15:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=kuxgregGc6S2EgVSPTZM48AZn8DnapjtpiNIAreKBsY=;
+ b=EUbPDDnG6yDuypIcPQP6m/HE/aigV+fjM42bhIRnCKfmKnCgdSfBNl5Zc7g5GC0GfOOS
+ ShvxSI1sWOKk9h+kY/Vms+DgzHJWmeux/JkJbaGrl2FvCvYtDbFUIk/9/zoMP5A41bqP
+ qrKMEF3YBk1ciz3W7bs8kUexKcQ1nLGRUEkMTWc9OQ0AJ+CH/Nx40Bp3KyXYnlRU+r67
+ QLxGhn1QjSydgePGpRjKKX2eduERuei/3s/AGqyLS3fQ7q7vq9UiTa1khAyfw3N+Ouoe
+ npBDOpg6/NMLBJJtDRXDw/KU7fxiLNuW5Jh2MqN4Y8LmdYwdlpsmGYP4MvhDkOu2XaHT yA== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0b-0016f401.pphosted.com with ESMTP id 328mmhmtbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 02:15:00 -0700
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 14 Jul
+ 2020 02:14:58 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
+ by SC-EXCH04.marvell.com (10.93.176.84) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 14 Jul 2020 02:14:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jrof/7NN3DrqQNlyMAEKLa9DeBATyydnVG404X289+RoFolH+pvNo8chrgWFz962hCmuJ/ELBpiZG/J9eU2rXhgMokcIPbRBursNpLWVmptDtkspdN4AokjD9cvGFTBGNXrr33kFAoLCBwk9z2wQJ3pZeH1vagvSRpQlVp/LsiWFqEfJk3tMrHGn9KiZFaN+qT4HklvS+b+MhPDUuY/1NZ1eQxwMruu1CWFe+OIIm7H2px72C/r0LNETKoXOXW18Ueo/XUOqBjW9m9/FfQ5Xl4a83qdY56UR0/c5wnQtV9Qj032KxiRZOa00+Ew1dq/+GvnnP/DbdU5qG4tqVf5/aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kuxgregGc6S2EgVSPTZM48AZn8DnapjtpiNIAreKBsY=;
+ b=SVeypVhiPLOAq4tMhh80pDSgRcX/ON2yiUk/rxa41LiE2kl1JJPNcX6oxsKjyWsSVUL67RX2dnM2AfrmvVCdzVNobew1DdTtl+P1R6txeNM7lDoN/I72oyEXgsZ5j44Oj9fIa54/K1XJ6oschbF+xn4e2PZyanxNS6UFSu/jgx/FgBwVMwCwNZYzsMK2lW0ifkQb/LO11/YWklLw5KyHf71APOTEuVHa0vArElZlPwE57k/+zI1NelRcN+ViEIhAqhPz/8Fd9Ev/DECsNYpO/4IepEfNunTmKuIQ6KlZJlO/lAYPQGgULTTTd4AY05aSc69zMaBJZPASDCJu9nhNow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9Pqx/9lkzvh5WKoy2o32ZODIaPfaEwhPcr7+MvK0JLI=;
-        b=WEmPKl4FjBTIn0aomMPp7w+X8d/FEsVAv++fuq3P9xc3r87+Pqey830PDSApGhlALv
-         7pwdzfizssuQlmE0yFquCuMLj9J4YWorVDXrJLwWIXNmGzHq24ahi9Gr8H3A+rRDG5Ne
-         mmUJngtpcM3oUVJzKcRnppID1QBoPuw4mPCCk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Pqx/9lkzvh5WKoy2o32ZODIaPfaEwhPcr7+MvK0JLI=;
-        b=HFLZNhbdcZLcVPYvrvukymC/vM0xNs8UUJ58/sMgF8Gf0qG5s3YVEhABUbwvcjx5PW
-         8vmp3F3i2AWJf/3DXqlnsFnf8ypRzEbMTXY1dUvnM22hXLTdqvFawPuReUX/RdNKqHVh
-         EyYXLNKnzNeiFHNYhX4hgjBr5GlHKLemgnY/zts+petATeyyChBp91HKg1UBw1U/fMlm
-         dK+N76TjpBaprSP9DdxsCweyEXC1zsZXjeM+IxcNYl1IjGBHimHw34OnDMmAXFu+6EgO
-         QLHBDv1Fm7kF+qIfSL8ph8Jq3zhXNLHUxzKCIvxgvw0S+GhkDdvMXr8TCNXiIzgWi6k/
-         JvEw==
-X-Gm-Message-State: AOAM530oIkwPazBDWuSRolpHkHT5+29IuD9wq3FiQMwwkvikJRopRZyX
-        Rtdtpmfzbc0lGWjtQJjSXLDmYakuc0M=
-X-Google-Smtp-Source: ABdhPJy4wnELZR5Eh4ZFB+kjIYJnpY/MZyMZokn6shny1yfqigdUl2UIpBotGyCtfwXIA//k/H/hGw==
-X-Received: by 2002:a1c:28a:: with SMTP id 132mr3246206wmc.109.1594718018463;
-        Tue, 14 Jul 2020 02:13:38 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y7sm27516915wrt.11.2020.07.14.02.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 02:13:37 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 11:13:35 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        virtualization@lists.linux-foundation.org,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 2/2] drm/virtio: Remove open-coded commit-tail function
-Message-ID: <20200714091335.GY3278063@phenom.ffwll.local>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <20200709123339.547390-2-daniel.vetter@ffwll.ch>
- <20200709140531.GA220817@ravnborg.org>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kuxgregGc6S2EgVSPTZM48AZn8DnapjtpiNIAreKBsY=;
+ b=VWs89qfIdHAwMZcG7ZdqGNms6APQQ/j2JTOKXzKxm+VV1ijdwYtFZcaey5fJGOCq1kiXrrPvQof8aUc3JTRRaAr9+7hO9jR2KgYFEOVOWw70wFbjkwJn85sNMWlHHfJjYVVn6NvXTqWart2P29WoK/IjqbAymyv72lANU+RYotQ=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (2603:10b6:208:163::15)
+ by BL0PR18MB2337.namprd18.prod.outlook.com (2603:10b6:207:43::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Tue, 14 Jul
+ 2020 09:14:56 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::1849:3020:9782:8979]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::1849:3020:9782:8979%4]) with mapi id 15.20.3174.026; Tue, 14 Jul 2020
+ 09:14:56 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Kamal Heib <kamalheib1@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: RE: [PATCH for-next 7/7] RDMA/qedr: Remove the query_pkey callback
+Thread-Topic: [PATCH for-next 7/7] RDMA/qedr: Remove the query_pkey callback
+Thread-Index: AQHWWbZcOokHrPbEoUyFgxZM+IgULakGyumQ
+Date:   Tue, 14 Jul 2020 09:14:56 +0000
+Message-ID: <MN2PR18MB318208805C9707AE29E55005A1610@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <20200714081038.13131-1-kamalheib1@gmail.com>
+ <20200714081038.13131-8-kamalheib1@gmail.com>
+In-Reply-To: <20200714081038.13131-8-kamalheib1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [46.116.41.26]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bbe0d18b-3f75-4f64-17a0-08d827d6606d
+x-ms-traffictypediagnostic: BL0PR18MB2337:
+x-microsoft-antispam-prvs: <BL0PR18MB23379229B4A8EED35B11D0D6A1610@BL0PR18MB2337.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: voOTzvWmugwhMfSJ9iSqYqAB9reKLlu85IDKevIFC+srbyFDmLFnBamjNNonNeJeQo23mJVN0p8GE2hHH44dntn5v4HNn4nj0T9zt6cGd02RgOCUClT4OBiA7y0VkP6qHuUdyvbW/wQL3S3vVCY9zblNSQLQB3qAh9DIYHaBXZSUnbriyNpizbJX1ctuw++RarJHXbdzRrAhSUIWfpxKYh6dKWfn41eydsWWd4Ja2OnIquWCpNmu9o+Sm3m55pZUrc7jLzYZ8NQOogBvJ4WJnIhFH4uqPxi7jXCFNzHL7IKdYzi8D/wGVI0eyEBLc//Styy+XdyRs9JhsfiGQHHt6g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR18MB3182.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(396003)(366004)(346002)(39860400002)(6506007)(76116006)(83380400001)(66946007)(66476007)(71200400001)(2906002)(66446008)(64756008)(66556008)(33656002)(9686003)(186003)(4326008)(26005)(54906003)(110136005)(8936002)(316002)(7696005)(5660300002)(478600001)(55016002)(8676002)(86362001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: toaThxB5CBx8OgCmDUupeRAYkjv5tdZ801TQ6pf9UEhHFC5v17Z/br0WQSVO8xG2tzUia5aqPxY+xyAQaky/oc0GfOGXMB2or0q26M5nOjZKKkbPzJpq1BacrgCNApri/YExqSgdSkUNL9WHgw/0oK5jRUBseRIzpT9XcJvWj4gAud6ajsNZ3kWGjrr5xs5bW975j568AuuosOmSzkdSoZHLCm4Nzd9BdGDEUgnO6azjQbwDqORGQlkXHWoM+TJInvGbjQLEK1P0ehH8XjsFndcUxtVLXYsO1h+zlDwoI6gi/OHoCgpf7caUWlAJHLv+SQiCmH56/XAGWYpQgNGUtTUdgIU1lUChgLPhZr6+RU3FTctHl3HOOBU4bwpbY4lwN/0hpDFlP/hc853ue8C7tHdQZw9Oqa0Sl8hWppGEdQsixC2dmCmGMZYRm4XF0NCxvXB8uUu4KVuWe57zPo4cFXSrrtfx9lTissXrVhcap50=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709140531.GA220817@ravnborg.org>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR18MB3182.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbe0d18b-3f75-4f64-17a0-08d827d6606d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2020 09:14:56.6782
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fvPy+b3yX4VwdmxyGziUu7N072FW2TVJjJ2Qly6ypM0pRJiqc0sZY0dk2LUWFzki6gjc0guf1ZaeLS+haMYGag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR18MB2337
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-14_02:2020-07-13,2020-07-14 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 04:05:31PM +0200, Sam Ravnborg wrote:
-> On Thu, Jul 09, 2020 at 02:33:39PM +0200, Daniel Vetter wrote:
-> > Exactly matches the one in the helpers.
-> > 
-> > This avoids me having to roll out dma-fence critical section
-> > annotations to this copy.
-> > 
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Gerd Hoffmann <kraxel@redhat.com>
-> > Cc: virtualization@lists.linux-foundation.org
-> > ---
-> >  drivers/gpu/drm/virtio/virtgpu_display.c | 20 --------------------
-> >  1 file changed, 20 deletions(-)
-> Very nice catch:
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> owner@vger.kernel.org> On Behalf Of Kamal Heib
+>=20
+> Now that the query_pkey() isn't mandatory by the RDMA core for iwarp
+> providers, this callback can be removed from the common ops and moved to
+> the RoCE only ops within the qedr driver.
+>=20
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> ---
+>  drivers/infiniband/hw/qedr/main.c  | 3 +--
+> drivers/infiniband/hw/qedr/verbs.c | 1 -
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/hw/qedr/main.c
+> b/drivers/infiniband/hw/qedr/main.c
+> index ccaedfd53e49..c9eeed25c662 100644
+> --- a/drivers/infiniband/hw/qedr/main.c
+> +++ b/drivers/infiniband/hw/qedr/main.c
+> @@ -110,7 +110,6 @@ static int qedr_iw_port_immutable(struct ib_device
+> *ibdev, u8 port_num,
+>  	if (err)
+>  		return err;
+>=20
+> -	immutable->pkey_tbl_len =3D 1;
+>  	immutable->gid_tbl_len =3D 1;
+>  	immutable->core_cap_flags =3D RDMA_CORE_PORT_IWARP;
+>  	immutable->max_mad_size =3D 0;
+> @@ -179,6 +178,7 @@ static int qedr_iw_register_device(struct qedr_dev
+> *dev)
+>=20
+>  static const struct ib_device_ops qedr_roce_dev_ops =3D {
+>  	.get_port_immutable =3D qedr_roce_port_immutable,
+> +	.query_pkey =3D qedr_query_pkey,
+>  };
+>=20
+>  static void qedr_roce_register_device(struct qedr_dev *dev) @@ -221,7
+> +221,6 @@ static const struct ib_device_ops qedr_dev_ops =3D {
+>  	.post_srq_recv =3D qedr_post_srq_recv,
+>  	.process_mad =3D qedr_process_mad,
+>  	.query_device =3D qedr_query_device,
+> -	.query_pkey =3D qedr_query_pkey,
+>  	.query_port =3D qedr_query_port,
+>  	.query_qp =3D qedr_query_qp,
+>  	.query_srq =3D qedr_query_srq,
+> diff --git a/drivers/infiniband/hw/qedr/verbs.c
+> b/drivers/infiniband/hw/qedr/verbs.c
+> index 3d7d5617818f..63eb935a1596 100644
+> --- a/drivers/infiniband/hw/qedr/verbs.c
+> +++ b/drivers/infiniband/hw/qedr/verbs.c
+> @@ -239,7 +239,6 @@ int qedr_query_port(struct ib_device *ibdev, u8 port,
+> struct ib_port_attr *attr)
+>  	attr->ip_gids =3D true;
+>  	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
+>  		attr->gid_tbl_len =3D 1;
+> -		attr->pkey_tbl_len =3D 1;
+>  	} else {
+>  		attr->gid_tbl_len =3D QEDR_MAX_SGID;
+>  		attr->pkey_tbl_len =3D QEDR_ROCE_PKEY_TABLE_LEN;
+> --
+> 2.25.4
 
-Patch applied, thanks for reviewing.
+Thanks,=A0
 
-> > 
-> > diff --git a/drivers/gpu/drm/virtio/virtgpu_display.c b/drivers/gpu/drm/virtio/virtgpu_display.c
-> > index f3ce49c5a34c..af55b334be2f 100644
-> > --- a/drivers/gpu/drm/virtio/virtgpu_display.c
-> > +++ b/drivers/gpu/drm/virtio/virtgpu_display.c
-> > @@ -314,25 +314,6 @@ virtio_gpu_user_framebuffer_create(struct drm_device *dev,
-> >  	return &virtio_gpu_fb->base;
-> >  }
-> >  
-> > -static void vgdev_atomic_commit_tail(struct drm_atomic_state *state)
-> > -{
-> > -	struct drm_device *dev = state->dev;
-> > -
-> > -	drm_atomic_helper_commit_modeset_disables(dev, state);
-> > -	drm_atomic_helper_commit_modeset_enables(dev, state);
-> > -	drm_atomic_helper_commit_planes(dev, state, 0);
-> > -
-> > -	drm_atomic_helper_fake_vblank(state);
-> > -	drm_atomic_helper_commit_hw_done(state);
-> > -
-> > -	drm_atomic_helper_wait_for_vblanks(dev, state);
-> > -	drm_atomic_helper_cleanup_planes(dev, state);
-> > -}
-> > -
-> > -static const struct drm_mode_config_helper_funcs virtio_mode_config_helpers = {
-> > -	.atomic_commit_tail = vgdev_atomic_commit_tail,
-> > -};
-> > -
-> >  static const struct drm_mode_config_funcs virtio_gpu_mode_funcs = {
-> >  	.fb_create = virtio_gpu_user_framebuffer_create,
-> >  	.atomic_check = drm_atomic_helper_check,
-> > @@ -346,7 +327,6 @@ void virtio_gpu_modeset_init(struct virtio_gpu_device *vgdev)
-> >  	drm_mode_config_init(vgdev->ddev);
-> >  	vgdev->ddev->mode_config.quirk_addfb_prefer_host_byte_order = true;
-> >  	vgdev->ddev->mode_config.funcs = &virtio_gpu_mode_funcs;
-> > -	vgdev->ddev->mode_config.helper_private = &virtio_mode_config_helpers;
-> >  
-> >  	/* modes will be validated against the framebuffer size */
-> >  	vgdev->ddev->mode_config.min_width = XRES_MIN;
-> > -- 
-> > 2.27.0
-> > 
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Acked-by: Michal Kalderon=A0<michal.kalderon@marvell.com>
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
