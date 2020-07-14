@@ -2,282 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA2921ED59
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 11:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7311521ED66
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jul 2020 11:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgGNJzp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jul 2020 05:55:45 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:46660 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgGNJzp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 05:55:45 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 52ECD804E0;
-        Tue, 14 Jul 2020 11:55:39 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 11:55:37 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-rdma@vger.kernel.org,
+        id S1726282AbgGNJ52 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jul 2020 05:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgGNJ51 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jul 2020 05:57:27 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB20C061755;
+        Tue, 14 Jul 2020 02:57:27 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q15so4170788wmj.2;
+        Tue, 14 Jul 2020 02:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dHnFvOIsrXw6jrB6m+7BeIm/WgTb5Cqh7gsjXssaU1c=;
+        b=KnoAcjX4xbVjcEeEVJH8HgscVFZmdZqaHYPU5EtBNSakspRZVOZRaF/dmW850mwgBb
+         EIEhQt2487O5Ch8XMPP3/ZU0Tssjmmc7st+F7gnirRjowDijU/yBcwEg3SOb9H1XsW6O
+         ZHx7iwIiziKTbK9+5KHYm9bGfe6nUHtsA16tHYKBk0E3M0omDqd8kn8O5ydg6O3+BZtA
+         PutrPQjiZTbEN81UwfdkSWanowJeW2hnqp7xV47pvtph9xIjnMWVQWpGmaH8ubZFQrdd
+         I/n+BAZE77F8uVwo3QQ03YNLe+6OGonbu4pK0o7ZgyMLHkHiHLHLknU5JFB2PiFJ+gQS
+         W0/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dHnFvOIsrXw6jrB6m+7BeIm/WgTb5Cqh7gsjXssaU1c=;
+        b=oPeWk+0OAMMkLCpvUUOwK/Z3qWXqdrfDO1I9uNJx5vA/Zz79MfRRzWniCsl9jF8a4s
+         pxlAZCUOnSjzrObQ88+Y6OFnNc7bQUwlGNxWuFeGLyLDm0dp38F4AfXXq9ZsM1R5hXqO
+         Tbdj5b2orrHkXB6eBT+zprTgwgEq9jHXbpA8R7OAa/ByWQy37Zr1ZPH8HDv2lwrOsH/w
+         /pXnW/WdNquJQ9r5SrwkY35WrlFAFUdjcrk7LbEr+VE67rUhmFqCsNryrEIT1KK5Qv6f
+         o7lmx2ZcYOASnmj8uFU3WY9MeYK2gN0ATsK7H+8KV34e2G96z97neRFtevG+YCNDVrd6
+         l/vQ==
+X-Gm-Message-State: AOAM531knnD8u/+e0mpoTqhMTW4GdDQUGc2GuXbtB5JCgSmFmbaJXzzU
+        wWHm2zVZJYMeFv9Gzk8qaLc=
+X-Google-Smtp-Source: ABdhPJy//OrDpSJANwxwERqV3gHdFYgIJtILxA4cb/jXIXye2R9kTiX9uf+7YtLVsgsXyKpQFfoArw==
+X-Received: by 2002:a1c:4444:: with SMTP id r65mr3301652wma.129.1594720644598;
+        Tue, 14 Jul 2020 02:57:24 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id r28sm27797330wrr.20.2020.07.14.02.57.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 02:57:23 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 06:57:17 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
         Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/atmel: Use drm_atomic_helper_commit
-Message-ID: <20200714095537.GA1573094@ravnborg.org>
-References: <20200707201229.472834-10-daniel.vetter@ffwll.ch>
- <20200707213137.482778-1-daniel.vetter@ffwll.ch>
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Trevor Woerner <twoerner@gmail.com>
+Subject: Re: [PATCH 04/25] drm/vkms: Annotate vblank timer
+Message-ID: <20200714095717.njwk2u4tkgro54jn@smtp.gmail.com>
+References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
+ <20200707201229.472834-5-daniel.vetter@ffwll.ch>
+ <20200712222716.4rhvj7hryiecjthv@smtp.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200707213137.482778-1-daniel.vetter@ffwll.ch>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=QyXUC8HyAAAA:8 a=7gkXJVJtAAAA:8 a=VwQbUJbxAAAA:8
-        a=XYAwZIGsAAAA:8 a=P-IC7800AAAA:8 a=JfrnYn6hAAAA:8 a=e5mUnYsNAAAA:8
-        a=h6CN_4qJII8sBilvXN4A:9 a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
-        a=AjGcO6oz07-iQ99wixmX:22 a=E8ToXWR_bxluHZ7gmE-Z:22
-        a=d3PnA9EDa4IxuAV0gXij:22 a=1CNFftbPRP8L7MoqJWF3:22
-        a=Vxmtnl_E_bksehYqCbjh:22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200712222716.4rhvj7hryiecjthv@smtp.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Daniel.
-
-On Tue, Jul 07, 2020 at 11:31:37PM +0200, Daniel Vetter wrote:
-> One of these drivers that predates the nonblocking support in helpers,
-> and hand-rolled its own thing. Entirely not anything specific here, we
-> can just delete it all and replace it with the helper version.
+On 07/12, Rodrigo Siqueira wrote:
+> Hi,
 > 
-> Could also perhaps use the drm_mode_config_helper_suspend/resume
-> stuff, for another few lines deleted. But I'm not looking at that
-> stuff, I'm just going through all the atomic commit functions and make
-> sure they have properly annotated dma-fence critical sections
-> everywhere.
+> Everything looks fine to me, I just noticed that the amdgpu patches did
+> not apply smoothly, however it was trivial to fix the issues.
 > 
-> v2:
-> - Also delete the workqueue (Sam)
-> - drop the @commit kerneldoc, I missed that one.
+> Reviewed-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
 > 
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Boris Brezillon <bbrezillon@kernel.org>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-I did succeed getttign my board operational.
-But based on reading the code:
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> Melissa,
+> Since you are using vkms regularly, could you test this patch and review
+> it? Remember to add your Tested-by when you finish.
+>
+Hi,
 
-I assume you will apply it.
+I've applied the patch series, ran some tests on vkms, and found no
+issues. I mean, things have remained stable.
 
-	Sam
+Tested-by: Melissa Wen <melissa.srw@gmail.com>
 
-
-> ---
->  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c | 107 +------------------
->  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h |   7 --
->  2 files changed, 2 insertions(+), 112 deletions(-)
+> Thanks
 > 
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> index 871293d1aeeb..03984932d174 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-> @@ -557,103 +557,10 @@ static irqreturn_t atmel_hlcdc_dc_irq_handler(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> -struct atmel_hlcdc_dc_commit {
-> -	struct work_struct work;
-> -	struct drm_device *dev;
-> -	struct drm_atomic_state *state;
-> -};
-> -
-> -static void
-> -atmel_hlcdc_dc_atomic_complete(struct atmel_hlcdc_dc_commit *commit)
-> -{
-> -	struct drm_device *dev = commit->dev;
-> -	struct atmel_hlcdc_dc *dc = dev->dev_private;
-> -	struct drm_atomic_state *old_state = commit->state;
-> -
-> -	/* Apply the atomic update. */
-> -	drm_atomic_helper_commit_modeset_disables(dev, old_state);
-> -	drm_atomic_helper_commit_planes(dev, old_state, 0);
-> -	drm_atomic_helper_commit_modeset_enables(dev, old_state);
-> -
-> -	drm_atomic_helper_wait_for_vblanks(dev, old_state);
-> -
-> -	drm_atomic_helper_cleanup_planes(dev, old_state);
-> -
-> -	drm_atomic_state_put(old_state);
-> -
-> -	/* Complete the commit, wake up any waiter. */
-> -	spin_lock(&dc->commit.wait.lock);
-> -	dc->commit.pending = false;
-> -	wake_up_all_locked(&dc->commit.wait);
-> -	spin_unlock(&dc->commit.wait.lock);
-> -
-> -	kfree(commit);
-> -}
-> -
-> -static void atmel_hlcdc_dc_atomic_work(struct work_struct *work)
-> -{
-> -	struct atmel_hlcdc_dc_commit *commit =
-> -		container_of(work, struct atmel_hlcdc_dc_commit, work);
-> -
-> -	atmel_hlcdc_dc_atomic_complete(commit);
-> -}
-> -
-> -static int atmel_hlcdc_dc_atomic_commit(struct drm_device *dev,
-> -					struct drm_atomic_state *state,
-> -					bool async)
-> -{
-> -	struct atmel_hlcdc_dc *dc = dev->dev_private;
-> -	struct atmel_hlcdc_dc_commit *commit;
-> -	int ret;
-> -
-> -	ret = drm_atomic_helper_prepare_planes(dev, state);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* Allocate the commit object. */
-> -	commit = kzalloc(sizeof(*commit), GFP_KERNEL);
-> -	if (!commit) {
-> -		ret = -ENOMEM;
-> -		goto error;
-> -	}
-> -
-> -	INIT_WORK(&commit->work, atmel_hlcdc_dc_atomic_work);
-> -	commit->dev = dev;
-> -	commit->state = state;
-> -
-> -	spin_lock(&dc->commit.wait.lock);
-> -	ret = wait_event_interruptible_locked(dc->commit.wait,
-> -					      !dc->commit.pending);
-> -	if (ret == 0)
-> -		dc->commit.pending = true;
-> -	spin_unlock(&dc->commit.wait.lock);
-> -
-> -	if (ret)
-> -		goto err_free;
-> -
-> -	/* We have our own synchronization through the commit lock. */
-> -	BUG_ON(drm_atomic_helper_swap_state(state, false) < 0);
-> -
-> -	/* Swap state succeeded, this is the point of no return. */
-> -	drm_atomic_state_get(state);
-> -	if (async)
-> -		queue_work(dc->wq, &commit->work);
-> -	else
-> -		atmel_hlcdc_dc_atomic_complete(commit);
-> -
-> -	return 0;
-> -
-> -err_free:
-> -	kfree(commit);
-> -error:
-> -	drm_atomic_helper_cleanup_planes(dev, state);
-> -	return ret;
-> -}
-> -
->  static const struct drm_mode_config_funcs mode_config_funcs = {
->  	.fb_create = drm_gem_fb_create,
->  	.atomic_check = drm_atomic_helper_check,
-> -	.atomic_commit = atmel_hlcdc_dc_atomic_commit,
-> +	.atomic_commit = drm_atomic_helper_commit,
->  };
->  
->  static int atmel_hlcdc_dc_modeset_init(struct drm_device *dev)
-> @@ -712,11 +619,6 @@ static int atmel_hlcdc_dc_load(struct drm_device *dev)
->  	if (!dc)
->  		return -ENOMEM;
->  
-> -	dc->wq = alloc_ordered_workqueue("atmel-hlcdc-dc", 0);
-> -	if (!dc->wq)
-> -		return -ENOMEM;
-> -
-> -	init_waitqueue_head(&dc->commit.wait);
->  	dc->desc = match->data;
->  	dc->hlcdc = dev_get_drvdata(dev->dev->parent);
->  	dev->dev_private = dc;
-> @@ -724,7 +626,7 @@ static int atmel_hlcdc_dc_load(struct drm_device *dev)
->  	ret = clk_prepare_enable(dc->hlcdc->periph_clk);
->  	if (ret) {
->  		dev_err(dev->dev, "failed to enable periph_clk\n");
-> -		goto err_destroy_wq;
-> +		return ret;
->  	}
->  
->  	pm_runtime_enable(dev->dev);
-> @@ -761,9 +663,6 @@ static int atmel_hlcdc_dc_load(struct drm_device *dev)
->  	pm_runtime_disable(dev->dev);
->  	clk_disable_unprepare(dc->hlcdc->periph_clk);
->  
-> -err_destroy_wq:
-> -	destroy_workqueue(dc->wq);
-> -
->  	return ret;
->  }
->  
-> @@ -771,7 +670,6 @@ static void atmel_hlcdc_dc_unload(struct drm_device *dev)
->  {
->  	struct atmel_hlcdc_dc *dc = dev->dev_private;
->  
-> -	flush_workqueue(dc->wq);
->  	drm_kms_helper_poll_fini(dev);
->  	drm_atomic_helper_shutdown(dev);
->  	drm_mode_config_cleanup(dev);
-> @@ -784,7 +682,6 @@ static void atmel_hlcdc_dc_unload(struct drm_device *dev)
->  
->  	pm_runtime_disable(dev->dev);
->  	clk_disable_unprepare(dc->hlcdc->periph_clk);
-> -	destroy_workqueue(dc->wq);
->  }
->  
->  static int atmel_hlcdc_dc_irq_postinstall(struct drm_device *dev)
-> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-> index 469d4507e576..5b5c774e0edf 100644
-> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-> @@ -331,9 +331,7 @@ struct atmel_hlcdc_dc_desc {
->   * @crtc: CRTC provided by the display controller
->   * @planes: instantiated planes
->   * @layers: active HLCDC layers
-> - * @wq: display controller workqueue
->   * @suspend: used to store the HLCDC state when entering suspend
-> - * @commit: used for async commit handling
->   */
->  struct atmel_hlcdc_dc {
->  	const struct atmel_hlcdc_dc_desc *desc;
-> @@ -341,15 +339,10 @@ struct atmel_hlcdc_dc {
->  	struct atmel_hlcdc *hlcdc;
->  	struct drm_crtc *crtc;
->  	struct atmel_hlcdc_layer *layers[ATMEL_HLCDC_MAX_LAYERS];
-> -	struct workqueue_struct *wq;
->  	struct {
->  		u32 imr;
->  		struct drm_atomic_state *state;
->  	} suspend;
-> -	struct {
-> -		wait_queue_head_t wait;
-> -		bool pending;
-> -	} commit;
->  };
->  
->  extern struct atmel_hlcdc_formats atmel_hlcdc_plane_rgb_formats;
+> On 07/07, Daniel Vetter wrote:
+> > This is needed to signal the fences from page flips, annotate it
+> > accordingly. We need to annotate entire timer callback since if we get
+> > stuck anywhere in there, then the timer stops, and hence fences stop.
+> > Just annotating the top part that does the vblank handling isn't
+> > enough.
+> > 
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Cc: linux-rdma@vger.kernel.org
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: intel-gfx@lists.freedesktop.org
+> > Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Christian König <christian.koenig@amd.com>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> > Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > ---
+> >  drivers/gpu/drm/vkms/vkms_crtc.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+> > index ac85e17428f8..a53a40848a72 100644
+> > --- a/drivers/gpu/drm/vkms/vkms_crtc.c
+> > +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+> > @@ -1,5 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0+
+> >  
+> > +#include <linux/dma-fence.h>
+> > +
+> >  #include <drm/drm_atomic.h>
+> >  #include <drm/drm_atomic_helper.h>
+> >  #include <drm/drm_probe_helper.h>
+> > @@ -14,7 +16,9 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+> >  	struct drm_crtc *crtc = &output->crtc;
+> >  	struct vkms_crtc_state *state;
+> >  	u64 ret_overrun;
+> > -	bool ret;
+> > +	bool ret, fence_cookie;
+> > +
+> > +	fence_cookie = dma_fence_begin_signalling();
+> >  
+> >  	ret_overrun = hrtimer_forward_now(&output->vblank_hrtimer,
+> >  					  output->period_ns);
+> > @@ -49,6 +53,8 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+> >  			DRM_DEBUG_DRIVER("Composer worker already queued\n");
+> >  	}
+> >  
+> > +	dma_fence_end_signalling(fence_cookie);
+> > +
+> >  	return HRTIMER_RESTART;
+> >  }
+> >  
+> > -- 
+> > 2.27.0
+> > 
+> 
 > -- 
-> 2.27.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Rodrigo Siqueira
+> https://siqueira.tech
+
+
