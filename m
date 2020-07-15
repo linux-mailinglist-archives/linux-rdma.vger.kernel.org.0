@@ -2,146 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2904220E77
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2020 15:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C0C220F02
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2020 16:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731942AbgGONwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jul 2020 09:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        id S1728082AbgGOORL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jul 2020 10:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729086AbgGONwA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jul 2020 09:52:00 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2139EC061755
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 06:52:00 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id p26so472254oos.7
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 06:52:00 -0700 (PDT)
+        with ESMTP id S1726834AbgGOORL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jul 2020 10:17:11 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E36C061755
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 07:17:11 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls15so3138316pjb.1
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 07:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MqsOl2rYB/7u7Gut1iGuVJHU6JubtHB+/cs3tCH619k=;
-        b=IKgfCkkoCpyGSci4cTPs6WgN6drUjM+E3fQd+RPREwzfcvyoI/L2/DSylDaZWzbbuB
-         ZgDTW9XW77MQfdfYrmTKY8Ba+zSSqU0LXVTiQfGjJQ1YBrXbynYX7OwZI6lTTmBPBmKW
-         2LvOJErq6bacSh3G/oxiPt9fWxpefW9zWQzeg=
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=BUujrJp/fLBUqdhVh6MGt9MqY3XGPAqH8rPeP0da008=;
+        b=DsXRNbpINrw5epzvR1DU/pqGz5fzG+bfHXbe89aQ35SpMpihdIwC2mgXE86HWeZPWQ
+         juei1X/6BUIjxW4mV/XX6yi4/yKrRsDqfCsqaNTNG8xLjjMvl6E/VE4yTM/sxsN9cXZU
+         QEGnsDjqkci7YNUJeYAGIDj3itxxRUwBZ7xz8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MqsOl2rYB/7u7Gut1iGuVJHU6JubtHB+/cs3tCH619k=;
-        b=lUXlxif07/kQN3HUeIgqj1765uoLALV8ALu6ejPNqLZH8AU9rD9X79XglM645P1omY
-         ffvNkrfWJn8SRfh17tAFJf4ds5Lgg3Jx1fFc3kOGEN7f+0Qau1+i221lc0cPpy0pCpcI
-         ObmIc8Pd+2a4sQLedZEYAJowKa81JNJa5i2W4zdid+JpghHExYO22a5COk16pXUs+diG
-         eU8oq+oxOcrNVRO9cmYAAvVND4JaSAlmW3GiTFcFW4nx8dGpQM3IHf3F+Z/C5AzDstMp
-         3jyvBQoeitTCC+N/O9CmH76yIi+mYP759veT2wWPX70IBZP4I2OhWCw5jFXJd0pJlj5y
-         MOBQ==
-X-Gm-Message-State: AOAM530jlQK/JY4vsR2/dIKEPPSqiGzw5XLKeXiJBkckS4KIDPIPsLiZ
-        ufW00ubXi30k192neam5FX3sdPGRoVl1g5FDjsaokg==
-X-Google-Smtp-Source: ABdhPJwb4NJPJ8t5WoT1YhrXoIhXNQ8S5ZrdL1024UrQe8WZqMBqKIOTr7Bpj9gabyh7CPZGKTyh2I4hoATPLTHtUTk=
-X-Received: by 2002:a4a:bb8a:: with SMTP id h10mr9338522oop.28.1594821119474;
- Wed, 15 Jul 2020 06:51:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
- <20200707201229.472834-9-daniel.vetter@ffwll.ch> <20200715125347.GT159988@e110455-lin.cambridge.arm.com>
-In-Reply-To: <20200715125347.GT159988@e110455-lin.cambridge.arm.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 15 Jul 2020 15:51:48 +0200
-Message-ID: <CAKMK7uHt=eUP+FQpET8j8bVsmL3FqEBVcWPQSk6R27SMqpuV+w@mail.gmail.com>
-Subject: Re: [PATCH 08/25] drm/malidp: Annotate dma-fence critical section in
- commit path
-To:     Liviu Dudau <liviu.dudau@arm.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "James (Qian) Wang" <james.qian.wang@arm.com>,
-        Mihail Atanassov <mihail.atanassov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BUujrJp/fLBUqdhVh6MGt9MqY3XGPAqH8rPeP0da008=;
+        b=j3Y+vCxEF7STKLdm/kK9rNAUr9T9yLvuna3p2830p4c7U80VCQAZW33lL3gKwKkdzy
+         0a5JxALFMUnao+Z6s0LSksD108w+UW+IyHqW2X1E019GCUn5gOeamqzJu7BDSxlF1GU4
+         RyF8hLQuRokiqdHaCUFkjBweIpY92llC5cB2ruzvn8207tGAU01zPY7fgXC3/cPqQ4H8
+         /ong3E30R5RoJdM74wZYAS4s6qFMkXhbnfvp3buEqsJIODigWLgaEATeEljUr+1HMyzv
+         FA+7yrCHUXv8+WQ07Lmqz5MGCqe22P7UzPr+zEoJuQmZZEl/LayTT7hfZhbJIH+F59Ov
+         H06A==
+X-Gm-Message-State: AOAM532l91zt1BoIojO/4eO7V7Oc7FwsXuR8WKvPSFit4bbWn1AvxKRv
+        /X4bUGcTBbCj1Ya4AMoF0DMzmFe1Qr9UJ8umRSR09LEhJk11Oo4mzRSwJIQZCHFMyWZ5mqd5812
+        LmxeOHbmkbQegJSk41+lgxsID8teC0gE6C5BrPERQ6u6RYN/1R/AEpOHtywLrMb2ecNi26wTGLa
+        vTTwQ=
+X-Google-Smtp-Source: ABdhPJwjSITtu3T6XVyFe1xvVR+yxi+LdNUs0Vk4aRO8gC+mU1BHl/B2VnWEGuycecvSxVjaDhsKqQ==
+X-Received: by 2002:a17:902:c142:: with SMTP id 2mr8746237plj.222.1594822630191;
+        Wed, 15 Jul 2020 07:17:10 -0700 (PDT)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id k92sm2399254pje.30.2020.07.15.07.17.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jul 2020 07:17:09 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com
+Cc:     devesh.sharma@broadcom.com, leon@kernel.org
+Subject: [PATCH V2 for-next 0/6] Broadcom's driver update
+Date:   Wed, 15 Jul 2020 10:16:53 -0400
+Message-Id: <1594822619-4098-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 2:53 PM Liviu Dudau <liviu.dudau@arm.com> wrote:
->
-> On Tue, Jul 07, 2020 at 10:12:12PM +0200, Daniel Vetter wrote:
-> > Again needs to be put right after the call to
-> > drm_atomic_helper_commit_hw_done(), since that's the last thing which
-> > can hold up a subsequent atomic commit.
-> >
-> > No surprises here.
->
-> I was (still am) hoping to do a testing for this patch but when I dug out=
- the series
-> from the ML it looked like it has extra dependencies, so I was waiting fo=
-r the dust
-> to settle.
->
-> Otherwise, LGTM.
+This series is mainly focused on adding driver fast path
+changes to support variable sized wqe support. There are
+five patches in this series.
 
-I should all just apply I think, it's based on drm-tip. Branch with
-bunch of other random stuff is here:
+The first patch is taking care of passing wqe mode through
+driver load sequence. The second patch is moving cqe polling
+logic on shadow queue indicies. Patch 0003 0004 and 0005 deal
+with changing post-send/post-recv to accomodate changes.
 
-https://cgit.freedesktop.org/~danvet/drm/log/
+The last patch 0006, adds a new co-maintainer's name.
 
-If that doesn't cherry-pick cleanly I'm confused about something.
--Daniel
+link to v1 series:
+https://www.spinics.net/lists/linux-rdma/msg92678.html
 
->
-> Best regards,
-> Liviu
->
-> >
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > Cc: "James (Qian) Wang" <james.qian.wang@arm.com>
-> > Cc: Liviu Dudau <liviu.dudau@arm.com>
-> > Cc: Mihail Atanassov <mihail.atanassov@arm.com>
-> > ---
-> >  drivers/gpu/drm/arm/malidp_drv.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/arm/malidp_drv.c b/drivers/gpu/drm/arm/mal=
-idp_drv.c
-> > index 69fee05c256c..26e60401a8e1 100644
-> > --- a/drivers/gpu/drm/arm/malidp_drv.c
-> > +++ b/drivers/gpu/drm/arm/malidp_drv.c
-> > @@ -234,6 +234,7 @@ static void malidp_atomic_commit_tail(struct drm_at=
-omic_state *state)
-> >       struct drm_crtc *crtc;
-> >       struct drm_crtc_state *old_crtc_state;
-> >       int i;
-> > +     bool fence_cookie =3D dma_fence_begin_signalling();
-> >
-> >       pm_runtime_get_sync(drm->dev);
-> >
-> > @@ -260,6 +261,8 @@ static void malidp_atomic_commit_tail(struct drm_at=
-omic_state *state)
-> >
-> >       malidp_atomic_commit_hw_done(state);
-> >
-> > +     dma_fence_end_signalling(fence_cookie);
-> > +
-> >       pm_runtime_put(drm->dev);
-> >
-> >       drm_atomic_helper_cleanup_planes(drm, state);
-> > --
-> > 2.27.0
-> >
->
-> --
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> | I would like to |
-> | fix the world,  |
-> | but they're not |
-> | giving me the   |
->  \ source code!  /
->   ---------------
->     =C2=AF\_(=E3=83=84)_/=C2=AF
+Changes V1 -> V2:
+ -- Splitted the first big patch in 5 smaller patches
+ -- Dropped ABI related patch to address the review
+    comment from Jason and Leon.
+ -- added new patch to update maintainer's list
 
 
+Devesh Sharma (6):
+  RDMA/bnxt_re: introduce wqe mode to select execution path
+  RDMA/bnxt_re: introduce a function to allocate swq
+  RDMA/bnxt_re: Pull psn buffer dynamically based on prod
+  RDMA/bnxt_re: Add helper data structures
+  RDMA/bnxt_re: Change wr posting logic to accommodate variable wqes
+  RDMA/bnxt_re: Update maintainers for Broadcom rdma driver
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+ MAINTAINERS                               |   1 +
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 168 +++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   8 +-
+ drivers/infiniband/hw/bnxt_re/main.c      |  23 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 751 +++++++++++++++++-------------
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  | 127 ++++-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  58 ++-
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h  |   1 +
+ 8 files changed, 743 insertions(+), 394 deletions(-)
+
+-- 
+1.8.3.1
+
