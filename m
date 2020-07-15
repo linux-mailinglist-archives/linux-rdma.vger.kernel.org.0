@@ -2,137 +2,269 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B2220BFA
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2020 13:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9F6220C71
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jul 2020 13:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbgGOLhw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jul 2020 07:37:52 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:44404 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728970AbgGOLhv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:37:51 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0eea8d0000>; Wed, 15 Jul 2020 19:37:49 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 15 Jul 2020 04:37:49 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Wed, 15 Jul 2020 04:37:49 -0700
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
- 2020 11:37:48 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 15 Jul 2020 11:37:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CMNAOAr650akm/7dDas7BTAIPVDWKg3++jqjVweL2uJ2tfmVoHBfpFNWPavSwieuNB55fAEUvQYTuPyeu9R6grUjtmYsUOdFbuEXfHdHGO6jcmpMLU+yzt1u+Txcg2LK4h01ua5Y9TIO8FXHnP7ZFBnQE0DRP1BzfcdFvAiARrXANZNEHtB7ZA93PqDrmktx+vMstAMAn9hO4cdCQ1kItjJjK6Ca9qFNsTKtXpW5fbeECp2+eVsxwDaVvtXPPl2rwCrAjkDJD1c97oy659Wm8aa5Yu+dXmsH64Bv2bZxE6ITZ7PHhCzJxPSiRZFmpQXgqN9memWUd5LbZqUrdurHyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tVQoQwE0i9TxII/9RDa0YbA0pXsWx/zodF4tyKdGJCA=;
- b=nWeztETDxa7AIGUtrAKZsqs8c6IDaTOwSa7sHA3IBpeiY/2nd/5LamsMrvUE5aEOVvaSSdwzJYzXc9g8s/0ZGlD0OIE5AuZ9WBepTMkujlW75RUw+/dcmbMke2Y7qm/Veu1XcUQPPym0qpbDHcmaqWemipYfk3U9CgzHwvv/3v23w1yfcz4N8IHZ6AL9EoWYzAo0GdXVZXSaESh4mWCQnuokPVxiJU3DbeqINtmI334wNxoFVDYsjPejZ3z9+1098GY55/MSntvu8e9gCDW+c+aZkYALOkZwBe9bJEa3Aagfz06Gc1zN6xctManq6v4kLDD9b8xYJoqje7DeTcc1wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: yadro.com; dkim=none (message not signed)
- header.d=none;yadro.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2603.namprd12.prod.outlook.com (2603:10b6:5:49::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Wed, 15 Jul
- 2020 11:37:46 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
- 11:37:46 +0000
-Date:   Wed, 15 Jul 2020 08:37:43 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mikhail Malygin <m.malygin@yadro.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Sergey Kojushev <S.Kojushev@yadro.com>,
-        "linux@yadro.com" <linux@yadro.com>
-Subject: Re: [PATCH] rdma_rxe: Prevent access to wr->next ptr afrer wr is
- posted to send queue
-Message-ID: <20200715113743.GC2021234@nvidia.com>
-References: <A9F28BA8-EAB3-48AC-99C0-09E93D7B9DE0@yadro.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <A9F28BA8-EAB3-48AC-99C0-09E93D7B9DE0@yadro.com>
-X-ClientProxiedBy: YT1PR01CA0138.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730490AbgGOLx3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jul 2020 07:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728461AbgGOLx2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jul 2020 07:53:28 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8DDC061755
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 04:53:28 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id r8so1975761oij.5
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jul 2020 04:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4FinrZlSydscGLD2XsWVO6ma8sgzxkNosmE+MO8lKig=;
+        b=EuIfKI6Bn90Pi6oY4F2zofoOTzeGYqVMf+4Hl3ChqJRLun57M5MH9Itz9/q9Na8Rdc
+         3h8d43G5mJFidQR/uT6wg+ZN0zp46F4bNgoXw+zvdR/GApCyHO9VI5zbGEa5Aek9L2cL
+         XHemHmKdlyehq57zo12xitk+g0hXVmgANpaE0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4FinrZlSydscGLD2XsWVO6ma8sgzxkNosmE+MO8lKig=;
+        b=mHQUg1lVRmd3FFcTAZ+vff4ngmjInxG5Ovbthnnjmz0svl+WdkR12aWdYgvhCPcuDa
+         7IRcuIH8xF2jLoTmzFLOBcNuepN9ONtV06wCcxhwk/SJjR/vq801OReRQS+t0d1IMnka
+         DfykAjDOMu32MBcBX/xxkoD4ObAdL4D8bgh0TwBAEK8+dCGWvqGijQAblo008A+Vwx9X
+         GrV4t94SyBPsGZB/mry6h/v+Pmt8gNTJVa8yMXcG8YXNIUPPzXjIirv8m3loZYlMLVbM
+         GbDEhwB5YlFBGLQuPaoiKs8ESBiyA22PmXimui+sDL/EkHlh8RmH2mVrJubE93KhbVfy
+         aR9g==
+X-Gm-Message-State: AOAM532LkS1v++7Cs3eNSyZ9l3/lmWB26JapM+4TcxCi19ChR57ki44W
+        VGo5qQeY7LAs0VudKVU7l8ooqWW8viFInL2kObVUs12I
+X-Google-Smtp-Source: ABdhPJxUL5GYS/lkJdhIPXoYwZ5RFdtdz0fp2dGsnvxTUfeb+KRTouxT1ct6MX8VZM0M2ALQCn8JC6faol/ocWZzBrk=
+X-Received: by 2002:aca:cc8e:: with SMTP id c136mr7447522oig.128.1594814007622;
+ Wed, 15 Jul 2020 04:53:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0138.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Wed, 15 Jul 2020 11:37:45 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jvfjL-00AaDe-Hv; Wed, 15 Jul 2020 08:37:43 -0300
-X-Originating-IP: [206.223.160.26]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20d8234d-c7e6-442f-85b4-08d828b37e5b
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2603:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB26033A1F42CB2B8833C1A8F9C27E0@DM6PR12MB2603.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ppLJ7immwoev60zN8KaKYIz/uGBKKNCrQelSziH6QVnfepecdqtc/kF1dSy6gCU+Sf+Wpe+eXaZxR1E0A+IwEHo/vJ6Cob06Jr3sJGtHgKwkOvC3AX54ZiN0u8HmK1jVLiZpOF5/EiHaPQJoSazhlhNwcd4JKTkWnhGgMs9+Aq+boUfSVHtrap7tqJ5dTZdKlC6UKujx3vspCGd0RvaWVL7ogxoISddLTp+WgvIgbM4Xen+Xh9DiEDGckk4qC/3T18OFM8VnoOhICJShAz9HDu4RLEol9Q/1OhxqXY3Y8oq+4wwK6KYBgAPpHXKqmAsOwXJVfqtljXRGgOc3sXv9Yw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(396003)(366004)(136003)(346002)(376002)(36756003)(186003)(26005)(54906003)(86362001)(2906002)(83380400001)(6916009)(8676002)(4326008)(9746002)(8936002)(9786002)(33656002)(478600001)(5660300002)(4744005)(316002)(1076003)(2616005)(426003)(66946007)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 9EZTfUxr+7Fdd+YzvI5XecaiQr8WcppDxREYWaaExRlba8rt95AiplH9aysNdckm+WuUiBCtkxT8caQxtNywk/b7yO7xbiKWjcy/ACxEw3Vmz7tjH/bOGh1yrs+zFulXw5lqLCLjSxfz87CJ8a/PiCBYOKCxE1Czbln54dWqYL1MeUxYk2PAxpB/hYiqBhYBk22GLwdDUp7X/P8250Oo5lnYSwuFMU4Qnn2FixZm6bl8mQzfjlLFYY3kbTwRRB+sU2S3dPEiGMT/91yp2I5R1OQtiyGP5C8SInPVHdSbnEd63Adq5KlOzUf7IIlYbRG0Y/pEUkeZozL5rmJtdpA8mXHC0iDDaE+n/jvr1SSl/hKfii2iXHcwqbNTsrMB/YxmTCu0T0UdsIm5NhPzIV3Cv5EOiIWaYzDErNijpR8K3H1a/uh+r+hIcDrNjQcZHJBRoRchst/A2rRjpGlyNjqTXSq442ozmsZMrEWaAENjBL8CDDYZrN0Qlultbzpbm5NS
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20d8234d-c7e6-442f-85b4-08d828b37e5b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2020 11:37:46.2886
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TJBwxOhsO0bVrXSFZxa/h29OGEiR3phyXwirrEtx+1oZouvtgAEnZchMjVEP1bTC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2603
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594813069; bh=d+IaYHGMweZE92rGGoq/A+Nv798+xtmndYLdlJ2oJzE=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         Content-Transfer-Encoding:In-Reply-To:X-ClientProxiedBy:
-         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
-         X-Originating-IP:X-MS-PublicTrafficType:
-         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=VpQJ51WoWnKacvfsVswCm2W0aelp1fZwzXbkS3aWLmszS77wZsMQCB/Ev7kbaOsEs
-         c6X36yfLxMMVQR65hdWTiz/nK2Y4RsxuuTwpo2yyCqLvdWe94LeK+YIxEwQWvKhhzk
-         6GrFAvxMogJMCBKHlCbfkB5rjp58jgEQUprJfWuo1xtSAQyoxo97KrDPbDSMTjf0IH
-         04xI+T+eNAjTXlYqssgyRCmI2WTG5WV2SaYzyL2E6jR13r836vDDlJK/YIiK0OZRDm
-         CLuAIcfJUJnsMkf+eWQOZlqlh/PV/IMSJzpNNgpTon0Rnv/48sIRhPFVlE8bVKM9Sc
-         /U4KHkTtz5L3g==
+References: <20200707201229.472834-1-daniel.vetter@ffwll.ch>
+ <20200707201229.472834-20-daniel.vetter@ffwll.ch> <20200714104910.GC3278063@phenom.ffwll.local>
+ <d3e85f62-e427-7f1c-0ff4-842ffe57172e@amd.com> <20200714143124.GG3278063@phenom.ffwll.local>
+ <ab593d2b-051f-4d34-26d1-596351a50630@gmail.com>
+In-Reply-To: <ab593d2b-051f-4d34-26d1-596351a50630@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 15 Jul 2020 13:53:16 +0200
+Message-ID: <CAKMK7uFjG9LjJ_bAqZ=_1tO=iEnhMpJBbzxG-OEWzXujf8jnGw@mail.gmail.com>
+Subject: Re: [PATCH 19/25] drm/amdgpu: s/GFP_KERNEL/GFP_ATOMIC in scheduler code
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 08:57:40AM +0000, Mikhail Malygin wrote:
->=20
-> > Why is this READ_ONCE? The wr list at this point cannot be allowed to
-> > change
-> >=20
-> > Jason
->=20
-> The idea behind this READ_ONCE was to make sure read of wr->next
-> happens before post_send_one(), as there is no data dependency
-> between post_send_one and read of wr->next. However I=E2=80=99m not 100%
-> sure this is necessary here.
+On Wed, Jul 15, 2020 at 11:17 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> Am 14.07.20 um 16:31 schrieb Daniel Vetter:
+> > On Tue, Jul 14, 2020 at 01:40:11PM +0200, Christian K=C3=B6nig wrote:
+> >> Am 14.07.20 um 12:49 schrieb Daniel Vetter:
+> >>> On Tue, Jul 07, 2020 at 10:12:23PM +0200, Daniel Vetter wrote:
+> >>>> My dma-fence lockdep annotations caught an inversion because we
+> >>>> allocate memory where we really shouldn't:
+> >>>>
+> >>>>    kmem_cache_alloc+0x2b/0x6d0
+> >>>>    amdgpu_fence_emit+0x30/0x330 [amdgpu]
+> >>>>    amdgpu_ib_schedule+0x306/0x550 [amdgpu]
+> >>>>    amdgpu_job_run+0x10f/0x260 [amdgpu]
+> >>>>    drm_sched_main+0x1b9/0x490 [gpu_sched]
+> >>>>    kthread+0x12e/0x150
+> >>>>
+> >>>> Trouble right now is that lockdep only validates against GFP_FS, whi=
+ch
+> >>>> would be good enough for shrinkers. But for mmu_notifiers we actuall=
+y
+> >>>> need !GFP_ATOMIC, since they can be called from any page laundering,
+> >>>> even if GFP_NOFS or GFP_NOIO are set.
+> >>>>
+> >>>> I guess we should improve the lockdep annotations for
+> >>>> fs_reclaim_acquire/release.
+> >>>>
+> >>>> Ofc real fix is to properly preallocate this fence and stuff it into
+> >>>> the amdgpu job structure. But GFP_ATOMIC gets the lockdep splat out =
+of
+> >>>> the way.
+> >>>>
+> >>>> v2: Two more allocations in scheduler paths.
+> >>>>
+> >>>> Frist one:
+> >>>>
+> >>>>    __kmalloc+0x58/0x720
+> >>>>    amdgpu_vmid_grab+0x100/0xca0 [amdgpu]
+> >>>>    amdgpu_job_dependency+0xf9/0x120 [amdgpu]
+> >>>>    drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
+> >>>>    drm_sched_main+0xf9/0x490 [gpu_sched]
+> >>>>
+> >>>> Second one:
+> >>>>
+> >>>>    kmem_cache_alloc+0x2b/0x6d0
+> >>>>    amdgpu_sync_fence+0x7e/0x110 [amdgpu]
+> >>>>    amdgpu_vmid_grab+0x86b/0xca0 [amdgpu]
+> >>>>    amdgpu_job_dependency+0xf9/0x120 [amdgpu]
+> >>>>    drm_sched_entity_pop_job+0x3f/0x440 [gpu_sched]
+> >>>>    drm_sched_main+0xf9/0x490 [gpu_sched]
+> >>>>
+> >>>> Cc: linux-media@vger.kernel.org
+> >>>> Cc: linaro-mm-sig@lists.linaro.org
+> >>>> Cc: linux-rdma@vger.kernel.org
+> >>>> Cc: amd-gfx@lists.freedesktop.org
+> >>>> Cc: intel-gfx@lists.freedesktop.org
+> >>>> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> >>>> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> >>>> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> >>>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> >>> Has anyone from amd side started looking into how to fix this properl=
+y?
+> >> Yeah I checked both and neither are any real problem.
+> > I'm confused ... do you mean "no real problem fixing them" or "not
+> > actually a real problem"?
+>
+> Both, at least the VMID stuff is trivial to avoid.
+>
+> And the fence allocation is extremely unlikely. E.g. when we allocate a
+> new one we previously most likely just freed one already.
 
-The spinock in post_one_send() guarantees no reordering across
-post_one_send()
+Yeah I think debugging we can avoid, just stop debugging if things get
+hung up like that. So mempool for the hw fences should be perfectly
+fine.
 
-Jason
+The vmid stuff I don't really understand enough, but the hw fence
+stuff I think I grok, plus other scheduler users need that too from a
+quick look. I might be tackling that one (maybe put the mempool
+outright into drm_scheduler code as a helper), except if you have
+patches already in the works. vmid I'll leave to you guys :-)
+
+-Daniel
+
+>
+> >
+> >>> I looked a bit into fixing this with mempool, and the big guarantee w=
+e
+> >>> need is that
+> >>> - there's a hard upper limit on how many allocations we minimally nee=
+d to
+> >>>     guarantee forward progress. And the entire vmid allocation and
+> >>>     amdgpu_sync_fence stuff kinda makes me question that's a valid
+> >>>     assumption.
+> >> We do have hard upper limits for those.
+> >>
+> >> The VMID allocation could as well just return the fence instead of put=
+ting
+> >> it into the sync object IIRC. So that just needs some cleanup and can =
+avoid
+> >> the allocation entirely.
+> > Yeah embedding should be simplest solution of all.
+> >
+> >> The hardware fence is limited by the number of submissions we can have
+> >> concurrently on the ring buffers, so also not a problem at all.
+> > Ok that sounds good. Wrt releasing the memory again, is that also done
+> > without any of the allocation-side locks held? I've seen some vmid mana=
+ger
+> > somewhere ...
+>
+> Well that's the issue. We can't guarantee that for the hardware fence
+> memory since it could be that we hold another reference during debugging
+> IIRC.
+>
+> Still looking if and how we could fix this. But as I said this problem
+> is so extremely unlikely.
+>
+> Christian.
+>
+> > -Daniel
+> >
+> >> Regards,
+> >> Christian.
+> >>
+> >>> - mempool_free must be called without any locks in the way which are =
+held
+> >>>     while we call mempool_alloc. Otherwise we again have a nice deadl=
+ock
+> >>>     with no forward progress. I tried auditing that, but got lost in =
+amdgpu
+> >>>     and scheduler code. Some lockdep annotations for mempool.c might =
+help,
+> >>>     but they're not going to catch everything. Plus it would be again=
+ manual
+> >>>     annotations because this is yet another cross-release issue. So n=
+ot sure
+> >>>     that helps at all.
+> >>>
+> >>> iow, not sure what to do here. Ideas?
+> >>>
+> >>> Cheers, Daniel
+> >>>
+> >>>> ---
+> >>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 2 +-
+> >>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c   | 2 +-
+> >>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c  | 2 +-
+> >>>>    3 files changed, 3 insertions(+), 3 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu=
+/drm/amd/amdgpu/amdgpu_fence.c
+> >>>> index 8d84975885cd..a089a827fdfe 100644
+> >>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+> >>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+> >>>> @@ -143,7 +143,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, =
+struct dma_fence **f,
+> >>>>            uint32_t seq;
+> >>>>            int r;
+> >>>> -  fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_KERNEL);
+> >>>> +  fence =3D kmem_cache_alloc(amdgpu_fence_slab, GFP_ATOMIC);
+> >>>>            if (fence =3D=3D NULL)
+> >>>>                    return -ENOMEM;
+> >>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/d=
+rm/amd/amdgpu/amdgpu_ids.c
+> >>>> index 267fa45ddb66..a333ca2d4ddd 100644
+> >>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> >>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> >>>> @@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_v=
+m *vm,
+> >>>>            if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_=
+wait))
+> >>>>                    return amdgpu_sync_fence(sync, ring->vmid_wait);
+> >>>> -  fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_KER=
+NEL);
+> >>>> +  fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_ATO=
+MIC);
+> >>>>            if (!fences)
+> >>>>                    return -ENOMEM;
+> >>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/=
+drm/amd/amdgpu/amdgpu_sync.c
+> >>>> index 8ea6c49529e7..af22b526cec9 100644
+> >>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
+> >>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
+> >>>> @@ -160,7 +160,7 @@ int amdgpu_sync_fence(struct amdgpu_sync *sync, =
+struct dma_fence *f)
+> >>>>            if (amdgpu_sync_add_later(sync, f))
+> >>>>                    return 0;
+> >>>> -  e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_KERNEL);
+> >>>> +  e =3D kmem_cache_alloc(amdgpu_sync_slab, GFP_ATOMIC);
+> >>>>            if (!e)
+> >>>>                    return -ENOMEM;
+> >>>> --
+> >>>> 2.27.0
+> >>>>
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
