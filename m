@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C0522230F
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 14:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C0D222311
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 14:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgGPM4c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jul 2020 08:56:32 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:41066 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728793AbgGPM42 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:56:28 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f104e7a0000>; Thu, 16 Jul 2020 20:56:26 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 05:56:26 -0700
+        id S1728827AbgGPM4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jul 2020 08:56:38 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14890 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728791AbgGPM4f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jul 2020 08:56:35 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f104e0f0000>; Thu, 16 Jul 2020 05:54:39 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 16 Jul 2020 05:56:34 -0700
 X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Thu, 16 Jul 2020 05:56:26 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jul
- 2020 12:56:22 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 16 Jul 2020 12:56:22 +0000
+        by hqpgpgate102.nvidia.com on Thu, 16 Jul 2020 05:56:34 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jul
+ 2020 12:56:29 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 16 Jul 2020 12:56:29 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nspICqUh/CGWbYgVZEmSM836QiZiRUijAG28gGXJsnOHD8fH8MyDdhRdYKAVYq+QaijRPXjyGcNgSdA3qBdciQ2EEMlHhGSTbYAV5AQ9FTm5f+dFLt1wtr6eCKxPnGLizrza+4PFJmhFrf5rBLtZaVpg8piq8mEdMaSHy90zuhDkC3wLxj/LiFKC3PkleLFQFo+gZtPhb4RKOSErIKHbAD6jS3AdTzCOZAzC/FDWODx7bi+77UaNoqUmkkXSwaEhnUExCCsLi0w8A0jOmWD2sSTXEZN3edFKNzSoqlsFE/QVIq9JfMsSqDUQgL5qqtVR6m5NPCD+PT5gutA0QuhJJw==
+ b=do96/Bwb1jA+040YXL92/YTzEcEpwXF+Myiy+6a6/y2TQRjWq/F7I/UT0NiLZvw/SwCCc9wCmWa0sfPsAFXAEz5yvbsSGGZA/DjGZvkYqtAMI+FpdafxiIIQM5zUAhVCNQYqyRoeyeJO2Sk62cYzZFPu3FFchFG6gnjFe8RIioqB3InbovYSqQ0dnHa2BVewVlYiNf9581V0wvNNF3wjoWqmgwMyEPIq/inkyYJHha34ih9oG0TEYsdLXWfU0R4CyD2/o9HMhXZv+oOYL+lg12Rl7eaHk1FHM3nJ2msRmzXhste4rV0aUMMrBV/BUly3A9pdhAtfVhTZtrbOoi/ruw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kaJCl/87lwPtCVyxFWmUcLGvEplXuxsVGiGHwQLvHRQ=;
- b=kCL1Dtj2JF80v+jd1k8UkxnTciAJ2p8ctfp8yUTC1ucfxTySSbh0e24w0iQbqrBj0XABxUfnN3P9jqdAeykF3kAn4HrtrZZHWH4Ff49ouqegKMHbUWPVYx5to70zucuu2gA93vT3eci3NcFsT9xmme/us80dVC4/DmhH2/oZFkINSJZ5DoVl6DNMFkNvdRT9kZd2DDjF17aoeHtiM+IjYoX2ljc66KvdKa1uxgKd+9SEZtkC9NbEyl7qPZ2EYe23NrVP+lln52EQH0RWzv6FFGQH8ZVaLzQ+oARenh0v7muzLEvYzIx6vCuWdSqwsjjuIqsI2WH6LGtWwpLZjcpEoQ==
+ bh=00WeDnwgvG+2+DsjiJlDNEUD5aXYPsG12z9DDP/6Wfo=;
+ b=cKkDzLmNlcUu3WX2DvctLsqhYamxmVW8KQ9vBYUZJv4EUXXIudp0u73d31gkEizUea6+DidZGJ5oRlFxXaQZWxKbu1oTu21WI5U1arLv+JVzX4KirmuEooV/Zq1vAdy9yRX0y7cmhQo2lGfyawckRL+W8JaQDysIlz1wYaXCeGWrp8YpsTHn+2kUpTDCNrl+b6ccFarakn5/U3N7ta5wm2fmpHDKhiZQDI0y2zqZXW6RFrZZQeMNK/z4tag3bhwXwmtYrGQ3g1Skb5O5X/14iBWAKF/dXrTApi8KojklB2YFxNjY2MFrVHlfxUrgDAbkyJdUfct4e2jnEXyBkWhIqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
@@ -40,54 +40,54 @@ Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM6PR12MB4235.namprd12.prod.outlook.com (2603:10b6:5:220::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Thu, 16 Jul
- 2020 12:56:20 +0000
+ 2020 12:56:28 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.026; Thu, 16 Jul 2020
- 12:56:20 +0000
-Date:   Thu, 16 Jul 2020 09:56:16 -0300
+ 12:56:28 +0000
+Date:   Thu, 16 Jul 2020 09:56:26 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     liweihang <liweihang@huawei.com>
+To:     Weihang Li <liweihang@huawei.com>
 CC:     <dledford@redhat.com>, <leon@kernel.org>,
         <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH for-rc] RDMA/hns: Fix wrong assignment of lp_pktn_ini in
- QPC
-Message-ID: <20200716125616.GA2615760@nvidia.com>
-References: <1594726138-49294-1-git-send-email-liweihang@huawei.com>
+Subject: Re: [PATCH for-rc] RDMA/hns: Fix wrong PBL offset when VA is not
+ aligned to PAGE_SIZE
+Message-ID: <20200716125626.GB2615760@nvidia.com>
+References: <1594726935-45666-1-git-send-email-liweihang@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1594726138-49294-1-git-send-email-liweihang@huawei.com>
-X-ClientProxiedBy: YT1PR01CA0092.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <1594726935-45666-1-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: YTXPR0101CA0036.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::49) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0092.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Thu, 16 Jul 2020 12:56:19 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jw3Qu-00AyUZ-A8; Thu, 16 Jul 2020 09:56:16 -0300
+Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0036.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Thu, 16 Jul 2020 12:56:28 +0000
+Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jw3R4-00AyUp-RA; Thu, 16 Jul 2020 09:56:26 -0300
 X-Originating-IP: [206.223.160.26]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e3baf697-dfd6-417f-952b-08d82987a26f
+X-MS-Office365-Filtering-Correlation-Id: 28326a7a-09c3-4202-1b80-08d82987a7ba
 X-MS-TrafficTypeDiagnostic: DM6PR12MB4235:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB423530244B5A79B64F74125EC27F0@DM6PR12MB4235.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB42353DAF3D20344C5C62FBF7C27F0@DM6PR12MB4235.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +++muGJxvkWSw3uDw5HetumznlQiTUjmIewexPgVHR8W2za+OTntGttSY5582KYDK3d98p/SWSPiNykwYYgmTKPsbtEPn2D2rDhrFehHInvQwIrPqou6s8cWzWxSFjp6xZSS+axk9Br4uH+j12rANUxOTUCowfjfCw4PXjFHSnYtqKSfmKCMxZKfGl72rVNgFjTRJb6aapPUzyTv+/CaG+bq2dgmHK/+7TrP2gH8b4WEDIVuGERlCH6kvbabRBIVYdXHwcYsVcT/8mFlTebLnhzmcgrXiNkiLUgCt8N5O/ILOORB+ouaVgw3w3eaMDZXnoKHviSGHyXyfXuVwc8MJw==
+X-Microsoft-Antispam-Message-Info: LUIqwPDyZAWpoynm8kJxTNlt/VW81+URROwKe1cXbx3Yenq3CgxW0313sGBm8G4SMLx0DQPiTeSIRFtKKYy+VPNJpR7sFvfWSEpLwMcMt7DQ59R/NPIRL4QmGZcjT3LnPwpMbNweSSyZ1oxgGK1l4wyM3EdxtME4JIZL3GhgLfz2Z0sADb1MtOo3aqRRYua3ImsnAYrZW0mkPrbl+j3hUUetaL6Us0dzhp2kZm48ZNAph7PCTENJUyEEtN1RiaUdS9JpbjcunWeEP+X9cCjib0Oif2blRlVnAZ1NWjcyclHZ3XjEnmfviPH72+hBXZ9wN07tpKqOqDAqpZts1GfvOw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(346002)(366004)(376002)(396003)(478600001)(66476007)(66556008)(66946007)(4744005)(1076003)(26005)(186003)(83380400001)(86362001)(4326008)(33656002)(5660300002)(2616005)(426003)(2906002)(8676002)(316002)(6916009)(8936002)(9786002)(36756003)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: mgxj1EWrHG0XFiTQgTeCRxY7joQ6YFukyUisnXer7z2FrEHOnKMX3DW32Z5J8Mx9iHRqCsYwYn8izJ3EZUCZJi84GJgMXVYOcrZGQcTYh2bOp7fQZAGcicMfjNNlUDUeGm4FkCiFG7e/JCt1hw6DjjHsj7cOljrFszZ/za4lTmPBAdqWWgkxntWAv7/8h9yKLRDSwqF6VPbcBuvdpjFcipU19jB2EFREqU+yDh2z9P8jVp+NYlDYs6+xLHdYBEND/LMnrEN+NbhwlWlYVsRVj65wfw3c9CuWE88RbI0IHQURPt1V1pjxbhB1koM6LI1Vxw7UJ/+c2VEgpK/Xy2gdOBYjueTTiU3wUgBnq7tY6+BKohFU2A6lljc5bBfhCQiW99GhnH3LPUnR3A9cSPvAtWhKEkHNpjbfKZlThxTuIl+X3xYvpDEb0XdZieNfbDBwxDvFgsJ+12FL2yIl1OurKvn2ZVyr3CpB3iuajPvEFRDfUOesePhZi57zMeYjcGFX
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3baf697-dfd6-417f-952b-08d82987a26f
+X-MS-Exchange-AntiSpam-MessageData: EBdnFHbd1Nk0mNrOTqxLdU2WPIjWWfjsCp+Uk0Wz0KhZBGqUJvMgP2safA8k7EwBfFyaUDJV8vLxxGjY3qenNVVN+YPN4opKgt6WVCOeHxRMhu/MBRObfQCQGo0bBAw+ZT4MqsFpVwW8ilOQ+a11KmBO6tImxA3RLCjg/EFa3pyQOZUbQxcIfDYPozauMBIajzjUfAjryKR50C6EtjfAiEh2cexZWxxSR4OTrH5smvg7GuMRLZirL0sB9GbEhGqje8iLV4+CbcqmPd4X4zNaNylQtPqfk8lmYHXwJZpjC+/+dWXZdAqYBYVCW95Q9UF7R7Ws1w/Q2+2b8EgILXx4JyMk8wyQ4DLyWDSZeHEPrnatg5o1y95r5/VZyeAUN3TNRw01EzyAT61OiT0zO/hUWY+zVhvqrdtCusWmAx1mGLIqKwKfkRj0W7xpwqVLvraWr0Sdfyalqf+Wn99pXDHaMS9Dq7HCGVNd2BRdKrmDhb7VUkLIU6WtMKDocDL3i9Qp
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28326a7a-09c3-4202-1b80-08d82987a7ba
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2020 12:56:19.8568
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2020 12:56:28.7209
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tAWAYR/1nyzJii0NugVwtcIwDeOPSr3gMb4ibqvwb6dv3GwekP17Pwrj8VOxog4B
+X-MS-Exchange-CrossTenant-UserPrincipalName: dCLgPpFt248C55C55iwRfUpC1WnZpg2VMwrhzKMwZHRcJWd1T2YP20Sl3fdy65l5
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4235
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594904186; bh=kaJCl/87lwPtCVyxFWmUcLGvEplXuxsVGiGHwQLvHRQ=;
+        t=1594904079; bh=00WeDnwgvG+2+DsjiJlDNEUD5aXYPsG12z9DDP/6Wfo=;
         h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
          ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
          Subject:Message-ID:References:Content-Type:Content-Disposition:
@@ -106,34 +106,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=C7hBSRDwAQ4Xs3M48XwuutWddahmHsUmbgZT2Xe7+PgGgqGjkH9IOpMBCUzHEf38K
-         AWb/4x40zh8NVNd//pv/VPNwP5A48titSlf+aeHb/Rrdh1sF6JMIav4NwHnq2xlUL8
-         RVPT7kUKSR7shL4UdLKQhD7E0mBtY7jv11YcM8Pc9Wrw2p6hx96ADMgDrABgwNiYEf
-         cIJ+BHSVLU+ShCCmqgOcWtkPvFDWUb+Wv62sjH/xOQnoEXZQgkU/pEgh+pntKH4fQQ
-         OFSIEgOeIOzto8gCEkOGVXjFsHiULLB5evB8RyvJprbb5p76qGAp7kaYJu0LSC/gtg
-         tIcWLXb2/TLGA==
+        b=fkVOowdRTRa8QxEBDLro2L6KM+RjA1ffKVvDDB2GpfduofLykBa/k0z6r8N52jctu
+         p8Ag94qk0GRQEFFoRXkaYyfu58ewo/WlAr9ApBNA1zAk9ILYa8vZ/sODsE1awZ4iQE
+         ojB2HmK8IpY2ADyoFdAQkQnjMURSDBObNGmXsjkvy+m8+nvlrBTshOyyrj6fehp9DQ
+         FCrpAu5937LhdJkzFyJOEJzaOehLUa2VtlaBHHFmpEfx0ZsXg/i1Q08bVxRVr8XTlR
+         HyXaLo3dbgr+HbfJvlL5b9A7khXY1f0MLRI1nUkABRzkphFOBGRDJ4BI0QVwbL3ZFt
+         FCFST0JL+xVYg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 07:28:58PM +0800, liweihang wrote:
-> From: Weihang Li <liweihang@huawei.com>
+On Tue, Jul 14, 2020 at 07:42:15PM +0800, Weihang Li wrote:
+> From: Xi Wang <wangxi11@huawei.com>
 > 
-> The RoCE Engine will schedule to another QP after one has sent
-> (2 ^ lp_pktn_ini) packets. lp_pktn_ini is set in QPC and should be
-> calculated from 2 factors:
-> 1. current MTU as a integer
-> 2. the RoCE Engine's maximum slice length 64KB
-> But the driver use MTU as a enum ib_mtu and the max inline capability,
-> the lp_pktn_ini will be much bigger than expected which may cause traffic
-> of some QPs never get scheduled.
+> The ROCEE use "VA % buf_page_size" to caclulate the offset in the PBL's
+> first page, the actual PA corresponding to the MR's VA is equal to MR's
+> PA plus this offset. The first PA in PBL has already been aligned to
+> PAGE_SIZE after calling ib_umem_get(), but the MR's VA may not. If the
+> buf_page_size is small than the PAGE_SIZE, this will lead the ROCEE to
+> access the wrong memory because the offset is smaller than expected.
 > 
-> Fixes: b713128de7a1 ("RDMA/hns: Adjust lp_pktn_ini dynamically")
+> Fixes: 9b2cf76c9f05 ("RDMA/hns: Optimize PBL buffer allocation process")
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
 > Signed-off-by: Weihang Li <liweihang@huawei.com>
 > ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 34 +++++++++++++++++++-----------
->  1 file changed, 22 insertions(+), 12 deletions(-)
+>  drivers/infiniband/hw/hns/hns_roce_mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Applied to for-rc, thanks
 
