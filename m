@@ -2,174 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EDF222B55
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 20:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CF1222BB0
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 21:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgGPS5i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jul 2020 14:57:38 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17729 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPS5i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jul 2020 14:57:38 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f10a3150000>; Thu, 16 Jul 2020 11:57:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 11:57:37 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 16 Jul 2020 11:57:37 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jul
- 2020 18:57:34 +0000
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.55) by
- HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 16 Jul 2020 18:57:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E3SFn2I0Vy8qVjFKa/RtlRomDPlFMJ2UnV8j8JprNEJCHwykFQBr+EKOBqP/jc2D9XKI1a2SvO/Bt1W0jqS5puc8lKaOzx74eM4q3bWtvrCrxhx5TLlYh+e6YlmtL5KQQXct/0c06cvUyfJCpkEeAQc/kYs8xBH2CvhYFitc1SbII4LaebO5+ZBBfgirHUtdKccI35+Z2jz39x6aRuHbuYNgSc8rYo085wr1bzh4v0XtQ+X6XflViyoYCRO8aSB3bSfx9VxQ/Zf2iwmxI6XHIolbuc4mwafdT54jQ5rllyu+nDfYD2UTNivlxD/Op4rH8pQbk3QCyd6yoBn1fb1Y5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CX1KamiKlG+YFkFDpH8wZp/tAI4GAU8AufEaiLUTToo=;
- b=kpordPEWxyu3C1sJubk0T0oakueu6veJ6onKArSdw1heikcpJpDqHRfsvaqCC2UOBbNL6Y++qf9XpDlfTuE520BardyxeP6EBc95XMQ/V7xU3GJ/78NQQ5XTwL0mdCmqwl14VbpW0kQBDSK8IWQIOwb4cFickjD3Ukp1trB7essCl8ZUDfMcfBU8iPrJkH3Xsdl5PDHfI+L6n9YOVBXq924daOiQA2+Ko5KiVrWuWC1Y2yZwe6QdrB0iMdCzGpryhN+pvIDrs+sus1IJlvEo5SL70e9GvCujUotTis14UWmO3XeeJq9ME+l1youh7J7LaSnanqO66ZXgNSI3JAqi0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: marvell.com; dkim=none (message not signed)
- header.d=none;marvell.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1436.namprd12.prod.outlook.com (2603:10b6:3:78::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3174.22; Thu, 16 Jul 2020 18:57:32 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.026; Thu, 16 Jul 2020
- 18:57:32 +0000
-Date:   Thu, 16 Jul 2020 15:57:31 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Yuval Basson <ybason@marvell.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v3 rdma-next 2/2] RDMA/qedr: Add EDPM max size to alloc
- ucontext response
-Message-ID: <20200716185731.GD2021234@nvidia.com>
-References: <20200707063100.3811-1-michal.kalderon@marvell.com>
- <20200707063100.3811-3-michal.kalderon@marvell.com>
- <20200716171055.GA2645531@nvidia.com>
- <MN2PR18MB31824C9F96D7F0D511D9B261A17F0@MN2PR18MB3182.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <MN2PR18MB31824C9F96D7F0D511D9B261A17F0@MN2PR18MB3182.namprd18.prod.outlook.com>
-X-ClientProxiedBy: BL0PR0102CA0041.prod.exchangelabs.com
- (2603:10b6:208:25::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729266AbgGPTN7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jul 2020 15:13:59 -0400
+Received: from gateway20.websitewelcome.com ([192.185.68.24]:41843 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728374AbgGPTN6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:13:58 -0400
+X-Greylist: delayed 1574 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 15:13:58 EDT
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 846C74021FC24
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jul 2020 12:26:06 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id w8v0jkbKUQyTQw8v0jZyFw; Thu, 16 Jul 2020 13:47:42 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8IqV0d4ijCF3CnpKsDzE8OB4Fr535nEtPrtd0jJ2VMM=; b=k5lh+koQpZm8gML9fuAcogiRxm
+        kclV+0LZ0HqyMmujjipydBYf4syibz2bB/ilLi0GY8LOE/8MjBeJGPUKV7AMkYS0r9of+qAhw3OVd
+        RcEtSBiXYuI5GyXYvisFdPrd5W7fhHCnhU/vNrqkmijzqbBqvm1cJQvT4HSOSLi8CnCYvz48LN7gg
+        KSZIqUiPtwugg4r1f0/DgRFiHlL+R9cMJN5/0lgjC0RvnDfQTeTbjiSR0CG7VvRTlv2o6F29KveLY
+        SUziJSxGvuqHcoHFYMif4yvjCvOcPnTRnYvwbgjBWikhIbPEXV0TyTC1BaDMCFppRR38CjyQN0gLs
+        4F96Qo5A==;
+Received: from [201.162.240.161] (port=18888 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jw8uz-0013aH-Of; Thu, 16 Jul 2020 13:47:41 -0500
+Subject: Re: [PATCH v2][next] IB/hfi1: Remove unnecessary fall-through
+ markings
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200709235250.GA26678@embeddedor>
+ <20200716184141.GA2660905@nvidia.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <5a6bbb8d-fe45-26d9-a602-74094f843310@embeddedor.com>
+Date:   Thu, 16 Jul 2020 13:53:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0041.prod.exchangelabs.com (2603:10b6:208:25::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Thu, 16 Jul 2020 18:57:32 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jw94V-00BDrn-Cv; Thu, 16 Jul 2020 15:57:31 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: edd550b2-90ec-49b4-1710-08d829ba189d
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1436:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB14363E19E2D5D4BF58656270C27F0@DM5PR12MB1436.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tN2oyOFz1jgzc9lIl/OyLRJWR0V64ZjU8RnLpvvSHflbvMYkqax5Qouwr3BfTYwPxF6yvA36OMYsjhvA4Pdl3ZzsPx3NqsEmQWP2YHCC6ZFqJaU4/qtigSdRwZ1FkkWNzVUCDAN/RuKx0DNLXMOF97o7xoS6UqIsnWprKQ915fNUOxGZfVAqICmyWTUPAjH1onptonMBVaUrsb+gVZS/X6HLtGD9ei159p11Wh+QAQNV7TRfwrE9p2mKtfh96YQ2HCoFMFE6AWmtCaPzquj6G59XUSCfsUcjCMGN7FnVwK1FD0j/UDmjBI8dSc6rkzflZKjnYtaWAphGYd7/BMVKnA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(2616005)(4326008)(8936002)(426003)(478600001)(8676002)(83380400001)(186003)(86362001)(36756003)(26005)(5660300002)(1076003)(9786002)(9746002)(33656002)(66476007)(66946007)(2906002)(6916009)(66556008)(316002)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: clfe/VmbdAUwjlJkczPHoYEsk0HrkY9rAL4Y1uHuYHOAue9MGeBXJbUirrRwYtAfs2iQ/1QqXIhIV5JRexuBgYwgFyAI8IBZxiMElNKsUfnXhCybgehnX1Je9whxY6A/SO4P7pJ17ptOe+nCzOD8tecHY7pVEwelWT6EhhoN3ea8YaYj2l2dOGaLsV9LB0+G/Zwe2a4wNKrNLSR1Xw43rALQmyGt5pgJoqIrhaaWwW2lOg88d5pXgQmby3ad4ty9tbJr/2wAllU1/R6A3Q+Mo6PEHIeSilgiwWKAfaw7704pwuA3XcZmsZ2FcPO+RvveIRns+OiFMrDpXBg6qfsn/e3Ub8+Z5UsGVgUj1ne/hh1WiFw6AKMNiRZZPGdPdGQ/r7DSMkKLMhU14rsMbgHaqkRK8WP6/nOW5gNh87U56aiMagfx0uwafrSnsd1UMDQwDM1SqEyAzrWZ1snWLOX/DNJ55lGGDhMsrDgD7NF6I9w=
-X-MS-Exchange-CrossTenant-Network-Message-Id: edd550b2-90ec-49b4-1710-08d829ba189d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2020 18:57:32.8038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U2RdgPIfDhrz+lHhEsGWv2NrjJwS8O6hO7cVsrmlyTlRzlu3u+1ukpty6ugcCgoR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1436
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594925845; bh=CX1KamiKlG+YFkFDpH8wZp/tAI4GAU8AufEaiLUTToo=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=copA7P7B5f+j1KuS0IDKRLq853lWBM/WLCmcTneKimHFuih1399eBkQyWHtBakffK
-         3nC6J1NPPHb0DKSZqpsMf/wOpHeq4LtEHRZzBeISJRN386uUN43w79vJ+DmODVwdow
-         Ldn7OhZcsogW3XOPxCklRQ0a/Ddue8ZEGiJIVbqRSbho1zzLEMcj4BY7eoFeumTqv/
-         dK7+dZw9KS4Yjyu4NQqFUGvUB1VGtl7G5pFbJOieV0axqMGfEyBzWScpvDMWr8nGtl
-         oB8zoUNPj6T0OsFQ+1yV7LEMUGYBtKGF5BLgmFVBhIgKDoK0vftm7eCMWRT+oSOEg6
-         cJKTlakoGVNFA==
+In-Reply-To: <20200716184141.GA2660905@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.240.161
+X-Source-L: No
+X-Exim-ID: 1jw8uz-0013aH-Of
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.240.161]:18888
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 06:17:29PM +0000, Michal Kalderon wrote:
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Jason Gunthorpe
-> > 
-> > On Tue, Jul 07, 2020 at 09:31:00AM +0300, Michal Kalderon wrote:
-> > > User space should receive the maximum edpm size from kernel driver,
-> > > similar to other edpm/ldpm related limits.
-> > > Add an additional parameter to the alloc_ucontext_resp structure for
-> > > the edpm maximum size.
-> > >
-> > > In addition, pass an indication from user-space to kernel (and not
-> > > just kernel to user) that the DPM sizes are supported.
-> > >
-> > > This is for supporting backward-forward compatibility between driver
-> > > and lib for everything related to DPM transaction and limit sizes.
-> > >
-> > > This should have been part of commit mentioned in Fixes tag.
-> > > Fixes: 93a3d05f9d68 ("RDMA/qedr: Add kernel capability flags for dpm
-> > > enabled mode")
-> > > Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-> > > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-> > > drivers/infiniband/hw/qedr/verbs.c | 9 ++++++---
-> > >  include/uapi/rdma/qedr-abi.h       | 6 +++++-
-> > >  2 files changed, 11 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/qedr/verbs.c
-> > > b/drivers/infiniband/hw/qedr/verbs.c
-> > > index fbb0c66c7f2c..cfe4cd637f1c 100644
-> > > +++ b/drivers/infiniband/hw/qedr/verbs.c
-> > > @@ -320,9 +320,12 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx,
-> > struct ib_udata *udata)
-> > >  				  QEDR_DPM_TYPE_ROCE_LEGACY |
-> > >  				  QEDR_DPM_TYPE_ROCE_EDPM_MODE;
-> > >
-> > > -	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
-> > > -	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
-> > > -	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
-> > > +	if (ureq.context_flags & QEDR_SUPPORT_DPM_SIZES) {
-> > 
-> > Why does this need an input flag just to set some outputs?
-> > 
-> > The usual truncate on not enough size should take care of it, right?
-> At this point it just sets some output, but for future related changes around these sizes
-> there will also be fw related configurations, we will need to know whether the lib supports
-> accepting different sizes or not. This is for forward compatibility between libqedr and
-> driver. 
 
-I would be happier to see this flag introduced when it actually had a
-purpose, as I really don't like the pattern of conditionally filling
-uresp, but OK. Please delete this if when you make use of it the flag properly.
 
-Jason
+On 7/16/20 13:41, Jason Gunthorpe wrote:
+> On Thu, Jul 09, 2020 at 06:52:50PM -0500, Gustavo A. R. Silva wrote:
+>> Reorganize the code a bit in a more standard way[1] and remove
+>> unnecessary fall-through markings.
+>>
+>> [1] https://lore.kernel.org/lkml/20200708054703.GR207186@unreal/
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+>> ---
+>> Changes in v2:
+>>  - Remove additional overlooked fall-through markings.
+>>
+>>  drivers/infiniband/hw/hfi1/chip.c | 27 ++++++++++++++-------------
+>>  1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> Applied to for-next, thanks
+> 
+
+Thanks, Jason.
+
+--
+Gustavo
