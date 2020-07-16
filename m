@@ -2,155 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC11222A8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 19:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86036222ABD
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jul 2020 20:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgGPR7R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jul 2020 13:59:17 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7034 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgGPR7Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jul 2020 13:59:16 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f1095380000>; Thu, 16 Jul 2020 10:58:16 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 10:59:15 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 16 Jul 2020 10:59:15 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jul
- 2020 17:59:11 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 16 Jul 2020 17:59:11 +0000
+        id S1728374AbgGPSRh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jul 2020 14:17:37 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:23028 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728257AbgGPSRg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:17:36 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GIErYt002982;
+        Thu, 16 Jul 2020 11:17:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=m2izq2YgT4BexewPxf6w/5T7jdUFzcdP8kvbziCc4J8=;
+ b=CYzgq4VHJnpo3qdWa8f/4BtpUyRBtHZyc0P1AdMRO+17jp6bWTJMUCBPaAg/ORb87iG7
+ 9QWdbVM0JVvLvY+9bWm2WOVkWEf9ON+iggFGu6UeaaxkpQk/GyDZOGXWTg64q7ulvkWn
+ FLrDBRt0PuSsoxzwwVI7nk18DToMBGPR9+FdeHfKgXPgdd/e/glsfPhK7ZP0zh3v5i5u
+ vnGLBDh0yJka64kuGPAc83OTrTh083F+lXivtDmIWG0HEazhaVWHf5PcHBYhfPQyqr2C
+ IU+D+blvR8Z+RJKiXYzb9OoELJadHOj820A19D7vBom9z26mfqYtugxDZoFXkk660xsc 2w== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 328mmj11a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 11:17:32 -0700
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 16 Jul
+ 2020 11:17:30 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
+ by SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Thu, 16 Jul 2020 11:17:31 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hi8W7Fra2q6XJ5sy8VB9ljkfMd2VF2eC+rl8avj2q4b5wfqi/sEvpjaxVBQK4AxxtYK/4h6saHsAgWYNao26usT49OjpmmsKlQL4z3EgAQZQRUGqXzZaUW0EC7B1v1Vb14MsEvDHyci+JcZcG9kGgDmRzfUcjv5Vvr/+i+1CYGzEsfJhOTCtlRDDc672yZUktiIkGP7BuPcQDpZ+6LeruRdoKkVh5TsgBVqGM7vI0xJRoZUA6BvGOstt8vUvsZH+fVjZgVry+AM4cl3zgJDkLk0i2OCc8ESTo2Nc8dGGYVDEsdSBddoHCyWiardZHUknqmEbvF0exTfe508kwGuVsg==
+ b=CgSCpwTXSM+J+WAVab8iPb9xWzDP4vczV4EyXBVJPYA9LUpppbunSClLYcjeT03A+aa5rSiPrFpozVnXJdX/nilU/v8u9PqxanlbAJUQ8yJpD9xtXK3ijYFMJaGZSOTjy/4NVFDRHKZQ0hj8QqaVA601gxnMUo9mcra9kRnznYSFZv1flhuHhb5iuAuymDxoOkjxfiwRm6U5RqCCXxmoHe1DxRefSr4WdJkhXOq6x+E3R3Pe0Pvisy02iP7fAVewQ+GRPB8RxKnwszlX4Vbm0WIhMO/+5ODqw8jqzwXjzaG0LbzayRTUqRYHvjSX8BDgGqW5Zq8aeTPi0KsPSWyHkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nLifo1I/AoNHkPgmna9paZe/JH7ralTcpJd73FUjUdU=;
- b=aIXBFROyFQKqTQRlewKp8wFF3mKcmAyHmi3R5EIj7QOEemFMN4iWOI9UgOUU3OViqoC6n7u3RiEfKvT6c9ocN+9cVC6wPmDmn+//Xq467EM40QOQCm1WbvvdkPEez0iZ0Pqv9odNtBYD6Qb8NSGMCc8v1/wKVIhguUeyf+efo8PDa3T+FgzisuyxPEPrn65aeK5u22sGhyEz4ZTnz/U+1a8yhZakuh7hHj8ld3+VbvUDutGhsEKsWNlxTR2C3mcZldNG4b+FoRhtX7XWnh8ULccvujBV1rAYFUZrQJ8RItROqrgxxY66zI1rliNG03gb0v4c3byp9vHq3wzA0hPLeQ==
+ bh=m2izq2YgT4BexewPxf6w/5T7jdUFzcdP8kvbziCc4J8=;
+ b=bLGzKbciTzXwavwoKTaIHvKzJRxXr4jken/+LmUUxoTdymPOUjgHL+tZ1yMleJHYjUN7tjwjvqDJqY5uJJRiToGwpn0BVqYj2YZTI3OKNKb22YNuBdpJaM/7ty+/Jzid186QHSbRl6ciVIi1mLK/a5tQUgz8kuVhT4TC3LRHSAsewUpJQP6te0C73SytkZtT39zuPlWiulDso0RBFG+aTEzmpGBK5+HGBFVZ0l7pdv4oaFNyarCxlfRyDhyoKY/CpmaVQIElERSQrr9cTAZZu4YXQ0wV1WXEffLPMTpJFfCyWxNGzG8Ot/T/PdJR4vivqIZmhP8tc9SIPSqsD12Aaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: marvell.com; dkim=none (message not signed)
- header.d=none;marvell.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m2izq2YgT4BexewPxf6w/5T7jdUFzcdP8kvbziCc4J8=;
+ b=q9r0JlPAC0vksn4jCisK4tpo678hQl0d/L2/or4Hmfjovx3/DKPTvCgTX4rFoPGs3Uyr5Te7V1oCBnVad+/44O94CGMzRLMc8OnqrSM2n1wt9Ll+wPcGbo96x5XOeCPOZdOMJJZalLKVYG5OM9MAyJPf+dUx9D4Xi8cfg01YO/w=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (2603:10b6:208:163::15)
+ by BL0PR18MB3745.namprd18.prod.outlook.com (2603:10b6:208:81::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Thu, 16 Jul
- 2020 17:59:09 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.026; Thu, 16 Jul 2020
- 17:59:09 +0000
-Date:   Thu, 16 Jul 2020 14:59:07 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yuval Basson <ybason@marvell.com>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: Re: [PATCH v3 rdma-next] RDMA/qedr: SRQ's bug fixes
-Message-ID: <20200716175907.GA2653867@nvidia.com>
-References: <20200708195526.31040-1-ybason@marvell.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Thu, 16 Jul
+ 2020 18:17:29 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::1849:3020:9782:8979]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::1849:3020:9782:8979%4]) with mapi id 15.20.3195.018; Thu, 16 Jul 2020
+ 18:17:29 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Yuval Basson <ybason@marvell.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v3 rdma-next 2/2] RDMA/qedr: Add EDPM max size to alloc
+ ucontext response
+Thread-Topic: [PATCH v3 rdma-next 2/2] RDMA/qedr: Add EDPM max size to alloc
+ ucontext response
+Thread-Index: AQHWVCg0clmxjwo/n0KUKYS9RwmNz6kKf9GAgAAQojA=
+Date:   Thu, 16 Jul 2020 18:17:29 +0000
+Message-ID: <MN2PR18MB31824C9F96D7F0D511D9B261A17F0@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <20200707063100.3811-1-michal.kalderon@marvell.com>
+ <20200707063100.3811-3-michal.kalderon@marvell.com>
+ <20200716171055.GA2645531@nvidia.com>
+In-Reply-To: <20200716171055.GA2645531@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [46.116.41.26]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d272a105-892f-48a1-b992-08d829b48060
+x-ms-traffictypediagnostic: BL0PR18MB3745:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR18MB374524B0C5100184C6682C28A17F0@BL0PR18MB3745.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1443;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /lFIBJfTZlZSl9san3jebshZIEYNm1xbLWTfhj6aRkv3cnyEVPSe98D9qJngX9OFs3S/PBnMoXzVz3y9pu0M+YYFqGw+iOD/oBhdANMaN6b1tBzbHUuUyEzPf/+8ZkMv1gXgGD6g4h5yK7uJQ7BTBO9SgyCB9zcb5HpzMwp/aJgzWO3R5qZR2xKw3xmNClCG/AeTEHjpRptRvLN3DfGsPt9cZuIsxjxAXGTQ19Ol8YPjbjeAkBrstEdKLlIzf/4cCMoheZgtzcXIVpvhkGzyiOYnqhgyQyK6IvNaBIN6aKkZ7RBQcbaeLx1ihVasftVGM/Yvq5sCJP8k+9n8V0Egmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR18MB3182.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(83380400001)(54906003)(66946007)(33656002)(76116006)(66556008)(66446008)(55016002)(64756008)(8936002)(5660300002)(52536014)(478600001)(8676002)(71200400001)(66476007)(9686003)(7696005)(316002)(2906002)(4326008)(6506007)(186003)(26005)(6916009)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 3Wl8HH3fs00R7BRvIbfDgsCZahd+DUHi1o6D/5qfZYyyFLzxohGeR3HhyL8iX2hbu9E0JJ/aqPsS2covFCd9TB3yen0nYm97lZe4z6MNFFnYaARgiL5ritt6wlkS5wzLklDLz9jVyzyjjhzSh8p1bIJb28dGj9pTfoRilPsRWIkC3Q39l0yKDr3hGk5zv2HCKsvbTNfgITyqf++qll9i9PGj0vSfjTlOCIW4IYcREU5OyijgYwP9angGtKKNWrCyGuFJyMcWs0djy1GmAai/oPFx9Epl16u6cKOBg5yv5jPJwX1jdU2uFsDU+cVn2vg87yAH92i7bzAgb4nPwCvZuL627LciqkysEKo0l4u+iVG62CQui4VnWPu2iJ+M9CmyLKLDzSMENGwJuYugte6z6LCrDqhRFtc5zymrysphiDuXwKQEckRDXRa06T+BQe7wWFkeEDDu036jPu4RBOrV/h1HDrIVOEAwCouBVYTmE+Q=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200708195526.31040-1-ybason@marvell.com>
-X-ClientProxiedBy: MN2PR10CA0024.namprd10.prod.outlook.com
- (2603:10b6:208:120::37) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0024.namprd10.prod.outlook.com (2603:10b6:208:120::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.19 via Frontend Transport; Thu, 16 Jul 2020 17:59:09 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jw89z-00B9KQ-VV; Thu, 16 Jul 2020 14:59:07 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6d4a211e-88af-4cf8-de85-08d829b1f059
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3834:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3834176D848CFE9F8785A75CC27F0@DM6PR12MB3834.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vt/tuDjlxxC8Hnfz6jTizn0jb+6zpJZwujXbAX7pxPpj+7zyinH9wzwGoX/vpkRq3nHK6jloEfe1ggOQep1RF9NhLcmrZm7F79uYho9pncVJHpUJGk5gwxDopkDkVo2jLfcaEFJRF/rIsOgHwLUu6Qc1xFVNvEoUXvy65Nrdv//i+VWRf7ZH3A+DkuzQ2gbevJVV2nQFalHS40fyAVARHnuRuxIHaU17ur355w3OwKC6E0eMHZ5WHynN8jitWMmr/j/YcW1AaGddSDl3mRarCwPf0VXHwSoTYPBppEOTfdxJryqMla4SEznigNzZGT/G5rwzlBYAkZXZG7q7jrXBJg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(136003)(39860400002)(366004)(376002)(8676002)(1076003)(36756003)(66476007)(426003)(186003)(316002)(33656002)(2616005)(26005)(66946007)(4326008)(66556008)(2906002)(86362001)(9746002)(83380400001)(9786002)(5660300002)(478600001)(8936002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: mEOoHzbomLrS5nGoLg4G/9xF62InuRDNhK0dlS+KbA383xA7YEeTiyvJ4BsqptiJ2i6qWddNNII9ZmghFT97vELAvRFRTVX8yyLmGd7fVZCCz3DXi0h832HZea1kG1mitTwEt3vPBmaah2cwhb7yE8oWYpRTaRmIogSOax/ue7hDdNfARGbYJHi9WWGkRGIhFQxjlHErSrmuNh/6YVt1VRfHovdw+6Gx/j4HIimA86gSHdd1A9UyIFyxyQvenm3R9VHtNOkzVNLUwzQxHCWMUybhbww937OFPrWb44DOwCHhaYI2ZrNcJJm4XflPp4yLoyaSLK82V9P7kDfomnCE/jvHmigxWvjvopZD/ldpKt9JlyFcdlIs4rdGvdvPySGsTLefJJfX5uGoOui97rgGJIAQ4Fp+D7Q2TsILD1YFuSwjpMkwSEgIXsoY6jmgLTMQoytxbVwwhPn2gzELyb6mpkzgOIFrt0d2kk9IDO/INKs=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d4a211e-88af-4cf8-de85-08d829b1f059
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2020 17:59:09.4744
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR18MB3182.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d272a105-892f-48a1-b992-08d829b48060
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2020 18:17:29.5750
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2xsXPGksDCbw5jNo/oR5UXjOPOwUm/SUYY5S1lbxBxgm1hmDiXH4nQNE6on9m+Q9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3834
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594922296; bh=nLifo1I/AoNHkPgmna9paZe/JH7ralTcpJd73FUjUdU=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=EnxjfCPu47Bku03zH5EtNwn8HgLSHt0daUmlYVIxgUikNSFGdNh8eaO7FA1nfYhYO
-         p7d32vpt6EEpgreI7aakz8+9+6VmlqPbrCDEqsP9qSAY5zZEfK+JfKNjg1O2pEZSxm
-         ONf5uK4SvTopytNGCW7vvRckTx1ro2La2HAIoCULZ3/lMUmBmFxru9Va74pnceBJ+d
-         GzKUNbTM6J3moYny9wtY2ApFGl2kEihVnKdSXzb51KVPW2e6nURwQeLOPOKFS/wknT
-         y3eCF5PlYMxp3hMAcNd76IErIo6Lyh+Kf4cmSzgYUPFeBy7OUFgsL05hSjjP8yEO0t
-         NuudVZJeqDkAQ==
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sm2aroQ4xdz1Ae7g+DRVQ8KLj6KVWULZVpB5XEIyayZZXVho1zep+Q+6QXKEnaR88fhMSitgs0yGMlE3KgTcTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR18MB3745
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_08:2020-07-16,2020-07-16 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 10:55:26PM +0300, Yuval Basson wrote:
-> QP's with the same SRQ, working on different CQs and running in parallel
-> on different CPUs could lead to a race when maintaining the SRQ consumer
-> count, and leads to FW running out of SRQs. Update the consumer atomically.
-> Make sure the wqe_prod is updated after the sge_prod due to FW
-> requirements.
-> 
-> Fixes: 3491c9e799fb9 ("RDMA/qedr: Add support for kernel mode SRQ's")
-> Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-> Signed-off-by: Yuval Basson <ybason@marvell.com>
-> ---
-> Change in v3:
->  *Replace changelog
-> 
-> Changes in v2:
-> * Change barrier() to dma_wmb()
-> * Remove redundant dma_wmb()
-> 
->  drivers/infiniband/hw/qedr/qedr.h  |  4 ++--
->  drivers/infiniband/hw/qedr/verbs.c | 23 +++++++++++------------
->  2 files changed, 13 insertions(+), 14 deletions(-)
+> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> owner@vger.kernel.org> On Behalf Of Jason Gunthorpe
+>=20
+> On Tue, Jul 07, 2020 at 09:31:00AM +0300, Michal Kalderon wrote:
+> > User space should receive the maximum edpm size from kernel driver,
+> > similar to other edpm/ldpm related limits.
+> > Add an additional parameter to the alloc_ucontext_resp structure for
+> > the edpm maximum size.
+> >
+> > In addition, pass an indication from user-space to kernel (and not
+> > just kernel to user) that the DPM sizes are supported.
+> >
+> > This is for supporting backward-forward compatibility between driver
+> > and lib for everything related to DPM transaction and limit sizes.
+> >
+> > This should have been part of commit mentioned in Fixes tag.
+> > Fixes: 93a3d05f9d68 ("RDMA/qedr: Add kernel capability flags for dpm
+> > enabled mode")
+> > Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+> > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> > drivers/infiniband/hw/qedr/verbs.c | 9 ++++++---
+> >  include/uapi/rdma/qedr-abi.h       | 6 +++++-
+> >  2 files changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/qedr/verbs.c
+> > b/drivers/infiniband/hw/qedr/verbs.c
+> > index fbb0c66c7f2c..cfe4cd637f1c 100644
+> > +++ b/drivers/infiniband/hw/qedr/verbs.c
+> > @@ -320,9 +320,12 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx,
+> struct ib_udata *udata)
+> >  				  QEDR_DPM_TYPE_ROCE_LEGACY |
+> >  				  QEDR_DPM_TYPE_ROCE_EDPM_MODE;
+> >
+> > -	uresp.dpm_flags |=3D QEDR_DPM_SIZES_SET;
+> > -	uresp.ldpm_limit_size =3D QEDR_LDPM_MAX_SIZE;
+> > -	uresp.edpm_trans_size =3D QEDR_EDPM_TRANS_SIZE;
+> > +	if (ureq.context_flags & QEDR_SUPPORT_DPM_SIZES) {
+>=20
+> Why does this need an input flag just to set some outputs?
+>=20
+> The usual truncate on not enough size should take care of it, right?
+At this point it just sets some output, but for future related changes arou=
+nd these sizes
+there will also be fw related configurations, we will need to know whether =
+the lib supports
+accepting different sizes or not. This is for forward compatibility between=
+ libqedr and
+driver.=20
 
-Applied to for-next, thanks
-  
-> diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-> index 9b9e802..444537b 100644
-> --- a/drivers/infiniband/hw/qedr/verbs.c
-> +++ b/drivers/infiniband/hw/qedr/verbs.c
-> @@ -1510,6 +1510,7 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
->  	srq->dev = dev;
->  	hw_srq = &srq->hw_srq;
->  	spin_lock_init(&srq->lock);
-> +	atomic_set(&hw_srq->wr_cons_cnt, 0);
-
-I deleted this though, it is redundant the memory is pre-zero'd by the
-core code.
-
-Jason
+>=20
+> Jason
