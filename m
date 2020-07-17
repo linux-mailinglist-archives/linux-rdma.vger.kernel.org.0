@@ -2,160 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C662232AF
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jul 2020 07:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C57223358
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jul 2020 08:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgGQFBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jul 2020 01:01:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:28688 "EHLO mga05.intel.com"
+        id S1726180AbgGQGGI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jul 2020 02:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgGQFBX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jul 2020 01:01:23 -0400
-IronPort-SDR: Ib8jMxDjHwsAAbSwi7s9tR/+uwgj+Ox9zNV+csN1MfwZKcYLKaGJWXnMDvYEwolz6ifQAbHPtA
- vb8z24RBedjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="234389691"
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="234389691"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 22:01:23 -0700
-IronPort-SDR: B7WGDgu1TNT2ykgYAJB9wD5FdhS4xGSB5g+57ubsoI/FjzBzpyv+EqX+ilbVPbqF7xhVfQwcXB
- S8XsNCyk8t0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="460728386"
-Received: from lkp-server02.sh.intel.com (HELO 50058c6ee6fc) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jul 2020 22:01:21 -0700
-Received: from kbuild by 50058c6ee6fc with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jwIUq-00005x-RU; Fri, 17 Jul 2020 05:01:20 +0000
-Date:   Fri, 17 Jul 2020 13:00:03 +0800
-From:   kernel test robot <lkp@intel.com>
+        id S1725904AbgGQGGI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Jul 2020 02:06:08 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCC40206BE;
+        Fri, 17 Jul 2020 06:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594965967;
+        bh=rN/7FC+Uba8y8YhHoKXssNVJyTGUt+peKkjiXejVIqQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y3IU/XBdOL6rx+PKKeEECP/p1Hzo/2Ot2OLFKnWG4D65U5aHUBAbtNdrVgunFUsLJ
+         YZ9scZxqucP6vqTDrCZMcpvYch9DTx6sIorc0ZU7UJEHf+CtFeA54OjKdsjS8WgRj2
+         +rxYAs6kUXX+R1zHQnfJ8QHKocczJBRMWf+EU1wg=
+Date:   Fri, 17 Jul 2020 09:06:03 +0300
+From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- cbeb7d896c0f296451ffa7b67e7706786b8364c8
-Message-ID: <5f113053.b+0JeU8OV4HiX+F+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next] RDMA/include: Replace license text with SPDX
+ tags
+Message-ID: <20200717060603.GE813631@unreal>
+References: <20200714053523.287522-1-leon@kernel.org>
+ <20200716194507.GA2701568@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200716194507.GA2701568@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
-branch HEAD: cbeb7d896c0f296451ffa7b67e7706786b8364c8  RDMA/counter: Allow manually bind QPs with different pids to same counter
+On Thu, Jul 16, 2020 at 04:45:07PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 14, 2020 at 08:35:23AM +0300, Leon Romanovsky wrote:
+> > diff --git a/include/rdma/ib_hdrs.h b/include/rdma/ib_hdrs.h
+> > index 9a90bd031e8c..03567e7c5c57 100644
+> > +++ b/include/rdma/ib_hdrs.h
+> > @@ -1,48 +1,6 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+> >  /*
+> >   * Copyright(c) 2016 - 2018 Intel Corporation.
+> > - *
+> > - * This file is provided under a dual BSD/GPLv2 license.  When using or
+> > - * redistributing this file, you may do so under either license.
+> > - *
+> > - * GPL LICENSE SUMMARY
+> > - *
+> > - * This program is free software; you can redistribute it and/or modify
+> > - * it under the terms of version 2 of the GNU General Public License as
+> > - * published by the Free Software Foundation.
+> > - *
+> > - * This program is distributed in the hope that it will be useful, but
+> > - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> > - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> > - * General Public License for more details.
+> > - *
+> > - * BSD LICENSE
+> > - *
+> > - * Redistribution and use in source and binary forms, with or without
+> > - * modification, are permitted provided that the following conditions
+> > - * are met:
+> > - *
+> > - *  - Redistributions of source code must retain the above copyright
+> > - *    notice, this list of conditions and the following disclaimer.
+> > - *  - Redistributions in binary form must reproduce the above copyright
+> > - *    notice, this list of conditions and the following disclaimer in
+> > - *    the documentation and/or other materials provided with the
+> > - *    distribution.
+> > - *  - Neither the name of Intel Corporation nor the names of its
+> > - *    contributors may be used to endorse or promote products derived
+> > - *    from this software without specific prior written permission.
+> > - *
+> > - * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+> > - * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+> > - * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+> > - * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+> > - * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+> > - * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+> > - * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+> > - * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+> > - * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+> > - * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+> > - * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+> > - *
+>
+> This text is not Linux-OpenIB. License changes can't be done blindly
+> only exact blocks of text can be replaced by SPDX.
 
-elapsed time: 815m
+Do you know why it is not OpenIB? Can we relicense it? The difference
+between BSD and OpenIB is only in MIT disclaimer, which is very logical
+addition to me.
 
-configs tested: 98
-configs skipped: 1
+Thanks
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-x86_64               randconfig-a012-20200716
-x86_64               randconfig-a011-20200716
-x86_64               randconfig-a016-20200716
-x86_64               randconfig-a014-20200716
-x86_64               randconfig-a013-20200716
-x86_64               randconfig-a015-20200716
-i386                 randconfig-a016-20200716
-i386                 randconfig-a011-20200716
-i386                 randconfig-a015-20200716
-i386                 randconfig-a012-20200716
-i386                 randconfig-a013-20200716
-i386                 randconfig-a014-20200716
-i386                 randconfig-a016-20200717
-i386                 randconfig-a011-20200717
-i386                 randconfig-a015-20200717
-i386                 randconfig-a012-20200717
-i386                 randconfig-a013-20200717
-i386                 randconfig-a014-20200717
-x86_64               randconfig-a005-20200717
-x86_64               randconfig-a006-20200717
-x86_64               randconfig-a002-20200717
-x86_64               randconfig-a001-20200717
-x86_64               randconfig-a003-20200717
-x86_64               randconfig-a004-20200717
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Jason
