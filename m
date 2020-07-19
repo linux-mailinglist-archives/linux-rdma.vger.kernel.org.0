@@ -2,39 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21070224E71
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jul 2020 02:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFAB224FC5
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jul 2020 07:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgGSAc2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Jul 2020 20:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726633AbgGSAc1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Jul 2020 20:32:27 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FA1C0619D2;
-        Sat, 18 Jul 2020 17:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=fNkUg1z2dXWsVKhXv4tD3045EmSTq2gFU0A9CPcMrMg=; b=ildwkEbs+SXz3SlMAZVmjZ/b55
-        DbW7ul+pFEkBxfIRdlhoPDKnuGrJ11uiJOPqo70c/I/O8+LxjGuUbTCsR89eJW2SM3Nh6eZIsgn0c
-        Wn4i0//7/q3z1Tk7kw7waCsohtie8Y+gVTPMZI9y2wk2sVbwpgUMu4oBZH04+g98loP/QDcAoCAvq
-        VZeplYHPsY+2oEcHuqzwdXmhnEMhj34iRGsKsK75yEevU3c71N/na9iL1NrOHnqC6/rwO724o+OD5
-        vrye0qqtTj2xo0dK/k+DJs8UxgPbh69W2xfV5bmMu4+0cpMqvgOyo0+LGSqgQ0D11OIzUZWu4EaEk
-        scIZ99mw==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwxFg-00032L-Pw; Sun, 19 Jul 2020 00:32:25 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH] RDMA: rdma_user_ioctl.h: fix a duplicated word + clarify
-Date:   Sat, 18 Jul 2020 17:32:20 -0700
-Message-Id: <20200719003220.21250-1-rdunlap@infradead.org>
+        id S1726067AbgGSFWb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 19 Jul 2020 01:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgGSFWb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 19 Jul 2020 01:22:31 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27F6D2073A;
+        Sun, 19 Jul 2020 05:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595136150;
+        bh=IaoFfp0CVX6q3zmBZngpRxM+Awj+hBYH2gsSFPT8Ul4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HmL2PMahAt2696yxN53RCkePZrMbf13lxeBih60BMCxOhwcIDSnrVcrQOMJuhsTRf
+         mr0sYhSxINpfVQjkdFgRaUo7g02irpwZmnxq6Yy2RkdIwThlxad5IGBPNVWTdqqg7E
+         pDL6i+ChK8gEomLISia76lLYka+Xc4f6bXxe63pI=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v2 0/2] Align write() and ioctl() paths
+Date:   Sun, 19 Jul 2020 08:22:21 +0300
+Message-Id: <20200719052223.75245-1-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,25 +39,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Change the repeated word "it" in a comment to "it to".
-Also insert a dash in the sentence to add clarity.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: linux-rdma@vger.kernel.org
----
- include/uapi/rdma/rdma_user_ioctl.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog:
+v2:
+ * Fixed warning reported by kbuild where I wrote same assignment twice.
+v1:
+https://lore.kernel.org/lkml/20200716103956.1422139-1-leon@kernel.org
+ * v0 revealed old bug
+ * https://lore.kernel.org/linux-rdma/20200716102059.1420681-1-leon@kernel.org
+  that took a while to find.
+ * create_cq() was rewritten to make sure that uobj is properly
+ * initialized.
+v0:
+https://lore.kernel.org/lkml/20200708110554.1270613-1-leon@kernel.org
 
---- linux-next-20200717.orig/include/uapi/rdma/rdma_user_ioctl.h
-+++ linux-next-20200717/include/uapi/rdma/rdma_user_ioctl.h
-@@ -43,7 +43,7 @@
- 
- /*
-  * General blocks assignments
-- * It is closed on purpose do not expose it it user space
-+ * It is closed on purpose - do not expose it to user space
-  * #define MAD_CMD_BASE		0x00
-  * #define HFI1_CMD_BAS		0xE0
-  */
+----------------------------------------------------
+Hi,
+
+The discussion about RWQ table patch revealed incosistency with use of
+usecnt, complex unwind flows without any reason and difference between
+write() and ioctl() paths.
+
+This series extends infrastructure to be consistent, reliable and
+predicable in regards of commit/desotry uobject.
+
+Thanks
+
+Leon Romanovsky (2):
+  RDMA/core: Align abort/commit object scheme for write() and ioctl()
+    paths
+  RDMA/core: Update write interface to use automatic object lifetime
+
+ drivers/infiniband/core/uverbs_cmd.c          | 312 ++++++------------
+ drivers/infiniband/core/uverbs_main.c         |   4 +
+ .../infiniband/core/uverbs_std_types_device.c |   7 +-
+ include/rdma/uverbs_ioctl.h                   |   1 +
+ include/rdma/uverbs_std_types.h               |  14 +
+ 5 files changed, 118 insertions(+), 220 deletions(-)
+
+--
+2.26.2
+
