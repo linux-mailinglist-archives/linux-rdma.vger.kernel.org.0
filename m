@@ -2,92 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1F7225995
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 10:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D52225D4C
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 13:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGTICB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jul 2020 04:02:01 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:18716 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgGTICB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jul 2020 04:02:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595232121; x=1626768121;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EXBkKvxEbJsQ96m+qS4fije8AJ7HuRS1Zj4zUOqcY00=;
-  b=RCoklrLgYFR2+91beeiWBzNlJx6iIndPs1+D4XJI4Rp6UMy1x9ZhNAeK
-   Ix0gvX/9Zvs4u7E26Cy23sCDs74aSlYu/pVSgNwzDa/wap3dfERxLA4Ig
-   yKafP8Fp90UbetueY6R/jsgSRi7Gdo64zm8FaT4vZBJG0M/AzscW/FB9X
-   w=;
-IronPort-SDR: 7d7ygNPQ5+PmELQpRbbgJj55hXnWRGlJ/zome3lQ+dV1Zme92nXWSrYBtAoefNFqFkQQMaTJVj
- 6KdJ7VqDZ9nA==
-X-IronPort-AV: E=Sophos;i="5.75,374,1589241600"; 
-   d="scan'208";a="61016680"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 20 Jul 2020 08:01:59 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 26844A0803;
-        Mon, 20 Jul 2020 08:01:58 +0000 (UTC)
-Received: from EX13D22EUA003.ant.amazon.com (10.43.165.210) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 20 Jul 2020 08:01:57 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D22EUA003.ant.amazon.com (10.43.165.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 20 Jul 2020 08:01:56 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.1.212.12) by
- mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 20 Jul 2020 08:01:52 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Shadi Ammouri <sammouri@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: [PATCH for-next v2 4/4] RDMA/efa: Add EFA 0xefa1 PCI ID
-Date:   Mon, 20 Jul 2020 11:01:13 +0300
-Message-ID: <20200720080113.13055-5-galpress@amazon.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200720080113.13055-1-galpress@amazon.com>
-References: <20200720080113.13055-1-galpress@amazon.com>
+        id S1728516AbgGTLYM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jul 2020 07:24:12 -0400
+Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:39879 "EHLO
+        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728074AbgGTLYM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jul 2020 07:24:12 -0400
+X-Greylist: delayed 516 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Jul 2020 07:24:11 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id EEED53F64F;
+        Mon, 20 Jul 2020 13:15:33 +0200 (CEST)
+Authentication-Results: ste-pvt-msa1.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=gTkGdHYR;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vixtsmS5pBFA; Mon, 20 Jul 2020 13:15:33 +0200 (CEST)
+Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        (Authenticated sender: mb878879)
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 7B7A03F2DB;
+        Mon, 20 Jul 2020 13:15:30 +0200 (CEST)
+Received: from localhost.localdomain (unknown [134.134.139.76])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id CCBA93605CC;
+        Mon, 20 Jul 2020 13:15:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1595243729; bh=mjlfxngBtSmrB32mu8iDZVMjrYWXXM5cA0DACfYZQ2A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gTkGdHYRQjhf+Xn+mawTLz9g2cXReJ781N7XtbRK9TZGGLo4yDhimnm9Mevq/ntPQ
+         uyLUhQhfiM7x08z9IjjGWSu3S+AP+bNX+mEqJyRsxaF/sP0FmGUpVvXDhY8a5dEKvZ
+         LGF1OoSNnF/ZVdVaQNJHgwIeW7LViWHDfAvpN52E=
+Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
+ fences are a bad idea
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Stone <daniels@collabora.com>, linux-rdma@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Steve Pronovost <spronovo@microsoft.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Jesse Natalie <jenatali@microsoft.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        linux-media@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
+ <20200709123339.547390-1-daniel.vetter@ffwll.ch>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
+Date:   Mon, 20 Jul 2020 13:15:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20200709123339.547390-1-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add support for 0xefa1 devices.
+Hi,
 
-Reviewed-by: Shadi Ammouri <sammouri@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
- drivers/infiniband/hw/efa/efa_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On 7/9/20 2:33 PM, Daniel Vetter wrote:
+> Comes up every few years, gets somewhat tedious to discuss, let's
+> write this down once and for all.
+>
+> What I'm not sure about is whether the text should be more explicit in
+> flat out mandating the amdkfd eviction fences for long running compute
+> workloads or workloads where userspace fencing is allowed.
 
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 82145574c928..92d701146320 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -12,10 +12,12 @@
- 
- #include "efa.h"
- 
--#define PCI_DEV_ID_EFA_VF 0xefa0
-+#define PCI_DEV_ID_EFA0_VF 0xefa0
-+#define PCI_DEV_ID_EFA1_VF 0xefa1
- 
- static const struct pci_device_id efa_pci_tbl[] = {
--	{ PCI_VDEVICE(AMAZON, PCI_DEV_ID_EFA_VF) },
-+	{ PCI_VDEVICE(AMAZON, PCI_DEV_ID_EFA0_VF) },
-+	{ PCI_VDEVICE(AMAZON, PCI_DEV_ID_EFA1_VF) },
- 	{ }
- };
- 
--- 
-2.27.0
+Although (in my humble opinion) it might be possible to completely 
+untangle kernel-introduced fences for resource management and dma-fences 
+used for completion- and dependency tracking and lift a lot of 
+restrictions for the dma-fences, including prohibiting infinite ones, I 
+think this makes sense describing the current state.
+
+Reviewed-by: Thomas Hellstrom <thomas.hellstrom@intel.com>
+
 
