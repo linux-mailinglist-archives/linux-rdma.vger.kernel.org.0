@@ -2,61 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9E6226D00
+	by mail.lfdr.de (Postfix) with ESMTP id BB4EA226D01
 	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 19:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgGTRQi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jul 2020 13:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        id S1730132AbgGTRQo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jul 2020 13:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728889AbgGTRQi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jul 2020 13:16:38 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9047C061794
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 10:16:37 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id s21so13959201ilk.5
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 10:16:37 -0700 (PDT)
+        with ESMTP id S1728889AbgGTRQn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jul 2020 13:16:43 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DA8C061794
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 10:16:43 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q74so18454970iod.1
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 10:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:from:to:date:message-id:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=IuCdSG3Agt9xfLKqHbAe0tidom+hR2CFOoKolzr7mMk=;
-        b=BoyZKhDZwuKfIFn+q6S1BXcUMkuuMdiiBzV/pdTA5UjjVpMTCcZlMEk9CCmqOR9fF7
-         WGz+Ork6DwKIbiBeUdZx0mf5A3vU6Rqo7g4HXPZHSN0i8JAScPDz3MrnpDKQs5XTM8IN
-         veH/8e+6URE8s0I1IrxavyHe/lG3dMfl5Z4Zo5N16E8A2ulRZcy6IeI812Dy9Q/5J9o/
-         KbBsvfrYH3+JNHdb0cFfWElDVnjNSwAixXyFTzM39w0GELkCSpbiNfyvQf5eWp16NBf2
-         TRBg0PtUmKvTVYWa5bEuO+ONDS76EdqsKVCxuP/D2u9Wd94Al7zU4wa0L0o139kTBxbk
-         b7RQ==
+        bh=Ywqpoz7Cp5DPLI0M/OgNhS15sL0+82dSdP5UhB/spuw=;
+        b=uBfB+fuX06j0RcxowN2KOqjpQn82FdsSKwEYS9XjNpGEIX4DOVHDeT6XY5u/8dZYn8
+         z5K6ZHcAsZU0xVCiSfBz1ugFncbONgoJ4PdCaPjUYrv1wZFT6tWsvGe/LeklLFe81HFw
+         w1t5+xC6ommNnm1lZ55yMsywTvV++DJtNknzv/Rj9TEK9wnhj7sBWGMRcVvaTghYJePd
+         NofxzdcEi1oq8vgSOeJzVcjsN6D93HgMundCVwpPvyJb69PwOkxQKnOQKVKVn25w98de
+         1FG1OqiM4WOSJece13ln71PGxliCbldXo4T9NR4A2Xm/30910TiL9655QuXq/0LqS+Jc
+         SiRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:from:to:date:message-id
          :in-reply-to:references:user-agent:mime-version
          :content-transfer-encoding;
-        bh=IuCdSG3Agt9xfLKqHbAe0tidom+hR2CFOoKolzr7mMk=;
-        b=BT754OrNN+M31uIwPIuydn28gMNAIm0+WKeul/pV0JOzOkT9hgQCFiAezCqFc8GHOF
-         EDTsaRHHHCh/Fv9x+PE1FXM+VJM3V4OCewdu7TvvJGfakV745WiCN2+xJMEVFrfYOFW0
-         xqQZ52sx1t5wWaiR1JyuDF4yozdF4ekSLV1+4emG1Ijb9aOTIVGoRpIOUNHCKSTB9krP
-         9GAimxFMbEnqhMAXyYqfNeRJ+e3Fy/3jPLd9ZU3MPp3V+503b+kcmVFZUV8j1bJZ/hZS
-         0ABwsNjAoYvdmFiQzHobmWE57tOMz+LMUUYV/qjcanNw6GltH3X9aqFx6R7A1Us43b/0
-         Kx/g==
-X-Gm-Message-State: AOAM530MKX+u9pYA6Jyuxn2rKRgBrMIvwPklvV8yYNecQLU2oLhOuiJc
-        cR9R44VmQV9IYORqr4XAYopeMh61
-X-Google-Smtp-Source: ABdhPJzmYkK5ysKm7IOtUT7CJNkoCgcDJjJosnidk7vIeJTDBpRImYObav7QGGBh8/4GSLae+PNiWA==
-X-Received: by 2002:a92:8947:: with SMTP id n68mr24780314ild.235.1595265397193;
-        Mon, 20 Jul 2020 10:16:37 -0700 (PDT)
+        bh=Ywqpoz7Cp5DPLI0M/OgNhS15sL0+82dSdP5UhB/spuw=;
+        b=mX1OgqTq/LwZ+reR/iTY4/nKLBOpY9oXpCQhNK/k+NEV/SoAXx+E0a5O72ghJyJTWW
+         llGiVv262/V15Ur5BEMnfu6o8M+icJvjbA6vuoqhXJ5Qs4n7h8KgyWVuXIheXC8Ug3rb
+         vdrX/rR5TdCzqbLASJQ2orq4sEJk0UPm7I8AaUsVxk3aqA2SUlP1ehGmLS5lYS9BdxKz
+         x0j/WZdfucXeYEqgnSaP/6K7Sccm7nLT2vY0keWzlfLdt5RXx/ajN6QV5dR13yrVYywe
+         HzHtpZrw2EjH9Hu+PRdREHkAY0yWxzuQtunCxl2pQwCivqmPhRkrnaBAqj8I4XQzSFTj
+         RuXA==
+X-Gm-Message-State: AOAM532NWmrUcn63mgGMitEyxMlXW7R7LZmGW/ytxq6++Fo5vtf+K0Oj
+        FxVJS9jW/ergHwLrU9ZXmk4Krilc
+X-Google-Smtp-Source: ABdhPJxcgt8ftmdu+4m4orDA/5L5pct88O6Fl+QWvu6gfweCV9xSJw1wftsa/56aUvg2uXiyY7sPwA==
+X-Received: by 2002:a05:6638:1ec:: with SMTP id t12mr8924669jaq.86.1595265402526;
+        Mon, 20 Jul 2020 10:16:42 -0700 (PDT)
 Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id 5sm9139621ion.7.2020.07.20.10.16.36
+        by smtp.gmail.com with ESMTPSA id v5sm9144718ios.54.2020.07.20.10.16.42
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Jul 2020 10:16:36 -0700 (PDT)
+        Mon, 20 Jul 2020 10:16:42 -0700 (PDT)
 Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 06KHGanH023978
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 17:16:36 GMT
-Subject: [PATCH v2 1/3] RDMA/core: Move the rdma_show_ib_cm_event() macro
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 06KHGf7V023981
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jul 2020 17:16:41 GMT
+Subject: [PATCH v2 2/3] RDMA/cm: Replace pr_debug() call sites with
+ tracepoints
 From:   Chuck Lever <chuck.lever@oracle.com>
 To:     linux-rdma@vger.kernel.org
-Date:   Mon, 20 Jul 2020 13:16:36 -0400
-Message-ID: <159526539617.1543.257325920146781254.stgit@klimt.1015granger.net>
+Date:   Mon, 20 Jul 2020 13:16:41 -0400
+Message-ID: <159526540130.1543.15369631122876858192.stgit@klimt.1015granger.net>
 In-Reply-To: <159526519212.1543.15414933891659731269.stgit@klimt.1015granger.net>
 References: <159526519212.1543.15414933891659731269.stgit@klimt.1015granger.net>
 User-Agent: StGit/0.23
@@ -68,136 +69,621 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Refactor: Make it globally available in the utilities header.
+In the interest of converging on a common instrumentation
+infrastructure, modernize the pr_debug() call sites added by commit
+119bf81793ea ("IB/cm: Add debug prints to ib_cm"). The new
+tracepoints appear in a new "ib_cma" subsystem.
+
+The conversion is somewhat mechanical. Someone more familiar with
+the semantics of the recorded information might suggest additional
+data capture.
+
+Some benefits include:
+- Tracepoints enable "always on" reporting of these errors
+- The error records are structured and compact
+- Tracepoints provide hooks for eBPF scripts
+
+Sample output:
+
+            nfsd-1954  [003]    62.017901: icm_dreq_skipped:     local_id=1998890974 remote_id=1129750393 state=DREQ_RCVD lap_state=LAP_UNINIT
 
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- drivers/infiniband/core/cma_trace.h |   40 ----------------------------------
- include/trace/events/rdma.h         |   41 ++++++++++++++++++++++++++++++++++-
- include/trace/events/rpcrdma.h      |    1 +
- 3 files changed, 41 insertions(+), 41 deletions(-)
+ drivers/infiniband/core/Makefile   |    2 
+ drivers/infiniband/core/cm.c       |   80 +++------
+ drivers/infiniband/core/cm_trace.c |   15 ++
+ drivers/infiniband/core/cm_trace.h |  309 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 351 insertions(+), 55 deletions(-)
+ create mode 100644 drivers/infiniband/core/cm_trace.c
+ create mode 100644 drivers/infiniband/core/cm_trace.h
 
-diff --git a/drivers/infiniband/core/cma_trace.h b/drivers/infiniband/core/cma_trace.h
-index e6e20c36c538..e45264267bcc 100644
---- a/drivers/infiniband/core/cma_trace.h
-+++ b/drivers/infiniband/core/cma_trace.h
-@@ -17,46 +17,6 @@
- #include <linux/tracepoint.h>
- #include <trace/events/rdma.h>
+diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+index 24cb71a16a28..ccf2670ef45e 100644
+--- a/drivers/infiniband/core/Makefile
++++ b/drivers/infiniband/core/Makefile
+@@ -17,7 +17,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+ ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
+ ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
  
--/*
-- * enum ib_cm_event_type, from include/rdma/ib_cm.h
-- */
--#define IB_CM_EVENT_LIST			\
--	ib_cm_event(REQ_ERROR)			\
--	ib_cm_event(REQ_RECEIVED)		\
--	ib_cm_event(REP_ERROR)			\
--	ib_cm_event(REP_RECEIVED)		\
--	ib_cm_event(RTU_RECEIVED)		\
--	ib_cm_event(USER_ESTABLISHED)		\
--	ib_cm_event(DREQ_ERROR)			\
--	ib_cm_event(DREQ_RECEIVED)		\
--	ib_cm_event(DREP_RECEIVED)		\
--	ib_cm_event(TIMEWAIT_EXIT)		\
--	ib_cm_event(MRA_RECEIVED)		\
--	ib_cm_event(REJ_RECEIVED)		\
--	ib_cm_event(LAP_ERROR)			\
--	ib_cm_event(LAP_RECEIVED)		\
--	ib_cm_event(APR_RECEIVED)		\
--	ib_cm_event(SIDR_REQ_ERROR)		\
--	ib_cm_event(SIDR_REQ_RECEIVED)		\
--	ib_cm_event_end(SIDR_REP_RECEIVED)
--
--#undef ib_cm_event
--#undef ib_cm_event_end
--
--#define ib_cm_event(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
--#define ib_cm_event_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
--
--IB_CM_EVENT_LIST
--
--#undef ib_cm_event
--#undef ib_cm_event_end
--
--#define ib_cm_event(x)		{ IB_CM_##x, #x },
--#define ib_cm_event_end(x)	{ IB_CM_##x, #x }
--
--#define rdma_show_ib_cm_event(x) \
--		__print_symbolic(x, IB_CM_EVENT_LIST)
--
+-ib_cm-y :=			cm.o
++ib_cm-y :=			cm.o cm_trace.o
  
- DECLARE_EVENT_CLASS(cma_fsm_class,
- 	TP_PROTO(
-diff --git a/include/trace/events/rdma.h b/include/trace/events/rdma.h
-index aa19afc73a4e..81bb454fc288 100644
---- a/include/trace/events/rdma.h
-+++ b/include/trace/events/rdma.h
-@@ -6,7 +6,6 @@
- /*
-  * enum ib_event_type, from include/rdma/ib_verbs.h
-  */
--
- #define IB_EVENT_LIST				\
- 	ib_event(CQ_ERR)			\
- 	ib_event(QP_FATAL)			\
-@@ -90,6 +89,46 @@ IB_WC_STATUS_LIST
- #define rdma_show_wc_status(x) \
- 		__print_symbolic(x, IB_WC_STATUS_LIST)
+ iw_cm-y :=			iwcm.o iwpm_util.o iwpm_msg.o
  
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 0d1377232933..78554e679297 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -27,6 +27,7 @@
+ #include <rdma/ib_cm.h>
+ #include "cm_msgs.h"
+ #include "core_priv.h"
++#include "cm_trace.h"
+ 
+ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+@@ -2124,8 +2125,7 @@ static int cm_req_handler(struct cm_work *work)
+ 
+ 	listen_cm_id_priv = cm_match_req(work, cm_id_priv);
+ 	if (!listen_cm_id_priv) {
+-		pr_debug("%s: local_id %d, no listen_cm_id_priv\n", __func__,
+-			 be32_to_cpu(cm_id_priv->id.local_id));
++		trace_icm_no_listener_err(&cm_id_priv->id);
+ 		cm_id_priv->id.state = IB_CM_IDLE;
+ 		ret = -EINVAL;
+ 		goto destroy;
+@@ -2274,8 +2274,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+ 	if (cm_id->state != IB_CM_REQ_RCVD &&
+ 	    cm_id->state != IB_CM_MRA_REQ_SENT) {
+-		pr_debug("%s: local_comm_id %d, cm_id->state: %d\n", __func__,
+-			 be32_to_cpu(cm_id_priv->id.local_id), cm_id->state);
++		trace_icm_send_rep_err(cm_id_priv->id.local_id, cm_id->state);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+@@ -2348,8 +2347,7 @@ int ib_send_cm_rtu(struct ib_cm_id *cm_id,
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+ 	if (cm_id->state != IB_CM_REP_RCVD &&
+ 	    cm_id->state != IB_CM_MRA_REP_SENT) {
+-		pr_debug("%s: local_id %d, cm_id->state %d\n", __func__,
+-			 be32_to_cpu(cm_id->local_id), cm_id->state);
++		trace_icm_send_cm_rtu_err(cm_id);
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+@@ -2465,7 +2463,7 @@ static int cm_rep_handler(struct cm_work *work)
+ 		cpu_to_be32(IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg)), 0);
+ 	if (!cm_id_priv) {
+ 		cm_dup_rep_handler(work);
+-		pr_debug("%s: remote_comm_id %d, no cm_id_priv\n", __func__,
++		trace_icm_remote_no_priv_err(
+ 			 IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg));
+ 		return -EINVAL;
+ 	}
+@@ -2479,11 +2477,10 @@ static int cm_rep_handler(struct cm_work *work)
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-		pr_debug(
+-			"%s: cm_id_priv->id.state: %d, local_comm_id %d, remote_comm_id %d\n",
+-			__func__, cm_id_priv->id.state,
++		trace_icm_rep_unknown_err(
+ 			IBA_GET(CM_REP_LOCAL_COMM_ID, rep_msg),
+-			IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg));
++			IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg),
++			cm_id_priv->id.state);
+ 		spin_unlock_irq(&cm_id_priv->lock);
+ 		goto error;
+ 	}
+@@ -2500,7 +2497,7 @@ static int cm_rep_handler(struct cm_work *work)
+ 		spin_unlock(&cm.lock);
+ 		spin_unlock_irq(&cm_id_priv->lock);
+ 		ret = -EINVAL;
+-		pr_debug("%s: Failed to insert remote id %d\n", __func__,
++		trace_icm_insert_failed_err(
+ 			 IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg));
+ 		goto error;
+ 	}
+@@ -2517,9 +2514,8 @@ static int cm_rep_handler(struct cm_work *work)
+ 			     IB_CM_REJ_STALE_CONN, CM_MSG_RESPONSE_REP,
+ 			     NULL, 0);
+ 		ret = -EINVAL;
+-		pr_debug(
+-			"%s: Stale connection. local_comm_id %d, remote_comm_id %d\n",
+-			__func__, IBA_GET(CM_REP_LOCAL_COMM_ID, rep_msg),
++		trace_icm_staleconn_err(
++			IBA_GET(CM_REP_LOCAL_COMM_ID, rep_msg),
+ 			IBA_GET(CM_REP_REMOTE_COMM_ID, rep_msg));
+ 
+ 		if (cur_cm_id_priv) {
+@@ -2646,9 +2642,7 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
+ 		return -EINVAL;
+ 
+ 	if (cm_id_priv->id.state != IB_CM_ESTABLISHED) {
+-		pr_debug("%s: local_id %d, cm_id->state: %d\n", __func__,
+-			 be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_dreq_skipped(&cm_id_priv->id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2722,10 +2716,7 @@ static int cm_send_drep_locked(struct cm_id_private *cm_id_priv,
+ 		return -EINVAL;
+ 
+ 	if (cm_id_priv->id.state != IB_CM_DREQ_RCVD) {
+-		pr_debug(
+-			"%s: local_id %d, cm_idcm_id->state(%d) != IB_CM_DREQ_RCVD\n",
+-			__func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			cm_id_priv->id.state);
++		trace_icm_send_drep_err(&cm_id_priv->id);
+ 		kfree(private_data);
+ 		return -EINVAL;
+ 	}
+@@ -2810,9 +2801,8 @@ static int cm_dreq_handler(struct cm_work *work)
+ 		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
+ 				counter[CM_DREQ_COUNTER]);
+ 		cm_issue_drep(work->port, work->mad_recv_wc);
+-		pr_debug(
+-			"%s: no cm_id_priv, local_comm_id %d, remote_comm_id %d\n",
+-			__func__, IBA_GET(CM_DREQ_LOCAL_COMM_ID, dreq_msg),
++		trace_icm_no_priv_err(
++			IBA_GET(CM_DREQ_LOCAL_COMM_ID, dreq_msg),
+ 			IBA_GET(CM_DREQ_REMOTE_COMM_ID, dreq_msg));
+ 		return -EINVAL;
+ 	}
+@@ -2858,9 +2848,7 @@ static int cm_dreq_handler(struct cm_work *work)
+ 				counter[CM_DREQ_COUNTER]);
+ 		goto unlock;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_dreq_unknown_err(&cm_id_priv->id);
+ 		goto unlock;
+ 	}
+ 	cm_id_priv->id.state = IB_CM_DREQ_RCVD;
+@@ -2945,9 +2933,7 @@ static int cm_send_rej_locked(struct cm_id_private *cm_id_priv,
+ 			      state);
+ 		break;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id->state: %d\n", __func__,
+-			 be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_send_unknown_rej_err(&cm_id_priv->id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3060,9 +3046,7 @@ static int cm_rej_handler(struct cm_work *work)
+ 		}
+ 		/* fall through */
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_rej_unknown_err(&cm_id_priv->id);
+ 		spin_unlock_irq(&cm_id_priv->lock);
+ 		goto out;
+ 	}
+@@ -3118,9 +3102,7 @@ int ib_send_cm_mra(struct ib_cm_id *cm_id,
+ 		}
+ 		/* fall through */
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_send_mra_unknown_err(&cm_id_priv->id);
+ 		ret = -EINVAL;
+ 		goto error1;
+ 	}
+@@ -3229,9 +3211,7 @@ static int cm_mra_handler(struct cm_work *work)
+ 				counter[CM_MRA_COUNTER]);
+ 		/* fall through */
+ 	default:
+-		pr_debug("%s local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_mra_unknown_err(&cm_id_priv->id);
+ 		goto out;
+ 	}
+ 
+@@ -3765,8 +3745,7 @@ static void cm_process_send_error(struct ib_mad_send_buf *msg,
+ 	if (msg != cm_id_priv->msg || state != cm_id_priv->id.state)
+ 		goto discard;
+ 
+-	pr_debug_ratelimited("CM: failed sending MAD in state %d. (%s)\n",
+-			     state, ib_wc_status_msg(wc_status));
++	trace_icm_mad_send_err(state, wc_status);
+ 	switch (state) {
+ 	case IB_CM_REQ_SENT:
+ 	case IB_CM_MRA_REQ_RCVD:
+@@ -3889,7 +3868,7 @@ static void cm_work_handler(struct work_struct *_work)
+ 		ret = cm_timewait_handler(work);
+ 		break;
+ 	default:
+-		pr_debug("cm_event.event: 0x%x\n", work->cm_event.event);
++		trace_icm_handler_err(work->cm_event.event);
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+@@ -3925,8 +3904,7 @@ static int cm_establish(struct ib_cm_id *cm_id)
+ 		ret = -EISCONN;
+ 		break;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id->state: %d\n", __func__,
+-			 be32_to_cpu(cm_id->local_id), cm_id->state);
++		trace_icm_establish_err(cm_id);
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+@@ -4123,9 +4101,7 @@ static int cm_init_qp_init_attr(struct cm_id_private *cm_id_priv,
+ 		ret = 0;
+ 		break;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_qp_init_err(&cm_id_priv->id);
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+@@ -4173,9 +4149,7 @@ static int cm_init_qp_rtr_attr(struct cm_id_private *cm_id_priv,
+ 		ret = 0;
+ 		break;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_qp_rtr_err(&cm_id_priv->id);
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+@@ -4235,9 +4209,7 @@ static int cm_init_qp_rts_attr(struct cm_id_private *cm_id_priv,
+ 		ret = 0;
+ 		break;
+ 	default:
+-		pr_debug("%s: local_id %d, cm_id_priv->id.state: %d\n",
+-			 __func__, be32_to_cpu(cm_id_priv->id.local_id),
+-			 cm_id_priv->id.state);
++		trace_icm_qp_rts_err(&cm_id_priv->id);
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+diff --git a/drivers/infiniband/core/cm_trace.c b/drivers/infiniband/core/cm_trace.c
+new file mode 100644
+index 000000000000..8f3482f66338
+--- /dev/null
++++ b/drivers/infiniband/core/cm_trace.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * enum ib_cm_event_type, from include/rdma/ib_cm.h
++ * Trace points for the IB Connection Manager.
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2020, Oracle and/or its affiliates.
 + */
-+#define IB_CM_EVENT_LIST			\
-+	ib_cm_event(REQ_ERROR)			\
-+	ib_cm_event(REQ_RECEIVED)		\
-+	ib_cm_event(REP_ERROR)			\
-+	ib_cm_event(REP_RECEIVED)		\
-+	ib_cm_event(RTU_RECEIVED)		\
-+	ib_cm_event(USER_ESTABLISHED)		\
-+	ib_cm_event(DREQ_ERROR)			\
-+	ib_cm_event(DREQ_RECEIVED)		\
-+	ib_cm_event(DREP_RECEIVED)		\
-+	ib_cm_event(TIMEWAIT_EXIT)		\
-+	ib_cm_event(MRA_RECEIVED)		\
-+	ib_cm_event(REJ_RECEIVED)		\
-+	ib_cm_event(LAP_ERROR)			\
-+	ib_cm_event(LAP_RECEIVED)		\
-+	ib_cm_event(APR_RECEIVED)		\
-+	ib_cm_event(SIDR_REQ_ERROR)		\
-+	ib_cm_event(SIDR_REQ_RECEIVED)		\
-+	ib_cm_event_end(SIDR_REP_RECEIVED)
 +
-+#undef ib_cm_event
-+#undef ib_cm_event_end
++#include <rdma/rdma_cm.h>
++#include "cma_priv.h"
 +
-+#define ib_cm_event(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
-+#define ib_cm_event_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++#define CREATE_TRACE_POINTS
 +
-+IB_CM_EVENT_LIST
++#include "cm_trace.h"
+diff --git a/drivers/infiniband/core/cm_trace.h b/drivers/infiniband/core/cm_trace.h
+new file mode 100644
+index 000000000000..c69e28564913
+--- /dev/null
++++ b/drivers/infiniband/core/cm_trace.h
+@@ -0,0 +1,309 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Trace point definitions for the RDMA Connect Manager.
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2020 Oracle and/or its affiliates.
++ */
 +
-+#undef ib_cm_event
-+#undef ib_cm_event_end
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM ib_cma
 +
-+#define ib_cm_event(x)		{ IB_CM_##x, #x },
-+#define ib_cm_event_end(x)	{ IB_CM_##x, #x }
++#if !defined(_TRACE_IB_CMA_H) || defined(TRACE_HEADER_MULTI_READ)
 +
-+#define rdma_show_ib_cm_event(x) \
-+		__print_symbolic(x, IB_CM_EVENT_LIST)
++#define _TRACE_IB_CMA_H
 +
- /*
-  * enum rdma_cm_event_type, from include/rdma/rdma_cm.h
-  */
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index abe942225637..b6aad52beb62 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -13,6 +13,7 @@
- #include <linux/scatterlist.h>
- #include <linux/sunrpc/rpc_rdma_cid.h>
- #include <linux/tracepoint.h>
++#include <linux/tracepoint.h>
 +#include <rdma/ib_cm.h>
- #include <trace/events/rdma.h>
- 
- /**
++#include <trace/events/rdma.h>
++
++/*
++ * enum ib_cm_state, from include/rdma/ib_cm.h
++ */
++#define IB_CM_STATE_LIST					\
++	ib_cm_state(IDLE)					\
++	ib_cm_state(LISTEN)					\
++	ib_cm_state(REQ_SENT)					\
++	ib_cm_state(REQ_RCVD)					\
++	ib_cm_state(MRA_REQ_SENT)				\
++	ib_cm_state(MRA_REQ_RCVD)				\
++	ib_cm_state(REP_SENT)					\
++	ib_cm_state(REP_RCVD)					\
++	ib_cm_state(MRA_REP_SENT)				\
++	ib_cm_state(MRA_REP_RCVD)				\
++	ib_cm_state(ESTABLISHED)				\
++	ib_cm_state(DREQ_SENT)					\
++	ib_cm_state(DREQ_RCVD)					\
++	ib_cm_state(TIMEWAIT)					\
++	ib_cm_state(SIDR_REQ_SENT)				\
++	ib_cm_state_end(SIDR_REQ_RCVD)
++
++#undef  ib_cm_state
++#undef  ib_cm_state_end
++#define ib_cm_state(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
++#define ib_cm_state_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++
++IB_CM_STATE_LIST
++
++#undef  ib_cm_state
++#undef  ib_cm_state_end
++#define ib_cm_state(x)		{ IB_CM_##x, #x },
++#define ib_cm_state_end(x)	{ IB_CM_##x, #x }
++
++#define show_ib_cm_state(x) \
++		__print_symbolic(x, IB_CM_STATE_LIST)
++
++/*
++ * enum ib_cm_lap_state, from include/rdma/ib_cm.h
++ */
++#define IB_CM_LAP_STATE_LIST					\
++	ib_cm_lap_state(LAP_UNINIT)				\
++	ib_cm_lap_state(LAP_IDLE)				\
++	ib_cm_lap_state(LAP_SENT)				\
++	ib_cm_lap_state(LAP_RCVD)				\
++	ib_cm_lap_state(MRA_LAP_SENT)				\
++	ib_cm_lap_state_end(MRA_LAP_RCVD)
++
++#undef  ib_cm_lap_state
++#undef  ib_cm_lap_state_end
++#define ib_cm_lap_state(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++#define ib_cm_lap_state_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++
++IB_CM_LAP_STATE_LIST
++
++#undef  ib_cm_lap_state
++#undef  ib_cm_lap_state_end
++#define ib_cm_lap_state(x)	{ IB_CM_##x, #x },
++#define ib_cm_lap_state_end(x)	{ IB_CM_##x, #x }
++
++#define show_ib_cm_lap_state(x) \
++		__print_symbolic(x, IB_CM_LAP_STATE_LIST)
++
++
++DECLARE_EVENT_CLASS(icm_id_class,
++	TP_PROTO(
++		const struct ib_cm_id *cm_id
++	),
++
++	TP_ARGS(cm_id),
++
++	TP_STRUCT__entry(
++		__field(const void *, cm_id)	/* for eBPF scripts */
++		__field(unsigned int, local_id)
++		__field(unsigned int, remote_id)
++		__field(unsigned long, state)
++		__field(unsigned long, lap_state)
++	),
++
++	TP_fast_assign(
++		__entry->cm_id = cm_id;
++		__entry->local_id = be32_to_cpu(cm_id->local_id);
++		__entry->remote_id = be32_to_cpu(cm_id->remote_id);
++		__entry->state = cm_id->state;
++		__entry->lap_state = cm_id->lap_state;
++	),
++
++	TP_printk("local_id=%u remote_id=%u state=%s lap_state=%s",
++		__entry->local_id, __entry->remote_id,
++		show_ib_cm_state(__entry->state),
++		show_ib_cm_lap_state(__entry->lap_state)
++	)
++);
++
++#define DEFINE_CM_ERR_EVENT(name)					\
++		DEFINE_EVENT(icm_id_class,				\
++				icm_##name##_err,			\
++				TP_PROTO(				\
++					const struct ib_cm_id *cm_id	\
++				),					\
++				TP_ARGS(cm_id))
++
++DEFINE_CM_ERR_EVENT(send_cm_rtu);
++DEFINE_CM_ERR_EVENT(establish);
++DEFINE_CM_ERR_EVENT(no_listener);
++DEFINE_CM_ERR_EVENT(send_drep);
++DEFINE_CM_ERR_EVENT(dreq_unknown);
++DEFINE_CM_ERR_EVENT(send_unknown_rej);
++DEFINE_CM_ERR_EVENT(rej_unknown);
++DEFINE_CM_ERR_EVENT(send_mra_unknown);
++DEFINE_CM_ERR_EVENT(mra_unknown);
++DEFINE_CM_ERR_EVENT(qp_init);
++DEFINE_CM_ERR_EVENT(qp_rtr);
++DEFINE_CM_ERR_EVENT(qp_rts);
++
++DEFINE_EVENT(icm_id_class,						\
++	icm_dreq_skipped,						\
++	TP_PROTO(							\
++		const struct ib_cm_id *cm_id				\
++	),								\
++	TP_ARGS(cm_id)							\
++);
++
++DECLARE_EVENT_CLASS(icm_local_class,
++	TP_PROTO(
++		unsigned int local_id,
++		unsigned int remote_id
++	),
++
++	TP_ARGS(local_id, remote_id),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, local_id)
++		__field(unsigned int, remote_id)
++	),
++
++	TP_fast_assign(
++		__entry->local_id = local_id;
++		__entry->remote_id = remote_id;
++	),
++
++	TP_printk("local_id=%u remote_id=%u",
++		__entry->local_id, __entry->remote_id
++	)
++);
++
++#define DEFINE_CM_LOCAL_EVENT(name)					\
++		DEFINE_EVENT(icm_local_class,				\
++				icm_##name,				\
++				TP_PROTO(				\
++					unsigned int local_id,			\
++					unsigned int remote_id			\
++				),					\
++				TP_ARGS(local_id, remote_id))
++
++DEFINE_CM_LOCAL_EVENT(staleconn_err);
++DEFINE_CM_LOCAL_EVENT(no_priv_err);
++
++DECLARE_EVENT_CLASS(icm_remote_class,
++	TP_PROTO(
++		u32 remote_id
++	),
++
++	TP_ARGS(remote_id),
++
++	TP_STRUCT__entry(
++		__field(u32, remote_id)
++	),
++
++	TP_fast_assign(
++		__entry->remote_id = remote_id;
++	),
++
++	TP_printk("remote_id=%u",
++		__entry->remote_id
++	)
++);
++
++#define DEFINE_CM_REMOTE_EVENT(name)					\
++		DEFINE_EVENT(icm_remote_class,				\
++				icm_##name,				\
++				TP_PROTO(				\
++					u32 remote_id			\
++				),					\
++				TP_ARGS(remote_id))
++
++DEFINE_CM_REMOTE_EVENT(remote_no_priv_err);
++DEFINE_CM_REMOTE_EVENT(insert_failed_err);
++
++TRACE_EVENT(icm_send_rep_err,
++	TP_PROTO(
++		__be32 local_id,
++		enum ib_cm_state state
++	),
++
++	TP_ARGS(local_id, state),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, local_id)
++		__field(unsigned long, state)
++	),
++
++	TP_fast_assign(
++		__entry->local_id = be32_to_cpu(local_id);
++		__entry->state = state;
++	),
++
++	TP_printk("local_id=%u state=%s",
++		__entry->local_id, show_ib_cm_state(__entry->state)
++	)
++);
++
++TRACE_EVENT(icm_rep_unknown_err,
++	TP_PROTO(
++		unsigned int local_id,
++		unsigned int remote_id,
++		enum ib_cm_state state
++	),
++
++	TP_ARGS(local_id, remote_id, state),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, local_id)
++		__field(unsigned int, remote_id)
++		__field(unsigned long, state)
++	),
++
++	TP_fast_assign(
++		__entry->local_id = local_id;
++		__entry->remote_id = remote_id;
++		__entry->state = state;
++	),
++
++	TP_printk("local_id=%u remote_id=%u state=%s",
++		__entry->local_id, __entry->remote_id,
++		show_ib_cm_state(__entry->state)
++	)
++);
++
++TRACE_EVENT(icm_handler_err,
++	TP_PROTO(
++		enum ib_cm_event_type event
++	),
++
++	TP_ARGS(event),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, event)
++	),
++
++	TP_fast_assign(
++		__entry->event = event;
++	),
++
++	TP_printk("unhandled event=%s",
++		rdma_show_ib_cm_event(__entry->event)
++	)
++);
++
++TRACE_EVENT(icm_mad_send_err,
++	TP_PROTO(
++		enum ib_cm_state state,
++		enum ib_wc_status wc_status
++	),
++
++	TP_ARGS(state, wc_status),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, state)
++		__field(unsigned long, wc_status)
++	),
++
++	TP_fast_assign(
++		__entry->state = state;
++		__entry->wc_status = wc_status;
++	),
++
++	TP_printk("state=%s completion status=%s",
++		show_ib_cm_state(__entry->state),
++		rdma_show_wc_status(__entry->wc_status)
++	)
++);
++
++#endif /* _TRACE_IB_CMA_H */
++
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++#define TRACE_INCLUDE_FILE cm_trace
++
++#include <trace/define_trace.h>
 
 
