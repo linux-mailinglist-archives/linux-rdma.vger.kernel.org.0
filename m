@@ -2,113 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F292256D5
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 06:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4348B225992
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 10:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgGTE4c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jul 2020 00:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgGTE4c (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Jul 2020 00:56:32 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C620D20758;
-        Mon, 20 Jul 2020 04:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595220991;
-        bh=WpIzzTN6scE+2UyxOf2po3oTZMeSCPUMdXbQ6YleutA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ceHbdgk5deba4gxNstdXo0DOLPpRIEt5yb2TkzfUCzLpZcuJJi26TLNNeZ6O1+g7i
-         SVybg+YC7wjkXApW0jXI/mVdHMUTNjj5XCAooiwVJDzIEFyx+jqZ1G4or2+4EzrOT5
-         0bvkNyBGQhjqX7yfB3Km7pW2/V1DmlYJmw5jDBCI=
-Date:   Mon, 20 Jul 2020 07:56:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        corbet@lwn.net, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
-Message-ID: <20200720045626.GF127306@unreal>
-References: <20200719155845.59947-1-grandmaster@al2klimov.de>
+        id S1727045AbgGTIBo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jul 2020 04:01:44 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:17210 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgGTIBo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jul 2020 04:01:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595232105; x=1626768105;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4JUwrNiSJZwSVwrsBeW/YCoDSq7HGL1IpIHRkIHroU8=;
+  b=i/akHcUGhHdZF2gEVGXDi64e2gkQCvX7SrNw1mmAsTTyz8PtCFKhfWrY
+   BkB9oP6+AyWC3aQcelKFMTXI3ESWrU6P2rHTc7/bQvP3b8MsURPfAH0Fu
+   51655+5G/gw1edMfGCnkLSc2PVoRDXiAmFwEMCyIENqdjSrTl04ANyvN+
+   o=;
+IronPort-SDR: QNmgXJ4j9uurPHyIqy9b+UhiEaXjDXppQRpKcn9mvpJETYRFKk94M9OXMCjCLNaxGkB6kH+wtM
+ /0iOaIuYWdGQ==
+X-IronPort-AV: E=Sophos;i="5.75,374,1589241600"; 
+   d="scan'208";a="52800276"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 Jul 2020 08:01:30 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (Postfix) with ESMTPS id 5413DA30B1;
+        Mon, 20 Jul 2020 08:01:28 +0000 (UTC)
+Received: from EX13D02EUC004.ant.amazon.com (10.43.164.117) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 20 Jul 2020 08:01:27 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13D02EUC004.ant.amazon.com (10.43.164.117) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 20 Jul 2020 08:01:26 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.1.212.12) by
+ mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 20 Jul 2020 08:01:23 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next v2 0/4] Add support for 0xefa1 device
+Date:   Mon, 20 Jul 2020 11:01:09 +0300
+Message-ID: <20200720080113.13055-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200719155845.59947-1-grandmaster@al2klimov.de>
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 05:58:45PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
->
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
->
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
->
->  If there are any URLs to be removed completely
->  or at least not (just) HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
->
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
->
->  If you apply the patch, please let me know.
->
->  Sorry again to all maintainers who complained about subject lines.
->  Now I realized that you want an actually perfect prefixes,
->  not just subsystem ones.
->  I tried my best...
->  And yes, *I could* (at least half-)automate it.
->  Impossible is nothing! :)
->
->
->  Documentation/networking/rds.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-Why can't it be done in one mega-patch?
-It is insane to see patch for every file/link.
+The following submission adds the needed functionality in order to
+support 0xefa1 devices, and adds it to the driver pci table.
 
-We have more than 4k files with http:// in it.
+PR was sent:
+https://github.com/linux-rdma/rdma-core/pull/789
 
-➜  kernel git:(m/hw-cleanup) git grep -c http: | tr -d ':[:digit:]' | sort | uniq |wc -l
-4292
+Changelog -
+v1->v2: https://lore.kernel.org/linux-rdma/20200709083630.21377-1-galpress@amazon.com/
+* Add handshake with userspace provider to verify required features
+  support.
+
+Regards,
+Gal
+
+Gal Pressman (4):
+  RDMA/efa: Expose maximum TX doorbell batch
+  RDMA/efa: Expose minimum SQ size
+  RDMA/efa: User/kernel compatibility handshake mechanism
+  RDMA/efa: Add EFA 0xefa1 PCI ID
+
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 15 ++++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c       |  2 +
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  2 +
+ drivers/infiniband/hw/efa/efa_main.c          |  6 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         | 62 +++++++++++++++++++
+ include/uapi/rdma/efa-abi.h                   | 15 ++++-
+ 6 files changed, 97 insertions(+), 5 deletions(-)
 
 
->
-> diff --git a/Documentation/networking/rds.rst b/Documentation/networking/rds.rst
-> index 44936c27ab3a..c80d832509e2 100644
-> --- a/Documentation/networking/rds.rst
-> +++ b/Documentation/networking/rds.rst
-> @@ -11,7 +11,7 @@ This readme tries to provide some background on the hows and whys of RDS,
->  and will hopefully help you find your way around the code.
->
->  In addition, please see this email about RDS origins:
-> -http://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
-> +https://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
->
->  RDS Architecture
->  ================
-> --
-> 2.27.0
->
+base-commit: 5f0b2a6093a4d9aab093964c65083fe801ef1e58
+-- 
+2.27.0
+
