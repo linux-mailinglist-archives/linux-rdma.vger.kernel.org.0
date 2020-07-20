@@ -2,48 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01164225537
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 03:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F292256D5
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jul 2020 06:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgGTBPB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 19 Jul 2020 21:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgGTBPB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 19 Jul 2020 21:15:01 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AA2C0619D2;
-        Sun, 19 Jul 2020 18:15:00 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A812B128464A9;
-        Sun, 19 Jul 2020 18:15:00 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 18:15:00 -0700 (PDT)
-Message-Id: <20200719.181500.700026178439001994.davem@davemloft.net>
-To:     rdunlap@infradead.org
-Cc:     linux-kernel@vger.kernel.org, santosh.shilimkar@oracle.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net: rds: rdma_transport.h: delete duplicated word
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200719180824.12014-1-rdunlap@infradead.org>
-References: <20200719180824.12014-1-rdunlap@infradead.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 19 Jul 2020 18:15:00 -0700 (PDT)
+        id S1725872AbgGTE4c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jul 2020 00:56:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgGTE4c (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Jul 2020 00:56:32 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C620D20758;
+        Mon, 20 Jul 2020 04:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595220991;
+        bh=WpIzzTN6scE+2UyxOf2po3oTZMeSCPUMdXbQ6YleutA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ceHbdgk5deba4gxNstdXo0DOLPpRIEt5yb2TkzfUCzLpZcuJJi26TLNNeZ6O1+g7i
+         SVybg+YC7wjkXApW0jXI/mVdHMUTNjj5XCAooiwVJDzIEFyx+jqZ1G4or2+4EzrOT5
+         0bvkNyBGQhjqX7yfB3Km7pW2/V1DmlYJmw5jDBCI=
+Date:   Mon, 20 Jul 2020 07:56:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        corbet@lwn.net, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
+Message-ID: <20200720045626.GF127306@unreal>
+References: <20200719155845.59947-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200719155845.59947-1-grandmaster@al2klimov.de>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Sun, 19 Jul 2020 11:08:24 -0700
+On Sun, Jul 19, 2020 at 05:58:45PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+>
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+>
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+>
+>  If you apply the patch, please let me know.
+>
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
+>
+>
+>  Documentation/networking/rds.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Delete the doubled word "be" in a comment.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Why can't it be done in one mega-patch?
+It is insane to see patch for every file/link.
 
-Applied.
+We have more than 4k files with http:// in it.
+
+➜  kernel git:(m/hw-cleanup) git grep -c http: | tr -d ':[:digit:]' | sort | uniq |wc -l
+4292
+
+
+>
+> diff --git a/Documentation/networking/rds.rst b/Documentation/networking/rds.rst
+> index 44936c27ab3a..c80d832509e2 100644
+> --- a/Documentation/networking/rds.rst
+> +++ b/Documentation/networking/rds.rst
+> @@ -11,7 +11,7 @@ This readme tries to provide some background on the hows and whys of RDS,
+>  and will hopefully help you find your way around the code.
+>
+>  In addition, please see this email about RDS origins:
+> -http://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
+> +https://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html
+>
+>  RDS Architecture
+>  ================
+> --
+> 2.27.0
+>
