@@ -2,123 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85F3227B02
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 10:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1371F227B2F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 10:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgGUIrV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 04:47:21 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:13814 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGUIrV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 04:47:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id D68C23FA36;
-        Tue, 21 Jul 2020 10:47:18 +0200 (CEST)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=cfyygOmS;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xxeMSWhjAfgq; Tue, 21 Jul 2020 10:47:17 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 7D82A3F9E7;
-        Tue, 21 Jul 2020 10:47:15 +0200 (CEST)
-Received: from localhost.localdomain (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id CC59B36014B;
-        Tue, 21 Jul 2020 10:47:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1595321234; bh=hkvhvfi+JM5OBDtRUXrbQuN3JiHLZIObnsH22OCtN8w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cfyygOmSajTjenzL9cXVdGG96y6lgmTbUKCjVuFw82RLrwHeoGBU5cn0KXg8YsS8h
-         YKNgp4ieMf+U+RCdhVHHVDMnwiUl/E1dxMV0R8mgb7kxAM5+y+xKebL1Yf3BX4g1hl
-         4HmPvZMeCBWn3jekYn0VjQxbnQfT37gTupSD2Mdo=
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
- fences are a bad idea
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Stone <daniels@collabora.com>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        linux-media@vger.kernel.org,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
- <20200721074157.GB3278063@phenom.ffwll.local>
- <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org>
-Date:   Tue, 21 Jul 2020 10:47:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726521AbgGUIyo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 04:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726803AbgGUIyo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Jul 2020 04:54:44 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C954C20717;
+        Tue, 21 Jul 2020 08:54:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595321683;
+        bh=OuQaT8yvH8FY9F6rQRwTrDoughhUgKvd3p952kWOi+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h5bxBXnM7vZCEEbI2XSUUrLIT+zwG/ecLM1aQCwuRuxlVW2ZNG2oyeV69wHsA1xTR
+         dAryxbah4gn/HhEsxY+dGo5dK6BsRjeA9nCkp/Pql8x94bB9laKMvKICqjMWt7R8NH
+         jIoJyl1wE8hiWbSQscx/9t+t8czm4txDIrMj36YI=
+Date:   Tue, 21 Jul 2020 11:54:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, santosh.shilimkar@oracle.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] RDS: Replace HTTP links with HTTPS ones
+Message-ID: <20200721085437.GL1080481@unreal>
+References: <20200719155845.59947-1-grandmaster@al2klimov.de>
+ <20200720045626.GF127306@unreal>
+ <20200720075848.26bc3dfe@lwn.net>
+ <20200720140716.GB1080481@unreal>
+ <20200720083635.3e7880ce@lwn.net>
+ <20200720164827.GC1080481@unreal>
+ <c78d0958-c4ef-9754-c189-ffc507ca1340@al2klimov.de>
+ <20200721060529.GF1080481@unreal>
+ <f1df7901-35ef-af8a-b852-e5e89ababf01@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1df7901-35ef-af8a-b852-e5e89ababf01@al2klimov.de>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 7/21/20 9:45 AM, Christian König wrote:
-> Am 21.07.20 um 09:41 schrieb Daniel Vetter:
->> On Mon, Jul 20, 2020 at 01:15:17PM +0200, Thomas Hellström (Intel) 
->> wrote:
->>> Hi,
->>>
->>> On 7/9/20 2:33 PM, Daniel Vetter wrote:
->>>> Comes up every few years, gets somewhat tedious to discuss, let's
->>>> write this down once and for all.
->>>>
->>>> What I'm not sure about is whether the text should be more explicit in
->>>> flat out mandating the amdkfd eviction fences for long running compute
->>>> workloads or workloads where userspace fencing is allowed.
->>> Although (in my humble opinion) it might be possible to completely 
->>> untangle
->>> kernel-introduced fences for resource management and dma-fences used 
->>> for
->>> completion- and dependency tracking and lift a lot of restrictions 
->>> for the
->>> dma-fences, including prohibiting infinite ones, I think this makes 
->>> sense
->>> describing the current state.
->> Yeah I think a future patch needs to type up how we want to make that
->> happen (for some cross driver consistency) and what needs to be
->> considered. Some of the necessary parts are already there (with like the
->> preemption fences amdkfd has as an example), but I think some clear docs
->> on what's required from both hw, drivers and userspace would be really
->> good.
+On Tue, Jul 21, 2020 at 08:43:00AM +0200, Alexander A. Klimov wrote:
 >
-> I'm currently writing that up, but probably still need a few days for 
-> this.
+>
+> Am 21.07.20 um 08:05 schrieb Leon Romanovsky:
+> > On Mon, Jul 20, 2020 at 11:34:00PM +0200, Alexander A. Klimov wrote:
+> > >
+> > >
+> > > Am 20.07.20 um 18:48 schrieb Leon Romanovsky:
+> > > > On Mon, Jul 20, 2020 at 08:36:35AM -0600, Jonathan Corbet wrote:
+> > > > > On Mon, 20 Jul 2020 17:07:16 +0300
+> > > > > Leon Romanovsky <leon@kernel.org> wrote:
+> > > > >
+> > > > > > > Do *you* want to review that megapatch?  The number of issues that have
+> > > This question is... interesting.
+> > > And no, I would not.
+> >
+> > You are EXPECTED to review your work prior sending to the mailing list.
+> I meant I wouldn't review *one big* patch.
+> I didn't mean my actually sent smaller ones.
+>
+> >
+> > >
+> > > > > > > come up make it clear that these patches do, indeed, need review...
+> > > > > >
+> > > > > > Can you point me to the issues?
+> > > > > > What can go wrong with such a simple replacement?
+> > > > >
+> > > > > Some bits of the conversation:
+> > > > >
+> > > > >     https://lore.kernel.org/lkml/20200626110219.7ae21265@lwn.net/
+> > > > >     https://lore.kernel.org/lkml/20200626110706.7b5d4a38@lwn.net/
+> > > > >     https://lore.kernel.org/lkml/20200705142506.1f26a7e0@lwn.net/
+> > > > >     https://lore.kernel.org/lkml/20200713114321.783f0ae6@lwn.net/
+> > > > >     https://lore.kernel.org/lkml/202007081531.085533FC5@keescook/
+> > > > >
+> > > > > etc.
+> > > >
+> > > > After reading your links and especially this one.
+> > > > https://lore.kernel.org/lkml/20200713114321.783f0ae6@lwn.net/
+> > > > I don't understand why are we still seeing these patches?
+> > > >
+> > > > I gave to the author comments too, which were ignored.
+> > > > https://patchwork.kernel.org/patch/11644683/#23466547
+> > > I've added SPDXing (the automated way of course ;) ) to my todo list.
+> >
+> > OMG, why don't you listen? We don't want your automatic patches.
+> Wrong.
+> *Some of you* don't want my automatic patches.
+> And *some others* already applied them and said thanks.
 
-Great! I put down some (very) initial thoughts a couple of weeks ago 
-building on eviction fences for various hardware complexity levels here:
+Sure, it is automatic.
 
-https://gitlab.freedesktop.org/thomash/docs/-/blob/master/Untangling%20dma-fence%20and%20memory%20allocation.odt
+Anyway, good luck, may the force be with you!.
 
-/Thomas
+Thanks
 
-
+>
+> >
+> > Thanks
+> >
+> > >
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > jon
