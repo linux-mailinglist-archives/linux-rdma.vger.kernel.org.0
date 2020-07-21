@@ -2,175 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EBA227D82
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 12:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A3B227ECA
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 13:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgGUKrl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 06:47:41 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:3426 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGUKrl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 06:47:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 634B53FAA9;
-        Tue, 21 Jul 2020 12:47:38 +0200 (CEST)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=SWKK5JDY;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Lnu7aDB-FEDZ; Tue, 21 Jul 2020 12:47:37 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id B619E3FA36;
-        Tue, 21 Jul 2020 12:47:33 +0200 (CEST)
-Received: from localhost.localdomain (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id C976C36014B;
-        Tue, 21 Jul 2020 12:47:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1595328452; bh=SgSXLo8jlp/fUxGq5/reKrY6eohj3hTAWwVyZVHKpuw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=SWKK5JDYlv6qtQrYz/vvU9mKdIqWPE5+OPb/yzw09qAZIG2pjw+OHeMsgSa4jHpuS
-         uZ9fdDlzD4wuNqhhrbfgV1ASbwsDxz6PZs1TKxFzA/6WXfA+IuNOgIOyKzdvMZWhVC
-         PNVEsDJjINjdKaof0Wvjc1rMMD4+T1qlUEMbp7y4=
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
- fences are a bad idea
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Stone <daniels@collabora.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
- <20200721074157.GB3278063@phenom.ffwll.local>
- <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
- <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org>
- <2ca2c004-1e11-87f5-4bd8-761e1b44d21f@amd.com>
- <74727f17-b3a5-ca12-6db6-e47543797b72@shipmail.org>
- <CAKMK7uFfMi5M5EkCeG6=tjuDANH4=gDLnFpxCYU-E-xyrxwYUg@mail.gmail.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <ae4e4188-39e6-ec41-c11d-91e9211b4d3a@shipmail.org>
-Date:   Tue, 21 Jul 2020 12:47:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727768AbgGUL1M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 07:27:12 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:13607 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgGUL1M (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 07:27:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595330832; x=1626866832;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=So9ctermII+g6xlrDJ0EGP5lQZ20ONDcLN7hfkRlRzM=;
+  b=HGOFEyzaGjpTz0800ZxHS8HeYyI2JOOdYRVGPGjFl/SmPi4O8PTPU26L
+   AO1bUX1/0o+mRbPfbjJ291N4K8weYk9f2cx37k5SL4xYM0ewnNQWYUzzA
+   pc8ql7vWsDnc30kP5mwBmiVcuSqOJneGhMYAptD1MUwY6SMnGk9oqs48e
+   A=;
+IronPort-SDR: lOdakeJDFiW5kkJuHoyUMwZo5Buvus52rNF40CDvqQiXRXUK613mhFhZueSQlB9a5zlVg/WmV7
+ YqmwHV0Qcxhw==
+X-IronPort-AV: E=Sophos;i="5.75,378,1589241600"; 
+   d="scan'208";a="60304178"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 21 Jul 2020 11:27:09 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 42A15A1C0E;
+        Tue, 21 Jul 2020 11:27:05 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 21 Jul 2020 11:27:05 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.73) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 21 Jul 2020 11:27:00 +0000
+Subject: Re: [PATCH for-next v2 3/4] RDMA/efa: User/kernel compatibility
+ handshake mechanism
+To:     kernel test robot <lkp@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Doug Ledford" <dledford@redhat.com>
+CC:     <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
+        <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        "Shadi Ammouri" <sammouri@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20200720080113.13055-4-galpress@amazon.com>
+ <202007210118.fF0Xv5Jy%lkp@intel.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <99314564-cb73-5a25-3583-1afda323d2b3@amazon.com>
+Date:   Tue, 21 Jul 2020 14:26:55 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uFfMi5M5EkCeG6=tjuDANH4=gDLnFpxCYU-E-xyrxwYUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <202007210118.fF0Xv5Jy%lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.73]
+X-ClientProxiedBy: EX13D11UWB001.ant.amazon.com (10.43.161.53) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 20/07/2020 20:08, kernel test robot wrote:
+> Hi Gal,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on 5f0b2a6093a4d9aab093964c65083fe801ef1e58]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Gal-Pressman/Add-support-for-0xefa1-device/20200720-160419
+> base:    5f0b2a6093a4d9aab093964c65083fe801ef1e58
+> config: x86_64-allyesconfig (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cf1105069648446d58adfb7a6cc590013d6886ba)
 
-On 7/21/20 11:50 AM, Daniel Vetter wrote:
-> On Tue, Jul 21, 2020 at 11:38 AM Thomas Hellström (Intel)
-> <thomas_os@shipmail.org> wrote:
->>
->> On 7/21/20 10:55 AM, Christian König wrote:
->>> Am 21.07.20 um 10:47 schrieb Thomas Hellström (Intel):
->>>> On 7/21/20 9:45 AM, Christian König wrote:
->>>>> Am 21.07.20 um 09:41 schrieb Daniel Vetter:
->>>>>> On Mon, Jul 20, 2020 at 01:15:17PM +0200, Thomas Hellström (Intel)
->>>>>> wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> On 7/9/20 2:33 PM, Daniel Vetter wrote:
->>>>>>>> Comes up every few years, gets somewhat tedious to discuss, let's
->>>>>>>> write this down once and for all.
->>>>>>>>
->>>>>>>> What I'm not sure about is whether the text should be more
->>>>>>>> explicit in
->>>>>>>> flat out mandating the amdkfd eviction fences for long running
->>>>>>>> compute
->>>>>>>> workloads or workloads where userspace fencing is allowed.
->>>>>>> Although (in my humble opinion) it might be possible to completely
->>>>>>> untangle
->>>>>>> kernel-introduced fences for resource management and dma-fences
->>>>>>> used for
->>>>>>> completion- and dependency tracking and lift a lot of restrictions
->>>>>>> for the
->>>>>>> dma-fences, including prohibiting infinite ones, I think this
->>>>>>> makes sense
->>>>>>> describing the current state.
->>>>>> Yeah I think a future patch needs to type up how we want to make that
->>>>>> happen (for some cross driver consistency) and what needs to be
->>>>>> considered. Some of the necessary parts are already there (with
->>>>>> like the
->>>>>> preemption fences amdkfd has as an example), but I think some clear
->>>>>> docs
->>>>>> on what's required from both hw, drivers and userspace would be really
->>>>>> good.
->>>>> I'm currently writing that up, but probably still need a few days
->>>>> for this.
->>>> Great! I put down some (very) initial thoughts a couple of weeks ago
->>>> building on eviction fences for various hardware complexity levels here:
->>>>
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fthomash%2Fdocs%2F-%2Fblob%2Fmaster%2FUntangling%2520dma-fence%2520and%2520memory%2520allocation.odt&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C8978bbd7823e4b41663708d82d52add3%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637309180424312390&amp;sdata=tTxx2vfzfwLM1IBJSqqAZRw1604R%2F0bI3MwN1%2FBf2VQ%3D&amp;reserved=0
->>>>
->>> I don't think that this will ever be possible.
->>>
->>> See that Daniel describes in his text is that indefinite fences are a
->>> bad idea for memory management, and I think that this is a fixed fact.
->>>
->>> In other words the whole concept of submitting work to the kernel
->>> which depends on some user space interaction doesn't work and never will.
->> Well the idea here is that memory management will *never* depend on
->> indefinite fences: As soon as someone waits on a memory manager fence
->> (be it eviction, shrinker or mmu notifier) it breaks out of any
->> dma-fence dependencies and /or user-space interaction. The text tries to
->> describe what's required to be able to do that (save for non-preemptible
->> gpus where someone submits a forever-running shader).
-> Yeah I think that part of your text is good to describe how to
-> untangle memory fences from synchronization fences given how much the
-> hw can do.
->
->> So while I think this is possible (until someone comes up with a case
->> where it wouldn't work of course), I guess Daniel has a point in that it
->> won't happen because of inertia and there might be better options.
-> Yeah it's just I don't see much chance for splitting dma-fence itself.
-> That's also why I'm not positive on the "no hw preemption, only
-> scheduler" case: You still have a dma_fence for the batch itself,
-> which means still no userspace controlled synchronization or other
-> form of indefinite batches allowed. So not getting us any closer to
-> enabling the compute use cases people want.
+Uh, looks like I use some gcc specific stuff here.. I guess it's time to start
+checking clang compilation as well :).
 
-Yes, we can't do magic. As soon as an indefinite batch makes it to such 
-hardware we've lost. But since we can break out while the batch is stuck 
-in the scheduler waiting, what I believe we *can* do with this approach 
-is to avoid deadlocks due to locally unknown dependencies, which has 
-some bearing on this documentation patch, and also to allow memory 
-allocation in dma-fence (not memory-fence) critical sections, like gpu 
-fault- and error handlers without resorting to using memory pools.
-
-But again. I'm not saying we should actually implement this. Better to 
-consider it and reject it than not consider it at all.
-
-/Thomas
-
-
+Will fix and resubmit.
