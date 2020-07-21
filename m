@@ -2,96 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8232286D0
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48AB2287BF
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 19:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgGURKV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 13:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729497AbgGURKV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 13:10:21 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062EDC061794
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jul 2020 10:10:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id m9so11036395pfh.0
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jul 2020 10:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ijLcrIKdMxEslvD+jmX5vh8r2VprMB5vKT+BEwrD43I=;
-        b=jbNCKuWrF3z0Bg7Dr36LnwZDXW3G2F6aP0bwh8/t049mnjHR0d/sR727j+RVyU9jCn
-         /TZOB8HyVeohJR6IVzPXUxnyh4swfljxyUlhoVMwi6MxQCDnBEL39kl7XZRO+fgtHlma
-         ES8YVwy+jPIEvWcGC2MLxCAbsk+vvEU7aZ1C/Nx8fRYY1UxFn2vMngfQQQ0Sf0xgRP5i
-         eSrB6tQDpResfVmJuoLMqySe9Edc287xcCQ5H52DJaWvL/+qd2Lk0VlW7qPOy9xtatZP
-         udoLPJ2JA/w214qE6Xfjy0un/BXgwWwuvKZSBawrkikE8DTMNa8R3dvJfZg5AOixDdCy
-         R4tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ijLcrIKdMxEslvD+jmX5vh8r2VprMB5vKT+BEwrD43I=;
-        b=OepbrgxxakdPl/jZKIiHed1X7meW7S1e6sm5JXAKnVVnGf0p2r2jwB0lhhKUzfkvhY
-         5/y4qGLZXrJXY7p843HVfhmVo6TWfvahCkObNyEZ2PwXq/7PCE5YxBLdrBBon4AoOP9t
-         5mpPvxzcwSvKDoyclc8rG9psW5N0u/GohPlpnHoonF4F4Etf/xmzTbxYGofDIrRisOwE
-         m7vNOgh0s3GlO4zDBGQPL1Dyi/8t9Y99K41LDr+NvcWdVX+utwXLKi7mVbb6vusx9ltV
-         j2hVM1s7HNbar4uASsZ+KdbncHsQ+0WUya//L5Aa6v5Bz/6F0OY9AWiqjV19npTaKrCV
-         Be0g==
-X-Gm-Message-State: AOAM530OmIkZS/z14DOn6Vg+f/fiyyFCUGv+y5h/imqM9828X2N5+BPc
-        j+fhei12USQVFng4OBfzNEok70gOWOIFUkKlFkv0nQ==
-X-Google-Smtp-Source: ABdhPJwQ9lHmm0r4hO1qeg0VIz7/oth+VOhLnYujVBL0ZKyRnL5vBI4uz3Q2xi47jPq/DZF1n7mk1Sc8MxtsryVRbWM=
-X-Received: by 2002:a63:a119:: with SMTP id b25mr22913481pgf.10.1595351420130;
- Tue, 21 Jul 2020 10:10:20 -0700 (PDT)
+        id S1729344AbgGURqi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 13:46:38 -0400
+Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:39086 "EHLO
+        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgGURqf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 13:46:35 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id CB49A41421;
+        Tue, 21 Jul 2020 19:46:32 +0200 (CEST)
+Authentication-Results: pio-pvt-msa1.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b="frDUmX6P";
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2pG5veMOGOdo; Tue, 21 Jul 2020 19:46:31 +0200 (CEST)
+Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        (Authenticated sender: mb878879)
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id B8F983F3B9;
+        Tue, 21 Jul 2020 19:46:26 +0200 (CEST)
+Received: from [192.168.0.100] (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id F165136010A;
+        Tue, 21 Jul 2020 19:46:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1595353586; bh=4uB31R2+QdLg394hPLx29A25rPq/9GLfA0vttAkzBpo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=frDUmX6Pb56r4nJFS91NmtvI7DLzeVhvjaHlEz2Xvk+tfoPGQteOV/5DOErazBDCW
+         IA3s0raY3MXcOdWP58C+hrLKx9k+xPlQlWoYful1aGabjti0/uWInAu7ikzGlVMFNk
+         AKA8JWBHfIhnINvYQnCl7wjhvT3kkO+EFiEACWis=
+Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
+ fences are a bad idea
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Daniel Stone <daniels@collabora.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Steve Pronovost <spronovo@microsoft.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Jesse Natalie <jenatali@microsoft.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
+ <20200709123339.547390-1-daniel.vetter@ffwll.ch>
+ <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
+ <20200721074157.GB3278063@phenom.ffwll.local>
+ <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
+ <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org>
+ <2ca2c004-1e11-87f5-4bd8-761e1b44d21f@amd.com>
+ <74727f17-b3a5-ca12-6db6-e47543797b72@shipmail.org>
+ <CAKMK7uFfMi5M5EkCeG6=tjuDANH4=gDLnFpxCYU-E-xyrxwYUg@mail.gmail.com>
+ <ae4e4188-39e6-ec41-c11d-91e9211b4d3a@shipmail.org>
+ <f8f73b9f-ce8d-ea02-7caa-d50b75b72809@amd.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <6ed364c9-893b-8974-501a-418585eb4def@shipmail.org>
+Date:   Tue, 21 Jul 2020 19:46:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200720080113.13055-4-galpress@amazon.com> <202007210118.fF0Xv5Jy%lkp@intel.com>
- <99314564-cb73-5a25-3583-1afda323d2b3@amazon.com>
-In-Reply-To: <99314564-cb73-5a25-3583-1afda323d2b3@amazon.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 21 Jul 2020 10:10:07 -0700
-Message-ID: <CAKwvOdns6+LVqLO_aZgXOYi33xskO860=BEU-=Q7c3nGYkHs2A@mail.gmail.com>
-Subject: Re: [PATCH for-next v2 3/4] RDMA/efa: User/kernel compatibility
- handshake mechanism
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     kernel test robot <lkp@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Shadi Ammouri <sammouri@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f8f73b9f-ce8d-ea02-7caa-d50b75b72809@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 4:27 AM 'Gal Pressman' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> On 20/07/2020 20:08, kernel test robot wrote:
-> > Hi Gal,
-> >
-> > I love your patch! Yet something to improve:
-> >
-> > [auto build test ERROR on 5f0b2a6093a4d9aab093964c65083fe801ef1e58]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Gal-Pressman/Add-support-for-0xefa1-device/20200720-160419
-> > base:    5f0b2a6093a4d9aab093964c65083fe801ef1e58
-> > config: x86_64-allyesconfig (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cf1105069648446d58adfb7a6cc590013d6886ba)
->
-> Uh, looks like I use some gcc specific stuff here.. I guess it's time to start
-> checking clang compilation as well :).
->
-> Will fix and resubmit.
 
->> drivers/infiniband/hw/efa/efa_verbs.c:1539:18: error: invalid application of 'sizeof' to an incomplete type 'struct (anonymous struct at drivers/infiniband/hw/efa/efa_verbs.c:1529:2) []'
-           for (i = 0; i < ARRAY_SIZE(user_comp_handshakes); i++) {
-                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+On 2020-07-21 15:59, Christian König wrote:
+> Am 21.07.20 um 12:47 schrieb Thomas Hellström (Intel):
+...
+>> Yes, we can't do magic. As soon as an indefinite batch makes it to 
+>> such hardware we've lost. But since we can break out while the batch 
+>> is stuck in the scheduler waiting, what I believe we *can* do with 
+>> this approach is to avoid deadlocks due to locally unknown 
+>> dependencies, which has some bearing on this documentation patch, and 
+>> also to allow memory allocation in dma-fence (not memory-fence) 
+>> critical sections, like gpu fault- and error handlers without 
+>> resorting to using memory pools.
+>
+> Avoiding deadlocks is only the tip of the iceberg here.
+>
+> When you allow the kernel to depend on user space to proceed with some 
+> operation there are a lot more things which need consideration.
+>
+> E.g. what happens when an userspace process which has submitted stuff 
+> to the kernel is killed? Are the prepared commands send to the 
+> hardware or aborted as well? What do we do with other processes 
+> waiting for that stuff?
+>
+> How to we do resource accounting? When processes need to block when 
+> submitting to the hardware stuff which is not ready we have a process 
+> we can punish for blocking resources. But how is kernel memory used 
+> for a submission accounted? How do we avoid deny of service attacks 
+> here were somebody eats up all memory by doing submissions which can't 
+> finish?
+>
+Hmm. Are these problems really unique to user-space controlled 
+dependencies? Couldn't you hit the same or similar problems with 
+mis-behaving shaders blocking timeline progress?
 
-is user_comp_handshakes forward declared but not defined for an allyesconfig?
+/Thomas
 
--- 
-Thanks,
-~Nick Desaulniers
+
+
