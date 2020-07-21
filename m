@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C607A2280F4
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 15:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0542280F5
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 15:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgGUNbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 09:31:21 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:59424 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgGUNbU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 09:31:20 -0400
+        id S1727957AbgGUNbY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 09:31:24 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:57976 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgGUNbY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 09:31:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595338280; x=1626874280;
+  t=1595338284; x=1626874284;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DMKjB8xCfBzBCkKNfpgxia5k3f3wlJiB4oaoIdPpvAs=;
-  b=Dg4kkUmExn292LnlumgDO5viYQFLohHbpFb1GV84pP8SCo8dhmeYllIh
-   vi2lUv1/9GYNdKHqvUXDWS+9A/I1WY2sWSHlkSmxg8LjNM8ysnfKywqu+
-   Dt9EDTRs8AFTLKh9SbYX+BEf9Zeo3TGFevpzUC+rVBPJ/P3RbdiqL3ZLA
-   o=;
-IronPort-SDR: i16EELmr6KaOr7IQYKdN7VYlN/AypSQGjt/LzaAQO5TPgO1UEXPbaULJSGN2aledVs8BlNkGqL
- txwbmLL/hMtA==
+  bh=nxXCRA5OJEQr4Oj2d2r5A1eK1DPDEZaZ6EqrRtba188=;
+  b=Ql8lpi6L65rhpJs5iatzQ5SH39xAgPo0VN9zZHhLpNBCC2htSwp8K6Px
+   Tgu3FwOkIJb2lHqRBPzhPN4WdcX+atUNeFu5j7fc/ss787KEqlRDPoIBg
+   1fnSlI9+5WuprRJbLMobCYLIhPFTG/Lmopsy7bA3WCbu7khRko1p5x5pN
+   U=;
+IronPort-SDR: MDic4SsZeK4tlAugTIHrpoJYs2/29FHFkeZr1abANaZ3daGAXTxBoIZpeqzR38VOz9pz1SkCkj
+ zKCJoX3jkxoQ==
 X-IronPort-AV: E=Sophos;i="5.75,378,1589241600"; 
-   d="scan'208";a="53364017"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 21 Jul 2020 13:31:18 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 09FBCA2806;
-        Tue, 21 Jul 2020 13:31:16 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+   d="scan'208";a="61579205"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 21 Jul 2020 13:31:22 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 308A0224949;
+        Tue, 21 Jul 2020 13:31:21 +0000 (UTC)
+Received: from EX13D22EUB002.ant.amazon.com (10.43.166.131) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 21 Jul 2020 13:31:16 +0000
+ id 15.0.1497.2; Tue, 21 Jul 2020 13:31:20 +0000
 Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 21 Jul 2020 13:31:14 +0000
+ EX13D22EUB002.ant.amazon.com (10.43.166.131) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 21 Jul 2020 13:31:19 +0000
 Received: from 8c85908914bf.ant.amazon.com (10.1.213.11) by
  mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 21 Jul 2020 13:31:11 +0000
+ 15.0.1497.2 via Frontend Transport; Tue, 21 Jul 2020 13:31:15 +0000
 From:   Gal Pressman <galpress@amazon.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
 CC:     <linux-rdma@vger.kernel.org>,
         Alexander Matushevsky <matua@amazon.com>,
         Gal Pressman <galpress@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        "Shadi Ammouri" <sammouri@amazon.com>
-Subject: [PATCH for-next v3 2/4] RDMA/efa: Expose minimum SQ size
-Date:   Tue, 21 Jul 2020 16:30:47 +0300
-Message-ID: <20200721133049.74349-3-galpress@amazon.com>
+        Shadi Ammouri <sammouri@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: [PATCH for-next v3 3/4] RDMA/efa: User/kernel compatibility handshake mechanism
+Date:   Tue, 21 Jul 2020 16:30:48 +0300
+Message-ID: <20200721133049.74349-4-galpress@amazon.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200721133049.74349-1-galpress@amazon.com>
 References: <20200721133049.74349-1-galpress@amazon.com>
@@ -60,87 +60,116 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The device reports the minimum SQ size required for creation.
+Introduce a mechanism that performs an handshake between the userspace
+provider and kernel driver which verifies that the user supports all
+required features in order to operate correctly.
 
-This patch queries the min SQ size and reports it back to the
-userspace library.
+The handshake verifies the needed functionality by comparing the
+reported device caps and the provider caps. If the device reports a
+non-zero capability the appropriate comp mask is required from the
+userspace provider in order to allocate the context.
 
-Reviewed-by: Firas JahJah <firasj@amazon.com>
 Reviewed-by: Shadi Ammouri <sammouri@amazon.com>
+Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
 Signed-off-by: Gal Pressman <galpress@amazon.com>
 ---
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 4 ++--
- drivers/infiniband/hw/efa/efa_com_cmd.c         | 1 +
- drivers/infiniband/hw/efa/efa_com_cmd.h         | 1 +
- drivers/infiniband/hw/efa/efa_verbs.c           | 1 +
- include/uapi/rdma/efa-abi.h                     | 3 ++-
- 5 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/efa/efa_verbs.c | 49 +++++++++++++++++++++++++++
+ include/uapi/rdma/efa-abi.h           | 10 ++++++
+ 2 files changed, 59 insertions(+)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 03e7388af06e..5484b08bbc5d 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -606,8 +606,8 @@ struct efa_admin_feature_queue_attr_desc {
- 	/* Number of sub-CQs to be created for each CQ */
- 	u16 sub_cqs_per_cq;
- 
--	/* MBZ */
--	u16 reserved;
-+	/* Minimum number of WQEs per SQ */
-+	u16 min_sq_depth;
- 
- 	/* Maximum number of SGEs (buffers) allowed for a single send WQE */
- 	u16 max_wr_send_sges;
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 53cfde5c43d8..6ac23627f65a 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -481,6 +481,7 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
- 	result->sub_cqs_per_cq = resp.u.queue_attr.sub_cqs_per_cq;
- 	result->max_wr_rdma_sge = resp.u.queue_attr.max_wr_rdma_sges;
- 	result->max_tx_batch = resp.u.queue_attr.max_tx_batch;
-+	result->min_sq_depth = resp.u.queue_attr.min_sq_depth;
- 
- 	err = efa_com_get_feature(edev, &resp, EFA_ADMIN_NETWORK_ATTR);
- 	if (err) {
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index 8df2a26d57d4..190bac23f585 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -128,6 +128,7 @@ struct efa_com_get_device_attr_result {
- 	u16 max_rq_sge;
- 	u16 max_wr_rdma_sge;
- 	u16 max_tx_batch;
-+	u16 min_sq_depth;
- 	u8 db_bar;
- };
- 
 diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index f49d14cebe4a..26102ab333b2 100644
+index 26102ab333b2..7ca40df81ee5 100644
 --- a/drivers/infiniband/hw/efa/efa_verbs.c
 +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1526,6 +1526,7 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
- 	resp.inline_buf_size = dev->dev_attr.inline_buf_size;
- 	resp.max_llq_size = dev->dev_attr.max_llq_size;
- 	resp.max_tx_batch = dev->dev_attr.max_tx_batch;
-+	resp.min_sq_wr = dev->dev_attr.min_sq_depth;
+@@ -1501,11 +1501,48 @@ static int efa_dealloc_uar(struct efa_dev *dev, u16 uarn)
+ 	return efa_com_dealloc_uar(&dev->edev, &params);
+ }
  
- 	if (udata && udata->outlen) {
- 		err = ib_copy_to_udata(udata, &resp,
++#define EFA_CHECK_COMP(_dev, _comp_mask, _attr, _mask)                         \
++	(!(_dev)->dev_attr._attr || ((_comp_mask) & (_mask)))
++
++#define DEFINE_COMP_HANDSHAKE(_dev, _comp_mask, _attr, _mask)                  \
++	{                                                                      \
++		.attr = #_attr,                                                \
++		.check_comp = EFA_CHECK_COMP(_dev, _comp_mask, _attr, _mask)   \
++	}
++
++int efa_user_comp_handshake(const struct ib_ucontext *ibucontext,
++			    const struct efa_ibv_alloc_ucontext_cmd *cmd)
++{
++	struct efa_dev *dev = to_edev(ibucontext->device);
++	int i;
++	struct {
++		char *attr;
++		bool check_comp;
++	} user_comp_handshakes[] = {
++		DEFINE_COMP_HANDSHAKE(dev, cmd->comp_mask, max_tx_batch,
++				      EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH),
++		DEFINE_COMP_HANDSHAKE(dev, cmd->comp_mask, min_sq_depth,
++				      EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR),
++	};
++
++	for (i = 0; i < ARRAY_SIZE(user_comp_handshakes); i++) {
++		if (!user_comp_handshakes[i].check_comp) {
++			ibdev_dbg(&dev->ibdev,
++				  "Userspace handshake failed for %s attribute\n",
++				  user_comp_handshakes[i].attr);
++			return -EOPNOTSUPP;
++		}
++	}
++
++	return 0;
++}
++
+ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
+ {
+ 	struct efa_ucontext *ucontext = to_eucontext(ibucontext);
+ 	struct efa_dev *dev = to_edev(ibucontext->device);
+ 	struct efa_ibv_alloc_ucontext_resp resp = {};
++	struct efa_ibv_alloc_ucontext_cmd cmd = {};
+ 	struct efa_com_alloc_uar_result result;
+ 	int err;
+ 
+@@ -1514,6 +1551,18 @@ int efa_alloc_ucontext(struct ib_ucontext *ibucontext, struct ib_udata *udata)
+ 	 * we will ack input fields in our response.
+ 	 */
+ 
++	err = ib_copy_from_udata(&cmd, udata,
++				 min(sizeof(cmd), udata->inlen));
++	if (err) {
++		ibdev_dbg(&dev->ibdev,
++			  "Cannot copy udata for alloc_ucontext\n");
++		goto err_out;
++	}
++
++	err = efa_user_comp_handshake(ibucontext, &cmd);
++	if (err)
++		goto err_out;
++
+ 	err = efa_com_alloc_uar(&dev->edev, &result);
+ 	if (err)
+ 		goto err_out;
 diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index 10781763da37..7ef2306f8dd4 100644
+index 7ef2306f8dd4..507a2862bedb 100644
 --- a/include/uapi/rdma/efa-abi.h
 +++ b/include/uapi/rdma/efa-abi.h
-@@ -32,7 +32,8 @@ struct efa_ibv_alloc_ucontext_resp {
- 	__u16 inline_buf_size;
- 	__u32 max_llq_size; /* bytes */
- 	__u16 max_tx_batch; /* units of 64 bytes */
--	__u8 reserved_90[6];
-+	__u16 min_sq_wr;
-+	__u8 reserved_a0[4];
- };
+@@ -20,6 +20,16 @@
+  * hex bit offset of the field.
+  */
  
- struct efa_ibv_alloc_pd_resp {
++enum {
++	EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH  = 1 << 0,
++	EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR = 1 << 1,
++};
++
++struct efa_ibv_alloc_ucontext_cmd {
++	__u32 comp_mask;
++	__u8 reserved_20[4];
++};
++
+ enum efa_ibv_user_cmds_supp_udata {
+ 	EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE = 1 << 0,
+ 	EFA_USER_CMDS_SUPP_UDATA_CREATE_AH    = 1 << 1,
 -- 
 2.27.0
 
