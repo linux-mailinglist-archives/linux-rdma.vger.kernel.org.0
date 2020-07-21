@@ -2,253 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F0D228179
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 15:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2550F2286AC
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 19:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgGUN70 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 09:59:26 -0400
-Received: from mail-bn7nam10on2040.outbound.protection.outlook.com ([40.107.92.40]:4225
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726942AbgGUN7Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:59:25 -0400
+        id S1730689AbgGURDd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 13:03:33 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16683 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730401AbgGUQ7u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 12:59:50 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f171eae0000>; Tue, 21 Jul 2020 09:58:22 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 21 Jul 2020 09:59:24 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 21 Jul 2020 09:59:24 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Jul
+ 2020 16:59:16 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 21 Jul 2020 16:59:16 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MrZ3lIT9V0thjVmeLeA2jsEuUOlv0qye4upjsur2Pyt6i3JUWInQJrnPQ009x1IXMeJL/KQm03w/xLj7Gf9xzwZan+eqv48hWoS9NnwInVCoVsQYefDMyYtQWJicSfUi1/X0GMSjrkYgADqSxoycgKOYQhkko1YhDklIKN6bfSudHhwehZ/Md+BKMTGmb22FU0rT470RZYum3tuFrmEKt8LoH1bPjSWU17SQWtVQ4k7zhsI0ftaXhMJelJ656ly1chUUkc9M7fIvYfvQdVPLsniBywha3qhC2dgdp7PetofI2S15bVwTK3N2jgrzplyhHbc3VNwSci5N1/4IdJq50Q==
+ b=b8HnjMslH/BwACHN51GLf0yE31T/wRpQVq4SJhB8AiUv565rxFd0wLJYwCKyCICQCvU64KmFe9M4bnNVYXzZgZgT7NWkgUaLKSAvDuNORlmbHUdMgll0xiw+Qh7Iwm7hx05iYzUwTmOoBOX3OI3LTi1WTkT1Q9a2Dt+6hTOsDiqxZCSpSsAkbPqOJbi47HvdYUgG0bOvCR/3mupmX/oESTC0/BHB9lol93YqVv1G9vthFgUi1l8nLbTri2n/bSsA8BnrAqrELb4dHAA346L1xyPmB4MXdPz9d6yJ5PNmOWAoYq1rDWA9YvsdfpBp+p918ERS3soSjzuHE5N/jXmi5g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l1eSOFrKHl+ZoCrLbZQd20Pqo9TlM1qpLLV8LiD0BMg=;
- b=eYTbFRXIf78qcPCADEzTZXMqRiROgXU3PElfvJd0RC3Vkl5m6AHqOnHiUMEgW5ENQ073SNY6S2hWIj3/mDxQ3qHJMvHiI5+0HCVOusqgUhW7Jn0GAPuYCDvOk2b50RrZrnzMy1aKiSVDUbBZ3qIQO1isAJ9el9fFlIO/nhGdD+xQbga+WEH61kJuDPA4rkM1mnToj/dQSn5UxIAy14tpyPYJletzluGGqHU4NXlrPclD+HR6sbwQ4Uy3MapJs8AWQgG+02Qjc0q9RLxsSqpSE2gFNePI3stxLys1UjkkH/hpxjd7mkDQlCtYZ9x/4yGV4lVy23Iw2t6u28/N0sZEbw==
+ bh=lvuJtgyV2YSvmMk6YoZmcja9vkPBUJLVOBpHWa6nxek=;
+ b=GD23tI1iW4GMRPQPNdeQ0s9GybwVuI6/62CSw/ogJ4Ds1IMf0RDI3ZVVBA6nXDC+uUr0HS827marVsekuIppucfTXo7RmJQs+FEfcak5GoAjdUGP/G0Y8CYlnAJz8HC19DP00G6oTrvjw04IKTPSff8LS7ZXNUaF7oBxqJGm8Ra0fmP07D+GNxtCk1X/j4TivdkL3dfWdj8GzazjoDgNJ6VjwErYrGEC8ZuoeeF37aMgmlNQ6QZlc9Rq/upsF+xCdO55xya0NpQqqsplK3cIJ0TQ4Jk7pZTR+NX2yw0mVdFUTSBVlzdb1c9332pLQdm8jc0+7O6VmUbfXkWAdFKGTg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l1eSOFrKHl+ZoCrLbZQd20Pqo9TlM1qpLLV8LiD0BMg=;
- b=z9NW9roCuoW1oYSl/GpWfxRhdlBHu9uPzqvIhS3xWcN4/bY+7wt04NNu548vvB0eSCZhlyknMjuVL1y7X7DEARJZxm34lBfHQFyWOnMc6k2JcSJAo9/skW5IsWAbaOGVEXJ2nFWccifjyeps6n8hnsf/J1MYpc/N/pNOFWxWFxo=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
- by BYAPR12MB2773.namprd12.prod.outlook.com (2603:10b6:a03:72::10) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2937.namprd12.prod.outlook.com (2603:10b6:5:181::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Tue, 21 Jul
- 2020 13:59:18 +0000
-Received: from BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::bc19:eb90:1151:fc7a]) by BY5PR12MB3764.namprd12.prod.outlook.com
- ([fe80::bc19:eb90:1151:fc7a%3]) with mapi id 15.20.3216.020; Tue, 21 Jul 2020
- 13:59:18 +0000
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
- fences are a bad idea
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Stone <daniels@collabora.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
- <20200721074157.GB3278063@phenom.ffwll.local>
- <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
- <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org>
- <2ca2c004-1e11-87f5-4bd8-761e1b44d21f@amd.com>
- <74727f17-b3a5-ca12-6db6-e47543797b72@shipmail.org>
- <CAKMK7uFfMi5M5EkCeG6=tjuDANH4=gDLnFpxCYU-E-xyrxwYUg@mail.gmail.com>
- <ae4e4188-39e6-ec41-c11d-91e9211b4d3a@shipmail.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <f8f73b9f-ce8d-ea02-7caa-d50b75b72809@amd.com>
-Date:   Tue, 21 Jul 2020 15:59:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-In-Reply-To: <ae4e4188-39e6-ec41-c11d-91e9211b4d3a@shipmail.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR04CA0137.eurprd04.prod.outlook.com
- (2603:10a6:208:55::42) To BY5PR12MB3764.namprd12.prod.outlook.com
- (2603:10b6:a03:1ac::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.26; Tue, 21 Jul
+ 2020 16:59:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3195.026; Tue, 21 Jul 2020
+ 16:59:15 +0000
+Date:   Tue, 21 Jul 2020 13:59:13 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Prevent prefetch from racing with
+ implicit destruction
+Message-ID: <20200721165913.GA3171161@nvidia.com>
+References: <20200719065435.130722-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200719065435.130722-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR08CA0002.namprd08.prod.outlook.com
+ (2603:10b6:208:239::7) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR04CA0137.eurprd04.prod.outlook.com (2603:10a6:208:55::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Tue, 21 Jul 2020 13:59:14 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0002.namprd08.prod.outlook.com (2603:10b6:208:239::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Tue, 21 Jul 2020 16:59:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1jxvbl-00DIyU-RY; Tue, 21 Jul 2020 13:59:13 -0300
+X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3347e7f9-b40c-406a-8fb5-08d82d7e427d
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2773:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB27734EB7C6155426A96AC46883780@BYAPR12MB2773.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 27d1913c-225b-439d-784f-08d82d976628
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2937:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB29371D392E02DBA43EB7272EC2780@DM6PR12MB2937.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l14VUsFKTFKWT74xk6GoxHgXX898LKQi8MfCTMcCFN0k5uEeh8edSKb/4fElkkc0zNn94jA9ISjOvGo0XgyW5XelmJgx3SJrxK8mM7o2uWctxQGtWtKRQzu8iVwI+ZMOwto9l5vynFhllT5V7YA30XFf5Mtq/Sx39zXIG6GFXVekvauCiUH+paIay4yZhmdIWmUMgDtwYZj/wi+4zN91AAC0PmfGZDSDT/8yMPTNvJjML1t9buA/kXR726nu/foRd3n5NRmwB4uQLN3+Sxr4POjQrE2UWKbi2feRj0xR3Iev/Q2dG7110Pt62s82Qfc1D7aH2TzNcwfCJz2n/ogxc1UuKmQYptvc2hBmeWvHTcXyQEuDqi4oBhoOrzkbX12ARwCI+4ZRsgrr7r+MDD1CgDKbAXxP3SdnQmpDHf9BEv8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(6666004)(53546011)(186003)(2906002)(5660300002)(478600001)(16526019)(6486002)(966005)(4326008)(110136005)(316002)(54906003)(66574015)(31696002)(2616005)(8936002)(7416002)(52116002)(8676002)(66556008)(36756003)(45080400002)(86362001)(31686004)(83380400001)(66476007)(66946007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: R9h9Cz9RrQMijEwUA8iSn5Gm2Lw/lP2HTrlD5UFcraikwTq4yL6ZmwOdCkUumPNvynvc+ZKwrDohMCMaEV+mr3zRnenXjIfiuLmcs6VVR25W/mK4TCVnsUDjz5/MF938ffuMdo/+sNpkVKi3ZiNwcb/Z3CXVQ7nk+J21cbtJ6h2W95Zu6kvt1AGug5qclWKHqPnNto2Yzjpnv6ZAa5SOaIq43Nqdn3efMi5H5i83aKx0DnxSusfwQWk/EVY3CaZZjzqPGaAigE30zLmg0uKuekJHz71HaDpX/5M+QdLjrgyIenlVnekSoIcj4ps3T6g3TruoWeq9Gh5bn95UYDgZ0EcwC91w19Hzl18t5IuJJcgRW5OvwdpgAwu4Jux7e7gYd5vFrT01kMbYmISUupfYmW+bsyoHAQbRroThVIeRpflMZgXbmpS+xibQ9gtUdoO9mxCrHWRTfOSG7LYcamJP13+yfLCE1kZDHWF1CWneApg3tZ+KuAYGPydT/vWLKUFFP1qBfRDN5HI/BOTimEoT6XtYoBb8ZKXpm9IoT5rnouPn0vyMjCWcszdkPa17OKkc
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3347e7f9-b40c-406a-8fb5-08d82d7e427d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: M9QJbE/wLEk5L1FBUYPJgy34o2eaAeGMA4NHp8/p2GDx8+diheauA90R5WulD04HG74s8m+0NCvlhJn7YmcerC4H84IrYAaNZzSXvTVlElh3bCCbTExLyUFShH6tIMqF05X+GBcedO6EKdI3mUuOdqmgC9KlKosP3lGtCf7wrQSuP7nLARfZiGprxK2D0GUoqqOa5RvOb4VeuPPpdLJT8WMWKkh2ufrGRI2FjW4OHYg5f63MBs/MpeL131IyTvGU5cIbrUe9ybKr6isazL467p8fNJb9UJxg9eVm7g+2vu0BoSkMVGyFxPvWyJete9YDECGKK0GRKxElvK8rrRlBjg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(478600001)(6916009)(36756003)(8676002)(186003)(66556008)(66476007)(66946007)(83380400001)(33656002)(9786002)(26005)(54906003)(1076003)(426003)(9746002)(8936002)(5660300002)(4326008)(2906002)(86362001)(316002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: XtLeRlCFDKOyhCj7OY9AJEb4AAyM3w02Hb0siabwWmh8CP7FDrrDNdwXtdq+E6hCTgUJVgNYFNay9m5k6va9UHCzQCG1wgRnMVKF+v3PaSWXcSnNMCgIMJWEVigc/3Eu4eGerNwL2uQYx4DCzfrw16JjT7BTiK0n4g6wgXyWTWNhbu9EImNmQ1Wyfs3BTMmOoGIjhKcsd9Coer33xJHjLEY7hAZgxBmMZH/EzRgfCsPM/OnlkARq6V19azn7ap1mG9c2o4lExfcnBCOH482fb81FSK+Jba0ZG2yZgjgvUEmAMuXp4K1LH7lC9n9cWW3oi40nia4xs+BvhgkxbcWcCN8Pd8DqkvKlDbxnLByBebTZV7h/1M44BP1YcADXiMUqwis3xcYYIRjydjQK+vL4wx20Wo3oQytkTxEXpFePTwEoNSkdXEgfx6XXZ49lxJo2rw59KhyphMhepYjlD9PxAjDFYnLc0rl+41qdoGQL0aI=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27d1913c-225b-439d-784f-08d82d976628
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2020 13:59:18.1836
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2020 16:59:15.2663
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RoS/lQrY0iANUX1xcFX7Vi6ZTlrLiIpdprkt4yQipAm6KvDT902qsDDF8R4ulGj1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2773
+X-MS-Exchange-CrossTenant-UserPrincipalName: W+ZtVS47W8XKEIHQaRA6QEThB6AXCMf8st14oSLItXx15FvXSnU0jUkCUM4qvrfJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2937
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595350702; bh=lvuJtgyV2YSvmMk6YoZmcja9vkPBUJLVOBpHWa6nxek=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=j6h0Y40wgqttGkMKYskJV1hdXXFVH8DNbk4VDUiMHlioA7TXk3qSOvmCmWRkaViSy
+         OAVlV9C/gX7h++1S9+rtgsl/8apLKHOBHakPOvmoZSDk4cT+M3RUUjasqIrDBZ8U/w
+         W+oANhgtMWkrumGJGzygjxR58sdsmKWDmZlgtJpJ98PKogOMmMC+yeRwl4bdUTxNge
+         YWJOQb6vzTZYCQ//QY6k/fXn+qKYGIDhRK/hy43DJ7YNdcsxb9A4V1xmuiU+siw7wx
+         m3wb07l66YzLStTOeCPlG4e90Dj+HUZjaeDJZvng6ddi6E3F/z0omBw0L8NjrR/b4j
+         OT0CYnjPVOwnA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 21.07.20 um 12:47 schrieb Thomas Hellström (Intel):
->
-> On 7/21/20 11:50 AM, Daniel Vetter wrote:
->> On Tue, Jul 21, 2020 at 11:38 AM Thomas Hellström (Intel)
->> <thomas_os@shipmail.org> wrote:
->>>
->>> On 7/21/20 10:55 AM, Christian König wrote:
->>>> Am 21.07.20 um 10:47 schrieb Thomas Hellström (Intel):
->>>>> On 7/21/20 9:45 AM, Christian König wrote:
->>>>>> Am 21.07.20 um 09:41 schrieb Daniel Vetter:
->>>>>>> On Mon, Jul 20, 2020 at 01:15:17PM +0200, Thomas Hellström (Intel)
->>>>>>> wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> On 7/9/20 2:33 PM, Daniel Vetter wrote:
->>>>>>>>> Comes up every few years, gets somewhat tedious to discuss, let's
->>>>>>>>> write this down once and for all.
->>>>>>>>>
->>>>>>>>> What I'm not sure about is whether the text should be more
->>>>>>>>> explicit in
->>>>>>>>> flat out mandating the amdkfd eviction fences for long running
->>>>>>>>> compute
->>>>>>>>> workloads or workloads where userspace fencing is allowed.
->>>>>>>> Although (in my humble opinion) it might be possible to completely
->>>>>>>> untangle
->>>>>>>> kernel-introduced fences for resource management and dma-fences
->>>>>>>> used for
->>>>>>>> completion- and dependency tracking and lift a lot of restrictions
->>>>>>>> for the
->>>>>>>> dma-fences, including prohibiting infinite ones, I think this
->>>>>>>> makes sense
->>>>>>>> describing the current state.
->>>>>>> Yeah I think a future patch needs to type up how we want to make 
->>>>>>> that
->>>>>>> happen (for some cross driver consistency) and what needs to be
->>>>>>> considered. Some of the necessary parts are already there (with
->>>>>>> like the
->>>>>>> preemption fences amdkfd has as an example), but I think some clear
->>>>>>> docs
->>>>>>> on what's required from both hw, drivers and userspace would be 
->>>>>>> really
->>>>>>> good.
->>>>>> I'm currently writing that up, but probably still need a few days
->>>>>> for this.
->>>>> Great! I put down some (very) initial thoughts a couple of weeks ago
->>>>> building on eviction fences for various hardware complexity levels 
->>>>> here:
->>>>>
->>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fthomash%2Fdocs%2F-%2Fblob%2Fmaster%2FUntangling%2520dma-fence%2520and%2520memory%2520allocation.odt&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C0af39422c4e744a9303b08d82d637d62%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637309252665326201&amp;sdata=Zk3LVX7bbMpfAMsq%2Fs2jyA0puRQNcjzliJS%2BC7uDLMo%3D&amp;reserved=0 
->>>>>
->>>>>
->>>> I don't think that this will ever be possible.
->>>>
->>>> See that Daniel describes in his text is that indefinite fences are a
->>>> bad idea for memory management, and I think that this is a fixed fact.
->>>>
->>>> In other words the whole concept of submitting work to the kernel
->>>> which depends on some user space interaction doesn't work and never 
->>>> will.
->>> Well the idea here is that memory management will *never* depend on
->>> indefinite fences: As soon as someone waits on a memory manager fence
->>> (be it eviction, shrinker or mmu notifier) it breaks out of any
->>> dma-fence dependencies and /or user-space interaction. The text 
->>> tries to
->>> describe what's required to be able to do that (save for 
->>> non-preemptible
->>> gpus where someone submits a forever-running shader).
->> Yeah I think that part of your text is good to describe how to
->> untangle memory fences from synchronization fences given how much the
->> hw can do.
->>
->>> So while I think this is possible (until someone comes up with a case
->>> where it wouldn't work of course), I guess Daniel has a point in 
->>> that it
->>> won't happen because of inertia and there might be better options.
->> Yeah it's just I don't see much chance for splitting dma-fence itself.
+On Sun, Jul 19, 2020 at 09:54:35AM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> Prefetch work in mlx5_ib_prefetch_mr_work can be queued and able to run
+> concurrently with destruction of the implicit MR. The num_deferred_work
+> was intended to serialize this, but there is a race:
+> 
+>        CPU0                                          CPU1
+> 
+>     mlx5_ib_free_implicit_mr()
+>       xa_erase(odp_mkeys)
+>       synchronize_srcu()
+>       __xa_erase(implicit_children)
+>                                       mlx5_ib_prefetch_mr_work()
+>                                         pagefault_mr()
+>                                          pagefault_implicit_mr()
+>                                           implicit_get_child_mr()
+>                                            xa_cmpxchg()
+>                                         atomic_dec_and_test(num_deferred_mr)
+>       wait_event(imr->q_deferred_work)
+>       ib_umem_odp_release(odp_imr)
+>         kfree(odp_imr)
+> 
+> At this point in mlx5_ib_free_implicit_mr() the implicit_children list is
+> supposed to be empty forever so that destroy_unused_implicit_child_mr()
+> and related are not and will not be running.
+> 
+> Since it is not empty the destroy_unused_implicit_child_mr() flow ends up
+> touching deallocated memory as mlx5_ib_free_implicit_mr() already tore down the
+> imr parent.
+> 
+> The solution is to flush out the prefetch wq by driving num_deferred_work
+> to zero after creation of new prefetch work is blocked.
+> 
+> Fixes: 5256edcb98a1 ("RDMA/mlx5: Rework implicit ODP destroy")
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/odp.c | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
 
-Well that's the whole idea with the timeline semaphores and waiting for 
-a signal number to appear.
+Applied to for-rc, thanks
 
-E.g. instead of doing the wait with the dma_fence we are separating that 
-out into the timeline semaphore object.
-
-This not only avoids the indefinite fence problem for the wait before 
-signal case in Vulkan, but also prevents userspace to submit stuff which 
-can't be processed immediately.
-
->> That's also why I'm not positive on the "no hw preemption, only
->> scheduler" case: You still have a dma_fence for the batch itself,
->> which means still no userspace controlled synchronization or other
->> form of indefinite batches allowed. So not getting us any closer to
->> enabling the compute use cases people want.
-
-What compute use case are you talking about? I'm only aware about the 
-wait before signal case from Vulkan, the page fault case and the KFD 
-preemption fence case.
-
->
-> Yes, we can't do magic. As soon as an indefinite batch makes it to 
-> such hardware we've lost. But since we can break out while the batch 
-> is stuck in the scheduler waiting, what I believe we *can* do with 
-> this approach is to avoid deadlocks due to locally unknown 
-> dependencies, which has some bearing on this documentation patch, and 
-> also to allow memory allocation in dma-fence (not memory-fence) 
-> critical sections, like gpu fault- and error handlers without 
-> resorting to using memory pools.
-
-Avoiding deadlocks is only the tip of the iceberg here.
-
-When you allow the kernel to depend on user space to proceed with some 
-operation there are a lot more things which need consideration.
-
-E.g. what happens when an userspace process which has submitted stuff to 
-the kernel is killed? Are the prepared commands send to the hardware or 
-aborted as well? What do we do with other processes waiting for that stuff?
-
-How to we do resource accounting? When processes need to block when 
-submitting to the hardware stuff which is not ready we have a process we 
-can punish for blocking resources. But how is kernel memory used for a 
-submission accounted? How do we avoid deny of service attacks here were 
-somebody eats up all memory by doing submissions which can't finish?
-
-> But again. I'm not saying we should actually implement this. Better to 
-> consider it and reject it than not consider it at all.
-
-Agreed.
-
-Same thing as it turned out with the Wait before Signal for Vulkan, 
-initially it looked simpler to do it in the kernel. But as far as I know 
-the solution in userspace now works so well that we don't really want 
-the pain for a kernel implementation any more.
-
-Christian.
-
->
-> /Thomas
->
->
-
+Jason
