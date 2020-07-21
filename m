@@ -2,147 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE062228816
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 20:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05821228B4D
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jul 2020 23:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgGUSTK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jul 2020 14:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgGUSTJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 14:19:09 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A538C061794
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jul 2020 11:19:09 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id c25so15771647otf.7
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jul 2020 11:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=a22hQK6cJeMfHLvNiRw93Ty044K5y0nmFYyuDYDGOcI=;
-        b=RRts8Pwr5UcXXv3Bw+O9xoHnODEWp1V/p9FlxiDtRAKNg+HxEHVHcKsKyJoEilJYdv
-         q+rn4deBX9ggDziultofcYH0vtI7iUhGC1o2Sm09VJbb27z0uOKkDOVyZvjfaO7uPWWn
-         7hh7xMU+JE9uzVYgLmFx+C9um8P94b6VFznq4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a22hQK6cJeMfHLvNiRw93Ty044K5y0nmFYyuDYDGOcI=;
-        b=VpyHMJjoWho3O6Zr7ZVI/ifqinGwax99gKEa5YfBdoflx1MvAmrzPphdDK78LsaVyw
-         9XjTBeVTzeYsmVmVUct5SDSXhRrEQ7ZSczTGVNH+bJXJp8qQFcnlvmUUbWhyDCEaLDsM
-         79aeYPnPRySOZno9Q/VfAjdRjrrbGi/Oc7LmPnRWDpxS18dWwXmhLt+g9uwutE6AWOA0
-         EYuzo8CMCJ/wqsvQOfAUt22uIzQQFMEk8PmS9pGAI6RffRc/vKCEliF9JiaUOqYFHPdw
-         5ROXu9qWMZ6kn5PMG/hS+59uBPZl3stDTNOJF9riY8wB6TTDV+f6nRnJBD/N28mnHNWa
-         P/iQ==
-X-Gm-Message-State: AOAM533XtB9nN5JSh6u8XTg3wsiOaLNiR8Naw54IxiE2voFNWqM94mPC
-        gmvlqvMHnWRVYmh88uh/D7hSWiGp4bj1VdQjjZwW0A==
-X-Google-Smtp-Source: ABdhPJxcmcdY93XzSZSgT29lbh/+9cL9bNlOYjhUUtCZpNsuNRauZwGL7jeysaYtumdQH4HCtzK6O992FnCwdZ8uYq0=
-X-Received: by 2002:a05:6830:1d0:: with SMTP id r16mr27028455ota.188.1595355548728;
- Tue, 21 Jul 2020 11:19:08 -0700 (PDT)
+        id S1731242AbgGUVbd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jul 2020 17:31:33 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16107 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730974AbgGUVbc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jul 2020 17:31:32 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f175e750002>; Tue, 21 Jul 2020 14:30:29 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 21 Jul 2020 14:31:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 21 Jul 2020 14:31:31 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 21 Jul
+ 2020 21:31:25 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 21 Jul 2020 21:31:25 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f175ead0001>; Tue, 21 Jul 2020 14:31:25 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Ben Skeggs" <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH v3 0/5] mm/migrate: avoid device private invalidations
+Date:   Tue, 21 Jul 2020 14:31:14 -0700
+Message-ID: <20200721213119.32344-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch> <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
- <20200721074157.GB3278063@phenom.ffwll.local> <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
- <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org> <2ca2c004-1e11-87f5-4bd8-761e1b44d21f@amd.com>
- <74727f17-b3a5-ca12-6db6-e47543797b72@shipmail.org> <CAKMK7uFfMi5M5EkCeG6=tjuDANH4=gDLnFpxCYU-E-xyrxwYUg@mail.gmail.com>
- <ae4e4188-39e6-ec41-c11d-91e9211b4d3a@shipmail.org> <f8f73b9f-ce8d-ea02-7caa-d50b75b72809@amd.com>
- <6ed364c9-893b-8974-501a-418585eb4def@shipmail.org>
-In-Reply-To: <6ed364c9-893b-8974-501a-418585eb4def@shipmail.org>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 21 Jul 2020 20:18:57 +0200
-Message-ID: <CAKMK7uF9kFD+=2_6LJ1Wa2UNUAhAAjs5MNz7dmTfe-4_EFYjWA@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
- fences are a bad idea
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Stone <daniels@collabora.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595367029; bh=S6TSnAaZe1yneC9qg+vali1aI4hicYt4hljXvpfEYPc=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=DnuBVmb4eDYGee/BzoLo3pnjgjneMSU/TSTsQmcQ9DAbiNQQpPFtY+zbjGwdGx2FF
+         wQ6Uie5n1usLkpeq4/h6ifVK6vhZghGtFt7gzWin8SCeBODjKeAvShGk2vXYxUCVOe
+         YPy7FXSBzYywTFkmYRzY/Mf2A+pRCCSw28133BMQTAYMJufABqRMzUNyGM+QA4MadI
+         3lrbbggcvIW9549w/6LetDLr5CS0Y/oxcvSS+Xw6f+zXsjvkvv7hn5hg4ry/LAzEst
+         lBF6Vstb7mTJefMpdEj61ilm2pL9jwuK6fgV8W22Nomolyn3Eh2Tuokdxb4C7/b5lL
+         1PhIiZU+SarUg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 7:46 PM Thomas Hellstr=C3=B6m (Intel)
-<thomas_os@shipmail.org> wrote:
->
->
-> On 2020-07-21 15:59, Christian K=C3=B6nig wrote:
-> > Am 21.07.20 um 12:47 schrieb Thomas Hellstr=C3=B6m (Intel):
-> ...
-> >> Yes, we can't do magic. As soon as an indefinite batch makes it to
-> >> such hardware we've lost. But since we can break out while the batch
-> >> is stuck in the scheduler waiting, what I believe we *can* do with
-> >> this approach is to avoid deadlocks due to locally unknown
-> >> dependencies, which has some bearing on this documentation patch, and
-> >> also to allow memory allocation in dma-fence (not memory-fence)
-> >> critical sections, like gpu fault- and error handlers without
-> >> resorting to using memory pools.
-> >
-> > Avoiding deadlocks is only the tip of the iceberg here.
-> >
-> > When you allow the kernel to depend on user space to proceed with some
-> > operation there are a lot more things which need consideration.
-> >
-> > E.g. what happens when an userspace process which has submitted stuff
-> > to the kernel is killed? Are the prepared commands send to the
-> > hardware or aborted as well? What do we do with other processes
-> > waiting for that stuff?
-> >
-> > How to we do resource accounting? When processes need to block when
-> > submitting to the hardware stuff which is not ready we have a process
-> > we can punish for blocking resources. But how is kernel memory used
-> > for a submission accounted? How do we avoid deny of service attacks
-> > here were somebody eats up all memory by doing submissions which can't
-> > finish?
-> >
-> Hmm. Are these problems really unique to user-space controlled
-> dependencies? Couldn't you hit the same or similar problems with
-> mis-behaving shaders blocking timeline progress?
+The goal for this series is to avoid device private memory TLB
+invalidations when migrating a range of addresses from system
+memory to device private memory and some of those pages have already
+been migrated. The approach taken is to introduce a new mmu notifier
+invalidation event type and use that in the device driver to skip
+invalidation callbacks from migrate_vma_setup(). The device driver is
+also then expected to handle device MMU invalidations as part of the
+migrate_vma_setup(), migrate_vma_pages(), migrate_vma_finalize() process.
+Note that this is opt-in. A device driver can simply invalidate its MMU
+in the mmu notifier callback and not handle MMU invalidations in the
+migration sequence.
 
-We just kill them, which we can because stuff needs to complete in a
-timely fashion, and without any further intervention - all
-prerequisite dependencies must be and are known by the kernel.
+This series is based on Jason Gunthorpe's HMM tree (linux-5.8.0-rc4).
 
-But with the long/endless running compute stuff with userspace sync
-point and everything free-wheeling, including stuff like "hey I'll
-submit this patch but the memory isn't even all allocated yet, so I'm
-just going to hang it on this semaphore until that's done" is entirely
-different. There just shooting the batch kills the programming model,
-and abitrarily holding up a batch for another one to first get its
-memory also breaks it, because userspace might have issued them with
-dependencies in the other order.
+Also, this replaces the need for the following two patches I sent:
+("mm: fix migrate_vma_setup() src_owner and normal pages")
+https://lore.kernel.org/linux-mm/20200622222008.9971-1-rcampbell@nvidia.com
+("nouveau: fix mixed normal and device private page migration")
+https://lore.kernel.org/lkml/20200622233854.10889-3-rcampbell@nvidia.com
 
-So with that execution model you don't run batches, but just an entire
-context. Up to userspace what it does with that, and like with cpu
-threads just running a busy loop doing nothing is perfectly legit
-(from the kernel pov's at least) workload. Nothing in the kernel ever
-waits on such a context to do anything, if the kernel needs something
-you just preempt (or if it's memory and you have gpu page fault
-handling, rip out the page). Accounting is all done on a specific gpu
-context too. And probably we need a somewhat consistent approach on
-how we handle these gpu context things (definitely needed for cgroups
-and all that).
--Daniel
+Bharata Rao, let me know if I can add your reviewed-by back since
+I made a fair number of changes to this version of the series.
+
+Changes in v3:
+Changed the direction field "dir" to a "flags" field and renamed
+  src_owner to pgmap_owner.
+Fixed a locking issue in nouveau for the migration invalidation.
+Added a HMM selftest test case to exercise the HMM test driver
+  invalidation changes.
+Removed reviewed-by Bharata B Rao since this version is moderately
+  changed.
+
+Changes in v2:
+Rebase to Jason Gunthorpe's HMM tree.
+Added reviewed-by from Bharata B Rao.
+Rename the mmu_notifier_range::data field to migrate_pgmap_owner as
+  suggested by Jason Gunthorpe.
+
+Ralph Campbell (5):
+  nouveau: fix storing invalid ptes
+  mm/migrate: add a flags parameter to migrate_vma
+  mm/notifier: add migration invalidation type
+  nouveau/svm: use the new migration invalidation
+  mm/hmm/test: use the new migration invalidation
+
+ arch/powerpc/kvm/book3s_hv_uvmem.c            |  4 ++-
+ drivers/gpu/drm/nouveau/nouveau_dmem.c        | 19 ++++++++---
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 21 +++++-------
+ drivers/gpu/drm/nouveau/nouveau_svm.h         | 13 ++++++-
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    | 13 ++++---
+ include/linux/migrate.h                       | 16 ++++++---
+ include/linux/mmu_notifier.h                  |  7 ++++
+ lib/test_hmm.c                                | 34 +++++++++++--------
+ mm/migrate.c                                  | 14 ++++++--
+ tools/testing/selftests/vm/hmm-tests.c        | 18 +++++++---
+ 10 files changed, 112 insertions(+), 47 deletions(-)
+
 --=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.20.1
+
