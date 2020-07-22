@@ -2,145 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A12229998
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 15:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9852299CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 16:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732481AbgGVN4d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Jul 2020 09:56:33 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:39371 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726425AbgGVN4c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 09:56:32 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
-        with SMTP; 22 Jul 2020 16:56:30 +0300
-Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06MDuTPo026773;
-        Wed, 22 Jul 2020 16:56:30 +0300
-From:   Max Gurtovoy <maxg@mellanox.com>
-To:     sagi@grimberg.me, yaminf@mellanox.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, leon@kernel.org, bvanassche@acm.org
-Cc:     israelr@mellanox.com, oren@mellanox.com, jgg@mellanox.com,
-        idanb@mellanox.com, Max Gurtovoy <maxg@mellanox.com>
-Subject: [PATCH 3/3] IB/srpt: use new shared CQ mechanism
-Date:   Wed, 22 Jul 2020 16:56:29 +0300
-Message-Id: <20200722135629.49467-3-maxg@mellanox.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200722135629.49467-1-maxg@mellanox.com>
-References: <20200722135629.49467-1-maxg@mellanox.com>
+        id S1727825AbgGVOI6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Jul 2020 10:08:58 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:18178 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726973AbgGVOI6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 10:08:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595426938; x=1626962938;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zJM16J6+rY97ma9upB39CRCMXO2OvDXSopXeH4R3j1A=;
+  b=QdYOTLocjCCrFRkwEqGsUho+mMKZfg1tDiAFNvy6TMdoHTel3IOz/pWr
+   d5KtHvggXE4DEPO54P6UFFyyy45oCVJfJgu1kWhh3gIntrFYjtcIv1uUU
+   x5gwbWnD2T7JYkUEEyaXMXO7PtWnKZo0ybirsyjTNzk8KKG3X7547dY4M
+   g=;
+IronPort-SDR: O0jW1Ap1iGJ2tx3V71K5drzTuwvRHDadR3EI8k00cv7PJ7TOVoV/QcNvdHmyuHlKXfN7Ti9YCN
+ 7bM1WdPuoKzA==
+X-IronPort-AV: E=Sophos;i="5.75,383,1589241600"; 
+   d="scan'208";a="60717674"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 22 Jul 2020 14:03:28 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 68CAAA292D;
+        Wed, 22 Jul 2020 14:03:27 +0000 (UTC)
+Received: from EX13D02EUC003.ant.amazon.com (10.43.164.10) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Jul 2020 14:03:26 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13D02EUC003.ant.amazon.com (10.43.164.10) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 22 Jul 2020 14:03:25 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.95.83.32) by
+ mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Wed, 22 Jul 2020 14:03:22 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next v4 0/4] Add support for 0xefa1 device
+Date:   Wed, 22 Jul 2020 17:03:08 +0300
+Message-ID: <20200722140312.3651-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yamin Friedman <yaminf@mellanox.com>
+Hi all,
 
-Has the driver use shared CQs provided by the rdma core driver.
-This provides an advantage of improved efficiency handling interrupts.
+The following submission adds the needed functionality in order to
+support 0xefa1 devices, and adds it to the driver pci table.
 
-Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 17 +++++++++--------
- drivers/infiniband/ulp/srpt/ib_srpt.h |  1 +
- 2 files changed, 10 insertions(+), 8 deletions(-)
+PR was sent:
+https://github.com/linux-rdma/rdma-core/pull/789
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index ef7fcd3..7a4884c 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -869,7 +869,7 @@ static int srpt_zerolength_write(struct srpt_rdma_ch *ch)
- 
- static void srpt_zerolength_write_done(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct srpt_rdma_ch *ch = cq->cq_context;
-+	struct srpt_rdma_ch *ch = wc->qp->qp_context;
- 
- 	pr_debug("%s-%d wc->status %d\n", ch->sess_name, ch->qp->qp_num,
- 		 wc->status);
-@@ -1322,7 +1322,7 @@ static int srpt_abort_cmd(struct srpt_send_ioctx *ioctx)
-  */
- static void srpt_rdma_read_done(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct srpt_rdma_ch *ch = cq->cq_context;
-+	struct srpt_rdma_ch *ch = wc->qp->qp_context;
- 	struct srpt_send_ioctx *ioctx =
- 		container_of(wc->wr_cqe, struct srpt_send_ioctx, rdma_cqe);
- 
-@@ -1683,7 +1683,7 @@ static void srpt_handle_tsk_mgmt(struct srpt_rdma_ch *ch,
- 
- static void srpt_recv_done(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct srpt_rdma_ch *ch = cq->cq_context;
-+	struct srpt_rdma_ch *ch = wc->qp->qp_context;
- 	struct srpt_recv_ioctx *ioctx =
- 		container_of(wc->wr_cqe, struct srpt_recv_ioctx, ioctx.cqe);
- 
-@@ -1744,7 +1744,7 @@ static void srpt_process_wait_list(struct srpt_rdma_ch *ch)
-  */
- static void srpt_send_done(struct ib_cq *cq, struct ib_wc *wc)
- {
--	struct srpt_rdma_ch *ch = cq->cq_context;
-+	struct srpt_rdma_ch *ch = wc->qp->qp_context;
- 	struct srpt_send_ioctx *ioctx =
- 		container_of(wc->wr_cqe, struct srpt_send_ioctx, ioctx.cqe);
- 	enum srpt_command_state state;
-@@ -1791,7 +1791,7 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
- 		goto out;
- 
- retry:
--	ch->cq = ib_alloc_cq_any(sdev->device, ch, ch->rq_size + sq_size,
-+	ch->cq = ib_cq_pool_get(sdev->device, ch->rq_size + sq_size, -1,
- 				 IB_POLL_WORKQUEUE);
- 	if (IS_ERR(ch->cq)) {
- 		ret = PTR_ERR(ch->cq);
-@@ -1799,6 +1799,7 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
- 		       ch->rq_size + sq_size, ret);
- 		goto out;
- 	}
-+	ch->cq_size = ch->rq_size + sq_size;
- 
- 	qp_init->qp_context = (void *)ch;
- 	qp_init->event_handler
-@@ -1843,7 +1844,7 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
- 		if (retry) {
- 			pr_debug("failed to create queue pair with sq_size = %d (%d) - retrying\n",
- 				 sq_size, ret);
--			ib_free_cq(ch->cq);
-+			ib_cq_pool_put(ch->cq, ch->cq_size);
- 			sq_size = max(sq_size / 2, MIN_SRPT_SQ_SIZE);
- 			goto retry;
- 		} else {
-@@ -1869,14 +1870,14 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
- 
- err_destroy_cq:
- 	ch->qp = NULL;
--	ib_free_cq(ch->cq);
-+	ib_cq_pool_put(ch->cq, ch->cq_size);
- 	goto out;
- }
- 
- static void srpt_destroy_ch_ib(struct srpt_rdma_ch *ch)
- {
- 	ib_destroy_qp(ch->qp);
--	ib_free_cq(ch->cq);
-+	ib_cq_pool_put(ch->cq, ch->cq_size);
- }
- 
- /**
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index f31c349..41435a6 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -300,6 +300,7 @@ struct srpt_rdma_ch {
- 		} rdma_cm;
- 	};
- 	struct ib_cq		*cq;
-+	u32			cq_size;
- 	struct ib_cqe		zw_cqe;
- 	struct rcu_head		rcu;
- 	struct kref		kref;
+Changelog -
+v3->v4: https://lore.kernel.org/linux-rdma/20200721133049.74349-1-galpress@amazon.com/
+* Remove the user_comp_handshakes array and use the macros explicitly.
+* Make efa_user_comp_handshake static.
+v2->v3: https://lore.kernel.org/linux-rdma/20200720080113.13055-1-galpress@amazon.com/
+* Remove gcc specific stuff to fix clang compilation.
+v1->v2: https://lore.kernel.org/linux-rdma/20200709083630.21377-1-galpress@amazon.com/
+* Add handshake with userspace provider to verify required features
+  support.
+
+Regards,
+Gal
+
+Gal Pressman (4):
+  RDMA/efa: Expose maximum TX doorbell batch
+  RDMA/efa: Expose minimum SQ size
+  RDMA/efa: User/kernel compatibility handshake mechanism
+  RDMA/efa: Add EFA 0xefa1 PCI ID
+
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 15 ++++++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c       |  2 +
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  2 +
+ drivers/infiniband/hw/efa/efa_main.c          |  6 ++-
+ drivers/infiniband/hw/efa/efa_verbs.c         | 42 +++++++++++++++++++
+ include/uapi/rdma/efa-abi.h                   | 15 ++++++-
+ 6 files changed, 77 insertions(+), 5 deletions(-)
+
+
+base-commit: 8e7eafb816ab7e5047b74cb8eb1db2f8f14f7d7a
 -- 
-1.8.3.1
+2.27.0
 
