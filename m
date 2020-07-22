@@ -2,72 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D1822A0B9
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 22:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04F422A19B
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 23:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgGVU3F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Jul 2020 16:29:05 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:45820 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgGVU3F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 16:29:05 -0400
-Received: by mail-il1-f199.google.com with SMTP id c1so1896269ilk.12
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Jul 2020 13:29:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=J+35V1GhRYpImLMMK2GI/sO17Jyt3p/2anYHKeEsSGE=;
-        b=bLAP0e2k/aMthPLQogKXahYmXGGjIBTuicwaAqv5LOYqpwvBBBEU5Sf8IwGgKvPkja
-         7No8i42lWHjUGk+iZGeg0OuQ66ICMbQFBNuiV8hXoAXcEYwonIqQSf7pijv12VfnbIHq
-         cIvJclyGwwhU4uW3nyFYz+dAa3zsT1hj+2f29g94JwE4ePHonAsKB4bQsD5kqpCDOQXB
-         ugNGRwE7wLRGByQyBCl/LErjGqoDFnns9xZTaaDX99OlpbsmNCL2CH8/x2s5CwPhfN3l
-         N5uu4NWbi8tRl9JckbS0eaOVi9dTlwC+6ykAwuuDiGUmeuiXo5TMS+Teot0gaXqkAoC2
-         OLTA==
-X-Gm-Message-State: AOAM5336nN1/3+pudACSnwZTPUJ7E46BUAtfVEcMIGhFSFnDfBTQchXX
-        pzYJrqka8JwF0cHk9CKmTt6GkY5Eau5mDLF3quEeM6cZM0pk
-X-Google-Smtp-Source: ABdhPJxHK6WbX/I4a7/yMyShEPLIR0Q9QECWtZRgxeRHjQAiPmIUBL9QFevmt3eA7WbXHH2iZgv3Tq89tpWot0N8y5MnqAgDQh6w
+        id S1730153AbgGVVxc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Jul 2020 17:53:32 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31984 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726841AbgGVVxb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Jul 2020 17:53:31 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MLehx2011129;
+        Wed, 22 Jul 2020 14:53:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=nXGQFz13UrR6JaFA6YbqUKvaj2VtE34elxufvD8zFyE=;
+ b=AJVOmtly8oVT/BsCaUzoNex/ICnt+lz5mLuf4hLhPpFKkkatlgRc4G9CqKiiQ0KY0FcQ
+ VhuEr59v79Ql12zCHvIPSYr5UDyeYxNAjkpnRlKGYLCCNtrierwcLZ/YV70prkWp3CFZ
+ FhrcI+yj49Ewnxqh4wTyihHoY3LkrVfKrcsQYbxSjWF7YexaKUWLZkzq5ixDzurlWPqh
+ evPQQg4tOs0+Cy0VeYsXIt2OQrLz9OzpP4neNWLRihde0nRj1nlsi4zXVz9nfwTHi7Ld
+ Gpy448sqDmoXH/OyzoiltTpSxhu+QwOAghvhzD3m/i03dl+wTgYw+h+cVmyVZU6dgxBv sw== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 32c0kksxd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 14:53:13 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
+ 2020 14:53:12 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 14:53:11 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id 69E673F703F;
+        Wed, 22 Jul 2020 14:53:05 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Lobakin <alobakin@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 03/15] qed: move chain methods to a separate file
+Date:   Thu, 23 Jul 2020 00:52:49 +0300
+Message-ID: <20200722215249.2695-1-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200722155349.747-4-alobakin@marvell.com>
+References: <20200722155349.747-4-alobakin@marvell.com>,
+ <20200722155349.747-1-alobakin@marvell.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:8b45:: with SMTP id i66mr1708429ild.19.1595449744109;
- Wed, 22 Jul 2020 13:29:04 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 13:29:04 -0700
-In-Reply-To: <0000000000005b9fca05aa0af1b9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000041388e05ab0d97aa@google.com>
-Subject: Re: KASAN: use-after-free Read in netdevice_event_work_handler
-From:   syzbot <syzbot+20b90969babe05609947@syzkaller.appspotmail.com>
-To:     andrew@lunn.ch, davem@davemloft.net, dledford@redhat.com,
-        f.fainelli@gmail.com, hkallweit1@gmail.com, jgg@ziepe.ca,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, rkovhaev@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_16:2020-07-22,2020-07-22 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-syzbot has bisected this issue to:
+Kbuild test robot triggered a build error on Alpha, sorry. Will send
+v2 soon.
 
-commit d70c47c8dc6902db19555b7ff7e6eeb264d4ac06
-Author: Heiner Kallweit <hkallweit1@gmail.com>
-Date:   Thu Apr 23 19:34:33 2020 +0000
-
-    net: phy: make phy_suspend a no-op if PHY is suspended already
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b2aad8900000
-start commit:   0bddd227 Documentation: update for gcc 4.9 requirement
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15b2aad8900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b2aad8900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=66ad203c2bb6d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=20b90969babe05609947
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a8edff100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167d3bb7100000
-
-Reported-by: syzbot+20b90969babe05609947@syzkaller.appspotmail.com
-Fixes: d70c47c8dc69 ("net: phy: make phy_suspend a no-op if PHY is suspended already")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Al
