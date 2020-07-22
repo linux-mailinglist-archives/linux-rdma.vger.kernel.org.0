@@ -2,681 +2,304 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE6022974F
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 13:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50ED229797
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 13:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726153AbgGVLXk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Jul 2020 07:23:40 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:17192 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726028AbgGVLXi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:23:38 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MBKuln022237;
-        Wed, 22 Jul 2020 04:23:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=Hu/y/tgDj0Z5k33wfdBkDHNbHppIP8rxZCz9dsDDyrA=;
- b=jfd30I1D2Q3fLzoZUEFvR2UyZ/RBlncAgYXq+X01WqJ5JBjWZx4Oiib81drEkgHaw/OU
- 6qS3gdjbG1tl9LJ58ASalBGtFbNXkkVu9Erk5DSsvk0GYZCPuJX1jztXXtuu2iAU9jpe
- 1St2sC6ULuOYwYT3uSSs2PEpXjBgMAwvsC0/ZX+rnaZMR9ipOVBc9IAV7byBAWWcpoTb
- QomXF93yTm8upizkfqWMDvng+VNGfv/tb7/oa1Wh6VphN4V5qEx9MClnluLnh7u6YzWe
- CK5la2lHEP5JeCSg7EBbPdZnt7ue+nc6xm11sGniDLeSFJZoSfA4/9q34HTufqsW+Z6W QA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 32c0kkqjnj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 04:23:33 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
- 2020 04:23:31 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
- 2020 04:23:30 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 04:23:30 -0700
-Received: from lb-tlvb-ybason.il.qlogic.org (unknown [10.5.221.176])
-        by maili.marvell.com (Postfix) with ESMTP id 4707A3F703F;
-        Wed, 22 Jul 2020 04:23:29 -0700 (PDT)
-From:   Yuval Basson <ybason@marvell.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, Yuval Basson <ybason@marvell.com>,
-        "Michal Kalderon" <mkalderon@marvell.com>
-Subject: [PATCH rdma-next] qedr: Add support for user mode XRC-SRQ's
-Date:   Wed, 22 Jul 2020 13:23:39 +0300
-Message-ID: <20200722102339.30104-1-ybason@marvell.com>
-X-Mailer: git-send-email 2.14.5
+        id S1730054AbgGVLjd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Jul 2020 07:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgGVLjd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 07:39:33 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E1FC0619DE
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Jul 2020 04:39:33 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id r8so1584958oij.5
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Jul 2020 04:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g9TiRZLPSKHMr8Ff++37IewQa29JTl7u2x6QvpJDSzY=;
+        b=Y7hXQUhJdiARkKQNxqTHTZ+wAkAyDx9PL1FW8VwRs0O4aHcHffMqUchTVQfjgTJXb5
+         JZNpDjP3MlIHmY8EaB6B2OPT61NK4d1aJj69PrXp/keN7eQ4mdBPRDCWlRwCctpRtcon
+         pB6fyBnJveDM/iUy5w8/CXhV8E3ydB6J3h0d0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g9TiRZLPSKHMr8Ff++37IewQa29JTl7u2x6QvpJDSzY=;
+        b=TIVL0WchhA+hnEnL+VvwBUVUn8DZlGH2EmtkHBUjB3BMhdVmB2d1aeDw/moRLB1C/U
+         b3DfsOKrAldA24m5i279PgAgWFmwvHHamRgmXoQBIPL7dPeYAdjQC5waqzfrLpsfGYjN
+         eCgT6cDSl7C4Q4HityLxQzhQrPRGZS3PGZYY8eYB4hwN/WDzq0V+f1WiI/0CIWwdWDC5
+         yDG/B1cpBmk/rrro5rUE55jtw8Q0p6rG9QrlmK5A0q8IuvKNfLTva9WcrTj3F0x+Xpjg
+         G9MVjV5hErci4TtAnJ4aA1QnPlzowJBFZsMf15WGXXQPV9SjB0VRyoRYSTP52QlACaw/
+         WQlQ==
+X-Gm-Message-State: AOAM533xnAMBUrU/BFb14J+8KNHTWHycYbQfYDl4Mx/mCJvmeNCjxJAD
+        znMlkvki2ixCS2LKNi5ahWzXlf031miWg/4Aoe66IA==
+X-Google-Smtp-Source: ABdhPJzY6PHdL/L/QgEPLmGA+g6qf3lZeTpfg/RFXs/QangcGvPjy4yTJwwEFD9BwKm/swCp49wY5XPczQ7jnPAYjJY=
+X-Received: by 2002:aca:da03:: with SMTP id r3mr6821055oig.14.1595417972307;
+ Wed, 22 Jul 2020 04:39:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_05:2020-07-22,2020-07-22 signatures=0
+References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
+ <20200709123339.547390-1-daniel.vetter@ffwll.ch> <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
+ <20200721074157.GB3278063@phenom.ffwll.local> <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
+ <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org> <CAPM=9twUWeenf-26GEvkuKo3wHgS3BCyrva=sNaWo6+=A5qdoQ@mail.gmail.com>
+ <805c49b7-f0b3-45dc-5fe3-b352f0971527@shipmail.org> <CAKMK7uHhhxBC2MvnNnU9FjxJaWkEcP3m5m7AN3yzfw=wxFsckA@mail.gmail.com>
+ <92393d26-d863-aac6-6d27-53cad6854e13@shipmail.org> <CAKMK7uF8jpyuCF8uUbEeJUedErxqRGa8JY+RuURg7H1XXWXzkw@mail.gmail.com>
+ <8fd999f2-cbf6-813c-6ad4-131948fb5cc5@shipmail.org>
+In-Reply-To: <8fd999f2-cbf6-813c-6ad4-131948fb5cc5@shipmail.org>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 22 Jul 2020 13:39:21 +0200
+Message-ID: <CAKMK7uH0rcyepP2hDpNB-yuvNyjee1tPmxWUyefS5j7i-N6Pfw@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
+ fences are a bad idea
+To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Stone <daniels@collabora.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Steve Pronovost <spronovo@microsoft.com>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Jesse Natalie <jenatali@microsoft.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement the XRC specific verbs.
-The additional QP type introduced new logic to the rest of the verbs that
-now require distinguishing whether a QP has an "RQ" or an "SQ" or both.
+On Wed, Jul 22, 2020 at 12:31 PM Thomas Hellstr=C3=B6m (Intel)
+<thomas_os@shipmail.org> wrote:
+>
+>
+> On 2020-07-22 11:45, Daniel Vetter wrote:
+> > On Wed, Jul 22, 2020 at 10:05 AM Thomas Hellstr=C3=B6m (Intel)
+> > <thomas_os@shipmail.org> wrote:
+> >>
+> >> On 2020-07-22 09:11, Daniel Vetter wrote:
+> >>> On Wed, Jul 22, 2020 at 8:45 AM Thomas Hellstr=C3=B6m (Intel)
+> >>> <thomas_os@shipmail.org> wrote:
+> >>>> On 2020-07-22 00:45, Dave Airlie wrote:
+> >>>>> On Tue, 21 Jul 2020 at 18:47, Thomas Hellstr=C3=B6m (Intel)
+> >>>>> <thomas_os@shipmail.org> wrote:
+> >>>>>> On 7/21/20 9:45 AM, Christian K=C3=B6nig wrote:
+> >>>>>>> Am 21.07.20 um 09:41 schrieb Daniel Vetter:
+> >>>>>>>> On Mon, Jul 20, 2020 at 01:15:17PM +0200, Thomas Hellstr=C3=B6m =
+(Intel)
+> >>>>>>>> wrote:
+> >>>>>>>>> Hi,
+> >>>>>>>>>
+> >>>>>>>>> On 7/9/20 2:33 PM, Daniel Vetter wrote:
+> >>>>>>>>>> Comes up every few years, gets somewhat tedious to discuss, le=
+t's
+> >>>>>>>>>> write this down once and for all.
+> >>>>>>>>>>
+> >>>>>>>>>> What I'm not sure about is whether the text should be more exp=
+licit in
+> >>>>>>>>>> flat out mandating the amdkfd eviction fences for long running=
+ compute
+> >>>>>>>>>> workloads or workloads where userspace fencing is allowed.
+> >>>>>>>>> Although (in my humble opinion) it might be possible to complet=
+ely
+> >>>>>>>>> untangle
+> >>>>>>>>> kernel-introduced fences for resource management and dma-fences=
+ used
+> >>>>>>>>> for
+> >>>>>>>>> completion- and dependency tracking and lift a lot of restricti=
+ons
+> >>>>>>>>> for the
+> >>>>>>>>> dma-fences, including prohibiting infinite ones, I think this m=
+akes
+> >>>>>>>>> sense
+> >>>>>>>>> describing the current state.
+> >>>>>>>> Yeah I think a future patch needs to type up how we want to make=
+ that
+> >>>>>>>> happen (for some cross driver consistency) and what needs to be
+> >>>>>>>> considered. Some of the necessary parts are already there (with =
+like the
+> >>>>>>>> preemption fences amdkfd has as an example), but I think some cl=
+ear docs
+> >>>>>>>> on what's required from both hw, drivers and userspace would be =
+really
+> >>>>>>>> good.
+> >>>>>>> I'm currently writing that up, but probably still need a few days=
+ for
+> >>>>>>> this.
+> >>>>>> Great! I put down some (very) initial thoughts a couple of weeks a=
+go
+> >>>>>> building on eviction fences for various hardware complexity levels=
+ here:
+> >>>>>>
+> >>>>>> https://gitlab.freedesktop.org/thomash/docs/-/blob/master/Untangli=
+ng%20dma-fence%20and%20memory%20allocation.odt
+> >>>>> We are seeing HW that has recoverable GPU page faults but only for
+> >>>>> compute tasks, and scheduler without semaphores hw for graphics.
+> >>>>>
+> >>>>> So a single driver may have to expose both models to userspace and
+> >>>>> also introduces the problem of how to interoperate between the two
+> >>>>> models on one card.
+> >>>>>
+> >>>>> Dave.
+> >>>> Hmm, yes to begin with it's important to note that this is not a
+> >>>> replacement for new programming models or APIs, This is something th=
+at
+> >>>> takes place internally in drivers to mitigate many of the restrictio=
+ns
+> >>>> that are currently imposed on dma-fence and documented in this and
+> >>>> previous series. It's basically the driver-private narrow completion=
+s
+> >>>> Jason suggested in the lockdep patches discussions implemented the s=
+ame
+> >>>> way as eviction-fences.
+> >>>>
+> >>>> The memory fence API would be local to helpers and middle-layers lik=
+e
+> >>>> TTM, and the corresponding drivers.  The only cross-driver-like
+> >>>> visibility would be that the dma-buf move_notify() callback would no=
+t be
+> >>>> allowed to wait on dma-fences or something that depends on a dma-fen=
+ce.
+> >>> Because we can't preempt (on some engines at least) we already have
+> >>> the requirement that cross driver buffer management can get stuck on =
+a
+> >>> dma-fence. Not even taking into account the horrors we do with
+> >>> userptr, which are cross driver no matter what. Limiting move_notify
+> >>> to memory fences only doesn't work, since the pte clearing might need
+> >>> to wait for a dma_fence first. Hence this becomes a full end-of-batch
+> >>> fence, not just a limited kernel-internal memory fence.
+> >> For non-preemptible hardware the memory fence typically *is* the
+> >> end-of-batch fence. (Unless, as documented, there is a scheduler
+> >> consuming sync-file dependencies in which case the memory fence wait
+> >> needs to be able to break out of that). The key thing is not that we c=
+an
+> >> break out of execution, but that we can break out of dependencies, sin=
+ce
+> >> when we're executing all dependecies (modulo semaphores) are already
+> >> fulfilled. That's what's eliminating the deadlocks.
+> >>
+> >>> That's kinda why I think only reasonable option is to toss in the
+> >>> towel and declare dma-fence to be the memory fence (and suck up all
+> >>> the consequences of that decision as uapi, which is kinda where we
+> >>> are), and construct something new&entirely free-wheeling for userspac=
+e
+> >>> fencing. But only for engines that allow enough preempt/gpu page
+> >>> faulting to make that possible. Free wheeling userspace fences/gpu
+> >>> semaphores or whatever you want to call them (on windows I think it's
+> >>> monitored fence) only work if you can preempt to decouple the memory
+> >>> fences from your gpu command execution.
+> >>>
+> >>> There's the in-between step of just decoupling the batchbuffer
+> >>> submission prep for hw without any preempt (but a scheduler), but tha=
+t
+> >>> seems kinda pointless. Modern execbuf should be O(1) fastpath, with
+> >>> all the allocation/mapping work pulled out ahead. vk exposes that
+> >>> model directly to clients, GL drivers could use it internally too, so
+> >>> I see zero value in spending lots of time engineering very tricky
+> >>> kernel code just for old userspace. Much more reasonable to do that i=
+n
+> >>> userspace, where we have real debuggers and no panics about security
+> >>> bugs (or well, a lot less, webgl is still a thing, but at least
+> >>> browsers realized you need to container that completely).
+> >> Sure, it's definitely a big chunk of work. I think the big win would b=
+e
+> >> allowing memory allocation in dma-fence critical sections. But I
+> >> completely buy the above argument. I just wanted to point out that man=
+y
+> >> of the dma-fence restrictions are IMHO fixable, should we need to do
+> >> that for whatever reason.
+> > I'm still not sure that's possible, without preemption at least. We
+> > have 4 edges:
+> > - Kernel has internal depencies among memory fences. We want that to
+> > allow (mild) amounts of overcommit, since that simplifies live so
+> > much.
+> > - Memory fences can block gpu ctx execution (by nature of the memory
+> > simply not being there yet due to our overcommit)
+> > - gpu ctx have (if we allow this) userspace controlled semaphore
+> > dependencies. Of course userspace is expected to not create deadlocks,
+> > but that's only assuming the kernel doesn't inject additional
+> > dependencies. Compute folks really want that.
+> > - gpu ctx can hold up memory allocations if all we have is
+> > end-of-batch fences. And end-of-batch fences are all we have without
+> > preempt, plus if we want backwards compat with the entire current
+> > winsys/compositor ecosystem we need them, which allows us to inject
+> > stuff dependent upon them pretty much anywhere.
+> >
+> > Fundamentally that's not fixable without throwing one of the edges
+> > (and the corresponding feature that enables) out, since no entity has
+> > full visibility into what's going on. E.g. forcing userspace to tell
+> > the kernel about all semaphores just brings up back to the
+> > drm_timeline_syncobj design we have merged right now. And that's imo
+> > no better.
+>
+> Indeed, HW waiting for semaphores without being able to preempt that
+> wait is a no-go. The doc (perhaps naively) assumes nobody is doing that.
 
-Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-Signed-off-by: Yuval Basson <ybason@marvell.com>
----
- drivers/infiniband/hw/qedr/main.c  |  19 +++
- drivers/infiniband/hw/qedr/qedr.h  |  33 +++++
- drivers/infiniband/hw/qedr/verbs.c | 291 +++++++++++++++++++++++++------------
- drivers/infiniband/hw/qedr/verbs.h |   4 +-
- 4 files changed, 255 insertions(+), 92 deletions(-)
+preempt is a necessary but not sufficient condition, you also must not
+have end-of-batch memory fences. And i915 has semaphore support and
+end-of-batch memory fences, e.g. one piece is:
 
-diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index c9eeed2..b35d2e3 100644
---- a/drivers/infiniband/hw/qedr/main.c
-+++ b/drivers/infiniband/hw/qedr/main.c
-@@ -179,6 +179,8 @@ static int qedr_iw_register_device(struct qedr_dev *dev)
- static const struct ib_device_ops qedr_roce_dev_ops = {
- 	.get_port_immutable = qedr_roce_port_immutable,
- 	.query_pkey = qedr_query_pkey,
-+	.alloc_xrcd = qedr_alloc_xrcd,
-+	.dealloc_xrcd = qedr_dealloc_xrcd,
- };
- 
- static void qedr_roce_register_device(struct qedr_dev *dev)
-@@ -186,6 +188,10 @@ static void qedr_roce_register_device(struct qedr_dev *dev)
- 	dev->ibdev.node_type = RDMA_NODE_IB_CA;
- 
- 	ib_set_device_ops(&dev->ibdev, &qedr_roce_dev_ops);
-+
-+	dev->ibdev.uverbs_cmd_mask |= QEDR_UVERBS(OPEN_XRCD) |
-+		QEDR_UVERBS(CLOSE_XRCD) |
-+		QEDR_UVERBS(CREATE_XSRQ);
- }
- 
- static const struct ib_device_ops qedr_dev_ops = {
-@@ -232,6 +238,7 @@ static void qedr_roce_register_device(struct qedr_dev *dev)
- 	INIT_RDMA_OBJ_SIZE(ib_cq, qedr_cq, ibcq),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, qedr_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_srq, qedr_srq, ibsrq),
-+	INIT_RDMA_OBJ_SIZE(ib_xrcd, qedr_xrcd, ibxrcd),
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, qedr_ucontext, ibucontext),
- };
- 
-@@ -703,6 +710,18 @@ static void qedr_affiliated_event(void *context, u8 e_code, void *fw_handle)
- 			event.event = IB_EVENT_SRQ_ERR;
- 			event_type = EVENT_TYPE_SRQ;
- 			break;
-+		case ROCE_ASYNC_EVENT_XRC_DOMAIN_ERR:
-+			event.event = IB_EVENT_QP_ACCESS_ERR;
-+			event_type = EVENT_TYPE_QP;
-+			break;
-+		case ROCE_ASYNC_EVENT_INVALID_XRCETH_ERR:
-+			event.event = IB_EVENT_QP_ACCESS_ERR;
-+			event_type = EVENT_TYPE_QP;
-+			break;
-+		case ROCE_ASYNC_EVENT_XRC_SRQ_CATASTROPHIC_ERR:
-+			event.event = IB_EVENT_CQ_ERR;
-+			event_type = EVENT_TYPE_CQ;
-+			break;
- 		default:
- 			DP_ERR(dev, "unsupported event %d on handle=%llx\n",
- 			       e_code, roce_handle64);
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 4602921..d0b3a7a 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -310,6 +310,11 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
- 
-+struct qedr_xrcd {
-+	struct ib_xrcd ibxrcd;
-+	u16 xrcd_id;
-+};
-+
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-@@ -361,6 +366,7 @@ struct qedr_srq {
- 	struct ib_umem *prod_umem;
- 	u16 srq_id;
- 	u32 srq_limit;
-+	bool is_xrc;
- 	/* lock to protect srq recv post */
- 	spinlock_t lock;
- };
-@@ -573,6 +579,11 @@ static inline struct qedr_pd *get_qedr_pd(struct ib_pd *ibpd)
- 	return container_of(ibpd, struct qedr_pd, ibpd);
- }
- 
-+static inline struct qedr_xrcd *get_qedr_xrcd(struct ib_xrcd *ibxrcd)
-+{
-+	return container_of(ibxrcd, struct qedr_xrcd, ibxrcd);
-+}
-+
- static inline struct qedr_cq *get_qedr_cq(struct ib_cq *ibcq)
- {
- 	return container_of(ibcq, struct qedr_cq, ibcq);
-@@ -598,6 +609,28 @@ static inline struct qedr_srq *get_qedr_srq(struct ib_srq *ibsrq)
- 	return container_of(ibsrq, struct qedr_srq, ibsrq);
- }
- 
-+static inline bool qedr_qp_has_srq(struct qedr_qp *qp)
-+{
-+	return !!qp->srq;
-+}
-+
-+static inline bool qedr_qp_has_sq(struct qedr_qp *qp)
-+{
-+	if (qp->qp_type == IB_QPT_GSI || qp->qp_type == IB_QPT_XRC_TGT)
-+		return 0;
-+
-+	return 1;
-+}
-+
-+static inline bool qedr_qp_has_rq(struct qedr_qp *qp)
-+{
-+	if (qp->qp_type == IB_QPT_GSI || qp->qp_type == IB_QPT_XRC_INI ||
-+	    qp->qp_type == IB_QPT_XRC_TGT || qedr_qp_has_srq(qp))
-+		return 0;
-+
-+	return 1;
-+}
-+
- static inline struct qedr_user_mmap_entry *
- get_qedr_mmap_entry(struct rdma_user_mmap_entry *rdma_entry)
- {
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index bd37eaf..6bddbaa 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -136,6 +136,8 @@ int qedr_query_device(struct ib_device *ibdev,
- 	    IB_DEVICE_RC_RNR_NAK_GEN |
- 	    IB_DEVICE_LOCAL_DMA_LKEY | IB_DEVICE_MEM_MGT_EXTENSIONS;
- 
-+	if (!rdma_protocol_iwarp(&dev->ibdev, 1))
-+		attr->device_cap_flags |= IB_DEVICE_XRC;
- 	attr->max_send_sge = qattr->max_sge;
- 	attr->max_recv_sge = qattr->max_sge;
- 	attr->max_sge_rd = qattr->max_sge;
-@@ -480,6 +482,23 @@ void qedr_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	dev->ops->rdma_dealloc_pd(dev->rdma_ctx, pd->pd_id);
- }
- 
-+
-+int qedr_alloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
-+{
-+	struct qedr_dev *dev = get_qedr_dev(ibxrcd->device);
-+	struct qedr_xrcd *xrcd = get_qedr_xrcd(ibxrcd);
-+
-+	return dev->ops->rdma_alloc_xrcd(dev->rdma_ctx, &xrcd->xrcd_id);
-+}
-+
-+void qedr_dealloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
-+{
-+	struct qedr_dev *dev = get_qedr_dev(ibxrcd->device);
-+	u16 xrcd_id = get_qedr_xrcd(ibxrcd)->xrcd_id;
-+
-+	dev->ops->rdma_dealloc_xrcd(dev->rdma_ctx, xrcd_id);
-+
-+}
- static void qedr_free_pbl(struct qedr_dev *dev,
- 			  struct qedr_pbl_info *pbl_info, struct qedr_pbl *pbl)
- {
-@@ -1184,7 +1203,10 @@ static int qedr_check_qp_attrs(struct ib_pd *ibpd, struct qedr_dev *dev,
- 	struct qedr_device_attr *qattr = &dev->attr;
- 
- 	/* QP0... attrs->qp_type == IB_QPT_GSI */
--	if (attrs->qp_type != IB_QPT_RC && attrs->qp_type != IB_QPT_GSI) {
-+	if (attrs->qp_type != IB_QPT_RC &&
-+	    attrs->qp_type != IB_QPT_GSI &&
-+	    attrs->qp_type != IB_QPT_XRC_INI &&
-+	    attrs->qp_type != IB_QPT_XRC_TGT) {
- 		DP_DEBUG(dev, QEDR_MSG_QP,
- 			 "create qp: unsupported qp type=0x%x requested\n",
- 			 attrs->qp_type);
-@@ -1227,6 +1249,22 @@ static int qedr_check_qp_attrs(struct ib_pd *ibpd, struct qedr_dev *dev,
- 		return -EINVAL;
- 	}
- 
-+	/* verify consumer QPs are not trying to use GSI QP's CQ.
-+	 * TGT QP isn't associated with RQ/SQ
-+	 */
-+	if ((attrs->qp_type != IB_QPT_GSI) && (dev->gsi_qp_created) &&
-+	    (attrs->qp_type != IB_QPT_XRC_TGT)) {
-+		struct qedr_cq *send_cq = get_qedr_cq(attrs->send_cq);
-+		struct qedr_cq *recv_cq = get_qedr_cq(attrs->recv_cq);
-+
-+		if ((send_cq->cq_type == QEDR_CQ_TYPE_GSI) ||
-+		    (recv_cq->cq_type == QEDR_CQ_TYPE_GSI)) {
-+			DP_ERR(dev,
-+			       "create qp: consumer QP cannot use GSI CQs.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -1289,8 +1327,12 @@ static int qedr_copy_qp_uresp(struct qedr_dev *dev,
- 	int rc;
- 
- 	memset(uresp, 0, sizeof(*uresp));
--	qedr_copy_sq_uresp(dev, uresp, qp);
--	qedr_copy_rq_uresp(dev, uresp, qp);
-+
-+	if (qedr_qp_has_sq(qp))
-+		qedr_copy_sq_uresp(dev, uresp, qp);
-+
-+	if (qedr_qp_has_rq(qp))
-+		qedr_copy_rq_uresp(dev, uresp, qp);
- 
- 	uresp->atomic_supported = dev->atomic_cap != IB_ATOMIC_NONE;
- 	uresp->qp_id = qp->qp_id;
-@@ -1314,18 +1356,25 @@ static void qedr_set_common_qp_params(struct qedr_dev *dev,
- 		kref_init(&qp->refcnt);
- 		init_completion(&qp->iwarp_cm_comp);
- 	}
-+
- 	qp->pd = pd;
- 	qp->qp_type = attrs->qp_type;
- 	qp->max_inline_data = attrs->cap.max_inline_data;
--	qp->sq.max_sges = attrs->cap.max_send_sge;
- 	qp->state = QED_ROCE_QP_STATE_RESET;
- 	qp->signaled = (attrs->sq_sig_type == IB_SIGNAL_ALL_WR) ? true : false;
--	qp->sq_cq = get_qedr_cq(attrs->send_cq);
- 	qp->dev = dev;
-+	if (qedr_qp_has_sq(qp)) {
-+		qp->sq.max_sges = attrs->cap.max_send_sge;
-+		qp->sq_cq = get_qedr_cq(attrs->send_cq);
-+		DP_DEBUG(dev, QEDR_MSG_QP,
-+			 "SQ params:\tsq_max_sges = %d, sq_cq_id = %d\n",
-+			 qp->sq.max_sges, qp->sq_cq->icid);
-+	}
- 
--	if (attrs->srq) {
-+	if (attrs->srq)
- 		qp->srq = get_qedr_srq(attrs->srq);
--	} else {
-+
-+	if (qedr_qp_has_rq(qp)) {
- 		qp->rq_cq = get_qedr_cq(attrs->recv_cq);
- 		qp->rq.max_sges = attrs->cap.max_recv_sge;
- 		DP_DEBUG(dev, QEDR_MSG_QP,
-@@ -1344,30 +1393,26 @@ static void qedr_set_common_qp_params(struct qedr_dev *dev,
- 
- static int qedr_set_roce_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- {
--	int rc;
-+	int rc = 0;
- 
--	qp->sq.db = dev->db_addr +
--		    DB_ADDR_SHIFT(DQ_PWM_OFFSET_XCM_RDMA_SQ_PROD);
--	qp->sq.db_data.data.icid = qp->icid + 1;
--	rc = qedr_db_recovery_add(dev, qp->sq.db,
--				  &qp->sq.db_data,
--				  DB_REC_WIDTH_32B,
--				  DB_REC_KERNEL);
--	if (rc)
--		return rc;
-+	if (qedr_qp_has_sq(qp)) {
-+		qp->sq.db = dev->db_addr +
-+			    DB_ADDR_SHIFT(DQ_PWM_OFFSET_XCM_RDMA_SQ_PROD);
-+		qp->sq.db_data.data.icid = qp->icid + 1;
-+		rc = qedr_db_recovery_add(dev, qp->sq.db, &qp->sq.db_data,
-+					  DB_REC_WIDTH_32B, DB_REC_KERNEL);
-+		if (rc)
-+			return rc;
-+	}
- 
--	if (!qp->srq) {
-+	if (qedr_qp_has_rq(qp)) {
- 		qp->rq.db = dev->db_addr +
- 			    DB_ADDR_SHIFT(DQ_PWM_OFFSET_TCM_ROCE_RQ_PROD);
- 		qp->rq.db_data.data.icid = qp->icid;
--
--		rc = qedr_db_recovery_add(dev, qp->rq.db,
--					  &qp->rq.db_data,
--					  DB_REC_WIDTH_32B,
--					  DB_REC_KERNEL);
--		if (rc)
--			qedr_db_recovery_del(dev, qp->sq.db,
--					     &qp->sq.db_data);
-+		rc = qedr_db_recovery_add(dev, qp->rq.db, &qp->rq.db_data,
-+					  DB_REC_WIDTH_32B, DB_REC_KERNEL);
-+		if (rc && qedr_qp_has_sq(qp))
-+			qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 	}
- 
- 	return rc;
-@@ -1390,6 +1435,10 @@ static int qedr_check_srq_params(struct qedr_dev *dev,
- 		DP_ERR(dev,
- 		       "create srq: unsupported sge=0x%x requested (max_srq_sge=0x%x)\n",
- 		       attrs->attr.max_sge, qattr->max_sge);
-+	}
-+
-+	if (!udata && attrs->srq_type == IB_SRQT_XRC) {
-+		DP_ERR(dev, "XRC SRQs are not supported in kernel-space\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1512,6 +1561,7 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
- 		return -EINVAL;
- 
- 	srq->dev = dev;
-+	srq->is_xrc = (init_attr->srq_type == IB_SRQT_XRC);
- 	hw_srq = &srq->hw_srq;
- 	spin_lock_init(&srq->lock);
- 
-@@ -1553,6 +1603,14 @@ int qedr_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
- 	in_params.prod_pair_addr = phy_prod_pair_addr;
- 	in_params.num_pages = page_cnt;
- 	in_params.page_size = page_size;
-+	if (srq->is_xrc) {
-+		struct qedr_xrcd *xrcd = get_qedr_xrcd(init_attr->ext.xrc.xrcd);
-+		struct qedr_cq *cq = get_qedr_cq(init_attr->ext.cq);
-+
-+		in_params.is_xrc = 1;
-+		in_params.xrcd_id = xrcd->xrcd_id;
-+		in_params.cq_cid = cq->icid;
-+	}
- 
- 	rc = dev->ops->rdma_create_srq(dev->rdma_ctx, &in_params, &out_params);
- 	if (rc)
-@@ -1595,6 +1653,7 @@ void qedr_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- 
- 	xa_erase_irq(&dev->srqs, srq->srq_id);
- 	in_params.srq_id = srq->srq_id;
-+	in_params.is_xrc = srq->is_xrc;
- 	dev->ops->rdma_destroy_srq(dev->rdma_ctx, &in_params);
- 
- 	if (ibsrq->uobject)
-@@ -1645,6 +1704,20 @@ int qedr_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
- 	return 0;
- }
- 
-+static enum qed_rdma_qp_type qedr_ib_to_qed_qp_type(enum ib_qp_type ib_qp_type)
-+{
-+	switch (ib_qp_type) {
-+	case IB_QPT_RC:
-+		return QED_RDMA_QP_TYPE_RC;
-+	case IB_QPT_XRC_INI:
-+		return QED_RDMA_QP_TYPE_XRC_INI;
-+	case IB_QPT_XRC_TGT:
-+		return QED_RDMA_QP_TYPE_XRC_TGT;
-+	default:
-+		return QED_RDMA_QP_TYPE_INVAL;
-+	}
-+}
-+
- static inline void
- qedr_init_common_qp_in_params(struct qedr_dev *dev,
- 			      struct qedr_pd *pd,
-@@ -1659,20 +1732,27 @@ int qedr_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
- 
- 	params->signal_all = (attrs->sq_sig_type == IB_SIGNAL_ALL_WR);
- 	params->fmr_and_reserved_lkey = fmr_and_reserved_lkey;
--	params->pd = pd->pd_id;
--	params->dpi = pd->uctx ? pd->uctx->dpi : dev->dpi;
--	params->sq_cq_id = get_qedr_cq(attrs->send_cq)->icid;
-+	params->qp_type = qedr_ib_to_qed_qp_type(attrs->qp_type);
- 	params->stats_queue = 0;
--	params->srq_id = 0;
--	params->use_srq = false;
- 
--	if (!qp->srq) {
-+	if (pd) {
-+		params->pd = pd->pd_id;
-+		params->dpi = pd->uctx ? pd->uctx->dpi : dev->dpi;
-+	}
-+
-+	if (qedr_qp_has_sq(qp))
-+		params->sq_cq_id = get_qedr_cq(attrs->send_cq)->icid;
-+
-+	if (qedr_qp_has_rq(qp))
- 		params->rq_cq_id = get_qedr_cq(attrs->recv_cq)->icid;
- 
--	} else {
-+	if (qedr_qp_has_srq(qp)) {
- 		params->rq_cq_id = get_qedr_cq(attrs->recv_cq)->icid;
- 		params->srq_id = qp->srq->srq_id;
- 		params->use_srq = true;
-+	} else {
-+		params->srq_id = 0;
-+		params->use_srq = false;
- 	}
- }
- 
-@@ -1686,8 +1766,10 @@ static inline void qedr_qp_user_print(struct qedr_dev *dev, struct qedr_qp *qp)
- 		 "rq_len=%zd"
- 		 "\n",
- 		 qp,
--		 qp->usq.buf_addr,
--		 qp->usq.buf_len, qp->urq.buf_addr, qp->urq.buf_len);
-+		 qedr_qp_has_sq(qp) ? qp->usq.buf_addr : 0x0,
-+		 qedr_qp_has_sq(qp) ? qp->usq.buf_len : 0,
-+		 qedr_qp_has_rq(qp) ? qp->urq.buf_addr : 0x0,
-+		 qedr_qp_has_sq(qp) ? qp->urq.buf_len : 0);
- }
- 
- static inline void
-@@ -1713,11 +1795,15 @@ static void qedr_cleanup_user(struct qedr_dev *dev,
- 			      struct qedr_ucontext *ctx,
- 			      struct qedr_qp *qp)
- {
--	ib_umem_release(qp->usq.umem);
--	qp->usq.umem = NULL;
-+	if (qedr_qp_has_sq(qp)) {
-+		ib_umem_release(qp->usq.umem);
-+		qp->usq.umem = NULL;
-+	}
- 
--	ib_umem_release(qp->urq.umem);
--	qp->urq.umem = NULL;
-+	if (qedr_qp_has_rq(qp)) {
-+		ib_umem_release(qp->urq.umem);
-+		qp->urq.umem = NULL;
-+	}
- 
- 	if (rdma_protocol_roce(&dev->ibdev, 1)) {
- 		qedr_free_pbl(dev, &qp->usq.pbl_info, qp->usq.pbl_tbl);
-@@ -1752,28 +1838,38 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- {
- 	struct qed_rdma_create_qp_in_params in_params;
- 	struct qed_rdma_create_qp_out_params out_params;
--	struct qedr_pd *pd = get_qedr_pd(ibpd);
--	struct qedr_create_qp_uresp uresp;
--	struct qedr_ucontext *ctx = pd ? pd->uctx : NULL;
--	struct qedr_create_qp_ureq ureq;
-+	struct qedr_create_qp_uresp uresp = {};
-+	struct qedr_create_qp_ureq ureq = {};
- 	int alloc_and_init = rdma_protocol_roce(&dev->ibdev, 1);
--	int rc = -EINVAL;
-+	struct qedr_ucontext *ctx = NULL;
-+	struct qedr_pd *pd = NULL;
-+	int rc = 0;
- 
- 	qp->create_type = QEDR_QP_CREATE_USER;
--	memset(&ureq, 0, sizeof(ureq));
--	rc = ib_copy_from_udata(&ureq, udata, min(sizeof(ureq), udata->inlen));
--	if (rc) {
--		DP_ERR(dev, "Problem copying data from user space\n");
--		return rc;
-+
-+	if (ibpd) {
-+		pd = get_qedr_pd(ibpd);
-+		ctx = pd->uctx;
- 	}
- 
--	/* SQ - read access only (0) */
--	rc = qedr_init_user_queue(udata, dev, &qp->usq, ureq.sq_addr,
--				  ureq.sq_len, true, 0, alloc_and_init);
--	if (rc)
--		return rc;
-+	if (udata) {
-+		rc = ib_copy_from_udata(&ureq, udata, min(sizeof(ureq),
-+					udata->inlen));
-+		if (rc) {
-+			DP_ERR(dev, "Problem copying data from user space\n");
-+			return rc;
-+		}
-+	}
- 
--	if (!qp->srq) {
-+	if (qedr_qp_has_sq(qp)) {
-+		/* SQ - read access only (0) */
-+		rc = qedr_init_user_queue(udata, dev, &qp->usq, ureq.sq_addr,
-+					  ureq.sq_len, true, 0, alloc_and_init);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	if (qedr_qp_has_rq(qp)) {
- 		/* RQ - read access only (0) */
- 		rc = qedr_init_user_queue(udata, dev, &qp->urq, ureq.rq_addr,
- 					  ureq.rq_len, true, 0, alloc_and_init);
-@@ -1785,9 +1881,21 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qedr_init_common_qp_in_params(dev, pd, qp, attrs, false, &in_params);
- 	in_params.qp_handle_lo = ureq.qp_handle_lo;
- 	in_params.qp_handle_hi = ureq.qp_handle_hi;
--	in_params.sq_num_pages = qp->usq.pbl_info.num_pbes;
--	in_params.sq_pbl_ptr = qp->usq.pbl_tbl->pa;
--	if (!qp->srq) {
-+
-+	if (qp->qp_type == IB_QPT_XRC_TGT) {
-+		struct qedr_xrcd *xrcd = get_qedr_xrcd(attrs->xrcd);
-+
-+		in_params.xrcd_id = xrcd->xrcd_id;
-+		in_params.qp_handle_lo = qp->qp_id;
-+		in_params.use_srq = 1;
-+	}
-+
-+	if (qedr_qp_has_sq(qp)) {
-+		in_params.sq_num_pages = qp->usq.pbl_info.num_pbes;
-+		in_params.sq_pbl_ptr = qp->usq.pbl_tbl->pa;
-+	}
-+
-+	if (qedr_qp_has_rq(qp)) {
- 		in_params.rq_num_pages = qp->urq.pbl_info.num_pbes;
- 		in_params.rq_pbl_ptr = qp->urq.pbl_tbl->pa;
- 	}
-@@ -1809,39 +1917,32 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->qp_id = out_params.qp_id;
- 	qp->icid = out_params.icid;
- 
--	rc = qedr_copy_qp_uresp(dev, qp, udata, &uresp);
--	if (rc)
--		goto err;
-+	if (udata) {
-+		rc = qedr_copy_qp_uresp(dev, qp, udata, &uresp);
-+		if (rc)
-+			goto err;
-+	}
- 
- 	/* db offset was calculated in copy_qp_uresp, now set in the user q */
--	ctx = pd->uctx;
--	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
--	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
--
--	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
--		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
--
--		/* calculate the db_rec_db2 data since it is constant so no
--		 *  need to reflect from user
--		 */
--		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
--		qp->urq.db_rec_db2_data.data.value =
--			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	if (qedr_qp_has_sq(qp)) {
-+		qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
-+		rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
-+					  &qp->usq.db_rec_data->db_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
- 	}
- 
--	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
--				  &qp->usq.db_rec_data->db_data,
--				  DB_REC_WIDTH_32B,
--				  DB_REC_USER);
--	if (rc)
--		goto err;
--
--	rc = qedr_db_recovery_add(dev, qp->urq.db_addr,
--				  &qp->urq.db_rec_data->db_data,
--				  DB_REC_WIDTH_32B,
--				  DB_REC_USER);
--	if (rc)
--		goto err;
-+	if (qedr_qp_has_rq(qp)) {
-+		qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_addr,
-+					  &qp->urq.db_rec_data->db_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 
- 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
- 		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-@@ -1852,7 +1953,6 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 			goto err;
- 	}
- 	qedr_qp_user_print(dev, qp);
--
- 	return rc;
- err:
- 	rc = dev->ops->rdma_destroy_qp(dev->rdma_ctx, qp->qed_qp);
-@@ -2115,12 +2215,21 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 			     struct ib_qp_init_attr *attrs,
- 			     struct ib_udata *udata)
- {
--	struct qedr_dev *dev = get_qedr_dev(ibpd->device);
--	struct qedr_pd *pd = get_qedr_pd(ibpd);
-+	struct qedr_xrcd *xrcd = NULL;
-+	struct qedr_pd *pd = NULL;
-+	struct qedr_dev *dev;
- 	struct qedr_qp *qp;
- 	struct ib_qp *ibqp;
- 	int rc = 0;
- 
-+	if (attrs->qp_type == IB_QPT_XRC_TGT) {
-+		xrcd = get_qedr_xrcd(attrs->xrcd);
-+		dev = get_qedr_dev(xrcd->ibxrcd.device);
-+	} else {
-+		pd = get_qedr_pd(ibpd);
-+		dev = get_qedr_dev(ibpd->device);
-+	}
-+
- 	DP_DEBUG(dev, QEDR_MSG_QP, "create qp: called from %s, pd=%p\n",
- 		 udata ? "user library" : "kernel", pd);
- 
-@@ -2151,7 +2260,7 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 		return ibqp;
- 	}
- 
--	if (udata)
-+	if (udata || xrcd)
- 		rc = qedr_create_user_qp(dev, qp, ibpd, udata, attrs);
- 	else
- 		rc = qedr_create_kernel_qp(dev, qp, ibpd, attrs);
-diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
-index 39dd628..bb09c64 100644
---- a/drivers/infiniband/hw/qedr/verbs.h
-+++ b/drivers/infiniband/hw/qedr/verbs.h
-@@ -48,7 +48,9 @@ int qedr_iw_query_gid(struct ib_device *ibdev, u8 port,
- void qedr_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
- int qedr_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- void qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--
-+int qedr_alloc_xrcd(struct ib_xrcd *ibxrcd,
-+				struct ib_udata *udata);
-+void qedr_dealloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata);
- int qedr_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		   struct ib_udata *udata);
- int qedr_resize_cq(struct ib_cq *, int cqe, struct ib_udata *);
--- 
-1.8.3.1
+commit c4e8ba7390346a77ffe33ec3f210bc62e0b6c8c6
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Tue Apr 7 14:08:11 2020 +0100
 
+    drm/i915/gt: Yield the timeslice if caught waiting on a user semaphore
+
+Sure it preempts, but that's not enough.
+
+> > That's kinda why I'm not seeing much benefits in a half-way state:
+> > Tons of work, and still not what userspace wants. And for the full
+> > deal that userspace wants we might as well not change anything with
+> > dma-fences. For that we need a) ctx preempt and b) new entirely
+> > decoupled fences that never feed back into a memory fences and c) are
+> > controlled entirely by userspace. And c) is the really important thing
+> > people want us to provide.
+> >
+> > And once we're ok with dma_fence =3D=3D memory fences, then enforcing t=
+he
+> > strict and painful memory allocation limitations is actually what we
+> > want.
+>
+> Let's hope you're right. My fear is that that might be pretty painful as
+> well.
+
+Oh it's very painful too:
+- We need a separate uapi flavour for gpu ctx with preempt instead of
+end-of-batch dma-fence.
+- Which needs to be implemented without breaking stuff badly - e.g. we
+need to make sure we don't probe-wait on fences unnecessarily since
+that forces random unwanted preempts.
+- If we want this with winsys integration we need full userspace
+revisions since all the dma_fence based sync sharing is out (implicit
+sync on dma-buf, sync_file, drm_syncobj are all defunct since we can
+only go the other way round).
+
+Utter pain, but I think it's better since it can be done
+driver-by-driver, and even userspace usecase by usecase. Which means
+we can experiment in areas where the 10+ years of uapi guarantee isn't
+so painful, learn, until we do the big jump of new
+zero-interaction-with-memory-management fences become baked in forever
+into compositor/winsys/modeset protocols. With the other approach of
+splitting dma-fence we need to do all the splitting first, make sure
+we get it right, and only then can we enable the use-case for real.
+
+That's just not going to happen, at least not in upstream across all
+drivers. Within a single driver in some vendor tree hacking stuff up
+is totally fine ofc.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
