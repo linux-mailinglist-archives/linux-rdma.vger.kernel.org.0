@@ -2,136 +2,312 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF24229902
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 15:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377C3229999
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jul 2020 15:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgGVNMN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Jul 2020 09:12:13 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:35822 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgGVNMM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 09:12:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id D70B13F634;
-        Wed, 22 Jul 2020 15:12:09 +0200 (CEST)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=m8x/rX9A;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LpwrYAHQP3Iq; Wed, 22 Jul 2020 15:12:09 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 420893F29E;
-        Wed, 22 Jul 2020 15:12:05 +0200 (CEST)
-Received: from [192.168.0.100] (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 7831D362551;
-        Wed, 22 Jul 2020 15:12:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1595423525; bh=BkLRqDnF6XeEiFgBNy2htn8KfcdCEjHm5mJt4RvFSnY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=m8x/rX9A/5dWwW9deLLc6aLIe4nKw3T+GjV3Mey9FdcHPjjgoDT8c+S8HtNfUdSry
-         hyK2SRYBZv+xlR+pd8m2hEh+pGKmkJMiDw0KlyvoimmBHTzNHUQfUUCgDwzI4bxZ8g
-         QuFArKmKCeFm9S1vgSmn0RJWQHG/kF/iJyd5XVgo=
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] dma-buf.rst: Document why indefinite
- fences are a bad idea
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Daniel Stone <daniels@collabora.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Steve Pronovost <spronovo@microsoft.com>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Jesse Natalie <jenatali@microsoft.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <93b673b7-bb48-96eb-dc2c-bd4f9304000e@shipmail.org>
- <20200721074157.GB3278063@phenom.ffwll.local>
- <3603bb71-318b-eb53-0532-9daab62dce86@amd.com>
- <57a5eb9d-b74f-8ce4-7199-94e911d9b68b@shipmail.org>
- <CAPM=9twUWeenf-26GEvkuKo3wHgS3BCyrva=sNaWo6+=A5qdoQ@mail.gmail.com>
- <805c49b7-f0b3-45dc-5fe3-b352f0971527@shipmail.org>
- <CAKMK7uHhhxBC2MvnNnU9FjxJaWkEcP3m5m7AN3yzfw=wxFsckA@mail.gmail.com>
- <92393d26-d863-aac6-6d27-53cad6854e13@shipmail.org>
- <CAKMK7uF8jpyuCF8uUbEeJUedErxqRGa8JY+RuURg7H1XXWXzkw@mail.gmail.com>
- <8fd999f2-cbf6-813c-6ad4-131948fb5cc5@shipmail.org>
- <CAKMK7uH0rcyepP2hDpNB-yuvNyjee1tPmxWUyefS5j7i-N6Pfw@mail.gmail.com>
- <df5414f5-ac5c-d212-500c-b05c7c78ce84@shipmail.org>
- <CAKMK7uF27SifuvMatuP2kJPTf+LVmVbG098cE2cqorYYo7UHkw@mail.gmail.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <697d1b5e-5d1c-1655-23f8-7a3f652606f3@shipmail.org>
-Date:   Wed, 22 Jul 2020 15:12:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726425AbgGVN4f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Jul 2020 09:56:35 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:39369 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727867AbgGVN4e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jul 2020 09:56:34 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+        with SMTP; 22 Jul 2020 16:56:30 +0300
+Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06MDuTPm026773;
+        Wed, 22 Jul 2020 16:56:29 +0300
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     sagi@grimberg.me, yaminf@mellanox.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, leon@kernel.org, bvanassche@acm.org
+Cc:     israelr@mellanox.com, oren@mellanox.com, jgg@mellanox.com,
+        idanb@mellanox.com, Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH 1/3] IB/iser: use new shared CQ mechanism
+Date:   Wed, 22 Jul 2020 16:56:27 +0300
+Message-Id: <20200722135629.49467-1-maxg@mellanox.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uF27SifuvMatuP2kJPTf+LVmVbG098cE2cqorYYo7UHkw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Yamin Friedman <yaminf@mellanox.com>
 
-On 2020-07-22 14:41, Daniel Vetter wrote:
->
-> Ah I think I misunderstood which options you want to compare here. I'm
-> not sure how much pain fixing up "dma-fence as memory fence" really
-> is. That's kinda why I want a lot more testing on my annotation
-> patches, to figure that out. Not much feedback aside from amdgpu and
-> intel, and those two drivers pretty much need to sort out their memory
-> fence issues anyway (because of userptr and stuff like that).
->
-> The only other issues outside of these two drivers I'm aware of:
-> - various scheduler drivers doing allocations in the drm/scheduler
-> critical section. Since all arm-soc drivers have a mildly shoddy
-> memory model of "we just pin everything" they don't really have to
-> deal with this. So we might just declare arm as a platform broken and
-> not taint the dma-fence critical sections with fs_reclaim. Otoh we
-> need to fix this for drm/scheduler anyway, I think best option would
-> be to have a mempool for hw fences in the scheduler itself, and at
-> that point fixing the other drivers shouldn't be too onerous.
->
-> - vmwgfx doing a dma_resv in the atomic commit tail. Entirely
-> orthogonal to the entire memory fence discussion.
+Has the driver use shared CQs provided by the rdma core driver.
+Because this provides similar functionality to iser_comp it has been
+removed. Now there is no reason to allocate very large CQs when the driver
+is loaded while gaining the advantage of shared CQs.
 
-With vmwgfx there is another issue that is hit when the gpu signals an 
-error. At that point the batch might be restarted with a new meta 
-command buffer that needs to be allocated out of a dma pool. in the 
-fence critical section. That's probably a bit nasty to fix, but not 
-impossible.
+Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
+Acked-by: Max Gurtovoy <maxg@mellanox.com>
+---
+ drivers/infiniband/ulp/iser/iscsi_iser.h |  23 ++-----
+ drivers/infiniband/ulp/iser/iser_verbs.c | 112 +++++++------------------------
+ 2 files changed, 29 insertions(+), 106 deletions(-)
 
->
-> I'm pretty sure there's more bugs, I just haven't heard from them yet.
-> Also due to the opt-in nature of dma-fence we can limit the scope of
-> what we fix fairly naturally, just don't put them where no one cares
-> :-) Of course that also hides general locking issues in dma_fence
-> signalling code, but well *shrug*.
-Hmm, yes. Another potential big problem would be drivers that want to 
-use gpu page faults in the dma-fence critical sections with the 
-batch-based programming model.
-
-/Thomas
-
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+index 1d77c7f..fddcb88 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.h
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+@@ -300,18 +300,6 @@ struct iser_login_desc {
+ struct iscsi_iser_task;
+ 
+ /**
+- * struct iser_comp - iSER completion context
+- *
+- * @cq:         completion queue
+- * @active_qps: Number of active QPs attached
+- *              to completion context
+- */
+-struct iser_comp {
+-	struct ib_cq		*cq;
+-	int                      active_qps;
+-};
+-
+-/**
+  * struct iser_device - iSER device handle
+  *
+  * @ib_device:     RDMA device
+@@ -320,9 +308,6 @@ struct iser_comp {
+  * @event_handler: IB events handle routine
+  * @ig_list:	   entry in devices list
+  * @refcount:      Reference counter, dominated by open iser connections
+- * @comps_used:    Number of completion contexts used, Min between online
+- *                 cpus and device max completion vectors
+- * @comps:         Dinamically allocated array of completion handlers
+  */
+ struct iser_device {
+ 	struct ib_device             *ib_device;
+@@ -330,8 +315,6 @@ struct iser_device {
+ 	struct ib_event_handler      event_handler;
+ 	struct list_head             ig_list;
+ 	int                          refcount;
+-	int			     comps_used;
+-	struct iser_comp	     *comps;
+ };
+ 
+ /**
+@@ -380,11 +363,12 @@ struct iser_fr_pool {
+  *
+  * @cma_id:              rdma_cm connection maneger handle
+  * @qp:                  Connection Queue-pair
++ * @cq:                  Connection completion queue
++ * @cq_size:             The number of max outstanding completions
+  * @post_recv_buf_count: post receive counter
+  * @sig_count:           send work request signal count
+  * @rx_wr:               receive work request for batch posts
+  * @device:              reference to iser device
+- * @comp:                iser completion context
+  * @fr_pool:             connection fast registration poool
+  * @pi_support:          Indicate device T10-PI support
+  * @reg_cqe:             completion handler
+@@ -392,11 +376,12 @@ struct iser_fr_pool {
+ struct ib_conn {
+ 	struct rdma_cm_id           *cma_id;
+ 	struct ib_qp	            *qp;
++	struct ib_cq		    *cq;
++	u32			    cq_size;
+ 	int                          post_recv_buf_count;
+ 	u8                           sig_count;
+ 	struct ib_recv_wr	     rx_wr[ISER_MIN_POSTED_RX];
+ 	struct iser_device          *device;
+-	struct iser_comp	    *comp;
+ 	struct iser_fr_pool          fr_pool;
+ 	bool			     pi_support;
+ 	struct ib_cqe		     reg_cqe;
+diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
+index c1f44c4..699e075 100644
+--- a/drivers/infiniband/ulp/iser/iser_verbs.c
++++ b/drivers/infiniband/ulp/iser/iser_verbs.c
+@@ -68,59 +68,23 @@ static void iser_event_handler(struct ib_event_handler *handler,
+ static int iser_create_device_ib_res(struct iser_device *device)
+ {
+ 	struct ib_device *ib_dev = device->ib_device;
+-	int i, max_cqe;
+ 
+ 	if (!(ib_dev->attrs.device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS)) {
+ 		iser_err("IB device does not support memory registrations\n");
+ 		return -1;
+ 	}
+ 
+-	device->comps_used = min_t(int, num_online_cpus(),
+-				 ib_dev->num_comp_vectors);
+-
+-	device->comps = kcalloc(device->comps_used, sizeof(*device->comps),
+-				GFP_KERNEL);
+-	if (!device->comps)
+-		goto comps_err;
+-
+-	max_cqe = min(ISER_MAX_CQ_LEN, ib_dev->attrs.max_cqe);
+-
+-	iser_info("using %d CQs, device %s supports %d vectors max_cqe %d\n",
+-		  device->comps_used, dev_name(&ib_dev->dev),
+-		  ib_dev->num_comp_vectors, max_cqe);
+-
+ 	device->pd = ib_alloc_pd(ib_dev,
+ 		iser_always_reg ? 0 : IB_PD_UNSAFE_GLOBAL_RKEY);
+ 	if (IS_ERR(device->pd))
+ 		goto pd_err;
+ 
+-	for (i = 0; i < device->comps_used; i++) {
+-		struct iser_comp *comp = &device->comps[i];
+-
+-		comp->cq = ib_alloc_cq(ib_dev, comp, max_cqe, i,
+-				       IB_POLL_SOFTIRQ);
+-		if (IS_ERR(comp->cq)) {
+-			comp->cq = NULL;
+-			goto cq_err;
+-		}
+-	}
+-
+ 	INIT_IB_EVENT_HANDLER(&device->event_handler, ib_dev,
+ 			      iser_event_handler);
+ 	ib_register_event_handler(&device->event_handler);
+ 	return 0;
+ 
+-cq_err:
+-	for (i = 0; i < device->comps_used; i++) {
+-		struct iser_comp *comp = &device->comps[i];
+-
+-		if (comp->cq)
+-			ib_free_cq(comp->cq);
+-	}
+-	ib_dealloc_pd(device->pd);
+ pd_err:
+-	kfree(device->comps);
+-comps_err:
+ 	iser_err("failed to allocate an IB resource\n");
+ 	return -1;
+ }
+@@ -131,20 +95,9 @@ static int iser_create_device_ib_res(struct iser_device *device)
+  */
+ static void iser_free_device_ib_res(struct iser_device *device)
+ {
+-	int i;
+-
+-	for (i = 0; i < device->comps_used; i++) {
+-		struct iser_comp *comp = &device->comps[i];
+-
+-		ib_free_cq(comp->cq);
+-		comp->cq = NULL;
+-	}
+-
+ 	ib_unregister_event_handler(&device->event_handler);
+ 	ib_dealloc_pd(device->pd);
+ 
+-	kfree(device->comps);
+-	device->comps = NULL;
+ 	device->pd = NULL;
+ }
+ 
+@@ -287,70 +240,57 @@ static int iser_create_ib_conn_res(struct ib_conn *ib_conn)
+ 	struct ib_device	*ib_dev;
+ 	struct ib_qp_init_attr	init_attr;
+ 	int			ret = -ENOMEM;
+-	int index, min_index = 0;
++	unsigned int max_send_wr, cq_size;
+ 
+ 	BUG_ON(ib_conn->device == NULL);
+ 
+ 	device = ib_conn->device;
+ 	ib_dev = device->ib_device;
+ 
+-	memset(&init_attr, 0, sizeof init_attr);
++	if (ib_conn->pi_support)
++		max_send_wr = ISER_QP_SIG_MAX_REQ_DTOS + 1;
++	else
++		max_send_wr = ISER_QP_MAX_REQ_DTOS + 1;
++	max_send_wr = min_t(unsigned int, max_send_wr,
++			    (unsigned int)ib_dev->attrs.max_qp_wr);
+ 
+-	mutex_lock(&ig.connlist_mutex);
+-	/* select the CQ with the minimal number of usages */
+-	for (index = 0; index < device->comps_used; index++) {
+-		if (device->comps[index].active_qps <
+-		    device->comps[min_index].active_qps)
+-			min_index = index;
++	cq_size = max_send_wr + ISER_QP_MAX_RECV_DTOS;
++	ib_conn->cq = ib_cq_pool_get(ib_dev, cq_size, -1, IB_POLL_SOFTIRQ);
++	if (IS_ERR(ib_conn->cq)) {
++		ret = PTR_ERR(ib_conn->cq);
++		goto cq_err;
+ 	}
+-	ib_conn->comp = &device->comps[min_index];
+-	ib_conn->comp->active_qps++;
+-	mutex_unlock(&ig.connlist_mutex);
+-	iser_info("cq index %d used for ib_conn %p\n", min_index, ib_conn);
++	ib_conn->cq_size = cq_size;
++
++	memset(&init_attr, 0, sizeof(init_attr));
+ 
+ 	init_attr.event_handler = iser_qp_event_callback;
+ 	init_attr.qp_context	= (void *)ib_conn;
+-	init_attr.send_cq	= ib_conn->comp->cq;
+-	init_attr.recv_cq	= ib_conn->comp->cq;
++	init_attr.send_cq	= ib_conn->cq;
++	init_attr.recv_cq	= ib_conn->cq;
+ 	init_attr.cap.max_recv_wr  = ISER_QP_MAX_RECV_DTOS;
+ 	init_attr.cap.max_send_sge = 2;
+ 	init_attr.cap.max_recv_sge = 1;
+ 	init_attr.sq_sig_type	= IB_SIGNAL_REQ_WR;
+ 	init_attr.qp_type	= IB_QPT_RC;
+-	if (ib_conn->pi_support) {
+-		init_attr.cap.max_send_wr = ISER_QP_SIG_MAX_REQ_DTOS + 1;
++	init_attr.cap.max_send_wr = max_send_wr;
++	if (ib_conn->pi_support)
+ 		init_attr.create_flags |= IB_QP_CREATE_INTEGRITY_EN;
+-		iser_conn->max_cmds =
+-			ISER_GET_MAX_XMIT_CMDS(ISER_QP_SIG_MAX_REQ_DTOS);
+-	} else {
+-		if (ib_dev->attrs.max_qp_wr > ISER_QP_MAX_REQ_DTOS) {
+-			init_attr.cap.max_send_wr  = ISER_QP_MAX_REQ_DTOS + 1;
+-			iser_conn->max_cmds =
+-				ISER_GET_MAX_XMIT_CMDS(ISER_QP_MAX_REQ_DTOS);
+-		} else {
+-			init_attr.cap.max_send_wr = ib_dev->attrs.max_qp_wr;
+-			iser_conn->max_cmds =
+-				ISER_GET_MAX_XMIT_CMDS(ib_dev->attrs.max_qp_wr);
+-			iser_dbg("device %s supports max_send_wr %d\n",
+-				 dev_name(&device->ib_device->dev),
+-				 ib_dev->attrs.max_qp_wr);
+-		}
+-	}
++	iser_conn->max_cmds = ISER_GET_MAX_XMIT_CMDS(max_send_wr - 1);
+ 
+ 	ret = rdma_create_qp(ib_conn->cma_id, device->pd, &init_attr);
+ 	if (ret)
+ 		goto out_err;
+ 
+ 	ib_conn->qp = ib_conn->cma_id->qp;
+-	iser_info("setting conn %p cma_id %p qp %p\n",
++	iser_info("setting conn %p cma_id %p qp %p max_send_wr %d\n",
+ 		  ib_conn, ib_conn->cma_id,
+-		  ib_conn->cma_id->qp);
++		  ib_conn->cma_id->qp, max_send_wr);
+ 	return ret;
+ 
+ out_err:
+-	mutex_lock(&ig.connlist_mutex);
+-	ib_conn->comp->active_qps--;
+-	mutex_unlock(&ig.connlist_mutex);
++	ib_cq_pool_put(ib_conn->cq, ib_conn->cq_size);
++cq_err:
+ 	iser_err("unable to alloc mem or create resource, err %d\n", ret);
+ 
+ 	return ret;
+@@ -462,10 +402,8 @@ static void iser_free_ib_conn_res(struct iser_conn *iser_conn,
+ 		  iser_conn, ib_conn->cma_id, ib_conn->qp);
+ 
+ 	if (ib_conn->qp != NULL) {
+-		mutex_lock(&ig.connlist_mutex);
+-		ib_conn->comp->active_qps--;
+-		mutex_unlock(&ig.connlist_mutex);
+ 		rdma_destroy_qp(ib_conn->cma_id);
++		ib_cq_pool_put(ib_conn->cq, ib_conn->cq_size);
+ 		ib_conn->qp = NULL;
+ 	}
+ 
+-- 
+1.8.3.1
 
