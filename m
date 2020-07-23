@@ -2,416 +2,368 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6D522A958
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jul 2020 09:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BA422A99E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jul 2020 09:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgGWHHZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Jul 2020 03:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgGWHHZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:07:25 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7588120825;
-        Thu, 23 Jul 2020 07:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595488043;
-        bh=naDrxkHWoAuHdjvFdrkkGt6ZI9q/1AA39Y0ScD+1sYw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+dMuJ1iya59QbxdLaA/FwJXu48fYlUVPujA+UOCo2pCdi+YlTFa+WhkF5IZ+XZbL
-         SNzYOb4FakY3wQKZyQBPSpEseQLgUyYkivcmszcdoo3+M00RoF4Y9FsbyCF+xl+tso
-         tANNSdtb6aIu+NGDYDdZaBBQxXpVulzBynqhi8Cc=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
-        syzbot+08092148130652a6faae@syzkaller.appspotmail.com,
-        syzbot+a929647172775e335941@syzkaller.appspotmail.com
-Subject: [PATCH rdma-next 4/4] RDMA/cma: Execute rdma_cm destruction from a handler properly
-Date:   Thu, 23 Jul 2020 10:07:07 +0300
-Message-Id: <20200723070707.1771101-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200723070707.1771101-1-leon@kernel.org>
-References: <20200723070707.1771101-1-leon@kernel.org>
+        id S1726554AbgGWHZw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Jul 2020 03:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgGWHZv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Jul 2020 03:25:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB81C0619DC
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Jul 2020 00:25:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j18so4005672wmi.3
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Jul 2020 00:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=95JqaQ3T5sU0jYy1fGUcAB6HjUzH41K844x/1DqqxJ0=;
+        b=rcMaCTUVpnMxjaSuvmhdq8MjRi807LyTkuFdWUMlWIfEHdOeZBmaqNcRTfNmxckUBT
+         mM8qTgmW0GcAhh65tFfihzuiB+o6TxlFgQBHjQ94NTrNceya3khYlC+Ef6j+dqupVL36
+         Qh3iVOQ4Ar4k/P3cmmFoqsYVx8YWDSgAmbrchS8GtXULOLRXU0WQfc09STxoHc7eEsTD
+         KwZd574JgNQwz6mOT9llkKHhb7QZJfP6vPRYOl8+kCxpwOaBXUfrVBgXVId9IDXHzJgP
+         rFmMNodZ+QuHRodKc1wI0GrUaiQLJ5gz5xPLN5NFITqN57JzG6dmAx3wrw/9Qz1xaEtq
+         P7Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=95JqaQ3T5sU0jYy1fGUcAB6HjUzH41K844x/1DqqxJ0=;
+        b=ahHosCkD6E2oDbpg/NAIvZkZ4SAddhr7NVAsWXpNRYJJa9k866L1baKww9n44AZOM2
+         s+9iLEKJ0nFIFum7BUct6xVTfkdg5hzX3kw1++2oVAhgxPOtywKXyBHxajl+J7uGWmon
+         0QrPdIKNG1md56e0xEb1ZpU9o2p0w2QmhSwqtsN+VF8VDWo4+Bn96CMuyitqvxbOUA4J
+         k6XKLokRUPaBmFL4/dCff4zy74wUiacXBqqLpZp6HKU3R6OS/AvgnF6MhawWaOQNZ0Os
+         YA20pgX5+jSGcI4+JaIlVVC0E9qnxX7LMWYx8RuLEjvf60QIgFtMoMrNWAQEPcgGbg6h
+         EzFg==
+X-Gm-Message-State: AOAM533FocXkgQQQUS6BlhDf2ksQw3MaiyQV68XWf5kc5cTy3lWHLs71
+        u67EQfZaHLZS+XdVO46HRmQ=
+X-Google-Smtp-Source: ABdhPJzem3jmu3MRRkUs2igOk2T/jD0xKzB6bAUHDQlzP63jgMnFWtyXtWlGuOdiHsIikVLX5jUsEg==
+X-Received: by 2002:a7b:ce02:: with SMTP id m2mr2835138wmc.96.1595489150189;
+        Thu, 23 Jul 2020 00:25:50 -0700 (PDT)
+Received: from kheib-workstation ([77.137.112.102])
+        by smtp.gmail.com with ESMTPSA id c194sm2530237wme.8.2020.07.23.00.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 00:25:49 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 10:25:46 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Yanjun Zhu <yanjunz@mellanox.com>, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: FW: [PATCH for-next] RDMA/rxe: Remove pkey table
+Message-ID: <20200723072546.GA835185@kheib-workstation>
+References: <20200721101618.686110-1-kamalheib1@gmail.com>
+ <AM6PR05MB6263CFB337190B1740CDF4B7D8780@AM6PR05MB6263.eurprd05.prod.outlook.com>
+ <CAD=hENePPVzfaC_YtCL1izsFSi+U_T=0m18MujARznsWbj=q5g@mail.gmail.com>
+ <20200723055723.GA828525@kheib-workstation>
+ <7a6d602f-1adc-cc36-5a11-e0beb6e31cec@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a6d602f-1adc-cc36-5a11-e0beb6e31cec@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+On Thu, Jul 23, 2020 at 02:58:41PM +0800, Zhu Yanjun wrote:
+> On 7/23/2020 1:57 PM, Kamal Heib wrote:
+> > On Wed, Jul 22, 2020 at 10:09:04AM +0800, Zhu Yanjun wrote:
+> > > On Tue, Jul 21, 2020 at 7:28 PM Yanjun Zhu <yanjunz@mellanox.com> wrote:
+> > > > 
+> > > > 
+> > > > -----Original Message-----
+> > > > From: Kamal Heib <kamalheib1@gmail.com>
+> > > > Sent: Tuesday, July 21, 2020 6:16 PM
+> > > > To: linux-rdma@vger.kernel.org
+> > > > Cc: Yanjun Zhu <yanjunz@mellanox.com>; Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>; Kamal Heib <kamalheib1@gmail.com>
+> > > > Subject: [PATCH for-next] RDMA/rxe: Remove pkey table
+> > > > 
+> > > > The RoCE spec require from RoCE devices to support only the defualt pkey, While the rxe driver maintain a 64 enties pkey table and use only the first entry. With that said remove the maintaing of the pkey table and used the default pkey when needed.
+> > > > 
+> > > Hi Kamal
+> > > 
+> > > After this patch is applied, do you make tests with SoftRoCE and mlx hardware?
+> > > 
+> > > The SoftRoCE should work well with the mlx hardware.
+> > > 
+> > > Zhu Yanjun
+> > > 
+> > Hi Zhu,
+> > 
+> > Yes, please see below:
+> > 
+> > $ ibv_rc_pingpong -d mlx5_0 -g 11
+> >    local address:  LID 0x0000, QPN 0x0000e3, PSN 0x728a4f, GID ::ffff:172.31.40.121
+> 
+> Can you make tests with GSI QP?
+> 
+> Zhu Yanjun
+> 
 
-When a rdma_cm_id needs to be destroyed after a handler callback fails,
-part of the destruction pattern is open coded into each call site.
+[root@rdma-dev-21 ~]$ rping -s -C 10 -a 172.31.40.121 -v 
+server ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+server ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrs
+server ping data: rdma-ping-2: CDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrst
+server ping data: rdma-ping-3: DEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstu
+server ping data: rdma-ping-4: EFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuv
+server ping data: rdma-ping-5: FGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvw
+server ping data: rdma-ping-6: GHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwx
+server ping data: rdma-ping-7: HIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxy
+server ping data: rdma-ping-8: IJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz
+server ping data: rdma-ping-9: JKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyzA
+server DISCONNECT EVENT...
+wait for RDMA_READ_ADV state 10
+[root@rdma-dev-21 ~]$ ls /sys/class/infiniband/
+mlx5_0
 
-Unfortunately the blind assignment to state discards important information
-needed to do cma_cancel_operation(). This results in active operations
-being left running after rdma_destroy_id() completes, and the
-use-after-free bugs from KASAN.
+[root@rdma-dev-22 ~]$ rping -c -C 10 -a 172.31.40.121 -v
+ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrs
+ping data: rdma-ping-2: CDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrst
+ping data: rdma-ping-3: DEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstu
+ping data: rdma-ping-4: EFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuv
+ping data: rdma-ping-5: FGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvw
+ping data: rdma-ping-6: GHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwx
+ping data: rdma-ping-7: HIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxy
+ping data: rdma-ping-8: IJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz
+ping data: rdma-ping-9: JKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyzA
+[root@rdma-dev-22 ~]$ ls /sys/class/infiniband
+rxe0
 
-Consolidate this entire pattern into destroy_id_handler_unlock() and
-manage the locking correctly. The state should be set to
-RDMA_CM_DESTROYING under the handler_lock to atomically ensure no futher
-handlers are called.
+Thanks,
+Kamal
 
-Reported-by: syzbot+08092148130652a6faae@syzkaller.appspotmail.com
-Reported-by: syzbot+a929647172775e335941@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/cma.c | 174 ++++++++++++++++------------------
- 1 file changed, 84 insertions(+), 90 deletions(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 11f43204fee7..26de0dab60bb 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -428,19 +428,6 @@ static int cma_comp_exch(struct rdma_id_private *id_priv,
- 	return ret;
- }
- 
--static enum rdma_cm_state cma_exch(struct rdma_id_private *id_priv,
--				   enum rdma_cm_state exch)
--{
--	unsigned long flags;
--	enum rdma_cm_state old;
--
--	spin_lock_irqsave(&id_priv->lock, flags);
--	old = id_priv->state;
--	id_priv->state = exch;
--	spin_unlock_irqrestore(&id_priv->lock, flags);
--	return old;
--}
--
- static inline u8 cma_get_ip_ver(const struct cma_hdr *hdr)
- {
- 	return hdr->ip_version >> 4;
-@@ -1829,21 +1816,9 @@ static void cma_leave_mc_groups(struct rdma_id_private *id_priv)
- 	}
- }
- 
--void rdma_destroy_id(struct rdma_cm_id *id)
-+static void _destroy_id(struct rdma_id_private *id_priv,
-+			enum rdma_cm_state state)
- {
--	struct rdma_id_private *id_priv =
--		container_of(id, struct rdma_id_private, id);
--	enum rdma_cm_state state;
--
--	/*
--	 * Wait for any active callback to finish.  New callbacks will find
--	 * the id_priv state set to destroying and abort.
--	 */
--	mutex_lock(&id_priv->handler_mutex);
--	trace_cm_id_destroy(id_priv);
--	state = cma_exch(id_priv, RDMA_CM_DESTROYING);
--	mutex_unlock(&id_priv->handler_mutex);
--
- 	cma_cancel_operation(id_priv, state);
- 
- 	rdma_restrack_del(&id_priv->res);
-@@ -1874,6 +1849,42 @@ void rdma_destroy_id(struct rdma_cm_id *id)
- 	put_net(id_priv->id.route.addr.dev_addr.net);
- 	kfree(id_priv);
- }
-+
-+/*
-+ * destroy an ID from within the handler_mutex. This ensures that no other
-+ * handlers can start running concurrently.
-+ */
-+static void destroy_id_handler_unlock(struct rdma_id_private *id_priv)
-+	__releases(&idprv->handler_mutex)
-+{
-+	enum rdma_cm_state state;
-+	unsigned long flags;
-+
-+	trace_cm_id_destroy(id_priv);
-+
-+	/*
-+	 * Setting the state to destroyed under the handler mutex provides a
-+	 * fence against calling handler callbacks. If this is invoked due to
-+	 * the failure of a handler callback then it guarentees that no future
-+	 * handlers will be called.
-+	 */
-+	lockdep_assert_held(&id_priv->handler_mutex);
-+	spin_lock_irqsave(&id_priv->lock, flags);
-+	state = id_priv->state;
-+	id_priv->state = RDMA_CM_DESTROYING;
-+	spin_unlock_irqrestore(&id_priv->lock, flags);
-+	mutex_unlock(&id_priv->handler_mutex);
-+	_destroy_id(id_priv, state);
-+}
-+
-+void rdma_destroy_id(struct rdma_cm_id *id)
-+{
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
-+
-+	mutex_lock(&id_priv->handler_mutex);
-+	destroy_id_handler_unlock(id_priv);
-+}
- EXPORT_SYMBOL(rdma_destroy_id);
- 
- static int cma_rep_recv(struct rdma_id_private *id_priv)
-@@ -1938,7 +1949,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- {
- 	struct rdma_id_private *id_priv = cm_id->context;
- 	struct rdma_cm_event event = {};
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&id_priv->handler_mutex);
- 	if ((ib_event->event != IB_CM_TIMEWAIT_EXIT &&
-@@ -2007,14 +2018,12 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.ib = NULL;
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
- out:
- 	mutex_unlock(&id_priv->handler_mutex);
--	return ret;
-+	return 0;
- }
- 
- static struct rdma_id_private *
-@@ -2176,7 +2185,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	mutex_lock(&listen_id->handler_mutex);
- 	if (listen_id->state != RDMA_CM_LISTEN) {
- 		ret = -ECONNABORTED;
--		goto err1;
-+		goto err_unlock;
- 	}
- 
- 	offset = cma_user_data_offset(listen_id);
-@@ -2193,43 +2202,38 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	}
- 	if (!conn_id) {
- 		ret = -ENOMEM;
--		goto err1;
-+		goto err_unlock;
- 	}
- 
- 	mutex_lock_nested(&conn_id->handler_mutex, SINGLE_DEPTH_NESTING);
- 	ret = cma_ib_acquire_dev(conn_id, listen_id, &req);
--	if (ret)
--		goto err2;
-+	if (ret) {
-+		destroy_id_handler_unlock(conn_id);
-+		goto err_unlock;
-+	}
- 
- 	conn_id->cm_id.ib = cm_id;
- 	cm_id->context = conn_id;
- 	cm_id->cm_handler = cma_ib_handler;
- 
- 	ret = cma_cm_event_handler(conn_id, &event);
--	if (ret)
--		goto err3;
-+	if (ret) {
-+		/* Destroy the CM ID by returning a non-zero value. */
-+		conn_id->cm_id.ib = NULL;
-+		mutex_unlock(&listen_id->handler_mutex);
-+		destroy_id_handler_unlock(conn_id);
-+		goto net_dev_put;
-+	}
-+
- 	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
- 	    (conn_id->id.qp_type != IB_QPT_UD)) {
- 		trace_cm_send_mra(cm_id->context);
- 		ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
- 	}
--	mutex_unlock(&lock);
- 	mutex_unlock(&conn_id->handler_mutex);
--	mutex_unlock(&listen_id->handler_mutex);
--	if (net_dev)
--		dev_put(net_dev);
--	return 0;
- 
--err3:
--	/* Destroy the CM ID by returning a non-zero value. */
--	conn_id->cm_id.ib = NULL;
--err2:
--	cma_exch(conn_id, RDMA_CM_DESTROYING);
--	mutex_unlock(&conn_id->handler_mutex);
--err1:
-+err_unlock:
- 	mutex_unlock(&listen_id->handler_mutex);
--	if (conn_id)
--		rdma_destroy_id(&conn_id->id);
- 
- net_dev_put:
- 	if (net_dev)
-@@ -2329,9 +2333,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.iw = NULL;
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
- 
-@@ -2378,16 +2380,16 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 
- 	ret = rdma_translate_ip(laddr, &conn_id->id.route.addr.dev_addr);
- 	if (ret) {
--		mutex_unlock(&conn_id->handler_mutex);
--		rdma_destroy_id(new_cm_id);
--		goto out;
-+		mutex_unlock(&listen_id->handler_mutex);
-+		destroy_id_handler_unlock(conn_id);
-+		return ret;
- 	}
- 
- 	ret = cma_iw_acquire_dev(conn_id, listen_id);
- 	if (ret) {
--		mutex_unlock(&conn_id->handler_mutex);
--		rdma_destroy_id(new_cm_id);
--		goto out;
-+		mutex_unlock(&listen_id->handler_mutex);
-+		destroy_id_handler_unlock(conn_id);
-+		return ret;
- 	}
- 
- 	conn_id->cm_id.iw = cm_id;
-@@ -2401,10 +2403,8 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 	if (ret) {
- 		/* User wants to destroy the CM ID */
- 		conn_id->cm_id.iw = NULL;
--		cma_exch(conn_id, RDMA_CM_DESTROYING);
--		mutex_unlock(&conn_id->handler_mutex);
- 		mutex_unlock(&listen_id->handler_mutex);
--		rdma_destroy_id(&conn_id->id);
-+		destroy_id_handler_unlock(conn_id);
- 		return ret;
- 	}
- 
-@@ -2644,21 +2644,21 @@ static void cma_work_handler(struct work_struct *_work)
- {
- 	struct cma_work *work = container_of(_work, struct cma_work, work);
- 	struct rdma_id_private *id_priv = work->id;
--	int destroy = 0;
- 
- 	mutex_lock(&id_priv->handler_mutex);
- 	if (!cma_comp_exch(id_priv, work->old_state, work->new_state))
--		goto out;
-+		goto out_unlock;
- 
- 	if (cma_cm_event_handler(id_priv, &work->event)) {
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		destroy = 1;
-+		cma_id_put(id_priv);
-+		destroy_id_handler_unlock(id_priv);
-+		goto out_free;
- 	}
--out:
-+
-+out_unlock:
- 	mutex_unlock(&id_priv->handler_mutex);
- 	cma_id_put(id_priv);
--	if (destroy)
--		rdma_destroy_id(&id_priv->id);
-+out_free:
- 	kfree(work);
- }
- 
-@@ -2666,23 +2666,22 @@ static void cma_ndev_work_handler(struct work_struct *_work)
- {
- 	struct cma_ndev_work *work = container_of(_work, struct cma_ndev_work, work);
- 	struct rdma_id_private *id_priv = work->id;
--	int destroy = 0;
- 
- 	mutex_lock(&id_priv->handler_mutex);
- 	if (id_priv->state == RDMA_CM_DESTROYING ||
- 	    id_priv->state == RDMA_CM_DEVICE_REMOVAL)
--		goto out;
-+		goto out_unlock;
- 
- 	if (cma_cm_event_handler(id_priv, &work->event)) {
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		destroy = 1;
-+		cma_id_put(id_priv);
-+		destroy_id_handler_unlock(id_priv);
-+		goto out_free;
- 	}
- 
--out:
-+out_unlock:
- 	mutex_unlock(&id_priv->handler_mutex);
- 	cma_id_put(id_priv);
--	if (destroy)
--		rdma_destroy_id(&id_priv->id);
-+out_free:
- 	kfree(work);
- }
- 
-@@ -3158,9 +3157,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
- 		event.event = RDMA_CM_EVENT_ADDR_RESOLVED;
- 
- 	if (cma_cm_event_handler(id_priv, &event)) {
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		destroy_id_handler_unlock(id_priv);
- 		return;
- 	}
- out:
-@@ -3777,7 +3774,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 	struct rdma_cm_event event = {};
- 	const struct ib_cm_sidr_rep_event_param *rep =
- 				&ib_event->param.sidr_rep_rcvd;
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&id_priv->handler_mutex);
- 	if (id_priv->state != RDMA_CM_CONNECT)
-@@ -3827,14 +3824,12 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.ib = NULL;
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
- out:
- 	mutex_unlock(&id_priv->handler_mutex);
--	return ret;
-+	return 0;
- }
- 
- static int cma_resolve_ib_udp(struct rdma_id_private *id_priv,
-@@ -4359,9 +4354,7 @@ static int cma_ib_mc_handler(int status, struct ib_sa_multicast *multicast)
- 
- 	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
- 	if (ret) {
--		cma_exch(id_priv, RDMA_CM_DESTROYING);
--		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		destroy_id_handler_unlock(id_priv);
- 		return 0;
- 	}
- 
-@@ -4802,7 +4795,8 @@ static void cma_send_device_removal_put(struct rdma_id_private *id_priv)
- 		 */
- 		cma_id_put(id_priv);
- 		mutex_unlock(&id_priv->handler_mutex);
--		rdma_destroy_id(&id_priv->id);
-+		trace_cm_id_destroy(id_priv);
-+		_destroy_id(id_priv, state);
- 		return;
- 	}
- 	mutex_unlock(&id_priv->handler_mutex);
--- 
-2.26.2
-
+> >    remote address: LID 0x0000, QPN 0x000011, PSN 0xd67210, GID ::ffff:172.31.40.122
+> > 8192000 bytes in 0.03 seconds = 2194.56 Mbit/sec
+> > 1000 iters in 0.03 seconds = 29.86 usec/iter
+> > 
+> > $ ibv_rc_pingpong -d rxe0 -g 1 rdma-dev-21
+> >    local address:  LID 0x0000, QPN 0x000011, PSN 0xd67210, GID ::ffff:172.31.40.122
+> >    remote address: LID 0x0000, QPN 0x0000e3, PSN 0x728a4f, GID ::ffff:172.31.40.121
+> > 8192000 bytes in 0.03 seconds = 2192.72 Mbit/sec
+> > 1000 iters in 0.03 seconds = 29.89 usec/iter
+> > 
+> > Thanks,
+> > Kamal
+> > 
+> > > > Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > > > ---
+> > > >   drivers/infiniband/sw/rxe/rxe.c       | 34 +++------------------------
+> > > >   drivers/infiniband/sw/rxe/rxe_param.h |  4 ++--  drivers/infiniband/sw/rxe/rxe_recv.c  | 29 ++++-------------------
+> > > >   drivers/infiniband/sw/rxe/rxe_req.c   |  5 +---
+> > > >   drivers/infiniband/sw/rxe/rxe_verbs.c | 17 +++-----------  drivers/infiniband/sw/rxe/rxe_verbs.h |  1 -
+> > > >   6 files changed, 13 insertions(+), 77 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c index efcb72c92be6..907203afbd99 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe.c
+> > > > @@ -40,14 +40,6 @@ MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");  MODULE_DESCRIPTION("Soft RDMA transport");  MODULE_LICENSE("Dual BSD/GPL");
+> > > > 
+> > > > -/* free resources for all ports on a device */ -static void rxe_cleanup_ports(struct rxe_dev *rxe) -{
+> > > > -       kfree(rxe->port.pkey_tbl);
+> > > > -       rxe->port.pkey_tbl = NULL;
+> > > > -
+> > > > -}
+> > > > -
+> > > >   /* free resources for a rxe device all objects created for this device must
+> > > >    * have been destroyed
+> > > >    */
+> > > > @@ -66,8 +58,6 @@ void rxe_dealloc(struct ib_device *ib_dev)
+> > > >          rxe_pool_cleanup(&rxe->mc_grp_pool);
+> > > >          rxe_pool_cleanup(&rxe->mc_elem_pool);
+> > > > 
+> > > > -       rxe_cleanup_ports(rxe);
+> > > > -
+> > > >          if (rxe->tfm)
+> > > >                  crypto_free_shash(rxe->tfm);
+> > > >   }
+> > > > @@ -139,25 +129,14 @@ static void rxe_init_port_param(struct rxe_port *port)
+> > > >   /* initialize port state, note IB convention that HCA ports are always
+> > > >    * numbered from 1
+> > > >    */
+> > > > -static int rxe_init_ports(struct rxe_dev *rxe)
+> > > > +static void rxe_init_ports(struct rxe_dev *rxe)
+> > > >   {
+> > > >          struct rxe_port *port = &rxe->port;
+> > > > 
+> > > >          rxe_init_port_param(port);
+> > > > -
+> > > > -       port->pkey_tbl = kcalloc(port->attr.pkey_tbl_len,
+> > > > -                       sizeof(*port->pkey_tbl), GFP_KERNEL);
+> > > > -
+> > > > -       if (!port->pkey_tbl)
+> > > > -               return -ENOMEM;
+> > > > -
+> > > > -       port->pkey_tbl[0] = 0xffff;
+> > > >          addrconf_addr_eui48((unsigned char *)&port->port_guid,
+> > > >                              rxe->ndev->dev_addr);
+> > > > -
+> > > >          spin_lock_init(&port->port_lock);
+> > > > -
+> > > > -       return 0;
+> > > >   }
+> > > > 
+> > > >   /* init pools of managed objects */
+> > > > @@ -247,13 +226,11 @@ static int rxe_init(struct rxe_dev *rxe)
+> > > >          /* init default device parameters */
+> > > >          rxe_init_device_param(rxe);
+> > > > 
+> > > > -       err = rxe_init_ports(rxe);
+> > > > -       if (err)
+> > > > -               goto err1;
+> > > > +       rxe_init_ports(rxe);
+> > > > 
+> > > >          err = rxe_init_pools(rxe);
+> > > >          if (err)
+> > > > -               goto err2;
+> > > > +               return err;
+> > > > 
+> > > >          /* init pending mmap list */
+> > > >          spin_lock_init(&rxe->mmap_offset_lock);
+> > > > @@ -263,11 +240,6 @@ static int rxe_init(struct rxe_dev *rxe)
+> > > >          mutex_init(&rxe->usdev_lock);
+> > > > 
+> > > >          return 0;
+> > > > -
+> > > > -err2:
+> > > > -       rxe_cleanup_ports(rxe);
+> > > > -err1:
+> > > > -       return err;
+> > > >   }
+> > > > 
+> > > >   void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu) diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> > > > index 99e9d8ba9767..2f381aeafcb5 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> > > > @@ -100,7 +100,7 @@ enum rxe_device_param {
+> > > >          RXE_MAX_SRQ_SGE                 = 27,
+> > > >          RXE_MIN_SRQ_SGE                 = 1,
+> > > >          RXE_MAX_FMR_PAGE_LIST_LEN       = 512,
+> > > > -       RXE_MAX_PKEYS                   = 64,
+> > > > +       RXE_MAX_PKEYS                   = 1,
+> > > >          RXE_LOCAL_CA_ACK_DELAY          = 15,
+> > > > 
+> > > >          RXE_MAX_UCONTEXT                = 512,
+> > > > @@ -148,7 +148,7 @@ enum rxe_port_param {
+> > > >          RXE_PORT_INIT_TYPE_REPLY        = 0,
+> > > >          RXE_PORT_ACTIVE_WIDTH           = IB_WIDTH_1X,
+> > > >          RXE_PORT_ACTIVE_SPEED           = 1,
+> > > > -       RXE_PORT_PKEY_TBL_LEN           = 64,
+> > > > +       RXE_PORT_PKEY_TBL_LEN           = 1,
+> > > >          RXE_PORT_PHYS_STATE             = IB_PORT_PHYS_STATE_POLLING,
+> > > >          RXE_PORT_SUBNET_PREFIX          = 0xfe80000000000000ULL,
+> > > >   };
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > > > index 46e111c218fd..7e123d3c4d09 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_recv.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > > > @@ -101,36 +101,15 @@ static void set_qkey_viol_cntr(struct rxe_port *port)  static int check_keys(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+> > > >                        u32 qpn, struct rxe_qp *qp)
+> > > >   {
+> > > > -       int i;
+> > > > -       int found_pkey = 0;
+> > > >          struct rxe_port *port = &rxe->port;
+> > > >          u16 pkey = bth_pkey(pkt);
+> > > > 
+> > > >          pkt->pkey_index = 0;
+> > > > 
+> > > > -       if (qpn == 1) {
+> > > > -               for (i = 0; i < port->attr.pkey_tbl_len; i++) {
+> > > > -                       if (pkey_match(pkey, port->pkey_tbl[i])) {
+> > > > -                               pkt->pkey_index = i;
+> > > > -                               found_pkey = 1;
+> > > > -                               break;
+> > > > -                       }
+> > > > -               }
+> > > > -
+> > > > -               if (!found_pkey) {
+> > > > -                       pr_warn_ratelimited("bad pkey = 0x%x\n", pkey);
+> > > > -                       set_bad_pkey_cntr(port);
+> > > > -                       goto err1;
+> > > > -               }
+> > > > -       } else {
+> > > > -               if (unlikely(!pkey_match(pkey,
+> > > > -                                        port->pkey_tbl[qp->attr.pkey_index]
+> > > > -                                       ))) {
+> > > > -                       pr_warn_ratelimited("bad pkey = 0x%0x\n", pkey);
+> > > > -                       set_bad_pkey_cntr(port);
+> > > > -                       goto err1;
+> > > > -               }
+> > > > -               pkt->pkey_index = qp->attr.pkey_index;
+> > > > +       if (!pkey_match(pkey, IB_DEFAULT_PKEY_FULL)) {
+> > > > +               pr_warn_ratelimited("bad pkey = 0x%x\n", pkey);
+> > > > +               set_bad_pkey_cntr(port);
+> > > > +               goto err1;
+> > > >          }
+> > > > 
+> > > >          if ((qp_type(qp) == IB_QPT_UD || qp_type(qp) == IB_QPT_GSI) && diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> > > > index e5031172c019..34df2b55e650 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> > > > @@ -381,7 +381,6 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+> > > >                                         struct rxe_pkt_info *pkt)
+> > > >   {
+> > > >          struct rxe_dev          *rxe = to_rdev(qp->ibqp.device);
+> > > > -       struct rxe_port         *port = &rxe->port;
+> > > >          struct sk_buff          *skb;
+> > > >          struct rxe_send_wr      *ibwr = &wqe->wr;
+> > > >          struct rxe_av           *av;
+> > > > @@ -419,9 +418,7 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+> > > >                          (pkt->mask & (RXE_WRITE_MASK | RXE_IMMDT_MASK)) ==
+> > > >                          (RXE_WRITE_MASK | RXE_IMMDT_MASK));
+> > > > 
+> > > > -       pkey = (qp_type(qp) == IB_QPT_GSI) ?
+> > > > -                port->pkey_tbl[ibwr->wr.ud.pkey_index] :
+> > > > -                port->pkey_tbl[qp->attr.pkey_index];
+> > > > +       pkey = IB_DEFAULT_PKEY_FULL;
+> > > > 
+> > > >          qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
+> > > >                                           qp->attr.dest_qp_num;
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > > > index 74f071003690..779458ddd422 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > > > @@ -83,22 +83,11 @@ static int rxe_query_port(struct ib_device *dev,  static int rxe_query_pkey(struct ib_device *device,
+> > > >                            u8 port_num, u16 index, u16 *pkey)  {
+> > > > -       struct rxe_dev *rxe = to_rdev(device);
+> > > > -       struct rxe_port *port;
+> > > > -
+> > > > -       port = &rxe->port;
+> > > > -
+> > > > -       if (unlikely(index >= port->attr.pkey_tbl_len)) {
+> > > > -               dev_warn(device->dev.parent, "invalid index = %d\n",
+> > > > -                        index);
+> > > > -               goto err1;
+> > > > -       }
+> > > > +       if (index > 0)
+> > > > +               return -EINVAL;
+> > > > 
+> > > > -       *pkey = port->pkey_tbl[index];
+> > > > +       *pkey = IB_DEFAULT_PKEY_FULL;
+> > > >          return 0;
+> > > > -
+> > > > -err1:
+> > > > -       return -EINVAL;
+> > > >   }
+> > > > 
+> > > >   static int rxe_modify_device(struct ib_device *dev, diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > index 92de39c4a7c1..c664c7f36ab5 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > @@ -371,7 +371,6 @@ struct rxe_mc_elem {
+> > > > 
+> > > >   struct rxe_port {
+> > > >          struct ib_port_attr     attr;
+> > > > -       u16                     *pkey_tbl;
+> > > >          __be64                  port_guid;
+> > > >          __be64                  subnet_prefix;
+> > > >          spinlock_t              port_lock; /* guard port */
+> > > > --
+> > > > 2.25.4
+> > > > 
+> 
