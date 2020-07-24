@@ -2,123 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED30222C436
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 13:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A38822C526
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 14:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgGXLP3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jul 2020 07:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S1726539AbgGXM2k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jul 2020 08:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgGXLP3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jul 2020 07:15:29 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01545C0619D3
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Jul 2020 04:15:29 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id s189so5040260pgc.13
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Jul 2020 04:15:28 -0700 (PDT)
+        with ESMTP id S1726366AbgGXM2k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jul 2020 08:28:40 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92CEC0619D3
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Jul 2020 05:28:39 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id i4so9570741iov.11
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Jul 2020 05:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ByTK/MSOWmoWUor1KYibnpKbiy1kgHfk5qHnLHNx6g0=;
-        b=K45E34Qk+3CMK1GTniglWFyBfFxieyks5gTBMV/STUVLZtFGtzgskHfsbpByVPMjtD
-         OmG87NNUlh9lu7nga/V9cxDhJFtjNVHkDCALLbmMRU9M7TFDCI2tOfq9gZuLxk2brKiz
-         hchPX3gXuPK85KdXCIFOFjHVosp2SKm32+xXW6lGjYe/kDKsaOnFubVjCIS40bIJIZ0l
-         AqKw0TMOq0QaKVvEeDog8zMxVBfFU2rls+1O1aWwOII+PQPf+ko/id8t6gftsduYR+OB
-         1pPZ20KP+oWoTMpK8ltq4+VfaBtlvQChQ84Y9gnISQdHs0AK/CXOQmOx5CMfWWhOIvSy
-         tE7A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=du/BYAW28pBdeWaStSwp60K/C3aT5OK1nW91G7unHfM=;
+        b=eEieiC/MzOXVBsS3ig5HFUkyHpdqFwm7Jj3Zn0fby5UWNv96qUNYCY007Mmmwbqlml
+         HGtN8lj0F+P7fQ0iYLe3WdBwnoX4Kic7GPPbxlj9xwsQc1ZTnluZILlhrbQYDkt76xsG
+         aF8cMjnSwsrACrb1PDl66NgqUoTR2oM+V4ewn20beb25TffeoVHvgGL7/CWOcurTsDK9
+         j5oOYFkBYHOw1kDc/pxTm/yndVeyDe9e7lVzrLZlt75IlbVnk/swC6jCCkmDN4d1uiv8
+         jnya2uWyuKikB1jSN4U+FGI+HsJoq2dqiWwEkPTf/dRCi2PYQ0Z9511tTb6aNxzSvYhU
+         dCzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ByTK/MSOWmoWUor1KYibnpKbiy1kgHfk5qHnLHNx6g0=;
-        b=ab+w5nz8Oc73jsmIKc6UzbSZXEjWxS/7kPjoHcZFMVCz1rjalwKeerYlC6WZCzaICN
-         SYqlv7RnypOX1u2zK6vl0glQ2V9N6gfX4NvcQfnqIhO3x/o43Yrqv6EPemMxibVKM3Wf
-         oY7UBlGvIOd3LWMEHz+IGGY9hGzb+Osx8D99fgdoQzLGPgPKQGIxUXah5VYiq7k+qdfm
-         zqIyQ9pUP1w0nc1gyNqcRdiJ7VcfS9jLv1gz2+gg+9KgaKi3tC8P6xt32LhTKyhTDf34
-         5mGP428EM5d5wHoPn0xmignGZMntfCr5uvA68s/szlt2TLkErSos4tyaGNjJuXnsW6GG
-         PRTg==
-X-Gm-Message-State: AOAM531tNtLJ1KdZHmhCV1uwj0h1Ks85VfRtXFkg2lf35tnNjdZfg50E
-        7qw+LR3yy6h8DitPaN0mG9ovhQ==
-X-Google-Smtp-Source: ABdhPJxQJKNsX1mN2ufI/w/jKMI8D8XHGjqMcGsUgSNeNlY+Q3Cca4/YxQqoLmXrpuAIAloPeSpXWQ==
-X-Received: by 2002:a62:cdc4:: with SMTP id o187mr8622431pfg.200.1595589327284;
-        Fri, 24 Jul 2020 04:15:27 -0700 (PDT)
-Received: from dragon-master.domain.name ([43.224.130.248])
-        by smtp.gmail.com with ESMTPSA id y7sm5569643pgk.93.2020.07.24.04.15.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=du/BYAW28pBdeWaStSwp60K/C3aT5OK1nW91G7unHfM=;
+        b=jM6iAyTx6uyyXIsc904itOmjAitEzq9BXV+BGhtywSq55PkM7Whmj0StGHfio3YgIj
+         nKbAm02oY7Tx38PoZbrQDOCJHN91cwc7Yjehz3IFncFbTXe9qqgae2dnhNrmfYA0UZks
+         M20+7aeX5qqC20e/1fHIKoqvUWho9w5BhpBoyW5rF4P71xG7Hpd4Ms2KBPndvRc9n06s
+         6E6CsAwtbyLskLO1I7B94EJRNRjImRRSvyFd3VXVzkSRutrqi8MnOGXCNdqeaUfiDXep
+         GLzzN8xt7PsA8E5LH7Y0atqpacoRzFaYYNO9ooXqBbVtgydvwt+GetIdS5bl7FtKyVZH
+         v5Vg==
+X-Gm-Message-State: AOAM533VkbKwoo4itDdZ8KTdWMlA5J4WYigXfvwDmxldI8cWjFFA3/Hv
+        BoyDEho9hnVwOB+cRP3AgwWyZA==
+X-Google-Smtp-Source: ABdhPJxJDNJp31AEgtWFASJ56vlCs8hHyxQFk0iGWP0RLvHf59EaBgGOgLlcWSK9m5jT5Q01uy2pYg==
+X-Received: by 2002:a05:6638:1696:: with SMTP id f22mr10388110jat.60.1595593719224;
+        Fri, 24 Jul 2020 05:28:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id a24sm2988114ioe.46.2020.07.24.05.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 04:15:26 -0700 (PDT)
-From:   Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org, bvanassche@acm.org
-Cc:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Subject: [PATCH 3/3] RDMA/rtrs: remove WQ_MEM_RECLAIM for rtrs_wq
-Date:   Fri, 24 Jul 2020 16:45:08 +0530
-Message-Id: <20200724111508.15734-4-haris.iqbal@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200724111508.15734-1-haris.iqbal@cloud.ionos.com>
+        Fri, 24 Jul 2020 05:28:38 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jywoX-00Epxi-89; Fri, 24 Jul 2020 09:28:37 -0300
+Date:   Fri, 24 Jul 2020 09:28:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Cc:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, leon@kernel.org,
+        bvanassche@acm.org
+Subject: Re: [PATCH 2/3] RDMA/rtrs-srv: only call put_device when it's in
+ sysfs
+Message-ID: <20200724122837.GN25301@ziepe.ca>
 References: <20200724111508.15734-1-haris.iqbal@cloud.ionos.com>
+ <20200724111508.15734-3-haris.iqbal@cloud.ionos.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724111508.15734-3-haris.iqbal@cloud.ionos.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+On Fri, Jul 24, 2020 at 04:45:07PM +0530, Md Haris Iqbal wrote:
+> From: Jack Wang <jinpu.wang@cloud.ionos.com>
+> 
+> There are error case we will call free_srv before device kobject
+> initialized, in such case we shouldn't call put_device, otherwise
+> a Warning will be generated, eg:
+> 
+> kobject: '(null)' (000000009f5445ed): is not initialized, yet kobject_put() is being called.
+> 
+> So add check before call into put_device.
+> 
+> Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index 0d9241f5d9e6..8a55bc559466 100644
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -1373,7 +1373,10 @@ static void free_srv(struct rtrs_srv *srv)
+>  	mutex_destroy(&srv->paths_mutex);
+>  	mutex_destroy(&srv->paths_ev_mutex);
+>  	/* last put to release the srv structure */
+> -	put_device(&srv->dev);
+> +	if(srv->dev.kobj.state_in_sysfs)
+> +		put_device(&srv->dev);
+> +	else
+> +		kfree(srv);
+>  }
 
-We triggered warning from time to time when we run regression
-test, eg:
+Not like this, call device_initialize() sooner.
 
-rnbd_client L685: </dev/nullb0@bla> Device disconnected.
-rnbd_client L1756: Unloading module
-------------[ cut here ]-----------
-workqueue: WQ_MEM_RECLAIM rtrs_client_wq:rtrs_clt_reconnect_work [rtrs_client] is flushing !WQ_MEM_RECLAIM ib_addr:process_one_req [ib_core]
-WARNING: CPU: 2 PID: 18824 at kernel/workqueue.c:2517 check_flush_dependency+0xad/0x130
-
-The root cause is workqueue core expect flushing should not be done
-for a !WQ_MEM_RECLAIM wq from a WQ_MEM_RECLAIM workqueue.
-
-In above case ib_addr workqueue without WQ_MEM_RECLAIM, but rtrs_wq
-WQ_MEM_RECLAIM.
-
-To avoid the warning, remove the WQ_MEM_RECLAIM flag.
-
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 5b31d3b03737..776e89231c52 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2982,7 +2982,7 @@ static int __init rtrs_client_init(void)
- 		pr_err("Failed to create rtrs-client dev class\n");
- 		return PTR_ERR(rtrs_clt_dev_class);
- 	}
--	rtrs_wq = alloc_workqueue("rtrs_client_wq", WQ_MEM_RECLAIM, 0);
-+	rtrs_wq = alloc_workqueue("rtrs_client_wq", 0, 0);
- 	if (!rtrs_wq) {
- 		class_destroy(rtrs_clt_dev_class);
- 		return -ENOMEM;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 8a55bc559466..454bb6c343bb 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -2153,7 +2153,7 @@ static int __init rtrs_server_init(void)
- 		err = PTR_ERR(rtrs_dev_class);
- 		goto out_chunk_pool;
- 	}
--	rtrs_wq = alloc_workqueue("rtrs_server_wq", WQ_MEM_RECLAIM, 0);
-+	rtrs_wq = alloc_workqueue("rtrs_server_wq", 0, 0);
- 	if (!rtrs_wq) {
- 		err = -ENOMEM;
- 		goto out_dev_class;
--- 
-2.25.1
-
+Jason
