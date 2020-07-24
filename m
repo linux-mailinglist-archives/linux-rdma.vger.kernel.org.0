@@ -2,173 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B859F22CE9F
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 21:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230E422CEAA
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 21:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgGXTZw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jul 2020 15:25:52 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:26719 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGXTZw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:25:52 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f1b35bc0000>; Sat, 25 Jul 2020 03:25:48 +0800
-Received: from HKMAIL101.nvidia.com ([10.18.16.10])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 24 Jul 2020 12:25:48 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Fri, 24 Jul 2020 12:25:48 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 24 Jul
- 2020 19:25:39 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 24 Jul 2020 19:25:39 +0000
+        id S1726381AbgGXTb5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jul 2020 15:31:57 -0400
+Received: from mail-vi1eur05on2042.outbound.protection.outlook.com ([40.107.21.42]:50304
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726085AbgGXTb4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:31:56 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ezDM5++2B9d6FOzIYetTknAwwY9sromgcbLhVR5uOnXo+llLlqtYDPs+JyAgsIf1g/XXcgVTlmnxigVMC9sRY9sGiwAHZ3/ajDt3Fc5o5mDWQ1UYLPxxc1H5XtwqDCkORxuDeAJGP3BxWBf1BSBki9VsXqEU9W0fKd8XgeGR8axMxRfhmCMxndWCwq6ZSD9v8stST8D9Kk8NCMcOgN8Z4rKDGnA1H5CmrNyMvdzgPMhhFpp1bRbwX9cRY9hS0jhXclrKo4xWhnWp0PQZJhyd+kTfAz25OOUO1uzJcYXOzrBpOhvq/Oq6gUBKSVUAw1Z83cRU3biCSSBfjcjqGyDDig==
+ b=B6m1FJt0YV2bGSyAGl7jhTcDstCG8RL418+rJ4ckH66c05M9PEUYFpnK1rH0pw3+0X08ewnSQmRqmdqDgOsll1XM8eZr4cXf1+EtElcaKahkobqZQU7hOM9hNNYAz3EbRyuxPFKa+Gp55+su95M5PbCDWYFimXfqUAI+TL1alixTT5AOAk+u5GLGSt0KVnu2Ix8+Larg+b2prTqUtHZQXgJwVWLfP+OG/lPPXDk7z3lV/D2+K/EJxR9oGt+UWvnuCzJ3pk5Ksk9KOOy25vyOFZTDJfCCTw4fywMI7mIQ3MUexWXlh6RzfOh4knjgO0i5P1LNe/8vBSEqyB4DLKOYHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5LCMyx+JC1KDgELoXYyMl8fAwciORp4LP8avErGdQ4=;
- b=Q4tCrMZs30omZY64xbtg1bxnYLt7lwf2vl1CVE0cOxe/l91jXSKiiNWuW6s3HiezTp8wSthM7JiTA8LlK3TkOd+KfY2YMjNcf2v/4YeRsATFq9nHas0wmr3svePXhK8YIi6HfkSfKC4hfsh9qTS80SeIVBXC2WUhOGKHEUdrxjcIR24o0z20xwXyMNNBbPWVq0O6H9tzCttDLIaomPZVfnDk32taa/6a/YWgXNva33+cOU82ebIRfifT8yNpmceDSvcRuCQQtUhu9pPDtpBs8WPpvZL9kEPi24QjkAXfLFERzFJ0kb6nSSB8vOQxnRIZd677UAmmhy92FSE40pq5Rw==
+ bh=8Ng/TpK721EFdOxMGLMWZz8ZYA3qgMHh2yIJoe1ly34=;
+ b=Ku6E1xViWLaDgpZRAln5RAvmKiGUazpN04ZE4cqX1zalM1DXJpzDugexgIEvB0mB++UOSXZFYozSfk6Ol+JoAvpFiIy1LJq44bawi4aLo+3Wk3zDTIZ3Bb4IGcOZgRILGJ8+0W6VTas6VAxpNAa/hjFhfyJxnk3XQoI+2e+O08RqFevCpnVzvBWWkZZ4OAgl6EjL7pUP3P9tjh39GVBU09IoZy139hASdrHetiDGnrhsKoMQWIbcfV0pi+Z1Rf4xUJSTBcJ4RqA+TxM86sRILiEWPrZF+zoSsJcbFdQQHk6YyhxxjkRliQbQp0hRwV7QajfRIdQNLUB7MErAOpmQOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3017.namprd12.prod.outlook.com (2603:10b6:5:3e::13) with
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Ng/TpK721EFdOxMGLMWZz8ZYA3qgMHh2yIJoe1ly34=;
+ b=mDhJRfq6SegcXdgv3afzUjiG5huzzXTNUzQfL3QkprVs15WYSDz+IT3IEo76FGue/MmAXUYFIBM9TbhtyUqOriirUqiPwHTEP1RLVNvdC1VK0OdwsvxfEQ70hi4yvx0vhdLrOvI+GYFRcn1Eg64idpAXLBQKJTMrbwVleSwbKjc=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
+ by AM6PR05MB4855.eurprd05.prod.outlook.com (2603:10a6:20b:12::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Fri, 24 Jul
- 2020 19:25:37 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.024; Fri, 24 Jul 2020
- 19:25:37 +0000
-Date:   Fri, 24 Jul 2020 16:25:35 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 2/2] RDMA/core: Update write interface to
- use automatic object lifetime
-Message-ID: <20200724192535.GA3655847@nvidia.com>
-References: <20200719052223.75245-1-leon@kernel.org>
- <20200719052223.75245-3-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Fri, 24 Jul
+ 2020 19:31:53 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::15f4:b130:d907:ce72]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::15f4:b130:d907:ce72%6]) with mapi id 15.20.3195.028; Fri, 24 Jul 2020
+ 19:31:53 +0000
+Date:   Fri, 24 Jul 2020 22:31:51 +0300
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/3] Create UMR with relaxed ordering
+Message-ID: <20200724193151.GA64071@unreal>
+References: <20200716105248.1423452-1-leon@kernel.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200719052223.75245-3-leon@kernel.org>
-X-ClientProxiedBy: MN2PR10CA0011.namprd10.prod.outlook.com
- (2603:10b6:208:120::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+In-Reply-To: <20200716105248.1423452-1-leon@kernel.org>
+X-ClientProxiedBy: AM3PR07CA0097.eurprd07.prod.outlook.com
+ (2603:10a6:207:6::31) To AM6PR05MB6408.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0011.namprd10.prod.outlook.com (2603:10b6:208:120::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20 via Frontend Transport; Fri, 24 Jul 2020 19:25:36 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1jz3K3-00FL6s-Cm; Fri, 24 Jul 2020 16:25:35 -0300
-X-Originating-IP: [156.34.48.30]
+Received: from localhost (213.57.247.131) by AM3PR07CA0097.eurprd07.prod.outlook.com (2603:10a6:207:6::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend Transport; Fri, 24 Jul 2020 19:31:52 +0000
+X-Originating-IP: [213.57.247.131]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cbffd900-5509-45bd-fd91-08d8300757a3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3017:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB301703E6D137306B1B6A1ADDC2770@DM6PR12MB3017.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:499;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2369bca2-e75d-485c-9403-08d8300837ef
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4855:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB48558148FBC1B2FE322DED9CB0770@AM6PR05MB4855.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2wEL0CSqHr38XDLQXDJ3RCUNgZfT4MhnsKuLowstzmtXnjnvcmevUzvILZUMLGuGred+2CsvBXoNv8mbg30NAMhE5AQCN3O4sgL3990uVmAtaBW2KBb6MG83Fqkl8N681S/3YM8OHUpC2chZZb4qgx+XzcXd0EQzCO83SoNcC7J1dSfI+t7Lq284FeQPwHQciVnaKrxsjUC5u8ZcGWsuo6WGV3KVwte2hrR8dTqNOsW8zKBtJEwN/q3uKtkhyfNyr81UfbGCc0jMqcGHZXMvPuduIzJghof/DiJAR+ZlNeYgAZ46yA2Q6O9IxykXMumyoXV31gJXRmnOhMhP0KkDOA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39860400002)(66946007)(426003)(9786002)(66476007)(54906003)(9746002)(66556008)(186003)(6916009)(86362001)(8936002)(478600001)(36756003)(4326008)(1076003)(33656002)(2616005)(26005)(2906002)(83380400001)(15650500001)(316002)(8676002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: BWBdVkYu/6+vzGlUXGnWr/GdhjP7yRHbJ4ve75Zrt1gtjqa1T3heLWG15SYONqGAP7x/ubCMElgfKiCLf5XWgCBRq4T5tMU26z3xk3vHupIJ3Xfw/sR1K7LBxLbgr+AwKPyWk3Ku8cs48ffW8Nnr60nFZGhXXlMnNZLG8vad13Srp6tFWH9KzjS7y31Ms1E/tjcCJ4bziWAo8CZ05vqfQ+NiVfcz1kaBbiwyOB0dy1msYffeqs1Y+Qe07jY9IMFBKvzjHnc3zmhaB9Yayaj5cF1R7QYjld2dWIl/UQN/pL8T6/lfaWBf5sMTmCWKjmJMjMQj4oyGhZF1B0nuP+zzHi4Ih+b9KgjqHNh58lEe2UVVKSZL3NRTHbyrIUhdi7dvoXsbikf8ZFA7OvLdNPPB7M0jzncA9QdNWS7MDaARRP6VkkHPKrbUnK2nZKXKMP2dnNZtYysQ37zYLIhC3mNTUMZY52AqsVHkRVk/4ixYv4g=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbffd900-5509-45bd-fd91-08d8300757a3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: 4XXNpDoU0kdFokKj9OmC7nwtEyj9engbuwE1BUDSEdfkdM6ZY1LBiJWcJol0CanYYfUu5RSkg/AH1b9Ky+mXEn5C1hf60bxeFo3lIN9wnyZy84vkIBuUqU93hcqAAEQJHe3lH38LyPbWZelroCeZZBQoG2WNkGlsASiwWcjN/96cdgRC2FxlnSaJEEV5WkwaQVEohGBTSoHJbWz0aUJbkDabsPjgwv/8ZjnQZcv3BGDPVVs/bSe/iMxBT7lXEOcYDC5trqYDfrp0d174Ej3yyYO+zuwfm8T/7l66obUWiQKVAmfNaVx6QudLTmB6U8xA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(7916004)(396003)(376002)(136003)(366004)(346002)(39860400002)(5660300002)(26005)(110136005)(16526019)(316002)(4744005)(4326008)(8676002)(956004)(52116002)(33656002)(186003)(6496006)(66556008)(86362001)(66476007)(33716001)(66946007)(2906002)(9686003)(8936002)(54906003)(83380400001)(6486002)(6636002)(107886003)(478600001)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 5GvpMlD/9WFvlaHhFSHP769MgXrCsDCs8pToBdt/VJmytzobos/8PyfzDEcQ1NhQJYqeH6hQB8CH4PXR17miOwec2Sd5gJXgpHiDyZfjrriZhCQxojX2HVJZj3EYsTFiw6iqVlzRydrXnByKJOi3DxSh42pcVuAcDTEbnQHgmDNFAh/2fjRDfteeVPaXhhFBxxsrKl4212rfYFvC0/voruPaQhOYFRwVcyhc+MrCS1Tr+z8bz/+Pn6PX3PfLvjX9tEPpjNKytLQMOL3xCxgC1OAc6/i/AJOP2a7uU9qv7dMYIWYnkuIsdZ/CNXXM1oj9P4qJ6dxcJ+ZldnLnWbQNn81hrdGw/Sbu6gQdW0pjwRdmnwP/43bARIGa/29tn72ei01ypTYSIml5Zq0vrzq7WKHKQBb9rwd5VJh7Gx8oCEL9kUZWnohsfIxMfNyobfgZkwciRi59VaO7IRKahUxdQPhZAEX6WG38gLIrfu3TxLaA1qS8fBpXxW19KZX8b5ep
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2369bca2-e75d-485c-9403-08d8300837ef
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6408.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 19:25:37.0662
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 19:31:53.0503
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kkFhAgBlUD+O95QdL98g34lTDEuAWlj7cstnqqjivFXis0GX1e9UdMsJLcpgWbd+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3017
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595618748; bh=+5LCMyx+JC1KDgELoXYyMl8fAwciORp4LP8avErGdQ4=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=rdU8TnXhH+PcXX6UynHnc21NwH2GB1UW1Ezxf9UjO/iD2iYI64xbDKOfkQFncptUc
-         BRCKVAiDQKqYxuW9+A8VgD3OOXdhkhPS9lG70Eq5Wb6ErJWLuP/jWJBeDL0qFw0Bgx
-         SH61pHZ58FZw9X+8JlfgCAjo9hMphgzegfVzsud7G7pF2h7Po5q5cJZF1GHFQRQska
-         8I4T1UJq4LGEOXWt1KuXQszTTpoxkVCXEVaWudLIuWFjcKk/FW6ObR8UwhEnakwdcL
-         IGgm3BZwyCrmkjjOb/5YYsXQ2U3mhw0MiTa5G49OsigGCUv8AU3EeCKVVoPPuJm4IA
-         Jkx9VxLHnlphQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: bnuAWk4UhHGlUaIc8vXyqAxXW41fsDIiSiYuE9MbevtcV0tRYqc2ldK5tYHnJrprzNw4+Co1oeYhwVBM/4PyDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4855
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 08:22:23AM +0300, Leon Romanovsky wrote:
+On Thu, Jul 16, 2020 at 01:52:45PM +0300, Leon Romanovsky wrote:
 > From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> The automatic object lifetime model allows us to change write() interface
-> to have same logic as ioctl() path. Update the create/alloc functions to be
-> in the following format, so code flow will be the same:
->  * Allocate objects
->  * Initialize them
->  * Call to the drivers, this is last step that is allowed to fail
->  * Finalize object
->  * Return response and allow to core code to handle abort/commit
->    respectively.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/uverbs_cmd.c | 312 ++++++++-------------------
->  1 file changed, 93 insertions(+), 219 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> index 68c9a0210220..a66fc3e37a74 100644
-> --- a/drivers/infiniband/core/uverbs_cmd.c
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -273,7 +273,7 @@ int ib_init_ucontext(struct uverbs_attr_bundle *attrs)
->  
->  static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
->  {
-> -	struct ib_uverbs_get_context_resp resp;
-> +	struct ib_uverbs_get_context_resp resp = {};
->  	struct ib_uverbs_get_context cmd;
->  	struct ib_device *ib_dev;
->  	struct ib_uobject *uobj;
-> @@ -293,25 +293,20 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
->  		goto err_ucontext;
->  	}
->  
-> -	resp = (struct ib_uverbs_get_context_resp){
-> -		.num_comp_vectors = attrs->ufile->device->num_comp_vectors,
-> -		.async_fd = uobj->id,
-> -	};
-> -	ret = uverbs_response(attrs, &resp, sizeof(resp));
-> -	if (ret)
-> -		goto err_uobj;
-> -
->  	ret = ib_init_ucontext(attrs);
->  	if (ret)
->  		goto err_uobj;
+>
+> Hi,
+>
+> ConnectX-7 supports setting relaxed ordering read/write mkey attribute by UMR,
+> indicated by new HCA capabilities, so extend mlx5_ib driver to configure
+> UMR control segment based on those capabilities.
+>
+> Thanks
+>
+> Meir Lichtinger (3):
+>   RDMA/mlx5: ConnectX-7 new capabilities to set relaxed ordering by UMR
+>   RDMA/mlx5: Use MLX5_SET macro instead of local structure
+>   RDMA/mlx5: Set mkey relaxed ordering by UMR with ConnectX-7
+>
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 18 +++-----
+>  drivers/infiniband/hw/mlx5/wr.c      | 68 ++++++++++++++++++++--------
+>  include/linux/mlx5/device.h          |  5 +-
+>  include/linux/mlx5/mlx5_ifc.h        |  4 +-
+>  4 files changed, 63 insertions(+), 32 deletions(-)
 
-init_ucontext cannot be undone and cannot be called twice, so it must
-be last in the function. I dropped the hunk changing ib_uverbs_get_context().
+Thanks, first patch is applied to mlx5-next.
+042dd05bddbd RDMA/mlx5: ConnectX-7 new capabilities to set relaxed ordering by UMR
 
-Applied to for-next, thanks
 
-Jason
+>
+> --
+> 2.26.2
+>
