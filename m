@@ -2,75 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D349D22C100
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 10:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF3722C1C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jul 2020 11:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgGXIlP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jul 2020 04:41:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37428 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgGXIlO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jul 2020 04:41:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4E5861C0BD2; Fri, 24 Jul 2020 10:41:13 +0200 (CEST)
-Date:   Fri, 24 Jul 2020 10:41:12 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] RDMA/mlx5: fix typo in structure name
-Message-ID: <20200724084112.GC31930@amd>
+        id S1726784AbgGXJMT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 24 Jul 2020 05:12:19 -0400
+Received: from mx2.itam.mx ([148.205.229.36]:42968 "EHLO mx2.itam.mx"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgGXJMT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:12:19 -0400
+Received: from cronos2.itam.mx (cronos2.itam.mx [148.205.148.141])
+        by mx2.itam.mx  with ESMTP id 06O9BAWi010993-06O9BAWs010993
+        (version=TLSv1.0 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Fri, 24 Jul 2020 04:11:11 -0500
+Received: from [10.28.175.153] (105.0.7.102) by cronos2.itam.mx
+ (148.205.148.141) with Microsoft SMTP Server (TLS) id 14.3.468.0; Fri, 24 Jul
+ 2020 04:11:10 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="VywGB/WGlW4DM4P8"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients@vger.kernel.org
+From:   ''Tayeb@vger.kernel.org, Souami''@vger.kernel.org
+Date:   Fri, 24 Jul 2020 11:10:55 +0200
+Reply-To: <charlesjacksonjr001@gmail.com>
+Message-ID: <0de10b7a-9b56-4a12-9e86-1a1856c51fa9@CRONOS2.itam.mx>
+X-Originating-IP: [105.0.7.102]
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hallo
 
---VywGB/WGlW4DM4P8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Amerika, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der Hilfsgelder für das Corona-Virus.
 
-This is user API, but likely noone uses it...? Fix it before it
-becomes problem.
+Dies ist Ihr Spendencode: [CJ530342019]
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+www.youtube.com/watch?v=BSr8myiLPMQ
+
+Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
+
+charlesjacksonjr001@gmail.com
+
+Ich hoffe, dass Sie und Ihre Familie dies durchkommen
 
 
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/m=
-lx5_user_ioctl_cmds.h
-index 8e316ef896b5..2d889df38df6 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -259,7 +259,7 @@ enum mlx5_ib_create_flow_attrs {
- 	MLX5_IB_ATTR_CREATE_FLOW_FLAGS,
- };
-=20
--enum mlx5_ib_destoy_flow_attrs {
-+enum mlx5_ib_destroy_flow_attrs {
- 	MLX5_IB_ATTR_DESTROY_FLOW_HANDLE =3D (1U << UVERBS_ID_NS_SHIFT),
- };
-=20
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---VywGB/WGlW4DM4P8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8anqgACgkQMOfwapXb+vJDugCfaYsiuj7DNwprSvQEpcgL6Ny3
-ZI0An1SzQHO9yKKHkQOGUCxPcJlZh9JZ
-=fHM/
------END PGP SIGNATURE-----
-
---VywGB/WGlW4DM4P8--
+Herr Charles Jackson
