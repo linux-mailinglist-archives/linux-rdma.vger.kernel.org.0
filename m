@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE04922DA21
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jul 2020 00:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33E022DB57
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jul 2020 04:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgGYWFB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jul 2020 18:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S1727034AbgGZC2o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jul 2020 22:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgGYWFA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jul 2020 18:05:00 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6169CC08C5C0;
-        Sat, 25 Jul 2020 15:04:59 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id v22so3665638qtq.8;
-        Sat, 25 Jul 2020 15:04:59 -0700 (PDT)
+        with ESMTP id S1727013AbgGZC2n (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jul 2020 22:28:43 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B476BC0619D2;
+        Sat, 25 Jul 2020 19:28:43 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id e13so12333400qkg.5;
+        Sat, 25 Jul 2020 19:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ORj8ts7tAGRiEo5hGbERimOD2nuQgJZB1dWj3IpTlc4=;
-        b=TA5BzKw5Fy2VrqhNGS5adDNkjAMk2Ozonbl6X+CNDcQBSjU8dH70YBm/mgJxQZDeEU
-         mTtYJLs0Wi3OI/09FXhe4itg8dg0Z8VtmBfOqAsjmvGp8zzObsoVApdHkEHyqiT1oKDI
-         CYA3m4GEkeQJ/yopNwx8cyY94qFAA7u7PKi4L2Q8lZYogQRe8oealTjJgZHj8DQRGCiY
-         +L61pUqPA7g09eha1VNdn63zV8SdKUBgOYSwLfSJ5uAtJxXKRZ7aSbpuGQJmkeEtPUwh
-         CVgK7Kof7xEC4UD9/yJMgTCKRt2TQ1UxuYAwezs8EBkoMIea43Fgh1bj2MQTVlSlrn52
-         lQEA==
+        bh=4RfkvlMt2rThYkklpBMRg3zwGuy1XZ+sZK1Hvc1Zws8=;
+        b=K/Y4CcDRyCp8X8+LBwvI77yMPhDNYMu5OIkLphXaFjLvLFUoaLUZ7Um2xZ384bUFJr
+         9kWU+QsNe+XFzYY4NGXk+b5XYpAjxwVplrp0ZnCq4gH4RAghgzoiOyAjUYCAxHMB1gGQ
+         M3TdfUxgrOEEX1m9zqMWhWeo83I0rANSgTZD3qWKbRE6GJQoe5bqFeh1tIBq4S/L37iC
+         e10A2X/xcfoWI8gDoXPtUzOli4jnil7PkoohG4YcE1Mrz+HlTNzsiBUcI9bxOxgjEM49
+         kQ3v4NxRxKwgC/UYEHZBUwzgayUuaaunIPUHOgkOZlmp0VXsaTqU02EDLtXJOsenTIuB
+         kq2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ORj8ts7tAGRiEo5hGbERimOD2nuQgJZB1dWj3IpTlc4=;
-        b=J6yzedAS+4IVrp61vlyIOI/Axvh1YM23BgyZUt4UyL2qLs0oBl1mp9lezqFaNsXs1L
-         FWfvPKQUl/HtV1v+ubDCGlDNbJKNmyOz84W4KbTvKagXkGKRCYUqynxV9xTImxZQXAx6
-         U05AL+YvLK1jPG9qXK8HNkoUN08J7N4Urq7zbWTmSifUMyVkLj6XdzHA7mWi6YERLJMn
-         NPylvbf/lN3qyti8monwXewhPoi4B+K8uBNkArBI8voNhG23RkJDc5JHpjfqHuZt9Zmh
-         aLQ+Gv7xJTplc7cbIBrlY3/7/+Cq/9Cirf1UdVpf4Od+nKFqwK8aGeFlL8yk6g/qdE3I
-         f0Bw==
-X-Gm-Message-State: AOAM532/yF5ui7UQsa8gUqi/WmRmuwxC3cen7fDGPRSZU6PUBzjrIGqT
-        U/OP6NnN54748fB4+bxnVOKi8wDjqg==
-X-Google-Smtp-Source: ABdhPJz7E+iPwoBo/pvoBW9iN5HOxLTbBllS4XSHUeC2hqrK35sLHRmkovlHKJAn8ey4pn3T5jsLlA==
-X-Received: by 2002:ac8:4e2f:: with SMTP id d15mr15620334qtw.125.1595714698435;
-        Sat, 25 Jul 2020 15:04:58 -0700 (PDT)
+        bh=4RfkvlMt2rThYkklpBMRg3zwGuy1XZ+sZK1Hvc1Zws8=;
+        b=hfysgWyFyIO9icNrac+QavWoqDXc0bpBXVBEWsEbUHlMSDz3nvw4TKVi4Hz//Zsn5l
+         +cJVRhWASFN/wytNxJD5b6kokB0MX7tHb/HjG/54n9uM3hMquG32Szaa1/dNLgMLC/om
+         j04vDraLFLJDBlRxrSq9S8PBVy6SgttWR7SVrwRxlve2gdQMvRS81Ez2I4l+eessRiWW
+         3ymw0BjQFWEL7tv1PGri8rBVZQK/JfARUrsbtVZvVM070RSCtHF9zDa+GOSx+SQH+uj5
+         tocUcKKQQ3ak5+zMUcVeVqYOvJD1Gt/10Ygzkf+cTCdY6RuGazdy2YGqKTqST9NQZaSH
+         Or5Q==
+X-Gm-Message-State: AOAM531J4+FKzkn9uxKfhdZ3ZlQFKIQN56YKcARalCtUWD5h8IZ/q1RX
+        Cy+t86FOXGzXZFVxfinF6A==
+X-Google-Smtp-Source: ABdhPJwzZVg3MNUXqS+wa+k0VLYtFF6fVCt3zo5divFq0l52ko+Cw1GX/Gak4/JDH4PGLtaCJ1J7aQ==
+X-Received: by 2002:a05:620a:5f7:: with SMTP id z23mr1413433qkg.206.1595730522804;
+        Sat, 25 Jul 2020 19:28:42 -0700 (PDT)
 Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id 8sm12306554qkh.77.2020.07.25.15.04.57
+        by smtp.gmail.com with ESMTPSA id z197sm13512785qkb.66.2020.07.25.19.28.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 15:04:57 -0700 (PDT)
+        Sat, 25 Jul 2020 19:28:42 -0700 (PDT)
 From:   Peilin Ye <yepeilin.cs@gmail.com>
 To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
@@ -55,12 +55,12 @@ Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
         syzkaller-bugs@googlegroups.com,
         linux-kernel-mentees@lists.linuxfoundation.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH] infiniband: Prevent uninit-value in ucma_accept()
-Date:   Sat, 25 Jul 2020 18:02:03 -0400
-Message-Id: <20200725220203.624557-1-yepeilin.cs@gmail.com>
+Subject: [Linux-kernel-mentees] [PATCH v2] infiniband: Prevent uninit-value in ucma_accept()
+Date:   Sat, 25 Jul 2020 22:27:16 -0400
+Message-Id: <20200726022716.635727-1-yepeilin.cs@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200725194839.623653-1-yepeilin.cs@gmail.com>
-References: <20200725194839.623653-1-yepeilin.cs@gmail.com>
+In-Reply-To: <20200725220203.624557-1-yepeilin.cs@gmail.com>
+References: <20200725220203.624557-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -71,8 +71,14 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 ucma_accept() is reading uninitialized memory when `in_len` is
 less than `offsetof(struct rdma_ucm_accept, ece)`. Fix it.
 
+Reported-and-tested-by: syzbot+086ab5ca9eafd2379aa6@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=0bce3bb68cb383fce92f78444e3ef77c764b60ad
 Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
+Change in v2:
+    - syzbot has reported this bug as "KMSAN: uninit-value in xa_load".
+      Add "Reported-and-tested-by:" and "Link:" tags for it.
+
  drivers/infiniband/core/ucma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
