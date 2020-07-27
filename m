@@ -2,93 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B76C22E758
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jul 2020 10:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C5A22E9A3
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jul 2020 11:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgG0ILu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jul 2020 04:11:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:43688 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726853AbgG0ILu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:11:50 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7053B8B147A59080BB98;
-        Mon, 27 Jul 2020 16:11:47 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 27 Jul 2020 16:11:39 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 7/7] RDMA/hns: Fix the unneeded process when getting a general type of CQE error
-Date:   Mon, 27 Jul 2020 16:10:49 +0800
-Message-ID: <1595837449-29193-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1595837449-29193-1-git-send-email-liweihang@huawei.com>
-References: <1595837449-29193-1-git-send-email-liweihang@huawei.com>
+        id S1726315AbgG0J5R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jul 2020 05:57:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgG0J5R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:57:17 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0A782075D;
+        Mon, 27 Jul 2020 09:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595843837;
+        bh=C+LgWBhn6Kuqs8rTdsG6YhEg8KnvL3JldX9Tt+LmbKc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fBln0a4xmTqqdnVQdFcOymP6KBU+TNYN0rKAzCnz+nSgHzz8H0DrUBnZd9HappPrd
+         fhLUu/pA05Gb9Qt3PudFW9+qIxdEhlfWs4NYUF7+15I8TvKSSnAr/XsexTwS86l+7/
+         Ov0I9Ju4+S1hYJVtwOJOKiaqakt2HBfQl5JA9ToU=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix prefetch memory leak if get_prefetchable_mr fails
+Date:   Mon, 27 Jul 2020 12:57:12 +0300
+Message-Id: <20200727095712.495652-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-If the hns ROCEE reports a general error CQE (types not specified by the IB
-General Specifications), it's no need to change the QP state to error, and
-the driver should just skip it.
+destroy_prefetch_work() must always be called if the work is not going
+to be queued. The num_sge also should have been set to i, not i-1
+which avoids the condition where it shouldn't have been called in the
+first place.
 
-Fixes: 7c044adca272 ("RDMA/hns: Simplify the cqe code of poll cq")
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+Cc: stable@vger.kernel.org
+Fixes: fb985e278a30 ("RDMA/mlx5: Use SRCU properly in ODP prefetch")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 9 +++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 1 +
- 2 files changed, 10 insertions(+)
+ drivers/infiniband/hw/mlx5/odp.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d6acde5..a0a0427 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3046,6 +3046,7 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 		  IB_WC_RETRY_EXC_ERR },
- 		{ HNS_ROCE_CQE_V2_RNR_RETRY_EXC_ERR, IB_WC_RNR_RETRY_EXC_ERR },
- 		{ HNS_ROCE_CQE_V2_REMOTE_ABORT_ERR, IB_WC_REM_ABORT_ERR },
-+		{ HNS_ROCE_CQE_V2_GENERAL_ERR, IB_WC_GENERAL_ERR}
- 	};
- 
- 	u32 cqe_status = roce_get_field(cqe->byte_4, V2_CQE_BYTE_4_STATUS_M,
-@@ -3068,6 +3069,14 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 		       sizeof(*cqe), false);
- 
- 	/*
-+	 * For hns ROCEE, GENERAL_ERR is an error type that is not defined in
-+	 * the standard protocol, the driver must ignore it and needn't to set
-+	 * the QP to an error state.
-+	 */
-+	if (cqe_status == HNS_ROCE_CQE_V2_GENERAL_ERR)
-+		return;
-+
-+	/*
- 	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
- 	 * into errored mode. Hence, as a workaround to this hardware
- 	 * limitation, driver needs to assist in flushing. But the flushing
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 53c26f3..1fb1c58 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -214,6 +214,7 @@ enum {
- 	HNS_ROCE_CQE_V2_TRANSPORT_RETRY_EXC_ERR		= 0x15,
- 	HNS_ROCE_CQE_V2_RNR_RETRY_EXC_ERR		= 0x16,
- 	HNS_ROCE_CQE_V2_REMOTE_ABORT_ERR		= 0x22,
-+	HNS_ROCE_CQE_V2_GENERAL_ERR			= 0x23,
- 
- 	HNS_ROCE_V2_CQE_STATUS_MASK			= 0xff,
- };
--- 
-2.8.1
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 4f1e46733830..cfd7efab114e 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -1806,9 +1806,7 @@ static bool init_prefetch_work(struct ib_pd *pd,
+ 		work->frags[i].mr =
+ 			get_prefetchable_mr(pd, advice, sg_list[i].lkey);
+ 		if (!work->frags[i].mr) {
+-			work->num_sge = i - 1;
+-			if (i)
+-				destroy_prefetch_work(work);
++			work->num_sge = i;
+ 			return false;
+ 		}
+
+@@ -1875,6 +1873,7 @@ int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
+ 	srcu_key = srcu_read_lock(&dev->odp_srcu);
+ 	if (!init_prefetch_work(pd, advice, pf_flags, work, sg_list, num_sge)) {
+ 		srcu_read_unlock(&dev->odp_srcu, srcu_key);
++		destroy_prefetch_work(work);
+ 		return -EINVAL;
+ 	}
+ 	queue_work(system_unbound_wq, &work->work);
+--
+2.26.2
 
