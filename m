@@ -2,18 +2,18 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2909D2307DD
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB772307DA
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgG1KnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 06:43:21 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8289 "EHLO huawei.com"
+        id S1728566AbgG1KnT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 06:43:19 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8842 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728686AbgG1KnU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:43:20 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 04E1F73F7E09A9484138;
-        Tue, 28 Jul 2020 18:43:17 +0800 (CST)
+        id S1728614AbgG1KnT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:43:19 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9559CCE201BA10053DD2;
+        Tue, 28 Jul 2020 18:43:16 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
  14.3.487.0; Tue, 28 Jul 2020 18:43:10 +0800
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 4/7] RDMA/hns: Remove redundant parameters in set_rc_wqe()
-Date:   Tue, 28 Jul 2020 18:42:18 +0800
-Message-ID: <1595932941-40613-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 5/7] RDMA/hns: Delete unnecessary memset when allocating VF resource
+Date:   Tue, 28 Jul 2020 18:42:19 +0800
+Message-ID: <1595932941-40613-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
 References: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
@@ -36,112 +36,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are some functions called by set_rc_wqe() use two parameters:
-"void *wqe" and "struct hns_roce_v2_rc_send_wqe *rc_sq_wqe", but the first
-one can be got from the second one. So remove the redundant wqe from
-related functions.
+From: Lang Cheng <chenglang@huawei.com>
 
+The hns_roce_cmq_setup_basic_desc() can clear the whole desc, so removes
+these redundant memset operations.
+
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ff738db..8cda4a9 100644
+index 8cda4a9..9d64804 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -91,10 +91,11 @@ static u32 to_hr_opcode(u32 ib_opcode)
- }
+@@ -1514,8 +1514,6 @@ static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
  
- static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
--			 void *wqe, const struct ib_reg_wr *wr)
-+			 const struct ib_reg_wr *wr)
- {
-+	struct hns_roce_wqe_frmr_seg *fseg =
-+		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
- 	struct hns_roce_mr *mr = to_hr_mr(wr->mr);
--	struct hns_roce_wqe_frmr_seg *fseg = wqe;
- 	u64 pbl_ba;
- 
- 	/* use ib_access_flags */
-@@ -128,14 +129,16 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
- 		     V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S, 0);
- }
- 
--static void set_atomic_seg(const struct ib_send_wr *wr, void *wqe,
-+static void set_atomic_seg(const struct ib_send_wr *wr,
- 			   struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
- 			   unsigned int valid_num_sge)
- {
--	struct hns_roce_wqe_atomic_seg *aseg;
-+	struct hns_roce_v2_wqe_data_seg *dseg =
-+		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
-+	struct hns_roce_wqe_atomic_seg *aseg =
-+		(void *)dseg + sizeof(struct hns_roce_v2_wqe_data_seg);
- 
--	set_data_seg_v2(wqe, wr->sg_list);
--	aseg = wqe + sizeof(struct hns_roce_v2_wqe_data_seg);
-+	set_data_seg_v2(dseg, wr->sg_list);
- 
- 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
- 		aseg->fetchadd_swap_data = cpu_to_le64(atomic_wr(wr)->swap);
-@@ -143,7 +146,7 @@ static void set_atomic_seg(const struct ib_send_wr *wr, void *wqe,
- 	} else {
- 		aseg->fetchadd_swap_data =
- 			cpu_to_le64(atomic_wr(wr)->compare_add);
--		aseg->cmp_data  = 0;
-+		aseg->cmp_data = 0;
- 	}
- 
- 	roce_set_field(rc_sq_wqe->byte_16, V2_RC_SEND_WQE_BYTE_16_SGE_NUM_M,
-@@ -176,13 +179,15 @@ static void set_extend_sge(struct hns_roce_qp *qp, const struct ib_send_wr *wr,
- 
- static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 			     struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
--			     void *wqe, unsigned int *sge_ind,
-+			     unsigned int *sge_ind,
- 			     unsigned int valid_num_sge)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
--	struct hns_roce_v2_wqe_data_seg *dseg = wqe;
-+	struct hns_roce_v2_wqe_data_seg *dseg =
-+		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_qp *qp = to_hr_qp(ibqp);
-+	void *wqe = dseg;
- 	int j = 0;
- 	int i;
- 
-@@ -438,7 +443,6 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
- 		     owner_bit);
- 
--	wqe += sizeof(struct hns_roce_v2_rc_send_wqe);
- 	switch (wr->opcode) {
- 	case IB_WR_RDMA_READ:
- 	case IB_WR_RDMA_WRITE:
-@@ -451,7 +455,7 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 		rc_sq_wqe->inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
- 		break;
- 	case IB_WR_REG_MR:
--		set_frmr_seg(rc_sq_wqe, wqe, reg_wr(wr));
-+		set_frmr_seg(rc_sq_wqe, reg_wr(wr));
- 		break;
- 	case IB_WR_ATOMIC_CMP_AND_SWP:
- 	case IB_WR_ATOMIC_FETCH_AND_ADD:
-@@ -468,10 +472,10 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 
- 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
- 	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
--		set_atomic_seg(wr, wqe, rc_sq_wqe, valid_num_sge);
-+		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
- 	else if (wr->opcode != IB_WR_REG_MR)
- 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
--					wqe, &curr_idx, valid_num_sge);
-+					&curr_idx, valid_num_sge);
- 
- 	*sge_idx = curr_idx;
- 
+ 	req_a = (struct hns_roce_vf_res_a *)desc[0].data;
+ 	req_b = (struct hns_roce_vf_res_b *)desc[1].data;
+-	memset(req_a, 0, sizeof(*req_a));
+-	memset(req_b, 0, sizeof(*req_b));
+ 	for (i = 0; i < 2; i++) {
+ 		hns_roce_cmq_setup_basic_desc(&desc[i],
+ 					      HNS_ROCE_OPC_ALLOC_VF_RES, false);
 -- 
 2.8.1
 
