@@ -2,84 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74CC2308F1
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 13:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78F9230925
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 13:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgG1LiS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 07:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729081AbgG1LiR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 07:38:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19016C0619DE
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f18so17966361wrs.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
+        id S1729081AbgG1Luc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 07:50:32 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:51812 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729036AbgG1Lub (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 07:50:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
-        b=b8/14qSmtpua6DExDbiZQujm3FVCJQWOEnGYc8m39CT4QhCFHb7H/8m/Mr+GJhki5y
-         D26KeL8e5wwIhpqswED7Iyj8LNXjLx29RYfhZ1pPRjvkmM3zHNDeTF1tCFcQE9cmRh/R
-         raunFxUrBwUmVbHiIcNmDsAsXlg0feXUzfnq5cUO9m3PCR65DPFX0ENqSsff92XlzdML
-         2lZ1DHEdMBJRJ7G/JmLQNbN9a0xCfCCdIavasCRbfc1GMLbxrWB9YQiD4Jx827i+wgQH
-         uvPy2fXgy98qEeiaY5zYJY4YAm1gQLhdwyYSQS3qfKNnqXIVHUgDrgxJy+XFocnlCNnt
-         WweQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
-        b=fNCuVHv2omHzpzrnsZCpxaFCy0RxHGT44e3khcz3kVi34FA8HOY4vUhITGL286SVD0
-         afulmgXthUt9BQD1O/N87FeKsDWdkRExBMSaNURxvYabq2Bqu1vbGgm2+iWmyAvGQ7FD
-         L50mQfseIqTzxqTBX02LR8ZjErlBvgJhunHSaLpLSxIGGSzekJsvrk+d9Vt1Azgkc2jR
-         zguHlrEiIhmtJia5HbLLcknNwRlK5oaHvV7X+0ux9SYrVh7sxKErD8BcPvbT4nVo4+lg
-         nvLp9tZvDC3udPyOFehTYXAVgTCsTFxWQa+wp/FxvfOSy4SuSB83AWg73JHd+FGCADx+
-         PUNw==
-X-Gm-Message-State: AOAM530LSxVtgGHbJlO99b68KA6r4Tzq7v/Z+EoDdJk/zG2SoVrn9/0R
-        LOhY1VM3w/dXfNIGEvHUuBOyHv/rTdRl1q2JEHY=
-X-Google-Smtp-Source: ABdhPJxf3Z6j28ZJZ91yE+38HygJgiTtZMyB/VSeYng0agg0J+nv4s0qzz48SwEN7D8BizofBLS128ELYqeZWTC2zc4=
-X-Received: by 2002:a5d:5746:: with SMTP id q6mr24649773wrw.59.1595936294234;
- Tue, 28 Jul 2020 04:38:14 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595937031; x=1627473031;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=w2VazeQFh+Bwsj8mjcpuPT1Eb2J7hZ/26Ei0Nu6XEio=;
+  b=G/yCWPWA9/62wN46cFA2kXZn2bt+6TLJ9Igunxunx+ayOevy0ePkciaT
+   wn1GkWh0TAtkSg2CN2o3CuM7Ka4AUT16pexIOE2LsxpPehqLXAYQKbtV6
+   LgaQEs3bECOj837VK5aN5H0I8sxOGkeofFJFgJbJWiznOknmI1sWcNbOi
+   w=;
+IronPort-SDR: y559Otk63xTqggDHpLqEeNdf9ZUHI24Xabmq9CVKgAiJ5BV2/dT9GuHDGSnka8j3y2s4bPoymX
+ ZVx/EXPhsV/A==
+X-IronPort-AV: E=Sophos;i="5.75,406,1589241600"; 
+   d="scan'208";a="44526273"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 28 Jul 2020 11:50:30 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id CB58EA2618;
+        Tue, 28 Jul 2020 11:50:28 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Jul 2020 11:50:27 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.100) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Jul 2020 11:50:23 +0000
+Subject: Re: [PATCH for-next v4 3/4] RDMA/efa: User/kernel compatibility
+ handshake mechanism
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Shadi Ammouri <sammouri@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20200722140312.3651-1-galpress@amazon.com>
+ <20200722140312.3651-4-galpress@amazon.com>
+ <20200727185633.GA70218@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <1efd7d21-2e4d-46b8-fbdf-47c4bb5553fe@amazon.com>
+Date:   Tue, 28 Jul 2020 14:50:18 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:a5d:65cb:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 04:38:13
- -0700 (PDT)
-From:   Rashid Al-Wahaibi <pdlarsen550@gmail.com>
-Date:   Tue, 28 Jul 2020 12:38:13 +0100
-Message-ID: <CAE00X2F5SUiQf0qCZYq3Yx353S0Esu1hA3RH4THqOM0WZMKHFQ@mail.gmail.com>
-Subject: Your Partnership
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200727185633.GA70218@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D38UWC003.ant.amazon.com (10.43.162.23) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-Good day,
-My name is Rashid Al-Wahaibi, I am from Oman but base here in the UK
-and a Managing Partner of BP Partnership Ltd, a Financial Consultancy
-Firm with office in the United Kingdom. I am contacting you based on
-the request of Ms Rosmah Mansor Najib Razak, wife of Najib Razak, the
-immediate past Malaysian Prime Minister.
+On 27/07/2020 21:56, Jason Gunthorpe wrote:
+> On Wed, Jul 22, 2020 at 05:03:11PM +0300, Gal Pressman wrote:
+>> Introduce a mechanism that performs an handshake between the userspace
+>> provider and kernel driver which verifies that the user supports all
+>> required features in order to operate correctly.
+>>
+>> The handshake verifies the needed functionality by comparing the
+>> reported device caps and the provider caps. If the device reports a
+>> non-zero capability the appropriate comp mask is required from the
+>> userspace provider in order to allocate the context.
+>>
+>> Reviewed-by: Shadi Ammouri <sammouri@amazon.com>
+>> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>>  drivers/infiniband/hw/efa/efa_verbs.c | 40 +++++++++++++++++++++++++++
+>>  include/uapi/rdma/efa-abi.h           | 10 +++++++
+>>  2 files changed, 50 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>> index 26102ab333b2..fda175836fb6 100644
+>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>> @@ -1501,11 +1501,39 @@ static int efa_dealloc_uar(struct efa_dev *dev, u16 uarn)
+>>  	return efa_com_dealloc_uar(&dev->edev, &params);
+>>  }
+>>  
+>> +#define EFA_CHECK_USER_COMP(_dev, _comp_mask, _attr, _mask, _attr_str) \
+>> +	(_attr_str = (!(_dev)->dev_attr._attr || ((_comp_mask) & (_mask))) ? \
+>> +		     NULL : #_attr)
+>> +
+>> +static int efa_user_comp_handshake(const struct ib_ucontext *ibucontext,
+>> +				   const struct efa_ibv_alloc_ucontext_cmd *cmd)
+>> +{
+>> +	struct efa_dev *dev = to_edev(ibucontext->device);
+>> +	char *attr_str;
+>> +
+>> +	if (EFA_CHECK_USER_COMP(dev, cmd->comp_mask, max_tx_batch,
+>> +				EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH, attr_str))
+>> +		goto err;
+>> +
+>> +	if (EFA_CHECK_USER_COMP(dev, cmd->comp_mask, min_sq_depth,
+>> +				EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR,
+>> +				attr_str))
+>> +		goto err;
+> 
+> But this patch should be first, the kernel should never return a
+> non-zero value unless these input bits are set
 
-I found your profile satisfying and decided to contact you based on Ms
-Rosmah Mansor Najib Razak desire to invest in any viable project in
-your region.
+But that's exactly what this patch does, it can only fail in case
+max_tx_batch/min_sq_depth is turned on by the device.
 
-I need you to guide me on the type of investment that will be of best
-interest and provide good return on investment in your country and
-also act as her investment manager. She is ready to invest $25m to
-$50m USD
-
-I will explain further detail of this business proposal when you reply
-to this email indicating your interest.
-
-
-Regards,
-
-Rashid Al-Wahaibi,
-Bp Partnership Ltd
-60 Raglan Road
-Reigate, ENG RH2 0HN,
-United Kingdom
+Anyway, the order doesn't matter as long as the pciid patch is last.
