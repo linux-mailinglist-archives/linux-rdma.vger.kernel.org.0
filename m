@@ -2,73 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A48230592
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 10:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5186D2307DB
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgG1Iig (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 04:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgG1Iig (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 04:38:36 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6822C061794
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 01:38:35 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id f14so3940887ejb.2
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 01:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=FLdcQvbATlWGb3q817mpG8Q2+i83wVtJgcYRlPT/aYA=;
-        b=rh/1akvf40M581mlxkqXDO+9psDBBE6vF1QtmMxFTFtuZ0Evzz3otoUnh9uxiAE/Wq
-         0TA+gZsVRDYeWlr6TUTpJph7crDUZFdgZkZdiV0ctGLdAvNG4jReRn17awP5gO55PCbY
-         oMA+LW6t1EKSsrGyGa0ZDn7uP1gwjX2YhMQaM72t9sQZKwMSEJUK+F/mUSE9Ohrgo1RX
-         MLLLSSMhUSinbsbKQXGqfZbl47S17zp6SRxGfzWLlCgMTmGFx0J0NgYKZkIg4xY5gUKP
-         BMJ8GlJjQbdNvT47/8vt8su1JL7hX4l6kwKmOyP3ukJ2uvEcoCpReXtl65whcrnNIfJC
-         o4yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=FLdcQvbATlWGb3q817mpG8Q2+i83wVtJgcYRlPT/aYA=;
-        b=pr7O3aXAXX31DhTTk9vgB8jURvPDyrKSsus3lqPdDTXV3IpypxJwv2mb/SteLzjmln
-         GPlVVavYc7p+Y4bXzJ8HOb0M+hzgaeyY/hy5ezHjvTAlWFGLD1ALBIrvo46CyRfSxbge
-         7GwGZnIzQnM1kG7qkqS890FeVZZNU59aWXYrUOrZDs8wRAQ2UIgkSMjTfx6ddGbIrLsc
-         CiM3viRAjTdzH2sRfcxiSFpaTxjH/IxdCJV3P7Wxd3J+0e0cdIea6nQWwoS7auGTrL6I
-         Yi6HMGwrweBEf7w5Y2fJDQOvBMjXdmxmcuP6Uvegq+wEoh4tqFRuwWw90lTG8Z7bqMNT
-         wrnA==
-X-Gm-Message-State: AOAM530mscIxDRClgioemFYxVp5cGF3HTxP3wFrjfZZqJyZjTNO/6KDR
-        Yfy4jpXbIW8xDp1DT2+Sc0zqDfBra9vSx+DobcllZ1CE
-X-Google-Smtp-Source: ABdhPJyq/4g3KQAaBVdfNc0KW3zPHW6jMQfkzkI3GT9z3e9QQtB1VZF/tyIWmTA6KAcAXRaLsiGJobKiUb3oS4ihQ2I=
-X-Received: by 2002:a17:906:f752:: with SMTP id jp18mr24112364ejb.538.1595925513290;
- Tue, 28 Jul 2020 01:38:33 -0700 (PDT)
+        id S1728636AbgG1KnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 06:43:20 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8290 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728655AbgG1KnT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:43:19 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id F3DDEC02ED9ED256DC1C;
+        Tue, 28 Jul 2020 18:43:16 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 18:43:08 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next 0/7] RDMA/hns: Updates for kernel v5.8
+Date:   Tue, 28 Jul 2020 18:42:14 +0800
+Message-ID: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-From:   Anubhav Guleria <anubhav.nitsri.it@gmail.com>
-Date:   Tue, 28 Jul 2020 14:08:22 +0530
-Message-ID: <CAFsMY+jqLe7VTwkZjpjdkGem1=waQPMUZ=n8nw5JGRct06_hsg@mail.gmail.com>
-Subject: Issues with i40iw
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
-Both of my servers are running with kernel 4.14.178 and have Intel
-Ethernet Network Adapter X722. Also the IOMMU is disabled. I was
-trying to run qperf and ran into couple of issues:
+These are some miscellaneous changes of hns driver. #1 ~ #5 are cleanups
+and #6 ~ #7 are small fixes.
 
-1) While running any bw test, eg. rc_bw or rc_bi_bw, I see following
-messages in dmesg:
-i40iw_cqp_ce_handler: opcode = 0x1 maj_err_code = 0xffff min_err_code = 0x8007
-i40iw_wait_event: error cqp command 0xb completion maj = 0xffff min=0x8007
+Changes since v1:
+- Fix comments from Leon about the judgment of return value in #2.
+- Rewrite the commit message and remove the unused macro in #3.
 
-2) Following rc benchmarks fail: rc_rdma_write_bw, rc_rdma_write_lat,
-rc_compare_swap_mr, rc_fetch_add_mr, ver_rc_compare_swap and
-ver_rc_fetch_add. For these I get error of failed to post "benchmark
-name"
+Lang Cheng (4):
+  RDMA/hns: Remove redundant hardware opcode definitions
+  RDMA/hns: Remove support for HIP08_A
+  RDMA/hns: Delete unnecessary memset when allocating VF resource
+  RDMA/hns: Fix error during modify qp RTS2RTS
 
-Am I missing something here? Any suggestions?
+Weihang Li (2):
+  RDMA/hns: Refactor hns_roce_v2_set_hem()
+  RDMA/hns: Remove redundant parameters in set_rc_wqe()
 
-Thanks,
-Anubhav
+Xi Wang (1):
+  RDMA/hns: Fix the unneeded process when getting a general type of CQE
+    error
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |   5 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 209 +++++++++++++++-------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  19 +--
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  10 --
+ 4 files changed, 115 insertions(+), 128 deletions(-)
+
+-- 
+2.8.1
+
