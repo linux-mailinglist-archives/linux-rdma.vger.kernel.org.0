@@ -2,120 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DA72311CF
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 20:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1D12311D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 20:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgG1Sf5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 14:35:57 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:35789 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729475AbgG1Sf5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 14:35:57 -0400
-Received: by mail-pj1-f66.google.com with SMTP id il6so362453pjb.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 11:35:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9i5BBHREORuTzj8FAN14ckMlGcQgcgOsiBwHPLWsVpE=;
-        b=ugyjOhXoO3mTJE2JRrStG30uzFtb0/PESgmm4VAMiZWhhvjk7IIiA/rlRVXaKX02bL
-         Oat7D9/7xFCSpzlL9Z/+YvODIzExAmcXdmffmO02HmUm90UURNgFic1hApE/gHU05QHO
-         asWZbrlGCsXYMXbVt7ZyoxV/nitFu3+ZiFWkD1YxuKFLlovAfTetok38ycS7H+Dr6D8H
-         fEXW1EuY53YQI8DBJR7VgPjTs1fFBj7U2GAZq9TqzYFjvHsv8x9dRs1PWLNoNjWP1dsr
-         8tcHgJJi22RX1ijuTGPWwWysRXHH+6aDW5RR/0cr8grYwTBddtdKLZ+BkPx1WQ9tDO/p
-         nGXA==
-X-Gm-Message-State: AOAM530D8klxCT6jp9I/hFy4VgKKUungHyMNJOFOca/IZ5X1MZV2zvP5
-        U7OAwmoaKTcEMaI0AUzHEJ+iimLQ
-X-Google-Smtp-Source: ABdhPJwJV/Nd3Zr81y3cR4096NvjviTeoZrcTQ//uuEkvRbHfzsey1tjXRxCYL7+JA/op/f/XWhQUA==
-X-Received: by 2002:a17:902:6b08:: with SMTP id o8mr24268973plk.104.1595961356381;
-        Tue, 28 Jul 2020 11:35:56 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:541c:8b1b:5ac:35fe? ([2601:647:4802:9070:541c:8b1b:5ac:35fe])
-        by smtp.gmail.com with ESMTPSA id s194sm19172559pgs.24.2020.07.28.11.35.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 11:35:55 -0700 (PDT)
-Subject: Re: Hang at NVME Host caused by Controller reset
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        bharat@chelsio.com
-References: <20200727181944.GA5484@chelsio.com>
- <9b8dae53-1fcc-3c03-5fcd-cfb55cd8cc80@grimberg.me>
- <20200728115904.GA5508@chelsio.com>
- <4d87ffbb-24a2-9342-4507-cabd9e3b76c2@grimberg.me>
- <20200728174224.GA5497@chelsio.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <3963dc58-1d64-b6e1-ea27-06f3030d5c6e@grimberg.me>
-Date:   Tue, 28 Jul 2020 11:35:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729639AbgG1Six (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 14:38:53 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45709 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729475AbgG1Six (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 14:38:53 -0400
+IronPort-SDR: vyArQlnq1NjPO4zrviu5okL/jF/fZq2AXMnEST38eZ9L5aes9Xwd/jmQ86Fv3KD5X3CKuORJ7b
+ 3u7pPx7/iXNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="139312238"
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="139312238"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 11:38:52 -0700
+IronPort-SDR: 7E07RAPnS8/p/M3fSlMbRvdBVhxYYMcCcyMKd5B1m1oN/hR8x3fqY91GZHj5BDm7J1a6uvk8SS
+ Y+3WEZCsyb4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="489997141"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga006.fm.intel.com with ESMTP; 28 Jul 2020 11:38:51 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 06SIcobE005788;
+        Tue, 28 Jul 2020 11:38:50 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 06SIcmJM022248;
+        Tue, 28 Jul 2020 14:38:48 -0400
+Subject: [PATCH for-rc] IB/rdmavt: Fix RQ counting issues causing use of an
+ invalid RWQE
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 28 Jul 2020 14:38:48 -0400
+Message-ID: <20200728183848.22226.29132.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-In-Reply-To: <20200728174224.GA5497@chelsio.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Sagi,
-> 
-> Yes, Multipath is disabled.
+The lookaside count is improperly initialized to the size of the
+Receive Queue with the additional +1.  In the traces below, the
+RQ size is 384, so the count was set to 385.
 
-Thanks.
+The lookaside count is then rarely refreshed.  Note the high and
+incorrect count in the trace below:
 
-> This time, with "nvme-fabrics: allow to queue requests for live queues"
-> patch applied, I see hang only at blk_queue_enter():
+rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9008 wr_id 55c7206d75a0 qpn c
+	qpt 2 pid 3018 num_sge 1 head 1 tail 0, count 385
+rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
 
-Interesting, does the reset loop hang? or is it able to make forward
-progress?
+The head,tail indicate there is only one RWQE posted although the count
+says 385 and we correctly return the element 0.
 
-> [Jul28 17:25] INFO: task nvme:21119 blocked for more than 122 seconds.
-> [  +0.000061]       Not tainted 5.8.0-rc7ekr+ #2
-> [  +0.000052] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [  +0.000059] nvme            D14392 21119   2456 0x00004000
-> [  +0.000059] Call Trace:
-> [  +0.000110]  __schedule+0x32b/0x670
-> [  +0.000108]  schedule+0x45/0xb0
-> [  +0.000107]  blk_queue_enter+0x1e9/0x250
-> [  +0.000109]  ? wait_woken+0x70/0x70
-> [  +0.000110]  blk_mq_alloc_request+0x53/0xc0
-> [  +0.000111]  nvme_alloc_request+0x61/0x70 [nvme_core]
-> [  +0.000121]  nvme_submit_user_cmd+0x50/0x310 [nvme_core]
-> [  +0.000118]  nvme_user_cmd+0x12e/0x1c0 [nvme_core]
-> [  +0.000163]  ? _copy_to_user+0x22/0x30
-> [  +0.000113]  blkdev_ioctl+0x100/0x250
-> [  +0.000115]  block_ioctl+0x34/0x40
-> [  +0.000110]  ksys_ioctl+0x82/0xc0
-> [  +0.000109]  __x64_sys_ioctl+0x11/0x20
-> [  +0.000109]  do_syscall_64+0x3e/0x70
-> [  +0.000120]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  +0.000112] RIP: 0033:0x7fbe9cdbb67b
-> [  +0.000110] Code: Bad RIP value.
-> [  +0.000124] RSP: 002b:00007ffd61ff5778 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000010
-> [  +0.000170] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:
-> 00007fbe9cdbb67b
-> [  +0.000114] RDX: 00007ffd61ff5780 RSI: 00000000c0484e43 RDI:
-> 0000000000000003
-> [  +0.000113] RBP: 0000000000000000 R08: 0000000000000001 R09:
-> 0000000000000000
-> [  +0.000115] R10: 0000000000000000 R11: 0000000000000246 R12:
-> 00007ffd61ff7219
-> [  +0.000123] R13: 0000000000000006 R14: 00007ffd61ff5e30 R15:
-> 000055e09c1854a0
-> [  +0.000115] Kernel panic - not syncing: hung_task: blocked tasks
+The next call to rvt_get_rwqe with the decremented count:
 
-For some reason the ioctl is not woken up when unfreezing the queue...
+rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9058 wr_id 0 qpn c
+	qpt 2 pid 3018 num_sge 0 head 1 tail 1, count 384
+rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
 
-> You could easily reproduce this by running below, parallelly, for 10min:
->   while [ 1 ]; do  nvme write-zeroes /dev/nvme0n1 -s 1 -c 1; done
->   while [ 1 ]; do echo 1 > /sys/block/nvme0n1/device/reset_controller;
-> done
->   while [ 1 ]; do ifconfig enp2s0f4 down; sleep 24; ifconfig enp2s0f4 up;
-> sleep 28; done
->   
->   Not sure using nvme-write this way is valid or not..
+Note that the RQ is empty (head == tail) yet we return the RWQE at tail 1,
+which is not valid because of the bogus high count.
 
-sure it is, its I/O just like fs I/O.
+Best case, the RWQE has never been posted and the rc logic sees an RWQE
+that is too small (all zeros) and puts the QP into an error state.
+
+In the worst case, a server slow at posting receive buffers might fool
+rvt_get_rwqe() into fetching an old RWQE and corrupt memory.
+
+Fix by deleting the faulty initialization code and creating an
+inline to fetch the posted count and convert all callers to use
+new inline.
+
+Fixes: f592ae3c999f ("IB/rdmavt: Fracture single lock used for posting and processing RWQEs")
+Reported-by: Zhaojuan Guo <zguo@redhat.com>
+Cc: <stable@vger.kernel.org> # 5.4.x
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+---
+ drivers/infiniband/sw/rdmavt/qp.c |   33 ++++-----------------------------
+ drivers/infiniband/sw/rdmavt/rc.c |    4 +---
+ include/rdma/rdmavt_qp.h          |   19 +++++++++++++++++++
+ 3 files changed, 24 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 7db35dd..332a8ba 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -901,8 +901,6 @@ static void rvt_init_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
+ 	qp->s_tail_ack_queue = 0;
+ 	qp->s_acked_ack_queue = 0;
+ 	qp->s_num_rd_atomic = 0;
+-	if (qp->r_rq.kwq)
+-		qp->r_rq.kwq->count = qp->r_rq.size;
+ 	qp->r_sge.num_sge = 0;
+ 	atomic_set(&qp->s_reserved_used, 0);
+ }
+@@ -2367,31 +2365,6 @@ static int init_sge(struct rvt_qp *qp, struct rvt_rwqe *wqe)
+ }
+ 
+ /**
+- * get_count - count numbers of request work queue entries
+- * in circular buffer
+- * @rq: data structure for request queue entry
+- * @tail: tail indices of the circular buffer
+- * @head: head indices of the circular buffer
+- *
+- * Return - total number of entries in the circular buffer
+- */
+-static u32 get_count(struct rvt_rq *rq, u32 tail, u32 head)
+-{
+-	u32 count;
+-
+-	count = head;
+-
+-	if (count >= rq->size)
+-		count = 0;
+-	if (count < tail)
+-		count += rq->size - tail;
+-	else
+-		count -= tail;
+-
+-	return count;
+-}
+-
+-/**
+  * get_rvt_head - get head indices of the circular buffer
+  * @rq: data structure for request queue entry
+  * @ip: the QP
+@@ -2465,7 +2438,7 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ 
+ 	if (kwq->count < RVT_RWQ_COUNT_THRESHOLD) {
+ 		head = get_rvt_head(rq, ip);
+-		kwq->count = get_count(rq, tail, head);
++		kwq->count = rvt_get_rq_count(rq, head, tail);
+ 	}
+ 	if (unlikely(kwq->count == 0)) {
+ 		ret = 0;
+@@ -2500,7 +2473,9 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ 		 * the number of remaining WQEs.
+ 		 */
+ 		if (kwq->count < srq->limit) {
+-			kwq->count = get_count(rq, tail, get_rvt_head(rq, ip));
++			kwq->count =
++				rvt_get_rq_count(rq,
++						 get_rvt_head(rq, ip), tail);
+ 			if (kwq->count < srq->limit) {
+ 				struct ib_event ev;
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
+index 977906c..c58735f 100644
+--- a/drivers/infiniband/sw/rdmavt/rc.c
++++ b/drivers/infiniband/sw/rdmavt/rc.c
+@@ -127,9 +127,7 @@ __be32 rvt_compute_aeth(struct rvt_qp *qp)
+ 			 * not atomic, which is OK, since the fuzziness is
+ 			 * resolved as further ACKs go out.
+ 			 */
+-			credits = head - tail;
+-			if ((int)credits < 0)
+-				credits += qp->r_rq.size;
++			credits = rvt_get_rq_count(&qp->r_rq, head, tail);
+ 		}
+ 		/*
+ 		 * Binary search the credit table to find the code to
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index c4369a6..2f1fc23 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -305,6 +305,25 @@ struct rvt_rq {
+ 	spinlock_t lock ____cacheline_aligned_in_smp;
+ };
+ 
++/**
++ * rvt_get_rq_count - count numbers of request work queue entries
++ * in circular buffer
++ * @rq: data structure for request queue entry
++ * @head: head indices of the circular buffer
++ * @tail: tail indices of the circular buffer
++ *
++ * Return - total number of entries in the Receive Queue
++ */
++
++static inline u32 rvt_get_rq_count(struct rvt_rq *rq, u32 head, u32 tail)
++{
++	u32 count = head - tail;
++
++	if ((s32)count < 0)
++		count += rq->size;
++	return count;
++}
++
+ /*
+  * This structure holds the information that the send tasklet needs
+  * to send a RDMA read response or atomic operation.
+
