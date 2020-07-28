@@ -2,156 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25712313C2
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 22:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE03D23145B
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 22:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgG1UUm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 16:20:42 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38403 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728234AbgG1UUm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 16:20:42 -0400
-Received: by mail-pl1-f196.google.com with SMTP id m16so10578857pls.5
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 13:20:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gef16de5EpPX1YeoY9rwySs9VcunkRYa4UoYB5zUiY0=;
-        b=NxY5xF4rZadhzkHYh1g7/1EFA/5SaxAuIH3Xc55CESClNd6Qh7JoUC4W+OhFQikEAJ
-         OGIWZxoATWzlc9QVD3P3/6828QeXhkqrU5rTUDqFkkyn8uKdv2dd9xiJAbK8IPH1AHO6
-         /r8r0qzTyGr9OwXcMP7LOnNpbvg9Tb5rnW6NIyuvIZ1xJoGgFYjDv5C6sDVmavNtpprM
-         baLlpkzf2voYbP2X02muoxcqIxqGV9bjp1yxKdlw6WhxnKhnJofzy2hRqaP8jBkzdAB5
-         V511PqQ+nNDnDWNdbUlWdo2WCvxfq5zciglCuUMAcUtRSElHDHg2BzLDlgnRODhiDXaA
-         CXrg==
-X-Gm-Message-State: AOAM531MHWSe4xNplC6p9bakDRLQb61qKhPM5YhuL70yvFRbi7imx0eQ
-        4AvgGAnOSXtgKp7nh+j1aoA=
-X-Google-Smtp-Source: ABdhPJyAwJgram0zIs0QZFhwwRwEYyn8Z2/U0hhhcXwICWWPKWOHQ5fbr03Bhd/NjD5JmFFBVlUx2w==
-X-Received: by 2002:a17:90a:fd03:: with SMTP id cv3mr5957620pjb.111.1595967641522;
-        Tue, 28 Jul 2020 13:20:41 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:541c:8b1b:5ac:35fe? ([2601:647:4802:9070:541c:8b1b:5ac:35fe])
-        by smtp.gmail.com with ESMTPSA id s18sm9585186pfd.132.2020.07.28.13.20.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 13:20:40 -0700 (PDT)
-Subject: Re: Hang at NVME Host caused by Controller reset
-From:   Sagi Grimberg <sagi@grimberg.me>
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        bharat@chelsio.com
-References: <20200727181944.GA5484@chelsio.com>
- <9b8dae53-1fcc-3c03-5fcd-cfb55cd8cc80@grimberg.me>
- <20200728115904.GA5508@chelsio.com>
- <4d87ffbb-24a2-9342-4507-cabd9e3b76c2@grimberg.me>
- <20200728174224.GA5497@chelsio.com>
- <3963dc58-1d64-b6e1-ea27-06f3030d5c6e@grimberg.me>
-Message-ID: <54cc5ecf-bd04-538c-fa97-7c4d2afd92d7@grimberg.me>
-Date:   Tue, 28 Jul 2020 13:20:38 -0700
+        id S1729337AbgG1U5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 16:57:33 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15954 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728993AbgG1U5c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 16:57:32 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f20910e0001>; Tue, 28 Jul 2020 13:56:46 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 28 Jul 2020 13:57:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 13:57:31 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 20:57:31 +0000
+Subject: Re: [PATCH v4 3/6] mm/notifier: add migration invalidation type
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+References: <20200723223004.9586-1-rcampbell@nvidia.com>
+ <20200723223004.9586-4-rcampbell@nvidia.com>
+ <20200728191518.GA159104@nvidia.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <08eb43d9-9650-f050-9cfb-d8ba5df6c5dd@nvidia.com>
+Date:   Tue, 28 Jul 2020 13:57:31 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <3963dc58-1d64-b6e1-ea27-06f3030d5c6e@grimberg.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200728191518.GA159104@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595969807; bh=9Nj75AE4ohwwG9J6YbO3veFOmQ4ey7Egk4PXruXSzmU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=A2aVhD+B+AhG2E5d83qfwZzxxNrFv1TRhOrGwvam4fmgELGml0WuPUwQJgwjxZBg4
+         zmSjTa6i2efJWUcN/wUCWgfe8tmF6dTiAtH2AwAUsDkc9AJLoRuVMnCAEP4fGOIj1R
+         G7wqR8mmh+IJPYOolfdXKpBEWdSmQQ4jx4TzXk+AGmM9tzosm7cOWNeRzTOvSfySMg
+         Mc/W5xlkuMEAZfnKrSMtEyBpqbDuT94P/55M3a/7YTmrfnz+XuPxXm/lPQPjsSUFkK
+         zmSmW7uzwoHnXlFMJkolzml+ktsHPbaKP9GwaH6bC5V6O8zhD29UNEWmGCh7CwLjq9
+         sFBK7PeKxByow==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
->> This time, with "nvme-fabrics: allow to queue requests for live queues"
->> patch applied, I see hang only at blk_queue_enter():
+On 7/28/20 12:15 PM, Jason Gunthorpe wrote:
+> On Thu, Jul 23, 2020 at 03:30:01PM -0700, Ralph Campbell wrote:
+>>   static inline int mm_has_notifiers(struct mm_struct *mm)
+>> @@ -513,6 +519,7 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+>>   	range->start = start;
+>>   	range->end = end;
+>>   	range->flags = flags;
+>> +	range->migrate_pgmap_owner = NULL;
+>>   }
 > 
-> Interesting, does the reset loop hang? or is it able to make forward
-> progress?
+> Since this function is commonly called and nobody should read
+> migrate_pgmap_owner unless MMU_NOTIFY_MIGRATE is set as the event,
+> this assignment can be dropped.
+> 
+> Jason
 
-Looks like the freeze depth is messed up with the timeout handler.
-We shouldn't call nvme_tcp_teardown_io_queues in the timeout handler
-because it messes with the freeze depth, causing the unfreeze to not
-wake the waiter (blk_queue_enter). We should simply stop the queue
-and complete the I/O, and the condition was wrong too, because we
-need to do it only for the connect command (which cannot reset the
-timer). So we should check for reserved in the timeout handler.
-
-Can you please try this patch?
---
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 62fbaecdc960..c3288dd2c92f 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -464,6 +464,7 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl 
-*ctrl)
-         if (!nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING))
-                 return;
-
-+       dev_warn(ctrl->device, "starting error recovery\n");
-         queue_work(nvme_reset_wq, &to_tcp_ctrl(ctrl)->err_work);
-  }
-
-@@ -2156,33 +2157,37 @@ nvme_tcp_timeout(struct request *rq, bool reserved)
-         struct nvme_tcp_ctrl *ctrl = req->queue->ctrl;
-         struct nvme_tcp_cmd_pdu *pdu = req->pdu;
-
--       /*
--        * Restart the timer if a controller reset is already scheduled. Any
--        * timed out commands would be handled before entering the 
-connecting
--        * state.
--        */
--       if (ctrl->ctrl.state == NVME_CTRL_RESETTING)
--               return BLK_EH_RESET_TIMER;
--
-         dev_warn(ctrl->ctrl.device,
-                 "queue %d: timeout request %#x type %d\n",
-                 nvme_tcp_queue_id(req->queue), rq->tag, pdu->hdr.type);
-
--       if (ctrl->ctrl.state != NVME_CTRL_LIVE) {
-+       switch (ctrl->ctrl.state) {
-+       case NVME_CTRL_RESETTING:
-                 /*
--                * Teardown immediately if controller times out while 
-starting
--                * or we are already started error recovery. all outstanding
--                * requests are completed on shutdown, so we return 
-BLK_EH_DONE.
-+                * Restart the timer if a controller reset is already 
-scheduled.
-+                * Any timed out commands would be handled before 
-entering the
-+                * connecting state.
-                  */
--               flush_work(&ctrl->err_work);
--               nvme_tcp_teardown_io_queues(&ctrl->ctrl, false);
--               nvme_tcp_teardown_admin_queue(&ctrl->ctrl, false);
--               return BLK_EH_DONE;
-+               return BLK_EH_RESET_TIMER;
-+       case NVME_CTRL_CONNECTING:
-+               if (reserved) {
-+                       /*
-+                        * stop queue immediately if controller times 
-out while connecting
-+                        * or we are already started error recovery. all 
-outstanding
-+                        * requests are completed on shutdown, so we 
-return BLK_EH_DONE.
-+                        */
-+                       nvme_tcp_stop_queue(&ctrl->ctrl, 
-nvme_tcp_queue_id(req->queue));
-+                       nvme_req(rq)->flags |= NVME_REQ_CANCELLED;
-+                       nvme_req(rq)->status = NVME_SC_HOST_ABORTED_CMD;
-+                       blk_mq_complete_request(rq);
-+                       return BLK_EH_DONE;
-+               }
-+               /* fallthru */
-+       default:
-+       case NVME_CTRL_LIVE:
-+               nvme_tcp_error_recovery(&ctrl->ctrl);
-         }
-
--       dev_warn(ctrl->ctrl.device, "starting error recovery\n");
--       nvme_tcp_error_recovery(&ctrl->ctrl);
--
-         return BLK_EH_RESET_TIMER;
-  }
---
+I agree.
+Acked-by: Ralph Campbell <rcampbell@nvidia.com>
