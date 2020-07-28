@@ -2,125 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D11230983
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 14:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3248B23098C
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 14:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgG1MDE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 08:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60706 "EHLO mail.kernel.org"
+        id S1728630AbgG1MFQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 08:05:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:31418 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728589AbgG1MDC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:03:02 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92CFE206D8;
-        Tue, 28 Jul 2020 12:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595937781;
-        bh=qIsFchhcG/XdESV0a8BeXSyjYDbqGWnaNtKK5a4ruMc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Cut9HncVU9PbzZWrCzCIAdk8da10gCZg/MSHL/f5zGin8984Sz7m03uTw54o1aus+
-         RRbKf8XSycMH867yCjyOqBcRJwVp8ZPEwkKwZT7sEr1YefDx6iwU8hNGlIsZCt1pRf
-         BJtcWb8SdYVB24w86VsKB5rTnIc4JGVnSwIa3XO0=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Allow providing extra scatter CQE QP flag
-Date:   Tue, 28 Jul 2020 15:02:55 +0300
-Message-Id: <20200728120255.805733-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728560AbgG1MFQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:05:16 -0400
+IronPort-SDR: aRM3pNhQNmc5Ekup8Jopo2Flp8PDctmhjJvncSJxKLlq1OU4tQj6lsCHvfRUSlaV/mftf9Ctib
+ D9AJuuIfXg7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="148659176"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="148659176"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 05:05:15 -0700
+IronPort-SDR: IGS3wP9HiE9uj2acdtk3NK/r865wvC6HNdJ5tC21OU2uxy2IQlZjsAN0RfGBnYGZthwTQ6spUh
+ UpZu9yxKnb3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="364473147"
+Received: from lkp-server01.sh.intel.com (HELO d27eb53fc52b) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2020 05:05:13 -0700
+Received: from kbuild by d27eb53fc52b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k0OM4-0000s6-Uo; Tue, 28 Jul 2020 12:05:12 +0000
+Date:   Tue, 28 Jul 2020 20:04:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 47fda651d5af2506deac57d54887cf55ce26e244
+Message-ID: <5f201457.pz3aYelZFPxHvRYI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 47fda651d5af2506deac57d54887cf55ce26e244  RDMA/core: Fix return error value in _ib_modify_qp() to negative
 
-Scatter CQE feature relies on two flags MLX5_QP_FLAG_SCATTER_CQE and
-MLX5_QP_FLAG_ALLOW_SCATTER_CQE, both of them can be provided without
-relation to device capability.
+elapsed time: 1090m
 
-Relax global validity check to allow MLX5_QP_FLAG_ALLOW_SCATTER_CQE QP
-flag.
+configs tested: 66
+configs skipped: 3
 
-Fixes: 90ecb37a751b ("RDMA/mlx5: Change scatter CQE flag to be set like other vendor flags")
-Fixes: 37518fa49f76 ("RDMA/mlx5: Process all vendor flags in one place")
-Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          r7785rp_defconfig
+mips                         tb0226_defconfig
+mips                      loongson3_defconfig
+um                            kunit_defconfig
+nds32                            alldefconfig
+arm                       imx_v4_v5_defconfig
+mips                           gcw0_defconfig
+mips                      fuloong2e_defconfig
+arm                      pxa255-idp_defconfig
+s390                                defconfig
+arm                          prima2_defconfig
+arm                      footbridge_defconfig
+mips                        nlm_xlr_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a014-20200728
+x86_64               randconfig-a012-20200728
+x86_64               randconfig-a015-20200728
+x86_64               randconfig-a016-20200728
+x86_64               randconfig-a013-20200728
+x86_64               randconfig-a011-20200728
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
- drivers/infiniband/hw/mlx5/qp.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index e050eade97a1..42620f88e393 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1766,15 +1766,14 @@ static int create_rss_raw_qp_tir(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- }
- 
- static void configure_requester_scat_cqe(struct mlx5_ib_dev *dev,
-+					 struct mlx5_ib_qp *qp,
- 					 struct ib_qp_init_attr *init_attr,
--					 struct mlx5_ib_create_qp *ucmd,
- 					 void *qpc)
- {
- 	int scqe_sz;
- 	bool allow_scat_cqe = false;
- 
--	if (ucmd)
--		allow_scat_cqe = ucmd->flags & MLX5_QP_FLAG_ALLOW_SCATTER_CQE;
-+	allow_scat_cqe = qp->flags_en & MLX5_QP_FLAG_ALLOW_SCATTER_CQE;
- 
- 	if (!allow_scat_cqe && init_attr->sq_sig_type != IB_SIGNAL_ALL_WR)
- 		return;
-@@ -2012,7 +2011,7 @@ static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	}
- 	if ((qp->flags_en & MLX5_QP_FLAG_SCATTER_CQE) &&
- 	    (qp->type == MLX5_IB_QPT_DCI || qp->type == IB_QPT_RC))
--		configure_requester_scat_cqe(dev, init_attr, ucmd, qpc);
-+		configure_requester_scat_cqe(dev, qp, init_attr, qpc);
- 
- 	if (qp->rq.wqe_cnt) {
- 		MLX5_SET(qpc, qpc, log_rq_stride, qp->rq.wqe_shift - 4);
-@@ -2543,13 +2542,18 @@ static void process_vendor_flag(struct mlx5_ib_dev *dev, int *flags, int flag,
- 		return;
- 	}
- 
--	if (flag == MLX5_QP_FLAG_SCATTER_CQE) {
-+	switch (flag) {
-+	case MLX5_QP_FLAG_SCATTER_CQE:
-+	case MLX5_QP_FLAG_ALLOW_SCATTER_CQE:
- 		/*
--		 * We don't return error if this flag was provided,
--		 * and mlx5 doesn't have right capability.
--		 */
--		*flags &= ~MLX5_QP_FLAG_SCATTER_CQE;
-+			 * We don't return error if these flags were provided,
-+			 * and mlx5 doesn't have right capability.
-+			 */
-+		*flags &= ~(MLX5_QP_FLAG_SCATTER_CQE |
-+			    MLX5_QP_FLAG_ALLOW_SCATTER_CQE);
- 		return;
-+	default:
-+		break;
- 	}
- 	mlx5_ib_dbg(dev, "Vendor create QP flag 0x%X is not supported\n", flag);
- }
-@@ -2589,6 +2593,8 @@ static int process_vendor_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SIGNATURE, true, qp);
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SCATTER_CQE,
- 			    MLX5_CAP_GEN(mdev, sctr_data_cqe), qp);
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_ALLOW_SCATTER_CQE,
-+			    MLX5_CAP_GEN(mdev, sctr_data_cqe), qp);
- 
- 	if (qp->type == IB_QPT_RAW_PACKET) {
- 		cond = MLX5_CAP_ETH(mdev, tunnel_stateless_vxlan) ||
--- 
-2.26.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
