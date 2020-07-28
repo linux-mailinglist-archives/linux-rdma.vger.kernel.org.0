@@ -2,172 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E2B230356
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 08:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B823A2304AE
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 09:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgG1G4q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 02:56:46 -0400
-Received: from mail-eopbgr760080.outbound.protection.outlook.com ([40.107.76.80]:15905
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S1727978AbgG1HxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 03:53:14 -0400
+Received: from mail-vi1eur05on2050.outbound.protection.outlook.com ([40.107.21.50]:9376
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726885AbgG1G4q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:56:46 -0400
+        id S1727930AbgG1HxM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:53:12 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TsfTjbpobIZNIgzGCjY67TyDcapQYEy3yvFlbRBaEndJblUutlCxmGW1xYbefuytAIimB8fvAdD9V6VeLxQJjeZwo1xnW8sfNKTS0Pjl5IDqEUB19pWLmJGj1CcIpEjkeneMA3QCI3H/BVIXTnATg5ZaSW5Ff60T/4x9P+lIHl6yfYJocZ7nUpsfuI8mCWEITjPImPOEFv3YjkUj0G87aLRtn9ySIQ3yfRPn26AS4/+lOd5XsHmTPw2cJxUHtWkQlSZOAuEdL3nIuzXvu3OEvSXlImpgwVnrzirRbi0d/fMsxoKUpNah3Dv56f8JF0vP9hq48xRm081TCFRKOPFzaQ==
+ b=aBggCzgbk+GohR+BgnHW2FHXCCsVAOAHAIdaHi4I18Gygbl41tFXcXFNgQL7V/DQ9n948YpEvqpZOueVqzZX4xuAO5hMWs95IdOPXxlx8oEMRfIYEOYbSJWY2+vMTtfmKMSfPj26+yIrNirbOZ2B+yDixyS88mCysttRrAL5q37fpfIfb5LKqT51VNBSd1YoejcLabX/V4v3gNNSN2yJAhTAXM1qpYmMNXdfd+J9EgWKJXD4Uq9FG0rC77KKcX9lOH1+xFAV5cgdqg0SQSar0bx7Rw2bREW00THSPToi1xA6KGrUwhKuw5fzvaqbt+/2vzDSa0OIp80+hAtPG7sSfQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkWADiYG8d5BSQMhIF0cqLu5QiFbDd3x67E2ayjtq6s=;
- b=nCj2SEj6sdMV8Er+oA9ABfhAfusicD39u/CgarKzDgMo/fZVU2ah83mnpA0yBzjvi35SXw4wakyrvnYffqBUkQ04t6ZGHFCG0V4eqxVDjZHq/qTRBLrShp6UCDc5oSsgQX/IL7qHSdilhz5ahtuA7i+OLnNdXJ2p0B6fUhvAk4xgYIDZpwTYv7xg8FyNzn+YUwwescZhjn1Ce4OxUzAO3h9T2W/hZLZQ6uS0MSgqO610KBy6DhEGtD1Na4vyIKeLg9GFe0/Hcn+T5DhrfFPtbHWeTQl5LuKPhIOxTIpppRLaPDvoEKFlyGwpWJT2UhCPdzoxFT6pRsWq0f90IFcfPA==
+ bh=ecCTnL6/+2TqoE9cWFl1D51TIICdZT4W7ghkr7hZRu0=;
+ b=KLWTN/ZR1+e1iNhbVqgQSn0lMy+dBQMSKN6Bpg2sRaShzIInBDFodz0khVc0JjhroEnZPT8oBB4mVH+X3cU3hW7JChwETPbYh/GYG+mamUjUuPWoFTbfI+wxhknZmVFdmR+AoDM7FQlcQpQrCz1lze8MuyEFgh0o/YDD6jxmAKdOe67GugnGGay11mPf6SUpwq3jMDtUfefrv+whDSmaWcJnZ0KVJ/TLB8dlHk7fHILfaf7q9eTaYBoEkBEfT8U9GJcO6rc4cP9/SNFlRTAOxRD6MiPM3E0DtmhKfHptdBTuSyBNsYdoD/59hPlAXSuso3v3dq4TWLpgDeV/0qcbkA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkWADiYG8d5BSQMhIF0cqLu5QiFbDd3x67E2ayjtq6s=;
- b=wH3w9+R7kgugUpLyhcnIzbGLsGsGGSwnJgeZhI8HN/YsEOcXUNYjLoBiVlo/JvuG802YNx7G/I00m9/X5Sqe9GJQGjY78+7vj+IT/3ZXiDLjvLJD+OM4lzHkSflp3qizCyCLVqFqaDPV9PCZzHNiyeeUhQP/K6a3IkApWW7DJdc=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB3838.namprd12.prod.outlook.com (2603:10b6:208:16c::11) with
+ bh=ecCTnL6/+2TqoE9cWFl1D51TIICdZT4W7ghkr7hZRu0=;
+ b=idPOBqX1a0A5Y33m7Vi0Rkr/wqvjtN62In9GC6Kv+7vEktIb0BvoYTKrN9Mbt1eQTEx+vn5yyGsQiLd+eEIIAbewawgPSOjtdbY7zwBqiRd5INykpF/ZDvSYup2pCap//01urDfcrh4DI745EGYp9WV7CM1jPYHpv4PFmTbGEsY=
+Received: from AM6PR05MB5094.eurprd05.prod.outlook.com (2603:10a6:20b:9::29)
+ by AM6PR05MB6008.eurprd05.prod.outlook.com (2603:10a6:20b:a3::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Tue, 28 Jul
- 2020 06:56:42 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::a16e:8812:b4c0:918d%6]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
- 06:56:42 +0000
-Subject: Re: [PATCH] drm/amdgpu/dc: Stop dma_resv_lock inversion in
- commit_tail
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20200727213017.852589-1-daniel.vetter@ffwll.ch>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <d4e687e9-cf0b-384f-5982-849d0fa11147@amd.com>
-Date:   Tue, 28 Jul 2020 08:56:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200727213017.852589-1-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Tue, 28 Jul
+ 2020 07:53:08 +0000
+Received: from AM6PR05MB5094.eurprd05.prod.outlook.com
+ ([fe80::d803:a59d:9a85:975f]) by AM6PR05MB5094.eurprd05.prod.outlook.com
+ ([fe80::d803:a59d:9a85:975f%7]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 07:53:08 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        "Julia.Lawall@inria.fr" <Julia.Lawall@inria.fr>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/7] net/mlx5: drop unnecessary list_empty
+Thread-Topic: [PATCH 4/7] net/mlx5: drop unnecessary list_empty
+Thread-Index: AQHWY0F4frxq877HjEGPrpmehoD3gakbq0iAgAD2dgA=
+Date:   Tue, 28 Jul 2020 07:53:08 +0000
+Message-ID: <86e8f054d029991167a9fe0a4bdfedff94e38022.camel@mellanox.com>
+References: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
+         <1595761112-11003-5-git-send-email-Julia.Lawall@inria.fr>
+         <20200727.101059.1257161436665415755.davem@davemloft.net>
+In-Reply-To: <20200727.101059.1257161436665415755.davem@davemloft.net>
+Accept-Language: en-US
 Content-Language: en-US
-X-ClientProxiedBy: AM0PR10CA0018.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::28) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=mellanox.com;
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 810ef92f-feb4-4d87-7175-08d832cb4482
+x-ms-traffictypediagnostic: AM6PR05MB6008:
+x-microsoft-antispam-prvs: <AM6PR05MB600879F3A1F69DAEA65F5E46BE730@AM6PR05MB6008.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vWgcoy6tmTuns4YysqKFDd3F5DRpRBZ5brxvymsOR/3aEYD3s9fLtx7LxZZkWS9Ag+P5u+tc419DVzkxSOUcFSz8/mmXHn/JF2wj+31/bLKCflZyhQOzjsvIBTQQad69qYkcgZY3tHEqb6Y2L5SBV3FZaHMWlJiiBG0IEzQE5WoQW3CRG6WgAMwLC/XzYttv7OTCRxYOtizWFFhTw5to/y3nzwVAnIX3cCs/W0zCFNs9bWAA5hWEORVbz4hrZNalaEu+VdQ4WvRWHx1O78Av1ASgQJkWPUWXt5HgwXm5qXphrRgapxIAtf6x38i2hFNbrlr/nj+m6aivQ1tCGukHLnoeSRcjrf8Lq7S1tbWSKXw8uDf3eU4y9n4aAAWD5x5fw6wgQFZydKcF2qpxPxlA1A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB5094.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(71200400001)(2906002)(8676002)(6512007)(86362001)(26005)(316002)(4326008)(8936002)(83380400001)(186003)(110136005)(54906003)(91956017)(4744005)(478600001)(76116006)(2616005)(6506007)(66476007)(66446008)(36756003)(5660300002)(66946007)(66556008)(64756008)(6486002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: j4tdcfNyMXNglkepm8QoMk4c95JJD4h8GMqX2PlezL6MtVVEJ3DuQKfgq5NTZbPMe4dFr8KpnmeVscbuwJxmf+H87A12ZNe90lokErYVP5NK6YDIU8BwdG/lBxH2/WoWRA2F27Tx0Ifh30ZkWDgs0jsSIrg4WbBgj826SRnLKzwmSWkzs0gx007AX+cFOKRiF9bfzY0JSFn5TczXoxjcf4kCar3BuR4h1xPo4M+0G8O6aw7EPwiQoJlV0RncA9kL/EJhG1vHOiILI638rLpEHiZKT65ADrL1DSbLaKmRk9NUiFSiopNOLn5ZRPCxZwXFYY4U6EZ8I4y75z3qU3BstyCIAGB7r9+hyIweAeYxDYL7VmLrlKULyj6aoqxSW49/x8CHrdUER6CWE0K0QkcgrZUITV212r5mb2bL75ijX6l6b8ugmpakQkUfLBgC3QgQvZ1dfjjDNpSvED5TSTQspSzOooa1HU4BhkJAB3ntxx4=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <45C695049F1F7C409C1F172865DCA880@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR10CA0018.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend Transport; Tue, 28 Jul 2020 06:56:40 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8222575c-e9db-4375-acc2-08d832c36271
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3838:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB383874905529E140F43DAFF383730@MN2PR12MB3838.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: etuWxKD+7FSURO5FPlbjT1kJJsu3f/cOqXh4VQVWX3utitJ+Z0vns5gmutSv3X2AFvCEZzZcpEAyZDMU5C+NVZjcM6ubsAUxMHHqXM9VNFt1p+pLix4P4HECw4lbdOkKxBL8vRHzh1t6ds+I7BhCaxIwYavsPbPPZ6kLtN0WnzrlIdVfgh8z8HqpwwLsTzJ4AdDo0n9efblzLJvzdZhmCBz8gYtUnjlZnN0RRLcLTp9z1ra5EpaXu3YvtnldNmSHyh8ZsdB+NUmE6cBsb7MGawlpQ0nszD2AbOIBp5SSNz6ZICIoPlD07iOgUa81Qnaabw/ylVhZ9WD3dLLEXMuthNoIhOJZstJaAPeX5D8nFNCD7b0GJpyEqR0q9VBz/E0HHqNKLZ/1mO1o7rjYdoMJS1CuQLWOzzRnGcMxCxbIoYWcfptK6QsoPE1NeyQ9mlM7Esm4QQOCtZwnZVSiua5xmA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(6666004)(186003)(31686004)(16526019)(86362001)(66574015)(66476007)(66946007)(83380400001)(8676002)(478600001)(966005)(4326008)(45080400002)(66556008)(5660300002)(6486002)(8936002)(54906003)(31696002)(36756003)(2616005)(52116002)(7416002)(316002)(2906002)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: u5WKVduONTremJCVT9sGeouYFPpogtoU823m5Pr+jNMNOM/DUHLQ9Xs4KfB788cHAB4ZROn+8cH4Zhfn6GR0OvWPyNQZxuYqiZC8HeEzZ0mYYKScXdlZZsxHkKxTfUnoFwVVMsC8Bcm7wJMDAAGBlF6MsupbVYIp9+ejS8qD4HcZc6l6yBirriWSMJFvRGigs2OX84b5GboX0t8gQMZGAOEgzv+Bx23xxjIuDthcwxK3tE6mWlhxyCtKC/vZ5VAY0BnbpgcyH14RwxWLM/hnh0RVuNcADQePClpGluoRpLCfKVmr7Bk9BhJJrUaG2+doJmBHCL82314kFjk8GGyRgy+PBiCoiHYBvOorIW66tB8nquT7tkQDx7/lSC9Tisz3/Q0J8Q1IgyB30lIVTmID0GWIXtvdEgxFzr5HfzkcbDMnDsvVbHSKEeVdk+OIDG3hYtav0d1pPD9MY6y7efNPC/iHd7ThqcI64dVd3Y5ucQmrbBXNWGp1F6BljnkBTvRSmo4I38YmncLyBqFt2EyA1Zddxsdg9m//G8a0aZTmaq+KHgsh7oUBxVpQjMLFV8+W
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8222575c-e9db-4375-acc2-08d832c36271
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-OriginatorOrg: Mellanox.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 06:56:42.5593
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB5094.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 810ef92f-feb4-4d87-7175-08d832cb4482
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 07:53:08.1135
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lX0potb1U9WL+HICjQxPAO4/1oIBFXhi7+LFJKsAasgFLvZJdlz6aIrNUKnMgu2L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3838
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GYD85D0ATT21DxUUq84v3UA4Rm8liA1OU2gnwM7daDPK47rAkPiRcPtjdgvmLBf7A9gZEdzNta9YeF8qePRSPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6008
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 27.07.20 um 23:30 schrieb Daniel Vetter:
-> Trying to grab dma_resv_lock while in commit_tail before we've done
-> all the code that leads to the eventual signalling of the vblank event
-> (which can be a dma_fence) is deadlock-y. Don't do that.
->
-> Here the solution is easy because just grabbing locks to read
-> something races anyway. We don't need to bother, READ_ONCE is
-> equivalent. And avoids the locking issue.
->
-> v2: Also take into account tmz_surface boolean, plus just delete the
-> old code.
->
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Christian König <christian.koenig@amd.com>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
-> DC-folks, I think this split out patch from my series here
->
-> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fdri-devel%2F20200707201229.472834-1-daniel.vetter%40ffwll.ch%2F&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C8a4f5736682a4b5c943e08d832747ab1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637314823145521840&amp;sdata=qd7Nrox62Lr%2FXWbJJFVskg9RYL4%2FoRVCFjR6rUDMA5E%3D&amp;reserved=0
->
-> should be ready for review/merging. I fixed it up a bit so that it's not
-> just a gross hack :-)
->
-> Cheers, Daniel
->
->
-> ---
->   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 19 ++++++-------------
->   1 file changed, 6 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 21ec64fe5527..a20b62b1f2ef 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6959,20 +6959,13 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
->   			DRM_ERROR("Waiting for fences timed out!");
->   
->   		/*
-> -		 * TODO This might fail and hence better not used, wait
-> -		 * explicitly on fences instead
-> -		 * and in general should be called for
-> -		 * blocking commit to as per framework helpers
-> +		 * We cannot reserve buffers here, which means the normal flag
-> +		 * access functions don't work. Paper over this with READ_ONCE,
-> +		 * but maybe the flags are invariant enough that not even that
-> +		 * would be needed.
->   		 */
-> -		r = amdgpu_bo_reserve(abo, true);
-> -		if (unlikely(r != 0))
-> -			DRM_ERROR("failed to reserve buffer before flip\n");
-> -
-> -		amdgpu_bo_get_tiling_flags(abo, &tiling_flags);
-> -
-> -		tmz_surface = amdgpu_bo_encrypted(abo);
-> -
-> -		amdgpu_bo_unreserve(abo);
-> +		tiling_flags = READ_ONCE(abo->tiling_flags);
-> +		tmz_surface = READ_ONCE(abo->flags) & AMDGPU_GEM_CREATE_ENCRYPTED;
-
-Yeah, the abo->flags are mostly fixed after creation, especially the 
-encrypted flag can't change or we corrupt page table tables. So that 
-should work fine.
-
-Anybody who picks this up feel free to add an Reviewed-by: Christian 
-König <christian.koenig@amd.com>.
-
-Regards,
-Christian.
-
->   
->   		fill_dc_plane_info_and_addr(
->   			dm->adev, new_plane_state, tiling_flags,
-
+T24gTW9uLCAyMDIwLTA3LTI3IGF0IDEwOjEwIC0wNzAwLCBEYXZpZCBNaWxsZXIgd3JvdGU6DQo+
+IEZyb206IEp1bGlhIExhd2FsbCA8SnVsaWEuTGF3YWxsQGlucmlhLmZyPg0KPiBEYXRlOiBTdW4s
+IDI2IEp1bCAyMDIwIDEyOjU4OjI5ICswMjAwDQo+IA0KPiA+IGxpc3RfZm9yX2VhY2hfZW50cnkg
+aXMgYWJsZSB0byBoYW5kbGUgYW4gZW1wdHkgbGlzdC4NCj4gPiBUaGUgb25seSBlZmZlY3Qgb2Yg
+YXZvaWRpbmcgdGhlIGxvb3AgaXMgbm90IGluaXRpYWxpemluZyB0aGUNCj4gPiBpbmRleCB2YXJp
+YWJsZS4NCj4gPiBEcm9wIGxpc3RfZW1wdHkgdGVzdHMgaW4gY2FzZXMgd2hlcmUgdGhlc2UgdmFy
+aWFibGVzIGFyZSBub3QNCj4gPiB1c2VkLg0KPiA+IA0KPiA+IE5vdGUgdGhhdCBsaXN0X2Zvcl9l
+YWNoX2VudHJ5IGlzIGRlZmluZWQgaW4gdGVybXMgb2YNCj4gbGlzdF9maXJzdF9lbnRyeSwNCj4g
+PiB3aGljaCBpbmRpY2F0ZXMgdGhhdCBpdCBzaG91bGQgbm90IGJlIHVzZWQgb24gYW4gZW1wdHkg
+bGlzdC4gIEJ1dA0KPiBpbg0KPiA+IGxpc3RfZm9yX2VhY2hfZW50cnksIHRoZSBlbGVtZW50IG9i
+dGFpbmVkIGJ5IGxpc3RfZmlyc3RfZW50cnkgaXMNCj4gbm90DQo+ID4gcmVhbGx5IGFjY2Vzc2Vk
+LCBvbmx5IHRoZSBhZGRyZXNzIG9mIGl0cyBsaXN0X2hlYWQgZmllbGQgaXMNCj4gY29tcGFyZWQN
+Cj4gPiB0byB0aGUgYWRkcmVzcyBvZiB0aGUgbGlzdCBoZWFkLCBzbyB0aGUgbGlzdF9maXJzdF9l
+bnRyeSBpcyBzYWZlLg0KPiA+IA0KPiA+IFRoZSBzZW1hbnRpYyBwYXRjaCB0aGF0IG1ha2VzIHRo
+aXMgY2hhbmdlIGlzIGFzIGZvbGxvd3MgKHdpdGgNCj4gYW5vdGhlcg0KPiA+IHZhcmlhbnQgZm9y
+IHRoZSBubyBicmFjZSBjYXNlKTogKGh0dHA6Ly9jb2NjaW5lbGxlLmxpcDYuZnIvKQ0KPiAgLi4u
+DQo+ID4gU2lnbmVkLW9mZi1ieTogSnVsaWEgTGF3YWxsIDxKdWxpYS5MYXdhbGxAaW5yaWEuZnI+
+DQo+IA0KPiBTYWVlZCwgcGxlYXNlIHBpY2sgdGhpcyB1cC4NCj4gDQo+IFRoYW5rIHlvdS4NCg0K
+QXBwbGllZCB0byBuZXQtbmV4dC1tbHg1Lg0KDQpUaGFua3MgIQ0K
