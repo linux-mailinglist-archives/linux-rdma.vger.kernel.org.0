@@ -2,205 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1D12311D5
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 20:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5CB231246
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 21:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729639AbgG1Six (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 14:38:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45709 "EHLO mga02.intel.com"
+        id S1732634AbgG1TP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 15:15:28 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:5140 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729475AbgG1Six (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:38:53 -0400
-IronPort-SDR: vyArQlnq1NjPO4zrviu5okL/jF/fZq2AXMnEST38eZ9L5aes9Xwd/jmQ86Fv3KD5X3CKuORJ7b
- 3u7pPx7/iXNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="139312238"
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="139312238"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 11:38:52 -0700
-IronPort-SDR: 7E07RAPnS8/p/M3fSlMbRvdBVhxYYMcCcyMKd5B1m1oN/hR8x3fqY91GZHj5BDm7J1a6uvk8SS
- Y+3WEZCsyb4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="489997141"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Jul 2020 11:38:51 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 06SIcobE005788;
-        Tue, 28 Jul 2020 11:38:50 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 06SIcmJM022248;
-        Tue, 28 Jul 2020 14:38:48 -0400
-Subject: [PATCH for-rc] IB/rdmavt: Fix RQ counting issues causing use of an
- invalid RWQE
-To:     jgg@ziepe.ca, dledford@redhat.com
-From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Tue, 28 Jul 2020 14:38:48 -0400
-Message-ID: <20200728183848.22226.29132.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.16
+        id S1728561AbgG1TP1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:15:27 -0400
+Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f20794b0000>; Wed, 29 Jul 2020 03:15:23 +0800
+Received: from HKMAIL103.nvidia.com ([10.18.16.12])
+  by hkpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 28 Jul 2020 12:15:23 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate101.nvidia.com on Tue, 28 Jul 2020 12:15:23 -0700
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 19:15:22 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 28 Jul 2020 19:15:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BRV6Fh7GziUTIDNjoxDzAay+PsG17PL5fliqyyzIdz/bn2zKBBqgegfbHJ0EcCBEAJg3Qq7BThHJ/u5AO8PUqkIzFg2/qNNmbFZ0mB9YWRK7hD1Tue58zcQ6ohmF10UnbH7O6WKNjDPWQcC58yDsC6DuySXgATAVBfj/Pvvx1Oe6DaFfHr0RahitGde8DROltFvA12xMEjjxlNLOJ+JyA/l/ZiE3YC5YZXH3sr9ap9aKZ0Hit67Sr7zVFECSCkUVww+beDMkXD3vXrzUgup/0Zs8duPCJ2LZgnnKB0g8LryAFGBamT8pTXkD7iSvmzH+j/3oQyjqFidqNlagtTS/aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oeNoQhlOF2fFxSAftUqt6fC0NQGDE04LF8LzMamEzdc=;
+ b=Yvp5Ims5WVGYu929HEMxOy8m/xLqLKs0H3hasW2cqvjxMILfCRXoZXIOL0iR7CzSvO9RXcasceRnrmkHhUsPOrA7Q3uPalteRJ7twx0gkSz9EG+TUzKYBFTn0SS2kOt8RHH5DY8Sg6KyeZVQTYyNCbiIL7OZ2r5RXTJ3zmR8cDHio2BFRMqdoxiJHOU4+4YSi+eqs1JnKKJ7e9pJ5o8U9qjqqRYDssD6VBUP9GsW6E6PcHsHvXQ56c5TH89GINy+v/LI1hTb1yl3st72gzZ89lgIsrlM3hTUQ5cd0nYuILDEy94IqOmue67qb1y7tfDRjV8OOGLVNNNFZYVGYOJQkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1515.namprd12.prod.outlook.com (2603:10b6:4:6::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3216.23; Tue, 28 Jul 2020 19:15:20 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 19:15:20 +0000
+Date:   Tue, 28 Jul 2020 16:15:18 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+Subject: Re: [PATCH v4 3/6] mm/notifier: add migration invalidation type
+Message-ID: <20200728191518.GA159104@nvidia.com>
+References: <20200723223004.9586-1-rcampbell@nvidia.com>
+ <20200723223004.9586-4-rcampbell@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200723223004.9586-4-rcampbell@nvidia.com>
+X-ClientProxiedBy: MN2PR16CA0031.namprd16.prod.outlook.com
+ (2603:10b6:208:134::44) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0031.namprd16.prod.outlook.com (2603:10b6:208:134::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Tue, 28 Jul 2020 19:15:20 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k0V4I-000fXl-Tm; Tue, 28 Jul 2020 16:15:18 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3cdaeee0-0c4b-40c1-c44f-08d8332a91ca
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1515:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1515E35511089C096E10ACBCC2730@DM5PR12MB1515.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IVChklyLQAyK48pWtA7+W/aB2dtYvKefZjzBifLv5lptZlBpekJdcCIneoov1izqbZIDNEC8Yw5pihYH/d4G8pXOtO4hDGOkFHyrmPnrrOToOfFBib4meb6gubuZJ+kiCX8yGHjsEBPDEF6vyCsfda/Ozs2hz8uplWnjNGFQA0BbvOoCgtgSFyGS1GDUq//1zMDwUcCvc97lfQ8V+sFqxCR/HJb8kTfaTYqX5/c7tMKI1SXExB+r10nm5RCmA1N6nlsoquICtcprc9ZiGXOgt/g8rdQyTQbeAf5lNUmgzozWmESTCh/bfI9XbEFCvYTON2r4+iQYKA2RwnKW2/sjsA+ZbXdru4Sc5d2aCPgk2e26rRY9825AVNtyJML/KV62
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(4744005)(1076003)(54906003)(37006003)(6636002)(2906002)(316002)(7416002)(8936002)(5660300002)(8676002)(9746002)(9786002)(33656002)(478600001)(66556008)(66476007)(26005)(186003)(66946007)(86362001)(2616005)(6862004)(4326008)(426003)(36756003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: RBJrtRMwBoRVmLRUwWoCl7FTp/VclOwxmFS0uC7wDOidKik0e/ZSXxLb+zo2VtLplcCEqdSg1TFzTJmJZMqlR7UsTpqk/kBlNIyvwVNz/Tz9wCtze06j4rgH3mreyD3zqRucOSyTX91cR3FXCfGzxBvsctzE1js0edgD5Lmin8G397jClog0tMxyPnsj/LC8iVp16ZEocxiWRuKhP1UxWcRMSJd2u43ZlBgucbWorud94NPyYtRN4bTAs5IE6y25r5rJan+zdADXYllzd3+0Nap+qLJwh4Hwi1wlkScNhwEzyKdYEM5WxAw8Arxd3WdfGW6BE2LkbKeipNClhgll4J2StGyG4Uo2gDD8zkhtckEpZKtyS4Ki5tuojOCMmKF4R16O/JR5MoBo1/W1BdRemYkd548q0T7ci7Prg0MAKSw55D8AtH7rQtmhEU65Qc8po36KCWPntrCz5J7fNhc+/fofn8KQ7pODuhIeZOf3Hq4=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cdaeee0-0c4b-40c1-c44f-08d8332a91ca
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 19:15:20.3941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FUfALy/QnfGcZM+xyqvpwFi8hbl38bfcI6Jr6V91sFxA+dhlfqt5yj/7Mlya7F/0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1515
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595963723; bh=oeNoQhlOF2fFxSAftUqt6fC0NQGDE04LF8LzMamEzdc=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=DTR5ZyDsmlBfs+dpERGF38p/VUECPe9XoeFd+SmVGKvEJkjLMVZGtXIwyM9lUJefe
+         ZGunyqmQeuBmhcfGVWKkJMI8e96RfHBx1ZTJ49ZMO+B67Uvz4zmpLDwT9W4dlYRyHR
+         lpENFb3/PVtw8FUYf9uNo/cPW7qbMJXw1D6lOdK/mPxuO0VUH8/NTevQTLK5ZPYEYD
+         IWazd1Tk6/0419EnMc2s5l0KvBKeXXFRfWSnMh5e3x0xJ0X95lbjcUD7DaumQYVHiG
+         33sijOyBp/aMz5mfp8IAev+KVvnVd6n9D+2+LnexUWY9tQpe4EEQ2z6spwdGCq+H57
+         Uu1i6RHxia4Lw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The lookaside count is improperly initialized to the size of the
-Receive Queue with the additional +1.  In the traces below, the
-RQ size is 384, so the count was set to 385.
+On Thu, Jul 23, 2020 at 03:30:01PM -0700, Ralph Campbell wrote:
+>  static inline int mm_has_notifiers(struct mm_struct *mm)
+> @@ -513,6 +519,7 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+>  	range->start = start;
+>  	range->end = end;
+>  	range->flags = flags;
+> +	range->migrate_pgmap_owner = NULL;
+>  }
 
-The lookaside count is then rarely refreshed.  Note the high and
-incorrect count in the trace below:
+Since this function is commonly called and nobody should read
+migrate_pgmap_owner unless MMU_NOTIFY_MIGRATE is set as the event,
+this assignment can be dropped.
 
-rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9008 wr_id 55c7206d75a0 qpn c
-	qpt 2 pid 3018 num_sge 1 head 1 tail 0, count 385
-rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
-
-The head,tail indicate there is only one RWQE posted although the count
-says 385 and we correctly return the element 0.
-
-The next call to rvt_get_rwqe with the decremented count:
-
-rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9058 wr_id 0 qpn c
-	qpt 2 pid 3018 num_sge 0 head 1 tail 1, count 384
-rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
-
-Note that the RQ is empty (head == tail) yet we return the RWQE at tail 1,
-which is not valid because of the bogus high count.
-
-Best case, the RWQE has never been posted and the rc logic sees an RWQE
-that is too small (all zeros) and puts the QP into an error state.
-
-In the worst case, a server slow at posting receive buffers might fool
-rvt_get_rwqe() into fetching an old RWQE and corrupt memory.
-
-Fix by deleting the faulty initialization code and creating an
-inline to fetch the posted count and convert all callers to use
-new inline.
-
-Fixes: f592ae3c999f ("IB/rdmavt: Fracture single lock used for posting and processing RWQEs")
-Reported-by: Zhaojuan Guo <zguo@redhat.com>
-Cc: <stable@vger.kernel.org> # 5.4.x
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
----
- drivers/infiniband/sw/rdmavt/qp.c |   33 ++++-----------------------------
- drivers/infiniband/sw/rdmavt/rc.c |    4 +---
- include/rdma/rdmavt_qp.h          |   19 +++++++++++++++++++
- 3 files changed, 24 insertions(+), 32 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 7db35dd..332a8ba 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -901,8 +901,6 @@ static void rvt_init_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
- 	qp->s_tail_ack_queue = 0;
- 	qp->s_acked_ack_queue = 0;
- 	qp->s_num_rd_atomic = 0;
--	if (qp->r_rq.kwq)
--		qp->r_rq.kwq->count = qp->r_rq.size;
- 	qp->r_sge.num_sge = 0;
- 	atomic_set(&qp->s_reserved_used, 0);
- }
-@@ -2367,31 +2365,6 @@ static int init_sge(struct rvt_qp *qp, struct rvt_rwqe *wqe)
- }
- 
- /**
-- * get_count - count numbers of request work queue entries
-- * in circular buffer
-- * @rq: data structure for request queue entry
-- * @tail: tail indices of the circular buffer
-- * @head: head indices of the circular buffer
-- *
-- * Return - total number of entries in the circular buffer
-- */
--static u32 get_count(struct rvt_rq *rq, u32 tail, u32 head)
--{
--	u32 count;
--
--	count = head;
--
--	if (count >= rq->size)
--		count = 0;
--	if (count < tail)
--		count += rq->size - tail;
--	else
--		count -= tail;
--
--	return count;
--}
--
--/**
-  * get_rvt_head - get head indices of the circular buffer
-  * @rq: data structure for request queue entry
-  * @ip: the QP
-@@ -2465,7 +2438,7 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
- 
- 	if (kwq->count < RVT_RWQ_COUNT_THRESHOLD) {
- 		head = get_rvt_head(rq, ip);
--		kwq->count = get_count(rq, tail, head);
-+		kwq->count = rvt_get_rq_count(rq, head, tail);
- 	}
- 	if (unlikely(kwq->count == 0)) {
- 		ret = 0;
-@@ -2500,7 +2473,9 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
- 		 * the number of remaining WQEs.
- 		 */
- 		if (kwq->count < srq->limit) {
--			kwq->count = get_count(rq, tail, get_rvt_head(rq, ip));
-+			kwq->count =
-+				rvt_get_rq_count(rq,
-+						 get_rvt_head(rq, ip), tail);
- 			if (kwq->count < srq->limit) {
- 				struct ib_event ev;
- 
-diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
-index 977906c..c58735f 100644
---- a/drivers/infiniband/sw/rdmavt/rc.c
-+++ b/drivers/infiniband/sw/rdmavt/rc.c
-@@ -127,9 +127,7 @@ __be32 rvt_compute_aeth(struct rvt_qp *qp)
- 			 * not atomic, which is OK, since the fuzziness is
- 			 * resolved as further ACKs go out.
- 			 */
--			credits = head - tail;
--			if ((int)credits < 0)
--				credits += qp->r_rq.size;
-+			credits = rvt_get_rq_count(&qp->r_rq, head, tail);
- 		}
- 		/*
- 		 * Binary search the credit table to find the code to
-diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
-index c4369a6..2f1fc23 100644
---- a/include/rdma/rdmavt_qp.h
-+++ b/include/rdma/rdmavt_qp.h
-@@ -305,6 +305,25 @@ struct rvt_rq {
- 	spinlock_t lock ____cacheline_aligned_in_smp;
- };
- 
-+/**
-+ * rvt_get_rq_count - count numbers of request work queue entries
-+ * in circular buffer
-+ * @rq: data structure for request queue entry
-+ * @head: head indices of the circular buffer
-+ * @tail: tail indices of the circular buffer
-+ *
-+ * Return - total number of entries in the Receive Queue
-+ */
-+
-+static inline u32 rvt_get_rq_count(struct rvt_rq *rq, u32 head, u32 tail)
-+{
-+	u32 count = head - tail;
-+
-+	if ((s32)count < 0)
-+		count += rq->size;
-+	return count;
-+}
-+
- /*
-  * This structure holds the information that the send tasklet needs
-  * to send a RDMA read response or atomic operation.
-
+Jason
