@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9877D2307DC
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2909D2307DD
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgG1KnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 06:43:20 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8839 "EHLO huawei.com"
+        id S1728568AbgG1KnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 06:43:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8289 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728568AbgG1KnT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:43:19 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8AA85C11F602201A182A;
-        Tue, 28 Jul 2020 18:43:16 +0800 (CST)
+        id S1728686AbgG1KnU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:43:20 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 04E1F73F7E09A9484138;
+        Tue, 28 Jul 2020 18:43:17 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Jul 2020 18:43:09 +0800
+ 14.3.487.0; Tue, 28 Jul 2020 18:43:10 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 3/7] RDMA/hns: Remove support for HIP08_A
-Date:   Tue, 28 Jul 2020 18:42:17 +0800
-Message-ID: <1595932941-40613-4-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 4/7] RDMA/hns: Remove redundant parameters in set_rc_wqe()
+Date:   Tue, 28 Jul 2020 18:42:18 +0800
+Message-ID: <1595932941-40613-5-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
 References: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
@@ -36,207 +36,112 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+There are some functions called by set_rc_wqe() use two parameters:
+"void *wqe" and "struct hns_roce_v2_rc_send_wqe *rc_sq_wqe", but the first
+one can be got from the second one. So remove the redundant wqe from
+related functions.
 
-HIP08_A is an temporary version and all features of it are supported by
-HIP08_B. So remove the relevant code.
-
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |  5 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 97 +++++++++++++----------------
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 10 ---
- 3 files changed, 47 insertions(+), 65 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 6e64931..846954e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -37,9 +37,8 @@
- 
- #define DRV_NAME "hns_roce"
- 
--/* hip08 is a pci device, it includes two version according pci version id */
--#define PCI_REVISION_ID_HIP08_A			0x20
--#define PCI_REVISION_ID_HIP08_B			0x21
-+/* hip08 is a pci device */
-+#define PCI_REVISION_ID_HIP08			0x21
- 
- #define HNS_ROCE_HW_VER1	('h' << 24 | 'i' << 16 | '0' << 8 | '6')
- 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 516e246..ff738db 100644
+index ff738db..8cda4a9 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1744,27 +1744,25 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_srq_wrs	= HNS_ROCE_V2_MAX_SRQ_WR;
- 	caps->max_srq_sges	= HNS_ROCE_V2_MAX_SRQ_SGE;
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP08_B) {
--		caps->flags |= HNS_ROCE_CAP_FLAG_ATOMIC | HNS_ROCE_CAP_FLAG_MW |
--			       HNS_ROCE_CAP_FLAG_SRQ | HNS_ROCE_CAP_FLAG_FRMR |
--			       HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL;
--
--		caps->num_qpc_timer	  = HNS_ROCE_V2_MAX_QPC_TIMER_NUM;
--		caps->qpc_timer_entry_sz  = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
--		caps->qpc_timer_ba_pg_sz  = 0;
--		caps->qpc_timer_buf_pg_sz = 0;
--		caps->qpc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
--		caps->num_cqc_timer	  = HNS_ROCE_V2_MAX_CQC_TIMER_NUM;
--		caps->cqc_timer_entry_sz  = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
--		caps->cqc_timer_ba_pg_sz  = 0;
--		caps->cqc_timer_buf_pg_sz = 0;
--		caps->cqc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
--
--		caps->sccc_entry_sz	  = HNS_ROCE_V2_SCCC_ENTRY_SZ;
--		caps->sccc_ba_pg_sz	  = 0;
--		caps->sccc_buf_pg_sz	  = 0;
--		caps->sccc_hop_num	  = HNS_ROCE_SCCC_HOP_NUM;
--	}
-+	caps->flags |= HNS_ROCE_CAP_FLAG_ATOMIC | HNS_ROCE_CAP_FLAG_MW |
-+		       HNS_ROCE_CAP_FLAG_SRQ | HNS_ROCE_CAP_FLAG_FRMR |
-+		       HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL;
-+
-+	caps->num_qpc_timer	  = HNS_ROCE_V2_MAX_QPC_TIMER_NUM;
-+	caps->qpc_timer_entry_sz  = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
-+	caps->qpc_timer_ba_pg_sz  = 0;
-+	caps->qpc_timer_buf_pg_sz = 0;
-+	caps->qpc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
-+	caps->num_cqc_timer	  = HNS_ROCE_V2_MAX_CQC_TIMER_NUM;
-+	caps->cqc_timer_entry_sz  = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
-+	caps->cqc_timer_ba_pg_sz  = 0;
-+	caps->cqc_timer_buf_pg_sz = 0;
-+	caps->cqc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
-+
-+	caps->sccc_entry_sz	  = HNS_ROCE_V2_SCCC_ENTRY_SZ;
-+	caps->sccc_ba_pg_sz	  = 0;
-+	caps->sccc_buf_pg_sz	  = 0;
-+	caps->sccc_hop_num	  = HNS_ROCE_SCCC_HOP_NUM;
+@@ -91,10 +91,11 @@ static u32 to_hr_opcode(u32 ib_opcode)
  }
  
- static void calc_pg_sz(int obj_num, int obj_size, int hop_num, int ctx_bt_num,
-@@ -1995,20 +1993,18 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 		   caps->srqc_bt_num, &caps->srqc_buf_pg_sz,
- 		   &caps->srqc_ba_pg_sz, HEM_TYPE_SRQC);
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP08_B) {
--		caps->sccc_hop_num = ctx_hop_num;
--		caps->qpc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
--		caps->cqc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
-+	caps->sccc_hop_num = ctx_hop_num;
-+	caps->qpc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
-+	caps->cqc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
- 
--		calc_pg_sz(caps->num_qps, caps->sccc_entry_sz,
--			   caps->sccc_hop_num, caps->sccc_bt_num,
--			   &caps->sccc_buf_pg_sz, &caps->sccc_ba_pg_sz,
--			   HEM_TYPE_SCCC);
--		calc_pg_sz(caps->num_cqc_timer, caps->cqc_timer_entry_sz,
--			   caps->cqc_timer_hop_num, caps->cqc_timer_bt_num,
--			   &caps->cqc_timer_buf_pg_sz,
--			   &caps->cqc_timer_ba_pg_sz, HEM_TYPE_CQC_TIMER);
--	}
-+	calc_pg_sz(caps->num_qps, caps->sccc_entry_sz,
-+		   caps->sccc_hop_num, caps->sccc_bt_num,
-+		   &caps->sccc_buf_pg_sz, &caps->sccc_ba_pg_sz,
-+		   HEM_TYPE_SCCC);
-+	calc_pg_sz(caps->num_cqc_timer, caps->cqc_timer_entry_sz,
-+		   caps->cqc_timer_hop_num, caps->cqc_timer_bt_num,
-+		   &caps->cqc_timer_buf_pg_sz,
-+		   &caps->cqc_timer_ba_pg_sz, HEM_TYPE_CQC_TIMER);
- 
- 	calc_pg_sz(caps->num_cqe_segs, caps->mtt_entry_sz, caps->cqe_hop_num,
- 		   1, &caps->cqe_buf_pg_sz, &caps->cqe_ba_pg_sz, HEM_TYPE_CQE);
-@@ -2055,22 +2051,19 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
- 		return ret;
- 	}
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP08_B) {
--		ret = hns_roce_query_pf_timer_resource(hr_dev);
--		if (ret) {
--			dev_err(hr_dev->dev,
--				"Query pf timer resource fail, ret = %d.\n",
--				ret);
--			return ret;
--		}
-+	ret = hns_roce_query_pf_timer_resource(hr_dev);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"failed to query pf timer resource, ret = %d.\n", ret);
-+		return ret;
-+	}
- 
--		ret = hns_roce_set_vf_switch_param(hr_dev, 0);
--		if (ret) {
--			dev_err(hr_dev->dev,
--				"Set function switch param fail, ret = %d.\n",
--				ret);
--			return ret;
--		}
-+	ret = hns_roce_set_vf_switch_param(hr_dev, 0);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"failed to set function switch param, ret = %d.\n",
-+			ret);
-+		return ret;
- 	}
- 
- 	hr_dev->vendor_part_id = hr_dev->pci_dev->device;
-@@ -2336,8 +2329,7 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
+ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+-			 void *wqe, const struct ib_reg_wr *wr)
++			 const struct ib_reg_wr *wr)
  {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_wqe_frmr_seg *fseg =
++		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
+ 	struct hns_roce_mr *mr = to_hr_mr(wr->mr);
+-	struct hns_roce_wqe_frmr_seg *fseg = wqe;
+ 	u64 pbl_ba;
  
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP08_B)
--		hns_roce_function_clear(hr_dev);
-+	hns_roce_function_clear(hr_dev);
+ 	/* use ib_access_flags */
+@@ -128,14 +129,16 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+ 		     V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S, 0);
+ }
  
- 	hns_roce_free_link_table(hr_dev, &priv->tpq);
- 	hns_roce_free_link_table(hr_dev, &priv->tsq);
-@@ -4231,12 +4223,13 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
- 	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_HOP_LIMIT_M,
- 		       V2_QPC_BYTE_24_HOP_LIMIT_S, 0);
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP08_B && is_udp)
-+	if (is_udp)
- 		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
- 			       V2_QPC_BYTE_24_TC_S, grh->traffic_class >> 2);
- 	else
- 		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
- 			       V2_QPC_BYTE_24_TC_S, grh->traffic_class);
-+
- 	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
- 		       V2_QPC_BYTE_24_TC_S, 0);
- 	roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_FL_M,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index a0a47bd..e94ca13 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -411,7 +411,6 @@ static int set_extend_sge_param(struct hns_roce_dev *hr_dev, u32 sq_wqe_cnt,
- 				struct hns_roce_qp *hr_qp,
- 				struct ib_qp_cap *cap)
+-static void set_atomic_seg(const struct ib_send_wr *wr, void *wqe,
++static void set_atomic_seg(const struct ib_send_wr *wr,
+ 			   struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+ 			   unsigned int valid_num_sge)
  {
--	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	u32 cnt;
+-	struct hns_roce_wqe_atomic_seg *aseg;
++	struct hns_roce_v2_wqe_data_seg *dseg =
++		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
++	struct hns_roce_wqe_atomic_seg *aseg =
++		(void *)dseg + sizeof(struct hns_roce_v2_wqe_data_seg);
  
- 	cnt = max(1U, cap->max_send_sge);
-@@ -431,15 +430,6 @@ static int set_extend_sge_param(struct hns_roce_dev *hr_dev, u32 sq_wqe_cnt,
- 	} else if (hr_qp->sq.max_gs > HNS_ROCE_SGE_IN_WQE) {
- 		cnt = roundup_pow_of_two(sq_wqe_cnt *
- 				     (hr_qp->sq.max_gs - HNS_ROCE_SGE_IN_WQE));
--
--		if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_A) {
--			if (cnt > hr_dev->caps.max_extend_sg) {
--				ibdev_err(ibdev,
--					  "failed to check exSGE num, exSGE num = %d.\n",
--					  cnt);
--				return -EINVAL;
--			}
--		}
+-	set_data_seg_v2(wqe, wr->sg_list);
+-	aseg = wqe + sizeof(struct hns_roce_v2_wqe_data_seg);
++	set_data_seg_v2(dseg, wr->sg_list);
+ 
+ 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
+ 		aseg->fetchadd_swap_data = cpu_to_le64(atomic_wr(wr)->swap);
+@@ -143,7 +146,7 @@ static void set_atomic_seg(const struct ib_send_wr *wr, void *wqe,
  	} else {
- 		cnt = 0;
+ 		aseg->fetchadd_swap_data =
+ 			cpu_to_le64(atomic_wr(wr)->compare_add);
+-		aseg->cmp_data  = 0;
++		aseg->cmp_data = 0;
  	}
+ 
+ 	roce_set_field(rc_sq_wqe->byte_16, V2_RC_SEND_WQE_BYTE_16_SGE_NUM_M,
+@@ -176,13 +179,15 @@ static void set_extend_sge(struct hns_roce_qp *qp, const struct ib_send_wr *wr,
+ 
+ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 			     struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+-			     void *wqe, unsigned int *sge_ind,
++			     unsigned int *sge_ind,
+ 			     unsigned int valid_num_sge)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+-	struct hns_roce_v2_wqe_data_seg *dseg = wqe;
++	struct hns_roce_v2_wqe_data_seg *dseg =
++		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	struct hns_roce_qp *qp = to_hr_qp(ibqp);
++	void *wqe = dseg;
+ 	int j = 0;
+ 	int i;
+ 
+@@ -438,7 +443,6 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
+ 		     owner_bit);
+ 
+-	wqe += sizeof(struct hns_roce_v2_rc_send_wqe);
+ 	switch (wr->opcode) {
+ 	case IB_WR_RDMA_READ:
+ 	case IB_WR_RDMA_WRITE:
+@@ -451,7 +455,7 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 		rc_sq_wqe->inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
+ 		break;
+ 	case IB_WR_REG_MR:
+-		set_frmr_seg(rc_sq_wqe, wqe, reg_wr(wr));
++		set_frmr_seg(rc_sq_wqe, reg_wr(wr));
+ 		break;
+ 	case IB_WR_ATOMIC_CMP_AND_SWP:
+ 	case IB_WR_ATOMIC_FETCH_AND_ADD:
+@@ -468,10 +472,10 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 
+ 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
+ 	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
+-		set_atomic_seg(wr, wqe, rc_sq_wqe, valid_num_sge);
++		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
+ 	else if (wr->opcode != IB_WR_REG_MR)
+ 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
+-					wqe, &curr_idx, valid_num_sge);
++					&curr_idx, valid_num_sge);
+ 
+ 	*sge_idx = curr_idx;
+ 
 -- 
 2.8.1
 
