@@ -2,93 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD2A2307E1
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 12:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74CC2308F1
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jul 2020 13:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgG1Kn0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 06:43:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48374 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728709AbgG1KnY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:43:24 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id BD88A64D86DA46CA6805;
-        Tue, 28 Jul 2020 18:43:21 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Jul 2020 18:43:11 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 7/7] RDMA/hns: Fix the unneeded process when getting a general type of CQE error
-Date:   Tue, 28 Jul 2020 18:42:21 +0800
-Message-ID: <1595932941-40613-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
-References: <1595932941-40613-1-git-send-email-liweihang@huawei.com>
+        id S1729180AbgG1LiS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jul 2020 07:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729081AbgG1LiR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jul 2020 07:38:17 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19016C0619DE
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f18so17966361wrs.0
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
+        b=b8/14qSmtpua6DExDbiZQujm3FVCJQWOEnGYc8m39CT4QhCFHb7H/8m/Mr+GJhki5y
+         D26KeL8e5wwIhpqswED7Iyj8LNXjLx29RYfhZ1pPRjvkmM3zHNDeTF1tCFcQE9cmRh/R
+         raunFxUrBwUmVbHiIcNmDsAsXlg0feXUzfnq5cUO9m3PCR65DPFX0ENqSsff92XlzdML
+         2lZ1DHEdMBJRJ7G/JmLQNbN9a0xCfCCdIavasCRbfc1GMLbxrWB9YQiD4Jx827i+wgQH
+         uvPy2fXgy98qEeiaY5zYJY4YAm1gQLhdwyYSQS3qfKNnqXIVHUgDrgxJy+XFocnlCNnt
+         WweQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
+        b=fNCuVHv2omHzpzrnsZCpxaFCy0RxHGT44e3khcz3kVi34FA8HOY4vUhITGL286SVD0
+         afulmgXthUt9BQD1O/N87FeKsDWdkRExBMSaNURxvYabq2Bqu1vbGgm2+iWmyAvGQ7FD
+         L50mQfseIqTzxqTBX02LR8ZjErlBvgJhunHSaLpLSxIGGSzekJsvrk+d9Vt1Azgkc2jR
+         zguHlrEiIhmtJia5HbLLcknNwRlK5oaHvV7X+0ux9SYrVh7sxKErD8BcPvbT4nVo4+lg
+         nvLp9tZvDC3udPyOFehTYXAVgTCsTFxWQa+wp/FxvfOSy4SuSB83AWg73JHd+FGCADx+
+         PUNw==
+X-Gm-Message-State: AOAM530LSxVtgGHbJlO99b68KA6r4Tzq7v/Z+EoDdJk/zG2SoVrn9/0R
+        LOhY1VM3w/dXfNIGEvHUuBOyHv/rTdRl1q2JEHY=
+X-Google-Smtp-Source: ABdhPJxf3Z6j28ZJZ91yE+38HygJgiTtZMyB/VSeYng0agg0J+nv4s0qzz48SwEN7D8BizofBLS128ELYqeZWTC2zc4=
+X-Received: by 2002:a5d:5746:: with SMTP id q6mr24649773wrw.59.1595936294234;
+ Tue, 28 Jul 2020 04:38:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Received: by 2002:a5d:65cb:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 04:38:13
+ -0700 (PDT)
+From:   Rashid Al-Wahaibi <pdlarsen550@gmail.com>
+Date:   Tue, 28 Jul 2020 12:38:13 +0100
+Message-ID: <CAE00X2F5SUiQf0qCZYq3Yx353S0Esu1hA3RH4THqOM0WZMKHFQ@mail.gmail.com>
+Subject: Your Partnership
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
-
-If the hns ROCEE reports a general error CQE (types not specified by the IB
-General Specifications), it's no need to change the QP state to error, and
-the driver should just skip it.
-
-Fixes: 7c044adca272 ("RDMA/hns: Simplify the cqe code of poll cq")
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 9 +++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 1 +
- 2 files changed, 10 insertions(+)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 0c81100..d51b332 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3046,6 +3046,7 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 		  IB_WC_RETRY_EXC_ERR },
- 		{ HNS_ROCE_CQE_V2_RNR_RETRY_EXC_ERR, IB_WC_RNR_RETRY_EXC_ERR },
- 		{ HNS_ROCE_CQE_V2_REMOTE_ABORT_ERR, IB_WC_REM_ABORT_ERR },
-+		{ HNS_ROCE_CQE_V2_GENERAL_ERR, IB_WC_GENERAL_ERR}
- 	};
- 
- 	u32 cqe_status = roce_get_field(cqe->byte_4, V2_CQE_BYTE_4_STATUS_M,
-@@ -3068,6 +3069,14 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 		       sizeof(*cqe), false);
- 
- 	/*
-+	 * For hns ROCEE, GENERAL_ERR is an error type that is not defined in
-+	 * the standard protocol, the driver must ignore it and needn't to set
-+	 * the QP to an error state.
-+	 */
-+	if (cqe_status == HNS_ROCE_CQE_V2_GENERAL_ERR)
-+		return;
-+
-+	/*
- 	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
- 	 * into errored mode. Hence, as a workaround to this hardware
- 	 * limitation, driver needs to assist in flushing. But the flushing
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 53c26f3..1fb1c58 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -214,6 +214,7 @@ enum {
- 	HNS_ROCE_CQE_V2_TRANSPORT_RETRY_EXC_ERR		= 0x15,
- 	HNS_ROCE_CQE_V2_RNR_RETRY_EXC_ERR		= 0x16,
- 	HNS_ROCE_CQE_V2_REMOTE_ABORT_ERR		= 0x22,
-+	HNS_ROCE_CQE_V2_GENERAL_ERR			= 0x23,
- 
- 	HNS_ROCE_V2_CQE_STATUS_MASK			= 0xff,
- };
 -- 
-2.8.1
+Good day,
+My name is Rashid Al-Wahaibi, I am from Oman but base here in the UK
+and a Managing Partner of BP Partnership Ltd, a Financial Consultancy
+Firm with office in the United Kingdom. I am contacting you based on
+the request of Ms Rosmah Mansor Najib Razak, wife of Najib Razak, the
+immediate past Malaysian Prime Minister.
 
+I found your profile satisfying and decided to contact you based on Ms
+Rosmah Mansor Najib Razak desire to invest in any viable project in
+your region.
+
+I need you to guide me on the type of investment that will be of best
+interest and provide good return on investment in your country and
+also act as her investment manager. She is ready to invest $25m to
+$50m USD
+
+I will explain further detail of this business proposal when you reply
+to this email indicating your interest.
+
+
+Regards,
+
+Rashid Al-Wahaibi,
+Bp Partnership Ltd
+60 Raglan Road
+Reigate, ENG RH2 0HN,
+United Kingdom
