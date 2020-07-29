@@ -2,115 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F5B23267B
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 22:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F406023275F
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 00:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgG2Uva (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jul 2020 16:51:30 -0400
-Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:31553
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726476AbgG2Uva (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:51:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hToJcbzHzPSSITevL1qAy1f19zh5GuaboAuDdUGbe3evddQFtUDmm/4U3Zaf3nmMT2qbUr/n/iDeApVc0PMJp0ygRhvtY1GwLhx1hN4WCw6LvLeau9EsqRPpMJmOtjG75YYbNo1Hk/ZLljdh+TZFQocx0IynCqlBlO4s32N59I/paYW4JBuBChCmAX0TvveNLJw7mVohFQPbk4eTNnpMquhlWV8noZ2uKpkjFq6XV15wgYzcc8/IFT6p+ASzEfDW44/LKiOKw7+UvKRdrTcpvYXJO/NcjNu/qZDq4jxufMXk+6MQayH8A0SgOflGAcKk7RheUPZTEd8qRYpky+a6Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
- b=B8HPwWfr+/wxMR8MIQlBVQj3krAuz72QL+0mlWosPU0DI6rZ7MLVPEATwJuiZ7e9gS0FFEBtLe2Jk9zbSSXfb8/5EH633plzEZlGoYVAzj8N6lUbdwfak9n+R8TsAZwv2bvyWBq7w/qrIOVoyqSScpaQIJmv8Q4SLgGrl2GRKn0zVHIZFtRh8lBj4wbL+QZxcAF1637jKIC+dvN8vgBNALom5uMOCyv66wYVN9oiXAmQq+alLO1Zj5/tZ7vtf+NH2RokH38Q+2lWRkd+2KnHH1s/9RRkBbOAdztlkpYAkGqxDv5OLRUT7pZWOJ22ADt2Zrz9Jym5meA6hp2vPNvW0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
- b=aW8ZYKnk8+tmDV6IfvJMwrJ7GawC6hHE8+BFNVC/fI0irqNvQAQfmS6Y3elSAo8d9xfpzSVCa02Bc/F2eBX5NXU89WPe62lO5aMnJ+UsY6i6e1ppXZYvSUr3QahxkDmKT9cDaitk9msNU3KHGRsDfH4O9Ujl276XrpcOisIH4Jw=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB5694.eurprd05.prod.outlook.com (2603:10a6:803:cd::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Wed, 29 Jul
- 2020 20:51:25 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::508a:d074:ad3a:3529]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::508a:d074:ad3a:3529%5]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 20:51:23 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>
-CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
-        "hawk@kernel.org" <hawk@kernel.org>, "kafai@fb.com" <kafai@fb.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "xiongx18@fudan.edu.cn" <xiongx18@fudan.edu.cn>,
-        "yhs@fb.com" <yhs@fb.com>, "ast@kernel.org" <ast@kernel.org>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
-        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>
-Subject: Re: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Thread-Topic: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Thread-Index: AQHWZaSD4+bJSZVEQUqH8FFGnSv/eKke6kCAgAAYKQCAAAZTAA==
-Date:   Wed, 29 Jul 2020 20:51:23 +0000
-Message-ID: <2199f90fb6394d60d8dc62b15c6a6e62a22e4f41.camel@mellanox.com>
-References: <20200729123334.GA6766@xin-virtual-machine>
-         <613fe5f56cb60982937c826ed915ada2de5e93a2.camel@mellanox.com>
-         <20200729.132842.190888844026802233.davem@davemloft.net>
-In-Reply-To: <20200729.132842.190888844026802233.davem@davemloft.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.4 (3.36.4-1.fc32) 
-authentication-results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=mellanox.com;
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 90d107f8-8831-41c5-51f9-08d8340127c1
-x-ms-traffictypediagnostic: VI1PR05MB5694:
-x-microsoft-antispam-prvs: <VI1PR05MB5694F1077594284AE01C5A16BE700@VI1PR05MB5694.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iIlP7rbhfD5Y4Xk/JXqor+J3p0DNARUVrxV+eEkjEljypVGzpWlfesg0QUt5HFOncEmexVtr3YgmeD8xlLUDI6bGlBpyb4R06vJPZx98+JSdQBs7KShvzB5s3zC6AAC0zGHrR0dhNUqFHHKhcG1E8eIfmyMIcU/zFbAYwKJo+H1WBY1TQJW952YuW1IiZbws8BoB/gqNl1VuVUU9jasNPm6MMgkha9Ie6BSQZdJbGd864dFqjUr93zGgcO1zyX/17H4cgpAegdd2XRz7SmT7YuQRlsSml5vOcrrt/DabToYCadC2wk/KSsUdytH2GGFrCQ4KRhbDk3Ma57wmRt/f7g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(2906002)(36756003)(66946007)(71200400001)(4744005)(76116006)(64756008)(478600001)(6512007)(66446008)(91956017)(66556008)(7416002)(316002)(66476007)(54906003)(8936002)(6486002)(5660300002)(86362001)(6916009)(8676002)(26005)(186003)(6506007)(4326008)(2616005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZkPioEl42y7OftyPWrvJknbAsV0qCntyHZ84huThK5eb8B0oXLWU89sUhzMo2oJacuxNyX6nAUwbODpGP5s9IpCo2yXtZNVOjQi49djay2JGk7BaYSa5bUwhuMLc9bd9i8l75RtemFsR6n9rUgIR1j3UafdVqSsrmt93+l7LN2dzexTtgm+O++gPI5m0Hm1RTpgkXrI1GCR7W+m5JEIcxhY+DjooF3O/V7+s/piN7oTH4wBulaNoH+syuaWyOhsjoLPqcMe1Z6mtFX5Um8Z3HBGRembCiHDvZ+Y1i1o5oPh1spmgp87lnc6Qt1puaxt/bB6dWboIyt2GtyTV16e2d2DTHhgqPewbeCJtpACvGycFGxI0TtDT696/+7oHhJ8GlFN5kpa3zcaNoZ+1AQ4VNuzANitJhvJVOeKR4Blw8dbbo8IQvbtBs2ydDKdORzXc4diADZGiqYgGHl5s+6kCS+WsSgmXJitQJC3lpOrirLs=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A05DF2DD34D2F145881D6421727DC25A@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727071AbgG2WKy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jul 2020 18:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgG2WKy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jul 2020 18:10:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC8DC061794;
+        Wed, 29 Jul 2020 15:10:54 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so4016561wmj.5;
+        Wed, 29 Jul 2020 15:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VRmXX22Ht9Ug7pe7RoctKCZnQAxX1VH0Ou5Q8SMIejk=;
+        b=Xt2cZ1tWt2tIeIk0lGFPYBvi2AJQmiptaxJ/IrqrJHsJP0XcurZ7xsprx89qWRSeas
+         euW6FnIpxp07vyK+XaFIVryYYhIAN1YBPz3zm3lqJADQ5omnUDX0NP6grbTBUtPnhsdF
+         J3TU+Tk7qY+yTiPGhkvo5ja7npziNhpk/3uANV7RSJ0qhUSFxcZcaFPS9YVbbb3ZWKzz
+         kC+nHw97kt9XnnF0enP57i1SXtmprwiM9sDxXIHlr2UdMmazSH55332PFuAEcA8lGpD2
+         HUsRWoWlUt/ckjME1OdX86A+vCEj4oTXxTKGCUYxq/u3kAikEIkm045zrIeEm5tnz0pe
+         lZUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VRmXX22Ht9Ug7pe7RoctKCZnQAxX1VH0Ou5Q8SMIejk=;
+        b=tit934V84zYlMimy2FfkTSPgm0mZRhMDeCgr17dNYH92hb4/Z0vzngh/ztHLiolRIZ
+         rPqo9GfCZjfiEeN3ijINl9EtGALT+OdVOaADJq44BBT/C3BkeN4mGQiglp25OU4gKxkZ
+         7NcaFkG0QQhLzc6uT2XzINXPbEwxw9e5WBM5fgwhgrxo9ywR8CaqdnYHoQ6L0yUlGjZ4
+         uSD3NwWAKtn/7Ctu++oH3uFruUsJPi9dGh6t10LkRV3mSHVkAMqxk7LhrfSBfCs5J8P3
+         tZV9UCJ2PB2C1erGl7y1PC1pnCIpyipicI4pjotnpS9u/PDREUvzVxu50q9SxUwY4YHj
+         ZWrQ==
+X-Gm-Message-State: AOAM533nhKBdeVbRUJYD00H/+gNwRv3jexFr3Ilby2HtbqKe1Eban3pi
+        GKZC0ySVdn6pzXFRqteIvsm33TA905Skr5JD2MM=
+X-Google-Smtp-Source: ABdhPJy8ks1gVFBsd4+PvZ7RcVx+rmeF3fW3P6eru07cUIBqON0J65m9pkCTSrgJ1mggZhfdeqSwdUdDfuQuzzSeZtw=
+X-Received: by 2002:a1c:2:: with SMTP id 2mr10843270wma.79.1596060652954; Wed,
+ 29 Jul 2020 15:10:52 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB5102.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90d107f8-8831-41c5-51f9-08d8340127c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2020 20:51:23.7775
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b/pxPP7UffeILrjkEIqxQIo+qTP6CMDSbnJPcil6bt5uTlLFHjnWgCejcanmht727znZYyJF+IyBILN2TeyLeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5694
+References: <20200727213017.852589-1-daniel.vetter@ffwll.ch> <d4e687e9-cf0b-384f-5982-849d0fa11147@amd.com>
+In-Reply-To: <d4e687e9-cf0b-384f-5982-849d0fa11147@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 29 Jul 2020 18:10:42 -0400
+Message-ID: <CADnq5_OdpSD3xRufctNedeiehiA80XcN1YOA7d58nMFcrp8vhg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/dc: Stop dma_resv_lock inversion in commit_tail
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTI5IGF0IDEzOjI4IC0wNzAwLCBEYXZpZCBNaWxsZXIgd3JvdGU6DQo+
-IEZyb206IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KPiBEYXRlOiBXZWQs
-IDI5IEp1bCAyMDIwIDE5OjAyOjE1ICswMDAwDQo+IA0KPiA+PiBGaXggdGhpcyBpc3N1ZSBieSBq
-dW1waW5nIHRvIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoDQo+ID4+IGVycl9ycV93cV9kZXN0cm95
-DQo+ID4+IHdoZW4gZWl0aGVyIGZ1bmN0aW9uIGZhaWxzLg0KPiA+PiANCj4gPiANCj4gPiBGaXhl
-czogNDIyZDRjNDAxZWRkICgibmV0L21seDVlOiBSWCwgU3BsaXQgV1Egb2JqZWN0cyBmb3IgZGlm
-ZmVyZW50DQo+IFJRDQo+ID4gdHlwZXMiKQ0KPiANCj4gU2FlZWQsIGFyZSB5b3UgZ29pbmcgdG8g
-dGFrZSB0aGlzIGludG8geW91ciB0cmVlIG9yIHdvdWxkIHlvdSBsaWtlIG1lDQo+IHRvDQo+IGFw
-cGx5IGl0IGRpcmVjdGx5Pw0KPiANCj4gVGhhbmtzLg0KDQpJIHdpbGwgdGFrZSB0aGlzIHRvIG15
-IHRyZWUgb25jZSBYaW4gYWRkcyB0aGUgbWlzc2luZyBGaXhlcyB0YWcuDQpUaGFua3MuDQoNCg==
+Applied.  Thanks!
+
+Alex
+
+On Tue, Jul 28, 2020 at 2:56 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 27.07.20 um 23:30 schrieb Daniel Vetter:
+> > Trying to grab dma_resv_lock while in commit_tail before we've done
+> > all the code that leads to the eventual signalling of the vblank event
+> > (which can be a dma_fence) is deadlock-y. Don't do that.
+> >
+> > Here the solution is easy because just grabbing locks to read
+> > something races anyway. We don't need to bother, READ_ONCE is
+> > equivalent. And avoids the locking issue.
+> >
+> > v2: Also take into account tmz_surface boolean, plus just delete the
+> > old code.
+> >
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Cc: linux-rdma@vger.kernel.org
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: intel-gfx@lists.freedesktop.org
+> > Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > ---
+> > DC-folks, I think this split out patch from my series here
+> >
+> > https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
+e.kernel.org%2Fdri-devel%2F20200707201229.472834-1-daniel.vetter%40ffwll.ch=
+%2F&amp;data=3D02%7C01%7Cchristian.koenig%40amd.com%7C8a4f5736682a4b5c943e0=
+8d832747ab1%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637314823145521840=
+&amp;sdata=3Dqd7Nrox62Lr%2FXWbJJFVskg9RYL4%2FoRVCFjR6rUDMA5E%3D&amp;reserve=
+d=3D0
+> >
+> > should be ready for review/merging. I fixed it up a bit so that it's no=
+t
+> > just a gross hack :-)
+> >
+> > Cheers, Daniel
+> >
+> >
+> > ---
+> >   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 19 ++++++------------=
+-
+> >   1 file changed, 6 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/driver=
+s/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > index 21ec64fe5527..a20b62b1f2ef 100644
+> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > @@ -6959,20 +6959,13 @@ static void amdgpu_dm_commit_planes(struct drm_=
+atomic_state *state,
+> >                       DRM_ERROR("Waiting for fences timed out!");
+> >
+> >               /*
+> > -              * TODO This might fail and hence better not used, wait
+> > -              * explicitly on fences instead
+> > -              * and in general should be called for
+> > -              * blocking commit to as per framework helpers
+> > +              * We cannot reserve buffers here, which means the normal=
+ flag
+> > +              * access functions don't work. Paper over this with READ=
+_ONCE,
+> > +              * but maybe the flags are invariant enough that not even=
+ that
+> > +              * would be needed.
+> >                */
+> > -             r =3D amdgpu_bo_reserve(abo, true);
+> > -             if (unlikely(r !=3D 0))
+> > -                     DRM_ERROR("failed to reserve buffer before flip\n=
+");
+> > -
+> > -             amdgpu_bo_get_tiling_flags(abo, &tiling_flags);
+> > -
+> > -             tmz_surface =3D amdgpu_bo_encrypted(abo);
+> > -
+> > -             amdgpu_bo_unreserve(abo);
+> > +             tiling_flags =3D READ_ONCE(abo->tiling_flags);
+> > +             tmz_surface =3D READ_ONCE(abo->flags) & AMDGPU_GEM_CREATE=
+_ENCRYPTED;
+>
+> Yeah, the abo->flags are mostly fixed after creation, especially the
+> encrypted flag can't change or we corrupt page table tables. So that
+> should work fine.
+>
+> Anybody who picks this up feel free to add an Reviewed-by: Christian
+> K=C3=B6nig <christian.koenig@amd.com>.
+>
+> Regards,
+> Christian.
+>
+> >
+> >               fill_dc_plane_info_and_addr(
+> >                       dm->adev, new_plane_state, tiling_flags,
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
