@@ -2,80 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B8E2325DF
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 22:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65703232625
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 22:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgG2UIF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jul 2020 16:08:05 -0400
-Received: from mga02.intel.com ([134.134.136.20]:10144 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726671AbgG2UIE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:08:04 -0400
-IronPort-SDR: GPip9xsf0hPT3oPdf7isfCSL2wtS25eYXFh8fsZxgyHHMc9MmjiKGWzgHvP9+Fdcnfxa/iybdF
- uX62gyZ9aeuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="139498399"
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="139498399"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 13:07:59 -0700
-IronPort-SDR: VEkKSi7YHpHQJlHbeXmqz+RxRzypBtnzmh8OUVMTj5pmIuPPVhrxf61eQdmlv+SVKmj2qbz1UI
- Z9migdSznqFQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,411,1589266800"; 
-   d="scan'208";a="434798608"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jul 2020 13:07:57 -0700
-Received: from fmsmsx155.amr.corp.intel.com (10.18.116.71) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 29 Jul 2020 13:07:56 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.54]) by
- FMSMSX155.amr.corp.intel.com ([169.254.5.149]) with mapi id 14.03.0439.000;
- Wed, 29 Jul 2020 13:07:56 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Anubhav Guleria <anubhav.nitsri.it@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: Issue with i40iw
-Thread-Topic: Issue with i40iw
-Thread-Index: AQHWZeIm6pAu1sdeKUeg0pbAcpS5A6ke+Lkw
-Date:   Wed, 29 Jul 2020 20:07:56 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A70106600A99@fmsmsx124.amr.corp.intel.com>
-References: <CAFsMY+gFTh_hUDGexx3duLD_anZkar+SNj3S9UhMYH+ciYU-rA@mail.gmail.com>
-In-Reply-To: <CAFsMY+gFTh_hUDGexx3duLD_anZkar+SNj3S9UhMYH+ciYU-rA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.107]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S1726718AbgG2U2w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jul 2020 16:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgG2U2w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jul 2020 16:28:52 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFDCC061794;
+        Wed, 29 Jul 2020 13:28:52 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5F9A911CEB79D;
+        Wed, 29 Jul 2020 13:12:06 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 13:28:42 -0700 (PDT)
+Message-Id: <20200729.132842.190888844026802233.davem@davemloft.net>
+To:     saeedm@mellanox.com
+Cc:     songliubraving@fb.com, hawk@kernel.org, kafai@fb.com,
+        kpsingh@chromium.org, john.fastabend@gmail.com, leon@kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org,
+        linux-rdma@vger.kernel.org, xiongx18@fudan.edu.cn, yhs@fb.com,
+        andriin@fb.com, kuba@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        xiyuyang19@fudan.edu.cn, tanxin.ctf@gmail.com,
+        yuanxzhang@fudan.edu.cn
+Subject: Re: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <613fe5f56cb60982937c826ed915ada2de5e93a2.camel@mellanox.com>
+References: <20200729123334.GA6766@xin-virtual-machine>
+        <613fe5f56cb60982937c826ed915ada2de5e93a2.camel@mellanox.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 29 Jul 2020 13:12:07 -0700 (PDT)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBTdWJqZWN0OiBJc3N1ZSB3aXRoIGk0MGl3DQo+IA0KPiBIaSwNCj4gQm90aCBvZiBteSBzZXJ2
-ZXJzIGFyZSBydW5uaW5nIHdpdGgga2VybmVsIDQuMTQuMTc4IGFuZCBoYXZlIEludGVsIEV0aGVy
-bmV0DQo+IE5ldHdvcmsgQWRhcHRlciBYNzIyLiBBbHNvIHRoZSBJT01NVSBpcyBkaXNhYmxlZC4g
-SSB3YXMgdHJ5aW5nIHRvIHJ1biBxcGVyZiBhbmQNCj4gcmFuIGludG8gY291cGxlIG9mIGlzc3Vl
-czoNCj4gDQo+IDEpIFdoaWxlIHJ1bm5pbmcgYW55IGJ3IHRlc3QsIGVnLiByY19idyBvciByY19i
-aV9idywgSSBzZWUgZm9sbG93aW5nIG1lc3NhZ2VzIGluDQo+IGRtZXNnOg0KPiBpNDBpd19jcXBf
-Y2VfaGFuZGxlcjogb3Bjb2RlID0gMHgxIG1hal9lcnJfY29kZSA9IDB4ZmZmZiBtaW5fZXJyX2Nv
-ZGUgPQ0KPiAweDgwMDcNCj4gaTQwaXdfd2FpdF9ldmVudDogZXJyb3IgY3FwIGNvbW1hbmQgMHhi
-IGNvbXBsZXRpb24gbWFqID0gMHhmZmZmIG1pbj0weDgwMDcNCj4gDQo+IDIpIEZvbGxvd2luZyBy
-YyBiZW5jaG1hcmtzIGZhaWw6IHJjX3JkbWFfd3JpdGVfYncsIHJjX3JkbWFfd3JpdGVfbGF0LA0K
-PiByY19jb21wYXJlX3N3YXBfbXIsIHJjX2ZldGNoX2FkZF9tciwgdmVyX3JjX2NvbXBhcmVfc3dh
-cCBhbmQNCj4gdmVyX3JjX2ZldGNoX2FkZC4gRm9yIHRoZXNlIEkgZ2V0IGVycm9yIG9mIGZhaWxl
-ZCB0byBwb3N0ICJiZW5jaG1hcmsgbmFtZSINCj4gDQo+IEFtIEkgbWlzc2luZyBzb21ldGhpbmcg
-aGVyZT8gQW55IHN1Z2dlc3Rpb25zPw0KQXJlIHRoZXNlICJyY19jb21wYXJlX3N3YXBfbXIsIHJj
-X2ZldGNoX2FkZF9tciwgdmVyX3JjX2NvbXBhcmVfc3dhcCBhbmQNCnZlcl9yY19mZXRjaF9hZGQi
-IHJlcG9ydGluZyBhbiBpbnZhbGlkIG9wIGNvZGU/IFRob3NlIGFyZSB1bnN1cHBvcnRlZCBpbiBp
-NDBpdy4NCg0KcXBlcmYgSSB0aGluayB1c2VzIHdyaXRlIHdpdGggaW1tZWRpYXRlIHdoaWNoIGlz
-IGFsc28gdW5zdXBwb3J0ZWQgaW4gaTQwaXcNCmFuZCBjb3VsZCBleHBsYWluIHRoZSByZG1hX3dy
-aXRlXyogZmFpbHMuDQoNCkZvciBwZXJmb3JtYW5jZSBiZW5jaG1hcmtpbmcgb24geDcyMiwgd2Ug
-YXJlIHR5cGljYWxseSB1c2luZyBwZXJmdGVzdHMgKGliXyogdGVzdHMpDQoNClNoaXJheg0KDQo=
+From: Saeed Mahameed <saeedm@mellanox.com>
+Date: Wed, 29 Jul 2020 19:02:15 +0000
+
+> On Wed, 2020-07-29 at 20:33 +0800, Xin Xiong wrote:
+>> The function invokes bpf_prog_inc(), which increases the refcount of
+>> a
+>> bpf_prog object "rq->xdp_prog" if the object isn't NULL.
+>> 
+>> The refcount leak issues take place in two error handling paths. When
+>> mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function
+>> simply
+>> returns the error code and forgets to drop the refcount increased
+>> earlier, causing a refcount leak of "rq->xdp_prog".
+>> 
+>> Fix this issue by jumping to the error handling path
+>> err_rq_wq_destroy
+>> when either function fails.
+>> 
+> 
+> Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ
+> types")
+
+Saeed, are you going to take this into your tree or would you like me to
+apply it directly?
+
+Thanks.
