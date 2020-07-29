@@ -2,148 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FADC231E89
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 14:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677FF231EAC
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 14:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgG2M2n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jul 2020 08:28:43 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:39194 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgG2M2m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:28:42 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f216b770000>; Wed, 29 Jul 2020 20:28:39 +0800
-Received: from HKMAIL101.nvidia.com ([10.18.16.10])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 29 Jul 2020 05:28:39 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Wed, 29 Jul 2020 05:28:39 -0700
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Jul
- 2020 12:28:38 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 29 Jul 2020 12:28:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JJqmm3UaP0dqn1ylc5jgmBNwPXiYqm69pug20g+5CEnqGypR8r1OmCiPfNABzj8Txkzdauy4OdQRxHhJjTeP7BNCFlY8TSmwbD28KUQ1dmzv45tfP6L6RywzIHLNFqRKkx30AdV1vjksZkcmrDJY4SqmI3zozRaLqiz+Fzw2y0+NgS0Sub2jL+nJBgnD+jNmPCw5TUBSgAvFr7Zfnm/gCOWFUbbgFTR+xltzyuh+3SAyRMn1KicPOD+BGj7q3nkKJce/KFNUp4QT38ti9jF+X2iwcR3lTWRQXiCG0JVcpd4aIxicGMrdbXsBdLMwDvVdqiAyaZw5ugMhau3vbnZlgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFy7YFHEB3yuqoWUI+zP/ZxZUs7Xn+n2+X0IIOtltu8=;
- b=DfSEAea272NxUIl77V8vtA60tchjQszy1s4vUa8FuKpa1keCktzGxCC5l1eZDD9yTf2PKVzTYNk0svIU7vOv2RjeXkZ+TbsbZJFnQstY7EVYrHyw1DggJaLFs45ZBEakIunttbYrXyMS+Q1rFmufR8O0BgBmPHcIlPAJYZoVRfmSLpjA4ecVoUPvdDfCUiLKp+tsTSDDeLvkH0onMwj4d/+sHkIW2h2x47Q6AZcKHnlgqv5tNHlzxHhgObLEl6Y1VMtvEHoeip6f66w+lOp56Uz6THi8BvIvPbjaZ5ucEdHK9gbtuR+qcd0UnxlWOr3QfgAwjEqsJeX3LdWWaWk8mQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Wed, 29 Jul
- 2020 12:28:36 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 12:28:36 +0000
-Date:   Wed, 29 Jul 2020 09:28:34 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>
-Subject: Re: [PATCH for-next v4 0/4] Add support for 0xefa1 device
-Message-ID: <20200729122834.GA220079@nvidia.com>
-References: <20200722140312.3651-1-galpress@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200722140312.3651-1-galpress@amazon.com>
-X-ClientProxiedBy: MN2PR04CA0002.namprd04.prod.outlook.com
- (2603:10b6:208:d4::15) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726385AbgG2MkG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jul 2020 08:40:06 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:60639 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726353AbgG2MkF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Jul 2020 08:40:05 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:40:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=ckL
+        fjXtDlNzfBaiEh1n2WcNgMFoH6IBrBoFHbV5jBXk=; b=fnf7yXZz1XG1VNx8A0G
+        P4HxGvbRGReDWbincy2f3kynybLSC3IMgsbUHPjD/qfWHFxTL31NniB634/rzCCi
+        oEJjjyakdrtR8A+77LWS4LFdp2MkciXGICA9ZFGcnRgzXTrEQ4fTEc52rD+0BW3L
+        HPTtyfYhnRNJbCvS7krRiVQc=
+Received: from xin-virtual-machine (unknown [111.192.143.50])
+        by app2 (Coremail) with SMTP id XQUFCgDHzbmebCFfDJqTAg--.8049S3;
+        Wed, 29 Jul 2020 20:33:35 +0800 (CST)
+Date:   Wed, 29 Jul 2020 20:33:34 +0800
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
+Subject: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
+Message-ID: <20200729123334.GA6766@xin-virtual-machine>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0002.namprd04.prod.outlook.com (2603:10b6:208:d4::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Wed, 29 Jul 2020 12:28:35 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k0lCE-000vGT-Ih; Wed, 29 Jul 2020 09:28:34 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 15d0fe0b-d60d-4095-d23d-08d833baea1f
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1754:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB175471CF6F267739095EB724C2700@DM5PR12MB1754.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YaJ2J/BW95BrLK1Aohgmvacc58BRD87udpElxnNYfh5FPjb1AZnLc1j3Zl5eE+8iEhiD7aLMGaw0DxGTpD8HvOzbBl9YxuV9bftz9ZpMyKRFZd0BSk4gv+V3LtLAXv8nuNkEwOTc9DFpKTmsxaqARCXyESuzREmJZbzwg8U4T4Nn0/SgP1RnFdkDGKHPhXoYiXZaxb7PtCxoyC20/8jdwcm4i8LTuswARafhkOj0h9NcuvDWhqd/23tq52PtfALHA1SDAzQje93BRZj22sWPSl9OfoTQjybHGuutM0WpXI+mxWvcuPhbMzYkWAcgS7yW0+7B7S1WB41nXNOqGlKFWdHy7IaQRiykloUe1wn+iGvRgB8qMe85heS6kBNo8XgOcFFRuPhHyzlr1B2/XJ/SszyZC+xTFVMgZKx/dcz0kY28Q6yRRWbOyaFoVAQuxKIuF09guLKMyngqCfwQ2plt3A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(66556008)(66946007)(66476007)(426003)(33656002)(478600001)(966005)(2616005)(83380400001)(6916009)(36756003)(2906002)(26005)(8676002)(316002)(4326008)(1076003)(54906003)(8936002)(186003)(5660300002)(9786002)(9746002)(86362001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: AddgUN+feFZMvdXo2IqDSbzVm1spJwtEHHHeD/Mym4TOLX28JcqlbLmhEMjcX/YmEbWzeAZQDNVTm0zCH8XgonrOeZzcFgia9Xh/vMZO2QI5/hN7yVVIfynn5xtkzOAkMXpJqhDZXlvK2Hl9cx3KY113cTAUOUZJORZz3gEuX2DfvKADcOMkvK6wgokt+QfgLExv9QwULrWtAqLHJ8SONCiCVgFwCt73emAaqM4EddjrDjwAzWchDi92BoFOyT1V2JuL0I54Dq9hKxaDWvTrJ8emA6d84bCV0HN7DT9ACT86km3I2zo+0Q8MXR0YzbQF54gezR3a87Ci+r1LHaP1DfBJ3uZjuXHAF2CkXn7T4F25ZCLJdsTJq7Jk0FMrktLgsNyPO2/94KN5NNrAc+S7SN8NBICbWwuuffm3iO5ShweAwb69WZNK3NVJdHcyqm0xXLI1tzb5V4MPGhhZBL06kuuuVUjSLFeiX+VlZTH+lIY=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15d0fe0b-d60d-4095-d23d-08d833baea1f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2020 12:28:36.0391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6jCb8UjootaN8z6mFUniU6fEmOfWJjLnD2q5pwo+7/w1eHopJg2Vfc8Axb6VxNet
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1754
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596025719; bh=TFy7YFHEB3yuqoWUI+zP/ZxZUs7Xn+n2+X0IIOtltu8=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=gHq0UyuvYAdK4JHrsBPa3NTUIN8zH14BMOR4Xy5qX1+6nlASRt1xMFlCBUnMJbOdF
-         u0eP0iIlETJ155/3EO4OS7/Tj3KT28POE3B4wfpY1JF8EowXGQcxcU0dTHObJeeG2B
-         yMVgWupWGftd2sMwmsIAnsybUhSW7g7CXqNxOwfzoCM+7LFllpWlx4Vkei2ifzEHP8
-         IyPXnnlVFjDNq14nr/qg36//y9yDTSm8HoD8mCiWBIfqU2hlDBwpnXaiuSVbOM70EL
-         ArrlEa7KHO2I4DBgiDjNQL8Su54BBh6yapUPzhVyMWj0c4HNGtkSxJySsWGuzZ9/hG
-         UcXslJyGilvdQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: XQUFCgDHzbmebCFfDJqTAg--.8049S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rGr45KFg_yoW8WF4Upr
+        47X3sFyrZ5ta4UJw4DAaykXa4rKan0vF1kWr1avayfZr4DAan5Ar9Ygry7uF1UGFy8Gw12
+        qws2kws8AFn5C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUewIDDUUUU
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 05:03:08PM +0300, Gal Pressman wrote:
-> Hi all,
-> 
-> The following submission adds the needed functionality in order to
-> support 0xefa1 devices, and adds it to the driver pci table.
-> 
-> PR was sent:
-> https://github.com/linux-rdma/rdma-core/pull/789
-> 
-> Changelog -
-> v3->v4: https://lore.kernel.org/linux-rdma/20200721133049.74349-1-galpress@amazon.com/
-> * Remove the user_comp_handshakes array and use the macros explicitly.
-> * Make efa_user_comp_handshake static.
-> v2->v3: https://lore.kernel.org/linux-rdma/20200720080113.13055-1-galpress@amazon.com/
-> * Remove gcc specific stuff to fix clang compilation.
-> v1->v2: https://lore.kernel.org/linux-rdma/20200709083630.21377-1-galpress@amazon.com/
-> * Add handshake with userspace provider to verify required features
->   support.
-> 
-> Regards,
-> Gal
-> 
-> Gal Pressman (4):
->   RDMA/efa: Expose maximum TX doorbell batch
->   RDMA/efa: Expose minimum SQ size
->   RDMA/efa: User/kernel compatibility handshake mechanism
->   RDMA/efa: Add EFA 0xefa1 PCI ID
+The function invokes bpf_prog_inc(), which increases the refcount of a
+bpf_prog object "rq->xdp_prog" if the object isn't NULL.
 
-Applied to for-next
+The refcount leak issues take place in two error handling paths. When
+mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function simply
+returns the error code and forgets to drop the refcount increased
+earlier, causing a refcount leak of "rq->xdp_prog".
 
-Jason
+Fix this issue by jumping to the error handling path err_rq_wq_destroy
+when either function fails.
+
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a836a02a2116..8e1b1ab416d8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
+ 					&rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
+ 
+@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
+ 					 &rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+ 
+-- 
+2.25.1
+
