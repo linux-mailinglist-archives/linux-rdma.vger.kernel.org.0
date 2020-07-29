@@ -2,113 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677FF231EAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 14:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663D5232073
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 16:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgG2MkG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jul 2020 08:40:06 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.73]:60639 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgG2MkF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:40:05 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:40:04 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=ckL
-        fjXtDlNzfBaiEh1n2WcNgMFoH6IBrBoFHbV5jBXk=; b=fnf7yXZz1XG1VNx8A0G
-        P4HxGvbRGReDWbincy2f3kynybLSC3IMgsbUHPjD/qfWHFxTL31NniB634/rzCCi
-        oEJjjyakdrtR8A+77LWS4LFdp2MkciXGICA9ZFGcnRgzXTrEQ4fTEc52rD+0BW3L
-        HPTtyfYhnRNJbCvS7krRiVQc=
-Received: from xin-virtual-machine (unknown [111.192.143.50])
-        by app2 (Coremail) with SMTP id XQUFCgDHzbmebCFfDJqTAg--.8049S3;
-        Wed, 29 Jul 2020 20:33:35 +0800 (CST)
-Date:   Wed, 29 Jul 2020 20:33:34 +0800
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
-Subject: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Message-ID: <20200729123334.GA6766@xin-virtual-machine>
+        id S1726996AbgG2Odf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jul 2020 10:33:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40573 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726971AbgG2Ode (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jul 2020 10:33:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596033213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nrWZeUHHAezX02B5tZbQkludP/Rhl57VOqYp9NBaRag=;
+        b=Ur+MNT/8Y3AeEx9hAMNs/ptYNqDos+mSJjVeFn6/clrPpY3AyMaYOmN1YD50an/wgmp2Wu
+        YXHKhguqhiLLxWIREeD++g9wMfjnmP74Y+1k0xT+UR5ZIcy2NIWzKSHQzxjwswbd3Alosf
+        G9zQbZBYO1POw1FJoodZeiPmIiTNdgI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-4tAlSEYsOrS_7bGFtShljw-1; Wed, 29 Jul 2020 10:33:31 -0400
+X-MC-Unique: 4tAlSEYsOrS_7bGFtShljw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F7EF79EC1;
+        Wed, 29 Jul 2020 14:33:30 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 683775C5B7;
+        Wed, 29 Jul 2020 14:33:29 +0000 (UTC)
+Date:   Wed, 29 Jul 2020 22:33:26 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc] IB/rdmavt: Fix RQ counting issues causing use of
+ an invalid RWQE
+Message-ID: <20200729143326.GA2493772@dhcp-128-72.nay.redhat.com>
+References: <20200728183848.22226.29132.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CM-TRANSID: XQUFCgDHzbmebCFfDJqTAg--.8049S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rGr45KFg_yoW8WF4Upr
-        47X3sFyrZ5ta4UJw4DAaykXa4rKan0vF1kWr1avayfZr4DAan5Ar9Ygry7uF1UGFy8Gw12
-        qws2kws8AFn5C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
-        0xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUewIDDUUUU
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
+In-Reply-To: <20200728183848.22226.29132.stgit@awfm-01.aw.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The function invokes bpf_prog_inc(), which increases the refcount of a
-bpf_prog object "rq->xdp_prog" if the object isn't NULL.
+On Tue, Jul 28, 2020 at 02:38:48PM -0400, Mike Marciniszyn wrote:
+> The lookaside count is improperly initialized to the size of the
+> Receive Queue with the additional +1.  In the traces below, the
+> RQ size is 384, so the count was set to 385.
+> 
+> The lookaside count is then rarely refreshed.  Note the high and
+> incorrect count in the trace below:
+> 
+> rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9008 wr_id 55c7206d75a0 qpn c
+> 	qpt 2 pid 3018 num_sge 1 head 1 tail 0, count 385
+> rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
+> 
+> The head,tail indicate there is only one RWQE posted although the count
+> says 385 and we correctly return the element 0.
+> 
+> The next call to rvt_get_rwqe with the decremented count:
+> 
+> rvt_get_rwqe: [hfi1_0] wqe ffffc900078e9058 wr_id 0 qpn c
+> 	qpt 2 pid 3018 num_sge 0 head 1 tail 1, count 384
+> rvt_get_rwqe: (hfi1_rc_rcv+0x4eb/0x1480 [hfi1] <- rvt_get_rwqe) ret=0x1
+> 
+> Note that the RQ is empty (head == tail) yet we return the RWQE at tail 1,
+> which is not valid because of the bogus high count.
+> 
+> Best case, the RWQE has never been posted and the rc logic sees an RWQE
+> that is too small (all zeros) and puts the QP into an error state.
+> 
+> In the worst case, a server slow at posting receive buffers might fool
+> rvt_get_rwqe() into fetching an old RWQE and corrupt memory.
+> 
+> Fix by deleting the faulty initialization code and creating an
+> inline to fetch the posted count and convert all callers to use
+> new inline.
+> 
+> Fixes: f592ae3c999f ("IB/rdmavt: Fracture single lock used for posting and processing RWQEs")
 
-The refcount leak issues take place in two error handling paths. When
-mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function simply
-returns the error code and forgets to drop the refcount increased
-earlier, causing a refcount leak of "rq->xdp_prog".
+Confirmed this patch works for me. Thanks
 
-Fix this issue by jumping to the error handling path err_rq_wq_destroy
-when either function fails.
-
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a836a02a2116..8e1b1ab416d8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
- 					&rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
- 
-@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
- 					 &rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
- 
--- 
-2.25.1
+Tested-by: Honggang Li <honli@redhat.com>
 
