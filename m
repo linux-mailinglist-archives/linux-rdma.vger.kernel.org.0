@@ -2,253 +2,372 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412BE23174F
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 03:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8477231B44
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jul 2020 10:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730275AbgG2Bga (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jul 2020 21:36:30 -0400
-Received: from mail-vi1eur05on2052.outbound.protection.outlook.com ([40.107.21.52]:12160
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S1726299AbgG2Ie0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jul 2020 04:34:26 -0400
+Received: from mail-eopbgr150047.outbound.protection.outlook.com ([40.107.15.47]:63546
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730117AbgG2Bg3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jul 2020 21:36:29 -0400
+        id S1727902AbgG2IeZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:34:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6BcvtD/30FyCh60IJczp8bKOiOOUyw5wK5XhL9sqNMmu31Od2M9RpBpIVQ92aonSMbQ8yEMIv18IY/Uxzu4vX5uwA+on2P4p/0JJiABwZKVWmFKOMt8e11KtEXpb0havQjw0Ud9kghLckPHNdFhyk297bh5Mvk0REbXGsvifmlKaTSm6kcbnm2riqqlM/7KUEQq8YoAxHvc+sBQS6EJfRvkpruhCyY3f6VpYc5HgnBsQNhVmoMJa43ftY/LVrH/F7+AwG5hWFwTTE7vHtOobY7HY5w6kwWMhPvyEBKzoMVoZQC8xuLQYqfscxSGV4tOhi6s+rdSfo9F4PIRm1ma/g==
+ b=YV198EiMomTcl/ILjrvNJOqc/HOnAfYHriHUDFn6SHlzrPgq8LGwlVEm/B1LyaQ9FCVceRjctp2ozOrOlWED73iuBtsKnyRWu1xw0/XS5f8r/YNlUAVc/socUkENJ+mXs9hKQLUmOj9HhWVzen1wwcQn3qqPCj0CVipOsonKTDXj4g/hCNVEL6fqSAstnKFi8np6FHogpsYEY5L1u32Zm/eosqTWYb9eYiCOn89AvNWNqT7GUj3Tk4MGlL3Av/MusJKKhwRYRyLeMBe4vR7xSY6jbKUMB8NNTQ7Knd6OElVAoN4v6B8dB2krdFnX1YpV1NEIMe26yxIPH+hqvFAGhg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Uv7RLgCws3wQGrbC+C3Hxmw5s/sE5ZP6AL1x9pz45Y=;
- b=L3nJgrHMKoOp+4EWnlYUg2Pyee2ylerpSmKJjIVY6B5Ig3edjrg1J+l29Q9XkruN7432/xYTucY+IU42mB3dbx054yOfmVNiRfUhvNbv0aDsoKu5OsNQqDJMH3dUrq0/8oQL3lPVh6mRJrlwVNWKPosHRPqVl9cVSQ3QBM4ozmTx8qio6JbLtTHcCEaRZbUrEPjUwWxdoRSoiBKNBGgtXx4bdfjE+zq7j3cLYE83eqXEGCQLcWUFMwRZo6gcitKki2L0motq1wFqXoeoK+d0DqMkpUfngUUkSmCfCGuz0awS2MmXlI3QfZObUwPm2ZWr9RskLYwtGzH4uMb+s7fWGw==
+ bh=QNgOsKgCsB0wV0uhUwCSaI24Vq9p+Jp1Ao464nGe+Nc=;
+ b=oI2R2nAM/ymkPW2Lc9EtXL3NkKfoo/rUedIiU8TXRcVJtqhgvZFhc0SsvGzfC9vPz6hlJsdw2Q3Qw28TMQporKbQMnbdjFjfy8TResqBdTxfCW4AN91wxoJzCCnTqCBYlLIt0nHq1nPxvj/2n6kNEbYj/0h5jRiudCH/TiHRN3dAnyu6qIntS9aJvcc01UADH4OXuqGPGsmpGAjMvWK/2p4ICyTr/W9SkF5STxfoZ1PmNgmOhhLGCZyxx0KCorhybAjThTVsHyVEEcxXzDjxE8FyvDi5j6pO+pbVWe59F2UNqGjaRn5lLxSQLSfyTgTjJDgCR4FsaFdPNxHjQAB/ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Uv7RLgCws3wQGrbC+C3Hxmw5s/sE5ZP6AL1x9pz45Y=;
- b=Srqw4wf3xfkGJgGxfzX0iAXuLwvWBYzUoNUi1xiOh91MfBgRhv2dpQf0I+Ufj9voc2Ht3Hz4rMRjrDsHukG+ClZimlL5iNC8jXCqcjiFDN5APlvNlo86s6ZqS3/ycbp0FhEn2PCh24QDuj9gtMNc1aN90PVK52iBhQacwqFIKdQ=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
-Received: from HE1PR05MB3337.eurprd05.prod.outlook.com (2603:10a6:7:34::15) by
- HE1PR0502MB3913.eurprd05.prod.outlook.com (2603:10a6:7:89::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.24; Wed, 29 Jul 2020 01:36:25 +0000
-Received: from HE1PR05MB3337.eurprd05.prod.outlook.com
- ([fe80::c860:86e8:5520:856d]) by HE1PR05MB3337.eurprd05.prod.outlook.com
- ([fe80::c860:86e8:5520:856d%5]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 01:36:24 +0000
-Subject: Re: FW: [PATCH for-next] RDMA/rxe: Remove pkey table
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yanjun Zhu <yanjunz@mellanox.com>,
-        linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-References: <20200723055723.GA828525@kheib-workstation>
- <7a6d602f-1adc-cc36-5a11-e0beb6e31cec@gmail.com>
- <20200723072546.GA835185@kheib-workstation>
- <81816c7d-9b14-98de-c6ee-0a6b4a43a060@gmail.com>
- <20200723131549.GM25301@ziepe.ca>
- <4796e70a-ca67-2d48-fdd8-e5593474d204@gmail.com>
- <20200728083557.GA73564@kheib-workstation>
- <9a6f21eb-a9c7-ed77-31b3-f9befa5a49b0@gmail.com>
- <20200728134442.GA29573@kheib-workstation>
- <93160a8d-fca7-defc-b39e-e6e5a97ddb87@gmail.com>
- <20200728174225.GA52282@kheib-workstation>
- <b12cf75a-1459-bee9-8d38-19a73d048a62@gmail.com>
-From:   Mark Bloch <markb@mellanox.com>
-Message-ID: <9e2beff9-ff0a-a6e6-c4b5-621650480044@mellanox.com>
-Date:   Tue, 28 Jul 2020 18:36:18 -0700
+ bh=QNgOsKgCsB0wV0uhUwCSaI24Vq9p+Jp1Ao464nGe+Nc=;
+ b=IZJlkia3FIVpq23W4XBFXJZfRjVT/3L1zcmHUX67U8O6XLeMDd9Hvv9iF60wE5PcZvNslogQbYhW54Lq1tXYu5nlBEB9T2HNoICchG77xt1TUxgByDz+iXoT4X8NPxEguJE4+AcmR+vWA66d9qNPuWVNWT1tcKKCx/yUKLMaqik=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
+ by AM4PR0501MB2738.eurprd05.prod.outlook.com (2603:10a6:200:5a::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Wed, 29 Jul
+ 2020 08:34:20 +0000
+Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::4065:87d7:1f28:26c3]) by AM0PR05MB5810.eurprd05.prod.outlook.com
+ ([fe80::4065:87d7:1f28:26c3%6]) with mapi id 15.20.3216.033; Wed, 29 Jul 2020
+ 08:34:20 +0000
+Subject: Re: [PATCH 1/3] IB/iser: use new shared CQ mechanism
+To:     sagi@grimberg.me, yaminf@mellanox.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, leon@kernel.org, bvanassche@acm.org
+Cc:     israelr@mellanox.com, oren@mellanox.com, jgg@mellanox.com,
+        idanb@mellanox.com
+References: <20200722135629.49467-1-maxg@mellanox.com>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <b922a13b-592b-0c03-bd0e-c7b6c7d4a54e@mellanox.com>
+Date:   Wed, 29 Jul 2020 11:34:11 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <b12cf75a-1459-bee9-8d38-19a73d048a62@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200722135629.49467-1-maxg@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN2PR19CA0033.namprd19.prod.outlook.com
- (2603:10b6:208:178::46) To HE1PR05MB3337.eurprd05.prod.outlook.com
- (2603:10a6:7:34::15)
+X-ClientProxiedBy: FR2P281CA0002.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::12) To AM0PR05MB5810.eurprd05.prod.outlook.com
+ (2603:10a6:208:11f::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.6.80] (216.156.69.42) by MN2PR19CA0033.namprd19.prod.outlook.com (2603:10b6:208:178::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Wed, 29 Jul 2020 01:36:22 +0000
-X-Originating-IP: [216.156.69.42]
+Received: from [10.0.0.10] (93.172.65.141) by FR2P281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Wed, 29 Jul 2020 08:34:19 +0000
+X-Originating-IP: [93.172.65.141]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 251d8641-4de0-4982-5424-08d8335fcdfe
-X-MS-TrafficTypeDiagnostic: HE1PR0502MB3913:
+X-MS-Office365-Filtering-Correlation-Id: 842a3192-f7c0-43ec-d42d-08d8339a3064
+X-MS-TrafficTypeDiagnostic: AM4PR0501MB2738:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0502MB39134A6DCFB672F7AF40ACDCD2700@HE1PR0502MB3913.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <AM4PR0501MB273893C7776D76869A43E61BB6700@AM4PR0501MB2738.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:549;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QBxxb2ZiIdnu8DZZyc6QNy1cilYU0lGGUKhN9c83eQ7fLLdu1Ds5wDTiDW7CFJF+citquonMu3HQHoAXryhX3YRpupd1e9j6Hz3e7NtFnkLR38NE1+6Ai5z1oEZxP8gHTD65ygoy6G+puqihGB0Xo2TN1MqWbewueaevjEIWrF4Yc8BkKM+xHfT/6O1NO+GYEHQoQF/nxgvNTmBWYl1EDsHKX3fTEE8U+biWgPfw3A4erOSbEBAlgY5F3tIhQMn7gmMNBYK3aXpEvWA210kLyR7yDPdOVRDiPp/w3vmS3N4IW73E5u8ts+mcWzwJwPgoqVewS6iw0m7sKEHoyO4jyXUwesopOt+9ViWY5y94BVqXqmW2qzmZxYr/PcsqrOQo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR05MB3337.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39850400004)(6486002)(110136005)(54906003)(5660300002)(4326008)(186003)(31686004)(31696002)(6666004)(16526019)(86362001)(2906002)(478600001)(36756003)(83380400001)(956004)(8936002)(16576012)(52116002)(66476007)(66556008)(26005)(2616005)(8676002)(53546011)(316002)(66946007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: b92WqWX9rBLvlBULqY1BcMv0eR6AFJc7I0nnPypyGwSg3VteSfwIRohYK5xmuRZBlzCnV5iEmadM4Y5GVl1f/PywKaN/2CQR3opUhg6Y+2/pP2QOVZJ5Pq8ZEgNYuF7RZpemHiarbM66Wor+6CfSGnx/mZqxDG49QIC6Q5ThyzKKTbyYPL9VhZsDlODnaGGl2MUnlU/mz9/6rKSi+44J/ZoG+TGJTYT22fhEa/xSzwMInd4UlRibr39qwoh2iypSGvSzSV5F9IkSnXZCbmFscAlYvC/SU+pnF3VdA2YTqC0R9TgpXoAFx/49uMnfyjPL9jXVOIytueghJaOOJCM1x7Tvl7l1MJ7Ma0acUlWG+TPAl4aPUmQU21fKFTuObEsL0xNDNGnOn9pMLySDPpT2US8lhh+TkPWwnHFvYuwBXW/Ylv/kPwUSOrXJx0LlNS7PJsHNULQBazV3gAPTz4TVyqQk6YEZYH1mO2MRZy9C+TI=
+X-Microsoft-Antispam-Message-Info: erxAwQlImN9hsZiJnagmt4pToMD2mTSBYjRcAFhi/2+az8kpJOQmbaErkyCGUcid0rdE/qRcxPHd7RA+vwlGV8JBO1N8O/eJKNs9sd8UEEi4C9LePG8OzJCGKlw6B5TbfRKLpeIPgpTPYUkCywtg75vhLFpCPAWVgAE+3QE4C2GVXNL7umOWNuiEkRou8LG9xPoN+FHlSglOmkS0nbS7dOLvrxrl9C1sWNKOkcUGDbHa8vhfrnXkwVveorrLZZyJcdBASFcuCq7f1aNL2PksbOy8Nyq/h2od0inNVxfG+FENLPx0eGU2jCTJV0ykwmLUReE2CJO0rwvF+sbEO8hwxVmo3uw1Bdsum1fQuU62MyMK9ljSnQ6PERUvinTonSpj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(4326008)(478600001)(8936002)(16526019)(107886003)(5660300002)(66556008)(186003)(16576012)(26005)(2616005)(956004)(31696002)(36756003)(86362001)(66476007)(6666004)(52116002)(53546011)(8676002)(31686004)(2906002)(66946007)(316002)(6486002)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: mfG+ZzpiMoycYSrAk0WaOEgPSp9nafTJQD3j42RxZuR/LpHJbW5srswzXwWUbvxwJbwc5gGFd25sPQONAS/kd3nct8bIjnfjhOgxJbuXRFDedVvU9WBUCvhnPUCygnJNFyVSznTiLaLI7lr6aL87hxkhIdnYJatqxeUrsd5uGD6iSu0aqBHK4qhbgVNHgqPyiQS2mo8ZbmsEOq6Hyd1qjgLHzemtl74lz1i1txb+QlfvRuoikQhtfvVxT41X1FcrHeU92G2N/mUjKoXt4krGCN1FUZnN3Q/9AZ+cP6vh9mv7StRX1+AuxCEFHIPHD+mmVTIEj1ytiHZWse1PY/HOQCdChEXjLPvzVPwS0iItubwReMFeuWbaNH5G1m/5AKQ2sacdlaymeA6ZHHGqX1Oo3anXYCxqeYA3YvjclgD/fwX+KcbhENo06HPJae92EEHNyKo+98Du2Wk+7SH/rj35sdyYzVKSjtKWYJVOW7kror1Wx+oWZVJ6Kl5ooCWR9kcE
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 251d8641-4de0-4982-5424-08d8335fcdfe
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR05MB3337.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 842a3192-f7c0-43ec-d42d-08d8339a3064
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB5810.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2020 01:36:24.6670
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2020 08:34:20.4938
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Tu4scA0Aa1jLmTJRM1qu4h7wP6JavkZM9ksjFn1UDRscSlaWrq0V9HnJLah6sce068k/aC8BYC/dtkX+RgzVzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0502MB3913
+X-MS-Exchange-CrossTenant-UserPrincipalName: FYBq3/j4+N3X9+g6Pa3YmYhfQFlmogMf3cpPAEgStUXy532sbxiQnAHjSmqqOOCPcN9/l2CZ9expGB+DRSG/fQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0501MB2738
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Jason/Leon,
 
+can you please pull this to "for-kernel-5.9" branch please ?
 
-On 7/28/2020 16:45, Zhu Yanjun wrote:
-> On 7/29/2020 1:42 AM, Kamal Heib wrote:
->> On Tue, Jul 28, 2020 at 11:46:36PM +0800, Zhu Yanjun wrote:
->>> On 7/28/2020 9:44 PM, Kamal Heib wrote:
->>>> On Tue, Jul 28, 2020 at 09:21:06PM +0800, Zhu Yanjun wrote:
->>>>> On 7/28/2020 4:35 PM, Kamal Heib wrote:
->>>>>> On Thu, Jul 23, 2020 at 11:15:00PM +0800, Zhu Yanjun wrote:
->>>>>>> On 7/23/2020 9:15 PM, Jason Gunthorpe wrote:
->>>>>>>> On Thu, Jul 23, 2020 at 09:08:39PM +0800, Zhu Yanjun wrote:
->>>>>>>>> On 7/23/2020 3:25 PM, Kamal Heib wrote:
->>>>>>>>>> On Thu, Jul 23, 2020 at 02:58:41PM +0800, Zhu Yanjun wrote:
->>>>>>>>>>> On 7/23/2020 1:57 PM, Kamal Heib wrote:
->>>>>>>>>>>> On Wed, Jul 22, 2020 at 10:09:04AM +0800, Zhu Yanjun wrote:
->>>>>>>>>>>>> On Tue, Jul 21, 2020 at 7:28 PM Yanjun Zhu <yanjunz@mellanox.com> wrote:
->>>>>>>>>>>>>> From: Kamal Heib <kamalheib1@gmail.com>
->>>>>>>>>>>>>> Sent: Tuesday, July 21, 2020 6:16 PM
->>>>>>>>>>>>>> To: linux-rdma@vger.kernel.org
->>>>>>>>>>>>>> Cc: Yanjun Zhu <yanjunz@mellanox.com>; Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>; Kamal Heib <kamalheib1@gmail.com>
->>>>>>>>>>>>>> Subject: [PATCH for-next] RDMA/rxe: Remove pkey table
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> The RoCE spec require from RoCE devices to support only the defualt pkey, While the rxe driver maintain a 64 enties pkey table and use only the first entry. With that said remove the maintaing of the pkey table and used the default pkey when needed.
->>>>>>>>>>>>>>
->>>>>>>>>>>>> Hi Kamal
->>>>>>>>>>>>>
->>>>>>>>>>>>> After this patch is applied, do you make tests with SoftRoCE and mlx hardware?
->>>>>>>>>>>>>
->>>>>>>>>>>>> The SoftRoCE should work well with the mlx hardware.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Zhu Yanjun
->>>>>>>>>>>>>
->>>>>>>>>>>> Hi Zhu,
->>>>>>>>>>>>
->>>>>>>>>>>> Yes, please see below:
->>>>>>>>>>>>
->>>>>>>>>>>> $ ibv_rc_pingpong -d mlx5_0 -g 11
->>>>>>>>>>>>         local address:  LID 0x0000, QPN 0x0000e3, PSN 0x728a4f, GID ::ffff:172.31.40.121
->>>>>>>>>>> Can you make tests with GSI QP?
->>>>>>>>>>>
->>>>>>>>>>> Zhu Yanjun
->>>>>>>>>>>
->>>>>>>>> Is this the GSI ?
->>>>>>>>>
->>>>>>>>> Please check GSI in "InfiniBandTM Architecture Specification Volume 1
->>>>>>>>> Release 1.3"
->>>>>>>>>
->>>>>>>>> Then make tests with GSI again.
->>>>>>> The followings are also removed by this commit. Not sure if it is good.
->>>>>>>
->>>>>>> "
->>>>>>>
->>>>>>> C9-42: If the destination QP is QP1, the BTH:P_Key shall be compared to the
->>>>>>> set of P_Keys associated with the port on which the packet arrived. If the
->>>>>>> P_Key matches any of the keys associated with the port, it shall be
->>>>>>> considered valid.
->>>>>>>
->>>>>>> "
->>>>>>>
->>>>>> The above is correct for ports that configured to work in InfiniBand
->>>>>> mode, while in RoCEv2 mode only the default P_Key should be associated
->>>>>> with the port (Please see below from "ANNEX A17:   ROCEV2 (IP ROUTABLE
->>>>>> ROCE)):
->>>>>>
->>>>>> """
->>>>>> 17.7.1 LOADING THE P_KEY TABLE
->>>>>>
->>>>>> Compliance statement C17-7: on page 1193 describes requirements for
->>>>>> setting the P_Key table based on an assumption that the P_Key table is
->>>>>> set directly by a Subnet Manager. However, RoCEv2 ports do not support
->>>>>> InfiniBand Subnet Management. Therefore, compliance statement C17-7:
->>>>>> on page 1193 does not apply to RoCEv2 ports.
->>>>> "
->>>>>
->>>>> C17-7: An HCA shall require no OS involvement to set the P_Key table;
->>>>>
->>>>> the P_Key table shall be set directly by Subnet Manager MADs.
->>>>>
->>>>> "
->>>>>
->>>>> In SoftRoCE, what set the P_Key table?
->>>>>
->>>> No one is setting the P_Key table in SoftRoCE, and no subnet manager in
->>>> the RoCE fabric.
->>>>
->>>> Could you please tell me what is wrong with this patch?
->>> Please read the mail thread again.
->>>
->>> GSI QP number is 1. In your commits, the handle of qpn == 1 is removed.
->>>
->>> It seems that it conflicts with IB specification.
->>>
->>> Not sure if it is good.
->>>
->> Could you please read my patch again and point to what do you think is
->> wrong?
-> 
-> What I said is very clear. Good luck
+Or do we need more reviews on this series ?
 
-qpn == 1, qpn == x it, qpn == i, it doesn't matter. Please read the RoCEv2 annex:
-
-A17.4.7 INFINIBAND PARTITIONING
-Methods to populate the P_Key table associated with a RoCEv2 port are
-outside the scope of this annex. Note that this annex relies on the partition
-table being initialized at power on time with at least the default P_Key as
-described in Chapter 10 (Software Transport Interface) of the base specification. The P_Key contained in the BTH is validated for inbound packets
-as required by the packet header validation protocols defined in Chapter
-9 of the base specification.
-
-A17.7.1 LOADING THE P_KEY TABLE
-Compliance statement C17-7 describes requirements for setting the
-P_Key table based on an assumption that the P_Key table is set directly
-by a Subnet Manager. However, RoCEv2 ports do not support InfiniBand
-Subnet Management. Therefore, compliance statement C17-7 does not
-apply to RoCEv2 ports.
-Methods for setting the P_Key table associated with a RoCEv2 port are
-not defined in this specification, except for the requirements for a default
-P_Key described elsewhere in this annex.
-
-rxe =  Software RDMA over Ethernet, so we are dealing only with RoCE traffic (no IB).
-We don't have an SM.
-The spec requires that at least the default pkey is defined (and rxe defines only the default p_pkey).
-Kamel is doing just that.
-
-Mark
-
-> 
-> Zhu Yanjun
-> 
->>
->> What I did in this patch is to verify that the pkey value in the
->> received packet is the default P_Key regardless of the qpn, because RoCE
->> devices should maintain only the default P_Key.
->>
->> Thanks,
->> Kamal
->>
->>>> Thanks,
->>>> Kamal
->>>>
->>>>>> Methods for setting the P_Key table associated with a RoCEv2 port are
->>>>>> not defined in this specification, except for the requirements for a
->>>>>> default P_Key described elsewhere in this annex.
->>>>>> """
->>>>>>
->>>>>> Thanks,
->>>>>> Kamal
->>>>>>
->>>>>>
->>>>>>>> rping uses RDMA CM which goes over the GSI
->>>>>>>>
->>>>>>>> Jason
->>>
-> 
+On 7/22/2020 4:56 PM, Max Gurtovoy wrote:
+> From: Yamin Friedman <yaminf@mellanox.com>
+>
+> Has the driver use shared CQs provided by the rdma core driver.
+> Because this provides similar functionality to iser_comp it has been
+> removed. Now there is no reason to allocate very large CQs when the driver
+> is loaded while gaining the advantage of shared CQs.
+>
+> Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
+> Acked-by: Max Gurtovoy <maxg@mellanox.com>
+> ---
+>   drivers/infiniband/ulp/iser/iscsi_iser.h |  23 ++-----
+>   drivers/infiniband/ulp/iser/iser_verbs.c | 112 +++++++------------------------
+>   2 files changed, 29 insertions(+), 106 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+> index 1d77c7f..fddcb88 100644
+> --- a/drivers/infiniband/ulp/iser/iscsi_iser.h
+> +++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+> @@ -300,18 +300,6 @@ struct iser_login_desc {
+>   struct iscsi_iser_task;
+>   
+>   /**
+> - * struct iser_comp - iSER completion context
+> - *
+> - * @cq:         completion queue
+> - * @active_qps: Number of active QPs attached
+> - *              to completion context
+> - */
+> -struct iser_comp {
+> -	struct ib_cq		*cq;
+> -	int                      active_qps;
+> -};
+> -
+> -/**
+>    * struct iser_device - iSER device handle
+>    *
+>    * @ib_device:     RDMA device
+> @@ -320,9 +308,6 @@ struct iser_comp {
+>    * @event_handler: IB events handle routine
+>    * @ig_list:	   entry in devices list
+>    * @refcount:      Reference counter, dominated by open iser connections
+> - * @comps_used:    Number of completion contexts used, Min between online
+> - *                 cpus and device max completion vectors
+> - * @comps:         Dinamically allocated array of completion handlers
+>    */
+>   struct iser_device {
+>   	struct ib_device             *ib_device;
+> @@ -330,8 +315,6 @@ struct iser_device {
+>   	struct ib_event_handler      event_handler;
+>   	struct list_head             ig_list;
+>   	int                          refcount;
+> -	int			     comps_used;
+> -	struct iser_comp	     *comps;
+>   };
+>   
+>   /**
+> @@ -380,11 +363,12 @@ struct iser_fr_pool {
+>    *
+>    * @cma_id:              rdma_cm connection maneger handle
+>    * @qp:                  Connection Queue-pair
+> + * @cq:                  Connection completion queue
+> + * @cq_size:             The number of max outstanding completions
+>    * @post_recv_buf_count: post receive counter
+>    * @sig_count:           send work request signal count
+>    * @rx_wr:               receive work request for batch posts
+>    * @device:              reference to iser device
+> - * @comp:                iser completion context
+>    * @fr_pool:             connection fast registration poool
+>    * @pi_support:          Indicate device T10-PI support
+>    * @reg_cqe:             completion handler
+> @@ -392,11 +376,12 @@ struct iser_fr_pool {
+>   struct ib_conn {
+>   	struct rdma_cm_id           *cma_id;
+>   	struct ib_qp	            *qp;
+> +	struct ib_cq		    *cq;
+> +	u32			    cq_size;
+>   	int                          post_recv_buf_count;
+>   	u8                           sig_count;
+>   	struct ib_recv_wr	     rx_wr[ISER_MIN_POSTED_RX];
+>   	struct iser_device          *device;
+> -	struct iser_comp	    *comp;
+>   	struct iser_fr_pool          fr_pool;
+>   	bool			     pi_support;
+>   	struct ib_cqe		     reg_cqe;
+> diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
+> index c1f44c4..699e075 100644
+> --- a/drivers/infiniband/ulp/iser/iser_verbs.c
+> +++ b/drivers/infiniband/ulp/iser/iser_verbs.c
+> @@ -68,59 +68,23 @@ static void iser_event_handler(struct ib_event_handler *handler,
+>   static int iser_create_device_ib_res(struct iser_device *device)
+>   {
+>   	struct ib_device *ib_dev = device->ib_device;
+> -	int i, max_cqe;
+>   
+>   	if (!(ib_dev->attrs.device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS)) {
+>   		iser_err("IB device does not support memory registrations\n");
+>   		return -1;
+>   	}
+>   
+> -	device->comps_used = min_t(int, num_online_cpus(),
+> -				 ib_dev->num_comp_vectors);
+> -
+> -	device->comps = kcalloc(device->comps_used, sizeof(*device->comps),
+> -				GFP_KERNEL);
+> -	if (!device->comps)
+> -		goto comps_err;
+> -
+> -	max_cqe = min(ISER_MAX_CQ_LEN, ib_dev->attrs.max_cqe);
+> -
+> -	iser_info("using %d CQs, device %s supports %d vectors max_cqe %d\n",
+> -		  device->comps_used, dev_name(&ib_dev->dev),
+> -		  ib_dev->num_comp_vectors, max_cqe);
+> -
+>   	device->pd = ib_alloc_pd(ib_dev,
+>   		iser_always_reg ? 0 : IB_PD_UNSAFE_GLOBAL_RKEY);
+>   	if (IS_ERR(device->pd))
+>   		goto pd_err;
+>   
+> -	for (i = 0; i < device->comps_used; i++) {
+> -		struct iser_comp *comp = &device->comps[i];
+> -
+> -		comp->cq = ib_alloc_cq(ib_dev, comp, max_cqe, i,
+> -				       IB_POLL_SOFTIRQ);
+> -		if (IS_ERR(comp->cq)) {
+> -			comp->cq = NULL;
+> -			goto cq_err;
+> -		}
+> -	}
+> -
+>   	INIT_IB_EVENT_HANDLER(&device->event_handler, ib_dev,
+>   			      iser_event_handler);
+>   	ib_register_event_handler(&device->event_handler);
+>   	return 0;
+>   
+> -cq_err:
+> -	for (i = 0; i < device->comps_used; i++) {
+> -		struct iser_comp *comp = &device->comps[i];
+> -
+> -		if (comp->cq)
+> -			ib_free_cq(comp->cq);
+> -	}
+> -	ib_dealloc_pd(device->pd);
+>   pd_err:
+> -	kfree(device->comps);
+> -comps_err:
+>   	iser_err("failed to allocate an IB resource\n");
+>   	return -1;
+>   }
+> @@ -131,20 +95,9 @@ static int iser_create_device_ib_res(struct iser_device *device)
+>    */
+>   static void iser_free_device_ib_res(struct iser_device *device)
+>   {
+> -	int i;
+> -
+> -	for (i = 0; i < device->comps_used; i++) {
+> -		struct iser_comp *comp = &device->comps[i];
+> -
+> -		ib_free_cq(comp->cq);
+> -		comp->cq = NULL;
+> -	}
+> -
+>   	ib_unregister_event_handler(&device->event_handler);
+>   	ib_dealloc_pd(device->pd);
+>   
+> -	kfree(device->comps);
+> -	device->comps = NULL;
+>   	device->pd = NULL;
+>   }
+>   
+> @@ -287,70 +240,57 @@ static int iser_create_ib_conn_res(struct ib_conn *ib_conn)
+>   	struct ib_device	*ib_dev;
+>   	struct ib_qp_init_attr	init_attr;
+>   	int			ret = -ENOMEM;
+> -	int index, min_index = 0;
+> +	unsigned int max_send_wr, cq_size;
+>   
+>   	BUG_ON(ib_conn->device == NULL);
+>   
+>   	device = ib_conn->device;
+>   	ib_dev = device->ib_device;
+>   
+> -	memset(&init_attr, 0, sizeof init_attr);
+> +	if (ib_conn->pi_support)
+> +		max_send_wr = ISER_QP_SIG_MAX_REQ_DTOS + 1;
+> +	else
+> +		max_send_wr = ISER_QP_MAX_REQ_DTOS + 1;
+> +	max_send_wr = min_t(unsigned int, max_send_wr,
+> +			    (unsigned int)ib_dev->attrs.max_qp_wr);
+>   
+> -	mutex_lock(&ig.connlist_mutex);
+> -	/* select the CQ with the minimal number of usages */
+> -	for (index = 0; index < device->comps_used; index++) {
+> -		if (device->comps[index].active_qps <
+> -		    device->comps[min_index].active_qps)
+> -			min_index = index;
+> +	cq_size = max_send_wr + ISER_QP_MAX_RECV_DTOS;
+> +	ib_conn->cq = ib_cq_pool_get(ib_dev, cq_size, -1, IB_POLL_SOFTIRQ);
+> +	if (IS_ERR(ib_conn->cq)) {
+> +		ret = PTR_ERR(ib_conn->cq);
+> +		goto cq_err;
+>   	}
+> -	ib_conn->comp = &device->comps[min_index];
+> -	ib_conn->comp->active_qps++;
+> -	mutex_unlock(&ig.connlist_mutex);
+> -	iser_info("cq index %d used for ib_conn %p\n", min_index, ib_conn);
+> +	ib_conn->cq_size = cq_size;
+> +
+> +	memset(&init_attr, 0, sizeof(init_attr));
+>   
+>   	init_attr.event_handler = iser_qp_event_callback;
+>   	init_attr.qp_context	= (void *)ib_conn;
+> -	init_attr.send_cq	= ib_conn->comp->cq;
+> -	init_attr.recv_cq	= ib_conn->comp->cq;
+> +	init_attr.send_cq	= ib_conn->cq;
+> +	init_attr.recv_cq	= ib_conn->cq;
+>   	init_attr.cap.max_recv_wr  = ISER_QP_MAX_RECV_DTOS;
+>   	init_attr.cap.max_send_sge = 2;
+>   	init_attr.cap.max_recv_sge = 1;
+>   	init_attr.sq_sig_type	= IB_SIGNAL_REQ_WR;
+>   	init_attr.qp_type	= IB_QPT_RC;
+> -	if (ib_conn->pi_support) {
+> -		init_attr.cap.max_send_wr = ISER_QP_SIG_MAX_REQ_DTOS + 1;
+> +	init_attr.cap.max_send_wr = max_send_wr;
+> +	if (ib_conn->pi_support)
+>   		init_attr.create_flags |= IB_QP_CREATE_INTEGRITY_EN;
+> -		iser_conn->max_cmds =
+> -			ISER_GET_MAX_XMIT_CMDS(ISER_QP_SIG_MAX_REQ_DTOS);
+> -	} else {
+> -		if (ib_dev->attrs.max_qp_wr > ISER_QP_MAX_REQ_DTOS) {
+> -			init_attr.cap.max_send_wr  = ISER_QP_MAX_REQ_DTOS + 1;
+> -			iser_conn->max_cmds =
+> -				ISER_GET_MAX_XMIT_CMDS(ISER_QP_MAX_REQ_DTOS);
+> -		} else {
+> -			init_attr.cap.max_send_wr = ib_dev->attrs.max_qp_wr;
+> -			iser_conn->max_cmds =
+> -				ISER_GET_MAX_XMIT_CMDS(ib_dev->attrs.max_qp_wr);
+> -			iser_dbg("device %s supports max_send_wr %d\n",
+> -				 dev_name(&device->ib_device->dev),
+> -				 ib_dev->attrs.max_qp_wr);
+> -		}
+> -	}
+> +	iser_conn->max_cmds = ISER_GET_MAX_XMIT_CMDS(max_send_wr - 1);
+>   
+>   	ret = rdma_create_qp(ib_conn->cma_id, device->pd, &init_attr);
+>   	if (ret)
+>   		goto out_err;
+>   
+>   	ib_conn->qp = ib_conn->cma_id->qp;
+> -	iser_info("setting conn %p cma_id %p qp %p\n",
+> +	iser_info("setting conn %p cma_id %p qp %p max_send_wr %d\n",
+>   		  ib_conn, ib_conn->cma_id,
+> -		  ib_conn->cma_id->qp);
+> +		  ib_conn->cma_id->qp, max_send_wr);
+>   	return ret;
+>   
+>   out_err:
+> -	mutex_lock(&ig.connlist_mutex);
+> -	ib_conn->comp->active_qps--;
+> -	mutex_unlock(&ig.connlist_mutex);
+> +	ib_cq_pool_put(ib_conn->cq, ib_conn->cq_size);
+> +cq_err:
+>   	iser_err("unable to alloc mem or create resource, err %d\n", ret);
+>   
+>   	return ret;
+> @@ -462,10 +402,8 @@ static void iser_free_ib_conn_res(struct iser_conn *iser_conn,
+>   		  iser_conn, ib_conn->cma_id, ib_conn->qp);
+>   
+>   	if (ib_conn->qp != NULL) {
+> -		mutex_lock(&ig.connlist_mutex);
+> -		ib_conn->comp->active_qps--;
+> -		mutex_unlock(&ig.connlist_mutex);
+>   		rdma_destroy_qp(ib_conn->cma_id);
+> +		ib_cq_pool_put(ib_conn->cq, ib_conn->cq_size);
+>   		ib_conn->qp = NULL;
+>   	}
+>   
