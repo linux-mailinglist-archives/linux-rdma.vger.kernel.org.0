@@ -2,94 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCFC2329BF
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 03:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11623232B59
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 07:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgG3B6E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jul 2020 21:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgG3B6D (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jul 2020 21:58:03 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51C6C061794
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jul 2020 18:58:03 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id f18so3432378qke.0
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jul 2020 18:58:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=hD4JVbRoXU8HBHOVfHiuteW8LNmG7l4+fLjJw6+lL+o=;
-        b=NNHAiB3GjPKlQ2xd5ZEwvNI3BDPOqBsPbHib1dCO1pZMaDNmrdPoRZI+l+EGuATwEr
-         LTtHLGmJFuTcIfU43Sqt7WooR5gHwVSc5mQM6X2YENJvLGONb7TGwcsKR2Ch+t+w9Gsh
-         MFH0D0jjOIfYTSTEhLPQD/VhFax+cUjC/QKjVrcbzM0yZRgbYgBELsI2na6TDBicnWRB
-         VCx8lSF2ElimO0Kpffa/BFNtv2ids+2NZ6uou8OYNhal1Ac5a+T6nCpM3/F0ySEt3NkI
-         5L7dt1j0BSu3dopiQ97Q+CbqhkfRadubUKfaQjHQFkUHP40w1Ve98WSC53EtzifkMmNb
-         xH7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=hD4JVbRoXU8HBHOVfHiuteW8LNmG7l4+fLjJw6+lL+o=;
-        b=nAa9zuYYg3fhkZ6CoSjklNfXi9lVhnS9ZvXpsIoVtqkmvf7ylLlOhIsYSWw4dHZSWl
-         1eNe7VMQzy6AsDwhdFKVNuJDWZs6CoTRy5+fCUKSB4YiOwfyiWu+BLRq8OQDgPsjiZ7A
-         C7p61QgYpZ1Aytd4N2f4unYHSovAtJGJzcwyNooPjoWSt06OA2QDpmAlNopVc5hbaREB
-         RTJTEUOTvHx9ucRzKb5OIJRnP0tK9uhhNz/j7Z9J00rfDibXP5QkBqc8f1kDw1UphRuD
-         gAiMvfmpRI1QKkfplmXrat2RvDOYYCSs9oonFmZUcxu+uorSk1VhBSyeqY6zjZZ4l1EG
-         P4gA==
-X-Gm-Message-State: AOAM531dBKlxVFK3uuXUOxTmJdcYT0IJaobKTO1/Iy/MfIDQETA2HlXW
-        1bX3ijcZMF3kjVmKYyAblSmenKgxADXwSA==
-X-Google-Smtp-Source: ABdhPJxtYHASL5siDARRmf7mGdSRr96pDCPaV546UOgYlDtH2NBqg8etyj2L9VQKSHjUZCfKcfpQhSULoZWGyw==
-X-Received: by 2002:ad4:4d83:: with SMTP id cv3mr767697qvb.236.1596074282824;
- Wed, 29 Jul 2020 18:58:02 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 18:57:55 -0700
-Message-Id: <20200730015755.1827498-1-edumazet@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-Subject: [PATCH net] RDMA/umem: add a schedule point in ib_umem_get()
-From:   Eric Dumazet <edumazet@google.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726774AbgG3F3D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jul 2020 01:29:03 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57956 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726133AbgG3F3D (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jul 2020 01:29:03 -0400
+IronPort-SDR: sXMLHnNOVNSmmjsnacH8pL+JNBICd1XmstJz4MUujxJ+8uqQlGOuxvDv5tdeuOU4yvSjSCRAZ9
+ hwv234xr4N5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9697"; a="150715322"
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="150715322"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2020 22:29:02 -0700
+IronPort-SDR: f2xdvly5HiK8AVZLIEe/ULm2/H5c37/QsOvQZ+Zc5iNrcDzgdacuOObTnYtvmto6DEgSu+DJEN
+ Seg7ql713QXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,413,1589266800"; 
+   d="scan'208";a="490538648"
+Received: from lkp-server01.sh.intel.com (HELO aff35d61a1e5) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Jul 2020 22:29:00 -0700
+Received: from kbuild by aff35d61a1e5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k117k-00005m-0I; Thu, 30 Jul 2020 05:29:00 +0000
+Date:   Thu, 30 Jul 2020 13:28:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 71cab8ef5c9e53ae2359c4130f4365428ba10136
+Message-ID: <5f225a68.d4p9F8+HoAeRUXLY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mapping as little as 64GB can take more than 10 seconds,
-triggering issues on kernels with CONFIG_PREEMPT_NONE=y.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: 71cab8ef5c9e53ae2359c4130f4365428ba10136  RDMA/mlx5: Delete unreachable code
 
-ib_umem_get() already splits the work in 2MB units on x86_64,
-adding a cond_resched() in the long-lasting loop is enough
-to solve the issue.
+elapsed time: 971m
 
-Note that sg_alloc_table() can still use more than 100 ms,
-which is also problematic. This might be addressed later
-in ib_umem_add_sg_table(), adding new blocks in sgl
-on demand.
+configs tested: 68
+configs skipped: 2
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+s390                          debug_defconfig
+mips                     cu1000-neo_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a004-20200729
+x86_64               randconfig-a005-20200729
+x86_64               randconfig-a002-20200729
+x86_64               randconfig-a006-20200729
+x86_64               randconfig-a003-20200729
+x86_64               randconfig-a001-20200729
+i386                 randconfig-a003-20200729
+i386                 randconfig-a004-20200729
+i386                 randconfig-a005-20200729
+i386                 randconfig-a002-20200729
+i386                 randconfig-a006-20200729
+i386                 randconfig-a001-20200729
+i386                 randconfig-a016-20200729
+i386                 randconfig-a012-20200729
+i386                 randconfig-a013-20200729
+i386                 randconfig-a014-20200729
+i386                 randconfig-a011-20200729
+i386                 randconfig-a015-20200729
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
- drivers/infiniband/core/umem.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 82455a1392f1d19c96ae956f0bd4e93e3a52d29c..831bff8d52e547834e9e04064127fbb280595126 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -261,6 +261,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	sg = umem->sg_head.sgl;
- 
- 	while (npages) {
-+		cond_resched();
- 		ret = pin_user_pages_fast(cur_base,
- 					  min_t(unsigned long, npages,
- 						PAGE_SIZE /
--- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
