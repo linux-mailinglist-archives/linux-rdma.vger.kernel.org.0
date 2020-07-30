@@ -2,128 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB5B233872
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 20:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1D92338E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 21:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgG3ShA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jul 2020 14:37:00 -0400
-Received: from mga14.intel.com ([192.55.52.115]:17168 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726544AbgG3ShA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Jul 2020 14:37:00 -0400
-IronPort-SDR: OW3xV+jxF0H/9HyzUL0rLu3LJtrXatncAhU8v510Vy3MEGuACSMBI+38tvz4vq+IaUhrTAuKuS
- nZjkJokboNGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="150865493"
-X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
-   d="scan'208";a="150865493"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 11:36:59 -0700
-IronPort-SDR: xj3vCEquyQh/Iz2tUqYS3g+Sq3X/90WZEazTLW5Ri3DrQrMMrv4LQh+DFL3ISHa6yCq/UDEgUX
- l9zX1xPtRZ/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
-   d="scan'208";a="322986364"
-Received: from lkp-server02.sh.intel.com (HELO d4d86dd808e0) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Jul 2020 11:36:57 -0700
-Received: from kbuild by d4d86dd808e0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k1DQG-0000BW-In; Thu, 30 Jul 2020 18:36:56 +0000
-Date:   Fri, 31 Jul 2020 02:36:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 1d70ad0f85435a7262de802b104e49e6598c50ff
-Message-ID: <5f23133e.W/04jNRqX1HQjd2p%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730481AbgG3TV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jul 2020 15:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730475AbgG3TV7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jul 2020 15:21:59 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8A6C061574;
+        Thu, 30 Jul 2020 12:21:58 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 11so26728297qkn.2;
+        Thu, 30 Jul 2020 12:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=agaThPhartfIHs0CEVdT0S0oqKuMNdJA/yYlXtKqgNk=;
+        b=FyRMSHJbJlHdwbK7O7cNCShcgYOjQ/O59qUAUFfx4KS+mcIV0USH78zqh+JpriUN4P
+         zUT87eXfKUEjQk6A+SJdwFOHRQ246AByRhfbIUWJtIIj27EJz78aucu4KRz3Ge6LzRzC
+         5zD16l0ZqNaGBSbPH/V4IJrgHRlSuAgKV8OTIM/GBnQMGBg/No74TCnfKfX5SyySLuzv
+         EmRaQtgF4mDtZBY9cB9aMePCezuNGr27rLbcFhvMIG2t7lwDGfSmTTTJlNoBhDxmxFjP
+         i+u5Y2joONJm3KIpGVfSbUhLHLRNEtA0ZcqI5h/7kSe0/1k0cCmI2ZRfQ5EsUF8Rut2P
+         DtUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=agaThPhartfIHs0CEVdT0S0oqKuMNdJA/yYlXtKqgNk=;
+        b=IAhtleAp1AIn6EjLobIQiyNSWEQ2ALS5a9b96tUQQp8WL3QKMCVu59Fv+gVE6JxMIC
+         7tTPlnTyJpIAQh3DA5At57X3pBKQmYr8cICXRQFBMFwU0tEDevwKaGm/lKcdXLYfMg/b
+         bwqp4SFCfY1hSYrYgPf/R4wkoadgom3GKNrLpbgrf2fKGSGzRmTSAJr6LxufXLLcd096
+         1xb5xxsWfIkvcizshTzEuyftIirZuuEPPRBq9PtoD0lxYceV02cUNAZgdeBGyA907YY/
+         5teN/is0GEjfGJmAH9kDhptZyRpx1vuwOye1M+/0DnsMpg+tvHJnxYj08H+XigzgPOpE
+         OtYg==
+X-Gm-Message-State: AOAM532BZM8J5btHTErDYWFX+TY+PfEBcPPW3D4kjddkHHXElYnkSqMm
+        5MAPZ3IhciVaNXGn8GbEwg==
+X-Google-Smtp-Source: ABdhPJwWCgUMsoFCCaoH1/xFyEBTGW5Q+V6fazGvqkm22JCMJGkInRBxDqiFpodkc6+juDwBXBZwtg==
+X-Received: by 2002:ae9:e507:: with SMTP id w7mr730223qkf.264.1596136918051;
+        Thu, 30 Jul 2020 12:21:58 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id c205sm4994572qkg.98.2020.07.30.12.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 12:21:57 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak in rds_notify_queue_get()
+Date:   Thu, 30 Jul 2020 15:20:26 -0400
+Message-Id: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 1d70ad0f85435a7262de802b104e49e6598c50ff  RDMA/netlink: Remove CAP_NET_RAW check when dump a raw QP
+rds_notify_queue_get() is potentially copying uninitialized kernel stack
+memory to userspace since the compiler may leave a 4-byte hole at the end
+of `cmsg`.
 
-elapsed time: 1215m
+In 2016 we tried to fix this issue by doing `= { 0 };` on `cmsg`, which
+unfortunately does not always initialize that 4-byte hole. Fix it by using
+memset() instead.
 
-configs tested: 66
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                             defconfig
-x86_64               randconfig-a001-20200730
-x86_64               randconfig-a004-20200730
-x86_64               randconfig-a002-20200730
-x86_64               randconfig-a006-20200730
-x86_64               randconfig-a003-20200730
-x86_64               randconfig-a005-20200730
-i386                 randconfig-a005-20200730
-i386                 randconfig-a004-20200730
-i386                 randconfig-a006-20200730
-i386                 randconfig-a002-20200730
-i386                 randconfig-a001-20200730
-i386                 randconfig-a003-20200730
-i386                 randconfig-a016-20200730
-i386                 randconfig-a012-20200730
-i386                 randconfig-a014-20200730
-i386                 randconfig-a015-20200730
-i386                 randconfig-a011-20200730
-i386                 randconfig-a013-20200730
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
+Cc: stable@vger.kernel.org
+Fixes: f037590fff30 ("rds: fix a leak of kernel memory")
+Fixes: bdbe6fbc6a2f ("RDS: recv.c")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Note: the "real" copy_to_user() happens in put_cmsg(), where
+`cmlen - sizeof(*cm)` equals to `sizeof(cmsg)`.
+
+Reference: https://lwn.net/Articles/417989/
+
+$ pahole -C "rds_rdma_notify" net/rds/recv.o
+struct rds_rdma_notify {
+	__u64                      user_token;           /*     0     8 */
+	__s32                      status;               /*     8     4 */
+
+	/* size: 16, cachelines: 1, members: 2 */
+	/* padding: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+ net/rds/recv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index c8404971d5ab..aba4afe4dfed 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -450,12 +450,13 @@ static int rds_still_queued(struct rds_sock *rs, struct rds_incoming *inc,
+ int rds_notify_queue_get(struct rds_sock *rs, struct msghdr *msghdr)
+ {
+ 	struct rds_notifier *notifier;
+-	struct rds_rdma_notify cmsg = { 0 }; /* fill holes with zero */
++	struct rds_rdma_notify cmsg;
+ 	unsigned int count = 0, max_messages = ~0U;
+ 	unsigned long flags;
+ 	LIST_HEAD(copy);
+ 	int err = 0;
+ 
++	memset(&cmsg, 0, sizeof(cmsg));	/* fill holes with zero */
+ 
+ 	/* put_cmsg copies to user space and thus may sleep. We can't do this
+ 	 * with rs_lock held, so first grab as many notifications as we can stuff
+-- 
+2.25.1
+
