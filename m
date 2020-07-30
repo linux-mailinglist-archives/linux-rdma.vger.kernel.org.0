@@ -2,219 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D21A233708
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 18:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014EA233871
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 20:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729832AbgG3QpY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jul 2020 12:45:24 -0400
-Received: from pio-pvt-msa2.bahnhof.se ([79.136.2.41]:36152 "EHLO
-        pio-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728415AbgG3QpY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jul 2020 12:45:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 9D5093FC07;
-        Thu, 30 Jul 2020 18:45:18 +0200 (CEST)
-Authentication-Results: pio-pvt-msa2.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=Ban6eCam;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.911
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.911 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.812,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FGIani5JgmKM; Thu, 30 Jul 2020 18:45:17 +0200 (CEST)
-Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        (Authenticated sender: mb878879)
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 22D5D3FBCF;
-        Thu, 30 Jul 2020 18:45:14 +0200 (CEST)
-Received: from localhost.localdomain (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 68E9E361FE2;
-        Thu, 30 Jul 2020 18:45:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1596127516; bh=WmoqVD5xMx2mKhiXkA7Wx6HNNvArGiPu3cb42J8Eqq8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ban6eCam79LaP2aso+KqRtn4VGxizeZQ3uHVvcID5i+rm+f7F9Yk/y4F1LRpx7kM4
-         7+UvyzkUHOyPhdiSOiHvQteBECLWcX8gITVwl8MQG3RSVLKJZ8EZjCZK5d63q9vEYr
-         4f/39kCtOd/IbfmxfAV+kxoiRaUob9Nuv5nZKE4E=
-Subject: Re: [PATCH] dma-resv: lockdep-prime address_space->i_mmap_rwsem for
- dma-resv
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-References: <20200728135839.1035515-1-daniel.vetter@ffwll.ch>
- <38cbc4fb-3a88-47c4-2d6c-4d90f9be42e7@shipmail.org>
- <CAKMK7uFe-70DE5qOBJ6FwD8d_A0yZt+h5bCqA=e9QtYE1qwASQ@mail.gmail.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <60f2b14f-8cef-f515-9cf5-bdbc02d9c63c@shipmail.org>
-Date:   Thu, 30 Jul 2020 18:45:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726275AbgG3ShA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jul 2020 14:37:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7567 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726581AbgG3ShA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jul 2020 14:37:00 -0400
+IronPort-SDR: OHFHGhw96uDcEE3H4FL42n+o8ut/OGa+boAt8RMPwvQYH+6xeAVlL+Nk4ZFWCmjB3RPU5Ds68p
+ JSofGpAR8Pag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="213205282"
+X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
+   d="scan'208";a="213205282"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2020 11:36:59 -0700
+IronPort-SDR: Tsd/Gj2kS0F7lFqw1vc4545ti5rf4k83HZi+n5McBjvUK8mzfNpdbc6jlp0YdObFUV5a0M8lgc
+ ZY/5LxNbG3AQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,415,1589266800"; 
+   d="scan'208";a="491223442"
+Received: from lkp-server02.sh.intel.com (HELO d4d86dd808e0) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 30 Jul 2020 11:36:57 -0700
+Received: from kbuild by d4d86dd808e0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k1DQG-0000BN-Hs; Thu, 30 Jul 2020 18:36:56 +0000
+Date:   Fri, 31 Jul 2020 02:36:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 54a485e9ec084da1a4b32dcf7749c7d760ed8aa5
+Message-ID: <5f231332.U2Mpduj3wqD8Sa/g%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uFe-70DE5qOBJ6FwD8d_A0yZt+h5bCqA=e9QtYE1qwASQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: 54a485e9ec084da1a4b32dcf7749c7d760ed8aa5  IB/rdmavt: Fix RQ counting issues causing use of an invalid RWQE
 
-On 7/30/20 3:17 PM, Daniel Vetter wrote:
-> On Thu, Jul 30, 2020 at 2:17 PM Thomas Hellström (Intel)
-> <thomas_os@shipmail.org> wrote:
->>
->> On 7/28/20 3:58 PM, Daniel Vetter wrote:
->>> GPU drivers need this in their shrinkers, to be able to throw out
->>> mmap'ed buffers. Note that we also need dma_resv_lock in shrinkers,
->>> but that loop is resolved by trylocking in shrinkers.
->>>
->>> So full hierarchy is now (ignore some of the other branches we already
->>> have primed):
->>>
->>> mmap_read_lock -> dma_resv -> shrinkers -> i_mmap_lock_write
->>>
->>> I hope that's not inconsistent with anything mm or fs does, adding
->>> relevant people.
->>>
->> Looks OK to me. The mapping_dirty_helpers run under the i_mmap_lock, but
->> don't allocate any memory AFAICT.
->>
->> Since huge page-table-entry splitting may happen under the i_mmap_lock
->> from unmap_mapping_range() it might be worth figuring out how new page
->> directory pages are allocated, though.
-> ofc I'm not an mm expert at all, but I did try to scroll through all
-> i_mmap_lock_write/read callers. Found the following:
->
-> - kernel/events/uprobes.c in build_map_info:
->
->              /*
->               * Needs GFP_NOWAIT to avoid i_mmap_rwsem recursion through
->               * reclaim. This is optimistic, no harm done if it fails.
->               */
->
-> - I got lost in the hugetlb.c code and couldn't convince myself it's
-> not allocating page directories at various levels with something else
-> than GFP_KERNEL.
->
-> So looks like the recursion is clearly there and known, but the
-> hugepage code is too complex and flying over my head.
-> -Daniel
+elapsed time: 1215m
 
-OK, so I inverted your annotation and ran a memory hog, and got the 
-below splat. So clearly your proposed reclaim->i_mmap_lock locking order 
-is an already established one.
+configs tested: 72
+configs skipped: 1
 
-So
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                             defconfig
+x86_64               randconfig-a001-20200730
+x86_64               randconfig-a004-20200730
+x86_64               randconfig-a002-20200730
+x86_64               randconfig-a006-20200730
+x86_64               randconfig-a003-20200730
+x86_64               randconfig-a005-20200730
+i386                 randconfig-a005-20200730
+i386                 randconfig-a004-20200730
+i386                 randconfig-a006-20200730
+i386                 randconfig-a002-20200730
+i386                 randconfig-a001-20200730
+i386                 randconfig-a003-20200730
+i386                 randconfig-a016-20200730
+i386                 randconfig-a012-20200730
+i386                 randconfig-a014-20200730
+i386                 randconfig-a015-20200730
+i386                 randconfig-a011-20200730
+i386                 randconfig-a013-20200730
+i386                 randconfig-a016-20200729
+i386                 randconfig-a012-20200729
+i386                 randconfig-a013-20200729
+i386                 randconfig-a014-20200729
+i386                 randconfig-a011-20200729
+i386                 randconfig-a015-20200729
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-8<---------------------------------------------------------------------------------------------
-
-[  308.324654] WARNING: possible circular locking dependency detected
-[  308.324655] 5.8.0-rc2+ #16 Not tainted
-[  308.324656] ------------------------------------------------------
-[  308.324657] kswapd0/98 is trying to acquire lock:
-[  308.324658] ffff92a16f758428 (&mapping->i_mmap_rwsem){++++}-{3:3}, 
-at: rmap_walk_file+0x1c0/0x2f0
-[  308.324663]
-                but task is already holding lock:
-[  308.324664] ffffffffb0960240 (fs_reclaim){+.+.}-{0:0}, at: 
-__fs_reclaim_acquire+0x5/0x30
-[  308.324666]
-                which lock already depends on the new lock.
-
-[  308.324667]
-                the existing dependency chain (in reverse order) is:
-[  308.324667]
-                -> #1 (fs_reclaim){+.+.}-{0:0}:
-[  308.324670]        fs_reclaim_acquire+0x34/0x40
-[  308.324672]        dma_resv_lockdep+0x186/0x224
-[  308.324675]        do_one_initcall+0x5d/0x2c0
-[  308.324676]        kernel_init_freeable+0x222/0x288
-[  308.324678]        kernel_init+0xa/0x107
-[  308.324679]        ret_from_fork+0x1f/0x30
-[  308.324680]
-                -> #0 (&mapping->i_mmap_rwsem){++++}-{3:3}:
-[  308.324682]        __lock_acquire+0x119f/0x1fc0
-[  308.324683]        lock_acquire+0xa4/0x3b0
-[  308.324685]        down_read+0x2d/0x110
-[  308.324686]        rmap_walk_file+0x1c0/0x2f0
-[  308.324687]        page_referenced+0x133/0x150
-[  308.324689]        shrink_active_list+0x142/0x610
-[  308.324690]        balance_pgdat+0x229/0x620
-[  308.324691]        kswapd+0x200/0x470
-[  308.324693]        kthread+0x11f/0x140
-[  308.324694]        ret_from_fork+0x1f/0x30
-[  308.324694]
-                other info that might help us debug this:
-
-[  308.324695]  Possible unsafe locking scenario:
-
-[  308.324695]        CPU0                    CPU1
-[  308.324696]        ----                    ----
-[  308.324696]   lock(fs_reclaim);
-[  308.324697] lock(&mapping->i_mmap_rwsem);
-[  308.324698]                                lock(fs_reclaim);
-[  308.324699]   lock(&mapping->i_mmap_rwsem);
-[  308.324699]
-                 *** DEADLOCK ***
-
-[  308.324700] 1 lock held by kswapd0/98:
-[  308.324701]  #0: ffffffffb0960240 (fs_reclaim){+.+.}-{0:0}, at: 
-__fs_reclaim_acquire+0x5/0x30
-[  308.324702]
-                stack backtrace:
-[  308.324704] CPU: 1 PID: 98 Comm: kswapd0 Not tainted 5.8.0-rc2+ #16
-[  308.324705] Hardware name: VMware, Inc. VMware Virtual Platform/440BX 
-Desktop Reference Platform, BIOS 6.00 07/29/2019
-[  308.324706] Call Trace:
-[  308.324710]  dump_stack+0x92/0xc8
-[  308.324711]  check_noncircular+0x12d/0x150
-[  308.324713]  __lock_acquire+0x119f/0x1fc0
-[  308.324715]  lock_acquire+0xa4/0x3b0
-[  308.324716]  ? rmap_walk_file+0x1c0/0x2f0
-[  308.324717]  ? __lock_acquire+0x394/0x1fc0
-[  308.324719]  down_read+0x2d/0x110
-[  308.324720]  ? rmap_walk_file+0x1c0/0x2f0
-[  308.324721]  rmap_walk_file+0x1c0/0x2f0
-[  308.324722]  page_referenced+0x133/0x150
-[  308.324724]  ? __page_set_anon_rmap+0x70/0x70
-[  308.324725]  ? page_get_anon_vma+0x190/0x190
-[  308.324726]  shrink_active_list+0x142/0x610
-[  308.324728]  balance_pgdat+0x229/0x620
-[  308.324730]  kswapd+0x200/0x470
-[  308.324731]  ? lockdep_hardirqs_on_prepare+0xf5/0x170
-[  308.324733]  ? finish_wait+0x80/0x80
-[  308.324734]  ? balance_pgdat+0x620/0x620
-[  308.324736]  kthread+0x11f/0x140
-[  308.324737]  ? kthread_create_worker_on_cpu+0x40/0x40
-[  308.324739]  ret_from_fork+0x1f/0x30
-
-
-
->> /Thomas
->>
->>
->>
->
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
