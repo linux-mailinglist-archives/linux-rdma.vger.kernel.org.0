@@ -2,78 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39742233B5B
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 00:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34CB233BF8
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 01:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730644AbgG3W26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jul 2020 18:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        id S1730716AbgG3XQQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jul 2020 19:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730641AbgG3W25 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:28:57 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1729896AbgG3XQQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jul 2020 19:16:16 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D06520829;
-        Thu, 30 Jul 2020 22:28:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D6A020663;
+        Thu, 30 Jul 2020 23:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596148137;
-        bh=YH9+ICW/3hXRtSm64orqu19oSdQuuWKrMUBevTvaXkE=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=F+0Ydd/Fgutk16gkyGj2gECpPoXbH4sg6UlFq9catgilRzwkQfA9O7G1w0Kz6j0y8
-         QrQ7gUCMeXm93qiW40R2H2WfV9+NT2PCbOx4GxEs87RdYK42aWEzohK3Bf2m4JuD5e
-         DShs/tsbsdcOdvIawMZxl9W+REGJfO6Zjj0yspI8=
-Date:   Thu, 30 Jul 2020 23:28:36 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-rdma@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
-Subject: Re: [PATCH 0/7] drop unnecessary list_empty
-Message-Id: <159614804536.1473.16638498246526574558.b4-ty@kernel.org>
+        s=default; t=1596150976;
+        bh=jV18/jcAfyBNdKXiKomBQ4xuaDpihYjnYpMMURmt6/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VSj6mhzGSAQOTQv2hwW5ylCeQQQyNExtDVnbqF3WJfya60aQAEtb5uWnlQ35DwYRY
+         XM9aeGvJsrshNvz1XRVl/IrTi1f13juWyrEN1uJT/PsDtMwaDNvDoomTjsXuNWGZcC
+         Od3OWtN9wk7RHBB5oRRrfFla3dv+VJ4O5BKTmsTk=
+Date:   Thu, 30 Jul 2020 16:16:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xin Xiong <xiongx18@fudan.edu.cn>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH v2] net/mlx5e: fix bpf_prog reference count leaks in
+ mlx5e_alloc_rq
+Message-ID: <20200730161613.7a0265b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200730102941.5536-1-xiongx18@fudan.edu.cn>
+References: <20200730102941.5536-1-xiongx18@fudan.edu.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 26 Jul 2020 12:58:25 +0200, Julia Lawall wrote:
-> The various list iterators are able to handle an empty list.
-> The only effect of avoiding the loop is not initializing some
-> index variables.
-> Drop list_empty tests in cases where these variables are not
-> used.
+On Thu, 30 Jul 2020 18:29:41 +0800 Xin Xiong wrote:
+> Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ
+> types")
 > 
-> The semantic patch that makes these changes is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> [...]
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: Intel: drop unnecessary list_empty
-      commit: a383308e50244a28fe927b9c1acbe0a963bf186b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Thanks for the patch, please make sure Fixes tag is not line-wrapped
+and there is no empty line between that and the sign-offs.
