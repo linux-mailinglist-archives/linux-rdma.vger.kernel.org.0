@@ -2,123 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEF1232F80
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 11:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D5233063
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jul 2020 12:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgG3Jam (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jul 2020 05:30:42 -0400
-Received: from mail-vi1eur05on2061.outbound.protection.outlook.com ([40.107.21.61]:7444
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S1726967AbgG3Ka3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jul 2020 06:30:29 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:36992 "EHLO fudan.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726774AbgG3Jal (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Jul 2020 05:30:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X0I2rbzkEObWVkEXPODQeZa5xyGNjFwFpv1WDEXll9rjtyphKiiK+CwkByFmLO0MXJKWe5zMrS8zWD63P0gR7//UV+T6fN+RYW5UV08Afn1TtGvI7zn4H6MboHs5T0ddYi2uBwzJtoIq6RO4CNhGmTTH+M6ETKoKHcoXIU6j4UoKMFuzP7zA0lqzRMLP/ke/9gROWeLBQQUSplO8PisOX63+O6fsQv/njwZ4Xt78yiLz4+PrBNt52hYvDz3ZvDVLBL5GpNzaZU/2D/U7UYMbOPO7SeiaAVDbY3uah5qFK/7YXMESy0FFtkmB5ppYGVLTNQebeAg76GBuDFvp40mrHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hIU4hjrJfPusBewPkWcMKvoKsN/xBtpk7hSbaRgRnfE=;
- b=i4nmS7YrdCMv0pvDIcd3JPVh20PYOrOAdvjLwMo8uY1ht8ZnOiR0fjmwr6Q91zWu6u8iRl/45r2hkaCfR1ccSRRxSxUZ6jA9D5QFPvTC5M3Kp9il5L0iinqNdZdEXsQvgc0MMZqLz60kLQa89uwKqcU5ljEekAillf+Ls5JK4/HV+pCXE8lQ4CvJR9YBPhfB62eKDKrLmS8Fw98ZY4xaeWWUk5cn2JhxzQGCzOfMc1GjKt370g2lETdmGMC4LqpFcBh64gQofus6ozu3u1nUu18pkvTyPKRHGWnI8/rrrN7dbapYtJPmQwtEfWHXThQhsL5r4vARGEmpHrzqchkH1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hIU4hjrJfPusBewPkWcMKvoKsN/xBtpk7hSbaRgRnfE=;
- b=JnBANOl1QiXLkK5f9JjnnnwB1p30FjqgrZQaR9O7lxiQB7T1PjdhoEO/tX0MBrgUURZj/nWNUlZBmeq31hnC/5NeHIALV2DheM9B/hKK/yKQVik3Frg8mTy3OLFeIJuutznsSg6CGb2ZpymiJcGZb1pJi588z01l8ZV0uSS32ag=
-Authentication-Results: mellanox.com; dkim=none (message not signed)
- header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com (2603:10a6:208:11f::18)
- by AM0PR0502MB3825.eurprd05.prod.outlook.com (2603:10a6:208:23::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Thu, 30 Jul
- 2020 09:30:36 +0000
-Received: from AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::4065:87d7:1f28:26c3]) by AM0PR05MB5810.eurprd05.prod.outlook.com
- ([fe80::4065:87d7:1f28:26c3%6]) with mapi id 15.20.3216.034; Thu, 30 Jul 2020
- 09:30:36 +0000
-Subject: Re: [PATCH rdma-rc 3/3] RDMA/core: Free DIM memory in error unwind
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>
-References: <20200730082719.1582397-1-leon@kernel.org>
- <20200730082719.1582397-4-leon@kernel.org>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <331a2b75-87e7-b53b-191c-63cbb0617a29@mellanox.com>
-Date:   Thu, 30 Jul 2020 12:30:32 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200730082719.1582397-4-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: FR2P281CA0020.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:14::7) To AM0PR05MB5810.eurprd05.prod.outlook.com
- (2603:10a6:208:11f::18)
+        id S1725892AbgG3Ka2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jul 2020 06:30:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=YGeAc6Wc56
+        nAYNAcYe8hVIlpE0CdSjlL19b3AqomqcY=; b=JslT8cGb/VHBVQv9qxu+d4+OXK
+        qyWG8oe/foQnMOklextsOh57TG1OuRq+FeCS4JLlTNMkY8WxFdFA76QKUKzcM0aR
+        MvI3wJhgtjgiuDi9ypxvrfaHxF21pXKQ+1V2+lRqwBoteL1JHHXxYvfkqvGVfkoR
+        5/fHbSo0YvJhQwweQ=
+Received: from xin-virtual-machine (unknown [111.192.143.50])
+        by app2 (Coremail) with SMTP id XQUFCgD3_zMnoSJfM9KfAg--.21996S3;
+        Thu, 30 Jul 2020 18:30:00 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH v2] net/mlx5e: fix bpf_prog reference count leaks in mlx5e_alloc_rq
+Date:   Thu, 30 Jul 2020 18:29:41 +0800
+Message-Id: <20200730102941.5536-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.0.0.10] (93.172.65.141) by FR2P281CA0020.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Thu, 30 Jul 2020 09:30:35 +0000
-X-Originating-IP: [93.172.65.141]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 850f88cf-9997-4850-6cd0-08d8346b3704
-X-MS-TrafficTypeDiagnostic: AM0PR0502MB3825:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR0502MB38258DAF9480CFA0000613CCB6710@AM0PR0502MB3825.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:497;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ocsn34r1roqIJThzbMqrfH80V1rwjsFrEHXlVmvGnCig1ypOFLwsTa9F18C0ojse+UcXlcb6vKyHPHYFAEdcdxvf6LgmwNV9fUg42OTaO+ZSdu/gZSE38i6YBxB6Hk0htG+hbGppEXehfMJZCRIOJagD5zX6PtOTNuCmA3Lbg/6gAebKb0BZgdzc4Havqx3CYpY+HsSBgNYIOkHN/lrZWMM9UIfS7DQMXlTfuuQEGy3lZRuTtZQoafgLf4uvfU/hoKn15x2eNK87TWliIbHmpXIAaZRhKSnB+i+XQApeBNF12axn93ZvQmyldTPwkd+Or5Nx9qOwDEH9kk2JO496sbLeG7xtx7ZmCoOEP8ts8ZVVTn4yEMBnC8ClVY7BBx+d
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5810.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(52116002)(2616005)(36756003)(5660300002)(4326008)(956004)(6666004)(186003)(26005)(31686004)(16526019)(478600001)(6486002)(53546011)(66556008)(16576012)(4744005)(107886003)(2906002)(8936002)(6636002)(316002)(86362001)(31696002)(66476007)(66946007)(54906003)(110136005)(8676002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: GS5LbASegLhHuJcKvHRotMOB+H06cCM7ibWkMUWD9TzEgwPE/IcP7E4/EfmSsMdy/Pm3a0itU9kJF3ArEaaduE5YdJx17SuAeKoayvqsYgrOZavkVPyGaOc7WayXYhlpTjsJunyxHlGRRKGuhJWHxWKhkQrlPt8k5+XyXH6Z8WCzMpR7TAZor1puDsja76CdXTfc1NDiTQo1Bet/oC/wG9E6YOxW9+vK0mEvKR2cP1bpFbFIeBbzApKkF2GRzN+2IDkagbit84Ovs1GkK3fyIW3fKKo8cBR9Rnr2BQMm7kkMPFXKdX79YhapngWuYiQD1Aske0LtIIJfnk9w0uM1svJWcuipJKXNSUmgQfg9EHnTFrTtO7Z3XClH1LvG1/qEf5ct75nQgneQUCK2xi0E1NiLnWnx7IAjiE3/eu3tDHtztYbLR4bApYGg9JzMTWngF1l9eTfjOSKF40qtGLvsFl+ycwEV6j4IBEj9MoY0N+v7z3bGoyhaBHvadlZxuIZ1
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 850f88cf-9997-4850-6cd0-08d8346b3704
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB5810.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2020 09:30:36.4215
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nDpX9u6SeA2u5BdTTI8+o2GDN8LmUaPM4WbPkYbFdOEZ8+pHAW+RkhnygYXbQNKyflWT7OLJkv3uLFdZEjFD7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0502MB3825
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: XQUFCgD3_zMnoSJfM9KfAg--.21996S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rXF1rCrg_yoW8Cr1kpr
+        47Wr9FkFZ5JFyUJw4DAaykXa4Fka90y3WDWF1Fvw4fXrs8AFs5AFyFgry7uF1UGFW8Gw1j
+        qw429ws8AFn5AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUO5r4UUUUU
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The function invokes bpf_prog_inc(), which increases the reference
+count of a bpf_prog object "rq->xdp_prog" if the object isn't NULL.
 
-On 7/30/2020 11:27 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
->
-> The memory allocated for the DIM wasn't freed in in error unwind path,
-> fix it by calling to rdma_dim_destroy().
->
-> Fixes: da6629793aa6 ("RDMA/core: Provide RDMA DIM support for ULPs")
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->   drivers/infiniband/core/cq.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-> index 33759b39c3d3..513825e424bf 100644
-> --- a/drivers/infiniband/core/cq.c
-> +++ b/drivers/infiniband/core/cq.c
-> @@ -275,6 +275,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
->   	return cq;
->   
->   out_destroy_cq:
-> +	rdma_dim_destroy(cq);
->   	rdma_restrack_del(&cq->res);
->   	cq->device->ops.destroy_cq(cq, udata);
->   out_free_wc:
+The refcount leak issues take place in two error handling paths. When
+either mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function
+simply returns the error code and forgets to drop the reference count
+increased earlier, causing a reference count leak of "rq->xdp_prog".
 
-Looks good,
+Fix this issue by jumping to the error handling path err_rq_wq_destroy
+while either function fails.
 
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com <mailto:maxg@mellanox.com>>
+Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ
+types")
+
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+v1 -> v2:
+- Amended parts of wording to be better understood
+- Added Fixes tag
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a836a02a2116..8e1b1ab416d8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
+ 					&rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
+ 
+@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
+ 					 &rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+ 
+-- 
+2.25.1
 
