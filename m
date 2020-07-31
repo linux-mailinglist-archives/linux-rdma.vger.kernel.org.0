@@ -2,159 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B361234B70
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 21:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EF4234B82
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 21:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgGaTHU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jul 2020 15:07:20 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:64672 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726726AbgGaTHT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 31 Jul 2020 15:07:19 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f246be30001>; Sat, 01 Aug 2020 03:07:15 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 31 Jul 2020 12:07:15 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Fri, 31 Jul 2020 12:07:15 -0700
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jul
- 2020 19:07:15 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 31 Jul 2020 19:07:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CydMeot5Ldn8y5AM639+nPLGfByK2v2LQztQvJJb2yBF+gzdylZ6ONUPYPpAdCE+Me0R+aIqe57+O1fpY49jIvYJiT+TRNsSbMA3n+A8r0nGt6St505x20BbQRObsj3iGNEhShN+eEzEIPvOtXWlIfxhmQ3su6gqbNEiP6DzrsoFyZx2EzK7w8uY+XsFzbmTFevJo9iJnOBN6nUjD4nrtLbM+2/lMSd5q3K0a6ao2trzzMRhtt5EEfZiVO6Gup4NpO74YkMupqXHU7mgB+WpjbdpD6shRapQGza7rOB7u6MQfx09VcNCwq8WKmqTVmyO1UqTLpndMNqIDB1JcOqpTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vohw9Kc6fT8kr96kOmpUwyaa1nCAQ/DhtbMjIvPaRQo=;
- b=aszpW8hbKNoCmB6K85CtrA6O0AeVWL7TzW7Uq+R6D5oykXqzSB6Q19jFV1i412ddh81W9V7cM1jdeP15yHewYpwjbEZ0zPZnj+9D5AdlmUmoys4l0PzIM3Skc33caDweM1EwprEkyJdls9BkkHOu1irNDlRXFj7gAuiZIGF26+2ee8WxTDrX9xfM4yZvaPkBHMdG8KzKdQ8soBRPAouB8czFBB7cjHp/sB8M1IBDL3HEKQ0KZ9J58oc0GVRVYRW9Z2VWMmvazDCbMD4oMhCM3XHWxfHUmiBKr6z2CmsotPE8XAeuJeuHVHNXtPrYUhPVthKSTelrKhjzgMZCy0mF3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2602.namprd12.prod.outlook.com (2603:10b6:5:4a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.25; Fri, 31 Jul
- 2020 19:07:13 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3239.020; Fri, 31 Jul 2020
- 19:07:13 +0000
-Date:   Fri, 31 Jul 2020 16:07:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Chuck Lever <chuck.lever@oracle.com>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v2 0/3] IB CM tracepoints
-Message-ID: <20200731190710.GA520925@nvidia.com>
-References: <159526519212.1543.15414933891659731269.stgit@klimt.1015granger.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <159526519212.1543.15414933891659731269.stgit@klimt.1015granger.net>
-X-ClientProxiedBy: MN2PR16CA0050.namprd16.prod.outlook.com
- (2603:10b6:208:234::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730737AbgGaTPr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Jul 2020 15:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbgGaTPq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jul 2020 15:15:46 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F1EC06174A
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Jul 2020 12:15:45 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c12so14766530qtn.9
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Jul 2020 12:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fq0Y+W4Lgf9ZSs2fq5dZEqY/mzSGk+8POFJ4bFdvCDk=;
+        b=G/VpxuJUEys50kS6M4S8wb2H1SZFH9TAe6PT9j9DjWLTOfJB5PNMU67K3dsNbEqa/T
+         f/t/ak0QhLCebd7u7VQEHzvhQW9JdWn6Q0zDWLUeVDy3t8XfK0bgdcd4pK6d11b8hDOJ
+         awmYIM72dgL0i2V7jQWPII+xmQ6s7xdvCa7yHe3VPproYPZLgxU/trvWLMs7TJ1a17zM
+         hkxnvRS2KHmbgVl2ohPFNxuIcOG5Hy4m6X5ZU/L5bcHwUkvXjAenwqP7ddqeXsdvNx8d
+         7a/WH0YQE0MirCzNS6Fv+Fw+tL8mCVhiagDDtra7MILsPqqCdx7raAC9vGeT/LHU24gG
+         VvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fq0Y+W4Lgf9ZSs2fq5dZEqY/mzSGk+8POFJ4bFdvCDk=;
+        b=cCN6zyXhYNLmuvzck434sUKKP1OFG9JBPhHlvfah+d7yr4AfoXtL4bNNlONwCJ+G9W
+         BRPLya099rkzmDnTNIHmgqBk4PIH1Ix2wE94Z9pSwkPxOKA3eXlLUrli+HdNzCm/GaRZ
+         DyTMN+0glabYo7ONYZseTE8fALAm/iFLEWuGs/gMJMRM05pFT/6Ne1f5FZSA++2KVPoO
+         tGFEd0/gDi7M5MaDc8G/yqBvNlXIe7bSsD1Svp3isNW1gWmdDK0AId3+7ibhhGm43KOK
+         UFq/O9M5uE43gamMHMH0Gwdrw/nKRErq7vsjOyKVAhlqeqCCYpJQ5gJhStv0+RAWXYcX
+         Gh4Q==
+X-Gm-Message-State: AOAM533uyVPEhJwBUdduNtwwyhtrK+0i6U79IIkKY9J15KtrcNpHLAnJ
+        PANr5qlSXGAR0BIA7hSO4lqyhQ==
+X-Google-Smtp-Source: ABdhPJy80fPm/ep3Y4AxQL+NAp4HUm3l9/dB0ABYDlNS+XUMwzmiJ6PHh20/a5m/KIRuQsM16pnQBA==
+X-Received: by 2002:aed:3361:: with SMTP id u88mr5258595qtd.79.1596222944775;
+        Fri, 31 Jul 2020 12:15:44 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id q2sm10160900qtl.64.2020.07.31.12.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2020 12:15:44 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k1aVL-002Bep-EX; Fri, 31 Jul 2020 16:15:43 -0300
+Date:   Fri, 31 Jul 2020 16:15:43 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, kvm-ppc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+Subject: Re: [PATCH v4 6/6] mm/migrate: remove range invalidation in
+ migrate_vma_pages()
+Message-ID: <20200731191543.GJ24045@ziepe.ca>
+References: <20200723223004.9586-1-rcampbell@nvidia.com>
+ <20200723223004.9586-7-rcampbell@nvidia.com>
+ <20200728191940.GB159104@nvidia.com>
+ <7f947311-0034-9148-1dca-fb9b9a10abc4@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0050.namprd16.prod.outlook.com (2603:10b6:208:234::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Fri, 31 Jul 2020 19:07:12 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k1aN4-002BXb-Rx; Fri, 31 Jul 2020 16:07:10 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e66bc10d-b6f7-4f92-e8fc-08d83584ee21
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2602:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2602463F3562B3684DC319A5C24E0@DM6PR12MB2602.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Sb3I7NMCW9uabvXnSHNfbFUx4Kpgharpv5KzKcb1g25XxnrySeyNeS0bakIj9HO166uXFe9a65MwTHYKnRFrCrpLrjVEs8hkQJqIuqLMteJcHk3RvAkNzCEzYlJe/cxOyI68movh0Vts6qm9Ni5eCGb+CaXWtOuyKnDfFO2WAgwkyf0iur5F0Ya0CVzTKsQslpBkM+4w2JmA1wc8uZnpZUlaoKy6xNXIsBUP61HAXd0aAzQLi7Bo6zjyK0DfU9gMvnsVEk3YwaW2pYjZ6AQu1zcRRmgY0UOw9ufvE/Yd+2e2l9gl2kEzwVP//EJzUDL2xPDgJkW6wFbBRJV3jpPmGVZmUbkGA4g5jIqaBnAs48KfSZlrwYUlLpn57NkuJs58
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(66556008)(66946007)(86362001)(26005)(4326008)(478600001)(33656002)(186003)(8676002)(83380400001)(1076003)(66476007)(2906002)(316002)(8936002)(36756003)(5660300002)(2616005)(9786002)(6916009)(9746002)(426003)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: RU9o8FwSvYlpErR0ewlt31m4fZy9szy+4e62giXPxNUj8nsREVrpKdfDaiuaYds0tS82TOGCJ8NPk9ZkGvQiKKG3PqMSWMPkFyeSM6oy2Esm41f0h2lkXP4JGxEf128ztyFAGiBtS6IgmQfyK4wsJPQGYREJ7ajnO/UUDcyR0wFmReoL30FdSbVG3xS0lZrd9V+yrLphsRDoHxlf/ga+zjIqAjf9JoSrkmucPRrdzZ+3UJwRM07Vl1jZsDpMgjBSu4XuZO5QidBOgknjGITCwC5j1bi+zZVSxpbEsR3Mzjy2V5QFzeV6g+ICtUqPVHJmSBKw375wZpImpTwzF1C9EUbTwuoFacHuiPZUEej485k9NQN7eu3X2fUtjNni7mo4vl18tWSFZujR2/aTjL2TbJ0lk8Dp9DxXmr3wuo0JGEiHJ7yrceHfrIZY0fFbx66nvd5akxyEWby+CD27dSzdVpqsB4TlsmB7WNwx4GbMsL0=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e66bc10d-b6f7-4f92-e8fc-08d83584ee21
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2020 19:07:13.0634
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1AzHG2RNADsRpJYEG5F0OsIhHPO6ZdV+K+koCz9FGlMmNA73CnIFHS+1RDGuYx4K
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2602
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1596222435; bh=Vohw9Kc6fT8kr96kOmpUwyaa1nCAQ/DhtbMjIvPaRQo=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=dGASICWlDYCmE1L8gD4Cr6A21iOQ7j8L9o3SY+ioyr3q1+v7owi8vQchjELku21Q2
-         doLjBF7PmxTXsQ6gMbJOD/e0ultELFtpAfzQHdxJTplUpfZeEQpz3awm+L191OMWn7
-         f79hjPd7hZcwlBL/93hYkZuK/nyi4M235eRpYNA4zZlIiOTZh8TlVm9BeDkldE8qoK
-         xUcSyMM4uEaAAIs2KrE8cn/l/hn1Pe89wTKULm+c1wYbkzeY0TSi0d3ZHEX1mVLJ10
-         8pDAxuK/NAbkzdXg0hO21t0m0H309apNXmd+XNWjBZcQDiuiiJ+367ELyErdvmfYq+
-         nq+XBIMW2+L4g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f947311-0034-9148-1dca-fb9b9a10abc4@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 01:16:28PM -0400, Chuck Lever wrote:
-> Oracle has an interest in a common observability infrastructure in
-> the RDMA core and ULPs. Introduce static tracepoints that can also
-> be used as hooks for eBPF scripts, replacing infrastructure that
-> is based on printk. This takes the same approach as tracepoints
-> added recently in the RDMA CM.
+On Tue, Jul 28, 2020 at 03:04:07PM -0700, Ralph Campbell wrote:
 > 
-> Changes since RFC:
-> * Correct spelling of example tracepoint in patch description
-> * Newer tool chains don't care for tracepoints with the same name
->   in different subsystems
-> * Display ib_cm_events, not ib_events
+> On 7/28/20 12:19 PM, Jason Gunthorpe wrote:
+> > On Thu, Jul 23, 2020 at 03:30:04PM -0700, Ralph Campbell wrote:
+> > > When migrating the special zero page, migrate_vma_pages() calls
+> > > mmu_notifier_invalidate_range_start() before replacing the zero page
+> > > PFN in the CPU page tables. This is unnecessary since the range was
+> > > invalidated in migrate_vma_setup() and the page table entry is checked
+> > > to be sure it hasn't changed between migrate_vma_setup() and
+> > > migrate_vma_pages(). Therefore, remove the redundant invalidation.
+> > 
+> > I don't follow this logic, the purpose of the invalidation is also to
+> > clear out anything that may be mirroring this VA, and "the page hasn't
+> > changed" doesn't seem to rule out that case?
+> > 
+> > I'm also not sure I follow where the zero page came from?
 > 
+> The zero page comes from an anonymous private VMA that is read-only
+> and the user level CPU process tries to read the page data (or any
+> other read page fault).
 > 
-> Chuck Lever (3):
->       RDMA/core: Move the rdma_show_ib_cm_event() macro
->       RDMA/cm: Replace pr_debug() call sites with tracepoints
->       RDMA/cm: Add tracepoints to track MAD send operations
+> > Jason
+> > 
 > 
+> The overall migration process is:
 > 
->  drivers/infiniband/core/Makefile   |   2 +-
->  drivers/infiniband/core/cm.c       | 102 ++++---
->  drivers/infiniband/core/cm_trace.c |  15 ++
->  drivers/infiniband/core/cm_trace.h | 414 +++++++++++++++++++++++++++++
->  4 files changed, 476 insertions(+), 57 deletions(-)
->  create mode 100644 drivers/infiniband/core/cm_trace.c
->  create mode 100644 drivers/infiniband/core/cm_trace.h
+> mmap_read_lock()
+> 
+> migrate_vma_setup()
+>       // invalidates range, locks/isolates pages, puts migration entry in page table
+> 
+> <driver allocates destination pages and copies source to dest>
+> 
+> migrate_vma_pages()
+>       // moves source struct page info to destination struct page info.
+>       // clears migration flag for pages that can't be migrated.
+> 
+> <driver updates device page tables for pages still migrating, rollback pages not migrating>
+> 
+> migrate_vma_finalize()
+>       // replaces migration page table entry with destination page PFN.
+> 
+> mmap_read_unlock()
+> 
+> Since the address range is invalidated in the migrate_vma_setup() stage,
+> and the page is isolated from the LRU cache, locked, unmapped, and the page table
+> holds a migration entry (so the page can't be faulted and the CPU page table set
+> valid again), and there are no extra page references (pins), the page
+> "should not be modified".
 
-This doesn't apply, can you resend it?
-
-Applying: RDMA/core: Move the rdma_show_ib_cm_event() macro
-error: sha1 information is lacking or useless (include/trace/events/rpcrdma.h).
-error: could not build fake ancestor
-Patch failed at 0001 RDMA/core: Move the rdma_show_ib_cm_event() macro
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+That is the physical page though, it doesn't prove nobody else is
+reading the PTE.
  
-I guess in two weeks after the merge window
+> For pte_none()/is_zero_pfn() entries, migrate_vma_setup() leaves the
+> pte_none()/is_zero_pfn() entry in place but does still call
+> mmu_notifier_invalidate_range_start() for the whole range being migrated.
 
-Thanks,
+Ok..
+
+> In the migrate_vma_pages() step, the pte page table is locked and the
+> pte entry checked to be sure it is still pte_none/is_zero_pfn(). If not,
+> the new page isn't inserted. If it is still none/zero, the new device private
+> struct page is inserted into the page table, replacing the pte_none()/is_zero_pfn()
+> page table entry. The secondary MMUs were already invalidated in the migrate_vma_setup()
+> step and a pte_none() or zero page can't be modified so the only invalidation needed
+> is the CPU TLB(s) for clearing the special zero page PTE entry.
+
+No, the secondary MMU was invalidated but the invalidation start/end
+range was exited. That means a secondary MMU is immeidately able to
+reload the zero page into its MMU cache.
+
+When this code replaces the PTE that has a zero page it also has to
+invalidate again so that secondary MMU's are guaranteed to pick up the
+new PTE value.
+
+So, I still don't understand how this is safe?
+
 Jason
