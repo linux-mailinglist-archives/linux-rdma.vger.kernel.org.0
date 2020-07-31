@@ -2,110 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAB8233FB5
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 09:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7452E234204
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 11:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731490AbgGaHFW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jul 2020 03:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731367AbgGaHFV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jul 2020 03:05:21 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD44AC061574;
-        Fri, 31 Jul 2020 00:05:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kr4so4601885pjb.2;
-        Fri, 31 Jul 2020 00:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qogj519tDPhVlnDqSFd2ylWvoTNUxXYt6MySeSAH02Y=;
-        b=ezV+1aQEE0vLmyIrgfs9Ek7f9T/rdKwJX3gvyxvcHlPhb55VqDcZriBnN0dwMUezvv
-         rAPivnjvWGXESDbmG1LVXge38S1Gyb8JnR6EDyZ3ySbyxSDVMAXhx19pp10cuFf8yoso
-         smE1Tc6s40ZDl8L3VpsYdkc22N/ngBltadWX5chTgSExJYNzUw7vT7c2JV9CeXrfaPbs
-         zyImDtHW002NC5bxRI3bfS7UXYmS1rK+BecEBKe+oTq6FTKeu56a4CJnaTzMPm943ydU
-         8gJ2S8yC4L/JWoMYdlDiTnk870FTDVcTKairNMMxAkbqT/5wqbWaIX42xfGnAuoo57Kq
-         H6ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qogj519tDPhVlnDqSFd2ylWvoTNUxXYt6MySeSAH02Y=;
-        b=ZEOhrQ5tKLAOj+jOYFZqh9ApCrhfk5T4ng1APL4EjEDjpm08d4keNEmbYYFd+nxkoY
-         XoiOEYbs4FIgHGuW1S4o5/yXQU2Y1UOo4McdVHUqtbr14PzYsoKGK6Nc06hpfZhI0vKG
-         JHB7S5NTt6YtnEaf0cBd55eT4Nlq49mF0z3BAbRZBsGC4q40ZL0foly3yn344vM1jLBa
-         LFlcb4osgGXED0w66zB0mPALEisuUbPYufFB2abCOnJL0UEddv3mq4lwkXoszBAgTDT5
-         PnYDoRlNiFp//TlrP29IJF6RbdpB6qz9nHaWNMIjEhPhav+2AAs72SvfeY2oEIoJcIoP
-         29hQ==
-X-Gm-Message-State: AOAM531Yua79+sVgtt7j689Dmo7BCXUv5VmbIDsw5mX/KRxEbYGwCO54
-        QcrGYhWboEVgiBIRAXMkEB8FuH0zsnfABsYsYOs=
-X-Google-Smtp-Source: ABdhPJw1K163hzWxoBsht0vngIzFQCrYy5PEp+QmbL3aRf0LXPKrg5RaismRTGmWXn2tmXlJSpxv02caa/DIGUcnu+o=
-X-Received: by 2002:a62:158e:: with SMTP id 136mr2542352pfv.36.1596179121242;
- Fri, 31 Jul 2020 00:05:21 -0700 (PDT)
+        id S1732009AbgGaJHR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Jul 2020 05:07:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63479 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731981AbgGaJHR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:07:17 -0400
+IronPort-SDR: ftNpzAhao/WulGY3cb9f+gmpJl7NsXQOM1bbJAE2h8n4LvO5tYaO/YodorDR9XfdFt8vkS/wq8
+ 5D9brO1V7nvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9698"; a="149577001"
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="149577001"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2020 02:07:16 -0700
+IronPort-SDR: VSIWuHcFU1ND4Ku5dV5EptqY/jdhD/geDfm3Iy5C0slee48+94OKyw/blUyjveAA4dqbMrsZSv
+ S0S4+Ur9xJ+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,417,1589266800"; 
+   d="scan'208";a="491425711"
+Received: from lkp-server02.sh.intel.com (HELO d4d86dd808e0) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 31 Jul 2020 02:07:14 -0700
+Received: from kbuild by d4d86dd808e0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k1R0T-0000VK-Km; Fri, 31 Jul 2020 09:07:13 +0000
+Date:   Fri, 31 Jul 2020 17:06:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 395f2e8fd340c5bfad026f5968b56ec34cf20dd1
+Message-ID: <5f23df0f.RQePvG7QMxokFg0K%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
- <20200731045301.GI75549@unreal> <20200731053306.GA466103@kroah.com>
- <20200731053333.GB466103@kroah.com> <CAHp75Vdr2HC_ogNhBCxxGut9=Z6pQMFiA0w-268OQv+5unYOTg@mail.gmail.com>
- <20200731070030.GJ75549@unreal>
-In-Reply-To: <20200731070030.GJ75549@unreal>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 31 Jul 2020 10:05:04 +0300
-Message-ID: <CAHp75VfZj4L6PJBbWi6wwMF2nucaxGjRLVvi-fTPSWxWvFE0TA@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-To:     Leon Romanovsky <leon@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sakari, JFYI. I remember during some reviews we have a discussion
-about {0} vs {} and surprisingly they are not an equivalent.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: 395f2e8fd340c5bfad026f5968b56ec34cf20dd1  RDMA/hns: Fix the unneeded process when getting a general type of CQE error
 
-On Fri, Jul 31, 2020 at 10:00 AM Leon Romanovsky <leon@kernel.org> wrote:
-> On Fri, Jul 31, 2020 at 09:29:27AM +0300, Andy Shevchenko wrote:
-> > On Friday, July 31, 2020, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > wrote:
-> > > On Fri, Jul 31, 2020 at 07:33:06AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Fri, Jul 31, 2020 at 07:53:01AM +0300, Leon Romanovsky wrote:
-> > > > > On Thu, Jul 30, 2020 at 03:20:26PM -0400, Peilin Ye wrote:
+elapsed time: 725m
 
-...
+configs tested: 84
+configs skipped: 1
 
-> > > > > Of course, this is the difference between "{ 0 }" and "{}"
-> > > initializations.
-> > > >
-> > > > Really?  Neither will handle structures with holes in it, try it and
-> > > > see.
-> >
-> >
-> > {} is a GCC extension, but I never thought it works differently.
->
-> Yes, this is GCC extension and kernel relies on them very heavily.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I guess simple people who contribute to the kernel just haven't
-realized (yet) that it's an extension and that's why we have plenty of
-{} and {0} in the kernel.
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a005-20200730
+i386                 randconfig-a004-20200730
+i386                 randconfig-a006-20200730
+i386                 randconfig-a002-20200730
+i386                 randconfig-a001-20200730
+i386                 randconfig-a003-20200730
+i386                 randconfig-a005-20200731
+i386                 randconfig-a004-20200731
+i386                 randconfig-a006-20200731
+i386                 randconfig-a002-20200731
+i386                 randconfig-a001-20200731
+i386                 randconfig-a003-20200731
+x86_64               randconfig-a001-20200730
+x86_64               randconfig-a004-20200730
+x86_64               randconfig-a002-20200730
+x86_64               randconfig-a006-20200730
+x86_64               randconfig-a003-20200730
+x86_64               randconfig-a005-20200730
+x86_64               randconfig-a015-20200731
+x86_64               randconfig-a014-20200731
+x86_64               randconfig-a016-20200731
+x86_64               randconfig-a012-20200731
+x86_64               randconfig-a013-20200731
+x86_64               randconfig-a011-20200731
+i386                 randconfig-a016-20200731
+i386                 randconfig-a012-20200731
+i386                 randconfig-a014-20200731
+i386                 randconfig-a015-20200731
+i386                 randconfig-a011-20200731
+i386                 randconfig-a013-20200731
+i386                 randconfig-a016-20200730
+i386                 randconfig-a012-20200730
+i386                 randconfig-a014-20200730
+i386                 randconfig-a015-20200730
+i386                 randconfig-a011-20200730
+i386                 randconfig-a013-20200730
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> > > And if true, where in the C spec does it say that?
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
