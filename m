@@ -2,112 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B30234516
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 14:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DD623453E
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jul 2020 14:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732999AbgGaMCV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jul 2020 08:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732699AbgGaMCT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jul 2020 08:02:19 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E9DC061574;
-        Fri, 31 Jul 2020 05:02:19 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id c2so16336192edx.8;
-        Fri, 31 Jul 2020 05:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=amVhr7R4Tl+AZRhIhKHpLA6uHviyCSc4sbl+N98Jdpg=;
-        b=JcMW1AmzuSS8oG65Inbid1bJUW/hbncZI7QS2d5UfMrtraGXnzfDKeDWUDIhuDP/6T
-         a5oy1TmPN7ZBWRpPUELAvSc5ujNSi1+DihJnVMqL9vW2Zx+Gqyawvb1ZEH1Jfv3gEIrJ
-         Lb33FgO9+8s5fiMLgtNRSIsBQ/8O1duwSGT7dVS7uZoRDhjo39sJfhzJWtn4xdYsjJ2u
-         Ap3vuoboz/YeojnQZcGlmicmKam1fnTIigSdb5tkXlt1czDa2nbdWRmVzLSyOYzUiz0Q
-         HEQsp232s4YkFDK8tN4PaxGlzYevBgaH5JeG75wkyNZjaVXbkGPtcdIWaK1VnBc5/gUK
-         kRUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=amVhr7R4Tl+AZRhIhKHpLA6uHviyCSc4sbl+N98Jdpg=;
-        b=DspcxHkPfmfOZ5+wRVzzP3+uwFaeS/X7NMqCQKlIvFR0iXTeWRTNLqloD8mB/VgNzx
-         8PWCxAjXL9YmuIcaGdPLV05LAf8RrDiw19ybmO57vC6jq5Ych2Uc30oevaZJdkaXuAfA
-         17n7x2rbvvUO+oniTpsaOwTPQAtfPLZozKWgux8bxTAx7LCwIUXBrmxWeRz95L7G7G7y
-         rrvR2BFP89IgMl66bjc2FORjZS4Xh7r8yLezEmi/2BcxaJ43VhlEO9ni9hNyBoX9uzDQ
-         bKXgpqzdL8viiNB3hOGqjXf//Oego4Gr5avNoOWLO5BgK2rIpiTB8RWUF0pRtCbRGK2T
-         PMFA==
-X-Gm-Message-State: AOAM533ExnG7rzIow8/Vd7aWCLHtKLo+OY15WcCo91NEUjYHTSvX50z2
-        dv8RVyOxq5JsgppEs4S3pfY=
-X-Google-Smtp-Source: ABdhPJxxcaYV0fL7ANNAzpxeHZXM0MM7VCpGGNBUD6uol8RNcQxADNTtg7/dBuH2xZETfFkTuu3WUQ==
-X-Received: by 2002:aa7:ce90:: with SMTP id y16mr3597463edv.325.1596196938310;
-        Fri, 31 Jul 2020 05:02:18 -0700 (PDT)
-Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
-        by smtp.gmail.com with ESMTPSA id j5sm9091734ejk.87.2020.07.31.05.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 05:02:17 -0700 (PDT)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     helgaas@kernel.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        bjorn@helgaas.com, skhan@linuxfoundation.org,
+        id S1732993AbgGaMFZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Jul 2020 08:05:25 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49014 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733108AbgGaMFY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jul 2020 08:05:24 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2wKA036678;
+        Fri, 31 Jul 2020 12:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=wQSjVYBw/TnpmeaVef5NuD3Sb07fZXefhlktIO+86VE=;
+ b=iZX7AyqlTaeG0sax9PxX4B4ZcMa2vT0UZ7l/Y+qmA1wZlGMKLak5Bs9GINU76b0lfvYm
+ ey6lmKPyGj3kt6rI2z71n217FQ72/y7ayy7rFtbD7yEjPFW5ph4B+/DwvW4S1WNvK0EJ
+ 87xTp9jGelyP01Vqr2pJIJww6jcOHz8AU/g/VLB4NRxrrmkHCyMmGvBqXiOJun+04Q6z
+ JyQNhQ3VhAIoSRf1E2CbKlUGYo0+/ayHFWK8VIFxcPoqV+v1WMPN8fdwF+K/p3KbpHT1
+ k7K+7KOHh8FFAn6Jzq+mfTB8y5hdo9Qzvx/v+HfwZKpsv5Zt8R13N8ZzegxlMOu051qn WA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32hu1jrqca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 31 Jul 2020 12:05:13 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06VC2bSk150843;
+        Fri, 31 Jul 2020 12:03:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 32hu63wuxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 31 Jul 2020 12:03:13 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06VC3Cr1152622;
+        Fri, 31 Jul 2020 12:03:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 32hu63wuv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 31 Jul 2020 12:03:12 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06VC3Anq029674;
+        Fri, 31 Jul 2020 12:03:10 GMT
+Received: from dhcp-10-175-172-80.vpn.oracle.com (/10.175.172.80)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 31 Jul 2020 05:03:10 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200731115909.GA1649637@kroah.com>
+Date:   Fri, 31 Jul 2020 14:03:06 +0200
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH v4 01/12] IB/hfi1: Check if pcie_capability_read_*() reads ~0
-Date:   Fri, 31 Jul 2020 13:02:29 +0200
-Message-Id: <20200731110240.98326-2-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200731110240.98326-1-refactormyself@gmail.com>
-References: <20200731110240.98326-1-refactormyself@gmail.com>
+        netdev@vger.kernel.org,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <866B1B5B-0156-4EED-9599-51BEF5661DA9@oracle.com>
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+ <20200731045301.GI75549@unreal> <20200731095943.GI5493@kadam>
+ <81B40AF5-EBCA-4628-8CF6-687C12134552@oracle.com>
+ <20200731115909.GA1649637@kroah.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9698 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 suspectscore=3 bulkscore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007310090
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On failure pcie_capability_read_dword() sets it's last parameter,
-val to 0. In this case dn and up will be 0, so aspm_hw_l1_supported()
-will return false.
-However, with Patch 12/12, it is possible that val is set to ~0 on
-failure. This would introduce a bug because (x & x) == (~0 & x). So
-with dn and up being 0x02, a true value is return when the read has
-actually failed.
 
-Since, the value ~0 is invalid here,
 
-Reset dn and up to 0 when a value of ~0 is read into them, this
-ensures false is returned on failure in this case.
+> On 31 Jul 2020, at 13:59, Greg Kroah-Hartman =
+<gregkh@linuxfoundation.org> wrote:
+>=20
+> On Fri, Jul 31, 2020 at 01:14:09PM +0200, H=C3=A5kon Bugge wrote:
+>>=20
+>>=20
+>>> On 31 Jul 2020, at 11:59, Dan Carpenter <dan.carpenter@oracle.com> =
+wrote:
+>>>=20
+>>> On Fri, Jul 31, 2020 at 07:53:01AM +0300, Leon Romanovsky wrote:
+>>>> On Thu, Jul 30, 2020 at 03:20:26PM -0400, Peilin Ye wrote:
+>>>>> rds_notify_queue_get() is potentially copying uninitialized kernel =
+stack
+>>>>> memory to userspace since the compiler may leave a 4-byte hole at =
+the end
+>>>>> of `cmsg`.
+>>>>>=20
+>>>>> In 2016 we tried to fix this issue by doing `=3D { 0 };` on =
+`cmsg`, which
+>>>>> unfortunately does not always initialize that 4-byte hole. Fix it =
+by using
+>>>>> memset() instead.
+>>>>=20
+>>>> Of course, this is the difference between "{ 0 }" and "{}" =
+initializations.
+>>>>=20
+>>>=20
+>>> No, there is no difference.  Even struct assignments like:
+>>>=20
+>>> 	foo =3D *bar;
+>>>=20
+>>> can leave struct holes uninitialized.  Depending on the compiler the
+>>> assignment can be implemented as a memset() or as a series of struct
+>>> member assignments.
+>>=20
+>> What about:
+>>=20
+>> struct rds_rdma_notify {
+>> 	__u64                      user_token;
+>> 	__s32                      status;
+>> } __attribute__((packed));
+>=20
+> Why is this still a discussion at all?
+>=20
+> Try it and see, run pahole and see if there are holes in this =
+structure
+> (odds are no), you don't need us to say what is happening here...
 
-Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
----
+An older posting had this:
 
- drivers/infiniband/hw/hfi1/aspm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+$ pahole -C "rds_rdma_notify" net/rds/recv.o
+struct rds_rdma_notify {
+	__u64                      user_token;           /*     0     8 =
+*/
+	__s32                      status;               /*     8     4 =
+*/
 
-diff --git a/drivers/infiniband/hw/hfi1/aspm.c b/drivers/infiniband/hw/hfi1/aspm.c
-index a3c53be4072c..9605b2145d19 100644
---- a/drivers/infiniband/hw/hfi1/aspm.c
-+++ b/drivers/infiniband/hw/hfi1/aspm.c
-@@ -33,13 +33,13 @@ static bool aspm_hw_l1_supported(struct hfi1_devdata *dd)
- 		return false;
- 
- 	pcie_capability_read_dword(dd->pcidev, PCI_EXP_LNKCAP, &dn);
--	dn = ASPM_L1_SUPPORTED(dn);
-+	dn = (dn == (u32)~0) ? 0 : ASPM_L1_SUPPORTED(dn);
- 
- 	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &up);
--	up = ASPM_L1_SUPPORTED(up);
-+	up = (up == (u32)~0) ? 0 : ASPM_L1_SUPPORTED(up);
- 
- 	/* ASPM works on A-step but is reported as not supported */
--	return (!!dn || is_ax(dd)) && !!up;
-+	return (dn || is_ax(dd)) && up;
- }
- 
- /* Set L1 entrance latency for slower entry to L1 */
--- 
-2.18.4
+	/* size: 16, cachelines: 1, members: 2 */
+	/* padding: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+
+Thxs, H=C3=A5kon
 
