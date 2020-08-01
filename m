@@ -2,137 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3610235107
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Aug 2020 09:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6382D235115
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Aug 2020 10:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgHAHnN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Aug 2020 03:43:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36101 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgHAHnN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 1 Aug 2020 03:43:13 -0400
-IronPort-SDR: tm5v6XeQ1dMVQAR5XOLQd1Qt89cWcSunF9z9SUEQs0KMJQLy0VzHkXuWiZ/jBYu1rqjTJLY6Sh
- yewC3N/I+gHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9699"; a="131976131"
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="131976131"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2020 00:43:11 -0700
-IronPort-SDR: JUpBf3XaVSHFB1B+yc9YCK//tATbScMT3cE+qa0/b8qcmANj+8qO2C70MXqixlnDY7bJQy/5Xz
- Zx2Ea3Rh0Uew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,420,1589266800"; 
-   d="scan'208";a="323499820"
-Received: from lkp-server01.sh.intel.com (HELO e21119890065) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Aug 2020 00:43:10 -0700
-Received: from kbuild by e21119890065 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k1mAf-0000MJ-SR; Sat, 01 Aug 2020 07:43:09 +0000
-Date:   Sat, 01 Aug 2020 15:42:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 928da37a229f344424ffc89c9a58feb2368bb018
-Message-ID: <5f251cd1.GFfP9emsq0dqYdwN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728266AbgHAIA7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Aug 2020 04:00:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58748 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgHAIA6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Aug 2020 04:00:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wTFw026356;
+        Sat, 1 Aug 2020 08:00:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JcmYWttSgHbw7qmGDRTSvtOA/0p07IlseUnTuNrFNjc=;
+ b=v/0FkYbVaBTZHtmsPt81t2LxiXsh0E24AS2oPVkso964b5B5DXK85h8T1RZCzpD+qI4x
+ eK9e51amSGeWeddjOl6FYD30GRjrEfH3oyckeRbi/Le+mL7HZOH1vklRd3uE6MPEZJSJ
+ I1Y3dP/wa6iWOT/WEovib+rDatLM37z+SX+vBI1AnY1prLuE95IqNcuZ78qyvw9/0+pZ
+ nBtFb3BJrp5Tq0ZK2nh/QYZsvPKoWo79Wb9N1TOsSpjjOlp4gFM0o6R36cD9GGzbOMhe
+ W2vkOivca/j4VnEy+QUlcMzxX25lLqb4n8/Xo0b01bJKNHepm88iQp43QEsJEpLlZwwg gA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32n0bkrcrc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 01 Aug 2020 08:00:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wlk5023636;
+        Sat, 1 Aug 2020 08:00:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 32myqgqq4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 01 Aug 2020 08:00:43 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07180g11028919;
+        Sat, 1 Aug 2020 08:00:42 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32myqgqq41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 01 Aug 2020 08:00:42 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07180c7b019130;
+        Sat, 1 Aug 2020 08:00:38 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 01 Aug 2020 01:00:37 -0700
+Date:   Sat, 1 Aug 2020 11:00:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200801080026.GJ5493@kadam>
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+ <20200731045301.GI75549@unreal>
+ <20200731053306.GA466103@kroah.com>
+ <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200731182712.GI24045@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200731182712.GI24045@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9699 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008010062
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 928da37a229f344424ffc89c9a58feb2368bb018  RDMA/umem: Add a schedule point in ib_umem_get()
+On Fri, Jul 31, 2020 at 03:27:12PM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 31, 2020 at 07:19:24PM +0200, Greg Kroah-Hartman wrote:
+> 
+> > > I tried for a bit and didn't find a way to get even old gcc 4.4 to not
+> > > initialize the holes.
+> > 
+> > Odd, so it is just the "= {0};" that does not zero out the holes?
+> 
+> Nope, it seems to work fine too. I tried a number of situations and I
+> could not get the compiler to not zero holes, even back to gcc 4.4
+> 
+> It is not just accidental either, take this:
+> 
+> 	struct rds_rdma_notify {
+> 		unsigned long user_token;
+> 		unsigned char status;
+> 		unsigned long user_token1 __attribute__((aligned(32)));
+> 	} foo = {0};
+> 
+> Which has quite a big hole, clang generates:
+> 
+> 	movq	$0, 56(%rdi)
+> 	movq	$0, 48(%rdi)
+> 	movq	$0, 40(%rdi)
+> 	movq	$0, 32(%rdi)
+> 	movq	$0, 24(%rdi)
+> 	movq	$0, 16(%rdi)
+> 	movq	$0, 8(%rdi)
+> 	movq	$0, (%rdi)
+> 
+> Deliberate extra instructions to fill both holes. gcc 10 does the
+> same, older gcc's do create a rep stosq over the whole thing.
+> 
+> Some fiddling with godbolt shows quite a variety of output, but I
+> didn't see anything that looks like a compiler not filling
+> padding. Even godbolt's gcc 4.1 filled the padding, which is super old.
+> 
+> In several cases it seems the aggregate initializer produced better
+> code than memset, in other cases it didn't
+> 
+> Without an actual example where this doesn't work right it is hard to
+> say anything more..
 
-elapsed time: 720m
+Here is the example that set off the recent patches:
 
-configs tested: 75
-configs skipped: 2
+https://lkml.org/lkml/2020/7/27/199
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Another example is commit 5ff223e86f5a ("net: Zeroing the structure
+ethtool_wolinfo in ethtool_get_wol()").  I tested this one with GCC 7.4
+at the time and it was a real life bug.
 
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-xtensa                    xip_kc705_defconfig
-arm                       versatile_defconfig
-arm                             ezx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a005-20200731
-i386                 randconfig-a004-20200731
-i386                 randconfig-a006-20200731
-i386                 randconfig-a002-20200731
-i386                 randconfig-a001-20200731
-i386                 randconfig-a003-20200731
-i386                 randconfig-a004-20200801
-i386                 randconfig-a005-20200801
-i386                 randconfig-a001-20200801
-i386                 randconfig-a003-20200801
-i386                 randconfig-a002-20200801
-i386                 randconfig-a006-20200801
-x86_64               randconfig-a015-20200731
-x86_64               randconfig-a014-20200731
-x86_64               randconfig-a016-20200731
-x86_64               randconfig-a012-20200731
-x86_64               randconfig-a013-20200731
-x86_64               randconfig-a011-20200731
-i386                 randconfig-a016-20200731
-i386                 randconfig-a012-20200731
-i386                 randconfig-a014-20200731
-i386                 randconfig-a015-20200731
-i386                 randconfig-a013-20200731
-i386                 randconfig-a011-20200731
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+The rest of these patches were based on static analysis from Smatch.
+They're all "theoretical" bugs based on the C standard but it's
+impossible to know if and when they'll turn into real life bugs.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+It's not a super long list of code that's affected because we've known
+that the bug was possible for a few years.  It was only last year when
+I saw that it had become a real life bug.
+
+regards,
+dan carpenter
+
