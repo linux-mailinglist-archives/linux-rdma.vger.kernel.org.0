@@ -2,151 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6382D235115
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Aug 2020 10:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DCF235239
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Aug 2020 14:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgHAIA7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Aug 2020 04:00:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58748 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgHAIA6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Aug 2020 04:00:58 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wTFw026356;
-        Sat, 1 Aug 2020 08:00:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=JcmYWttSgHbw7qmGDRTSvtOA/0p07IlseUnTuNrFNjc=;
- b=v/0FkYbVaBTZHtmsPt81t2LxiXsh0E24AS2oPVkso964b5B5DXK85h8T1RZCzpD+qI4x
- eK9e51amSGeWeddjOl6FYD30GRjrEfH3oyckeRbi/Le+mL7HZOH1vklRd3uE6MPEZJSJ
- I1Y3dP/wa6iWOT/WEovib+rDatLM37z+SX+vBI1AnY1prLuE95IqNcuZ78qyvw9/0+pZ
- nBtFb3BJrp5Tq0ZK2nh/QYZsvPKoWo79Wb9N1TOsSpjjOlp4gFM0o6R36cD9GGzbOMhe
- W2vkOivca/j4VnEy+QUlcMzxX25lLqb4n8/Xo0b01bJKNHepm88iQp43QEsJEpLlZwwg gA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 32n0bkrcrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 01 Aug 2020 08:00:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0717wlk5023636;
-        Sat, 1 Aug 2020 08:00:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 32myqgqq4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 01 Aug 2020 08:00:43 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07180g11028919;
-        Sat, 1 Aug 2020 08:00:42 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 32myqgqq41-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 Aug 2020 08:00:42 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07180c7b019130;
-        Sat, 1 Aug 2020 08:00:38 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 01 Aug 2020 01:00:37 -0700
-Date:   Sat, 1 Aug 2020 11:00:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        id S1728955AbgHAMY0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Aug 2020 08:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728505AbgHAMYZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Aug 2020 08:24:25 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4726BC06174A;
+        Sat,  1 Aug 2020 05:24:25 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id qc22so19227892ejb.4;
+        Sat, 01 Aug 2020 05:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T7aPF82SA5wWWFZavl8BJzxoy0LUNqXZ1nMb9d5sWLA=;
+        b=j66cZ0STMIZTim+8iu9l4yKXtG8ZTanGI8z+X1wR0aquCIkjlSQ3uq144NXbHFRqYq
+         pryOrLm0Tk4WjXIpQPSZ9hc5epP0b8/seyPyQa+oa84ubNQfoqeMdFAeOwHM5c7f8gs6
+         iw1UY5HeZyBDIl6k0tfTCuIswWS1yzXqU96nzIlAzw9U72XKPoXpyeW/y8zsFeP4eni7
+         u92WbfkYX/y3wS58Nh5M614LPj1IL5Sgqlo04ji1dBuFIvc+ym23L2TB1sTW89cBJDl5
+         Jm1eicn/zIgYkq2QWzqabG/A92wScoWb3O1Q68yCp6is3jqAAXrCric1VJ3YyUqhFsVs
+         VMzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T7aPF82SA5wWWFZavl8BJzxoy0LUNqXZ1nMb9d5sWLA=;
+        b=dQrSRBSe++bzQlTg5FYL72L/wPWgzSJVMOY7MZ2TMCmM9dc4twLGikNjuhEiT7hCoc
+         GD0iXcvIu3WqChD5R4YkHPapuSQBpyaPRT7oJuBMplb+9XPaVsTTqWGA3/drvOFWlXT9
+         x34s/luakjXoBR+USjeRWuGucORT4U3NpUL/lgOdETqpgWAoVSlpqhIuKQnBTj7KupMV
+         d4P2Y4bJUEW2GSB1GyI9mzdDLq+CjlfPLVsttpQpP7t4pl5yxU+JHNtaRqpimRWLTFLg
+         ndQA8jM4dsc5nrY2iElAhjvky4pFToSCwdSoUDvFjref7DL2YM35Fw4P1P4ML4xZHtRL
+         L4+Q==
+X-Gm-Message-State: AOAM533j1VchNgcqTNA/OP5KRaSsN/WieVpieZryg13pXJrU3XXErVau
+        w1ZZmi02mJKGOmZcCjljBwE=
+X-Google-Smtp-Source: ABdhPJzoUNKtZROrtg5oRTHrqWYi9kdFEI+ce31VxUN0Y2Yt/rL0DBWkJLpuSAyDhwqGzfm7zy5ymA==
+X-Received: by 2002:a17:906:b146:: with SMTP id bt6mr8432804ejb.138.1596284663809;
+        Sat, 01 Aug 2020 05:24:23 -0700 (PDT)
+Received: from net.saheed (95C84E0A.dsl.pool.telekom.hu. [149.200.78.10])
+        by smtp.gmail.com with ESMTPSA id a101sm12083131edf.76.2020.08.01.05.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Aug 2020 05:24:22 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, skhan@linuxfoundation.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-Message-ID: <20200801080026.GJ5493@kadam>
-References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
- <20200731045301.GI75549@unreal>
- <20200731053306.GA466103@kroah.com>
- <20200731053333.GB466103@kroah.com>
- <20200731140452.GE24045@ziepe.ca>
- <20200731142148.GA1718799@kroah.com>
- <20200731143604.GF24045@ziepe.ca>
- <20200731171924.GA2014207@kroah.com>
- <20200731182712.GI24045@ziepe.ca>
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mtd@lists.infradead.org, iommu@lists.linux-foundation.org,
+        linux-rdma@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-gpio@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-edac@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net
+Subject: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
+Date:   Sat,  1 Aug 2020 13:24:29 +0200
+Message-Id: <20200801112446.149549-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731182712.GI24045@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9699 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1011 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008010062
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 03:27:12PM -0300, Jason Gunthorpe wrote:
-> On Fri, Jul 31, 2020 at 07:19:24PM +0200, Greg Kroah-Hartman wrote:
-> 
-> > > I tried for a bit and didn't find a way to get even old gcc 4.4 to not
-> > > initialize the holes.
-> > 
-> > Odd, so it is just the "= {0};" that does not zero out the holes?
-> 
-> Nope, it seems to work fine too. I tried a number of situations and I
-> could not get the compiler to not zero holes, even back to gcc 4.4
-> 
-> It is not just accidental either, take this:
-> 
-> 	struct rds_rdma_notify {
-> 		unsigned long user_token;
-> 		unsigned char status;
-> 		unsigned long user_token1 __attribute__((aligned(32)));
-> 	} foo = {0};
-> 
-> Which has quite a big hole, clang generates:
-> 
-> 	movq	$0, 56(%rdi)
-> 	movq	$0, 48(%rdi)
-> 	movq	$0, 40(%rdi)
-> 	movq	$0, 32(%rdi)
-> 	movq	$0, 24(%rdi)
-> 	movq	$0, 16(%rdi)
-> 	movq	$0, 8(%rdi)
-> 	movq	$0, (%rdi)
-> 
-> Deliberate extra instructions to fill both holes. gcc 10 does the
-> same, older gcc's do create a rep stosq over the whole thing.
-> 
-> Some fiddling with godbolt shows quite a variety of output, but I
-> didn't see anything that looks like a compiler not filling
-> padding. Even godbolt's gcc 4.1 filled the padding, which is super old.
-> 
-> In several cases it seems the aggregate initializer produced better
-> code than memset, in other cases it didn't
-> 
-> Without an actual example where this doesn't work right it is hard to
-> say anything more..
+The return value of pci_read_config_*() may not indicate a device error.
+However, the value read by these functions is more likely to indicate
+this kind of error. This presents two overlapping ways of reporting
+errors and complicates error checking.
 
-Here is the example that set off the recent patches:
+It is possible to move to one single way of checking for error if the 
+dependencies on the return value of these functions are removed, then it
+can later be made to return void.
 
-https://lkml.org/lkml/2020/7/27/199
+Remove all uses of the return value of pci_read_config_*().
+Check the actual value read for ~0. In this case, ~0 is an invalid value
+thus it indicates some kind of error.
 
-Another example is commit 5ff223e86f5a ("net: Zeroing the structure
-ethtool_wolinfo in ethtool_get_wol()").  I tested this one with GCC 7.4
-at the time and it was a real life bug.
+In some cases it madkes sence to make the calling function return void
+without causing any bug. Future callers can use the value obtained from
+these functions for validation. This case pertain to cs5536_read() and 
+edac_pci_read_dword()
 
-The rest of these patches were based on static analysis from Smatch.
-They're all "theoretical" bugs based on the C standard but it's
-impossible to know if and when they'll turn into real life bugs.
+MERGE:
+There is no dependency.
+Merge individually
 
-It's not a super long list of code that's affected because we've known
-that the bug was possible for a few years.  It was only last year when
-I saw that it had become a real life bug.
+Saheed O. Bolarinwa (17):
+  ata: Drop uses of pci_read_config_*() return value
+  atm: Drop uses of pci_read_config_*() return value
+  bcma: Drop uses of pci_read_config_*() return value
+  hwrng: Drop uses of pci_read_config_*() return value
+  dmaengine: ioat: Drop uses of pci_read_config_*() return value
+  edac: Drop uses of pci_read_config_*() return value
+  fpga: altera-cvp: Drop uses of pci_read_config_*() return value
+  gpio: Drop uses of pci_read_config_*() return value
+  drm/i915/vga: Drop uses of pci_read_config_*() return value
+  hwmon: Drop uses of pci_read_config_*() return value
+  intel_th: pci: Drop uses of pci_read_config_*() return value
+  i2c: Drop uses of pci_read_config_*() return value
+  ide: Drop uses of pci_read_config_*() return value
+  IB: Drop uses of pci_read_config_*() return value
+  iommu/vt-d: Drop uses of pci_read_config_*() return value
+  mtd: Drop uses of pci_read_config_*() return value
+  net: Drop uses of pci_read_config_*() return value
 
-regards,
-dan carpenter
+ drivers/ata/pata_cs5536.c                     |  6 +--
+ drivers/ata/pata_rz1000.c                     |  3 +-
+ drivers/atm/eni.c                             |  3 +-
+ drivers/atm/he.c                              | 12 +++--
+ drivers/atm/idt77252.c                        |  9 ++--
+ drivers/atm/iphase.c                          | 46 ++++++++++---------
+ drivers/atm/lanai.c                           |  4 +-
+ drivers/atm/nicstar.c                         |  3 +-
+ drivers/atm/zatm.c                            |  9 ++--
+ drivers/bcma/host_pci.c                       |  6 ++-
+ drivers/char/hw_random/amd-rng.c              |  6 +--
+ drivers/dma/ioat/dma.c                        |  6 +--
+ drivers/edac/amd64_edac.c                     |  8 ++--
+ drivers/edac/amd8111_edac.c                   | 16 ++-----
+ drivers/edac/amd8131_edac.c                   |  6 +--
+ drivers/edac/i82443bxgx_edac.c                |  3 +-
+ drivers/edac/sb_edac.c                        | 12 +++--
+ drivers/edac/skx_common.c                     | 18 +++++---
+ drivers/fpga/altera-cvp.c                     |  8 ++--
+ drivers/gpio/gpio-amd8111.c                   |  7 ++-
+ drivers/gpio/gpio-rdc321x.c                   | 21 +++++----
+ drivers/gpu/drm/i915/display/intel_vga.c      |  3 +-
+ drivers/hwmon/i5k_amb.c                       | 12 +++--
+ drivers/hwmon/vt8231.c                        |  8 ++--
+ drivers/hwtracing/intel_th/pci.c              | 12 ++---
+ drivers/i2c/busses/i2c-ali15x3.c              |  6 ++-
+ drivers/i2c/busses/i2c-elektor.c              |  3 +-
+ drivers/i2c/busses/i2c-nforce2.c              |  4 +-
+ drivers/i2c/busses/i2c-sis5595.c              | 17 ++++---
+ drivers/i2c/busses/i2c-sis630.c               |  7 +--
+ drivers/i2c/busses/i2c-viapro.c               | 11 +++--
+ drivers/ide/cs5536.c                          |  6 +--
+ drivers/ide/rz1000.c                          |  3 +-
+ drivers/ide/setup-pci.c                       | 26 +++++++----
+ drivers/infiniband/hw/hfi1/pcie.c             | 38 +++++++--------
+ drivers/infiniband/hw/mthca/mthca_reset.c     | 19 ++++----
+ drivers/iommu/intel/iommu.c                   |  6 ++-
+ drivers/mtd/maps/ichxrom.c                    |  4 +-
+ drivers/net/can/peak_canfd/peak_pciefd_main.c |  6 ++-
+ drivers/net/can/sja1000/peak_pci.c            |  6 ++-
+ drivers/net/ethernet/agere/et131x.c           | 11 +++--
+ .../ethernet/broadcom/bnx2x/bnx2x_ethtool.c   |  5 +-
+ .../cavium/liquidio/cn23xx_pf_device.c        |  4 +-
+ drivers/net/ethernet/marvell/sky2.c           |  5 +-
+ drivers/net/ethernet/mellanox/mlx4/catas.c    |  7 +--
+ drivers/net/ethernet/mellanox/mlx4/reset.c    | 10 ++--
+ .../net/ethernet/myricom/myri10ge/myri10ge.c  |  4 +-
+ drivers/net/wan/farsync.c                     |  5 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  4 +-
+ .../net/wireless/intel/iwlwifi/pcie/trans.c   | 15 ++++--
+ 50 files changed, 270 insertions(+), 209 deletions(-)
+
+-- 
+2.18.4
 
