@@ -2,91 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C18F235A6A
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Aug 2020 22:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1801B239CBC
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 00:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgHBUSp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Aug 2020 16:18:45 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:58748 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbgHBUSo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 2 Aug 2020 16:18:44 -0400
-Received: from nazgul.tnic (unknown [78.130.214.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D2291EC02A8;
-        Sun,  2 Aug 2020 22:18:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1596399520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=z0K+vlWV9j7wfXLQcUnvdJhwiVrF38RAZueHzdmaci0=;
-        b=IpVr02DQwE3yYwTGqHzkePquczoIuB3CSh4JRazV28rb0yxVyTjgJHeFSYXLscJQCgocj+
-        YjGRmfK2vuZ4xdnOu8V6Bj4srNoX1QpTQVYAD0HdeQama4rhKTHzaxEhs3BC4FYYx+fxXN
-        dZeZiogCz7IvNzoJKsyyZMEOy76rM2w=
-Date:   Sun, 2 Aug 2020 22:18:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Saheed Bolarinwa <refactormyself@gmail.com>, trix@redhat.com,
-        Kalle Valo <kvalo@codeaurora.org>,
+        id S1726534AbgHBWKX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Aug 2020 18:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgHBWKX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Aug 2020 18:10:23 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBBEC06174A
+        for <linux-rdma@vger.kernel.org>; Sun,  2 Aug 2020 15:10:22 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id o2so16530031qvk.6
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Aug 2020 15:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G/9zZ5p0SBsYcCXdanUrC5EB8eHdMPxe1+JMyKoRc10=;
+        b=E5aFGH1zhPwSIpxPBGW2p4cDlOq1GdjukqzSGRY7lg1+fl71R/Sobad6/Xe6h3qAfK
+         Q7OpYW4iHyziHVd56/ynbsHOqmVYq4mLt8EN/PB5Cw/t+RPHc9gE/iL8jR3BL1C2FH6/
+         yZB208L6AQV6NJRM4UFTOiAT091SYK8djQj/DLSpccwILqIMkvR7dCQvCj20/m4e0nTW
+         Zrrte/TFrGqh80o+blo7awO2x4he1GY5sDjvod50Yr9KPVqIv0ezSsItF3WdyBmSQjpE
+         Fdmvp1p14o3tdhYYhhRS1pmu4HlOlDKdEKF20MCsmZ/2jl+y26bOxs+iY05lshkWrsk0
+         O6xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G/9zZ5p0SBsYcCXdanUrC5EB8eHdMPxe1+JMyKoRc10=;
+        b=SQx1GwYB31/pGNhkwIRsy8EAMy1dINSsCdcQQN1+LR5mFtqUmmZyBkotuSMP0D0Ig6
+         mm9lsyYkPoC9POsENcEHRykuLFHrwd9W8wNO2//E5a1suSFrds45XA1GVvh+2xv4Yf5U
+         ArFK9Dsn+g7KNg4jISTKmx62mdd9VeLgB+cGJHX9Y2Yq1+85L4pqYaBgW4NWnrVVY9TH
+         Kp69E4vGAWiwFfK2KCdBR9n1UdRuPrFsmp389ewNzj7ZbNV/I5wpE3uc16CHqz3L1pa0
+         5Pl9Rl7O1jfipD0v8u+KuX6IniQFXLfFbweYgzkXriTvKfHO6gG793Wx3dQRiaij9YgH
+         SYeQ==
+X-Gm-Message-State: AOAM532aWbzoBY93zLvZuiJYGUrh0h4rzvdw4/0ttjV14edoABZ7g6Sh
+        iQ9zG7XqiWIZ5HCtI8hTCFfmpg==
+X-Google-Smtp-Source: ABdhPJwuPyEEkUubTt/T0DTBZkrG/a1mit/K5GcIGmqhcC6v077uwjpHAS1lUty8mywd61HFxQNQMw==
+X-Received: by 2002:ad4:51c8:: with SMTP id p8mr4370005qvq.31.1596406222034;
+        Sun, 02 Aug 2020 15:10:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id h13sm19138339qtu.7.2020.08.02.15.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Aug 2020 15:10:21 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k2MBQ-002pjS-Ao; Sun, 02 Aug 2020 19:10:20 -0300
+Date:   Sun, 2 Aug 2020 19:10:20 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Joerg Roedel <joro@8bytes.org>, bjorn@helgaas.com,
-        skhan@linuxfoundation.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mtd@lists.infradead.org, iommu@lists.linux-foundation.org,
-        linux-rdma@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-gpio@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-edac@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net
-Subject: Re: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
-Message-ID: <20200802201806.GA24437@nazgul.tnic>
-References: <20200802184648.GA23190@nazgul.tnic>
- <20200802191406.GA248232@bjorn-Precision-5520>
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200802221020.GN24045@ziepe.ca>
+References: <20200730192026.110246-1-yepeilin.cs@gmail.com>
+ <20200731045301.GI75549@unreal>
+ <20200731053306.GA466103@kroah.com>
+ <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200801053833.GK75549@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200802191406.GA248232@bjorn-Precision-5520>
+In-Reply-To: <20200801053833.GK75549@unreal>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 02, 2020 at 02:14:06PM -0500, Bjorn Helgaas wrote:
-> Wait, I'm not convinced yet.  I know that if a PCI read fails, you
-> normally get ~0 data because the host bridge fabricates it to complete
-> the CPU load.
-> 
-> But what guarantees that a PCI config register cannot contain ~0?
+On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
 
-Well, I don't think you can differentiate that case, right?
+> I'm using {} instead of {0} because of this GCC bug.
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
 
-I guess this is where the driver knowledge comes into play: if the read
-returns ~0, the pci_read_config* should probably return in that case
-something like:
+This is why the {} extension exists..
 
-	PCIBIOS_READ_MAYBE_FAILED
-
-to denote it is all 1s and then the caller should be able to determine,
-based on any of domain:bus:slot.func and whatever else the driver knows
-about its hardware, whether the 1s are a valid value or an error.
-Hopefully.
-
-Or something better of which I cannot think of right now...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jason
