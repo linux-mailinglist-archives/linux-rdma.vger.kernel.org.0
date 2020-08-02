@@ -2,93 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B632239CC0
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 00:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D01239CCA
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 00:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgHBWW3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Aug 2020 18:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S1727850AbgHBW2q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Aug 2020 18:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgHBWW2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Aug 2020 18:22:28 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54954C06174A
-        for <linux-rdma@vger.kernel.org>; Sun,  2 Aug 2020 15:22:28 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id h7so33637549qkk.7
-        for <linux-rdma@vger.kernel.org>; Sun, 02 Aug 2020 15:22:28 -0700 (PDT)
+        with ESMTP id S1727781AbgHBW2q (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Aug 2020 18:28:46 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD926C061757
+        for <linux-rdma@vger.kernel.org>; Sun,  2 Aug 2020 15:28:45 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l23so33718287qkk.0
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Aug 2020 15:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=j5EnCNuAsZu/5GSHSkCJnQHkqSHw04mgkG5bd0dw21A=;
-        b=B5Srbuxy71fxtFxfecWMtxMpPoV9c8pwCDJR+OJcCRFSMETyzxoHIqEA+j1JRdSN2q
-         11bjtvb/Vh4SQTSr8P7Ha3fA/FgeQZaziEsYh1PiplvKCc5yIlOOjQfGRzvWXlH6K17J
-         cOd0gbt7YRXrKQKJZfvMYGXHAjdUbDcIjrAPUB/XK11u88HkoPf1ECOBVvg0vwrOGHDD
-         ovd29v/okdIs8rw8NlCTmlwSzAY0ZnZ6HYDmPer8MJLmczGv2rIj3398zDI3kD3li4b1
-         V1J5xzWlgHCuWZSirvVWjgHy4dKU9YSMd6RazPgWb/i/GdQoEODwAUAD1SI4KZ8R5Vgp
-         ydrA==
+        bh=X2bYgTX4K3EZYIeQDAN4hcSO5LdesUSG+q6mG9kn4ys=;
+        b=lIf6/YNuL/fGjujaZaoNWqjOsE+V2SxqHpXstZJx+0q2hXtLpUFUTz5JX8XdrjIX84
+         nHNBhu4B25HP4PjS2WRfH/wBVJnp15ux7/z2PJT4SEWunVT30EfxZztzctwXk7QW0gTo
+         9Nl0wqW9uhY/cOlHKkY2bAxXtZ8oU22wXRgsHJkYugvcXjiHns5QhPw+INH4KWhRatZ0
+         Zb9IgHQCzuejMB4jCfe0cnBMXT0o2vTT+BoP48ROWLDHm99aMCb15cx9yTnjG0xA+izp
+         1a2shGvPVx/c3qIncZKuA2cCSdiHnxQ4E8gu8ODnEPo0jl+X8CW+q5BGj0a6F6cDfN43
+         G5CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=j5EnCNuAsZu/5GSHSkCJnQHkqSHw04mgkG5bd0dw21A=;
-        b=Dp9qSi3W8SIDdx3rDsf6bgCEHsNLmGu7e7xEPALJemL9cK/d5YCza2tP90LCQxzxlz
-         OjVsgTRSwd+/YUpOAYx6KMGSAbLLAh0tuzRqSXwGWTsTelY3KhVh2Smd9pil+qK4KTfo
-         AA2kEKwzkcTE7Tefp/TTliACx6WIpqGUGccNLm5oPvdjRwOIsoBhBmqfXgBFQaLF1/kt
-         Pe86Fz1/U6cklA4Gjah1f+rZiwnwdVqQbVZw4XVCE1DL3ryjel30sWIDnlDsGVneVf8H
-         aLj4j8fuOoSq8eps9y8zVl9nj5StMkRlNU/t+QImFGXIFpJ/hjT1vASm06I3g/5u8+nK
-         JDZg==
-X-Gm-Message-State: AOAM533qgHYZgSPAAF9QOOSPup5B28caf3/rQduTt27mDVTgYX+8SuS9
-        /SeoggtlsIY2ryQkLSYnE0mx8w==
-X-Google-Smtp-Source: ABdhPJwJOTXoO+G0ejSTeukp3EiH3KmI6wo9FiLGNbWWm4DhpMV4kjjYdTHOHbf4XcJDV/E2eA64pg==
-X-Received: by 2002:a05:620a:110d:: with SMTP id o13mr14049206qkk.60.1596406947387;
-        Sun, 02 Aug 2020 15:22:27 -0700 (PDT)
+        bh=X2bYgTX4K3EZYIeQDAN4hcSO5LdesUSG+q6mG9kn4ys=;
+        b=dlXIfFEAF/cpTQjAPSANxs3ndk4BdsETduvMZN5taqLNhtK7i4AlaXkGhNiPXBlzEJ
+         Vs9v6LtbRjijP6zl0PdzPOp81nSGF2CZzrCNRYMfIMqeDQvSqH3efWE1n6mIZ94ETerq
+         vbb1Kl42disiRSe2DJ/vcwSM/M3dnJryurZNJyHZRPdzWNQy0RZXkulwP8ZTCuMAut0G
+         uOaNWjVUHVYMb8Olarn6vY7lMfS4XaPJgqAN/331XueOxjAYCzROeIZGwhxGdIr8DFtM
+         qSN9fy3ROv919+ecOVRX2/b2neVQviWXMcM518gfnuYEPDQqbDWZaA8ZafXFXdVr8OJy
+         Bo7Q==
+X-Gm-Message-State: AOAM533sL0jmo9lB7YnufINCqcw9UmZ/jiqLiQkO2bXO8bhGf9u5fnwe
+        U3VcCmrjsO7eu9SfSJOHemeaNQ==
+X-Google-Smtp-Source: ABdhPJy4eXa0DseBVUfptK+ZJ5ECzRMJW3DLsqYCv1XNOKBUDhbP4IqCmIWvuu9UONvVig+CWSFdDQ==
+X-Received: by 2002:a37:4c9:: with SMTP id 192mr13359614qke.125.1596407324789;
+        Sun, 02 Aug 2020 15:28:44 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id d46sm20955491qtk.37.2020.08.02.15.22.26
+        by smtp.gmail.com with ESMTPSA id p33sm18333547qtp.49.2020.08.02.15.28.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2020 15:22:26 -0700 (PDT)
+        Sun, 02 Aug 2020 15:28:44 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1k2MN8-002pv6-2z; Sun, 02 Aug 2020 19:22:26 -0300
-Date:   Sun, 2 Aug 2020 19:22:26 -0300
+        id 1k2MTD-002q9U-LB; Sun, 02 Aug 2020 19:28:43 -0300
+Date:   Sun, 2 Aug 2020 19:28:43 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in netdevice_event_work_handler
-Message-ID: <20200802222226.GO24045@ziepe.ca>
-References: <0000000000005b9fca05aa0af1b9@google.com>
- <20200731211122.GA1728751@thinkpad>
+To:     Joe Perches <joe@perches.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200802222843.GP24045@ziepe.ca>
+References: <20200731045301.GI75549@unreal>
+ <20200731053306.GA466103@kroah.com>
+ <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200801053833.GK75549@unreal>
+ <20200802221020.GN24045@ziepe.ca>
+ <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200731211122.GA1728751@thinkpad>
+In-Reply-To: <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 02:11:22PM -0700, Rustam Kovhaev wrote:
-
-> IB roce driver receives NETDEV_UNREGISTER event, calls dev_hold() and
-> schedules work item to execute, and before wq gets a chance to complete
-> it, we return to ip_tunnel.c:274 and call free_netdev(), and then later
-> we get UAF when scheduled function references already freed net_device
+On Sun, Aug 02, 2020 at 03:23:58PM -0700, Joe Perches wrote:
+> On Sun, 2020-08-02 at 19:10 -0300, Jason Gunthorpe wrote:
+> > On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
+> > 
+> > > I'm using {} instead of {0} because of this GCC bug.
+> > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
+> > 
+> > This is why the {} extension exists..
 > 
-> i added verbose logging to ip_tunnel.c to see pcpu_refcnt:
-> +       pr_info("about to free_netdev(dev) dev->pcpu_refcnt %d", netdev_refcnt_read(dev));
-> 
-> and got the following:
-> [  410.220127][ T2944] ip_tunnel: about to free_netdev(dev) dev->pcpu_refcnt 8
+> There is no guarantee that the gcc struct initialization {}
+> extension also zeros padding.
 
-I think there is a missing call to netdev_wait_allrefs() in the
-rollback_registered_many().
-
-The normal success flow has this wait after delivering
-NETDEV_UNREGISTER, the error unwind for register_netdevice should as
-well.
-
-If the netdevice can progress to free while a dev_hold is active I
-think it means dev_hold is functionally useless.
+We just went over this. Yes there is, C11 requires it.
 
 Jason
