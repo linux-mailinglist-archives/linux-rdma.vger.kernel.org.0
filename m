@@ -2,30 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC02235A29
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Aug 2020 21:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C18F235A6A
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Aug 2020 22:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgHBTOK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Aug 2020 15:14:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36902 "EHLO mail.kernel.org"
+        id S1727865AbgHBUSp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Aug 2020 16:18:45 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58748 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgHBTOJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 2 Aug 2020 15:14:09 -0400
-Received: from localhost (mobile-166-175-186-42.mycingular.net [166.175.186.42])
+        id S1725910AbgHBUSo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 2 Aug 2020 16:18:44 -0400
+Received: from nazgul.tnic (unknown [78.130.214.198])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9B0F206E9;
-        Sun,  2 Aug 2020 19:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596395648;
-        bh=8BmtM5Wz6njp3alR4dE4/v12QyDF8IHMxGR5An5fCEM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=i/jHSvTUizuVlNBRmQdxRNPe6coho/ATL8nGKi/xOmyBYjKmz9+xWg85IsgGxSgIS
-         dL1yfc+oHKYsaeZL0AE3OSX+Y10i5fuMEzdWvutU18j1LA95jrbDgF15+X0v94hhxC
-         1mNVxGQqYc9cBpDxqrC9KNkOyCMbtt1kU/iMoM8s=
-Date:   Sun, 2 Aug 2020 14:14:06 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D2291EC02A8;
+        Sun,  2 Aug 2020 22:18:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1596399520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=z0K+vlWV9j7wfXLQcUnvdJhwiVrF38RAZueHzdmaci0=;
+        b=IpVr02DQwE3yYwTGqHzkePquczoIuB3CSh4JRazV28rb0yxVyTjgJHeFSYXLscJQCgocj+
+        YjGRmfK2vuZ4xdnOu8V6Bj4srNoX1QpTQVYAD0HdeQama4rhKTHzaxEhs3BC4FYYx+fxXN
+        dZeZiogCz7IvNzoJKsyyZMEOy76rM2w=
+Date:   Sun, 2 Aug 2020 22:18:06 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
 Cc:     Saheed Bolarinwa <refactormyself@gmail.com>, trix@redhat.com,
         Kalle Valo <kvalo@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -49,33 +51,42 @@ Cc:     Saheed Bolarinwa <refactormyself@gmail.com>, trix@redhat.com,
         linux-crypto@vger.kernel.org,
         linux-atm-general@lists.sourceforge.net
 Subject: Re: [RFC PATCH 00/17] Drop uses of pci_read_config_*() return value
-Message-ID: <20200802191406.GA248232@bjorn-Precision-5520>
+Message-ID: <20200802201806.GA24437@nazgul.tnic>
+References: <20200802184648.GA23190@nazgul.tnic>
+ <20200802191406.GA248232@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200802184648.GA23190@nazgul.tnic>
+In-Reply-To: <20200802191406.GA248232@bjorn-Precision-5520>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 02, 2020 at 08:46:48PM +0200, Borislav Petkov wrote:
-> On Sun, Aug 02, 2020 at 07:28:00PM +0200, Saheed Bolarinwa wrote:
-> > Because the value ~0 has a meaning to some drivers and only
+On Sun, Aug 02, 2020 at 02:14:06PM -0500, Bjorn Helgaas wrote:
+> Wait, I'm not convinced yet.  I know that if a PCI read fails, you
+> normally get ~0 data because the host bridge fabricates it to complete
+> the CPU load.
 > 
-> No, ~0 means that the PCI read failed. For *every* PCI device I know.
+> But what guarantees that a PCI config register cannot contain ~0?
 
-Wait, I'm not convinced yet.  I know that if a PCI read fails, you
-normally get ~0 data because the host bridge fabricates it to complete
-the CPU load.
+Well, I don't think you can differentiate that case, right?
 
-But what guarantees that a PCI config register cannot contain ~0?
-If there's something about that in the spec I'd love to know where it
-is because it would simplify a lot of things.
+I guess this is where the driver knowledge comes into play: if the read
+returns ~0, the pci_read_config* should probably return in that case
+something like:
 
-I don't think we should merge any of these patches as-is.  If we *do*
-want to go this direction, we at least need some kind of macro or
-function that tests for ~0 so we have a clue about what's happening
-and can grep for it.
+	PCIBIOS_READ_MAYBE_FAILED
 
-Bjorn
+to denote it is all 1s and then the caller should be able to determine,
+based on any of domain:bus:slot.func and whatever else the driver knows
+about its hardware, whether the 1s are a valid value or an error.
+Hopefully.
+
+Or something better of which I cannot think of right now...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
