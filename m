@@ -2,112 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B48B23AA69
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 18:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E06923B0AC
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Aug 2020 01:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgHCQYd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Aug 2020 12:24:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56008 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726624AbgHCQYb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Aug 2020 12:24:31 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 073GLuUD040454;
-        Mon, 3 Aug 2020 16:24:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=Sj7HVhacoxnmHEpoaOlRqZUx5bPbdDtLYndSotkkDWI=;
- b=Uv0M+EBPNEV7yrVflMBYnR/HWhGvUr68kNqzOPG5+BUbXSuDNbUXG+z8wAvodeIaE/SJ
- MXRCwoVSCuC6Fb/jeiAD3OtuuEEoM+yI572mOdcUDTYyJEv4mzEDdcoNNeR0MLKPMa7i
- iKcK61gzjs1Fak8IGrs6cN5/b45PlGq6b2Mt4mrKbufggBmyJN8Xe2X6QVPFDziOvgig
- WPYUtYCkrnskEmVTKlIpwzJJYVj5HJ6897BWltu0gbi+X/ami3vUVZRzUJLc9OxEyr50
- uMOVVxG+Uch/aJVFbMQ/CoyaD+y38ipzFJ82FSROUiosQhsaytWw6bc5zp8SXsIlo8NT Gg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32nc9ye1vg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 03 Aug 2020 16:24:24 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 073GN7gY019082;
-        Mon, 3 Aug 2020 16:24:24 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 32p5gqyrys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Aug 2020 16:24:24 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 073GONkh019394;
-        Mon, 3 Aug 2020 16:24:23 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Aug 2020 09:24:23 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: NFS over RDMA issues on Linux 5.4
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <8a1087d3-9add-dfe1-da0c-edab74fcca51@rothenpieler.org>
-Date:   Mon, 3 Aug 2020 12:24:21 -0400
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CE6C02CE-3EEB-4834-B499-376BC6020A17@oracle.com>
-References: <8a1087d3-9add-dfe1-da0c-edab74fcca51@rothenpieler.org>
-To:     Timo Rothenpieler <timo@rothenpieler.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008030119
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9702 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
- adultscore=0 clxscore=1011 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008030119
+        id S1726805AbgHCXGa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Aug 2020 19:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728545AbgHCXGa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Aug 2020 19:06:30 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F7BC061756
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Aug 2020 16:06:30 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id m7so4651381qki.12
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Aug 2020 16:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wAUE6jUn5mAwPKG/Q4g9vNtYtEutYsrwV5EW4m6aKOU=;
+        b=aQPbnrjunrUlMKPJZCkOu9GiuwLThf4AAYXaSayDvpYZIe0S0J5kWgrEUjiDBH9If6
+         Nk9QNCh3nxu8CXdo+xB/HLA8CehJ2h3vX8mFXWeKtG4Ehnv/lG4XUFRHkTOmDmx2Gu+t
+         isoDrdskWg1Yq4JaJ2gyFOMQASXHDC3AOHQFV8jXqTkjjMH9OISCb5l703LpOA/etz3n
+         Odi5KMRaQBfXsQRPGtsPxY+h2Mu3CS08N6pHNkSCakHEE7/ei6ZPcuVPeLMgC98An320
+         u+suEZDSIIjWB+8Yuby/tpgOMJBQQty/fmvjkfvWZZTaQmoN4l3AusKGnGnuiBnLxtgp
+         mMmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wAUE6jUn5mAwPKG/Q4g9vNtYtEutYsrwV5EW4m6aKOU=;
+        b=OR0vTVfOKkuhPBRcKlRneaUvG/LJgRD4YkLDtfsVYAy1xQ9sHSIS53oxpB5OAJgjVQ
+         jQl7MUtClY2Istz06YGNFafbbhPUFawkTtKpkLhTzcva/LIwYp6c+wC/oFYupx7edXCG
+         NV5MPX1+AW0VwU6ozYrTLAeBOMKTLa35y5fRw8E6HGxwJ9GxjlvACvC6x+x64uGc8UeX
+         XYvSNLJIb/w84uEAZ9XEPaN3p+y+KtJkOwJ6dpEivzdE7yf5gHjTOFJvhjcD4hs6oAXN
+         B3tbR2PMoVXoUz6GeBM/U4WzoX9abdrY7SIpVbKlPwWXRVim5YGlZqKSv6s8Rn8q6f6b
+         z8XQ==
+X-Gm-Message-State: AOAM530Xa30GNkPu7jQMLaijiD2VbfeCP4FqOP6Ga6F/JHfAdNcN1pAj
+        aemtyEIUEZjp8vVLgY6rz1C1dw==
+X-Google-Smtp-Source: ABdhPJyd0Tryhkzt206/Jh2HMiFEcuAT06LpeX3boAviXZIf/eRMRzhVp8FyjqPcmsR8tNjqSdSpPA==
+X-Received: by 2002:a37:649:: with SMTP id 70mr18613154qkg.318.1596495988988;
+        Mon, 03 Aug 2020 16:06:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 9sm22473777qtg.4.2020.08.03.16.06.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 16:06:27 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k2jXH-0039ha-72; Mon, 03 Aug 2020 20:06:27 -0300
+Date:   Mon, 3 Aug 2020 20:06:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joe Perches <joe@perches.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200803230627.GQ24045@ziepe.ca>
+References: <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200801053833.GK75549@unreal>
+ <20200802221020.GN24045@ziepe.ca>
+ <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
+ <20200802222843.GP24045@ziepe.ca>
+ <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Timo-
+On Sun, Aug 02, 2020 at 03:45:40PM -0700, Joe Perches wrote:
+> On Sun, 2020-08-02 at 19:28 -0300, Jason Gunthorpe wrote:
+> > On Sun, Aug 02, 2020 at 03:23:58PM -0700, Joe Perches wrote:
+> > > On Sun, 2020-08-02 at 19:10 -0300, Jason Gunthorpe wrote:
+> > > > On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
+> > > > 
+> > > > > I'm using {} instead of {0} because of this GCC bug.
+> > > > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
+> > > > 
+> > > > This is why the {} extension exists..
+> > > 
+> > > There is no guarantee that the gcc struct initialization {}
+> > > extension also zeros padding.
+> >
+> > We just went over this. Yes there is, C11 requires it.
+> 
+> c11 is not c90.  The kernel uses c90.
 
-> On Aug 3, 2020, at 11:05 AM, Timo Rothenpieler <timo@rothenpieler.org> =
-wrote:
->=20
-> Hello,
->=20
-> I have just deployed a new system with Mellanox ConnectX-4 VPI EDR IB =
-cards and wanted to setup NFS over RDMA on it.
->=20
-> However, while mounting the FS over RDMA works fine, actually using it =
-results in the following messages absolutely hammering dmesg on both =
-client and server:
->=20
->> =
-https://gist.github.com/BtbN/9582e597b6581f552fa15982b0285b80#file-server-=
-log
->=20
-> The spam only stops once I forcibly reboot the client. The filesystem =
-gets nowhere during all this. The retrans counter in nfsstat just keeps =
-going up, nothing actually gets done.
->=20
-> This is on Linux 5.4.54, using nfs-utils 2.4.3.
-> The mlx5 driver had enhanced-mode disabled in order to enable IPoIB =
-connected mode with an MTU of 65520.
->=20
-> Normal NFS 4.2 over tcp works perfectly fine on this setup, it's only =
-when I mount via rdma that things go wrong.
->=20
-> Is this an issue on my end, or did I run into a bug somewhere here?
-> Any pointers, patches and solutions to test are welcome.
+The kernel already relies on a lot of C11/C99 features and
+behaviors. For instance Linus just bumped the minimum compiler version
+so that C11's _Generic is usable.
 
-I haven't seen that failure mode here, so best I can recommend is
-keep investigating. I've copied linux-rdma in case they have any
-advice.
+Why do you think this particular part of C11 shouldn't be relied on?
 
---
-Chuck Lever
-
-
-
+Jason
