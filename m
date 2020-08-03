@@ -2,100 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43F6239E81
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 06:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F5D239F5B
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 07:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgHCE6p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Aug 2020 00:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        id S1727773AbgHCF6z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Aug 2020 01:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgHCE6p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 3 Aug 2020 00:58:45 -0400
+        id S1726986AbgHCF6z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 3 Aug 2020 01:58:55 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DD062068F;
-        Mon,  3 Aug 2020 04:58:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 755A220678;
+        Mon,  3 Aug 2020 05:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596430724;
-        bh=0wWu/yJWcJHPmm8RbF95+DdUX5G1LnDQ23Z2blw/WnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z6qPIEgF/UKp+AlLPVIkFocBc7mvGHOXJRP678/PMve5rmyqsVTkuz9VsKK41IZ4o
-         Bgw1F9OID013tKs7dEZEy+biN9BRct6FIt/kue+lSdWTS4UVyKh/nipQlhSjMABNEi
-         dj1i+iPxo6xTYI7gA/KPead6eBLVxHt72ONcZb9U=
-Date:   Mon, 3 Aug 2020 07:58:40 +0300
+        s=default; t=1596434334;
+        bh=62DyfZVI/tE2AV8v/cnpysnfgi7K425vJAZCp31eFII=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sHlaPWfYDF604Tz4b/5IwQaEaglz4rURQXpVndg653UAPAbuRasY5Laeg8AR+txmG
+         xPmGYap2whNjwUzZRTskXJ0wvvLM+eWtThjB+5165nVDeLCZk2Y4TnH0AxjNZ1CpVl
+         ug3CEtADHOHYg3N5eu+/O8ertG6RlAzZQbUKKYgQ=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-Message-ID: <20200803045840.GM75549@unreal>
-References: <20200731053333.GB466103@kroah.com>
- <20200731140452.GE24045@ziepe.ca>
- <20200731142148.GA1718799@kroah.com>
- <20200731143604.GF24045@ziepe.ca>
- <20200731171924.GA2014207@kroah.com>
- <20200801053833.GK75549@unreal>
- <20200802221020.GN24045@ziepe.ca>
- <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
- <20200802222843.GP24045@ziepe.ca>
- <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Michael Guralnik <michaelgur@mellanox.com>,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix flow destination setting for RDMA TX flow table
+Date:   Mon,  3 Aug 2020 08:58:49 +0300
+Message-Id: <20200803055849.14947-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 02, 2020 at 03:45:40PM -0700, Joe Perches wrote:
-> On Sun, 2020-08-02 at 19:28 -0300, Jason Gunthorpe wrote:
-> > On Sun, Aug 02, 2020 at 03:23:58PM -0700, Joe Perches wrote:
-> > > On Sun, 2020-08-02 at 19:10 -0300, Jason Gunthorpe wrote:
-> > > > On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
-> > > >
-> > > > > I'm using {} instead of {0} because of this GCC bug.
-> > > > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
-> > > >
-> > > > This is why the {} extension exists..
-> > >
-> > > There is no guarantee that the gcc struct initialization {}
-> > > extension also zeros padding.
-> >
-> > We just went over this. Yes there is, C11 requires it.
->
-> c11 is not c90.  The kernel uses c90.
+From: Michael Guralnik <michaelgur@mellanox.com>
 
-It is not accurate, kernel uses gnu89 dialect, which is C90 with some
-C99 features [1]. In our case, we rely on GCC extension {} that doesn't
-contradict standart [2] and fills holes with zeros too.
+For RDMA TX flow table, set destination type to be 'port' and prevent
+creation of flows with TIR destination.
 
-[1] Makefile:500
-   496 KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
-   497                    -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
-   498                    -Werror=implicit-function-declaration -Werror=implicit-int \
-   499                    -Wno-format-security \
-   500                    -std=gnu89
+As RDMA TX is an egress flow table the rules on this flow table should
+not forward traffic back to the NIC and should set the destination to be
+the port.
 
-[2] From GCC:
-https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html
-"When a base standard is specified, the compiler accepts all programs
-following that standard plus those using GNU extensions that do not
-contradict it."
+Without the setting of this destination type flow rules on the RDMA TX
+flow tables are not created as FW invokes a syndrome for undefined
+destination for the rule.
 
-Thanks
+Fixes: 24670b1a3166 ("net/mlx5: Add support for RDMA TX steering")
+Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/fs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->
->
->
+diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+index fbbb1adac273..d75f461eba50 100644
+--- a/drivers/infiniband/hw/mlx5/fs.c
++++ b/drivers/infiniband/hw/mlx5/fs.c
+@@ -1866,12 +1866,14 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
+ 		else
+ 			*dest_id = mqp->raw_packet_qp.rq.tirn;
+ 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_TIR;
+-	} else if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS) {
++	} else if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
++		   fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX) {
+ 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_PORT;
+ 	}
+
+ 	if (*dest_type == MLX5_FLOW_DESTINATION_TYPE_TIR &&
+-	    fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS)
++	    (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
++	     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX))
+ 		return -EINVAL;
+
+ 	return 0;
+--
+2.26.2
+
