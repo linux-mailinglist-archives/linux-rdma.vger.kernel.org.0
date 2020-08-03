@@ -2,116 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB7F23A041
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 09:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111BD23A1CF
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Aug 2020 11:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgHCH1f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Aug 2020 03:27:35 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45107 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgHCH1e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Aug 2020 03:27:34 -0400
-Received: by mail-wr1-f67.google.com with SMTP id z18so29617470wrm.12;
-        Mon, 03 Aug 2020 00:27:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bk+w2IXrWrlLfK9eisE+wLzLklGKFWdlPBnk6Rh8O64=;
-        b=ZM96H6azdKk5z1l5Dj4VganJCVH4lFwksN+3jB1EQ54QYwQB0GbBTl24ZN//+MTYw9
-         /W+9Gn4pDAAUPh45JLSag7maksH9HShAZkIOGIBlfNuQ2hyZlgW7KW/F1FCbdhqHCAnV
-         u2HxCRjCwHY6/GJ01sYXLuZJdFwI8ZK5vRHpDClJpiRikbU/QxfzbPfE8MzLdQ+KSg/B
-         r+ocz6GhvsWK5fylI2NbnN40x8e/aE2ikovR2mJK0pZ+UxjmdcEJjt1MKU03SgER1jHE
-         CjPjwUqOsnklm5DjXAclUbHFwp4FZfxw0vDyYGYiZa9tvrLo7IIDuvqD5PkBZ3vdIjG4
-         DL3Q==
-X-Gm-Message-State: AOAM532wEzDw6eGW6KKi75j+DPJzrsQDWcv01PyjhlceOplslfkaGvTX
-        BBAd54WCiC37YTyEfRa+MP9zbOUB
-X-Google-Smtp-Source: ABdhPJwwT7go5S2QLv9PqWVF1Q/fRxRD0anTRKbY917MFHKIx4ANFqMKdEebkep2UNsdw+uif1yInA==
-X-Received: by 2002:adf:ec45:: with SMTP id w5mr14068689wrn.415.1596439652366;
-        Mon, 03 Aug 2020 00:27:32 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:6dac:e394:c378:553e? ([2601:647:4802:9070:6dac:e394:c378:553e])
-        by smtp.gmail.com with ESMTPSA id l81sm22161672wmf.4.2020.08.03.00.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Aug 2020 00:27:31 -0700 (PDT)
-Subject: Re: [IB/srpt] c804af2c1d: last_state.test.blktests.exit_code.143
-To:     Yamin Friedman <yaminf@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        kernel test robot <rong.a.chen@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Max Gurtovoy <maxg@mellanox.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org, lkp@lists.01.org
-References: <20200802060925.GW23458@shao2-debian>
- <f8ef3284-4646-94d9-7eea-14ac0873b03b@acm.org>
- <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
-Date:   Mon, 3 Aug 2020 00:27:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725968AbgHCJgk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Aug 2020 05:36:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36112 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgHCJgk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Aug 2020 05:36:40 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0739H7gc054959;
+        Mon, 3 Aug 2020 09:36:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=IM7JPKhzENSyYGDL/C7fWaTdj+MTBkjqO/862CoRfz8=;
+ b=IdhZIY/VQCGYYE4ZcaOwrsrMvJ26+J6VKhPX2OIwmRbnNwsfcQrAbj5M5SS8Ge82UApy
+ bnRo4Qxk5O/vAbO2DEOYpdI6EujgzX9f+zAPVG5EKTXzqaT7VxZOXOgDnLSp0eqtwcYT
+ N5xe7zq5KQNYdwXv0D024Zyq/2jDiCP732JoU90stmHNtCP6gIbg6znBT5w54izyJufW
+ Q77/QCZdnSwSxo49Uv3kj32dHtEjY/eO8WzGo5QhEmr0/CyYwd5AVzXDOM1AoJSXVOgO
+ MGgIykhTYK3BiwFicoWZdS4A6HfVXNTYrFEP45DqkMIEZMR7eDyzXgzHGLxAHO1GzRRF wQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 32pdnq0rpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 03 Aug 2020 09:36:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0739X3aW020788;
+        Mon, 3 Aug 2020 09:34:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 32p5gqgpfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 03 Aug 2020 09:34:29 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0739YSQk023748;
+        Mon, 3 Aug 2020 09:34:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 32p5gqgpfa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Aug 2020 09:34:28 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0739YOdY020620;
+        Mon, 3 Aug 2020 09:34:24 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 Aug 2020 02:34:23 -0700
+Date:   Mon, 3 Aug 2020 12:34:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+Message-ID: <20200803093414.GL5493@kadam>
+References: <20200731045301.GI75549@unreal>
+ <20200731053306.GA466103@kroah.com>
+ <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca>
+ <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca>
+ <20200731171924.GA2014207@kroah.com>
+ <20200731182712.GI24045@ziepe.ca>
+ <20200801080026.GJ5493@kadam>
+ <20200801144030.GM24045@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200801144030.GM24045@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9701 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 adultscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008030068
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Ah, thanks.  We've had a bunch of discussions about these leaks but I
+wasn't aware of this.
 
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: c804af2c1d3152c0cf877eeb50d60c2d49ac0cf0 ("IB/srpt: use new 
->>> shared CQ mechanism")
->>> https://git.kernel.org/cgit/linux/kernel/git/rdma/rdma.git for-next
->>>
->>>
->>> in testcase: blktests
->>> with following parameters:
->>>
->>>     test: srp-group1
->>>     ucode: 0x21
->>>
->>>
->>>
->>> on test machine: 4 threads Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz 
->>> with 4G memory
->>>
->>> caused below changes (please refer to attached dmesg/kmsg for entire 
->>> log/backtrace):
->>>
->>>
->>>
->>>
->>> If you fix the issue, kindly add following tag
->>> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>>
->>>
->>> user  :notice: [   44.688140] 2020-08-01 16:10:22 ./check srp/001 
->>> srp/002 srp/003 srp/004 srp/005 srp/006 srp/007 srp/008 srp/009 
->>> srp/010 srp/011 srp/012 srp/013 srp/015
->>> user  :notice: [   44.706657] srp/001 (Create and remove LUNs)
->>> user  :notice: [   44.718405] srp/001 (Create and remove 
->>> LUNs)                             [passed]
->>> user  :notice: [   44.729902]     runtime  ...  1.972s
->>> user  :notice: [   99.038748] IPMI BMC is not supported on this 
->>> machine, skip bmc-watchdog setup!
->>> user  :notice: [ 3699.039790] Sat Aug  1 17:11:22 UTC 2020 detected 
->>> soft_timeout
->>> user  :notice: [ 3699.060341] kill 960 /usr/bin/time -v -o 
->>> /tmp/lkp/blktests.time /lkp/lkp/src/tests/blktests
->> Yamin and Max, can you take a look at this? The SRP tests from the
->> blktests repository pass reliably with kernel version v5.7 and before.
->> With label next-20200731 from linux-next however that test triggers the
->> following hang:
-> 
-> I will look into it.
+regards,
+dan carpenter
 
-FWIW, I ran into this as well with nvme-rdma, but it also reproduces
-when I revert the shared CQ patch from nvme-rdma. Another data point
-is that my tests passes with siw.
