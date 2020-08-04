@@ -2,96 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36D23BDBC
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Aug 2020 18:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F080D23C056
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Aug 2020 21:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729329AbgHDQHw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Aug 2020 12:07:52 -0400
-Received: from btbn.de ([5.9.118.179]:40978 "EHLO btbn.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgHDQHs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Aug 2020 12:07:48 -0400
-Received: from [IPv6:2001:16b8:64d7:4500:fc3b:cfd2:151e:7636] (200116b864d74500fc3bcfd2151e7636.dip.versatel-1u1.de [IPv6:2001:16b8:64d7:4500:fc3b:cfd2:151e:7636])
-        by btbn.de (Postfix) with ESMTPSA id 717434D3BB;
-        Tue,  4 Aug 2020 18:07:37 +0200 (CEST)
-Subject: Re: NFS over RDMA issues on Linux 5.4
-From:   Timo Rothenpieler <timo@rothenpieler.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-References: <8a1087d3-9add-dfe1-da0c-edab74fcca51@rothenpieler.org>
- <CE6C02CE-3EEB-4834-B499-376BC6020A17@oracle.com>
- <20200804093635.GA4432@unreal>
- <92a5a932-b843-eed3-555e-7557ccc1f308@rothenpieler.org>
- <20200804122557.GB4432@unreal>
- <DAF6EFDA-5863-4887-B495-0BE3CA714209@oracle.com>
- <d41ac40e-8974-0a44-2b9f-bede74619935@rothenpieler.org>
- <F6BDB1B6-6315-47C9-A589-F4A57E25B2C5@oracle.com>
- <20200804134642.GC4432@unreal>
- <45BA86D8-52A3-407E-83BE-27343C0182C5@oracle.com>
- <B82C41F6-1C23-44F5-B802-621F6B63E12F@oracle.com>
- <7c7418cb-7f7a-5de3-2025-7bde5cd5ac2a@rothenpieler.org>
- <4751E7F5-AAB1-4602-B926-9BB08E1D213D@oracle.com>
- <074fb120-1807-3d83-f34e-400e05cbce27@rothenpieler.org>
-Message-ID: <507cf7b9-4044-79d3-28ed-1bfff2c3e211@rothenpieler.org>
-Date:   Tue, 4 Aug 2020 18:07:37 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726350AbgHDT7s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Aug 2020 15:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgHDT7r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Aug 2020 15:59:47 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C922C06174A;
+        Tue,  4 Aug 2020 12:59:47 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id r4so13246408pls.2;
+        Tue, 04 Aug 2020 12:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n8qr9Xpstwwca8AXJiSUgtIod/3O027NBlrU0CWCi3I=;
+        b=AIjpsI36psS/bZbywZzRkMmni/1aWo9RsguNrcZix6QjC3ELmBTizcdLnrYman3zS5
+         rjayxz/JRvRyButW7/lH/kyS467vFoi0pfi0AItQ03cn6L7uXFxTXQFLY93Jq6O64w6B
+         dOpE9HQDSF+mnWHGZwDnH0BbfuIHoD1BAGLOjClSQL0JpbXsLzrJJxiF9GfVw7FYI6x2
+         DJykQw0mgk0hUkezmqqhDuqxAF+WO9bSCwlMRXpeF2DgxC00OBk3kC0n/7W5BF1HSzcA
+         Etm7BG8avj4rHA5L12QOV5s3MCmUlUPauKo/PnaaFTr7Qb+SB+XiBnMtO5Ryius7m8Eq
+         qWDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n8qr9Xpstwwca8AXJiSUgtIod/3O027NBlrU0CWCi3I=;
+        b=PtNjQeUZtWbkjI7tjcGNjUohyGUzrGckP/5NRltvujLeWPrq2Fe3f/EsDU7w+zhdaX
+         1GW387i8DoDMy3SWHwjeSXauMzulnyRDroTa7UKpSAw3gxARnKZRJXbwjA2PHJC6+5yD
+         aOXRvaLE1jDJBOMIQJD8F2QowtoG4tEejyTQdjUQzlT7DdXilzCCon6VR0ZXc31CfX3a
+         JlIoH7/l3gT77szvpnZ4jYvEzpiCDMR2vjzPFLBty81+qLFpZoxjkfWJtxVyftYqR+OJ
+         yB2HQNLSTtJpP2g9e4Ot87vqu0Mfw8ajhdA60v2/2ZmK/zorCm7d9hHp5vmD94dVIolt
+         RNlg==
+X-Gm-Message-State: AOAM532RPKir8Q5XnmFVJMNNRu/yahBKFFXE6gN9iVdWiJeSALoBVON+
+        YaQlEYaDcad4CisLr942DwRTmjzkyt0=
+X-Google-Smtp-Source: ABdhPJyFIZzJB6lcTN7Al6/93KEVK9f7bNiV3lcwLil5u3nnX1p7ox6z/hf6Wwyn/I/ykCmFKUIbPg==
+X-Received: by 2002:a17:902:b089:: with SMTP id p9mr20011218plr.52.1596571186607;
+        Tue, 04 Aug 2020 12:59:46 -0700 (PDT)
+Received: from thinkpad (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id v128sm23069064pfc.14.2020.08.04.12.59.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 12:59:46 -0700 (PDT)
+Date:   Tue, 4 Aug 2020 13:00:13 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in netdevice_event_work_handler
+Message-ID: <20200804200013.GB263814@thinkpad>
+References: <0000000000005b9fca05aa0af1b9@google.com>
+ <20200731211122.GA1728751@thinkpad>
+ <20200802222226.GO24045@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <074fb120-1807-3d83-f34e-400e05cbce27@rothenpieler.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200802222226.GO24045@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 04.08.2020 17:50, Timo Rothenpieler wrote:
-> On 04.08.2020 17:46, Chuck Lever wrote:
->>
->>
->>> On Aug 4, 2020, at 11:39 AM, Timo Rothenpieler 
->>> <timo@rothenpieler.org> wrote:
->>>
->>> On 04.08.2020 17:34, Chuck Lever wrote:
->>>> I see a LOC_LEN_ERR on a Receive. Leon, doesn't that mean the server's
->>>> Send was too large?
->>>> Timo, what filesystem are you sharing on your NFS server? The thing 
->>>> that
->>>> comes to mind is https://bugzilla.kernel.org/show_bug.cgi?id=198053
->>>
->>> The filesystem on the server is indeed a zfs-on-linux (version 
->>> 0.8.4), just as in that bug report.
->>>
->>> Should I try to apply the proposed fix you posted on that bug report 
->>> on the client (and server?).
->>
->> If you are hitting that bug, the server is the problem. The client
->> should work fine once the server is fixed. (I'm not happy about
->> the client's looping behavior either, but that will go away once
->> the server behaves).
->>
->> I'm not hopeful that the fix applies cleanly to v4.19, but it
->> might. Another option would be upgrading your NFS server.
+On Sun, Aug 02, 2020 at 07:22:26PM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 31, 2020 at 02:11:22PM -0700, Rustam Kovhaev wrote:
 > 
-> It's running on 5.4.54 and the patch applies with no fuzz whatsoever:
-
+> > IB roce driver receives NETDEV_UNREGISTER event, calls dev_hold() and
+> > schedules work item to execute, and before wq gets a chance to complete
+> > it, we return to ip_tunnel.c:274 and call free_netdev(), and then later
+> > we get UAF when scheduled function references already freed net_device
+> > 
+> > i added verbose logging to ip_tunnel.c to see pcpu_refcnt:
+> > +       pr_info("about to free_netdev(dev) dev->pcpu_refcnt %d", netdev_refcnt_read(dev));
+> > 
+> > and got the following:
+> > [  410.220127][ T2944] ip_tunnel: about to free_netdev(dev) dev->pcpu_refcnt 8
 > 
-> I will deploy the patch to both server and client and report back.
+> I think there is a missing call to netdev_wait_allrefs() in the
+> rollback_registered_many().
+calling it there leads to rtnl deadlock, i think we should call
+net_set_todo(), so that later when we call rtnl_unlock() it will
+execute netdev_run_todo() and there it will proceed to calling
+netdev_wait_allrefs(), but in ip tunnel i will need get
+free_netdev() to be called after we unlock rtnl mutex
+i'll try to send a new patch for review
 
-Reporting success.
+> The normal success flow has this wait after delivering
+> NETDEV_UNREGISTER, the error unwind for register_netdevice should as
+> well.
+> 
+> If the netdevice can progress to free while a dev_hold is active I
+> think it means dev_hold is functionally useless.
+good point
 
-With the patch from that bug applied, no error spam is happening anymore.
-Plus, the filesystem actually works and definitely got a whole lot 
-snappier than before. Which is not all that unexpected.
-
-Thank you so much for your help analyzing this and for the fix!
-I hope it can get applied to mainline soon and will reach 5.4 backports 
-eventually.
-Until then, I will carry it as a local patch for the systems.
-
-
-Thanks again,
-Timo
