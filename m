@@ -2,151 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9BF23D19E
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Aug 2020 22:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E798E23D359
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Aug 2020 23:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgHEUDZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Aug 2020 16:03:25 -0400
-Received: from mail-db8eur05on2084.outbound.protection.outlook.com ([40.107.20.84]:65096
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727864AbgHEQhp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:37:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KREiv9Cge5hQAiFzvDa49f62o59BfXUu1r6ulRIhY+RBq3TLWH9pjaK4kU2GCJLiK+Rnxd0X1KHfTIDWjapJQCFKv4boJvwQk1ItDJFYBjDoWr91t3lKrum6fffo2DJ5AgmBT2DfZ8MK37oDX/gm4UcrPlS8sIioSBDgZYXXuoI6dSICOAob3ut9MlAKIbVgNTDO6bZXr16dCpHxyA41PLsYPJLgYK60wKvq3rABR25UXSCIwIofTD3Wcd2s4Fh4oasXc/j0kpy7h9DGVBLC5WCBM1cxGFKg9z9nVECE5yog99xKaTVrcIySLCwVZSh2s7iUCIySF2kHuhg6zzGVOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X1RTfqZ+JLecbKaaCssu126NIUlEvjEbYJzC1gmHhGU=;
- b=Ggqix+FsJiFbLYvvSivNQM4YFpcHYpSbJXxrqHTAvQwd4LiDQLzO4DLuwZgTE3YcLxmrC8lolgTPt4J2uXtIMFilrUyfRDos55e5oKwn4ugiTBoSCjjvb3O/Asaj3YEnpoQKEY5V9qJcl4D9TRbt7jTGoUID0EnyVyzaf+2gPj8aJOMdxwvY22CQzfqeHIpSMaFLS4LZHTYjjczK0MBRH41xJ03htEDCHWYClWvhhxqkgnpC9eYx73/miYNuk5cIA3xzVBPwO5LuhaJlj9X81bDiYlZz5tWhrplAKAVCAvbWKy6QojzjCzXKc1O7XSgxrcSuiVFNJPLzRFb4ZYZNeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X1RTfqZ+JLecbKaaCssu126NIUlEvjEbYJzC1gmHhGU=;
- b=jecRdBuTFNZ7HQilEKWNYfGDiMcJ3fW216CW/YxebZQD4Bpk1+lDcPx2GwwSfE0+4nkycXjcOkmpBxpBbCy60WXmG3AvyDBbKC22q3YiLjp2R5u1NCenuMtZDphE7M8NzDF4GaxxSKxBVTGVx4DiAm+POcprwXITW8A/94BPR9c=
-Authentication-Results: mellanox.com; dkim=none (message not signed)
- header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM5PR0502MB2883.eurprd05.prod.outlook.com (2603:10a6:203:9e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Wed, 5 Aug
- 2020 16:37:42 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::15f4:b130:d907:ce72]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::15f4:b130:d907:ce72%6]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
- 16:37:42 +0000
-Date:   Wed, 5 Aug 2020 19:37:38 +0300
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Max Gurtovoy <maxg@mellanox.com>
-Cc:     sagi@grimberg.me, linux-rdma@vger.kernel.org, jgg@nvidia.com,
-        jgg@mellanox.com, dledford@redhat.com, oren@mellanox.com
-Subject: Re: [PATCH 1/2] IB/isert: use unlikely macro in the fast path
-Message-ID: <20200805163738.GM4432@unreal>
-References: <20200805121231.166162-1-maxg@mellanox.com>
- <20200805131644.GJ4432@unreal>
- <3777c9d9-1d36-f8e0-624f-aa633fd517ab@mellanox.com>
- <20200805160601.GL4432@unreal>
- <6cd8d78e-3017-696b-508c-73c3c8b92802@mellanox.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6cd8d78e-3017-696b-508c-73c3c8b92802@mellanox.com>
-X-ClientProxiedBy: AM0PR03CA0043.eurprd03.prod.outlook.com (2603:10a6:208::20)
- To AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
+        id S1726055AbgHEVB2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Aug 2020 17:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgHEVBZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Aug 2020 17:01:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40875C061575
+        for <linux-rdma@vger.kernel.org>; Wed,  5 Aug 2020 14:01:25 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f1so41427972wro.2
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Aug 2020 14:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nFhKU1c8QJZQ3rQsIyMuD/WuH/oGWV1Tm3foNGD2v2k=;
+        b=dQy8rl7aUPmsMmQWvtSUZbEMOwZdn47PqtlhgzjyJzGKZln3NAq0NNGy2R+pe1Ozl8
+         BME+Ub/NOYm3Oj2XDTeGDQHcvSaqvao2dZvQOVznqxJ0P5ajFmVdvLrpdqXUDlaZs600
+         +kcLgwXBPafMHymA1f1igvjCq2OvpwdCXH3ernvJxUnZsgTNE/u3wPfAYUi/RO0Ae9ij
+         YKjjfMv5oM6AT8h3jkzmZDRY797BoUMhwoFTXvMgswCTPYwco44vF5bajFUZJ6HnOgt7
+         ZHl1TP6qns+10Hz8t+WBfU28tu2b5Rp6MmId01L0kh8MrBS28EWIh697/EuKGYSpt6Nz
+         Vf9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nFhKU1c8QJZQ3rQsIyMuD/WuH/oGWV1Tm3foNGD2v2k=;
+        b=kO/WHnW2QD9KXXPIKj+DiUE68+1I21UdhmXyq2yyANTV1OXlIJzBpRrZRHxQDZFOnM
+         wEs/10W6KNVYSdaBp/lZQmm3g3sEkRjO/iBWzUS4Bl3Qy2ApIzLF/uRkMJcPRwr9HVSP
+         Zz4QVzeEGLbxe9aKWkGG+iPqbOfaBIpwT69cl2ikL2AzwWQ32BfCo9pGYEHgZoe51c19
+         pQ8O/roMKz5bh2uzd49uff8rNoS2djn8UVwPG2LOUHk+7HTeMBVtiYAVzXp2kKJibvNZ
+         vpUrPXOTjZ04+HUQsNyzS9rNAwvAzL+x2Rcwdyo+xacnIaoiVfSm5waOW8qJPxxCpznF
+         orug==
+X-Gm-Message-State: AOAM530HNoU97wAjj5pYeMp5MMihmTwv4PZA/mAeTz9TBjpUU4AvD21/
+        AL/FynwL1uWjDZ50blvTBvwMxXtTkX0=
+X-Google-Smtp-Source: ABdhPJxyx5LXj9NC7A5yN9b3+P/x7DAngwBTu0H/zdoKeZfRbDtgp6ZDiq/Aibk5Fe5uGT/2TN40dA==
+X-Received: by 2002:adf:ee51:: with SMTP id w17mr4507524wro.239.1596661283798;
+        Wed, 05 Aug 2020 14:01:23 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([77.137.118.169])
+        by smtp.gmail.com with ESMTPSA id 15sm3771690wmo.33.2020.08.05.14.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 14:01:23 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Kamal Heib <kamalheib1@gmail.com>,
+        Christian Benvenuti <benve@cisco.com>
+Subject: [PATCH for-rc] RDMA/usnic: Fix reported max_pkeys attribute
+Date:   Thu,  6 Aug 2020 00:00:51 +0300
+Message-Id: <20200805210051.800859-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (213.57.247.131) by AM0PR03CA0043.eurprd03.prod.outlook.com (2603:10a6:208::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17 via Frontend Transport; Wed, 5 Aug 2020 16:37:42 +0000
-X-Originating-IP: [213.57.247.131]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e45c9fcb-8ee7-4489-2373-08d8395ddfc7
-X-MS-TrafficTypeDiagnostic: AM5PR0502MB2883:
-X-LD-Processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM5PR0502MB2883DC32CB7274FDF5057270B04B0@AM5PR0502MB2883.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lNQl3sJARlJItUCzCLGIRJ/u8qUqlXpFWnP21NKdBsOxupSo/lfDcPpQXXU7NT9xRazqdBnUfU4ShQ3HI+sN7yhNTfnKw+0WH9TLIZOT2Cl4AnFowKq1H4XBdh6HXW7GkX7QhCWCTNBZnxLHgHBp3+mCqZsDap0MggGuR49fX6NWrVUGDsvY8J4SBJys+2wr1y/1ZMevDxD5dxHsxvELcUse2YKPv8ykZgzefZmXjsWFkldDGySgxegNVSYIdc/SvRRuiMkGhLNyLmojzZnsCELTnI3uarWGeBuRtlTA4AZCgLoPjYK4fTwqJP/YMLKIJkzDoT09HbVk9teMZRsyqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(4636009)(366004)(346002)(376002)(396003)(136003)(39860400002)(6862004)(83380400001)(6666004)(8676002)(1076003)(4326008)(26005)(186003)(9686003)(16526019)(8936002)(316002)(33656002)(478600001)(33716001)(86362001)(53546011)(2906002)(6486002)(6496006)(107886003)(5660300002)(6636002)(66476007)(66946007)(52116002)(956004)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Nzv747SLnyCa2u2/snvZyVjyGbHOUBJd3JWyfudauFmTgl5H3RppYqzcq3clxB9YTIJRwQQWbVEE4IULh8aQpy87d1OdzUv4P09Re/8cHXXLHzx45U3Tnb/MOAXE0PDiB8izDZqOor1Ftqgffl118QrEPlUtgOoqsNjRsKkN9qj7pBqylpZ0fYgyAO+8LGiRi6+5A9jeTobVqbTTU2Y+Rc1FUq77sn3gJTf7/yQQMVujQmu/0TZsJ5EQLOtT5j2KErKl+gaUsSompNP+tnuMBjokoDPvXBrce/tpVDbbuM1n1HNUaGEF7WbWsy9px3CVGyZnB042ha0dkmwUslOoeANN3io29B83ZCruTxGdMdUDN7rS24ol41XenukQZ1qI4HE0HVV7wJwrysLddoSh7xvbY4T1ZmnG2GAGz6o+6OT+iZFWyqriyTDDi64Cb4jX6yAzogOWgy2Ip1MflbggTXUkK7nL1rE0nPSmhTEssOw7a+gishBK7tu8jALwZNfeIu2i8P8yyvQJlayei83S+lOFaV/cddYCQELlAmgsnqiVZjNNaGuBK3Uy0frgdIMM6y/lOjdGylIEmF/XXm0Ob5dQnh7P0obPZP3Lp7Y8vE5shw6uB1yln0OjEIOSr2Baz6J4vYFSL6/DUAWrCj+iJw==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e45c9fcb-8ee7-4489-2373-08d8395ddfc7
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6408.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2020 16:37:42.3885
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gr1SxjQB/kBxdREFaZmKM0lZFZYnTAZHp4HLjtSNg3pfIfx/yFu72zcmZr/XxKMEsxM0PLXiUnnanKKF6CX2+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0502MB2883
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 07:28:50PM +0300, Max Gurtovoy wrote:
->
-> On 8/5/2020 7:06 PM, Leon Romanovsky wrote:
-> > On Wed, Aug 05, 2020 at 06:14:16PM +0300, Max Gurtovoy wrote:
-> > > On 8/5/2020 4:16 PM, Leon Romanovsky wrote:
-> > > > On Wed, Aug 05, 2020 at 03:12:30PM +0300, Max Gurtovoy wrote:
-> > > > > Add performance optimization that might slightly improve small IO sizes
-> > > > > benchmarks.
-> > > > >
-> > > > > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-> > > > > ---
-> > > > >    drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
-> > > > >    1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > I find the expectation from "unlikely/likely" keywords to be overrated.
-> > > >
-> > > > When we introduced dissagregate post send verbs in rdma-core, we
-> > > > benchmarked likely/unlikely and didn't find any significant difference
-> > > > for code with and without such keywords.
-> > > >
-> > > > Thanks
-> > > Leon,
-> > >
-> > > We are using these small optimizations in all our ULPs and we saw benefit in
-> > > large scale and high loads (we did the same in NVMf/RDMA).
-> > >
-> > > These kind of optimizations might not be seen immediately but are
-> > > accumulated.
-> > >
-> > > I don't know why do you compare user-space benchmarks to storage drivers.
-> > Why not? It produces same asm code and both have same performance
-> > characteristic.
-> >
-> > > Can you please review the code ?
-> > There is nothing to review here, the patch is straightforward, I just
-> > don't believe in it.
->
-> Its ok.
->
-> Just ignore it if you don't want to review it.
+Make sure to report the right max_pkeys attribute value to indicate the
+maximum number of partitions supported by the usnic device.
 
-OK, just because you asked.
+Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Cc: Christian Benvenuti <benve@cisco.com>
+---
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I reviewed this patch and didn't find any justification for performance
-claim, can you please provide us numbers before/after so we will be able
-to decide based on reliable data? It will help us to review our drivers
-and improve them even more.
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+index b8a77ce11590..0cb2a73d46ee 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -309,7 +309,7 @@ int usnic_ib_query_device(struct ib_device *ibdev,
+ 	props->max_pd = USNIC_UIOM_MAX_PD_CNT;
+ 	props->max_mr = USNIC_UIOM_MAX_MR_CNT;
+ 	props->local_ca_ack_delay = 0;
+-	props->max_pkeys = 0;
++	props->max_pkeys = 1;
+ 	props->atomic_cap = IB_ATOMIC_NONE;
+ 	props->masked_atomic_cap = props->atomic_cap;
+ 	props->max_qp_rd_atom = 0;
+-- 
+2.25.4
 
->
-> The maintainers of iser target will review and decide if they believe in it
-> or not.
-
-Sure, I don't care who will provide numbers.
-
-Thanks
-
->
->
-> > > Sagi,
-> > >
-> > > Can you send your comments as well ?
-> > >
-> > >
