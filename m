@@ -2,58 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528DA23F147
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Aug 2020 18:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AD823F964
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 00:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgHGQdK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Aug 2020 12:33:10 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:38303 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgHGQdJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Aug 2020 12:33:09 -0400
-Received: by mail-pl1-f193.google.com with SMTP id t11so1288772plr.5
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Aug 2020 09:33:09 -0700 (PDT)
+        id S1726229AbgHHW5i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 8 Aug 2020 18:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgHHW5h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Aug 2020 18:57:37 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2250C061756;
+        Sat,  8 Aug 2020 15:57:37 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id c6so2761275pje.1;
+        Sat, 08 Aug 2020 15:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9sPtCXARRDyoJ9gED6VcstU3ZnY0CN85dWocZ7ctG2E=;
+        b=QZU/Tvgq78IUEtDcC1+6C6xvjHGuXJHXguScPFEZz+aS8foez55jwUhTUnx6KF7Il+
+         M4iZheUMXLzs7xSlWXfG7H+dM0oO1GHdyFlV0iYOxUVqXT3hfmdNyhfIzRT+rq9ZVN0p
+         lRJeSK58lKVj6qy80rOKm5wmcgQJxk8Egn9Qe4S2LdY9PTEFAUCSDT509S/C9+IxX6PH
+         sNXvvUkN+iMb38o1tJ6uK54VtqU/ZK2fQsTq02a3T44B4e6sPjqwCS08rXMMlOJD1Akz
+         yjwAl/o38v5nzut99M9Sbzr9YLxJdAPl/n+p9mtauvxWllfoTls6vC9FiQQ+0wzanl/6
+         Aeyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RBteJymRaE0obdwMEax8s9Joqu/u+fWBtLyA69UI4WY=;
-        b=kzQ7sow8QDBEoq2EA34N4INKdT1mkHrZedtOFdfSuFU1dcKRNYy7vIrKXV70TLr+3s
-         nHEl+7jhZWjlvDq42mTLNaZEY6ffdnDaw9M2AKU8J77Fcf7vkQhCBGzPYlMG4XFikLaw
-         J3AoMiKiK0wbHxt1BZx8/1alOpf7wAPwIod0aXhOABzRdDMtKZSUebXwRXvpfeY1Fg1r
-         UoY4pNJMXjFI4hTCLmzo1rKeLmZb91UUTRgogP4T4e2DM+tlFsWYfNpOyRhW0saJfuhz
-         N47n+RJOnXpnL+q9BjAioE6PZPEs1Inxh50NHt7jCYKkrlxrbLK3/ebhViKt8M50ZarY
-         d/mw==
-X-Gm-Message-State: AOAM5326bG5mAC3EaHUELlBY0CwCfXOXV/8aNYJ2v9/+2rV8H3wb4dCk
-        0/zWB6smFs+ezsRFzH0ydCI=
-X-Google-Smtp-Source: ABdhPJx8xB/HHngUtS1VzkBb4z7epeeXtyyS10cEFtflSsX+RtXFZD9lfBu2JJvXDwv9gIuukxDb0Q==
-X-Received: by 2002:a17:90a:5206:: with SMTP id v6mr13684170pjh.202.1596817988777;
-        Fri, 07 Aug 2020 09:33:08 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:d88d:857c:b14c:519a? ([2601:647:4802:9070:d88d:857c:b14c:519a])
-        by smtp.gmail.com with ESMTPSA id j18sm1769722pgn.33.2020.08.07.09.33.07
+        bh=9sPtCXARRDyoJ9gED6VcstU3ZnY0CN85dWocZ7ctG2E=;
+        b=pc1ce5ZdI0gvM5iXcPpO3CzZuagcLFgbxg1XOYwpAyV5euFJdsDoOg3PIMKisqtZBh
+         d85bo0dT9NEH+m9x8I1zJZzDe/GTygF/mGT/NqfTufw7J+PQDUcRDsXvfYSR9Ko6GjRi
+         5iAB0XWncXBU1IjdmNItUR2Qz+AkSLKvrzSSBXy/MBjsWFPAHq1ucobzB7YlN2Bk7Gsn
+         b9xT4J6hPHWmqPVvbe/Fx6AqUCvnEWcgGJOUpMWnFnEBtygziOsgx7++4UHx1TVxlRNB
+         ugRm/D9qgrXaa+RGph3QCxt56tTZU2ZZR/TdVgPZXxmA1c9+UpBi0jFn2RAW6t3IcgVZ
+         2vpQ==
+X-Gm-Message-State: AOAM532Y80AuIWCNU5D+X8EDBfwHY4WW4CXAa6am/Nbi4i4yn7Cs4Y+y
+        qHC/npR9im4OaCELMRw1VH4/uoF5oj9D3Q==
+X-Google-Smtp-Source: ABdhPJxC1hb5eucKSMPhCKqbRKPCMGw/TpygTR/MPLb0wTD4LcgT7LTAWUFr7XtyF2eqj7hNOfB1oQ==
+X-Received: by 2002:a17:90a:d482:: with SMTP id s2mr19980811pju.140.1596927456678;
+        Sat, 08 Aug 2020 15:57:36 -0700 (PDT)
+Received: from [100.115.92.198] (18.48.24.136.in-addr.arpa. [136.24.48.18])
+        by smtp.gmail.com with ESMTPSA id y17sm17167551pfe.30.2020.08.08.15.57.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Aug 2020 09:33:08 -0700 (PDT)
-Subject: Re: [PATCH 1/2] IB/isert: use unlikely macro in the fast path
-To:     Leon Romanovsky <leonro@mellanox.com>
-Cc:     Max Gurtovoy <maxg@mellanox.com>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com, jgg@mellanox.com, dledford@redhat.com,
-        oren@mellanox.com
-References: <20200805121231.166162-1-maxg@mellanox.com>
- <20200805131644.GJ4432@unreal>
- <3777c9d9-1d36-f8e0-624f-aa633fd517ab@mellanox.com>
- <20200805160601.GL4432@unreal>
- <6cd8d78e-3017-696b-508c-73c3c8b92802@mellanox.com>
- <20200805163738.GM4432@unreal>
- <5364b857-fb44-78ab-85e9-d0e6700ae7c1@grimberg.me>
- <20200807160956.GO4432@unreal>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <3cc0e24e-2585-4a82-f065-9d087079fd16@grimberg.me>
-Date:   Fri, 7 Aug 2020 09:33:06 -0700
+        Sat, 08 Aug 2020 15:57:36 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
+ in rds_notify_queue_get()
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Joe Perches <joe@perches.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+References: <20200731053333.GB466103@kroah.com>
+ <20200731140452.GE24045@ziepe.ca> <20200731142148.GA1718799@kroah.com>
+ <20200731143604.GF24045@ziepe.ca> <20200731171924.GA2014207@kroah.com>
+ <20200801053833.GK75549@unreal> <20200802221020.GN24045@ziepe.ca>
+ <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
+ <20200802222843.GP24045@ziepe.ca>
+ <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
+ <20200803230627.GQ24045@ziepe.ca>
+From:   Jack Leadford <leadford.jack@gmail.com>
+Message-ID: <ff066616-3bb8-b6c8-d329-7de5ab8ee982@gmail.com>
+Date:   Sat, 8 Aug 2020 15:57:33 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200807160956.GO4432@unreal>
+In-Reply-To: <20200803230627.GQ24045@ziepe.ca>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,31 +85,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hello!
 
->>> I reviewed this patch and didn't find any justification for performance
->>> claim, can you please provide us numbers before/after so we will be able
->>> to decide based on reliable data? It will help us to review our drivers
->>> and improve them even more.
->>
->> I don't see any reason to find evidence in justification here. It's a
->> fastpath call, which is unlikely to fail, and these macros are
->> considered common practice.
->>
->> There is no reason to make Max to go and quantify a micro-optimization.
-> 
-> Unfortunately Max didn't try to see if these likely/unlikely macros
-> change something, but I did.
-> 
-> Simple objdump -d before and after shows that GCC 9 generates same
-> ISERT code before and after this patch. It is expected and there are a lot
-> of reasons for that, but all of them can be reduced to two:
-> * First, GCC is awesome in building profiled code with right predictions for
-> standard flows.
-> * Second, likely/unlikely is intended to be used when input/output is random
-> from GCC point of view.
-> 
-> So as a summary, there is no optimization here, just misuse of unlikely macro.
-> 
-> BTW, old GCCs behave the same and kernel full of wrong copy/paste.
+Thanks to Jason for getting this conversation back on track.
 
-if that is the case, then we can drop this patch. Thanks for checking.
+Yes: in general, {} or a partial initializer /will/ zero padding bits.
+
+However, there is a bug in some versions of GCC where {} will /not/ zero
+padding bits; actually, Jason's test program in this mail 
+https://lore.kernel.org/lkml/20200731143604.GF24045@ziepe.ca/
+has the right ingredients to trigger the bug, but the GCC
+versions used are outside of the bug window. :)
+
+For more details on these cases and more (including said GCC bug), see 
+my paper at:
+
+https://www.nccgroup.com/us/about-us/newsroom-and-events/blog/2019/october/padding-the-struct-how-a-compiler-optimization-can-disclose-stack-memory/
+
+Hopefully this paper can serve as a helpful reference when these cases 
+are encountered in the kernel.
+
+Thank you.
+
+Jack Leadford
+
+On 8/3/20 4:06 PM, Jason Gunthorpe wrote:
+> On Sun, Aug 02, 2020 at 03:45:40PM -0700, Joe Perches wrote:
+>> On Sun, 2020-08-02 at 19:28 -0300, Jason Gunthorpe wrote:
+>>> On Sun, Aug 02, 2020 at 03:23:58PM -0700, Joe Perches wrote:
+>>>> On Sun, 2020-08-02 at 19:10 -0300, Jason Gunthorpe wrote:
+>>>>> On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
+>>>>>
+>>>>>> I'm using {} instead of {0} because of this GCC bug.
+>>>>>> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
+>>>>>
+>>>>> This is why the {} extension exists..
+>>>>
+>>>> There is no guarantee that the gcc struct initialization {}
+>>>> extension also zeros padding.
+>>>
+>>> We just went over this. Yes there is, C11 requires it.
+>>
+>> c11 is not c90.  The kernel uses c90.
+> 
+> The kernel already relies on a lot of C11/C99 features and
+> behaviors. For instance Linus just bumped the minimum compiler version
+> so that C11's _Generic is usable.
+> 
+> Why do you think this particular part of C11 shouldn't be relied on?
+> 
+> Jason
+> 
+> 
