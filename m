@@ -2,90 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C39723FD3E
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5101323FD3B
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgHIHsa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 9 Aug 2020 03:48:30 -0400
-Received: from smtp180.sjtu.edu.cn ([202.120.2.180]:47380 "EHLO
-        smtp180.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgHIHsa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 03:48:30 -0400
-X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Sun, 09 Aug 2020 03:48:29 EDT
-Received: from proxy01.sjtu.edu.cn (smtp185.sjtu.edu.cn [202.120.2.185])
-        by smtp180.sjtu.edu.cn (Postfix) with ESMTPS id 1CAEC1008CA20
-        for <linux-rdma@vger.kernel.org>; Sun,  9 Aug 2020 15:41:13 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by proxy01.sjtu.edu.cn (Postfix) with ESMTP id 15E6D2042423E
-        for <linux-rdma@vger.kernel.org>; Sun,  9 Aug 2020 15:41:13 +0800 (CST)
-X-Virus-Scanned: amavisd-new at proxy01.sjtu.edu.cn
-Received: from proxy01.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy01.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Dz0RsbVY-mVv for <linux-rdma@vger.kernel.org>;
-        Sun,  9 Aug 2020 15:41:12 +0800 (CST)
-Received: from [10.86.108.142] (unknown [120.253.239.90])
-        (Authenticated sender: Fan_Yang@sjtu.edu.cn)
-        by proxy01.sjtu.edu.cn (Postfix) with ESMTPSA id CCA7A20424202
-        for <linux-rdma@vger.kernel.org>; Sun,  9 Aug 2020 15:41:12 +0800 (CST)
-From:   Fan Yang <Fan_Yang@sjtu.edu.cn>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Asking for help: Is it possible to force use rxe provider functions
- atop a Mellanox ConnectX-5 ethernet network?
-Message-Id: <1A873CA4-9A41-41D2-A335-63FA834DE13F@sjtu.edu.cn>
-Date:   Sun, 9 Aug 2020 15:41:05 +0800
-To:     linux-rdma@vger.kernel.org
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1726361AbgHIHpb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Aug 2020 03:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgHIHpb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 03:45:31 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C73C061756;
+        Sun,  9 Aug 2020 00:45:30 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x25so134116pff.4;
+        Sun, 09 Aug 2020 00:45:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=99KLVxoGYktpAH84WHol6L1wVNytU8WR1EzojQK+pz8=;
+        b=Xd0h+wS84C7743+jiJu6F/MDNB44b8vDRcmzyzHrSa3zikoSElfyGdicdY/QObsqVq
+         JXB3M8Yo7WFdtPZzOvbbAPiW5P47PVYST0u1HLpazfzVyL9O8q2hjh/VRuujCbqydfsU
+         LwQIEE5FsiYwwi//yXXqCbdDfYpPo8HMj0pYfpZ628WM0LffgW8laRFCc1jW1hP4tAoX
+         dGDOgrmHTwdDyz68fEkWsgXGW43z4CwpsndwvT2rJOSuk9dq73X9Zn38oHizhpuPJ98p
+         pZQfkL+7IGukWJc1kkGw89dwl6veFPYUp8Z3pYa5im+skuH2IlnyGj7xD5y62BEVhYlw
+         DoOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=99KLVxoGYktpAH84WHol6L1wVNytU8WR1EzojQK+pz8=;
+        b=OOMQx6bRQIMYXcGA7wVw47gmIBZkjXLUabnTIjDWcRelR4cvwrqt1OA7GP5EAR+9Gs
+         yLyn2m65khlPIrglT4nK8GG2Be0fqQrFTiVl0GdqnsSoj4eZdwo329FRugRY3KnUC5QS
+         8gl+AqpLOJfKnSblmKRHETx9Fhazrj6UbbEQDepZBeVXdYXnhwOKbVgLl0tK8F062biP
+         7rjzwFxexfKgHcQ+/6pVmPKTGr41/7yF+oETeSqXxFdNCCiZTV2g2QnTG9K8aIUoX3qv
+         dM85ZZ/7mNbr+BH6eJhE6WWzhLgLTJOqfp/I6KcYUyP/vVRHKBZxmnPUgi3gzXCIVHlg
+         aMPA==
+X-Gm-Message-State: AOAM532JLOv+u+46RU5Z8POiz9jGeToNOgbr5AA+iAePpegpOLA3s3et
+        I7IKdDJZR17dQBYxyHgrheM=
+X-Google-Smtp-Source: ABdhPJzsoCfxEnjao2KRuJ3zQCm54AGcQIDsaAojukQtP1HlpPxerMu0nntSsKFFpS0BGPEcKWSK3A==
+X-Received: by 2002:a63:5b65:: with SMTP id l37mr17172064pgm.72.1596959130108;
+        Sun, 09 Aug 2020 00:45:30 -0700 (PDT)
+Received: from blackclown ([103.88.82.9])
+        by smtp.gmail.com with ESMTPSA id b18sm5559113pgj.12.2020.08.09.00.45.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 09 Aug 2020 00:45:29 -0700 (PDT)
+Date:   Sun, 9 Aug 2020 13:15:17 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, galpress@amazon.com,
+        sleybo@amazon.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 5/4] RDMA/efa : Remove pci-dma-compat wrapper APIs
+Message-ID: <20200809074517.GA4419@blackclown>
+References: <cover.1596957073.git.usuraj35@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1596957073.git.usuraj35@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
+The legacy API wrappers in include/linux/pci-dma-compat.h
+should go away as it creates unnecessary midlayering
+for include/linux/dma-mapping.h APIs.
 
-I have access to a cloud-provided virtual machine with a "Mellanox
-Technologies MT27800 Family [ConnectX-5 Virtual Function]" ethernet
-controller.  It seems that I cannot use hardware RoCE on it (BTW, do
-you know how to check this?), so I decide to use rxe.
+Instead use dma-mapping.h APIs directly.
 
-However, a divide error occurs when I run my RDMA program:
+The patch has been generated with the coccinelle script below
+and compile-tested.
 
-trap divide error ip:7f8dd1802b8f sp:7ffc63e72a80 error:0 in libmlx5.so.1.12.28.0[7f8dd17eb000+46000]
+@@@@
+- PCI_DMA_BIDIRECTIONAL
++ DMA_BIDIRECTIONAL
 
-The backtrace is:
+@@@@
+- PCI_DMA_TODEVICE
++ DMA_TO_DEVICE
 
-(gdb) bt
-#0  0x00007ffff63d3365 in __add_page (context=0x7ffff7f75010)
-    at ~/src/rdma-core/providers/mlx5/dbrec.c:58
-#1  0x00007ffff63d3587 in mlx5_alloc_dbrec (context=0x7ffff7f75010, pd=0x0, custom_alloc=0x5555557671e8)
-    at ~/src/rdma-core/providers/mlx5/dbrec.c:119
-#2  0x00007ffff6403320 in create_cq (context=0x7ffff7f75150, cq_attr=0x7fffffffe6d0, cq_alloc_flags=0, 
-    mlx5cq_attr=0x0) at ~/src/rdma-core/providers/mlx5/verbs.c:1013
-#3  0x00007ffff640388a in mlx5_create_cq (context=0x7ffff7f75150, cqe=3, channel=0x555555765ec0, comp_vector=0)
-    at ~/src/rdma-core/providers/mlx5/verbs.c:1134
-#4  0x00007ffff79acfb9 in __ibv_create_cq_1_1 (context=0x7ffff7f75150, cqe=3, 
-    cq_context=0x55555575b440 <admin_qp>, channel=0x555555765ec0, comp_vector=0)
-    at ~/src/rdma-core/libibverbs/verbs.c:520
-#5  0x0000555555556e79 in fsr_process_admin_qp_cm_event_req (aqp=0x55555575b440 <admin_qp>, ev=0x555555765a50)
-    at ../../../server/fmsgserver_rdma/fmsgserver_rdma.c:449
-#6  0x0000555555557299 in fsr_process_admin_qp_cm_event (aqp=0x55555575b440 <admin_qp>, ec=0x55555575c410)
-    at ../../../server/fmsgserver_rdma/fmsgserver_rdma.c:552
-#7  0x00005555555573b7 in fsr_estab_admin_qp (aqp=0x55555575b440 <admin_qp>)
-    at ../../../server/fmsgserver_rdma/fmsgserver_rdma.c:596
-#8  0x0000555555557445 in fmsgserver_rdma_init () at ../../../server/fmsgserver_rdma/fmsgserver_rdma.c:619
-#9  0x00005555555562cf in main (argc=1, argv=0x7fffffffe9b8) at driver.c:248
+@@@@
+- PCI_DMA_FROMDEVICE
++ DMA_FROM_DEVICE
 
-I find that the 'match_device' in rdma-core/libibverbs/init.c
-will always match the mlx5 provider instead of the rxe provider since the
-the pci ID matches (see hca_table in rdma-core/providers/mlx5/mlx5.c).
-This leads to mlx5_xxx functions are invoked instead of the rxe_xxx functions.
+@@@@
+- PCI_DMA_NONE
++ DMA_NONE
 
-Do you know how to force use the rxe-provider functions on top of the
-mellanox connectX-5 ethernet network?  Currently as a workaround, I
-comment out the mlx5 subdirectories in the CMakeLists.txt so that mlx5
-won't be tried in 'try_all_drivers'.
+@@ expression E1, E2, E3; @@
+- pci_alloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
 
-Best Regards,
-Fan
+@@ expression E1, E2, E3; @@
+- pci_zalloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_free_consistent(E1, E2, E3, E4)
++ dma_free_coherent(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_single(E1, E2, E3, E4)
++ dma_map_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_single(E1, E2, E3, E4)
++ dma_unmap_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4, E5; @@
+- pci_map_page(E1, E2, E3, E4, E5)
++ dma_map_page(&E1->dev, E2, E3, E4, E5)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_page(E1, E2, E3, E4)
++ dma_unmap_page(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_sg(E1, E2, E3, E4)
++ dma_map_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_sg(E1, E2, E3, E4)
++ dma_unmap_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
++ dma_sync_single_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_device(E1, E2, E3, E4)
++ dma_sync_single_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
++ dma_sync_sg_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
++ dma_sync_sg_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2; @@
+- pci_dma_mapping_error(E1, E2)
++ dma_mapping_error(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_consistent_dma_mask(E1, E2)
++ dma_set_coherent_mask(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_dma_mask(E1, E2)
++ dma_set_mask(&E1->dev, E2)
+
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+---
+ drivers/infiniband/hw/efa/efa_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 92d701146320..bcc931ad71b0 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -405,13 +405,13 @@ static int efa_device_init(struct efa_com_dev *edev, struct pci_dev *pdev)
+                return err;
+        }
+
+-       err = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
++       err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(dma_width));
+        if (err) {
+                dev_err(&pdev->dev, "pci_set_dma_mask failed %d\n", err);
+                return err;
+        }
+
+-       err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
++       err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(dma_width));
+        if (err) {
+                dev_err(&pdev->dev,
+                        "err_pci_set_consistent_dma_mask failed %d\n",
+-- 
+2.17.1
+
