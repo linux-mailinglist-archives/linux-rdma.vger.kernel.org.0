@@ -2,59 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0109123FD23
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F3A23FD2C
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgHIH3m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 Aug 2020 03:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
+        id S1726209AbgHIHbY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Aug 2020 03:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbgHIH3l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 03:29:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5C1C061756;
-        Sun,  9 Aug 2020 00:29:41 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p8so3219078pgn.13;
-        Sun, 09 Aug 2020 00:29:41 -0700 (PDT)
+        with ESMTP id S1726050AbgHIHbY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 03:31:24 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6EAC061756;
+        Sun,  9 Aug 2020 00:31:24 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id g19so3272356plq.0;
+        Sun, 09 Aug 2020 00:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Uw4AJhVOUVAPmZTUOaWlOKe34sDgFsEFEe1OfXc73/E=;
-        b=tkAagPMQlJdpJJ4qZQlmkpI/R8yagVk2xbRK2v8Y9uYaYUWiAuO9JX+aJvvx011cON
-         Esg7H6Ugbc1uLg5BelgZc3T86mXs37sERnrvfpDbCVfR1cK1Hy+8DCErw5jeswyCBAHb
-         Tn6AMM1oKO35JiAYCDD5z3xI1OP6SwH5FjOaVg5uFrysyTFq83T9iDSdiN3lAd8K+Snk
-         Ve9BIuXrBQkztKvHU+TFapwxNeRE0Y8LIwQLkI8S77rmbl85l2352GkDVrek3j5fbqMD
-         H+MYJXrMR5SMieCP0Tcv+TGPL5QZpsGdukfxXOGhO3RuVuhmhs6SuTN0hhZe8fXzk7jm
-         Ca0w==
+        bh=3IEkmePa89gcZWABOJNx2SLkslOKz0GmyAcBV+36SBw=;
+        b=UFrOq3A4hekXkXI3NOJsYetaJaL526uObur6HmbzxnoUd15JdEbN39BSWwQPVj0C1I
+         Rjwt2kJJzWhRIWNmZ3zVGBDu4dnjWv1zkdLYbgS+TxrhwcrIUDVhICrGDNP4RpjEdtVF
+         g963dULwY4a04MnsJFB0RqnejrraqJ4zYftXpR0f9IuAlNtRB6Jp06nG10+OBUIWeMH/
+         mSa98p2cVzGXzu090YYZFgvPztGqCgZeUDPqhCV28QWnP+J91MVcJXJrTdGDaT4qtpxA
+         LU+V6A4VPYlK4ZEWB8Ur2SsHG9gH1EhM5q/cU+hUYYuaiDYqSBEHRnADtGEdbE3vch2e
+         wPqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Uw4AJhVOUVAPmZTUOaWlOKe34sDgFsEFEe1OfXc73/E=;
-        b=kZuMlGtv6rtXnnA+F+Yqwvq9LKGcYa96w4e7WzWPcqrhsGORcYlBEZP+q/oveX+KmF
-         dnE+HWP5u5YDDXQYnJVq3dcIJWp1ssb6PIU83eFVnQRMNF42anzZdX/rx1LaViN/h3fs
-         fI/cH5W8qTRqaiwj/vWntLioM9dVnDyrB8QopEVpV+4UKCfBmMAwZGd9Z0g1hQ53XBbB
-         3Vxs6n0tN3RpWyAgTrTwZv3fFriIAYq9O3qC+WIPQUGs+6mw1eWwS+mtqUijzRHgiSaq
-         8ynbKW8Pi6VZbwLElMH2h/wGVi97IuoV7NVgrl+1SR5s82Iq1XGciBiBaWE1lrU0S1By
-         Ixdw==
-X-Gm-Message-State: AOAM532zVyvyK/9dBuLxXhHGRExSpNtrHJXcdTSe8cDde0888/eaHybC
-        YwtstlgiBeOQSQGjL8tWDB4=
-X-Google-Smtp-Source: ABdhPJws8yMgz/33peTxloHjqq+m8aTYxNK4BPLMCQhigQHIwkQ/ijeqyEXEIr7zMk0WOqs6ERCcoQ==
-X-Received: by 2002:aa7:97a3:: with SMTP id d3mr20515753pfq.178.1596958180986;
-        Sun, 09 Aug 2020 00:29:40 -0700 (PDT)
+        bh=3IEkmePa89gcZWABOJNx2SLkslOKz0GmyAcBV+36SBw=;
+        b=moL5toM0W3kiKbJD2GwHh4aXAG1jpF5LlHhnF6PUN3/VxjqorhOPxs5QIrMph9JKQT
+         gBEda31r9dAIb6n7JXupu5jgT+O7AAnxbJtU46P00L3dRkiNGu1I+r0K3mQ9TlRrlSHY
+         GIIfUR742d0r+FaqI4DENDOqPsP8FYD/CLBBZUw14SU6BwLTZIi72ZYbRf8cAHporY/g
+         kg2FralLQAlRjq6ZCL0cMAgC+Glq2bTu/wxRDf0YPHScLSY5W1tzDq33j5el2H8Temoc
+         kGfr0zszPlrnTSoshNSL46pQgYobflTSS8jvN5eW4bW2+LvlvuaFCNo24DSVGHndCUki
+         V8pQ==
+X-Gm-Message-State: AOAM5329rs6i+1hn17ATOpIjt/lUaQp35UCrye/x70OdwKASDxawdtWY
+        CpWXEvPSvm8STos6bmJyT9EEJrEuD/s=
+X-Google-Smtp-Source: ABdhPJx/EJOdynpXlqYwVhtl3lGDXK7XtOrWtgSjNomq4f3xmurXcjtaRcUugRryy8Xwy2Caa+IhTA==
+X-Received: by 2002:a17:902:6545:: with SMTP id d5mr19603309pln.257.1596958283505;
+        Sun, 09 Aug 2020 00:31:23 -0700 (PDT)
 Received: from blackclown ([103.88.82.9])
-        by smtp.gmail.com with ESMTPSA id 25sm18241169pfh.37.2020.08.09.00.29.37
+        by smtp.gmail.com with ESMTPSA id x26sm18274112pfn.218.2020.08.09.00.31.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 09 Aug 2020 00:29:40 -0700 (PDT)
-Date:   Sun, 9 Aug 2020 12:59:27 +0530
+        Sun, 09 Aug 2020 00:31:23 -0700 (PDT)
+Date:   Sun, 9 Aug 2020 13:01:09 +0530
 From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com
+To:     dledford@redhat.com, jgg@ziepe.ca
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/4] IB/hfi1: Remove pci-dma-compat wrapper APIs
-Message-ID: <1d74b57647f511de3d5ab96dbb4149fdbce58f64.1596957073.git.usuraj35@gmail.com>
+Subject: [PATCH 2/4] IB/mthca: Remove pci-dma-compat wrapper APIs
+Message-ID: <4998646a4cc2bf4abef6f8e63634944994f72dde.1596957073.git.usuraj35@gmail.com>
 References: <cover.1596957073.git.usuraj35@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -157,78 +156,162 @@ and compile-tested.
 
 Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- drivers/infiniband/hw/hfi1/pcie.c         |  8 ++++----
- drivers/infiniband/hw/hfi1/user_exp_rcv.c | 13 ++++++-------
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/mthca/mthca_eq.c      | 21 ++++++++++---------
+ drivers/infiniband/hw/mthca/mthca_main.c    |  8 +++----
+ drivers/infiniband/hw/mthca/mthca_memfree.c | 23 ++++++++++++---------
+ 3 files changed, 28 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-index 18d32f053d26..a2356bfa1485 100644
---- a/drivers/infiniband/hw/hfi1/pcie.c
-+++ b/drivers/infiniband/hw/hfi1/pcie.c
-@@ -92,21 +92,21 @@ int hfi1_pcie_init(struct hfi1_devdata *dd)
- 		goto bail;
- 	}
+diff --git a/drivers/infiniband/hw/mthca/mthca_eq.c b/drivers/infiniband/hw/mthca/mthca_eq.c
+index 2cdf686203c1..9f311bd22f72 100644
+--- a/drivers/infiniband/hw/mthca/mthca_eq.c
++++ b/drivers/infiniband/hw/mthca/mthca_eq.c
+@@ -617,9 +617,9 @@ static void mthca_free_eq(struct mthca_dev *dev,
  
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret) {
- 		/*
- 		 * If the 64 bit setup fails, try 32 bit.  Some systems
- 		 * do not setup 64 bit maps on systems with 2GB or less
- 		 * memory installed.
- 		 */
--		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		if (ret) {
- 			dd_dev_err(dd, "Unable to set DMA mask: %d\n", ret);
- 			goto bail;
- 		}
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+		ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	} else {
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-+		ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
- 	}
- 	if (ret) {
- 		dd_dev_err(dd, "Unable to set DMA consistent mask: %d\n", ret);
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index f81ca20f4b69..fe737da3d1dc 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -175,8 +175,8 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
- 	struct hfi1_devdata *dd = fd->uctxt->dd;
+ 	mthca_free_mr(dev, &eq->mr);
+ 	for (i = 0; i < npages; ++i)
+-		pci_free_consistent(dev->pdev, PAGE_SIZE,
+-				    eq->page_list[i].buf,
+-				    dma_unmap_addr(&eq->page_list[i], mapping));
++		dma_free_coherent(&dev->pdev->dev, PAGE_SIZE,
++				  eq->page_list[i].buf,
++				  dma_unmap_addr(&eq->page_list[i], mapping));
  
- 	if (mapped) {
--		pci_unmap_single(dd->pcidev, node->dma_addr,
--				 node->npages * PAGE_SIZE, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&dd->pcidev->dev, node->dma_addr,
-+				 node->npages * PAGE_SIZE, DMA_FROM_DEVICE);
- 		pages = &node->pages[idx];
- 	} else {
- 		pages = &tidbuf->pages[idx];
-@@ -735,9 +735,8 @@ static int set_rcvarray_entry(struct hfi1_filedata *fd,
- 	if (!node)
+ 	kfree(eq->page_list);
+ 	mthca_free_mailbox(dev, mailbox);
+@@ -739,17 +739,18 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
+ 	dev->eq_table.icm_page = alloc_page(GFP_HIGHUSER);
+ 	if (!dev->eq_table.icm_page)
  		return -ENOMEM;
+-	dev->eq_table.icm_dma  = pci_map_page(dev->pdev, dev->eq_table.icm_page, 0,
+-					      PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
+-	if (pci_dma_mapping_error(dev->pdev, dev->eq_table.icm_dma)) {
++	dev->eq_table.icm_dma  = dma_map_page(&dev->pdev->dev,
++					      dev->eq_table.icm_page, 0,
++					      PAGE_SIZE, DMA_BIDIRECTIONAL);
++	if (dma_mapping_error(&dev->pdev->dev, dev->eq_table.icm_dma)) {
+ 		__free_page(dev->eq_table.icm_page);
+ 		return -ENOMEM;
+ 	}
  
--	phys = pci_map_single(dd->pcidev,
--			      __va(page_to_phys(pages[0])),
--			      npages * PAGE_SIZE, PCI_DMA_FROMDEVICE);
-+	phys = dma_map_single(&dd->pcidev->dev, __va(page_to_phys(pages[0])),
-+			      npages * PAGE_SIZE, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(&dd->pcidev->dev, phys)) {
- 		dd_dev_err(dd, "Failed to DMA map Exp Rcv pages 0x%llx\n",
- 			   phys);
-@@ -779,8 +778,8 @@ static int set_rcvarray_entry(struct hfi1_filedata *fd,
- 	hfi1_cdbg(TID, "Failed to insert RB node %u 0x%lx, 0x%lx %d",
- 		  node->rcventry, node->notifier.interval_tree.start,
- 		  node->phys, ret);
--	pci_unmap_single(dd->pcidev, phys, npages * PAGE_SIZE,
--			 PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&dd->pcidev->dev, phys, npages * PAGE_SIZE,
-+			 DMA_FROM_DEVICE);
- 	kfree(node);
- 	return -EFAULT;
+ 	ret = mthca_MAP_ICM_page(dev, dev->eq_table.icm_dma, icm_virt);
+ 	if (ret) {
+-		pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
+-			       PCI_DMA_BIDIRECTIONAL);
++		dma_unmap_page(&dev->pdev->dev, dev->eq_table.icm_dma,
++			       PAGE_SIZE, DMA_BIDIRECTIONAL);
+ 		__free_page(dev->eq_table.icm_page);
+ 	}
+ 
+@@ -759,8 +760,8 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
+ void mthca_unmap_eq_icm(struct mthca_dev *dev)
+ {
+ 	mthca_UNMAP_ICM(dev, dev->eq_table.icm_virt, 1);
+-	pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
+-		       PCI_DMA_BIDIRECTIONAL);
++	dma_unmap_page(&dev->pdev->dev, dev->eq_table.icm_dma, PAGE_SIZE,
++		       DMA_BIDIRECTIONAL);
+ 	__free_page(dev->eq_table.icm_page);
  }
+ 
+diff --git a/drivers/infiniband/hw/mthca/mthca_main.c b/drivers/infiniband/hw/mthca/mthca_main.c
+index fe9654a7af71..d6465ae897b1 100644
+--- a/drivers/infiniband/hw/mthca/mthca_main.c
++++ b/drivers/infiniband/hw/mthca/mthca_main.c
+@@ -937,20 +937,20 @@ static int __mthca_init_one(struct pci_dev *pdev, int hca_type)
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask.\n");
+-		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+ 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting.\n");
+ 			goto err_free_res;
+ 		}
+ 	}
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit "
+ 			 "consistent PCI DMA mask.\n");
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+ 			dev_err(&pdev->dev, "Can't set consistent PCI DMA mask, "
+ 				"aborting.\n");
+diff --git a/drivers/infiniband/hw/mthca/mthca_memfree.c b/drivers/infiniband/hw/mthca/mthca_memfree.c
+index fa808582b08b..215a01b24258 100644
+--- a/drivers/infiniband/hw/mthca/mthca_memfree.c
++++ b/drivers/infiniband/hw/mthca/mthca_memfree.c
+@@ -66,8 +66,8 @@ static void mthca_free_icm_pages(struct mthca_dev *dev, struct mthca_icm_chunk *
+ 	int i;
+ 
+ 	if (chunk->nsg > 0)
+-		pci_unmap_sg(dev->pdev, chunk->mem, chunk->npages,
+-			     PCI_DMA_BIDIRECTIONAL);
++		dma_unmap_sg(&dev->pdev->dev, chunk->mem, chunk->npages,
++		             DMA_BIDIRECTIONAL);
+ 
+ 	for (i = 0; i < chunk->npages; ++i)
+ 		__free_pages(sg_page(&chunk->mem[i]),
+@@ -184,9 +184,10 @@ struct mthca_icm *mthca_alloc_icm(struct mthca_dev *dev, int npages,
+ 			if (coherent)
+ 				++chunk->nsg;
+ 			else if (chunk->npages == MTHCA_ICM_CHUNK_LEN) {
+-				chunk->nsg = pci_map_sg(dev->pdev, chunk->mem,
++				chunk->nsg = dma_map_sg(&dev->pdev->dev,
++							chunk->mem,
+ 							chunk->npages,
+-							PCI_DMA_BIDIRECTIONAL);
++							DMA_BIDIRECTIONAL);
+ 
+ 				if (chunk->nsg <= 0)
+ 					goto fail;
+@@ -204,9 +205,8 @@ struct mthca_icm *mthca_alloc_icm(struct mthca_dev *dev, int npages,
+ 	}
+ 
+ 	if (!coherent && chunk) {
+-		chunk->nsg = pci_map_sg(dev->pdev, chunk->mem,
+-					chunk->npages,
+-					PCI_DMA_BIDIRECTIONAL);
++		chunk->nsg = dma_map_sg(&dev->pdev->dev, chunk->mem,
++					chunk->npages, DMA_BIDIRECTIONAL);
+ 
+ 		if (chunk->nsg <= 0)
+ 			goto fail;
+@@ -480,7 +480,8 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mthca_uar *uar,
+ 	sg_set_page(&db_tab->page[i].mem, pages[0], MTHCA_ICM_PAGE_SIZE,
+ 			uaddr & ~PAGE_MASK);
+ 
+-	ret = pci_map_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
++	ret = dma_map_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
++			 DMA_TO_DEVICE);
+ 	if (ret < 0) {
+ 		unpin_user_page(pages[0]);
+ 		goto out;
+@@ -489,7 +490,8 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mthca_uar *uar,
+ 	ret = mthca_MAP_ICM_page(dev, sg_dma_address(&db_tab->page[i].mem),
+ 				 mthca_uarc_virt(dev, uar, i));
+ 	if (ret) {
+-		pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
++		dma_unmap_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
++			     DMA_TO_DEVICE);
+ 		unpin_user_page(sg_page(&db_tab->page[i].mem));
+ 		goto out;
+ 	}
+@@ -555,7 +557,8 @@ void mthca_cleanup_user_db_tab(struct mthca_dev *dev, struct mthca_uar *uar,
+ 	for (i = 0; i < dev->uar_table.uarc_size / MTHCA_ICM_PAGE_SIZE; ++i) {
+ 		if (db_tab->page[i].uvirt) {
+ 			mthca_UNMAP_ICM(dev, mthca_uarc_virt(dev, uar, i), 1);
+-			pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
++			dma_unmap_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
++				     DMA_TO_DEVICE);
+ 			unpin_user_page(sg_page(&db_tab->page[i].mem));
+ 		}
+ 	}
 -- 
 2.17.1
 
