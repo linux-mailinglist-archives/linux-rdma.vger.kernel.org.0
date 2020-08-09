@@ -2,79 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4E523FD48
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 10:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53A923FD5A
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 10:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgHIIKu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 Aug 2020 04:10:50 -0400
-Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:44738 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726250AbgHIIKu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 04:10:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 5FE701800028E;
-        Sun,  9 Aug 2020 08:10:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4250:4321:4605:5007:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12295:12296:12297:12438:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14659:14721:21080:21433:21627:21990:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: tin89_2a09b8826fd0
-X-Filterd-Recvd-Size: 2260
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  9 Aug 2020 08:10:47 +0000 (UTC)
-Message-ID: <91159e176c090f2d7ada6957af342c4b6d787973.camel@perches.com>
-Subject: Re: [PATCH 5/4] RDMA/efa : Remove pci-dma-compat wrapper APIs
-From:   Joe Perches <joe@perches.com>
-To:     Suraj Upadhyay <usuraj35@gmail.com>, dledford@redhat.com,
-        jgg@ziepe.ca, galpress@amazon.com, sleybo@amazon.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Sun, 09 Aug 2020 01:10:46 -0700
-In-Reply-To: <20200809074517.GA4419@blackclown>
+        id S1726210AbgHIIgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Aug 2020 04:36:05 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:42954 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgHIIgF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 04:36:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1596962165; x=1628498165;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=G6sNgHTlfA39QjdSkKJD9tDLhIyODeSKXQPkPpdaSbM=;
+  b=tt6tce1UlUrCjPvBtr1vNOd2KUAlsur2zG+R+MOOo9qPASiNrxqRzubC
+   6fFgrW4oB/ZwPRpQ3qnda54pd1nHR/pLd7uY4p9t5h5iWuyxSuHw5EJYb
+   9Gu+pKJ5UndTrav1FY7M5qdBwfPyTJ9wSCoE6nyRpErt/637/xEVbxCWL
+   Y=;
+IronPort-SDR: qEEIWK+V6ELPO6t2XtOAyIEnDrIehEVP+f4d2bt2EDMPZkAfnd+p6Jo9HC9GjmJYSOulrwYepf
+ EHNnDNgu1r/A==
+X-IronPort-AV: E=Sophos;i="5.75,453,1589241600"; 
+   d="scan'208";a="65346983"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 09 Aug 2020 08:36:03 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id C9A43A176B;
+        Sun,  9 Aug 2020 08:36:01 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 9 Aug 2020 08:36:01 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.145) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 9 Aug 2020 08:35:57 +0000
+Subject: Re: [PATCH 0/4] Infiniband Subsystem: Remove pci-dma-compat wrapper
+ APIs.
+To:     Suraj Upadhyay <usuraj35@gmail.com>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
 References: <cover.1596957073.git.usuraj35@gmail.com>
-         <20200809074517.GA4419@blackclown>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <9220090e-7340-df50-a998-57a5e7752f90@amazon.com>
+Date:   Sun, 9 Aug 2020 11:35:51 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <cover.1596957073.git.usuraj35@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.145]
+X-ClientProxiedBy: EX13D21UWA004.ant.amazon.com (10.43.160.252) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 2020-08-09 at 13:15 +0530, Suraj Upadhyay wrote:
-> The legacy API wrappers in include/linux/pci-dma-compat.h
-> should go away as it creates unnecessary midlayering
-> for include/linux/dma-mapping.h APIs.
+On 09/08/2020 10:24, Suraj Upadhyay wrote:
+> Hii Developers,
 > 
-> Instead use dma-mapping.h APIs directly.
+> 	This patch series will replace all the legacy pci-dma-compat wrappers
+> with the dma-mapping APIs directly in the INFINIBAND Subsystem.
 > 
-> The patch has been generated with the coccinelle script below
-> and compile-tested.
-[]
-> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-[]
-> @@ -405,13 +405,13 @@ static int efa_device_init(struct efa_com_dev *edev, struct pci_dev *pdev)
->                 return err;
->         }
+> This task is done through a coccinelle script which is described in each commit
+> message.
 > 
-> -       err = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-> +       err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(dma_width));
->         if (err) {
->                 dev_err(&pdev->dev, "pci_set_dma_mask failed %d\n", err);
+> The changes are compile tested.
+> 
+> Thanks,
+> 
+> Suraj Upadhyay.
+> 
+> Suraj Upadhyay (4):
+>   IB/hfi1: Remove pci-dma-compat wrapper APIs
+>   IB/mthca: Remove pci-dma-compat wrapper APIs
+>   RDMA/qib: Remove pci-dma-compat wrapper APIs
+>   RDMA/pvrdma: Remove pci-dma-compat wrapper APIs
+> 
+>  drivers/infiniband/hw/hfi1/pcie.c             |  8 +++----
+>  drivers/infiniband/hw/hfi1/user_exp_rcv.c     | 13 +++++------
+>  drivers/infiniband/hw/mthca/mthca_eq.c        | 21 +++++++++--------
+>  drivers/infiniband/hw/mthca/mthca_main.c      |  8 +++----
+>  drivers/infiniband/hw/mthca/mthca_memfree.c   | 23 +++++++++++--------
+>  drivers/infiniband/hw/qib/qib_file_ops.c      | 12 +++++-----
+>  drivers/infiniband/hw/qib/qib_init.c          |  4 ++--
+>  drivers/infiniband/hw/qib/qib_pcie.c          |  8 +++----
+>  drivers/infiniband/hw/qib/qib_user_pages.c    | 12 +++++-----
+>  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  6 ++---
+>  10 files changed, 59 insertions(+), 56 deletions(-)
+> 
 
-Coccinelle is great for some things, but not
-necessarily for these sorts of changes in an
-completely automated way.
-
-The dev_err messages also need to be changed
-as the format string contains the old name.
-
-> -       err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-> +       err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(dma_width));
->         if (err) {
->                 dev_err(&pdev->dev,
->                         "err_pci_set_consistent_dma_mask failed %d\n",
-
-
-
+The efa patch isn't listed here, and it shows as patch 5/4?
