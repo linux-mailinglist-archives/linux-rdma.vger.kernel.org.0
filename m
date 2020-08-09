@@ -2,138 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AD823F964
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 00:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA1D23FCFA
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 08:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgHHW5i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 Aug 2020 18:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        id S1726097AbgHIGRz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Aug 2020 02:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgHHW5h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Aug 2020 18:57:37 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2250C061756;
-        Sat,  8 Aug 2020 15:57:37 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id c6so2761275pje.1;
-        Sat, 08 Aug 2020 15:57:37 -0700 (PDT)
+        with ESMTP id S1725988AbgHIGRy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 02:17:54 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E08C061756;
+        Sat,  8 Aug 2020 23:17:54 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id bo3so6199742ejb.11;
+        Sat, 08 Aug 2020 23:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9sPtCXARRDyoJ9gED6VcstU3ZnY0CN85dWocZ7ctG2E=;
-        b=QZU/Tvgq78IUEtDcC1+6C6xvjHGuXJHXguScPFEZz+aS8foez55jwUhTUnx6KF7Il+
-         M4iZheUMXLzs7xSlWXfG7H+dM0oO1GHdyFlV0iYOxUVqXT3hfmdNyhfIzRT+rq9ZVN0p
-         lRJeSK58lKVj6qy80rOKm5wmcgQJxk8Egn9Qe4S2LdY9PTEFAUCSDT509S/C9+IxX6PH
-         sNXvvUkN+iMb38o1tJ6uK54VtqU/ZK2fQsTq02a3T44B4e6sPjqwCS08rXMMlOJD1Akz
-         yjwAl/o38v5nzut99M9Sbzr9YLxJdAPl/n+p9mtauvxWllfoTls6vC9FiQQ+0wzanl/6
-         Aeyw==
+        h=from:to:cc:subject:date:message-id;
+        bh=8/WAyXxEK6f4eGf236GZbQc5j4me7n0Ad/X2a4kTwOE=;
+        b=g0wkBOA3EmdhKYruxbUmwfZmyVVTTidomJP8brzeZl79rzKBdFEI8mraRU6x8pZqlf
+         OMasWBFRtzBR+dXkmerWTSMGVErG+6gCap7t9JAqwsy7SZvwAyvDHYOh29Fo8hXC+C6N
+         VkU+xRYgfagEmoUY8iuHEKYtB+GOmRNYTGb8sUJoktf4T6P530ou9X63PDraRWYODKHT
+         FAt5M4KU4em8Ppf1hcOU4by0PYNgM66MkWOx+ZJSjqqgBHV6o648IG8e3c02PmV+OGm1
+         YfwJ62JXegpiBF0rA1UZppSgk9lC+O1TqsAqx+1YSCbL+HyvK7xTt2+1tBDOnE/z94p6
+         uR0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9sPtCXARRDyoJ9gED6VcstU3ZnY0CN85dWocZ7ctG2E=;
-        b=pc1ce5ZdI0gvM5iXcPpO3CzZuagcLFgbxg1XOYwpAyV5euFJdsDoOg3PIMKisqtZBh
-         d85bo0dT9NEH+m9x8I1zJZzDe/GTygF/mGT/NqfTufw7J+PQDUcRDsXvfYSR9Ko6GjRi
-         5iAB0XWncXBU1IjdmNItUR2Qz+AkSLKvrzSSBXy/MBjsWFPAHq1ucobzB7YlN2Bk7Gsn
-         b9xT4J6hPHWmqPVvbe/Fx6AqUCvnEWcgGJOUpMWnFnEBtygziOsgx7++4UHx1TVxlRNB
-         ugRm/D9qgrXaa+RGph3QCxt56tTZU2ZZR/TdVgPZXxmA1c9+UpBi0jFn2RAW6t3IcgVZ
-         2vpQ==
-X-Gm-Message-State: AOAM532Y80AuIWCNU5D+X8EDBfwHY4WW4CXAa6am/Nbi4i4yn7Cs4Y+y
-        qHC/npR9im4OaCELMRw1VH4/uoF5oj9D3Q==
-X-Google-Smtp-Source: ABdhPJxC1hb5eucKSMPhCKqbRKPCMGw/TpygTR/MPLb0wTD4LcgT7LTAWUFr7XtyF2eqj7hNOfB1oQ==
-X-Received: by 2002:a17:90a:d482:: with SMTP id s2mr19980811pju.140.1596927456678;
-        Sat, 08 Aug 2020 15:57:36 -0700 (PDT)
-Received: from [100.115.92.198] (18.48.24.136.in-addr.arpa. [136.24.48.18])
-        by smtp.gmail.com with ESMTPSA id y17sm17167551pfe.30.2020.08.08.15.57.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Aug 2020 15:57:36 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Joe Perches <joe@perches.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <20200731053333.GB466103@kroah.com>
- <20200731140452.GE24045@ziepe.ca> <20200731142148.GA1718799@kroah.com>
- <20200731143604.GF24045@ziepe.ca> <20200731171924.GA2014207@kroah.com>
- <20200801053833.GK75549@unreal> <20200802221020.GN24045@ziepe.ca>
- <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
- <20200802222843.GP24045@ziepe.ca>
- <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
- <20200803230627.GQ24045@ziepe.ca>
-From:   Jack Leadford <leadford.jack@gmail.com>
-Message-ID: <ff066616-3bb8-b6c8-d329-7de5ab8ee982@gmail.com>
-Date:   Sat, 8 Aug 2020 15:57:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200803230627.GQ24045@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8/WAyXxEK6f4eGf236GZbQc5j4me7n0Ad/X2a4kTwOE=;
+        b=Rou7dn0c7K9YEUlbMPVgD5mVuUEFmx7s2TrxM4lRizT6Xir42p/j5d7ZA7Ij1GRL8n
+         Md2fh2mgywN4f67afP8qKrwvZOCoPrxLavzTmrmAHZG+wtRmaceg1+8dmAW6TmwUkupy
+         x9JYbotWXTZFU22rD2MKMBDLYqnMNNTVZ3d5IgUN7Ftm9KH4yfnBS5yHEQpV+19iUYVg
+         n0GvyazyUC/graKLl2SY6CPYMBoyMqontZiFggNE2At+hK8CN02n3WGdNMv3dmKQhUbp
+         tJlxCXt/h6QscJBXbfKiXdVPXHxZ3AzL7Rbi51ZcCSdnE0MrIEB3fg8gQKEwH5iLrvj7
+         bqfw==
+X-Gm-Message-State: AOAM5302EzutqDYNW6D71ebBB6A0IoA76hsvSSTAdYAXMKjhuXGlm4Xx
+        QeHnryymwLIBbY5fSlhkDIuUZUM8cDE=
+X-Google-Smtp-Source: ABdhPJzAWTtG0O3pCQAx7xu92rq1VP07wg1HoGT+dX5bPPDs3LBi5kspOwUUzgtQT2hF3gwlm3mvyA==
+X-Received: by 2002:a17:906:24d0:: with SMTP id f16mr15910842ejb.325.1596953873009;
+        Sat, 08 Aug 2020 23:17:53 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d48:c300:9164:4bc4:8f8b:2b7d])
+        by smtp.gmail.com with ESMTPSA id j1sm5175454edq.58.2020.08.08.23.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Aug 2020 23:17:52 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] dma-buf.rst: repair length of title underline
+Date:   Sun,  9 Aug 2020 08:17:39 +0200
+Message-Id: <20200809061739.16803-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello!
+With commit 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are
+a bad idea"), document generation warns:
 
-Thanks to Jason for getting this conversation back on track.
+  Documentation/driver-api/dma-buf.rst:182: \
+  WARNING: Title underline too short.
 
-Yes: in general, {} or a partial initializer /will/ zero padding bits.
+Repair length of title underline to remove warning.
 
-However, there is a bug in some versions of GCC where {} will /not/ zero
-padding bits; actually, Jason's test program in this mail 
-https://lore.kernel.org/lkml/20200731143604.GF24045@ziepe.ca/
-has the right ingredients to trigger the bug, but the GCC
-versions used are outside of the bug window. :)
+Fixes: 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are a bad idea")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Daniel, please pick this minor non-urgent fix to your new documentation.
 
-For more details on these cases and more (including said GCC bug), see 
-my paper at:
+ Documentation/driver-api/dma-buf.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-https://www.nccgroup.com/us/about-us/newsroom-and-events/blog/2019/october/padding-the-struct-how-a-compiler-optimization-can-disclose-stack-memory/
+diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
+index 100bfd227265..13ea0cc0a3fa 100644
+--- a/Documentation/driver-api/dma-buf.rst
++++ b/Documentation/driver-api/dma-buf.rst
+@@ -179,7 +179,7 @@ DMA Fence uABI/Sync File
+    :internal:
+ 
+ Indefinite DMA Fences
+-~~~~~~~~~~~~~~~~~~~~
++~~~~~~~~~~~~~~~~~~~~~
+ 
+ At various times &dma_fence with an indefinite time until dma_fence_wait()
+ finishes have been proposed. Examples include:
+-- 
+2.17.1
 
-Hopefully this paper can serve as a helpful reference when these cases 
-are encountered in the kernel.
-
-Thank you.
-
-Jack Leadford
-
-On 8/3/20 4:06 PM, Jason Gunthorpe wrote:
-> On Sun, Aug 02, 2020 at 03:45:40PM -0700, Joe Perches wrote:
->> On Sun, 2020-08-02 at 19:28 -0300, Jason Gunthorpe wrote:
->>> On Sun, Aug 02, 2020 at 03:23:58PM -0700, Joe Perches wrote:
->>>> On Sun, 2020-08-02 at 19:10 -0300, Jason Gunthorpe wrote:
->>>>> On Sat, Aug 01, 2020 at 08:38:33AM +0300, Leon Romanovsky wrote:
->>>>>
->>>>>> I'm using {} instead of {0} because of this GCC bug.
->>>>>> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
->>>>>
->>>>> This is why the {} extension exists..
->>>>
->>>> There is no guarantee that the gcc struct initialization {}
->>>> extension also zeros padding.
->>>
->>> We just went over this. Yes there is, C11 requires it.
->>
->> c11 is not c90.  The kernel uses c90.
-> 
-> The kernel already relies on a lot of C11/C99 features and
-> behaviors. For instance Linus just bumped the minimum compiler version
-> so that C11's _Generic is usable.
-> 
-> Why do you think this particular part of C11 shouldn't be relied on?
-> 
-> Jason
-> 
-> 
