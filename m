@@ -2,92 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90F623FD12
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792A723FD1E
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Aug 2020 09:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgHIHEt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 Aug 2020 03:04:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgHIHEt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 9 Aug 2020 03:04:49 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9032206C3;
-        Sun,  9 Aug 2020 07:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596956688;
-        bh=RXegfO8sfwtCPziOMzKjff9+mTWukqMXNBxcvA/PHQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WbjJliggcdbohvw04zRJ7b4Y/r/cKmbBRJpasZ3n26KOioJjq7UsNclBR2x1bdeDt
-         xlZbQXEruW13ZQFEm4tdU81P2XkQOrQ3i7WDcpzgrxamnx1xDAOLngh0sHZGNMUP4D
-         1sgz5yxpQG0vFOT6X9NqnS70c7StKKboPX/plznY=
-Date:   Sun, 9 Aug 2020 10:04:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Leadford <leadford.jack@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH net] rds: Prevent kernel-infoleak
- in rds_notify_queue_get()
-Message-ID: <20200809070440.GA1653394@unreal>
-References: <20200731142148.GA1718799@kroah.com>
- <20200731143604.GF24045@ziepe.ca>
- <20200731171924.GA2014207@kroah.com>
- <20200801053833.GK75549@unreal>
- <20200802221020.GN24045@ziepe.ca>
- <fb7ec4d4ed78e6ae7fa6c04abb24d1c00dc2b0f7.camel@perches.com>
- <20200802222843.GP24045@ziepe.ca>
- <60584f4c0303106b42463ddcfb108ec4a1f0b705.camel@perches.com>
- <20200803230627.GQ24045@ziepe.ca>
- <ff066616-3bb8-b6c8-d329-7de5ab8ee982@gmail.com>
+        id S1726175AbgHIHYr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Aug 2020 03:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgHIHYq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Aug 2020 03:24:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95869C061756;
+        Sun,  9 Aug 2020 00:24:46 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w17so3238822ply.11;
+        Sun, 09 Aug 2020 00:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=rlCw9bXNz9amSiyruivuB3SKCYjIcaIfTwgEtm92qW4=;
+        b=jUBeK3xAvto7PSUx2HYYsmFHvicywYI+71jRXaFkgIUUbmk9vB/d9Aa95hlzr/lV1K
+         5zvwZehnn0cJx0I0FiLh100a1z3ZNfb+1Z0mcKu8agANAm5CzpLUitLJSP8GuyuaXyxN
+         U4/M8Dtf62WRdfOcmcenjPcQENnXoo1LczVOe+hhE0jhGbTzMcluRRdZpF/E6Pp9frFt
+         YV0Hrx+5GVLWPdIXTNF9RB9I+9uckf/jIOKPz7xANgvwpPAeOUldXMkNvz1PxiYlQQ97
+         /O2YWFFdHP3gkz4dcsKe53OyzUaN1FTUj8QzBEgIHKtOLy7NWhLcc4h/d21qs6J+WBZ1
+         HMrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=rlCw9bXNz9amSiyruivuB3SKCYjIcaIfTwgEtm92qW4=;
+        b=qTUKrpmv01tYAvUs3F/I8ptG+rzTVpmIOpAQerhWLT+aoLtjsjV80EwureuWatS/7k
+         7zVB22vnhUyqzUb5bAoFJHSai1rA9M77bFIppo8dRxrPHYwtTzU8XTAdasFVdocKdpaE
+         B/GZMNNcVOnXfwOc/vBr8wg5UwV6KrCcSU8xtIi0whKJixa0DcLsGl87XgCxOKpJQ4wu
+         aQZCGv8MfhilQojFn0jbizCH3dUdbuz68fboKwD3u18unUoSF/yO53bd0RhIs2+gS8To
+         vqvfM/SbzF5JpdHvcVHrZzks6aHksN1TYgyhC9tkRZlzHNDRgvgLT92kbI4A093evuC2
+         YNdA==
+X-Gm-Message-State: AOAM530WJaXu4sbee6A6EfPODkSDqv3qJZhM3a3wTGXdAe0cBbv7Sc+w
+        OUGK7gd3r0/eTkkV6q/V4/ofxn8OCX4=
+X-Google-Smtp-Source: ABdhPJxuKuH6lag//Z3lCgAfLwYaAPCgKfW1uCamkewUti6WnhVFWc3MOF6OUpwZx60wnjApbHFjXg==
+X-Received: by 2002:a17:90a:202c:: with SMTP id n41mr22176095pjc.126.1596957886122;
+        Sun, 09 Aug 2020 00:24:46 -0700 (PDT)
+Received: from blackclown ([103.88.82.9])
+        by smtp.gmail.com with ESMTPSA id gl9sm565272pjb.41.2020.08.09.00.24.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 09 Aug 2020 00:24:45 -0700 (PDT)
+Date:   Sun, 9 Aug 2020 12:54:28 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 0/4] Infiniband Subsystem: Remove pci-dma-compat wrapper APIs.
+Message-ID: <cover.1596957073.git.usuraj35@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ff066616-3bb8-b6c8-d329-7de5ab8ee982@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 08, 2020 at 03:57:33PM -0700, Jack Leadford wrote:
-> Hello!
->
-> Thanks to Jason for getting this conversation back on track.
->
-> Yes: in general, {} or a partial initializer /will/ zero padding bits.
->
-> However, there is a bug in some versions of GCC where {} will /not/ zero
-> padding bits; actually, Jason's test program in this mail
-> https://lore.kernel.org/lkml/20200731143604.GF24045@ziepe.ca/
-> has the right ingredients to trigger the bug, but the GCC
-> versions used are outside of the bug window. :)
->
-> For more details on these cases and more (including said GCC bug), see my
-> paper at:
->
-> https://www.nccgroup.com/us/about-us/newsroom-and-events/blog/2019/october/padding-the-struct-how-a-compiler-optimization-can-disclose-stack-memory/
->
-> Hopefully this paper can serve as a helpful reference when these cases are
-> encountered in the kernel.
+Hii Developers,
 
-I read the paper and didn't find exact GCC version, only remark that it
-was before GCC 7.
+	This patch series will replace all the legacy pci-dma-compat wrappers
+with the dma-mapping APIs directly in the INFINIBAND Subsystem.
 
-So my question, why is this case different from any other GCC bugs?
-AFAIK, we don't add kernel code to overcome GCC bugs which exist in
-specific versions, which already were fixed.
+This task is done through a coccinelle script which is described in each commit
+message.
 
-More on that, this paper talks about specific flow which doesn't exist
-in the discussed patch.
+The changes are compile tested.
 
-Thanks
+Thanks,
+
+Suraj Upadhyay.
+
+Suraj Upadhyay (4):
+  IB/hfi1: Remove pci-dma-compat wrapper APIs
+  IB/mthca: Remove pci-dma-compat wrapper APIs
+  RDMA/qib: Remove pci-dma-compat wrapper APIs
+  RDMA/pvrdma: Remove pci-dma-compat wrapper APIs
+
+ drivers/infiniband/hw/hfi1/pcie.c             |  8 +++----
+ drivers/infiniband/hw/hfi1/user_exp_rcv.c     | 13 +++++------
+ drivers/infiniband/hw/mthca/mthca_eq.c        | 21 +++++++++--------
+ drivers/infiniband/hw/mthca/mthca_main.c      |  8 +++----
+ drivers/infiniband/hw/mthca/mthca_memfree.c   | 23 +++++++++++--------
+ drivers/infiniband/hw/qib/qib_file_ops.c      | 12 +++++-----
+ drivers/infiniband/hw/qib/qib_init.c          |  4 ++--
+ drivers/infiniband/hw/qib/qib_pcie.c          |  8 +++----
+ drivers/infiniband/hw/qib/qib_user_pages.c    | 12 +++++-----
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  6 ++---
+ 10 files changed, 59 insertions(+), 56 deletions(-)
+
+-- 
+2.17.1
+
