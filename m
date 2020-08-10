@@ -2,113 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCEE24052D
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Aug 2020 13:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9623724055A
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Aug 2020 13:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgHJLU5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Aug 2020 07:20:57 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57474 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgHJLUy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Aug 2020 07:20:54 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07ABGbqg056479;
-        Mon, 10 Aug 2020 11:20:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=y1wmFYbJ+HYC63cVgEe6D2pIJsUWEap1+nfWxbIzEa0=;
- b=EkqUQL6Tx5BksUbnCGwJs2d4XutyWIm3E2AcEUa79XpaHY5q0GpHURHE1vgYXPZZhybw
- 8bYOtFI9IlwgMQZwkmOjKgAyZmmOrIuTnigRt/+XavIzWyO1wrcD95P2KksITht3OpSh
- C74KMbQP1FBqph9bDC+A3JDeO8OSEFlA7hB5rQDtd6TfW8aktkvncB2tRwvN3aBb66aU
- ATbPGj7KeyfPd6LHDsblTeqRxhfx7szt2Q6qEK5rniNksYQGbuwo3+zvWq4BX/L22jju
- DWz3rWsgik7xVuzbZiQ7K5bJyPYdDDI43D0jpmgpq7TwPats5hb7877gwE/4YI/+raV5 2g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32sm0mdvrg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 10 Aug 2020 11:20:49 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07ABDRET017388;
-        Mon, 10 Aug 2020 11:20:49 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 32t5mmd0hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Aug 2020 11:20:49 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07ABKlqw030378;
-        Mon, 10 Aug 2020 11:20:47 GMT
-Received: from dhcp-10-175-161-90.vpn.oracle.com (/10.175.161.90)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 10 Aug 2020 11:20:47 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH for-rc v2 0/6] Add CM packets missing and harden the
- proxying
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20200803061941.1139994-1-haakon.bugge@oracle.com>
-Date:   Mon, 10 Aug 2020 13:20:43 +0200
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>, ranro@mellanox.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A84B2186-42F4-4164-B80D-27782CEAE925@oracle.com>
-References: <20200803061941.1139994-1-haakon.bugge@oracle.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9708 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008100083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9708 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 clxscore=1015
- suspectscore=3 mlxlogscore=999 priorityscore=1501 adultscore=0
- impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008100083
+        id S1726415AbgHJLZs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Aug 2020 07:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgHJLZq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Aug 2020 07:25:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC430C061756;
+        Mon, 10 Aug 2020 04:25:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f1so7803990wro.2;
+        Mon, 10 Aug 2020 04:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=oTg2lxBtHTJ9GHQqs1UPfQnOTLFgVN0t8PhdBgnUOZo=;
+        b=o9v8vl6sxuZv3OE+NRsrsOpuKAl5e53GHbfTnyCtOZV1p2zAW+cLNzN6HOvnefctsr
+         YUQIkHHJaFE5NU1fJ7SddpIUAXlGM5yfm7ystzVLYNJZVa4GuyUSeTxTuRv3m1vlVNz6
+         OIKMicdaF4eGlNE8pB8WPUk1fddWOqpq9CLr6FKC44fBF9a8L9WOYqu+YAsiQj+yWKNo
+         pZFSVzQEQb4u2obVQcJ+6ZsfNPKru3/Vt9nDGZaeYLShIN07zhyl6g3UZpr+6CZgyNpm
+         SGfl0IaUx/eMPL9MOVpnZeQ0ayjoAVhA+T8ClKjAraCJRitMvkZL0sN1piaWHV2TLeGw
+         XQdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=oTg2lxBtHTJ9GHQqs1UPfQnOTLFgVN0t8PhdBgnUOZo=;
+        b=eHoLI0FMB1lozTw0V+hwLwuKWt71aU7imBAU01/tQ1hVXuk2Xxjd1WD+gBMh0fREgf
+         +a3ufjhV9BD2ggR56JS9jCCYFdD6ib3CwAmvLWr3Hhig0FlekLnvG0eycAIfcrmPHHCp
+         uwlHtr8UzlkkQJkwf+moIlxwCrYFXl5baltjLpkBZyNJldIjX3nVojh06wx53RIzdMuv
+         1/DtU8s1dCRyPvHDs+ndl5TYN4U4OoT72uyBwvmkKbCM1gF38evkyBKKAXEYc0NtrFmp
+         kXy8QgXXbOSLm3oUfC0eJ2E7nb51OLCi4ftE9/rn/NCiRgJmNkriZHj22WOlb1giBMsH
+         GAHg==
+X-Gm-Message-State: AOAM530BvTcKQkUflPdwydFlHh61KxbS2p0arrLsQifZd0+LOn0CEzjx
+        rDiXhLPbYwJzxgOxvI+gtkmmprRr
+X-Google-Smtp-Source: ABdhPJwu7ulsQB2sIxkwOEtiTddoyOl0dMfmiZCjLvbUiY7InajwnIBXsggut18F6II9XAC3RPytGQ==
+X-Received: by 2002:a5d:6381:: with SMTP id p1mr23634015wru.112.1597058744166;
+        Mon, 10 Aug 2020 04:25:44 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id h11sm18407755wrb.68.2020.08.10.04.25.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Aug 2020 04:25:43 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH] dma-buf.rst: repair length of title underline
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org
+References: <20200809061739.16803-1-lukas.bulwahn@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <7d434810-79bd-89a3-18f8-c5c2a2524822@gmail.com>
+Date:   Mon, 10 Aug 2020 13:25:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200809061739.16803-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A friendly reminder.
+Am 09.08.20 um 08:17 schrieb Lukas Bulwahn:
+> With commit 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are
+> a bad idea"), document generation warns:
+>
+>    Documentation/driver-api/dma-buf.rst:182: \
+>    WARNING: Title underline too short.
+>
+> Repair length of title underline to remove warning.
+>
+> Fixes: 72b6ede73623 ("dma-buf.rst: Document why indefinite fences are a bad idea")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
+Acked-by: Christian König <christian.koenig@amd.com>
 
-Thxs, H=C3=A5kon
+Should I pick it up into drm-misc-next?
 
-
-> On 3 Aug 2020, at 08:19, H=C3=A5kon Bugge <haakon.bugge@oracle.com> =
-wrote:
->=20
-> A high number of MAD packet drops are observed in the mlx4 MAD proxy
-> system. These are fixed by separating the parameters for the tunnel
-> vs. wire QPs and by introducing a separate worker-thread for the wire
-> QPs.
->=20
-> Support for MRA and REJ with its reason being timeout is also added.
->=20
-> Dynamic debug prints adjusted and amended.
->=20
->    v1->v2:
-> 	* Added commit ("Adjust delayed work when a dup is observed")
-> 	* Minor adjustments in some of the commits
->=20
-> H=C3=A5kon Bugge (6):
->  IB/mlx4: Add and improve logging
->  IB/mlx4: Add support for MRA
->  IB/mlx4: Separate tunnel and wire bufs parameters
->  IB/mlx4: Fix starvation in paravirt mux/demux
->  IB/mlx4: Add support for REJ due to timeout
->  IB/mlx4: Adjust delayed work when a dup is observed
->=20
-> drivers/infiniband/hw/mlx4/cm.c      | 148 ++++++++++++++++++++++++-
-> drivers/infiniband/hw/mlx4/mad.c     | 158 +++++++++++++++------------
-> drivers/infiniband/hw/mlx4/mlx4_ib.h |   8 +-
-> 3 files changed, 241 insertions(+), 73 deletions(-)
->=20
-> --
-> 2.20.1
->=20
+> ---
+> Daniel, please pick this minor non-urgent fix to your new documentation.
+>
+>   Documentation/driver-api/dma-buf.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
+> index 100bfd227265..13ea0cc0a3fa 100644
+> --- a/Documentation/driver-api/dma-buf.rst
+> +++ b/Documentation/driver-api/dma-buf.rst
+> @@ -179,7 +179,7 @@ DMA Fence uABI/Sync File
+>      :internal:
+>   
+>   Indefinite DMA Fences
+> -~~~~~~~~~~~~~~~~~~~~
+> +~~~~~~~~~~~~~~~~~~~~~
+>   
+>   At various times &dma_fence with an indefinite time until dma_fence_wait()
+>   finishes have been proposed. Examples include:
 
