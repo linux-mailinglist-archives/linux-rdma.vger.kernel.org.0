@@ -2,106 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89153241F68
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Aug 2020 19:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE19242025
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Aug 2020 21:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgHKRwj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Aug 2020 13:52:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6541 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgHKRwj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:52:39 -0400
-IronPort-SDR: mnWInFjpMz9PszliSvwqk68AdrEmBMidNdG54xq/qAGeem/8GIN2CgkisdCrKCWxb0yRsryuf7
- 8ke7vt0vgUKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9710"; a="153017032"
-X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
-   d="scan'208";a="153017032"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2020 10:49:35 -0700
-IronPort-SDR: JyTOtJ9Ntv2/iB6qeLHBq/st9+3jhpJzqRl8XxCk2ybVOtPgUd0XoIorLXM5R9iYUX9c5mcWke
- cKxE1dy0gTRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,301,1592895600"; 
-   d="scan'208";a="308473524"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga002.jf.intel.com with ESMTP; 11 Aug 2020 10:49:35 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 07BHnX7m056643;
-        Tue, 11 Aug 2020 10:49:34 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 07BHnV8d191232;
-        Tue, 11 Aug 2020 13:49:32 -0400
-Subject: [PATCH for-rc] IB/hfi1: Correct an interlock issue for TID RDMA
- WRITE request
-To:     jgg@ziepe.ca, dledford@redhat.com
-From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Tue, 11 Aug 2020 13:49:31 -0400
-Message-ID: <20200811174931.191210.84093.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.16
+        id S1726023AbgHKTPD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Aug 2020 15:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgHKTPB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Aug 2020 15:15:01 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B16DC06174A
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 12:15:01 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id g18so2873147ooa.0
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 12:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dt58iV2aiDtn/PAgWplmS49ybu7ZFLQHLMHu8nIAEgI=;
+        b=dMj0Ze59smoVeA2fyrZ3z+sgAGvGHF8qa3VceI45mpzYySFSWPS2GlYG4f13Ocev3F
+         HQS9R6Y/PXQvETL91gWEomClLJEuS23i7oLKTkcWyHaKrO2xEty+VVsNpaLHs0UAdPaR
+         wGIxk4ay6YmjpM7m+GyKaiOCHpYGbf3gZ6ZrQSZXl+0b18GbNHqw575uPQr7ldkf1vCU
+         62DVmxipOksyCTqTcdXVTTfMt12551zNGVBqvGIku4OzJxr3eKY7JZJ/URTdGS787Riw
+         6+3JnbxjWZHlPl8r507pRQKrXEqKHCMMjtA9ztVUhEbOHa9F4KkK9stcevPjuv+K5xuM
+         esSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dt58iV2aiDtn/PAgWplmS49ybu7ZFLQHLMHu8nIAEgI=;
+        b=hRb0iuO70bB2deuD6BFlJdfELjQQbiY2cclbPixAWp6fC1Up8wDY/bz/6cMQgwnvOs
+         ONFiBpMAdTnvm90ipud9iUG/05nCAZ8ln1xCey/Etx4en3dHoKJUsAZjStjAsB7ltoV/
+         suAdUQA6VfgyCAKbiWVESrghgT+x4MGignYOGQfDdTAXDJT5iIKtfgDwlsfkLqGd2Xd3
+         xbD+hakuBsbROuWTRhFpSY4XCtlSulL7HNwNZXJvG+2aLX6Uk+nZ7JjXoqeFz7HuXeFx
+         eBTkGAcbRvQ7jC0XpK7wRb2xuAtJ6lJEz5B5dA+mDXO7oI3+sFEK1OvU14efJFmlvlZI
+         TUOg==
+X-Gm-Message-State: AOAM5335U65VD+DtF4axzLBepJxOwhWRRAZi5//qLBKJLpq/LOFgJ+YR
+        VW5+fUcUCzCMOIjZMmNTWc7AVtxqt10=
+X-Google-Smtp-Source: ABdhPJwZffyIN9eww40pIH0bll8OhJTAhFOykzQ50mdz1lNil4KMvn0jfo4Odu85zZQTzx9oY4Z3Dg==
+X-Received: by 2002:a05:6820:457:: with SMTP id p23mr6531169oou.47.1597173300493;
+        Tue, 11 Aug 2020 12:15:00 -0700 (PDT)
+Received: from localhost ([2605:6000:8b03:f000:e4b8:eb35:9686:2a33])
+        by smtp.gmail.com with ESMTPSA id b17sm4229093otj.73.2020.08.11.12.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 12:15:00 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     linux-rdma@vger.kernel.org, jgg@nvidia.com
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH 1/1] Address an issue with hardened user copy
+Date:   Tue, 11 Aug 2020 14:14:57 -0500
+Message-Id: <20200811191457.6309-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+by copying to user space from the stack instead of slab cache.
+This affects the rdma_rxe driver causing a warning once per boot.
+The alternative is to ifigure out how to whitelist the xxx_qp struct
+but this seems simple and clean.
 
-The following message occurs when running an AI application
-with TID RDMA enabled:
-
-hfi1 0000:7f:00.0: hfi1_0: [QP74] hfi1_tid_timeout 4084
-hfi1 0000:7f:00.0: hfi1_0: [QP70] hfi1_tid_timeout 4084
-
-The issue happens when TID RDMA WRITE request is followed by an
-IB_WR_RDMA_WRITE_WITH_IMM request, the latter could be completed
-first on the responder side. As a result, no ACK packet for the
-latter could be sent because the TID RDMA WRITE request is still
-being processed on the responder side.
-
-When the TID RDMA WRITE request is eventually completed, the requester
-will wait for the IB_WR_RDMA_WRITE_WITH_IMM request to be acknowledged.
-
-If the next request is another TID RDMA WRITE request, no
-TID RDMA WRITE DATA packet could be sent because the preceding
-IB_WR_RDMA_WRITE_WITH_IMM request is not completed yet.
-
-Consequently the IB_WR_RDMA_WRITE_WITH_IMM will be retried but
-it will be ignored on the responder side because the responder
-thinks it has already been completed. Eventually the retry will
-be exhausted and the qp will be put into error state on the requester
-side. On the responder side, the TID resource timer will eventually
-expire because no TID RDMA WRITE DATA packets will be received for
-the second TID RDMA WRITE request.  There is also risk of a
-write-after-write memory corruption due to the issue.
-
-Fix by adding a requester side interlock to prevent any potential
-data corruption and TID RDMA protocol error.
-
-Fixes: a0b34f75ec20 ("IB/hfi1: Add interlock between a TID RDMA request and other requests")
-Cc: <stable@vger.kernel.org> # 5.4.x+
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 ---
- drivers/infiniband/hw/hfi1/tid_rdma.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/uverbs_std_types_qp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index 9af82ff..73d197e 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -3215,6 +3215,7 @@ bool hfi1_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
- 	case IB_WR_ATOMIC_CMP_AND_SWP:
- 	case IB_WR_ATOMIC_FETCH_AND_ADD:
- 	case IB_WR_RDMA_WRITE:
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
- 		switch (prev->wr.opcode) {
- 		case IB_WR_TID_RDMA_WRITE:
- 			req = wqe_to_tid_req(prev);
+diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
+index 3bf8dcdfe7eb..2f8b14003b95 100644
+--- a/drivers/infiniband/core/uverbs_std_types_qp.c
++++ b/drivers/infiniband/core/uverbs_std_types_qp.c
+@@ -98,6 +98,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	struct ib_device *device;
+ 	u64 user_handle;
+ 	int ret;
++	int qp_num;
+ 
+ 	ret = uverbs_copy_from_or_zero(&cap, attrs,
+ 			       UVERBS_ATTR_CREATE_QP_CAP);
+@@ -293,9 +294,10 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	if (ret)
+ 		return ret;
+ 
++	/* copy from stack to avoid whitelisting issues */
++	qp_num = qp->qp_num;
+ 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
+-			     &qp->qp_num,
+-			     sizeof(qp->qp_num));
++			     &qp_num, sizeof(qp_num));
+ 
+ 	return ret;
+ err_put:
+-- 
+2.25.1
 
