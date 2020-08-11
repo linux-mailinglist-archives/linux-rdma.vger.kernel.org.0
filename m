@@ -2,70 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B7F241845
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Aug 2020 10:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB3B24186A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Aug 2020 10:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgHKIbh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Aug 2020 04:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728237AbgHKIbg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Aug 2020 04:31:36 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A092BC061787
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 01:31:36 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qc22so12181771ejb.4
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 01:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AiEVGPid6fNu3u2/+UVT80DrdCDFGK6L0AEhBU/401w=;
-        b=PyjA9AmdtZwpDwiqa7CWI/1e1+SMXF8+PoPYnxb+EWmtB09hHtqNEQvDJYifVgJe5t
-         0cFPEm+eCxvvj1bsdNVbLfH7NtIIwA3rKYKl2A5FFOCZ4kJiWSg8fVE6INjDmVGJcF1y
-         J2Ga9RGRm1J0z4XX9b7ynr5Hat8fw2XHn3vLBeRcyBeWenHgdYIyFNe1/EeZV8EsdKpE
-         M7BuOEI8RdlOuS6jNIOjmuUIvD4f5PGD9WD8VBBjLcY11WQnzu/4Jfows5e+WrVeq2IA
-         cd5AHJRtDanuK+woC3qPsW5q279EOx7mKRPffQNO/cmfPrYf9bF50ajRtwTdZb9vWn50
-         Y4gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AiEVGPid6fNu3u2/+UVT80DrdCDFGK6L0AEhBU/401w=;
-        b=A6tmjgrbdS4lIba7+3G52z/7hRIC+Qvcc/wvtIgmyDnNnHlJH/5Oe++7raXRZAiu1z
-         7zHFkrjnxxZ/eA49E4z6SD1+zBcRe0QcM744v2xrUndvIp77C5WNZGdm8ZRQLEcAZiFi
-         GDHDp3RHsdT7C9HPkCGvtIApsaKDrtKKG5T5s6at8aKtZwJUPTbwUBDbZMnEHT2t50G0
-         CZiBTObflRBMtUkv8zZI+ApnY1wiLK8JIPrifU3pUAHu+j4rE+6xaQwTossi3Wr9QRKw
-         /xw5t/A/NDVz6QMwUndIHtCzCjIkGdVMKdAcsLG+QzFmk1kISKcL7nfP5Bur8XY7LLk3
-         ohkg==
-X-Gm-Message-State: AOAM532bn1Knbs/KOdTYgECYXmJaMQHtVstUxO72pkQDWPQ7a0mG5kbZ
-        QmiJq3+5NQMJtCi6oBqf26aHHdaRmB6MuqdwGWLQuA==
-X-Google-Smtp-Source: ABdhPJzG73nvFfk0XHtVcnuCEDIBQb1M84nJWERMU5MRp5HyWBIMdmOdwokCmjSJgOTGZ+wm37iGEylpCzk4+KHjTP0=
-X-Received: by 2002:a17:906:7a16:: with SMTP id d22mr25846663ejo.478.1597134695070;
- Tue, 11 Aug 2020 01:31:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
-In-Reply-To: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 11 Aug 2020 10:31:24 +0200
-Message-ID: <CAMGffEmN25PjoLVsWPbp7kVrCWpA-T8AMxb32zYtSVs=3Z090Q@mail.gmail.com>
+        id S1728325AbgHKIpt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Aug 2020 04:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728224AbgHKIpt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Aug 2020 04:45:49 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69972206B2;
+        Tue, 11 Aug 2020 08:45:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597135548;
+        bh=CM0r4ny8D0CnW7Az/Is/5+LTSrdxUCBXSOMBqQBAgGs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ht3PbJ5XpCZCSYzCCFNfDFkYpyjh3FEFVjpBwFIdICQtIL8FaafJXyIVUp4oEsxKE
+         lqFIT0Zcqt+mNiHrB5lrFCBy85yHbajpnb5ghSQF8YuvaIYxpIhJ+VqQ0yPKBVFo8t
+         JQK234l5Ky3uJrRNrvtgv5F9IRkFkSfa/jc5bVDY=
+Date:   Tue, 11 Aug 2020 11:45:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Cc:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        linux-block@vger.kernel.org,
+        kernel test robot <rong.a.chen@intel.com>
 Subject: Re: [PATCH v2] RDMA/rtrs-srv: Incorporate ib_register_client into
  rtrs server init
-To:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-block@vger.kernel.org,
-        kernel test robot <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200811084544.GB634816@unreal>
+References: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 1:51 PM Md Haris Iqbal
-<haris.iqbal@cloud.ionos.com> wrote:
->
+On Mon, Aug 10, 2020 at 05:20:49PM +0530, Md Haris Iqbal wrote:
 > The rnbd_server module's communication manager (cm) initialization depends
 > on the registration of the "network namespace subsystem" of the RDMA CM
 > agent module. As such, when the kernel is configured to load the
@@ -105,5 +83,167 @@ On Mon, Aug 10, 2020 at 1:51 PM Md Haris Iqbal
 > Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
 > Reported-by: kernel test robot <rong.a.chen@intel.com>
 > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Thanks!
+> ---
+> Change in v2:
+>         Use only single variable to track number of IB devices and failure
+>         Change according to kernel coding style
+>
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 79 +++++++++++++++++++++++++-
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.h |  6 ++
+>  2 files changed, 82 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index 0d9241f5d9e6..69a37ce73b0c 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -16,6 +16,7 @@
+>  #include "rtrs-srv.h"
+>  #include "rtrs-log.h"
+>  #include <rdma/ib_cm.h>
+> +#include <rdma/ib_verbs.h>
+>
+>  MODULE_DESCRIPTION("RDMA Transport Server");
+>  MODULE_LICENSE("GPL");
+> @@ -31,6 +32,7 @@ MODULE_LICENSE("GPL");
+>  static struct rtrs_rdma_dev_pd dev_pd;
+>  static mempool_t *chunk_pool;
+>  struct class *rtrs_dev_class;
+> +static struct rtrs_srv_ib_ctx ib_ctx;
+>
+>  static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
+>  static int __read_mostly sess_queue_depth = DEFAULT_SESS_QUEUE_DEPTH;
+> @@ -2033,6 +2035,64 @@ static void free_srv_ctx(struct rtrs_srv_ctx *ctx)
+>  	kfree(ctx);
+>  }
+>
+> +static int rtrs_srv_add_one(struct ib_device *device)
+> +{
+> +	struct rtrs_srv_ctx *ctx;
+> +	int ret;
+> +
+> +	if (ib_ctx.ib_dev_count)
+> +		goto out;
+> +
+> +	/*
+> +	 * Since our CM IDs are NOT bound to any ib device we will create them
+> +	 * only once
+> +	 */
+> +	ctx = ib_ctx.srv_ctx;
+> +	ret = rtrs_srv_rdma_init(ctx, ib_ctx.port);
+> +	if (ret) {
+> +		/*
+> +		 * We errored out here.
+> +		 * According to the ib code, if we encounter an error here then the
+> +		 * error code is ignored, and no more calls to our ops are made.
+> +		 */
+> +		pr_err("Failed to initialize RDMA connection");
+> +		ib_ctx.ib_dev_count = -1;
+> +		return ret;
+> +	}
+> +
+> +out:
+> +	/*
+> +	 * Keep a track on the number of ib devices added
+> +	 */
+> +	ib_ctx.ib_dev_count++;
+> +
+> +	return 0;
+> +}
+> +
+> +static void rtrs_srv_remove_one(struct ib_device *device, void *client_data)
+> +{
+> +	struct rtrs_srv_ctx *ctx;
+> +
+> +	ib_ctx.ib_dev_count--;
+> +
+> +	if (ib_ctx.ib_dev_count)
+> +		return;
+> +
+> +	/*
+> +	 * Since our CM IDs are NOT bound to any ib device we will remove them
+> +	 * only once, when the last device is removed
+> +	 */
+> +	ctx = ib_ctx.srv_ctx;
+> +	rdma_destroy_id(ctx->cm_id_ip);
+> +	rdma_destroy_id(ctx->cm_id_ib);
+> +}
+> +
+> +static struct ib_client rtrs_srv_client = {
+> +	.name	= "rtrs_server",
+> +	.add	= rtrs_srv_add_one,
+> +	.remove	= rtrs_srv_remove_one
+> +};
+> +
+>  /**
+>   * rtrs_srv_open() - open RTRS server context
+>   * @ops:		callback functions
+> @@ -2051,12 +2111,26 @@ struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_srv_ops *ops, u16 port)
+>  	if (!ctx)
+>  		return ERR_PTR(-ENOMEM);
+>
+> -	err = rtrs_srv_rdma_init(ctx, port);
+> +	ib_ctx = (struct rtrs_srv_ib_ctx) {
+> +		.srv_ctx	= ctx,
+> +		.port		= port,
+> +	};
+> +
+> +	err = ib_register_client(&rtrs_srv_client);
+>  	if (err) {
+>  		free_srv_ctx(ctx);
+>  		return ERR_PTR(err);
+>  	}
+>
+> +	/*
+> +	 * Since ib_register_client does not propagate the device add error
+> +	 * we check if .add was called and the RDMA connection init failed
+> +	 */
+> +	if (ib_ctx.ib_dev_count < 0) {
+> +		free_srv_ctx(ctx);
+> +		return ERR_PTR(-ENODEV);
+> +	}
+
+I afraid that you overcomplicated here, ib_register_client() doesn't
+return error if ->add() for specific device failed, it doesn't mean
+that ->add won't be called again for another device.
+
+So you don't need to use ib_dev_count == -1, just keep it to be 0 and
+leave to  rtrs_srv_close() to free srv_ctx.
+
+Failure to call ->add shouldn't be any different from no-ib-devices situation.
+
+Thanks
+
+> +
+>  	return ctx;
+>  }
+>  EXPORT_SYMBOL(rtrs_srv_open);
+> @@ -2090,8 +2164,7 @@ static void close_ctx(struct rtrs_srv_ctx *ctx)
+>   */
+>  void rtrs_srv_close(struct rtrs_srv_ctx *ctx)
+>  {
+> -	rdma_destroy_id(ctx->cm_id_ip);
+> -	rdma_destroy_id(ctx->cm_id_ib);
+> +	ib_unregister_client(&rtrs_srv_client);
+>  	close_ctx(ctx);
+>  	free_srv_ctx(ctx);
+>  }
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> index dc95b0932f0d..e8f7e99a9a6e 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> @@ -118,6 +118,12 @@ struct rtrs_srv_ctx {
+>  	struct list_head srv_list;
+>  };
+>
+> +struct rtrs_srv_ib_ctx {
+> +	struct rtrs_srv_ctx	*srv_ctx;
+> +	u16			port;
+> +	int			ib_dev_count;
+> +};
+> +
+>  extern struct class *rtrs_dev_class;
+>
+>  void close_sess(struct rtrs_srv_sess *sess);
+> --
+> 2.25.1
+>
