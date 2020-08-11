@@ -2,91 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221C824119A
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Aug 2020 22:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29C824163B
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Aug 2020 08:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgHJUTY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Aug 2020 16:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
+        id S1727902AbgHKGPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Aug 2020 02:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgHJUTX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Aug 2020 16:19:23 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F52DC061756
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Aug 2020 13:19:23 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d190so655899wmd.4
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Aug 2020 13:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pgWR0GkgPslYq7zCwHMGb0vyH0GeGB3zy/Rxr8MLNnM=;
-        b=FlhHEc8NNpnTlzbu0qJPJBuTltnvhItD/fFI6MU/J3ivg5EQ41duCSnLcpbN9Lu/ar
-         MzkRFKgo2iFXtH48c1q0X+z4dcigCddOYtKW0GxhPeLyggnVq0r+TnwknJUkMR9iQFE/
-         AyP+q24j/oOuWlhY6RIyG8rt1K3QNSGJGvvut7BpV02mC3S97wN0DI95xLLO3dgJMLdP
-         SXerjlZwfW+g0Q99sPjKjlVLhArbViTtaPCA/J3lPLW5Ig84O+uhJREX6vPG3Ow3HqmP
-         FbCX3JnCXzQyze7JvZ5+3f/eZtli4RBLELvkVfSlxqH3ybrQbHx/i0NjpPqL0PLvNAAR
-         QzeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pgWR0GkgPslYq7zCwHMGb0vyH0GeGB3zy/Rxr8MLNnM=;
-        b=DgHFd+s8WDOXS7roEh/buC3+hcBxrA/4k8ESh6A4y/JvXmB9ggDkHdWeDbJGyndnWP
-         7jU0hEeHPyKRHJifnhKAf7K+X4oU3isPCImex5yrBtPpijU5nsMm9tAszRvCPjBaZu1Z
-         HU8itwdDvRuxX1SH3bOWJZDyVFa//CvQtljBL19NKJ8GhGkumx9lmNHEoQNLVavDBXyM
-         fTfuONpK+xBVRPvBZPu9HQc4v/M5xfiH7fuhj2JLmcln1ULnHc+rXiB1AARxMH0Nv5V2
-         8C+Zllp9BNmG6KywULjaxNSbvy4O2y8QZBIcGIAXvD9vXJWwxzqeUN9UP//HOHQ3zXrl
-         A02w==
-X-Gm-Message-State: AOAM530Px8LhKXS2CKt0YtLEnAkcn1W2+fXNlRJrr0lFSaii8Sn+tRUD
-        ePWDJmOznRS5LA+YXa4kMgk=
-X-Google-Smtp-Source: ABdhPJzxmueiQS30cqDfeV98CkjxAUBNQEPyaQ3wZcFBYUcSrsptmyn4z31AXFPQ2TTyvoQVU+OzbA==
-X-Received: by 2002:a1c:e0d7:: with SMTP id x206mr886630wmg.91.1597090762040;
-        Mon, 10 Aug 2020 13:19:22 -0700 (PDT)
-Received: from kheib-workstation ([37.142.6.87])
-        by smtp.gmail.com with ESMTPSA id t25sm1076226wmj.18.2020.08.10.13.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 13:19:21 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 23:19:18 +0300
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Christian Benvenuti <benve@cisco.com>
-Subject: Re: [PATCH for-rc] RDMA/usnic: Fix reported max_pkeys attribute
-Message-ID: <20200810201918.GA443976@kheib-workstation>
-References: <20200805210051.800859-1-kamalheib1@gmail.com>
- <20200805221742.GS24045@ziepe.ca>
+        with ESMTP id S1726154AbgHKGPY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Aug 2020 02:15:24 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6C5C06174A;
+        Mon, 10 Aug 2020 23:15:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BQjHW61Pqz9sTM;
+        Tue, 11 Aug 2020 16:15:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1597126520;
+        bh=vmA+U6yYordllIlIbbA0NQplZPeDri+hoiMGp1wkbEM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rVFvNdvDn+0X42UKxMtre6LFZycz0m0HXH2n0WFRWQRcQ1MZ0ga42i8Ev/4GGN8lw
+         gJDXFsgo1OwUATt9NCedr7N+sBd9p5GCHyU3O4ewmhU0wXa3kwLiLtNZgiguByjJ5P
+         b+cPlHiyw8iRsyQhnab+mX+ShF2qJW6WtWeIHZGlAJKWo3kUoe8Kq0om6YRcOoawmN
+         5YDjIz1btmZ2UNs8Nc53etiG2rshjvYlyJN0FBfcgnThzb3EWxyfONA8ny00FD0bwT
+         +tK1ZWbPukfWkvcqtUjDs8hm2wj8X94mTaSliePXUOiQPtILPMclAZwuOtexzF268L
+         ef+8mu0DXqqfg==
+Date:   Tue, 11 Aug 2020 16:15:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trondmy@gmail.com>
+Subject: Re: Please pull NFS server updates for v5.9
+Message-ID: <20200811161518.0896c1e8@canb.auug.org.au>
+In-Reply-To: <EC1AA9E7-4AC1-49C6-B138-B6A3E4ED7A0B@oracle.com>
+References: <F9B8940D-9F7B-47F5-9946-D77C17CF959A@oracle.com>
+        <20200810090349.64bce58f@canb.auug.org.au>
+        <EC1AA9E7-4AC1-49C6-B138-B6A3E4ED7A0B@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805221742.GS24045@ziepe.ca>
+Content-Type: multipart/signed; boundary="Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 07:17:42PM -0300, Jason Gunthorpe wrote:
-> On Thu, Aug 06, 2020 at 12:00:51AM +0300, Kamal Heib wrote:
-> > Make sure to report the right max_pkeys attribute value to indicate the
-> > maximum number of partitions supported by the usnic device.
-> 
-> Why does usnic support pkeys? This needs more explanation
-> 
-> Jason
+--Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks like the usnic provider is acting like the RoCE providers by returning
-the default pkey when calling the query_pkey() callback, Do you think that
-this needs to removed like what was done for iWarp providers?
+Hi Chuck,
 
-int usnic_ib_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
-                                u16 *pkey)
-{
-        if (index > 0)
-                return -EINVAL;
+On Mon, 10 Aug 2020 08:25:14 -0400 Chuck Lever <chuck.lever@oracle.com> wro=
+te:
+>=20
+> Is there something I need to change? The public copy of the cel-testing
+> branch has had this content for the past 12 days.
 
-        *pkey = 0xffff;
-        return 0;
-}
+You just need to keep your cel-next branch up to the top commit that is
+ready.  That is the branch you told me to fetch.  It is currently at commit
 
-Thanks,
-Kamal
+  0a8e7b7d0846 ("SUNRPC: Revert 241b1f419f0e ("SUNRPC: Remove xdr_buf_trim(=
+)")")
+
+It looks like that is what Linus merged into v5.7-rc2.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8yN3YACgkQAVBC80lX
+0GwXGwf/X1xza4u2L2jJX6O8CmpIPjjZeO69GKzmnyVVRoOXVzjthv1JJk+wg+7l
+7FxHlD8dqgtxuxE+A2Y4OGzpnG+phqoA15e6k5dxscbV9r7LRcweAZNeNO1E/05q
+iXJgeV32+PTsRQFLuTQyfyCQjYZDqUt9H2Uh2m4F7xOot+FY8t9PTDw4gbwoYTPT
+rZJH1myqDPB++EIWdsZhb3xJuY6I6znFLIceYia+b55DMF7nCATpjOeZxq7sSHIo
+2gZlAv7pYw/eANhL+mSn9xgnsYS/VVdEu0BhDoWgJLKWMPjM3f8ZvzuEpaIkoguD
+qscoOtH3WIqd5h1S8GFUpOkM920XTA==
+=iHxj
+-----END PGP SIGNATURE-----
+
+--Sig_/uT/4_Xdt=yeslqAXJ+Bf_QJ--
