@@ -2,105 +2,320 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A021F24245D
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 05:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95484242519
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 07:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgHLDlE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Aug 2020 23:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgHLDlE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Aug 2020 23:41:04 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6C1C06174A
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 20:41:04 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id l84so610875oig.10
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Aug 2020 20:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=SF4iuQCCcU6o6Na1D9BAvSPgWl0SIFYxA2Jcscu/+JM=;
-        b=Rw4ChUjBBfdLLagN1VeA8OBlJVBv7f/dn4m0nCuMcpuyDZOtFUSRFFm2lWRLaWKULd
-         4WidiwmJKRHtM+vH4MClRnvI6QAuM5eTPV8iYvrjE3bAfxyHjGjybBTUUQwFxzpz9/oe
-         x+iUUwhw48DR0SJCisNjZuc6yT0P6QbxacWpt+Nfc377pCZeQTo1tNAFL3ON61ChN8SI
-         pfLt0+R0egb5WUK7mdkhMaFQMJflbJy1+TA2NrWbmA5cA5cldj99KmAwByQZVSiO4kn0
-         TEUYwKdIjGLcegiLuxx/1yv17YFwWi5M8+RM/NMWMjo6yfxr9i0Qmsl80oudVcJuNkl3
-         vVWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=SF4iuQCCcU6o6Na1D9BAvSPgWl0SIFYxA2Jcscu/+JM=;
-        b=gKk6OYSU9Ws0QBJtZgfnP37ssowtoEJU7Ssxh2VUM/hSgNh0kn5ptASm8axMdfansX
-         SxbdzbuQ/SHDt90OCr33hdoA0TJq/qCj6do7wkyUQYOGIqYmyxtyKaGZk/qmZ+9lpZze
-         yUu8pSniA/hZhltG8/2jM+uh2YYSK7xDWzeNm7J4V7DfggmW6U2AJqWH8ole4R+mu692
-         aZKXzUi7524QuJg1l0fefgATJxlSiBEAXurfVW6Aezal0NoNHPlKLiVEQQ/GYzLotqmb
-         lskJFdfzUjm7MChz5KUp/7i+LO+DwT6kztPSKPpp/5XzIyknkr55g3BnHWNzz/ka7rvb
-         Qt+g==
-X-Gm-Message-State: AOAM533zfT0EGn9HncHvVwy7Rmndp6o4AvEQXDM5c2MKAS5lN0K1oREB
-        hnYrHWHYAHcVqJJ4tTDogzr1clxy66I=
-X-Google-Smtp-Source: ABdhPJz0U/Cq7VBsfW13kS/mSEYqxS6OfNvqRYLYtHnp51B2qdGyghecS8vr2hnbVANkFNQ1CleRoA==
-X-Received: by 2002:aca:cd05:: with SMTP id d5mr5730055oig.138.1597203663612;
-        Tue, 11 Aug 2020 20:41:03 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:581e:50ac:ae30:b7b6? ([2605:6000:8b03:f000:581e:50ac:ae30:b7b6])
-        by smtp.gmail.com with ESMTPSA id e5sm189095otb.81.2020.08.11.20.41.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 20:41:03 -0700 (PDT)
-To:     linux-rdma@vger.kernel.org, jgg@nvidia.com
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Is there a simple way to install rdma-core other than making a
- package?
-Message-ID: <75bbc81e-cde9-c8ac-0ba3-04bf17b8d5fa@gmail.com>
-Date:   Tue, 11 Aug 2020 22:41:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726641AbgHLFsw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Aug 2020 01:48:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgHLFsw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Aug 2020 01:48:52 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7431820768;
+        Wed, 12 Aug 2020 05:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597211330;
+        bh=6nL2HoOhNEbl42HpghJ+HUD0enJcFH+Bi6G0kqoUFy0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0blaT+Mzrvc6mcGTABoW2D3xaNcOsqs16eBAMNdnALpXwrIUE1GlgZIpp9PpXfOeX
+         WeT3qtY6HVfWJ3wr154a7nQ5vofDmj4+jQKJ8VNf+no49Fl7dcA2MU1+vstnDLhHbU
+         rPr+3r6nk9fLTd3J3nZSXf6dbshSRYEnqOvdfgd8=
+Date:   Wed, 12 Aug 2020 08:48:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Cc:     Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        Haris Iqbal <haris.iqbal@cloud.ionos.com>,
+        linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-block@vger.kernel.org,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH v2] RDMA/rtrs-srv: Incorporate ib_register_client into
+ rtrs server init
+Message-ID: <20200812054844.GH634816@unreal>
+References: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
+ <20200811084544.GB634816@unreal>
+ <CAJpMwyjC+CuSoXD_XEaHS4njnFaHCbegMX+qucMfg-fXVqFD+Q@mail.gmail.com>
+ <20200811104711.GC634816@unreal>
+ <CAJpMwygFuhq-aiiVHz1w=jAjav1ZN-5yMuos67S2=2UX-wb85Q@mail.gmail.com>
+ <CAMGffE=NSGsJAFJe5_n8_xfJ=6-kp5rYY3LK5wdcQCDdt6+CkQ@mail.gmail.com>
+ <CAHg0HuxhZsedZFKCNwxMrH83CvSaqUrzHteb_O69-eWA30D4yw@mail.gmail.com>
+ <20200811120732.GE634816@unreal>
+ <CAHg0HuybaHz+vJwnTsOxqEgsSkuA6YHPYgdfk6VsQmtw43UYtw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHg0HuybaHz+vJwnTsOxqEgsSkuA6YHPYgdfk6VsQmtw43UYtw@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There doesn't seem to be a documented way to make install rdma-core, at least in the README file. However trying the obvious
+On Tue, Aug 11, 2020 at 02:32:38PM +0200, Danil Kipnis wrote:
+> On Tue, Aug 11, 2020 at 2:07 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Tue, Aug 11, 2020 at 01:44:58PM +0200, Danil Kipnis wrote:
+> > > On Tue, Aug 11, 2020 at 1:13 PM Jinpu Wang <jinpu.wang@cloud.ionos.com> wrote:
+> > > >
+> > > > On Tue, Aug 11, 2020 at 12:53 PM Haris Iqbal
+> > > > <haris.iqbal@cloud.ionos.com> wrote:
+> > > > >
+> > > > > On Tue, Aug 11, 2020 at 4:17 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > On Tue, Aug 11, 2020 at 02:27:12PM +0530, Haris Iqbal wrote:
+> > > > > > > On Tue, Aug 11, 2020 at 2:15 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On Mon, Aug 10, 2020 at 05:20:49PM +0530, Md Haris Iqbal wrote:
+> > > > > > > > > The rnbd_server module's communication manager (cm) initialization depends
+> > > > > > > > > on the registration of the "network namespace subsystem" of the RDMA CM
+> > > > > > > > > agent module. As such, when the kernel is configured to load the
+> > > > > > > > > rnbd_server and the RDMA cma module during initialization; and if the
+> > > > > > > > > rnbd_server module is initialized before RDMA cma module, a null ptr
+> > > > > > > > > dereference occurs during the RDMA bind operation.
+> > > > > > > > >
+> > > > > > > > > Call trace below,
+> > > > > > > > >
+> > > > > > > > > [    1.904782] Call Trace:
+> > > > > > > > > [    1.904782]  ? xas_load+0xd/0x80
+> > > > > > > > > [    1.904782]  xa_load+0x47/0x80
+> > > > > > > > > [    1.904782]  cma_ps_find+0x44/0x70
+> > > > > > > > > [    1.904782]  rdma_bind_addr+0x782/0x8b0
+> > > > > > > > > [    1.904782]  ? get_random_bytes+0x35/0x40
+> > > > > > > > > [    1.904782]  rtrs_srv_cm_init+0x50/0x80
+> > > > > > > > > [    1.904782]  rtrs_srv_open+0x102/0x180
+> > > > > > > > > [    1.904782]  ? rnbd_client_init+0x6e/0x6e
+> > > > > > > > > [    1.904782]  rnbd_srv_init_module+0x34/0x84
+> > > > > > > > > [    1.904782]  ? rnbd_client_init+0x6e/0x6e
+> > > > > > > > > [    1.904782]  do_one_initcall+0x4a/0x200
+> > > > > > > > > [    1.904782]  kernel_init_freeable+0x1f1/0x26e
+> > > > > > > > > [    1.904782]  ? rest_init+0xb0/0xb0
+> > > > > > > > > [    1.904782]  kernel_init+0xe/0x100
+> > > > > > > > > [    1.904782]  ret_from_fork+0x22/0x30
+> > > > > > > > > [    1.904782] Modules linked in:
+> > > > > > > > > [    1.904782] CR2: 0000000000000015
+> > > > > > > > > [    1.904782] ---[ end trace c42df88d6c7b0a48 ]---
+> > > > > > > > >
+> > > > > > > > > All this happens cause the cm init is in the call chain of the module init,
+> > > > > > > > > which is not a preferred practice.
+> > > > > > > > >
+> > > > > > > > > So remove the call to rdma_create_id() from the module init call chain.
+> > > > > > > > > Instead register rtrs-srv as an ib client, which makes sure that the
+> > > > > > > > > rdma_create_id() is called only when an ib device is added.
+> > > > > > > > >
+> > > > > > > > > Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+> > > > > > > > > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > > > > > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > > > > > > > > ---
+> > > > > > > > > Change in v2:
+> > > > > > > > >         Use only single variable to track number of IB devices and failure
+> > > > > > > > >         Change according to kernel coding style
+> > > > > > > > >
+> > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 79 +++++++++++++++++++++++++-
+> > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.h |  6 ++
+> > > > > > > > >  2 files changed, 82 insertions(+), 3 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > > > > > > index 0d9241f5d9e6..69a37ce73b0c 100644
+> > > > > > > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > > > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > > > > > > @@ -16,6 +16,7 @@
+> > > > > > > > >  #include "rtrs-srv.h"
+> > > > > > > > >  #include "rtrs-log.h"
+> > > > > > > > >  #include <rdma/ib_cm.h>
+> > > > > > > > > +#include <rdma/ib_verbs.h>
+> > > > > > > > >
+> > > > > > > > >  MODULE_DESCRIPTION("RDMA Transport Server");
+> > > > > > > > >  MODULE_LICENSE("GPL");
+> > > > > > > > > @@ -31,6 +32,7 @@ MODULE_LICENSE("GPL");
+> > > > > > > > >  static struct rtrs_rdma_dev_pd dev_pd;
+> > > > > > > > >  static mempool_t *chunk_pool;
+> > > > > > > > >  struct class *rtrs_dev_class;
+> > > > > > > > > +static struct rtrs_srv_ib_ctx ib_ctx;
+> > > > > > > > >
+> > > > > > > > >  static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
+> > > > > > > > >  static int __read_mostly sess_queue_depth = DEFAULT_SESS_QUEUE_DEPTH;
+> > > > > > > > > @@ -2033,6 +2035,64 @@ static void free_srv_ctx(struct rtrs_srv_ctx *ctx)
+> > > > > > > > >       kfree(ctx);
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > +static int rtrs_srv_add_one(struct ib_device *device)
+> > > > > > > > > +{
+> > > > > > > > > +     struct rtrs_srv_ctx *ctx;
+> > > > > > > > > +     int ret;
+> > > > > > > > > +
+> > > > > > > > > +     if (ib_ctx.ib_dev_count)
+> > > > > > > > > +             goto out;
+> > > > > > > > > +
+> > > > > > > > > +     /*
+> > > > > > > > > +      * Since our CM IDs are NOT bound to any ib device we will create them
+> > > > > > > > > +      * only once
+> > > > > > > > > +      */
+> > > > > > > > > +     ctx = ib_ctx.srv_ctx;
+> > > > > > > > > +     ret = rtrs_srv_rdma_init(ctx, ib_ctx.port);
+> > > > > > > > > +     if (ret) {
+> > > > > > > > > +             /*
+> > > > > > > > > +              * We errored out here.
+> > > > > > > > > +              * According to the ib code, if we encounter an error here then the
+> > > > > > > > > +              * error code is ignored, and no more calls to our ops are made.
+> > > > > > > > > +              */
+> > > > > > > > > +             pr_err("Failed to initialize RDMA connection");
+> > > > > > > > > +             ib_ctx.ib_dev_count = -1;
+> > > > > > > > > +             return ret;
+> > > > > > > > > +     }
+> > > > > > > > > +
+> > > > > > > > > +out:
+> > > > > > > > > +     /*
+> > > > > > > > > +      * Keep a track on the number of ib devices added
+> > > > > > > > > +      */
+> > > > > > > > > +     ib_ctx.ib_dev_count++;
+> > > > > > > > > +
+> > > > > > > > > +     return 0;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static void rtrs_srv_remove_one(struct ib_device *device, void *client_data)
+> > > > > > > > > +{
+> > > > > > > > > +     struct rtrs_srv_ctx *ctx;
+> > > > > > > > > +
+> > > > > > > > > +     ib_ctx.ib_dev_count--;
+> > > > > > > > > +
+> > > > > > > > > +     if (ib_ctx.ib_dev_count)
+> > > > > > > > > +             return;
+> > > > > > > > > +
+> > > > > > > > > +     /*
+> > > > > > > > > +      * Since our CM IDs are NOT bound to any ib device we will remove them
+> > > > > > > > > +      * only once, when the last device is removed
+> > > > > > > > > +      */
+> > > > > > > > > +     ctx = ib_ctx.srv_ctx;
+> > > > > > > > > +     rdma_destroy_id(ctx->cm_id_ip);
+> > > > > > > > > +     rdma_destroy_id(ctx->cm_id_ib);
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static struct ib_client rtrs_srv_client = {
+> > > > > > > > > +     .name   = "rtrs_server",
+> > > > > > > > > +     .add    = rtrs_srv_add_one,
+> > > > > > > > > +     .remove = rtrs_srv_remove_one
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > >  /**
+> > > > > > > > >   * rtrs_srv_open() - open RTRS server context
+> > > > > > > > >   * @ops:             callback functions
+> > > > > > > > > @@ -2051,12 +2111,26 @@ struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_srv_ops *ops, u16 port)
+> > > > > > > > >       if (!ctx)
+> > > > > > > > >               return ERR_PTR(-ENOMEM);
+> > > > > > > > >
+> > > > > > > > > -     err = rtrs_srv_rdma_init(ctx, port);
+> > > > > > > > > +     ib_ctx = (struct rtrs_srv_ib_ctx) {
+> > > > > > > > > +             .srv_ctx        = ctx,
+> > > > > > > > > +             .port           = port,
+> > > > > > > > > +     };
+> > > > > > > > > +
+> > > > > > > > > +     err = ib_register_client(&rtrs_srv_client);
+> > > > > > > > >       if (err) {
+> > > > > > > > >               free_srv_ctx(ctx);
+> > > > > > > > >               return ERR_PTR(err);
+> > > > > > > > >       }
+> > > > > > > > >
+> > > > > > > > > +     /*
+> > > > > > > > > +      * Since ib_register_client does not propagate the device add error
+> > > > > > > > > +      * we check if .add was called and the RDMA connection init failed
+> > > > > > > > > +      */
+> > > > > > > > > +     if (ib_ctx.ib_dev_count < 0) {
+> > > > > > > > > +             free_srv_ctx(ctx);
+> > > > > > > > > +             return ERR_PTR(-ENODEV);
+> > > > > > > > > +     }
+> > > > > > > >
+> > > > > > > > I afraid that you overcomplicated here, ib_register_client() doesn't
+> > > > > > > > return error if ->add() for specific device failed, it doesn't mean
+> > > > > > > > that ->add won't be called again for another device.
+> > > > > > > >
+> > > > > > > > So you don't need to use ib_dev_count == -1, just keep it to be 0 and
+> > > > > > > > leave to  rtrs_srv_close() to free srv_ctx.
+> > > > > > >
+> > > > > > > Leaving it 0 when there is an error is not gonna work. Since when the
+> > > > > > > modules are all built-in, a call to ib_register_client() will not
+> > > > > > > result in a call to ->add() then and there. So ib_register_client()
+> > > > > > > will return after registering the client, but without calling ->add().
+> > > > > > > Which means, ib_dev_count would be 0.
+> > > > > >
+> > > > > > If ib_dev_count == 0 => rtrs_srv_rdma_init() didn't success => nothing
+> > > > > > to release.
+> > > > >
+> > > > > True, but we have to send a failure back to the caller of
+> > > > > "rtrs_srv_open()" (and user of this ulp); which in our case is
+> > > > > rnbd-srv's function rnbd_srv_init_module().
+> > > > > In our case, the rnbd-drv module init would fail if "rtrs_srv_open()"
+> > > > > fails, meaning rtrs_srv_rdma_init() had failed.
+> > > > >
+> > > > > Even if we are talking in generic terms, any module calling the
+> > > > > "rtrs_srv_open()" of the rtrs ulp, would want to know if the server
+> > > > > open failed or succeeded right?
+> > > > I think Leon is right, any success of call to ->add, we have something
+> > > > to rtrs_srv_rdma_init,
+> > > > we can consider rtrs_srv_open is success instead of an error.
+> > >
+> > > I don't think Leon is right. In case when all modules are built in,
+> > > add is not called in place when ib_client_register is called (cause
+> > > there are no registered devices and add_client_context will be called
+> > > at some later point in time from enable_device_and_get instead). So we
+> > > have two cases: built in and not built in. Then there is a possibility
+> > > that rtrs_srv_rdma_init fails (create_id, bind_addr, etc.) or doesn't
+> > > fail. Particularly we need to separate the case where add hasn't been
+> > > called at all yet (i.e. modules are built in, we just need to wait
+> > > until add gets called and then can start listening) and the case where
+> > > it did get called but failed (i.e. modules are not built in it got
+> > > called but failed - in that case we need to refuse to load module and
+> > > return error since we can't start listening).
+> > > The latter case is indicated by ib_dev_count = -1. I think it would
+> > > make code easier to read if instead of setting ib_dev_count to -1 and
+> > > explicitly checking whether it's below 0, one would introduce an
+> > > additional variable for the error code returned by rtrs_srv_rdma_init
+> > > and check it instead.
+> >
+> > Sorry, but it is very hard to read this block without indentations.
+>
+> Do you mean like empty lines between text paragraphs?
 
-$ bash build.sh
-$ cd build
-$ sudo make install
+Yes
 
-seems to work, almost. After a few 100 lines of promising output I get
+>
+> >
+> > Anyway, as I said there should be no difference in behaviour between no
+> > devices and first device failed to initialize.
+>
+> If we load the server module and fail to initialize the device, we
+> return an error to the user (insmod fails). We could just log
+> something into dmesg and stay there doing nothing. Is that what you
+> suggest? Then one would also probably want to have a way to say to the
+> server it should try to init again (currently one just tries insmod
+> again)...
 
-CMake Error at librdmacm/cmake_install.cmake:76 (file):
-  file INSTALL cannot find
-  "/home/rpearson/src/rdma-core-git/build/lib/librdmacm.so.1.3.31.0": No such
-  file or directory.
+First, we need to agree that "failure to initialize" is equal to the
+situation where are no ib devices in the system.
 
-Looking I see
+Second, once device is registered, it needs to appear in relevant
+sys/class with symlink to it. In similar way to uverbs:
 
-# ls -l build/lib
-
+[leonro@vm ~]$ ls -l /sys/class/infiniband_verbs/uverbs0/
 ....
+lrwxrwxrwx 1 root root    0 Aug 12 05:40 device -> ../../../0000:00:09.0
 
--rwxrwxr-x 1 rpearson rpearson  263384 Aug 10 12:31 libqedr-rdmav25.so
-lrwxrwxrwx 1 rpearson rpearson      14 Aug 10 12:31 librdmacm.so -> librdmacm.so.1
-lrwxrwxrwx 1 rpearson rpearson      21 Aug 10 12:31 librdmacm.so.1 -> librdmacm.so.1.3.31.0
--rwxrwxr-x 1 rpearson rpearson  138536 Aug 10 12:31 librspreload.so
--rwxrwxr-x 1 rpearson rpearson  112488 Aug 10 12:32 librxe-rdmav25.so
+So users will see if server succeeded to initialize or not.
 
-....
+Third, retrigger ib_device and rtrs will try to reconnect, no need to
+call insmod again.
 
-with no librdmacm.so.1.3.31.0 as advertised. On the other hand if you stop after bash build.sh and before make install you get:
+Thanks
 
--rwxrwxr-x 1 rpearson rpearson  263384 Aug 10 12:31 libqedr-rdmav25.so
-lrwxrwxrwx 1 rpearson rpearson      14 Aug 10 12:31 librdmacm.so -> librdmacm.so.1
-lrwxrwxrwx 1 rpearson rpearson      21 Aug 10 12:31 librdmacm.so.1 -> librdmacm.so.1.3.31.0
--rwxrwxr-x 1 rpearson rpearson  608632 Aug 10 12:31 librdmacm.so.1.3.31.0
--rwxrwxr-x 1 rpearson rpearson  138536 Aug 10 12:31 librspreload.so
-
-So the make install seems to be deleting the .so file. Nothing like this is happening to the other libraries. 
-
-Any help would be appreciated. I would like to be able to install this version of rdma-core on the system.
-
-Bob Pearson
+>
+> Thank you,
+> Danil
+>
+> >
+> > Thanks
+> >
+> > >
+> > > >
+> > > > Thanks Leon for catching this.
+> > > >
+> > > > Regards!
