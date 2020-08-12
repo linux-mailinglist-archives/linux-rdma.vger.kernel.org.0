@@ -2,90 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE5324251F
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 07:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAFD242523
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 07:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgHLFw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Aug 2020 01:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51602 "EHLO mail.kernel.org"
+        id S1726430AbgHLF5h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Aug 2020 01:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgHLFw7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Aug 2020 01:52:59 -0400
+        id S1726264AbgHLF5h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Aug 2020 01:57:37 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E97920768;
-        Wed, 12 Aug 2020 05:52:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E67920768;
+        Wed, 12 Aug 2020 05:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597211579;
-        bh=0ybcVrNMKq+NEb0GlZ1DY8froaaLuRExbiJbZ3/87Ag=;
+        s=default; t=1597211857;
+        bh=FLc+Zw2dJwnTMj/gMY+Xvf0FURIythZJ4Borm0Xv3u4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iACneFBb/uPnGIzGZp7dIM/4zjPhyz4KiXlvgq+VQ34WNMrrHnAT3VGVkHrc2yd7I
-         S2Lx9N0b/uzh1ipwgQesBJ5ypu4h5BFHNcfF8xIacubrGeMUky2qblqgd/VZTKvQ3U
-         fZ0JhlKK9fO5vOdO/R3SS5TKXfp+eDPiqpnIKAPA=
-Date:   Wed, 12 Aug 2020 08:52:55 +0300
+        b=l7iqNirmuKrpAEOm26iHkhVYlPfF1HrFQijIWvK8Vvogv8gyUVafEg1q6LoAoaYph
+         vamJHfNDzwnSz8za2A7TNEwqTRoUb4Huj1h3caAUj2/clwZgGwHBFidRH6qgKZnsjw
+         WnDbL3l47jf+d/K9y+ZOmjG7NQdDtvxXepFh6Uvo=
+Date:   Wed, 12 Aug 2020 08:57:30 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH 1/1] Address an issue with hardened user copy
-Message-ID: <20200812055255.GI634816@unreal>
-References: <20200811191457.6309-1-rpearson@hpe.com>
+Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com
+Subject: Re: Is there a simple way to install rdma-core other than making a
+ package?
+Message-ID: <20200812055730.GJ634816@unreal>
+References: <75bbc81e-cde9-c8ac-0ba3-04bf17b8d5fa@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200811191457.6309-1-rpearson@hpe.com>
+In-Reply-To: <75bbc81e-cde9-c8ac-0ba3-04bf17b8d5fa@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 02:14:57PM -0500, Bob Pearson wrote:
-> by copying to user space from the stack instead of slab cache.
-> This affects the rdma_rxe driver causing a warning once per boot.
-> The alternative is to ifigure out how to whitelist the xxx_qp struct
-
-ifigure -> figure
-
-> but this seems simple and clean.
-
-
-We have multiple cases like this in the code, what is the error exactly?
-And what is "hardened user copy"?
-
+On Tue, Aug 11, 2020 at 10:41:02PM -0500, Bob Pearson wrote:
+> There doesn't seem to be a documented way to make install rdma-core, at least in the README file. However trying the obvious
 >
-> ---
+> $ bash build.sh
+> $ cd build
+> $ sudo make install
 
-Signed-off-by is missing.
+The build.sh script that comes with rdma-core builds libraries in-place
+and is not suitable for "make install".
 
->  drivers/infiniband/core/uverbs_std_types_qp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-> index 3bf8dcdfe7eb..2f8b14003b95 100644
-> --- a/drivers/infiniband/core/uverbs_std_types_qp.c
-> +++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-> @@ -98,6 +98,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
->  	struct ib_device *device;
->  	u64 user_handle;
->  	int ret;
-> +	int qp_num;
->
->  	ret = uverbs_copy_from_or_zero(&cap, attrs,
->  			       UVERBS_ATTR_CREATE_QP_CAP);
-> @@ -293,9 +294,10 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
->  	if (ret)
->  		return ret;
->
-> +	/* copy from stack to avoid whitelisting issues */
-> +	qp_num = qp->qp_num;
->  	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_QP_RESP_QP_NUM,
-> -			     &qp->qp_num,
-> -			     sizeof(qp->qp_num));
-> +			     &qp_num, sizeof(qp_num));
->
->  	return ret;
->  err_put:
-> --
-> 2.25.1
->
+Thanks
