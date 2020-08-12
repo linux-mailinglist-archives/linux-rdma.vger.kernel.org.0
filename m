@@ -2,184 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D74D242891
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 13:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B6B242DE6
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Aug 2020 19:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgHLLPB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Aug 2020 07:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726804AbgHLLPA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Aug 2020 07:15:00 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AAFC06174A
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Aug 2020 04:15:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f12so1614169wru.13
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Aug 2020 04:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tsxv/bhnV0/y7Dl+QxJkO0cCc38hF+OOCr7UlqYNsXw=;
-        b=Q9Fww4N7veutTa1AVnGEKdmHNJY9i+Y1piK9IZ0S6804B8fFY/D8BiyLXk/3GXLBGi
-         04lAJvulY//utulumSnc61EUd2P6Fq4m79jTgbpDWrpZoAmKHSCBxUSib+nm0Io/AsFr
-         otXuIS3sjRq5wa/y6wx7FEAh0GHANDb88+eqPFNFum0XMs6jmZWXaQ+yvjuUdgVqTs1O
-         oB2iMeNApfBTkRAH1WVzbCQYL9b/ewkuUMUNnRS9Zkqt9oWMs7jBbbzBg25VKDYldbbk
-         UdKxJzjTQdLNRCeXTqKs+In/6ClEpZYmOD7DZCPiIjqobPVnRgIe3ODGhuGXaYhr5UT3
-         w//w==
+        id S1726447AbgHLROV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Aug 2020 13:14:21 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:34955 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgHLROV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Aug 2020 13:14:21 -0400
+Received: by mail-pj1-f67.google.com with SMTP id t6so1470977pjr.0
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Aug 2020 10:14:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=tsxv/bhnV0/y7Dl+QxJkO0cCc38hF+OOCr7UlqYNsXw=;
-        b=W6LUvcjVmD6QRBSyFIFS4d4M5IhvHtaPS9Yc31sBwTus7mxePVDNesUvTCf+oQFpbm
-         epHEbaevMjm/n/wGtwvSUeNn0zHqWI5W2V1MwKA4mMuGWneP+QA7tzw2iNyRIeHHw/xP
-         PsOsZ27UOjsw7LDtky/Zts9dU1LeTf5bgwVJkFgllUBZvaE2drAPTRYLH1d9zrW2lEmh
-         il+byWPfvyv0o8yq7UehtSGXDsOHWyj/iH6GeMGvIlowYSrDtpZ2dwMX5tY9WolR/++9
-         y8C8UUmnqd3IYpvEXu/XsKUXE4xAVIvWYtXbWSiQ2Sp0fHL9m/J7DaYoYDjUXWMFz+Pq
-         9kIg==
-X-Gm-Message-State: AOAM5331XPkexuS6WCGRlRXGCpeUzzyOEMebLAX1r8yrAGGIEyzfcg7G
-        jbZP+0czV7uLzQVHGO/qoo3xagY1c08=
-X-Google-Smtp-Source: ABdhPJyQa6rokaW7VU8AgCSQdFeGPBkv8zKofqJf6klNw8PbgwxRDh2/cTjLQ7M+/nH7otAUOtBNcA==
-X-Received: by 2002:a5d:4d4b:: with SMTP id a11mr32812232wru.230.1597230898063;
-        Wed, 12 Aug 2020 04:14:58 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([37.142.6.87])
-        by smtp.gmail.com with ESMTPSA id g70sm3423997wmg.24.2020.08.12.04.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 04:14:56 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Zhu Yanjun <yanjunz@mellanox.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-rc] RDMA/rxe: Fix panic when calling kmem_cache_create()
-Date:   Wed, 12 Aug 2020 14:14:47 +0300
-Message-Id: <20200812111447.256822-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        bh=eHS6JYFw+sIP71nG7bXZd0SU419jhqort8c6lUr3BeQ=;
+        b=T7g0WrfEgV8nArGnKP0n3vSGTAGlf9x8Hb+4OCdvHTtdG5EdnQXethFmjsLOdV9oLv
+         CAElFezIKlYdDUkRLQ8Nedv70QbGTgrSy7GdVWHXhbY8vPA4MOeIzmAuiXRFF1l7KBl+
+         XasKx9ErUynx5z66EHVV0PhG5l516Xt8q7oBfZHqNIx5SSUXmE4uIs4redlFiMFaXEnu
+         JHKAGPa4fJ9pCpsPhfKOIe3qj4CsZxH+vu+enVupvqe9goFEhtQ+lUPt6goufOwYCPTt
+         Whz5Zhh/7knPSxzx5hi5cAAhz0AI4SWJlCyAxnD/ZY6/roQlqfQHvHlel5NhmjqveYI5
+         YnNA==
+X-Gm-Message-State: AOAM532rD5zeVakSmbFNng1SfQf5ai13BoGNbMzaEpwCSUG2eTegKsQG
+        HDfer15LWgw1uN+MYZfHnEg=
+X-Google-Smtp-Source: ABdhPJzZBzSCrE1m3nNsWMNYDt8oxbPo3Wm2CRVTTU4Wx18cA26B+7ew5r/DKfbexHhpgrB87cEgGg==
+X-Received: by 2002:a17:902:fe04:: with SMTP id g4mr380039plj.69.1597252460267;
+        Wed, 12 Aug 2020 10:14:20 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id l19sm3095655pff.8.2020.08.12.10.14.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2020 10:14:18 -0700 (PDT)
+Subject: Re: Is there a simple way to install rdma-core other than making a
+ package?
+To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org,
+        jgg@nvidia.com
+References: <75bbc81e-cde9-c8ac-0ba3-04bf17b8d5fa@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <23cc5656-882f-f8a8-426c-ff065cb0b969@acm.org>
+Date:   Wed, 12 Aug 2020 10:14:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <75bbc81e-cde9-c8ac-0ba3-04bf17b8d5fa@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-To avoid the following kernel panic when calling kmem_cache_create()
-with a NULL pointer from pool_cache(), move the rxe_cache_init() to the
-context of device creation.
+On 2020-08-11 20:41, Bob Pearson wrote:
+> There doesn't seem to be a documented way to make install rdma-core, at least in the README file. However trying the obvious
+> 
+> $ bash build.sh
+> $ cd build
+> $ sudo make install
+> 
+> seems to work, almost. After a few 100 lines of promising output I get
+> 
+> CMake Error at librdmacm/cmake_install.cmake:76 (file):
+>   file INSTALL cannot find
+>   "/home/rpearson/src/rdma-core-git/build/lib/librdmacm.so.1.3.31.0": No such
+>   file or directory.
 
- BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP NOPTI
- CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
- Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
- RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
- Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
- RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
- RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
- RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
- R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
- R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
- FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
- Call Trace:
-  rxe_alloc+0xc8/0x160 [rdma_rxe]
-  rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
-  __ib_alloc_pd+0xcb/0x160 [ib_core]
-  ib_mad_init_device+0x296/0x8b0 [ib_core]
-  add_client_context+0x11a/0x160 [ib_core]
-  enable_device_and_get+0xdc/0x1d0 [ib_core]
-  ib_register_device+0x572/0x6b0 [ib_core]
-  ? crypto_create_tfm+0x32/0xe0
-  ? crypto_create_tfm+0x7a/0xe0
-  ? crypto_alloc_tfm+0x58/0xf0
-  rxe_register_device+0x19d/0x1c0 [rdma_rxe]
-  rxe_net_add+0x3d/0x70 [rdma_rxe]
-  ? dev_get_by_name_rcu+0x73/0x90
-  rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
-  parse_args+0x179/0x370
-  ? ref_module+0x1b0/0x1b0
-  load_module+0x135e/0x17e0
-  ? ref_module+0x1b0/0x1b0
-  ? __do_sys_init_module+0x13b/0x180
-  __do_sys_init_module+0x13b/0x180
-  do_syscall_64+0x5b/0x1a0
-  entry_SYSCALL_64_after_hwframe+0x65/0xca
- RIP: 0033:0x7f9137ed296e
+This is how I do this myself:
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe.c       | 14 +++++++-------
- drivers/infiniband/sw/rxe/rxe_pool.c  |  3 +++
- drivers/infiniband/sw/rxe/rxe_sysfs.c |  7 +++++++
- 3 files changed, 17 insertions(+), 7 deletions(-)
+export EXTRA_CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Debug -DENABLE_WERROR=1" &&
+    mkdir -p build &&
+    cd build &&
+    cmake -G Ninja CFLAGS="-O0 -g" -DCMAKE_INSTALL_PREFIX=/usr .. &&
+    ninja &&
+    ninja install
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 5642eefb4ba1..60d5086dd34d 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -318,6 +318,13 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
- 		goto err;
- 	}
- 
-+	/* initialize slab caches for managed objects */
-+	err = rxe_cache_init();
-+	if (err) {
-+		pr_err("unable to init object pools\n");
-+		goto err;
-+	}
-+
- 	err = rxe_net_add(ibdev_name, ndev);
- 	if (err) {
- 		pr_err("failed to add %s\n", ndev->name);
-@@ -336,13 +343,6 @@ static int __init rxe_module_init(void)
- {
- 	int err;
- 
--	/* initialize slab caches for managed objects */
--	err = rxe_cache_init();
--	if (err) {
--		pr_err("unable to init object pools\n");
--		return err;
--	}
--
- 	err = rxe_net_init();
- 	if (err)
- 		return err;
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index fbcbac52290b..06c6d1f835b7 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -139,6 +139,9 @@ int rxe_cache_init(void)
- 	for (i = 0; i < RXE_NUM_TYPES; i++) {
- 		type = &rxe_type_info[i];
- 		size = ALIGN(type->size, RXE_POOL_ALIGN);
-+		if (type->cache)
-+			continue;
-+
- 		if (!(type->flags & RXE_POOL_NO_ALLOC)) {
- 			type->cache =
- 				kmem_cache_create(type->name, size,
-diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-index ccda5f5a3bc0..d0af48ba0110 100644
---- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-@@ -81,6 +81,13 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
- 		goto err;
- 	}
- 
-+	/* initialize slab caches for managed objects */
-+	err = rxe_cache_init();
-+	if (err) {
-+		pr_err("unable to init object pools\n");
-+		goto err;
-+	}
-+
- 	err = rxe_net_add("rxe%d", ndev);
- 	if (err) {
- 		pr_err("failed to add %s\n", intf);
--- 
-2.25.4
-
+Bart.
