@@ -2,123 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AF124529E
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Aug 2020 23:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1C2452AE
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Aug 2020 23:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgHOVxj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 15 Aug 2020 17:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
+        id S1729121AbgHOVyU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 15 Aug 2020 17:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729148AbgHOVwl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 15 Aug 2020 17:52:41 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50BDC061246
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Aug 2020 22:00:09 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id v21so9247900otj.9
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Aug 2020 22:00:09 -0700 (PDT)
+        with ESMTP id S1729117AbgHOVwg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 15 Aug 2020 17:52:36 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ADDC061235
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Aug 2020 22:45:40 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a5so10071924wrm.6
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Aug 2020 22:45:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I02BPlvFy618itBX0mtykTToAXHctOOIS2ZLlT6vRJk=;
-        b=Q5888Tf00gbqvTzCMbG6sF/oQLu8rDP5TTkp/YhE0Mu8qi9reUTfEaIMHqR/v6yq9p
-         NSEkRSxTIbM4wVdBCrkgAnr3CsHV1ESW4m3d0HoCF1h4izI/dE8/UQr1ipc+UgR1eCLI
-         eTt/GMoWym03yXmnbf6bnbpaLNYZT3V1aRQjcWCYewi1R3YhMhovjtbyvrqPda/5O1TD
-         2cwmKg6dIs35zPeOhc2Pvu9Wd/UbtDMcO3UmUCfMb3YZZXihI9Jco0aRxwdoiDL9e1ox
-         bGsVbcWuIfThkpLVgGkGFGgSN+SHApjYS4S9JOPbP8Tgf4KFa7Ra+e36tvBf8ef8cgdX
-         ZyzQ==
+        d=kernelim-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+/aQPgBdctfCPkN2hsKPsv6boSaHaEN13UyN4xwV5wE=;
+        b=MHKoo7DCs5fHWAvtff6EIY7D/hJHp24zHtuKEc/vJMN5VcYuVv8I/1uMI8uaPgjtcw
+         bBMbE8FexiGLLFxMU7gOq3y+TzLhYeKQU0RsSqJ0xGmOPlQgtDQX/SvzAWzAK68DyCgD
+         i/LaqykKOWNw/pCN/UKF5fN6RuyVV0EfACgAOo9gWlHvY69yeqM7nS+0xzsj1W2jLWEX
+         8D75pzQraiu+kBy3x7UdpxjNZR49v2k02eTvFJABr6SdEyW6/DsZik92iDUbl0I1hLPs
+         JXp3stppcDVkPvzNq+DHjsWDvRLsT5CuFzi1/hRMn+BiPC6N4gEpObmDBgKdt2qLhM/r
+         yDXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I02BPlvFy618itBX0mtykTToAXHctOOIS2ZLlT6vRJk=;
-        b=XCZc52jh4kcMHIUdj/ajcSlNq7uNn92KF4PeGUpF5TxboAkgVo3VC0OiIBNiShrL7B
-         OrpBDZpSpwK5BIulXkO530jN/sliIumbgLd6jqyDpa2gXFWiFhbSQ3dlgm45oCFfRwjY
-         dVkF+/w9/b5MTPVmv2lH7KGJFS/zTetLNbPtrUDe9U19KkJy8t5oh+kdU6YfkOt4twhr
-         fqgbZjdZgYg0fw/cx952A9RmZWbJOaeNlYBljpPgSlHf910vrtZLVhvtzjw0wIuP73Pv
-         DRbHGyjI6Bql4hU9tFE+uBN3UGdRczjYAQ19UUCTltBVbAFRACbabY9RhAQEQz9+t70z
-         FUdw==
-X-Gm-Message-State: AOAM531pueb/YrV89Ym0gJUt8EpaxY1j2H6jikV4Xfp+g5CMvcqS70nB
-        9TSUEGKXOHx+6CHaYu+X3STHNEsoWTpCKQ==
-X-Google-Smtp-Source: ABdhPJzBmHjlYbwpPnAMNlyp7T4vmCIYr5gz3gv23YrspzfeLfwEFYOfGzfjz+dVSJ7QLL+1fT2YIA==
-X-Received: by 2002:a9d:2f23:: with SMTP id h32mr4370729otb.334.1597467609042;
-        Fri, 14 Aug 2020 22:00:09 -0700 (PDT)
-Received: from localhost ([2605:6000:8b03:f000:b453:c5f2:2895:a54c])
-        by smtp.gmail.com with ESMTPSA id l17sm2125126otn.2.2020.08.14.22.00.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+/aQPgBdctfCPkN2hsKPsv6boSaHaEN13UyN4xwV5wE=;
+        b=BxjfFrqs4G8PX0bS3+j/okTSosQUlnAIMZ6t8/Mn22opwclsYkdHt/2A24VdQoNZ9j
+         AxaUjhIY/m1hJJ0NDH9pQ/qu/bYh1Gq/y7OjiMsJSQah/qENpl+xe0HkR82/BwQrNQX1
+         OJOlFbyTx470hXITOrJLo4h0yjz//FWB9XRkm9OeiLDQU97HkPFr5X5OWaIWM8EHdSUf
+         M9e7zfheCytDXNAd5pneZ3bF+o4d5Ikasw+zNBricsEwoVNKxHtzHuCrlTCSyrdj0iUm
+         sK6lswD7eMEKQzzrD/kZcpsgaPf9Hamaj8meiBOHZNVMMWHB1bzXmWyrtWSqgjS7DkyT
+         NzVw==
+X-Gm-Message-State: AOAM5312QoqE2vmK4dMun89RfHCF3jPT5L986iEenUwHRYSs6P+cucfs
+        e13Bl4G5g74Og9QPC+6siWKDEA==
+X-Google-Smtp-Source: ABdhPJy1Ks7m4wNqY3xj2Br282e4/ffX4B8ONEyjVpIaYR5PrTlOIMUPByiKuibHFE+Oy7oMmgjPgg==
+X-Received: by 2002:adf:ca06:: with SMTP id o6mr5285330wrh.181.1597470339433;
+        Fri, 14 Aug 2020 22:45:39 -0700 (PDT)
+Received: from gmail.com ([141.226.169.176])
+        by smtp.gmail.com with ESMTPSA id f124sm19635765wmf.7.2020.08.14.22.45.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 22:00:08 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH 19/20] fixed white space issues
-Date:   Fri, 14 Aug 2020 23:58:43 -0500
-Message-Id: <20200815045912.8626-20-rpearson@hpe.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200815045912.8626-1-rpearson@hpe.com>
-References: <20200815045912.8626-1-rpearson@hpe.com>
+        Fri, 14 Aug 2020 22:45:38 -0700 (PDT)
+Date:   Sat, 15 Aug 2020 08:45:35 +0300
+From:   Dan Aloni <dan@kernelim.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH] xprtrdma: make sure MRs are unmapped before freeing them
+Message-ID: <20200815054535.GA3337941@gmail.com>
+References: <20200814173734.3271600-1-dan@kernelim.com>
+ <5B87C3B5-B73D-40FD-A813-B3929CDF7583@oracle.com>
+ <20200814191056.GA3277556@gmail.com>
+ <DA35C71E-101D-45F6-A5BE-23493F7119C0@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DA35C71E-101D-45F6-A5BE-23493F7119C0@oracle.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Checkpatch reported some trailing whitespace. Trying to fix that
-here.
+On Fri, Aug 14, 2020 at 04:21:54PM -0400, Chuck Lever wrote:
+> 
+> 
+> > On Aug 14, 2020, at 3:10 PM, Dan Aloni <dan@kernelim.com> wrote:
+> > 
+> > On Fri, Aug 14, 2020 at 02:12:48PM -0400, Chuck Lever wrote:
+> >> Hi Dan-
+> >> 
+> >>> On Aug 14, 2020, at 1:37 PM, Dan Aloni <dan@kernelim.com> wrote:
+> >>> 
+> >>> It was observed that on disconnections, these unmaps don't occur. The
+> >>> relevant path is rpcrdma_mrs_destroy(), being called from
+> >>> rpcrdma_xprt_disconnect().
+> >> 
+> >> MRs are supposed to be unmapped right after they are used, so
+> >> during disconnect they should all be unmapped already. How often
+> >> do you see a DMA mapped MR in this code path? Do you have a
+> >> reproducer I can try?
+> > 
+> > These are not graceful disconnections but abnormal ones, where many large
+> > IOs are still in flight, while the remote server suddenly breaks the
+> > connection, the remote IP is still reachable but refusing to accept new
+> > connections only for a few seconds.
+> 
+> Ideally that's not supposed to matter. I'll see if I can reproduce
+> with my usual tricks.
+> 
+> Why is your server behaving this way?
 
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
- drivers/infiniband/sw/rxe/rxe_mw.c    | 4 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.h | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+It's a dedicated storage cluster under a specific testing scenario,
+implementing floating IPs.  Haven't tried, but maybe the same scenario
+can be reproduced with a standard single Linux NFSv3 server by fiddling
+with nfsd open ports.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index 6b998527b34b..ae7f5710f7dd 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -370,7 +370,7 @@ static void do_invalidate_mw(struct rxe_mw *mw)
- 	mw->mr = NULL;
- 
- 	mw->access = 0;
--	mw->addr = 0; 
-+	mw->addr = 0;
- 	mw->length = 0;
- 	mw->state = RXE_MEM_STATE_FREE;
- }
-@@ -405,7 +405,7 @@ static void do_dealloc_mw(struct rxe_mw *mw)
- 
- 	mw->ibmw.pd = NULL;
- 	mw->access = 0;
--	mw->addr = 0; 
-+	mw->addr = 0;
- 	mw->length = 0;
- 	mw->state = RXE_MEM_STATE_INVALID;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index b4855d3ea6f4..c990654e396d 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -66,7 +66,7 @@ struct rxe_ucontext {
- };
- 
- struct rxe_pd {
--	struct ib_pd            ibpd;
-+	struct ib_pd		ibpd;
- 	struct rxe_pool_entry	pelem;
- };
- 
-@@ -309,8 +309,8 @@ enum rxe_mr_type {
- #define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
- 
- struct rxe_phys_buf {
--	u64      addr;
--	u64      size;
-+	u64	 addr;
-+	u64	 size;
- };
- 
- struct rxe_map {
 -- 
-2.25.1
-
+Dan Aloni
