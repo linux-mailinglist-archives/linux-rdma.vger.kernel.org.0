@@ -2,96 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E361224580E
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Aug 2020 16:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3642459C1
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 00:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729562AbgHPObk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Aug 2020 10:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S1726904AbgHPWEq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Aug 2020 18:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728829AbgHPOaL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Aug 2020 10:30:11 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A49C061374
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Aug 2020 07:28:37 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id f18so11610053wmc.0
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Aug 2020 07:28:37 -0700 (PDT)
+        with ESMTP id S1726114AbgHPWEp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Aug 2020 18:04:45 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3673DC061786
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Aug 2020 15:04:45 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 9so11773635wmj.5
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Aug 2020 15:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=NAKDDu3zYGlp6/1rTFA3zLXzfLNUWElMFpld1DGXTqZ3f2C1G5vMMGgQBtzYdv61gR
-         j0gW2VjYzcAEQEK9JcrA+yGSHFEXNhE9RNkaz3uxkanP37gacJrIVytgT7/c7zGkA2Dy
-         XJB3L8ToVDoWAD9Rvm7U849RIrxncLk9xI9S/Uu5ZGT/cXsim2IUQmYeZsKFSBsv6kJT
-         3kDR9KLYjND6JPpx0YTAndrQaTelzP3558OkivI4ykhj79/nak1F6z80uX1/EQIXmTKV
-         I+kUa6Zt2XAbNuMItIuLndMdaWWyo32PYvWKoOywYCMLUV2UDlYdbpJ66arhF+MiPCa0
-         yMKA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EK59YeNweTnOCzZsjEDake2xeFN5dYABW/jYJ1/liXs=;
+        b=YA0oAo1VWal5Tb3eEe7QXmMHEp6z2k+gGz7Kw/Adk3aiiU4zD63T7k9z3xSyqIEoKj
+         cXPtMIJnCTw34wlhboByQkBaMD1xhJ+3t+l+y0PIN/+pUenvRE34hsco4JWWnBqCTaM9
+         MfG+yEnxHghtz73BxDvXQD7oj9zG+ekrcsodWFuIXvEmyNbceEekjxRi+HSUfLjJ71vH
+         jMSp0+KIRVe6Y7CzRwbazqtWbwnTovrKNtf28YWAkatMrOuMy/sYBczBmA+7cejpeOrn
+         7GX9z8rUnQSQ4p6dtFyNd0W3IE7U4fRF+1Vh4iJsqsIGE2CGM4BOrl5cMCdowoi6wPzi
+         FZ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
-        b=CK2+NGBToEZuynB0IDHKMzCpkz2jd5wsDGGEAd4JJbmDkoHXOddc12mWG+QzyjY4l5
-         9EOCYxwCmPPhzh9cNnzJJXBrSWyY6Zv3kNwPBVOKMmyk7OMPJlJFB91B95R+/F/+Sep/
-         PyFnfJI6wRZAClBXCdjSBveHm8gINIOkHMyXQ3PsRE1oejYPXbamR4uu9kUvwHI9cltk
-         95BKx6y4pAbKXYP35Kgw09h3HoIc0rDlCZnoJ/5PREL2QkWF0uzSUEiCAaT1ohFQDVUb
-         NQL9/y/TSPCT/fa56MWnNhQel7L8XpFZVHczpiJjtXqVUqcRMFhLfU9WDLXo4CNOG96g
-         83Sw==
-X-Gm-Message-State: AOAM533ZOCXet7Si7ZfOPWnFlZSoer1LwnlhLTqTXsaoj1xq3lxltuQT
-        VsdWl7i5iSoSGt1G1Dvn3arRIiuN4EQTS0I02tXAJBfO1zY=
-X-Google-Smtp-Source: ABdhPJydZZ8FQlFGmrB/EDLy0Z8gH5X03F6EFXypW4K1vf8iv94WhLhI3iwPKgeJEaRZZocHWED4lUmYPOBkTFPeX+4=
-X-Received: by 2002:a1c:a1c7:: with SMTP id k190mr10461870wme.1.1597588111746;
- Sun, 16 Aug 2020 07:28:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EK59YeNweTnOCzZsjEDake2xeFN5dYABW/jYJ1/liXs=;
+        b=rnYC6mXyBpfabR+zKO041ILLpkV1KmGbY4d/s87abrazjbxs3K3evjUBens3tGFj1p
+         w/WsRRR5OGZYO3PpbSoCSXamifgpO0eXbCLCHLqbmbiN56M5Vzue/GsC/QwjaLaG3lEI
+         NWW33PX40xZImI0UHEuGSL5VSKeG0bgrHwIxod3E+t6FRjBno4KhThuuls0GKkLbdEiI
+         gVGdmlmjLaVjTmVUQnlIHLGzR/mb1NFzOloenurq85LMHUEN/jhRHd3aOiqbIUeQxO+V
+         JBw/JhDQORgU6+zSE4HsM1qprh6Q0NX8Kn0Tu6nVgpsZhxa/97EETK9fCnPqOUWZkS/n
+         bGLQ==
+X-Gm-Message-State: AOAM533EmWsEQgKzaJqLZWbtdPb1htVng/GNzsALKoFx9pA2mVk5IaId
+        2mchyXnXPO0zNL8MESz/28rNDT/Xl9Cpkw==
+X-Google-Smtp-Source: ABdhPJxhxZfzdoRp9QnxJ9BuI4SCkJgXZ7yoKqdHG/aEFdDq4Di8cGDjZaAWXItkOzItLMt5goL2AA==
+X-Received: by 2002:a1c:e008:: with SMTP id x8mr11928752wmg.75.1597615483734;
+        Sun, 16 Aug 2020 15:04:43 -0700 (PDT)
+Received: from kheib-workstation ([77.137.118.46])
+        by smtp.gmail.com with ESMTPSA id b123sm28084737wme.20.2020.08.16.15.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 15:04:43 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 01:04:40 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Christian Benvenuti <benve@cisco.com>
+Subject: Re: [PATCH for-rc] RDMA/usnic: Fix reported max_pkeys attribute
+Message-ID: <20200816220440.GA820535@kheib-workstation>
+References: <20200805210051.800859-1-kamalheib1@gmail.com>
+ <20200805221742.GS24045@ziepe.ca>
+ <20200810201918.GA443976@kheib-workstation>
+ <20200814165408.GU24045@ziepe.ca>
 MIME-Version: 1.0
-Received: by 2002:a5d:6cd3:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:28:30
- -0700 (PDT)
-Reply-To: sctnld11170@tlen.pl
-From:   "Mr. Scott Donald" <confianzayrentabilidad@gmail.com>
-Date:   Sun, 16 Aug 2020 07:28:30 -0700
-Message-ID: <CANrrfX7wwL97G=jb--8nb9jH8oRO8T90L6NGSfg1HfnzMyyHcw@mail.gmail.com>
-Subject: Hello, Please
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200814165408.GU24045@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=20
-Dear Friend,
+On Fri, Aug 14, 2020 at 01:54:08PM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 10, 2020 at 11:19:18PM +0300, Kamal Heib wrote:
+> > On Wed, Aug 05, 2020 at 07:17:42PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Aug 06, 2020 at 12:00:51AM +0300, Kamal Heib wrote:
+> > > > Make sure to report the right max_pkeys attribute value to indicate the
+> > > > maximum number of partitions supported by the usnic device.
+> > > 
+> > > Why does usnic support pkeys? This needs more explanation
+> > > 
+> > > Jason
+> > 
+> > Looks like the usnic provider is acting like the RoCE providers by returning
+> > the default pkey when calling the query_pkey() callback, Do you think that
+> > this needs to removed like what was done for iWarp providers?
+> > 
+> > int usnic_ib_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
+> >                                 u16 *pkey)
+> > {
+> >         if (index > 0)
+> >                 return -EINVAL;
+> > 
+> >         *pkey = 0xffff;
+> >         return 0;
+> > }
+> 
+> You'd have to check the libfabric provider to see if it cares or not
+> 
+> Jason
 
-I'm Mr. Scott Donald a Successful businessMan dealing with
-Exportation, I got your mail contact through search to let you know my
-intension and my Ugly Situation Am a dying Man here in Los Angeles
-California Hospital Bed in (USA), I Lost my Wife and my only Daughter
-for Covid-19 and I also have a problem in my Health and I can die
-anytime I Know,
+Looks like the usnic provider under libfabric doesn't care about
+pkey/query_pkey, I'll prepare a patch that will remove the query_pkey()
+callback.
 
-I have a project that I am about to hand over to you. and I already
-instructed the Bankia S.A. Madrid, Spain(BSA) to transfer my fund sum
-of =C2=A33,7M GBP. Equivalent to =E2=82=AC4,077,033.91 EUR, to you as to en=
-able you
-to give 50% of this fund to Charitable Home in your State and take 50%
-don't think otherwise and why would anybody send someone you barely
-know to help you deliver a message, help me do this for the happiness
-of my soul and for God to mercy me and my Family and give Us a good
-place.
+ kheib   master  ~  git  upstream  libfabric  git grep -n query_pkey prov/usnic/
+ kheib   master  ~  git  upstream  libfabric  git grep -n pkey prov/usnic/
+ kheib   master  ~  git  upstream  libfabric 
 
-please, do as I said there was someone from your State that I deeply
-love so very very much and I miss her so badly I have no means to
-reach any Charitable Home there. that is why I go for a personal
-search of the Country and State and I got your mail contact through
-search to let you know my Bitterness and please, help me is getting
-Dark I ask my Doctor to help me keep you notice failure for me to
-reach you in person Your urgent Response, here is my Doctor Whats-app
-Number for urgent notice +13019692737
-
-Hope To Hear From You. I'm sending this email to you for the second
-time yet no response from you.
-
-My Regards.
-
-Mr. Scott Donald
-CEO
+Thanks,
+Kamal 
