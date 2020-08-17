@@ -2,78 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D539245A60
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 03:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0E3245E3E
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 09:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgHQBFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Aug 2020 21:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgHQBFR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Aug 2020 21:05:17 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752F2C061786;
-        Sun, 16 Aug 2020 18:05:17 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u63so13454400oie.5;
-        Sun, 16 Aug 2020 18:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HzYop1XmyTCgbyOk5qIfQelbPJHN1NZbmzUN2Oj/Kk0=;
-        b=G+F+gn4A7SR4aPjKnrQt48BT6CgKQygvaKOfEwRa6pRwQcinAxU5CBaNfA2hrulnAw
-         rfGUWAgSP0CmasQkMzDaM4SEnpoJOuuqWxQOz+NrEZB85ZZCpZ8vvsKzKSqP5EURrGzC
-         Bvusokb+dA2yW2EMMaBHgoKgU6/aUdQ9i8GLA2KcVq2JkBSWCqOHiyacKIFj8KyL9lZf
-         YhmrrPcGBqpXGo08eWTxyRfdHq0UY8BSYVAWFKSZAGFfT3RZlnVXqEWuY3loq6jRp1HX
-         jYkBJKwBHxehcYP571PLl9jF7Vx+DLWk3SnQ19+htVp4XKZrHxHZ53ynE9+ZplPIFeX8
-         37Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HzYop1XmyTCgbyOk5qIfQelbPJHN1NZbmzUN2Oj/Kk0=;
-        b=drG3cN4TOllSbF2rwecFQ5KEJ/xuQfi65Nq+wtY6oZYb7i91kugwiQcaJOh/GMZD6Z
-         6eagmsu3vO3qRH4tSXD7eJzIMubJBZ3xna7y6u7vH8Bq4jCtc4FCcwnIopNT8Rt4+0rF
-         0nWSGGehRfwjdBdIjzHy7kyDS2D961bALWvfwcPb2b8XHkMmMgMHgQNVgbnuKB5BVeMg
-         1XSzyXCWA2+D7wYfOCrP6Lc/oMc3mVteAfaAxeWlxoxxzuD+ytqr4KBx1jYxoQFkc6mg
-         1Kbz0pA9E21J0qcUfMoEOY9PHyE+FR2ld+ne06fI3pwraMxXHb6BxWx5Ejwq7AO/dz9i
-         c4OQ==
-X-Gm-Message-State: AOAM533gnbRgpt4plQOKOOJ08jorlGvfK8Uza5OVzXzaW/97JQ6Ch8si
-        /5hrM7HosyQSGoc2+4stf0PNybFIp2VuSbqQDTE=
-X-Google-Smtp-Source: ABdhPJyaXeGbXej2pBVF1NwUHSB6OMzkVnBYSQd07EBYYbu4npJ0BEEZ+FomGJ+X1rn0Ncsqv5iD47VMQhP72buJSE8=
-X-Received: by 2002:aca:b286:: with SMTP id b128mr8239548oif.89.1597626315495;
- Sun, 16 Aug 2020 18:05:15 -0700 (PDT)
+        id S1726829AbgHQHoQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Aug 2020 03:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgHQHoO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:44:14 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E36420738;
+        Mon, 17 Aug 2020 07:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597650254;
+        bh=LryFHNFDSd2PtN6jRcpaptofL3Qn0MUdGJKE9K2UQcc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PmfQ3F2/3020USngL6qE4F9RMcBQIL0a9fYvDSuNr8UZjmxsHb1fGY3i2rAVurnLQ
+         yPWB4Sm+NLKdJwjIzlNn9HpF4XaIJ38bhVaSm8mtWIFHqc3b4f7zmsR2pPAL+K6Fec
+         Q5Pt1tPiQE065Irh25DCvmXhLLdVOt2laJ2NDQmU=
+Date:   Mon, 17 Aug 2020 10:44:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     David Ahern <dsahern@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH iproute2-rc v1 2/2] rdma: Properly print device and link
+ names in CLI output
+Message-ID: <20200817074410.GI7555@unreal>
+References: <20200811073201.663398-1-leon@kernel.org>
+ <20200811073201.663398-3-leon@kernel.org>
+ <20200816154846.63ebf57c@hermes.lan>
 MIME-Version: 1.0
-References: <1597555550-26300-1-git-send-email-yanjunz@mellanox.com> <20200816074521.GE7555@unreal>
-In-Reply-To: <20200816074521.GE7555@unreal>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 17 Aug 2020 09:05:04 +0800
-Message-ID: <CAD=hENdbsLD+YKHqw4=hiTeLz3S-1_1pL9=PbpnkHKed2pDuOg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: SOFT-ROCE: Change Zhu Yanjun's email address
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Zhu Yanjun <yanjunz@mellanox.com>, yanjunz@nvidia.com,
-        linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200816154846.63ebf57c@hermes.lan>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 16, 2020 at 3:45 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Sun, Aug 16, 2020 at 03:48:46PM -0700, Stephen Hemminger wrote:
+> On Tue, 11 Aug 2020 10:32:01 +0300
+> Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On Sun, Aug 16, 2020 at 01:25:50PM +0800, Zhu Yanjun wrote:
-> > I prefer to use this email address for kernel related work.
-> >
-> > Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-> > ---
-> >  MAINTAINERS |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > +	print_color_string(PRINT_ANY, COLOR_NONE, "ifname", "dev %s ", name);
 >
-> It was already handled.
-> https://lore.kernel.org/lkml/20200810091100.243932-1-leon@kernel.org/
+> Since this is an interface name, you might want to consider using COLOR_IFNAME?
+>
+> I will go ahead and apply it as is but more work is needed here.
 
-Cool!
-
->
-> Thanks
+Thanks for taking care.
