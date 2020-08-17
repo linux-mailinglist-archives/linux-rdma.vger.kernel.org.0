@@ -2,337 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B592467BF
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 15:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B598246834
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 16:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728686AbgHQNx2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Aug 2020 09:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
+        id S1728465AbgHQOPk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Aug 2020 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgHQNx0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 09:53:26 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B079C061389
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 06:53:25 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id v6so17582325iow.11
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 06:53:25 -0700 (PDT)
+        with ESMTP id S1728881AbgHQOPg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 10:15:36 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CFBC061389
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 07:15:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id df16so12401978edb.9
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 07:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=a1I9wTP2AqFpIlHUgtuyfV35FjLMDY37yhBNhKR51xA=;
-        b=t8H8UqhCh6zIawYngK+L6cKEmUN/PHBpvGLCQNPj95M8AD+eM+FJGfYYxyJ2h7PE49
-         7YU10WG7JBktdMPsN3nd9UCcVV4IRn++y0OlfLknLtXzoufPB4TpKYUx5jYL3WS0ryW8
-         NCuV9eRZO2wMpR3RNKG+lwQQ6peC23R0J89AmHFmqydBSL+LDp+nMfywJ/8bwX2jiTm0
-         +YOqbeHIQHftotCF/ESSY6s3sYaKo7dafJYm866mJspocqLvK/nLE/Cb8W//dTqF1D6+
-         5mD01QXVfs/FNpd02Iyo/j9nLZLOJEFUCxUGDsFf0xdlCyMuigcdiZ9uIJM7m2nTngG4
-         1NiQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5GU+hvhFq5FTqZEE9oONoXIkAiVxgc+Oe9aNa54OoQw=;
+        b=El20VIDg2NdzHYr8IDobZ35xvin+mYvK5IfVN6E9Mz2vqJozybe5i/2Wlxsfn/Sw/y
+         f0k6vhoiwuZpjkzNSH7o+/kxhGMI3IyIdKA4L1csfLFdCS6VvpM1KpyCMatdms38ockb
+         vn6Q6r/gun8WRAuHZEgnHoD53UF7AoIaf1iQ4RKKUOFzHezYOMIPu4FjKKdkid1QrTsN
+         XYkEGMgZuM9FY7pC3oZAX3Vg3vp1JBtMrz/WWZifbhpZStXw/b3vMHLDcnShb+UIMLC4
+         o9oDwufDPJMlMN5ma80n0X1ZjkPVvlDsh9iTTR2Y6qpP13GK5L2sWymrfnPwd48VcEor
+         G8Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=a1I9wTP2AqFpIlHUgtuyfV35FjLMDY37yhBNhKR51xA=;
-        b=nM5lqn2dC/tKU3+KcakEv15lvRrD5+bbIdO5So7U2uw/qWZEEzzkTJPT+QNeJmwXlG
-         Xo0FEFZOULD44JOqUX5WKPgfZNy1LsI4HQo+o06E7Z04lkiGdlzgFVDvNkurRA7GVj1H
-         HM/NCR+76mrF99y808Uxo/CMkw7oBzsa49F9HaQcjdWgKYlPGXmP2T/SQybZmK1mOnf9
-         DIfkIOW88NVW6ZLbtJHoseSFh4qWiSdFVRTMjxk1jYfnwI02PiErzvVOxzRMDMokQspT
-         XlCWiWBjLmZmSr3C6r98uJTeea3czRSPnNn9XNlFdWkzSiT+8CvuoVXWbgjlw3OBVIvY
-         nMdA==
-X-Gm-Message-State: AOAM530a1XZjFCpRAOScGQ6ZqrDCrdoBFV4NE6D4vGuzz3JS8/ZurJPx
-        j2uwnzDklKsz7I2qUD9jGiRX+OmxTdtALA==
-X-Google-Smtp-Source: ABdhPJz+fA8Qn6I/0MxxdneDrTzKp3O3BNXkAgdFMr/DStO52HNR36VEAuIod9Hwwa6SCcictNJw8Q==
-X-Received: by 2002:a05:6638:1614:: with SMTP id x20mr14478414jas.92.1597672403631;
-        Mon, 17 Aug 2020 06:53:23 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id l5sm9854991ios.3.2020.08.17.06.53.22
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Aug 2020 06:53:22 -0700 (PDT)
-Received: from klimt.1015granger.net (klimt.1015granger.net [192.168.1.55])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 07HDrMWY004687
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 13:53:22 GMT
-Subject: [PATCH v3 3/3] RDMA/cm: Add tracepoints to track MAD send operations
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-rdma@vger.kernel.org
-Date:   Mon, 17 Aug 2020 09:53:22 -0400
-Message-ID: <159767240197.2968.12048458026453596018.stgit@klimt.1015granger.net>
-In-Reply-To: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
-References: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
-User-Agent: StGit/0.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5GU+hvhFq5FTqZEE9oONoXIkAiVxgc+Oe9aNa54OoQw=;
+        b=feGq92duc02/H6gFl2MdhoulHjA4nLlPAXcIdKOESJDaYz3t+tfiUr6yVaMsFI7S2r
+         mLg+AY7e/BtY9NSp+GLeg3tzKw2SJ7yzaF5lHqjFheTDvLgpbR1moIHphKVFkwJed5Fr
+         QHsJKoo18D2W2vhM6hSnwqHTTw4MpD7KjJ7apVP7rIVNVUYoF/CBUdoqpROMXiDns7R6
+         5wQ+l/mLDx7GUvNGqN9O+yuVZxvN9DHcmcySixWGq7v/Yr/+AZgWly+kjTOlNQkZZY94
+         jM75hkvVAzJYZU6SJfU79rbP//XhjDwHih2CL/tjKnO0xeCviivUMMoa/2Gfl+0q6Iln
+         nyKA==
+X-Gm-Message-State: AOAM533vqVKwpBvNnX6opx320A35kBglOcO/5gSZ08p7M4DZL/eYMeFD
+        vLMFBrg65sVS427S665p/tMDrQ==
+X-Google-Smtp-Source: ABdhPJzjr9ZxRXnAgQ3pOgNu0n1L4UO5JB4hdIav5PocnLg1VrC/U2k8Jix0avX3cyR6efPTsghljQ==
+X-Received: by 2002:a05:6402:3121:: with SMTP id dd1mr15268241edb.72.1597673735048;
+        Mon, 17 Aug 2020 07:15:35 -0700 (PDT)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id g19sm14563399ejz.5.2020.08.17.07.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 07:15:34 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 16:15:33 +0200
+From:   Simon Horman <simon.horman@netronome.com>
+To:     Allen Pais <allen.lkml@gmail.com>
+Cc:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org,
+        kda@linux-powerpc.org, dougmill@linux.ibm.com,
+        cooldavid@cooldavid.org, mlindner@marvell.com, borisp@mellanox.com,
+        keescook@chromium.org, linux-acenic@sunsite.dk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, Romain Perier <romain.perier@gmail.com>
+Subject: Re: [oss-drivers] [PATCH 16/20] ethernet: netronome: convert
+ tasklets to use new tasklet_setup() API
+Message-ID: <20200817141532.GA4130@netronome.com>
+References: <20200817082434.21176-1-allen.lkml@gmail.com>
+ <20200817082434.21176-18-allen.lkml@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817082434.21176-18-allen.lkml@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Surface the operation of MAD exchanges during connection
-establishment. Some samples:
+On Mon, Aug 17, 2020 at 01:54:30PM +0530, Allen Pais wrote:
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly.
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-[root@klimt ~]# trace-cmd report -F ib_cma
-cpus=4
-     kworker/0:4-123   [000]    60.677388: icm_send_rep:         local_id=1965336542 remote_id=1096195961 state=REQ_RCVD lap_state=LAP_UNINIT
-   kworker/u8:11-391   [002]    60.678808: icm_send_req:         local_id=1982113758 remote_id=0 state=IDLE lap_state=LAP_UNINIT
-     kworker/0:4-123   [000]    60.679652: icm_send_rtu:         local_id=1982113758 remote_id=1079418745 state=REP_RCVD lap_state=LAP_UNINIT
-            nfsd-1954  [001]    60.691350: icm_send_rep:         local_id=1998890974 remote_id=1129750393 state=MRA_REQ_SENT lap_state=LAP_UNINIT
-            nfsd-1954  [003]    62.017931: icm_send_drep:        local_id=1998890974 remote_id=1129750393 state=TIMEWAIT lap_state=LAP_UNINIT
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- drivers/infiniband/core/cm.c       |   22 +++++++-
- drivers/infiniband/core/cm_trace.h |  105 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 125 insertions(+), 2 deletions(-)
+But:
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 79a593941a12..3195d7c8be59 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1564,6 +1564,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
- 	cm_id_priv->local_qpn = cpu_to_be32(IBA_GET(CM_REQ_LOCAL_QPN, req_msg));
- 	cm_id_priv->rq_psn = cpu_to_be32(IBA_GET(CM_REQ_STARTING_PSN, req_msg));
- 
-+	trace_icm_send_req(&cm_id_priv->id);
- 	spin_lock_irqsave(&cm_id_priv->lock, flags);
- 	ret = ib_post_send_mad(cm_id_priv->msg, NULL);
- 	if (ret) {
-@@ -1611,6 +1612,9 @@ static int cm_issue_rej(struct cm_port *port,
- 		IBA_SET_MEM(CM_REJ_ARI, rej_msg, ari, ari_length);
- 	}
- 
-+	trace_icm_issue_rej(
-+		IBA_GET(CM_REJ_LOCAL_COMM_ID, rcv_msg),
-+		IBA_GET(CM_REJ_REMOTE_COMM_ID, rcv_msg));
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret)
- 		cm_free_msg(msg);
-@@ -1962,6 +1966,7 @@ static void cm_dup_req_handler(struct cm_work *work,
- 	}
- 	spin_unlock_irq(&cm_id_priv->lock);
- 
-+	trace_icm_send_dup_req(&cm_id_priv->id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret)
- 		goto free;
-@@ -2288,6 +2293,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
- 	msg->timeout_ms = cm_id_priv->timeout_ms;
- 	msg->context[1] = (void *) (unsigned long) IB_CM_REP_SENT;
- 
-+	trace_icm_send_rep(cm_id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-@@ -2359,6 +2365,7 @@ int ib_send_cm_rtu(struct ib_cm_id *cm_id,
- 	cm_format_rtu((struct cm_rtu_msg *) msg->mad, cm_id_priv,
- 		      private_data, private_data_len);
- 
-+	trace_icm_send_rtu(cm_id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-@@ -2440,6 +2447,7 @@ static void cm_dup_rep_handler(struct cm_work *work)
- 		goto unlock;
- 	spin_unlock_irq(&cm_id_priv->lock);
- 
-+	trace_icm_send_dup_rep(&cm_id_priv->id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret)
- 		goto free;
-@@ -2661,6 +2669,7 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
- 	msg->timeout_ms = cm_id_priv->timeout_ms;
- 	msg->context[1] = (void *) (unsigned long) IB_CM_DREQ_SENT;
- 
-+	trace_icm_send_dreq(&cm_id_priv->id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		cm_enter_timewait(cm_id_priv);
-@@ -2731,6 +2740,7 @@ static int cm_send_drep_locked(struct cm_id_private *cm_id_priv,
- 	cm_format_drep((struct cm_drep_msg *) msg->mad, cm_id_priv,
- 		       private_data, private_data_len);
- 
-+	trace_icm_send_drep(&cm_id_priv->id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		cm_free_msg(msg);
-@@ -2780,6 +2790,9 @@ static int cm_issue_drep(struct cm_port *port,
- 	IBA_SET(CM_DREP_LOCAL_COMM_ID, drep_msg,
- 		IBA_GET(CM_DREQ_REMOTE_COMM_ID, dreq_msg));
- 
-+	trace_icm_issue_drep(
-+		IBA_GET(CM_DREQ_LOCAL_COMM_ID, dreq_msg),
-+		IBA_GET(CM_DREQ_REMOTE_COMM_ID, dreq_msg));
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret)
- 		cm_free_msg(msg);
-@@ -2937,6 +2950,7 @@ static int cm_send_rej_locked(struct cm_id_private *cm_id_priv,
- 		return -EINVAL;
- 	}
- 
-+	trace_icm_send_rej(&cm_id_priv->id, reason);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		cm_free_msg(msg);
-@@ -3115,6 +3129,7 @@ int ib_send_cm_mra(struct ib_cm_id *cm_id,
- 		cm_format_mra((struct cm_mra_msg *) msg->mad, cm_id_priv,
- 			      msg_response, service_timeout,
- 			      private_data, private_data_len);
-+		trace_icm_send_mra(cm_id);
- 		ret = ib_post_send_mad(msg, NULL);
- 		if (ret)
- 			goto error2;
-@@ -3485,10 +3500,12 @@ int ib_send_cm_sidr_req(struct ib_cm_id *cm_id,
- 	msg->context[1] = (void *) (unsigned long) IB_CM_SIDR_REQ_SENT;
- 
- 	spin_lock_irqsave(&cm_id_priv->lock, flags);
--	if (cm_id->state == IB_CM_IDLE)
-+	if (cm_id->state == IB_CM_IDLE) {
-+		trace_icm_send_sidr_req(&cm_id_priv->id);
- 		ret = ib_post_send_mad(msg, NULL);
--	else
-+	} else {
- 		ret = -EINVAL;
-+	}
- 
- 	if (ret) {
- 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-@@ -3650,6 +3667,7 @@ static int cm_send_sidr_rep_locked(struct cm_id_private *cm_id_priv,
- 
- 	cm_format_sidr_rep((struct cm_sidr_rep_msg *) msg->mad, cm_id_priv,
- 			   param);
-+	trace_icm_send_sidr_rep(&cm_id_priv->id);
- 	ret = ib_post_send_mad(msg, NULL);
- 	if (ret) {
- 		cm_free_msg(msg);
-diff --git a/drivers/infiniband/core/cm_trace.h b/drivers/infiniband/core/cm_trace.h
-index c69e28564913..8e53982f9250 100644
---- a/drivers/infiniband/core/cm_trace.h
-+++ b/drivers/infiniband/core/cm_trace.h
-@@ -80,6 +80,59 @@ IB_CM_LAP_STATE_LIST
- #define show_ib_cm_lap_state(x) \
- 		__print_symbolic(x, IB_CM_LAP_STATE_LIST)
- 
-+/*
-+ * enum ib_cm_rej_reason, from include/rdma/ib_cm.h
-+ */
-+#define IB_CM_REJ_REASON_LIST					\
-+	ib_cm_rej_reason(REJ_NO_QP)				\
-+	ib_cm_rej_reason(REJ_NO_EEC)				\
-+	ib_cm_rej_reason(REJ_NO_RESOURCES)			\
-+	ib_cm_rej_reason(REJ_TIMEOUT)				\
-+	ib_cm_rej_reason(REJ_UNSUPPORTED)			\
-+	ib_cm_rej_reason(REJ_INVALID_COMM_ID)			\
-+	ib_cm_rej_reason(REJ_INVALID_COMM_INSTANCE)		\
-+	ib_cm_rej_reason(REJ_INVALID_SERVICE_ID)		\
-+	ib_cm_rej_reason(REJ_INVALID_TRANSPORT_TYPE)		\
-+	ib_cm_rej_reason(REJ_STALE_CONN)			\
-+	ib_cm_rej_reason(REJ_RDC_NOT_EXIST)			\
-+	ib_cm_rej_reason(REJ_INVALID_GID)			\
-+	ib_cm_rej_reason(REJ_INVALID_LID)			\
-+	ib_cm_rej_reason(REJ_INVALID_SL)			\
-+	ib_cm_rej_reason(REJ_INVALID_TRAFFIC_CLASS)		\
-+	ib_cm_rej_reason(REJ_INVALID_HOP_LIMIT)			\
-+	ib_cm_rej_reason(REJ_INVALID_PACKET_RATE)		\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_GID)			\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_LID)			\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_SL)			\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_TRAFFIC_CLASS)		\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_HOP_LIMIT)		\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_PACKET_RATE)		\
-+	ib_cm_rej_reason(REJ_PORT_CM_REDIRECT)			\
-+	ib_cm_rej_reason(REJ_PORT_REDIRECT)			\
-+	ib_cm_rej_reason(REJ_INVALID_MTU)			\
-+	ib_cm_rej_reason(REJ_INSUFFICIENT_RESP_RESOURCES)	\
-+	ib_cm_rej_reason(REJ_CONSUMER_DEFINED)			\
-+	ib_cm_rej_reason(REJ_INVALID_RNR_RETRY)			\
-+	ib_cm_rej_reason(REJ_DUPLICATE_LOCAL_COMM_ID)		\
-+	ib_cm_rej_reason(REJ_INVALID_CLASS_VERSION)		\
-+	ib_cm_rej_reason(REJ_INVALID_FLOW_LABEL)		\
-+	ib_cm_rej_reason(REJ_INVALID_ALT_FLOW_LABEL)		\
-+	ib_cm_rej_reason_end(REJ_VENDOR_OPTION_NOT_SUPPORTED)
-+
-+#undef  ib_cm_rej_reason
-+#undef  ib_cm_rej_reason_end
-+#define ib_cm_rej_reason(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
-+#define ib_cm_rej_reason_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
-+
-+IB_CM_REJ_REASON_LIST
-+
-+#undef  ib_cm_rej_reason
-+#undef  ib_cm_rej_reason_end
-+#define ib_cm_rej_reason(x)	{ IB_CM_##x, #x },
-+#define ib_cm_rej_reason_end(x)	{ IB_CM_##x, #x }
-+
-+#define show_ib_cm_rej_reason(x) \
-+		__print_symbolic(x, IB_CM_REJ_REASON_LIST)
- 
- DECLARE_EVENT_CLASS(icm_id_class,
- 	TP_PROTO(
-@@ -111,6 +164,56 @@ DECLARE_EVENT_CLASS(icm_id_class,
- 	)
- );
- 
-+#define DEFINE_CM_SEND_EVENT(name)					\
-+		DEFINE_EVENT(icm_id_class,				\
-+				icm_send_##name,				\
-+				TP_PROTO(				\
-+					const struct ib_cm_id *cm_id	\
-+				),					\
-+				TP_ARGS(cm_id))
-+
-+DEFINE_CM_SEND_EVENT(req);
-+DEFINE_CM_SEND_EVENT(rep);
-+DEFINE_CM_SEND_EVENT(dup_req);
-+DEFINE_CM_SEND_EVENT(dup_rep);
-+DEFINE_CM_SEND_EVENT(rtu);
-+DEFINE_CM_SEND_EVENT(mra);
-+DEFINE_CM_SEND_EVENT(sidr_req);
-+DEFINE_CM_SEND_EVENT(sidr_rep);
-+DEFINE_CM_SEND_EVENT(dreq);
-+DEFINE_CM_SEND_EVENT(drep);
-+
-+TRACE_EVENT(icm_send_rej,
-+	TP_PROTO(
-+		const struct ib_cm_id *cm_id,
-+		enum ib_cm_rej_reason reason
-+	),
-+
-+	TP_ARGS(cm_id, reason),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, cm_id)
-+		__field(u32, local_id)
-+		__field(u32, remote_id)
-+		__field(unsigned long, state)
-+		__field(unsigned long, reason)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->cm_id = cm_id;
-+		__entry->local_id = be32_to_cpu(cm_id->local_id);
-+		__entry->remote_id = be32_to_cpu(cm_id->remote_id);
-+		__entry->state = cm_id->state;
-+		__entry->reason = reason;
-+	),
-+
-+	TP_printk("local_id=%u remote_id=%u state=%s reason=%s",
-+		__entry->local_id, __entry->remote_id,
-+		show_ib_cm_state(__entry->state),
-+		show_ib_cm_rej_reason(__entry->reason)
-+	)
-+);
-+
- #define DEFINE_CM_ERR_EVENT(name)					\
- 		DEFINE_EVENT(icm_id_class,				\
- 				icm_##name##_err,			\
-@@ -172,6 +275,8 @@ DECLARE_EVENT_CLASS(icm_local_class,
- 				),					\
- 				TP_ARGS(local_id, remote_id))
- 
-+DEFINE_CM_LOCAL_EVENT(issue_rej);
-+DEFINE_CM_LOCAL_EVENT(issue_drep);
- DEFINE_CM_LOCAL_EVENT(staleconn_err);
- DEFINE_CM_LOCAL_EVENT(no_priv_err);
- 
+This series should be targeted at net-next, and thus have net-next in its
+subject
 
+	[PATCH net-next x/y] ...
 
+And it should be posted when net-next is open: it is currently closed.
+
+	http://vger.kernel.org/~davem/net-next.html
+
+> ---
+>  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> index 39ee23e8c0bf..1dcd24d899f5 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> @@ -2287,9 +2287,9 @@ static bool nfp_ctrl_rx(struct nfp_net_r_vector *r_vec)
+>  	return budget;
+>  }
+>  
+> -static void nfp_ctrl_poll(unsigned long arg)
+> +static void nfp_ctrl_poll(struct tasklet_struct *t)
+>  {
+> -	struct nfp_net_r_vector *r_vec = (void *)arg;
+> +	struct nfp_net_r_vector *r_vec = from_tasklet(r_vec, t, tasklet);
+>  
+>  	spin_lock(&r_vec->lock);
+>  	nfp_net_tx_complete(r_vec->tx_ring, 0);
+> @@ -2337,8 +2337,7 @@ static void nfp_net_vecs_init(struct nfp_net *nn)
+>  
+>  			__skb_queue_head_init(&r_vec->queue);
+>  			spin_lock_init(&r_vec->lock);
+> -			tasklet_init(&r_vec->tasklet, nfp_ctrl_poll,
+> -				     (unsigned long)r_vec);
+> +			tasklet_setup(&r_vec->tasklet, nfp_ctrl_poll);
+>  			tasklet_disable(&r_vec->tasklet);
+>  		}
+>  
+> -- 
+> 2.17.1
+> 
