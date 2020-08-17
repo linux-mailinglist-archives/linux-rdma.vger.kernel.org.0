@@ -2,69 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8D52465DB
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 14:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D1924664F
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 14:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgHQMAE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Aug 2020 08:00:04 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9748 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726530AbgHQMAC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Aug 2020 08:00:02 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B0186DFBD17B0052AF87;
-        Mon, 17 Aug 2020 19:59:59 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 17 Aug 2020 19:59:49 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Add a check for current state before modifying QP
-Date:   Mon, 17 Aug 2020 19:58:52 +0800
-Message-ID: <1597665532-48406-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1728037AbgHQM0z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Aug 2020 08:26:55 -0400
+Received: from proxima.lasnet.de ([78.47.171.185]:43158 "EHLO
+        proxima.lasnet.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728000AbgHQM0w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 08:26:52 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Aug 2020 08:26:51 EDT
+Received: from localhost.localdomain (p200300e9d747fd86eda1c6650823d2bd.dip0.t-ipconnect.de [IPv6:2003:e9:d747:fd86:eda1:c665:823:d2bd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id 49FCBC25F9;
+        Mon, 17 Aug 2020 14:19:40 +0200 (CEST)
+Subject: Re: [PATCH 4/8] net: mac802154: convert tasklets to use new
+ tasklet_setup() API
+To:     Allen Pais <allen.cryptic@gmail.com>, gerrit@erg.abdn.ac.uk,
+        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        johannes@sipsolutions.net, alex.aring@gmail.com,
+        santosh.shilimkar@oracle.com, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us
+Cc:     keescook@chromium.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+References: <20200817085120.24894-1-allen.cryptic@gmail.com>
+ <20200817085120.24894-4-allen.cryptic@gmail.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <5309b90a-1caa-ec22-ddb9-49eca3581957@datenfreihafen.org>
+Date:   Mon, 17 Aug 2020 14:19:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200817085120.24894-4-allen.cryptic@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+Hello.
 
-It should be considered as an illegal operation if the ULP attempts to
-modify a QP from another state to the current hardware state. Otherwise,
-the ULP can modify some fields of QPC at any time. For example, for a QP in
-state of RTS, modify it from RTR to RTS can change the PSN, which is always
-not as expected.
+On 17.08.20 10:51, Allen Pais wrote:
+> From: Allen Pais <allen.lkml@gmail.com>
+> 
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly.
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+> ---
+>   net/mac802154/main.c | 8 +++-----
+>   1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/net/mac802154/main.c b/net/mac802154/main.c
+> index 06ea0f8bfd5c..520cedc594e1 100644
+> --- a/net/mac802154/main.c
+> +++ b/net/mac802154/main.c
+> @@ -20,9 +20,9 @@
+>   #include "ieee802154_i.h"
+>   #include "cfg.h"
+>   
+> -static void ieee802154_tasklet_handler(unsigned long data)
+> +static void ieee802154_tasklet_handler(struct tasklet_struct *t)
+>   {
+> -	struct ieee802154_local *local = (struct ieee802154_local *)data;
+> +	struct ieee802154_local *local = from_tasklet(local, t, tasklet);
+>   	struct sk_buff *skb;
+>   
+>   	while ((skb = skb_dequeue(&local->skb_queue))) {
+> @@ -91,9 +91,7 @@ ieee802154_alloc_hw(size_t priv_data_len, const struct ieee802154_ops *ops)
+>   	INIT_LIST_HEAD(&local->interfaces);
+>   	mutex_init(&local->iflist_mtx);
+>   
+> -	tasklet_init(&local->tasklet,
+> -		     ieee802154_tasklet_handler,
+> -		     (unsigned long)local);
+> +	tasklet_setup(&local->tasklet, ieee802154_tasklet_handler);
+>   
+>   	skb_queue_head_init(&local->skb_queue);
+>   
+> 
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_qp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index e94ca13..bb87e5fc 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1162,8 +1162,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 	mutex_lock(&hr_qp->mutex);
- 
--	cur_state = attr_mask & IB_QP_CUR_STATE ?
--		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
-+	if (attr_mask & IB_QP_CUR_STATE && attr->cur_qp_state != hr_qp->state)
-+		goto out;
-+
-+	cur_state = hr_qp->state;
- 	new_state = attr_mask & IB_QP_STATE ? attr->qp_state : cur_state;
- 
- 	if (ibqp->uobject &&
--- 
-2.8.1
+Acked-by: Stefan Schmidt <stefan@datenfreihafen.org>
 
+regards
+Stefan Schmidt
