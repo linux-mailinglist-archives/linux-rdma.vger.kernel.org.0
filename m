@@ -2,50 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE3F246016
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 10:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AB124601F
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Aug 2020 10:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgHQI3T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Aug 2020 04:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        id S1726769AbgHQI3g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Aug 2020 04:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgHQI3O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 04:29:14 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9510C06138A;
-        Mon, 17 Aug 2020 01:29:13 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g15so3241986plj.6;
-        Mon, 17 Aug 2020 01:29:13 -0700 (PDT)
+        with ESMTP id S1726842AbgHQI3S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 04:29:18 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E683BC061388;
+        Mon, 17 Aug 2020 01:29:17 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so7787788pgf.0;
+        Mon, 17 Aug 2020 01:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mpTvLV2skT2BsbjdvmvS7WbpiU8WJnm3QiU8cdWEdZ4=;
-        b=SNWSPMwsXxcDYbomSRcnWgDAgrZhmhBy8lduJbQaXMy+E9NVBYG03V3AkFcWRmPMvl
-         3YRVv+7y+pwFpXYmXN/FA9JNpbFfc15APZ0olb5+4LfFYvYkI2ULJPYTtbJw4zpBR7Xb
-         zRu2Fo+vvj/P2ySD7JB2GzVdKKNri4936It09heU52HVUE2NjTL74SZmLUH/qLjUPZp0
-         Tra4yxkqiRvg30v9O+rxuRiz6/cO4nQCL7FBR+LPi5yJ0NBFm2uLriS0r0vslsbYNcmi
-         N2qL+Z1uEq2ami3M/o0u1zjiFGE7w1IMzyfDoJJW8doGP26pfIfxiiB3+677/1Rwcna1
-         kFHw==
+        bh=vUxE5IeTrT0uCQB6Hz6X7n59nqYPK8f19l5eZsLWZHk=;
+        b=MMpOJ+RWvTnu+RVdki2iQGVC8V89OH3VVXnGu/Y1RXOtkejr+GGOhHI3zVcflDZCqq
+         g9v5dZss8ljsyK8YQZwsh20zKQzUtQa1GyansxULKF1ZunW/QCxnhgebjLu5MRqyTX+K
+         kM3JBkP/wxurYrtpjJ1sUceO8AZi2c7hmKKgwsAD1BW+Y5QqjzW3hhyYmrS6uluFyaYn
+         TDwFAbsuaWgLI6llChgHaLRJZHwXc/6xfUFeHSDkaLh3Eh88+iUYlP4M9g1jAznBqzxH
+         r5reKQ0qB6hMVsvEpbk1WTLzXzSVwmKB3ShvqyfuP7COb5jgcZYAx7616Lg8HNsYNqbA
+         u2qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=mpTvLV2skT2BsbjdvmvS7WbpiU8WJnm3QiU8cdWEdZ4=;
-        b=VF7KeOV//SixubgXnDzLRcMSR3/vtOcvPmsmoJxt68jSL6loK9E1k5j3bz1AvXjpL+
-         R/xvICq4GI0dx1WJaC+VncNbiATFwV4JcCtMF+JjF16XeiMjQy/1PXOgH99o9MPU/+5+
-         e9v9e/0tw4x3ppAybDDGsbvulSDoSPlo0g1sDYN4+rIJhJMozck2kbaActPMHRpnhDqS
-         N3FnqIFgVSRpSB+lvDS5jFAiX1kC3LBaJqtwktUL5xn7aGaL8Z5fNUMhk3oQsZKkSK34
-         wsx/jB/43w5HNXLdh/Z1vEckUGeWzCw8nj8Z4MPOuNHCol7DY2xnTJJnYWA4wIdOKpD9
-         hbsg==
-X-Gm-Message-State: AOAM532Nq5Fq5t8JvbEhsy1y+63P4vxsKJVNhOBNwrB1RXK3OmAZWGUC
-        Z0CSrr51FHo7ILwLov3odSo=
-X-Google-Smtp-Source: ABdhPJzJfA4xlE8UeGwJ9+bgNisAJobpuTK3w/8/kC6OJBAqNyzXiJgEaqpAI3iSlFmnqryEyLwp/Q==
-X-Received: by 2002:a17:902:c151:: with SMTP id 17mr9914837plj.228.1597652953478;
-        Mon, 17 Aug 2020 01:29:13 -0700 (PDT)
+        bh=vUxE5IeTrT0uCQB6Hz6X7n59nqYPK8f19l5eZsLWZHk=;
+        b=LiTwPuu9J2/suUnm75QvMsoKawgR2rw00jMKR6oZw3bX5IM88Sxm9YOZTjcRvKyE20
+         zItdk2fdR6uxT8A1kcg8yNN07S/Pz8klw4qcdYt2KwJRUQf+8jSdxm0Q4F2MsDNgiMCe
+         gsASQz8dmVVuZXTlv2532IlN0Nfwg/hqYOwf5D25TZQ8BSmGWgEubEbAk7PGWNgB+/TG
+         A/PwEI9Zl3YBe3P0LlfTdhu48en/w1xUGIA5FEeB7y3ggdvfEyYOi3EF+Hh9pVlAJOql
+         f+6sIHEkZcVZIQ8YXk3XnbumMjVcOibDxcYTNRIXex9A+mFyOseLdifppFvHBAIIyxQR
+         6URA==
+X-Gm-Message-State: AOAM532t9pcncnk5KLLWu99jC19sCOuUXAx/ptRcwh4T8TUngc7Sazao
+        p9GSZkSM3SOEx0EuRsAA6jhUUnRO4ypo9w==
+X-Google-Smtp-Source: ABdhPJyYs1aNn2mn1IdIEBv6VUmsXeEGAWZ/8yu4FckGc55qa1H6aT4QyV5onP+w/yrk5eNfiI4cfA==
+X-Received: by 2002:a05:6a00:228f:: with SMTP id f15mr10444046pfe.222.1597652957399;
+        Mon, 17 Aug 2020 01:29:17 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.202.98])
-        by smtp.gmail.com with ESMTPSA id r7sm18948102pfl.186.2020.08.17.01.29.10
+        by smtp.gmail.com with ESMTPSA id r7sm18948102pfl.186.2020.08.17.01.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 01:29:13 -0700 (PDT)
+        Mon, 17 Aug 2020 01:29:16 -0700 (PDT)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
         somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
@@ -53,9 +53,9 @@ To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
 Cc:     keescook@chromium.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 4/5] infiniband: qib: convert tasklets to use new tasklet_setup() API
-Date:   Mon, 17 Aug 2020 13:58:43 +0530
-Message-Id: <20200817082844.21700-5-allen.lkml@gmail.com>
+Subject: [PATCH 5/5] infiniband: rxe: convert tasklets to use new tasklet_setup() API
+Date:   Mon, 17 Aug 2020 13:58:44 +0530
+Message-Id: <20200817082844.21700-6-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200817082844.21700-1-allen.lkml@gmail.com>
 References: <20200817082844.21700-1-allen.lkml@gmail.com>
@@ -72,72 +72,86 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/infiniband/hw/qib/qib_iba7322.c |  7 +++----
- drivers/infiniband/hw/qib/qib_sdma.c    | 10 +++++-----
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_cq.c   | 6 +++---
+ drivers/infiniband/sw/rxe/rxe_task.c | 8 ++++----
+ drivers/infiniband/sw/rxe/rxe_task.h | 2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index 8bcbc884e5b6..0f6f021e0562 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -1733,9 +1733,9 @@ static noinline void handle_7322_errors(struct qib_devdata *dd)
- 	return;
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index ad3090131126..f232fd03d19a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -66,9 +66,9 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
+ 	return -EINVAL;
  }
  
--static void qib_error_tasklet(unsigned long data)
-+static void qib_error_tasklet(struct tasklet_struct *t)
+-static void rxe_send_complete(unsigned long data)
++static void rxe_send_complete(struct tasklet_struct *t)
  {
--	struct qib_devdata *dd = (struct qib_devdata *)data;
-+	struct qib_devdata *dd = from_tasklet(dd, t, error_tasklet);
- 
- 	handle_7322_errors(dd);
- 	qib_write_kreg(dd, kr_errmask, dd->cspec->errormask);
-@@ -3537,8 +3537,7 @@ static void qib_setup_7322_interrupt(struct qib_devdata *dd, int clearpend)
- 	for (i = 0; i < ARRAY_SIZE(redirect); i++)
- 		qib_write_kreg(dd, kr_intredirect + i, redirect[i]);
- 	dd->cspec->main_int_mask = mask;
--	tasklet_init(&dd->error_tasklet, qib_error_tasklet,
--		(unsigned long)dd);
-+	tasklet_setup(&dd->error_tasklet, qib_error_tasklet);
- }
- 
- /**
-diff --git a/drivers/infiniband/hw/qib/qib_sdma.c b/drivers/infiniband/hw/qib/qib_sdma.c
-index 99e11c347130..eece0d4ce6c7 100644
---- a/drivers/infiniband/hw/qib/qib_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_sdma.c
-@@ -62,7 +62,7 @@ static void sdma_get(struct qib_sdma_state *);
- static void sdma_put(struct qib_sdma_state *);
- static void sdma_set_state(struct qib_pportdata *, enum qib_sdma_states);
- static void sdma_start_sw_clean_up(struct qib_pportdata *);
--static void sdma_sw_clean_up_task(unsigned long);
-+static void sdma_sw_clean_up_task(struct tasklet_struct *);
- static void unmap_desc(struct qib_pportdata *, unsigned);
- 
- static void sdma_get(struct qib_sdma_state *ss)
-@@ -119,9 +119,10 @@ static void clear_sdma_activelist(struct qib_pportdata *ppd)
- 	}
- }
- 
--static void sdma_sw_clean_up_task(unsigned long opaque)
-+static void sdma_sw_clean_up_task(struct tasklet_struct *t)
- {
--	struct qib_pportdata *ppd = (struct qib_pportdata *) opaque;
-+	struct qib_pportdata *ppd = from_tasklet(ppd, t,
-+						 sdma_sw_clean_up_task);
+-	struct rxe_cq *cq = (struct rxe_cq *)data;
++	struct rxe_cq *cq = from_tasklet(cq, t, comp_task);
  	unsigned long flags;
  
- 	spin_lock_irqsave(&ppd->sdma_lock, flags);
-@@ -436,8 +437,7 @@ int qib_setup_sdma(struct qib_pportdata *ppd)
+ 	spin_lock_irqsave(&cq->cq_lock, flags);
+@@ -107,7 +107,7 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
  
- 	INIT_LIST_HEAD(&ppd->sdma_activelist);
+ 	cq->is_dying = false;
  
--	tasklet_init(&ppd->sdma_sw_clean_up_task, sdma_sw_clean_up_task,
--		(unsigned long)ppd);
-+	tasklet_setup(&ppd->sdma_sw_clean_up_task, sdma_sw_clean_up_task);
+-	tasklet_init(&cq->comp_task, rxe_send_complete, (unsigned long)cq);
++	tasklet_setup(&cq->comp_task, rxe_send_complete);
  
- 	ret = dd->f_init_sdma_regs(ppd);
- 	if (ret)
+ 	spin_lock_init(&cq->cq_lock);
+ 	cq->ibcq.cqe = cqe;
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 08f05ac5f5d5..f7c944d2f987 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -55,12 +55,12 @@ int __rxe_do_task(struct rxe_task *task)
+  * a second caller finds the task already running
+  * but looks just after the last call to func
+  */
+-void rxe_do_task(unsigned long data)
++void rxe_do_task(struct tasklet_struct *t)
+ {
+ 	int cont;
+ 	int ret;
+ 	unsigned long flags;
+-	struct rxe_task *task = (struct rxe_task *)data;
++	struct rxe_task *task = from_tasklet(task, t, tasklet);
+ 
+ 	spin_lock_irqsave(&task->state_lock, flags);
+ 	switch (task->state) {
+@@ -123,7 +123,7 @@ int rxe_init_task(void *obj, struct rxe_task *task,
+ 	snprintf(task->name, sizeof(task->name), "%s", name);
+ 	task->destroyed	= false;
+ 
+-	tasklet_init(&task->tasklet, rxe_do_task, (unsigned long)task);
++	tasklet_setup(&task->tasklet, rxe_do_task);
+ 
+ 	task->state = TASK_STATE_START;
+ 	spin_lock_init(&task->state_lock);
+@@ -159,7 +159,7 @@ void rxe_run_task(struct rxe_task *task, int sched)
+ 	if (sched)
+ 		tasklet_schedule(&task->tasklet);
+ 	else
+-		rxe_do_task((unsigned long)task);
++		rxe_do_task(&task->tasklet);
+ }
+ 
+ void rxe_disable_task(struct rxe_task *task)
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+index 08ff42d451c6..f69fbb2dd09f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -80,7 +80,7 @@ int __rxe_do_task(struct rxe_task *task);
+  * work to do someone must reschedule the task before
+  * leaving
+  */
+-void rxe_do_task(unsigned long data);
++void rxe_do_task(struct tasklet_struct *t);
+ 
+ /* run a task, else schedule it to run as a tasklet, The decision
+  * to run or schedule tasklet is based on the parameter sched.
 -- 
 2.17.1
 
