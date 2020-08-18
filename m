@@ -2,357 +2,212 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4037C247AFB
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Aug 2020 01:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB0247BFB
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Aug 2020 03:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgHQXEp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Aug 2020 19:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S1726302AbgHRBsw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Aug 2020 21:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgHQXEn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 19:04:43 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BD7C061342
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 16:04:42 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a26so19828264ejc.2
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 16:04:42 -0700 (PDT)
+        with ESMTP id S1726297AbgHRBst (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Aug 2020 21:48:49 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92367C061389
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 18:48:48 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id f10so8452314plj.8
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Aug 2020 18:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQ7OVhmDCfTsRoTmrZis59557f8uaW9Xy2vgKyQ546Y=;
-        b=acjVRjSVcPBrEAv9mq70PZ89dAC5pGJAxXXmjb0aYwqD91zhDsgKoTV2AKafrkfzCh
-         aCTJyKMwjZIR8jKxr0W3s3ea8vFoU+nUQa/UH063rBeEcWsMcrs/bgIvjbegrGPO6x4+
-         ePu7uevCU/9yBVGpJMlz3ZQEL372napbiEgZQDzlFqvPlmJVCNXkPM5J/GtafA8Gol5H
-         lHmxpYeG1hKPG597QV9Z4LwNLJL3DQMNfaV7TzwOhjE88IIM/5FbMYKvP9Y7voWZEzW/
-         BjKCgP0wUShOMb6lK91lE6JKCz49bU2MjYtKpRerSONGmRm+SzXz6dSX/u8cVt4JvPVr
-         soBg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/SsAuzgpdvf2qLoRaGI7sdBasfnROtNutplpDFBFz4A=;
+        b=TGjfP9pOvpP5UkJqyQs4TUhkHhuFmMbKTdzBdY6xDZqpei8+B7pr7AOH+gbgBwBzSJ
+         ePIEBgfQL1L0R96Jcf8n7I3RkU2emnKUO03I9v5WXj18DVkWFLMm/LLpZxZGyJqERP+t
+         wIx99fXw6Y7QaFPiFo+yI2efPr9C2tLhRykb5cCOFtojTymVa6M0vg9uBstTR8WXlWbf
+         wLv1kUKH4evdgcZeRxhyUF+75mGXcqmqYMve+KtQvH+Y7XQxGMtP1/kpba96FRICPoTk
+         96+o4Rw2sZuVQb/0tCCKLF/DSgdQ9iJq+O0v4v78XiE5XZ00Q5MGGqSOhryZVduavguc
+         BQRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQ7OVhmDCfTsRoTmrZis59557f8uaW9Xy2vgKyQ546Y=;
-        b=S6gBKyvQO+bNRk2VJGQroSVkreztUGudMbxSbP4CztglJU4xjczqw3akH3WeSxivp3
-         egJHyWDfqdsKkIUZTrMcykKL3fRhefYWjvX0Df/l3kaE87Q+QYnPIpoVQSQOMX1hlJ6x
-         nvy9z0zUoNRpReBHIboy4NIjwFrUxt5VeWRyOSRyuxuDrNo3edyKYrksVxKEIcm973gO
-         EO/IPH9IDCaEqphNy4dJf+jvLZDN2BZsl+nIa6Pn2oyOtkPlqYhoFZwYD/2cvoD4kexz
-         pyvRUFDRcFov2MdnyBFSn885AwtKfuWIUUd8W0mb0Mz7BhCEgm1cb43xqLAKInCsa78i
-         vbGA==
-X-Gm-Message-State: AOAM5332xuPJa1FwoDH1Lnp+P+75tjU4nP6P0xXXDdbnsVYqXhCg8K6n
-        CiGt9/+SCpDhHgU1zQDcH/bUAK6G8YuDsveQHBYYkw==
-X-Google-Smtp-Source: ABdhPJyCLhWKemhmCdbs5d4ZjASiZ+8e8aXVS3mc7JN+eXvSQirgbMh9Patn3OF1ag3EZXqxbn9dd4IRwyZ2Www6Nss=
-X-Received: by 2002:a17:906:c7d3:: with SMTP id dc19mr17318738ejb.495.1597705481004;
- Mon, 17 Aug 2020 16:04:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/SsAuzgpdvf2qLoRaGI7sdBasfnROtNutplpDFBFz4A=;
+        b=ZchCuxJyse9VcriFLPz4WlDVxEB1BU08pkqIk2stMf06uKPS37Gc2v3hJCiUQ5EiXW
+         uRDv3vSHtgqWRs5so4tdtjmC5Boh1z0ocBmUkmqXM5x9zPwD3wzjRuCxMbieAX/mzFtg
+         rjGYn11+Ry5Xq42LpI47KcY6fHx+j4m6GDiK6QtsVItRn4F99jakZvUGbnRp2J6e2wNJ
+         tm54E/bvF9wHr35tLiRTn+L7sqr4B9+pCSq0eGUaEG5OUydKUdZ2t7c3zVQ7ElwNPiCY
+         vAtNRr/v0PCnMd1vDdEKS1k0RCrTdc7i2l2ZvhyOuQ/yHI49csDnPGvS8GlSuF2PJ8eN
+         KF/w==
+X-Gm-Message-State: AOAM531GGpxjGuW2pLVawSRGvRimLgb5tE5PBaT8lHLSRexrfdCU9w0L
+        BQsvTmsdSj80UC7Fw+iVnuM=
+X-Google-Smtp-Source: ABdhPJxuZczmyaKZebfYL9bsUbWaienHZNE1uwuXj+RfcF7Ydnd23r2jQo/Syq+wwmgEBDGHb1cpXg==
+X-Received: by 2002:a17:90a:b88c:: with SMTP id o12mr10956476pjr.187.1597715327782;
+        Mon, 17 Aug 2020 18:48:47 -0700 (PDT)
+Received: from [10.75.201.17] ([118.201.220.138])
+        by smtp.gmail.com with ESMTPSA id na14sm18860086pjb.6.2020.08.17.18.48.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Aug 2020 18:48:47 -0700 (PDT)
+Subject: Re: [PATCH for-rc] RDMA/rxe: Fix panic when calling
+ kmem_cache_create()
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20200812111447.256822-1-kamalheib1@gmail.com>
+ <9701a68d-c377-474a-5f65-c4e045a67e11@gmail.com>
+ <20200816221236.GA821081@kheib-workstation>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Message-ID: <a52afe9b-e474-5412-bf33-4f3a3690a322@gmail.com>
+Date:   Tue, 18 Aug 2020 09:48:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-References: <20200810115049.304118-1-haris.iqbal@cloud.ionos.com>
- <20200811084544.GB634816@unreal> <CAJpMwyjC+CuSoXD_XEaHS4njnFaHCbegMX+qucMfg-fXVqFD+Q@mail.gmail.com>
- <20200811104711.GC634816@unreal> <CAJpMwygFuhq-aiiVHz1w=jAjav1ZN-5yMuos67S2=2UX-wb85Q@mail.gmail.com>
- <CAMGffE=NSGsJAFJe5_n8_xfJ=6-kp5rYY3LK5wdcQCDdt6+CkQ@mail.gmail.com>
- <CAHg0HuxhZsedZFKCNwxMrH83CvSaqUrzHteb_O69-eWA30D4yw@mail.gmail.com>
- <20200811120732.GE634816@unreal> <CAHg0HuybaHz+vJwnTsOxqEgsSkuA6YHPYgdfk6VsQmtw43UYtw@mail.gmail.com>
- <20200812054844.GH634816@unreal>
-In-Reply-To: <20200812054844.GH634816@unreal>
-From:   Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Date:   Tue, 18 Aug 2020 04:34:29 +0530
-Message-ID: <CAJpMwygViV_-1YAHAti=Q3JTvax5KW704w7h9maqLrd4qpumVA@mail.gmail.com>
-Subject: Re: [PATCH v2] RDMA/rtrs-srv: Incorporate ib_register_client into
- rtrs server init
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jinpu Wang <jinpu.wang@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-block@vger.kernel.org,
-        kernel test robot <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200816221236.GA821081@kheib-workstation>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 11:18 AM Leon Romanovsky <leon@kernel.org> wrote:
+On 8/17/2020 6:12 AM, Kamal Heib wrote:
+> On Sat, Aug 15, 2020 at 02:58:45PM +0800, Zhu Yanjun wrote:
+>> On 8/12/2020 7:14 PM, Kamal Heib wrote:
+>>> To avoid the following kernel panic when calling kmem_cache_create()
+>>> with a NULL pointer from pool_cache(),
+>> What is the root cause of this kernel panic?
+>>
+> The kernel panic is triggered using the following command and it happen
+> because the cache is not getting initialized.
 >
-> On Tue, Aug 11, 2020 at 02:32:38PM +0200, Danil Kipnis wrote:
-> > On Tue, Aug 11, 2020 at 2:07 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Tue, Aug 11, 2020 at 01:44:58PM +0200, Danil Kipnis wrote:
-> > > > On Tue, Aug 11, 2020 at 1:13 PM Jinpu Wang <jinpu.wang@cloud.ionos.com> wrote:
-> > > > >
-> > > > > On Tue, Aug 11, 2020 at 12:53 PM Haris Iqbal
-> > > > > <haris.iqbal@cloud.ionos.com> wrote:
-> > > > > >
-> > > > > > On Tue, Aug 11, 2020 at 4:17 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Aug 11, 2020 at 02:27:12PM +0530, Haris Iqbal wrote:
-> > > > > > > > On Tue, Aug 11, 2020 at 2:15 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > > > > >
-> > > > > > > > > On Mon, Aug 10, 2020 at 05:20:49PM +0530, Md Haris Iqbal wrote:
-> > > > > > > > > > The rnbd_server module's communication manager (cm) initialization depends
-> > > > > > > > > > on the registration of the "network namespace subsystem" of the RDMA CM
-> > > > > > > > > > agent module. As such, when the kernel is configured to load the
-> > > > > > > > > > rnbd_server and the RDMA cma module during initialization; and if the
-> > > > > > > > > > rnbd_server module is initialized before RDMA cma module, a null ptr
-> > > > > > > > > > dereference occurs during the RDMA bind operation.
-> > > > > > > > > >
-> > > > > > > > > > Call trace below,
-> > > > > > > > > >
-> > > > > > > > > > [    1.904782] Call Trace:
-> > > > > > > > > > [    1.904782]  ? xas_load+0xd/0x80
-> > > > > > > > > > [    1.904782]  xa_load+0x47/0x80
-> > > > > > > > > > [    1.904782]  cma_ps_find+0x44/0x70
-> > > > > > > > > > [    1.904782]  rdma_bind_addr+0x782/0x8b0
-> > > > > > > > > > [    1.904782]  ? get_random_bytes+0x35/0x40
-> > > > > > > > > > [    1.904782]  rtrs_srv_cm_init+0x50/0x80
-> > > > > > > > > > [    1.904782]  rtrs_srv_open+0x102/0x180
-> > > > > > > > > > [    1.904782]  ? rnbd_client_init+0x6e/0x6e
-> > > > > > > > > > [    1.904782]  rnbd_srv_init_module+0x34/0x84
-> > > > > > > > > > [    1.904782]  ? rnbd_client_init+0x6e/0x6e
-> > > > > > > > > > [    1.904782]  do_one_initcall+0x4a/0x200
-> > > > > > > > > > [    1.904782]  kernel_init_freeable+0x1f1/0x26e
-> > > > > > > > > > [    1.904782]  ? rest_init+0xb0/0xb0
-> > > > > > > > > > [    1.904782]  kernel_init+0xe/0x100
-> > > > > > > > > > [    1.904782]  ret_from_fork+0x22/0x30
-> > > > > > > > > > [    1.904782] Modules linked in:
-> > > > > > > > > > [    1.904782] CR2: 0000000000000015
-> > > > > > > > > > [    1.904782] ---[ end trace c42df88d6c7b0a48 ]---
-> > > > > > > > > >
-> > > > > > > > > > All this happens cause the cm init is in the call chain of the module init,
-> > > > > > > > > > which is not a preferred practice.
-> > > > > > > > > >
-> > > > > > > > > > So remove the call to rdma_create_id() from the module init call chain.
-> > > > > > > > > > Instead register rtrs-srv as an ib client, which makes sure that the
-> > > > > > > > > > rdma_create_id() is called only when an ib device is added.
-> > > > > > > > > >
-> > > > > > > > > > Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-> > > > > > > > > > Reported-by: kernel test robot <rong.a.chen@intel.com>
-> > > > > > > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > > > > > > > > > ---
-> > > > > > > > > > Change in v2:
-> > > > > > > > > >         Use only single variable to track number of IB devices and failure
-> > > > > > > > > >         Change according to kernel coding style
-> > > > > > > > > >
-> > > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 79 +++++++++++++++++++++++++-
-> > > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.h |  6 ++
-> > > > > > > > > >  2 files changed, 82 insertions(+), 3 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > > > > > > index 0d9241f5d9e6..69a37ce73b0c 100644
-> > > > > > > > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > > > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > > > > > > @@ -16,6 +16,7 @@
-> > > > > > > > > >  #include "rtrs-srv.h"
-> > > > > > > > > >  #include "rtrs-log.h"
-> > > > > > > > > >  #include <rdma/ib_cm.h>
-> > > > > > > > > > +#include <rdma/ib_verbs.h>
-> > > > > > > > > >
-> > > > > > > > > >  MODULE_DESCRIPTION("RDMA Transport Server");
-> > > > > > > > > >  MODULE_LICENSE("GPL");
-> > > > > > > > > > @@ -31,6 +32,7 @@ MODULE_LICENSE("GPL");
-> > > > > > > > > >  static struct rtrs_rdma_dev_pd dev_pd;
-> > > > > > > > > >  static mempool_t *chunk_pool;
-> > > > > > > > > >  struct class *rtrs_dev_class;
-> > > > > > > > > > +static struct rtrs_srv_ib_ctx ib_ctx;
-> > > > > > > > > >
-> > > > > > > > > >  static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
-> > > > > > > > > >  static int __read_mostly sess_queue_depth = DEFAULT_SESS_QUEUE_DEPTH;
-> > > > > > > > > > @@ -2033,6 +2035,64 @@ static void free_srv_ctx(struct rtrs_srv_ctx *ctx)
-> > > > > > > > > >       kfree(ctx);
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > > +static int rtrs_srv_add_one(struct ib_device *device)
-> > > > > > > > > > +{
-> > > > > > > > > > +     struct rtrs_srv_ctx *ctx;
-> > > > > > > > > > +     int ret;
-> > > > > > > > > > +
-> > > > > > > > > > +     if (ib_ctx.ib_dev_count)
-> > > > > > > > > > +             goto out;
-> > > > > > > > > > +
-> > > > > > > > > > +     /*
-> > > > > > > > > > +      * Since our CM IDs are NOT bound to any ib device we will create them
-> > > > > > > > > > +      * only once
-> > > > > > > > > > +      */
-> > > > > > > > > > +     ctx = ib_ctx.srv_ctx;
-> > > > > > > > > > +     ret = rtrs_srv_rdma_init(ctx, ib_ctx.port);
-> > > > > > > > > > +     if (ret) {
-> > > > > > > > > > +             /*
-> > > > > > > > > > +              * We errored out here.
-> > > > > > > > > > +              * According to the ib code, if we encounter an error here then the
-> > > > > > > > > > +              * error code is ignored, and no more calls to our ops are made.
-> > > > > > > > > > +              */
-> > > > > > > > > > +             pr_err("Failed to initialize RDMA connection");
-> > > > > > > > > > +             ib_ctx.ib_dev_count = -1;
-> > > > > > > > > > +             return ret;
-> > > > > > > > > > +     }
-> > > > > > > > > > +
-> > > > > > > > > > +out:
-> > > > > > > > > > +     /*
-> > > > > > > > > > +      * Keep a track on the number of ib devices added
-> > > > > > > > > > +      */
-> > > > > > > > > > +     ib_ctx.ib_dev_count++;
-> > > > > > > > > > +
-> > > > > > > > > > +     return 0;
-> > > > > > > > > > +}
-> > > > > > > > > > +
-> > > > > > > > > > +static void rtrs_srv_remove_one(struct ib_device *device, void *client_data)
-> > > > > > > > > > +{
-> > > > > > > > > > +     struct rtrs_srv_ctx *ctx;
-> > > > > > > > > > +
-> > > > > > > > > > +     ib_ctx.ib_dev_count--;
-> > > > > > > > > > +
-> > > > > > > > > > +     if (ib_ctx.ib_dev_count)
-> > > > > > > > > > +             return;
-> > > > > > > > > > +
-> > > > > > > > > > +     /*
-> > > > > > > > > > +      * Since our CM IDs are NOT bound to any ib device we will remove them
-> > > > > > > > > > +      * only once, when the last device is removed
-> > > > > > > > > > +      */
-> > > > > > > > > > +     ctx = ib_ctx.srv_ctx;
-> > > > > > > > > > +     rdma_destroy_id(ctx->cm_id_ip);
-> > > > > > > > > > +     rdma_destroy_id(ctx->cm_id_ib);
-> > > > > > > > > > +}
-> > > > > > > > > > +
-> > > > > > > > > > +static struct ib_client rtrs_srv_client = {
-> > > > > > > > > > +     .name   = "rtrs_server",
-> > > > > > > > > > +     .add    = rtrs_srv_add_one,
-> > > > > > > > > > +     .remove = rtrs_srv_remove_one
-> > > > > > > > > > +};
-> > > > > > > > > > +
-> > > > > > > > > >  /**
-> > > > > > > > > >   * rtrs_srv_open() - open RTRS server context
-> > > > > > > > > >   * @ops:             callback functions
-> > > > > > > > > > @@ -2051,12 +2111,26 @@ struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_srv_ops *ops, u16 port)
-> > > > > > > > > >       if (!ctx)
-> > > > > > > > > >               return ERR_PTR(-ENOMEM);
-> > > > > > > > > >
-> > > > > > > > > > -     err = rtrs_srv_rdma_init(ctx, port);
-> > > > > > > > > > +     ib_ctx = (struct rtrs_srv_ib_ctx) {
-> > > > > > > > > > +             .srv_ctx        = ctx,
-> > > > > > > > > > +             .port           = port,
-> > > > > > > > > > +     };
-> > > > > > > > > > +
-> > > > > > > > > > +     err = ib_register_client(&rtrs_srv_client);
-> > > > > > > > > >       if (err) {
-> > > > > > > > > >               free_srv_ctx(ctx);
-> > > > > > > > > >               return ERR_PTR(err);
-> > > > > > > > > >       }
-> > > > > > > > > >
-> > > > > > > > > > +     /*
-> > > > > > > > > > +      * Since ib_register_client does not propagate the device add error
-> > > > > > > > > > +      * we check if .add was called and the RDMA connection init failed
-> > > > > > > > > > +      */
-> > > > > > > > > > +     if (ib_ctx.ib_dev_count < 0) {
-> > > > > > > > > > +             free_srv_ctx(ctx);
-> > > > > > > > > > +             return ERR_PTR(-ENODEV);
-> > > > > > > > > > +     }
-> > > > > > > > >
-> > > > > > > > > I afraid that you overcomplicated here, ib_register_client() doesn't
-> > > > > > > > > return error if ->add() for specific device failed, it doesn't mean
-> > > > > > > > > that ->add won't be called again for another device.
-> > > > > > > > >
-> > > > > > > > > So you don't need to use ib_dev_count == -1, just keep it to be 0 and
-> > > > > > > > > leave to  rtrs_srv_close() to free srv_ctx.
-> > > > > > > >
-> > > > > > > > Leaving it 0 when there is an error is not gonna work. Since when the
-> > > > > > > > modules are all built-in, a call to ib_register_client() will not
-> > > > > > > > result in a call to ->add() then and there. So ib_register_client()
-> > > > > > > > will return after registering the client, but without calling ->add().
-> > > > > > > > Which means, ib_dev_count would be 0.
-> > > > > > >
-> > > > > > > If ib_dev_count == 0 => rtrs_srv_rdma_init() didn't success => nothing
-> > > > > > > to release.
-> > > > > >
-> > > > > > True, but we have to send a failure back to the caller of
-> > > > > > "rtrs_srv_open()" (and user of this ulp); which in our case is
-> > > > > > rnbd-srv's function rnbd_srv_init_module().
-> > > > > > In our case, the rnbd-drv module init would fail if "rtrs_srv_open()"
-> > > > > > fails, meaning rtrs_srv_rdma_init() had failed.
-> > > > > >
-> > > > > > Even if we are talking in generic terms, any module calling the
-> > > > > > "rtrs_srv_open()" of the rtrs ulp, would want to know if the server
-> > > > > > open failed or succeeded right?
-> > > > > I think Leon is right, any success of call to ->add, we have something
-> > > > > to rtrs_srv_rdma_init,
-> > > > > we can consider rtrs_srv_open is success instead of an error.
-> > > >
-> > > > I don't think Leon is right. In case when all modules are built in,
-> > > > add is not called in place when ib_client_register is called (cause
-> > > > there are no registered devices and add_client_context will be called
-> > > > at some later point in time from enable_device_and_get instead). So we
-> > > > have two cases: built in and not built in. Then there is a possibility
-> > > > that rtrs_srv_rdma_init fails (create_id, bind_addr, etc.) or doesn't
-> > > > fail. Particularly we need to separate the case where add hasn't been
-> > > > called at all yet (i.e. modules are built in, we just need to wait
-> > > > until add gets called and then can start listening) and the case where
-> > > > it did get called but failed (i.e. modules are not built in it got
-> > > > called but failed - in that case we need to refuse to load module and
-> > > > return error since we can't start listening).
-> > > > The latter case is indicated by ib_dev_count = -1. I think it would
-> > > > make code easier to read if instead of setting ib_dev_count to -1 and
-> > > > explicitly checking whether it's below 0, one would introduce an
-> > > > additional variable for the error code returned by rtrs_srv_rdma_init
-> > > > and check it instead.
-> > >
-> > > Sorry, but it is very hard to read this block without indentations.
-> >
-> > Do you mean like empty lines between text paragraphs?
+> modprobe rdma_rxe add=eno1
 >
-> Yes
+> Thanks,
+> Kamal
 >
-> >
-> > >
-> > > Anyway, as I said there should be no difference in behaviour between no
-> > > devices and first device failed to initialize.
-> >
-> > If we load the server module and fail to initialize the device, we
-> > return an error to the user (insmod fails). We could just log
-> > something into dmesg and stay there doing nothing. Is that what you
-> > suggest? Then one would also probably want to have a way to say to the
-> > server it should try to init again (currently one just tries insmod
-> > again)...
->
-> First, we need to agree that "failure to initialize" is equal to the
-> situation where are no ib devices in the system.
->
-> Second, once device is registered, it needs to appear in relevant
-> sys/class with symlink to it. In similar way to uverbs:
->
-> [leonro@vm ~]$ ls -l /sys/class/infiniband_verbs/uverbs0/
-> ....
-> lrwxrwxrwx 1 root root    0 Aug 12 05:40 device -> ../../../0000:00:09.0
->
-> So users will see if server succeeded to initialize or not.
->
-> Third, retrigger ib_device and rtrs will try to reconnect, no need to
-> call insmod again.
+>> Zhu Yanjun
+>>
+>>>    move the rxe_cache_init() to the
+>>> context of device creation.
+>>>
+>>>    BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
+>>>    PGD 0 P4D 0
+>>>    Oops: 0000 [#1] SMP NOPTI
+>>>    CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
+>>>    Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
+>>>    RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
+>>>    Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
+>>>    RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
+>>>    RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
+>>>    RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
+>>>    RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
+>>>    R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
+>>>    R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
+>>>    FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
+>>>    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>    CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
+>>>    Call Trace:
+>>>     rxe_alloc+0xc8/0x160 [rdma_rxe]
+>>>     rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
+>>>     __ib_alloc_pd+0xcb/0x160 [ib_core]
+>>>     ib_mad_init_device+0x296/0x8b0 [ib_core]
+>>>     add_client_context+0x11a/0x160 [ib_core]
+>>>     enable_device_and_get+0xdc/0x1d0 [ib_core]
+>>>     ib_register_device+0x572/0x6b0 [ib_core]
+>>>     ? crypto_create_tfm+0x32/0xe0
+>>>     ? crypto_create_tfm+0x7a/0xe0
+>>>     ? crypto_alloc_tfm+0x58/0xf0
+>>>     rxe_register_device+0x19d/0x1c0 [rdma_rxe]
+>>>     rxe_net_add+0x3d/0x70 [rdma_rxe]
+>>>     ? dev_get_by_name_rcu+0x73/0x90
+>>>     rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
+>>>     parse_args+0x179/0x370
+>>>     ? ref_module+0x1b0/0x1b0
+>>>     load_module+0x135e/0x17e0
+>>>     ? ref_module+0x1b0/0x1b0
+>>>     ? __do_sys_init_module+0x13b/0x180
+>>>     __do_sys_init_module+0x13b/0x180
+>>>     do_syscall_64+0x5b/0x1a0
+>>>     entry_SYSCALL_64_after_hwframe+0x65/0xca
+>>>    RIP: 0033:0x7f9137ed296e
+>>>
+>>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+>>> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+>>> ---
+>>>    drivers/infiniband/sw/rxe/rxe.c       | 14 +++++++-------
+>>>    drivers/infiniband/sw/rxe/rxe_pool.c  |  3 +++
+>>>    drivers/infiniband/sw/rxe/rxe_sysfs.c |  7 +++++++
+>>>    3 files changed, 17 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+>>> index 5642eefb4ba1..60d5086dd34d 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
+>>> @@ -318,6 +318,13 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>>>    		goto err;
+>>>    	}
+>>> +	/* initialize slab caches for managed objects */
+>>> +	err = rxe_cache_init();
+>>> +	if (err) {
+>>> +		pr_err("unable to init object pools\n");
+>>> +		goto err;
+>>> +	}
+>>> +
+>>>    	err = rxe_net_add(ibdev_name, ndev);
+>>>    	if (err) {
+>>>    		pr_err("failed to add %s\n", ndev->name);
+>>> @@ -336,13 +343,6 @@ static int __init rxe_module_init(void)
+>>>    {
+>>>    	int err;
+>>> -	/* initialize slab caches for managed objects */
+>>> -	err = rxe_cache_init();
 
-Could you elaborate a little on what you mean when you say "retrigger
-ib_device", and how to do it.
+When modprobe rdma_rxe, rxe_module_init should be called. Then 
+rxe_cache_init should be also called.
 
-I looked around and the only thing I found are the below options, and
-they do not trigger the add functions. I am surely missing something
-here.
+Why does the above call trace occur?
 
-$ echo 1 > /sys/class/infiniband_verbs/uverbs0/device/rescan
-$ echo 1 > /sys/class/infiniband_verbs/uverbs0/device/reset
+Zhu Yanjun
 
->
-> Thanks
->
-> >
-> > Thank you,
-> > Danil
-> >
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > > >
-> > > > > Thanks Leon for catching this.
-> > > > >
-> > > > > Regards!
+>>> -	if (err) {
+>>> -		pr_err("unable to init object pools\n");
+>>> -		return err;
+>>> -	}
+>>> -
+>>>    	err = rxe_net_init();
+>>>    	if (err)
+>>>    		return err;
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+>>> index fbcbac52290b..06c6d1f835b7 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+>>> @@ -139,6 +139,9 @@ int rxe_cache_init(void)
+>>>    	for (i = 0; i < RXE_NUM_TYPES; i++) {
+>>>    		type = &rxe_type_info[i];
+>>>    		size = ALIGN(type->size, RXE_POOL_ALIGN);
+>>> +		if (type->cache)
+>>> +			continue;
+>>> +
+>>>    		if (!(type->flags & RXE_POOL_NO_ALLOC)) {
+>>>    			type->cache =
+>>>    				kmem_cache_create(type->name, size,
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+>>> index ccda5f5a3bc0..d0af48ba0110 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+>>> @@ -81,6 +81,13 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
+>>>    		goto err;
+>>>    	}
+>>> +	/* initialize slab caches for managed objects */
+>>> +	err = rxe_cache_init();
+>>> +	if (err) {
+>>> +		pr_err("unable to init object pools\n");
+>>> +		goto err;
+>>> +	}
+>>> +
+>>>    	err = rxe_net_add("rxe%d", ndev);
+>>>    	if (err) {
+>>>    		pr_err("failed to add %s\n", intf);
+>>
 
-
-
--- 
-
-Regards
--Haris
