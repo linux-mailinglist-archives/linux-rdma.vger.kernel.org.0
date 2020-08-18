@@ -2,133 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F40248CA9
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Aug 2020 19:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3704248D9E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Aug 2020 20:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgHRROt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Aug 2020 13:14:49 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36940 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726974AbgHRROj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Aug 2020 13:14:39 -0400
-Received: by mail-wr1-f65.google.com with SMTP id y3so19007968wrl.4
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 10:14:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vb3zGwE1WCHx+27JTR7GFIFm9G79r4Q2mIZjMGFpqGY=;
-        b=sTaTNL9SL0Pcd5vL3uEsrZ2bz0vkolgd/wNQeron6kgVAbCXSOVDyn6cE1k10HH5UJ
-         hzcWlnvzKcs6BfSCaYvROEqYNqgBVnT70SqHya3JfKnqEHQQoEhHl4D3YKAjgM0C5JMC
-         2J9s6fHUWjFcrTIUmAJn0rn5HwBB9veqytx6gspS72KwScAA1pt3ES4aL5GjXwbptwFa
-         2S5yVK8tOs9bpWosZzldEf/SFZa5bzFPNJWkqG8PG3Qo/8GNSTeg36SW9MfvvpjhoHr0
-         h869b6rJbLKejeHGPUF0ZZMNShHsQQU/HBSNPb17D7X3RBI0B9iaH2NLy4FvEs/glVz5
-         phDg==
-X-Gm-Message-State: AOAM531gYlAIWOuYk+iu+9A/WDoSsH7psgT9Ob928aFWeYK9m1Z57mEj
-        SN47cRahAwJyYeZpByRHJywYr8Tu639PVw==
-X-Google-Smtp-Source: ABdhPJyJHY/NJ3mG0RnRPvsuD1T6FVfsRe2a3gqSII96sXaJzw7NrhRfx5QMBsW4GuseFGLoY7t11w==
-X-Received: by 2002:adf:dfcf:: with SMTP id q15mr241953wrn.345.1597770876875;
-        Tue, 18 Aug 2020 10:14:36 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:3dce:63f2:5e83:391e? ([2601:647:4802:9070:3dce:63f2:5e83:391e])
-        by smtp.gmail.com with ESMTPSA id z127sm703344wme.44.2020.08.18.10.14.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 10:14:36 -0700 (PDT)
-Subject: Re: regression with "nvme-rdma: use new shared CQ mechanism" from
- v5.9-rc1
-To:     Yi Zhang <yi.zhang@redhat.com>, linux-nvme@lists.infradead.org
-Cc:     yaminf@mellanox.com, kbusch@kernel.org, hch@lst.de,
-        linux-rdma@vger.kernel.org
-References: <1476432272.38046616.1597766884817.JavaMail.zimbra@redhat.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <797037be-c908-6c95-e459-4e997de51679@grimberg.me>
-Date:   Tue, 18 Aug 2020 10:14:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726585AbgHRSAf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Aug 2020 14:00:35 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18649 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726541AbgHRSAc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Aug 2020 14:00:32 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f3c17050003>; Tue, 18 Aug 2020 10:59:33 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 18 Aug 2020 11:00:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 18 Aug 2020 11:00:31 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 18 Aug
+ 2020 18:00:31 +0000
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.44) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 18 Aug 2020 18:00:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RQ++KQOpnHyerh9c8gDcCx0jwfwjd6deXvWSPybhmuQQreRKXvIHXyU4cHk1sl6POHCEaHdO8WHU3QcG1m3XNma9vcbSWM6yohjNO0LFNM+K6dNlOtvXXBReCK9z0SKvoH8mu8eoBl7RnFNU4ChEdMyinPG5xDkIJogfq5HR9IYZZSOi4h0TxvrNwajlZJU6++KqwwCKAJobLADSf2TKuhNen6Jzm2yOy+ww7UWci/xBA3GyJjq018AePVD+KVoPDOTzCaEQvuaPN0PzRHO78jaZmdQyV04kG0g9pb0PmeRfjEDH8yAaWzKKzp8txEd9zUMbtTmc0WIG1PIk+LPIgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xdIffwpkdCgXFwUoecVzKow+Tj7FkSRff4d62iQ8GHc=;
+ b=LTC19IciQh+NqRdBBaNToqjcN1JkC5vULNzBJV/jlnMx+9WI9PkWOWOyzTH797rTsfp7ArZe9n1+PHr1csswQ14vIjl4McDB/JPEonAjhgQH3t0I2DI3J/USUZO1K4DMGcdUcno0I+5GDqBUJc0cypga9LS+E4cAKAsk4kaWJ3vvoG4UYbmd5ZeCt0bcnH5wt7PTgvk07iSXxpYx7JUCFPkb3NO2dgKPrQIWxDKspr/uZ2gOTwLJxmluOYmFAx1SNtqfJxLyGFflVRxpD6qARVuM5gvQsJWydXGalOWNfGWZePTbBEt+zFfaWVVzooAhlPDlPyZig50vEF55RLuRUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0204.namprd12.prod.outlook.com (2603:10b6:4:51::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.22; Tue, 18 Aug
+ 2020 18:00:30 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3283.028; Tue, 18 Aug 2020
+ 18:00:30 +0000
+Date:   Tue, 18 Aug 2020 15:00:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/3] Cleanups to flow creation paths
+Message-ID: <20200818180028.GA2056204@nvidia.com>
+References: <20200730081235.1581127-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200730081235.1581127-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR04CA0016.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::29) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <1476432272.38046616.1597766884817.JavaMail.zimbra@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0016.namprd04.prod.outlook.com (2603:10b6:208:d4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16 via Frontend Transport; Tue, 18 Aug 2020 18:00:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k85uO-008cxc-D6; Tue, 18 Aug 2020 15:00:28 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9bf7ab3b-2031-41d3-3a5f-08d843a09815
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0204:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0204311FF3FD9AB493C67E88C25C0@DM5PR1201MB0204.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YhG7POF0k2IKLKyY/T4nNmAuLvqDpBRhW8Nd/kAE+0LqgE6y0MaZkHAz8w5QP9UoYyC4kO4EKFKtN4b4ytms0bflMJlvBWZeCjAngPiyHTxPB2n0lE5cDgys2K/AwboztFgXFl8vDe96D7GkxV4Qt8SKCviFnZVaGRHiBNMGHEleAo4IqKOYWlLO08QQORPZL9Hqz4+nd0v7cmHsXQyT8G3fyE/MMSzT46MaI+8vOdn8cCrDoPVbDnyG/cVW/hJD61UM2NlpWeqQ50JXxRjls1fDIlMAxqxikCKMRFhX5AXovNozK1omwv7dzq59XezgSd9FBW1EgaBRHrKEUu7a7Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(366004)(2906002)(33656002)(8676002)(4326008)(8936002)(107886003)(6916009)(9746002)(9786002)(54906003)(478600001)(426003)(2616005)(26005)(1076003)(4744005)(5660300002)(316002)(186003)(66556008)(66476007)(36756003)(66946007)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GT1SJ3H7/xxtV9l8nUBrYOYpDj7nelAVJZRH4bw62VaT5bf02TdHyCdyTMqKO1cQ+c19IwEzMvGtOSww5ngHT8/418BOE6LwD5B6aSB27vTRY+qje+rnOjD2Rg7PcN9O/M3GtiYwJQ8l7uRPpq1MhCUBUM8V3l2IZYFwOgV3ANHAUcucy6CVcnfoOFBqRbV21s7QOQyKHeDBkyKMkbZrh+oiJhFC36YEh2wWtLJhxslxHlamB7smzV7UjKybQe0pPaL4pNDX+Xhbj71Ipq43DFq0cvhRVBVzc2Xacdc/7mNN3hOMvvEcucmGCntBfkSprK1wyngsG96nrMNA3UTn4253zEfLKGnBrYG5+9LeRAZxPmQOSmPoZjPoBBcCpVBGA6HxWd/UVETxhZ9Ro6hiwQotvWiK2dxaGJOHzxfhE5CN6S4IPTb/eKhaLPRzfGj+By7TRjCIXYK9vWvu0tqjl8zxi3c/48DwbyASOrU+s1hF0Jadpj7kMwrua6dqdLiVS6m0YgpcWDM6CV174MZjlx00FfJ9YJQhvH9ceBzsYZ6Wl8/Khrwpz94cKEUMT+JAwih9E7wOL2w2tm3Va16MhpkVwcJ915stqWHUTQKNT5F+pFBG10LhG7Fqqi16L73UQBaxPlMjOSdP6u9hmIOITw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bf7ab3b-2031-41d3-3a5f-08d843a09815
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2020 18:00:30.0860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8F/5g0T6yBr/Zzj/AfIH6ANy+0sQfg7/jxNoIxGlTt35/nfbysswsjTHXhSUChRx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0204
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1597773573; bh=xdIffwpkdCgXFwUoecVzKow+Tj7FkSRff4d62iQ8GHc=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Exchange-Transport-Forked:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=jO4SgFTlMGnaKZ2cEL42TR7m86fLiw2rLeWW1NaSpOrFZa8kVWdRmRTfQ9hPmW4dU
+         Q+9E6LTaACVryCuIwE2CGA5kHBqWzcRtVQIA+3+knBihPo2RfajI0ZX5uo3GXUiM70
+         7aNIsVoUzMTwqxqQPC9YxEKKdEM5vxusWrdT8Wlx7mfh8l5MLtXXzA6EEzhEoYlh/m
+         Xzp37OvkAoooRm5ZUv4VrHlS5jTeRxiQYhlEexEdtXsJFuof+Rzlszrgo7WhM+DMXi
+         CfL7q4CQ/Sonotgpc/u0BEPaWZ62c2tgk9FyVkpVmm9l12k1JO3t4zNIdhhYK5JzAK
+         kqizYD4fy6x8g==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+linux-rdma
+On Thu, Jul 30, 2020 at 11:12:32AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Very straightforward cleanup.
+> 
+> Thanks
+> 
+> Leon Romanovsky (3):
+>   RDMA/mlx5: Simplify multiple else-if cases with switch keyword
+>   RDMA/mlx5: Replace open-coded offsetofend() macro
+>   RDMA: Remove constant domain argument from flow creation call
 
-On 8/18/20 9:08 AM, Yi Zhang wrote:
-> Hello
-> 
-> With Sagi's new blktests nvme rdma[1], I found one regresson that lead nvme/004 hang.
-> By bisecting, I found it was introduced from [2], could anyone help check this issue, thanks.
-> 
-> [1] https://marc.info/?l=linux-block&m=159738590701657&w=2
-> # nvme_trtype=rdma ./check nvme/004                      -------> hang and never finished
-> nvme/004 (test nvme and nvmet UUID NS descriptors)
->      runtime  1.647s  ...
-> 
-> # ps aux | grep rdma_rxe
-> root        1657  0.0  0.0   8292  1632 pts/0    D+   11:54   0:00 modprobe -r rdma_rxe
->          
-> # cat /proc/1657/stack
-> [<0>] disable_device+0xa2/0x130 [ib_core]
-> [<0>] __ib_unregister_device+0x37/0xa0 [ib_core]
-> [<0>] ib_unregister_driver+0x9d/0xd0 [ib_core]
-> [<0>] rxe_module_exit+0x16/0x7d [rdma_rxe]
-> [<0>] __do_sys_delete_module.constprop.0+0x170/0x2c0
-> [<0>] do_syscall_64+0x33/0x40
-> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> # dmesg
-> [  273.577444] run blktests nvme/004 at 2020-08-18 11:54:22
-> [  273.615610] rdma_rxe: loaded
-> [  273.623675] infiniband rxe0: set active
-> [  273.627962] infiniband rxe0: added eno1
-> [  273.639520] infiniband rxe1: set down
-> [  273.643611] infiniband rxe1: added eno2
-> [  273.655617] infiniband rxe0: set down
-> [  273.659713] infiniband rxe0: added eno3
-> [  273.673854] infiniband rxe0: set down
-> [  273.677946] infiniband rxe0: added eno4
-> [  273.695954] infiniband rxe0: set active
-> [  273.700236] infiniband rxe0: added enp130s0f0
-> [  273.717858] infiniband rxe0: set down
-> [  273.721954] infiniband rxe0: added enp130s0f1
-> [  273.739460] lo speed is unknown, defaulting to 1000
-> [  273.744941] lo speed is unknown, defaulting to 1000
-> [  273.750413] lo speed is unknown, defaulting to 1000
-> [  273.757853] infiniband rxe0: set active
-> [  273.762139] infiniband rxe0: added lo
-> [  273.766229] lo speed is unknown, defaulting to 1000
-> [  273.771681] lo speed is unknown, defaulting to 1000
-> [  273.777135] lo speed is unknown, defaulting to 1000
-> [  273.992958] loop: module loaded
-> [  274.024550] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
-> [  274.039541] nvmet_rdma: enabling port 0 (10.16.221.68:4420)
-> [  274.066081] nvmet: creating controller 1 for subsystem blktests-subsystem-1 for NQN nqn.2014-08.org.nvmexpress:uuid:e5372c18c860491bb18adb3b5b025a20.
-> [  274.081395] nvme nvme0: creating 32 I/O queues.
-> [  274.120241] nvme nvme0: mapped 32/0/0 default/read/poll queues.
-> [  274.132037] nvme nvme0: new ctrl: NQN "blktests-subsystem-1", addr 10.16.221.68:4420
-> [  275.171715] nvme nvme0: Removing ctrl: NQN "blktests-subsystem-1"
-> [  275.311794] rdma_rxe: not configured on eno1
-> [  275.321210] rdma_rxe: not configured on eno2
-> [  275.333410] rdma_rxe: not configured on eno3
-> [  275.347527] rdma_rxe: not configured on eno4
-> [  275.362830] rdma_rxe: not configured on enp130s0f0
-> [  275.383157] rdma_rxe: not configured on enp130s0f1
-> [  275.406067] rdma_rxe: not configured on lo
-> [  513.938222] infiniband rocep130s0f0: set active
-> [  558.930867] infiniband rocep130s0f0: set active
-> [  558.948955] infiniband rocep130s0f0: set active
-> [  603.930414] infiniband rocep130s0f0: set active
-> 
-> 
-> [2]
-> ca0f1a8055be nvmet-rdma: use new shared CQ mechanism
-> 287f329e3131 nvme-rdma: use new shared CQ mechanism
-> 
-> Best Regards,
->    Yi Zhang
-> 
-> 
+Applied to for-next, thanks
+
+Jason
