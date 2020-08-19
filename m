@@ -2,92 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C357249857
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 10:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5862C249987
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 11:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHSIjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Aug 2020 04:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgHSIjD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Aug 2020 04:39:03 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8BC061757;
-        Wed, 19 Aug 2020 01:39:03 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id o21so20316172oie.12;
-        Wed, 19 Aug 2020 01:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W71/LrqAlFC3/G6z89zTm/EWsI2g+jB+qB4Bkg6curE=;
-        b=IjVvBhVoSR3FYwKueuFpDWuNsDKlq1SR3TQvN4tE+a/yvNtgtHikKf5JvTXr2Armey
-         OFo8wZ+MynwWOsPjvyBc1KeW6iOhXZWXYihIjaXi0sjC8jCmJC2CBad9Dwe8UcbEPMa2
-         a1ULfEPX730s0meC9XaN8HFs4s8P7MxvHyKlLlAuvson1P3LshQ2tQr5kB/nZ2z7QeyT
-         q72qg7KLyN/TkFHoN0S6/Cut+2nYQajIuAZbWpqmFTAYCLFNX8fc1AKLd3ds9DslzsiD
-         hIeZuCb/hxEYA/Lp+tcHQsPXg+70+a836jrudMgOyQgSW4wCoBqeLokOd6BuL5GgVpIb
-         k05g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W71/LrqAlFC3/G6z89zTm/EWsI2g+jB+qB4Bkg6curE=;
-        b=ptX6YG/QC7ndZ3owTcgJtBsl8X0u5VWyEHgxe2s+Rm/73DhWM5jOnPnDVoEMLE787l
-         tDRnLocIp55zLsRmKlijCIR2xAjz28DUyHDlpAHJxBSSO6tyl8cjXiKLPnKgCpQYzhBx
-         UWnXQ38eCELGBILXOCDnxKaj2m5dmlHTUuzeF3yxA/DLD6ti5wcq5nqTpB4UXspEaXOB
-         Ax4GStIXIJNucUg3KvKsp2H2Ma45JzayPI/BGfWvtVag42Jtu2uLHT6Zj/QGv5FXRzui
-         A+mJYXeIQr3NBw8Hxtiax9xNeXEXgkKKzZK34TRcvUu/xg5EJp1ljn6u77IsTIoXVzPW
-         1p0g==
-X-Gm-Message-State: AOAM530Ludv4V5OV5OMaAYVPjtBqP2l0QzE8dHHDOIcx1PP+d7y5yzSQ
-        BvxIrNsPti30FS81v3eIpPPKbcNBctTCovKMDHE=
-X-Google-Smtp-Source: ABdhPJxVA1KzgN4UZOZ2fKohkd/bjyUGON/hZI5e7pOIxlirCnCYNveul3+UeA9M1UocEo8mBES3PsrV0xL0Mn3X1h8=
-X-Received: by 2002:aca:5102:: with SMTP id f2mr2377201oib.169.1597826342732;
- Wed, 19 Aug 2020 01:39:02 -0700 (PDT)
+        id S1725804AbgHSJk5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Aug 2020 05:40:57 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:43216 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726876AbgHSJk5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Aug 2020 05:40:57 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E1FE0282A39096AF016A;
+        Wed, 19 Aug 2020 17:40:53 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 19 Aug 2020 17:40:43 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-rc] Revert "RDMA/hns: Reserve one sge in order to avoid local length error"
+Date:   Wed, 19 Aug 2020 17:39:44 +0800
+Message-ID: <1597829984-20223-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20200819075632.22285-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200819075632.22285-1-dinghao.liu@zju.edu.cn>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 19 Aug 2020 16:38:50 +0800
-Message-ID: <CAD=hENdh9Lk1o6cknBptUHnQXLDUD=skuuD4rF+eLt3X4HTt0g@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Fix memleak in rxe_mem_init_user
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Zhu Yanjun <yanjunz@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 3:59 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
->
-> When page_address() fails, umem should be freed just
-> like when rxe_mem_alloc() fails.
->
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/infiniband/sw/rxe/rxe_mr.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index cdd811a45120..ce24144de16a 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -205,6 +205,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
->                         vaddr = page_address(sg_page_iter_page(&sg_iter));
->                         if (!vaddr) {
->                                 pr_warn("null vaddr\n");
-> +                               ib_umem_release(umem);
-seems reasonable.
+This patch caused some issues on SEND operation, and it should be reverted
+to make the drivers work correctly. There will be a better solution that
+has been tested carefully to solve the original problem.
 
-Thanks,
+This reverts commit 711195e57d341e58133d92cf8aaab1db24e4768d.
 
-Zhu Yanjun
->                                 err = -ENOMEM;
->                                 goto err1;
->                         }
-> --
-> 2.17.1
->
+Fixes: 711195e57d34 ("RDMA/hns: Reserve one sge in order to avoid local length error")
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h | 2 --
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 9 ++++-----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 4 +---
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 5 ++---
+ drivers/infiniband/hw/hns/hns_roce_srq.c    | 2 +-
+ 5 files changed, 8 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index da9888d..6edcbdc 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -65,8 +65,6 @@
+ #define HNS_ROCE_CQE_WCMD_EMPTY_BIT		0x2
+ #define HNS_ROCE_MIN_CQE_CNT			16
+ 
+-#define HNS_ROCE_RESERVED_SGE			1
+-
+ #define HNS_ROCE_MAX_IRQ_NUM			128
+ 
+ #define HNS_ROCE_SGE_IN_WQE			2
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index d296859..4cda95e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -633,7 +633,7 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 
+ 		wqe_idx = (hr_qp->rq.head + nreq) & (hr_qp->rq.wqe_cnt - 1);
+ 
+-		if (unlikely(wr->num_sge >= hr_qp->rq.max_gs)) {
++		if (unlikely(wr->num_sge > hr_qp->rq.max_gs)) {
+ 			ibdev_err(ibdev, "rq:num_sge=%d >= qp->sq.max_gs=%d\n",
+ 				  wr->num_sge, hr_qp->rq.max_gs);
+ 			ret = -EINVAL;
+@@ -653,7 +653,6 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 		if (wr->num_sge < hr_qp->rq.max_gs) {
+ 			dseg->lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
+ 			dseg->addr = 0;
+-			dseg->len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
+ 		}
+ 
+ 		/* rq support inline data */
+@@ -787,8 +786,8 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 		}
+ 
+ 		if (wr->num_sge < srq->max_gs) {
+-			dseg[i].len = cpu_to_le32(HNS_ROCE_INVALID_SGE_LENGTH);
+-			dseg[i].lkey = cpu_to_le32(HNS_ROCE_INVALID_LKEY);
++			dseg[i].len = 0;
++			dseg[i].lkey = cpu_to_le32(0x100);
+ 			dseg[i].addr = 0;
+ 		}
+ 
+@@ -5070,7 +5069,7 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+ 
+ 	attr->srq_limit = limit_wl;
+ 	attr->max_wr = srq->wqe_cnt - 1;
+-	attr->max_sge = srq->max_gs - HNS_ROCE_RESERVED_SGE;
++	attr->max_sge = srq->max_gs;
+ 
+ out:
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 1fb1c58..ac29be4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -92,9 +92,7 @@
+ #define HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ		PAGE_SIZE
+ #define HNS_ROCE_V2_PAGE_SIZE_SUPPORTED		0xFFFFF000
+ #define HNS_ROCE_V2_MAX_INNER_MTPT_NUM		2
+-#define HNS_ROCE_INVALID_LKEY			0x0
+-#define HNS_ROCE_INVALID_SGE_LENGTH		0x80000000
+-
++#define HNS_ROCE_INVALID_LKEY			0x100
+ #define HNS_ROCE_CMQ_TX_TIMEOUT			30000
+ #define HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE	2
+ #define HNS_ROCE_V2_RSV_QPS			8
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index e94ca13..c063c45 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -386,8 +386,7 @@ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+ 		return -EINVAL;
+ 	}
+ 
+-	hr_qp->rq.max_gs = roundup_pow_of_two(max(1U, cap->max_recv_sge) +
+-					      HNS_ROCE_RESERVED_SGE);
++	hr_qp->rq.max_gs = roundup_pow_of_two(max(1U, cap->max_recv_sge));
+ 
+ 	if (hr_dev->caps.max_rq_sg <= HNS_ROCE_SGE_IN_WQE)
+ 		hr_qp->rq.wqe_shift = ilog2(hr_dev->caps.max_rq_desc_sz);
+@@ -402,7 +401,7 @@ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+ 		hr_qp->rq_inl_buf.wqe_cnt = 0;
+ 
+ 	cap->max_recv_wr = cnt;
+-	cap->max_recv_sge = hr_qp->rq.max_gs - HNS_ROCE_RESERVED_SGE;
++	cap->max_recv_sge = hr_qp->rq.max_gs;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index f40a000..b9e2dbd 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -297,7 +297,7 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	spin_lock_init(&srq->lock);
+ 
+ 	srq->wqe_cnt = roundup_pow_of_two(init_attr->attr.max_wr + 1);
+-	srq->max_gs = init_attr->attr.max_sge + HNS_ROCE_RESERVED_SGE;
++	srq->max_gs = init_attr->attr.max_sge;
+ 
+ 	if (udata) {
+ 		ret = ib_copy_from_udata(&ucmd, udata, sizeof(ucmd));
+-- 
+2.8.1
+
