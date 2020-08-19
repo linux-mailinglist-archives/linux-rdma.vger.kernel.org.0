@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8384924938F
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 05:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62236249390
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 05:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgHSDnF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Aug 2020 23:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        id S1726627AbgHSDn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Aug 2020 23:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgHSDnF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Aug 2020 23:43:05 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B239C061389
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:43:05 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h16so18020947oti.7
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:43:05 -0700 (PDT)
+        with ESMTP id S1726410AbgHSDn2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Aug 2020 23:43:28 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1263BC061389
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:43:28 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id z22so19888800oid.1
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LbzzSd6+FtCs2j1YkR2VUZSVZcYZF2OksTewulq0h2Q=;
-        b=YM5tLKoEZc17VL+jJ2rycB8EMDAGfRwcIMZCovu3SZ1Jm6lJil5KSZsbGWfRsI//za
-         QBcfQcxt17kYRgq1fVeLWIYZVCBMHMKAIy30XcZ19aymhiYtOoL78+Pzs5ktUCVG1TEg
-         D+zL5+fZ8t/VFD3BgE0tRhXJzW3T1jtLqpRDm0cMMYQ3AgUeLBVJaxYawTXCkp6eOs0+
-         hl+7uY2MP/nc7+dLcg7MtagLpo2YfwbnT2iVFEEWedj02jrw9mw9I2aUn8NhnXTeMGht
-         TZqhlgKP0Jj9nudTw9xofNcDVT+AZji4ywue0IkTqBhoeFWVub9oNGDyGNqPY0+YGTTt
-         arBg==
+        bh=juJfX/gqaYFk5ct/d6Vp6z9eCFpFK5TQej96UmJucQE=;
+        b=hR037aZ/1BtXq/yD6F/EdH5NOJnVa5VHIkUesXgUdnSxWzp9LhHoU3oXzDlFwIfygy
+         Egg4/Lw9TDHOQBpwwSnhjWukA+gQtcBNy+TESxhJ3IB4ZsQSwGyllnSXZeGTlha6fipc
+         tYML6FLH0DP7Iw+jAAtsZKUPsGuiksXs86ICOzLTzIL+NzzlNeOYw0BrdThBv311SVzf
+         MPF+NCb2gifQlG0JnsoGxvz6DhEBF3WwgYPRYCQlCTwpgga8eU7D8iRDT9xTpdvhAFrQ
+         nSHplucoAUwin9Xezwl0s54T+BL+IPAd0hKejFzmLqvWrh2S+A83TTYG9D/7/47n8DIH
+         bEbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LbzzSd6+FtCs2j1YkR2VUZSVZcYZF2OksTewulq0h2Q=;
-        b=OISlVJZT1zI4K/adgHtiH9auTBNBTVO84IhoXmdznmt2m49BafC9t1Lb0mXkFq/eK8
-         ncMFaq50SHOtdQf6WFx4wQ+eJpGorMtbiG1A3wZjzd8ovauwDqoSeJSW4PbzBFv0+asZ
-         TBVhS39OyDTke0Wx2TuiXIjuXas6XlYCa/ffmr3C5wfWdyN9NjeLiEO6+7UWXBWU1dmW
-         IB1lmlRNLPHbI+vmMeFXKH9esQyxNzibVmFWQZqVdIvodT6avwPyIN4NEjsxHVNNyJ/w
-         +8W+t864OUOiw9+UByxFW6MupCcnWzJIliffbfNtJ8X6GnKc4Y4Z52Gko4dU/7CvnzrX
-         c9cQ==
-X-Gm-Message-State: AOAM531sPU7Lt9dm94LFwYWkzAAG++hakCzbCuB4LyXFlj1DrQpcYXov
-        nk7w4IkT34E4KYMjy89qPWvBPCmlthz6+g==
-X-Google-Smtp-Source: ABdhPJxRzQva7BSYLY12+FVN3YzyhNKRnhIk/mzsrWRoIx0HDM5ZJGojvwX5V8KBuEMRAVZymB22+g==
-X-Received: by 2002:a9d:5786:: with SMTP id q6mr17377912oth.258.1597808584436;
-        Tue, 18 Aug 2020 20:43:04 -0700 (PDT)
+        bh=juJfX/gqaYFk5ct/d6Vp6z9eCFpFK5TQej96UmJucQE=;
+        b=PpVlc7cbnW1YAd7ctSdQgyJVTLCzDfqEAIM4EmVb1JB0OnG7DV6pmFMpheXoBr+Gp4
+         1Jf7TnMZE6ke9eGp7TMxp1JtBJq1wUhx03x2GlNVrtroZexSe4pMRq+kmXfaTwp5h97H
+         GfM4OVL4pyJgQ+cg2kzzQxVNJzyboQLpNepnFo0MfzVgFHpzPSH8CxV1GkxIf25kKxSb
+         oywnLGm0Xz1LTYjit+Wj0pa/6qoFmY100N7gUauchgbTGGbcjngYd/HxOR7bcxcIWlf0
+         e3TjtyGitvmnRl9QpxqLS1rJDvIiYKkBYPstHlc1HYZ2QVB5S7ZooJHOy54Fu8IQjDLU
+         YPpQ==
+X-Gm-Message-State: AOAM533V80CMzK6+SMeGayclGu5ofqxcqkJqiPRrN3BX3kbCxddZMyvN
+        IFrmz2hlK0SZPcRhsP8mx30=
+X-Google-Smtp-Source: ABdhPJzdQAZ8wKxu/tQN2F9VTi5lWhKmq+EL4jGfVtGHNN3gOHnT41e7xa1H6bm59t1r8mtiDD3Aww==
+X-Received: by 2002:aca:3ac3:: with SMTP id h186mr2058338oia.44.1597808607529;
+        Tue, 18 Aug 2020 20:43:27 -0700 (PDT)
 Received: from localhost ([2605:6000:8b03:f000:2731:80e6:14c6:1150])
-        by smtp.gmail.com with ESMTPSA id w9sm4371713oih.31.2020.08.18.20.43.04
+        by smtp.gmail.com with ESMTPSA id x9sm4447037ood.45.2020.08.18.20.43.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 20:43:04 -0700 (PDT)
+        Tue, 18 Aug 2020 20:43:27 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH v2 09/16] rdma_rxe: Extended pools to support both keys and indices
-Date:   Tue, 18 Aug 2020 22:40:04 -0500
-Message-Id: <20200819034002.8835-10-rpearson@hpe.com>
+Subject: [PATCH v2 10/16] rdma_rxe: Implemented functional alloc_mw and dealloc_mw APIs
+Date:   Tue, 18 Aug 2020 22:40:06 -0500
+Message-Id: <20200819034002.8835-11-rpearson@hpe.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200819034002.8835-1-rpearson@hpe.com>
 References: <20200819034002.8835-1-rpearson@hpe.com>
@@ -64,264 +64,117 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Allowed both indices and keys to exist for objects in the pools.
-Previously you were limited to one or the other. This will support
-allowing the keys on MWs to change.
+Created basic functional alloc_mw and dealloc_mw funnctions.
+This change supports running user space test cases for these APIs.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.c | 73 ++++++++++++++--------------
- drivers/infiniband/sw/rxe/rxe_pool.h | 32 +++++++-----
- 2 files changed, 58 insertions(+), 47 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mw.c    | 55 +++++++++++++++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_pool.c  |  3 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  5 +++
+ 3 files changed, 58 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index f5df5e0b714f..ea8510044fbe 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -8,15 +8,62 @@
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ 
++/* this temporary code to test ibv_alloc_mw, ibv_dealloc_mw */
+ struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
+ 			   struct ib_udata *udata)
+ {
+-	pr_err_once("%s: not implemented\n", __func__);
+-	return ERR_PTR(-EINVAL);
++	struct rxe_pd *pd = to_rpd(ibpd);
++	struct rxe_dev *rxe = to_rdev(ibpd->device);
++	struct rxe_mw *mw;
++	u32 rkey;
++
++	if (unlikely((type != IB_MW_TYPE_1) &&
++		     (type != IB_MW_TYPE_2)))
++		return ERR_PTR(-EINVAL);
++
++	rxe_add_ref(pd);
++
++	mw = rxe_alloc(&rxe->mw_pool);
++	if (unlikely(!mw)) {
++		rxe_drop_ref(pd);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	/* pick a random rkey for now */
++	get_random_bytes(&rkey, sizeof(rkey));
++
++	rxe_add_index(mw);
++	rxe_add_key(mw, &rkey);
++
++	spin_lock_init(&mw->lock);
++	mw->qp			= NULL;
++	mw->mr			= NULL;
++	mw->addr		= 0;
++	mw->length		= 0;
++	mw->ibmw.pd		= ibpd;
++	mw->ibmw.type		= type;
++	mw->ibmw.rkey		= rkey;
++	mw->state		= (type == IB_MW_TYPE_2) ?
++					RXE_MEM_STATE_FREE :
++					RXE_MEM_STATE_VALID;
++
++	return &mw->ibmw;
+ }
+ 
+ int rxe_dealloc_mw(struct ib_mw *ibmw)
+ {
+-	pr_err_once("%s: not implemented\n", __func__);
+-	return -EINVAL;
++	struct rxe_mw *mw = to_rmw(ibmw);
++	struct rxe_pd *pd = to_rpd(ibmw->pd);
++	unsigned long flags;
++
++	spin_lock_irqsave(&mw->lock, flags);
++	mw->state = RXE_MEM_STATE_INVALID;
++	spin_unlock_irqrestore(&mw->lock, flags);
++
++	rxe_drop_ref(pd);
++	rxe_drop_index(mw);
++	rxe_drop_key(mw);
++	rxe_drop_ref(mw);
++
++	return 0;
+ }
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index ad6f50e8b57a..f9f16e7ed0f7 100644
+index f9f16e7ed0f7..5679714827ec 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.c
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -152,18 +152,18 @@ static int rxe_pool_init_index(struct rxe_pool *pool, u32 max, u32 min)
- 		goto out;
- 	}
- 
--	pool->max_index = max;
--	pool->min_index = min;
-+	pool->index.max_index = max;
-+	pool->index.min_index = min;
- 
- 	size = BITS_TO_LONGS(max - min + 1) * sizeof(long);
--	pool->table = kmalloc(size, GFP_KERNEL);
--	if (!pool->table) {
-+	pool->index.table = kmalloc(size, GFP_KERNEL);
-+	if (!pool->index.table) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
- 
--	pool->table_size = size;
--	bitmap_zero(pool->table, max - min + 1);
-+	pool->index.table_size = size;
-+	bitmap_zero(pool->index.table, max - min + 1);
- 
- out:
- 	return err;
-@@ -185,7 +185,8 @@ int rxe_pool_init(
- 	pool->max_elem		= max_elem;
- 	pool->elem_size		= ALIGN(size, RXE_POOL_ALIGN);
- 	pool->flags		= rxe_type_info[type].flags;
--	pool->tree		= RB_ROOT;
-+	pool->index.tree	= RB_ROOT;
-+	pool->key.tree		= RB_ROOT;
- 	pool->cleanup		= rxe_type_info[type].cleanup;
- 
- 	atomic_set(&pool->num_elem, 0);
-@@ -203,8 +204,8 @@ int rxe_pool_init(
- 	}
- 
- 	if (rxe_type_info[type].flags & RXE_POOL_KEY) {
--		pool->key_offset = rxe_type_info[type].key_offset;
--		pool->key_size = rxe_type_info[type].key_size;
-+		pool->key.key_offset = rxe_type_info[type].key_offset;
-+		pool->key.key_size = rxe_type_info[type].key_size;
- 	}
- 
- 	pool->state = RXE_POOL_STATE_VALID;
-@@ -218,7 +219,7 @@ static void rxe_pool_release(struct kref *kref)
- 	struct rxe_pool *pool = container_of(kref, struct rxe_pool, ref_cnt);
- 
- 	pool->state = RXE_POOL_STATE_INVALID;
--	kfree(pool->table);
-+	kfree(pool->index.table);
+@@ -61,7 +61,8 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
+ 	[RXE_TYPE_MW] = {
+ 		.name		= "rxe-mw",
+ 		.size		= sizeof(struct rxe_mw),
+-		.flags		= RXE_POOL_INDEX,
++		.flags		= RXE_POOL_INDEX
++				| RXE_POOL_KEY,
+ 		.max_index	= RXE_MAX_MW_INDEX,
+ 		.min_index	= RXE_MIN_MW_INDEX,
+ 	},
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index a7686772a6fc..52db82c27cf9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -445,6 +445,11 @@ static inline struct rxe_mr *to_rmr(struct ib_mr *mr)
+ 	return mr ? container_of(mr, struct rxe_mr, ibmr) : NULL;
  }
  
- static void rxe_pool_put(struct rxe_pool *pool)
-@@ -243,27 +244,27 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
- static u32 alloc_index(struct rxe_pool *pool)
- {
- 	u32 index;
--	u32 range = pool->max_index - pool->min_index + 1;
-+	u32 range = pool->index.max_index - pool->index.min_index + 1;
- 
--	index = find_next_zero_bit(pool->table, range, pool->last);
-+	index = find_next_zero_bit(pool->index.table, range, pool->index.last);
- 	if (index >= range)
--		index = find_first_zero_bit(pool->table, range);
-+		index = find_first_zero_bit(pool->index.table, range);
- 
- 	WARN_ON_ONCE(index >= range);
--	set_bit(index, pool->table);
--	pool->last = index;
--	return index + pool->min_index;
-+	set_bit(index, pool->index.table);
-+	pool->index.last = index;
-+	return index + pool->index.min_index;
- }
- 
- static void insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
- {
--	struct rb_node **link = &pool->tree.rb_node;
-+	struct rb_node **link = &pool->index.tree.rb_node;
- 	struct rb_node *parent = NULL;
- 	struct rxe_pool_entry *elem;
- 
- 	while (*link) {
- 		parent = *link;
--		elem = rb_entry(parent, struct rxe_pool_entry, node);
-+		elem = rb_entry(parent, struct rxe_pool_entry, index_node);
- 
- 		if (elem->index == new->index) {
- 			pr_warn("element already exists!\n");
-@@ -276,25 +277,25 @@ static void insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
- 			link = &(*link)->rb_right;
- 	}
- 
--	rb_link_node(&new->node, parent, link);
--	rb_insert_color(&new->node, &pool->tree);
-+	rb_link_node(&new->index_node, parent, link);
-+	rb_insert_color(&new->index_node, &pool->index.tree);
- out:
- 	return;
- }
- 
- static void insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
- {
--	struct rb_node **link = &pool->tree.rb_node;
-+	struct rb_node **link = &pool->key.tree.rb_node;
- 	struct rb_node *parent = NULL;
- 	struct rxe_pool_entry *elem;
- 	int cmp;
- 
- 	while (*link) {
- 		parent = *link;
--		elem = rb_entry(parent, struct rxe_pool_entry, node);
-+		elem = rb_entry(parent, struct rxe_pool_entry, key_node);
- 
--		cmp = memcmp((u8 *)elem + pool->key_offset,
--			     (u8 *)new + pool->key_offset, pool->key_size);
-+		cmp = memcmp((u8 *)elem + pool->key.key_offset,
-+			     (u8 *)new + pool->key.key_offset, pool->key.key_size);
- 
- 		if (cmp == 0) {
- 			pr_warn("key already exists!\n");
-@@ -307,8 +308,8 @@ static void insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
- 			link = &(*link)->rb_right;
- 	}
- 
--	rb_link_node(&new->node, parent, link);
--	rb_insert_color(&new->node, &pool->tree);
-+	rb_link_node(&new->key_node, parent, link);
-+	rb_insert_color(&new->key_node, &pool->key.tree);
- out:
- 	return;
- }
-@@ -320,7 +321,7 @@ void rxe_add_key(void *arg, void *key)
- 	unsigned long flags;
- 
- 	write_lock_irqsave(&pool->pool_lock, flags);
--	memcpy((u8 *)elem + pool->key_offset, key, pool->key_size);
-+	memcpy((u8 *)elem + pool->key.key_offset, key, pool->key.key_size);
- 	insert_key(pool, elem);
- 	write_unlock_irqrestore(&pool->pool_lock, flags);
- }
-@@ -332,7 +333,7 @@ void rxe_drop_key(void *arg)
- 	unsigned long flags;
- 
- 	write_lock_irqsave(&pool->pool_lock, flags);
--	rb_erase(&elem->node, &pool->tree);
-+	rb_erase(&elem->key_node, &pool->key.tree);
- 	write_unlock_irqrestore(&pool->pool_lock, flags);
- }
- 
-@@ -355,8 +356,8 @@ void rxe_drop_index(void *arg)
- 	unsigned long flags;
- 
- 	write_lock_irqsave(&pool->pool_lock, flags);
--	clear_bit(elem->index - pool->min_index, pool->table);
--	rb_erase(&elem->node, &pool->tree);
-+	clear_bit(elem->index - pool->index.min_index, pool->index.table);
-+	rb_erase(&elem->index_node, &pool->index.tree);
- 	write_unlock_irqrestore(&pool->pool_lock, flags);
- }
- 
-@@ -460,10 +461,10 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- 	if (pool->state != RXE_POOL_STATE_VALID)
- 		goto out;
- 
--	node = pool->tree.rb_node;
-+	node = pool->index.tree.rb_node;
- 
- 	while (node) {
--		elem = rb_entry(node, struct rxe_pool_entry, node);
-+		elem = rb_entry(node, struct rxe_pool_entry, index_node);
- 
- 		if (elem->index > index)
- 			node = node->rb_left;
-@@ -492,13 +493,13 @@ void *rxe_pool_get_key(struct rxe_pool *pool, void *key)
- 	if (pool->state != RXE_POOL_STATE_VALID)
- 		goto out;
- 
--	node = pool->tree.rb_node;
-+	node = pool->key.tree.rb_node;
- 
- 	while (node) {
--		elem = rb_entry(node, struct rxe_pool_entry, node);
-+		elem = rb_entry(node, struct rxe_pool_entry, key_node);
- 
--		cmp = memcmp((u8 *)elem + pool->key_offset,
--			     key, pool->key_size);
-+		cmp = memcmp((u8 *)elem + pool->key.key_offset,
-+			     key, pool->key.key_size);
- 
- 		if (cmp > 0)
- 			node = node->rb_left;
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index c5a7721c8fde..664153bf9392 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -59,8 +59,11 @@ struct rxe_pool_entry {
- 	struct kref		ref_cnt;
- 	struct list_head	list;
- 
--	/* only used if indexed or keyed */
--	struct rb_node		node;
-+	/* only used if keyed */
-+	struct rb_node		key_node;
++static inline struct rxe_mw *to_rmw(struct ib_mw *mw)
++{
++	return mw ? container_of(mw, struct rxe_mw, ibmw) : NULL;
++}
 +
-+	/* only used if indexed */
-+	struct rb_node		index_node;
- 	u32			index;
- };
+ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name);
  
-@@ -77,15 +80,22 @@ struct rxe_pool {
- 	unsigned int		max_elem;
- 	atomic_t		num_elem;
- 
--	/* only used if indexed or keyed */
--	struct rb_root		tree;
--	unsigned long		*table;
--	size_t			table_size;
--	u32			max_index;
--	u32			min_index;
--	u32			last;
--	size_t			key_offset;
--	size_t			key_size;
-+	/* only used if indexed */
-+	struct {
-+		struct rb_root		tree;
-+		unsigned long		*table;
-+		size_t			table_size;
-+		u32			last;
-+		u32			max_index;
-+		u32			min_index;
-+	} index;
-+
-+	/* only used if keyed */
-+	struct {
-+		struct rb_root		tree;
-+		size_t			key_offset;
-+		size_t			key_size;
-+	} key;
- };
- 
- /* initialize slab caches for managed objects */
+ void rxe_mc_cleanup(struct rxe_pool_entry *arg);
 -- 
 2.25.1
 
