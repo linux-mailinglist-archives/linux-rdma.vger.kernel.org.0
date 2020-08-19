@@ -2,327 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB48249239
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 03:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909CF249339
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Aug 2020 05:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgHSBS6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 18 Aug 2020 21:18:58 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3482 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726367AbgHSBS6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Aug 2020 21:18:58 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 82613A7203CB3127D07E;
-        Wed, 19 Aug 2020 09:18:55 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 19 Aug 2020 09:18:55 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 19 Aug 2020 09:18:54 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Wed, 19 Aug 2020 09:18:54 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     chenglang <chenglang@huawei.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next 2/4] RDMA/hns: Add support for EQE in size of 64
- Bytes
-Thread-Topic: [PATCH for-next 2/4] RDMA/hns: Add support for EQE in size of 64
- Bytes
-Thread-Index: AQHWdJSA42gvRda6Ck6t9YY3sQ9f3w==
-Date:   Wed, 19 Aug 2020 01:18:54 +0000
-Message-ID: <e3f2134b9a1342dc83897dc53627e030@huawei.com>
-References: <1597668344-48575-1-git-send-email-liweihang@huawei.com>
- <1597668344-48575-3-git-send-email-liweihang@huawei.com>
- <b949e571-219a-f6dc-3e22-1432669f1d1a@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727068AbgHSDID (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Aug 2020 23:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727043AbgHSDIC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Aug 2020 23:08:02 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A68C061389
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:08:02 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mw10so450098pjb.2
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Aug 2020 20:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Sb9vbApk6CCB20Zi+qR+drVkCzG+Jh/5puXQEl4JfcY=;
+        b=ZheUj4oEUa9jkfC7MIzvwyIOt7CSsIju3fxqj61oZ8YurHStdJndVxmOdESqK7s1BF
+         JEL5cm1x0te+6ivDYKWD/0tDxsLPSVuBDxdCE00qYw7rzXHt6eQfTpz294PBLTSUjNok
+         9JfbOj77KqkTGzS2qSRU/fZ6cA6RvQcRoeWO9PYmZYh1d2Yr57gLX5TmE62yPf0ek6qu
+         XQmyeL8UQRljHMPaLknpiwYQWel7oDmshMkf2unjnsADpzJG+r/MXYT72WEQJIvNKp2D
+         vNR6mnbuR5BFCF17RqYsPcL8KCfY6wyDgoiBOqwU2Qkv2BzDoXlfxmweD+yqTntEXvPb
+         HU7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Sb9vbApk6CCB20Zi+qR+drVkCzG+Jh/5puXQEl4JfcY=;
+        b=SnJDO9p6+xAEHM6cpkMNpZXBvf5HSixQg0eUOLLGyiBNwz4tWd3epxCAUXII2QSYUK
+         XTsaxdm1PkzUCAK1zCMCDU1bIelXEpaMWwe5uHF2aFJFFrbP4w6gRU3JGCTT6DgQHYDi
+         nvLGzh42mCbSEHZBU0waYBl8U7bY4d07AoJ39zWYCrcuuXafiUsYFk5vaIIlCq9Bw5er
+         t+HywulEQ8BxxIHH74n+Dh9Ye8kPOlHWQB7qViHxQJMd2+uF5W62BuulKrhP2qXQJ1CA
+         g9hCFa2xcB1WVYPNWdU71UoDM6T22zHKIZp3oC55PZG0FIhDTHA6xgmcnh8OICPMXYdH
+         vntw==
+X-Gm-Message-State: AOAM531qBQB3MlOuME/OHzvkriIOcnJoyfcgXcjNMNT+YLa/U2mxdhVL
+        JfNs8zdWe2ZZX6dljXwFUzo=
+X-Google-Smtp-Source: ABdhPJxWv2xGBQICiR/Igmn8a5Aj8C1L5m4cRszsabYpMWNATLEDB/W2lGP6bdaKM8MV6ItbDIv/Kw==
+X-Received: by 2002:a17:90a:bc96:: with SMTP id x22mr2537807pjr.164.1597806482096;
+        Tue, 18 Aug 2020 20:08:02 -0700 (PDT)
+Received: from [10.75.201.17] ([118.201.220.138])
+        by smtp.gmail.com with ESMTPSA id u3sm338206pjn.29.2020.08.18.20.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 20:08:01 -0700 (PDT)
+Subject: Re: [PATCH for-rc] RDMA/rxe: Fix panic when calling
+ kmem_cache_create()
+To:     Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20200812111447.256822-1-kamalheib1@gmail.com>
+ <9701a68d-c377-474a-5f65-c4e045a67e11@gmail.com>
+ <20200816221236.GA821081@kheib-workstation>
+ <a52afe9b-e474-5412-bf33-4f3a3690a322@gmail.com>
+ <20200818055057.GA881164@kheib-workstation> <20200818074956.GM7555@unreal>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Message-ID: <31678b13-4db1-d454-a85c-1ba5c8029c41@gmail.com>
+Date:   Wed, 19 Aug 2020 11:07:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200818074956.GM7555@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/8/18 14:55, chenglang wrote:
-> 
-> 
-> On 2020/8/17 20:45, Weihang Li wrote:
->> From: Wenpeng Liang <liangwenpeng@huawei.com>
->>
->> The new version of RoCEE supports using CEQE in size of 4B or 64B, AEQE in
->> size of 16B or 64B. The performance of bus can be improved by using larger
->> size of EQE.
->>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>   drivers/infiniband/hw/hns/hns_roce_device.h | 13 +++++++++---
->>   drivers/infiniband/hw/hns/hns_roce_hw_v1.c  | 10 ++++-----
->>   drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 33 ++++++++++++++++++++++-------
->>   drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  7 ++++--
->>   4 files changed, 44 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index 846954e..8d658a1 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -39,6 +39,7 @@
->>   
->>   /* hip08 is a pci device */
-> 
-> May delete this comment?
+On 8/18/2020 3:49 PM, Leon Romanovsky wrote:
+> On Tue, Aug 18, 2020 at 08:50:57AM +0300, Kamal Heib wrote:
+>> On Tue, Aug 18, 2020 at 09:48:43AM +0800, Zhu Yanjun wrote:
+>>> On 8/17/2020 6:12 AM, Kamal Heib wrote:
+>>>> On Sat, Aug 15, 2020 at 02:58:45PM +0800, Zhu Yanjun wrote:
+>>>>> On 8/12/2020 7:14 PM, Kamal Heib wrote:
+>>>>>> To avoid the following kernel panic when calling kmem_cache_create()
+>>>>>> with a NULL pointer from pool_cache(),
+>>>>> What is the root cause of this kernel panic?
+>>>>>
+>>>> The kernel panic is triggered using the following command and it happen
+>>>> because the cache is not getting initialized.
+>>>>
+>>>> modprobe rdma_rxe add=eno1
+>>>>
+>>>> Thanks,
+>>>> Kamal
+>>>>
+>>>>> Zhu Yanjun
+>>>>>
+>>>>>>     move the rxe_cache_init() to the
+>>>>>> context of device creation.
+>>>>>>
+>>>>>>     BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
+>>>>>>     PGD 0 P4D 0
+>>>>>>     Oops: 0000 [#1] SMP NOPTI
+>>>>>>     CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
+>>>>>>     Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
+>>>>>>     RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
+>>>>>>     Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
+>>>>>>     RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
+>>>>>>     RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
+>>>>>>     RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
+>>>>>>     RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
+>>>>>>     R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
+>>>>>>     R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
+>>>>>>     FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
+>>>>>>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>>     CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
+>>>>>>     Call Trace:
+>>>>>>      rxe_alloc+0xc8/0x160 [rdma_rxe]
+>>>>>>      rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
+>>>>>>      __ib_alloc_pd+0xcb/0x160 [ib_core]
+>>>>>>      ib_mad_init_device+0x296/0x8b0 [ib_core]
+>>>>>>      add_client_context+0x11a/0x160 [ib_core]
+>>>>>>      enable_device_and_get+0xdc/0x1d0 [ib_core]
+>>>>>>      ib_register_device+0x572/0x6b0 [ib_core]
+>>>>>>      ? crypto_create_tfm+0x32/0xe0
+>>>>>>      ? crypto_create_tfm+0x7a/0xe0
+>>>>>>      ? crypto_alloc_tfm+0x58/0xf0
+>>>>>>      rxe_register_device+0x19d/0x1c0 [rdma_rxe]
+>>>>>>      rxe_net_add+0x3d/0x70 [rdma_rxe]
+>>>>>>      ? dev_get_by_name_rcu+0x73/0x90
+>>>>>>      rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
+>>>>>>      parse_args+0x179/0x370
+>>>>>>      ? ref_module+0x1b0/0x1b0
+>>>>>>      load_module+0x135e/0x17e0
+>>>>>>      ? ref_module+0x1b0/0x1b0
+>>>>>>      ? __do_sys_init_module+0x13b/0x180
+>>>>>>      __do_sys_init_module+0x13b/0x180
+>>>>>>      do_syscall_64+0x5b/0x1a0
+>>>>>>      entry_SYSCALL_64_after_hwframe+0x65/0xca
+>>>>>>     RIP: 0033:0x7f9137ed296e
+>>>>>>
+>>>>>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+>>>>>> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+>>>>>> ---
+>>>>>>     drivers/infiniband/sw/rxe/rxe.c       | 14 +++++++-------
+>>>>>>     drivers/infiniband/sw/rxe/rxe_pool.c  |  3 +++
+>>>>>>     drivers/infiniband/sw/rxe/rxe_sysfs.c |  7 +++++++
+>>>>>>     3 files changed, 17 insertions(+), 7 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> index 5642eefb4ba1..60d5086dd34d 100644
+>>>>>> --- a/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> @@ -318,6 +318,13 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>>>>>>     		goto err;
+>>>>>>     	}
+>>>>>> +	/* initialize slab caches for managed objects */
+>>>>>> +	err = rxe_cache_init();
+>>>>>> +	if (err) {
+>>>>>> +		pr_err("unable to init object pools\n");
+>>>>>> +		goto err;
+>>>>>> +	}
+>>>>>> +
+>>>>>>     	err = rxe_net_add(ibdev_name, ndev);
+>>>>>>     	if (err) {
+>>>>>>     		pr_err("failed to add %s\n", ndev->name);
+>>>>>> @@ -336,13 +343,6 @@ static int __init rxe_module_init(void)
+>>>>>>     {
+>>>>>>     	int err;
+>>>>>> -	/* initialize slab caches for managed objects */
+>>>>>> -	err = rxe_cache_init();
+>>> When modprobe rdma_rxe, rxe_module_init should be called. Then
+>>> rxe_cache_init should be also called.
+>>>
+>>> Why does the above call trace occur?
+>>>
+>>> Zhu Yanjun
+>>>
+>> As you can see in the call trace attached to the commit message, When
+>> running the "modprobe rdma_rxe add=eno1" command the rxe_param_set_add()
+>> is called before rxe_module_init() (without init the caches), so the
+>> call trace occurs when trying to register the allocated rxe device from
+>> the context of rxe_param_set_add() without initialize the caches.
+> I would expect the fix being in rxe_init() instead of putting calls to
+> rxe_cache_init() in all places.
 
-OK, will remove it, thank you.
+I agree with you.
 
-> 
->>   #define PCI_REVISION_ID_HIP08			0x21
->> +#define PCI_REVISION_ID_HIP09			0x30
->>   
->>   #define HNS_ROCE_HW_VER1	('h' << 24 | 'i' << 16 | '0' << 8 | '6')
->>   
->> @@ -78,8 +79,10 @@
->>   #define HNS_ROCE_CEQ				0
->>   #define HNS_ROCE_AEQ				1
->>   
->> -#define HNS_ROCE_CEQ_ENTRY_SIZE			0x4
->> -#define HNS_ROCE_AEQ_ENTRY_SIZE			0x10
->> +#define HNS_ROCE_CEQE_SIZE			0x4
->> +#define HNS_ROCE_AEQE_SIZE			0x10
->> +
->> +#define HNS_ROCE_V3_EQE_SIZE			0x40
->>   
->>   #define HNS_ROCE_SL_SHIFT			28
->>   #define HNS_ROCE_TCLASS_SHIFT			20
->> @@ -680,7 +683,8 @@ enum {
->>   };
->>   
->>   struct hns_roce_ceqe {
->> -	__le32			comp;
->> +	__le32	comp;
->> +	u32	rsv[15];
-> 
-> 
-> __le32.
+Is it possible to make rxe_module_init be called before rxe_param_set_add?
 
-OK.
+Thanks
 
-> 
-> 
->>   };
->>   
->>   struct hns_roce_aeqe {
->> @@ -717,6 +721,7 @@ struct hns_roce_aeqe {
->>   			u8	rsv0;
->>   		} __packed cmd;
->>   	 } event;
->> +	u32 rsv[12];
-> 
-> 
-> ditto. Seems they are not new issues.
-> 
+>
+> Thanks
 
-OK.
-
-
-Thanks,
-Weihang
-
-> 
->>   };
->>   
->>   struct hns_roce_eq {
->> @@ -811,6 +816,8 @@ struct hns_roce_caps {
->>   	u32		pbl_hop_num;
->>   	int		aeqe_depth;
->>   	int		ceqe_depth;
->> +	u32		aeqe_size;
->> +	u32		ceqe_size;
->>   	enum ib_mtu	max_mtu;
->>   	u32		qpc_bt_num;
->>   	u32		qpc_timer_bt_num;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->> index ef7f8b3..ff76bf5 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->> @@ -3775,8 +3775,7 @@ static void hns_roce_v1_db_overflow_handle(struct hns_roce_dev *hr_dev,
->>   
->>   static struct hns_roce_aeqe *get_aeqe_v1(struct hns_roce_eq *eq, u32 entry)
->>   {
->> -	unsigned long off = (entry & (eq->entries - 1)) *
->> -			     HNS_ROCE_AEQ_ENTRY_SIZE;
->> +	unsigned long off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQE_SIZE;
->>   
->>   	return (struct hns_roce_aeqe *)((u8 *)
->>   		(eq->buf_list[off / HNS_ROCE_BA_SIZE].buf) +
->> @@ -3881,8 +3880,7 @@ static int hns_roce_v1_aeq_int(struct hns_roce_dev *hr_dev,
->>   
->>   static struct hns_roce_ceqe *get_ceqe_v1(struct hns_roce_eq *eq, u32 entry)
->>   {
->> -	unsigned long off = (entry & (eq->entries - 1)) *
->> -			     HNS_ROCE_CEQ_ENTRY_SIZE;
->> +	unsigned long off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQE_SIZE;
->>   
->>   	return (struct hns_roce_ceqe *)((u8 *)
->>   			(eq->buf_list[off / HNS_ROCE_BA_SIZE].buf) +
->> @@ -4253,7 +4251,7 @@ static int hns_roce_v1_init_eq_table(struct hns_roce_dev *hr_dev)
->>   				       CEQ_REG_OFFSET * i;
->>   			eq->entries = hr_dev->caps.ceqe_depth;
->>   			eq->log_entries = ilog2(eq->entries);
->> -			eq->eqe_size = HNS_ROCE_CEQ_ENTRY_SIZE;
->> +			eq->eqe_size = HNS_ROCE_CEQE_SIZE;
->>   		} else {
->>   			/* AEQ */
->>   			eq_table->eqc_base[i] = hr_dev->reg_base +
->> @@ -4263,7 +4261,7 @@ static int hns_roce_v1_init_eq_table(struct hns_roce_dev *hr_dev)
->>   				       ROCEE_CAEP_AEQE_CONS_IDX_REG;
->>   			eq->entries = hr_dev->caps.aeqe_depth;
->>   			eq->log_entries = ilog2(eq->entries);
->> -			eq->eqe_size = HNS_ROCE_AEQ_ENTRY_SIZE;
->> +			eq->eqe_size = HNS_ROCE_AEQE_SIZE;
->>   		}
->>   	}
->>   
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index d51b332..882d064 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -1740,6 +1740,8 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
->>   	caps->gid_table_len[0]	= HNS_ROCE_V2_GID_INDEX_NUM;
->>   	caps->ceqe_depth	= HNS_ROCE_V2_COMP_EQE_NUM;
->>   	caps->aeqe_depth	= HNS_ROCE_V2_ASYNC_EQE_NUM;
->> +	caps->aeqe_size		= HNS_ROCE_AEQE_SIZE;
->> +	caps->ceqe_size		= HNS_ROCE_CEQE_SIZE;
->>   	caps->local_ca_ack_delay = 0;
->>   	caps->max_mtu = IB_MTU_4096;
->>   
->> @@ -1765,6 +1767,11 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
->>   	caps->sccc_ba_pg_sz	  = 0;
->>   	caps->sccc_buf_pg_sz	  = 0;
->>   	caps->sccc_hop_num	  = HNS_ROCE_SCCC_HOP_NUM;
->> +
->> +	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
->> +		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +	}
->>   }
->>   
->>   static void calc_pg_sz(int obj_num, int obj_size, int hop_num, int ctx_bt_num,
->> @@ -1959,6 +1966,8 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
->>   	caps->cqc_timer_entry_sz = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
->>   	caps->mtt_entry_sz = HNS_ROCE_V2_MTT_ENTRY_SZ;
->>   	caps->num_mtt_segs = HNS_ROCE_V2_MAX_MTT_SEGS;
->> +	caps->ceqe_size = HNS_ROCE_CEQE_SIZE;
->> +	caps->aeqe_size = HNS_ROCE_AEQE_SIZE;
->>   	caps->mtt_ba_pg_sz = 0;
->>   	caps->num_cqe_segs = HNS_ROCE_V2_MAX_CQE_SEGS;
->>   	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
->> @@ -1982,6 +1991,11 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
->>   					  V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_M,
->>   					  V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_S);
->>   
->> +	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
->> +		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +	}
->> +
->>   	calc_pg_sz(caps->num_qps, caps->qpc_entry_sz, caps->qpc_hop_num,
->>   		   caps->qpc_bt_num, &caps->qpc_buf_pg_sz, &caps->qpc_ba_pg_sz,
->>   		   HEM_TYPE_QPC);
->> @@ -5223,7 +5237,7 @@ static struct hns_roce_aeqe *next_aeqe_sw_v2(struct hns_roce_eq *eq)
->>   
->>   	aeqe = hns_roce_buf_offset(eq->mtr.kmem,
->>   				   (eq->cons_index & (eq->entries - 1)) *
->> -				   HNS_ROCE_AEQ_ENTRY_SIZE);
->> +				   eq->eqe_size);
->>   
->>   	return (roce_get_bit(aeqe->asyn, HNS_ROCE_V2_AEQ_AEQE_OWNER_S) ^
->>   		!!(eq->cons_index & eq->entries)) ? aeqe : NULL;
->> @@ -5323,7 +5337,8 @@ static struct hns_roce_ceqe *next_ceqe_sw_v2(struct hns_roce_eq *eq)
->>   
->>   	ceqe = hns_roce_buf_offset(eq->mtr.kmem,
->>   				   (eq->cons_index & (eq->entries - 1)) *
->> -				   HNS_ROCE_CEQ_ENTRY_SIZE);
->> +				   eq->eqe_size);
->> +
->>   	return (!!(roce_get_bit(ceqe->comp, HNS_ROCE_V2_CEQ_CEQE_OWNER_S))) ^
->>   		(!!(eq->cons_index & eq->entries)) ? ceqe : NULL;
->>   }
->> @@ -5599,14 +5614,16 @@ static int config_eqc(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
->>   	roce_set_field(eqc->byte_36, HNS_ROCE_EQC_CONS_INDX_M,
->>   		       HNS_ROCE_EQC_CONS_INDX_S, HNS_ROCE_EQ_INIT_CONS_IDX);
->>   
->> -	/* set nex_eqe_ba[43:12] */
->> -	roce_set_field(eqc->nxt_eqe_ba0, HNS_ROCE_EQC_NXT_EQE_BA_L_M,
->> +	roce_set_field(eqc->byte_40, HNS_ROCE_EQC_NXT_EQE_BA_L_M,
->>   		       HNS_ROCE_EQC_NXT_EQE_BA_L_S, eqe_ba[1] >> 12);
->>   
->> -	/* set nex_eqe_ba[63:44] */
->> -	roce_set_field(eqc->nxt_eqe_ba1, HNS_ROCE_EQC_NXT_EQE_BA_H_M,
->> +	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_NXT_EQE_BA_H_M,
->>   		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eqe_ba[1] >> 44);
->>   
->> +	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_EQE_SIZE_M,
->> +		       HNS_ROCE_EQC_EQE_SIZE_S,
->> +		       eq->eqe_size == HNS_ROCE_V3_EQE_SIZE ? 1 : 0);
->> +
->>   	return 0;
->>   }
->>   
->> @@ -5797,7 +5814,7 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
->>   			eq_cmd = HNS_ROCE_CMD_CREATE_CEQC;
->>   			eq->type_flag = HNS_ROCE_CEQ;
->>   			eq->entries = hr_dev->caps.ceqe_depth;
->> -			eq->eqe_size = HNS_ROCE_CEQ_ENTRY_SIZE;
->> +			eq->eqe_size = hr_dev->caps.ceqe_size;
->>   			eq->irq = hr_dev->irq[i + other_num + aeq_num];
->>   			eq->eq_max_cnt = HNS_ROCE_CEQ_DEFAULT_BURST_NUM;
->>   			eq->eq_period = HNS_ROCE_CEQ_DEFAULT_INTERVAL;
->> @@ -5806,7 +5823,7 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
->>   			eq_cmd = HNS_ROCE_CMD_CREATE_AEQC;
->>   			eq->type_flag = HNS_ROCE_AEQ;
->>   			eq->entries = hr_dev->caps.aeqe_depth;
->> -			eq->eqe_size = HNS_ROCE_AEQ_ENTRY_SIZE;
->> +			eq->eqe_size = hr_dev->caps.aeqe_size;
->>   			eq->irq = hr_dev->irq[i - comp_num + other_num];
->>   			eq->eq_max_cnt = HNS_ROCE_AEQ_DEFAULT_BURST_NUM;
->>   			eq->eq_period = HNS_ROCE_AEQ_DEFAULT_INTERVAL;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> index 1fb1c58..9ed3339 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> @@ -1779,8 +1779,8 @@ struct hns_roce_eq_context {
->>   	__le32	byte_28;
->>   	__le32	byte_32;
->>   	__le32	byte_36;
->> -	__le32	nxt_eqe_ba0;
->> -	__le32	nxt_eqe_ba1;
->> +	__le32	byte_40;
->> +	__le32	byte_44;
->>   	__le32	rsv[5];
->>   };
->>   
->> @@ -1922,6 +1922,9 @@ struct hns_roce_eq_context {
->>   #define HNS_ROCE_EQC_NXT_EQE_BA_H_S 0
->>   #define HNS_ROCE_EQC_NXT_EQE_BA_H_M GENMASK(19, 0)
->>   
->> +#define HNS_ROCE_EQC_EQE_SIZE_S 20
->> +#define HNS_ROCE_EQC_EQE_SIZE_M GENMASK(21, 20)
->> +
->>   #define HNS_ROCE_V2_CEQE_COMP_CQN_S 0
->>   #define HNS_ROCE_V2_CEQE_COMP_CQN_M GENMASK(23, 0)
->>   
->>
-> 
 
