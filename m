@@ -2,252 +2,1457 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5213424BE91
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Aug 2020 15:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1F224BF60
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Aug 2020 15:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgHTNXA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Aug 2020 09:23:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10233 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729357AbgHTNS7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Aug 2020 09:18:59 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8B0E29302C230591DD78;
-        Thu, 20 Aug 2020 21:18:56 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 20 Aug 2020 21:18:50 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 4/4] RDMA/hns: Add support for QPC in size of 512 Bytes
-Date:   Thu, 20 Aug 2020 21:17:49 +0800
-Message-ID: <1597929469-22674-5-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1597929469-22674-1-git-send-email-liweihang@huawei.com>
-References: <1597929469-22674-1-git-send-email-liweihang@huawei.com>
+        id S1730508AbgHTNrd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Aug 2020 09:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729533AbgHTNn2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Aug 2020 09:43:28 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA72C061385
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 06:43:26 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id t6so1003022pjr.0
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 06:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=9a4ie8u6Hvblk7e52i4WYlADS1uYZDRrVEIFdpYBOoA=;
+        b=Y6PILgJmVwsQCNOGOUJSSJXHfTu8RCwgIEh3wR7bS4tuTZrXMYuU/DHY9pP8zoZBX4
+         T/N7+hR9/u1UXyVUVLaQNsEACIv2cxmrwqbFDdZFDYxQKKzb6rSwg4Iyh5qkD/Ef00oj
+         JtZfmTg/HuL2djdPuieJcVBzdB20HGN6hhtH+zCEo0TBsAV96uVQqzl7wjSxFwe+MDzo
+         /1K46plfvxSsEexJhBvKoO1Uy7T+011TkP7Rx84/fbZ/7r+2UVXD2W0bcNnyCBkJyqjD
+         MIhuSJdXZaKaBzXMyKXA4Z97EG09Xcxm+AahbIb9uCICWDAw4jS8uj3+KdARXyX8BSs4
+         gP1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9a4ie8u6Hvblk7e52i4WYlADS1uYZDRrVEIFdpYBOoA=;
+        b=KftdJuhOgogvISG/iFKKjql/CNryjOirtxLp5HNgscOh2liazxvA0Dp3kiJGVbbbtU
+         RKmumTInTRDfG9YGiu0XFbuxslcH1JcPTnkxG22EJSRUwbXMIll9zz5xiyMO88mhBkWp
+         WaRVAYVa6obgvlz+fnjTQhgtSN9V246Ti0/l0kWiao8GyhWOz1OK6DyrhTZdhS+bBFnc
+         OBYDs51vOY2DM6wCOwDU+CA3Zkt9r0R64VPfbJFQplrEl/KY0pItmNeIu4B9hSFG4Psy
+         MzLyEfCsLfT7FQQLC+iMMb6A7icKu3WyVOgqgTnu2Fm34ceqGe7BLgIKQhOxeT9wFOIP
+         mSLA==
+X-Gm-Message-State: AOAM530VebSIza5X8v9rdSpL8wGrGonz2xRL3WzN9dyVfZcC8JmxXQPJ
+        1DBXyIMXPUGqMkW3+TR0yEEjQ5YpiFE=
+X-Google-Smtp-Source: ABdhPJzqRRjzpKDgTRgX0se1AnFA3pBYqktQF024xKE2tDeCvkQvoYxMqosssLdT5aIgz/TYdoxqTw==
+X-Received: by 2002:a17:90b:d8e:: with SMTP id bg14mr2495333pjb.41.1597931001493;
+        Thu, 20 Aug 2020 06:43:21 -0700 (PDT)
+Received: from [10.75.201.17] ([118.201.220.138])
+        by smtp.gmail.com with ESMTPSA id g17sm2104432pge.9.2020.08.20.06.43.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Aug 2020 06:43:20 -0700 (PDT)
+Subject: Re: [PATCH v2 01/16] rdma_rxe: Added SPDX headers to rxe source files
+To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+References: <20200819034002.8835-1-rpearson@hpe.com>
+ <20200819034002.8835-2-rpearson@hpe.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Message-ID: <a6f28450-0686-b969-0626-9ee78f129734@gmail.com>
+Date:   Thu, 20 Aug 2020 21:43:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200819034002.8835-2-rpearson@hpe.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+On 8/19/2020 11:39 AM, Bob Pearson wrote:
+> Added SPDX header to all tracked .c and .h files.
+>
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe.c             | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe.h             | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_av.c          | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_comp.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_cq.c          | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_hdr.h         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_hw_counters.c | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_hw_counters.h | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_icrc.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_loc.h         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_mcast.c       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_mmap.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_mr.c          | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_net.c         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_net.h         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_opcode.c      | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_opcode.h      | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_param.h       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_pool.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_pool.h        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_qp.c          | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_queue.c       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_queue.h       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_recv.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_req.c         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_resp.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_srq.c         | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_sysfs.c       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_task.c        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_task.h        | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_verbs.c       | 31 ++-------------------
+>   drivers/infiniband/sw/rxe/rxe_verbs.h       | 31 ++-------------------
+>   32 files changed, 96 insertions(+), 896 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index 5642eefb4ba1..3a46df0fb4a0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
 
-The new version of RoCEE supports using QPC in size of 256B or 512B, so
-that HIP09 can supports new congestion control algorithms by using QPC in
-larger size.
+The license is changed?
 
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  5 ++++-
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  2 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v1.h  |  2 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 26 +++++++++++++++++---------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +-
- 6 files changed, 26 insertions(+), 15 deletions(-)
+Why?
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index f4ffc87..0fcf650 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -86,6 +86,9 @@
- #define HNS_ROCE_V2_CQE_SIZE 32
- #define HNS_ROCE_V3_CQE_SIZE 64
- 
-+#define HNS_ROCE_V2_QPC_SZ 256
-+#define HNS_ROCE_V3_QPC_SZ 512
-+
- #define HNS_ROCE_SL_SHIFT			28
- #define HNS_ROCE_TCLASS_SHIFT			20
- #define HNS_ROCE_FLOW_LABEL_MASK		0xfffff
-@@ -805,7 +808,7 @@ struct hns_roce_caps {
- 	u32		page_size_cap;
- 	u32		reserved_lkey;
- 	int		mtpt_entry_sz;
--	int		qpc_entry_sz;
-+	int		qpc_sz;
- 	int		irrl_entry_sz;
- 	int		trrl_entry_sz;
- 	int		cqc_entry_sz;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index e053421..cda0145 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -1471,7 +1471,7 @@ static int hns_roce_v1_profile(struct hns_roce_dev *hr_dev)
- 	caps->max_qp_dest_rdma	= HNS_ROCE_V1_MAX_QP_DEST_RDMA;
- 	caps->max_sq_desc_sz	= HNS_ROCE_V1_MAX_SQ_DESC_SZ;
- 	caps->max_rq_desc_sz	= HNS_ROCE_V1_MAX_RQ_DESC_SZ;
--	caps->qpc_entry_sz	= HNS_ROCE_V1_QPC_ENTRY_SIZE;
-+	caps->qpc_sz		= HNS_ROCE_V1_QPC_SIZE;
- 	caps->irrl_entry_sz	= HNS_ROCE_V1_IRRL_ENTRY_SIZE;
- 	caps->cqc_entry_sz	= HNS_ROCE_V1_CQC_ENTRY_SIZE;
- 	caps->mtpt_entry_sz	= HNS_ROCE_V1_MTPT_ENTRY_SIZE;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.h b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-index 5996892..ffd0156 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-@@ -68,7 +68,7 @@
- #define HNS_ROCE_V1_COMP_EQE_NUM			0x8000
- #define HNS_ROCE_V1_ASYNC_EQE_NUM			0x400
- 
--#define HNS_ROCE_V1_QPC_ENTRY_SIZE			256
-+#define HNS_ROCE_V1_QPC_SIZE				256
- #define HNS_ROCE_V1_IRRL_ENTRY_SIZE			8
- #define HNS_ROCE_V1_CQC_ENTRY_SIZE			64
- #define HNS_ROCE_V1_MTPT_ENTRY_SIZE			64
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ea20d82..2ced155 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1683,7 +1683,7 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_sq_desc_sz	= HNS_ROCE_V2_MAX_SQ_DESC_SZ;
- 	caps->max_rq_desc_sz	= HNS_ROCE_V2_MAX_RQ_DESC_SZ;
- 	caps->max_srq_desc_sz	= HNS_ROCE_V2_MAX_SRQ_DESC_SZ;
--	caps->qpc_entry_sz	= HNS_ROCE_V2_QPC_ENTRY_SZ;
-+	caps->qpc_sz		= HNS_ROCE_V2_QPC_SZ;
- 	caps->irrl_entry_sz	= HNS_ROCE_V2_IRRL_ENTRY_SZ;
- 	caps->trrl_entry_sz	= HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ;
- 	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
-@@ -1772,6 +1772,7 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
- 		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
- 		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
-+		caps->qpc_sz = HNS_ROCE_V3_QPC_SZ;
- 	}
- }
- 
-@@ -1874,7 +1875,7 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->idx_entry_sz	     = resp_b->idx_entry_sz;
- 	caps->sccc_entry_sz	     = resp_b->scc_ctx_entry_sz;
- 	caps->max_mtu		     = resp_b->max_mtu;
--	caps->qpc_entry_sz	     = le16_to_cpu(resp_b->qpc_entry_sz);
-+	caps->qpc_sz		     = HNS_ROCE_V2_QPC_SZ;
- 	caps->min_cqes		     = resp_b->min_cqes;
- 	caps->min_wqes		     = resp_b->min_wqes;
- 	caps->page_size_cap	     = le32_to_cpu(resp_b->page_size_cap);
-@@ -1996,9 +1997,10 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
- 		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
- 		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
-+		caps->qpc_sz = HNS_ROCE_V3_QPC_SZ;
- 	}
- 
--	calc_pg_sz(caps->num_qps, caps->qpc_entry_sz, caps->qpc_hop_num,
-+	calc_pg_sz(caps->num_qps, caps->qpc_sz, caps->qpc_hop_num,
- 		   caps->qpc_bt_num, &caps->qpc_buf_pg_sz, &caps->qpc_ba_pg_sz,
- 		   HEM_TYPE_QPC);
- 	calc_pg_sz(caps->num_mtpts, caps->mtpt_entry_sz, caps->mpt_hop_num,
-@@ -3535,16 +3537,21 @@ static int hns_roce_v2_clear_hem(struct hns_roce_dev *hr_dev,
- 
- static int hns_roce_v2_qp_modify(struct hns_roce_dev *hr_dev,
- 				 struct hns_roce_v2_qp_context *context,
-+				 struct hns_roce_v2_qp_context *qpc_mask,
- 				 struct hns_roce_qp *hr_qp)
- {
- 	struct hns_roce_cmd_mailbox *mailbox;
-+	int qpc_size;
- 	int ret;
- 
- 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
- 	if (IS_ERR(mailbox))
- 		return PTR_ERR(mailbox);
- 
--	memcpy(mailbox->buf, context, sizeof(*context) * 2);
-+	/* The qpc size of HIP08 is only 256B, which is half of HIP09 */
-+	qpc_size = hr_dev->caps.qpc_sz;
-+	memcpy(mailbox->buf, context, qpc_size);
-+	memcpy(mailbox->buf + qpc_size, qpc_mask, qpc_size);
- 
- 	ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0, hr_qp->qpn, 0,
- 				HNS_ROCE_CMD_MODIFY_QPC,
-@@ -4330,7 +4337,7 @@ static int hns_roce_v2_set_abs_fields(struct ib_qp *ibqp,
- 	}
- 
- 	if (cur_state == IB_QPS_RESET && new_state == IB_QPS_INIT) {
--		memset(qpc_mask, 0, sizeof(*qpc_mask));
-+		memset(qpc_mask, 0, hr_dev->caps.qpc_sz);
- 		modify_qp_reset_to_init(ibqp, attr, attr_mask, context,
- 					qpc_mask);
- 	} else if (cur_state == IB_QPS_INIT && new_state == IB_QPS_INIT) {
-@@ -4553,8 +4560,9 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	 * we should set all bits of the relevant fields in context mask to
- 	 * 0 at the same time, else set them to 0x1.
- 	 */
--	memset(context, 0, sizeof(*context));
--	memset(qpc_mask, 0xff, sizeof(*qpc_mask));
-+	memset(context, 0, hr_dev->caps.qpc_sz);
-+	memset(qpc_mask, 0xff, hr_dev->caps.qpc_sz);
-+
- 	ret = hns_roce_v2_set_abs_fields(ibqp, attr, attr_mask, cur_state,
- 					 new_state, context, qpc_mask);
- 	if (ret)
-@@ -4604,7 +4612,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		       V2_QPC_BYTE_60_QP_ST_S, 0);
- 
- 	/* SW pass context to HW */
--	ret = hns_roce_v2_qp_modify(hr_dev, ctx, hr_qp);
-+	ret = hns_roce_v2_qp_modify(hr_dev, context, qpc_mask, hr_qp);
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to modify QP, ret = %d\n", ret);
- 		goto out;
-@@ -4667,7 +4675,7 @@ static int hns_roce_v2_query_qpc(struct hns_roce_dev *hr_dev,
- 	if (ret)
- 		goto out;
- 
--	memcpy(hr_context, mailbox->buf, sizeof(*hr_context));
-+	memcpy(hr_context, mailbox->buf, hr_dev->caps.qpc_sz);
- 
- out:
- 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index a78e5b3..1595ab6 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -77,7 +77,6 @@
- #define HNS_ROCE_V2_MAX_SQ_DESC_SZ		64
- #define HNS_ROCE_V2_MAX_RQ_DESC_SZ		16
- #define HNS_ROCE_V2_MAX_SRQ_DESC_SZ		64
--#define HNS_ROCE_V2_QPC_ENTRY_SZ		256
- #define HNS_ROCE_V2_IRRL_ENTRY_SZ		64
- #define HNS_ROCE_V2_TRRL_ENTRY_SZ		48
- #define HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ	100
-@@ -516,6 +515,7 @@ struct hns_roce_v2_qp_context {
- 	__le32	byte_248_ack_psn;
- 	__le32	byte_252_err_txcqn;
- 	__le32	byte_256_sqflush_rqcqe;
-+	__le32	ext[64];
- };
- 
- #define	V2_QPC_BYTE_4_TST_S 0
-@@ -1588,7 +1588,7 @@ struct hns_roce_query_pf_caps_b {
- 	u8 idx_entry_sz;
- 	u8 scc_ctx_entry_sz;
- 	u8 max_mtu;
--	__le16 qpc_entry_sz;
-+	__le16 qpc_sz;
- 	__le16 qpc_timer_entry_sz;
- 	__le16 cqc_timer_entry_sz;
- 	u8 min_cqes;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 2871d7e..b1b0f18 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -590,7 +590,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 	}
- 
- 	ret = hns_roce_init_hem_table(hr_dev, &hr_dev->qp_table.qp_table,
--				      HEM_TYPE_QPC, hr_dev->caps.qpc_entry_sz,
-+				      HEM_TYPE_QPC, hr_dev->caps.qpc_sz,
- 				      hr_dev->caps.num_qps, 1);
- 	if (ret) {
- 		dev_err(dev, "Failed to init QP context memory, aborting.\n");
--- 
-2.8.1
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <rdma/rdma_netlink.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+> index fb07eed9e402..c5a2ee265fa7 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.h
+> +++ b/drivers/infiniband/sw/rxe/rxe.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
+> index 81ee756c19b8..de9445d7210d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_av.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_av.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_av.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *		- Redistributions of source code must retain the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer.
+> - *
+> - *		- Redistributions in binary form must reproduce the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer in the documentation and/or other materials
+> - *		  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+> index 4bc88708b355..ab1e61ca98d0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_comp.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+> index ad3090131126..4e5c325f74f4 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_cq.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   #include <linux/vmalloc.h>
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_hdr.h b/drivers/infiniband/sw/rxe/rxe_hdr.h
+> index ce003666b800..9a1913db86f0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_hdr.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_hdr.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_hdr.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_HDR_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+> index 636edb5f4cf4..1cbf4887d7b2 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+> @@ -1,33 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> - * Copyright (c) 2017 Mellanox Technologies Ltd. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> + * linux/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+>    *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+> + * Copyright (c) 2017 Mellanox Technologies Ltd. All rights reserved.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.h b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+> index 72c0d63c79e0..9718ecc10130 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+> @@ -1,33 +1,8 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> - * Copyright (c) 2017 Mellanox Technologies Ltd. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> + * linux/drivers/infiniband/sw/rxe/rxe_hw_counters.h
+>    *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+> + * Copyright (c) 2017 Mellanox Technologies Ltd. All rights reserved.
+>    */
+>   
+>   #ifndef RXE_HW_COUNTERS_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> index 39e0be31aab1..398f632d8958 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_icrc.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 775c23becaec..73e3253c7817 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_loc.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_LOC_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+> index 522a7942c56c..4c7304a6259a 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_mcast.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *		- Redistributions of source code must retain the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer.
+> - *
+> - *		- Redistributions in binary form must reproduce the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer in the documentation and/or other materials
+> - *		  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
+> index 7887f623f62c..a6179dc65ca4 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mmap.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_mmap.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/module.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index e83c7b518bfa..17096b1d51c1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_mr.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 312c2fc961c0..c4cab17188e2 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_net.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+> index 2ca71d3d245c..e899f588fc2f 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_net.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_NET_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
+> index 4cf11063e0b5..ddfc08c14893 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_opcode.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_opcode.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <rdma/ib_pack.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
+> index 307604e9c78d..59e8b3875826 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_opcode.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_opcode.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_OPCODE_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> index 99e9d8ba9767..1a0d4da0ec3f 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_param.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_PARAM_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+> index fbcbac52290b..31fb0be7cdf3 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_pool.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *		- Redistributions of source code must retain the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer.
+> - *
+> - *		- Redistributions in binary form must reproduce the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer in the documentation and/or other materials
+> - *		  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+> index 2f2cff1cbe43..c5a7721c8fde 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_pool.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *		- Redistributions of source code must retain the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer.
+> - *
+> - *		- Redistributions in binary form must reproduce the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer in the documentation and/or other materials
+> - *		  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_POOL_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+> index 6c11c3aeeca6..b6bf74b2fe06 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_qp.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *		- Redistributions of source code must retain the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer.
+> - *
+> - *		- Redistributions in binary form must reproduce the above
+> - *		  copyright notice, this list of conditions and the following
+> - *		  disclaimer in the documentation and/or other materials
+> - *		  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+> index 245040c3a35d..6aa4b5dac8fc 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_queue.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_queue.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must retailuce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/vmalloc.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
+> index 8ef17d617022..799adfef6ba8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_queue.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_QUEUE_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+> index 831ad578a7b2..c0b55b010bf5 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_recv.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> index e5031172c019..cc071ababcb0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_req.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index c4a8195bf670..aefc9a27ece5 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_resp.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/skbuff.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
+> index d8459431534e..a0744d6a13c2 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_srq.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/vmalloc.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+> index ccda5f5a3bc0..83ff077b81d0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_sysfs.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include "rxe.h"
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+> index 08f05ac5f5d5..c53c639e6e40 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_task.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/kernel.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+> index 08ff42d451c6..1b5bc405cafe 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_task.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_TASK_H
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index b8a22af724e8..8a7b23f6e7b6 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1,34 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_verbs.c
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *     Redistribution and use in source and binary forms, with or
+> - *     without modification, are permitted provided that the following
+> - *     conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #include <linux/dma-mapping.h>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index 92de39c4a7c1..5ce489b1606d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -1,34 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>   /*
+> + * linux/drivers/infiniband/sw/rxe/rxe_verbs.h
+> + *
+>    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+>    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> - *
+> - * This software is available to you under a choice of one of two
+> - * licenses.  You may choose to be licensed under the terms of the GNU
+> - * General Public License (GPL) Version 2, available from the file
+> - * COPYING in the main directory of this source tree, or the
+> - * OpenIB.org BSD license below:
+> - *
+> - *	   Redistribution and use in source and binary forms, with or
+> - *	   without modification, are permitted provided that the following
+> - *	   conditions are met:
+> - *
+> - *	- Redistributions of source code must retain the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer.
+> - *
+> - *	- Redistributions in binary form must reproduce the above
+> - *	  copyright notice, this list of conditions and the following
+> - *	  disclaimer in the documentation and/or other materials
+> - *	  provided with the distribution.
+> - *
+> - * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> - * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+> - * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+> - * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+> - * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> - * SOFTWARE.
+>    */
+>   
+>   #ifndef RXE_VERBS_H
+
 
