@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA25124C7E9
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 00:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C243624C7EA
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 00:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgHTWrV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Aug 2020 18:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
+        id S1728551AbgHTWrY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Aug 2020 18:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728423AbgHTWrP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Aug 2020 18:47:15 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5A8C061385
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:15 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id v6so124018ota.13
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:15 -0700 (PDT)
+        with ESMTP id S1728368AbgHTWrT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Aug 2020 18:47:19 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CE5C061386
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:18 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id c4so127623otf.12
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dJ78iBOtJKgSzmxm9gmcuQV2b7GcdOiNq2waT/j6EfI=;
-        b=FdAC9/9OFvq0D9PM1XJ62d7fYfhH6DiQt+Ep5IboP6i3R1RkGa+fxGA/otBehUmyWt
-         8prf+infQbHWtQgMGrngM899l172WOMYMcqPCJiH8WgpJGMg5nCsU3WY8q9zqzahXHbg
-         gCZZSehiRl3lipiZijdkbHO4NMVB+kveygltOtN6KhRziP8pyzpAnSUGT9NW3r2mCbGA
-         Li9KmigAZ34iki92xXQdyjzY10mCDJQuPiw+mAGEuCYLomNEHpby+MspROPmqMTuYWVb
-         laJCIPfHhN4uo+uYq3cWMAu2FNRqE7G75cRDeuZ2+e3jGWC2mmYSNd5GoACXPuGUT9X1
-         sMjA==
+        bh=opQ5PQYAFjcFf54uc0HWsHLrSgEnDQ3xUI0E2iiCI/g=;
+        b=PU1rv/ZfIBzyOHgelnVsr/N1tgcBmwFlQuPhrXrYRVxVEZ7Rqa4WvjXZnkM4Ean3Tb
+         Z3nKh9I8UiEz5wShWxx4H7fjPeEJqO9/yGYHNHhv5Pcn6ouSCRw9Xhx2cRgP9TFdtl+8
+         bPERv5/AySFJu7gg9+jqdsiqqb1mnSjZW97M6tRkCpP4aGTzhsVdy0oQ2+ZfwzupaC2v
+         lm8UnMK/Z4ZbftIu2QWSMY24RiD5w9Qii1yicNPNKFzBUE82FstqGu45JHtmFoKrqrMZ
+         Z3h8X/OLKp1Fc/GDQqZycernaLibf5BKJqlQyLdgqX1KNMfFkarl8fHIt2Jy6YsSRZIY
+         6b7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dJ78iBOtJKgSzmxm9gmcuQV2b7GcdOiNq2waT/j6EfI=;
-        b=a0QvN5Eal0d7MrMgfuv9eS9y8xGYTx9/RieiUDvmkhg/TV1XxcKqFrvkvLehPF1/3O
-         uFbYRg1MnYs7sC61XF+syMt6rsc34kDQT/a+PmMTqio7OvjbY2+kVh/E2FC2T7RHjDng
-         17XlxR9eTZdN7gQyCoXihFtZoJcALNU7+Hbt4OX5x6q6S0W6NjV45m6pZZS80+ImZ+mB
-         xILVoM6VyULZAr/pDcJs19fjnfIwGwZI6KWPyF5MLjJcruwJkrACVE8s+AVQTT4dYX5B
-         B/3vWH3rtk5Cn+8xf+uzPMPPPPCz4EB5HbpnFZn/H9pYUojbwovNFXh8OgkLEM6GVUkI
-         SjTA==
-X-Gm-Message-State: AOAM530JmsO0VhQWoLgoc+nEwiZ7qwNsr2Hp1YnWRbntQCisa3faIL/w
-        dXrWYOgvPS/KzRhpCyRLwsdyhkQRgGN7/A==
-X-Google-Smtp-Source: ABdhPJyXTVledXwjr7ymfm/xPP5brDbTLdMTwJpVoNWtlfW41eSYAlXlKHvgi3QcebNc70XzimU8Yg==
-X-Received: by 2002:a05:6830:1c1:: with SMTP id r1mr108923ota.100.1597963634652;
-        Thu, 20 Aug 2020 15:47:14 -0700 (PDT)
+        bh=opQ5PQYAFjcFf54uc0HWsHLrSgEnDQ3xUI0E2iiCI/g=;
+        b=aIu8C22avasw36+ejOy1yTmMPs4jh9YB8bws2x3D87+k7brAf+B2RNhBBL8Q47WAa9
+         LbJcyEfROf4Y+Fp5e2kJhqFCb4UOWbybRjY6Jzhf8opAXvclW3ZpxxaOz0ItbHacTTY+
+         NYzgWp79G24rtCc+tioigYQQXXWc3SGweZIJZ/Pv/0GanQ+fC97ZY7rsCxRKfOUY3YN+
+         Xj2uBCxdcjc0CVKynTEv+eh342X2elT9AdyW2wNEUedfM2/Mx6xXsoT9QDjhxMpEL6TK
+         RTd8VYoEc9hq5Y7YPQBM6MDT5KU6XMdSTSH5JRuJYHCabwWQa1bDZ5wNNtWCQVbngVuQ
+         uAYA==
+X-Gm-Message-State: AOAM530sd0ITTxnRLpoRVTI18m4NdDfNw/UN3uGBWYf9/8dxZkpbitIh
+        NXFd9JF79mNAbBfxIsir9pu8MLy5UhDFAw==
+X-Google-Smtp-Source: ABdhPJzyefhM/l8B34L18/hVdIvV/apOcOkBkQhtMykDtJqDTg0xAjUPwmh1F+yPAkmVrBmqsHusuw==
+X-Received: by 2002:a9d:7405:: with SMTP id n5mr9550otk.286.1597963635474;
+        Thu, 20 Aug 2020 15:47:15 -0700 (PDT)
 Received: from localhost ([2605:6000:8b03:f000:e2a0:5228:a0c3:36eb])
-        by smtp.gmail.com with ESMTPSA id k18sm750988otj.55.2020.08.20.15.47.14
+        by smtp.gmail.com with ESMTPSA id i10sm682219oie.42.2020.08.20.15.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 15:47:14 -0700 (PDT)
+        Thu, 20 Aug 2020 15:47:15 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH v3 02/17] rdma_rxe: Fixed style warnings
-Date:   Thu, 20 Aug 2020 17:46:23 -0500
-Message-Id: <20200820224638.3212-3-rpearson@hpe.com>
+Subject: [PATCH v3 03/17] ib_user_verbs.h: Added ib_uverbs_wc_opcode
+Date:   Thu, 20 Aug 2020 17:46:24 -0500
+Message-Id: <20200820224638.3212-4-rpearson@hpe.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200820224638.3212-1-rpearson@hpe.com>
 References: <20200820224638.3212-1-rpearson@hpe.com>
@@ -64,131 +64,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fixed several minor checkpatch warnings in existing rxe source.
+This enum plays the same role as ib_uverbs_wr_opcode documenting
+the opcodes in the user space API. It plays a role for software
+drivers like rxe.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c  |  3 +--
- drivers/infiniband/sw/rxe/rxe_net.c   |  2 +-
- drivers/infiniband/sw/rxe/rxe_qp.c    |  3 +--
- drivers/infiniband/sw/rxe/rxe_task.h  |  2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c | 13 ++++++++-----
- include/uapi/rdma/rdma_user_rxe.h     |  6 +++---
- 6 files changed, 15 insertions(+), 14 deletions(-)
+ include/uapi/rdma/ib_user_verbs.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index ab1e61ca98d0..d9a527c138d3 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -665,9 +665,8 @@ int rxe_completer(void *arg)
- 			 */
+diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
+index 0474c7400268..456438c18c2c 100644
+--- a/include/uapi/rdma/ib_user_verbs.h
++++ b/include/uapi/rdma/ib_user_verbs.h
+@@ -457,6 +457,17 @@ struct ib_uverbs_poll_cq {
+ 	__u32 ne;
+ };
  
- 			/* there is nothing to retry in this case */
--			if (!wqe || (wqe->state == wqe_state_posted)) {
-+			if (!wqe || (wqe->state == wqe_state_posted))
- 				goto exit;
--			}
- 
- 			/* if we've started a retry, don't start another
- 			 * retry sequence, unless this is a timeout.
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 8c390da4897b..7650cf348c48 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -95,7 +95,7 @@ static struct dst_entry *rxe_find_route6(struct net_device *ndev,
- 	ndst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
- 					       recv_sockets.sk6->sk, &fl6,
- 					       NULL);
--	if (unlikely(IS_ERR(ndst))) {
-+	if (IS_ERR(ndst)) {
- 		pr_err_ratelimited("no route to %pI6\n", daddr);
- 		return NULL;
- 	}
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index b6bf74b2fe06..edfd8e7a21d4 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -603,9 +603,8 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
- 	if (mask & IB_QP_QKEY)
- 		qp->attr.qkey = attr->qkey;
- 
--	if (mask & IB_QP_AV) {
-+	if (mask & IB_QP_AV)
- 		rxe_init_av(&attr->ah_attr, &qp->pri_av);
--	}
- 
- 	if (mask & IB_QP_ALT_PATH) {
- 		rxe_init_av(&attr->alt_ah_attr, &qp->alt_av);
-diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
-index 1b5bc405cafe..b2920a663683 100644
---- a/drivers/infiniband/sw/rxe/rxe_task.h
-+++ b/drivers/infiniband/sw/rxe/rxe_task.h
-@@ -35,7 +35,7 @@ struct rxe_task {
- /*
-  * init rxe_task structure
-  *	arg  => parameter to pass to fcn
-- *	fcn  => function to call until it returns != 0
-+ *	func => function to call until it returns != 0
-  */
- int rxe_init_task(void *obj, struct rxe_task *task,
- 		  void *arg, int (*func)(void *), char *name);
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9aaf3a9fed7c..c2d09998b778 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -566,6 +566,12 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	    qp_type(qp) == IB_QPT_GSI)
- 		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
- 
-+	if (mask & WR_REG_MASK) {
-+		wqe->mask = mask;
-+		wqe->state = wqe_state_posted;
-+		return 0;
-+	}
++enum ib_uverbs_wc_opcode {
++	IB_UVERBS_WC_SEND = 0,
++	IB_UVERBS_WC_RDMA_WRITE = 1,
++	IB_UVERBS_WC_RDMA_READ = 2,
++	IB_UVERBS_WC_COMP_SWAP = 3,
++	IB_UVERBS_WC_FETCH_ADD = 4,
++	IB_UVERBS_WC_BIND_MW = 5,
++	IB_UVERBS_WC_LOCAL_INV = 6,
++	IB_UVERBS_WC_TSO = 7,
++};
 +
- 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE)) {
- 		p = wqe->dma.inline_data;
- 
-@@ -576,13 +582,10 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 
- 			p += sge->length;
- 		}
--	} else if (mask & WR_REG_MASK) {
--		wqe->mask = mask;
--		wqe->state = wqe_state_posted;
--		return 0;
--	} else
-+	} else {
- 		memcpy(wqe->dma.sge, ibwr->sg_list,
- 		       num_sge * sizeof(struct ib_sge));
-+	}
- 
- 	wqe->iova = mask & WR_ATOMIC_MASK ? atomic_wr(ibwr)->remote_addr :
- 		mask & WR_READ_OR_WRITE_MASK ? rdma_wr(ibwr)->remote_addr : 0;
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index aae2e696bb38..d8f2e0e46dab 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -99,8 +99,8 @@ struct rxe_send_wr {
- 				struct ib_mr *mr;
- 				__aligned_u64 reserved;
- 			};
--			__u32        key;
--			__u32        access;
-+			__u32	     key;
-+			__u32	     access;
- 		} reg;
- 	} wr;
- };
-@@ -112,7 +112,7 @@ struct rxe_sge {
- };
- 
- struct mminfo {
--	__aligned_u64  		offset;
-+	__aligned_u64		offset;
- 	__u32			size;
- 	__u32			pad;
- };
+ struct ib_uverbs_wc {
+ 	__aligned_u64 wr_id;
+ 	__u32 status;
 -- 
 2.25.1
 
