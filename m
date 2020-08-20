@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2942424C7F6
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 00:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF0C24C7F9
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 00:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgHTWro (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Aug 2020 18:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        id S1728604AbgHTWrt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Aug 2020 18:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728590AbgHTWr1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Aug 2020 18:47:27 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60FEC061347
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:26 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u24so3333601oic.7
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:26 -0700 (PDT)
+        with ESMTP id S1728538AbgHTWrb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Aug 2020 18:47:31 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1C9C061385
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:27 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id z18so153279otk.6
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Aug 2020 15:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=suGjmnRv6IndVlZiyeX22g4dQDF8WetJnEwclkmhTCQ=;
-        b=Veh/FESB26+T9Ft0eaKWC2bK0IdiVaml8UBTJtaQA4ybSi4iLxSlGn6LdL0zO4xmBj
-         dNg4nRyyDCfV4+jGu8mdgvuJgQtrzCJCQ8r2tdlsRwWDxTIBXFcdKXpFt7/aUoFuaQvy
-         eDij2M7w0JnMdRWKyA4mlvDMz3eWApFud8C6EpsymL60nQtwma6nzFaL5ihEAquY+eVC
-         r3uRolnaXS7xGcK0dUg4XfnsQUtpxhJN/lH1TG0WSGK7OU8XVpEUVaeZ8u0aba1sn8lk
-         oCQ+g7hUaiwdIkQNefGKHn6rBSWIF4kHx13NTDQD5S+NeBXC8rLbfbwavnHVkvQe31Su
-         vtkw==
+        bh=SumVBOyV1VaWcOuyepIGG0vjBGukASuezf6G+hSGeks=;
+        b=X31kwgN4LSNxRkKstQ8E5AzzD32wsT+FzvBleFdjp/TSSYrArBVs6CNNZZvdx1L0kx
+         4NRJtwC50YxkJ+++Wlmq9FsXDhqfAV1i33ii+e47yIjj0iS8Jq+fU5qJkjavmHTtpWT3
+         Sz+nJc6jNWEr4wnbhhFjvBqCbF77ahYYEyj4KYAqHzFycR/a7sNafvXvdRj/FfRnnAY5
+         uiCCl/KZ9LfnoboaX583YYBacs20Z1gTVEsgg8glIw9jhSyg0DTYqJE/1+dSxtFaUda6
+         bQognpiS2MNEyERwnTjrGEfzVFlbNa6noqGA/+fLVX5l48/AyjyFsoR3iB6V5Aip37kk
+         wROQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=suGjmnRv6IndVlZiyeX22g4dQDF8WetJnEwclkmhTCQ=;
-        b=N56TjGswslKfpzVL4reiLOoAra0otYKFs5EajuAhlgKvOufiuZG22nbT9sW+MfHSzG
-         vMywmovrcUnlaF42GJEChDZ3B10aMSUdeiso2ORL5uQyuNt1Mu2cAq5OCw9CfgGh5Ozj
-         f1J9Ym8QFZ7dyojW3GV42emv/8It+tFoOn9hD8SegJ/eeLTTbExLy0OzhkRsYI9yqvHM
-         KLVlHsMLmMjrYTbhNIgyj4s1Lu/zdt3Wp9siP3moEOQ5TUrA2s5KGtKdnOnEEK2o40XY
-         Y8R9sXxcbyywYbPpE4Bi2RygHILAY7siSsPU3xhFK+jfFM1P6LfSwTBbOu0c+Qp5kVPE
-         W3eA==
-X-Gm-Message-State: AOAM5327iLMwNkEkvoSSbBk+QDj9xrK1uIM0RWjYEPHXxcfOui8AvO4D
-        ugScNCYCJjGRVL3AcdvwgfRYydUhA+gESQ==
-X-Google-Smtp-Source: ABdhPJwAHiiBFpMpoJwmHGUBLp+PjVt+uNOkaizl7P6cWHyXX9OS/H87ys9JrU/zb8iu4AIov1InmA==
-X-Received: by 2002:aca:b6c4:: with SMTP id g187mr90963oif.91.1597963645799;
-        Thu, 20 Aug 2020 15:47:25 -0700 (PDT)
+        bh=SumVBOyV1VaWcOuyepIGG0vjBGukASuezf6G+hSGeks=;
+        b=Q4M4QjJWcyGAXCCd8lJKm1ct58oaj3Tsw4gxinZ8+xG8haQdX6ne/5g+Mh6jZb6SHo
+         dOAGFUzltgFPf2GcQyOjSKn+0ukqzMSuOEH/fXgWaVHzrqKdup+JptLjXZpPU2SWpo/o
+         6eeegBF+uQu/+bfQTmdq2oI1SvBt12yGlv4LcHQdL/9MweBd0mSDERnYY+DnEu1T+VA1
+         Fen2RCTRshAoXDeWY540WPlKzrM3Yy6wRFh73QvZ6qJ/BUvwvMXjiMacLn0lCQrZqPCT
+         Uq4zZ095D8n6EF8h3yUTrunxwDw2GJcmYXKNi6dCQbhx3xPnYlgi3g1x6q3iQzHVLdfG
+         ffAw==
+X-Gm-Message-State: AOAM532kNJqH5r3PDawHMy1QmI1jiHS1FjYX92eUrb/vwMHq2d9jJu3B
+        UpZ4ycExZ1AGglPoeART4lVwrYToLnmSSw==
+X-Google-Smtp-Source: ABdhPJy9ErEpYL2U7L8lmnCza4ejJU8e0hAQR7yhyK/XAv+WlVjC5KHJiS/t31tf1iQHM1HquRgOjQ==
+X-Received: by 2002:a05:6830:1c1:: with SMTP id r1mr109491ota.100.1597963646758;
+        Thu, 20 Aug 2020 15:47:26 -0700 (PDT)
 Received: from localhost ([2605:6000:8b03:f000:e2a0:5228:a0c3:36eb])
-        by smtp.gmail.com with ESMTPSA id s135sm673976oih.35.2020.08.20.15.47.24
+        by smtp.gmail.com with ESMTPSA id x70sm671834oif.3.2020.08.20.15.47.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 15:47:25 -0700 (PDT)
+        Thu, 20 Aug 2020 15:47:26 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH v3 15/17] rdma_rxe: Added functional bind and invalidate MW ops
-Date:   Thu, 20 Aug 2020 17:46:36 -0500
-Message-Id: <20200820224638.3212-16-rpearson@hpe.com>
+Subject: [PATCH v3 16/17] rdma_rxe: Implemented read/write/atomic access to MW
+Date:   Thu, 20 Aug 2020 17:46:37 -0500
+Message-Id: <20200820224638.3212-17-rpearson@hpe.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200820224638.3212-1-rpearson@hpe.com>
 References: <20200820224638.3212-1-rpearson@hpe.com>
@@ -64,440 +64,392 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replaced bind MW and invalidate MW stubs with functional versions
-Added rules checking for these operations based on the InfiniBand
-architecture document.
-Added an extra flags field in the rxe WQE to indicate whether the
-bind operation came from the ibv_bind_verbs API or the
-ibv_post_send API to enforce the rules on type 1 and 2 MWs.
+Extended current support for rkeys referencing MRs to include
+rkeys referencing MWs.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c    |   3 +-
- drivers/infiniband/sw/rxe/rxe_mw.c    | 287 ++++++++++++++++++++++++--
- drivers/infiniband/sw/rxe/rxe_verbs.h |   7 +
- include/uapi/rdma/rdma_user_rxe.h     |  32 ++-
- 4 files changed, 312 insertions(+), 17 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  7 ++-
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
+ drivers/infiniband/sw/rxe/rxe_mw.c    | 44 +++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_req.c   |  3 +-
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 70 ++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
+ 6 files changed, 150 insertions(+), 55 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 12b43fa9087d..785f2ee48038 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -86,12 +86,11 @@ int copy_data(struct rxe_pd *pd, int access,
+ 	      struct rxe_dma_info *dma, void *addr, int length,
+ 	      enum copy_direction dir, u32 *crcp);
+ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
+-struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+-			   enum lookup_type type);
+-int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+ void rxe_mr_cleanup(struct rxe_pool_entry *arg);
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+ int rxe_invalidate_mr(struct rxe_qp *qp, struct rxe_mr *mr);
++int rxe_mr_check_access(struct rxe_qp *qp, struct rxe_mr *mr,
++			int access, u64 va, u32 resid);
+ void rxe_mr_cleanup(struct rxe_pool_entry *arg);
+ 
+ /* rxe_mw.c */
+@@ -100,6 +99,8 @@ struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
+ int rxe_dealloc_mw(struct ib_mw *ibmw);
+ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+ int rxe_invalidate_mw(struct rxe_qp *qp, struct rxe_mw *mw);
++int rxe_mw_check_access(struct rxe_qp *qp, struct rxe_mw *mw,
++			int access, u64 va, u32 resid);
+ void rxe_mw_cleanup(struct rxe_pool_entry *arg);
+ 
+ /* rxe_net.c */
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index b8d3002d9df8..d2116c55c772 100644
+index d2116c55c772..7d454e32851a 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -555,7 +555,8 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
- 	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
- 	int i;
- 
--	ib_umem_release(mr->umem);
-+	if (mr->umem)
-+		ib_umem_release(mr->umem);
- 
- 	if (mr->map) {
- 		for (i = 0; i < mr->num_map; i++)
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index c41b5160bdba..ec9b3d766551 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -25,7 +25,7 @@ static void rxe_set_mw_rkey(struct rxe_mw *mw)
- 			   (rxe_add_key(mw, &rkey) == 0)))
- 			return;
- 	} while (tries++ < 10);
--	pr_err("unable to get random rkey for mw\n");
-+	pr_err_once("unable to get random rkey for mw\n");
+@@ -26,7 +26,7 @@ static void rxe_set_mr_lkey(struct rxe_mr *mr)
+ 	pr_err("unable to get random lkey for mr\n");
  }
  
- /* this temporary code to test ibv_alloc_mw, ibv_dealloc_mw */
-@@ -38,7 +38,7 @@ struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
- 	struct rxe_alloc_mw_resp __user *uresp = NULL;
- 
- 	if (udata) {
--		if (udata->outlen < sizeof(*uresp))
-+		if (unlikely(udata->outlen < sizeof(*uresp)))
- 			return ERR_PTR(-EINVAL);
- 		uresp = udata->outbuf;
- 	}
-@@ -70,10 +70,9 @@ struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
- 					RXE_MEM_STATE_VALID;
- 
- 	if (uresp) {
--		if (copy_to_user(&uresp->index, &mw->pelem.index,
--				 sizeof(uresp->index))) {
-+		if (unlikely(copy_to_user(&uresp->index, &mw->pelem.index,
-+				 sizeof(uresp->index)))) {
- 			rxe_drop_ref(mw);
--			rxe_drop_ref(pd);
- 			return ERR_PTR(-EFAULT);
- 		}
- 	}
-@@ -81,13 +80,31 @@ struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
- 	return &mw->ibmw;
+-int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
++static int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ {
+ 	switch (mr->type) {
+ 	case RXE_MR_TYPE_DMA:
+@@ -385,6 +385,25 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 	return err;
  }
  
-+/* cleanup mw in case someone is still holding a ref */
-+static void do_dealloc_mw(struct rxe_mw *mw)
++static struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 lkey)
 +{
-+	if (mw->mr) {
-+		rxe_drop_ref(mw->mr);
-+		atomic_dec(&mw->mr->num_mw);
-+		mw->mr = NULL;
++	struct rxe_mr *mr;
++	struct rxe_dev *rxe = to_rdev(pd->ibpd.device);
++
++	mr = rxe_pool_get_key(&rxe->mr_pool, &lkey);
++	if (!mr)
++		return NULL;
++
++	if (unlikely((mr->ibmr.lkey != lkey) || (mr->pd != pd) ||
++		     (access && !(access & mr->access)) ||
++		     (mr->state != RXE_MEM_STATE_VALID))) {
++		rxe_drop_ref(mr);
++		return NULL;
 +	}
 +
-+	mw->qp = NULL;
-+	mw->access = 0;
-+	mw->addr = 0;
-+	mw->length = 0;
-+	mw->state = RXE_MEM_STATE_INVALID;
++	return mr;
 +}
 +
- int rxe_dealloc_mw(struct ib_mw *ibmw)
- {
- 	struct rxe_mw *mw = to_rmw(ibmw);
- 	unsigned long flags;
+ /* copy data in or out of a wqe, i.e. sg list
+  * under the control of a dma descriptor
+  */
+@@ -414,7 +433,7 @@ int copy_data(
+ 	}
  
- 	spin_lock_irqsave(&mw->lock, flags);
--	mw->state = RXE_MEM_STATE_INVALID;
-+
-+	do_dealloc_mw(mw);
-+
- 	spin_unlock_irqrestore(&mw->lock, flags);
+ 	if (sge->length && (offset < sge->length)) {
+-		mr = lookup_mr(pd, access, sge->lkey, lookup_local);
++		mr = lookup_mr(pd, access, sge->lkey);
+ 		if (!mr) {
+ 			err = -EINVAL;
+ 			goto err1;
+@@ -439,8 +458,7 @@ int copy_data(
+ 			}
  
- 	rxe_drop_ref(mw);
-@@ -95,18 +112,264 @@ int rxe_dealloc_mw(struct ib_mw *ibmw)
+ 			if (sge->length) {
+-				mr = lookup_mr(pd, access, sge->lkey,
+-						 lookup_local);
++				mr = lookup_mr(pd, access, sge->lkey);
+ 				if (!mr) {
+ 					err = -EINVAL;
+ 					goto err1;
+@@ -515,39 +533,39 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
  	return 0;
  }
  
--/* stub for bind mw */
-+/* Check the rules for bind MW oepration. */
-+static int check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
-+			 struct rxe_mw *mw, struct rxe_mr *mr)
-+{
-+	/* check to see if bind operation came through
-+	 * ibv_bind_mw verbs API.
-+	 */
-+	switch (mw->ibmw.type) {
-+	case IB_MW_TYPE_1:
-+		/* o10-37.2.34 */
-+		if (unlikely(!(wqe->wr.wr.umw.flags & RXE_BIND_MW))) {
-+			pr_err_once("attempt to bind type 1 MW with send WR\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case IB_MW_TYPE_2:
-+		/* o10-37.2.35 */
-+		if (unlikely(wqe->wr.wr.umw.flags & RXE_BIND_MW)) {
-+			pr_err_once("attempt to bind type 2 MW with verbs API\n");
-+			return -EINVAL;
-+		}
-+
-+		/* C10-72 */
-+		if (unlikely(qp->pd != to_rpd(mw->ibmw.pd))) {
-+			pr_err_once("attempt to bind type 2 MW with qp with different PD\n");
-+			return -EINVAL;
-+		}
-+
-+		/* o10-37.2.40 */
-+		if (unlikely(wqe->wr.wr.umw.length == 0)) {
-+			pr_err_once("attempt to invalidate type 2 MW by binding with zero length\n");
-+			return -EINVAL;
-+		}
-+
-+		if (unlikely(!mr)) {
-+			pr_err_once("attempt to bind MW to a NULL mr\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (unlikely((mw->ibmw.type == IB_MW_TYPE_1) &&
-+			(mw->state != RXE_MEM_STATE_VALID))) {
-+		pr_err_once("attempt to bind a type 1 MW not in the valid state\n");
-+		return -EINVAL;
-+	}
-+
-+	/* o10-36.2.2 */
-+	if (unlikely((mw->access & IB_ZERO_BASED) &&
-+			(mw->ibmw.type == IB_MW_TYPE_1))) {
-+		pr_err_once("attempt to bind a zero based type 1 MW\n");
-+		return -EINVAL;
-+	}
-+
-+	if (unlikely((wqe->wr.wr.umw.rkey & 0xff) == (mw->ibmw.rkey & 0xff))) {
-+		pr_err_once("attempt to bind MW with same key\n");
-+		return -EINVAL;
-+	}
-+
-+	/* remaining checks only apply to a nonzero MR */
-+	if (!mr)
-+		return 0;
-+
-+	if (unlikely(mr->access & IB_ZERO_BASED)) {
-+		pr_err_once("attempt to bind MW to zero based MR\n");
-+		return -EINVAL;
-+	}
-+
-+	/* o10-37.2.30 */
-+	if (unlikely((mw->ibmw.type == IB_MW_TYPE_2) &&
-+			(mw->state != RXE_MEM_STATE_FREE))) {
-+		pr_err_once("attempt to bind a type 2 MW not in the free state\n");
-+		return -EINVAL;
-+	}
-+
-+	/* C10-73 */
-+	if (unlikely(!(mr->access & IB_ACCESS_MW_BIND))) {
-+		pr_err_once("attempt to bind an MW to an MR without bind access\n");
-+		return -EINVAL;
-+	}
-+
-+	/* C10-74 */
-+	if (unlikely((mw->access & (IB_ACCESS_REMOTE_WRITE |
-+				    IB_ACCESS_REMOTE_ATOMIC)) &&
-+	    !(mr->access & IB_ACCESS_LOCAL_WRITE))) {
-+		pr_err_once("attempt to bind an writeable MW to an MR without local write access\n");
-+		return -EINVAL;
-+	}
-+
-+	/* C10-75 */
-+	if (mw->access & IB_ZERO_BASED) {
-+		if (unlikely(wqe->wr.wr.umw.length > mr->length)) {
-+			pr_err_once("attempt to bind a ZB MW outside of the MR\n");
-+			return -EINVAL;
-+		}
-+	} else {
-+		if (unlikely((wqe->wr.wr.umw.addr < mr->iova) ||
-+		    ((wqe->wr.wr.umw.addr + wqe->wr.wr.umw.length) >
-+		     (mr->iova + mr->length)))) {
-+			pr_err_once("attempt to bind a VA MW outside of the MR\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int do_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
-+			struct rxe_mw *mw, struct rxe_mr *mr)
-+{
-+	u32 rkey;
-+	u32 new_rkey;
-+	struct rxe_mw *duplicate_mw;
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+
-+	/* key part of new rkey is provided by user for type 2
-+	 * and ibv_bind_mw() for type 1 MWs
-+	 * there is a very rare chance that the new rkey will
-+	 * collide with an existing MW. Return an error if this
-+	 * occurs
-+	 */
-+	rkey = mw->ibmw.rkey;
-+	new_rkey = (rkey & 0xffffff00) | (wqe->wr.wr.umw.rkey & 0x000000ff);
-+	duplicate_mw = rxe_pool_get_key(&rxe->mw_pool, &new_rkey);
-+	if (duplicate_mw) {
-+		pr_err_once("new MW key is a duplicate, try another\n");
-+		rxe_drop_ref(duplicate_mw);
-+		return -EINVAL;
-+	}
-+
-+	rxe_drop_key(mw);
-+	rxe_add_key(mw, &new_rkey);
-+
-+	mw->access = wqe->wr.wr.umw.access;
-+	mw->state = RXE_MEM_STATE_VALID;
-+	mw->addr = wqe->wr.wr.umw.addr;
-+	mw->length = wqe->wr.wr.umw.length;
-+
-+	if (mw->mr) {
-+		rxe_drop_ref(mw->mr);
-+		atomic_dec(&mw->mr->num_mw);
-+		mw->mr = NULL;
-+	}
-+
-+	if (mw->length) {
-+		mw->mr = mr;
-+		atomic_inc(&mr->num_mw);
-+		rxe_add_ref(mr);
-+	}
-+
-+	if (mw->ibmw.type == IB_MW_TYPE_2)
-+		mw->qp = qp;
-+
-+	return 0;
-+}
-+
- int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+-/* (1) find the mr (mr or mw) corresponding to lkey/rkey
+- *     depending on lookup_type
+- * (2) verify that the (qp) pd matches the mr pd
+- * (3) verify that the mr can support the requested access
+- * (4) verify that mr state is valid
+- */
+-struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+-			   enum lookup_type type)
++/* TODO this needs additional validation */
++int rxe_invalidate_mr(struct rxe_qp *qp, struct rxe_mr *mr)
  {
--	pr_err_once("%s: not implemented\n", __func__);
--	return -EINVAL;
+-	struct rxe_mr *mr;
+-	struct rxe_dev *rxe = to_rdev(pd->ibpd.device);
++	mr->state = RXE_MEM_STATE_FREE;
++	return 0;
++}
+ 
+-	mr = rxe_pool_get_key(&rxe->mr_pool, &key);
+-	if (!mr)
+-		return NULL;
++int rxe_mr_check_access(struct rxe_qp *qp, struct rxe_mr *mr,
++			int access, u64 va, u32 resid)
++{
 +	int ret;
-+	struct rxe_mw *mw;
-+	struct rxe_mr *mr;
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	unsigned long flags;
-+
-+	if (qp->is_user) {
-+		mw = rxe_pool_get_index(&rxe->mw_pool,
-+					wqe->wr.wr.umw.mw_index);
-+		if (!mw) {
-+			pr_err_once("mw with index = %d not found\n",
-+				wqe->wr.wr.umw.mw_index);
-+			ret = -EINVAL;
-+			goto err1;
-+		}
-+		mr = rxe_pool_get_index(&rxe->mr_pool,
-+					wqe->wr.wr.umw.mr_index);
-+		if (!mr && wqe->wr.wr.umw.length) {
-+			pr_err_once("mr with index = %d not found\n",
-+				wqe->wr.wr.umw.mr_index);
-+			ret = -EINVAL;
-+			goto err2;
-+		}
-+	} else {
-+		mw = to_rmw(wqe->wr.wr.kmw.mw);
-+		rxe_add_ref(mw);
-+		if (wqe->wr.wr.kmw.mr) {
-+			mr = to_rmr(wqe->wr.wr.kmw.mr);
-+			rxe_add_ref(mr);
-+		} else {
-+			mr = NULL;
-+		}
++	struct rxe_pd *pd = to_rpd(mr->ibmr.pd);
+ 
+-	if (unlikely((type == lookup_local && mr->lkey != key) ||
+-		     (type == lookup_remote && mr->rkey != key) ||
+-		     mr->pd != pd ||
+-		     (access && !(access & mr->access)) ||
+-		     mr->state != RXE_MEM_STATE_VALID)) {
+-		rxe_drop_ref(mr);
+-		mr = NULL;
++	if (unlikely(mr->state != RXE_MEM_STATE_VALID)) {
++		pr_err("attempt to access a MR that is not in the valid state\n");
++		return -EINVAL;
+ 	}
+ 
+-	return mr;
+-}
++	/* C10-56 */
++	if (unlikely(pd != qp->pd)) {
++		pr_err("attempt to access a MR with a different PD than the QP\n");
++		return -EINVAL;
++	}
+ 
+-/* stub for invalidate MR */
+-int rxe_invalidate_mr(struct rxe_qp *qp, struct rxe_mr *mr)
+-{
+-	mr->state = RXE_MEM_STATE_FREE;
+-	return 0;
++	/* C10-57 */
++	if (unlikely(access && !(access & mr->access))) {
++		pr_err("attempt to access a MR without required access rights\n");
++		return -EINVAL;
 +	}
 +
-+	spin_lock_irqsave(&mw->lock, flags);
++	ret = mr_check_range(mr, va, resid);
 +
-+	ret = check_bind_mw(qp, wqe, mw, mr);
-+	if (ret)
-+		goto err3;
-+
-+	ret = do_bind_mw(qp, wqe, mw, mr);
-+err3:
-+	spin_unlock_irqrestore(&mw->lock, flags);
-+
-+	if (mr)
-+		rxe_drop_ref(mr);
-+err2:
-+	rxe_drop_ref(mw);
-+err1:
 +	return ret;
-+}
-+
-+static int check_invalidate_mw(struct rxe_qp *qp, struct rxe_mw *mw)
+ }
+ 
+ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index ec9b3d766551..4178cf501a2b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -372,6 +372,50 @@ int rxe_invalidate_mw(struct rxe_qp *qp, struct rxe_mw *mw)
+ 	return ret;
+ }
+ 
++int rxe_mw_check_access(struct rxe_qp *qp, struct rxe_mw *mw,
++			int access, u64 va, u32 resid)
 +{
++	struct rxe_pd *pd = to_rpd(mw->ibmw.pd);
++
 +	if (unlikely(mw->state != RXE_MEM_STATE_VALID)) {
-+		pr_err_once("attempt to invalidate a MW that is not valid\n");
++		pr_err_once("attempt to access a MW that is not in the valid state\n");
 +		return -EINVAL;
 +	}
 +
-+	/* o10-37.2.26 */
-+	if (unlikely(mw->ibmw.type == IB_MW_TYPE_1)) {
-+		pr_err_once("attempt to invalidate a type 1 MW\n");
++	/* C10-76.2.1 */
++	if (unlikely((mw->ibmw.type == IB_MW_TYPE_1) && (pd != qp->pd))) {
++		pr_err_once("attempt to access a type 1 MW with a different PD than the QP\n");
 +		return -EINVAL;
++	}
++
++	/* o10-37.2.43 */
++	if (unlikely((mw->ibmw.type == IB_MW_TYPE_2) && (mw->qp != qp))) {
++		pr_err_once("attempt to access a type 2 MW that is associated with a different QP\n");
++		return -EINVAL;
++	}
++
++	/* C10-77 */
++	if (unlikely(access && !(access & mw->access))) {
++		pr_err_once("attempt to access a MW without sufficient access\n");
++		return -EINVAL;
++	}
++
++	if (mw->access & IB_ZERO_BASED) {
++		if (unlikely((va + resid) > mw->length)) {
++			pr_err_once("attempt to access a ZB MW out of bounds\n");
++			return -EINVAL;
++		}
++	} else {
++		if (unlikely((va < mw->addr) ||
++			((va + resid) > (mw->addr + mw->length)))) {
++			pr_err_once("attempt to access a VA MW out of bounds\n");
++			return -EINVAL;
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static void do_invalidate_mw(struct rxe_mw *mw)
-+{
-+	mw->qp = NULL;
-+
-+	rxe_drop_ref(mw->mr);
-+	atomic_dec(&mw->mr->num_mw);
-+	mw->mr = NULL;
-+
-+	mw->access = 0;
-+	mw->addr = 0;
-+	mw->length = 0;
-+	mw->state = RXE_MEM_STATE_FREE;
- }
- 
--/* stub for invalidate MW */
- int rxe_invalidate_mw(struct rxe_qp *qp, struct rxe_mw *mw)
- {
--	pr_err_once("%s: not implemented\n", __func__);
--	return -EINVAL;
-+	int ret;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&mw->lock, flags);
-+
-+	ret = check_invalidate_mw(qp, mw);
-+	if (ret)
-+		goto err;
-+
-+	do_invalidate_mw(mw);
-+err:
-+	spin_unlock_irqrestore(&mw->lock, flags);
-+
-+	return ret;
- }
- 
  void rxe_mw_cleanup(struct rxe_pool_entry *arg)
+ {
+ 	struct rxe_mw *mw = container_of(arg, typeof(*mw), pelem);
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index ec5a1677a2a1..3cdb71b27e02 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -758,8 +758,7 @@ int rxe_requester(void *arg)
+ 
+ again:
+ 	/* we come here if we are done with the current wqe but want to
+-	 * get called again. Mostly we loop back to next wqe so should
+-	 * be all one way or the other
++	 * get called again.
+ 	 */
+ 	ret = 0;
+ 	goto done;
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 9997eaab235d..d6e957a34910 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -392,7 +392,9 @@ static enum resp_states check_length(struct rxe_qp *qp,
+ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 				   struct rxe_pkt_info *pkt)
+ {
+-	struct rxe_mr *mr = NULL;
++	struct rxe_mr *mr;
++	struct rxe_mw *mw;
++	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+ 	u64 va;
+ 	u32 rkey;
+ 	u32 resid;
+@@ -400,6 +402,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 	int mtu = qp->mtu;
+ 	enum resp_states state;
+ 	int access;
++	unsigned long flags;
+ 
+ 	if (pkt->mask & (RXE_READ_MASK | RXE_WRITE_MASK)) {
+ 		if (pkt->mask & RXE_RETH_MASK) {
+@@ -407,6 +410,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 			qp->resp.rkey = reth_rkey(pkt);
+ 			qp->resp.resid = reth_len(pkt);
+ 			qp->resp.length = reth_len(pkt);
++			qp->resp.offset = 0;
+ 		}
+ 		access = (pkt->mask & RXE_READ_MASK) ? IB_ACCESS_REMOTE_READ
+ 						     : IB_ACCESS_REMOTE_WRITE;
+@@ -414,6 +418,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 		qp->resp.va = atmeth_va(pkt);
+ 		qp->resp.rkey = atmeth_rkey(pkt);
+ 		qp->resp.resid = sizeof(u64);
++		qp->resp.offset = 0;
+ 		access = IB_ACCESS_REMOTE_ATOMIC;
+ 	} else {
+ 		return RESPST_EXECUTE;
+@@ -431,20 +436,46 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 	resid	= qp->resp.resid;
+ 	pktlen	= payload_size(pkt);
+ 
+-	mr = lookup_mr(qp->pd, access, rkey, lookup_remote);
+-	if (!mr) {
+-		state = RESPST_ERR_RKEY_VIOLATION;
+-		goto err;
+-	}
++	/* check rkey on each packet because someone could
++	 * have invalidated, deallocated or unregistered it
++	 * since the last packet
++	 */
++	if (rkey & IS_MW) {
++		mw = rxe_pool_get_key(&rxe->mw_pool, &rkey);
++		if (!mw) {
++			pr_err_once("no MW found with rkey = 0x%08x\n", rkey);
++			state = RESPST_ERR_RKEY_VIOLATION;
++			goto err;
++		}
+ 
+-	if (unlikely(mr->state == RXE_MEM_STATE_FREE)) {
+-		state = RESPST_ERR_RKEY_VIOLATION;
+-		goto err;
+-	}
++		spin_lock_irqsave(&mw->lock, flags);
++		if (rxe_mw_check_access(qp, mw, access, va, resid)) {
++			spin_unlock_irqrestore(&mw->lock, flags);
++			rxe_drop_ref(mw);
++			state = RESPST_ERR_RKEY_VIOLATION;
++			goto err;
++		}
++
++		mr = mw->mr;
++		rxe_add_ref(mr);
+ 
+-	if (mr_check_range(mr, va, resid)) {
+-		state = RESPST_ERR_RKEY_VIOLATION;
+-		goto err;
++		if (mw->access & IB_ZERO_BASED)
++			qp->resp.offset = mw->addr;
++
++		spin_unlock_irqrestore(&mw->lock, flags);
++		rxe_drop_ref(mw);
++	} else {
++		mr = rxe_pool_get_key(&rxe->mr_pool, &rkey);
++		if (!mr || (mr->rkey != rkey)) {
++			pr_err_once("no MR found with rkey = 0x%08x\n", rkey);
++			state = RESPST_ERR_RKEY_VIOLATION;
++			goto err;
++		}
++
++		if (rxe_mr_check_access(qp, mr, access, va, resid)) {
++			state = RESPST_ERR_RKEY_VIOLATION;
++			goto err;
++		}
+ 	}
+ 
+ 	if (pkt->mask & RXE_WRITE_MASK)	 {
+@@ -500,8 +531,8 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
+ 	int	err;
+ 	int data_len = payload_size(pkt);
+ 
+-	err = rxe_mr_copy(qp->resp.mr, qp->resp.va, payload_addr(pkt),
+-			   data_len, to_mr_obj, NULL);
++	err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
++			  payload_addr(pkt), data_len, to_mr_obj, NULL);
+ 	if (err) {
+ 		rc = RESPST_ERR_RKEY_VIOLATION;
+ 		goto out;
+@@ -520,7 +551,6 @@ static DEFINE_SPINLOCK(atomic_ops_lock);
+ static enum resp_states process_atomic(struct rxe_qp *qp,
+ 				       struct rxe_pkt_info *pkt)
+ {
+-	u64 iova = atmeth_va(pkt);
+ 	u64 *vaddr;
+ 	enum resp_states ret;
+ 	struct rxe_mr *mr = qp->resp.mr;
+@@ -530,7 +560,7 @@ static enum resp_states process_atomic(struct rxe_qp *qp,
+ 		goto out;
+ 	}
+ 
+-	vaddr = iova_to_vaddr(mr, iova, sizeof(u64));
++	vaddr = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset, sizeof(u64));
+ 
+ 	/* check vaddr is 8 bytes aligned. */
+ 	if (!vaddr || (uintptr_t)vaddr & 7) {
+@@ -655,8 +685,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+ 		res->type		= RXE_READ_MASK;
+ 		res->replay		= 0;
+ 
+-		res->read.va		= qp->resp.va;
+-		res->read.va_org	= qp->resp.va;
++		res->read.va		= qp->resp.va +
++					  qp->resp.offset;
++		res->read.va_org	= qp->resp.va +
++					  qp->resp.offset;
+ 
+ 		res->first_psn		= req_pkt->psn;
+ 
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 8b0fddac3817..38130903fc87 100644
+index 38130903fc87..155bea2b4ec9 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -329,9 +329,16 @@ struct rxe_mr {
- 	u32			max_buf;
- 	u32			num_map;
+@@ -185,6 +185,7 @@ struct rxe_resp_info {
  
-+	atomic_t		num_mw;
-+
- 	struct rxe_map		**map;
- };
- 
-+enum rxe_send_flags {
-+	/* flag indicaes bind call came through verbs API */
-+	RXE_BIND_MW		= (1 << 0),
-+};
-+
- /* use high order bit to separate MW and MR rkeys */
- #define IS_MW  (1 << 31)
- 
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index fdf6d13ed4b7..d49125682359 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -96,12 +96,36 @@ struct rxe_send_wr {
- 		struct {
- 			__aligned_u64	addr;
- 			__aligned_u64	length;
--			__u32	mr_index;
--			__u32	mw_index;
-+			union {
-+				__u32		mr_index;
-+				__aligned_u64	reserved1;
-+			};
-+			union {
-+				__u32		mw_index;
-+				__aligned_u64	reserved2;
-+			};
-+			__u32	rkey;
-+			__u32	access;
-+			__u32	flags;
-+		} umw;
-+		/* The following are only used by the kernel
-+		 * and are not part of the uapi
-+		 */
-+		struct {
-+			__aligned_u64	addr;
-+			__aligned_u64	length;
-+			union {
-+				struct ib_mr	*mr;
-+				__aligned_u64	reserved1;
-+			};
-+			union {
-+				struct ib_mw	*mw;
-+				__aligned_u64	reserved2;
-+			};
- 			__u32	rkey;
- 			__u32	access;
--		} bind_mw;
--		/* reg is only used by the kernel and is not part of the uapi */
-+			__u32	flags;
-+		} kmw;
- 		struct {
- 			union {
- 				struct ib_mr *mr;
+ 	/* RDMA read / atomic only */
+ 	u64			va;
++	u64			offset;
+ 	struct rxe_mr		*mr;
+ 	u32			resid;
+ 	u32			rkey;
 -- 
 2.25.1
 
