@@ -2,178 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493C924D195
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 11:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F6024D1B7
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 11:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgHUJco (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Aug 2020 05:32:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10251 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727898AbgHUJcm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 Aug 2020 05:32:42 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 61901497F416D0DC1556;
-        Fri, 21 Aug 2020 17:32:39 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 21 Aug 2020 17:32:30 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Get udp sport num dynamically instead of using a fixed value
-Date:   Fri, 21 Aug 2020 17:31:29 +0800
-Message-ID: <1598002289-8611-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S1727006AbgHUJt6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Aug 2020 05:49:58 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43964 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgHUJt5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Aug 2020 05:49:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L9gMlm082026;
+        Fri, 21 Aug 2020 09:49:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=orjAXZiNJh1MaoNFDKY8bEIm3QOf3FaECDDCfTCafAA=;
+ b=nf3gJW5wWhdtOqFrWIJBzI1j8cwnInu1ZZnwJ0QrlK6Lx/tjSwGOXgNfOnuxsphgN7QG
+ Ml7LRwxDjHaQ5FKUAMj6H2ZWST0U6Uoe0mjBLJ/7lYpC5ue+UaV7c/5S0ZXXHj9EGwDa
+ ZRV7Ap0OS3YYiiDFK+l32hC1S4OngfOj/274jR5hbID26wXE5YG29x5VvGsK64QPD6EI
+ f38BgdtnXfn5kRMLtrKgNUYPrWwLoH009sbTWdg1MACyn8GWfLe5gs+ELfoi7ZthoIO8
+ KhQOC2sxjWu9U6jR5YeSeOeyv2/6RdK5c08P3l8dBp1OQrHnGWEIMJuM8snfzRZG+mMY aQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 32x74rnaux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 09:49:46 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07L9iYoF028593;
+        Fri, 21 Aug 2020 09:47:45 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 331b2ejg71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 09:47:45 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07L9laAQ000738;
+        Fri, 21 Aug 2020 09:47:36 GMT
+Received: from dhcp-10-175-160-47.vpn.oracle.com (/10.175.160.47)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 09:47:35 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] IB/uverbs: Fix memleak in ib_uverbs_add_one
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+Date:   Fri, 21 Aug 2020 11:47:32 +0200
+Cc:     kjlu@umn.edu, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Ariel Elior <ariel.elior@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E59593D2-E7F5-4D41-B6DC-B8B8C55241CE@oracle.com>
+References: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=62 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210089
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=62 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210089
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The UDP source port number in RoCE v2 is used to create entropy for network
-routers (ECMP), load balancers and 802.3ad link aggregation switching that
-are not aware of RoCE IB headers. Considering that the IB core has achieved
-a new interface to get a hashed value of it，the fixed value of it in QPC
-and UD WQE in hns driver could be fixed and the port number is to be set
-dynamically now.
 
-For QPC of RC, the value could be hashed from flow_lable if the user pass
-it in or from remote qpn and local qpn. For WQE of UD, it is set according
-to fl or as a random value.
 
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_ah.c     | 18 ++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_device.h | 23 ++++++++++++-----------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 13 +++++++++++--
- include/rdma/ib_verbs.h                     |  1 +
- 4 files changed, 42 insertions(+), 13 deletions(-)
+> On 21 Aug 2020, at 10:10, Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>=20
+> When ida_alloc_max() fails, uverbs_dev should be freed
+> just like when init_srcu_struct() fails. It's the same
+> for the error paths after this call.
+>=20
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+> drivers/infiniband/core/uverbs_main.c | 1 +
+> 1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/infiniband/core/uverbs_main.c =
+b/drivers/infiniband/core/uverbs_main.c
+> index 37794d88b1f3..c6b4e3e2aff6 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -1170,6 +1170,7 @@ static int ib_uverbs_add_one(struct ib_device =
+*device)
+> 		ib_uverbs_comp_dev(uverbs_dev);
+> 	wait_for_completion(&uverbs_dev->comp);
+> 	put_device(&uverbs_dev->dev);
+> +	kfree(uverbs_dev);
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index 5b2f9314..54cadbc 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -39,6 +39,22 @@
- #define HNS_ROCE_VLAN_SL_BIT_MASK	7
- #define HNS_ROCE_VLAN_SL_SHIFT		13
- 
-+static inline u16 get_ah_udp_sport(const struct rdma_ah_attr *ah_attr)
-+{
-+	u32 fl = ah_attr->grh.flow_label;
-+	u16 sport;
-+
-+	if (!fl)
-+		sport = get_random_u32() %
-+			(IB_ROCE_UDP_ENCAP_VALID_PORT_MAX + 1 -
-+			 IB_ROCE_UDP_ENCAP_VALID_PORT_MIN) +
-+			IB_ROCE_UDP_ENCAP_VALID_PORT_MIN;
-+	else
-+		sport = rdma_flow_label_to_udp_sport(fl);
-+
-+	return sport;
-+}
-+
- int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 		       struct ib_udata *udata)
- {
-@@ -79,6 +95,8 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 
- 	memcpy(ah->av.dgid, grh->dgid.raw, HNS_ROCE_GID_SIZE);
- 	ah->av.sl = rdma_ah_get_sl(ah_attr);
-+	ah->av.flowlabel = grh->flow_label;
-+	ah->av.udp_sport = get_ah_udp_sport(ah_attr);
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index da9888d..8d92d8d8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -537,17 +537,18 @@ struct hns_roce_raq_table {
- };
- 
- struct hns_roce_av {
--	u8          port;
--	u8          gid_index;
--	u8          stat_rate;
--	u8          hop_limit;
--	u32         flowlabel;
--	u8          sl;
--	u8          tclass;
--	u8          dgid[HNS_ROCE_GID_SIZE];
--	u8          mac[ETH_ALEN];
--	u16         vlan_id;
--	bool	    vlan_en;
-+	u8 port;
-+	u8 gid_index;
-+	u8 stat_rate;
-+	u8 hop_limit;
-+	u32 flowlabel;
-+	u16 udp_sport;
-+	u8 sl;
-+	u8 tclass;
-+	u8 dgid[HNS_ROCE_GID_SIZE];
-+	u8 mac[ETH_ALEN];
-+	u16 vlan_id;
-+	bool vlan_en;
- };
- 
- struct hns_roce_ah {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d296859..4da553d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -369,7 +369,7 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
- 		       curr_idx & (qp->sge.sge_cnt - 1));
- 
- 	roce_set_field(ud_sq_wqe->byte_24, V2_UD_SEND_WQE_BYTE_24_UDPSPN_M,
--		       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S, 0);
-+		       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S, ah->av.udp_sport);
- 	ud_sq_wqe->qkey = cpu_to_le32(ud_wr(wr)->remote_qkey & 0x80000000 ?
- 			  qp->qkey : ud_wr(wr)->remote_qkey);
- 	roce_set_field(ud_sq_wqe->byte_32, V2_UD_SEND_WQE_BYTE_32_DQPN_M,
-@@ -4165,6 +4165,14 @@ static int modify_qp_rtr_to_rts(struct ib_qp *ibqp,
- 	return 0;
- }
- 
-+static inline u16 get_udp_sport(u32 fl, u32 lqpn, u32 rqpn)
-+{
-+	if (!fl)
-+		fl = rdma_calc_flow_label(lqpn, rqpn);
-+
-+	return rdma_flow_label_to_udp_sport(fl);
-+}
-+
- static int hns_roce_v2_set_path(struct ib_qp *ibqp,
- 				const struct ib_qp_attr *attr,
- 				int attr_mask,
-@@ -4228,7 +4236,8 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
- 
- 	roce_set_field(context->byte_52_udpspn_dmac, V2_QPC_BYTE_52_UDPSPN_M,
- 		       V2_QPC_BYTE_52_UDPSPN_S,
--		       is_udp ? 0x12b7 : 0);
-+		       is_udp ? get_udp_sport(grh->flow_label, ibqp->qp_num,
-+					      attr->dest_qp_num) : 0);
- 
- 	roce_set_field(qpc_mask->byte_52_udpspn_dmac, V2_QPC_BYTE_52_UDPSPN_M,
- 		       V2_QPC_BYTE_52_UDPSPN_S, 0);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 55dfe0e..c868609 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4706,6 +4706,7 @@ bool rdma_dev_access_netns(const struct ib_device *device,
- 			   const struct net *net);
- 
- #define IB_ROCE_UDP_ENCAP_VALID_PORT_MIN (0xC000)
-+#define IB_ROCE_UDP_ENCAP_VALID_PORT_MAX (0xFFFF)
- #define IB_GRH_FLOWLABEL_MASK (0x000FFFFF)
- 
- /**
--- 
-2.8.1
+Isn't this taken care of by the *release* function pointer, which =
+happens to be ib_uverbs_release_dev() ?
+
+
+Thxs, H=C3=A5kon
+
+> 	return ret;
+> }
+>=20
+> --=20
+> 2.17.1
+>=20
 
