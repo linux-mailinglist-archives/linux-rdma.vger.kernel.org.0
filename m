@@ -2,82 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F35524CE5D
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 09:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD78F24D062
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Aug 2020 10:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgHUHB5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Aug 2020 03:01:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55175 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726119AbgHUHB4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Aug 2020 03:01:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597993315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yIGSYjFFLTVb50eqymJwc16CIZ3D03wNNhMqT2v4fFo=;
-        b=dJzbMLf6JSbI03dJs5zPtqRKpaYnFnnn0M4/n6yA8MIgj4GLCSpO3rK+5kFmzSVioRXwvD
-        rsbQ9cpCf7OFI1aV9Q1Rc1fXFnZQKw7uSL6nGuci7j6YF2wjgKeqvZUO4Vv66VUTWLkG2w
-        MtpLw5Ngo6ZE11mYk1atQPNobHSF/EU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-bmWLZW8UPxSpNitocniUOw-1; Fri, 21 Aug 2020 03:01:45 -0400
-X-MC-Unique: bmWLZW8UPxSpNitocniUOw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14FD1084C91;
-        Fri, 21 Aug 2020 07:01:43 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-195.ams2.redhat.com [10.36.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 489C95DA7E;
-        Fri, 21 Aug 2020 07:01:42 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 36D4E241; Fri, 21 Aug 2020 09:01:42 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 09:01:42 +0200
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        virtualization@lists.linux-foundation.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 2/2] drm/virtio: Remove open-coded commit-tail function
-Message-ID: <20200821070142.iwobpibai6aavpl6@sirius.home.kraxel.org>
-References: <20200707201229.472834-4-daniel.vetter@ffwll.ch>
- <20200709123339.547390-1-daniel.vetter@ffwll.ch>
- <20200709123339.547390-2-daniel.vetter@ffwll.ch>
- <5cb80369-75a5-fc83-4683-3a6fc2814104@kernel.org>
- <20200819132408.jnqjhdgd4jbnarhh@sirius.home.kraxel.org>
- <8a80b434-c8ed-daa3-753b-dd2ec89b9067@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a80b434-c8ed-daa3-753b-dd2ec89b9067@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1727866AbgHUIKu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Aug 2020 04:10:50 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:16964 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727772AbgHUIKt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 Aug 2020 04:10:49 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHj_9vgT9f51UsAQ--.16912S4;
+        Fri, 21 Aug 2020 16:10:27 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Ariel Elior <ariel.elior@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] IB/uverbs: Fix memleak in ib_uverbs_add_one
+Date:   Fri, 21 Aug 2020 16:10:11 +0800
+Message-Id: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHj_9vgT9f51UsAQ--.16912S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruFykJr1fZFy3KF1fZr47urg_yoW3CFc_Gr
+        1jqrs7uFn8CFWqkr1UArs3XrW2gFsI9a4rWa9ay34rJ347W343G392vr98Xr45Wr4jkFyD
+        JFWDJ348Krs5CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAls6
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 08:32:51AM +0200, Jiri Slaby wrote:
-> On 19. 08. 20, 15:24, Gerd Hoffmann wrote:
-> > On Wed, Aug 19, 2020 at 02:43:28PM +0200, Jiri Slaby wrote:
-> >> On 09. 07. 20, 14:33, Daniel Vetter wrote:
-> >>> Exactly matches the one in the helpers.
-> >>
-> >> It's not that exact. The order of modeset_enables and planes is
-> >> different. And this causes a regression -- no fb in qemu.
-> > 
-> > Does https://patchwork.freedesktop.org/patch/385980/ help?
-> 
-> Yes, it does.
+When ida_alloc_max() fails, uverbs_dev should be freed
+just like when init_srcu_struct() fails. It's the same
+for the error paths after this call.
 
-Any chance you can send a tested-by & acked-by for the series so I can
-get it merged?
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/infiniband/core/uverbs_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
-  Gerd
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 37794d88b1f3..c6b4e3e2aff6 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -1170,6 +1170,7 @@ static int ib_uverbs_add_one(struct ib_device *device)
+ 		ib_uverbs_comp_dev(uverbs_dev);
+ 	wait_for_completion(&uverbs_dev->comp);
+ 	put_device(&uverbs_dev->dev);
++	kfree(uverbs_dev);
+ 	return ret;
+ }
+ 
+-- 
+2.17.1
 
