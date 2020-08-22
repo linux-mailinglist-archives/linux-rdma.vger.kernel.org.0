@@ -2,154 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B62424E505
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Aug 2020 06:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C49F24E5B7
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Aug 2020 07:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725811AbgHVERC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Aug 2020 00:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgHVERB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Aug 2020 00:17:01 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639B3C061573
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id q9so3217434oth.5
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SmZOhr2At1rMDgNNXtY5F9FoFdcOI3/Q/IAFqc+WtUo=;
-        b=mWmvXzr4r6QFOG9bCXAY7rjYPu3k6Xiy2xiMGdWtmuqcM1Sr3Q3ouxBUL7+3AXd6fz
-         mTf0hBM6LSDPps8WLzE39DVB7cTl1cYeYG1xIvNcRmLJTHxhaqCfF+38KVAtIy7VfRIC
-         emh6sgal48kC+pIg/SEWYuBbCkl0QvXHR3ri0MLlZ7A0DwxEHTOiN8iGB3VjNZEBPE0E
-         4KQ8197Uipirch8gzn5FEnNqjCUG3LH9HI5wrK3svOyMFTpPJbIsj5Aub8Qx/7nppovt
-         ivCg/qOhvD/RFts5b1uLpoXliu0urGfMLbSKHLnAnq+mNVG4S+gMfCuPdHZBtmFb20T0
-         zQew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SmZOhr2At1rMDgNNXtY5F9FoFdcOI3/Q/IAFqc+WtUo=;
-        b=ZX90a5B4V0LbRINRhxV+QaywtY02C7Bto4XLVC61Fkyab8TW933NFup3bMmo19QRyG
-         KKqT3Wk+DqTJGW7IoejnZBs4AVH1Sz/7zt0gLv6fUFukm5UrhG6h1ULHiqzV8FapSQVU
-         c+p5/c7AVmgClfZZHz7ieQRS+Qf4qsCkTLKHncDq+GjP22WteE0PI4J1+oNFDwn9SGEO
-         qizTahNz1fuc8Ckyp+S+fppW91KnhB/+peGO6krqvoD20Jr4+8LOcR/0uxe+DJo98ebJ
-         8fCDvg1LeVUa7OwKuI7J0oTH2ThcdBz0OfhMw3svV58V4+/ftteM4yiiYhQa9/wFpD07
-         l5zw==
-X-Gm-Message-State: AOAM530+U5jRsvp5Gw646vqW3XcwYy6JAydDSb2j4uRQXUz4EBwxXBpC
-        sorKffSr6TaJqj3hps+B1uU=
-X-Google-Smtp-Source: ABdhPJy/E+vOr+CPycUbYSEKuE1Z35HSTIq+hhXu7rXfmokZ8yJM+rvFNqk8DyBqOemqWtCVhAJxrQ==
-X-Received: by 2002:a9d:2c06:: with SMTP id f6mr4166020otb.122.1598069820227;
-        Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:228:31e8:cd20:3a66? ([2605:6000:8b03:f000:228:31e8:cd20:3a66])
-        by smtp.gmail.com with ESMTPSA id w22sm870555ooq.37.2020.08.21.21.16.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 21:16:59 -0700 (PDT)
-Subject: Re: [PATCH v3 11/17] rdma_rxe: Address an issue with hardened user
- copy
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-References: <20200820224638.3212-1-rpearson@hpe.com>
- <20200820224638.3212-12-rpearson@hpe.com>
- <4fd91289-7cd7-a62c-54ee-4ace9eb45a14@gmail.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <f69f8a27-e4e6-88ae-77d8-358fde60d72e@gmail.com>
-Date:   Fri, 21 Aug 2020 23:16:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725864AbgHVF7c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Aug 2020 01:59:32 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:21190 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725863AbgHVF7c (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 22 Aug 2020 01:59:32 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Sat, 22 Aug 2020 13:58:59
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Sat, 22 Aug 2020 13:58:59 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+Cc:     kjlu@umn.edu, "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Yishai Hadas" <yishaih@mellanox.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "Michel Lespinasse" <walken@google.com>,
+        "Ariel Elior" <ariel.elior@marvell.com>,
+        "Michal Kalderon" <michal.kalderon@marvell.com>,
+        "OFED mailing list" <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] IB/uverbs: Fix memleak in ib_uverbs_add_one
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.12 build 20200616(0f5d8152)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <E59593D2-E7F5-4D41-B6DC-B8B8C55241CE@oracle.com>
+References: <20200821081013.4762-1-dinghao.liu@zju.edu.cn>
+ <E59593D2-E7F5-4D41-B6DC-B8B8C55241CE@oracle.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-In-Reply-To: <4fd91289-7cd7-a62c-54ee-4ace9eb45a14@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <152fbf70.7b.17414bfaa7c.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgBn6PwjtEBfKnIzAQ--.39571W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBlZdtPnBhAAssz
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbAIS07vEb7Iv0x
+        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
+        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
+        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
+        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
+        6r4UMIAIbVACI402YVCY1x02628vn2kIc2xKxwCS07vE7I0Y64k_MIAIbVCY0x0Ix7I2Y4
+        AK64vIr41lV2xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY
+        6xC20s026xCaFVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s
+        026x8GjcxK67AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIAIbV
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        V2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/21/20 10:32 PM, Zhu Yanjun wrote:
-> On 8/21/2020 6:46 AM, Bob Pearson wrote:
->> Added a new feature to pools to let driver white list a region of
->> a pool object. This removes a kernel oops caused when create qp
->> returns the qp number so the next patch will work without errors.
->>
->> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_pool.c | 20 +++++++++++++++++---
->>   drivers/infiniband/sw/rxe/rxe_pool.h |  4 ++++
->>   2 files changed, 21 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index 5679714827ec..374e56689d30 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -40,9 +40,12 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
->>           .name        = "rxe-qp",
->>           .size        = sizeof(struct rxe_qp),
->>           .cleanup    = rxe_qp_cleanup,
->> -        .flags        = RXE_POOL_INDEX,
->> +        .flags        = RXE_POOL_INDEX
->> +                | RXE_POOL_WHITELIST,
->>           .min_index    = RXE_MIN_QP_INDEX,
->>           .max_index    = RXE_MAX_QP_INDEX,
->> +        .user_offset    = offsetof(struct rxe_qp, ibqp.qp_num),
->> +        .user_size    = sizeof(u32),
->>       },
->>       [RXE_TYPE_CQ] = {
->>           .name        = "rxe-cq",
->> @@ -116,10 +119,21 @@ int rxe_cache_init(void)
->>           type = &rxe_type_info[i];
->>           size = ALIGN(type->size, RXE_POOL_ALIGN);
->>           if (!(type->flags & RXE_POOL_NO_ALLOC)) {
->> -            type->cache =
->> -                kmem_cache_create(type->name, size,
->> +            if (type->flags & RXE_POOL_WHITELIST) {
->> +                type->cache =
->> +                    kmem_cache_create_usercopy(
->> +                        type->name, size,
->> +                        RXE_POOL_ALIGN,
->> +                        RXE_POOL_CACHE_FLAGS,
->> +                        type->user_offset,
->> +                        type->user_size, NULL);
->> +            } else {
->> +                type->cache =
->> +                    kmem_cache_create(type->name, size,
->>                             RXE_POOL_ALIGN,
->>                             RXE_POOL_CACHE_FLAGS, NULL);
->> +            }
->> +
->>               if (!type->cache) {
->>                   pr_err("Unable to init kmem cache for %s\n",
->>                          type->name);
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
->> index 664153bf9392..fc5b584a8137 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
->> @@ -17,6 +17,7 @@ enum rxe_pool_flags {
->>       RXE_POOL_INDEX        = BIT(1),
->>       RXE_POOL_KEY        = BIT(2),
->>       RXE_POOL_NO_ALLOC    = BIT(4),
->> +    RXE_POOL_WHITELIST    = BIT(5),
->>   };
->>     enum rxe_elem_type {
->> @@ -44,6 +45,9 @@ struct rxe_type_info {
->>       u32            min_index;
->>       size_t            key_offset;
->>       size_t            key_size;
->> +    /* for white listing where necessary */
-> 
-> s/where/when
-> 
-> 
->> +    unsigned int        user_offset;
->> +    unsigned int        user_size;
->>       struct kmem_cache    *cache;
->>   };
->>   
-> 
-> 
-The reason for this change is that every time I do anything with rdma_rxe on current head of tree I get a kernel oops with a warning that there is a bad or missing white list. I traced this back to the user_copy routine which (recently) decided that when you copy just a part of a kernel memory object stored in a kmem cache that this represented a risk of leaking information from the kernel to user space. For the QP object the qp_num is copied back to user space in the user API. They also provided a new kmem_ccache_create_usercopy call that allows you to specify a 'whitelisted' portion of each object with an offset and length. So I just made it a feature of pools since it may come up again instead of treating QPs differently that all the other objects. This is part of a general program to harden the Linux kernel.
-You can see the change to rxe_cache_init in the same file. Perhaps just dropping the comment would address the concern. See an earlier post I made with a pointer to an article in lwn describing the changes to the kernel.
+PiAKPiA+IE9uIDIxIEF1ZyAyMDIwLCBhdCAxMDoxMCwgRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1
+QHpqdS5lZHUuY24+IHdyb3RlOgo+ID4gCj4gPiBXaGVuIGlkYV9hbGxvY19tYXgoKSBmYWlscywg
+dXZlcmJzX2RldiBzaG91bGQgYmUgZnJlZWQKPiA+IGp1c3QgbGlrZSB3aGVuIGluaXRfc3JjdV9z
+dHJ1Y3QoKSBmYWlscy4gSXQncyB0aGUgc2FtZQo+ID4gZm9yIHRoZSBlcnJvciBwYXRocyBhZnRl
+ciB0aGlzIGNhbGwuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFv
+LmxpdUB6anUuZWR1LmNuPgo+ID4gLS0tCj4gPiBkcml2ZXJzL2luZmluaWJhbmQvY29yZS91dmVy
+YnNfbWFpbi5jIHwgMSArCj4gPiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiA+IAo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3V2ZXJic19tYWluLmMgYi9k
+cml2ZXJzL2luZmluaWJhbmQvY29yZS91dmVyYnNfbWFpbi5jCj4gPiBpbmRleCAzNzc5NGQ4OGIx
+ZjMuLmM2YjRlM2UyYWZmNiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3Jl
+L3V2ZXJic19tYWluLmMKPiA+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3V2ZXJic19t
+YWluLmMKPiA+IEBAIC0xMTcwLDYgKzExNzAsNyBAQCBzdGF0aWMgaW50IGliX3V2ZXJic19hZGRf
+b25lKHN0cnVjdCBpYl9kZXZpY2UgKmRldmljZSkKPiA+IAkJaWJfdXZlcmJzX2NvbXBfZGV2KHV2
+ZXJic19kZXYpOwo+ID4gCXdhaXRfZm9yX2NvbXBsZXRpb24oJnV2ZXJic19kZXYtPmNvbXApOwo+
+ID4gCXB1dF9kZXZpY2UoJnV2ZXJic19kZXYtPmRldik7Cj4gPiArCWtmcmVlKHV2ZXJic19kZXYp
+Owo+IAo+IElzbid0IHRoaXMgdGFrZW4gY2FyZSBvZiBieSB0aGUgKnJlbGVhc2UqIGZ1bmN0aW9u
+IHBvaW50ZXIsIHdoaWNoIGhhcHBlbnMgdG8gYmUgaWJfdXZlcmJzX3JlbGVhc2VfZGV2KCkgPwo+
+IAoKWW91IGFyZSByaWdodCwgdGhhbmsgeW91IGZvciBwb2ludGluZyBvdXQgdGhhdCEKClJlZ2Fy
+ZHMsCkRpbmdoYW8K
