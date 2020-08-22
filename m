@@ -2,65 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B26924E502
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Aug 2020 06:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B62424E505
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Aug 2020 06:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725826AbgHVEFp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Aug 2020 00:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S1725811AbgHVERC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Aug 2020 00:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgHVEFo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Aug 2020 00:05:44 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD455C061573
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:05:44 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z195so280269oia.6
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:05:44 -0700 (PDT)
+        with ESMTP id S1725807AbgHVERB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Aug 2020 00:17:01 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639B3C061573
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id q9so3217434oth.5
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ipKjWhujOOEKQIZYe2xJAmc5Y5BMNrT9Y4Qm7bFKacI=;
-        b=teSHBdY+em7L7tg6wxwgO06pyZEUWUEhQzS3KtP6MtGeXZtu3tWMQ8PLwgpYRjQZFO
-         l/w37QcR9QTSjd+r79fpJuCtxF5XlnwK/+jhWLG1FaQc8npDFSQ0F4GB+pqJDOnDmroK
-         a2sXz17MbG9wqKQOUzBNzQr3I2c2rDPOBqyAVtRaIL+vPx/16Ugr9BOP+d59rg7w8T9X
-         1UhvtEsyEB+o8/750Tgm5TBTWKVnoWde2Xe2Z4gYOYdtN7B3gwX5HdPDgfb1exD0P2wG
-         ygLmfTYV9bM/1d11I5RfWOn0clfovaPJxZ+Cp00TpGeBolLK0y3c4wr3r8Ixs3FFJ8d7
-         2OUA==
+        bh=SmZOhr2At1rMDgNNXtY5F9FoFdcOI3/Q/IAFqc+WtUo=;
+        b=mWmvXzr4r6QFOG9bCXAY7rjYPu3k6Xiy2xiMGdWtmuqcM1Sr3Q3ouxBUL7+3AXd6fz
+         mTf0hBM6LSDPps8WLzE39DVB7cTl1cYeYG1xIvNcRmLJTHxhaqCfF+38KVAtIy7VfRIC
+         emh6sgal48kC+pIg/SEWYuBbCkl0QvXHR3ri0MLlZ7A0DwxEHTOiN8iGB3VjNZEBPE0E
+         4KQ8197Uipirch8gzn5FEnNqjCUG3LH9HI5wrK3svOyMFTpPJbIsj5Aub8Qx/7nppovt
+         ivCg/qOhvD/RFts5b1uLpoXliu0urGfMLbSKHLnAnq+mNVG4S+gMfCuPdHZBtmFb20T0
+         zQew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ipKjWhujOOEKQIZYe2xJAmc5Y5BMNrT9Y4Qm7bFKacI=;
-        b=FqoeIb2FwMNl0ZqSI72FVbJtDc2Z2yIRp/zol552eMno/gAgMh/kOlpfv/8Aa2xc+2
-         E4hZHZncgc0JBuV16gvrijVbCw82/VyJKB9tJ2ihAbGgEky/kwavQflyiqzNxjmRHai2
-         5MabI4opYqISOjnZmc5I9ghqVFFnrlBl7IAOfbmfHiPU+m0muyBRUYGK7e5V+++iALIY
-         llS1ZLuc2NaUvnmDo8z4kdPg3tFaMd65RMsdAc9PM0t0j1RKWw444dRSjxfkdbdx7ulA
-         UJlYaYbV8vZYn6sonuTpY7sg18wMy1Q+XqKArMUL1+bdSWk6vDYTj1h0BBkAAO2zEdYu
-         ECNw==
-X-Gm-Message-State: AOAM530pz84wtBM6PDYHp/w96rEPtgp6hX/UkJL/aj3cB2bs87RTXp/I
-        4IST2El0abldyPqsPQu0N+MLRIxAuNxVBg==
-X-Google-Smtp-Source: ABdhPJze0Mv29WHu4vD9GJ0R8LO6Xcvbiq4Zc8Q/uE0fjfYSdU5PoRc0Rosr73ARcsK1YAgkwUVJtg==
-X-Received: by 2002:a05:6808:10b:: with SMTP id b11mr237757oie.72.1598069144099;
-        Fri, 21 Aug 2020 21:05:44 -0700 (PDT)
+        bh=SmZOhr2At1rMDgNNXtY5F9FoFdcOI3/Q/IAFqc+WtUo=;
+        b=ZX90a5B4V0LbRINRhxV+QaywtY02C7Bto4XLVC61Fkyab8TW933NFup3bMmo19QRyG
+         KKqT3Wk+DqTJGW7IoejnZBs4AVH1Sz/7zt0gLv6fUFukm5UrhG6h1ULHiqzV8FapSQVU
+         c+p5/c7AVmgClfZZHz7ieQRS+Qf4qsCkTLKHncDq+GjP22WteE0PI4J1+oNFDwn9SGEO
+         qizTahNz1fuc8Ckyp+S+fppW91KnhB/+peGO6krqvoD20Jr4+8LOcR/0uxe+DJo98ebJ
+         8fCDvg1LeVUa7OwKuI7J0oTH2ThcdBz0OfhMw3svV58V4+/ftteM4yiiYhQa9/wFpD07
+         l5zw==
+X-Gm-Message-State: AOAM530+U5jRsvp5Gw646vqW3XcwYy6JAydDSb2j4uRQXUz4EBwxXBpC
+        sorKffSr6TaJqj3hps+B1uU=
+X-Google-Smtp-Source: ABdhPJy/E+vOr+CPycUbYSEKuE1Z35HSTIq+hhXu7rXfmokZ8yJM+rvFNqk8DyBqOemqWtCVhAJxrQ==
+X-Received: by 2002:a9d:2c06:: with SMTP id f6mr4166020otb.122.1598069820227;
+        Fri, 21 Aug 2020 21:17:00 -0700 (PDT)
 Received: from ?IPv6:2605:6000:8b03:f000:228:31e8:cd20:3a66? ([2605:6000:8b03:f000:228:31e8:cd20:3a66])
-        by smtp.gmail.com with ESMTPSA id d7sm858383oop.34.2020.08.21.21.05.43
+        by smtp.gmail.com with ESMTPSA id w22sm870555ooq.37.2020.08.21.21.16.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 21:05:43 -0700 (PDT)
-Subject: Re: [PATCH v3 17/17] rdma_rxe: minor cleanups
+        Fri, 21 Aug 2020 21:16:59 -0700 (PDT)
+Subject: Re: [PATCH v3 11/17] rdma_rxe: Address an issue with hardened user
+ copy
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
 References: <20200820224638.3212-1-rpearson@hpe.com>
- <20200820224638.3212-18-rpearson@hpe.com>
- <a153a775-9b53-3ccc-4c2a-ec76f863d1a1@gmail.com>
+ <20200820224638.3212-12-rpearson@hpe.com>
+ <4fd91289-7cd7-a62c-54ee-4ace9eb45a14@gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <abf9804c-8fc7-7f2d-f73d-0c9260f5cf60@gmail.com>
-Date:   Fri, 21 Aug 2020 23:05:43 -0500
+Message-ID: <f69f8a27-e4e6-88ae-77d8-358fde60d72e@gmail.com>
+Date:   Fri, 21 Aug 2020 23:16:59 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <a153a775-9b53-3ccc-4c2a-ec76f863d1a1@gmail.com>
+In-Reply-To: <4fd91289-7cd7-a62c-54ee-4ace9eb45a14@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -69,120 +70,86 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/21/20 9:14 PM, Zhu Yanjun wrote:
+On 8/21/20 10:32 PM, Zhu Yanjun wrote:
 > On 8/21/2020 6:46 AM, Bob Pearson wrote:
->> Added vendor_part_id
->> Fixed bug in rxe_resp.c at RKEY_VIOLATION: failed to ack bad rkeys
->> Fixed failure to init mr in rxe_resp.c at check_rkey
->> Fixed failure to allow invalidation of invalid MWs
+>> Added a new feature to pools to let driver white list a region of
+>> a pool object. This removes a kernel oops caused when create qp
+>> returns the qp number so the next patch will work without errors.
 >>
 >> Signed-off-by: Bob Pearson <rpearson@hpe.com>
 >> ---
->>   drivers/infiniband/sw/rxe/rxe.c       |  1 +
->>   drivers/infiniband/sw/rxe/rxe_mw.c    | 20 ++++++++++++--------
->>   drivers/infiniband/sw/rxe/rxe_param.h |  1 +
->>   drivers/infiniband/sw/rxe/rxe_resp.c  |  9 ++++++---
->>   4 files changed, 20 insertions(+), 11 deletions(-)
+>>   drivers/infiniband/sw/rxe/rxe_pool.c | 20 +++++++++++++++++---
+>>   drivers/infiniband/sw/rxe/rxe_pool.h |  4 ++++
+>>   2 files changed, 21 insertions(+), 3 deletions(-)
 >>
->> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
->> index 10f441ac7203..11b043edd647 100644
->> --- a/drivers/infiniband/sw/rxe/rxe.c
->> +++ b/drivers/infiniband/sw/rxe/rxe.c
->> @@ -43,6 +43,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
->>       rxe->max_inline_data            = RXE_MAX_INLINE_DATA;
->>         rxe->attr.vendor_id            = RXE_VENDOR_ID;
->> +    rxe->attr.vendor_part_id        = RXE_VENDOR_PART_ID;
->>       rxe->attr.max_mr_size            = RXE_MAX_MR_SIZE;
->>       rxe->attr.page_size_cap            = RXE_PAGE_SIZE_CAP;
->>       rxe->attr.max_qp            = RXE_MAX_QP;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
->> index 4178cf501a2b..a443deae35a3 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
->> @@ -28,7 +28,6 @@ static void rxe_set_mw_rkey(struct rxe_mw *mw)
->>       pr_err_once("unable to get random rkey for mw\n");
->>   }
->>   -/* this temporary code to test ibv_alloc_mw, ibv_dealloc_mw */
->>   struct ib_mw *rxe_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
->>                  struct ib_udata *udata)
->>   {
->> @@ -326,9 +325,12 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
->>     static int check_invalidate_mw(struct rxe_qp *qp, struct rxe_mw *mw)
->>   {
->> -    if (unlikely(mw->state != RXE_MEM_STATE_VALID)) {
->> -        pr_err_once("attempt to invalidate a MW that is not valid\n");
->> -        return -EINVAL;
->> +    /* run_test requires invalidate to work when !valid so don't check */
->> +    if (0) {
->> +        if (unlikely(mw->state != RXE_MEM_STATE_VALID)) {
->> +            pr_err_once("attempt to invalidate a MW that is not valid\n");
->> +            return -EINVAL;
->> +        }
->>       }
->>         /* o10-37.2.26 */
->> @@ -344,9 +346,11 @@ static void do_invalidate_mw(struct rxe_mw *mw)
->>   {
->>       mw->qp = NULL;
->>   -    rxe_drop_ref(mw->mr);
->> -    atomic_dec(&mw->mr->num_mw);
->> -    mw->mr = NULL;
->> +    if (mw->mr) {
->> +        rxe_drop_ref(mw->mr);
->> +        atomic_dec(&mw->mr->num_mw);
->> +        mw->mr = NULL;
->> +    }
->>         mw->access = 0;
->>       mw->addr = 0;
->> @@ -378,7 +382,7 @@ int rxe_mw_check_access(struct rxe_qp *qp, struct rxe_mw *mw,
->>       struct rxe_pd *pd = to_rpd(mw->ibmw.pd);
->>         if (unlikely(mw->state != RXE_MEM_STATE_VALID)) {
->> -        pr_err_once("attempt to access a MW that is not in the valid state\n");
->> +        pr_err_once("attempt to access a MW that is not valid\n");
->>           return -EINVAL;
->>       }
->>   diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
->> index e1d485bdd6af..beaa3f844819 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_param.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
->> @@ -107,6 +107,7 @@ enum rxe_device_param {
->>         /* IBTA v1.4 A3.3.1 VENDOR INFORMATION section */
->>       RXE_VENDOR_ID            = 0XFFFFFF,
->> +    RXE_VENDOR_PART_ID        = 1,
-> 
-> RXE_VENDOR_PART_ID can be zero.
-> 
-> Zhu Yanjun
-> 
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> index 5679714827ec..374e56689d30 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> @@ -40,9 +40,12 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
+>>           .name        = "rxe-qp",
+>>           .size        = sizeof(struct rxe_qp),
+>>           .cleanup    = rxe_qp_cleanup,
+>> -        .flags        = RXE_POOL_INDEX,
+>> +        .flags        = RXE_POOL_INDEX
+>> +                | RXE_POOL_WHITELIST,
+>>           .min_index    = RXE_MIN_QP_INDEX,
+>>           .max_index    = RXE_MAX_QP_INDEX,
+>> +        .user_offset    = offsetof(struct rxe_qp, ibqp.qp_num),
+>> +        .user_size    = sizeof(u32),
+>>       },
+>>       [RXE_TYPE_CQ] = {
+>>           .name        = "rxe-cq",
+>> @@ -116,10 +119,21 @@ int rxe_cache_init(void)
+>>           type = &rxe_type_info[i];
+>>           size = ALIGN(type->size, RXE_POOL_ALIGN);
+>>           if (!(type->flags & RXE_POOL_NO_ALLOC)) {
+>> -            type->cache =
+>> -                kmem_cache_create(type->name, size,
+>> +            if (type->flags & RXE_POOL_WHITELIST) {
+>> +                type->cache =
+>> +                    kmem_cache_create_usercopy(
+>> +                        type->name, size,
+>> +                        RXE_POOL_ALIGN,
+>> +                        RXE_POOL_CACHE_FLAGS,
+>> +                        type->user_offset,
+>> +                        type->user_size, NULL);
+>> +            } else {
+>> +                type->cache =
+>> +                    kmem_cache_create(type->name, size,
+>>                             RXE_POOL_ALIGN,
+>>                             RXE_POOL_CACHE_FLAGS, NULL);
+>> +            }
+>> +
+>>               if (!type->cache) {
+>>                   pr_err("Unable to init kmem cache for %s\n",
+>>                          type->name);
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+>> index 664153bf9392..fc5b584a8137 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+>> @@ -17,6 +17,7 @@ enum rxe_pool_flags {
+>>       RXE_POOL_INDEX        = BIT(1),
+>>       RXE_POOL_KEY        = BIT(2),
+>>       RXE_POOL_NO_ALLOC    = BIT(4),
+>> +    RXE_POOL_WHITELIST    = BIT(5),
 >>   };
->>     /* default/initial rxe port parameters */
->> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
->> index d6e957a34910..bf7ef56aaf1c 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
->> @@ -392,8 +392,8 @@ static enum resp_states check_length(struct rxe_qp *qp,
->>   static enum resp_states check_rkey(struct rxe_qp *qp,
->>                      struct rxe_pkt_info *pkt)
->>   {
->> -    struct rxe_mr *mr;
->> -    struct rxe_mw *mw;
->> +    struct rxe_mr *mr = NULL;
->> +    struct rxe_mw *mw = NULL;
->>       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->>       u64 va;
->>       u32 rkey;
->> @@ -1368,7 +1368,10 @@ int rxe_responder(void *arg)
->>                   /* Class C */
->>                   do_class_ac_error(qp, AETH_NAK_REM_ACC_ERR,
->>                             IB_WC_REM_ACCESS_ERR);
->> -                state = RESPST_COMPLETE;
->> +                if (qp->resp.wqe)
->> +                    state = RESPST_COMPLETE;
->> +                else
->> +                    state = RESPST_ACKNOWLEDGE;
->>               } else {
->>                   qp->resp.drop_msg = 1;
->>                   if (qp->srq) {
+>>     enum rxe_elem_type {
+>> @@ -44,6 +45,9 @@ struct rxe_type_info {
+>>       u32            min_index;
+>>       size_t            key_offset;
+>>       size_t            key_size;
+>> +    /* for white listing where necessary */
+> 
+> s/where/when
 > 
 > 
+>> +    unsigned int        user_offset;
+>> +    unsigned int        user_size;
+>>       struct kmem_cache    *cache;
+>>   };
+>>   
 > 
-I would agree but the pyverbs tests do not agree. If someone will fix the test I would be happy to leave it zero.
+> 
+The reason for this change is that every time I do anything with rdma_rxe on current head of tree I get a kernel oops with a warning that there is a bad or missing white list. I traced this back to the user_copy routine which (recently) decided that when you copy just a part of a kernel memory object stored in a kmem cache that this represented a risk of leaking information from the kernel to user space. For the QP object the qp_num is copied back to user space in the user API. They also provided a new kmem_ccache_create_usercopy call that allows you to specify a 'whitelisted' portion of each object with an offset and length. So I just made it a feature of pools since it may come up again instead of treating QPs differently that all the other objects. This is part of a general program to harden the Linux kernel.
+You can see the change to rxe_cache_init in the same file. Perhaps just dropping the comment would address the concern. See an earlier post I made with a pointer to an article in lwn describing the changes to the kernel.
