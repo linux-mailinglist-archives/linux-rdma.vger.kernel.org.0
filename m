@@ -2,159 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C831824EF8D
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Aug 2020 21:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF5324EFD3
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Aug 2020 23:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgHWTqF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Aug 2020 15:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgHWTqE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Aug 2020 15:46:04 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE42FC061573
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Aug 2020 12:46:03 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so6430986wmi.2
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Aug 2020 12:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vL87g1XGOmL7vLHYcXTZcUzLCzV2/7QByJxsnm+DM5k=;
-        b=LlHqBfAFJ132chDl7aOWUsqiGty/iyRmwH42p3AH0jj5TojgZzgK/lA0FmPkpB25/b
-         EmMpTCQCrJIP0I69eHGc3K/JcL2teDbQiAb+acyD03E/j4LsRws4bkF55eaYiFjco8Zj
-         8M9eOM6VvfvT0aGdrthucISdWTkVsSoxQBz6PYgUYQC2lKc4rbo9Qyy+kqXbfB6T8Vdj
-         jPG/PSkjBDYpZyPkqtC8Ea2k+c2VT7VQGyRY4c/YYeyaNLZz95qGc8e7/ViE0q379s/S
-         Pbi2Wh3xuGqKyBD99N298lQZIhPvDX26mWH2amOSgmg5wm8oLViywe/8S6AQ072keKBG
-         rjBw==
+        id S1725992AbgHWVSq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Aug 2020 17:18:46 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:36152 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgHWVSp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Aug 2020 17:18:45 -0400
+Received: by mail-pl1-f193.google.com with SMTP id y6so3258833plt.3;
+        Sun, 23 Aug 2020 14:18:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vL87g1XGOmL7vLHYcXTZcUzLCzV2/7QByJxsnm+DM5k=;
-        b=QTZCpICzcze82IaJ+2eKAJWczhw2ZfyGeGgCa9vDF52SMJ9vxh6Z1i2aSbNWmoraHR
-         58xi0C433BAoXDKmSGyXxIm9D0gSVIVbEnAtMwFgofMf0eihxhLBUprVWK7sgNJ3VHtN
-         +leL75hhK22x81UcIXn6YZ67D3+wreHkfMS6YoLQIxUpZ4SX6nIiCLn0DvvdTRflCPTx
-         1iQWKb8D8CJ7p3GOCqka5dxVjQEvqmfvnXF8kMrnlf2NEEZy73H8pXzT3t3g4N/RJ/oL
-         oLjPclzTCokmJANn5BuRTtogGhtQuorVq3Syd2E7F5t8geQEB6Ejp9HTzvTCzSzsSz0y
-         RR+Q==
-X-Gm-Message-State: AOAM532R3q1CxxY+o97ssfVtPjzHRYVI1dS2EnNAYhMGMGtnp9Ew8Yta
-        BOG/mWLx1eVrAqB5f6JOSe3j2eYiWsY=
-X-Google-Smtp-Source: ABdhPJyvuiXvOnEK22PvejzRnF7P8wEaGcAOxwLR+Yo8SDY0lxCMb2P6hHaluFKjBnUjRzQv1Hu/8w==
-X-Received: by 2002:a7b:c76e:: with SMTP id x14mr2448047wmk.176.1598211962364;
-        Sun, 23 Aug 2020 12:46:02 -0700 (PDT)
-Received: from kheib-workstation ([37.142.0.228])
-        by smtp.gmail.com with ESMTPSA id l1sm20714823wrb.12.2020.08.23.12.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 12:46:01 -0700 (PDT)
-Date:   Sun, 23 Aug 2020 22:45:58 +0300
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH v2 for-rc] RDMA/rxe: Fix panic when calling
- kmem_cache_create()
-Message-ID: <20200823194558.GA36665@kheib-workstation>
-References: <20200818142504.917186-1-kamalheib1@gmail.com>
- <20200818163157.GY24045@ziepe.ca>
- <20200818211545.GA936143@kheib-workstation>
- <20200820113717.GA24045@ziepe.ca>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Vi0dm8w5d4Lt77qeOvVZYVSCtoaDsjZjWKLPsqVLob8=;
+        b=PCUaCMfjz9I4tFanZ8T7mfFLUUc4+iTGgiBiQl8wUG+S5rLRAUjA/M8tO2QnEqAfzd
+         DRu9oceUw/gJNWu8bp7ytNEesd7X3Y5ISMWppiJMFtV0vs5sKOK26zQi8eFqPZ+i9rnR
+         p8o5pvdl6eC4QtjHTeugDmumdMEkz/leYiqExjU5JmPPqihNbD3eG2/GA6ZTs+W7e3K1
+         zXNiXhDIhWNj39XWNF3QpTkKIPR8D+5OJYiE74LCfnS+G7UYgvRVyP+dHKMoRi42iiJ+
+         7ASpyuCAlbK55WuOwM8vc7WmX/m1uUvxnkvZjEd/7qMM10BPjDOQq+zJyuKfgaXD4ENn
+         hJdA==
+X-Gm-Message-State: AOAM533DsZCpgnSDsg6sUALfaEfX9i0pLjl9AhK5C8faZmEPKspB+rKV
+        0ewtGlKb/pPtu53kTH3S/HE=
+X-Google-Smtp-Source: ABdhPJybhVWmfuADEBnqwPOuNKLX8BQccS3YPE9P4Glo3YXSoyU76hsqk0R0TM2Tvs4Ri3Lw7GrRIg==
+X-Received: by 2002:a17:90b:1182:: with SMTP id gk2mr2233995pjb.172.1598217523634;
+        Sun, 23 Aug 2020 14:18:43 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id nl15sm336068pjb.42.2020.08.23.14.18.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Aug 2020 14:18:42 -0700 (PDT)
+Subject: Re: [IB/srpt] c804af2c1d: last_state.test.blktests.exit_code.143
+To:     Sagi Grimberg <sagi@grimberg.me>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Max Gurtovoy <maxg@mellanox.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org, lkp@lists.01.org
+References: <20200802060925.GW23458@shao2-debian>
+ <f8ef3284-4646-94d9-7eea-14ac0873b03b@acm.org>
+ <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
+ <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <128192ad-05ff-fa8e-14fc-479a115311e0@acm.org>
+Date:   Sun, 23 Aug 2020 14:18:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820113717.GA24045@ziepe.ca>
+In-Reply-To: <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 08:37:17AM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 19, 2020 at 12:15:45AM +0300, Kamal Heib wrote:
-> > On Tue, Aug 18, 2020 at 01:31:57PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Aug 18, 2020 at 05:25:04PM +0300, Kamal Heib wrote:
-> > > > To avoid the following kernel panic when calling kmem_cache_create()
-> > > > with a NULL pointer from pool_cache(), move the rxe_cache_init() to the
-> > > > context of device initialization.
-> > > 
-> > > I think you've hit on a bigger bug than just this oops.
-> > > 
-> > > rxe_net_add() should never be called before rxe_module_init(), that
-> > > surely subtly breaks all kinds of things.
-> > > 
-> > > Maybe it is time to remove these module parameters?
-> > >
-> > Yes, I agree, this can be done in for-next.
-> > 
-> > But at least can we take this patch to for-rc (stable) to fix this issue
-> > in stable releases?
+On 2020-08-03 00:27, Sagi Grimberg wrote:
 > 
-> If you want to fix something in stable then block the module options
-> from working as actual module options - eg before rxe_module_init()
-> runs.
+>>>> Greeting,
+>>>>
+>>>> FYI, we noticed the following commit (built with gcc-9):
+>>>>
+>>>> commit: c804af2c1d3152c0cf877eeb50d60c2d49ac0cf0 ("IB/srpt: use new shared CQ mechanism")
+>>>> https://git.kernel.org/cgit/linux/kernel/git/rdma/rdma.git for-next
+>>>>
+>>>>
+>>>> in testcase: blktests
+>>>> with following parameters:
+>>>>
+>>>>     test: srp-group1
+>>>>     ucode: 0x21
+>>>>
+>>>>
+>>>>
+>>>> on test machine: 4 threads Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz with 4G memory
+>>>>
+>>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> If you fix the issue, kindly add following tag
+>>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>>>>
+>>>>
+>>>> user  :notice: [   44.688140] 2020-08-01 16:10:22 ./check srp/001 srp/002 srp/003 srp/004 srp/005 srp/006 srp/007 srp/008 srp/009 srp/010 srp/011 srp/012 srp/013 srp/015
+>>>> user  :notice: [   44.706657] srp/001 (Create and remove LUNs)
+>>>> user  :notice: [   44.718405] srp/001 (Create and remove LUNs)                             [passed]
+>>>> user  :notice: [   44.729902]     runtime  ...  1.972s
+>>>> user  :notice: [   99.038748] IPMI BMC is not supported on this machine, skip bmc-watchdog setup!
+>>>> user  :notice: [ 3699.039790] Sat Aug  1 17:11:22 UTC 2020 detected soft_timeout
+>>>> user  :notice: [ 3699.060341] kill 960 /usr/bin/time -v -o /tmp/lkp/blktests.time /lkp/lkp/src/tests/blktests
+>>> Yamin and Max, can you take a look at this? The SRP tests from the
+>>> blktests repository pass reliably with kernel version v5.7 and before.
+>>> With label next-20200731 from linux-next however that test triggers the
+>>> following hang:
+>>
+>> I will look into it.
 > 
-> Jason
+> FWIW, I ran into this as well with nvme-rdma, but it also reproduces
+> when I revert the shared CQ patch from nvme-rdma. Another data point
+> is that my tests passes with siw.
 
-Something like the following patch?
+Hi Jason,
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 907203afbd99..872ebc57ac06 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -40,6 +40,8 @@ MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");
- MODULE_DESCRIPTION("Soft RDMA transport");
- MODULE_LICENSE("Dual BSD/GPL");
-
-+bool rxe_is_loaded = false;
-+
- /* free resources for a rxe device all objects created for this device must
-  * have been destroyed
-  */
-@@ -315,6 +317,7 @@ static int __init rxe_module_init(void)
-                return err;
-
-        rdma_link_register(&rxe_link_ops);
-+       rxe_is_loaded = true;
-        pr_info("loaded\n");
-        return 0;
- }
-@@ -326,6 +329,7 @@ static void __exit rxe_module_exit(void)
-        rxe_net_exit();
-        rxe_cache_exit();
-
-+       rxe_is_loaded = false;
-        pr_info("unloaded\n");
- }
-
-diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-index fb07eed9e402..d9b71b5e2fba 100644
---- a/drivers/infiniband/sw/rxe/rxe.h
-+++ b/drivers/infiniband/sw/rxe/rxe.h
-@@ -67,6 +67,8 @@
-
- #define RXE_ROCE_V2_SPORT              (0xc000)
-
-+extern bool rxe_is_loaded;
-+
- static inline u32 rxe_crc32(struct rxe_dev *rxe,
-                            u32 crc, void *next, size_t len)
- {
-diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-index ccda5f5a3bc0..12c7ca0764d5 100644
---- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-@@ -61,6 +61,11 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
-        struct net_device *ndev;
-        struct rxe_dev *exists;
-
-+       if (!rxe_is_loaded) {
-+               pr_err("Please make sure to load the rdma_rxe module first\n");
-+               return -EINVAL;
-+       }
-+
-        len = sanitize_arg(val, intf, sizeof(intf));
-        if (!len) {
-                pr_err("add: invalid interface name\n");
+The patch below is sufficient to unbreak blktests. I think that the
+deadlock while unloading rdma_rxe happens because the RDMA core waits for
+all ib_dev references to be dropped before dealloc_driver is called.
+The rdma_rxe dealloc_driver implementation drops an ib_dev reference. The
+dealloc_driver callback was introduced by commit d0899892edd0
+("RDMA/device: Provide APIs from the core code to help unregistration").
+Do you agree that this regression has been introduced by commits
+d0899892edd0 and c367074b6c37 ("RDMA/rxe: Use driver_unregister and new
+unregistration API")?
 
 Thanks,
-Kamal
+
+Bart.
+
+---
+ drivers/infiniband/core/device.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index dca2842a7872..5192f305b253 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1287,13 +1287,8 @@ static void disable_device(struct ib_device *device)
+
+ 	/* Pairs with refcount_set in enable_device */
+ 	ib_device_put(device);
+-	wait_for_completion(&device->unreg_completion);
+
+-	/*
+-	 * compat devices must be removed after device refcount drops to zero.
+-	 * Otherwise init_net() may add more compatdevs after removing compat
+-	 * devices and before device is disabled.
+-	 */
++	/* To do: prevent init_net() to add more compat_devs. */
+ 	remove_compat_devs(device);
+ }
+
+
