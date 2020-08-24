@@ -2,112 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A739F25013D
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 17:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17805250184
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 17:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgHXPea (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 11:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S1727021AbgHXPwp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 11:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgHXPe0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 11:34:26 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114EDC061573
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 08:34:26 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r15so9123507wrp.13
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 08:34:25 -0700 (PDT)
+        with ESMTP id S1728068AbgHXPwf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 11:52:35 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22CCC061573
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 08:52:34 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a5so9236031wrm.6
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 08:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+D2AMGWHVkCdLKv++7Xm4DUDl4qyqb/DDwk3cJvAbM8=;
-        b=GlFce9pHQZssqisppcWmoWpF/nZ7xwW9dTfLqYX8qR0/KMeVoI1HmfFAnzAa/SvJY2
-         IPEWJfDPCzT0PMsk9FKEW3hxSRzfl77RTV5RS4geDtlOStwW9NHqqYKo4E9bdqzPCOeu
-         4gsKHJQB06HutywyHWHqPDJxLt31mZmlg9VSpCGdmM9yQRN9rmG01sOFu6sILlDbo9sx
-         Bsx2wAFGvgooNdCZwW56P3VK7UHYBZ1j30BOmWmiscbm6bvGi+ce3xT5Bc1visFGepRX
-         Tp8sRdHLcesg6fMDtqIAr8YIJvDdASU7n3eSsuBJuL4d1zmQV5Ol7Q6wZc8aLVmfztLF
-         8y8g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BvyITqIgq1Iudn85NLA7kleCoHRveeWMENpu09YdmiE=;
+        b=OLQw07x3VVMkpirhGCMwQO92phCeXNDTwIE4lQXxKUNQKtS2juNeu/J65iLwRlb2Rd
+         V5yFrz4Lekr+ZgIaBbH1TBNPlIp/frqHIPe09uKTKnUb+eTaZO4MAf5hueUmeY5GSC+B
+         a2FAsnKK6GxgkBjU6AHvw3UegURLu/trW9He4AoZA5Vu4WsCprXyfXTIfpVNE1EPJ99H
+         9AF4jk4IPU/4YXrwS+TEoZFEX64OdDF9p5xo1NLpHtkIB9fmimcTYYHCy2vmCSMnXNeI
+         g76+9ieiTqu7KcVZZHIPSc6kJzswRFyJHkyGqF+skMljyEBzH0bqeQV8QYXhlNNQIoNm
+         +oGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+D2AMGWHVkCdLKv++7Xm4DUDl4qyqb/DDwk3cJvAbM8=;
-        b=K4rUG4iIpUSfe9LF9lap+vDiufs9fhU1WSOe3fB+dzNWGkNdgSDunZn31wBdns1jvB
-         NXR4wvB0Q1E3AhETD+jc81v6tjBlGljHlZj2VQOYduCCNxg5vNkO+e2UtqZ7AZgqZNY6
-         myjKda1jbLz1vgZYmQzPI6igR9h3yeM4m4N1PZIDmQ4UoGy+N50NF91HAAvBVdtXp+qM
-         VxTniaodfSo9nE9iJAOyhtOCv4WYqV9/kpCOtRgBcSSCdhDlM9KiQLbV2vPIHHN/keOp
-         I3rR5QSVnm/wK35lMrOZX4MCFDPPxV1YkbaUUTwAC0Nov/LDH9O5ZwH/UZm90nAR9v2l
-         pGog==
-X-Gm-Message-State: AOAM530PW1Zbp5bBkY/QTCPXWC3uSQsMdp2oOEVxe003zBFsMgi1dETk
-        gqERPZvN3AslLdkxiLIiBMI=
-X-Google-Smtp-Source: ABdhPJzacTHzbBBWcztt2TY8jnew/3CNa6SNmM5RGlSYjt6YhYmOP7ZmB1A3d+KJdM5flW+SP0GBMA==
-X-Received: by 2002:adf:eb0a:: with SMTP id s10mr6412187wrn.83.1598283264741;
-        Mon, 24 Aug 2020 08:34:24 -0700 (PDT)
-Received: from kheib-workstation ([37.142.0.228])
-        by smtp.gmail.com with ESMTPSA id r11sm24486903wrw.78.2020.08.24.08.34.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BvyITqIgq1Iudn85NLA7kleCoHRveeWMENpu09YdmiE=;
+        b=GKnyWCXP9Wj5wLtBuIsPd4duOPc2J6+fhiTBEhtky6AVpUvsfaifLJAvcm1ykoFAk5
+         7zjDEXZtvxesLcngw55WZmOiE7dTdzroRMShGgjYBmTR1XAWgcVT0XeOC8N9b2OhpSb4
+         DS9qLYJ2tnhl5CYvHiNpSiBV+Q5EvLsvS6helh9MuFOVUeSyrTO6Wk4kIxFNBVa1Vgd/
+         BDcP2bi3N7dKGsVDdy2C6+4XekcjCSVuCqPk0umrwtLL49cMqPA5Xkgrlk/gaVCbMaxw
+         FUZb07Rj8HIKAVI/dW9Hro7nsmN12GNumH3e/IpiG4mO5qSxAEXCIj4HLFgB2hYzHnmG
+         kQBw==
+X-Gm-Message-State: AOAM532j66fw4lbMMn1tmGFWG/Zd5wrHlSIkuHsqiaXIv+cAYsApPzBO
+        QD+spTdIkdZE+vMCNFN9e4q4fH9TbHE=
+X-Google-Smtp-Source: ABdhPJyRirUfnX6Bx3lUoLvB73qtD2Ccq2t5dhAo2bVNnN4eVzTyBI3cG/o3mWQjIkyL6xnnN5+unQ==
+X-Received: by 2002:adf:9ec1:: with SMTP id b1mr6358524wrf.171.1598284352940;
+        Mon, 24 Aug 2020 08:52:32 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([37.142.0.228])
+        by smtp.gmail.com with ESMTPSA id k7sm15557641wrv.72.2020.08.24.08.52.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 08:34:24 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 18:34:21 +0300
+        Mon, 24 Aug 2020 08:52:32 -0700 (PDT)
 From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH v2 for-rc] RDMA/rxe: Fix panic when calling
- kmem_cache_create()
-Message-ID: <20200824153421.GA150111@kheib-workstation>
-References: <20200818142504.917186-1-kamalheib1@gmail.com>
- <20200818163157.GY24045@ziepe.ca>
- <20200818211545.GA936143@kheib-workstation>
- <20200820113717.GA24045@ziepe.ca>
- <20200823194558.GA36665@kheib-workstation>
- <20200824134723.GD24045@ziepe.ca>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH v3 for-rc] RDMA/rxe: Fix panic when calling kmem_cache_create()
+Date:   Mon, 24 Aug 2020 18:52:20 +0300
+Message-Id: <20200824155220.153854-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824134723.GD24045@ziepe.ca>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:47:23AM -0300, Jason Gunthorpe wrote:
-> On Sun, Aug 23, 2020 at 10:45:58PM +0300, Kamal Heib wrote:
-> > On Thu, Aug 20, 2020 at 08:37:17AM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Aug 19, 2020 at 12:15:45AM +0300, Kamal Heib wrote:
-> > > > On Tue, Aug 18, 2020 at 01:31:57PM -0300, Jason Gunthorpe wrote:
-> > > > > On Tue, Aug 18, 2020 at 05:25:04PM +0300, Kamal Heib wrote:
-> > > > > > To avoid the following kernel panic when calling kmem_cache_create()
-> > > > > > with a NULL pointer from pool_cache(), move the rxe_cache_init() to the
-> > > > > > context of device initialization.
-> > > > > 
-> > > > > I think you've hit on a bigger bug than just this oops.
-> > > > > 
-> > > > > rxe_net_add() should never be called before rxe_module_init(), that
-> > > > > surely subtly breaks all kinds of things.
-> > > > > 
-> > > > > Maybe it is time to remove these module parameters?
-> > > > >
-> > > > Yes, I agree, this can be done in for-next.
-> > > > 
-> > > > But at least can we take this patch to for-rc (stable) to fix this issue
-> > > > in stable releases?
-> > > 
-> > > If you want to fix something in stable then block the module options
-> > > from working as actual module options - eg before rxe_module_init()
-> > > runs.
-> > > 
-> > > Jason
-> > 
-> > Something like the following patch?
-> 
-> Yes, something more like that
-> 
-> Jason
+To avoid the following kernel panic when calling kmem_cache_create()
+with a NULL pointer from pool_cache(), Block the rxe_param_set_add()
+from running if the rdma_rxe module is not loaded.
 
-OK, Thanks!
+ BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP NOPTI
+ CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
+ Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
+ RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
+ Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
+ RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
+ RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
+ RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
+ R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
+ R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
+ FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
+ Call Trace:
+  rxe_alloc+0xc8/0x160 [rdma_rxe]
+  rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
+  __ib_alloc_pd+0xcb/0x160 [ib_core]
+  ib_mad_init_device+0x296/0x8b0 [ib_core]
+  add_client_context+0x11a/0x160 [ib_core]
+  enable_device_and_get+0xdc/0x1d0 [ib_core]
+  ib_register_device+0x572/0x6b0 [ib_core]
+  ? crypto_create_tfm+0x32/0xe0
+  ? crypto_create_tfm+0x7a/0xe0
+  ? crypto_alloc_tfm+0x58/0xf0
+  rxe_register_device+0x19d/0x1c0 [rdma_rxe]
+  rxe_net_add+0x3d/0x70 [rdma_rxe]
+  ? dev_get_by_name_rcu+0x73/0x90
+  rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
+  parse_args+0x179/0x370
+  ? ref_module+0x1b0/0x1b0
+  load_module+0x135e/0x17e0
+  ? ref_module+0x1b0/0x1b0
+  ? __do_sys_init_module+0x13b/0x180
+  __do_sys_init_module+0x13b/0x180
+  do_syscall_64+0x5b/0x1a0
+  entry_SYSCALL_64_after_hwframe+0x65/0xca
+ RIP: 0033:0x7f9137ed296e
 
-I'll send v3 soon.
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe.c       | 4 ++++
+ drivers/infiniband/sw/rxe/rxe.h       | 2 ++
+ drivers/infiniband/sw/rxe/rxe_sysfs.c | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-Thanks,
-Kamal
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 907203afbd99..88b5c866f5ab 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -40,6 +40,8 @@ MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");
+ MODULE_DESCRIPTION("Soft RDMA transport");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
++bool rxe_is_loaded;
++
+ /* free resources for a rxe device all objects created for this device must
+  * have been destroyed
+  */
+@@ -315,6 +317,7 @@ static int __init rxe_module_init(void)
+ 		return err;
+ 
+ 	rdma_link_register(&rxe_link_ops);
++	rxe_is_loaded = true;
+ 	pr_info("loaded\n");
+ 	return 0;
+ }
+@@ -326,6 +329,7 @@ static void __exit rxe_module_exit(void)
+ 	rxe_net_exit();
+ 	rxe_cache_exit();
+ 
++	rxe_is_loaded = false;
+ 	pr_info("unloaded\n");
+ }
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index fb07eed9e402..d9b71b5e2fba 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -67,6 +67,8 @@
+ 
+ #define RXE_ROCE_V2_SPORT		(0xc000)
+ 
++extern bool rxe_is_loaded;
++
+ static inline u32 rxe_crc32(struct rxe_dev *rxe,
+ 			    u32 crc, void *next, size_t len)
+ {
+diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+index ccda5f5a3bc0..12c7ca0764d5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
++++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+@@ -61,6 +61,11 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
+ 	struct net_device *ndev;
+ 	struct rxe_dev *exists;
+ 
++	if (!rxe_is_loaded) {
++		pr_err("Please make sure to load the rdma_rxe module first\n");
++		return -EINVAL;
++	}
++
+ 	len = sanitize_arg(val, intf, sizeof(intf));
+ 	if (!len) {
+ 		pr_err("add: invalid interface name\n");
+-- 
+2.26.2
+
