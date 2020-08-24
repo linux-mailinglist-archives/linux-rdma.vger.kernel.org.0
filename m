@@ -2,100 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369CD25073B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 20:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC48F250768
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 20:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgHXSPG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 14:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgHXSPF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 14:15:05 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465B7C061573
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 11:15:05 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g33so4947726pgb.4
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 11:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DtOrUQtzHbeu3ICxgKjd1EY7HVvEYdCkKdBDm56KPYs=;
-        b=QDcqIO9HaToxSd5lCs58ZOyPtIYxP7R2AjiKIpCWBor8WhFgaABeMyrIee3lYeitfx
-         Z0gR7VbuuEfb0obJZwzZgkLfH6EOSIVawQOMDbqZkrcgu8/7vJ8P2vi4KGG17q0wFuYC
-         Vj7EJFnWMR3yd/JKN2n+V6YwR2AKUR4KWdWP4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DtOrUQtzHbeu3ICxgKjd1EY7HVvEYdCkKdBDm56KPYs=;
-        b=YiVqywgPnifS/K/QiVnok2yT6+AnKgX0JK+Oj7Cc13RuwL8IlFOSwjeB330vL9gC32
-         1GI8qQ3wZ4fAXCUR5y5c6/0XZRuBZxiAqtTxp0Sdm/MDbRp0KLt1pSa4ihz1VYiXnedK
-         oBHCyvQDH7yqI6AZogyXCQBvqGhoyunj3gqE02qQ4MN3+xj7CSSTY0aZ4rv5zKFux7TN
-         aD7fxNNeQsDHFuSi/MLqhf7p2Lm+AdlLDWlv3VXP8qpsNpU7SPgdC+XckAnxdRRwNk+D
-         QxsgSajLUqoMfJg19VCZPaJUQD5URSEffw1uHTXXt+tnJrKc2uJsvqXw7kFJ9s5zs01t
-         HI0A==
-X-Gm-Message-State: AOAM530+DvTkiqQrYapewTgZDgdPnOpH8JJO6i7wjTFWci02Q+Jd5mb2
-        4so7glKlmayoUl0iKpPp6mepXQ==
-X-Google-Smtp-Source: ABdhPJzXHR2dTD7YCWlGs3wOgKHioGOMMnRrp33hNNRKY9rcTuvbGSjKSmf1dJ7QXg4RxmcVWkyRIg==
-X-Received: by 2002:a63:5703:: with SMTP id l3mr1237248pgb.329.1598292904673;
-        Mon, 24 Aug 2020 11:15:04 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q5sm5027811pfu.16.2020.08.24.11.15.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 Aug 2020 11:15:03 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 6/6] RDMA/bnxt_re: Fix driver crash on unaligned PSN entry address
-Date:   Mon, 24 Aug 2020 11:14:36 -0700
-Message-Id: <1598292876-26529-7-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1598292876-26529-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1598292876-26529-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1727062AbgHXSYp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 14:24:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47738 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbgHXSYp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 14:24:45 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OIEddG142642;
+        Mon, 24 Aug 2020 18:24:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=GWl0xEwecc8iDt9Tb4KcWaJ605wliyFH5gkIPi6sbBU=;
+ b=qsDEqTmEFTydQq+9CR7ebzNTtRqKq8OyPbcpWEBoMNr9UhhctvRZuCUmA1zhOQI9kWSq
+ WY3n/pA8DcedYRSbQxVsAzCubLghFti3RKVPVkHx4HxXpjbzZdlyEdDA8kwrdKMjPlD4
+ 5Vv4Hf3dEzxzN4BFli5jvg9KDfajL7DUWLm6a85okrQpB1CMno5h1fk5TFNFa2k3+2w6
+ kgnZpDm0kIzASFnsNRWY8UAxKREHW2nzOlGFcN2oxrdeh5GSCvOFPf3fOvXr7sQ4mo0T
+ TDAbEE0thVoI4FATQbiWPwW+H2B6vjDSiG5E1mE8chUZvHgjWdWb/TSSIymrnbnYfiI/ 0g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 333cshx88k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 18:24:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OIEims040499;
+        Mon, 24 Aug 2020 18:24:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 333r9j0y8t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 18:24:41 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07OIOevA013843;
+        Mon, 24 Aug 2020 18:24:41 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 11:24:40 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH v3 0/3] IB CM tracepoints
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200824174213.GA3256703@nvidia.com>
+Date:   Mon, 24 Aug 2020 14:24:40 -0400
+Cc:     linux-rdma@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5C1EC1AC-8385-4E08-9C4A-97B04AF3763B@oracle.com>
+References: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
+ <20200824174213.GA3256703@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008240149
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240149
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
 
-When computing the first psn entry, driver checks
-for page alignment. If this address is not page aligned,it
-attempts to compute the offset in that page for later
-use by using ALIGN macro. ALIGN macro does not return offset
-bytes but the requested aligned address and hence cannot
-be used directly to store as offset.
-Since driver was using the address itself instead of offset,
-it resulted in invalid address when filling the psn buffer.
 
-Fixed driver to use PAGE_MASK macro to calculate the offset.
+> On Aug 24, 2020, at 1:42 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
+>=20
+> On Mon, Aug 17, 2020 at 09:53:05AM -0400, Chuck Lever wrote:
+>> Oracle has an interest in a common observability infrastructure in
+>> the RDMA core and ULPs. Introduce static tracepoints that can also
+>> be used as hooks for eBPF scripts, replacing infrastructure that
+>> is based on printk. This takes the same approach as tracepoints
+>> added recently in the RDMA CM.
+>>=20
+>> Change since v2:
+>> * Rebase on v5.9-rc1
+>>=20
+>> Changes since RFC:
+>> * Correct spelling of example tracepoint in patch description
+>> * Newer tool chains don't care for tracepoints with the same name
+>> in different subsystems
+>> * Display ib_cm_events, not ib_events
+>=20
+> Doesn't compile:
+>=20
+> In file included from drivers/infiniband/core/cm_trace.h:414,
+>                 from drivers/infiniband/core/cm_trace.c:15:
+> ./include/trace/define_trace.h:95:42: fatal error: ./cm_trace.h: No =
+such file or directory
+>   95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>      |                                          ^
+> compilation terminated.
 
-Fixes: fddcbbb02af4 ("RDMA/bnxt_re: Simplify obtaining queue entry from hw ring")
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I am not able to reproduce this failure.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 3535130..9f90cfe 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -937,10 +937,10 @@ static void bnxt_qplib_init_psn_ptr(struct bnxt_qplib_qp *qp, int size)
- 
- 	sq = &qp->sq;
- 	hwq = &sq->hwq;
-+	/* First psn entry */
- 	fpsne = (u64)bnxt_qplib_get_qe(hwq, hwq->depth, &psn_pg);
- 	if (!IS_ALIGNED(fpsne, PAGE_SIZE))
--		indx_pad = ALIGN(fpsne, PAGE_SIZE) / size;
--
-+		indx_pad = (fpsne & ~PAGE_MASK) / size;
- 	hwq->pad_pgofft = indx_pad;
- 	hwq->pad_pg = (u64 *)psn_pg;
- 	hwq->pad_stride = size;
--- 
-2.5.5
+gcc (GCC) 10.1.1 20200507 (Red Hat 10.1.1-1)
+
+What if you edit drivers/infiniband/core/cm_trace.h and
+change the definition of TRACE_INCLUDE_PATH from "." to
+"../../drivers/infiniband/core" ?
+
+
+--
+Chuck Lever
+
+
 
