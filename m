@@ -2,34 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0724FB85
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CE124FB83
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgHXKdJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 06:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55526 "EHLO mail.kernel.org"
+        id S1727040AbgHXKdH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 06:33:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726956AbgHXKdA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:33:00 -0400
+        id S1725968AbgHXKdD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:33:03 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B4B92075B;
-        Mon, 24 Aug 2020 10:32:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5DFB207D3;
+        Mon, 24 Aug 2020 10:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598265179;
-        bh=JaspX95wfYtN1z/T9fZT+PXfqr3ytNl13OdOmuiZ9ms=;
+        s=default; t=1598265183;
+        bh=/Ok6EOxBXX5c0FyexeUKSuc+06fEIwUImbMlHxP1/18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OiCYzudqISG1ZLt+FJfs8hNGPFbgM4VWd+0fTAYDPIiA4gnUv1R0eih9c8Kz++LeF
-         UVUer5WMyr6sHjIKhfL9q7jfbjMNTtTDJVu6eE9HY9QpjDi7N4OpKGC4yWhScrQTXe
-         n2oIyCNpRWk9z4fOWo6jMI/yS2M8eHsXEk4QvmwE=
+        b=z+SLyAgqhAoPn+lILTKVPoBpz5hOYxn21MOpZf0ECmb0X0ZaTzbupSuuvV2UT0V/g
+         4FXBZ4AkuiajXvG6+HW5lLxhpqpyInFZSlUVF9KcL+YV8wwHtxS7qen3pUAMIVi3kC
+         WQXUIo8a5BHNb5y4IG1/F49pS4vM+Wp5K83HyEnA=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 03/10] RDMA/mlx5: Issue FW command to destroy SRQ on reentry
-Date:   Mon, 24 Aug 2020 13:32:40 +0300
-Message-Id: <20200824103247.1088464-4-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        linux-rdma@vger.kernel.org, Or Gerlitz <ogerlitz@mellanox.com>,
+        Roland Dreier <roland@purestorage.com>
+Subject: [PATCH rdma-next 04/10] RDMA/mlx5: Fix potential race between destroy and CQE poll
+Date:   Mon, 24 Aug 2020 13:32:41 +0300
+Message-Id: <20200824103247.1088464-5-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200824103247.1088464-1-leon@kernel.org>
 References: <20200824103247.1088464-1-leon@kernel.org>
@@ -42,49 +46,38 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The HW release can fail and leave the system in limbo state,
-where SRQ is removed from the table, but can't be destroyed later.
-In every reentry, the initial xa_erase_irq() check will fail.
+The SRQ can be destroyed right before mlx5_cmd_get_srq is called.
+In such case the latter will return NULL instead of expected SRQ.
 
-Rewrite the erase logic to keep index, but don't store the entry
-itself. By doing it, we can safely reinsert entry back in the case
-of destroy failure and be safe from any xa_store_irq() error.
-
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/srq_cmd.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx5/cq.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
-index 37aaacebd3f2..c6d807f04d9d 100644
---- a/drivers/infiniband/hw/mlx5/srq_cmd.c
-+++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
-@@ -596,13 +596,22 @@ void mlx5_cmd_destroy_srq(struct mlx5_ib_dev *dev, struct mlx5_core_srq *srq)
- 	struct mlx5_core_srq *tmp;
- 	int err;
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index 34c2cd57d994..2bac246b9fef 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -168,7 +168,7 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
+ {
+ 	enum rdma_link_layer ll = rdma_port_get_link_layer(qp->ibqp.device, 1);
+ 	struct mlx5_ib_dev *dev = to_mdev(qp->ibqp.device);
+-	struct mlx5_ib_srq *srq;
++	struct mlx5_ib_srq *srq = NULL;
+ 	struct mlx5_ib_wq *wq;
+ 	u16 wqe_ctr;
+ 	u8  roce_packet_type;
+@@ -180,7 +180,8 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
  
--	tmp = xa_erase_irq(&table->array, srq->srqn);
--	if (!tmp || tmp != srq)
-+	/* Delete entry, but leave index occupied */
-+	tmp = xa_store_irq(&table->array, srq->srqn, NULL, 0);
-+	if (WARN_ON(!tmp || tmp != srq))
- 		return;
- 
- 	err = destroy_srq_split(dev, srq);
--	if (err)
-+	if (err) {
-+		/*
-+		 * We don't need to check returned result for an error,
-+		 * because  we are storing in pre-allocated space xarray
-+		 * entry and it can't fail at this stage.
-+		 */
-+		xa_store_irq(&table->array, srq->srqn, srq, 0);
- 		return;
-+	}
-+	xa_erase_irq(&table->array, srq->srqn);
- 
- 	mlx5_core_res_put(&srq->common);
- 	wait_for_completion(&srq->common.free);
+ 		if (qp->ibqp.xrcd) {
+ 			msrq = mlx5_cmd_get_srq(dev, be32_to_cpu(cqe->srqn));
+-			srq = to_mibsrq(msrq);
++			if (msrq)
++				srq = to_mibsrq(msrq);
+ 		} else {
+ 			srq = to_msrq(qp->ibqp.srq);
+ 		}
 -- 
 2.26.2
 
