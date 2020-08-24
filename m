@@ -2,93 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7D724FAF7
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578E724FB7F
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgHXKDM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 06:03:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
+        id S1726854AbgHXKc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 06:32:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726086AbgHXKDL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:03:11 -0400
+        id S1725946AbgHXKcx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:32:53 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 727AC2071E;
-        Mon, 24 Aug 2020 10:03:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CD0820639;
+        Mon, 24 Aug 2020 10:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598263390;
-        bh=/qLLd39h/EgE3uu+zDV2bL9jlQlsNDtavwQ/G3YM5Ng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clVZy12dt/FKS17oucTGEOgehgG6urBzb9Jo8PIeB7ICwZg2eamCJjk9EuvgeKxeu
-         F5ezw11TaRIE5Zh1Ffject567/El/gQeYPs1kctna7MD9p42s4wgL+HUzc2ZOXoFFr
-         dRDe5G1Ex9OXJYGHT54F/GBFkKxV+dCBenZbuFWA=
-Date:   Mon, 24 Aug 2020 13:03:06 +0300
+        s=default; t=1598265172;
+        bh=8DeFfIcdXJghB7NzIwwL1peH2xcicQGi9Trx+qh88bw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=itX1JqqAE3a9AUhs0yPJnkuAWn59y1FYNR6HgRgfHvIdOy0WSW6n4uzaojjHdWmLv
+         j4X+sKax2zi3F1zB4vzIZyKa5KafozYOfAgNrrM8Pi5bPnKXdZDuT51tNh8UW4jqBE
+         PhtO97eBwyAmN72yBpmDgpE5IZLXEIz2A1JfBrrs=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH v3 01/17] rdma_rxe: Added SPDX headers to rxe source files
-Message-ID: <20200824100306.GK571722@unreal>
-References: <20200820224638.3212-1-rpearson@hpe.com>
- <20200820224638.3212-2-rpearson@hpe.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Roland Dreier <roland@purestorage.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: [PATCH rdma-next 00/10] Restore failure of destroy commands
+Date:   Mon, 24 Aug 2020 13:32:37 +0300
+Message-Id: <20200824103247.1088464-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820224638.3212-2-rpearson@hpe.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 05:46:22PM -0500, Bob Pearson wrote:
-> Added SPDX header to all tracked .c and .h files.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe.c             | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe.h             | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_av.c          | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_comp.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_cq.c          | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_hdr.h         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_hw_counters.c | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_hw_counters.h | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_icrc.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_loc.h         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_mcast.c       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_mmap.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_mr.c          | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_net.c         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_net.h         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_opcode.c      | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_opcode.h      | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_param.h       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_pool.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_pool.h        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_qp.c          | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_queue.c       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_queue.h       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_recv.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_req.c         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_resp.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_srq.c         | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_sysfs.c       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_task.c        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_task.h        | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_verbs.c       | 31 ++-------------------
->  drivers/infiniband/sw/rxe/rxe_verbs.h       | 31 ++-------------------
->  32 files changed, 96 insertions(+), 896 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index 907203afbd99..6c2100c71874 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -1,34 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->  /*
-> + * linux/drivers/infiniband/sw/rxe/rxe.c
+From: Leon Romanovsky <leonro@nvidia.com>
 
-This line is not needed.
+Hi,
+
+This series restores the ability to fail on destroy commands, due to the
+fact that mlx5_ib DEVX implementation interleaved ib_core objects
+with FW objects without sharing reference counters.
+
+In a retrospective, every part of the mlx5_ib flow is correct.
+
+It started from IBTA which was written by HW engineers with HW in mind and
+they allowed to fail in destruction. FW implemented it with symmetrical
+interface like any other command and propagated error back to the kernel,
+which forwarded it to the libibverbs and kernel ULPs.
+
+Libibverbs was designed with IBTA spec in hand putting destroy errors in
+stone. Up till mlx5_ib DEVX, it worked well, because the IB verbs objects
+are counted by the kernel and ib_core ensures that FW destroy will success
+by managing various reference counters on such objects.
+
+The extension of the mlx5 driver changed this flow when allowed DEVX objects
+that are not managed by ib_core to be interleaved with the ones under ib_core
+responsibility.
+
+The drivers that want to implement DEVX flows, must ensure that FW/HW
+destroys are performed as early as possible before any other internal
+cleanup. After HW destroys, drivers are not allowed to fail.
+
+This series includes two patches (WQ and "potential race") that will
+require extra work in mlx5_ib, they both theoretical. WQ is not in use
+in DEVX, but is needed to make interface symmetrical to other objects.
+"Potential race" is in ULP flow that ensures that SRQ is destoyed in
+proper order.
 
 Thanks
+
+Leon Romanovsky (10):
+  RDMA: Restore ability to fail on PD deallocate
+  RDMA: Restore ability to fail on AH destroy
+  RDMA/mlx5: Issue FW command to destroy SRQ on reentry
+  RDMA/mlx5: Fix potential race between destroy and CQE poll
+  RDMA: Restore ability to fail on SRQ destroy
+  RDMA/core: Delete function indirection for alloc/free kernel CQ
+  RDMA: Allow fail of destroy CQ
+  RDMA: Change XRCD destroy return value
+  RDMA: Restore ability to return error for destroy WQ
+  RDMA: Make counters destroy symmetrical
+
+ drivers/infiniband/core/cq.c                  |  36 +++---
+ drivers/infiniband/core/uverbs_std_types.c    |   3 +-
+ .../core/uverbs_std_types_counters.c          |   4 +-
+ drivers/infiniband/core/uverbs_std_types_wq.c |   2 +-
+ drivers/infiniband/core/verbs.c               |  56 +++++++---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  12 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   8 +-
+ drivers/infiniband/hw/cxgb4/cq.c              |   3 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |   3 +-
+ drivers/infiniband/hw/cxgb4/qp.c              |   3 +-
+ drivers/infiniband/hw/efa/efa.h               |   6 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  11 +-
+ drivers/infiniband/hw/hns/hns_roce_ah.c       |   5 -
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  13 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_pd.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   3 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   6 +-
+ drivers/infiniband/hw/mlx4/ah.c               |   5 -
+ drivers/infiniband/hw/mlx4/cq.c               |   3 +-
+ drivers/infiniband/hw/mlx4/main.c             |   6 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |  11 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   3 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   3 +-
+ drivers/infiniband/hw/mlx5/ah.c               |   5 -
+ drivers/infiniband/hw/mlx5/cmd.c              |   4 +-
+ drivers/infiniband/hw/mlx5/cmd.h              |   2 +-
+ drivers/infiniband/hw/mlx5/counters.c         |   3 +-
+ drivers/infiniband/hw/mlx5/cq.c               |  21 ++--
+ drivers/infiniband/hw/mlx5/main.c             |   4 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  13 ++-
+ drivers/infiniband/hw/mlx5/qp.c               |  12 +-
+ drivers/infiniband/hw/mlx5/qp.h               |   4 +-
+ drivers/infiniband/hw/mlx5/qpc.c              |   5 +-
+ drivers/infiniband/hw/mlx5/srq.c              |  26 ++---
+ drivers/infiniband/hw/mlx5/srq.h              |   2 +-
+ drivers/infiniband/hw/mlx5/srq_cmd.c          |  22 +++-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  12 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.c      |   3 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.h      |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  11 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |   6 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  14 ++-
+ drivers/infiniband/hw/qedr/verbs.h            |   8 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |   7 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   3 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   |   8 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   8 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/ah.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/cq.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/cq.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/pd.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/pd.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/srq.c            |   3 +-
+ drivers/infiniband/sw/rdmavt/srq.h            |   2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  12 +-
+ drivers/infiniband/sw/siw/siw_verbs.c         |   9 +-
+ drivers/infiniband/sw/siw/siw_verbs.h         |   6 +-
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c       |   6 +-
+ include/rdma/ib_verbs.h                       | 105 +++++-------------
+ 65 files changed, 313 insertions(+), 275 deletions(-)
+
+--
+2.26.2
+
