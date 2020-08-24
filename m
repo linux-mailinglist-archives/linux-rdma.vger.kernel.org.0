@@ -2,34 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3124FB8E
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E3524FB8A
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgHXKde (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 06:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55798 "EHLO mail.kernel.org"
+        id S1727049AbgHXKdi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 06:33:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727042AbgHXKdM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Aug 2020 06:33:12 -0400
+        id S1727047AbgHXKdS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Aug 2020 06:33:18 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D74FB207DF;
-        Mon, 24 Aug 2020 10:33:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38FAE207D3;
+        Mon, 24 Aug 2020 10:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598265190;
-        bh=5v90RaTqfsCtqCvy57ElA1QnTxroKj893eTVe/b14tY=;
+        s=default; t=1598265194;
+        bh=H6ZT9ordjPM8X4IbmoHdQWP8YmKDzvDt/6CLc7a2TDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lBka4Db0sb/bxqQ9NsOI48E/wXZQyahdMXmrShlnes8eA523+Fdz5XCePCwQ4HJIC
-         yU7Yq0Ej6rPw3i3XUqZp4u0IpUvG0X1NNozfUc9nlYFr/fD2jiAXQcHtdExtZyMU7R
-         uqjUIvtt2rj0DRxFiGpqf1yH9MSg6CwSdg8C9dnk=
+        b=C+Q9tD9C5vJrJgoswqVx5ade0I59o2v+myfcS6pvI1ZK021n3cCxHgJsB8Kur7pGI
+         F5aJIaWsxdeVgs5zPuW8sF78p9plfh6VLj+/DsvUpn1jpKjcyQ2TH5h6xKviu8NWcK
+         9DbSfgFzo3OsbMf0AJBvrQaeAL64nF5qpz9ZzrNg=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 06/10] RDMA/core: Delete function indirection for alloc/free kernel CQ
-Date:   Mon, 24 Aug 2020 13:32:43 +0300
-Message-Id: <20200824103247.1088464-7-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: [PATCH rdma-next 07/10] RDMA: Allow fail of destroy CQ
+Date:   Mon, 24 Aug 2020 13:32:44 +0300
+Message-Id: <20200824103247.1088464-8-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200824103247.1088464-1-leon@kernel.org>
 References: <20200824103247.1088464-1-leon@kernel.org>
@@ -42,194 +66,640 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The ib_alloc_cq*() and ib_free_cq*() are solely kernel verbs to manage
-CQs and doesn't need extra indirection just to call same functions with
-constant parameter NULL as udata.
+Like any other verbs object, CQ shouldn't fail during destroy,
+but mlx5_ib didn't follow this contract while mixed IB verbs objects
+with DEVX. Such mix causes to the situation where FW and kernel
+are fully dependent on the reference counting of another side.
 
+Kernel verbs and drivers that don't have DEVX flows shouldn't fail.
+
+Fixes: e39afe3d6dbd ("RDMA: Convert CQ allocations to be under core responsibility")
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cq.c | 33 ++++++++-----------
- include/rdma/ib_verbs.h      | 62 ++++--------------------------------
- 2 files changed, 20 insertions(+), 75 deletions(-)
+ drivers/infiniband/core/cq.c                    |  5 ++++-
+ drivers/infiniband/core/verbs.c                 |  9 +++++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  3 ++-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h        |  2 +-
+ drivers/infiniband/hw/cxgb4/cq.c                |  3 ++-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h          |  2 +-
+ drivers/infiniband/hw/efa/efa.h                 |  2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c           |  3 ++-
+ drivers/infiniband/hw/hns/hns_roce_cq.c         |  3 ++-
+ drivers/infiniband/hw/hns/hns_roce_device.h     |  4 ++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c      |  3 ++-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  3 ++-
+ drivers/infiniband/hw/mlx4/cq.c                 |  3 ++-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h            |  2 +-
+ drivers/infiniband/hw/mlx5/cq.c                 | 16 +++++++++++-----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h            |  2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c    |  3 ++-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  3 ++-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h     |  2 +-
+ drivers/infiniband/hw/qedr/verbs.c              |  5 +++--
+ drivers/infiniband/hw/qedr/verbs.h              |  2 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  4 ++--
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h    |  2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c    |  3 ++-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h |  2 +-
+ drivers/infiniband/sw/rdmavt/cq.c               |  3 ++-
+ drivers/infiniband/sw/rdmavt/cq.h               |  2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c           |  3 ++-
+ drivers/infiniband/sw/siw/siw_verbs.c           |  3 ++-
+ drivers/infiniband/sw/siw/siw_verbs.h           |  2 +-
+ include/rdma/ib_verbs.h                         |  6 ++++--
+ 31 files changed, 70 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 513825e424bf..49c2d71e309a 100644
+index 49c2d71e309a..9d86513fed81 100644
 --- a/drivers/infiniband/core/cq.c
 +++ b/drivers/infiniband/core/cq.c
-@@ -197,24 +197,22 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
- }
- 
- /**
-- * __ib_alloc_cq_user - allocate a completion queue
-+ * __ib_alloc_cq        allocate a completion queue
-  * @dev:		device to allocate the CQ for
-  * @private:		driver private data, accessible from cq->cq_context
-  * @nr_cqe:		number of CQEs to allocate
-  * @comp_vector:	HCA completion vectors for this CQ
-  * @poll_ctx:		context to poll the CQ from.
-  * @caller:		module owner name.
-- * @udata:		Valid user data or NULL for kernel object
-  *
-  * This is the proper interface to allocate a CQ for in-kernel users. A
-  * CQ allocated with this interface will automatically be polled from the
-  * specified context. The ULP must use wr->wr_cqe instead of wr->wr_id
-  * to use this CQ abstraction.
+@@ -319,6 +319,8 @@ EXPORT_SYMBOL(__ib_alloc_cq_any);
   */
--struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
--				 int nr_cqe, int comp_vector,
--				 enum ib_poll_context poll_ctx,
--				 const char *caller, struct ib_udata *udata)
-+struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
-+			    int comp_vector, enum ib_poll_context poll_ctx,
-+			    const char *caller)
+ void ib_free_cq(struct ib_cq *cq)
  {
- 	struct ib_cq_init_attr cq_attr = {
- 		.cqe		= nr_cqe,
-@@ -277,7 +275,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- out_destroy_cq:
- 	rdma_dim_destroy(cq);
- 	rdma_restrack_del(&cq->res);
--	cq->device->ops.destroy_cq(cq, udata);
-+	cq->device->ops.destroy_cq(cq, NULL);
- out_free_wc:
- 	kfree(cq->wc);
- out_free_cq:
-@@ -285,7 +283,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
- 	trace_cq_alloc_error(nr_cqe, comp_vector, poll_ctx, ret);
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL(__ib_alloc_cq_user);
-+EXPORT_SYMBOL(__ib_alloc_cq);
- 
- /**
-  * __ib_alloc_cq_any - allocate a completion queue
-@@ -310,22 +308,19 @@ struct ib_cq *__ib_alloc_cq_any(struct ib_device *dev, void *private,
- 			atomic_inc_return(&counter) %
- 			min_t(int, dev->num_comp_vectors, num_online_cpus());
- 
--	return __ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
--				  caller, NULL);
-+	return __ib_alloc_cq(dev, private, nr_cqe, comp_vector, poll_ctx,
-+			     caller);
- }
- EXPORT_SYMBOL(__ib_alloc_cq_any);
- 
- /**
-- * ib_free_cq_user - free a completion queue
-+ * ib_free_cq - free a completion queue
-  * @cq:		completion queue to free.
-- * @udata:	User data or NULL for kernel object
-  */
--void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
-+void ib_free_cq(struct ib_cq *cq)
- {
--	if (WARN_ON_ONCE(atomic_read(&cq->usecnt)))
--		return;
--	if (WARN_ON_ONCE(cq->cqe_used))
--		return;
-+	WARN_ON_ONCE(atomic_read(&cq->usecnt));
-+	WARN_ON_ONCE(cq->cqe_used);
- 
- 	switch (cq->poll_ctx) {
- 	case IB_POLL_DIRECT:
-@@ -344,11 +339,11 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
++	int ret;
++
+ 	WARN_ON_ONCE(atomic_read(&cq->usecnt));
+ 	WARN_ON_ONCE(cq->cqe_used);
+
+@@ -338,8 +340,9 @@ void ib_free_cq(struct ib_cq *cq)
+
  	rdma_dim_destroy(cq);
  	trace_cq_free(cq);
++	ret = cq->device->ops.destroy_cq(cq, NULL);
++	WARN_ONCE(ret, "Destroy of kernel CQ shouldn't fail");
  	rdma_restrack_del(&cq->res);
--	cq->device->ops.destroy_cq(cq, udata);
-+	cq->device->ops.destroy_cq(cq, NULL);
+-	cq->device->ops.destroy_cq(cq, NULL);
  	kfree(cq->wc);
  	kfree(cq);
  }
--EXPORT_SYMBOL(ib_free_cq_user);
-+EXPORT_SYMBOL(ib_free_cq);
- 
- void ib_cq_pool_init(struct ib_device *dev)
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 8ce6fc14677a..80154be9390a 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2023,16 +2023,21 @@ EXPORT_SYMBOL(rdma_set_cq_moderation);
+
+ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata)
  {
++	int ret;
++
+ 	if (WARN_ON_ONCE(cq->shared))
+ 		return -EOPNOTSUPP;
+
+ 	if (atomic_read(&cq->usecnt))
+ 		return -EBUSY;
+
++	ret = cq->device->ops.destroy_cq(cq, udata);
++	if (ret && udata)
++		return ret;
++
+ 	rdma_restrack_del(&cq->res);
+-	cq->device->ops.destroy_cq(cq, udata);
+ 	kfree(cq);
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL(ib_destroy_cq_user);
+
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 13460fd31c8d..c983a48e9aed 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -2803,7 +2803,7 @@ int bnxt_re_post_recv(struct ib_qp *ib_qp, const struct ib_recv_wr *wr,
+ }
+
+ /* Completion Queues */
+-void bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
++int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ {
+ 	struct bnxt_re_cq *cq;
+ 	struct bnxt_qplib_nq *nq;
+@@ -2819,6 +2819,7 @@ void bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	atomic_dec(&rdev->cq_count);
+ 	nq->budget--;
+ 	kfree(cq->cql);
++	return 0;
+ }
+
+ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 7ca232809466..9a8130b79256 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -193,7 +193,7 @@ int bnxt_re_post_recv(struct ib_qp *qp, const struct ib_recv_wr *recv_wr,
+ 		      const struct ib_recv_wr **bad_recv_wr);
+ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		      struct ib_udata *udata);
+-void bnxt_re_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
++int bnxt_re_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ int bnxt_re_poll_cq(struct ib_cq *cq, int num_entries, struct ib_wc *wc);
+ int bnxt_re_req_notify_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
+ struct ib_mr *bnxt_re_get_dma_mr(struct ib_pd *pd, int mr_access_flags);
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index 352b8af1998a..28349ed50885 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -967,7 +967,7 @@ int c4iw_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+ 	return !err || err == -ENODATA ? npolled : err;
+ }
+
+-void c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
++int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ {
+ 	struct c4iw_cq *chp;
+ 	struct c4iw_ucontext *ucontext;
+@@ -985,6 +985,7 @@ void c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 		   ucontext ? &ucontext->uctx : &chp->cq.rdev->uctx,
+ 		   chp->destroy_skb, chp->wr_waitp);
+ 	c4iw_put_wr_wait(chp->wr_waitp);
++	return 0;
+ }
+
+ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index fa91e80869c0..dc65811e6a93 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -992,7 +992,7 @@ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start,
+ 					   struct ib_udata *udata);
+ struct ib_mr *c4iw_get_dma_mr(struct ib_pd *pd, int acc);
+ int c4iw_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+-void c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
++int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
+ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		   struct ib_udata *udata);
+ int c4iw_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 6b06ce87fbfc..64ae8ba6a7f6 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -139,7 +139,7 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata);
+ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+ 			    struct ib_qp_init_attr *init_attr,
+ 			    struct ib_udata *udata);
+-void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		  struct ib_udata *udata);
+ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 426c5f687c7b..ca03b42960fa 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -973,7 +973,7 @@ static int efa_destroy_cq_idx(struct efa_dev *dev, int cq_idx)
+ 	return efa_com_destroy_cq(&dev->edev, &params);
+ }
+
+-void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct efa_dev *dev = to_edev(ibcq->device);
+ 	struct efa_cq *cq = to_ecq(ibcq);
+@@ -986,6 +986,7 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 	efa_destroy_cq_idx(dev, cq->cq_idx);
+ 	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
+ 			DMA_FROM_DEVICE);
++	return 0;
+ }
+
+ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index e87d616f7988..c5acf3332519 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -311,7 +311,7 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 	return ret;
+ }
+
+-void hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
++int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
+ 	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
+@@ -322,6 +322,7 @@ void hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	free_cq_buf(hr_dev, hr_cq);
+ 	free_cq_db(hr_dev, hr_cq, udata);
+ 	free_cqc(hr_dev, hr_cq);
++	return 0;
+ }
+
+ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index ce0bec4a73c2..f8d70c3a5bf8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -932,7 +932,7 @@ struct hns_roce_hw {
+ 	int (*poll_cq)(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ 	int (*dereg_mr)(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr,
+ 			struct ib_udata *udata);
+-	void (*destroy_cq)(struct ib_cq *ibcq, struct ib_udata *udata);
++	int (*destroy_cq)(struct ib_cq *ibcq, struct ib_udata *udata);
+ 	int (*modify_cq)(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+ 	int (*init_eq)(struct hns_roce_dev *hr_dev);
+ 	void (*cleanup_eq)(struct hns_roce_dev *hr_dev);
+@@ -1252,7 +1252,7 @@ int to_hr_qp_type(int qp_type);
+ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 		       struct ib_udata *udata);
+
+-void hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
++int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
+ int hns_roce_db_map_user(struct hns_roce_ucontext *context,
+ 			 struct ib_udata *udata, unsigned long virt,
+ 			 struct hns_roce_db *db);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 07b4c85d341d..86a4b1421f82 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -3572,7 +3572,7 @@ int hns_roce_v1_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	return 0;
+ }
+
+-static void hns_roce_v1_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++static int hns_roce_v1_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibcq->device);
+ 	struct hns_roce_cq *hr_cq = to_hr_cq(ibcq);
+@@ -3603,6 +3603,7 @@ static void hns_roce_v1_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 		}
+ 		wait_time++;
+ 	}
++	return 0;
+ }
+
+ static void set_eq_cons_index_v1(struct hns_roce_eq *eq, int req_not)
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index 360b037f90e7..d863b28a71f0 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -1053,7 +1053,7 @@ void i40iw_cq_wq_destroy(struct i40iw_device *iwdev, struct i40iw_sc_cq *cq)
+  * @ib_cq: cq pointer
+  * @udata: user data or NULL for kernel object
+  */
+-static void i40iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
++static int i40iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ {
+ 	struct i40iw_cq *iwcq;
+ 	struct i40iw_device *iwdev;
+@@ -1065,6 +1065,7 @@ static void i40iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	i40iw_cq_wq_destroy(iwdev, cq);
+ 	cq_free_resources(iwdev, iwcq);
+ 	i40iw_rem_devusecount(iwdev);
++	return 0;
+ }
+
+ /**
+diff --git a/drivers/infiniband/hw/mlx4/cq.c b/drivers/infiniband/hw/mlx4/cq.c
+index f8b936b76dcd..3851316407ce 100644
+--- a/drivers/infiniband/hw/mlx4/cq.c
++++ b/drivers/infiniband/hw/mlx4/cq.c
+@@ -475,7 +475,7 @@ int mlx4_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata)
+ 	return err;
+ }
+
+-void mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
++int mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ {
+ 	struct mlx4_ib_dev *dev = to_mdev(cq->device);
+ 	struct mlx4_ib_cq *mcq = to_mcq(cq);
+@@ -495,6 +495,7 @@ void mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ 		mlx4_db_free(dev->dev, &mcq->db);
+ 	}
+ 	ib_umem_release(mcq->umem);
++	return 0;
+ }
+
+ static void dump_cqe(void *cqe)
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 392a5a7c2a31..32a024f765ea 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -742,7 +742,7 @@ int mlx4_ib_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+ int mlx4_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata);
+ int mlx4_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		      struct ib_udata *udata);
+-void mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
++int mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ int mlx4_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int mlx4_ib_arm_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
+ void __mlx4_ib_cq_clean(struct mlx4_ib_cq *cq, u32 qpn, struct mlx4_ib_srq *srq);
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index 2bac246b9fef..cb418fdcc9f8 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -1024,16 +1024,22 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	return err;
+ }
+
+-void mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
++int mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(cq->device);
+ 	struct mlx5_ib_cq *mcq = to_mcq(cq);
++	int ret;
+
+-	mlx5_core_destroy_cq(dev->mdev, &mcq->mcq);
+-	if (udata)
++	ret = mlx5_core_destroy_cq(dev->mdev, &mcq->mcq);
++	if (ret && udata)
++		return ret;
++
++	if (udata) {
+ 		destroy_cq_user(mcq, udata);
+-	else
+-		destroy_cq_kernel(dev, mcq);
++		return 0;
++	}
++	destroy_cq_kernel(dev, mcq);
++	return ret;
+ }
+
+ static int is_equal_rsn(struct mlx5_cqe64 *cqe64, u32 rsn)
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index b7b00e9e180b..0a65f7ba40c4 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1151,7 +1151,7 @@ int mlx5_ib_read_wqe_srq(struct mlx5_ib_srq *srq, int wqe_index, void *buffer,
+ 			 size_t buflen, size_t *bc);
+ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		      struct ib_udata *udata);
+-void mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
++int mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ int mlx5_ib_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+index 5d1e17214f0c..4624b975fee2 100644
+--- a/drivers/infiniband/hw/mthca/mthca_provider.c
++++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+@@ -792,7 +792,7 @@ static int mthca_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *uda
+ 	return ret;
+ }
+
+-static void mthca_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
++static int mthca_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ {
+ 	if (udata) {
+ 		struct mthca_ucontext *context =
+@@ -811,6 +811,7 @@ static void mthca_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ 				    to_mcq(cq)->set_ci_db_index);
+ 	}
+ 	mthca_free_cq(to_mdev(cq->device), to_mcq(cq));
++	return 0;
+ }
+
+ static inline u32 convert_access(int acc)
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index 220bb09d6431..6f15dbf39939 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -1057,7 +1057,7 @@ static void ocrdma_flush_cq(struct ocrdma_cq *cq)
+ 	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ }
+
+-void ocrdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++int ocrdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct ocrdma_cq *cq = get_ocrdma_cq(ibcq);
+ 	struct ocrdma_eq *eq = NULL;
+@@ -1082,6 +1082,7 @@ void ocrdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 				ocrdma_get_db_addr(dev, pdid),
+ 				dev->nic_info.db_page_size);
+ 	}
++	return 0;
+ }
+
+ static int ocrdma_add_qpn_map(struct ocrdma_dev *dev, struct ocrdma_qp *qp)
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+index 4f6806f16e61..425d554e7f3f 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+@@ -72,7 +72,7 @@ int ocrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+ int ocrdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		     struct ib_udata *udata);
+ int ocrdma_resize_cq(struct ib_cq *, int cqe, struct ib_udata *);
+-void ocrdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++int ocrdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+
+ struct ib_qp *ocrdma_create_qp(struct ib_pd *,
+ 			       struct ib_qp_init_attr *attrs,
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index d75300d7df95..e3640064a401 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1052,7 +1052,7 @@ int qedr_resize_cq(struct ib_cq *ibcq, int new_cnt, struct ib_udata *udata)
+ #define QEDR_DESTROY_CQ_MAX_ITERATIONS		(10)
+ #define QEDR_DESTROY_CQ_ITER_DURATION		(10)
+
+-void qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++int qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct qedr_dev *dev = get_qedr_dev(ibcq->device);
+ 	struct qed_rdma_destroy_cq_out_params oparams;
+@@ -1067,7 +1067,7 @@ void qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 	/* GSIs CQs are handled by driver, so they don't exist in the FW */
+ 	if (cq->cq_type == QEDR_CQ_TYPE_GSI) {
+ 		qedr_db_recovery_del(dev, cq->db_addr, &cq->db.data);
+-		return;
++		return 0;
+ 	}
+
+ 	iparams.icid = cq->icid;
+@@ -1115,6 +1115,7 @@ void qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 	 * Since the destroy CQ ramrod has also been received on the EQ we can
+ 	 * be certain that there's no event handler in process.
+ 	 */
++	return 0;
+ }
+
+ static inline int get_gid_info_from_table(struct ib_qp *ibqp,
+diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
+index a78b206d8b5a..4620fba34d5f 100644
+--- a/drivers/infiniband/hw/qedr/verbs.h
++++ b/drivers/infiniband/hw/qedr/verbs.h
+@@ -52,7 +52,7 @@ int qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+ int qedr_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		   struct ib_udata *udata);
+ int qedr_resize_cq(struct ib_cq *, int cqe, struct ib_udata *);
+-void qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++int qedr_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+ int qedr_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ struct ib_qp *qedr_create_qp(struct ib_pd *, struct ib_qp_init_attr *attrs,
+ 			     struct ib_udata *);
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+index 17fc3af138f1..7f49fd2060e5 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -597,9 +597,9 @@ int usnic_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	return 0;
+ }
+
+-void usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
++int usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ {
+-	return;
++	return 0;
+ }
+
+ struct ib_mr *usnic_ib_reg_mr(struct ib_pd *pd, u64 start, u64 length,
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
+index 7d9c75a66905..91f35d396635 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
+@@ -60,7 +60,7 @@ int usnic_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 				int attr_mask, struct ib_udata *udata);
+ int usnic_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		       struct ib_udata *udata);
+-void usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
++int usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ struct ib_mr *usnic_ib_reg_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				u64 virt_addr, int access_flags,
+ 				struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+index 4f6cc0de7ef9..6d3e6389e47d 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+@@ -235,7 +235,7 @@ static void pvrdma_free_cq(struct pvrdma_dev *dev, struct pvrdma_cq *cq)
+  * @cq: the completion queue to destroy.
+  * @udata: user data or null for kernel object
+  */
+-void pvrdma_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
++int pvrdma_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ {
+ 	struct pvrdma_cq *vcq = to_vcq(cq);
+ 	union pvrdma_cmd_req req;
+@@ -261,6 +261,7 @@ void pvrdma_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+
+ 	pvrdma_free_cq(dev, vcq);
+ 	atomic_dec(&dev->num_cqs);
++	return 0;
+ }
+
+ static inline struct pvrdma_cqe *get_cqe(struct pvrdma_cq *cq, int i)
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index f9edce71b79b..97ed8f952f6e 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -411,7 +411,7 @@ int pvrdma_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+ 		     int sg_nents, unsigned int *sg_offset);
+ int pvrdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		     struct ib_udata *udata);
+-void pvrdma_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
++int pvrdma_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ int pvrdma_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int pvrdma_req_notify_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
+ int pvrdma_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index 04d2e72017fe..19248be14093 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -315,7 +315,7 @@ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+  *
+  * Called by ib_destroy_cq() in the generic verbs code.
+  */
+-void rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++int rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct rvt_cq *cq = ibcq_to_rvtcq(ibcq);
+ 	struct rvt_dev_info *rdi = cq->rdi;
+@@ -328,6 +328,7 @@ void rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 		kref_put(&cq->ip->ref, rvt_release_mmap_info);
+ 	else
+ 		vfree(cq->kqueue);
++	return 0;
+ }
+
+ /**
+diff --git a/drivers/infiniband/sw/rdmavt/cq.h b/drivers/infiniband/sw/rdmavt/cq.h
+index 5e26a2eb19a4..feb01e7ee004 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.h
++++ b/drivers/infiniband/sw/rdmavt/cq.h
+@@ -53,7 +53,7 @@
+
+ int rvt_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		  struct ib_udata *udata);
+-void rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++int rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+ int rvt_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags notify_flags);
+ int rvt_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata);
+ int rvt_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *entry);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 7303edbc293b..576aa60fdd27 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -806,13 +806,14 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	return rxe_add_to_pool(&rxe->cq_pool, &cq->pelem);
+ }
+
+-static void rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
++static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct rxe_cq *cq = to_rcq(ibcq);
+
+ 	rxe_cq_disable(cq);
+
+ 	rxe_drop_ref(cq);
++	return 0;
+ }
+
+ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index a6ec1e968fb4..7cf3242ffb41 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -1056,7 +1056,7 @@ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
+ 	return rv > 0 ? 0 : rv;
+ }
+
+-void siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
++int siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
+ {
+ 	struct siw_cq *cq = to_siw_cq(base_cq);
+ 	struct siw_device *sdev = to_siw_dev(base_cq->device);
+@@ -1074,6 +1074,7 @@ void siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata)
+ 	atomic_dec(&sdev->num_cq);
+
+ 	vfree(cq->queue);
++	return 0;
+ }
+
+ /*
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
+index ed2d8ac2f967..637454529357 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.h
++++ b/drivers/infiniband/sw/siw/siw_verbs.h
+@@ -62,7 +62,7 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+ 		  const struct ib_send_wr **bad_wr);
+ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
+ 		     const struct ib_recv_wr **bad_wr);
+-void siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata);
++int siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata);
+ int siw_poll_cq(struct ib_cq *base_cq, int num_entries, struct ib_wc *wc);
+ int siw_req_notify_cq(struct ib_cq *base_cq, enum ib_cq_notify_flags flags);
+ struct ib_mr *siw_reg_user_mr(struct ib_pd *base_pd, u64 start, u64 len,
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 2ea278b0494a..a3eb363674df 100644
+index a3eb363674df..335189bddbef 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -3808,46 +3808,15 @@ static inline int ib_post_recv(struct ib_qp *qp,
- 	return qp->device->ops.post_recv(qp, recv_wr, bad_recv_wr ? : &dummy);
- }
- 
--struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
--				 int nr_cqe, int comp_vector,
--				 enum ib_poll_context poll_ctx,
--				 const char *caller, struct ib_udata *udata);
--
--/**
-- * ib_alloc_cq_user: Allocate kernel/user CQ
-- * @dev: The IB device
-- * @private: Private data attached to the CQE
-- * @nr_cqe: Number of CQEs in the CQ
-- * @comp_vector: Completion vector used for the IRQs
-- * @poll_ctx: Context used for polling the CQ
-- * @udata: Valid user data or NULL for kernel objects
-- */
--static inline struct ib_cq *ib_alloc_cq_user(struct ib_device *dev,
--					     void *private, int nr_cqe,
--					     int comp_vector,
--					     enum ib_poll_context poll_ctx,
--					     struct ib_udata *udata)
--{
--	return __ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
--				  KBUILD_MODNAME, udata);
--}
--
--/**
-- * ib_alloc_cq: Allocate kernel CQ
-- * @dev: The IB device
-- * @private: Private data attached to the CQE
-- * @nr_cqe: Number of CQEs in the CQ
-- * @comp_vector: Completion vector used for the IRQs
-- * @poll_ctx: Context used for polling the CQ
-- *
-- * NOTE: for user cq use ib_alloc_cq_user with valid udata!
-- */
-+struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
-+			    int comp_vector, enum ib_poll_context poll_ctx,
-+			    const char *caller);
- static inline struct ib_cq *ib_alloc_cq(struct ib_device *dev, void *private,
- 					int nr_cqe, int comp_vector,
- 					enum ib_poll_context poll_ctx)
+@@ -2429,7 +2429,7 @@ struct ib_device_ops {
+ 	int (*create_cq)(struct ib_cq *cq, const struct ib_cq_init_attr *attr,
+ 			 struct ib_udata *udata);
+ 	int (*modify_cq)(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+-	void (*destroy_cq)(struct ib_cq *cq, struct ib_udata *udata);
++	int (*destroy_cq)(struct ib_cq *cq, struct ib_udata *udata);
+ 	int (*resize_cq)(struct ib_cq *cq, int cqe, struct ib_udata *udata);
+ 	struct ib_mr *(*get_dma_mr)(struct ib_pd *pd, int mr_access_flags);
+ 	struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
+@@ -3896,7 +3896,9 @@ int ib_destroy_cq_user(struct ib_cq *cq, struct ib_udata *udata);
+  */
+ static inline void ib_destroy_cq(struct ib_cq *cq)
  {
--	return ib_alloc_cq_user(dev, private, nr_cqe, comp_vector, poll_ctx,
--				NULL);
-+	return __ib_alloc_cq(dev, private, nr_cqe, comp_vector, poll_ctx,
-+			     KBUILD_MODNAME);
+-	ib_destroy_cq_user(cq, NULL);
++	int ret = ib_destroy_cq_user(cq, NULL);
++
++	WARN_ONCE(ret, "Destroy of kernel CQ shouldn't fail");
  }
- 
- struct ib_cq *__ib_alloc_cq_any(struct ib_device *dev, void *private,
-@@ -3869,26 +3838,7 @@ static inline struct ib_cq *ib_alloc_cq_any(struct ib_device *dev,
- 				 KBUILD_MODNAME);
- }
- 
--/**
-- * ib_free_cq_user - Free kernel/user CQ
-- * @cq: The CQ to free
-- * @udata: Valid user data or NULL for kernel objects
-- *
-- * NOTE: This function shouldn't be called on shared CQs.
-- */
--void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata);
--
--/**
-- * ib_free_cq - Free kernel CQ
-- * @cq: The CQ to free
-- *
-- * NOTE: for user cq use ib_free_cq_user with valid udata!
-- */
--static inline void ib_free_cq(struct ib_cq *cq)
--{
--	ib_free_cq_user(cq, NULL);
--}
--
-+void ib_free_cq(struct ib_cq *cq);
- int ib_process_cq_direct(struct ib_cq *cq, int budget);
- 
+
  /**
--- 
+--
 2.26.2
 
