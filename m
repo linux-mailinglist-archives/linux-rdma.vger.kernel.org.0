@@ -2,100 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE8625043B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 18:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFD5250580
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Aug 2020 19:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgHXQ7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 12:59:38 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18657 "EHLO
+        id S1726939AbgHXRQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 13:16:43 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13669 "EHLO
         hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgHXQ7a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 12:59:30 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f43f1b40002>; Mon, 24 Aug 2020 09:58:28 -0700
+        with ESMTP id S1728343AbgHXQgo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 12:36:44 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f43ec5c0000>; Mon, 24 Aug 2020 09:35:40 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 24 Aug 2020 09:59:29 -0700
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 24 Aug 2020 09:36:41 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 24 Aug 2020 09:59:29 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 24 Aug
- 2020 16:59:29 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.58) by
+        by hqpgpgate101.nvidia.com on Mon, 24 Aug 2020 09:36:41 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 24 Aug
+ 2020 16:36:41 +0000
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.45) by
  HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 24 Aug 2020 16:59:29 +0000
+ 15.0.1473.3 via Frontend Transport; Mon, 24 Aug 2020 16:36:41 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fY5onWMOws7xLLI0ZQZK+o76irIRVYpnbtTL0NFfBOB0Wzlyc/zI6vDgnR4GQk8HneIpTZIONozo9bbzJ5Q6ambbIF60LgpV47yIbBOHtKiWVrCKdA/OMKwoYQq5udFnpwD6NU/hqv/M6csjdQ0umdX7DlX5xHiZlupIgk+IkVm9llsaiCQvs/LpWYW6Ny0X1hUwT9BwnWDXu0m5ZU0UVgZeCDIBjFLo4nDiYBKNG4YDiBfmJX+h7JErc0stDuUnGhzfhgG5cVCY/irYGye+Fyqn4T3z/tlQjEOWCbub3iSKCVpuWAFyzqq7Txhh9zXR9r4oSDGBMJCyBhfj+LiMgw==
+ b=BBR3li7QF5AMY7D3tOKDxryDr2BGSIchGTAWmhLxkHE+ylbRYm9UuOUwrqr60qAB7dS4ioKa5gRVTm7byzHJiDvvoCrMxqJH2mkcnS0jXuhCg8K3W5rd8DR+TlqQmQac+MAxAjk6jqIwhBnHDckkGCbtlYhoLE9uE222WWWXoKHIJPtBAbGy5hMKVNZaqGM4HqyX/ypLr05N3gaV9EpIZY4PVZD6OrtmQv/KS+yYU1+9Tg1V/62Z+b3+ydB7sJDZ4go7BPt3XrhZiEOQcGb0KhDLMxnFBimBEB5uKT9fETIKip8CHuXie2O22q0e8a/6lWJvFI1VmGOQ7YQvjERQrA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m4zqmzIXfnip918T5juXL5ppEt3Li8+xlOIN9ww1Ntk=;
- b=eR4PQbuYa5l4EdETNVJ48CEJIooTtq/3KtTxdTlq8uJIFP1E9h7mvmY5Hb5ydgWTmTxb7b0T6f8rvHAx9s7GPKXwuv9mcwBduuT3oXPJ0GMHwDTvjhOadKueYliVmkFTedU+zBKw6BxKWk+M6WnUBC+bl3A9+SLOr2PKP8N41Y+mRV5hR+WU7FbHp5mr7LpO+Dl2Q8DBTJP+RN8P07fbEVEXEhijbr8WRV4IjKrqRpGWkDnFhEWI8M51xJlIzPrP63qFcl5+eWQUCT69wVhXgNNghHCyQdan7iUdcKM9UH0Lg8UH+2RebZcnBr4ALzE5A9ORZJrt3aQ4xLpkWTeSuQ==
+ bh=u/+9xHHrEwFL7cdJKA9sW5yjCCspixwrNbNycHWVPXY=;
+ b=Hgkela0Ry8htUXUMfpQzGg/CfdqGn9L6S/RUGUV713X2m0MgqWyx+49nPT47OQmDatPxQtDrTK11qNvooMQsMA9Ej+3x+yaukDYmfypywSsl2Jnjz5Q6cfpAPOXk1kJ0mEg6vShAF3qTUaCVcclFXANcpGmuBctY45UOuR9FWXChfCHCoZoherR29DqycITV4ydtHleSs2fk1eDooASuPgUq6q+lnIy67NJgoe6PawL64KfD0pDlz3h5LZ+HAUUdFgBagg5Dlo58IQ3pE8/3fYJQKEhOEdfF4DpAWJkYRNO9adYaEhwXhX1eTPCcqnaNZBIbGlihDzIVMi6XI8IGVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: cloud.ionos.com; dkim=none (message not signed)
- header.d=none;cloud.ionos.com; dmarc=none action=none header.from=nvidia.com;
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10) with
+ by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Mon, 24 Aug
- 2020 16:59:27 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Mon, 24 Aug
+ 2020 16:36:40 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3305.026; Mon, 24 Aug 2020
- 16:59:27 +0000
-Date:   Mon, 24 Aug 2020 13:59:25 -0300
+ 16:36:40 +0000
+Date:   Mon, 24 Aug 2020 13:36:38 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-CC:     <danil.kipnis@cloud.ionos.com>, <jinpu.wang@cloud.ionos.com>,
-        <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <leon@kernel.org>
-Subject: Re: [PATCH] RDMA/rtrs-srv: Replace device_register with
- device_initialize and device_add
-Message-ID: <20200824165925.GA3208822@nvidia.com>
-References: <20200811092722.2450-1-haris.iqbal@cloud.ionos.com>
-Content-Type: text/plain; charset="us-ascii"
+To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <yishaih@mellanox.com>, <jackm@dev.mellanox.co.il>,
+        <ranro@mellanox.com>
+Subject: Re: [PATCH for-rc v2 0/6] Add CM packets missing and harden the
+ proxying
+Message-ID: <20200824163638.GA3179735@nvidia.com>
+References: <20200803061941.1139994-1-haakon.bugge@oracle.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20200811092722.2450-1-haris.iqbal@cloud.ionos.com>
-X-ClientProxiedBy: MN2PR22CA0004.namprd22.prod.outlook.com
- (2603:10b6:208:238::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200803061941.1139994-1-haakon.bugge@oracle.com>
+X-ClientProxiedBy: MN2PR16CA0021.namprd16.prod.outlook.com
+ (2603:10b6:208:134::34) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by MN2PR22CA0004.namprd22.prod.outlook.com (2603:10b6:208:238::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Mon, 24 Aug 2020 16:59:27 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kAFob-00DSlt-J4; Mon, 24 Aug 2020 13:59:25 -0300
+Received: from 255.255.255.255 (255.255.255.255) by MN2PR16CA0021.namprd16.prod.outlook.com (2603:10b6:208:134::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25 via Frontend Transport; Mon, 24 Aug 2020 16:36:39 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kAFSY-00DLD4-Fw; Mon, 24 Aug 2020 13:36:38 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d56c1fd5-d376-4e88-575d-08d8484f0f64
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4388:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB43889640F96FE8ABF56E7C90C2560@DM6PR12MB4388.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 39327be7-6fcd-4d33-fed0-08d8484be05e
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2488:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB24882526044FA4366E7F1AE9C2560@DM5PR12MB2488.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:639;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BVsYJbAbo1BXPzhzffGcHMgd0oT9eZeoOsn7Qwntsg4MwJynct9T43lucoHIt4ybQqOg5HF7tT9ihjlrg4eFY8lv7oeomsg8XwgICIZGOu4YybJe2RY6XaL9BIEZ+gS6TPWtbONeptYXOREEApDUJY4IHKv+0+NgrK4UDulIFURqzc7HGbvtracJFPNhOfLv2deYjkWum1A1rFzdjUTf/Nt8C6chwRVWILqFLve34CrGVVl9iGm3wcVOrAEF9/nrj51I2cEcY2I8HEsfhTMlgSyVZlGeth15Ur7g4/96LOiHba23QRUHYPU8LOfcP4YsIj4ZhzEkuiuS2Cmo242oAA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(39860400002)(396003)(36756003)(66556008)(5660300002)(8936002)(66476007)(2906002)(66946007)(86362001)(4326008)(9786002)(9746002)(426003)(2616005)(26005)(478600001)(316002)(33656002)(6916009)(1076003)(8676002)(186003)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: obsfChfVXAufigpq2ARrsQ1rCg2JDO1yCy4gqiHaNZfJSpAPMiwwrBOqiYqElmvnCHWqPxAW7W0pjDd+jNEJuPoDcbOlXCVqapSb+9wTjEyN1xFMruDs0IrranneT45KfAJoR6d5xBUkONHMNu71d8Gogg1ixShUEN1DbvUHzcL4vHZufMoRaruQ6MvtpIqWO63WuHwPs5HUHfZdKpUoHh7icjd4UuLRUZ9/i7+Jz6KGIdIF1VZdF9T36oLZ05hm7StDuNu/uq9QcT3SCNRJCbjCGw2OpUUK1JHu7WmaQ5VIG4AIFy24ZgCGyo7czxmbZYujXBmDyvsemYXczJ766ZwKhw0iV92VjnLrTYFl2Avx+UYv8W012dGgQKOePOc7mH/o6EZCvLwitRz1Z9PFVknrncPoBJAV8liZ7+0SCT6p45PkoUyCz9qr0o0irlsTXwRFEtQbuxCWBVFSZ2Iml9QBOR8l/9Fem0HkaMXHoTMevy3tmqeegvwIAfRneqscahLUBdSd8UzeCjKlAjVOYPNoDQSjMvuz+A7x/Rl3opmVwq0b2Vxq9suhlPxJHzJ7sZTv0pLnHuME0LoiAaC7S9bFezUIpczCo65xeJ92mIq+PyUxbp19357qoknkW74FP2JKir7S/I2IaqgBT2OXjw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: d56c1fd5-d376-4e88-575d-08d8484f0f64
+X-Microsoft-Antispam-Message-Info: mKqpkD6CF5zFKAMn7/T7XVZmSruontiEACIs/L0vEnUTRIS3h93ZvWU16NW4yhB17ZjZuBSGqDo8XdNcM6+egPq0y4cRhU/PUSOvCPyufnMzfX2m/c8krQC4zTG2s6jPMG8YPreqo0MwBY+VSIfbR8rxn3jp/k9k46STu8e15Fm0TD12y4wNw5HeuLylkzFcG3s7Ky4W/dxScNCHS8ph4eSPbu6W7+nOcw/YzO8s1HGA9HUKL3s109zpnaKuZ8aFJYWpzUQdO29pgzsJse5Gcl0Bg74ye76nqhkMZlAr+mDGjyIqNd0OoRqzlzGc9t+qVKz2//ONDx3dZxOY6Vfg5g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(366004)(4744005)(9746002)(9786002)(2906002)(2616005)(478600001)(186003)(8676002)(5660300002)(86362001)(1076003)(66476007)(66556008)(426003)(316002)(26005)(66946007)(33656002)(4326008)(107886003)(8936002)(36756003)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0J7huWu1cClVPyB4pPW2jmeWOT1KBUn56ghYOBxXx2yDfIM6TuWps4bYOHhvTF3y2EEQ7I4Nug7STUXDJROpM6IVQuklRlD5eYXoRVhVDjet7eAAlLea1MYJRkbm1vnT2hUfvjEPaE0LtCQUnIjUmo9KXsVPGJLkKzo9bvm5ThT36eW7QKJojEnqjgW2P6y/wtQ2ucqCg91QsNlB0Q9SaAfh4OofUPgNaZniM01oxgU5NXnwFuA7wXMi5fQbgv1AtAzUZbPnXN/WlK8+FGQEFVMIVWi5i3ke/v65H8wIhffA/o1qcWpb1vTgT206q4TbVlV/J+t2Kj12v57K4pG2aajt2Z5YOdVEq8GBE6f5dgU2n1TIkKqWhwrFxiTb/mb7Pd3jL/ICq2KkHEf9TVd0fHYEkL9jomwfsbSY2XqXOvdIlrLYhkLtePNSf9iIMcopZO/WJIm3IS3bkWiEzrgXjbf+axtr8Z8RrEZ/o3lAwx/cZiy9OoijVaAbf/gik/YZC4UFSqJlDMSsEMwYWooVVW8Lak7tiDFp5mFsf87Bnu39m6MpEV2TUlk1vGF42rL1D2EBh6eLn8jaZWIs6Iap07qc3nPQsmK85pAWq3JlypIKizcolD+XwinH5XnuHpTuMMTB8/yV9aSdxfiY08SGQg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39327be7-6fcd-4d33-fed0-08d8484be05e
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2020 16:59:27.2974
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2020 16:36:40.3280
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k25AeK+r4sl6MmIYjti/KY9vE16j3Zms5uEe6YVgJk/rHyAaB/ny00+YSeThfGuQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4388
+X-MS-Exchange-CrossTenant-UserPrincipalName: oG56mj9D2Gm2NaiYeF1mkUKNPFVgrXxsExBhE+ILylrnpb9syWqbKBED2AXFkzdm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2488
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598288308; bh=m4zqmzIXfnip918T5juXL5ppEt3Li8+xlOIN9ww1Ntk=;
+        t=1598286940; bh=9pVsSan8tLwo4rVR94hsi3rJsUEnnvPDSXioQgfJbAs=;
         h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
          ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
          Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         Content-Transfer-Encoding:In-Reply-To:X-ClientProxiedBy:
+         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
+         X-Originating-IP:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-Microsoft-Antispam-PRVS:X-MS-Exchange-Transport-Forked:
          X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
          X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
          X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
@@ -107,41 +110,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=A+4Dm6OII2icbGAPOWKYQSPYEzmvSWNoTnpOyKKPeTOERObsRY85na+VSug4F0naf
-         avMs7Pl9W6lQitNvERe1SnOE4qkPsZcgb0mzCfXtPHkZ3Rq8nM3ac5sHT4cP0ErmZC
-         Q3TF4cY0IgSemUjDjRyzFtJ8rTdDikqkW1FsRXFH4RoWnJKQM+S9RIPND7z92vEyX7
-         eB/zYojrb9Scl/eJAvRFpYWz+/mU8aqB9hMLQSyl4mQ341pKMQi0/ygrtTQRtOWstt
-         q1UQI1ssUmpZtwsRm0ZtBBXaiHZpO+Imzva7FXVyF8b6+ZW2+16hYjQg4iytHbPsSo
-         IH4qzIVNoJuJg==
+        b=fmTs/DZRqUn6xpoXOWe5qeSbisTCE6UlNg/LjE1gQMJwW2jjhv1RIk7LSry8xtQgY
+         vaPdfXfCKveRQARJ2gvB7uiWYPepV3JOcHDf/+irtt4elsPOBBf/LLt/Birwh+M/HK
+         1HesjuxoY3vCO2ZqRddhG29EjGokuxgMzLnOEN2rY/YB4lMX4ZJ49auuLziyPvvHsa
+         ASAWGWQ1TE3tb4hgFyVVqGgDmcNcdw1LmgvZuTl71DhU2uPOEMRacqQhak17mEH/9e
+         vXFhimt3ANg6XU7Z/o1KUruB79F36cJGbPGHBn5RdjPLDkEAk8jfU3y6iT8fNhJyh0
+         sAKCk9xmIHhiw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 02:57:22PM +0530, Md Haris Iqbal wrote:
-> There are error cases when we will call free_srv before device kobject is
-> initialized; in such cases calling put_device generates the following
-> warning,
-> 
-> kobject: '(null)' (000000009f5445ed): is not initialized, yet
-> kobject_put() is being called.
-> 
-> It was suggested by Jason to call device_initialize() sooner.
-> 
-> So call device_initialize() only once when the server is allocated. If we
-> end up calling put_srv() and subsequently free_srv(), our call to
-> put_device() would result in deletion of the obj. Call device_add() later
-> when we actually have a connection. Correspondingly, call device_del()
-> instead of device_unregister() when srv->dev_ref falls to 0.
-> 
-> Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-> Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> Reviewed-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 8 ++++----
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 1 +
->  2 files changed, 5 insertions(+), 4 deletions(-)
+On Mon, Aug 03, 2020 at 08:19:35AM +0200, H=C3=A5kon Bugge wrote:
+> A high number of MAD packet drops are observed in the mlx4 MAD proxy
+> system. These are fixed by separating the parameters for the tunnel
+> vs. wire QPs and by introducing a separate worker-thread for the wire
+> QPs.
+>=20
+> Support for MRA and REJ with its reason being timeout is also added.
+>=20
+> Dynamic debug prints adjusted and amended.
+>=20
+>     v1->v2:
+> 	* Added commit ("Adjust delayed work when a dup is observed")
+> 	* Minor adjustments in some of the commits
+>=20
+> H=C3=A5kon Bugge (6):
+>   IB/mlx4: Add and improve logging
+>   IB/mlx4: Add support for MRA
+>   IB/mlx4: Separate tunnel and wire bufs parameters
+>   IB/mlx4: Fix starvation in paravirt mux/demux
+>   IB/mlx4: Add support for REJ due to timeout
+>   IB/mlx4: Adjust delayed work when a dup is observed
 
-Applied to for-rc, thanks
+Applied to for-next, this does not look like -rc material
 
+Thanks,
 Jason
