@@ -2,95 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B58B250B3F
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 00:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7135F250BAE
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 00:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgHXWAF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Aug 2020 18:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgHXWAF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 18:00:05 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3637C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 15:00:04 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 144so9119651qkl.5
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Aug 2020 15:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jTvi36PtrPCa8KRZMnZagR00ztzDmQDCsc+sihgZ0D0=;
-        b=Itg82sK7OOutg4JelsbXVX8N1SuCvEcRCnT9SbsS7nvwltlhDWcuizikKe6+bHcv+i
-         BQHIqvdWOCKP1qMNKliwO4JjFFu1cCujYPHXBVJXaK8XKaF+mmsARiZ+SyVjtmnFnpY3
-         u7o/6tC3XgEiZxCQXaQFukVzV4mU5y13aY9WKDi4CFbOdzlHndhYmYfCSgWfQTbcKcv/
-         QFi/XwCBvf/3VPvNCYft7L0vu2ENzgnToS6n92T3Zj17PA8jUZzeafRY3Pf3AGG6ltQm
-         vYKGkdfRUa1XSNSwnjbxFW6RDkq1ltTYJoebr6INKibKrgsRLs/9kvfm3nChEhbfNHsK
-         5Rgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jTvi36PtrPCa8KRZMnZagR00ztzDmQDCsc+sihgZ0D0=;
-        b=HS1yRdKbPelybQ5WCFIB/LLZQWR9S8w7WZf7dmychw0d23sK4OhdTZk6CPWXbTk3SD
-         BLSAyTXWReHhN4IkhhQLwJXNTB6TQuPCCNpenI/buXvJysqLUYKX+3OY7m65xepxsZ8z
-         MdqM8aVVwKIX0yQ8grPYqD0j9xmQpf9X4Luv7tUSXxZJn/MJ7Oe0OqQ6FTIgaBZGbPLM
-         tcy57STsUdRUHLhSct3pJc40EcfANo8wFwthJCt3fftQRqRINxw4XmFOL6GEKKDcTO7b
-         154LRU3p6oUD45pYlNqksWUHj6OxV77SxnaTb9sfiHyvifa705GvJCfITqPQR4BGGo67
-         +MTg==
-X-Gm-Message-State: AOAM530cg4vzeu76c/NWUL5VD/4c9Orc1+19sX7kfU7c3/xek41J8m6k
-        DTh6c1d8MVt5DcORxxJzbnGKlg==
-X-Google-Smtp-Source: ABdhPJxacNjFM5WToptGYtB1Dl+H+Fr7GUSfEWsHKuepFySIUIO72S5dzZcK6alEvKaZGT/rbEZiLg==
-X-Received: by 2002:a05:620a:1355:: with SMTP id c21mr6918902qkl.378.1598306404171;
-        Mon, 24 Aug 2020 15:00:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l38sm12528626qtl.58.2020.08.24.15.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 15:00:03 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kAKVW-00E0BC-O6; Mon, 24 Aug 2020 19:00:02 -0300
-Date:   Mon, 24 Aug 2020 19:00:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc 1/6] RDMA/bnxt_re: Remove the qp from list only if
- the qp destroy succeeds
-Message-ID: <20200824220002.GF24045@ziepe.ca>
-References: <1598292876-26529-1-git-send-email-selvin.xavier@broadcom.com>
- <1598292876-26529-2-git-send-email-selvin.xavier@broadcom.com>
- <20200824190141.GL571722@unreal>
- <CA+sbYW3R_uScvS63dWNNVO4965OjOCRPagpqOY1JKrbsOTEEeQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+sbYW3R_uScvS63dWNNVO4965OjOCRPagpqOY1JKrbsOTEEeQ@mail.gmail.com>
+        id S1726303AbgHXWaP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Aug 2020 18:30:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42898 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgHXWaP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Aug 2020 18:30:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OMPNks126034;
+        Mon, 24 Aug 2020 22:30:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=Zt9yvl0vvvZR2oW6M/gJOz2CZMoJuB1GqweqMPWR6nc=;
+ b=dNGJhwTEZyIbgFQNOkHBT+zTSHM+onA7NfawTCpayOGGl/hLscf6pEtZyVrkI4gaFODF
+ Y9r26u07iXFQeUAaNU19zClzV9PxHLlH6fTfAOZvwzWW19ZV+soQ+CJo9aiRwf4j3w/N
+ JOd8Qi27YnElwezb0dCCp5x5vmL4YDIPhIcQbw9zo+h6lEPCpe/VfXxVnScJp3teD/LS
+ VpUxj8ff90q2R70auE6w87eZY5abu9V3ZA3Jdxh6pftHG2CzHwKs682ls7StB29HRg/P
+ S+DaMH7ETDIv1324OL9EOM/crJX4I9o2RIPsvtQxBYW0rkwan6xfbtB0OEIdOYKRT1Ip qg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 333w6tns4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 22:30:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OMLGTC076446;
+        Mon, 24 Aug 2020 22:30:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 333r9hu0w6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 22:30:12 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07OMUBbI022368;
+        Mon, 24 Aug 2020 22:30:12 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 15:30:11 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH v3 0/3] IB CM tracepoints
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200824215611.GM1152540@nvidia.com>
+Date:   Mon, 24 Aug 2020 18:30:11 -0400
+Cc:     linux-rdma@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <18BBE137-A534-493A-827F-7E30736793C6@oracle.com>
+References: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
+ <20200824174213.GA3256703@nvidia.com>
+ <5C1EC1AC-8385-4E08-9C4A-97B04AF3763B@oracle.com>
+ <20200824215611.GM1152540@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240177
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9723 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008240177
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 01:06:23AM +0530, Selvin Xavier wrote:
-> On Tue, Aug 25, 2020 at 12:31 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 11:14:31AM -0700, Selvin Xavier wrote:
-> > > Driver crashes when destroy_qp is re-tried because of an
-> > > error returned. This is because the qp entry was  removed
-> > > from the qp list during the first call.
-> >
-> > How is it possible that destroy_qp fail?
-> >
-> One possibility is when the FW is in a crash state.   Driver commands
-> to FW  fails and it reports an error status for destroy_qp verb.
-> Even Though the chances of this failure is less,  wanted to avoid a
-> host crash seen in this scenario.
 
-Drivers are not allowed to fail destroy - the only exception is if a
-future destroy would succeed for some reason.
 
-This patch should ignore the return code from FW and clean up all the
-host memory. If the FW is not responding then the device should be
-killed and the DMA allowed bit turned off in the PCI config space.
+> On Aug 24, 2020, at 5:56 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
+>=20
+> On Mon, Aug 24, 2020 at 02:24:40PM -0400, Chuck Lever wrote:
+>>=20
+>>=20
+>>> On Aug 24, 2020, at 1:42 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
+>>>=20
+>>> On Mon, Aug 17, 2020 at 09:53:05AM -0400, Chuck Lever wrote:
+>>>> Oracle has an interest in a common observability infrastructure in
+>>>> the RDMA core and ULPs. Introduce static tracepoints that can also
+>>>> be used as hooks for eBPF scripts, replacing infrastructure that
+>>>> is based on printk. This takes the same approach as tracepoints
+>>>> added recently in the RDMA CM.
+>>>>=20
+>>>> Change since v2:
+>>>> * Rebase on v5.9-rc1
+>>>>=20
+>>>> Changes since RFC:
+>>>> * Correct spelling of example tracepoint in patch description
+>>>> * Newer tool chains don't care for tracepoints with the same name
+>>>> in different subsystems
+>>>> * Display ib_cm_events, not ib_events
+>>>=20
+>>> Doesn't compile:
+>>>=20
+>>> In file included from drivers/infiniband/core/cm_trace.h:414,
+>>>                from drivers/infiniband/core/cm_trace.c:15:
+>>> ./include/trace/define_trace.h:95:42: fatal error: ./cm_trace.h: No =
+such file or directory
+>>>  95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>>>     |                                          ^
+>>> compilation terminated.
+>>=20
+>> I am not able to reproduce this failure.
+>>=20
+>> gcc (GCC) 10.1.1 20200507 (Red Hat 10.1.1-1)
+>=20
+> Yep, using gcc 10 too
+>=20
+> Start from a clean tree?
 
-Jason
+Always.
+
+
+>> What if you edit drivers/infiniband/core/cm_trace.h and
+>> change the definition of TRACE_INCLUDE_PATH from "." to
+>> "../../drivers/infiniband/core" ?
+>=20
+> It works
+>=20
+> It is because ./ is relative to include/trace/define_trace.h ?
+
+Yes.
+
+It appears that the many instances of "#define TRACE_INCLUDE_PATH ."
+already in the kernel are each accompanied by Makefile magic to make
+that work correctly. I neglected (again) to add that.
+
+But now that I've read the instructions in include/trace/define_trace.h,
+I prefer using a full relative path instead of "."-with-Makefile.
+
+Do I need to send a v4?
+
+--
+Chuck Lever
+
+
+
