@@ -2,175 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F27E251AD7
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 16:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED26251C08
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 17:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725893AbgHYOcc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 10:32:32 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6768 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgHYOca (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 10:32:30 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4520860000>; Tue, 25 Aug 2020 07:30:30 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 25 Aug 2020 07:32:29 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 25 Aug 2020 07:32:29 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
- 2020 14:32:09 +0000
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.50) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 25 Aug 2020 14:32:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g3kayPztvOJR3toOi21ZOVetZhDPCz4hpYjBrQte+u45LuLDRdmMQKbprbJsxLjNtBsuGGHmYEG+zYbJSzXi7T9B4Qryz4CDO33VKnfUSTT8I+TlG9DLuT8ACV0y66LcMcRdM/N3+mr8kePC8TLw724v72nNoAix13Hkefj+59I3O8S9jQDgAmWZWTfgwkn19fYXWGm8dXQKk9u1VtcctuY/akUmCEnNyscJlikq7RH1OU0NB4RIETEStmfH0RLhFvBWngVpupfK/TSqvUydsFBUkCOulNUS6GavAq/WCsjK26RgGpCVat24PZljb3Ae4ihpPklD8xsrDQQqAimmmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7A+y8l2gyLnAWM23L/J2w6I/1AKUWc7ubOBnlkuD28I=;
- b=b537qi0zufIKrlrE/WH4B9dE+ClUWaQGZdzDPPV1U1xiYrMh84df5rgtmFw2M0Jp315CsgIvTn4T08fYKOo2OEOk6Rubc9/ph7ZN7ZkWFD0VwewpW/U5IUoGOSwXKg3fGeAmuMZd4MkD4Q8n4y2rYI3gwgDUvjobaC6l/0CwpPd8HTqHO/HYKXlGE3L2IiGegY55fj2o9uBiB7E+YMxnyUx/Ql7AZXXKxkRGmSTM/nqHjUUNkMkDDUsCSmU3eHRcXV7jkOs7K+qs5mEapPt+h4OmM0yvD//cvp0dnfo+kNfyFpEZkIU0LP6qFJtsszJ2guEcL8Fg2ZBTKnyn7qYE0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4042.namprd12.prod.outlook.com (2603:10b6:5:215::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Tue, 25 Aug
- 2020 14:32:08 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3305.026; Tue, 25 Aug 2020
- 14:32:08 +0000
-Date:   Tue, 25 Aug 2020 11:32:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Lijun Ou <oulijun@huawei.com>, <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        "Parvi Kaustubhi" <pkaustub@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <yanjunz@nvidia.com>
-Subject: Re: [PATCH rdma-next 01/10] RDMA: Restore ability to fail on PD
- deallocate
-Message-ID: <20200825143206.GT1152540@nvidia.com>
-References: <20200824103247.1088464-1-leon@kernel.org>
- <20200824103247.1088464-2-leon@kernel.org>
- <10111f1b-ea06-dce5-a8be-d18e70962547@amazon.com>
- <20200825115246.GP1152540@nvidia.com>
- <110cc351-f8f1-8f88-3912-c4dae711b393@amazon.com>
- <20200825130736.GQ1152540@nvidia.com>
- <74f893e8-694a-17f0-dc49-05061a214558@amazon.com>
- <20200825134428.GR1152540@nvidia.com>
- <5f4f67b1-ca3c-fd11-a835-db7906cad148@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5f4f67b1-ca3c-fd11-a835-db7906cad148@amazon.com>
-X-ClientProxiedBy: YTXPR0101CA0042.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726483AbgHYPSS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 11:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgHYPRs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 11:17:48 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A68C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 08:17:47 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 83so2811186wme.4
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 08:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7VvrGTVai5q1KEnc2nBuxU/mmelbDzXMEsJbVUzD0hA=;
+        b=RqTvOQI1fGK+Um/Ru3QiP1P4TA+ac6h1ffR9TJUdrYK49Qp+LSdmSp68wgPmhfbkO5
+         kTHq/jYdcv5iDu2JrwVDFV+q+BMagYCMHdVWHIcmT5fONlTXdMMF8CbFJWgnPzXctV6q
+         NyzRCw83qh3KWmyGuLcuUs247NaLqYQxG9FRF3nYX4FkZi5PL9Ro8pQPLVkRs8PkNxH3
+         ixOFgZEO5OheCUsU+KA7vs+XkCRwDBUxox6m5a++8U0Ik2tUNAXwJxHebXrSkvwHhKd2
+         XRmAgC2jFABDaXzx3DmuaxqaiVKZX2IWxQdc7PJ4ZTYNW4kiom5HkT8WBlzQTzZn8xh0
+         3NZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7VvrGTVai5q1KEnc2nBuxU/mmelbDzXMEsJbVUzD0hA=;
+        b=gST0esCNxTBc+/TCmCcRe4hTg5aBDPSwE8WlYBDIEW+GB+HTc+3cKs43w5N55XNRWy
+         WcmuuRCA9dZiCcVR5zlhWOY2xXoVeywFbSiUvppDrAI/lsCqv0c/Ycn1clba5vtq9gt5
+         0hviQghofMbe135Et0qnHlNUwbA+tZHEbPd+mi2Dl8FgB0bdP9sHOT2lEs84twNIlU0X
+         wMSFru626fcYt78nkVSATiK+LgpDbJcYIHFLTrkstchYh/70o9KKFYeIftvPT7ktLu0L
+         2auOShBTLAv9i68FyiXZ06DY4Ri7CYeLht5lWWs0okLofP/4dKwt+4hkdEVCuimYHqLm
+         mcTQ==
+X-Gm-Message-State: AOAM530xPrWIDLiKBhAOyXwnafXv2FdycFb3K2MvjSAfxKQeXmZGInzR
+        /bYE1J/abnL35XRqF6iRnJd8o1O63S4=
+X-Google-Smtp-Source: ABdhPJwvGFy/ffyPJM88zODD51E2qo9iV7AgBI5T7xKtGuXokGPJAdfUt+mHGqAI8ZW7jIUZBSGXkA==
+X-Received: by 2002:a1c:f20e:: with SMTP id s14mr898020wmc.23.1598368666017;
+        Tue, 25 Aug 2020 08:17:46 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([37.142.0.228])
+        by smtp.gmail.com with ESMTPSA id k24sm6146211wmj.19.2020.08.25.08.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 08:17:45 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH v4 for-rc] RDMA/rxe: Fix panic when calling kmem_cache_create()
+Date:   Tue, 25 Aug 2020 18:17:25 +0300
+Message-Id: <20200825151725.254046-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by YTXPR0101CA0042.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Tue, 25 Aug 2020 14:32:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kAZza-00EZk7-CD; Tue, 25 Aug 2020 11:32:06 -0300
-X-Originating-IP: [206.223.160.26]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 057b7489-6159-48d5-51d6-08d84903a53d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4042:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB40429836C8683266E50FB331C2570@DM6PR12MB4042.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D7/bJ2s+0DuZ+3Qsu3O8w7Kb2HhQC2zJ/6NeEcB87ms7a2WNRC2j/lXaTATZYqvjKQXJ4Dl9BFjuwh0xvlYT7X6ZL3A+3h+i+DSYMF07H9NlP65UgLomXdJBV7q5ywfKvtIZ1NHcl+3Jk+OL6Bxy7OFSLb127UnBkSRtTay+Beg2bneXDx05FJAqV/NMt0CVl/CnZlXFC3dTrID1s0z/7DijEjXPlGSfK0LfyndlDhEgIf6/bCHO0A95po0NS39OdJH7AYdBPAbzK+CoAJCxFyZ//3aSkLNddWBB/GU4VL6QviIEBHuSw8iKAc6rM4zuO6iYJxzi7rrM4ZIEL56S3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(396003)(39860400002)(7416002)(66556008)(5660300002)(36756003)(8936002)(2906002)(4326008)(66476007)(426003)(66946007)(9786002)(9746002)(4744005)(86362001)(2616005)(107886003)(26005)(478600001)(54906003)(186003)(316002)(8676002)(83380400001)(33656002)(6916009)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: eDYyJGf7XuUClCXAqjddNw7hgYivrD3qOrM+HGWR76KNGacxe9hVbH8ZJ6V1l4uNEqMeD0BosioziRNuLcrvZy3MCwQbVW47OkUcdQqDd2D+Ny185El05wu4QPeQFbNgKnibob+zhczVAx0y0RRZTxaPlES5fb1PMeIkPTh4HE3NYmSthkuqIXIN7L3FsyWKWDva+kuX1NVmm9UD+louN9oTD0ircqbeIkKjSdCvDUW1/NiBMxuMzG6GeUvo+IxDJ/0yRZNumHJIVTzZIgpah+X07any69y1wRQTvpvoAIOOVr5+bvpCsV10mMUotqd92O+YIssPOYrGVKgNm0tgYx40K6wvqplR3DxHKlqjWsOdg1j1akGKPSYfawiNr7Z6OIP5A0TANaTRdMkW064nVb055APi/wFG6gMijD22Jxv+9QrD5TSq/8cg9iTxjAFOSGmcB9wYbtmg/erWYdV1vciyq02Xz5jmANBz2rjaAlplGE9emhZK/+fDr/7DdEub0E7DUIKIr0Bk32U13icm6uiWaZ3Nr2KNXd8jGJnOM7x6cUf9xc/fRBPsU6Gf7GV1wz4wHWo80QB+qJmOFGfjvgzflJDnqEBkLeVkzdB2q+a9EzNvrRHNDK4VgSuZQOiDV6liYEs8lIpDmZoMeUxt3A==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 057b7489-6159-48d5-51d6-08d84903a53d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2020 14:32:08.3681
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vQKsVjjWcHKrKC2Gw1O/qn4RQhNfirMSTMqEtIqDQK3+DXwsHLoQm+i098dtNrZB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4042
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598365830; bh=7A+y8l2gyLnAWM23L/J2w6I/1AKUWc7ubOBnlkuD28I=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=AXi/x/3WOnf70slJOPGhWFIJ5j5rwWufHxTZOlv8eJ/be84GckXKolP1/MpaBftw6
-         pC6Nudl7529MJSXdFXgIHU/pwQCWqAbhJLEIZnF2/EARc8YZ9HwbEHtXn7v4orLeHp
-         EWUYgMd/uXUSodGQBWFdULEqZ7ceA3Pabe3XKvq5OE6GUAZw1FzRRQ2i+rcOPBAHKU
-         sdxwpxIJEM2xoNGvU5G8CafZ5Uz0kgMdRDg5M42mbDwPWqT2t0zQMRDAllXFh+d34d
-         zVedIpLeINhBWyg4kY1EwPNU9K5r8IC8YnIQAKuCEcwsau7Ht6F0R4sw1MKjRAc+nB
-         Q4vu5gfpnOz/Q==
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 05:04:14PM +0300, Gal Pressman wrote:
+To avoid the following kernel panic when calling kmem_cache_create()
+with a NULL pointer from pool_cache(), Block the rxe_param_set_add()
+from running if the rdma_rxe module is not initialized.
+
+ BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP NOPTI
+ CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
+ Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
+ RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
+ Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
+ RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
+ RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
+ RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
+ R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
+ R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
+ FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
+ Call Trace:
+  rxe_alloc+0xc8/0x160 [rdma_rxe]
+  rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
+  __ib_alloc_pd+0xcb/0x160 [ib_core]
+  ib_mad_init_device+0x296/0x8b0 [ib_core]
+  add_client_context+0x11a/0x160 [ib_core]
+  enable_device_and_get+0xdc/0x1d0 [ib_core]
+  ib_register_device+0x572/0x6b0 [ib_core]
+  ? crypto_create_tfm+0x32/0xe0
+  ? crypto_create_tfm+0x7a/0xe0
+  ? crypto_alloc_tfm+0x58/0xf0
+  rxe_register_device+0x19d/0x1c0 [rdma_rxe]
+  rxe_net_add+0x3d/0x70 [rdma_rxe]
+  ? dev_get_by_name_rcu+0x73/0x90
+  rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
+  parse_args+0x179/0x370
+  ? ref_module+0x1b0/0x1b0
+  load_module+0x135e/0x17e0
+  ? ref_module+0x1b0/0x1b0
+  ? __do_sys_init_module+0x13b/0x180
+  __do_sys_init_module+0x13b/0x180
+  do_syscall_64+0x5b/0x1a0
+  entry_SYSCALL_64_after_hwframe+0x65/0xca
+ RIP: 0033:0x7f9137ed296e
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe.c       | 4 ++++
+ drivers/infiniband/sw/rxe/rxe.h       | 2 ++
+ drivers/infiniband/sw/rxe/rxe_sysfs.c | 5 +++++
+ 3 files changed, 11 insertions(+)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 907203afbd99..77f2c7cd1216 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -40,6 +40,8 @@ MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");
+ MODULE_DESCRIPTION("Soft RDMA transport");
+ MODULE_LICENSE("Dual BSD/GPL");
  
-> Right, as always, the error code would probably not contain much information,
-> but there's a big difference between returning error code X/Y vs returning
-> success instead of an error. To me that just feels wrong, at least in cases
-> where we can prevent that.
++bool rxe_initialized;
++
+ /* free resources for a rxe device all objects created for this device must
+  * have been destroyed
+  */
+@@ -315,6 +317,7 @@ static int __init rxe_module_init(void)
+ 		return err;
+ 
+ 	rdma_link_register(&rxe_link_ops);
++	rxe_initialized = true;
+ 	pr_info("loaded\n");
+ 	return 0;
+ }
+@@ -326,6 +329,7 @@ static void __exit rxe_module_exit(void)
+ 	rxe_net_exit();
+ 	rxe_cache_exit();
+ 
++	rxe_initialized = false;
+ 	pr_info("unloaded\n");
+ }
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index fb07eed9e402..cae1b0a24c85 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -67,6 +67,8 @@
+ 
+ #define RXE_ROCE_V2_SPORT		(0xc000)
+ 
++extern bool rxe_initialized;
++
+ static inline u32 rxe_crc32(struct rxe_dev *rxe,
+ 			    u32 crc, void *next, size_t len)
+ {
+diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+index ccda5f5a3bc0..2af31d421bfc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
++++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+@@ -61,6 +61,11 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
+ 	struct net_device *ndev;
+ 	struct rxe_dev *exists;
+ 
++	if (!rxe_initialized) {
++		pr_err("Module parameters are not supported, use rdma link add or rxe_cfg\n");
++		return -EAGAIN;
++	}
++
+ 	len = sanitize_arg(val, intf, sizeof(intf));
+ 	if (!len) {
+ 		pr_err("add: invalid interface name\n");
+-- 
+2.26.2
 
-From user perspective it is a success. The purpose of the destroy
-kernel command is to allow userspace to release the memory underlying
-the object.
-
-The only valid reason to return a failure from destroy to userspace is
-if userspace has a programming error - eg destroying a PD while QPs
-exist does fail today for all drivers.
-
-Userspace should treat destroy failure as a serious error and crash -
-there is no possible recovery from it beyond leaking memory.
-
-Userspace should NOT be exposed to device failure via destroy. Failed
-devices trigger an ASYNC EVENT and destroy MUST succeed after the
-device fatal event.
-
-Jason
