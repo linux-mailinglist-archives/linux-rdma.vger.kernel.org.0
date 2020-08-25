@@ -2,71 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550EB25115B
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 07:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A3C25115D
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 07:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHYFJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 01:09:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
+        id S1728377AbgHYFK6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 01:10:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgHYFJi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 25 Aug 2020 01:09:38 -0400
+        id S1725781AbgHYFKz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Aug 2020 01:10:55 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BE8F2071E;
-        Tue, 25 Aug 2020 05:09:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D75020737;
+        Tue, 25 Aug 2020 05:10:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598332178;
-        bh=xghkNZGiHt08vLm/Z1dguQak2SCtktG5m7zGti3yt9U=;
+        s=default; t=1598332255;
+        bh=uRlkyFcI1ug3cJPLxk+twuMIPefcD23jue1E0pLjMWg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHxiCWv62Ae+2mYHIcTW0sNwOYsYyUicNPZjcAcH064eZa/CLZdhRIHMqMrbmjHeX
-         7xCFWOAE6d5IkI8M1F02GpIYkgZEsYh5YSuJN8nLWs6zRSscqFdSTrcz+YPrNZFv2k
-         CbjDhnji9myYszpOqc7gmySzLo6qex9n/SWMDByo=
-Date:   Tue, 25 Aug 2020 08:09:34 +0300
+        b=GMt99xwl20q8pVojmeoSu7cO2fVnmfFCAepCN1bR6wYErVynnNpMwsbsWHXhyQaYa
+         P6mXXDQhjDQSLxgrOJTBWpYaSl/PYop0G9dSzEZflupteZt/Z1NXqrRahLuh/Kutbe
+         zo6LtuJzX98d+ZrqrWRKF0L903Urv0oSPGZMOyec=
+Date:   Tue, 25 Aug 2020 08:10:52 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH] Fix tests/test_device.py
-Message-ID: <20200825050934.GN571722@unreal>
-References: <20200825012344.5696-1-rpearson@hpe.com>
+To:     Chris Worley <worleys@gmail.com>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: NVME module won't load ("nvme: disagrees about version of symbol
+ nvme_uninit_ctrl")
+Message-ID: <20200825051052.GO571722@unreal>
+References: <CANWz5fhKJ=MbXdQo8gjAvioGj4V+V0wKZrU90OnCc+Nn0KkBLg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825012344.5696-1-rpearson@hpe.com>
+In-Reply-To: <CANWz5fhKJ=MbXdQo8gjAvioGj4V+V0wKZrU90OnCc+Nn0KkBLg@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 08:23:44PM -0500, Bob Pearson wrote:
-> Removed a test case which requires vendor_part_id to be non zero.
-> Per IBTA A3.3.1 VENDOR INFORMATION it is not required that the
-> vendor part ID field be set to a non-zero value:
+On Mon, Aug 24, 2020 at 03:39:29PM -1000, Chris Worley wrote:
+> Running MLNX_OFED_LINUX-5.0-2.1.8.0-rhel8.2-x86_6 on ConnectX-3 cards,
+> attempting to run NVME-over-fabrics.
 >
-> 	The following components are vendor specific: VendorID, DeviceID, De-
-> 	vice Version, Subsystem VendorID, SubsystemID, ID String.
+> OFED installed with: "./mlnxofedinstall --add-kernel-support
+> --with-nvmf --force"
 >
-> 	The vendor places its IEEE assigned Organization Unique Identifier
-> 	(OUI) in the VendorId field and *MAY PLACE ANY VALUE IN THE DEVICEID* and
-> 	Device Version fields. The vendor may also provide an ASCII string of its
-> 	choice in the ID String field.
+> The OFED install did indicate it couldn't load the firmware (although
+> these are Mellanox cards) and said: "Note: In order to load the new
+> nvme-rdma and nvmet-rdma modules, the nvme module must be reloaded."
+> ... but the nvme driver doesn't even load.
 >
-> 	The Subsystem VendorID and SubsystemID provide additional informa-
-> 	tion when a subsystem vendor uses components provided by other ven-
-> 	dors. In this case the subsystem vendor provides its OUI in the Subsystem
-> 	VendorID field and may specify any value in the SubsystemD field.
-> 	A vendor that produces a generic controller (i.e., one that supports a stan-
-> 	dard I/O protocol such as SRP), which does not have vendor specific de-
-> 	vice drivers, may use the value of 0xFFFFFF in the VendorID field.
-> 	However, such a value prevents the vendor from ever providing vendor
-> 	specific drivers for the product.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  tests/test_device.py | 1 -
->  1 file changed, 1 deletion(-)
+> Where did I go wrong?
 
+You posted to the wrong mailing list.
+Please approach Mellanox support channel for MOFED related questions.
 
-Thanks, I'll pick to rdma-core later this week if no objections come.
+Thanks
