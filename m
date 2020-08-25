@@ -2,181 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CD2251CAF
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 17:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED03251D28
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 18:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgHYPwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 11:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgHYPv7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 11:51:59 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9128AC061574;
-        Tue, 25 Aug 2020 08:51:58 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y8so1412528wma.0;
-        Tue, 25 Aug 2020 08:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2WWaSZZuXloXF3hXA39Q3ZCHpRit+wqprTZANU5AeMQ=;
-        b=rw/DxH6GxN345y2h6nelqrvVSJ+WYtUojlJ1ozoP6zQI7IOifGBqQkEy+dFuQPezPW
-         /jGm5n2pHyYB3wWTxGMSzkBGy7/LHnlOcL+6NNfFL/ZvkdoaAtUQgyrnY04r7jzXp87/
-         3g5GAsYiHOlRTZxhIE1fApeF9j334HZM++zkr2NMItqSo7CBW8r5EhfERPFzW7wOFbdN
-         QyvCwTntdoKisqeKhwXP+VT6BgmqDZQ7GMizaQad0yuP81CL86beJv2CtmZmMkC5KHgi
-         JYpl1hTjw3tTOCKmCoEIsUBcy5M5TqBBTPAIwmZlMKEbOG5lwKcKIDockt8QMICJ9Zfw
-         4O4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2WWaSZZuXloXF3hXA39Q3ZCHpRit+wqprTZANU5AeMQ=;
-        b=pJfTbk54qWMuwYwUAzIjzhpkHOLunNqGBxsuGPfwzj3xhfNwl2uG5R/bqcPAhHBoZW
-         fiZ32pg2ldmLNX6FiEFdQ/XqCuy+FhtLCQUzuOk07G+oGjMjJqcmvXpFfqnecGFx2VHT
-         aS4xomTHbnBGoEhFdYHpgiw4CDG9m0mGhfRfBZdrIgNY6TwRZLMVJ70b31Kqx0Bn71mU
-         NGcBXLjhcZgoKjjh78xlWB2YbmteQvKieOFGtgQiMAXJKgHNAxHkQdVf82Vc1mMJ4zdq
-         rFU5exjJFiGy7e/V3FzVg4UBquAkFuNVd2Zg0EYuv4vVnoEawh7RDMjikWEnKR0USA4l
-         Cwwg==
-X-Gm-Message-State: AOAM533fJS5DX+NSs4pqRALHmrCHXuI+IFiFJ9zuVR92/GlF9j9mStYN
-        7aiakNaobuq5nEuq5hR2wjM=
-X-Google-Smtp-Source: ABdhPJxbzjMYznH2bknIDMu+vaMPZmI1DImIMLu0bptCORhJT3lHHQlr6j84R6N4o63i7k8DOxxCkA==
-X-Received: by 2002:a7b:c205:: with SMTP id x5mr2819350wmi.161.1598370717236;
-        Tue, 25 Aug 2020 08:51:57 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id 33sm32511492wri.16.2020.08.25.08.51.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 08:51:56 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        id S1726257AbgHYQ0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 12:26:39 -0400
+Received: from smtprelay0248.hostedemail.com ([216.40.44.248]:50666 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725805AbgHYQ0i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Aug 2020 12:26:38 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 618B3181D330D;
+        Tue, 25 Aug 2020 16:26:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3872:3874:4321:5007:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14877:21064:21080:21433:21451:21627:21990:30003:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: goose87_0e0f18d2705d
+X-Filterd-Recvd-Size: 2005
+Received: from XPS-9350 (unknown [172.58.27.113])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 25 Aug 2020 16:26:33 +0000 (UTC)
+Message-ID: <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Roland Dreier <roland@purestorage.com>,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] IB/qib: remove superfluous fallthrough statements
-Date:   Tue, 25 Aug 2020 16:51:42 +0100
-Message-Id: <20200825155142.349651-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+Date:   Tue, 25 Aug 2020 09:26:30 -0700
+In-Reply-To: <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
+References: <20200825155142.349651-1-alex.dewar90@gmail.com>
+         <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
-were later converted to fallthrough statements by commit df561f6688fe
-("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
-warning about unreachable code.
+On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
+> 
+> On 8/25/20 10:51, Alex Dewar wrote:
+> > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+> > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
+> > were later converted to fallthrough statements by commit df561f6688fe
+> > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
+> > warning about unreachable code.
+> > 
+> > Remove the fallthrough statements and replace the mass of gotos with
+> > simple return statements to make the code terser and less bug-prone.
+> > 
+> 
+> This should be split up into two separate patches: one to address the
+> fallthrough markings, and another one for the gotos.
 
-Remove the fallthrough statements and replace the mass of gotos with
-simple return statements to make the code terser and less bug-prone.
+I don't think it's necessary to break this into multiple patches.
+Logical changes in a single patch are just fine, micro patches
+aren't that useful.
 
-Addresses-Coverity: ("Unreachable code")
-Fixes: 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/infiniband/hw/qib/qib_mad.c | 52 ++++++++---------------------
- 1 file changed, 13 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qib/qib_mad.c b/drivers/infiniband/hw/qib/qib_mad.c
-index e7789e724f56..f83e331977f8 100644
---- a/drivers/infiniband/hw/qib/qib_mad.c
-+++ b/drivers/infiniband/hw/qib/qib_mad.c
-@@ -2293,76 +2293,50 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
- 			struct ib_mad *out_mad)
- {
- 	struct ib_cc_mad *ccp = (struct ib_cc_mad *)out_mad;
--	int ret;
--
- 	*out_mad = *in_mad;
- 
- 	if (ccp->class_version != 2) {
- 		ccp->status |= IB_SMP_UNSUP_VERSION;
--		ret = reply((struct ib_smp *)ccp);
--		goto bail;
-+		return reply((struct ib_smp *)ccp);
- 	}
- 
- 	switch (ccp->method) {
- 	case IB_MGMT_METHOD_GET:
- 		switch (ccp->attr_id) {
- 		case IB_CC_ATTR_CLASSPORTINFO:
--			ret = cc_get_classportinfo(ccp, ibdev);
--			goto bail;
--
-+			return cc_get_classportinfo(ccp, ibdev);
- 		case IB_CC_ATTR_CONGESTION_INFO:
--			ret = cc_get_congestion_info(ccp, ibdev, port);
--			goto bail;
--
-+			return cc_get_congestion_info(ccp, ibdev, port);
- 		case IB_CC_ATTR_CA_CONGESTION_SETTING:
--			ret = cc_get_congestion_setting(ccp, ibdev, port);
--			goto bail;
--
-+			return cc_get_congestion_setting(ccp, ibdev, port);
- 		case IB_CC_ATTR_CONGESTION_CONTROL_TABLE:
--			ret = cc_get_congestion_control_table(ccp, ibdev, port);
--			goto bail;
--
--			fallthrough;
-+			return cc_get_congestion_control_table(ccp, ibdev, port);
- 		default:
- 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
--			ret = reply((struct ib_smp *) ccp);
--			goto bail;
-+			return reply((struct ib_smp *) ccp);
- 		}
--
- 	case IB_MGMT_METHOD_SET:
- 		switch (ccp->attr_id) {
- 		case IB_CC_ATTR_CA_CONGESTION_SETTING:
--			ret = cc_set_congestion_setting(ccp, ibdev, port);
--			goto bail;
--
-+			return cc_set_congestion_setting(ccp, ibdev, port);
- 		case IB_CC_ATTR_CONGESTION_CONTROL_TABLE:
--			ret = cc_set_congestion_control_table(ccp, ibdev, port);
--			goto bail;
--
--			fallthrough;
-+			return cc_set_congestion_control_table(ccp, ibdev, port);
- 		default:
- 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
--			ret = reply((struct ib_smp *) ccp);
--			goto bail;
-+			return reply((struct ib_smp *) ccp);
- 		}
--
- 	case IB_MGMT_METHOD_GET_RESP:
- 		/*
- 		 * The ib_mad module will call us to process responses
- 		 * before checking for other consumers.
- 		 * Just tell the caller to process it normally.
- 		 */
--		ret = IB_MAD_RESULT_SUCCESS;
--		goto bail;
--
--	case IB_MGMT_METHOD_TRAP:
--	default:
--		ccp->status |= IB_SMP_UNSUP_METHOD;
--		ret = reply((struct ib_smp *) ccp);
-+		return IB_MAD_RESULT_SUCCESS;
- 	}
- 
--bail:
--	return ret;
-+	/* method is unsupported */
-+	ccp->status |= IB_SMP_UNSUP_METHOD;
-+	return reply((struct ib_smp *) ccp);
- }
- 
- /**
--- 
-2.28.0
 
