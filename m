@@ -2,110 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2104251982
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 15:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9692519B9
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 15:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgHYN0B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 09:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgHYN0A (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 09:26:00 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED033C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 06:25:59 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id v2so10371977ilq.4
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 06:25:59 -0700 (PDT)
+        id S1726471AbgHYNde (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 09:33:34 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:28238 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726766AbgHYNdX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 09:33:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vGFZ1GigmB4VbPvA/eLO+saugx0ctCKcTrNRsaN1JH8=;
-        b=AmRu38IcGj40Sih7BnddB6/1gHoBIJX100LTOCBt82AQKDu33IB1WynsjLIfRLSnc5
-         DazchNPaUgyGwU2tNypeF96FSj6D12HZEgBMEGXv5vJ9NYQUSJ7yWyIqQbdd9IwDp1UV
-         O04AM3cX3ASwNeUaCaGvbNNsJLI+QYsStxKMLTVy5PJmTNn64BhzGFXPJ7Ixe7LVdfQp
-         O7az0TyGOhlEV0Q+Gh0UUYGXPH1Ps5rarB0EKVVGZjbNr8YvJXkJFFvwBja/SyZeItGh
-         S4Z7tCx4hPYcQcwDu4LKxzQhI2tJVh4FqeH957QpN+x/Ie5Z/2GmpX2eh+YhZz1tyQNH
-         5jUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vGFZ1GigmB4VbPvA/eLO+saugx0ctCKcTrNRsaN1JH8=;
-        b=kqFq+h4wMJPsgNYQ0J9fCoEJ4jRmIb1+LOaNHa7M3mk7oyyr0ZBZY25DBCDDmMw1Ul
-         sq1zMbh15XqdGR7nl4g94kriCofuMCtW9f2zkFtY8C2py9uQuWWv5OgyL1PYrDuoS5/x
-         A0bawARCQCVL7vC1qfgkQxLf0ZNQW+RiMi97dVyAkb6bExXIyGt2KaH82Omx8Bx8w6FS
-         Mo9hCf6MS07EaBnnCSt9KRZ+fL7rLxQoYGn4uWpbVg9I6kU0FcPSWKrQPdKDYtjI3rTo
-         sauHOEimAPsna3STiagAIgVpUOHLGlqvJcZgzP0rEhWx/lA5zI2L8gVSKU1XrDxpFyBC
-         4n/g==
-X-Gm-Message-State: AOAM531t8nFgf4X0fZUjgJVYZJRU0/Yjy2t4QAqCNjt+l4toLg2lYRwd
-        kCYCIO9SBb0l/38uUGSfCnm33XLiDUFtng==
-X-Google-Smtp-Source: ABdhPJzp0Mbv17c6WYoSdkGJMu9wawQRLM1oPX6r79Iiy+1Attc9Hp5LZBHGB6oKtKAzcZwTbUuXUg==
-X-Received: by 2002:a92:d306:: with SMTP id x6mr9713355ila.229.1598361959278;
-        Tue, 25 Aug 2020 06:25:59 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 3sm9355310ily.31.2020.08.25.06.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 06:25:58 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kAYxZ-00EYNV-3U; Tue, 25 Aug 2020 10:25:57 -0300
-Date:   Tue, 25 Aug 2020 10:25:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>, linux-rdma@vger.kernel.org,
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1598362402; x=1629898402;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=gy5wyA2tgkYMsHybjeuvixVAFLIykprABtY7NycjTms=;
+  b=b0OJ77EhteMuCL8643d63PvkrmlDsXMvteG0L3JvuKmXd2LGaFXbs9L3
+   butfhs/R4S/J5kg8v8ZH0RMQPSaTOqsOFvB+bzV37WRer3zGZkS/NhVur
+   z2m5FRDSnCEdVokDiALe43J46F7TgxZKSzaCdJfUYl0Ql37jN/rnxoijk
+   s=;
+X-IronPort-AV: E=Sophos;i="5.76,352,1592870400"; 
+   d="scan'208";a="49791567"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 25 Aug 2020 13:33:18 +0000
+Received: from EX13D19EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id 76E42A2128;
+        Tue, 25 Aug 2020 13:33:16 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.40) by
+ EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 25 Aug 2020 13:33:02 +0000
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Restore ability to fail on PD
+ deallocate
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Lijun Ou <oulijun@huawei.com>, <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <yanjunz@nvidia.com>
-Subject: Re: [PATCH v3 for-rc] RDMA/rxe: Fix panic when calling
- kmem_cache_create()
-Message-ID: <20200825132557.GH24045@ziepe.ca>
-References: <20200824155220.153854-1-kamalheib1@gmail.com>
- <ee809280-48d2-a5cc-c1a1-521ba58636b1@acm.org>
- <20200824165111.GE24045@ziepe.ca>
- <20200825093624.GB194958@kheib-workstation>
+References: <20200824103247.1088464-1-leon@kernel.org>
+ <20200824103247.1088464-2-leon@kernel.org>
+ <10111f1b-ea06-dce5-a8be-d18e70962547@amazon.com>
+ <20200825115246.GP1152540@nvidia.com>
+ <110cc351-f8f1-8f88-3912-c4dae711b393@amazon.com>
+ <20200825130736.GQ1152540@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <74f893e8-694a-17f0-dc49-05061a214558@amazon.com>
+Date:   Tue, 25 Aug 2020 16:32:57 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825093624.GB194958@kheib-workstation>
+In-Reply-To: <20200825130736.GQ1152540@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.40]
+X-ClientProxiedBy: EX13D07UWA001.ant.amazon.com (10.43.160.145) To
+ EX13D19EUB001.ant.amazon.com (10.43.166.229)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 12:36:24PM +0300, Kamal Heib wrote:
-> On Mon, Aug 24, 2020 at 01:51:11PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Aug 24, 2020 at 09:41:14AM -0700, Bart Van Assche wrote:
-> > > On 8/24/20 8:52 AM, Kamal Heib wrote:
-> > > > +bool rxe_is_loaded;
-> > > 
-> > > The name of this variable seems wrong to me. My understanding is that rxe_module_init() is
-> > > called whether or not rxe has been built as a module. Consider renaming this variable into
-> > > e.g. "rxe_initialized".
-> > > 
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-> > > > index ccda5f5a3bc0..12c7ca0764d5 100644
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_sysfs.c
-> > > > @@ -61,6 +61,11 @@ static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
-> > > >   	struct net_device *ndev;
-> > > >   	struct rxe_dev *exists;
-> > > > +	if (!rxe_is_loaded) {
-> > > > +		pr_err("Please make sure to load the rdma_rxe module first\n");
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +
-> > > >   	len = sanitize_arg(val, intf, sizeof(intf));
-> > > >   	if (!len) {
-> > > >   		pr_err("add: invalid interface name\n");
-> > > 
-> > > The above message is misleading. Consider changing it into e.g. the following:
-> > > 
-> > >     Please wait until initialization of the rdma_rxe module has finished.
-> > 
-> > How about "Module parameters are not supported, use rdma link add"
->
-> I don't think so, This patch is targeted to for-rc (stable) and the
-> support of "rdma link add" is not part of all the stable versions.
+On 25/08/2020 16:07, Jason Gunthorpe wrote:
+> On Tue, Aug 25, 2020 at 03:12:07PM +0300, Gal Pressman wrote:
+>> On 25/08/2020 14:52, Jason Gunthorpe wrote:
+>>> On Tue, Aug 25, 2020 at 11:13:25AM +0300, Gal Pressman wrote:
+>>>> On 24/08/2020 13:32, Leon Romanovsky wrote:
+>>>>> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+>>>>> index 1889dd172a25..8547f9d543df 100644
+>>>>> +++ b/drivers/infiniband/hw/efa/efa.h
+>>>>> @@ -134,7 +134,7 @@ int efa_query_gid(struct ib_device *ibdev, u8 port, int index,
+>>>>>  int efa_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
+>>>>>  		   u16 *pkey);
+>>>>>  int efa_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+>>>>> -void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+>>>>> +int efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+>>>>>  int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata);
+>>>>>  struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+>>>>>  			    struct ib_qp_init_attr *init_attr,
+>>>>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>> index 3f7f19b9f463..660a69943e02 100644
+>>>>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>>>>> @@ -383,13 +383,14 @@ int efa_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>>>>>  	return err;
+>>>>>  }
+>>>>>
+>>>>> -void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>>>>> +int efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+>>>>>  {
+>>>>>  	struct efa_dev *dev = to_edev(ibpd->device);
+>>>>>  	struct efa_pd *pd = to_epd(ibpd);
+>>>>>
+>>>>>  	ibdev_dbg(&dev->ibdev, "Dealloc pd[%d]\n", pd->pdn);
+>>>>>  	efa_pd_dealloc(dev, pd->pdn);
+>>>>> +	return 0;
+>>>>>  }
+>>>>
+>>>> Nice change, thanks Leon.
+>>>> At least for EFA, I prefer to return the return value of the destroy command
+>>>> instead of silently ignoring it (same for the other patches).
+>>>
+>>> Drivers can't fail the destroy unless a future destroy will succeed.
+>>> it breaks everything to do that.
+>>
+>> What does it break?
+> 
+> For uverbs it will go into an infinite loop in
+> uverbs_destroy_ufile_hw() if destroy doesn't eventually succeed.
 
-then add "or rxe_cfg"
+The code breaks the loop in such cases, why infinite loop?
 
-Jason
+> For kernel it will trigger WARN_ON's and then a permanent memory leak.
+> 
+>> I agree that drivers shouldn't fail destroy commands, but you know.. bugs/errors
+>> happen (especially when dealing with hardware), and we have a way to propagate
+>> them, why do it for only some of the drivers?
+> 
+> There is no way to propogate them.
+> 
+> All destroy must eventually succeed.
+
+There is no way to propagate them on process cleanup, but the destroy verbs have
+a return code all the way back to libibverbs, which we can use for error
+propagation. The cleanup flow can either ignore the return value, or we can add
+another parameter that explicitly means the call shouldn't fail and all
+allocated memory/state should be freed.
+
+>>> If the chip fails a destroy when it should not then it has failed and
+>>> should be disabled at PCI and reset, continuing to free anyhow.
+>>
+>> How do we reset the device when there are active apps using it?
+> 
+> The zap stuff revokes the BAR mmaping, it triggerst device fatal to
+> userspace and that is mostly it for userspace..
+
+Interesting, is there a reference driver that does that today?
