@@ -2,78 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3664A251D4C
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 18:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E6B251D6F
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 18:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgHYQhz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 12:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHYQhy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 12:37:54 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEFDC061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 09:37:54 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id r8so1394103ota.6
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 09:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=jxTwDlhT4RdlsKfkyZgB6au+lj91bcjVeupOiRuBhY0=;
-        b=aVRyKu8T8SnqBWoGJTb+lJ7bicPz/Aqb2pM1CjJ19pOvstb1n0zQuKOulcQABHvWZC
-         Q9Fnyx6ZaGRFbx6hueX41gQ4PmepqeOPZUOLOXom4ozSmKo4MT9pPR23SNC7TCsFT0W+
-         /vh3a+3WjCFLbre3oKEByZzGKLTw7Ib3ZR5WuYo+skh0u07+0mpHXUvE8bQVYrAo7aPz
-         /mFCU0i8t1PYAnmYf4VoatpOtrRp7TXca7D7Y4aXkGCxh3A0yHeALQ0oX+MhHXKgG5Is
-         lnlnSYYiWKZkfcpzgwGgGmbC88tLrPgcy3D8izqNI/DmNZ+SNUL13AwyXboldiKmu5W+
-         AhAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=jxTwDlhT4RdlsKfkyZgB6au+lj91bcjVeupOiRuBhY0=;
-        b=plVh9LvcHITCJn/LAFdKs2ea+BigUJqWQMbQORqwTRQJCH7qKgR0HEuPHptE3o3kRz
-         78wUdIkathVda7uYvCMh7JmITAb+D/kOdkBWLcSYAYjPi8pxjbffW4mEjM8n6OKIMeci
-         riHHmVxKngqlpJ+mMIbS0g460TKS5OLPJo4MgG+vT54Kppqjc0BfbcDwyNvTm7+mc4ti
-         npdXdMD9Aj6nMvuq4IqeMo8vVsATKmBPZb1plw6XvsOTB61mhqkyM5OquqAqhsQorj1i
-         zqbj0qgiPlJjdxp2Li+zUiGVnBf44VC4JT9AL/DPOTKusTHuXynkrdU+3m+CW+VSyAaE
-         kv+g==
-X-Gm-Message-State: AOAM530b08ElEwH3EA+3NWELxzCoJlf6GPolBJ/8EwU7m0LkbbJskWyo
-        YovAH1BM4XtYP7+dA1ABYLrk7XTjAZPPeQ==
-X-Google-Smtp-Source: ABdhPJz0etUy+iNpxWuX6aSXo5FU74+TyajIk+SJXG7dfQ+WbuRiRQv28FXT9jt9tqrOZxZBziq8vQ==
-X-Received: by 2002:a9d:48d:: with SMTP id 13mr7895693otm.9.1598373473504;
-        Tue, 25 Aug 2020 09:37:53 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:d277:9c63:7fd2:8e07? ([2605:6000:8b03:f000:d277:9c63:7fd2:8e07])
-        by smtp.gmail.com with ESMTPSA id a10sm2740444oto.76.2020.08.25.09.37.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 09:37:53 -0700 (PDT)
-To:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re another alternative to resolve hardened user copy warnings
-Message-ID: <42b0da37-898f-2ca1-ffcb-444b65c9c48d@gmail.com>
-Date:   Tue, 25 Aug 2020 11:37:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726187AbgHYQr6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 12:47:58 -0400
+Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:41284 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725805AbgHYQr5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Aug 2020 12:47:57 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EE3E8837F24D;
+        Tue, 25 Aug 2020 16:47:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4425:5007:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14877:21064:21080:21433:21451:21627:21939:21990:30003:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: form08_42108202705d
+X-Filterd-Recvd-Size: 2494
+Received: from XPS-9350 (unknown [172.58.35.126])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 25 Aug 2020 16:47:53 +0000 (UTC)
+Message-ID: <777e01f8dc9bd35e8b7bdf1b5181d0d13b86d8b9.camel@perches.com>
+Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Roland Dreier <roland@purestorage.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 25 Aug 2020 09:47:50 -0700
+In-Reply-To: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
+References: <20200825155142.349651-1-alex.dewar90@gmail.com>
+         <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
+         <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+         <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently only the rxe driver is exhibiting the issue of kernel warnings during qp create caused by recent kernel changes looking for potential information leaks to user space. The test which triggers this warning is very specific. It occurs when a portion of a kernel object stored in a slab cache is copied to user space and the copied area has not been 'whitelisted' by setting useroffset and usersize parameters for the kmem cache. As already discussed there are two ways to mitigate this
+On Tue, 2020-08-25 at 11:49 -0500, Gustavo A. R. Silva wrote:
+> 
+> On 8/25/20 11:26, Joe Perches wrote:
+> > On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
+> > > On 8/25/20 10:51, Alex Dewar wrote:
+> > > > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+> > > > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
+> > > > were later converted to fallthrough statements by commit df561f6688fe
+> > > > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
+> > > > warning about unreachable code.
+> > > > 
+> > > > Remove the fallthrough statements and replace the mass of gotos with
+> > > > simple return statements to make the code terser and less bug-prone.
+> > > > 
+> > > 
+> > > This should be split up into two separate patches: one to address the
+> > > fallthrough markings, and another one for the gotos.
+> > 
+> > I don't think it's necessary to break this into multiple patches.
+> > Logical changes in a single patch are just fine, micro patches
+> > aren't that useful.
+> > 
+> 
+> There is a reason for this. Read the changelog text and review the patch.
 
-	- copy the data, in this case an int, out of the kmem cache object then copy that to user space
-	- play by the rules and set useroffset and usersize using kmem_cache_create_usercopy()
+What makes you think I didn't already do that?
 
-Additionally, as you have mentioned, we could move the allocation to the core (like AH, CQ, PD, etc.). But this only works for a different reason. If you use kmalloc or kzalloc then the warning is not triggered either and core uses these to allocate objects.
+I think your desire for micropatches is unnecessary.
 
-Allocating memory from kmalloc or kzalloc is effectively the same as kmem cache except that the pre-allocated sizes are typically powers of 2 so there is some wastage of memory and you have the potential to pre initialize all the objects in the kmem cache (e.g. locks, constants, etc) saving some time. Currently rxe does not take advantage of this second feature because resource allocation is not on the performance path for RDMA. Given this we have a third alternative which is
 
-	- get rid of the kmem caches and use kzalloc to allocate storage for objects in the pools.
-
-This is a simple change to rxe_pool.c, easy to understand, little or no change to the rest of the driver. This does not prevent moving other object allocations into the core but will resolve the warning issue.
-
-Bob
