@@ -2,80 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E6B251D6F
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 18:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0506251D60
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 18:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgHYQr6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 12:47:58 -0400
-Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:41284 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725805AbgHYQr5 (ORCPT
+        id S1727011AbgHYQnY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 12:43:24 -0400
+Received: from gateway34.websitewelcome.com ([192.185.149.13]:48319 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725947AbgHYQnV (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:47:57 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EE3E8837F24D;
-        Tue, 25 Aug 2020 16:47:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4425:5007:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14877:21064:21080:21433:21451:21627:21939:21990:30003:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: form08_42108202705d
-X-Filterd-Recvd-Size: 2494
-Received: from XPS-9350 (unknown [172.58.35.126])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 25 Aug 2020 16:47:53 +0000 (UTC)
-Message-ID: <777e01f8dc9bd35e8b7bdf1b5181d0d13b86d8b9.camel@perches.com>
+        Tue, 25 Aug 2020 12:43:21 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id E362D85A6AA
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 11:43:17 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Ac2Xk38iBBD8bAc2XkTtyV; Tue, 25 Aug 2020 11:43:17 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cOGcQuNcgu27ssRe7+iEilXICwkaDhh0xHUhsfky6/A=; b=fRFpmnqdD+FV804lUWuyvAZWBn
+        X4dF1aIY3v3YTV0F+UJuTPHXi6WvGPmwCRi4qh4bbjlMcUBZJYX4jJb8tdD+o3m6UWuAe7yo+r5Zs
+        obIUsnhWJ33DeeIc16B9xOVd7ioOInz5s0vcrRCWgrORSU4RWYMowBDr+COgroKxen4E8pNCtmFR5
+        2n5C5sBchDXyzeAZXXt+Dr1dOuolMFUszSqBrQBOV7+5Hd8V/laHZqXYrvHqEKBfEELVVq+ciHYbJ
+        C93vdYvzgpYMuETgWOp04+omT/m6jjxxSOWPP3FSVWdAmdlTjpFC8TjG9WbXGzChZD2bvtlosLOl8
+        xC45sjSQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58602 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kAc2X-000vvH-4N; Tue, 25 Aug 2020 11:43:17 -0500
 Subject: Re: [PATCH] IB/qib: remove superfluous fallthrough statements
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Alex Dewar <alex.dewar90@gmail.com>
+To:     Joe Perches <joe@perches.com>, Alex Dewar <alex.dewar90@gmail.com>
 Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Roland Dreier <roland@purestorage.com>,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 25 Aug 2020 09:47:50 -0700
-In-Reply-To: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
 References: <20200825155142.349651-1-alex.dewar90@gmail.com>
-         <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
-         <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
-         <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+ <4877c3a5-365e-4500-43c0-4a4361e2cda3@embeddedor.com>
+ <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <da65ca20-49cb-2940-76d6-7e341687a9e2@embeddedor.com>
+Date:   Tue, 25 Aug 2020 11:49:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <086ee29ef75f657dcf45e92d4ebfdf2b3f4fcab8.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kAc2X-000vvH-4N
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58602
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 16
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2020-08-25 at 11:49 -0500, Gustavo A. R. Silva wrote:
+
+
+On 8/25/20 11:26, Joe Perches wrote:
+> On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
+>>
+>> On 8/25/20 10:51, Alex Dewar wrote:
+>>> Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
+>>> erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
+>>> were later converted to fallthrough statements by commit df561f6688fe
+>>> ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
+>>> warning about unreachable code.
+>>>
+>>> Remove the fallthrough statements and replace the mass of gotos with
+>>> simple return statements to make the code terser and less bug-prone.
+>>>
+>>
+>> This should be split up into two separate patches: one to address the
+>> fallthrough markings, and another one for the gotos.
 > 
-> On 8/25/20 11:26, Joe Perches wrote:
-> > On Tue, 2020-08-25 at 11:19 -0500, Gustavo A. R. Silva wrote:
-> > > On 8/25/20 10:51, Alex Dewar wrote:
-> > > > Commit 36a8f01cd24b ("IB/qib: Add congestion control agent implementation")
-> > > > erroneously marked a couple of switch cases as /* FALLTHROUGH */, which
-> > > > were later converted to fallthrough statements by commit df561f6688fe
-> > > > ("treewide: Use fallthrough pseudo-keyword"). This triggered a Coverity
-> > > > warning about unreachable code.
-> > > > 
-> > > > Remove the fallthrough statements and replace the mass of gotos with
-> > > > simple return statements to make the code terser and less bug-prone.
-> > > > 
-> > > 
-> > > This should be split up into two separate patches: one to address the
-> > > fallthrough markings, and another one for the gotos.
-> > 
-> > I don't think it's necessary to break this into multiple patches.
-> > Logical changes in a single patch are just fine, micro patches
-> > aren't that useful.
-> > 
+> I don't think it's necessary to break this into multiple patches.
+> Logical changes in a single patch are just fine, micro patches
+> aren't that useful.
 > 
-> There is a reason for this. Read the changelog text and review the patch.
 
-What makes you think I didn't already do that?
+There is a reason for this. Read the changelog text and review the patch.
 
-I think your desire for micropatches is unnecessary.
-
-
+Thanks
+--
+Gustavo
