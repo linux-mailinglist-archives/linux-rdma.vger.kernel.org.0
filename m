@@ -2,212 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226B7251DB5
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 19:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B64251DCF
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Aug 2020 19:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgHYRBU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Aug 2020 13:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgHYRBQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 13:01:16 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D2DC061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 10:01:16 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id n128so12252420oif.0
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Aug 2020 10:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Uup6a/QG3ory1pv7v44s12RC7IJfnGB6j5bfAcfD8ks=;
-        b=JkjyyEBvakNZoXW+pKHWSvTRo9Deu4+6rbXHKuLUvWYFpNoSQCXzC9tfvaD6KB04bs
-         Md3W3Ttl1zJBy98yoX/JsiB/KyK0wJJXmkAkCJQU09KtaQdC8gvRmm0hBhgpE2EvfeOd
-         PuaTAunNsUPebkWZusKqy4oNmACoJDHTI4rQlezfidnyIywQOoqw0HIMhlK1/VJB+FgV
-         X7YjcCdI+8v+JwocZZa5UmxP4+gtPfFuWnjFBnpsk1Ofw5Cr7H5yOIZS/ZP7tuFJlwFo
-         dKOfjMhjLl5Czxz8G8O/mtVdCT1utaRKChOgx5euBc0CKQt9g8eDvMqIu//PrKAcMJY7
-         NCCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Uup6a/QG3ory1pv7v44s12RC7IJfnGB6j5bfAcfD8ks=;
-        b=qVIZZpVTGg2QvbymIbeTqqD2UoZ31SH6R5iWiYBFR07Ig+alMQo9myld7BKHQLCMz5
-         aiHpy+Rk9Wbg23oCAS2qSmhfGqaPBDinkcUG358AD3/CfV9h6TT/CVqI1MhExFWjR7c1
-         RC+RBukJpWkW9KTrQawKaNRg2Esx0WydZfEB3rugJSH2YA/q0klI0luzQuzR9xYvdV4F
-         jNYiAivXisFsJ3T+suZyRTHR4CY+JvB/TGx8+OFd1MCmLo5ph81mb1quCZDxxsGfro1U
-         5RkM8DckRT2FQi1rWBcJHL28Cznwcw5X3468tn9ESnwXwlMqNXtGB8p4rQmErUGegj48
-         ABYQ==
-X-Gm-Message-State: AOAM530PDYEKWZ05FqhsdQOD463iOZuf+GtmTSjYUyzM5iJeGQzxklvw
-        my2IL8ObAg4Rknoe1nF5WfRndSYPORBLZQ==
-X-Google-Smtp-Source: ABdhPJwu9RkRqvNqi7oc+qQ2P2SqZmvGhtN7705nFhkmJyr60ZrBWTCaK/qPpR0qNHW9QvYEK4wMXQ==
-X-Received: by 2002:aca:1016:: with SMTP id 22mr1506030oiq.63.1598374875888;
-        Tue, 25 Aug 2020 10:01:15 -0700 (PDT)
-Received: from localhost ([2605:6000:8b03:f000:d277:9c63:7fd2:8e07])
-        by smtp.gmail.com with ESMTPSA id s7sm373864oig.48.2020.08.25.10.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 10:01:15 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     leon@kernel.org, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next] rdma_rxe: address an issue with hardened user copy
-Date:   Tue, 25 Aug 2020 11:58:37 -0500
-Message-Id: <20200825165836.27477-1-rpearson@hpe.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726225AbgHYRFU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Aug 2020 13:05:20 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18132 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgHYRFT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Aug 2020 13:05:19 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4544c10000>; Tue, 25 Aug 2020 10:05:05 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 25 Aug 2020 10:05:18 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 25 Aug 2020 10:05:18 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 25 Aug
+ 2020 17:05:18 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 25 Aug 2020 17:05:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a++H3G6erfWltQuwyb9sSRYGBRmDWQ7u+lnWxNw3uiaa4M3xZ3SuciS43KXVum6x5MTZ4EXk22IlVtPTG1PVGmt5YPQRGejI4+sh0VII7rJd2QCqvgydNoViSw1SiOL4RpC55x1NUaRdxjRHT9nPly8dE7bzrSNJJtoP0FOacaBO3gk44ih38Qjjyl0jnhbXMXi4ej7w2Y8bSjsYrVNaR0f3/n43Fj3IsbaKycnlZbRHuVj1SSleqwDctRgPmQnUeE2OTzE9lDJRv+qGX3CzYmsEGbJfXK7kMe6lvtO3ykAxlmWubGdUg5VLKT2o4dVAv4SfKfrrcgrASIzbGkD3qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VOTQbpCSMLKdQZT0yQmqLDjcfdbh3HprVbACXGdYe1c=;
+ b=FAweCdrQly7PfB11gGNmsruvu3hd39mYpVB8T1v2LAS2DHcgDj5a5WCxDn8anzm8oVtHufwyDwCdxsJeE2BMXwfUSub/Ttoi3DX4ETX0zr9wjacTfkwzy7gzkH2AyzOZWVlSKrLJFI/s2/avr0knbC/DaoxNqlug0hxVCcWs6hNMZkVUJlzAOyNYFl34H8b4oOcvBpYuDoJOnQJ09KMJ/qUDi8G7Wiyppx2zNnKYcB4YjpGPEjJfS7iM02gMN852P3+xl5nnRgNXaXz52bkSS/D9pqKfSwLm4IoWp7l/MVWae8xqDHJvlh0Gxx/I1qIaet1CgDgxBdn1ReoHPG1hjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4057.namprd12.prod.outlook.com (2603:10b6:5:213::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Tue, 25 Aug
+ 2020 17:05:16 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3305.026; Tue, 25 Aug 2020
+ 17:05:16 +0000
+Date:   Tue, 25 Aug 2020 14:05:14 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v3 0/3] IB CM tracepoints
+Message-ID: <20200825170514.GA3507370@nvidia.com>
+References: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <159767229823.2968.6482101365744305238.stgit@klimt.1015granger.net>
+X-ClientProxiedBy: YTOPR0101CA0013.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by YTOPR0101CA0013.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Tue, 25 Aug 2020 17:05:16 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kAcNm-00Eil4-Rb; Tue, 25 Aug 2020 14:05:14 -0300
+X-Originating-IP: [206.223.160.26]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c9f3d1eb-c710-4708-440d-08d8491909f7
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4057:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4057A81740675B9A54629FEBC2570@DM6PR12MB4057.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yfcRVUb9t7ENdSRtUmJjlb0O5x/fUtBWvXIbMZ8cOc8pBxN3fBI/UXGiCXfNEmv25QnlJYjwiAkk2P/8P8AeqWR3/tBEBACqs+2LSiw1nEVv+ksM41Uz5y62I59J1Ia9Sc0hh5BWXdr2rejflBSz0fYBHzBlQAY9TeIaSVBzqaBR4H5ppG40IetAyfAMtFqOxytVspytLB0iO0Tena+UQZ250UI/WTFSyheCNTIfGri895myUFX2FhLsbGaxWVbemyOmKVDeYhSh4wbhqQlN1UROwDofWA1FBlj3J7z+7Njn9ZkoM4ABJdRCxGBRjfhUGOj3dvH7K+fKSWlzPE/A+Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(39860400002)(376002)(36756003)(426003)(2616005)(316002)(186003)(26005)(9746002)(33656002)(66476007)(66556008)(86362001)(1076003)(4326008)(66946007)(9786002)(83380400001)(2906002)(8936002)(8676002)(4744005)(6916009)(478600001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: SLLAtL+eDzJxVPi/eNYxTucKggmMjuCR0259CN/6TI0LmSKLRXugLvchkjj+kMqyBCW6tPGWcEa4AuRXSZEpmzk4Xeo8Wt/XaDQcwDQfO+nketdaHXR7PcSsm+u7hRaTNvriBMJNjusPDHyoSHbo7Nchji4mjz54oNbdmvNf3iWgTjFa/yQL/DT98rKzO3XCUx14uFDr+yAjKRcw+y9VgmNg00tlC7DqnIhaU2YoF9pRAMKOBCfXC9f2cnOtTfdddG4Tt+F6WXkMFOCuIpEJStjRgVRIMmho46th+iCnc1rOShf7wkLACeuWsia8hYMJQrN2RxC7nywK4AVWwgS2YLnfubf3wynRv78CUZaqX4BdX99CwsOei2w585NlpY/qk15z44SSBKUlFnM9S1zmwFzvzDF0nUnd6qv+0gcx5E3Ny5Qq6j7g44agPb25sPulH1c8KXdJ3rHm6ogv72WaWLWEye6+jjBk969SEulMv3JqRQVdaUMKZ3VRQaoPgj2HhDdiRU0h5pC8uleqcOX4azR/pFzSuii34JTyFj+JfnZ8kmZ4/Ce2MG1uvqTMN4v4FzBpv/G1x5umykaQlF2jTmcQGLrfJ3LqK2N8bG7jSue7dMq89pNIgAftSwfkrwz7IWc5/SrVRGkUcXeTcWu6+g==
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9f3d1eb-c710-4708-440d-08d8491909f7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2020 17:05:16.8561
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zM4ulgI1GrD/P2odiqNx9rOsjtq+BLLXxUy7MxkbdtLvbP1kQohZ6MgCi4OCixyi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4057
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598375105; bh=VOTQbpCSMLKdQZT0yQmqLDjcfdbh3HprVbACXGdYe1c=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=e6Jiby8dNP/1QW+mpwKC9ecTSqcFBQ09ARM+Y4Xmm1hYYLkZWinzuzpvhsYdr3ZYF
+         sgRI7avUBvMOwmhNELMiV5g7CT6IZsyVkkygK7y0GZFOC2kVbmtSASCitNkp4w4pBK
+         kJaVDVydkRKzI2KUlu8V9D2nBvJglMB2ao5ft4O7eRXexTsH/Cfb0aqRBppfjrGC23
+         d6mVAinYEwKjbZd048ojdgxEf5MM6zQoJncDiJcRdQUclj33lmLdVz14RzF3zgPb4l
+         2Wmpv+J8+MvF1T5c7Xv5luabMvX4qRTVNkqfyDKzJMNpi7gWyvL9PJX1dDQD73Bzat
+         LOs49udW+PsBw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Change rxe pools to use kzalloc instead of kmem_cache to allocate
-memory for rxe objects.
+On Mon, Aug 17, 2020 at 09:53:05AM -0400, Chuck Lever wrote:
+> Oracle has an interest in a common observability infrastructure in
+> the RDMA core and ULPs. Introduce static tracepoints that can also
+> be used as hooks for eBPF scripts, replacing infrastructure that
+> is based on printk. This takes the same approach as tracepoints
+> added recently in the RDMA CM.
+> 
+> Change since v2:
+> * Rebase on v5.9-rc1
+> 
+> Changes since RFC:
+> * Correct spelling of example tracepoint in patch description
+> * Newer tool chains don't care for tracepoints with the same name
+>  in different subsystems
+> * Display ib_cm_events, not ib_events
+> 
+> 
+> Chuck Lever (3):
+>       RDMA/core: Move the rdma_show_ib_cm_event() macro
+>       RDMA/cm: Replace pr_debug() call sites with tracepoints
+>       RDMA/cm: Add tracepoints to track MAD send operations
 
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
- drivers/infiniband/sw/rxe/rxe.c      |  8 ----
- drivers/infiniband/sw/rxe/rxe_pool.c | 60 +---------------------------
- drivers/infiniband/sw/rxe/rxe_pool.h |  7 ----
- 3 files changed, 2 insertions(+), 73 deletions(-)
+Applied to for-next, thanks
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index cc395da13eff..a1ff70e0b1f8 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -277,13 +277,6 @@ static int __init rxe_module_init(void)
- {
- 	int err;
- 
--	/* initialize slab caches for managed objects */
--	err = rxe_cache_init();
--	if (err) {
--		pr_err("unable to init object pools\n");
--		return err;
--	}
--
- 	err = rxe_net_init();
- 	if (err)
- 		return err;
-@@ -298,7 +291,6 @@ static void __exit rxe_module_exit(void)
- 	rdma_link_unregister(&rxe_link_ops);
- 	ib_unregister_driver(RDMA_DRIVER_RXE);
- 	rxe_net_exit();
--	rxe_cache_exit();
- 
- 	pr_info("unloaded\n");
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index c0fab4a65f9e..70fc9f7a25b6 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -84,62 +84,6 @@ static inline const char *pool_name(struct rxe_pool *pool)
- 	return rxe_type_info[pool->type].name;
- }
- 
--static inline struct kmem_cache *pool_cache(struct rxe_pool *pool)
--{
--	return rxe_type_info[pool->type].cache;
--}
--
--static void rxe_cache_clean(size_t cnt)
--{
--	int i;
--	struct rxe_type_info *type;
--
--	for (i = 0; i < cnt; i++) {
--		type = &rxe_type_info[i];
--		if (!(type->flags & RXE_POOL_NO_ALLOC)) {
--			kmem_cache_destroy(type->cache);
--			type->cache = NULL;
--		}
--	}
--}
--
--int rxe_cache_init(void)
--{
--	int err;
--	int i;
--	size_t size;
--	struct rxe_type_info *type;
--
--	for (i = 0; i < RXE_NUM_TYPES; i++) {
--		type = &rxe_type_info[i];
--		size = ALIGN(type->size, RXE_POOL_ALIGN);
--		if (!(type->flags & RXE_POOL_NO_ALLOC)) {
--			type->cache =
--				kmem_cache_create(type->name, size,
--						  RXE_POOL_ALIGN,
--						  RXE_POOL_CACHE_FLAGS, NULL);
--			if (!type->cache) {
--				pr_err("Unable to init kmem cache for %s\n",
--				       type->name);
--				err = -ENOMEM;
--				goto err1;
--			}
--		}
--	}
--
--	return 0;
--
--err1:
--	rxe_cache_clean(i);
--
--	return err;
--}
--
--void rxe_cache_exit(void)
--{
--	rxe_cache_clean(RXE_NUM_TYPES);
--}
--
- static int rxe_pool_init_index(struct rxe_pool *pool, u32 max, u32 min)
- {
- 	int err = 0;
-@@ -381,7 +325,7 @@ void *rxe_alloc(struct rxe_pool *pool)
- 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
- 		goto out_cnt;
- 
--	elem = kmem_cache_zalloc(pool_cache(pool),
-+	elem = kzalloc(rxe_type_info[pool->type].size,
- 				 (pool->flags & RXE_POOL_ATOMIC) ?
- 				 GFP_ATOMIC : GFP_KERNEL);
- 	if (!elem)
-@@ -443,7 +387,7 @@ void rxe_elem_release(struct kref *kref)
- 		pool->cleanup(elem);
- 
- 	if (!(pool->flags & RXE_POOL_NO_ALLOC))
--		kmem_cache_free(pool_cache(pool), elem);
-+		kfree(elem);
- 	atomic_dec(&pool->num_elem);
- 	ib_device_put(&pool->rxe->ib_dev);
- 	rxe_pool_put(pool);
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index 64d92be3f060..3d722aae5f15 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -42,7 +42,6 @@ struct rxe_type_info {
- 	u32			min_index;
- 	size_t			key_offset;
- 	size_t			key_size;
--	struct kmem_cache	*cache;
- };
- 
- extern struct rxe_type_info rxe_type_info[];
-@@ -96,12 +95,6 @@ struct rxe_pool {
- 	} key;
- };
- 
--/* initialize slab caches for managed objects */
--int rxe_cache_init(void);
--
--/* cleanup slab caches for managed objects */
--void rxe_cache_exit(void);
--
- /* initialize a pool of objects with given limit on
-  * number of elements. gets parameters from rxe_type_info
-  * pool elements will be allocated out of a slab cache
--- 
-2.25.1
-
+Jason
