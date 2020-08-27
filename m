@@ -2,132 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976D82548B1
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Aug 2020 17:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A530254A9F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Aug 2020 18:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgH0PKo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Aug 2020 11:10:44 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:43555 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728409AbgH0LsF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Aug 2020 07:48:05 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f479d720000>; Thu, 27 Aug 2020 19:48:02 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 27 Aug 2020 04:48:02 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Thu, 27 Aug 2020 04:48:02 -0700
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 27 Aug
- 2020 11:48:02 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 27 Aug 2020 11:48:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nVO5PP+5HOmCXiQ9AMz48FYgDeJAnhkedxjLlYRwfGWpXW5XW9z4MfG2fCiMFTw1930tRkLSyzNoovXLNKlUFcFDVVjOSenV39iWVWLyq+ffAMYpESMtDVYpyJwC6d+ng59yperm8aK+954ItBMvD4POuLZrT1CuW8L3dgeygHp9urFSAAA4pHdYKjayOtKxGhSdJsHylCGcvELScI57Ab73DaNfQcBa1iCokDyYLvPgjZ0eF7dn6wlDLL/5RVgePOhksZ35W38+l79oCs4fP8m0SzAKlAzM3XSjjPAw0mgqsU2/yMrvBrPoM62VB3HjnZeeP6UiVA93Uv2O84rWGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zo6Ke2qK0TIlHdBdxUuscYCC3G+zz+J/TRn+dQ31f2c=;
- b=GWJnkg9zy0zdLYpnYiycWRqk7w9NDyAY6c1Fo6avdjJmKwIi86NDdbe59o3X9BBkZlgXdzvqdpUM1BsKVZY9tz1vW3iLIKUA9SG2o8TqIXcl+uoTVlpq/Haf3JagZ/WlXxakOu5tReYKPxXrLA7er48tCrqPH9HHQ7VOI4iGhxISxW1rwIMszRybqONsWsR6IZkuKeRKRAK9IGA+oN6BUPyE+dR8mwHhQQ13sBvRq0thvws2MKTUBOMuIQGTsU587IptkAoa2Q2fIMUCctLpkpUu1+zswFC8ZUInViKUToFOAw5Io5QbSn1eVVwne3p1iAnrkZTxTpN199ARLfHs8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: zju.edu.cn; dkim=none (message not signed)
- header.d=none;zju.edu.cn; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1882.namprd12.prod.outlook.com (2603:10b6:3:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Thu, 27 Aug
- 2020 11:48:00 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3305.032; Thu, 27 Aug 2020
- 11:47:59 +0000
-Date:   Thu, 27 Aug 2020 08:47:58 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-CC:     <kjlu@umn.edu>, Zhu Yanjun <yanjunz@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/rxe: Fix memleak in rxe_mem_init_user
-Message-ID: <20200827114758.GA3997325@nvidia.com>
-References: <20200819075632.22285-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200819075632.22285-1-dinghao.liu@zju.edu.cn>
-X-ClientProxiedBy: MN2PR10CA0036.namprd10.prod.outlook.com
- (2603:10b6:208:120::49) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726834AbgH0QXA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Aug 2020 12:23:00 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:35346 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbgH0QXA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Aug 2020 12:23:00 -0400
+Received: by mail-pf1-f195.google.com with SMTP id o68so56335pfg.2
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Aug 2020 09:22:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Zko1SJUVRJBPxBYatDX3H+Goh1VCykVJBZiCrTNbFSg=;
+        b=XImnHIrqDGzMjLbze/0bhbEI7e5ehCKbtNWH63Qtkyf4KlEsPPwMnPOOpwLANJCsz8
+         zzJWiDv9hwx5kxxannsSfmmwGSl56XRSmNoH6PvFKVtpKj31IVVeKkiFcJXw2NzuZTgC
+         MS3e8hnaWWENzpuya6sOEXcF8B2lUUqtvwCd15jJhGZjhCGCRFZRJX9xe/N9B04l0bz8
+         z2BYiBvnDu+qD+8EZzWSgEeNzvlawYqmJGFEIfiqXOmu9Z1170/gWq2EB4dR7aNsXrB/
+         hj4O1dLdo/SpvYWIMWZrUwXzSk+Tajb+mox6T2I+Ltftkfm9yPj33pmZKQrsKENTNebh
+         I5ew==
+X-Gm-Message-State: AOAM530XXfipPRU3NJaV4JB8gFD1hqI5fGWCSyyVTlAg3/RCckiNqjXY
+        SARwObSMCKjTrJ9BQ7cvGC4dzmls2i8=
+X-Google-Smtp-Source: ABdhPJz4jKT0doARzRmhzpTRu9lB9RDoturfq0LE3sPj1+3FO1G/vgAv9TGzHLMOiY2zq6bTNQqQIQ==
+X-Received: by 2002:a65:4984:: with SMTP id r4mr4968760pgs.261.1598545379164;
+        Thu, 27 Aug 2020 09:22:59 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id t33sm2845704pga.72.2020.08.27.09.22.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2020 09:22:58 -0700 (PDT)
+Subject: Re: [PATCH v4 for-rc] RDMA/rxe: Fix panic when calling
+ kmem_cache_create()
+To:     Jason Gunthorpe <jgg@nvidia.com>, Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+References: <20200825151725.254046-1-kamalheib1@gmail.com>
+ <20200827121822.GA4014126@nvidia.com>
+ <20200827142955.GA406793@kheib-workstation>
+ <20200827145450.GK1152540@nvidia.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <47468360-cd58-96fd-7d4f-4f4c351e9ce7@acm.org>
+Date:   Thu, 27 Aug 2020 09:22:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by MN2PR10CA0036.namprd10.prod.outlook.com (2603:10b6:208:120::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.20 via Frontend Transport; Thu, 27 Aug 2020 11:47:59 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kBGNq-00Gltn-5C; Thu, 27 Aug 2020 08:47:58 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 35ea42b3-10cd-4664-a5f1-08d84a7f0beb
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1882:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB18822DF9E2F66359753BD2F2C2550@DM5PR12MB1882.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ru9UI+tm5kcE93ZzeKKVBOqflUc9pUSj0l9NykJW/KxXz8V6V1llknD5WZCWXPT7pJhXK4PTFUbUS3S3cKMU/UL6nvUQPmugcV7qCs3ayHFTFyK8Is6dJhkPSpvY6n7NUAtJ3Y8bOon4yHt+/UBXUmzx7pUOqRrK3rqFsw9VSD/Hu2NfdJi5mrOJs5VjbemzE1Wwf75LVHtcSvLUxNXLsoWnOmjq4MkyOpuoGfTaDfcYnpUAeyjumryj7o8s0tzldJfk8zPPxmS4V+wcFJp3kn/C4OrB+MhC6gcVzVxreqJSwLtAByaesEb9WoX3jKS2mvZrslUotg23hu5iKmJGEg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(39860400002)(346002)(66556008)(66476007)(9786002)(66946007)(36756003)(9746002)(6916009)(478600001)(426003)(8676002)(4326008)(2616005)(1076003)(8936002)(316002)(26005)(5660300002)(186003)(4744005)(86362001)(33656002)(2906002)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: O4Ks6C90Gn1SlbZxtZ3N8p1KgdCdP8I3h8yPwvJSjy7Ayyz+BJUMAlowduWFnuW59EZzsZyA8/NoGBoVzksyTMYbtZ8KLEx4WfhTDYakQw9wiRUd4gkobRYVGTlZET7HCN24ksOZU4w9iiDGBFrb5Xg9gryrUspM/cFUdk8aXuSIfWCTXIpbWYgUC2ilIr4lRkaYTV+MzSazgEOK/KjQ5eqKl2Fg9z1v87QOKqpQdK5XKCbA5W8B8vt0X1KHJphX2MqC3oXRWBQIRtsuvjXAlv2Z12Vae967in38cIqS5Lhcd03QL7+ftHiizfv8UCNmSZqvpYUxt5rjVV3HyeR0juZhgfEHaxbwr3vH51q2qvtmQRPl+ces+e4cHRIJwEpHnVcn7We6Hp55OOvvIpGVqkYVE+EmdSzEBUaZCSeh9I6y/ckk5RODOcC401GPjQPXrNwOxftOqjnYuYIw1X4DcSEACYK1R8swmGnH2qMCAWddmIlmMwf+5jnjZXlTjtynrEb1uqsbKYTT+6d+IC2fbiwlqT3c9z5NoCpX3XQIKtxcQ/PcX5S9qFPo6Gfs1ArRmxhqswhDx/qZrFVpL3NaqCyYpW+CxgNhln9UaMY6RX6i1++3TCDI4Cf35LsSOWeVyHYAh4tJ4JPeJtSrErBFCA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35ea42b3-10cd-4664-a5f1-08d84a7f0beb
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 11:47:59.7937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3izvq9Zq6xTzjCXT7mXZJOzIjvOFHkKEZCn8bkiISLM26MiPlIedCdYrj0t0uq3J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598528882; bh=Zo6Ke2qK0TIlHdBdxUuscYCC3G+zz+J/TRn+dQ31f2c=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Exchange-Transport-Forked:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=eBtTDkomGIL2e423YHt9VLpIsQSIA99ITUD8xaEWIWVpo+p+OZiYuxCs7b4vH2XEh
-         QGR4z+WQI/jfKxUMEbjKJ47mSlOKyrfLVOam+m5wbl3z7AE35Qs1ONCY1edCWnchj9
-         ZAlLCYrsc850oHS4lgG7tMu+jalmiw6+3TznBNVT5lH9xhwClV01nV3Vyz3tSzSnOo
-         mKIAPZ0Fr1OJr/njLyy5lZ7W08Ido7Q6XjaazvAb2ZyLqTzPoWTHUvZPZCWO21i9Gs
-         cox46/kKwPRxG+I2TfBR9SA9yg0BLlk1volCFl2uTCiqkB4CC5DklfrTaEz0smBVn5
-         hKPBFTa/53vHw==
+In-Reply-To: <20200827145450.GK1152540@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 03:56:32PM +0800, Dinghao Liu wrote:
-> When page_address() fails, umem should be freed just
-> like when rxe_mem_alloc() fails.
+On 2020-08-27 07:54, Jason Gunthorpe wrote:
+> On Thu, Aug 27, 2020 at 05:29:55PM +0300, Kamal Heib wrote:
+>>> Can you send a PR to rdma-core to delete rxe_cfg as well? In
+>>> preperation to remove the module parameters
+>>>
+>>
+>> Someone already did that :-)
+>>
+>> commit 0d2ff0e1502ebc63346bc9ffd37deb3c4fd0dbc9
+>> Author: Jason Gunthorpe <jgg@ziepe.ca>
+>> Date:   Tue Jan 28 15:53:07 2020 -0400
+>>
+>>     rxe: Remove rxe_cfg
+>>
+>>     This is obsoleted by iproute2's 'rdma link add' command.
+>>
+>>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/infiniband/sw/rxe/rxe_mr.c | 1 +
->  1 file changed, 1 insertion(+)
+> Oh! Lets drop the kernel side of this in Jan 2021 then?
 
-Applied to for-rc, I added a fixes line
+I think the person who wants to remove the kernel side of this is responsible
+for modifying blktests such that blktests does not break. From the blktests
+source code:
 
-Jason
+                modprobe rdma_rxe || return $?
+                (
+                        cd /sys/class/net &&
+                                for i in *; do
+                                        if [ -e "$i" ] && ! has_rdma_rxe "$i"; then
+                                                echo "$i" > /sys/module/rdma_rxe/parameters/add ||
+                                                        echo "Failed to bind the rdma_rxe driver to $i"
+                                        fi
+                                done
+                )
+
+Thanks,
+
+Bart.
