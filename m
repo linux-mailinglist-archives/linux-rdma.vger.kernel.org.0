@@ -2,145 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8222D2546D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Aug 2020 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9C6254830
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Aug 2020 16:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgH0OaK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Aug 2020 10:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S1726804AbgH0O7y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Aug 2020 10:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgH0OaA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Aug 2020 10:30:00 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F11C06121B
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Aug 2020 07:29:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y3so5597604wrl.4
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Aug 2020 07:29:59 -0700 (PDT)
+        with ESMTP id S1729032AbgH0MNT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Aug 2020 08:13:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58396C061264
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Aug 2020 05:13:08 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o196so5054786qke.8
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Aug 2020 05:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=KMR6gPKx4Iusd775broNtcC5EoDFrRdaHB14KOj+7Q4=;
-        b=TOfH5BijQEVvcWtU0GoVnKbJmwIyg6N5WBw53XWdIE6WZ7thpzMqpE/MwsdjfACVbY
-         XqEerat/XMmBJCsPttDenNqB51a56KnoY6NpoCnP74MQBOowVJL04+Dg8/HyhT7ItV1r
-         66SgaHPr6ExHkgAs3/DFZP98gU/kkSpNX9xxcBNahn1Ferpx4JE9qBFMQ79uTckK1Lq+
-         L+kU4tttS02csI8Qpg6KVQA7RBL73O/1SGm0JMAeVwaKidtdvAvIjfUhVjtiAHPyPplU
-         vWZfZA2prmfqnz8ZjVn/Za/HAUocFopZYHvD/nvXrzuqwf5FmkoT6ATohXTDnUA9KU9g
-         mEtQ==
+        bh=NVgMAvwSkRVpVqhmGwbXBmebtM3j4g3jGyyptImAh84=;
+        b=U4bSinliGIBk9YsT1l8+TkYscTtSFt4w/TeAYLtseGwCwUIndXcbrcDHwSVYbfBLFp
+         AZSFeLqLBApnvfseJtldjCgUZDDVSwKINeYC2kgbyYtvX48TRZUJA1Rc+q45Iw/C1KOD
+         bh0LxlyH5j/C+VMhBx5oyrPmewnm85foXtP4uPTA9kuJVbP+WTRjL4yA8Vdpgkzw6J8a
+         hZ1a6UBsp99RVpSyhOGZtOMKgDcpteu/TdPQrr4Bj+4lqhyemvWlEBweufZDyQdFFnr6
+         K4LQUw5WY9F9yKOxXLU+INzN+v3oLyCOgizrU3LqHz755y/TIqtFcvcwAgqbfM6/rbQ3
+         8UJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KMR6gPKx4Iusd775broNtcC5EoDFrRdaHB14KOj+7Q4=;
-        b=RE8kFu815tR70EcIxSrJd/1pfn+TPg2A/rwapi05OJ+g54KxtbGLx2JGK1R0ZGpEdu
-         D5H6VaHwoxuJWcYjnB3q/9v6tgLA07IM3A1Gcq91FU54GwX7w8hS7+7c4IC7iWC3mQMu
-         YyijGapHi/WfikcFwbAr7hou5u285XGHt0W5HpjE28ZqmTvwFoTnSC6Tw+ujy3pjBeWo
-         zuV3do1XpY9RyGu9DruAA1Vw+VXtwV8w5XQfpoeC6zjhIpelp8Pd7TCFPW0IBsWXMIWo
-         kWEb0ARtpdUlW/PuUv7hyp+R4LBu0eCqSPHybcYcG2k7l7CRcX/DcCiXwCCH6DOkuDbs
-         THpQ==
-X-Gm-Message-State: AOAM53056pGYZUXXmI9aarP5LVAVAt7JxOKGHd9FIf4SoMmCn7vEXB1I
-        jMOPKCZsaYixOgnxpAj5JNy46XsCkvs=
-X-Google-Smtp-Source: ABdhPJyhmq8ru/r1ixoAajw00UasH53/lREHKOcOLwlm/a9mhxIHOZiR/yDuQHBix6rvGeg6PDE2wQ==
-X-Received: by 2002:adf:e30e:: with SMTP id b14mr20080041wrj.215.1598538598554;
-        Thu, 27 Aug 2020 07:29:58 -0700 (PDT)
-Received: from kheib-workstation ([37.142.0.228])
-        by smtp.gmail.com with ESMTPSA id n18sm6112940wrp.58.2020.08.27.07.29.57
+        bh=NVgMAvwSkRVpVqhmGwbXBmebtM3j4g3jGyyptImAh84=;
+        b=eozszdlUtQyY5b1yPIN10Y3o7mjMDeH30qEDd6qyMwxcQjYP+8lkAK12IpdBflidBp
+         X+hAtT7mde6OasUyjvkSULtlHWa6W/brKjEl1zbL3pf37MN2IQgcmc2DdZ9AnJDdNB4d
+         M1+JH5961NbGXT3ge1rVO0cSGNL7S7360FZKBcOcuoGDYK6L2TlmC4v6XUK6lDaTW0CS
+         dS2juNzk230e+3KElL95P/IA9jgXnN72t+Oey/OTVXnU/OkJQ3D1CXnd0Q9sVaRK5rtQ
+         h8oXTXfJ/eZJn38S68/rlTUw7HwRiP+mOlzD5RCm4Xc+/DKPZhwhtwBQ46tQW69LJHyu
+         +vgg==
+X-Gm-Message-State: AOAM5313+0O8eu5MLByItkN2onX5g7G1ovPcF0BYhwqgCqNDCy6cDDem
+        mnIg8mYvmzBAz2bb2TaSULqqyw==
+X-Google-Smtp-Source: ABdhPJy3vMsKT+NmNB9Dcn1vgO0PcJ/ZddVHy3pb3fTTA34BJjXpCLIwaULxBF9wP3XjGQTkaFMO2g==
+X-Received: by 2002:a37:e105:: with SMTP id c5mr5218388qkm.150.1598530387564;
+        Thu, 27 Aug 2020 05:13:07 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id g13sm1553087qki.62.2020.08.27.05.13.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:29:57 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 17:29:55 +0300
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Thu, 27 Aug 2020 05:13:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kBGmA-00GoFl-8m; Thu, 27 Aug 2020 09:13:06 -0300
+Date:   Thu, 27 Aug 2020 09:13:06 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <galpress@amazon.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <yanjunz@nvidia.com>
-Subject: Re: [PATCH v4 for-rc] RDMA/rxe: Fix panic when calling
- kmem_cache_create()
-Message-ID: <20200827142955.GA406793@kheib-workstation>
-References: <20200825151725.254046-1-kamalheib1@gmail.com>
- <20200827121822.GA4014126@nvidia.com>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Restore ability to fail on PD
+ deallocate
+Message-ID: <20200827121306.GM24045@ziepe.ca>
+References: <10111f1b-ea06-dce5-a8be-d18e70962547@amazon.com>
+ <20200825115246.GP1152540@nvidia.com>
+ <110cc351-f8f1-8f88-3912-c4dae711b393@amazon.com>
+ <20200825130736.GQ1152540@nvidia.com>
+ <74f893e8-694a-17f0-dc49-05061a214558@amazon.com>
+ <20200825134428.GR1152540@nvidia.com>
+ <5f4f67b1-ca3c-fd11-a835-db7906cad148@amazon.com>
+ <9DD61F30A802C4429A01CA4200E302A70106634FB5@fmsmsx124.amr.corp.intel.com>
+ <20200826114043.GY1152540@nvidia.com>
+ <9DD61F30A802C4429A01CA4200E302A7010712C8EC@ORSMSX101.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827121822.GA4014126@nvidia.com>
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7010712C8EC@ORSMSX101.amr.corp.intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:18:22AM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 25, 2020 at 06:17:25PM +0300, Kamal Heib wrote:
-> > To avoid the following kernel panic when calling kmem_cache_create()
-> > with a NULL pointer from pool_cache(), Block the rxe_param_set_add()
-> > from running if the rdma_rxe module is not initialized.
-> > 
-> >  BUG: unable to handle kernel NULL pointer dereference at 000000000000000b
-> >  PGD 0 P4D 0
-> >  Oops: 0000 [#1] SMP NOPTI
-> >  CPU: 4 PID: 8512 Comm: modprobe Kdump: loaded Not tainted 4.18.0-231.el8.x86_64 #1
-> >  Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 10/02/2018
-> >  RIP: 0010:kmem_cache_alloc+0xd1/0x1b0
-> >  Code: 8b 57 18 45 8b 77 1c 48 8b 5c 24 30 0f 1f 44 00 00 5b 48 89 e8 5d 41 5c 41 5d 41 5e 41 5f c3 81 e3 00 00 10 00 75 0e 4d 89 fe <41> f6 47 0b 04 0f 84 6c ff ff ff 4c 89 ff e8 cc da 01 00 49 89 c6
-> >  RSP: 0018:ffffa2b8c773f9d0 EFLAGS: 00010246
-> >  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000005
-> >  RDX: 0000000000000004 RSI: 00000000006080c0 RDI: 0000000000000000
-> >  RBP: ffff8ea0a8634fd0 R08: ffffa2b8c773f988 R09: 00000000006000c0
-> >  R10: 0000000000000000 R11: 0000000000000230 R12: 00000000006080c0
-> >  R13: ffffffffc0a97fc8 R14: 0000000000000000 R15: 0000000000000000
-> >  FS:  00007f9138ed9740(0000) GS:ffff8ea4ae800000(0000) knlGS:0000000000000000
-> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >  CR2: 000000000000000b CR3: 000000046d59a000 CR4: 00000000003406e0
-> >  Call Trace:
-> >   rxe_alloc+0xc8/0x160 [rdma_rxe]
-> >   rxe_get_dma_mr+0x25/0xb0 [rdma_rxe]
-> >   __ib_alloc_pd+0xcb/0x160 [ib_core]
-> >   ib_mad_init_device+0x296/0x8b0 [ib_core]
-> >   add_client_context+0x11a/0x160 [ib_core]
-> >   enable_device_and_get+0xdc/0x1d0 [ib_core]
-> >   ib_register_device+0x572/0x6b0 [ib_core]
-> >   ? crypto_create_tfm+0x32/0xe0
-> >   ? crypto_create_tfm+0x7a/0xe0
-> >   ? crypto_alloc_tfm+0x58/0xf0
-> >   rxe_register_device+0x19d/0x1c0 [rdma_rxe]
-> >   rxe_net_add+0x3d/0x70 [rdma_rxe]
-> >   ? dev_get_by_name_rcu+0x73/0x90
-> >   rxe_param_set_add+0xaf/0xc0 [rdma_rxe]
-> >   parse_args+0x179/0x370
-> >   ? ref_module+0x1b0/0x1b0
-> >   load_module+0x135e/0x17e0
-> >   ? ref_module+0x1b0/0x1b0
-> >   ? __do_sys_init_module+0x13b/0x180
-> >   __do_sys_init_module+0x13b/0x180
-> >   do_syscall_64+0x5b/0x1a0
-> >   entry_SYSCALL_64_after_hwframe+0x65/0xca
-> >  RIP: 0033:0x7f9137ed296e
-> > 
-> > Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > ---
-> >  drivers/infiniband/sw/rxe/rxe.c       | 4 ++++
-> >  drivers/infiniband/sw/rxe/rxe.h       | 2 ++
-> >  drivers/infiniband/sw/rxe/rxe_sysfs.c | 5 +++++
-> >  3 files changed, 11 insertions(+)
-> 
-> Can you send a PR to rdma-core to delete rxe_cfg as well? In
-> preperation to remove the module parameters
->
+On Thu, Aug 27, 2020 at 02:06:03AM +0000, Saleem, Shiraz wrote:
 
-Someone already did that :-)
+> Which then boils down do we just keep a simpler definition of the
+> API contract -- driver can just return whatever the true error code
+> is?  
 
-commit 0d2ff0e1502ebc63346bc9ffd37deb3c4fd0dbc9
-Author: Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Tue Jan 28 15:53:07 2020 -0400
+No, that was always wrong. In almost every case returning codes from
+destroy is a driver bug, flat out. It causes kernel leaking
+memory/worse and unrecoverable userspace failures.
 
-    rxe: Remove rxe_cfg
-
-    This is obsoleted by iproute2's 'rdma link add' command.
-
-    Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-
-Thanks,
-Kamal
-
-> Applied to for-rc
-> 
-> Thanks,
-> Jason
+Jason
