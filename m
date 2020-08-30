@@ -2,110 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522DD25623B
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Aug 2020 22:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D83D256CD9
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Aug 2020 10:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgH1Usx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Aug 2020 16:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgH1Usv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Aug 2020 16:48:51 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD65C061264
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Aug 2020 13:48:51 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id j16so60164ooc.7
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Aug 2020 13:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JvL5NaWHZfMYOf9MtlaVDd2osfTd36Htl2Ik5AoPm+w=;
-        b=iYqQb0cVlMQqlCEW03FwWSG8gT5UGZGTy4XinJ6F/A0qvilV40r/2ouAHNptcDQTxw
-         HSHi7gMlBnzENI5KQXwZ8q00hOvmQVZc+ubu2LpvY2TDCjyOFaYWeazKXFB0w9IbgwjE
-         A8sG4GAfG35VDj4VXGr4B1FfO1fCLw1t+uLwIElRYxBwIKRijx5xvgYwMP3nkyk16kBq
-         GviraK+Yc4uKw8nEmeBo9vFDuLTl1LO/xiWUy5IMqEcJ12X95DRWuFEyzNEKPrIIpUO5
-         F9tJgnbzrNfiaanXGYAFhMZJFHdpNEOT5//fBVHm1CJy2XFJUva+chTGQAw0gKfNAoCI
-         We2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JvL5NaWHZfMYOf9MtlaVDd2osfTd36Htl2Ik5AoPm+w=;
-        b=Q/oAyTrjgQL3g8q1z01com1ZYFIvQeGSm84Z5gkMdjVTOPAdy+w1MH63Qy8QCNxnWS
-         hZ/4DPeENfSpmY3yyMZ8gh+5Ma19C5BZjxzAMzy8vs1Os08BYQGgEGwOf10QeN3Vsgxf
-         /472eiZ5eNDRGPOsivM2geTOh6tBJ4NlmHvOGtEawutK/hjm+hzOwTT4whBLLadhgpfa
-         aKsukVe1Wy2cnLrL13nnRYxMTpATCXHK7RgkVkDfCbxPbkfuyl/wFSkzMUOPxhGCxAFk
-         fFTxlRPCP8uSu0PjW6xT/9Xx5kI7XdhQJQEwvxjDUh1F1C/SLHoRtxErqNmc7698rVT3
-         2dJw==
-X-Gm-Message-State: AOAM530+o/8Z0CymI1kVkRThgwdPDWlwU7mYteprJTTMkMMhqUAhu0EX
-        imBblvsB/nbfbMiWAKTNSelrzEQaZcYunA==
-X-Google-Smtp-Source: ABdhPJwNnZ4H7KBjYghmsvHOypRhB9Z6U0P6gjRcCQzOAhntLzBuw8ajhnrvZesygPxf33K6pkG0Fw==
-X-Received: by 2002:a4a:9cd6:: with SMTP id d22mr341607ook.0.1598647729615;
-        Fri, 28 Aug 2020 13:48:49 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:f026:647f:55bb:7c0f? ([2605:6000:8b03:f000:f026:647f:55bb:7c0f])
-        by smtp.gmail.com with ESMTPSA id 40sm119435otj.76.2020.08.28.13.48.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Aug 2020 13:48:49 -0700 (PDT)
-Subject: Re: pyverbs failures
-To:     Jason Gunthorpe <jgg@nvidia.com>, Parav Pandit <parav@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-References: <0c4cef74-21bf-19b5-1523-6fffa450e764@gmail.com>
- <20200828184458.GS1152540@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <3c88c04f-e9ad-2d13-2fd0-59f9756dfaab@gmail.com>
-Date:   Fri, 28 Aug 2020 15:48:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726078AbgH3IkW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Aug 2020 04:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726013AbgH3IkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 30 Aug 2020 04:40:20 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DD9020714;
+        Sun, 30 Aug 2020 08:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598776819;
+        bh=4qTFzvTKwV/6OQlRrbfK7OU39udgXE4A/C0NtP7Zpeg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0Ud8ZI5J+e8OAvrNB6Sj6XnGfAkJ0raLNeaNDocM4jq5lK7zLTzOM7uMM3/pZ39ad
+         NLzcuajhvHEEnppjFZHeH93BP2iHYfNLmCYXgnfWG3HN2I6UAtFiGBzj5XijJwXujR
+         SX9daUVD/l47HbIyRX6AtV9tvvO2xF+XSDpOwyh8=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Roland Dreier <roland@purestorage.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: [PATCH rdma-next v1 00/10] Restore failure of destroy commands
+Date:   Sun, 30 Aug 2020 11:40:00 +0300
+Message-Id: <20200830084010.102381-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200828184458.GS1152540@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/28/20 1:44 PM, Jason Gunthorpe wrote:
-> On Fri, Aug 28, 2020 at 11:51:07AM -0500, Bob Pearson wrote:
-> 
->> I have been trying to reduce the number of test failures in the
->> pyverbs tests for the rxe driver. There is one class of these errors
->> that seems to be potentially a design failure in rdma core. By
->> default each time a new RoCE device is registered the core sets up a
->> gid table in cache.c and populates the first gid entry with the
->> eui64 version of the IPV6 link local address. Later the other IP
->> addresses configured on each port are added as well. It is expected
->> that the default entry with sgid_index = 0 will function as a valid
->> source address. Five years ago this probably always worked but more
->> modern OSes have stopped using this address for privacy
->> reasons. Ubuntu 20.04 which is the one I am working on uses a pseudo
->> random address and not the MAC based one. Windows and IOS also
->> apparently no longer use this address. The result is that the
->> pyverbs test cases which use sgid_index = 0 in some cases, and use
->> random sgid_indices including 0 in others, fail. The most common
->> failure symptom is that when attempting to add a remote address to a
->> QP (INIT -> RTR) it is unable to contact the invalid address and it
->> times out.
-> 
-> The RoCEv1 GID is formed as you described above, is rxe triggering
-> some RoCEv1 support that it can't handle?
-> 
->> A better choice for the default GID for RoCEv2 devices may be to
->> just use the IPV6 address configured as the link local address for
->> the ndev. If they use the eui64 address the result will be the
->> same. At least some of these OSes claim that the link local address
->> is temporary, changing periodically. This would require tracking
->> IPV6.
-> 
-> Certainly RoCEv2 devices shouldn't have GIDs that are not matching
-> their IP addresses. Otherwise it would malform a UDP header.
-> 
-> Maybe Parav remebers if there is some tricky reason why this is still
-> being done?
-> 
-> Jason
-> 
-rxe does not support RoCEv1. If you look at the /sys/class/infiniband/<rxe_0>/ports/1/gid_attrs/types/0 (and all the rest as well) the type is RoCE v2. If you look at mlx5 devices they have two gids for each address one with RoCE v1 and one with RoCEv2, but they also get the 'bad' address. The code is straight forward and not sensitive to v1 or v2. It just builds the eui64 gid for gid_index = 0.
+From: Leon Romanovsky <leonro@nvidia.com>
+
+Changelog:
+v1:
+ * Changed returned value in efa_destroy_ah() from EINVAL to EOPNOTSUPP
+v0:
+ * https://lore.kernel.org/lkml/20200824103247.1088464-1-leon@kernel.org
+
+-----------------------------------------------------------------------------
+Hi,
+
+This series restores the ability to fail on destroy commands, due to the
+fact that mlx5_ib DEVX implementation interleaved ib_core objects
+with FW objects without sharing reference counters.
+
+In a retrospective, every part of the mlx5_ib flow is correct.
+
+It started from IBTA which was written by HW engineers with HW in mind and
+they allowed to fail in destruction. FW implemented it with symmetrical
+interface like any other command and propagated error back to the kernel,
+which forwarded it to the libibverbs and kernel ULPs.
+
+Libibverbs was designed with IBTA spec in hand putting destroy errors in
+stone. Up till mlx5_ib DEVX, it worked well, because the IB verbs objects
+are counted by the kernel and ib_core ensures that FW destroy will success
+by managing various reference counters on such objects.
+
+The extension of the mlx5 driver changed this flow when allowed DEVX objects
+that are not managed by ib_core to be interleaved with the ones under ib_core
+responsibility.
+
+The drivers that want to implement DEVX flows, must ensure that FW/HW
+destroys are performed as early as possible before any other internal
+cleanup. After HW destroys, drivers are not allowed to fail.
+
+This series includes two patches (WQ and "potential race") that will
+require extra work in mlx5_ib, they both theoretical. WQ is not in use
+in DEVX, but is needed to make interface symmetrical to other objects.
+"Potential race" is in ULP flow that ensures that SRQ is destoyed in
+proper order.
+
+Thanks
+
+Leon Romanovsky (10):
+  RDMA: Restore ability to fail on PD deallocate
+  RDMA: Restore ability to fail on AH destroy
+  RDMA/mlx5: Issue FW command to destroy SRQ on reentry
+  RDMA/mlx5: Fix potential race between destroy and CQE poll
+  RDMA: Restore ability to fail on SRQ destroy
+  RDMA/core: Delete function indirection for alloc/free kernel CQ
+  RDMA: Allow fail of destroy CQ
+  RDMA: Change XRCD destroy return value
+  RDMA: Restore ability to return error for destroy WQ
+  RDMA: Make counters destroy symmetrical
+
+ drivers/infiniband/core/cq.c                  |  36 +++---
+ drivers/infiniband/core/uverbs_std_types.c    |   3 +-
+ .../core/uverbs_std_types_counters.c          |   4 +-
+ drivers/infiniband/core/uverbs_std_types_wq.c |   2 +-
+ drivers/infiniband/core/verbs.c               |  56 +++++++---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  12 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   8 +-
+ drivers/infiniband/hw/cxgb4/cq.c              |   3 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |   3 +-
+ drivers/infiniband/hw/cxgb4/qp.c              |   3 +-
+ drivers/infiniband/hw/efa/efa.h               |   6 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  11 +-
+ drivers/infiniband/hw/hns/hns_roce_ah.c       |   5 -
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  13 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_pd.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   3 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   6 +-
+ drivers/infiniband/hw/mlx4/ah.c               |   5 -
+ drivers/infiniband/hw/mlx4/cq.c               |   3 +-
+ drivers/infiniband/hw/mlx4/main.c             |   6 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |  11 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   3 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   3 +-
+ drivers/infiniband/hw/mlx5/ah.c               |   5 -
+ drivers/infiniband/hw/mlx5/cmd.c              |   4 +-
+ drivers/infiniband/hw/mlx5/cmd.h              |   2 +-
+ drivers/infiniband/hw/mlx5/counters.c         |   3 +-
+ drivers/infiniband/hw/mlx5/cq.c               |  21 ++--
+ drivers/infiniband/hw/mlx5/main.c             |   4 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  13 ++-
+ drivers/infiniband/hw/mlx5/qp.c               |  12 +-
+ drivers/infiniband/hw/mlx5/qp.h               |   4 +-
+ drivers/infiniband/hw/mlx5/qpc.c              |   5 +-
+ drivers/infiniband/hw/mlx5/srq.c              |  26 ++---
+ drivers/infiniband/hw/mlx5/srq.h              |   2 +-
+ drivers/infiniband/hw/mlx5/srq_cmd.c          |  22 +++-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  12 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.c      |   3 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.h      |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  11 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |   6 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  14 ++-
+ drivers/infiniband/hw/qedr/verbs.h            |   8 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |   7 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   3 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   |   8 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   8 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/ah.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/cq.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/cq.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/pd.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/pd.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/srq.c            |   3 +-
+ drivers/infiniband/sw/rdmavt/srq.h            |   2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  12 +-
+ drivers/infiniband/sw/siw/siw_verbs.c         |   9 +-
+ drivers/infiniband/sw/siw/siw_verbs.h         |   6 +-
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c       |   6 +-
+ include/rdma/ib_verbs.h                       | 105 +++++-------------
+ 65 files changed, 313 insertions(+), 275 deletions(-)
+
+--
+2.26.2
+
