@@ -2,34 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195F8256D43
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC33256D44
 	for <lists+linux-rdma@lfdr.de>; Sun, 30 Aug 2020 12:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgH3KOv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726264AbgH3KOv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Sun, 30 Aug 2020 06:14:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48990 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgH3KOq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 30 Aug 2020 06:14:46 -0400
+        id S1728762AbgH3KOt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 30 Aug 2020 06:14:49 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E64FF207DA;
-        Sun, 30 Aug 2020 10:14:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 627F7208CA;
+        Sun, 30 Aug 2020 10:14:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598782485;
-        bh=YlS5oONg7VJySL6XACMHJkvvxr+bdpQDzuKPjsg0HdQ=;
+        s=default; t=1598782489;
+        bh=EzqJ7VUWwmXig0zSu7HibRzW6Vq4SKBW7qep/hsQ4RE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jabs3DZ6ZAeXrjDBxGVvhYHmEFnAeqRqr3Q48d2vPLRshBQI9hGNwa5Bndy8aQiLQ
-         YYTwTZ+6NC/zCogaZsJN5Fvc0spM3pZsraPMGosrct5T0ly+MGwEoxlUWraxL8mkDo
-         6lVfdyb8tfkz3987t2MZbncRWGfFphgtzcZb77pI=
+        b=vz+2WStixuegdWWHOV6TasSgOuiS1qD6KyErkQ5Kow6IfPU4HElCyRXtkGJpAoVIz
+         sIX9JnxOnABLb9KP6IqcBMUkg2Vg86F5shCJIpKqpPTMK4qGo+lVklQFH4HFY8Xacf
+         C3SsJFw3bjD+k13YcwzOylvW1aZd41TCntT9JXHk=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 01/13] RDMA/cma: Delete from restrack DB after successful destroy
-Date:   Sun, 30 Aug 2020 13:14:24 +0300
-Message-Id: <20200830101436.108487-2-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@nvidia.com>
+Subject: [PATCH rdma-next v1 02/13] RDMA/mlx5: Don't call to restrack recursively
+Date:   Sun, 30 Aug 2020 13:14:25 +0300
+Message-Id: <20200830101436.108487-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200830101436.108487-1-leon@kernel.org>
 References: <20200830101436.108487-1-leon@kernel.org>
@@ -42,59 +43,59 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Update the code to have similar destroy pattern like other IB objects.
+The restrack is going to manage memory of all IB objects and must be
+called before object is created. GSI QP in the mlx5_ib separated between
+creating dummy interface and HW object beneath. This was achieved by
+double call to ib_create_qp().
 
-This change create asymmetry to the rdma_id_private create flow to make
-sure that memory is managed by restrack.
+In order to skip such reentry call to internal driver create_qp code.
 
+Reviewed-by: Mark Zhang <markz@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cma.c      | 3 +--
- drivers/infiniband/core/restrack.c | 3 +++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/gsi.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 78641858abe2..5d6b70ae7a57 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1821,7 +1821,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- {
- 	cma_cancel_operation(id_priv, state);
+diff --git a/drivers/infiniband/hw/mlx5/gsi.c b/drivers/infiniband/hw/mlx5/gsi.c
+index 40d418153891..d9f300f78a82 100644
+--- a/drivers/infiniband/hw/mlx5/gsi.c
++++ b/drivers/infiniband/hw/mlx5/gsi.c
+@@ -182,13 +182,25 @@ struct ib_qp *mlx5_ib_gsi_create_qp(struct ib_pd *pd,
+ 		hw_init_attr.cap.max_send_sge = 0;
+ 		hw_init_attr.cap.max_inline_data = 0;
+ 	}
+-	gsi->rx_qp = ib_create_qp(pd, &hw_init_attr);
++
++	gsi->rx_qp = mlx5_ib_create_qp(pd, &hw_init_attr, NULL);
+ 	if (IS_ERR(gsi->rx_qp)) {
+ 		mlx5_ib_warn(dev, "unable to create hardware GSI QP. error %ld\n",
+ 			     PTR_ERR(gsi->rx_qp));
+ 		ret = PTR_ERR(gsi->rx_qp);
+ 		goto err_destroy_cq;
+ 	}
++	gsi->rx_qp->device = pd->device;
++	gsi->rx_qp->pd = pd;
++	gsi->rx_qp->real_qp = gsi->rx_qp;
++
++	gsi->rx_qp->qp_type = hw_init_attr.qp_type;
++	gsi->rx_qp->send_cq = hw_init_attr.send_cq;
++	gsi->rx_qp->recv_cq = hw_init_attr.recv_cq;
++	gsi->rx_qp->event_handler = hw_init_attr.event_handler;
++	spin_lock_init(&gsi->rx_qp->mr_lock);
++	INIT_LIST_HEAD(&gsi->rx_qp->rdma_mrs);
++	INIT_LIST_HEAD(&gsi->rx_qp->sig_mrs);
  
--	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
- 			if (id_priv->cm_id.ib)
-@@ -1847,6 +1846,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
+ 	dev->devr.ports[init_attr->port_num - 1].gsi = gsi;
  
- 	put_net(id_priv->id.route.addr.dev_addr.net);
-+	rdma_restrack_del(&id_priv->res);
- 	kfree(id_priv);
- }
+@@ -219,7 +231,7 @@ int mlx5_ib_gsi_destroy_qp(struct ib_qp *qp)
+ 	mlx5_ib_dbg(dev, "destroying GSI QP\n");
  
-@@ -3728,7 +3728,6 @@ int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
- 
- 	return 0;
- err2:
--	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev)
- 		cma_release_dev(id_priv);
- err1:
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index 62fbb0ae9cb4..90fc74106620 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -330,6 +330,9 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
- 	rt = &dev->res[res->type];
- 
- 	old = xa_erase(&rt->xa, res->id);
-+	if (!old &&
-+	    (res->type == RDMA_RESTRACK_MR || res->type == RDMA_RESTRACK_QP))
-+		return;
- 	WARN_ON(old != res);
- 	res->valid = false;
- 
+ 	mutex_lock(&dev->devr.mutex);
+-	ret = ib_destroy_qp(gsi->rx_qp);
++	ret = mlx5_ib_destroy_qp(gsi->rx_qp, NULL);
+ 	if (ret) {
+ 		mlx5_ib_warn(dev, "unable to destroy hardware GSI QP. error %d\n",
+ 			     ret);
 -- 
 2.26.2
 
