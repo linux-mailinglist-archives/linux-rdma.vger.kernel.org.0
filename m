@@ -2,75 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557EA257CC3
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Aug 2020 17:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94997257D2D
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Aug 2020 17:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgHaPbT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Aug 2020 11:31:19 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:58911 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728826AbgHaPbR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Aug 2020 11:31:17 -0400
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 506AB24000C;
-        Mon, 31 Aug 2020 15:31:13 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        id S1729250AbgHaPet (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Aug 2020 11:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729242AbgHaPem (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Aug 2020 11:34:42 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE8AC061573
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Aug 2020 08:34:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n10so2415294qtv.3
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Aug 2020 08:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iAMba//TxGLvi6KI3uMlOLBajkxl3K8BsmpgOVTnGqo=;
+        b=dB+PP0hQuSQ4ZE8AxL4ua78XiDhRqJG+WP1QgDTe/7c5TwCAzrVzmTcZGZSf6OldPO
+         WhDPMFpalcHqA0Qy776ZtI2GCBleXbcTKWEeg+/P7tf79mIOdsk5KvaH56H6lMdNFH1G
+         D+9ObvHehoceRDcgZ2Wet7VH/JvWFMPHflij80ZGdza/uj2fFTmVdwECA4UCfeOB/kMk
+         IhyLkwb7T+jZ0oUjKnX/7V4TaRMIT34uyoJ0eclyBj4w5xoCFv2jzuc7R6I/oryZMf8x
+         Cquly/geUjK1wp/F6ogLCRFLExLLC45L2AVHs95WZlyrIW7Cn3H8SqyD15vc9KOuN08M
+         Ca9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iAMba//TxGLvi6KI3uMlOLBajkxl3K8BsmpgOVTnGqo=;
+        b=a3bBfF2Voi71vdXBVLP4DNI94OIS0axjLP+54jjyfP9SfAtbbD8qfRdWP7Wif9IZyd
+         z8u9NaaXs3eN8RzVypNsXDGuvukcDhgZcSgV1OmM1lejetV+9imqy35mez+5KDhpWxee
+         QZeUTVPPFXSMnFpegsDgzO/DhwvmJ2Zc61JHR0dh9jZYfF+c7GXAaGTzQrG0KwdaNVTu
+         QTHYsvAdAuqpYDpp7UTgFXvsPjel0cTnNGDG5cj3ia6bZRsRiNvZ7eJErvuuHS1Bj8YU
+         zCAztC60JDBb0YXidKUTIW2gtzRaP5HbyVb5a5ms52V31UY+eF/fZR3BZCoT65kRAVRX
+         T+3Q==
+X-Gm-Message-State: AOAM532MifzQgB4b8/50/FtbfSc/MccDUQ+xGPRAs15Fj0davr7es2Pu
+        XGiKL9+IGmcFTRaWYwTGYfYFag==
+X-Google-Smtp-Source: ABdhPJxUTXkZenE7cBleXw6w+N0DnPg9wNGzSw1MSkAiXkrts3H3PIrQrcMTQoG+i4ivWGAfZjhflw==
+X-Received: by 2002:ac8:72da:: with SMTP id o26mr1887711qtp.266.1598888081636;
+        Mon, 31 Aug 2020 08:34:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x13sm10404428qts.23.2020.08.31.08.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 08:34:40 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kClpQ-002mCz-C7; Mon, 31 Aug 2020 12:34:40 -0300
+Date:   Mon, 31 Aug 2020 12:34:40 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Cengiz Can <cengiz@kernel.wtf>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] infiniband: remove unnecessary fallthrough usage
-Date:   Mon, 31 Aug 2020 18:30:34 +0300
-Message-Id: <20200831153033.113952-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.28.0
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband: remove unnecessary fallthrough usage
+Message-ID: <20200831153440.GA24045@ziepe.ca>
+References: <20200831153033.113952-1-cengiz@kernel.wtf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831153033.113952-1-cengiz@kernel.wtf>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Since /* fallthrough */ comments are deprecated[1], they are being replaced
-by new 'fallthrough' pseudo-keyword.
+On Mon, Aug 31, 2020 at 06:30:34PM +0300, Cengiz Can wrote:
+> Since /* fallthrough */ comments are deprecated[1], they are being replaced
+> by new 'fallthrough' pseudo-keyword.
+> 
+> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?\
+>         highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> This sometimes leads to unreachable code warnings by static analyzers,
+> particularly in this case, Coverity Scanner. (CID 1466512)
+> 
+> Remove unnecessary 'fallthrough' keywords to prevent dead code
+> warnings.
+> 
+> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+> ---
+>  drivers/infiniband/hw/qib/qib_mad.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?\
-        highlight=fallthrough#implicit-switch-case-fall-through
+Alex beat you to it:
 
-This sometimes leads to unreachable code warnings by static analyzers,
-particularly in this case, Coverity Scanner. (CID 1466512)
+https://patchwork.kernel.org/patch/11736039/
 
-Remove unnecessary 'fallthrough' keywords to prevent dead code
-warnings.
-
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
- drivers/infiniband/hw/qib/qib_mad.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qib/qib_mad.c b/drivers/infiniband/hw/qib/qib_mad.c
-index e7789e724f56..f972e559a8a7 100644
---- a/drivers/infiniband/hw/qib/qib_mad.c
-+++ b/drivers/infiniband/hw/qib/qib_mad.c
-@@ -2322,7 +2322,6 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
- 			ret = cc_get_congestion_control_table(ccp, ibdev, port);
- 			goto bail;
- 
--			fallthrough;
- 		default:
- 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
- 			ret = reply((struct ib_smp *) ccp);
-@@ -2339,7 +2338,6 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
- 			ret = cc_set_congestion_control_table(ccp, ibdev, port);
- 			goto bail;
- 
--			fallthrough;
- 		default:
- 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
- 			ret = reply((struct ib_smp *) ccp);
--- 
-2.28.0
-
+Thanks,
+Jason
