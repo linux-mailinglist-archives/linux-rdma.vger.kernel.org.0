@@ -2,112 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EB0257357
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Aug 2020 07:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0955257479
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Aug 2020 09:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725794AbgHaFhl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Aug 2020 01:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgHaFhh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Aug 2020 01:37:37 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F58EC061573
-        for <linux-rdma@vger.kernel.org>; Sun, 30 Aug 2020 22:37:37 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id t9so3935758pfq.8
-        for <linux-rdma@vger.kernel.org>; Sun, 30 Aug 2020 22:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Tj3+c/5mu2y7NtUbu8Tmrv7qKc6My/jhDsNSLws4SGE=;
-        b=iGJQuXAIrQKcTLN9qmoqnMey73N0Cb884uh10kHZjZ8jk6q8fEWnuuLV+3gYArnP+h
-         3MWVjt5nUPgx5g/+VVxpLmZ/2qlhgcNFWtsMKqp5VwYTOfKk6mfCnlilRwwEN1dEBLbc
-         24dyq0ZItXypV1EWsja1ve5XfNn0MrHrM5vAGyRN8MTI7GacvGxto8AfG9nvliFwA+6+
-         pG23WFYVJQ8ZJ4ZNUFshOoJyf8/OEiyz4spKQdiT2T6+WgWBhoA9Dx7hfmI0BsNCYUS8
-         MRGyRtEAdrc09+A0xwB7ijOLuqPFscmjq/wbE6DkO2Oib5AjK78tn936JDekzHedLCU0
-         rjHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Tj3+c/5mu2y7NtUbu8Tmrv7qKc6My/jhDsNSLws4SGE=;
-        b=RR2Jc91sh6oCQC09CGVBaZUHVlYC9DooeOc179J05eNWsvWWj/9GOc9G6raCIZhgTD
-         NddfenUxm4AmQL6vY3lXY6pgL5qDhY6Nrqq12Q1vcMQ1TkreQy5RET646OCjgoge+M9p
-         d1laaX1SNn8OA5yqAZHi/mVw9q9x4PhXmmxWeL+Lhr9hQ7gVw8aS3LQ7pCVK3rvDhIP3
-         U+ypxIbzT1HgFWUfcsp8Zk2U9//DYUY+HwdotTTw8TUfBUwdFeco0wOSJh+5nSEocUxC
-         G56oou1ABmB8LURuy/g0kSPsKYG2RSZ42INKYhiFM5HGzsO/aRtj5IIgiXhjcOHRHDrG
-         +odA==
-X-Gm-Message-State: AOAM5331jS50Hmm/TA/Jcj/79bMsu2GSbjqdztgVbghgI6F159Ae2lKB
-        okvlEb6uxFXXMSO8drYyhBOG0l57+sotQtGEPrw=
-X-Google-Smtp-Source: ABdhPJzYOVE3kMVTg0kCHC31B/FlmJ0aQ58Z/VQONHYL6goAomRz8Qc67J15t/7mbqDu1n8QGHbFRbb49SuC8KtJ5HY=
-X-Received: by 2002:a63:9d0f:: with SMTP id i15mr25391pgd.413.1598852256164;
- Sun, 30 Aug 2020 22:37:36 -0700 (PDT)
+        id S1726102AbgHaHqQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 31 Aug 2020 03:46:16 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3146 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726573AbgHaHqP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 31 Aug 2020 03:46:15 -0400
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 900E8C2E4D9DEC1E9AD8;
+        Mon, 31 Aug 2020 15:46:10 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 31 Aug 2020 15:46:10 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 31 Aug 2020 15:46:10 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Mon, 31 Aug 2020 15:46:10 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 1/4] RDMA/hns: Export hardware capability
+ flags to userspace
+Thread-Topic: [PATCH v2 for-next 1/4] RDMA/hns: Export hardware capability
+ flags to userspace
+Thread-Index: AQHWfG9NNvwDDSWCPEOkjDn9kDnjiw==
+Date:   Mon, 31 Aug 2020 07:46:09 +0000
+Message-ID: <22f7007f36f54bb8acec608fc19e1593@huawei.com>
+References: <1597929469-22674-1-git-send-email-liweihang@huawei.com>
+ <1597929469-22674-2-git-send-email-liweihang@huawei.com>
+ <20200827124031.GA4023659@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200830103209.378141-1-sagi@grimberg.me> <20200831051453.GA13058@infradead.org>
-In-Reply-To: <20200831051453.GA13058@infradead.org>
-Reply-To: doug@easyco.com
-From:   Doug Dumitru <dougdumitruredirect@gmail.com>
-Date:   Sun, 30 Aug 2020 22:37:10 -0700
-Message-ID: <CAFx4rwS-4VGvDr1bnhVuPitBREbZKDnn7SiYhMbOCxji28evbA@mail.gmail.com>
-Subject: Re: [PATCH] IB/isert: fix unaligned immediate-data handling
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-rdma@vger.kernel.org,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Rust <srust@blockbridge.com>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 10:14 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Sun, Aug 30, 2020 at 03:32:09AM -0700, Sagi Grimberg wrote:
-> > Currently we allocate rx buffers in a single contiguous buffers
-> > for headers (iser and iscsi) and data trailer. This means
-> > that most likely the data starting offset is aligned to 76
-> > bytes (size of both headers).
-> >
-> > This worked fine for years, but at some point this broke.
-> > To fix this, we should avoid passing unaligned buffers for
-> > I/O.
-> >
-> > Instead, we allocate our recv buffers with some extra space
-> > such that we can have the data portion align to 512 byte boundary.
-> > This also means that we cannot reference headers or data using
-> > structure but rather accessors (as they may move based on alignment).
-> > Also, get rid of the wrong __packed annotation from iser_rx_desc
-> > as this has only harmful effects (not aligned to anything).
-> >
-> > This affects the rx descriptors for iscsi login and data plane.
->
-> What are the symptoms of the breakage?
+On 2020/8/27 20:40, Jason Gunthorpe wrote:
+> On Thu, Aug 20, 2020 at 09:17:46PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> The libhns in userspace for HIP09 will use the hardware's capability to
+>> enable some features. So export the hardware capablility flags to userspace
+>> by reusing the reserved fields in structure
+>> "hns_roce_ib_alloc_ucontext_resp".
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_main.c | 1 +
+>>  include/uapi/rdma/hns-abi.h               | 2 +-
+>>  2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+>> index 5907cfd..98945df 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+>> @@ -313,6 +313,7 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
+>>  		return -EAGAIN;
+>>  
+>>  	resp.qp_tab_size = hr_dev->caps.num_qps;
+>> +	resp.cap_flags = (u32)hr_dev->caps.flags;
+> 
+> This makes all the HNS_ROCE_CAP_FLAG_* values uapi, they need to be
+> moved to the uapi header too.
+> 
+> Or rethink this to only expose what you want to be uapi.
+> 
+> Jason
+> 
 
-You don't get the same blocks back that you just wrote.
+Hi Jason,
 
-A simple program that tags sectors with sector numbers gets blocks
-that are shifted by 72 bytes.  Shows up basically instantly.
-Completely non-functional for pretty much any application.
+Thanks for your comments, we will only expose the needed flag to be
+uapi.
 
-I tested this on 5.4.61 with both Mellanox Connect X3 (ROCE) and
-Chelsio T580 cards (iWarp).  Both required that ImmediateData be
-turned off on the target side before the patch.  After the patch, it
-works both ways.
+Considering that this cap_flags field is not necessary for this series,
+I will drop #1 and send a new version. And the modification about
+cap_flags will be sent later.
 
-This is from a thread that started late last year and went thru about
-March.  Sagi then seems to drop it, until I pinged him on it a few
-days ago.  He asked me to test the patch and then I did.  My tests
-were only two systems and I did not dig into the patch.  I don't think
-Sagi has the hardware to test this end to end himself.
-
-I am not sure how much the ImmediateData hurts performance.  I get
-wire speed either way on my single socket E5-1650 v3 server.
-
-Doug Dumitru
-
-[posting twice, forgot to turn plain text on, sorry]
-
--- 
-Doug Dumitru
-EasyCo LLC
+Weihang
