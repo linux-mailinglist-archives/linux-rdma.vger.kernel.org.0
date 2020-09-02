@@ -2,79 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D22C25A3D1
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 05:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E74025A50F
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 07:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIBDKt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Sep 2020 23:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
+        id S1726021AbgIBFdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 01:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBDKr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Sep 2020 23:10:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3122EC061244
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Sep 2020 20:10:46 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id s205so4046921lja.7
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Sep 2020 20:10:46 -0700 (PDT)
+        with ESMTP id S1725774AbgIBFdY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 01:33:24 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05AAC061244
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Sep 2020 22:33:23 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so3805828wrr.4
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Sep 2020 22:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q0TA0JzQJqpIlJrl53Y9fuEwpAWDrBOTkllzb7qWp7k=;
-        b=OuFCudma/VpFBCKAf54ByEVIui09931cO+Omp7jAlyj1QeZCdtMFkRvvppOijRzN7F
-         szxJLqH2OwskKxhDb3L9o4BWhxl9GcC0l/n+4JE1vXbrPhbK91IE7ELk2nTLN+67eKRk
-         +TGg70I2W5tf4OUB70f13gbMVy1/ml6Kyyewjyx2lCFSuKYPykjhO7fz+KHM7Rs6g/U8
-         lOKaM0M96aY7wIlVRzo8zuxOx6LQ5Xmrkr8O3+9fEQlUP1oJN8rUbqd2UleVSiAqkl6x
-         aSK8YVyjsfkHOQwnHoSA4UOWP1MoxQvjs/LS0Nflqlp6Znz6PP7vYNoMzzGWMDGUbMfG
-         w1rw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QkY1jNWSSSeIw1HAKpdMIgEupd8wVOkph4iVZolXkQc=;
+        b=WXl79ckC6fculkqTa3dBSfapSM2Awz7utBbu7S6/Ihm6C4Z9qDSmKLM0zQVgAYHHXZ
+         sEe4rnD0Rz1hCYK9zvAUD0NmRfy9PkbUMn21AwScyL1JDjRrKWdcWSeSlCaUzqB+aoBp
+         HC2abTNhGr2/QBdJe7f8nSxmtydDqfEOVgMbBzMnhI6e52FZVRvs0RgRgQlcXPuX81zd
+         n11zy4Ol/4aUjRHJMluRZg20f0i4XkSJjThLCZytIMETHaT4fkAnYbu+hH8AEkaFTBeT
+         YmpxPatA2zR5xRD+79KY+k+5xgjHt+5FxOCDWh8ACfhZigUl47Spbd5KuTeF1Mf7rdEY
+         mbLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q0TA0JzQJqpIlJrl53Y9fuEwpAWDrBOTkllzb7qWp7k=;
-        b=j+hN4U6AaNQz94mUN9RpPRDl47ZNsU8pBtBfVJRgwhZBknbqRErq5J2rXPiWiNjjC0
-         aprIyIwHWt4/iVSMWdypPyL1nlDGabSPvcol4UYbEcOaM4S5kjF1dr5wbke7AjUPiYeQ
-         838KATkosAEh1ADXrqPIiVdi4GGc3kxDH9IEqYTTZ6CHbkCxDFlohnSsEyqHYb11Nd0L
-         QElhR8hH46sksAdpck1Sy87QQnoohzpJDbsOdKil+a9RjaV4kmXDuNYsYN16Qnc97PRi
-         80Pz2WbzZ5nK6md7lpzdB272ezC+sdICw16O5gJvVYH1ZOc520HivQGGl6gghWiVfsOR
-         xesg==
-X-Gm-Message-State: AOAM532HUElxFMieJto5Z+m/goh0TZ7L2n66DhCDYNwR4q3y+0phQ93f
-        MofRNO8CBxU//XOXe0oXTvBPjzKyDqzAxdwF6o0=
-X-Google-Smtp-Source: ABdhPJwil5J/arb07zwuUJXQttUfbGl9HAScGwMs1cdZn3OowsvER24Hc5DOqir+3bf25z/dQTPQhVEbtLGJDUNu3sI=
-X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr2177796ljj.29.1599016245261;
- Tue, 01 Sep 2020 20:10:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <0-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com> <4-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
-In-Reply-To: <4-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 2 Sep 2020 05:10:34 +0200
-Message-ID: <CANiq72nxN0QkiwWkYbreBknOuC1cXriJetdO7K8WijrW1f1rsQ@mail.gmail.com>
-Subject: Re: [PATCH 04/14] RDMA/umem: Add rdma_umem_for_each_dma_block()
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QkY1jNWSSSeIw1HAKpdMIgEupd8wVOkph4iVZolXkQc=;
+        b=P/dg6XEK6Neo30O0fkBo2polRmulIv6QwVb2NlMhaVPpPfFdf6hllkflpviLlNQa2Y
+         ep7e7DnLWnL6peLkl2BwFeS1ZmrReKFE7cNJBP6jYkXKo03zXxJglDRoIPIRjVkiT88F
+         sepLdXuAdS/9r4z2IF10Kp9NBSClUfRYKOG0+KZeYrNC7x9O5pdfSVnPEjrQE/e3JUD6
+         Z5HOePW4Y/sLxvRTGK2IK2oUIdXSg/ALO2BDAQ/9LgUrWdWXGe0g62pmMD7ERLqHGj0n
+         HS/SN7ANBnyKU/stcM/fDj+L99ZHTSb5+tKwvQ7K6FslsAizLGdJmY8Dcj/WG/SmpgII
+         cMvQ==
+X-Gm-Message-State: AOAM530Yl2DWfwQGb17KDFMa+ccYkDdtEbN8092foMqsVPNR5ibooBAf
+        LubHSZB6ptWV/fcaeCxLH8lYGJXetGA=
+X-Google-Smtp-Source: ABdhPJxwns+uDm57QnT5bXglEqRICtp5nHobWy80FRmOokeL0p9z11aRL8AAlVHrAqhKsM72sEfvMQ==
+X-Received: by 2002:adf:cc8c:: with SMTP id p12mr5525014wrj.92.1599024802314;
+        Tue, 01 Sep 2020 22:33:22 -0700 (PDT)
+Received: from kheib-workstation ([37.142.0.228])
+        by smtp.gmail.com with ESMTPSA id b8sm5109522wrx.76.2020.09.01.22.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 22:33:21 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 08:33:18 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Devesh Sharma <devesh.sharma@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Gal Pressman <galpress@amazon.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        linux-rdma@vger.kernel.org, Weihang Li <liweihang@huawei.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Lijun Ou <oulijun@huawei.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: Re: [PATCH v4 for-rc] RDMA/rxe: Fix panic when calling
+ kmem_cache_create()
+Message-ID: <20200902053318.GA177054@kheib-workstation>
+References: <20200825151725.254046-1-kamalheib1@gmail.com>
+ <20200827121822.GA4014126@nvidia.com>
+ <20200827142955.GA406793@kheib-workstation>
+ <20200827145450.GK1152540@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827145450.GK1152540@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 2:43 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
->  .clang-format                              |  1 +
+On Thu, Aug 27, 2020 at 11:54:50AM -0300, Jason Gunthorpe wrote:
+> On Thu, Aug 27, 2020 at 05:29:55PM +0300, Kamal Heib wrote:
+> > > Can you send a PR to rdma-core to delete rxe_cfg as well? In
+> > > preperation to remove the module parameters
+> > >
+> > 
+> > Someone already did that :-)
+> > 
+> > commit 0d2ff0e1502ebc63346bc9ffd37deb3c4fd0dbc9
+> > Author: Jason Gunthorpe <jgg@ziepe.ca>
+> > Date:   Tue Jan 28 15:53:07 2020 -0400
+> > 
+> >     rxe: Remove rxe_cfg
+> > 
+> >     This is obsoleted by iproute2's 'rdma link add' command.
+> > 
+> >     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> Oh! Lets drop the kernel side of this in Jan 2021 then?
+> 
+> Jason
 
-Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Works for me.
 
-Cheers,
-Miguel
+Thanks,
+Kamal
