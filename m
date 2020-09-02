@@ -2,76 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA06325A750
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEDC25A76B
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgIBIEp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 04:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgIBIEn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 04:04:43 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9070FC061245
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 01:04:43 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x14so4171144wrl.12
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 01:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ITan/zWSkbnHfpsc035XWViobYfAo1iIHcwyiV6vkj4=;
-        b=Ei7BzzoxqD3QGipbXt1TuGH/beBPbo1RAf16/0vRAsw/iy+rXNLeISy72B+5AEtnpu
-         zBNjabWW79SX5ZhUBPwQ8ykTA1sO4KEt17z8lhruVcHxlLYttBqZ/4jf33/tY30WShY1
-         A/LAVnjntmc+pKn4HK0tMTtNxZN4MzL8g9bdWcqpUV18YSgZ47eGmFSRzMsQgDKVT6be
-         ZMfGK5yozLBTj4+wbyfWou5pVSPWYuqvCIrZuWh3Pdoo0GRlCSezl3rmImcJsULSOdkI
-         0SoWVrGywta4MUPG7ffDnHJ1xgrCWvZwFBnCVV0LfSHPuNXPkXtIDYgcnj6yTDS9Kqsb
-         BnPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=ITan/zWSkbnHfpsc035XWViobYfAo1iIHcwyiV6vkj4=;
-        b=pNar9WlcxdYA/illNKt+VFhwlk5Ojo2FJyCqtL+31o4iUochhJ0LLhn0JkBryWXh7Q
-         UWDmcHqZx99pRchJGcJiVLh3YJPjQa9TZ4E+oBQSgA3OjoiJSiqQf8ZLqjE9Yhwbq3T5
-         hG1710y1sj1TVny6WbK5QmugGq4okVDm15+uNkmHzaT3oHrMtwrmXfsjV4jGt+FdR2Dv
-         pE9cn7l6GjOpaR8q/c/XQ2yuhE1uMihdBeAb5tVekUimmEByJoUoRhvH0iD+coG0it+E
-         tlRc/8P3wfBDbJKmqvAl9i7kyrdSnZfBIlkiuSez83IajRPl/jtrPa4uDE+dgqRI6lio
-         Hdag==
-X-Gm-Message-State: AOAM5305NEvzBj55xa4Ezv/URHWwsnjLPATnlPiLtaSoXLBsul/FwGjA
-        fUKW1mWhtGAK93kvS/Z/hie9LWTGLqG7J3yCMVz9IFR5g0xPyA4=
-X-Google-Smtp-Source: ABdhPJwjmZyPbIbsIS0onIVB4/6WhNp5Hwjzy8zBBzVuPFznPgphMCKLBbkBEU9IhwXmGLh7hyv56e86QYxlsUzSGrg=
-X-Received: by 2002:adf:de08:: with SMTP id b8mr5595440wrm.4.1599033881354;
- Wed, 02 Sep 2020 01:04:41 -0700 (PDT)
+        id S1726144AbgIBIL2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 04:11:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgIBIL2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:11:28 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA2BF2072A;
+        Wed,  2 Sep 2020 08:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599034287;
+        bh=/kbh7IvQHNBhwATreOI8CPiuQC2q08fvANf2M+lhQxw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cf6rR8SDpzuSHCX5L+kKdOEY94dO3oh9d2rIXfm+HWULp4L0pWw9WhAmJKQ6wQJE8
+         zkuadQfl4aO1T8yMb/fz2v0WK4Sr1O+70ZTQU/S0N9hBZHfYHYPfbey++VEg4zXcwp
+         XBOMvK4P0NRusNDTECU4aorLOitadPjWU/dHP4o0=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Eli Cohen <eli@dev.mellanox.co.il>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Roland Dreier <rolandd@cisco.com>
+Subject: [PATCH rdma-next 0/8] Cleanup and fix the CMA state machine
+Date:   Wed,  2 Sep 2020 11:11:14 +0300
+Message-Id: <20200902081122.745412-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Wed, 2 Sep 2020 10:04:30 +0200
-Message-ID: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
-Subject: [RFC] Reliable Multicast on top of RTRS
-To:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi @,
+From: Leon Romanovsky <leonro@nvidia.com>
 
-RTRS allows for reliable transmission of sg lists between two hosts
-over rdma. It is optimised for block io. One can implement a client
-and a server module on top of RTRS which would allow for reliable
-transmission to a group of hosts.
+From Jason:
 
-In the networking world this is called reliable multicast. I think one
-can say that reliable multicast is an equivalent to what is called
-"mirror" in the storage world. There is something called XoR network
-coding which seems to be an equivalent of raid5. There is also Reed
-Solomon network coding.
+The RDMA CMA continues to attract syzkaller bugs due to its somewhat loose
+operation of its FSM. Audit and scrub the whole thing to follow modern
+expectations.
 
-Having a reliable multicast with coding rdma-based transport layer
-would allow for very flexible and scalable designs of distributed
-replication solutions based on different in-kernel transport, block
-and replication drivers.
+Overall the design elements are broadly:
 
-What do you think?
+- The ULP entry points MUST NOT run in parallel with each other. The ULP
+  is solely responsible for preventing this.
 
-Best,
-Danil.
+- If the ULP returns !0 from it's event callback it MUST guarentee that no
+  other ULP threads are touching the cm_id or calling into any RDMA CM
+  entry point.
+
+- ULP entry points can sometimes run conurrently with handler callbacks,
+  although it is tricky because there are many entry points that exist
+  in the flow before the handler is registered.
+
+- Some ULP entry points are called from the ULP event handler callback,
+  under the handler_mutex. (however ucma never does this)
+
+- state uses a weird double locking scheme, in most cases one should hold
+  the handler_mutex. (It is somewhat unclear what exactly the spinlock is
+  for)
+
+- Reading the state without holding the spinlock should use READ_ONCE,
+  even if the handler_mutex is held.
+
+- There are certain states which are 'stable' under the handler_mutex,
+  exit from that state requires also holding the handler_mutex. This
+  explains why testing the test under only the handler_mutex makes sense.
+
+Thanks
+
+Jason Gunthorpe (8):
+  RDMA/cma: Fix locking for the RDMA_CM_CONNECT state
+  RDMA/cma: Make the locking for automatic state transition more clear
+  RDMA/cma: Fix locking for the RDMA_CM_LISTEN state
+  RDMA/cma: Remove cma_comp()
+  RDMA/cma: Combine cma_ndev_work with cma_work
+  RDMA/cma: Remove dead code for kernel rdmacm multicast
+  RDMA/cma: Consolidate the destruction of a cma_multicast in one place
+  RDMA/cma: Fix use after free race in roce multicast join
+
+ drivers/infiniband/core/cma.c | 466 ++++++++++++++++------------------
+ 1 file changed, 218 insertions(+), 248 deletions(-)
+
+--
+2.26.2
+
