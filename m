@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6479A25A770
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEF425A771
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgIBILh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 04:11:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34178 "EHLO mail.kernel.org"
+        id S1726967AbgIBILj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 04:11:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgIBILf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:11:35 -0400
+        id S1726293AbgIBILi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:11:38 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2DB820826;
-        Wed,  2 Sep 2020 08:11:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49FFD2084C;
+        Wed,  2 Sep 2020 08:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599034294;
-        bh=pu7BqtrRV3xB3IGB0NLz9sjE0SzpYaVLQiInsAAskDg=;
+        s=default; t=1599034298;
+        bh=QVXrkytbyrpcq7hudaWALE5s9Sy6LPUcopzOGLyxnJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sLLSDaX4Eyx2qN5KuxWyWSVkPYtoRSzQGXOs+KT17Upbk0Qs1tMOj4FG0Nw8nC9+O
-         gVESGXRQ1LeXgc8YUjiXsqIIZu32Ljc6JXioQbNbqkV45HzcaBLeW1fNtFcBPcpYvn
-         WqaQkgSKpFKT7FeOzdzrafCgVYtvjHb+Sap6nKhw=
+        b=Lv+j3Txk4QSVxAalZVs9ZHoeP+C0gpiZAcjbmCWZHF3qz5X/N8XQP9Gxn21pRU1JS
+         0e6r3r8TNUCN21ZvvkZ/z2x3747HVeImApF/CajCAzQ4dKUjOpsUELE8Bcs1HTC84f
+         YOdTEAUs1CLDSwgREvfO/Owk2dZuCgOXsGCTrojA=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 2/8] RDMA/cma: Make the locking for automatic state transition more clear
-Date:   Wed,  2 Sep 2020 11:11:16 +0300
-Message-Id: <20200902081122.745412-3-leon@kernel.org>
+Subject: [PATCH rdma-next 3/8] RDMA/cma: Fix locking for the RDMA_CM_LISTEN state
+Date:   Wed,  2 Sep 2020 11:11:17 +0300
+Message-Id: <20200902081122.745412-4-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200902081122.745412-1-leon@kernel.org>
 References: <20200902081122.745412-1-leon@kernel.org>
@@ -42,121 +42,114 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@nvidia.com>
 
-Re-organize things so the state variable is not read unlocked. The first
-attempt to go directly from ADDR_BOUND immediately tells us if the ID is
-already bound, if we can't do that then the attempt inside
-rdma_bind_addr() to go from IDLE to ADDR_BOUND confirms the ID needs
-binding.
+There is a strange unlocked read of the ID state when checking for
+reuseaddr. This is because an ID cannot be reusable once it becomes a
+listening ID. Instead of using the state to exclude reuse, just clear it
+as part of rdma_listen()'s flow to convert reusable into not reusable.
+
+Once a ID goes to listen there is no way back out, and the only use of
+reusable is on the bind_list check.
+
+Finally, update the checks under handler_mutex to use READ_ONCE and audit
+that once RDMA_CM_LISTEN is observed in a req callback it is stable under
+the handler_mutex.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cma.c | 67 +++++++++++++++++++++++------------
- 1 file changed, 45 insertions(+), 22 deletions(-)
+ drivers/infiniband/core/cma.c | 36 +++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 7ac9306ab5b3..901d1bd35603 100644
+index 901d1bd35603..1ab779e63762 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -3278,32 +3278,54 @@ static int cma_bind_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
- 	return rdma_bind_addr(id, src_addr);
+@@ -2215,7 +2215,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
+ 	}
+ 
+ 	mutex_lock(&listen_id->handler_mutex);
+-	if (listen_id->state != RDMA_CM_LISTEN) {
++	if (READ_ONCE(listen_id->state) != RDMA_CM_LISTEN) {
+ 		ret = -ECONNABORTED;
+ 		goto err_unlock;
+ 	}
+@@ -2393,7 +2393,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+ 	listen_id = cm_id->context;
+ 
+ 	mutex_lock(&listen_id->handler_mutex);
+-	if (listen_id->state != RDMA_CM_LISTEN)
++	if (READ_ONCE(listen_id->state) != RDMA_CM_LISTEN)
+ 		goto out;
+ 
+ 	/* Create a new RDMA id for the new IW CM ID */
+@@ -3357,7 +3357,8 @@ int rdma_set_reuseaddr(struct rdma_cm_id *id, int reuse)
+ 
+ 	id_priv = container_of(id, struct rdma_id_private, id);
+ 	spin_lock_irqsave(&id_priv->lock, flags);
+-	if (reuse || id_priv->state == RDMA_CM_IDLE) {
++	if ((reuse && id_priv->state != RDMA_CM_LISTEN) ||
++	    id_priv->state == RDMA_CM_IDLE) {
+ 		id_priv->reuseaddr = reuse;
+ 		ret = 0;
+ 	} else {
+@@ -3551,8 +3552,7 @@ static int cma_check_port(struct rdma_bind_list *bind_list,
+ 		if (id_priv == cur_id)
+ 			continue;
+ 
+-		if ((cur_id->state != RDMA_CM_LISTEN) && reuseaddr &&
+-		    cur_id->reuseaddr)
++		if (reuseaddr && cur_id->reuseaddr)
+ 			continue;
+ 
+ 		cur_addr = cma_src_addr(cur_id);
+@@ -3593,18 +3593,6 @@ static int cma_use_port(enum rdma_ucm_port_space ps,
+ 	return ret;
  }
  
--int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
--		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
-+/*
-+ * If required, resolve the source address for bind and leave the id_priv in
-+ * state RDMA_CM_ADDR_BOUND. This oddly uses the state to determine the prior
-+ * calls made by ULP, a previously bound ID will not be re-bound and src_addr is
-+ * ignored.
-+ */
-+static int resolve_prepare_src(struct rdma_id_private *id_priv,
-+			       struct sockaddr *src_addr,
-+			       const struct sockaddr *dst_addr)
- {
--	struct rdma_id_private *id_priv;
- 	int ret;
- 
--	id_priv = container_of(id, struct rdma_id_private, id);
- 	memcpy(cma_dst_addr(id_priv), dst_addr, rdma_addr_size(dst_addr));
--	if (id_priv->state == RDMA_CM_IDLE) {
--		ret = cma_bind_addr(id, src_addr, dst_addr);
--		if (ret) {
--			memset(cma_dst_addr(id_priv), 0,
--			       rdma_addr_size(dst_addr));
--			return ret;
-+	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
-+		/* For a well behaved ULP state will be RDMA_CM_IDLE */
-+		ret = cma_bind_addr(&id_priv->id, src_addr, dst_addr);
-+		if (ret)
-+			goto err_dst;
-+		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
-+					   RDMA_CM_ADDR_QUERY))) {
-+			ret = -EINVAL;
-+			goto err_dst;
- 		}
- 	}
- 
- 	if (cma_family(id_priv) != dst_addr->sa_family) {
--		memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_state;
- 	}
-+	return 0;
- 
--	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
--		memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
--		return -EINVAL;
--	}
-+err_state:
-+	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
-+err_dst:
-+	memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
-+	return ret;
-+}
-+
-+int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
-+		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
-+{
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
-+	int ret;
-+
-+	ret = resolve_prepare_src(id_priv, src_addr, dst_addr);
-+	if (ret)
-+		return ret;
- 
- 	if (cma_any_addr(dst_addr)) {
- 		ret = cma_resolve_loopback(id_priv);
-@@ -3676,20 +3698,21 @@ static int cma_check_linklocal(struct rdma_dev_addr *dev_addr,
- 
- int rdma_listen(struct rdma_cm_id *id, int backlog)
- {
--	struct rdma_id_private *id_priv;
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
- 	int ret;
- 
--	id_priv = container_of(id, struct rdma_id_private, id);
--	if (id_priv->state == RDMA_CM_IDLE) {
-+	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN)) {
-+		/* For a well behaved ULP state will be RDMA_CM_IDLE */
- 		id->route.addr.src_addr.ss_family = AF_INET;
- 		ret = rdma_bind_addr(id, cma_src_addr(id_priv));
- 		if (ret)
- 			return ret;
-+		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
-+					   RDMA_CM_LISTEN)))
-+			return -EINVAL;
- 	}
- 
--	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN))
--		return -EINVAL;
+-static int cma_bind_listen(struct rdma_id_private *id_priv)
+-{
+-	struct rdma_bind_list *bind_list = id_priv->bind_list;
+-	int ret = 0;
 -
+-	mutex_lock(&lock);
+-	if (bind_list->owners.first->next)
+-		ret = cma_check_port(bind_list, id_priv, 0);
+-	mutex_unlock(&lock);
+-	return ret;
+-}
+-
+ static enum rdma_ucm_port_space
+ cma_select_inet_ps(struct rdma_id_private *id_priv)
+ {
+@@ -3713,8 +3701,16 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
+ 			return -EINVAL;
+ 	}
+ 
++	/*
++	 * Once the ID reaches RDMA_CM_LISTEN it is not allowed to be reusable
++	 * any more, and has to be unique in the bind list.
++	 */
  	if (id_priv->reuseaddr) {
- 		ret = cma_bind_listen(id_priv);
+-		ret = cma_bind_listen(id_priv);
++		mutex_lock(&lock);
++		ret = cma_check_port(id_priv->bind_list, id_priv, 0);
++		if (!ret)
++			id_priv->reuseaddr = 0;
++		mutex_unlock(&lock);
  		if (ret)
+ 			goto err;
+ 	}
+@@ -3739,6 +3735,10 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
+ 	return 0;
+ err:
+ 	id_priv->backlog = 0;
++	/*
++	 * All the failure paths that lead here will not allow the req_handler's
++	 * to have run.
++	 */
+ 	cma_comp_exch(id_priv, RDMA_CM_LISTEN, RDMA_CM_ADDR_BOUND);
+ 	return ret;
+ }
 -- 
 2.26.2
 
