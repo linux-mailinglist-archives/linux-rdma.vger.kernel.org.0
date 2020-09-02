@@ -2,52 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1608225B64B
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 00:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E8825B71B
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 01:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgIBWGu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 18:06:50 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39399 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgIBWGr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 18:06:47 -0400
-Received: by mail-pg1-f195.google.com with SMTP id v15so418352pgh.6
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 15:06:47 -0700 (PDT)
+        id S1726310AbgIBXHS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 19:07:18 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:45648 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgIBXHR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 19:07:17 -0400
+Received: by mail-pg1-f173.google.com with SMTP id 67so491043pgd.12;
+        Wed, 02 Sep 2020 16:07:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TGHpHg05lrtDBriniYpM+XAo+E9+8HWsXYDmjr6MPV0=;
-        b=FfMOnwMvT9qER8bYwbzHrLEECDa/WfDHRdsTVafEyke5iSi+iwFhlvqupvKPy5cJrK
-         oXkP3WantSR7VBITbD1c9v7ykBMkQpccp3b/tByfRwSgEd4PnxB4807Dqr2BuPd+KwIL
-         MKPvG364BoVIJiXMACuQ62Th5lH42Ycy0PEOTTA1I65sWeYKgciFAUlGMuq9O+8F9unm
-         EIlSIR+dvwJKT8zlaIOgyCgcS7KOuph1QpypBF7aXmJTEnKDBC5sqMKII+ssJ6ejOjcr
-         Xd9JjV3NX08Wbni3rKPVK9hxPHzSWy8HAQXobel3UCns4+kcb92Us3b7YNRSznH2G7CP
-         01WQ==
-X-Gm-Message-State: AOAM533Ppy4iA2pX3H3qRUUQ+rOXLr6bm5YG+Z5ITLThgQ6ckOoM8+1t
-        rqE/Q2dOrur6Aaj0k7OwD0M=
-X-Google-Smtp-Source: ABdhPJxmo8M4b1ixENhCdn/spqsJKECOT8AgBujNc3po9hZy9FcAF+7iuD96P1VRtBUygzfH1reNHA==
-X-Received: by 2002:a17:902:bb8d:: with SMTP id m13mr448461pls.11.1599084406868;
-        Wed, 02 Sep 2020 15:06:46 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:4025:ed24:701e:8cf3? ([2601:647:4802:9070:4025:ed24:701e:8cf3])
-        by smtp.gmail.com with ESMTPSA id r123sm505737pfc.187.2020.09.02.15.06.45
+        bh=e7FwOEGGEMeAosXGf3vEt7w+keSrNJPAi/ExRrKOBCU=;
+        b=V4k7+7jchMBPctxWlfKyhAvuidJiYqetIm9pvUiyEgG23v35aQrxzCsSEXW90p4e2I
+         kogls7hYKKvEOmQm5zGyJVQKA6PJyavt4iiV7l/SvWu5xaNtQdoxnMgPgPWcw6XgWrgm
+         5Iz5X/96hHBqOV/tKxwFRxYJvXf9MfVq4pHrqo6Xy0XbYQrZnvgZjLpwai92hbqVrhGX
+         BLVxMOfZB68DlZgrMzmFBsAgkBMuulp0sDTlThC5HL5Kl9FGVg/b8AxCrzBlc6Nhk/M/
+         sNayhplD6geywI6Uot6BwAa2S7n+lm3jrfRngluGnBThBak21WSDtGijYsd57Yhx8X/Q
+         +njQ==
+X-Gm-Message-State: AOAM530GL6ERgfYDjsIyuiblgnybQ1iV42rO0yuOzwqS/P/RjOthWUTH
+        dVICM722I3//fngeeeHYbqG9zSIDTXA=
+X-Google-Smtp-Source: ABdhPJyNwqqk28YnUTSFsctPyYFjKwEJKzMtf3chE0SL+h36TuVZa5+3fkDIsos2ZSLZtqwzZAjlWA==
+X-Received: by 2002:a17:902:bcc2:: with SMTP id o2mr604619pls.87.1599088036436;
+        Wed, 02 Sep 2020 16:07:16 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:56b7:d2c3:23c8:7358? ([2601:647:4000:d7:56b7:d2c3:23c8:7358])
+        by smtp.gmail.com with ESMTPSA id u15sm437742pjx.50.2020.09.02.16.07.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 15:06:46 -0700 (PDT)
-Subject: Re: [PATCH v2] IB/isert: fix unaligned immediate-data handling
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Stephen Rust <srust@blockbridge.com>,
-        Doug Dumitru <doug@dumitru.com>
-References: <20200901030826.140880-1-sagi@grimberg.me>
- <20200902185333.GA1420661@nvidia.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <780aa197-e377-ea0b-1fdd-8619057003e8@grimberg.me>
-Date:   Wed, 2 Sep 2020 15:06:44 -0700
+        Wed, 02 Sep 2020 16:07:15 -0700 (PDT)
+Subject: Re: [RFC] Reliable Multicast on top of RTRS
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
+References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org>
+Date:   Wed, 2 Sep 2020 16:07:13 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200902185333.GA1420661@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -55,38 +76,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
->> Currently we allocate rx buffers in a single contiguous buffers for
->> headers (iser and iscsi) and data trailer. This means that most likely
->> the data starting offset is aligned to 76 bytes (size of both headers).
->>
->> This worked fine for years, but at some point this broke, resulting in
->> data corruptions in isert when a command comes with immediate data
->> and the underlying backend device assumes 512 bytes buffer alignment.
->>
->> We assume a hard-requirement for all direct I/O buffers to be 512 bytes
->> aligned. To fix this, we should avoid passing unaligned buffers for I/O.
->>
->> Instead, we allocate our recv buffers with some extra space such that we
->> can have the data portion align to 512 byte boundary. This also means
->> that we cannot reference headers or data using structure but rather
->> accessors (as they may move based on alignment). Also, get rid of the
->> wrong __packed annotation from iser_rx_desc as this has only harmful
->> effects (not aligned to anything).
->>
->> This affects the rx descriptors for iscsi login and data plane.
->>
->> Reported-by: Stephen Rust <srust@blockbridge.com>
->> Tested-by: Doug Dumitru <doug@dumitru.com>
->> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
->> ---
->> Changes from v1:
->> - revised change log
+On 2020-09-02 01:04, Danil Kipnis wrote:
+> RTRS allows for reliable transmission of sg lists between two hosts
+> over rdma. It is optimised for block io. One can implement a client
+> and a server module on top of RTRS which would allow for reliable
+> transmission to a group of hosts.
 > 
-> This still needs to identify when this regression occurred for
-> backporting, what is the fixes line?
+> In the networking world this is called reliable multicast. I think one
+> can say that reliable multicast is an equivalent to what is called
+> "mirror" in the storage world. There is something called XoR network
+> coding which seems to be an equivalent of raid5. There is also Reed
+> Solomon network coding.
+> 
+> Having a reliable multicast with coding rdma-based transport layer
+> would allow for very flexible and scalable designs of distributed
+> replication solutions based on different in-kernel transport, block
+> and replication drivers.
+> 
+> What do you think?
 
-I don't have the exact bisection, the original report mentioned:
-3d75ca0adef4 ("block: introduce multi-page bvec helpers")
+How will the resulting software differ from DRBD (other than that it
+uses RDMA)? How will it be guaranteed that the resulting software does
+not suffer from the problems that have been solved by the introduction
+of the DRBD activity log
+(https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
 
-But I cannot explain what in that patch caused this.
+Thanks,
+
+Bart.
