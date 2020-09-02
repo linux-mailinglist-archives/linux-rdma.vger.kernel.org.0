@@ -2,91 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6D525A25C
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 02:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF1925A266
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 02:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgIBAnz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Sep 2020 20:43:55 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4702 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726174AbgIBAnr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Sep 2020 20:43:47 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4eeab50001>; Tue, 01 Sep 2020 17:43:33 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 01 Sep 2020 17:43:47 -0700
+        id S1726814AbgIBAoP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Sep 2020 20:44:15 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:14272 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgIBAoI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Sep 2020 20:44:08 -0400
+Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4eead40000>; Wed, 02 Sep 2020 08:44:04 +0800
+Received: from HKMAIL103.nvidia.com ([10.18.16.12])
+  by hkpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 01 Sep 2020 17:44:04 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 01 Sep 2020 17:43:47 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep
- 2020 00:43:46 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 2 Sep 2020 00:43:46 +0000
+        by hkpgpgate101.nvidia.com on Tue, 01 Sep 2020 17:44:04 -0700
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep
+ 2020 00:43:50 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 2 Sep 2020 00:43:50 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A6EAMY4YbcRoIdycxTkBaxA/XPAKmNxmJdl4Mn9G8OSxi9VkXpMBI1eJ6u7BPY/IMhIAzOKJjGvbBQYMsz+3FfALRM7hA33kQnEvZ42P/t7s26nXXBU/Sl/KYhXC/zGdDKlUAr6bVztx/BAE4dI0+50NTyyqQupyarkuJoCmgS15NfiWwEwh7cCw/NRcs/imAB2szoWIzUJyPAWC1W/3BCugRPKv5jXXyP5bW+gESkz0lXK/IfNWjiT0fQwOmbL7D6VMUDSpvnVM3H4hxgaS2Hj0m7dCURFfbpJuaboBl2fOYbkdYg2b5ulzW9ZWs3q1TCTt8vR3sdQQ2gsobHMFgQ==
+ b=YwW3xPUktR709nNg7UvmtEhtlTtdg1gDSm5dJ62OJGHL+oWJRZb6cRu3+61HjKGlFcosgl1Vk9rIZab8SIPqlZLNoVyR4Hpl0MvncMaHu+RCNriGKwNR5AbILoKhGMRRgKzyTZEqfjj8VHXf9bjtJrpQwBTwh7IndfZNBtoRVYcAaVMgAcpQ0i9E8pCoioXKYsVvbCD1Qfbz8FAdT/gqWFgJdYHMB3hrLxlPAGzEPudIItJLCFKz6KgbJy+AYe2xzJcAuI/Vp9rG9t5GAh0IsHwOHAS1LbzVi9nTi8jTslLcX9ciqT30Gupkn6x/hfE4a5WdrLmD81A7/NLb7JcuxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GWlwu5h/Hpbzo+YuKOPphOqPYXKBsn6BeIKELN7PbAw=;
- b=WjZ0X8inVwp9MFOr+j3UlyaBRSSH6I06yufjSXFUbY86uU5XQJcnFqPw2gYp5GzniZJURt8C3dN0EOQbsqzcRIXgCLW1PwaUd0PBdTQ/pvBeSFTCLH0vzlOfUsTub1b6NQQMQc29IPDe1o4Rrm2JciRVuq5SALwnzqtbD3j9PKa5ychsIPiFzYRQch6hguttATYsJd9Jzdvx5pRua5rBVJKlxB8ckevVNAKCKMi2q5lNMrQNEBXFbiOP4yijyxOaXgn1zdJXUybu6EJ1LaVkGJwIry+TSnurIYR5ySB7/aMGKMQH28scEPTYK6tvTtOyySWGOGty4TmKLjer3nCYUw==
+ bh=1xd7J3ytyr84NpsCDV99kItcCsLrl1/4KM+yHHz1ysk=;
+ b=f3//d5DW6ccAAtXHDMOoL+FeaYQ7QKZ9CmH5ZOEV9VvvcOd8TMKjWDzvkU+vgUHNfOzsxxmPFayUepJ0C1xnVntL7gPxIF4YOT6uWVk1OlLHX+4GMykfshIkOUThuR4Zz3+XkhJ5227ymjaf2S56XiXW20YRIujL+7RgcUCq5UlLr74iUSrVOWZaIU+HO1ihGVLxWiDqwlo3Kq0DusCrGrOndIECeyCOmUUyv7IQLtJwsja/mHJIqfXcyry6zJUuY2Qx712lx9TKVz6Y5lJdAXGZsjqN9trBHzdrp4/DaZoDXZ8Sd62Gd8DYqBFBm17+ZuaslF9Td/79WTwiGbjoyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Authentication-Results: marvell.com; dkim=none (message not signed)
+ header.d=none;marvell.com; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Wed, 2 Sep
- 2020 00:43:45 +0000
+ 2020 00:43:48 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3326.025; Wed, 2 Sep 2020
- 00:43:45 +0000
+ 00:43:48 +0000
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH 13/14] RDMA/mlx5: Use ib_umem_num_dma_blocks()
-Date:   Tue, 1 Sep 2020 21:43:41 -0300
-Message-ID: <13-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
+To:     Ariel Elior <aelior@marvell.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>,
+        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        "Zhu Yanjun" <yanjunz@nvidia.com>
+Subject: [PATCH 14/14] RDMA/umem: Rename ib_umem_offset() to ib_umem_dma_offset()
+Date:   Tue, 1 Sep 2020 21:43:42 -0300
+Message-ID: <14-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
 In-Reply-To: <0-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
 References: 
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-X-ClientProxiedBy: BL0PR1501CA0036.namprd15.prod.outlook.com
- (2603:10b6:207:17::49) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL0PR1501CA0029.namprd15.prod.outlook.com
+ (2603:10b6:207:17::42) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BL0PR1501CA0036.namprd15.prod.outlook.com (2603:10b6:207:17::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 2 Sep 2020 00:43:44 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kDGsJ-005P1e-AM; Tue, 01 Sep 2020 21:43:43 -0300
+Received: from 255.255.255.255 (255.255.255.255) by BL0PR1501CA0029.namprd15.prod.outlook.com (2603:10b6:207:17::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 2 Sep 2020 00:43:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kDGsJ-005P1j-C7; Tue, 01 Sep 2020 21:43:43 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5aee878e-298b-418c-080d-08d84ed93f0b
+X-MS-Office365-Filtering-Correlation-Id: 75e07d74-a39a-4dcb-cf48-08d84ed94092
 X-MS-TrafficTypeDiagnostic: DM6PR12MB3834:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB383469AB5477AD674E0C30A9C22F0@DM6PR12MB3834.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3834B4DDAE9B49F5CB3ED937C22F0@DM6PR12MB3834.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1148;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mjf25/BhJq2BJzZUyCpNZgIGKS1xl2gu/C3q+G7nNovFkPdZu8x8/qPha51nLvX3tuenGwyDnfhdI/Xj7mPiLik8YM8KdI8UKRhXmew2iktnyLG3vApuw92JM2/88Ip66msOgYjYw16++W3zEGT/fIVXslD7T2xNLk4E1ZBEDo+7baCjOR8/GGpZOHZ5jA5LeJzhIXNAknwlOgfa1nOQa0JpfDcq4cISxU3sVGoxuLw23bN8aZuUZ8zhv5J7qfRTd8xuxrB9GECAQ1YEXNvEV4SKOSxDE7qwwCLSxHyUazyeuO80/iSiUrNJ6Gze4nk7QGbkO6ot4NOIJ+klHQojKQ==
+X-Microsoft-Antispam-Message-Info: CIKfdwoIq3PEaOCSDP5uDVnr957b23NvBIcFlBFLJ5iBsQr4P/7tbYPGlStKUl1tEqG7yxaAZ6ehOHpjEBBURVWTFPW7iMaxaEpZt72V3JOoj5zU9pEUrJJ5w3MtsATgG13D72VSPgPWASjULglyFDNd5LAHqrdeir8k+3fPl5hPbQLu+IFotvizjmwHuW8TMbeWNJHd0k7FIyZ0di07/QvT/+6QkAccENoYb3tGpVCRGfaQuU9g2wwkADucil/Acad4GyeqwwAfkoFx8O7+bsoXmgy5OJ9tyYzFc+74uJMBOhXJjdEfac+89eSXqboGeWekATDEhPGyrbuwqnzLsg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(8936002)(26005)(86362001)(426003)(8676002)(9746002)(9786002)(2616005)(186003)(83380400001)(66556008)(66476007)(316002)(478600001)(66946007)(110136005)(2906002)(6636002)(36756003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: +uAsEtpZO00RxYkTlWpGGLc/qR2k07TH6/FGV0ZdvAFM/T6ia4CCYVkDgeHivpNUpl4wK/Vs6iIxk1YyUKr9nEX4aCdi5KiAnoM/BzJdda1VLnAnyncY8Ir5gJMz8aDEIBSm24DmGRoGDDD2vi7lU5OH5NpmsZb0FacJHTyaM3+T2wE5c9Y5BBUkPSmwwWragdsAJJk6mGS4UD+EtWV0uo44Jo2ODKWZlpmSeCVknyw0jIKCQ9ym+9Jb1P9B92dIzGdx3rP/5N6xHwycIIOj6tr/N8KN8SSvNgXrKThZJrCY6anv0tpvk7NOX+fs5LJ+utUBABTLTbEziExAD/x67jCzrBfTZ2O//5xMCDOFYy8WYGSZcwWsEdxk3KbWoKrCgpBRcav6PcF9454abXEtHRmTAPX98FwSkVzEkNE6SYVXQcCxz0h3DvX1OUDpclRLxYDyd+EhR0mwQEvc2Suqe68IpercVOlPiKym61sKgCsJwQugnqGbe9tQoFfBEBg4RSQNlkWo0kpO/zO2dljaOmJtYLsSZ3RCFv5R+YRcHKfYP6ldvUItEvVhB2czLEq9f1fRQp/bw310yhEP5pupbev577rVz1S8LfCrJVpd77gmPQRuU48Yy9CQAFUmeqd5ehd+AXc6JwiXMUAH0/TFMA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5aee878e-298b-418c-080d-08d84ed93f0b
+X-MS-Exchange-AntiSpam-MessageData: +qccY3+lReE1M6DacgFifRHQNl15Lrt/e81ozHR+3I9oGQ7WF0vl4oy9nHhSqrWa9r1k+jeD5DlAdfRTNb9pOiWo4oUQ3oizxdsJqUir+90N1CD7F+fImMHMDJCW3c+71Xom46DKOCJGGJmekWe//DuKPZykXPtANoXeIfsmfV5KgaG//etrQykoVK2Z+qO/YXO2R1r/0lH2fIHsyVweCV5BoZYRTbXL/qLMDOV1qmBpZDHyXueMZPsMfLYj9N8LL1zy2r1hSUqPAVRnN0eCXF7oFgm+CsytddyDBxrDthL6rgb1MqI5DiasyaeTN7FZQNWiPc2+lzWKvEatgPa3Wzs7sGCnYcAhwwIT12fGHz9WIPN0OXVXg1y1RpTiNJNQALeWwoFAa8TJs+HcKanpepQHNnKC6e8MVX0VNp5SaTeTANG1UC5xTqE8ipAujZLxeoQ/0fip5OEAFnETdsXSFsdkkyN831K2QVumJQ8FsA7SCSduxtJZAc9Xb5xoeC234wYYU1X4FJARohX0g5o1i5mmX7oPSL+3Dtky/1LYpw13+aMjl5n/9EnI5vo2MlpOnMDI51p8iwl7kZG/kTJmtGj5t4RsEqkBQCUR6oAamQ41kiw8cHQutoMepJQbtaDqhc1uMnbtV+gD6y4f2bPRyw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75e07d74-a39a-4dcb-cf48-08d84ed94092
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2020 00:43:44.9380
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2020 00:43:47.3556
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ev+h5TvDEA9G4sXz2JRARduKOsFRSWlLD+qopAHHDDg17VPjCGTsP+67U2WUvcCV
+X-MS-Exchange-CrossTenant-UserPrincipalName: YoDSswzwDa6ieCtpC19m56M0aCKGHexN727/ZDsZYqMIJoqC12MRpqk6fsrhAOab
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3834
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599007413; bh=w+DN43GNbyoUX+NTByLvYb4kdbJ93uF8IMUQLU6AW2w=;
+        t=1599007444; bh=2Sluy/UhJJF7J5SkPmaAkVXOV8+mAhplUY9Fa74y4NU=;
         h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
          ARC-Authentication-Results:Authentication-Results:From:To:Subject:
          Date:Message-ID:In-Reply-To:References:Content-Transfer-Encoding:
@@ -106,257 +113,130 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=E8OJTYEE/nzK4B8+exFtQhfttjgX+K/P7trqbzBej5VbRdpk/NnGQRv+ZoQni5XKD
-         xnGqHUmp+ujsDem6C0SkUuDgv1xAh3o5XOnWsEjZ2h9ACIjCH2E9rjyhWL1K759MyJ
-         ZZCsDakJfyV9cyqgfYQxQy3D9+2XAwQ8h83Ltrgslj8Fulcq8y0h5WQl5lIYL39cue
-         DbmOwCI9TPQoa9AAY2rdc6gyx0kmM3n7xYM1tBj9Y+i0qzQjmioa4CtDq/6q38P0YJ
-         EPwLEp/iKh8IKjA57ILpRMYa/szMsdo44p1KttkDIvTphEhRDdaH9gvwIH9MbhJiiQ
-         ghyR7BHcXSPSg==
+        b=c1D1VKlr8H9jfjWPUe0Ej36ZyrZ4poONSmWryMbjL1+kyip+fVXI0OekF6a0/X4LN
+         aE1MLs/zJ/3Ypj11KG2HZmzhvyd2S+sPwtgESxvvvYn35MPrOWweqSi71irMzfp5F6
+         7fOYJ0Jt+9Y/dd7oqGiUEkrwhXPe6LPg/c/wiJPr6u9fQ8eLGgt1b5HtU4xy8X5poQ
+         ffDJLe/leAg4+dHER6iD4Q7Icj0GtvRzGhdHyn/DbHIvhPVT6CtheHcF0oRnAna7hm
+         lroBr41CwY8x8yJvyzQMYS2NhfBSPciN7o9/fXkXGctESbPQUZogQFdfYSTHUQMxvU
+         7Rv03CTL/SoPA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-For the calls linked to mlx4_ib_umem_calc_optimal_mtt_size() compute the
-number of DMA pages directly based on the returned page_shift. This was
-just being used as a weird default if the algorithm hits the lower limit.
+This function should be used to get the offset from the first DMA block.
 
-All other places are just using it with PAGE_SIZE.
-
-As this is the last call site, remove ib_umem_num_pages().
+The few places using this without a DMA iterator are calling it to work
+around the lack of setting sgl->offset when the umem is created.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/infiniband/core/umem.c       | 12 ------------
- drivers/infiniband/hw/mlx4/cq.c      |  8 ++++----
- drivers/infiniband/hw/mlx4/mlx4_ib.h |  3 +--
- drivers/infiniband/hw/mlx4/mr.c      | 14 ++++++--------
- drivers/infiniband/hw/mlx4/qp.c      | 17 +++++++++--------
- drivers/infiniband/hw/mlx4/srq.c     |  5 +++--
- include/rdma/ib_umem.h               |  2 --
- 7 files changed, 23 insertions(+), 38 deletions(-)
+ drivers/infiniband/core/umem.c              | 2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
+ drivers/infiniband/hw/qedr/verbs.c          | 2 +-
+ drivers/infiniband/sw/rdmavt/mr.c           | 2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c          | 2 +-
+ include/rdma/ib_umem.h                      | 9 ++++++---
+ 6 files changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.=
 c
-index f02e34cac59581..49d6ddc37b6fde 100644
+index 49d6ddc37b6fde..c840115b8c0945 100644
 --- a/drivers/infiniband/core/umem.c
 +++ b/drivers/infiniband/core/umem.c
-@@ -346,18 +346,6 @@ void ib_umem_release(struct ib_umem *umem)
- }
- EXPORT_SYMBOL(ib_umem_release);
-=20
--int ib_umem_page_count(struct ib_umem *umem)
--{
--	int i, n =3D 0;
--	struct scatterlist *sg;
--
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i)
--		n +=3D sg_dma_len(sg) >> PAGE_SHIFT;
--
--	return n;
--}
--EXPORT_SYMBOL(ib_umem_page_count);
--
- /*
-  * Copy from the given ib_umem's pages to the given buffer.
-  *
-diff --git a/drivers/infiniband/hw/mlx4/cq.c b/drivers/infiniband/hw/mlx4/c=
-q.c
-index 8a3436994f8097..3de97f428dc63b 100644
---- a/drivers/infiniband/hw/mlx4/cq.c
-+++ b/drivers/infiniband/hw/mlx4/cq.c
-@@ -142,16 +142,16 @@ static int mlx4_ib_get_cq_umem(struct mlx4_ib_dev *de=
-v, struct ib_udata *udata,
- 	int err;
- 	int cqe_size =3D dev->dev->caps.cqe_size;
- 	int shift;
--	int n;
-=20
- 	*umem =3D ib_umem_get(&dev->ib_dev, buf_addr, cqe * cqe_size,
- 			    IB_ACCESS_LOCAL_WRITE);
- 	if (IS_ERR(*umem))
- 		return PTR_ERR(*umem);
-=20
--	n =3D ib_umem_page_count(*umem);
--	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(*umem, 0, &n);
--	err =3D mlx4_mtt_init(dev->dev, n, shift, &buf->mtt);
-+	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(*umem, 0);
-+	err =3D mlx4_mtt_init(dev->dev,
-+			    ib_umem_num_dma_blocks(*umem, 1UL << shift), shift,
-+			    &buf->mtt);
-=20
- 	if (err)
- 		goto err_buf;
-diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/m=
-lx4/mlx4_ib.h
-index bcac8fc5031766..660955a11914e7 100644
---- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-+++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-@@ -905,7 +905,6 @@ struct ib_rwq_ind_table
- 			      struct ib_rwq_ind_table_init_attr *init_attr,
- 			      struct ib_udata *udata);
- int mlx4_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
--int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
--				       int *num_of_mtts);
-+int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va)=
-;
-=20
- #endif /* MLX4_IB_H */
-diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/m=
-r.c
-index 1d5ef0de12c950..19b2d3fbe81e03 100644
---- a/drivers/infiniband/hw/mlx4/mr.c
-+++ b/drivers/infiniband/hw/mlx4/mr.c
-@@ -254,8 +254,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, str=
-uct mlx4_mtt *mtt,
-  * middle already handled as part of mtt shift calculation for both their =
-start
-  * & end addresses.
-  */
--int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
--				       int *num_of_mtts)
-+int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va)
- {
- 	u64 block_shift =3D MLX4_MAX_MTT_SHIFT;
- 	u64 min_shift =3D PAGE_SHIFT;
-@@ -353,7 +352,6 @@ int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *=
-umem, u64 start_va,
- 		pr_warn("misaligned total length detected (%llu, %llu)!",
- 			total_len, block_shift);
-=20
--	*num_of_mtts =3D total_len >> block_shift;
- end:
- 	if (block_shift < min_shift) {
- 		/*
-@@ -409,7 +407,6 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64=
- start, u64 length,
- 	struct mlx4_ib_mr *mr;
- 	int shift;
- 	int err;
--	int n;
-=20
- 	mr =3D kzalloc(sizeof(*mr), GFP_KERNEL);
- 	if (!mr)
-@@ -421,11 +418,12 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u=
-64 start, u64 length,
- 		goto err_free;
+@@ -369,7 +369,7 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, =
+size_t offset,
  	}
 =20
--	n =3D ib_umem_page_count(mr->umem);
--	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(mr->umem, start, &n);
-+	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(mr->umem, start);
+ 	ret =3D sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_nents, dst, length=
+,
+-				 offset + ib_umem_offset(umem));
++				 offset + ib_umem_dma_offset(umem, PAGE_SIZE));
 =20
- 	err =3D mlx4_mr_alloc(dev->dev, to_mpd(pd)->pdn, virt_addr, length,
--			    convert_access(access_flags), n, shift, &mr->mmr);
-+			    convert_access(access_flags),
-+			    ib_umem_num_dma_blocks(mr->umem, 1UL << shift),
-+			    shift, &mr->mmr);
- 	if (err)
- 		goto err_umem;
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniba=
+nd/hw/ocrdma/ocrdma_verbs.c
+index 1fb8da6d613674..f22532fbc364fe 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -870,7 +870,7 @@ struct ib_mr *ocrdma_reg_user_mr(struct ib_pd *ibpd, u6=
+4 start, u64 len,
+ 		goto umem_err;
 =20
-@@ -511,7 +509,7 @@ int mlx4_ib_rereg_user_mr(struct ib_mr *mr, int flags,
- 			mmr->umem =3D NULL;
- 			goto release_mpt_entry;
- 		}
--		n =3D ib_umem_page_count(mmr->umem);
-+		n =3D ib_umem_num_dma_blocks(mmr->umem, PAGE_SIZE);
- 		shift =3D PAGE_SHIFT;
+ 	mr->hwmr.pbe_size =3D PAGE_SIZE;
+-	mr->hwmr.fbo =3D ib_umem_offset(mr->umem);
++	mr->hwmr.fbo =3D ib_umem_dma_offset(mr->umem, PAGE_SIZE);
+ 	mr->hwmr.va =3D usr_addr;
+ 	mr->hwmr.len =3D len;
+ 	mr->hwmr.remote_wr =3D (acc & IB_ACCESS_REMOTE_WRITE) ? 1 : 0;
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qed=
+r/verbs.c
+index 278b48443aedba..daac742e71044d 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -2878,7 +2878,7 @@ struct ib_mr *qedr_reg_user_mr(struct ib_pd *ibpd, u6=
+4 start, u64 len,
+ 	mr->hw_mr.pbl_two_level =3D mr->info.pbl_info.two_layered;
+ 	mr->hw_mr.pbl_page_size_log =3D ilog2(mr->info.pbl_info.pbl_size);
+ 	mr->hw_mr.page_size_log =3D PAGE_SHIFT;
+-	mr->hw_mr.fbo =3D ib_umem_offset(mr->umem);
++	mr->hw_mr.fbo =3D ib_umem_dma_offset(mr->umem, PAGE_SIZE);
+ 	mr->hw_mr.length =3D len;
+ 	mr->hw_mr.vaddr =3D usr_addr;
+ 	mr->hw_mr.zbva =3D false;
+diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdma=
+vt/mr.c
+index 2f7c25fea44a9d..04f7dc0ce9e44d 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.c
++++ b/drivers/infiniband/sw/rdmavt/mr.c
+@@ -404,7 +404,7 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 sta=
+rt, u64 length,
+ 	mr->mr.user_base =3D start;
+ 	mr->mr.iova =3D virt_addr;
+ 	mr->mr.length =3D length;
+-	mr->mr.offset =3D ib_umem_offset(umem);
++	mr->mr.offset =3D ib_umem_dma_offset(umem, PAGE_SIZE);
+ 	mr->mr.access_flags =3D mr_access_flags;
+ 	mr->umem =3D umem;
 =20
- 		err =3D mlx4_mr_rereg_mem_write(dev->dev, &mmr->mmr,
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/q=
-p.c
-index 2975f350b9fd10..3113d9ca112771 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -869,7 +869,6 @@ static int create_rq(struct ib_pd *pd, struct ib_qp_ini=
-t_attr *init_attr,
- 	struct mlx4_ib_create_wq wq;
- 	size_t copy_len;
- 	int shift;
--	int n;
-=20
- 	qp->mlx4_ib_qp_type =3D MLX4_IB_QPT_RAW_PACKET;
-=20
-@@ -922,9 +921,10 @@ static int create_rq(struct ib_pd *pd, struct ib_qp_in=
-it_attr *init_attr,
- 		goto err;
- 	}
-=20
--	n =3D ib_umem_page_count(qp->umem);
--	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(qp->umem, 0, &n);
--	err =3D mlx4_mtt_init(dev->dev, n, shift, &qp->mtt);
-+	shift =3D mlx4_ib_umem_calc_optimal_mtt_size(qp->umem, 0);
-+	err =3D mlx4_mtt_init(dev->dev,
-+			    ib_umem_num_dma_blocks(qp->umem, 1UL << shift),
-+			    shift, &qp->mtt);
-=20
- 	if (err)
- 		goto err_buf;
-@@ -1077,7 +1077,6 @@ static int create_qp_common(struct ib_pd *pd, struct =
-ib_qp_init_attr *init_attr,
- 		struct mlx4_ib_create_qp ucmd;
- 		size_t copy_len;
- 		int shift;
--		int n;
-=20
- 		copy_len =3D sizeof(struct mlx4_ib_create_qp);
-=20
-@@ -1117,9 +1116,11 @@ static int create_qp_common(struct ib_pd *pd, struct=
- ib_qp_init_attr *init_attr,
- 			goto err;
- 		}
-=20
--		n =3D ib_umem_page_count(qp->umem);
--		shift =3D mlx4_ib_umem_calc_optimal_mtt_size(qp->umem, 0, &n);
--		err =3D mlx4_mtt_init(dev->dev, n, shift, &qp->mtt);
-+		shift =3D mlx4_ib_umem_calc_optimal_mtt_size(qp->umem, 0);
-+		err =3D mlx4_mtt_init(dev->dev,
-+				    ib_umem_num_dma_blocks(qp->umem,
-+							   1UL << shift),
-+				    shift, &qp->mtt);
-=20
- 		if (err)
- 			goto err_buf;
-diff --git a/drivers/infiniband/hw/mlx4/srq.c b/drivers/infiniband/hw/mlx4/=
-srq.c
-index 8f9d5035142d33..108b2d0118d064 100644
---- a/drivers/infiniband/hw/mlx4/srq.c
-+++ b/drivers/infiniband/hw/mlx4/srq.c
-@@ -115,8 +115,9 @@ int mlx4_ib_create_srq(struct ib_srq *ib_srq,
- 		if (IS_ERR(srq->umem))
- 			return PTR_ERR(srq->umem);
-=20
--		err =3D mlx4_mtt_init(dev->dev, ib_umem_page_count(srq->umem),
--				    PAGE_SHIFT, &srq->mtt);
-+		err =3D mlx4_mtt_init(
-+			dev->dev, ib_umem_num_dma_blocks(srq->umem, PAGE_SIZE),
-+			PAGE_SHIFT, &srq->mtt);
- 		if (err)
- 			goto err_buf;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe=
+/rxe_mr.c
+index 708e2dff5eaa70..8f60dc9dee8658 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -196,7 +196,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
+ 	mem->length		=3D length;
+ 	mem->iova		=3D iova;
+ 	mem->va			=3D start;
+-	mem->offset		=3D ib_umem_offset(umem);
++	mem->offset		=3D ib_umem_dma_offset(umem, PAGE_SIZE);
+ 	mem->state		=3D RXE_MEM_STATE_VALID;
+ 	mem->type		=3D RXE_MEM_TYPE_MR;
 =20
 diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index ba3b9be0d8c56a..4bac6e29f030c2 100644
+index 4bac6e29f030c2..5e709b2c251644 100644
 --- a/include/rdma/ib_umem.h
 +++ b/include/rdma/ib_umem.h
-@@ -73,7 +73,6 @@ static inline void __rdma_umem_block_iter_start(struct ib=
-_block_iter *biter,
- struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 			    size_t size, int access);
- void ib_umem_release(struct ib_umem *umem);
--int ib_umem_page_count(struct ib_umem *umem);
- int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
- 		      size_t length);
- unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
-@@ -91,7 +90,6 @@ static inline struct ib_umem *ib_umem_get(struct ib_devic=
-e *device,
- 	return ERR_PTR(-EINVAL);
+@@ -27,10 +27,13 @@ struct ib_umem {
+ 	unsigned int    sg_nents;
+ };
+=20
+-/* Returns the offset of the umem start relative to the first page. */
+-static inline int ib_umem_offset(struct ib_umem *umem)
++/*
++ * Returns the offset of the umem start relative to the first DMA block re=
+turned
++ * by rdma_umem_for_each_dma_block().
++ */
++static inline int ib_umem_dma_offset(struct ib_umem *umem, unsigned long p=
+gsz)
+ {
+-	return umem->address & ~PAGE_MASK;
++	return umem->address & (pgsz - 1);
  }
- static inline void ib_umem_release(struct ib_umem *umem) { }
--static inline int ib_umem_page_count(struct ib_umem *umem) { return 0; }
- static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_=
-t offset,
- 		      		    size_t length) {
- 	return -EINVAL;
+=20
+ static inline size_t ib_umem_num_dma_blocks(struct ib_umem *umem,
 --=20
 2.28.0
 
