@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544DF25A76F
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479A25A770
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 10:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgIBILd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 04:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
+        id S1726968AbgIBILh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 04:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIBILc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:11:32 -0400
+        id S1726293AbgIBILf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:11:35 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D21720826;
-        Wed,  2 Sep 2020 08:11:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2DB820826;
+        Wed,  2 Sep 2020 08:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599034291;
-        bh=UalnntVjeTlyxh3UfhAc8Ig2azRcbzGmhQvAiOPiSQs=;
+        s=default; t=1599034294;
+        bh=pu7BqtrRV3xB3IGB0NLz9sjE0SzpYaVLQiInsAAskDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U2f1yggMJbwCP1GcJjet4KjUfJq7bvdEItcsX68nvA4l7zY3m7BPdROkzE8yfLLbW
-         84LkNryNoRnwRJTl/6RVyPqB8KbNpyyeusG/qCDs1HgsP/z2g92jJv6qj8ExQzfOnb
-         UiNdv09d3rL7I+pCdE17HQKMz7Fq5A3Td/IAWUcs=
+        b=sLLSDaX4Eyx2qN5KuxWyWSVkPYtoRSzQGXOs+KT17Upbk0Qs1tMOj4FG0Nw8nC9+O
+         gVESGXRQ1LeXgc8YUjiXsqIIZu32Ljc6JXioQbNbqkV45HzcaBLeW1fNtFcBPcpYvn
+         WqaQkgSKpFKT7FeOzdzrafCgVYtvjHb+Sap6nKhw=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 1/8] RDMA/cma: Fix locking for the RDMA_CM_CONNECT state
-Date:   Wed,  2 Sep 2020 11:11:15 +0300
-Message-Id: <20200902081122.745412-2-leon@kernel.org>
+Subject: [PATCH rdma-next 2/8] RDMA/cma: Make the locking for automatic state transition more clear
+Date:   Wed,  2 Sep 2020 11:11:16 +0300
+Message-Id: <20200902081122.745412-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200902081122.745412-1-leon@kernel.org>
 References: <20200902081122.745412-1-leon@kernel.org>
@@ -42,98 +42,96 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@nvidia.com>
 
-It is currently a bit confusing, but the design is if the handler_mutex
-is held, and the state is in RDMA_CM_CONNECT, then the state cannot leave
-RDMA_CM_CONNECT without also serializing with the handler_mutex.
-
-Make this clearer by adding a direct assertion, fixing the usage in
-rdma_connect and generally using READ_ONCE to read the state value.
+Re-organize things so the state variable is not read unlocked. The first
+attempt to go directly from ADDR_BOUND immediately tells us if the ID is
+already bound, if we can't do that then the attempt inside
+rdma_bind_addr() to go from IDLE to ADDR_BOUND confirms the ID needs
+binding.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cma.c | 44 ++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 14 deletions(-)
+ drivers/infiniband/core/cma.c | 67 +++++++++++++++++++++++------------
+ 1 file changed, 45 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index f1c45f67e2eb..7ac9306ab5b3 100644
+index 7ac9306ab5b3..901d1bd35603 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -421,6 +421,15 @@ static int cma_comp_exch(struct rdma_id_private *id_priv,
- 	unsigned long flags;
- 	int ret;
+@@ -3278,32 +3278,54 @@ static int cma_bind_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
+ 	return rdma_bind_addr(id, src_addr);
+ }
  
-+	/*
-+	 * The FSM uses a funny double locking where state is protected by both
-+	 * the handler_mutex and the spinlock. State is not allowed to change
-+	 * away from a handler_mutex protected value without also holding
-+	 * handler_mutex.
-+	 */
-+	if (comp == RDMA_CM_CONNECT)
-+		lockdep_assert_held(&id_priv->handler_mutex);
-+
- 	spin_lock_irqsave(&id_priv->lock, flags);
- 	if ((ret = (id_priv->state == comp)))
- 		id_priv->state = exch;
-@@ -1969,13 +1978,15 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
+-int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
+-		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
++/*
++ * If required, resolve the source address for bind and leave the id_priv in
++ * state RDMA_CM_ADDR_BOUND. This oddly uses the state to determine the prior
++ * calls made by ULP, a previously bound ID will not be re-bound and src_addr is
++ * ignored.
++ */
++static int resolve_prepare_src(struct rdma_id_private *id_priv,
++			       struct sockaddr *src_addr,
++			       const struct sockaddr *dst_addr)
  {
- 	struct rdma_id_private *id_priv = cm_id->context;
- 	struct rdma_cm_event event = {};
-+	enum rdma_cm_state state;
+-	struct rdma_id_private *id_priv;
  	int ret;
  
- 	mutex_lock(&id_priv->handler_mutex);
-+	state = READ_ONCE(id_priv->state);
- 	if ((ib_event->event != IB_CM_TIMEWAIT_EXIT &&
--	     id_priv->state != RDMA_CM_CONNECT) ||
-+	     state != RDMA_CM_CONNECT) ||
- 	    (ib_event->event == IB_CM_TIMEWAIT_EXIT &&
--	     id_priv->state != RDMA_CM_DISCONNECT))
-+	     state != RDMA_CM_DISCONNECT))
- 		goto out;
- 
- 	switch (ib_event->event) {
-@@ -1985,7 +1996,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- 		event.status = -ETIMEDOUT;
- 		break;
- 	case IB_CM_REP_RECEIVED:
--		if (cma_comp(id_priv, RDMA_CM_CONNECT) &&
-+		if (state == RDMA_CM_CONNECT &&
- 		    (id_priv->id.qp_type != IB_QPT_UD)) {
- 			trace_cm_send_mra(id_priv);
- 			ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
-@@ -2246,8 +2257,8 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 		goto net_dev_put;
+-	id_priv = container_of(id, struct rdma_id_private, id);
+ 	memcpy(cma_dst_addr(id_priv), dst_addr, rdma_addr_size(dst_addr));
+-	if (id_priv->state == RDMA_CM_IDLE) {
+-		ret = cma_bind_addr(id, src_addr, dst_addr);
+-		if (ret) {
+-			memset(cma_dst_addr(id_priv), 0,
+-			       rdma_addr_size(dst_addr));
+-			return ret;
++	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
++		/* For a well behaved ULP state will be RDMA_CM_IDLE */
++		ret = cma_bind_addr(&id_priv->id, src_addr, dst_addr);
++		if (ret)
++			goto err_dst;
++		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
++					   RDMA_CM_ADDR_QUERY))) {
++			ret = -EINVAL;
++			goto err_dst;
+ 		}
  	}
  
--	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
--	    (conn_id->id.qp_type != IB_QPT_UD)) {
-+	if (READ_ONCE(conn_id->state) == RDMA_CM_CONNECT &&
-+	    conn_id->id.qp_type != IB_QPT_UD) {
- 		trace_cm_send_mra(cm_id->context);
- 		ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
+ 	if (cma_family(id_priv) != dst_addr->sa_family) {
+-		memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_state;
  	}
-@@ -2308,7 +2319,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
- 	struct sockaddr *raddr = (struct sockaddr *)&iw_event->remote_addr;
++	return 0;
  
- 	mutex_lock(&id_priv->handler_mutex);
--	if (id_priv->state != RDMA_CM_CONNECT)
-+	if (READ_ONCE(id_priv->state) != RDMA_CM_CONNECT)
- 		goto out;
+-	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
+-		memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
+-		return -EINVAL;
+-	}
++err_state:
++	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
++err_dst:
++	memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
++	return ret;
++}
++
++int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
++		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
++{
++	struct rdma_id_private *id_priv =
++		container_of(id, struct rdma_id_private, id);
++	int ret;
++
++	ret = resolve_prepare_src(id_priv, src_addr, dst_addr);
++	if (ret)
++		return ret;
  
- 	switch (iw_event->event) {
-@@ -3807,7 +3818,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 	int ret;
+ 	if (cma_any_addr(dst_addr)) {
+ 		ret = cma_resolve_loopback(id_priv);
+@@ -3676,20 +3698,21 @@ static int cma_check_linklocal(struct rdma_dev_addr *dev_addr,
  
- 	mutex_lock(&id_priv->handler_mutex);
--	if (id_priv->state != RDMA_CM_CONNECT)
-+	if (READ_ONCE(id_priv->state) != RDMA_CM_CONNECT)
- 		goto out;
- 
- 	switch (ib_event->event) {
-@@ -4043,12 +4054,15 @@ static int cma_connect_iw(struct rdma_id_private *id_priv,
- 
- int rdma_connect(struct rdma_cm_id *id, struct rdma_conn_param *conn_param)
+ int rdma_listen(struct rdma_cm_id *id, int backlog)
  {
 -	struct rdma_id_private *id_priv;
 +	struct rdma_id_private *id_priv =
@@ -141,33 +139,24 @@ index f1c45f67e2eb..7ac9306ab5b3 100644
  	int ret;
  
 -	id_priv = container_of(id, struct rdma_id_private, id);
--	if (!cma_comp_exch(id_priv, RDMA_CM_ROUTE_RESOLVED, RDMA_CM_CONNECT))
--		return -EINVAL;
-+	mutex_lock(&id_priv->handler_mutex);
-+	if (!cma_comp_exch(id_priv, RDMA_CM_ROUTE_RESOLVED, RDMA_CM_CONNECT)) {
-+		ret = -EINVAL;
-+		goto err_unlock;
-+	}
+-	if (id_priv->state == RDMA_CM_IDLE) {
++	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN)) {
++		/* For a well behaved ULP state will be RDMA_CM_IDLE */
+ 		id->route.addr.src_addr.ss_family = AF_INET;
+ 		ret = rdma_bind_addr(id, cma_src_addr(id_priv));
+ 		if (ret)
+ 			return ret;
++		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
++					   RDMA_CM_LISTEN)))
++			return -EINVAL;
+ 	}
  
- 	if (!id->qp) {
- 		id_priv->qp_num = conn_param->qp_num;
-@@ -4065,11 +4079,13 @@ int rdma_connect(struct rdma_cm_id *id, struct rdma_conn_param *conn_param)
- 	else
- 		ret = -ENOSYS;
- 	if (ret)
--		goto err;
+-	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN))
+-		return -EINVAL;
 -
-+		goto err_state;
-+	mutex_unlock(&id_priv->handler_mutex);
- 	return 0;
--err:
-+err_state:
- 	cma_comp_exch(id_priv, RDMA_CM_CONNECT, RDMA_CM_ROUTE_RESOLVED);
-+err_unlock:
-+	mutex_unlock(&id_priv->handler_mutex);
- 	return ret;
- }
- EXPORT_SYMBOL(rdma_connect);
+ 	if (id_priv->reuseaddr) {
+ 		ret = cma_bind_listen(id_priv);
+ 		if (ret)
 -- 
 2.26.2
 
