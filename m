@@ -2,105 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E8825B71B
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 01:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B91825B775
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 01:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgIBXHS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 19:07:18 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:45648 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIBXHR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 19:07:17 -0400
-Received: by mail-pg1-f173.google.com with SMTP id 67so491043pgd.12;
-        Wed, 02 Sep 2020 16:07:17 -0700 (PDT)
+        id S1726686AbgIBX7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 19:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726377AbgIBX7M (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 19:59:12 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49264C061244
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 16:59:12 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z2so586538qtv.12
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 16:59:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k+XXCDXSF8k3/5oiJ0DY2qz0pJ0OQTKQmzd5Mr1hMp0=;
+        b=k1y0rDoDsr248x1CrTdDnmq7vHyf3zqzV66lGF84OfqFM/30fnlspewvTtRvX7gidt
+         gKLDfuKNurlYK+R6LwvZ+qHdC4de+pqaJZSVppacYj9aI9LUH0L5tc0Uoh+Z/aj8M9ZJ
+         R6FWg8miU37wLvY2KcR7jd2EIPJ1daC+4PIKYb7D8dOi77gNhJnXrhYPMOqh32KuvPP8
+         XejcAUn4CvHG80LA/gFKzjQRuuelnO2jhZWs/wY/tECnRxVgNr/JnyNRnkRY/TttdGB/
+         gU7CLgfyrHQVWJMKNbMqWZLm+o2LV+mlHDUmQZV7kjB8cqzryAmBAJ5nZ9CcRCfBnsZS
+         7rVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e7FwOEGGEMeAosXGf3vEt7w+keSrNJPAi/ExRrKOBCU=;
-        b=V4k7+7jchMBPctxWlfKyhAvuidJiYqetIm9pvUiyEgG23v35aQrxzCsSEXW90p4e2I
-         kogls7hYKKvEOmQm5zGyJVQKA6PJyavt4iiV7l/SvWu5xaNtQdoxnMgPgPWcw6XgWrgm
-         5Iz5X/96hHBqOV/tKxwFRxYJvXf9MfVq4pHrqo6Xy0XbYQrZnvgZjLpwai92hbqVrhGX
-         BLVxMOfZB68DlZgrMzmFBsAgkBMuulp0sDTlThC5HL5Kl9FGVg/b8AxCrzBlc6Nhk/M/
-         sNayhplD6geywI6Uot6BwAa2S7n+lm3jrfRngluGnBThBak21WSDtGijYsd57Yhx8X/Q
-         +njQ==
-X-Gm-Message-State: AOAM530GL6ERgfYDjsIyuiblgnybQ1iV42rO0yuOzwqS/P/RjOthWUTH
-        dVICM722I3//fngeeeHYbqG9zSIDTXA=
-X-Google-Smtp-Source: ABdhPJyNwqqk28YnUTSFsctPyYFjKwEJKzMtf3chE0SL+h36TuVZa5+3fkDIsos2ZSLZtqwzZAjlWA==
-X-Received: by 2002:a17:902:bcc2:: with SMTP id o2mr604619pls.87.1599088036436;
-        Wed, 02 Sep 2020 16:07:16 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:56b7:d2c3:23c8:7358? ([2601:647:4000:d7:56b7:d2c3:23c8:7358])
-        by smtp.gmail.com with ESMTPSA id u15sm437742pjx.50.2020.09.02.16.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 16:07:15 -0700 (PDT)
-Subject: Re: [RFC] Reliable Multicast on top of RTRS
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
-References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org>
-Date:   Wed, 2 Sep 2020 16:07:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k+XXCDXSF8k3/5oiJ0DY2qz0pJ0OQTKQmzd5Mr1hMp0=;
+        b=hlAH3yse+ay1y8fRltEi5D8W3EHp/RTBvZ1O7dqQucXPB0HNeoS8/5U5KMQ0vFEBIr
+         paglikK9IwAjk506EZtevRhIloweqe8JuKFyKdUKpTOzYlNO/SnFXNJjxRFZG/p6aQuY
+         cRbtp3dglYplCqBoDbO1gPbDeMzFmXuqzOZA4qA80q7xbs3zhDYAHh1bJSRiquTJ7dsC
+         LnzREP1cq7sLgLAqRnOabJkfqUkxG8km3lQ4djCIBYgu3uQ4LVjaxCIATy15tfs6pVu4
+         qJaEkDbQb+7ykNzW5jMYllA/DZdYeVHfWE2XUwIWam15odkmkudIK+ecURyI8zNG+3UM
+         xszA==
+X-Gm-Message-State: AOAM533Hs7+MWDscqAmlhKYUrTK9auHIjVpA+Entvn2WWdmmDdIqAAhI
+        ujQaETHlD7DplZzpUPaE07pI/w==
+X-Google-Smtp-Source: ABdhPJxPEvQzdmtHRU/dLJO3dr0rZQWH3nG+MoxQFCjUTeleYWtCUHQZIyapPQIwS1V6Ay7IjUZ3Og==
+X-Received: by 2002:ac8:60d9:: with SMTP id i25mr716212qtm.209.1599091151435;
+        Wed, 02 Sep 2020 16:59:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b43sm762647qtk.84.2020.09.02.16.59.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 16:59:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kDcek-006Cfl-01; Wed, 02 Sep 2020 20:59:10 -0300
+Date:   Wed, 2 Sep 2020 20:59:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/ucma: fix memory leak of mc on an xa_alloc
+ failure
+Message-ID: <20200902235909.GK24045@ziepe.ca>
+References: <20200902162805.200436-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902162805.200436-1-colin.king@canonical.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-09-02 01:04, Danil Kipnis wrote:
-> RTRS allows for reliable transmission of sg lists between two hosts
-> over rdma. It is optimised for block io. One can implement a client
-> and a server module on top of RTRS which would allow for reliable
-> transmission to a group of hosts.
+On Wed, Sep 02, 2020 at 05:28:05PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> In the networking world this is called reliable multicast. I think one
-> can say that reliable multicast is an equivalent to what is called
-> "mirror" in the storage world. There is something called XoR network
-> coding which seems to be an equivalent of raid5. There is also Reed
-> Solomon network coding.
+> Currently when an xa_alloc failure occurs the error exit path leaks
+> the allocated object mc.  Fix this by adding an error return path
+> that frees mc and rename error exit paths err3 to err4 and err2 to err3.
 > 
-> Having a reliable multicast with coding rdma-based transport layer
-> would allow for very flexible and scalable designs of distributed
-> replication solutions based on different in-kernel transport, block
-> and replication drivers.
-> 
-> What do you think?
+> Fixes: 95fe51096b7a ("RDMA/ucma: Remove mc_list and rely on xarray")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/infiniband/core/ucma.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 
-How will the resulting software differ from DRBD (other than that it
-uses RDMA)? How will it be guaranteed that the resulting software does
-not suffer from the problems that have been solved by the introduction
-of the DRBD activity log
-(https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
+Alex beat you too it, so I will use his patch, thanks
 
-Thanks,
-
-Bart.
+Jason
