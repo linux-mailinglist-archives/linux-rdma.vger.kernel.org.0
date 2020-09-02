@@ -2,96 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522EF25AAD2
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 14:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCC225AB09
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Sep 2020 14:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgIBMFt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 08:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgIBMFs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:05:48 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F3B42078B;
-        Wed,  2 Sep 2020 12:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599048344;
-        bh=jU9kXSKxebPQPV5iXla8KF1pwWA5kUaBdX8pFvGzgdc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b72Qg0m+4qIA76wV73i3cdLEft5umNprMIIJijmpiilVPJKH7bYzvJwMD+arFW9Ih
-         jIebhOQPH4laDBXO9953qwjm9G9bLETZFPcJajpj+NoKMyDxFCETyUyLRa9k9PHkt2
-         I/mWLq6/zWzyiTUjyLiuUbEK28XSpr503m3cBuZk=
-Date:   Wed, 2 Sep 2020 15:05:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
+        id S1726400AbgIBMUo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 08:20:44 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43084 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgIBMUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 08:20:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082CDltP059162;
+        Wed, 2 Sep 2020 12:20:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=aMtoJgiEiUzC2nMgsAFM3dWIFdNUa8qTKPwIAHCRo0g=;
+ b=hBbThGM927GZMnskHu6NXT5YVoXMsJrdiZdyf59/2sfudu+2HomWaXwiFoS0uK41tDbx
+ qfTPrgC3LQzFZteaqLt992Tlex78D5X4EpuZoNj8beNKTMt54At1rwwFmEGgkhpnQjVb
+ 95bIG1PWFQIYiese0maSMqzRICrXJlTbnPlqm4PBY+1Vsj1yqn/VSHW8vxqSQ5tYIJVc
+ 5DZo2btTR7hoenYp9klLU37dpOg1vtHhYN2rRVSIhLxrIUaWfMtam8h5xME+mbYS8o9T
+ Rpq8Fnmt6Y6MPFAEKoz2aeAItDzrL2NWUay7RYrbXQuNhkZ0llAYvsAfo4KYgcmrCR8y uw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 339dmn0n41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 12:20:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082CFlWc044837;
+        Wed, 2 Sep 2020 12:18:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3380xyhv6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 12:18:31 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 082CITrR020852;
+        Wed, 2 Sep 2020 12:18:30 GMT
+Received: from dhcp-10-175-173-45.vpn.oracle.com (/10.175.173.45)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 05:18:29 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [rdma:for-next 16/50] drivers/infiniband/hw/mlx4/cm.c:496:48:
+ sparse: sparse: incorrect type in initializer (different address spaces)
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200902115228.GP1152540@nvidia.com>
+Date:   Wed, 2 Sep 2020 14:18:27 +0200
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CC1EC6BF-BAF0-42C2-9DF2-6E233B702119@oracle.com>
+References: <202009021436.HsjhN4O1%lkp@intel.com>
+ <20200902115228.GP1152540@nvidia.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [PATCH 02/14] RDMA/umem: Prevent small pages from being returned
- by ib_umem_find_best_pgsz()
-Message-ID: <20200902120540.GI59010@unreal>
-References: <0-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
- <2-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
- <20200902115119.GH59010@unreal>
- <20200902115912.GQ1152540@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902115912.GQ1152540@nvidia.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020116
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 08:59:12AM -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 02, 2020 at 02:51:19PM +0300, Leon Romanovsky wrote:
-> > On Tue, Sep 01, 2020 at 09:43:30PM -0300, Jason Gunthorpe wrote:
-> > > rdma_for_each_block() makes assumptions about how the SGL is constructed
-> > > that don't work if the block size is below the page size used to to build
-> > > the SGL.
-> > >
-> > > The rules for umem SGL construction require that the SG's all be PAGE_SIZE
-> > > aligned and we don't encode the actual byte offset of the VA range inside
-> > > the SGL using offset and length. So rdma_for_each_block() has no idea
-> > > where the actual starting/ending point is to compute the first/last block
-> > > boundary if the starting address should be within a SGL.
-> > >
-> > > Fixing the SGL construction turns out to be really hard, and will be the
-> > > subject of other patches. For now block smaller pages.
-> > >
-> > > Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
-> > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > >  drivers/infiniband/core/umem.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> > > index 120e98403c345d..7b5bc969e55630 100644
-> > > +++ b/drivers/infiniband/core/umem.c
-> > > @@ -151,6 +151,12 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
-> > >  	dma_addr_t mask;
-> > >  	int i;
-> > >
-> > > +	/* rdma_for_each_block() has a bug if the page size is smaller than the
-> > > +	 * page size used to build the umem. For now prevent smaller page sizes
-> > > +	 * from being returned.
-> > > +	 */
-> > > +	pgsz_bitmap &= GENMASK(BITS_PER_LONG - 1, PAGE_SHIFT);
-> > > +
-> >
-> > Why do we care about such case? Why can't we leave this check forever?
->
-> If HW supports only, say 4k page size, and runs on a 64k page size
-> architecture it should be able to fragment into the native HW page
-> size.
->
-> The whole point of these APIs is to decouple the system and HW page
-> sizes.
 
-Right now you are preventing such combinations, but is this real concern
-for existing drivers?
 
-Thanks
+> On 2 Sep 2020, at 13:52, Jason Gunthorpe <jgg@nvidia.com> wrote:
+>=20
+> On Wed, Sep 02, 2020 at 02:01:41PM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git =
+for-next
+>> head:   524d8ffd07f0ca10b24011487339f836ed859b32
+>> commit: 227a0e142e375909959a74b7782403e14331f6f3 [16/50] IB/mlx4: Add =
+support for REJ due to timeout
+>> config: i386-randconfig-s001-20200902 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>> reproduce:
+>>        # apt-get install sparse
+>>        # sparse version: v0.6.2-191-g10164920-dirty
+>>        git checkout 227a0e142e375909959a74b7782403e14331f6f3
+>>        # save the attached .config to linux build tree
+>>        make W=3D1 C=3D1 CF=3D'-fdiagnostic-prefix -D__CHECK_ENDIAN__' =
+ARCH=3Di386=20
+>>=20
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> Gah!
+>=20
+> H=C3=A5kon, radix trees are not allowed please change this to xarray!
 
->
+I believe this is lack of __rcu in the variable definition. I started =
+with
+
+	void **slot;=20
+
+but sparse didn't like it, so I changed it to:
+
+	__rcu void **slot;
+
+sparse liked that, but then it didn't like:
+
+	struct rej_tmout_entry *item =3D *slot;
+
+Shall I change that to:
+
+	struct rej_tmout_entry *item =3D =
+rcu_dereference_protected(*slot, true);
+
+?
+
+
+Not sure why I need to meld in this rcu stuff when everything is =
+protected by a mutex anyway.
+
+Please advice,
+
+
+H=C3=A5kon
+
+
+
+>=20
+> Thanks,
 > Jason
+
