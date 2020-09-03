@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592E825BAD9
+	by mail.lfdr.de (Postfix) with ESMTP id C633825BADA
 	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 08:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgICGHN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726025AbgICGHN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 3 Sep 2020 02:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgICGHF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 02:07:05 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E10DC061244
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 23:07:05 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e33so1261815pgm.0
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 23:07:05 -0700 (PDT)
+        with ESMTP id S1726109AbgICGHJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 02:07:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683B9C061244
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 23:07:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k15so1384610pfc.12
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 23:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=owfrpNL/RiIwYXs92g1iDTHe3f/CAcnbksFi3Dnvj5A=;
-        b=Wyz0rV52Qk3mPzP1tINrNKzp5WbBiz9zCZrfzZlc0WTSGmLIqYHQl+eN3yEuuRu2tT
-         6CzApIXl1wa0Hq+EGl58nstj+drrEUyhxTOrqfcx86Ym5HuUzP/335XW55bgE64J8bFf
-         juIfD7xKvh3WIwmfZqQF4814dBQMeHJxutsnxrzZ+2pGOnCAlSgt/DJkQXs7HtO5Ly3b
-         ig5W66/nRDyJhK8fxajcN7iGNxb6zDliHay5kjP/Iz8PiEdZhwd9utvecWd4l6q6/MSM
-         XBaThDfCfoYku5vgNDvvSE46W6/tMWdwbN19S/FR0AYrqJ/ahWtYSIc0EF75hvUtfv/o
-         dtLg==
+        bh=0IAAG0FjZzDRtU1T0Ft7OlLUeddkej5M/Q99d+vMwhc=;
+        b=Mf+OBcvI7TNvb3+jfyD9difio5rwle6pVPBEmnIzKZHx/CYmTvwgr14f55EcAKnM9f
+         qhbmzeHutFxaz8Kkx6nyo1T4RDE9vA9Kf+33jvnTsopFAzCk1wJbHnv4trzleCQ9k7OX
+         J/tdBjgw78UIkC7yshJYBUYf7OY/g/ZTHgrsZ/YSDKRKXU+1hyxxyhuNsYlZFIv1Zu6c
+         LPQ7gx7+pzZydaTV9zmON/OFfd8AknvKlEcLMbp7pd8I6YF/IUhUe0iDKipollt3iwqf
+         m6RaAReuIQDHeeA98pHfBB9xBePSZiGq9gRk4C/ZrNPzHGGw3W68QrMJ2jEK7A927YvK
+         DGDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=owfrpNL/RiIwYXs92g1iDTHe3f/CAcnbksFi3Dnvj5A=;
-        b=Kz8YS3ox62GKdfqXbN1rzlyJVf9hXwk1M795r5m14QWmK0oEHjD0H3ADKk3xnEC1FR
-         0R5Zluxg1H0hmKLVhdRmtFKzdNXvhAWXgjHumlHVqGAGhdwrj4Vivravqu8Lgeri42jW
-         Iid/9EECL4JvhVKnNQEKwutxJTpSMAtjJn4+34k/xU25vAQjvHWUpn5l4xm57KiimFNs
-         9fZIuzUEMg9z1LwrQ9IIiUTn9UsBa09BVZ4JEz3UHQOWDnEAYjdMnkUTDf35otHlEskv
-         7C6P6cUgdDyjpir+L8g0SqZnYXAu5KkRpciH2JchSYazvurVx/ebvdKQ4M8iqBY/21Wf
-         n2Gg==
-X-Gm-Message-State: AOAM532pXKZ/G+e6SOMHzxnoG0col1ulDNImfxnqRiS4NpsWUt2k3gSf
-        70V+CT+UuZLYZc4iOPSQE64=
-X-Google-Smtp-Source: ABdhPJz7kfAR/+QTLxlgBSI4LyH8WxtPcSg8bnfJnfrvoN6ejpSqsMgTq+j20YSy29F8AaJkNbwooA==
-X-Received: by 2002:a17:902:7d85:: with SMTP id a5mr2195461plm.148.1599113224787;
-        Wed, 02 Sep 2020 23:07:04 -0700 (PDT)
+        bh=0IAAG0FjZzDRtU1T0Ft7OlLUeddkej5M/Q99d+vMwhc=;
+        b=RIKGmNxRJO7r9q31l5rlxny7Ygv9/P7ifJyZAC4n3sTeuCQ8uUiZfocC0oGzusKm1X
+         eFBIwo8Fuu4Es315io7UtjttQA0//qpoVpdoEhbsGRiItFaCtbNl1bELWyVDnnQNS3C3
+         1DK3aKw7J80i61tqc7pLneTIAwrkDHYXmG4ZZIG4fsqHbLkOaj2oNMLTOHS1bL1bpAa2
+         mGYBswj3w51hpv4v6RpO68g1R4rgUROAr7qN4VparfKFXpp/XbwUKU8REWYZA5zc3A9W
+         WghtABOfzdtqBtLbXyFINAWLVWA+JK5ZcJ/HEysBhs3ie+I0MYBvK/MDVeUXsRfM2WJt
+         gl2g==
+X-Gm-Message-State: AOAM533HjPDcI4j23d6a8PRc7Rxn3wYqOeI5nCtK3bNR+SEWX+mepPFz
+        XMbBWdlGe8slvgqmw/SP2I8=
+X-Google-Smtp-Source: ABdhPJyw59KFVseWM7ViaFXbmWmoJMOO10m+8kNtECPM2TH/oq2Y8CMcVKFMm2UmfRPziZx1G1cXiw==
+X-Received: by 2002:a17:902:56a:: with SMTP id 97mr2249475plf.130.1599113229032;
+        Wed, 02 Sep 2020 23:07:09 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.196.170])
-        by smtp.gmail.com with ESMTPSA id v1sm1210395pjh.16.2020.09.02.23.07.00
+        by smtp.gmail.com with ESMTPSA id v1sm1210395pjh.16.2020.09.02.23.07.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 23:07:04 -0700 (PDT)
+        Wed, 02 Sep 2020 23:07:08 -0700 (PDT)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     jgg@nvidia.com, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
@@ -56,9 +56,9 @@ Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
         dennis.dalessandro@intel.com, faisal.latif@intel.com,
         shiraz.saleem@intel.com, Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v2 3/5] RDMA/i40iw: convert tasklets to use new tasklet_setup() API
-Date:   Thu,  3 Sep 2020 11:36:35 +0530
-Message-Id: <20200903060637.424458-4-allen.lkml@gmail.com>
+Subject: [PATCH v2 4/5] RDMA/qib: convert tasklets to use new tasklet_setup() API
+Date:   Thu,  3 Sep 2020 11:36:36 +0530
+Message-Id: <20200903060637.424458-5-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903060637.424458-1-allen.lkml@gmail.com>
 References: <20200903060637.424458-1-allen.lkml@gmail.com>
@@ -77,59 +77,72 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/infiniband/hw/i40iw/i40iw_main.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/qib/qib_iba7322.c |  7 +++----
+ drivers/infiniband/hw/qib/qib_sdma.c    | 10 +++++-----
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
-index 58a433135a03..c0cdb25440bf 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_main.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
-@@ -192,9 +192,9 @@ static void i40iw_enable_intr(struct i40iw_sc_dev *dev, u32 msix_id)
-  * i40iw_dpc - tasklet for aeq and ceq 0
-  * @data: iwarp device
-  */
--static void i40iw_dpc(unsigned long data)
-+static void i40iw_dpc(struct tasklet_struct *t)
+diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
+index a10eab89aee4..189a0ce6056a 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7322.c
++++ b/drivers/infiniband/hw/qib/qib_iba7322.c
+@@ -1733,9 +1733,9 @@ static noinline void handle_7322_errors(struct qib_devdata *dd)
+ 	return;
+ }
+ 
+-static void qib_error_tasklet(unsigned long data)
++static void qib_error_tasklet(struct tasklet_struct *t)
  {
--	struct i40iw_device *iwdev = (struct i40iw_device *)data;
-+	struct i40iw_device *iwdev = from_tasklet(iwdev, t, dpc_tasklet);
+-	struct qib_devdata *dd = (struct qib_devdata *)data;
++	struct qib_devdata *dd = from_tasklet(dd, t, error_tasklet);
  
- 	if (iwdev->msix_shared)
- 		i40iw_process_ceq(iwdev, iwdev->ceqlist);
-@@ -206,9 +206,9 @@ static void i40iw_dpc(unsigned long data)
-  * i40iw_ceq_dpc - dpc handler for CEQ
-  * @data: data points to CEQ
-  */
--static void i40iw_ceq_dpc(unsigned long data)
-+static void i40iw_ceq_dpc(struct tasklet_struct *t)
+ 	handle_7322_errors(dd);
+ 	qib_write_kreg(dd, kr_errmask, dd->cspec->errormask);
+@@ -3537,8 +3537,7 @@ static void qib_setup_7322_interrupt(struct qib_devdata *dd, int clearpend)
+ 	for (i = 0; i < ARRAY_SIZE(redirect); i++)
+ 		qib_write_kreg(dd, kr_intredirect + i, redirect[i]);
+ 	dd->cspec->main_int_mask = mask;
+-	tasklet_init(&dd->error_tasklet, qib_error_tasklet,
+-		(unsigned long)dd);
++	tasklet_setup(&dd->error_tasklet, qib_error_tasklet);
+ }
+ 
+ /**
+diff --git a/drivers/infiniband/hw/qib/qib_sdma.c b/drivers/infiniband/hw/qib/qib_sdma.c
+index 8f8d61736656..5e86cbf7d70e 100644
+--- a/drivers/infiniband/hw/qib/qib_sdma.c
++++ b/drivers/infiniband/hw/qib/qib_sdma.c
+@@ -62,7 +62,7 @@ static void sdma_get(struct qib_sdma_state *);
+ static void sdma_put(struct qib_sdma_state *);
+ static void sdma_set_state(struct qib_pportdata *, enum qib_sdma_states);
+ static void sdma_start_sw_clean_up(struct qib_pportdata *);
+-static void sdma_sw_clean_up_task(unsigned long);
++static void sdma_sw_clean_up_task(struct tasklet_struct *);
+ static void unmap_desc(struct qib_pportdata *, unsigned);
+ 
+ static void sdma_get(struct qib_sdma_state *ss)
+@@ -119,9 +119,10 @@ static void clear_sdma_activelist(struct qib_pportdata *ppd)
+ 	}
+ }
+ 
+-static void sdma_sw_clean_up_task(unsigned long opaque)
++static void sdma_sw_clean_up_task(struct tasklet_struct *t)
  {
--	struct i40iw_ceq *iwceq = (struct i40iw_ceq *)data;
-+	struct i40iw_ceq *iwceq = from_tasklet(iwceq, t, dpc_tasklet);
- 	struct i40iw_device *iwdev = iwceq->iwdev;
+-	struct qib_pportdata *ppd = (struct qib_pportdata *) opaque;
++	struct qib_pportdata *ppd = from_tasklet(ppd, t,
++						 sdma_sw_clean_up_task);
+ 	unsigned long flags;
  
- 	i40iw_process_ceq(iwdev, iwceq);
-@@ -689,10 +689,10 @@ static enum i40iw_status_code i40iw_configure_ceq_vector(struct i40iw_device *iw
- 	enum i40iw_status_code status;
+ 	spin_lock_irqsave(&ppd->sdma_lock, flags);
+@@ -436,8 +437,7 @@ int qib_setup_sdma(struct qib_pportdata *ppd)
  
- 	if (iwdev->msix_shared && !ceq_id) {
--		tasklet_init(&iwdev->dpc_tasklet, i40iw_dpc, (unsigned long)iwdev);
-+		tasklet_setup(&iwdev->dpc_tasklet, i40iw_dpc);
- 		status = request_irq(msix_vec->irq, i40iw_irq_handler, 0, "AEQCEQ", iwdev);
- 	} else {
--		tasklet_init(&iwceq->dpc_tasklet, i40iw_ceq_dpc, (unsigned long)iwceq);
-+		tasklet_setup(&iwceq->dpc_tasklet, i40iw_ceq_dpc);
- 		status = request_irq(msix_vec->irq, i40iw_ceq_handler, 0, "CEQ", iwceq);
- 	}
+ 	INIT_LIST_HEAD(&ppd->sdma_activelist);
  
-@@ -841,7 +841,7 @@ static enum i40iw_status_code i40iw_configure_aeq_vector(struct i40iw_device *iw
- 	u32 ret = 0;
+-	tasklet_init(&ppd->sdma_sw_clean_up_task, sdma_sw_clean_up_task,
+-		(unsigned long)ppd);
++	tasklet_setup(&ppd->sdma_sw_clean_up_task, sdma_sw_clean_up_task);
  
- 	if (!iwdev->msix_shared) {
--		tasklet_init(&iwdev->dpc_tasklet, i40iw_dpc, (unsigned long)iwdev);
-+		tasklet_setup(&iwdev->dpc_tasklet, i40iw_dpc);
- 		ret = request_irq(msix_vec->irq, i40iw_irq_handler, 0, "i40iw", iwdev);
- 	}
- 	if (ret) {
+ 	ret = dd->f_init_sdma_regs(ppd);
+ 	if (ret)
 -- 
 2.25.1
 
