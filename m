@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E199825BAD6
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 08:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86CC25BAD7
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 08:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbgICGG6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Sep 2020 02:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S1725967AbgICGHE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Sep 2020 02:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgICGG5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 02:06:57 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EF9C061244
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 23:06:56 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u13so1261205pgh.1
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 23:06:56 -0700 (PDT)
+        with ESMTP id S1725943AbgICGHC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 02:07:02 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA73C061244
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 23:07:00 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o20so1391079pfp.11
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 23:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q/4QvKZBb/mGn1yWZfjleUiofW6BFP93AH88fMJBGbQ=;
-        b=BVGnutTsOjiEkog1rX/m20RZyGITJsFq/Zbzh8zmL2UlvN9kdtYIp2RrgYoLRRcC9m
-         g2xwVB2bRBMRH12RTlpZPEe2FlEofTDnAAHTgL0++eFF90rrWZveW+AxiViBdGUzDlJ8
-         /skVlrEWzU8UqIPgYmfOK7fGkxpMIcywdC47dnV83hw7rsC2vkZYYfjusLa0/mmZK26t
-         Hc7AILnieBdWHZBVKHWxvwyz76fBBmIP9PFKIrlKQZGWs5qmw7Qn7O1jKxsVIrrW2i+D
-         EOzM44InuLtVKTvMOy4QpoOFjpSkm4l4k8dN0tzi+w6Rl0QlE9b69pzZt9STCC2Ukyxl
-         LTgQ==
+        bh=qgTAEJ+MvTux0GG6ydOla3bizdzDlSbFfuqk1terVhA=;
+        b=rQXPXWsm3J/JEy+yWVe+nbp18l6fBRfEuGjhc0dR2rVcJ2dcR+znf7ueidew1dBguR
+         pvy4UNkoo7RAiu55NP89BSB77K8j2pd3GpdYOvhntfbMfDHq/4jhGl1naCGW1zySWRKz
+         95M/xuhd4aUc3Jw3d25JNTGZnQS/atQdg65SnzaW45+sACyt68/2sZe8yWLW7ugPvzaQ
+         iaGEswsHacLJbPh7EcxPFYxZP2h1RGGDzNWS5A+c+A3ctyNDbBVHQfvF1mFzJPgPmYRv
+         7tU7l3JusmWyUJc1L+UcpB/AC3w0gZFzVN1GnBiom1D+WZjrseAQpguHQNd8pJvGHJod
+         DR7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q/4QvKZBb/mGn1yWZfjleUiofW6BFP93AH88fMJBGbQ=;
-        b=OqO67leZef0F5GJXBVSzYN3KlVlxgI1xV4rqln4ZFlv+ONCPcWnkas3Tfwi6W8+VJU
-         eme2cWboC98cfgogwnKHHtmGfhOUm/vvEoyKKR6OyYpovrgztDjrGeprkXuKNOxnCEVG
-         f9rU8525tt73JE4HpBj0XRsykOYFf256z02FIVUdyWDzJwUXn+GMRUQLFztqOXe1DsT1
-         Q8bNSWWwAgt01bhgtYToEOsiJ1AIkEMwYcCtX1uR21wun5uZXohw9TA++2w/T44THrSG
-         nkXb3QCfv993FulLwGf0N+HTAw2mB4HRtjZI0mlHkR8gbXtFat7b+Xfp9w+6XyvxC7ms
-         zufA==
-X-Gm-Message-State: AOAM531UyI9bubh3nClqgutTby5LNYrERzTRz2GcckqxS2Mt/SYy1aWM
-        Qcmqkz5fLgJXmKJz792g3Ds=
-X-Google-Smtp-Source: ABdhPJxrO9CDDrlWoVfAQb2DOR02B87mu/g9LhYBnEQnwqO5n5N0otwCkGoZCYYYxzMIPDqTW2c79A==
-X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr589126pfc.11.1599113215697;
-        Wed, 02 Sep 2020 23:06:55 -0700 (PDT)
+        bh=qgTAEJ+MvTux0GG6ydOla3bizdzDlSbFfuqk1terVhA=;
+        b=mtleHwrZaTl5OXZdgWGznp+dhkOH+2dBweKw174gSvTsmBMCOZiyHC3axvKq59OLdT
+         mO3REYyPnCMaScElZ2Bkhf80OQRKz2k6DjzRkUIivMrdHFwesqWFFShvWdDC/EAjqAZc
+         ENIKRHjwYzOTxar46dSPOcnBkZOoCUohVEIT/zhH3eJGLvEHPThx0EV+DDRXE1jYW7jN
+         SnT1W0RPdghDgPpX2tjip3XA8j3zdWOYfSklJZC2r6IoRXTKu5X0bNsuuwIQzoofWbfD
+         XrkMKZI2EJ7oSIMqJMeQAXUwT+xK9cKy5GVcrD8PG2U0xBUvQGbVB+Mu7JOmQ44qfWKi
+         Eaqw==
+X-Gm-Message-State: AOAM532nLvmPX23VXiR+2+YoDjP4yHmMZbiPimp4ibw7L0KoqcmOCGnX
+        HI62k5fij/r/MIow6oZlheE=
+X-Google-Smtp-Source: ABdhPJxFaZwBIWtaWb79A+o68UJ4VuVLJ2FbbFvBxzbd0GpmBZW1CyNIBrgA+RtNgX+yoetwvueXwA==
+X-Received: by 2002:aa7:9a44:: with SMTP id x4mr2213275pfj.199.1599113220312;
+        Wed, 02 Sep 2020 23:07:00 -0700 (PDT)
 Received: from localhost.localdomain ([49.207.196.170])
-        by smtp.gmail.com with ESMTPSA id v1sm1210395pjh.16.2020.09.02.23.06.51
+        by smtp.gmail.com with ESMTPSA id v1sm1210395pjh.16.2020.09.02.23.06.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 23:06:55 -0700 (PDT)
+        Wed, 02 Sep 2020 23:06:59 -0700 (PDT)
 From:   Allen Pais <allen.lkml@gmail.com>
 To:     jgg@nvidia.com, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
@@ -56,9 +56,9 @@ Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
         dennis.dalessandro@intel.com, faisal.latif@intel.com,
         shiraz.saleem@intel.com, Allen Pais <allen.lkml@gmail.com>,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH v2 1/5] RDMA/bnxt_re: convert tasklets to use new tasklet_setup() API
-Date:   Thu,  3 Sep 2020 11:36:33 +0530
-Message-Id: <20200903060637.424458-2-allen.lkml@gmail.com>
+Subject: [PATCH v2 2/5] IB/hfi1: convert tasklets to use new tasklet_setup() API
+Date:   Thu,  3 Sep 2020 11:36:34 +0530
+Message-Id: <20200903060637.424458-3-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903060637.424458-1-allen.lkml@gmail.com>
 References: <20200903060637.424458-1-allen.lkml@gmail.com>
@@ -77,80 +77,68 @@ and from_tasklet() to pass the tasklet pointer explicitly.
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c   |  7 +++----
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 11 +++++------
- 2 files changed, 8 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/hfi1/sdma.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index d60e3dcea087..34a08ae00f24 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -295,9 +295,9 @@ static void __wait_for_all_nqes(struct bnxt_qplib_cq *cq, u16 cnq_events)
- 	}
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index 04575c9afd61..a307d4c8b15a 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -232,11 +232,11 @@ static const struct sdma_set_state_action sdma_action_table[] = {
+ static void sdma_complete(struct kref *);
+ static void sdma_finalput(struct sdma_state *);
+ static void sdma_get(struct sdma_state *);
+-static void sdma_hw_clean_up_task(unsigned long);
++static void sdma_hw_clean_up_task(struct tasklet_struct *);
+ static void sdma_put(struct sdma_state *);
+ static void sdma_set_state(struct sdma_engine *, enum sdma_states);
+ static void sdma_start_hw_clean_up(struct sdma_engine *);
+-static void sdma_sw_clean_up_task(unsigned long);
++static void sdma_sw_clean_up_task(struct tasklet_struct *);
+ static void sdma_sendctrl(struct sdma_engine *, unsigned);
+ static void init_sdma_regs(struct sdma_engine *, u32, uint);
+ static void sdma_process_event(
+@@ -545,9 +545,10 @@ static void sdma_err_progress_check(struct timer_list *t)
+ 	schedule_work(&sde->err_halt_worker);
  }
  
--static void bnxt_qplib_service_nq(unsigned long data)
-+static void bnxt_qplib_service_nq(struct tasklet_struct *t)
+-static void sdma_hw_clean_up_task(unsigned long opaque)
++static void sdma_hw_clean_up_task(struct tasklet_struct *t)
  {
--	struct bnxt_qplib_nq *nq = (struct bnxt_qplib_nq *)data;
-+	struct bnxt_qplib_nq *nq = from_tasklet(nq, t, nq_tasklet);
- 	struct bnxt_qplib_hwq *hwq = &nq->hwq;
- 	int num_srqne_processed = 0;
- 	int num_cqne_processed = 0;
-@@ -448,8 +448,7 @@ int bnxt_qplib_nq_start_irq(struct bnxt_qplib_nq *nq, int nq_indx,
+-	struct sdma_engine *sde = (struct sdma_engine *)opaque;
++	struct sdma_engine *sde = from_tasklet(sde, t,
++					       sdma_hw_clean_up_task);
+ 	u64 statuscsr;
  
- 	nq->msix_vec = msix_vector;
- 	if (need_init)
--		tasklet_init(&nq->nq_tasklet, bnxt_qplib_service_nq,
--			     (unsigned long)nq);
-+		tasklet_setup(&nq->nq_tasklet, bnxt_qplib_service_nq);
- 	else
- 		tasklet_enable(&nq->nq_tasklet);
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 4e211162acee..1f9e8234d0f4 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -50,7 +50,7 @@
- #include "qplib_sp.h"
- #include "qplib_fp.h"
- 
--static void bnxt_qplib_service_creq(unsigned long data);
-+static void bnxt_qplib_service_creq(struct tasklet_struct *t);
- 
- /* Hardware communication channel */
- static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
-@@ -79,7 +79,7 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- 		goto done;
- 	do {
- 		mdelay(1); /* 1m sec */
--		bnxt_qplib_service_creq((unsigned long)rcfw);
-+		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
- 	} while (test_bit(cbit, cmdq->cmdq_bitmap) && --count);
- done:
- 	return count ? 0 : -ETIMEDOUT;
-@@ -369,9 +369,9 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 	while (1) {
+@@ -604,9 +605,9 @@ static void sdma_flush_descq(struct sdma_engine *sde)
+ 		sdma_desc_avail(sde, sdma_descq_freecnt(sde));
  }
  
- /* SP - CREQ Completion handlers */
--static void bnxt_qplib_service_creq(unsigned long data)
-+static void bnxt_qplib_service_creq(struct tasklet_struct *t)
+-static void sdma_sw_clean_up_task(unsigned long opaque)
++static void sdma_sw_clean_up_task(struct tasklet_struct *t)
  {
--	struct bnxt_qplib_rcfw *rcfw = (struct bnxt_qplib_rcfw *)data;
-+	struct bnxt_qplib_rcfw *rcfw = from_tasklet(rcfw, t, creq.creq_tasklet);
- 	struct bnxt_qplib_creq_ctx *creq = &rcfw->creq;
- 	u32 type, budget = CREQ_ENTRY_POLL_BUDGET;
- 	struct bnxt_qplib_hwq *hwq = &creq->hwq;
-@@ -685,8 +685,7 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
+-	struct sdma_engine *sde = (struct sdma_engine *)opaque;
++	struct sdma_engine *sde = from_tasklet(sde, t, sdma_sw_clean_up_task);
+ 	unsigned long flags;
  
- 	creq->msix_vec = msix_vector;
- 	if (need_init)
--		tasklet_init(&creq->creq_tasklet,
--			     bnxt_qplib_service_creq, (unsigned long)rcfw);
-+		tasklet_setup(&creq->creq_tasklet, bnxt_qplib_service_creq);
- 	else
- 		tasklet_enable(&creq->creq_tasklet);
- 	rc = request_irq(creq->msix_vec, bnxt_qplib_creq_irq, 0,
+ 	spin_lock_irqsave(&sde->tail_lock, flags);
+@@ -1454,11 +1455,10 @@ int sdma_init(struct hfi1_devdata *dd, u8 port)
+ 		sde->tail_csr =
+ 			get_kctxt_csr_addr(dd, this_idx, SD(TAIL));
+ 
+-		tasklet_init(&sde->sdma_hw_clean_up_task, sdma_hw_clean_up_task,
+-			     (unsigned long)sde);
+-
+-		tasklet_init(&sde->sdma_sw_clean_up_task, sdma_sw_clean_up_task,
+-			     (unsigned long)sde);
++		tasklet_setup(&sde->sdma_hw_clean_up_task,
++			      sdma_hw_clean_up_task);
++		tasklet_setup(&sde->sdma_sw_clean_up_task,
++			      sdma_sw_clean_up_task);
+ 		INIT_WORK(&sde->err_halt_worker, sdma_err_halt_wait);
+ 		INIT_WORK(&sde->flush_worker, sdma_field_flush);
+ 
 -- 
 2.25.1
 
