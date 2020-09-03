@@ -2,45 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EAA25B7B9
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 02:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697C725B842
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 03:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgICAtB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Sep 2020 20:49:01 -0400
-Received: from gateway34.websitewelcome.com ([192.185.148.231]:25911 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726594AbgICAtA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 20:49:00 -0400
-X-Greylist: delayed 1247 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Sep 2020 20:48:59 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 1808227A507
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 19:28:12 -0500 (CDT)
+        id S1727851AbgICBYf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Sep 2020 21:24:35 -0400
+Received: from gateway36.websitewelcome.com ([192.185.187.5]:23800 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726686AbgICBYf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Sep 2020 21:24:35 -0400
+X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Sep 2020 21:24:34 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id CF1804032C9C2
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 19:00:08 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id Dd6qkoPSCBD8bDd6qkAfNn; Wed, 02 Sep 2020 19:28:12 -0500
+        id DdDBketaEn9FWDdDBkAdit; Wed, 02 Sep 2020 19:34:45 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CVEFOm410YCQzd5KtXwBn7ctxqZ0oV+pUtBfQ7D9i10=; b=zPwuawYXKpQ3SM8XqisjIV3TYU
-        iLRZa9/25ZwUZOsLugaNldPHOuxB7bZy5S9IWXYWPy0s5UsMxBMHPqLXk9uA1dcWcZjsanNKgVGry
-        QOXSRbLORkjnrioVziEYBTL87e1jVphKjkRdrJ1izHWh0YllggZHuiHAB61DSH7kYJAoPSSKA1dsA
-        gsOEidXYQQIf8v5MAS4lW3W4+NvvlZJLIhDCxp+I96m00z4EzzlknznDVETpzwREwTLAHleA18LHd
-        RELLrlsuMAfliv7Z2RZt+HJZjFz9cwaYYCEx1lHDRB7wwFxlUqT9uNBYoyzGIcnSjfKlpUCHUO8ii
-        hrGe2lsg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59038 helo=[192.168.15.8])
+        bh=9l0pH/+k3HZvCMGnsV6Lacu8N8aycjUoexsgCCT+iW4=; b=GU+PgiQ79chhsqfTXaK9470S7O
+        X8I1PofoIvSEW1zpkq2y8tAi/W94ZuTK8OL0V+Avehvu/cZakvJp1NlLDYhIboy9VE51UJ2XJRP77
+        PMOUlby5oMAOKo4q57qJTxJbZfrNmuJ4xHQ2C8eJoa/ehZNkY3uaC6TRe2tCYdCMN/ZYq7lVmTH5i
+        r/Afruwr+LcqsSZq9UWE5OrHH4kl8cXzVRGe1QAXUmndaVloB8nEYHxvO3c6rAaeqJHEtZOHNP4Yn
+        2rTRqBOEsb6kEPe91thDSmcZti/wpQIklD2BnyeN2B2viRZ/1vZdWJA9uszeTDa8IjI1fo6JuMNmz
+        xzgn0o0g==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59140 helo=[192.168.15.8])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1kDd6p-003yEQ-Q3; Wed, 02 Sep 2020 19:28:11 -0500
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        id 1kDdDA-0041Gg-Ko; Wed, 02 Sep 2020 19:34:44 -0500
+Subject: Re: [PATCH] RDMA/ucma: Fix resource leak on error path
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20200902162454.332828-1-alex.dewar90@gmail.com>
+ <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
+ <20200903003242.GL24045@ziepe.ca>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -86,16 +90,15 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9ehGZEO3+gCDFmK
  rjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrSVtSixD1uOgyt
  AP7RWS474w==
-Subject: Re: [PATCH] RDMA/ucma: Fix resource leak on error path
-Message-ID: <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
-Date:   Wed, 2 Sep 2020 19:34:26 -0500
+Message-ID: <0204eb72-8024-e6fc-800c-bd7e6ff94da7@embeddedor.com>
+Date:   Wed, 2 Sep 2020 19:40:58 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200902162454.332828-1-alex.dewar90@gmail.com>
+In-Reply-To: <20200903003242.GL24045@ziepe.ca>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
 X-AntiAbuse: Original Domain - vger.kernel.org
@@ -104,13 +107,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 187.162.31.110
 X-Source-L: No
-X-Exim-ID: 1kDd6p-003yEQ-Q3
+X-Exim-ID: 1kDdDA-0041Gg-Ko
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:59038
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:59140
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
+X-Email-Count: 11
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
@@ -118,27 +121,21 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Alex,
 
-On 9/2/20 11:24, Alex Dewar wrote:
-> In ucma_process_join(), if the call to xa_alloc() fails, the function
-> will return without freeing mc. Fix this by jumping to the correct line.
+On 9/2/20 19:32, Jason Gunthorpe wrote:
+
+>>> Addresses-Coverity: ("Resource leak")
+>>
+>> If you are using a public Coverity scan, please also include the Coverity ID.
+>> In this case ID 1496814, something like:
+>>
+>> Addresses-Coverity-ID: 1496814 ("Resource leak")
 > 
-> In the process I renamed the jump labels to something more memorable for
-> extra clarity.
+> Thanks, I fixed it up
 > 
-> Addresses-Coverity: ("Resource leak")
 
-If you are using a public Coverity scan, please also include the Coverity ID.
-In this case ID 1496814, something like:
+Awesome. :)
 
-Addresses-Coverity-ID: 1496814 ("Resource leak")
-
-People that don't include an CID is because they are using a private Coverity
-scan, so it doesn't make sense for them to add an ID because no one but
-them have access to that scan report.
-
-Thanks
+Thanks, Jason.
 --
 Gustavo
-
