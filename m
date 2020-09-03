@@ -2,220 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF2125BE7C
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 11:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DBE25BE7F
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 11:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgICJdO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Sep 2020 05:33:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:31360 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726268AbgICJdN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:33:13 -0400
-IronPort-SDR: LHYDzoctB9PDFS2d6knm9lEy826K+ofpb/Kh403Tm2K2YnJogiZbsgBWBXbNkXtRTAIWm2Ne3M
- BrdDmNC+8GZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="175598707"
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="175598707"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 02:33:09 -0700
-IronPort-SDR: 9NnvGdQ7rHVMEl7ornOdPMB50w5qY7gMx/8fCbgRqpS1n2b2312mvghww+9MaoeCK83EzJm4PJ
- 1obX4Zxb2t2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="302146203"
-Received: from lkp-server01.sh.intel.com (HELO f1af165c0d27) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 03 Sep 2020 02:33:07 -0700
-Received: from kbuild by f1af165c0d27 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kDlcB-000079-0A; Thu, 03 Sep 2020 09:33:07 +0000
-Date:   Thu, 03 Sep 2020 17:32:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 28b0865714b315e318ac45c4fc9156f3d4649646
-Message-ID: <5f50b84b.jLTAi2OzmZ2LQtfq%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726323AbgICJfJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Sep 2020 05:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgICJfJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 05:35:09 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC01EC061244;
+        Thu,  3 Sep 2020 02:35:08 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v4so2163118wmj.5;
+        Thu, 03 Sep 2020 02:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YmN6TYlQSwbm/wl1f5Jflst3Mjgwzhs4CRceNi7GnDQ=;
+        b=ohCM+ip22BVbqXf47OCWm47Nucq2P7yWHYLgqXl6cWN4Ap17kV1B9BwEojfKVQUD3c
+         lbtr+AwWpMYU9NFOcwzSLKlFeWU51tPiCfkWTUaXuMykeDkyeYjylbLGK1W4R6I9Bo/F
+         EW8UUJcWYcF3ioXQgbhTG2tTnJweTqvwZ3x1EpGp0Fkfn/rbYLl5+5wmPGxX6br9f/pI
+         x64CmyHNRo4yZRKk1eKKy1hRoXaV/H/hjwKkUJZH/uMJsRW1EKrBh2qjFMvayxlT44l8
+         Z0FTg393wkWA6oU6rHsBI4AkSFLLf1Hv6dmsaxxnKyWiMuGehk2Gn/nkBLlQOTlvimsk
+         pzNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YmN6TYlQSwbm/wl1f5Jflst3Mjgwzhs4CRceNi7GnDQ=;
+        b=Zt1tMkWxisdKwLMudiGVN9EriYeGzyz+JdS4Tn8Zrw7DfnPPGfYYIt6PSwnALT2ZI6
+         wWBOGniFCPz5nzkj4984jjPdDsWLZGhNgLkzgW7Jt26AmNASAWQ79wVDPwbNbDAyB7VP
+         OO0j70Fd8DVSrosL46odar8X89RtG22oh/kFTpx3JxvCdlZc7S61NWCJejBneOCarfbH
+         vzrewjHSSYeCmpnJLMvFBxeoZ4wWcJc3w3R6CFPH8bhS+Jh7HzS27zIQdaAhNUJDYwfH
+         S/20IGxrTSOaEAVfOEGc79rSlwUA7GLU5S5mXvanNSYy5iZ8FTVTqPwkUkj0h+gxg9qL
+         Ixaw==
+X-Gm-Message-State: AOAM533Uddisa8GEU3WEkxBIVTk3SA8llzJA1bKUU90vKzu8fLPw3veQ
+        swrfuT5TueBxDDhDP17YYDI=
+X-Google-Smtp-Source: ABdhPJzdYF4jAWN0nANFY3nmh0Og5LZpu/SJBN4ONUwY/Hts0Uuj+rxmZuzWvbLPoOHu782HW5ZUmA==
+X-Received: by 2002:a7b:c38f:: with SMTP id s15mr521509wmj.16.1599125707468;
+        Thu, 03 Sep 2020 02:35:07 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id e18sm3515525wrx.50.2020.09.03.02.35.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 02:35:06 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Thu, 3 Sep 2020 10:35:04 +0100
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ucma: Fix resource leak on error path
+Message-ID: <20200903093504.ita7taa67a6x6k7p@medion>
+References: <20200902162454.332828-1-alex.dewar90@gmail.com>
+ <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: 28b0865714b315e318ac45c4fc9156f3d4649646  RDMA/core: Fix reported speed and width
+On Wed, Sep 02, 2020 at 07:34:26PM -0500, Gustavo A. R. Silva wrote:
+> Hi Alex,
+> 
+> On 9/2/20 11:24, Alex Dewar wrote:
+> > In ucma_process_join(), if the call to xa_alloc() fails, the function
+> > will return without freeing mc. Fix this by jumping to the correct line.
+> > 
+> > In the process I renamed the jump labels to something more memorable for
+> > extra clarity.
+> > 
+> > Addresses-Coverity: ("Resource leak")
+> 
+> If you are using a public Coverity scan, please also include the Coverity ID.
+> In this case ID 1496814, something like:
+> 
+> Addresses-Coverity-ID: 1496814 ("Resource leak")
 
-elapsed time: 723m
-
-configs tested: 155
-configs skipped: 17
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         rt305x_defconfig
-nios2                            alldefconfig
-sh                          polaris_defconfig
-arm                          gemini_defconfig
-arc                        nsim_700_defconfig
-arm                              zx_defconfig
-microblaze                          defconfig
-mips                        vocore2_defconfig
-mips                      maltasmvp_defconfig
-powerpc                      ppc44x_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-mips                 pnx8335_stb225_defconfig
-arm                          badge4_defconfig
-mips                             allyesconfig
-arm                            zeus_defconfig
-um                             i386_defconfig
-mips                         mpc30x_defconfig
-c6x                        evmc6474_defconfig
-arm                      jornada720_defconfig
-m68k                       m5249evb_defconfig
-x86_64                           alldefconfig
-mips                   sb1250_swarm_defconfig
-arm                       imx_v4_v5_defconfig
-sh                           se7712_defconfig
-mips                          rb532_defconfig
-sh                            hp6xx_defconfig
-arm                           h5000_defconfig
-arm                           sunxi_defconfig
-sh                           se7721_defconfig
-arm                        shmobile_defconfig
-nds32                             allnoconfig
-arm                           omap1_defconfig
-mips                  decstation_64_defconfig
-arc                      axs103_smp_defconfig
-arc                              alldefconfig
-sh                      rts7751r2d1_defconfig
-arm                        mvebu_v5_defconfig
-arm                         nhk8815_defconfig
-powerpc                      tqm8xx_defconfig
-mips                           gcw0_defconfig
-arm                          moxart_defconfig
-powerpc                    adder875_defconfig
-arm                             mxs_defconfig
-sh                   sh7770_generic_defconfig
-mips                      loongson3_defconfig
-i386                             allyesconfig
-c6x                              alldefconfig
-sh                         ecovec24_defconfig
-arm                          collie_defconfig
-m68k                          multi_defconfig
-sparc                            allyesconfig
-sh                         microdev_defconfig
-mips                          malta_defconfig
-mips                        workpad_defconfig
-c6x                        evmc6457_defconfig
-mips                          rm200_defconfig
-h8300                            alldefconfig
-mips                            gpr_defconfig
-arc                              allyesconfig
-sh                           se7724_defconfig
-arm                         mv78xx0_defconfig
-microblaze                      mmu_defconfig
-riscv                          rv32_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200902
-i386                 randconfig-a005-20200902
-i386                 randconfig-a006-20200902
-i386                 randconfig-a002-20200902
-i386                 randconfig-a001-20200902
-i386                 randconfig-a003-20200902
-i386                 randconfig-a004-20200903
-i386                 randconfig-a005-20200903
-i386                 randconfig-a006-20200903
-i386                 randconfig-a002-20200903
-i386                 randconfig-a001-20200903
-i386                 randconfig-a003-20200903
-x86_64               randconfig-a013-20200902
-x86_64               randconfig-a016-20200902
-x86_64               randconfig-a011-20200902
-x86_64               randconfig-a012-20200902
-x86_64               randconfig-a015-20200902
-x86_64               randconfig-a014-20200902
-i386                 randconfig-a016-20200902
-i386                 randconfig-a015-20200902
-i386                 randconfig-a011-20200902
-i386                 randconfig-a013-20200902
-i386                 randconfig-a014-20200902
-i386                 randconfig-a012-20200902
-i386                 randconfig-a016-20200903
-i386                 randconfig-a015-20200903
-i386                 randconfig-a011-20200903
-i386                 randconfig-a013-20200903
-i386                 randconfig-a014-20200903
-i386                 randconfig-a012-20200903
-x86_64               randconfig-a004-20200903
-x86_64               randconfig-a006-20200903
-x86_64               randconfig-a003-20200903
-x86_64               randconfig-a005-20200903
-x86_64               randconfig-a001-20200903
-x86_64               randconfig-a002-20200903
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20200902
-x86_64               randconfig-a006-20200902
-x86_64               randconfig-a003-20200902
-x86_64               randconfig-a005-20200902
-x86_64               randconfig-a001-20200902
-x86_64               randconfig-a002-20200902
-x86_64               randconfig-a013-20200903
-x86_64               randconfig-a016-20200903
-x86_64               randconfig-a011-20200903
-x86_64               randconfig-a012-20200903
-x86_64               randconfig-a015-20200903
-x86_64               randconfig-a014-20200903
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Ahh ok. Thanks for the pointer :)
+> 
+> People that don't include an CID is because they are using a private Coverity
+> scan, so it doesn't make sense for them to add an ID because no one but
+> them have access to that scan report.
+> 
+> Thanks
+> --
+> Gustavo
+> 
