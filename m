@@ -2,107 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EC325BAAD
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 07:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA3725BAD5
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 08:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgICF6R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Sep 2020 01:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
+        id S1725984AbgICGGz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Sep 2020 02:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgICF6R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 01:58:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063A0C061244
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 22:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OLK17jT/X07dwKpD+dvlugET8UGIHQdA1/2KFZnem/A=; b=c31gugrTOwXjZwRVC9imR7FUQY
-        lY5wv0YCdwboTP1FrJFPC+/X0Kx6jruJt983TKfG94/F9zkzr/HlLEv2xv4jbOyaHJyPZBcQK2UAJ
-        /uNNkcExR7DWgu+x5fVy8haiTdE6WF99CP+lFwWNHBJSQMvNPK6nQRwKs7mGia8IhZrAGwY/Fqv1K
-        KLmEJPqGfsH625bbIb1q+3h379srcDRKQECS+orJHb+x0zDY69twCxReJL7adSZhQFwjHcixj8zSf
-        eR2B9j18xoVis/lOnJMnjLjzIsPfNS8a4xKw9zJkDS7QQrhIZ7py53SVGNUi7HJtc07YBRd01X8Gr
-        0Z5ZaIzw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDiGE-0008Mb-W6; Thu, 03 Sep 2020 05:58:15 +0000
-Date:   Thu, 3 Sep 2020 06:58:14 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Stephen Rust <srust@blockbridge.com>,
-        Doug Dumitru <doug@dumitru.com>
-Subject: Re: [PATCH v2] IB/isert: fix unaligned immediate-data handling
-Message-ID: <20200903055814.GB31262@infradead.org>
-References: <20200901030826.140880-1-sagi@grimberg.me>
+        with ESMTP id S1725943AbgICGGx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 02:06:53 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D716EC061244
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Sep 2020 23:06:51 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m5so1234807pgj.9
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Sep 2020 23:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBVC6oLyNJnmC7CK+9/5MHrueGDnYbnXC6caSW30iCk=;
+        b=gTrKtX5B/2/V2GqN7XapNSdK2gR05VeFhq+mTqjQBq36zjjxA33A2XcblqpwGei/ld
+         PWQjlpaQJXESW+i36nArWdrwqubc9yBv6G9nmYEbD2TfKwgtPHXZ2quziEn5BXmHiq6V
+         dkXlRNy0N9L2VFgQwmYuFcqekqZN/oCDzk1kMBLI86UOSjD9YpscmG8AXu+jP30Dr+6L
+         r9jaTqBdWLw+WYYdv/3okCVFKlLf7EQTUkypCUF7J8sTGMlbnbZlPi0vQHpf/bJ6604K
+         OIMzJ4zl1i/QV0QWL9mJWAYGSNLNGRuoy4LQzTLonlP/Xn4c34dxOBk9MxPAUcZDupsm
+         Y/xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBVC6oLyNJnmC7CK+9/5MHrueGDnYbnXC6caSW30iCk=;
+        b=gLaAF+rkfe/Q3zOmSKOeUqFN3xxG6tiYas98PYSc/bWrWnhm6hU2X23KmNYOwozleI
+         4PIQnGCmutkSybwyL90M3d3wK+rlor9/ZEyXvCmw/j/uPsrRrkW4cjj0+PXYCCWFrE0M
+         zhLRUW7GO/Rn3P5/x5eOr+lzSiEWL1h73zh11dJJBH5J3op5UHr395c7Fse2ggcmN7VW
+         c3S64Mi3R6sHir2ja9/Re1tFQYfKrBLMOCtEDsQWJaSLzwDWbgPce5FYoLRts1uRHZJ4
+         IIogzwNAN+/Z1la0aKKsRZqz87bqY0VGJ39kPiTskY10dR/Otnl0QKhQelmU89VyRTez
+         3ZZg==
+X-Gm-Message-State: AOAM531Khe+GwRLeNNFkYaohfGqs3fxLrLHkf3+EDJOZw94w6kuw2OVP
+        LzINz85phV796f6dtaN6CxQ=
+X-Google-Smtp-Source: ABdhPJyTU0/xl3citwb3RpsAz29JZbv+OplSEaJ3fUNeK4qxMbZ8pkhYm6jgaxcjRbN6NLoUCo2z5g==
+X-Received: by 2002:a05:6a00:89:: with SMTP id c9mr2230206pfj.159.1599113211239;
+        Wed, 02 Sep 2020 23:06:51 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.196.170])
+        by smtp.gmail.com with ESMTPSA id v1sm1210395pjh.16.2020.09.02.23.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 23:06:50 -0700 (PDT)
+From:   Allen Pais <allen.lkml@gmail.com>
+To:     jgg@nvidia.com, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
+        devesh.sharma@broadcom.com, somnath.kotur@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, nareshkumar.pbs@broadcom.com,
+        jgg@ziepe.ca, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, Allen Pais <allen.lkml@gmail.com>
+Subject: [PATCH v2 0/5] RDMA: convert tasklets to use new
+Date:   Thu,  3 Sep 2020 11:36:32 +0530
+Message-Id: <20200903060637.424458-1-allen.lkml@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901030826.140880-1-sagi@grimberg.me>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 08:08:26PM -0700, Sagi Grimberg wrote:
-> Currently we allocate rx buffers in a single contiguous buffers for
-> headers (iser and iscsi) and data trailer. This means that most likely
-> the data starting offset is aligned to 76 bytes (size of both headers).
-> 
-> This worked fine for years, but at some point this broke, resulting in
-> data corruptions in isert when a command comes with immediate data
-> and the underlying backend device assumes 512 bytes buffer alignment.
-> 
-> We assume a hard-requirement for all direct I/O buffers to be 512 bytes
-> aligned. To fix this, we should avoid passing unaligned buffers for I/O.
-> 
-> Instead, we allocate our recv buffers with some extra space such that we
-> can have the data portion align to 512 byte boundary. This also means
-> that we cannot reference headers or data using structure but rather
-> accessors (as they may move based on alignment). Also, get rid of the
-> wrong __packed annotation from iser_rx_desc as this has only harmful
-> effects (not aligned to anything).
-> 
-> This affects the rx descriptors for iscsi login and data plane.
-> 
-> Reported-by: Stephen Rust <srust@blockbridge.com>
-> Tested-by: Doug Dumitru <doug@dumitru.com>
-> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-> ---
-> Changes from v1:
-> - revised change log
-> 
->  drivers/infiniband/ulp/isert/ib_isert.c | 93 +++++++++++++------------
->  drivers/infiniband/ulp/isert/ib_isert.h | 41 ++++++++---
->  2 files changed, 79 insertions(+), 55 deletions(-)
-> 
-> diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-> index 61e2f7fc513d..5b6a0ad9faaa 100644
-> --- a/drivers/infiniband/ulp/isert/ib_isert.c
-> +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-> @@ -140,15 +140,16 @@ isert_alloc_rx_descriptors(struct isert_conn *isert_conn)
->  	rx_desc = isert_conn->rx_descs;
->  
->  	for (i = 0; i < ISERT_QP_MAX_RECV_DTOS; i++, rx_desc++)  {
-> -		dma_addr = ib_dma_map_single(ib_dev, (void *)rx_desc,
-> -					ISER_RX_PAYLOAD_SIZE, DMA_FROM_DEVICE);
-> +		dma_addr = ib_dma_map_single(ib_dev,
-> +					rx_desc->buf,
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+introduced a new tasklet initialization API. This series converts
+all the infiniband drivers to use the new tasklet_setup() API
 
-Nit: no real need to the line break here.
+The series is based on 5.9-rc3
 
-> +	ib_dma_unmap_single(ib_dev, isert_conn->login_desc->dma_addr,
-> +			    ISER_RX_SIZE,
->  			    DMA_FROM_DEVICE);
+v2:
+ Fixed bnxt_re driver. Suggested by Jason.
+ Fixed subject line.
 
-Same here.
+Allen Pais (5):
+  RDMA/bnxt_re: convert tasklets to use new tasklet_setup() API
+  IB/hfi1: convert tasklets to use new tasklet_setup() API
+  RDMA/i40iw: convert tasklets to use new tasklet_setup() API
+  RDMA/qib: convert tasklets to use new tasklet_setup() API
+  RDMA/rxe: convert tasklets to use new tasklet_setup() API
 
-> + * RX size is default of 8k plus headers, but data needs to align to
-> + * 512 boundary, so use 1024 to have the extra space for alignment.
-> + */
-> +#define ISER_RX_SIZE		(ISCSI_DEF_MAX_RECV_SEG_LEN + 1024)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   |  7 +++----
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 11 +++++------
+ drivers/infiniband/hw/hfi1/sdma.c          | 22 +++++++++++-----------
+ drivers/infiniband/hw/i40iw/i40iw_main.c   | 14 +++++++-------
+ drivers/infiniband/hw/qib/qib_iba7322.c    |  7 +++----
+ drivers/infiniband/hw/qib/qib_sdma.c       | 10 +++++-----
+ drivers/infiniband/sw/rxe/rxe_cq.c         |  6 +++---
+ drivers/infiniband/sw/rxe/rxe_task.c       |  8 ++++----
+ drivers/infiniband/sw/rxe/rxe_task.h       |  2 +-
+ 9 files changed, 42 insertions(+), 45 deletions(-)
 
-A 512 byte alignment is not the correct for e.g. the 4k Xen block
-device case.  Any reason we don't just separate allocations for headers
-vs the data and use another ib_sge?
+-- 
+2.25.1
+
