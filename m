@@ -2,205 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AA125C48E
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 17:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8A125C443
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Sep 2020 17:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgICPMV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Sep 2020 11:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728785AbgICMTP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:19:15 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA2A6208B3;
-        Thu,  3 Sep 2020 12:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599135554;
-        bh=+cqm82p4iiF8vpY35ibkg76jII4BWrBq5/GuWJZ1IY8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwCTh40/5BUeuPBBaAzgC30W1HQqKwjiFtuI5MCC7hpuPTX+kDNC40GGdxQirpsin
-         2NDOBw7C6gIRBXTj2ZtTXlTOLAn9j3Qsy/YxJ9naYPS/JETR8ZmvrjJEzwdmEwu3Gk
-         y18rdwP3q8d2qGhezN6ufFsw8gkNX7wll0V4+pig=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 4/4] RDMA/umem: Move to allocate SG table from pages
-Date:   Thu,  3 Sep 2020 15:18:53 +0300
-Message-Id: <20200903121853.1145976-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200903121853.1145976-1-leon@kernel.org>
-References: <20200903121853.1145976-1-leon@kernel.org>
+        id S1729062AbgICPHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Sep 2020 11:07:32 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18459 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729478AbgICPFh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Sep 2020 11:05:37 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f50f2990000>; Thu, 03 Sep 2020 06:41:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 03 Sep 2020 06:42:33 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 03 Sep 2020 06:42:33 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Sep
+ 2020 13:42:32 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 3 Sep 2020 13:42:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ROALkc5O615wSuyaQwSor3gyBfK+YfMC3F4TICkfZhisMFHxZZ7Y549L1Yoj4e8/wXcUy7poMsJTDiH9ykjBfY8ne7awdGoSRELww4WmgyfwO6ShfdTtUh1J8zP1S8MudFqEGhJckZz/Ya6ZVgNp4orCDUcKCPpw+EGGyfMHoDQC1MOy0BoEpfSgqoLlFb8L0DcJhVjhtY+7lB5ACrNdrQ1CJKmboOG5xyn7kTQETDMoCKzqDDXbJSDEzZpCSo6KJ60JQpvHSe8YMVz66h42I7imXD/tsXchcwashtiAb3Lq4PhPB8e0+U+LuHjXwjIoU2qw/FEdB6WlskKJg8/jCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tugTEMAaUkoKbnwNRZyadqfK3FJPMMX8u+6/ehQvjZ8=;
+ b=CfX0lZc3/7aMf/UdPhlioB2oGVlW8O/i7EBMQ+22cQ6Vlj/aAdAzEENSyyQt++j/lQTPrywjEaMzVQiMqvbmNq796C2j42j3KtcuA1gIa7KYxl3g/Dvl2dP3zeL9u4X/PsGcVg1xlMH91fQMnk4JJVSCR2HyfdiACeEY1hYcY5PWIyMe1sjrTKsRrJGAr9h4RFu3K19KPJnhAH2h/4KBxgaSNVhxWS0Vm6h0qtl55sdu1uLSXkMeZhumMSSHQJmpXdBDq+v4b4JAMpEnGL8fdFucYrxLLXNzIY4xBgCnknfxG1Loit4BW/Yoe34FaXgtM51qzvr0+vnNg6MXwpRCSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1147.namprd12.prod.outlook.com (2603:10b6:3:79::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Thu, 3 Sep
+ 2020 13:42:31 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3326.025; Thu, 3 Sep 2020
+ 13:42:31 +0000
+Date:   Thu, 3 Sep 2020 10:42:29 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        <linux-rdma@vger.kernel.org>, Or Gerlitz <ogerlitz@mellanox.com>,
+        Roland Dreier <roland@purestorage.com>
+Subject: Re: [PATCH rdma-next v1 04/10] RDMA/mlx5: Fix potential race between
+ destroy and CQE poll
+Message-ID: <20200903134229.GA1550019@nvidia.com>
+References: <20200830084010.102381-1-leon@kernel.org>
+ <20200830084010.102381-5-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200830084010.102381-5-leon@kernel.org>
+X-ClientProxiedBy: MN2PR07CA0001.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::11) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by MN2PR07CA0001.namprd07.prod.outlook.com (2603:10b6:208:1a0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Thu, 3 Sep 2020 13:42:31 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kDpVV-006VFC-Lc; Thu, 03 Sep 2020 10:42:29 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aaffdb00-90f4-424f-3c80-08d8500f34a3
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1147:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1147E81E7FC8C356941BD4ADC22C0@DM5PR12MB1147.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4mgtFwFhlR7CyKnVDkFCzRFUObVoLDU5ic/JLiahvo25hVRKZnDKM8EALYVaBB2+yT/rGyf8EBA8KJLq6r9pqLhBQrgYGkyHfmpW6ft8n4PCaRmK+Yq/lcuZOoWf+e2GZIx73JqKVyV+2hMZQkBfUOrrEOhZSVS2TOX3/35rTSJStRo7T2CZoxHVD/xlxVM9JRW8IXuiH4EGMtco55OMP4mFvlnfo1HY/5w6527Bh7l0g00qvKq6lKitOgCzOl/rcdVRNcffiAKsC1OGFMg9Py1dJKCLL/DXG/Rk1Ngrusv6YYgKMq2/qprmBhxamN6m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(186003)(316002)(26005)(8676002)(83380400001)(4326008)(5660300002)(4744005)(8936002)(6916009)(478600001)(2616005)(1076003)(9746002)(86362001)(54906003)(2906002)(9786002)(33656002)(36756003)(426003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: OVy23FpX4yculkXW+Ao8cJFEEH6g+JKAF8+RQfKrRotwrPTxcTZyGOj3w6s22epPqTeyaqiAEw3G3plf9s8QbD9HMcXSzU+bzOSJVEIAobNq7ya16JykVvG9WcTcCxqNI5V3ryXKtyTwNFvz5BJ21E28t0nGhIfFy2RUA7vq60oC7Jdm/rfsCYB0wKcv/XunAkeWm1PL0oU3nhpexvhZpZVpT8gsdbms5X5W8b1gC3n1X5dwhLzlfAZleh5X1g3b451YNRN6UiPmuTVwBIe1ppSyKCzph2IGEvpT03jGEdnXZ9teFauEy9jBoNK8x9UWpkubNo9ZrkP2DnLmTkZZZbNyOaaXSSiJluJHT/nkTqPn7G8stKJm/BYrJknsDod1664B1t0M1VdCJiEnu+paTC7X7klN5ZX8YuvO351RMqvSTQruczMfxCDarX46RKYaLImE9wJYIYJJVjQO5uyALafB8EU1zyu84yc3gy9KnAIicYeP/H78NqFXMtVzrXiglo5jx4crjhY6MXdp+wVD3/CdergjJnvsmIY5DF+nFXS8/X6KCDsNHNw7ws38ps0nLOk/VMS/Sz4MvMA72ZcmBnjgEh0OdXKf0fN0E0C+UwAg3CSpYLxlBKJGgpm1IAf6V0aH6ju1NtKhybORxS5eTg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: aaffdb00-90f4-424f-3c80-08d8500f34a3
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2020 13:42:31.6056
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YlZbbXD4si2ofqvKH5c+J417H5brrHuxT5sNO0S6rGIK+7SAxSiXt82ehMXQRN2V
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1147
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599140505; bh=tugTEMAaUkoKbnwNRZyadqfK3FJPMMX8u+6/ehQvjZ8=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Exchange-Transport-Forked:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=SLwSRlH9gQTjkH8GT0P4kAmNUYqTiseg0IjjcZ0dK6TTwmM1WPXaaeizfw4S8/U/0
+         M1McdZWiA3Li7t5AOGXwVsbqH9MOsBKL+s9BrQ5bzngjpz/wuLkv0p1b4l8RdjiWyV
+         832IhOwavIasO6ZswMXEQmwl7Wvd0BVILKrnFAEqEWsPbEH1XbNnRzBFhySg2dUtCc
+         VHeKg0OoHtUEmUa97dFRIxbYXfvLQtmvmpqcoAFP+eLtY9EdNfEGEtNw8/TU7H+prR
+         B1np2X0vsAVMExTZ3hXv7S+NrPqt82S3l7zT1deou4b4K4/AZnNtJjNtZZzUSRhbfA
+         zL4+t+pR3xwag==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On Sun, Aug 30, 2020 at 11:40:04AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> The SRQ can be destroyed right before mlx5_cmd_get_srq is called.
+> In such case the latter will return NULL instead of expected SRQ.
+> 
+> Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/cq.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-Remove the implementation of ib_umem_add_sg_table and instead
-call to sg_alloc_table_append which already has the logic to
-merge contiguous pages.
+Applied to for-next
 
-Besides that it removes duplicated functionality, it reduces the
-memory consumption of the SG table significantly. Prior to this
-patch, the SG table was allocated in advance regardless consideration
-of contiguous pages.
-
-In huge pages system of 2MB page size, without this change, the SG table
-would contain x512 SG entries.
-E.g. for 100GB memory registration:
-
-	 Number of entries	Size
-Before 	      26214400          600.0MB
-After            51200		  1.2MB
-
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c | 93 +++++-----------------------------
- 1 file changed, 14 insertions(+), 79 deletions(-)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index be889e99cfac..9eb946f665ec 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -62,73 +62,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	sg_free_table(&umem->sg_head);
- }
-
--/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
-- *
-- * sg: current scatterlist entry
-- * page_list: array of npage struct page pointers
-- * npages: number of pages in page_list
-- * max_seg_sz: maximum segment size in bytes
-- * nents: [out] number of entries in the scatterlist
-- *
-- * Return new end of scatterlist
-- */
--static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
--						struct page **page_list,
--						unsigned long npages,
--						unsigned int max_seg_sz,
--						int *nents)
--{
--	unsigned long first_pfn;
--	unsigned long i = 0;
--	bool update_cur_sg = false;
--	bool first = !sg_page(sg);
--
--	/* Check if new page_list is contiguous with end of previous page_list.
--	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
--	 */
--	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
--		       page_to_pfn(page_list[0])))
--		update_cur_sg = true;
--
--	while (i != npages) {
--		unsigned long len;
--		struct page *first_page = page_list[i];
--
--		first_pfn = page_to_pfn(first_page);
--
--		/* Compute the number of contiguous pages we have starting
--		 * at i
--		 */
--		for (len = 0; i != npages &&
--			      first_pfn + len == page_to_pfn(page_list[i]) &&
--			      len < (max_seg_sz >> PAGE_SHIFT);
--		     len++)
--			i++;
--
--		/* Squash N contiguous pages from page_list into current sge */
--		if (update_cur_sg) {
--			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
--				sg_set_page(sg, sg_page(sg),
--					    sg->length + (len << PAGE_SHIFT),
--					    0);
--				update_cur_sg = false;
--				continue;
--			}
--			update_cur_sg = false;
--		}
--
--		/* Squash N contiguous pages into next sge or first sge */
--		if (!first)
--			sg = sg_next(sg);
--
--		(*nents)++;
--		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
--		first = false;
--	}
--
--	return sg;
--}
--
- /**
-  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
-  *
-@@ -205,7 +138,8 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
--	struct scatterlist *sg;
-+	struct scatterlist *sg = NULL;
-+	struct sg_append append = {};
- 	unsigned int gup_flags = FOLL_WRITE;
-
- 	/*
-@@ -255,15 +189,9 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- 	cur_base = addr & PAGE_MASK;
-
--	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
--	if (ret)
--		goto vma;
--
- 	if (!umem->writable)
- 		gup_flags |= FOLL_FORCE;
-
--	sg = umem->sg_head.sgl;
--
- 	while (npages) {
- 		cond_resched();
- 		ret = pin_user_pages_fast(cur_base,
-@@ -276,10 +204,18 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- 		cur_base += ret * PAGE_SIZE;
- 		npages   -= ret;
--
--		sg = ib_umem_add_sg_table(sg, page_list, ret,
--			dma_get_max_seg_size(device->dma_device),
--			&umem->sg_nents);
-+		append.left_pages = npages;
-+		append.prv = sg;
-+		sg = sg_alloc_table_append(&umem->sg_head, page_list, ret, 0,
-+					   ret << PAGE_SHIFT,
-+					   dma_get_max_seg_size(device->dma_device),
-+					   GFP_KERNEL, &append);
-+		umem->sg_nents = umem->sg_head.nents;
-+		if (IS_ERR(sg)) {
-+			unpin_user_pages_dirty_lock(page_list, ret, 0);
-+			ret = PTR_ERR(sg);
-+			goto umem_release;
-+		}
- 	}
-
- 	sg_mark_end(sg);
-@@ -301,7 +237,6 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- umem_release:
- 	__ib_umem_release(device, umem, 0);
--vma:
- 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
- out:
- 	free_page((unsigned long) page_list);
---
-2.26.2
-
+Thanks,
+Jason
