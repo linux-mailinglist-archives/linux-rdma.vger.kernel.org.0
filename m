@@ -2,221 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155DA25D053
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 06:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792FA25D766
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 13:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgIDEVw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Sep 2020 00:21:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45346 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbgIDEVw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Sep 2020 00:21:52 -0400
-IronPort-SDR: C5xR1TpOJfnAIqrbk+VegAjC6JGJMlDpS/mFZ6qY7AKrg8CzREQqky1hksGnKEq+rG0TYHqtP6
- RlPQy33fYntg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="156955511"
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="156955511"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 21:21:51 -0700
-IronPort-SDR: rgUMSATEPurm/JEqZjIhLRmIVsLoR4rbb6SY+VKDQqXVyQta3skIKAMw486XmL9cThWTdbK3Tc
- yGr4JAplYxsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="503321249"
-Received: from lkp-server01.sh.intel.com (HELO 217b9320e422) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Sep 2020 21:21:49 -0700
-Received: from kbuild by 217b9320e422 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kE3ES-00000v-0M; Fri, 04 Sep 2020 04:21:48 +0000
-Date:   Fri, 04 Sep 2020 12:20:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 00b3c11879d790f51cac6477abe870936a2323ae
-Message-ID: <5f51c0a7.StBwA83hBMotSFod%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730155AbgIDLdC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Sep 2020 07:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730014AbgIDLcu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 07:32:50 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831C5C061246
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Sep 2020 04:32:49 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id w12so5937089qki.6
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Sep 2020 04:32:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=przGtC/GACBkh9fYWt057mWQgDPtk/XBjjLtmZvZQ+g=;
+        b=CiTKYzFR1SlCmJbwj/xOxE6xWzBs6RH2zeSKaKFBjBhcpFr4pkn/ah6RdybJU7yao4
+         nSdHLMr+/Tm4mTOX7WrRjWYt0kOE1RCPRD1EMTcEvHf16ybZxa2JmNYgfgZDyYIft6eo
+         M9Z6J+QbdywHuN+kIBlZeeKbYydh0o9vQXFEd6EA9Ghc6klb1wMnKUeDxXiCfLzwmz2U
+         FP6rn86BkcnHOZIzPDarVVTdZw3tHAuX2C76Tmwm+NmEV8tY9mY1LUpe7hg3mIRH+0x4
+         r0sh/fTm+FJ/ClJ9ccDWXH6iKGclrM5VCr1/58yVyqQ/pjm3NbUxNznIhPv3k+jZbpiK
+         FN+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=przGtC/GACBkh9fYWt057mWQgDPtk/XBjjLtmZvZQ+g=;
+        b=kjt4QJ0up+X2440gVDrKQDAuHbpDLvOpnbIw2eP5A0nBhxiFic7StPj+8Z/hBsilmX
+         j/DpvgqUoj/yfciKuX1JnrCs60DHKXI1z5jtJJoTUSHUZUaPt60HASEvuqTOdzBmPQe2
+         HOuJ2jHA2Q4VYMqBAlw7gWlUNG67MIR/68Cj1q5d5NGGLcRR2I2wb/pkqG0sJuytJjcz
+         fXCVBhIchONhNLRM5CIZBpiq+iVt31nlttYfYmTIVyPk2MmJDgpdUhCRD0Q+nxQ3oKns
+         xl3oXOahxJmn6UYR8mc0ZzLXdCw/D/wN8HlE+F25rSjA5Z1mqt/NKQXrCzk9TxBvJyqN
+         qt9g==
+X-Gm-Message-State: AOAM5315L3vk+1uUfgycFPjgWrPcGAspoX6lKX7CvaPGjTkE0jvycv/h
+        RciEVpd91Zigm6epXXjepem1LA==
+X-Google-Smtp-Source: ABdhPJxtn7W3x3cg4A/eat2jqT4UIQl71B/vlblXAnYVQniU5ZIznFdsZeENPAauF5e+G/27DTfeaQ==
+X-Received: by 2002:a37:a143:: with SMTP id k64mr7760038qke.266.1599219165446;
+        Fri, 04 Sep 2020 04:32:45 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b187sm4277907qkd.107.2020.09.04.04.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 04:32:44 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kE9xU-007H6m-17; Fri, 04 Sep 2020 08:32:44 -0300
+Date:   Fri, 4 Sep 2020 08:32:44 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: Finding the namespace of a struct ib_device
+Message-ID: <20200904113244.GP24045@ziepe.ca>
+References: <5fa7f367-49df-fb1d-22d0-9f1dd1b76915@oracle.com>
+ <20200903173910.GO24045@ziepe.ca>
+ <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 00b3c11879d790f51cac6477abe870936a2323ae  RDMA/rxe: Convert tasklets to use new tasklet_setup() API
+On Fri, Sep 04, 2020 at 12:01:12PM +0800, Ka-Cheong Poon wrote:
+> On 9/4/20 1:39 AM, Jason Gunthorpe wrote:
+> > On Thu, Sep 03, 2020 at 10:02:01PM +0800, Ka-Cheong Poon wrote:
+> > > When a struct ib_client's add() function is called. is there a
+> > > supported method to find out the namespace of the passed in
+> > > struct ib_device?  There is rdma_dev_access_netns() but it does
+> > > not return the namespace.  It seems that it needs to have
+> > > something like the following.
+> > > 
+> > > struct net *rdma_dev_to_netns(struct ib_device *ib_dev)
+> > > {
+> > >         return read_pnet(&ib_dev->coredev.rdma_net);
+> > > }
+> > > 
+> > > Comments?
+> > 
+> > I suppose, but why would something need this?
+> 
+> 
+> If the client needs to allocate stuff for the namespace
+> related to that device, it needs to know the namespace of
+> that device.  Then when that namespace is deleted, the
+> client can clean up those related stuff as the client's
+> namespace exit function can be called before the remove()
+> function is triggered in rdma_dev_exit_net().  Without
+> knowing the namespace of that device, coordination cannot
+> be done.
 
-elapsed time: 740m
+Since each device can only be in one namespace, why would a client
+ever need to allocate at a level more granular than a device?
 
-configs tested: 156
-configs skipped: 10
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         cm_x300_defconfig
-xtensa                generic_kc705_defconfig
-sparc                               defconfig
-arm                           spitz_defconfig
-powerpc                      pmac32_defconfig
-arm                       cns3420vb_defconfig
-arm                         vf610m4_defconfig
-ia64                         bigsur_defconfig
-xtensa                           alldefconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     powernv_defconfig
-arm                            lart_defconfig
-sh                          rsk7203_defconfig
-mips                      fuloong2e_defconfig
-mips                            ar7_defconfig
-arm                         lpc32xx_defconfig
-powerpc                        cell_defconfig
-mips                        workpad_defconfig
-openrisc                         alldefconfig
-powerpc                      ep88xc_defconfig
-arm                           viper_defconfig
-um                            kunit_defconfig
-sh                          r7780mp_defconfig
-powerpc                          g5_defconfig
-um                             i386_defconfig
-sh                            shmin_defconfig
-powerpc                         ps3_defconfig
-powerpc                    mvme5100_defconfig
-sh                           se7780_defconfig
-c6x                        evmc6457_defconfig
-mips                     decstation_defconfig
-arm                        multi_v5_defconfig
-arc                     nsimosci_hs_defconfig
-sh                         ap325rxa_defconfig
-arc                                 defconfig
-powerpc                       ppc64_defconfig
-arm                         palmz72_defconfig
-sh                           se7724_defconfig
-sh                           se7343_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                    vt8500_v6_v7_defconfig
-alpha                            alldefconfig
-x86_64                              defconfig
-sh                               alldefconfig
-powerpc                     ep8248e_defconfig
-arm                          imote2_defconfig
-sh                          urquell_defconfig
-powerpc64                           defconfig
-mips                        nlm_xlr_defconfig
-powerpc                     mpc512x_defconfig
-mips                         tb0287_defconfig
-powerpc                       maple_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-sh                   sh7724_generic_defconfig
-mips                           mtx1_defconfig
-arm                           stm32_defconfig
-arm                            hisi_defconfig
-microblaze                    nommu_defconfig
-sh                          lboxre2_defconfig
-arm                        spear6xx_defconfig
-arc                             nps_defconfig
-arm                        keystone_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20200903
-x86_64               randconfig-a006-20200903
-x86_64               randconfig-a003-20200903
-x86_64               randconfig-a005-20200903
-x86_64               randconfig-a001-20200903
-x86_64               randconfig-a002-20200903
-i386                 randconfig-a004-20200902
-i386                 randconfig-a005-20200902
-i386                 randconfig-a006-20200902
-i386                 randconfig-a002-20200902
-i386                 randconfig-a001-20200902
-i386                 randconfig-a003-20200902
-i386                 randconfig-a004-20200903
-i386                 randconfig-a005-20200903
-i386                 randconfig-a006-20200903
-i386                 randconfig-a002-20200903
-i386                 randconfig-a001-20200903
-i386                 randconfig-a003-20200903
-x86_64               randconfig-a013-20200902
-x86_64               randconfig-a016-20200902
-x86_64               randconfig-a011-20200902
-x86_64               randconfig-a012-20200902
-x86_64               randconfig-a015-20200902
-x86_64               randconfig-a014-20200902
-i386                 randconfig-a016-20200903
-i386                 randconfig-a015-20200903
-i386                 randconfig-a011-20200903
-i386                 randconfig-a013-20200903
-i386                 randconfig-a014-20200903
-i386                 randconfig-a012-20200903
-i386                 randconfig-a016-20200902
-i386                 randconfig-a015-20200902
-i386                 randconfig-a011-20200902
-i386                 randconfig-a013-20200902
-i386                 randconfig-a014-20200902
-i386                 randconfig-a012-20200902
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20200902
-x86_64               randconfig-a006-20200902
-x86_64               randconfig-a003-20200902
-x86_64               randconfig-a005-20200902
-x86_64               randconfig-a001-20200902
-x86_64               randconfig-a002-20200902
-x86_64               randconfig-a013-20200903
-x86_64               randconfig-a016-20200903
-x86_64               randconfig-a011-20200903
-x86_64               randconfig-a012-20200903
-x86_64               randconfig-a015-20200903
-x86_64               randconfig-a014-20200903
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
