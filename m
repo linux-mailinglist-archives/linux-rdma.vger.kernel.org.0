@@ -2,106 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CE125E3BB
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Sep 2020 00:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4A725E3D6
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Sep 2020 00:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgIDWdB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Sep 2020 18:33:01 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18179 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728076AbgIDWdB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 18:33:01 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f52c08e0000>; Fri, 04 Sep 2020 15:32:46 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 04 Sep 2020 15:33:00 -0700
+        id S1728098AbgIDWme (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Sep 2020 18:42:34 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:40061 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727851AbgIDWma (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Sep 2020 18:42:30 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f52c2cf0001>; Sat, 05 Sep 2020 06:42:23 +0800
+Received: from HKMAIL102.nvidia.com ([10.18.16.11])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 04 Sep 2020 15:42:23 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 04 Sep 2020 15:33:00 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Sep
- 2020 22:33:00 +0000
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.44) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 4 Sep 2020 22:33:00 +0000
+        by hkpgpgate102.nvidia.com on Fri, 04 Sep 2020 15:42:23 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Sep
+ 2020 22:42:06 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 4 Sep 2020 22:42:06 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QE9MYAmNOJWd2KUPe/Icjdvt4ARjh1tcj9ahcVibZEipjfFMdkxNkG6gGsj3GvSjjXuUgp5hTNJhWBONBn+33atZQr9a19m1MzOEWZ1l7Gp7OiepfBE9/LIL8t2qxGgwffxojzrn4syqDbQwfUadi1CBjN0S9VOTTFHMQX84zzQct4ODw5x+AcR7ATi3WmW8triUfrD8r9VrLOl3vj8yeZUuHKUQ1XDXAuQpUFt+vUa3CcvgsslnV/Vv4MyDn+7mNSWI8mNH9oG1sd2eJGvnp2Mz5CupD6cjRm0/VaXHO9ivEPBxIe5VAUPYoHOiYN1QDXj49Y7iBi3O64ygrhQzxg==
+ b=YBjHrHKb5QSt1gN2cpQ+XOorCmaibv0AcwokZLsEH8dx7YSuzWAWycceRyllw4m+1rx41TmBjRzsNuCZmOgTraJ63U//vOeYrshjJMWIUanJGLzWMQMHpYVP6Kc025kCI//HaBikA4R6MV+Dcmr0SsiwzWAnvAg2VS9C0dZIdzgf5PnjfBQ5Wfyx1LgYkq/FO845NMCK2Ck21CdN6scNP4cFLyIpFw+CN+eCxOa/qF7V8Q5BKUx3GgxomVbB7ucT9seq/r9fI0cXsw5/6Mo33P5O+fHHJ7iYLHkk6qZg1UY/bJjp2Citd+LOl8Bns9njnxGXpZ8sKLcMVq85VivqMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KvCuK5US/98XMQR5kpvg5hC0iI91xNec5A1rEXhXlbI=;
- b=j2OjbKG0KmUnBqGK06oronvxuj8mKd9UhoG4j46yCTEOqgbNWvkNFepWDBir1U3IST0f6PuEOh/wg4JWYcvqL1mNpM4M+mWaQaNxe9dNi7zmzV3Nb9n0qKA+Z5yFvtX0N5gk3C2wNBrJCbw5ocEg+LjhJta64ef8T8riBu8ZjCObLmfv4cxLSJ3K2cpAdao4Xl4rSm+jkkgdhs8lRA9ORVe6E16cF8lWxtFDCsoDUpMi9yL123fzFiyBgs5N81UGkEj+F/LUdXNyQOiqHpNqHXiJHqpUGu3APbdJpdC5vEr25oto1PW2IRUPJAkzpaTLn1tVjHoFj5af44nSePVweQ==
+ bh=X7BTxAtsMjdAseiXuafyjbbKWxTe0BrWj7xPy+dRYH0=;
+ b=A8OBbpodRxOR6Ti9kuInXrYob4BtBmK8WfWCOORH0rhVLQYe/kgJ5/MiY5IpdDrgU6bSvQZID4zVesirW/LzZeerjJpLzhYBIgk6XPKS7BRqk5swvGeZ0mAD9IhmNXfz39pX8/7/YWtErdM3LIWrxiNAf9dFB+zh1gtZ6YztPfkx/Q5zaStU7O17w6CZjG8ESveu4aruKncUTNxGY+1cwCJZ4UbpjD93FgZzjQpjKU2LOcmFHI+5Dif/Q6pRCwl0p2tBUxJWPQcO9mV7kOZiGQozB3F5zUxRFK8eb7kKTKXsqecia/nQaNjyBMuZK3syy+1UEU7ybcvyAQ2ig+AXJg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Authentication-Results: vmware.com; dkim=none (message not signed)
  header.d=none;vmware.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1243.namprd12.prod.outlook.com (2603:10b6:3:74::22) with
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+ by BYAPR12MB2806.namprd12.prod.outlook.com (2603:10b6:a03:70::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Fri, 4 Sep
- 2020 22:32:59 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3326.025; Fri, 4 Sep 2020
- 22:32:58 +0000
-Date:   Fri, 4 Sep 2020 19:32:56 -0300
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.22; Fri, 4 Sep
+ 2020 22:42:04 +0000
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::445b:111e:a091:66f9]) by BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::445b:111e:a091:66f9%6]) with mapi id 15.20.3326.025; Fri, 4 Sep 2020
+ 22:42:04 +0000
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Adit Ranadive <aditr@vmware.com>,
+To:     Adit Ranadive <aditr@vmware.com>, Ariel Elior <aelior@marvell.com>,
         Potnuri Bharat Teja <bharat@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>,
-        VMware PV-Drivers <pv-drivers@vmware.com>
-Subject: Re: [PATCH 06/14] RDMA/umem: Split ib_umem_num_pages() into
- ib_umem_num_dma_blocks()
-Message-ID: <20200904223256.GA455005@nvidia.com>
-References: <0-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
- <6-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com>
-X-ClientProxiedBy: MN2PR20CA0039.namprd20.prod.outlook.com
- (2603:10b6:208:235::8) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        "David S. Miller" <davem@davemloft.net>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        "Gal Pressman" <galpress@amazon.com>,
+        <GR-everest-linux-l2@marvell.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        Weihang Li <liweihang@huawei.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "Naresh Kumar PBS" <nareshkumar.pbs@broadcom.com>,
+        <netdev@vger.kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        "Selvin Xavier" <selvin.xavier@broadcom.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+CC:     Firas JahJah <firasj@amazon.com>,
+        Henry Orosco <henry.orosco@intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH v2 00/17] RDMA: Improve use of umem in DMA drivers
+Date:   Fri, 4 Sep 2020 19:41:41 -0300
+Message-ID: <0-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: BL0PR02CA0004.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::17) To BY5PR12MB3827.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ab::16)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0039.namprd20.prod.outlook.com (2603:10b6:208:235::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Fri, 4 Sep 2020 22:32:58 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kEKGO-001uOn-Sh; Fri, 04 Sep 2020 19:32:56 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0004.namprd02.prod.outlook.com (2603:10b6:207:3c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17 via Frontend Transport; Fri, 4 Sep 2020 22:42:01 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kEKP8-001vBw-Ox; Fri, 04 Sep 2020 19:41:58 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0081f9a7-bc9d-4e0a-4064-08d85122799c
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1243:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1243BB3D251F899981842F51C22D0@DM5PR12MB1243.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Office365-Filtering-Correlation-Id: 96ebb523-8a7e-4bd1-eaca-08d85123bd8d
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2806:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB28061AE45CFE4DA2FF088BF8C22D0@BYAPR12MB2806.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:590;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dif5vg9AErHdC+ZEVEcp/j4uPu3TEMqmSh+CTAkvxSe73Uq9dz57Gon1UMI10i5GyOG57vEThtprtWARvANxfIYkoW7B4NvqXHzrgJPn/IbOAfY8G/QftXfKhuMPU0oyP7g5cn7R5jmA4qLBe8ZP1b2FP/DK8+lv2hjc/Fs9fZC30hsAo8uAy5zQiNjdzHI0nyfGwh6qfImjUyi41w9bLUQ8PGmyuTV/2i90PhSuj/gYZ8qWdQg/DaHd2QA4WRR4py1uQwPjwaCtAIGZvPD+UBZb1xL1pdhZgvTdrzjDQmsyFicBSMpDH3H65vEKR1cE0Ws6ZO12D+GNfOk8X7EPduhntBwy7T9gpgTVvAmXm3FrdOgk0r4rA4t1TqYK1vBW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(136003)(396003)(8676002)(33656002)(2616005)(8936002)(110136005)(83380400001)(2906002)(66946007)(1076003)(9786002)(478600001)(86362001)(9746002)(36756003)(66556008)(426003)(5660300002)(66476007)(316002)(4744005)(186003)(26005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 6ggrmTfdPJkGUotDEDs3qdcldqtd8CXtLN23g+RDX3Cpu3aVA8KoSt6Zz8tPd7Z8GnQB7UHf9i5GSNUUz6pydUOFGiVxxhn2SQ0lwTZTpfym5dZfWpV+UxzSQkrOgFiL/BucpS1B+3vUuS1nrWR1ZnqhRhRDllFrJDMH33gtruHwWJBQtMtailaZgd0gQT47VaMlW601hyBdCCBaSr08M+3O9y/EMwwxesY9TAtUezDUw9d1TStLBy6u3+iHRuJbyiZNZjdkjyG0rMZmynaXcUm6xRkfMibeWsiYejTpj/t1wDOEAZJ9atxxRiSUOiumXcld6pUBPD3ILEmXr3eoHWn/NiENlvMW3Xm79X3banRlh3V/TYzc6kYlIdq8V3qH9EyXcQoaKhBv7m5GADukpIZK4ZZ2x7q75/vRbNg2IUCtD6htke2spZLY82rudYrbm069+orGGJpXiDoYdNlbAHMruicv2mmcq7cJjrg4d9uM0NXXT+Ae+SP8XHl862Azn4YRGpfYc2sphh/llbhgawYFmn2z4rJPZrXPbRcmFVepCt3lkVRmVnuBWHkBiIHo1VLWTUadmD0Gzcs38f9IHcUN60Jla1BNYlHs2OMgeKIMpFpxMk43U3coGPP5wBWFIzbDyRJLN4+DuSQzZ0Bq1g==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0081f9a7-bc9d-4e0a-4064-08d85122799c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: IOfHdnOLBvt2PsDfPO26inGL87993UmeeTBEF5HzPJtRLVO8IZvbGdFDb797g2dhO7Psys8+vXy82sB5U2viiUvpiS6JlsGSYCXxk52swxh+2sapeb8A8L+StEj+wxJ0UMiU9qFgm3NzfA1LFml/tTBW/05RXsBKrbRmbewQ0lCxFV/WEJDR6ofukx/YTMcQ0XVplxCJMOk0JD6Skcbltd4lurfyA/sZHx9jLWBK7fgNND2+nnCE5FAyOokfzWKTIJh+RSBwILeJv9SHT6rVnucXMZ69u6IikOH2gU+IUe8gvWaT1OQvBD0TQ29IvHE0G7n8ODxbyDjoM8NhT5ouYqdu6JMNxwzBKj9a7SBD7U9wkR4rmBmvhZKSThK0vLLOg4lnanhIRhODVMbo7g64IHGw/QJk6QMLQS3OP+Al3EP+MIMYaCuYQjnHGxTkJzj9yVKKnct9ojrWcWrvywytpw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(396003)(136003)(346002)(66556008)(26005)(54906003)(66476007)(6666004)(110136005)(8676002)(186003)(316002)(83380400001)(426003)(7416002)(2616005)(9786002)(478600001)(6636002)(36756003)(9746002)(86362001)(8936002)(5660300002)(2906002)(966005)(4326008)(66946007)(4216001)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: qm6fQz5ybPbKFqMpfq8RweQGBh9QdezMB2qbEvLh4bpaAr9z3ALdOjC+zGl4gHdqwuTTL30U00YqGiOSrGUjXanLb9cztoxPScYk9Rw8s7KLlzDsV35lG4BwBJOD8vJc+KiDeFvaM4LtRXKiq4Pw8gNtSrg7qnlrh/Gd6IWH8+B7GtpqfdNirle4dTgiSnlZUa8eZer9KIw/T6FrmoHwdCSAvNyj4F8JrBFpSs/PNRnfuolt6XOIveGAE4GX91f1csxkKdLRzk6av6WdV5edhe3hELBOHA+pf2JQspDjuPWjst+L8bm9Z/YBmnbDfbloyJBzE6bQ04IWaddsmow7HumrvPpzRzhFTuCdSsst80ujDm7bLKhwC2qgNy59vTfvOQmtJGHEHeLaVo29CQIkvTTG4I+phGig60cWcLqqMXHdJ253gi4vMwtJj5SaH3DVbIuz5oSUMD+Q7/t1maU82ojC6zbozv8m2uHKYuQQ0vmYrxG//lkYXPd3KmrSLU/RrjAFO77xbpsuF2L03Sutx5qudime+3KTojXSKz4HUqMDFdNbTJQMt4QKjX3BV+k4Uzai+7NVgXoGJDFS9RKgmS0vcNHPzt7MwnifNOkB2Zr+vI+7C3wOz3ZwaaMFNIQfDH6ReckfSaMs/m8GKm+upA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96ebb523-8a7e-4bd1-eaca-08d85123bd8d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 22:32:58.8283
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 22:42:02.3552
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ss9ZO3LsTdWPB8f4eRlvt4uB2uChYAWqqsxDzjmDds21AxMaA2oiD2rJ1JNcCS6A
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1243
+X-MS-Exchange-CrossTenant-UserPrincipalName: JXPWmkvNFLJqE8zV85dP0DN/GEjFTQDYVRS2oFFsgUZCn7kFsrMeyj6y2VwpyD1p
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2806
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599258766; bh=KvCuK5US/98XMQR5kpvg5hC0iI91xNec5A1rEXhXlbI=;
+        t=1599259343; bh=1BzpAroTuYp2wYzkMeguTWDtS2lFOQNt83dbkyE27QY=;
         h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         ARC-Authentication-Results:Authentication-Results:From:To:CC:
+         Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
+         X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
          X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
          X-MS-Exchange-CrossTenant-Network-Message-Id:
          X-MS-Exchange-CrossTenant-AuthSource:
          X-MS-Exchange-CrossTenant-AuthAs:
@@ -110,41 +130,108 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=N74kHk71ZoKx4NzP6LyYl/WRkSRcpiOjAQn1v/E5r7t3Gh1t5OHehPOis5RnLyMvZ
-         Zy6cpwz9pMzxK8fmH1dS9R7lrpg8GvtP+dcRub2vd1K2J0KCFbxN217Zt+50kzbtRB
-         ljEYwilSpWHluWWMmG00mv5jCW1YnejzGnSuDqeFTLpNyRXKM/4M0L7+rkS5I50ZNb
-         11Cchiq+Yk1RNuSKY3osILJdRnK8K5+BdgCfShHZqi+yDyTRw/JuexawwJXJ+BxA5G
-         ddSEILjlHir1dSy1VNvK+StcfFhdA1fLTTLJuXeZCznWxdOR6kkAFXZFthjqhpPixb
-         wzhwzyde8+FqA==
+        b=XPGvgAC19Mfp/80tYLlm4QNWKX0i0D4OeeMjaEQz6laQVPS2k+wn1XY44n0K0RLT4
+         8OM4SwP+ycYUI5ghyw146qNEYz/P1V65s33cetLJWAtLQk3wcfiFlLKg2f4W1oOwqQ
+         wVQ1yMOew8/LTBocxZJz6IrtDYugoVVf98heiNZUutRGyhGXQZId58ZayfBnoeq2Se
+         befG8lt2PnE0Z9lmoyUJ8ZN6bk+Y/rGwt4NEqveN2FESmtQutDG4vFTwLZ4xeUhxcs
+         9rbEwiGyBR6yaNId4zaEQ2K7rsnkKKUU4n8bO9W67gzNj+pz3ituWgdQrEbLsqJSJd
+         1JXrprwC51RPw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 09:43:34PM -0300, Jason Gunthorpe wrote:
-> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-> index b880512ba95f16..ba3b9be0d8c56a 100644
-> +++ b/include/rdma/ib_umem.h
-> @@ -33,11 +33,17 @@ static inline int ib_umem_offset(struct ib_umem *umem)
->  	return umem->address & ~PAGE_MASK;
->  }
->  
-> +static inline size_t ib_umem_num_dma_blocks(struct ib_umem *umem,
-> +					    unsigned long pgsz)
-> +{
-> +	return (ALIGN(umem->address + umem->length, pgsz) -
-> +		ALIGN_DOWN(umem->address, pgsz)) /
-> +	       pgsz;
-> +}
+Most RDMA drivers rely on a linear table of DMA addresses organized in
+some device specific page size.
 
-Like the other places, this is wrong as well. The IOVA needs to be
-used here or it can be +-1 page away from what
-rdma_umem_for_each_dma_block() returns.
+For a while now the core code has had the rdma_for_each_block() SG
+iterator to help break a umem into DMA blocks for use in the device lists.
 
-However, it does work if pgsz is PAGE_SIZE, or for the very common
-cases where umem->address == IOVA... 
+Improve on this by adding rdma_umem_for_each_dma_block(),
+ib_umem_dma_offset() and ib_umem_num_dma_blocks().
 
-Which, I suppose, is why nobody noticed this until now, as I found
-several drivers open coding the above.
+Replace open codings, or calls to fixed PAGE_SIZE APIs, in most of the
+drivers with one of the above APIs.
 
-Jason
+Get rid of the really weird and duplicative ib_umem_page_count().
+
+Fix two problems with ib_umem_find_best_pgsz(), and several problems
+related to computing the wrong DMA list length if IOVA !=3D umem->address.
+
+At this point many of the driver have a clear path to call
+ib_umem_find_best_pgsz() and replace hardcoded PAGE_SIZE or PAGE_SHIFT
+values when constructing their DMA lists.
+
+This is the first series in an effort to modernize the umem usage in all
+the DMA drivers.
+
+v1: https://lore.kernel.org/r/0-v1-00f59ce24f1f+19f50-umem_1_jgg@nvidia.com
+v2:
+ - Fix ib_umem_find_best_pgsz() to use IOVA not umem->addr
+ - Fix ib_umem_num_dma_blocks() to use IOVA not umem->addr
+ - Two new patches to remove wrong open coded versions of
+   ib_umem_num_dma_blocks() from EFA and i40iw
+ - Redo the mlx4 ib_umem_num_dma_blocks() to do less and be safer
+   until the whole thing can be moved to ib_umem_find_best_pgsz()
+ - Two new patches to delete calls to ib_umem_offset() in qedr and
+   ocrdma
+
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Jason Gunthorpe (17):
+  RDMA/umem: Fix ib_umem_find_best_pgsz() for mappings that cross a page
+    boundary
+  RDMA/umem: Prevent small pages from being returned by
+    ib_umem_find_best_pgsz()
+  RDMA/umem: Use simpler logic for ib_umem_find_best_pgsz()
+  RDMA/umem: Add rdma_umem_for_each_dma_block()
+  RDMA/umem: Replace for_each_sg_dma_page with
+    rdma_umem_for_each_dma_block
+  RDMA/umem: Split ib_umem_num_pages() into ib_umem_num_dma_blocks()
+  RDMA/efa: Use ib_umem_num_dma_pages()
+  RDMA/i40iw: Use ib_umem_num_dma_pages()
+  RDMA/qedr: Use rdma_umem_for_each_dma_block() instead of open-coding
+  RDMA/qedr: Use ib_umem_num_dma_blocks() instead of
+    ib_umem_page_count()
+  RDMA/bnxt: Do not use ib_umem_page_count() or ib_umem_num_pages()
+  RDMA/hns: Use ib_umem_num_dma_blocks() instead of opencoding
+  RDMA/ocrdma: Use ib_umem_num_dma_blocks() instead of
+    ib_umem_page_count()
+  RDMA/pvrdma: Use ib_umem_num_dma_blocks() instead of
+    ib_umem_page_count()
+  RDMA/mlx4: Use ib_umem_num_dma_blocks()
+  RDMA/qedr: Remove fbo and zbva from the MR
+  RDMA/ocrdma: Remove fbo from MR
+
+ .clang-format                                 |  1 +
+ drivers/infiniband/core/umem.c                | 45 +++++++-----
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      | 72 +++++++------------
+ drivers/infiniband/hw/cxgb4/mem.c             |  8 +--
+ drivers/infiniband/hw/efa/efa_verbs.c         |  9 ++-
+ drivers/infiniband/hw/hns/hns_roce_alloc.c    |  3 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       | 49 +++++--------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     | 13 +---
+ drivers/infiniband/hw/mlx4/cq.c               |  1 -
+ drivers/infiniband/hw/mlx4/mr.c               |  5 +-
+ drivers/infiniband/hw/mlx4/qp.c               |  2 -
+ drivers/infiniband/hw/mlx4/srq.c              |  5 +-
+ drivers/infiniband/hw/mlx5/mem.c              |  4 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  8 +--
+ drivers/infiniband/hw/ocrdma/ocrdma.h         |  1 -
+ drivers/infiniband/hw/ocrdma/ocrdma_hw.c      |  5 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   | 25 +++----
+ drivers/infiniband/hw/qedr/verbs.c            | 52 +++++---------
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |  2 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_misc.c    |  9 ++-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |  2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |  6 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c    | 12 +---
+ include/linux/qed/qed_rdma_if.h               |  2 -
+ include/rdma/ib_umem.h                        | 37 ++++++++--
+ include/rdma/ib_verbs.h                       | 24 -------
+ 27 files changed, 170 insertions(+), 234 deletions(-)
+
+--=20
+2.28.0
+
