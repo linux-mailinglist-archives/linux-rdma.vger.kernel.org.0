@@ -2,102 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B73F25D77E
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 13:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BD725DB4D
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 16:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730072AbgIDLgY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Sep 2020 07:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
+        id S1730729AbgIDOUu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Sep 2020 10:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729930AbgIDLf2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 07:35:28 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0CEC061246
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Sep 2020 04:35:27 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e17so5782415wme.0
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Sep 2020 04:35:27 -0700 (PDT)
+        with ESMTP id S1730493AbgIDNmc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 09:42:32 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED2EC061245
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Sep 2020 06:30:57 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k13so1142727plk.13
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Sep 2020 06:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7vXeg97tthpHn3OO05TYv6MMMBFwUPr9qFdp5Cy/4dA=;
-        b=fgxVF/KyrZotODBO6md3qVlmfLr1Yswld4L6UNDdmY8Kz2X24HlOcy5vpRpL4rQ530
-         gSMb7ay6j29f8JitxNubbM84Y0Vy2awUgC9aVsr/VWAgZAPTtFx707gjGuJedrngffk/
-         2rHELETgWgk8HSS6N24wNbk7FnfcXbSluqeNpyXRjqYcdFg0+4vKoB9DJVsSlHdCZKqe
-         qGh43iCNHUEh5ck+UDqey9145ghDrCdoyWzi6zglY0HshYc6vAYNqqkE2hIPYMZsex/H
-         toDwou6nj8xFEiZje4JFCGJNZZXBe5HqIEG4juqJhLHBAg/FxrEvzRxp3YxxOwxCN5Xi
-         DWYQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zEzxJFrL05lrktaxsWx4GbCXNTEcyg631XqfJCCVBTU=;
+        b=I6q+E6Uw9uGBzuXMperYCw/4dMaq7i7CAIbpd4MrKco2H76UcNIurmuWo/Lx/M1O55
+         MgSlslnOAsnL24kszsARKkXzOQXTs0Y2D+KNpxfsmOi1Ue08liC1u0+h08IiSMO0aipl
+         Kzl0d0gLoytl+01nV4nm9S1olUfy27L0J1v9AI++5RSfB7BwSH3JQqyc9eOgF+UrR0HL
+         t+f2bvc2O0plUwWAQ7aX4q4r4xIrcx49ASAXt32q3cDh7UK4pXUd64v9GVzVxUHe7V7v
+         BuF9BuPw+GGpnurdl+kRM4MOqttvUcoo9qw0Zy0topsKWpMAJ9nQH5qwpSJ9Nf41rM+S
+         GmmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7vXeg97tthpHn3OO05TYv6MMMBFwUPr9qFdp5Cy/4dA=;
-        b=HySQxjhLDgZpCMD6OqqS4Ym9Jnnt/WYXPPc3oNQvY1TB4uJc4a1C42hPuzoKgcYxXW
-         TsEDILi5Ou1fpA0/Rxoj0K3ISbM3RbYGFyF5FxgBfr5iPE/PgsYdIdJRVqZkloFPr4iK
-         LLuSKJRHmoHHdvbPTw2FDStr6ZLMGYJqQv4QrbaFxKwBg9pB4xZPy6q/3ZYS0mSS5lAE
-         LAp/aigcqOyodBDKt9Jv3pGhV5zv8SatZDHF6oZzxeIEa4Vf6pvfBM72af1x5REY9k/i
-         qYg7KPln7iOFo3vYCrTvVnEVsUMezP5w/i5OfFua4r+XXCSFxuQJgmdc645rCmQwPfXc
-         gK3A==
-X-Gm-Message-State: AOAM530x3/LbsImBebQwtdKwuZV4i//MxJHxYjrjtwvz6IdOjy6mADTj
-        YyugFiEHbugAc9pJwNlpCen+8L/3kfb33XmAreVH
-X-Google-Smtp-Source: ABdhPJw5wZGimxTw9n7szYlZ3p5Z+QDtX17dFoRAYKAcnXU2PfEgN70bforC8WZ9Bl4pCtP+K+rlOuQza/laTYmHQ/U=
-X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr7196762wmk.160.1599219326253;
- Fri, 04 Sep 2020 04:35:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zEzxJFrL05lrktaxsWx4GbCXNTEcyg631XqfJCCVBTU=;
+        b=AFmo+adXi7mpD3v+rPEWWkz0T3E5KJBigECknpVWrZXTm4lWpuJRkQW+Gdns8vWZoe
+         H5y0+bAvKF3qAfYAkaj7r4zTVmB59/NqEZrFiA0sH3FtBTQfLI5Z+bMiFE1WkWVjcIHv
+         9SSn21tIr+NVGPVmt0klakWWd5vYRBua3wGIVf1Au3OAKEu73qKVz23na4VNUza2mnH6
+         VJMnfz1eUIr2o5UoN3ymBgAfxWcfuZQ5o9yqgFA7oRuVhd9tFtaF2+Bqscl+vgGyq9E3
+         EGwZ9aFAU2TnRtEtr7e3KmZeP+fNGEllGKcNDZUhnDCouMf7f2Q4zl08ue8R6maGetdH
+         PPQg==
+X-Gm-Message-State: AOAM532jbrMBtUoXtoFgfAHcji1i4wQbAItuEphvkpSL1hmXu8+j4vKN
+        w+tULYxKrNF2J/GqeYiNt72+hg==
+X-Google-Smtp-Source: ABdhPJyLrJLP1RT2gJjDn6XMRtUHFoM/mrZSqot5BmiKK+nA6eC/FTja8qhlgjL1Mmws9Ezb++AItw==
+X-Received: by 2002:a17:90a:4046:: with SMTP id k6mr8143814pjg.11.1599226255925;
+        Fri, 04 Sep 2020 06:30:55 -0700 (PDT)
+Received: from nb01533.fkb.profitbricks.net ([43.224.130.252])
+        by smtp.gmail.com with ESMTPSA id n26sm6744992pff.30.2020.09.04.06.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 06:30:55 -0700 (PDT)
+From:   Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Subject: [PATCH] RDMA/rtrs-srv: Set .release function for rtrs srv device during device init
+Date:   Fri,  4 Sep 2020 19:00:38 +0530
+Message-Id: <20200904133038.335680-1-haris.iqbal@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
- <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org>
-In-Reply-To: <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Fri, 4 Sep 2020 13:35:15 +0200
-Message-ID: <CAHg0HuyGr8BfgBvXUG7N5WYyXKEzyh3i7eA=2XZxbW3zyXLTsA@mail.gmail.com>
-Subject: Re: [RFC] Reliable Multicast on top of RTRS
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 1:07 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2020-09-02 01:04, Danil Kipnis wrote:
-> > RTRS allows for reliable transmission of sg lists between two hosts
-> > over rdma. It is optimised for block io. One can implement a client
-> > and a server module on top of RTRS which would allow for reliable
-> > transmission to a group of hosts.
-> >
-> > In the networking world this is called reliable multicast. I think one
-> > can say that reliable multicast is an equivalent to what is called
-> > "mirror" in the storage world. There is something called XoR network
-> > coding which seems to be an equivalent of raid5. There is also Reed
-> > Solomon network coding.
-> >
-> > Having a reliable multicast with coding rdma-based transport layer
-> > would allow for very flexible and scalable designs of distributed
-> > replication solutions based on different in-kernel transport, block
-> > and replication drivers.
-> >
-> > What do you think?
->
-> How will the resulting software differ from DRBD (other than that it
-> uses RDMA)?
+The device .release function was not being set during the device
+initialization. This was leading to the below warning, in error cases when
+put_srv was called before device_add was called.
 
-DRBD replicates disks (a local one with a remote one). The idea here
-would be to replicate on the level of hosts, i.e. to support
-replication inside the transport layer. A reliable mc on top of rtrs
-would be more similar to a stack where an md-raid<x> sits on a client
-on top of two or more imported srp/nvmeof/rnbd devices, but with an
-ability to resync between remote machines directly.
+Warning:
 
-> How will it be guaranteed that the resulting software does
-> not suffer from the problems that have been solved by the introduction
-> of the DRBD activity log
-> (https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
+Device '(null)' does not have a release() function, it is broken and must
+be fixed. See Documentation/kobject.txt.
 
-The above would require some kind of activity log also, I'm afraid.
+So, set the device .release function during device initialization in the
+__alloc_srv() function.
 
->
-> Thanks,
->
-> Bart.
+Fixes: baa5b28b7a474 ("RDMA/rtrs-srv: Replace device_register with..")
+Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 8 --------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 8 ++++++++
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+index 2f981ae97076..cf6a2be61695 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+@@ -152,13 +152,6 @@ static struct attribute_group rtrs_srv_stats_attr_group = {
+ 	.attrs = rtrs_srv_stats_attrs,
+ };
+ 
+-static void rtrs_srv_dev_release(struct device *dev)
+-{
+-	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
+-
+-	kfree(srv);
+-}
+-
+ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ {
+ 	struct rtrs_srv *srv = sess->srv;
+@@ -172,7 +165,6 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ 		goto unlock;
+ 	}
+ 	srv->dev.class = rtrs_dev_class;
+-	srv->dev.release = rtrs_srv_dev_release;
+ 	err = dev_set_name(&srv->dev, "%s", sess->s.sessname);
+ 	if (err)
+ 		goto unlock;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index b61a18e57aeb..28f6414dfa3d 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1319,6 +1319,13 @@ static int rtrs_srv_get_next_cq_vector(struct rtrs_srv_sess *sess)
+ 	return sess->cur_cq_vector;
+ }
+ 
++static void rtrs_srv_dev_release(struct device *dev)
++{
++	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
++
++	kfree(srv);
++}
++
+ static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
+ 				     const uuid_t *paths_uuid)
+ {
+@@ -1337,6 +1344,7 @@ static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
+ 	srv->queue_depth = sess_queue_depth;
+ 	srv->ctx = ctx;
+ 	device_initialize(&srv->dev);
++	srv->dev.release = rtrs_srv_dev_release;
+ 
+ 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
+ 			      GFP_KERNEL);
+-- 
+2.25.1
+
