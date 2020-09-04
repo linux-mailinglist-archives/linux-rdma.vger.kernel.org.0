@@ -2,138 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BD725DB4D
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 16:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A8425DAE5
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Sep 2020 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730729AbgIDOUu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Sep 2020 10:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730493AbgIDNmc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 09:42:32 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED2EC061245
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Sep 2020 06:30:57 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k13so1142727plk.13
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Sep 2020 06:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zEzxJFrL05lrktaxsWx4GbCXNTEcyg631XqfJCCVBTU=;
-        b=I6q+E6Uw9uGBzuXMperYCw/4dMaq7i7CAIbpd4MrKco2H76UcNIurmuWo/Lx/M1O55
-         MgSlslnOAsnL24kszsARKkXzOQXTs0Y2D+KNpxfsmOi1Ue08liC1u0+h08IiSMO0aipl
-         Kzl0d0gLoytl+01nV4nm9S1olUfy27L0J1v9AI++5RSfB7BwSH3JQqyc9eOgF+UrR0HL
-         t+f2bvc2O0plUwWAQ7aX4q4r4xIrcx49ASAXt32q3cDh7UK4pXUd64v9GVzVxUHe7V7v
-         BuF9BuPw+GGpnurdl+kRM4MOqttvUcoo9qw0Zy0topsKWpMAJ9nQH5qwpSJ9Nf41rM+S
-         GmmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zEzxJFrL05lrktaxsWx4GbCXNTEcyg631XqfJCCVBTU=;
-        b=AFmo+adXi7mpD3v+rPEWWkz0T3E5KJBigECknpVWrZXTm4lWpuJRkQW+Gdns8vWZoe
-         H5y0+bAvKF3qAfYAkaj7r4zTVmB59/NqEZrFiA0sH3FtBTQfLI5Z+bMiFE1WkWVjcIHv
-         9SSn21tIr+NVGPVmt0klakWWd5vYRBua3wGIVf1Au3OAKEu73qKVz23na4VNUza2mnH6
-         VJMnfz1eUIr2o5UoN3ymBgAfxWcfuZQ5o9yqgFA7oRuVhd9tFtaF2+Bqscl+vgGyq9E3
-         EGwZ9aFAU2TnRtEtr7e3KmZeP+fNGEllGKcNDZUhnDCouMf7f2Q4zl08ue8R6maGetdH
-         PPQg==
-X-Gm-Message-State: AOAM532jbrMBtUoXtoFgfAHcji1i4wQbAItuEphvkpSL1hmXu8+j4vKN
-        w+tULYxKrNF2J/GqeYiNt72+hg==
-X-Google-Smtp-Source: ABdhPJyLrJLP1RT2gJjDn6XMRtUHFoM/mrZSqot5BmiKK+nA6eC/FTja8qhlgjL1Mmws9Ezb++AItw==
-X-Received: by 2002:a17:90a:4046:: with SMTP id k6mr8143814pjg.11.1599226255925;
-        Fri, 04 Sep 2020 06:30:55 -0700 (PDT)
-Received: from nb01533.fkb.profitbricks.net ([43.224.130.252])
-        by smtp.gmail.com with ESMTPSA id n26sm6744992pff.30.2020.09.04.06.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 06:30:55 -0700 (PDT)
-From:   Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        linux-rdma@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Subject: [PATCH] RDMA/rtrs-srv: Set .release function for rtrs srv device during device init
-Date:   Fri,  4 Sep 2020 19:00:38 +0530
-Message-Id: <20200904133038.335680-1-haris.iqbal@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
+        id S1730547AbgIDOEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Sep 2020 10:04:24 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45386 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730496AbgIDOEW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Sep 2020 10:04:22 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084E4FRh079032;
+        Fri, 4 Sep 2020 14:04:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=o+Knbr3aSaiJzMkSTH2PN7Lrt4gyqRKlMIJELwp82jg=;
+ b=Ye3pbd71XHD3oUJc2A9RxKTOghozikUVamYgqlrjUrFoqmA0EBq+dtMLYbH/i9bQsMhB
+ Fd6DzPyncIsSoNx38x2Eykf0Qs3Fn3PWTyk4qnk//7wOcabhb3r+mDq6/w0GH1WErgWr
+ DtzXiDbInCWDgQgRG+3qznjagUeuXtTH3igv8AInHbUKqhEwpJPacDm/C/R7ySPkv1QF
+ arAeqivwmdXvuIGahEDElhLzoUgJy5tK1Gs7tKBWdzN9quOk2lOuhtXOs/b5NUAItz5y
+ 4pzekurL8goXGU6CTAxox07ZM00iybQ7tMbxeQuL/BXZk/aeWhcp3e3dEjM7mln716qJ 8g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 337eympkr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Sep 2020 14:04:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084E1CmD053673;
+        Fri, 4 Sep 2020 14:02:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33bhs4g662-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Sep 2020 14:02:14 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 084E2DKU017447;
+        Fri, 4 Sep 2020 14:02:13 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Sep 2020 07:02:12 -0700
+Subject: Re: Finding the namespace of a struct ib_device
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+References: <5fa7f367-49df-fb1d-22d0-9f1dd1b76915@oracle.com>
+ <20200903173910.GO24045@ziepe.ca>
+ <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
+ <20200904113244.GP24045@ziepe.ca>
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <be812cb4-4b80-5ee5-4ed8-9d44f0a06edd@oracle.com>
+Date:   Fri, 4 Sep 2020 22:02:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200904113244.GP24045@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9733 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9733 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040129
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The device .release function was not being set during the device
-initialization. This was leading to the below warning, in error cases when
-put_srv was called before device_add was called.
+On 9/4/20 7:32 PM, Jason Gunthorpe wrote:
+> On Fri, Sep 04, 2020 at 12:01:12PM +0800, Ka-Cheong Poon wrote:
+>> On 9/4/20 1:39 AM, Jason Gunthorpe wrote:
+>>> On Thu, Sep 03, 2020 at 10:02:01PM +0800, Ka-Cheong Poon wrote:
+>>>> When a struct ib_client's add() function is called. is there a
+>>>> supported method to find out the namespace of the passed in
+>>>> struct ib_device?  There is rdma_dev_access_netns() but it does
+>>>> not return the namespace.  It seems that it needs to have
+>>>> something like the following.
+>>>>
+>>>> struct net *rdma_dev_to_netns(struct ib_device *ib_dev)
+>>>> {
+>>>>          return read_pnet(&ib_dev->coredev.rdma_net);
+>>>> }
+>>>>
+>>>> Comments?
+>>>
+>>> I suppose, but why would something need this?
+>>
+>>
+>> If the client needs to allocate stuff for the namespace
+>> related to that device, it needs to know the namespace of
+>> that device.  Then when that namespace is deleted, the
+>> client can clean up those related stuff as the client's
+>> namespace exit function can be called before the remove()
+>> function is triggered in rdma_dev_exit_net().  Without
+>> knowing the namespace of that device, coordination cannot
+>> be done.
+> 
+> Since each device can only be in one namespace, why would a client
+> ever need to allocate at a level more granular than a device?
 
-Warning:
 
-Device '(null)' does not have a release() function, it is broken and must
-be fixed. See Documentation/kobject.txt.
+A client wants to have namespace specific info.  If the
+device belongs to a namespace, it wants to associate those
+info with that device.  When a namespace is deleted, the
+info will need to be deleted.  You can consider the info
+as associated with both a namespace and a device.
 
-So, set the device .release function during device initialization in the
-__alloc_srv() function.
 
-Fixes: baa5b28b7a474 ("RDMA/rtrs-srv: Replace device_register with..")
-Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 8 --------
- drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 8 ++++++++
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 2f981ae97076..cf6a2be61695 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -152,13 +152,6 @@ static struct attribute_group rtrs_srv_stats_attr_group = {
- 	.attrs = rtrs_srv_stats_attrs,
- };
- 
--static void rtrs_srv_dev_release(struct device *dev)
--{
--	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
--
--	kfree(srv);
--}
--
- static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- {
- 	struct rtrs_srv *srv = sess->srv;
-@@ -172,7 +165,6 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- 		goto unlock;
- 	}
- 	srv->dev.class = rtrs_dev_class;
--	srv->dev.release = rtrs_srv_dev_release;
- 	err = dev_set_name(&srv->dev, "%s", sess->s.sessname);
- 	if (err)
- 		goto unlock;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index b61a18e57aeb..28f6414dfa3d 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1319,6 +1319,13 @@ static int rtrs_srv_get_next_cq_vector(struct rtrs_srv_sess *sess)
- 	return sess->cur_cq_vector;
- }
- 
-+static void rtrs_srv_dev_release(struct device *dev)
-+{
-+	struct rtrs_srv *srv = container_of(dev, struct rtrs_srv, dev);
-+
-+	kfree(srv);
-+}
-+
- static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
- 				     const uuid_t *paths_uuid)
- {
-@@ -1337,6 +1344,7 @@ static struct rtrs_srv *__alloc_srv(struct rtrs_srv_ctx *ctx,
- 	srv->queue_depth = sess_queue_depth;
- 	srv->ctx = ctx;
- 	device_initialize(&srv->dev);
-+	srv->dev.release = rtrs_srv_dev_release;
- 
- 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
- 			      GFP_KERNEL);
 -- 
-2.25.1
+K. Poon
+ka-cheong.poon@oracle.com
+
 
