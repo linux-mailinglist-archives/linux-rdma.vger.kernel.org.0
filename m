@@ -2,143 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC5C25EE8E
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Sep 2020 17:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E583325EF25
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Sep 2020 18:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbgIFPYm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 6 Sep 2020 11:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45178 "EHLO mail.kernel.org"
+        id S1725841AbgIFQdI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 6 Sep 2020 12:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728988AbgIFPYi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 6 Sep 2020 11:24:38 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1725816AbgIFQdH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 6 Sep 2020 12:33:07 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 939EF20714;
-        Sun,  6 Sep 2020 15:24:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B23C520709;
+        Sun,  6 Sep 2020 16:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599405878;
-        bh=0AN9vTtEVgo+SJBOVzsksipscEZrvAzHFAC1UL7iWfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SGjpKyNmrwpETQlKgQaZ+ECbe8jVgsNTyn+YrZuCk4Xokv44XE3RaoeU0Zbau6Zue
-         CVs/Mfsb58MvBdq0FCZ6Qgd33UCzsTIBWMuv9ExS9ZR376cZx2fUkLo3R0FF+zkKWY
-         TYqaGPLj74CdmL5Jcr/jRorA0zovs+Xen7YpguCo=
-Date:   Sun, 6 Sep 2020 18:24:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 13/13] RDMA/restrack: Drop valid restrack
- field as source of ambiguity
-Message-ID: <20200906152433.GJ55261@unreal>
-References: <20200830101436.108487-1-leon@kernel.org>
- <20200830101436.108487-14-leon@kernel.org>
- <20200903162148.GA1552408@nvidia.com>
- <20200906142400.GG55261@unreal>
- <20200906142815.GC9166@nvidia.com>
+        s=default; t=1599409987;
+        bh=JufQVAIIPQnj/VnYRwkF5YTXrluEZWFgHXv3wmmLd2I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g6lRDB2vUEQWwY79IzN2cVcWlre/UQU/Rmm/eas2WpU45a2dz4aAtnTio29vBgxCR
+         SfCWnIgkFVPGdkxZb3KF/P43qdxbD12GxYm6+0f1s/9bljYKpLdzxYc4lvbmDDlnRI
+         1aeO2w7h3HCN9WJ78DfVGZv/ZKd7VajZe/y03NHk=
+Date:   Sun, 6 Sep 2020 09:33:05 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kernel-team@fb.com,
+        tariqt@mellanox.com, yishaih@mellanox.com,
+        linux-rdma@vger.kernel.org, jiri@resnulli.us
+Subject: Re: [PATCH net-next] mlx4: make sure to always set the port type
+Message-ID: <20200906093305.5c901cc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200906072759.GC55261@unreal>
+References: <20200904200621.2407839-1-kuba@kernel.org>
+        <20200906072759.GC55261@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200906142815.GC9166@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 06, 2020 at 11:28:15AM -0300, Jason Gunthorpe wrote:
-> On Sun, Sep 06, 2020 at 05:24:00PM +0300, Leon Romanovsky wrote:
-> > On Thu, Sep 03, 2020 at 01:21:48PM -0300, Jason Gunthorpe wrote:
-> > > On Sun, Aug 30, 2020 at 01:14:36PM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@mellanox.com>
-> > > >
-> > > > The valid field was needed to distinguish between supported/not
-> > > > supported QPs, after the create_qp was changed to support all types,
-> > > > that field can be dropped and the code simplified a little bit.
-> > > >
-> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > > >  drivers/infiniband/core/restrack.c | 29 ++++++++---------------------
-> > > >  include/rdma/restrack.h            |  9 ---------
-> > > >  2 files changed, 8 insertions(+), 30 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-> > > > index 4caaa6312105..fb5345c8bd89 100644
-> > > > +++ b/drivers/infiniband/core/restrack.c
-> > > > @@ -143,7 +143,7 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
-> > > >  		return container_of(res, struct rdma_counter, res)->device;
-> > > >  	default:
-> > > >  		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
-> > > > -		return NULL;
-> > > > +		return ERR_PTR(-EINVAL);
-> > > >  	}
-> > > >  }
-> > > >
-> > > > @@ -223,7 +223,7 @@ int __must_check rdma_restrack_add(struct rdma_restrack_entry *res)
-> > > >  	struct rdma_restrack_root *rt;
-> > > >  	int ret = 0;
-> > > >
-> > > > -	if (!dev)
-> > > > +	if (IS_ERR_OR_NULL(dev))
-> > > >  		return -ENODEV;
-> > > >
-> > > >  	if (res->no_track)
-> > > > @@ -261,10 +261,7 @@ int __must_check rdma_restrack_add(struct rdma_restrack_entry *res)
-> > > >  	}
-> > > >
-> > > >  out:
-> > > > -	if (ret)
-> > > > -		return ret;
-> > > > -	res->valid = true;
-> > > > -	return 0;
-> > > > +	return ret;
-> > > >  }
-> > > >  EXPORT_SYMBOL(rdma_restrack_add);
-> > > >
-> > > > @@ -323,25 +320,16 @@ EXPORT_SYMBOL(rdma_restrack_put);
-> > > >   */
-> > > >  void rdma_restrack_del(struct rdma_restrack_entry *res)
-> > > >  {
-> > > > +	struct ib_device *dev = res_to_dev(res);
-> > > >  	struct rdma_restrack_entry *old;
-> > > >  	struct rdma_restrack_root *rt;
-> > > > -	struct ib_device *dev;
-> > > >
-> > > > -	if (!res->valid) {
-> > > > -		if (res->task) {
-> > > > -			put_task_struct(res->task);
-> > > > -			res->task = NULL;
-> > > > -		}
-> > > > -		return;
-> > > > -	}
-> > > > -
-> > > > -	if (res->no_track)
-> > > > +	WARN_ONCE(!dev && res->type != RDMA_RESTRACK_CM_ID,
-> > > > +		  "IB device should be set for restrack type %s",
-> > > > +		  type2str(res->type));
-> > > > +	if (res->no_track || IS_ERR_OR_NULL(dev))
-> > > >  		goto out;
-> > > >
-> > > > -	dev = res_to_dev(res);
-> > > > -	if (WARN_ON(!dev))
-> > > > -		return;
-> > > > -
-> > > >  	rt = &dev->res[res->type];
-> > > >  	old = xa_erase(&rt->xa, res->id);
-> > >
-> > > How does this work without valid?
-> > >
-> > > xa_alloc is called in rdma_restrack_add() and previously it was safe
-> > > to call res_track_del() on unadded things.
-> > >
-> > > Now there are problems, like __ib_alloc_cq_user() does calls
-> > > restrack_del without doing restrack_ad()
+On Sun, 6 Sep 2020 10:27:59 +0300 Leon Romanovsky wrote:
+> On Fri, Sep 04, 2020 at 01:06:21PM -0700, Jakub Kicinski wrote:
+> > Even tho mlx4_core registers the devlink ports, it's mlx4_en
+> > and mlx4_ib which set their type. In situations where one of
+> > the two is not built yet the machine has ports of given type
+> > we see the devlink warning from devlink_port_type_warn() trigger.
 > >
-> > Maybe I missed it, but I don't see it in the code.
->
-> Look at the error unwinding
+> > Having ports of a type not supported by the kernel may seem
+> > surprising, but it does occur in practice - when the unsupported
+> > port is not plugged in to a switch anyway users are more than happy
+> > not to see it (and potentially allocate any resources to it).
+> >
+> > Set the type in mlx4_core if type-specific driver is not built.
+> >
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx4/main.c | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+> > index 258c7a96f269..70cf24ba71e4 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx4/main.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+> > @@ -3031,6 +3031,17 @@ static int mlx4_init_port_info(struct mlx4_dev *dev, int port)
+> >  	if (err)
+> >  		return err;
+> >
+> > +	/* Ethernet and IB drivers will normally set the port type,
+> > +	 * but if they are not built set the type now to prevent
+> > +	 * devlink_port_type_warn() from firing.
+> > +	 */
+> > +	if (!IS_ENABLED(CONFIG_MLX4_EN) &&
+> > +	    dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
+> > +		devlink_port_type_eth_set(&info->devlink_port, NULL);  
+>                                                                ^^^^^
+> 
+> Won't it crash in devlink_port_type_eth_set()?
+> The first line there dereferences pointer.
+>   7612         const struct net_device_ops *ops = netdev->netdev_ops;
 
-After this series I will call to rdma_restrack_put() and not to rdma_restrack_del().
-in error unwind.
+Damn, good catch. It's not supposed to be required. I'll patch devlink.
+ 
+> And can we call to devlink_port_type_*_set() without IS_ENABLED() check?
 
-Thanks
-
->
-> Jason
+It'll generate two netlink notifications - not the end of the world but
+also doesn't feel super clean.
