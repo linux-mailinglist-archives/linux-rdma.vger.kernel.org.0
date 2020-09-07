@@ -2,169 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308A225F4B4
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 10:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2D525F4F9
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 10:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgIGIMC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 7 Sep 2020 04:12:02 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3153 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728054AbgIGIMB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:12:01 -0400
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 60A1D63C5C299EA0583A;
-        Mon,  7 Sep 2020 16:11:55 +0800 (CST)
-Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 7 Sep 2020 16:11:55 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 7 Sep 2020 16:11:54 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Mon, 7 Sep 2020 16:11:54 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Huwei (Xavier)" <xavier.huwei@huawei.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        oulijun <oulijun@huawei.com>
-Subject: Re: [PATCH v2 12/17] RDMA/hns: Use ib_umem_num_dma_blocks() instead
- of opencoding
-Thread-Topic: [PATCH v2 12/17] RDMA/hns: Use ib_umem_num_dma_blocks() instead
- of opencoding
-Thread-Index: AQHWgwypFlejl7L8mkGmitUIXL1wBg==
-Date:   Mon, 7 Sep 2020 08:11:54 +0000
-Message-ID: <d0aea0dfb6154838bfded3eeacb22221@huawei.com>
-References: <12-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728041AbgIGIYl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 04:24:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53558 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727972AbgIGIYk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Sep 2020 04:24:40 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0878O4UR087295;
+        Mon, 7 Sep 2020 08:24:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=XiDqqsNUytfqbgVV0BtPzZE9hnFY0oe2pv471whbO8U=;
+ b=Kg4OfFpWH2qZtIhLAHzO/eGY6xtq/SjRV+oDH1sDdmiOoqY1k2ibTCviymbCXtDA5GMy
+ xcTdCY4JoFexXpDECz7Zts39iYUv92bTQpVBS7AGJCG3lIUXJ7jgVNT1PZNGS8LPLYYE
+ NgvRJ/w8gB6/0LzFZmJGv2hGfzpZWJ5ffEgRlMcnj5T2YNHLdqs56lsrZASz7z4CU2Yk
+ KdpMXx4XSrZApivMpLYHK7f4RGld7Wf1YF3BOZA+QCocAFI+Dl266/DknxxuLq85ypPb
+ CBwzoNc6zeX1i9xJ+9Lo2vPI3fChOIcRjdV40w95dDHfkxOIPZPAzG70Ank6aG5v253h 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33c3amn6pc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Sep 2020 08:24:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0878KugQ106413;
+        Mon, 7 Sep 2020 08:24:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33cmk00e8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Sep 2020 08:24:36 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0878OYlr030992;
+        Mon, 7 Sep 2020 08:24:35 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Sep 2020 01:24:34 -0700
+Subject: Re: Finding the namespace of a struct ib_device
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+References: <5fa7f367-49df-fb1d-22d0-9f1dd1b76915@oracle.com>
+ <20200903173910.GO24045@ziepe.ca>
+ <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
+ <20200904113244.GP24045@ziepe.ca>
+ <be812cb4-4b80-5ee5-4ed8-9d44f0a06edd@oracle.com>
+ <20200906074442.GE55261@unreal>
+ <9f8984ec-31e4-d71e-d55e-5cf115066e96@oracle.com>
+ <20200907071819.GL55261@unreal>
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <69fdae5f-5824-9151-0a00-a7453382eee0@oracle.com>
+Date:   Mon, 7 Sep 2020 16:24:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200907071819.GL55261@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9736 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009070082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9736 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ clxscore=1015 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009070083
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/9/5 6:42, Jason Gunthorpe wrote:
-> mtr_umem_page_count() does the same thing, replace it with the core code.
+On 9/7/20 3:18 PM, Leon Romanovsky wrote:
+> On Mon, Sep 07, 2020 at 11:33:38AM +0800, Ka-Cheong Poon wrote:
+>> On 9/6/20 3:44 PM, Leon Romanovsky wrote:
+>>> On Fri, Sep 04, 2020 at 10:02:10PM +0800, Ka-Cheong Poon wrote:
+>>>> On 9/4/20 7:32 PM, Jason Gunthorpe wrote:
+>>>>> On Fri, Sep 04, 2020 at 12:01:12PM +0800, Ka-Cheong Poon wrote:
+>>>>>> On 9/4/20 1:39 AM, Jason Gunthorpe wrote:
+>>>>>>> On Thu, Sep 03, 2020 at 10:02:01PM +0800, Ka-Cheong Poon wrote:
+>>>>>>>> When a struct ib_client's add() function is called. is there a
+>>>>>>>> supported method to find out the namespace of the passed in
+>>>>>>>> struct ib_device?  There is rdma_dev_access_netns() but it does
+>>>>>>>> not return the namespace.  It seems that it needs to have
+>>>>>>>> something like the following.
+>>>>>>>>
+>>>>>>>> struct net *rdma_dev_to_netns(struct ib_device *ib_dev)
+>>>>>>>> {
+>>>>>>>>            return read_pnet(&ib_dev->coredev.rdma_net);
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> Comments?
+>>>>>>>
+>>>>>>> I suppose, but why would something need this?
+>>>>>>
+>>>>>>
+>>>>>> If the client needs to allocate stuff for the namespace
+>>>>>> related to that device, it needs to know the namespace of
+>>>>>> that device.  Then when that namespace is deleted, the
+>>>>>> client can clean up those related stuff as the client's
+>>>>>> namespace exit function can be called before the remove()
+>>>>>> function is triggered in rdma_dev_exit_net().  Without
+>>>>>> knowing the namespace of that device, coordination cannot
+>>>>>> be done.
+>>>>>
+>>>>> Since each device can only be in one namespace, why would a client
+>>>>> ever need to allocate at a level more granular than a device?
+>>>>
+>>>>
+>>>> A client wants to have namespace specific info.  If the
+>>>> device belongs to a namespace, it wants to associate those
+>>>> info with that device.  When a namespace is deleted, the
+>>>> info will need to be deleted.  You can consider the info
+>>>> as associated with both a namespace and a device.
+>>>
+>>> Can you be more specific about which info you are talking about?
+>>
+>>
+>> Actually, a lot of info can be both namespace and device specific.
+>> For example, a client wants to have a different PD allocation policy
+>> with a device when used in different namespaces.
+>>
+>>
+>>> And what is the client that is net namespace-aware from one side,
+>>> but from another separate data between them "manually"?
+>>
+>>
+>> Could you please elaborate what is meant by "namespace aware from
+>> one side but from another separate data between them manually"?
+>> I understand what namespace aware means.  But it is not clear what
+>> is meant by "separating data manually".  Do you mean having different
+>> behavior in different namespaces?  If this is the case, there is
+>> nothing special here.  An admin may choose to have different behavior
+>> in different namespaces.  There is nothing manual going on in the
+>> client code.
 > 
-> Also, ib_umem_find_best_pgsz() should always be called to check that the
-> umem meets the page_size requirement. If there is a limited set of
-> page_sizes that work it the pgsz_bitmap should be set to that set. 0 is a
-> failure and the umem cannot be used.
+> We are talking about net-namespaces, and as we wrote above, the ib_device
+> that supports such namespace can exist only in a single one
 > 
-> Lightly tidy the control flow to implement this flow properly.
+> The client that implemented such support can check its namespace while
+> "client->add" is called. It should be equal to be seen by ib_device.
 > 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_mr.c | 49 ++++++++++---------------
->  1 file changed, 19 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> index e5df3884b41dda..16699f6bb03a51 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> @@ -707,19 +707,6 @@ static inline size_t mtr_bufs_size(struct hns_roce_buf_attr *attr)
->  	return size;
->  }
->  
-> -static inline int mtr_umem_page_count(struct ib_umem *umem,
-> -				      unsigned int page_shift)
-> -{
-> -	int count = ib_umem_page_count(umem);
-> -
-> -	if (page_shift >= PAGE_SHIFT)
-> -		count >>= page_shift - PAGE_SHIFT;
-> -	else
-> -		count <<= PAGE_SHIFT - page_shift;
-> -
-> -	return count;
-> -}
-> -
->  static inline size_t mtr_kmem_direct_size(bool is_direct, size_t alloc_size,
->  					  unsigned int page_shift)
->  {
-> @@ -767,12 +754,10 @@ static int mtr_alloc_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->  			  struct ib_udata *udata, unsigned long user_addr)
->  {
->  	struct ib_device *ibdev = &hr_dev->ib_dev;
-> -	unsigned int max_pg_shift = buf_attr->page_shift;
-> -	unsigned int best_pg_shift = 0;
-> +	unsigned int best_pg_shift;
->  	int all_pg_count = 0;
->  	size_t direct_size;
->  	size_t total_size;
-> -	unsigned long tmp;
->  	int ret = 0;
->  
->  	total_size = mtr_bufs_size(buf_attr);
-> @@ -782,6 +767,9 @@ static int mtr_alloc_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->  	}
->  
->  	if (udata) {
-> +		unsigned long pgsz_bitmap;
-> +		unsigned long page_size;
-> +
->  		mtr->kmem = NULL;
->  		mtr->umem = ib_umem_get(ibdev, user_addr, total_size,
->  					buf_attr->user_access);
-> @@ -790,15 +778,17 @@ static int mtr_alloc_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->  				  PTR_ERR(mtr->umem));
->  			return -ENOMEM;
->  		}
-> -		if (buf_attr->fixed_page) {
-> -			best_pg_shift = max_pg_shift;
-> -		} else {
-> -			tmp = GENMASK(max_pg_shift, 0);
-> -			ret = ib_umem_find_best_pgsz(mtr->umem, tmp, user_addr);
-> -			best_pg_shift = (ret <= PAGE_SIZE) ?
-> -					PAGE_SHIFT : ilog2(ret);
-> -		}
-> -		all_pg_count = mtr_umem_page_count(mtr->umem, best_pg_shift);
-> +		if (buf_attr->fixed_page)
-> +			pgsz_bitmap = 1 << buf_attr->page_shift;
-> +		else
-> +			pgsz_bitmap = GENMASK(buf_attr->page_shift, PAGE_SHIFT);
-> +
-> +		page_size = ib_umem_find_best_pgsz(mtr->umem, pgsz_bitmap,
-> +						   user_addr);
-> +		if (!page_size)
-> +			return -EINVAL;
-> +		best_pg_shift = order_base_2(page_size);
-> +		all_pg_count = ib_umem_num_dma_blocks(mtr->umem, page_size);
->  		ret = 0;
->  	} else {
->  		mtr->umem = NULL;
-> @@ -808,16 +798,15 @@ static int mtr_alloc_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->  			return -ENOMEM;
->  		}
->  		direct_size = mtr_kmem_direct_size(is_direct, total_size,
-> -						   max_pg_shift);
-> +						   buf_attr->page_shift);
->  		ret = hns_roce_buf_alloc(hr_dev, total_size, direct_size,
-> -					 mtr->kmem, max_pg_shift);
-> +					 mtr->kmem, buf_attr->page_shift);
->  		if (ret) {
->  			ibdev_err(ibdev, "Failed to alloc kmem, ret %d\n", ret);
->  			goto err_alloc_mem;
-> -		} else {
-> -			best_pg_shift = max_pg_shift;
-> -			all_pg_count = mtr->kmem->npages;
->  		}
-> +		best_pg_shift = buf_attr->page_shift;
-> +		all_pg_count = mtr->kmem->npages;
->  	}
->  
->  	/* must bigger than minimum hardware page shift */
-> 
+> See:
+>   rdma_dev_change_netns ->
+>   	enable_device_and_get ->
+> 		add_client_context ->
+> 			client->add(device)
 
-Thanks
 
-Acked-by: Weihang Li <liweihang@huawei.com>
+This is the original question.  How does the client's add() function
+know the namespace of device?  What is your suggestion in finding
+the net namespace of device at add() time?
+
+
+> "Manual" means that client will store results of first client->add call
+> (in init_net NS) and will use globally stored data for other NS, which
+> is not netdev way to work with namespaces. The expectation that they are
+> separated without shared data between.
+
+
+It is not clear why client needs to use globally stored data for other
+net namespaces.  When an RDMA device is moved from init_net to another net
+namespace, the client's remove() function is called first, and then the
+client's add() function is called.  If a client can know the net namespace
+of a device when add()/remove() is called, it can use namespace specific
+data storage.  It does not need to store namespace specific data in a
+global store.  The original question is how to find out the net namespace
+of a device.
+
+
+
+-- 
+K. Poon
+ka-cheong.poon@oracle.com
+
+
