@@ -2,48 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895C6260387
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 19:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC747260384
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 19:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgIGRup (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Sep 2020 13:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        id S1729588AbgIGRuj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 13:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729217AbgIGMJb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:09:31 -0400
+        id S1729226AbgIGMJf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:09:35 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD45C2166E;
-        Mon,  7 Sep 2020 12:09:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8E832137B;
+        Mon,  7 Sep 2020 12:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599480570;
-        bh=h3l0Eu702QO4M2VbOH4Zb/Avfog62KOLH1EMWeHIjWk=;
+        s=default; t=1599480573;
+        bh=GNBVjdxlrENxzPP4PJP2D1M8MCcHP0bdqe6pDiMCW04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIivoePQLeSHfqOHzGwOMh1EoNeHhPnZ2gOav+RIwg+JgVN5SCeCiGA6hL2RoRNo9
-         LiJYaBn8dcx0tofSshsPOlkKT8fbQEKLDBjIKAYK9GYYhe3RhUGNBh6r8G5s8bPWr+
-         RE6oUkQhaFNrnVHKEWaQ8BrnnbW3JoakxN1E3tYY=
+        b=WGyJil++chH81p9Ja7LdSlMupn3Ho6OJWA1jkxPpH4NjK9X3NFH750LDZaNRNfaOX
+         Cy2UAfzZBgjQBfYaOiFdHY9ee0Zoa5RcbTNV9ZjEWpIU4lCvtyJiqJWkNE8LFRuO6O
+         B74DLYMVMhz+82Hxh6Ma8k7Eo9GPrUd+cCcLS8AM=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Adit Ranadive <aditr@vmware.com>,
         Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
         Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
         Gal Pressman <galpress@amazon.com>,
         Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
         Michal Kalderon <mkalderon@marvell.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
         Somnath Kotur <somnath.kotur@broadcom.com>,
         Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
         VMware PV-Drivers <pv-drivers@vmware.com>,
@@ -51,9 +44,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <yanjunz@nvidia.com>
-Subject: [PATCH rdma-next v2 1/9] RDMA: Restore ability to fail on PD deallocate
-Date:   Mon,  7 Sep 2020 15:09:13 +0300
-Message-Id: <20200907120921.476363-2-leon@kernel.org>
+Subject: [PATCH rdma-next v2 2/9] RDMA: Restore ability to fail on AH destroy
+Date:   Mon,  7 Sep 2020 15:09:14 +0300
+Message-Id: <20200907120921.476363-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200907120921.476363-1-leon@kernel.org>
 References: <20200907120921.476363-1-leon@kernel.org>
@@ -66,576 +59,415 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-The IB verbs objects are counted by the kernel and ib_core ensures
-that deallocate PD will success so it will be called once all other
-objects that depends on PD will be released. This is achieved
-by managing various reference counters on such objects.
+Like any other IB verbs objects, AH are refcounted by ib_core. The release
+of those objects are controlled by ib_core with promise that AH destroy
+can't fail.
 
-The mlx5 driver didn't follow this standard flow when allowed DEVX
-objects that are not managed by ib_core to be interleaved with the
-ones under ib_core responsibility.
+Being SW object for now, this change makes dealloc_ah() to behave like
+any other destroy IB flows.
 
-In such interleaved scenarios deallocate command can fail and ib_core
-will leave uobject in internal DB and attempt to clean it later to
-free resources anyway.
-
-This change partially restores returned value from dealloc_pd() for
-all drivers, but keeping in mind that non-DEVX devices and kernel verbs
-paths shouldn't fail.
-
-Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
+Fixes: d345691471b4 ("RDMA: Handle AH allocations by IB/core")
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/uverbs_std_types.c      |  3 +--
- drivers/infiniband/core/verbs.c                 |  8 ++++++--
- drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  3 ++-
- drivers/infiniband/hw/bnxt_re/ib_verbs.h        |  2 +-
- drivers/infiniband/hw/cxgb4/provider.c          |  3 ++-
- drivers/infiniband/hw/efa/efa.h                 |  2 +-
- drivers/infiniband/hw/efa/efa_verbs.c           |  3 ++-
- drivers/infiniband/hw/hns/hns_roce_device.h     |  2 +-
- drivers/infiniband/hw/hns/hns_roce_pd.c         |  3 ++-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  3 ++-
- drivers/infiniband/hw/mlx4/main.c               |  3 ++-
- drivers/infiniband/hw/mlx5/cmd.c                |  4 ++--
- drivers/infiniband/hw/mlx5/cmd.h                |  2 +-
- drivers/infiniband/hw/mlx5/main.c               |  4 ++--
- drivers/infiniband/hw/mthca/mthca_provider.c    |  3 ++-
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  5 +++--
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.h     |  2 +-
- drivers/infiniband/hw/qedr/verbs.c              |  3 ++-
- drivers/infiniband/hw/qedr/verbs.h              |  2 +-
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  3 ++-
- drivers/infiniband/hw/usnic/usnic_ib_verbs.h    |  2 +-
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c |  5 +++--
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h |  2 +-
- drivers/infiniband/sw/rdmavt/pd.c               |  3 ++-
- drivers/infiniband/sw/rdmavt/pd.h               |  2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c           |  3 ++-
- drivers/infiniband/sw/siw/siw_verbs.c           |  3 ++-
- drivers/infiniband/sw/siw/siw_verbs.h           |  2 +-
- include/rdma/ib_verbs.h                         | 13 +++++--------
- 29 files changed, 56 insertions(+), 42 deletions(-)
+ drivers/infiniband/core/verbs.c                 | 8 ++++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c        | 3 ++-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h        | 2 +-
+ drivers/infiniband/hw/efa/efa.h                 | 2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c           | 5 +++--
+ drivers/infiniband/hw/hns/hns_roce_ah.c         | 5 -----
+ drivers/infiniband/hw/hns/hns_roce_device.h     | 5 ++++-
+ drivers/infiniband/hw/mlx4/ah.c                 | 5 -----
+ drivers/infiniband/hw/mlx4/mlx4_ib.h            | 5 ++++-
+ drivers/infiniband/hw/mlx5/ah.c                 | 5 -----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h            | 5 ++++-
+ drivers/infiniband/hw/mthca/mthca_provider.c    | 3 ++-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.c        | 3 ++-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.h        | 2 +-
+ drivers/infiniband/hw/qedr/verbs.c              | 3 ++-
+ drivers/infiniband/hw/qedr/verbs.h              | 2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c | 3 ++-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h | 2 +-
+ drivers/infiniband/sw/rdmavt/ah.c               | 3 ++-
+ drivers/infiniband/sw/rdmavt/ah.h               | 2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c           | 3 ++-
+ include/rdma/ib_verbs.h                         | 8 +++++---
+ 22 files changed, 46 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_std_types.c b/drivers/infiniband/core/uverbs_std_types.c
-index 08c39cfb1bd9..2932e832f48f 100644
---- a/drivers/infiniband/core/uverbs_std_types.c
-+++ b/drivers/infiniband/core/uverbs_std_types.c
-@@ -122,8 +122,7 @@ static int uverbs_free_pd(struct ib_uobject *uobject,
- 	if (ret)
- 		return ret;
- 
--	ib_dealloc_pd_user(pd, &attrs->driver_udata);
--	return 0;
-+	return ib_dealloc_pd_user(pd, &attrs->driver_udata);
- }
- 
- void ib_uverbs_free_event_queue(struct ib_uverbs_event_queue *event_queue)
 diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 3096e73797b7..a4a2cd378cb4 100644
+index a4a2cd378cb4..bd345e7ce913 100644
 --- a/drivers/infiniband/core/verbs.c
 +++ b/drivers/infiniband/core/verbs.c
-@@ -329,7 +329,7 @@ EXPORT_SYMBOL(__ib_alloc_pd);
-  * exist.  The caller is responsible to synchronously destroy them and
-  * guarantee no new allocations will happen.
-  */
--void ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata)
-+int ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata)
+@@ -968,18 +968,22 @@ int rdma_destroy_ah_user(struct ib_ah *ah, u32 flags, struct ib_udata *udata)
  {
- 	int ret;
+ 	const struct ib_gid_attr *sgid_attr = ah->sgid_attr;
+ 	struct ib_pd *pd;
++	int ret;
  
-@@ -343,9 +343,13 @@ void ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata)
- 	   requires the caller to guarantee we can't race here. */
- 	WARN_ON(atomic_read(&pd->usecnt));
+ 	might_sleep_if(flags & RDMA_DESTROY_AH_SLEEPABLE);
  
-+	ret = pd->device->ops.dealloc_pd(pd, udata);
+ 	pd = ah->pd;
+ 
+-	ah->device->ops.destroy_ah(ah, flags);
++	ret = ah->device->ops.destroy_ah(ah, flags);
 +	if (ret)
 +		return ret;
 +
- 	rdma_restrack_del(&pd->res);
--	pd->device->ops.dealloc_pd(pd, udata);
- 	kfree(pd);
+ 	atomic_dec(&pd->usecnt);
+ 	if (sgid_attr)
+ 		rdma_put_gid_attr(sgid_attr);
+ 
+ 	kfree(ah);
+-	return 0;
 +	return ret;
  }
- EXPORT_SYMBOL(ib_dealloc_pd_user);
+ EXPORT_SYMBOL(rdma_destroy_ah_user);
  
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 5ee272d27aaa..c53f6e329d84 100644
+index c53f6e329d84..67ebf1996700 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -532,7 +532,7 @@ static int bnxt_re_create_fence_mr(struct bnxt_re_pd *pd)
+@@ -602,13 +602,14 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
  }
  
- /* Protection Domains */
--void bnxt_re_dealloc_pd(struct ib_pd *ib_pd, struct ib_udata *udata)
-+int bnxt_re_dealloc_pd(struct ib_pd *ib_pd, struct ib_udata *udata)
+ /* Address Handles */
+-void bnxt_re_destroy_ah(struct ib_ah *ib_ah, u32 flags)
++int bnxt_re_destroy_ah(struct ib_ah *ib_ah, u32 flags)
  {
- 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
- 	struct bnxt_re_dev *rdev = pd->rdev;
-@@ -542,6 +542,7 @@ void bnxt_re_dealloc_pd(struct ib_pd *ib_pd, struct ib_udata *udata)
- 	if (pd->qplib_pd.id)
- 		bnxt_qplib_dealloc_pd(&rdev->qplib_res, &rdev->qplib_res.pd_tbl,
- 				      &pd->qplib_pd);
+ 	struct bnxt_re_ah *ah = container_of(ib_ah, struct bnxt_re_ah, ib_ah);
+ 	struct bnxt_re_dev *rdev = ah->rdev;
+ 
+ 	bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah,
+ 			      !(flags & RDMA_DESTROY_AH_SLEEPABLE));
 +	return 0;
  }
  
- int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ static u8 bnxt_re_stack_to_dev_nw_type(enum rdma_network_type ntype)
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 1daeb30e06fd..d9e2e406f66a 100644
+index d9e2e406f66a..b6b56a92b78e 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -163,7 +163,7 @@ int bnxt_re_query_gid(struct ib_device *ibdev, u8 port_num,
- enum rdma_link_layer bnxt_re_get_link_layer(struct ib_device *ibdev,
- 					    u8 port_num);
- int bnxt_re_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void bnxt_re_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
-+int bnxt_re_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- int bnxt_re_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+@@ -168,7 +168,7 @@ int bnxt_re_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
  		      struct ib_udata *udata);
  int bnxt_re_modify_ah(struct ib_ah *ah, struct rdma_ah_attr *ah_attr);
-diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
-index 6c579d2d3997..5f2b30624512 100644
---- a/drivers/infiniband/hw/cxgb4/provider.c
-+++ b/drivers/infiniband/hw/cxgb4/provider.c
-@@ -190,7 +190,7 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 	return ret;
- }
- 
--static void c4iw_deallocate_pd(struct ib_pd *pd, struct ib_udata *udata)
-+static int c4iw_deallocate_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	struct c4iw_dev *rhp;
- 	struct c4iw_pd *php;
-@@ -202,6 +202,7 @@ static void c4iw_deallocate_pd(struct ib_pd *pd, struct ib_udata *udata)
- 	mutex_lock(&rhp->rdev.stats.lock);
- 	rhp->rdev.stats.pd.cur--;
- 	mutex_unlock(&rhp->rdev.stats.lock);
-+	return 0;
- }
- 
- static int c4iw_allocate_pd(struct ib_pd *pd, struct ib_udata *udata)
+ int bnxt_re_query_ah(struct ib_ah *ah, struct rdma_ah_attr *ah_attr);
+-void bnxt_re_destroy_ah(struct ib_ah *ah, u32 flags);
++int bnxt_re_destroy_ah(struct ib_ah *ah, u32 flags);
+ int bnxt_re_create_srq(struct ib_srq *srq,
+ 		       struct ib_srq_init_attr *srq_init_attr,
+ 		       struct ib_udata *udata);
 diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 1889dd172a25..8547f9d543df 100644
+index 8547f9d543df..6b06ce87fbfc 100644
 --- a/drivers/infiniband/hw/efa/efa.h
 +++ b/drivers/infiniband/hw/efa/efa.h
-@@ -134,7 +134,7 @@ int efa_query_gid(struct ib_device *ibdev, u8 port, int index,
- int efa_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
- 		   u16 *pkey);
- int efa_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
--void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
-+int efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
- int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata);
- struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
- 			    struct ib_qp_init_attr *init_attr,
+@@ -156,7 +156,7 @@ void efa_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
+ int efa_create_ah(struct ib_ah *ibah,
+ 		  struct rdma_ah_init_attr *init_attr,
+ 		  struct ib_udata *udata);
+-void efa_destroy_ah(struct ib_ah *ibah, u32 flags);
++int efa_destroy_ah(struct ib_ah *ibah, u32 flags);
+ int efa_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 		  int qp_attr_mask, struct ib_udata *udata);
+ enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
 diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index de9a22f0fcc2..383ce126d82f 100644
+index 383ce126d82f..a03e3514bd8a 100644
 --- a/drivers/infiniband/hw/efa/efa_verbs.c
 +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -383,13 +383,14 @@ int efa_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+@@ -1873,7 +1873,7 @@ int efa_create_ah(struct ib_ah *ibah,
  	return err;
  }
  
--void efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+int efa_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+-void efa_destroy_ah(struct ib_ah *ibah, u32 flags)
++int efa_destroy_ah(struct ib_ah *ibah, u32 flags)
  {
- 	struct efa_dev *dev = to_edev(ibpd->device);
- 	struct efa_pd *pd = to_epd(ibpd);
+ 	struct efa_dev *dev = to_edev(ibah->pd->device);
+ 	struct efa_ah *ah = to_eah(ibah);
+@@ -1883,10 +1883,11 @@ void efa_destroy_ah(struct ib_ah *ibah, u32 flags)
+ 	if (!(flags & RDMA_DESTROY_AH_SLEEPABLE)) {
+ 		ibdev_dbg(&dev->ibdev,
+ 			  "Destroy address handle is not supported in atomic context\n");
+-		return;
++		return -EOPNOTSUPP;
+ 	}
  
- 	ibdev_dbg(&dev->ibdev, "Dealloc pd[%d]\n", pd->pdn);
- 	efa_pd_dealloc(dev, pd->pdn);
+ 	efa_ah_destroy(dev, ah);
 +	return 0;
  }
  
- static int efa_destroy_qp_handle(struct efa_dev *dev, u32 qp_handle)
+ struct rdma_hw_stats *efa_alloc_hw_stats(struct ib_device *ibdev, u8 port_num)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
+index 54cadbc0724e..75b06db60f7c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_ah.c
++++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
+@@ -116,8 +116,3 @@ int hns_roce_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr)
+ 
+ 	return 0;
+ }
+-
+-void hns_roce_destroy_ah(struct ib_ah *ah, u32 flags)
+-{
+-	return;
+-}
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 4f1dd916d05f..9688240d7fce 100644
+index 9688240d7fce..da3e8ed916f8 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -1182,7 +1182,7 @@ int hns_roce_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
- void hns_roce_destroy_ah(struct ib_ah *ah, u32 flags);
+@@ -1179,7 +1179,10 @@ void hns_roce_bitmap_free_range(struct hns_roce_bitmap *bitmap,
+ int hns_roce_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+ 		       struct ib_udata *udata);
+ int hns_roce_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
+-void hns_roce_destroy_ah(struct ib_ah *ah, u32 flags);
++static inline int hns_roce_destroy_ah(struct ib_ah *ah, u32 flags)
++{
++	return 0;
++}
  
  int hns_roce_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
-+int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+ int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/mlx4/ah.c b/drivers/infiniband/hw/mlx4/ah.c
+index 5f8f8d5c0ce0..7321d6ab5fe1 100644
+--- a/drivers/infiniband/hw/mlx4/ah.c
++++ b/drivers/infiniband/hw/mlx4/ah.c
+@@ -232,8 +232,3 @@ int mlx4_ib_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr)
  
- struct ib_mr *hns_roce_get_dma_mr(struct ib_pd *pd, int acc);
- struct ib_mr *hns_roce_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index b10c50b8736e..98f69496adb4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -82,9 +82,10 @@ int hns_roce_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
  	return 0;
  }
- 
--void hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	hns_roce_pd_free(to_hr_dev(pd->device), to_hr_pd(pd)->pdn);
+-
+-void mlx4_ib_destroy_ah(struct ib_ah *ah, u32 flags)
+-{
+-	return;
+-}
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index bcac8fc50317..6d51653edaf8 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -753,7 +753,10 @@ int mlx4_ib_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+ int mlx4_ib_create_ah_slave(struct ib_ah *ah, struct rdma_ah_attr *ah_attr,
+ 			    int slave_sgid_index, u8 *s_mac, u16 vlan_tag);
+ int mlx4_ib_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
+-void mlx4_ib_destroy_ah(struct ib_ah *ah, u32 flags);
++static inline int mlx4_ib_destroy_ah(struct ib_ah *ah, u32 flags)
++{
 +	return 0;
- }
++}
  
- int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index b51339328a51..c0f796cb6e5e 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -328,12 +328,13 @@ static int i40iw_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-  * @ibpd: ptr of pd to be deallocated
-  * @udata: user data or null for kernel object
-  */
--static void i40iw_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+static int i40iw_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- {
- 	struct i40iw_pd *iwpd = to_iwpd(ibpd);
- 	struct i40iw_device *iwdev = to_iwdev(ibpd->device);
+ int mlx4_ib_create_srq(struct ib_srq *srq, struct ib_srq_init_attr *init_attr,
+ 		       struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/mlx5/ah.c b/drivers/infiniband/hw/mlx5/ah.c
+index 4a60e693a04d..505bc47fd575 100644
+--- a/drivers/infiniband/hw/mlx5/ah.c
++++ b/drivers/infiniband/hw/mlx5/ah.c
+@@ -147,8 +147,3 @@ int mlx5_ib_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr)
  
- 	i40iw_rem_pdusecount(iwpd, iwdev);
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 2543062c0cb0..1be0108db992 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -1214,9 +1214,10 @@ static int mlx4_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
  	return 0;
  }
- 
--static void mlx4_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+static int mlx4_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	mlx4_pd_free(to_mdev(pd->device)->dev, to_mpd(pd)->pdn);
+-
+-void mlx5_ib_destroy_ah(struct ib_ah *ah, u32 flags)
+-{
+-	return;
+-}
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 5287fc868662..1e5f77d3e86b 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1119,7 +1119,10 @@ void mlx5_ib_free_srq_wqe(struct mlx5_ib_srq *srq, int wqe_index);
+ int mlx5_ib_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+ 		      struct ib_udata *udata);
+ int mlx5_ib_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
+-void mlx5_ib_destroy_ah(struct ib_ah *ah, u32 flags);
++static inline int mlx5_ib_destroy_ah(struct ib_ah *ah, u32 flags)
++{
 +	return 0;
- }
- 
- static int mlx4_ib_alloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
-diff --git a/drivers/infiniband/hw/mlx5/cmd.c b/drivers/infiniband/hw/mlx5/cmd.c
-index ebb2f108b64f..f5aac53cebf0 100644
---- a/drivers/infiniband/hw/mlx5/cmd.c
-+++ b/drivers/infiniband/hw/mlx5/cmd.c
-@@ -209,14 +209,14 @@ void mlx5_cmd_dealloc_transport_domain(struct mlx5_core_dev *dev, u32 tdn,
- 	mlx5_cmd_exec_in(dev, dealloc_transport_domain, in);
- }
- 
--void mlx5_cmd_dealloc_pd(struct mlx5_core_dev *dev, u32 pdn, u16 uid)
-+int mlx5_cmd_dealloc_pd(struct mlx5_core_dev *dev, u32 pdn, u16 uid)
- {
- 	u32 in[MLX5_ST_SZ_DW(dealloc_pd_in)] = {};
- 
- 	MLX5_SET(dealloc_pd_in, in, opcode, MLX5_CMD_OP_DEALLOC_PD);
- 	MLX5_SET(dealloc_pd_in, in, pd, pdn);
- 	MLX5_SET(dealloc_pd_in, in, uid, uid);
--	mlx5_cmd_exec_in(dev, dealloc_pd, in);
-+	return mlx5_cmd_exec_in(dev, dealloc_pd, in);
- }
- 
- int mlx5_cmd_attach_mcg(struct mlx5_core_dev *dev, union ib_gid *mgid,
-diff --git a/drivers/infiniband/hw/mlx5/cmd.h b/drivers/infiniband/hw/mlx5/cmd.h
-index 1d192a8ca87d..ca3afa7d73a3 100644
---- a/drivers/infiniband/hw/mlx5/cmd.h
-+++ b/drivers/infiniband/hw/mlx5/cmd.h
-@@ -44,7 +44,7 @@ int mlx5_cmd_query_cong_params(struct mlx5_core_dev *dev, int cong_point,
- int mlx5_cmd_alloc_memic(struct mlx5_dm *dm, phys_addr_t *addr,
- 			 u64 length, u32 alignment);
- void mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length);
--void mlx5_cmd_dealloc_pd(struct mlx5_core_dev *dev, u32 pdn, u16 uid);
-+int mlx5_cmd_dealloc_pd(struct mlx5_core_dev *dev, u32 pdn, u16 uid);
- void mlx5_cmd_destroy_tir(struct mlx5_core_dev *dev, u32 tirn, u16 uid);
- void mlx5_cmd_destroy_tis(struct mlx5_core_dev *dev, u32 tisn, u16 uid);
- void mlx5_cmd_destroy_rqt(struct mlx5_core_dev *dev, u32 rqtn, u16 uid);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index d60d63221b14..bfa8b6b3c681 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2569,12 +2569,12 @@ static int mlx5_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	return 0;
- }
- 
--static void mlx5_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+static int mlx5_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	struct mlx5_ib_dev *mdev = to_mdev(pd->device);
- 	struct mlx5_ib_pd *mpd = to_mpd(pd);
- 
--	mlx5_cmd_dealloc_pd(mdev->mdev, mpd->pdn, mpd->uid);
-+	return mlx5_cmd_dealloc_pd(mdev->mdev, mpd->pdn, mpd->uid);
- }
- 
- static int mlx5_ib_mcg_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
++}
+ int mlx5_ib_create_srq(struct ib_srq *srq, struct ib_srq_init_attr *init_attr,
+ 		       struct ib_udata *udata);
+ int mlx5_ib_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
 diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-index 9fa2f9164a47..d3ed7c19b2ef 100644
+index d3ed7c19b2ef..12b7c5349004 100644
 --- a/drivers/infiniband/hw/mthca/mthca_provider.c
 +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-@@ -373,9 +373,10 @@ static int mthca_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	return 0;
+@@ -390,9 +390,10 @@ static int mthca_ah_create(struct ib_ah *ibah,
+ 			       init_attr->ah_attr, ah);
  }
  
--static void mthca_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+static int mthca_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+-static void mthca_ah_destroy(struct ib_ah *ah, u32 flags)
++static int mthca_ah_destroy(struct ib_ah *ah, u32 flags)
  {
- 	mthca_pd_free(to_mdev(pd->device), to_mpd(pd));
+ 	mthca_destroy_ah(to_mdev(ah->device), to_mah(ah));
 +	return 0;
  }
  
- static int mthca_ah_create(struct ib_ah *ibah,
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-index c1751c9a0f62..a9d2f7a40b51 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
-@@ -664,7 +664,7 @@ int ocrdma_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ static int mthca_create_srq(struct ib_srq *ibsrq,
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_ah.c b/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
+index 6eea02b18968..699a8b719ed6 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_ah.c
+@@ -215,12 +215,13 @@ int ocrdma_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
  	return status;
  }
  
--void ocrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+int ocrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+-void ocrdma_destroy_ah(struct ib_ah *ibah, u32 flags)
++int ocrdma_destroy_ah(struct ib_ah *ibah, u32 flags)
  {
- 	struct ocrdma_pd *pd = get_ocrdma_pd(ibpd);
- 	struct ocrdma_dev *dev = get_ocrdma_dev(ibpd->device);
-@@ -682,10 +682,11 @@ void ocrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	struct ocrdma_ah *ah = get_ocrdma_ah(ibah);
+ 	struct ocrdma_dev *dev = get_ocrdma_dev(ibah->device);
  
- 		if (is_ucontext_pd(uctx, pd)) {
- 			ocrdma_release_ucontext_pd(uctx);
--			return;
-+			return 0;
- 		}
- 	}
- 	_ocrdma_dealloc_pd(dev, pd);
+ 	ocrdma_free_av(dev, ah);
 +	return 0;
  }
  
- static int ocrdma_alloc_lkey(struct ocrdma_dev *dev, struct ocrdma_mr *mr,
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
-index df8e3b923a44..4c85be43507c 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
-@@ -67,7 +67,7 @@ void ocrdma_dealloc_ucontext(struct ib_ucontext *uctx);
- int ocrdma_mmap(struct ib_ucontext *, struct vm_area_struct *vma);
+ int ocrdma_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_ah.h b/drivers/infiniband/hw/ocrdma/ocrdma_ah.h
+index 8b73b3489f3a..35cf2e2ff391 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_ah.h
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_ah.h
+@@ -53,7 +53,7 @@ enum {
  
- int ocrdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void ocrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
-+int ocrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- 
- int ocrdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ int ocrdma_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
  		     struct ib_udata *udata);
+-void ocrdma_destroy_ah(struct ib_ah *ah, u32 flags);
++int ocrdma_destroy_ah(struct ib_ah *ah, u32 flags);
+ int ocrdma_query_ah(struct ib_ah *ah, struct rdma_ah_attr *ah_attr);
+ 
+ int ocrdma_process_mad(struct ib_device *dev, int process_mad_flags,
 diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 0bdfa300865d..c81d1e547295 100644
+index c81d1e547295..f85e916bec7d 100644
 --- a/drivers/infiniband/hw/qedr/verbs.c
 +++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -471,13 +471,14 @@ int qedr_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+@@ -2767,11 +2767,12 @@ int qedr_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
  	return 0;
  }
  
--void qedr_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+int qedr_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+-void qedr_destroy_ah(struct ib_ah *ibah, u32 flags)
++int qedr_destroy_ah(struct ib_ah *ibah, u32 flags)
  {
- 	struct qedr_dev *dev = get_qedr_dev(ibpd->device);
- 	struct qedr_pd *pd = get_qedr_pd(ibpd);
+ 	struct qedr_ah *ah = get_qedr_ah(ibah);
  
- 	DP_DEBUG(dev, QEDR_MSG_INIT, "Deallocating PD %d\n", pd->pd_id);
- 	dev->ops->rdma_dealloc_pd(dev->rdma_ctx, pd->pd_id);
+ 	rdma_destroy_ah_attr(&ah->attr);
 +	return 0;
  }
  
- static void qedr_free_pbl(struct qedr_dev *dev,
+ static void free_mr_info(struct qedr_dev *dev, struct mr_info *info)
 diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
-index 39dd6286ba39..1b450919ba9c 100644
+index 1b450919ba9c..1b4ed8d37f5e 100644
 --- a/drivers/infiniband/hw/qedr/verbs.h
 +++ b/drivers/infiniband/hw/qedr/verbs.h
-@@ -47,7 +47,7 @@ void qedr_dealloc_ucontext(struct ib_ucontext *uctx);
- int qedr_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma);
- void qedr_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
- int qedr_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
-+int qedr_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- 
- int qedr_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+@@ -72,7 +72,7 @@ int qedr_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		       const struct ib_recv_wr **bad_recv_wr);
+ int qedr_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
  		   struct ib_udata *udata);
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-index 02a49f661c8d..8af3212101be 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-@@ -449,9 +449,10 @@ int usnic_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	return 0;
- }
+-void qedr_destroy_ah(struct ib_ah *ibah, u32 flags);
++int qedr_destroy_ah(struct ib_ah *ibah, u32 flags);
  
--void usnic_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+int usnic_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
- 	usnic_uiom_dealloc_pd((to_upd(pd))->umem_pd);
-+	return 0;
- }
- 
- struct ib_qp *usnic_ib_create_qp(struct ib_pd *pd,
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
-index 9195f2b901ce..f8911c0330e2 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
-@@ -49,7 +49,7 @@ int usnic_ib_query_qp(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
- int usnic_ib_query_gid(struct ib_device *ibdev, u8 port, int index,
- 				union ib_gid *gid);
- int usnic_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
--void usnic_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
-+int usnic_ib_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
- struct ib_qp *usnic_ib_create_qp(struct ib_pd *pd,
- 					struct ib_qp_init_attr *init_attr,
- 					struct ib_udata *udata);
+ int qedr_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+ struct ib_mr *qedr_get_dma_mr(struct ib_pd *, int acc);
 diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
-index 65ac3693ad12..678c94531e68 100644
+index 678c94531e68..fc412cbfd042 100644
 --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
 +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
-@@ -479,9 +479,9 @@ int pvrdma_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-  * @pd: the protection domain to be released
-  * @udata: user data or null for kernel object
+@@ -548,9 +548,10 @@ int pvrdma_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+  * @flags: destroy address handle flags (see enum rdma_destroy_ah_flags)
   *
-- * @return: 0 on success, otherwise errno.
-+ * @return: Always 0
   */
--void pvrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+int pvrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+-void pvrdma_destroy_ah(struct ib_ah *ah, u32 flags)
++int pvrdma_destroy_ah(struct ib_ah *ah, u32 flags)
  {
- 	struct pvrdma_dev *dev = to_vdev(pd->device);
- 	union pvrdma_cmd_req req = {};
-@@ -498,6 +498,7 @@ void pvrdma_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- 			 ret);
+ 	struct pvrdma_dev *dev = to_vdev(ah->device);
  
- 	atomic_dec(&dev->num_pds);
+ 	atomic_dec(&dev->num_ahs);
++	return 0;
+ }
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index 7bf33a654275..58b41a3e8b7e 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -416,7 +416,7 @@ int pvrdma_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int pvrdma_req_notify_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
+ int pvrdma_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+ 		     struct ib_udata *udata);
+-void pvrdma_destroy_ah(struct ib_ah *ah, u32 flags);
++int pvrdma_destroy_ah(struct ib_ah *ah, u32 flags);
+ 
+ int pvrdma_create_srq(struct ib_srq *srq, struct ib_srq_init_attr *init_attr,
+ 		      struct ib_udata *udata);
+diff --git a/drivers/infiniband/sw/rdmavt/ah.c b/drivers/infiniband/sw/rdmavt/ah.c
+index 75a04b1497c4..b938c4ffa99a 100644
+--- a/drivers/infiniband/sw/rdmavt/ah.c
++++ b/drivers/infiniband/sw/rdmavt/ah.c
+@@ -132,7 +132,7 @@ int rvt_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+  *
+  * Return: 0 on success
+  */
+-void rvt_destroy_ah(struct ib_ah *ibah, u32 destroy_flags)
++int rvt_destroy_ah(struct ib_ah *ibah, u32 destroy_flags)
+ {
+ 	struct rvt_dev_info *dev = ib_to_rvt(ibah->device);
+ 	struct rvt_ah *ah = ibah_to_rvtah(ibah);
+@@ -143,6 +143,7 @@ void rvt_destroy_ah(struct ib_ah *ibah, u32 destroy_flags)
+ 	spin_unlock_irqrestore(&dev->n_ahs_lock, flags);
+ 
+ 	rdma_destroy_ah_attr(&ah->attr);
 +	return 0;
  }
  
  /**
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
-index 699b20849a7e..7bf33a654275 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
-@@ -399,7 +399,7 @@ int pvrdma_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
- int pvrdma_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata);
- void pvrdma_dealloc_ucontext(struct ib_ucontext *context);
- int pvrdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void pvrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
-+int pvrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
- struct ib_mr *pvrdma_get_dma_mr(struct ib_pd *pd, int acc);
- struct ib_mr *pvrdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 				 u64 virt_addr, int access_flags,
-diff --git a/drivers/infiniband/sw/rdmavt/pd.c b/drivers/infiniband/sw/rdmavt/pd.c
-index a403718f0b5e..01b7abf91520 100644
---- a/drivers/infiniband/sw/rdmavt/pd.c
-+++ b/drivers/infiniband/sw/rdmavt/pd.c
-@@ -95,11 +95,12 @@ int rvt_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-  *
-  * Return: always 0
-  */
--void rvt_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+int rvt_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- {
- 	struct rvt_dev_info *dev = ib_to_rvt(ibpd->device);
+diff --git a/drivers/infiniband/sw/rdmavt/ah.h b/drivers/infiniband/sw/rdmavt/ah.h
+index 40b7123fec76..5a85edd06491 100644
+--- a/drivers/infiniband/sw/rdmavt/ah.h
++++ b/drivers/infiniband/sw/rdmavt/ah.h
+@@ -52,7 +52,7 @@
  
- 	spin_lock(&dev->n_pds_lock);
- 	dev->n_pds_allocated--;
- 	spin_unlock(&dev->n_pds_lock);
-+	return 0;
- }
-diff --git a/drivers/infiniband/sw/rdmavt/pd.h b/drivers/infiniband/sw/rdmavt/pd.h
-index 71ba76d72b1d..06a6a38beedc 100644
---- a/drivers/infiniband/sw/rdmavt/pd.h
-+++ b/drivers/infiniband/sw/rdmavt/pd.h
-@@ -51,6 +51,6 @@
- #include <rdma/rdma_vt.h>
+ int rvt_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+ 		  struct ib_udata *udata);
+-void rvt_destroy_ah(struct ib_ah *ibah, u32 destroy_flags);
++int rvt_destroy_ah(struct ib_ah *ibah, u32 destroy_flags);
+ int rvt_modify_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
+ int rvt_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
  
- int rvt_alloc_pd(struct ib_pd *pd, struct ib_udata *udata);
--void rvt_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
-+int rvt_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
- 
- #endif          /* DEF_RDMAVTPD_H */
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 36edc294e105..7fe7316bd287 100644
+index 7fe7316bd287..c346b0295a99 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -148,11 +148,12 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	return rxe_add_to_pool(&rxe->pd_pool, &pd->pelem);
- }
- 
--static void rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- {
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 
- 	rxe_drop_ref(pd);
-+	return 0;
- }
- 
- static int rxe_create_ah(struct ib_ah *ibah,
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index adafa1b8bebe..2d2b6df0b027 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -234,12 +234,13 @@ int siw_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+@@ -201,11 +201,12 @@ static int rxe_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
  	return 0;
  }
  
--void siw_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
-+int siw_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+-static void rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
++static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
  {
- 	struct siw_device *sdev = to_siw_dev(pd->device);
+ 	struct rxe_ah *ah = to_rah(ibah);
  
- 	siw_dbg_pd(pd, "free PD\n");
- 	atomic_dec(&sdev->num_pd);
+ 	rxe_drop_ref(ah);
 +	return 0;
  }
  
- void siw_qp_get_ref(struct ib_qp *base_qp)
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
-index d9572275a6b6..3dbab78579cb 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.h
-+++ b/drivers/infiniband/sw/siw/siw_verbs.h
-@@ -49,7 +49,7 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
- int siw_query_gid(struct ib_device *base_dev, u8 port, int idx,
- 		  union ib_gid *gid);
- int siw_alloc_pd(struct ib_pd *base_pd, struct ib_udata *udata);
--void siw_dealloc_pd(struct ib_pd *base_pd, struct ib_udata *udata);
-+int siw_dealloc_pd(struct ib_pd *base_pd, struct ib_udata *udata);
- struct ib_qp *siw_create_qp(struct ib_pd *base_pd,
- 			    struct ib_qp_init_attr *attr,
- 			    struct ib_udata *udata);
+ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 4cb29e4c9a76..9ff4c28009c6 100644
+index 9ff4c28009c6..b9d1765c6e42 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -2404,7 +2404,7 @@ struct ib_device_ops {
- 	void (*mmap_free)(struct rdma_user_mmap_entry *entry);
- 	void (*disassociate_ucontext)(struct ib_ucontext *ibcontext);
- 	int (*alloc_pd)(struct ib_pd *pd, struct ib_udata *udata);
--	void (*dealloc_pd)(struct ib_pd *pd, struct ib_udata *udata);
-+	int (*dealloc_pd)(struct ib_pd *pd, struct ib_udata *udata);
- 	int (*create_ah)(struct ib_ah *ah, struct rdma_ah_init_attr *attr,
+@@ -2409,7 +2409,7 @@ struct ib_device_ops {
  			 struct ib_udata *udata);
  	int (*modify_ah)(struct ib_ah *ah, struct rdma_ah_attr *ah_attr);
-@@ -3462,12 +3462,7 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
- #define ib_alloc_pd(device, flags) \
- 	__ib_alloc_pd((device), (flags), KBUILD_MODNAME)
- 
--/**
-- * ib_dealloc_pd_user - Deallocate kernel/user PD
-- * @pd: The protection domain
-- * @udata: Valid user data or NULL for kernel objects
-- */
--void ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata);
-+int ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata);
- 
- /**
-  * ib_dealloc_pd - Deallocate kernel PD
-@@ -3477,7 +3472,9 @@ void ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata);
+ 	int (*query_ah)(struct ib_ah *ah, struct rdma_ah_attr *ah_attr);
+-	void (*destroy_ah)(struct ib_ah *ah, u32 flags);
++	int (*destroy_ah)(struct ib_ah *ah, u32 flags);
+ 	int (*create_srq)(struct ib_srq *srq,
+ 			  struct ib_srq_init_attr *srq_init_attr,
+ 			  struct ib_udata *udata);
+@@ -3602,9 +3602,11 @@ int rdma_destroy_ah_user(struct ib_ah *ah, u32 flags, struct ib_udata *udata);
+  *
+  * NOTE: for user ah use rdma_destroy_ah_user with valid udata!
   */
- static inline void ib_dealloc_pd(struct ib_pd *pd)
+-static inline int rdma_destroy_ah(struct ib_ah *ah, u32 flags)
++static inline void rdma_destroy_ah(struct ib_ah *ah, u32 flags)
  {
--	ib_dealloc_pd_user(pd, NULL);
-+	int ret = ib_dealloc_pd_user(pd, NULL);
+-	return rdma_destroy_ah_user(ah, flags, NULL);
++	int ret = rdma_destroy_ah_user(ah, flags, NULL);
 +
-+	WARN_ONCE(ret, "Destroy of kernel PD shouldn't fail");
++	WARN_ONCE(ret, "Destroy of kernel AH shouldn't fail");
  }
  
- enum rdma_create_ah_flags {
+ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
 -- 
 2.26.2
 
