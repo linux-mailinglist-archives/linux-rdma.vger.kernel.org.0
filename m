@@ -2,134 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692FA25F5FC
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 11:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF3925F60A
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 11:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgIGJEn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Sep 2020 05:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58564 "EHLO mail.kernel.org"
+        id S1728067AbgIGJKM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 05:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728172AbgIGJEn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:04:43 -0400
+        id S1727953AbgIGJKM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Sep 2020 05:10:12 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA8A62145D;
-        Mon,  7 Sep 2020 09:04:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDDD62145D;
+        Mon,  7 Sep 2020 09:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599469482;
-        bh=MR2F6/cewDzCOWF6gB5qQDGXNg0e+p8lzS9wnzRXBlU=;
+        s=default; t=1599469811;
+        bh=y8Yf6R2NSNJScN/RAMacxJxngNkANZjz4XWYW3mG3OU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xos/0HknXkNDu0bKPL/e0M8uiPNPeLwxY7em+0GRxF5IxsNJ53NKJkm6w+CZFLsAz
-         kPMk+GjnONUbbu3KCwb37dDRyGNRdkTH2BrgMXvoUUQUbs9QXQhDE+X0ueL6FVa0xY
-         bnpFkw7j/QQ1/WRMTn9MPvfOkxhLHO1XKw264fpw=
-Date:   Mon, 7 Sep 2020 12:04:38 +0300
+        b=m1Nv9saLpS0RyBSXVQjRz16ETNBw/Rc0WeckzloMvodYmh01CSV/9EFEjmhcybBZ3
+         49OZVpICKyP8qiV9MV3d8u7zG5ScRsicCl42kHb4z0ESL6e9wT6vpzBL2z/39WHbQH
+         qOAGWcLsyH2rXXPGP+HVk0a+a7gPucaMjI4gyjYE=
+Date:   Mon, 7 Sep 2020 12:10:07 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: Re: Finding the namespace of a struct ib_device
-Message-ID: <20200907090438.GM55261@unreal>
-References: <5fa7f367-49df-fb1d-22d0-9f1dd1b76915@oracle.com>
- <20200903173910.GO24045@ziepe.ca>
- <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
- <20200904113244.GP24045@ziepe.ca>
- <be812cb4-4b80-5ee5-4ed8-9d44f0a06edd@oracle.com>
- <20200906074442.GE55261@unreal>
- <9f8984ec-31e4-d71e-d55e-5cf115066e96@oracle.com>
- <20200907071819.GL55261@unreal>
- <69fdae5f-5824-9151-0a00-a7453382eee0@oracle.com>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, kernel-team@fb.com, tariqt@mellanox.com,
+        yishaih@mellanox.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] mlx4: make sure to always set the port type
+Message-ID: <20200907091007.GN55261@unreal>
+References: <20200904200621.2407839-1-kuba@kernel.org>
+ <20200906072759.GC55261@unreal>
+ <20200906093305.5c901cc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200907062135.GJ2997@nanopsycho.orion>
+ <20200907064830.GK55261@unreal>
+ <20200907071939.GK2997@nanopsycho.orion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <69fdae5f-5824-9151-0a00-a7453382eee0@oracle.com>
+In-Reply-To: <20200907071939.GK2997@nanopsycho.orion>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 04:24:26PM +0800, Ka-Cheong Poon wrote:
-> On 9/7/20 3:18 PM, Leon Romanovsky wrote:
-> > On Mon, Sep 07, 2020 at 11:33:38AM +0800, Ka-Cheong Poon wrote:
-> > > On 9/6/20 3:44 PM, Leon Romanovsky wrote:
-> > > > On Fri, Sep 04, 2020 at 10:02:10PM +0800, Ka-Cheong Poon wrote:
-> > > > > On 9/4/20 7:32 PM, Jason Gunthorpe wrote:
-> > > > > > On Fri, Sep 04, 2020 at 12:01:12PM +0800, Ka-Cheong Poon wrote:
-> > > > > > > On 9/4/20 1:39 AM, Jason Gunthorpe wrote:
-> > > > > > > > On Thu, Sep 03, 2020 at 10:02:01PM +0800, Ka-Cheong Poon wrote:
-> > > > > > > > > When a struct ib_client's add() function is called. is there a
-> > > > > > > > > supported method to find out the namespace of the passed in
-> > > > > > > > > struct ib_device?  There is rdma_dev_access_netns() but it does
-> > > > > > > > > not return the namespace.  It seems that it needs to have
-> > > > > > > > > something like the following.
-> > > > > > > > >
-> > > > > > > > > struct net *rdma_dev_to_netns(struct ib_device *ib_dev)
-> > > > > > > > > {
-> > > > > > > > >            return read_pnet(&ib_dev->coredev.rdma_net);
-> > > > > > > > > }
-> > > > > > > > >
-> > > > > > > > > Comments?
-> > > > > > > >
-> > > > > > > > I suppose, but why would something need this?
-> > > > > > >
-> > > > > > >
-> > > > > > > If the client needs to allocate stuff for the namespace
-> > > > > > > related to that device, it needs to know the namespace of
-> > > > > > > that device.  Then when that namespace is deleted, the
-> > > > > > > client can clean up those related stuff as the client's
-> > > > > > > namespace exit function can be called before the remove()
-> > > > > > > function is triggered in rdma_dev_exit_net().  Without
-> > > > > > > knowing the namespace of that device, coordination cannot
-> > > > > > > be done.
-> > > > > >
-> > > > > > Since each device can only be in one namespace, why would a client
-> > > > > > ever need to allocate at a level more granular than a device?
-> > > > >
-> > > > >
-> > > > > A client wants to have namespace specific info.  If the
-> > > > > device belongs to a namespace, it wants to associate those
-> > > > > info with that device.  When a namespace is deleted, the
-> > > > > info will need to be deleted.  You can consider the info
-> > > > > as associated with both a namespace and a device.
-> > > >
-> > > > Can you be more specific about which info you are talking about?
-> > >
-> > >
-> > > Actually, a lot of info can be both namespace and device specific.
-> > > For example, a client wants to have a different PD allocation policy
-> > > with a device when used in different namespaces.
-> > >
-> > >
-> > > > And what is the client that is net namespace-aware from one side,
-> > > > but from another separate data between them "manually"?
-> > >
-> > >
-> > > Could you please elaborate what is meant by "namespace aware from
-> > > one side but from another separate data between them manually"?
-> > > I understand what namespace aware means.  But it is not clear what
-> > > is meant by "separating data manually".  Do you mean having different
-> > > behavior in different namespaces?  If this is the case, there is
-> > > nothing special here.  An admin may choose to have different behavior
-> > > in different namespaces.  There is nothing manual going on in the
-> > > client code.
+On Mon, Sep 07, 2020 at 09:19:39AM +0200, Jiri Pirko wrote:
+> Mon, Sep 07, 2020 at 08:48:30AM CEST, leon@kernel.org wrote:
+> >On Mon, Sep 07, 2020 at 08:21:35AM +0200, Jiri Pirko wrote:
+> >> Sun, Sep 06, 2020 at 06:33:05PM CEST, kuba@kernel.org wrote:
+> >> >On Sun, 6 Sep 2020 10:27:59 +0300 Leon Romanovsky wrote:
+> >> >> On Fri, Sep 04, 2020 at 01:06:21PM -0700, Jakub Kicinski wrote:
+> >> >> > Even tho mlx4_core registers the devlink ports, it's mlx4_en
+> >> >> > and mlx4_ib which set their type. In situations where one of
+> >> >> > the two is not built yet the machine has ports of given type
+> >> >> > we see the devlink warning from devlink_port_type_warn() trigger.
+> >> >> >
+> >> >> > Having ports of a type not supported by the kernel may seem
+> >> >> > surprising, but it does occur in practice - when the unsupported
+> >> >> > port is not plugged in to a switch anyway users are more than happy
+> >> >> > not to see it (and potentially allocate any resources to it).
+> >> >> >
+> >> >> > Set the type in mlx4_core if type-specific driver is not built.
+> >> >> >
+> >> >> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> >> >> > ---
+> >> >> >  drivers/net/ethernet/mellanox/mlx4/main.c | 11 +++++++++++
+> >> >> >  1 file changed, 11 insertions(+)
+> >> >> >
+> >> >> > diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+> >> >> > index 258c7a96f269..70cf24ba71e4 100644
+> >> >> > --- a/drivers/net/ethernet/mellanox/mlx4/main.c
+> >> >> > +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+> >> >> > @@ -3031,6 +3031,17 @@ static int mlx4_init_port_info(struct mlx4_dev *dev, int port)
+> >> >> >  	if (err)
+> >> >> >  		return err;
+> >> >> >
+> >> >> > +	/* Ethernet and IB drivers will normally set the port type,
+> >> >> > +	 * but if they are not built set the type now to prevent
+> >> >> > +	 * devlink_port_type_warn() from firing.
+> >> >> > +	 */
+> >> >> > +	if (!IS_ENABLED(CONFIG_MLX4_EN) &&
+> >> >> > +	    dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
+> >> >> > +		devlink_port_type_eth_set(&info->devlink_port, NULL);
+> >> >>                                                                ^^^^^
+> >> >>
+> >> >> Won't it crash in devlink_port_type_eth_set()?
+> >> >> The first line there dereferences pointer.
+> >> >>   7612         const struct net_device_ops *ops = netdev->netdev_ops;
+> >> >
+> >> >Damn, good catch. It's not supposed to be required. I'll patch devlink.
+> >>
+> >> When you set the port type to ethernet, you should have the net_device
+> >> instance. Why wouldn't you?
 > >
-> > We are talking about net-namespaces, and as we wrote above, the ib_device
-> > that supports such namespace can exist only in a single one
+> >It is how mlx4 is implemented, see mlx4_dev_cap() function:
+> >588         for (i = 1; i <= dev->caps.num_ports; ++i) {
+> >589                 dev->caps.port_type[i] = MLX4_PORT_TYPE_NONE;
+> >....
 > >
-> > The client that implemented such support can check its namespace while
-> > "client->add" is called. It should be equal to be seen by ib_device.
-> >
-> > See:
-> >   rdma_dev_change_netns ->
-> >   	enable_device_and_get ->
-> > 		add_client_context ->
-> > 			client->add(device)
+> >The port type is being set to IB or ETH without relation to net_device,
+> >fixing it will require very major code rewrite for the stable driver
+> >that in maintenance mode.
 >
+> Because the eth driver is not loaded, I see. The purpose of the
+> WARN in devlink_port_type_eth_set is to prevent drivers from registering
+> particular port without netdev/ibdev. That is what was repeatedly
+> happening in the past as the driver developers didn't know they need to
+> do it or were just lazy to do so.
 >
-> This is the original question.  How does the client's add() function
-> know the namespace of device?  What is your suggestion in finding
-> the net namespace of device at add() time?
+> I wonder if there is any possibility to do both...
 
-As I wrote above, "It should be equal to be seen by ib_device.", check net
-namespace of your client.
+It is hard to say, hope that Jakub will take a look.
 
 Thanks
+
+>
+> >
+> >>
+> >>
+> >> >
+> >> >> And can we call to devlink_port_type_*_set() without IS_ENABLED() check?
+> >> >
+> >> >It'll generate two netlink notifications - not the end of the world but
+> >> >also doesn't feel super clean.
+> >
+> >I would say that such a situation is corner case during the driver init and
+> >not an end of the world to see double netlink message.
+> >
+> >Thanks
