@@ -2,148 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6D525F3C4
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 09:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9934D25F3F3
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 09:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIGHTn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Sep 2020 03:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgIGHTm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Sep 2020 03:19:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A630AC061574
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Sep 2020 00:19:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z4so14620320wrr.4
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Sep 2020 00:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iHAh9k3RLvG0ayLeESM8RhfwH1hL5cASS4K5eiNZw6s=;
-        b=TuhOSMmUrglov49OE2JxL7acpRJDCZpoo6uZrI/5y59J2xZpiUcY5tOpHfifRKbVl/
-         DrTefRkoawXlbfi3LuZEP6431LfLXLKYHO5ggaHNmsfYVLpBQ0lbegwoyTVdednBhzVi
-         m8kWVXJnILySGqlfZzdhliVMxPXcIIZ0rTE+IHRlguq/8OioYO6t40uNfLr9CO9XSX07
-         GlXePGJOlPDJyJ9xlZl131FV6raIF4wm35VOC1LGDDcApW0Ak+6xes8CnnTeJfyRtriw
-         34kNdu1AlfMYyCHu0zl5qu/gtH7U20FGX6YRkywMgqGIXr4YX8+XxCtGH1/7shZPTneN
-         pY0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iHAh9k3RLvG0ayLeESM8RhfwH1hL5cASS4K5eiNZw6s=;
-        b=CHEl14bYnwsCoS2MkIAAeSCEQbKvpUwzNw5TFvnlCVt/ybko7Kqd5oj8ny53eJqoCi
-         /GFuiv3ucyTDeUFs0ov0xo7oQwL9jtUMv1qiPW2gRA1E8ES5VNfyDftxqOJW+Sc7PO0D
-         pguQy+xNO0Y5JXc97XCHuOZ+0QB58b+LkayjND67LT4LotXau+97WLxbwVhrVftpyn6e
-         nr6rLsR79iN2A6b3kU9pRUAWppvqCXSJdKYt+f0ula71OVxUAP/cjpEXLQpBBsKbqUsC
-         trSRjtL8bsqobLyfwZyfqrl2sSvMCUsZWfHutFJQK1odpBqaj6F5RE5F1+bb0vOab/w5
-         5rdA==
-X-Gm-Message-State: AOAM533gXs29YGv4yNyD/58S7IiHtMcLFjC47vLYfPayYcvCIQlwfufd
-        lYPV8/xEcCrD9WTpO7/iROBa+Q==
-X-Google-Smtp-Source: ABdhPJyc4EXJ6y51A5Y0W0GQqdg91GUCHHC8SUh4xBc7IiZtePR/n0A/3WAS3DV1PQFpFwKeoRVDGg==
-X-Received: by 2002:a5d:6784:: with SMTP id v4mr14614478wru.215.1599463180209;
-        Mon, 07 Sep 2020 00:19:40 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id o4sm23240591wru.55.2020.09.07.00.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 00:19:39 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 09:19:39 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
+        id S1726771AbgIGH3P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 03:29:15 -0400
+Received: from verein.lst.de ([213.95.11.211]:47986 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726741AbgIGH3P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Sep 2020 03:29:15 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A348F68BEB; Mon,  7 Sep 2020 09:29:12 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 09:29:12 +0200
+From:   Christoph Hellwig <hch@lst.de>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, kernel-team@fb.com, tariqt@mellanox.com,
-        yishaih@mellanox.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next] mlx4: make sure to always set the port type
-Message-ID: <20200907071939.GK2997@nanopsycho.orion>
-References: <20200904200621.2407839-1-kuba@kernel.org>
- <20200906072759.GC55261@unreal>
- <20200906093305.5c901cc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200907062135.GJ2997@nanopsycho.orion>
- <20200907064830.GK55261@unreal>
+Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next 1/4] lib/scatterlist: Refactor
+ sg_alloc_table_from_pages
+Message-ID: <20200907072912.GA19875@lst.de>
+References: <20200903121853.1145976-1-leon@kernel.org> <20200903155434.1153934-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907064830.GK55261@unreal>
+In-Reply-To: <20200903155434.1153934-1-leon@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Sep 07, 2020 at 08:48:30AM CEST, leon@kernel.org wrote:
->On Mon, Sep 07, 2020 at 08:21:35AM +0200, Jiri Pirko wrote:
->> Sun, Sep 06, 2020 at 06:33:05PM CEST, kuba@kernel.org wrote:
->> >On Sun, 6 Sep 2020 10:27:59 +0300 Leon Romanovsky wrote:
->> >> On Fri, Sep 04, 2020 at 01:06:21PM -0700, Jakub Kicinski wrote:
->> >> > Even tho mlx4_core registers the devlink ports, it's mlx4_en
->> >> > and mlx4_ib which set their type. In situations where one of
->> >> > the two is not built yet the machine has ports of given type
->> >> > we see the devlink warning from devlink_port_type_warn() trigger.
->> >> >
->> >> > Having ports of a type not supported by the kernel may seem
->> >> > surprising, but it does occur in practice - when the unsupported
->> >> > port is not plugged in to a switch anyway users are more than happy
->> >> > not to see it (and potentially allocate any resources to it).
->> >> >
->> >> > Set the type in mlx4_core if type-specific driver is not built.
->> >> >
->> >> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->> >> > ---
->> >> >  drivers/net/ethernet/mellanox/mlx4/main.c | 11 +++++++++++
->> >> >  1 file changed, 11 insertions(+)
->> >> >
->> >> > diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
->> >> > index 258c7a96f269..70cf24ba71e4 100644
->> >> > --- a/drivers/net/ethernet/mellanox/mlx4/main.c
->> >> > +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
->> >> > @@ -3031,6 +3031,17 @@ static int mlx4_init_port_info(struct mlx4_dev *dev, int port)
->> >> >  	if (err)
->> >> >  		return err;
->> >> >
->> >> > +	/* Ethernet and IB drivers will normally set the port type,
->> >> > +	 * but if they are not built set the type now to prevent
->> >> > +	 * devlink_port_type_warn() from firing.
->> >> > +	 */
->> >> > +	if (!IS_ENABLED(CONFIG_MLX4_EN) &&
->> >> > +	    dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
->> >> > +		devlink_port_type_eth_set(&info->devlink_port, NULL);
->> >>                                                                ^^^^^
->> >>
->> >> Won't it crash in devlink_port_type_eth_set()?
->> >> The first line there dereferences pointer.
->> >>   7612         const struct net_device_ops *ops = netdev->netdev_ops;
->> >
->> >Damn, good catch. It's not supposed to be required. I'll patch devlink.
->>
->> When you set the port type to ethernet, you should have the net_device
->> instance. Why wouldn't you?
->
->It is how mlx4 is implemented, see mlx4_dev_cap() function:
->588         for (i = 1; i <= dev->caps.num_ports; ++i) {
->589                 dev->caps.port_type[i] = MLX4_PORT_TYPE_NONE;
->....
->
->The port type is being set to IB or ETH without relation to net_device,
->fixing it will require very major code rewrite for the stable driver
->that in maintenance mode.
+On Thu, Sep 03, 2020 at 06:54:34PM +0300, Leon Romanovsky wrote:
+> From: Maor Gottlieb <maorg@nvidia.com>
+> 
+> Currently, sg_alloc_table_from_pages doesn't support dynamic chaining of
+> SG entries. Therefore it requires from user to allocate all the pages in
+> advance and hold them in a large buffer. Such a buffer consumes a lot of
+> temporary memory in HPC systems which do a very large memory registration.
+> 
+> The next patches introduce API for dynamically allocation from pages and
+> it requires us to do the following:
+>  * Extract the code to alloc_from_pages_common.
+>  * Change the build of the table to iterate on the chunks and not on the
+>    SGEs. It will allow dynamic allocation of more SGEs.
+> 
+> Since sg_alloc_table_from_pages allocate exactly the number of chunks,
+> therefore chunks are equal to the number of SG entries.
 
-Because the eth driver is not loaded, I see. The purpose of the
-WARN in devlink_port_type_eth_set is to prevent drivers from registering
-particular port without netdev/ibdev. That is what was repeatedly
-happening in the past as the driver developers didn't know they need to
-do it or were just lazy to do so.
-
-I wonder if there is any possibility to do both...
-
->
->>
->>
->> >
->> >> And can we call to devlink_port_type_*_set() without IS_ENABLED() check?
->> >
->> >It'll generate two netlink notifications - not the end of the world but
->> >also doesn't feel super clean.
->
->I would say that such a situation is corner case during the driver init and
->not an end of the world to see double netlink message.
->
->Thanks
+Given how few users __sg_alloc_table_from_pages has, what about just
+switching it to your desired calling conventions without another helper?
