@@ -2,98 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D1625FA60
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 14:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E013725FA78
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 14:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgIGMVH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Sep 2020 08:21:07 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:22934 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729325AbgIGMUK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Sep 2020 08:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599481210; x=1631017210;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=pHwdjcgcZ0MRsPOcO51Tb5RuzBtDKjL215nBXuSVSGw=;
-  b=OjJXagDZ/x7kfBdrmmeK+6F2ViLtjci5TErFX42jtQlPxw+vXR/VWDtD
-   rcC1yR2fKexfW2kjtoh9eBFbWLwq3xliNrGaKs/KhszV4a6B6K0uU+E+j
-   /zcRmtKmb3IwbS+CtLHMcowEO/6VCZrCi3J9u1y+LwLacgKkoQ2AWOT2j
-   s=;
-X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
-   d="scan'208";a="52309656"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 07 Sep 2020 12:20:09 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 8ADA5A24DA;
-        Mon,  7 Sep 2020 12:20:06 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.34) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Sep 2020 12:20:00 +0000
-Subject: Re: [PATCH v2 07/17] RDMA/efa: Use ib_umem_num_dma_pages()
-To:     Jason Gunthorpe <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <7-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <d9cb7f02-86d0-25d6-1314-cc048fd1ebae@amazon.com>
-Date:   Mon, 7 Sep 2020 15:19:54 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1729332AbgIGMWi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 08:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729183AbgIGMWC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:22:02 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 252C42075A;
+        Mon,  7 Sep 2020 12:22:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599481321;
+        bh=iYUb+Zsd4GrCPNUdtbpxR+WKk7SvIZEULip+gpNTCbY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZevYvN0acMnmWlQZ8iq3aV/c4og9RjIhs2VxJ2tGhqdp69YRtbyWS/zrLcAIrkHN3
+         VkUy5pWJoWfDqxkxWAzVsp3FyfmXtJ6Rhk5nrmcOJBG47xRUulBdL2l1SfpI1+H6Xp
+         8Qn9SZmTALdBrvgFn+iIFO2KmHE36dG3CHxUAQxU=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next v2 00/14] Track memory allocation with restrack DB help
+Date:   Mon,  7 Sep 2020 15:21:42 +0300
+Message-Id: <20200907122156.478360-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <7-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D39UWB001.ant.amazon.com (10.43.161.5) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/09/2020 1:41, Jason Gunthorpe wrote:
-> If ib_umem_find_best_pgsz() returns > PAGE_SIZE then the equation here is
-> not correct. 'start' should be 'virt'. Change it to use the core code for
-> page_num and the canonical calculation of page_shift.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Should I submit a fix for stable changing start to virt?
+Changelog:
+v2:
+ * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
+ * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
+v1:
+ * Fixed rebase error, deleted second assignment of qp_type.
+ * Rebased code on latests rdma-next, the changes in cma.c caused to change
+   in patch "RDMA/cma: Delete from restrack DB after successful destroy".
+ * Dropped patch of port assignment, it is already done as part of this
+   series.
+ * I didn't add @calller description, regular users should not use _named() funciton.
+ * https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
+v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
 
-> Fixes: 40ddb3f02083 ("RDMA/efa: Use API to get contiguous memory blocks aligned to device supported page size")
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/hw/efa/efa_verbs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> index d85c63a5021a70..72da0faa7ebf97 100644
-> --- a/drivers/infiniband/hw/efa/efa_verbs.c
-> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> @@ -4,6 +4,7 @@
->   */
->  
->  #include <linux/vmalloc.h>
-> +#include <linux/log2.h>
->  
->  #include <rdma/ib_addr.h>
->  #include <rdma/ib_umem.h>
-> @@ -1538,9 +1539,8 @@ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
->  		goto err_unmap;
->  	}
->  
-> -	params.page_shift = __ffs(pg_sz);
-> -	params.page_num = DIV_ROUND_UP(length + (start & (pg_sz - 1)),
-> -				       pg_sz);
-> +	params.page_shift = order_base_2(pg_sz);
+----------------------------------------------------------------------------------
+Hi,
 
-Not related to this patch, but indeed looks better :).
+The resource tracker has built-in kref counter to synchronize object
+release. It makes restrack perfect choice to be responsible for the
+memory lifetime of any object in which restrack entry is embedded.
 
-> +	params.page_num = ib_umem_num_dma_blocks(mr->umem, pg_sz);
+In order to make it, the restrack was changed to be mandatory and all
+callers of rdma_restrack_add() started to rely on result returned from
+that call. Being mandatory means that all objects specific to restrack
+type must be tracked.
 
-Thanks,
-Tested-by: Gal Pressman <galpress@amazon.com>
-Acked-by: Gal Pressman <galpress@amazon.com>
+Before this series, the restrack and rdmatool were aid tools in debug
+session of user space applications, this caused to some of the
+functionality to be left behind, like support XRC QPs, device memory MRs
+and QP0/QP1 in multi-port devices.
+
+This series fixes all mentioned above without extending rdmatool at all.
+
+Thanks
+
+Leon Romanovsky (14):
+  RDMA/cma: Delete from restrack DB after successful destroy
+  RDMA/mlx5: Don't call to restrack recursively
+  RDMA/mlx4: Provide port number for special QPs
+  RDMA/restrack: Count references to the verbs objects
+  RDMA/restrack: Simplify restrack tracking in kernel flows
+  RDMA/restrack: Improve readability in task name management
+  RDMA/cma: Be strict with attaching to CMA device
+  RDMA/core: Allow drivers to disable restrack DB
+  RDMA/counter: Combine allocation and bind logic
+  RDMA/restrack: Store all special QPs in restrack DB
+  RDMA/restrack: Make restrack DB mandatory for IB objects
+  RDMA/restrack: Support all QP types
+  RDMA/core: Track device memory MRs
+  RDMA/restrack: Drop valid restrack field as source of ambiguity
+
+ drivers/infiniband/core/cma.c                 | 225 +++++++++++-------
+ drivers/infiniband/core/core_priv.h           |  39 ++-
+ drivers/infiniband/core/counters.c            | 178 +++++++-------
+ drivers/infiniband/core/cq.c                  |  24 +-
+ drivers/infiniband/core/rdma_core.c           |   3 +-
+ drivers/infiniband/core/restrack.c            | 207 ++++++++--------
+ drivers/infiniband/core/restrack.h            |  10 +-
+ drivers/infiniband/core/uverbs_cmd.c          |  50 +++-
+ drivers/infiniband/core/uverbs_std_types_cq.c |  12 +-
+ drivers/infiniband/core/uverbs_std_types_mr.c |  10 +
+ drivers/infiniband/core/uverbs_std_types_qp.c |   4 +-
+ drivers/infiniband/core/verbs.c               |  91 +++++--
+ drivers/infiniband/hw/mlx4/mad.c              |   9 +-
+ drivers/infiniband/hw/mlx5/gsi.c              |  16 +-
+ drivers/infiniband/hw/mlx5/qp.c               |   2 +-
+ include/rdma/ib_verbs.h                       |  10 +-
+ include/rdma/restrack.h                       |  46 ++--
+ 17 files changed, 541 insertions(+), 395 deletions(-)
+
+--
+2.26.2
+
