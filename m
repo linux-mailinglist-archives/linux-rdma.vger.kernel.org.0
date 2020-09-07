@@ -2,105 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CFB25FA2D
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 14:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA2B25FA52
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 14:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgIGMLe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Sep 2020 08:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729240AbgIGMLX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:11:23 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 725B921775;
-        Mon,  7 Sep 2020 12:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599480594;
-        bh=v00z8LkjsW6YOVvvonOV0ebXRkp/2+uVpcdymZxbEEA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lspQcpyxgb8dySCIMBL+HzbYbaLeKRsoBDeN5dnHXT6xxBVjiitEqZGxad9tzGVZt
-         xi/VnvcFAUTuEgALud6eRWcqUQtcPrf4E8ychktffAco91PlMXIZtiDY+8PbL4LmWh
-         CEgNo0zYqPsVfHg9TYiUdJQBIWNdU2EDkOH21ngk=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v2 9/9] RDMA: Make counters destroy symmetrical
-Date:   Mon,  7 Sep 2020 15:09:21 +0300
-Message-Id: <20200907120921.476363-10-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200907120921.476363-1-leon@kernel.org>
-References: <20200907120921.476363-1-leon@kernel.org>
+        id S1729183AbgIGMSp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 08:18:45 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:53566 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729254AbgIGMRA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Sep 2020 08:17:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1599481020; x=1631017020;
+  h=subject:to:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=GmZLaYehet2rhT9INd3WxR7miH/fWBHQgomzxF8VBtU=;
+  b=TxVge9ShQDDmjLyGKsUxpzBropNmnyG041sN9V5y58+RzgL2kGIb2kT5
+   0UvGG1wRHdfxE+cA9DXUqapUqecK2rmjITw57zohHtViogjrGQA6HeB5B
+   HuIEkNzm8HRz48lTR57fG5InW48k4YdqxkPAaBFSOVt6P2blZjkxZItc8
+   E=;
+X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
+   d="scan'208";a="66010422"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 Sep 2020 12:16:21 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id 0C79CA2290;
+        Mon,  7 Sep 2020 12:16:19 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.38) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 7 Sep 2020 12:16:14 +0000
+Subject: Re: [PATCH v2 06/17] RDMA/umem: Split ib_umem_num_pages() into
+ ib_umem_num_dma_blocks()
+To:     Jason Gunthorpe <jgg@nvidia.com>, Adit Ranadive <aditr@vmware.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>,
+        VMware PV-Drivers <pv-drivers@vmware.com>
+References: <6-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <530c0a69-0477-ab2a-6fd4-016b938b0bb5@amazon.com>
+Date:   Mon, 7 Sep 2020 15:16:08 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6-v2-270386b7e60b+28f4-umem_1_jgg@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.38]
+X-ClientProxiedBy: EX13P01UWB001.ant.amazon.com (10.43.161.59) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On 05/09/2020 1:41, Jason Gunthorpe wrote:
+> ib_num_pages() should only be used by things working with the SGL in CPU
 
-Change counters to return failure like any other verbs
-destroy, however this flow shouldn't return error at all.
-
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/uverbs_std_types_counters.c | 4 +++-
- drivers/infiniband/hw/mlx5/counters.c               | 3 ++-
- include/rdma/ib_verbs.h                             | 2 +-
- 3 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/uverbs_std_types_counters.c b/drivers/infiniband/core/uverbs_std_types_counters.c
-index c7e7438752bc..b3c6c066b601 100644
---- a/drivers/infiniband/core/uverbs_std_types_counters.c
-+++ b/drivers/infiniband/core/uverbs_std_types_counters.c
-@@ -46,7 +46,9 @@ static int uverbs_free_counters(struct ib_uobject *uobject,
- 	if (ret)
- 		return ret;
- 
--	counters->device->ops.destroy_counters(counters);
-+	ret = counters->device->ops.destroy_counters(counters);
-+	if (ret)
-+		return ret;
- 	kfree(counters);
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 145f3cb40ccb..8d77fea0eb48 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -117,7 +117,7 @@ static int mlx5_ib_read_counters(struct ib_counters *counters,
- 	return ret;
- }
- 
--static void mlx5_ib_destroy_counters(struct ib_counters *counters)
-+static int mlx5_ib_destroy_counters(struct ib_counters *counters)
- {
- 	struct mlx5_ib_mcounters *mcounters = to_mcounters(counters);
- 
-@@ -125,6 +125,7 @@ static void mlx5_ib_destroy_counters(struct ib_counters *counters)
- 	if (mcounters->hw_cntrs_hndl)
- 		mlx5_fc_destroy(to_mdev(counters->device)->mdev,
- 				mcounters->hw_cntrs_hndl);
-+	return 0;
- }
- 
- static int mlx5_ib_create_counters(struct ib_counters *counters,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0f628ac3cc92..ad2f8dfa2e66 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2504,7 +2504,7 @@ struct ib_device_ops {
- 				   struct uverbs_attr_bundle *attrs);
- 	int (*create_counters)(struct ib_counters *counters,
- 			       struct uverbs_attr_bundle *attrs);
--	void (*destroy_counters)(struct ib_counters *counters);
-+	int (*destroy_counters)(struct ib_counters *counters);
- 	int (*read_counters)(struct ib_counters *counters,
- 			     struct ib_counters_read_attr *counters_read_attr,
- 			     struct uverbs_attr_bundle *attrs);
--- 
-2.26.2
-
+Nit: ib_umem_num_pages().
