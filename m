@@ -2,145 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B85925F219
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 05:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACCE25F31F
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Sep 2020 08:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIGDfx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 6 Sep 2020 23:35:53 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44664 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgIGDfw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 6 Sep 2020 23:35:52 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0873YnRJ043332;
-        Mon, 7 Sep 2020 03:35:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GRojt9+0Q4AKuBaVlaNo3WGPnzGQAi1kMP5iRyO4f7c=;
- b=Daco75qiG8BumFK1Jx1V3q+5Sknn43yb/06utyYKIX03CPoarIvYrPf6VHCXE1jVWmg4
- ut49J95mALGWwhaWvEyKU4WW58ebaItbIdXky25+gRkr4Pev2aHhIvXwkZfgF8lDZgqp
- tv34Qhiip9w1v6GHMbI7YhxBmXXpac1cSOCj1Q+56QbvXROqwEprr7F8X91TqgjWn+79
- TJYiWImLkGacL5tIFbdXDa+w/A0qCdr+jYjBz4SQFg4Jg8iUCupKRyBnnq1b1m3nUxXX
- vj2wX3mjGor8rZ17Pn/yRtSRfRncn2mfr2+9AIHmR/nfGW9rawH/q8IMc8OtpoNe7OzY SA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33c2mkm7av-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 07 Sep 2020 03:35:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0873UsEG084926;
-        Mon, 7 Sep 2020 03:33:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33cmjydqgx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Sep 2020 03:33:47 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0873Xk2w022047;
-        Mon, 7 Sep 2020 03:33:46 GMT
-Received: from [10.159.211.29] (/10.159.211.29)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 06 Sep 2020 20:33:46 -0700
-Subject: Re: Finding the namespace of a struct ib_device
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-References: <5fa7f367-49df-fb1d-22d0-9f1dd1b76915@oracle.com>
- <20200903173910.GO24045@ziepe.ca>
- <a5899aa9-4553-1307-0688-f07f3a919ce8@oracle.com>
- <20200904113244.GP24045@ziepe.ca>
- <be812cb4-4b80-5ee5-4ed8-9d44f0a06edd@oracle.com>
- <20200906074442.GE55261@unreal>
-From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <9f8984ec-31e4-d71e-d55e-5cf115066e96@oracle.com>
-Date:   Mon, 7 Sep 2020 11:33:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726490AbgIGGVm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Sep 2020 02:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgIGGVj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Sep 2020 02:21:39 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBE1C061574
+        for <linux-rdma@vger.kernel.org>; Sun,  6 Sep 2020 23:21:38 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j2so14450958wrx.7
+        for <linux-rdma@vger.kernel.org>; Sun, 06 Sep 2020 23:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3oP9jMz8PxukO77MqrP3WJWqCJMX6PQBpHmKrr7RmAE=;
+        b=DzschHug1O5sGkzahEgIqom0bzD4Mxup6tApjd3tZ964RDsl0cFi8V11gY5ojNWqBo
+         a00/8oZgXMJ8Nl58u36Wy5d7ZnWA+LLcj4MV5ikghczrksAUsy4XvXuVQM40glqne+bu
+         SKjxhNr3jsIPzzZH8S431P99a5h5U+beTMHtqBhCKaKx3t+m9BHGGeTkEza9dISyvC6H
+         5y0ngzHrpVIOfptEDYdkMPwme7fLgGjOH2RtK/wkjyIrFhEi9LNOfk98QMpPtEFnNanx
+         hjObx1XucUFucGd/qi5ivDt6rJ4+0fsUA3JTzTRiBDKCX8WZrXpWtG9jEbWcgylR8A0g
+         d8HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3oP9jMz8PxukO77MqrP3WJWqCJMX6PQBpHmKrr7RmAE=;
+        b=UXn+kpiQRvklf193lIyxf+dPwn33nB/APm/7XWHe/1BXkntXqGcTAGFJfEUE/eYGol
+         45OQ+HgUMw1wfrhD50JGaConrSqZQBoC2m7kximJxjPMM+xSQU4aZNFxVQFHER1oSlSC
+         HvVihzVDxPZ63sjupZVpNmAyo4jl6aUPKDAwaIaIPXxBjzjaksIed45QXqPVVZ8oLRQd
+         J4DlrDo14ReLp6zqAxxqzTPLfcF1JFKnnJYCIPpZqkEfJRFhLoeejHAfGjw7IUYxXpYS
+         oyJ2y4w2QSvwP+rC7GXioKzmFYg8Rnb5JGPrihen60vlGFwxLWVdFeG74ubEcnQAGde/
+         fj6Q==
+X-Gm-Message-State: AOAM5319xNbUemCVQ8NDMbXjPZ6CUfR+QXVjeVgexZ5uxH57UHks3nAA
+        zb2kqxSoYVfk38JG5Z6aiqYtpw==
+X-Google-Smtp-Source: ABdhPJzZA0heTDu0QOuAMERnnKoZLQvA5RgAZExXcniJI/xYrHiRLz0NOnwTZbamWpE2x2eNZyJORg==
+X-Received: by 2002:a05:6000:11cd:: with SMTP id i13mr869570wrx.140.1599459697091;
+        Sun, 06 Sep 2020 23:21:37 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id y5sm15567903wmg.21.2020.09.06.23.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2020 23:21:36 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 08:21:35 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, kernel-team@fb.com, tariqt@mellanox.com,
+        yishaih@mellanox.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] mlx4: make sure to always set the port type
+Message-ID: <20200907062135.GJ2997@nanopsycho.orion>
+References: <20200904200621.2407839-1-kuba@kernel.org>
+ <20200906072759.GC55261@unreal>
+ <20200906093305.5c901cc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200906074442.GE55261@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9736 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009070034
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9736 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009070035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200906093305.5c901cc5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/6/20 3:44 PM, Leon Romanovsky wrote:
-> On Fri, Sep 04, 2020 at 10:02:10PM +0800, Ka-Cheong Poon wrote:
->> On 9/4/20 7:32 PM, Jason Gunthorpe wrote:
->>> On Fri, Sep 04, 2020 at 12:01:12PM +0800, Ka-Cheong Poon wrote:
->>>> On 9/4/20 1:39 AM, Jason Gunthorpe wrote:
->>>>> On Thu, Sep 03, 2020 at 10:02:01PM +0800, Ka-Cheong Poon wrote:
->>>>>> When a struct ib_client's add() function is called. is there a
->>>>>> supported method to find out the namespace of the passed in
->>>>>> struct ib_device?  There is rdma_dev_access_netns() but it does
->>>>>> not return the namespace.  It seems that it needs to have
->>>>>> something like the following.
->>>>>>
->>>>>> struct net *rdma_dev_to_netns(struct ib_device *ib_dev)
->>>>>> {
->>>>>>           return read_pnet(&ib_dev->coredev.rdma_net);
->>>>>> }
->>>>>>
->>>>>> Comments?
->>>>>
->>>>> I suppose, but why would something need this?
->>>>
->>>>
->>>> If the client needs to allocate stuff for the namespace
->>>> related to that device, it needs to know the namespace of
->>>> that device.  Then when that namespace is deleted, the
->>>> client can clean up those related stuff as the client's
->>>> namespace exit function can be called before the remove()
->>>> function is triggered in rdma_dev_exit_net().  Without
->>>> knowing the namespace of that device, coordination cannot
->>>> be done.
->>>
->>> Since each device can only be in one namespace, why would a client
->>> ever need to allocate at a level more granular than a device?
->>
->>
->> A client wants to have namespace specific info.  If the
->> device belongs to a namespace, it wants to associate those
->> info with that device.  When a namespace is deleted, the
->> info will need to be deleted.  You can consider the info
->> as associated with both a namespace and a device.
+Sun, Sep 06, 2020 at 06:33:05PM CEST, kuba@kernel.org wrote:
+>On Sun, 6 Sep 2020 10:27:59 +0300 Leon Romanovsky wrote:
+>> On Fri, Sep 04, 2020 at 01:06:21PM -0700, Jakub Kicinski wrote:
+>> > Even tho mlx4_core registers the devlink ports, it's mlx4_en
+>> > and mlx4_ib which set their type. In situations where one of
+>> > the two is not built yet the machine has ports of given type
+>> > we see the devlink warning from devlink_port_type_warn() trigger.
+>> >
+>> > Having ports of a type not supported by the kernel may seem
+>> > surprising, but it does occur in practice - when the unsupported
+>> > port is not plugged in to a switch anyway users are more than happy
+>> > not to see it (and potentially allocate any resources to it).
+>> >
+>> > Set the type in mlx4_core if type-specific driver is not built.
+>> >
+>> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>> > ---
+>> >  drivers/net/ethernet/mellanox/mlx4/main.c | 11 +++++++++++
+>> >  1 file changed, 11 insertions(+)
+>> >
+>> > diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+>> > index 258c7a96f269..70cf24ba71e4 100644
+>> > --- a/drivers/net/ethernet/mellanox/mlx4/main.c
+>> > +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+>> > @@ -3031,6 +3031,17 @@ static int mlx4_init_port_info(struct mlx4_dev *dev, int port)
+>> >  	if (err)
+>> >  		return err;
+>> >
+>> > +	/* Ethernet and IB drivers will normally set the port type,
+>> > +	 * but if they are not built set the type now to prevent
+>> > +	 * devlink_port_type_warn() from firing.
+>> > +	 */
+>> > +	if (!IS_ENABLED(CONFIG_MLX4_EN) &&
+>> > +	    dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
+>> > +		devlink_port_type_eth_set(&info->devlink_port, NULL);  
+>>                                                                ^^^^^
+>> 
+>> Won't it crash in devlink_port_type_eth_set()?
+>> The first line there dereferences pointer.
+>>   7612         const struct net_device_ops *ops = netdev->netdev_ops;
+>
+>Damn, good catch. It's not supposed to be required. I'll patch devlink.
+
+When you set the port type to ethernet, you should have the net_device
+instance. Why wouldn't you?
+
+
 > 
-> Can you be more specific about which info you are talking about?
-
-
-Actually, a lot of info can be both namespace and device specific.
-For example, a client wants to have a different PD allocation policy
-with a device when used in different namespaces.
-
-
-> And what is the client that is net namespace-aware from one side,
-> but from another separate data between them "manually"?
-
-
-Could you please elaborate what is meant by "namespace aware from
-one side but from another separate data between them manually"?
-I understand what namespace aware means.  But it is not clear what
-is meant by "separating data manually".  Do you mean having different
-behavior in different namespaces?  If this is the case, there is
-nothing special here.  An admin may choose to have different behavior
-in different namespaces.  There is nothing manual going on in the
-client code.
-
-
--- 
-K. Poon
-ka-cheong.poon@oracle.com
-
-
+>> And can we call to devlink_port_type_*_set() without IS_ENABLED() check?
+>
+>It'll generate two netlink notifications - not the end of the world but
+>also doesn't feel super clean.
