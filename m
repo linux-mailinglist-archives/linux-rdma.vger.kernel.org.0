@@ -2,69 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E702D261D3C
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Sep 2020 21:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C5D26202A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Sep 2020 22:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731528AbgIHTeR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Sep 2020 15:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731926AbgIHTeN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Sep 2020 15:34:13 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE859C061573
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Sep 2020 12:34:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id i17so17549749oig.10
-        for <linux-rdma@vger.kernel.org>; Tue, 08 Sep 2020 12:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=Fy5ymBjjWnfEAeyjKphSyewH/is6WKQ7xMzptSFI3WA=;
-        b=FSeEJm3JNjA5bjWqkbG5tllrfEz0HXXEU+evZIASdgurVMDc88oftYxSdj4l4plNpd
-         XKiuDjQrEubJvst5I0miVJU+MncllhmIhYYCgu0L/1NvM9rYEs+PUWi+Hcfoh3R4X0IF
-         ffMvhAcJGUD6EKnNXD+G3uBZYuqnyGMyJAWRw5yg/X8LaDoEUo0FonCj1Z/6SaC/YzX6
-         tvwnJHi7KfKoWVQHg2OhY3dewONv87EaoLBBiGhlwNumdIGN4Vus7Im6UVsh7iJHys3E
-         MciGG/UrFGT/+h3CNEnbDvOjh7YtznZd/dRSgSx0UIACsNRzf8zRoQRuBDcKCJnW0yK+
-         YWRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=Fy5ymBjjWnfEAeyjKphSyewH/is6WKQ7xMzptSFI3WA=;
-        b=C0susZsq6ku3DYXjc1ygJX48a8FI0ZKXNHALuOLJxlOdQaYOWYIiAl0UxgVh/6uQ0j
-         CL/qMChsWnn7TrJvQVgoO65L5pQBr1zb0gllWkpZ1okU2OSmYmm2yaJu7p5ud6zP9nTh
-         hbbdQstwu0RJ9ZWAiX7PKLTLZYGmuemF1d1cqi4ws2ohyII4/xNQUaMy64KiFiNgzIVQ
-         XMH/6MGjXIDJ/O2u5ZLYHIMAMfmoP8iI3SOrccn8e7yjIawmWgirpOeJYBglySTgjYzR
-         rjlRC7veNzdZ5jw8ZJQI2X3loKdYjiPPLC9heajs8Y5ZjREnipfv27SPdjjfumKdn2KJ
-         e1jg==
-X-Gm-Message-State: AOAM532WiTorKBOi4ccGjNv9Yv2eOLqxr8gg/ZhN0ZTl/82448YvjmoM
-        8Jydu68ufRXlsktp8ODRavuSvpAa3x4=
-X-Google-Smtp-Source: ABdhPJzpYv76dpeazGJl/epuw7cxf7aTHAs+UOcrnDxhdno9CBrH1I7EKf3tLP3ksinUo9m/SB7NrA==
-X-Received: by 2002:a05:6808:3d6:: with SMTP id o22mr349378oie.150.1599593649986;
-        Tue, 08 Sep 2020 12:34:09 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:9815:7696:31ff:cdb4? ([2605:6000:8b03:f000:9815:7696:31ff:cdb4])
-        by smtp.gmail.com with ESMTPSA id z16sm26153oth.43.2020.09.08.12.34.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 12:34:09 -0700 (PDT)
-To:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: mcast bugs
-Message-ID: <10c076fe-3a45-d42e-7e33-218ccc635b7e@gmail.com>
-Date:   Tue, 8 Sep 2020 14:34:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730437AbgIHUKK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Sep 2020 16:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730256AbgIHPQT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:16:19 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7CA020738;
+        Tue,  8 Sep 2020 14:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599576130;
+        bh=lfoUPPR2gqsJdqMiK482qM/kOQuzCSYDs5/hEZR9tfw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rffg2CMusAGHcc4AXnAglgwcpMXazNXrltouag4/eZvxjUTu7kjYGVo4pB0GdPI9q
+         z0U05uH4Axfgo3AzXzEyWRqDtOIwxAC+JahnNWowv1xKpPBwvxDetznSMPLTuRdzlC
+         rCTlUtYY1SdVGeqcooRmcQscYOlOUagBjdV7hJqI=
+Date:   Tue, 8 Sep 2020 17:42:05 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>
+Subject: Re: [PATCH rdma-next v1 3/3] RDMA: Fix link active_speed size
+Message-ID: <20200908144205.GF421756@unreal>
+References: <20200902074503.743310-1-leon@kernel.org>
+ <20200902074503.743310-4-leon@kernel.org>
+ <20200908141924.GG9166@nvidia.com>
+ <20200908142651.GE421756@unreal>
+ <20200908142756.GH9166@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908142756.GH9166@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Jason,
+On Tue, Sep 08, 2020 at 11:27:56AM -0300, Jason Gunthorpe wrote:
+> On Tue, Sep 08, 2020 at 05:26:51PM +0300, Leon Romanovsky wrote:
+> > On Tue, Sep 08, 2020 at 11:19:24AM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Sep 02, 2020 at 10:45:03AM +0300, Leon Romanovsky wrote:
+> > > > From: Aharon Landau <aharonl@mellanox.com>
+> > > >
+> > > > According to the IB spec active_speed size should be u16 and not u8 as
+> > > > before. Changing it to allow further extensions in offered speeds.
+> > > >
+> > > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > > > Signed-off-by: Aharon Landau <aharonl@mellanox.com>
+> > > > Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > >  drivers/infiniband/core/uverbs_std_types_device.c | 3 ++-
+> > > >  drivers/infiniband/core/verbs.c                   | 2 +-
+> > > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h           | 2 +-
+> > > >  drivers/infiniband/hw/hfi1/verbs.c                | 2 +-
+> > > >  drivers/infiniband/hw/mlx5/main.c                 | 8 ++------
+> > > >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c       | 2 +-
+> > > >  drivers/infiniband/hw/qedr/verbs.c                | 2 +-
+> > > >  drivers/infiniband/hw/qib/qib.h                   | 6 +++---
+> > > >  drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   | 2 +-
+> > > >  include/rdma/ib_verbs.h                           | 4 ++--
+> > > >  10 files changed, 15 insertions(+), 18 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
+> > > > index 75df2094a010..7b03446b6936 100644
+> > > > +++ b/drivers/infiniband/core/uverbs_std_types_device.c
+> > > > @@ -165,7 +165,8 @@ void copy_port_attr_to_resp(struct ib_port_attr *attr,
+> > > >  	resp->subnet_timeout = attr->subnet_timeout;
+> > > >  	resp->init_type_reply = attr->init_type_reply;
+> > > >  	resp->active_width = attr->active_width;
+> > > > -	resp->active_speed = attr->active_speed;
+> > > > +	WARN_ON(attr->active_speed & ~0xFF);
+> > >
+> > > ?? This doesn't seem like a warn on situation..
+> >
+> > Why? We are returning u8 to the user, so need to catch overflow.
+>
+> We need to have actual backwards compat here, not just throw a warning
+> at the syscall boundary
 
-I have fixed the multicast bugs in the rxe driver. Aside from what we discussed last week there were some issues in the pools code. This work is done on top of the memory windows work which also changed the pools code. My preference is to wait until you accept the rest of the MW patches and then submit the extended API work (which is done) and then the multicast work but I don't know when or if all that will happen. The current status is that rxe no longer fails any of the pyverbs tests and only skips 31 of them (DMR, XRC, and a few others.)
+We don't have fallback and don't have speed that crosses u8 limit yet.
+This WARN_ON() is needed to ensure that we properly extend
+ib_port_speed.
 
-Bob
+>
+> Why can't it just be truncated?
+
+The coming IBTA will have extension in that area.
+
+>
+> Jason
