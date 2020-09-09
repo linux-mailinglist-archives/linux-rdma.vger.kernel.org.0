@@ -2,185 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143A9262086
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Sep 2020 22:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3542624B4
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 04:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730159AbgIHUND (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Sep 2020 16:13:03 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16325 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730116AbgIHPLR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Sep 2020 11:11:17 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5799330002>; Tue, 08 Sep 2020 07:46:11 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 08 Sep 2020 07:47:02 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 08 Sep 2020 07:47:02 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
- 2020 14:46:50 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 8 Sep 2020 14:46:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OXUuqbR+1DoLwLQiNjGYMA/4KcoF9yvKs3inXnkNVfkNzOWNPNFws9c6kgfpfWOTMBohxPR8qbW95izyPnWffJRcFJsMOceacrkqIv+pvPeQ4rHPIoS/eV21PJUCU5KoQ39F8ANVT+GnPkDSEckUHR3Ax+zrcrGrlADobGjvlxhVk1/+F9ksfDRfCL05mP3IFUHMoiIlF+vnrCiMUEgyHz8RdzsX0vgTy31IrD/RdhHG6pWwklewyEUxOai9vDKQOGoXBwNF3/NM49r6Jea2jB2aNoaUjHkvkF9mtjWLl7NPWegGi6/Lc0l6L3EWaYeikcqXlQMU+1XXuddnCEsnDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uZlP9MiNwSB6ktfMRIfqOCHBIpREtQo38AQVbDi4nFM=;
- b=U6NqVgqO32/Azu5kxYiACuplYmeDLyilMtip8qSwYW6zCFFIyBoAXxAlY+3e2SgPFYqBk9skeWWWlRqKZPlJFUOsBzP3YnCOKU3BWJlYFLX1lPnyOn154dAlDTIX/bI/wxnSPsvcYUYT/VjHdVKcj0nMOrtCGyASdNx9vUpNFW1mKmO4aF3ASn8v1ECtStncuSJwtQZbH2GJd0hITOf/+kahFN/+eoA2TIxTMYG/OgKNOnxkMUXaDq2DPu5K09ZYx0eTeGqNEtBjeqZZwcYy7LGitAy27tjBGLendDZ6Al9L7dKkKTZV6PIpX9baKYmSVLACGwekEhUu14tVCijYqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BY5PR12MB4067.namprd12.prod.outlook.com (2603:10b6:a03:212::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Tue, 8 Sep
- 2020 14:46:49 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::445b:111e:a091:66f9]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::445b:111e:a091:66f9%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
- 14:46:49 +0000
-Date:   Tue, 8 Sep 2020 11:46:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@mellanox.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "Dennis Dalessandro" <dennis.dalessandro@intel.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        <linux-rdma@vger.kernel.org>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>
-Subject: Re: [PATCH rdma-next v1 3/3] RDMA: Fix link active_speed size
-Message-ID: <20200908144646.GJ9166@nvidia.com>
-References: <20200902074503.743310-1-leon@kernel.org>
- <20200902074503.743310-4-leon@kernel.org> <20200908141924.GG9166@nvidia.com>
- <20200908142651.GE421756@unreal> <20200908142756.GH9166@nvidia.com>
- <20200908144205.GF421756@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200908144205.GF421756@unreal>
-X-ClientProxiedBy: BL0PR01CA0029.prod.exchangelabs.com (2603:10b6:208:71::42)
- To BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+        id S1726642AbgIICCB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Sep 2020 22:02:01 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36107 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgIICB7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Sep 2020 22:01:59 -0400
+Received: by mail-pg1-f193.google.com with SMTP id m8so904108pgi.3;
+        Tue, 08 Sep 2020 19:01:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=kvL65AfQsPGI4gpoBmEgnMaj8DleEIV8yU5wsNDGWf0=;
+        b=uO3xDQb9hb9jcE8cC6MKof/ILAu7vTlVFIWTLePcpsJf/VJg29Sote9Qk414LBunC/
+         3UTTpb0dcd16Hh/8/agbflwNRdE5CGKwBDz0Y0+ctr9Jsekl36x7sQNnAsFgQCnQh5w/
+         +D30wH4/xMpcMTfZr15CAyaId5slnE0mdGUN8ObDqh7okiZ4ZUPEDhsTKwCt0h5swpIV
+         KqkoP0vIAuWOU66MZ4QsTYq1/6p17KDCH3mai851ZeSAu6v+4iUKoZo+8fx4Whzac3sI
+         JjSJ61+G+68Di7F8eDcww+RztfDvCuR6tOBW+rppAOc7p4ddRmIrU5CRk6SpwH+Qd7at
+         v5/g==
+X-Gm-Message-State: AOAM533vGJooohv9kS2/7+M4GMVKNBEhoAyRFFCN+wAGy0ikOYx6/2Cp
+        PlZc7if43ehYke4SVps/B8Q=
+X-Google-Smtp-Source: ABdhPJzywdzVLVX5JZdZ9cKfiVBn/LFo9kj0C56l7tuJqdbfDnbcLB5tt0u07fWpcpjPzS7aCDaA9A==
+X-Received: by 2002:a63:1a21:: with SMTP id a33mr1235125pga.305.1599616917034;
+        Tue, 08 Sep 2020 19:01:57 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:fb09:e536:da63:a7cd? ([2601:647:4000:d7:fb09:e536:da63:a7cd])
+        by smtp.gmail.com with ESMTPSA id 72sm645870pfx.79.2020.09.08.19.01.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 19:01:56 -0700 (PDT)
+Subject: Re: [IB/srpt] c804af2c1d: last_state.test.blktests.exit_code.143
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org, lkp@lists.01.org
+References: <20200802060925.GW23458@shao2-debian>
+ <f8ef3284-4646-94d9-7eea-14ac0873b03b@acm.org>
+ <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
+ <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
+ <128192ad-05ff-fa8e-14fc-479a115311e0@acm.org>
+ <20200824133019.GH1152540@nvidia.com>
+ <2a2ff3a5-f58e-8246-fd09-87029b562347@acm.org>
+ <20200908182232.GP9166@nvidia.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <e8a240aa-9e9b-3dca-062f-9130b787f29b@acm.org>
+Date:   Tue, 8 Sep 2020 19:01:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR01CA0029.prod.exchangelabs.com (2603:10b6:208:71::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Tue, 8 Sep 2020 14:46:48 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kFetS-00316A-DR; Tue, 08 Sep 2020 11:46:46 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a2e52240-d2a0-4b36-bc52-08d854060400
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4067:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB40677DCF6AF3C1A399D35C42C2290@BY5PR12MB4067.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: opfsA5TPIBODRdZ4mkA2tfNLc8iTqVbPuJlY7OFBcEu3cihuCI9cu9cf8XUpukZ3oWv7YZwJrvl8jFZWkZR5UHx8End6F0XvFFxfhlGJF+JlTSL30qUaOVcIY36rFeFJv/50LEH+SRpi0pobJFiYZSuhU+uqsGvsZUCLJ34V2kiNsc5EvKfwBJ1GicCdxvxj0/MogCL6qnrpea9GIcJtrNwa6tHrsu/iNmRURkv6Iwl8d3kNz9PIgXxAu3xIDNXVJ0MYw/nuDktfM63zWh0CD0B19zPo6m1e6Zzj+zFhBHAl3I6IDIksRncwXXLgDi7g
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(376002)(39860400002)(136003)(26005)(1076003)(54906003)(2906002)(9786002)(86362001)(9746002)(7416002)(33656002)(8936002)(5660300002)(478600001)(316002)(186003)(83380400001)(8676002)(6916009)(66946007)(426003)(66556008)(66476007)(4326008)(2616005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: UtUdY1Tomo3+mlcjMv53rPKNWXm/8ehilHvWsKNRuRVyEiwqROzyrykeGuQgR99r5bMmD5xFAggm+JkT3UU6HfIe2d1ZWGbUvsXTh6opi8NJdCqzUBVJSx/fLwUYmMh5ZqHYnuBlsUS98R1GIXINX4Rkje+dXWOncBRbS7ka/jqFfTm1DMD4NhTicu/9jrsbsCR6I9pSqLsU8v2z+PHVdSixIu4xq/EaFB3Q7GJeUaStlKhPkGtUJ17AKSExnc573ETyw+bJq0pGh0QiybOk7gYdH6xS3TvZsK2OykfQuiRfZV7bxC09ahQaRSZ2c0vZ2k4+F+oCpXJmGyDy+JgqG71TLRoRT/7176XmB6rBDj8aFILzAKelAo6Ndenplh6PAvpJGk5fBaGl9DJitUb7bm1j+tghq5GvFrxBwpClnG7sPJ4z36zLee9dUbqUIMabE0/as9qh9dW6NvwxySYocQkwpTf/DQttwG15Ep6Dwkk014nNrNfbFLp0w8T5oHRX8eTJ0nEP5xlB4TOowIsCmd3i31DvZYDYUyHiZSr3T6N98cykV2f8hC8u7t2qkZtuM2PFI/Gp8OH7J4iZU7waXipG06sE7RKm0XpUf/mbMo2pWNjJWOhyWs/W4ycNBjvzyGtYrXNmZWig9u2WnGJklg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2e52240-d2a0-4b36-bc52-08d854060400
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 14:46:48.8947
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lhUApjbRrFrtn4+fKimiqNRuL4dK++KDgIZQ2M1Lb69xW2XvhMZhyzlhJklz98Ad
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4067
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599576371; bh=uZlP9MiNwSB6ktfMRIfqOCHBIpREtQo38AQVbDi4nFM=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=h7MvVa7ZD0jFBmGttqcLm9SKSxW2jz1BFfQgZdMEyTtlZq3Dl8E4oZzYEvZVURTup
-         T8dI7c4uN8NEyQJAE4hiV4sK7HXjFJdCHke9N/tzR9WA8dh9H9TkJpxBQsDppo/EIF
-         u8qDgXp4JTaV4qRrP/bxuy1zT8RxysSfhe140lwmAcGYk5gUreZMFAzqMew7E69NH6
-         jqmOxMa0NoxEabVYJuvAcWB9QM+qh9+09jeAFq1r7dzmdHsC1SMITovCMLn0k3rwad
-         OUk9zHkPaMlEcPbZLcmwSUhxzH4SICZILjhivgH8+2TS5krwbjhDnXu+sJs/BO3F4d
-         SBbn+RzTK3Veg==
+In-Reply-To: <20200908182232.GP9166@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 05:42:05PM +0300, Leon Romanovsky wrote:
-> On Tue, Sep 08, 2020 at 11:27:56AM -0300, Jason Gunthorpe wrote:
-> > On Tue, Sep 08, 2020 at 05:26:51PM +0300, Leon Romanovsky wrote:
-> > > On Tue, Sep 08, 2020 at 11:19:24AM -0300, Jason Gunthorpe wrote:
-> > > > On Wed, Sep 02, 2020 at 10:45:03AM +0300, Leon Romanovsky wrote:
-> > > > > From: Aharon Landau <aharonl@mellanox.com>
-> > > > >
-> > > > > According to the IB spec active_speed size should be u16 and not u8 as
-> > > > > before. Changing it to allow further extensions in offered speeds.
-> > > > >
-> > > > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > > > > Signed-off-by: Aharon Landau <aharonl@mellanox.com>
-> > > > > Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > >  drivers/infiniband/core/uverbs_std_types_device.c | 3 ++-
-> > > > >  drivers/infiniband/core/verbs.c                   | 2 +-
-> > > > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h           | 2 +-
-> > > > >  drivers/infiniband/hw/hfi1/verbs.c                | 2 +-
-> > > > >  drivers/infiniband/hw/mlx5/main.c                 | 8 ++------
-> > > > >  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c       | 2 +-
-> > > > >  drivers/infiniband/hw/qedr/verbs.c                | 2 +-
-> > > > >  drivers/infiniband/hw/qib/qib.h                   | 6 +++---
-> > > > >  drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   | 2 +-
-> > > > >  include/rdma/ib_verbs.h                           | 4 ++--
-> > > > >  10 files changed, 15 insertions(+), 18 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
-> > > > > index 75df2094a010..7b03446b6936 100644
-> > > > > +++ b/drivers/infiniband/core/uverbs_std_types_device.c
-> > > > > @@ -165,7 +165,8 @@ void copy_port_attr_to_resp(struct ib_port_attr *attr,
-> > > > >  	resp->subnet_timeout = attr->subnet_timeout;
-> > > > >  	resp->init_type_reply = attr->init_type_reply;
-> > > > >  	resp->active_width = attr->active_width;
-> > > > > -	resp->active_speed = attr->active_speed;
-> > > > > +	WARN_ON(attr->active_speed & ~0xFF);
-> > > >
-> > > > ?? This doesn't seem like a warn on situation..
-> > >
-> > > Why? We are returning u8 to the user, so need to catch overflow.
-> >
-> > We need to have actual backwards compat here, not just throw a warning
-> > at the syscall boundary
+On 2020-09-08 11:22, Jason Gunthorpe wrote:
+> It is reasonable to consider the cq_pool as a built-in client, so I
+> would suggest moving it to right around the time the dynamic clients
+> are handled. Something like this:
 > 
-> We don't have fallback and don't have speed that crosses u8 limit yet.
-> This WARN_ON() is needed to ensure that we properly extend
-> ib_port_speed.
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index c36b4d2b61e0c0..e3651dacad1da6 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1285,6 +1285,8 @@ static void disable_device(struct ib_device *device)
+>  		remove_client_context(device, cid);
+>  	}
+>  
+> +	ib_cq_pool_destroy(ib_dev);
+> +
+>  	/* Pairs with refcount_set in enable_device */
+>  	ib_device_put(device);
+>  	wait_for_completion(&device->unreg_completion);
+> @@ -1328,6 +1330,8 @@ static int enable_device_and_get(struct ib_device *device)
+>  			goto out;
+>  	}
+>  
+> +	ib_cq_pool_init(device);
+> +
+>  	down_read(&clients_rwsem);
+>  	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
+>  		ret = add_client_context(device, client);
+> @@ -1400,7 +1404,6 @@ int ib_register_device(struct ib_device *device, const char *name)
+>  		goto dev_cleanup;
+>  	}
+>  
+> -	ib_cq_pool_init(device);
+>  	ret = enable_device_and_get(device);
+>  	dev_set_uevent_suppress(&device->dev, false);
+>  	/* Mark for userspace that device is ready */
+> @@ -1455,7 +1458,6 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
+>  		goto out;
+>  
+>  	disable_device(ib_dev);
+> -	ib_cq_pool_destroy(ib_dev);
+>  
+>  	/* Expedite removing unregistered pointers from the hash table */
+>  	free_netdevs(ib_dev);
 
-Until we have some compat story I don't want to just increase this
-value, it clearly renders the device unusable, so why do it?
+The above patch didn't compile, but the patch below does and makes the hang
+disappear. So feel free to add the following to the patch below:
 
-Jason
+Tested-by: Bart Van Assche <bvanassche@acm.org>
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index c36b4d2b61e0..23ee65a9185f 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1285,6 +1285,8 @@ static void disable_device(struct ib_device *device)
+ 		remove_client_context(device, cid);
+ 	}
+
++	ib_cq_pool_destroy(device);
++
+ 	/* Pairs with refcount_set in enable_device */
+ 	ib_device_put(device);
+ 	wait_for_completion(&device->unreg_completion);
+@@ -1328,6 +1330,8 @@ static int enable_device_and_get(struct ib_device *device)
+ 			goto out;
+ 	}
+
++	ib_cq_pool_init(device);
++
+ 	down_read(&clients_rwsem);
+ 	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
+ 		ret = add_client_context(device, client);
+@@ -1400,7 +1404,6 @@ int ib_register_device(struct ib_device *device, const char *name)
+ 		goto dev_cleanup;
+ 	}
+
+-	ib_cq_pool_init(device);
+ 	ret = enable_device_and_get(device);
+ 	dev_set_uevent_suppress(&device->dev, false);
+ 	/* Mark for userspace that device is ready */
+@@ -1455,7 +1458,6 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
+ 		goto out;
+
+ 	disable_device(ib_dev);
+-	ib_cq_pool_destroy(ib_dev);
+
+ 	/* Expedite removing unregistered pointers from the hash table */
+ 	free_netdevs(ib_dev);
+
