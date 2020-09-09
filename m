@@ -2,317 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49809262B62
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 11:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88769262C64
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 11:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgIIJKo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Sep 2020 05:10:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11292 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726005AbgIIJKn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:10:43 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 413E9A4C976BA38EB05B;
-        Wed,  9 Sep 2020 17:10:40 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Sep 2020 17:10:29 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Create QP/CQ with selected QPN/CQN for bank load balance
-Date:   Wed, 9 Sep 2020 17:09:23 +0800
-Message-ID: <1599642563-10264-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726060AbgIIJri (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Sep 2020 05:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgIIJrh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Sep 2020 05:47:37 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3454FC061573
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Sep 2020 02:47:37 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id h206so1352709ybc.11
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Sep 2020 02:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ska-ac-za.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=gYB9LqR/14ONneTOJHQU3l0lF8vgy7tCXRHR3vagiSU=;
+        b=WUMPFYnkps3lL4pVd0wJohRk2R/O4B8Ob/CjV+/USIlqjUbaPHL8bgH+YeQgV1vwE1
+         XD7GzTvblJHygPVXF3YRIHYhd8pjx1PWF71vYJqT0823SrV/b/hcGWrdNqC8CbhkT6FT
+         8ckvOEg3+XJZBKsbDW+L5LeB1OhsNgn3jTw0zcC1Huu9PBBqjwCKSd7kAeDDAC/uVTV2
+         DafRbwx+8B/9c7F9RtQGtrfroY1zxIiJywrH1nAjdeUGdOxZGfFOiC9PodKhtYiTlZSw
+         xrtbe/L6hgYFo9w3HRKDadeijaZcMFai5geY+hBRkNY0xqsOCsImPBIPC+Q3YG4WAFQq
+         ov0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=gYB9LqR/14ONneTOJHQU3l0lF8vgy7tCXRHR3vagiSU=;
+        b=L5EL2ErEJoo6T7WRV120JjnDiDrHySRFugtS3Wo+D7Ib685KDfmZkXd9FPTTvzWTpp
+         TBZR3D1EFon5b86b4q7mXexviTURPgctVFs0UUeGa4swl6lRPoqbBT+zvfnrqGRvGduy
+         44vjYX+xLwksZgMy4lDSJslId49Q8TB73iISLHJODJvoEzQky8xhj4FpYUbMqMv8ACry
+         2OzS/9kOZZkCCsFQLKtq0Qhu0+59giA6/w4LdcalUp/tM+HpoAXqN7ZyX761gQPQkLht
+         CWy6afHGQvbDlaGc5Tiec8nzmd8olBzoQEb4JKGHa86SninClSQEgLDlA2ZdPR9fca7v
+         nLBQ==
+X-Gm-Message-State: AOAM530qY5RXVEGhWcNOchdYGT2cigp8/ZZemeij8e151rxXFzTCkT39
+        G85jqG4eJFJGFaqN0aY6178IOES81hgWiWeftpbszq6b0hGRdkGT
+X-Google-Smtp-Source: ABdhPJwN69L5M4t63KtA36E0eelKbHB7ZFxp5MqZrQ8pzTUyHkiG2M9Bp3PC83YXImCTb6bDwTAO2uQ1bcEu4cwySPE=
+X-Received: by 2002:a25:4843:: with SMTP id v64mr4680619yba.187.1599644855027;
+ Wed, 09 Sep 2020 02:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+From:   Bruce Merry <bmerry@ska.ac.za>
+Date:   Wed, 9 Sep 2020 11:47:24 +0200
+Message-ID: <CAOm-9apwANddPcn4BYZwjV9Rd=f+Y6WRuwBwBxMM+aapOAwbXw@mail.gmail.com>
+Subject: Bug report: in-place build exposes fixup headers, breaking static_assert
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+When building with the recommended build.sh script, it seems that some
+header files that override system headers get installed into the
+build/include directory. I'm guessing these are intended to be used
+while building rdma-core itself, but have the effect of interfering
+with other software that is specifying this include directory to build
+against rdma-core libraries.
 
-In order to improve performance by balancing the load between different
-banks of cache, the QPC cache is desigend to choose one of 8 banks
-according to lower 3 bits of QPN, and the CQC cache uses the lower 2 bits
-to choose one from 4 banks. The hns driver needs to count the number of
-QP/CQ on each bank and then assigns the QP/CQ being created to the bank
-with the minimum load first.
+The case I ran into is that an assert.h file is added that #defines
+static_assert to an empty macro. Apart from silently disabling the
+static assertions in users' code, this breaks compilation of C++11
+code, because the arguments to static_assert may contain a comma (such
+as in a list of template arguments), leading to errors because the
+preprocessor splits on the comma and sees more than two arguments to
+the macro.
 
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_alloc.c  | 46 +++++++++++++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_cq.c     | 38 +++++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_device.h |  8 +++++
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 39 ++++++++++++++++++++++--
- 4 files changed, 128 insertions(+), 3 deletions(-)
+To reproduce, try building this Dockerfile:
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-index a522cb2..cbe955c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-@@ -36,6 +36,52 @@
- #include "hns_roce_device.h"
- #include <rdma/ib_umem.h>
- 
-+static int get_bit(struct hns_roce_bitmap *bitmap, u8 bankid,
-+		   u8 mod, unsigned long *obj)
-+{
-+	unsigned long offset_bak = bitmap->last;
-+	bool one_circle_flag = false;
-+
-+	do {
-+		*obj = find_next_zero_bit(bitmap->table, bitmap->max,
-+					  bitmap->last);
-+		if (*obj >= bitmap->max) {
-+			*obj = find_first_zero_bit(bitmap->table, bitmap->max);
-+			one_circle_flag = true;
-+		}
-+
-+		bitmap->last = (*obj + 1);
-+		if (bitmap->last == bitmap->max) {
-+			bitmap->last = 0;
-+			one_circle_flag = true;
-+		}
-+
-+		/* Not found after a round of search */
-+		if (bitmap->last >= offset_bak && one_circle_flag)
-+			return -EINVAL;
-+
-+	} while (*obj % mod != bankid);
-+
-+	return 0;
-+}
-+
-+int hns_roce_bitmap_alloc_with_bankid(struct hns_roce_bitmap *bitmap,
-+				      u8 bankid, u8 mod,
-+				      unsigned long *obj)
-+{
-+	int ret;
-+
-+	spin_lock(&bitmap->lock);
-+
-+	ret = get_bit(bitmap, bankid, mod, obj);
-+	if (!ret)
-+		set_bit(*obj, bitmap->table);
-+
-+	spin_unlock(&bitmap->lock);
-+
-+	return ret;
-+}
-+
- int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
- {
- 	int ret = 0;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index e87d616..8abd6ac 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -39,6 +39,25 @@
- #include <rdma/hns-abi.h>
- #include "hns_roce_common.h"
- 
-+static u8 get_least_load_bankid_for_cq(struct hns_roce_dev *hr_dev)
-+{
-+	u32 least_load = atomic_read(&hr_dev->bank_cq_cnt[0]);
-+	u8 bankid = 0;
-+	u32 bankcnt;
-+	u8 i;
-+
-+	/* Get the least used bank id. */
-+	for (i = 1; i < HNS_ROCE_CQ_BANK_NUM; i++) {
-+		bankcnt = atomic_read(&hr_dev->bank_cq_cnt[i]);
-+		if (bankcnt < least_load) {
-+			least_load = bankcnt;
-+			bankid = i;
-+		}
-+	}
-+
-+	return bankid;
-+}
-+
- static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- {
- 	struct hns_roce_cmd_mailbox *mailbox;
-@@ -46,6 +65,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	u64 mtts[MTT_MIN_COUNT] = { 0 };
- 	dma_addr_t dma_handle;
-+	u8 bankid;
- 	int ret;
- 
- 	ret = hns_roce_mtr_find(hr_dev, &hr_cq->mtr, 0, mtts, ARRAY_SIZE(mtts),
-@@ -56,12 +76,17 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	}
- 
- 	cq_table = &hr_dev->cq_table;
--	ret = hns_roce_bitmap_alloc(&cq_table->bitmap, &hr_cq->cqn);
-+	bankid = get_least_load_bankid_for_cq(hr_dev);
-+	ret = hns_roce_bitmap_alloc_with_bankid(&cq_table->bitmap, bankid,
-+						HNS_ROCE_CQ_BANK_NUM,
-+						&hr_cq->cqn);
- 	if (ret) {
- 		ibdev_err(ibdev, "Failed to alloc CQ bitmap, err %d\n", ret);
- 		return ret;
- 	}
- 
-+	atomic_inc(&hr_dev->bank_cq_cnt[bankid]);
-+
- 	/* Get CQC memory HEM(Hardware Entry Memory) table */
- 	ret = hns_roce_table_get(hr_dev, &cq_table->table, hr_cq->cqn);
- 	if (ret) {
-@@ -111,14 +136,22 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
- 
- err_out:
-+	atomic_dec(&hr_dev->bank_cq_cnt[bankid]);
- 	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
- 	return ret;
- }
- 
-+static inline u8 get_cq_bankid(unsigned long cqn)
-+{
-+	/* The lower 2 bits of CQN are used to hash to different banks */
-+	return (u8)(cqn & GENMASK(1, 0));
-+}
-+
- static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- {
- 	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
- 	struct device *dev = hr_dev->dev;
-+	u8 bankid;
- 	int ret;
- 
- 	ret = hns_roce_cmd_mbox(hr_dev, 0, 0, hr_cq->cqn, 1,
-@@ -140,6 +173,9 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
- 	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
-+
-+	bankid = get_cq_bankid(hr_cq->cqn);
-+	atomic_dec(&hr_dev->bank_cq_cnt[bankid]);
- }
- 
- static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 4f1dd91..c543440 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -117,6 +117,9 @@
- #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
- #define SRQ_DB_REG				0x230
- 
-+#define HNS_ROCE_QP_BANK_NUM 8
-+#define HNS_ROCE_CQ_BANK_NUM 4
-+
- /* The chip implementation of the consumer index is calculated
-  * according to twice the actual EQ depth
-  */
-@@ -1003,6 +1006,8 @@ struct hns_roce_dev {
- 	void			*priv;
- 	struct workqueue_struct *irq_workq;
- 	const struct hns_roce_dfx_hw *dfx;
-+	atomic_t bank_qp_cnt[HNS_ROCE_QP_BANK_NUM];
-+	atomic_t bank_cq_cnt[HNS_ROCE_CQ_BANK_NUM];
- };
- 
- static inline struct hns_roce_dev *to_hr_dev(struct ib_device *ib_dev)
-@@ -1163,6 +1168,9 @@ void hns_roce_cleanup_cq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_srq_table(struct hns_roce_dev *hr_dev);
- 
-+int hns_roce_bitmap_alloc_with_bankid(struct hns_roce_bitmap *bitmap,
-+				      u8 bankid, u8 mod,
-+				      unsigned long *obj);
- int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj);
- void hns_roce_bitmap_free(struct hns_roce_bitmap *bitmap, unsigned long obj,
- 			 int rr);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 975281f..42d3080 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -156,9 +156,29 @@ static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
- 	}
- }
- 
-+static u8 get_least_load_bankid_for_qp(struct hns_roce_dev *hr_dev)
-+{
-+	u32 least_load = atomic_read(&hr_dev->bank_qp_cnt[0]);
-+	u8 bankid = 0;
-+	u32 bankcnt;
-+	u8 i;
-+
-+	/* Get the least used bank id. */
-+	for (i = 1; i < HNS_ROCE_QP_BANK_NUM; i++) {
-+		bankcnt = atomic_read(&hr_dev->bank_qp_cnt[i]);
-+		if (bankcnt < least_load) {
-+			least_load = bankcnt;
-+			bankid = i;
-+		}
-+	}
-+
-+	return bankid;
-+}
-+
- static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- {
- 	unsigned long num = 0;
-+	u8 bankid;
- 	int ret;
- 
- 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI) {
-@@ -171,12 +191,16 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 
- 		hr_qp->doorbell_qpn = 1;
- 	} else {
--		ret = hns_roce_bitmap_alloc_range(&hr_dev->qp_table.bitmap,
--						  1, 1, &num);
-+		bankid = get_least_load_bankid_for_qp(hr_dev);
-+		ret = hns_roce_bitmap_alloc_with_bankid(&hr_dev->qp_table.bitmap,
-+							bankid,
-+							HNS_ROCE_QP_BANK_NUM,
-+							&num);
- 		if (ret) {
- 			ibdev_err(&hr_dev->ib_dev, "Failed to alloc bitmap\n");
- 			return -ENOMEM;
- 		}
-+		atomic_inc(&hr_dev->bank_qp_cnt[bankid]);
- 
- 		hr_qp->doorbell_qpn = (u32)num;
- 	}
-@@ -342,9 +366,16 @@ static void free_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
- }
- 
-+static inline u8 get_qp_bankid(unsigned long qpn)
-+{
-+	/* The lower 3 bits of cqn are used to hash to different banks */
-+	return (u8)(qpn & GENMASK(2, 0));
-+}
-+
- static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- {
- 	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
-+	u8 bankid;
- 
- 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
- 		return;
-@@ -353,6 +384,10 @@ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		return;
- 
- 	hns_roce_bitmap_free_range(&qp_table->bitmap, hr_qp->qpn, 1, BITMAP_RR);
-+
-+	bankid = get_qp_bankid(hr_qp->qpn);
-+	atomic_dec(&hr_dev->bank_qp_cnt[bankid]);
-+
- }
- 
- static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+FROM quay.io/pypa/manylinux2010_x86_64
+
+RUN yum install -y \
+        wget cmake3 ninja-build libnl3-devel
+
+RUN wget https://github.com/linux-rdma/rdma-core/releases/download/v31.0/rdma-core-31.0.tar.gz
+-O /tmp/rdma-core-31.0.tar.gz
+RUN tar -C /tmp -zxf /tmp/rdma-core-31.0.tar.gz
+RUN cd /tmp/rdma-core-31.0 && ./build.sh
+
+RUN echo -e "#include <cassert>\n#include <vector>" > simple.cpp
+RUN g++ -std=c++11 -c simple.cpp -I /tmp/rdma-core-31.0/build/include
+
+
+The compiler output starts with:
+
+In file included from
+/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/stl_iterator.h:66,
+                 from
+/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/stl_algobase.h:67,
+                 from /opt/rh/devtoolset-8/root/usr/include/c++/8/vector:60,
+                 from simple.cpp:2:
+/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/ptr_traits.h:115:71:
+error: macro "static_assert" passed 3 arguments, but takes just 2
+    "pointer type defines element_type or is like SomePointer<T, Args>");
+
+When I changed my build process to do an out-of-place install the
+problem went away.
+
+Regards
+Bruce
 -- 
-2.8.1
-
+Bruce Merry
+Senior Science Processing Developer
+SARAO
