@@ -2,155 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6817B263308
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 18:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98326263424
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgIIQ42 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Sep 2020 12:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730911AbgIIQ4Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Sep 2020 12:56:16 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3556EC061573
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Sep 2020 09:56:16 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d6so2672179pfn.9
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Sep 2020 09:56:16 -0700 (PDT)
+        id S1731302AbgIIROo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Sep 2020 13:14:44 -0400
+Received: from mail-bn8nam12on2105.outbound.protection.outlook.com ([40.107.237.105]:12865
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730201AbgIIP3H (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:29:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i9MH3oNhlZ9ls1R9VJs0QMyffdResM02JKqmiRWnMl47rO7AzitJXBsffTvMNuuj5gdmHXkYnwtMhh26K2YseoGKPUn5xJBl8TdGD1T3O1/C4mYnrAtTZe6Jt4Ro2AqT2wxVZgbnepwTIhbtPfgL6PiFapyNKsznQnXs//XSHj7o1Jw5lsgx9OhXDwOG2APbJhHqxIe1jToKENi01P74LnGSVFkIp2NWJfIIf+jYTAv8GPNJc3ew2TD3nbu2B6yqqy004Sx3j5G+lf/m9wAHw77CtKtsuhD1AUz18snptLB4G+0vqvhPrLTKw03Og0cwtVhhGiNe0ujo5WkCYgsudQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SWKhIKdt/sNSj6n+/gcPfB5hebExkceJpbIDzBgig48=;
+ b=h118os+kEjdOAkOQtj5xrNUozbI/6zH4g541GrEOtM1VeWvke0/++yeA/AAcVQIX8ZCIKfXwIuH37NG88EfmusZsdY7yErk53/4T6+xq2JRqTfx/ExVK8PYqKlTnbV9cPY0vRqxduIyLjsvqqnzUZgQmH7M3wkz4kMJV2RoqjeKfCcJH4wqzwWhF84a3XcukCZVYEA5/zvm8PurW2wgb7qY7qobtArTIzlox1mxOkZ8dEyNqGb9p7UecECHZ4uzBHotrLHJptx0WOeNO/Cmdcg+wZbpQzB5L2SKr6TfMWeXdqU+2AL1utDqL+xfH6jlrpCV/QdPGFoNYwBFVKMrVXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=chelsio.com; dmarc=pass action=none header.from=chelsio.com;
+ dkim=pass header.d=chelsio.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=gl5YvAOZp93b/wM56Dis2Ef5sMZofdOKMbfKboGp6yo=;
-        b=cdevoIjGxGVYu95IODtQea1YyoLcyw6sCCXKlJU2yUgo03CQRdkf6cy+flAIUtqrdu
-         oHoIpUwX9jWbMr2IZRh9TNuMUILi8CzSIPwkJstfmd598FkInQIjDRX0zuSX8v9XSxX0
-         ojBsLhQVlcN8Ks5A97aN6vLJ7ahpAMsBuBNMo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gl5YvAOZp93b/wM56Dis2Ef5sMZofdOKMbfKboGp6yo=;
-        b=Eo/gtBBRDLvJ2YDX5Z26hQ75cqDT+Nki7VUdmh9XuQaE35fry1QrnsKseOKk+CDFqC
-         eIWzQWhCwdqK8nsYObMi08mxTVhiiSogosbuUCz6/F1soUkLes6N7byciL/GmrYnRu5G
-         2CBNyy32mitulSlMi+OLqmLlCzWa4z4Fxa3DE6jCwIFADldznCErfAHPp/mpYULT+ido
-         tZjwu8UNX7s+NEiOmOmt72Rc+C/KRtdtDxlPN7vDRWWYnNdCIWLFPp/FPBpvXhUnxURk
-         BknsZVw88R+tW+M9yvjM8yW4xpNz/5KyMTVCJ9WQOEgvojQRhp+QR+cn1KS64N2beUgr
-         VViA==
-X-Gm-Message-State: AOAM533F8DAmKLiXLpF+LSNb4VzOqrl1HAsU/ubGtqsVhsbKFuCUUm0L
-        q97q4XpSIvdy1L6TB9dyT+0YDg==
-X-Google-Smtp-Source: ABdhPJxETamqFi5zkOw06l3Tp+NSNEkaTDzqtNwNnisPrhkZdLtx8XcQgkZ5FkusZb9DveNbwGLgdw==
-X-Received: by 2002:a17:902:b088:: with SMTP id p8mr1638177plr.86.1599670575585;
-        Wed, 09 Sep 2020 09:56:15 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id il14sm2370370pjb.54.2020.09.09.09.56.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 09:56:14 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yuval Bason <yuval.bason@cavium.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] qedr: fix resource leak in qedr_create_qp
-Date:   Wed,  9 Sep 2020 16:55:59 +0000
-Message-Id: <20200909165600.20556-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+ d=chelsious.onmicrosoft.com; s=selector2-chelsious-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SWKhIKdt/sNSj6n+/gcPfB5hebExkceJpbIDzBgig48=;
+ b=wZv4BVcXDxbvfaTPrbnfHXslTHsIp559JBu1/f+UoVIKIy+NAQz/ugHKQv28ufubcOP1oNIYHF/SbrvaoaDnCEL00l71Vk/8zdFDxDkF1dj1ughFNoCvxwYsVzgJKfAE2otJ+zjQCmAPIwXuHzcFzU7Jr70MV8NoAFXvksNTkxw=
+Received: from CY4PR1201MB0232.namprd12.prod.outlook.com
+ (2603:10b6:910:21::21) by CY4PR12MB1175.namprd12.prod.outlook.com
+ (2603:10b6:903:3d::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Wed, 9 Sep
+ 2020 15:28:44 +0000
+Received: from CY4PR1201MB0232.namprd12.prod.outlook.com
+ ([fe80::f969:46ca:793:4300]) by CY4PR1201MB0232.namprd12.prod.outlook.com
+ ([fe80::f969:46ca:793:4300%6]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
+ 15:28:44 +0000
+From:   Potnuri Bharat Teja <bharat@chelsio.com>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] RDMA/iw_cxgb4: disable delayed ack by default
+Thread-Topic: [PATCH] RDMA/iw_cxgb4: disable delayed ack by default
+Thread-Index: AQHWhq/HJkpDy+3//UGG2qQaNwmNy6lgbiqA
+Date:   Wed, 9 Sep 2020 15:28:44 +0000
+Message-ID: <CY4PR1201MB02327F3093F7DD29E08CCF32CE260@CY4PR1201MB0232.namprd12.prod.outlook.com>
+References: <20200909134726.10348-1-bharat@chelsio.com>
+In-Reply-To: <20200909134726.10348-1-bharat@chelsio.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: chelsio.com; dkim=none (message not signed)
+ header.d=none;chelsio.com; dmarc=none action=none header.from=chelsio.com;
+x-originating-ip: [157.48.36.39]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ef6bfa35-2b2a-4e4f-2e9b-08d854d509cc
+x-ms-traffictypediagnostic: CY4PR12MB1175:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR12MB117563637385EAD06D9C45B9CE260@CY4PR12MB1175.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2043;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IF/cV4ps6ykqxl0+gbAU0FmtpPnSlX4e4fg2ADLTjcDdNrFSOI3UQcBexB8X+VR79kvg834r6Y0CVuOHi+jVbTy7muLKWzSFpzfoIO/L+UzNeqoqsEbSqWunMMkRZ/7c55MbQVBXPp3TFJGYgRQuTR+zc0/X5RPBHFX6/vaKSSVpQ1ufDWeDsWURl1wJ/N7Ez18OzrVmGRqsGR/vFlJ9NW06WBvJi1beCbN8fYICW6IS3Pq8TagXvA06JAG0OLy6mzAywV4ad2MwRES6/npvj+5vCGAcllafLFLtXLpuZGP4RMgh+DAQ5d1E6kZEjByY3eVZXYEDrToXnREVmIlfBg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB0232.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39830400003)(396003)(366004)(7696005)(55016002)(86362001)(316002)(83380400001)(71200400001)(478600001)(9686003)(52536014)(5660300002)(8936002)(8676002)(33656002)(2906002)(66476007)(66556008)(53546011)(6506007)(64756008)(4326008)(26005)(66446008)(76116006)(110136005)(66946007)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: TKwUoXOBr8ge7ZhnEYDTDUOzCz1c0o+PSk0X1ZhdV1QxLNlDY9M6AjTxycZWf7Zqa0u3Zel7WBUYw9vw7tAGPtAykmv+OC1G5sQkOVHaMFRP9aDVM1le0VOAQVp9rYFjKwhqkCN+WtUCWrTMe1YOpVAeHJ2CqHOYdhXBwV+ngLSu7+69w/GcfqfJ24XRgyGw/30I9XiWxIdzf3948MwcVudmE/+7A4bNCcOzexYwSPm7Q2qUluDca2WH8i2+91HdTj/IbIddK1Shc4yxN++hKhg2pGjbpEJv0wpmj/G3R4e12ZAmSt8rQwME+4Alpswubf5a/aFkhMsH8KjjT7busin2hl0mrmrrlTEekGKXJgEIu3ZxESuXmZWdgXceTuZ7LEuHKJb6HvBG7Uw+aTKgOd4Z0H6q9Cfi2Qd24uIwYWvbN35TyaQ9hrfIBa8vbEpLKIain0VPhCuwY7W/yfVcmGd4/sOirLSzH10NRTTqfjZzNlQ3lWCasnvMx6C4sFIDOlW+kThZHMvBv0Gt225ruhTimqmuFc8ZD3Z7BanzBn5l7wDgag/5zl5Kgp53qkdLQJXBfIEEhWY1rm5mC4gCZFCB6ZBUviwLFM+6UUKAcpmGlMZTLy2GWVuAWKXMA4ZXKx+auyhMzQ0qB3M8OQszzA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: chelsio.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0232.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef6bfa35-2b2a-4e4f-2e9b-08d854d509cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 15:28:44.1119
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 065db76d-a7ae-4c60-b78a-501e8fc17095
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1MTFaVXJxtoabYq5wg3uCopKUB3HpUIelTIsRdXVhxOBrE40xq3P4EGGu3AV/+r3CSP8blI9Gw+DsY4/rnFFSCVhH0eOceO33KsfN/VUYeo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1175
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When xa_insert() fails, the acquired resource in qedr_create_qp should
-also be freed. However, current implementation does not handle the
-error.
+Missed rdma-next subject prefix. Resending.
 
-Fix this by adding a new goto label that calls qedr_free_qp_resources.
+-----Original Message-----
+From: Potnuri Bharat Teja <bharat@chelsio.com>=20
+Sent: Wednesday, September 9, 2020 7:17 PM
+To: jgg@ziepe.ca; dledford@redhat.com
+Cc: linux-rdma@vger.kernel.org; Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: [PATCH] RDMA/iw_cxgb4: disable delayed ack by default
 
-Fixes: 1212767e23bb ("qedr: Add wrapping generic structure for qpidr and
-adjust idr routines.")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Receive side delayed ack mode is needed only for certain area networks/ con=
+nections. Therefore disable it by default.
+
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 48 ++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 23 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index b49bef94637e..19688773c58b 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -2112,6 +2112,28 @@ static int qedr_create_kernel_qp(struct qedr_dev *dev,
- 	return rc;
- }
- 
-+static int qedr_free_qp_resources(struct qedr_dev *dev, struct qedr_qp *qp,
-+				  struct ib_udata *udata)
-+{
-+	struct qedr_ucontext *ctx =
-+		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
-+					  ibucontext);
-+	int rc;
-+
-+	if (qp->qp_type != IB_QPT_GSI) {
-+		rc = dev->ops->rdma_destroy_qp(dev->rdma_ctx, qp->qed_qp);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	if (qp->create_type == QEDR_QP_CREATE_USER)
-+		qedr_cleanup_user(dev, ctx, qp);
-+	else
-+		qedr_cleanup_kernel(dev, qp);
-+
-+	return 0;
-+}
-+
- struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 			     struct ib_qp_init_attr *attrs,
- 			     struct ib_udata *udata)
-@@ -2165,11 +2187,13 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
- 		rc = xa_insert(&dev->qps, qp->qp_id, qp, GFP_KERNEL);
- 		if (rc)
--			goto err;
-+			goto err2;
- 	}
- 
- 	return &qp->ibqp;
- 
-+err2:
-+	qedr_free_qp_resources(dev, qp, udata);
- err:
- 	kfree(qp);
- 
-@@ -2671,28 +2695,6 @@ int qedr_query_qp(struct ib_qp *ibqp,
- 	return rc;
- }
- 
--static int qedr_free_qp_resources(struct qedr_dev *dev, struct qedr_qp *qp,
--				  struct ib_udata *udata)
--{
--	struct qedr_ucontext *ctx =
--		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
--					  ibucontext);
--	int rc;
--
--	if (qp->qp_type != IB_QPT_GSI) {
--		rc = dev->ops->rdma_destroy_qp(dev->rdma_ctx, qp->qed_qp);
--		if (rc)
--			return rc;
--	}
--
--	if (qp->create_type == QEDR_QP_CREATE_USER)
--		qedr_cleanup_user(dev, ctx, qp);
--	else
--		qedr_cleanup_kernel(dev, qp);
--
--	return 0;
--}
--
- int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- {
- 	struct qedr_qp *qp = get_qedr_qp(ibqp);
--- 
-2.17.1
-
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4=
+/cm.c
+index 1f288c73ccfc..8769e7aa097f 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -77,9 +77,9 @@ static int enable_ecn;  module_param(enable_ecn, int, 064=
+4);  MODULE_PARM_DESC(enable_ecn, "Enable ECN (default=3D0/disabled)");
+=20
+-static int dack_mode =3D 1;
++static int dack_mode;
+ module_param(dack_mode, int, 0644);
+-MODULE_PARM_DESC(dack_mode, "Delayed ack mode (default=3D1)");
++MODULE_PARM_DESC(dack_mode, "Delayed ack mode (default=3D0)");
+=20
+ uint c4iw_max_read_depth =3D 32;
+ module_param(c4iw_max_read_depth, int, 0644);
+--
+2.24.0
