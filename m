@@ -2,106 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88769262C64
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 11:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E2A262E0D
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 13:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgIIJri (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Sep 2020 05:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S1729789AbgIILnn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Sep 2020 07:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgIIJrh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Sep 2020 05:47:37 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3454FC061573
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Sep 2020 02:47:37 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id h206so1352709ybc.11
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Sep 2020 02:47:37 -0700 (PDT)
+        with ESMTP id S1729912AbgIILnh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Sep 2020 07:43:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5727AC061786
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Sep 2020 04:43:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so2610760wrm.2
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Sep 2020 04:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ska-ac-za.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=gYB9LqR/14ONneTOJHQU3l0lF8vgy7tCXRHR3vagiSU=;
-        b=WUMPFYnkps3lL4pVd0wJohRk2R/O4B8Ob/CjV+/USIlqjUbaPHL8bgH+YeQgV1vwE1
-         XD7GzTvblJHygPVXF3YRIHYhd8pjx1PWF71vYJqT0823SrV/b/hcGWrdNqC8CbhkT6FT
-         8ckvOEg3+XJZBKsbDW+L5LeB1OhsNgn3jTw0zcC1Huu9PBBqjwCKSd7kAeDDAC/uVTV2
-         DafRbwx+8B/9c7F9RtQGtrfroY1zxIiJywrH1nAjdeUGdOxZGfFOiC9PodKhtYiTlZSw
-         xrtbe/L6hgYFo9w3HRKDadeijaZcMFai5geY+hBRkNY0xqsOCsImPBIPC+Q3YG4WAFQq
-         ov0g==
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IoOwfF+G1FhxX5cbjmmLGfMHMYzBv9TU48vhKftxc4E=;
+        b=DOpEExo5OekREeixjcSIiA4XaYFDzY4R5rQVYK7Yr3+aRN49fKpEnlSQn1p3NL2szo
+         jJl9XLfdxe6ZtZ7o+2zglk5PkyocqIXdOfMz2yFObqPab392C+AtYgOSXQufb+LCfJRs
+         cH1IMgxzKfteJy63eRcUtTn4xx0b6VGOomM714xvPCKb6b3JYwwN2qfXNOR9dPZQIfoe
+         hJp8uFXVxFGgmpPTmTzqie2dcHgMqpqO2HEBUt4EzxgrYpp87b2byLdAxwNqDG/PyL3s
+         Wy6/kOGt/1vl9SSBaGRqunmiclb7e3XOUTL9YiseNP2HRlQJps/neAjQjVpv2eewDDJx
+         7Ebw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=gYB9LqR/14ONneTOJHQU3l0lF8vgy7tCXRHR3vagiSU=;
-        b=L5EL2ErEJoo6T7WRV120JjnDiDrHySRFugtS3Wo+D7Ib685KDfmZkXd9FPTTvzWTpp
-         TBZR3D1EFon5b86b4q7mXexviTURPgctVFs0UUeGa4swl6lRPoqbBT+zvfnrqGRvGduy
-         44vjYX+xLwksZgMy4lDSJslId49Q8TB73iISLHJODJvoEzQky8xhj4FpYUbMqMv8ACry
-         2OzS/9kOZZkCCsFQLKtq0Qhu0+59giA6/w4LdcalUp/tM+HpoAXqN7ZyX761gQPQkLht
-         CWy6afHGQvbDlaGc5Tiec8nzmd8olBzoQEb4JKGHa86SninClSQEgLDlA2ZdPR9fca7v
-         nLBQ==
-X-Gm-Message-State: AOAM530qY5RXVEGhWcNOchdYGT2cigp8/ZZemeij8e151rxXFzTCkT39
-        G85jqG4eJFJGFaqN0aY6178IOES81hgWiWeftpbszq6b0hGRdkGT
-X-Google-Smtp-Source: ABdhPJwN69L5M4t63KtA36E0eelKbHB7ZFxp5MqZrQ8pzTUyHkiG2M9Bp3PC83YXImCTb6bDwTAO2uQ1bcEu4cwySPE=
-X-Received: by 2002:a25:4843:: with SMTP id v64mr4680619yba.187.1599644855027;
- Wed, 09 Sep 2020 02:47:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IoOwfF+G1FhxX5cbjmmLGfMHMYzBv9TU48vhKftxc4E=;
+        b=EamYRy/nK1VxsfIyJ0NNXvW0h26zCtYoxXG6cJ6js5xcmI7jhMnijWdcXlE5OwYrMW
+         HZEd2ipWDE4P5mYJjFbnk2RDh7HtBIm+9r2BtB9DCsaSyY/hSDPnxARfhbS4gxpSTR61
+         IovNkUMD99ZcbEF5c3k4Cy7laxQnS0FyPtON1lVyzfvcKfSR5RXKsp4XrAARHk9CzLEd
+         RV/V7xjVbxrMy9auu0hCd99fqqXUQAtyTAFZoK3MS31Htx88fN+LifBMYSe+Ekz3EXWN
+         lUeQmdwsoDPHhRumstFtvTZeVG9dlS9SqMyBjt99MkmSHXmrJ1N30orNvQzfs6+hXSWS
+         j5lA==
+X-Gm-Message-State: AOAM531Qcc6cH2y5i3aMbii38nHK/ZzJXdDWhzfVIVxrp1W3WF6568y1
+        3ZK4YzjPEXSd13Iyant5DkrPyaFCwXgxEAS556U/zCEdYNtI
+X-Google-Smtp-Source: ABdhPJxoVFaBjvxkgoCd8gkWhxu1oRIRDUlJoJokVKR9f7iE4SskInZ+QaVYiFzUBkT0z331yEU5ggJyNx3ZC+udIvA=
+X-Received: by 2002:adf:81e6:: with SMTP id 93mr3473456wra.412.1599651785016;
+ Wed, 09 Sep 2020 04:43:05 -0700 (PDT)
 MIME-Version: 1.0
-From:   Bruce Merry <bmerry@ska.ac.za>
-Date:   Wed, 9 Sep 2020 11:47:24 +0200
-Message-ID: <CAOm-9apwANddPcn4BYZwjV9Rd=f+Y6WRuwBwBxMM+aapOAwbXw@mail.gmail.com>
-Subject: Bug report: in-place build exposes fixup headers, breaking static_assert
-To:     linux-rdma@vger.kernel.org
+References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
+ <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org> <CAHg0HuyGr8BfgBvXUG7N5WYyXKEzyh3i7eA=2XZxbW3zyXLTsA@mail.gmail.com>
+ <cc14aa58-254e-5c33-89ab-6f3900143164@acm.org>
+In-Reply-To: <cc14aa58-254e-5c33-89ab-6f3900143164@acm.org>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Wed, 9 Sep 2020 13:42:54 +0200
+Message-ID: <CAHg0HuxJ-v7WgqbU62zkihquN9Kyc9nPzGhcung+UyFOG7LECQ@mail.gmail.com>
+Subject: Re: [RFC] Reliable Multicast on top of RTRS
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When building with the recommended build.sh script, it seems that some
-header files that override system headers get installed into the
-build/include directory. I'm guessing these are intended to be used
-while building rdma-core itself, but have the effect of interfering
-with other software that is specifying this include directory to build
-against rdma-core libraries.
+On Fri, Sep 4, 2020 at 5:33 PM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 2020-09-04 04:35, Danil Kipnis wrote:
+> > On Thu, Sep 3, 2020 at 1:07 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> >> How will it be guaranteed that the resulting software does
+> >> not suffer from the problems that have been solved by the introduction
+> >> of the DRBD activity log
+> >> (https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
+> >
+> > The above would require some kind of activity log also, I'm afraid.
+>
+> How about collaborating with the DRBD team? My concern is that otherwise
+> we will end up with two drivers in the kernel that implement block device
+> replication between servers connected over a network.
 
-The case I ran into is that an assert.h file is added that #defines
-static_assert to an empty macro. Apart from silently disabling the
-static assertions in users' code, this breaks compilation of C++11
-code, because the arguments to static_assert may contain a comma (such
-as in a list of template arguments), leading to errors because the
-preprocessor splits on the comma and sees more than two arguments to
-the macro.
+I have two general understanding questions:
+- What is the conceptual difference between DRBD and an md-raid1 with
+one local leg and one remote (imported over srp/nvmeof/rnbd)?
+- Is this possible to setup an md-raid1 on a client sitting on top of
+two remote DRBD devices, which are configured in "active-active" mode?
 
-To reproduce, try building this Dockerfile:
+Does anybody know?
 
-FROM quay.io/pypa/manylinux2010_x86_64
-
-RUN yum install -y \
-        wget cmake3 ninja-build libnl3-devel
-
-RUN wget https://github.com/linux-rdma/rdma-core/releases/download/v31.0/rdma-core-31.0.tar.gz
--O /tmp/rdma-core-31.0.tar.gz
-RUN tar -C /tmp -zxf /tmp/rdma-core-31.0.tar.gz
-RUN cd /tmp/rdma-core-31.0 && ./build.sh
-
-RUN echo -e "#include <cassert>\n#include <vector>" > simple.cpp
-RUN g++ -std=c++11 -c simple.cpp -I /tmp/rdma-core-31.0/build/include
-
-
-The compiler output starts with:
-
-In file included from
-/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/stl_iterator.h:66,
-                 from
-/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/stl_algobase.h:67,
-                 from /opt/rh/devtoolset-8/root/usr/include/c++/8/vector:60,
-                 from simple.cpp:2:
-/opt/rh/devtoolset-8/root/usr/include/c++/8/bits/ptr_traits.h:115:71:
-error: macro "static_assert" passed 3 arguments, but takes just 2
-    "pointer type defines element_type or is like SomePointer<T, Args>");
-
-When I changed my build process to do an out-of-place install the
-problem went away.
-
-Regards
-Bruce
--- 
-Bruce Merry
-Senior Science Processing Developer
-SARAO
+>
+> Thanks,
+>
+> Bart.
