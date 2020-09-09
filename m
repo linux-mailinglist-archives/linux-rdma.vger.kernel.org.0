@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997CD262B27
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 10:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F44262B25
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 10:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIII65 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1727820AbgIII65 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 9 Sep 2020 04:58:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11284 "EHLO huawei.com"
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11283 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730154AbgIII6z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:58:55 -0400
+        id S1730157AbgIII64 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:58:56 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9FA4682AA7264ABF66AA;
+        by Forcepoint Email with ESMTP id 9B190D4E0E2B5C3E4175;
         Wed,  9 Sep 2020 16:58:53 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Sep 2020 16:58:42 +0800
+ 14.3.487.0; Wed, 9 Sep 2020 16:58:43 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 7/9] RDMA/hns: Fix the wrong value of rnr_retry when querying qp
-Date:   Wed, 9 Sep 2020 16:57:32 +0800
-Message-ID: <1599641854-23160-8-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 8/9] RDMA/hns: Fix configuration of ack_req_freq in QPC
+Date:   Wed, 9 Sep 2020 16:57:33 +0800
+Message-ID: <1599641854-23160-9-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
 References: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
@@ -36,33 +36,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+The hardware will add AckReq flag in BTH header according to the value of
+ack_req_freq to request ACK from responder for the packets with this flag.
+It should be greater than or equal to lp_pktn_ini instead of using a fixed
+value.
 
-The rnr_retry returned to the user is not correct, it should be got from
-another fields in QPC.
-
-Fixes: bfe860351e31 ("RDMA/hns: Fix cast from or to restricted __le32 for driver")
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Fixes: 7b9bd73ed13d ("RDMA/hns: Fix wrong assignment of lp_pktn_ini in QPC")
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index af2dea1..fdbc6b0 100644
+index fdbc6b0..fe11c9a 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4810,7 +4810,9 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	qp_attr->retry_cnt = roce_get_field(context.byte_212_lsn,
- 					    V2_QPC_BYTE_212_RETRY_CNT_M,
- 					    V2_QPC_BYTE_212_RETRY_CNT_S);
--	qp_attr->rnr_retry = le32_to_cpu(context.rq_rnr_timer);
-+	qp_attr->rnr_retry = roce_get_field(context.byte_244_rnr_rxack,
-+					    V2_QPC_BYTE_244_RNR_CNT_M,
-+					    V2_QPC_BYTE_244_RNR_CNT_S);
+@@ -3675,9 +3675,6 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
+ 			     V2_QPC_BYTE_76_SRQ_EN_S, 1);
+ 	}
  
- done:
- 	qp_attr->cur_qp_state = qp_attr->qp_state;
+-	roce_set_field(context->byte_172_sq_psn, V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
+-		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, 4);
+-
+ 	roce_set_bit(context->byte_172_sq_psn, V2_QPC_BYTE_172_FRE_S, 1);
+ 
+ 	hr_qp->access_flags = attr->qp_access_flags;
+@@ -3988,6 +3985,7 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
+ 	dma_addr_t trrl_ba;
+ 	dma_addr_t irrl_ba;
+ 	enum ib_mtu mtu;
++	u8 lp_pktn_ini;
+ 	u8 port_num;
+ 	u64 *mtts;
+ 	u8 *dmac;
+@@ -4095,13 +4093,21 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
+ 	}
+ 
+ #define MAX_LP_MSG_LEN 65536
+-	/* MTU*(2^LP_PKTN_INI) shouldn't be bigger than 64kb */
++	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
++	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / ib_mtu_enum_to_int(mtu));
++
+ 	roce_set_field(context->byte_56_dqpn_err, V2_QPC_BYTE_56_LP_PKTN_INI_M,
+-		       V2_QPC_BYTE_56_LP_PKTN_INI_S,
+-		       ilog2(MAX_LP_MSG_LEN / ib_mtu_enum_to_int(mtu)));
++		       V2_QPC_BYTE_56_LP_PKTN_INI_S, lp_pktn_ini);
+ 	roce_set_field(qpc_mask->byte_56_dqpn_err, V2_QPC_BYTE_56_LP_PKTN_INI_M,
+ 		       V2_QPC_BYTE_56_LP_PKTN_INI_S, 0);
+ 
++	/* ACK_REQ_FREQ should be larger than or equal to LP_PKTN_INI */
++	roce_set_field(context->byte_172_sq_psn, V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
++		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, lp_pktn_ini);
++	roce_set_field(qpc_mask->byte_172_sq_psn,
++		       V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
++		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, 0);
++
+ 	roce_set_bit(qpc_mask->byte_108_rx_reqepsn,
+ 		     V2_QPC_BYTE_108_RX_REQ_PSN_ERR_S, 0);
+ 	roce_set_field(qpc_mask->byte_96_rx_reqmsn, V2_QPC_BYTE_96_RX_REQ_MSN_M,
 -- 
 2.8.1
 
