@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3040262B1E
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 10:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CCA262B22
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Sep 2020 10:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgIII6v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Sep 2020 04:58:51 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11278 "EHLO huawei.com"
+        id S1730136AbgIII6w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Sep 2020 04:58:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11279 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730128AbgIII6u (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:58:50 -0400
+        id S1729741AbgIII6v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:58:51 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8ED765EA1F8E53A32899;
+        by Forcepoint Email with ESMTP id 930FE7E9B35E23EAD49A;
         Wed,  9 Sep 2020 16:58:48 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Sep 2020 16:58:41 +0800
+ 14.3.487.0; Wed, 9 Sep 2020 16:58:42 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 4/9] RDMA/hns: Correct typo of hns_roce_create_cq()
-Date:   Wed, 9 Sep 2020 16:57:29 +0800
-Message-ID: <1599641854-23160-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 5/9] RDMA/hns: Add check for the validity of sl configuration
+Date:   Wed, 9 Sep 2020 16:57:30 +0800
+Message-ID: <1599641854-23160-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
 References: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
@@ -36,29 +36,59 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+From: Jiaran Zhang <zhangjiaran@huawei.com>
 
-Change "initialze" to "initialize".
+According to the RoCE v1 specification, the sl (service level) 0-7 are
+mapped directly to priorities 0-7 respectively, sl 8-15 are reserved. The
+driver should verify whether the the value of sl is larger than 7, if so,
+an exception should be returned.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 ++++++++++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index e87d616..4f4f54f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -287,7 +287,7 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
- 	/*
- 	 * For the QP created by kernel space, tptr value should be initialized
- 	 * to zero; For the QP created by user space, it will cause synchronous
--	 * problems if tptr is set to zero here, so we initialze it in user
-+	 * problems if tptr is set to zero here, so we initialize it in user
- 	 * space.
- 	 */
- 	if (!udata && hr_cq->tptr_addr)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 2643972..01aabb7 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4302,11 +4302,19 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 		       V2_QPC_BYTE_28_FL_S, 0);
+ 	memcpy(context->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
+ 	memset(qpc_mask->dgid, 0, sizeof(grh->dgid.raw));
++
++	hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
++	if (unlikely(hr_qp->sl > MAX_SERVICE_LEVEL)) {
++		ibdev_err(ibdev,
++			  "failed to fill QPC, sl (%d) shouldn't be larger than %d.\n",
++			  hr_qp->sl, MAX_SERVICE_LEVEL);
++		return -EINVAL;
++	}
++
+ 	roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
+-		       V2_QPC_BYTE_28_SL_S, rdma_ah_get_sl(&attr->ah_attr));
++		       V2_QPC_BYTE_28_SL_S, hr_qp->sl);
+ 	roce_set_field(qpc_mask->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
+ 		       V2_QPC_BYTE_28_SL_S, 0);
+-	hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index ac29be4..17f35f9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1941,6 +1941,8 @@ struct hns_roce_eq_context {
+ #define HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S 0
+ #define HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M GENMASK(23, 0)
+ 
++#define MAX_SERVICE_LEVEL 0x7
++
+ struct hns_roce_wqe_atomic_seg {
+ 	__le64          fetchadd_swap_data;
+ 	__le64          cmp_data;
 -- 
 2.8.1
 
