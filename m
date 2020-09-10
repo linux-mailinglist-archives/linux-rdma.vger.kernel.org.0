@@ -2,130 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F15264390
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 12:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E066D264530
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 13:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgIJKQs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Sep 2020 06:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730260AbgIJKQi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Sep 2020 06:16:38 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656B6C061756;
-        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so5065195wmh.4;
-        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
-        b=TyMbFj/CCKS/yEhzmJyx0SXASPCumWs129eaMWwliNPHoe9nGlJZk2Tsw17ABtL/mL
-         mWke72l5dRMmrFg9ieYmDr1jVfXiMwSmIMEMsNuXAYrMDmbRSlu2SEhpSFeukLVe3cg9
-         +5O+wBu+Jx7JfEyF9JNwdrWebHIVozT6N0VTqxSNEjrIsLOZ3R3dejl3APk21PLF2Oj8
-         +Kb8ACZuKGttnfzoDexc2yloyF3/YUcCQzcDsr90PZvO0KOXZEocClY8eSC4NnFPV4xO
-         lvhsU6vpfnm+pvKWrckJN/8r5bLtL/kaV4lfgkeSIGRnLzVQeQ+BBL7u23nOrwhO07G+
-         JHEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
-        b=pmUw8PMCpmIHzSROi++DPz4KjuYgWtg1+Y5TE231Bqiqr8R2N1C3xqoxsiwBj6o1cg
-         uH2BXtjGnMGGoluHj644z5xr7xlqF6U2gftY836V0P2i1eGVJRbd6Kt5NRdxnuMIEUiL
-         l2iyGGPzmqplYZFS9cH521ZnO3ebnALHjbVC/Yy86VDwVom/j1SkB7EzjdV3z887JSV1
-         vBn2sxOKogw/Qr4Wwks6/Tsd6y+ZPpXYP0rtp5M7H0Cz9R+tTExVNwpFLc4afNM8kBHv
-         sPRTlUxnMhVTJVsmuIxtZtgT2oyddp39osiyXrTv8c0GKDU7rTuLb07sCHlL7FBgK0nz
-         qKBw==
-X-Gm-Message-State: AOAM531fehkY9RO3xn+p429hIZbAH2vvrEoH04VI6Oae8Aw4ljanDWzg
-        xuso8Ww0yrtKmBUnjJW0R1g=
-X-Google-Smtp-Source: ABdhPJxz+CTfYBRsr9wPZ8ehDJQEmTq++yYJr4Xo0s0U0R6hQKoUpOmBLcC8LM7TIOPThVoU3WYKbg==
-X-Received: by 2002:a1c:234b:: with SMTP id j72mr7837172wmj.153.1599732997083;
-        Thu, 10 Sep 2020 03:16:37 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id a127sm2936155wmh.34.2020.09.10.03.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:16:36 -0700 (PDT)
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Kees Cook <kees.cook@canonical.com>,
-        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
-        storagedev@microchip.com, ceph-devel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <81d852d4-115f-c6c6-ef80-17c47ec4849a@gmail.com>
-Date:   Thu, 10 Sep 2020 12:16:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730181AbgIJLLI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Sep 2020 07:11:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6916 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728970AbgIJKxn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:53:43 -0400
+IronPort-SDR: h9jv+QE1RecI5HOVkjHwTHCmnVzWGfflFX9Kmpu+KeJ1ssy89Xm3euINoEQfAnlJMvDEulbhKE
+ FYfjiV+zKZgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="159458864"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="159458864"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 03:51:38 -0700
+IronPort-SDR: i0yGfX0m+/YBQ0Sdq5tqTbOf+Wki2Q0Qgm44A2CvpkVSiZtFB/yQADaY96J5PPli2Gdwko+goy
+ mMCYFKlQYsPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="407726332"
+Received: from lkp-server01.sh.intel.com (HELO 12ff3cf3f2e9) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Sep 2020 03:51:36 -0700
+Received: from kbuild by 12ff3cf3f2e9 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kGKAy-0000q2-4M; Thu, 10 Sep 2020 10:51:36 +0000
+Date:   Thu, 10 Sep 2020 18:51:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 7bf5d303007cd3cc835966bc03a8b1949a59c823
+Message-ID: <5f5a0515.yxRI4UXku2rhNxub%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: 7bf5d303007cd3cc835966bc03a8b1949a59c823  RDMA: Restore ability to fail on PD deallocate
 
+elapsed time: 720m
 
-On 09/09/2020 22:06, Joe Perches wrote:
-> diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
-> index 09f931d4598c..778be26d329f 100644
-> --- a/drivers/net/wireless/mediatek/mt7601u/dma.c
-> +++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
-> @@ -193,11 +193,11 @@ static void mt7601u_complete_rx(struct urb *urb)
->   	case -ESHUTDOWN:
->   	case -ENOENT:
->   		return;
-> +	case 0:
-> +		break;
->   	default:
->   		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
->   				    urb->status);
-> -		fallthrough;
-> -	case 0:
->   		break;
->   	}
->   
-> @@ -238,11 +238,11 @@ static void mt7601u_complete_tx(struct urb *urb)
->   	case -ESHUTDOWN:
->   	case -ENOENT:
->   		return;
-> +	case 0:
-> +		break;
->   	default:
->   		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
->   				    urb->status);
-> -		fallthrough;
-> -	case 0:
->   		break;
->   	}
+configs tested: 138
+configs skipped: 14
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                            zeus_defconfig
+powerpc                 linkstation_defconfig
+sparc64                             defconfig
+mips                             allmodconfig
+powerpc                     powernv_defconfig
+powerpc                      mgcoge_defconfig
+arm                        neponset_defconfig
+m68k                        stmark2_defconfig
+i386                             allyesconfig
+arm                       mainstone_defconfig
+mips                           mtx1_defconfig
+sh                          r7785rp_defconfig
+arc                           tb10x_defconfig
+arm                        spear3xx_defconfig
+riscv                    nommu_k210_defconfig
+m68k                           sun3_defconfig
+arm                            u300_defconfig
+sh                           se7712_defconfig
+m68k                        mvme147_defconfig
+m68k                            q40_defconfig
+x86_64                           alldefconfig
+powerpc                     mpc83xx_defconfig
+arm                  colibri_pxa270_defconfig
+mips                        nlm_xlp_defconfig
+arc                                 defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                           ip22_defconfig
+mips                           ip27_defconfig
+riscv                               defconfig
+arm                          collie_defconfig
+sh                           se7750_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       bvme6000_defconfig
+arm                         lpc18xx_defconfig
+mips                           jazz_defconfig
+m68k                       m5249evb_defconfig
+parisc                generic-32bit_defconfig
+arm                         assabet_defconfig
+arm                            dove_defconfig
+arm                         ebsa110_defconfig
+arc                        vdk_hs38_defconfig
+arm                            lart_defconfig
+openrisc                         alldefconfig
+c6x                         dsk6455_defconfig
+mips                 decstation_r4k_defconfig
+s390                             allyesconfig
+arm                        cerfcube_defconfig
+sh                             shx3_defconfig
+arm                         cm_x300_defconfig
+sh                ecovec24-romimage_defconfig
+csky                                defconfig
+i386                                defconfig
+sh                          polaris_defconfig
+m68k                        mvme16x_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+sparc                       sparc32_defconfig
+mips                      loongson3_defconfig
+mips                  maltasmvp_eva_defconfig
+alpha                               defconfig
+sh                              ul2_defconfig
+powerpc                        cell_defconfig
+m68k                          multi_defconfig
+arm                         nhk8815_defconfig
+powerpc                      chrp32_defconfig
+arm                           corgi_defconfig
+sh                           se7780_defconfig
+sh                           se7206_defconfig
+mips                          rb532_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20200909
+x86_64               randconfig-a006-20200909
+x86_64               randconfig-a003-20200909
+x86_64               randconfig-a001-20200909
+x86_64               randconfig-a005-20200909
+x86_64               randconfig-a002-20200909
+x86_64               randconfig-a004-20200910
+x86_64               randconfig-a006-20200910
+x86_64               randconfig-a003-20200910
+x86_64               randconfig-a002-20200910
+x86_64               randconfig-a005-20200910
+x86_64               randconfig-a001-20200910
+i386                 randconfig-a004-20200909
+i386                 randconfig-a005-20200909
+i386                 randconfig-a006-20200909
+i386                 randconfig-a002-20200909
+i386                 randconfig-a001-20200909
+i386                 randconfig-a003-20200909
+i386                 randconfig-a016-20200909
+i386                 randconfig-a015-20200909
+i386                 randconfig-a011-20200909
+i386                 randconfig-a013-20200909
+i386                 randconfig-a014-20200909
+i386                 randconfig-a012-20200909
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20200909
+x86_64               randconfig-a016-20200909
+x86_64               randconfig-a011-20200909
+x86_64               randconfig-a012-20200909
+x86_64               randconfig-a015-20200909
+x86_64               randconfig-a014-20200909
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
