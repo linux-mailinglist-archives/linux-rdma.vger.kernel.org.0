@@ -2,86 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F71226480D
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 16:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F847264A11
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 18:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgIJOew convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 10 Sep 2020 10:34:52 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59601 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731019AbgIJObP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:31:15 -0400
-IronPort-SDR: OTPpc1VBKeg+hBetJ7RYEPbP3Vro45/ZPgv35emsCgO4azJ4DVWFzlOpdKHnh+wRgUXb3sDBGm
- OO2kDCi4+J+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="146261918"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="146261918"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 07:31:13 -0700
-IronPort-SDR: YwD3ByGVX2uxV95cYEAQntsgJLm67BJBFzAljvyGvsfCYhteodr05Ku2oi3KvgEqmKFgYTRBZv
- ky+mowGfI1RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="300569708"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP; 10 Sep 2020 07:31:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Sep 2020 07:30:44 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Sep 2020 07:30:43 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
- Thu, 10 Sep 2020 07:30:43 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH rdma-next 10/10] RDMA/i40iw: Remove intermediate pointer
- that points to the same struct
-Thread-Topic: [PATCH rdma-next 10/10] RDMA/i40iw: Remove intermediate pointer
- that points to the same struct
-Thread-Index: AQHWh3rfsYJ+XjDqSE65y7ubBuANialh7rRg
-Date:   Thu, 10 Sep 2020 14:30:42 +0000
-Message-ID: <0b8aa47177d247acbfa7e9c901db1b4c@intel.com>
-References: <20200910140046.1306341-1-leon@kernel.org>
- <20200910140046.1306341-11-leon@kernel.org>
-In-Reply-To: <20200910140046.1306341-11-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727044AbgIJQmr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Sep 2020 12:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgIJQi4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Sep 2020 12:38:56 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A31C0617A4
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Sep 2020 09:31:50 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c18so7407540wrm.9
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Sep 2020 09:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8XrenaZC7x7EEzLKgWnRWWP3kw9ET6fFDlth4Zp/gtY=;
+        b=hS3ujk0SNbO+KKIhwCtkhoaR3D4iaqKNbu5obxXUIkUAIZEavvzLtR/AmkXCcWoApD
+         6qpvZyIpj9MYpkAyH9G8uDL9NSGEi/1lDmYfV7LcqkQ60EBegndDFNwM8JmtO545n85S
+         MOg1C3tt9lgEWQfDFA9RZTtn4r+yEtCoUD0KQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8XrenaZC7x7EEzLKgWnRWWP3kw9ET6fFDlth4Zp/gtY=;
+        b=rCd+5jpDdnakOwZg6/pJmYunajGejbGgImDAm7sINdOQDtbPNdZgvDQVOJ3OzCJ/M3
+         rg8+dGrnUCfAd3qg7M+ROQuTzrG9pztuoIZ4rNyTVl8aYnGZJQsFGDj392k4mOOa6ccc
+         g6BdVr8PanOw8RQmm4UEQ+HchUcpkIEWDLuJYkcPMqO+ksBDqYJR9CeaPJMjI9lnctXD
+         spf4U8uCc3v/+R/W/eWHf5ZqZA7E3x7yme9fTJ/wM3j52FejT/y3lbosMVwqQiCV1pfN
+         bTYSjlc3MzGXrW83Jqj28KnZhWUJpTc/z+Kz3MS5pCujghzjARzIt1a4qdbkuKmCePR+
+         7LWg==
+X-Gm-Message-State: AOAM53079+IMllww4PEQe0NN9SwjO3ablRgt1Zo7FsWIxuf9B1u6/6Nn
+        Q59z+d42CoHRD4qOLM1un/qhKj5hwIAiR+IeobJMRA==
+X-Google-Smtp-Source: ABdhPJwcM1WR8tf/ZS8yQwLpBis3MuAq9iXnzyvBX/Zvx2Mb7vIdbYBdQkdSZNftBa2+3D5j79NwEzxaMX89slqGZpY=
+X-Received: by 2002:a05:6000:124d:: with SMTP id j13mr10703282wrx.182.1599755508951;
+ Thu, 10 Sep 2020 09:31:48 -0700 (PDT)
 MIME-Version: 1.0
+References: <f79159af-4408-dc2f-6efa-45c5b45cf2d9@web.de>
+In-Reply-To: <f79159af-4408-dc2f-6efa-45c5b45cf2d9@web.de>
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Date:   Fri, 11 Sep 2020 01:31:38 +0900
+Message-ID: <CAEYrHj=pfGB7OuHt90t2aaawr31W9XZCHeHJurt3o0rK44jZ+A@mail.gmail.com>
+Subject: Re: [PATCH] qedr: fix resource leak in qedr_create_qp
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-rdma@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Takafumi Kubota <takafumi@sslab.ics.keio.ac.jp>,
+        Yuval Bason <yuval.bason@cavium.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH rdma-next 10/10] RDMA/i40iw: Remove intermediate pointer that
-> points to the same struct
-> 
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> There is no real need to have an intermediate pointer for the same struct, remove it,
-> and use struct directly.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
+Hi,
 
-Looks good. Thanks!
+Thank you for your comment.
+I will re-label the goto statements and post the patch as version 2.
 
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Thanks,
+Keita
+
+2020=E5=B9=B49=E6=9C=8810=E6=97=A5(=E6=9C=A8) 22:24 Markus Elfring <Markus.=
+Elfring@web.de>:
+>
+> > Fix this by adding a new goto label that calls qedr_free_qp_resources.
+>
+> =E2=80=A6
+> > +++ b/drivers/infiniband/hw/qedr/verbs.c
+> =E2=80=A6
+> > @@ -2165,11 +2187,13 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd=
+,
+> =E2=80=A6
+> >       return &qp->ibqp;
+> >
+> > +err2:
+> > +     qedr_free_qp_resources(dev, qp, udata);
+> >  err:
+> >       kfree(qp);
+>
+> I propose to choose further alternatives for numbered labels.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/coding-style.rst?id=3D7fe10096c1508c7f033d34d0741809f8=
+eecc1ed4#n485
+>
+> Regards,
+> Markus
