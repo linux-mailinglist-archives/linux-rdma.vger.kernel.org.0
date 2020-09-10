@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30008264780
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 15:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9092647DE
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 16:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730930AbgIJNv7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Sep 2020 09:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57768 "EHLO mail.kernel.org"
+        id S1731025AbgIJOSj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Sep 2020 10:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730957AbgIJNuh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:50:37 -0400
+        id S1731113AbgIJOKa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:10:30 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7BD620C09;
-        Thu, 10 Sep 2020 13:43:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0DC72087C;
+        Thu, 10 Sep 2020 14:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599745399;
-        bh=nqUozDsWHKFfK8W6Zmuq3D8dIUc6nBawbFyjEB7VGKs=;
+        s=default; t=1599746454;
+        bh=NC59gY6gDpF4St8Avgs63Ch9l94JS70uezB7Z0FXG/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RZ5D8wygQYIg8oUMLgaF0zYDleFR6e+9IoW4WXZ78laPqeE8jd88MnFlwU7rp+Lc5
-         U3QPa0XDOWRUg7YvOE+XovMe/piv/VtX+1yPnClvdT2tAkQVtwCp4+YVbwcPgCQCYr
-         E2o3xf2EHhbCrDLaiwu6+4DO+b/m5Y3WVzPgCOsA=
+        b=aeMTXt5fAyip/Cqe9ohDXHEszhnsl/Vz3OQkzcgdX6LSm+GGVUlfLLX+V3YL/1nO0
+         y5cWEKvvP/yZEa6tggAoHf5lnY2SflWNilw3Rs+3nRO1nB7hbf7u3K6vzaLXiPU6AK
+         XSFhlUeqC/k3X6bq30s59fbBjf1BZK6SIY8Aw5W0=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 3/4] lib/scatterlist: Add support in dynamic allocation of SG table from pages
-Date:   Thu, 10 Sep 2020 16:42:58 +0300
-Message-Id: <20200910134259.1304543-4-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next 01/10] RDMA/mlx5: Embed GSI QP into general mlx5_ib QP
+Date:   Thu, 10 Sep 2020 17:00:37 +0300
+Message-Id: <20200910140046.1306341-2-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200910134259.1304543-1-leon@kernel.org>
-References: <20200910134259.1304543-1-leon@kernel.org>
+In-Reply-To: <20200910140046.1306341-1-leon@kernel.org>
+References: <20200910140046.1306341-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -41,231 +41,177 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Add an API that supports dynamic allocation of the SG table from pages,
-such function should be used by drivers that can't supply all the pages
-at one time.
+The GSI QPs have different create flow from the regular QPs, but it is
+not really needed. Update the code to use mlx5_ib_qp as a storage class
+for all outside of GSI calls.
 
-This function returns the last populated sge in the table. Users should
-pass it as an argument to the function from the second call and forward.
-As for sg_alloc_table_from_pages, nents will be equal to the number of
-populated SGEs (chunks).
-
-With this new API, drivers can benefit the optimization of merging
-contiguous pages without a need to allocate all pages in advance and
-hold them in a large buffer.
-
-E.g. with the Infiniband driver that allocates a single page for hold the
-pages. For 1TB memory registration, the temporary buffer would consume only
-4KB, instead of 2GB.
-
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- include/linux/scatterlist.h |   6 ++
- lib/scatterlist.c           | 131 +++++++++++++++++++++++++++++++-----
- 2 files changed, 119 insertions(+), 18 deletions(-)
+ drivers/infiniband/hw/mlx5/gsi.c     | 38 +++++++---------------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 25 +++++++++++++++---
+ drivers/infiniband/hw/mlx5/qp.c      |  2 +-
+ 3 files changed, 32 insertions(+), 33 deletions(-)
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 9d13004334aa..9fcc5783dfbc 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -291,6 +291,12 @@ void sg_free_table(struct sg_table *);
- int __sg_alloc_table(struct sg_table *, unsigned int, unsigned int,
- 		     struct scatterlist *, unsigned int, gfp_t, sg_alloc_fn *);
- int sg_alloc_table(struct sg_table *, unsigned int, gfp_t);
-+#ifndef CONFIG_ARCH_NO_SG_CHAIN
-+struct scatterlist *sg_alloc_table_append(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages);
-+#endif
- int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 				unsigned int n_pages, unsigned int offset,
- 				unsigned long size, unsigned int max_segment,
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index ade5c4a6fbf9..8249a6764efe 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -403,19 +403,51 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
- }
- EXPORT_SYMBOL(sg_alloc_table);
-
--static struct scatterlist *
--alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
--			unsigned int n_pages, unsigned int offset,
--			unsigned long size, unsigned int max_segment,
--			gfp_t gfp_mask)
-+static struct scatterlist *get_next_sg(struct sg_table *table,
-+				       struct scatterlist *prv,
-+				       unsigned long left_npages,
-+				       gfp_t gfp_mask)
+diff --git a/drivers/infiniband/hw/mlx5/gsi.c b/drivers/infiniband/hw/mlx5/gsi.c
+index d9f300f78a82..0b18558ba7b0 100644
+--- a/drivers/infiniband/hw/mlx5/gsi.c
++++ b/drivers/infiniband/hw/mlx5/gsi.c
+@@ -39,26 +39,6 @@ struct mlx5_ib_gsi_wr {
+ 	bool completed:1;
+ };
+ 
+-struct mlx5_ib_gsi_qp {
+-	struct ib_qp ibqp;
+-	struct ib_qp *rx_qp;
+-	u8 port_num;
+-	struct ib_qp_cap cap;
+-	enum ib_sig_type sq_sig_type;
+-	/* Serialize qp state modifications */
+-	struct mutex mutex;
+-	struct ib_cq *cq;
+-	struct mlx5_ib_gsi_wr *outstanding_wrs;
+-	u32 outstanding_pi, outstanding_ci;
+-	int num_qps;
+-	/* Protects access to the tx_qps. Post send operations synchronize
+-	 * with tx_qp creation in setup_qp(). Also protects the
+-	 * outstanding_wrs array and indices.
+-	 */
+-	spinlock_t lock;
+-	struct ib_qp **tx_qps;
+-};
+-
+ static struct mlx5_ib_gsi_qp *gsi_qp(struct ib_qp *qp)
  {
--	unsigned int chunks, cur_page, seg_len, i;
--	struct scatterlist *prv, *s = NULL;
-+	struct scatterlist *next_sg;
-+	int ret;
-+
-+	/* If table was just allocated */
-+	if (!prv)
-+		return table->sgl;
-+
-+	/* Check if last entry should be keeped for chainning */
-+	next_sg = sg_next(prv);
-+	if (!sg_is_last(next_sg) || left_npages == 1)
-+		return next_sg;
-+
-+	ret = sg_alloc_next(table, next_sg,
-+			    min_t(unsigned long, left_npages,
-+				  SG_MAX_SINGLE_ALLOC),
-+			    SG_MAX_SINGLE_ALLOC, gfp_mask);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return sg_next(prv);
-+}
-+
-+static struct scatterlist *alloc_from_pages_common(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
-+{
-+	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
-+	unsigned int tmp_nents = sgt->nents;
-+	struct scatterlist *s = prv;
-+	unsigned int table_size;
+ 	return container_of(qp, struct mlx5_ib_gsi_qp, ibqp);
+@@ -116,6 +96,7 @@ struct ib_qp *mlx5_ib_gsi_create_qp(struct ib_pd *pd,
+ 				    struct ib_qp_init_attr *init_attr)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
++	struct mlx5_ib_qp *mqp;
+ 	struct mlx5_ib_gsi_qp *gsi;
+ 	struct ib_qp_init_attr hw_init_attr = *init_attr;
+ 	const u8 port_num = init_attr->port_num;
+@@ -130,10 +111,11 @@ struct ib_qp *mlx5_ib_gsi_create_qp(struct ib_pd *pd,
+ 			num_qps = MLX5_MAX_PORTS;
+ 	}
+ 
+-	gsi = kzalloc(sizeof(*gsi), GFP_KERNEL);
+-	if (!gsi)
++	mqp = kzalloc(sizeof(struct mlx5_ib_qp), GFP_KERNEL);
++	if (!mqp)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	gsi = &mqp->gsi;
+ 	gsi->tx_qps = kcalloc(num_qps, sizeof(*gsi->tx_qps), GFP_KERNEL);
+ 	if (!gsi->tx_qps) {
+ 		ret = -ENOMEM;
+@@ -216,20 +198,18 @@ struct ib_qp *mlx5_ib_gsi_create_qp(struct ib_pd *pd,
+ err_free_tx:
+ 	kfree(gsi->tx_qps);
+ err_free:
+-	kfree(gsi);
++	kfree(mqp);
+ 	return ERR_PTR(ret);
+ }
+ 
+-int mlx5_ib_gsi_destroy_qp(struct ib_qp *qp)
++int mlx5_ib_destroy_gsi(struct mlx5_ib_qp *mqp)
+ {
+-	struct mlx5_ib_dev *dev = to_mdev(qp->device);
+-	struct mlx5_ib_gsi_qp *gsi = gsi_qp(qp);
++	struct mlx5_ib_dev *dev = to_mdev(mqp->ibqp.device);
++	struct mlx5_ib_gsi_qp *gsi = &mqp->gsi;
+ 	const int port_num = gsi->port_num;
+ 	int qp_index;
  	int ret;
-
- 	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
- 		return ERR_PTR(-EINVAL);
-
-+	if (prv &&
-+	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
-+	    page_to_pfn(pages[0]))
-+		prv_len = prv->length;
-+
- 	/* compute number of contiguous chunks */
- 	chunks = 1;
- 	seg_len = 0;
-@@ -428,13 +460,16 @@ alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
- 		}
- 	}
-
--	ret = sg_alloc_table(sgt, chunks, gfp_mask);
--	if (unlikely(ret))
--		return ERR_PTR(ret);
-+	if (!prv) {
-+		/* Only the last allocation could be less than the maximum */
-+		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-+		ret = sg_alloc_table(sgt, table_size, gfp_mask);
-+		if (unlikely(ret))
-+			return ERR_PTR(ret);
-+	}
-
- 	/* merging chunks and putting them into the scatterlist */
- 	cur_page = 0;
--	s = sgt->sgl;
- 	for (i = 0; i < chunks; i++) {
- 		unsigned int j, chunk_size;
-
-@@ -444,22 +479,82 @@ alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
- 			seg_len += PAGE_SIZE;
- 			if (seg_len >= max_segment ||
- 			    page_to_pfn(pages[j]) !=
--			    page_to_pfn(pages[j - 1]) + 1)
-+				    page_to_pfn(pages[j - 1]) + 1)
- 				break;
- 		}
-
- 		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
--		sg_set_page(s, pages[cur_page],
--			    min_t(unsigned long, size, chunk_size), offset);
-+		chunk_size = min_t(unsigned long, size, chunk_size);
-+		if (!i && prv_len) {
-+			if (max_segment - prv->length >= chunk_size) {
-+				sg_set_page(s, sg_page(s),
-+					    s->length + chunk_size, s->offset);
-+				goto next;
-+			}
-+		}
-+
-+		/* Pass how many chunks might left */
-+		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
-+		if (IS_ERR(s)) {
-+			/* Adjust entry length to be as before function was
-+			 * called
-+			 */
-+			if (prv_len)
-+				prv->length = prv_len;
-+			goto out;
-+		}
-+		sg_set_page(s, pages[cur_page], chunk_size, offset);
-+		tmp_nents++;
-+next:
- 		size -= chunk_size;
- 		offset = 0;
- 		cur_page = j;
--		prv = s;
--		s = sg_next(s);
- 	}
--	return prv;
-+	sgt->nents = tmp_nents;
-+out:
-+	return s;
+ 
+-	mlx5_ib_dbg(dev, "destroying GSI QP\n");
+-
+ 	mutex_lock(&dev->devr.mutex);
+ 	ret = mlx5_ib_destroy_qp(gsi->rx_qp, NULL);
+ 	if (ret) {
+@@ -253,7 +233,7 @@ int mlx5_ib_gsi_destroy_qp(struct ib_qp *qp)
+ 
+ 	kfree(gsi->outstanding_wrs);
+ 	kfree(gsi->tx_qps);
+-	kfree(gsi);
++	kfree(mqp);
+ 
+ 	return 0;
  }
-
-+#ifndef CONFIG_ARCH_NO_SG_CHAIN
-+/**
-+ * sg_alloc_table_append - Allocate and initialize an sg table from
-+ *                         an array of pages
-+ * @sgt:	 The sg table header to use
-+ * @pages:	 Pointer to an array of page pointers
-+ * @n_pages:	 Number of pages in the pages array
-+ * @offset:      Offset from start of the first page to the start of a buffer
-+ * @size:        Number of valid bytes in the buffer (after offset)
-+ * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
-+ * @gfp_mask:	 GFP allocation mask
-+ * @prv:	 Last populated sge in sgt
-+ * @left_pages:  Left pages caller have to set after this call
-+ *
-+ *  Description:
-+ *    If @prv is NULL, it allocates and initialize an sg table from a list of
-+ *    pages. Contiguous ranges of the pages are squashed into a single
-+ *    scatterlist node up to the maximum size specified in @max_segment. A user
-+ *    may provide an offset at a start and a size of valid data in a buffer
-+ *    specified by the page array. A user may provide @append to chain pages
-+ *    to last entry in sgt. The returned sg table is released by sg_free_table.
-+ *
-+ * Returns:
-+ *   Last SGE in sgt on success, negative error on failure.
-+ *
-+ * Notes:
-+ *   If this function returns non-0 (eg failure), the caller must call
-+ *   sg_free_table() to cleanup any leftover allocations.
-+ */
-+struct scatterlist *sg_alloc_table_append(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
-+{
-+	return alloc_from_pages_common(sgt, pages, n_pages, offset, size,
-+				       max_segment, gfp_mask, prv, left_pages);
-+}
-+EXPORT_SYMBOL_GPL(sg_alloc_table_append);
-+#endif
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 184abd5f493c..7e0eb815724b 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -384,6 +384,26 @@ struct mlx5_ib_dct {
+ 	u32                     *in;
+ };
+ 
++struct mlx5_ib_gsi_qp {
++	struct ib_qp ibqp;
++	struct ib_qp *rx_qp;
++	u8 port_num;
++	struct ib_qp_cap cap;
++	enum ib_sig_type sq_sig_type;
++	/* Serialize qp state modifications */
++	struct mutex mutex;
++	struct ib_cq *cq;
++	struct mlx5_ib_gsi_wr *outstanding_wrs;
++	u32 outstanding_pi, outstanding_ci;
++	int num_qps;
++	/* Protects access to the tx_qps. Post send operations synchronize
++	 * with tx_qp creation in setup_qp(). Also protects the
++	 * outstanding_wrs array and indices.
++	 */
++	spinlock_t lock;
++	struct ib_qp **tx_qps;
++};
 +
- /**
-  * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
-  *			         an array of pages
-@@ -489,7 +584,7 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 	struct scatterlist *sg;
-
- 	sg = alloc_from_pages_common(sgt, pages, n_pages, offset, size,
--				     max_segment, gfp_mask);
-+				     max_segment, gfp_mask, NULL, 0);
- 	return PTR_ERR_OR_ZERO(sg);
- }
- EXPORT_SYMBOL(__sg_alloc_table_from_pages);
---
+ struct mlx5_ib_qp {
+ 	struct ib_qp		ibqp;
+ 	union {
+@@ -391,6 +411,7 @@ struct mlx5_ib_qp {
+ 		struct mlx5_ib_raw_packet_qp raw_packet_qp;
+ 		struct mlx5_ib_rss_qp rss_qp;
+ 		struct mlx5_ib_dct dct;
++		struct mlx5_ib_gsi_qp gsi;
+ 	};
+ 	struct mlx5_frag_buf	buf;
+ 
+@@ -693,8 +714,6 @@ struct mlx5_mr_cache {
+ 	unsigned long		last_add;
+ };
+ 
+-struct mlx5_ib_gsi_qp;
+-
+ struct mlx5_ib_port_resources {
+ 	struct mlx5_ib_resources *devr;
+ 	struct mlx5_ib_gsi_qp *gsi;
+@@ -1322,7 +1341,7 @@ void mlx5_ib_init_cong_debugfs(struct mlx5_ib_dev *dev, u8 port_num);
+ /* GSI QP helper functions */
+ struct ib_qp *mlx5_ib_gsi_create_qp(struct ib_pd *pd,
+ 				    struct ib_qp_init_attr *init_attr);
+-int mlx5_ib_gsi_destroy_qp(struct ib_qp *qp);
++int mlx5_ib_destroy_gsi(struct mlx5_ib_qp *mqp);
+ int mlx5_ib_gsi_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+ 			  int attr_mask);
+ int mlx5_ib_gsi_query_qp(struct ib_qp *qp, struct ib_qp_attr *qp_attr,
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index e8dd32d6a7ab..92dda0e50f5d 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -3037,7 +3037,7 @@ int mlx5_ib_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
+ 	struct mlx5_ib_qp *mqp = to_mqp(qp);
+ 
+ 	if (unlikely(qp->qp_type == IB_QPT_GSI))
+-		return mlx5_ib_gsi_destroy_qp(qp);
++		return mlx5_ib_destroy_gsi(mqp);
+ 
+ 	if (mqp->type == MLX5_IB_QPT_DCT)
+ 		return mlx5_ib_destroy_dct(mqp);
+-- 
 2.26.2
 
