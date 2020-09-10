@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB2D2652EB
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 23:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E8B265368
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 23:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgIJV0B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Sep 2020 17:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
+        id S1728211AbgIJVeK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Sep 2020 17:34:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731022AbgIJOXH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:23:07 -0400
+        id S1730972AbgIJNuh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:50:37 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC10621D79;
-        Thu, 10 Sep 2020 14:22:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53FE20809;
+        Thu, 10 Sep 2020 13:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599747740;
-        bh=3aEzZNjHx3U08T+P3zj4nKWybx827ruV5zSdcR7n1Zk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oW3/GVsrodD7DBWin/B1Q6WeluKQ6Arq02tRsGP9uHHmyn8VnacmuAC6ghha9NOK7
-         i2rrVgifKwvgruvT8phyqMlE63qAAcl/rcHPr0zF+hWHxLRabVonb6A960FKFxPXky
-         MJiBCMKUZtbE5dRtbKHGn+rPfEMmLbF+laGaS1UE=
+        s=default; t=1599745385;
+        bh=HS8wsmWliqw+vjJ423NAWe4CfnIUGKglNawk6e/Lpxc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=v68CyWmYUwHBBsPt4GggNokqZGoCyVhYssoIlWXKk89FPtJaabSRsh9pjI+3fhDJ7
+         W+177d2NwJl1JZZEtCOB7BZy0gQe/Q8hbhtfocsskQ4WlX8Drl4bywg1MoNnirjWxD
+         NleEcOIZHybs7oeRQofnPYjrQ9jryVLrKXCzGT6Q=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
+To:     iChristoph Hellwig <hch@lst.de>,
+        Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Avihai Horon <avihaih@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 4/4] RDMA/uverbs: Expose the new GID query API to user space
-Date:   Thu, 10 Sep 2020 17:22:04 +0300
-Message-Id: <20200910142204.1309061-5-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next v1 0/4] scatterlist: add sg_alloc_table_append function
+Date:   Thu, 10 Sep 2020 16:42:55 +0300
+Message-Id: <20200910134259.1304543-1-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200910142204.1309061-1-leon@kernel.org>
-References: <20200910142204.1309061-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -40,301 +40,63 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Avihai Horon <avihaih@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Expose the query GID table and entry API to user space by adding
-two new methods and method handlers to the device object.
+Changelog:
+v1:
+ * Changed _sg_chain to be __sg_chain
+ * Added dependency on ARCH_NO_SG_CHAIN
+ * Removed struct sg_append
+v0:
+ * https://lore.kernel.org/lkml/20200903121853.1145976-1-leon@kernel.org
 
-This API provides a faster way to query a GID table using single call and
-will be used in libibverbs to improve current approach that requires
-multiple calls to open, close and read multiple sysfs files for a single
-GID table entry.
+--------------------------------------------------------------------------
+From Maor:
 
-Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../infiniband/core/uverbs_std_types_device.c | 180 +++++++++++++++++-
- include/rdma/ib_verbs.h                       |   6 +-
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
- include/uapi/rdma/ib_user_ioctl_verbs.h       |   6 +
- 4 files changed, 204 insertions(+), 4 deletions(-)
+This series adds a new constructor for a scatter gather table. Like
+sg_alloc_table_from_pages function, this function merges all contiguous
+chunks of the pages a into single scatter gather entry.
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
-index 7b03446b6936..beba1e284264 100644
---- a/drivers/infiniband/core/uverbs_std_types_device.c
-+++ b/drivers/infiniband/core/uverbs_std_types_device.c
-@@ -8,6 +8,7 @@
- #include "uverbs.h"
- #include <rdma/uverbs_ioctl.h>
- #include <rdma/opa_addr.h>
-+#include <rdma/ib_cache.h>
- 
- /*
-  * This ioctl method allows calling any defined write or write_ex
-@@ -266,6 +267,157 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_CONTEXT)(
- 	return ucontext->device->ops.query_ucontext(ucontext, attrs);
- }
- 
-+static int copy_gid_entries_to_user(struct uverbs_attr_bundle *attrs,
-+				    struct ib_uverbs_gid_entry *entries,
-+				    size_t num_entries, size_t user_entry_size)
-+{
-+	const struct uverbs_attr *attr;
-+	void __user *user_entries;
-+	size_t copy_len;
-+	int ret;
-+	int i;
-+
-+	if (user_entry_size == sizeof(*entries)) {
-+		ret = uverbs_copy_to(attrs,
-+				     UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+				     entries, sizeof(*entries) * num_entries);
-+		return ret;
-+	}
-+
-+	copy_len = min_t(size_t, user_entry_size, sizeof(*entries));
-+	attr = uverbs_attr_get(attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES);
-+	if (IS_ERR(attr))
-+		return PTR_ERR(attr);
-+
-+	user_entries = u64_to_user_ptr(attr->ptr_attr.data);
-+	for (i = 0; i < num_entries; i++) {
-+		if (copy_to_user(user_entries, entries, copy_len))
-+			return -EFAULT;
-+
-+		if (user_entry_size > sizeof(*entries)) {
-+			if (clear_user(user_entries + sizeof(*entries),
-+				       user_entry_size - sizeof(*entries)))
-+				return -EFAULT;
-+		}
-+
-+		entries++;
-+		user_entries += user_entry_size;
-+	}
-+
-+	return uverbs_output_written(attrs,
-+				     UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES);
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uverbs_gid_entry *entries;
-+	struct ib_ucontext *ucontext;
-+	struct ib_device *ib_dev;
-+	size_t user_entry_size;
-+	size_t max_entries;
-+	size_t num_entries;
-+	u32 flags;
-+	int ret;
-+
-+	ret = uverbs_get_flags32(&flags, attrs,
-+				 UVERBS_ATTR_QUERY_GID_TABLE_FLAGS, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&user_entry_size, attrs,
-+			       UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE);
-+	if (ret)
-+		return ret;
-+
-+	max_entries = uverbs_attr_ptr_get_array_size(
-+		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+		user_entry_size);
-+	if (max_entries <= 0)
-+		return -EINVAL;
-+
-+	ucontext = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ucontext))
-+		return PTR_ERR(ucontext);
-+	ib_dev = ucontext->device;
-+
-+	entries = uverbs_zalloc(attrs, max_entries * sizeof(*entries));
-+	if (!entries)
-+		return -ENOMEM;
-+
-+	ret = rdma_query_gid_table(ib_dev, entries, max_entries, &num_entries);
-+	if (ret)
-+		return ret;
-+
-+	ret = copy_gid_entries_to_user(attrs, entries, num_entries,
-+				       user_entry_size);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs,
-+			     UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+			     &num_entries, sizeof(num_entries));
-+	return ret;
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	const struct ib_gid_attr *gid_attr;
-+	struct ib_uverbs_gid_entry entry;
-+	struct ib_ucontext *ucontext;
-+	struct ib_device *ib_dev;
-+	u32 gid_index;
-+	u32 port_num;
-+	u32 flags;
-+	int ret;
-+
-+	ret = uverbs_get_flags32(&flags, attrs,
-+				 UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&port_num, attrs,
-+			       UVERBS_ATTR_QUERY_GID_ENTRY_PORT);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&gid_index, attrs,
-+			       UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX);
-+	if (ret)
-+		return ret;
-+
-+	ucontext = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ucontext))
-+		return PTR_ERR(ucontext);
-+	ib_dev = ucontext->device;
-+
-+	if (!rdma_is_port_valid(ib_dev, port_num))
-+		return -EINVAL;
-+
-+	if (!rdma_ib_or_roce(ib_dev, port_num))
-+		return -EINVAL;
-+
-+	gid_attr = rdma_get_gid_attr(ib_dev, port_num, gid_index);
-+	if (IS_ERR(gid_attr))
-+		return PTR_ERR(gid_attr);
-+
-+	memcpy(&entry.gid, &gid_attr->gid, sizeof(gid_attr->gid));
-+	entry.gid_index = gid_attr->index;
-+	entry.port_num = gid_attr->port_num;
-+	entry.gid_type = gid_attr->gid_type;
-+	ret = rdma_get_ndev_ifindex(gid_attr, &entry.netdev_ifindex);
-+	if (ret)
-+		goto out;
-+
-+	ret = uverbs_copy_to_struct_or_zero(
-+		attrs, UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY, &entry,
-+		sizeof(entry));
-+out:
-+	rdma_put_gid_attr(gid_attr);
-+	return ret;
-+}
-+
- DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_METHOD_GET_CONTEXT,
- 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_GET_CONTEXT_NUM_COMP_VECTORS,
-@@ -300,12 +452,38 @@ DECLARE_UVERBS_NAMED_METHOD(
- 				   reserved),
- 		UA_MANDATORY));
- 
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_QUERY_GID_TABLE,
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE, u64,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_QUERY_GID_TABLE_FLAGS, u32,
-+			     UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+			    UVERBS_ATTR_MIN_SIZE(0), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+			    UVERBS_ATTR_TYPE(u64), UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_QUERY_GID_ENTRY,
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_ENTRY_PORT, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY,
-+			    UVERBS_ATTR_STRUCT(struct ib_uverbs_gid_entry,
-+					       netdev_ifindex),
-+			    UA_MANDATORY));
-+
- DECLARE_UVERBS_GLOBAL_METHODS(UVERBS_OBJECT_DEVICE,
- 			      &UVERBS_METHOD(UVERBS_METHOD_GET_CONTEXT),
- 			      &UVERBS_METHOD(UVERBS_METHOD_INVOKE_WRITE),
- 			      &UVERBS_METHOD(UVERBS_METHOD_INFO_HANDLES),
- 			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_PORT),
--			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_CONTEXT));
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_CONTEXT),
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_GID_TABLE),
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_GID_ENTRY));
- 
- const struct uapi_definition uverbs_def_obj_device[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_DEVICE),
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 80cc0f5de5c3..1e170e09afb0 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -138,9 +138,9 @@ union ib_gid {
- extern union ib_gid zgid;
- 
- enum ib_gid_type {
--	IB_GID_TYPE_IB        = 0,
--	IB_GID_TYPE_ROCE      = 1,
--	IB_GID_TYPE_ROCE_UDP_ENCAP = 2,
-+	IB_GID_TYPE_IB = IB_UVERBS_GID_TYPE_IB,
-+	IB_GID_TYPE_ROCE = IB_UVERBS_GID_TYPE_ROCE_V1,
-+	IB_GID_TYPE_ROCE_UDP_ENCAP = IB_UVERBS_GID_TYPE_ROCE_V2,
- 	IB_GID_TYPE_SIZE
- };
- 
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index 99dcabf61a71..7968a1845355 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -70,6 +70,8 @@ enum uverbs_methods_device {
- 	UVERBS_METHOD_QUERY_PORT,
- 	UVERBS_METHOD_GET_CONTEXT,
- 	UVERBS_METHOD_QUERY_CONTEXT,
-+	UVERBS_METHOD_QUERY_GID_TABLE,
-+	UVERBS_METHOD_QUERY_GID_ENTRY,
- };
- 
- enum uverbs_attrs_invoke_write_cmd_attr_ids {
-@@ -352,4 +354,18 @@ enum uverbs_attrs_async_event_create {
- 	UVERBS_ATTR_ASYNC_EVENT_ALLOC_FD_HANDLE,
- };
- 
-+enum uverbs_attrs_query_gid_table_cmd_attr_ids {
-+	UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE,
-+	UVERBS_ATTR_QUERY_GID_TABLE_FLAGS,
-+	UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+	UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+};
-+
-+enum uverbs_attrs_query_gid_entry_cmd_attr_ids {
-+	UVERBS_ATTR_QUERY_GID_ENTRY_PORT,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index d5ac65ae2557..cfea82acfe57 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -250,6 +250,12 @@ enum rdma_driver_id {
- 	RDMA_DRIVER_SIW,
- };
- 
-+enum ib_uverbs_gid_type {
-+	IB_UVERBS_GID_TYPE_IB,
-+	IB_UVERBS_GID_TYPE_ROCE_V1,
-+	IB_UVERBS_GID_TYPE_ROCE_V2,
-+};
-+
- struct ib_uverbs_gid_entry {
- 	__aligned_u64 gid[2];
- 	__u32 gid_index;
--- 
+In contrast to sg_alloc_table_from_pages, the new API allows chaining of
+new pages to already initialized SG table.
+
+This allows drivers to utilize the optimization of merging contiguous
+pages without a need to pre allocate all the pages and hold them in
+a very large temporary buffer prior to the call to SG table initialization.
+
+The first two patches refactor the code of sg_alloc_table_from_pages
+in order to have code sharing and add sg_alloc_next function to allow
+dynamic allocation of more entries in the SG table.
+
+The third patch introduces the new API.
+
+The last patch changes the Infiniband driver to use the new API. It
+removes duplicate functionality from the code and benefits the
+optimization of allocating dynamic SG table from pages.
+
+In huge pages system of 2MB page size, without this change, the SG table
+would contain x512 SG entries.
+E.g. for 100GB memory registration:
+
+             Number of entries      Size
+    Before        26214400          600.0MB
+    After            51200            1.2MB
+
+Thanks
+
+Maor Gottlieb (4):
+  lib/scatterlist: Refactor sg_alloc_table_from_pages
+  lib/scatterlist: Add support in dynamically allocation of SG entries
+  lib/scatterlist: Add support in dynamic allocation of SG table from
+    pages
+  RDMA/umem: Move to allocate SG table from pages
+
+ drivers/infiniband/Kconfig     |   1 +
+ drivers/infiniband/core/umem.c |  90 ++--------
+ include/linux/scatterlist.h    |  35 ++--
+ lib/scatterlist.c              | 292 +++++++++++++++++++++++++--------
+ 4 files changed, 255 insertions(+), 163 deletions(-)
+
+--
 2.26.2
 
