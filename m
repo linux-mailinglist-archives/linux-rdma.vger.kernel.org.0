@@ -2,111 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA492652DA
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 23:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEEF2652E2
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Sep 2020 23:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgIJVYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Sep 2020 17:24:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:37282 "EHLO foss.arm.com"
+        id S1726741AbgIJVZd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Sep 2020 17:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731004AbgIJOXM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:23:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3BEB11B3;
-        Thu, 10 Sep 2020 07:21:17 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B4783F66E;
-        Thu, 10 Sep 2020 07:21:08 -0700 (PDT)
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Kees Cook <kees.cook@canonical.com>,
-        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
-        storagedev@microchip.com, ceph-devel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Will Deacon <will@kernel.org>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9372456a-8dcf-2735-57a4-e126aa5df3a6@arm.com>
-Date:   Thu, 10 Sep 2020 15:21:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731017AbgIJOXL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:23:11 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C939020855;
+        Thu, 10 Sep 2020 14:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599747730;
+        bh=HXDMf0WwGpvkHzJQa+L89oXrj1hJrch64nYIs4kz63I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oJvxd0TtbbC2mbSA1CBlomzUXm6dR1fRinqXKefD/cwkniNKO8F1NvMx/MwJ1Mp8X
+         hoo9q+yKUijIoM5mQroCeOC7BT06sAA5g2XYXJ2WcPySmPXY449HJSXREp4hT4H4Oi
+         Z/Xlud87Qp5gUKjDFRoT2ZmL6cstmLpQi8Wdxzpw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>
+Subject: [PATCH rdma-next 0/4] Query GID table API
+Date:   Thu, 10 Sep 2020 17:22:00 +0300
+Message-Id: <20200910142204.1309061-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-09-09 21:06, Joe Perches wrote:
-> fallthrough to a separate case/default label break; isn't very readable.
-> 
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
-> 
-> Found using:
-> 
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> 
-> Miscellanea:
-> 
-> o Move or coalesce a couple label blocks above a default: block.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> 
-> Compiled allyesconfig x86-64 only.
-> A few files for other arches were not compiled.
-> 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[...]
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index c192544e874b..743db1abec40 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -3777,7 +3777,7 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
->   	switch (FIELD_GET(IDR0_TTF, reg)) {
->   	case IDR0_TTF_AARCH32_64:
->   		smmu->ias = 40;
-> -		fallthrough;
-> +		break;
->   	case IDR0_TTF_AARCH64:
->   		break;
->   	default:
+From Avihai,
 
-I have to say I don't really agree with the readability argument for 
-this one - a fallthrough is semantically correct here, since the first 
-case is a superset of the second. It just happens that anything we would 
-do for the common subset is implicitly assumed (there are other 
-potential cases we simply haven't added support for at the moment), thus 
-the second case is currently empty.
+When an application is not using RDMA CM and if it is using multiple RDMA
+devices with one or more RoCE ports, finding the right GID table entry is
+a long process.
 
-This change actively obfuscates that distinction.
+For example, with two RoCE dual-port devices in a system, when IP
+failover is used between two RoCE ports, searching a suitable GID
+entry for a given source IP, matching netdevice of given RoCEv1/v2 type
+requires iterating over all 4 ports * 256 entry GID table.
 
-Robin.
+Even though the best first match GID table for given criteria is used,
+when the matching entry is on the 4th port, it requires reading
+3 ports * 256 entries * 3 files (GID, netdev, type) = 2304 files.
+
+The GID table needs to be referred on every QP creation during IP
+failover on other netdevice of an RDMA device.
+
+In an alternative approach, a GID cache may be maintained and updated on
+GID change event was reported by the kernel. However, it comes with below
+two limitations:
+(a) Maintain a thread per application process instance to listen and update
+ the cache.
+(b) Without the thread, on cache miss event, query the GID table. Even in
+ this approach, if multiple processes are used, a GID cache needs to be
+ maintained on a per-process basis. With a large number of processes,
+ this method doesn't scale.
+
+Hence, we introduce this series of patches, which introduces an API to
+query the complete GID tables of an RDMA device, that returns all valid
+GID table entries.
+
+This is done through single ioctl, eliminating 2304 read, 2304 open and
+2304 close system calls to just a total of 2 calls (one for each device).
+
+While at it, we also introduce an API to query an individual GID entry
+over ioctl interface, which provides all GID attributes information.
+
+Thanks
+
+Avihai Horon (4):
+  RDMA/core: Change rdma_get_gid_attr returned error code
+  RDMA/core: Modify enum ib_gid_type and enum rdma_network_type
+  RDMA/core: Introduce new GID table query API
+  RDMA/uverbs: Expose the new GID query API to user space
+
+ drivers/infiniband/core/cache.c               |  99 +++++++++-
+ drivers/infiniband/core/cma.c                 |  10 -
+ drivers/infiniband/core/cma_configfs.c        |  13 +-
+ drivers/infiniband/core/cma_priv.h            |  10 +
+ drivers/infiniband/core/sysfs.c               |   3 +-
+ .../infiniband/core/uverbs_std_types_device.c | 180 +++++++++++++++++-
+ drivers/infiniband/core/verbs.c               |   2 +-
+ drivers/infiniband/hw/mlx5/cq.c               |   2 +-
+ drivers/infiniband/hw/mlx5/main.c             |   4 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   4 +-
+ include/rdma/ib_cache.h                       |   5 +
+ include/rdma/ib_verbs.h                       |  19 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  14 ++
+ 14 files changed, 351 insertions(+), 30 deletions(-)
+
+--
+2.26.2
+
