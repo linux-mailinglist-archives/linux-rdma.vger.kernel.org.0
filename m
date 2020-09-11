@@ -2,136 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3CC266572
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Sep 2020 19:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCBD266710
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Sep 2020 19:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725786AbgIKRDI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Sep 2020 13:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
+        id S1726023AbgIKRhH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Sep 2020 13:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbgIKRBm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Sep 2020 13:01:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FCBC061757
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Sep 2020 10:01:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id n10so8418779qtv.3
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Sep 2020 10:01:42 -0700 (PDT)
+        with ESMTP id S1725930AbgIKMuA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Sep 2020 08:50:00 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0470C061757
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Sep 2020 05:49:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m6so11404018wrn.0
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Sep 2020 05:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hQC5h4tmhJe0o6/7GihSPzVFpGRqbcoLdlsbFYRWvJE=;
-        b=ETjF5S+F6vyqp8xD14BBvlkWN5J7Mj7/bzBIomrefzra9O0UN4PLiDy/6jiIWkc3UV
-         IZnBe1TTqBxLJhRT8jUduG/qvencO3jGWqpNvpfHOAMRk04CrifkwkbcWhRYZp6HUHq1
-         0lGbYdNO9hfYQts6HpAWSNRV1UapBFS96xOOJV8XmunIDBQYDnUDyTsf7McyIT+NR8Wq
-         H6mjJo6cZD89+EkgBoubbpiLrOCMKvqoEB8q2IsRAkumaei7M6avUNmXai9uU43701/P
-         LK6MgJBKCnG+H2p1muMmUiAejSwiQSq/66nLA7p8i+IjI8YQ6pVDBo7P+TRfo921lN/L
-         bkjQ==
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nWbc4yMI9H7bl97CVcSxQv/EwnVj0ipCdrn8uq6XpTE=;
+        b=ZhF6FLOxM6x7I7r0tgZIcmqTW3FgLmQpAWreu6Oijs+tt1JDiTN4xtO7gS09FKoB6s
+         EEYVj7HbEIGTUtbiNnMv+MJFArYQN2vqI69IYqhzMjQCcikIpz3g7KdgI4fJ7czvczEa
+         Z23sitHp3PUt/TfvriiI8vSjX1VBgfLlnLZ9A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hQC5h4tmhJe0o6/7GihSPzVFpGRqbcoLdlsbFYRWvJE=;
-        b=qzZLDaY0xUEHUeaz+cvG1ngFg4dz2Ss+euhJcqX1Dq5AQZnCPEHgUi42UTAOUfaEmX
-         J2SGwPEEOo+w4EBpvYjM5cNbrFMxfF79Qjy2JqD/w150JeI0A7DnutGSTjJ8izE02Zk5
-         apCoDDyKNYcw39JJSLn+3eM4EkfAleeVHjrudwrOedxy4gW4ODRBVO/HneQxOwgMFGuU
-         OmhXFvTWy8eCxxSYCuXDu2fSgow0A4rB3SJjI88q4O/UX3Yh5oBCSTKR+9LWg72Z8g1S
-         mYO1CbM8lPUrQuZRs7DDy9T5G4zdI2YPVSLHvHK+l0kLRP8VocD+UzXMExTSXj7bzU68
-         LQJA==
-X-Gm-Message-State: AOAM530lY9DwVlpWqctFS/oRnJWKGGWssJF7zucF0Iqg7/a4+0Qel0g3
-        QB/YhdPOYaSFGYE4gYSmuNi1EQ==
-X-Google-Smtp-Source: ABdhPJyCFCumfnLKani2CUL3oiVZh0W4ll9EBQ13YKmcxlm9eCZAWXiL7vqQ0sINhFhnX0HMCgsfPw==
-X-Received: by 2002:ac8:5341:: with SMTP id d1mr2849701qto.176.1599843701359;
-        Fri, 11 Sep 2020 10:01:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id u15sm3456866qtj.3.2020.09.11.10.01.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 10:01:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kGmQd-0050vl-Nk; Fri, 11 Sep 2020 14:01:39 -0300
-Date:   Fri, 11 Sep 2020 14:01:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com>,
-        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in ucma_close (2)
-Message-ID: <20200911170139.GU87483@ziepe.ca>
-References: <0000000000008e7c8f05aef61d8d@google.com>
- <20200911041640.20652-1-hdanton@sina.com>
- <20200911152017.18644-1-hdanton@sina.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nWbc4yMI9H7bl97CVcSxQv/EwnVj0ipCdrn8uq6XpTE=;
+        b=EOAr63EmebTjgw7kvdIwZknyEb2GoUkjDCJQP2MOGgK0kpZJPK68eG/SxmhVcKv5Pz
+         eGyssdIy3myns2IGmJPtUrB8UjtLDnUQMyENkGQdYurk3VBx57imVCNFU1djKYZabNQp
+         +cq4iRAGdaGSiTdS+FQd+TCq1v4a1iCAyLq+DXVAO7zaji+95LSRJFf/Y3gC72zY9gf5
+         Fy9XrpXNsPS/q+h/OpDpGPxnj8YxkMpJ8DXinuT5eysL+D6PB+UbfQWW8S+8fFai4WQw
+         X5VNu0HdEiji70m4u6/aWdZIhEYChfWMXSu1F8EGTGdPbdAtCOGch70R6vRRNDO0x44k
+         Fn+Q==
+X-Gm-Message-State: AOAM532ZqVulA0YWXl+MT4RxlD3HpDWxr06RNZtZknQwS13L82EqoeYf
+        /qHVo4u+p8gReGjI+Kdcjl3dGkr6mZUR6i+Kf5B9Wg==
+X-Google-Smtp-Source: ABdhPJzU5HHpYZ8aksLleECyLkPPJqWQEXktBFbiMMFXDO29AEh31KF19A1HSjNHai2b4blpPhdazL9YED11Fp9K+Y0=
+X-Received: by 2002:a5d:4bcf:: with SMTP id l15mr1918848wrt.384.1599828598125;
+ Fri, 11 Sep 2020 05:49:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911152017.18644-1-hdanton@sina.com>
+References: <f79159af-4408-dc2f-6efa-45c5b45cf2d9@web.de> <CAEYrHj=pfGB7OuHt90t2aaawr31W9XZCHeHJurt3o0rK44jZ+A@mail.gmail.com>
+ <59440849-23b1-9c69-ecf6-78f8a0b82c7a@web.de>
+In-Reply-To: <59440849-23b1-9c69-ecf6-78f8a0b82c7a@web.de>
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Date:   Fri, 11 Sep 2020 21:49:46 +0900
+Message-ID: <CAEYrHjmsd4Sp2R54y55pVL3CXr1KXedoBnTEczCBkpE9+SsFNg@mail.gmail.com>
+Subject: Re: [PATCH] qedr: fix resource leak in qedr_create_qp
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-rdma@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Takafumi Kubota <takafumi@sslab.ics.keio.ac.jp>,
+        Yuval Bason <yuval.bason@cavium.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 11:20:17PM +0800, Hillf Danton wrote:
-> 
-> On Fri, 11 Sep 2020 08:57:50 -0300 Jason Gunthorpe wrote:
-> > On Fri, Sep 11, 2020 at 12:16:40PM +0800, Hillf Danton wrote:
-> > > Detect race destroying ctx in order to avoid UAF.
-> > > 
-> > > +++ b/drivers/infiniband/core/ucma.c
-> > > @@ -625,6 +625,10 @@ static ssize_t ucma_destroy_id(struct uc
-> > >  		return PTR_ERR(ctx);
-> > >  
-> > >  	mutex_lock(&ctx->file->mut);
-> > > +	if (ctx->destroying == 1) {
-> > > +		mutex_unlock(&ctx->file->mut);
-> > > +		return -ENXIO;
-> > > +	}
-> > >  	ctx->destroying = 1;
-> > >  	mutex_unlock(&ctx->file->mut);
-> > >  
-> > > @@ -1826,6 +1830,8 @@ static int ucma_close(struct inode *inod
-> > >  
-> > >  	mutex_lock(&file->mut);
-> > >  	list_for_each_entry_safe(ctx, tmp, &file->ctx_list, list) {
-> > > +		if (ctx->destroying == 1)
-> > > +			continue;
-> > >  		ctx->destroying = 1;
-> > >  		mutex_unlock(&file->mut);
-> > >  
-> > 
-> > ucma_destroy_id() is called from write() and ucma_close is release(),
-> > so there is no way these can race?
-> 
-> Sound good but what's reported is uaf in the close path, which is
-> impossible without another thread releasing the ctx a step ahead
-> the closer.
-> Can we call it a race if that's true?
+Hi,
+thank you for the comment.
+I will fix the line break and re-post the patch
 
-Migrate is the cause, very tricky:
+Thanks,
+Keita
 
-		CPU0                      CPU1
-	ucma_destroy_id()
-				  ucma_migrate_id()
-				       ucma_get_ctx()
-	xa_lock()
-	 _ucma_find_context()
-	 xa_erase()
-				       xa_lock()
-					ctx->file = new_file
-					list_move()
-				       xa_unlock()
-				      ucma_put_ctx
-				   ucma_close()
-				      _destroy_id()
-
-	_destroy_id()
-	  wait_for_completion()
-	  // boom
-
-
-ie the destrory_id() on the initial FD captures the ctx right before
-migrate moves it, then the new FD closes calling destroy while the
-other destroy is still running.
-
-Sigh, I will rewrite migrate too..
-
-Jason
+2020=E5=B9=B49=E6=9C=8811=E6=97=A5(=E9=87=91) 4:48 Markus Elfring <Markus.E=
+lfring@web.de>:
+>
+> > I will re-label the goto statements and post the patch as version 2.
+>
+> Thanks for such a positive feedback.
+>
+>
+> Another suggestion:
+>
+> > > Fixes: 1212767e23bb ("qedr: Add wrapping generic structure for qpidr =
+and
+> > > adjust idr routines.")
+>
+> Please omit a line break for this tag.
+>
+> Regards,
+> Markus
