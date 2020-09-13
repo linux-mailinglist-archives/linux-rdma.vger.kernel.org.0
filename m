@@ -2,85 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B711267E66
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Sep 2020 09:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107BC267E78
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Sep 2020 10:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgIMHmN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Sep 2020 03:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        id S1725916AbgIMICj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Sep 2020 04:02:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgIMHmJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 13 Sep 2020 03:42:09 -0400
+        id S1725912AbgIMICj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 13 Sep 2020 04:02:39 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BDF8208E4;
-        Sun, 13 Sep 2020 07:42:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9280C2074B;
+        Sun, 13 Sep 2020 08:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599982929;
-        bh=1+ks5eBvgyftq+woCZ7NkUpmRWGYCsWG4ZWHIrAPN14=;
+        s=default; t=1599984158;
+        bh=KKHXbv4fB4680N6E8ZjD15Mq3rSarEptUUQS4/1cemk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZD/x0EtZFtJMQ+VHBXa1vZXqZncT9ljrSBk561mGLIBVmWVv9a2aCWxsg59qrN8Iz
-         1TQmCqurXWkumNN6tJKEeaIueQf53uTK2TmH86bb1UX8ax8qvVGr6KYplVr8m6tlLe
-         sIeKL3TsOBuiW+A71TP2NjnbZ+3xSSJX3O7ORP/s=
-Date:   Sun, 13 Sep 2020 10:42:04 +0300
+        b=YKjjKkA3hHjdyW/ukBB4dHRqMXw/6MAGTRsoztsG7ZPZI+z3XI8Tdy4ehMYiCswzz
+         1XI/K8iXKoaGUYY7CM3JHVEW6TuEfUq+XE2Jj1K2AoArD5O/BuCyXrxemYqugC5oZp
+         msv1oJ0KnJUjsLCkB1mj6/weaT/VILLmxtTKbtVE=
+Date:   Sun, 13 Sep 2020 11:02:33 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: Re: [PATCH rdma-next 2/4] RDMA/core: Modify enum ib_gid_type and
- enum rdma_network_type
-Message-ID: <20200913074204.GD35718@unreal>
+        Avihai Horon <avihaih@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next 3/4] RDMA/core: Introduce new GID table query
+ API
+Message-ID: <20200913080233.GE35718@unreal>
 References: <20200910142204.1309061-1-leon@kernel.org>
- <20200910142204.1309061-3-leon@kernel.org>
- <20200911191116.GR904879@nvidia.com>
+ <20200910142204.1309061-4-leon@kernel.org>
+ <20200911195221.GS904879@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200911191116.GR904879@nvidia.com>
+In-Reply-To: <20200911195221.GS904879@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 04:11:16PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 10, 2020 at 05:22:02PM +0300, Leon Romanovsky wrote:
->
-> > diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
-> > index 3c1e2ca564fe..f1b277793980 100644
-> > +++ b/drivers/infiniband/core/cma_configfs.c
-> > @@ -123,16 +123,21 @@ static ssize_t default_roce_mode_store(struct config_item *item,
-> >  {
-> >  	struct cma_device *cma_dev;
-> >  	struct cma_dev_port_group *group;
-> > -	int gid_type = ib_cache_gid_parse_type_str(buf);
-> > +	int gid_type;
-> >  	ssize_t ret;
+On Fri, Sep 11, 2020 at 04:52:21PM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 10, 2020 at 05:22:03PM +0300, Leon Romanovsky wrote:
+> > From: Avihai Horon <avihaih@nvidia.com>
 > >
-> > -	if (gid_type < 0)
-> > -		return -EINVAL;
-> > -
-> >  	ret = cma_configfs_params_get(item, &cma_dev, &group);
-> >  	if (ret)
-> >  		return ret;
+> > Introduce rdma_query_gid_table which enables querying all the GID tables
+> > of a given device and copying the attributes of all valid GID entries to
+> > a provided buffer.
 > >
-> > +	gid_type = ib_cache_gid_parse_type_str(buf);
-> > +	if (gid_type < 0)
-> > +		return -EINVAL;
+> > This API provides a faster way to query a GID table using single call and
+> > will be used in libibverbs to improve current approach that requires
+> > multiple calls to open, close and read multiple sysfs files for a single
+> > GID table entry.
+> >
+> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >  drivers/infiniband/core/cache.c         | 93 +++++++++++++++++++++++++
+> >  include/rdma/ib_cache.h                 |  5 ++
+> >  include/uapi/rdma/ib_user_ioctl_verbs.h |  8 +++
+> >  3 files changed, 106 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+> > index cf49ac0b0aa6..175e229eccd3 100644
+> > +++ b/drivers/infiniband/core/cache.c
+> > @@ -1247,6 +1247,99 @@ rdma_get_gid_attr(struct ib_device *device, u8 port_num, int index)
+> >  }
+> >  EXPORT_SYMBOL(rdma_get_gid_attr);
+> >
+> > +/**
+> > + * rdma_get_ndev_ifindex - Reads ndev ifindex of the given gid attr.
+> > + * @gid_attr: Pointer to the GID attribute.
+> > + * @ndev_ifindex: Pointer through which the ndev ifindex is returned.
+> > + *
+> > + * Returns 0 on success or appropriate error code. The netdevice must be in UP
+> > + * state.
+> > + */
+> > +int rdma_get_ndev_ifindex(const struct ib_gid_attr *gid_attr, u32 *ndev_ifindex)
+> > +{
+> > +	struct net_device *ndev;
+> > +	int ret = 0;
 > > +
-> > +	if (gid_type == IB_GID_TYPE_IB &&
-> > +	    rdma_protocol_roce_eth_encap(cma_dev->device, group->port_num))
-> > +		gid_type = IB_GID_TYPE_ROCE;
+> > +	if (rdma_protocol_ib(gid_attr->device, gid_attr->port_num)) {
+> > +		*ndev_ifindex = 0;
+> > +		return 0;
+> > +	}
+> > +
+> > +	rcu_read_lock();
+> > +	ndev = rcu_dereference(gid_attr->ndev);
+> > +	if (!ndev || (READ_ONCE(ndev->flags) & IFF_UP) == 0) {
+> > +		ret = -ENODEV;
+> > +		goto out;
+> > +	}
 >
-> This logic should be in cma_set_default_gid_type() so as not to move
-> struct cma_device
+> None of this is necessary to read the ifindex, especially since the
+> read_lock is being held.
 
-We wanted to keep "this hack of git type" as close as possible to the
-actual needed place.
+I see same rcu_read_lock->rcu_dereference->rcu_read_unlock pattern in
+rdma_read_gid_l2_fields(), why this function is different?
 
-I'll fix.
+>
+> > +/**
+> > + * rdma_query_gid_table - Reads GID table entries of all the ports of a device up to max_entries.
+> > + * @device: The device to query.
+> > + * @entries: Entries where GID entries are returned.
+> > + * @max_entries: Maximum number of entries that can be returned.
+> > + * Entries array must be allocated to hold max_entries number of entries.
+> > + * @num_entries: Updated to the number of entries that were successfully read.
+> > + *
+> > + * Returns 0 on success or appropriate error code.
+> > + */
+> > +int rdma_query_gid_table(struct ib_device *device,
+> > +			 struct ib_uverbs_gid_entry *entries,
+> > +			 size_t max_entries, size_t *num_entries)
+>
+> return ssize_t instead of the output pointer
+
+I'll change.
+
+>
+> > +{
+> > +	const struct ib_gid_attr *gid_attr;
+> > +	struct ib_gid_table *table;
+> > +	unsigned int port_num;
+> > +	unsigned long flags;
+> > +	int ret;
+> > +	int i;
+>
+> i is unsigned
+
+"i" is used as an iterator till table->sz while "sz" is declared as int.
+I'll change it to be unsigned int, but it is not needed.
 
 Thanks
 
