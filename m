@@ -2,44 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901D1269228
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 18:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AB2269252
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 18:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgINQw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Sep 2020 12:52:59 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36568 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgINQvA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Sep 2020 12:51:00 -0400
-Received: by mail-pg1-f196.google.com with SMTP id f2so259028pgd.3
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Sep 2020 09:50:59 -0700 (PDT)
+        id S1725961AbgINQ7B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Sep 2020 12:59:01 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:52749 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgINQ4W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Sep 2020 12:56:22 -0400
+Received: by mail-pj1-f65.google.com with SMTP id o16so136466pjr.2
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Sep 2020 09:56:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=/aJ4X4AVP27asaO12N1gmfnn+t87XNKA0mGMbUFaBuQ=;
-        b=dZIT7YYd4Tt9+VN42vE2UoaPrZpyXh1Da8bZRa+w9uHw4QwSfIy5RSaeHLD61iERsZ
-         FfG4EgChn00fc8qcA8Bkm3C6IlazZb51rO+BIdO/gEKlp0NoNWUvlrjH5b+OWQ3cfa+3
-         paOTYeMPoIZLgcV008slbNRD+Vn+hI1Jzc2+AKEoeOcZyjZc2Euti83Mk+CUATgXOhgy
-         LFVwBtd8xYJrU8z9bIaK89PUqiXrEbnDH0Q1Mu7tmW5iIoqwhVGlR1hK/8UDWVbLD6Ij
-         FbCuQiIWIPd3ieffXru816x67lAnCzpR8z8IfTJzrjcPSk80UGckrE+pZL1sWiodvSkl
-         yrXg==
-X-Gm-Message-State: AOAM531O26krKXJGX37o+zjYRlxJP6cZcK27ulfcCSxAG6Jss2Zx918e
-        J8vrclOcMMlC1qz/PWfzeJk=
-X-Google-Smtp-Source: ABdhPJw8SAkKavtSlTdMFjBKOhgJJXZGBOg+UF/jde/P9+f8qmb4oAVT5pL7loPf9eTeXkeBai+lxw==
-X-Received: by 2002:a62:d44e:0:b029:13c:1611:652f with SMTP id u14-20020a62d44e0000b029013c1611652fmr14036268pfl.15.1600102258951;
-        Mon, 14 Sep 2020 09:50:58 -0700 (PDT)
+        bh=d5r5ZjxqslDTHYertXw07PFVkvDSdh/4MUWRrEj439I=;
+        b=aU/ucgRvK0xorQ8sDJ8AlKw1of1tw/E0FKN+tqOzv4N+kxOuUhenROEo7776pvzfKZ
+         G0WiWh+jIegKT62z7xbEKNqXuCRDKsW9hXKFNpXCZUcUfKLWo5B+RiweBWcJ7f8EAEn9
+         EC9IJwfIFyeUCNwUDBhX7Osu5/mKb28SXd533b90+JOj7/eriOrcjEF8PWRSAXopPp1Z
+         Ui2UliLQnhhrz/Uuw7ds4xMGjlcLowul2EXOKhRrrDeYxRbjB8BRCH18W7qoLS5Mb7Zl
+         rImzVlxm7BwiHXb8EdO95PCX/mkKK8et5rRuUNg4otS6wn/Zhnvy0iKzF8q3owcQjNvD
+         RNkg==
+X-Gm-Message-State: AOAM532iEldxUoyg88essjP825LHxlS2z21GY6SUcb09thDC0MUT9kc6
+        U9NZP/iO9aUvZH9lpg7Kl78=
+X-Google-Smtp-Source: ABdhPJyuA9oUotyVPxuPXui0SyedpROUA9UCwiaLN5/AxcXcr3miy/LTB2AaYSrEQQueucCKTFyWYA==
+X-Received: by 2002:a17:90a:f682:: with SMTP id cl2mr285273pjb.158.1600102581102;
+        Mon, 14 Sep 2020 09:56:21 -0700 (PDT)
 Received: from ?IPv6:2601:647:4000:d7:3f5a:7698:1b81:cc96? ([2601:647:4000:d7:3f5a:7698:1b81:cc96])
-        by smtp.gmail.com with ESMTPSA id o5sm9553294pjs.13.2020.09.14.09.50.57
+        by smtp.gmail.com with ESMTPSA id e123sm11066876pfh.167.2020.09.14.09.56.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 09:50:58 -0700 (PDT)
+        Mon, 14 Sep 2020 09:56:20 -0700 (PDT)
 Subject: Re: [PATCH] srp_daemon: Avoid extra permissions for the lock file
 To:     Sergey Gorenko <sergeygo@nvidia.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>
 References: <20200819141745.11005-1-sergeygo@nvidia.com>
- <BN8PR12MB3220065FFCE12DED0704BE9BBF230@BN8PR12MB3220.namprd12.prod.outlook.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -64,12 +62,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <b2cc891a-3fb0-25d9-ca8b-e26800c90143@acm.org>
-Date:   Mon, 14 Sep 2020 09:50:57 -0700
+Message-ID: <7027c39a-1435-c4eb-d42f-c7fe272456a8@acm.org>
+Date:   Mon, 14 Sep 2020 09:56:19 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <BN8PR12MB3220065FFCE12DED0704BE9BBF230@BN8PR12MB3220.namprd12.prod.outlook.com>
+In-Reply-To: <20200819141745.11005-1-sergeygo@nvidia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,10 +76,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-09-14 02:24, Sergey Gorenko wrote:
-> Could you review the patch? I'm asking for you because you are specified
-> as a maintainer for srp_daemon in rdma-core.
+On 2020-08-19 07:17, Sergey Gorenko wrote:
+> There is no need to create a world-writable lock file.
+> It's enough to have an RW permission for the file owner only.
+> 
+> Signed-off-by: Sergey Gorenko <sergeygo@nvidia.com>
+> Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  srp_daemon/srp_daemon.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
+> index f14d9f56c9f2..fcf94537cebb 100644
+> --- a/srp_daemon/srp_daemon.c
+> +++ b/srp_daemon/srp_daemon.c
+> @@ -142,7 +142,6 @@ static int check_process_uniqueness(struct config_t *conf)
+>  		return -1;
+>  	}
+>  
+> -	fchmod(fd, S_IRUSR|S_IRGRP|S_IROTH|S_IWUSR|S_IWGRP|S_IWOTH);
+>  	if (0 != lockf(fd, F_TLOCK, 0)) {
+>  		pr_err("failed to lock %s (errno: %d). possibly another "
+>  		       "srp_daemon is locking it\n", path, errno);
 
-Thanks for the reminder. That patch had escaped from my attention.
+I think the fchmod() call was introduced by commit ee138ce1e40d ("Cause
+srp_daemon launch to fail if another srp_daemon is already working on the
+same HCA port."). Has it been verified that with this change applied that
+mechanism still works?
+
+Anyway, please add a reference to that commit in the patch description.
+
+Thanks,
 
 Bart.
+
+
+
