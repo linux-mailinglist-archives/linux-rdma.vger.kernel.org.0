@@ -2,196 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC912690BB
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 17:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901D1269228
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 18:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgINP4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Sep 2020 11:56:38 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:57184 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgINP4R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:56:17 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5f928b0000>; Mon, 14 Sep 2020 23:55:55 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 08:55:55 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Mon, 14 Sep 2020 08:55:55 -0700
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Sep
- 2020 15:55:55 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 14 Sep 2020 15:55:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMxbtmrA8vPxahaTyQ2NOG/e79zXgh9g6Lht3qhLv4cSSo+93qrw4QGI9/y3OT5Sbkhui/bMzAa9ukjIsgHO1DzfJ/6rKKIvYvVfCDRP7AVHstqRcjyTHo2wNdqMb4dGRNcxJOSIQkPOhXm5f7GJnttEBmroPH7Lyh/qTdukoUBr5/8LvC+k6dZAu6Elb4KX2NvI/24tF50Uz5UWVJCcF5vxWdFWanv2ge9XcpSrJn72RWZE6PfoidX0s00pFXg7HXJjaegPdTVfxWOmw7D+UOBqP1OYr6jdX3Zj+07O53+jC1gCKjuudgoHBucVKhOJGqT6xVowRwUZ0LQrgj+geA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ElTvoPOofgeGrbWksr+bBc5wJjficDAugwJyAIaOwI4=;
- b=i/vbKwk8A/DmlOfwJr2R7iIbRfi/pw/COyKIkxLwRp1dviGFn3FfqxOQ2lDeGkyayCmLQwJTpd5t4Q7S+eyNuAKp1Xp4lF2WmZDYlUEaqhPfrGdCy8QcA7VRP520VavvUZ5V/Inm9Ww4uwS6M9cSfQSwEX9WBVgUwm4UDCP2klBTIKnIoj0+eTZnXcQKX8Kh+1medDffoZM2lZX3DgT4u8O0e1Uj0BzETfazwURPd4tdz30yLkBv6dstCRYWlKOD2A+gA9f0VkR3ozsHxZ9ZnTjV/IfGi4WDl1sir4nK0p5zOL731P0R7Ag4viPiL3Wb6+gCQn3fy+Teal55b7/u9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
- 2020 15:55:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
- 15:55:52 +0000
-Date:   Mon, 14 Sep 2020 12:55:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 4/4] RDMA/uverbs: Expose the new GID query API
- to user space
-Message-ID: <20200914155550.GF904879@nvidia.com>
-References: <20200910142204.1309061-1-leon@kernel.org>
- <20200910142204.1309061-5-leon@kernel.org>
- <20200911195918.GT904879@nvidia.com> <20200913091302.GF35718@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200913091302.GF35718@unreal>
-X-ClientProxiedBy: YQXPR0101CA0044.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726239AbgINQw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Sep 2020 12:52:59 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:36568 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgINQvA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Sep 2020 12:51:00 -0400
+Received: by mail-pg1-f196.google.com with SMTP id f2so259028pgd.3
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Sep 2020 09:50:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/aJ4X4AVP27asaO12N1gmfnn+t87XNKA0mGMbUFaBuQ=;
+        b=dZIT7YYd4Tt9+VN42vE2UoaPrZpyXh1Da8bZRa+w9uHw4QwSfIy5RSaeHLD61iERsZ
+         FfG4EgChn00fc8qcA8Bkm3C6IlazZb51rO+BIdO/gEKlp0NoNWUvlrjH5b+OWQ3cfa+3
+         paOTYeMPoIZLgcV008slbNRD+Vn+hI1Jzc2+AKEoeOcZyjZc2Euti83Mk+CUATgXOhgy
+         LFVwBtd8xYJrU8z9bIaK89PUqiXrEbnDH0Q1Mu7tmW5iIoqwhVGlR1hK/8UDWVbLD6Ij
+         FbCuQiIWIPd3ieffXru816x67lAnCzpR8z8IfTJzrjcPSk80UGckrE+pZL1sWiodvSkl
+         yrXg==
+X-Gm-Message-State: AOAM531O26krKXJGX37o+zjYRlxJP6cZcK27ulfcCSxAG6Jss2Zx918e
+        J8vrclOcMMlC1qz/PWfzeJk=
+X-Google-Smtp-Source: ABdhPJw8SAkKavtSlTdMFjBKOhgJJXZGBOg+UF/jde/P9+f8qmb4oAVT5pL7loPf9eTeXkeBai+lxw==
+X-Received: by 2002:a62:d44e:0:b029:13c:1611:652f with SMTP id u14-20020a62d44e0000b029013c1611652fmr14036268pfl.15.1600102258951;
+        Mon, 14 Sep 2020 09:50:58 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:3f5a:7698:1b81:cc96? ([2601:647:4000:d7:3f5a:7698:1b81:cc96])
+        by smtp.gmail.com with ESMTPSA id o5sm9553294pjs.13.2020.09.14.09.50.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 09:50:58 -0700 (PDT)
+Subject: Re: [PATCH] srp_daemon: Avoid extra permissions for the lock file
+To:     Sergey Gorenko <sergeygo@nvidia.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+References: <20200819141745.11005-1-sergeygo@nvidia.com>
+ <BN8PR12MB3220065FFCE12DED0704BE9BBF230@BN8PR12MB3220.namprd12.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <b2cc891a-3fb0-25d9-ca8b-e26800c90143@acm.org>
+Date:   Mon, 14 Sep 2020 09:50:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YQXPR0101CA0044.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:14::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 15:55:52 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kHqpa-0069mD-AF; Mon, 14 Sep 2020 12:55:50 -0300
-X-Originating-IP: [206.223.160.26]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5204eee3-6199-40a5-2fad-08d858c6a837
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2601:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB26010EF6407D0CD478797009C2230@DM6PR12MB2601.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PAXbNpqbOHFiBAJtmlAIqZpEoq8JRHJf+PTTT2km/oCKbbdFYiLN0kVDWblGgetSIXMPmyJDDHiqkVgaI5tTCKnB1AFQS7mbq2iBIY04+dr00V0FbEe4ew2TOj2LCdnDDRId79qRpOvls9KYxA9RYWaRoDoDbpZM/GLSLLWBwRJJSSE4aVvDnsmYfix7E0tAaimRvknAlmX1KTpt2k+QyVmTBg0fVZsciIm94KDAQqk/isFY/ZNH6DQOuoijBKvPE42R43bfYUykcJnUoBU/4lvYDHvInEVhEO9hrX1ZKTuUCEkZJ0ORJpMZLpSyyhIJnCp+HSSDILyg3xTr9SdufDM0ET3j9jJREEX7CSywtj27fGHhrfnwhVTswX3NKroH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(26005)(6916009)(54906003)(1076003)(316002)(186003)(83380400001)(33656002)(4326008)(8676002)(86362001)(2616005)(9786002)(478600001)(9746002)(5660300002)(426003)(2906002)(66556008)(66476007)(66946007)(36756003)(8936002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: WSoPyfXW3bWOH3wynjoXduwM6H882fj9vt2ujzud/0DxhAIawwcPNReUo6x6wY1Wcipve4M0LMtysQiGQw0oYssJMjlAX2/m1+Ec2xpdjFOSdojEGBXBuyvmRUzdogM3TC35ym6GURkghUkl6RqBxn1nouVt+iOIUAqVNj3A8OZnmzRQ3UL6NQ9hVYziOp+twKyB2cmmBHEnGZQ89vMbaZr4GyznVGDWXcRJq1vHiZEIW8xafzNTkwqTIc4Mz8qeh2lkA27ZsFWa71KAh3vxRcudZ7D6jjrP/6noUc6OL/Vwz5rPEc7ylR0UbBkbOHAor/kk15JVYsEkXC0M1XEycpOLH/2CSa3L6jgPzpwT3zSNW8BMym1BYhHyE6CAJRCpSS2BEOTuHWRy8+/tdXq6SRdGMl+QBS+DVBWtAfHZz5zQXIMN4+nV7AgpGktRhla3YQObcrl79PZ4X8EnPbLjtXojLCpoJDyMQpjp35jdMbvamJ7uIRtTyefR1Ah+Kwzgew4RMwJHaDEda6iJVirGean13uK9wh7KbgtCH+Urh4ZH0OHkliLSQJrOjkr7BAu1dFlGw3ft/6tvSJAXIKJcQ32OArfLdDQgDyBFIenXnOV2d7OAWHTkjVeMt+9mZSi2ArNtTQovc78Sl35zJFVSJw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5204eee3-6199-40a5-2fad-08d858c6a837
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 15:55:52.4241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pheykpUPTa4NtFl/JIcgebwvGHthFP1/DSk8azHTWrtYM1q1vfbWgyYkX59Icoam
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2601
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600098955; bh=ElTvoPOofgeGrbWksr+bBc5wJjficDAugwJyAIaOwI4=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=AX+HoNHG6EX2tqWuM0EJ56Wmu9vO2K40SgeOk3hjq+/9449+RPMireBN3/dgV33V4
-         gsuXD2rOkLNayNt8K4IqDppsokCy1jbvyBHMjgAt6nv/JFuGeHEz81GKYFUOexo7Iu
-         u2Mxx6DmJq9Wj58INZ9BMxVMIEViifjJRLkJBZnTjASPocKT1fDpCLdJgyg3Yaj1A2
-         MY5Vyk6OrRvbO4V123WTlEjtOowgwESPQU2T9m4d5Wh+5Mz36D2CEJeoolrUl0R+v0
-         DQc76ZdBvuVyad4MKnLcUUc9KIUtZoqtTrkSGoJQW58wDTp6vOmnUs4NvZb1mEBBe8
-         gUmfHWfvJticA==
+In-Reply-To: <BN8PR12MB3220065FFCE12DED0704BE9BBF230@BN8PR12MB3220.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 12:13:02PM +0300, Leon Romanovsky wrote:
-> > > +static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
-> > > +	struct uverbs_attr_bundle *attrs)
-> > > +{
-> > > +	const struct ib_gid_attr *gid_attr;
-> > > +	struct ib_uverbs_gid_entry entry;
-> > > +	struct ib_ucontext *ucontext;
-> > > +	struct ib_device *ib_dev;
-> > > +	u32 gid_index;
-> > > +	u32 port_num;
-> > > +	u32 flags;
-> > > +	int ret;
-> > > +
-> > > +	ret = uverbs_get_flags32(&flags, attrs,
-> > > +				 UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, 0);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = uverbs_get_const(&port_num, attrs,
-> > > +			       UVERBS_ATTR_QUERY_GID_ENTRY_PORT);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = uverbs_get_const(&gid_index, attrs,
-> > > +			       UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ucontext = ib_uverbs_get_ucontext(attrs);
-> > > +	if (IS_ERR(ucontext))
-> > > +		return PTR_ERR(ucontext);
-> > > +	ib_dev = ucontext->device;
-> >
-> > > +	if (!rdma_is_port_valid(ib_dev, port_num))
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (!rdma_ib_or_roce(ib_dev, port_num))
-> > > +		return -EINVAL;
-> >
-> > Why these two tests? I would expect rdma_get_gid_attr() to do them
-> 
-> First check is not needed, but the second check doesn't exist in
-> rdma_get_gid_attr(). We don't check that table returned from
-> rdma_gid_table() call exists.
+On 2020-09-14 02:24, Sergey Gorenko wrote:
+> Could you review the patch? I'm asking for you because you are specified
+> as a maintainer for srp_daemon in rdma-core.
 
-Oh that is a bit exciting, maybe it should be checked...
+Thanks for the reminder. That patch had escaped from my attention.
 
-Ideally we should also block this uapi entirely if the device doesn't
-have a gid table, so this should be -EOPNOTSUP and moved up to the
-top so it can be moved once we figure it out.
-
-> > > +	gid_attr = rdma_get_gid_attr(ib_dev, port_num, gid_index);
-> > > +	if (IS_ERR(gid_attr))
-> > > +		return PTR_ERR(gid_attr);
-> > > +
-> > > +	memcpy(&entry.gid, &gid_attr->gid, sizeof(gid_attr->gid));
-> > > +	entry.gid_index = gid_attr->index;
-> > > +	entry.port_num = gid_attr->port_num;
-> > > +	entry.gid_type = gid_attr->gid_type;
-> > > +	ret = rdma_get_ndev_ifindex(gid_attr, &entry.netdev_ifindex);
-> >
-> > Use rdma_read_gid_attr_ndev_rcu()
-> 
-> I don't want to bring below logic to uverbs* file.
-> 
->   1263         if (rdma_protocol_ib(gid_attr->device, gid_attr->port_num)) {
->   1264                 *ndev_ifindex = 0;
->   1265                 return 0;
->   1266         }
-
-Shouldn't be needed, rdma_read_gid_attr_ndev_rcu() already returns -1
-for IB
-
-Jason
+Bart.
