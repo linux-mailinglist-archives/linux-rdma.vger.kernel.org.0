@@ -2,36 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2422689DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 13:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5855B268A04
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Sep 2020 13:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgINLTS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Sep 2020 07:19:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45902 "EHLO mail.kernel.org"
+        id S1726047AbgINL1n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Sep 2020 07:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgINLTD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:19:03 -0400
+        id S1726025AbgINL1F (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:27:05 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C6D821D24;
-        Mon, 14 Sep 2020 11:19:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BD92216C4;
+        Mon, 14 Sep 2020 11:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600082342;
-        bh=E83cmqT1XoXi97Nmmvk4Ry1wo9DttE4g+t4FA6GLXIE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KTHlKriNCO+ZVH3Y1XXTrDvmEe/ozOxU4AiRatM9+p1VZ0h4lztPX+WrWSA4noQnp
-         l8ETJV3YGFrgQfbaW4aFia2/EDaJCysEOdY9jwqLkpSn31gxf7ptDsQijsj+Cxrkvx
-         DxnclBY2hNjL4KZV2BYHCN/bE//e+1DcvwbTbccg=
+        s=default; t=1600082824;
+        bh=XlUPXf20sYSWsrDm+BbO3sfM3Q86Ei0e0831A0lcByA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oA5V/9NBZFvEeGUqt135OXkRxYENcN3kcapHHZ59sgAskLzzyfskM4ZeddyjrJYHV
+         Ot1LSj6rkcfaAX2Rnd8RcWV/WTzQvY8knOgYRDBcSTGuG128RMzrWruQN74LKPTrlq
+         VzdcgMnjcAKH0J0kdHyC39bpjI1ICXq4OjfgzXVs=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next v3] RDMA/mlx4: Provide port number for special QPs
-Date:   Mon, 14 Sep 2020 14:18:57 +0300
-Message-Id: <20200914111857.344434-1-leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next 2/5] RDMA/mlx5: Use set_mkc_access_pd_addr_fields() in reg_create()
+Date:   Mon, 14 Sep 2020 14:26:50 +0300
+Message-Id: <20200914112653.345244-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200914112653.345244-1-leon@kernel.org>
+References: <20200914112653.345244-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -39,77 +40,51 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Special QPs created by mlx4 have same QP port borrowed from
-the context, while they are expected to have different ones.
+reg_create() open codes this helper, use the shared code.
 
-Fix it by using HW physical port instead.
-
-It fixes the following error during driver init:
-[   12.074150] mlx4_core 0000:05:00.0: mlx4_ib: initializing demux service for 128 qp1 clients
-[   12.084036] <mlx4_ib> create_pv_sqp: Couldn't create special QP (-16)
-[   12.085123] <mlx4_ib> create_pv_resources: Couldn't create  QP1 (-16)
-[   12.088300] mlx4_en: Mellanox ConnectX HCA Ethernet driver v4.0-0
-
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- Changelog:
-v3: mlx4 devices create 2 special QPs in SRIOV mode, separate them by
-port number and special bit. The mlx4 is limited to two ports and not
-going to be extended, and the port_num is not forwarded to FW too, so
-it is safe.
-v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-4-leon@kernel.org/#r
----
- drivers/infiniband/hw/mlx4/mad.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/mr.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/mad.c b/drivers/infiniband/hw/mlx4/mad.c
-index 8bd16474708f..4b565640ba85 100644
---- a/drivers/infiniband/hw/mlx4/mad.c
-+++ b/drivers/infiniband/hw/mlx4/mad.c
-@@ -1792,7 +1792,7 @@ static void pv_qp_event_handler(struct ib_event *event, void *qp_context)
- }
-
- static int create_pv_sqp(struct mlx4_ib_demux_pv_ctx *ctx,
--			    enum ib_qp_type qp_type, int create_tun)
-+			 enum ib_qp_type qp_type, int port, int create_tun)
- {
- 	int i, ret;
- 	struct mlx4_ib_demux_pv_qp *tun_qp;
-@@ -1822,12 +1822,13 @@ static int create_pv_sqp(struct mlx4_ib_demux_pv_ctx *ctx,
- 		qp_init_attr.proxy_qp_type = qp_type;
- 		qp_attr_mask_INIT = IB_QP_STATE | IB_QP_PKEY_INDEX |
- 			   IB_QP_QKEY | IB_QP_PORT;
-+		qp_init_attr.init_attr.port_num = ctx->port;
- 	} else {
- 		qp_init_attr.init_attr.qp_type = qp_type;
- 		qp_init_attr.init_attr.create_flags = MLX4_IB_SRIOV_SQP;
- 		qp_attr_mask_INIT = IB_QP_STATE | IB_QP_PKEY_INDEX | IB_QP_QKEY;
-+		qp_init_attr.init_attr.port_num = port | 1 << 7;
- 	}
--	qp_init_attr.init_attr.port_num = ctx->port;
- 	qp_init_attr.init_attr.qp_context = ctx;
- 	qp_init_attr.init_attr.event_handler = pv_qp_event_handler;
- 	tun_qp->qp = ib_create_qp(ctx->pd, &qp_init_attr.init_attr);
-@@ -2026,7 +2027,7 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
- 	}
-
- 	if (ctx->has_smi) {
--		ret = create_pv_sqp(ctx, IB_QPT_SMI, create_tun);
-+		ret = create_pv_sqp(ctx, IB_QPT_SMI, port, create_tun);
- 		if (ret) {
- 			pr_err("Couldn't create %s QP0 (%d)\n",
- 			       create_tun ? "tunnel for" : "",  ret);
-@@ -2034,7 +2035,7 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
- 		}
- 	}
-
--	ret = create_pv_sqp(ctx, IB_QPT_GSI, create_tun);
-+	ret = create_pv_sqp(ctx, IB_QPT_GSI, port, create_tun);
- 	if (ret) {
- 		pr_err("Couldn't create %s QP1 (%d)\n",
- 		       create_tun ? "tunnel for" : "",  ret);
---
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 6e63c0b36872..b21eb9dec185 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1199,29 +1199,16 @@ static struct mlx5_ib_mr *reg_create(struct ib_mr *ibmr, struct ib_pd *pd,
+ 	MLX5_SET(create_mkey_in, in, pg_access, !!(pg_cap));
+ 
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
++	set_mkc_access_pd_addr_fields(mkc, access_flags, virt_addr, pd);
+ 	MLX5_SET(mkc, mkc, free, !populate);
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_MTT);
+-	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+-		MLX5_SET(mkc, mkc, relaxed_ordering_write,
+-			 !!(access_flags & IB_ACCESS_RELAXED_ORDERING));
+-	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+-		MLX5_SET(mkc, mkc, relaxed_ordering_read,
+-			 !!(access_flags & IB_ACCESS_RELAXED_ORDERING));
+-	MLX5_SET(mkc, mkc, a, !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
+-	MLX5_SET(mkc, mkc, rw, !!(access_flags & IB_ACCESS_REMOTE_WRITE));
+-	MLX5_SET(mkc, mkc, rr, !!(access_flags & IB_ACCESS_REMOTE_READ));
+-	MLX5_SET(mkc, mkc, lw, !!(access_flags & IB_ACCESS_LOCAL_WRITE));
+-	MLX5_SET(mkc, mkc, lr, 1);
+ 	MLX5_SET(mkc, mkc, umr_en, 1);
+ 
+-	MLX5_SET64(mkc, mkc, start_addr, virt_addr);
+ 	MLX5_SET64(mkc, mkc, len, length);
+-	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+ 	MLX5_SET(mkc, mkc, bsf_octword_size, 0);
+ 	MLX5_SET(mkc, mkc, translations_octword_size,
+ 		 get_octo_len(virt_addr, length, page_shift));
+ 	MLX5_SET(mkc, mkc, log_page_size, page_shift);
+-	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+ 	if (populate) {
+ 		MLX5_SET(create_mkey_in, in, translations_octword_actual_size,
+ 			 get_octo_len(virt_addr, length, page_shift));
+-- 
 2.26.2
 
