@@ -2,163 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFBF26A468
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Sep 2020 13:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FEE26A579
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Sep 2020 14:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIOLru (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Sep 2020 07:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOLrI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Sep 2020 07:47:08 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A709F20732;
-        Tue, 15 Sep 2020 11:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600170428;
-        bh=u0ZCXAtUd1T/sahy0seTlGuKqmBczTEOCYW+fb2HauA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1sHFqMp4cvdfdNhvovS9YomMQXah6hbwaVfQLHTyaxAJ8eHucUi2fjFkCujJFAEs0
-         WaFk2nvTNTSE6bpqYcQ8JuafoMvg8qncyExYq2arrFFRmtdkDN3gzbuXyZzalIHJYl
-         6y+OlU7ZS07M0Mew1NFczvRb//K4oTQEtrg5P7Kk=
-Date:   Tue, 15 Sep 2020 14:47:04 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 4/4] RDMA/uverbs: Expose the new GID query API
- to user space
-Message-ID: <20200915114704.GB486552@unreal>
-References: <20200910142204.1309061-1-leon@kernel.org>
- <20200910142204.1309061-5-leon@kernel.org>
- <20200911195918.GT904879@nvidia.com>
- <20200913091302.GF35718@unreal>
- <20200914155550.GF904879@nvidia.com>
+        id S1726242AbgIOMpy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Sep 2020 08:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgIOMpb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Sep 2020 08:45:31 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D13C06178B;
+        Tue, 15 Sep 2020 05:45:24 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z19so1854512pfn.8;
+        Tue, 15 Sep 2020 05:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XLvKC1QgKkHaTyoOvehGhV+Ht6Yp+maIHFDFeeVXq8M=;
+        b=U5TrWgn8lEBzlVwpiipMur62Lm5Vpbnbt1ijTULCsAAOrzIK9+Qm69Aggok2xEYHxb
+         /vCWXARkKZO26GJYPXyLmoK7V+Gz7n0GF2xhC2pveIV9XLUAihKLvURt28xed3TWUynR
+         7QxCO3GYgw1aG+Cu9NDkBPJ91F40lhlwdlFghCore2RpK8gnmCKyfr8LIy0gaFdG8xHQ
+         /mzbSYdzlu3860JCuALGlyHW0n5PJBNnUCoTEQ8OnVFyVSbcgd4HIHr6A4Zao0TR049m
+         eipWdvq3ZfrurEIRpiWgmsWIL5Tnd9Ha7KTwwh0ffyclogguk8QELt3fSpxMQzoE09TR
+         0QWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XLvKC1QgKkHaTyoOvehGhV+Ht6Yp+maIHFDFeeVXq8M=;
+        b=iIgWKC2Cvc/At6hkgdYzWAy/TmZCMDBNW5s7nuEGKtGzJtdwoNNmyCiOc+QqyZ4t3l
+         KqUZbzVekPMNKfFSJgrEERCc5x6dOZw0MbAA01N4erRcA1tsKeXwjXXTSDQBkAlsRbq3
+         lX3DxYwIK6N9CpiTtZmtAhtyepjKcqQa3QPiLnxf4RM/2Kfz+9YJP5+W+NXOMO694k/h
+         YaUz2KcVZUn10Oevlg/6dn2+KGzsSzD0VgxVYDKsZbkj2gbuGvT8mN0GrOsLjnaqmYjI
+         ZtOAC/xaOaWcBCjuU7RMjASzgApqCgOYy6+BLyi7GsbEgEDkSX+7ojTcDXHBP608/era
+         zd3g==
+X-Gm-Message-State: AOAM533YOuf84krH6e7XDYnQoM289hX+raGsYRXtNGqVRIDLd40celLZ
+        rmsc9rN6sC7jLg1ZbqeQXRsDIv6aff3KK6J7OeI=
+X-Google-Smtp-Source: ABdhPJwGJUPVEVWbhzPPDlRLJ7w8+OtzA3zxmhxY9wEbd9cZp9qKfZZDo8HrD5NKHnTBl9DAZ+5l7JvG+cRpReQFtFE=
+X-Received: by 2002:aa7:9e43:0:b029:142:2501:34e3 with SMTP id
+ z3-20020aa79e430000b0290142250134e3mr1632591pfq.60.1600173924139; Tue, 15 Sep
+ 2020 05:45:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914155550.GF904879@nvidia.com>
+References: <20200915101559.33292-1-fazilyildiran@gmail.com> <20200915112341.GU904879@nvidia.com>
+In-Reply-To: <20200915112341.GU904879@nvidia.com>
+From:   =?UTF-8?B?TmVjaXAgRi4gWcSxbGTEsXJhbg==?= <fazilyildiran@gmail.com>
+Date:   Tue, 15 Sep 2020 15:45:13 +0300
+Message-ID: <CAODUWC5j9VZYedQ620RvunxHO4AnaQokhGniT4FgPyjE=Vzgjg@mail.gmail.com>
+Subject: Re: [PATCH] IB/rxe: fix kconfig dependency warning for RDMA_RXE
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:55:50PM -0300, Jason Gunthorpe wrote:
-> On Sun, Sep 13, 2020 at 12:13:02PM +0300, Leon Romanovsky wrote:
-> > > > +static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
-> > > > +	struct uverbs_attr_bundle *attrs)
-> > > > +{
-> > > > +	const struct ib_gid_attr *gid_attr;
-> > > > +	struct ib_uverbs_gid_entry entry;
-> > > > +	struct ib_ucontext *ucontext;
-> > > > +	struct ib_device *ib_dev;
-> > > > +	u32 gid_index;
-> > > > +	u32 port_num;
-> > > > +	u32 flags;
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = uverbs_get_flags32(&flags, attrs,
-> > > > +				 UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, 0);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ret = uverbs_get_const(&port_num, attrs,
-> > > > +			       UVERBS_ATTR_QUERY_GID_ENTRY_PORT);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ret = uverbs_get_const(&gid_index, attrs,
-> > > > +			       UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ucontext = ib_uverbs_get_ucontext(attrs);
-> > > > +	if (IS_ERR(ucontext))
-> > > > +		return PTR_ERR(ucontext);
-> > > > +	ib_dev = ucontext->device;
-> > >
-> > > > +	if (!rdma_is_port_valid(ib_dev, port_num))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (!rdma_ib_or_roce(ib_dev, port_num))
-> > > > +		return -EINVAL;
-> > >
-> > > Why these two tests? I would expect rdma_get_gid_attr() to do them
+Steps to reproduce this for v5.9-rc4 on x86 machine (using make.cross [1]
+to cross compile for arm64):
+1. make.cross ARCH=arm64 allnoconfig
+2. make.cross ARCH=arm64 menuconfig
+  a. Enable NET
+  b. Enable INET
+  c. Enable PCI
+  d. Enable INFINIBAND
+  e. Enable RDMA_RXE
+3. make.cross ARCH=arm64 olddefconfig # WARNING: unmet direct
+dependencies detected for CRYPTO_CRC32
+
+[1] https://github.com/fengguang/lkp-tests/blob/master/sbin/make.cross
+
+Thanks
+Necip
+
+On Tue, Sep 15, 2020 at 2:23 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Tue, Sep 15, 2020 at 01:16:00PM +0300, Necip Fazil Yildiran wrote:
+> > When RDMA_RXE is enabled and CRYPTO is disabled, it results in the
+> > following Kbuild warning:
 > >
-> > First check is not needed, but the second check doesn't exist in
-> > rdma_get_gid_attr(). We don't check that table returned from
-> > rdma_gid_table() call exists.
+> > WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+> >   Depends on [n]: CRYPTO [=n]
+> >   Selected by [y]:
+> >   - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && (!64BIT || ARCH_DMA_ADDR_T_64BIT [=n])
 >
-> Oh that is a bit exciting, maybe it should be checked...
+> ?? how did you get here? I thought the kconfig front ends were
+> supposed to prevent this.
 >
-> Ideally we should also block this uapi entirely if the device doesn't
-> have a gid table, so this should be -EOPNOTSUP and moved up to the
-> top so it can be moved once we figure it out.
-
-It is already in earliest possible stage, right after we get ib_device.
-
->
-> > > > +	gid_attr = rdma_get_gid_attr(ib_dev, port_num, gid_index);
-> > > > +	if (IS_ERR(gid_attr))
-> > > > +		return PTR_ERR(gid_attr);
-> > > > +
-> > > > +	memcpy(&entry.gid, &gid_attr->gid, sizeof(gid_attr->gid));
-> > > > +	entry.gid_index = gid_attr->index;
-> > > > +	entry.port_num = gid_attr->port_num;
-> > > > +	entry.gid_type = gid_attr->gid_type;
-> > > > +	ret = rdma_get_ndev_ifindex(gid_attr, &entry.netdev_ifindex);
-> > >
-> > > Use rdma_read_gid_attr_ndev_rcu()
-> >
-> > I don't want to bring below logic to uverbs* file.
-> >
-> >   1263         if (rdma_protocol_ib(gid_attr->device, gid_attr->port_num)) {
-> >   1264                 *ndev_ifindex = 0;
-> >   1265                 return 0;
-> >   1266         }
->
-> Shouldn't be needed, rdma_read_gid_attr_ndev_rcu() already returns -1
-> for IB
-
-It will be something like this:
-
-diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
-index 8e957aa38531..071698af4b8e 100644
---- a/drivers/infiniband/core/uverbs_std_types_device.c
-+++ b/drivers/infiniband/core/uverbs_std_types_device.c
-@@ -368,10 +368,11 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
- static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
- 	struct uverbs_attr_bundle *attrs)
- {
-+	struct ib_uverbs_gid_entry entry = {};
- 	const struct ib_gid_attr *gid_attr;
--	struct ib_uverbs_gid_entry entry;
- 	struct ib_ucontext *ucontext;
- 	struct ib_device *ib_dev;
-+	struct net_device *ndev;
- 	u32 gid_index;
- 	u32 port_num;
- 	u32 flags;
-@@ -408,9 +409,17 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
- 	entry.gid_index = gid_attr->index;
- 	entry.port_num = gid_attr->port_num;
- 	entry.gid_type = gid_attr->gid_type;
--	ret = rdma_get_ndev_ifindex(gid_attr, &entry.netdev_ifindex);
--	if (ret)
--		goto out;
-+
-+	if (rdma_protocol_roce(ib_dev, port_num)) {
-+		rcu_read_lock();
-+		ndev = rdma_read_gid_attr_ndev_rcu(gid_attr);
-+		if (IS_ERR(ndev)) {
-+		       rcu_read_unlock();
-+		       goto out;
-+		}
-+		entry.netdev_ifindex = ndev->ifindex;
-+		rcu_read_unlock();
-+	}
-
- 	ret = uverbs_copy_to_struct_or_zero(
- 		attrs, UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY, &entry,
+> Jason
