@@ -2,59 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBFE26B189
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 00:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8506026B20C
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 00:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727619AbgIOWbr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Sep 2020 18:31:47 -0400
-Received: from verein.lst.de ([213.95.11.211]:48377 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727621AbgIOQRS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:17:18 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 26A0868BEB; Tue, 15 Sep 2020 18:16:44 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 18:16:43 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        id S1727047AbgIOWjc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Sep 2020 18:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727565AbgIOWe4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Sep 2020 18:34:56 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFB2C061788;
+        Tue, 15 Sep 2020 15:34:55 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 30E97136A8C1F;
+        Tue, 15 Sep 2020 15:18:05 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:34:49 -0700 (PDT)
+Message-Id: <20200915.153449.1384323730053933155.davem@davemloft.net>
+To:     oded.gabbay@gmail.com
+Cc:     kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, SW_Drivers@habana.ai,
+        gregkh@linuxfoundation.org, andrew@lunn.ch, f.fainelli@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 1/4] lib/scatterlist: Refactor
- sg_alloc_table_from_pages
-Message-ID: <20200915161643.GA24320@lst.de>
-References: <20200910134259.1304543-1-leon@kernel.org> <20200910134259.1304543-2-leon@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910134259.1304543-2-leon@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
+References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+        <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Tue, 15 Sep 2020 15:18:05 -0700 (PDT)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:42:56PM +0300, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@nvidia.com>
-> 
-> Currently, sg_alloc_table_from_pages doesn't support dynamic chaining of
-> SG entries. Therefore it requires from user to allocate all the pages in
-> advance and hold them in a large buffer. Such a buffer consumes a lot of
-> temporary memory in HPC systems which do a very large memory registration.
-> 
-> The next patches introduce API for dynamically allocation from pages and
-> it requires us to do the following:
->  * Extract the code to alloc_from_pages_common.
->  * Change the build of the table to iterate on the chunks and not on the
->    SGEs. It will allow dynamic allocation of more SGEs.
-> 
-> Since sg_alloc_table_from_pages allocate exactly the number of chunks,
-> therefore chunks are equal to the number of SG entries.
-> 
-> Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+From: Oded Gabbay <oded.gabbay@gmail.com>
+Date: Wed, 16 Sep 2020 00:20:12 +0300
 
-I really don't think this refactoring on its own adds any value,
-it just makes reading the rest of the series harder.
+> I completely understand but you didn't answer my question. How come
+> there are drivers which create netdev objects, and specifically sgi-xp
+> in misc (but I also saw it in usb drivers) that live outside
+> drivers/net ? Why doesn't your request apply to them as well ?
 
-(functionally it looks correct, though)
+Don't use examples of drivers doing the wrong thing as an excuse for
+you to repeat the mistake.
+
+Ok?
+
+That kind of argument doesn't work here.
