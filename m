@@ -2,97 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A24726AEB6
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Sep 2020 22:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED3F26AEDD
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Sep 2020 22:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727683AbgIOUeF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Sep 2020 16:34:05 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:35283 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728062AbgIOUdR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Sep 2020 16:33:17 -0400
-Received: by mail-pf1-f195.google.com with SMTP id o68so2648336pfg.2
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Sep 2020 13:32:31 -0700 (PDT)
+        id S1728064AbgIOUr6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Sep 2020 16:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728088AbgIOUr3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Sep 2020 16:47:29 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25620C06174A;
+        Tue, 15 Sep 2020 13:47:28 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id x14so5433495oic.9;
+        Tue, 15 Sep 2020 13:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OIuRgcFlTxfaP90+9msbWVcCrwNMEUrSlP9dST0eMV0=;
+        b=VdTt9DB0Qj2KcTjInZldnPHaKAxaQLxrXytsY70qenGhfpCuiPL8+g5tR7SES1yFMN
+         YClit66x2z9Q3mPzl2wOE8fn/h3xmD4VV/2k1O+bZDEZFD3UOp21b7ytQhtWuhKXLQSW
+         WaVdRWyR32K/ojiNApmrG5x/2Id3b7T4oWyY+Mf4dT13C128CbpXa0gbe+z4oxsnRS7T
+         AEtrmYboIRnfXQlGtmcYvFIdNywoav+hyemM8oU+aoKVg16VXrIQVwdS/hvooOJO5v6Q
+         uzBAWEO6yqzqaUgKuY/Q3q9aN34nyQvAHjkjzDHWHBWO9T6Y9w9FxrDDMGlXLg+tcvFV
+         p5hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RXW/eLZI8Sy77ZEMvS/zwoaoRg+vHMc4xyAMcTVg7QQ=;
-        b=Xlx+pG0qz13r0q9j8JY3BShYT06a9ocjAOLuhQwrUvrhhzXMDMLk5/q8gfh1YCnsC5
-         OiI0pjS6rzpmssWNauNjF0XNBOSp/IQrio8eSE62q05nepKlFi4l+KoNAkzfuw5KXdsl
-         XMjLlNRyCrJLNudxDvkxlImMbmX97rhZ404WvI2AgpzVFFD3fnDtJE9slJopvaDcDbuz
-         lWfG5i8tnXfukjmD0Y5zHVkOYct8UlJcGfrjnWM8ROxg9hUPeGef+PjIBTkNy52we0d+
-         /S2HNThoKfFBfbpC7DSYKWxXEkJPgPSegejIX2TTystSpogYmW80mD/xdVDHlu49vG6k
-         GFCg==
-X-Gm-Message-State: AOAM533h3NBxuNRL6rugm8LaGwJQ2QsEsmlhsFFXrZKQc9u2mOWBPbON
-        9CKJHeBjssFXPtgH0S/XnHM=
-X-Google-Smtp-Source: ABdhPJzJIT3F5g32E46MDmoGmleK5F2yhof4dkoHS/lDK/yer+6hbPh8JLjSUHUYGawNMDkxD0icOg==
-X-Received: by 2002:a63:355:: with SMTP id 82mr15423018pgd.384.1600201950530;
-        Tue, 15 Sep 2020 13:32:30 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:cf06:df5:7551:f96f? ([2601:647:4000:d7:cf06:df5:7551:f96f])
-        by smtp.gmail.com with ESMTPSA id p29sm11844695pgl.34.2020.09.15.13.32.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 13:32:29 -0700 (PDT)
-Subject: Re: [PATCH] srp_daemon: Avoid extra permissions for the lock file
-To:     Sergey Gorenko <sergeygo@nvidia.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-References: <20200819141745.11005-1-sergeygo@nvidia.com>
- <7027c39a-1435-c4eb-d42f-c7fe272456a8@acm.org>
- <BN8PR12MB32208D60B5E5E1AFBDBAF0CCBF200@BN8PR12MB3220.namprd12.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <e6c1888e-8488-4255-edda-7fa1648ca957@acm.org>
-Date:   Tue, 15 Sep 2020 13:32:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OIuRgcFlTxfaP90+9msbWVcCrwNMEUrSlP9dST0eMV0=;
+        b=KBDkS+jUk5l800s+mTkykuET+HRvy/bOqphkmKmQeneTsdG+R00TTVhSC3NHzDp1B+
+         6Rc1Xvx0cMgaPqGQr0f0MjX0doNxm4B+mLtnaWjP3p5JeaLZLC+4/kKK+LoWu6OyHBAU
+         +9tKlltARxfMdyEQCoyro0ID20qidWwe83ZIPLuh6CwAdhufZy/r2imH4bRc1kgTOIzU
+         5N6WheWB7FtuTbMr1j/A1pp8GwkQeS9+zciV7AMgayJlTxquZFVydhgv6QkaQMccXxD6
+         JxVcJSRtE+oPbD/1g+ZkkKJ2u6M65UiZeJ7s6MbUlbOv+avGKHai/TDjm0PSx8+ZLu9m
+         r/gg==
+X-Gm-Message-State: AOAM531uWUYFFrmjjTWGaTWLyEj7ZGWEX+GBxEvA5Dc0A31rNe124i+3
+        3mEw5Nss7EvINu/feleHgJMeC6llG/fDGP7CjE8=
+X-Google-Smtp-Source: ABdhPJzlAsO4eDIUIeSF/kUt++MszHsCflQWvBucCSUHV4kXz+Ql2ae2nHnM6AavonJDI5JwFbsBjCHYsVvKkTecfbs=
+X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr915414oij.154.1600202847068;
+ Tue, 15 Sep 2020 13:47:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BN8PR12MB32208D60B5E5E1AFBDBAF0CCBF200@BN8PR12MB3220.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Tue, 15 Sep 2020 23:46:58 +0300
+Message-ID: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-09-15 01:10, Sergey Gorenko wrote:
-> I tested the patch for the following scenarios:
-> * Start the srp_daemon service when srp_daemon is not running and the lock file does not exist.
-> * Start the srp_daemon service when srp_daemon is not running and the lock file exists.
-> * Start the srp_daemon service when srp_daemon is running and the lock file exists.
-> * Start the srp_daemon service when srp_daemon is running and the lock file exists and the file owner is not root. (Such scenario can happen if someone tries to run srp_daemon manually as not root. The srp_daemon fails in this case, but the lock file is created). This case is handled successfully even without the fchmod() call because the srp_daemon service starts srp_daemon as root.
->  
-> I do not know any case when fchmod() is needed. And it does not look like a good idea to create a word-writable file owned by root. That's why I want to remove the fchmod() call.
->  
-> Do you have an idea when the fchmod() call can be needed?
->  
-> If you have no other objections, I will add the fixes line and send V1.
+On Tue, Sep 15, 2020 at 11:35 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue, 15 Sep 2020 20:10:08 +0300 Oded Gabbay wrote:
+> > Hello,
+> >
+> > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > into the habanalabs driver.
+> >
+> > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > are in that patch's commit message.
+>
+> You keep reposting this, yet this SDK shim^W^W driver is still living in
+> drivers/misc. If you want to make it look like a NIC, the code belongs
+> where NIC drivers are.
+>
+> Then again, is it a NIC? Why do you have those custom IOCTLs? That's far
+> from normal.
 
-Thanks Sergey for having shared all this information. I think this testing
-is sufficient. Hence:
+Hi Jakub,
+I'm sorry but from your question it seems as if you didn't read my
+cover letter at all, as I took great lengths in explaining exactly
+what our device is and why we use custom IOCTLs.
+TL;DR
+We have an accelerator for deep learning (GAUDI) which uses RDMA as
+infrastructure for communication between multiple accelerators. Same
+as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+The RDMA implementation we did does NOT support some basic RDMA
+IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+library or to connect to the rdma infrastructure in the kernel. We
+wanted to do it but when we analyzed it, we saw we wouldn't be able to
+support basic stuff and therefore we had to revert to our IOCTLs.
+To sum it up, because our NIC is used for intra-communication, we
+don't expose nor intend users to use it as a NIC per-se. However, to
+be able to get statistics and manage them in a standard way, and
+support control plane over Ethernet, we do register each port to the
+net subsystem (i.e. create netdev per port).
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+I hope this short summary explains this better.
+As per your request that this code lives in the net subsystem, I think
+that will make it only more complicated and hard to upstream and
+maintain.
+I see there are other examples (e.g. sgi-xp) that contain networking
+driver code in misc so I don't understand this objection.
+>
+> Please make sure to CC linux-rdma. You clearly stated that the device
+> does RDMA-like transfers.
+
+We don't use the RDMA infrastructure in the kernel and we can't
+connect to it due to the lack of H/W support we have so I don't see
+why we need to CC linux-rdma.
+
+Oded
