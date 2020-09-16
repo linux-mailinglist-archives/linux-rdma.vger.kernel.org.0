@@ -2,90 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA2F26BB7E
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 06:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F7026BC40
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 08:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgIPE05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 00:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgIPE04 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 00:26:56 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50F5C06174A;
-        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g96so5404176otb.12;
-        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
-        b=Rt2LpIbxECIIT5r72IgzJlUWFN/DiqiKJfmOc7EFuBihxuYMIeiU7ZRS4Qr2t5Qb+O
-         hjJkiLBms7/rjA2i0o35xAUWE6tLaHPrToLirTEMP4pC2jpvsog3c/uk9McMnaZybDoP
-         U+zGR44vxisksgcner/C2JHvIV1eO+4Ja+sPy2nNiTDMDrNR6nm/SXzoeSAk9rbZ2EWT
-         6i5wh/oWq0xR4Q+zPkyNwHHnhPs+Ajn4ZqTLYfuHFlv4F47vpKQqEVkr2kH5FWdJtg0Y
-         vB6fnlTukD/f/BfvJ40vIg5/l5Oss09QcNDKPEUxF3hakvYV1JvmxzLa/oF7NegdR+RO
-         5SXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
-        b=nYgTwJanxsCRcCUtJ2ovhy7Ep9eryTKul1S97unmVRfEdE+vEFxO5v6TGjTaEGKQVi
-         SFMd6m1X42kzOl81wBJa9HqxSiPibknIyrPviGL2c8qEyyTyPrDp1ZoNBtDt1etngHNC
-         VzH772gegEoK5bpNnx4mMakyhegkt2e26I7ASB92yXNiT0OeCypfSIbnHRds0/TcscXB
-         hC3hnJg6fYc8gURrPubQe/javTBT99lWSFZJzIMS4c6TjC4wwpBQxFcGrYUgf7699FIw
-         HLBWdAXJGqH1H4A5bRV/YbQTVrsigx2URXxeAh8Zp0RIy7IYbt0mByHDEHitfVBU6FW4
-         PqAg==
-X-Gm-Message-State: AOAM530FcDWj/xapO3L0msTJ+ka2rYD2eHRwoq87Z93CmQnBaAzYUk1o
-        ukALoCIOzw1E81G9oPeLUojdIE0Iv4AL3SgprZ5eezlni+yioQ==
-X-Google-Smtp-Source: ABdhPJx6Reu4lQxpEQCi6cm/jKU0KJZ1o/chXk6/dcA7ql4ztI76CFS66ybppJIiP6EdnWWUSOkrIPElxCHgo2u0M6w=
-X-Received: by 2002:a9d:5a92:: with SMTP id w18mr14967737oth.145.1600230414131;
- Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
+        id S1726132AbgIPGKj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 02:10:39 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59554 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726128AbgIPGKj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 02:10:39 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from sergeygo@nvidia.com)
+        with SMTP; 16 Sep 2020 09:10:33 +0300
+Received: from rsws38.mtr.labs.mlnx (rsws38.mtr.labs.mlnx [10.209.40.117])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08G6AXrd017431;
+        Wed, 16 Sep 2020 09:10:33 +0300
+From:   Sergey Gorenko <sergeygo@nvidia.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Sergey Gorenko <sergeygo@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH v1] srp_daemon: Avoid extra permissions for the lock file
+Date:   Wed, 16 Sep 2020 05:51:13 +0000
+Message-Id: <20200916055113.15151-1-sergeygo@nvidia.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com> <20200915.153449.1384323730053933155.davem@davemloft.net>
-In-Reply-To: <20200915.153449.1384323730053933155.davem@davemloft.net>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 16 Sep 2020 07:26:26 +0300
-Message-ID: <CAFCwf10fa7Hq=hMeg9mrfnaFXi9gtJU82BiShE4TpBOg8yuHgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     David Miller <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 1:34 AM David Miller <davem@davemloft.net> wrote:
->
-> From: Oded Gabbay <oded.gabbay@gmail.com>
-> Date: Wed, 16 Sep 2020 00:20:12 +0300
->
-> > I completely understand but you didn't answer my question. How come
-> > there are drivers which create netdev objects, and specifically sgi-xp
-> > in misc (but I also saw it in usb drivers) that live outside
-> > drivers/net ? Why doesn't your request apply to them as well ?
->
-> Don't use examples of drivers doing the wrong thing as an excuse for
-> you to repeat the mistake.
->
-> Ok?
-Well, it's not like there is a big red warning near those drivers
-saying "this is wrong"...
-How could I have known that in advance ?
+There is no need to create a world-writable lock file.
+It's enough to have an RW permission for the file owner only.
 
->
-> That kind of argument doesn't work here.
-I know that, I just didn't know those drivers did "the wrong thing"
+Fixes: ee138ce1e40d ("Cause srp_daemon launch to fail if another srp_daemon is already working on the same HCA port.")
+Signed-off-by: Sergey Gorenko <sergeygo@nvidia.com>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+---
+Changelog:
+v1: Add the fixes line.
+---
+ srp_daemon/srp_daemon.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Oded
+diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
+index f14d9f56c9f2..fcf94537cebb 100644
+--- a/srp_daemon/srp_daemon.c
++++ b/srp_daemon/srp_daemon.c
+@@ -142,7 +142,6 @@ static int check_process_uniqueness(struct config_t *conf)
+ 		return -1;
+ 	}
+ 
+-	fchmod(fd, S_IRUSR|S_IRGRP|S_IROTH|S_IWUSR|S_IWGRP|S_IWOTH);
+ 	if (0 != lockf(fd, F_TLOCK, 0)) {
+ 		pr_err("failed to lock %s (errno: %d). possibly another "
+ 		       "srp_daemon is locking it\n", path, errno);
+-- 
+2.21.1
+
