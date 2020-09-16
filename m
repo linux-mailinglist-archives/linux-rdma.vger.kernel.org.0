@@ -2,158 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11C426CE0C
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 23:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61B626CFF8
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 02:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIPVJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 17:09:13 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:58921 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726350AbgIPPzv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Sep 2020 11:55:51 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f621d370000>; Wed, 16 Sep 2020 22:12:07 +0800
-Received: from HKMAIL104.nvidia.com ([10.18.16.13])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 16 Sep 2020 07:12:07 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Wed, 16 Sep 2020 07:12:07 -0700
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
- 2020 14:12:07 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 16 Sep 2020 14:12:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OUK51VH30THYG+PGlW38ktQ0ZomjF+fFncCamgk/gzpoZ9VP1ji6vTviQNSKD7BpPiPQ2/R684bPMm2dTp/c9wk9uwRDzZmGAwHFCESJkSEOLdEAR4pOcSjPlB48aO10sCLluWfsfpQ+qfwbtrZRqS3ixARiAZPmb84r99yNSIyf21Bg1PyF90NBXWyGDHHtsTcscfS6O9nVxdaeIwkuzwj7Wy3UkKjPX/v3heqLF6XZz2R6XoQ4p/bwh3YTe5F/wcgSpaWsBuu4u7bgKns6KM+GJI1xHm/TqfgcJs9ok5q/gBQ76i8Jfc2z2QhNaFyNHgIMlGKnvKKXalHaUSCZsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ikTGbApEfRIwx7KcbfV56VLaGEsYfZ+w2PaDJeVcfw=;
- b=bd+QLw0cIErBpVP+/04wgbgExYaf6zzeMgmz23MScI18CTwRuNTvgmIsCBmsfufPDLQ9QMR9ELuNXrAUc1lq+6n0PVzqOui+lbm3ol7ajqsbNcrTFNRCczuGBrAiZr+WyIA7kQemHPzsOw4V/K3EKZEpLtRV7Mbs54MMKamPaAnLIinZl36eIAXLv4KlKNuTMf0ol9A3/DQbTgKZwEASQddfARYmMa+CCLuTmPFfjgD6N4hB6crrHO3iVawnX3PeFCrm9cLdIr4pwA78BU8tJQ5JuO5shtSySL59HjAKKoXXZvz0VHme+tXBJ/Rne6As9PmJNjO024ZZXo/Q4HWMBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2939.namprd12.prod.outlook.com (2603:10b6:5:18b::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 14:12:04 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Wed, 16 Sep 2020
- 14:12:04 +0000
-Date:   Wed, 16 Sep 2020 11:12:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 4/4] RDMA/uverbs: Expose the new GID query API
- to user space
-Message-ID: <20200916141202.GA3699@nvidia.com>
-References: <20200910142204.1309061-1-leon@kernel.org>
- <20200910142204.1309061-5-leon@kernel.org>
- <20200911195918.GT904879@nvidia.com> <20200913091302.GF35718@unreal>
- <20200914155550.GF904879@nvidia.com> <20200915114704.GB486552@unreal>
- <20200915190614.GE1573713@nvidia.com> <20200916103710.GH486552@unreal>
- <20200916120440.GL1573713@nvidia.com> <20200916124429.GI486552@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200916124429.GI486552@unreal>
-X-ClientProxiedBy: BL1PR13CA0015.namprd13.prod.outlook.com
- (2603:10b6:208:256::20) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726022AbgIQAco (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 20:32:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39546 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgIQAco (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 20:32:44 -0400
+X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:32:43 EDT
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GLP5F3189912;
+        Wed, 16 Sep 2020 21:35:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=YBVyrnQAJIlJ4hP52DbY5iLdgiX0DsXLeEtelYwWZms=;
+ b=rYw/yb6AqQ8bxBL6SQhB6hqq08jHpyrKxHuFLokIyBA111u1PMQW6RUZSRSmYj9kanAE
+ rHtPDw38NMEENRw85lCXc62wioisS+rGHwC49cndjoweQ/QBeW4mmALlgso6bxAO3hXr
+ v/WRVcZ4xZi9g7mmpIZucKSVSbA+n06Ph03jdyUOQe0tTg4xNCarMLnHiAoPaARvOn/j
+ vH0t1XZ0oijceqLwdo2faDC4NvryDQzi4i64Nujm5TW0E3cMgwFPSn7ODqqn8AGCw0JG
+ hxIDUDMEWthlvacinYZoeMO2w2AaPWi1YzFpxqidco7kfdFcmFtwK4kUTliITPeXUST5 OA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33gp9mdmqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 21:35:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GLPVxC037138;
+        Wed, 16 Sep 2020 21:35:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 33h889c190-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 21:35:17 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08GLZGig005208;
+        Wed, 16 Sep 2020 21:35:16 GMT
+Received: from [10.159.236.249] (/10.159.236.249)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 21:35:15 +0000
+Subject: Re: [PATCH 1/1] net/rds: suppress page allocation failure error in
+ recv buffer refill
+To:     santosh.shilimkar@oracle.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        aruna.ramakrishna@oracle.com, rama.nichanamatlu@oracle.com
+References: <1600283326-30323-1-git-send-email-manjunath.b.patil@oracle.com>
+ <389b52c6-0d9a-7644-49f6-66eb7a45b3e6@oracle.com>
+ <392801e0-cebd-d0dd-fc65-666161c6599b@oracle.com>
+ <30c39b36-a7c4-6214-4265-2df5546c0025@oracle.com>
+From:   Manjunath Patil <manjunath.b.patil@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <bcbca3eb-9465-8294-3c64-3b265d4194f7@oracle.com>
+Date:   Wed, 16 Sep 2020 14:35:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0015.namprd13.prod.outlook.com (2603:10b6:208:256::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.6 via Frontend Transport; Wed, 16 Sep 2020 14:12:04 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIYAE-0002lo-SS; Wed, 16 Sep 2020 11:12:02 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6c218726-df3b-4201-1c6c-08d85a4a7cc4
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2939:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB29399791702F9960BD07D802C2210@DM6PR12MB2939.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YcgDxt+RhAHxgFEi0BuI5cRJGVCWJq/Xz6IFaVaC/1XxPy1rt21UPeMUVTBfAzoVqhplVA7GfFkVyqE1b/oSxztKUdNvdJ+2g9NWd7SHVdeg1iG+e6tigu2+UfV/N0UXmmOyZR4onsXoN/gbGZ3+fwxWWnRVxt0waeHTkp5g5p+D30j74DfnEJO6PBceN0RETwNcMaXdmqhFVUgf8xejZo8GevTk3zTHoX5YFFkfZl4W5d55tBP50nKzItaJpSOQ12R/F5aphBIgpzoxuzfpnwNN5N+BrhvpQK3H5XhkHUDabwLLUTzMBFc4ookt/EidCYTbA2nFHeh9TptaU5rgM93Hw/ijh8IY0ADx1Z52eseqJ24evjtsNcCH2eJnt5k5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(346002)(39860400002)(26005)(4326008)(2616005)(1076003)(8936002)(478600001)(316002)(54906003)(8676002)(5660300002)(2906002)(36756003)(66556008)(66476007)(186003)(86362001)(9786002)(66946007)(33656002)(6916009)(426003)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: jFhooyn8QDnZiupng10fOUTIz8naLLGF5B+QKTPMLZHcJXcjzXcyr4DA/7MmRluGhg0qahQQ/9ogBwh2HkR75H4pIShZiaGmPOQzafEoNjPVuh2OyDb6k28akO2CAaMNpbiOLai9FHnBnEQRKYmn7Is2Vy2X/U2CSTUPbRjaEMSvpHVaZwNwan7uRyOjOQjWPRTR7Mb/5tnRtuFIC/L48OLvqWiwO86AZ0gJWnyBMOJ4kyq9lmxFMdCVE25BKChSI5ab1N42hoGhLOnVisDuHkzi3KzVAw5zOyP/F/t8gY5QZvOB/2Neyu0w8/mAk6ykrvJafDK4WNGCWvgsE/DQBe7+usVcc+6icPuQzbhM/ZnbiBcMf/yAVCHmTNGK+M2hwyD+Uoj9RsDrrLaMhe1SUsw2gUqjJhE0r95fm6RkcS6xxqUi9/OSypGuudB6lFhfOF/Y7KDtGme8CVEEaLRtQEp9RoisDfFIAhj3P+LeSWE7d7rqCKcPG9i0erOIAF7Nh5Cgxa3A0fKZaMmtfPBsYjuwvuxPlnvWr53BpjdH7S9Aj1Pi7+MmXoJH8c4YLFeKlQZ1JWiOFDhbjVcBV8mrcroXd9O8i/UjZkNLN9O8ZpBUL8mCRFReHmxY61qZ5AMIeTkHsRGHbn4BvYQT0kIb6Q==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c218726-df3b-4201-1c6c-08d85a4a7cc4
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 14:12:04.2560
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sOT/9auakPg68qXsJdk+m4AS929ORNGQKqeztBE1DAb8/dFIOQEAQfE+PvIIKhd1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2939
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600265527; bh=5ikTGbApEfRIwx7KcbfV56VLaGEsYfZ+w2PaDJeVcfw=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=VFGj4kwk1Kj8hNg2J6EMzIzC8pzvcyhf+x7l/1MSERiGvFmdMQ4OdFpJIOn6BcPt5
-         SaV2pp9uqvWnNQFjuvjUrKY6z6OuK/JCQxids4bbyRdSNHHwcFfbvtR0oRSbmcPPAP
-         ATrEjhg5ozv6CEHsGsANGWCD6JOB/koyw/xUW2FMDUoXnY1iUEHkwSUmcDQUbPeCpw
-         1yKAzqrD6L6VOQK5aBTnvZDd2S4w0ybYv483CmUrNV5q2cHKvwlLVi0ki8FlWmCQzJ
-         NxZ0D76avLaj3v1K1eQ/yDS6vJhyjLfG+pXP6iXVaPF+/pKYlkLmuh7vCO+20ppjNw
-         Ks5UhVcTmdGyA==
-Sender: linux-rdma-owner@vger.kernel.org
+In-Reply-To: <30c39b36-a7c4-6214-4265-2df5546c0025@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=1 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160156
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160156
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:44:29PM +0300, Leon Romanovsky wrote:
-> On Wed, Sep 16, 2020 at 09:04:40AM -0300, Jason Gunthorpe wrote:
-> > On Wed, Sep 16, 2020 at 01:37:10PM +0300, Leon Romanovsky wrote:
-> > > It depends on how you want to treat errors from rdma_read_gid_attr_ndev_rcu().
-> > > Current check allows us to ensure that any error returned by this call is
-> > > handled.
-> > >
-> > > Otherwise we will find ourselves with something like this:
-> > > ndev = rdma_read_gid_attr_ndev_rcu(gid_attr);
-> > > if (IS_ERR(ndev)) {
-> > > 	if (rdma_protocol_roce())
-> > > 		goto error;
-> > > 	if (ERR_PTR(ndev) != -ENODEV)
-> > > 	        goto error;
-> > > }
-> >
-> > Isn't it just
-> >
-> > if (IS_ERR(ndev)) {
-> >    if (ERR_PTR(ndev) != -ENODEV)
-> >         goto error;
-> >    index = -1;
-> > }
-> >
-> > Which seems fine and clear enough
-> 
-> It is a problem if roce device returned -ENODEV.
+On 9/16/2020 2:25 PM, santosh.shilimkar@oracle.com wrote:
+> On 9/16/20 2:15 PM, Manjunath Patil wrote:
+>> Hi Santosh,
+>>
+>> inline.
+>> On 9/16/2020 12:27 PM, santosh.shilimkar@oracle.com wrote:
+>>> On 9/16/20 12:08 PM, Manjunath Patil wrote:
+>>>> RDS/IB tries to refill the recv buffer in softirq context using
+>>>> GFP_NOWAIT flag. However alloc failure is handled by queueing a 
+>>>> work to
+>>>> refill the recv buffer with GFP_KERNEL flag. This means failure to
+>>>> allocate with GFP_NOWAIT isn't fatal. Do not print the PAF warnings if
+>>>> softirq context fails to refill the recv buffer, instead print a one
+>>>> line warning once a day.
+>>>>
+>>>> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+>>>> Reviewed-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+>>>> ---
+>>>>   net/rds/ib_recv.c | 16 +++++++++++++---
+>>>>   1 file changed, 13 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
+>>>> index 694d411dc72f..38d2894f6bb2 100644
+>>>> --- a/net/rds/ib_recv.c
+>>>> +++ b/net/rds/ib_recv.c
+>>>> @@ -310,8 +310,8 @@ static int rds_ib_recv_refill_one(struct 
+>>>> rds_connection *conn,
+>>>>       struct rds_ib_connection *ic = conn->c_transport_data;
+>>>>       struct ib_sge *sge;
+>>>>       int ret = -ENOMEM;
+>>>> -    gfp_t slab_mask = GFP_NOWAIT;
+>>>> -    gfp_t page_mask = GFP_NOWAIT;
+>>>> +    gfp_t slab_mask = gfp;
+>>>> +    gfp_t page_mask = gfp;
+>>>>         if (gfp & __GFP_DIRECT_RECLAIM) {
+>>>>           slab_mask = GFP_KERNEL;
+>>>> @@ -406,6 +406,16 @@ void rds_ib_recv_refill(struct rds_connection 
+>>>> *conn, int prefill, gfp_t gfp)
+>>>>           recv = &ic->i_recvs[pos];
+>>>>           ret = rds_ib_recv_refill_one(conn, recv, gfp);
+>>>>           if (ret) {
+>>>> +            static unsigned long warn_time;
+>>> Comment should start on next line.
+>> I will add new line. checkpatch.pl didn't find it though.
+>>>> +            /* warn max once per day. This should be enough to
+>>>> +             * warn users about low mem situation.
+>>>> +             */
+>>>> +            if (printk_timed_ratelimit(&warn_time,
+>>>> +                           24 * 60 * 60 * 1000))
+>>>> +                pr_warn("RDS/IB: failed to refill recv buffer for 
+>>>> <%pI6c,%pI6c,%d>, waking worker\n",
+>>>> +                    &conn->c_laddr, &conn->c_faddr,
+>>>> +                    conn->c_tos);
+>>> Didn't notice this before.
+>>> Why not just use "pr_warn_ratelimited()" ?
+>> I think you meant, get rid of if clause and use 
+>> "pr_warn_ratelimited()" instead.
+>> That can still produce more than needed logs during low memory 
+>> situation.
+>>
+> Try it out. It will do the same job as what you are trying to do.
+Sure. I will use it and see. I will submit next version after my testing.
 
-Can it happen? RCU I suppose, but I think this is an issue in
-rdma_read_gid_attr_ndev_rcu() - it should not return ENODEV if the RCU
-shows the gid_attr is being concurrently destroyed
-
-Jason
+-Thanks,
+Manjunath
