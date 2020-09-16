@@ -2,62 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F7026BC40
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 08:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DBF26BDC7
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 09:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgIPGKj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 02:10:39 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59554 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726128AbgIPGKj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 02:10:39 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from sergeygo@nvidia.com)
-        with SMTP; 16 Sep 2020 09:10:33 +0300
-Received: from rsws38.mtr.labs.mlnx (rsws38.mtr.labs.mlnx [10.209.40.117])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08G6AXrd017431;
-        Wed, 16 Sep 2020 09:10:33 +0300
-From:   Sergey Gorenko <sergeygo@nvidia.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Sergey Gorenko <sergeygo@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH v1] srp_daemon: Avoid extra permissions for the lock file
-Date:   Wed, 16 Sep 2020 05:51:13 +0000
-Message-Id: <20200916055113.15151-1-sergeygo@nvidia.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726342AbgIPHRb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 03:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726149AbgIPHRZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:17:25 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCB262076B;
+        Wed, 16 Sep 2020 07:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600240645;
+        bh=lPltz0UA//MmcZWvq3LaaXKDBJM+SO+YnSL4n5jpfn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMzTtvuFxSoJYvZ7IP4WZyqQbx/dcPRXdz6RQZjc+n2IF/YMhxHfBLeuuLUwnFqNc
+         LFmDCGuU2WxJtVTymLWNQfl8d5IK4RCWU39i4wANX5kBlTQY/o+yEfrUE0/PBaZQH8
+         hJ0Do36tvsGC6pcl73QrN9mGhPrcESKmBbAOU3v8=
+Date:   Wed, 16 Sep 2020 10:17:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 1/4] lib/scatterlist: Refactor
+ sg_alloc_table_from_pages
+Message-ID: <20200916071721.GC486552@unreal>
+References: <20200910134259.1304543-1-leon@kernel.org>
+ <20200910134259.1304543-2-leon@kernel.org>
+ <20200915161643.GA24320@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915161643.GA24320@lst.de>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is no need to create a world-writable lock file.
-It's enough to have an RW permission for the file owner only.
+On Tue, Sep 15, 2020 at 06:16:43PM +0200, Christoph Hellwig wrote:
+> On Thu, Sep 10, 2020 at 04:42:56PM +0300, Leon Romanovsky wrote:
+> > From: Maor Gottlieb <maorg@nvidia.com>
+> >
+> > Currently, sg_alloc_table_from_pages doesn't support dynamic chaining of
+> > SG entries. Therefore it requires from user to allocate all the pages in
+> > advance and hold them in a large buffer. Such a buffer consumes a lot of
+> > temporary memory in HPC systems which do a very large memory registration.
+> >
+> > The next patches introduce API for dynamically allocation from pages and
+> > it requires us to do the following:
+> >  * Extract the code to alloc_from_pages_common.
+> >  * Change the build of the table to iterate on the chunks and not on the
+> >    SGEs. It will allow dynamic allocation of more SGEs.
+> >
+> > Since sg_alloc_table_from_pages allocate exactly the number of chunks,
+> > therefore chunks are equal to the number of SG entries.
+> >
+> > Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>
+> I really don't think this refactoring on its own adds any value,
+> it just makes reading the rest of the series harder.
 
-Fixes: ee138ce1e40d ("Cause srp_daemon launch to fail if another srp_daemon is already working on the same HCA port.")
-Signed-off-by: Sergey Gorenko <sergeygo@nvidia.com>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
----
-Changelog:
-v1: Add the fixes line.
----
- srp_daemon/srp_daemon.c | 1 -
- 1 file changed, 1 deletion(-)
+We expected this type of the comment, but decided to send "splitted"
+version because it is much easier to squash patches instead of splitting
+them later.
 
-diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-index f14d9f56c9f2..fcf94537cebb 100644
---- a/srp_daemon/srp_daemon.c
-+++ b/srp_daemon/srp_daemon.c
-@@ -142,7 +142,6 @@ static int check_process_uniqueness(struct config_t *conf)
- 		return -1;
- 	}
- 
--	fchmod(fd, S_IRUSR|S_IRGRP|S_IROTH|S_IWUSR|S_IWGRP|S_IWOTH);
- 	if (0 != lockf(fd, F_TLOCK, 0)) {
- 		pr_err("failed to lock %s (errno: %d). possibly another "
- 		       "srp_daemon is locking it\n", path, errno);
--- 
-2.21.1
+We will squash and resubmit.
 
+>
+> (functionally it looks correct, though)
+
+Thanks
