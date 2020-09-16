@@ -2,64 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BC726C986
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 21:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CADE26C943
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 21:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgIPTMJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 15:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
+        id S1727559AbgIPTFn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 15:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727333AbgIPRkk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:40:40 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727428AbgIPRqT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:46:19 -0400
+Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA2892224B;
-        Wed, 16 Sep 2020 12:33:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37C15223C6;
+        Wed, 16 Sep 2020 14:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600259630;
-        bh=26flU1uuMKxzqG/k2vWLqMH8v0mxEamsV3PKiwvOl04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F1rWIe3U/LJwC2fUFiA7cpkXEI8/wXJ1Es+jsKJWBZ7f0jWQ2FnsHCReX9Q3TBuR/
-         lLrhvfjHBUs2Cl8zY3cfOEJMIB8KtWolCFFYn29oJwtuGwvb7/tgbB6Th6iK+0TQRl
-         md1PZsgNYtgb/BUuEYXSrYVTtxZt+4o/TbG7Cres=
-Date:   Wed, 16 Sep 2020 14:34:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-spdx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Raed Salem <raeds@mellanox.com>,
-        Huy Nguyen <huyn@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: IPsec: make spdxcheck.py happy
-Message-ID: <20200916123425.GA2808885@kroah.com>
-References: <20200916085824.30731-1-lukas.bulwahn@gmail.com>
+        s=default; t=1600265258;
+        bh=5s/MaNFFRHPJk+rKebZaMyTwXEnMoByh3O9LF6ssmms=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ziIGaP51PrGgprqarMAFSnJguDt+14MqW3HAPpFZwEKU9peJtATQNATmqr6TlvJfW
+         X4jCKtTFRfqPZRNyLX3VmVBPnoQkJrrbVYL/pxy+U6bJR/ucKi3ngL2lT6rL5FjtdR
+         Xsb/B/NRiEd1lmJtkvGZXSVn1/9R6n3I3q4eQnnE=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v2 2/2] RDMA/umem: Move to allocate SG table from pages
+Date:   Wed, 16 Sep 2020 17:07:26 +0300
+Message-Id: <20200916140726.839377-3-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200916140726.839377-1-leon@kernel.org>
+References: <20200916140726.839377-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916085824.30731-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:58:24AM +0200, Lukas Bulwahn wrote:
-> Commit 2d64663cd559 ("net/mlx5: IPsec: Add HW crypto offload support")
-> provided a proper SPDX license expression, but slipped in a typo.
-> 
-> Fortunately, ./scripts/spdxcheck.py warns:
-> 
->   drivers/net/ethernet/mellanox/mlx5/core/accel/ipsec_offload.c: 1:39 \
->   Invalid License ID: Linux-OpenIBt
-> 
-> Remove the typo and make spdxcheck.py happy.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> 
-> Greg, please pick this minor non-urgent patch into your spdx tree.
+From: Maor Gottlieb <maorg@nvidia.com>
 
-Will do, thanks!
+Remove the implementation of ib_umem_add_sg_table and instead
+call to sg_alloc_table_append which already has the logic to
+merge contiguous pages.
+
+Besides that it removes duplicated functionality, it reduces the
+memory consumption of the SG table significantly. Prior to this
+patch, the SG table was allocated in advance regardless consideration
+of contiguous pages.
+
+In huge pages system of 2MB page size, without this change, the SG table
+would contain x512 SG entries.
+E.g. for 100GB memory registration:
+
+	 Number of entries	Size
+Before 	      26214400          600.0MB
+After            51200		  1.2MB
+
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/umem.c | 90 +++++-----------------------------
+ 1 file changed, 11 insertions(+), 79 deletions(-)
+
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 01b680b62846..690c303bcc8c 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -63,73 +63,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
+ 	sg_free_table(&umem->sg_head);
+ }
+
+-/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
+- *
+- * sg: current scatterlist entry
+- * page_list: array of npage struct page pointers
+- * npages: number of pages in page_list
+- * max_seg_sz: maximum segment size in bytes
+- * nents: [out] number of entries in the scatterlist
+- *
+- * Return new end of scatterlist
+- */
+-static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
+-						struct page **page_list,
+-						unsigned long npages,
+-						unsigned int max_seg_sz,
+-						int *nents)
+-{
+-	unsigned long first_pfn;
+-	unsigned long i = 0;
+-	bool update_cur_sg = false;
+-	bool first = !sg_page(sg);
+-
+-	/* Check if new page_list is contiguous with end of previous page_list.
+-	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
+-	 */
+-	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
+-		       page_to_pfn(page_list[0])))
+-		update_cur_sg = true;
+-
+-	while (i != npages) {
+-		unsigned long len;
+-		struct page *first_page = page_list[i];
+-
+-		first_pfn = page_to_pfn(first_page);
+-
+-		/* Compute the number of contiguous pages we have starting
+-		 * at i
+-		 */
+-		for (len = 0; i != npages &&
+-			      first_pfn + len == page_to_pfn(page_list[i]) &&
+-			      len < (max_seg_sz >> PAGE_SHIFT);
+-		     len++)
+-			i++;
+-
+-		/* Squash N contiguous pages from page_list into current sge */
+-		if (update_cur_sg) {
+-			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
+-				sg_set_page(sg, sg_page(sg),
+-					    sg->length + (len << PAGE_SHIFT),
+-					    0);
+-				update_cur_sg = false;
+-				continue;
+-			}
+-			update_cur_sg = false;
+-		}
+-
+-		/* Squash N contiguous pages into next sge or first sge */
+-		if (!first)
+-			sg = sg_next(sg);
+-
+-		(*nents)++;
+-		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
+-		first = false;
+-	}
+-
+-	return sg;
+-}
+-
+ /**
+  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
+  *
+@@ -221,7 +154,7 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+ 	struct mm_struct *mm;
+ 	unsigned long npages;
+ 	int ret;
+-	struct scatterlist *sg;
++	struct scatterlist *sg = NULL;
+ 	unsigned int gup_flags = FOLL_WRITE;
+
+ 	/*
+@@ -276,15 +209,9 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+
+ 	cur_base = addr & PAGE_MASK;
+
+-	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
+-	if (ret)
+-		goto vma;
+-
+ 	if (!umem->writable)
+ 		gup_flags |= FOLL_FORCE;
+
+-	sg = umem->sg_head.sgl;
+-
+ 	while (npages) {
+ 		cond_resched();
+ 		ret = pin_user_pages_fast(cur_base,
+@@ -297,10 +224,16 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+
+ 		cur_base += ret * PAGE_SIZE;
+ 		npages   -= ret;
+-
+-		sg = ib_umem_add_sg_table(sg, page_list, ret,
+-			dma_get_max_seg_size(device->dma_device),
+-			&umem->sg_nents);
++		sg = sg_alloc_table_append(&umem->sg_head, page_list, ret, 0,
++					   ret << PAGE_SHIFT,
++					   dma_get_max_seg_size(device->dma_device),
++					   GFP_KERNEL, sg, npages);
++		umem->sg_nents = umem->sg_head.nents;
++		if (IS_ERR(sg)) {
++			unpin_user_pages_dirty_lock(page_list, ret, 0);
++			ret = PTR_ERR(sg);
++			goto umem_release;
++		}
+ 	}
+
+ 	sg_mark_end(sg);
+@@ -322,7 +255,6 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+
+ umem_release:
+ 	__ib_umem_release(device, umem, 0);
+-vma:
+ 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
+ out:
+ 	free_page((unsigned long) page_list);
+--
+2.26.2
+
