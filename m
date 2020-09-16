@@ -2,133 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D411426C9DF
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 21:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E692226CB94
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 22:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727478AbgIPTd5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 15:33:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:36056 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727323AbgIPTbq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 15:31:46 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GJObHT022349;
-        Wed, 16 Sep 2020 19:30:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Zi4KIsbSGtozSi0Vpv/S07eccak3oW8n1oDQsyU9fn8=;
- b=KPpTtv0+WFGmHMu202FqIcRPq/CZd0F+tnpzfqpjdb1crdBcr+4tZ1mDNZAqdow10Iqj
- 502pmcPeGkGrIy1djPkqCe2WVDeXaVfV8cCnHZIUoT9ZLhWeQ0ZJyXE6faSX2jGiRWx9
- ryDpgXL7jrwMG7VGVrxHYepXhpnjKxyqPr+3418vepsEp8zaa7MBHjUv+FToAiTAjwVs
- TNQQeHNYP65qhB0ngQQzTrUiirjjZRj05bTbGiC7n+Cd+tnx8zSxJtzgMoxd+uNCLP+b
- xEFU0wrQVqdywaMnv/IpHOKb4NCWQtGASRdpKASLK+Ne/x+boBAMnXUlM712jv8LbKdd 4g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33j91dpr4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 19:30:23 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GJPUGF056658;
-        Wed, 16 Sep 2020 19:28:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33h8893f2j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 19:28:22 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GJSMRX027971;
-        Wed, 16 Sep 2020 19:28:22 GMT
-Received: from [10.74.111.69] (/10.74.111.69)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 19:27:42 +0000
-Subject: Re: [PATCH 1/1] net/rds: suppress page allocation failure error in
- recv buffer refill
-To:     Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        aruna.ramakrishna@oracle.com, rama.nichanamatlu@oracle.com
-References: <1600283326-30323-1-git-send-email-manjunath.b.patil@oracle.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <389b52c6-0d9a-7644-49f6-66eb7a45b3e6@oracle.com>
-Date:   Wed, 16 Sep 2020 12:27:40 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S1726988AbgIPU34 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 16:29:56 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:47744 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726722AbgIPRVj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:21:39 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6249800002>; Thu, 17 Sep 2020 01:21:04 +0800
+Received: from HKMAIL101.nvidia.com ([10.18.16.10])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 10:21:04 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate102.nvidia.com on Wed, 16 Sep 2020 10:21:04 -0700
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
+ 2020 17:21:04 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 16 Sep 2020 17:21:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K6vdLNrP+fmhp6MqJznai3b6spROhhq5QblHYpA+C8kyxA8Z/NFHGhx/J8Ckp6A7f7gIj8O3woI1eMA+oDmGJebpd3WDh8F3Hi/BE5QM5X4TvttRVShRDL4xYpkMIlp3lMS2/MGxGOcp+8Z1GjN/MpbIQsk4h0iiCzXmvSvgp7D3SkrC7d/O0ua0YvRc6b8/2wzSgnQZQcd3Sfxoi/xr/FHaATXQj7Cr3Wshqdr2ae2Lw3LPnEVQwgL5Z5kY3B7EDSCobUCm0xeN0PfzvPQr+2PMCmGWKCV09o2JJLW6cI8eBdOzuJQG4XVfT1EF5FzPmjBFJww2IlGfMK09Ti2kQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cKZjfT+BBBf52lE1vh/mjRFdH+5ptiP28Xn/3mbkuRA=;
+ b=MryA/PXhZYOpu26ZIkdDN5JTUy5GuseG4mYRtdcym87mw+VSbfoqXXKb4Yl8OVWP2O0JdbuS0YKWvlCMY8wpnWHUerwbvOix4r5s0Hpcjyva7Zy8p9DNDrS6Atw0mjsErxk0VKXTuQlpC9VmgmMdKztsAXKzC2qQpCwEWsS7u/XnlX/zWK6PT+EOJdEgd/jv9uVr5hnh6iIOudL3Ctd9rJDGGWrhxCOwa2CN52mWLLfIx2JKSSs5b2pWdOzOJ3LsK6cc27gKloVJukvVqhCM3GoSG7dLKoaxBoSdVK9k+D6c3q5DcXCz8lgmsmymJNMySu1lJ9efIYpknnIncJkuJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3596.namprd12.prod.outlook.com (2603:10b6:5:3e::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
+ 2020 17:21:02 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Wed, 16 Sep 2020
+ 17:21:02 +0000
+Date:   Wed, 16 Sep 2020 14:21:00 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 1/4] IB/core: Improve ODP to use
+ hmm_range_fault()
+Message-ID: <20200916172100.GE3699@nvidia.com>
+References: <20200914113949.346562-1-leon@kernel.org>
+ <20200914113949.346562-2-leon@kernel.org>
+ <20200916164516.GA11582@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200916164516.GA11582@infradead.org>
+X-ClientProxiedBy: BL0PR02CA0109.namprd02.prod.outlook.com
+ (2603:10b6:208:35::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <1600283326-30323-1-git-send-email-manjunath.b.patil@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160137
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0109.namprd02.prod.outlook.com (2603:10b6:208:35::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Wed, 16 Sep 2020 17:21:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIb76-0005dm-KE; Wed, 16 Sep 2020 14:21:00 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9d9e0621-33e5-4fc2-966b-08d85a64e2cb
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3596:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3596A7419DCC547D81F9979AC2210@DM6PR12MB3596.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AWhV4MCGWmJDHRkRqiJA47yj8gV6ooJJeciq01az1uDebOTo2R8IVAeRYwXaJuand0RrMfZvy0Gvf6VPxZW/4RkdLtMhgYh6y0P/KbgJUxP5l+Lq1lWy5JbmR9Lrf6TYMBoS9OryQ0x6Nd1oe0Ev9eTgh3B+JmUYA8537yYO0U73+Sj7M9q0+T3eglyeNqFZpj95+gKGFBp/s6va6RB0nOgMQyc165PVWfGrSgGeFFl5nHowEH84Fe+rw7KCB8zys8q1KhoYl9FFo2ovcPvwwFCr/rYliEvB0lCz1SwvZTiwwI2erlvf6ycEj5Dk7h46Ye8awuEmE02Do/acklqFEg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(136003)(396003)(9786002)(316002)(186003)(8676002)(2906002)(6916009)(36756003)(33656002)(4744005)(8936002)(66556008)(66476007)(26005)(9746002)(4326008)(86362001)(66946007)(1076003)(5660300002)(478600001)(426003)(83380400001)(54906003)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Dkf/30m9ha+wPF6cVvRJftY3l4MnFMgaDpq5lVht5HP061fLivzF++duAg1o6k0gMT/v5wy1pOTVVx0dzfkzIJrs4eJfgrEfZTGENRMS3GnYPbMFA0U2jJ/iFHkCJdTD0bJTHAKz75YxqOIaZE13k/sfCArvIzOFmyCOqo5ZPEJc2L2MRGHB15oolFgx8EzD9qHdDaFruUO5mwtG4sgsDDehR4LRx9ywVqvk4w4ujf1qxyKK91OtmRDUaO9bMOAowW5Ni+MbvTDZOcw0lSNndzQ6MvaydWFW0+TiHry4/ovUxeZxxzD8ssCbUGblqb7rm4dvS3XpP11nqlu80OVb9erAfoYxC772QC8Ajt7mEwPegfyMYCD53/wxoP0DhCvSgSnzGqCKtdLhI18p+rClM5BJ0rbmjWfLZo/+TmQ2rmrmrEqxRv97qxtkkxWMTBDvnI1EQSob6Bf2Yr7/GfcUtwt4OtM495t06rArOk3aBuGGjUY13PvWnuDWVa4KqaY+Dl6SJXC37wqmIA0TL1skoz5BQ49FXM6MR6+2qSogiBXRVD1xr1ITD9HK9mabXOmlbXRrB9SxRLMXegFkPYdhc4zk0SqX6CTyPWwq7JRuqmv0h6bX84TVy6Huej8WXNzcUhr5RvJupWQd/Qiyb/MSVQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d9e0621-33e5-4fc2-966b-08d85a64e2cb
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 17:21:02.3046
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gvnq4b6O4mtJTt0JYPx9BMAiqibfGu73JSN83epP+1JsDt8Hp9DwhUKdZTDIpD+e
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3596
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600276864; bh=cKZjfT+BBBf52lE1vh/mjRFdH+5ptiP28Xn/3mbkuRA=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Exchange-Transport-Forked:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=YiFCuMAwDNswL5gU9rEpIz+chwQD2ZI6HiKiYreFrUIHS+Xif14T84YqhpKR8Wj3u
+         kFL46Ugf9lxJRYJws8Mf/1Rz0K5dMeVJKR5UG5JQZtmNPJ6U7c+A3XCdpPlF+3JXOH
+         kfVyCqSNhE/Atea2OxoczZYVHa0AeXcMgyDwn4UYIPn8CmDOgetQTrrn47YOZLOWpN
+         XH+f4IrY+x5w2l5Yy7sK+pViLMyQygsKWCMbn9OI4V0FgxlTMBBH3xlZT6vNvkxAVu
+         fT/vofVyyuOR/atDKtEZanjTCbXH/NClLkANXOlZBfUmjcFYumXj+LE4nacZmWuE9g
+         K++8B8cngOgrQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/16/20 12:08 PM, Manjunath Patil wrote:
-> RDS/IB tries to refill the recv buffer in softirq context using
-> GFP_NOWAIT flag. However alloc failure is handled by queueing a work to
-> refill the recv buffer with GFP_KERNEL flag. This means failure to
-> allocate with GFP_NOWAIT isn't fatal. Do not print the PAF warnings if
-> softirq context fails to refill the recv buffer, instead print a one
-> line warning once a day.
-> 
-> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-> Reviewed-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-> ---
->   net/rds/ib_recv.c | 16 +++++++++++++---
->   1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
-> index 694d411dc72f..38d2894f6bb2 100644
-> --- a/net/rds/ib_recv.c
-> +++ b/net/rds/ib_recv.c
-> @@ -310,8 +310,8 @@ static int rds_ib_recv_refill_one(struct rds_connection *conn,
->   	struct rds_ib_connection *ic = conn->c_transport_data;
->   	struct ib_sge *sge;
->   	int ret = -ENOMEM;
-> -	gfp_t slab_mask = GFP_NOWAIT;
-> -	gfp_t page_mask = GFP_NOWAIT;
-> +	gfp_t slab_mask = gfp;
-> +	gfp_t page_mask = gfp;
->   
->   	if (gfp & __GFP_DIRECT_RECLAIM) {
->   		slab_mask = GFP_KERNEL;
-> @@ -406,6 +406,16 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill, gfp_t gfp)
->   		recv = &ic->i_recvs[pos];
->   		ret = rds_ib_recv_refill_one(conn, recv, gfp);
->   		if (ret) {
-> +			static unsigned long warn_time;
-Comment should start on next line.
-> +			/* warn max once per day. This should be enough to
-> +			 * warn users about low mem situation.
-> +			 */
-> +			if (printk_timed_ratelimit(&warn_time,
-> +						   24 * 60 * 60 * 1000))
-> +				pr_warn("RDS/IB: failed to refill recv buffer for <%pI6c,%pI6c,%d>, waking worker\n",
-> +					&conn->c_laddr, &conn->c_faddr,
-> +					conn->c_tos);
-Didn't notice this before.
-Why not just use "pr_warn_ratelimited()" ?
-> +
->   			must_wake = true;
->   			break;
->   		}
-> @@ -1020,7 +1030,7 @@ void rds_ib_recv_cqe_handler(struct rds_ib_connection *ic,
->   		rds_ib_stats_inc(s_ib_rx_ring_empty);
->   
->   	if (rds_ib_ring_low(&ic->i_recv_ring)) {
-> -		rds_ib_recv_refill(conn, 0, GFP_NOWAIT);
-> +		rds_ib_recv_refill(conn, 0, GFP_NOWAIT | __GFP_NOWARN);
->   		rds_ib_stats_inc(s_ib_rx_refill_from_cq);
->   	}
->   }
-> 
+On Wed, Sep 16, 2020 at 05:45:16PM +0100, Christoph Hellwig wrote:
+ 
+> Note that 0 is a valid DMA address.  I think due the access bit this
+> works, but it is a little subtle..
+
+It should be checked again carefully.. This looks a bit questionable
+if the flags are what makes it work:
+
++               dma_addr = dma & ODP_DMA_ADDR_MASK;
++               if (dma_addr) {
+
+> But more importantly except for (dma_addr_t)-1 (DMA_MAPPING_ERROR)
+> all dma_addr_t values are valid, so taking more than a single bit
+> from a dma_addr_t is not strictly speaking correct.
+
+This is the result of dma_map_page(). The HW requires that
+dma_map_page(page_size) returns a DMA address that is page_size
+aligned, even for huge pages.
+
+So at least the last 12 bits of the DMA address are always 0, they can
+be used for flags. This is also the HW representation in the page
+table.
+
+Last time you pointed at this code you agreed this alignment was met,
+is it still OK?
+
+Jason
