@@ -2,346 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6C826BA72
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 05:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA2F26BB7E
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 06:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgIPDCb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 15 Sep 2020 23:02:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3536 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgIPDC3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Sep 2020 23:02:29 -0400
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 2DB9F13303000865F5CF;
-        Wed, 16 Sep 2020 11:02:23 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 16 Sep 2020 11:02:15 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 16 Sep 2020 11:02:14 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Wed, 16 Sep 2020 11:02:15 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v3 for-next 2/4] RDMA/hns: Add support for CQE in size of
- 64 Bytes
-Thread-Topic: [PATCH v3 for-next 2/4] RDMA/hns: Add support for CQE in size of
- 64 Bytes
-Thread-Index: AQHWi5wG+NMPWMyKAE2UdBXOWGpBoA==
-Date:   Wed, 16 Sep 2020 03:02:15 +0000
-Message-ID: <eafb1c861cff4289be0c6dc2d8243032@huawei.com>
-References: <1599138967-17621-1-git-send-email-liweihang@huawei.com>
- <1599138967-17621-3-git-send-email-liweihang@huawei.com>
- <20200915200830.GA1593198@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726100AbgIPE05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 00:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbgIPE04 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 00:26:56 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50F5C06174A;
+        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g96so5404176otb.12;
+        Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
+        b=Rt2LpIbxECIIT5r72IgzJlUWFN/DiqiKJfmOc7EFuBihxuYMIeiU7ZRS4Qr2t5Qb+O
+         hjJkiLBms7/rjA2i0o35xAUWE6tLaHPrToLirTEMP4pC2jpvsog3c/uk9McMnaZybDoP
+         U+zGR44vxisksgcner/C2JHvIV1eO+4Ja+sPy2nNiTDMDrNR6nm/SXzoeSAk9rbZ2EWT
+         6i5wh/oWq0xR4Q+zPkyNwHHnhPs+Ajn4ZqTLYfuHFlv4F47vpKQqEVkr2kH5FWdJtg0Y
+         vB6fnlTukD/f/BfvJ40vIg5/l5Oss09QcNDKPEUxF3hakvYV1JvmxzLa/oF7NegdR+RO
+         5SXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BjCFbGmPmsk7PjTa4PqyTGBZejxzGNrHohCt8u93HL0=;
+        b=nYgTwJanxsCRcCUtJ2ovhy7Ep9eryTKul1S97unmVRfEdE+vEFxO5v6TGjTaEGKQVi
+         SFMd6m1X42kzOl81wBJa9HqxSiPibknIyrPviGL2c8qEyyTyPrDp1ZoNBtDt1etngHNC
+         VzH772gegEoK5bpNnx4mMakyhegkt2e26I7ASB92yXNiT0OeCypfSIbnHRds0/TcscXB
+         hC3hnJg6fYc8gURrPubQe/javTBT99lWSFZJzIMS4c6TjC4wwpBQxFcGrYUgf7699FIw
+         HLBWdAXJGqH1H4A5bRV/YbQTVrsigx2URXxeAh8Zp0RIy7IYbt0mByHDEHitfVBU6FW4
+         PqAg==
+X-Gm-Message-State: AOAM530FcDWj/xapO3L0msTJ+ka2rYD2eHRwoq87Z93CmQnBaAzYUk1o
+        ukALoCIOzw1E81G9oPeLUojdIE0Iv4AL3SgprZ5eezlni+yioQ==
+X-Google-Smtp-Source: ABdhPJx6Reu4lQxpEQCi6cm/jKU0KJZ1o/chXk6/dcA7ql4ztI76CFS66ybppJIiP6EdnWWUSOkrIPElxCHgo2u0M6w=
+X-Received: by 2002:a9d:5a92:: with SMTP id w18mr14967737oth.145.1600230414131;
+ Tue, 15 Sep 2020 21:26:54 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200915140418.4afbc1eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf10+_hQOSH4Ot+keE9Tc+ybupvp5JyUhFbvfoy6HseVyZg@mail.gmail.com> <20200915.153449.1384323730053933155.davem@davemloft.net>
+In-Reply-To: <20200915.153449.1384323730053933155.davem@davemloft.net>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 16 Sep 2020 07:26:26 +0300
+Message-ID: <CAFCwf10fa7Hq=hMeg9mrfnaFXi9gtJU82BiShE4TpBOg8yuHgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/9/16 4:08, Jason Gunthorpe wrote:
-> On Thu, Sep 03, 2020 at 09:16:05PM +0800, Weihang Li wrote:
->> From: Wenpeng Liang <liangwenpeng@huawei.com>
->>
->> The new version of RoCEE supports using CQE in size of 32B or 64B. The
->> performance of bus can be improved by using larger size of CQE.
->>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>  drivers/infiniband/hw/hns/hns_roce_cq.c     | 19 ++++++++++++++++++-
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 +++++-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  5 ++---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v1.h  |  2 +-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 20 +++++++++++++-------
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  7 +++++--
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |  2 ++
->>  include/uapi/rdma/hns-abi.h                 |  4 +++-
->>  8 files changed, 49 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
->> index e87d616..9a2f745 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
->> @@ -150,7 +150,7 @@ static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
->>  	int err;
->>  
->>  	buf_attr.page_shift = hr_dev->caps.cqe_buf_pg_sz + HNS_HW_PAGE_SHIFT;
->> -	buf_attr.region[0].size = hr_cq->cq_depth * hr_dev->caps.cq_entry_sz;
->> +	buf_attr.region[0].size = hr_cq->cq_depth * hr_cq->cqe_size;
->>  	buf_attr.region[0].hopnum = hr_dev->caps.cqe_hop_num;
->>  	buf_attr.region_count = 1;
->>  	buf_attr.fixed_page = true;
->> @@ -224,6 +224,21 @@ static void free_cq_db(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
->>  	}
->>  }
->>  
->> +static void set_cqe_size(struct hns_roce_cq *hr_cq, struct ib_udata *udata,
->> +			 struct hns_roce_ib_create_cq *ucmd)
->> +{
->> +	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
->> +
->> +	if (udata) {
->> +		if (udata->inlen >= offsetofend(typeof(*ucmd), cqe_size))
->> +			hr_cq->cqe_size = ucmd->cqe_size;
->> +		else
->> +			hr_cq->cqe_size = HNS_ROCE_V2_CQE_SIZE;
->> +	} else {
->> +		hr_cq->cqe_size = hr_dev->caps.cqe_sz;
->> +	}
->> +}
->> +
->>  int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->>  		       struct ib_udata *udata)
->>  {
->> @@ -266,6 +281,8 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
->>  		}
->>  	}
->>  
->> +	set_cqe_size(hr_cq, udata, &ucmd);
->> +
->>  	ret = alloc_cq_buf(hr_dev, hr_cq, udata, ucmd.buf_addr);
->>  	if (ret) {
->>  		ibdev_err(ibdev, "Failed to alloc CQ buf, err %d\n", ret);
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index cbf3478..2e4f6b1 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -81,6 +81,9 @@
->>  
->>  #define HNS_ROCE_V3_EQE_SIZE 0x40
->>  
->> +#define HNS_ROCE_V2_CQE_SIZE 32
->> +#define HNS_ROCE_V3_CQE_SIZE 64
->> +
->>  #define HNS_ROCE_SL_SHIFT			28
->>  #define HNS_ROCE_TCLASS_SHIFT			20
->>  #define HNS_ROCE_FLOW_LABEL_MASK		0xfffff
->> @@ -469,6 +472,7 @@ struct hns_roce_cq {
->>  	void __iomem			*cq_db_l;
->>  	u16				*tptr_addr;
->>  	int				arm_sn;
->> +	int				cqe_size;
->>  	unsigned long			cqn;
->>  	u32				vector;
->>  	atomic_t			refcount;
->> @@ -796,7 +800,7 @@ struct hns_roce_caps {
->>  	int		num_pds;
->>  	int		reserved_pds;
->>  	u32		mtt_entry_sz;
->> -	u32		cq_entry_sz;
->> +	u32		cqe_sz;
->>  	u32		page_size_cap;
->>  	u32		reserved_lkey;
->>  	int		mtpt_entry_sz;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->> index 83c07c2..f2fcea0 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->> @@ -1476,7 +1476,7 @@ static int hns_roce_v1_profile(struct hns_roce_dev *hr_dev)
->>  	caps->cqc_entry_sz	= HNS_ROCE_V1_CQC_ENTRY_SIZE;
->>  	caps->mtpt_entry_sz	= HNS_ROCE_V1_MTPT_ENTRY_SIZE;
->>  	caps->mtt_entry_sz	= HNS_ROCE_V1_MTT_ENTRY_SIZE;
->> -	caps->cq_entry_sz	= HNS_ROCE_V1_CQE_ENTRY_SIZE;
->> +	caps->cqe_sz		= HNS_ROCE_V1_CQE_SIZE;
->>  	caps->page_size_cap	= HNS_ROCE_V1_PAGE_SIZE_SUPPORT;
->>  	caps->reserved_lkey	= 0;
->>  	caps->reserved_pds	= 0;
->> @@ -1897,8 +1897,7 @@ static int hns_roce_v1_write_mtpt(struct hns_roce_dev *hr_dev, void *mb_buf,
->>  
->>  static void *get_cqe(struct hns_roce_cq *hr_cq, int n)
->>  {
->> -	return hns_roce_buf_offset(hr_cq->mtr.kmem,
->> -				   n * HNS_ROCE_V1_CQE_ENTRY_SIZE);
->> +	return hns_roce_buf_offset(hr_cq->mtr.kmem, n * HNS_ROCE_V1_CQE_SIZE);
->>  }
->>  
->>  static void *get_sw_cqe(struct hns_roce_cq *hr_cq, int n)
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.h b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
->> index 52307b2..5996892 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
->> @@ -74,7 +74,7 @@
->>  #define HNS_ROCE_V1_MTPT_ENTRY_SIZE			64
->>  #define HNS_ROCE_V1_MTT_ENTRY_SIZE			64
->>  
->> -#define HNS_ROCE_V1_CQE_ENTRY_SIZE			32
->> +#define HNS_ROCE_V1_CQE_SIZE				32
->>  #define HNS_ROCE_V1_PAGE_SIZE_SUPPORT			0xFFFFF000
->>  
->>  #define HNS_ROCE_V1_TABLE_CHUNK_SIZE			(1 << 17)
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index 71eee67..8f7e85d 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -1690,7 +1690,7 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
->>  	caps->mtpt_entry_sz	= HNS_ROCE_V2_MTPT_ENTRY_SZ;
->>  	caps->mtt_entry_sz	= HNS_ROCE_V2_MTT_ENTRY_SZ;
->>  	caps->idx_entry_sz	= HNS_ROCE_V2_IDX_ENTRY_SZ;
->> -	caps->cq_entry_sz	= HNS_ROCE_V2_CQE_ENTRY_SIZE;
->> +	caps->cqe_sz		= HNS_ROCE_V2_CQE_SIZE;
->>  	caps->page_size_cap	= HNS_ROCE_V2_PAGE_SIZE_SUPPORTED;
->>  	caps->reserved_lkey	= 0;
->>  	caps->reserved_pds	= 0;
->> @@ -1770,6 +1770,7 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
->>  	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
->>  		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
->>  		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
->>  	}
->>  }
->>  
->> @@ -1862,7 +1863,7 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
->>  	caps->max_sq_desc_sz	     = resp_a->max_sq_desc_sz;
->>  	caps->max_rq_desc_sz	     = resp_a->max_rq_desc_sz;
->>  	caps->max_srq_desc_sz	     = resp_a->max_srq_desc_sz;
->> -	caps->cq_entry_sz	     = resp_a->cq_entry_sz;
->> +	caps->cqe_sz		     = HNS_ROCE_V2_CQE_SIZE;
->>  
->>  	caps->mtpt_entry_sz	     = resp_b->mtpt_entry_sz;
->>  	caps->irrl_entry_sz	     = resp_b->irrl_entry_sz;
->> @@ -1993,6 +1994,7 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
->>  	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
->>  		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
->>  		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
->> +		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
->>  	}
->>  
->>  	calc_pg_sz(caps->num_qps, caps->qpc_entry_sz, caps->qpc_hop_num,
->> @@ -2771,8 +2773,7 @@ static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
->>  
->>  static void *get_cqe_v2(struct hns_roce_cq *hr_cq, int n)
->>  {
->> -	return hns_roce_buf_offset(hr_cq->mtr.kmem,
->> -				   n * HNS_ROCE_V2_CQE_ENTRY_SIZE);
->> +	return hns_roce_buf_offset(hr_cq->mtr.kmem, n * hr_cq->cqe_size);
->>  }
->>  
->>  static void *get_sw_cqe_v2(struct hns_roce_cq *hr_cq, int n)
->> @@ -2872,6 +2873,10 @@ static void hns_roce_v2_write_cqc(struct hns_roce_dev *hr_dev,
->>  	roce_set_field(cq_context->byte_8_cqn, V2_CQC_BYTE_8_CQN_M,
->>  		       V2_CQC_BYTE_8_CQN_S, hr_cq->cqn);
->>  
->> +	roce_set_field(cq_context->byte_8_cqn, V2_CQC_BYTE_8_CQE_SIZE_M,
->> +		       V2_CQC_BYTE_8_CQE_SIZE_S, hr_cq->cqe_size ==
->> +		       HNS_ROCE_V3_CQE_SIZE ? 1 : 0);
->> +
->>  	cq_context->cqe_cur_blk_addr = cpu_to_le32(to_hr_hw_page_addr(mtts[0]));
->>  
->>  	roce_set_field(cq_context->byte_16_hop_addr,
->> @@ -3039,7 +3044,8 @@ static int hns_roce_v2_sw_poll_cq(struct hns_roce_cq *hr_cq, int num_entries,
->>  }
->>  
->>  static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
->> -			   struct hns_roce_v2_cqe *cqe, struct ib_wc *wc)
->> +			   struct hns_roce_cq *cq, struct hns_roce_v2_cqe *cqe,
->> +			   struct ib_wc *wc)
->>  {
->>  	static const struct {
->>  		u32 cqe_status;
->> @@ -3080,7 +3086,7 @@ static void get_cqe_status(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
->>  
->>  	ibdev_err(&hr_dev->ib_dev, "error cqe status 0x%x:\n", cqe_status);
->>  	print_hex_dump(KERN_ERR, "", DUMP_PREFIX_NONE, 16, 4, cqe,
->> -		       sizeof(*cqe), false);
->> +		       cq->cqe_size, false);
->>  
->>  	/*
->>  	 * For hns ROCEE, GENERAL_ERR is an error type that is not defined in
->> @@ -3177,7 +3183,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
->>  		++wq->tail;
->>  	}
->>  
->> -	get_cqe_status(hr_dev, *cur_qp, cqe, wc);
->> +	get_cqe_status(hr_dev, *cur_qp, hr_cq, cqe, wc);
->>  	if (unlikely(wc->status != IB_WC_SUCCESS))
->>  		return 0;
->>  
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> index f98c55a..ca6b055 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> @@ -86,7 +86,6 @@
->>  #define HNS_ROCE_V2_MTPT_ENTRY_SZ		64
->>  #define HNS_ROCE_V2_MTT_ENTRY_SZ		64
->>  #define HNS_ROCE_V2_IDX_ENTRY_SZ		4
->> -#define HNS_ROCE_V2_CQE_ENTRY_SIZE		32
->>  #define HNS_ROCE_V2_SCCC_ENTRY_SZ		32
->>  #define HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ		PAGE_SIZE
->>  #define HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ		PAGE_SIZE
->> @@ -309,6 +308,9 @@ struct hns_roce_v2_cq_context {
->>  #define	V2_CQC_BYTE_8_CQN_S 0
->>  #define V2_CQC_BYTE_8_CQN_M GENMASK(23, 0)
->>  
->> +#define V2_CQC_BYTE_8_CQE_SIZE_S 27
->> +#define V2_CQC_BYTE_8_CQE_SIZE_M GENMASK(28, 27)
->> +
->>  #define	V2_CQC_BYTE_16_CQE_CUR_BLK_ADDR_S 0
->>  #define V2_CQC_BYTE_16_CQE_CUR_BLK_ADDR_M GENMASK(19, 0)
->>  
->> @@ -896,6 +898,7 @@ struct hns_roce_v2_cqe {
->>  	u8	smac[4];
->>  	__le32	byte_28;
->>  	__le32	byte_32;
->> +	__le32	rsv[8];
->>  };
->>  
->>  #define	V2_CQE_BYTE_4_OPCODE_S 0
->> @@ -1571,7 +1574,7 @@ struct hns_roce_query_pf_caps_a {
->>  	u8 max_sq_desc_sz;
->>  	u8 max_rq_desc_sz;
->>  	u8 max_srq_desc_sz;
->> -	u8 cq_entry_sz;
->> +	u8 cqe_sz;
->>  };
->>  
->>  struct hns_roce_query_pf_caps_b {
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
->> index 5907cfd..73bdec7 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
->> @@ -323,6 +323,8 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
->>  		mutex_init(&context->page_mutex);
->>  	}
->>  
->> +	resp.cqe_size = hr_dev->caps.cqe_sz;
->> +
->>  	ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
->>  	if (ret)
->>  		goto error_fail_copy_to_udata;
->> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
->> index eb76b38..9ec85f7 100644
->> +++ b/include/uapi/rdma/hns-abi.h
->> @@ -39,6 +39,8 @@
->>  struct hns_roce_ib_create_cq {
->>  	__aligned_u64 buf_addr;
->>  	__aligned_u64 db_addr;
->> +	__u32 cqe_size;
->> +	__u32 reserved;
->>  };
-> 
-> This struct was made bigger, but the copy has to change to allow the
-> user to supply the smaller struct:
-> 
-> int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
-> 		       struct ib_udata *udata)
-> {
-> 	struct hns_roce_ib_create_cq ucmd = {};
-> 
-> 		ret = ib_copy_from_udata(&ucmd, udata, sizeof(ucmd));
-> 
-> Copies past the end of the buffer
-> 
-> Jason
-> 
+On Wed, Sep 16, 2020 at 1:34 AM David Miller <davem@davemloft.net> wrote:
+>
+> From: Oded Gabbay <oded.gabbay@gmail.com>
+> Date: Wed, 16 Sep 2020 00:20:12 +0300
+>
+> > I completely understand but you didn't answer my question. How come
+> > there are drivers which create netdev objects, and specifically sgi-xp
+> > in misc (but I also saw it in usb drivers) that live outside
+> > drivers/net ? Why doesn't your request apply to them as well ?
+>
+> Don't use examples of drivers doing the wrong thing as an excuse for
+> you to repeat the mistake.
+>
+> Ok?
+Well, it's not like there is a big red warning near those drivers
+saying "this is wrong"...
+How could I have known that in advance ?
 
-Thanks for your reminder, I will fix it.
+>
+> That kind of argument doesn't work here.
+I know that, I just didn't know those drivers did "the wrong thing"
 
-Weihang
+Oded
