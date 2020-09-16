@@ -2,149 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8199B26C3A2
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 16:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B8926C422
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Sep 2020 17:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgIPN0v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 09:26:51 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1573 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbgIPNXv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 09:23:51 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f61ff2b0000>; Wed, 16 Sep 2020 05:03:55 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 16 Sep 2020 05:04:43 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 05:04:43 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Sep
- 2020 12:04:43 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 16 Sep 2020 12:04:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJGiwuq4pw+jxEteGeJXjBSlnuJxGVWVaLWQbi4gzBKbobWlqZTLRrTs21CI1ClhvCVaVrJUKFmu3lxqNjnuRkhN0F9aGo0rRIqY7UX/h069ci0JMgJ8bqFkPd85ffbLgHeDO9lJ4Nm7k6kr2rj90QdCU5Q6pGliNljrmel73Ul6dnYQfEkErkp9dxsYVG051hYSZIYykCRMegT3jihmhQeY8QEP2JsZShVVd8DDSx5crRYNRdeu+ExHEcx4Rz7Dq6GkDIRScTojB2rTPz1PjNJr3lLZaJMMr+GqqejE/PwdDRd4Z0waddVfj+t4VO2IIZUoAydUI/IKHyySgI732Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1lMkMpYuu6GRTn6Dh93i4jH3HdVCHG1xcocwx0WyThs=;
- b=a4aIt3HP6OXRjJx1vn/ezTACgyomvPjZhfrS3RFSdenfOK2zY5n0EVjeLucHTjelY4a/akHFHoXP/960hY8tx87Sk+BSqw3DpQ8CcRQkgaIHYdA56LJ5K52pXFCALbSLnWil1+pfWjjSYQxi3IwTxkDH3R41ezUurrRP6d6dyllR4X/+5og7gbgHfQixkw7FHfqijmu8pquQEzGVqfb/SzPWpMaqtb1mI7SUWojgRLqrH30ttFwJxblGFa+3mHA4fCeWbF2aXCNksvT70hInr8GcRT4Yox2JiWFCKCxGIdYysw4lhXllVqCKuVw1fTWiCiTCOTZYo2TZeMaz50lhMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 12:04:42 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Wed, 16 Sep 2020
- 12:04:42 +0000
-Date:   Wed, 16 Sep 2020 09:04:40 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 4/4] RDMA/uverbs: Expose the new GID query API
- to user space
-Message-ID: <20200916120440.GL1573713@nvidia.com>
-References: <20200910142204.1309061-1-leon@kernel.org>
- <20200910142204.1309061-5-leon@kernel.org>
- <20200911195918.GT904879@nvidia.com> <20200913091302.GF35718@unreal>
- <20200914155550.GF904879@nvidia.com> <20200915114704.GB486552@unreal>
- <20200915190614.GE1573713@nvidia.com> <20200916103710.GH486552@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200916103710.GH486552@unreal>
-X-ClientProxiedBy: CH2PR02CA0019.namprd02.prod.outlook.com
- (2603:10b6:610:4e::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726333AbgIPPY1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Sep 2020 11:24:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:48894 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgIPPUg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 11:20:36 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GEcqKn168644;
+        Wed, 16 Sep 2020 14:39:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=GXEFfMoxY5jSnSgBStwhC+9fwy+pwfx20XtAKWyL2UI=;
+ b=Q9bS1yU32gq425B+yVqgdWMYvU8QWsGzN9miFHxW0U8Lh8BqgghsamgIZMtXli50pmnb
+ ichnAbZwzSxyrbn9CcXOsmMio7bnCsxT3WFIDWziaXkeJVe/uaEST2W8AnDyxSXTu7CQ
+ cKT/t5C2JpLNMEScGHqvjqxXhyO4oxNdTR2gDpjJ9YA+CgcipbtQdTPw8Pl7Ute6mqDn
+ xhO04wc0l2WXrDKfqLl/LV/0fB9iUGT9HG9Ece13hT+0XbCP4FzfQ0NfMp17sk7j9jl6
+ QbMZFyQwflBVdzrG3r7G7SCvj9hsLsBg+YAQLTYyft7xhfBlOw95rNGEA/B7vBYhNu/T Hw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33gp9mbfun-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 14:39:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GEUnHm090074;
+        Wed, 16 Sep 2020 14:39:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33h891rqg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Sep 2020 14:39:47 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08GEdj6G007001;
+        Wed, 16 Sep 2020 14:39:46 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Sep 2020 14:39:45 +0000
+Date:   Wed, 16 Sep 2020 17:39:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     oulijun@huawei.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] RDMA/hns: Avoid unncessary initialization
+Message-ID: <20200916143940.GA766708@mwanda>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR02CA0019.namprd02.prod.outlook.com (2603:10b6:610:4e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Wed, 16 Sep 2020 12:04:41 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIWAy-006v1o-80; Wed, 16 Sep 2020 09:04:40 -0300
-X-Originating-IP: [206.223.160.26]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0aa2c33d-cb3a-4352-62c1-08d85a38b14e
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3212046A7586A8B44E4EFFAEC2210@DM6PR12MB3212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WkC4kxdymlgB28BzArPGhczmwxNj/a2E0vgU6nc8ktGXps2bLq5FqyZ4gp4JU7bvMH6vu6jDeoqjTMxC8rFR3WZ+R76ePjyZB7riGiZBhCd3zvV/YGf/uEFxLkiWRHIsWpbjuV+ukCfqBHRKltYbmKEgtIi79pI4cbWcTRyWyHCkcRqO92qrHEsCxs8uq/38RHg2LBPfwzcU19geus3jx7j7BbXiAeBsuuoF7krAkAGB/dAqXjeMo/mX+uO5Du0lOD6DlFRCbh0iwgD9D8UaOLD4cprUWWjFrwfy8IU+RDMmJo0zI8IniuVYw+cbkUkc
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(136003)(376002)(396003)(4326008)(54906003)(2906002)(1076003)(66946007)(36756003)(2616005)(4744005)(186003)(66556008)(66476007)(316002)(26005)(5660300002)(33656002)(6916009)(426003)(478600001)(8676002)(8936002)(9746002)(9786002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KT0Xu2RtIorZkZ1kfzU+/7/gPCafVPExaGwDCZbs8K7vuPehtDZaFlofzQ8esxtTKd0jM9bfrKD7p3y2sZ6j3qmXtqe/6AEY9crNzCZsr6KJhDsYaOH4i86VlxiAvHpHpe0CT7cQB47J3jrKFLKrPp6GllIW2uwjx2NooBIRZOnRmcFQvKrxxGT+uH+gS2BxFyfq7ZEhnQJ1JXK2TVSRUc2EI5Zi1sNT+pwXtaJeOdc89NgsDlP598kNpISY1h4RU4JOXu1h9oMqt8qhcWaKvWpgN6ahGDdWnya+MBkeQPKXCI+NNzQWUSIUvCvQvVCn7yclTkO+4ZNAOfQcyGnpi2ZWSs5zqJh/Ft29zQJpHCry09kbNyL55SvNcj3LXwER0X4gVq3KIpq7339ffWpqVhFK4AQfC0JK4MQ4NtjmzXlNniIevH/Mea/kzJLzzEV6Co0/7Nez566iwNoJvcTcwmo2dsxJrhMzzVW/2HT3G/VGVFGw2/6XfyNK9yLTkfy+LP4T5OWNYw1DL3HSeawnDDptf6qoEoUJNdafBEcUzMrK7zMKLGFl2nBdwuyYTWjvYSEo1aICTceSnNFLAa6/PhxIfI9WvBk3PrYakVSEKIc4A5BgfbipFC5tiAaXgCAWPQ9+GxYJBQKBQMW1WPbiOA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0aa2c33d-cb3a-4352-62c1-08d85a38b14e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 12:04:41.9024
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x44Dda0aaBrBmFSHIsmlhZxuI9wPzm2uNCH2pB3sjUBrdzI1vaMyxaNt3KGytuqw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600257835; bh=1lMkMpYuu6GRTn6Dh93i4jH3HdVCHG1xcocwx0WyThs=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=CdT7UUdT8tVwwtG27nmMiIw476/omeWdpoT/L7HJk2Jmv9zse66O+fdlqTV3CQGTp
-         U+pJ2dCwf2YxYm4U+4PriZmGSvopKLmFOgtLzihUMrpSmQcVkXjdPuWcz8U7M7mPXU
-         pA1+hsfTnRGLZd0H3vv5C4nokt3II7uO5mUzWrNAxCGz8lHYDvCJj66/1d/apKOahA
-         HDN97jP+lkuLjzZ/bZPromA29qM4CgSGpgGtj/n5Juh0cIvbI0V+8/Evm1QKJyg+vB
-         tB2SAUnUljVgnCDYDOmggmRHqDl1YUm2VVbQWDCqZyRA9P7FUawfjYmnNQBiFCeCHI
-         H0pkR5SuHCZ8A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=3 mlxscore=0 bulkscore=0 mlxlogscore=806 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=815
+ adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=3 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009160111
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:37:10PM +0300, Leon Romanovsky wrote:
-> It depends on how you want to treat errors from rdma_read_gid_attr_ndev_rcu().
-> Current check allows us to ensure that any error returned by this call is
-> handled.
-> 
-> Otherwise we will find ourselves with something like this:
-> ndev = rdma_read_gid_attr_ndev_rcu(gid_attr);
-> if (IS_ERR(ndev)) {
-> 	if (rdma_protocol_roce())
-> 		goto error;
-> 	if (ERR_PTR(ndev) != -ENODEV)
-> 	        goto error;
-> }
+Hello Lijun Ou,
 
-Isn't it just 
+The patch a2f3d4479fe9: "RDMA/hns: Avoid unncessary initialization"
+from Sep 8, 2020, leads to the following static checker warning:
 
-if (IS_ERR(ndev)) {
-   if (ERR_PTR(ndev) != -ENODEV)
-        goto error;
-   index = -1;
-}
+	drivers/infiniband/hw/hns/hns_roce_hw_v1.c:282 hns_roce_v1_post_send()
+	error: uninitialized symbol 'ps_opcode'.
 
-Which seems fine and clear enough
+drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+   256                          switch (wr->opcode) {
+   257                          case IB_WR_RDMA_READ:
+   258                                  ps_opcode = HNS_ROCE_WQE_OPCODE_RDMA_READ;
+   259                                  set_raddr_seg(wqe,  rdma_wr(wr)->remote_addr,
+   260                                                 rdma_wr(wr)->rkey);
+   261                                  break;
+   262                          case IB_WR_RDMA_WRITE:
+   263                          case IB_WR_RDMA_WRITE_WITH_IMM:
+   264                                  ps_opcode = HNS_ROCE_WQE_OPCODE_RDMA_WRITE;
+   265                                  set_raddr_seg(wqe,  rdma_wr(wr)->remote_addr,
+   266                                                rdma_wr(wr)->rkey);
+   267                                  break;
+   268                          case IB_WR_SEND:
+   269                          case IB_WR_SEND_WITH_INV:
+   270                          case IB_WR_SEND_WITH_IMM:
+   271                                  ps_opcode = HNS_ROCE_WQE_OPCODE_SEND;
+   272                                  break;
+   273                          case IB_WR_LOCAL_INV:
+                                ^^^^^^^^^^^^^^^^^^^^
+"ps_opcode" is not initialized for this case statement.
 
-Jason
+   274                                  break;
+   275                          case IB_WR_ATOMIC_CMP_AND_SWP:
+   276                          case IB_WR_ATOMIC_FETCH_AND_ADD:
+   277                          case IB_WR_LSO:
+   278                          default:
+   279                                  ps_opcode = HNS_ROCE_WQE_OPCODE_MASK;
+   280                                  break;
+   281                          }
+   282                          ctrl->flag |= cpu_to_le32(ps_opcode);
+                                                          ^^^^^^^^^
+Uninitialized.
+
+   283                          wqe += sizeof(struct hns_roce_wqe_raddr_seg);
+   284  
+   285                          dseg = wqe;
+
+regards,
+dan carpenter
