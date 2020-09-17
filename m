@@ -2,172 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7517326DA05
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 13:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A04E26DAAF
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 13:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgIQLWQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 07:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45928 "EHLO mail.kernel.org"
+        id S1726897AbgIQLsV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 07:48:21 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:36258 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726757AbgIQLWN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:22:13 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E6E220771;
-        Thu, 17 Sep 2020 11:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600341732;
-        bh=i1j9Hhbbgbzhaa9xAmeyb2t/T0RQsbJlNgRAggdx/1E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N0k9/N13dVmBMFUTbW4k+xsqaPHIL69yxhp8Qy1gx5KYZ3F0hJgLNh5l2ZDoa4ZcN
-         Z5GkGPKOODKhfZmfYPfaFRIuA1Sx3Dlx+75A+U9GsWoGgbtAGz0KYSNStmpapmXhN1
-         qVqDF7u4a4cffaWxhCFfyd20HwqW5ofmBWTsYFB0=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Yishai Hadas <yishaih@nvidia.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvida.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH rdma-next v1 4/4] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
-Date:   Thu, 17 Sep 2020 14:21:52 +0300
-Message-Id: <20200917112152.1075974-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200917112152.1075974-1-leon@kernel.org>
-References: <20200917112152.1075974-1-leon@kernel.org>
+        id S1726823AbgIQLsN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:48:13 -0400
+X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 07:48:00 EDT
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f634b970000>; Thu, 17 Sep 2020 19:42:15 +0800
+Received: from HKMAIL104.nvidia.com ([10.18.16.13])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 04:42:15 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate102.nvidia.com on Thu, 17 Sep 2020 04:42:15 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 11:42:04 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 17 Sep 2020 11:42:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JvUiA4xwntFL2R4SQycP/w25OXPHPVl77F5jWEFo1LhxT7hHtSWdrUsOG/Danxeo7HDydryaLvtzZEWmnPsgCwz+oMttW6LdPQnljXuKs94Gg4LDi5NsEf6K8Tek14cpBl/e7A7ceqBURyZcLv/hu670Urn2eWhB/9um8fRDcODtvBeeaLI4hcZyKeGoiXQ2HgWBLwDuYqXcf3LMOm/zGR1/tXzgNjC2pMtSlnUWyYiXwj0q/30yk1pCSMsPMHpNokzJatXUOHg5UT0iTF9DwnMMbVPRAimeaJ+bSy729RTuFTwlSNLpFcSpSf40rS4mlWYpo3gcyXEuXstD9QpikA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vy8OmMtlr8ET5ylzAjs58xOaSWhYBapenD/Q8WKdeWU=;
+ b=PzIr2wDNuNTGlHsXKndqNko7oQw1BFny0V83Tjrw3IWZ0tQK0YZMGuW6rtTC48fahBLS40pucUxfazr07ba9lDzbVBCLLnOPTyMAxzThB16QPtNzj1rFVaBb7XW8RoGEHC6AnPHLy/V2LdCJFj0o+PbRU85Qzi0iLQRhuLP+l+yRG/+jnaDRdIIlRfw114zpbM2dGKEK9xh10FmNnFRDIjHx6nAOS93XvIG2RKE+bY3eYoa1MCrUUfwBF8tY8oDHbnijTGInmJeYavEzsF9chFoZuL/Zap1CJFKMvKzgrgYa+i7P7TSDOiD78ulHDZGOsE9ho7nhdEYcEY8VTRpOxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3403.namprd12.prod.outlook.com (2603:10b6:5:11d::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.18; Thu, 17 Sep
+ 2020 11:41:55 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
+ 11:41:55 +0000
+Date:   Thu, 17 Sep 2020 08:41:54 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Achiad Shochat <achiad@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Aharon Landau <aharonl@mellanox.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>, <linux-rdma@vger.kernel.org>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        "Somnath Kotur" <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>
+Subject: Re: [PATCH rdma-next v2 0/3] Fix in-kernel active_speed type
+Message-ID: <20200917114154.GH3699@nvidia.com>
+References: <20200917090223.1018224-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200917090223.1018224-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR12CA0027.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::40) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0027.namprd12.prod.outlook.com (2603:10b6:208:a8::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Thu, 17 Sep 2020 11:41:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kIsIU-000QJF-6D; Thu, 17 Sep 2020 08:41:54 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a5a5a970-2fa6-4144-866f-08d85afead89
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3403:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3403CADBFEDE27976A11B69BC23E0@DM6PR12MB3403.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6edCIGsgXgi5jrLtNQSGv7rlkR8fFmQ4B8DZ5m1nuaPoAdp0kt4PQKpe41yP2ElTN4nnLECcS3Aih496Ek7TKHGEEPon1ihLrO4hsB5UNNlVCVKuZmR6wY7xKSAEsVDb3KCxSHRUJMk6/GA/+W/Dd9vU7QoSyeV/PcieW9ZlXj/iq6feZ0pNiPrsEp+a7rvvUdAuHnmM8vBdFO5ybwoXM8kRvppCZx5yw//zNMnA7ftkOlsAi/C3bHvbn8K0e3HGZTCLALM1QO72BfeoYjECBRoCWmMxSnV9NKI9Poga2+nfdhZ3zMrj3KM4QByAkNIqPdyv6Bcun4acKSOJA+ClTVSI1T+xBzENJAub9fe/e+b6FtJBsU2SbVnokrScFnuabrxvpXo7sYNqg0c7+GAXk1qhq6qw93S4emRiOXONAUMlbQ6MCRi0zZ/r/6QWR1HyjcRA3QDWDK9QeTNACfsiCQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(346002)(396003)(366004)(9786002)(9746002)(1076003)(4744005)(8936002)(478600001)(54906003)(83380400001)(4326008)(6916009)(86362001)(426003)(8676002)(2616005)(2906002)(36756003)(66556008)(66946007)(5660300002)(66476007)(186003)(966005)(316002)(7416002)(33656002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: WcX2kLySIywO3yUNPXx8LStFvnWf3Y9S5iBNrPUNZynyafuT8Kdc8dYsfoh6N8kYHQq4vkLGeZw0EAmsoYj4ihqbGdd1hTW5pboSiB9WUqtrfa9HE3TZrlAW2swwv2qkmKUxS95dR8hbcYPx5AhqGMUjbDwjpVaQNQOMI5ydyHtmtn/oPvxeMKE2zcElydCT0sVkRlMHrHTRXEEqZeYbyfA8yRJFYIkSQjYk+WtVBS2s0aLOeQrZH7l/16JN7SgabmBc1lNkYd8mZacUkSa283FzU7eCTiszTzJjs+jjhyBO8PVEK2WxP6pjRp8yje1ztBPzWsZKIqCFb6b8ZJqT6j9IJskKJpmnfeCAQmp7wbmCoInfAtfGkStnRpa99A5o1D2eOAcQrNUAzMAtx0wFaKUmKel5tpp+ut6dXKNkKi8H6uzipginQb+iFd39JDZmUIk3d6DHzY/F7UG0rbu/Qvr0fHOtnsp+zP0KAYv/6H2Dzy4+VcbXnDNWT8Sp6Gi6t8A83TKA8OQyZxiDJnTRIGgcp73SjmlOxU+66j4zwXfjh1LjhU/TVoAtKMggTHuz96O50OLY50rNswHwLX1JEzi7I+CcBv1+5hRrPvj+0yAkenBfy0JbK9VMHK1VKsSGRalOcX+CM5M9Lo6uj9VTvw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5a5a970-2fa6-4144-866f-08d85afead89
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 11:41:55.5457
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 789RPrlr4tTh/oI/nY05VbHZuPQDWGcvESn7Ksz/rs3ojCWBk7EgB7znN64q3Gr2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3403
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600342935; bh=Vy8OmMtlr8ET5ylzAjs58xOaSWhYBapenD/Q8WKdeWU=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=O1v0hwNNqpyWbDJJtHAnQjryNCBhujbuffwqBIvNrnNp/3zgVZq9Kb1pK++txcqnn
+         u/Ye57ZuM+GZoLFIC6X7r/GC7j8tLOMdT/Zz5DmtlS1ygrVkBiH3uxzhIsqmQzUC/Z
+         UOzsDdmBgEz/8vLm1tAzU/EPk6JjrmjiMdFb07nHp7lAwXa++JCk675EfSaAZRQi23
+         hp/INO5Hqpjy590rcZNwOLJcQBsHxrvmO/EGjsD6wWBEqb4gNOa9rBBuUVbAcQ4E/1
+         ipyo2HMC9kxhodYqsGC4UmMqK1d/WPGKgxa06aH/l49N6E7bQBQ3WaUvcFqTnJBuBh
+         UWtP/GnH+zdUQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@nvidia.com>
+On Thu, Sep 17, 2020 at 12:02:20PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v2:
+>  * Changed WARN_ON casting to be saturated value instead while returning active_speed
+>    to the user.
+> v1: https://lore.kernel.org/linux-rdma/20200902074503.743310-1-leon@kernel.org
+>  * Changed patch #1 to fix memory corruption to help with bisect. No
+>    change in series, because the added code is changed anyway in patch
+>    #3.
+> v0:
+>  * https://lore.kernel.org/linux-rdma/20200824105826.1093613-1-leon@kernel.org
+> 
+> 
+> IBTA declares speed as 16 bits, but kernel stores it in u8. This series
+> fixes in-kernel declaration while keeping external interface intact.
+> 
+> Thanks
+> 
+> Aharon Landau (3):
+>   net/mlx5: Refactor query port speed functions
+>   RDMA/mlx5: Delete duplicated mlx5_ptys_width enum
+>   RDMA: Fix link active_speed size
 
-Sync device with CPU pages upon ODP MR registration.
-This reduce potential page faults down the road and improve performance.
+Look OK, can you update the shared branch?
 
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  6 ++++++
- drivers/infiniband/hw/mlx5/mr.c      | 11 +++++++----
- drivers/infiniband/hw/mlx5/odp.c     | 22 +++++++++++++++++++++-
- 3 files changed, 34 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6ab3efb75b21..8e77a262e44c 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1283,6 +1283,7 @@ void mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t nentries,
- int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
- 			       enum ib_uverbs_advise_mr_advice advice,
- 			       u32 flags, struct ib_sge *sg_list, u32 num_sge);
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, u64 user_va, size_t bcnt, bool enable);
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- static inline void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev)
- {
-@@ -1304,6 +1305,11 @@ mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, u64 user_va,
-+				      size_t bcnt, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
-
- extern const struct mmu_interval_notifier_ops mlx5_mn_ops;
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index dea65e511a3e..234a5d25a072 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1431,7 +1431,7 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->umem = umem;
- 	set_mr_fields(dev, mr, npages, length, access_flags);
-
--	if (xlt_with_umr) {
-+	if (xlt_with_umr && !(access_flags & IB_ACCESS_ON_DEMAND)) {
- 		/*
- 		 * If the MR was created with reg_create then it will be
- 		 * configured properly but left disabled. It is safe to go ahead
-@@ -1439,9 +1439,6 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 		 */
- 		int update_xlt_flags = MLX5_IB_UPD_XLT_ENABLE;
-
--		if (access_flags & IB_ACCESS_ON_DEMAND)
--			update_xlt_flags |= MLX5_IB_UPD_XLT_ZAP;
--
- 		err = mlx5_ib_update_xlt(mr, 0, ncont, page_shift,
- 					 update_xlt_flags);
- 		if (err) {
-@@ -1467,6 +1464,12 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 			dereg_mr(dev, mr);
- 			return ERR_PTR(err);
- 		}
-+
-+		err = mlx5_ib_init_odp_mr(mr, start, length, xlt_with_umr);
-+		if (err) {
-+			dereg_mr(dev, mr);
-+			return ERR_PTR(err);
-+		}
- 	}
-
- 	return &mr->ibmr;
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 28b7227d31bf..61bff5ecb356 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -666,6 +666,7 @@ void mlx5_ib_fence_odp_mr(struct mlx5_ib_mr *mr)
-
- #define MLX5_PF_FLAGS_DOWNGRADE BIT(1)
- #define MLX5_PF_FLAGS_SNAPSHOT BIT(2)
-+#define MLX5_PF_FLAGS_ENABLE BIT(3)
- static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 			     u64 user_va, size_t bcnt, u32 *bytes_mapped,
- 			     u32 flags)
-@@ -675,6 +676,10 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	u64 access_mask;
- 	u64 start_idx;
- 	bool fault = !(flags & MLX5_PF_FLAGS_SNAPSHOT);
-+	u32 xlt_flags = MLX5_IB_UPD_XLT_ATOMIC;
-+
-+	if (flags & MLX5_PF_FLAGS_ENABLE)
-+		xlt_flags |= MLX5_IB_UPD_XLT_ENABLE;
-
- 	page_shift = odp->page_shift;
- 	start_idx = (user_va - ib_umem_start(odp)) >> page_shift;
-@@ -692,7 +697,7 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	 * ib_umem_odp_map_dma_and_lock already checks this.
- 	 */
- 	ret = mlx5_ib_update_xlt(mr, start_idx, np,
--				 page_shift, MLX5_IB_UPD_XLT_ATOMIC);
-+				 page_shift, xlt_flags);
- 	mutex_unlock(&odp->umem_mutex);
-
- 	if (ret < 0) {
-@@ -827,6 +832,21 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
- 				     flags);
- }
-
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, u64 user_va, size_t bcnt,
-+			bool enable)
-+{
-+	u32 flags = MLX5_PF_FLAGS_SNAPSHOT;
-+	int ret;
-+
-+	if (enable)
-+		flags |= MLX5_PF_FLAGS_ENABLE;
-+
-+	ret = pagefault_real_mr(mr, to_ib_umem_odp(mr->umem),
-+				user_va, bcnt, NULL,
-+				flags);
-+	return ret >= 0 ? 0 : ret;
-+}
-+
- struct pf_frame {
- 	struct pf_frame *next;
- 	u32 key;
---
-2.26.2
-
+Thanks,
+Jason
