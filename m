@@ -2,141 +2,251 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2729E26DBB9
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 14:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D97E26DCB3
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgIQMjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 08:39:06 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:2806 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgIQMif (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:38:35 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6358b40000>; Thu, 17 Sep 2020 20:38:12 +0800
-Received: from HKMAIL102.nvidia.com ([10.18.16.11])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 05:38:12 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Thu, 17 Sep 2020 05:38:12 -0700
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 12:38:10 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 17 Sep 2020 12:38:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mBs+trNhVYWiH2pfFoN5mfOERh38Rrgt8Gi2zlkVH3zU4LQBx1JuzZgeUJ951qjVmMY/6BTUclh0HBVQVkCw7m8K+fA/hxgnltxdz6zgftvuN+EXUPn84Ti3Sv9L2DNDMbnfrNNB6KrWsijKlcgI2rlkPFO7J5YC3cna1f46GWi+vOQ26VZ/KxH5au75KeT+JHuHiKGtgcWlexfsPUPUesBHZLvuhaq/dlWUA4WNBOEK8Kn9U9YsANAPIeHSIaYveHGvXa4BFFaJgPrOObJNdyibOGj+VWnFllQVPeQjEIgS7ZhRILQviL8B/2S4CbE/LVGDWblJTOwyFHKzDjScUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xzKJVmXLGV7/+g8B9fCvyR3I0JgPfM3GbNWR32a1HnE=;
- b=A03XN/XDV7HusRZ1TB8Gjqo+cfx9UE4qVmY1KpABOTLLiCRpMH3vkze8dHvvVOOWkoj/wFT9OzfozHF16IGvpBteC2qv4+6CnFPs1+6wKfgoYEoFJebFF6butnBxl3cZY/vMStw30PQnhqevADh1dMBH6WtC6S4TTI1QKgcrEeQ4elpEoq5i4w25xkLc/660Mewhk8gCWTutXpVmRwahDz5KgSG4+MvlYqeO/cKBaunjDkE6HmlOVxJzecxpa0Rg+F7t5UYjsFArc1103qOd+zjjzufh1cnLxiIDFCcjQxySXLhF9jdSqfqDeZBjDipkPkXp4FHJcv4JKlTTLKSxqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4010.namprd12.prod.outlook.com (2603:10b6:5:1ce::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 17 Sep
- 2020 12:38:08 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
- 12:38:08 +0000
-Date:   Thu, 17 Sep 2020 09:38:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Liu Shixin <liushixin2@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] RDMA/mlx5: fix type warning of sizeof in
- __mlx5_ib_alloc_counters()
-Message-ID: <20200917123806.GA114613@nvidia.com>
-References: <20200917082926.GA869610@unreal>
- <20200917091008.2309158-1-liushixin2@huawei.com>
- <20200917090810.GB869610@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200917090810.GB869610@unreal>
-X-ClientProxiedBy: MN2PR14CA0010.namprd14.prod.outlook.com
- (2603:10b6:208:23e::15) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727043AbgIQNVH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 09:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbgIQNTt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Sep 2020 09:19:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003BFC061788
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Sep 2020 06:19:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so2043976wrn.6
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Sep 2020 06:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OJz3dROXwZ4H9FjplYiHUh7ta1dm2pPiZx++Qm+gMOk=;
+        b=Ol8zdtYKra8OqwKcXQZPTIzAIAjrxl7EnGA/qptW05V0voGayUZTJ1UOmlJx84mWcm
+         0r1ALbQGydxydvFM37pyuB+FPcNQJYGFXrs30Uy4uBKXsTI9vDopq0psqSt8WIVbv/3m
+         SL42by4B46k89IfXDFWI+V95drUdRSPKiXLkY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=OJz3dROXwZ4H9FjplYiHUh7ta1dm2pPiZx++Qm+gMOk=;
+        b=naH2XnI0Yq+tgD1S4N6P4V49AqfD9+W2G0SzKqLsyihQpnu987wo1KE42nKIOq7Ic3
+         8GwI4+lgKxo7FcQdXy3+QZT/1JtfZIMZFVe+/lnrV/5NI18Yk3u/03TZGgtBbZgYm216
+         I1wKxAQG/I3uccFOf2t73zBhRZ6csjTdgJ7AukQBWA652jMrgwR+KebNEkwohN3WvwZ2
+         Ua9M7iTCxBMF7Cfv3Y/9nSaFwD72fVX+/o0BUGcFiIMVYeDf6e4bfx1aXSYAUJZ5bH6n
+         wkKLLIJXCYv0NOxg9/2BQQtoZVkt5I8E41zo42j2ypPEJtx/QjwlE0JI+q8QEsDU9FnN
+         W8Yg==
+X-Gm-Message-State: AOAM5339u/bgOG7Xk/7ETzkHQve2kwpgjMderCBJoMHOUOmj2uOI/QsH
+        YMRUfuzAF/s0pdQEBVz0VQ4ZTQ==
+X-Google-Smtp-Source: ABdhPJwWrq6ZejmimL/ybiemi2sN/GPynbFDqZKwAC87Lkhqkhgx8buF3bHZlQuU+GRDRVJVnJpavA==
+X-Received: by 2002:a5d:6b84:: with SMTP id n4mr34531077wrx.55.1600348785370;
+        Thu, 17 Sep 2020 06:19:45 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d2sm39644798wro.34.2020.09.17.06.19.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 06:19:44 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 15:19:42 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH] dma-resv: lockdep-prime address_space->i_mmap_rwsem for
+ dma-resv
+Message-ID: <20200917131942.GX438822@phenom.ffwll.local>
+Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>, Linux MM <linux-mm@kvack.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+References: <20200728135839.1035515-1-daniel.vetter@ffwll.ch>
+ <38cbc4fb-3a88-47c4-2d6c-4d90f9be42e7@shipmail.org>
+ <CAKMK7uFe-70DE5qOBJ6FwD8d_A0yZt+h5bCqA=e9QtYE1qwASQ@mail.gmail.com>
+ <60f2b14f-8cef-f515-9cf5-bdbc02d9c63c@shipmail.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR14CA0010.namprd14.prod.outlook.com (2603:10b6:208:23e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Thu, 17 Sep 2020 12:38:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kItAs-000TpN-TC; Thu, 17 Sep 2020 09:38:06 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc19e173-6618-4cc5-9517-08d85b0687d8
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4010:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB401043B183C4F080A15F89E1C23E0@DM6PR12MB4010.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u1FxkJs7YgeVNs4lYCnfjJSnWMK3fqRpC4GlXnrW50ry/IDiejdEfLepZCOranEC4SXBESXv1/Y+kkd28uO/uqGL+gzSQyIuXVV86HbG/WlZJYQwErgiiSt35zh7bROI2cahjsoiQG0B6JLAYxCZaE86RKvxpLtYPabMk8LRSAADik5Gi3zEHkNOKq4qUptz0Bt1cjQJZWOGdqNnJ46EwM6icgbJLTmRwTvdQMPH0HGmO+hU2ZN5tF+q+zGSacz9ygwZJ2O6pJCwfyWAtIOzYBBnE78hmX3WkrCiMZbhNjLby13gAfKQ3apWNMxhWQDI87L9dDeaxmMvJaKzNq28m8BXy7mnI3ymgGkxKp8pjt7+jOjlODBlO5ENyKBOo0xoCnuCvHDpo3rXG8WKNGZ3fNvq2MnkTiR4h4Gcmwz+dvc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(376002)(39860400002)(136003)(186003)(2616005)(26005)(478600001)(4326008)(316002)(426003)(8936002)(9746002)(54906003)(9786002)(66946007)(1076003)(66476007)(66556008)(6916009)(86362001)(36756003)(5660300002)(4744005)(33656002)(8676002)(2906002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 4dzvWUarOHASVzkdyhw+yx+P5WnuvWYPRzDbCY/qYdQyREijCZ1nUcaaXLTcvU6Q13XdD1w5poD1b+2WpEIhJAQicc/ZZpTwY07n69EEhAxWU3tLdh43PSLGR1m0I7HrzySAlALwV5gVISjNs14O5OEyBhuVcGVIUmJ0oRj9/pBNqRPSdY+XqdpCjAD8s/NMWZb+vHpqpzvtsklhBfnq9xx5YGUCygY/xmsDBEBgU1/N+tN2dZobO+WDNWZKr4dkeOYrEGnzYBAGN1KVMtNvrXvOXJFVrfFGj/dsAu6kP9qxjM2bElRQE5rEYC7WkSzHytORLnYoAPD2ePFLDT/3TbwdRTs72OfuDN6KyY8mCauESMnxPNOD2VeTqftzClw/pKYbJOg/a7noRDBHzuaV0VZvEMjcIjophlLZK5sx5hxNDOLq/dTGWyv29wSkFG6ahkw9EGpexjnVSJhSpus/bHK9v0ib/HD2CnSUvvsPa8SpZlDnX37Nnl0yDNKPjS1QWBxXuCcankXec2gYEYBdiqvIoBzP6Z6P+UFOmOaVqCMU4oMsGkFTOqtoAru+noRTeEpIR1t/35+QQLS1k1yvQqcGJbqsG+8v48iIJOuyVFAmNJXJoI6Px4DnGuQ5pbMZ8NdwAnSXzjR+tbrzpePvFw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc19e173-6618-4cc5-9517-08d85b0687d8
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 12:38:08.2913
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: poznMqpQyWc+Y12/yZwxnsU9TnhWbEaHhfjqQWReDI8SGpwKC0LYTcmcTjuxn/5c
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4010
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600346292; bh=xzKJVmXLGV7/+g8B9fCvyR3I0JgPfM3GbNWR32a1HnE=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=l4SpQirHapd4SirahO45Gnil2ZU+hDZTpBPNkPt3XLazAJrmDYOrIt0+WdiRbuFiM
-         YkmaQcABZOiczx1fhBh4yFNh71/bnmrrq9Ff6RosH3zXBj0+hBY1qPwrf4qRM4ONUa
-         j/Jn05Zj2eRtbNe9/fUfo5L/2uPX4l8+ivVJ1+7RL7ZhyRQoKDtYHHPjVKxRh81rSS
-         yt3cPMUr2zzqx5WhbFqlqSc1J6gVcz/wIaZU1278y8wIfAwMNcs90GH/BFoVS7Nvc0
-         8CfyniqkN8F1V1L9N/JvL9lyUCSZWYjyirP62GmuWbZdDD+VvC5IXXwawr6l/L9gCO
-         jJUq75Ua1BDvg==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <60f2b14f-8cef-f515-9cf5-bdbc02d9c63c@shipmail.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:08:10PM +0300, Leon Romanovsky wrote:
-> On Thu, Sep 17, 2020 at 05:10:08PM +0800, Liu Shixin wrote:
-> > sizeof() when applied to a pointer typed expression should give the
-> > size of the pointed data, even if the data is a pointer.
-> >
-> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-
-Needs a fixes line
-
-> >  	if (!cnts->names)
-> >  		return -ENOMEM;
-> >
-> >  	cnts->offsets = kcalloc(num_counters,
-> > -				sizeof(cnts->offsets), GFP_KERNEL);
-> > +				sizeof(*cnts->offsets), GFP_KERNEL);
+On Thu, Jul 30, 2020 at 06:45:14PM +0200, Thomas Hellström (Intel) wrote:
 > 
-> This is not.
+> On 7/30/20 3:17 PM, Daniel Vetter wrote:
+> > On Thu, Jul 30, 2020 at 2:17 PM Thomas Hellström (Intel)
+> > <thomas_os@shipmail.org> wrote:
+> > > 
+> > > On 7/28/20 3:58 PM, Daniel Vetter wrote:
+> > > > GPU drivers need this in their shrinkers, to be able to throw out
+> > > > mmap'ed buffers. Note that we also need dma_resv_lock in shrinkers,
+> > > > but that loop is resolved by trylocking in shrinkers.
+> > > > 
+> > > > So full hierarchy is now (ignore some of the other branches we already
+> > > > have primed):
+> > > > 
+> > > > mmap_read_lock -> dma_resv -> shrinkers -> i_mmap_lock_write
+> > > > 
+> > > > I hope that's not inconsistent with anything mm or fs does, adding
+> > > > relevant people.
+> > > > 
+> > > Looks OK to me. The mapping_dirty_helpers run under the i_mmap_lock, but
+> > > don't allocate any memory AFAICT.
+> > > 
+> > > Since huge page-table-entry splitting may happen under the i_mmap_lock
+> > > from unmap_mapping_range() it might be worth figuring out how new page
+> > > directory pages are allocated, though.
+> > ofc I'm not an mm expert at all, but I did try to scroll through all
+> > i_mmap_lock_write/read callers. Found the following:
+> > 
+> > - kernel/events/uprobes.c in build_map_info:
+> > 
+> >              /*
+> >               * Needs GFP_NOWAIT to avoid i_mmap_rwsem recursion through
+> >               * reclaim. This is optimistic, no harm done if it fails.
+> >               */
+> > 
+> > - I got lost in the hugetlb.c code and couldn't convince myself it's
+> > not allocating page directories at various levels with something else
+> > than GFP_KERNEL.
+> > 
+> > So looks like the recursion is clearly there and known, but the
+> > hugepage code is too complex and flying over my head.
+> > -Daniel
+> 
+> OK, so I inverted your annotation and ran a memory hog, and got the below
+> splat. So clearly your proposed reclaim->i_mmap_lock locking order is an
+> already established one.
+> 
+> So
+> 
+> Reviewed-by: Thomas Hellström <thomas.hellstrom@intel.com>
 
-Why not?
+No one complaining that this is a terrible idea and two reviews from
+people who know stuff, so I went ahead and pushed this to drm-misc-next.
 
-Jason
+Thanks for taking a look at this.
+-Daniel
+
+> 
+> 8<---------------------------------------------------------------------------------------------
+> 
+> [  308.324654] WARNING: possible circular locking dependency detected
+> [  308.324655] 5.8.0-rc2+ #16 Not tainted
+> [  308.324656] ------------------------------------------------------
+> [  308.324657] kswapd0/98 is trying to acquire lock:
+> [  308.324658] ffff92a16f758428 (&mapping->i_mmap_rwsem){++++}-{3:3}, at:
+> rmap_walk_file+0x1c0/0x2f0
+> [  308.324663]
+>                but task is already holding lock:
+> [  308.324664] ffffffffb0960240 (fs_reclaim){+.+.}-{0:0}, at:
+> __fs_reclaim_acquire+0x5/0x30
+> [  308.324666]
+>                which lock already depends on the new lock.
+> 
+> [  308.324667]
+>                the existing dependency chain (in reverse order) is:
+> [  308.324667]
+>                -> #1 (fs_reclaim){+.+.}-{0:0}:
+> [  308.324670]        fs_reclaim_acquire+0x34/0x40
+> [  308.324672]        dma_resv_lockdep+0x186/0x224
+> [  308.324675]        do_one_initcall+0x5d/0x2c0
+> [  308.324676]        kernel_init_freeable+0x222/0x288
+> [  308.324678]        kernel_init+0xa/0x107
+> [  308.324679]        ret_from_fork+0x1f/0x30
+> [  308.324680]
+>                -> #0 (&mapping->i_mmap_rwsem){++++}-{3:3}:
+> [  308.324682]        __lock_acquire+0x119f/0x1fc0
+> [  308.324683]        lock_acquire+0xa4/0x3b0
+> [  308.324685]        down_read+0x2d/0x110
+> [  308.324686]        rmap_walk_file+0x1c0/0x2f0
+> [  308.324687]        page_referenced+0x133/0x150
+> [  308.324689]        shrink_active_list+0x142/0x610
+> [  308.324690]        balance_pgdat+0x229/0x620
+> [  308.324691]        kswapd+0x200/0x470
+> [  308.324693]        kthread+0x11f/0x140
+> [  308.324694]        ret_from_fork+0x1f/0x30
+> [  308.324694]
+>                other info that might help us debug this:
+> 
+> [  308.324695]  Possible unsafe locking scenario:
+> 
+> [  308.324695]        CPU0                    CPU1
+> [  308.324696]        ----                    ----
+> [  308.324696]   lock(fs_reclaim);
+> [  308.324697] lock(&mapping->i_mmap_rwsem);
+> [  308.324698]                                lock(fs_reclaim);
+> [  308.324699]   lock(&mapping->i_mmap_rwsem);
+> [  308.324699]
+>                 *** DEADLOCK ***
+> 
+> [  308.324700] 1 lock held by kswapd0/98:
+> [  308.324701]  #0: ffffffffb0960240 (fs_reclaim){+.+.}-{0:0}, at:
+> __fs_reclaim_acquire+0x5/0x30
+> [  308.324702]
+>                stack backtrace:
+> [  308.324704] CPU: 1 PID: 98 Comm: kswapd0 Not tainted 5.8.0-rc2+ #16
+> [  308.324705] Hardware name: VMware, Inc. VMware Virtual Platform/440BX
+> Desktop Reference Platform, BIOS 6.00 07/29/2019
+> [  308.324706] Call Trace:
+> [  308.324710]  dump_stack+0x92/0xc8
+> [  308.324711]  check_noncircular+0x12d/0x150
+> [  308.324713]  __lock_acquire+0x119f/0x1fc0
+> [  308.324715]  lock_acquire+0xa4/0x3b0
+> [  308.324716]  ? rmap_walk_file+0x1c0/0x2f0
+> [  308.324717]  ? __lock_acquire+0x394/0x1fc0
+> [  308.324719]  down_read+0x2d/0x110
+> [  308.324720]  ? rmap_walk_file+0x1c0/0x2f0
+> [  308.324721]  rmap_walk_file+0x1c0/0x2f0
+> [  308.324722]  page_referenced+0x133/0x150
+> [  308.324724]  ? __page_set_anon_rmap+0x70/0x70
+> [  308.324725]  ? page_get_anon_vma+0x190/0x190
+> [  308.324726]  shrink_active_list+0x142/0x610
+> [  308.324728]  balance_pgdat+0x229/0x620
+> [  308.324730]  kswapd+0x200/0x470
+> [  308.324731]  ? lockdep_hardirqs_on_prepare+0xf5/0x170
+> [  308.324733]  ? finish_wait+0x80/0x80
+> [  308.324734]  ? balance_pgdat+0x620/0x620
+> [  308.324736]  kthread+0x11f/0x140
+> [  308.324737]  ? kthread_create_worker_on_cpu+0x40/0x40
+> [  308.324739]  ret_from_fork+0x1f/0x30
+> 
+> 
+> 
+> > > /Thomas
+> > > 
+> > > 
+> > > 
+> > 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
