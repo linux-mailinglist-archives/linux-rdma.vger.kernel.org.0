@@ -2,91 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173BE26DE92
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 16:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FFD26E0FA
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 18:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgIQOWD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 10:22:03 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13242 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727392AbgIQOMH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:12:07 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DD669CF5D799BBBDFFC7;
-        Thu, 17 Sep 2020 22:11:59 +0800 (CST)
-Received: from [10.67.103.119] (10.67.103.119) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 22:11:57 +0800
-Subject: Re: [bug report] RDMA/hns: Avoid unncessary initialization
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-CC:     <linux-rdma@vger.kernel.org>
-References: <20200916143940.GA766708@mwanda>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <3dbe4539-2c7a-1ef2-3923-0f18567d4265@huawei.com>
-Date:   Thu, 17 Sep 2020 22:11:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S1728457AbgIQQmX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 12:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728491AbgIQQfZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:35:25 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD71C214D8;
+        Thu, 17 Sep 2020 16:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600360524;
+        bh=Uz6xePWXVQihMLxMXZSK/OgsLyUGo4M1rBM8krJvvR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GBTx4oXeYHOqEHjiTQ1uInC8eD0l4QXjC5CiZX5qWlmiSvGHIJxftSHcROfH6I7uE
+         of98ql93MxNYFsOqRuEH3J2OgLdC8qJL81HBmgPEQ7xzIFqztyRFZMHic3r2FIbFBz
+         naL98if9SWuYGb6ySPp7vxfMkDZOi9l+ntF4HKfU=
+Date:   Thu, 17 Sep 2020 19:35:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Achiad Shochat <achiad@mellanox.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Aharon Landau <aharonl@mellanox.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>
+Subject: Re: [PATCH rdma-next v2 0/3] Fix in-kernel active_speed type
+Message-ID: <20200917163520.GH869610@unreal>
+References: <20200917090223.1018224-1-leon@kernel.org>
+ <20200917114154.GH3699@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916143940.GA766708@mwanda>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.119]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917114154.GH3699@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks. I will fix it.
+On Thu, Sep 17, 2020 at 08:41:54AM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 17, 2020 at 12:02:20PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Changelog:
+> > v2:
+> >  * Changed WARN_ON casting to be saturated value instead while returning active_speed
+> >    to the user.
+> > v1: https://lore.kernel.org/linux-rdma/20200902074503.743310-1-leon@kernel.org
+> >  * Changed patch #1 to fix memory corruption to help with bisect. No
+> >    change in series, because the added code is changed anyway in patch
+> >    #3.
+> > v0:
+> >  * https://lore.kernel.org/linux-rdma/20200824105826.1093613-1-leon@kernel.org
+> >
+> >
+> > IBTA declares speed as 16 bits, but kernel stores it in u8. This series
+> > fixes in-kernel declaration while keeping external interface intact.
+> >
+> > Thanks
+> >
+> > Aharon Landau (3):
+> >   net/mlx5: Refactor query port speed functions
+> >   RDMA/mlx5: Delete duplicated mlx5_ptys_width enum
+> >   RDMA: Fix link active_speed size
+>
+> Look OK, can you update the shared branch?
 
-ÔÚ 2020/9/16 22:39, Dan Carpenter Ð´µÀ:
-> Hello Lijun Ou,
->
-> The patch a2f3d4479fe9: "RDMA/hns: Avoid unncessary initialization"
-> from Sep 8, 2020, leads to the following static checker warning:
->
-> 	drivers/infiniband/hw/hns/hns_roce_hw_v1.c:282 hns_roce_v1_post_send()
-> 	error: uninitialized symbol 'ps_opcode'.
->
-> drivers/infiniband/hw/hns/hns_roce_hw_v1.c
->     256                          switch (wr->opcode) {
->     257                          case IB_WR_RDMA_READ:
->     258                                  ps_opcode = HNS_ROCE_WQE_OPCODE_RDMA_READ;
->     259                                  set_raddr_seg(wqe,  rdma_wr(wr)->remote_addr,
->     260                                                 rdma_wr(wr)->rkey);
->     261                                  break;
->     262                          case IB_WR_RDMA_WRITE:
->     263                          case IB_WR_RDMA_WRITE_WITH_IMM:
->     264                                  ps_opcode = HNS_ROCE_WQE_OPCODE_RDMA_WRITE;
->     265                                  set_raddr_seg(wqe,  rdma_wr(wr)->remote_addr,
->     266                                                rdma_wr(wr)->rkey);
->     267                                  break;
->     268                          case IB_WR_SEND:
->     269                          case IB_WR_SEND_WITH_INV:
->     270                          case IB_WR_SEND_WITH_IMM:
->     271                                  ps_opcode = HNS_ROCE_WQE_OPCODE_SEND;
->     272                                  break;
->     273                          case IB_WR_LOCAL_INV:
->                                  ^^^^^^^^^^^^^^^^^^^^
-> "ps_opcode" is not initialized for this case statement.
->
->     274                                  break;
->     275                          case IB_WR_ATOMIC_CMP_AND_SWP:
->     276                          case IB_WR_ATOMIC_FETCH_AND_ADD:
->     277                          case IB_WR_LSO:
->     278                          default:
->     279                                  ps_opcode = HNS_ROCE_WQE_OPCODE_MASK;
->     280                                  break;
->     281                          }
->     282                          ctrl->flag |= cpu_to_le32(ps_opcode);
->                                                            ^^^^^^^^^
-> Uninitialized.
->
->     283                          wqe += sizeof(struct hns_roce_wqe_raddr_seg);
->     284
->     285                          dseg = wqe;
->
-> regards,
-> dan carpenter
-> .
->
+I pushed first two patches to mlx5-next branch:
 
+e27014bdb47e RDMA/mlx5: Delete duplicated mlx5_ptys_width enum
+639bf4415cad net/mlx5: Refactor query port speed functions
+
+Thanks
+
+>
+> Thanks,
+> Jason
