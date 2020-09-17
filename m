@@ -2,147 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825F026D169
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 05:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33BA26D2DF
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Sep 2020 07:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725267AbgIQDDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Sep 2020 23:03:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60278 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgIQDDW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Sep 2020 23:03:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GL8uCS160374;
-        Wed, 16 Sep 2020 21:15:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=AVQPLWUU6K3yO+73vDw9BdNKEyDGmBgF91TwAjI7JwI=;
- b=bXOwmSRY052K6room7bqoNWMZPTAHbjC1b5arRkxd6a8dXVL7XgEK1yoc/J9bxuy02zH
- I1VzYshe6d2hib3DsMu1e+EIs5gKPBDAudNSM82VFUUK6YFczSTggQ2gPDv/Yuk58EzY
- NZIhjJ4I+xzk9G1pfWQDF7jOqyUU9Y97RF4LetOrH3lYRJM6L9rGdc+yWRwz7N8cDazo
- 8ULOrIbidwEo2zn7uhZjt+XF4aGCGg0tmVC6VRftkvH+tZByCfqa0AyLiOIfUaKS+f1c
- K4Daz1AdDO3YVyJxkJQ/zBvgtbwaen3QsQ4bv+S/os3KGUwYiPJJec9ASGWZCXTc1qVF fA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9mdj1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Sep 2020 21:15:12 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08GL9w92071742;
-        Wed, 16 Sep 2020 21:15:11 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 33hm33hw1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Sep 2020 21:15:11 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08GLFASO027204;
-        Wed, 16 Sep 2020 21:15:10 GMT
-Received: from [10.159.236.249] (/10.159.236.249)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Sep 2020 21:15:10 +0000
-Subject: Re: [PATCH 1/1] net/rds: suppress page allocation failure error in
- recv buffer refill
-To:     santosh.shilimkar@oracle.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        aruna.ramakrishna@oracle.com, rama.nichanamatlu@oracle.com
-References: <1600283326-30323-1-git-send-email-manjunath.b.patil@oracle.com>
- <389b52c6-0d9a-7644-49f6-66eb7a45b3e6@oracle.com>
-From:   Manjunath Patil <manjunath.b.patil@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <392801e0-cebd-d0dd-fc65-666161c6599b@oracle.com>
-Date:   Wed, 16 Sep 2020 14:15:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726109AbgIQFDV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 01:03:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5697 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726106AbgIQFDV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 01:03:21 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 01:03:20 EDT
+IronPort-SDR: Dl8eqegBpO1QMXX3eedUg2p7ed9V2KuxqbyqNmA2h1yN6hr2mwq6DherATeYFJgtmdTQTfkJs1
+ 2oHNWWVksf0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="160554002"
+X-IronPort-AV: E=Sophos;i="5.76,435,1592895600"; 
+   d="scan'208";a="160554002"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 21:56:12 -0700
+IronPort-SDR: 3nPNHkZCIeQ8IB9as/Ngx98nqR6ikviZf++fHt6Wj311qrhOvZ7CL4i29jfpgR0Uv/HKa1yaQ/
+ Tt+HKDlfIpew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,435,1592895600"; 
+   d="scan'208";a="409786197"
+Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Sep 2020 21:56:10 -0700
+Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kIlxq-0000QL-92; Thu, 17 Sep 2020 04:56:10 +0000
+Date:   Thu, 17 Sep 2020 12:56:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 3cc30e8dfcb625ba4bd62a75aba475581c967639
+Message-ID: <5f62ec66.VWDsgGVRKRaLk+BL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <389b52c6-0d9a-7644-49f6-66eb7a45b3e6@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160155
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=1 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009160155
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Santosh,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 3cc30e8dfcb625ba4bd62a75aba475581c967639  RDMA/ipoib: Convert to use DEFINE_SEQ_ATTRIBUTE macro
 
-inline.
-On 9/16/2020 12:27 PM, santosh.shilimkar@oracle.com wrote:
-> On 9/16/20 12:08 PM, Manjunath Patil wrote:
->> RDS/IB tries to refill the recv buffer in softirq context using
->> GFP_NOWAIT flag. However alloc failure is handled by queueing a work to
->> refill the recv buffer with GFP_KERNEL flag. This means failure to
->> allocate with GFP_NOWAIT isn't fatal. Do not print the PAF warnings if
->> softirq context fails to refill the recv buffer, instead print a one
->> line warning once a day.
->>
->> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
->> Reviewed-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
->> ---
->>   net/rds/ib_recv.c | 16 +++++++++++++---
->>   1 file changed, 13 insertions(+), 3 deletions(-)
->>
->> diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
->> index 694d411dc72f..38d2894f6bb2 100644
->> --- a/net/rds/ib_recv.c
->> +++ b/net/rds/ib_recv.c
->> @@ -310,8 +310,8 @@ static int rds_ib_recv_refill_one(struct 
->> rds_connection *conn,
->>       struct rds_ib_connection *ic = conn->c_transport_data;
->>       struct ib_sge *sge;
->>       int ret = -ENOMEM;
->> -    gfp_t slab_mask = GFP_NOWAIT;
->> -    gfp_t page_mask = GFP_NOWAIT;
->> +    gfp_t slab_mask = gfp;
->> +    gfp_t page_mask = gfp;
->>         if (gfp & __GFP_DIRECT_RECLAIM) {
->>           slab_mask = GFP_KERNEL;
->> @@ -406,6 +406,16 @@ void rds_ib_recv_refill(struct rds_connection 
->> *conn, int prefill, gfp_t gfp)
->>           recv = &ic->i_recvs[pos];
->>           ret = rds_ib_recv_refill_one(conn, recv, gfp);
->>           if (ret) {
->> +            static unsigned long warn_time;
-> Comment should start on next line.
-I will add new line. checkpatch.pl didn't find it though.
->> +            /* warn max once per day. This should be enough to
->> +             * warn users about low mem situation.
->> +             */
->> +            if (printk_timed_ratelimit(&warn_time,
->> +                           24 * 60 * 60 * 1000))
->> +                pr_warn("RDS/IB: failed to refill recv buffer for 
->> <%pI6c,%pI6c,%d>, waking worker\n",
->> +                    &conn->c_laddr, &conn->c_faddr,
->> +                    conn->c_tos);
-> Didn't notice this before.
-> Why not just use "pr_warn_ratelimited()" ?
-I think you meant, get rid of if clause and use "pr_warn_ratelimited()" 
-instead.
-That can still produce more than needed logs during low memory situation.
+elapsed time: 726m
 
--Thanks,
-Manjunath
->> +
->>               must_wake = true;
->>               break;
->>           }
->> @@ -1020,7 +1030,7 @@ void rds_ib_recv_cqe_handler(struct 
->> rds_ib_connection *ic,
->>           rds_ib_stats_inc(s_ib_rx_ring_empty);
->>         if (rds_ib_ring_low(&ic->i_recv_ring)) {
->> -        rds_ib_recv_refill(conn, 0, GFP_NOWAIT);
->> +        rds_ib_recv_refill(conn, 0, GFP_NOWAIT | __GFP_NOWARN);
->>           rds_ib_stats_inc(s_ib_rx_refill_from_cq);
->>       }
->>   }
->>
+configs tested: 152
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                    vt8500_v6_v7_defconfig
+arm                       omap2plus_defconfig
+arc                     haps_hs_smp_defconfig
+sparc                               defconfig
+m68k                        mvme16x_defconfig
+sh                             espt_defconfig
+powerpc                     redwood_defconfig
+xtensa                    xip_kc705_defconfig
+mips                 pnx8335_stb225_defconfig
+mips                        qi_lb60_defconfig
+parisc                generic-32bit_defconfig
+c6x                        evmc6472_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc64                        alldefconfig
+arm                        oxnas_v6_defconfig
+mips                           ip22_defconfig
+arm                         axm55xx_defconfig
+sh                           se7722_defconfig
+powerpc                      pasemi_defconfig
+sh                        apsh4ad0a_defconfig
+arm                         ebsa110_defconfig
+openrisc                         alldefconfig
+arm                      tct_hammer_defconfig
+openrisc                 simple_smp_defconfig
+arm                      jornada720_defconfig
+arm                           corgi_defconfig
+powerpc                 mpc8272_ads_defconfig
+nios2                         10m50_defconfig
+arm                        spear3xx_defconfig
+mips                     decstation_defconfig
+mips                      malta_kvm_defconfig
+sh                        sh7763rdp_defconfig
+arm                          pcm027_defconfig
+powerpc                  storcenter_defconfig
+mips                         cobalt_defconfig
+mips                          rm200_defconfig
+m68k                        stmark2_defconfig
+riscv                            alldefconfig
+sh                   secureedge5410_defconfig
+sh                            shmin_defconfig
+arm                  colibri_pxa300_defconfig
+arm                        clps711x_defconfig
+sh                           se7724_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                          kfr2r09_defconfig
+c6x                        evmc6678_defconfig
+c6x                                 defconfig
+arm                           stm32_defconfig
+mips                           ci20_defconfig
+powerpc                    sam440ep_defconfig
+arm                         at91_dt_defconfig
+powerpc                     kilauea_defconfig
+arm                          imote2_defconfig
+parisc                           allyesconfig
+nios2                            allyesconfig
+arm                           sama5_defconfig
+sh                ecovec24-romimage_defconfig
+arm                           efm32_defconfig
+mips                         tb0287_defconfig
+mips                         db1xxx_defconfig
+arc                             nps_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                         rt305x_defconfig
+powerpc                  mpc866_ads_defconfig
+alpha                            alldefconfig
+m68k                         apollo_defconfig
+alpha                               defconfig
+arc                      axs103_smp_defconfig
+powerpc                   lite5200b_defconfig
+sh                           se7343_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arc                 nsimosci_hs_smp_defconfig
+powerpc                    klondike_defconfig
+arc                        nsimosci_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                       eiger_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200916
+x86_64               randconfig-a004-20200916
+x86_64               randconfig-a003-20200916
+x86_64               randconfig-a002-20200916
+x86_64               randconfig-a001-20200916
+x86_64               randconfig-a005-20200916
+i386                 randconfig-a004-20200916
+i386                 randconfig-a006-20200916
+i386                 randconfig-a003-20200916
+i386                 randconfig-a001-20200916
+i386                 randconfig-a002-20200916
+i386                 randconfig-a005-20200916
+i386                 randconfig-a015-20200916
+i386                 randconfig-a014-20200916
+i386                 randconfig-a011-20200916
+i386                 randconfig-a013-20200916
+i386                 randconfig-a016-20200916
+i386                 randconfig-a012-20200916
+i386                 randconfig-a015-20200917
+i386                 randconfig-a014-20200917
+i386                 randconfig-a011-20200917
+i386                 randconfig-a013-20200917
+i386                 randconfig-a016-20200917
+i386                 randconfig-a012-20200917
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20200916
+x86_64               randconfig-a011-20200916
+x86_64               randconfig-a016-20200916
+x86_64               randconfig-a012-20200916
+x86_64               randconfig-a015-20200916
+x86_64               randconfig-a013-20200916
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
