@@ -2,35 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C25426EAFB
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 04:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF5326EB7F
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 04:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIRCCP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
+        id S1727584AbgIRCFj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgIRCCO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:14 -0400
+        id S1727531AbgIRCF2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1E062311B;
-        Fri, 18 Sep 2020 02:02:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F0E5238E4;
+        Fri, 18 Sep 2020 02:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394534;
-        bh=pRNGbiRoRgPMYVV1IBDeNhpUaUDuxTENbvyEKeYl//k=;
+        s=default; t=1600394727;
+        bh=n9uYGRl08kDvHUfxAKaTg+k73v4fIxF3D6A/0fMjQjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fH4wSrX+n/8JKSb8ofsSpdml8sg1f2ioLk+vzVI8gf0sG9uXezurcpKtYwE3BMXr9
-         XlrgidgmHQg85XZ0K/ZZD2lch3CD8c0ne4+OnEWAr3e4kXZ3Uc20iGAbcuJrJVSO9w
-         Ggq7QRtCKkk+sSVpzGvSqppiYAIfzV+y96/uwuLo=
+        b=hlVCvkjWSWNZLn4v114Ienf4zEUoh+pVOkxP6x0UKS8EM34naWVL6CZSIAj0yiwyr
+         QFW+NyKO5VDq19Kb1M97oO3eXrIITI4CWPdQ3RphLLPKCJ//0RAElnOJNfcKhfaDBE
+         bpJN4/odrtsivHoaueoBw73f8gANyDIXnmkTO3gI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+Cc:     Zhu Yanjun <yanjunz@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 053/330] RDMA/iw_cgxb4: Fix an error handling path in 'c4iw_connect()'
-Date:   Thu, 17 Sep 2020 21:56:33 -0400
-Message-Id: <20200918020110.2063155-53-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 210/330] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
+Date:   Thu, 17 Sep 2020 21:59:10 -0400
+Message-Id: <20200918020110.2063155-210-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,42 +43,53 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhu Yanjun <yanjunz@mellanox.com>
 
-[ Upstream commit 9067f2f0b41d7e817fc8c5259bab1f17512b0147 ]
+[ Upstream commit d0ca2c35dd15a3d989955caec02beea02f735ee6 ]
 
-We should jump to fail3 in order to undo the 'xa_insert_irq()' call.
+The RXE driver doesn't set sys_image_guid and user space applications see
+zeros. This causes to pyverbs tests to fail with the following traceback,
+because the IBTA spec requires to have valid sys_image_guid.
 
-Link: https://lore.kernel.org/r/20190923190746.10964-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+ Traceback (most recent call last):
+   File "./tests/test_device.py", line 51, in test_query_device
+     self.verify_device_attr(attr)
+   File "./tests/test_device.py", line 74, in verify_device_attr
+     assert attr.sys_image_guid != 0
+
+In order to fix it, set sys_image_guid to be equal to node_guid.
+
+Before:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 0000:0000:0000:0000
+
+After:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 5054:00ff:feaa:5363
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200323112800.1444784-1-leon@kernel.org
+Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 6b4e7235d2f56..30e08bcc9afb5 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -3382,7 +3382,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (raddr->sin_addr.s_addr == htonl(INADDR_ANY)) {
- 			err = pick_local_ipaddrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index a8c11b5e1e943..a92aca1745c16 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -116,6 +116,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+ 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
+ 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
+ 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
++	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
++			rxe->ndev->dev_addr);
  
- 		/* find a route */
-@@ -3404,7 +3404,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
- 			err = pick_local_ip6addrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
- 
- 		/* find a route */
+ 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
+ }
 -- 
 2.25.1
 
