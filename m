@@ -2,112 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F09026FBD9
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 13:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE8626FBDC
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 13:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIRL4L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Sep 2020 07:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRL4L (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:56:11 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DD0E20DD4;
-        Fri, 18 Sep 2020 11:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600430170;
-        bh=aQzR/1lujS7ewQIIdMoJzyFPhGFv2g9VohqzclE/DrM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pvVliJ9kUgw46S9xYcA1iMfDV93wmmN3GEtYhU34iOEnJNtQnoXyxeYpokSAbPwXi
-         FTSD5b324sKjjWtfkdWJiiHStfPaqxlQYHBbpU/v6jodE3JJAFsinuCD0xD+RPsOgV
-         OUFh3Ypi/hzCDJYCDJpjtwMCYpJY7F5Rd1ctp04A=
-Date:   Fri, 18 Sep 2020 14:56:05 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next v3] RDMA/mlx4: Provide port number for special
- QPs
-Message-ID: <20200918115605.GS869610@unreal>
-References: <20200914111857.344434-1-leon@kernel.org>
- <20200917150813.GN3699@nvidia.com>
- <20200917161034.GE869610@unreal>
- <20200918084613.GQ869610@unreal>
+        id S1726126AbgIRL4j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Sep 2020 07:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIRL4j (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 07:56:39 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B40BC06174A;
+        Fri, 18 Sep 2020 04:56:39 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h17so5141955otr.1;
+        Fri, 18 Sep 2020 04:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bKOrvyGUMEvEmOgg/jMWt/EUqVke0/N7VcikSM/zy5E=;
+        b=nT1xkTnBT44HIB5gZBYN1J8G2VdO+OJkIKIhOXeBgLEsONUbEOECgEIBmC+CzOB4fi
+         s2+RJpe+KtnS4Ny1JZ8AkkwfkKPKpZD2lHHco54ucxQO123wIch6Trxm3LEleX5owCNQ
+         N7WNQ64lLwj8qzil+7QMxCj1TZXzeGdescOOEeqDER7fuNIH8FlK+yS3TqtEXUGWW/dY
+         S4+QI2I0wajHSS4iY9bMvXerjQFmdEegIdMNFO9BC727wJ2HJJ0VtbaCkGtQq/3hbx0k
+         53PyzP3ACS78t8wqQQ7NcV9xl/r/EIK0UDehYXZS6w0jb6jVyud4sqR3PWIHAzQVVaKi
+         YIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bKOrvyGUMEvEmOgg/jMWt/EUqVke0/N7VcikSM/zy5E=;
+        b=fNdbuLPGLdb57fgS43GAqjKpo/u0vTmxP3hMi7y406qT11wV+ViGkdFk7EOvZlahIZ
+         3stxAY+kAKujqNIZ2wPiYarZD9TUTgu9YRvMoFH3kODJm1f8tNEUkJ77VXaWqlehzoje
+         TN1lsI3N2PU2O4yGAdND5iBbnVVoKaYJ8G/IAw3jg9g/KuGWdNXylIuMtG5Tv9jlX3XO
+         iq3rKxm2GAAX+QuY3aG8HU9vyB5CpTygIlikTJPJbsvDCy+9X+fhbD7tXZtwyTHUzvEf
+         ffkhwpmiSN+62rlWuWjFBqCbK6hnMuxYeACC7ywicArwxIfzQCz3wtkAp7UaHsCmGGrp
+         f05g==
+X-Gm-Message-State: AOAM532jwYaIiorKincyPmLQ9beRQIbqvrarxZlQhvv6RvWMR53AxAOR
+        eTvy6r1CqQXGAceeUptrVlTZv+0iFBNb1esy43E=
+X-Google-Smtp-Source: ABdhPJzk5hzh3206q304HnVA4MDalu//mmX4OhC3q96ogtc63dcCtzPNKyFt3Rusp6BT9OtcYeEocHth+XDGyX/528o=
+X-Received: by 2002:a9d:b95:: with SMTP id 21mr6191903oth.143.1600430198690;
+ Fri, 18 Sep 2020 04:56:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918084613.GQ869610@unreal>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+In-Reply-To: <20200918115227.GR869610@unreal>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Fri, 18 Sep 2020 14:56:09 +0300
+Message-ID: <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:46:13AM +0300, Leon Romanovsky wrote:
-> On Thu, Sep 17, 2020 at 07:10:34PM +0300, Leon Romanovsky wrote:
-> > On Thu, Sep 17, 2020 at 12:08:13PM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Sep 14, 2020 at 02:18:57PM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > Special QPs created by mlx4 have same QP port borrowed from
-> > > > the context, while they are expected to have different ones.
-> > > >
-> > > > Fix it by using HW physical port instead.
-> > > >
-> > > > It fixes the following error during driver init:
-> > > > [   12.074150] mlx4_core 0000:05:00.0: mlx4_ib: initializing demux service for 128 qp1 clients
-> > > > [   12.084036] <mlx4_ib> create_pv_sqp: Couldn't create special QP (-16)
-> > > > [   12.085123] <mlx4_ib> create_pv_resources: Couldn't create  QP1 (-16)
-> > > > [   12.088300] mlx4_en: Mellanox ConnectX HCA Ethernet driver v4.0-0
-> > > >
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > ---
-> > > >  Changelog:
-> > > > v3: mlx4 devices create 2 special QPs in SRIOV mode, separate them by
-> > > > port number and special bit. The mlx4 is limited to two ports and not
-> > > > going to be extended, and the port_num is not forwarded to FW too, so
-> > > > it is safe.
-> > > > v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-4-leon@kernel.org/#r
-> > > > ---
-> > > >  drivers/infiniband/hw/mlx4/mad.c | 9 +++++----
-> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > I didn't understand why this was in the restrack series, and the
-> > > commit doesn't say when the error can be hit
-> >
-> > restrack changes revealed it when I added these special QPs to the DB.
-> > It is not fix in traditional sense, so no Fixes line.
+On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> Anyway, please wait with this patch, it makes troubles in some mlx4
-> SRIOV tests.
-
-The end result that this patch is going to be replaced by this fixup
-to "RDMA/core: Allow drivers to disable restrack DB" patch.
-
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 7f0290112db7..e306d2aab510 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -1562,6 +1562,11 @@ static int _mlx4_ib_create_qp(struct ib_pd *pd, struct mlx4_ib_qp *qp,
- 		if (err)
- 			return err;
-
-+		if (init_attr->create_flags &
-+		    (MLX4_IB_SRIOV_SQP | MLX4_IB_SRIOV_TUNNEL_QP))
-+			/* Internal QP created with ib_create_qp */
-+			rdma_restrack_no_track(&qp->ibqp.res);
-+
- 		qp->port	= init_attr->port_num;
- 		qp->ibqp.qp_num = init_attr->qp_type == IB_QPT_SMI ? 0 :
- 			init_attr->create_flags & MLX4_IB_QP_CREATE_ROCE_V2_GSI ? sqpn : 1;
-
+> On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> > On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> > >> infrastructure for communication between multiple accelerators. Same
+> > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > >> The RDMA implementation we did does NOT support some basic RDMA
+> > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > >> library or to connect to the rdma infrastructure in the kernel.
+> > >
+> > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > > you can't add random device offloads as IOCTL to nedevs.
+> > >
+> > > RDMA is the proper home for all the networking offloads that don't fit
+> > > into netdev.
+> > >
+> > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > > all. I'm sure this can too.
+> >
+> > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> > was suggested to go through the vfio subsystem instead.
+> >
+> > I think this comes back to the discussion we had when EFA was upstreamed, which
+> > is what's the bar to get accepted to the RDMA subsystem.
+> > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> >
+> > Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> > or should we open the "what qualifies as an RDMA device" question again?
+>
+> I want to remind you that rdma-core requirement came to make sure that
+> anything exposed from the RDMA to the userspace is strict with proper
+> UAPI header hygiene.
+>
+> I doubt that Havana's ioctls are backed by anything like this.
 >
 > Thanks
->
-> >
-> > Thanks
-> >
-> > >
-> > > No fixes line?
-> > >
-> > > Jason
+
+Why do you doubt that ? Have you looked at our code ?
+Our uapi and IOCTLs interface is based on drm subsystem uapi interface
+and it is very safe and protected.
+Otherwise Greg would have never allowed me to go upstream in the first place.
+
+We have a single function which is the entry point for all the IOCTLs
+of our drivers (only one IOCTL is RDMA related, all the others are
+compute related).
+That function is almost 1:1 copy of the function in drm.
+
+Thanks,
+Oded
