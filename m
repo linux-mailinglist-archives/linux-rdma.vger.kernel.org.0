@@ -2,40 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D4A26EE4B
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 04:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C23626F162
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 04:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgIRC1a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 22:27:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
+        id S1729998AbgIRCux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 22:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728969AbgIRCPo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:15:44 -0400
+        id S1728091AbgIRCIg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7E6323718;
-        Fri, 18 Sep 2020 02:15:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 649202399C;
+        Fri, 18 Sep 2020 02:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395343;
-        bh=rUtb9V7M1oaKlcBDHBooORQKVwbE3i4WC/GefyBYoO4=;
+        s=default; t=1600394916;
+        bh=Jrjz1w+nRAnz2QLcyTOmt09nTzFZzNmf2WOi96S4Bjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Js5d7j3KuUSn+Rv/9gAuQQP3KRrNshFvRwqcZxL1HgfOBQzqa0lNjolw3yg6liq0R
-         Lpr2ruCp8b90esAAhKn113avYzcbRGDcafKcKqIaaLLnDXCcKifX7yU1dKK1MutCsv
-         Anl87yO4UsLXOWmm+Wc/sjNJA9V6SDHFk0jFPXWA=
+        b=DF7rMuqOHtcrV+HVzL4G9hCKduSl5VBcACGIBNoqRjI1qVs18MswXtdY4pb2rUAD8
+         WdYgBHf3zv66zMKdgh89ed8O4rsnPwLMFHvkYsrnOb4iCgET1coKQeOpPLGzctvchk
+         /CPVhwsNIqhLjE495otpO+uOVnPVa+TXJ6Rdv8RI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Pan Bian <bianpan2016@163.com>,
+        =?UTF-8?q?Michal=20Kalderon=C2=A0?= <michal.kalderon@marvell.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 39/90] RDMA/rxe: Fix configuration of atomic queue pair attributes
-Date:   Thu, 17 Sep 2020 22:14:04 -0400
-Message-Id: <20200918021455.2067301-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 028/206] RDMA/qedr: Fix potential use after free
+Date:   Thu, 17 Sep 2020 22:05:04 -0400
+Message-Id: <20200918020802.2065198-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918021455.2067301-1-sashal@kernel.org>
-References: <20200918021455.2067301-1-sashal@kernel.org>
+In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
+References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,74 +44,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit fb3063d31995cc4cf1d47a406bb61d6fb1b1d58d ]
+[ Upstream commit 960657b732e1ce21b07be5ab48a7ad3913d72ba4 ]
 
-From the comment above the definition of the roundup_pow_of_two() macro:
+Move the release operation after error log to avoid possible use after
+free.
 
-     The result is undefined when n == 0.
-
-Hence only pass positive values to roundup_pow_of_two(). This patch fixes
-the following UBSAN complaint:
-
-  UBSAN: Undefined behaviour in ./include/linux/log2.h:57:13
-  shift exponent 64 is too large for 64-bit type 'long unsigned int'
-  Call Trace:
-   dump_stack+0xa5/0xe6
-   ubsan_epilogue+0x9/0x26
-   __ubsan_handle_shift_out_of_bounds.cold+0x4c/0xf9
-   rxe_qp_from_attr.cold+0x37/0x5d [rdma_rxe]
-   rxe_modify_qp+0x59/0x70 [rdma_rxe]
-   _ib_modify_qp+0x5aa/0x7c0 [ib_core]
-   ib_modify_qp+0x3b/0x50 [ib_core]
-   cma_modify_qp_rtr+0x234/0x260 [rdma_cm]
-   __rdma_accept+0x1a7/0x650 [rdma_cm]
-   nvmet_rdma_cm_handler+0x1286/0x14cd [nvmet_rdma]
-   cma_cm_event_handler+0x6b/0x330 [rdma_cm]
-   cma_ib_req_handler+0xe60/0x22d0 [rdma_cm]
-   cm_process_work+0x30/0x140 [ib_cm]
-   cm_req_handler+0x11f4/0x1cd0 [ib_cm]
-   cm_work_handler+0xb8/0x344e [ib_cm]
-   process_one_work+0x569/0xb60
-   worker_thread+0x7a/0x5d0
-   kthread+0x1e6/0x210
-   ret_from_fork+0x24/0x30
-
-Link: https://lore.kernel.org/r/20200217205714.26937-1-bvanassche@acm.org
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Link: https://lore.kernel.org/r/1573021434-18768-1-git-send-email-bianpan2016@163.com
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index d6672127808b7..186da467060cc 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -597,15 +597,16 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
- 	struct ib_gid_attr sgid_attr;
+diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+index 2566715773675..e908dfbaa1378 100644
+--- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
++++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+@@ -460,10 +460,10 @@ qedr_addr6_resolve(struct qedr_dev *dev,
  
- 	if (mask & IB_QP_MAX_QP_RD_ATOMIC) {
--		int max_rd_atomic = __roundup_pow_of_two(attr->max_rd_atomic);
-+		int max_rd_atomic = attr->max_rd_atomic ?
-+			roundup_pow_of_two(attr->max_rd_atomic) : 0;
- 
- 		qp->attr.max_rd_atomic = max_rd_atomic;
- 		atomic_set(&qp->req.rd_atomic, max_rd_atomic);
+ 	if ((!dst) || dst->error) {
+ 		if (dst) {
+-			dst_release(dst);
+ 			DP_ERR(dev,
+ 			       "ip6_route_output returned dst->error = %d\n",
+ 			       dst->error);
++			dst_release(dst);
+ 		}
+ 		return -EINVAL;
  	}
- 
- 	if (mask & IB_QP_MAX_DEST_RD_ATOMIC) {
--		int max_dest_rd_atomic =
--			__roundup_pow_of_two(attr->max_dest_rd_atomic);
-+		int max_dest_rd_atomic = attr->max_dest_rd_atomic ?
-+			roundup_pow_of_two(attr->max_dest_rd_atomic) : 0;
- 
- 		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
- 
 -- 
 2.25.1
 
