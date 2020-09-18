@@ -2,155 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6390026FF1E
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 15:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6AF26FF1B
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 15:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgIRNt4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Sep 2020 09:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgIRNtz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 09:49:55 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9C0C0613CE;
-        Fri, 18 Sep 2020 06:49:55 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id r4so1436148ooq.7;
-        Fri, 18 Sep 2020 06:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eSTVGNh/5mQHPnByx0WomiCqSvC+JAjHkYFnnp7p7Oc=;
-        b=oGkNm1QkD3vp4zYjnHuVmKLK4++n6Bf0bmaLZL/JnCj7RlnQnc8qvgQQJrcW7mT1xe
-         YgCUGdUw/xNgLJATeDEgLlI5xVkMJVsvvb8Jy0F0MRUcTsJT5xnqszbt4vxz/R4b5SIV
-         LDIwxjDxnsKgMuzILtXjXOP7N22zJy2+l0ETltAPZN+ZlTb4s7fQPAMRCzDGfWF2wJzX
-         eqlQFyu/3cvYMHtFuphUXGGBbj/33meHNLann0ep1qaVCBSEQXIQxt83gQPZnrh3crDu
-         7ggd/shEGiWz7uBf4ZGpPDUZXbUpG5wjDErO6uAx8qUhO/x6CoNQbs7/q+McXvsuDbVf
-         xrcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eSTVGNh/5mQHPnByx0WomiCqSvC+JAjHkYFnnp7p7Oc=;
-        b=JVoQZkkHplnBQgiGe85YmmgBsKrmax90mv/65hjDjGVh1fXPXHxrynZb0r9JxieoEP
-         QbJ21AyGks4lZThIckGQWLNlMmXxbVPmZpvu45ktsRvUKqQl8k1fWzJNcBocMZzrYjxG
-         cUIKOsRfdbiaAXx4zLWtqjfOnK4OHpYDnmzuUaDTrAJAxUcEFWflyEIetaxq4HWRjzJ9
-         u/z4PIidstqdKDIs7BHf8kbvGYe+JgRmFcZNTiM0YNX364nU76ZhUJ38rdae5Q9+mS5Q
-         Wg9sWPbJHuC4u0MPf5yWYE0beZ3V1gOcFbA784W2CJrpqzEKZPHSzTXYUNuXG5A26JVM
-         a4uA==
-X-Gm-Message-State: AOAM531ee3tnpDwHuhJP9YAf2OEDyxNEqRWn7hEFyZqOFRsAo+CKsRZk
-        YeGCiVCkN6LFqvH/L8CgxuQDn0fTF/KcZpicSjA=
-X-Google-Smtp-Source: ABdhPJxt1KlcV1NIDtb7F+k+aLYBjtnRdSEBDNwlTzK/YlkzTD8P2J5/8WI5VYBIHoniB7tJcmAmpCOcgQ1qsAe+oQQ=
-X-Received: by 2002:a4a:d9c3:: with SMTP id l3mr23846819oou.27.1600436994918;
- Fri, 18 Sep 2020 06:49:54 -0700 (PDT)
+        id S1726121AbgIRNtl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Sep 2020 09:49:41 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10961 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIRNtl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 09:49:41 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f64bae70002>; Fri, 18 Sep 2020 06:49:27 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
+ 2020 13:49:38 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 18 Sep 2020 13:49:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKIPAQKxhITEh8FUO4d2Gwkxpi5AS9lGPriXQdIF94Mjtu6WcySlNx62aEdZkXZEVcg+YWMhFJFEnXQrg3gmpUb7l2M77o1jY9SmvT6kO6nLsKsdDKA2gCk8TCkPk56uQtDfUW6/FmiP8dgu+bDhju8UqO7o4dauZNu4op6nv4V11Il9TfPg+gkT60t+RTQTy2n8V290Vp7u2EM9COOvrR6uituGGrNhGNEJ4yKq0vfM4Kpp396rNqNIDcgErZ9LiMKhA5hu4B/Vf0mfcwuLnYf4AkRZu6H2uFSh0hN0apS4ioKXPIddQRX8vglrSmFNxWj+8m+f/aTwc3b7WU8Q7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CyTIIs9W7t2+IzY6vqMIwVOXTzPv6CIMnjc27jlkR10=;
+ b=WE9yTWYp6NoA9muLRxkIH4kEAhByqbRG7s7PfwT+BmOiRuK5lqE9OS1Act5rY+4K+WKIhLIjEfrcCIyD21peSLkw/grnuGRWjlj62dDArpb1KSiqKoH6DYl/D7i6QfdRQES/kz3LfyblPlM/FiM8jmSjozS8ZOXbERz1L6Rm21oF5IIxkOhhcryBFnN0ViSbSf/AsoYlkk+4RlfJLkvc7PO2a1Xii8GfxE+jskbzRMMDLYS1+Z0suggpuFAlWO9tKB6YiwrEuqOVLt/KQlU1G0O2x9Gz3u7K08COmDey9auIG36+RNolpek511ru9yjhViBa+mTKNp5CZK6V1ow0Mw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3210.namprd12.prod.outlook.com (2603:10b6:5:185::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 18 Sep
+ 2020 13:49:37 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Fri, 18 Sep 2020
+ 13:49:37 +0000
+Date:   Fri, 18 Sep 2020 10:49:35 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Weihang Li <liweihang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 2/9] RDMA/hns: Add type check in get/set hw
+ field
+Message-ID: <20200918134935.GA304147@nvidia.com>
+References: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
+ <1599641854-23160-3-git-send-email-liweihang@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1599641854-23160-3-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: MN2PR11CA0021.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
- <20200918115601.GP8409@ziepe.ca> <CAFCwf12G4FnhjzijZLh_=n59SQMcTnULTqp8DOeQGyX6_q_ayA@mail.gmail.com>
- <20200918121621.GQ8409@ziepe.ca> <CAFCwf12YBaka2w2cnTxyX9L=heMnaM6QN1_oJ7h7DxHDmy2Xng@mail.gmail.com>
- <20200918125014.GR8409@ziepe.ca> <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
- <20200918132645.GS8409@ziepe.ca>
-In-Reply-To: <20200918132645.GS8409@ziepe.ca>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Fri, 18 Sep 2020 16:49:25 +0300
-Message-ID: <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     izur@habana.ai, Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR11CA0021.namprd11.prod.outlook.com (2603:10b6:208:23b::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Fri, 18 Sep 2020 13:49:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kJGlb-001H96-LE; Fri, 18 Sep 2020 10:49:35 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c21d9a5-0447-4b19-a0eb-08d85bd9aeaa
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3210:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB32106BF29FA5F5D6849FCCB4C23F0@DM6PR12MB3210.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: otGUScrz/KFM1ipAp/4xQqvt5BEBFvyFjr7Kh1bxbUWxVVOB48hsxghtK2Y8Wdvp6EGjQzmeLpRMrgfVdy0XjSZavUdNBrpb1saZFYNnufA8Tq+P7oMa0v+Q3FPseTvMwe8igE8lJ1p5HyGYIYWbpSgL0dHa76oOI/Bww21YzVEj59aIiBhegAyuNiG+jSmlE8IOUuHDrQu8auYOh0Ba/4lSJsldw14ExNZnmnRYHG5+Kk32BC76viDTn9uPdFmJ36NKZLzEAagWMiJjlIepsF0hP8+8WFI1STi32ZgTPBzHEAz/cXr6bURN6fsUHl1OlQFUfmnYeI7gKfyOfBt7/jJXAJ3p6ITSBvmQuIxjLGqQeyp3QHhEMAlSEH6J2+5ay0jiX/FLZt9vW3ujUCgCCgGSUt0wlBi+03c+Qvfa5HQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(396003)(136003)(33656002)(316002)(83380400001)(26005)(478600001)(36756003)(1076003)(5660300002)(4744005)(426003)(186003)(9746002)(2906002)(66556008)(66476007)(4326008)(9786002)(66946007)(8676002)(86362001)(8936002)(2616005)(6916009)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 2JfR8xjDYiGrNTzuJ5QpwIjN8AZvIlIlBXAhc3uVWwksjXsBsyL4YyrqM/TQ3G7Yy9tfmwo/8iYFx3opSeNP6tZSRNljVNkoDl8Q6/GBPXUSI9ChXY/RwNVVWj5Jkn3ruU0GD8vWdow/3EmpCozCmN+OebgYaIUVo9iNa0r7NT6BYFUFft5EwirYE3fQnCI0jG3dmq9El4qa8sf4HKXCnLTqTqfyrxc9u+Tmm4WuIsubJNinAI+zLA1aFVGwimdeKTn/1KFHQNxZdbTc3xVVRZKKUGZXGqg+/jvzKuxWEMrNEwKcpRNK/ZRhoaXbb5R99/vMf9HbMijwT4X+khsLWefDfIV1PyZAPyFjhDNuEGEVPSOIQe0ECEFll5K2PpoE7cKs/9zMECzxacP4AJJDbUZcigidLAPX5/RkH8g5vJT7cX1r4kLDnBIjjw4PvSxNue3fICtAweJd4jF9x4/tWI5PKSxAuwEdnhNUH+fQ32lWyKgsAPInKIDWKMhu3kloOkWu/mo+X6WqdC1+5Uwq1yqFXfouy4JfF+AEUt8LXk+KD8PNlLmy72lljIMokIuu1zi/IBejRM7prdwUqdRSkIX5deBNuIF6RjN+Jw0JfDNvvjWhgFLhFeq+ovOA0DsP5nHy4csAIfS4WmtMox6iTQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c21d9a5-0447-4b19-a0eb-08d85bd9aeaa
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 13:49:37.1003
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JwVTNsgP2g2/F0eqSvN04+9BSHhGPAT7YOUM5xVItUbjcj1Y1WPzQYKy+afbQ2um
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3210
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600436968; bh=CyTIIs9W7t2+IzY6vqMIwVOXTzPv6CIMnjc27jlkR10=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
+         References:Content-Type:Content-Disposition:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=cUWhAPv71G4HzzmFhBWGZtSXl+Ig8Ryi2FblPgWxR5/Oz0kPRXD0IWCnDCzVXO0GD
+         vaoYjvaDgHVEcpmKz44neNCC5xA6UWFbcqlwd2vE0+lYqV4Oh2wXtLJjY+A5JmN7PD
+         qjKnTfFYYwKvWR7geezFM3UACiD1n1ZkMJdPUl09VFld/+RWpLTKjuZ9BUmV+IKAY2
+         gSlSR24a6hq4m8vgGPMa5CZpwfEKgzKXpGTfRaKyUsBrXYS3ZVZiJlg+D659QrvSDd
+         CknMZ25lmCeGEwn+tJ727HgyAf4p4bh7nu/yoWU3cpSQMOPtJgeXo/BzdQ8/C97nyT
+         gz7h85ffG2NMQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 4:26 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Sep 18, 2020 at 04:02:24PM +0300, Oded Gabbay wrote:
->
-> > The problem with MR is that the API doesn't let us return a new VA. It
-> > forces us to use the original VA that the Host OS allocated.
->
-> If using the common MR API you'd have to assign a unique linear range
-> in the single device address map and record both the IOVA and the MMU
-> VA in the kernel struct.
->
-> Then when submitting work using that MR lkey the kernel will adjust
-> the work VA using the equation (WORK_VA - IOVA) + MMU_VA before
-> forwarding to HW.
->
-We can't do that. That will kill the performance. If for every
-submission I need to modify the packet's contents, the throughput will
-go downhill.
-Also, submissions to our RDMA qmans are coupled with submissions to
-our DMA/Compute QMANs. We can't separate those to different API calls.
-That will also kill performance and in addition, will prevent us from
-synchronizing all the engines.
+On Wed, Sep 09, 2020 at 04:57:27PM +0800, Weihang Li wrote:
+> From: Lang Cheng <chenglang@huawei.com>
+> 
+> roce_get_field() and roce_set_field() are only used to set variables in
+> type of __le32, add checks for type to avoid inappropriate assignments.
+> 
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_common.h | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 
-I also have to say, it troubles me that you keep referring to our
-device as an RDMA device. It is not an RDMA device. It is a
-deep-learning accelerator which uses RDMA as a way to interconnect
-multiple devices. We don't intend to replace General-Purpose RDMA
-devices. We know we don't support that.
-Therefore, I still fail to see why we need to support all the above...
+I'm skeptical this actually works. __le32 and u32 are the same thing
+unless using sparse, and sparse will already catch mis-uses as-is.
 
-Our work submission is not to just "send/receive packets". Sending
-packets is part of a general recipe to do DMA, perform compute on data
-and send/receive data. All together, in a synchronized fashion.
-
-The way you try to force me to go is to separate that into different
-functionality, as if I have different ASICs, which is very
-counter-productive in terms of performance and simplicity. i.e. have
-one method of submitting work to DMA/compute and another way to RDMA
-ports.
-
-I know this is how the kernel is structured now - subsystems for
-devices that belong to a single domain (graphics, net, storage). But I
-fear that you will soon see this paradigm doesn't work with new
-devices in AI, which combine multiple domains into a single ASIC.
-
-Greg, I would love to hear your opinion here. Am I totally wrong ? Is
-treating a single ASIC that belongs to multiple domains as if it were
-multiple ASICs a good thing ? Don't you think it will hurt the
-performance ?
-
-Oded
-
-> EFA doesn't support rkeys, so they are not required to be emulated. It
-> would have to create rkeys using some guadidv_reg_mr_rkey()
->
-> It is important to understand that the usual way we support these
-> non-RDMA devices is to insist that they use SW to construct a minimal
-> standards based RDMA API, and then allow the device to have a 'dv' API
-> to access a faster, highly device specific, SW bypass path.
->
-> So for instance you might have some guadidv_post_work(qp) that doesn't
-> use lkeys and works directly on the MMU_VA. A guadidv_get_mmu_va(mr)
-> would return the required HW VA from the kernel.
->
-> Usually the higher level communication library (UCX, MPI, etc) forms
-> the dv primitives into something application usable.
->
-> > we do if that VA is in the range of our HBM addresses ? The device
-> > won't be able to distinguish between them. The transaction that is
-> > generated by an engine inside our device will go to the HBM instead of
-> > going to the PCI controller and then to the host.
-> >
-> > That's the crust of the problem and why we didn't use MR.
->
-> No, the problem with the device is that it doesn't have a lkey/rkey,
-> so it is stuck with a single translation domain. RoCE compliant
-> devices are required to have multiple translation domains - each
-> lkey/rkey specifies a unique translation.
->
-> The MR concept is a region of process VA mapped into the device for
-> device access, and this device *clearly* has that.
->
-> Jason
+Jason
