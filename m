@@ -2,36 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE48426F369
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 05:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D9826F2FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 05:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgIRDGk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Sep 2020 23:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50880 "EHLO mail.kernel.org"
+        id S1726507AbgIRCE6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Sep 2020 22:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727193AbgIRCEB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:04:01 -0400
+        id S1726564AbgIRCEu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:04:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0525B2376F;
-        Fri, 18 Sep 2020 02:03:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D031023718;
+        Fri, 18 Sep 2020 02:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394633;
-        bh=icekX+96jvpFDg2LzTwHzZf/G/6xaKhAV6pnlfsCQZ8=;
+        s=default; t=1600394689;
+        bh=a8TAtyVBLWhSc13/EqI2FOiHMoVAkw2IHfHbUIO1nmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dc1ygC6SG/RpwhGMUVEAPz3gp7vbt3GGxiTkt73zGgJHR+tXB0P88glDx7QmxWzmc
-         TYGZ2JcnmOTz1FhkJyfoFeFWkwz7OF5pjbMF5fFE1BkibT5Rwtb9XnQbkPez1iipu+
-         9DhCF2L51iY4pq0cnnQYPjd20p3HSBKvF5xCq5+A=
+        b=h3k+MDF29JQXsNUvGFaf1HtgZA21bsjYzNY9hmVk7bmMi00AypZ7NEOd6ddY86RM8
+         6SNR2M6G8tPSK/GNVhlT/mfmzDm4LqUg6EK6FQTuI2bQ+S/HOc+N4Zwa4WkG4LPCqH
+         fMJHPta4i7RlBADAp0Vq2HUqKmDtE6XBE9EGp13Y=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 133/330] RDMA/rxe: Fix configuration of atomic queue pair attributes
-Date:   Thu, 17 Sep 2020 21:57:53 -0400
-Message-Id: <20200918020110.2063155-133-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 178/330] RDMA/cm: Remove a race freeing timewait_info
+Date:   Thu, 17 Sep 2020 21:58:38 -0400
+Message-Id: <20200918020110.2063155-178-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,74 +42,144 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit fb3063d31995cc4cf1d47a406bb61d6fb1b1d58d ]
+[ Upstream commit bede86a39d9dc3387ac00dcb8e1ac221676b2f25 ]
 
-From the comment above the definition of the roundup_pow_of_two() macro:
+When creating a cm_id during REQ the id immediately becomes visible to the
+other MAD handlers, and shortly after the state is moved to IB_CM_REQ_RCVD
 
-     The result is undefined when n == 0.
+This allows cm_rej_handler() to run concurrently and free the work:
 
-Hence only pass positive values to roundup_pow_of_two(). This patch fixes
-the following UBSAN complaint:
+        CPU 0                                CPU1
+ cm_req_handler()
+  ib_create_cm_id()
+  cm_match_req()
+    id_priv->state = IB_CM_REQ_RCVD
+                                       cm_rej_handler()
+                                         cm_acquire_id()
+                                         spin_lock(&id_priv->lock)
+                                         switch (id_priv->state)
+  					   case IB_CM_REQ_RCVD:
+                                            cm_reset_to_idle()
+                                             kfree(id_priv->timewait_info);
+   goto destroy
+  destroy:
+    kfree(id_priv->timewait_info);
+                                             id_priv->timewait_info = NULL
 
-  UBSAN: Undefined behaviour in ./include/linux/log2.h:57:13
-  shift exponent 64 is too large for 64-bit type 'long unsigned int'
-  Call Trace:
-   dump_stack+0xa5/0xe6
-   ubsan_epilogue+0x9/0x26
-   __ubsan_handle_shift_out_of_bounds.cold+0x4c/0xf9
-   rxe_qp_from_attr.cold+0x37/0x5d [rdma_rxe]
-   rxe_modify_qp+0x59/0x70 [rdma_rxe]
-   _ib_modify_qp+0x5aa/0x7c0 [ib_core]
-   ib_modify_qp+0x3b/0x50 [ib_core]
-   cma_modify_qp_rtr+0x234/0x260 [rdma_cm]
-   __rdma_accept+0x1a7/0x650 [rdma_cm]
-   nvmet_rdma_cm_handler+0x1286/0x14cd [nvmet_rdma]
-   cma_cm_event_handler+0x6b/0x330 [rdma_cm]
-   cma_ib_req_handler+0xe60/0x22d0 [rdma_cm]
-   cm_process_work+0x30/0x140 [ib_cm]
-   cm_req_handler+0x11f4/0x1cd0 [ib_cm]
-   cm_work_handler+0xb8/0x344e [ib_cm]
-   process_one_work+0x569/0xb60
-   worker_thread+0x7a/0x5d0
-   kthread+0x1e6/0x210
-   ret_from_fork+0x24/0x30
+Causing a double free or worse.
 
-Link: https://lore.kernel.org/r/20200217205714.26937-1-bvanassche@acm.org
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Do not free the timewait_info without also holding the
+id_priv->lock. Simplify this entire flow by making the free unconditional
+during cm_destroy_id() and removing the confusing special case error
+unwind during creation of the timewait_info.
+
+This also fixes a leak of the timewait if cm_destroy_id() is called in
+IB_CM_ESTABLISHED with an XRC TGT QP. The state machine will be left in
+ESTABLISHED while it needed to transition through IB_CM_TIMEWAIT to
+release the timewait pointer.
+
+Also fix a leak of the timewait_info if the caller mis-uses the API and
+does ib_send_cm_reqs().
+
+Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
+Link: https://lore.kernel.org/r/20200310092545.251365-4-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/cm.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index e2c6d1cedf416..f85273883794b 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -592,15 +592,16 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
- 	int err;
- 
- 	if (mask & IB_QP_MAX_QP_RD_ATOMIC) {
--		int max_rd_atomic = __roundup_pow_of_two(attr->max_rd_atomic);
-+		int max_rd_atomic = attr->max_rd_atomic ?
-+			roundup_pow_of_two(attr->max_rd_atomic) : 0;
- 
- 		qp->attr.max_rd_atomic = max_rd_atomic;
- 		atomic_set(&qp->req.rd_atomic, max_rd_atomic);
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 09af96ec41dd6..c1d6a068f50fe 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1092,14 +1092,22 @@ retest:
+ 		break;
  	}
  
- 	if (mask & IB_QP_MAX_DEST_RD_ATOMIC) {
--		int max_dest_rd_atomic =
--			__roundup_pow_of_two(attr->max_dest_rd_atomic);
-+		int max_dest_rd_atomic = attr->max_dest_rd_atomic ?
-+			roundup_pow_of_two(attr->max_dest_rd_atomic) : 0;
+-	spin_lock_irq(&cm.lock);
++	spin_lock_irq(&cm_id_priv->lock);
++	spin_lock(&cm.lock);
++	/* Required for cleanup paths related cm_req_handler() */
++	if (cm_id_priv->timewait_info) {
++		cm_cleanup_timewait(cm_id_priv->timewait_info);
++		kfree(cm_id_priv->timewait_info);
++		cm_id_priv->timewait_info = NULL;
++	}
+ 	if (!list_empty(&cm_id_priv->altr_list) &&
+ 	    (!cm_id_priv->altr_send_port_not_ready))
+ 		list_del(&cm_id_priv->altr_list);
+ 	if (!list_empty(&cm_id_priv->prim_list) &&
+ 	    (!cm_id_priv->prim_send_port_not_ready))
+ 		list_del(&cm_id_priv->prim_list);
+-	spin_unlock_irq(&cm.lock);
++	spin_unlock(&cm.lock);
++	spin_unlock_irq(&cm_id_priv->lock);
  
- 		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
+ 	cm_free_id(cm_id->local_id);
+ 	cm_deref_id(cm_id_priv);
+@@ -1416,7 +1424,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	/* Verify that we're not in timewait. */
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+-	if (cm_id->state != IB_CM_IDLE) {
++	if (cm_id->state != IB_CM_IDLE || WARN_ON(cm_id_priv->timewait_info)) {
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 		ret = -EINVAL;
+ 		goto out;
+@@ -1434,12 +1442,12 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 				 param->ppath_sgid_attr, &cm_id_priv->av,
+ 				 cm_id_priv);
+ 	if (ret)
+-		goto error1;
++		goto out;
+ 	if (param->alternate_path) {
+ 		ret = cm_init_av_by_path(param->alternate_path, NULL,
+ 					 &cm_id_priv->alt_av, cm_id_priv);
+ 		if (ret)
+-			goto error1;
++			goto out;
+ 	}
+ 	cm_id->service_id = param->service_id;
+ 	cm_id->service_mask = ~cpu_to_be64(0);
+@@ -1457,7 +1465,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
  
+ 	ret = cm_alloc_msg(cm_id_priv, &cm_id_priv->msg);
+ 	if (ret)
+-		goto error1;
++		goto out;
+ 
+ 	req_msg = (struct cm_req_msg *) cm_id_priv->msg->mad;
+ 	cm_format_req(req_msg, cm_id_priv, param);
+@@ -1480,7 +1488,6 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	return 0;
+ 
+ error2:	cm_free_msg(cm_id_priv->msg);
+-error1:	kfree(cm_id_priv->timewait_info);
+ out:	return ret;
+ }
+ EXPORT_SYMBOL(ib_send_cm_req);
+@@ -1965,7 +1972,7 @@ static int cm_req_handler(struct cm_work *work)
+ 		pr_debug("%s: local_id %d, no listen_cm_id_priv\n", __func__,
+ 			 be32_to_cpu(cm_id->local_id));
+ 		ret = -EINVAL;
+-		goto free_timeinfo;
++		goto destroy;
+ 	}
+ 
+ 	cm_id_priv->id.cm_handler = listen_cm_id_priv->id.cm_handler;
+@@ -2050,8 +2057,6 @@ static int cm_req_handler(struct cm_work *work)
+ rejected:
+ 	atomic_dec(&cm_id_priv->refcount);
+ 	cm_deref_id(listen_cm_id_priv);
+-free_timeinfo:
+-	kfree(cm_id_priv->timewait_info);
+ destroy:
+ 	ib_destroy_cm_id(cm_id);
+ 	return ret;
 -- 
 2.25.1
 
