@@ -2,87 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686A8270931
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 01:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EA527093A
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 01:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgIRXlD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Sep 2020 19:41:03 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:39449 "EHLO nat-hk.nvidia.com"
+        id S1726054AbgIRXta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Sep 2020 19:49:30 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:48594 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgIRXlD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Sep 2020 19:41:03 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f65458d0000>; Sat, 19 Sep 2020 07:41:01 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
- 2020 23:41:01 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 18 Sep 2020 23:41:00 +0000
+        id S1726022AbgIRXt3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Sep 2020 19:49:29 -0400
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6547860000>; Sat, 19 Sep 2020 07:49:26 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
+ 2020 23:49:26 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 18 Sep 2020 23:49:25 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NvIT5vKBqMbB6Bie858ji/V1YTX0TLI3F7/bDObR9084B4POoKVXzY5rMhkZPly5MI4dEXOM4BTI57VAEXdx4i37CctD6+WrihgTJziZ//gItzsnwpcX4zlQNYJtRUdnHucFK5J3F9IEkHPLMhxl3gF7/Is6TUdsoxE7eTRRVRF3vaw8/kl7ggP2/99B64JBAi1lHJoxHs4mehMsPnrTU6vnT3IokoeAv7yj2EkLhgS0DZn+y9oG352aH7/6fGt8Rc3kAdy+Y33uLAQECWp7x5/Vl1LgUVIhC+xu1XwheS/aqGdPnMmCX07OMYeX3tP2P+gpgYeQaMcUJ+0INj+g4w==
+ b=eoCeDqS+OX6HgZOGZzSPpHYA7h5hws8D8Urhxl3IMii3bORI7R32YntZ4C/7LRQfaFbJtiSXENefjdqyrkf18UFyvJStBdgyMaQWOKE2X8hNLiZBiCuJVh+DNFa+UfsqrJQ6SUsIFhDfP/hhrHRQrwexSUQUgyxMsHBC9WQky/VjWsrSUSPon58ed5M+Gs0m47J0923ZhRucRkq3fE8cSZP90fljQpQ8leBDrNu1oQ66UboFBV7zP9u+qX4Qb+dVCLSKcJjFlHTeIXnGerUzrTsWhwSXWD5wvsv4YXdfTvavQ+e6RY1jvzfoi2IhunVcVLjPpgX4+KM/hZ3h5xD1pw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=elp47yo9CCBFXnkFKUMDGMtrz13Cmj20FckLuwG7Lyg=;
- b=ap8MjgrnsHQw/GDLWu1DmLl+EbgYWCLA3FPOTLs/GEb0w3hpeG/0AnhKPQVqTgRP+Y3hr68pv2hS8Q+OvWCFkxdV1SqpCV8O/8gIzWQuimB97ka88zkQAutbr6av4lC+oQsErIb/AF+fA+e3twIhNQpS9SioAY2b9TDERnOHhwOkyQEW3n5yWopqcz8C1ffuAD5aAfJW2n2Uhp5YzynwTbIFhJ+napZGqxepOQCdacH0SmSeAyAjGugWESUzSFa0U9cNIxyhEhpeWnvehgCQz4MzR4+6UDXD9qRMJsZ5jkyuMYLQ+g1rANfSAFTYvyJK2vYYg4n5WxRXAXfNJ3w5wQ==
+ bh=4eiWdJQ/u37NBxT11B55qzeb4NUJncS3oS9Hv9ydG1M=;
+ b=AnMAEc4mEkMhikOmuQpHOjkMcDQ0YSi7LGJERSNARTLPBmhpq44sCv0XROzzcRuEH8Rwnf41T1H8bOgGNMwgbPWA/xCbElR+wfLxP2+2Aq5UbAVVerHCuHYqWNiZYKd2t5XvOZgYjz5SBEMCea7AqB/zUmAkEnbzuE4TFgFC91pgdZnPsxmnBl2d63X6N+ViYJ3KyKtNgj1UkjMo+bw3hEPSdLo0hpvAJgS5Ezrjfa9GsGutao2qG5LtlAQ9lofi55jQ1qezHWxraVNAmktsZ5XGYJwRp8SDVqVvQboRo4uNrejmfBbrKSrmKqRI4d1JDyytJqAT1GELxSFiP0jOtA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (10.255.76.76) by
- DM6PR12MB4041.namprd12.prod.outlook.com (10.141.184.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.11; Fri, 18 Sep 2020 23:40:59 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1546.namprd12.prod.outlook.com (2603:10b6:4:8::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.11; Fri, 18 Sep 2020 23:49:23 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Fri, 18 Sep 2020
- 23:40:59 +0000
-Date:   Fri, 18 Sep 2020 20:40:57 -0300
+ 23:49:22 +0000
+Date:   Fri, 18 Sep 2020 20:49:21 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Bob Pearson <rpearsonhpe@gmail.com>
 CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
         Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for-next v5 09/12] rdma_rxe: Add support for extended QP
- operations
-Message-ID: <20200918234057.GH3699@nvidia.com>
+Subject: Re: [PATCH for-next v5 10/12] rdma_rxe: Fix pool related bugs
+Message-ID: <20200918234921.GI3699@nvidia.com>
 References: <20200918211517.5295-1-rpearson@hpe.com>
- <20200918211517.5295-10-rpearson@hpe.com>
+ <20200918211517.5295-11-rpearson@hpe.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200918211517.5295-10-rpearson@hpe.com>
-X-ClientProxiedBy: MN2PR10CA0031.namprd10.prod.outlook.com
- (2603:10b6:208:120::44) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20200918211517.5295-11-rpearson@hpe.com>
+X-ClientProxiedBy: MN2PR07CA0001.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::11) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR10CA0031.namprd10.prod.outlook.com (2603:10b6:208:120::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Fri, 18 Sep 2020 23:40:58 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kJPzt-001tbY-Hp; Fri, 18 Sep 2020 20:40:57 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR07CA0001.namprd07.prod.outlook.com (2603:10b6:208:1a0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15 via Frontend Transport; Fri, 18 Sep 2020 23:49:22 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kJQ81-001thj-5E; Fri, 18 Sep 2020 20:49:21 -0300
 X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ffc0fcb-bc08-4a09-5d10-08d85c2c4b71
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4041:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB40413EC52742E2AB6044232EC23F0@DM6PR12MB4041.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Office365-Filtering-Correlation-Id: 12058118-d66b-4f6f-e4b1-08d85c2d77b4
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1546:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB15462CDE258B4BC00E666DF2C23F0@DM5PR12MB1546.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vH0rKDOotaV78NjciitnvyDN4RLGhrvwCfbD0rdVlaBujJKEt2SPkxhDmZuMBOGAaXGNJCk1QNrk4WYq8QPkE8rMTSn5lxiglPL5lhKsvQP6MNDdAUHTswKjaRWeelyZ39zMf77nB49+kCIegPWGTo8SgwMTTxVICBgA6XFhNhUR+nmDlFA7Jz8fenUXOWU1JZQNhYjitfZ2tLz16ZOXgGIkOevo6AZeYWMiFEGFSQHP7qc/EJNOmPYHhb5vj8G0uOtJEid8TlYjSn4Z8wFAnKI4u0C/87/cm/7ELow/We/MZynpXQSxMrGWaK1ZMI66NghX1i62NJb52DVI/mD+lQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(8936002)(316002)(33656002)(186003)(8676002)(86362001)(1076003)(36756003)(2906002)(5660300002)(4744005)(9786002)(66946007)(6916009)(26005)(4326008)(66476007)(9746002)(66556008)(426003)(478600001)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ziXuJD2yUKwnwu1rrWDS7Why9CWuU6qY3skR6nO5thw2b7RmdSZzy4+X/EZpupMZ5hhJed5ZiQydAyfKafW54jDL5/baFeo1R0IiWILQv6lj5FolxATNCoFAoYHwtyE5rbSAujGdrNVZD2m2caTjrkokEEq8zAGMCn7/Qp0N7wOZxay4PahTmCy8qUd87QDe8ZNZ4edku9/2n7MKiPvmF1up451CUzukoKvG5DW1d1RfCFBuYWJQlbbnU5W/HMlp/IbEuAeQ1FITu+YbqfoBaFaEii6UEkX8k9bD89P/hgWB6fo8piHUx70JE5qcXrxf/0Dxlim5jC4+FHApyN6WyKjV0BLIbaNqlgmwM4eoikai/dZYNCFs9GgDhrn9AlgS8XMfnFBnDra2moS0+JUGBiF9X8bqubJg8vyK5Ma+7DO6wmMYEQuUMIzMHfE9XGqyQh7BVcBHD/DLhMZaqaSBfASPdezQdz6MjT4g6f5ygedw8XYM4zreNJjWNRjfbTMhA80heT/gy13fccnsR99u+k8rKXbhvOR2DVLSvCoda/vkuKkFVZCxzuqUVET3uR9wTjmFIYIWpjNGj7pQgjhqLC++aEipCg5djjlEoeVFgSamt5CEwa6iMDFUCgPrPB21tdVY/PyVXncAkVOVC6O/Sw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ffc0fcb-bc08-4a09-5d10-08d85c2c4b71
+X-Microsoft-Antispam-Message-Info: XZ4E2iu4dbOxNujQskkLJfNkGw2S6sowzz+gaa5GlPrDcG6Xu68WMr1wDgk+AYV68onXz12miX+khdhvuBYlVpmjDuW6IfsEBVYBboBGnfyrrpzJcOw3jnEXFu81CXUO/HrDxRyzIIX1co33RY/aFu4gNfV8lkNvKOjqeB/sdEtoMtfe74QEhnAJGGus2RYMRM4BHRCn98XsMCM+kfZow1yGOr49H6YMsLPsG//2sMLV5tsNHLrdgJ4QMKzdGheSVHU9bcOV146Ui3LdlS4ce3hT3jXLLUYE6KqIQnLb2tJ0YFqWPo+ICqow2wE6bQw40QPOxNU+GNL/ZlfIHzloQcdZmi3CBW1sZKk+nUhsroP8oMa3cTEVCGUCEG7bHmrW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(376002)(396003)(136003)(26005)(426003)(4326008)(316002)(186003)(6916009)(2616005)(478600001)(86362001)(33656002)(8936002)(9786002)(2906002)(36756003)(9746002)(5660300002)(66946007)(83380400001)(66556008)(66476007)(1076003)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ipvqGvOIZ+0TVepdZS65++MBj8tnD+AA6gJeNdDQ3S6AIjj6nBawE7Eg7honkW7fI5T3glhl2jntbwRLdE7qCHc1A2zwpRBBhgiQMoX7KZVIjg7X6pOkHRB2sbjIuV3Q0IJiiSzaa5dgUdXAYL14tMuGCS8LXwVEb3zMl5/oNfcDuPxAUqtd6S6wwfvEqYjQYpbKlwdPInLSgqHHcKGB56NY1wepRZgvD3rgfmmHoArkYVDfL00cITlrJeX4GPAll2m8kfpdvGUCXBAjR1du5ePAnhF9T8p7+pTTM28sq5XTH62NUjQnhPSvIiobAoSzulnhfdhxqUov6BmdUZEDSa4GZhsFmU7YG/Lgjk4lob4FT2Uuf+6862mA7WqT25Q85YiimAgAsaTI6xVi3giaYrKrH4SKlS8ivDwoC9k9Kt6chxKRn6J5oRNT0htIGHSr5+Gf0ZN5Qz+BE0flOfYkhIQVe0awToEIkVrtoNMbiyQLC8QMawKDpTC1HnyCn0CquMJNTMsZjiXW0ExOt9jK5jtWgHJBxyEqrOhwJ1MMwm7p8W6k3zcS8Z5lUGjfxblyfYBXfQU0kuk+sH5XTLTERosULh7g/h4buRq0sTlawCJgcI1jGF0FUaeRLp+ZEmieP8s1iMwTNpxX4Z2oIlK6ow==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12058118-d66b-4f6f-e4b1-08d85c2d77b4
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 23:40:58.9070
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 23:49:22.6831
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ROZiEIo78zczbAt9BlYLV2Ze5xb7OekoFa0rSFRqUpEARk57btHytam66rYVhzA1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4041
+X-MS-Exchange-CrossTenant-UserPrincipalName: p1oZQF6fWJPsl8xqeVcNfOoP0savthl67fZNECq7I757A1UAGYiMfP6MEnaYXqmq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1546
 X-OriginatorOrg: Nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600472461; bh=elp47yo9CCBFXnkFKUMDGMtrz13Cmj20FckLuwG7Lyg=;
+        t=1600472966; bh=4eiWdJQ/u37NBxT11B55qzeb4NUJncS3oS9Hv9ydG1M=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
          Authentication-Results:Date:From:To:CC:Subject:Message-ID:
          References:Content-Type:Content-Disposition:In-Reply-To:
@@ -101,39 +100,46 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
          X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
          X-MS-Exchange-CrossTenant-UserPrincipalName:
          X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=kOtexIb7z0E01/a9RuWJRidSWWWSXt1n+UdogyBHOPqFxljw5XCjKA2uXwl93TYM4
-         xEigf+EAFcYifUvEvg3YtaWCGZU9oUA650NR+vn5i+1uoo5x01yFS64DZcY7t86a0h
-         msoI1YL0D/4oAt9BPs81dBaez6K1LBlDN0Q4bSU/ZwSNnwRWvY2Wi3c/K9z+6dCy7S
-         8SLW4PUWhZjWtsxpzOs8rSbdiIeNqgc01d37UkHwEaz7pLG7VPgE0H9n8MiXNwX7/f
-         5v4JKambxKoYs/JbNiiLYMyV9r9lDnBDvvCB044fwPTBWuXv9/wAX8nZzN12pqFJi3
-         EXMTVHCLesPpw==
+        b=L+ZxSAmicdisggDrne3c/J+0rUYBCSM/kfqAtnpOWXK/o1Q3FulQqF2oiBoZQtKX/
+         lnA1NjJjeRppZuYXYEu8Mwsxt0tAXASjqWIgUm95sIyajE7SA6YicwVY/isM4buU5q
+         aIUrH0IugVFN6IpTyLVQgADTMh/LOYmM3Mw3Q2F5FA/0eJ/cvI/zNMKYHNpz65RKyM
+         YzEx7c8xUegY0dlvPwlAfLyjgUSph89GsDrNKezj9jf7pT/ynUYTND2DXrnc77lUg3
+         Q63Beu42IqBbqlqSnCfTYoVtgBGcGhWdtYGD3hzu/cp6MGYUOvXKC3+SgQ+PZv7/Im
+         aNciGBWMuesIw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 04:15:14PM -0500, Bob Pearson wrote:
-> Add bits to user api command bitmask.
-> 
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->  drivers/infiniband/sw/rxe/rxe_verbs.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 594d8353600a..7849d8d72d4c 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -1187,6 +1187,8 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
->  
->  	dev->uverbs_ex_cmd_mask =
->  	      BIT_ULL(IB_USER_VERBS_EX_CMD_QUERY_DEVICE)
-> +	    | BIT_ULL(IB_USER_VERBS_EX_CMD_CREATE_QP)
-> +	    | BIT_ULL(IB_USER_VERBS_EX_CMD_MODIFY_QP)
->  	    | BIT_ULL(IB_USER_VERBS_EX_CMD_CREATE_CQ)
->  	    | BIT_ULL(IB_USER_VERBS_EX_CMD_MODIFY_CQ)
->  	    ;
+On Fri, Sep 18, 2020 at 04:15:15PM -0500, Bob Pearson wrote:
+> This patch does following:
+>   - Replace the rwlock used for pool->pool_lock by a spinlock.
+>     Rwlock is a multi-reader single writer lock but there are
+>     cases where a multi-writer lock is required, especially where
+>     multiple objects can be created at the same time.
 
-Again I wonder if we should just set these always in the core code,
-can you see a reason why not?
+Not sure what a multi-write lock is, sounds scary
 
-I really hate these cmd_masks and want to get rid of them anyhow
+>   - Be more careful about type checking in pool APIs.
+>     Originally each object used in rxe had a pool_entry struct as
+>     the first member of it's struct. Since then about half have
+>     it first and the other half have it later in the struct. The
+>     pool APIs used void * as a hack to avoid type checking. This
+>     patch changes the APIs so the pool_entry struct is position
+>     independent. When used a parameter a macro is used to convert
+>     the object pointer to the entry pointer. The offset of the entry
+>     is stored for each pool and used to convert the entry address to
+>     the object address.
+>   - Provide locked and unlocked versions of the APIs.
+>     The current code uses a lock in each API to allow atomic
+>     updates to the pools. But some uses fail to work because they
+>     combined multiple pool operations and expect them to be
+>     atomic. As an example doing a lookup to see if a matching object
+>     exists for a multicast group followed by a create of a new group
+>     if it does not. By letting the caller take the pool lock and then
+>     combine unlocked operations this problem is fixed.
+>   - Replace calls to pool APIs with the typesafe versions.
+>   - Replaced a few calls to pr_warn with pr_err_once.
+
+This probably needs to be split up
 
 Jason
