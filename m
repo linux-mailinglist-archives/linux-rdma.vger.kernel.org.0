@@ -2,71 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B281827032C
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 19:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756102707F2
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 23:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgIRRXo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Sep 2020 13:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
+        id S1726154AbgIRVPw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Sep 2020 17:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgIRRXo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 13:23:44 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C203C0613CE
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Sep 2020 10:23:44 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t76so7883667oif.7
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Sep 2020 10:23:44 -0700 (PDT)
+        with ESMTP id S1726118AbgIRVPw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 17:15:52 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24962C0613CE
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Sep 2020 14:15:52 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id n2so8714237oij.1
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Sep 2020 14:15:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=ihJzXb+hV3/6HRd9BgYNwInSJAlwIzVvA/7smO+1mes=;
-        b=bDpdNPh4jM3zb3X0KCxBsr5pOycc/FvKxucfgRjmOVq4MxfQ7PM+SHjlT+MJykKquN
-         SVeHGqQXtVGlvmQGPjXgQb6DqcWinFRFBpvGgnhD73Vbi1ImYKKvLQsw2dQAqTwclBfP
-         w0AwFjrGDLp/IItm4UV6uDuKreB+Sipw/HgvEkXI9BB6IHi9ljPagr07hxDO7ej0Y/cf
-         JhEymI4gp8BU+0i97D9ZFqWb8KnKikQOaOFZM6ldhOojAagD2bMuSu8MP4etE1oaiUER
-         ZKBLpL18sshTo+QXzaNeFvzTAvmLzYHPS5pG5BzaH6Gqc8L+BX0QUK9TQ/sJMb00Jpz9
-         vPAQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8rxD7ngtE2B6yjT4J6Wtgxcz9cTP1TljJyUfIFPuZ/g=;
+        b=b97EA+wZc4ODCfPkZrIvnegugQSXy9ozWUjLDazahgNA8c8jQR2y7tzhT9yaVC9ra6
+         R+TwGnd/iXUOVZ4KxDQu9MvrILkZ23rHuYJdhYQAH0UdhSH2LxwmumphVV97FjuHxDrE
+         CpWWuEwYDPuSyv4feZtzs/3d/UGlC+G+MII4Bmwmc7MZEXAeirr+Vof/RLCShyOFu3tR
+         CRWjTfdjcsHx3ADchOXd1AHbyE8tLknA3QnNgrbSEqTvoKRQiJ0+0RnZDYx/qbfH0qDm
+         5v4k32lp+Fm4sot1i9P2OYcT/sDz448mbbOt0TgjBvAUTv3qTe01g6lesa4OJ2PdwNJe
+         UewA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=ihJzXb+hV3/6HRd9BgYNwInSJAlwIzVvA/7smO+1mes=;
-        b=rY3p0HgIb25FDkb0EbUxWpUuJYlO3hIniE9i4VHBduZd1Z4S/SmqAGOteK7ADRoAAW
-         Ihw2Nnxcls5D3PYtTJwJYAbseutSc86MNoJysK4oA3MPoOVL6+TcX4WL9sZ4hM6qGUlq
-         D1ClBSksGQJ8SoeIHdjvpRV+iqL57JsN1A/Gm4juOwhX7+1LTgwhczVvZzWVmMqa+Rpj
-         4BcvBv1ZbDOS6dba9YbvmWlS4XgChl4x1s1L9Ong1oQ4nmtkWbZwDcgAqP7lqRfcBcAw
-         izpa4CT96+l3XvbbgZN2WhLogREpeSV3LrmGgOwuuiwrVKKMYBwRITWTodQvX3+Nzs0Q
-         doQw==
-X-Gm-Message-State: AOAM533zU3Wo9WxR3OWfvZ5OzyyeFT03gof32wBVc5Bt8sE+iLq1nBZH
-        hVAbiZbthSYy0gi3gkVXoHiMplBkmOI=
-X-Google-Smtp-Source: ABdhPJxw4i1E7bEGSrsxZ6+KmogUsk8TK5v+NdXfAGLcLUbU9fRAX+wcmRsiKygH+OIHxx+CZKoPVg==
-X-Received: by 2002:aca:55c5:: with SMTP id j188mr10237646oib.138.1600449823474;
-        Fri, 18 Sep 2020 10:23:43 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:818d:d6c1:3b0:6a85? ([2605:6000:8b03:f000:818d:d6c1:3b0:6a85])
-        by smtp.gmail.com with ESMTPSA id 91sm2758842ott.55.2020.09.18.10.23.42
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 10:23:43 -0700 (PDT)
-To:     linux-rdma@vger.kernel.org
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8rxD7ngtE2B6yjT4J6Wtgxcz9cTP1TljJyUfIFPuZ/g=;
+        b=AQROtrHJhxALXf2c2sLkZzypWVbgI/BXbZhzqJFSrmSp8+S/kIpfAdSoM8AnVoYrfj
+         nUqJAtkHHjh3i+RM6V0F1+aBTcF2AjYNGWH4bFG5/NyeO8Q3Ky8gON/EaWomMR90Q59L
+         FYaxDk8Kf8/fzUW/wKeqKxI0Ma+QkBlhVeGGqZlQGgFdtPXcZ/tqNUWgkyVpfqk3bpb6
+         1Mottd8FrxswAqmu8k1up0dt+wXeVbcApfXKvTVLZhIw7hV+K/jiuoE0RI5mk58f7P5G
+         /Od49p/mjBu6s25P0XLGA0CekhJodeBX6l3ydNg81wuy8n/6aQeKCU839GmTa0tJM7We
+         oIMA==
+X-Gm-Message-State: AOAM530X1T7lytO/D0os9pKGUI95m9hu8vMiBCLxcf/cLsxa4HvQFivd
+        VGXjiwrhT0U9bdM6kf59wKI=
+X-Google-Smtp-Source: ABdhPJzpLrAEv2rXJX5OEvmloP8AV/qxsUOPtLF2exwIy0OXPKqEnAvjdztVJl/WcinSGACFBhTa4g==
+X-Received: by 2002:aca:ec53:: with SMTP id k80mr10286934oih.92.1600463751561;
+        Fri, 18 Sep 2020 14:15:51 -0700 (PDT)
+Received: from localhost ([2605:6000:8b03:f000:4725:6035:508:6d87])
+        by smtp.gmail.com with ESMTPSA id m12sm3150419otq.8.2020.09.18.14.15.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 14:15:51 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: pyverbs regression
-Message-ID: <5c484f6d-364f-834d-0b16-144be92fc234@gmail.com>
-Date:   Fri, 18 Sep 2020 12:23:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v5 00/12] rdma_rxe: API extensions
+Date:   Fri, 18 Sep 2020 16:15:05 -0500
+Message-Id: <20200918211517.5295-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I pulled head of tree for rdma-core and the kernel and rebuilt them and I am now seeing the following warnings from pyverbs which I had not seen before. The tests I expected to run are still running but there seems to be an inconsistency somewhere.
+This patch series is a collection of API extensions for the rdma_rxe driver.
+With this patch set installed there are no errors in pyverbs run-tests and
+31 tests are skipped down from 56. The remaining skipped test cases include
+	- XRC tests
+	- ODP tests
+	- Parent device tests
+	- Import tests
+	- Device memory
+	- MLX5 specific tests
+	- EFA tests
 
-<frozen importlib._bootstrap>:219: RuntimeWarning: pyverbs.srq.SRQ size changed, may indicate binary incompatibility. Expected 56 from C header, got 64 from PyObject
-<frozen importlib._bootstrap>:219: RuntimeWarning: pyverbs.qp.QP size changed, may indicate binary incompatibility. Expected 104 from C header, got 112 from PyObject
-<frozen importlib._bootstrap>:219: RuntimeWarning: pyverbs.qp.QPEx size changed, may indicate binary incompatibility. Expected 112 from C header, got 120 from PyObject
+It continues from the previous (v4) set which implemented memory windows and
+has had a number of individual patches picked up in for-next.
 
-Bob Pearson
+This set (v5) includes:
+	Ported to current head of tree
+	Memory windows patches not yet picked up
+	kernel support for the extended user space APIs:
+	  - ibv_query_device_ex
+	  - ibv_create_cq_ex
+	  - ibv_create_qp_ex
+	Fixes for multicast which is not currently working
+
+This patch set depends on a matching rdma-core user space library patch set.
+
+In order to run correctly it is necessary to configure by hand the EUI64 link
+local IPV6 address on systems which use a random link local address (like
+Ubuntu).
+
+Bob Pearson (12):
+  rdma_rxe: Separate MEM into MR and MW objects.
+  rdma_rxe: Enable MW objects
+  rdma_rxe: Let pools support both keys and indices
+  rdma_rxe: Add alloc_mw and dealloc_mw verbs
+  rdma_rxe: Add bind_mw and invalidate_mw verbs
+  rdma_rxe: Add memory access through MWs
+  rdma_rxe: Add support for ibv_query_device_ex
+  rdma_rxe: Add support for extended CQ operations
+  rdma_rxe: Add support for extended QP operations
+  rdma_rxe: Fix pool related bugs for multicast
+  rdma_rxe: Fix multicast group allocation bug
+  rdma_rxe: Fix bugs in the multicast receive path
+
+ drivers/infiniband/sw/rxe/Makefile     |   1 +
+ drivers/infiniband/sw/rxe/rxe.c        | 100 ++++--
+ drivers/infiniband/sw/rxe/rxe_comp.c   |  12 +-
+ drivers/infiniband/sw/rxe/rxe_cq.c     |  12 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  43 ++-
+ drivers/infiniband/sw/rxe/rxe_mcast.c  | 110 ++++---
+ drivers/infiniband/sw/rxe/rxe_mr.c     | 350 +++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_mw.c     | 416 +++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.h |   1 -
+ drivers/infiniband/sw/rxe/rxe_param.h  |  10 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c   | 330 +++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_pool.h   | 109 +++++--
+ drivers/infiniband/sw/rxe/rxe_recv.c   |  64 ++--
+ drivers/infiniband/sw/rxe/rxe_req.c    | 113 ++++---
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 125 +++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c  | 101 +++---
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |  64 ++--
+ include/uapi/rdma/rdma_user_rxe.h      |  68 +++-
+ 19 files changed, 1448 insertions(+), 592 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+
+-- 
+2.25.1
+
