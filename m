@@ -2,61 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFD726FDBB
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 15:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B6826FDDF
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Sep 2020 15:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgIRNC4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Sep 2020 09:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgIRNCy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Sep 2020 09:02:54 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710C1C06174A;
-        Fri, 18 Sep 2020 06:02:54 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x14so6882394oic.9;
-        Fri, 18 Sep 2020 06:02:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IaS9N3Cng7inbUF+J31vDuAkMgLHxsqDlirlY0FiQ4o=;
-        b=qV8eq1i4hzO2ZurLNa/xNu3twhKi6zMyrsuXQV1Ulfpi/1aq4CCkSPsIYb9riyPmL8
-         WHxx4SMEqX+6uqRn1ORKEgwRfisC/Qg76pmuQpf8M9N4wH+uuNrmn7YivQvViR0Nsxm1
-         ip1Pmtatumvk568qONRe1Z+q4rUJd9fRqScm38Gm3SrCAGP9XuiDWcB0clvDEf3it27w
-         clH8qM4/fN8YInstvz6Hf2ar85ZCff5wudlRBBI95oZwwszuskQlS9gO7/ezYAzW8L5g
-         XoGT5bCzVip2/Iyvzsoozt07gqKZnFBgjTd7nC8c31gQtvPd8f6F1nl6j07X2GidNRuv
-         itsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IaS9N3Cng7inbUF+J31vDuAkMgLHxsqDlirlY0FiQ4o=;
-        b=FUl6ngCAn67MazrVlynzCoXYlg/4WUG9mae2+KrCVuTuQzhp47Qu5vQzGZ5HJERf8d
-         uDsaHQVZoAEnMijODyZx1SgripfRPi77AwW5CbS9t/N7TCKCsoHLr08y+3H7+h4nY+/9
-         6K4OWrot11LcVZUeQNDFs+2Z9On8LitFTVwxm7yKi18KY4no+Ft/6sPnXmntGHHnYfq9
-         eIGovrx6aYqMWQPrwYsfe+OsM+us1Rszo5kPkyxzxENSCVl5CmqXf9Kt297xKjH3nIxX
-         fdA8cltNRVs0V8ZNuTjgjW9RxwS2/7BJZCSQ8C0W65Z6GKNpXQIkKx2ibchzSnjvM+ej
-         9IxA==
-X-Gm-Message-State: AOAM533pQN83Qz9ao7lTsTqMoxrKEs3oV7GV15915xScyKHjrsyIsJ9W
-        EYwuOO+MzPUzA0M61eKZb7TA9L29RdC/zcwYmi8=
-X-Google-Smtp-Source: ABdhPJx5P2coN1iGx3hJqsOpCFte2hcUqF1dJiLi+OdLp4UhEFLRTpyVy97rOoc92Wp7oG+09/gygVAOe7JkT+97dr4=
-X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr9510248oij.154.1600434173449;
- Fri, 18 Sep 2020 06:02:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
- <20200918115601.GP8409@ziepe.ca> <CAFCwf12G4FnhjzijZLh_=n59SQMcTnULTqp8DOeQGyX6_q_ayA@mail.gmail.com>
- <20200918121621.GQ8409@ziepe.ca> <CAFCwf12YBaka2w2cnTxyX9L=heMnaM6QN1_oJ7h7DxHDmy2Xng@mail.gmail.com>
- <20200918125014.GR8409@ziepe.ca>
-In-Reply-To: <20200918125014.GR8409@ziepe.ca>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Fri, 18 Sep 2020 16:02:24 +0300
-Message-ID: <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     izur@habana.ai, Gal Pressman <galpress@amazon.com>,
+        id S1726738AbgIRNKB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Sep 2020 09:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726406AbgIRNKA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:10:00 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F411F235FD;
+        Fri, 18 Sep 2020 13:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600434599;
+        bh=AIZsqDKqusAtAp+ep4BDpo81voa/dxE7UpcixUilc7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kAtu/1Ee3pTjZ52xAindcmZEXpXE8sOUqD6IxxhqIH55IIRyVudrWbeGPZPvDP3pV
+         IrP1QVx5Xy28erE/fy1kVpwTc2m6Ujq0kzpOcF2BImirLm1Cy+/gbdnm8DaOOLpG4X
+         +PEthXnn3++NGWHK1umO2tMJASDlrM03vX102Lnw=
+Date:   Fri, 18 Sep 2020 16:09:55 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         Jakub Kicinski <kuba@kernel.org>,
         "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
         netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
@@ -64,80 +34,165 @@ Cc:     izur@habana.ai, Gal Pressman <galpress@amazon.com>,
         "David S. Miller" <davem@davemloft.net>,
         Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-rdma@vger.kernel.org, izur@habana.ai,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918130955.GV869610@unreal>
+References: <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
+ <20200918121905.GU869610@unreal>
+ <CAFCwf12KEa=chCZCWWkJ5bvGDeRCrmBcY9fB8CrtzjOknRQ5Qg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf12KEa=chCZCWWkJ5bvGDeRCrmBcY9fB8CrtzjOknRQ5Qg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Sep 18, 2020 at 03:34:54PM +0300, Oded Gabbay wrote:
-> > > > Another example is that the submission of WQ is done through our QMAN
-> > > > mechanism and is NOT mapped to userspace (due to the restrictions you
-> > > > mentioned above and other restrictions).
-> > >
-> > > Sure, other RDMA drivers also require a kernel ioctl for command
-> > > execution.
-> > >
-> > > In this model the MR can be a software construct, again representing a
-> > > security authorization:
-> > >
-> > > - A 'full process' MR, in which case the kernel command excution
-> > >   handles dma map and pinning at command execution time
-> > > - A 'normal' MR, in which case the DMA list is pre-created and the
-> > >   command execution just re-uses this data
-> > >
-> > > The general requirement for RDMA is the same as DRM, you must provide
-> > > enough code in rdma-core to show how the device works, and minimally
-> > > test it. EFA uses ibv_ud_pingpong, and some pyverbs tests IIRC.
-> > >
-> > > So you'll want to arrange something where the default MR and PD
-> > > mechanisms do something workable on this device, like auto-open the
-> > > misc FD when building the PD, and support the 'normal' MR flow for
-> > > command execution.
+On Fri, Sep 18, 2020 at 03:31:51PM +0300, Oded Gabbay wrote:
+> On Fri, Sep 18, 2020 at 3:19 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > I don't know how we can support MR because we can't support any
-> > virtual address on the host. Our internal MMU doesn't support 64-bits.
-> > We investigated in the past, very much wanted to use IBverbs but
-> > didn't figure out how to make it work.
-> > I'm adding Itay here and he can also shed more details on that.
+> > On Fri, Sep 18, 2020 at 03:07:19PM +0300, Oded Gabbay wrote:
+> > > On Fri, Sep 18, 2020 at 3:03 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Sep 18, 2020 at 02:56:09PM +0300, Oded Gabbay wrote:
+> > > > > On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> > > > > > > On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > > > > > > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> > > > > > > >> infrastructure for communication between multiple accelerators. Same
+> > > > > > > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > > > > > > >> The RDMA implementation we did does NOT support some basic RDMA
+> > > > > > > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > > > > > > >> library or to connect to the rdma infrastructure in the kernel.
+> > > > > > > >
+> > > > > > > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > > > > > > > you can't add random device offloads as IOCTL to nedevs.
+> > > > > > > >
+> > > > > > > > RDMA is the proper home for all the networking offloads that don't fit
+> > > > > > > > into netdev.
+> > > > > > > >
+> > > > > > > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > > > > > > > all. I'm sure this can too.
+> > > > > > >
+> > > > > > > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> > > > > > > was suggested to go through the vfio subsystem instead.
+> > > > > > >
+> > > > > > > I think this comes back to the discussion we had when EFA was upstreamed, which
+> > > > > > > is what's the bar to get accepted to the RDMA subsystem.
+> > > > > > > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> > > > > > > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> > > > > > >
+> > > > > > > Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> > > > > > > or should we open the "what qualifies as an RDMA device" question again?
+> > > > > >
+> > > > > > I want to remind you that rdma-core requirement came to make sure that
+> > > > > > anything exposed from the RDMA to the userspace is strict with proper
+> > > > > > UAPI header hygiene.
+> > > > > >
+> > > > > > I doubt that Havana's ioctls are backed by anything like this.
+> > > > > >
+> > > > > > Thanks
+> > > > >
+> > > > > Why do you doubt that ? Have you looked at our code ?
+> > > > > Our uapi and IOCTLs interface is based on drm subsystem uapi interface
+> > > > > and it is very safe and protected.
+> > > >
+> > > > Yes, I looked and didn't find open-source users of your UAPI headers.
+> > > > It is not related to being safe or protected by to the common request
+> > > > to present userspace that relies on those exported interfaces.
+> > > >
+> > > > > Otherwise Greg would have never allowed me to go upstream in the first place.
+> > > >
+> > > > Nice, can we get a link?
+> > > >
+> > > > >
+> > > > > We have a single function which is the entry point for all the IOCTLs
+> > > > > of our drivers (only one IOCTL is RDMA related, all the others are
+> > > > > compute related).
+> > > > > That function is almost 1:1 copy of the function in drm.
+> > > >
+> > > > DRM has same rules as RDMA, no kernel code will be merged without seeing
+> > > > open-source userspace.
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > Thanks,
+> > > > > Oded
+> > >
+> > > So we do have an open-source library called hl-thunk, which uses our
+> > > driver and indeed that was part of the requirement.
+> > > It is similar to libdrm.
+> > > Here is the link:
+> > > https://github.com/HabanaAI/hl-thunk
+> >
+> > Are you kidding?
+> >
+> > This is mirror of some internal repository that looks like dumpster
+> > with ChangeId, internal bug tracker numbers, not part of major OS
+> > distributions.
+> >
+> > It is not open-source library and shows very clear why you chose
+> > to upstream your driver through driver/misc/ tree.
+> >
+> > Thanks
 >
-> I'm not sure what that means, if the driver intends to DMA from
-> process memory then it certainly has a MR concept.
+> Adding Olof here.
 >
-> MRs can control the IOVA directly so if you say the HW needs a MR IOVA
-> < 2**32 then that is still OK.
+> No, usually not.
+> But are you kidding ?
+> What did you exactly expect to find ? Is there an open-source project
+> somewhere that encapsulates Deep-learning accelerators which I could
+> connect to ?
+
+I would expect certain level of code quality, collaboration and review
+that distros require for inclusion. It is not the case for the github
+repo you presented.
+
+> AFAIK, the only thing remotely relevant is CUDA and that is
+> closed-source (strange to hear lectures about open-source from NVIDIA
+> people here...)
+
+Please check git log statistics to estimate Nvidia/Mellanox/Cumulus
+contributions to the Linux kernel and the open-source. You will be
+surprised.
+
 >
-> Jason
+> So we are trying to give to the community such an open source library,
+> or at least an example. Hopefully one day, when more companies
+> upstream their drivers for deep-learning accelerators we could do
+> something like libdrm or rdma-core, but for now, it's just our driver.
 
-Hi Jason,
-I'll try to explain but please bear with me because it requires some
-understanding of our H/W architecture.
+AFAIR, your driver is not unique, HiSilicon tried to submit something
+similar years ago (warpdrive) and they are not alone.
 
-Our ASIC has 32 GB of HBM memory (similar to GPUs). The problem is
-that HBM memory is accessed by our ASIC's engines (DMA, NIC, etc.)
-with physical addressing, which is mapped inside our device between
-0x0 to 0x8_0000_0000.
+>
+> I have been in this community since 2013 with AMD and then RedHat, and
+> I come with good intentions and a desire to open source and upstream
+> as much as I can. I don't think I deserve this kind of response.
 
-Now, if a user performs malloc and then maps that memory to our device
-(using our memory MAP ioctl, similar to how GPU works), it will get a
-new virtual address, which is in the range of 0x80_0000_0000 - (2^50
--1). Then, he can use that new VA in our device with different engines
-(DMA, NIC, compute).
+There is no need to take it personal. It was you who posted a link
+to the github repo. What did you expect?
 
-That way, addresses that represent the host memory do not overlap
-addresses that represent HBM memory.
+>
+> The bottom line is that we had this discussion with Greg and Olof and
+> DRM people almost 2 years ago and if there was some open-source
+> project in user-space or some subsystem in the kernel we could connect
+> to, we would have done that instead of what we did, but the fact of
+> the matter there isn't such thing. Olof tried and is trying to create
+> a h/w accelerator subsystem but it still hasn't got up from the ground
+> yet.
 
-The problem with MR is that the API doesn't let us return a new VA. It
-forces us to use the original VA that the Host OS allocated. What will
-we do if that VA is in the range of our HBM addresses ? The device
-won't be able to distinguish between them. The transaction that is
-generated by an engine inside our device will go to the HBM instead of
-going to the PCI controller and then to the host.
+Maybe it is a time to do it right.
 
-That's the crust of the problem and why we didn't use MR.
-If that's not clear, I'll be happy to explain more.
-
-Thanks,
-Oded
+>
+> Oded
