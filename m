@@ -2,214 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31376270ABC
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 06:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D965B270B2A
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 08:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgISEnv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Sep 2020 00:43:51 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43116 "EHLO mga14.intel.com"
+        id S1726129AbgISGkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Sep 2020 02:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgISEnu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 19 Sep 2020 00:43:50 -0400
-IronPort-SDR: 4rGHuT/4BtVIUg/1IvBfB1sVJvmXRFRhwKzKZoSPnsP74aMFGSz5+P/BlYq3Z6iFS904P1lUQV
- bKLNDw6P472w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="159388489"
-X-IronPort-AV: E=Sophos;i="5.77,277,1596524400"; 
-   d="scan'208";a="159388489"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 21:43:50 -0700
-IronPort-SDR: u/VOaTbEMDgA6sLBhYsyqtwgrDtIfMFLuVugQ9fAE0eCexcgpUH4wuHlh3y79Q6eLsYpDOz9ac
- nLg13Ip39P/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,277,1596524400"; 
-   d="scan'208";a="308173601"
-Received: from lkp-server01.sh.intel.com (HELO a05db971c861) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 18 Sep 2020 21:43:49 -0700
-Received: from kbuild by a05db971c861 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kJUiy-0000sj-AT; Sat, 19 Sep 2020 04:43:48 +0000
-Date:   Sat, 19 Sep 2020 12:42:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 8383da3e4a610496c6790e46e48b2b26be0cc252
-Message-ID: <5f658c4a.c2W7z2M7B1vnDc5P%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726097AbgISGkY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 19 Sep 2020 02:40:24 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B4722100A;
+        Sat, 19 Sep 2020 06:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600497624;
+        bh=Rw1fKQZnuVnuseWjXKTsz/1trckMMO2cNujeP3URrLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VVVYL5XMH9mdHhzC6N+k3lubdk8Lr0JiELYE53i5NwwXJxm5dc85/YjiqcnK94ZvC
+         HhssywKVeigYUCghDyS3aBmasn3SqClEldJAHtI4yj1KkxPTLG4eqV+v4j/SemQdQg
+         2wtGAOVCWJ6r1FfM8pbYW2vonBkqZiozHU/TxlVw=
+Date:   Sat, 19 Sep 2020 08:40:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200919064020.GC439518@kroah.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
+ <20200918121905.GU869610@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200918121905.GU869610@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 8383da3e4a610496c6790e46e48b2b26be0cc252  RDMA/mlx5: Clarify what the UMR is for when creating MRs
+On Fri, Sep 18, 2020 at 03:19:05PM +0300, Leon Romanovsky wrote:
+> > So we do have an open-source library called hl-thunk, which uses our
+> > driver and indeed that was part of the requirement.
+> > It is similar to libdrm.
+> > Here is the link:
+> > https://github.com/HabanaAI/hl-thunk
+> 
+> Are you kidding?
+> 
+> This is mirror of some internal repository that looks like dumpster
+> with ChangeId, internal bug tracker numbers, not part of major OS
+> distributions.
+> 
+> It is not open-source library and shows very clear why you chose
+> to upstream your driver through driver/misc/ tree.
 
-elapsed time: 730m
+It is an open source library, as per the license and the code
+availability.  What more is expected here?
 
-configs tested: 150
-configs skipped: 2
+No distro has to pick it up, that's not a requirement for kernel code,
+we have many kernel helper programs that are not in distros.  Heck, udev
+took a long time to get into distros, does that mean the kernel side of
+that interface should never have been merged?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I don't understand your complaint here, it's not our place to judge the
+code quality of userspace libraries, otherwise we would never get any
+real-work done :)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                    vdk_hs38_smp_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                      acadia_defconfig
-arm                        neponset_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                          pxa910_defconfig
-m68k                          amiga_defconfig
-powerpc                 mpc832x_mds_defconfig
-ia64                             alldefconfig
-riscv                          rv32_defconfig
-arm                       imx_v6_v7_defconfig
-arm                             rpc_defconfig
-c6x                              allyesconfig
-arm                            u300_defconfig
-arm                       omap2plus_defconfig
-m68k                             alldefconfig
-mips                          malta_defconfig
-mips                        vocore2_defconfig
-sh                           se7750_defconfig
-xtensa                         virt_defconfig
-arm                           corgi_defconfig
-sparc                               defconfig
-arm                           efm32_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                         apollo_defconfig
-mips                           jazz_defconfig
-arm                         s5pv210_defconfig
-sparc64                          alldefconfig
-mips                           ip28_defconfig
-m68k                       m5208evb_defconfig
-s390                             allyesconfig
-powerpc                      arches_defconfig
-xtensa                              defconfig
-arm                        spear3xx_defconfig
-nios2                         3c120_defconfig
-powerpc                      pcm030_defconfig
-sh                        sh7763rdp_defconfig
-c6x                                 defconfig
-mips                           rs90_defconfig
-powerpc                      ppc40x_defconfig
-arm                  colibri_pxa300_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                         microdev_defconfig
-alpha                               defconfig
-powerpc                     tqm5200_defconfig
-powerpc                    klondike_defconfig
-arc                         haps_hs_defconfig
-arm                          lpd270_defconfig
-arm                          simpad_defconfig
-mips                           ci20_defconfig
-powerpc                    mvme5100_defconfig
-arm                            xcep_defconfig
-sh                     sh7710voipgw_defconfig
-mips                        bcm63xx_defconfig
-arm                          moxart_defconfig
-parisc                           alldefconfig
-powerpc                 linkstation_defconfig
-mips                     decstation_defconfig
-sh                        edosk7760_defconfig
-powerpc                        cell_defconfig
-mips                        omega2p_defconfig
-arm                       versatile_defconfig
-arm                            mps2_defconfig
-powerpc                        icon_defconfig
-mips                        jmr3927_defconfig
-mips                       rbtx49xx_defconfig
-mips                        nlm_xlp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-alpha                            allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200917
-i386                 randconfig-a006-20200917
-i386                 randconfig-a003-20200917
-i386                 randconfig-a001-20200917
-i386                 randconfig-a002-20200917
-i386                 randconfig-a005-20200917
-i386                 randconfig-a004-20200918
-i386                 randconfig-a001-20200918
-i386                 randconfig-a003-20200918
-i386                 randconfig-a006-20200918
-i386                 randconfig-a002-20200918
-i386                 randconfig-a005-20200918
-x86_64               randconfig-a014-20200917
-x86_64               randconfig-a011-20200917
-x86_64               randconfig-a016-20200917
-x86_64               randconfig-a012-20200917
-x86_64               randconfig-a015-20200917
-x86_64               randconfig-a013-20200917
-x86_64               randconfig-a011-20200919
-x86_64               randconfig-a012-20200919
-i386                 randconfig-a015-20200917
-i386                 randconfig-a014-20200917
-i386                 randconfig-a011-20200917
-i386                 randconfig-a013-20200917
-i386                 randconfig-a016-20200917
-i386                 randconfig-a012-20200917
-i386                 randconfig-a015-20200918
-i386                 randconfig-a011-20200918
-i386                 randconfig-a014-20200918
-i386                 randconfig-a013-20200918
-i386                 randconfig-a012-20200918
-i386                 randconfig-a016-20200918
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+thanks,
 
-clang tested configs:
-x86_64               randconfig-a006-20200917
-x86_64               randconfig-a004-20200917
-x86_64               randconfig-a003-20200917
-x86_64               randconfig-a002-20200917
-x86_64               randconfig-a001-20200917
-x86_64               randconfig-a005-20200917
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
