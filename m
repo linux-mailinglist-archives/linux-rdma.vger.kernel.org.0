@@ -2,77 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2BC270BD6
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 10:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C908270BDE
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 10:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgISI2d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 19 Sep 2020 04:28:33 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3551 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726041AbgISI2d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:28:33 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id D808BD0E9A3866F735B0;
-        Sat, 19 Sep 2020 16:28:30 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Sat, 19 Sep 2020 16:28:30 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 19 Sep 2020 16:28:30 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Sat, 19 Sep 2020 16:28:30 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 2/9] RDMA/hns: Add type check in get/set hw
- field
-Thread-Topic: [PATCH v2 for-next 2/9] RDMA/hns: Add type check in get/set hw
- field
-Thread-Index: AQHWhod1wXCo/VgBc0ajLEn27b75iQ==
-Date:   Sat, 19 Sep 2020 08:28:30 +0000
-Message-ID: <973281b807ef472b80b581bf0557ff7e@huawei.com>
-References: <1599641854-23160-1-git-send-email-liweihang@huawei.com>
- <1599641854-23160-3-git-send-email-liweihang@huawei.com>
- <20200918134935.GA304147@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726129AbgISIaR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Sep 2020 04:30:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgISIaR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 19 Sep 2020 04:30:17 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7108C21481;
+        Sat, 19 Sep 2020 08:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600504216;
+        bh=ecvx3fwLyzUWFii+adPU3o1ev+ad3zkBSz/k9Yth0pY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i3KB5D4Z39ZeZSi7uDSXgVK+hIp4NBDlBGId2JEUxso5lYA4WRM5ZliJVIkgdq8TO
+         wOhpfrYvGel0LHdo8Fnpec0bObxYspgGHMrHUOJ3/qhfy+FQhfSBw5uOoxXBUR5KSk
+         E50h28G6iAMWePqyr1P0s00E4I4qqEz2O9vvU+cQ=
+Date:   Sat, 19 Sep 2020 10:30:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200919083012.GA465680@kroah.com>
+References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
+ <20200918121905.GU869610@unreal>
+ <20200919064020.GC439518@kroah.com>
+ <20200919082003.GW869610@unreal>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200919082003.GW869610@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/9/18 21:49, Jason Gunthorpe wrote:
-> On Wed, Sep 09, 2020 at 04:57:27PM +0800, Weihang Li wrote:
->> From: Lang Cheng <chenglang@huawei.com>
->>
->> roce_get_field() and roce_set_field() are only used to set variables in
->> type of __le32, add checks for type to avoid inappropriate assignments.
->>
->> Signed-off-by: Lang Cheng <chenglang@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_common.h | 14 ++++++++------
->>  1 file changed, 8 insertions(+), 6 deletions(-)
+On Sat, Sep 19, 2020 at 11:20:03AM +0300, Leon Romanovsky wrote:
+> On Sat, Sep 19, 2020 at 08:40:20AM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Sep 18, 2020 at 03:19:05PM +0300, Leon Romanovsky wrote:
+> > > > So we do have an open-source library called hl-thunk, which uses our
+> > > > driver and indeed that was part of the requirement.
+> > > > It is similar to libdrm.
+> > > > Here is the link:
+> > > > https://github.com/HabanaAI/hl-thunk
+> > >
+> > > Are you kidding?
+> > >
+> > > This is mirror of some internal repository that looks like dumpster
+> > > with ChangeId, internal bug tracker numbers, not part of major OS
+> > > distributions.
+> > >
+> > > It is not open-source library and shows very clear why you chose
+> > > to upstream your driver through driver/misc/ tree.
+> >
+> > It is an open source library, as per the license and the code
+> > availability.  What more is expected here?
 > 
-> I'm skeptical this actually works. __le32 and u32 are the same thing
-> unless using sparse, and sparse will already catch mis-uses as-is.
-> 
-> Jason
-> 
+> So can I fork iproute2, add bunch of new custom netlink UAPIs and expect
+> Dave to merge it after I throw it on github?
 
-Umm...You are right. I will drop this one.
+Don't be silly, that's not the case here at all and you know that.
 
-Thank you
-Weihang
+> > No distro has to pick it up, that's not a requirement for kernel code,
+> > we have many kernel helper programs that are not in distros.  Heck, udev
+> > took a long time to get into distros, does that mean the kernel side of
+> > that interface should never have been merged?
+> >
+> > I don't understand your complaint here, it's not our place to judge the
+> > code quality of userspace libraries, otherwise we would never get any
+> > real-work done :)
+> 
+> My main complaint is that you can't imagine merging code into large
+> subsystems (netdev, RDMA, DRM? e.t.c) without being civil open-source
+> citizen. It means use of existing user-space libraries/tools and/or
+> providing new ones that will be usable for everyone.
+
+Agreed.
+
+> In this case, we have some custom char device with library that is not
+> usable for anyone else and this is why drivers/misc/ is right place.
+
+Also agreed.
+
+> While we are talking about real-work, it is our benefit to push companies
+> to make investment into ecosystem and not letting them to find an excuse
+> for not doing it.
+
+So why are you complaining about a stand-alone driver that does not have
+any shared subsystems's userspace code to control that driver?
+
+Yes, when integrating into other subsystems (i.e. networking and rdma),
+they should use those common subsystems interfaces, no one is arguing
+that at all.
+
+totally lost,
+
+greg k-h
