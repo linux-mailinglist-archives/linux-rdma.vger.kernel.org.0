@@ -2,57 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF52271031
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Sep 2020 21:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB062712F5
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Sep 2020 10:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgISTWi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Sep 2020 15:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgISTWi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Sep 2020 15:22:38 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C27C0613CF
-        for <linux-rdma@vger.kernel.org>; Sat, 19 Sep 2020 12:22:38 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id w186so10556676qkd.1
-        for <linux-rdma@vger.kernel.org>; Sat, 19 Sep 2020 12:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IfjJMShMAYEFKN5YLXC6yZVzsTKuAmJMrDmWZpivwoY=;
-        b=Tx7WEG+h7F8CDjBu/jlOiysl3JQczwwLMYKLACitzc0UuMfh/mFPRT69zR9TY7H7Y8
-         nRAsWx6u92MdLzYVKoSx5YIx4mt2rFOhQDzMPgq8dyo85LutFSqYJPxlyMr370qVWQPh
-         H9FeOWLwKF4zY4yKCuV+VGlC11W6EsuvkqvRVvXLEIkJO+TPJe+zoiNQjaGzFOpY/2Pv
-         0N2qI5aTyiz4H09KoLRv5WBBGvKV0pGaUI32g5Xey8ZEe9I9PREMEmdZyHtniJQlMHhM
-         vMq3MaatsAiEqhudJATetXS0Osaw8bIme03wLXpLmlJHKa+tt0fWG+C8mmjNMTlYaN/O
-         IogA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IfjJMShMAYEFKN5YLXC6yZVzsTKuAmJMrDmWZpivwoY=;
-        b=SaSdnCd/wI9E6e7B+NU0zLWHuf6qHFa+lqZVJBsa7suNYGp/0fDwz447vWES8ZI8F2
-         Xwgki116xfnQvFZIUNPBZFEPqIBfZeBwGRYSZjyAXrQT+aEx+CoufkoqnVNGPR+7Cydt
-         QF+DRWmJ3zXcEOck4XvGVQOTcvzZY3jVIjPUiv/vFoexIuauQ321bUqqw9sNYb8bAkP9
-         DbMF2MVyhDidrmKvQud737ra/Rle+KagT5Bta6jrXOr3q5OdeYhWcEDMOiYBiCQp+J9n
-         6tdw1Ss2MsFcj6jyBWuu4PA0fq+2kCsluDlXPBFujQPIhRDXD3wC3spW9eISftWmH6z6
-         ub8g==
-X-Gm-Message-State: AOAM531694zxf5wbSx3eSnZdlez/pthHItz7MzfHbj2jH6NkDAVl1BRI
-        z2W++om4b9kSXigQ3qksdq+IJA==
-X-Google-Smtp-Source: ABdhPJxk5odPvPQ8xzh4HdByt+rV02OFXI2X/xCfsTAiUmLUSkpZ3MTa9p4Iad69Vfo49XEZDj73Cw==
-X-Received: by 2002:a37:9bd8:: with SMTP id d207mr41437784qke.100.1600543356975;
-        Sat, 19 Sep 2020 12:22:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b43sm5299375qtk.84.2020.09.19.12.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 12:22:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kJiRP-0027Dz-Nf; Sat, 19 Sep 2020 16:22:35 -0300
-Date:   Sat, 19 Sep 2020 16:22:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S1726262AbgITIrH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 20 Sep 2020 04:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726247AbgITIrH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 20 Sep 2020 04:47:07 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3322A20897;
+        Sun, 20 Sep 2020 08:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600591626;
+        bh=eVe8YinMtI2dMDa4O8XZdud/EOS2AHiSaBq4i3l/pXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l5mpg2LA4Q9ZBmfrhUxMWUlwfkd3S3KMiyqm4UWBAF7WVSFIk1msArDvr2idO300A
+         VrV4V+AxUXRqkEj6dsdgII5+WR1ij7nK28FQew9TvNqH2IN6FpnmYBRi7lRYXZkKuc
+         FsSbbPTHzERTbXB/fkgtCVX2WMDi3e1ElSgWn58A=
+Date:   Sun, 20 Sep 2020 10:47:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
         Leon Romanovsky <leon@kernel.org>,
         Gal Pressman <galpress@amazon.com>,
@@ -64,9 +37,8 @@ Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         linux-rdma@vger.kernel.org
 Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200919192235.GB8409@ziepe.ca>
-References: <20200918115227.GR869610@unreal>
- <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+Message-ID: <20200920084702.GA533114@kroah.com>
+References: <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
  <20200918120340.GT869610@unreal>
  <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
  <20200918121905.GU869610@unreal>
@@ -75,43 +47,60 @@ References: <20200918115227.GR869610@unreal>
  <20200919083012.GA465680@kroah.com>
  <CAFCwf122V-ep44Kqk1DgRJN+tq3ctxE9uVbqYL07apLkLe2Z7g@mail.gmail.com>
  <20200919172730.GC2733595@kroah.com>
+ <20200919192235.GB8409@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200919172730.GC2733595@kroah.com>
+In-Reply-To: <20200919192235.GB8409@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 07:27:30PM +0200, Greg Kroah-Hartman wrote:
-> > It's probably heresy, but why do I need to integrate into the RDMA subsystem ?
-> > I understand your reasoning about networking (Ethernet) as the driver
-> > connects to the kernel networking stack (netdev), but with RDMA the
-> > driver doesn't use or connect to anything in that stack. If I were to
-> > support IBverbs and declare that I support it, then of course I would
-> > need to integrate to the RDMA subsystem and add my backend to
-> > rdma-core.
+On Sat, Sep 19, 2020 at 04:22:35PM -0300, Jason Gunthorpe wrote:
+> On Sat, Sep 19, 2020 at 07:27:30PM +0200, Greg Kroah-Hartman wrote:
+> > > It's probably heresy, but why do I need to integrate into the RDMA subsystem ?
+> > > I understand your reasoning about networking (Ethernet) as the driver
+> > > connects to the kernel networking stack (netdev), but with RDMA the
+> > > driver doesn't use or connect to anything in that stack. If I were to
+> > > support IBverbs and declare that I support it, then of course I would
+> > > need to integrate to the RDMA subsystem and add my backend to
+> > > rdma-core.
+> > 
+> > IBverbs are horrid and I would not wish them on anyone.  Seriously.
 > 
-> IBverbs are horrid and I would not wish them on anyone.  Seriously.
+> I'm curious what drives this opinion? Did you have it since you
+> reviewed the initial submission all those years ago?
 
-I'm curious what drives this opinion? Did you have it since you
-reviewed the initial submission all those years ago?
+As I learned more about that interface, yes, I like it less and less :)
 
-> I think the general rdma apis are the key here, not the userspace api.
+But that's the userspace api you all are stuck with, for various
+reasons, my opinion doesn't matter here.
 
-Are you proposing that habana should have uAPI in drivers/misc and
-present a standard rdma-core userspace for it? This is the only
-userspace programming interface for RoCE HW. I think that would be
-much more work.
+> > I think the general rdma apis are the key here, not the userspace api.
+> 
+> Are you proposing that habana should have uAPI in drivers/misc and
+> present a standard rdma-core userspace for it? This is the only
+> userspace programming interface for RoCE HW. I think that would be
+> much more work.
+> 
+> If not, what open source userspace are you going to ask them to
+> present to merge the kernel side into misc?
 
-If not, what open source userspace are you going to ask them to
-present to merge the kernel side into misc?
+I don't think that they have a userspace api to their rdma feature from
+what I understand, but I could be totally wrong as I do not know their
+hardware at all, so I'll let them answer this question.
 
-> Note, I do not know exactly what they are, but no, IBverbs are not ok.
+> > Note, I do not know exactly what they are, but no, IBverbs are not ok.
+> 
+> Should we stop merging new drivers and abandon the RDMA subsystem? Is
+> there something you'd like to see fixed?
+> 
+> Don't really understand your position, sorry.
 
-Should we stop merging new drivers and abandon the RDMA subsystem? Is
-there something you'd like to see fixed?
+For anything that _has_ to have a userspace RMDA interface, sure ibverbs
+are the one we are stuck with, but I didn't think that was the issue
+here at all, which is why I wrote the above comments.
 
-Don't really understand your position, sorry.
+thanks,
 
-Jason
+greg k-h
