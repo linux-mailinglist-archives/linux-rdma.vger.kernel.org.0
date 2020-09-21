@@ -2,103 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6D82730D3
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Sep 2020 19:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F57A27336E
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Sep 2020 22:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgIUR0b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Sep 2020 13:26:31 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15877 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbgIUR0b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Sep 2020 13:26:31 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f68e2190001>; Mon, 21 Sep 2020 10:25:45 -0700
-Received: from [172.27.13.124] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 17:26:28 +0000
-Subject: Re: [PATCH rdma-next v1 4/4] RDMA/mlx5: Sync device with CPU pages
- upon ODP MR registration
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, Yishai Hadas <yishaih@nvida.com>,
-        "Christoph Hellwig" <hch@infradead.org>
-References: <20200917112152.1075974-1-leon@kernel.org>
- <20200917112152.1075974-5-leon@kernel.org> <20200921142543.GU3699@nvidia.com>
- <cf4516e4-f5f3-295f-d4ef-f0411765c9e8@nvidia.com>
- <20200921170821.GY3699@nvidia.com>
-From:   Yishai Hadas <yishaih@nvidia.com>
-Message-ID: <6d11b4cc-c1f3-da53-a3f0-4942c823043a@nvidia.com>
-Date:   Mon, 21 Sep 2020 20:26:26 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726457AbgIUUEJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Sep 2020 16:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUUEI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Sep 2020 16:04:08 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD37C061755
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Sep 2020 13:04:08 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id q21so13502629ota.8
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Sep 2020 13:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkDHLqaBnIotj/EdcMr0D89sjI8qKFZeg64GDh3bLvw=;
+        b=qyfTfxbmYDR3v0whKqTr0s6s8r2k6hLjzu8ahXnB0F56XKsUs+6f7YrtXkGWXCw9FM
+         Bp/eWIzrNO/EYRggOy87dzj2xNhZUL7wQ8dvbmFVJJHwQJy5sD2/E4gaLduOEsBBrizi
+         ssW6aAz3Hq/83WNUMEIc0e095z+G6WjsJi/OToQBZM2YiDbLjL1t0QHFaPl5AlICn9xk
+         xsIunfLiDCgJx+3ZZigIVKku7gn31p621eusDW839cOusp1/EeH768gcsXAd9qUSLHVM
+         CXJVa2gFOwnqCnx6X95W0WtHfm8jNwjtdYv/xKx8os+OlOhpqvJb2gxlty96DbcNc1OV
+         c0Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkDHLqaBnIotj/EdcMr0D89sjI8qKFZeg64GDh3bLvw=;
+        b=lJJAGq+ZKqPj1EDC/r2L9lJ+mRMHo5VXX63TUXm//SrSI95PM/NHHQqlHfMfmDcVlR
+         Q6CuzjW1N62jitUcR1AQK56oGMHkhDSKYuU0VhbF9TUw3Enf+vaPnSphJnZrChEl3TCe
+         QnwCrkQ2EjBSigaywlBaGXOkz083U5/+etpsyGyeHqswi38VGrg7e/1DHijLn6lxlmHH
+         wBJDlvglou8Ff74GbN0++Q7Yg/7lYPS3xPkW4UQmhSgYTlnMIaFY46Fo2xsNQawoLyia
+         2WuiuAbHQCiDiUDK8JUkRu+cE/V5zJUMGnvDW5E3GTSE43HiGs14GkdcyLJtdV7ktZdN
+         w8yQ==
+X-Gm-Message-State: AOAM533U3PYFEjGbHZCPG0PK71kG2yI7bpMVbw3ZblHdVOLdAS4UMu7j
+        hQY1XNMl/im4NIzqfWZVJzM=
+X-Google-Smtp-Source: ABdhPJxq26AdXej/08R3YHkHvl02mhCK+UQHaG9yLXdIqWD60P9wd9vw9+pQMRECf4AleGJRM22SkQ==
+X-Received: by 2002:a9d:709a:: with SMTP id l26mr667975otj.115.1600718647350;
+        Mon, 21 Sep 2020 13:04:07 -0700 (PDT)
+Received: from localhost ([2605:6000:8b03:f000:9211:f781:8595:d131])
+        by smtp.gmail.com with ESMTPSA id a5sm6278333oti.30.2020.09.21.13.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 13:04:06 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v6 00/12] rdma_rxe: API extensions
+Date:   Mon, 21 Sep 2020 15:03:44 -0500
+Message-Id: <20200921200356.8627-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200921170821.GY3699@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL109.nvidia.com (172.20.187.15) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600709145; bh=Ild9x1p7r0QZ+lfTV0LPpWth9bF7ewoeM4JI/U5ji1c=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=DI4vl7iv3nPS+/ObwApnOgQCiFE0aXqVcdhCTPEn2psLm/yYlC1xc1p4ncC74vvdX
-         cXBr573emh1Mz1F7bniGB9/TeK1zk9ZSKQfI5JoYf0GVGbnrP3uUXP5U3O6NlhO6FQ
-         YTiaaz9Go13QfBn2CXKqzTJpov3+u/eZYX6KDlpnAqBH7/q8AV23V7IZoxvg7nHAKI
-         JWIp9JnknwkJLpHtxCWG6PEGjNh1txNRE4i3FkA+KA0ckRz5kw8lsyDtm0thGWalCq
-         W0dlEobD1MWiYBeL1JPTUUNEDtEvL5YdoKNKIlj9s12RAhmsQIXOc/p55decO+FAuX
-         Vy36vmPppN1ig==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/21/2020 8:08 PM, Jason Gunthorpe wrote:
-> On Mon, Sep 21, 2020 at 08:04:43PM +0300, Yishai Hadas wrote:
->> On 9/21/2020 5:25 PM, Jason Gunthorpe wrote:
->>> On Thu, Sep 17, 2020 at 02:21:52PM +0300, Leon Romanovsky wrote:
->>>
->>>> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
->>>> index dea65e511a3e..234a5d25a072 100644
->>>> +++ b/drivers/infiniband/hw/mlx5/mr.c
->>>> @@ -1431,7 +1431,7 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
->>>>    	mr->umem = umem;
->>>>    	set_mr_fields(dev, mr, npages, length, access_flags);
->>>>
->>>> -	if (xlt_with_umr) {
->>>> +	if (xlt_with_umr && !(access_flags & IB_ACCESS_ON_DEMAND)) {
->>>>    		/*
->>>>    		 * If the MR was created with reg_create then it will be
->>>>    		 * configured properly but left disabled. It is safe to go ahead
->>>> @@ -1439,9 +1439,6 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
->>>>    		 */
->>>>    		int update_xlt_flags = MLX5_IB_UPD_XLT_ENABLE;
->>>>
->>>> -		if (access_flags & IB_ACCESS_ON_DEMAND)
->>>> -			update_xlt_flags |= MLX5_IB_UPD_XLT_ZAP;
->>>> -
->>>>    		err = mlx5_ib_update_xlt(mr, 0, ncont, page_shift,
->>>>    					 update_xlt_flags);
->>>>    		if (err) {
->>>> @@ -1467,6 +1464,12 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
->>>>    			dereg_mr(dev, mr);
->>>>    			return ERR_PTR(err);
->>>>    		}
->>>> +
->>>> +		err = mlx5_ib_init_odp_mr(mr, start, length, xlt_with_umr);
->>> No reason to pass start/length, that is already in the mr
->>>
->>> Jason
->> The start / iova is set on 'ib_mr' in the uverbs layer post returning from
->> reg_user_mr for all drivers [1], so the function just got both.
->> Makes sense ?
-> The information is stored in the umem_odp
->
-> Jason
+V6:
+   Fixed two issues raised by Jason and Zhu.
 
-OK, we may take it from there, will be part of V2.
+   Undid the replacement of rwlocks by spinlocks in patch 10/12. On further
+   reading it turns out rwlocks were the better choice.
 
-Yishai
+   Missing prototype for rxe_invalidate_mr. This was caused by a regression in
+   patch 05/12 which had dropped the actual use of the routine as well as the
+   prototype. Fixed.
+
+V5:
+   This patch series is a collection of API extensions for the rdma_rxe driver.
+   With this patch set installed there are no errors in pyverbs run-tests and
+   31 tests are skipped down from 56. The remaining skipped test cases include
+	   - XRC tests
+	   - ODP tests
+	   - Parent device tests
+	   - Import tests
+	   - Device memory
+	   - MLX5 specific tests
+	   - EFA tests
+
+   It continues from the previous (v4) set which implemented memory windows and
+   has had a number of individual patches picked up in for-next.
+
+   This set (v5) includes:
+	   Ported to current head of tree
+	   Memory windows patches not yet picked up
+	   kernel support for the extended user space APIs:
+	     - ibv_query_device_ex
+	     - ibv_create_cq_ex
+	     - ibv_create_qp_ex
+	   Fixes for multicast which is not currently working
+
+   This patch set depends on a matching rdma-core user space library patch set.
+
+   In order to run correctly it is necessary to configure by hand the EUI64 link
+   local IPV6 address on systems which use a random link local address (like
+   Ubuntu).
+
+Bob Pearson (12):
+  rdma_rxe: Separat MEM into MR and MW objects.
+  rdma_rxe: Enable MW objects
+  rdma_rxe: Let pools support both keys and indices
+  rdma_rxe: Add alloc_mw and dealloc_mw verbs
+  rdma_rxe: Add bind_mw and invalidate_mw verbs
+  Add memory access through MWs
+  rdma_rxe: Add support for ibv_query_device_ex
+  rdma_rxe: Add support for extended CQ operations
+  rdma_rxe: Add support for extended QP operations
+  rdma_rxe: Fix pool related bugs
+  rdma_rxe: Fix mcast group allocation bug
+  rdma_rxe: Fix bugs in the multicast receive path
+
+ drivers/infiniband/sw/rxe/Makefile     |   1 +
+ drivers/infiniband/sw/rxe/rxe.c        | 100 ++++--
+ drivers/infiniband/sw/rxe/rxe_comp.c   |  12 +-
+ drivers/infiniband/sw/rxe/rxe_cq.c     |  12 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  45 ++-
+ drivers/infiniband/sw/rxe/rxe_mcast.c  | 110 ++++---
+ drivers/infiniband/sw/rxe/rxe_mr.c     | 354 +++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_mw.c     | 416 +++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.h |   1 -
+ drivers/infiniband/sw/rxe/rxe_param.h  |  10 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c   | 320 ++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_pool.h   | 107 +++++--
+ drivers/infiniband/sw/rxe/rxe_recv.c   |  64 ++--
+ drivers/infiniband/sw/rxe/rxe_req.c    | 145 ++++++---
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 188 ++++++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c  | 101 +++---
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |  64 ++--
+ include/uapi/rdma/rdma_user_rxe.h      |  68 +++-
+ 19 files changed, 1532 insertions(+), 597 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+
+-- 
+2.25.1
 
