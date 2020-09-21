@@ -2,65 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEEA2724F8
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Sep 2020 15:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6BD272557
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Sep 2020 15:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbgIUNMd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Sep 2020 09:12:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59562 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727335AbgIUNKb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:31 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A37AE43B4B1B87E47D11;
-        Mon, 21 Sep 2020 21:10:28 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:20 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] net/mlx5: simplify the return expression of mlx5_ec_init()
-Date:   Mon, 21 Sep 2020 21:10:44 +0800
-Message-ID: <20200921131044.92430-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726584AbgIUN0N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Sep 2020 09:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgIUN0N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:26:13 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4818120708;
+        Mon, 21 Sep 2020 13:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600694773;
+        bh=tTWlCLjvuo1tJvYphh7kj/Nq4AvZMFZvnyz0oLuf/j8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xjmubhzU5xJnmDIB15vYqI+Q/KIwbET6YFMDxXEBcBn7irb3hplACALO32oevYLoC
+         toWXE/ib2N3ZoepvP0X+w05sqW/Y6g8beQTBPOXrTLDJY0hTSpwwK6ACj9G5TjyzlE
+         lgCwdz2b9RhuqxfhTmyncCaTSuiDhhQ7o4hingTo=
+Date:   Mon, 21 Sep 2020 16:26:08 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] RDMA/mlx5: fix type warning of sizeof in
+ __mlx5_ib_alloc_counters()
+Message-ID: <20200921132608.GD1223944@unreal>
+References: <20200917082926.GA869610@unreal>
+ <20200917091008.2309158-1-liushixin2@huawei.com>
+ <20200917090810.GB869610@unreal>
+ <20200917123806.GA114613@nvidia.com>
+ <20200917170511.GI869610@unreal>
+ <20200917172451.GK8409@ziepe.ca>
+ <20200917173346.GK869610@unreal>
+ <59dfb43f-04a7-b02a-1619-81d92ca69278@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59dfb43f-04a7-b02a-1619-81d92ca69278@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Simplify the return expression.
+On Fri, Sep 18, 2020 at 11:23:18AM +0800, Liu Shixin wrote:
+> On 2020/9/18 1:33, Leon Romanovsky wrote:
+> > On Thu, Sep 17, 2020 at 02:24:51PM -0300, Jason Gunthorpe wrote:
+> >> On Thu, Sep 17, 2020 at 08:05:11PM +0300, Leon Romanovsky wrote:
+> >>> On Thu, Sep 17, 2020 at 09:38:06AM -0300, Jason Gunthorpe wrote:
+> >>>> On Thu, Sep 17, 2020 at 12:08:10PM +0300, Leon Romanovsky wrote:
+> >>>>> On Thu, Sep 17, 2020 at 05:10:08PM +0800, Liu Shixin wrote:
+> >>>>>> sizeof() when applied to a pointer typed expression should give the
+> >>>>>> size of the pointed data, even if the data is a pointer.
+> >>>>>>
+> >>>>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> >>>> Needs a fixes line
+> >>>>
+> >>>>>>  	if (!cnts->names)
+> >>>>>>  		return -ENOMEM;
+> >>>>>>
+> >>>>>>  	cnts->offsets = kcalloc(num_counters,
+> >>>>>> -				sizeof(cnts->offsets), GFP_KERNEL);
+> >>>>>> +				sizeof(*cnts->offsets), GFP_KERNEL);
+> >>>>> This is not.
+> >>>> Why not?
+> >>> cnts->offsets is array of pointers that we will set later.
+> >>> The "sizeof(*cnts->offsets)" will return the size of size_t, while we
+> >>> need to get "size_t *".
+> >> Then why isn't a pointer to size **?
+> >>
+> >> Something is rotten here
+> > No problem, I'll check.
+> I think cnts->offsets is an array pointer whose element is size_t rathen than pointer,
+> so the patch description does not correspond.
+> And I think it should be modified to sizeof(*cnts->offsets) with other description.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/ecpf.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Sorry for me being wrong, you are right.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-index a894ea98c..fa05b4657 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ecpf.c
-@@ -51,11 +51,7 @@ int mlx5_ec_init(struct mlx5_core_dev *dev)
- 	/* ECPF shall enable HCA for peer PF in the same way a PF
- 	 * does this for its VFs.
- 	 */
--	err = mlx5_peer_pf_init(dev);
--	if (err)
--		return err;
--
--	return 0;
-+	return mlx5_peer_pf_init(dev);
- }
- 
- void mlx5_ec_cleanup(struct mlx5_core_dev *dev)
--- 
-2.23.0
+Thanks
 
+> >
+> >> Jason
+> > .
+> >
+>
