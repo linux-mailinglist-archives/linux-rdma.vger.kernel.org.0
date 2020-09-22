@@ -2,56 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFEF273A6A
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 07:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43404273AD1
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 08:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgIVFyo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 01:54:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53424 "EHLO mail.kernel.org"
+        id S1728398AbgIVGYz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 02:24:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:43283 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgIVFyn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 01:54:43 -0400
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAD9623A9B;
-        Tue, 22 Sep 2020 05:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600754083;
-        bh=qinHNa98lV8Vbex+es8YwI6s9Zh4TPeJErHxYKfr41E=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=pjDKcZ4OtrGP7QNOPqlZ9fFJkM46FuvH3PMLX316DxHEfz9GAJ4Xy3XH0eiyxKr7k
-         Jw/Ox28kvFvFlwen7/ZVA0Z65qOZpRrxGtuP3qXHg190hWVU7Dzh1K/B76XFYhsZ2K
-         VDT6Lma3m2A+ebXtOiAjZ1rg7HgurHBoKlFHlp9c=
-Message-ID: <5d37fdcb0d50d79f93e8cdb31cb3f182548ffcc1.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5: remove unreachable return
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, eranbe@mellanox.com,
-        lariel@mellanox.com, saeedm@mellanox.com, leon@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Sep 2020 22:54:41 -0700
-In-Reply-To: <20200921114103.GA21071@duo.ucw.cz>
-References: <20200921114103.GA21071@duo.ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728136AbgIVGYz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:24:55 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CDF0A6736F; Tue, 22 Sep 2020 08:24:52 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 08:24:52 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v2 1/2] lib/scatterlist: Add support in
+ dynamic allocation of SG table from pages
+Message-ID: <20200922062452.GA30956@lst.de>
+References: <20200916140726.839377-1-leon@kernel.org> <20200916140726.839377-2-leon@kernel.org> <20200921075725.GA19394@lst.de> <20200921091813.GA1223944@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921091813.GA1223944@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2020-09-21 at 13:41 +0200, Pavel Machek wrote:
-> The last return statement is unreachable code. I'm not sure if it
-> will
-> provoke any warnings, but it looks ugly.
->     
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+On Mon, Sep 21, 2020 at 12:18:13PM +0300, Leon Romanovsky wrote:
+> On Mon, Sep 21, 2020 at 09:57:25AM +0200, Christoph Hellwig wrote:
+> > I'm still not really sold on the explosion of specific sgl APIs, so
+> > I ended up implementing my original suggestion to reuse
+> > __sg_alloc_table_from_pages and just pass two additional parameters.
+> > I also ended up moving the memset out of __sg_alloc_table into its
+> > two callers, and I think the result looks much better, what do you
+> > think?
 > 
-> 
+> I think that the API call is really hard to grasp now with too many
+> arguments. Fun part will start when someone will decide to use this API
+> without some (expected for now) parameters.
 
-Applied to net-next-mlx5.
-
-Thanks,
-Saeed.
-
+It has the same number of parameters as before, we just switch three
+more callers to the tons of arguments function instead of keeping the
+old one with two less arguments around.
