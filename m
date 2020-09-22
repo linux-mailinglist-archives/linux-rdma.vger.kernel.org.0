@@ -2,205 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB882741DC
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 14:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8660B274257
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 14:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgIVMOZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 08:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgIVMOZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 08:14:25 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A709C061755
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 05:14:25 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id n2so20781603oij.1
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 05:14:25 -0700 (PDT)
+        id S1726566AbgIVMqv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 08:46:51 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:20978 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVMqu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 08:46:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l/8bmP6FchAvN0yq+1cTD38v5/7nTLM0su9L9VKliIg=;
-        b=BqRAzkvdUNf6YMxSJwS11kJQY6N4QfcIioh1OYAopEPonyBZ/L8lvZSwWjIHCB6qPc
-         FxYlDQFAEvVVJDc47byKzKkC+FBfbKN1XT2aVua3+9mD2hytOx4X20yF/LDktel8U/C3
-         nGgbg4XHc9Hj3bTmi1eqPIq2hvpPla1St7A8YR0CP7Jq04Db/JVxQWK3zRObRiTb3ffm
-         yKrYa/iw/bReARoI6qXBJea8khyXtqjFoqdIBGlLCNBP8fTmZ0OQjMomkUcjlrUcTW6D
-         DocmNqOXwkDU52lZ7gR9loQ5zDOsv6i7u2LZoT+5jflkMDVU7re1FqNk7P25vcj2yExi
-         esrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l/8bmP6FchAvN0yq+1cTD38v5/7nTLM0su9L9VKliIg=;
-        b=OVWDoUwCLd5JJsHbni4CZGOOKpa/uoUrRoBh8AqmvZbAXg3JNPEXbQIF/M0XDyPigD
-         +Qo0eYlybVs1hNqR+9PFfiVhaMQD26OlA5Qgbk1y0GT15F3SqGnHLmnKfKZ6GPyDX4xU
-         9amRS7LpNy85KPMGP4tRoyTTeUiUPBZnF2phIkFaoiGzjw0PmemQkb61eijGqP+n0/Pc
-         MRKrkas5r6CvszOw3js0U9uEYfhQDHbFTjG0o0YEtebUTnHsWlLHcnBIIoEhtTWLoeth
-         AMM4ZNpbKcq1V4aneg5dRY5tlvbRAs46FP4D4VOuQMsl+Gys1mRgnz699p09lbSLMJLj
-         gCqQ==
-X-Gm-Message-State: AOAM531gCqTTzfoQBSuxfy5EaWMYmamtFADlxeiaX5+drm0/NIA47gtB
-        UuO1u3jf3ej0jvPzrdzymufJOFdkCT5BX79itoM=
-X-Google-Smtp-Source: ABdhPJz80tc1V3ByFh31KjRSwtV2L1yrvu7zZIkgwwbKtPgyOl1OFVCo7H9gPCiqV7KrbKDGfe4CImo6sCK8O0hQd3Y=
-X-Received: by 2002:aca:4e03:: with SMTP id c3mr2244363oib.169.1600776864379;
- Tue, 22 Sep 2020 05:14:24 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600778810; x=1632314810;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=nziyF0gCHf+QbUZWkcNumlIIbcw7LDkmtCIhMVokIFM=;
+  b=TfEOQVNe2a5SEJoigXV06ZCR+NEP1ZuUl27rQCymWfl8DCwejcAq4FJ8
+   5bc57ErZ70/WjpfAJxPpRepwHb3ogep+EODSbgn9NJ+VJ39yw58T8+CL0
+   s3e5hFLbBYgfNQVtfxRNe9D3kSdT70BOzmUNYMYR/j8AsFDjNXlL/POsK
+   I=;
+X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
+   d="scan'208";a="56952007"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 12:46:48 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id E7FC8A1869;
+        Tue, 22 Sep 2020 12:46:43 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.237) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 22 Sep 2020 12:46:34 +0000
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <izur@habana.ai>, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
+References: <20200918132645.GS8409@ziepe.ca>
+ <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
+ <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+ <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+ <20200922114101.GE8409@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
+Date:   Tue, 22 Sep 2020 15:46:29 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200921200356.8627-1-rpearson@hpe.com> <20200921200356.8627-13-rpearson@hpe.com>
-In-Reply-To: <20200921200356.8627-13-rpearson@hpe.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 22 Sep 2020 20:14:13 +0800
-Message-ID: <CAD=hENeBKW2JJJaiXD0n_vqgLz2dvw_HQ3P4K8R4pTnyXG4vZw@mail.gmail.com>
-Subject: Re: [PATCH for-next v6 12/12] rdma_rxe: Fix bugs in the multicast
- receive path
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200922114101.GE8409@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D17UWB004.ant.amazon.com (10.43.161.132) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 4:04 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> This patch does the following
->   - Fix a bug in rxe_rcv.
->     The current code calls rxe_match_dgid which checks to see if the
->     destination ip address (dgid) matches one of the addresses in
->     the gid table. This is ok for unicast adfdresses but not mcast
->     addresses. Because of this all mcast packets were previously
->     dropped.
+On 22/09/2020 14:41, Jason Gunthorpe wrote:
+> On Mon, Sep 21, 2020 at 02:22:02PM +0300, Gal Pressman wrote:
+> 
+>> What is considered a RoCE port in this case if it's not compliant with RoCE?
+>> Sounds like it's an implementation of RDMA over ethernet, not RoCE.
+>> Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
+>> (BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
+>> exposed? Or is it closed source?)
+> 
+> I think Oded was drawing a parallel to how nvlink is integral with the
+> compute element. From Oded's descriptions I don't think it is much
+> like nvlink at all.
+> 
+>> Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
+>> verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
+>> habanalabs driver)?
+>> So neither any userspace verbs apps could use it nor kernel ULPs?
+> 
+> Based on what Oded described it seems like a reasonable RDMA device
+> with some limitations around MR IOVA.
+> 
+> Looks like the desire is to create a RDMA WR and CQ ring in userspace,
+> and then co-mingle that with the compute side of the device.
+> 
+> So instead of doing the special IOCTL and mmap against the compute FD
+> it would create a RDMA QP and RDMA CQ, use dv to access the raw
+> internals, and the propritary stack would have exactly the same stuff
+> it would have had with the misc ioctl.
+> 
+> But, completely separately, they'd also have to implement some of
+> verbs which serves as the open source userspace showing how this HW
+> works. What that is depends largely on what their HW can do, and if
+> they want to connect to UCX/mpi/libfabric/etc
+> 
+> A bunch of ioctl stubs or a few tests is far below our standard in
+> RDMA.
+> 
+> There may have been some argument that the compute side of this device
+> has no industry standards so should be a drivers/misc, but HPC
+> networking *does* have extensive standards and extensive open source
+> software stacks. It is very hard for me to see how a device in this
+> market could be competitive without integrating with that stuff.
 
-338 /* rxe_rcv is called from the interface driver */
-339 void rxe_rcv(struct sk_buff *skb)
-340 {
-...
-365         err = hdr_check(pkt);  <---In this function multicast
-packets are checked and taken as error.
-366         if (unlikely(err))
-367                 goto drop;
-...
+I agree, that makes sense.
+But assuming Oded actually goes and implements all the needed verbs to get a
+basic functional libibverbs provider (assuming their HW can do it somehow), is
+it really useful if no one is going to use it?
+It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
+and I'm assuming the only real world use case is going to be using the hl stack,
+which means we're left with a lot of dead code that's not used/tested by anyone.
 
-Zhu Yanjun
-
->   - Fix a bug in rxe_rcv_mcast_pkt.
->     The current code is just wrong. It assumed that it could pass
->     the same skb to rxe_rcv_pkt changing the qp pointer as it went
->     when multiple QPs were attached to the same mcast address. In
->     fact each QP needs a separate clone of the skb which it will
->     delete later.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_recv.c | 60 +++++++++++++++++-----------
->  1 file changed, 36 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 50411b0069ba..bc86ebbd2c8c 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -233,6 +233,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->         struct rxe_mc_elem *mce;
->         struct rxe_qp *qp;
->         union ib_gid dgid;
-> +       struct sk_buff *per_qp_skb;
-> +       struct rxe_pkt_info *per_qp_pkt;
->         int err;
->
->         if (skb->protocol == htons(ETH_P_IP))
-> @@ -261,42 +263,37 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->                 if (err)
->                         continue;
->
-> -               /* if *not* the last qp in the list
-> -                * increase the users of the skb then post to the next qp
-> +               /* for all but the last qp create a new clone of the
-> +                * skb and pass to the qp.
-> +                * This effectively reverts an earlier change
-> +                * which did not work. The pkt struct is contained
-> +                * in the skb so each time you changed pkt you also
-> +                * changed all the earlier pkts as well. Caused a mess.
->                  */
->                 if (mce->qp_list.next != &mcg->qp_list)
-> -                       skb_get(skb);
-> +                       per_qp_skb = skb_clone(skb, GFP_ATOMIC);
-> +               else
-> +                       per_qp_skb = skb;
->
-> -               pkt->qp = qp;
-> +               per_qp_pkt = SKB_TO_PKT(per_qp_skb);
-> +               per_qp_pkt->qp = qp;
->                 rxe_add_ref(qp);
-> -               rxe_rcv_pkt(pkt, skb);
-> +               rxe_rcv_pkt(per_qp_pkt, per_qp_skb);
->         }
->
->         spin_unlock_bh(&mcg->mcg_lock);
-> -
->         rxe_drop_ref(mcg);      /* drop ref from rxe_pool_get_key. */
-> +       return;
->
->  err1:
->         kfree_skb(skb);
-> +       return;
->  }
->
-> -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
-> +static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb,
-> +                         union ib_gid *pdgid)
->  {
-> -       struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->         const struct ib_gid_attr *gid_attr;
-> -       union ib_gid dgid;
-> -       union ib_gid *pdgid;
-> -
-> -       if (pkt->mask & RXE_LOOPBACK_MASK)
-> -               return 0;
-> -
-> -       if (skb->protocol == htons(ETH_P_IP)) {
-> -               ipv6_addr_set_v4mapped(ip_hdr(skb)->daddr,
-> -                                      (struct in6_addr *)&dgid);
-> -               pdgid = &dgid;
-> -       } else {
-> -               pdgid = (union ib_gid *)&ipv6_hdr(skb)->daddr;
-> -       }
->
->         gid_attr = rdma_find_gid_by_port(&rxe->ib_dev, pdgid,
->                                          IB_GID_TYPE_ROCE_UDP_ENCAP,
-> @@ -314,17 +311,32 @@ void rxe_rcv(struct sk_buff *skb)
->         int err;
->         struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->         struct rxe_dev *rxe = pkt->rxe;
-> +       union ib_gid dgid;
-> +       union ib_gid *pdgid;
->         __be32 *icrcp;
->         u32 calc_icrc, pack_icrc;
-> +       int is_mc;
->
->         pkt->offset = 0;
->
->         if (unlikely(skb->len < pkt->offset + RXE_BTH_BYTES))
->                 goto drop;
->
-> -       if (rxe_match_dgid(rxe, skb) < 0) {
-> -               pr_warn_ratelimited("failed matching dgid\n");
-> -               goto drop;
-> +       if (skb->protocol == htons(ETH_P_IP)) {
-> +               ipv6_addr_set_v4mapped(ip_hdr(skb)->daddr,
-> +                                      (struct in6_addr *)&dgid);
-> +               pdgid = &dgid;
-> +       } else {
-> +               pdgid = (union ib_gid *)&ipv6_hdr(skb)->daddr;
-> +       }
-> +
-> +       is_mc = rdma_is_multicast_addr((struct in6_addr *)pdgid);
-> +
-> +       if (!(pkt->mask & RXE_LOOPBACK_MASK) && !is_mc) {
-> +               if (rxe_match_dgid(rxe, skb, pdgid) < 0) {
-> +                       pr_warn_ratelimited("failed matching dgid\n");
-> +                       goto drop;
-> +               }
->         }
->
->         pkt->opcode = bth_opcode(pkt);
-> --
-> 2.25.1
->
+Genuine question, wouldn't it be better if they only implement what's actually
+going to be used and tested by their customers?
