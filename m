@@ -2,758 +2,521 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D91273E37
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 11:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E860273F58
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 12:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgIVJLc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 05:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60220 "EHLO mail.kernel.org"
+        id S1726625AbgIVKOf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 06:14:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgIVJLc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:11:32 -0400
+        id S1726526AbgIVKOf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:14:35 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEE7F208A9;
-        Tue, 22 Sep 2020 09:11:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C7EE238D6;
+        Tue, 22 Sep 2020 10:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600765889;
-        bh=XAirzzFlBgG/HxM+ET0lJD9iBsabVM34w4RN3vrr3cs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJ6GuZIvKOpjvF/Z6WaXwTMe/oJLn8tvccLxsz8nIPUVh7dGCleWwjNEkFs8K3q8o
-         bBlxG1qv6ooohCI/UF5dgf/bhPHbe54U8grVezPpOUeue8RQYjOPJ7JFFjB5knNAV6
-         CcvDbF1jTwiCNbm5ypnsfoLigrqxVSPRSAW8bFP4=
+        s=default; t=1600769674;
+        bh=4+upjP1r+u0arIBw2JywABUcqID4YdX9/F+jeTxBJU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VCuwOuXa1vVcNAZFUfTXWYo1nxd6abermVhQAc7ayFpiSMf+/w22ApMVrCDN6sOOb
+         +S2d34gNdpKx7/11TwLpNnHIZK6UMgXEV5nkRUOl28Xi+bZDWMEEz4tB7K0+8fFU2U
+         FO+rIKyEFhubSWtiSOZsPWf5trs6rFI4RwLVsaWk=
+Date:   Tue, 22 Sep 2020 13:14:29 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v3 5/5] RDMA/restrack: Improve readability in task name management
-Date:   Tue, 22 Sep 2020 12:11:06 +0300
-Message-Id: <20200922091106.2152715-6-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200922091106.2152715-1-leon@kernel.org>
-References: <20200922091106.2152715-1-leon@kernel.org>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA: Explicitly pass in the dma_device to
+ ib_register_device
+Message-ID: <20200922101429.GF1223944@unreal>
+References: <20200922082745.2149973-1-leon@kernel.org>
+ <OFA7334E75.E0306A27-ON002585EB.003059A0-002585EB.0031440E@notes.na.collabserv.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OFA7334E75.E0306A27-ON002585EB.003059A0-002585EB.0031440E@notes.na.collabserv.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Sep 22, 2020 at 08:58:06AM +0000, Bernard Metzler wrote:
+> -----"Leon Romanovsky" <leon@kernel.org> wrote: -----
+>
+> >To: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
+> ><jgg@nvidia.com>
+> >From: "Leon Romanovsky" <leon@kernel.org>
+> >Date: 09/22/2020 10:28AM
+> >Cc: "Adit Ranadive" <aditr@vmware.com>, "Ariel Elior"
+> ><aelior@marvell.com>, "Bernard Metzler" <bmt@zurich.ibm.com>,
+> >"Christian Benvenuti" <benve@cisco.com>, "Dennis Dalessandro"
+> ><dennis.dalessandro@intel.com>, "Devesh Sharma"
+> ><devesh.sharma@broadcom.com>, "Faisal Latif"
+> ><faisal.latif@intel.com>, "Gal Pressman" <galpress@amazon.com>,
+> >"Lijun Ou" <oulijun@huawei.com>, linux-rdma@vger.kernel.org, "Michal
+> >Kalderon" <mkalderon@marvell.com>, "Mike Marciniszyn"
+> ><mike.marciniszyn@intel.com>, "Naresh Kumar PBS"
+> ><nareshkumar.pbs@broadcom.com>, "Nelson Escobar"
+> ><neescoba@cisco.com>, "Parav Pandit" <parav@nvidia.com>, "Parvi
+> >Kaustubhi" <pkaustub@cisco.com>, "Potnuri Bharat Teja"
+> ><bharat@chelsio.com>, "Selvin Xavier" <selvin.xavier@broadcom.com>,
+> >"Shiraz Saleem" <shiraz.saleem@intel.com>, "Somnath Kotur"
+> ><somnath.kotur@broadcom.com>, "Sriharsha Basavapatna"
+> ><sriharsha.basavapatna@broadcom.com>, "VMware PV-Drivers"
+> ><pv-drivers@vmware.com>, "Weihang Li" <liweihang@huawei.com>, "Wei
+> >Hu(Xavier)" <huwei87@hisilicon.com>, "Yishai Hadas"
+> ><yishaih@nvidia.com>, "Zhu Yanjun" <yanjunz@nvidia.com>
+> >Subject: [EXTERNAL] [PATCH rdma-next] RDMA: Explicitly pass in the
+> >dma_device to ib_register_device
+> >
+> >From: Jason Gunthorpe <jgg@nvidia.com>
+> >
+> >The current design is convoulted where the IB core makes assumptions
+> >that a real DMA device will usually come from parent unless it looks
+> >like the ib_device is partially setup for DMA, in which case the
+> >ib_device itself is used for DMA, but somethings might still come
+> >from the parent.
+> >
+> >Make this clearer by having the caller explicitly specify what the
+> >DMA device should be. The caller is always responsible to fully
+> >setup the DMA device it specifies. If NULL is used then the
+> >ib_device will be used as the DMA device, but the caller must
+> >still set it up completely.
+> >
+> >rvt is the only driver that did not fully setup the DMA device
+> >before registering. Move the rvt specific code out of
+> >setup_dma_device() into rvt and set the dma_mask's directly.
+> >
+> >Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> >Reviewed-by: Parav Pandit <parav@nvidia.com>
+> >Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >---
+> > drivers/infiniband/core/device.c              | 73
+> >+++++++------------
+> > drivers/infiniband/hw/bnxt_re/main.c          |  2 +-
+> > drivers/infiniband/hw/cxgb4/provider.c        |  3 +-
+> > drivers/infiniband/hw/efa/efa_main.c          |  2 +-
+> > drivers/infiniband/hw/hns/hns_roce_main.c     |  2 +-
+> > drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  2 +-
+> > drivers/infiniband/hw/mlx4/main.c             |  3 +-
+> > drivers/infiniband/hw/mlx5/main.c             |  2 +-
+> > drivers/infiniband/hw/mthca/mthca_provider.c  |  2 +-
+> > drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  3 +-
+> > drivers/infiniband/hw/qedr/main.c             |  2 +-
+> > drivers/infiniband/hw/usnic/usnic_ib_main.c   |  2 +-
+> > .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  2 +-
+> > drivers/infiniband/sw/rdmavt/vt.c             |  8 +-
+> > drivers/infiniband/sw/rxe/rxe_verbs.c         |  2 +-
+> > drivers/infiniband/sw/siw/siw_main.c          |  4 +-
+> > include/rdma/ib_verbs.h                       |  3 +-
+> > 17 files changed, 52 insertions(+), 65 deletions(-)
+> >
+> >diff --git a/drivers/infiniband/core/device.c
+> >b/drivers/infiniband/core/device.c
+> >index ec3becf85cac..417d93bbdaca 100644
+> >--- a/drivers/infiniband/core/device.c
+> >+++ b/drivers/infiniband/core/device.c
+> >@@ -1177,58 +1177,34 @@ static int assign_name(struct ib_device
+> >*device, const char *name)
+> > 	return ret;
+> > }
+> >
+> >-static void setup_dma_device(struct ib_device *device)
+> >+static void setup_dma_device(struct ib_device *device,
+> >+			     struct device *dma_device)
+> > {
+> >-	struct device *parent = device->dev.parent;
+> >-
+> >-	WARN_ON_ONCE(device->dma_device);
+> >-
+> >-#ifdef CONFIG_DMA_OPS
+> >-	if (device->dev.dma_ops) {
+> >+	if (!dma_device) {
+> > 		/*
+> >-		 * The caller provided custom DMA operations. Copy the
+> >-		 * DMA-related fields that are used by e.g. dma_alloc_coherent()
+> >-		 * into device->dev.
+> >+		 * If the caller does not provide a DMA capable device then the
+> >+		 * IB device will be used. In this case the caller should fully
+> >+		 * setup the ibdev for DMA. This usually means using
+> >+		 * dma_virt_ops.
+> > 		 */
+> >-		device->dma_device = &device->dev;
+> >-		if (!device->dev.dma_mask) {
+> >-			if (parent)
+> >-				device->dev.dma_mask = parent->dma_mask;
+> >-			else
+> >-				WARN_ON_ONCE(true);
+> >-		}
+> >-		if (!device->dev.coherent_dma_mask) {
+> >-			if (parent)
+> >-				device->dev.coherent_dma_mask =
+> >-					parent->coherent_dma_mask;
+> >-			else
+> >-				WARN_ON_ONCE(true);
+> >-		}
+> >-	} else
+> >-#endif /* CONFIG_DMA_OPS */
+> >-	{
+> >+#ifdef CONFIG_DMA_OPS
+> >+		if (WARN_ON(!device->dev.dma_ops))
+> >+			return;
+> >+#endif
+> >+		if (WARN_ON(!device->dev.dma_parms))
+> >+			return;
+> >+
+> >+		dma_device = &device->dev;
+> >+	} else {
+> >+		device->dev.dma_parms = dma_device->dma_parms;
+> > 		/*
+> >-		 * The caller did not provide custom DMA operations. Use the
+> >-		 * DMA mapping operations of the parent device.
+> >+		 * Auto setup the segment size if a DMA device was passed in.
+> >+		 * The PCI core sets the maximum segment size to 64 KB. Increase
+> >+		 * this parameter to 2 GB.
+> > 		 */
+> >-		WARN_ON_ONCE(!parent);
+> >-		device->dma_device = parent;
+> >-	}
+> >-
+> >-	if (!device->dev.dma_parms) {
+> >-		if (parent) {
+> >-			/*
+> >-			 * The caller did not provide DMA parameters, so
+> >-			 * 'parent' probably represents a PCI device. The PCI
+> >-			 * core sets the maximum segment size to 64
+> >-			 * KB. Increase this parameter to 2 GB.
+> >-			 */
+> >-			device->dev.dma_parms = parent->dma_parms;
+> >-			dma_set_max_seg_size(device->dma_device, SZ_2G);
+> >-		} else {
+> >-			WARN_ON_ONCE(true);
+> >-		}
+> >+		dma_set_max_seg_size(dma_device, SZ_2G);
+> > 	}
+> >+	device->dma_device = dma_device;
+> > }
+> >
+> > /*
+> >@@ -1241,7 +1217,6 @@ static int setup_device(struct ib_device
+> >*device)
+> > 	struct ib_udata uhw = {.outlen = 0, .inlen = 0};
+> > 	int ret;
+> >
+> >-	setup_dma_device(device);
+> > 	ib_device_check_mandatory(device);
+> >
+> > 	ret = setup_port_data(device);
+> >@@ -1361,7 +1336,8 @@ static void prevent_dealloc_device(struct
+> >ib_device *ib_dev)
+> >  * asynchronously then the device pointer may become freed as soon
+> >as this
+> >  * function returns.
+> >  */
+> >-int ib_register_device(struct ib_device *device, const char *name)
+> >+int ib_register_device(struct ib_device *device, const char *name,
+> >+		       struct device *dma_device)
+> > {
+> > 	int ret;
+> >
+> >@@ -1369,6 +1345,7 @@ int ib_register_device(struct ib_device
+> >*device, const char *name)
+> > 	if (ret)
+> > 		return ret;
+> >
+> >+	setup_dma_device(device, dma_device);
+> > 	ret = setup_device(device);
+> > 	if (ret)
+> > 		return ret;
+> >diff --git a/drivers/infiniband/hw/bnxt_re/main.c
+> >b/drivers/infiniband/hw/bnxt_re/main.c
+> >index 53aee5a42ab8..b3bc62021039 100644
+> >--- a/drivers/infiniband/hw/bnxt_re/main.c
+> >+++ b/drivers/infiniband/hw/bnxt_re/main.c
+> >@@ -736,7 +736,7 @@ static int bnxt_re_register_ib(struct bnxt_re_dev
+> >*rdev)
+> > 	if (ret)
+> > 		return ret;
+> >
+> >-	return ib_register_device(ibdev, "bnxt_re%d");
+> >+	return ib_register_device(ibdev, "bnxt_re%d",
+> >&rdev->en_dev->pdev->dev);
+> > }
+> >
+> > static void bnxt_re_dev_remove(struct bnxt_re_dev *rdev)
+> >diff --git a/drivers/infiniband/hw/cxgb4/provider.c
+> >b/drivers/infiniband/hw/cxgb4/provider.c
+> >index 4b76f2f3f4e4..5f4f3abf41e4 100644
+> >--- a/drivers/infiniband/hw/cxgb4/provider.c
+> >+++ b/drivers/infiniband/hw/cxgb4/provider.c
+> >@@ -570,7 +570,8 @@ void c4iw_register_device(struct work_struct
+> >*work)
+> > 	ret = set_netdevs(&dev->ibdev, &dev->rdev);
+> > 	if (ret)
+> > 		goto err_dealloc_ctx;
+> >-	ret = ib_register_device(&dev->ibdev, "cxgb4_%d");
+> >+	ret = ib_register_device(&dev->ibdev, "cxgb4_%d",
+> >+				 &dev->rdev.lldi.pdev->dev);
+> > 	if (ret)
+> > 		goto err_dealloc_ctx;
+> > 	return;
+> >diff --git a/drivers/infiniband/hw/efa/efa_main.c
+> >b/drivers/infiniband/hw/efa/efa_main.c
+> >index 92d701146320..4de5be3e1dfe 100644
+> >--- a/drivers/infiniband/hw/efa/efa_main.c
+> >+++ b/drivers/infiniband/hw/efa/efa_main.c
+> >@@ -331,7 +331,7 @@ static int efa_ib_device_add(struct efa_dev *dev)
+> >
+> > 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
+> >
+> >-	err = ib_register_device(&dev->ibdev, "efa_%d");
+> >+	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
+> > 	if (err)
+> > 		goto err_release_doorbell_bar;
+> >
+> >diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c
+> >b/drivers/infiniband/hw/hns/hns_roce_main.c
+> >index 2b4d75733e72..1b5f895d7daf 100644
+> >--- a/drivers/infiniband/hw/hns/hns_roce_main.c
+> >+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+> >@@ -547,7 +547,7 @@ static int hns_roce_register_device(struct
+> >hns_roce_dev *hr_dev)
+> > 		if (ret)
+> > 			return ret;
+> > 	}
+> >-	ret = ib_register_device(ib_dev, "hns_%d");
+> >+	ret = ib_register_device(ib_dev, "hns_%d", dev);
+> > 	if (ret) {
+> > 		dev_err(dev, "ib_register_device failed!\n");
+> > 		return ret;
+> >diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> >b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> >index e53f6c0dc12e..945d30a86bbc 100644
+> >--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> >+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> >@@ -2748,7 +2748,7 @@ int i40iw_register_rdma_device(struct
+> >i40iw_device *iwdev)
+> > 	if (ret)
+> > 		goto error;
+> >
+> >-	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
+> >+	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d",
+> >&iwdev->hw.pcidev->dev);
+> > 	if (ret)
+> > 		goto error;
+> >
+> >diff --git a/drivers/infiniband/hw/mlx4/main.c
+> >b/drivers/infiniband/hw/mlx4/main.c
+> >index 753c70402498..cd0fba6b0964 100644
+> >--- a/drivers/infiniband/hw/mlx4/main.c
+> >+++ b/drivers/infiniband/hw/mlx4/main.c
+> >@@ -2841,7 +2841,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
+> > 		goto err_steer_free_bitmap;
+> >
+> > 	rdma_set_device_sysfs_group(&ibdev->ib_dev, &mlx4_attr_group);
+> >-	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d"))
+> >+	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d",
+> >+			       &dev->persist->pdev->dev))
+> > 		goto err_diag_counters;
+> >
+> > 	if (mlx4_ib_mad_init(ibdev))
+> >diff --git a/drivers/infiniband/hw/mlx5/main.c
+> >b/drivers/infiniband/hw/mlx5/main.c
+> >index 3ae681a6ae3b..bca57c7661eb 100644
+> >--- a/drivers/infiniband/hw/mlx5/main.c
+> >+++ b/drivers/infiniband/hw/mlx5/main.c
+> >@@ -4404,7 +4404,7 @@ static int mlx5_ib_stage_ib_reg_init(struct
+> >mlx5_ib_dev *dev)
+> > 		name = "mlx5_%d";
+> > 	else
+> > 		name = "mlx5_bond_%d";
+> >-	return ib_register_device(&dev->ib_dev, name);
+> >+	return ib_register_device(&dev->ib_dev, name,
+> >&dev->mdev->pdev->dev);
+> > }
+> >
+> > static void mlx5_ib_stage_pre_ib_reg_umr_cleanup(struct mlx5_ib_dev
+> >*dev)
+> >diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c
+> >b/drivers/infiniband/hw/mthca/mthca_provider.c
+> >index 31b558ff8218..c4d9cdc4ee97 100644
+> >--- a/drivers/infiniband/hw/mthca/mthca_provider.c
+> >+++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+> >@@ -1206,7 +1206,7 @@ int mthca_register_device(struct mthca_dev
+> >*dev)
+> > 	mutex_init(&dev->cap_mask_mutex);
+> >
+> > 	rdma_set_device_sysfs_group(&dev->ib_dev, &mthca_attr_group);
+> >-	ret = ib_register_device(&dev->ib_dev, "mthca%d");
+> >+	ret = ib_register_device(&dev->ib_dev, "mthca%d", &dev->pdev->dev);
+> > 	if (ret)
+> > 		return ret;
+> >
+> >diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+> >b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+> >index d8c47d24d6d6..60416186f1d0 100644
+> >--- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+> >+++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+> >@@ -255,7 +255,8 @@ static int ocrdma_register_device(struct
+> >ocrdma_dev *dev)
+> > 	if (ret)
+> > 		return ret;
+> >
+> >-	return ib_register_device(&dev->ibdev, "ocrdma%d");
+> >+	return ib_register_device(&dev->ibdev, "ocrdma%d",
+> >+				  &dev->nic_info.pdev->dev);
+> > }
+> >
+> > static int ocrdma_alloc_resources(struct ocrdma_dev *dev)
+> >diff --git a/drivers/infiniband/hw/qedr/main.c
+> >b/drivers/infiniband/hw/qedr/main.c
+> >index 7c0aac3e635b..464becdd41f7 100644
+> >--- a/drivers/infiniband/hw/qedr/main.c
+> >+++ b/drivers/infiniband/hw/qedr/main.c
+> >@@ -293,7 +293,7 @@ static int qedr_register_device(struct qedr_dev
+> >*dev)
+> > 	if (rc)
+> > 		return rc;
+> >
+> >-	return ib_register_device(&dev->ibdev, "qedr%d");
+> >+	return ib_register_device(&dev->ibdev, "qedr%d", &dev->pdev->dev);
+> > }
+> >
+> > /* This function allocates fast-path status block memory */
+> >diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> >b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> >index 462ed71abf53..6c23a5472168 100644
+> >--- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> >+++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> >@@ -425,7 +425,7 @@ static void *usnic_ib_device_add(struct pci_dev
+> >*dev)
+> > 	if (ret)
+> > 		goto err_fwd_dealloc;
+> >
+> >-	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d"))
+> >+	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d", &dev->dev))
+> > 		goto err_fwd_dealloc;
+> >
+> > 	usnic_fwd_set_mtu(us_ibdev->ufdev, us_ibdev->netdev->mtu);
+> >diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> >b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> >index 780fd2dfc07e..5b2c94441125 100644
+> >--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> >+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+> >@@ -270,7 +270,7 @@ static int pvrdma_register_device(struct
+> >pvrdma_dev *dev)
+> > 	spin_lock_init(&dev->srq_tbl_lock);
+> > 	rdma_set_device_sysfs_group(&dev->ib_dev, &pvrdma_attr_group);
+> >
+> >-	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d");
+> >+	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d",
+> >&dev->pdev->dev);
+> > 	if (ret)
+> > 		goto err_srq_free;
+> >
+> >diff --git a/drivers/infiniband/sw/rdmavt/vt.c
+> >b/drivers/infiniband/sw/rdmavt/vt.c
+> >index f904bb34477a..2f117ac11c8b 100644
+> >--- a/drivers/infiniband/sw/rdmavt/vt.c
+> >+++ b/drivers/infiniband/sw/rdmavt/vt.c
+> >@@ -581,7 +581,11 @@ int rvt_register_device(struct rvt_dev_info
+> >*rdi)
+> > 	spin_lock_init(&rdi->n_cqs_lock);
+> >
+> > 	/* DMA Operations */
+> >-	rdi->ibdev.dev.dma_ops = rdi->ibdev.dev.dma_ops ? : &dma_virt_ops;
+> >+	rdi->ibdev.dev.dma_ops = &dma_virt_ops;
+> >+	rdi->ibdev.dev.dma_parms = rdi->ibdev.dev.parent->dma_parms;
+> >+	rdi->ibdev.dev.dma_mask = rdi->ibdev.dev.parent->dma_mask;
+> >+	rdi->ibdev.dev.coherent_dma_mask =
+> >+		rdi->ibdev.dev.parent->coherent_dma_mask;
+> >
+> > 	/* Protection Domain */
+> > 	spin_lock_init(&rdi->n_pds_lock);
+> >@@ -629,7 +633,7 @@ int rvt_register_device(struct rvt_dev_info *rdi)
+> > 		rdi->ibdev.num_comp_vectors = 1;
+> >
+> > 	/* We are now good to announce we exist */
+> >-	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev));
+> >+	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev),
+> >NULL);
+> > 	if (ret) {
+> > 		rvt_pr_err(rdi, "Failed to register driver with ib core.\n");
+> > 		goto bail_wss;
+> >diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> >b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> >index f368dc16281a..37fee72755be 100644
+> >--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> >+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> >@@ -1182,7 +1182,7 @@ int rxe_register_device(struct rxe_dev *rxe,
+> >const char *ibdev_name)
+> > 	rxe->tfm = tfm;
+> >
+> > 	rdma_set_device_sysfs_group(dev, &rxe_attr_group);
+> >-	err = ib_register_device(dev, ibdev_name);
+> >+	err = ib_register_device(dev, ibdev_name, NULL);
+> > 	if (err)
+> > 		pr_warn("%s failed with error %d\n", __func__, err);
+> >
+> >diff --git a/drivers/infiniband/sw/siw/siw_main.c
+> >b/drivers/infiniband/sw/siw/siw_main.c
+> >index d862bec84376..0362d57b4db8 100644
+> >--- a/drivers/infiniband/sw/siw/siw_main.c
+> >+++ b/drivers/infiniband/sw/siw/siw_main.c
+> >@@ -69,7 +69,7 @@ static int siw_device_register(struct siw_device
+> >*sdev, const char *name)
+> >
+> > 	sdev->vendor_part_id = dev_id++;
+> >
+> >-	rv = ib_register_device(base_dev, name);
+> >+	rv = ib_register_device(base_dev, name, NULL);
+> > 	if (rv) {
+> > 		pr_warn("siw: device registration error %d\n", rv);
+> > 		return rv;
+> >@@ -386,6 +386,8 @@ static struct siw_device
+> >*siw_device_create(struct net_device *netdev)
+> > 	base_dev->dev.dma_parms = &sdev->dma_parms;
+> > 	sdev->dma_parms = (struct device_dma_parameters)
+> > 		{ .max_segment_size = SZ_2G };
+> >+	dma_coerce_mask_and_coherent(&base_dev->dev,
+> >+				     dma_get_required_mask(&base_dev->dev));
+>
+> Leon, can you please help me to understand this
+> additional logic? Do we need to setup the DMA device
+> for (software) RDMA devices which rely on dma_virt_ops
+> in the end, or better leave it untouched?
 
-Reduce ambiguity in interfaces to set resource names and manage
-struct task reference counters.
+The logic that driver is responsible to give right DMA device,
+so yes, you are setting here mask from dma_virt_ops, as RXE did.
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/cma.c                 | 134 ++++++++++++------
- drivers/infiniband/core/core_priv.h           |  12 +-
- drivers/infiniband/core/counters.c            |   9 +-
- drivers/infiniband/core/cq.c                  |   2 +-
- drivers/infiniband/core/restrack.c            |  73 +++++-----
- drivers/infiniband/core/restrack.h            |   6 +-
- drivers/infiniband/core/ucma.c                |   7 +-
- drivers/infiniband/core/uverbs_cmd.c          |  14 +-
- drivers/infiniband/core/uverbs_std_types_cq.c |   4 +-
- drivers/infiniband/core/verbs.c               |  10 +-
- include/rdma/rdma_cm.h                        |  47 ++----
- include/rdma/restrack.h                       |  13 +-
- 12 files changed, 172 insertions(+), 159 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 99a8d61bcbb2..6419b798cd2e 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -453,10 +453,8 @@ static void _cma_attach_to_dev(struct rdma_id_private *id_priv,
- 	id_priv->id.route.addr.dev_addr.transport =
- 		rdma_node_get_transport(cma_dev->device->node_type);
- 	list_add_tail(&id_priv->list, &cma_dev->id_list);
--	if (id_priv->res.kern_name)
--		rdma_restrack_add(&id_priv->res);
--	else
--		rdma_restrack_uadd(&id_priv->res);
-+	rdma_restrack_add(&id_priv->res);
-+
- 	trace_cm_id_attach(id_priv, cma_dev->device);
- }
- 
-@@ -822,10 +820,10 @@ static void cma_id_put(struct rdma_id_private *id_priv)
- 		complete(&id_priv->comp);
- }
- 
--struct rdma_cm_id *__rdma_create_id(struct net *net,
--				    rdma_cm_event_handler event_handler,
--				    void *context, enum rdma_ucm_port_space ps,
--				    enum ib_qp_type qp_type, const char *caller)
-+static struct rdma_id_private *
-+__rdma_create_id(struct net *net, rdma_cm_event_handler event_handler,
-+		 void *context, enum rdma_ucm_port_space ps,
-+		 enum ib_qp_type qp_type, const struct rdma_id_private *parent)
- {
- 	struct rdma_id_private *id_priv;
- 
-@@ -853,11 +851,44 @@ struct rdma_cm_id *__rdma_create_id(struct net *net,
- 	id_priv->seq_num &= 0x00ffffff;
- 
- 	rdma_restrack_new(&id_priv->res, RDMA_RESTRACK_CM_ID);
--	rdma_restrack_set_task(&id_priv->res, caller);
-+	if (parent)
-+		rdma_restrack_parent_name(&id_priv->res, &parent->res);
- 
--	return &id_priv->id;
-+	return id_priv;
-+}
-+
-+struct rdma_cm_id *
-+__rdma_create_kernel_id(struct net *net, rdma_cm_event_handler event_handler,
-+			void *context, enum rdma_ucm_port_space ps,
-+			enum ib_qp_type qp_type, const char *caller)
-+{
-+	struct rdma_id_private *ret;
-+
-+	ret = __rdma_create_id(net, event_handler, context, ps, qp_type, NULL);
-+	if (IS_ERR(ret))
-+		return ERR_CAST(ret);
-+
-+	rdma_restrack_set_name(&ret->res, caller);
-+	return &ret->id;
-+}
-+EXPORT_SYMBOL(__rdma_create_kernel_id);
-+
-+struct rdma_cm_id *rdma_create_user_id(rdma_cm_event_handler event_handler,
-+				       void *context,
-+				       enum rdma_ucm_port_space ps,
-+				       enum ib_qp_type qp_type)
-+{
-+	struct rdma_id_private *ret;
-+
-+	ret = __rdma_create_id(current->nsproxy->net_ns, event_handler, context,
-+			       ps, qp_type, NULL);
-+	if (IS_ERR(ret))
-+		return ERR_CAST(ret);
-+
-+	rdma_restrack_set_name(&ret->res, NULL);
-+	return &ret->id;
- }
--EXPORT_SYMBOL(__rdma_create_id);
-+EXPORT_SYMBOL(rdma_create_user_id);
- 
- static int cma_init_ud_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
- {
-@@ -2029,14 +2060,15 @@ cma_ib_new_conn_id(const struct rdma_cm_id *listen_id,
- 	int ret;
- 
- 	listen_id_priv = container_of(listen_id, struct rdma_id_private, id);
--	id = __rdma_create_id(listen_id->route.addr.dev_addr.net,
--			    listen_id->event_handler, listen_id->context,
--			    listen_id->ps, ib_event->param.req_rcvd.qp_type,
--			    listen_id_priv->res.kern_name);
--	if (IS_ERR(id))
-+	id_priv = __rdma_create_id(listen_id->route.addr.dev_addr.net,
-+				   listen_id->event_handler, listen_id->context,
-+				   listen_id->ps,
-+				   ib_event->param.req_rcvd.qp_type,
-+				   listen_id_priv);
-+	if (IS_ERR(id_priv))
- 		return NULL;
- 
--	id_priv = container_of(id, struct rdma_id_private, id);
-+	id = &id_priv->id;
- 	if (cma_save_net_info((struct sockaddr *)&id->route.addr.src_addr,
- 			      (struct sockaddr *)&id->route.addr.dst_addr,
- 			      listen_id, ib_event, ss_family, service_id))
-@@ -2090,13 +2122,13 @@ cma_ib_new_udp_id(const struct rdma_cm_id *listen_id,
- 	int ret;
- 
- 	listen_id_priv = container_of(listen_id, struct rdma_id_private, id);
--	id = __rdma_create_id(net, listen_id->event_handler, listen_id->context,
--			      listen_id->ps, IB_QPT_UD,
--			      listen_id_priv->res.kern_name);
--	if (IS_ERR(id))
-+	id_priv = __rdma_create_id(net, listen_id->event_handler,
-+				   listen_id->context, listen_id->ps, IB_QPT_UD,
-+				   listen_id_priv);
-+	if (IS_ERR(id_priv))
- 		return NULL;
- 
--	id_priv = container_of(id, struct rdma_id_private, id);
-+	id = &id_priv->id;
- 	if (cma_save_net_info((struct sockaddr *)&id->route.addr.src_addr,
- 			      (struct sockaddr *)&id->route.addr.dst_addr,
- 			      listen_id, ib_event, ss_family,
-@@ -2332,7 +2364,6 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
- static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 			       struct iw_cm_event *iw_event)
- {
--	struct rdma_cm_id *new_cm_id;
- 	struct rdma_id_private *listen_id, *conn_id;
- 	struct rdma_cm_event event = {};
- 	int ret = -ECONNABORTED;
-@@ -2352,16 +2383,14 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		goto out;
- 
- 	/* Create a new RDMA id for the new IW CM ID */
--	new_cm_id = __rdma_create_id(listen_id->id.route.addr.dev_addr.net,
--				     listen_id->id.event_handler,
--				     listen_id->id.context,
--				     RDMA_PS_TCP, IB_QPT_RC,
--				     listen_id->res.kern_name);
--	if (IS_ERR(new_cm_id)) {
-+	conn_id = __rdma_create_id(listen_id->id.route.addr.dev_addr.net,
-+				   listen_id->id.event_handler,
-+				   listen_id->id.context, RDMA_PS_TCP,
-+				   IB_QPT_RC, listen_id);
-+	if (IS_ERR(conn_id)) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
--	conn_id = container_of(new_cm_id, struct rdma_id_private, id);
- 	mutex_lock_nested(&conn_id->handler_mutex, SINGLE_DEPTH_NESTING);
- 	conn_id->state = RDMA_CM_CONNECT;
- 
-@@ -2466,7 +2495,6 @@ static void cma_listen_on_dev(struct rdma_id_private *id_priv,
- 			      struct cma_device *cma_dev)
- {
- 	struct rdma_id_private *dev_id_priv;
--	struct rdma_cm_id *id;
- 	struct net *net = id_priv->id.route.addr.dev_addr.net;
- 	int ret;
- 
-@@ -2475,13 +2503,12 @@ static void cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	if (cma_family(id_priv) == AF_IB && !rdma_cap_ib_cm(cma_dev->device, 1))
- 		return;
- 
--	id = __rdma_create_id(net, cma_listen_handler, id_priv, id_priv->id.ps,
--			      id_priv->id.qp_type, id_priv->res.kern_name);
--	if (IS_ERR(id))
-+	dev_id_priv =
-+		__rdma_create_id(net, cma_listen_handler, id_priv,
-+				 id_priv->id.ps, id_priv->id.qp_type, id_priv);
-+	if (IS_ERR(dev_id_priv))
- 		return;
- 
--	dev_id_priv = container_of(id, struct rdma_id_private, id);
--
- 	dev_id_priv->state = RDMA_CM_ADDR_BOUND;
- 	memcpy(cma_src_addr(dev_id_priv), cma_src_addr(id_priv),
- 	       rdma_addr_size(cma_src_addr(id_priv)));
-@@ -2494,7 +2521,7 @@ static void cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	dev_id_priv->tos_set = id_priv->tos_set;
- 	dev_id_priv->tos = id_priv->tos;
- 
--	ret = rdma_listen(id, id_priv->backlog);
-+	ret = rdma_listen(&dev_id_priv->id, id_priv->backlog);
- 	if (ret)
- 		dev_warn(&cma_dev->device->dev,
- 			 "RDMA CMA: cma_listen_on_dev, error %d\n", ret);
-@@ -4149,8 +4176,25 @@ static int cma_send_sidr_rep(struct rdma_id_private *id_priv,
- 	return ib_send_cm_sidr_rep(id_priv->cm_id.ib, &rep);
- }
- 
--int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
--		  const char *caller)
-+/**
-+ * rdma_accept - Called to accept a connection request or response.
-+ * @id: Connection identifier associated with the request.
-+ * @conn_param: Information needed to establish the connection.  This must be
-+ *   provided if accepting a connection request.  If accepting a connection
-+ *   response, this parameter must be NULL.
-+ *
-+ * Typically, this routine is only called by the listener to accept a connection
-+ * request.  It must also be called on the active side of a connection if the
-+ * user is performing their own QP transitions.
-+ *
-+ * In the case of error, a reject message is sent to the remote side and the
-+ * state of the qp associated with the id is modified to error, such that any
-+ * previously posted receive buffers would be flushed.
-+ *
-+ * This function is for use by kernel ULPs and must be called from under the
-+ * handler callback.
-+ */
-+int rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param)
- {
- 	struct rdma_id_private *id_priv =
- 		container_of(id, struct rdma_id_private, id);
-@@ -4158,8 +4202,6 @@ int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
- 
- 	lockdep_assert_held(&id_priv->handler_mutex);
- 
--	rdma_restrack_set_task(&id_priv->res, caller);
--
- 	if (READ_ONCE(id_priv->state) != RDMA_CM_CONNECT)
- 		return -EINVAL;
- 
-@@ -4198,10 +4240,10 @@ int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
- 	rdma_reject(id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
- 	return ret;
- }
--EXPORT_SYMBOL(__rdma_accept);
-+EXPORT_SYMBOL(rdma_accept);
- 
--int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
--		      const char *caller, struct rdma_ucm_ece *ece)
-+int rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-+		    struct rdma_ucm_ece *ece)
- {
- 	struct rdma_id_private *id_priv =
- 		container_of(id, struct rdma_id_private, id);
-@@ -4209,9 +4251,9 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
- 	id_priv->ece.vendor_id = ece->vendor_id;
- 	id_priv->ece.attr_mod = ece->attr_mod;
- 
--	return __rdma_accept(id, conn_param, caller);
-+	return rdma_accept(id, conn_param);
- }
--EXPORT_SYMBOL(__rdma_accept_ece);
-+EXPORT_SYMBOL(rdma_accept_ece);
- 
- void rdma_lock_handler(struct rdma_cm_id *id)
- {
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index cf5a50cefa39..e84b0fedaacb 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -361,15 +361,9 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
- 	 */
- 	is_xrc = qp_type == IB_QPT_XRC_INI || qp_type == IB_QPT_XRC_TGT;
- 	if ((qp_type < IB_QPT_MAX && !is_xrc) || qp_type == IB_QPT_DRIVER) {
--		if (uobj)
--			rdma_restrack_uadd(&qp->res);
--		else {
--			rdma_restrack_set_task(&qp->res, pd->res.kern_name);
--			rdma_restrack_add(&qp->res);
--		}
--	} else
--		qp->res.valid = false;
--
-+		rdma_restrack_parent_name(&qp->res, &pd->res);
-+		rdma_restrack_add(&qp->res);
-+	}
- 	return qp;
- }
- 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index e13c500a9ec0..e4ff0d3328b6 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -250,13 +250,8 @@ static struct rdma_counter *rdma_get_counter_auto_mode(struct ib_qp *qp,
- static void rdma_counter_res_add(struct rdma_counter *counter,
- 				 struct ib_qp *qp)
- {
--	if (rdma_is_kernel_res(&qp->res)) {
--		rdma_restrack_set_task(&counter->res, qp->res.kern_name);
--		rdma_restrack_add(&counter->res);
--	} else {
--		rdma_restrack_attach_task(&counter->res, qp->res.task);
--		rdma_restrack_uadd(&counter->res);
--	}
-+	rdma_restrack_parent_name(&counter->res, &qp->res);
-+	rdma_restrack_add(&counter->res);
- }
- 
- static void counter_release(struct kref *kref)
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 620cf7c2696d..12ebacf52958 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -236,7 +236,7 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
- 		goto out_free_cq;
- 
- 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
--	rdma_restrack_set_task(&cq->res, caller);
-+	rdma_restrack_set_name(&cq->res, caller);
- 
- 	ret = dev->ops.create_cq(cq, &cq_attr, NULL);
- 	if (ret)
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index 88d3852676a9..4aeeaaed0f17 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -147,34 +147,56 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
- 	}
- }
- 
--void rdma_restrack_set_task(struct rdma_restrack_entry *res,
--			    const char *caller)
-+/**
-+ * rdma_restrack_attach_task() - attach the task onto this resource,
-+ * valid for user space restrack entries.
-+ * @res:  resource entry
-+ * @task: the task to attach
-+ */
-+static void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
-+				      struct task_struct *task)
- {
--	if (caller) {
--		res->kern_name = caller;
-+	if (WARN_ON_ONCE(!task))
- 		return;
--	}
- 
- 	if (res->task)
- 		put_task_struct(res->task);
--	get_task_struct(current);
--	res->task = current;
-+	get_task_struct(task);
-+	res->task = task;
-+	res->user = true;
- }
--EXPORT_SYMBOL(rdma_restrack_set_task);
- 
- /**
-- * rdma_restrack_attach_task() - attach the task onto this resource
-+ * rdma_restrack_set_name() - set the task for this resource
-  * @res:  resource entry
-- * @task: the task to attach, the current task will be used if it is NULL.
-+ * @caller: kernel name, the current task will be used if the caller is NULL.
-  */
--void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
--			       struct task_struct *task)
-+void rdma_restrack_set_name(struct rdma_restrack_entry *res, const char *caller)
- {
--	if (res->task)
--		put_task_struct(res->task);
--	get_task_struct(task);
--	res->task = task;
-+	if (caller) {
-+		res->kern_name = caller;
-+		return;
-+	}
-+
-+	rdma_restrack_attach_task(res, current);
-+}
-+EXPORT_SYMBOL(rdma_restrack_set_name);
-+
-+/**
-+ * rdma_restrack_parent_name() - set the restrack name properties based
-+ * on parent restrack
-+ * @dst: destination resource entry
-+ * @parent: parent resource entry
-+ */
-+void rdma_restrack_parent_name(struct rdma_restrack_entry *dst,
-+			       const struct rdma_restrack_entry *parent)
-+{
-+	if (rdma_is_kernel_res(parent))
-+		dst->kern_name = parent->kern_name;
-+	else
-+		rdma_restrack_attach_task(dst, parent->task);
- }
-+EXPORT_SYMBOL(rdma_restrack_parent_name);
- 
- /**
-  * rdma_restrack_new() - Initializes new restrack entry to allow _put() interface
-@@ -229,25 +251,6 @@ void rdma_restrack_add(struct rdma_restrack_entry *res)
- }
- EXPORT_SYMBOL(rdma_restrack_add);
- 
--/**
-- * rdma_restrack_uadd() - add user object to the reource tracking database
-- * @res:  resource entry
-- */
--void rdma_restrack_uadd(struct rdma_restrack_entry *res)
--{
--	if ((res->type != RDMA_RESTRACK_CM_ID) &&
--	    (res->type != RDMA_RESTRACK_COUNTER))
--		res->task = NULL;
--
--	if (!res->task)
--		rdma_restrack_set_task(res, NULL);
--	res->kern_name = NULL;
--
--	res->user = true;
--	rdma_restrack_add(res);
--}
--EXPORT_SYMBOL(rdma_restrack_uadd);
--
- int __must_check rdma_restrack_get(struct rdma_restrack_entry *res)
- {
- 	return kref_get_unless_zero(&res->kref);
-diff --git a/drivers/infiniband/core/restrack.h b/drivers/infiniband/core/restrack.h
-index d35c4c41d2ff..6a04fc41f738 100644
---- a/drivers/infiniband/core/restrack.h
-+++ b/drivers/infiniband/core/restrack.h
-@@ -29,6 +29,8 @@ void rdma_restrack_add(struct rdma_restrack_entry *res);
- void rdma_restrack_del(struct rdma_restrack_entry *res);
- void rdma_restrack_new(struct rdma_restrack_entry *res,
- 		       enum rdma_restrack_type type);
--void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
--			       struct task_struct *task);
-+void rdma_restrack_set_name(struct rdma_restrack_entry *res,
-+			    const char *caller);
-+void rdma_restrack_parent_name(struct rdma_restrack_entry *dst,
-+			       const struct rdma_restrack_entry *parent);
- #endif /* _RDMA_CORE_RESTRACK_H_ */
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index b3a7dbb12f25..08a628246bd6 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -456,8 +456,7 @@ static ssize_t ucma_create_id(struct ucma_file *file, const char __user *inbuf,
- 		return -ENOMEM;
- 
- 	ctx->uid = cmd.uid;
--	cm_id = __rdma_create_id(current->nsproxy->net_ns,
--				 ucma_event_handler, ctx, cmd.ps, qp_type, NULL);
-+	cm_id = rdma_create_user_id(ucma_event_handler, ctx, cmd.ps, qp_type);
- 	if (IS_ERR(cm_id)) {
- 		ret = PTR_ERR(cm_id);
- 		goto err1;
-@@ -1126,7 +1125,7 @@ static ssize_t ucma_accept(struct ucma_file *file, const char __user *inbuf,
- 		ucma_copy_conn_param(ctx->cm_id, &conn_param, &cmd.conn_param);
- 		mutex_lock(&ctx->mutex);
- 		rdma_lock_handler(ctx->cm_id);
--		ret = __rdma_accept_ece(ctx->cm_id, &conn_param, NULL, &ece);
-+		ret = rdma_accept_ece(ctx->cm_id, &conn_param, &ece);
- 		if (!ret) {
- 			/* The uid must be set atomically with the handler */
- 			ctx->uid = cmd.uid;
-@@ -1136,7 +1135,7 @@ static ssize_t ucma_accept(struct ucma_file *file, const char __user *inbuf,
- 	} else {
- 		mutex_lock(&ctx->mutex);
- 		rdma_lock_handler(ctx->cm_id);
--		ret = __rdma_accept_ece(ctx->cm_id, NULL, NULL, &ece);
-+		ret = rdma_accept_ece(ctx->cm_id, NULL, &ece);
- 		rdma_unlock_handler(ctx->cm_id);
- 		mutex_unlock(&ctx->mutex);
- 	}
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 6ddd26548da8..7b8d6b3409d5 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -223,6 +223,7 @@ int ib_alloc_ucontext(struct uverbs_attr_bundle *attrs)
- 	xa_init_flags(&ucontext->mmap_xa, XA_FLAGS_ALLOC);
- 
- 	rdma_restrack_new(&ucontext->res, RDMA_RESTRACK_CTX);
-+	rdma_restrack_set_name(&ucontext->res, NULL);
- 	attrs->context = ucontext;
- 	return 0;
- }
-@@ -251,7 +252,7 @@ int ib_init_ucontext(struct uverbs_attr_bundle *attrs)
- 	if (ret)
- 		goto err_uncharge;
- 
--	rdma_restrack_uadd(&ucontext->res);
-+	rdma_restrack_add(&ucontext->res);
- 
- 	/*
- 	 * Make sure that ib_uverbs_get_ucontext() sees the pointer update
-@@ -443,10 +444,12 @@ static int ib_uverbs_alloc_pd(struct uverbs_attr_bundle *attrs)
- 	atomic_set(&pd->usecnt, 0);
- 
- 	rdma_restrack_new(&pd->res, RDMA_RESTRACK_PD);
-+	rdma_restrack_set_name(&pd->res, NULL);
-+
- 	ret = ib_dev->ops.alloc_pd(pd, &attrs->driver_udata);
- 	if (ret)
- 		goto err_alloc;
--	rdma_restrack_uadd(&pd->res);
-+	rdma_restrack_add(&pd->res);
- 
- 	uobj->object = pd;
- 	uobj_finalize_uobj_create(uobj, attrs);
-@@ -748,7 +751,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	mr->iova = cmd.hca_va;
- 
- 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
--	rdma_restrack_uadd(&mr->res);
-+	rdma_restrack_set_name(&mr->res, NULL);
-+	rdma_restrack_add(&mr->res);
- 
- 	uobj->object = mr;
- 	uobj_put_obj_read(pd);
-@@ -1008,10 +1012,12 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
- 	atomic_set(&cq->usecnt, 0);
- 
- 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
-+	rdma_restrack_set_name(&cq->res, NULL);
-+
- 	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
- 	if (ret)
- 		goto err_free;
--	rdma_restrack_uadd(&cq->res);
-+	rdma_restrack_add(&cq->res);
- 
- 	obj->uevent.uobject.object = cq;
- 	obj->uevent.event_file = READ_ONCE(attrs->ufile->default_async_file);
-diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-index 3a5fd6c9ba72..8dabd05988b2 100644
---- a/drivers/infiniband/core/uverbs_std_types_cq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-@@ -126,13 +126,15 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	atomic_set(&cq->usecnt, 0);
- 
- 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
-+	rdma_restrack_set_name(&cq->res, NULL);
-+
- 	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
- 	if (ret)
- 		goto err_free;
- 
- 	obj->uevent.uobject.object = cq;
- 	obj->uevent.uobject.user_handle = user_handle;
--	rdma_restrack_uadd(&cq->res);
-+	rdma_restrack_add(&cq->res);
- 	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_CREATE_CQ_HANDLE);
- 
- 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_CREATE_CQ_RESP_CQE, &cq->cqe,
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 8117e551a866..53dd8284260a 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -273,7 +273,7 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
- 	pd->flags = flags;
- 
- 	rdma_restrack_new(&pd->res, RDMA_RESTRACK_PD);
--	rdma_restrack_set_task(&pd->res, caller);
-+	rdma_restrack_set_name(&pd->res, caller);
- 
- 	ret = device->ops.alloc_pd(pd, NULL);
- 	if (ret) {
-@@ -1999,7 +1999,7 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
- 	atomic_set(&cq->usecnt, 0);
- 
- 	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
--	rdma_restrack_set_task(&cq->res, caller);
-+	rdma_restrack_set_name(&cq->res, caller);
- 
- 	ret = device->ops.create_cq(cq, cq_attr, NULL);
- 	if (ret) {
-@@ -2081,7 +2081,7 @@ struct ib_mr *ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	atomic_inc(&pd->usecnt);
- 
- 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
--	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
-+	rdma_restrack_parent_name(&mr->res, &pd->res);
- 	rdma_restrack_add(&mr->res);
- 
- 	return mr;
-@@ -2165,7 +2165,7 @@ struct ib_mr *ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
- 	mr->sig_attrs = NULL;
- 
- 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
--	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
-+	rdma_restrack_parent_name(&mr->res, &pd->res);
- 	rdma_restrack_add(&mr->res);
- out:
- 	trace_mr_alloc(pd, mr_type, max_num_sg, mr);
-@@ -2226,7 +2226,7 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 	mr->sig_attrs = sig_attrs;
- 
- 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
--	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
-+	rdma_restrack_parent_name(&mr->res, &pd->res);
- 	rdma_restrack_add(&mr->res);
- out:
- 	trace_mr_integ_alloc(pd, max_num_data_sg, max_num_meta_sg, mr);
-diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
-index c1334c9a7aa8..c672ae1da26b 100644
---- a/include/rdma/rdma_cm.h
-+++ b/include/rdma/rdma_cm.h
-@@ -110,11 +110,14 @@ struct rdma_cm_id {
- 	u8			 port_num;
- };
- 
--struct rdma_cm_id *__rdma_create_id(struct net *net,
--				    rdma_cm_event_handler event_handler,
--				    void *context, enum rdma_ucm_port_space ps,
--				    enum ib_qp_type qp_type,
--				    const char *caller);
-+struct rdma_cm_id *
-+__rdma_create_kernel_id(struct net *net, rdma_cm_event_handler event_handler,
-+			void *context, enum rdma_ucm_port_space ps,
-+			enum ib_qp_type qp_type, const char *caller);
-+struct rdma_cm_id *rdma_create_user_id(rdma_cm_event_handler event_handler,
-+				       void *context,
-+				       enum rdma_ucm_port_space ps,
-+				       enum ib_qp_type qp_type);
- 
- /**
-  * rdma_create_id - Create an RDMA identifier.
-@@ -132,9 +135,9 @@ struct rdma_cm_id *__rdma_create_id(struct net *net,
-  * The event handler callback serializes on the id's mutex and is
-  * allowed to sleep.
-  */
--#define rdma_create_id(net, event_handler, context, ps, qp_type) \
--	__rdma_create_id((net), (event_handler), (context), (ps), (qp_type), \
--			 KBUILD_MODNAME)
-+#define rdma_create_id(net, event_handler, context, ps, qp_type)               \
-+	__rdma_create_kernel_id(net, event_handler, context, ps, qp_type,      \
-+				KBUILD_MODNAME)
- 
- /**
-   * rdma_destroy_id - Destroys an RDMA identifier.
-@@ -250,34 +253,12 @@ int rdma_connect_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-  */
- int rdma_listen(struct rdma_cm_id *id, int backlog);
- 
--int __rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
--		  const char *caller);
-+int rdma_accept(struct rdma_cm_id *id, struct rdma_conn_param *conn_param);
- 
- void rdma_lock_handler(struct rdma_cm_id *id);
- void rdma_unlock_handler(struct rdma_cm_id *id);
--int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
--		      const char *caller, struct rdma_ucm_ece *ece);
--
--/**
-- * rdma_accept - Called to accept a connection request or response.
-- * @id: Connection identifier associated with the request.
-- * @conn_param: Information needed to establish the connection.  This must be
-- *   provided if accepting a connection request.  If accepting a connection
-- *   response, this parameter must be NULL.
-- *
-- * Typically, this routine is only called by the listener to accept a connection
-- * request.  It must also be called on the active side of a connection if the
-- * user is performing their own QP transitions.
-- *
-- * In the case of error, a reject message is sent to the remote side and the
-- * state of the qp associated with the id is modified to error, such that any
-- * previously posted receive buffers would be flushed.
-- *
-- * This function is for use by kernel ULPs and must be called from under the
-- * handler callback.
-- */
--#define rdma_accept(id, conn_param) \
--	__rdma_accept((id), (conn_param),  KBUILD_MODNAME)
-+int rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-+		    struct rdma_ucm_ece *ece);
- 
- /**
-  * rdma_notify - Notifies the RDMA CM of an asynchronous event that has
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index db59e208f5e8..d3a1cc5be7bc 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -106,14 +106,11 @@ struct rdma_restrack_entry {
- 
- int rdma_restrack_count(struct ib_device *dev,
- 			enum rdma_restrack_type type);
--
--void rdma_restrack_uadd(struct rdma_restrack_entry *res);
--
- /**
-  * rdma_is_kernel_res() - check the owner of resource
-  * @res:  resource entry
-  */
--static inline bool rdma_is_kernel_res(struct rdma_restrack_entry *res)
-+static inline bool rdma_is_kernel_res(const struct rdma_restrack_entry *res)
- {
- 	return !res->user;
- }
-@@ -130,14 +127,6 @@ int __must_check rdma_restrack_get(struct rdma_restrack_entry *res);
-  */
- int rdma_restrack_put(struct rdma_restrack_entry *res);
- 
--/**
-- * rdma_restrack_set_task() - set the task for this resource
-- * @res:  resource entry
-- * @caller: kernel name, the current task will be used if the caller is NULL.
-- */
--void rdma_restrack_set_task(struct rdma_restrack_entry *res,
--			    const char *caller);
--
- /*
-  * Helper functions for rdma drivers when filling out
-  * nldev driver attributes.
--- 
-2.26.2
-
+>
+> Thanks very much!
+> Bernard.
+>
