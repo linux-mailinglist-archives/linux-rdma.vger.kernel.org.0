@@ -2,169 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09680273D27
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 10:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D42273D3E
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 10:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVIVW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 04:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
+        id S1726673AbgIVI0r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 04:26:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726649AbgIVIVW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:21:22 -0400
+        id S1726486AbgIVI0r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:26:47 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDD7F239E5;
-        Tue, 22 Sep 2020 08:21:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A17F7239E5;
+        Tue, 22 Sep 2020 08:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600762881;
-        bh=lfO6wozy3t9vkjCRw4UsYQFeZ0fvbF2+UjBfiz0Er0w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Surrj9TCni9KdyhzWgXqk3LhBpxPdGTTx6WV0Ze+pqoRPanwd4EUO5FwNz8gzDQCR
-         pJPAgd2D22KgmsZB8f5d5iGOIshIqY5q34W9FefPKRhKP18kdHCXhWZB6T8/nU74s5
-         86q54UiqR1SGRZBdRv8PsBb7IArCGUsm8f+0ipy0=
+        s=default; t=1600763206;
+        bh=+wLGhuvBipQJDc5R24NSR7JgfQiCe86ceunbt34Awi4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u3ihSVvhoihD45AS6xIW4tHGqrkE46WNYMoLUnolnrT47IFeLuCRt4GTm8e1E6kC/
+         5QDAy1dhu3XHoYsev2HNdx2bFtBMGjhSFEeC7gMoC3buMI5Xhi9H/UhWEVnVl+jTCz
+         ZPNPXb+K8Qr/9mX+Vzj/Is/OVVCCDq0rosJdUvFI=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Yishai Hadas <yishaih@nvidia.com>, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH rdma-next v2 4/4] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
-Date:   Tue, 22 Sep 2020 11:21:04 +0300
-Message-Id: <20200922082104.2148873-5-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>
+Subject: [PATCH rdma-next v2 0/4] Query GID table API
+Date:   Tue, 22 Sep 2020 11:26:37 +0300
+Message-Id: <20200922082641.2149549-1-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200922082104.2148873-1-leon@kernel.org>
-References: <20200922082104.2148873-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Sync device with CPU pages upon ODP MR registration.
-This reduce potential page faults down the road and improve performance.
+Changelog:
+v2:
+ * Embedded RoCE protocol type into rdma_read_gid_attr_ndev_rcu
+v1: https://lore.kernel.org/lkml/20200914111129.343651-1-leon@kernel.org
+ * Moved git_type logic to cma_set_default_gid_type - Patch #2
+ * Changed signature of rdma_query_gid_table - Patch #3
+ * Changed i to be unsigned - Patch #3
+ * Fixed multiplication overflow - Patch #4
+v0: https://lore.kernel.org/lkml/20200910142204.1309061-1-leon@kernel.org
 
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  5 +++++
- drivers/infiniband/hw/mlx5/mr.c      | 11 +++++++----
- drivers/infiniband/hw/mlx5/odp.c     | 21 ++++++++++++++++++++-
- 3 files changed, 32 insertions(+), 5 deletions(-)
+------------------------------------------------------------------------------
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6ab3efb75b21..b1f2b34e5955 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1283,6 +1283,7 @@ void mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t nentries,
- int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
- 			       enum ib_uverbs_advise_mr_advice advice,
- 			       u32 flags, struct ib_sge *sg_list, u32 num_sge);
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, bool enable);
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- static inline void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev)
- {
-@@ -1304,6 +1305,10 @@ mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+From Avihai,
 
- extern const struct mmu_interval_notifier_ops mlx5_mn_ops;
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index dea65e511a3e..d6264687f08c 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1431,7 +1431,7 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->umem = umem;
- 	set_mr_fields(dev, mr, npages, length, access_flags);
+When an application is not using RDMA CM and if it is using multiple RDMA
+devices with one or more RoCE ports, finding the right GID table entry is
+a long process.
 
--	if (xlt_with_umr) {
-+	if (xlt_with_umr && !(access_flags & IB_ACCESS_ON_DEMAND)) {
- 		/*
- 		 * If the MR was created with reg_create then it will be
- 		 * configured properly but left disabled. It is safe to go ahead
-@@ -1439,9 +1439,6 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 		 */
- 		int update_xlt_flags = MLX5_IB_UPD_XLT_ENABLE;
+For example, with two RoCE dual-port devices in a system, when IP
+failover is used between two RoCE ports, searching a suitable GID
+entry for a given source IP, matching netdevice of given RoCEv1/v2 type
+requires iterating over all 4 ports * 256 entry GID table.
 
--		if (access_flags & IB_ACCESS_ON_DEMAND)
--			update_xlt_flags |= MLX5_IB_UPD_XLT_ZAP;
--
- 		err = mlx5_ib_update_xlt(mr, 0, ncont, page_shift,
- 					 update_xlt_flags);
- 		if (err) {
-@@ -1467,6 +1464,12 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 			dereg_mr(dev, mr);
- 			return ERR_PTR(err);
- 		}
-+
-+		err = mlx5_ib_init_odp_mr(mr, xlt_with_umr);
-+		if (err) {
-+			dereg_mr(dev, mr);
-+			return ERR_PTR(err);
-+		}
- 	}
+Even though the best first match GID table for given criteria is used,
+when the matching entry is on the 4th port, it requires reading
+3 ports * 256 entries * 3 files (GID, netdev, type) = 2304 files.
 
- 	return &mr->ibmr;
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 28b7227d31bf..15fd6d224527 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -666,6 +666,7 @@ void mlx5_ib_fence_odp_mr(struct mlx5_ib_mr *mr)
+The GID table needs to be referred on every QP creation during IP
+failover on other netdevice of an RDMA device.
 
- #define MLX5_PF_FLAGS_DOWNGRADE BIT(1)
- #define MLX5_PF_FLAGS_SNAPSHOT BIT(2)
-+#define MLX5_PF_FLAGS_ENABLE BIT(3)
- static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 			     u64 user_va, size_t bcnt, u32 *bytes_mapped,
- 			     u32 flags)
-@@ -675,6 +676,10 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	u64 access_mask;
- 	u64 start_idx;
- 	bool fault = !(flags & MLX5_PF_FLAGS_SNAPSHOT);
-+	u32 xlt_flags = MLX5_IB_UPD_XLT_ATOMIC;
-+
-+	if (flags & MLX5_PF_FLAGS_ENABLE)
-+		xlt_flags |= MLX5_IB_UPD_XLT_ENABLE;
+In an alternative approach, a GID cache may be maintained and updated on
+GID change event was reported by the kernel. However, it comes with below
+two limitations:
+(a) Maintain a thread per application process instance to listen and update
+ the cache.
+(b) Without the thread, on cache miss event, query the GID table. Even in
+ this approach, if multiple processes are used, a GID cache needs to be
+ maintained on a per-process basis. With a large number of processes,
+ this method doesn't scale.
 
- 	page_shift = odp->page_shift;
- 	start_idx = (user_va - ib_umem_start(odp)) >> page_shift;
-@@ -692,7 +697,7 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	 * ib_umem_odp_map_dma_and_lock already checks this.
- 	 */
- 	ret = mlx5_ib_update_xlt(mr, start_idx, np,
--				 page_shift, MLX5_IB_UPD_XLT_ATOMIC);
-+				 page_shift, xlt_flags);
- 	mutex_unlock(&odp->umem_mutex);
+Hence, we introduce this series of patches, which introduces an API to
+query the complete GID tables of an RDMA device, that returns all valid
+GID table entries.
 
- 	if (ret < 0) {
-@@ -827,6 +832,20 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
- 				     flags);
- }
+This is done through single ioctl, eliminating 2304 read, 2304 open and
+2304 close system calls to just a total of 2 calls (one for each device).
 
-+int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr, bool enable)
-+{
-+	u32 flags = MLX5_PF_FLAGS_SNAPSHOT;
-+	int ret;
-+
-+	if (enable)
-+		flags |= MLX5_PF_FLAGS_ENABLE;
-+
-+	ret = pagefault_real_mr(mr, to_ib_umem_odp(mr->umem),
-+				mr->umem->address, mr->umem->length, NULL,
-+				flags);
-+	return ret >= 0 ? 0 : ret;
-+}
-+
- struct pf_frame {
- 	struct pf_frame *next;
- 	u32 key;
+While at it, we also introduce an API to query an individual GID entry
+over ioctl interface, which provides all GID attributes information.
+
+Thanks
+
+Avihai Horon (4):
+  RDMA/core: Change rdma_get_gid_attr returned error code
+  RDMA/core: Modify enum ib_gid_type and enum rdma_network_type
+  RDMA/core: Introduce new GID table query API
+  RDMA/uverbs: Expose the new GID query API to user space
+
+ drivers/infiniband/core/cache.c               |  81 +++++++-
+ drivers/infiniband/core/cma.c                 |   4 +
+ drivers/infiniband/core/cma_configfs.c        |   9 +-
+ drivers/infiniband/core/sysfs.c               |   3 +-
+ .../infiniband/core/uverbs_std_types_device.c | 193 +++++++++++++++++-
+ drivers/infiniband/core/verbs.c               |   2 +-
+ drivers/infiniband/hw/mlx5/cq.c               |   2 +-
+ drivers/infiniband/hw/mlx5/main.c             |   4 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   4 +-
+ include/rdma/ib_cache.h                       |   3 +
+ include/rdma/ib_verbs.h                       |  19 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  14 ++
+ 13 files changed, 331 insertions(+), 23 deletions(-)
+
 --
 2.26.2
 
