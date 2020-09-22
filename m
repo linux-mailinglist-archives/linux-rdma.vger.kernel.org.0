@@ -2,39 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C335273A60
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 07:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFEF273A6A
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 07:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgIVFwc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 01:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52378 "EHLO mail.kernel.org"
+        id S1728880AbgIVFyo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 01:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgIVFwc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 01:52:32 -0400
+        id S1726488AbgIVFyn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 01:54:43 -0400
 Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29D2523A84;
-        Tue, 22 Sep 2020 05:52:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAD9623A9B;
+        Tue, 22 Sep 2020 05:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600753951;
-        bh=2IByJ+bQXbK2DnwYue/7cbeDGY1GiEt1X1Rxrio1dP0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Tz8v8/noF8MZG/xJluWjuPAIpYT/boMnbKaQNDzVDucwCBzfjb+NQx6Z7a5j+WZVd
-         XsMDKXXNFsgiMs8qRKidEoad+lKXjhyBIftIVHekLfT42HbDotE1ntfcuhbNlUhAvW
-         7XT4acFUIqGXimiVY+jgA3cxavtbkbdvWUNmm7Qk=
-Message-ID: <ae06288c3c4d5d8ad59202ff7967d479af1152a5.camel@kernel.org>
-Subject: Re: [PATCH -next] net/mlx5: simplify the return expression of
- mlx5_ec_init()
+        s=default; t=1600754083;
+        bh=qinHNa98lV8Vbex+es8YwI6s9Zh4TPeJErHxYKfr41E=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=pjDKcZ4OtrGP7QNOPqlZ9fFJkM46FuvH3PMLX316DxHEfz9GAJ4Xy3XH0eiyxKr7k
+         Jw/Ox28kvFvFlwen7/ZVA0Z65qOZpRrxGtuP3qXHg190hWVU7Dzh1K/B76XFYhsZ2K
+         VDT6Lma3m2A+ebXtOiAjZ1rg7HgurHBoKlFHlp9c=
+Message-ID: <5d37fdcb0d50d79f93e8cdb31cb3f182548ffcc1.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5: remove unreachable return
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+To:     Pavel Machek <pavel@ucw.cz>, eranbe@mellanox.com,
+        lariel@mellanox.com, saeedm@mellanox.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Sep 2020 22:52:30 -0700
-In-Reply-To: <20200921131044.92430-1-miaoqinglang@huawei.com>
-References: <20200921131044.92430-1-miaoqinglang@huawei.com>
+Date:   Mon, 21 Sep 2020 22:54:41 -0700
+In-Reply-To: <20200921114103.GA21071@duo.ucw.cz>
+References: <20200921114103.GA21071@duo.ucw.cz>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
@@ -43,17 +41,17 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2020-09-21 at 21:10 +0800, Qinglang Miao wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/ecpf.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+On Mon, 2020-09-21 at 13:41 +0200, Pavel Machek wrote:
+> The last return statement is unreachable code. I'm not sure if it
+> will
+> provoke any warnings, but it looks ugly.
+>     
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 > 
 > 
 
 Applied to net-next-mlx5.
 
-Thanks.
+Thanks,
+Saeed.
 
