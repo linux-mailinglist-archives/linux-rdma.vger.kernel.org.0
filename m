@@ -2,43 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7FD273D7E
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 10:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E456B273D7D
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 10:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgIVIkR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 04:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
+        id S1726578AbgIVIkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 04:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgIVIkR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:40:17 -0400
+        id S1726098AbgIVIkL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:40:11 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F1D123A7A;
-        Tue, 22 Sep 2020 08:40:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0991C23A5F;
+        Tue, 22 Sep 2020 08:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600764014;
-        bh=h9rFTp2cY1cCW7PPaasSWRxT8TazEpwM3hRasp7X/k4=;
+        s=default; t=1600764010;
+        bh=uP8LlFhaPiWHCdYEhWCVB84Z00tYgoS/2k9BUykxWMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tu99uOeB/lioA+H+0JqwuIkhF3i1afaGTCFBMQ9UVF2/UjwVm2joSf4RAqkUFnU4F
-         IXekd/mIIkS/PaZ5tYGb0Xv1VCmQQ2Gus8mmUKg6eIE1TpCYvEidcz3c5cmmHIa9qb
-         JxpCiH3mWCKt3eHQ8NhtS6ObpFA04tzXmTiakdL0=
+        b=UWVq1x2ENYkGpRg92zBBuodGYcxzFS0zaFc259fENQX5boCXUi74mlrsspN0MiaQb
+         a46/C+2FwIIBZ5DYd4/HHfOYPTzJMcI1yGn5PcAkEOHwuKakzF0DIa/Z1CheaYVSJZ
+         Hu3USgjSkwcQEnWkv5cAgs4CgbIZebVjLItpPMj4=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: [PATCH rdma-next v3 1/2] lib/scatterlist: Add support in dynamic allocation of SG table from pages
-Date:   Tue, 22 Sep 2020 11:39:57 +0300
-Message-Id: <20200922083958.2150803-2-leon@kernel.org>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v3 2/2] RDMA/umem: Move to allocate SG table from pages
+Date:   Tue, 22 Sep 2020 11:39:58 +0300
+Message-Id: <20200922083958.2150803-3-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200922083958.2150803-1-leon@kernel.org>
 References: <20200922083958.2150803-1-leon@kernel.org>
@@ -48,469 +39,165 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-Extend __sg_alloc_table_from_pages to support dynamic allocation of
-SG table from pages. It should be used by drivers that can't supply
-all the pages at one time.
+Remove the implementation of ib_umem_add_sg_table and instead
+call to __sg_alloc_table_from_pages which already has the logic to
+merge contiguous pages.
 
-This function returns the last populated SGE in the table. Users should
-pass it as an argument to the function from the second call and forward.
-As before, nents will be equal to the number of populated SGEs (chunks).
+Besides that it removes duplicated functionality, it reduces the
+memory consumption of the SG table significantly. Prior to this
+patch, the SG table was allocated in advance regardless consideration
+of contiguous pages.
 
-With this new extension, drivers can benefit the optimization of merging
-contiguous pages without a need to allocate all pages in advance and
-hold them in a large buffer.
+In huge pages system of 2MB page size, without this change, the SG table
+would contain x512 SG entries.
+E.g. for 100GB memory registration:
 
-E.g. with the Infiniband driver that allocates a single page for hold
-the
-pages. For 1TB memory registration, the temporary buffer would consume
-only
-4KB, instead of 2GB.
+	 Number of entries	Size
+Before 	      26214400          600.0MB
+After            51200		  1.2MB
 
 Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  12 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  15 +-
- include/linux/scatterlist.h                 |  43 +++---
- lib/scatterlist.c                           | 158 +++++++++++++++-----
- lib/sg_pool.c                               |   3 +-
- tools/testing/scatterlist/main.c            |   9 +-
- 6 files changed, 163 insertions(+), 77 deletions(-)
+ drivers/infiniband/core/umem.c | 92 +++++-----------------------------
+ 1 file changed, 12 insertions(+), 80 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-index 12b30075134a..f2eaed6aca3d 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -403,6 +403,7 @@ __i915_gem_userptr_alloc_pages(struct drm_i915_gem_object *obj,
- 	unsigned int max_segment = i915_sg_segment_size();
- 	struct sg_table *st;
- 	unsigned int sg_page_sizes;
-+	struct scatterlist *sg;
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 01b680b62846..0ef736970aba 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -63,73 +63,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
+ 	sg_free_table(&umem->sg_head);
+ }
+
+-/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
+- *
+- * sg: current scatterlist entry
+- * page_list: array of npage struct page pointers
+- * npages: number of pages in page_list
+- * max_seg_sz: maximum segment size in bytes
+- * nents: [out] number of entries in the scatterlist
+- *
+- * Return new end of scatterlist
+- */
+-static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
+-						struct page **page_list,
+-						unsigned long npages,
+-						unsigned int max_seg_sz,
+-						int *nents)
+-{
+-	unsigned long first_pfn;
+-	unsigned long i = 0;
+-	bool update_cur_sg = false;
+-	bool first = !sg_page(sg);
+-
+-	/* Check if new page_list is contiguous with end of previous page_list.
+-	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
+-	 */
+-	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
+-		       page_to_pfn(page_list[0])))
+-		update_cur_sg = true;
+-
+-	while (i != npages) {
+-		unsigned long len;
+-		struct page *first_page = page_list[i];
+-
+-		first_pfn = page_to_pfn(first_page);
+-
+-		/* Compute the number of contiguous pages we have starting
+-		 * at i
+-		 */
+-		for (len = 0; i != npages &&
+-			      first_pfn + len == page_to_pfn(page_list[i]) &&
+-			      len < (max_seg_sz >> PAGE_SHIFT);
+-		     len++)
+-			i++;
+-
+-		/* Squash N contiguous pages from page_list into current sge */
+-		if (update_cur_sg) {
+-			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
+-				sg_set_page(sg, sg_page(sg),
+-					    sg->length + (len << PAGE_SHIFT),
+-					    0);
+-				update_cur_sg = false;
+-				continue;
+-			}
+-			update_cur_sg = false;
+-		}
+-
+-		/* Squash N contiguous pages into next sge or first sge */
+-		if (!first)
+-			sg = sg_next(sg);
+-
+-		(*nents)++;
+-		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
+-		first = false;
+-	}
+-
+-	return sg;
+-}
+-
+ /**
+  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
+  *
+@@ -221,7 +154,7 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+ 	struct mm_struct *mm;
+ 	unsigned long npages;
  	int ret;
+-	struct scatterlist *sg;
++	struct scatterlist *sg = NULL;
+ 	unsigned int gup_flags = FOLL_WRITE;
 
- 	st = kmalloc(sizeof(*st), GFP_KERNEL);
-@@ -410,13 +411,12 @@ __i915_gem_userptr_alloc_pages(struct drm_i915_gem_object *obj,
- 		return ERR_PTR(-ENOMEM);
+ 	/*
+@@ -276,15 +209,9 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
 
- alloc_table:
--	ret = __sg_alloc_table_from_pages(st, pvec, num_pages,
--					  0, num_pages << PAGE_SHIFT,
--					  max_segment,
--					  GFP_KERNEL);
--	if (ret) {
-+	sg = __sg_alloc_table_from_pages(st, pvec, num_pages, 0,
-+					 num_pages << PAGE_SHIFT, max_segment,
-+					 NULL, 0, GFP_KERNEL);
-+	if (IS_ERR(sg)) {
- 		kfree(st);
--		return ERR_PTR(ret);
-+		return ERR_CAST(sg);
- 	}
+ 	cur_base = addr & PAGE_MASK;
 
- 	ret = i915_gem_gtt_prepare_pages(obj, st);
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-index ab524ab3b0b4..f22acd398b1f 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-@@ -419,6 +419,7 @@ static int vmw_ttm_map_dma(struct vmw_ttm_tt *vmw_tt)
- 	int ret = 0;
- 	static size_t sgl_size;
- 	static size_t sgt_size;
-+	struct scatterlist *sg;
+-	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
+-	if (ret)
+-		goto vma;
+-
+ 	if (!umem->writable)
+ 		gup_flags |= FOLL_FORCE;
 
- 	if (vmw_tt->mapped)
- 		return 0;
-@@ -441,13 +442,15 @@ static int vmw_ttm_map_dma(struct vmw_ttm_tt *vmw_tt)
- 		if (unlikely(ret != 0))
- 			return ret;
+-	sg = umem->sg_head.sgl;
+-
+ 	while (npages) {
+ 		cond_resched();
+ 		ret = pin_user_pages_fast(cur_base,
+@@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+ 			goto umem_release;
 
--		ret = __sg_alloc_table_from_pages
--			(&vmw_tt->sgt, vsgt->pages, vsgt->num_pages, 0,
--			 (unsigned long) vsgt->num_pages << PAGE_SHIFT,
--			 dma_get_max_seg_size(dev_priv->dev->dev),
--			 GFP_KERNEL);
--		if (unlikely(ret != 0))
-+		sg = __sg_alloc_table_from_pages(&vmw_tt->sgt, vsgt->pages,
-+				vsgt->num_pages, 0,
-+				(unsigned long) vsgt->num_pages << PAGE_SHIFT,
-+				dma_get_max_seg_size(dev_priv->dev->dev),
-+				NULL, 0, GFP_KERNEL);
+ 		cur_base += ret * PAGE_SIZE;
+-		npages   -= ret;
+-
+-		sg = ib_umem_add_sg_table(sg, page_list, ret,
+-			dma_get_max_seg_size(device->dma_device),
+-			&umem->sg_nents);
++		npages -= ret;
++		sg = __sg_alloc_table_from_pages(
++			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
++			dma_get_max_seg_size(device->dma_device), sg, npages,
++			GFP_KERNEL);
++		umem->sg_nents = umem->sg_head.nents;
 +		if (IS_ERR(sg)) {
++			unpin_user_pages_dirty_lock(page_list, ret, 0);
 +			ret = PTR_ERR(sg);
- 			goto out_sg_alloc_fail;
++			goto umem_release;
 +		}
-
- 		if (vsgt->num_pages > vmw_tt->sgt.nents) {
- 			uint64_t over_alloc =
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 45cf7b69d852..c24cc667b56b 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -165,6 +165,22 @@ static inline void sg_set_buf(struct scatterlist *sg, const void *buf,
- #define for_each_sgtable_dma_sg(sgt, sg, i)	\
- 	for_each_sg((sgt)->sgl, sg, (sgt)->nents, i)
-
-+static inline void __sg_chain(struct scatterlist *chain_sg,
-+			      struct scatterlist *sgl)
-+{
-+	/*
-+	 * offset and length are unused for chain entry. Clear them.
-+	 */
-+	chain_sg->offset = 0;
-+	chain_sg->length = 0;
-+
-+	/*
-+	 * Set lowest bit to indicate a link pointer, and make sure to clear
-+	 * the termination bit if it happens to be set.
-+	 */
-+	chain_sg->page_link = ((unsigned long) sgl | SG_CHAIN) & ~SG_END;
-+}
-+
- /**
-  * sg_chain - Chain two sglists together
-  * @prv:	First scatterlist
-@@ -178,18 +194,7 @@ static inline void sg_set_buf(struct scatterlist *sg, const void *buf,
- static inline void sg_chain(struct scatterlist *prv, unsigned int prv_nents,
- 			    struct scatterlist *sgl)
- {
--	/*
--	 * offset and length are unused for chain entry.  Clear them.
--	 */
--	prv[prv_nents - 1].offset = 0;
--	prv[prv_nents - 1].length = 0;
--
--	/*
--	 * Set lowest bit to indicate a link pointer, and make sure to clear
--	 * the termination bit if it happens to be set.
--	 */
--	prv[prv_nents - 1].page_link = ((unsigned long) sgl | SG_CHAIN)
--					& ~SG_END;
-+	__sg_chain(&prv[prv_nents - 1], sgl);
- }
-
- /**
-@@ -283,13 +288,15 @@ typedef void (sg_free_fn)(struct scatterlist *, unsigned int);
- void __sg_free_table(struct sg_table *, unsigned int, unsigned int,
- 		     sg_free_fn *);
- void sg_free_table(struct sg_table *);
--int __sg_alloc_table(struct sg_table *, unsigned int, unsigned int,
--		     struct scatterlist *, unsigned int, gfp_t, sg_alloc_fn *);
-+int __sg_alloc_table(struct sg_table *, struct scatterlist *, unsigned int,
-+		unsigned int, struct scatterlist *, unsigned int,
-+		gfp_t, sg_alloc_fn *);
- int sg_alloc_table(struct sg_table *, unsigned int, gfp_t);
--int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
--				unsigned int n_pages, unsigned int offset,
--				unsigned long size, unsigned int max_segment,
--				gfp_t gfp_mask);
-+struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
-+		struct page **pages, unsigned int n_pages, unsigned int offset,
-+		unsigned long size, unsigned int max_segment,
-+		struct scatterlist *prv, unsigned int left_pages,
-+		gfp_t gfp_mask);
- int sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 			      unsigned int n_pages, unsigned int offset,
- 			      unsigned long size, gfp_t gfp_mask);
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 5d63a8857f36..91587560497d 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -245,6 +245,7 @@ EXPORT_SYMBOL(sg_free_table);
- /**
-  * __sg_alloc_table - Allocate and initialize an sg table with given allocator
-  * @table:	The sg table header to use
-+ * @prv:	Last populated sge in sgt
-  * @nents:	Number of entries in sg list
-  * @max_ents:	The maximum number of entries the allocator returns per call
-  * @nents_first_chunk: Number of entries int the (preallocated) first
-@@ -263,17 +264,15 @@ EXPORT_SYMBOL(sg_free_table);
-  *   __sg_free_table() to cleanup any leftover allocations.
-  *
-  **/
--int __sg_alloc_table(struct sg_table *table, unsigned int nents,
--		     unsigned int max_ents, struct scatterlist *first_chunk,
--		     unsigned int nents_first_chunk, gfp_t gfp_mask,
--		     sg_alloc_fn *alloc_fn)
-+int __sg_alloc_table(struct sg_table *table, struct scatterlist *prv,
-+		unsigned int nents, unsigned int max_ents,
-+		struct scatterlist *first_chunk,
-+		unsigned int nents_first_chunk, gfp_t gfp_mask,
-+		sg_alloc_fn *alloc_fn)
- {
--	struct scatterlist *sg, *prv;
--	unsigned int left;
--	unsigned curr_max_ents = nents_first_chunk ?: max_ents;
--	unsigned prv_max_ents;
--
--	memset(table, 0, sizeof(*table));
-+	unsigned int curr_max_ents = nents_first_chunk ?: max_ents;
-+	unsigned int left, prv_max_ents = 0;
-+	struct scatterlist *sg;
-
- 	if (nents == 0)
- 		return -EINVAL;
-@@ -283,7 +282,6 @@ int __sg_alloc_table(struct sg_table *table, unsigned int nents,
- #endif
-
- 	left = nents;
--	prv = NULL;
- 	do {
- 		unsigned int sg_size, alloc_size = left;
-
-@@ -308,7 +306,7 @@ int __sg_alloc_table(struct sg_table *table, unsigned int nents,
- 			 * linkage.  Without this, sg_kfree() may get
- 			 * confused.
- 			 */
--			if (prv)
-+			if (prv_max_ents)
- 				table->nents = ++table->orig_nents;
-
- 			return -ENOMEM;
-@@ -321,10 +319,18 @@ int __sg_alloc_table(struct sg_table *table, unsigned int nents,
- 		 * If this is the first mapping, assign the sg table header.
- 		 * If this is not the first mapping, chain previous part.
- 		 */
--		if (prv)
--			sg_chain(prv, prv_max_ents, sg);
--		else
-+		if (!prv)
- 			table->sgl = sg;
-+		else if (prv_max_ents)
-+			sg_chain(prv, prv_max_ents, sg);
-+		else {
-+			__sg_chain(prv, sg);
-+			/*
-+			 * We decrease one since the prvious last sge in used to
-+			 * chain the chunks together.
-+			 */
-+			table->nents = table->orig_nents -= 1;
-+		}
-
- 		/*
- 		 * If no more entries after this one, mark the end
-@@ -356,7 +362,8 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
- {
- 	int ret;
-
--	ret = __sg_alloc_table(table, nents, SG_MAX_SINGLE_ALLOC,
-+	memset(table, 0, sizeof(*table));
-+	ret = __sg_alloc_table(table, NULL, nents, SG_MAX_SINGLE_ALLOC,
- 			       NULL, 0, gfp_mask, sg_kmalloc);
- 	if (unlikely(ret))
- 		__sg_free_table(table, SG_MAX_SINGLE_ALLOC, 0, sg_kfree);
-@@ -365,6 +372,30 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
- }
- EXPORT_SYMBOL(sg_alloc_table);
-
-+static struct scatterlist *get_next_sg(struct sg_table *table,
-+		struct scatterlist *prv, unsigned long left_npages,
-+		gfp_t gfp_mask)
-+{
-+	struct scatterlist *next_sg;
-+	int ret;
-+
-+	/* If table was just allocated */
-+	if (!prv)
-+		return table->sgl;
-+
-+	/* Check if last entry should be keeped for chainning */
-+	next_sg = sg_next(prv);
-+	if (!sg_is_last(next_sg) || left_npages == 1)
-+		return next_sg;
-+
-+	ret = __sg_alloc_table(table, next_sg,
-+			min_t(unsigned long, left_npages, SG_MAX_SINGLE_ALLOC),
-+			SG_MAX_SINGLE_ALLOC, NULL, 0, gfp_mask, sg_kmalloc);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return sg_next(prv);
-+}
-+
- /**
-  * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
-  *			         an array of pages
-@@ -374,29 +405,47 @@ EXPORT_SYMBOL(sg_alloc_table);
-  * @offset:      Offset from start of the first page to the start of a buffer
-  * @size:        Number of valid bytes in the buffer (after offset)
-  * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
-+ * @prv:	 Last populated sge in sgt
-+ * @left_pages:  Left pages caller have to set after this call
-  * @gfp_mask:	 GFP allocation mask
-  *
-- *  Description:
-- *    Allocate and initialize an sg table from a list of pages. Contiguous
-- *    ranges of the pages are squashed into a single scatterlist node up to the
-- *    maximum size specified in @max_segment. An user may provide an offset at a
-- *    start and a size of valid data in a buffer specified by the page array.
-- *    The returned sg table is released by sg_free_table.
-+ * Description:
-+ *    If @prv is NULL, allocate and initialize an sg table from a list of pages,
-+ *    else reuse the scatterlist passed in at @prv.
-+ *    Contiguous ranges of the pages are squashed into a single scatterlist
-+ *    entry up to the maximum size specified in @max_segment.  A user may
-+ *    provide an offset at a start and a size of valid data in a buffer
-+ *    specified by the page array.
-  *
-  * Returns:
-- *   0 on success, negative error on failure
-+ *   Last SGE in sgt on success, PTR_ERR on otherwise.
-+ *   The allocation in @sgt must be released by sg_free_table.
-+ *
-+ * Notes:
-+ *   If this function returns non-0 (eg failure), the caller must call
-+ *   sg_free_table() to cleanup any leftover allocations.
-  */
--int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
--				unsigned int n_pages, unsigned int offset,
--				unsigned long size, unsigned int max_segment,
--				gfp_t gfp_mask)
-+struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
-+		struct page **pages, unsigned int n_pages, unsigned int offset,
-+		unsigned long size, unsigned int max_segment,
-+		struct scatterlist *prv, unsigned int left_pages,
-+		gfp_t gfp_mask)
- {
--	unsigned int chunks, cur_page, seg_len, i;
-+	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
-+	unsigned int tmp_nents = sgt->nents;
-+	struct scatterlist *s = prv;
-+	unsigned int table_size;
- 	int ret;
--	struct scatterlist *s;
-
- 	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
-+	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
-+		return ERR_PTR(-EOPNOTSUPP);
-+
-+	if (prv &&
-+	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
-+	    page_to_pfn(pages[0]))
-+		prv_len = prv->length;
-
- 	/* compute number of contiguous chunks */
- 	chunks = 1;
-@@ -410,13 +459,17 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 		}
  	}
 
--	ret = sg_alloc_table(sgt, chunks, gfp_mask);
--	if (unlikely(ret))
--		return ret;
-+	if (!prv) {
-+		/* Only the last allocation could be less than the maximum */
-+		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-+		ret = sg_alloc_table(sgt, table_size, gfp_mask);
-+		if (unlikely(ret))
-+			return ERR_PTR(ret);
-+	}
+ 	sg_mark_end(sg);
+@@ -322,7 +255,6 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
 
- 	/* merging chunks and putting them into the scatterlist */
- 	cur_page = 0;
--	for_each_sg(sgt->sgl, s, sgt->orig_nents, i) {
-+	for (i = 0; i < chunks; i++) {
- 		unsigned int j, chunk_size;
-
- 		/* look for the end of the current chunk */
-@@ -425,19 +478,41 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 			seg_len += PAGE_SIZE;
- 			if (seg_len >= max_segment ||
- 			    page_to_pfn(pages[j]) !=
--			    page_to_pfn(pages[j - 1]) + 1)
-+				    page_to_pfn(pages[j - 1]) + 1)
- 				break;
- 		}
-
- 		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
--		sg_set_page(s, pages[cur_page],
--			    min_t(unsigned long, size, chunk_size), offset);
-+		chunk_size = min_t(unsigned long, size, chunk_size);
-+		if (!i && prv_len) {
-+			if (max_segment - prv->length >= chunk_size) {
-+				sg_set_page(s, sg_page(s),
-+					    s->length + chunk_size, s->offset);
-+				goto next;
-+			}
-+		}
-+
-+		/* Pass how many chunks might left */
-+		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
-+		if (IS_ERR(s)) {
-+			/*
-+			 * Adjust entry length to be as before function was
-+			 * called.
-+			 */
-+			if (prv_len)
-+				prv->length = prv_len;
-+			goto out;
-+		}
-+		sg_set_page(s, pages[cur_page], chunk_size, offset);
-+		tmp_nents++;
-+next:
- 		size -= chunk_size;
- 		offset = 0;
- 		cur_page = j;
- 	}
--
--	return 0;
-+	sgt->nents = tmp_nents;
-+out:
-+	return s;
- }
- EXPORT_SYMBOL(__sg_alloc_table_from_pages);
-
-@@ -465,8 +540,9 @@ int sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 			      unsigned int n_pages, unsigned int offset,
- 			      unsigned long size, gfp_t gfp_mask)
- {
--	return __sg_alloc_table_from_pages(sgt, pages, n_pages, offset, size,
--					   SCATTERLIST_MAX_SEGMENT, gfp_mask);
-+	return PTR_ERR_OR_ZERO(__sg_alloc_table_from_pages(sgt, pages, n_pages,
-+			offset, size, SCATTERLIST_MAX_SEGMENT, NULL, 0,
-+			gfp_mask));
- }
- EXPORT_SYMBOL(sg_alloc_table_from_pages);
-
-diff --git a/lib/sg_pool.c b/lib/sg_pool.c
-index db29e5c1f790..c449248bf5d5 100644
---- a/lib/sg_pool.c
-+++ b/lib/sg_pool.c
-@@ -129,7 +129,8 @@ int sg_alloc_table_chained(struct sg_table *table, int nents,
- 		nents_first_chunk = 0;
- 	}
-
--	ret = __sg_alloc_table(table, nents, SG_CHUNK_SIZE,
-+	memset(table, 0, sizeof(*table));
-+	ret = __sg_alloc_table(table, NULL, nents, SG_CHUNK_SIZE,
- 			       first_chunk, nents_first_chunk,
- 			       GFP_ATOMIC, sg_pool_alloc);
- 	if (unlikely(ret))
-diff --git a/tools/testing/scatterlist/main.c b/tools/testing/scatterlist/main.c
-index 0a1464181226..4899359a31ac 100644
---- a/tools/testing/scatterlist/main.c
-+++ b/tools/testing/scatterlist/main.c
-@@ -55,14 +55,13 @@ int main(void)
- 	for (i = 0, test = tests; test->expected_segments; test++, i++) {
- 		struct page *pages[MAX_PAGES];
- 		struct sg_table st;
--		int ret;
-+		struct scatterlist *sg;
-
- 		set_pages(pages, test->pfn, test->num_pages);
-
--		ret = __sg_alloc_table_from_pages(&st, pages, test->num_pages,
--						  0, test->size, test->max_seg,
--						  GFP_KERNEL);
--		assert(ret == test->alloc_ret);
-+		sg = __sg_alloc_table_from_pages(&st, pages, test->num_pages, 0,
-+				test->size, test->max_seg, NULL, 0, GFP_KERNEL);
-+		assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
-
- 		if (test->alloc_ret)
- 			continue;
+ umem_release:
+ 	__ib_umem_release(device, umem, 0);
+-vma:
+ 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
+ out:
+ 	free_page((unsigned long) page_list);
 --
 2.26.2
 
