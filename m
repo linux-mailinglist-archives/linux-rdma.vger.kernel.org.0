@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E62D273E33
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 11:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D552273E35
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 11:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgIVJLV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 05:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60034 "EHLO mail.kernel.org"
+        id S1726653AbgIVJLY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 05:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgIVJLV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:11:21 -0400
+        id S1726424AbgIVJLY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:11:24 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7064320715;
-        Tue, 22 Sep 2020 09:11:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C4BD20C09;
+        Tue, 22 Sep 2020 09:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600765879;
-        bh=bhPbX7jAHDZu8pFTEuGg3Ndo4B7nGRoe4ZUEofansqE=;
+        s=default; t=1600765882;
+        bh=09ir3dOlvUFTFR2Q22kv+zLSof8KzynsOj03v74/BW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1b1BQsIE+VMaT/TI7eh/ly8Jvm5MroRmot8VUZBvjEaxx4+llOT39KvZHGo96yla5
-         jeK54a3EIuVPpzejsvT3Q5+QzVXLQnGq8Cicwv42NoRzKTV6sl9eMZ3hjl3AQVgBB6
-         doto16Ms3mzpyPgk9jf5OCsnyRqHQzgQeGIyeCmY=
+        b=oKkh1Vl3MjrT3q0hgVIPGNnder2L285EgVjDC9XMIOjmOnCcFapAsb22b4BvP7+mq
+         PSP7NoZ0xaWfs8pgO0icdLMKgbrBvpBCblTllxt0rFDIxpjyw6s9wOklIlWuz7V4kr
+         wXLKwy0T8T/VfGo1rwLGyX4efrwoQXP/TjHz1QEQ=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v3 3/5] RDMA/restrack: Count references to the verbs objects
-Date:   Tue, 22 Sep 2020 12:11:04 +0300
-Message-Id: <20200922091106.2152715-4-leon@kernel.org>
+Subject: [PATCH rdma-next v3 4/5] RDMA/restrack: Simplify restrack tracking in kernel flows
+Date:   Tue, 22 Sep 2020 12:11:05 +0300
+Message-Id: <20200922091106.2152715-5-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200922091106.2152715-1-leon@kernel.org>
 References: <20200922091106.2152715-1-leon@kernel.org>
@@ -41,443 +41,225 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Refactor the restrack code to make sure that kref inside restrack entry
-properly kref the object in which it is embedded. This slight change is
-needed for future conversions of MR and QP which are refcounted before
-the release and kfree.
-
-The ideal flow from ib_core perspective as follows:
-* Allocate ib_* structure with rdma_zalloc_*.
-* Set everything that is known to ib_core to that newly created object.
-* Initialize kref with restrack help
-* Call to driver specific allocation functions.
-* Insert into restrack DB
-....
-* Return and release restrack with restrack_put.
+There is no need to do an extra function indirection just to add
+restrack entry to the DB. This patch prepares the code to the future
+requirement of making restrack is mandatory for managing ib objects.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cma.c                 |  5 ++-
- drivers/infiniband/core/core_priv.h           |  3 +-
- drivers/infiniband/core/counters.c            |  6 ++-
- drivers/infiniband/core/cq.c                  |  7 ++--
- drivers/infiniband/core/restrack.c            | 42 ++++++++++++++-----
- drivers/infiniband/core/restrack.h            |  3 ++
- drivers/infiniband/core/uverbs_cmd.c          | 13 ++++--
- drivers/infiniband/core/uverbs_std_types_cq.c |  4 +-
- drivers/infiniband/core/verbs.c               | 18 ++++----
- include/rdma/restrack.h                       |  7 ----
- 10 files changed, 70 insertions(+), 38 deletions(-)
+ drivers/infiniband/core/cma.c       |  2 +-
+ drivers/infiniband/core/core_priv.h |  6 ++--
+ drivers/infiniband/core/counters.c  |  2 +-
+ drivers/infiniband/core/cq.c        |  2 +-
+ drivers/infiniband/core/restrack.c  | 46 ++++-------------------------
+ drivers/infiniband/core/restrack.h  |  1 +
+ drivers/infiniband/core/verbs.c     | 13 ++++----
+ include/rdma/restrack.h             |  1 -
+ 8 files changed, 22 insertions(+), 51 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 22f0b7ccdd6c..568ad223d40f 100644
+index 568ad223d40f..99a8d61bcbb2 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -833,8 +833,6 @@ struct rdma_cm_id *__rdma_create_id(struct net *net,
- 	if (!id_priv)
- 		return ERR_PTR(-ENOMEM);
- 
--	rdma_restrack_set_task(&id_priv->res, caller);
--	id_priv->res.type = RDMA_RESTRACK_CM_ID;
- 	id_priv->state = RDMA_CM_IDLE;
- 	id_priv->id.context = context;
- 	id_priv->id.event_handler = event_handler;
-@@ -854,6 +852,9 @@ struct rdma_cm_id *__rdma_create_id(struct net *net,
- 	id_priv->id.route.addr.dev_addr.net = get_net(net);
- 	id_priv->seq_num &= 0x00ffffff;
- 
-+	rdma_restrack_new(&id_priv->res, RDMA_RESTRACK_CM_ID);
-+	rdma_restrack_set_task(&id_priv->res, caller);
-+
- 	return &id_priv->id;
- }
- EXPORT_SYMBOL(__rdma_create_id);
+@@ -454,7 +454,7 @@ static void _cma_attach_to_dev(struct rdma_id_private *id_priv,
+ 		rdma_node_get_transport(cma_dev->device->node_type);
+ 	list_add_tail(&id_priv->list, &cma_dev->id_list);
+ 	if (id_priv->res.kern_name)
+-		rdma_restrack_kadd(&id_priv->res);
++		rdma_restrack_add(&id_priv->res);
+ 	else
+ 		rdma_restrack_uadd(&id_priv->res);
+ 	trace_cm_id_attach(id_priv, cma_dev->device);
 diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index a1e6a67b2c4a..2ad276cd9781 100644
+index 2ad276cd9781..cf5a50cefa39 100644
 --- a/drivers/infiniband/core/core_priv.h
 +++ b/drivers/infiniband/core/core_priv.h
-@@ -44,6 +44,7 @@
- #include <rdma/ib_mad.h>
- #include <rdma/restrack.h>
- #include "mad_priv.h"
-+#include "restrack.h"
- 
- /* Total number of ports combined across all struct ib_devices's */
- #define RDMA_MAX_PORTS 8192
-@@ -352,6 +353,7 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
- 	INIT_LIST_HEAD(&qp->rdma_mrs);
- 	INIT_LIST_HEAD(&qp->sig_mrs);
- 
-+	rdma_restrack_new(&qp->res, RDMA_RESTRACK_QP);
- 	/*
- 	 * We don't track XRC QPs for now, because they don't have PD
- 	 * and more importantly they are created internaly by driver,
-@@ -359,7 +361,6 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
- 	 */
- 	is_xrc = qp_type == IB_QPT_XRC_INI || qp_type == IB_QPT_XRC_TGT;
+@@ -363,8 +363,10 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
  	if ((qp_type < IB_QPT_MAX && !is_xrc) || qp_type == IB_QPT_DRIVER) {
--		qp->res.type = RDMA_RESTRACK_QP;
  		if (uobj)
  			rdma_restrack_uadd(&qp->res);
- 		else
+-		else
+-			rdma_restrack_kadd(&qp->res);
++		else {
++			rdma_restrack_set_task(&qp->res, pd->res.kern_name);
++			rdma_restrack_add(&qp->res);
++		}
+ 	} else
+ 		qp->res.valid = false;
+ 
 diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 636166880442..c059de99d19c 100644
+index c059de99d19c..e13c500a9ec0 100644
 --- a/drivers/infiniband/core/counters.c
 +++ b/drivers/infiniband/core/counters.c
-@@ -80,8 +80,9 @@ static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
- 
- 	counter->device    = dev;
- 	counter->port      = port;
--	counter->res.type  = RDMA_RESTRACK_COUNTER;
--	counter->stats     = dev->ops.counter_alloc_stats(counter);
-+
-+	rdma_restrack_new(&counter->res, RDMA_RESTRACK_COUNTER);
-+	counter->stats = dev->ops.counter_alloc_stats(counter);
- 	if (!counter->stats)
- 		goto err_stats;
- 
-@@ -107,6 +108,7 @@ static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
- 	mutex_unlock(&port_counter->lock);
- 	kfree(counter->stats);
- err_stats:
-+	rdma_restrack_put(&counter->res);
- 	kfree(counter);
- 	return NULL;
- }
+@@ -252,7 +252,7 @@ static void rdma_counter_res_add(struct rdma_counter *counter,
+ {
+ 	if (rdma_is_kernel_res(&qp->res)) {
+ 		rdma_restrack_set_task(&counter->res, qp->res.kern_name);
+-		rdma_restrack_kadd(&counter->res);
++		rdma_restrack_add(&counter->res);
+ 	} else {
+ 		rdma_restrack_attach_task(&counter->res, qp->res.task);
+ 		rdma_restrack_uadd(&counter->res);
 diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 19e36e52181b..2c3ff8dda717 100644
+index 2c3ff8dda717..620cf7c2696d 100644
 --- a/drivers/infiniband/core/cq.c
 +++ b/drivers/infiniband/core/cq.c
-@@ -235,15 +235,13 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
- 	if (!cq->wc)
- 		goto out_free_cq;
- 
--	cq->res.type = RDMA_RESTRACK_CQ;
-+	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
- 	rdma_restrack_set_task(&cq->res, caller);
- 
- 	ret = dev->ops.create_cq(cq, &cq_attr, NULL);
- 	if (ret)
- 		goto out_free_wc;
- 
--	rdma_restrack_kadd(&cq->res);
--
- 	rdma_dim_init(cq);
- 
- 	switch (cq->poll_ctx) {
-@@ -269,14 +267,15 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
+@@ -267,7 +267,7 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
  		goto out_destroy_cq;
  	}
  
-+	rdma_restrack_kadd(&cq->res);
+-	rdma_restrack_kadd(&cq->res);
++	rdma_restrack_add(&cq->res);
  	trace_cq_alloc(cq, nr_cqe, comp_vector, poll_ctx);
  	return cq;
  
- out_destroy_cq:
- 	rdma_dim_destroy(cq);
--	rdma_restrack_del(&cq->res);
- 	cq->device->ops.destroy_cq(cq, NULL);
- out_free_wc:
-+	rdma_restrack_put(&cq->res);
- 	kfree(cq->wc);
- out_free_cq:
- 	kfree(cq);
 diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index 62fbb0ae9cb4..22c658e8c157 100644
+index 22c658e8c157..88d3852676a9 100644
 --- a/drivers/infiniband/core/restrack.c
 +++ b/drivers/infiniband/core/restrack.c
-@@ -202,6 +202,21 @@ void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
- 	res->task = task;
+@@ -123,32 +123,6 @@ int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
  }
+ EXPORT_SYMBOL(rdma_restrack_count);
  
-+/**
-+ * rdma_restrack_new() - Initializes new restrack entry to allow _put() interface
-+ * to release memory in fully automatic way.
-+ * @res - Entry to initialize
-+ * @type - REstrack type
-+ */
-+void rdma_restrack_new(struct rdma_restrack_entry *res,
-+		       enum rdma_restrack_type type)
-+{
-+	kref_init(&res->kref);
-+	init_completion(&res->comp);
-+	res->type = type;
-+}
-+EXPORT_SYMBOL(rdma_restrack_new);
-+
- static void rdma_restrack_add(struct rdma_restrack_entry *res)
+-static void set_kern_name(struct rdma_restrack_entry *res)
+-{
+-	struct ib_pd *pd;
+-
+-	switch (res->type) {
+-	case RDMA_RESTRACK_QP:
+-		pd = container_of(res, struct ib_qp, res)->pd;
+-		if (!pd) {
+-			WARN_ONCE(true, "XRC QPs are not supported\n");
+-			/* Survive, despite the programmer's error */
+-			res->kern_name = " ";
+-		}
+-		break;
+-	case RDMA_RESTRACK_MR:
+-		pd = container_of(res, struct ib_mr, res)->pd;
+-		break;
+-	default:
+-		/* Other types set kern_name directly */
+-		pd = NULL;
+-		break;
+-	}
+-
+-	if (pd)
+-		res->kern_name = pd->res.kern_name;
+-}
+-
+ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
  {
- 	struct ib_device *dev = res_to_dev(res);
-@@ -213,8 +228,6 @@ static void rdma_restrack_add(struct rdma_restrack_entry *res)
- 
- 	rt = &dev->res[res->type];
- 
--	kref_init(&res->kref);
--	init_completion(&res->comp);
- 	if (res->type == RDMA_RESTRACK_QP) {
- 		/* Special case to ensure that LQPN points to right QP */
- 		struct ib_qp *qp = container_of(res, struct ib_qp, res);
-@@ -305,6 +318,10 @@ static void restrack_release(struct kref *kref)
- 	struct rdma_restrack_entry *res;
- 
- 	res = container_of(kref, struct rdma_restrack_entry, kref);
-+	if (res->task) {
-+		put_task_struct(res->task);
-+		res->task = NULL;
-+	}
- 	complete(&res->comp);
+ 	switch (res->type) {
+@@ -217,7 +191,11 @@ void rdma_restrack_new(struct rdma_restrack_entry *res,
  }
+ EXPORT_SYMBOL(rdma_restrack_new);
  
-@@ -314,14 +331,23 @@ int rdma_restrack_put(struct rdma_restrack_entry *res)
- }
- EXPORT_SYMBOL(rdma_restrack_put);
- 
+-static void rdma_restrack_add(struct rdma_restrack_entry *res)
 +/**
-+ * rdma_restrack_del() - delete object from the reource tracking database
++ * rdma_restrack_add() - add object to the reource tracking database
 + * @res:  resource entry
 + */
- void rdma_restrack_del(struct rdma_restrack_entry *res)
++void rdma_restrack_add(struct rdma_restrack_entry *res)
  {
- 	struct rdma_restrack_entry *old;
+ 	struct ib_device *dev = res_to_dev(res);
  	struct rdma_restrack_root *rt;
- 	struct ib_device *dev;
- 
--	if (!res->valid)
--		goto out;
-+	if (!res->valid) {
-+		if (res->task) {
-+			put_task_struct(res->task);
-+			res->task = NULL;
-+		}
-+		return;
-+	}
- 
- 	dev = res_to_dev(res);
- 	if (WARN_ON(!dev))
-@@ -330,16 +356,12 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
- 	rt = &dev->res[res->type];
- 
- 	old = xa_erase(&rt->xa, res->id);
-+	if (res->type == RDMA_RESTRACK_MR || res->type == RDMA_RESTRACK_QP)
-+		return;
- 	WARN_ON(old != res);
- 	res->valid = false;
- 
- 	rdma_restrack_put(res);
- 	wait_for_completion(&res->comp);
--
--out:
--	if (res->task) {
--		put_task_struct(res->task);
--		res->task = NULL;
--	}
+@@ -249,19 +227,7 @@ static void rdma_restrack_add(struct rdma_restrack_entry *res)
+ 	if (!ret)
+ 		res->valid = true;
  }
- EXPORT_SYMBOL(rdma_restrack_del);
+-
+-/**
+- * rdma_restrack_kadd() - add kernel object to the reource tracking database
+- * @res:  resource entry
+- */
+-void rdma_restrack_kadd(struct rdma_restrack_entry *res)
+-{
+-	res->task = NULL;
+-	set_kern_name(res);
+-	res->user = false;
+-	rdma_restrack_add(res);
+-}
+-EXPORT_SYMBOL(rdma_restrack_kadd);
++EXPORT_SYMBOL(rdma_restrack_add);
+ 
+ /**
+  * rdma_restrack_uadd() - add user object to the reource tracking database
 diff --git a/drivers/infiniband/core/restrack.h b/drivers/infiniband/core/restrack.h
-index d084e5f89849..16006a5e7408 100644
+index 16006a5e7408..d35c4c41d2ff 100644
 --- a/drivers/infiniband/core/restrack.h
 +++ b/drivers/infiniband/core/restrack.h
-@@ -25,6 +25,9 @@ struct rdma_restrack_root {
+@@ -25,6 +25,7 @@ struct rdma_restrack_root {
  
  int rdma_restrack_init(struct ib_device *dev);
  void rdma_restrack_clean(struct ib_device *dev);
-+void rdma_restrack_del(struct rdma_restrack_entry *res);
-+void rdma_restrack_new(struct rdma_restrack_entry *res,
-+		       enum rdma_restrack_type type);
- void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
- 			       struct task_struct *task);
- #endif /* _RDMA_CORE_RESTRACK_H_ */
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index e5c0784e151d..6ddd26548da8 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -218,10 +218,11 @@ int ib_alloc_ucontext(struct uverbs_attr_bundle *attrs)
- 	if (!ucontext)
- 		return -ENOMEM;
- 
--	ucontext->res.type = RDMA_RESTRACK_CTX;
- 	ucontext->device = ib_dev;
- 	ucontext->ufile = ufile;
- 	xa_init_flags(&ucontext->mmap_xa, XA_FLAGS_ALLOC);
-+
-+	rdma_restrack_new(&ucontext->res, RDMA_RESTRACK_CTX);
- 	attrs->context = ucontext;
- 	return 0;
- }
-@@ -313,6 +314,7 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
- err_uobj:
- 	rdma_alloc_abort_uobject(uobj, attrs, false);
- err_ucontext:
-+	rdma_restrack_put(&attrs->context->res);
- 	kfree(attrs->context);
- 	attrs->context = NULL;
- 	return ret;
-@@ -439,8 +441,8 @@ static int ib_uverbs_alloc_pd(struct uverbs_attr_bundle *attrs)
- 	pd->device  = ib_dev;
- 	pd->uobject = uobj;
- 	atomic_set(&pd->usecnt, 0);
--	pd->res.type = RDMA_RESTRACK_PD;
- 
-+	rdma_restrack_new(&pd->res, RDMA_RESTRACK_PD);
- 	ret = ib_dev->ops.alloc_pd(pd, &attrs->driver_udata);
- 	if (ret)
- 		goto err_alloc;
-@@ -453,6 +455,7 @@ static int ib_uverbs_alloc_pd(struct uverbs_attr_bundle *attrs)
- 	return uverbs_response(attrs, &resp, sizeof(resp));
- 
- err_alloc:
-+	rdma_restrack_put(&pd->res);
- 	kfree(pd);
- err:
- 	uobj_alloc_abort(uobj, attrs);
-@@ -742,8 +745,9 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
- 	mr->sig_attrs = NULL;
- 	mr->uobject = uobj;
- 	atomic_inc(&pd->usecnt);
--	mr->res.type = RDMA_RESTRACK_MR;
- 	mr->iova = cmd.hca_va;
-+
-+	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
- 	rdma_restrack_uadd(&mr->res);
- 
- 	uobj->object = mr;
-@@ -1002,8 +1006,8 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
- 	cq->event_handler = ib_uverbs_cq_event_handler;
- 	cq->cq_context    = ev_file ? &ev_file->ev_queue : NULL;
- 	atomic_set(&cq->usecnt, 0);
--	cq->res.type = RDMA_RESTRACK_CQ;
- 
-+	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
- 	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
- 	if (ret)
- 		goto err_free;
-@@ -1021,6 +1025,7 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
- 	return uverbs_response(attrs, &resp, sizeof(resp));
- 
- err_free:
-+	rdma_restrack_put(&cq->res);
- 	kfree(cq);
- err_file:
- 	if (ev_file)
-diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-index b1c7dacc02de..3a5fd6c9ba72 100644
---- a/drivers/infiniband/core/uverbs_std_types_cq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-@@ -33,6 +33,7 @@
- #include <rdma/uverbs_std_types.h>
- #include "rdma_core.h"
- #include "uverbs.h"
-+#include "restrack.h"
- 
- static int uverbs_free_cq(struct ib_uobject *uobject,
- 			  enum rdma_remove_reason why,
-@@ -123,8 +124,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	cq->event_handler = ib_uverbs_cq_event_handler;
- 	cq->cq_context    = ev_file ? &ev_file->ev_queue : NULL;
- 	atomic_set(&cq->usecnt, 0);
--	cq->res.type = RDMA_RESTRACK_CQ;
- 
-+	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
- 	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
- 	if (ret)
- 		goto err_free;
-@@ -139,6 +140,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
- 	return ret;
- 
- err_free:
-+	rdma_restrack_put(&cq->res);
- 	kfree(cq);
- err_event_file:
- 	if (obj->uevent.event_file)
++void rdma_restrack_add(struct rdma_restrack_entry *res);
+ void rdma_restrack_del(struct rdma_restrack_entry *res);
+ void rdma_restrack_new(struct rdma_restrack_entry *res,
+ 		       enum rdma_restrack_type type);
 diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index d0c3767b0f9f..2607c410b09f 100644
+index 2607c410b09f..8117e551a866 100644
 --- a/drivers/infiniband/core/verbs.c
 +++ b/drivers/infiniband/core/verbs.c
-@@ -272,11 +272,12 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
- 	atomic_set(&pd->usecnt, 0);
- 	pd->flags = flags;
- 
--	pd->res.type = RDMA_RESTRACK_PD;
-+	rdma_restrack_new(&pd->res, RDMA_RESTRACK_PD);
- 	rdma_restrack_set_task(&pd->res, caller);
- 
- 	ret = device->ops.alloc_pd(pd, NULL);
- 	if (ret) {
-+		rdma_restrack_put(&pd->res);
+@@ -281,7 +281,7 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
  		kfree(pd);
  		return ERR_PTR(ret);
  	}
-@@ -1996,11 +1997,13 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
- 	cq->event_handler = event_handler;
- 	cq->cq_context = cq_context;
- 	atomic_set(&cq->usecnt, 0);
--	cq->res.type = RDMA_RESTRACK_CQ;
-+
-+	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
- 	rdma_restrack_set_task(&cq->res, caller);
+-	rdma_restrack_kadd(&pd->res);
++	rdma_restrack_add(&pd->res);
  
- 	ret = device->ops.create_cq(cq, cq_attr, NULL);
- 	if (ret) {
-+		rdma_restrack_put(&cq->res);
- 		kfree(cq);
+ 	if (device->attrs.device_cap_flags & IB_DEVICE_LOCAL_DMA_LKEY)
+ 		pd->local_dma_lkey = device->local_dma_lkey;
+@@ -2008,7 +2008,7 @@ struct ib_cq *__ib_create_cq(struct ib_device *device,
  		return ERR_PTR(ret);
  	}
-@@ -2076,7 +2079,8 @@ struct ib_mr *ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->pd = pd;
- 	mr->dm = NULL;
+ 
+-	rdma_restrack_kadd(&cq->res);
++	rdma_restrack_add(&cq->res);
+ 	return cq;
+ }
+ EXPORT_SYMBOL(__ib_create_cq);
+@@ -2081,7 +2081,8 @@ struct ib_mr *ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
  	atomic_inc(&pd->usecnt);
--	mr->res.type = RDMA_RESTRACK_MR;
-+
-+	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
- 	rdma_restrack_kadd(&mr->res);
+ 
+ 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
+-	rdma_restrack_kadd(&mr->res);
++	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
++	rdma_restrack_add(&mr->res);
  
  	return mr;
-@@ -2156,11 +2160,11 @@ struct ib_mr *ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
- 	mr->uobject = NULL;
- 	atomic_inc(&pd->usecnt);
- 	mr->need_inval = false;
--	mr->res.type = RDMA_RESTRACK_MR;
--	rdma_restrack_kadd(&mr->res);
- 	mr->type = mr_type;
+ }
+@@ -2164,7 +2165,8 @@ struct ib_mr *ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
  	mr->sig_attrs = NULL;
  
-+	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
-+	rdma_restrack_kadd(&mr->res);
+ 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
+-	rdma_restrack_kadd(&mr->res);
++	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
++	rdma_restrack_add(&mr->res);
  out:
  	trace_mr_alloc(pd, mr_type, max_num_sg, mr);
  	return mr;
-@@ -2216,11 +2220,11 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
- 	mr->uobject = NULL;
- 	atomic_inc(&pd->usecnt);
- 	mr->need_inval = false;
--	mr->res.type = RDMA_RESTRACK_MR;
--	rdma_restrack_kadd(&mr->res);
- 	mr->type = IB_MR_TYPE_INTEGRITY;
+@@ -2224,7 +2226,8 @@ struct ib_mr *ib_alloc_mr_integrity(struct ib_pd *pd,
  	mr->sig_attrs = sig_attrs;
  
-+	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
-+	rdma_restrack_kadd(&mr->res);
+ 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
+-	rdma_restrack_kadd(&mr->res);
++	rdma_restrack_set_task(&mr->res, pd->res.kern_name);
++	rdma_restrack_add(&mr->res);
  out:
  	trace_mr_integ_alloc(pd, max_num_data_sg, max_num_meta_sg, mr);
  	return mr;
 diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index 7682d1bcf789..d7c166237939 100644
+index d7c166237939..db59e208f5e8 100644
 --- a/include/rdma/restrack.h
 +++ b/include/rdma/restrack.h
-@@ -110,13 +110,6 @@ int rdma_restrack_count(struct ib_device *dev,
- void rdma_restrack_kadd(struct rdma_restrack_entry *res);
+@@ -107,7 +107,6 @@ struct rdma_restrack_entry {
+ int rdma_restrack_count(struct ib_device *dev,
+ 			enum rdma_restrack_type type);
+ 
+-void rdma_restrack_kadd(struct rdma_restrack_entry *res);
  void rdma_restrack_uadd(struct rdma_restrack_entry *res);
  
--/**
-- * rdma_restrack_del() - delete object from the reource tracking database
-- * @res:  resource entry
-- * @type: actual type of object to operate
-- */
--void rdma_restrack_del(struct rdma_restrack_entry *res);
--
  /**
-  * rdma_is_kernel_res() - check the owner of resource
-  * @res:  resource entry
 -- 
 2.26.2
 
