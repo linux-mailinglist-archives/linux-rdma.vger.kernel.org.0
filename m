@@ -2,91 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DC6274370
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 15:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CAC274415
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 16:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgIVNoj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 09:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgIVNoj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 09:44:39 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E6BC061755
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 06:44:39 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id a9so3422290wmm.2
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 06:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IEql/yKjmpdnbyvaUwyS2yz2YZQa7bcbJnCzko9aQvM=;
-        b=mVIadGSz9bfoDqbQZQKiDDZQ6pI/cozM2yIVHn3E3Jbe4xKB2hz1t1WR2WWpmWI/nx
-         jhssgBiwKhzfcZTVd1e87IniqfFL5A1H4k7IktZFJE0AMXV8I+b153B2b4Za6zHysphe
-         tyD6OdD9dY+3alTCh5ujmYOnJQADmWd1J1ENg7P+q1NYP5rxwBb0MsN6r4+8azD/SEev
-         49NQZAcEhJCqxRd8TeqmRW+Ijms+WlWvixnpbkDkixiTWy3gE2hEuS8redBNUfDe4Q2y
-         eoqL5TgI2UeYmxBYoqzz4EXqHdpGRKWw0mz/A1cX31PSY+dxaxV4A2NeQFK/DsEDkcZK
-         o4gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IEql/yKjmpdnbyvaUwyS2yz2YZQa7bcbJnCzko9aQvM=;
-        b=pb8g7YlOHGg5P4rhIOUBpUpF+nVMQecZ8VkpQPF9dRY1uqpnZ3LeRIeNc5hxrgTVvM
-         RziA+YIk44GeEy9uh0OYIPhHhBIExoecs4Yb/5TMx9H6tFWQVR5Sh8XUP31Xy7KBMxml
-         9u1+AZlq47HRBPiwpUNqt1xxeN3rQ3m5ptji7Gi2cqzVAuEQKBxW7rbXZe8TmLgimNll
-         WeRaWI8CRPyaLsYoYlqBabr/sHX3ez7wvyzpEQi6ptEpGrfZdWzTedJSRX+yXk+cfTiv
-         wDafQpr8q5IQoa/iAiEv5KfmO512TDSjDJxrMbZPM74Y8lwOMggrI8xJ6y6hMc5niKnV
-         ctjw==
-X-Gm-Message-State: AOAM530CelNTXtjhisZbS5v29snfWfEv4l3ryqOAkiQXQf8E7yplTHm8
-        Csr8RMOoz8PSz1vmF/e94CX3Aw5bjHk=
-X-Google-Smtp-Source: ABdhPJw5nJdPXZReembSLS4tKkMIg5KpmbOMuqYxpczvsDULVdeKKsH3Dk3Oz/I1GWlFYIk4jexf3w==
-X-Received: by 2002:a7b:cd06:: with SMTP id f6mr1204998wmj.66.1600782277433;
-        Tue, 22 Sep 2020 06:44:37 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([2a00:a040:19b:e02f:5cc2:9fa6:fc6d:771d])
-        by smtp.gmail.com with ESMTPSA id a81sm5074908wmf.32.2020.09.22.06.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 06:44:36 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-rc] RDMA/mlx4: Fix return value when QP type isn't supported
-Date:   Tue, 22 Sep 2020 16:44:29 +0300
-Message-Id: <20200922134429.130255-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726566AbgIVOWH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 10:22:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38134 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726494AbgIVOWH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:22:07 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ME5Tit010872
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 10:22:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
+ : cc : date : mime-version : references : content-transfer-encoding :
+ content-type : message-id : subject; s=pp1;
+ bh=fjyVaKFq9FrsbDELUSzfS68bdCUQFsy0uVx8wtyGp2I=;
+ b=eSKSeNeA1R5o9kG8jtx/yGe4bCkDttHWkgnDMkHDLDgkSlu8qG74IMz6mta29qUcaP2o
+ 0e1/q/PqsJ6bEeH6m6oYazyS1UFRd5bQJPsmo4BZMUgn1DcK5UTzYER98qFXo1VlBX18
+ 48cj0CeDp9Ax4tz8x2sd6xA+3KBsqo+shGZWrDI9MqiCrU0TUL0uuOjiMYslIRIU5/2n
+ gy7m3gxiM6jQ5qdb34b95l8nZvmBEAGvRbSYNZng1wfWyOrRAoTTM14HIpHbSDjfOPRx
+ BrBI7oykUcabS1IbO7pDsc2eISVNfpuqDc9+tcx+GDiL7hWhq3OtnAEqNPDmnORTHz0Y GA== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33qjdgsapt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 10:22:05 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 22 Sep 2020 14:22:04 -0000
+Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
+        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 22 Sep 2020 14:22:02 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020092214220197-445391 ;
+          Tue, 22 Sep 2020 14:22:01 +0000 
+In-Reply-To: <20200922101429.GF1223944@unreal>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Adit Ranadive" <aditr@vmware.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        "Christian Benvenuti" <benve@cisco.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@intel.com>,
+        "Devesh Sharma" <devesh.sharma@broadcom.com>,
+        "Faisal Latif" <faisal.latif@intel.com>,
+        "Gal Pressman" <galpress@amazon.com>,
+        "Lijun Ou" <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        "Michal Kalderon" <mkalderon@marvell.com>,
+        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
+        "Naresh Kumar PBS" <nareshkumar.pbs@broadcom.com>,
+        "Nelson Escobar" <neescoba@cisco.com>,
+        "Parav Pandit" <parav@nvidia.com>,
+        "Parvi Kaustubhi" <pkaustub@cisco.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        "Selvin Xavier" <selvin.xavier@broadcom.com>,
+        "Shiraz Saleem" <shiraz.saleem@intel.com>,
+        "Somnath Kotur" <somnath.kotur@broadcom.com>,
+        "Sriharsha Basavapatna" <sriharsha.basavapatna@broadcom.com>,
+        "VMware PV-Drivers" <pv-drivers@vmware.com>,
+        "Weihang Li" <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        "Yishai Hadas" <yishaih@nvidia.com>,
+        "Zhu Yanjun" <yanjunz@nvidia.com>
+Date:   Tue, 22 Sep 2020 14:22:01 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200922101429.GF1223944@unreal>,<20200922082745.2149973-1-leon@kernel.org>
+ <OFA7334E75.E0306A27-ON002585EB.003059A0-002585EB.0031440E@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
+X-KeepSent: E5279622:4F47648E-002585EB:004EEBC0;
+ type=4; flags=0; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 31027
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20092214-5525-0000-0000-000003552933
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000030
+X-IBM-SpamModules-Versions: BY=3.00013874; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01438550; UDB=6.00772860; IPR=6.01221236;
+ MB=3.00034186; MTD=3.00000008; XFM=3.00000015; UTC=2020-09-22 14:22:04
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-09-22 08:28:30 - 6.00011869
+x-cbparentid: 20092214-5526-0000-0000-0000F0632BE4
+Message-Id: <OFE5279622.4F47648E-ON002585EB.004EEBC0-002585EB.004EEBDA@notes.na.collabserv.com>
+Subject: RE: [PATCH rdma-next] RDMA: Explicitly pass in the dma_device to
+ ib_register_device
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_13:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The proper return code is "-EOPNOTSUPP" when trying to modify a raw
-packet QP over an IB port.
+...
 
-Fixes: 3987a2d3193c ("IB/mlx4: Add raw packet QP support")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/hw/mlx4/qp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>> >diff --git a/drivers/infiniband/sw/siw/siw=5Fmain.c
+>> >b/drivers/infiniband/sw/siw/siw=5Fmain.c
+>> >index d862bec84376..0362d57b4db8 100644
+>> >--- a/drivers/infiniband/sw/siw/siw=5Fmain.c
+>> >+++ b/drivers/infiniband/sw/siw/siw=5Fmain.c
+>> >@@ -69,7 +69,7 @@ static int siw=5Fdevice=5Fregister(struct siw=5Fdevice
+>> >*sdev, const char *name)
+>> >
+>> > 	sdev->vendor=5Fpart=5Fid =3D dev=5Fid++;
+>> >
+>> >-	rv =3D ib=5Fregister=5Fdevice(base=5Fdev, name);
+>> >+	rv =3D ib=5Fregister=5Fdevice(base=5Fdev, name, NULL);
+>> > 	if (rv) {
+>> > 		pr=5Fwarn("siw: device registration error %d\n", rv);
+>> > 		return rv;
+>> >@@ -386,6 +386,8 @@ static struct siw=5Fdevice
+>> >*siw=5Fdevice=5Fcreate(struct net=5Fdevice *netdev)
+>> > 	base=5Fdev->dev.dma=5Fparms =3D &sdev->dma=5Fparms;
+>> > 	sdev->dma=5Fparms =3D (struct device=5Fdma=5Fparameters)
+>> > 		{ .max=5Fsegment=5Fsize =3D SZ=5F2G };
+>> >+	dma=5Fcoerce=5Fmask=5Fand=5Fcoherent(&base=5Fdev->dev,
+>> >+				     dma=5Fget=5Frequired=5Fmask(&base=5Fdev->dev));
+>>
+>> Leon, can you please help me to understand this
+>> additional logic? Do we need to setup the DMA device
+>> for (software) RDMA devices which rely on dma=5Fvirt=5Fops
+>> in the end, or better leave it untouched?
+>
+>The logic that driver is responsible to give right DMA device,
+>so yes, you are setting here mask from dma=5Fvirt=5Fops, as RXE did.
+>
+Thanks Leon!
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 2975f350b9fd..3c6ed7a7d407 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -2785,8 +2785,10 @@ static int _mlx4_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 	if ((attr_mask & IB_QP_PORT) && (ibqp->qp_type == IB_QPT_RAW_PACKET) &&
- 	    (rdma_port_get_link_layer(&dev->ib_dev, attr->port_num) !=
--	     IB_LINK_LAYER_ETHERNET))
-+	     IB_LINK_LAYER_ETHERNET)) {
-+		err = -EOPNOTSUPP;
- 		goto out;
-+	}
- 
- 	if (attr_mask & IB_QP_PKEY_INDEX) {
- 		int p = attr_mask & IB_QP_PORT ? attr->port_num : qp->port;
--- 
-2.26.2
+I wonder how this was working w/o that before!
+
+Many thanks,
+Bernard.
 
