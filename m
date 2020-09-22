@@ -2,117 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5951D27417D
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 13:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB882741DC
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 14:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgIVLtp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 07:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41392 "EHLO
+        id S1726562AbgIVMOZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 08:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgIVLtl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 07:49:41 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A831DC0613D0
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 04:49:41 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 16so18644476qkf.4
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 04:49:41 -0700 (PDT)
+        with ESMTP id S1726505AbgIVMOZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 08:14:25 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A709C061755
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 05:14:25 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id n2so20781603oij.1
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 05:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1D8ju+sMCrprb+0b/yOahK+eYVzPNlNBaX9NLNExdtI=;
-        b=muDDi0pTHyd9JBABm8RyGLvWbVcMxru6wlVrHBiDJUY0jrq7Ma6mMxfMSYqQR2sE7S
-         n6oWDLWu5dVTDb7iJrAWfjxmSdDqSDAJJW9NGZCBpfYbdyI9g1jOOFjEAzn7/UzcB7vf
-         6kHbhNt0CKfpSocliMKcT3ueUyylf+kgqxUPyKzVGLicVzXOW+EPcdqsXV6Z51wTI+Lq
-         mFn1Jmghmfz+QaX+PmjcpkzNu4kwAmbrY1iH3ow2hdHyCneXpKtLqwPJ9kIdYF1wt1Fy
-         7Ad6pYgKKRqILeVv4+7BbG5JUDTj8gXQYUqzkQ2twtMOgHE/dr3KehrG6Q9VeF5IoCH0
-         WnTg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l/8bmP6FchAvN0yq+1cTD38v5/7nTLM0su9L9VKliIg=;
+        b=BqRAzkvdUNf6YMxSJwS11kJQY6N4QfcIioh1OYAopEPonyBZ/L8lvZSwWjIHCB6qPc
+         FxYlDQFAEvVVJDc47byKzKkC+FBfbKN1XT2aVua3+9mD2hytOx4X20yF/LDktel8U/C3
+         nGgbg4XHc9Hj3bTmi1eqPIq2hvpPla1St7A8YR0CP7Jq04Db/JVxQWK3zRObRiTb3ffm
+         yKrYa/iw/bReARoI6qXBJea8khyXtqjFoqdIBGlLCNBP8fTmZ0OQjMomkUcjlrUcTW6D
+         DocmNqOXwkDU52lZ7gR9loQ5zDOsv6i7u2LZoT+5jflkMDVU7re1FqNk7P25vcj2yExi
+         esrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1D8ju+sMCrprb+0b/yOahK+eYVzPNlNBaX9NLNExdtI=;
-        b=JJfTC9SZNtJKQRPr2rXTegvXjeM40t/EjnuOcqWKY2UrGIZAdu5MEwI1tJVggQjp97
-         uPC01rQ+EF/jmkW8GWdezus+d77e89lnbJAip1cOK2V6JslyhO6HPaqjn5r02ls+pyHz
-         QI/TrniO7URsq4tQIT+ElwOFjoUXnTh8SghuZbI9L64lszsfagWw5UDy4LVAIxEhGYmj
-         u+33kSO8AxsInjo3OZEprCNyQnl5sALRZ/93nqSk7LhyW0Qy8HawPr9p7zqU5KziL9If
-         YehKRTAMks0Lb024UkMwH4FQkZXJ4GCcWfdFjLdu6GkP83dyAM9oqOpy1k6lwHHFHu+l
-         EhKw==
-X-Gm-Message-State: AOAM530y4CWTN2ErGwHtFERSSDAn6qwGv0MUibtmFfyBbKIxtaaeEXGn
-        7AofhnDL6crbvUp5Og+PjakVxQ==
-X-Google-Smtp-Source: ABdhPJynCuK8vUTw9DbgSp3TWPoe/lJE1NnbKoGAO/to47jv50SynIh4q+Mrv7MDzz74la/2EhiNeA==
-X-Received: by 2002:a37:c203:: with SMTP id i3mr4203326qkm.155.1600775380815;
-        Tue, 22 Sep 2020 04:49:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id q142sm11081340qke.48.2020.09.22.04.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:49:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKgnj-0030YZ-N6; Tue, 22 Sep 2020 08:49:39 -0300
-Date:   Tue, 22 Sep 2020 08:49:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Gal Pressman <galpress@amazon.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200922114939.GF8409@ziepe.ca>
-References: <20200918121905.GU869610@unreal>
- <20200919064020.GC439518@kroah.com>
- <20200919082003.GW869610@unreal>
- <20200919083012.GA465680@kroah.com>
- <CAFCwf122V-ep44Kqk1DgRJN+tq3ctxE9uVbqYL07apLkLe2Z7g@mail.gmail.com>
- <20200919172730.GC2733595@kroah.com>
- <20200919192235.GB8409@ziepe.ca>
- <20200920084702.GA533114@kroah.com>
- <20200921115239.GC8409@ziepe.ca>
- <20200921142053.1d2310f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l/8bmP6FchAvN0yq+1cTD38v5/7nTLM0su9L9VKliIg=;
+        b=OVWDoUwCLd5JJsHbni4CZGOOKpa/uoUrRoBh8AqmvZbAXg3JNPEXbQIF/M0XDyPigD
+         +Qo0eYlybVs1hNqR+9PFfiVhaMQD26OlA5Qgbk1y0GT15F3SqGnHLmnKfKZ6GPyDX4xU
+         9amRS7LpNy85KPMGP4tRoyTTeUiUPBZnF2phIkFaoiGzjw0PmemQkb61eijGqP+n0/Pc
+         MRKrkas5r6CvszOw3js0U9uEYfhQDHbFTjG0o0YEtebUTnHsWlLHcnBIIoEhtTWLoeth
+         AMM4ZNpbKcq1V4aneg5dRY5tlvbRAs46FP4D4VOuQMsl+Gys1mRgnz699p09lbSLMJLj
+         gCqQ==
+X-Gm-Message-State: AOAM531gCqTTzfoQBSuxfy5EaWMYmamtFADlxeiaX5+drm0/NIA47gtB
+        UuO1u3jf3ej0jvPzrdzymufJOFdkCT5BX79itoM=
+X-Google-Smtp-Source: ABdhPJz80tc1V3ByFh31KjRSwtV2L1yrvu7zZIkgwwbKtPgyOl1OFVCo7H9gPCiqV7KrbKDGfe4CImo6sCK8O0hQd3Y=
+X-Received: by 2002:aca:4e03:: with SMTP id c3mr2244363oib.169.1600776864379;
+ Tue, 22 Sep 2020 05:14:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921142053.1d2310f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200921200356.8627-1-rpearson@hpe.com> <20200921200356.8627-13-rpearson@hpe.com>
+In-Reply-To: <20200921200356.8627-13-rpearson@hpe.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Tue, 22 Sep 2020 20:14:13 +0800
+Message-ID: <CAD=hENeBKW2JJJaiXD0n_vqgLz2dvw_HQ3P4K8R4pTnyXG4vZw@mail.gmail.com>
+Subject: Re: [PATCH for-next v6 12/12] rdma_rxe: Fix bugs in the multicast
+ receive path
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:20:53PM -0700, Jakub Kicinski wrote:
-> I'd wager the only reason you expose the netdevs at all is for link
-> settings, stats, packet capture and debug. You'd never run TCP traffic
-> over those links. And you're fighting against using Linux APIs for the
-> only real traffic that runs on those links - RDMA(ish) traffic.
+On Tue, Sep 22, 2020 at 4:04 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> This patch does the following
+>   - Fix a bug in rxe_rcv.
+>     The current code calls rxe_match_dgid which checks to see if the
+>     destination ip address (dgid) matches one of the addresses in
+>     the gid table. This is ok for unicast adfdresses but not mcast
+>     addresses. Because of this all mcast packets were previously
+>     dropped.
 
-The usual working flow is to use something like TCP to exchange
-connection information then pivot to RDMA for the actual data
-flow. This is why a driver like this could get away with such a low
-performance implementation for a 100G NIC, it is just application boot
-metadata being exchanged.
+338 /* rxe_rcv is called from the interface driver */
+339 void rxe_rcv(struct sk_buff *skb)
+340 {
+...
+365         err = hdr_check(pkt);  <---In this function multicast
+packets are checked and taken as error.
+366         if (unlikely(err))
+367                 goto drop;
+...
 
-Sniffing probably won't work as typically the HW will capture the RoCE
-traffic before reaching Linux - and the Linux driver couldn't handle a
-100G flow anyhow. Stats might not work either.
+Zhu Yanjun
 
-As far as the "usual rules" we do require that accelerator devices
-sharing a netdev are secure in the concept of netdev userspace
-security. They can access the assigned RoCEv2 UDP port but cannot do
-things like forge src IP/MAC addresses, violate VLANs, reach outside
-net namespaces, capature arbitary traffic, etc.
-
-This stuff is tricky and generally requires HW support. Someone has to
-audit all of this and ensure it meets the netdev security requirements
-too, otherwise it will need CAP_NET_RAW to function. Obviously this
-requires seeing enough of a userspace implementation to understand how
-the design approaches verbs 'Address Handles' and so forth.
-
-RDMA HW has had errors before and when discovered it was blocked with
-CAP_NET_RAW until new chip revs came out, this is something I take
-very seriously.
-
-Jason
+>   - Fix a bug in rxe_rcv_mcast_pkt.
+>     The current code is just wrong. It assumed that it could pass
+>     the same skb to rxe_rcv_pkt changing the qp pointer as it went
+>     when multiple QPs were attached to the same mcast address. In
+>     fact each QP needs a separate clone of the skb which it will
+>     delete later.
+>
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_recv.c | 60 +++++++++++++++++-----------
+>  1 file changed, 36 insertions(+), 24 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+> index 50411b0069ba..bc86ebbd2c8c 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+> @@ -233,6 +233,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+>         struct rxe_mc_elem *mce;
+>         struct rxe_qp *qp;
+>         union ib_gid dgid;
+> +       struct sk_buff *per_qp_skb;
+> +       struct rxe_pkt_info *per_qp_pkt;
+>         int err;
+>
+>         if (skb->protocol == htons(ETH_P_IP))
+> @@ -261,42 +263,37 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+>                 if (err)
+>                         continue;
+>
+> -               /* if *not* the last qp in the list
+> -                * increase the users of the skb then post to the next qp
+> +               /* for all but the last qp create a new clone of the
+> +                * skb and pass to the qp.
+> +                * This effectively reverts an earlier change
+> +                * which did not work. The pkt struct is contained
+> +                * in the skb so each time you changed pkt you also
+> +                * changed all the earlier pkts as well. Caused a mess.
+>                  */
+>                 if (mce->qp_list.next != &mcg->qp_list)
+> -                       skb_get(skb);
+> +                       per_qp_skb = skb_clone(skb, GFP_ATOMIC);
+> +               else
+> +                       per_qp_skb = skb;
+>
+> -               pkt->qp = qp;
+> +               per_qp_pkt = SKB_TO_PKT(per_qp_skb);
+> +               per_qp_pkt->qp = qp;
+>                 rxe_add_ref(qp);
+> -               rxe_rcv_pkt(pkt, skb);
+> +               rxe_rcv_pkt(per_qp_pkt, per_qp_skb);
+>         }
+>
+>         spin_unlock_bh(&mcg->mcg_lock);
+> -
+>         rxe_drop_ref(mcg);      /* drop ref from rxe_pool_get_key. */
+> +       return;
+>
+>  err1:
+>         kfree_skb(skb);
+> +       return;
+>  }
+>
+> -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
+> +static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb,
+> +                         union ib_gid *pdgid)
+>  {
+> -       struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+>         const struct ib_gid_attr *gid_attr;
+> -       union ib_gid dgid;
+> -       union ib_gid *pdgid;
+> -
+> -       if (pkt->mask & RXE_LOOPBACK_MASK)
+> -               return 0;
+> -
+> -       if (skb->protocol == htons(ETH_P_IP)) {
+> -               ipv6_addr_set_v4mapped(ip_hdr(skb)->daddr,
+> -                                      (struct in6_addr *)&dgid);
+> -               pdgid = &dgid;
+> -       } else {
+> -               pdgid = (union ib_gid *)&ipv6_hdr(skb)->daddr;
+> -       }
+>
+>         gid_attr = rdma_find_gid_by_port(&rxe->ib_dev, pdgid,
+>                                          IB_GID_TYPE_ROCE_UDP_ENCAP,
+> @@ -314,17 +311,32 @@ void rxe_rcv(struct sk_buff *skb)
+>         int err;
+>         struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+>         struct rxe_dev *rxe = pkt->rxe;
+> +       union ib_gid dgid;
+> +       union ib_gid *pdgid;
+>         __be32 *icrcp;
+>         u32 calc_icrc, pack_icrc;
+> +       int is_mc;
+>
+>         pkt->offset = 0;
+>
+>         if (unlikely(skb->len < pkt->offset + RXE_BTH_BYTES))
+>                 goto drop;
+>
+> -       if (rxe_match_dgid(rxe, skb) < 0) {
+> -               pr_warn_ratelimited("failed matching dgid\n");
+> -               goto drop;
+> +       if (skb->protocol == htons(ETH_P_IP)) {
+> +               ipv6_addr_set_v4mapped(ip_hdr(skb)->daddr,
+> +                                      (struct in6_addr *)&dgid);
+> +               pdgid = &dgid;
+> +       } else {
+> +               pdgid = (union ib_gid *)&ipv6_hdr(skb)->daddr;
+> +       }
+> +
+> +       is_mc = rdma_is_multicast_addr((struct in6_addr *)pdgid);
+> +
+> +       if (!(pkt->mask & RXE_LOOPBACK_MASK) && !is_mc) {
+> +               if (rxe_match_dgid(rxe, skb, pdgid) < 0) {
+> +                       pr_warn_ratelimited("failed matching dgid\n");
+> +                       goto drop;
+> +               }
+>         }
+>
+>         pkt->opcode = bth_opcode(pkt);
+> --
+> 2.25.1
+>
