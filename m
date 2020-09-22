@@ -2,133 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42F027450C
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 17:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A64274652
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Sep 2020 18:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVPNz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Sep 2020 11:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S1726641AbgIVQOb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Sep 2020 12:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726667AbgIVPNy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 11:13:54 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BEEC061755
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 08:13:54 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g4so17485338wrs.5
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 08:13:54 -0700 (PDT)
+        with ESMTP id S1726340AbgIVQOb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Sep 2020 12:14:31 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEBDC061755
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 09:14:31 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id db4so9831741qvb.4
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Sep 2020 09:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernelim-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3+yuya+P/LX/yzku7z4IMsJiACj4i++IXJX3Bf2IIkE=;
-        b=02MPkMue/Ow3RGgRAfuyD1ekRC0flWM+NW7AxthcuHGw94zn383EDlPtEwxUS1fUF3
-         G/pehPMLKVx2cPK8n14kDNmzrVK6/CYIn3pj7ni8FRMtHRLVTxUWeqs11EH6FAHtzg5C
-         tctaSGQjDQnQL6+N6nomxGrGZ1n0MDjSwuZgYqHjFD3e0zybHJwe7SCmnl5L+jIwYaXm
-         D+JhzCP4Wa66KfNIeRFCYBvme78tsy3ih4iXjFFtPOqK38b21/Lq7XIdgydnlj530/7B
-         WkHD9LgHOgizPT7uYJG7Pl9PtXs/Vup4ZrnwWWMVZ2fYRbxDP0Mbe4fglmlS2bGwSL/F
-         qwoA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zWPzhPXud6VNhoCoKGqUlfr5qEum5vqp/NMsQDoLUC4=;
+        b=RRTG2t9njyMOevdlLC86wlJd8D+yLCyG9Mq/1GV3EqYWmcoFhCpIJCaqyD5hMjWHrm
+         ASqRwBQZhe7tZdDG4NpyUvtKqravrSvdY63jU91WxlMbKC6k2KqS+9JJg1hVxH2hUYJW
+         hRHVszuAnEfbFs+5BjttohWpXBv8jHWSsEnHn5ol0dVtpWBfbCtFir4O0FU2wwD/Xk6x
+         RnXv40YGeTdbI9b35RLql3k3eznGKLEVtGReKnVFFYy0MPZHpIt2b4PkM5Byv6f5bZSi
+         reykqmJQ67hPUeYRgwNtq67GR+xgJscw2aaO0BPzulVjXiFnubqwnIc/DPIeoNCo0uAb
+         Rp0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3+yuya+P/LX/yzku7z4IMsJiACj4i++IXJX3Bf2IIkE=;
-        b=cHCqkaPYgLbnRl8eoJ8d02nCMTaAIcEyr7+sHj8iAZzRBZb3r+fQ8/3L9hyTu2R+y9
-         AsX4/zODrPIeuWG4lr1zuQa2XmQnQAuehitMNzdaaCILv9TRCKq6IhWAmS093hQgAMan
-         0t7J+yyXb2jBuT61Lq5/Fsv8uzBMizZHzHvaQfU+YRn3d3phKutPHvLUUjukpnWSCm2k
-         6+00fHEiP1KUgkcK8oOC4fqci/m3MKjSFWl/5Ov6Ia798KMtB+xE6UyC33lgA5cjNIdD
-         0JcGg6oU9wV5YGcKP+2P6UFAv2pNwM8iR196WlMcoOd/NkXzBT7LLPjljsnvTW/nAk3p
-         jxww==
-X-Gm-Message-State: AOAM532KS/RHOmARhmxMsQ7kRNqYsiYBVBQm+iV6iZdybwQrF6/IX+co
-        Rdd3dBPq96e6evz3lKDd0zLuux1UkzSdqg==
-X-Google-Smtp-Source: ABdhPJwMBKc51uq03tzDp1SuRMfDy8hN3wECXWEUpfh7D9uRDdaC+REr7coZd+dsO+W/yDEqB3sx7Q==
-X-Received: by 2002:adf:e601:: with SMTP id p1mr6383682wrm.172.1600787632935;
-        Tue, 22 Sep 2020 08:13:52 -0700 (PDT)
-Received: from gmail.com ([5.102.224.127])
-        by smtp.gmail.com with ESMTPSA id d19sm5091838wmd.0.2020.09.22.08.13.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zWPzhPXud6VNhoCoKGqUlfr5qEum5vqp/NMsQDoLUC4=;
+        b=Q9ma367lVRUz1qIBRGX8Thn6eFEET35JJcK7CcWAhGswohNFNcp6m9jajo2aMhfzqm
+         gaaQpOAHwQJ3oHedwXl/+KaVZDd9SAFadgkpHF2Y5w91Uiy/+wdKRTtK3pkOhLyY9WfA
+         LkC4oKnDlc3VjMkQn+1w3tAtkX2/sMK95RvwyJj1jF2xIDgcsneAi6PlBmNsYcG5dNg6
+         8BylUSsJOt0ZP8BBTYbYMXUNteNAcdbhb1tae390TU3DuCgXJ2lEnyb6GNLkkLUhmtns
+         O/HKA7NHTifnilu6Dahzqnt2xhpv8AbRuH6eW2TGW5qQP+3217vymPMgrRyCqEUhfbVr
+         A/Xw==
+X-Gm-Message-State: AOAM533Bv4Qw/+nNrdtVltdbFxg5M0rLd0nRGDCyIgosRtipuPz1BY0E
+        IxoPX6sHHB9xd7UliClyjdDevw==
+X-Google-Smtp-Source: ABdhPJw5me7Js3130zPe33NMl4wTjhVJqXvfKdaP/dBlNq6WGqmASS+7NuMfwF30JNVJVNBJuzrpMw==
+X-Received: by 2002:a0c:9c09:: with SMTP id v9mr6773362qve.57.1600791270713;
+        Tue, 22 Sep 2020 09:14:30 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t1sm13140036qtj.12.2020.09.22.09.14.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 08:13:52 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 18:13:48 +0300
-From:   Dan Aloni <dan@kernelim.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: RDMA/addr: NULL dereference in process_one_req
-Message-ID: <20200922151348.GA4103095@gmail.com>
+        Tue, 22 Sep 2020 09:14:29 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kKkw1-0034kp-8i; Tue, 22 Sep 2020 13:14:29 -0300
+Date:   Tue, 22 Sep 2020 13:14:29 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        izur@habana.ai, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200922161429.GI8409@ziepe.ca>
+References: <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+ <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+ <20200922114101.GE8409@ziepe.ca>
+ <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The Oops below [1], is quite rare, and occurs after awhile when kernel
-code repeatedly tries to resolve addresses. According to my analysis the
-work item is executed twice, and in the second time a NULL value of
-`req->callback` triggers this Oops.
+On Tue, Sep 22, 2020 at 03:46:29PM +0300, Gal Pressman wrote:
 
-After many run iterations, I did managed to reproduce this issue once
-with an isolated sample kernel code I posted at this address:
+> I agree, that makes sense.
+> But assuming Oded actually goes and implements all the needed verbs to get a
+> basic functional libibverbs provider (assuming their HW can do it somehow), is
+> it really useful if no one is going to use it?
+> It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
+> and I'm assuming the only real world use case is going to be using the hl stack,
+> which means we're left with a lot of dead code that's not used/tested by anyone.
+> 
+> Genuine question, wouldn't it be better if they only implement what's actually
+> going to be used and tested by their customers?
 
-    https://github.com/kernelim/ibaddr-null-deref-repro
+The general standard for this 'accel' hardware, both in DRM and RDMA
+is to present an open source userspace. Companies are encouraged to
+use that as their main interface but I suppose are free to carry the
+cost of dual APIs, and the community's wrath if they want.
 
-The sample code works similarly to the client code in the rpcrdma kernel
-module.
+At least for RDMA this is guided by the founding event of Linux RDMA
+where all customers demanded the madness of every supplier having a
+unique software stack from the kernel down stop. Since then the low
+level stack has been cross vendor and uniform.
 
-Is it possible that once a work item is executing, the netevent-based
-side call to requeue it in `set_timeout`, puts it on another CPU while
-it is still running?  Otherwise it is hard to explain what I'm seeing.
-My sample code also attempts to inject a notifier NETEVENT_NEIGH_UPDATE
-event to trigger this, but it did not increase the frequency of
-reproduction.
-
-I'm experimenting with a fix [2] but I'm not sure it would solve this
-issue yet. I'm hoping for more suggestions and insight.
-
-Thanks
-
-[1]
-
-[165371.631784] Workqueue: ib_addr process_one_req [ib_core]
-[165371.637268] RIP: 0010:0x0
-[165371.640066] Code: Bad RIP value.
-[165371.643468] RSP: 0018:ffffb484cfd87e60 EFLAGS: 00010297
-[165371.648870] RAX: 0000000000000000 RBX: ffff94ef2e027130 RCX: ffff94eee8271800
-[165371.656196] RDX: ffff94eee8271920 RSI: ffff94ef2e027010 RDI: 00000000ffffff92
-[165371.663518] RBP: ffffb484cfd87e80 R08: 00726464615f6269 R09: 8080808080808080
-[165371.670839] R10: ffffb484cfd87c68 R11: fefefefefefefeff R12: ffff94ef2e027000
-[165371.678162] R13: ffff94ef2e027010 R14: ffff94ef2e027130 R15: 0ffff951f2c624a0
-[165371.685485] FS:  0000000000000000(0000) GS:ffff94ef40e80000(0000) knlGS:0000000000000000
-[165371.693762] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[165371.699681] CR2: ffffffffffffffd6 CR3: 0000005eca20a002 CR4: 00000000007606e0
-[165371.707001] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[165371.714325] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[165371.721647] PKRU: 55555554
-[165371.724526] Call Trace:
-[165371.727170]  process_one_req+0x39/0x150 [ib_core]
-[165371.732051]  process_one_work+0x20f/0x400
-[165371.736242]  worker_thread+0x34/0x410
-[165371.740082]  kthread+0x121/0x140
-[165371.743484]  ? process_one_work+0x400/0x400
-[165371.747844]  ? kthread_park+0x90/0x90
-[165371.751681]  ret_from_fork+0x1f/0x40
-
-
-[2]
-
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 3a98439bba83..6d7c325cb8e6 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -636,7 +636,8 @@ static void process_one_req(struct work_struct *_work)
-                        /* requeue the work for retrying again */
-                        spin_lock_bh(&lock);
-                        if (!list_empty(&req->list))
--                               set_timeout(req, req->timeout);
-+                               if (delayed_work_pending(&req->work))
-+                                       set_timeout(req, req->timeout);
-                        spin_unlock_bh(&lock);
-                        return;
-                }
-
-Signed-off-by: Dan Aloni <dan@kernelim.com>
-
--- 
-Dan Aloni
+Jason
