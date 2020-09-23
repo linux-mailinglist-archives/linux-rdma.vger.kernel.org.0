@@ -2,359 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF57275DDA
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Sep 2020 18:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4C9275FF4
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Sep 2020 20:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIWQue (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Sep 2020 12:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58650 "EHLO mail.kernel.org"
+        id S1726460AbgIWSes (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Sep 2020 14:34:48 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:10040 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgIWQud (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:50:33 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C27C20672;
-        Wed, 23 Sep 2020 16:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600879832;
-        bh=mbJXxfC0zE1GuBCa15LJjPUxfu9pZ9nsdOXpXzG3/p0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vaZlHvsbtH6Eix+++NCy2Trx2LdlGCNowput6JVG5j5Yu3zc1IL3aEoBPJ7mvkRVL
-         6WGWBsfTg+76p7KGvQHA6LkRk2RtHNjYD28ihmWlxriwNoOZrOeqq7wYc4yg9ELYQ6
-         HLB3wo6xLxeo6CBU1ji3lVs/AnHR1168UiVhVg/8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Avihai Horon <avihaih@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v3 4/4] RDMA/uverbs: Expose the new GID query API to user space
-Date:   Wed, 23 Sep 2020 19:50:15 +0300
-Message-Id: <20200923165015.2491894-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200923165015.2491894-1-leon@kernel.org>
-References: <20200923165015.2491894-1-leon@kernel.org>
+        id S1726332AbgIWSeq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:34:46 -0400
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6b95430000>; Thu, 24 Sep 2020 02:34:43 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
+ 2020 18:34:19 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.103)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 23 Sep 2020 18:34:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mowqNedM7jZwf1T7I3IFvQNdLSvAQsQgk721E+QB9AXofhDsMYskniMR54GfiGbZnpIV4LPKPxsVAYcWDcfZRTBsw96ciPHkcbw6jlCMZifKy6u494sGbL2fA7DEqWWnPp/DvWMYrNlYQbyEn/G3gSvKFY3Diqj8t0+ENH8J1DaEfVfit1CCW1VPSrsENaxkGrkss1owsi60sZtZvLxsIpZkczWzJrdNuSvZajP3vleB65Vraj0+O1CeW9W0uvVjbEndRmM0jU4Gr9E6rL4e2aBESidz+Xnk9CqVigOVbJqM1vM5T3NxSmcvnHhf15QycJsg6ATSRDg2mcTdBWu0SQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Mn0xyIlBFeWV1K7ty8godwy+x8+7EIicroz8BXWc/0=;
+ b=HcVY7wikRZ+jqbWDOxvgTG0VFY7fwbVNeeXqnRQbksZ5EReCnWbNdcla72t6LSfjLGznHqU2wph9bPjyZSU6R87qeB1f9i6BRXLHE7h5vQUoz2+p0qcZ0Jv0tlzUKB8mU5mmd0Q/adceylnNoXzFmMPjHaICFIA3VzjR0AOHqQq2OFB/mUQRvI0HlNxlElRbaJ66hUDeULqZensb3AQ8rz7j61vB2L6wQmeAeXIAYBO74EHpOvO1tazI3wso6xRjXxB14cjlYPz1ilQpcdG4zODqDkUyBb8G7nH7rT1cY/34GhUQq/Bj1mcweOMAMnM782Cdja5ZfZqTamGN8gGKtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3114.namprd12.prod.outlook.com (2603:10b6:5:11e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Wed, 23 Sep
+ 2020 18:34:10 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
+ 18:34:10 +0000
+Date:   Wed, 23 Sep 2020 15:34:09 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "Bernard Metzler" <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        "Gal Pressman" <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        "Parav Pandit" <parav@nvidia.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA: Explicitly pass in the dma_device to
+ ib_register_device
+Message-ID: <20200923183409.GA9475@nvidia.com>
+References: <20200922082745.2149973-1-leon@kernel.org>
+ <20200923053840.GA4809@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200923053840.GA4809@infradead.org>
+X-Originating-IP: [156.34.48.30]
+X-ClientProxiedBy: MN2PR15CA0048.namprd15.prod.outlook.com
+ (2603:10b6:208:237::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0048.namprd15.prod.outlook.com (2603:10b6:208:237::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 18:34:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kL9aj-0007WX-7p; Wed, 23 Sep 2020 15:34:09 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eff38d3b-b318-41f6-861d-08d85fef4344
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3114:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3114F56D959A21F9F36723F5C2380@DM6PR12MB3114.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nYj9+waQwzEr2O/Zui86icggFsE3zpflrkQE0MOOFXGArYvJ8TWDcvBJB6n5kepvn7ew3p/VToYvruucfUD4NYgXKVTuV/Kvzmi4nfk/C7P5cPdbTrnSaa7/m+UrIkgkiUEzZNXKy2KjvqvY99Swb7uaXRfFOBilYnFNXu3NWnPSsNXXccJyeMfObgst2Z4i4TYLyCV649C5cj5Z7qlvKv11nrc0XdKdmxKIBqr1cHjVnpYjpX4i45zECD58Ss4W5Hob4kjZVtj4uFoYSPEjtqpjmERmeGn0g1sv9nxTccJR4TGhOObYLkT3W9Wu3arLa9se6dVUiKOSCpqeFk/ugg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(478600001)(7416002)(83380400001)(33656002)(54906003)(36756003)(86362001)(26005)(8676002)(186003)(9746002)(426003)(2906002)(107886003)(66476007)(4326008)(9786002)(66946007)(2616005)(1076003)(66556008)(5660300002)(6916009)(316002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: QWgBGxUGhC3X5+YL9QHg79/MpPr2+CMMsnrZiptgVhuotGKEHvKwKHKe6lVgTbESbvPT514gC9+J7cKW5y7sx5II8bWuN2EuXuLv3Amvhmv23fmeVmgOLfVjhmMjg/CGF83Rkj62o+OU9pSRNWrjjTVrOBqN+oEeYtpyJe+kwlsty3lnTSMwRuFkP1pm1DRBovkrFe7MxbR9pyjfnnEPj5/q6YF2oaxUVW/lgXieoChIJCELNUjM73C7HPvP5+VCr/jpFWlV9KziOYRvobdsToDzEmfay6MudAGqYEkz3PoceCXKEFzUg3vhzvPTbEPxQMd9R/3rfRwyehR0QRoCtUy1UkwJNZI4xUBpE33MaPfAn6UM44MdJgxgTHzCv1GM8JPp+J3r+wdfjZHWZ6JTL+Cx5sQuUMQwIv2/YzEIOpaPJKNmZrYOcyBEglyY+ALti1dG1eFNDW8OSmmhWoE2TbGf892mHRVdlmhRZKfEcSR1ZNocUt/ZiYAG9bFCNXkv3Qlil14hzlAHhhQVIzsOakZtofyL/2qDNuCrb8dt79KzoCrdIKFlWgEUte8ythRvieLfOFxWbzuDo+YSTi69zi5Rg805X+7nGqb+n0FvtP2MRz/Nhl6TWu6rQVegQ8DYuMBJwgfqL/AfOih4xo6dfQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: eff38d3b-b318-41f6-861d-08d85fef4344
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 18:34:10.6460
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HLiIaqxIrVeTLookEGvLxABUXUzRiMgTi8Te/Oed7nIbG96/yO/zZj1xjnd7wpWH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3114
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600886083; bh=1Mn0xyIlBFeWV1K7ty8godwy+x8+7EIicroz8BXWc/0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
+         References:Content-Type:Content-Disposition:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-MS-Exchange-Transport-Forked:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=qSD08YzvemME/gatlrER0TFgVD+u6fpe4TgJb2NLSg2/+D472Xd9hyyhq0PVmbLrP
+         jMtLbGboQBZvefxEnyRI2lkiFX7k/BHZQSzGZ44mOYbmaujwaOwJGBLSgcWmsyIxpW
+         aIupApe6BTASGw9tHj7h23667+bETdA5RGX8w6a/e9ml2Q1phdsGYKYbOsrmsBKaHo
+         3GbZrz5Jib0lXouuUAr9d7IJqc5iB9quLcyhhz1wpZSo8jkblFCrFY+qpQWqEHT25S
+         sdpiHAY6Ul19B1SOZ+0UK46xn1LH4wXTGZqcCpFSstQgzWYUeESCIUWzM8UhLN4DJl
+         N8G3dSW5akCZA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Avihai Horon <avihaih@nvidia.com>
+On Wed, Sep 23, 2020 at 06:38:40AM +0100, Christoph Hellwig wrote:
+> > +static void setup_dma_device(struct ib_device *device,
+> > +			     struct device *dma_device)
+> >  {
+> > +	if (!dma_device) {
+> >  		/*
+> > +		 * If the caller does not provide a DMA capable device then the
+> > +		 * IB device will be used. In this case the caller should fully
+> > +		 * setup the ibdev for DMA. This usually means using
+> > +		 * dma_virt_ops.
+> >  		 */
+> > +#ifdef CONFIG_DMA_OPS
+> > +		if (WARN_ON(!device->dev.dma_ops))
+> > +			return;
+> > +#endif
+> 
+> dma ops are entirely optiona and NULL for the most common case
+> (direct mapping without an IOMMU).
 
-Expose the query GID table and entry API to user space by adding
-two new methods and method handlers to the device object.
+This is the case where:
 
-This API provides a faster way to query a GID table using single call and
-will be used in libibverbs to improve current approach that requires
-multiple calls to open, close and read multiple sysfs files for a single
-GID table entry.
+ +		dma_device = &device->dev;
 
-Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../infiniband/core/uverbs_std_types_device.c | 196 +++++++++++++++++-
- include/rdma/ib_verbs.h                       |   6 +-
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
- include/uapi/rdma/ib_user_ioctl_verbs.h       |   6 +
- 4 files changed, 220 insertions(+), 4 deletions(-)
+device == struct ib_device we just allocated
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
-index 9f43c0161a8e..f367d523a46b 100644
---- a/drivers/infiniband/core/uverbs_std_types_device.c
-+++ b/drivers/infiniband/core/uverbs_std_types_device.c
-@@ -3,11 +3,13 @@
-  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-  */
- 
-+#include <linux/overflow.h>
- #include <rdma/uverbs_std_types.h>
- #include "rdma_core.h"
- #include "uverbs.h"
- #include <rdma/uverbs_ioctl.h>
- #include <rdma/opa_addr.h>
-+#include <rdma/ib_cache.h>
- 
- /*
-  * This ioctl method allows calling any defined write or write_ex
-@@ -266,6 +268,172 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_CONTEXT)(
- 	return ucontext->device->ops.query_ucontext(ucontext, attrs);
- }
- 
-+static int copy_gid_entries_to_user(struct uverbs_attr_bundle *attrs,
-+				    struct ib_uverbs_gid_entry *entries,
-+				    size_t num_entries, size_t user_entry_size)
-+{
-+	const struct uverbs_attr *attr;
-+	void __user *user_entries;
-+	size_t copy_len;
-+	int ret;
-+	int i;
-+
-+	if (user_entry_size == sizeof(*entries)) {
-+		ret = uverbs_copy_to(attrs,
-+				     UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+				     entries, sizeof(*entries) * num_entries);
-+		return ret;
-+	}
-+
-+	copy_len = min_t(size_t, user_entry_size, sizeof(*entries));
-+	attr = uverbs_attr_get(attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES);
-+	if (IS_ERR(attr))
-+		return PTR_ERR(attr);
-+
-+	user_entries = u64_to_user_ptr(attr->ptr_attr.data);
-+	for (i = 0; i < num_entries; i++) {
-+		if (copy_to_user(user_entries, entries, copy_len))
-+			return -EFAULT;
-+
-+		if (user_entry_size > sizeof(*entries)) {
-+			if (clear_user(user_entries + sizeof(*entries),
-+				       user_entry_size - sizeof(*entries)))
-+				return -EFAULT;
-+		}
-+
-+		entries++;
-+		user_entries += user_entry_size;
-+	}
-+
-+	return uverbs_output_written(attrs,
-+				     UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES);
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uverbs_gid_entry *entries;
-+	struct ib_ucontext *ucontext;
-+	struct ib_device *ib_dev;
-+	size_t user_entry_size;
-+	ssize_t num_entries;
-+	size_t max_entries;
-+	size_t num_bytes;
-+	u32 flags;
-+	int ret;
-+
-+	ret = uverbs_get_flags32(&flags, attrs,
-+				 UVERBS_ATTR_QUERY_GID_TABLE_FLAGS, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&user_entry_size, attrs,
-+			       UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE);
-+	if (ret)
-+		return ret;
-+
-+	max_entries = uverbs_attr_ptr_get_array_size(
-+		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+		user_entry_size);
-+	if (max_entries <= 0)
-+		return -EINVAL;
-+
-+	ucontext = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ucontext))
-+		return PTR_ERR(ucontext);
-+	ib_dev = ucontext->device;
-+
-+	if (check_mul_overflow(max_entries, sizeof(*entries), &num_bytes))
-+		return -EINVAL;
-+
-+	entries = uverbs_zalloc(attrs, num_bytes);
-+	if (!entries)
-+		return -ENOMEM;
-+
-+	num_entries = rdma_query_gid_table(ib_dev, entries, max_entries);
-+	if (num_entries < 0)
-+		return -EINVAL;
-+
-+	ret = copy_gid_entries_to_user(attrs, entries, num_entries,
-+				       user_entry_size);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs,
-+			     UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+			     &num_entries, sizeof(num_entries));
-+	return ret;
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_ENTRY)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uverbs_gid_entry entry = {};
-+	const struct ib_gid_attr *gid_attr;
-+	struct ib_ucontext *ucontext;
-+	struct ib_device *ib_dev;
-+	struct net_device *ndev;
-+	u32 gid_index;
-+	u32 port_num;
-+	u32 flags;
-+	int ret;
-+
-+	ret = uverbs_get_flags32(&flags, attrs,
-+				 UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&port_num, attrs,
-+			       UVERBS_ATTR_QUERY_GID_ENTRY_PORT);
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_get_const(&gid_index, attrs,
-+			       UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX);
-+	if (ret)
-+		return ret;
-+
-+	ucontext = ib_uverbs_get_ucontext(attrs);
-+	if (IS_ERR(ucontext))
-+		return PTR_ERR(ucontext);
-+	ib_dev = ucontext->device;
-+
-+	if (!rdma_is_port_valid(ib_dev, port_num))
-+		return -EINVAL;
-+
-+	if (!rdma_ib_or_roce(ib_dev, port_num))
-+		return -EOPNOTSUPP;
-+
-+	gid_attr = rdma_get_gid_attr(ib_dev, port_num, gid_index);
-+	if (IS_ERR(gid_attr))
-+		return PTR_ERR(gid_attr);
-+
-+	memcpy(&entry.gid, &gid_attr->gid, sizeof(gid_attr->gid));
-+	entry.gid_index = gid_attr->index;
-+	entry.port_num = gid_attr->port_num;
-+	entry.gid_type = gid_attr->gid_type;
-+
-+	rcu_read_lock();
-+	ndev = rdma_read_gid_attr_ndev_rcu(gid_attr);
-+	if (IS_ERR(ndev)) {
-+		if (PTR_ERR(ndev) != -ENODEV) {
-+			ret = PTR_ERR(ndev);
-+			rcu_read_unlock();
-+			goto out;
-+		}
-+	} else {
-+		entry.netdev_ifindex = ndev->ifindex;
-+	}
-+	rcu_read_unlock();
-+
-+	ret = uverbs_copy_to_struct_or_zero(
-+		attrs, UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY, &entry,
-+		sizeof(entry));
-+out:
-+	rdma_put_gid_attr(gid_attr);
-+	return ret;
-+}
-+
- DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_METHOD_GET_CONTEXT,
- 	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_GET_CONTEXT_NUM_COMP_VECTORS,
-@@ -300,12 +468,38 @@ DECLARE_UVERBS_NAMED_METHOD(
- 				   reserved),
- 		UA_MANDATORY));
- 
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_QUERY_GID_TABLE,
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE, u64,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_QUERY_GID_TABLE_FLAGS, u32,
-+			     UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+			    UVERBS_ATTR_MIN_SIZE(0), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+			    UVERBS_ATTR_TYPE(u64), UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_QUERY_GID_ENTRY,
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_ENTRY_PORT, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_CONST_IN(UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS, u32,
-+			     UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY,
-+			    UVERBS_ATTR_STRUCT(struct ib_uverbs_gid_entry,
-+					       netdev_ifindex),
-+			    UA_MANDATORY));
-+
- DECLARE_UVERBS_GLOBAL_METHODS(UVERBS_OBJECT_DEVICE,
- 			      &UVERBS_METHOD(UVERBS_METHOD_GET_CONTEXT),
- 			      &UVERBS_METHOD(UVERBS_METHOD_INVOKE_WRITE),
- 			      &UVERBS_METHOD(UVERBS_METHOD_INFO_HANDLES),
- 			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_PORT),
--			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_CONTEXT));
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_CONTEXT),
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_GID_TABLE),
-+			      &UVERBS_METHOD(UVERBS_METHOD_QUERY_GID_ENTRY));
- 
- const struct uapi_definition uverbs_def_obj_device[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_DEVICE),
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index ab104bc2b8e5..b585db4ef9b4 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -138,9 +138,9 @@ union ib_gid {
- extern union ib_gid zgid;
- 
- enum ib_gid_type {
--	IB_GID_TYPE_IB        = 0,
--	IB_GID_TYPE_ROCE      = 1,
--	IB_GID_TYPE_ROCE_UDP_ENCAP = 2,
-+	IB_GID_TYPE_IB = IB_UVERBS_GID_TYPE_IB,
-+	IB_GID_TYPE_ROCE = IB_UVERBS_GID_TYPE_ROCE_V1,
-+	IB_GID_TYPE_ROCE_UDP_ENCAP = IB_UVERBS_GID_TYPE_ROCE_V2,
- 	IB_GID_TYPE_SIZE
- };
- 
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index 99dcabf61a71..7968a1845355 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -70,6 +70,8 @@ enum uverbs_methods_device {
- 	UVERBS_METHOD_QUERY_PORT,
- 	UVERBS_METHOD_GET_CONTEXT,
- 	UVERBS_METHOD_QUERY_CONTEXT,
-+	UVERBS_METHOD_QUERY_GID_TABLE,
-+	UVERBS_METHOD_QUERY_GID_ENTRY,
- };
- 
- enum uverbs_attrs_invoke_write_cmd_attr_ids {
-@@ -352,4 +354,18 @@ enum uverbs_attrs_async_event_create {
- 	UVERBS_ATTR_ASYNC_EVENT_ALLOC_FD_HANDLE,
- };
- 
-+enum uverbs_attrs_query_gid_table_cmd_attr_ids {
-+	UVERBS_ATTR_QUERY_GID_TABLE_ENTRY_SIZE,
-+	UVERBS_ATTR_QUERY_GID_TABLE_FLAGS,
-+	UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-+	UVERBS_ATTR_QUERY_GID_TABLE_RESP_NUM_ENTRIES,
-+};
-+
-+enum uverbs_attrs_query_gid_entry_cmd_attr_ids {
-+	UVERBS_ATTR_QUERY_GID_ENTRY_PORT,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_GID_INDEX,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_FLAGS,
-+	UVERBS_ATTR_QUERY_GID_ENTRY_RESP_ENTRY,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index d5ac65ae2557..cfea82acfe57 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -250,6 +250,12 @@ enum rdma_driver_id {
- 	RDMA_DRIVER_SIW,
- };
- 
-+enum ib_uverbs_gid_type {
-+	IB_UVERBS_GID_TYPE_IB,
-+	IB_UVERBS_GID_TYPE_ROCE_V1,
-+	IB_UVERBS_GID_TYPE_ROCE_V2,
-+};
-+
- struct ib_uverbs_gid_entry {
- 	__aligned_u64 gid[2];
- 	__u32 gid_index;
--- 
-2.26.2
+The only use of this configuration is to override the dma ops with
+dma_virt_ops, so drivers that don't do that are buggy. A ib_device
+itself cannot do DMA otherwise. This should probably be clarified to
+just fail if !CONIFG_DMA_OPS
 
+All other cases should point dma_device at some kind of DMA capable
+struct device like a pci_device, which can have a NULL ops.
+
+> > +	} else {
+> > +		device->dev.dma_parms = dma_device->dma_parms;
+> >  		/*
+> > +		 * Auto setup the segment size if a DMA device was passed in.
+> > +		 * The PCI core sets the maximum segment size to 64 KB. Increase
+> > +		 * this parameter to 2 GB.
+> >  		 */
+> > +		dma_set_max_seg_size(dma_device, SZ_2G);
+> 
+> You can't just inherity DMA properties like this this.  Please
+> fix all code that looks at the seg size to look at the DMA device.
+
+Inherit? This is overriding the PCI default of 64K to be 2G for RDMA
+devices.
+
+The closest thing RDMA has to segment size is the length of a IB
+scatter/gather WR element in verbs. This is 32 bits by spec.
+
+Even if a SGL > 32 bits was required the ULP should switch to use RDMA
+MRs instead of inline IB SG.
+
+So really there is no segment size limitation and the intention here
+is to just disable segment size at IOMMU layer.
+
+Since this is universal, by spec, not HW specific, it doesn't make
+much sense to put in the drivers.
+
+> Btw, where does the magic 2G come from?
+
+2G is the largest power of two that will fit in a struct
+scatterlist->length or the ib_sge->length.
+
+Jason
