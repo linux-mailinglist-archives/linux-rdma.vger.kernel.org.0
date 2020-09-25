@@ -2,155 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947CF27867F
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 13:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6992786C3
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 14:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgIYL6q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Sep 2020 07:58:46 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:6915 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgIYL6o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:58:44 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6ddb710000>; Fri, 25 Sep 2020 19:58:41 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 25 Sep
- 2020 11:58:37 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.51) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 25 Sep 2020 11:58:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jlzDhE2CpEFR5UvMwx36aDOIi8nVK1CJQ+3s+5S/ZeslJRzDEf77mLg7u1W6eMIBP692JvubWExDT4R5A622dAYa6IUW/v34epl+XJC0Jc28LSQ+A8KK0Y/EJ0CWeeKoIsQKvGGO8kNWwHNWc8FESTY1f7VPdHspT0Vb84wnVzkd0pBz82mWoQ0h8BjAYpbhBMpzmNJP1FR4TRG3va55fN2+o9dggqqyiG2EEJNs1HG42+R1aWbkREuTCqqu4g+rIRsQcsME6769pQUyLR+1d/kTiSGY9KI4JHTcBRjQOS9YIxaVsiyEu8ZnCO/2nkLsKnCk4k6/o4tIbdqHgY3rGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9MYxayAQMlbYSUtc6MXr0ErFpGIN/sIC/TquzhapA0=;
- b=Ss4o6zXfwfTmWOLuTukOd2vjQsAav5B4QFY5AoYQju2RNDSeHW8NPc9Pwrnb9y/0ceYr3nMgyf+95S5TyCORcm8ayy0l4ahmEzb29IzO4zVNi2AMsiu4iTZaOOZV2HCzRHMAAcqhlnhkQ2wLw4Vi/+xr1CtzmG8+uv6GJFAlHt1lvjzCiwmSAxhMnECed3JUx55RTznX+NKmt3y+Oi31Q/+WXxjbzcM9cuB0g/excOXIcyaqjWvQ8kAxZK/3mqjc9yMocBJts5ehQtpTAVFxd1iyTvMeJ/Pux+m0acU5kjaOxtWsyiBvTeBWuNrQi50MaE87wmLE9b+vX39SbFXtBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2485.namprd12.prod.outlook.com (2603:10b6:4:bb::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Fri, 25 Sep
- 2020 11:58:35 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
- 11:58:35 +0000
-Date:   Fri, 25 Sep 2020 08:58:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-CC:     Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        "Doug Ledford" <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        id S1728395AbgIYMNt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Sep 2020 08:13:49 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6791 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbgIYMNt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Sep 2020 08:13:49 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6dde9b0000>; Fri, 25 Sep 2020 05:12:11 -0700
+Received: from [172.27.0.140] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 25 Sep
+ 2020 12:13:30 +0000
+Subject: Re: [Intel-gfx] [PATCH rdma-next v3 1/2] lib/scatterlist: Add support
+ in dynamic allocation of SG table from pages
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
         <intel-gfx@lists.freedesktop.org>,
         Roland Scheidegger <sroland@vmware.com>,
         <dri-devel@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
         "VMware Graphics" <linux-graphics-maintainer@vmware.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
         Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [Intel-gfx] [PATCH rdma-next v3 1/2] lib/scatterlist: Add
- support in dynamic allocation of SG table from pages
-Message-ID: <20200925115833.GZ9475@nvidia.com>
 References: <20200922083958.2150803-1-leon@kernel.org>
  <20200922083958.2150803-2-leon@kernel.org>
  <118a03ef-d160-e202-81cc-16c9c39359fc@linux.intel.com>
  <20200925071330.GA2280698@unreal>
  <adff5752-582c-2065-89e2-924ef732911a@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <adff5752-582c-2065-89e2-924ef732911a@linux.intel.com>
-X-Originating-IP: [156.34.48.30]
-X-ClientProxiedBy: BL1PR13CA0026.namprd13.prod.outlook.com
- (2603:10b6:208:256::31) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+From:   Maor Gottlieb <maorg@nvidia.com>
+Message-ID: <a8cca9f0-58ec-654d-939e-8568d17d4c60@nvidia.com>
+Date:   Fri, 25 Sep 2020 15:13:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0026.namprd13.prod.outlook.com (2603:10b6:208:256::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.14 via Frontend Transport; Fri, 25 Sep 2020 11:58:35 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kLmMz-000nQL-L0; Fri, 25 Sep 2020 08:58:33 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fcf473df-5ed4-4e72-f637-08d8614a54cc
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2485:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB2485C89862DB531E934930C8C2360@DM5PR12MB2485.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pMV9LxU4FhJo3IJUVpgvPqcdEchPAJA70JaUfKLK4k1NGWSTlTy43Afs28aoX7j3IQjozRAs97nTVNtrwnK5RU38ak7Ts0k7FwbOjxBc3DjE90X0GXeGXDM+/IsC43pV3ET+rGknb/Iv5+VcolaY6lL18M3FaIusR6aH/HqPe1WjdQ2MH8iUPHNiphNXo+6XugRc/nf1TrqdNWZBeZb8Y4TTpeuURugtBQBWL6pjp0Zt6PNuptXX3c8jmC5AY9WpfGzg7bCQz2LNQqaSllTuAKzIzDy8FkH62cPcgoAoww47m1gIzBPwEM1oi0e5N6JQGcg4kEG0BUt/QAR51gR8jguFW5tKD7yykhaUBsGR0u0kEZa98oexnVMGpMVTQJnl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(66946007)(66556008)(186003)(54906003)(2906002)(1076003)(26005)(53546011)(316002)(86362001)(33656002)(5660300002)(36756003)(7416002)(9786002)(9746002)(6916009)(478600001)(2616005)(66476007)(8676002)(4326008)(107886003)(8936002)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: e1pQNxeP/TLN76OdKBdfxJXBFLssCjTtnS2Sg+COpOc5a/oKkkEmd1WpC9AR2QE/tKIFAvYilsGWgPvMKb+Q1zcagbV1h/O7BgBBH2AUkDWywKirbJ5Ek4y0PCvSeU123qF9hfbUkGyMv4lw/Pp69XIHitctjcnxWH7v5jH87hb/7GRzD1uEQTbsRitWzQxVAJg2MkYhkrmtbwZ3Qk1FV2bOjlpFS5gemOYM9yFj1YGowaUqzXLB8YU7MQB2S18e60oAcVWpEc9ss2+eqvKLePcHlwMjKifkh8CoPsVowtEEetSJestHd5j7Ge0O+uwvbOoD8k8zmCKJw/YVsb+uUtbgcj2EwXfyYgkoOgcwJm+AHD2kTOgZnQB0rxVeKdBrP3QuFN0pJywahgHGIpHEGV4MPXs+9NQs6wxSZrxSTj0er4gs5fDUd1XsnPq/oQ6SkZwJfoQz/cx1/l8X/AEhf8eRBsXebWOjA+P+XEHwAcILC2HjObNXbye3TRrrPOVY9tJmE2MQhltYA7M3kM8ANTx4LAokYt8ZatMqGQKooHaRN700v2ySGU5omELT5iG20ZpzMnlri5IplYPCAAOaEvTfviDs1gDAQtImDpGiupDlarCqaOVp45WKXgpEETnHCYJ1sXhh02MO/ea1bxK/8Q==
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcf473df-5ed4-4e72-f637-08d8614a54cc
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 11:58:35.2696
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e7iCdokvHLeK1A+yiFj3KUn+HddJZG/boTZlaxhSMLJoc/U9cAJtVN/5jaPdOTmV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2485
-X-OriginatorOrg: Nvidia.com
+In-Reply-To: <adff5752-582c-2065-89e2-924ef732911a@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601035121; bh=i9MYxayAQMlbYSUtc6MXr0ErFpGIN/sIC/TquzhapA0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
-         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
-         References:Content-Type:Content-Disposition:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
-         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
-         X-MS-Exchange-Transport-Forked:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=UBU7RbJGc72g5nCst20RcXOTriUU+oCCDckomH4l7d67cf1gNfCg0h6Dd9KYzRDUS
-         sKgShT2YOL3yJfyXHrIXOqFDqqDKbi9PZAd5zzB3M5DoCpSXxWGYgD7O6NYjkrE5ya
-         w8V/kJ4iX0rcRh+OVcJQM6bDrZdFQHr5XB0z5ZrHZl/geDsCLk/uXlQydLeCZjtKW9
-         hjDQPYQZP/dH/N8BbbusUwVCVV4ZptczESC4NoSnHMcX850PkScP+IsLMsgBNnq7XT
-         1h7EJOUPDC2GbzDuLcCZsjgJIlFOJg5ESgdBMccxUmY5vMm/s2WuuWjBp36ZGA0IYt
-         odRFDPnap/PHw==
+        t=1601035931; bh=OOxZYaeyrnTeUKolTNHANplbexAqSviLCY+bHC09/Hg=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=HYmkm8xCiVsEWw4dyNi+Djz5rk4y7teGKYpjvtAVH5SihKKT0eSxXfGiZvQTX7iWg
+         PFvEwPjW3jL84//v1jjMU/5QXGHzXMlfUxFOMxDqiqj94VsaICGmdRPFU7DPO4TC7/
+         ZpdnfqdNWnZFfhZuNM7NRq/BTnoKS1U8DVwRpUNEO5+FmGLfl9nK53ra2MXnsu5N3K
+         YVPYZmtU/YqjUpm1Fr5Eafxu7TaMR+d+aym6WkJWJJDnhtc9efmBxR0gDQNKBzwU6n
+         Xb+2y4LNG3tJx/NqWDyygyZD7GluQjDlpYoQWZS22uuls+E52NaLCCDjA9zY0UzJPd
+         ZID+Pru1blUYA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:41:29PM +0100, Tvrtko Ursulin wrote:
-> 
+
+On 9/25/2020 2:41 PM, Tvrtko Ursulin wrote:
+>
 > On 25/09/2020 08:13, Leon Romanovsky wrote:
-> > On Thu, Sep 24, 2020 at 09:21:20AM +0100, Tvrtko Ursulin wrote:
-> > > 
-> > > On 22/09/2020 09:39, Leon Romanovsky wrote:
-> > > > From: Maor Gottlieb <maorg@mellanox.com>
-> > > > 
-> > > > Extend __sg_alloc_table_from_pages to support dynamic allocation of
-> > > > SG table from pages. It should be used by drivers that can't supply
-> > > > all the pages at one time.
-> > > > 
-> > > > This function returns the last populated SGE in the table. Users should
-> > > > pass it as an argument to the function from the second call and forward.
-> > > > As before, nents will be equal to the number of populated SGEs (chunks).
-> > > 
-> > > So it's appending and growing the "list", did I get that right? Sounds handy
-> > > indeed. Some comments/questions below.
-> > 
-> > Yes, we (RDMA) use this function to chain contiguous pages.
-> 
-> I will eveluate if i915 could start using it. We have some loops which build
-> page by page and coalesce.
+>> On Thu, Sep 24, 2020 at 09:21:20AM +0100, Tvrtko Ursulin wrote:
+>>>
+>>> On 22/09/2020 09:39, Leon Romanovsky wrote:
+>>>> From: Maor Gottlieb <maorg@mellanox.com>
+>>>>
+>>>> Extend __sg_alloc_table_from_pages to support dynamic allocation of
+>>>> SG table from pages. It should be used by drivers that can't supply
+>>>> all the pages at one time.
+>>>>
+>>>> This function returns the last populated SGE in the table. Users=20
+>>>> should
+>>>> pass it as an argument to the function from the second call and=20
+>>>> forward.
+>>>> As before, nents will be equal to the number of populated SGEs=20
+>>>> (chunks).
+>>>
+>>> So it's appending and growing the "list", did I get that right?=20
+>>> Sounds handy
+>>> indeed. Some comments/questions below.
+>>
+>> Yes, we (RDMA) use this function to chain contiguous pages.
+>
+> I will eveluate if i915 could start using it. We have some loops which=20
+> build page by page and coalesce.
+>
+> [snip]
+>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(ret))
+>>>> diff --git a/tools/testing/scatterlist/main.c=20
+>>>> b/tools/testing/scatterlist/main.c
+>>>> index 0a1464181226..4899359a31ac 100644
+>>>> --- a/tools/testing/scatterlist/main.c
+>>>> +++ b/tools/testing/scatterlist/main.c
+>>>> @@ -55,14 +55,13 @@ int main(void)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0, test =3D tests; tes=
+t->expected_segments; test++,=20
+>>>> i++) {
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pa=
+ge *pages[MAX_PAGES];
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct sg=
+_table st;
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct scatterlist *sg;
+>>>>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_pages=
+(pages, test->pfn, test->num_pages);
+>>>>
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D __sg_alloc_table_f=
+rom_pages(&st, pages,=20
+>>>> test->num_pages,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0, test->size, test->max_seg,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 GFP_KERNEL);
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert(ret =3D=3D test->al=
+loc_ret);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sg =3D __sg_alloc_table_fr=
+om_pages(&st, pages,=20
+>>>> test->num_pages, 0,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 test->size, test->max_seg, NULL, 0, GFP_KERNEL);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 assert(PTR_ERR_OR_ZERO(sg)=
+ =3D=3D test->alloc_ret);
+>>>
+>>> Some test coverage for relatively complex code would be very=20
+>>> welcomed. Since
+>>> the testing framework is already there, even if it bit-rotted a bit,=20
+>>> but
+>>> shouldn't be hard to fix.
+>>>
+>>> A few tests to check append/grow works as expected, in terms of how=20
+>>> the end
+>>> table looks like given the initial state and some different page=20
+>>> patterns
+>>> added to it. And both crossing and not crossing into sg chaining=20
+>>> scenarios.
+>>
+>> This function is basic for all RDMA devices and we are pretty confident
+>> that the old and new flows are tested thoroughly.
+>>
+>> We will add proper test in next kernel cycle.
+>
+> Patch seems to be adding a requirement that all callers of=20
+> (__)sg_alloc_table_from_pages pass in zeroed struct sg_table, which=20
+> wasn't the case so far.
+>
+> Have you audited all the callers and/or fixed them? There seems to be=20
+> quite a few. Gut feel says problem would probably be better solved in=20
+> lib/scatterlist.c and not by making all the callers memset. Should be=20
+> possible if you make sure you only read st->nents if prev was passed in?
+>
+> I've fixed the unit test and with this change the existing tests do=20
+> pass. But without zeroing it does fail on the very first, single page,=20
+> test scenario.
+>
+> You can pull the unit test hacks from=20
+> git://people.freedesktop.org/~tursulin/drm-intel sgtest.
+>
+> Regards,
+>
+> Tvrtko
 
-Christoph H doesn't like it, but if there are enough cases we should
-really have a pin_user_pages_to_sg() rather than open code this all
-over the place.
+Thanks for finding this issue.=C2=A0 In the regular flow,=20
+__sg_alloc_table_from_pages memset the sg_table struct, but currently=20
+the code access this struct before. Will be fixed internally in scatterlist=
+.
 
-With THP the chance of getting a coalescing SG is much higher, and
-everything is more efficient with larger SGEs.
-
-Jason
