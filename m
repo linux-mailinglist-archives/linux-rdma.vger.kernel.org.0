@@ -2,134 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B99278A56
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 16:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4190278A54
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 16:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgIYOHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Sep 2020 10:07:51 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6570 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYOHu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:07:50 -0400
-IronPort-SDR: fI89OUCxyn3dSZLCZkzWu8Pm72wtzZthr5BKvi/caeRd4/PJ0zNwOxrt28Ro00kZgswSSL8nZT
- 6kCh+kJJVzew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158879207"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="158879207"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:54:45 -0700
-IronPort-SDR: dk03fEEi9qPyhqM7EwMAHy0s+gOrBDoBRLjKg62nh1DCt22erA2Hjz2fGiIdaCN+F1Vla5tS05
- r4RnbuAL/0xQ==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="455841547"
-Received: from mlevy2-mobl.ger.corp.intel.com (HELO [10.251.176.131]) ([10.251.176.131])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:54:41 -0700
-Subject: Re: [Intel-gfx] [PATCH rdma-next v3 1/2] lib/scatterlist: Add support
- in dynamic allocation of SG table from pages
-To:     Maor Gottlieb <maorg@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
-        linux-rdma@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        Roland Scheidegger <sroland@vmware.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Maor Gottlieb <maorg@mellanox.com>
-References: <20200922083958.2150803-1-leon@kernel.org>
- <20200922083958.2150803-2-leon@kernel.org>
- <118a03ef-d160-e202-81cc-16c9c39359fc@linux.intel.com>
- <20200925071330.GA2280698@unreal> <20200925115544.GY9475@nvidia.com>
- <65ca566b-7a5e-620f-13a4-c59eb836345a@nvidia.com>
- <33942b10-8eef-9180-44c5-b7379b92b824@linux.intel.com>
- <9d69d68d-7868-609b-c703-dfe9fec93a0f@nvidia.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <45919218-9a73-e3e3-cc03-5255a227f341@linux.intel.com>
-Date:   Fri, 25 Sep 2020 14:54:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728056AbgIYOH3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Sep 2020 10:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgIYOH3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Sep 2020 10:07:29 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEBAC0613CE
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id cy2so1413659qvb.0
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ky8MreI3OvNL2vsDZr1bzR8znuBSqWm9TW6JUk7GecE=;
+        b=M7odxUL9heq1xTIMokyrxqVVGLMRabM0IGGh6FHY0y0CNW/j5coU0ghL3vvYxk/oV/
+         oE09Za02EZ0+lTOfiITK+jWeqfxc5DyhxyWi4MPGZCIxhMtWb2/9KJU3DSdf62TXc+vc
+         s1cONPPhNBq7G0pqKeLjuUtTMF99wAjtEsgA252H5OAKRXbcROcK25gZM7UC1csIt0eu
+         mjZACd3BSLDU1op4Xbj3tTAqFbQyK8kPW6IspYxZa9CmQztTTEYcvbdj+dnjH5s+fCMD
+         dsujfd83Tef8Vdz5btoqsIQQWU7q1ZNoebcIsDzKBQr0MIYsIgW3KqEbzgJAddxt9ngV
+         3Itw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ky8MreI3OvNL2vsDZr1bzR8znuBSqWm9TW6JUk7GecE=;
+        b=S7axFGttdPfmkVevihw8U3ilApn5GuQQyElsNBdqmOG48oKoCrJy34JHUKVXat20Bx
+         PiYzrK/s2VVs8br8EgDL1xS8vlxMNGYDmPs7Rx1l4YYzlhnNPn8gHikuIw3sn0DhwQTT
+         IUsXRyF5for5fwed3vILTkqlyjd1nDk0qANWykoqnnAkqyhzdx1HGXkD51g6QpmkL0ah
+         JhhYtTLxpZtdUXdPt7JECx4J45QrRQHYxMy7ibWQtn9jqxMaF8Pg0x5HUrqCMjTQW8KT
+         5AiB/DRpErlivbF6JZ9PRbsURe0l/Y6Tu48CJfkcr+PDUHxT+xO1yoGZDTVLeD962M0D
+         Wqhg==
+X-Gm-Message-State: AOAM531TL0gSWxjDALOsFR2o04R/da1733XjHH5ZUnK9N5iMmIc5cALM
+        Mj10QPllwFT7MavNUx0Vys7ytvXbKzaP0QAT
+X-Google-Smtp-Source: ABdhPJzlR8wK8aQM2Vy2d/Jum9pkDiZHXLv87MG9NYukRz44eQfEO6pXoFiH1qfNC2Yt6OfPDpb6gQ==
+X-Received: by 2002:a0c:fd42:: with SMTP id j2mr4779835qvs.37.1601042848138;
+        Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m1sm1694496qkn.89.2020.09.25.07.07.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 07:07:27 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kLoNi-0012Nj-SQ; Fri, 25 Sep 2020 11:07:26 -0300
+Date:   Fri, 25 Sep 2020 11:07:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
+Cc:     Edward Srouji <edwards@nvidia.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: pyverbs regression
+Message-ID: <20200925140726.GI9916@ziepe.ca>
+References: <5c484f6d-364f-834d-0b16-144be92fc234@gmail.com>
+ <1fb57743-20fd-1316-8071-cc3ab056e582@nvidia.com>
+ <CS1PR8401MB0821BD9BEF78160638B4C7A2BC3A0@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <9d69d68d-7868-609b-c703-dfe9fec93a0f@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CS1PR8401MB0821BD9BEF78160638B4C7A2BC3A0@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 25/09/2020 14:39, Maor Gottlieb wrote:
+On Mon, Sep 21, 2020 at 04:34:52PM +0000, Pearson, Robert B wrote:
+> Edward,
 > 
-> On 9/25/2020 3:33 PM, Tvrtko Ursulin wrote:
->>
->> On 25/09/2020 13:18, Maor Gottlieb wrote:
->>> On 9/25/2020 2:55 PM, Jason Gunthorpe wrote:
->>>> On Fri, Sep 25, 2020 at 10:13:30AM +0300, Leon Romanovsky wrote:
->>>>>>> diff --git a/tools/testing/scatterlist/main.c 
->>>>>>> b/tools/testing/scatterlist/main.c
->>>>>>> index 0a1464181226..4899359a31ac 100644
->>>>>>> +++ b/tools/testing/scatterlist/main.c
->>>>>>> @@ -55,14 +55,13 @@ int main(void)
->>>>>>>        for (i = 0, test = tests; test->expected_segments; test++, 
->>>>>>> i++) {
->>>>>>>            struct page *pages[MAX_PAGES];
->>>>>>>            struct sg_table st;
->>>>>>> -        int ret;
->>>>>>> +        struct scatterlist *sg;
->>>>>>>
->>>>>>>            set_pages(pages, test->pfn, test->num_pages);
->>>>>>>
->>>>>>> -        ret = __sg_alloc_table_from_pages(&st, pages, 
->>>>>>> test->num_pages,
->>>>>>> -                          0, test->size, test->max_seg,
->>>>>>> -                          GFP_KERNEL);
->>>>>>> -        assert(ret == test->alloc_ret);
->>>>>>> +        sg = __sg_alloc_table_from_pages(&st, pages, 
->>>>>>> test->num_pages, 0,
->>>>>>> +                test->size, test->max_seg, NULL, 0, GFP_KERNEL);
->>>>>>> +        assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
->>>>>> Some test coverage for relatively complex code would be very 
->>>>>> welcomed. Since
->>>>>> the testing framework is already there, even if it bit-rotted a 
->>>>>> bit, but
->>>>>> shouldn't be hard to fix.
->>>>>>
->>>>>> A few tests to check append/grow works as expected, in terms of 
->>>>>> how the end
->>>>>> table looks like given the initial state and some different page 
->>>>>> patterns
->>>>>> added to it. And both crossing and not crossing into sg chaining 
->>>>>> scenarios.
->>>>> This function is basic for all RDMA devices and we are pretty 
->>>>> confident
->>>>> that the old and new flows are tested thoroughly.
->>>> Well, since 0-day is reporting that __i915_gem_userptr_alloc_pages is
->>>> crashing on this, it probably does need some tests :\
->>>>
->>>> Jason
->>>
->>> It is crashing in the regular old flow which already tested.
->>> However, I will add more tests.
->>
->> Do you want to take some of the commits from 
->> git://people.freedesktop.org/~tursulin/drm-intel sgtest? It would be 
->> fine by me. I can clean up the commit messages if you want.
-> 
-> I will very appreciate it. Thanks
+> That problem was resolved by following Leon's suggestion and
+> deleting the build directory. I do not see it any more.
 
-I've pushed a branch with tidied commit messages and a bit re-ordered to 
-the same location. You can pull and include in your series:
+It means some make dependencies are missing :(
 
-  tools/testing/scatterlist: Rejuvenate bit-rotten test
-  tools/testing/scatterlist: Show errors in human readable form
-
-And "test fixes for sg append" you can squash (minus the sg_table 
-zeroing) into your patch.
-
-If this plan does not work for you, I can send two of my patches to lkml 
-independently. What ever you prefer.
-
-Regards,
-
-Tvrtko
+Jason
