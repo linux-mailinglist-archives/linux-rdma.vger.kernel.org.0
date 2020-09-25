@@ -2,221 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A38C27864D
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 13:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175F227865A
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 13:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgIYLwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Sep 2020 07:52:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27074 "EHLO mga12.intel.com"
+        id S1727749AbgIYLz7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Sep 2020 07:55:59 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:23922 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727248AbgIYLwY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:52:24 -0400
-IronPort-SDR: U4jGwX5gyFDmVCFk2xMBLFp4gl/MwOmMwsdciGOL55OioINSPzK+d3ILDopgJLf5sNnBeTl4zB
- oRrnt35EYwiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140915411"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="140915411"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 04:39:21 -0700
-IronPort-SDR: u0xNA1R9SJtdtn/6Om28+GO/NfV+qihB4OuDeqYpG5VDMqT303Ub6ARKUu4NIoHe0/RkgQoilk
- o7p5Og3rlPSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="512108112"
-Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Sep 2020 04:39:19 -0700
-Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kLm4N-00004i-7s; Fri, 25 Sep 2020 11:39:19 +0000
-Date:   Fri, 25 Sep 2020 19:39:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 30b707886aeb89eee4e6b4e0c1aba9fb50e30a5f
-Message-ID: <5f6dd6de.ovqJpDuM3447pWdl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727521AbgIYLz7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:55:59 -0400
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6ddacb0001>; Fri, 25 Sep 2020 19:55:55 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 25 Sep
+ 2020 11:55:50 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.57) by
+ HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 25 Sep 2020 11:55:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aZlHyC+i40Jx0QCfbC2UcUfkDR2Oqa5QZ538ZQtiw0yD+VqsCk8yKubMnVf46KkeX8Z0Ii8y7BbjLKCnI7Vsvl/mkeVtGma+H4MshL9kl1hi2mFlvMt77PBreqad9CjHIZJQGTk0S8EHT4PE/M5B6ZKVGfl8viejzmsePLgEFj7ASoJeW0M+lFleBPS08jZfFhuywRbHCug1mSuNpSFBRLD1acRNYA/wIX5i4zYNYVTSarcwViWAOSdOBXIWnpzLqkfcVoGIhAiwzPmc6+l5zYokD85jol4bFoT3R6fXhm582ggKVGEoz4+epkd5J25jvopsrjerG3L09VQ9gBQ8Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K7un/5f7i/od79b7GD2C9iKkz7Uw+RURaayiAbz5t+c=;
+ b=DoCfWwb+FVHbSY9Di/tvjG02zgfIEsMJ46wFRJBG0siij4bnfnbulTwDqmgWiKL8skxwPXInkQ6S1pi343WKlXbB2+iu+f0zu9Yu69gfu32ZrWxzdBRoJGcQN60UYaev8gaJ1bfGKw/v2SqSJP4YA4JXM7mVNQ1dmq16ds9oKijrVzAtS4Rbn/UwPj+/VhuAAqL441lZvN1BcI3JWQVNRCxfmLIHFkFmnCuba742mVDy1qG9qt/uaaGsT6x/WWMBk97XhCHnZlj37OCkw6ElRi/7ajPDI2AgNeJsXTxNY4SnnDb8MNWADEPT4Qn8YAJg/fchD9Y7h3tCg6omreos8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2485.namprd12.prod.outlook.com (2603:10b6:4:bb::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Fri, 25 Sep
+ 2020 11:55:45 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
+ 11:55:45 +0000
+Date:   Fri, 25 Sep 2020 08:55:44 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <intel-gfx@lists.freedesktop.org>,
+        "Roland Scheidegger" <sroland@vmware.com>,
+        <dri-devel@lists.freedesktop.org>,
+        "David Airlie" <airlied@linux.ie>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [Intel-gfx] [PATCH rdma-next v3 1/2] lib/scatterlist: Add
+ support in dynamic allocation of SG table from pages
+Message-ID: <20200925115544.GY9475@nvidia.com>
+References: <20200922083958.2150803-1-leon@kernel.org>
+ <20200922083958.2150803-2-leon@kernel.org>
+ <118a03ef-d160-e202-81cc-16c9c39359fc@linux.intel.com>
+ <20200925071330.GA2280698@unreal>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200925071330.GA2280698@unreal>
+X-Originating-IP: [156.34.48.30]
+X-ClientProxiedBy: MN2PR14CA0018.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::23) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR14CA0018.namprd14.prod.outlook.com (2603:10b6:208:23e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23 via Frontend Transport; Fri, 25 Sep 2020 11:55:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kLmKG-000nOT-6d; Fri, 25 Sep 2020 08:55:44 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5c69e17f-6cc8-4a0a-bb36-08d86149efae
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2485:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB24852EA7682E2D2694D47F33C2360@DM5PR12MB2485.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bjETh35cKQuGlWia2cc4lJNFoN4EOznj0XVJk8IO3vdGooRPy6jSpYUzKjgug7pe5RVwvKR6fCV/P/KM0VZGJZcUKh/jwbNJGZqhQn7Lb/6y31GCBv+Oa6oH5Z4gjayobEAmLxfOBTW9GOoNYge8kObjsZ3NRvhPE7lnaJER2cuw63/+VsiJmy3PX9PlriiTz1iyX9ZC6Wg2p+QAtQz4UAS3NB4zybvXCrIM/uODWVvNVapaBlqSNQOfV0uw2mI3s2GTp+TlskgYb4LNW9Hgl0qf9r8mWSs9UhI4I2dKKq6UbFGTupSRrZaaASfGNFw6cchQkxWQT56vgoUpd5heNLlTfZSVLeZZ9w47kyIXQtCES6eOivTWgxZE3U55OO3V
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(66946007)(66556008)(186003)(54906003)(2906002)(1076003)(26005)(316002)(86362001)(33656002)(5660300002)(36756003)(7416002)(9786002)(9746002)(6916009)(478600001)(2616005)(66476007)(8676002)(4326008)(107886003)(8936002)(426003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: XgbRTfOUWpFzL9fR1edgYoRAxsXKE8ZLpJ3IW3t+l2I2knfFsAYoJHYglty8CVXf4l1ismX0BQZQyfVOkz3Dkpwn+JwInAWShBSfvo9AvYy4oSSWf4WLtl12H6U62iHu1Y4Z+fwus2kQqulVMuSRIB71ThjoRcug7EW4jcuxsh+nI0MQ9yvpauzzuf1rbT7qHWCQBMYLZS3v8zr+hEf2DDDEN7jEvEShM5EKTSZ2jEZxHHCHajb45P4Ar3VFVp4DhpMJm9/iyfIFVv47LAm71V5KdSH6xHUK+5NV3rrSAsE/tgZOv8lipriGX5RLtbq1vbgNximWhaSp2b7mQhQ3yyMuij4DpoJPHiNMqgABrGO6SPu+UxcPxUyF9LGANgSvFesdHxl0/4dyIxnqLM0Xh+xOwdVvzgLm30Kf2ReqcvwIjUkCfRlnmMS37iCxIG+gZUflXNpLPgVrX4rTcIDCu0S4ItlFVUMQwliV/3OWPc0IpjfcbhPlnTekzx/0BIzLplW0KkNUGoyG15uWibWDrF6MnK3IIsSlTaaN24CTCFPLTF/3czC4Hqr1AcCrezAz+A+ZFw3JstzxWHdZwHDFfvNP+4ceF5Wo177xETIs1pMBXQ8Wai323G5zQ60isiH37L+RplH9tSN+BRXbNZktEQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c69e17f-6cc8-4a0a-bb36-08d86149efae
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 11:55:45.6416
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jt9/UbD1aOgPmBRoSnCTZW++Abj+NEp99wMHpZcrjTgq/9EiOdSaV1SoIM8MyHWQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2485
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601034955; bh=K7un/5f7i/od79b7GD2C9iKkz7Uw+RURaayiAbz5t+c=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
+         References:Content-Type:Content-Disposition:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-MS-Exchange-Transport-Forked:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=IqDFG02JscTGlt7X327i4HW06op2maNlGR5RUGXRBT+AyAVAwB9Tc3xu7LERRhoOv
+         RnXngW/NtrfEh+2HtoCNCRHyg1sOLI1g1BMS9KdNR/U9FFiwu2jDLROIKVkMmuUw1e
+         dMlgSe8DfzL+k9o/WahsZSjX4rCuGURppSosbz7oSf4YYjiirdg0OrlSbSxxy6F421
+         qlHvDNDKMKJ/OWhJIVk0H4i9PeA2ig7z4GstTpd1FYK3E0sB8tLv+qYl7uDxsCF2aj
+         uW4fnCO4nxF3c94lti4N29USkKbg9J8FicZDh9wut2CIihS01eMf28S59e0Vy6K/pX
+         58Cxt+RedoSBg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 30b707886aeb89eee4e6b4e0c1aba9fb50e30a5f  RDMA/hns: Support inline data in extented sge space for RC
+On Fri, Sep 25, 2020 at 10:13:30AM +0300, Leon Romanovsky wrote:
+> > > diff --git a/tools/testing/scatterlist/main.c b/tools/testing/scatterlist/main.c
+> > > index 0a1464181226..4899359a31ac 100644
+> > > +++ b/tools/testing/scatterlist/main.c
+> > > @@ -55,14 +55,13 @@ int main(void)
+> > >   	for (i = 0, test = tests; test->expected_segments; test++, i++) {
+> > >   		struct page *pages[MAX_PAGES];
+> > >   		struct sg_table st;
+> > > -		int ret;
+> > > +		struct scatterlist *sg;
+> > >
+> > >   		set_pages(pages, test->pfn, test->num_pages);
+> > >
+> > > -		ret = __sg_alloc_table_from_pages(&st, pages, test->num_pages,
+> > > -						  0, test->size, test->max_seg,
+> > > -						  GFP_KERNEL);
+> > > -		assert(ret == test->alloc_ret);
+> > > +		sg = __sg_alloc_table_from_pages(&st, pages, test->num_pages, 0,
+> > > +				test->size, test->max_seg, NULL, 0, GFP_KERNEL);
+> > > +		assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
+> >
+> > Some test coverage for relatively complex code would be very welcomed. Since
+> > the testing framework is already there, even if it bit-rotted a bit, but
+> > shouldn't be hard to fix.
+> >
+> > A few tests to check append/grow works as expected, in terms of how the end
+> > table looks like given the initial state and some different page patterns
+> > added to it. And both crossing and not crossing into sg chaining scenarios.
+> 
+> This function is basic for all RDMA devices and we are pretty confident
+> that the old and new flows are tested thoroughly.
 
-elapsed time: 871m
+Well, since 0-day is reporting that __i915_gem_userptr_alloc_pages is
+crashing on this, it probably does need some tests :\
 
-configs tested: 157
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7203_defconfig
-nios2                         10m50_defconfig
-powerpc               mpc834x_itxgp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                       holly_defconfig
-sh                          landisk_defconfig
-arm                            lart_defconfig
-sh                   secureedge5410_defconfig
-m68k                        mvme147_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                ecovec24-romimage_defconfig
-arm                      footbridge_defconfig
-arm                           h5000_defconfig
-powerpc                     tqm8540_defconfig
-arc                          axs103_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           ci20_defconfig
-i386                                defconfig
-powerpc                      tqm8xx_defconfig
-arm                         bcm2835_defconfig
-arm                           stm32_defconfig
-arm                          collie_defconfig
-mips                         cobalt_defconfig
-arm                        clps711x_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-h8300                            alldefconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                      rts7751r2d1_defconfig
-mips                        bcm47xx_defconfig
-mips                         tb0226_defconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-m68k                         apollo_defconfig
-powerpc                          g5_defconfig
-mips                           rs90_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                   bluestone_defconfig
-sh                           se7751_defconfig
-mips                       capcella_defconfig
-parisc                generic-32bit_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                         hackkit_defconfig
-um                           x86_64_defconfig
-arm                       netwinder_defconfig
-arm                        keystone_defconfig
-arc                              alldefconfig
-powerpc                      pasemi_defconfig
-sh                             sh03_defconfig
-mips                          rm200_defconfig
-arm                           sunxi_defconfig
-arm                          imote2_defconfig
-arm                        mini2440_defconfig
-arm                         assabet_defconfig
-mips                         bigsur_defconfig
-mips                     loongson1c_defconfig
-m68k                       m5275evb_defconfig
-mips                        workpad_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                       maple_defconfig
-arm                       omap2plus_defconfig
-mips                         db1xxx_defconfig
-s390                             allyesconfig
-sh                          sdk7786_defconfig
-arm                          tango4_defconfig
-mips                           mtx1_defconfig
-m68k                          atari_defconfig
-sh                             shx3_defconfig
-mips                      maltasmvp_defconfig
-mips                           ip22_defconfig
-mips                        nlm_xlp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200923
-i386                 randconfig-a006-20200923
-i386                 randconfig-a003-20200923
-i386                 randconfig-a004-20200923
-i386                 randconfig-a005-20200923
-i386                 randconfig-a001-20200923
-i386                 randconfig-a002-20200924
-i386                 randconfig-a006-20200924
-i386                 randconfig-a003-20200924
-i386                 randconfig-a004-20200924
-i386                 randconfig-a005-20200924
-i386                 randconfig-a001-20200924
-i386                 randconfig-a002-20200925
-i386                 randconfig-a006-20200925
-i386                 randconfig-a003-20200925
-i386                 randconfig-a004-20200925
-i386                 randconfig-a005-20200925
-i386                 randconfig-a001-20200925
-x86_64               randconfig-a011-20200925
-x86_64               randconfig-a013-20200925
-x86_64               randconfig-a014-20200925
-x86_64               randconfig-a015-20200925
-x86_64               randconfig-a012-20200925
-x86_64               randconfig-a016-20200925
-i386                 randconfig-a012-20200925
-i386                 randconfig-a014-20200925
-i386                 randconfig-a016-20200925
-i386                 randconfig-a013-20200925
-i386                 randconfig-a011-20200925
-i386                 randconfig-a015-20200925
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a005-20200925
-x86_64               randconfig-a002-20200925
-x86_64               randconfig-a006-20200925
-x86_64               randconfig-a001-20200925
-x86_64               randconfig-a003-20200925
-x86_64               randconfig-a004-20200925
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
