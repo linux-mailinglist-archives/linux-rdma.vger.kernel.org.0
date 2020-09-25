@@ -2,79 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4190278A54
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 16:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5FB278EEE
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Sep 2020 18:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgIYOH3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Sep 2020 10:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgIYOH3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Sep 2020 10:07:29 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEBAC0613CE
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id cy2so1413659qvb.0
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ky8MreI3OvNL2vsDZr1bzR8znuBSqWm9TW6JUk7GecE=;
-        b=M7odxUL9heq1xTIMokyrxqVVGLMRabM0IGGh6FHY0y0CNW/j5coU0ghL3vvYxk/oV/
-         oE09Za02EZ0+lTOfiITK+jWeqfxc5DyhxyWi4MPGZCIxhMtWb2/9KJU3DSdf62TXc+vc
-         s1cONPPhNBq7G0pqKeLjuUtTMF99wAjtEsgA252H5OAKRXbcROcK25gZM7UC1csIt0eu
-         mjZACd3BSLDU1op4Xbj3tTAqFbQyK8kPW6IspYxZa9CmQztTTEYcvbdj+dnjH5s+fCMD
-         dsujfd83Tef8Vdz5btoqsIQQWU7q1ZNoebcIsDzKBQr0MIYsIgW3KqEbzgJAddxt9ngV
-         3Itw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ky8MreI3OvNL2vsDZr1bzR8znuBSqWm9TW6JUk7GecE=;
-        b=S7axFGttdPfmkVevihw8U3ilApn5GuQQyElsNBdqmOG48oKoCrJy34JHUKVXat20Bx
-         PiYzrK/s2VVs8br8EgDL1xS8vlxMNGYDmPs7Rx1l4YYzlhnNPn8gHikuIw3sn0DhwQTT
-         IUsXRyF5for5fwed3vILTkqlyjd1nDk0qANWykoqnnAkqyhzdx1HGXkD51g6QpmkL0ah
-         JhhYtTLxpZtdUXdPt7JECx4J45QrRQHYxMy7ibWQtn9jqxMaF8Pg0x5HUrqCMjTQW8KT
-         5AiB/DRpErlivbF6JZ9PRbsURe0l/Y6Tu48CJfkcr+PDUHxT+xO1yoGZDTVLeD962M0D
-         Wqhg==
-X-Gm-Message-State: AOAM531TL0gSWxjDALOsFR2o04R/da1733XjHH5ZUnK9N5iMmIc5cALM
-        Mj10QPllwFT7MavNUx0Vys7ytvXbKzaP0QAT
-X-Google-Smtp-Source: ABdhPJzlR8wK8aQM2Vy2d/Jum9pkDiZHXLv87MG9NYukRz44eQfEO6pXoFiH1qfNC2Yt6OfPDpb6gQ==
-X-Received: by 2002:a0c:fd42:: with SMTP id j2mr4779835qvs.37.1601042848138;
-        Fri, 25 Sep 2020 07:07:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m1sm1694496qkn.89.2020.09.25.07.07.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 07:07:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kLoNi-0012Nj-SQ; Fri, 25 Sep 2020 11:07:26 -0300
-Date:   Fri, 25 Sep 2020 11:07:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
-Cc:     Edward Srouji <edwards@nvidia.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: pyverbs regression
-Message-ID: <20200925140726.GI9916@ziepe.ca>
-References: <5c484f6d-364f-834d-0b16-144be92fc234@gmail.com>
- <1fb57743-20fd-1316-8071-cc3ab056e582@nvidia.com>
- <CS1PR8401MB0821BD9BEF78160638B4C7A2BC3A0@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
+        id S1729492AbgIYQnn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Sep 2020 12:43:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729110AbgIYQnn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:43:43 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5867B2075F;
+        Fri, 25 Sep 2020 16:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601052222;
+        bh=vCavm+41tX+dRSaZvXie4KfHuLanChjfGVl1TGFbDho=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Zs81yYRt72eFESB9GdL18cG5D5L3wZXGBJm8A/A5BIWV6hFX9ROv9Ki/nHNuEdyMK
+         9MuMXSfaNoZxtRSkgdBYpUjDEWCQmttoWBmmpQP6H3oZElrY0YTD1cUpVFl4cCyZSx
+         Y1YoqSv1lcxMGntcYYbFALXaoxpQNvtZDQra9yhY=
+Date:   Fri, 25 Sep 2020 11:49:13 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Roi Dayan <roid@mellanox.com>, Vlad Buslov <vladbu@nvidia.com>,
+        Ariel Levkovich <lariel@mellanox.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] net/mlx5e: Fix potential null pointer dereference
+Message-ID: <20200925164913.GA18472@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CS1PR8401MB0821BD9BEF78160638B4C7A2BC3A0@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:34:52PM +0000, Pearson, Robert B wrote:
-> Edward,
-> 
-> That problem was resolved by following Leon's suggestion and
-> deleting the build directory. I do not see it any more.
+Calls to kzalloc() and kvzalloc() should be null-checked
+in order to avoid any potential failures. In this case,
+a potential null pointer dereference.
 
-It means some make dependencies are missing :(
+Fix this by adding null checks for _parse_attr_ and _flow_
+right after allocation.
 
-Jason
+Addresses-Coverity-ID: 1497154 ("Dereference before null check")
+Fixes: c620b772152b ("net/mlx5: Refactor tc flow attributes structure")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index f815b0c60a6c..fb27154bfddb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -4534,20 +4534,22 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
+ 	struct mlx5e_tc_flow_parse_attr *parse_attr;
+ 	struct mlx5_flow_attr *attr;
+ 	struct mlx5e_tc_flow *flow;
+-	int out_index, err;
++	int err = -ENOMEM;
++	int out_index;
+ 
+ 	flow = kzalloc(sizeof(*flow), GFP_KERNEL);
+ 	parse_attr = kvzalloc(sizeof(*parse_attr), GFP_KERNEL);
++	if (!parse_attr || !flow)
++		goto err_free;
+ 
+ 	flow->flags = flow_flags;
+ 	flow->cookie = f->cookie;
+ 	flow->priv = priv;
+ 
+ 	attr = mlx5_alloc_flow_attr(get_flow_name_space(flow));
+-	if (!parse_attr || !flow || !attr) {
+-		err = -ENOMEM;
++	if (!attr)
+ 		goto err_free;
+-	}
++
+ 	flow->attr = attr;
+ 
+ 	for (out_index = 0; out_index < MLX5_MAX_FLOW_FWD_VPORTS; out_index++)
+-- 
+2.27.0
+
