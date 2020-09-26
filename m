@@ -2,34 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE4A279861
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Sep 2020 12:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20046279860
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Sep 2020 12:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgIZKZc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 26 Sep 2020 06:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40620 "EHLO mail.kernel.org"
+        id S1726963AbgIZKZ2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 26 Sep 2020 06:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgIZKZc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:25:32 -0400
+        id S1726309AbgIZKZ2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 26 Sep 2020 06:25:28 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B89D32078B;
-        Sat, 26 Sep 2020 10:25:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 517A4238E6;
+        Sat, 26 Sep 2020 10:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601115931;
-        bh=lAZPpPYEAUt6ts0wYXEcptrS+isoaE/Jyx/p5Gt0nqg=;
+        s=default; t=1601115928;
+        bh=VGWfwDfIOXhvRWkudvLTf0g3DPOBWkcShEILY+1SZB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PrEPJB27+//Q35xEWXeFHzxM8RglwCYLmf3o8q/3FOYPRXk9LGQtvtW8ZUzJZ6PwX
-         kPShCshYmaHdVtUnRA8c8J2RE/9lKdjjTUveIh0P83hUwE2wTvxQLt3jC07cgoNN1U
-         wXmdNWedtQ9S8Bol+9Bw1gM4ae/H+GVsNpzhjITY=
+        b=E3qXpuJu4uGtmAST2fCpFZcbGyojdTx/r9qefnZcHFBksaghqlWv7Iomw6YA1Fed2
+         N91lpuMwE+qK48YcQPey0Nk74lenaa2ko3EReSRoo/kX6ssABk/WczBP7GaABhOxLZ
+         qDzj8Ns+6JzuL3R6uFxwu97wgbcP64UkP025cXdo=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 09/10] RDMA/mthca: Combine special QP struct with mthca QP
-Date:   Sat, 26 Sep 2020 13:24:49 +0300
-Message-Id: <20200926102450.2966017-10-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH rdma-next v1 10/10] RDMA/i40iw: Remove intermediate pointer that points to the same struct
+Date:   Sat, 26 Sep 2020 13:24:50 +0300
+Message-Id: <20200926102450.2966017-11-leon@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200926102450.2966017-1-leon@kernel.org>
 References: <20200926102450.2966017-1-leon@kernel.org>
@@ -41,308 +43,51 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-As preparation for the removal of QP allocation logic, we need to ensure
-that ib_core allocates the right amount of memory before a call to the
-driver create_qp(). It requires from driver to have the same structs for
-all types of QPs.
+There is no real need to have an intermediate pointer for the same
+struct, remove it, and use struct directly.
 
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mthca/mthca_dev.h      |  2 +-
- drivers/infiniband/hw/mthca/mthca_provider.c | 13 +++-
- drivers/infiniband/hw/mthca/mthca_provider.h | 27 +++----
- drivers/infiniband/hw/mthca/mthca_qp.c       | 75 ++++++++++----------
- 4 files changed, 59 insertions(+), 58 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_dev.h b/drivers/infiniband/hw/mthca/mthca_dev.h
-index 7550e9d03dec..9dbbf4d16796 100644
---- a/drivers/infiniband/hw/mthca/mthca_dev.h
-+++ b/drivers/infiniband/hw/mthca/mthca_dev.h
-@@ -548,7 +548,7 @@ int mthca_alloc_sqp(struct mthca_dev *dev,
- 		    struct ib_qp_cap *cap,
- 		    int qpn,
- 		    int port,
--		    struct mthca_sqp *sqp,
-+		    struct mthca_qp *qp,
- 		    struct ib_udata *udata);
- void mthca_free_qp(struct mthca_dev *dev, struct mthca_qp *qp);
- int mthca_create_ah(struct mthca_dev *dev,
-diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-index 5dbddf8faf99..31b558ff8218 100644
---- a/drivers/infiniband/hw/mthca/mthca_provider.c
-+++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-@@ -535,9 +535,14 @@ static struct ib_qp *mthca_create_qp(struct ib_pd *pd,
- 	case IB_QPT_SMI:
- 	case IB_QPT_GSI:
- 	{
--		qp = kzalloc(sizeof(struct mthca_sqp), GFP_KERNEL);
-+		qp = kzalloc(sizeof(*qp), GFP_KERNEL);
- 		if (!qp)
- 			return ERR_PTR(-ENOMEM);
-+		qp->sqp = kzalloc(sizeof(struct mthca_sqp), GFP_KERNEL);
-+		if (!qp->sqp) {
-+			kfree(qp);
-+			return ERR_PTR(-ENOMEM);
-+		}
- 
- 		qp->ibqp.qp_num = init_attr->qp_type == IB_QPT_SMI ? 0 : 1;
- 
-@@ -546,7 +551,7 @@ static struct ib_qp *mthca_create_qp(struct ib_pd *pd,
- 				      to_mcq(init_attr->recv_cq),
- 				      init_attr->sq_sig_type, &init_attr->cap,
- 				      qp->ibqp.qp_num, init_attr->port_num,
--				      to_msqp(qp), udata);
-+				      qp, udata);
- 		break;
- 	}
- 	default:
-@@ -555,6 +560,7 @@ static struct ib_qp *mthca_create_qp(struct ib_pd *pd,
- 	}
- 
- 	if (err) {
-+		kfree(qp->sqp);
- 		kfree(qp);
- 		return ERR_PTR(err);
- 	}
-@@ -587,7 +593,8 @@ static int mthca_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
- 				    to_mqp(qp)->rq.db_index);
- 	}
- 	mthca_free_qp(to_mdev(qp->device), to_mqp(qp));
--	kfree(qp);
-+	kfree(to_mqp(qp)->sqp);
-+	kfree(to_mqp(qp));
- 	return 0;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index ffb692d619b2..747b4de6faca 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -380,7 +380,7 @@ void i40iw_free_qp_resources(struct i40iw_qp *iwqp)
+ 	i40iw_free_dma_mem(iwdev->sc_dev.hw, &iwqp->kqp.dma_mem);
+ 	kfree(iwqp->kqp.wrid_mem);
+ 	iwqp->kqp.wrid_mem = NULL;
+-	kfree(iwqp->allocated_buffer);
++	kfree(iwqp);
  }
  
-diff --git a/drivers/infiniband/hw/mthca/mthca_provider.h b/drivers/infiniband/hw/mthca/mthca_provider.h
-index 84c64bff0d92..8a77483bb33c 100644
---- a/drivers/infiniband/hw/mthca/mthca_provider.h
-+++ b/drivers/infiniband/hw/mthca/mthca_provider.h
-@@ -240,6 +240,16 @@ struct mthca_wq {
- 	__be32    *db;
- };
+ /**
+@@ -537,7 +537,6 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 	struct i40iw_create_qp_req req;
+ 	struct i40iw_create_qp_resp uresp;
+ 	u32 qp_num = 0;
+-	void *mem;
+ 	enum i40iw_status_code ret;
+ 	int err_code;
+ 	int sq_size;
+@@ -579,12 +578,10 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 	init_info.qp_uk_init_info.max_rq_frag_cnt = init_attr->cap.max_recv_sge;
+ 	init_info.qp_uk_init_info.max_inline_data = init_attr->cap.max_inline_data;
  
-+struct mthca_sqp {
-+	int             pkey_index;
-+	u32             qkey;
-+	u32             send_psn;
-+	struct ib_ud_header ud_header;
-+	int             header_buf_size;
-+	void           *header_buf;
-+	dma_addr_t      header_dma;
-+};
-+
- struct mthca_qp {
- 	struct ib_qp           ibqp;
- 	int                    refcount;
-@@ -265,17 +275,7 @@ struct mthca_qp {
+-	mem = kzalloc(sizeof(*iwqp), GFP_KERNEL);
+-	if (!mem)
++	iwqp = kzalloc(sizeof(*iwqp), GFP_KERNEL);
++	if (!iwqp)
+ 		return ERR_PTR(-ENOMEM);
  
- 	wait_queue_head_t      wait;
- 	struct mutex	       mutex;
--};
--
--struct mthca_sqp {
--	struct mthca_qp qp;
--	int             pkey_index;
--	u32             qkey;
--	u32             send_psn;
--	struct ib_ud_header ud_header;
--	int             header_buf_size;
--	void           *header_buf;
--	dma_addr_t      header_dma;
-+	struct mthca_sqp *sqp;
- };
- 
- static inline struct mthca_ucontext *to_mucontext(struct ib_ucontext *ibucontext)
-@@ -313,9 +313,4 @@ static inline struct mthca_qp *to_mqp(struct ib_qp *ibqp)
- 	return container_of(ibqp, struct mthca_qp, ibqp);
- }
- 
--static inline struct mthca_sqp *to_msqp(struct mthca_qp *qp)
--{
--	return container_of(qp, struct mthca_sqp, qp);
--}
--
- #endif /* MTHCA_PROVIDER_H */
-diff --git a/drivers/infiniband/hw/mthca/mthca_qp.c b/drivers/infiniband/hw/mthca/mthca_qp.c
-index c6e95d0d760a..08a2a7afafd3 100644
---- a/drivers/infiniband/hw/mthca/mthca_qp.c
-+++ b/drivers/infiniband/hw/mthca/mthca_qp.c
-@@ -809,7 +809,7 @@ static int __mthca_modify_qp(struct ib_qp *ibqp,
- 		qp->alt_port = attr->alt_port_num;
- 
- 	if (is_sqp(dev, qp))
--		store_attrs(to_msqp(qp), attr, attr_mask);
-+		store_attrs(qp->sqp, attr, attr_mask);
- 
- 	/*
- 	 * If we moved QP0 to RTR, bring the IB link up; if we moved
-@@ -1368,39 +1368,40 @@ int mthca_alloc_sqp(struct mthca_dev *dev,
- 		    struct ib_qp_cap *cap,
- 		    int qpn,
- 		    int port,
--		    struct mthca_sqp *sqp,
-+		    struct mthca_qp *qp,
- 		    struct ib_udata *udata)
- {
- 	u32 mqpn = qpn * 2 + dev->qp_table.sqp_start + port - 1;
- 	int err;
- 
--	sqp->qp.transport = MLX;
--	err = mthca_set_qp_size(dev, cap, pd, &sqp->qp);
-+	qp->transport = MLX;
-+	err = mthca_set_qp_size(dev, cap, pd, qp);
- 	if (err)
- 		return err;
- 
--	sqp->header_buf_size = sqp->qp.sq.max * MTHCA_UD_HEADER_SIZE;
--	sqp->header_buf = dma_alloc_coherent(&dev->pdev->dev, sqp->header_buf_size,
--					     &sqp->header_dma, GFP_KERNEL);
--	if (!sqp->header_buf)
-+	qp->sqp->header_buf_size = qp->sq.max * MTHCA_UD_HEADER_SIZE;
-+	qp->sqp->header_buf =
-+		dma_alloc_coherent(&dev->pdev->dev, qp->sqp->header_buf_size,
-+				   &qp->sqp->header_dma, GFP_KERNEL);
-+	if (!qp->sqp->header_buf)
- 		return -ENOMEM;
- 
- 	spin_lock_irq(&dev->qp_table.lock);
- 	if (mthca_array_get(&dev->qp_table.qp, mqpn))
- 		err = -EBUSY;
- 	else
--		mthca_array_set(&dev->qp_table.qp, mqpn, sqp);
-+		mthca_array_set(&dev->qp_table.qp, mqpn, qp->sqp);
- 	spin_unlock_irq(&dev->qp_table.lock);
- 
- 	if (err)
- 		goto err_out;
- 
--	sqp->qp.port      = port;
--	sqp->qp.qpn       = mqpn;
--	sqp->qp.transport = MLX;
-+	qp->port      = port;
-+	qp->qpn       = mqpn;
-+	qp->transport = MLX;
- 
- 	err = mthca_alloc_qp_common(dev, pd, send_cq, recv_cq,
--				    send_policy, &sqp->qp, udata);
-+				    send_policy, qp, udata);
- 	if (err)
- 		goto err_out_free;
- 
-@@ -1421,10 +1422,9 @@ int mthca_alloc_sqp(struct mthca_dev *dev,
- 
- 	mthca_unlock_cqs(send_cq, recv_cq);
- 
-- err_out:
--	dma_free_coherent(&dev->pdev->dev, sqp->header_buf_size,
--			  sqp->header_buf, sqp->header_dma);
--
-+err_out:
-+	dma_free_coherent(&dev->pdev->dev, qp->sqp->header_buf_size,
-+			  qp->sqp->header_buf, qp->sqp->header_dma);
- 	return err;
- }
- 
-@@ -1487,20 +1487,19 @@ void mthca_free_qp(struct mthca_dev *dev,
- 
- 	if (is_sqp(dev, qp)) {
- 		atomic_dec(&(to_mpd(qp->ibqp.pd)->sqp_count));
--		dma_free_coherent(&dev->pdev->dev,
--				  to_msqp(qp)->header_buf_size,
--				  to_msqp(qp)->header_buf,
--				  to_msqp(qp)->header_dma);
-+		dma_free_coherent(&dev->pdev->dev, qp->sqp->header_buf_size,
-+				  qp->sqp->header_buf, qp->sqp->header_dma);
- 	} else
- 		mthca_free(&dev->qp_table.alloc, qp->qpn);
- }
- 
- /* Create UD header for an MLX send and build a data segment for it */
--static int build_mlx_header(struct mthca_dev *dev, struct mthca_sqp *sqp,
--			    int ind, const struct ib_ud_wr *wr,
-+static int build_mlx_header(struct mthca_dev *dev, struct mthca_qp *qp, int ind,
-+			    const struct ib_ud_wr *wr,
- 			    struct mthca_mlx_seg *mlx,
- 			    struct mthca_data_seg *data)
- {
-+	struct mthca_sqp *sqp = qp->sqp;
- 	int header_size;
- 	int err;
- 	u16 pkey;
-@@ -1513,7 +1512,7 @@ static int build_mlx_header(struct mthca_dev *dev, struct mthca_sqp *sqp,
- 	if (err)
- 		return err;
- 	mlx->flags &= ~cpu_to_be32(MTHCA_NEXT_SOLICIT | 1);
--	mlx->flags |= cpu_to_be32((!sqp->qp.ibqp.qp_num ? MTHCA_MLX_VL15 : 0) |
-+	mlx->flags |= cpu_to_be32((!qp->ibqp.qp_num ? MTHCA_MLX_VL15 : 0) |
- 				  (sqp->ud_header.lrh.destination_lid ==
- 				   IB_LID_PERMISSIVE ? MTHCA_MLX_SLR : 0) |
- 				  (sqp->ud_header.lrh.service_level << 8));
-@@ -1534,29 +1533,29 @@ static int build_mlx_header(struct mthca_dev *dev, struct mthca_sqp *sqp,
- 		return -EINVAL;
- 	}
- 
--	sqp->ud_header.lrh.virtual_lane    = !sqp->qp.ibqp.qp_num ? 15 : 0;
-+	sqp->ud_header.lrh.virtual_lane    = !qp->ibqp.qp_num ? 15 : 0;
- 	if (sqp->ud_header.lrh.destination_lid == IB_LID_PERMISSIVE)
- 		sqp->ud_header.lrh.source_lid = IB_LID_PERMISSIVE;
- 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
--	if (!sqp->qp.ibqp.qp_num)
--		ib_get_cached_pkey(&dev->ib_dev, sqp->qp.port,
--				   sqp->pkey_index, &pkey);
-+	if (!qp->ibqp.qp_num)
-+		ib_get_cached_pkey(&dev->ib_dev, qp->port, sqp->pkey_index,
-+				   &pkey);
- 	else
--		ib_get_cached_pkey(&dev->ib_dev, sqp->qp.port,
--				   wr->pkey_index, &pkey);
-+		ib_get_cached_pkey(&dev->ib_dev, qp->port, wr->pkey_index,
-+				   &pkey);
- 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
- 	sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
- 	sqp->ud_header.bth.psn = cpu_to_be32((sqp->send_psn++) & ((1 << 24) - 1));
- 	sqp->ud_header.deth.qkey = cpu_to_be32(wr->remote_qkey & 0x80000000 ?
- 					       sqp->qkey : wr->remote_qkey);
--	sqp->ud_header.deth.source_qpn = cpu_to_be32(sqp->qp.ibqp.qp_num);
-+	sqp->ud_header.deth.source_qpn = cpu_to_be32(qp->ibqp.qp_num);
- 
- 	header_size = ib_ud_header_pack(&sqp->ud_header,
- 					sqp->header_buf +
- 					ind * MTHCA_UD_HEADER_SIZE);
- 
- 	data->byte_count = cpu_to_be32(header_size);
--	data->lkey       = cpu_to_be32(to_mpd(sqp->qp.ibqp.pd)->ntmr.ibmr.lkey);
-+	data->lkey       = cpu_to_be32(to_mpd(qp->ibqp.pd)->ntmr.ibmr.lkey);
- 	data->addr       = cpu_to_be64(sqp->header_dma +
- 				       ind * MTHCA_UD_HEADER_SIZE);
- 
-@@ -1735,9 +1734,9 @@ int mthca_tavor_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 			break;
- 
- 		case MLX:
--			err = build_mlx_header(dev, to_msqp(qp), ind, ud_wr(wr),
--					       wqe - sizeof (struct mthca_next_seg),
--					       wqe);
-+			err = build_mlx_header(
-+				dev, qp, ind, ud_wr(wr),
-+				wqe - sizeof(struct mthca_next_seg), wqe);
- 			if (err) {
- 				*bad_wr = wr;
- 				goto out;
-@@ -2065,9 +2064,9 @@ int mthca_arbel_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 			break;
- 
- 		case MLX:
--			err = build_mlx_header(dev, to_msqp(qp), ind, ud_wr(wr),
--					       wqe - sizeof (struct mthca_next_seg),
--					       wqe);
-+			err = build_mlx_header(
-+				dev, qp, ind, ud_wr(wr),
-+				wqe - sizeof(struct mthca_next_seg), wqe);
- 			if (err) {
- 				*bad_wr = wr;
- 				goto out;
+-	iwqp = (struct i40iw_qp *)mem;
+-	iwqp->allocated_buffer = mem;
+ 	qp = &iwqp->sc_qp;
+ 	qp->back_qp = (void *)iwqp;
+ 	qp->push_idx = I40IW_INVALID_PUSH_PAGE_INDEX;
 -- 
 2.26.2
 
