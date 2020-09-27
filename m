@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E3427A056
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 11:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2395A27A05F
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 11:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgI0Jqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Sep 2020 05:46:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14303 "EHLO huawei.com"
+        id S1726281AbgI0Jxs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Sep 2020 05:53:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45516 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726255AbgI0Jqa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:46:30 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2CB0E4E2F8D42925706A;
-        Sun, 27 Sep 2020 17:46:27 +0800 (CST)
+        id S1726149AbgI0Jxr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 27 Sep 2020 05:53:47 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BDA9E3AF85A034E70D13;
+        Sun, 27 Sep 2020 17:53:45 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 27 Sep 2020 17:46:16 +0800
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sun, 27 Sep 2020 17:53:36 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Support owner mode doorbell
-Date:   Sun, 27 Sep 2020 17:45:01 +0800
-Message-ID: <1601199901-41677-1-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Remove unused variables and definitions
+Date:   Sun, 27 Sep 2020 17:52:21 +0800
+Message-ID: <1601200341-7924-1-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -35,128 +35,64 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Lang Cheng <chenglang@huawei.com>
 
-The doorbell needs to store PI information into QPC, so the RoCEE should
-wait for the results of storing, that is, it needs two bus operations to
-complete a doorbell. When ROCEE is in SDI mode, multiple doorbells may be
-interlocked because the RoCEE can only handle bus operations serially. So a
-flag to mark if HIP09 is working in SDI mode is added. When the SDI flag is
-set, the ROCEE will ignore the PI information of the doorbell, continue to
-fetch wqe and verify its validity by it's owner_bit.
+Some code was removed but the variables were still there, and some
+parameters have been changed to be queried from firmware. So the
+definitions of them are no longer needed.
 
 Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
-Previous version:
-v1: https://patchwork.kernel.org/patch/11799327/
-
-Changes since v1:
-- Fix comments from Leon about the unused enum.
-
- drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 28 ++++++++++++++++++++++------
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  3 +++
- 3 files changed, 28 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
+ 2 files changed, 10 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a8183ef..7c88e25 100644
+index a8183ef..6d2acff 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -137,9 +137,10 @@ enum {
- 	SERV_TYPE_UD,
- };
+@@ -57,7 +57,6 @@
+ /* Hardware specification only for v1 engine */
+ #define HNS_ROCE_MAX_INNER_MTPT_NUM		0x7
+ #define HNS_ROCE_MAX_MTPT_PBL_NUM		0x100000
+-#define HNS_ROCE_MAX_SGE_NUM			2
  
--enum {
-+enum hns_roce_qp_caps {
- 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
- 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
-+	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
- };
+ #define HNS_ROCE_EACH_FREE_CQ_WAIT_MSECS	20
+ #define HNS_ROCE_MAX_FREE_CQ_WAIT_CNT	\
+@@ -87,12 +86,7 @@
+ #define HNS_ROCE_V2_QPC_SZ 256
+ #define HNS_ROCE_V3_QPC_SZ 512
  
- enum hns_roce_cq_flags {
-@@ -229,6 +230,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
-+	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
- };
- 
- #define HNS_ROCE_DB_TYPE_COUNT			2
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 6d30850..cc89bdb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -474,9 +474,6 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
- 	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_SE_S,
- 		     (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
- 
--	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
--		     owner_bit);
+-#define HNS_ROCE_SL_SHIFT			28
+-#define HNS_ROCE_TCLASS_SHIFT			20
+-#define HNS_ROCE_FLOW_LABEL_MASK		0xfffff
 -
- 	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_PD_M,
- 		       V2_UD_SEND_WQE_BYTE_16_PD_S, to_hr_pd(qp->ibqp.pd)->pdn);
+ #define HNS_ROCE_MAX_PORTS			6
+-#define HNS_ROCE_MAX_GID_NUM			16
+ #define HNS_ROCE_GID_SIZE			16
+ #define HNS_ROCE_SGE_SIZE			16
  
-@@ -517,7 +514,18 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+@@ -120,8 +114,6 @@
+ #define PAGES_SHIFT_24				24
+ #define PAGES_SHIFT_32				32
  
- 	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
- 
-+	/*
-+	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
-+	 * including new WQEs waiting for the doorbell to update the PI again.
-+	 * Therefore, the owner bit of WQE MUST be updated after all fields
-+	 * and extSGEs have been written into DDR instead of cache.
-+	 */
-+	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
-+		wmb();
-+
- 	*sge_idx = curr_idx;
-+	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
- 
- 	return 0;
- }
-@@ -591,9 +599,6 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_CQE_S,
- 		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
- 
--	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
--		     owner_bit);
+-#define HNS_ROCE_PCI_BAR_NUM			2
 -
- 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
- 	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
- 		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
-@@ -601,7 +606,18 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
- 					&curr_idx, valid_num_sge);
+ #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+ #define SRQ_DB_REG				0x230
  
-+	/*
-+	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
-+	 * including new WQEs waiting for the doorbell to update the PI again.
-+	 * Therefore, the owner bit of WQE MUST be updated after all fields
-+	 * and extSGEs have been written into DDR instead of cache.
-+	 */
-+	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
-+		wmb();
-+
- 	*sge_idx = curr_idx;
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
- 
- 	return ret;
- }
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 7c3b548..5ae3c5a 100644
+index 7c3b548..d08e575 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -727,6 +727,9 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
+@@ -41,8 +41,6 @@
+ #include "hns_roce_hem.h"
+ #include <rdma/hns-abi.h>
  
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SDI_MODE)
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_OWNER_DB;
-+
- 	if (udata) {
- 		if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
- 			ret = hns_roce_db_map_user(uctx, udata, ucmd->sdb_addr,
+-#define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
+-
+ static void flush_work_handle(struct work_struct *work)
+ {
+ 	struct hns_roce_work *flush_work = container_of(work,
 -- 
 2.8.1
 
