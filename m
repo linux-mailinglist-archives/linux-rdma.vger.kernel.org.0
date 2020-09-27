@@ -2,211 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8246279F08
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 08:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B9427A044
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 11:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730432AbgI0GrI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Sep 2020 02:47:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730410AbgI0GrF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Sep 2020 02:47:05 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6203239D4;
-        Sun, 27 Sep 2020 06:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601189223;
-        bh=gl14ZErzehWQb9/1WcJI2wZGRSjulxeuYZbP3y4EGLc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMispFsOQLvz+Qyxmrt6Qc0ik7QXjFAb+TFUmE8BjHObN8yQ6F7vLrE/qymgZKfFS
-         yyJHHX+n5q/7piF1S4/keK1b/SPLD425FV4m4bEyAUqCGjRzudjxlVAEFzs9keBLme
-         DpUVbiO1gbp7UwKvsWHFW1fGX3qGgOCshU8lQtnM=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table from pages
-Date:   Sun, 27 Sep 2020 09:46:47 +0300
-Message-Id: <20200927064647.3106737-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200927064647.3106737-1-leon@kernel.org>
-References: <20200927064647.3106737-1-leon@kernel.org>
+        id S1726252AbgI0JdM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 27 Sep 2020 05:33:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3561 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726244AbgI0JdM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 27 Sep 2020 05:33:12 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 2B7D9EF20CFBC88351D4;
+        Sun, 27 Sep 2020 17:33:10 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Sun, 27 Sep 2020 17:33:09 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sun, 27 Sep 2020 17:33:09 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Sun, 27 Sep 2020 17:33:09 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next] RDMA/hns: Support owner mode doorbell
+Thread-Topic: [PATCH for-next] RDMA/hns: Support owner mode doorbell
+Thread-Index: AQHWkxVgpY7CzIZB4EWLV6O1KLIoKA==
+Date:   Sun, 27 Sep 2020 09:33:09 +0000
+Message-ID: <3dba4d0d025144bfbe2fc7a67705f49b@huawei.com>
+References: <1601022214-56412-1-git-send-email-liweihang@huawei.com>
+ <20200927063004.GG2280698@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On 2020/9/27 14:30, Leon Romanovsky wrote:
+> On Fri, Sep 25, 2020 at 04:23:34PM +0800, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> The doorbell needs to store PI information into QPC, so the RoCEE should
+>> wait for the results of storing, that is, it needs two bus operations to
+>> complete a doorbell. When ROCEE is in SDI mode, multiple doorbells may be
+>> interlocked because the RoCEE can only handle bus operations serially. So a
+>> flag to mark if HIP09 is working in SDI mode is added. When the SDI flag is
+>> set, the ROCEE will ignore the PI information of the doorbell, continue to
+>> fetch wqe and verify its validity by it's owner_bit.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  5 ++++-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 28 ++++++++++++++++++++++------
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  3 +++
+>>  3 files changed, 29 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index a8183ef..517c127 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -137,9 +137,10 @@ enum {
+>>  	SERV_TYPE_UD,
+>>  };
+>>
+>> -enum {
+>> +enum hns_roce_qp_caps {
+>>  	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
+>>  	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
+>> +	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
+>>  };
+>>
+>>  enum hns_roce_cq_flags {
+>> @@ -229,6 +230,8 @@ enum {
+>>  	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
+>>  	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
+>>  	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
+>> +	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
+>> +	HNS_ROCE_CAP_FLAG_MAX			= BIT(28)
+> 
+> This enum is not used.
+> 
+> Thanks
+> 
 
-Remove the implementation of ib_umem_add_sg_table and instead
-call to __sg_alloc_table_from_pages which already has the logic to
-merge contiguous pages.
+Thank you, the enum is not used in this patch. I will remove it
+and add it back when needed later.
 
-Besides that it removes duplicated functionality, it reduces the
-memory consumption of the SG table significantly. Prior to this
-patch, the SG table was allocated in advance regardless consideration
-of contiguous pages.
-
-In huge pages system of 2MB page size, without this change, the SG table
-would contain x512 SG entries. E.g. for 100GB memory registration:
-
-	 Number of entries	Size
-Before 	      26214400          600.0MB
-After            51200		  1.2MB
-
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c | 92 +++++-----------------------------
- 1 file changed, 12 insertions(+), 80 deletions(-)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 01b680b62846..0ef736970aba 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -63,73 +63,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	sg_free_table(&umem->sg_head);
- }
-
--/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
-- *
-- * sg: current scatterlist entry
-- * page_list: array of npage struct page pointers
-- * npages: number of pages in page_list
-- * max_seg_sz: maximum segment size in bytes
-- * nents: [out] number of entries in the scatterlist
-- *
-- * Return new end of scatterlist
-- */
--static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
--						struct page **page_list,
--						unsigned long npages,
--						unsigned int max_seg_sz,
--						int *nents)
--{
--	unsigned long first_pfn;
--	unsigned long i = 0;
--	bool update_cur_sg = false;
--	bool first = !sg_page(sg);
--
--	/* Check if new page_list is contiguous with end of previous page_list.
--	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
--	 */
--	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
--		       page_to_pfn(page_list[0])))
--		update_cur_sg = true;
--
--	while (i != npages) {
--		unsigned long len;
--		struct page *first_page = page_list[i];
--
--		first_pfn = page_to_pfn(first_page);
--
--		/* Compute the number of contiguous pages we have starting
--		 * at i
--		 */
--		for (len = 0; i != npages &&
--			      first_pfn + len == page_to_pfn(page_list[i]) &&
--			      len < (max_seg_sz >> PAGE_SHIFT);
--		     len++)
--			i++;
--
--		/* Squash N contiguous pages from page_list into current sge */
--		if (update_cur_sg) {
--			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
--				sg_set_page(sg, sg_page(sg),
--					    sg->length + (len << PAGE_SHIFT),
--					    0);
--				update_cur_sg = false;
--				continue;
--			}
--			update_cur_sg = false;
--		}
--
--		/* Squash N contiguous pages into next sge or first sge */
--		if (!first)
--			sg = sg_next(sg);
--
--		(*nents)++;
--		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
--		first = false;
--	}
--
--	return sg;
--}
--
- /**
-  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
-  *
-@@ -221,7 +154,7 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
--	struct scatterlist *sg;
-+	struct scatterlist *sg = NULL;
- 	unsigned int gup_flags = FOLL_WRITE;
-
- 	/*
-@@ -276,15 +209,9 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- 	cur_base = addr & PAGE_MASK;
-
--	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
--	if (ret)
--		goto vma;
--
- 	if (!umem->writable)
- 		gup_flags |= FOLL_FORCE;
-
--	sg = umem->sg_head.sgl;
--
- 	while (npages) {
- 		cond_resched();
- 		ret = pin_user_pages_fast(cur_base,
-@@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
- 			goto umem_release;
-
- 		cur_base += ret * PAGE_SIZE;
--		npages   -= ret;
--
--		sg = ib_umem_add_sg_table(sg, page_list, ret,
--			dma_get_max_seg_size(device->dma_device),
--			&umem->sg_nents);
-+		npages -= ret;
-+		sg = __sg_alloc_table_from_pages(
-+			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
-+			dma_get_max_seg_size(device->dma_device), sg, npages,
-+			GFP_KERNEL);
-+		umem->sg_nents = umem->sg_head.nents;
-+		if (IS_ERR(sg)) {
-+			unpin_user_pages_dirty_lock(page_list, ret, 0);
-+			ret = PTR_ERR(sg);
-+			goto umem_release;
-+		}
- 	}
-
- 	sg_mark_end(sg);
-@@ -322,7 +255,6 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- umem_release:
- 	__ib_umem_release(device, umem, 0);
--vma:
- 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
- out:
- 	free_page((unsigned long) page_list);
---
-2.26.2
-
+Weihang
