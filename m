@@ -2,97 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2395A27A05F
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 11:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FA327A09E
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Sep 2020 13:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgI0Jxs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Sep 2020 05:53:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45516 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726149AbgI0Jxr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:53:47 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id BDA9E3AF85A034E70D13;
-        Sun, 27 Sep 2020 17:53:45 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 27 Sep 2020 17:53:36 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Remove unused variables and definitions
-Date:   Sun, 27 Sep 2020 17:52:21 +0800
-Message-ID: <1601200341-7924-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726239AbgI0LdM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Sep 2020 07:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgI0LdL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Sep 2020 07:33:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7028DC0613CE;
+        Sun, 27 Sep 2020 04:33:11 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so3775464wmi.0;
+        Sun, 27 Sep 2020 04:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wJ1VLS0/uB1O1ogFvwazuXAShHBOl3yCdRkg2rUruVQ=;
+        b=SFBkGlvhuRS1x6CYb3HCcKtDrRTnDaxzdO/Y8i8hxer0QhsABPWepQlEf7h0s1pr4h
+         IvyOMafRyIeghnyihuboY15fNddld9O/DLwtgWabjUtO2JUwBtRlN+Gb/+OmjjD9oG5N
+         rG4dYiJuX8vqt69ZzXj6wP3WXJjGEYj+gwt9FRjBDYdOYTrrWB0w/MKO97PNAXzyCjkw
+         Uyq2Za3+u9TakMogzKiLnupVCEPVcgutvzDayKg8y1edAiKm7zgtIf/kWMfFVztDxUQE
+         sHqo4Yw2bK38UH3vXKGYSmqW1HBsU6zuYU0Txx5SES9UHwF/MpyMZLmhUJPmrypzw+NH
+         H84g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wJ1VLS0/uB1O1ogFvwazuXAShHBOl3yCdRkg2rUruVQ=;
+        b=ln9+nIr2lvFYjumF4USlSlOF7NPY5xNSYvaqOeP2mL3/6HLKiAY9M7ZtZtvglGMYrS
+         YBqj4qMltnYBQoMZOJfkkJbQ4NCrlqO2hki5pFnczgob/06ZIT/bhAchc/h+bKRCCZ7D
+         ig2ywBqFPT7fdKfTswBdt0Jl16q4zraNyTLlH220DcF2tO3r6DyZOvpRtstSKPzo0X8k
+         HXBraSIjEeD9jBJDvaOatjv0tGr36c2EHHxwHxWNFvIKQH8m0Xks+OIY+IxsewPK6efV
+         GtopTKrEZ+GTE9mdJkYb/jmkFhHRUw+cDqIVuWTXYvicZYWn1aM+4EISY5vBfM/q2Ql7
+         YFaA==
+X-Gm-Message-State: AOAM532iqRI1hGri+BHoqnYRmFoSC9aK96VrKl0JnLo4Se6QFFqoy626
+        ncHxGbDLIuKA8p2kEjy946U=
+X-Google-Smtp-Source: ABdhPJw4JaacRb1FcdkxoHT0WUcDrylBN2V5m5JEDuQWfue1uLRC4EaaLYFjWkHgAMR2P+Qx1jZsxQ==
+X-Received: by 2002:a1c:4187:: with SMTP id o129mr6546232wma.113.1601206390063;
+        Sun, 27 Sep 2020 04:33:10 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id d83sm5671565wmf.23.2020.09.27.04.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 04:33:09 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] net/mlx5e: Fix some static analysis warnings
+Date:   Sun, 27 Sep 2020 12:32:51 +0100
+Message-Id: <20200927113254.362480-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+Hi,
 
-Some code was removed but the variables were still there, and some
-parameters have been changed to be queried from firmware. So the
-definitions of them are no longer needed.
+Coverity has flagged up some warnings for this driver, which I address
+in this patch series. All the fixes are fairly trivial and have been
+build-tested.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
- 2 files changed, 10 deletions(-)
+Best,
+Alex
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a8183ef..6d2acff 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -57,7 +57,6 @@
- /* Hardware specification only for v1 engine */
- #define HNS_ROCE_MAX_INNER_MTPT_NUM		0x7
- #define HNS_ROCE_MAX_MTPT_PBL_NUM		0x100000
--#define HNS_ROCE_MAX_SGE_NUM			2
- 
- #define HNS_ROCE_EACH_FREE_CQ_WAIT_MSECS	20
- #define HNS_ROCE_MAX_FREE_CQ_WAIT_CNT	\
-@@ -87,12 +86,7 @@
- #define HNS_ROCE_V2_QPC_SZ 256
- #define HNS_ROCE_V3_QPC_SZ 512
- 
--#define HNS_ROCE_SL_SHIFT			28
--#define HNS_ROCE_TCLASS_SHIFT			20
--#define HNS_ROCE_FLOW_LABEL_MASK		0xfffff
--
- #define HNS_ROCE_MAX_PORTS			6
--#define HNS_ROCE_MAX_GID_NUM			16
- #define HNS_ROCE_GID_SIZE			16
- #define HNS_ROCE_SGE_SIZE			16
- 
-@@ -120,8 +114,6 @@
- #define PAGES_SHIFT_24				24
- #define PAGES_SHIFT_32				32
- 
--#define HNS_ROCE_PCI_BAR_NUM			2
--
- #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
- #define SRQ_DB_REG				0x230
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 7c3b548..d08e575 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -41,8 +41,6 @@
- #include "hns_roce_hem.h"
- #include <rdma/hns-abi.h>
- 
--#define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
--
- static void flush_work_handle(struct work_struct *work)
- {
- 	struct hns_roce_work *flush_work = container_of(work,
--- 
-2.8.1
 
