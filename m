@@ -2,77 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E4B27B7AB
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 01:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251CE27B803
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 01:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbgI1XOe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Sep 2020 19:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgI1XNm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Sep 2020 19:13:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99ECFC0613A8
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 15:36:04 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k25so2107581qtu.4
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 15:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E6o1Xg5cHVZMY5hHDlsYGaqfQfQoQMj4uN/vu7I2wU8=;
-        b=BlX+CwQ4BiN/7yQa8XmdcImpU9IlDRhnsgC++e4Ije7ZhPK0YvLPbilvyOkMdO3QcX
-         /Vc5pVTdxBN8GAMft2GHYoG4nAJClmV7FaMmT0wBxo9uyL7wx0FXyGyuVz1F9L1J2NSG
-         6dXv2eJIWvIHyX9yXDStSzj0hWD+k5qlwU4VB/HEtURs93zD9AP3IyZPnL/0OHDzN8tk
-         ByudXaNgBpV9LgTNjxTklqGNiieoi4IhhVPcQtDWWjJj4Ajqx7oj4ST3UUP7Ykh8jhFq
-         QR8q+QuQjhnVaGQZ4zUeSp5eA7mn02emJtp1ss3NglTwUzToOdU1YjwG3TUOGXxUGBRY
-         HV4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E6o1Xg5cHVZMY5hHDlsYGaqfQfQoQMj4uN/vu7I2wU8=;
-        b=e7JBJBC7a8NaWpqO35O7kxnVIeyEbZeHoRZ88tDeKU3sg8SRS6UuNLx045+X2oTrd/
-         4yiCKoiEoefBtqFiPydtp1Rt2iFlkLk/BWan/LUz/gB56gZhMAq8qomQsfhjBhwTLiMi
-         Cf6Nr0ZokmD3wHZNXJka9la4j3hVcgmj4nv5l8a3sx/TKjuoPU0dExgGwMh0CGkrAZKw
-         e1Pwmca8uijky8F56bmUUO6i6CRMK8PWPRCPKXMnb8bp0DC6iE5vzfvkEQbdBbDO4C5U
-         mFF3Ys4j4alt30Mhr5BRuXKJmcxOokeW5yaGyPZTTKNDxG/UbSpz1XjBTKYw4kIYDaCS
-         x0Ng==
-X-Gm-Message-State: AOAM533Opy6Iu9Ik1p9HTYmJ2M5Poybu9lE7XGuzowbV/lo5xq+JD5H9
-        oWEIuDwKOwCLyoeDT2Or0nFChQ==
-X-Google-Smtp-Source: ABdhPJx6PDs1ve4+MaO8asvzeeubcLXS2JRvSLk/EJaEvwYAO02DGP6ufOLLOrbmCKlGZy6L45I+cA==
-X-Received: by 2002:aed:3e3d:: with SMTP id l58mr359140qtf.350.1601332563854;
-        Mon, 28 Sep 2020 15:36:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id a24sm2387620qko.82.2020.09.28.15.36.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 15:36:03 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kN1kY-002a85-L0; Mon, 28 Sep 2020 19:36:02 -0300
-Date:   Mon, 28 Sep 2020 19:36:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH for-rc] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
-Message-ID: <20200928223602.GS9916@ziepe.ca>
-References: <20200928202631.52020-1-kamalheib1@gmail.com>
+        id S1727049AbgI1XVt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Sep 2020 19:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726369AbgI1XVt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:21:49 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 513BE206C9;
+        Mon, 28 Sep 2020 23:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601335308;
+        bh=S2+UC+XrRqfCZ/+gR6ZQaUOaVF+k3xO1+tGlLGwIl9g=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=pUru917FzEYkB62HFZ1JWJcY/cDvNUBgzPb2Dr0F9/IdsypHsU8KTRdRoYIEE5VlL
+         KuedFBKR1lNBPlIJkcLjuy2bdk4Nl+Njn2y/dATkcp48fXBayctqTC3QHwVvsmjTgW
+         +/5ODrxN8245SLzWn2R8XggnDVhXlcN40Dz3LTuM=
+Message-ID: <1017ab3724b83818c03dfa7661b3f31827a7f62f.camel@kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5e: Fix a use after free on error in
+ mlx5_tc_ct_shared_counter_get()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     David Miller <davem@davemloft.net>, dan.carpenter@oracle.com
+Cc:     leon@kernel.org, kuba@kernel.org, roid@mellanox.com,
+        ozsh@mellanox.com, paulb@mellanox.com, elibr@mellanox.com,
+        lariel@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Date:   Mon, 28 Sep 2020 16:21:47 -0700
+In-Reply-To: <20200928.122952.688062131867166420.davem@davemloft.net>
+References: <20200928090556.GA377727@mwanda>
+         <20200928.122952.688062131867166420.davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928202631.52020-1-kamalheib1@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:26:31PM +0300, Kamal Heib wrote:
-> Before this patch, the rtnl_link_ops are set only for ipoib network
-> devices that are created via the rtnl_link_ops->newlink() callback, this
-> patch fixes that by setting the rtnl_link_ops for all ipoib network
-> devices. Also, implement the dellink() callback to block users from
-> trying to remove the base ipoib network device while allowing it only
-> for child interfaces.
+On Mon, 2020-09-28 at 12:29 -0700, David Miller wrote:
+> From: Dan Carpenter <dan.carpenter@oracle.com>
+> Date: Mon, 28 Sep 2020 12:05:56 +0300
+> 
+> > This code frees "shared_counter" and then dereferences on the next
+> line
+> > to get the error code.
+> > 
+> > Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both
+> directions")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> Saeed, I assume you will pick this up.
+> 
+> Thank you.
 
-Why?
+Applied to net-next-mlx5.
 
-Jason
+Thanks
+
