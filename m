@@ -2,97 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBD427A8EC
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 09:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F5027AA3C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 11:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgI1HnG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Sep 2020 03:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgI1HnF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:43:05 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 600122100A;
-        Mon, 28 Sep 2020 07:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601278985;
-        bh=qEiBrfNJfo3j3guhrzPxyPtqthA1XxTL+21RNCztAmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eB2WTXQVs4jt4p9BSTF7D/b7ouPEOUWfddSU8u9DKfDzceoLwj81z9U77eLd+X96S
-         QssGSS5VdGJGgGOaB2W2Bc8px9X1Cgroo8joTvvbQH+U03Bg0zax82FKLZPi+skVsr
-         /k6kVfCQonSpYR7G1YwSYjhoMC71ruWXWRkDy1m0=
-Date:   Mon, 28 Sep 2020 10:43:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        id S1726534AbgI1JIR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Sep 2020 05:08:17 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:42102 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgI1JIR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Sep 2020 05:08:17 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S93hJV194769;
+        Mon, 28 Sep 2020 09:08:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=jfgO1O7Ck5C96o5hB9CZqDDeCkVWsRHno5yUPfNdobY=;
+ b=SHrRNC/EYgSqWf4UMZAt3acjFOmY5dZWWBZfeuJeATXT0EwqrgvmSi85QE0GN2g0LF88
+ 1MKsDKM/XrrToIC/1RxJWNPBIdAxSj/M9oUHydCZUCpe4BpK8CwRDOTSu6xcnAEsLU60
+ UsUxkdWFDIWu3CVo3VERK4MqaVy4hmDdnjWQEkTHrIxbJ1baKc18cvqa9eVj03Mhbudi
+ tYbyeLSB4I1H7IkMKrsWj6c5PyN1SnfCPjSDXphucBSWBWEtO48ddbwu+wZ4edZvmV8R
+ gWBlWPbGUNW7rJIFfzXxKDAWdjDmhnLhLv70OxRhVhcZzsR3QzWYzI7OBVq2bWHr/SYo 8A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33su5am0uc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 09:08:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S94jHF072788;
+        Mon, 28 Sep 2020 09:06:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33tf7k2mmm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Sep 2020 09:06:06 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08S964Hi006320;
+        Mon, 28 Sep 2020 09:06:04 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 28 Sep 2020 02:06:04 -0700
+Date:   Mon, 28 Sep 2020 12:05:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Roi Dayan <roid@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
         Paul Blakey <paulb@mellanox.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Eli Britstein <elibr@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net/mlx5e: Fix use of freed pointer
-Message-ID: <20200928074301.GC3094@unreal>
-References: <20200927113254.362480-1-alex.dewar90@gmail.com>
- <20200927113254.362480-3-alex.dewar90@gmail.com>
+        Eli Britstein <elibr@mellanox.com>,
+        Ariel Levkovich <lariel@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next] net/mlx5e: Fix a use after free on error in
+ mlx5_tc_ct_shared_counter_get()
+Message-ID: <20200928090556.GA377727@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200927113254.362480-3-alex.dewar90@gmail.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009280076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009280076
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 12:32:53PM +0100, Alex Dewar wrote:
-> If the call to mlx5_fc_create() fails, then shared_counter will be freed
-> before its member, shared_counter->counter, is accessed to retrieve the
-> error code. Fix by using an intermediate variable.
->
-> Addresses-Coverity: CID 1497153: Memory - illegal accesses (USE_AFTER_FREE)
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
+This code frees "shared_counter" and then dereferences on the next line
+to get the error code.
 
-Please add Fixes line.
+Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both directions")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> index b5f8ed30047b..5851a1dfe6e4 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> @@ -738,6 +738,7 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
->  	struct mlx5_ct_shared_counter *shared_counter;
->  	struct mlx5_core_dev *dev = ct_priv->dev;
->  	struct mlx5_ct_entry *rev_entry;
-> +	struct mlx5_fc *counter;
->  	__be16 tmp_port;
->
->  	/* get the reversed tuple */
-> @@ -775,12 +776,13 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
->  	if (!shared_counter)
->  		return ERR_PTR(-ENOMEM);
->
-> -	shared_counter->counter = mlx5_fc_create(dev, true);
-> -	if (IS_ERR(shared_counter->counter)) {
-> +	counter = mlx5_fc_create(dev, true);
-> +	if (IS_ERR(counter)) {
->  		ct_dbg("Failed to create counter for ct entry");
->  		kfree(shared_counter);
-> -		return ERR_PTR(PTR_ERR(shared_counter->counter));
-> +		return (struct mlx5_ct_shared_counter *)counter;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+index b5f8ed30047b..cea2070af9af 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+@@ -739,6 +739,7 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 	struct mlx5_core_dev *dev = ct_priv->dev;
+ 	struct mlx5_ct_entry *rev_entry;
+ 	__be16 tmp_port;
++	int ret;
+ 
+ 	/* get the reversed tuple */
+ 	tmp_port = rev_tuple.port.src;
+@@ -778,8 +779,9 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
+ 	shared_counter->counter = mlx5_fc_create(dev, true);
+ 	if (IS_ERR(shared_counter->counter)) {
+ 		ct_dbg("Failed to create counter for ct entry");
++		ret = PTR_ERR(shared_counter->counter);
+ 		kfree(shared_counter);
+-		return ERR_PTR(PTR_ERR(shared_counter->counter));
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	refcount_set(&shared_counter->refcount, 1);
+-- 
+2.28.0
 
-return ERR_CAST(counter);
-
-
->  	}
-> +	shared_counter->counter = counter;
->
->  	refcount_set(&shared_counter->refcount, 1);
->  	return shared_counter;
-> --
-> 2.28.0
->
