@@ -2,85 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F7627AD52
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 13:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18EF27ADBC
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 14:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgI1Lzv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Sep 2020 07:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1Lzt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Sep 2020 07:55:49 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50811C061755
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 04:55:49 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e7so445453qtj.11
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 04:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O+dJtTci3eD3nmfqR/g8Ssfc2v3e4C147vKh7tn+c9s=;
-        b=XUreKkADqc+Ca8Lo7EJeDIn+KMzk+TJYoYHlQjKiE0ZIv+DHIGz2525H8zfGJjbIIL
-         rxd5yLwiTFzJ3eYN+e09JBV1N4+wmkdU0OXsbpQsC4Mv/fviFiFMdcZsm8J22ZuYi9B1
-         XrYaqIajcd7uX0B8vQrDdW67wHrOe/I7WmuPyYmq+tkZKHklgMQmUbm3AonH1g7wwLc4
-         RBZ0KUCBN45SGqNt4gCmt0u/+6X3IgaZrfU1Ch19OuFK+DJ3V89y5oVRZl1dyaWALOq1
-         noeEtCTYUT8ku1gYAIuNTI7O6F4fqiff3r7QZZU2L1oEBoQu2L3eRTlj3FzfDurithcF
-         ydFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O+dJtTci3eD3nmfqR/g8Ssfc2v3e4C147vKh7tn+c9s=;
-        b=tIf75hCX9gTVLu5LNYs18JhB6NAwWNoiqSesv6dW/rxrBkiRr92ObbSoCDSFtlDZH1
-         jLTUSDyM+24hfZDkVRCWrXJQ8CHTNDUdhkXvPnq65E4PG8JgLP+X0sDQc81M9chU6j2x
-         whuV2ePVCS/TqtgsL0udEw7eZgu6YgYp0bjdMkqblUxsgzpWS8uGRn2yOlyz+3AkZwCE
-         xd71VhOXo0uzkgQWgOSrrIWlx3w86T6Zzo+55n8UQn4b1h5n8bEZdxQosUhuOEWjapLI
-         slpVb7jfY9PfS90MyjImgVoIsfnUvZOW4bim5fywdFGqv1RsgvcGI/QF4lrmVShqIM2a
-         yMZw==
-X-Gm-Message-State: AOAM531ELm1vbCSNcgxFkxdj6qd8/E7muCcGyMKxbbdccG4H3gDA2EHF
-        bmmwOmUXou+YTPsRkvrbBd8BF+I70JAFfoNX
-X-Google-Smtp-Source: ABdhPJzylAqZGfOxuRwSYONTE3GYcr+QYn1ezgqfH4AcedHlWdd7iwKbupX1xNlT4CdQZ2dmvZJ+yw==
-X-Received: by 2002:aed:2946:: with SMTP id s64mr1052235qtd.335.1601294148580;
-        Mon, 28 Sep 2020 04:55:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id k26sm982791qtf.35.2020.09.28.04.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 04:55:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kMrkx-001tim-3Z; Mon, 28 Sep 2020 08:55:47 -0300
-Date:   Mon, 28 Sep 2020 08:55:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
+        id S1726415AbgI1M2A convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 28 Sep 2020 08:28:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3562 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726406AbgI1M2A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:28:00 -0400
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 1CB135AB8D6469FA6C12;
+        Mon, 28 Sep 2020 20:27:57 +0800 (CST)
+Received: from dggema701-chm.china.huawei.com (10.3.20.65) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 28 Sep 2020 20:27:56 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema701-chm.china.huawei.com (10.3.20.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 28 Sep 2020 20:27:56 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Mon, 28 Sep 2020 20:27:56 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
 Subject: Re: [PATCH for-next] RDMA/hns: Remove unused variables and
  definitions
-Message-ID: <20200928115547.GL9916@ziepe.ca>
+Thread-Topic: [PATCH for-next] RDMA/hns: Remove unused variables and
+ definitions
+Thread-Index: AQHWlLQdbOCmP0FTx0GazLYtS50Zjw==
+Date:   Mon, 28 Sep 2020 12:27:56 +0000
+Message-ID: <191e848eff4840ef80d9fbb0eab064a8@huawei.com>
 References: <1601200341-7924-1-git-send-email-liweihang@huawei.com>
+ <20200928115547.GL9916@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601200341-7924-1-git-send-email-liweihang@huawei.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 05:52:21PM +0800, Weihang Li wrote:
-> From: Lang Cheng <chenglang@huawei.com>
+On 2020/9/28 19:55, Jason Gunthorpe wrote:
+> On Sun, Sep 27, 2020 at 05:52:21PM +0800, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> Some code was removed but the variables were still there, and some
+>> parameters have been changed to be queried from firmware. So the
+>> definitions of them are no longer needed.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
+>>  2 files changed, 10 deletions(-)
 > 
-> Some code was removed but the variables were still there, and some
-> parameters have been changed to be queried from firmware. So the
-> definitions of them are no longer needed.
+> Should have a fixes for the patch that removed the code
 > 
-> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
->  2 files changed, 10 deletions(-)
+> Jason
+> 
 
-Should have a fixes for the patch that removed the code
+Hi Jason,
 
-Jason
+Thanks for the comment. But I'm confused about when we should add
+fixes tag.
+
+For example, The only purpose of this patch is to remove redundant
+macro definitions, the macros to be removed belong to 4 different
+former patches, so we have to add 4 lines of fixes. It seems difficult
+to merge this one back to previous versions of kernel.
+
+Should I split this patch into 4 patches and add a fixes tag for each
+one, or just put all these fixes tag in this patch?
+
+Thanks
+Weihang
