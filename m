@@ -2,108 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F5027AA3C
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 11:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9A627ABA6
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Sep 2020 12:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgI1JIR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Sep 2020 05:08:17 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:42102 "EHLO
+        id S1726573AbgI1KPQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Sep 2020 06:15:16 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:44598 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1JIR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Sep 2020 05:08:17 -0400
+        with ESMTP id S1726500AbgI1KPQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Sep 2020 06:15:16 -0400
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S93hJV194769;
-        Mon, 28 Sep 2020 09:08:07 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SABPVX129653;
+        Mon, 28 Sep 2020 10:15:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=jfgO1O7Ck5C96o5hB9CZqDDeCkVWsRHno5yUPfNdobY=;
- b=SHrRNC/EYgSqWf4UMZAt3acjFOmY5dZWWBZfeuJeATXT0EwqrgvmSi85QE0GN2g0LF88
- 1MKsDKM/XrrToIC/1RxJWNPBIdAxSj/M9oUHydCZUCpe4BpK8CwRDOTSu6xcnAEsLU60
- UsUxkdWFDIWu3CVo3VERK4MqaVy4hmDdnjWQEkTHrIxbJ1baKc18cvqa9eVj03Mhbudi
- tYbyeLSB4I1H7IkMKrsWj6c5PyN1SnfCPjSDXphucBSWBWEtO48ddbwu+wZ4edZvmV8R
- gWBlWPbGUNW7rJIFfzXxKDAWdjDmhnLhLv70OxRhVhcZzsR3QzWYzI7OBVq2bWHr/SYo 8A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33su5am0uc-1
+ bh=LPYaMKSIzSW676D+dL0gaedlKwcq+iEI2gIe5J3ZT6g=;
+ b=LWMH34/St/oQkTxY844g+ViT3siNvwLscatw8SXO+yuJOe9/Uy1h3fxOQ7/TZPFC68ic
+ KQgSpL8O4G9iiatMCLdoNbhBk7rWt2olAp87fyxGVusAG1Xuo03kA8RwWvAVCT3C3NGn
+ c1n20WagP6G6A0E4BCbG6Yxqh3qbbroOuSZCL3haQlcsSl4uqpB87M9wtQRf3z2S6nWg
+ o223ie4xsZztTTM+rpQqTG56paw9uWJHShqbMLWieg4hNKH8fPo0lxdEl7HLZFctiBpE
+ JWJlxrhVGANM/VPnURmMRlz3yiNqwtJkr7dE8Dx/hqoGI6J20OUyNuNNP3Ik670QyJfM ag== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33su5am8y3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 09:08:07 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08S94jHF072788;
-        Mon, 28 Sep 2020 09:06:06 GMT
+        Mon, 28 Sep 2020 10:15:12 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SA8upu036292;
+        Mon, 28 Sep 2020 10:15:12 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33tf7k2mmm-1
+        by userp3030.oracle.com with ESMTP id 33tfjur3g6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 09:06:06 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08S964Hi006320;
-        Mon, 28 Sep 2020 09:06:04 GMT
+        Mon, 28 Sep 2020 10:15:12 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08SAFBYq008260;
+        Mon, 28 Sep 2020 10:15:11 GMT
 Received: from mwanda (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 28 Sep 2020 02:06:04 -0700
-Date:   Mon, 28 Sep 2020 12:05:56 +0300
+        with ESMTP ; Mon, 28 Sep 2020 03:15:10 -0700
+Date:   Mon, 28 Sep 2020 13:15:05 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Roi Dayan <roid@mellanox.com>, Oz Shlomo <ozsh@mellanox.com>,
-        Paul Blakey <paulb@mellanox.com>,
-        Eli Britstein <elibr@mellanox.com>,
-        Ariel Levkovich <lariel@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH net-next] net/mlx5e: Fix a use after free on error in
- mlx5_tc_ct_shared_counter_get()
-Message-ID: <20200928090556.GA377727@mwanda>
+To:     lariel@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5e: Support CT offload for tc nic flows
+Message-ID: <20200928101505.GA382341@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009280076
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=11
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009280080
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=11
  lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
  malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280076
+ definitions=main-2009280080
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This code frees "shared_counter" and then dereferences on the next line
-to get the error code.
+Hello Ariel Levkovich,
 
-Fixes: 1edae2335adf ("net/mlx5e: CT: Use the same counter for both directions")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The patch aedd133d17bc: "net/mlx5e: Support CT offload for tc nic
+flows" from Jul 21, 2020, leads to the following static checker
+warning:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-index b5f8ed30047b..cea2070af9af 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-@@ -739,6 +739,7 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
- 	struct mlx5_core_dev *dev = ct_priv->dev;
- 	struct mlx5_ct_entry *rev_entry;
- 	__be16 tmp_port;
-+	int ret;
- 
- 	/* get the reversed tuple */
- 	tmp_port = rev_tuple.port.src;
-@@ -778,8 +779,9 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
- 	shared_counter->counter = mlx5_fc_create(dev, true);
- 	if (IS_ERR(shared_counter->counter)) {
- 		ct_dbg("Failed to create counter for ct entry");
-+		ret = PTR_ERR(shared_counter->counter);
- 		kfree(shared_counter);
--		return ERR_PTR(PTR_ERR(shared_counter->counter));
-+		return ERR_PTR(ret);
- 	}
- 
- 	refcount_set(&shared_counter->refcount, 1);
--- 
-2.28.0
+	drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:1132 mlx5e_tc_del_nic_flow()
+	warn: passing freed memory 'flow'
 
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+  1105  static void mlx5e_tc_del_nic_flow(struct mlx5e_priv *priv,
+  1106                                    struct mlx5e_tc_flow *flow)
+  1107  {
+  1108          struct mlx5_flow_attr *attr = flow->attr;
+  1109          struct mlx5e_tc_table *tc = &priv->fs.tc;
+  1110  
+  1111          flow_flag_clear(flow, OFFLOADED);
+  1112  
+  1113          if (flow_flag_test(flow, CT))
+  1114                  mlx5_tc_ct_delete_flow(get_ct_priv(flow->priv), flow, attr);
+                                                                        ^^^^
+I guess this used to free "flow" and Smatch's db hasn't totally caught
+up yet.  Now it doesn't use "flow" at all.  Maybe we could just remove
+that parameter?
+
+  1115          else if (!IS_ERR_OR_NULL(flow->rule[0]))
+  1116                  mlx5e_del_offloaded_nic_rule(priv, flow->rule[0], attr);
+  1117  
+  1118          /* Remove root table if no rules are left to avoid
+  1119           * extra steering hops.
+  1120           */
+  1121          mutex_lock(&priv->fs.tc.t_lock);
+  1122          if (!mlx5e_tc_num_filters(priv, MLX5_TC_FLAG(NIC_OFFLOAD)) &&
+  1123              !IS_ERR_OR_NULL(tc->t)) {
+  1124                  mlx5_chains_put_table(nic_chains(priv), 0, 1, MLX5E_TC_FT_LEVEL);
+  1125                  priv->fs.tc.t = NULL;
+  1126          }
+  1127          mutex_unlock(&priv->fs.tc.t_lock);
+  1128  
+  1129          kvfree(attr->parse_attr);
+  1130  
+  1131          if (attr->action & MLX5_FLOW_CONTEXT_ACTION_MOD_HDR)
+  1132                  mlx5e_detach_mod_hdr(priv, flow);
+                                                   ^^^^
+  1133  
+  1134          mlx5_fc_destroy(priv->mdev, attr->counter);
+  1135  
+  1136          if (flow_flag_test(flow, HAIRPIN))
+  1137                  mlx5e_hairpin_flow_del(priv, flow);
+  1138  
+  1139          kfree(flow->attr);
+  1140  }
+
+regards,
+dan carpenter
