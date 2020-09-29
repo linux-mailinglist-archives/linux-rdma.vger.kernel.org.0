@@ -2,99 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF5A27D413
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 19:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F5327D49D
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 19:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgI2RCH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Sep 2020 13:02:07 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:41099 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728385AbgI2RCF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Sep 2020 13:02:05 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f73688b0000>; Wed, 30 Sep 2020 01:02:03 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 17:02:02 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 29 Sep 2020 17:02:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cHYXjU9bRN7gExctldVh+efMVb+zh6di6yXb/wDp3I2NViVGMl02GkJtaVPsvX3o0YE1te03Cn9iB8cjjktexuDOIJPd+NoHKBQzl8wJiMLBg7TuHwDPQ08FDDEUnq4tlzdnK1u2arkR179AjbbUE0YdLxoNliFhAZchKV9+4G/42Tp0nOXWWTKLItF1/ln6bVTto37WL7iy/Ow+Ncy1tt1kPBEZALaegkaVFiJmqU2zs7YqUgHPruJhqzbcvICNP5kHRyuiQzqcdVzVHUWINHvJOkEAgmmvhn5+vpVvRWnS9LYcH7VpX4xg6j68akWZoSX+8m4NPFlBbkUIfYwumA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WYLQj27KayHGmVS9AKc27P5U6vfzvOyyAJ21BqjYIig=;
- b=OSDAOt/TbPyJKZaIV12+2JdNX3ahKM58y+rGJmd9lE19gBiVAfVCIm3Wp8Oug5MGUqh3ZQM6qWv3LbtrWcN0BBWJR63j5tJNPdJ+JT6T6sC3csmvjamQDXHkRFEHFCNn1ig+k/fvry+ySWNa4EoMWLCcJM0ObGKYs75P0K5R0ZE04xDSO5VGejULoYxjQE6w4RHp1p0X+7YIu0qsPa9uQKhTNx6E8NvshE7/r2vB34kqmpvpMTzr5swjx/m3MzSW/Xpo/kQ0cOnj2VamkkbfSBMOMfHYNAzE+q6CEHLjvobN3pd3FBSg6eSPIGBdaamCKdP8vAKgiVJ+zl3jbfbCvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4268.namprd12.prod.outlook.com (2603:10b6:5:223::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Tue, 29 Sep
- 2020 17:02:00 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Tue, 29 Sep 2020
- 17:02:00 +0000
-Date:   Tue, 29 Sep 2020 14:01:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next] RDMA/hns: Remove unused variables and
- definitions
-Message-ID: <20200929170159.GA761702@nvidia.com>
-References: <1601371934-40003-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1601371934-40003-1-git-send-email-liweihang@huawei.com>
-X-ClientProxiedBy: BL0PR02CA0085.namprd02.prod.outlook.com
- (2603:10b6:208:51::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1728372AbgI2Rkk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Sep 2020 13:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgI2Rkk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Sep 2020 13:40:40 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD9CC061755
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Sep 2020 10:40:40 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id g72so5150267qke.8
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Sep 2020 10:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YJe/rb+DuKM4G4scwUhs1bq13h4LKL8VG8YtuXYZp7s=;
+        b=Ppw8j6xIqGzdNGikUJa/62w4eSIiEla3NiHAUfPn4WPtdMWDUgZoOQNOgIMpFim6If
+         ON3E1W1EYskkwReD+Mkv0H2hBNnLkLTCP3Dj89Yd3WULB7uMTkK+KmZXlEWqPYqD+QyL
+         XIU0aeGbHQFSJHpWFzT5j9LjZKhNfujEu9B3VL1FaICE93GtHdqcOQAlwto2Q4AGmS+k
+         CZ80NBIeP1IpU9jcGl+7+LCJ+oXwdmFzrqObdLdIseF46t2N3LBsmHfVGGG4Bzv1v8Rh
+         /02vlj3VMWI3QoJ3bBUkqCHBwtMEdIH6n4/RdKuprLC2C27zXZDeDZvmg6djTZGOXdUd
+         n37g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YJe/rb+DuKM4G4scwUhs1bq13h4LKL8VG8YtuXYZp7s=;
+        b=H+IR/2DMVjg4weYWxjpEAT1k7zvv3DFx7aEt3hxpKh3MWTXPcRGjRq2QsBWfKtXsy8
+         5YdWLCYvNh9g4UlpdFCZv2fEycTQerSziJx/FbfGnAzSC3qo5VyUEDuUTpLpcxqLREMW
+         qpTNj+JxwzN2YAMSVNQN7LhsFAb3Izfp9lkwzt33TN6mUm2wWMoABgaO6F0t47XbPs+Q
+         XGTiiUqjXhvmosjOhVm6aXWLGniPtzAy2DGfe+Ozl03ExP0pVqoW9iPnN5xa2+N0vzKx
+         XRKLJTgB8SNcLtjYvEt+1yPBqbN3LWGZj31jpFRgUxXO14JT1vG6iMTGPECJKGPbx6pj
+         zhOQ==
+X-Gm-Message-State: AOAM5322SXwYmHuT3OxkhQg35eLQco4ciSi754aO/RL6STWIsU0PpDya
+        QoOfrJVii5KICZug1kQrsSR/iHIqztezkFbp
+X-Google-Smtp-Source: ABdhPJz042i8JGNAfIUUWGfV9bI3b8tGN9v44+1p4ieURc2WL585LjX/fw7MFsMBWHR5rFThKlo7ZA==
+X-Received: by 2002:a37:794:: with SMTP id 142mr5571635qkh.114.1601401239182;
+        Tue, 29 Sep 2020 10:40:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id s10sm5544492qkg.61.2020.09.29.10.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 10:40:38 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kNJcD-003D2b-RB; Tue, 29 Sep 2020 14:40:37 -0300
+Date:   Tue, 29 Sep 2020 14:40:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+Message-ID: <20200929174037.GW9916@ziepe.ca>
+References: <be812cb4-4b80-5ee5-4ed8-9d44f0a06edd@oracle.com>
+ <20200906074442.GE55261@unreal>
+ <9f8984ec-31e4-d71e-d55e-5cf115066e96@oracle.com>
+ <20200907071819.GL55261@unreal>
+ <69fdae5f-5824-9151-0a00-a7453382eee0@oracle.com>
+ <20200907090438.GM55261@unreal>
+ <27a60d6d-0e86-6fc6-f4e9-2893c824ba56@oracle.com>
+ <20200907102225.GA421756@unreal>
+ <d0459663-e243-c114-b9d1-9cf47c8b71e0@oracle.com>
+ <fd402e39-489e-abfd-a3a7-77092f25ced8@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0085.namprd02.prod.outlook.com (2603:10b6:208:51::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 17:02:00 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNJ0p-003CBY-1q; Tue, 29 Sep 2020 14:01:59 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601398923; bh=WYLQj27KayHGmVS9AKc27P5U6vfzvOyyAJ21BqjYIig=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=KWDoWBZnfJLoij+7FTReJ0ltVYIWL+QALz7OHIXvDeQvweoc44U8c+U1SmjhLJ1ye
-         bSZ6alRB0ZeE9yeSz9CixaLhSsYkS0VxMJM5mghxRrRjA86oT8giD6zAKqM7RUa10j
-         Oi+X3fnkjLXAHPA1BtK30Wx86R24TWoXNdKdcumjcRqjyLC+CbBEvUJ4ZckvFXpUIP
-         AUjBuiJkS+oEqfAtxQE023XJ/07+E0/LJr63ox6Y0iDyL0iI0HI9LMUFuu+hsTiR91
-         T9PyZ/VQ7HMcNKBjZeblwdQ2NzvRu8L7DVp1sD+owiMZqIlGua5IPZjY25iME4oykk
-         S+cF2S8jZFziQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fd402e39-489e-abfd-a3a7-77092f25ced8@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 05:32:14PM +0800, Weihang Li wrote:
-> From: Lang Cheng <chenglang@huawei.com>
+On Wed, Sep 30, 2020 at 12:57:48AM +0800, Ka-Cheong Poon wrote:
+> On 9/7/20 9:48 PM, Ka-Cheong Poon wrote:
 > 
-> Some code was removed but the variables were still there, and some
-> parameters have been changed to be queried from firmware. So the
-> definitions of them are no longer needed.
+> > This may require a number of changes and the way a client interacts with
+> > the current RDMA framework.  For example, currently a client registers
+> > once using one struct ib_client and gets device notifications for all
+> > namespaces and devices.  Suppose there is rdma_[un]register_net_client(),
+> > it may need to require a client to use a different struct ib_client to
+> > register for each net namespace.  And struct ib_client probably needs to
+> > have a field to store the net namespace.  Probably all those client
+> > interaction functions will need to be modified.  Since the clients xarray
+> > is global, more clients may mean performance implication, such as it takes
+> > longer to go through the whole clients xarray.
+> > 
+> > There are probably many other subtle changes required.  It may turn out to
+> > be not so straight forward.  Is this community willing the take such changes?
+> > I can take a stab at it if the community really thinks that this is preferred.
 > 
-> Fixes: 2a3d923f8730 ("RDMA/hns: Replace magic numbers with #defines")
-> Fixes: 82e620d9c3a0 ("RDMA/hns: Modify the data structure of hns_roce_av")
-> Fixes: 82547469782a ("IB/hns: Implement the add_gid/del_gid and optimize the GIDs management")
-> Fixes: 21b97f538765 ("RDMA/hns: Fixup qp release bug")
-> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
-> Changes since v1 (https://patchwork.kernel.org/patch/11802025/):
-> - Add fixes tag for related patches.
 > 
->  drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
->  2 files changed, 10 deletions(-)
+> Attached is a diff of a prototype for the above.  This exercise is
+> to see what needs to be done to have a more network namespace aware
+> interface for RDMA client registration.
 
-Applied to for-next
+An RDMA device is either in all namespaces or in a single
+namespace. If a client has some interest in only some namespaces then
+it should check the namespace during client registration and not
+register if it isn't interested. No need to change anything in the
+core code.
 
-Thanks,
+> Is the RDMA shared namespace mode the preferred mode to use as it is the
+> default mode?  
+
+Shared is the legacy mode, modern systems should switch to namespace
+mode at early boot
+
+> Is it expected that a client knows the running mode before
+> interacting with the RDMA subsystem?  
+
+Why would a client care?
+
+> Is a client not supposed to differentiate different namespaces?
+
+None do today.
+
+> A new connection comes in and the event handler is called for an
+> RDMA_CM_EVENT_CONNECT_REQUEST event.  There is no obvious namespace info regarding
+> the event.  It seems that the only way to find out the namespace info is to
+> use the context of struct rdma_cm_id.  
+
+The rdma_cm_id has only a single namespace, the ULP knows what it is
+because it created it. A listening ID can't spawn new IDs in different
+namespaces.
+
+> (*) Note that in __rdma_create_id(), it does a get_net(net) to put a
+>     reference on a namespace.  Suppose a kernel module calls rdma_create_id()
+>     in its namespace .init function to create an RDMA listener and calls
+>     rdma_destroy_id() in its namespace .exit function to destroy it.  
+
+Yes, namespaces remain until all objects touching them are deleted.
+
+It seems like a ULP error to drive cm_id lifetime entirely from the
+per-net stuff.
+
+This would be similar to creating a socket in the kernel.
+
+>     __rdma_create_id() adds a reference to a namespace, when a sys admin
+>     deletes a namespace (say `ip netns del ...`), the namespace won't be
+>     deleted because of this reference.  And the module will not release this
+>     reference until its .exit function is called only when the namespace is
+>     deleted.  To resolve this issue, in the diff (in __rdma_create_id()), I
+>     did something similar to the kern check in sk_alloc().
+
+What you are running into is there is no kernel user of net
+namespaces, all current ULPs exclusively use the init_net.
+
+Without an example of what that is supposed to be like it is hard to
+really have a discussion. You should reference other TCP in the kernel
+to see if someone has figured out how to make this work for TCP. It
+should be basically the same.
+
 Jason
