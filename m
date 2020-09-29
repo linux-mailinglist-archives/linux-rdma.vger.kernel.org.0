@@ -2,96 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D40127B80F
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 01:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54BB27BCC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 08:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgI1XZs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Sep 2020 19:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgI1XZs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:25:48 -0400
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6038B2076A;
-        Mon, 28 Sep 2020 23:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601335547;
-        bh=iCS/ts0ASN16IaSHlp9cyi3HjNkN+HRIvd/XP8pvAIQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=yT/rXRN14s6cXs7QXCmvczxg7To5+F3E9YvR7u89N7F1/ThSmeh4i26FMi1KP68ZD
-         8VCD0LpcJjhQ+tssv6gLf8Ho4MKRBzben9Xk9aBeUE7ZOrUqRkr6S0ODP36CkKsIF7
-         J/mc5fHDWC6/dsDx74ywdc64bITrVDIOElcyZ01o=
-Message-ID: <64f6a3eaaac505c341f996df0b0877ee9af56c00.camel@kernel.org>
-Subject: Re: net/mlx5: Refactor tc flow attributes structure
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>, Vlad Buslov <vladbu@nvidia.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 28 Sep 2020 16:25:46 -0700
-In-Reply-To: <763ea1c6-ed2b-3487-113f-fb48c1cf27dc@canonical.com>
-References: <763ea1c6-ed2b-3487-113f-fb48c1cf27dc@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1725550AbgI2GEv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Sep 2020 02:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI2GEv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Sep 2020 02:04:51 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D99C061755
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 23:04:51 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so3919667wrv.1
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Sep 2020 23:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UTzjivD8al9txgEqwbjKP1Ayj3RsW00zEDrSgHBx658=;
+        b=Idarl2WengdjMgiDBvwpLfRXGioVemysTxdP6h/iiOTJ628OlsXoMBPE/IQiVgWXW4
+         EAYbm2jFoPjnyYZmHUchuq8WcQT8laCwqWeZSnthy3R2oaR0uzceK3Qq5esDZVnkC3Vm
+         qTG0FKkSgCNkY01DgQjrxM1/5eD97/qmQnqZi9LIZFc35OZE42p3JGmTm6ZbQnfgl6/N
+         LOE+QOqDxNJ64BeXSaUrYWUfPUG+RI1mYoEuF//X3F9NUHlEAbKoN5kbKwquKecYqo6e
+         Fbkaoixuut+1JhQ7K9mX6AOxFGc+7ebWcGYlXDpxyLSxLGVI167HMDrOgBEB0pfLrjuL
+         DVTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UTzjivD8al9txgEqwbjKP1Ayj3RsW00zEDrSgHBx658=;
+        b=CLYLwTBJgptiK8Z/RSxM/Fixj1/IvlaN4EP9LjLShLgcwaSYNC/1lWnXha12jbHHko
+         5x7GILqHCg9y+Jboowc3zAtcnNj8xf4XXOc4tnhXldgwj1eOePkPIWKQ5JdFdBU5zoFj
+         Zd0UtissqDoBjIpvCoyQpj5bvxaVT0bp3TFQBfiR/XCARkiTYJMGk0Ig5XQE1UoUO9as
+         VFkMtbixvbbIcXnf1cL07a8scyOIL7/2/nrl9JgnYF9XMfHHg2B9QFC/re7RaGr3w1Zo
+         Iyx8LPU6JPq/twSsTttLZFcemn+egwK5ds38wXEZWAocm1LQA2ubAawRmBhxG45WEJua
+         ZcNA==
+X-Gm-Message-State: AOAM532O2SeUsb95bC+mLh3k66a7ohANtJjmR0xXHONpRn+pwtkQRh82
+        XNnxmWRAR5LMnHHqwCIH9Zo=
+X-Google-Smtp-Source: ABdhPJyUMKgS7TOeObnoaSazm7fe2LwSIxHnfsnTHMVriOKsoO9yOKIohsrB32py5feA3EtCCOi9JQ==
+X-Received: by 2002:a5d:56cd:: with SMTP id m13mr2089239wrw.261.1601359489860;
+        Mon, 28 Sep 2020 23:04:49 -0700 (PDT)
+Received: from kheib-workstation ([2a00:a040:19b:e02f:5cc2:9fa6:fc6d:771d])
+        by smtp.gmail.com with ESMTPSA id h186sm3976642wmf.24.2020.09.28.23.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 23:04:49 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 09:04:38 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-rc] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+Message-ID: <20200929060438.GA73375@kheib-workstation>
+References: <20200928202631.52020-1-kamalheib1@gmail.com>
+ <20200928223602.GS9916@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928223602.GS9916@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2020-09-28 at 17:06 +0100, Colin Ian King wrote:
-> Hi,
+On Mon, Sep 28, 2020 at 07:36:02PM -0300, Jason Gunthorpe wrote:
+> On Mon, Sep 28, 2020 at 11:26:31PM +0300, Kamal Heib wrote:
+> > Before this patch, the rtnl_link_ops are set only for ipoib network
+> > devices that are created via the rtnl_link_ops->newlink() callback, this
+> > patch fixes that by setting the rtnl_link_ops for all ipoib network
+> > devices. Also, implement the dellink() callback to block users from
+> > trying to remove the base ipoib network device while allowing it only
+> > for child interfaces.
 > 
-> static analysis with Coverity has found a null pointer dereference
-> issue
-> with the following commit:
-> 
-> commit c620b772152b8274031083bdb2e11c963e596c5c
-> Author: Ariel Levkovich <lariel@mellanox.com>
-> Date:   Thu Apr 30 05:54:08 2020 +0300
-> 
->     net/mlx5: Refactor tc flow attributes structure
-> 
-> The analysis is as follows:
-> 
-> 1240        slow_attr =
-> mlx5_alloc_flow_attr(MLX5_FLOW_NAMESPACE_FDB);
-> 
->     1. Condition !slow_attr, taking true branch.
->     2. var_compare_op: Comparing slow_attr to null implies that
-> slow_attr might be null.
-> 
-> 1241        if (!slow_attr)
-> 1242                mlx5_core_warn(flow->priv->mdev, "Unable to
-> unoffload slow path rule\n");
-> 1243
-> 1244        memcpy(slow_attr, flow->attr, ESW_FLOW_ATTR_SZ);
-> 
-> Dereference after null check (FORWARD_NULL)
->     3. var_deref_op: Dereferencing null pointer slow_attr.
-> 
-> 1245        slow_attr->action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
-> 1246        slow_attr->esw_attr->split_count = 0;
-> 1247        slow_attr->flags |= MLX5_ESW_ATTR_FLAG_SLOW_PATH;
-> 1248        mlx5e_tc_unoffload_fdb_rules(esw, flow, slow_attr);
-> 1249        flow_flag_clear(flow, SLOW);
-> 1250        kfree(slow_attr);
-> 
-> there is a !slow_attr check but if it slow_attr is null the code then
-> dereferences it multiple times afterwards.
-> 
-> Colin
+> Why?
+>
 
-Thanks Colin for the Report,
+This is needed to avoid the inconsistent user experience for PKeys that
+is created via netlink VS PKeys that is created via sysfs and the based
+ipoib interface, as you can see below the ipoib attributes are reported
+only for PKeys that is created via netlink in the 'ip -d link show'
+output:
 
-Ariel is handling this internally and we will be posting the patch
-soon.
+PKey created via netlink (pkey, mode, and umcast attributes are present):
+$ ip link add link mlx5_ib0 name mlx5_ib0.8001 type ipoib pkey 0x8001
+$ ip -d link show dev mlx5_ib0.8001
+28: mlx5_ib0.8001@mlx5_ib0: <BROADCAST,MULTICAST> mtu 4092 qdisc noop state DOWN mode DEFAULT group default qlen 256
+    link/infiniband 00:00:1f:e3:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:80:01:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520
+    ipoib pkey  0x8001 mode  datagram umcast  0000 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
 
+While:
 
+PKey created via sysfs (the attributes are not present):
+$ ip -d link show dev mlx5_ib0.8002
+20: mlx5_ib0.8002@mlx5_ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc mq state UP mode DEFAULT group default qlen 256
+    link/infiniband 00:00:11:7b:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:80:02:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520 addrgenmode none numtxqueues 256 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535
+
+Same for the base interface:
+$ ip -d link show dev mlx5_ib0
+19: mlx5_ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc mq state UP mode DEFAULT group default qlen 256
+    link/infiniband 00:00:11:79:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520 addrgenmode none numtxqueues 256 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535 
+    altname ibp7s0f0
+
+After applying this patch:
+
+$ ip link add link mlx5_ib0 name mlx5_ib0.8001 type ipoib pkey 0x8001
+$ ip -d link show dev mlx5_ib0.8001
+38: mlx5_ib0.8001@mlx5_ib0: <BROADCAST,MULTICAST> mtu 4092 qdisc noop state DOWN mode DEFAULT group default qlen 256
+    link/infiniband 00:00:2e:4e:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:80:01:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520
+    ipoib pkey  0x8001 mode  datagram umcast  0000 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+$ ip -d link show dev mlx5_ib0.8002
+30: mlx5_ib0.8002@mlx5_ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc mq state UP mode DEFAULT group default qlen 256
+    link/infiniband 00:00:1f:e6:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:80:02:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520 
+    ipoib pkey  0x8002 mode  datagram umcast  0000 addrgenmode none numtxqueues 256 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535
+
+$ ip -d link show dev mlx5_ib0
+29: mlx5_ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2044 qdisc mq state UP mode DEFAULT group default qlen 256
+    link/infiniband 00:00:1f:e4:fe:80:00:00:00:00:00:00:24:8a:07:03:00:a3:19:64 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65520
+    ipoib pkey  0xffff mode  datagram umcast  0000 addrgenmode none numtxqueues 256 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535
+
+Also modifying the the ipoib attributes will work only for PKeys that is
+created via netlink (for example, setting the mode).
+
+Thanks,
+Kamal
+
+> Jason
 
