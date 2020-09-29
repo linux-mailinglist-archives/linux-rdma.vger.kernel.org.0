@@ -2,111 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B0A27C0AB
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 11:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B500027C151
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 11:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgI2JOO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Sep 2020 05:14:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727805AbgI2JOK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:14:10 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60F592076B;
-        Tue, 29 Sep 2020 09:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601370849;
-        bh=5E3slNjRuvNNMcxv/TURB1ODurtLk+FxpM6WF84I9eM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eD0XGSr3+0Agd6IUm1AK+1BjhSo7o0PQKkrFwt17Xi02vAO34ojq6cXvCocqySYjD
-         583ZL3/PRW5KZMCJTXag9M6FFW0boQcOm0a9YzWq1j+KYkgvELur+nM9gCbkaoaO1F
-         ibMAgZmc/jakTD35Jh/eDJht3SykRDQvYIpn7IeY=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
-        Keith Busch <kbusch@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>
-Subject: [PATCH blk-next 2/2] RDMA/core: Delete not-implemented get_vector_affinity
-Date:   Tue, 29 Sep 2020 12:13:58 +0300
-Message-Id: <20200929091358.421086-3-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200929091358.421086-1-leon@kernel.org>
-References: <20200929091358.421086-1-leon@kernel.org>
+        id S1727605AbgI2Jdj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Sep 2020 05:33:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14769 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725786AbgI2Jdj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:33:39 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EF21B20ECEA0AAC0CA12;
+        Tue, 29 Sep 2020 17:33:36 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 29 Sep 2020 17:33:30 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Remove unused variables and definitions
+Date:   Tue, 29 Sep 2020 17:32:14 +0800
+Message-ID: <1601371934-40003-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Lang Cheng <chenglang@huawei.com>
 
-There are no drivers that support .get_vector_affinity(), so delete it.
+Some code was removed but the variables were still there, and some
+parameters have been changed to be queried from firmware. So the
+definitions of them are no longer needed.
 
-Fixes: 9afc97c29b03 ("mlx5: remove support for ib_get_vector_affinity")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: 2a3d923f8730 ("RDMA/hns: Replace magic numbers with #defines")
+Fixes: 82e620d9c3a0 ("RDMA/hns: Modify the data structure of hns_roce_av")
+Fixes: 82547469782a ("IB/hns: Implement the add_gid/del_gid and optimize the GIDs management")
+Fixes: 21b97f538765 ("RDMA/hns: Fixup qp release bug")
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/core/device.c |  1 -
- include/rdma/ib_verbs.h          | 23 -----------------------
- 2 files changed, 24 deletions(-)
+Changes since v1 (https://patchwork.kernel.org/patch/11802025/):
+- Add fixes tag for related patches.
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 417d93bbdaca..e00ce044555d 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2619,7 +2619,6 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, get_link_layer);
- 	SET_DEVICE_OP(dev_ops, get_netdev);
- 	SET_DEVICE_OP(dev_ops, get_port_immutable);
--	SET_DEVICE_OP(dev_ops, get_vector_affinity);
- 	SET_DEVICE_OP(dev_ops, get_vf_config);
- 	SET_DEVICE_OP(dev_ops, get_vf_guid);
- 	SET_DEVICE_OP(dev_ops, get_vf_stats);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 7fb09a36b654..b1b279d888f0 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2319,8 +2319,6 @@ struct ib_device_ops {
- 	int (*modify_device)(struct ib_device *device, int device_modify_mask,
- 			     struct ib_device_modify *device_modify);
- 	void (*get_dev_fw_str)(struct ib_device *device, char *str);
--	const struct cpumask *(*get_vector_affinity)(struct ib_device *ibdev,
--						     int comp_vector);
- 	int (*query_port)(struct ib_device *device, u8 port_num,
- 			  struct ib_port_attr *port_attr);
- 	int (*modify_port)(struct ib_device *device, u8 port_num,
-@@ -4545,27 +4543,6 @@ static inline __be16 ib_lid_be16(u32 lid)
- 	return cpu_to_be16((u16)lid);
- }
+ drivers/infiniband/hw/hns/hns_roce_device.h | 8 --------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 2 --
+ 2 files changed, 10 deletions(-)
 
--/**
-- * ib_get_vector_affinity - Get the affinity mappings of a given completion
-- *   vector
-- * @device:         the rdma device
-- * @comp_vector:    index of completion vector
-- *
-- * Returns NULL on failure, otherwise a corresponding cpu map of the
-- * completion vector (returns all-cpus map if the device driver doesn't
-- * implement get_vector_affinity).
-- */
--static inline const struct cpumask *
--ib_get_vector_affinity(struct ib_device *device, int comp_vector)
--{
--	if (comp_vector < 0 || comp_vector >= device->num_comp_vectors ||
--	    !device->ops.get_vector_affinity)
--		return NULL;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index a8183ef..6d2acff 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -57,7 +57,6 @@
+ /* Hardware specification only for v1 engine */
+ #define HNS_ROCE_MAX_INNER_MTPT_NUM		0x7
+ #define HNS_ROCE_MAX_MTPT_PBL_NUM		0x100000
+-#define HNS_ROCE_MAX_SGE_NUM			2
+ 
+ #define HNS_ROCE_EACH_FREE_CQ_WAIT_MSECS	20
+ #define HNS_ROCE_MAX_FREE_CQ_WAIT_CNT	\
+@@ -87,12 +86,7 @@
+ #define HNS_ROCE_V2_QPC_SZ 256
+ #define HNS_ROCE_V3_QPC_SZ 512
+ 
+-#define HNS_ROCE_SL_SHIFT			28
+-#define HNS_ROCE_TCLASS_SHIFT			20
+-#define HNS_ROCE_FLOW_LABEL_MASK		0xfffff
 -
--	return device->ops.get_vector_affinity(device, comp_vector);
+ #define HNS_ROCE_MAX_PORTS			6
+-#define HNS_ROCE_MAX_GID_NUM			16
+ #define HNS_ROCE_GID_SIZE			16
+ #define HNS_ROCE_SGE_SIZE			16
+ 
+@@ -120,8 +114,6 @@
+ #define PAGES_SHIFT_24				24
+ #define PAGES_SHIFT_32				32
+ 
+-#define HNS_ROCE_PCI_BAR_NUM			2
 -
--}
+ #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+ #define SRQ_DB_REG				0x230
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 7c3b548..d08e575 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -41,8 +41,6 @@
+ #include "hns_roce_hem.h"
+ #include <rdma/hns-abi.h>
+ 
+-#define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
 -
- /**
-  * rdma_roce_rescan_device - Rescan all of the network devices in the system
-  * and add their gids, as needed, to the relevant RoCE devices.
---
-2.26.2
+ static void flush_work_handle(struct work_struct *work)
+ {
+ 	struct hns_roce_work *flush_work = container_of(work,
+-- 
+2.8.1
 
