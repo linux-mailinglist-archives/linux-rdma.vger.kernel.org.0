@@ -2,23 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D704727EBC9
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 17:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AAC27EC10
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 17:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgI3PFZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Sep 2020 11:05:25 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9139 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgI3PFZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Sep 2020 11:05:25 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f749e4f0002>; Wed, 30 Sep 2020 08:03:43 -0700
-Received: from [172.27.13.156] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 15:05:17 +0000
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
+        id S1730653AbgI3POS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Sep 2020 11:14:18 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:24075 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728480AbgI3POP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:14:15 -0400
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f74a0c40000>; Wed, 30 Sep 2020 23:14:12 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
+ 2020 15:14:11 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 15:14:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oZssfSeVRejFr8QQLFZ8LgbSRmObinCMPlvtEli95uOgaQNGhiHXT4Acd0fBYG8s6qDGILP5isF5zAJGbGZmkrSw6zciDvPWk9Eu9+WhiU00h+VP2s8zpJsb9uhHGBm+zPEsHyJUo145Jru5+W2omvo0nMC0CWii6sipt9ELUAFo4+1t5HwMyGVziyufwrIR9xmDGcAp9xdSRdDx/Jb2qf1avUloc+MikLfQPgyfzBR8A27PqEBd1a2ToNOYYl+5i/ICLUnwUTMb5e9BSYnSRaPGJCRbh+JDfOp04LkrQ20J4v/fJ/O6Ab3y1yNznoPZ57ncM7IiS3IBdaprghj/1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s25BWvSSYFaWscZEV8dpG8j2WBhhANw0myZWj3gyy+8=;
+ b=oVeSBv9FhYSnFhZ0Z5cjiG+hHzpYWH3sgPE0kFPlR8AtCXqyK6CO+EVDsFMve9bkSXQSIOLwvq337Y7ybkoin47hTEkkqJMFD+j/IfGs/2vc7wPDIWBZBbJnzbcotM1Dt7E66kW2Z6pOXet90d4ypu8znaFZPoRbSiSPahlzO7c5wKo+LWXkkfPQSGdgcE7Gr4AwwMEWDW2/rqFDOMIKyJK3gewg8P1n/8Sfs0lVet2jTriGOA24ngGgPlplFnm7R4osKjSp++utHSfOZa6J5JtCO8BATjfAFr4i0ykv7e3BCAv+pkinJ9B0GtfxFm9SuPFyeivtfZVQy2Ws3J7ROA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 30 Sep
+ 2020 15:14:08 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 15:14:08 +0000
+Date:   Wed, 30 Sep 2020 12:14:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maor Gottlieb <maorg@nvidia.com>
 CC:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Christoph Hellwig <hch@lst.de>,
@@ -33,96 +55,55 @@ CC:     Leon Romanovsky <leon@kernel.org>,
         Roland Scheidegger <sroland@vmware.com>,
         "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
         VMware Graphics <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
+ from pages
+Message-ID: <20200930151406.GM816047@nvidia.com>
 References: <20200927064647.3106737-1-leon@kernel.org>
  <20200927064647.3106737-5-leon@kernel.org>
  <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
  <20200930114527.GE816047@nvidia.com>
  <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
  <20200930115837.GF816047@nvidia.com>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
-Date:   Wed, 30 Sep 2020 18:05:15 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20200930115837.GF816047@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0038.namprd13.prod.outlook.com
+ (2603:10b6:208:257::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0038.namprd13.prod.outlook.com (2603:10b6:208:257::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend Transport; Wed, 30 Sep 2020 15:14:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNdny-0048L3-Hh; Wed, 30 Sep 2020 12:14:06 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601478223; bh=1C8k0Jr4P7T3F40hyRgF1mLm/eFVC81ePiQovbxLYos=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=FnhAMOP0S4xv7P035nhKcJ09owUIHEJm0fdJzUAsp5xXZeAz9aHTRsdc0guKBSzNY
-         UJSI63M1yJ1IqsIvCZzYRtzx/VOcWpl1A6F5XaK6rYuh7LZ5GQaSsjtNulEfBVXTaZ
-         zFFrmULj7NxzCU5KYKBkNDMxBU1F9gZbvhFkaIA3lHlHRgSt/AC9PyE8ghIZuR364+
-         eHQBBMC53WfQKlWsCjwa1vXprX1ZtHK00GwWRNSfPxemwEk1WncdT0F7HFpGOZzkU1
-         ++u4BuvZEuqxruTWvVoqFEt7fFjGzu1GYqmJQxdWcT8DGgtP5rGslMn0aqktEZTBxo
-         cdV094gt5U8IA==
+        t=1601478852; bh=hF+5rGDA7BuDnHsRnPwRle+nLbbEACSot6NWeuDv2dw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=LXlkWM9QtDp96AciBbt2qrmve0czMpV3ul45q3cTlFlKk6uNa5Z/S1Mqv/qKrR/Le
+         i3y5F1fxft1U/RzbfKbojNtTB0X7hMtuUuQ3WsYepRQecx5FHP0Wr4IHaeXF8TNFpq
+         9EYOJwwVEx5cnlfoKJAmmsPhsdRv6jK9T87WTXr0+4yh0LQ1E4SkuYP/l9vIP0lBfl
+         uavIda64znHsvaAd1VDEhRzTH2exRbVSp0GtNnoiypXJbSeu4WeWp5OrPF9r6FOrbn
+         3PiSDM+GSHOO1P2+mkYByeIQKd0G3IvgjXokBFmFZ/v0KtcJfUxTXrmHv1HTt8twHA
+         LRjNePO7Sdv5A==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
+> This is right only for the last iteration. E.g. in the first iteration in
+> case that there are more pages (left_pages), then we allocate
+> SG_MAX_SINGLE_ALLOC.=C2=A0 We don't know how many pages from the second i=
+teration
+> will be squashed to the SGE from the first iteration.
 
-On 9/30/2020 2:58 PM, Jason Gunthorpe wrote:
-> On Wed, Sep 30, 2020 at 02:53:58PM +0300, Maor Gottlieb wrote:
->> On 9/30/2020 2:45 PM, Jason Gunthorpe wrote:
->>> On Wed, Sep 30, 2020 at 12:53:21PM +0300, Leon Romanovsky wrote:
->>>> On Tue, Sep 29, 2020 at 04:59:29PM -0300, Jason Gunthorpe wrote:
->>>>> On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
->>>>>> @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib=
-_device *device,
->>>>>>    			goto umem_release;
->>>>>>
->>>>>>    		cur_base +=3D ret * PAGE_SIZE;
->>>>>> -		npages   -=3D ret;
->>>>>> -
->>>>>> -		sg =3D ib_umem_add_sg_table(sg, page_list, ret,
->>>>>> -			dma_get_max_seg_size(device->dma_device),
->>>>>> -			&umem->sg_nents);
->>>>>> +		npages -=3D ret;
->>>>>> +		sg =3D __sg_alloc_table_from_pages(
->>>>>> +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
->>>>>> +			dma_get_max_seg_size(device->dma_device), sg, npages,
->>>>>> +			GFP_KERNEL);
->>>>>> +		umem->sg_nents =3D umem->sg_head.nents;
->>>>>> +		if (IS_ERR(sg)) {
->>>>>> +			unpin_user_pages_dirty_lock(page_list, ret, 0);
->>>>>> +			ret =3D PTR_ERR(sg);
->>>>>> +			goto umem_release;
->>>>>> +		}
->>>>>>    	}
->>>>>>
->>>>>>    	sg_mark_end(sg);
->>>>> Does it still need the sg_mark_end?
->>>> It is preserved here for correctness, the release logic doesn't rely o=
-n
->>>> this marker, but it is better to leave it.
->>> I mean, my read of __sg_alloc_table_from_pages() is that it already
->>> placed it, the final __alloc_table() does it?
->> It marks the last allocated sge, but not the last populated sge (with pa=
-ge).
-> Why are those different?
->
-> It looks like the last iteration calls __alloc_table() with an exact
-> number of sges
->
-> +	if (!prv) {
-> +		/* Only the last allocation could be less than the maximum */
-> +		table_size =3D left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-> +		ret =3D sg_alloc_table(sgt, table_size, gfp_mask);
-> +		if (unlikely(ret))
-> +			return ERR_PTR(ret);
-> +	}
->
-> Jason
+Well, it is 0 or 1 SGE's. Check if the first page is mergable and
+subtract one from the required length?
 
-This is right only for the last iteration. E.g. in the first iteration=20
-in case that there are more pages (left_pages), then we allocate=20
-SG_MAX_SINGLE_ALLOC.=C2=A0 We don't know how many pages from the second=20
-iteration will be squashed to the SGE from the first iteration.
+I dislike this sg_mark_end() it is something that should be internal,
+IMHO.
 
+Jason
