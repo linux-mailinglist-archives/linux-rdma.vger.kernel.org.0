@@ -2,117 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8B127F152
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 20:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15B127F53F
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 00:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725799AbgI3Sbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Sep 2020 14:31:40 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18757 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Sbj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Sep 2020 14:31:39 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f74cea50000>; Wed, 30 Sep 2020 11:29:57 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 18:31:39 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 18:31:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XQUILY4uSIcxmfRJ0eNhdcry/QHCR5iRqKPC1I+YgO3/iPwCqwMIaO0At4SLB68DPpoTgNJOLGoWUpA8D9Mf19vd5+i+dju50Mzd1QoNWv7+SBijXPByuVqlApB/Yz0rJ3PfD92X9XFvoXNn1VJjQYhf2jOXfNnoUsIUGuGxfH+LRHuMY3v1ogQIDjomTlyp2k9Y1JejDFHTzGagWkpVY4zrMyEGbtOzOdL9kG9AaQwLmbyY6QeOFdWBRa6/F7oq5/vpJWY4BIY+bGIqTOb53z/DZN90J5Bvm9K1KtKaJm36uxgWXTUdkwdAXYOsn9dPXX46DT7N/LUFFG77wMXtEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aB2nvRdtDK8IaIifUGstgSGDWJX0GKZ02H7z/AWtzKI=;
- b=T/gluFGqPJqx5Jsv777VOqRHhhJbYQ+41zLaj4Jv4aIx2778DhnNDVQRcI3qx4S9JpU5dv8YtQKu0ssF4Aevp0sp2WEoi2RPexZW1FXgRyhV7Kp/S8yekI2YnCymG44nwsw4rGeI8o7IJ/V9tUjpfsFvn3ISxugSRmfHVrkY6c4nnjYF6eHhGkySuJOGyIyz7b06C0YOXEseFi3vJ/0OD35IWCrzQ0Bgw00L1FNSB0U89SPtyY3mW+PhGpAwVBiMO2dSUZbL28ejMznigtqeMw6JS3Tqd2UY25cQFKU4DlDso22npkHunal9EYtvs89/iqpqJum5OVPKHycM2e/ezw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Wed, 30 Sep
- 2020 18:31:38 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 18:31:38 +0000
-Date:   Wed, 30 Sep 2020 15:31:36 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>, Dan Aloni <dan@kernelim.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/addr: Fix race with
- netevent_callback()/rdma_addr_cancel()
-Message-ID: <20200930183136.GA1031970@nvidia.com>
-References: <20200930072007.1009692-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200930072007.1009692-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR20CA0050.namprd20.prod.outlook.com
- (2603:10b6:208:235::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1731630AbgI3WkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Sep 2020 18:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731626AbgI3WkN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Sep 2020 18:40:13 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A953C061755;
+        Wed, 30 Sep 2020 15:40:12 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y17so4131795lfa.8;
+        Wed, 30 Sep 2020 15:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fhe1z9jtwJP0VpHDTUygA4zqKTE6joOsqm3YtyILkpA=;
+        b=hakMyYZMu0di6yGMZyDRgNav9ssN5aczE/zS2vkg+jDQ/mLSEiWSn8UsWSzkEcE6fN
+         eFHBb/VhpBaPFEcr6ei83OPTG/sxsI6ALVYtKCSebWuAwX38f/Z732d29XDwGwvXbGEH
+         unKbil+Ttr/BsRXA7COs+xvNm9+D6jbh5MUuOl3kWYWfO3wA4B330eCWNyDPVoDarrTi
+         tcBf/t+1pDLGYR5vtSK1u0qsUSuc+Ju153ijAzCXof/0DvpV2KjGjoJirxnDi+ALH5+P
+         B9CM4Zwijp+JPNB4m9ZOaiujnrsUC8jT9LzLQNGFESQhgwSuv+0gGvfSuLJTiKH2pihb
+         7WXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fhe1z9jtwJP0VpHDTUygA4zqKTE6joOsqm3YtyILkpA=;
+        b=TuLby4m0cvkHn1p7qxZdKSL0AK3qFFrN9bTZO4ABNnqvrB+lsn7M2PzJ7ck054v90o
+         +6UA/YdZPwJJ/FqPeaQrAxWRrA7iPMIjeKJReIcqY6OUGKumvq1Wwwve/WbwNz/0Vnbz
+         DKqxSZ8n+CHfRWW9Twxg2KskVhh1hSjgolbAf6hXVxF+8xcf3KejH/6lHtAiO8M+OLsZ
+         RbU2qySaL6CkSAEyU1rS9bIL5ASBuih9IBmnk9OBlhhfu1L7SkqwPr58tIBLG9nTon0G
+         /2TZrcB/JmLBZy7GDvcpkVfILioRUTRdfop/JfUxv0qfAp8YKL4aSUQ8Acn47lt/8pg2
+         dOWQ==
+X-Gm-Message-State: AOAM533fzlVgcGbBH+TirSEdr4mdlXkLmwuSohWG42MVFzZTq3Yf8BvD
+        J4BTUu52+k1kR3T6pwR0n50=
+X-Google-Smtp-Source: ABdhPJwexhyLpNfeNSaxynwqCF4RGK0ul3NCeYu5UXmNr+HzgPShXRkB9fg8JIxwDBTMLiBxlIfcsg==
+X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr1732072lfr.157.1601505611142;
+        Wed, 30 Sep 2020 15:40:11 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-229-94.NA.cust.bahnhof.se. [98.128.229.94])
+        by smtp.gmail.com with ESMTPSA id p10sm330893lfh.294.2020.09.30.15.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 15:40:10 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>, Qiushi Wu <wu000273@umn.edu>
+Subject: [PATCH rdma-next 0/2] RDMA: Constify static struct attribute_group
+Date:   Thu,  1 Oct 2020 00:40:02 +0200
+Message-Id: <20200930224004.24279-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0050.namprd20.prod.outlook.com (2603:10b6:208:235::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Wed, 30 Sep 2020 18:31:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNgt6-004KTf-Iv; Wed, 30 Sep 2020 15:31:36 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601490597; bh=aB2nvRdtDK8IaIifUGstgSGDWJX0GKZ02H7z/AWtzKI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=gHTN+vZBqNlaz4TPu1EuZrWOyzjKF8GnutYRQI3jC0H2JEjwBJ/OBYOK6JTnZbWnc
-         9NT2gIzE2HmFtIonl6xdD8XZ5PIpYBOuqYGRjc3jGbZj5cT5LBLf4Ml6Hc0XckPEoS
-         9poZn2bqbReYTLzBAzISNzLeejSM+oeCLHtnVfbJZt9UbZx93Fr7c2WDR1ML86IObm
-         2FzS9TQ8L0/VcPeW/gREOEqGxTcRAWGnCityxtY/Tx9kjQc5dWNGdIr0930ZMUxG/5
-         K9TmavdJoCsrF7K11BZYsBJbxlMJVYZbhXX1FUDQ14NwQmwsyU5EPmE5B3Bm9x4PgO
-         HWnfB+Sel8o5w==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:20:07AM +0300, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> This three thread race can result in the work being run once the callback
-> becomes NULL:
-> 
->        CPU1                 CPU2                   CPU3
->  netevent_callback()
->                      process_one_req()       rdma_addr_cancel()
->                       [..]
->      spin_lock_bh()
->   	set_timeout()
->      spin_unlock_bh()
-> 
-> 						spin_lock_bh()
-> 						list_del_init(&req->list);
-> 						spin_unlock_bh()
-> 
-> 		     req->callback = NULL
-> 		     spin_lock_bh()
-> 		       if (!list_empty(&req->list))
->                          // Skipped!
-> 		         // cancel_delayed_work(&req->work);
-> 		     spin_unlock_bh()
-> 
-> 		    process_one_req() // again
-> 		     req->callback() // BOOM
-> 						cancel_delayed_work_sync()
-> 
-> The solution is to always cancel the work once it is completed so any
-> in between set_timeout() does not result in it running again.
-> 
-> Fixes: 44e75052bc2a ("RDMA/rdma_cm: Make rdma_addr_cancel into a fence")
-> Reported-by: Dan Aloni <dan@kernelim.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/addr.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+Constify a couple of static struct attribute_group that are never
+modified to allow the compiler to put them in read-only memory.
 
-Applied to for-next
+Rikard Falkeborn (2):
+  RDMA/core: Constify struct attribute_group
+  RDMA/rtrs: Constify static struct attribute_group
 
-Jason
+ drivers/infiniband/core/sysfs.c              | 12 ++++++------
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  6 +++---
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  4 ++--
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+
+-- 
+2.28.0
+
