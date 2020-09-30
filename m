@@ -2,141 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BC927E807
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 13:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD4527E945
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 15:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgI3L6n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Sep 2020 07:58:43 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7733 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3L6m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Sep 2020 07:58:42 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7472e50001>; Wed, 30 Sep 2020 04:58:29 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 11:58:41 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 11:58:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m2EvexECMXk0gLDS728KRDPpIrs6GBzTyOM0BC8KbJRceHNw2e5Z9G7qbniVjZfR9sue6V9ONpHwaJEKfbx84YpTlrsUqTUIKCJdmom9Cpb6lwEpc0R6q9cSg4i1cNHEFGI2QY2RRShvsxDKP7aSHoVEQq9rwjQP5qDh96YWLKhHjEDgfeUejxNRmgxa1t/WPhOTDals9ysURBvAShgg/ItbsIl311LG9HZGKttzObHdm5QElbfUT5LlQYJzdz/nHxgw/HaqF0LZP+X8DHbOgnEURQ1Ydmk/XxJsR/QMjQ4h5C1l9jgwcsew7MjotFGGiy/rxT3Osi9fFxaQFvg3pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rhl15iQQ2nhZJ+bcGnlINA2ynwLtbeh4dQh9msgBhCE=;
- b=io+gnHtSKQifoUgxJgY3j8rIp5zZ0/LxU3lCez9geWd6CVWe8tJNHFEcMMlmbe0BDHDppNuJBFKfK9fwCJ5ESqa+jA2s6ZH51oaugu9cpak15b+BI2uTK9CaK9bJDtuXACzEJFEBJnA1hWaIyd83/y2ZxtlEo4pTwm7t24fQRn2JNq2KXDsfv2ZxXwroFY6XK5gjcQDL3z/tmgmwYbrO/quYv60v9j07rM/SkrJBYDCWfmJlID3ey5UQM3Ai0aFf9M5H+LcXbc8Pa+lzRUX8nvTvCdr6lhgeqK8kq5rPwiqOeXZUOmAE1U/R3xqMvS6gzrybrJYM1MictAHPSy355A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Wed, 30 Sep
- 2020 11:58:39 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 11:58:39 +0000
-Date:   Wed, 30 Sep 2020 08:58:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
- from pages
-Message-ID: <20200930115837.GF816047@nvidia.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-5-leon@kernel.org>
- <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
- <20200930114527.GE816047@nvidia.com>
- <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
-X-ClientProxiedBy: MN2PR05CA0003.namprd05.prod.outlook.com
- (2603:10b6:208:c0::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729859AbgI3NOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Sep 2020 09:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3NOR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Sep 2020 09:14:17 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031DFC061755
+        for <linux-rdma@vger.kernel.org>; Wed, 30 Sep 2020 06:14:17 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so2770563eja.2
+        for <linux-rdma@vger.kernel.org>; Wed, 30 Sep 2020 06:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9c1NFhfwrwDPfx3wDNeBI3/9qOQnMvfv5KFBA5mSm6s=;
+        b=imVfrSmnrqBOkthuTB26kRLGTmiQpg+emHIvdSBj3nu75G9IwnXD4chxU1KFDFa6wE
+         QHmGCkvBRaqJvw63VRfLPfC/WTaE1on/8dX2RvD2PBwGLglwrEc5Gud/9sZ6KbECM+dA
+         StSohkY0f6wCUAfStY3buu7VqMOY5zZqdQSjZJ56Ur1OXbibo5CXwLhnU1f11UlNNg+W
+         Lof03PjmxOu47cNdOKRMEyN22saog9vMpZh3P0vZwh6lac0mr9kXwnKDzq4KHvCFV1B/
+         WiruGMpCo9NsOsc4WqWIyIjq4RIwubuiB0G/j5guU1KJonlF2iGttYLw5S5k1iAiRTML
+         Z3Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9c1NFhfwrwDPfx3wDNeBI3/9qOQnMvfv5KFBA5mSm6s=;
+        b=nykxPVRkncAC4tmJigtIuz80l9qX3W6D+G5FToJDspxx22h+1Zqq67N+N6GlPY3nvp
+         0XB0prUY7FoHAB0GYlVN6c6yVf/SpDWfz5wP8c23wjj0RoFJJp2ey+4d4Rh3D1OAxwIj
+         sGE0HKfdgaSagdT1X6FBCfAlc3wljEBLBu309IgKnmXJ70VlAalI5Wj8cU3Y4shL8sGV
+         jTsinSr4dGB+fwu8ijN6E11JwtSo2VVKBMnNQ27ReFtUwXgH1E6wFCl3fLMMMDKjPv46
+         wmsAQrGoNzdq4QFMMtg7MZjCzkDu7REzDZyllhfnqmJGqCEEjVBCTi8ABxfC6NX5lYn8
+         0vsg==
+X-Gm-Message-State: AOAM530XST4rR/S7IPEZdNRcbGnsm1WfHgFuYG9wwtRYn5/+aff8JpbG
+        v5Q1zpHal13ferUUii7bP9pEuacTkzodAw==
+X-Google-Smtp-Source: ABdhPJzNbHLFxX23PuvRE1jB1jYD/twldM5qfs1CVswIdqsxmkMXb88cv28lHemXM/Lnz3M/zrHK9g==
+X-Received: by 2002:a17:906:d78d:: with SMTP id pj13mr2807388ejb.15.1601471655676;
+        Wed, 30 Sep 2020 06:14:15 -0700 (PDT)
+Received: from gkim-laptop.pb.local ([2001:1438:4010:2558:f1f0:c5ce:3610:b341])
+        by smtp.googlemail.com with ESMTPSA id e15sm1431103eds.5.2020.09.30.06.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 06:14:15 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@cloud.ionos.com>
+X-Google-Original-From: Gioh Kim <gi-oh.kim@clous.ionos.com>
+To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Subject: [PATCH] RDMA/rtrs: remove unused field of rtrs_iu
+Date:   Wed, 30 Sep 2020 15:14:07 +0200
+Message-Id: <20200930131407.6438-1-gi-oh.kim@clous.ionos.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0003.namprd05.prod.outlook.com (2603:10b6:208:c0::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.13 via Frontend Transport; Wed, 30 Sep 2020 11:58:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNakn-003vWb-LI; Wed, 30 Sep 2020 08:58:37 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601467110; bh=Rhl15iQQ2nhZJ+bcGnlINA2ynwLtbeh4dQh9msgBhCE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=JTVIGhFvjwui4mlIeo2K/XI8Ubo93r87mw3+Tr1+CX5ZQfaDIV2p8uT6AgQrKlylh
-         /0krm9Tt9zrEjmMJuio2n6pkwz3bY+Yd0fd+uEmr5nt7yhgaPbqR+WuDPkUyt9z6Db
-         I4yta0M/n5djqI0zcLOGBQXTeFW9sqlvEikAkgWBGuDuWlCge5LtZn9p2+lLKEE7Ws
-         XZnwVWSsPK+bMjVJwZNj05kG57JCf7AuX4P7qRLjiAK1SBVx3bL2tXl+xH5snA6FqQ
-         j7WdmXWn84ol/4EmM+OG7s4yF38yUMJn0Iy3Sg9eTvSTR3plMw/RgBRVD19PmLbAmO
-         CbgUkj/TdvW5w==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 02:53:58PM +0300, Maor Gottlieb wrote:
-> 
-> On 9/30/2020 2:45 PM, Jason Gunthorpe wrote:
-> > On Wed, Sep 30, 2020 at 12:53:21PM +0300, Leon Romanovsky wrote:
-> > > On Tue, Sep 29, 2020 at 04:59:29PM -0300, Jason Gunthorpe wrote:
-> > > > On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
-> > > > > @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-> > > > >   			goto umem_release;
-> > > > > 
-> > > > >   		cur_base += ret * PAGE_SIZE;
-> > > > > -		npages   -= ret;
-> > > > > -
-> > > > > -		sg = ib_umem_add_sg_table(sg, page_list, ret,
-> > > > > -			dma_get_max_seg_size(device->dma_device),
-> > > > > -			&umem->sg_nents);
-> > > > > +		npages -= ret;
-> > > > > +		sg = __sg_alloc_table_from_pages(
-> > > > > +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
-> > > > > +			dma_get_max_seg_size(device->dma_device), sg, npages,
-> > > > > +			GFP_KERNEL);
-> > > > > +		umem->sg_nents = umem->sg_head.nents;
-> > > > > +		if (IS_ERR(sg)) {
-> > > > > +			unpin_user_pages_dirty_lock(page_list, ret, 0);
-> > > > > +			ret = PTR_ERR(sg);
-> > > > > +			goto umem_release;
-> > > > > +		}
-> > > > >   	}
-> > > > > 
-> > > > >   	sg_mark_end(sg);
-> > > > Does it still need the sg_mark_end?
-> > > It is preserved here for correctness, the release logic doesn't rely on
-> > > this marker, but it is better to leave it.
-> > I mean, my read of __sg_alloc_table_from_pages() is that it already
-> > placed it, the final __alloc_table() does it?
-> 
-> It marks the last allocated sge, but not the last populated sge (with page).
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-Why are those different?
+list field is not used anywhere
 
-It looks like the last iteration calls __alloc_table() with an exact
-number of sges
+Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-+	if (!prv) {
-+		/* Only the last allocation could be less than the maximum */
-+		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-+		ret = sg_alloc_table(sgt, table_size, gfp_mask);
-+		if (unlikely(ret))
-+			return ERR_PTR(ret);
-+	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index 0a93c87ef92b..b8e43dc4d95a 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -115,7 +115,6 @@ struct rtrs_sess {
+ 
+ /* rtrs information unit */
+ struct rtrs_iu {
+-	struct list_head        list;
+ 	struct ib_cqe           cqe;
+ 	dma_addr_t              dma_addr;
+ 	void                    *buf;
+-- 
+2.20.1
 
-Jason 
