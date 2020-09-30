@@ -2,96 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB4827DA2B
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Sep 2020 23:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D49227DD57
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Sep 2020 02:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgI2VfS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Sep 2020 17:35:18 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11743 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbgI2VfR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Sep 2020 17:35:17 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f73a8300000>; Tue, 29 Sep 2020 14:33:36 -0700
-Received: from [172.27.0.26] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 29 Sep
- 2020 21:35:14 +0000
-Subject: Re: [PATCH rdma-next v2 1/4] IB/core: Improve ODP to use
- hmm_range_fault()
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>
-References: <20200922082104.2148873-1-leon@kernel.org>
- <20200922082104.2148873-2-leon@kernel.org>
- <20200929192730.GB767138@nvidia.com>
- <089ce58a-a439-79b5-72ac-128d56002878@nvidia.com>
- <20200929201303.GG9475@nvidia.com>
-From:   Yishai Hadas <yishaih@nvidia.com>
-Message-ID: <c3b37733-f48b-bc97-9077-60dab5954702@nvidia.com>
-Date:   Wed, 30 Sep 2020 00:34:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728799AbgI3AWn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Sep 2020 20:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728684AbgI3AWn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Sep 2020 20:22:43 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B39C061755
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Sep 2020 17:22:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id b2so5251818qtp.8
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Sep 2020 17:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zsb7D7WYfYK7JiNlBETYZlTfptxIqlFMeellzlYnbCY=;
+        b=XTGrYJINo3wICOpW1YzHVuXzCJX7nYj6VPkEkRZagWTqRzFw7lluiM8p/hkYwb+cWe
+         2cpCuQZuUPCPAM0lgvzJTH2oA4yybuuAk92RniQ41AYEqH6TwhdzumUgPm3t39jieftP
+         zKbcMTIVTGOZqFNxTkeA6uIZR2l+mNKXVzzqVxu3xsTqBS3WW2rRgahTPUYdxssDqZZm
+         nkUBEHxk7Q+5Cdm3pYE8lZCC5p+gvIZvvkIuG8doTHIVt/d9b7pS6b+6nDyBe+qp0oDV
+         M1wfUAPC91k2MIHhR5Xo1y7Bbadh4ykoCKuMMRx4jvTu1rJU5Bb4TjML8bcW8vs1wPgz
+         WmBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zsb7D7WYfYK7JiNlBETYZlTfptxIqlFMeellzlYnbCY=;
+        b=tJiYbvuRa5uWEPLZR18Daok+TfWEmDtwGKPtpUK9pECZ3Dgrq2SqTcK/qycin15ndA
+         eFXggX5H7TtryQ11GFuG5ogMdP63mBuNdWUv5zqYUHeb5YnJUrQustYfdS23FAuwxjg3
+         eT3S4aQp4vKyxDbITZj43o5xcwzKWwVuJiTl0HPOzUIjq/RKnok85u9ffkBRPCP594wf
+         HGtCLjUAQdnQEV61L3tlNVK5C3MYl2rNRP/My9DgBHfHEnL9CaiQkclWUBaFgTYzUQ7U
+         RCuQg1/ePVCSIMKCNn8B+LnSOPEvKuGXv8y8X4rUCNP0ZC5xc8ysG80SWaVqzC1UhEnN
+         4GMA==
+X-Gm-Message-State: AOAM5331fp1t9V7Jp2Sa6vD3uoz7o9PVJleY923dq+tV7CKEaEhztID/
+        MiocoM//k5rnliTdzRF+tcOc6A==
+X-Google-Smtp-Source: ABdhPJxS23ZY/oR++69n/GUSqD/WdhqZsU9FJuXrv3/R0FDgg47LZqI01j7hov7oRbzRm9RFiKBsdQ==
+X-Received: by 2002:ac8:4807:: with SMTP id g7mr6232385qtq.54.1601425361941;
+        Tue, 29 Sep 2020 17:22:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id e24sm85399qka.76.2020.09.29.17.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 17:22:41 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kNPtI-003kie-Kk; Tue, 29 Sep 2020 21:22:40 -0300
+Date:   Tue, 29 Sep 2020 21:22:40 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-rc] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+Message-ID: <20200930002240.GA9916@ziepe.ca>
+References: <20200928202631.52020-1-kamalheib1@gmail.com>
+ <20200928223602.GS9916@ziepe.ca>
+ <20200929060438.GA73375@kheib-workstation>
 MIME-Version: 1.0
-In-Reply-To: <20200929201303.GG9475@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601415216; bh=F7oPqqTsPj9yAVxmoDqQy16n+9FVlZna0tOv75D4LVI=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=AX67s85Pyo5WO6PToOgLfARxrE6CbWnMvlShwdB5XL5Bgn8jKGqUTfgfGgHlF+DiM
-         u2W45Xgeu2RhLTBIn78WD0hUVd3q2t8N9jo+/6/aWdacZ3Xbt5hjmMe2KPZmW2f+Ft
-         SrrTtluzP5Nd5qeWNRyWfNoO3CCT2CaXfQVrBcJsKB6ZV9MzU7WK8fyjS8IioKc3Ta
-         PJzkTZOmpAMZySoi8xk8rFJipZdoctCNmTxMe8eLPJ2HkWqanwh0nk8BwfC2N27pOy
-         +bPp6kjwSWEzvSEqPuxE9aNOVumRG1+gjmNJv13drHQv05KwR+wonE0gyN00xjzS8C
-         5vm/31CKEmg8g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929060438.GA73375@kheib-workstation>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/29/2020 11:13 PM, Jason Gunthorpe wrote:
->>>> +		WARN_ON(!(range.hmm_pfns[pfn_index] & HMM_PFN_VALID));
->>>> +		hmm_order = hmm_pfn_to_map_order(range.hmm_pfns[pfn_index]);
->>>> +		/* If a hugepage was detected and ODP wasn't set for, the umem
->>>> +		 * page_shift will be used, the opposite case is an error.
->>>> +		 */
->>>> +		if (hmm_order + PAGE_SHIFT < page_shift) {
->>>> +			ret = -EINVAL;
->>>> +			pr_debug("%s: un-expected hmm_order %d, page_shift %d\n",
->>>> +				 __func__, hmm_order, page_shift);
->>>>    			break;
->>>>    		}
->>> I think this break should be a continue here. There is no reason not
->>> to go to the next aligned PFN and try to sync as much as possible.
->> This might happen if the application didn't honor the contract to use
->> hugepages for the full range despite that it sets IB_ACCESS_HUGETLB, right ?
-> Yes
->
->> Do we still need to sync as much as possible in that case ? I
->> believe that we may consider return an error in this case to let
->> application be aware of as was before this series.
-> We might be prefetching or something weird where it could make sense.
->
->
-In addition to my previous note here as of below [1], ignoring the clear 
-error case might break some testing that expects to get an error in this 
-case when the contract was not honored.
+On Tue, Sep 29, 2020 at 09:04:38AM +0300, Kamal Heib wrote:
+> On Mon, Sep 28, 2020 at 07:36:02PM -0300, Jason Gunthorpe wrote:
+> > On Mon, Sep 28, 2020 at 11:26:31PM +0300, Kamal Heib wrote:
+> > > Before this patch, the rtnl_link_ops are set only for ipoib network
+> > > devices that are created via the rtnl_link_ops->newlink() callback, this
+> > > patch fixes that by setting the rtnl_link_ops for all ipoib network
+> > > devices. Also, implement the dellink() callback to block users from
+> > > trying to remove the base ipoib network device while allowing it only
+> > > for child interfaces.
+> > 
+> > Why?
+> >
+> 
+> This is needed to avoid the inconsistent user experience for PKeys that
+> is created via netlink VS PKeys that is created via sysfs and the based
+> ipoib interface, as you can see below the ipoib attributes are reported
+> only for PKeys that is created via netlink in the 'ip -d link show'
+> output:
 
-Also not sure how the HW will behave, won't that cause an extra / 
-infinite call to the driver to page fault for the missing data as the 
-result will be success but no dma will be provided ?
-As of that I believe that better leave the code as is, what do you think ?
+Summarize this in the commit message please
 
-
-[1] "Not sure about the exact scenario rather than an application issue, 
-this follows the original code in this area, maybe better sets an error 
-in the clear application error."
-
-Yishai
-
+Jason
