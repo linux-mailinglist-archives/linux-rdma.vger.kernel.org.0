@@ -2,342 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9F02807C6
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 21:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95523280830
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 22:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgJATcR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Oct 2020 15:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
+        id S1726671AbgJAUBs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Oct 2020 16:01:48 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:40064 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729990AbgJATcR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:32:17 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FE6020759;
-        Thu,  1 Oct 2020 19:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601580736;
-        bh=mXlByQDgsBBs1Axpxf6TJecUhVnUqdpDS/jr3iSqSME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=znTgB5/NBxXdrTa0EqptHeKLcDkNHDxhUTAoHflU6uBnTU6Owl8E43S43lcVO0aAA
-         xP5uKE+3rN2nreUd4pNjB7goO0xksK3BpGArXjUPb8zs7qm7XNccujWOyFtp5WfEdy
-         VEnESKDnbb1WtNFkAq6wC5y0cDw3vIdjZBL5iLGY=
-Date:   Thu, 1 Oct 2020 22:32:11 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 1/6] Add ancillary bus support
-Message-ID: <20201001193211.GX3094@unreal>
-References: <20201001050534.890666-1-david.m.ertman@intel.com>
- <20201001050534.890666-2-david.m.ertman@intel.com>
- <20201001083229.GV3094@unreal>
- <DM6PR11MB2841DEF5C090BC8D830DEC52DD300@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201001174025.GW3094@unreal>
- <BY5PR12MB4322C7955974B4DCFC8078EFDC300@BY5PR12MB4322.namprd12.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726606AbgJAUBs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:01:48 -0400
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7635a90000>; Fri, 02 Oct 2020 04:01:45 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
+ 2020 20:01:45 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 1 Oct 2020 20:01:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jJl8OVpl+tQL2YJUrB9qNnozOlsBf/UndDe9z0CSa8vxNJGCE1erovmZ4L92qZnF7n1DpDhG2SDx0kKMiLdvqolOd/nLfQ/MWtP+myXH4lxV3iNwQhbpbHkVf4J2cYqdIQq8hNZRZCI0i84EO3gVnayWk4FCO9BwYBL/ctaRyUYbKbdtUOPJUrQyTY2MS3O1f0eoLWJV3Gizv2XohSDP8D4ZzZp0P/5ttzgV6ixkdE+Kmgj4duadBJdBZvCQSIOulPDP1xMZXw1sI9eKa442IfcMPM9KS2pGVEBtd1ljZO67oqYJ79uymJgMfvvJk2k5QWgspky++maRdhQ6VSWK7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2urjXtS0r5DGIh1JfHdeb6M0Vh9Y3pT6Xl+YnaOer6c=;
+ b=ofHAH0EQ4g8iJx95p1KcjJfzC/YEAf7Ow5dXJNkX9wORdziFSFIosuylQlX+AB0T3lG/sLE7PvbnBhsepPdJ6nl4q4KliXpCZnb/0mkcT5hdEIcCbdktDZ6KKRixVgNNtYgvTr6PuRmVGC55o3ucdo+mdEohAWYgKjlP6Hkje8P8212WJJd8zjdqWTDfGxLXldg4Xr4G0VOww0r68cMLdjNPY4ANYZSgS4OvE0PsR21iw8oD3ghgo1AyA48JEDtUrTptcL9Ow5bzBPJIWkRUmXIilvZolkquTD0vE9JPORf1pQT2u36vLWKF6O6fhjr0tZ3Nr1kny8Wn1zmQD8RP5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Thu, 1 Oct
+ 2020 20:01:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 20:01:43 +0000
+Date:   Thu, 1 Oct 2020 17:01:42 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, Yishai Hadas <yishaih@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH rdma-next v3 0/4] Improve ODP by using HMM API
+Message-ID: <20201001200142.GA1185894@nvidia.com>
+References: <20200930163828.1336747-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <BY5PR12MB4322C7955974B4DCFC8078EFDC300@BY5PR12MB4322.namprd12.prod.outlook.com>
+In-Reply-To: <20200930163828.1336747-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR03CA0035.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::48) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0035.namprd03.prod.outlook.com (2603:10b6:208:2d::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Thu, 1 Oct 2020 20:01:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kO4lq-004yYA-4P; Thu, 01 Oct 2020 17:01:42 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601582506; bh=2urjXtS0r5DGIh1JfHdeb6M0Vh9Y3pT6Xl+YnaOer6c=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=rBp7Yk87LAW83ulA4HM8H3USPwcdxhsX4SoN8TruzB2dcGMs9e959kyftVoJK4qXS
+         i7X4FBkuInRKqQdmRaXa7djl8phj3BNwEB98PLE1qa+g1bMKkV7M5MkvWqbIYfrnAW
+         tSZb93c42db2o241WwEEeIhMhriOPztT7Dgxvz7qPOCvpv1QI0CjMkEZvPpPanhNb8
+         qV8GbIhIkSL1npiI6MmI+GhajlFtqlmlkF0Q/N9K3F/DSe1MwlP5OYwmmiCcKpMKVh
+         ZAFEAM/rgZuYBZp5S4hki8CMwgq9SKaPAuP+u2nFmxhfqqZhUw7dPhNH1z5cCBzjWV
+         GDufEiBLoJUuQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 06:29:22PM +0000, Parav Pandit wrote:
->
->
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, October 1, 2020 11:10 PM
-> >
-> > On Thu, Oct 01, 2020 at 05:20:35PM +0000, Ertman, David M wrote:
-> > > > -----Original Message-----
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Thursday, October 1, 2020 1:32 AM
-> > > > To: Ertman, David M <david.m.ertman@intel.com>
-> > > > Cc: linux-rdma@vger.kernel.org
-> > > > Subject: Re: [PATCH 1/6] Add ancillary bus support
-> > > >
-> > > > On Wed, Sep 30, 2020 at 10:05:29PM -0700, Dave Ertman wrote:
-> > > > > Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> > > > > It enables drivers to create an ancillary_device and bind an
-> > > > > ancillary_driver to it.
-> > > > >
-> > > > > The bus supports probe/remove shutdown and suspend/resume
-> > callbacks.
-> > > > > Each ancillary_device has a unique string based id; driver binds
-> > > > > to an ancillary_device based on this id through the bus.
-> > > > >
-> > > > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > > > Co-developed-by: Ranjani Sridharan
-> > > > > <ranjani.sridharan@linux.intel.com>
-> > > > > Signed-off-by: Ranjani Sridharan
-> > > > > <ranjani.sridharan@linux.intel.com>
-> > > > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Reviewed-by: Pierre-Louis Bossart
-> > > > > <pierre-louis.bossart@linux.intel.com>
-> > > > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > > > ---
-> > > > >  Documentation/driver-api/ancillary_bus.rst | 230
-> > > > +++++++++++++++++++++
-> > > > >  Documentation/driver-api/index.rst         |   1 +
-> > > > >  drivers/bus/Kconfig                        |   3 +
-> > > > >  drivers/bus/Makefile                       |   3 +
-> > > > >  drivers/bus/ancillary.c                    | 191 +++++++++++++++++
-> > > > >  include/linux/ancillary_bus.h              |  58 ++++++
-> > > > >  include/linux/mod_devicetable.h            |   8 +
-> > > > >  scripts/mod/devicetable-offsets.c          |   3 +
-> > > > >  scripts/mod/file2alias.c                   |   8 +
-> > > > >  9 files changed, 505 insertions(+)  create mode 100644
-> > > > > Documentation/driver-api/ancillary_bus.rst
-> > > > >  create mode 100644 drivers/bus/ancillary.c  create mode 100644
-> > > > > include/linux/ancillary_bus.h
-> > > > >
-> > > > > diff --git a/Documentation/driver-api/ancillary_bus.rst
-> > > > b/Documentation/driver-api/ancillary_bus.rst
-> > > > > new file mode 100644
-> > > > > index 000000000000..0a11979aa927
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/driver-api/ancillary_bus.rst
-> > > > > @@ -0,0 +1,230 @@
-> > > > > +.. SPDX-License-Identifier: GPL-2.0-only
-> > > > > +
-> > > > > +=============
-> > > > > +Ancillary Bus
-> > > > > +=============
-> > > > > +
-> > > > > +In some subsystems, the functionality of the core device
-> > > > (PCI/ACPI/other) is
-> > > > > +too complex for a single device to be managed as a monolithic
-> > > > > +block or a
-> > > > part of
-> > > > > +the functionality needs to be exposed to a different subsystem.
-> > > > > +Splitting
-> > > > the
-> > > > > +functionality into smaller orthogonal devices would make it
-> > > > > +easier to
-> > > > manage
-> > > > > +data, power management and domain-specific interaction with the
-> > > > hardware. A key
-> > > > > +requirement for such a split is that there is no dependency on a
-> > > > > +physical
-> > > > bus,
-> > > > > +device, register accesses or regmap support. These individual
-> > > > > +devices split
-> > > > from
-> > > > > +the core cannot live on the platform bus as they are not physical
-> > > > > +devices
-> > > > that
-> > > > > +are controlled by DT/ACPI. The same argument applies for not
-> > > > > +using MFD
-> > > > in this
-> > > > > +scenario as MFD relies on individual function devices being
-> > > > > +physical
-> > > > devices
-> > > > > +that are DT enumerated.
-> > > > > +
-> > > > > +An example for this kind of requirement is the audio subsystem
-> > > > > +where a
-> > > > single
-> > > > > +IP is handling multiple entities such as HDMI, Soundwire, local
-> > > > > +devices
-> > > > such as
-> > > > > +mics/speakers etc. The split for the core's functionality can be
-> > > > > +arbitrary or be defined by the DSP firmware topology and include
-> > > > > +hooks for
-> > > > test/debug. This
-> > > > > +allows for the audio core device to be minimal and focused on
-> > > > > +hardware-
-> > > > specific
-> > > > > +control and communication.
-> > > > > +
-> > > > > +The ancillary bus is intended to be minimal, generic and avoid
-> > > > > +domain-
-> > > > specific
-> > > > > +assumptions. Each ancillary_device represents a part of its
-> > > > > +parent functionality. The generic behavior can be extended and
-> > > > > +specialized as
-> > > > needed
-> > > > > +by encapsulating an ancillary_device within other domain-specific
-> > > > structures and
-> > > > > +the use of .ops callbacks. Devices on the ancillary bus do not
-> > > > > +share any structures and the use of a communication channel with
-> > > > > +the parent is domain-specific.
-> > > > > +
-> > > > > +When Should the Ancillary Bus Be Used
-> > > > > +=====================================
-> > > > > +
-> > > > > +The ancillary bus is to be used when a driver and one or more
-> > > > > +kernel
-> > > > modules,
-> > > > > +who share a common header file with the driver, need a mechanism
-> > > > > +to
-> > > > connect and
-> > > > > +provide access to a shared object allocated by the
-> > > > > +ancillary_device's registering driver.  The registering driver
-> > > > > +for the ancillary_device(s) and
-> > > > the
-> > > > > +kernel module(s) registering ancillary_drivers can be from the
-> > > > > +same
-> > > > subsystem,
-> > > > > +or from multiple subsystems.
-> > > > > +
-> > > > > +The emphasis here is on a common generic interface that keeps
-> > > > subsystem
-> > > > > +customization out of the bus infrastructure.
-> > > > > +
-> > > > > +One example could be a multi-port PCI network device that is
-> > > > > +rdma-
-> > > > capable and
-> > > > > +needs to export this functionality and attach to an rdma driver
-> > > > > +in another subsystem.  The PCI driver will allocate and register
-> > > > > +an ancillary_device for each physical function on the NIC.  The
-> > > > > +rdma driver will register an ancillary_driver that will be
-> > > > > +matched with and probed for each of these ancillary_devices.
-> > > > > +This will give the rdma driver access to the shared
-> > > > data/ops
-> > > > > +in the PCI drivers shared object to establish a connection with
-> > > > > +the PCI
-> > > > driver.
-> > > > > +
-> > > > > +Another use case is for the a PCI device to be split out into
-> > > > > +multiple sub functions.  For each sub function an
-> > > > > +ancillary_device will be created.  A PCI sub function driver will
-> > > > > +bind to such devices that will create its own one or more class
-> > > > > +devices.  A PCI sub function ancillary device will likely be
-> > > > > +contained in a struct with additional attributes such as user
-> > > > > +defined sub function number and optional attributes such as
-> > > > > +resources and a link to
-> > > > the
-> > > > > +parent device.  These attributes could be used by systemd/udev;
-> > > > > +and
-> > > > hence should
-> > > > > +be initialized before a driver binds to an ancillary_device.
-> > > > > +
-> > > > > +Ancillary Device
-> > > > > +================
-> > > > > +
-> > > > > +An ancillary_device is created and registered to represent a part
-> > > > > +of its
-> > > > parent
-> > > > > +device's functionality. It is given a name that, combined with
-> > > > > +the
-> > > > registering
-> > > > > +drivers KBUILD_MODNAME, creates a match_name that is used for
-> > > > > +driver
-> > > > binding,
-> > > > > +and an id that combined with the match_name provide a unique name
-> > > > > +to
-> > > > register
-> > > > > +with the bus subsystem.
-> > > > > +
-> > > > > +Registering an ancillary_device is a two-step process.  First you
-> > > > > +must call ancillary_device_initialize(), which will check several
-> > > > > +aspects of the ancillary_device struct and perform a
-> > > > > +device_initialize().  After this step completes, any error state
-> > > > > +must have a call to put_device() in its
-> > > > resolution
-> > > > > +path.  The second step in registering an ancillary_device is to
-> > > > > +perform a
-> > > > call
-> > > > > +to ancillary_device_add(), which will set the name of the device
-> > > > > +and add
-> > > > the
-> > > > > +device to the bus.
-> > > > > +
-> > > > > +To unregister an ancillary_device, just a call to
-> > > > ancillary_device_unregister()
-> > > > > +is used.  This will perform both a device_del() and a put_device().
-> > > >
-> > > > Why did you chose ancillary_device_initialize() and not
-> > > > ancillary_device_register() to be paired with
-> > ancillary_device_unregister()?
-> > > >
-> > > > Thanks
-> > >
-> > > We originally had a single call to ancillary_device_register() that
-> > > paired with unregister, but there was an ask to separate the register
-> > > into an initialize and add to make the error condition unwind more
-> > compartimentalized.
-> >
-> > It is correct thing to separate, but I would expect:
-> > ancillary_device_register()
-> > ancillary_device_add()
-> >
-> device_initialize(), device_add() and device_unregister() is the pattern widely followed in the core.
+On Wed, Sep 30, 2020 at 07:38:24PM +0300, Leon Romanovsky wrote:
 
-It doesn't mean that I need to agree with that, right?
+> This series improves ODP performance by moving to use the HMM API as of below.
+> 
+> The get_user_pages_remote() functionality was replaced by HMM:
+> - No need anymore to allocate and free memory to hold its output per call.
+> - No need anymore to use the put_page() to unpin the pages.
+> - The logic to detect contiguous pages is done based on the returned order
+>   from HMM, no need to run per page, and evaluate.
+> 
+> Moving to use the HMM enables to reduce page faults in the system by using the
+> snapshot mode. This mode allows existing pages in the CPU to become presented
+> to the device without faulting.
+> 
+> This non-faulting mode may be used explicitly by an application with some new
+> option of advice MR (i.e. PREFETCH_NO_FAULT) and is used upon ODP MR
+> registration internally as part of initiating the device page table.
+> 
+> To achieve the above, internal changes in the ODP data structures were done
+> and some flows were cleaned-up/adapted accordingly.
+>
+> Thanks
+> 
+> Yishai Hadas (4):
+>   IB/core: Improve ODP to use hmm_range_fault()
+>   IB/core: Enable ODP sync without faulting
+>   RDMA/mlx5: Extend advice MR to support non faulting mode
+>   RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
 
->
-> > vs.
-> > ancillary_device_unregister()
-> >
-> > It is not a big deal, just curious.
-> >
-> > The much more big deal is that I'm required to create 1-to-1 mapping
-> > between device and driver, and I can't connect all my different modules to
-> > one xxx_core.pf.y device in N-to-1 mapping. "N" represents different
-> > protocols (IB, ETH, SCSI) and "1" is one PCI core.
->
-> For one mlx5 (pf/vf/sf) device, there are three class erivers (ib, vdpa, en).
->
-> So there should be one ida allocate per mlx5 device type.
->
-> Static const mlx5_adev_names[MLX5_INTERFACE_PROTOCOL_MAX] = {
-> 	"rdma",
-> 	"eth",
-> 	"vdpa"
-> };
->
-> Something like for current mlx5_register_device(),
+Applied to for-next, thanks
 
-I know it and already implemented it, this is why I'm saying that it is
-not what I would expect from the implementation.
-
-It is wrong create mlx5_core.rdma.1 device that is equal to mlx5_core.eth.1
-just to connect our mlx5_ib.ko to it, while documentation explains about
-creating single PCI code device and other drivers connect to it.
-
-Thanks
-
-
-> mlx5_register_device()
-> {
-> 	id = ida_alloc(0, UINT_MAX, GFP_KERNEL);
->
-> 	for (i = 0; I < MLX5_INTERFACE_PROTOCOL_MAX; i++) {
-> 		adev = kzalloc(sizeof(*adev), GFP_KERNEL);
-> 		adev.name = mlx5_adev_names[i];
-> 		adev.id = ret;
-> 		adev.dev.parent = mlx5_core_dev->device;
-> 		adev->coredev = mlx5_core_dev;
-> 		ret = ancillary_device_initialize(&adev);
-> 		ret = ancillary_device_register(adev);
-> }
->
-> This will create 3 ancillary devices for each PCI PF/VF/SF.
-> mlx5_core.rdma.1
-> mlx5_core.eth.1
-> mlx5_core.vdpa.1
->
-> and mlx5_ib driver will do
->
-> ancillary_driver_register()
-> {
-> 	For ID of mlx5_core.rdma.
-> }
->
-> mlx5_vdpa driver does,
->
-> ancillary_driver_register()
-> {
-> 	For ID of mlx5_core.vdpa
-> }
->
-> This is uniform for pf/vf/sf for one or more all protocols.
-
+Jason
