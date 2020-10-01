@@ -2,89 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A516280B6B
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 01:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C832280B6F
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 01:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgJAXsc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Oct 2020 19:48:32 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:10596 "EHLO nat-hk.nvidia.com"
+        id S1728090AbgJAXvC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Oct 2020 19:51:02 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:5084 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728090AbgJAXsb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:48:31 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f766acc0000>; Fri, 02 Oct 2020 07:48:28 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 23:48:27 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 1 Oct 2020 23:48:27 +0000
+        id S1727780AbgJAXvC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:51:02 -0400
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f766b640000>; Fri, 02 Oct 2020 07:51:00 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
+ 2020 23:51:00 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 1 Oct 2020 23:50:59 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g6PH55SB9DlS5pUuqpD1xacgFcnhhjfKsCAayU1XnPisi7sdaPFE6DfC+cfKW4VWOHZnXOIM3KyatBdqCpsnwN+6q7vERDfrtTD8RNoY6sIoviUa8KL8ezNcNQXdK6SxGJqRO2PatekYhAYpHVgc72R3ypVswoHM0nHo73zdr9n4di5x1dnrtNQAeA2+olTFI3JxcquSkhxmd+QXnMfqrDxuITneLrKMuMfMBo8GCdiM/6XOS44w8YJWy+C8aMxbbmPuZ8tyDXZaPH/8kcuCJEo7aY9f/jl5y9mkDbJZMMVYFo3bl1oUFhoBCjjLAim2Q3iPJ3G+zXK4DzV1U6hUzg==
+ b=WSwDz32SDtjCwvgrZDBrY5HdmecQoxxsNF2H7h62IW1BiZvleGmvELLU4Q8+LlYLFwwaT/RjsjseOlXB/TZ3Uv2eKAIt12hSlSi4Tj2tB3mdBKMtL3d/f+MKie+SxoLNOD1l5C7hJENJKwh1hpzsDabXvpgeNgIRo4wSIYDQar2LWCZNCFpMQ9uDW8ZspJ0pTQYhSMM2zAJekkq1aS18MpWbnAXuPVYDBrfR/OmFkI/RdfFz7LAWrW0HlxhCXABRyjudqaWWoI1NImT8PpUWnOEuL3bT+WAivqYp5B/9vuC/ugtO/IAB7zRXMLek870IVzT0amX5kbDrpJ/lZ4PDEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=no4YlkBaVXQ5D/bUHtd+33SlfdHjr7GDSWCzggurJfk=;
- b=AWxU4k/Ar+cgD7vFI9B6AiAuaxRuxIfnJHK797HVMze4L9+F5Pm9RmF0ZsqCAA6rxSenxLccixwIFXg4V/IAi+R9qhDO3MzkgxcH+3m6IwDPJKaeGSkSj8J0FOaXBVEU2XHKxzEu7vAx9FzPy0CECjRy/0DW9uuldFokqBuijcsmwwN5bg/fleOZdVCBL3mrvH+WmkmNrNfxcq2Hj+28a5Gk8TrF1GILBQdp5IahwzRVfO+WmIcFokLegXaMMEQVjMKlnwA1/bW5uUoxGHeSUqPRvTV7ihLlMRQW9aETpkyOmm0buc6PMrV3rJYIBsqwa8s6cm7UFCjxBITGYIQa7A==
+ bh=VTXeI9jYiue74uhAdaSk/3Y+whJeaxpqMjFRL9uZp0E=;
+ b=DT/QPoB98aOgcwxiZxsfsDbodQeh6/1BiDUAUdPYmBEcmPCO4jvyski0xZwtrhnXxy8/7kge/OVLBzijyKEqV10gHEn98x7BKiMKDYlRIc26Pdxh1wDlocoNsmGz2fqB/Y3uSwccPCjbcD+Nj55F8Psad3PT2mUV5MJVcdowwZ9SF3UeEkfkt2amCLOVqJkyA/77f/JrBIfHQiDGnOui1OIfgDxsfyS94n+EUxpxBkm9EKZyTH52iOJE/+Wlt3ylnBPWtavFg6RKKSL8FLGMJ8jQTPLHHUSbR3mYSxwuzBTX2UlyWzVbEVhu+ki9L3IDCCX/EaFEYnWLgVs/so6ttQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2859.namprd12.prod.outlook.com (2603:10b6:5:15d::29) with
+ by DM5PR12MB1881.namprd12.prod.outlook.com (2603:10b6:3:10f::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.26; Thu, 1 Oct
- 2020 23:48:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Thu, 1 Oct
+ 2020 23:50:57 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 23:48:24 +0000
-Date:   Thu, 1 Oct 2020 20:48:23 -0300
+ 23:50:57 +0000
+Date:   Thu, 1 Oct 2020 20:50:55 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Kamal Heib <kamalheib1@gmail.com>, Qiushi Wu <wu000273@umn.edu>
-Subject: Re: [PATCH rdma-next 0/2] RDMA: Constify static struct
- attribute_group
-Message-ID: <20201001234823.GA1209081@nvidia.com>
-References: <20200930224004.24279-1-rikard.falkeborn@gmail.com>
+To:     Alok Prasad <palok@marvell.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <mkalderon@marvell.com>
+Subject: Re: [PATCH rdma-next] RDMA/qedr: endianness warnings cleanup
+Message-ID: <20201001235055.GA1209456@nvidia.com>
+References: <20201001100959.19940-1-palok@marvell.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200930224004.24279-1-rikard.falkeborn@gmail.com>
-X-ClientProxiedBy: BL0PR02CA0006.namprd02.prod.outlook.com
- (2603:10b6:207:3c::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201001100959.19940-1-palok@marvell.com>
+X-ClientProxiedBy: MN2PR12CA0013.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::26) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0006.namprd02.prod.outlook.com (2603:10b6:207:3c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Thu, 1 Oct 2020 23:48:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kO8JD-0054Y0-2U; Thu, 01 Oct 2020 20:48:23 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0013.namprd12.prod.outlook.com (2603:10b6:208:a8::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37 via Frontend Transport; Thu, 1 Oct 2020 23:50:56 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kO8Lf-0054dw-Q6; Thu, 01 Oct 2020 20:50:55 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601596108; bh=no4YlkBaVXQ5D/bUHtd+33SlfdHjr7GDSWCzggurJfk=;
+        t=1601596260; bh=VTXeI9jYiue74uhAdaSk/3Y+whJeaxpqMjFRL9uZp0E=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=c8CTGKREBeXDbv0GGN3YOz1WLPIA2PJHw2aRLvpzF60NU64oSG+d72C0QLYjTcGjo
-         kzIhiiMwQpT9nfbuPys8G4arEJmTwlpfaHj+z0SZ2mpsxDzKEiRQR/CCW+YvGhjFWk
-         tas2BrvTVx4UfV21z6IKYQ6p1aZRuEmYp4KUnca3KrGM4GylMos0+kxo9M5n6PLXBS
-         D3GYZ4uXZB/YUZD6/aDvYyRUirh7B7s24CHYTde/rT2tL/XKfBVNjYBUETVFE/0VPC
-         dmoiYG4w4R9EoZmjYMwWUDP0/T7X09eIIV43OxU2/Mhrbmw6468K51lLOFWld7bN5f
-         Sw7eCvEyQhpCw==
+        b=FTseTMfzM4JDeQwAYwDxUGH0Y3ERKmPLnjpb+xsp+28TnVCXpXbKoqeHGv0O5No+X
+         /pNAsSg4UWBIotf3rKTbdzHuNWmi4bUWGtfn60BEvzN5q1ZHj5bjfgFfpsYkLNzAB5
+         /qBegRFAsd10oCj42aEVQcRMapP4tsYp6Go4M59tj3VdICUASuWJtNf6JdF5YGrGxQ
+         T4MZf7R2r1VlIBGtVhZuxI9w8hCr5n+ugpll7zMMibleiqzkrJrRlZNCajWtj49UrU
+         P/fBRfYpYfbQ/ZdBMmt+zlOw5xM0BM0FgP+TyyhUqnfpQY5u05C3JnlLLXY4u7rCGp
+         llcRlUXRkxp5Q==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:40:02AM +0200, Rikard Falkeborn wrote:
-> Constify a couple of static struct attribute_group that are never
-> modified to allow the compiler to put them in read-only memory.
+On Thu, Oct 01, 2020 at 10:09:59AM +0000, Alok Prasad wrote:
+> Making a change to fix following sparse warnings
+> reported by kbuild bot.
 > 
-> Rikard Falkeborn (2):
->   RDMA/core: Constify struct attribute_group
->   RDMA/rtrs: Constify static struct attribute_group
+>  CHECK   drivers/infiniband/hw/qedr/verbs.c
+> 
+> drivers/infiniband/hw/qedr/verbs.c:3872:59: warning: incorrect type in assignment (different base types)
+> drivers/infiniband/hw/qedr/verbs.c:3872:59:    expected restricted __le32 [usertype] sge_prod
+> drivers/infiniband/hw/qedr/verbs.c:3872:59:    got unsigned int [usertype] sge_prod
+> drivers/infiniband/hw/qedr/verbs.c:3875:59: warning: incorrect type in assignment (different base types)
+> drivers/infiniband/hw/qedr/verbs.c:3875:59:    expected restricted __le32 [usertype] wqe_prod
+> drivers/infiniband/hw/qedr/verbs.c:3875:59:    got unsigned int [usertype] wqe_prod
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Fixes: acca72e2b031 ("RDMA/qedr: SRQ's bug fixes")
+> Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+> Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
+> Signed-off-by: Alok Prasad <palok@marvell.com>
+> ---
+>  drivers/infiniband/hw/qedr/verbs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to for-next, thanks
+Applied to for-next
 
+Thanks,
 Jason
