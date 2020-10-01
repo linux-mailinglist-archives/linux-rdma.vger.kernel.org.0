@@ -2,238 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0152805A1
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 19:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695002805CE
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 19:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbgJARkb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Oct 2020 13:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgJARkb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:40:31 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 874472054F;
-        Thu,  1 Oct 2020 17:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601574030;
-        bh=4/ABykS+U6Tt6z22Cxn78xvAi1fjpzZd0fKJpnCwHMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=034tsYcLjxqloiRe+BSwe8gDC1AJH9/DysJAB+xRPOYfa786lgf++bJ5LN+CcXHTI
-         g8OQJlxjM2kr/+x42BoC7eWT9E5CI+5DwmQQG8daDYpgVQyhXRNONPKsoTNGLxgYH5
-         uqu/2eV/UEcz6WIhz/Ut5qpVeh2tTfkg6oDjd2EM=
-Date:   Thu, 1 Oct 2020 20:40:25 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 1/6] Add ancillary bus support
-Message-ID: <20201001174025.GW3094@unreal>
-References: <20201001050534.890666-1-david.m.ertman@intel.com>
- <20201001050534.890666-2-david.m.ertman@intel.com>
- <20201001083229.GV3094@unreal>
- <DM6PR11MB2841DEF5C090BC8D830DEC52DD300@DM6PR11MB2841.namprd11.prod.outlook.com>
+        id S1732829AbgJARs4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Oct 2020 13:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732096AbgJARsz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Oct 2020 13:48:55 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B94C0613D0
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Oct 2020 10:48:55 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id m12so6352346otr.0
+        for <linux-rdma@vger.kernel.org>; Thu, 01 Oct 2020 10:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vKuGkVq4yoLDSpXwZuQSVYM/8Zy9KCtXCZW/DY9+1Ao=;
+        b=SncjLYjvsAB5Iu6TNzrgd3VKTg5wIg2/YlRylS2jVxwRnLuhK2V+8SSUEWiAGjt7Y+
+         e+EziI2aRPrP/BKxujZMSecJ9fEwOJxYiZEVygSz3o0JjE4o+saiFFnxsJCqtfNVqys/
+         HcrgvBYHEcbMSjitmhC8wfU359mxayTDUGg4ocHmAE3J1a9lGed8Rp5p9XacrP4gZFd8
+         Fi9XoDIvRA2AyvJoitM3P5LifXXSeK1UZ+Bo2X21/0sq1GSagaO1ADLJ4ku2PgDLWceB
+         As8mFTfo3YpbiFsYcE15jNCrlFvoW9A9uYi5h5GyzATeDv+Ubba6A0uyBfa1uTICxpPC
+         a/6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vKuGkVq4yoLDSpXwZuQSVYM/8Zy9KCtXCZW/DY9+1Ao=;
+        b=NpM0uFkZUz7pFL7pOHRAzjhtGtixe/+6AAXPENsSZI2oUDJR+Ki+4eZWllKsjVWmyh
+         3WhRgiDZEHiQ9Ksr7qnuvKDu0mi+GodqBKLx28lqf8tHUz8jnQBNon2J9tRxB+rOAJ2w
+         U3s0CkiDmJOjzUXn/qTn9IupZ89ChT7pcX+yy8FRBX0LuBvGqo2JjXpBVFQj/9E9kdQQ
+         g2CuJYs6GWnc51mkOkXewg/DQhOiUYwt2cjz+8d+E2V8h7O2U5yOLskxMh7cezfYRNFg
+         x+C7/L5sDMaZ0AfcACfzeuKK5Yj9hXd/bsazQe8KkzaMeWL/Fr/sTkdlEFxnhR4wAm/C
+         hDBQ==
+X-Gm-Message-State: AOAM533c+kHmadmRdln8YUDD9kBDpSuI979EgUy6E/2tVAVtSheSHNU6
+        3yBrZQHKsBJ8ay1qFD02QV55Syjn8lw=
+X-Google-Smtp-Source: ABdhPJzt+XjiLpFC0FptAaCJi7IjFTXlcNXkgJLy0oSggIqGqSzmccZK6NcTRIp81ejo92PnNspZpg==
+X-Received: by 2002:a05:6830:1bc2:: with SMTP id v2mr5770061ota.67.1601574534574;
+        Thu, 01 Oct 2020 10:48:54 -0700 (PDT)
+Received: from localhost ([2605:6000:8b03:f000:d01f:9a3e:d22f:7a6])
+        by smtp.gmail.com with ESMTPSA id g18sm1358531otg.58.2020.10.01.10.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:48:54 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v7 00/19] rdma_rxe: API extensions
+Date:   Thu,  1 Oct 2020 12:48:28 -0500
+Message-Id: <20201001174847.4268-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB2841DEF5C090BC8D830DEC52DD300@DM6PR11MB2841.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 05:20:35PM +0000, Ertman, David M wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, October 1, 2020 1:32 AM
-> > To: Ertman, David M <david.m.ertman@intel.com>
-> > Cc: linux-rdma@vger.kernel.org
-> > Subject: Re: [PATCH 1/6] Add ancillary bus support
-> >
-> > On Wed, Sep 30, 2020 at 10:05:29PM -0700, Dave Ertman wrote:
-> > > Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> > > It enables drivers to create an ancillary_device and bind an
-> > > ancillary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each ancillary_device has a unique string based id; driver binds to
-> > > an ancillary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> > >  Documentation/driver-api/ancillary_bus.rst | 230
-> > +++++++++++++++++++++
-> > >  Documentation/driver-api/index.rst         |   1 +
-> > >  drivers/bus/Kconfig                        |   3 +
-> > >  drivers/bus/Makefile                       |   3 +
-> > >  drivers/bus/ancillary.c                    | 191 +++++++++++++++++
-> > >  include/linux/ancillary_bus.h              |  58 ++++++
-> > >  include/linux/mod_devicetable.h            |   8 +
-> > >  scripts/mod/devicetable-offsets.c          |   3 +
-> > >  scripts/mod/file2alias.c                   |   8 +
-> > >  9 files changed, 505 insertions(+)
-> > >  create mode 100644 Documentation/driver-api/ancillary_bus.rst
-> > >  create mode 100644 drivers/bus/ancillary.c
-> > >  create mode 100644 include/linux/ancillary_bus.h
-> > >
-> > > diff --git a/Documentation/driver-api/ancillary_bus.rst
-> > b/Documentation/driver-api/ancillary_bus.rst
-> > > new file mode 100644
-> > > index 000000000000..0a11979aa927
-> > > --- /dev/null
-> > > +++ b/Documentation/driver-api/ancillary_bus.rst
-> > > @@ -0,0 +1,230 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0-only
-> > > +
-> > > +=============
-> > > +Ancillary Bus
-> > > +=============
-> > > +
-> > > +In some subsystems, the functionality of the core device
-> > (PCI/ACPI/other) is
-> > > +too complex for a single device to be managed as a monolithic block or a
-> > part of
-> > > +the functionality needs to be exposed to a different subsystem.  Splitting
-> > the
-> > > +functionality into smaller orthogonal devices would make it easier to
-> > manage
-> > > +data, power management and domain-specific interaction with the
-> > hardware. A key
-> > > +requirement for such a split is that there is no dependency on a physical
-> > bus,
-> > > +device, register accesses or regmap support. These individual devices split
-> > from
-> > > +the core cannot live on the platform bus as they are not physical devices
-> > that
-> > > +are controlled by DT/ACPI. The same argument applies for not using MFD
-> > in this
-> > > +scenario as MFD relies on individual function devices being physical
-> > devices
-> > > +that are DT enumerated.
-> > > +
-> > > +An example for this kind of requirement is the audio subsystem where a
-> > single
-> > > +IP is handling multiple entities such as HDMI, Soundwire, local devices
-> > such as
-> > > +mics/speakers etc. The split for the core's functionality can be arbitrary or
-> > > +be defined by the DSP firmware topology and include hooks for
-> > test/debug. This
-> > > +allows for the audio core device to be minimal and focused on hardware-
-> > specific
-> > > +control and communication.
-> > > +
-> > > +The ancillary bus is intended to be minimal, generic and avoid domain-
-> > specific
-> > > +assumptions. Each ancillary_device represents a part of its parent
-> > > +functionality. The generic behavior can be extended and specialized as
-> > needed
-> > > +by encapsulating an ancillary_device within other domain-specific
-> > structures and
-> > > +the use of .ops callbacks. Devices on the ancillary bus do not share any
-> > > +structures and the use of a communication channel with the parent is
-> > > +domain-specific.
-> > > +
-> > > +When Should the Ancillary Bus Be Used
-> > > +=====================================
-> > > +
-> > > +The ancillary bus is to be used when a driver and one or more kernel
-> > modules,
-> > > +who share a common header file with the driver, need a mechanism to
-> > connect and
-> > > +provide access to a shared object allocated by the ancillary_device's
-> > > +registering driver.  The registering driver for the ancillary_device(s) and
-> > the
-> > > +kernel module(s) registering ancillary_drivers can be from the same
-> > subsystem,
-> > > +or from multiple subsystems.
-> > > +
-> > > +The emphasis here is on a common generic interface that keeps
-> > subsystem
-> > > +customization out of the bus infrastructure.
-> > > +
-> > > +One example could be a multi-port PCI network device that is rdma-
-> > capable and
-> > > +needs to export this functionality and attach to an rdma driver in another
-> > > +subsystem.  The PCI driver will allocate and register an ancillary_device for
-> > > +each physical function on the NIC.  The rdma driver will register an
-> > > +ancillary_driver that will be matched with and probed for each of these
-> > > +ancillary_devices.  This will give the rdma driver access to the shared
-> > data/ops
-> > > +in the PCI drivers shared object to establish a connection with the PCI
-> > driver.
-> > > +
-> > > +Another use case is for the a PCI device to be split out into multiple sub
-> > > +functions.  For each sub function an ancillary_device will be created.  A PCI
-> > > +sub function driver will bind to such devices that will create its own one or
-> > > +more class devices.  A PCI sub function ancillary device will likely be
-> > > +contained in a struct with additional attributes such as user defined sub
-> > > +function number and optional attributes such as resources and a link to
-> > the
-> > > +parent device.  These attributes could be used by systemd/udev; and
-> > hence should
-> > > +be initialized before a driver binds to an ancillary_device.
-> > > +
-> > > +Ancillary Device
-> > > +================
-> > > +
-> > > +An ancillary_device is created and registered to represent a part of its
-> > parent
-> > > +device's functionality. It is given a name that, combined with the
-> > registering
-> > > +drivers KBUILD_MODNAME, creates a match_name that is used for driver
-> > binding,
-> > > +and an id that combined with the match_name provide a unique name to
-> > register
-> > > +with the bus subsystem.
-> > > +
-> > > +Registering an ancillary_device is a two-step process.  First you must call
-> > > +ancillary_device_initialize(), which will check several aspects of the
-> > > +ancillary_device struct and perform a device_initialize().  After this step
-> > > +completes, any error state must have a call to put_device() in its
-> > resolution
-> > > +path.  The second step in registering an ancillary_device is to perform a
-> > call
-> > > +to ancillary_device_add(), which will set the name of the device and add
-> > the
-> > > +device to the bus.
-> > > +
-> > > +To unregister an ancillary_device, just a call to
-> > ancillary_device_unregister()
-> > > +is used.  This will perform both a device_del() and a put_device().
-> >
-> > Why did you chose ancillary_device_initialize() and not
-> > ancillary_device_register() to be paired with ancillary_device_unregister()?
-> >
-> > Thanks
->
-> We originally had a single call to ancillary_device_register() that paired with
-> unregister, but there was an ask to separate the register into an initialize and
-> add to make the error condition unwind more compartimentalized.
+V7:
+   Ported this patch series forward to the current state of for-next.
 
-It is correct thing to separate, but I would expect:
-ancillary_device_register()
-ancillary_device_add()
+   MW now being allocated in core.
 
-vs.
-ancillary_device_unregister()
+   Split up rxe_pool changes into patches as requested by Jason.
+   Added some better comments.
+   Added error returns via ERR_PTR for APIs that return pointers.
 
-It is not a big deal, just curious.
+   Added some additional validation for rkeys in rxe_resp based on
+   chapter 9 of IBA.
 
-The much more big deal is that I'm required to create 1-to-1 mapping
-between device and driver, and I can't connect all my different modules
-to one xxx_core.pf.y device in N-to-1 mapping. "N" represents different
-protocols (IB, ETH, SCSI) and "1" is one PCI core.
+   Minor cleanup to rxe_mr which had duplicate entries.
 
-Thanks
+V6:
+   Fixed two issues raised by Jason and Zhu.
 
->
-> -DaveE
+   Undid the replacement of rwlocks by spinlocks in patch 10/12. On further
+   reading it turns out rwlocks were the better choice.
+
+   Missing prototype for rxe_invalidate_mr. This was caused by a regression in
+   patch 05/12 which had dropped the actual use of the routine as well as the
+   prototype. Fixed.
+
+V5:
+   This patch series is a collection of API extensions for the rdma_rxe driver.
+   With this patch set installed there are no errors in pyverbs run-tests and
+   31 tests are skipped down from 56. The remaining skipped test cases include
+           - XRC tests
+           - ODP tests
+           - Parent device tests
+           - Import tests
+           - Device memory
+           - MLX5 specific tests
+           - EFA tests
+
+   It continues from the previous (v4) set which implemented memory windows and
+   has had a number of individual patches picked up in for-next.
+
+   This set (v5) includes:
+           Ported to current head of tree
+           Memory windows patches not yet picked up
+           kernel support for the extended user space APIs:
+             - ibv_query_device_ex
+             - ibv_create_cq_ex
+             - ibv_create_qp_ex
+           Fixes for multicast which is not currently working
+
+   This patch set depends on a matching rdma-core user space library patch set.
+
+   In order to run correctly it is necessary to configure by hand the EUI64 link
+   local IPV6 address on systems which use a random link local address (like
+   Ubuntu).
+
+Bob Pearson (19):
+  rdma_rxe: Separat MEM into MR and MW objects.
+  rdma_rxe: Enable MW objects
+  rdma_rxe: Let pools support both keys and indices
+  rdma_rxe: make pool return values position independent
+  rdma_rxe: remove void * parameters in pool APIs
+  rdma_rxe: add alloc_mw and dealloc_mw verbs
+  rdma_rxe: Add bind_mw and invalidate_mw verbs
+  rdma_rxe: Add memory access through MWs
+  rdma_rxe: Add locked and unlocked pool APIs
+  rdma_rxe: Add support for ibv_query_device_ex
+  rdma_rxe: Add support for extended CQ operations
+  rdma_rxe: Add support for extended QP operations
+  rdma_rxe: Fix mcast group allocation bug
+  rdma_rxe: Fix bugs in the multicast receive path
+  rdma_rxe: handle ERR_PTR returns from pool
+  rdma_rxe: remove duplicate entries in struct rxe_mr
+  rdma_rme: removed unused RXE_MR_TYPE_FMR
+  rdma_rxe: add rkey validation checks for MR and MW
+  rdma_rxe: moved rxe_xmit_packet to rxe_net.c
+
+ drivers/infiniband/sw/rxe/Makefile     |   1 +
+ drivers/infiniband/sw/rxe/rxe.c        | 100 ++--
+ drivers/infiniband/sw/rxe/rxe_comp.c   |  12 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  91 ++--
+ drivers/infiniband/sw/rxe/rxe_mcast.c  | 118 +++--
+ drivers/infiniband/sw/rxe/rxe_mr.c     | 396 ++++++++-------
+ drivers/infiniband/sw/rxe/rxe_mw.c     | 420 ++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_net.c    |  47 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.h |   1 -
+ drivers/infiniband/sw/rxe/rxe_param.h  |  10 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c   | 653 ++++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_pool.h   | 148 +++---
+ drivers/infiniband/sw/rxe/rxe_recv.c   |  67 ++-
+ drivers/infiniband/sw/rxe/rxe_req.c    | 145 ++++--
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 188 +++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c  | 118 +++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |  71 ++-
+ include/uapi/rdma/rdma_user_rxe.h      |  68 ++-
+ 19 files changed, 1930 insertions(+), 735 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+
+-- 
+2.25.1
+
