@@ -2,375 +2,248 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724D027F8D8
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 07:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B3B27FA39
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Oct 2020 09:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbgJAFGb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Oct 2020 01:06:31 -0400
-Received: from mga14.intel.com ([192.55.52.115]:21948 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJAFGa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:06:30 -0400
-IronPort-SDR: QNlAM5XjE1q89eZT9pfrazqEg8OgEA5Ud9bHGl60oUipFxQdU5r0Bl1ssz2vRNcWQoLgZkyjSo
- coh/laBai1BQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161876197"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="161876197"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 22:06:28 -0700
-IronPort-SDR: VavgDIZ1Vz6WuqjPBbzfmhPH0WDBfAp1X4/qg37GdvalLkaKUZk1jfWMngMf6/6q93ZuvDL9nh
- d0gOyIQWVbpA==
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="501563220"
-Received: from dmert-dev.jf.intel.com ([10.166.241.5])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 22:06:27 -0700
-From:   Dave Ertman <david.m.ertman@intel.com>
-To:     linux-rdma@vger.kernel.org
-Subject: [PATCH 6/6] ASoC: SOF: debug: Remove IPC flood test support in SOF core
-Date:   Wed, 30 Sep 2020 22:05:34 -0700
-Message-Id: <20201001050534.890666-7-david.m.ertman@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201001050534.890666-1-david.m.ertman@intel.com>
-References: <20201001050534.890666-1-david.m.ertman@intel.com>
+        id S1731248AbgJAH0n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Oct 2020 03:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAH0m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Oct 2020 03:26:42 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3ABC0613E2
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Oct 2020 00:26:40 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id g3so223575edu.6
+        for <linux-rdma@vger.kernel.org>; Thu, 01 Oct 2020 00:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ZKtKXKnlI9OQcR2INMab6gGaMD1rqgWs4v7ImAsS28=;
+        b=HMB3bWupFtyFqFrornu8LUPR+eKE69dlVbICTJOY/SqNpN9xiYB9o2yv7Dyv2mTPG7
+         i+x+eA1ISs5n2Kdg19TcVbecjGO9xtOPQ8mB4bKmOs/2TxZHCw+qb5n+nX3i9uAkUOsz
+         wRHKepAKszXXpvWU1Unj958sPuv9hyUurzV+6qvDxRzUqNXezxDbGZbAsuV+fQdmCU9g
+         NEHtqSC0fZ/OwZy9spmtR8K616SlJdzqB8CdnfjFXVF1ovF6AlB1EdmQgOfDfvg9F9PG
+         ZMfTszWQeX9dv7DxB8cwt+4HlnepN6xH9pH8X25lr/koji5cJVuKRKPshDcrZgL/FHBh
+         u0bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ZKtKXKnlI9OQcR2INMab6gGaMD1rqgWs4v7ImAsS28=;
+        b=U0GnaKciXCb2NE7KfmkmYk5nR3CEj3EW7ZnFJZhzXhpMZBgPE+uyQu6BzKzwgmPQ5m
+         93bqDnQ1iHkpn5s1/Q7aMPZnav+cpJ6yRkCct8MrujwiDtif7DksgnF7Pkpw1ScxfZxt
+         Rp/lvNILYJjbdkSQHR1AErzonJYU4kpSYz+aHxFUly9vZSiE9zgd8mH5QONQ7K5EGOlX
+         QUorqeS9/Z5X4Ns3X8AXFSw+UTnl7W0ZXz0K25AThwhSclGTlrWIUYPPirSjCSAA4XDW
+         jowIxdHiQMC5AVVqjNtmLZQuhd+AWeFO25C5/d9Br+7U3FI5R/NFYlJFd7zoaI3sJTdX
+         LPyg==
+X-Gm-Message-State: AOAM533vjYolorvEKMb7YNYGfq8ynp/FamX28M+70s64Ueb5ivGDZEe3
+        8vlxCo7r7dAd7gye1kBvohcpvr6kEclXCg==
+X-Google-Smtp-Source: ABdhPJxyKpDexrlR5gMm/WeckDH1ZOsNlTfR/gExRTc2c1FoTc2vsFAzyR5/OatKyVjOnxHleBRPuw==
+X-Received: by 2002:a50:ee10:: with SMTP id g16mr7114902eds.258.1601537199589;
+        Thu, 01 Oct 2020 00:26:39 -0700 (PDT)
+Received: from gkim-laptop.pb.local ([2001:1438:4010:2558:4cea:8c37:1548:493c])
+        by smtp.googlemail.com with ESMTPSA id jr9sm3436230ejb.87.2020.10.01.00.26.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 00:26:39 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@cloud.ionos.com>
+X-Google-Original-From: Gioh Kim <gi-oh.kim@clous.ionos.com>
+To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Subject: [PATCH 1/2] RDMA/rtrs: remove unnecessary argument dir of rtrs_iu_free
+Date:   Thu,  1 Oct 2020 09:26:37 +0200
+Message-Id: <20201001072637.16121-1-gi-oh.kim@clous.ionos.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Fred Oh <fred.oh@linux.intel.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-Remove the IPC flood test support in the SOF core as it is
-now added in the IPC flood test client.
+The direction of DMA operation is already in the rtrs_iu.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 ---
- sound/soc/sof/Kconfig    |   8 --
- sound/soc/sof/debug.c    | 230 ---------------------------------------
- sound/soc/sof/sof-priv.h |   6 +-
- 3 files changed, 1 insertion(+), 243 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 14 ++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |  3 +--
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 14 ++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs.c     | 10 +++++-----
+ 4 files changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 55a2a20c3ec9..4046e96eed92 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -182,14 +182,6 @@ config SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE
- 	  module parameter (similar to dynamic debug)
- 	  If unsure, select "N".
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 776e89231c52..7af5f1559451 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1236,8 +1236,7 @@ static void free_sess_reqs(struct rtrs_clt_sess *sess)
+ 		if (req->mr)
+ 			ib_dereg_mr(req->mr);
+ 		kfree(req->sge);
+-		rtrs_iu_free(req->iu, DMA_TO_DEVICE,
+-			      sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(req->iu, sess->s.dev->ib_dev, 1);
+ 	}
+ 	kfree(sess->reqs);
+ 	sess->reqs = NULL;
+@@ -1605,8 +1604,7 @@ static void destroy_con_cq_qp(struct rtrs_clt_con *con)
  
--config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
--	bool "SOF enable IPC flood test"
--	help
--	  This option enables the IPC flood test which can be used to flood
--	  the DSP with test IPCs and gather stats about response times.
--	  Say Y if you want to enable IPC flood test.
--	  If unsure, select "N".
--
- config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_CLIENT
- 	tristate "SOF enable IPC flood test client"
- 	depends on SND_SOC_SOF_CLIENT
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 8e15f105d1d5..d224641768da 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -232,120 +232,10 @@ static int snd_sof_debugfs_probe_item(struct snd_sof_dev *sdev,
+ 	rtrs_cq_qp_destroy(&con->c);
+ 	if (con->rsp_ius) {
+-		rtrs_iu_free(con->rsp_ius, DMA_FROM_DEVICE,
+-			      sess->s.dev->ib_dev, con->queue_size);
++		rtrs_iu_free(con->rsp_ius, sess->s.dev->ib_dev, con->queue_size);
+ 		con->rsp_ius = NULL;
+ 		con->queue_size = 0;
+ 	}
+@@ -2245,7 +2243,7 @@ static void rtrs_clt_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
+ 	struct rtrs_iu *iu;
+ 
+ 	iu = container_of(wc->wr_cqe, struct rtrs_iu, cqe);
+-	rtrs_iu_free(iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
++	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
+ 
+ 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
+ 		rtrs_err(sess->clt, "Sess info request send failed: %s\n",
+@@ -2374,7 +2372,7 @@ static void rtrs_clt_info_rsp_done(struct ib_cq *cq, struct ib_wc *wc)
+ 
+ out:
+ 	rtrs_clt_update_wc_stats(con);
+-	rtrs_iu_free(iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
++	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
+ 	rtrs_clt_change_state(sess, state);
  }
- #endif
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--#define MAX_IPC_FLOOD_DURATION_MS 1000
--#define MAX_IPC_FLOOD_COUNT 10000
--#define IPC_FLOOD_TEST_RESULT_LEN 512
--
--static int sof_debug_ipc_flood_test(struct snd_sof_dev *sdev,
--				    struct snd_sof_dfsentry *dfse,
--				    bool flood_duration_test,
--				    unsigned long ipc_duration_ms,
--				    unsigned long ipc_count)
--{
--	struct sof_ipc_cmd_hdr hdr;
--	struct sof_ipc_reply reply;
--	u64 min_response_time = U64_MAX;
--	ktime_t start, end, test_end;
--	u64 avg_response_time = 0;
--	u64 max_response_time = 0;
--	u64 ipc_response_time;
--	int i = 0;
--	int ret;
--
--	/* configure test IPC */
--	hdr.cmd = SOF_IPC_GLB_TEST_MSG | SOF_IPC_TEST_IPC_FLOOD;
--	hdr.size = sizeof(hdr);
--
--	/* set test end time for duration flood test */
--	if (flood_duration_test)
--		test_end = ktime_get_ns() + ipc_duration_ms * NSEC_PER_MSEC;
--
--	/* send test IPC's */
--	while (1) {
--		start = ktime_get();
--		ret = sof_ipc_tx_message(sdev->ipc, hdr.cmd, &hdr, hdr.size,
--					 &reply, sizeof(reply));
--		end = ktime_get();
--
--		if (ret < 0)
--			break;
--
--		/* compute min and max response times */
--		ipc_response_time = ktime_to_ns(ktime_sub(end, start));
--		min_response_time = min(min_response_time, ipc_response_time);
--		max_response_time = max(max_response_time, ipc_response_time);
--
--		/* sum up response times */
--		avg_response_time += ipc_response_time;
--		i++;
--
--		/* test complete? */
--		if (flood_duration_test) {
--			if (ktime_to_ns(end) >= test_end)
--				break;
--		} else {
--			if (i == ipc_count)
--				break;
--		}
--	}
--
--	if (ret < 0)
--		dev_err(sdev->dev,
--			"error: ipc flood test failed at %d iterations\n", i);
--
--	/* return if the first IPC fails */
--	if (!i)
--		return ret;
--
--	/* compute average response time */
--	do_div(avg_response_time, i);
--
--	/* clear previous test output */
--	memset(dfse->cache_buf, 0, IPC_FLOOD_TEST_RESULT_LEN);
--
--	if (flood_duration_test) {
--		dev_dbg(sdev->dev, "IPC Flood test duration: %lums\n",
--			ipc_duration_ms);
--		snprintf(dfse->cache_buf, IPC_FLOOD_TEST_RESULT_LEN,
--			 "IPC Flood test duration: %lums\n", ipc_duration_ms);
--	}
--
--	dev_dbg(sdev->dev,
--		"IPC Flood count: %d, Avg response time: %lluns\n",
--		i, avg_response_time);
--	dev_dbg(sdev->dev, "Max response time: %lluns\n",
--		max_response_time);
--	dev_dbg(sdev->dev, "Min response time: %lluns\n",
--		min_response_time);
--
--	/* format output string */
--	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
--		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
--		 "IPC Flood count: %d\nAvg response time: %lluns\n",
--		 i, avg_response_time);
--
--	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
--		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
--		 "Max response time: %lluns\nMin response time: %lluns\n",
--		 max_response_time, min_response_time);
--
--	return ret;
--}
--#endif
+@@ -2436,9 +2434,9 @@ static int rtrs_send_sess_info(struct rtrs_clt_sess *sess)
  
- static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 				  size_t count, loff_t *ppos)
- {
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	struct snd_sof_dfsentry *dfse = file->private_data;
--	struct snd_sof_dev *sdev = dfse->sdev;
--	unsigned long ipc_duration_ms = 0;
--	bool flood_duration_test = false;
--	unsigned long ipc_count = 0;
--	struct dentry *dentry;
--	int err;
--#endif
- 	size_t size;
- 	char *string;
- 	int ret;
-@@ -357,78 +247,6 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	size = simple_write_to_buffer(string, count, ppos, buffer, count);
- 	ret = size;
+ out:
+ 	if (tx_iu)
+-		rtrs_iu_free(tx_iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(tx_iu, sess->s.dev->ib_dev, 1);
+ 	if (rx_iu)
+-		rtrs_iu_free(rx_iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(rx_iu, sess->s.dev->ib_dev, 1);
+ 	if (unlikely(err))
+ 		/* If we've never taken async path because of malloc problems */
+ 		rtrs_clt_change_state(sess, RTRS_CLT_CONNECTING_ERR);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index 0a93c87ef92b..63b128c6eb04 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -288,8 +288,7 @@ struct rtrs_msg_rdma_hdr {
+ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t t,
+ 			      struct ib_device *dev, enum dma_data_direction,
+ 			      void (*done)(struct ib_cq *cq, struct ib_wc *wc));
+-void rtrs_iu_free(struct rtrs_iu *iu, enum dma_data_direction dir,
+-		  struct ib_device *dev, u32 queue_size);
++void rtrs_iu_free(struct rtrs_iu *iu, struct ib_device *dev, u32 queue_size);
+ int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu);
+ int rtrs_iu_post_send(struct rtrs_con *con, struct rtrs_iu *iu, size_t size,
+ 		      struct ib_send_wr *head);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index a219bd1bdbc2..b8763fe9152f 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -575,8 +575,7 @@ static void unmap_cont_bufs(struct rtrs_srv_sess *sess)
+ 		struct rtrs_srv_mr *srv_mr;
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	/*
--	 * write op is only supported for ipc_flood_count or
--	 * ipc_flood_duration_ms debugfs entries atm.
--	 * ipc_flood_count floods the DSP with the number of IPC's specified.
--	 * ipc_duration_ms test floods the DSP for the time specified
--	 * in the debugfs entry.
--	 */
--	dentry = file->f_path.dentry;
--	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
--	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
--		flood_duration_test = true;
--
--	/* test completion criterion */
--	if (flood_duration_test)
--		ret = kstrtoul(string, 0, &ipc_duration_ms);
--	else
--		ret = kstrtoul(string, 0, &ipc_count);
--	if (ret < 0)
--		goto out;
--
--	/* limit max duration/ipc count for flood test */
--	if (flood_duration_test) {
--		if (!ipc_duration_ms) {
--			ret = size;
--			goto out;
--		}
--
--		/* find the minimum. min() is not used to avoid warnings */
--		if (ipc_duration_ms > MAX_IPC_FLOOD_DURATION_MS)
--			ipc_duration_ms = MAX_IPC_FLOOD_DURATION_MS;
--	} else {
--		if (!ipc_count) {
--			ret = size;
--			goto out;
--		}
--
--		/* find the minimum. min() is not used to avoid warnings */
--		if (ipc_count > MAX_IPC_FLOOD_COUNT)
--			ipc_count = MAX_IPC_FLOOD_COUNT;
--	}
--
--	ret = pm_runtime_get_sync(sdev->dev);
--	if (ret < 0) {
--		dev_err_ratelimited(sdev->dev,
--				    "error: debugfs write failed to resume %d\n",
--				    ret);
--		pm_runtime_put_noidle(sdev->dev);
--		goto out;
--	}
--
--	/* flood test */
--	ret = sof_debug_ipc_flood_test(sdev, dfse, flood_duration_test,
--				       ipc_duration_ms, ipc_count);
--
--	pm_runtime_mark_last_busy(sdev->dev);
--	err = pm_runtime_put_autosuspend(sdev->dev);
--	if (err < 0)
--		dev_err_ratelimited(sdev->dev,
--				    "error: debugfs write failed to idle %d\n",
--				    err);
--
--	/* return size if test is successful */
--	if (ret >= 0)
--		ret = size;
--out:
--#endif
- 	kfree(string);
- 	return ret;
- }
-@@ -444,25 +262,6 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 	int size;
- 	u8 *buf;
+ 		srv_mr = &sess->mrs[i];
+-		rtrs_iu_free(srv_mr->iu, DMA_TO_DEVICE,
+-			      sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
+ 		ib_dereg_mr(srv_mr->mr);
+ 		ib_dma_unmap_sg(sess->s.dev->ib_dev, srv_mr->sgt.sgl,
+ 				srv_mr->sgt.nents, DMA_BIDIRECTIONAL);
+@@ -680,8 +679,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
+ 			sgt = &srv_mr->sgt;
+ 			mr = srv_mr->mr;
+ free_iu:
+-			rtrs_iu_free(srv_mr->iu, DMA_TO_DEVICE,
+-				      sess->s.dev->ib_dev, 1);
++			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
+ dereg_mr:
+ 			ib_dereg_mr(mr);
+ unmap_sg:
+@@ -733,7 +731,7 @@ static void rtrs_srv_info_rsp_done(struct ib_cq *cq, struct ib_wc *wc)
+ 	struct rtrs_iu *iu;
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	struct dentry *dentry;
--
--	dentry = file->f_path.dentry;
--	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
--	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
--	    dfse->cache_buf) {
--		if (*ppos)
--			return 0;
--
--		count = strlen(dfse->cache_buf);
--		size_ret = copy_to_user(buffer, dfse->cache_buf, count);
--		if (size_ret)
--			return -EFAULT;
--
--		*ppos += count;
--		return count;
--	}
--#endif
- 	size = dfse->size;
+ 	iu = container_of(wc->wr_cqe, struct rtrs_iu, cqe);
+-	rtrs_iu_free(iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
++	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
  
- 	/* validate position & count */
-@@ -606,17 +405,6 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
- 	dfse->size = size;
- 	dfse->sdev = sdev;
+ 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
+ 		rtrs_err(s, "Sess info response send failed: %s\n",
+@@ -859,7 +857,7 @@ static int process_info_req(struct rtrs_srv_con *con,
+ 	if (unlikely(err)) {
+ 		rtrs_err(s, "rtrs_iu_post_send(), err: %d\n", err);
+ iu_free:
+-		rtrs_iu_free(tx_iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(tx_iu, sess->s.dev->ib_dev, 1);
+ 	}
+ rwr_free:
+ 	kfree(rwr);
+@@ -904,7 +902,7 @@ static void rtrs_srv_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
+ 		goto close;
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	/*
--	 * cache_buf is unused for SOF_DFSENTRY_TYPE_BUF debugfs entries.
--	 * So, use it to save the results of the last IPC flood test.
--	 */
--	dfse->cache_buf = devm_kzalloc(sdev->dev, IPC_FLOOD_TEST_RESULT_LEN,
--				       GFP_KERNEL);
--	if (!dfse->cache_buf)
--		return -ENOMEM;
--#endif
--
- 	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
- 			    &sof_dfs_fops);
- 	/* add to dfsentry list */
-@@ -662,24 +450,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+ out:
+-	rtrs_iu_free(iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
++	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
+ 	return;
+ close:
+ 	close_sess(sess);
+@@ -927,7 +925,7 @@ static int post_recv_info_req(struct rtrs_srv_con *con)
+ 	err = rtrs_iu_post_recv(&con->c, rx_iu);
+ 	if (unlikely(err)) {
+ 		rtrs_err(s, "rtrs_iu_post_recv(), err: %d\n", err);
+-		rtrs_iu_free(rx_iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
++		rtrs_iu_free(rx_iu, sess->s.dev->ib_dev, 1);
  		return err;
- #endif
+ 	}
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	/* create read-write ipc_flood_count debugfs entry */
--	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
--				       "ipc_flood_count", 0666);
--
--	/* errors are only due to memory allocation, not debugfs */
--	if (err < 0)
--		return err;
--
--	/* create read-write ipc_flood_duration_ms debugfs entry */
--	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
--				       "ipc_flood_duration_ms", 0666);
--
--	/* errors are only due to memory allocation, not debugfs */
--	if (err < 0)
--		return err;
--#endif
--
- 	return 0;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index ff1093d6e4bc..5163e662f86f 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -31,6 +31,8 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
+ 		return NULL;
+ 	for (i = 0; i < queue_size; i++) {
+ 		iu = &ius[i];
++		iu->direction = dir;
++
+ 		iu->buf = kzalloc(size, gfp_mask);
+ 		if (!iu->buf)
+ 			goto err;
+@@ -41,17 +43,15 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
+ 
+ 		iu->cqe.done  = done;
+ 		iu->size      = size;
+-		iu->direction = dir;
+ 	}
+ 	return ius;
+ err:
+-	rtrs_iu_free(ius, dir, dma_dev, i);
++	rtrs_iu_free(ius, dma_dev, i);
+ 	return NULL;
  }
- EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 151614224f47..ece5fce97460 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -50,10 +50,6 @@ extern int sof_core_debug;
- #define SOF_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
- 	SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT)
+ EXPORT_SYMBOL_GPL(rtrs_iu_alloc);
  
--#define ENABLE_DEBUGFS_CACHEBUF \
--	(IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE) || \
--	 IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST))
--
- /* DSP power state */
- enum sof_dsp_power_states {
- 	SOF_DSP_PM_D0,
-@@ -298,7 +294,7 @@ struct snd_sof_dfsentry {
- 	 * or if it is accessible only when the DSP is in D0.
- 	 */
- 	enum sof_debugfs_access_type access_type;
--#if ENABLE_DEBUGFS_CACHEBUF
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
- 	char *cache_buf; /* buffer to cache the contents of debugfs memory */
- #endif
- 	struct snd_sof_dev *sdev;
+-void rtrs_iu_free(struct rtrs_iu *ius, enum dma_data_direction dir,
+-		   struct ib_device *ibdev, u32 queue_size)
++void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_size)
+ {
+ 	struct rtrs_iu *iu;
+ 	int i;
+@@ -61,7 +61,7 @@ void rtrs_iu_free(struct rtrs_iu *ius, enum dma_data_direction dir,
+ 
+ 	for (i = 0; i < queue_size; i++) {
+ 		iu = &ius[i];
+-		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, dir);
++		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, iu->direction);
+ 		kfree(iu->buf);
+ 	}
+ 	kfree(ius);
 -- 
-2.26.2
+2.20.1
 
