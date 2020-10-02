@@ -2,125 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C564F2812FC
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 14:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028DF281337
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 14:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgJBMmW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Oct 2020 08:42:22 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12249 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgJBMmV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Oct 2020 08:42:21 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7720200000>; Fri, 02 Oct 2020 05:42:08 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 12:42:21 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 12:42:21 +0000
+        id S1726090AbgJBMzn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Oct 2020 08:55:43 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:54812 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBMzn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:55:43 -0400
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f77234d0000>; Fri, 02 Oct 2020 20:55:41 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
+ 2020 12:55:40 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 12:55:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kSyTaIfwAoYInB4q6C6gm9ZzRa8H0u1niHBYH8j+/JuwbM+AJmwils5v786gSRd/TF590wD/0maTbFGKcMKPklCpJcgQqMvUfpRwT7U/6oOFoEWz774sW/5yaZmAXOkwNgDpop5I24c/5RzP+4WE2iki6MhPY1381zRmk3KJcD3fuuOIzcn8nkLFduAOoVW1IG3CBU4debfuCyJtvZP7SFN64WWPdRtoABgI1LvJjYBLZhL08dxex3dKJSbT6hLX9Bjwxv/GYPaEpVbkS9xJpYJC+hvTl9+/dcIBWLTpXLeitvn/tyxVLh2rMGBKXTpyinR6oHcHO66r3P9ikvqLMQ==
+ b=EoJoC4OdsjXM9jLYzKI8TDH2264auwV4kcqb4dg4SjNwJRfzSl5lQmYxc12+LFiHSMJgZ9vp5IAYH5CII7mkPPv3Xd2SgpfGAB+kF9a+rwSYcDCIs3+LZRJA8dogEACoRQT6vYfscKUQonS/0l+KJSBZ7xe1xvznBg0PgD830nhGqcq5S85jGvBTv29vPAMjfqzAeW+fNiTVi4PWL+BlLyBMBOXwopS+UW4BpxksIAZI0TV7Y5kN75uKVIAsjVbIHV1wf1CnO0PDejbRtGOOK1PLWlY9Zg4DAC+vPw5qKZfsNvEbtZyZj/3JDNtLrYTWmcpjCVpyDtZktWrBBI471g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/ILIRMx0qDK043G7D2fsf0ew3JP1dppK7YB9W2srx8s=;
- b=kb9Ap3V5/J7DdqWjcjEgAwj/a00qd0qq3ym6ncR/jsOw2BY0iM5HKgej1DFdkD0e2T1rzXrKaZbSUuIbtTV8mc0GcnWrjIPN516qPmy+NAZYaSS6ACNGbbo9dqyoQS+Hx3IyKzOGjD58jmqXdmxV4OS9uBsS5RMhcyFbfuoMx15aS+GWeEVnJUJG8RD61ZDs6BjprEyQgTRC3QgFAn2tO2oZ8ZUbGw1lkpH5+6SnFOngrFMZXF0Bk10NW5TvjaQtNc65ccYuzA+4bBher65NWO228u5UJwZyrYRpkDPMJYz6EX9nW1ya5wT+mkOmHQlLAFSEX1UGO45fPS9UMRR1RA==
+ bh=AfpCIshFa94Q79MEn0hsNor1oTr3qwsgLN8XXAJv4gQ=;
+ b=JuLS9cGnYe27BShYyrRBsyO7lNk2aSUBzy4eoFTK6yK0ud8qswnD+jNG2Uq4y7Ner/f2GgO3HXqyJ1md6GnXwT+PGMUUQOYNvnz3gj3oMgFNLCKex5leqj3WRSfbJ21V2L1b4oU7btL0PirtQR0XrUACTrPTYEbczLLfAC8FeILFny8OIr4i+ud7eChA6jMvNo26xCw7DqQWacMT53zdDDR7Sf1wW106/NBKit4ilGdaCWbPLQjiAwGbWV5VYsDjR/zXNkQROsKSJ73LJz9WinFSGFNtsN/JUsaSGFMRwXpO3bhagXx6DTKwpk5cyNLQhhsu5FHuhA4erS+OYzBgvQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4973.namprd12.prod.outlook.com (2603:10b6:5:1b7::14) with
+ by DM5PR12MB2486.namprd12.prod.outlook.com (2603:10b6:4:b2::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Fri, 2 Oct
- 2020 12:42:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Fri, 2 Oct
+ 2020 12:55:37 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
- 12:42:19 +0000
-Date:   Fri, 2 Oct 2020 09:42:17 -0300
+ 12:55:37 +0000
+Date:   Fri, 2 Oct 2020 09:55:35 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Leon Romanovsky <leon@kernel.org>
 CC:     Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        <linux-rdma@vger.kernel.org>, Mark Zhang <markz@nvidia.com>
-Subject: Re: [PATCH rdma-next v3 6/9] RDMA/restrack: Add error handling while
- adding restrack object
-Message-ID: <20201002124217.GA1342563@nvidia.com>
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v3 9/9] RDMA/restrack: Drop valid restrack
+ field as source of ambiguity
+Message-ID: <20201002125535.GA1344115@nvidia.com>
 References: <20200926101938.2964394-1-leon@kernel.org>
- <20200926101938.2964394-7-leon@kernel.org>
+ <20200926101938.2964394-10-leon@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200926101938.2964394-7-leon@kernel.org>
-X-ClientProxiedBy: MN2PR07CA0004.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20200926101938.2964394-10-leon@kernel.org>
+X-ClientProxiedBy: MN2PR16CA0059.namprd16.prod.outlook.com
+ (2603:10b6:208:234::28) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR07CA0004.namprd07.prod.outlook.com (2603:10b6:208:1a0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Fri, 2 Oct 2020 12:42:18 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kOKO9-005dR7-Cj; Fri, 02 Oct 2020 09:42:17 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0059.namprd16.prod.outlook.com (2603:10b6:208:234::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Fri, 2 Oct 2020 12:55:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kOKb1-005dld-P4; Fri, 02 Oct 2020 09:55:35 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601642529; bh=/ILIRMx0qDK043G7D2fsf0ew3JP1dppK7YB9W2srx8s=;
+        t=1601643341; bh=AfpCIshFa94Q79MEn0hsNor1oTr3qwsgLN8XXAJv4gQ=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=h6qgTacLyCpu/cVCWNW6RUN07hPJXtvXAVlUhiapK8pPwmoOgT4HmRJO6/a5zN7Pc
-         7aRXLYi/jNPfPb3OtOecdh7CjSy74J3nxFYBqcVuiucKY0DFy7pGKYXn3Xb4aQeqsV
-         u53WC/zLEE0CWFgqlJfB18FpIFkyWpJLD9217IilejIF/+H+btzL6CvadPBkIqULXw
-         mooba9s+zPXGP2Vs5j0pmzhugCeopcymYXznl5cK2QcVkGJfltHMQjka+o7LXQZiY2
-         T3j1lw1F4rvS+9RjNc89qCS5/2gvIFaGBAjWSsYHIHkcdWb2etTy0Xn9ibve7xB0Ym
-         uDjqLdJOl86Rw==
+        b=idIXAaqDscsqsjR590WjqgRSE4V7fat0h5YDo7qrk2o/Ab3xZ++kK6mgMvNZkntIG
+         anZVm4359SNuwJ/zn3zLkr32MmMj7t8t9pDK6gugY30nqaII8OOpJNGE9CCGoF6Yqr
+         8shEXXVkaAkzn1pYWvLqo38mKfIoqBBnWtq0vaszb51at9jVwIN1Qmc+hfPAUIaKN5
+         hCeZM5MeG1/W5aNTMbfuyFeZeTuQW+KE7Y8DrA7znBlgzL4Qe+L+FphCavB6rL7keV
+         DY1gztMzr+l25VqxGRfkIlPaqHo8b2fP/OMq5z3jHqX8drTz8enysUt8c7WCb9/FYT
+         Nj/wWuOtnFbxQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 01:19:35PM +0300, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-> index 12ebacf52958..1abcb01d362f 100644
-> +++ b/drivers/infiniband/core/cq.c
-> @@ -267,10 +267,25 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
->  		goto out_destroy_cq;
+On Sat, Sep 26, 2020 at 01:19:38PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> The valid field was needed to distinguish between supported/not
+> supported QPs, after the create_qp was changed to support all types,
+> that field can be dropped in a favor of no_track field.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>  drivers/infiniband/core/restrack.c | 29 ++++++++---------------------
+>  include/rdma/restrack.h            |  9 ---------
+>  2 files changed, 8 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+> index 593af32d86a0..6ca3e6f3adb5 100644
+> +++ b/drivers/infiniband/core/restrack.c
+> @@ -143,7 +143,7 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
+>  		return container_of(res, struct rdma_counter, res)->device;
+>  	default:
+>  		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
+> -		return NULL;
+> +		return ERR_PTR(-EINVAL);
 >  	}
+>  }
 >  
-> -	rdma_restrack_add(&cq->res);
-> +	ret = rdma_restrack_add(&cq->res);
-> +	if (ret)
-> +		goto out_poll_cq;
-> +
->  	trace_cq_alloc(cq, nr_cqe, comp_vector, poll_ctx);
->  	return cq;
+> @@ -223,7 +223,7 @@ int __must_check rdma_restrack_add(struct rdma_restrack_entry *res)
+>  	struct rdma_restrack_root *rt;
+>  	int ret = 0;
 >  
-> +out_poll_cq:
-> +	switch (cq->poll_ctx) {
-> +	case IB_POLL_SOFTIRQ:
-> +		irq_poll_disable(&cq->iop);
-> +		break;
-> +	case IB_POLL_WORKQUEUE:
-> +	case IB_POLL_UNBOUND_WORKQUEUE:
-> +		cancel_work_sync(&cq->work);
+> -	if (!dev)
+> +	if (IS_ERR_OR_NULL(dev))
+>  		return -ENODEV;
 
-This error unwind is *technically* in the wrong order, it is wrong in
-ib_free_cq too which is an actual bug.
+dev can't be NULL
 
-The cq->comp_handler should be set before calling create_cq and undone
-after calling destroy_wq. We can do this right now that the
-allocations have been reworked.
+Not sure why this was changed? The error code is always thrown away,
+what was wrong with keeping it as NULL? 
 
-Otherwise there is no assurance the ib_cq_completion_workqueue() won't
-be called after this cancel == use after free
+Now that all callers check the return code this should be a WARN_ON as
+calling restrack_add in a way that is guarenteed to fail us a ULP
+error.
 
-Also, you need to check all the rdma_restrack_del()'s, they should
-always be *before* destroying the HW object, eg ib_free_cq() has it
-too late. Similarly the add should always be after the HW object is
-allocated.
+> +	WARN_ONCE(!dev && res->type != RDMA_RESTRACK_CM_ID,
+> +		  "IB device should be set for restrack type %s",
+> +		  type2str(res->type));
+> +	if (res->no_track || IS_ERR_OR_NULL(dev))
+>  		goto out;
 
-For instance fill_res_cq_entry() calls 
+dev is never NULL so that WARN_ONCE doesn't work
 
-  dev->ops.fill_res_cq_entry(msg, cq) 
-
-on an already free'd HW object with this arrangment.
-
-These are pre-existing things so lets fix them seperately please
+Why does this exclude CM_ID? I thought all the fixing in the cm was so
+restrack_add and _del were prefectly paired and a device must be
+present?
 
 Jason
