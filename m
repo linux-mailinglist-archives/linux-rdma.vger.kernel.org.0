@@ -2,55 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767342818DF
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 19:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAC0281B7B
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 21:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJBRKl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Oct 2020 13:10:41 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:36380 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBRKl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Oct 2020 13:10:41 -0400
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 092HAESb002361;
-        Fri, 2 Oct 2020 10:10:14 -0700
-Date:   Fri, 2 Oct 2020 22:40:13 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: Re: reduce iSERT Max IO size
-Message-ID: <20201002171007.GA16636@chelsio.com>
-References: <20200922104424.GA18887@chelsio.com>
- <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
+        id S2387806AbgJBTVp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 2 Oct 2020 15:21:45 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:64928 "EHLO mx.metalurgs.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388054AbgJBTVp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:21:45 -0400
+X-Greylist: delayed 436 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 15:21:44 EDT
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 98E7F61245
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Oct 2020 22:14:27 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 75F5E610BF
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Oct 2020 22:14:27 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id 3F6FE5F034; Fri,  2 Oct 2020 22:14:26 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.50])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id 1923562A4E;
+        Fri,  2 Oct 2020 22:14:19 +0300 (EEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Fri, 02 Oct 2020 16:14:13 -0300
+Reply-To: binmurrah@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201002191426.3F6FE5F034@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan.
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201002 notchecked
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Sagi & Max,
+Hello Dear,
 
-Any update on this?
-Please change the max IO size to 1MiB(256 pages). 
+We are Investment Company offering Corporate and Personal
+Loan at 3% Interest Rate for a duration of 10Years.
 
+We also pay 1% commission to brokers, who introduce project
+owners for finance or other opportunities.
 
-Thanks,
-Krishnam Raju.
-On Wednesday, September 09/23/20, 2020 at 01:57:47 -0700, Sagi Grimberg wrote:
-> 
-> >Hi,
-> >
-> >Please reduce the Max IO size to 1MiB(256 pages), at iSER Target.
-> >The PBL memory consumption has increased significantly after increasing
-> >the Max IO size to 16MiB(with commit:317000b926b07c).
-> >Due to the large MR pool, the max no.of iSER connections(On one variant
-> >of Chelsio cards) came down to 9, before it was 250.
-> >NVMe-RDMA target also uses 1MiB max IO size.
-> 
-> Max, remind me what was the point to support 16M? Did this resolve
-> an issue?
+Please get back to me if you are interested for more
+details.
+
+Yours faithfully,
+Hashim Bin 
