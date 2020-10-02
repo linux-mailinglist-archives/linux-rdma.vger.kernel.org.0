@@ -2,200 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D896E2811B8
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 13:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B2F281200
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Oct 2020 14:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387798AbgJBL4H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Oct 2020 07:56:07 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6148 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387783AbgJBL4H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Oct 2020 07:56:07 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7715220003>; Fri, 02 Oct 2020 04:55:14 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+        id S1726386AbgJBMHI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Oct 2020 08:07:08 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11276 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgJBMHH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Oct 2020 08:07:07 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7717830000>; Fri, 02 Oct 2020 05:05:23 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
  (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 11:56:05 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 11:56:05 +0000
+ 2020 12:02:39 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 12:02:39 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B9GFWbaa5Yxknkaz2EQWeOC8/Y47LiuvQ+BLm7x45iYw2GhpnlXspClVlwzK8bCJHlbfcodXIBPlPxwJMy3FQ9miO8UpORGGbD/yUcXujXDqlANRljJ0vlelUgFjZNP7jcpPv5fBvVlHsNWA83xl30/Car1YJc1oUumpjX6cG7u837KlP7kDR18sc439iK05FRu+Tl7upbg8hthZmhSAfKBNnC92OE/0e1JCLEEgV3AjE6RKEVG/BsffZwRXIFnAeZQqEM/zmXXWlt1u1cJTLF5f6FaisnW6Ip5p/aMQmp3N0EeltR+TKSLJeo78IAhlnqfm6zl1HGBz6vGXgJ+aHg==
+ b=ZSq8+lw4/X0XhraV5PBsEZew8qDPAwH3d9+DuPISCOsQGSFiS1+l0N8WFgMb5oEDL+7Ag1MlXQ0x++XvejtGACcLg2Lyn2Sxu6vxWM9rL4/1DKUWeO3V9girGU1ZrTjJV2uRYmriepgO2dXZ+0fsiOUXe4BvUlzExBKKerSxQzkwWvFY0adgzNUal2RZvTjyalyAYxiFTbYmwTEXj9Jj4Hs/qura+1qKSVYg1W+8D1OvHXTlrKC/REfZ6p/A6UD3lmkGyCp35wRP097Mh54tL8aJ37Mub86Dvo3Nb6e7YF8CuhbCnrCAZg1PqIx50/T+tcvEqU48VkWpjPl1fdwxWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tWhiyAOwUoGSc1FPIUb5uot3cltvuiRMSnC2Yl7siNU=;
- b=DF43+EIpXBYlz3x3E3DwtaRS/ndkI58TVtXp7viMigHeX8l0wwEU4oXFuSMx3krURRUMDvRwrPZUTDbUTQFBHBUms5Gltflkcfd5wH2DC4xQmcpwatVKAgFWkEH1uXodkOzybcH8ydUhksRNQ2r/r6vTEi452sWWlehuztKjaHIVdqlf1Y6lrb7Ldo4J7UZakeM1Of/QAMI2kZz3HiNz8+JJeWR+xrS/jq3t+viJxReeXG6wLPczCx/jpipELJsynlcLB4sveN+4koWctIDCqMRxbmIXvzCrqoIIJEq9z4dyMidOAS6M7a+a1qjI5hSCpp2ETXxZNkC6YrrJ8G3I4w==
+ bh=KwOna/ptcQ1fsSdXueMKnkEEDTNOy6II/i1TixQ+dX8=;
+ b=WfRdhZdwMEEDfGlUgtKTvkS9Q+UABihAm60XeXRtw9yeq1WveBW6OdxkKO1TX9CcVKeRgTETK2rsO1gkEMsfnwdMidypbloKu31NqKIjVC+MkLE4qPm/1vTP3Us72nc9syofYqqnC3Vwo/uqCD5Wh7nmvzeuVdSlMWLvVGCd/4OHTBES1dFn7PEu3DYW8fXTFEbGFZz8cL8850g883fFk1dMCNyuwxHRVguraqeRQE6TqLLTJ0obsdHxef7hgYZjlmx5CKY8bZZTj6u3ztc8xB7WOVHbeXEmm3OTODDtc86QGFDh0bkMowWwHPJ+7dCkl4u9X11DnBX+lNk1o2R1uQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
- by BYAPR12MB3429.namprd12.prod.outlook.com (2603:10b6:a03:a8::22) with
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Fri, 2 Oct
- 2020 11:56:02 +0000
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::3c25:6e4c:d506:6105]) by BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::3c25:6e4c:d506:6105%6]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
- 11:56:02 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "Ertman, David M" <david.m.ertman@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH 1/6] Add ancillary bus support
-Thread-Topic: [PATCH 1/6] Add ancillary bus support
-Thread-Index: AQHWl7C1MSqUSmitS0u6NuJRdy7sUamCa2qAgACTjYCAAAWKgIAABlCQgAAY64CAAKN2UIAAEZaAgAAjU/CAAC69AIAAAg4QgAAG2ICAAAEzUA==
-Date:   Fri, 2 Oct 2020 11:56:02 +0000
-Message-ID: <BY5PR12MB43224DEDE3F8D10BB42605CADC310@BY5PR12MB4322.namprd12.prod.outlook.com>
-References: <20201001083229.GV3094@unreal>
- <DM6PR11MB2841DEF5C090BC8D830DEC52DD300@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201001174025.GW3094@unreal>
- <BY5PR12MB4322C7955974B4DCFC8078EFDC300@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201001193211.GX3094@unreal>
- <BY5PR12MB4322EDDDF036BB58DE3A1F7BDC310@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201002062011.GY3094@unreal>
- <BY5PR12MB4322C2E2E726DCF700802104DC310@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201002111354.GZ3094@unreal>
- <BY5PR12MB432201FCEA970DA28AB06166DC310@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201002114545.GB3094@unreal>
-In-Reply-To: <20201002114545.GB3094@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [122.172.151.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cd4ec71b-f905-4d37-88b0-08d866ca22f8
-x-ms-traffictypediagnostic: BYAPR12MB3429:
-x-microsoft-antispam-prvs: <BYAPR12MB342985C72A2080D65DD45EB1DC310@BYAPR12MB3429.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EILiX/jxUQ2JhyyFtsNiN6qNNUaf/Hk3V5qIeeX+/Soiv0xktZ4LGufaeF20t1/k6P3vNph2v7sthnp7uATATCbRMMLtmEhYfRaFFPCx2nAPe+BDZyS6w1rw0vIkERg9FaFsM+Pk5BFPgkvm1CDcMPdUVoXFB3sUQRXxGHo+THLYo2Knm3TG16euA+NSa4/Dx3d7mHdCzuz/pmdD29ohQR47GTI1ABiVXEg1FqflGfaJPuMQxOaZRe3IrLOqABbxGlYFQkLR0+3somibKT+BAl0mMu+N0tMquJ+LvYHTdKtHbRhQd3Qzo0I1rk7OZ+zl4klBKhi586VGCZke6OVz7A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(366004)(54906003)(8936002)(6916009)(478600001)(33656002)(4326008)(7696005)(55016002)(5660300002)(26005)(9686003)(55236004)(186003)(6506007)(66446008)(8676002)(64756008)(66476007)(66946007)(76116006)(86362001)(66556008)(2906002)(71200400001)(316002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Bgz5zBbn/DT1Jv34ah01clmDYsg+dJ+PfnqOPZ80uAUR+FEcbVohYSAcfztV2ZgVog14PVqEPBrtLXzIexuqgF9WOZlPNOZ8chUtrZ/O0wyS0/DfRG5yONfTHzdm+WTwOEf17RqI5uan7oB08h/5EXE+dJMlyF6qnJY425qvHXr7DGpppedGBJnzCUVW2foUe1LS6rg6gjgxjsM7/GnVjC0WaMGw9P4WDawwZv2wz2KHBX91M7twz4pdWRxlJyS7ZPnC5L9GQCPKB7TE2np2TjxgTbg9ITe3mTDP7oplJSuWTK2FIu6sa4VL8oiX2pXywr00OX/jrU3ka5NNLqX6dhvtO55uwLiwLxMNgLkrnaSdyEhMYsWjs3xumPL0ZCI4MHmUloGNI4pwzoFRuER4Q9Z2dNhAIM492NZm5jm/RZZ49u2dy7OAFaCAqs7PwxNaWn1qUOVRdjfudWxaULp7pqR+s6Hg2jHUWkql4Fw/O69bljoktlx+8UJp7Dz6ipQpJWOj4C6qZgQXlqr4qxC1IzT9Ok+fOCzhhEOXSAcHInOWXf5xOdS9ylYuBMkt66JWX4RfnhBeG2FEytwFFxS9T1zyXUOSMk7+nmgty350HnD79WKdwWQyh31XdyaS/rfNJrqr4ZH3XIEJbIokGhowFw==
-x-ms-exchange-transport-forked: True
+ 2020 12:02:38 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
+ 12:02:38 +0000
+Date:   Fri, 2 Oct 2020 09:02:36 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-rc v2] RDMA/ipoib: Set rtnl_link_ops for ipoib
+ interfaces
+Message-ID: <20201002120236.GA1327974@nvidia.com>
+References: <20200930094013.156839-1-kamalheib1@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20200930094013.156839-1-kamalheib1@gmail.com>
+X-ClientProxiedBy: MN2PR20CA0017.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd4ec71b-f905-4d37-88b0-08d866ca22f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2020 11:56:02.7651
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8l2wICOkH/1SQ0EYdpZGziDI1kl0Fv8kUBq5p0iHB2Yj6kvmveS4nVo7fra5HT+vHBYy1FAYK7/urHra3/HJ5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3429
-X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0017.namprd20.prod.outlook.com (2603:10b6:208:e8::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Fri, 2 Oct 2020 12:02:37 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kOJlk-005ZUZ-SW; Fri, 02 Oct 2020 09:02:36 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601639714; bh=tWhiyAOwUoGSc1FPIUb5uot3cltvuiRMSnC2Yl7siNU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         x-ms-exchange-transport-forked:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=XNXT4+UWpPm+DPKIxIgGUhf30dFvhgvaOwLujEotPoLCei4VItBH7fDrs/9SERh4O
-         IrG4nmvX3CYL2BmEzX8n9uLXKiCjzgnRWlVvktH4/XMKJHWb6fFrLG1vcNtNXwUled
-         UVKjix5mCQak2mO/Quy39jEu1iG70L8XChR6eXdtVkXZIBZuT/yVA9+2NzLlyONEZq
-         ZfbYRTTaLcbZOaX8IWcErJbCtqOmlcH2VdXHeFKN4Nh2Fhah3dlRmglGgxUWOKEwy1
-         mEkoNw7Bxc/JEzakavT+Kyx4yTGZf4zJ4VKNFru/9IB3SaRXZ0JVe9pDZATFBySlGt
-         Xnwhd1CLHevDQ==
+        t=1601640323; bh=KwOna/ptcQ1fsSdXueMKnkEEDTNOy6II/i1TixQ+dX8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=aBS/qSpQia5zvs8XPCj6nyWhrHm8t2oxwdaSem/vweRHs1UWtD6WvAjgHwJN6Gd36
+         dGFGg7Bp1iCJAAGC68AEVZeYa5gcr4FjiHSTdyYmSWp9QjrNIlx0tY6WpdxWgvmDz5
+         DWNRl1MU3ru06f37C0uir+Ei8/X/J8QjdOiBJr8IiSKf4TbmA0PNp8DWpZtwY9BWpn
+         7n1WcHKQoBphTOqaIvVqvWZbo30VESSkGXMtFGNKuZJalDA43FJV2a7Clj1yu99c5t
+         4xKqevcKh6iTb/pTnPPhJNVgh82Qk1zjKU8byVHVbF/G/bV6rH591ikEkw3JVhdQLs
+         /b5gkdTeQ8nLQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Sep 30, 2020 at 12:40:13PM +0300, Kamal Heib wrote:
+> To avoid inconsistent user experience for PKey interfaces that are
+> created via netlink vs PKey interfaces that are created via sysfs and the
+> base interface, make sure to set the rtnl_link_ops for all ipoib network
+> devices, so the ipoib attributes will be reported/modified via iproute2
+> for all ipoib interfaces regardless of how they are created.
+> 
+> Also, after setting the rtnl_link_ops for the base interface, implement
+> the dellink() callback to block users from trying to remove it.
+> 
+> Fixes: 9baa0b036410 ("IB/ipoib: Add rtnl_link_ops support")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> v2: Update commit message.
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c    |  2 ++
+>  drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 11 +++++++++++
+>  drivers/infiniband/ulp/ipoib/ipoib_vlan.c    |  2 ++
+>  3 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> index ab75b7f745d4..96b6be5d507d 100644
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> @@ -2477,6 +2477,8 @@ static struct net_device *ipoib_add_port(const char *format,
+>  	/* call event handler to ensure pkey in sync */
+>  	queue_work(ipoib_workqueue, &priv->flush_heavy);
+>  
+> +	ndev->rtnl_link_ops = ipoib_get_link_ops();
+> +
+>  	result = register_netdev(ndev);
 
+Why do we need this one? I understand fixing the sysfs but not this part.
 
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Friday, October 2, 2020 5:16 PM
->=20
-> On Fri, Oct 02, 2020 at 11:27:43AM +0000, Parav Pandit wrote:
-> >
-> >
-> > > From: Leon Romanovsky <leon@kernel.org>
-> > > Sent: Friday, October 2, 2020 4:44 PM
-> >
-> > [..]
-> > > > > ../../../devices/pci0000:00/0000:00:0b.0/mlx5_core.eth.2
-> > > > This gives you the ability to not load the netdevice and rdma
-> > > > device of a VF
-> > > and only load the vdpa device.
-> > > > These are real use case that users have asked for.
-> > > > In use case one, they are only interested in rdma device.
-> > > > In second use case only vdpa device.
-> > > > How shall one achieve that without spinning of the device for each
-> class?
-> > >
-> > > Why will it be different if ancillary device is small PCI core?
-> > > If you want RDMA, you will use specific ancillary driver that
-> > > connects to that small PCI logic.
-> >
-> > I didn't follow, wwhat is PCI core and PCI logic in this context?
->=20
-> mlx5_core is PCI core/logic - ancillary device mlx5_ib/mlx5_en/mlx5_vdpa =
--
-> ancillary drivers
->=20
-> >
-> > Not sure if you understood the use case.
-> > Let me try again.
-> > Let say there are 4 VFs enabled.
-> > User would not like to create netdev for 3 VFs (0 to 2) ; user only wan=
-ts
-> rdma device for these VFs 0 to 2.
-> > User wants only vdpa device for 4th VF.
-> > User doesn't want to create rdma device and netdevice for the 4th VF.
-> > How one shall achieve this?
->=20
-> It depends on how N-to-1 bus will be implemented. For example, devlink
-> already allows to disable RoCE on specific function, nothing prohibits to
-> extend it to support other classes.
+>  	if (result) {
+>  		pr_warn("%s: couldn't register ipoib port %d; error %d\n",
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+> index 38c984d16996..d5a90a66b45c 100644
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+> @@ -144,6 +144,16 @@ static int ipoib_new_child_link(struct net *src_net, struct net_device *dev,
+>  	return 0;
+>  }
+>  
+> +static void ipoib_del_child_link(struct net_device *dev, struct list_head *head)
+> +{
+> +	struct ipoib_dev_priv *priv = ipoib_priv(dev);
+> +
+> +	if (!priv->parent)
+> +		return;
+> +
+> +	unregister_netdevice_queue(dev, head);
+> +}
 
-Sure. Please go through the our internal RFC dated 7/7/20 with subject "dev=
-link device params to disable rdma, netdev" which exactly achieves similar.
+The above is why this hunk was added right?
 
-And recent 3rd internal RFC "devlink to set driver parameters" discussion w=
-ith Eli, Jason, Jiri and others that describes to have one ancillary_device=
-_per_class instead of devlink.
+>  static size_t ipoib_get_size(const struct net_device *dev)
+>  {
+>  	return nla_total_size(2) +	/* IFLA_IPOIB_PKEY   */
+> @@ -158,6 +168,7 @@ static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
+>  	.priv_size	= sizeof(struct ipoib_dev_priv),
+>  	.setup		= ipoib_setup_common,
+>  	.newlink	= ipoib_new_child_link,
+> +	.dellink	= ipoib_del_child_link,
+>  	.changelink	= ipoib_changelink,
+>  	.get_size	= ipoib_get_size,
+>  	.fill_info	= ipoib_fill_info,
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+> index 30865605e098..c60db9f3f5ac 100644
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+> @@ -129,6 +129,8 @@ int __ipoib_vlan_add(struct ipoib_dev_priv *ppriv, struct ipoib_dev_priv *priv,
+>  		goto out_early;
+>  	}
+>  
+> +	ndev->rtnl_link_ops = ipoib_get_link_ops();
+> +
 
-Lets discuss it offline as we have multiple proposals floating.
+If this is only for the sysfs case why isn't it in ipoib_vlan_add()
+which is the sysfs only flow?
 
->=20
-> > It is easily achievable with current ancillary device instantiation per=
- class
-> proposal.
->=20
-> It is byproduct of 1-to-1 connection and not specific design decision.
->=20
-> >
-> > > Being nice to the users and provide clean abstraction are important g=
-oals
-> too.
-> > Which part of this makes not_nice_to_users and what is not abstracted.
-> > I lost you.
->=20
-> Your use case perfectly presented not_nice_to_users thing. Users are
-> interested to work on functions (VF/PF/SF) and configure them without
-> need to dig into the sysfs directories to connect ancillary classes and t=
-heir
-> indexes to the real functions.
->=20
-> Thanks
+Jason
