@@ -2,101 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6EA28293D
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Oct 2020 08:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FD1282A54
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Oct 2020 13:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725825AbgJDGsX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Oct 2020 02:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgJDGsX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 4 Oct 2020 02:48:23 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA7FB206A1;
-        Sun,  4 Oct 2020 06:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601794103;
-        bh=HQ6s0iIRb2rcCsevtHUNj729BGP2JsOOlTa+i9JI6aU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xHCeH4NsdqocEW0fL/aHw8U6ZB15CFdpATTxtdohXVGW31WDIzRQoz9hkpv3in8T+
-         R073NNERMYBhPdk1MZX1uJIouifBvCJ4PWqPS9A5ZHGo9DTqIb0HdAVTBvLZKZ8E1x
-         c3AJXVFXAAXHUiRs7vKuupIkt7TRLORpCTFFgIlU=
-Date:   Sun, 4 Oct 2020 09:48:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@nvidia.com>
-Subject: Re: [PATCH rdma-next v3 6/9] RDMA/restrack: Add error handling while
- adding restrack object
-Message-ID: <20201004064818.GB9764@unreal>
-References: <20200926101938.2964394-1-leon@kernel.org>
- <20200926101938.2964394-7-leon@kernel.org>
- <20201002124217.GA1342563@nvidia.com>
- <20201002125720.GD3094@unreal>
- <20201002131628.GI816047@nvidia.com>
+        id S1725927AbgJDLDa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Oct 2020 07:03:30 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:64667 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDLDa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Oct 2020 07:03:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601809410; x=1633345410;
+  h=subject:to:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=i0VecxD3MvungItxpjLlNqsevMBiu1WD3KvND+xf6EY=;
+  b=OqZjY6+RVkEQbkEkzjpArkH0ojhy4NU9kg59tw3VJgaah2oXLK3zYnbb
+   6z8EMkPYqISST16CQLF7yJz0jHczXm/Ryq3oVpAgxb7XJegOA8CUUAamf
+   xILgv43VEUEVp9SSNW1Ps4I0chRkUqUQgj2DLwDqEd1f/KXbd33cYFLKo
+   4=;
+X-IronPort-AV: E=Sophos;i="5.77,335,1596499200"; 
+   d="scan'208";a="73167691"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 04 Oct 2020 11:03:27 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 26C2922560D;
+        Sun,  4 Oct 2020 11:03:25 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.137) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 4 Oct 2020 11:03:12 +0000
+Subject: Re: [PATCH 06/11] RDMA: Check attr_mask during modify_qp
+To:     Jason Gunthorpe <jgg@nvidia.com>, Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, Weihang Li <liweihang@huawei.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+References: <6-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <06064431-fd1b-463d-c022-31f035b697bf@amazon.com>
+Date:   Sun, 4 Oct 2020 14:02:52 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002131628.GI816047@nvidia.com>
+In-Reply-To: <6-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.137]
+X-ClientProxiedBy: EX13D28UWB003.ant.amazon.com (10.43.161.60) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:16:28AM -0300, Jason Gunthorpe wrote:
-> On Fri, Oct 02, 2020 at 03:57:20PM +0300, Leon Romanovsky wrote:
-> > On Fri, Oct 02, 2020 at 09:42:17AM -0300, Jason Gunthorpe wrote:
-> > > On Sat, Sep 26, 2020 at 01:19:35PM +0300, Leon Romanovsky wrote:
-> > > > diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-> > > > index 12ebacf52958..1abcb01d362f 100644
-> > > > +++ b/drivers/infiniband/core/cq.c
-> > > > @@ -267,10 +267,25 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
-> > > >  		goto out_destroy_cq;
-> > > >  	}
-> > > >
-> > > > -	rdma_restrack_add(&cq->res);
-> > > > +	ret = rdma_restrack_add(&cq->res);
-> > > > +	if (ret)
-> > > > +		goto out_poll_cq;
-> > > > +
-> > > >  	trace_cq_alloc(cq, nr_cqe, comp_vector, poll_ctx);
-> > > >  	return cq;
-> > > >
-> > > > +out_poll_cq:
-> > > > +	switch (cq->poll_ctx) {
-> > > > +	case IB_POLL_SOFTIRQ:
-> > > > +		irq_poll_disable(&cq->iop);
-> > > > +		break;
-> > > > +	case IB_POLL_WORKQUEUE:
-> > > > +	case IB_POLL_UNBOUND_WORKQUEUE:
-> > > > +		cancel_work_sync(&cq->work);
-> > >
-> > > This error unwind is *technically* in the wrong order, it is wrong in
-> > > ib_free_cq too which is an actual bug.
-> > >
-> > > The cq->comp_handler should be set before calling create_cq and undone
-> > > after calling destroy_wq. We can do this right now that the
-> > > allocations have been reworked.
-> > >
-> > > Otherwise there is no assurance the ib_cq_completion_workqueue() won't
-> > > be called after this cancel == use after free
-> > >
-> > > Also, you need to check all the rdma_restrack_del()'s, they should
-> > > always be *before* destroying the HW object, eg ib_free_cq() has it
-> > > too late. Similarly the add should always be after the HW object is
-> > > allocated.
-> >
-> > It is true to not converted object (QP and MR), everything that was
-> > converted has two steps: rdma_restrack_put() before creation,
-> > rdma_restrack_add() right after creation and rdma_restrack_del() after
-> > successful destroy.
->
-> It must be before destroy not after.
+On 04/10/2020 2:20, Jason Gunthorpe wrote:
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index 191e0843f090c8..e3d9a5a5f4d992 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -917,6 +917,9 @@ int efa_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+>  	enum ib_qp_state new_state;
+>  	int err;
+>  
+> +	if (qp_attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
+> +		return -EOPNOTSUPP;
 
-We need rdma_restrack_put() after destroy to release memory.
-
-Thanks
-
->
-> Jason
+This is kinda redundant, we have a more strict check in efa_modify_qp_validate.
