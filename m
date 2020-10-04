@@ -2,216 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C17282B92
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Oct 2020 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C4B282C9F
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Oct 2020 20:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgJDPoE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Oct 2020 11:44:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
+        id S1726300AbgJDS6i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Oct 2020 14:58:38 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6297 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgJDPoC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 4 Oct 2020 11:44:02 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88C7F20759;
-        Sun,  4 Oct 2020 15:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601826241;
-        bh=O7HZcQRzxRmAmnS3hiVfDbaeM/A2kfet6dFl98RAZCk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X//tSZm6sevkjEKhDCnbeghNb7kZQJg6fxH61KLJC8YdLD9vUcDgC4p0C9hU5yL3m
-         ZWSgNOwL/hM/aZT1U76QjuYUS5CgSA3DaUKuoCUu5SYzhqLOZZzOk24IWuunait3zc
-         kkYnHpAnt8kYgYU3KLJprm9srd/PgZEB629dLBRs=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: [PATCH rdma-next v5 4/4] RDMA/umem: Move to allocate SG table from pages
-Date:   Sun,  4 Oct 2020 18:43:40 +0300
-Message-Id: <20201004154340.1080481-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201004154340.1080481-1-leon@kernel.org>
-References: <20201004154340.1080481-1-leon@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726288AbgJDS6i (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 4 Oct 2020 14:58:38 -0400
+IronPort-SDR: Suk4LatQ7Wjpwum+I/zqtZ4pbyZcibaWu/lC570oG5iwoIjKwxUp8No+bZKlagHvLvVEYc6gVa
+ kM1CSfFMp41Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="164151702"
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; 
+   d="scan'208";a="164151702"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 11:58:35 -0700
+IronPort-SDR: nbh1lPpZhyt4Mpd6F073Y+j6ZlqOwdGtnAU39wccVebdg5uZ/JRWw9Nep1g8scilUUjK7nhrdT
+ 06y1rgzKIPCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; 
+   d="scan'208";a="295384537"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Oct 2020 11:58:34 -0700
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [RFC PATCH v3 0/4] RDMA: Add dma-buf support
+Date:   Sun,  4 Oct 2020 12:12:27 -0700
+Message-Id: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
 
-Remove the implementation of ib_umem_add_sg_table and instead
-call to __sg_alloc_table_from_pages which already has the logic to
-merge contiguous pages.
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
 
-Besides that it removes duplicated functionality, it reduces the
-memory consumption of the SG table significantly. Prior to this
-patch, the SG table was allocated in advance regardless consideration
-of contiguous pages.
+Several mechanisms exist today to facilitate device memory access.
 
-In huge pages system of 2MB page size, without this change, the SG table
-would contain x512 SG entries.
-E.g. for 100GB memory registration:
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
 
-	 Number of entries	Size
-Before 	      26214400          600.0MB
-After            51200		  1.2MB
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c | 94 +++++-----------------------------
- 1 file changed, 12 insertions(+), 82 deletions(-)
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index c1ab6a4f2bc3..e9fecbdf391b 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -61,73 +61,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	sg_free_table(&umem->sg_head);
- }
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
 
--/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
-- *
-- * sg: current scatterlist entry
-- * page_list: array of npage struct page pointers
-- * npages: number of pages in page_list
-- * max_seg_sz: maximum segment size in bytes
-- * nents: [out] number of entries in the scatterlist
-- *
-- * Return new end of scatterlist
-- */
--static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
--						struct page **page_list,
--						unsigned long npages,
--						unsigned int max_seg_sz,
--						int *nents)
--{
--	unsigned long first_pfn;
--	unsigned long i = 0;
--	bool update_cur_sg = false;
--	bool first = !sg_page(sg);
--
--	/* Check if new page_list is contiguous with end of previous page_list.
--	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
--	 */
--	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
--		       page_to_pfn(page_list[0])))
--		update_cur_sg = true;
--
--	while (i != npages) {
--		unsigned long len;
--		struct page *first_page = page_list[i];
--
--		first_pfn = page_to_pfn(first_page);
--
--		/* Compute the number of contiguous pages we have starting
--		 * at i
--		 */
--		for (len = 0; i != npages &&
--			      first_pfn + len == page_to_pfn(page_list[i]) &&
--			      len < (max_seg_sz >> PAGE_SHIFT);
--		     len++)
--			i++;
--
--		/* Squash N contiguous pages from page_list into current sge */
--		if (update_cur_sg) {
--			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
--				sg_set_page(sg, sg_page(sg),
--					    sg->length + (len << PAGE_SHIFT),
--					    0);
--				update_cur_sg = false;
--				continue;
--			}
--			update_cur_sg = false;
--		}
--
--		/* Squash N contiguous pages into next sge or first sge */
--		if (!first)
--			sg = sg_next(sg);
--
--		(*nents)++;
--		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
--		first = false;
--	}
--
--	return sg;
--}
--
- /**
-  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
-  *
-@@ -217,7 +150,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
--	struct scatterlist *sg;
-+	struct scatterlist *sg = NULL;
- 	unsigned int gup_flags = FOLL_WRITE;
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
 
- 	/*
-@@ -272,15 +205,9 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+This is the third version of the patch series. Here are the changes
+from the previous version:
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+registration, pass all the attributes including the file descriptor
+as a structure.
+* Define a new access flag for dma-buf based memory region.
+* Check for on-demand paging support in the new uverbs command
 
- 	cur_base = addr & PAGE_MASK;
+This series consists of four patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 changes the signature of driver method for user
+space memory registration to accept a structure of attributes and adds
+dma-buf file descriptor to the structure. Vendor drivers are updated
+accordingly. Patch 3 adds dma-buf support to the mlx5 driver. Patch 4
+adds a new uverbs command for registering dma-buf based memory region.
 
--	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
--	if (ret)
--		goto vma;
--
- 	if (!umem->writable)
- 		gup_flags |= FOLL_FORCE;
+Related user space RDMA library changes will be provided as a separate
+patch series.
 
--	sg = umem->sg_head.sgl;
--
- 	while (npages) {
- 		cond_resched();
- 		ret = pin_user_pages_fast(cur_base,
-@@ -292,15 +219,19 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 			goto umem_release;
+Jianxin Xiong (4):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA: Expand driver memory registration methods to support dma-buf
+  RDMA/mlx5: Support dma-buf based userspace memory region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
 
- 		cur_base += ret * PAGE_SIZE;
--		npages   -= ret;
--
--		sg = ib_umem_add_sg_table(sg, page_list, ret,
--			dma_get_max_seg_size(device->dma_device),
--			&umem->sg_nents);
-+		npages -= ret;
-+		sg = __sg_alloc_table_from_pages(
-+			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
-+			dma_get_max_seg_size(device->dma_device), sg, npages,
-+			GFP_KERNEL);
-+		umem->sg_nents = umem->sg_head.nents;
-+		if (IS_ERR(sg)) {
-+			unpin_user_pages_dirty_lock(page_list, ret, 0);
-+			ret = PTR_ERR(sg);
-+			goto umem_release;
-+		}
- 	}
+ drivers/infiniband/core/Makefile                |   2 +-
+ drivers/infiniband/core/umem.c                  |   4 +
+ drivers/infiniband/core/umem_dmabuf.c           | 291 ++++++++++++++++++++++++
+ drivers/infiniband/core/umem_dmabuf.h           |  14 ++
+ drivers/infiniband/core/umem_odp.c              |  12 +
+ drivers/infiniband/core/uverbs_cmd.c            |  25 +-
+ drivers/infiniband/core/uverbs_std_types_mr.c   | 115 ++++++++++
+ drivers/infiniband/core/verbs.c                 |  15 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  23 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h        |   4 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h          |   6 +-
+ drivers/infiniband/hw/cxgb4/mem.c               |  19 +-
+ drivers/infiniband/hw/efa/efa.h                 |   3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c           |  24 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h     |   8 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c         |  28 +--
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  24 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h            |   7 +-
+ drivers/infiniband/hw/mlx4/mr.c                 |  37 +--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h            |   8 +-
+ drivers/infiniband/hw/mlx5/mr.c                 |  97 ++++++--
+ drivers/infiniband/hw/mlx5/odp.c                |  22 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c    |  13 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  23 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h     |   5 +-
+ drivers/infiniband/hw/qedr/verbs.c              |  25 +-
+ drivers/infiniband/hw/qedr/verbs.h              |   4 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  12 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h    |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c    |  24 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h |   4 +-
+ drivers/infiniband/sw/rdmavt/mr.c               |  21 +-
+ drivers/infiniband/sw/rdmavt/mr.h               |   4 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c           |  10 +-
+ drivers/infiniband/sw/siw/siw_verbs.c           |  26 ++-
+ drivers/infiniband/sw/siw/siw_verbs.h           |   5 +-
+ include/rdma/ib_umem.h                          |  19 +-
+ include/rdma/ib_verbs.h                         |  21 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h          |  14 ++
+ include/uapi/rdma/ib_user_ioctl_verbs.h         |   2 +
+ 40 files changed, 799 insertions(+), 225 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.h
 
--	sg_mark_end(sg);
--
- 	if (access & IB_ACCESS_RELAXED_ORDERING)
- 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
-
-@@ -318,7 +249,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
-
- umem_release:
- 	__ib_umem_release(device, umem, 0);
--vma:
- 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
- out:
- 	free_page((unsigned long) page_list);
---
-2.26.2
+-- 
+1.8.3.1
 
