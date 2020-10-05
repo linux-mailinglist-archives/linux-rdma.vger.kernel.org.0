@@ -2,115 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1122837A9
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Oct 2020 16:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55FC283811
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Oct 2020 16:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgJEOZ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Oct 2020 10:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S1725954AbgJEOm5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Oct 2020 10:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgJEOZ4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Oct 2020 10:25:56 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AD6C0613CE
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Oct 2020 07:25:56 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d20so12091482qka.5
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Oct 2020 07:25:56 -0700 (PDT)
+        with ESMTP id S1725936AbgJEOm4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Oct 2020 10:42:56 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FACEC0613CE
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Oct 2020 07:42:56 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id h8so2272288ooc.12
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Oct 2020 07:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Am9bINX9DgiYOqVX2mbmATJhOuip87QrRNQB+uDBQQk=;
-        b=Yuxx8RPwPDz+OJTvPyO3MrNED7QCwAZv9rEKUiGRRbj/Z4cW6bU4I1ETG/+xbYgxlF
-         vi3LpdtE/kRpliifxrUGmla5wVWNf0TCkWEi4OK4pQQevbNZFfvRpJzbGil7S2wN+/kJ
-         B+DmH2ptudUuqrc7yoBAY8BATexLY6pL9gQMIaxOfwGxBQDJ8eM5NU06xbeA/6iGCkFu
-         FdwKw8dUdBro8vFiz8oN4h+IuKNRnY/8sJ3OruItuxO2Gl54o+akKNKABo3+rwd/j6qy
-         fWK5VWJ4We3tpMGnRspSzU4Rafhw2wYDIUO2fZbxnOPrczBmTVgllFOfpyssS6zeA3g5
-         SEXg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mQLk/twJ/7+XkInTz9BSG8tie/lsTknC4MNJPn+oH5s=;
+        b=erigDT9rKn+KJE+RwjNsWH0M51AjaNwta4zPB11w0f0dnvo2i3s3hfc8KvyVbo/V0+
+         0OKKmnLeAGvequ7dtQpA3Ng9kTR8Ppy9UlbEA5X2LxfIOHBBLj3Hl/wu4IexRr0myLIH
+         iAahcWSS6gzPotlytWYD0ABOdlurvkq0UZdmdLeUEvqAJPd9h8eGSK94r84BS9eM/dP2
+         k5Yx06g4IW72qX7KGihMtJVsA/x6dIOspK+FPRb6Q8TvhIsXIdRELhPLWSzlIctCRg6A
+         nwEYHdAcINFj4hS3Hz/Zm710NaTfFGIujZezSrzQZxkdfzAqwGAQsYK+ppShUyDboP1G
+         wGYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Am9bINX9DgiYOqVX2mbmATJhOuip87QrRNQB+uDBQQk=;
-        b=Y8RB0noVaNDFm97qZZK/guVAku1WX6AiUl7H3ymiRSczP1ppzKlqCgDpvq9odHDC9Z
-         VmljMt6hWO2Kaq2K01Rba5s12wYT0vH4z1yn11VixjIeb4vcuQCxxEN6pJ6HUl4Fr5nt
-         cS4ruDLYMzM1F+bpt1WUPS6FnTTFu/gfb5y53whCt/z/2utTTwqy7SXXM8Mrslqb9SaO
-         cCTHkZDPzbCbiq5s4vhgVAimj/sQPL2NcXt1462VO0pzWZMQp7a7DMPyadQul/LVE+tC
-         /zvLyVOSFBlmcunE162sIwfg0erRn4MVHdqVeVOhI1Nph+krYnADNfi410Y30iZ/+Gws
-         DBhQ==
-X-Gm-Message-State: AOAM532b/tH7r0jzmeq8iMkgWWnzFGAk1gZXqLWiXrN/aJdWutTi/yxM
-        YlXbtQOabB6vmyjRLVwV9T5yuw==
-X-Google-Smtp-Source: ABdhPJzXZVeBHBzIGJEot6DXZc1KL53bxLd2Fh5oXGgaw1MbD703HNa4IOcawvgbVKV0hMXYa+JYlg==
-X-Received: by 2002:a37:624c:: with SMTP id w73mr166659qkb.185.1601907955391;
-        Mon, 05 Oct 2020 07:25:55 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id d12sm348183qtb.9.2020.10.05.07.25.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 07:25:54 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPRR4-007eYq-7Q; Mon, 05 Oct 2020 11:25:54 -0300
-Date:   Mon, 5 Oct 2020 11:25:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-Message-ID: <20201005142554.GS9916@ziepe.ca>
-References: <27a60d6d-0e86-6fc6-f4e9-2893c824ba56@oracle.com>
- <20200907102225.GA421756@unreal>
- <d0459663-e243-c114-b9d1-9cf47c8b71e0@oracle.com>
- <fd402e39-489e-abfd-a3a7-77092f25ced8@oracle.com>
- <20200929174037.GW9916@ziepe.ca>
- <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
- <20201002140445.GJ9916@ziepe.ca>
- <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
- <20201005131611.GR9916@ziepe.ca>
- <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mQLk/twJ/7+XkInTz9BSG8tie/lsTknC4MNJPn+oH5s=;
+        b=bc9vTtNIqba6n4ReEkwdG5EGtQa/MzVPG8pKDC1vv9jbNheaIYFlMwOrGj49u6blM6
+         OWqCqe6YN5Ta2OKQbKO/rMxsCNqMvK9sIlqqhd/KZdJqHXhJH7Hkf7zTaTgGQ1MG8wKS
+         ttTAmRCDqfw+cvO+2v7LdOBeAnhMIvPFgAnW+jCVZW3RZOE2w9Hr/AYGyBl1kOSgKfsQ
+         Fd0ghMpRDtalOrAh5anMo4jBB6SYSx8Oe15/OPfRce2OFd/Kw5XNotgnJjAdC/m3/e14
+         XDJzfOyV9oOV+ugod8jCHzCNhq11VHzVXMGoM+8pL7O8HZRnpo9BLHq70xYu5sImyhCQ
+         08nA==
+X-Gm-Message-State: AOAM533lCFaO+1Rc8UIzCdaNxNcWzN+iSlr9OZ66/QP6CZnstg9BUO+R
+        JiFcdZoiiXQTBnVwB796EzeISaKZD8I=
+X-Google-Smtp-Source: ABdhPJzABTquKWbHpdYpXl7ymmmo9HZ7dM9qenloR0P+JlbcpBkhD+TuOz0IJtR1a+vqzGRNt11LkA==
+X-Received: by 2002:a4a:d485:: with SMTP id o5mr12529381oos.60.1601908975733;
+        Mon, 05 Oct 2020 07:42:55 -0700 (PDT)
+Received: from ?IPv6:2605:6000:8b03:f000:8d47:e8b9:65b9:9466? ([2605:6000:8b03:f000:8d47:e8b9:65b9:9466])
+        by smtp.gmail.com with ESMTPSA id n10sm43357ooj.19.2020.10.05.07.42.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 07:42:55 -0700 (PDT)
+Subject: Re: [PATCH for-next v7 10/19] rdma_rxe: Add support for
+ ibv_query_device_ex
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+References: <20201001174847.4268-1-rpearson@hpe.com>
+ <20201001174847.4268-11-rpearson@hpe.com>
+ <20201003232153.GM816047@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <5819b623-c691-a9f3-e8a0-242b9f6bbf69@gmail.com>
+Date:   Mon, 5 Oct 2020 09:42:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+In-Reply-To: <20201003232153.GM816047@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:57:47PM +0800, Ka-Cheong Poon wrote:
-> > > It is a kernel module.  Which FD are you referring to?  It is
-> > > unclear why a kernel module must associate itself with a user
-> > > space FD.  Is there a particular reason that rdma_create_id()
-> > > needs to behave differently than sock_create_kern() in this
-> > > regard?
-> > 
-> > Somehow the kernel module has to be commanded to use this namespace,
-> > and generally I expect that command to be connected to FD.
+On 10/3/20 6:21 PM, Jason Gunthorpe wrote:
+> On Thu, Oct 01, 2020 at 12:48:38PM -0500, Bob Pearson wrote:
+>> Add code to initialize new struct members in
+>> ib_device_attr as place holders.
+>>
+>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe.c       | 101 ++++++++++++++++++--------
+>>  drivers/infiniband/sw/rxe/rxe_verbs.c |   7 +-
+>>  2 files changed, 75 insertions(+), 33 deletions(-)
 > 
+> This series should eliminate this patch and notably change the others
 > 
-> It is an unnecessary restriction on what a kernel module
-> can do.  Is it a problem if a kernel module initiates its
-> own RDMA connection for doing various stuff in a namespace?
+> https://patchwork.kernel.org/project/linux-rdma/list/?series=359361
+> 
+> Can you take a look that it works for this?
+> 
+> Thanks,
+> Jason
+> 
 
-Yes, someone has to apply policy to authorize this. Kernel modules
-randomly running around using security objects is not OK.
+I'll take a look. Let me know if/when you take it into for-next. Should be easy to adjust for these.
+Currently I am working to try to improve performance. I have replaced tasklets with work queues. Low
+QP count performance is not changed much but it should help high QP count performance. At the moment I am
+trying to optimize UD since it is a lot simpler. Once that is done I want to look at core affinity.
 
-Kernel modules should not be doing networking unless commanded to by
-userspace.
-
-> Any kernel module can initiate a TCP connection to do various
-> stuff without worrying about namespace deletion problem.  It
-> does not cause a problem AFAICT.  If the module needs to make
-> sure that the namespace does not go away, it can add its own
-> reference.  Is there a particular reason that RDMA subsystem
-> needs to behave differently?
-
-We don't have those kinds of ULPs.
-
-> For scalability and namespace separation reasons as cma_wq is
-> single threaded.  For example, there can be many work to be done
-> in one namespace.  But this should not have an adverse effect on
-> other namespaces (as long as there are resources available).
-
-This is a design issue of the cma_wq, it can be reworked to not need
-single threaded, nothing to do with namespaces
-
-Jason
+Bob
