@@ -2,144 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB3D283654
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Oct 2020 15:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1909F283664
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Oct 2020 15:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgJENNH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Oct 2020 09:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        id S1725931AbgJENQQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Oct 2020 09:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJENNH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Oct 2020 09:13:07 -0400
+        with ESMTP id S1725914AbgJENQP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Oct 2020 09:16:15 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A54C0613CE
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Oct 2020 06:13:07 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id z6so3240496qkz.4
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Oct 2020 06:13:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AD9C0613CE
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Oct 2020 06:16:14 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q5so11795856qkc.2
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Oct 2020 06:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=g/nm80+Ud0wRxvGfW3dlVEjR1+0DLL+VUhoF4LmgS+Q=;
-        b=HHMoe12/eAzH/fwzfESo4EPwuolZOIMbQjNC5GQRJrIb3mESWoCqFb/+X48/ok5xAY
-         1Ib5j6cJag2rt7rEGRcYQvbjvT6rY99IutD+lWrQU8ZQAc2QLQ8yiHaxqA+hTUm9R0AG
-         5niHdR+a9omhIWYTsRo+b8q6GcK3Zs8XSzXSBOQxcbygY0/2oiGqrcWOgqeLm3zPijhF
-         mb40XErkCkx8a657/zpPt7xIE+/WVgRfNKkWYIzrCp2tFDP+3BInjM7+gEMEf76WZHqQ
-         mWS1lNBj11tGTpzFwmXWxgQhpUHsgSF55YjnC64n3+0PHEFGUfjNmCIcTTGmKI9MGu2d
-         kCSQ==
+        bh=L9ru4Sqlhf2p0KE+zcoL9gXJ9Z/ZudEwwCB7ok4Wi+E=;
+        b=o+rtQHCVK6nQbRJZejNGS1aIfgQkSLk08A/mJdPkE2UwflbMne/ie+SEIG/Iek3DPI
+         aKMRglqplDpIYwV2QQXFJs9S+AxgdHVi0hcfBTufx44ORpUfI+J8q8GeAznc/XDsvbyF
+         E3GkTCpmiBwrK7WkelGKhVO7CLw8z4nUgEW6xvmdT60DLP+We1iwFMJo5fFBC8nLzMSC
+         2U69V4TFHu6Y0WrIeCZ7rEsiD+MmPCE1qWCf/fN0wQcVFOUyHRoPm7jNRmPI45wOqMQP
+         XIDPHqddY7a1+1BaWrvv/43rW8zN+DmhsB5b7cBwAocVOZ2mi8T8opQqlErsGZMojY/x
+         L38A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=g/nm80+Ud0wRxvGfW3dlVEjR1+0DLL+VUhoF4LmgS+Q=;
-        b=Kwgc8GZ7hsf/n7+cdjQCMOU1zHD8uR61d2SrppNnLAVIJ4p0JblIySgFkdsqN9p9P8
-         BykQY4bsNaZMmQy7zsF8emCk0+5dQb368sO6PgRjhH645FKK3Q27p0UxaVS1/WlP4Q9C
-         dDOmwkQXZMWj0v2veTnFJAcLnPqsomN01tom+NdJc5HR6u+WwlVNR+Zq5qwoYO5n9Jsm
-         gvQSnhjhTVU4qwQZzg9WeQMsBwt1fKJsT27gic5OxW6F2exyYoFf77jOSbi13cvKQAbE
-         lhwdjyk7yRx8sGDPlGY5jdPjZ0YpRoBeowHJKmPpdNbYQKRC3gVOViJUATPtoPP9MRN0
-         oB6A==
-X-Gm-Message-State: AOAM531SZOIi2wMrOmf/ujRnbh0mynDOdndWNH//Bb8TIxqoskEhz4pe
-        h81FqFVIijMQopCNo0ggacvKsA==
-X-Google-Smtp-Source: ABdhPJyrho8zIByNj5JL9HWW/xbMfB4xrHk9GWGi+3WSdBd2xnU203QhJSgXIPPx+itKthHZDwz+Yg==
-X-Received: by 2002:a37:bec2:: with SMTP id o185mr13957738qkf.37.1601903584565;
-        Mon, 05 Oct 2020 06:13:04 -0700 (PDT)
+        bh=L9ru4Sqlhf2p0KE+zcoL9gXJ9Z/ZudEwwCB7ok4Wi+E=;
+        b=hrf2wasNeGCUuxz6t0bVLHM1rRVn45ymmLS55Jti7N6ZHdwm6UxLD7jPPR4IX4tnC3
+         awzU49w0QsdsYgs9U1L1bccfVliU3J71tpdftP0FPF1NZ1VYy2Af4eBAgcgSxDaTA+pw
+         kJEe4QQGPyVpb22LzgT4xSJuZQVMKGf20wBrjDgLpLUAuCXwc+tgejANGiMkVZzHxgh/
+         qhAyKkC2OpMw48B3eBRnIsa8x1bJtkOXkpdkH+9TSuR23oZ6VVGHVG9uEnN0ghyFA36z
+         pvkH7G+J4kN5fteH/EcuOa0sWvh9a6ewlcJ24HiQCQtjr9ZHVTdEBJ5lAwO60WqQm/EE
+         pEVg==
+X-Gm-Message-State: AOAM530coa27KqasmHj4xYI82qrqLIN8vb7F3hy1m96AJjkgc8iG7awu
+        RFujsa8M/rTO0cpqKyUXIjhuiULRZUjox3U6
+X-Google-Smtp-Source: ABdhPJzUP6oxnZNcbbXBFbXoJB8RdvZge/U5wbaKb/+we9vkB/vBT26d8s5OBmx6xJCk3QmT7R9SWA==
+X-Received: by 2002:a37:9b97:: with SMTP id d145mr4523377qke.274.1601903772754;
+        Mon, 05 Oct 2020 06:16:12 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id p29sm7381872qtu.68.2020.10.05.06.13.03
+        by smtp.gmail.com with ESMTPSA id d200sm7187802qkc.109.2020.10.05.06.16.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 06:13:03 -0700 (PDT)
+        Mon, 05 Oct 2020 06:16:11 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kPQIY-007crb-Gz; Mon, 05 Oct 2020 10:13:02 -0300
-Date:   Mon, 5 Oct 2020 10:13:02 -0300
+        id 1kPQLb-007cuf-8T; Mon, 05 Oct 2020 10:16:11 -0300
+Date:   Mon, 5 Oct 2020 10:16:11 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
-Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201005131302.GQ9916@ziepe.ca>
-References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
- <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+Message-ID: <20201005131611.GR9916@ziepe.ca>
+References: <69fdae5f-5824-9151-0a00-a7453382eee0@oracle.com>
+ <20200907090438.GM55261@unreal>
+ <27a60d6d-0e86-6fc6-f4e9-2893c824ba56@oracle.com>
+ <20200907102225.GA421756@unreal>
+ <d0459663-e243-c114-b9d1-9cf47c8b71e0@oracle.com>
+ <fd402e39-489e-abfd-a3a7-77092f25ced8@oracle.com>
+ <20200929174037.GW9916@ziepe.ca>
+ <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
+ <20201002140445.GJ9916@ziepe.ca>
+ <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+In-Reply-To: <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 12:12:28PM -0700, Jianxin Xiong wrote:
-> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
-> used to support peer-to-peer access from RDMA devices.
+On Mon, Oct 05, 2020 at 06:27:39PM +0800, Ka-Cheong Poon wrote:
+> On 10/2/20 10:04 PM, Jason Gunthorpe wrote:
+> > > that namespace to use it.  If there are a large number of namespaces,
+> > > there won't be enough devices to assign to all of them (e.g. the
+> > > hardware I have access to only supports up to 24 VFs).  The shared
+> > > mode can be used in this case.  Could you please explain what needs
+> > > to be done to support a large number of namespaces in exclusive
+> > > mode?
+> > 
+> > Modern HW supports many more than 24 VFs, this is the expected
+> > interface
 > 
-> Device memory exported via dma-buf is associated with a file descriptor.
-> This is passed to the user space as a property associated with the
-> buffer allocation. When the buffer is registered as a memory region,
-> the file descriptor is passed to the RDMA driver along with other
-> parameters.
+> Do you have a ballpark on how many VFs are supported?  Is it in
+> the range of many thousands?
+
+Yes
+
+> BTW, while the shared mode is still here, can there be a simple
+> way for a client to find out which mode the RDMA subsystem is using?
+
+Return NULL for the namespace
+
+> > The new cm_id starts with the same ->context as the listener, the ULP should
+> > use this to pass any data, such as the namespace.
 > 
-> Implement the common code for importing dma-buf object and mapping
-> dma-buf pages.
+> This is what I suspected as mentioned in the previous email.  But
+> this makes it inconvenient if the context is already used for
+> something else.
+
+Don't see why. the context should be allocated memory, so the ULP can
+put several things lin there.
+
+> > I'm skeptical ULPs should be doing per-ns stuff like that. A ns aware
+> > ULP should fundamentally be linked to some FD and the ns to use should
+> > derived from the process that FD is linked to. Keeping per-ns stuff
+> > seems wrong.
 > 
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> ---
->  drivers/infiniband/core/Makefile      |   2 +-
->  drivers/infiniband/core/umem.c        |   4 +
->  drivers/infiniband/core/umem_dmabuf.c | 291 ++++++++++++++++++++++++++++++++++
->  drivers/infiniband/core/umem_dmabuf.h |  14 ++
->  drivers/infiniband/core/umem_odp.c    |  12 ++
->  include/rdma/ib_umem.h                |  19 ++-
->  6 files changed, 340 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
->  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+> 
+> It is a kernel module.  Which FD are you referring to?  It is
+> unclear why a kernel module must associate itself with a user
+> space FD.  Is there a particular reason that rdma_create_id()
+> needs to behave differently than sock_create_kern() in this
+> regard?
 
-I think this is using ODP too literally, dmabuf isn't going to need
-fine grained page faults, and I'm not sure this locking scheme is OK -
-ODP is horrifically complicated.
+Somehow the kernel module has to be commanded to use this namespace,
+and generally I expect that command to be connected to FD.
 
-If this is the approach then I think we should make dmabuf its own
-stand alone API, reg_user_mr_dmabuf()
+We don't have many use cases where the kernel operates namespaces
+independently..
 
-The implementation in mlx5 will be much more understandable, it would
-just do dma_buf_dynamic_attach() and program the XLT exactly the same
-as a normal umem.
+> While discussing about per namespace stuff, what is the reason
+> that the cma_wq is a global shared by all namespaces instead of
+> per namespace?  Is there a problem to have a per namespace cma_wq?
 
-The move_notify() simply zap's the XLT and triggers a work to reload
-it after the move. Locking is provided by the dma_resv_lock. Only a
-small disruption to the page fault handler is needed.
-
-> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
-> +				     DMA_BIDIRECTIONAL);
-> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-
-This doesn't look right, this lock has to be held up until the HW is
-prorgammed
-
-The use of atomic looks probably wrong as well.
-
-> +	k = 0;
-> +	total_pages = ib_umem_odp_num_pages(umem_odp);
-> +	for_each_sg(umem->sg_head.sgl, sg, umem->sg_head.nents, j) {
-> +		addr = sg_dma_address(sg);
-> +		pages = sg_dma_len(sg) >> page_shift;
-> +		while (pages > 0 && k < total_pages) {
-> +			umem_odp->dma_list[k++] = addr | access_mask;
-> +			umem_odp->npages++;
-> +			addr += page_size;
-> +			pages--;
-
-This isn't fragmenting the sg into a page list properly, won't work
-for unaligned things
-
-And really we don't need the dma_list for this case, with a fixed
-whole mapping DMA SGL a normal umem sgl is OK and the normal umem XLT
-programming in mlx5 is fine.
+Why would we want to do that?
 
 Jason
