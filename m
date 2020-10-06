@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0828518C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 20:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCB028519C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 20:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgJFSXr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Oct 2020 14:23:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59532 "EHLO mga18.intel.com"
+        id S1726762AbgJFSde convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Oct 2020 14:33:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1687 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbgJFSXr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:23:47 -0400
-IronPort-SDR: 8DO+9gQYFuX1Rmg2i3pubQjrckZQsjjuIGxUZO4pdv06sHcXoFiI3KU3TaGU7JqFWisYWOl+xM
- 5QqhKad4nwAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="152387306"
+        id S1725906AbgJFSde (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:33:34 -0400
+IronPort-SDR: LQPx8/g5GvMz/EDXzRq2adBTF0h4ya2tTFumnVNvlpBitAsSUOM9I7SADZqPF8OsvCZa+/NCWO
+ 9q9euQaMBEAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="163853894"
 X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="152387306"
+   d="scan'208";a="163853894"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:23:41 -0700
-IronPort-SDR: qf8FwMjwp4jA64b69yFhWu8OWFIP18/o/mhSRNvY2n0RrtXFTy/7i9Dl9zoLRj4hrKRr2xSvU3
- DDoEwiu9uMhw==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:32:56 -0700
+IronPort-SDR: +mPQsLC1Gek0s/5tFO2Go3M+tlPqX1bS4x2FyK4i+wthWhtA90huwOhoNv6EyxeBIQbUwa8eKR
+ 4eZuu4lgP5fw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="343896034"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2020 11:23:39 -0700
+   d="scan'208";a="518409118"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Oct 2020 11:32:55 -0700
 Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 6 Oct 2020 11:23:39 -0700
+ 15.1.1713.5; Tue, 6 Oct 2020 11:32:53 -0700
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
  fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 6 Oct 2020 11:23:38 -0700
+ 15.1.1713.5; Tue, 6 Oct 2020 11:32:52 -0700
 Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
  fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
- Tue, 6 Oct 2020 11:23:38 -0700
+ Tue, 6 Oct 2020 11:32:52 -0700
 From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Adit Ranadive <aditr@vmware.com>, Ariel Elior <aelior@marvell.com>,
+To:     Jason Gunthorpe <jgg@nvidia.com>, Adit Ranadive <aditr@vmware.com>,
+        "Ariel Elior" <aelior@marvell.com>,
         Christian Benvenuti <benve@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
@@ -67,16 +67,15 @@ CC:     Adit Ranadive <aditr@vmware.com>, Ariel Elior <aelior@marvell.com>,
         Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
         Zhu Yanjun <yanjunz@nvidia.com>,
         Yishai Hadas <yishaih@nvidia.com>
-Subject: RE: [PATCH 07/11] RDMA: Check flags during create_cq
-Thread-Topic: [PATCH 07/11] RDMA: Check flags during create_cq
-Thread-Index: AQHWmdvWcd96fv5yeEquYPwOa7HQC6mK4OQwgAB5ggD//41dcA==
-Date:   Tue, 6 Oct 2020 18:23:35 +0000
-Message-ID: <b0ab06afe6894f4186e5caa70ded64fa@intel.com>
+Subject: RE: [PATCH 00/11] Reduce uverbs_cmd_mask and remove
+ uverbs_ex_cmd_mask
+Thread-Topic: [PATCH 00/11] Reduce uverbs_cmd_mask and remove
+ uverbs_ex_cmd_mask
+Thread-Index: AQHWmdvP2obtsksLE0+HxK622bhh9KmK6ciA
+Date:   Tue, 6 Oct 2020 18:32:51 +0000
+Message-ID: <6d2ac29f62f640e5b1e37c70692359d1@intel.com>
 References: <0-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
- <7-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
- <dae8db3a1d134141bdd6dbcca5564433@intel.com>
- <20201006181326.GM4734@nvidia.com>
-In-Reply-To: <20201006181326.GM4734@nvidia.com>
+In-Reply-To: <0-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -92,28 +91,51 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH 07/11] RDMA: Check flags during create_cq
+> Subject: [PATCH 00/11] Reduce uverbs_cmd_mask and remove
+> uverbs_ex_cmd_mask
 > 
-> On Tue, Oct 06, 2020 at 06:04:29PM +0000, Saleem, Shiraz wrote:
-> > > a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > index 26a61af2d3977f..4aade66ad2aea8 100644
-> > > +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > @@ -1107,6 +1107,9 @@ static int i40iw_create_cq(struct ib_cq *ibcq,
-> > >  	int err_code;
-> > >  	int entries = attr->cqe;
-> > >
-> > > +	if (attr->flags)
-> > > +		return -EOPNOTSUPP;
-> > > +
-> >
-> > I am slightly confused.
-> > So these flags are set for drivers that support the extended create CQ API?
+> These have become increasingly redundant as the uverbs core layer has got better
+> at not invoking drivers in situations they are not supporting.
 > 
-> No, the flags can be set by any user or kernel program creating a CQ. The driver
-> must ensure it supports all requested flags.
+> The remaining uses are only in rxe and rvt for kernel datapath commands these
+> drivers expose to userspace.
 > 
-> Omitting the flags check was always a mistake because an in-kernel ULP could
-> attempt to use them - luckily none due today.
+> There are many, many weird and wrong things in the drivers related to these
+> masks. This closes a number of troublesome cases.
 > 
-OK. Makes sense now. Thanks!
+> Jason Gunthorpe (11):
+>   RDMA/cxgb4: Remove MW support
+>   RDMA: Remove uverbs_ex_cmd_mask values that are linked to functions
+>   RDMA: Remove elements in uverbs_cmd_mask that all drivers set
+>   RDMA: Move more uverbs_cmd_mask settings to the core
+>   RDMA: Check srq_type during create_srq
+>   RDMA: Check attr_mask during modify_qp
+>   RDMA: Check flags during create_cq
+>   RDMA: Check create_flags during create_qp
+>   RDMA/core Remove uverbs_ex_cmd_mask
+>   RDMA: Remove uverbs cmds from drivers that don't use them
+>   RDMA: Remove AH from uverbs_cmd_mask
+> 
+>  drivers/infiniband/core/device.c              | 33 ++++++++
+>  drivers/infiniband/core/uverbs_cmd.c          | 26 +++---
+>  drivers/infiniband/core/uverbs_uapi.c         |  5 +-
+>  drivers/infiniband/core/verbs.c               |  5 +-
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c      | 10 ++-
+>  drivers/infiniband/hw/bnxt_re/main.c          | 30 +------
+>  drivers/infiniband/hw/cxgb4/cq.c              |  2 +-
+>  drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |  2 -
+>  drivers/infiniband/hw/cxgb4/mem.c             | 84 -------------------
+>  drivers/infiniband/hw/cxgb4/provider.c        | 24 ------
+>  drivers/infiniband/hw/cxgb4/qp.c              |  8 +-
+>  drivers/infiniband/hw/efa/efa_main.c          | 22 +----
+>  drivers/infiniband/hw/efa/efa_verbs.c         |  6 ++
+>  drivers/infiniband/hw/hns/hns_roce_cq.c       |  3 +
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |  9 +-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  3 +
+>  drivers/infiniband/hw/hns/hns_roce_main.c     | 35 +-------
+>  drivers/infiniband/hw/hns/hns_roce_qp.c       | 14 +---
+>  drivers/infiniband/hw/hns/hns_roce_srq.c      |  4 +
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c     | 29 ++-----
+
+i40iw bit looks ok to me.
+Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
