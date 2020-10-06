@@ -2,102 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056FC2850B2
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 19:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11212850B9
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 19:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgJFRXW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 13:23:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgJFRXW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:23:22 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FB0420782;
-        Tue,  6 Oct 2020 17:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602005002;
-        bh=O8037/XQX9BMZhwDeVVw/xrgcB1aBDB18FxCjX2E5Bs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gEvAWCYYLyEIbgMzIMDzaE1mi8CXHQt4WiqgEJzlzaS35baukykaJVSXX150gy+kv
-         EbaFpf1GvtUgK9iNI9VMmmvhBGYcoQlCkM2ZvTiyIqZaK4/IkigHEgO2YT2XNBervS
-         OFpTXKQc7GZgOgtU8WDmPPctfymrriTdmVZgesdg=
-Date:   Tue, 6 Oct 2020 20:23:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dave Ertman <david.m.ertman@intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        gregkh@linuxfoundation.org, ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201006172317.GN1874917@unreal>
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
+        id S1725946AbgJFRYo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 13:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgJFRYo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 13:24:44 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E186EC061755
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 10:24:42 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 16so5768696oix.9
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 10:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RKKopYNcjNeFpv6TLCvBYUo3phBxS/bzVk3ny8U3SZ4=;
+        b=Ywzegx7iJlmxeVjVZylTidxr8VgvtygwAsLLUcnt9O5nTCCs6I2rKesGxA6F19rGvi
+         UravkjBt8BIXUX4j75kb74n5qmm7iOVZZwiuoAEcuxHJbniAoU8uPchZp6IHOGjcoBlX
+         1QK4XEVHCT1DG5yR53rfHgCYShrIyLE8nZYAA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RKKopYNcjNeFpv6TLCvBYUo3phBxS/bzVk3ny8U3SZ4=;
+        b=JW3qbU0MOCCQOlVzjsZzzx/YBR8L5ZVzIjakSbbyCYr5s/WWMQhzhuoIYPX97vE68m
+         tsFoHzt8Rc7brzBio6BWkcMfc2ePrGdlDjUz8f5kQOIZ7rEtzF3N6AQFObTRAd2HBTby
+         sb0xr7Tq0r3Ab68ecVOrtJRazmA+X9+96Zi2nuWz861QvNEvSWNT3dRrJWqmWECK5JMD
+         jEstgyE/3WVxxugaoc3lVN98XT4QmBqBfXFqST91Lz9ZNkSgKQ0A5D/bb1nO999OJfvX
+         tZvhvfprjD87NRkZHxSO2GdTuhRc1Eoos4AMxKoMxLPZ6AGFT+m6B++qE3IoNRSq5z29
+         6hAA==
+X-Gm-Message-State: AOAM532AmH0SIPRzUodSYaj3IsQ0SxuDWMZJnpkACkhxmJYcxa7n0pzH
+        9aOHk04cfQChQV5VpH/bKi36z1iYohBS/bVautBL3Q==
+X-Google-Smtp-Source: ABdhPJwMRUDWMR5gv6uevejjE1dEUzVSRSA7mRuyKG9aJA0erHylD0SSdUS6tuHF6wQyEztNveufIUanB12QJiWFzXA=
+X-Received: by 2002:aca:6083:: with SMTP id u125mr3479076oib.14.1602005081922;
+ Tue, 06 Oct 2020 10:24:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005182446.977325-2-david.m.ertman@intel.com>
+References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
+ <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+ <20201005131302.GQ9916@ziepe.ca> <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20201006092214.GX438822@phenom.ffwll.local> <20201006154956.GI5177@ziepe.ca> <20201006163420.GB438822@phenom.ffwll.local>
+In-Reply-To: <20201006163420.GB438822@phenom.ffwll.local>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 6 Oct 2020 19:24:30 +0200
+Message-ID: <CAKMK7uG1RpDQ9ZO=VxkNuGjGPqkAzMQDgi89eSjDoMerMQ4+9A@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     "Xiong, Jianxin" <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
-> Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> It enables drivers to create an ancillary_device and bind an
-> ancillary_driver to it.
+On Tue, Oct 6, 2020 at 6:34 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> The bus supports probe/remove shutdown and suspend/resume callbacks.
-> Each ancillary_device has a unique string based id; driver binds to
-> an ancillary_device based on this id through the bus.
+> On Tue, Oct 06, 2020 at 12:49:56PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Oct 06, 2020 at 11:22:14AM +0200, Daniel Vetter wrote:
+> > >
+> > > For reinstanting the pages you need:
+> > >
+> > > - dma_resv_lock, this prevents anyone else from issuing new moves or
+> > >   anything like that
+> > > - dma_resv_get_excl + dma_fence_wait to wait for any pending moves to
+> > >   finish. gpus generally don't wait on the cpu, but block the dependent
+> > >   dma operations from being scheduled until that fence fired. But for rdma
+> > >   odp I think you need the cpu wait in your worker here.
+> >
+> > Reinstating is not really any different that the first insertion, so
+> > then all this should be needed in every case?
 >
-> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> ---
+> Yes. Without move_notify we pin the dma-buf into system memory, so it
+> can't move, and hence you also don't have to chase it. But with
+> move_notify this all becomes possible.
 
-<...>
+I just realized I got it wrong compared to gpus. I needs to be:
+1. dma_resv_lock
+2. dma_buf_map_attachment, which might have to move the buffer around
+again if you're unlucky
+3. wait for the exclusive fence
+4. put sgt into your rdma ptes
+5 dma_resv_unlock
 
-> +/**
-> + * __ancillary_driver_register - register a driver for ancillary bus devices
-> + * @ancildrv: ancillary_driver structure
-> + * @owner: owning module/driver
-> + */
-> +int __ancillary_driver_register(struct ancillary_driver *ancildrv, struct module *owner)
-> +{
-> +	if (WARN_ON(!ancildrv->probe) || WARN_ON(!ancildrv->remove) ||
-> +	    WARN_ON(!ancildrv->shutdown) || WARN_ON(!ancildrv->id_table))
-> +		return -EINVAL;
-
-In our driver ->shutdown is empty, it will be best if ancillary bus will
-do "if (->remove) ..->remove()" pattern.
-
-> +
-> +	ancildrv->driver.owner = owner;
-> +	ancildrv->driver.bus = &ancillary_bus_type;
-> +	ancildrv->driver.probe = ancillary_probe_driver;
-> +	ancildrv->driver.remove = ancillary_remove_driver;
-> +	ancildrv->driver.shutdown = ancillary_shutdown_driver;
-> +
-
-I think that this part is wrong, probe/remove/shutdown functions should
-come from ancillary_bus_type. You are overwriting private device_driver
-callbacks that makes impossible to make container_of of ancillary_driver
-to chain operations.
-
-> +	return driver_register(&ancildrv->driver);
-> +}
-> +EXPORT_SYMBOL_GPL(__ancillary_driver_register);
-
-Thanks
+Maybe also something we should document somewhere for dynamic buffers.
+Assuming I got it right this time around ... Christian?
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
