@@ -2,121 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E08F285153
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 20:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB76285159
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 20:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgJFSCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 14:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJFSCq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 14:02:46 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91F0C061755
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 11:02:46 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q63so17673238qkf.3
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 11:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IMVs6pYP6d/JH2UQFKjNBBJvHP5ZySPzw+vwCQQZk3E=;
-        b=Q9yZXIgw1Z8brYzywOU+NTbJr0RIEdkmGB9rnXIKLY10UJpuxteU80zjy2yZb/pJ+N
-         DwDltyd6k63ppNLYv1qcBX92ji/NIACQqkFxfufiW8TR5CF1PKeiL9lGiz1fcbp+x39r
-         QtG+vnjW7SqSa7hPdkQAX85GVGuWL3Diqo4XyC5LzOnqDGue2YCjVS2OlPOvA0gnczlu
-         KJD9/Ce20nc7zp+4Mo1g001ngTDO7oZHCUPqiec761QXQiyduKwQ78rzMQWTtzCKjzyM
-         n+thwXwsDE87+SB4N9GVIeDa9ZWqSgaiaovi7QJjW8F0Z6LPeXOEfqP3CifxDDUEZe6Y
-         9vDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IMVs6pYP6d/JH2UQFKjNBBJvHP5ZySPzw+vwCQQZk3E=;
-        b=msP6rDuHrw9jL0+1vzvoK3S7ZN8+jy4mXgbt15ZU/E/1hRbCAIj2WlJH1pfCJyjOJD
-         2AMHDxrMZ3EW+EgKy6+G7Aewl1/AocQcJ4W9SG9RaYXRSriIrXHP2Cl+DCDafigvTLCI
-         GSBJrkXS2NolDdLM9uEpBX/vQI7G1UVWAYjLCxY+WuJ/WJgBxwDMZu0iPBLZ2ysjBlBg
-         zrcYLNzz+on6eyrDB6sL7I/Q+2+ubWM0eDYrLsq7USKm7L3dlownZyOfVUKN7cEKSMYI
-         AYU9ZUJ7G5FyGTQJ/4rP//2Z4841i6A2drSd5wMTGGns90ZijuvKqZmTmZtMIKfyqeHm
-         k3Sw==
-X-Gm-Message-State: AOAM530JzMtcHc2kqcNJLHdD8S+4EFN1bMrYOi4s6pFDZIfARjkVPGTt
-        JrTnCgBuYBAjVFUrInvXmKwWkQ==
-X-Google-Smtp-Source: ABdhPJwI8moAHpeup6ss9nWh+yNHyqpY+GdlISjjWS24npzay6ZqhbIeHm9O4hBKuOXaL/lBlsct7g==
-X-Received: by 2002:a37:a84d:: with SMTP id r74mr3290088qke.411.1602007365803;
-        Tue, 06 Oct 2020 11:02:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j9sm2784712qtq.36.2020.10.06.11.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 11:02:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPrIS-000cYy-A0; Tue, 06 Oct 2020 15:02:44 -0300
-Date:   Tue, 6 Oct 2020 15:02:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Xiong, Jianxin" <jianxin.xiong@intel.com>,
+        id S1726725AbgJFSEh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Oct 2020 14:04:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55937 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725925AbgJFSEh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:04:37 -0400
+IronPort-SDR: P6XqaMWK4r0eMBCYdKvDpU/aD23lpWHiB1VF8UlwrJ3KfQMs2WRBqUE20KpL+nV4Vh8O7xdVBp
+ 1rIsOBvpzmGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="152376230"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="152376230"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:04:36 -0700
+IronPort-SDR: bX2ocFF1NXug2L6dqNWpJSOyDYRIH8oYpMFTV7jt1uD2fMNWIsUdZNcUw7LuyS76FYjwQHHjCG
+ roXaXjNEl+vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="527480139"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP; 06 Oct 2020 11:04:35 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 6 Oct 2020 11:04:35 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 6 Oct 2020 11:04:34 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Tue, 6 Oct 2020 11:04:34 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Adit Ranadive <aditr@vmware.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
         Leon Romanovsky <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201006180244.GJ5177@ziepe.ca>
-References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
- <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
- <20201005131302.GQ9916@ziepe.ca>
- <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20201006092214.GX438822@phenom.ffwll.local>
- <20201006154956.GI5177@ziepe.ca>
- <20201006163420.GB438822@phenom.ffwll.local>
- <CAKMK7uG1RpDQ9ZO=VxkNuGjGPqkAzMQDgi89eSjDoMerMQ4+9A@mail.gmail.com>
+        Weihang Li <liweihang@huawei.com>,
+        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        "Somnath Kotur" <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: RE: [PATCH 07/11] RDMA: Check flags during create_cq
+Thread-Topic: [PATCH 07/11] RDMA: Check flags during create_cq
+Thread-Index: AQHWmdvWcd96fv5yeEquYPwOa7HQC6mK4OQw
+Date:   Tue, 6 Oct 2020 18:04:29 +0000
+Message-ID: <dae8db3a1d134141bdd6dbcca5564433@intel.com>
+References: <0-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+ <7-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+In-Reply-To: <7-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uG1RpDQ9ZO=VxkNuGjGPqkAzMQDgi89eSjDoMerMQ4+9A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 07:24:30PM +0200, Daniel Vetter wrote:
-> On Tue, Oct 6, 2020 at 6:34 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Oct 06, 2020 at 12:49:56PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Oct 06, 2020 at 11:22:14AM +0200, Daniel Vetter wrote:
-> > > >
-> > > > For reinstanting the pages you need:
-> > > >
-> > > > - dma_resv_lock, this prevents anyone else from issuing new moves or
-> > > >   anything like that
-> > > > - dma_resv_get_excl + dma_fence_wait to wait for any pending moves to
-> > > >   finish. gpus generally don't wait on the cpu, but block the dependent
-> > > >   dma operations from being scheduled until that fence fired. But for rdma
-> > > >   odp I think you need the cpu wait in your worker here.
-> > >
-> > > Reinstating is not really any different that the first insertion, so
-> > > then all this should be needed in every case?
-> >
-> > Yes. Without move_notify we pin the dma-buf into system memory, so it
-> > can't move, and hence you also don't have to chase it. But with
-> > move_notify this all becomes possible.
+> Subject: [PATCH 07/11] RDMA: Check flags during create_cq
 > 
-> I just realized I got it wrong compared to gpus. I needs to be:
-> 1. dma_resv_lock
-> 2. dma_buf_map_attachment, which might have to move the buffer around
-> again if you're unlucky
-> 3. wait for the exclusive fence
-> 4. put sgt into your rdma ptes
-> 5 dma_resv_unlock
+> Each driver should check that the CQ attrs is supported. Unfortuantely when flags
+> was added to the CQ attrs the drivers were not updated, uverbs_ex_cmd_mask
+> was used to block it. This was missed when create CQ was converted to ioctl, so
+> non-zero flags could have been passed into drivers.
 > 
-> Maybe also something we should document somewhere for dynamic buffers.
-> Assuming I got it right this time around ... Christian?
+> Check that flags is zero in all drivers that don't use it, remove
+> IB_USER_VERBS_EX_CMD_CREATE_CQ from uverbs_ex_cmd_mask.
+> 
+> Fixes: 41b2a71fc848 ("IB/uverbs: Move ioctl path of create_cq and destroy_cq to
+> a new file")
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/infiniband/core/device.c             | 1 +
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c     | 3 +++
+>  drivers/infiniband/hw/cxgb4/cq.c             | 2 +-
+>  drivers/infiniband/hw/efa/efa_verbs.c        | 3 +++
+>  drivers/infiniband/hw/hns/hns_roce_cq.c      | 3 +++
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c    | 3 +++
+>  drivers/infiniband/hw/mlx4/main.c            | 1 -
+>  drivers/infiniband/hw/mlx5/main.c            | 1 -
+>  drivers/infiniband/hw/mthca/mthca_provider.c | 2 +-
+> drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  | 2 +-
+>  drivers/infiniband/hw/qedr/verbs.c           | 3 +++
+>  drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 2 +-
+> drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c | 3 +++
+>  drivers/infiniband/sw/rdmavt/cq.c            | 2 +-
+>  drivers/infiniband/sw/rxe/rxe_verbs.c        | 2 +-
+>  drivers/infiniband/sw/siw/siw_verbs.c        | 3 +++
+>  16 files changed, 28 insertions(+), 8 deletions(-)
+> 
 
-#3 between 2 and 4 seems strange - I would expect once
-dma_buf_map_attachment() returns that the buffer can be placed in the
-ptes. It certianly can't be changed after the SGL is returned..
+[...]
 
-Feels like #2 should serialize all this internally? An API that
-returns invalidate data sometimes is dangerous :)
+> a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> index 26a61af2d3977f..4aade66ad2aea8 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> @@ -1107,6 +1107,9 @@ static int i40iw_create_cq(struct ib_cq *ibcq,
+>  	int err_code;
+>  	int entries = attr->cqe;
+> 
+> +	if (attr->flags)
+> +		return -EOPNOTSUPP;
+> +
 
-Jason
+I am slightly confused.
+So these flags are set for drivers that support the extended create CQ API?
+
+Shiraz
