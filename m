@@ -2,221 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CDD284B96
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 14:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B126284BEE
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 14:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgJFM03 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 08:26:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:63941 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbgJFM02 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:26:28 -0400
-IronPort-SDR: NKFUcWRqKT4FHSFOAYHKgHo+ovv8Akl8SB8YIGIUSEEemv76fQPwUwtnopVcd7rjZ9ZtKOF1g2
- De8M244y6PYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="228603566"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="228603566"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 05:26:27 -0700
-IronPort-SDR: Arhsz7auppsQivnSV5w/BF/fn1otcQqaStICIkvBm+N9J3eOdZpgugBDHzazx4dFeAF6+Is0xx
- ZDhLDTeqHOFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="343753012"
-Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2020 05:26:25 -0700
-Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kPm2z-0001Bx-2z; Tue, 06 Oct 2020 12:26:25 +0000
-Date:   Tue, 06 Oct 2020 20:25:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:hmm] BUILD SUCCESS 0c16d9635e3a51377e5815b9f8e14f497a4dbb42
-Message-ID: <5f7c6256.YCtdgn8B/oQu4eLU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726482AbgJFMqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 08:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgJFMqa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 08:46:30 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA097C061755
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 05:46:29 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b69so9812241qkg.8
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 05:46:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Oei6x3FYoQO8SNOZlW1qBYhs+2XgFUxEWsaHHrSu50E=;
+        b=dQI7Tnb383TS+eryKHtFnNf2Sp3QRLjOcoTwu9uIpDrjuHAKFNuKG5DBn6rOO+qiF2
+         RLVCbZ49bsvniuddK9uu+flnovGgp2dEPewMjUCc47IpkrPdfP4S9ufTrAIb1BlmLUFX
+         Hq2l38U0drl0WtlVXLpGwicgT7o/EnvCNhoYZwxQt6h/kzwKev0lypjA0JBFTt69bneM
+         6i2WNHCSG7uZXbMQH7qL4FhSkXnnOo+Q4T4BaxPDBQrzedJRFNxuajrAc2EmvV6rLMtJ
+         kp2UupXVUbLVb5tVnNcEao+WxjJc+AKhqhxp+kUCYZHgf7WVOt5VocrGDxMbtt9+E6fd
+         Tc+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oei6x3FYoQO8SNOZlW1qBYhs+2XgFUxEWsaHHrSu50E=;
+        b=WrGcpmVxE9pdcf5aaup64Fyo3ebUduQb8adRy5mKFtiwrVPcsp5XDsMo+A33C2y2IW
+         9PIqjcfxsNNgk/k7+q59t4rC1D26Tqgf+K828S08B0vvEtlH6si/sLMkqKb3K5vor0RK
+         BHA3no8ZpR69R/iw/zR4i2UoIqMbT83kPciWyIwqknZtLl8boLrcugrAXbdgbNUX9Yi9
+         WCsyh5asiSht/I1y+KtgAeEMm3URnKab9ZSn80DhxD8SU97PW2q9x93fqZxgwLUs4gr2
+         wRRVy13rhEvn6/zvFnUEcnBYsPHlrAepP7+MYzU3DpfSYvK6TZ71f7lCjhRYWpGi2j7+
+         KQKQ==
+X-Gm-Message-State: AOAM531UaSLUKQmbGEwCeNDnmtxDT+ThDOqR88W2oEyvI7gP6mq6g5G0
+        UvsgbvS4vCgbYTT9Ct9SJqtPyw==
+X-Google-Smtp-Source: ABdhPJxNOcrFAfAWzHcXVhP7DDtF2Ic5Rt7RroDeaVCSX8uE4/H7xiOevBPj5a5eNwr0UpeMSkUcHA==
+X-Received: by 2002:a37:4854:: with SMTP id v81mr461696qka.20.1601988388938;
+        Tue, 06 Oct 2020 05:46:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id o4sm2484865qko.120.2020.10.06.05.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 05:46:28 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kPmMN-000WQj-Kt; Tue, 06 Oct 2020 09:46:27 -0300
+Date:   Tue, 6 Oct 2020 09:46:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+Message-ID: <20201006124627.GH5177@ziepe.ca>
+References: <20200929174037.GW9916@ziepe.ca>
+ <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
+ <20201002140445.GJ9916@ziepe.ca>
+ <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
+ <20201005131611.GR9916@ziepe.ca>
+ <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+ <20201005142554.GS9916@ziepe.ca>
+ <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
+ <20201005154548.GT9916@ziepe.ca>
+ <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  hmm
-branch HEAD: 0c16d9635e3a51377e5815b9f8e14f497a4dbb42  RDMA/umem: Move to allocate SG table from pages
+On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
 
-elapsed time: 724m
+> > > > Kernel modules should not be doing networking unless commanded to by
+> > > > userspace.
+> > > 
+> > > It is still not clear why this is an issue with RDMA
+> > > connection, but not with general kernel socket.  It is
+> > > not random networking.  There is a purpose.
+> > 
+> > It is a problem with sockets too, how do the socket users trigger
+> > their socket usages? AFAIK all cases originate with userspace
+> 
+> A user starts a namespace.  The module is loaded for servicing
+> requests.  The module starts a listener.  The user deletes
+> the namespace.  This scenario will have everything cleaned up
+> properly if the listener is a kernel socket.  This is not the
+> case with RDMA.
 
-configs tested: 158
-configs skipped: 2
+Please point to reputable code in upstream doing this
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           ip28_defconfig
-sh                   sh7724_generic_defconfig
-m68k                          atari_defconfig
-arc                            hsdk_defconfig
-mips                        qi_lb60_defconfig
-mips                      maltaaprp_defconfig
-sh                                  defconfig
-arm                             mxs_defconfig
-mips                          malta_defconfig
-arm                         assabet_defconfig
-arm                          collie_defconfig
-mips                           ci20_defconfig
-mips                           rs90_defconfig
-arm                          exynos_defconfig
-mips                          ath79_defconfig
-arm                          pxa168_defconfig
-arm                         cm_x300_defconfig
-powerpc                      pasemi_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     stx_gp3_defconfig
-sh                           se7721_defconfig
-mips                         bigsur_defconfig
-arm                           stm32_defconfig
-arm                          iop32x_defconfig
-arm                          tango4_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        magician_defconfig
-alpha                               defconfig
-arm                         lpc32xx_defconfig
-m68k                          amiga_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                     tqm8555_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-sh                        apsh4ad0a_defconfig
-mips                        vocore2_defconfig
-c6x                        evmc6474_defconfig
-openrisc                    or1ksim_defconfig
-sh                          lboxre2_defconfig
-riscv                               defconfig
-sh                         apsh4a3a_defconfig
-arm                        multi_v5_defconfig
-xtensa                           alldefconfig
-powerpc                         ps3_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                          rsk7269_defconfig
-m68k                            mac_defconfig
-powerpc                     tqm8540_defconfig
-h8300                            alldefconfig
-powerpc                      chrp32_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                         palmz72_defconfig
-arm                          ixp4xx_defconfig
-arm                       mainstone_defconfig
-arm                         bcm2835_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                        sh7763rdp_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-mips                        jmr3927_defconfig
-arm                         vf610m4_defconfig
-mips                          ath25_defconfig
-powerpc                 canyonlands_defconfig
-arm                             pxa_defconfig
-sh                         ap325rxa_defconfig
-powerpc                     powernv_defconfig
-parisc                              defconfig
-sh                               allmodconfig
-mips                     loongson1c_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                          g5_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     sequoia_defconfig
-arm                            dove_defconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201006
-x86_64               randconfig-a002-20201006
-x86_64               randconfig-a001-20201006
-x86_64               randconfig-a005-20201006
-x86_64               randconfig-a003-20201006
-x86_64               randconfig-a006-20201006
-i386                 randconfig-a006-20201005
-i386                 randconfig-a005-20201005
-i386                 randconfig-a001-20201005
-i386                 randconfig-a004-20201005
-i386                 randconfig-a003-20201005
-i386                 randconfig-a002-20201005
-i386                 randconfig-a006-20201006
-i386                 randconfig-a005-20201006
-i386                 randconfig-a001-20201006
-i386                 randconfig-a004-20201006
-i386                 randconfig-a003-20201006
-i386                 randconfig-a002-20201006
-x86_64               randconfig-a012-20201005
-x86_64               randconfig-a015-20201005
-x86_64               randconfig-a014-20201005
-x86_64               randconfig-a013-20201005
-x86_64               randconfig-a011-20201005
-x86_64               randconfig-a016-20201005
-i386                 randconfig-a014-20201005
-i386                 randconfig-a015-20201005
-i386                 randconfig-a013-20201005
-i386                 randconfig-a016-20201005
-i386                 randconfig-a011-20201005
-i386                 randconfig-a012-20201005
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201005
-x86_64               randconfig-a002-20201005
-x86_64               randconfig-a001-20201005
-x86_64               randconfig-a003-20201005
-x86_64               randconfig-a005-20201005
-x86_64               randconfig-a006-20201005
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
