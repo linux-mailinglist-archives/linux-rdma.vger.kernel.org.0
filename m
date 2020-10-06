@@ -2,97 +2,240 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B126284BEE
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 14:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB64B284C39
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 15:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgJFMqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 08:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgJFMqa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 08:46:30 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA097C061755
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 05:46:29 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b69so9812241qkg.8
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 05:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Oei6x3FYoQO8SNOZlW1qBYhs+2XgFUxEWsaHHrSu50E=;
-        b=dQI7Tnb383TS+eryKHtFnNf2Sp3QRLjOcoTwu9uIpDrjuHAKFNuKG5DBn6rOO+qiF2
-         RLVCbZ49bsvniuddK9uu+flnovGgp2dEPewMjUCc47IpkrPdfP4S9ufTrAIb1BlmLUFX
-         Hq2l38U0drl0WtlVXLpGwicgT7o/EnvCNhoYZwxQt6h/kzwKev0lypjA0JBFTt69bneM
-         6i2WNHCSG7uZXbMQH7qL4FhSkXnnOo+Q4T4BaxPDBQrzedJRFNxuajrAc2EmvV6rLMtJ
-         kp2UupXVUbLVb5tVnNcEao+WxjJc+AKhqhxp+kUCYZHgf7WVOt5VocrGDxMbtt9+E6fd
-         Tc+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Oei6x3FYoQO8SNOZlW1qBYhs+2XgFUxEWsaHHrSu50E=;
-        b=WrGcpmVxE9pdcf5aaup64Fyo3ebUduQb8adRy5mKFtiwrVPcsp5XDsMo+A33C2y2IW
-         9PIqjcfxsNNgk/k7+q59t4rC1D26Tqgf+K828S08B0vvEtlH6si/sLMkqKb3K5vor0RK
-         BHA3no8ZpR69R/iw/zR4i2UoIqMbT83kPciWyIwqknZtLl8boLrcugrAXbdgbNUX9Yi9
-         WCsyh5asiSht/I1y+KtgAeEMm3URnKab9ZSn80DhxD8SU97PW2q9x93fqZxgwLUs4gr2
-         wRRVy13rhEvn6/zvFnUEcnBYsPHlrAepP7+MYzU3DpfSYvK6TZ71f7lCjhRYWpGi2j7+
-         KQKQ==
-X-Gm-Message-State: AOAM531UaSLUKQmbGEwCeNDnmtxDT+ThDOqR88W2oEyvI7gP6mq6g5G0
-        UvsgbvS4vCgbYTT9Ct9SJqtPyw==
-X-Google-Smtp-Source: ABdhPJxNOcrFAfAWzHcXVhP7DDtF2Ic5Rt7RroDeaVCSX8uE4/H7xiOevBPj5a5eNwr0UpeMSkUcHA==
-X-Received: by 2002:a37:4854:: with SMTP id v81mr461696qka.20.1601988388938;
-        Tue, 06 Oct 2020 05:46:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id o4sm2484865qko.120.2020.10.06.05.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 05:46:28 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPmMN-000WQj-Kt; Tue, 06 Oct 2020 09:46:27 -0300
-Date:   Tue, 6 Oct 2020 09:46:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-Message-ID: <20201006124627.GH5177@ziepe.ca>
-References: <20200929174037.GW9916@ziepe.ca>
- <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
- <20201002140445.GJ9916@ziepe.ca>
- <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
- <20201005131611.GR9916@ziepe.ca>
- <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
- <20201005142554.GS9916@ziepe.ca>
- <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
- <20201005154548.GT9916@ziepe.ca>
- <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+        id S1725943AbgJFNHm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 09:07:42 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45654 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgJFNHm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 09:07:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096D5feR190631;
+        Tue, 6 Oct 2020 13:07:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=z7gmEoADRt17dQboSr+Z/jgc+lb3/sPVCU5BQM8XUo8=;
+ b=xjFEwRd61HwHatDPaagxQj2MGrK2fnFCsnBLWwepf1ZebQZj+15OrfhXG9ederJXxKRo
+ v8vVuoDV0ItqWpqYEGNb19asuKr/Zu2rMpEKFubKjOyY2mI454i/0DM/TSQvg+RSMq1M
+ IXXz94PI0eabvFET6qle4CdpiYenz40glOvlfVRMhisWWWtjDYWU9yr0mbXHOnzRsARl
+ vvRTqcjuHWcNcO0qIT9n1DwTzjvRRPpJs6klr9faCCautLu5KN6lIofu8Q783WNSN4/F
+ 8fC6P+cTI05DHIaSj9XuXgOTLNc562llCmlETBnH8Lqy/DtMkvNfL35xOk4kAnLBmG1K cA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33xhxmutnw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 06 Oct 2020 13:07:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096D1DQO116930;
+        Tue, 6 Oct 2020 13:07:37 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33yyjfhfhh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 13:07:37 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 096D7alf019567;
+        Tue, 6 Oct 2020 13:07:36 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Oct 2020 06:07:36 -0700
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH for-next] IB/mlx4: Convert rej_tmout radix-tree to XArray
+Date:   Tue,  6 Oct 2020 15:07:14 +0200
+Message-Id: <1601989634-4595-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060084
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
+Fixes: b7d8e64fa9db ("IB/mlx4: Add support for REJ due to timeout")
 
-> > > > Kernel modules should not be doing networking unless commanded to by
-> > > > userspace.
-> > > 
-> > > It is still not clear why this is an issue with RDMA
-> > > connection, but not with general kernel socket.  It is
-> > > not random networking.  There is a purpose.
-> > 
-> > It is a problem with sockets too, how do the socket users trigger
-> > their socket usages? AFAIK all cases originate with userspace
-> 
-> A user starts a namespace.  The module is loaded for servicing
-> requests.  The module starts a listener.  The user deletes
-> the namespace.  This scenario will have everything cleaned up
-> properly if the listener is a kernel socket.  This is not the
-> case with RDMA.
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/hw/mlx4/cm.c      | 73 +++++++++++++++---------------------
+ drivers/infiniband/hw/mlx4/mlx4_ib.h |  4 +-
+ 2 files changed, 32 insertions(+), 45 deletions(-)
 
-Please point to reputable code in upstream doing this
+diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
+index 0ce4b5a..6c7986b 100644
+--- a/drivers/infiniband/hw/mlx4/cm.c
++++ b/drivers/infiniband/hw/mlx4/cm.c
+@@ -58,9 +58,7 @@ struct rej_tmout_entry {
+ 	int slave;
+ 	u32 rem_pv_cm_id;
+ 	struct delayed_work timeout;
+-	struct radix_tree_root *rej_tmout_root;
+-	/* Points to the mutex protecting this radix-tree */
+-	struct mutex *lock;
++	struct xarray *xa_rej_tmout;
+ };
+ 
+ struct cm_generic_msg {
+@@ -350,9 +348,7 @@ static void rej_tmout_timeout(struct work_struct *work)
+ 	struct rej_tmout_entry *item = container_of(delay, struct rej_tmout_entry, timeout);
+ 	struct rej_tmout_entry *deleted;
+ 
+-	mutex_lock(item->lock);
+-	deleted = radix_tree_delete_item(item->rej_tmout_root, item->rem_pv_cm_id, NULL);
+-	mutex_unlock(item->lock);
++	deleted = xa_cmpxchg(item->xa_rej_tmout, item->rem_pv_cm_id, item, NULL, 0);
+ 
+ 	if (deleted != item)
+ 		pr_debug("deleted(%p) != item(%p)\n", deleted, item);
+@@ -363,14 +359,13 @@ static void rej_tmout_timeout(struct work_struct *work)
+ static int alloc_rej_tmout(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id, int slave)
+ {
+ 	struct rej_tmout_entry *item;
+-	int sts;
++	struct rej_tmout_entry *old;
++
++	item = xa_load(&sriov->xa_rej_tmout, (unsigned long)rem_pv_cm_id);
+ 
+-	mutex_lock(&sriov->rej_tmout_lock);
+-	item = radix_tree_lookup(&sriov->rej_tmout_root, (unsigned long)rem_pv_cm_id);
+-	mutex_unlock(&sriov->rej_tmout_lock);
+ 	if (item) {
+-		if (IS_ERR(item))
+-			return PTR_ERR(item);
++		if (xa_err(item))
++			return xa_err(item);
+ 		/* If a retry, adjust delayed work */
+ 		mod_delayed_work(system_wq, &item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
+ 		return 0;
+@@ -383,36 +378,30 @@ static int alloc_rej_tmout(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id, int sl
+ 	INIT_DELAYED_WORK(&item->timeout, rej_tmout_timeout);
+ 	item->slave = slave;
+ 	item->rem_pv_cm_id = rem_pv_cm_id;
+-	item->rej_tmout_root = &sriov->rej_tmout_root;
+-	item->lock = &sriov->rej_tmout_lock;
++	item->xa_rej_tmout = &sriov->xa_rej_tmout;
+ 
+-	mutex_lock(&sriov->rej_tmout_lock);
+-	sts = radix_tree_insert(&sriov->rej_tmout_root, (unsigned long)rem_pv_cm_id, item);
+-	mutex_unlock(&sriov->rej_tmout_lock);
+-	if (sts)
+-		goto err_insert;
++	old = xa_cmpxchg(&sriov->xa_rej_tmout, (unsigned long)rem_pv_cm_id, NULL, item, GFP_KERNEL);
++	if (old) {
++		pr_debug("Non-null old entry (%p) or error (%d) when inserting\n", old, xa_err(old));
++		kfree(item);
++		return xa_err(old);
++	}
+ 
+ 	schedule_delayed_work(&item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
+ 
+ 	return 0;
+-
+-err_insert:
+-	kfree(item);
+-	return sts;
+ }
+ 
+ static int lookup_rej_tmout_slave(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id)
+ {
+ 	struct rej_tmout_entry *item;
+ 
+-	mutex_lock(&sriov->rej_tmout_lock);
+-	item = radix_tree_lookup(&sriov->rej_tmout_root, (unsigned long)rem_pv_cm_id);
+-	mutex_unlock(&sriov->rej_tmout_lock);
++	item = xa_load(&sriov->xa_rej_tmout, (unsigned long)rem_pv_cm_id);
+ 
+-	if (!item || IS_ERR(item)) {
++	if (!item || xa_err(item)) {
+ 		pr_debug("Could not find slave. rem_pv_cm_id 0x%x error: %d\n",
+-			 rem_pv_cm_id, (int)PTR_ERR(item));
+-		return !item ? -ENOENT : PTR_ERR(item);
++			 rem_pv_cm_id, xa_err(item));
++		return !item ? -ENOENT : xa_err(item);
+ 	}
+ 
+ 	return item->slave;
+@@ -483,34 +472,34 @@ void mlx4_ib_cm_paravirt_init(struct mlx4_ib_dev *dev)
+ 	INIT_LIST_HEAD(&dev->sriov.cm_list);
+ 	dev->sriov.sl_id_map = RB_ROOT;
+ 	xa_init_flags(&dev->sriov.pv_id_table, XA_FLAGS_ALLOC);
+-	mutex_init(&dev->sriov.rej_tmout_lock);
+-	INIT_RADIX_TREE(&dev->sriov.rej_tmout_root, GFP_KERNEL);
++	xa_init(&dev->sriov.xa_rej_tmout);
+ }
+ 
+-static void rej_tmout_tree_cleanup(struct mlx4_ib_sriov *sriov, int slave)
++static void rej_tmout_xa_cleanup(struct mlx4_ib_sriov *sriov, int slave)
+ {
+-	struct radix_tree_iter iter;
++	struct rej_tmout_entry *item;
+ 	bool flush_needed = false;
+-	__rcu void **slot;
++	unsigned long id;
+ 	int cnt = 0;
+ 
+-	mutex_lock(&sriov->rej_tmout_lock);
+-	radix_tree_for_each_slot(slot, &sriov->rej_tmout_root, &iter, 0) {
+-		struct rej_tmout_entry *item = *slot;
+-
++	xa_lock(&sriov->xa_rej_tmout);
++	xa_for_each(&sriov->xa_rej_tmout, id, item) {
+ 		if (slave < 0 || slave == item->slave) {
+ 			mod_delayed_work(system_wq, &item->timeout, 0);
+ 			flush_needed = true;
+ 			++cnt;
+ 		}
+ 	}
+-	mutex_unlock(&sriov->rej_tmout_lock);
++	xa_unlock(&sriov->xa_rej_tmout);
+ 
+ 	if (flush_needed) {
+ 		flush_scheduled_work();
+-		pr_debug("Deleted %d entries in radix_tree for slave %d during cleanup\n",
+-			 slave, cnt);
++		pr_debug("Deleted %d entries in xarray for slave %d during cleanup\n",
++			 cnt, slave);
+ 	}
++
++	if (slave < 0)
++		WARN_ON(!xa_empty(&sriov->xa_rej_tmout));
+ }
+ 
+ /* slave = -1 ==> all slaves */
+@@ -581,5 +570,5 @@ void mlx4_ib_cm_paravirt_clean(struct mlx4_ib_dev *dev, int slave)
+ 		kfree(map);
+ 	}
+ 
+-	rej_tmout_tree_cleanup(sriov, slave);
++	rej_tmout_xa_cleanup(sriov, slave);
+ }
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 2ab83ed..d8add5f 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -495,9 +495,7 @@ struct mlx4_ib_sriov {
+ 	spinlock_t id_map_lock;
+ 	struct rb_root sl_id_map;
+ 	struct list_head cm_list;
+-	/* Protects the radix-tree */
+-	struct mutex rej_tmout_lock;
+-	struct radix_tree_root rej_tmout_root;
++	struct xarray xa_rej_tmout;
+ };
+ 
+ struct gid_cache_context {
+-- 
+1.8.3.1
 
-Jason
