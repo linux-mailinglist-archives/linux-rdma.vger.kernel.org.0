@@ -2,205 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D50284941
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 11:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B70B284973
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 11:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgJFJWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 05:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFJWS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 05:22:18 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399BFC061755
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 02:22:18 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e2so2305508wme.1
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 02:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vqWUXovxlDHnIIpmXJAIMDOTP1UnC02nidaQuwXQABQ=;
-        b=PQ3i7/bLhuxIrjSbCE7Rdi9k9GTyfAwaiee+Xz50N529u+tbf3WeMch/34eM+CuE3s
-         9XieZESusb3rMVRbejugAeoQldsKtKbz3JChdScEUD4xK2fpxSsmiCvUzPdP+bcgG92x
-         9REbf4vUVu8Ndv7T7F/rGQkG5hHU8EOPjxTFs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vqWUXovxlDHnIIpmXJAIMDOTP1UnC02nidaQuwXQABQ=;
-        b=aIWyKE2fgaziVEGGwmELYC804Je2jlOZUAa5wPuI/5ePEh7GgrqTWjivLzi1ZEuRPK
-         yVOk28y7sXDZRHPNlWwVXlFbbfAk8w8yizNOBMimn9KGE1mFdsCUHhRZobgoXe3DcZOn
-         4adZkmWiW2hGNJ0bI0yMmgod9Kja/YUSRgLTZ89TR6riyeW1nnO+/vZA6Z/rW8LWnk9m
-         VsgWJ+2Vi9d0fmdt7DB4O0PR2keIc1kFGEObhUWbKTQy6b/5ODWT3erEaZgojhqbf3dJ
-         +u6P3ffelROlwwgB5TssO8zE+FY4i608bdZv27XWOYh6DzgsYcYv59SbTleMN1vl9NHb
-         ypPg==
-X-Gm-Message-State: AOAM531Wj7oyoDpGrNUtvDROylfbkIJuDC3NIFFVAVqkRJbX28jGivzM
-        u3UKwxAdGnmfiiARLoSUUnwrC+T3UPGXreql
-X-Google-Smtp-Source: ABdhPJwH5xsVL8Jtme2Bw6QxhXZvles3p74eY9ZX9xMw9WwjjJK57X6/dPcvGE0+clmE4fn5xVuKUw==
-X-Received: by 2002:a1c:bb84:: with SMTP id l126mr3972820wmf.159.1601976136837;
-        Tue, 06 Oct 2020 02:22:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m14sm57086wro.43.2020.10.06.02.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 02:22:15 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:22:14 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201006092214.GX438822@phenom.ffwll.local>
-References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
- <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
- <20201005131302.GQ9916@ziepe.ca>
- <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
+        id S1725891AbgJFJgo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 05:36:44 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46574 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgJFJgn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 05:36:43 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0969Tb6R008216;
+        Tue, 6 Oct 2020 09:36:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8n1+ecsESoWr9ySE4tP6FMIllrRLEjDpu/WvsOpQasU=;
+ b=f3hkVf1cVkeR/X98qzc+Nonx4pNx3OoHzyvKdJyBObSvaiLTHbq4xyB/hnkFdedUm958
+ R+zFVpOOfQyj6uADZHTaAlaEpHSjRclyh0ZPXaDFE21MLnme52dUxUxeBYlKuflB0j/O
+ 69tnzWsljvJO76ensmxcZaNA0fEQcq2TPhyBztwRb1RCK767/u/53TY8HQ0VIMLozDpE
+ Lk/tvRhyqNhkpTauoI8czD30m8WKnorh9KaSYiNHhLhfvK8LCikSAPDpEb0Jf9VN4cJG
+ WjLObkZ9pEvtxVGan+8ISwIGCqAAmSEjC+Cl8Fpyj9g/p+eOGpdsc0bfFWzsoEsB5XCe 6Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33xhxmtxj3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 06 Oct 2020 09:36:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0969VTTo193429;
+        Tue, 6 Oct 2020 09:36:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33y2vmr83b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 09:36:41 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0969aeap015360;
+        Tue, 6 Oct 2020 09:36:40 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Oct 2020 02:36:39 -0700
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+References: <d0459663-e243-c114-b9d1-9cf47c8b71e0@oracle.com>
+ <fd402e39-489e-abfd-a3a7-77092f25ced8@oracle.com>
+ <20200929174037.GW9916@ziepe.ca>
+ <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
+ <20201002140445.GJ9916@ziepe.ca>
+ <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
+ <20201005131611.GR9916@ziepe.ca>
+ <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+ <20201005142554.GS9916@ziepe.ca>
+ <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
+ <20201005154548.GT9916@ziepe.ca>
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+Date:   Tue, 6 Oct 2020 17:36:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201005154548.GT9916@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060060
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060060
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 04:18:11PM +0000, Xiong, Jianxin wrote:
-> > -----Original Message-----
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Monday, October 05, 2020 6:13 AM
-> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Leon Romanovsky
-> > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koenig <christian.koenig@amd.com>; Vetter, Daniel
-> > <daniel.vetter@intel.com>
-> > Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user memory region
-> > 
-> > On Sun, Oct 04, 2020 at 12:12:28PM -0700, Jianxin Xiong wrote:
-> > > Dma-buf is a standard cross-driver buffer sharing mechanism that can
-> > > be used to support peer-to-peer access from RDMA devices.
-> > >
-> > > Device memory exported via dma-buf is associated with a file descriptor.
-> > > This is passed to the user space as a property associated with the
-> > > buffer allocation. When the buffer is registered as a memory region,
-> > > the file descriptor is passed to the RDMA driver along with other
-> > > parameters.
-> > >
-> > > Implement the common code for importing dma-buf object and mapping
-> > > dma-buf pages.
-> > >
-> > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> > > Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> > > Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> > > ---
-> > >  drivers/infiniband/core/Makefile      |   2 +-
-> > >  drivers/infiniband/core/umem.c        |   4 +
-> > >  drivers/infiniband/core/umem_dmabuf.c | 291
-> > > ++++++++++++++++++++++++++++++++++
-> > >  drivers/infiniband/core/umem_dmabuf.h |  14 ++
-> > >  drivers/infiniband/core/umem_odp.c    |  12 ++
-> > >  include/rdma/ib_umem.h                |  19 ++-
-> > >  6 files changed, 340 insertions(+), 2 deletions(-)  create mode
-> > > 100644 drivers/infiniband/core/umem_dmabuf.c
-> > >  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
-> > 
-> > I think this is using ODP too literally, dmabuf isn't going to need fine grained page faults, and I'm not sure this locking scheme is OK - ODP is
-> > horrifically complicated.
-> > 
+On 10/5/20 11:45 PM, Jason Gunthorpe wrote:
+> On Mon, Oct 05, 2020 at 11:02:18PM +0800, Ka-Cheong Poon wrote:
+>> On 10/5/20 10:25 PM, Jason Gunthorpe wrote:
+>>> On Mon, Oct 05, 2020 at 09:57:47PM +0800, Ka-Cheong Poon wrote:
+>>>>>> It is a kernel module.  Which FD are you referring to?  It is
+>>>>>> unclear why a kernel module must associate itself with a user
+>>>>>> space FD.  Is there a particular reason that rdma_create_id()
+>>>>>> needs to behave differently than sock_create_kern() in this
+>>>>>> regard?
+>>>>>
+>>>>> Somehow the kernel module has to be commanded to use this namespace,
+>>>>> and generally I expect that command to be connected to FD.
+>>>>
+>>>>
+>>>> It is an unnecessary restriction on what a kernel module
+>>>> can do.  Is it a problem if a kernel module initiates its
+>>>> own RDMA connection for doing various stuff in a namespace?
+>>>
+>>> Yes, someone has to apply policy to authorize this. Kernel modules
+>>> randomly running around using security objects is not OK.
+>>
+>> The policy is to allow this.  It is not random stuff.
+>> Can the RDMA subsystem support it?
 > 
-> > If this is the approach then I think we should make dmabuf its own stand alone API, reg_user_mr_dmabuf()
-> 
-> That's the original approach in the first version. We can go back there.
-> 
-> > 
-> > The implementation in mlx5 will be much more understandable, it would just do dma_buf_dynamic_attach() and program the XLT exactly
-> > the same as a normal umem.
-> > 
-> > The move_notify() simply zap's the XLT and triggers a work to reload it after the move. Locking is provided by the dma_resv_lock. Only a
-> > small disruption to the page fault handler is needed.
-> > 
-> 
-> We considered such scheme but didn't go that way due to the lack of
-> notification when the move is done and thus the work wouldn't know when
-> it can reload.
-> 
-> Now I think it again, we could probably signal the reload in the page fault handler. 
+> allow everything is not a policy
 
-For reinstanting the pages you need:
 
-- dma_resv_lock, this prevents anyone else from issuing new moves or
-  anything like that
-- dma_resv_get_excl + dma_fence_wait to wait for any pending moves to
-  finish. gpus generally don't wait on the cpu, but block the dependent
-  dma operations from being scheduled until that fence fired. But for rdma
-  odp I think you need the cpu wait in your worker here.
-- get the new sg list, write it into your ptes
-- dma_resv_unlock to make sure you're not racing with a concurrent
-  move_notify
+It is not allowing everything.  It is the simple case that
+a kernel module can have a listener without the namespace
+issue.  Kernel socket does not have this problem.
 
-You can also grab multiple dma_resv_lock in atomically, but I think the
-odp rdma model doesn't require that (gpus need that).
 
-Note that you're allowed to allocate memory with GFP_KERNEL while holding
-dma_resv_lock, so this shouldn't impose any issues. You are otoh not
-allowed to cause userspace faults (so no gup/pup or copy*user with
-faulting enabled). So all in all this shouldn't be any worse that calling
-pup for normal umem.
+>>> Kernel modules should not be doing networking unless commanded to by
+>>> userspace.
+>>
+>> It is still not clear why this is an issue with RDMA
+>> connection, but not with general kernel socket.  It is
+>> not random networking.  There is a purpose.
+> 
+> It is a problem with sockets too, how do the socket users trigger
+> their socket usages? AFAIK all cases originate with userspace
 
-Unlike mmu notifier the caller holds dma_resv_lock already for you around
-the move_notify callback, so you shouldn't need any additional locking in
-there (aside from what you need to zap the ptes and flush hw tlbs).
 
-Cheers, Daniel
+A user starts a namespace.  The module is loaded for servicing
+requests.  The module starts a listener.  The user deletes
+the namespace.  This scenario will have everything cleaned up
+properly if the listener is a kernel socket.  This is not the
+case with RDMA.
 
+
+>> So if the reason of the current rdma_create_id() behavior
+>> is that there is no such user, I am adding one.  It should
+>> be clear that this difference between kernel socket and
+>> rdma_create_id() causes a problem in namespace handling.
 > 
-> > > +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> > > +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
-> > > +				     DMA_BIDIRECTIONAL);
-> > > +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> > 
-> > This doesn't look right, this lock has to be held up until the HW is programmed
-> 
-> The mapping remains valid until being invalidated again. There is a sequence number checking before programming the HW. 
-> 
-> > 
-> > The use of atomic looks probably wrong as well.
-> 
-> Do you mean umem_dmabuf->notifier_seq? Could you elaborate the concern?
-> 
-> > 
-> > > +	k = 0;
-> > > +	total_pages = ib_umem_odp_num_pages(umem_odp);
-> > > +	for_each_sg(umem->sg_head.sgl, sg, umem->sg_head.nents, j) {
-> > > +		addr = sg_dma_address(sg);
-> > > +		pages = sg_dma_len(sg) >> page_shift;
-> > > +		while (pages > 0 && k < total_pages) {
-> > > +			umem_odp->dma_list[k++] = addr | access_mask;
-> > > +			umem_odp->npages++;
-> > > +			addr += page_size;
-> > > +			pages--;
-> > 
-> > This isn't fragmenting the sg into a page list properly, won't work for unaligned things
-> 
-> I thought the addresses are aligned, but will add explicit alignment here.
-> 
-> > 
-> > And really we don't need the dma_list for this case, with a fixed whole mapping DMA SGL a normal umem sgl is OK and the normal umem
-> > XLT programming in mlx5 is fine.
-> 
-> The dma_list is used by both "polulate_mtt()" and "mlx5_ib_invalidate_range", which are used for XLT programming and invalidating (zapping), respectively.
-> 
-> > 
-> > Jason
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> It would be helpful to understand how that works, as I've said I don't
+> think a kernel module should open listening sockets/cm_ids on every
+> namespace without being told to do this.
+
+
+The issue is not about starting a listener.  The issue is on
+namespace deletion.
+
+
+
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+K. Poon
+ka-cheong.poon@oracle.com
+
+
