@@ -2,68 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF2B284B17
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 13:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E55284B49
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 14:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgJFLrE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 07:47:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41999 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJFLrD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 07:47:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kPlQq-0003t1-GA; Tue, 06 Oct 2020 11:47:00 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        id S1726329AbgJFMFG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 08:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgJFMFG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 08:05:06 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008FEC061755
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 05:05:05 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id y198so9963804qka.0
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 05:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J46uYoi137y1aPiibh1zaw5SLjEoUu3ij2cH8Ls1pK8=;
+        b=MqzM9/0aO3hZJkXsDYpwnQHRNlGU6DU9bj80N12Dz4Y9QrbAOe1TKDelHVophCI0KW
+         nUU/44DAlG7wtz0GxE657/nr0lEm3tFjNO2JBOWIghLnFqjBU6uMdtIfJgDAFrYKUnld
+         79uAUt4i6XePad6fKg7tpW21Vh6/Ke/i4q1kB8htgzA7wFm5llqHHvt+nqRln67+gMxS
+         JxJWhYwzJrhKIV0wfsq4CmWIJEjZ2ppBzGOA/hXMpsa40irvQ6JayU9+z6BrTsjAtFeI
+         wsmK/er7kzc0yTolRISH8hpZjeUd4DSautXaETPJ0/qcBZLd7GkNuI8PzZt3XdPum+I/
+         SGQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J46uYoi137y1aPiibh1zaw5SLjEoUu3ij2cH8Ls1pK8=;
+        b=D63gL+njr4Rg/mGmpDZIGYhHMAplEfOyHiHIDVQE/Uz4kHOozDLUMtvK3k5FdqsfS0
+         dhKiPhpnartsa48pgjxBO6R3WQqpZvz5KK9CTedwm7bCnOd5zmImj2xwiF2t0bb+0oW1
+         atoUfp25fVxuyWNwFXG0S1Cv4y9Duc7ioKTaKAaBPxhFVyzX9Zmi7m7xI1gj4WilyoBE
+         VDprT75kodidxm68YAJzshC1tW+gHKA2T4/2Sn9AAS21MYPJlQb92a96tS8Xv/55wvHp
+         5JdrL1wmd/aD6aEti/0aPNcDOos26/Jciosf7nVbJOhQhv5cLHDNgehK9AHDxPvwXdhH
+         X+Kg==
+X-Gm-Message-State: AOAM53179sO7rfnmVu0MUdLRrDFjMg2sR3BW/puWFUH8kAem20OgvB9j
+        Mv3lf3hqVSGD1ey2spOJdHU2hw==
+X-Google-Smtp-Source: ABdhPJyBYR5w4DmNjQ1fXG96tHkJkcRJZbGHu+z2scqyDROugMnucvTNKUFKSsoKSKSRpwvdCu7/Dw==
+X-Received: by 2002:a05:620a:2213:: with SMTP id m19mr4790838qkh.472.1601985905248;
+        Tue, 06 Oct 2020 05:05:05 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r187sm2163410qkc.63.2020.10.06.05.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 05:05:04 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kPliJ-000Vqk-6K; Tue, 06 Oct 2020 09:05:03 -0300
+Date:   Tue, 6 Oct 2020 09:05:03 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Somnath Kotur <somnath.kotur@broadcom.com>,
         Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eddie Wai <eddie.wai@broadcom.com>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] RDMA/bnxt_re: fix sizeof mismatch for allocation of pbl_tbl.
-Date:   Tue,  6 Oct 2020 12:47:00 +0100
-Message-Id: <20201006114700.537916-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: Re: [PATCH rdma-next v2] RDMA: Explicitly pass in the dma_device to
+ ib_register_device
+Message-ID: <20201006120503.GF5177@ziepe.ca>
+References: <20201006073229.2347811-1-leon@kernel.org>
+ <20201006073554.GA16894@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006073554.GA16894@infradead.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Oct 06, 2020 at 08:35:54AM +0100, Christoph Hellwig wrote:
+> > index f904bb34477a..2f117ac11c8b 100644
+> > +++ b/drivers/infiniband/sw/rdmavt/vt.c
+> > @@ -581,7 +581,11 @@ int rvt_register_device(struct rvt_dev_info *rdi)
+> >  	spin_lock_init(&rdi->n_cqs_lock);
+> > 
+> >  	/* DMA Operations */
+> > -	rdi->ibdev.dev.dma_ops = rdi->ibdev.dev.dma_ops ? : &dma_virt_ops;
+> > +	rdi->ibdev.dev.dma_ops = &dma_virt_ops;
+> > +	rdi->ibdev.dev.dma_parms = rdi->ibdev.dev.parent->dma_parms;
+> > +	rdi->ibdev.dev.dma_mask = rdi->ibdev.dev.parent->dma_mask;
+> 
+> This copies the dma_mask pointer, which seems completely bogus.
 
-An incorrect sizeof is being used, u64 * is not correct, it should be
-just u64 for a table of umem_pgs number of u64 items in the pbl_tbl.
-Use the idiom sizeof(*pbl_tbl) to get the object type without the need
-to explicitly use u64.
+And pointless since virt_ops doesn't do anything with it?
 
-Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index a0e8d93595d8..dc7de0863c77 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3856,7 +3856,7 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
- 	}
- 
- 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
--	pbl_tbl = kcalloc(umem_pgs, sizeof(u64 *), GFP_KERNEL);
-+	pbl_tbl = kcalloc(umem_pgs, sizeof(*pbl_tbl), GFP_KERNEL);
- 	if (!pbl_tbl) {
- 		rc = -ENOMEM;
- 		goto free_umem;
--- 
-2.27.0
-
+Jason
