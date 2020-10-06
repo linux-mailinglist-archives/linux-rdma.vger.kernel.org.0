@@ -2,110 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D90128482B
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 10:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D50284941
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 11:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgJFINk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 04:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFINk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:13:40 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52AC9206F7;
-        Tue,  6 Oct 2020 08:13:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601972019;
-        bh=LvzCbB0u7EWJxbO5tO/ifPKXIHNjm4ftrTis3L8nbZI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xIRPRFSxiK4nC/qpnnvjhRtdGl/J+seiE36psbef8l8Ewd96nw6pPCTHTud6fn53U
-         4gKF2C/BgUPAlaQF7SWdloxkeZUPBMsWVLFOXeFWxjboDfm69skavJGOeP+gxqw7ML
-         oS6uekkCp0pgnlSG2tnOORPM9aPR+uRNlyaazvfI=
-Date:   Tue, 6 Oct 2020 11:13:34 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <yanjunz@nvidia.com>
-Subject: Re: [PATCH rdma-next v2] RDMA: Explicitly pass in the dma_device to
- ib_register_device
-Message-ID: <20201006081334.GL1874917@unreal>
-References: <20201006073229.2347811-1-leon@kernel.org>
- <20201006073554.GA16894@infradead.org>
- <20201006075345.GK1874917@unreal>
- <20201006075749.GA23345@infradead.org>
+        id S1725939AbgJFJWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 05:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFJWS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Oct 2020 05:22:18 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399BFC061755
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Oct 2020 02:22:18 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e2so2305508wme.1
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Oct 2020 02:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vqWUXovxlDHnIIpmXJAIMDOTP1UnC02nidaQuwXQABQ=;
+        b=PQ3i7/bLhuxIrjSbCE7Rdi9k9GTyfAwaiee+Xz50N529u+tbf3WeMch/34eM+CuE3s
+         9XieZESusb3rMVRbejugAeoQldsKtKbz3JChdScEUD4xK2fpxSsmiCvUzPdP+bcgG92x
+         9REbf4vUVu8Ndv7T7F/rGQkG5hHU8EOPjxTFs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vqWUXovxlDHnIIpmXJAIMDOTP1UnC02nidaQuwXQABQ=;
+        b=aIWyKE2fgaziVEGGwmELYC804Je2jlOZUAa5wPuI/5ePEh7GgrqTWjivLzi1ZEuRPK
+         yVOk28y7sXDZRHPNlWwVXlFbbfAk8w8yizNOBMimn9KGE1mFdsCUHhRZobgoXe3DcZOn
+         4adZkmWiW2hGNJ0bI0yMmgod9Kja/YUSRgLTZ89TR6riyeW1nnO+/vZA6Z/rW8LWnk9m
+         VsgWJ+2Vi9d0fmdt7DB4O0PR2keIc1kFGEObhUWbKTQy6b/5ODWT3erEaZgojhqbf3dJ
+         +u6P3ffelROlwwgB5TssO8zE+FY4i608bdZv27XWOYh6DzgsYcYv59SbTleMN1vl9NHb
+         ypPg==
+X-Gm-Message-State: AOAM531Wj7oyoDpGrNUtvDROylfbkIJuDC3NIFFVAVqkRJbX28jGivzM
+        u3UKwxAdGnmfiiARLoSUUnwrC+T3UPGXreql
+X-Google-Smtp-Source: ABdhPJwH5xsVL8Jtme2Bw6QxhXZvles3p74eY9ZX9xMw9WwjjJK57X6/dPcvGE0+clmE4fn5xVuKUw==
+X-Received: by 2002:a1c:bb84:: with SMTP id l126mr3972820wmf.159.1601976136837;
+        Tue, 06 Oct 2020 02:22:16 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m14sm57086wro.43.2020.10.06.02.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 02:22:15 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:22:14 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Message-ID: <20201006092214.GX438822@phenom.ffwll.local>
+References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
+ <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+ <20201005131302.GQ9916@ziepe.ca>
+ <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006075749.GA23345@infradead.org>
+In-Reply-To: <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:57:49AM +0100, Christoph Hellwig wrote:
-> On Tue, Oct 06, 2020 at 10:53:45AM +0300, Leon Romanovsky wrote:
-> > On Tue, Oct 06, 2020 at 08:35:54AM +0100, Christoph Hellwig wrote:
-> > > > +	WARN_ON(!IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device);
-> > > > +	if (!dma_device) {
-> > > >  		/*
-> > > > -		 * The caller did not provide custom DMA operations. Use the
-> > > > -		 * DMA mapping operations of the parent device.
-> > > > +		 * If the caller does not provide a DMA capable device then the
-> > > > +		 * IB device will be used. In this case the caller should fully
-> > > > +		 * setup the ibdev for DMA. This usually means using
-> > > > +		 * dma_virt_ops.
-> > > >  		 */
-> > > > +		device->dev.dma_ops = &dma_virt_ops;
-> > > > +		dma_device = &device->dev;
+On Mon, Oct 05, 2020 at 04:18:11PM +0000, Xiong, Jianxin wrote:
+> > -----Original Message-----
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Monday, October 05, 2020 6:13 AM
+> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koenig <christian.koenig@amd.com>; Vetter, Daniel
+> > <daniel.vetter@intel.com>
+> > Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user memory region
+> > 
+> > On Sun, Oct 04, 2020 at 12:12:28PM -0700, Jianxin Xiong wrote:
+> > > Dma-buf is a standard cross-driver buffer sharing mechanism that can
+> > > be used to support peer-to-peer access from RDMA devices.
 > > >
-> > > The lack of the if probably means this will fail to link now when
-> > > CONFIG_DMA_VIRT_OPS is not set.  This also seems to not remove the
-> > > dma_virt_ops assignment in the callers.
-> >
-> > I expect to see this during driver development/testing. It is not worth
-> > to make if() case id device won't be operable.
->
-> Then you'll need an ifdef or whatever your preferred method is to
-> avoid the dma_virt_ops symbol reference for the !CONFIG_DMA_VIRT_OPS
-> case.
+> > > Device memory exported via dma-buf is associated with a file descriptor.
+> > > This is passed to the user space as a property associated with the
+> > > buffer allocation. When the buffer is registered as a memory region,
+> > > the file descriptor is passed to the RDMA driver along with other
+> > > parameters.
+> > >
+> > > Implement the common code for importing dma-buf object and mapping
+> > > dma-buf pages.
+> > >
+> > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> > > Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> > > Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> > > ---
+> > >  drivers/infiniband/core/Makefile      |   2 +-
+> > >  drivers/infiniband/core/umem.c        |   4 +
+> > >  drivers/infiniband/core/umem_dmabuf.c | 291
+> > > ++++++++++++++++++++++++++++++++++
+> > >  drivers/infiniband/core/umem_dmabuf.h |  14 ++
+> > >  drivers/infiniband/core/umem_odp.c    |  12 ++
+> > >  include/rdma/ib_umem.h                |  19 ++-
+> > >  6 files changed, 340 insertions(+), 2 deletions(-)  create mode
+> > > 100644 drivers/infiniband/core/umem_dmabuf.c
+> > >  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+> > 
+> > I think this is using ODP too literally, dmabuf isn't going to need fine grained page faults, and I'm not sure this locking scheme is OK - ODP is
+> > horrifically complicated.
+> > 
+> 
+> > If this is the approach then I think we should make dmabuf its own stand alone API, reg_user_mr_dmabuf()
+> 
+> That's the original approach in the first version. We can go back there.
+> 
+> > 
+> > The implementation in mlx5 will be much more understandable, it would just do dma_buf_dynamic_attach() and program the XLT exactly
+> > the same as a normal umem.
+> > 
+> > The move_notify() simply zap's the XLT and triggers a work to reload it after the move. Locking is provided by the dma_resv_lock. Only a
+> > small disruption to the page fault handler is needed.
+> > 
+> 
+> We considered such scheme but didn't go that way due to the lack of
+> notification when the move is done and thus the work wouldn't know when
+> it can reload.
+> 
+> Now I think it again, we could probably signal the reload in the page fault handler. 
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 882a7b389dc3..49d095f45216 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1181,7 +1181,7 @@ static void setup_dma_device(struct ib_device *device,
-                             struct device *dma_device)
- {
-        WARN_ON(!IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device);
--       if (!dma_device) {
-+       if (IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device) {
-                /*
-                 * If the caller does not provide a DMA capable device then the
-                 * IB device will be used. In this case the caller should fully
+For reinstanting the pages you need:
 
+- dma_resv_lock, this prevents anyone else from issuing new moves or
+  anything like that
+- dma_resv_get_excl + dma_fence_wait to wait for any pending moves to
+  finish. gpus generally don't wait on the cpu, but block the dependent
+  dma operations from being scheduled until that fence fired. But for rdma
+  odp I think you need the cpu wait in your worker here.
+- get the new sg list, write it into your ptes
+- dma_resv_unlock to make sure you're not racing with a concurrent
+  move_notify
+
+You can also grab multiple dma_resv_lock in atomically, but I think the
+odp rdma model doesn't require that (gpus need that).
+
+Note that you're allowed to allocate memory with GFP_KERNEL while holding
+dma_resv_lock, so this shouldn't impose any issues. You are otoh not
+allowed to cause userspace faults (so no gup/pup or copy*user with
+faulting enabled). So all in all this shouldn't be any worse that calling
+pup for normal umem.
+
+Unlike mmu notifier the caller holds dma_resv_lock already for you around
+the move_notify callback, so you shouldn't need any additional locking in
+there (aside from what you need to zap the ptes and flush hw tlbs).
+
+Cheers, Daniel
+
+> 
+> > > +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
+> > > +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
+> > > +				     DMA_BIDIRECTIONAL);
+> > > +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+> > 
+> > This doesn't look right, this lock has to be held up until the HW is programmed
+> 
+> The mapping remains valid until being invalidated again. There is a sequence number checking before programming the HW. 
+> 
+> > 
+> > The use of atomic looks probably wrong as well.
+> 
+> Do you mean umem_dmabuf->notifier_seq? Could you elaborate the concern?
+> 
+> > 
+> > > +	k = 0;
+> > > +	total_pages = ib_umem_odp_num_pages(umem_odp);
+> > > +	for_each_sg(umem->sg_head.sgl, sg, umem->sg_head.nents, j) {
+> > > +		addr = sg_dma_address(sg);
+> > > +		pages = sg_dma_len(sg) >> page_shift;
+> > > +		while (pages > 0 && k < total_pages) {
+> > > +			umem_odp->dma_list[k++] = addr | access_mask;
+> > > +			umem_odp->npages++;
+> > > +			addr += page_size;
+> > > +			pages--;
+> > 
+> > This isn't fragmenting the sg into a page list properly, won't work for unaligned things
+> 
+> I thought the addresses are aligned, but will add explicit alignment here.
+> 
+> > 
+> > And really we don't need the dma_list for this case, with a fixed whole mapping DMA SGL a normal umem sgl is OK and the normal umem
+> > XLT programming in mlx5 is fine.
+> 
+> The dma_list is used by both "polulate_mtt()" and "mlx5_ib_invalidate_range", which are used for XLT programming and invalidating (zapping), respectively.
+> 
+> > 
+> > Jason
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
