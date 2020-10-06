@@ -2,750 +2,483 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800AA2846F3
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 09:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087FD284757
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 09:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgJFHSa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 03:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48272 "EHLO mail.kernel.org"
+        id S1726979AbgJFHcg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 03:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgJFHS2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:18:28 -0400
+        id S1726917AbgJFHcg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:32:36 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57E1520760;
-        Tue,  6 Oct 2020 07:18:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00D8720760;
+        Tue,  6 Oct 2020 07:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601968706;
-        bh=Epk7mmLybpZm8devrYnJqYl5QYS0lKuxBPqVzNkfSdM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eslIrEIuVV5ibB/L0zwPNUbbVXlPA3eKnDzpftpxaXctYFaNxGw86/ykHIYy5wThe
-         IW009wFQcKces9ZxKTYTq69/7XEB5qf2EB2s7bUpNdJlYPmED3cVzjytgy6p2GazOt
-         qPfH4OjM7eHksTtX+Pn5iipSy9hKtDzC88xBfatg=
-Date:   Tue, 6 Oct 2020 10:18:21 +0300
+        s=default; t=1601969555;
+        bh=nr1meZpa3dAgyWXQoGOkDChh8gsNv0413ctL7HzCPWE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oyK/RmsP30CM6dw5PLJZgEgysz07zidfvVcPqxu8lEf74rk9IXqnhgu0lD2zEgL+H
+         WbdbHxKMPnlMNWqg2kdSWVClSMVMvJ54HVTHND9EoW6kdRrwjHvwtd0RzLWuZzYBXk
+         OVaPQ70sTHH5QSNNUIj+2xOpsrWgibibIPBzAW1o=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dave Ertman <david.m.ertman@intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        gregkh@linuxfoundation.org, ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201006071821.GI1874917@unreal>
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Adit Ranadive <aditr@vmware.com>, Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: [PATCH rdma-next v2] RDMA: Explicitly pass in the dma_device to ib_register_device
+Date:   Tue,  6 Oct 2020 10:32:29 +0300
+Message-Id: <20201006073229.2347811-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005182446.977325-2-david.m.ertman@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
-> Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> It enables drivers to create an ancillary_device and bind an
-> ancillary_driver to it.
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-I was under impression that this name is going to be changed.
+The code in setup_dma_device has become rather convoluted, move all of
+this to the drivers. Drives now pass in a DMA capable struct device which
+will be used to setup DMA, or drivers must fully configure the ibdev for
+DMA and pass in NULL.
 
->
-> The bus supports probe/remove shutdown and suspend/resume callbacks.
-> Each ancillary_device has a unique string based id; driver binds to
-> an ancillary_device based on this id through the bus.
->
-> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> ---
->  Documentation/driver-api/ancillary_bus.rst | 229 +++++++++++++++++++++
->  Documentation/driver-api/index.rst         |   1 +
->  drivers/bus/Kconfig                        |   3 +
->  drivers/bus/Makefile                       |   3 +
->  drivers/bus/ancillary.c                    | 225 ++++++++++++++++++++
->  include/linux/ancillary_bus.h              |  69 +++++++
->  include/linux/mod_devicetable.h            |   8 +
->  scripts/mod/devicetable-offsets.c          |   3 +
->  scripts/mod/file2alias.c                   |   8 +
->  9 files changed, 549 insertions(+)
->  create mode 100644 Documentation/driver-api/ancillary_bus.rst
->  create mode 100644 drivers/bus/ancillary.c
->  create mode 100644 include/linux/ancillary_bus.h
->
-> diff --git a/Documentation/driver-api/ancillary_bus.rst b/Documentation/driver-api/ancillary_bus.rst
-> new file mode 100644
-> index 000000000000..66f986e8672f
-> --- /dev/null
-> +++ b/Documentation/driver-api/ancillary_bus.rst
-> @@ -0,0 +1,229 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +
-> +=============
-> +Ancillary Bus
-> +=============
-> +
-> +In some subsystems, the functionality of the core device (PCI/ACPI/other) is
-> +too complex for a single device to be managed as a monolithic block or a part of
-> +the functionality needs to be exposed to a different subsystem.  Splitting the
-> +functionality into smaller orthogonal devices would make it easier to manage
-> +data, power management and domain-specific interaction with the hardware. A key
-> +requirement for such a split is that there is no dependency on a physical bus,
-> +device, register accesses or regmap support. These individual devices split from
-> +the core cannot live on the platform bus as they are not physical devices that
-> +are controlled by DT/ACPI. The same argument applies for not using MFD in this
-> +scenario as MFD relies on individual function devices being physical devices.
-> +
-> +An example for this kind of requirement is the audio subsystem where a single
-> +IP is handling multiple entities such as HDMI, Soundwire, local devices such as
-> +mics/speakers etc. The split for the core's functionality can be arbitrary or
-> +be defined by the DSP firmware topology and include hooks for test/debug. This
-> +allows for the audio core device to be minimal and focused on hardware-specific
-> +control and communication.
-> +
-> +The ancillary bus is intended to be minimal, generic and avoid domain-specific
-> +assumptions. Each ancillary_device represents a part of its parent
-> +functionality. The generic behavior can be extended and specialized as needed
-> +by encapsulating an ancillary_device within other domain-specific structures and
-> +the use of .ops callbacks. Devices on the ancillary bus do not share any
-> +structures and the use of a communication channel with the parent is
-> +domain-specific.
-> +
-> +When Should the Ancillary Bus Be Used
-> +=====================================
-> +
-> +The ancillary bus is to be used when a driver and one or more kernel modules,
-> +who share a common header file with the driver, need a mechanism to connect and
-> +provide access to a shared object allocated by the ancillary_device's
-> +registering driver.  The registering driver for the ancillary_device(s) and the
-> +kernel module(s) registering ancillary_drivers can be from the same subsystem,
-> +or from multiple subsystems.
-> +
-> +The emphasis here is on a common generic interface that keeps subsystem
-> +customization out of the bus infrastructure.
-> +
-> +One example could be a multi-port PCI network device that is rdma-capable and
-> +needs to export this functionality and attach to an rdma driver in another
-> +subsystem.  The PCI driver will allocate and register an ancillary_device for
-> +each physical function on the NIC.  The rdma driver will register an
-> +ancillary_driver that will be matched with and probed for each of these
-> +ancillary_devices.  This will give the rdma driver access to the shared data/ops
-> +in the PCI drivers shared object to establish a connection with the PCI driver.
-> +
-> +Another use case is for the PCI device to be split out into multiple sub
-> +functions.  For each sub function an ancillary_device will be created.  A PCI
-> +sub function driver will bind to such devices that will create its own one or
-> +more class devices.  A PCI sub function ancillary device will likely be
-> +contained in a struct with additional attributes such as user defined sub
-> +function number and optional attributes such as resources and a link to the
-> +parent device.  These attributes could be used by systemd/udev; and hence should
-> +be initialized before a driver binds to an ancillary_device.
-> +
-> +Ancillary Device
-> +================
-> +
-> +An ancillary_device is created and registered to represent a part of its parent
-> +device's functionality. It is given a name that, combined with the registering
-> +drivers KBUILD_MODNAME, creates a match_name that is used for driver binding,
-> +and an id that combined with the match_name provide a unique name to register
-> +with the bus subsystem.
-> +
-> +Registering an ancillary_device is a two-step process.  First you must call
-> +ancillary_device_initialize(), which will check several aspects of the
-> +ancillary_device struct and perform a device_initialize().  After this step
-> +completes, any error state must have a call to put_device() in its resolution
-> +path.  The second step in registering an ancillary_device is to perform a call
-> +to ancillary_device_add(), which will set the name of the device and add the
-> +device to the bus.
-> +
-> +To unregister an ancillary_device, just a call to ancillary_device_unregister()
-> +is used.  This will perform both a device_del() and a put_device().
-> +
-> +.. code-block:: c
-> +
-> +	struct ancillary_device {
-> +		struct device dev;
-> +                const char *name;
-> +		u32 id;
-> +	};
-> +
-> +If two ancillary_devices both with a match_name "mod.foo" are registered onto
-> +the bus, they must have unique id values (e.g. "x" and "y") so that the
-> +registered devices names will be "mod.foo.x" and "mod.foo.y".  If match_name +
-> +id are not unique, then the device_add will fail and generate an error message.
-> +
-> +The ancillary_device.dev.type.release or ancillary_device.dev.release must be
-> +populated with a non-NULL pointer to successfully register the ancillary_device.
-> +
-> +The ancillary_device.dev.parent must also be populated.
-> +
-> +Ancillary Device Memory Model and Lifespan
-> +------------------------------------------
-> +
-> +When a kernel driver registers an ancillary_device on the ancillary bus, we will
-> +use the nomenclature to refer to this kernel driver as a registering driver.  It
-> +is the entity that will allocate memory for the ancillary_device and register it
-> +on the ancillary bus.  It is important to note that, as opposed to the platform
-> +bus, the registering driver is wholly responsible for the management for the
-> +memory used for the driver object.
-> +
-> +A parent object, defined in the shared header file, will contain the
-> +ancillary_device.  It will also contain a pointer to the shared object(s), which
-> +will also be defined in the shared header.  Both the parent object and the
-> +shared object(s) will be allocated by the registering driver.  This layout
-> +allows the ancillary_driver's registering module to perform a container_of()
-> +call to go from the pointer to the ancillary_device, that is passed during the
-> +call to the ancillary_driver's probe function, up to the parent object, and then
-> +have access to the shared object(s).
-> +
-> +The memory for the ancillary_device will be freed only in its release()
-> +callback flow as defined by its registering driver.
-> +
-> +The memory for the shared object(s) must have a lifespan equal to, or greater
-> +than, the lifespan of the memory for the ancillary_device.  The ancillary_driver
-> +should only consider that this shared object is valid as long as the
-> +ancillary_device is still registered on the ancillary bus.  It is up to the
-> +registering driver to manage (e.g. free or keep available) the memory for the
-> +shared object beyond the life of the ancillary_device.
-> +
-> +Registering driver must unregister all ancillary devices before its registering
-> +parent device's remove() is completed.
-> +
-> +Ancillary Drivers
-> +=================
-> +
-> +Ancillary drivers follow the standard driver model convention, where
-> +discovery/enumeration is handled by the core, and drivers
-> +provide probe() and remove() methods. They support power management
-> +and shutdown notifications using the standard conventions.
-> +
-> +.. code-block:: c
-> +
-> +	struct ancillary_driver {
-> +		int (*probe)(struct ancillary_device *,
-> +                             const struct ancillary_device_id *id);
-> +		int (*remove)(struct ancillary_device *);
-> +		void (*shutdown)(struct ancillary_device *);
-> +		int (*suspend)(struct ancillary_device *, pm_message_t);
-> +		int (*resume)(struct ancillary_device *);
-> +		struct device_driver driver;
-> +		const struct ancillary_device_id *id_table;
-> +	};
-> +
-> +Ancillary drivers register themselves with the bus by calling
-> +ancillary_driver_register(). The id_table contains the match_names of ancillary
-> +devices that a driver can bind with.
-> +
-> +Example Usage
-> +=============
-> +
-> +Ancillary devices are created and registered by a subsystem-level core device
-> +that needs to break up its functionality into smaller fragments. One way to
-> +extend the scope of an ancillary_device would be to encapsulate it within a
-> +domain-specific structure defined by the parent device. This structure contains
-> +the ancillary_device and any associated shared data/callbacks needed to
-> +establish the connection with the parent.
-> +
-> +An example would be:
-> +
-> +.. code-block:: c
-> +
-> +        struct foo {
-> +		struct ancillary_device ancildev;
-> +		void (*connect)(struct ancillary_device *ancildev);
-> +		void (*disconnect)(struct ancillary_device *ancildev);
-> +		void *data;
-> +        };
-> +
-> +The parent device would then register the ancillary_device by calling
-> +ancillary_device_initialize(), and then ancillary_device_add(), with the pointer
-> +to the ancildev member of the above structure. The parent would provide a name
-> +for the ancillary_device that, combined with the parent's KBUILD_MODNAME, will
-> +create a match_name that will be used for matching and binding with a driver.
-> +
-> +Whenever an ancillary_driver is registered, based on the match_name, the
-> +ancillary_driver's probe() is invoked for the matching devices.  The
-> +ancillary_driver can also be encapsulated inside custom drivers that make the
-> +core device's functionality extensible by adding additional domain-specific ops
-> +as follows:
-> +
-> +.. code-block:: c
-> +
-> +	struct my_ops {
-> +		void (*send)(struct ancillary_device *ancildev);
-> +		void (*receive)(struct ancillary_device *ancildev);
-> +	};
-> +
-> +
-> +	struct my_driver {
-> +		struct ancillary_driver ancillary_drv;
-> +		const struct my_ops ops;
-> +	};
-> +
-> +An example of this type of usage would be:
-> +
-> +.. code-block:: c
-> +
-> +	const struct ancillary_device_id my_ancillary_id_table[] = {
-> +		{ .name = "foo_mod.foo_dev" },
-> +		{ },
-> +	};
-> +
-> +	const struct my_ops my_custom_ops = {
-> +		.send = my_tx,
-> +		.receive = my_rx,
-> +	};
-> +
-> +	const struct my_driver my_drv = {
-> +		.ancillary_drv = {
-> +			.driver = {
-> +				.name = "myancillarydrv",
+Other than setting the masks in rvt all drivers were doing this already
+anyhow.
 
-Why do we need to give control over driver name to the driver authors?
-It can be problematic if author puts name that already exists.
+mthca, mlx4 and mlx5 were already setting up maximum DMA segment size for
+DMA based on their hardweare limits in:
+__mthca_init_one()
+  dma_set_max_seg_size (1G)
 
-> +			},
-> +			.id_table = my_ancillary_id_table,
-> +			.probe = my_probe,
-> +			.remove = my_remove,
-> +			.shutdown = my_shutdown,
-> +		},
-> +		.ops = my_custom_ops,
-> +	};
-> diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-> index 5ef2cfe3a16b..9584ac2ed1f5 100644
-> --- a/Documentation/driver-api/index.rst
-> +++ b/Documentation/driver-api/index.rst
-> @@ -74,6 +74,7 @@ available subsections can be seen below.
->     thermal/index
->     fpga/index
->     acpi/index
-> +   ancillary_bus
->     backlight/lp855x-driver.rst
->     connector
->     console
-> diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-> index 0c262c2aeaf2..ba82a045b847 100644
-> --- a/drivers/bus/Kconfig
-> +++ b/drivers/bus/Kconfig
-> @@ -5,6 +5,9 @@
->
->  menu "Bus devices"
->
-> +config ANCILLARY_BUS
-> +       tristate
-> +
->  config ARM_CCI
->  	bool
->
-> diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-> index 397e35392bff..7c217eb1dbb7 100644
-> --- a/drivers/bus/Makefile
-> +++ b/drivers/bus/Makefile
-> @@ -3,6 +3,9 @@
->  # Makefile for the bus drivers.
->  #
->
-> +# Ancillary bus driver
-> +obj-$(CONFIG_ANCILLARY_BUS)	+= ancillary.o
-> +
->  # Interconnect bus drivers for ARM platforms
->  obj-$(CONFIG_ARM_CCI)		+= arm-cci.o
->  obj-$(CONFIG_ARM_INTEGRATOR_LM)	+= arm-integrator-lm.o
-> diff --git a/drivers/bus/ancillary.c b/drivers/bus/ancillary.c
-> new file mode 100644
-> index 000000000000..93888ca36fb1
-> --- /dev/null
-> +++ b/drivers/bus/ancillary.c
-> @@ -0,0 +1,225 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Software based bus for Ancillary devices
-> + *
-> + * Copyright (c) 2019-2020 Intel Corporation
-> + *
-> + * Please see Documentation/driver-api/ancillary_bus.rst for more information.
-> + */
-> +
-> +#define pr_fmt(fmt) "%s:%s: " fmt, KBUILD_MODNAME, __func__
-> +
-> +#include <linux/device.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/string.h>
-> +#include <linux/ancillary_bus.h>
-> +
-> +static const struct ancillary_device_id *ancillary_match_id(const struct ancillary_device_id *id,
-> +							    const struct ancillary_device *ancildev)
-> +{
-> +	while (id->name[0]) {
-> +		const char *p = strrchr(dev_name(&ancildev->dev), '.');
-> +		int match_size;
-> +
-> +		if (!p) {
-> +			id++;
-> +			continue;
-> +		}
-> +		match_size = p - dev_name(&ancildev->dev);
-> +
-> +		/* use dev_name(&ancildev->dev) prefix before last '.' char to match to */
-> +		if (!strncmp(dev_name(&ancildev->dev), id->name, match_size))
-> +			return id;
-> +		id++;
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static int ancillary_match(struct device *dev, struct device_driver *drv)
-> +{
-> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
-> +	struct ancillary_driver *ancildrv = to_ancillary_drv(drv);
-> +
-> +	return !!ancillary_match_id(ancildrv->id_table, ancildev);
-> +}
-> +
-> +static int ancillary_uevent(struct device *dev, struct kobj_uevent_env *env)
-> +{
-> +	const char *name, *p;
-> +
-> +	name = dev_name(dev);
-> +	p = strrchr(name, '.');
-> +
-> +	return add_uevent_var(env, "MODALIAS=%s%.*s", ANCILLARY_MODULE_PREFIX, (int)(p - name),
-> +			      name);
-> +}
-> +
-> +static const struct dev_pm_ops ancillary_dev_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(pm_generic_runtime_suspend, pm_generic_runtime_resume, NULL)
-> +	SET_SYSTEM_SLEEP_PM_OPS(pm_generic_suspend, pm_generic_resume)
-> +};
-> +
-> +struct bus_type ancillary_bus_type = {
-> +	.name = "ancillary",
-> +	.match = ancillary_match,
-> +	.uevent = ancillary_uevent,
-> +	.pm = &ancillary_dev_pm_ops,
-> +};
-> +
-> +/**
-> + * ancillary_device_initialize - check ancillary_device and initialize
-> + * @ancildev: ancillary device struct
-> + *
-> + * This is the first step in the two-step process to register an ancillary_device.
-> + *
-> + * When this function returns an error code, then the device_initialize will *not* have
-> + * been performed, and the caller will be responsible to free any memory allocated for the
-> + * ancillary_device in the error path directly.
-> + *
-> + * It returns 0 on success.  On success, the device_initialize has been performed.
-> + * After this point any error unwinding will need to include a call to put_device().
-> + * In this post-initialize error scenario, a call to the device's .release callback will be
-> + * triggered by put_device(), and all memory clean-up is expected to be handled there.
-> + */
-> +int ancillary_device_initialize(struct ancillary_device *ancildev)
-> +{
-> +	struct device *dev = &ancildev->dev;
-> +
-> +	dev->bus = &ancillary_bus_type;
-> +
-> +	if (!dev->parent) {
-> +		pr_err("ancillary_device has a NULL dev->parent\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!ancildev->name) {
-> +		pr_err("acillary_device has a NULL name\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!(dev->type && dev->type->release) && !dev->release) {
-> +		pr_err("ancillary_device does not have a release callback defined\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	device_initialize(&ancildev->dev);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(ancillary_device_initialize);
-> +
-> +/**
-> + * __ancillary_device_add - add an ancillary bus device
-> + * @ancildev: ancillary bus device to add to the bus
-> + * @modname: name of the parent device's driver module
-> + *
-> + * This is the second step in the two-step process to register an ancillary_device.
-> + *
-> + * This function must be called after a successful call to ancillary_device_initialize(), which
-> + * will perform the device_initialize.  This means that if this returns an error code, then a
-> + * put_device must be performed so that the .release callback will be triggered to free the
-> + * memory associated with the ancillary_device.
-> + */
-> +int __ancillary_device_add(struct ancillary_device *ancildev, const char *modname)
-> +{
-> +	struct device *dev = &ancildev->dev;
-> +	int ret;
-> +
-> +	if (!modname) {
-> +		pr_err("ancillary device modname is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = dev_set_name(dev, "%s.%s.%d", modname, ancildev->name, ancildev->id);
-> +	if (ret) {
-> +		pr_err("ancillary device dev_set_name failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = device_add(dev);
-> +	if (ret)
-> +		dev_err(dev, "adding ancillary device failed!: %d\n", ret);
-> +
-> +	return ret;
-> +}
+__mlx4_init_one()
+  dma_set_max_seg_size (1G)
 
-Sorry, but this is very strange API that requires users to put
-internal call to "dev" that is buried inside "struct ancillary_device".
+mlx5_pci_init()
+  set_dma_caps()
+    dma_set_max_seg_size (2G)
 
-For example in your next patch, you write this "put_device(&cdev->ancildev.dev);"
+Other non software drivers (except usnic) were extended to UINT_MAX [1, 2]
+instead of 2G as was before.
 
-I'm pretty sure that the amount of bugs in error unwind will be
-astonishing, so if you are doing wrappers over core code, better do not
-pass complexity to the users.
+[1] https://lore.kernel.org/linux-rdma/20200924114940.GE9475@nvidia.com/
+[2] https://lore.kernel.org/linux-rdma/20200924114940.GE9475@nvidia.com/
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Changelog
+v2:
+ * Simplified setup_dma_device() by removing extra if()s over various WARN_ON().
+v1: https://lore.kernel.org/linux-rdma/20201005110050.1703618-1-leon@kernel.org
+ * Moved dma_set_max_seg_size() to be part of the drivers and increased
+   the limit to UINT_MAX.
+---
+ drivers/infiniband/core/device.c              | 65 +++++--------------
+ drivers/infiniband/hw/bnxt_re/main.c          |  3 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |  4 +-
+ drivers/infiniband/hw/efa/efa_main.c          |  4 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c     |  3 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  3 +-
+ drivers/infiniband/hw/mlx4/main.c             |  3 +-
+ drivers/infiniband/hw/mlx5/main.c             |  2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  4 +-
+ drivers/infiniband/hw/qedr/main.c             |  3 +-
+ drivers/infiniband/hw/usnic/usnic_ib_main.c   |  3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  4 +-
+ drivers/infiniband/sw/rdmavt/vt.c             |  8 ++-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  2 +-
+ drivers/infiniband/sw/siw/siw_main.c          |  4 +-
+ include/rdma/ib_verbs.h                       |  3 +-
+ 17 files changed, 51 insertions(+), 69 deletions(-)
 
-> +EXPORT_SYMBOL_GPL(__ancillary_device_add);
-> +
-> +static int ancillary_probe_driver(struct device *dev)
-> +{
-> +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
-> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
-> +	int ret;
-> +
-> +	ret = dev_pm_domain_attach(dev, true);
-> +	if (ret) {
-> +		dev_warn(dev, "Failed to attach to PM Domain : %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = ancildrv->probe(ancildev, ancillary_match_id(ancildrv->id_table, ancildev));
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index ec3becf85cac..47df85a35cc7 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1177,58 +1177,22 @@ static int assign_name(struct ib_device *device, const char *name)
+ 	return ret;
+ }
 
-I don't think that you need to call ->probe() if ancillary_match_id()
-returned NULL and probably that check should be done before
-dev_pm_domain_attach().
+-static void setup_dma_device(struct ib_device *device)
++static void setup_dma_device(struct ib_device *device,
++			     struct device *dma_device)
+ {
+-	struct device *parent = device->dev.parent;
+-
+-	WARN_ON_ONCE(device->dma_device);
+-
+-#ifdef CONFIG_DMA_OPS
+-	if (device->dev.dma_ops) {
+-		/*
+-		 * The caller provided custom DMA operations. Copy the
+-		 * DMA-related fields that are used by e.g. dma_alloc_coherent()
+-		 * into device->dev.
+-		 */
+-		device->dma_device = &device->dev;
+-		if (!device->dev.dma_mask) {
+-			if (parent)
+-				device->dev.dma_mask = parent->dma_mask;
+-			else
+-				WARN_ON_ONCE(true);
+-		}
+-		if (!device->dev.coherent_dma_mask) {
+-			if (parent)
+-				device->dev.coherent_dma_mask =
+-					parent->coherent_dma_mask;
+-			else
+-				WARN_ON_ONCE(true);
+-		}
+-	} else
+-#endif /* CONFIG_DMA_OPS */
+-	{
++	WARN_ON(!IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device);
++	if (!dma_device) {
+ 		/*
+-		 * The caller did not provide custom DMA operations. Use the
+-		 * DMA mapping operations of the parent device.
++		 * If the caller does not provide a DMA capable device then the
++		 * IB device will be used. In this case the caller should fully
++		 * setup the ibdev for DMA. This usually means using
++		 * dma_virt_ops.
+ 		 */
+-		WARN_ON_ONCE(!parent);
+-		device->dma_device = parent;
+-	}
+-
+-	if (!device->dev.dma_parms) {
+-		if (parent) {
+-			/*
+-			 * The caller did not provide DMA parameters, so
+-			 * 'parent' probably represents a PCI device. The PCI
+-			 * core sets the maximum segment size to 64
+-			 * KB. Increase this parameter to 2 GB.
+-			 */
+-			device->dev.dma_parms = parent->dma_parms;
+-			dma_set_max_seg_size(device->dma_device, SZ_2G);
+-		} else {
+-			WARN_ON_ONCE(true);
+-		}
++		device->dev.dma_ops = &dma_virt_ops;
++		dma_device = &device->dev;
+ 	}
++	device->dma_device = dma_device;
++	WARN_ON(!device->dma_device->dma_parms);
+ }
 
-> +	if (ret)
-> +		dev_pm_domain_detach(dev, true);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ancillary_remove_driver(struct device *dev)
-> +{
-> +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
-> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
-> +	int ret;
-> +
-> +	ret = ancildrv->remove(ancildev);
-> +	dev_pm_domain_detach(dev, true);
-> +
-> +	return ret;
+ /*
+@@ -1241,7 +1205,6 @@ static int setup_device(struct ib_device *device)
+ 	struct ib_udata uhw = {.outlen = 0, .inlen = 0};
+ 	int ret;
 
-You returned an error to user and detached from PM, what will user do
-with this information? Should user ignore it? retry?
+-	setup_dma_device(device);
+ 	ib_device_check_mandatory(device);
 
-> +}
-> +
-> +static void ancillary_shutdown_driver(struct device *dev)
-> +{
-> +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
-> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
-> +
-> +	ancildrv->shutdown(ancildev);
-> +}
-> +
-> +/**
-> + * __ancillary_driver_register - register a driver for ancillary bus devices
-> + * @ancildrv: ancillary_driver structure
-> + * @owner: owning module/driver
-> + */
-> +int __ancillary_driver_register(struct ancillary_driver *ancildrv, struct module *owner)
-> +{
-> +	if (WARN_ON(!ancildrv->probe) || WARN_ON(!ancildrv->remove) ||
-> +	    WARN_ON(!ancildrv->shutdown) || WARN_ON(!ancildrv->id_table))
-> +		return -EINVAL;
-> +
-> +	ancildrv->driver.owner = owner;
-> +	ancildrv->driver.bus = &ancillary_bus_type;
-> +	ancildrv->driver.probe = ancillary_probe_driver;
-> +	ancildrv->driver.remove = ancillary_remove_driver;
-> +	ancildrv->driver.shutdown = ancillary_shutdown_driver;
-> +
-> +	return driver_register(&ancildrv->driver);
-> +}
-> +EXPORT_SYMBOL_GPL(__ancillary_driver_register);
-> +
-> +static int __init ancillary_bus_init(void)
-> +{
-> +	return bus_register(&ancillary_bus_type);
-> +}
-> +
-> +static void __exit ancillary_bus_exit(void)
-> +{
-> +	bus_unregister(&ancillary_bus_type);
-> +}
-> +
-> +module_init(ancillary_bus_init);
-> +module_exit(ancillary_bus_exit);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Ancillary Bus");
-> +MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
-> +MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
-> diff --git a/include/linux/ancillary_bus.h b/include/linux/ancillary_bus.h
-> new file mode 100644
-> index 000000000000..72169c8a5dfe
-> --- /dev/null
-> +++ b/include/linux/ancillary_bus.h
-> @@ -0,0 +1,69 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2019-2020 Intel Corporation
-> + *
-> + * Please see Documentation/driver-api/ancillary_bus.rst for more information.
-> + */
-> +
-> +#ifndef _ANCILLARY_BUS_H_
-> +#define _ANCILLARY_BUS_H_
-> +
-> +#include <linux/device.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/slab.h>
-> +
-> +struct ancillary_device {
-> +	struct device dev;
-> +	const char *name;
-> +	u32 id;
-> +};
-> +
-> +struct ancillary_driver {
-> +	int (*probe)(struct ancillary_device *ancildev, const struct ancillary_device_id *id);
-> +	int (*remove)(struct ancillary_device *ancildev);
-> +	void (*shutdown)(struct ancillary_device *ancildev);
-> +	int (*suspend)(struct ancillary_device *ancildev, pm_message_t state);
-> +	int (*resume)(struct ancillary_device *ancildev);
-> +	struct device_driver driver;
-> +	const struct ancillary_device_id *id_table;
-> +};
-> +
-> +static inline struct ancillary_device *to_ancillary_dev(struct device *dev)
-> +{
-> +	return container_of(dev, struct ancillary_device, dev);
-> +}
-> +
-> +static inline struct ancillary_driver *to_ancillary_drv(struct device_driver *drv)
-> +{
-> +	return container_of(drv, struct ancillary_driver, driver);
-> +}
-> +
-> +int ancillary_device_initialize(struct ancillary_device *ancildev);
-> +int __ancillary_device_add(struct ancillary_device *ancildev, const char *modname);
-> +#define ancillary_device_add(ancildev) __ancillary_device_add(ancildev, KBUILD_MODNAME)
-> +
-> +static inline void ancillary_device_unregister(struct ancillary_device *ancildev)
-> +{
-> +	device_unregister(&ancildev->dev);
-> +}
-> +
-> +int __ancillary_driver_register(struct ancillary_driver *ancildrv, struct module *owner);
-> +#define ancillary_driver_register(ancildrv) __ancillary_driver_register(ancildrv, THIS_MODULE)
-> +
-> +static inline void ancillary_driver_unregister(struct ancillary_driver *ancildrv)
-> +{
-> +	driver_unregister(&ancildrv->driver);
-> +}
-> +
-> +/**
-> + * module_ancillary_driver() - Helper macro for registering an ancillary driver
-> + * @__ancillary_driver: ancillary driver struct
-> + *
-> + * Helper macro for ancillary drivers which do not do anything special in
-> + * module init/exit. This eliminates a lot of boilerplate. Each module may only
-> + * use this macro once, and calling it replaces module_init() and module_exit()
-> + */
-> +#define module_ancillary_driver(__ancillary_driver) \
-> +	module_driver(__ancillary_driver, ancillary_driver_register, ancillary_driver_unregister)
-> +
-> +#endif /* _ANCILLARY_BUS_H_ */
-> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-> index 5b08a473cdba..7d596dc30833 100644
-> --- a/include/linux/mod_devicetable.h
-> +++ b/include/linux/mod_devicetable.h
-> @@ -838,4 +838,12 @@ struct mhi_device_id {
->  	kernel_ulong_t driver_data;
->  };
->
-> +#define ANCILLARY_NAME_SIZE 32
-> +#define ANCILLARY_MODULE_PREFIX "ancillary:"
-> +
-> +struct ancillary_device_id {
-> +	char name[ANCILLARY_NAME_SIZE];
+ 	ret = setup_port_data(device);
+@@ -1361,7 +1324,8 @@ static void prevent_dealloc_device(struct ib_device *ib_dev)
+  * asynchronously then the device pointer may become freed as soon as this
+  * function returns.
+  */
+-int ib_register_device(struct ib_device *device, const char *name)
++int ib_register_device(struct ib_device *device, const char *name,
++		       struct device *dma_device)
+ {
+ 	int ret;
 
-I hope that this be enough.
+@@ -1369,6 +1333,7 @@ int ib_register_device(struct ib_device *device, const char *name)
+ 	if (ret)
+ 		return ret;
 
-> +	kernel_ulong_t driver_data;
-> +};
-> +
->  #endif /* LINUX_MOD_DEVICETABLE_H */
-> diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
-> index 27007c18e754..79e37c4c25b3 100644
-> --- a/scripts/mod/devicetable-offsets.c
-> +++ b/scripts/mod/devicetable-offsets.c
-> @@ -243,5 +243,8 @@ int main(void)
->  	DEVID(mhi_device_id);
->  	DEVID_FIELD(mhi_device_id, chan);
->
-> +	DEVID(ancillary_device_id);
-> +	DEVID_FIELD(ancillary_device_id, name);
-> +
->  	return 0;
->  }
-> diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> index 2417dd1dee33..99c4fcd82bf3 100644
-> --- a/scripts/mod/file2alias.c
-> +++ b/scripts/mod/file2alias.c
-> @@ -1364,6 +1364,13 @@ static int do_mhi_entry(const char *filename, void *symval, char *alias)
->  {
->  	DEF_FIELD_ADDR(symval, mhi_device_id, chan);
->  	sprintf(alias, MHI_DEVICE_MODALIAS_FMT, *chan);
-> +	return 1;
-> +}
-> +
-> +static int do_ancillary_entry(const char *filename, void *symval, char *alias)
-> +{
-> +	DEF_FIELD_ADDR(symval, ancillary_device_id, name);
-> +	sprintf(alias, ANCILLARY_MODULE_PREFIX "%s", *name);
->
->  	return 1;
->  }
-> @@ -1442,6 +1449,7 @@ static const struct devtable devtable[] = {
->  	{"tee", SIZE_tee_client_device_id, do_tee_entry},
->  	{"wmi", SIZE_wmi_device_id, do_wmi_entry},
->  	{"mhi", SIZE_mhi_device_id, do_mhi_entry},
-> +	{"ancillary", SIZE_ancillary_device_id, do_ancillary_entry},
->  };
->
->  /* Create MODULE_ALIAS() statements.
-> --
-> 2.26.2
->
++	setup_dma_device(device, dma_device);
+ 	ret = setup_device(device);
+ 	if (ret)
+ 		return ret;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 53aee5a42ab8..04621ba8fa76 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -736,7 +736,8 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
+ 	if (ret)
+ 		return ret;
+
+-	return ib_register_device(ibdev, "bnxt_re%d");
++	dma_set_max_seg_size(&rdev->en_dev->pdev->dev, UINT_MAX);
++	return ib_register_device(ibdev, "bnxt_re%d", &rdev->en_dev->pdev->dev);
+ }
+
+ static void bnxt_re_dev_remove(struct bnxt_re_dev *rdev)
+diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
+index 4b76f2f3f4e4..8138c57a1e43 100644
+--- a/drivers/infiniband/hw/cxgb4/provider.c
++++ b/drivers/infiniband/hw/cxgb4/provider.c
+@@ -570,7 +570,9 @@ void c4iw_register_device(struct work_struct *work)
+ 	ret = set_netdevs(&dev->ibdev, &dev->rdev);
+ 	if (ret)
+ 		goto err_dealloc_ctx;
+-	ret = ib_register_device(&dev->ibdev, "cxgb4_%d");
++	dma_set_max_seg_size(&dev->rdev.lldi.pdev->dev, UINT_MAX);
++	ret = ib_register_device(&dev->ibdev, "cxgb4_%d",
++				 &dev->rdev.lldi.pdev->dev);
+ 	if (ret)
+ 		goto err_dealloc_ctx;
+ 	return;
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 92d701146320..6faed3a81e08 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -331,7 +331,7 @@ static int efa_ib_device_add(struct efa_dev *dev)
+
+ 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
+
+-	err = ib_register_device(&dev->ibdev, "efa_%d");
++	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
+ 	if (err)
+ 		goto err_release_doorbell_bar;
+
+@@ -418,7 +418,7 @@ static int efa_device_init(struct efa_com_dev *edev, struct pci_dev *pdev)
+ 			err);
+ 		return err;
+ 	}
+-
++	dma_set_max_seg_size(&pdev->dev, UINT_MAX);
+ 	return 0;
+ }
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 467c82900019..afeffafc59f9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -549,7 +549,8 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ 		if (ret)
+ 			return ret;
+ 	}
+-	ret = ib_register_device(ib_dev, "hns_%d");
++	dma_set_max_seg_size(dev, UINT_MAX);
++	ret = ib_register_device(ib_dev, "hns_%d", dev);
+ 	if (ret) {
+ 		dev_err(dev, "ib_register_device failed!\n");
+ 		return ret;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index 747b4de6faca..581ecbadf586 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -2761,7 +2761,8 @@ int i40iw_register_rdma_device(struct i40iw_device *iwdev)
+ 	if (ret)
+ 		goto error;
+
+-	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
++	dma_set_max_seg_size(&iwdev->hw.pcidev->dev, UINT_MAX);
++	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d", &iwdev->hw.pcidev->dev);
+ 	if (ret)
+ 		goto error;
+
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 753c70402498..cd0fba6b0964 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -2841,7 +2841,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
+ 		goto err_steer_free_bitmap;
+
+ 	rdma_set_device_sysfs_group(&ibdev->ib_dev, &mlx4_attr_group);
+-	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d"))
++	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d",
++			       &dev->persist->pdev->dev))
+ 		goto err_diag_counters;
+
+ 	if (mlx4_ib_mad_init(ibdev))
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 3ae681a6ae3b..bca57c7661eb 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4404,7 +4404,7 @@ static int mlx5_ib_stage_ib_reg_init(struct mlx5_ib_dev *dev)
+ 		name = "mlx5_%d";
+ 	else
+ 		name = "mlx5_bond_%d";
+-	return ib_register_device(&dev->ib_dev, name);
++	return ib_register_device(&dev->ib_dev, name, &dev->mdev->pdev->dev);
+ }
+
+ static void mlx5_ib_stage_pre_ib_reg_umr_cleanup(struct mlx5_ib_dev *dev)
+diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+index 31b558ff8218..c4d9cdc4ee97 100644
+--- a/drivers/infiniband/hw/mthca/mthca_provider.c
++++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+@@ -1206,7 +1206,7 @@ int mthca_register_device(struct mthca_dev *dev)
+ 	mutex_init(&dev->cap_mask_mutex);
+
+ 	rdma_set_device_sysfs_group(&dev->ib_dev, &mthca_attr_group);
+-	ret = ib_register_device(&dev->ib_dev, "mthca%d");
++	ret = ib_register_device(&dev->ib_dev, "mthca%d", &dev->pdev->dev);
+ 	if (ret)
+ 		return ret;
+
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+index d8c47d24d6d6..9b96661a7143 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+@@ -255,7 +255,9 @@ static int ocrdma_register_device(struct ocrdma_dev *dev)
+ 	if (ret)
+ 		return ret;
+
+-	return ib_register_device(&dev->ibdev, "ocrdma%d");
++	dma_set_max_seg_size(&dev->nic_info.pdev->dev, UINT_MAX);
++	return ib_register_device(&dev->ibdev, "ocrdma%d",
++				  &dev->nic_info.pdev->dev);
+ }
+
+ static int ocrdma_alloc_resources(struct ocrdma_dev *dev)
+diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
+index 7c0aac3e635b..967641662b24 100644
+--- a/drivers/infiniband/hw/qedr/main.c
++++ b/drivers/infiniband/hw/qedr/main.c
+@@ -293,7 +293,8 @@ static int qedr_register_device(struct qedr_dev *dev)
+ 	if (rc)
+ 		return rc;
+
+-	return ib_register_device(&dev->ibdev, "qedr%d");
++	dma_set_max_seg_size(&dev->pdev->dev, UINT_MAX);
++	return ib_register_device(&dev->ibdev, "qedr%d", &dev->pdev->dev);
+ }
+
+ /* This function allocates fast-path status block memory */
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+index 462ed71abf53..aa2e65fc5cd6 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+@@ -425,7 +425,8 @@ static void *usnic_ib_device_add(struct pci_dev *dev)
+ 	if (ret)
+ 		goto err_fwd_dealloc;
+
+-	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d"))
++	dma_set_max_seg_size(&dev->dev, SZ_2G);
++	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d", &dev->dev))
+ 		goto err_fwd_dealloc;
+
+ 	usnic_fwd_set_mtu(us_ibdev->ufdev, us_ibdev->netdev->mtu);
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+index 780fd2dfc07e..fa2a3fa0c3e4 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+@@ -270,7 +270,7 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
+ 	spin_lock_init(&dev->srq_tbl_lock);
+ 	rdma_set_device_sysfs_group(&dev->ib_dev, &pvrdma_attr_group);
+
+-	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d");
++	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d", &dev->pdev->dev);
+ 	if (ret)
+ 		goto err_srq_free;
+
+@@ -854,7 +854,7 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
+ 			goto err_free_resource;
+ 		}
+ 	}
+-
++	dma_set_max_seg_size(&pdev->dev, UINT_MAX);
+ 	pci_set_master(pdev);
+
+ 	/* Map register space */
+diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
+index f904bb34477a..2f117ac11c8b 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.c
++++ b/drivers/infiniband/sw/rdmavt/vt.c
+@@ -581,7 +581,11 @@ int rvt_register_device(struct rvt_dev_info *rdi)
+ 	spin_lock_init(&rdi->n_cqs_lock);
+
+ 	/* DMA Operations */
+-	rdi->ibdev.dev.dma_ops = rdi->ibdev.dev.dma_ops ? : &dma_virt_ops;
++	rdi->ibdev.dev.dma_ops = &dma_virt_ops;
++	rdi->ibdev.dev.dma_parms = rdi->ibdev.dev.parent->dma_parms;
++	rdi->ibdev.dev.dma_mask = rdi->ibdev.dev.parent->dma_mask;
++	rdi->ibdev.dev.coherent_dma_mask =
++		rdi->ibdev.dev.parent->coherent_dma_mask;
+
+ 	/* Protection Domain */
+ 	spin_lock_init(&rdi->n_pds_lock);
+@@ -629,7 +633,7 @@ int rvt_register_device(struct rvt_dev_info *rdi)
+ 		rdi->ibdev.num_comp_vectors = 1;
+
+ 	/* We are now good to announce we exist */
+-	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev));
++	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev), NULL);
+ 	if (ret) {
+ 		rvt_pr_err(rdi, "Failed to register driver with ib core.\n");
+ 		goto bail_wss;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index f368dc16281a..37fee72755be 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1182,7 +1182,7 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+ 	rxe->tfm = tfm;
+
+ 	rdma_set_device_sysfs_group(dev, &rxe_attr_group);
+-	err = ib_register_device(dev, ibdev_name);
++	err = ib_register_device(dev, ibdev_name, NULL);
+ 	if (err)
+ 		pr_warn("%s failed with error %d\n", __func__, err);
+
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index d862bec84376..0362d57b4db8 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -69,7 +69,7 @@ static int siw_device_register(struct siw_device *sdev, const char *name)
+
+ 	sdev->vendor_part_id = dev_id++;
+
+-	rv = ib_register_device(base_dev, name);
++	rv = ib_register_device(base_dev, name, NULL);
+ 	if (rv) {
+ 		pr_warn("siw: device registration error %d\n", rv);
+ 		return rv;
+@@ -386,6 +386,8 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
+ 	base_dev->dev.dma_parms = &sdev->dma_parms;
+ 	sdev->dma_parms = (struct device_dma_parameters)
+ 		{ .max_segment_size = SZ_2G };
++	dma_coerce_mask_and_coherent(&base_dev->dev,
++				     dma_get_required_mask(&base_dev->dev));
+ 	base_dev->num_comp_vectors = num_possible_cpus();
+
+ 	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index c9f70063f4e4..c390513e7ba8 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2782,7 +2782,8 @@ void ib_dealloc_device(struct ib_device *device);
+
+ void ib_get_device_fw_str(struct ib_device *device, char *str);
+
+-int ib_register_device(struct ib_device *device, const char *name);
++int ib_register_device(struct ib_device *device, const char *name,
++		       struct device *dma_device);
+ void ib_unregister_device(struct ib_device *device);
+ void ib_unregister_driver(enum rdma_driver_id driver_id);
+ void ib_unregister_device_and_put(struct ib_device *device);
+--
+2.26.2
+
