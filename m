@@ -2,189 +2,295 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A23284EEF
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 17:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1C5284F0C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Oct 2020 17:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJFP14 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Oct 2020 11:27:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33659 "EHLO mga12.intel.com"
+        id S1726064AbgJFPc7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Oct 2020 11:32:59 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56234 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFP14 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:27:56 -0400
-IronPort-SDR: QeDM/ScQrcW2A+HZNRbbrBs6431VhL8Qeh83rsOSjF0a8XrNi4Ch8LTEXdn5yOjNhjejNGAJ5r
- FKugDPss33HA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="143926600"
+        id S1725906AbgJFPc7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:32:59 -0400
+IronPort-SDR: 4yUMXlusN5MIca3xPGT5KZvzJMs1GOazl9R6z2pYekJvUe0GyOE9D0h2CX1KT67vc35SxBILBa
+ qpNFdKN/HBvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="144445847"
 X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="143926600"
+   d="scan'208";a="144445847"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:18:11 -0700
-IronPort-SDR: jyseSU0pg3l97W6nWc2ghmP+1PlhkgiTtjpSWzlQToieuZXfHvP5XeXyhpnzuq+dfIx1uY6gyr
- n6Y0n91f/yMQ==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:26:26 -0700
+IronPort-SDR: ivS5TWHds81ypmOr2pQD1NN9DwafyvhkWwHRT/Uf06zkZnf3uB4qqYg+j4pqCEmTgqw30HVYhh
+ kGUMZGxCjvkg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="460840058"
-Received: from mforsman-mobl.amr.corp.intel.com (HELO [10.212.97.68]) ([10.212.97.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:18:08 -0700
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     Leon Romanovsky <leon@kernel.org>,
-        Dave Ertman <david.m.ertman@intel.com>
-Cc:     alsa-devel@alsa-project.org, parav@mellanox.com, tiwai@suse.de,
-        netdev@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        fred.oh@linux.intel.com, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, broonie@kernel.org, jgg@nvidia.com,
-        gregkh@linuxfoundation.org, kuba@kernel.org,
-        dan.j.williams@intel.com, shiraz.saleem@intel.com,
-        davem@davemloft.net, kiran.patil@intel.com
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006071821.GI1874917@unreal>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
-Date:   Tue, 6 Oct 2020 10:18:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201006071821.GI1874917@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
+   d="scan'208";a="460843879"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga004.jf.intel.com with ESMTP; 06 Oct 2020 08:26:26 -0700
+Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 6 Oct 2020 08:26:25 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 6 Oct 2020 08:26:25 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 6 Oct 2020 08:26:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h8upzV2yxgiXbxgXGDTmgSYFiulL8T0AhJrAqshsnyynqHlerdgclT80QQfxBSSDDxNk/ZWKcls56cipgRe62Sjb1O2GrXOMjz2uGXOlsr2yx2I2nyfQixfwTR47QoCycMEJXuC9CnaWQHrZ+mxNWhJo2oZApWMtmxSh32n1Xuyq96yw36cdRp+1fImIVJABub0pxOIDz69yLG1fNvhwo3LghZ4LB2CMXMnpOfD68OoDWBm3Ci6+Wd0YbRpFI4C/rn+hMAJNcx1yKyCeEa4hi0obt/iN+OXYpP92kwKwFtbfqqok29F4w+jWDrp7XLZup1bDcWKFfAR/mHJs0PtkAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nHofyitEebw/lpThOJaVg4ioHTbaKTs0Yt92IB54Xno=;
+ b=VPwgV/q6fZvgnGl6oRDTuHwsD1bQK1MQK1Ky67x9z4FY3hTX2whUSRPFgCNiWKpfHbX0pcGGr1mgTcKYt/SxXPxYHeK4qHCmOpy1q2adBKfkzEa9gUpcdDjwsYOq424O5GWKTxQHkfvQM6OFxUR260VoG5APuCme3rI/UuyHf3Pl3OOIIsC2Exqq2cRL86+wmWI/wKQUIw7CrvPnBtovR3+H6ujD08kWUQCIFuxrojcDLKzoNtniBifQmX+hsyOGP9YxRP0X4mLdMKvG61NrRGlYeOM4ZJQkf0hd8WhLTUq2HQWYjnw9FMPhaQG3v2LrUFoWdyeeqEuX+YTDDW6K7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nHofyitEebw/lpThOJaVg4ioHTbaKTs0Yt92IB54Xno=;
+ b=gkxMvzyC1n1txLy1m/fGyAzYaFjMoRfxGO6W+plZPGF/ermEvZk3aoXL1q0f5sfNcwhodUi45cIf0YSH95XGoQTHKv2h05F0FzYd8tv84d47P3B6XeWWe7OZv3nQx3djXmD1Z/msPIArp+6W3B6GdmVS9aEfHOHa1tOExBHUmHY=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by CO1PR11MB4993.namprd11.prod.outlook.com (2603:10b6:303:6c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Tue, 6 Oct
+ 2020 15:26:21 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7067:d996:719:10fa]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7067:d996:719:10fa%6]) with mapi id 15.20.3433.045; Tue, 6 Oct 2020
+ 15:26:21 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: RE: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Thread-Topic: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Thread-Index: AQHWmoByzOf02BrPAUWXdhZKsQyBsKmI/YAAgAAfg6CAATJWAIAAYzGg
+Date:   Tue, 6 Oct 2020 15:26:21 +0000
+Message-ID: <MW3PR11MB4555C014C0A6006D9AD1B761E50D0@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
+ <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+ <20201005131302.GQ9916@ziepe.ca>
+ <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20201006092214.GX438822@phenom.ffwll.local>
+In-Reply-To: <20201006092214.GX438822@phenom.ffwll.local>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8a4fe046-944c-40ac-a4b2-08d86a0c2e04
+x-ms-traffictypediagnostic: CO1PR11MB4993:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO1PR11MB49933FDAB7FA1C489FEBD968E50D0@CO1PR11MB4993.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vFiGBo8PWY68DGNXP/V6QHkJ486nBrXMiP4fKGY8wh2tDKdLg5LLP1wntr/nodR0mZe5puSesqXFxqqnmqgCM6ajIwLmbsb6+sagNFX7S1vU6/ngS+9CeEFmpP8HTL02cqq0WdPNDfQcISWJvTMVwugF5EdKohkbZYPecVpDQxbxQiaaSa5ruyUrBTh/SZTcdunqoJXWnDGNt9/gW8JNeHQnH/qgQ2eqlZChbuFMJ3T3Z1BrhrzYXeXFfpi9F7v/zMJyChz21RwZE4IfmK/84cZgi8FtAN8kU6W9zXD0yEbuZGTmFYtTxQS+y0NVMp0wcBoDBAK4zH3ELN68WYxzIPaS3L1BlMih13uAUntek3Txc1gF4jBsg+h9QeygOZgWYWsjAJ+Mj9mrZPhJmE1Zeg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(83380400001)(83080400001)(33656002)(55016002)(5660300002)(2906002)(4326008)(9686003)(8676002)(478600001)(8936002)(66946007)(316002)(71200400001)(26005)(6916009)(53546011)(6506007)(66556008)(66476007)(66446008)(64756008)(76116006)(52536014)(186003)(966005)(54906003)(86362001)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +kBP2TiWwik2HwNRF4YYEImaGMZ8Zny5pPNvSc0nG0pA+Sfwnp7qQWwSOpX8T9nnv0fcuSIFDOyQD17eNF0JDywl8LTqhRR5vcJGp99Lje1m4seeonkxIXmNVoHdB68btdULYSsYadLJYwJpk+T98kOM6Vsb2JjX/oGtKrEOHJOhU7N3yKArbgbCiO2or/5PirJHzpuF/TSt1i5bHYRFMa8RPSJOMl4OpwgaT6tOj1d2YWc3FBbRVjwjIhb5NhBbtzQIz8S7CerZnuGHe+eDaQKylyVrtkJZFs/ltvTLn96nunwGol5SVtlVuDK27pilbw0mm2vu5eyfX2s4EEMJOJsg3D6TokqCGqSvhshY4DRDHGoVlV7rm/0wl3/VE+zM2FO0ghhW8I60VfWJM7I4Z0+2cnzMbKIzO3eGkOcbfWriRc9HswNku8ffaUO+xIZ1qNOylwviaYIJWDxgV+3lXB231PoiAqB7ZbDCUZMrjrUsW6i44qzSlJxHvgZxG5bmuLxG/QMfMN1M5zK+2IFSPS4dnw9sgtdf5YvUFSDtWSoxkzQc7FVoaBFX+jFuXQUlFUWRyDpQL9EuqHspCg/BD0FzUMLF3LUUZ+bar49e/oJ5PzbOiSxauMGLlvnhtmov1+szgwUDtx/9TGBR/hl9VQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a4fe046-944c-40ac-a4b2-08d86a0c2e04
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 15:26:21.5450
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y+kxPJYp7h5QogXvHZ+cy66+TocF/ji4FCb9/F1zQZxsXipTc25cjk4c0DHxyza/BDM3sytKg9vL3qY8/DRJPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4993
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks for the review Leon.
 
->> Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
->> It enables drivers to create an ancillary_device and bind an
->> ancillary_driver to it.
-> 
-> I was under impression that this name is going to be changed.
+> -----Original Message-----
+> From: Daniel Vetter <daniel@ffwll.ch>
+> Sent: Tuesday, October 06, 2020 2:22 AM
+> To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>; Leon Romanovsky <leon@kernel.org>; li=
+nux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org;
+> Doug Ledford <dledford@redhat.com>; Vetter, Daniel <daniel.vetter@intel.c=
+om>; Christian Koenig <christian.koenig@amd.com>
+> Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as u=
+ser memory region
+>=20
+> On Mon, Oct 05, 2020 at 04:18:11PM +0000, Xiong, Jianxin wrote:
+> > > -----Original Message-----
+> > > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > > Sent: Monday, October 05, 2020 6:13 AM
+> > > To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> > > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org;
+> > > Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> > > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian
+> > > Koenig <christian.koenig@amd.com>; Vetter, Daniel
+> > > <daniel.vetter@intel.com>
+> > > Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf
+> > > as user memory region
+> > >
+> > > On Sun, Oct 04, 2020 at 12:12:28PM -0700, Jianxin Xiong wrote:
+> > > > Dma-buf is a standard cross-driver buffer sharing mechanism that
+> > > > can be used to support peer-to-peer access from RDMA devices.
+> > > >
+> > > > Device memory exported via dma-buf is associated with a file descri=
+ptor.
+> > > > This is passed to the user space as a property associated with the
+> > > > buffer allocation. When the buffer is registered as a memory
+> > > > region, the file descriptor is passed to the RDMA driver along
+> > > > with other parameters.
+> > > >
+> > > > Implement the common code for importing dma-buf object and mapping
+> > > > dma-buf pages.
+> > > >
+> > > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> > > > Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> > > > Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> > > > ---
+> > > >  drivers/infiniband/core/Makefile      |   2 +-
+> > > >  drivers/infiniband/core/umem.c        |   4 +
+> > > >  drivers/infiniband/core/umem_dmabuf.c | 291
+> > > > ++++++++++++++++++++++++++++++++++
+> > > >  drivers/infiniband/core/umem_dmabuf.h |  14 ++
+> > > >  drivers/infiniband/core/umem_odp.c    |  12 ++
+> > > >  include/rdma/ib_umem.h                |  19 ++-
+> > > >  6 files changed, 340 insertions(+), 2 deletions(-)  create mode
+> > > > 100644 drivers/infiniband/core/umem_dmabuf.c
+> > > >  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+> > >
+> > > I think this is using ODP too literally, dmabuf isn't going to need
+> > > fine grained page faults, and I'm not sure this locking scheme is OK =
+- ODP is horrifically complicated.
+> > >
+> >
+> > > If this is the approach then I think we should make dmabuf its own
+> > > stand alone API, reg_user_mr_dmabuf()
+> >
+> > That's the original approach in the first version. We can go back there=
+.
+> >
+> > >
+> > > The implementation in mlx5 will be much more understandable, it
+> > > would just do dma_buf_dynamic_attach() and program the XLT exactly th=
+e same as a normal umem.
+> > >
+> > > The move_notify() simply zap's the XLT and triggers a work to reload
+> > > it after the move. Locking is provided by the dma_resv_lock. Only a s=
+mall disruption to the page fault handler is needed.
+> > >
+> >
+> > We considered such scheme but didn't go that way due to the lack of
+> > notification when the move is done and thus the work wouldn't know
+> > when it can reload.
+> >
+> > Now I think it again, we could probably signal the reload in the page f=
+ault handler.
+>=20
+> For reinstanting the pages you need:
+>=20
+> - dma_resv_lock, this prevents anyone else from issuing new moves or
+>   anything like that
+> - dma_resv_get_excl + dma_fence_wait to wait for any pending moves to
+>   finish. gpus generally don't wait on the cpu, but block the dependent
+>   dma operations from being scheduled until that fence fired. But for rdm=
+a
+>   odp I think you need the cpu wait in your worker here.
+> - get the new sg list, write it into your ptes
+> - dma_resv_unlock to make sure you're not racing with a concurrent
+>   move_notify
+>=20
+> You can also grab multiple dma_resv_lock in atomically, but I think the o=
+dp rdma model doesn't require that (gpus need that).
+>=20
+> Note that you're allowed to allocate memory with GFP_KERNEL while holding=
+ dma_resv_lock, so this shouldn't impose any issues. You are
+> otoh not allowed to cause userspace faults (so no gup/pup or copy*user wi=
+th faulting enabled). So all in all this shouldn't be any worse that
+> calling pup for normal umem.
+>=20
+> Unlike mmu notifier the caller holds dma_resv_lock already for you around=
+ the move_notify callback, so you shouldn't need any additional
+> locking in there (aside from what you need to zap the ptes and flush hw t=
+lbs).
+>=20
+> Cheers, Daniel
+>=20
 
-It's part of the opens stated in the cover letter.
+Hi Daniel, thanks for providing the details. I would have missed the dma_re=
+sv_get_excl + dma_fence_wait part otherwise.=20
 
-[...]
-
->> +	const struct my_driver my_drv = {
->> +		.ancillary_drv = {
->> +			.driver = {
->> +				.name = "myancillarydrv",
-> 
-> Why do we need to give control over driver name to the driver authors?
-> It can be problematic if author puts name that already exists.
-
-Good point. When I used the ancillary_devices for my own SoundWire test, 
-the driver name didn't seem specifically meaningful but needed to be set 
-to something, what mattered was the id_table. Just thinking aloud, maybe 
-we can add prefixing with KMOD_BUILD, as we've done already to avoid 
-collisions between device names?
-
-[...]
-
->> +int __ancillary_device_add(struct ancillary_device *ancildev, const char *modname)
->> +{
->> +	struct device *dev = &ancildev->dev;
->> +	int ret;
->> +
->> +	if (!modname) {
->> +		pr_err("ancillary device modname is NULL\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	ret = dev_set_name(dev, "%s.%s.%d", modname, ancildev->name, ancildev->id);
->> +	if (ret) {
->> +		pr_err("ancillary device dev_set_name failed: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	ret = device_add(dev);
->> +	if (ret)
->> +		dev_err(dev, "adding ancillary device failed!: %d\n", ret);
->> +
->> +	return ret;
->> +}
-> 
-> Sorry, but this is very strange API that requires users to put
-> internal call to "dev" that is buried inside "struct ancillary_device".
-> 
-> For example in your next patch, you write this "put_device(&cdev->ancildev.dev);"
-> 
-> I'm pretty sure that the amount of bugs in error unwind will be
-> astonishing, so if you are doing wrappers over core code, better do not
-> pass complexity to the users.
-
-In initial reviews, there was pushback on adding wrappers that don't do 
-anything except for a pointer indirection.
-
-Others had concerns that the API wasn't balanced and blurring layers.
-
-Both points have merits IMHO. Do we want wrappers for everything and 
-completely hide the low-level device?
-
-> 
->> +EXPORT_SYMBOL_GPL(__ancillary_device_add);
->> +
->> +static int ancillary_probe_driver(struct device *dev)
->> +{
->> +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
->> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
->> +	int ret;
->> +
->> +	ret = dev_pm_domain_attach(dev, true);
->> +	if (ret) {
->> +		dev_warn(dev, "Failed to attach to PM Domain : %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	ret = ancildrv->probe(ancildev, ancillary_match_id(ancildrv->id_table, ancildev));
-> 
-> I don't think that you need to call ->probe() if ancillary_match_id()
-> returned NULL and probably that check should be done before
-> dev_pm_domain_attach().
-
-we'll look into this.
-
-> 
->> +	if (ret)
->> +		dev_pm_domain_detach(dev, true);
->> +
->> +	return ret;
->> +}
->> +
->> +static int ancillary_remove_driver(struct device *dev)
->> +{
->> +	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
->> +	struct ancillary_device *ancildev = to_ancillary_dev(dev);
->> +	int ret;
->> +
->> +	ret = ancildrv->remove(ancildev);
->> +	dev_pm_domain_detach(dev, true);
->> +
->> +	return ret;
-> 
-> You returned an error to user and detached from PM, what will user do
-> with this information? Should user ignore it? retry?
-
-That comment was also provided in earlier reviews. In practice the error 
-is typically ignored so there was a suggestion to move the return type 
-to void, that could be done if this was desired by the majority.
-
-[...]
-
->> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
->> index 5b08a473cdba..7d596dc30833 100644
->> --- a/include/linux/mod_devicetable.h
->> +++ b/include/linux/mod_devicetable.h
->> @@ -838,4 +838,12 @@ struct mhi_device_id {
->>   	kernel_ulong_t driver_data;
->>   };
->>
->> +#define ANCILLARY_NAME_SIZE 32
->> +#define ANCILLARY_MODULE_PREFIX "ancillary:"
->> +
->> +struct ancillary_device_id {
->> +	char name[ANCILLARY_NAME_SIZE];
-> 
-> I hope that this be enough.
-
-Are you suggesting a different value to allow for a longer string?
+> >
+> > > > +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
+> > > > +	sgt =3D dma_buf_map_attachment(umem_dmabuf->attach,
+> > > > +				     DMA_BIDIRECTIONAL);
+> > > > +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+> > >
+> > > This doesn't look right, this lock has to be held up until the HW is
+> > > programmed
+> >
+> > The mapping remains valid until being invalidated again. There is a seq=
+uence number checking before programming the HW.
+> >
+> > >
+> > > The use of atomic looks probably wrong as well.
+> >
+> > Do you mean umem_dmabuf->notifier_seq? Could you elaborate the concern?
+> >
+> > >
+> > > > +	k =3D 0;
+> > > > +	total_pages =3D ib_umem_odp_num_pages(umem_odp);
+> > > > +	for_each_sg(umem->sg_head.sgl, sg, umem->sg_head.nents, j) {
+> > > > +		addr =3D sg_dma_address(sg);
+> > > > +		pages =3D sg_dma_len(sg) >> page_shift;
+> > > > +		while (pages > 0 && k < total_pages) {
+> > > > +			umem_odp->dma_list[k++] =3D addr | access_mask;
+> > > > +			umem_odp->npages++;
+> > > > +			addr +=3D page_size;
+> > > > +			pages--;
+> > >
+> > > This isn't fragmenting the sg into a page list properly, won't work
+> > > for unaligned things
+> >
+> > I thought the addresses are aligned, but will add explicit alignment he=
+re.
+> >
+> > >
+> > > And really we don't need the dma_list for this case, with a fixed
+> > > whole mapping DMA SGL a normal umem sgl is OK and the normal umem XLT=
+ programming in mlx5 is fine.
+> >
+> > The dma_list is used by both "polulate_mtt()" and "mlx5_ib_invalidate_r=
+ange", which are used for XLT programming and invalidating
+> (zapping), respectively.
+> >
+> > >
+> > > Jason
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
