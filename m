@@ -2,148 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F38228608F
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 15:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C62286405
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 18:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgJGNyz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 09:54:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43089 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728526AbgJGNys (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 09:54:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602078885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=83V1503E1Au2YwuNcpFE2I7JcBpY77JP+Cmbo9VJuNo=;
-        b=A0MaaJ6MG9FpvOeclFPJWbsGeb0msgifXW8ojb00CPWMFyOUoOPKXMkm3sDCkJyRmegEXa
-        RoEXsWHEBZcDZEMUR6TUX7+Cb0tyLWwJzI57t2+IAwFJSk7VX07hUkHFi0l21yMZzqxtOW
-        bLulBCmZWdbQp+0OCGwg4xWPCIA9LOw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-Tne8v-ocMEK17rTTu4G6cQ-1; Wed, 07 Oct 2020 09:54:42 -0400
-X-MC-Unique: Tne8v-ocMEK17rTTu4G6cQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73D29192AB69
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D2F91001281
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
-Received: from zmail23.collab.prod.int.phx2.redhat.com (zmail23.collab.prod.int.phx2.redhat.com [10.5.83.28])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 674DB181A71E
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 09:54:41 -0400 (EDT)
-From:   Doug Ledford <dledford@redhat.com>
-To:     linux-rdma@vger.kernel.org
-Message-ID: <252007469.52861641.1602078881249.JavaMail.zimbra@redhat.com>
-In-Reply-To: <431809995.52859932.1602077964742.JavaMail.zimbra@redhat.com>
-Subject: Upcoming OpenFabrics Alliance Webinar
+        id S1727857AbgJGQaV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 12:30:21 -0400
+Received: from sonic311-14.consmr.mail.bf2.yahoo.com ([74.6.131.124]:42459
+        "EHLO sonic311-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727876AbgJGQaU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 12:30:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602088218; bh=PxMwWzXvs+dqOoH0/FHvFmQpYH2JguaCUHYAVLLmaiw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=D3Hz9q9JJsaLTHCe9KHtWTC+NgQey3byF7xal7ZA69yQlC3Elj+VhUH3rypNnwSfwpR828UUEd59digMiCj0ANoShCcV2Rb242wq9ePovmAe48htXzIynPqPA2xUvy5tymaWkJJpzoV3awYb2JqcpRncqVk2SPpZhSVptDvHKbV/MqqwbyZD1o7McHCgv8aYOwnVVD41nR+84l27pYlOEsUb3HP4uqxUX8K0GnASyAPZX67sK2y9aRc9Q2TU/JZe9vV50I+7vhTshKf0Vo7NbrExXsciXh66SIc1Vsvwx9J4pr45Eyj6cXjJ2bwRcbu7tU70ydmZnKiTYBFE2ig7FQ==
+X-YMail-OSG: hff22QwVM1n1lr7kUhvwHmB9d.SXs.adS5qmrkMziCP7qYJ9pOzG_a.Jx2ZQdFI
+ C.SumHH6zu8GKC8cBNlJ8SARPLEuET.ZZ7.NCDhxfsZS7kqz8pG2I63tcuGf_4aTEuNmPBepRmpd
+ rXYdcNAdfpeTAutwPy_UjIZs8MqWFFNDBsh_tKhoZdZSyIhRpSEMkrr2fO7hNv93wFwq0fZf9JrA
+ oWBAfS7o4CJb6910ZfCfyUn9r23w1J17jPO_m_l1498U3_cNbD4qjgehHdaNq9fXVPTgnxeH69Wj
+ yjKpEVjlxb90g_.Z9MJtxVNKM6laAdSgXa.5Xu403O5NBGVAQKrXUpBHCxlWneTJMfqpd2AYYust
+ WswH5DyBwOaJr6GQw0XxSRw5.uTzgajso_cEsmSNvcF4tt32Ay.lVUr5sh0Ij1r_x92XGQUga21H
+ IYNF1yTUy45.r0RSpyy.mXJcYY9.r3tdw5r28Mag6S5EEj0nih3UdDyLA30o_0BNE_BveeGP3kkX
+ LiwfaKUAB8WD.ZyO4zAioik11yttXhI8FY6EpOOiP8U4P1mPHfefZPo98qRdmegPTPn8t0VUEIAV
+ 5On5c0In5O44vVN_5cxeq867PX.5ixfR50.mwRL71s5Tv_M8w7SZFW7HT26MqcMGeCcxUHHprjGb
+ ACBX0sMZ_OpVytBx0Y.f8pW51q3T_32iWy36i0GyJboYWWgvHUjcd_bXS7a8Mz3TVx0vmw1dbyE4
+ RbrcotyrMj2o5Wp_BRy2ZhKGwht.ue6b7dywa_0XZStuWqr3pPAcGTQJmFCPyy3Ir1TbpsZN3uai
+ 2IptIMGz8dk2gSoDG6AFWl1yOg2CHY7rBKSjFqx4envIzFt_diyjsNw.TINVFTlVAyIljaMGNHF6
+ CXBngo_a9Bt9r1LJFpxCl_CNYnJTZ9I7lCeMnaOPT0xiCsiF5Ms3FXmuSLwsUVKpAtV9XVodP4WT
+ l5RfdKAR8TRWmRnvu9zQDMc_Xl3i0Dl__mmAYZLwHEOQxlw2bdrTmXWLWg8u37c_Hq0_BQS_DVc.
+ VKa3WATcbYuU05K86Blp6FGPUqGiDVGvlM840nH0tjsNSVYLpaE6hWk8c9udvxN770bLwnUPZrOX
+ 3.6spxFK8IH7Uulrh4eTvsa5BhvSCgf9jW.mjVG_DDI5cJ1yiobbmWlGieXX7216ZfjmejOGfcCC
+ LDm9ngoz4O_TgbwHgyFSV0nvCvKcWxFNwYQ.yNXw9ftYfWJk8QI6wkpMtZuij1jrProlGSRBJFcy
+ vFGCe7eKaKKBnVuSJxpWfk8IiEn3PMCe5AqM7EFzz0POq3PdJFbVwThiS9ZMeYO0hvN4FP7NOwwK
+ x_jOJYCG_.084eLouohjeMp6aR2lXmRAuBDPMHGKlJqyaimMljVMMk7eMwnoxWVeaoqnIxN3vvWq
+ uF140tj8r3xk2KJfa5Hy5t2WORUBnlCgATtBoFMO9
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Wed, 7 Oct 2020 16:30:18 +0000
+Date:   Wed, 7 Oct 2020 16:23:24 +0000 (UTC)
+From:   Marilyn Robert <fredodinga22@gmail.com>
+Reply-To: marilyobert@gmail.com
+Message-ID: <1187042417.143758.1602087804794@mail.yahoo.com>
+Subject: =?UTF-8?B?0J3QsNGY0LzQuNC70LAg0LrQsNGYINCz0L7RgdC/0L7QtNCw0YDQvtGC?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.10.110.57, 10.4.195.17]
-Thread-Topic: Upcoming OpenFabrics Alliance Webinar
-Thread-Index: sBTAlMhyXBv/OYqksa3XE6ydgkMaxg==
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+References: <1187042417.143758.1602087804794.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
-
-Next week at 1pm EDT is a webinar about the new Fabric Software Development=
- Platform (FSDP).  This is a high level presentation about what we are doin=
-g.  This is in line with the new testing program we discussed at the 2019 O=
-FA workshop.
-
-I *strongly* encourage any upstream maintainers related to RDMA to attend (=
-that would be kernel maintainers, rdma-core maintainers, libfabric, ucx, op=
-enmpi, etc. maintainers).  The FSDP is intended to run CI testing of both u=
-pstream kernel and user space projects related to RDMA technologies (it nee=
-d not be a direct RDMA technology, but one that RDMA interacts with is suff=
-icient to qualify, so NVMe because of NVMEoFabrics is a qualified upstream =
-project for the cluster to run CI on).  As an upstream maintainer, this is =
-your opportunity to see where the cluster design is going and have input in=
-to the how the cluster is built.  Keep in mind that hardware has already st=
-arted to arrive, so this is a case of "speak now, or suck it up".
-
-Also, the cluster is intended to be a place where upstream developers that =
-might have access to limited types of RDMA hardware (Hi Chuck!), but who wi=
-sh to be able to test across a much broader suite of hardware could log int=
-o the cluster and run their tests.  Upstream developers who work for compan=
-ies that are members of the OFA are automatically qualified for an account =
-on the FSDP.  However, upstream developers working for companies unrelated =
-to RDMA technologies, but who none-the-less end up working on stuff that to=
-uches the RDMA stack anyway (Hey HCH!) are also eligible for free individua=
-l memberships in the OFA, which grants them eligibility for an account on t=
-he FSDP so they too can test their code before sending it.
-
-The presentation next week is fairly high level and does not get too deep i=
-nto the details of the structure of the FSDP.  This is because the FSDP is =
-just now being built (the first orders for hardware have been placed, serve=
-rs that control the cluster have been built, now we are starting to build t=
-he cluster out) and we still have some flexibility in how things are design=
-ed as a result.  This is the upstream community's opportunity to make sure =
-their voice is heard in regards to that design.
-
-I look forward to seeing all of you there, and don't forget to register so =
-we can make sure the webinar is sized sufficiently for the number of attend=
-ees.
-
-Doug Ledford
-
-
-
-------------  Begin forwarded message  ------------------
-New OFA Webinar
-Introduction to OFA=E2=80=99s Fabric Software Development Platform (FSDP)
-October 13 at 10 a.m. Pacific
-One Week Remaining to Register
-http://bit.ly/OFAWebinarFSDP=20
-
-=20
-
-As a reminder, the OpenFabrics Alliance (OFA) will host a webinar highlight=
-ing the new Fabric Software Development Platform (FSDP). This webinar is an=
- ideal opportunity for the OFA Community to learn about the new FSDP progra=
-m, the FSDP Working Group charter and target objectives, which was highligh=
-ted in recent a recent OFA blog series (Part 1, Part 2).=20
-
-Date/Time: Tuesday, October 13, 2020, at 10 a.m. Pacific
-
-Registration:  http://bit.ly/OFAWebinarFSDP=20
-
-Presenters: OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporation and Do=
-ug Ledford of Red Hat, Inc.
-
-Title: Introduction to OFA=E2=80=99s Fabric Software Development Platform (=
-FSDP)
-
-About: The new Fabric Software Development Platform (FSDP) project is a ven=
-dor-neutral cluster owned and maintained by the OFA for the benefit of its =
-members to develop, test, and validate new and existing network technologie=
-s. FSDP offers OFA members an opportunity for serious cost reduction in tes=
-ting, validation, and development, and provides an invaluable service to th=
-e open source community of maintainers as they support open source networki=
-ng software integration.=20
-
-In this webinar, OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporation a=
-nd Doug Ledford of Red Hat, Inc. will cover:
-
-    Origins of FSDP Project
-    Introduction to FSDP Usages
-        Continuous Integration Testing Service
-        On-Demand Development and Testing Program
-        Logo Testing
-    How to Join / Contribute=20
-
-Please contact press@openfabrics.org with any questions.
-
-
---=20
-Doug Ledford <dledford@redhat.com>
-              GPG KeyID: 0E572FDD
-
+DQoNCtCd0LDRmNC80LjQu9CwINC60LDRmCDQs9C+0YHQv9C+0LTQsNGA0L7Rgg0KDQrQiNCw0YEg
+0YHRg9C8IDY4LdCz0L7QtNC40YjQvdCwINC20LXQvdCwLCDQutC+0ZjQsCDRgdGC0YDQsNC00LAg
+0L7QtCDQv9GA0L7QtNC+0LvQttC10L0g0LrQsNGA0YbQuNC90L7QvCDQvdCwINC00L7RmNC60LAs
+INC+0LQg0YHQuNGC0LUg0LzQtdC00LjRhtC40L3RgdC60Lgg0LjQvdC00LjQutCw0YbQuNC4LCDQ
+vNC+0ZjQsNGC0LAg0YHQvtGB0YLQvtGY0LHQsCDQvdCw0LLQuNGB0YLQuNC90LAg0YHQtSDQstC7
+0L7RiNC4INC4INC+0YfQuNCz0LvQtdC00L3QviDQtSDQtNC10LrQsCDQvNC+0LbQtdCx0Lgg0L3Q
+tdC80LAg0LTQsCDQttC40LLQtdCw0Lwg0L/QvtCy0LXRnNC1INC+0LQg0YjQtdGB0YIg0LzQtdGB
+0LXRhtC4INC60LDQutC+INGA0LXQt9GD0LvRgtCw0YIg0L3QsCDQsdGA0LfQuNC+0YIg0YDQsNGB
+0YIg0Lgg0LHQvtC70LrQsNGC0LAg0YjRgtC+INGB0LUg0ZjQsNCy0YPQstCwINC60LDRmCDQvdC1
+0LAuINCc0L7RmNC+0YIg0YHQvtC/0YDRg9CzINC/0L7Rh9C40L3QsCDQvdC10LrQvtC70LrRgyDQ
+s9C+0LTQuNC90Lgg0L3QsNC90LDQt9Cw0LQg0Lgg0L3QsNGI0LjRgtC1INC00L7Qu9Cz0Lgg0LPQ
+vtC00LjQvdC4INCx0YDQsNC6INC90LUg0LHQtdCwINCx0LvQsNCz0L7RgdC70L7QstC10L3QuCDR
+gdC+INC90LjRgtGDINC10LTQvdC+INC00LXRgtC1LCDQv9C+INC90LXQs9C+0LLQsNGC0LAg0YHQ
+vNGA0YIg0LPQviDQvdCw0YHQu9C10LTQuNCyINGG0LXQu9C+0YLQviDQvdC10LPQvtCy0L4g0LHQ
+vtCz0LDRgtGB0YLQstC+Lg0KDQrQlNC+0LDRk9Cw0Lwg0LrQsNGYINCy0LDRgSDQvtGC0LrQsNC6
+0L4g0YHQtSDQv9C+0LzQvtC70LjQsiDQt9CwINGC0L7QsCwg0L/QvtC00LPQvtGC0LLQtdC9INGB
+0YPQvCDQtNCwINC00L7QvdC40YDQsNC8INGB0YPQvNCwINC+0LQgMiwgMzAwLCAwMDAg0LXQstGA
+0LAg0LfQsCDQv9C+0LzQvtGIINC90LAg0YHQuNGA0L7QvNCw0YjQvdC40YLQtSwg0YHQuNGA0L7Q
+vNCw0YjQvdC40YLQtSDQuCDQv9C+0LzQsNC70LrRgyDQv9GA0LjQstC40LvQtdCz0LjRgNCw0L3Q
+uNGC0LUg0LzQtdGT0YMg0LLQsNGI0LjRgtC1INGB0L7QsdGA0LDQvdC40ZjQsCAvINC+0L/RiNGC
+0LXRgdGC0LLQvi4g0JfQsNCx0LXQu9C10LbQtdGC0LUg0LTQtdC60LAg0L7QstC+0Zgg0YTQvtC9
+0LQg0LUg0LTQtdC/0L7QvdC40YDQsNC9INCy0L4g0LHQsNC90LrQsCDQutCw0LTQtSDRiNGC0L4g
+0YDQsNCx0L7RgtC10YjQtSDQvNC+0ZjQvtGCINGB0L7Qv9GA0YPQsy4gQXBwcmVjaWF0ZdC1INGG
+0LXQvdCw0Lwg0LDQutC+INC+0LHRgNC90LXRgtC1INCy0L3QuNC80LDQvdC40LUg0L3QsCDQvNC+
+0LXRgtC+INCx0LDRgNCw0ZrQtSDQt9CwINC/0YDQvtC/0LDQs9C40YDQsNGa0LUg0L3QsCDQvNCw
+0YHQsNC20LDRgtCwINC90LAg0LrRgNCw0LvRgdGC0LLQvtGC0L4sINGc0LUg0LLQuCDQtNCw0LTQ
+sNC8INC/0L7QstC10ZzQtSDQtNC10YLQsNC70Lgg0LfQsCDRgtC+0LAg0LrQsNC60L4g0LTQsCDQ
+v9C+0YHRgtCw0L/QuNGC0LUuDQoNCtCR0LvQsNCz0L7QtNCw0YDQsNC8DQrQky3Rk9CwINCc0LXR
+gNC40LvQuNC9INCg0L7QsdC10YDRgg==
