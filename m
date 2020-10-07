@@ -2,500 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590092858FD
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 09:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603D8285924
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 09:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgJGHGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 03:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGHGs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:06:48 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BE4620797;
-        Wed,  7 Oct 2020 07:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602054406;
-        bh=4VGqAdNSpTrfyqyF8qXCRWAPfMvTFax/1e09415hnY8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W1BHwHoXl3wWfQnNYiyALKsli3Rgqs9vT9URrQcOdJvnxhv2xkxfB08dB3ed8W/VL
-         Q/4VSKsv26ZXClTEUKScECvKvnETg0gBQA8cf+DAMtELTVOgCgbIm5P0/UWhFRUQML
-         OruADHwal7CZNCQ+X5I7xtCi1IYY7Xwb02vDgCjk=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Adit Ranadive <aditr@vmware.com>, Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <yanjunz@nvidia.com>
-Subject: [PATCH rdma-next v3] RDMA: Explicitly pass in the dma_device to ib_register_device
-Date:   Wed,  7 Oct 2020 10:06:41 +0300
-Message-Id: <20201007070641.3552647-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1727673AbgJGHOB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 03:14:01 -0400
+Received: from mail-dm6nam11on2052.outbound.protection.outlook.com ([40.107.223.52]:44481
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726041AbgJGHOA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:14:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XSOwKnSp71wrRp7wjEi4SQdcV1lC3htsbN9K5oj1NUa8cyEcF6b4NHopu1s+PgnqbJ65PI4T5JWd2LDBIaQdSHY/e8DC1P5XCs0iMinnCEi85pIs+rLszpNayVQCsgVkAF0ZT6VKe3aY6G5iTjRkhKTz6SRTrnhTLZEsLMRRo1ls0m0ytQd++AgdxrWQ+pgs7HBwftXWSt8S4ZLZKiL/VsjBXoUjX1TIkk78BDK3iYrBOpJ4Cj+BXcnwbD9VGf82N3gXSSZOt4eKuBWV7rWngUxH2rAKTfftoUMzGZJPnDeVAfOC0ehumY23jn5Gl2N5BlbP8NLRszlCf6K7ouLG1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AEpUHoOjky1yM60BXPTG/EA8BbeAzTKN2cwciBN7a1I=;
+ b=P+job8eUiNf2eGsHOiJX5V1CjwhBz4GwJ5eT0RoLSCfeHuFlYJUMoT4iUFn4ti2kJSw4k5nfgIEbEaZTvOAqiOhG+uv7OhKUD3ZyL+Ebjbp3Twz/RGHXtVHXhiHMpsC4ZghlRr1lYOGDvcYF4ONgp/bodG09hDBPhjQSCNcLZk76maYjRiHklaVwe0iVA+BF6XrAxTK/IgIk05rDpZnx7WILeqjFOQSjjwnQUwLYElhHXNLdKlY7HGHj+9hEnZG+1JgXa/YVGADP4njIjyijC3NbI8icWde1N8EENv1B4G2tow5JAkCRnr5RZhhJQrn4av0jTU4uD8fR1vX6v5ybhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AEpUHoOjky1yM60BXPTG/EA8BbeAzTKN2cwciBN7a1I=;
+ b=muLtk21c5ToQDt5ZgaMCg55+izKc85Q5pUqHombsBk0T3Ut+uQSh/i1OTSMAhqYOth+iiJ9MwRECdILf4ZVkv8/VSIBvzg/CYaS6jubgIqK23mKYSN1Cbrw8FHiVfdgjDEAYg0qPNMYr6HWI+f6jQzILx37l1J+Gb64YS3hFf28=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3677.namprd12.prod.outlook.com (2603:10b6:208:15a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Wed, 7 Oct
+ 2020 07:13:51 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.022; Wed, 7 Oct 2020
+ 07:13:51 +0000
+Subject: Re: [RFC PATCH v3 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+To:     Daniel Vetter <daniel@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Xiong, Jianxin" <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+References: <1601838751-148544-1-git-send-email-jianxin.xiong@intel.com>
+ <1601838751-148544-2-git-send-email-jianxin.xiong@intel.com>
+ <20201005131302.GQ9916@ziepe.ca>
+ <MW3PR11MB455572267489B3F6B1C5F8C5E50C0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20201006092214.GX438822@phenom.ffwll.local> <20201006154956.GI5177@ziepe.ca>
+ <20201006163420.GB438822@phenom.ffwll.local>
+ <CAKMK7uG1RpDQ9ZO=VxkNuGjGPqkAzMQDgi89eSjDoMerMQ4+9A@mail.gmail.com>
+ <20201006180244.GJ5177@ziepe.ca>
+ <CAKMK7uEN7=QGOJMMf5UwR5Azsk+3-apFjn_hFmoSUTDOh1f85g@mail.gmail.com>
+ <20201006183834.GK5177@ziepe.ca>
+ <CAKMK7uG_gFdyMTQetx56NqPommTu3EgVQ2eQUW_K8x=WmxPZyg@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <0a407552-606f-2e62-e9a9-afeea0c6b85a@amd.com>
+Date:   Wed, 7 Oct 2020 09:13:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <CAKMK7uG_gFdyMTQetx56NqPommTu3EgVQ2eQUW_K8x=WmxPZyg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: FR2P281CA0010.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::20) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FR2P281CA0010.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.16 via Frontend Transport; Wed, 7 Oct 2020 07:13:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 56c5a182-3c02-437e-d79f-08d86a908aaf
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3677:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB367782B50D8FD25EFB4B6FAF830A0@MN2PR12MB3677.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YYUX6xVooqXH7ETIsj3rtVWGFzzgwgFnl7aQk8B6cl7UliTdUBOWAcLt2vcE97DP1Sp8+Mi7zzuYxzs1kkTSGQp/E6Tk/rvTMSolb5kGgwTiQ3BlD82mvUBCh03OK13yVxL/tV1H0+n6w7ODj0dKkB7MF/Wy69L78+R2epiNs09yW3rUyA87mZdxn8TLhQtqz948cnoANT0bgVSXf0xytpnJrJ5xv1dWeXvz+g3ncM15CpHnIg0KwQRy2mjVq3JNm1M7q2bYAFuIXVFi47SF3NWPbXuELXVr6RC/gwUyHj0jb2cULClddHEz9jDkX5x/LlupptW3/nOIK35J/pLPCW74z8QJQeQhtcCs60Ncvp6NjJnNmQMlogI6TuI7a91R
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(396003)(136003)(376002)(6486002)(86362001)(52116002)(8936002)(16526019)(2616005)(83380400001)(186003)(31696002)(31686004)(2906002)(53546011)(5660300002)(478600001)(316002)(8676002)(6666004)(54906003)(4326008)(110136005)(36756003)(66556008)(66946007)(66476007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: wqlDodi7+R8bai+dbzO1jR/Z8/YpZxWgRpr8YAz916LSx9We7NRiel3vOL7Alk56TV/mlmjw9sd1Lr6Hsh9XtKzFeZ/rUyJaXiOgq50+KUR0K87vhNtcULi5phrKl3GgOKe3asE8FP+Z/XJbx9E+mFuQNZuIGN7Y66rmzs9zNkDpg1YTGRONKns8OWd7/dJ2Hk+KQJYABUhzd5M0p2b2kqRxmlDrH9fddvnNqgC/9HGIucP+42sPYOF4bI38oMNEanMAuVOxtXAhO+HxsMQ1aFLYuWGst/p/lyNEa7p/iTMNocs7LnQLaZ4HpfHlZcf0qmHhoWFEXrHZrdQIlP88wyF2uaarX9KP4jtfL7exhJHKIH3W4kH/BYVToq1sHU6b+ZtvEfx/IlAE+a0UWYyhDNINtEXEHZtXDNLubFSTKORmHbch1UKSg9Yy+nwbDEfNJ7EqtIWid2tfgALf/oyPqPHazZP8/VzxkpZ+HGRTrNDLfWZr1SIgw0tqEVWAYbrcKUPiF2ZhMhWJJVp1bg4rAmFvoO8TXT0uwEgexPdwxDt4gEUxNCw01H2ak8onJOlZ0XSJZC5oxlkWlrpsF2MruAb6hxaluAkvBgLyPq//Pm8h/YPuQLaQbq7mIkrylBwexiNmwyv/HrnAHNY3iHrTfoApfteKYRAa/yQGuhpsfo8goprW3dOb+5Q5AR1K76KfUByjOfpy7i5/yr2DMzHIIQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56c5a182-3c02-437e-d79f-08d86a908aaf
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 07:13:51.1098
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NwPsqPAs9o4+B7bYxnVAeYfpj3RS1yAm9W2uqPQo/LWaNaBYis6Wfk/jg9Wd5W89
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3677
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+Hi guys,
 
-The code in setup_dma_device has become rather convoluted, move all of
-this to the drivers. Drives now pass in a DMA capable struct device which
-will be used to setup DMA, or drivers must fully configure the ibdev for
-DMA and pass in NULL.
+maybe it becomes clearer to understand when you see this as two 
+different things:
+1. The current location where the buffer is.
+2. If the data inside the buffer can be accessed.
 
-Other than setting the masks in rvt all drivers were doing this already
-anyhow.
+The current location is returned back by dma_buf_map_attachment() and 
+the result of it can be used to fill up your page tables.
 
-mthca, mlx4 and mlx5 were already setting up maximum DMA segment size for
-DMA based on their hardweare limits in:
-__mthca_init_one()
-  dma_set_max_seg_size (1G)
+But before you can access the data at this location you need to wait for 
+the exclusive fence to signal.
 
-__mlx4_init_one()
-  dma_set_max_seg_size (1G)
+As Daniel explained the reason for this is that GPUs are heavily 
+pipelined pieces of hardware. To keep all blocks busy all the time you 
+need to prepare things ahead of time.
 
-mlx5_pci_init()
-  set_dma_caps()
-    dma_set_max_seg_size (2G)
+This is not only to make buffers able to move around, but also for 
+example for cache coherency. In other words the buffer could have been 
+at the given location all the time, but you need to wait for the 
+exclusive fence to guarantee that write back caches are done with their job.
 
-Other non software drivers (except usnic) were extended to UINT_MAX [1, 2]
-instead of 2G as was before.
+Regards,
+Christian.
 
-[1] https://lore.kernel.org/linux-rdma/20200924114940.GE9475@nvidia.com/
-[2] https://lore.kernel.org/linux-rdma/20200924114940.GE9475@nvidia.com/
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
-v3:
- * Changed hardcoded max_segment_size to use dma_set_max_seg_size for
-   RXE and SIW.
- * Protected dma_virt_ops from linkage failure without CONFIG_DMA_OPS.
- * Removed not needed mask setting in RVT.
-v2: https://lore.kernel.org/linux-rdma/20201006073229.2347811-1-leon@kernel.org
- * Simplified setup_dma_device() by removing extra if()s over various WARN_ON().
-v1: https://lore.kernel.org/linux-rdma/20201005110050.1703618-1-leon@kernel.org
- * Moved dma_set_max_seg_size() to be part of the drivers and increased
-   the limit to UINT_MAX.
----
- drivers/infiniband/core/device.c              | 65 +++++--------------
- drivers/infiniband/hw/bnxt_re/main.c          |  3 +-
- drivers/infiniband/hw/cxgb4/provider.c        |  4 +-
- drivers/infiniband/hw/efa/efa_main.c          |  4 +-
- drivers/infiniband/hw/hns/hns_roce_main.c     |  3 +-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  3 +-
- drivers/infiniband/hw/mlx4/main.c             |  3 +-
- drivers/infiniband/hw/mlx5/main.c             |  2 +-
- drivers/infiniband/hw/mthca/mthca_provider.c  |  2 +-
- drivers/infiniband/hw/ocrdma/ocrdma_main.c    |  4 +-
- drivers/infiniband/hw/qedr/main.c             |  3 +-
- drivers/infiniband/hw/usnic/usnic_ib_main.c   |  3 +-
- .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  4 +-
- drivers/infiniband/sw/rdmavt/vt.c             |  7 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c         |  5 +-
- drivers/infiniband/sw/siw/siw_main.c          |  7 +-
- include/rdma/ib_verbs.h                       |  3 +-
- 17 files changed, 52 insertions(+), 73 deletions(-)
-
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index ec3becf85cac..f1c87e7d31a6 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1177,58 +1177,22 @@ static int assign_name(struct ib_device *device, const char *name)
- 	return ret;
- }
-
--static void setup_dma_device(struct ib_device *device)
-+static void setup_dma_device(struct ib_device *device,
-+			     struct device *dma_device)
- {
--	struct device *parent = device->dev.parent;
--
--	WARN_ON_ONCE(device->dma_device);
--
--#ifdef CONFIG_DMA_OPS
--	if (device->dev.dma_ops) {
--		/*
--		 * The caller provided custom DMA operations. Copy the
--		 * DMA-related fields that are used by e.g. dma_alloc_coherent()
--		 * into device->dev.
--		 */
--		device->dma_device = &device->dev;
--		if (!device->dev.dma_mask) {
--			if (parent)
--				device->dev.dma_mask = parent->dma_mask;
--			else
--				WARN_ON_ONCE(true);
--		}
--		if (!device->dev.coherent_dma_mask) {
--			if (parent)
--				device->dev.coherent_dma_mask =
--					parent->coherent_dma_mask;
--			else
--				WARN_ON_ONCE(true);
--		}
--	} else
--#endif /* CONFIG_DMA_OPS */
--	{
-+	WARN_ON(!IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device);
-+	if (IS_ENABLED(CONFIG_DMA_VIRT_OPS) && !dma_device) {
- 		/*
--		 * The caller did not provide custom DMA operations. Use the
--		 * DMA mapping operations of the parent device.
-+		 * If the caller does not provide a DMA capable device then the
-+		 * IB device will be used. In this case the caller should fully
-+		 * setup the ibdev for DMA. This usually means using
-+		 * dma_virt_ops.
- 		 */
--		WARN_ON_ONCE(!parent);
--		device->dma_device = parent;
--	}
--
--	if (!device->dev.dma_parms) {
--		if (parent) {
--			/*
--			 * The caller did not provide DMA parameters, so
--			 * 'parent' probably represents a PCI device. The PCI
--			 * core sets the maximum segment size to 64
--			 * KB. Increase this parameter to 2 GB.
--			 */
--			device->dev.dma_parms = parent->dma_parms;
--			dma_set_max_seg_size(device->dma_device, SZ_2G);
--		} else {
--			WARN_ON_ONCE(true);
--		}
-+		device->dev.dma_ops = &dma_virt_ops;
-+		dma_device = &device->dev;
- 	}
-+	device->dma_device = dma_device;
-+	WARN_ON(!device->dma_device->dma_parms);
- }
-
- /*
-@@ -1241,7 +1205,6 @@ static int setup_device(struct ib_device *device)
- 	struct ib_udata uhw = {.outlen = 0, .inlen = 0};
- 	int ret;
-
--	setup_dma_device(device);
- 	ib_device_check_mandatory(device);
-
- 	ret = setup_port_data(device);
-@@ -1361,7 +1324,8 @@ static void prevent_dealloc_device(struct ib_device *ib_dev)
-  * asynchronously then the device pointer may become freed as soon as this
-  * function returns.
-  */
--int ib_register_device(struct ib_device *device, const char *name)
-+int ib_register_device(struct ib_device *device, const char *name,
-+		       struct device *dma_device)
- {
- 	int ret;
-
-@@ -1369,6 +1333,7 @@ int ib_register_device(struct ib_device *device, const char *name)
- 	if (ret)
- 		return ret;
-
-+	setup_dma_device(device, dma_device);
- 	ret = setup_device(device);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 53aee5a42ab8..04621ba8fa76 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -736,7 +736,8 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
- 	if (ret)
- 		return ret;
-
--	return ib_register_device(ibdev, "bnxt_re%d");
-+	dma_set_max_seg_size(&rdev->en_dev->pdev->dev, UINT_MAX);
-+	return ib_register_device(ibdev, "bnxt_re%d", &rdev->en_dev->pdev->dev);
- }
-
- static void bnxt_re_dev_remove(struct bnxt_re_dev *rdev)
-diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
-index 4b76f2f3f4e4..8138c57a1e43 100644
---- a/drivers/infiniband/hw/cxgb4/provider.c
-+++ b/drivers/infiniband/hw/cxgb4/provider.c
-@@ -570,7 +570,9 @@ void c4iw_register_device(struct work_struct *work)
- 	ret = set_netdevs(&dev->ibdev, &dev->rdev);
- 	if (ret)
- 		goto err_dealloc_ctx;
--	ret = ib_register_device(&dev->ibdev, "cxgb4_%d");
-+	dma_set_max_seg_size(&dev->rdev.lldi.pdev->dev, UINT_MAX);
-+	ret = ib_register_device(&dev->ibdev, "cxgb4_%d",
-+				 &dev->rdev.lldi.pdev->dev);
- 	if (ret)
- 		goto err_dealloc_ctx;
- 	return;
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 92d701146320..6faed3a81e08 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -331,7 +331,7 @@ static int efa_ib_device_add(struct efa_dev *dev)
-
- 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
-
--	err = ib_register_device(&dev->ibdev, "efa_%d");
-+	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
- 	if (err)
- 		goto err_release_doorbell_bar;
-
-@@ -418,7 +418,7 @@ static int efa_device_init(struct efa_com_dev *edev, struct pci_dev *pdev)
- 			err);
- 		return err;
- 	}
--
-+	dma_set_max_seg_size(&pdev->dev, UINT_MAX);
- 	return 0;
- }
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 467c82900019..afeffafc59f9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -549,7 +549,8 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 		if (ret)
- 			return ret;
- 	}
--	ret = ib_register_device(ib_dev, "hns_%d");
-+	dma_set_max_seg_size(dev, UINT_MAX);
-+	ret = ib_register_device(ib_dev, "hns_%d", dev);
- 	if (ret) {
- 		dev_err(dev, "ib_register_device failed!\n");
- 		return ret;
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index 747b4de6faca..581ecbadf586 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -2761,7 +2761,8 @@ int i40iw_register_rdma_device(struct i40iw_device *iwdev)
- 	if (ret)
- 		goto error;
-
--	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
-+	dma_set_max_seg_size(&iwdev->hw.pcidev->dev, UINT_MAX);
-+	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d", &iwdev->hw.pcidev->dev);
- 	if (ret)
- 		goto error;
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 753c70402498..cd0fba6b0964 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -2841,7 +2841,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 		goto err_steer_free_bitmap;
-
- 	rdma_set_device_sysfs_group(&ibdev->ib_dev, &mlx4_attr_group);
--	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d"))
-+	if (ib_register_device(&ibdev->ib_dev, "mlx4_%d",
-+			       &dev->persist->pdev->dev))
- 		goto err_diag_counters;
-
- 	if (mlx4_ib_mad_init(ibdev))
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 3ae681a6ae3b..bca57c7661eb 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -4404,7 +4404,7 @@ static int mlx5_ib_stage_ib_reg_init(struct mlx5_ib_dev *dev)
- 		name = "mlx5_%d";
- 	else
- 		name = "mlx5_bond_%d";
--	return ib_register_device(&dev->ib_dev, name);
-+	return ib_register_device(&dev->ib_dev, name, &dev->mdev->pdev->dev);
- }
-
- static void mlx5_ib_stage_pre_ib_reg_umr_cleanup(struct mlx5_ib_dev *dev)
-diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
-index 31b558ff8218..c4d9cdc4ee97 100644
---- a/drivers/infiniband/hw/mthca/mthca_provider.c
-+++ b/drivers/infiniband/hw/mthca/mthca_provider.c
-@@ -1206,7 +1206,7 @@ int mthca_register_device(struct mthca_dev *dev)
- 	mutex_init(&dev->cap_mask_mutex);
-
- 	rdma_set_device_sysfs_group(&dev->ib_dev, &mthca_attr_group);
--	ret = ib_register_device(&dev->ib_dev, "mthca%d");
-+	ret = ib_register_device(&dev->ib_dev, "mthca%d", &dev->pdev->dev);
- 	if (ret)
- 		return ret;
-
-diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
-index d8c47d24d6d6..9b96661a7143 100644
---- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
-+++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
-@@ -255,7 +255,9 @@ static int ocrdma_register_device(struct ocrdma_dev *dev)
- 	if (ret)
- 		return ret;
-
--	return ib_register_device(&dev->ibdev, "ocrdma%d");
-+	dma_set_max_seg_size(&dev->nic_info.pdev->dev, UINT_MAX);
-+	return ib_register_device(&dev->ibdev, "ocrdma%d",
-+				  &dev->nic_info.pdev->dev);
- }
-
- static int ocrdma_alloc_resources(struct ocrdma_dev *dev)
-diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index 7c0aac3e635b..967641662b24 100644
---- a/drivers/infiniband/hw/qedr/main.c
-+++ b/drivers/infiniband/hw/qedr/main.c
-@@ -293,7 +293,8 @@ static int qedr_register_device(struct qedr_dev *dev)
- 	if (rc)
- 		return rc;
-
--	return ib_register_device(&dev->ibdev, "qedr%d");
-+	dma_set_max_seg_size(&dev->pdev->dev, UINT_MAX);
-+	return ib_register_device(&dev->ibdev, "qedr%d", &dev->pdev->dev);
- }
-
- /* This function allocates fast-path status block memory */
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-index 462ed71abf53..aa2e65fc5cd6 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-@@ -425,7 +425,8 @@ static void *usnic_ib_device_add(struct pci_dev *dev)
- 	if (ret)
- 		goto err_fwd_dealloc;
-
--	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d"))
-+	dma_set_max_seg_size(&dev->dev, SZ_2G);
-+	if (ib_register_device(&us_ibdev->ib_dev, "usnic_%d", &dev->dev))
- 		goto err_fwd_dealloc;
-
- 	usnic_fwd_set_mtu(us_ibdev->ufdev, us_ibdev->netdev->mtu);
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index 780fd2dfc07e..fa2a3fa0c3e4 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -270,7 +270,7 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
- 	spin_lock_init(&dev->srq_tbl_lock);
- 	rdma_set_device_sysfs_group(&dev->ib_dev, &pvrdma_attr_group);
-
--	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d");
-+	ret = ib_register_device(&dev->ib_dev, "vmw_pvrdma%d", &dev->pdev->dev);
- 	if (ret)
- 		goto err_srq_free;
-
-@@ -854,7 +854,7 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
- 			goto err_free_resource;
- 		}
- 	}
--
-+	dma_set_max_seg_size(&pdev->dev, UINT_MAX);
- 	pci_set_master(pdev);
-
- 	/* Map register space */
-diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
-index f904bb34477a..b722a522fb20 100644
---- a/drivers/infiniband/sw/rdmavt/vt.c
-+++ b/drivers/infiniband/sw/rdmavt/vt.c
-@@ -581,7 +581,10 @@ int rvt_register_device(struct rvt_dev_info *rdi)
- 	spin_lock_init(&rdi->n_cqs_lock);
-
- 	/* DMA Operations */
--	rdi->ibdev.dev.dma_ops = rdi->ibdev.dev.dma_ops ? : &dma_virt_ops;
-+	rdi->ibdev.dev.dma_ops = &dma_virt_ops;
-+	rdi->ibdev.dev.dma_parms = rdi->ibdev.dev.parent->dma_parms;
-+	rdi->ibdev.dev.coherent_dma_mask =
-+		rdi->ibdev.dev.parent->coherent_dma_mask;
-
- 	/* Protection Domain */
- 	spin_lock_init(&rdi->n_pds_lock);
-@@ -629,7 +632,7 @@ int rvt_register_device(struct rvt_dev_info *rdi)
- 		rdi->ibdev.num_comp_vectors = 1;
-
- 	/* We are now good to announce we exist */
--	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev));
-+	ret = ib_register_device(&rdi->ibdev, dev_name(&rdi->ibdev.dev), NULL);
- 	if (ret) {
- 		rvt_pr_err(rdi, "Failed to register driver with ib core.\n");
- 		goto bail_wss;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index f368dc16281a..34e7146456df 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1130,8 +1130,7 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
- 			    rxe->ndev->dev_addr);
- 	dev->dev.dma_ops = &dma_virt_ops;
- 	dev->dev.dma_parms = &rxe->dma_parms;
--	rxe->dma_parms = (struct device_dma_parameters)
--		{ .max_segment_size = SZ_2G };
-+	dma_set_max_seg_size(&dev->dev, UINT_MAX);
- 	dma_coerce_mask_and_coherent(&dev->dev,
- 				     dma_get_required_mask(&dev->dev));
-
-@@ -1182,7 +1181,7 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
- 	rxe->tfm = tfm;
-
- 	rdma_set_device_sysfs_group(dev, &rxe_attr_group);
--	err = ib_register_device(dev, ibdev_name);
-+	err = ib_register_device(dev, ibdev_name, NULL);
- 	if (err)
- 		pr_warn("%s failed with error %d\n", __func__, err);
-
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index d862bec84376..86639ba8b0be 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -69,7 +69,7 @@ static int siw_device_register(struct siw_device *sdev, const char *name)
-
- 	sdev->vendor_part_id = dev_id++;
-
--	rv = ib_register_device(base_dev, name);
-+	rv = ib_register_device(base_dev, name, NULL);
- 	if (rv) {
- 		pr_warn("siw: device registration error %d\n", rv);
- 		return rv;
-@@ -384,8 +384,9 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 	base_dev->dev.parent = parent;
- 	base_dev->dev.dma_ops = &dma_virt_ops;
- 	base_dev->dev.dma_parms = &sdev->dma_parms;
--	sdev->dma_parms = (struct device_dma_parameters)
--		{ .max_segment_size = SZ_2G };
-+	dma_set_max_seg_size(&base_dev->dev, UINT_MAX);
-+	dma_coerce_mask_and_coherent(&base_dev->dev,
-+				     dma_get_required_mask(&base_dev->dev));
- 	base_dev->num_comp_vectors = num_possible_cpus();
-
- 	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index c9f70063f4e4..c390513e7ba8 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2782,7 +2782,8 @@ void ib_dealloc_device(struct ib_device *device);
-
- void ib_get_device_fw_str(struct ib_device *device, char *str);
-
--int ib_register_device(struct ib_device *device, const char *name);
-+int ib_register_device(struct ib_device *device, const char *name,
-+		       struct device *dma_device);
- void ib_unregister_device(struct ib_device *device);
- void ib_unregister_driver(enum rdma_driver_id driver_id);
- void ib_unregister_device_and_put(struct ib_device *device);
---
-2.26.2
+Am 06.10.20 um 21:12 schrieb Daniel Vetter:
+> On Tue, Oct 6, 2020 at 8:38 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>> On Tue, Oct 06, 2020 at 08:17:05PM +0200, Daniel Vetter wrote:
+>>
+>>> So on the gpu we pipeline this all. So step 4 doesn't happen on the
+>>> cpu, but instead we queue up a bunch of command buffers so that the
+>>> gpu writes these pagetables (and the flushes tlbs and then does the
+>>> actual stuff userspace wants it to do).
+>> mlx5 HW does basically this as well.
+>>
+>> We just apply scheduling for this work on the device, not in the CPU.
+>>
+>>> just queue it all up and let the gpu scheduler sort out the mess. End
+>>> result is that you get a sgt that points at stuff which very well
+>>> might have nothing even remotely resembling your buffer in there at
+>>> the moment. But all the copy operations are queued up, so rsn the data
+>>> will also be there.
+>> The explanation make sense, thanks
+>>
+>>> But rdma doesn't work like that, so it looks all a bit funny.
+>> Well, I guess it could, but how would it make anything better? I can
+>> overlap building the SGL and the device PTEs with something else doing
+>> 'move', but is that a workload that needs such agressive optimization?
+> The compounding issue with gpus is that we need entire lists of
+> buffers, atomically, for our dma operations. Which means that the
+> cliff you jump over with a working set that's slightly too big is very
+> steep, so that you have to pipeline your buffer moves interleaved with
+> dma operations to keep the hw busy. Having per page fault handling and
+> hw that can continue in other places while that fault is repaired
+> should smooth that cliff out enough that you don't need to bother.
+>
+> I think at worst we might worry about unfairness. With the "entire
+> list of buffers" workload model gpus might starve out rdma badly by
+> constantly moving all the buffers around. Installing a dma_fence in
+> the rdma page fault handler, to keep the dma-buf busy for a small
+> amount of time to make sure at least the next rdma transfer goes
+> through without more faults should be able to fix that though. Such a
+> keepalive fence should be in the shared slots for dma_resv, to not
+> blocker other access. This wouldn't even need any other changes in
+> rdma (although delaying the pte zapping when we get a move_notify
+> would be better), since an active fence alone makes that buffer a much
+> less likely target for eviction.
+>
+>>> This is also why the precise semantics of move_notify for gpu<->gpu
+>>> sharing took forever to discuss and are still a bit wip, because you
+>>> have the inverse problem: The dma api mapping might still be there
+>> Seems like this all makes a graph of operations, can't start the next
+>> one until all deps are finished. Actually sounds a lot like futures.
+>>
+>> Would be clearer if this attach API provided some indication that the
+>> SGL is actually a future valid SGL..
+> Yeah I think one of the things we've discussed is whether dma_buf
+> should pass around the fences more explicitly, or whether we should
+> continue to smash on the more implicit dma_resv tracking. Inertia won
+> out, at least for now because gpu drivers do all the book-keeping
+> directly in the shared dma_resv structure anyway, so this wouldn't
+> have helped to get cleaner code.
+> -Daniel
 
