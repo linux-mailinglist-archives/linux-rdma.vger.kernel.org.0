@@ -2,136 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4485B286047
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 15:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F38228608F
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 15:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgJGNgi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 09:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbgJGNgi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:36:38 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728568AbgJGNyz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 09:54:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43089 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728526AbgJGNys (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 09:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602078885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+        bh=83V1503E1Au2YwuNcpFE2I7JcBpY77JP+Cmbo9VJuNo=;
+        b=A0MaaJ6MG9FpvOeclFPJWbsGeb0msgifXW8ojb00CPWMFyOUoOPKXMkm3sDCkJyRmegEXa
+        RoEXsWHEBZcDZEMUR6TUX7+Cb0tyLWwJzI57t2+IAwFJSk7VX07hUkHFi0l21yMZzqxtOW
+        bLulBCmZWdbQp+0OCGwg4xWPCIA9LOw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-Tne8v-ocMEK17rTTu4G6cQ-1; Wed, 07 Oct 2020 09:54:42 -0400
+X-MC-Unique: Tne8v-ocMEK17rTTu4G6cQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36ABC206DD;
-        Wed,  7 Oct 2020 13:36:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602077798;
-        bh=MAeEvybVEoJRT6lc2sDnUP7WRyNeQfW3/IR19lxt3n0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BWZaWTr08epBHl9vryIfizBSgAF/Ov+UNRxdscWjXcpcq6behdtjEZeXEYWySAksK
-         x/uU7MM5ickJTP4tw3IbMpF7SN2aiSHWsmSzo/hbq0diLUmeiWbH7qBE3YrxGOy92L
-         2FrLTA+J9Es8X64gnA57vhZE3UCMfPqOlHzmopRA=
-Date:   Wed, 7 Oct 2020 16:36:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201007133633.GB3964015@unreal>
-References: <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006071821.GI1874917@unreal>
- <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
- <20201006170241.GM1874917@unreal>
- <BY5PR12MB43228E8DAA0B56BCF43AF3EFDC0D0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201006172650.GO1874917@unreal>
- <3ff1445d86564ef3aae28d1d1a9a19ea@intel.com>
- <20201006192036.GQ1874917@unreal>
- <CAPcyv4iC_KGOx7Jwax-GWxFJbfUM-2+ymSuf4zkCxG=Yob5KnQ@mail.gmail.com>
- <cd80aad674ee48faaaedc8698c9b23e2@intel.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73D29192AB69
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D2F91001281
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
+Received: from zmail23.collab.prod.int.phx2.redhat.com (zmail23.collab.prod.int.phx2.redhat.com [10.5.83.28])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 674DB181A71E
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 13:54:41 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 09:54:41 -0400 (EDT)
+From:   Doug Ledford <dledford@redhat.com>
+To:     linux-rdma@vger.kernel.org
+Message-ID: <252007469.52861641.1602078881249.JavaMail.zimbra@redhat.com>
+In-Reply-To: <431809995.52859932.1602077964742.JavaMail.zimbra@redhat.com>
+Subject: Upcoming OpenFabrics Alliance Webinar
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd80aad674ee48faaaedc8698c9b23e2@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.10.110.57, 10.4.195.17]
+Thread-Topic: Upcoming OpenFabrics Alliance Webinar
+Thread-Index: sBTAlMhyXBv/OYqksa3XE6ydgkMaxg==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 01:09:55PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> >
-> > On Tue, Oct 6, 2020 at 12:21 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Tue, Oct 06, 2020 at 05:41:00PM +0000, Saleem, Shiraz wrote:
-> > > > > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> > > > >
-> > > > > On Tue, Oct 06, 2020 at 05:09:09PM +0000, Parav Pandit wrote:
-> > > > > >
-> > > > > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > > > > Sent: Tuesday, October 6, 2020 10:33 PM
-> > > > > > >
-> > > > > > > On Tue, Oct 06, 2020 at 10:18:07AM -0500, Pierre-Louis Bossart wrote:
-> > > > > > > > Thanks for the review Leon.
-> > > > > > > >
-> > > > > > > > > > Add support for the Ancillary Bus, ancillary_device and
-> > ancillary_driver.
-> > > > > > > > > > It enables drivers to create an ancillary_device and
-> > > > > > > > > > bind an ancillary_driver to it.
-> > > > > > > > >
-> > > > > > > > > I was under impression that this name is going to be changed.
-> > > > > > > >
-> > > > > > > > It's part of the opens stated in the cover letter.
-> > > > > > >
-> > > > > > > ok, so what are the variants?
-> > > > > > > system bus (sysbus), sbsystem bus (subbus), crossbus ?
-> > > > > > Since the intended use of this bus is to
-> > > > > > (a) create sub devices that represent 'functional separation'
-> > > > > > and
-> > > > > > (b) second use case for subfunctions from a pci device,
-> > > > > >
-> > > > > > I proposed below names in v1 of this patchset.
-> > > > >
-> > > > > > (a) subdev_bus
-> > > > >
-> > > > > It sounds good, just can we avoid "_" in the name and call it subdev?
-> > > > >
-> > > >
-> > > > What is wrong with naming the bus 'ancillary bus'? I feel it's a fitting name.
-> > > > An ancillary software bus for ancillary devices carved off a parent device
-> > registered on a primary bus.
-> > >
-> > > Greg summarized it very well, every internal conversation about this
-> > > patch with my colleagues (non-english speakers) starts with the question:
-> > > "What does ancillary mean?"
-> > > https://lore.kernel.org/alsa-devel/20201001071403.GC31191@kroah.com/
-> > >
-> > > "For non-native english speakers this is going to be rough, given that
-> > > I as a native english speaker had to go look up the word in a
-> > > dictionary to fully understand what you are trying to do with that
-> > > name."
-> >
-> > I suggested "auxiliary" in another splintered thread on this question.
-> > In terms of what the kernel is already using:
-> >
-> > $ git grep auxiliary | wc -l
-> > 507
-> > $ git grep ancillary | wc -l
-> > 153
-> >
-> > Empirically, "auxiliary" is more common and closely matches the intended function
-> > of these devices relative to their parent device.
->
-> auxiliary bus is a befitting name as well.
+Hi all,
 
-Let's share all options and decide later.
-I don't want to find us bikeshedding about it.
+Next week at 1pm EDT is a webinar about the new Fabric Software Development=
+ Platform (FSDP).  This is a high level presentation about what we are doin=
+g.  This is in line with the new testing program we discussed at the 2019 O=
+FA workshop.
 
-Thanks
+I *strongly* encourage any upstream maintainers related to RDMA to attend (=
+that would be kernel maintainers, rdma-core maintainers, libfabric, ucx, op=
+enmpi, etc. maintainers).  The FSDP is intended to run CI testing of both u=
+pstream kernel and user space projects related to RDMA technologies (it nee=
+d not be a direct RDMA technology, but one that RDMA interacts with is suff=
+icient to qualify, so NVMe because of NVMEoFabrics is a qualified upstream =
+project for the cluster to run CI on).  As an upstream maintainer, this is =
+your opportunity to see where the cluster design is going and have input in=
+to the how the cluster is built.  Keep in mind that hardware has already st=
+arted to arrive, so this is a case of "speak now, or suck it up".
+
+Also, the cluster is intended to be a place where upstream developers that =
+might have access to limited types of RDMA hardware (Hi Chuck!), but who wi=
+sh to be able to test across a much broader suite of hardware could log int=
+o the cluster and run their tests.  Upstream developers who work for compan=
+ies that are members of the OFA are automatically qualified for an account =
+on the FSDP.  However, upstream developers working for companies unrelated =
+to RDMA technologies, but who none-the-less end up working on stuff that to=
+uches the RDMA stack anyway (Hey HCH!) are also eligible for free individua=
+l memberships in the OFA, which grants them eligibility for an account on t=
+he FSDP so they too can test their code before sending it.
+
+The presentation next week is fairly high level and does not get too deep i=
+nto the details of the structure of the FSDP.  This is because the FSDP is =
+just now being built (the first orders for hardware have been placed, serve=
+rs that control the cluster have been built, now we are starting to build t=
+he cluster out) and we still have some flexibility in how things are design=
+ed as a result.  This is the upstream community's opportunity to make sure =
+their voice is heard in regards to that design.
+
+I look forward to seeing all of you there, and don't forget to register so =
+we can make sure the webinar is sized sufficiently for the number of attend=
+ees.
+
+Doug Ledford
+
+
+
+------------  Begin forwarded message  ------------------
+New OFA Webinar
+Introduction to OFA=E2=80=99s Fabric Software Development Platform (FSDP)
+October 13 at 10 a.m. Pacific
+One Week Remaining to Register
+http://bit.ly/OFAWebinarFSDP=20
+
+=20
+
+As a reminder, the OpenFabrics Alliance (OFA) will host a webinar highlight=
+ing the new Fabric Software Development Platform (FSDP). This webinar is an=
+ ideal opportunity for the OFA Community to learn about the new FSDP progra=
+m, the FSDP Working Group charter and target objectives, which was highligh=
+ted in recent a recent OFA blog series (Part 1, Part 2).=20
+
+Date/Time: Tuesday, October 13, 2020, at 10 a.m. Pacific
+
+Registration:  http://bit.ly/OFAWebinarFSDP=20
+
+Presenters: OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporation and Do=
+ug Ledford of Red Hat, Inc.
+
+Title: Introduction to OFA=E2=80=99s Fabric Software Development Platform (=
+FSDP)
+
+About: The new Fabric Software Development Platform (FSDP) project is a ven=
+dor-neutral cluster owned and maintained by the OFA for the benefit of its =
+members to develop, test, and validate new and existing network technologie=
+s. FSDP offers OFA members an opportunity for serious cost reduction in tes=
+ting, validation, and development, and provides an invaluable service to th=
+e open source community of maintainers as they support open source networki=
+ng software integration.=20
+
+In this webinar, OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporation a=
+nd Doug Ledford of Red Hat, Inc. will cover:
+
+    Origins of FSDP Project
+    Introduction to FSDP Usages
+        Continuous Integration Testing Service
+        On-Demand Development and Testing Program
+        Logo Testing
+    How to Join / Contribute=20
+
+Please contact press@openfabrics.org with any questions.
+
+
+--=20
+Doug Ledford <dledford@redhat.com>
+              GPG KeyID: 0E572FDD
+
