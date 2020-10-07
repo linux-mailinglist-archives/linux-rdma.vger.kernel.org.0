@@ -2,239 +2,349 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619E9286695
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 20:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A98286687
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 20:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgJGSKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 14:10:52 -0400
-Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:44102 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728788AbgJGSKw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 14:10:52 -0400
-X-Greylist: delayed 365 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 14:10:50 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id 7DAE9180054C1
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 18:04:47 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 9CEBD837F24A;
-        Wed,  7 Oct 2020 18:04:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:355:379:599:800:871:960:973:982:988:989:1000:1260:1313:1314:1345:1359:1431:1437:1516:1518:1543:1575:1594:1711:1730:1747:1764:1777:1792:2194:2199:2376:2393:2553:2559:2562:2693:2911:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4425:5007:6117:6119:6506:6747:6748:7281:7809:7903:8531:8603:9010:10004:10394:10400:10848:11026:11232:11604:11658:11914:12043:12296:12297:12555:12663:12740:12895:12986:13161:13229:13439:13891:14096:14181:14659:14721:21060:21080:21324:21433:21451:21627:21789:30029:30054:30055:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: bread98_2507b7a271d1
-X-Filterd-Recvd-Size: 13413
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  7 Oct 2020 18:04:43 +0000 (UTC)
-Message-ID: <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
-Subject: Re: [PATCH -next] mm: Use sysfs_emit functions not sprintf
-From:   Joe Perches <joe@perches.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 07 Oct 2020 11:04:42 -0700
-In-Reply-To: <20201007125330.GO5177@ziepe.ca>
-References: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
-         <202010070014.76AA763CE@keescook> <20201007125330.GO5177@ziepe.ca>
-Content-Type: multipart/mixed; boundary="=-mi8zbEP98B9wkzS2GwtS"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1727085AbgJGSHo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 14:07:44 -0400
+Received: from mga07.intel.com ([134.134.136.100]:11995 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgJGSHn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:07:43 -0400
+IronPort-SDR: xVX7EDKEmvRm1h+6jKCT8Yh53uynJSowWDUcP2k7JkYbbNP4Eo6XzJFetm/9vFImqTShlp0Vey
+ G7CO70yJH5Og==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="229214981"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="229214981"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:07:19 -0700
+IronPort-SDR: xmDZwynQXHyAq4eX/jG3QiHc8BErQkNjemAWkHGqMPdz1sBkJ9HiZDvQ7r+k6hFgurkmnAES+l
+ pDzmC4A+1dzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="297698931"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Oct 2020 11:07:18 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 11:07:17 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 11:07:17 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 7 Oct 2020 11:07:17 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 7 Oct 2020 11:07:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCeqevbija4woGfu/fKKPZBIZFAg5DDcdICRaykB8oJyOF2fxUiBeXC+Fc96NzlqcRReIBODZcdoC++LN8gpNqwwGPfCiI9R0CMsxV5KB4FiqhjJ5aUMFVJJvx9Mh54gupW9l5dpzTpMFEZEqK2v2ChiIGmd4PI1GvkRQ/OmpCSvMiqUx5oJhOkNRIfQYidceVxc+nBXXk7q1ql6Shziw1L75UcVsZ6pWmErFsJIXH26P9DHb9aZgjb3VF+GHRyRBtAFY7Hhgk4gXZWScYYbMC13+9dY84pMo/BqSyudimCqa3ij4ZLe33SnyE/J0umINkCFrObcx1PM3+SN8ywEbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UYeBXYG7TkA57/BLx92pgLLTpMiXYAvaCAQGRuL7zxA=;
+ b=OmfZQ/caO49ghsYkhJM0dFSF24c47SbkYEx/Xn2RwkhMdhZ60LusFgnIBuTVLOCawJt28uvMjLoOWRdGkWmZ+fE+ji2O+Aa+sXxnMiyV3CDPMqHbP12gmmwvKs+yWhlg+asiadM/Lq5LM+tKwLi/zoN6Z66w9kMzN4F1lLp01lmfcr+/WPvrYQr8sRwq1ixxfbSwAqn6ebjX9qrjfvxRRy9meIsVPyXFzIT1lioiya8zN1gW+RWZXzy7t9cqTnu2giRqorHXAJsd3+BxP9HV8ORjmPWcYUr0dTtoFPACbYaTp8A7SE7ocKPhP9o4KJUBVsDxiul7rM1tpwb5K68o0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UYeBXYG7TkA57/BLx92pgLLTpMiXYAvaCAQGRuL7zxA=;
+ b=tzCM/MRJTZeq738RRee1ZK9Hm+ONxOOlk+pcjar38vfxx9DAn9i3frQ63zFXZ1uoplCHtuvFQ0qPxVtF1MmcReDKx4bIWje/fi63evRuEZIYX4OQrFXAqWz6CRV9v4qLeKfU/cHood2Yb75EDQbeS4/yGlXxSNx/ndsVcW+0PBM=
+Received: from DM6PR11MB2841.namprd11.prod.outlook.com (2603:10b6:5:c8::32) by
+ DM6PR11MB3835.namprd11.prod.outlook.com (2603:10b6:5:139::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.23; Wed, 7 Oct 2020 18:06:30 +0000
+Received: from DM6PR11MB2841.namprd11.prod.outlook.com
+ ([fe80::6d8e:9b06:ef72:2a]) by DM6PR11MB2841.namprd11.prod.outlook.com
+ ([fe80::6d8e:9b06:ef72:2a%5]) with mapi id 15.20.3433.044; Wed, 7 Oct 2020
+ 18:06:30 +0000
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: RE: [PATCH v2 1/6] Add ancillary bus support
+Thread-Topic: [PATCH v2 1/6] Add ancillary bus support
+Thread-Index: AQHWm06cVdQZOfJAqUq6P9wAQIqk66mKKyCAgACGDICAAB03gIABoskg
+Date:   Wed, 7 Oct 2020 18:06:30 +0000
+Message-ID: <DM6PR11MB2841C531FC27DB41E078C52BDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-2-david.m.ertman@intel.com>
+ <20201006071821.GI1874917@unreal>
+ <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
+ <20201006170241.GM1874917@unreal>
+In-Reply-To: <20201006170241.GM1874917@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [50.38.47.144]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 77bac927-18dd-4882-88b4-08d86aebb801
+x-ms-traffictypediagnostic: DM6PR11MB3835:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3835CF4610C46C2B10FE4B1FDD0A0@DM6PR11MB3835.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gEYtARMwTiJbGcqDnoVel36XE1hlwRwkMHdfMOXQcnK4JUM6CWL4YhDjrf+XLnpcTmxJVL55YwDsU+tIg3jS7CIKtUZEuajye4p6QuUasqXGFWbDwaJ0RrUXo/hqKpfMCyW1hEeNKAtUj1LkzA5nY57xYcHXdTo+wbpp8OAWxrGyawVBbbPygNTH6hov+Zt8QbcuokWubEeHu+Lq8uldCHY2+g4iOKOUy2zRTuDPfzROXud/hidVvuGvDa9xABTlEQ+vL8lBqK+rwu5OB/ZVh7xEHKL68Mokk3TsaZoCBwROhqf60CSmQ4t0VhNUhwnbTcG43oCVqeDRTAXuZRgVIw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2841.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(2906002)(186003)(76116006)(4326008)(71200400001)(7696005)(64756008)(66556008)(66946007)(5660300002)(66476007)(316002)(9686003)(66446008)(26005)(6506007)(54906003)(8936002)(55016002)(53546011)(52536014)(86362001)(7416002)(8676002)(83380400001)(33656002)(478600001)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MFBywZcwUEjSnOkWzZHMu6gtUxp6c3xz2X2jrzjf/H7VC/sAtzzWWap3FtJPOinBDApcMVqCAqQByingIUtxJSH/nQZaF6bUoUh3hYWN/zWg6NQEa/HeLk+qKwxo9+mEXbJf3+P/j1FsL5TTlNVWBwFBGJ+uoIwazwWkdSBX7gg1hJyTbpzxtwoV2fTPhLIKbu8G6p6clZ52THPU4ev71TZXRC8AVvmgHbdVkpV0UCo+H3KqSpxhHHnB/Eo0vW6UKXEXUpIfkM4t7E9i37n25mFTrIpfIRcnz6RSd8s6R9C3IY2WiA1xbP6KMV45nebSDMm324Uk5nT6LV4fZBCcbgNhqWNDzZCrl2kufYGuqoBdbWMX4tv+iKSDRRxqJmM54IrwGwPKZVIkH515Md9BEz1UcPA5i+7mrmowOW8yCXy0DXzGREuUxBVPvJRs0QitSYG4mzfaw3IlaaHN/NkChUG6mpALZXuuIll/aRGreRuCx8PTNz0DvqfuAGV8372KIAKqZelHP4sXblMNo2wvEFmVV5cjxjq0qNqf+4nZf9G5mUFcHdfAmZakF1GRW+MoDSQrHmW8qE5/2UQh1hD3+ZaTYweoQrsfxiTyFbzy/eCQh7QKvBqQjx/nJRjz1vqjiPAs2SXoteDIzMVXja+zYw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2841.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77bac927-18dd-4882-88b4-08d86aebb801
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 18:06:30.8603
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Dul88mk7UPVs+xwUEE7t2iMN9Dx3fMSp56YFdF0oeBzKrP8iVespRXx7JSB8JTj7TrznC9E1bLQtVpnb01jF+KU9BZp//VwiLWzengIXvOA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3835
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Tuesday, October 6, 2020 10:03 AM
+> To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Ertman, David M <david.m.ertman@intel.com>; alsa-devel@alsa-
+> project.org; parav@mellanox.com; tiwai@suse.de; netdev@vger.kernel.org;
+> ranjani.sridharan@linux.intel.com; fred.oh@linux.intel.com; linux-
+> rdma@vger.kernel.org; dledford@redhat.com; broonie@kernel.org;
+> jgg@nvidia.com; gregkh@linuxfoundation.org; kuba@kernel.org; Williams,
+> Dan J <dan.j.williams@intel.com>; Saleem, Shiraz
+> <shiraz.saleem@intel.com>; davem@davemloft.net; Patil, Kiran
+> <kiran.patil@intel.com>
+> Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+>=20
+> On Tue, Oct 06, 2020 at 10:18:07AM -0500, Pierre-Louis Bossart wrote:
+> > Thanks for the review Leon.
+> >
+> > > > Add support for the Ancillary Bus, ancillary_device and ancillary_d=
+river.
+> > > > It enables drivers to create an ancillary_device and bind an
+> > > > ancillary_driver to it.
+> > >
+> > > I was under impression that this name is going to be changed.
+> >
+> > It's part of the opens stated in the cover letter.
+>=20
+> ok, so what are the variants?
+> system bus (sysbus), sbsystem bus (subbus), crossbus ?
+>=20
+> >
+> > [...]
+> >
+> > > > +	const struct my_driver my_drv =3D {
+> > > > +		.ancillary_drv =3D {
+> > > > +			.driver =3D {
+> > > > +				.name =3D "myancillarydrv",
+> > >
+> > > Why do we need to give control over driver name to the driver authors=
+?
+> > > It can be problematic if author puts name that already exists.
+> >
+> > Good point. When I used the ancillary_devices for my own SoundWire test=
+,
+> the
+> > driver name didn't seem specifically meaningful but needed to be set to
+> > something, what mattered was the id_table. Just thinking aloud, maybe w=
+e
+> can
+> > add prefixing with KMOD_BUILD, as we've done already to avoid collision=
+s
+> > between device names?
+>=20
+> IMHO, it shouldn't be controlled by the drivers at all and need to have
+> kernel module name hardwired. Users will use it later for various
+> bind/unbind/autoprobe tricks and it will give predictability for them.
+>=20
+> >
+> > [...]
+> >
+> > > > +int __ancillary_device_add(struct ancillary_device *ancildev, cons=
+t
+> char *modname)
+> > > > +{
+> > > > +	struct device *dev =3D &ancildev->dev;
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!modname) {
+> > > > +		pr_err("ancillary device modname is NULL\n");
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > > +	ret =3D dev_set_name(dev, "%s.%s.%d", modname, ancildev->name,
+> ancildev->id);
+> > > > +	if (ret) {
+> > > > +		pr_err("ancillary device dev_set_name failed: %d\n", ret);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	ret =3D device_add(dev);
+> > > > +	if (ret)
+> > > > +		dev_err(dev, "adding ancillary device failed!: %d\n", ret);
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > >
+> > > Sorry, but this is very strange API that requires users to put
+> > > internal call to "dev" that is buried inside "struct ancillary_device=
+".
+> > >
+> > > For example in your next patch, you write this "put_device(&cdev-
+> >ancildev.dev);"
+> > >
+> > > I'm pretty sure that the amount of bugs in error unwind will be
+> > > astonishing, so if you are doing wrappers over core code, better do n=
+ot
+> > > pass complexity to the users.
+> >
+> > In initial reviews, there was pushback on adding wrappers that don't do
+> > anything except for a pointer indirection.
+> >
+> > Others had concerns that the API wasn't balanced and blurring layers.
+>=20
+> Are you talking about internal review or public?
+> If it is public, can I get a link to it?
+>=20
+> >
+> > Both points have merits IMHO. Do we want wrappers for everything and
+> > completely hide the low-level device?
+>=20
+> This API is partially obscures low level driver-core code and needs to
+> provide clear and proper abstractions without need to remember about
+> put_device. There is already _add() interface why don't you do
+> put_device() in it?
+>=20
 
---=-mi8zbEP98B9wkzS2GwtS
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+The pushback Pierre is referring to was during our mid-tier internal review=
+.  It was
+primarily a concern of Parav as I recall, so he can speak to his reasoning.
 
-On Wed, 2020-10-07 at 09:53 -0300, Jason Gunthorpe wrote:
-> On Wed, Oct 07, 2020 at 12:16:01AM -0700, Kees Cook wrote:
-> > On Tue, Oct 06, 2020 at 09:28:17AM -0700, Joe Perches wrote:
-> > > Convert the various uses of sprintf/snprintf/scnprintf to
-> > > format sysfs output to sysfs_emit and sysfs_emit_at to make
-> > > clear the output is sysfs related and to avoid any possible
-> > > buffer overrun of the PAGE_SIZE buffer.
-> > > 
-> > > Done with cocci scripts and some typing.
-> > 
-> > Can you include the cocci script in the commit log? It might be nicer to
-> > split the "manual" changes from the cocci changes, as that makes review
-> > much easier too.
-> > 
-> > Regardless, yes, I'm a fan of switching these all around to
-> > sysfs_emit*(). :)
-> 
-> Yah, +1, I'd welcome patches for drivers/infiniband as well next cycle
+What we originally had was a single API call (ancillary_device_register) th=
+at started
+with a call to device_initialize(), and every error path out of the functio=
+n performed
+a put_device().
 
-The script to change <foo>_show(struct device *, ...)
-function uses of
-sprintf to sysfs_emit is attached.
+Is this the model you have in mind?
 
-The cocci script is coarse and doesn't find nor change all
-the possible variants of the sprintf uses in these functions.
+-DaveE
 
-It could be run using:
-
-$ spatch --in-place -sp-file sysfs_emit.cocci drivers/infiniband/
-
-Against next-20201007 it produces:
-
-$ git diff --shortstat drivers/infiniband
- 25 files changed, 322 insertions(+), 303 deletions(-)
-
-Because it touches a lot of drivers, the 'cc' list is
-pretty large for the diff.
-
-Given the size of the cc list, unless there's a single
-acceptable patch, I will not submit individual patches as
-I really dislike the back and forth of this sub-maintainer
-will but this sub-maintainer will not apply a patch.
-
-Doug Ledford <dledford@redhat.com> (supporter:INFINIBAND SUBSYSTEM)
-Jason Gunthorpe <jgg@ziepe.ca> (supporter:INFINIBAND SUBSYSTEM)
-Selvin Xavier <selvin.xavier@broadcom.com> (supporter:BROADCOM NETXTREME-E ROCE DRIVER)
-Devesh Sharma <devesh.sharma@broadcom.com> (supporter:BROADCOM NETXTREME-E ROCE DRIVER)
-Somnath Kotur <somnath.kotur@broadcom.com> (supporter:BROADCOM NETXTREME-E ROCE DRIVER)
-Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com> (supporter:BROADCOM NETXTREME-E ROCE DRIVER)
-Naresh Kumar PBS <nareshkumar.pbs@broadcom.com> (supporter:BROADCOM NETXTREME-E ROCE DRIVER)
-Potnuri Bharat Teja <bharat@chelsio.com> (supporter:CXGB4 IWARP RNIC DRIVER (IW_CXGB4))
-Mike Marciniszyn <mike.marciniszyn@intel.com> (supporter:HFI1 DRIVER)
-Dennis Dalessandro <dennis.dalessandro@intel.com> (supporter:HFI1 DRIVER)
-Faisal Latif <faisal.latif@intel.com> (supporter:INTEL RDMA RNIC DRIVER)
-Shiraz Saleem <shiraz.saleem@intel.com> (supporter:INTEL RDMA RNIC DRIVER)
-Yishai Hadas <yishaih@nvidia.com> (supporter:MELLANOX MLX4 IB driver)
-Leon Romanovsky <leon@kernel.org> (supporter:MELLANOX MLX5 IB driver)
-Michal Kalderon <mkalderon@marvell.com> (supporter:QLOGIC QL4xxx RDMA DRIVER)
-Ariel Elior <aelior@marvell.com> (supporter:QLOGIC QL4xxx RDMA DRIVER)
-Christian Benvenuti <benve@cisco.com> (supporter:CISCO VIC LOW LATENCY NIC DRIVER)
-Nelson Escobar <neescoba@cisco.com> (supporter:CISCO VIC LOW LATENCY NIC DRIVER)
-Parvi Kaustubhi <pkaustub@cisco.com> (supporter:CISCO VIC LOW LATENCY NIC DRIVER)
-Adit Ranadive <aditr@vmware.com> (maintainer:VMWARE PVRDMA DRIVER)
-VMware PV-Drivers <pv-drivers@vmware.com> (maintainer:VMWARE PVRDMA DRIVER)
-Zhu Yanjun <yanjunz@nvidia.com> (supporter:SOFT-ROCE DRIVER (rxe))
-Danil Kipnis <danil.kipnis@cloud.ionos.com> (maintainer:RTRS TRANSPORT DRIVERS)
-Jack Wang <jinpu.wang@cloud.ionos.com> (maintainer:RTRS TRANSPORT DRIVERS)
-Bart Van Assche <bvanassche@acm.org> (supporter:SCSI RDMA PROTOCOL (SRP) INITIATOR)
-linux-rdma@vger.kernel.org (open list:INFINIBAND SUBSYSTEM)
-linux-kernel@vger.kernel.org (open list)
-
-
---=-mi8zbEP98B9wkzS2GwtS
-Content-Disposition: attachment; filename="sysfs_emit.cocci"
-Content-Type: text/plain; name="sysfs_emit.cocci"; charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-
-QEAKLy9pZGVudGlmaWVyIGRfc2hvdyA9fiAiXi4qc2hvdy4qJCI7CmlkZW50aWZpZXIgZF9zaG93
-OwppZGVudGlmaWVyIGFyZzEsIGFyZzIsIGFyZzM7CkBACnNzaXplX3QgZF9zaG93KHN0cnVjdCBk
-ZXZpY2UgKgotCWFyZzEKKwlkZXYKCSwgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKgotCWFyZzIK
-KwlhdHRyCgksIGNoYXIgKgotCWFyZzMKKwlidWYKCSkKewoJPC4uLgooCi0JYXJnMQorCWRldgp8
-Ci0JYXJnMgorCWF0dHIKfAotCWFyZzMKKwlidWYKKQoJLi4uPgp9CgpAQAovL2lkZW50aWZpZXIg
-ZF9zaG93ID1+ICJeLipzaG93LiokIjsKaWRlbnRpZmllciBkX3Nob3c7CmlkZW50aWZpZXIgZGV2
-LCBhdHRyLCBidWY7CkBACgpzc2l6ZV90IGRfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVj
-dCBkZXZpY2VfYXR0cmlidXRlICphdHRyLCBjaGFyICpidWYpCnsKCTwuLi4KCXJldHVybgotCXNw
-cmludGYoYnVmLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KfQoKQEAKLy9pZGVudGlm
-aWVyIGRfc2hvdyA9fiAiXi4qc2hvdy4qJCI7CmlkZW50aWZpZXIgZF9zaG93OwppZGVudGlmaWVy
-IGRldiwgYXR0ciwgYnVmOwpAQAoKc3NpemVfdCBkX3Nob3coc3RydWN0IGRldmljZSAqZGV2LCBz
-dHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQp7Cgk8Li4uCglyZXR1cm4K
-LQlzbnByaW50ZihidWYsIFBBR0VfU0laRSwKKwlzeXNmc19lbWl0KGJ1ZiwKCS4uLik7CgkuLi4+
-Cn0KCkBACi8vaWRlbnRpZmllciBkX3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVyIGRf
-c2hvdzsKaWRlbnRpZmllciBkZXYsIGF0dHIsIGJ1ZjsKQEAKCnNzaXplX3QgZF9zaG93KHN0cnVj
-dCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKmF0dHIsIGNoYXIgKmJ1ZikK
-ewoJPC4uLgoJcmV0dXJuCi0Jc2NucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLAorCXN5c2ZzX2VtaXQo
-YnVmLAoJLi4uKTsKCS4uLj4KfQoKQEAKLy9pZGVudGlmaWVyIGRfc2hvdyA9fiAiXi4qc2hvdy4q
-JCI7CmlkZW50aWZpZXIgZF9zaG93OwppZGVudGlmaWVyIGRldiwgYXR0ciwgYnVmOwpleHByZXNz
-aW9uIGNocjsKQEAKCnNzaXplX3QgZF9zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRl
-dmljZV9hdHRyaWJ1dGUgKmF0dHIsIGNoYXIgKmJ1ZikKewoJPC4uLgoJcmV0dXJuCi0Jc3RyY3B5
-KGJ1ZiwgY2hyKTsKKwlzeXNmc19lbWl0KGJ1ZiwgY2hyKTsKCS4uLj4KfQoKQEAKLy9pZGVudGlm
-aWVyIGRfc2hvdyA9fiAiXi4qc2hvdy4qJCI7CmlkZW50aWZpZXIgZF9zaG93OwppZGVudGlmaWVy
-IGRldiwgYXR0ciwgYnVmOwppZGVudGlmaWVyIGxlbjsKQEAKCnNzaXplX3QgZF9zaG93KHN0cnVj
-dCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKmF0dHIsIGNoYXIgKmJ1ZikK
-ewoJPC4uLgoJbGVuID0KLQlzcHJpbnRmKGJ1ZiwKKwlzeXNmc19lbWl0KGJ1ZiwKCS4uLik7Cgku
-Li4+CglyZXR1cm4gbGVuOwp9CgpAQAovL2lkZW50aWZpZXIgZF9zaG93ID1+ICJeLipzaG93Liok
-IjsKaWRlbnRpZmllciBkX3Nob3c7CmlkZW50aWZpZXIgZGV2LCBhdHRyLCBidWY7CmlkZW50aWZp
-ZXIgbGVuOwpAQAoKc3NpemVfdCBkX3Nob3coc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZGV2
-aWNlX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQp7Cgk8Li4uCglsZW4gPQotCXNucHJpbnRm
-KGJ1ZiwgUEFHRV9TSVpFLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KCXJldHVybiBs
-ZW47Cn0KCkBACi8vaWRlbnRpZmllciBkX3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVy
-IGRfc2hvdzsKaWRlbnRpZmllciBkZXYsIGF0dHIsIGJ1ZjsKaWRlbnRpZmllciBsZW47CkBACgpz
-c2l6ZV90IGRfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRl
-ICphdHRyLCBjaGFyICpidWYpCnsKCTwuLi4KCWxlbiA9Ci0Jc2NucHJpbnRmKGJ1ZiwgUEFHRV9T
-SVpFLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KCXJldHVybiBsZW47Cn0KCkBACi8v
-aWRlbnRpZmllciBkX3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVyIGRfc2hvdzsKaWRl
-bnRpZmllciBkZXYsIGF0dHIsIGJ1ZjsKaWRlbnRpZmllciBsZW47CkBACgpzc2l6ZV90IGRfc2hv
-dyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlICphdHRyLCBjaGFy
-ICpidWYpCnsKCTwuLi4KLQlsZW4gKz0gc2NucHJpbnRmKGJ1ZiArIGxlbiwgUEFHRV9TSVpFIC0g
-bGVuLAorCWxlbiArPSBzeXNmc19lbWl0X2F0KGJ1ZiwgbGVuLAoJLi4uKTsKCS4uLj4KCXJldHVy
-biBsZW47Cn0KCkBACi8vaWRlbnRpZmllciBkX3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlm
-aWVyIGRfc2hvdzsKaWRlbnRpZmllciBkZXYsIGF0dHIsIGJ1ZjsKZXhwcmVzc2lvbiBjaHI7CkBA
-Cgpzc2l6ZV90IGRfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfYXR0cmli
-dXRlICphdHRyLCBjaGFyICpidWYpCnsKLQlzdHJjcHkoYnVmLCBjaHIpOwotCXJldHVybiBzdHJs
-ZW4oYnVmKTsKKwlyZXR1cm4gc3lzZnNfZW1pdChidWYsIGNocik7Cn0KCkBACmlkZW50aWZpZXIg
-a19zaG93ID1+ICJeLipzaG93LiokIjsKaWRlbnRpZmllciBhcmcxLCBhcmcyLCBhcmczOwpAQApz
-c2l6ZV90IGtfc2hvdyhzdHJ1Y3Qga29iamVjdCAqCi0JYXJnMQorCWtvYmoKCSwgc3RydWN0IGtv
-YmpfYXR0cmlidXRlICoKLQlhcmcyCisJYXR0cgoJLCBjaGFyICoKLQlhcmczCisJYnVmCgkpCnsK
-CS4uLgooCi0JYXJnMQorCWtvYmoKfAotCWFyZzIKKwlhdHRyCnwKLQlhcmczCisJYnVmCikKCS4u
-Lgp9CgpAQAppZGVudGlmaWVyIGtfc2hvdyA9fiAiXi4qc2hvdy4qJCI7CmlkZW50aWZpZXIga29i
-aiwgYXR0ciwgYnVmOwpAQAoKc3NpemVfdCBrX3Nob3coc3RydWN0IGtvYmplY3QgKmtvYmosIHN0
-cnVjdCBrb2JqX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQp7Cgk8Li4uCglyZXR1cm4KLQlz
-cHJpbnRmKGJ1ZiwKKwlzeXNmc19lbWl0KGJ1ZiwKCS4uLik7CgkuLi4+Cn0KCkBACmlkZW50aWZp
-ZXIga19zaG93ID1+ICJeLipzaG93LiokIjsKaWRlbnRpZmllciBrb2JqLCBhdHRyLCBidWY7CkBA
-Cgpzc2l6ZV90IGtfc2hvdyhzdHJ1Y3Qga29iamVjdCAqa29iaiwgc3RydWN0IGtvYmpfYXR0cmli
-dXRlICphdHRyLCBjaGFyICpidWYpCnsKCTwuLi4KCXJldHVybgotCXNucHJpbnRmKGJ1ZiwgUEFH
-RV9TSVpFLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KfQoKQEAKaWRlbnRpZmllciBr
-X3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVyIGtvYmosIGF0dHIsIGJ1ZjsKQEAKCnNz
-aXplX3Qga19zaG93KHN0cnVjdCBrb2JqZWN0ICprb2JqLCBzdHJ1Y3Qga29ial9hdHRyaWJ1dGUg
-KmF0dHIsIGNoYXIgKmJ1ZikKewoJPC4uLgoJcmV0dXJuCi0Jc2NucHJpbnRmKGJ1ZiwgUEFHRV9T
-SVpFLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KfQoKQEAKaWRlbnRpZmllciBrX3No
-b3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVyIGtvYmosIGF0dHIsIGJ1ZjsKZXhwcmVzc2lv
-biBjaHI7CkBACgpzc2l6ZV90IGtfc2hvdyhzdHJ1Y3Qga29iamVjdCAqa29iaiwgc3RydWN0IGtv
-YmpfYXR0cmlidXRlICphdHRyLCBjaGFyICpidWYpCnsKCTwuLi4KCXJldHVybgotCXN0cmNweShi
-dWYsIGNocik7CisJc3lzZnNfZW1pdChidWYsIGNocik7CgkuLi4+Cn0KCkBACmlkZW50aWZpZXIg
-a19zaG93ID1+ICJeLipzaG93LiokIjsKaWRlbnRpZmllciBrb2JqLCBhdHRyLCBidWY7CmlkZW50
-aWZpZXIgbGVuOwpAQAoKc3NpemVfdCBrX3Nob3coc3RydWN0IGtvYmplY3QgKmtvYmosIHN0cnVj
-dCBrb2JqX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQp7Cgk8Li4uCglsZW4gPQotCXNwcmlu
-dGYoYnVmLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsKCS4uLj4KCXJldHVybiBsZW47Cn0KCkBA
-CmlkZW50aWZpZXIga19zaG93ID1+ICJeLipzaG93LiokIjsKaWRlbnRpZmllciBrb2JqLCBhdHRy
-LCBidWY7CmlkZW50aWZpZXIgbGVuOwpAQAoKc3NpemVfdCBrX3Nob3coc3RydWN0IGtvYmplY3Qg
-KmtvYmosIHN0cnVjdCBrb2JqX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQp7Cgk8Li4uCgls
-ZW4gPQotCXNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLAorCXN5c2ZzX2VtaXQoYnVmLAoJLi4uKTsK
-CS4uLj4KCXJldHVybiBsZW47Cn0KCkBACmlkZW50aWZpZXIga19zaG93ID1+ICJeLipzaG93Liok
-IjsKaWRlbnRpZmllciBrb2JqLCBhdHRyLCBidWY7CmlkZW50aWZpZXIgbGVuOwpAQAoKc3NpemVf
-dCBrX3Nob3coc3RydWN0IGtvYmplY3QgKmtvYmosIHN0cnVjdCBrb2JqX2F0dHJpYnV0ZSAqYXR0
-ciwgY2hhciAqYnVmKQp7Cgk8Li4uCglsZW4gPQotCXNjbnByaW50ZihidWYsIFBBR0VfU0laRSwK
-KwlzeXNmc19lbWl0KGJ1ZiwKCS4uLik7CgkuLi4+CglyZXR1cm4gbGVuOwp9CgpAQAppZGVudGlm
-aWVyIGtfc2hvdyA9fiAiXi4qc2hvdy4qJCI7CmlkZW50aWZpZXIga29iaiwgYXR0ciwgYnVmOwpp
-ZGVudGlmaWVyIGxlbjsKQEAKCnNzaXplX3Qga19zaG93KHN0cnVjdCBrb2JqZWN0ICprb2JqLCBz
-dHJ1Y3Qga29ial9hdHRyaWJ1dGUgKmF0dHIsIGNoYXIgKmJ1ZikKewoJPC4uLgotCWxlbiArPSBz
-Y25wcmludGYoYnVmICsgbGVuLCBQQUdFX1NJWkUgLSBsZW4sCisJbGVuICs9IHN5c2ZzX2VtaXRf
-YXQoYnVmLCBsZW4sCgkuLi4pOwoJLi4uPgoJcmV0dXJuIGxlbjsKfQoKQEAKaWRlbnRpZmllciBr
-X3Nob3cgPX4gIl4uKnNob3cuKiQiOwppZGVudGlmaWVyIGtvYmosIGF0dHIsIGJ1ZjsKZXhwcmVz
-c2lvbiBjaHI7CkBACgpzc2l6ZV90IGtfc2hvdyhzdHJ1Y3Qga29iamVjdCAqa29iaiwgc3RydWN0
-IGtvYmpfYXR0cmlidXRlICphdHRyLCBjaGFyICpidWYpCnsKLQlzdHJjcHkoYnVmLCBjaHIpOwot
-CXJldHVybiBzdHJsZW4oYnVmKTsKKwlyZXR1cm4gc3lzZnNfZW1pdChidWYsIGNocik7Cn0KCi8v
-IFJlbmFtZSB0aGUgc3lzZnNfZW1pdCBhc3NpZ25lZCB2YXJpYWJsZXMgbm90IG5hbWVkIGxlbiBh
-bmQgbm90IGFscmVhZHkgaW50Ci8vIGFuZCBzZXQgdGhlIG5hbWUgdG8gbGVuIGFuZCB0eXBlIHRv
-IGludAoKQG5vdF9pbnRfbm90X2xlbiBleGlzdHNACnR5cGUgVCAhPSBpbnQ7CmlkZW50aWZpZXIg
-eCAhPSBsZW47CnBvc2l0aW9uIHA7CmlkZW50aWZpZXIgc3lzZnMgPX4gIl5zeXNmc19lbWl0Liok
-IjsKYXNzaWdubWVudCBvcGVyYXRvciBhb3A7CkBACgpUIHhAcDsKLi4uCnggYW9wIHN5c2ZzKC4u
-LikKLi4uCgpAQAp0eXBlIG5vdF9pbnRfbm90X2xlbi5UOwppZGVudGlmaWVyIG5vdF9pbnRfbm90
-X2xlbi54Owpwb3NpdGlvbiBub3RfaW50X25vdF9sZW4ucDsKQEAKCi0gVCB4QHA7CisgaW50IGxl
-bjsKICA8Li4uCi0geAorIGxlbgogIC4uLj4KCi8vIFJlbmFtZSB0aGUgYWxyZWFkeSBpbnQgc3lz
-ZnNfZW1pdCBhc3NpZ25lZCB2YXJpYWJsZXMgbm90IG5hbWVkIGxlbgovLyBhbmQgc2V0IHRoZSBu
-YW1lIHRvIGxlbgoKQGludF9ub3RfbGVuIGV4aXN0c0AKdHlwZSBUID0gaW50OwppZGVudGlmaWVy
-IHggIT0gbGVuOwpwb3NpdGlvbiBwOwppZGVudGlmaWVyIHN5c2ZzID1+ICJec3lzZnNfZW1pdC4q
-JCI7CmFzc2lnbm1lbnQgb3BlcmF0b3IgYW9wOwpAQAoKVCB4QHA7Ci4uLgp4IGFvcCBzeXNmcygu
-Li4pCi4uLgoKQEAKdHlwZSBpbnRfbm90X2xlbi5UOwppZGVudGlmaWVyIGludF9ub3RfbGVuLng7
-CnBvc2l0aW9uIGludF9ub3RfbGVuLnA7CkBACgotIFQgeEBwOworIGludCBsZW47CiAgPC4uLgot
-IHgKKyBsZW4KICAuLi4+CgovLyBSZW5hbWUgdGhlIG5vbi1pbnQgaW50IHN5c2ZzX2VtaXQgYXNz
-aWduZWQgdmFyaWFibGVzIG5hbWVkIGxlbgovLyBhbmQgc2V0IHRoZSB0eXBlIHRvIGludAoKQG5v
-dF9pbnRfaGFzX2xlbiBleGlzdHNACnR5cGUgVCAhPSBpbnQ7CmlkZW50aWZpZXIgeCA9IGxlbjsK
-cG9zaXRpb24gcDsKaWRlbnRpZmllciBzeXNmcyA9fiAiXnN5c2ZzX2VtaXQuKiQiOwphc3NpZ25t
-ZW50IG9wZXJhdG9yIGFvcDsKQEAKClQgeEBwOwouLi4KeCBhb3Agc3lzZnMoLi4uKQouLi4KCkBA
-CnR5cGUgbm90X2ludF9oYXNfbGVuLlQ7CmlkZW50aWZpZXIgbm90X2ludF9oYXNfbGVuLng7CnBv
-c2l0aW9uIG5vdF9pbnRfaGFzX2xlbi5wOwpAQAoKLSBUIHhAcDsKKyBpbnQgbGVuOwo=
-
-
---=-mi8zbEP98B9wkzS2GwtS--
-
+> >
+> > >
+> > > > +EXPORT_SYMBOL_GPL(__ancillary_device_add);
+> > > > +
+> > > > +static int ancillary_probe_driver(struct device *dev)
+> > > > +{
+> > > > +	struct ancillary_driver *ancildrv =3D to_ancillary_drv(dev->drive=
+r);
+> > > > +	struct ancillary_device *ancildev =3D to_ancillary_dev(dev);
+> > > > +	int ret;
+> > > > +
+> > > > +	ret =3D dev_pm_domain_attach(dev, true);
+> > > > +	if (ret) {
+> > > > +		dev_warn(dev, "Failed to attach to PM Domain : %d\n", ret);
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	ret =3D ancildrv->probe(ancildev, ancillary_match_id(ancildrv-
+> >id_table, ancildev));
+> > >
+> > > I don't think that you need to call ->probe() if ancillary_match_id()
+> > > returned NULL and probably that check should be done before
+> > > dev_pm_domain_attach().
+> >
+> > we'll look into this.
+> >
+> > >
+> > > > +	if (ret)
+> > > > +		dev_pm_domain_detach(dev, true);
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +static int ancillary_remove_driver(struct device *dev)
+> > > > +{
+> > > > +	struct ancillary_driver *ancildrv =3D to_ancillary_drv(dev->drive=
+r);
+> > > > +	struct ancillary_device *ancildev =3D to_ancillary_dev(dev);
+> > > > +	int ret;
+> > > > +
+> > > > +	ret =3D ancildrv->remove(ancildev);
+> > > > +	dev_pm_domain_detach(dev, true);
+> > > > +
+> > > > +	return ret;
+> > >
+> > > You returned an error to user and detached from PM, what will user do
+> > > with this information? Should user ignore it? retry?
+> >
+> > That comment was also provided in earlier reviews. In practice the erro=
+r is
+> > typically ignored so there was a suggestion to move the return type to =
+void,
+> > that could be done if this was desired by the majority.
+>=20
+> +1 from me.
+>=20
+> >
+> > [...]
+> >
+> > > > diff --git a/include/linux/mod_devicetable.h
+> b/include/linux/mod_devicetable.h
+> > > > index 5b08a473cdba..7d596dc30833 100644
+> > > > --- a/include/linux/mod_devicetable.h
+> > > > +++ b/include/linux/mod_devicetable.h
+> > > > @@ -838,4 +838,12 @@ struct mhi_device_id {
+> > > >   	kernel_ulong_t driver_data;
+> > > >   };
+> > > >
+> > > > +#define ANCILLARY_NAME_SIZE 32
+> > > > +#define ANCILLARY_MODULE_PREFIX "ancillary:"
+> > > > +
+> > > > +struct ancillary_device_id {
+> > > > +	char name[ANCILLARY_NAME_SIZE];
+> > >
+> > > I hope that this be enough.
+> >
+> > Are you suggesting a different value to allow for a longer string?
+>=20
+> I have no idea, but worried that there were no checks at all if name is
+> more than 32. Maybe compiler warn about it?
+>=20
+> Thanks
