@@ -2,120 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A2C285F2D
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 14:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9FD285F8B
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 14:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgJGM2d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 08:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbgJGM2c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 08:28:32 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56B0C061755
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 05:28:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id r8so1541679qtp.13
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 05:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f1sgnDtA6Xrx/R2WXwsMCsesSFBaqVDgy/l8oO9Gqy8=;
-        b=BvsiDsFc9LRs22jyuiOH8UqXvoC/SYfgy+4t7zr6YbI9aFmMjUVDpF39SN6b6tS0EA
-         DGAwYdWocVIvyo4f3nb0jQPKHn1lTkXyzG2s0y0JOblLlSxUwHylukM3MZIYjTy3c0QM
-         e+h4MYatPdxDBSbLpDjDGReqBPfYDaoQwLf3XjyHLvWbqwi73U8jnNcK+GV9dkVm1kYA
-         3/WaFunUUxHumPXfOUnz7VhQsewC5dlBwZL4rasko0BGKVXk0h3VW5Hfz4rvvS5G2uEx
-         sZtnHEQLws++3ys5dpSn6ugv9W/Z2pgnGpKgNmLtMN6B3VA6E2fUgbthC/tofHfTpaHz
-         aW6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f1sgnDtA6Xrx/R2WXwsMCsesSFBaqVDgy/l8oO9Gqy8=;
-        b=ahUw6QkrNi32oVAtNZHql0PJdFktONi4q/YWYf2aErzhEdRixzQYtXd/5+wtj/ifIv
-         Y92RKbFSFAHCrTwZXWfPZGs/ao+jr0yBlCuhIi/40tkVXsODarGJGJ0I/5Do2UZjBOL3
-         hkRY64neuJIcaR5VeY7LGsoMuCZycty1/Q8yDh14710857ysrkm8W2p/aT7eVabL49L0
-         9mGqXEMeB0e7Q1nCxvUP5VpvuSe3tZzUOXmhbF0NW2SINJxQ/anUfE9CoSbnUD/yJRFF
-         6bag6JU3GcrN3WrbZXCdBAJ9fPHFMfIX1zpk3TrIcGpaRLC+iDFziZELUv6ipdw+jejv
-         dCQA==
-X-Gm-Message-State: AOAM532qZ/SjnTMZMDcdZ07tlZV7eydV8HwUFFAh0WpbzV/V3B5ZJzv3
-        EVzBc3acwRFhjzk6qWCZwHtYoMMc5FdPrL12
-X-Google-Smtp-Source: ABdhPJxln1kFpXlLbrYly7F4aGAaokNfoyeQsZ7MdAwfwCjRrOaXdmjPs4LZ9ntNeNWyNh5gbKRm+Q==
-X-Received: by 2002:aed:2986:: with SMTP id o6mr2954543qtd.269.1602073711802;
-        Wed, 07 Oct 2020 05:28:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t2sm1407465qti.25.2020.10.07.05.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 05:28:31 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQ8YY-000tH5-Hs; Wed, 07 Oct 2020 09:28:30 -0300
-Date:   Wed, 7 Oct 2020 09:28:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-Message-ID: <20201007122830.GM5177@ziepe.ca>
-References: <20201002140445.GJ9916@ziepe.ca>
- <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
- <20201005131611.GR9916@ziepe.ca>
- <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
- <20201005142554.GS9916@ziepe.ca>
- <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
- <20201005154548.GT9916@ziepe.ca>
- <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
- <20201006124627.GH5177@ziepe.ca>
- <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+        id S1728327AbgJGM4v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 08:56:51 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1179 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727253AbgJGM4v (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 08:56:51 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7dbb060001>; Wed, 07 Oct 2020 05:56:38 -0700
+Received: from [172.27.0.178] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 12:56:38 +0000
+Subject: Re: reduce iSERT Max IO size
+To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
+CC:     Sagi Grimberg <sagi@grimberg.me>, <linux-rdma@vger.kernel.org>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        Max Gurtovoy <maxg@mellanox.com>
+References: <20200922104424.GA18887@chelsio.com>
+ <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
+ <20201002171007.GA16636@chelsio.com>
+ <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
+ <20201003033644.GA19516@chelsio.com>
+ <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
+ <20201007033619.GA11425@chelsio.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <1a034761-3723-3c70-8a44-25ef2cbf786e@nvidia.com>
+Date:   Wed, 7 Oct 2020 15:56:26 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+In-Reply-To: <20201007033619.GA11425@chelsio.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602075398; bh=KGi2EGqHzZcHvsQFp3UhbKKhXpiDRmtuyhLH08FSzzU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=GLRyM+FEm4UGEv2Xy+9a79BiwLvKv3ZSdHamad4J0R2h5dYh5jIVbsjJ39XNsySUQ
+         PdCk9zCCvKIFC4+c7vT26uPOH56IB+HuZVAHM/gD8DWt7Iq7VlPjvz2LqZ8GQpviWx
+         f0d5KtZM9f4svsI6McjYTlpHMHsqr8M7zNhPFYZvdgz0YS0GVULRe4P/AzVImDrIvo
+         Cfb+uOQxWD3VbK19NA/D6HogvtYsymbH0Hq46dbZ5GfxI4bvGvN/wQOjE2zTZT6BRH
+         bQQGD6Oj+82/JAWaDJwb70rZBNBVbJ3iseeITTu1g44AEUvdflK13eb8c/OkS+NkGX
+         DCmWPxOWcCngA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 04:38:45PM +0800, Ka-Cheong Poon wrote:
-> On 10/6/20 8:46 PM, Jason Gunthorpe wrote:
-> > On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
-> > 
-> > > > > > Kernel modules should not be doing networking unless commanded to by
-> > > > > > userspace.
-> > > > > 
-> > > > > It is still not clear why this is an issue with RDMA
-> > > > > connection, but not with general kernel socket.  It is
-> > > > > not random networking.  There is a purpose.
-> > > > 
-> > > > It is a problem with sockets too, how do the socket users trigger
-> > > > their socket usages? AFAIK all cases originate with userspace
-> > > 
-> > > A user starts a namespace.  The module is loaded for servicing
-> > > requests.  The module starts a listener.  The user deletes
-> > > the namespace.  This scenario will have everything cleaned up
-> > > properly if the listener is a kernel socket.  This is not the
-> > > case with RDMA.
-> > 
-> > Please point to reputable code in upstream doing this
-> 
-> 
-> It is not clear what "reputable" here really means.  If it just
-> means something in kernel, then nearly all, if not all, Internet
-> protocols code in kernel create a control kernel socket for every
-> network namespaces.  That socket is deleted in the per namespace
-> exit function.  If it explicitly means listening socket, AFS and
-> TIPC in kernel do that for every namespaces.  That socket is
-> deleted in the per namespace exit function.
 
-AFS and TIPC are not exactly well reviewed mainstream areas.
+On 10/7/2020 6:36 AM, Krishnamraju Eraparaju wrote:
+> On Sunday, October 10/04/20, 2020 at 00:45:26 +0300, Max Gurtovoy wrote:
+>> On 10/3/2020 6:36 AM, Krishnamraju Eraparaju wrote:
+>>> On Friday, October 10/02/20, 2020 at 13:29:30 -0700, Sagi Grimberg wrote:
+>>>>> Hi Sagi & Max,
+>>>>>
+>>>>> Any update on this?
+>>>>> Please change the max IO size to 1MiB(256 pages).
+>>>> I think that the reason why this was changed to handle the worst case
+>>>> was in case there are different capabilities on the initiator and the
+>>>> target with respect to number of pages per MR. There is no handshake
+>>>> that aligns expectations.
+>>> But, the max pages per MR supported by most adapters is around 256 pages
+>>> only.
+>>> And I think only those iSER initiators, whose max pages per MR is 4096,
+>>> could send 16MiB sized IOs, am I correct?
+>> If the initiator can send 16MiB, we must make sure the target is
+>> capable to receive it.
+> I think max IO size, at iSER initiator, depends on
+> "max_fast_reg_page_list_len".
+> currently, below are the supported "max_fast_reg_page_list_len" of
+> various iwarp drivers:
+>
+> iw_cxgb4: 128 pages
+> Softiwarp: 256 pages
+> i40iw: 512 pages
+> qedr: couldn't find.
+>
+> For iwarp case, if 512 is the max pages supported by all iwarp drivers,
+> then provisioning a gigantic MR pool at target(to accommodate never used
+> 16MiB IO) wouldn't be a overkill?
 
-> It is very common for a network protocol to have something like
-> this for protocol processing.  It is not clear why RDMA subsystem
-> behaves differently and forbids this common practice.  Could you
-> please elaborate the issues this practice has such that the RDMA
-> subsystem cannot support it?
+For RoCE/IB Mellanox HCAs we support 16MiB IO size and even more. We 
+limited to 16MiB in iSER/iSERT.
 
-The kernel should not have rouge listening sockets just because a
-model is loaded. Creation if listening kernel side sockets should be
-triggered by userspace.
+Sagi,
 
-Jason
+what about adding a module parameter for this as we did in iSER initiator ?
+
+>>>> If we revert that it would restore the issue that you reported in the
+>>>> first place:
+>>>>
+>>>> --
+>>>> IB/isert: allocate RW ctxs according to max IO size
+>>> I don't see the reported issue after reducing the IO size to 256
+>>> pages(keeping all other changes of this patch intact).
+>>> That is, "attr.cap.max_rdma_ctxs" is now getting filled properly with
+>>> "rdma_rw_mr_factor()" related changes, I think.
+>>>
+>>> Before this change "attr.cap.max_rdma_ctxs" was hardcoded with
+>>> 128(ISCSI_DEF_XMIT_CMDS_MAX) pages, which is very low for single target
+>>> and muli-luns case.
+>>>
+>>> So reverting only ISCSI_ISER_MAX_SG_TABLESIZE macro to 256 doesn't cause the
+>>> reported issue.
+>>>
+>>> Thanks,
+>>> Krishnam Raju.
+>>>> Current iSER target code allocates MR pool budget based on queue size.
+>>>> Since there is no handshake between iSER initiator and target on max IO
+>>>> size, we'll set the iSER target to support upto 16MiB IO operations and
+>>>> allocate the correct number of RDMA ctxs according to the factor of MR's
+>>>> per IO operation. This would guaranty sufficient size of the MR pool for
+>>>> the required IO queue depth and IO size.
+>>>>
+>>>> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>>>> Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+>>>> --
+>>>>
+>>>>> Thanks,
+>>>>> Krishnam Raju.
+>>>>> On Wednesday, September 09/23/20, 2020 at 01:57:47 -0700, Sagi Grimberg wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> Please reduce the Max IO size to 1MiB(256 pages), at iSER Target.
+>>>>>>> The PBL memory consumption has increased significantly after increasing
+>>>>>>> the Max IO size to 16MiB(with commit:317000b926b07c).
+>>>>>>> Due to the large MR pool, the max no.of iSER connections(On one variant
+>>>>>>> of Chelsio cards) came down to 9, before it was 250.
+>>>>>>> NVMe-RDMA target also uses 1MiB max IO size.
+>>>>>> Max, remind me what was the point to support 16M? Did this resolve
+>>>>>> an issue?
