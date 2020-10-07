@@ -2,157 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAD62867CB
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 20:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740A32867E0
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 20:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgJGS4H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 14:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1728339AbgJGS47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 14:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgJGS4H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 14:56:07 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7D4C0613D2
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 11:56:07 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p15so4486746ejm.7
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 11:56:07 -0700 (PDT)
+        with ESMTP id S1728349AbgJGS44 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 14:56:56 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B501C0613D3
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 11:56:55 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id z6so4163696qkz.4
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 11:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yfiJ5nD/cUmyiqlzNZewJWZjW4mmc4Boj3zx3Rxdevw=;
-        b=F89nKzkhVw+pwSxd4I+Ro29bXc2Yy4aOTB0aRdedpGp4Xf5mIKcUUeC4WmcHJUQJhT
-         UmyJ5u0llCJiofg5m/aBddvUXcqKgw19yZWf2cFnhojQASzzrRtifWjlVLdkVTE2uFt0
-         f3r2Gr1CFfl4iERMNNQNTk+RiZo68CSSTSeHrj3xhWY6hGPtSy+eN0gPGg9at54tggYn
-         Xxd1PwlQsNUZMa5HsqCTBWAfgRGNsYKdj9jkf+QR8E28eeYFJZRGgn2VW/7oY5PJ/sjZ
-         vAb5jAvQBmIVvqj93TjfKNqcJNJ2OOqcgAgufr6IGab7ZF182lxt3MbvDJknrgJcxDId
-         ZXAg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
+        b=SNkiDcXhf8oV4GnEFwXCA2JkCI8lfRTYqFFI/i51g8N8R9CMI0TLBvayUFl3SPq2jE
+         fcMBGnU5zBGw+fPNTEvGuPiKJFEEyMNXu7k+4unLOmcVu4eCgetSTtZ8jFXMRmCGPaLo
+         PREcWEoNr8RjWrB0C4j2LZZmhL4snf9R0wNOAzoLdnx063EiJJxnvdvs9hpHlhLDgDDQ
+         X3mGARCYDHY+PLKwsJAAuEvXBOMcY7QPKDH0UppnRh0xkwc/U8t1eg/pVQZUA9JpjtUM
+         x+sQM85MfhjwFOaVpJRbWwamKLS38YjHa8En0TsrQW8Od14MZCS3GTLGvxwbipIrUlJ0
+         HdNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yfiJ5nD/cUmyiqlzNZewJWZjW4mmc4Boj3zx3Rxdevw=;
-        b=MEeUAk9463OU5/o2n7mgemamZs0NWwB1I54VMuCGQMUsDIM6fbGWLP5drajmWVkw0r
-         kDVZhYu6mY8U7YqMC8YFXV5JJNvc9cPnkBngakSGra+3EtFkRjwygRMwY/sBkyUD71Tu
-         NtgIyqpm4OBK+2x+rojOrn7qlpz9YmbIlVAMoUSMo6+xa7F3piTaR4DOPjvGGBtTXMuv
-         sWm6iqLbCiz/NtzLXjeVT+hHdRlwYKcred4br3DOBMrvyz5BSB/W+x6eXbG1n5qqXE5p
-         irL5VKGkhXZUGS4ELNhkmLqnSEvLeXGI/avse/D5d3HolIafG8nzId1bTqqUlYWx6FSs
-         ezYg==
-X-Gm-Message-State: AOAM532obvDZAjMXgCo6fdkL/Q9RQ79Y90A5X+JBUslCVKuWgbukOKlM
-        jPfA7/88rf7Jd2gKmb8yG180CUf6Yb9Aj6MODRa+uQ==
-X-Google-Smtp-Source: ABdhPJyNpzrYFZKJNGR3LOKY++IvBFmX8qfeS5JqUyOBjoxQwDjRp/d7m0uUE6VIQpOeEI+tD7+gLGvhR+0lRO7kp6k=
-X-Received: by 2002:a17:906:1a0b:: with SMTP id i11mr4831823ejf.472.1602096965738;
- Wed, 07 Oct 2020 11:56:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
+        b=RsTr3cWUFomHrRi1zdnelbj5ZqHcL/asbs2qU3H51Ozq8NZkBFSsUrfwfetQWQERh7
+         ny8ylnHTk68azRo8G991vX+SO3kHouqFM4n5DTMLqjehdEnkhWyoWON6hqi3S42OYfsi
+         bsT8m2prS1KCdq8zXIhyvO6dnMvAprPubgmVHOpLReRYnaCQZAq1TmYtGwgIBMkSeC7D
+         w8+tr/2p0GvJY7VziFll/PYFdvLW7+/sxqXPid8JzmWT/JRof7keu/YehBYIkx9dzeS+
+         5EcIEfZA5w7gdi7MDEyyC01Y6AywlTQGA5/XI2Le+Nou3cQ6NYs1Y485vpLEc0AsDMv2
+         k2pA==
+X-Gm-Message-State: AOAM530RJbBCLJO4MJdFKKDwAd/6iBE/y+w9TApoJjamvWHRokl6IEor
+        BT3br4UjLqxg7lixOku/Uccbh+zvVc4tcxoK
+X-Google-Smtp-Source: ABdhPJyv+pscj1uQm5l+2rGwyvNUTf34cKVOEz/9CM7hN75mUBaLoHOL+AJEukAuUIBhiCDVla6C7Q==
+X-Received: by 2002:a37:dc85:: with SMTP id v127mr4365223qki.107.1602097014467;
+        Wed, 07 Oct 2020 11:56:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id j88sm2115558qte.96.2020.10.07.11.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 11:56:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQEcP-001EtS-3Q; Wed, 07 Oct 2020 15:56:53 -0300
+Date:   Wed, 7 Oct 2020 15:56:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mm: Use sysfs_emit functions not sprintf
+Message-ID: <20201007185653.GZ5177@ziepe.ca>
+References: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
+ <202010070014.76AA763CE@keescook>
+ <20201007125330.GO5177@ziepe.ca>
+ <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
 MIME-Version: 1.0
-References: <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006071821.GI1874917@unreal> <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
- <20201006170241.GM1874917@unreal> <BY5PR12MB43228E8DAA0B56BCF43AF3EFDC0D0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201006172650.GO1874917@unreal> <3ff1445d86564ef3aae28d1d1a9a19ea@intel.com>
- <20201006192036.GQ1874917@unreal> <CAPcyv4iC_KGOx7Jwax-GWxFJbfUM-2+ymSuf4zkCxG=Yob5KnQ@mail.gmail.com>
- <cd80aad674ee48faaaedc8698c9b23e2@intel.com> <20201007133633.GB3964015@unreal>
-In-Reply-To: <20201007133633.GB3964015@unreal>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 7 Oct 2020 11:55:53 -0700
-Message-ID: <CAPcyv4j1VrPkX_=61S7pdCPdDGy+xFGMkHHNnR-FT+TXXvbOWA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:37 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, Oct 07, 2020 at 01:09:55PM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> > >
-> > > On Tue, Oct 6, 2020 at 12:21 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Tue, Oct 06, 2020 at 05:41:00PM +0000, Saleem, Shiraz wrote:
-> > > > > > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> > > > > >
-> > > > > > On Tue, Oct 06, 2020 at 05:09:09PM +0000, Parav Pandit wrote:
-> > > > > > >
-> > > > > > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > > > > > Sent: Tuesday, October 6, 2020 10:33 PM
-> > > > > > > >
-> > > > > > > > On Tue, Oct 06, 2020 at 10:18:07AM -0500, Pierre-Louis Bossart wrote:
-> > > > > > > > > Thanks for the review Leon.
-> > > > > > > > >
-> > > > > > > > > > > Add support for the Ancillary Bus, ancillary_device and
-> > > ancillary_driver.
-> > > > > > > > > > > It enables drivers to create an ancillary_device and
-> > > > > > > > > > > bind an ancillary_driver to it.
-> > > > > > > > > >
-> > > > > > > > > > I was under impression that this name is going to be changed.
-> > > > > > > > >
-> > > > > > > > > It's part of the opens stated in the cover letter.
-> > > > > > > >
-> > > > > > > > ok, so what are the variants?
-> > > > > > > > system bus (sysbus), sbsystem bus (subbus), crossbus ?
-> > > > > > > Since the intended use of this bus is to
-> > > > > > > (a) create sub devices that represent 'functional separation'
-> > > > > > > and
-> > > > > > > (b) second use case for subfunctions from a pci device,
-> > > > > > >
-> > > > > > > I proposed below names in v1 of this patchset.
-> > > > > >
-> > > > > > > (a) subdev_bus
-> > > > > >
-> > > > > > It sounds good, just can we avoid "_" in the name and call it subdev?
-> > > > > >
-> > > > >
-> > > > > What is wrong with naming the bus 'ancillary bus'? I feel it's a fitting name.
-> > > > > An ancillary software bus for ancillary devices carved off a parent device
-> > > registered on a primary bus.
-> > > >
-> > > > Greg summarized it very well, every internal conversation about this
-> > > > patch with my colleagues (non-english speakers) starts with the question:
-> > > > "What does ancillary mean?"
-> > > > https://lore.kernel.org/alsa-devel/20201001071403.GC31191@kroah.com/
-> > > >
-> > > > "For non-native english speakers this is going to be rough, given that
-> > > > I as a native english speaker had to go look up the word in a
-> > > > dictionary to fully understand what you are trying to do with that
-> > > > name."
-> > >
-> > > I suggested "auxiliary" in another splintered thread on this question.
-> > > In terms of what the kernel is already using:
-> > >
-> > > $ git grep auxiliary | wc -l
-> > > 507
-> > > $ git grep ancillary | wc -l
-> > > 153
-> > >
-> > > Empirically, "auxiliary" is more common and closely matches the intended function
-> > > of these devices relative to their parent device.
-> >
-> > auxiliary bus is a befitting name as well.
->
-> Let's share all options and decide later.
-> I don't want to find us bikeshedding about it.
+On Wed, Oct 07, 2020 at 11:04:42AM -0700, Joe Perches wrote:
+> On Wed, 2020-10-07 at 09:53 -0300, Jason Gunthorpe wrote:
+> > On Wed, Oct 07, 2020 at 12:16:01AM -0700, Kees Cook wrote:
+> > > On Tue, Oct 06, 2020 at 09:28:17AM -0700, Joe Perches wrote:
+> > > > Convert the various uses of sprintf/snprintf/scnprintf to
+> > > > format sysfs output to sysfs_emit and sysfs_emit_at to make
+> > > > clear the output is sysfs related and to avoid any possible
+> > > > buffer overrun of the PAGE_SIZE buffer.
+> > > > 
+> > > > Done with cocci scripts and some typing.
+> > > 
+> > > Can you include the cocci script in the commit log? It might be nicer to
+> > > split the "manual" changes from the cocci changes, as that makes review
+> > > much easier too.
+> > > 
+> > > Regardless, yes, I'm a fan of switching these all around to
+> > > sysfs_emit*(). :)
+> > 
+> > Yah, +1, I'd welcome patches for drivers/infiniband as well next cycle
+> 
+> The script to change <foo>_show(struct device *, ...)
+> function uses of
+> sprintf to sysfs_emit is attached.
 
-Too late we are deep into bikeshedding at this point... it continued
-over here [1] for a bit, but let's try to bring the discussion back to
-this thread.
+> $ git diff --shortstat drivers/infiniband
+>  25 files changed, 322 insertions(+), 303 deletions(-)
+> 
+> Because it touches a lot of drivers, the 'cc' list is
+> pretty large for the diff.
+> 
+> Given the size of the cc list, unless there's a single
+> acceptable patch, I will not submit individual patches as
+> I really dislike the back and forth of this sub-maintainer
+> will but this sub-maintainer will not apply a patch.
 
-[1]: http://lore.kernel.org/r/10048d4d-038c-c2b7-2ed7-fd4ca87d104a@linux.intel.com
+This size looks not too bad, we regularly do all driver updates. Up to
+you if you want split per driver. In rdma land something like this
+will go ahead unless someone points to technical errors in the
+conversion.
+
+Thanks,
+Jason
