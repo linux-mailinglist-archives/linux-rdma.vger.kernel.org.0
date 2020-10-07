@@ -2,125 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4FD285AA9
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 10:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A69C285B86
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 11:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgJGIk4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 04:40:56 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:54440 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJGIkz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 04:40:55 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0978eAvp055022;
-        Wed, 7 Oct 2020 08:40:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qpjQZyiq3Pi1kHvSn+dmnsCCKlAt4CkINQaol40BmrM=;
- b=E+Bz/zZXwHtGMpCtKlsipgzKBfA7TK/h+j7fkXJbqVyrLGaFUdxHe6FWvu6jKei1Xrng
- kVVKCmBfq8GR7Nooe7o5Yc6b5NhRgqOQw6RBCMIxpqNdknLz1/Ot9k2YjILFnX5oeUsG
- exg7KOEOTdU5TqG6NlmMkEiz4OyRUZ+Fszw4i71o0ER8FShthPk1OanRJ0RUjeo71u2X
- 2OgynFkQcgWtAmlkowixsrsTHk/mjGBoZ3X9Kaeo+NqXD5eD/RpqZ46giBAwHv21dSdq
- SEIKVjrKdnMuEsuTS97ApH4BXQqdxd0JcGf91COepJcV3BjSD5MKZ1EzFnNDl628Iciu 0w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33xetb0kp3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 08:40:54 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0978ZIpI127217;
-        Wed, 7 Oct 2020 08:38:54 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33y2vp7u7f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 08:38:54 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0978cqea029262;
-        Wed, 7 Oct 2020 08:38:53 GMT
-Received: from [10.159.211.29] (/10.159.211.29)
+        id S1726269AbgJGJEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 05:04:02 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44676 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgJGJEB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 05:04:01 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09793uK0177663
+        for <linux-rdma@vger.kernel.org>; Wed, 7 Oct 2020 09:04:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2020-01-29;
+ bh=zObixSnlrbpWIfqGosP8Kxxfe2DRqKgar5bcHVY7jY4=;
+ b=EnYapbX4sDVL7ZkAEwJ4qs9bHn5o2lPK64Kh48xsfDVCfWqY6NVurVUOhPxRvh/2INw6
+ B5l3Bho6aAISJ6KiTNEcVI02RgR2nhfLDxXh3QlHaWk+CB9UlSxAXcEyzjHTwPKm64XN
+ pcWo8GOYi+OGuiqDr53LzEDBhKfFufoGmJ0W+plPMXeBDep/RrkyCV+2tv6qM5oKqg9L
+ 2LsxHGUoBTXxdabuyt2fn0t+UVJPnBWSipkRiUPg0rvA7URq4FXL/ISfewq269IjEBVb
+ O+P0q54aURV74pUi+FDz6mP0DqDg23GYV/qfAqsDfyHusxJEEu9RmTVz2H4+w3YiJvBe qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33ym34nphb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 09:04:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09790AwU121250
+        for <linux-rdma@vger.kernel.org>; Wed, 7 Oct 2020 09:03:59 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33y37y9y1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 09:03:59 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09793xH3023059
+        for <linux-rdma@vger.kernel.org>; Wed, 7 Oct 2020 09:03:59 GMT
+Received: from ca-dev142.us.oracle.com (/10.129.135.62)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 01:38:52 -0700
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org
-References: <20200929174037.GW9916@ziepe.ca>
- <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
- <20201002140445.GJ9916@ziepe.ca>
- <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
- <20201005131611.GR9916@ziepe.ca>
- <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
- <20201005142554.GS9916@ziepe.ca>
- <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
- <20201005154548.GT9916@ziepe.ca>
- <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
- <20201006124627.GH5177@ziepe.ca>
+        with ESMTP ; Wed, 07 Oct 2020 02:03:58 -0700
 From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
-Date:   Wed, 7 Oct 2020 16:38:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20201006124627.GH5177@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] RDMA/core: Add rdma_dev_to_netns()
+Date:   Wed,  7 Oct 2020 02:03:55 -0700
+Message-Id: <20201007090355.1101408-1-ka-cheong.poon@oracle.com>
+X-Mailer: git-send-email 2.18.4
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070058
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=1 adultscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070059
+ definitions=main-2010070062
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
+ malwarescore=0 phishscore=0 suspectscore=1 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070063
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/6/20 8:46 PM, Jason Gunthorpe wrote:
-> On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
-> 
->>>>> Kernel modules should not be doing networking unless commanded to by
->>>>> userspace.
->>>>
->>>> It is still not clear why this is an issue with RDMA
->>>> connection, but not with general kernel socket.  It is
->>>> not random networking.  There is a purpose.
->>>
->>> It is a problem with sockets too, how do the socket users trigger
->>> their socket usages? AFAIK all cases originate with userspace
->>
->> A user starts a namespace.  The module is loaded for servicing
->> requests.  The module starts a listener.  The user deletes
->> the namespace.  This scenario will have everything cleaned up
->> properly if the listener is a kernel socket.  This is not the
->> case with RDMA.
-> 
-> Please point to reputable code in upstream doing this
+This function returns the namespace of a struct ib_device if the RDMA
+subsystem is in exclusive network namespace mode.  If the subsystem is
+in shared namespace mode, this function returns NULL.
 
+Signed-off-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+---
+ drivers/infiniband/core/device.c | 16 ++++++++++++++++
+ include/rdma/ib_verbs.h          |  1 +
+ 2 files changed, 17 insertions(+)
 
-It is not clear what "reputable" here really means.  If it just
-means something in kernel, then nearly all, if not all, Internet
-protocols code in kernel create a control kernel socket for every
-network namespaces.  That socket is deleted in the per namespace
-exit function.  If it explicitly means listening socket, AFS and
-TIPC in kernel do that for every namespaces.  That socket is
-deleted in the per namespace exit function.
-
-It is very common for a network protocol to have something like
-this for protocol processing.  It is not clear why RDMA subsystem
-behaves differently and forbids this common practice.  Could you
-please elaborate the issues this practice has such that the RDMA
-subsystem cannot support it?
-
-
-
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index c36b4d2b61e0..a3dd95bf3050 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -144,6 +144,22 @@ bool rdma_dev_access_netns(const struct ib_device *dev, const struct net *net)
+ }
+ EXPORT_SYMBOL(rdma_dev_access_netns);
+ 
++/**
++ * rdma_dev_to_netns() - Return the net namespace of a given device if the
++ *			 RDMA subsystem is in exclusive network namespace
++ *			 mode.  If it is in shared namespace mode, this
++ *			 function returns NULL.  Caller can use it to
++ *			 differentiate the two modes of the RDMA subsystem.
++ *
++ * @device: Pointer to rdma device to get the namespace
++ */
++struct net *rdma_dev_to_netns(const struct ib_device *device)
++{
++	return ib_devices_shared_netns ? NULL :
++		read_pnet(&device->coredev.rdma_net);
++}
++EXPORT_SYMBOL(rdma_dev_to_netns);
++
+ /*
+  * xarray has this behavior where it won't iterate over NULL values stored in
+  * allocated arrays.  So we need our own iterator to see all values stored in
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index c0b2fa7e9b95..aeced1a3324f 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4715,6 +4715,7 @@ static inline struct ib_device *rdma_device_to_ibdev(struct device *device)
+ 
+ bool rdma_dev_access_netns(const struct ib_device *device,
+ 			   const struct net *net);
++struct net *rdma_dev_to_netns(const struct ib_device *device);
+ 
+ #define IB_ROCE_UDP_ENCAP_VALID_PORT_MIN (0xC000)
+ #define IB_GRH_FLOWLABEL_MASK (0x000FFFFF)
 -- 
-K. Poon
-ka-cheong.poon@oracle.com
-
+2.18.4
 
