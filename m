@@ -2,141 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9FD285F8B
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 14:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81005285FCE
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 15:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgJGM4v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 08:56:51 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1179 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGM4v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 08:56:51 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7dbb060001>; Wed, 07 Oct 2020 05:56:38 -0700
-Received: from [172.27.0.178] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
- 2020 12:56:38 +0000
-Subject: Re: reduce iSERT Max IO size
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-CC:     Sagi Grimberg <sagi@grimberg.me>, <linux-rdma@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-References: <20200922104424.GA18887@chelsio.com>
- <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
- <20201002171007.GA16636@chelsio.com>
- <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
- <20201003033644.GA19516@chelsio.com>
- <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
- <20201007033619.GA11425@chelsio.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <1a034761-3723-3c70-8a44-25ef2cbf786e@nvidia.com>
-Date:   Wed, 7 Oct 2020 15:56:26 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <20201007033619.GA11425@chelsio.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1728271AbgJGNKK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 09:10:10 -0400
+Received: from mga14.intel.com ([192.55.52.115]:23514 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728177AbgJGNKK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:10:10 -0400
+IronPort-SDR: 2uXP6dcFVmHEidklmYFW35gNkSfedFWEiAjxH0Pm6nlnGpW5x16dLYnqGomi1/jTjTTsJ4+Tre
+ a6HEsGxQLqZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="164163344"
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="164163344"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 06:09:57 -0700
+IronPort-SDR: iE+mIb/JJV75SaQ5kJf0t0ESVcHA8dc6ozfnQ3gCzKdr8LMvG21UWJlUuIO9Cl5RalMnhhl4xF
+ DmcD24cKsM8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="297487083"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Oct 2020 06:09:57 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 06:09:56 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 06:09:56 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Wed, 7 Oct 2020 06:09:56 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Parav Pandit <parav@nvidia.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: RE: [PATCH v2 1/6] Add ancillary bus support
+Thread-Topic: [PATCH v2 1/6] Add ancillary bus support
+Thread-Index: AQHWm0x+bCEx5k0iU0+RSRzmm941iKmKoH2AgACGDICAAB03gIAAAc6AgAAE8QD//4wBYIAAk8gAgAB9aYCAADAfAA==
+Date:   Wed, 7 Oct 2020 13:09:55 +0000
+Message-ID: <cd80aad674ee48faaaedc8698c9b23e2@intel.com>
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-2-david.m.ertman@intel.com>
+ <20201006071821.GI1874917@unreal>
+ <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
+ <20201006170241.GM1874917@unreal>
+ <BY5PR12MB43228E8DAA0B56BCF43AF3EFDC0D0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20201006172650.GO1874917@unreal>
+ <3ff1445d86564ef3aae28d1d1a9a19ea@intel.com>
+ <20201006192036.GQ1874917@unreal>
+ <CAPcyv4iC_KGOx7Jwax-GWxFJbfUM-2+ymSuf4zkCxG=Yob5KnQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4iC_KGOx7Jwax-GWxFJbfUM-2+ymSuf4zkCxG=Yob5KnQ@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602075398; bh=KGi2EGqHzZcHvsQFp3UhbKKhXpiDRmtuyhLH08FSzzU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=GLRyM+FEm4UGEv2Xy+9a79BiwLvKv3ZSdHamad4J0R2h5dYh5jIVbsjJ39XNsySUQ
-         PdCk9zCCvKIFC4+c7vT26uPOH56IB+HuZVAHM/gD8DWt7Iq7VlPjvz2LqZ8GQpviWx
-         f0d5KtZM9f4svsI6McjYTlpHMHsqr8M7zNhPFYZvdgz0YS0GVULRe4P/AzVImDrIvo
-         Cfb+uOQxWD3VbK19NA/D6HogvtYsymbH0Hq46dbZ5GfxI4bvGvN/wQOjE2zTZT6BRH
-         bQQGD6Oj+82/JAWaDJwb70rZBNBVbJ3iseeITTu1g44AEUvdflK13eb8c/OkS+NkGX
-         DCmWPxOWcCngA==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 10/7/2020 6:36 AM, Krishnamraju Eraparaju wrote:
-> On Sunday, October 10/04/20, 2020 at 00:45:26 +0300, Max Gurtovoy wrote:
->> On 10/3/2020 6:36 AM, Krishnamraju Eraparaju wrote:
->>> On Friday, October 10/02/20, 2020 at 13:29:30 -0700, Sagi Grimberg wrote:
->>>>> Hi Sagi & Max,
->>>>>
->>>>> Any update on this?
->>>>> Please change the max IO size to 1MiB(256 pages).
->>>> I think that the reason why this was changed to handle the worst case
->>>> was in case there are different capabilities on the initiator and the
->>>> target with respect to number of pages per MR. There is no handshake
->>>> that aligns expectations.
->>> But, the max pages per MR supported by most adapters is around 256 pages
->>> only.
->>> And I think only those iSER initiators, whose max pages per MR is 4096,
->>> could send 16MiB sized IOs, am I correct?
->> If the initiator can send 16MiB, we must make sure the target is
->> capable to receive it.
-> I think max IO size, at iSER initiator, depends on
-> "max_fast_reg_page_list_len".
-> currently, below are the supported "max_fast_reg_page_list_len" of
-> various iwarp drivers:
->
-> iw_cxgb4: 128 pages
-> Softiwarp: 256 pages
-> i40iw: 512 pages
-> qedr: couldn't find.
->
-> For iwarp case, if 512 is the max pages supported by all iwarp drivers,
-> then provisioning a gigantic MR pool at target(to accommodate never used
-> 16MiB IO) wouldn't be a overkill?
-
-For RoCE/IB Mellanox HCAs we support 16MiB IO size and even more. We 
-limited to 16MiB in iSER/iSERT.
-
-Sagi,
-
-what about adding a module parameter for this as we did in iSER initiator ?
-
->>>> If we revert that it would restore the issue that you reported in the
->>>> first place:
->>>>
->>>> --
->>>> IB/isert: allocate RW ctxs according to max IO size
->>> I don't see the reported issue after reducing the IO size to 256
->>> pages(keeping all other changes of this patch intact).
->>> That is, "attr.cap.max_rdma_ctxs" is now getting filled properly with
->>> "rdma_rw_mr_factor()" related changes, I think.
->>>
->>> Before this change "attr.cap.max_rdma_ctxs" was hardcoded with
->>> 128(ISCSI_DEF_XMIT_CMDS_MAX) pages, which is very low for single target
->>> and muli-luns case.
->>>
->>> So reverting only ISCSI_ISER_MAX_SG_TABLESIZE macro to 256 doesn't cause the
->>> reported issue.
->>>
->>> Thanks,
->>> Krishnam Raju.
->>>> Current iSER target code allocates MR pool budget based on queue size.
->>>> Since there is no handshake between iSER initiator and target on max IO
->>>> size, we'll set the iSER target to support upto 16MiB IO operations and
->>>> allocate the correct number of RDMA ctxs according to the factor of MR's
->>>> per IO operation. This would guaranty sufficient size of the MR pool for
->>>> the required IO queue depth and IO size.
->>>>
->>>> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
->>>> Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
->>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
->>>> --
->>>>
->>>>> Thanks,
->>>>> Krishnam Raju.
->>>>> On Wednesday, September 09/23/20, 2020 at 01:57:47 -0700, Sagi Grimberg wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> Please reduce the Max IO size to 1MiB(256 pages), at iSER Target.
->>>>>>> The PBL memory consumption has increased significantly after increasing
->>>>>>> the Max IO size to 16MiB(with commit:317000b926b07c).
->>>>>>> Due to the large MR pool, the max no.of iSER connections(On one variant
->>>>>>> of Chelsio cards) came down to 9, before it was 250.
->>>>>>> NVMe-RDMA target also uses 1MiB max IO size.
->>>>>> Max, remind me what was the point to support 16M? Did this resolve
->>>>>> an issue?
+PiBTdWJqZWN0OiBSZTogW1BBVENIIHYyIDEvNl0gQWRkIGFuY2lsbGFyeSBidXMgc3VwcG9ydA0K
+PiANCj4gT24gVHVlLCBPY3QgNiwgMjAyMCBhdCAxMjoyMSBQTSBMZW9uIFJvbWFub3Zza3kgPGxl
+b25Aa2VybmVsLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUdWUsIE9jdCAwNiwgMjAyMCBhdCAw
+NTo0MTowMFBNICswMDAwLCBTYWxlZW0sIFNoaXJheiB3cm90ZToNCj4gPiA+ID4gU3ViamVjdDog
+UmU6IFtQQVRDSCB2MiAxLzZdIEFkZCBhbmNpbGxhcnkgYnVzIHN1cHBvcnQNCj4gPiA+ID4NCj4g
+PiA+ID4gT24gVHVlLCBPY3QgMDYsIDIwMjAgYXQgMDU6MDk6MDlQTSArMDAwMCwgUGFyYXYgUGFu
+ZGl0IHdyb3RlOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBGcm9tOiBMZW9uIFJvbWFub3Zza3kg
+PGxlb25Aa2VybmVsLm9yZz4NCj4gPiA+ID4gPiA+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgNiwg
+MjAyMCAxMDozMyBQTQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IE9uIFR1ZSwgT2N0IDA2LCAy
+MDIwIGF0IDEwOjE4OjA3QU0gLTA1MDAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOg0KPiA+
+ID4gPiA+ID4gPiBUaGFua3MgZm9yIHRoZSByZXZpZXcgTGVvbi4NCj4gPiA+ID4gPiA+ID4NCj4g
+PiA+ID4gPiA+ID4gPiA+IEFkZCBzdXBwb3J0IGZvciB0aGUgQW5jaWxsYXJ5IEJ1cywgYW5jaWxs
+YXJ5X2RldmljZSBhbmQNCj4gYW5jaWxsYXJ5X2RyaXZlci4NCj4gPiA+ID4gPiA+ID4gPiA+IEl0
+IGVuYWJsZXMgZHJpdmVycyB0byBjcmVhdGUgYW4gYW5jaWxsYXJ5X2RldmljZSBhbmQNCj4gPiA+
+ID4gPiA+ID4gPiA+IGJpbmQgYW4gYW5jaWxsYXJ5X2RyaXZlciB0byBpdC4NCj4gPiA+ID4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IEkgd2FzIHVuZGVyIGltcHJlc3Npb24gdGhhdCB0aGlzIG5h
+bWUgaXMgZ29pbmcgdG8gYmUgY2hhbmdlZC4NCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4g
+SXQncyBwYXJ0IG9mIHRoZSBvcGVucyBzdGF0ZWQgaW4gdGhlIGNvdmVyIGxldHRlci4NCj4gPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gPiBvaywgc28gd2hhdCBhcmUgdGhlIHZhcmlhbnRzPw0KPiA+ID4g
+PiA+ID4gc3lzdGVtIGJ1cyAoc3lzYnVzKSwgc2JzeXN0ZW0gYnVzIChzdWJidXMpLCBjcm9zc2J1
+cyA/DQo+ID4gPiA+ID4gU2luY2UgdGhlIGludGVuZGVkIHVzZSBvZiB0aGlzIGJ1cyBpcyB0bw0K
+PiA+ID4gPiA+IChhKSBjcmVhdGUgc3ViIGRldmljZXMgdGhhdCByZXByZXNlbnQgJ2Z1bmN0aW9u
+YWwgc2VwYXJhdGlvbicNCj4gPiA+ID4gPiBhbmQNCj4gPiA+ID4gPiAoYikgc2Vjb25kIHVzZSBj
+YXNlIGZvciBzdWJmdW5jdGlvbnMgZnJvbSBhIHBjaSBkZXZpY2UsDQo+ID4gPiA+ID4NCj4gPiA+
+ID4gPiBJIHByb3Bvc2VkIGJlbG93IG5hbWVzIGluIHYxIG9mIHRoaXMgcGF0Y2hzZXQuDQo+ID4g
+PiA+IA0KPiA+ID4gPiA+IChhKSBzdWJkZXZfYnVzDQo+ID4gPiA+DQo+ID4gPiA+IEl0IHNvdW5k
+cyBnb29kLCBqdXN0IGNhbiB3ZSBhdm9pZCAiXyIgaW4gdGhlIG5hbWUgYW5kIGNhbGwgaXQgc3Vi
+ZGV2Pw0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IFdoYXQgaXMgd3Jvbmcgd2l0aCBuYW1pbmcgdGhl
+IGJ1cyAnYW5jaWxsYXJ5IGJ1cyc/IEkgZmVlbCBpdCdzIGEgZml0dGluZyBuYW1lLg0KPiA+ID4g
+QW4gYW5jaWxsYXJ5IHNvZnR3YXJlIGJ1cyBmb3IgYW5jaWxsYXJ5IGRldmljZXMgY2FydmVkIG9m
+ZiBhIHBhcmVudCBkZXZpY2UNCj4gcmVnaXN0ZXJlZCBvbiBhIHByaW1hcnkgYnVzLg0KPiA+DQo+
+ID4gR3JlZyBzdW1tYXJpemVkIGl0IHZlcnkgd2VsbCwgZXZlcnkgaW50ZXJuYWwgY29udmVyc2F0
+aW9uIGFib3V0IHRoaXMNCj4gPiBwYXRjaCB3aXRoIG15IGNvbGxlYWd1ZXMgKG5vbi1lbmdsaXNo
+IHNwZWFrZXJzKSBzdGFydHMgd2l0aCB0aGUgcXVlc3Rpb246DQo+ID4gIldoYXQgZG9lcyBhbmNp
+bGxhcnkgbWVhbj8iDQo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxzYS1kZXZlbC8yMDIw
+MTAwMTA3MTQwMy5HQzMxMTkxQGtyb2FoLmNvbS8NCj4gPg0KPiA+ICJGb3Igbm9uLW5hdGl2ZSBl
+bmdsaXNoIHNwZWFrZXJzIHRoaXMgaXMgZ29pbmcgdG8gYmUgcm91Z2gsIGdpdmVuIHRoYXQNCj4g
+PiBJIGFzIGEgbmF0aXZlIGVuZ2xpc2ggc3BlYWtlciBoYWQgdG8gZ28gbG9vayB1cCB0aGUgd29y
+ZCBpbiBhDQo+ID4gZGljdGlvbmFyeSB0byBmdWxseSB1bmRlcnN0YW5kIHdoYXQgeW91IGFyZSB0
+cnlpbmcgdG8gZG8gd2l0aCB0aGF0DQo+ID4gbmFtZS4iDQo+IA0KPiBJIHN1Z2dlc3RlZCAiYXV4
+aWxpYXJ5IiBpbiBhbm90aGVyIHNwbGludGVyZWQgdGhyZWFkIG9uIHRoaXMgcXVlc3Rpb24uDQo+
+IEluIHRlcm1zIG9mIHdoYXQgdGhlIGtlcm5lbCBpcyBhbHJlYWR5IHVzaW5nOg0KPiANCj4gJCBn
+aXQgZ3JlcCBhdXhpbGlhcnkgfCB3YyAtbA0KPiA1MDcNCj4gJCBnaXQgZ3JlcCBhbmNpbGxhcnkg
+fCB3YyAtbA0KPiAxNTMNCj4gDQo+IEVtcGlyaWNhbGx5LCAiYXV4aWxpYXJ5IiBpcyBtb3JlIGNv
+bW1vbiBhbmQgY2xvc2VseSBtYXRjaGVzIHRoZSBpbnRlbmRlZCBmdW5jdGlvbg0KPiBvZiB0aGVz
+ZSBkZXZpY2VzIHJlbGF0aXZlIHRvIHRoZWlyIHBhcmVudCBkZXZpY2UuDQoNCmF1eGlsaWFyeSBi
+dXMgaXMgYSBiZWZpdHRpbmcgbmFtZSBhcyB3ZWxsLg0K
