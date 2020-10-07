@@ -2,152 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7EB285A43
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 10:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4FD285AA9
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Oct 2020 10:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgJGIPp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 04:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgJGIPo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 04:15:44 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1612BC061755
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Oct 2020 01:15:43 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id d28so1468641ote.1
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Oct 2020 01:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pzPWUp2kZLxPkBgPS5CFIuIDZhRYDXybDPGOe+gkyjk=;
-        b=Sk5u8ZJACW67ugyj/T0pqGfKZwFhZ6QzSMPb8GHncNSoFSXz5ceYEjUiMY2g1VWlur
-         akMu3IMZ04idCFQMJIH1qTYbGm9PtJrZDJY7cTSUMyHD2kqt0HmBgZwTu+2zWdQFbvWW
-         DnFXUIWNgYS5d6BaKP/BYCJ/koUmUcIdl08hI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pzPWUp2kZLxPkBgPS5CFIuIDZhRYDXybDPGOe+gkyjk=;
-        b=uBgeLc3OqWRxXOdWkAYCrv3+i+XWYXTLHoKNXpNkLb9owA0jHWtM/q2Zxgq3nYK4H6
-         NLQu0bgjNgUyhtxawbzNEUAWXcXssUNUAhek+d1eEV5L1kC8MrmxVFAhTMYfUCsznJ+9
-         bcZCKXjOAmT6S11YuTrdMM8igb7vXtUs/+227N0OZjQsi6OVatNpQrsUyG3hn9gVGHwJ
-         IoLc5CDmU0x08QRJWP9vo8b7ccceL/cslRYzD5ZQ6fbjSQ7DFOIcmisOdhY6BhsAgjZf
-         SjIR/Tk7iAYN/Q10/ZctCnBTvfwKguIrnsAlLYPqpRCc0cGcCvLjUNNxsWytqd6cvs+D
-         H+cw==
-X-Gm-Message-State: AOAM533Ja4JyctULPF4nm2wP53TxibrdouA0juS5mq9YibX1MkgiLi9B
-        4lxa3d3flYrUTjiRx/3kJFDlWWucjoRfD7TTlN4iFA==
-X-Google-Smtp-Source: ABdhPJy+YbYFDPa0+x1zr9PWGe0p0SDWhe7AMwlm685FYFp9ntA32GbX8DL6dp85EDg+Q3d+DRjums1alXx8QoNeihU=
-X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1110002otj.303.1602058542439;
- Wed, 07 Oct 2020 01:15:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201004154340.1080481-1-leon@kernel.org> <20201005235650.GA89159@nvidia.com>
- <20201006104122.GA438822@phenom.ffwll.local> <20201006114627.GE5177@ziepe.ca>
-In-Reply-To: <20201006114627.GE5177@ziepe.ca>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 7 Oct 2020 10:15:31 +0200
-Message-ID: <CAKMK7uG5UOS5360_HjJyroLE8b+6wrhT291PaqjFbii+BT7+Hg@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v5 0/4] Dynamicaly allocate SG table from the pages
+        id S1726181AbgJGIk4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 04:40:56 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:54440 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGIkz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 04:40:55 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0978eAvp055022;
+        Wed, 7 Oct 2020 08:40:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=qpjQZyiq3Pi1kHvSn+dmnsCCKlAt4CkINQaol40BmrM=;
+ b=E+Bz/zZXwHtGMpCtKlsipgzKBfA7TK/h+j7fkXJbqVyrLGaFUdxHe6FWvu6jKei1Xrng
+ kVVKCmBfq8GR7Nooe7o5Yc6b5NhRgqOQw6RBCMIxpqNdknLz1/Ot9k2YjILFnX5oeUsG
+ exg7KOEOTdU5TqG6NlmMkEiz4OyRUZ+Fszw4i71o0ER8FShthPk1OanRJ0RUjeo71u2X
+ 2OgynFkQcgWtAmlkowixsrsTHk/mjGBoZ3X9Kaeo+NqXD5eD/RpqZ46giBAwHv21dSdq
+ SEIKVjrKdnMuEsuTS97ApH4BXQqdxd0JcGf91COepJcV3BjSD5MKZ1EzFnNDl628Iciu 0w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33xetb0kp3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 08:40:54 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0978ZIpI127217;
+        Wed, 7 Oct 2020 08:38:54 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 33y2vp7u7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 08:38:54 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0978cqea029262;
+        Wed, 7 Oct 2020 08:38:53 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 01:38:52 -0700
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-rdma@vger.kernel.org
+References: <20200929174037.GW9916@ziepe.ca>
+ <2859e4a8-777b-48a5-d3c6-2f2effbebef9@oracle.com>
+ <20201002140445.GJ9916@ziepe.ca>
+ <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
+ <20201005131611.GR9916@ziepe.ca>
+ <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+ <20201005142554.GS9916@ziepe.ca>
+ <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
+ <20201005154548.GT9916@ziepe.ca>
+ <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+ <20201006124627.GH5177@ziepe.ca>
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+Date:   Wed, 7 Oct 2020 16:38:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20201006124627.GH5177@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070058
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070059
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 9:22 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Tue, Oct 06, 2020 at 12:41:22PM +0200, Daniel Vetter wrote:
-> > On Mon, Oct 05, 2020 at 08:56:50PM -0300, Jason Gunthorpe wrote:
-> > > On Sun, Oct 04, 2020 at 06:43:36PM +0300, Leon Romanovsky wrote:
-> > > > This series extends __sg_alloc_table_from_pages to allow chaining of
-> > > > new pages to already initialized SG table.
-> > > >
-> > > > This allows for the drivers to utilize the optimization of merging contiguous
-> > > > pages without a need to pre allocate all the pages and hold them in
-> > > > a very large temporary buffer prior to the call to SG table initialization.
-> > > >
-> > > > The second patch changes the Infiniband driver to use the new API. It
-> > > > removes duplicate functionality from the code and benefits the
-> > > > optimization of allocating dynamic SG table from pages.
-> > > >
-> > > > In huge pages system of 2MB page size, without this change, the SG table
-> > > > would contain x512 SG entries.
-> > > > E.g. for 100GB memory registration:
-> > > >
-> > > >              Number of entries      Size
-> > > >     Before        26214400          600.0MB
-> > > >     After            51200            1.2MB
-> > > >
-> > > > Thanks
-> > > >
-> > > > Maor Gottlieb (2):
-> > > >   lib/scatterlist: Add support in dynamic allocation of SG table from
-> > > >     pages
-> > > >   RDMA/umem: Move to allocate SG table from pages
-> > > >
-> > > > Tvrtko Ursulin (2):
-> > > >   tools/testing/scatterlist: Rejuvenate bit-rotten test
-> > > >   tools/testing/scatterlist: Show errors in human readable form
-> > >
-> > > This looks OK, I'm going to send it into linux-next on the hmm tree
-> > > for awhile to see if anything gets broken. If there is more
-> > > remarks/tags/etc please continue
-> >
-> > An idea that just crossed my mind: A pin_user_pages_sgt might be useful
-> > for both rdma and drm, since this would avoid the possible huge interim
-> > struct pages array for thp pages. Or anything else that could be coalesced
-> > down into a single sg entry.
-> >
-> > Not sure it's worth it, but would at least give a slightly neater
-> > interface I think.
->
-> We've talked about it. Christoph wants to see this area move to a biovec
-> interface instead of sgl, but it might still be worthwhile to have an
-> interm step at least as an API consolidation.
+On 10/6/20 8:46 PM, Jason Gunthorpe wrote:
+> On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
+> 
+>>>>> Kernel modules should not be doing networking unless commanded to by
+>>>>> userspace.
+>>>>
+>>>> It is still not clear why this is an issue with RDMA
+>>>> connection, but not with general kernel socket.  It is
+>>>> not random networking.  There is a purpose.
+>>>
+>>> It is a problem with sockets too, how do the socket users trigger
+>>> their socket usages? AFAIK all cases originate with userspace
+>>
+>> A user starts a namespace.  The module is loaded for servicing
+>> requests.  The module starts a listener.  The user deletes
+>> the namespace.  This scenario will have everything cleaned up
+>> properly if the listener is a kernel socket.  This is not the
+>> case with RDMA.
+> 
+> Please point to reputable code in upstream doing this
 
-Hm but then we'd need a new struct for the mapped side of things
-(which would still be what you get from dma-buf). That would be quite
-a bit of work to roll out everywhere, and sgt isn't such a huge misfit
-for passing buffer object mappings and system memory backing storage
-around, and hence what we (very slowly) converging drivers/gpu towards
-over the past 10 years or so.
 
-And moving the dma_map step out of dma-buf doesn't work, because some
-of the use-cases we have is for very special iommus which are managed
-by the gpu driver directly. Stuff that e.g. rotates/retiles/compresses
-on the fly, and is accessible by other (gfx related like video code,
-camera, ..) devices. Not something I expect to ever be relevant for
-rdma since this exist mostly on some small soc, but it's a thing.
-Without that dma-buf could hand out biovec for struct_page backed
-stuff, or some pfn_vec for the p2p stuff.
+It is not clear what "reputable" here really means.  If it just
+means something in kernel, then nearly all, if not all, Internet
+protocols code in kernel create a control kernel socket for every
+network namespaces.  That socket is deleted in the per namespace
+exit function.  If it explicitly means listening socket, AFS and
+TIPC in kernel do that for every namespaces.  That socket is
+deleted in the per namespace exit function.
 
-Anyway was just an idea, I guess we'll have to live with some
-impedance mismatch since rolling out the one an only iovec structure
-which suits everyone is I think impossible :-)
+It is very common for a network protocol to have something like
+this for protocol processing.  It is not clear why RDMA subsystem
+behaves differently and forbids this common practice.  Could you
+please elaborate the issues this practice has such that the RDMA
+subsystem cannot support it?
 
-> Avoiding the page list would be complicated as we'd somehow have to
-> code share the page table iterator scheme.
 
-We're (slowly) getting towards thp for vram mappings and everything so
-I guess for drivers/gpu we might make that happen. But yeah it'd be
-not so pretty I think.
--Daniel
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+K. Poon
+ka-cheong.poon@oracle.com
+
+
