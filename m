@@ -2,153 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C846287BEB
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 20:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC778287C28
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 21:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbgJHS4V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 14:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgJHS4U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 14:56:20 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BA0C061755
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Oct 2020 11:56:20 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z33so2145109qth.8
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 11:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GKuwdbdfDerO0oWysPpz0wBbV1H6nw7CdJXV5w2dnGw=;
-        b=JED6KFkgA9w2nyfQh62rVSqIP84AoywDDhTBWf0x/6DFP7kUTJN7hdxFNAd1KHxKiE
-         A5NJCFGlGzPXxGPj4tWlnVciECwt5iYh8+bi/YxJBJahr4V71tCjBt6ZiLY9GHLIIia4
-         KK0ugm8Iene+tcsSHVAxOZb2AON5ZvaRoneNdK3GxXSzkDJ+1tZEXtMqnu8lAb6uF0/1
-         lWVU+/IjyTu/YXLHVdikNwKJ40CvxdXQgRl+zxMfxvYhdCAfJpC3N2hO82mvaBdE3ko8
-         C4hcKZb0djH0gtxcVa1Et0Aq/q+tmhWEezWFSQfRK/Uo2li8x36kn/9uEMoO7TJpGy7C
-         iXXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GKuwdbdfDerO0oWysPpz0wBbV1H6nw7CdJXV5w2dnGw=;
-        b=FKsVpKxt1t7ZEi4apdYiqmNmsM2S+PMgGAnjhJNRpqJfEiFcywjuoZd3+GOCprMEh8
-         3xfq+3IrgQo8kgRCmG5SSRsgKBn/Wiwv3PT/Pqr8PiKHO90Q+YyngB6PJmGBh7JKsvMJ
-         PiiWy1mXXucK5MZoTA9WEehTJTW0LY88dddoOodiiox+p/SloL57rJyBOIY4aR0uHb5T
-         /CLwVTTkF7wkW50ME94loOfbXgmPOliG9QkcAIVKNQoRP9SY9ZIKL51LX3lxRwsZQEk1
-         FIsg6zWHkmsn5j0rzhEuxobvw2/5XceGz0T4/X8u7Fhv6nshgnw2oLMQy+uhuXbqJcBq
-         9xfg==
-X-Gm-Message-State: AOAM533lzEKaxkSlHZ3tFacsRAmjesuoeHuDUS9Q+gK2GWK7l5fBgPYt
-        Gv+23T/qhOe55HLYwABvpX7MxaU1Gv9OP1ug
-X-Google-Smtp-Source: ABdhPJyfqJ3aznb+6O1yRVdoCk4eSiVlT7WnVG/pWbkjgrH9G780oAWWvMN3iA2H6cEv+yam8cASRQ==
-X-Received: by 2002:aed:23fc:: with SMTP id k57mr9404963qtc.216.1602183379882;
-        Thu, 08 Oct 2020 11:56:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id f8sm4519268qkb.123.2020.10.08.11.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 11:56:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQb5O-001a1n-I8; Thu, 08 Oct 2020 15:56:18 -0300
-Date:   Thu, 8 Oct 2020 15:56:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Cc:     Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next] IB/mlx4: Convert rej_tmout radix-tree to XArray
-Message-ID: <20201008185618.GK5177@ziepe.ca>
-References: <1601989634-4595-1-git-send-email-haakon.bugge@oracle.com>
+        id S1726792AbgJHTOs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 15:14:48 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:36257 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726469AbgJHTOs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 15:14:48 -0400
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 098Ix6eR027138;
+        Thu, 8 Oct 2020 11:59:08 -0700
+Date:   Fri, 9 Oct 2020 00:29:06 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>, linux-rdma@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: Re: Re: reduce iSERT Max IO size
+Message-ID: <20201008185905.GA21229@chelsio.com>
+References: <20201007033619.GA11425@chelsio.com>
+ <20200922104424.GA18887@chelsio.com>
+ <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
+ <20201002171007.GA16636@chelsio.com>
+ <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
+ <20201003033644.GA19516@chelsio.com>
+ <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
+ <OF798A0BBE.E84F1C4A-ON002585FB.00486CB1-002585FB.004891F2@notes.na.collabserv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1601989634-4595-1-git-send-email-haakon.bugge@oracle.com>
+In-Reply-To: <OF798A0BBE.E84F1C4A-ON002585FB.00486CB1-002585FB.004891F2@notes.na.collabserv.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 03:07:14PM +0200, Håkon Bugge wrote:
-> Fixes: b7d8e64fa9db ("IB/mlx4: Add support for REJ due to timeout")
+On Thursday, October 10/08/20, 2020 at 13:12:39 +0000, Bernard Metzler wrote:
+> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 > 
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
->  drivers/infiniband/hw/mlx4/cm.c      | 73 +++++++++++++++---------------------
->  drivers/infiniband/hw/mlx4/mlx4_ib.h |  4 +-
->  2 files changed, 32 insertions(+), 45 deletions(-)
+> >To: "Max Gurtovoy" <mgurtovoy@nvidia.com>
+> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >Date: 10/07/2020 05:36AM
+> >Cc: "Sagi Grimberg" <sagi@grimberg.me>, linux-rdma@vger.kernel.org,
+> >"Potnuri Bharat Teja" <bharat@chelsio.com>, "Max Gurtovoy"
+> ><maxg@mellanox.com>
+> >Subject: [EXTERNAL] Re: reduce iSERT Max IO size
+> >
+> >On Sunday, October 10/04/20, 2020 at 00:45:26 +0300, Max Gurtovoy
+> >wrote:
+> >> 
+> >> On 10/3/2020 6:36 AM, Krishnamraju Eraparaju wrote:
+> >> >On Friday, October 10/02/20, 2020 at 13:29:30 -0700, Sagi Grimberg
+> >wrote:
+> >> >>>Hi Sagi & Max,
+> >> >>>
+> >> >>>Any update on this?
+> >> >>>Please change the max IO size to 1MiB(256 pages).
+> >> >>I think that the reason why this was changed to handle the worst
+> >case
+> >> >>was in case there are different capabilities on the initiator and
+> >the
+> >> >>target with respect to number of pages per MR. There is no
+> >handshake
+> >> >>that aligns expectations.
+> >> >But, the max pages per MR supported by most adapters is around 256
+> >pages
+> >> >only.
+> >> >And I think only those iSER initiators, whose max pages per MR is
+> >4096,
+> >> >could send 16MiB sized IOs, am I correct?
+> >> 
+> >> If the initiator can send 16MiB, we must make sure the target is
+> >> capable to receive it.
+> >I think max IO size, at iSER initiator, depends on
+> >"max_fast_reg_page_list_len".
+> >currently, below are the supported "max_fast_reg_page_list_len" of
+> >various iwarp drivers:
+> >
+> >iw_cxgb4: 128 pages
+> >Softiwarp: 256 pages
+> >i40iw: 512 pages
+> >qedr: couldn't find.
+> >
 > 
-> diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-> index 0ce4b5a..6c7986b 100644
-> +++ b/drivers/infiniband/hw/mlx4/cm.c
-> @@ -58,9 +58,7 @@ struct rej_tmout_entry {
->  	int slave;
->  	u32 rem_pv_cm_id;
->  	struct delayed_work timeout;
-> -	struct radix_tree_root *rej_tmout_root;
-> -	/* Points to the mutex protecting this radix-tree */
-> -	struct mutex *lock;
-> +	struct xarray *xa_rej_tmout;
->  };
->  
->  struct cm_generic_msg {
-> @@ -350,9 +348,7 @@ static void rej_tmout_timeout(struct work_struct *work)
->  	struct rej_tmout_entry *item = container_of(delay, struct rej_tmout_entry, timeout);
->  	struct rej_tmout_entry *deleted;
->  
-> -	mutex_lock(item->lock);
-> -	deleted = radix_tree_delete_item(item->rej_tmout_root, item->rem_pv_cm_id, NULL);
-> -	mutex_unlock(item->lock);
-> +	deleted = xa_cmpxchg(item->xa_rej_tmout, item->rem_pv_cm_id, item, NULL, 0);
->  
->  	if (deleted != item)
->  		pr_debug("deleted(%p) != item(%p)\n", deleted, item);
-> @@ -363,14 +359,13 @@ static void rej_tmout_timeout(struct work_struct *work)
->  static int alloc_rej_tmout(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id, int slave)
->  {
->  	struct rej_tmout_entry *item;
-> -	int sts;
-> +	struct rej_tmout_entry *old;
-> +
-> +	item = xa_load(&sriov->xa_rej_tmout, (unsigned long)rem_pv_cm_id);
+> For siw, this limit is not determined by resource constraints.
+> We could bump it up to 512, or higher. What is a reasonable
+> maximum, from iSER view?
 
-The locking that was here looks wrong, rej_tmout_timeout() is a work
-that could run at any time and kfree(item), so some kind of lock must
-be held across every touch to item
-
-Holding the xa_lock until the mod_delayed_work is done would be ok?
-
->  static int lookup_rej_tmout_slave(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id)
->  {
->  	struct rej_tmout_entry *item;
->  
-> -	mutex_lock(&sriov->rej_tmout_lock);
-> -	item = radix_tree_lookup(&sriov->rej_tmout_root, (unsigned long)rem_pv_cm_id);
-> -	mutex_unlock(&sriov->rej_tmout_lock);
-> +	item = xa_load(&sriov->xa_rej_tmout, (unsigned long)rem_pv_cm_id);
->  
-> -	if (!item || IS_ERR(item)) {
-> +	if (!item || xa_err(item)) {
->  		pr_debug("Could not find slave. rem_pv_cm_id 0x%x error: %d\n",
-> -			 rem_pv_cm_id, (int)PTR_ERR(item));
-> -		return !item ? -ENOENT : PTR_ERR(item);
-> +			 rem_pv_cm_id, xa_err(item));
-> +		return !item ? -ENOENT : xa_err(item);
->  	}
->  
->  	return item->slave;
-
-Here too
-
-> +	xa_lock(&sriov->xa_rej_tmout);
-> +	xa_for_each(&sriov->xa_rej_tmout, id, item) {
->  		if (slave < 0 || slave == item->slave) {
->  			mod_delayed_work(system_wq, &item->timeout, 0);
->  			flush_needed = true;
->  			++cnt;
->  		}
->  	}
-> -	mutex_unlock(&sriov->rej_tmout_lock);
-> +	xa_unlock(&sriov->xa_rej_tmout);
-
-This is OK
-
-Jason
+If the most common IO sizes are 4K & 8K, then the reasonable max IO size of
+256 pages(1 MiB) would be appropriate, by default. currently, NVMet-rdma
+also limits max IO size to 1MiB.
+> 
+> 
+> >For iwarp case, if 512 is the max pages supported by all iwarp
+> >drivers,
+> >then provisioning a gigantic MR pool at target(to accommodate never
+> >used
+> >16MiB IO) wouldn't be a overkill?
+> >> 
+> >> >
+> >> >>If we revert that it would restore the issue that you reported in
+> >the
+> >> >>first place:
+> >> >>
+> >> >>--
+> >> >>IB/isert: allocate RW ctxs according to max IO size
+> >> >I don't see the reported issue after reducing the IO size to 256
+> >> >pages(keeping all other changes of this patch intact).
+> >> >That is, "attr.cap.max_rdma_ctxs" is now getting filled properly
+> >with
+> >> >"rdma_rw_mr_factor()" related changes, I think.
+> >> >
+> >> >Before this change "attr.cap.max_rdma_ctxs" was hardcoded with
+> >> >128(ISCSI_DEF_XMIT_CMDS_MAX) pages, which is very low for single
+> >target
+> >> >and muli-luns case.
+> >> >
+> >> >So reverting only ISCSI_ISER_MAX_SG_TABLESIZE macro to 256 doesn't
+> >cause the
+> >> >reported issue.
+> >> >
+> >> >Thanks,
+> >> >Krishnam Raju.
+> >> >>Current iSER target code allocates MR pool budget based on queue
+> >size.
+> >> >>Since there is no handshake between iSER initiator and target on
+> >max IO
+> >> >>size, we'll set the iSER target to support upto 16MiB IO
+> >operations and
+> >> >>allocate the correct number of RDMA ctxs according to the factor
+> >of MR's
+> >> >>per IO operation. This would guaranty sufficient size of the MR
+> >pool for
+> >> >>the required IO queue depth and IO size.
+> >> >>
+> >> >>Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> >> >>Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> >> >>Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> >> >>--
+> >> >>
+> >> >>>
+> >> >>>Thanks,
+> >> >>>Krishnam Raju.
+> >> >>>On Wednesday, September 09/23/20, 2020 at 01:57:47 -0700, Sagi
+> >Grimberg wrote:
+> >> >>>>>Hi,
+> >> >>>>>
+> >> >>>>>Please reduce the Max IO size to 1MiB(256 pages), at iSER
+> >Target.
+> >> >>>>>The PBL memory consumption has increased significantly after
+> >increasing
+> >> >>>>>the Max IO size to 16MiB(with commit:317000b926b07c).
+> >> >>>>>Due to the large MR pool, the max no.of iSER connections(On
+> >one variant
+> >> >>>>>of Chelsio cards) came down to 9, before it was 250.
+> >> >>>>>NVMe-RDMA target also uses 1MiB max IO size.
+> >> >>>>Max, remind me what was the point to support 16M? Did this
+> >resolve
+> >> >>>>an issue?
+> >
+> 
