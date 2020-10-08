@@ -2,108 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382DD287ACD
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B98287AD5
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 19:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730261AbgJHRSI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 13:18:08 -0400
-Received: from mga11.intel.com ([192.55.52.93]:43048 "EHLO mga11.intel.com"
+        id S1731043AbgJHRUR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 13:20:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728780AbgJHRSH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:18:07 -0400
-IronPort-SDR: 66JQmYILR86tvKuPCKKwRYjoAnjUnysmrZ2HtUNHKVtdR4kQKWV/hhKrWL8ctRezk55veaUZs4
- Cb+9xVTQJA3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="161913390"
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="161913390"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 10:18:07 -0700
-IronPort-SDR: 5fHfkN4sDF0vmHtzirSyD7drsM6oLjc3bornOVMuQUB82IsCxgy9SfpzNC7X6B/4fxxI9BPBDm
- L1n7vieJgxEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
-   d="scan'208";a="298158660"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Oct 2020 10:18:07 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 098HI5wK026807;
-        Thu, 8 Oct 2020 10:18:05 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 098HI3XA189122;
-        Thu, 8 Oct 2020 13:18:03 -0400
-Subject: [PATCH for-next] IB/hfi,rdmavt,qib,opa_vnic: Update MAINTAINERS
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Date:   Thu, 08 Oct 2020 13:18:03 -0400
-Message-ID: <20201008171803.189100.43448.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
+        id S1728780AbgJHRUR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:20:17 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E413204EF;
+        Thu,  8 Oct 2020 17:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602177616;
+        bh=qqJaQ8w9+/FSFtBNLOGYEQ7wz4IYZfeGaGac4ucM/GA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V7Xmgrp5RI+cknUfCHil8Usd4zBVjfPjV1rt2Tlr4BVtZCM2VuLRGE1I+Xecomqoj
+         bP8LYTXylGlFZp2ZdcuKZMVSaA1OMWsS0acb4Jc6VGA93XjPr0U2tOT7g74WmZvB0l
+         QfVGV1A1O3YC1l60ZCwG5ka9VFOLPKrwkpT475jg=
+Date:   Thu, 8 Oct 2020 20:20:11 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dave Ertman <david.m.ertman@intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        gregkh@linuxfoundation.org, ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com
+Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+Message-ID: <20201008172011.GO13580@unreal>
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-2-david.m.ertman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005182446.977325-2-david.m.ertman@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Intel has spun off the Omni-Path Architecture group which is now a new
-company known as Cornelis Networks. Updating the MAINTAINERS file to
-reflect this change and our new email addresses.
+On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
+> Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
+> It enables drivers to create an ancillary_device and bind an
+> ancillary_driver to it.
+>
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each ancillary_device has a unique string based id; driver binds to
+> an ancillary_device based on this id through the bus.
+>
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> ---
 
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+<...>
+
+> +
+> +static const struct ancillary_device_id *ancillary_match_id(const struct ancillary_device_id *id,
+> +							    const struct ancillary_device *ancildev)
+> +{
+> +	while (id->name[0]) {
+> +		const char *p = strrchr(dev_name(&ancildev->dev), '.');
+> +		int match_size;
+> +
+> +		if (!p) {
+> +			id++;
+> +			continue;
+> +		}
+> +		match_size = p - dev_name(&ancildev->dev);
+> +
+> +		/* use dev_name(&ancildev->dev) prefix before last '.' char to match to */
+> +		if (!strncmp(dev_name(&ancildev->dev), id->name, match_size))
+
+This check is wrong, it causes to wrong matching if strlen(id->name) > match_size
+In my case, the trigger was:
+[    5.175848] ancillary:ancillary_match_id: dev mlx5_core.ib.0, id mlx5_core.ib_rep
+
+From cf8f10af72f9e0d57c7ec077d59238cc12b0650f Mon Sep 17 00:00:00 2001
+From: Leon Romanovsky <leonro@nvidia.com>
+Date: Thu, 8 Oct 2020 19:40:03 +0300
+Subject: [PATCH] fixup! Fixes to ancillary bus
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- MAINTAINERS |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/bus/ancillary.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f0068bc..ab7b69f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7726,8 +7726,8 @@ F:	include/linux/cciss*.h
- F:	include/uapi/linux/cciss*.h
- 
- HFI1 DRIVER
--M:	Mike Marciniszyn <mike.marciniszyn@intel.com>
--M:	Dennis Dalessandro <dennis.dalessandro@intel.com>
-+M:	Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-+M:	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
- F:	drivers/infiniband/hw/hfi1
-@@ -12861,8 +12861,8 @@ S:	Maintained
- F:	drivers/char/hw_random/optee-rng.c
- 
- OPA-VNIC DRIVER
--M:	Dennis Dalessandro <dennis.dalessandro@intel.com>
--M:	Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>
-+M:	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-+M:	Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
- F:	drivers/infiniband/ulp/opa_vnic
-@@ -14154,8 +14154,8 @@ F:	drivers/firmware/qemu_fw_cfg.c
- F:	include/uapi/linux/qemu_fw_cfg.h
- 
- QIB DRIVER
--M:	Dennis Dalessandro <dennis.dalessandro@intel.com>
--M:	Mike Marciniszyn <mike.marciniszyn@intel.com>
-+M:	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-+M:	Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
- F:	drivers/infiniband/hw/qib/
-@@ -14577,8 +14577,8 @@ S:	Maintained
- F:	drivers/net/ethernet/rdc/r6040.c
- 
- RDMAVT - RDMA verbs software
--M:	Dennis Dalessandro <dennis.dalessandro@intel.com>
--M:	Mike Marciniszyn <mike.marciniszyn@intel.com>
-+M:	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-+M:	Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
- F:	drivers/infiniband/sw/rdmavt
+diff --git a/drivers/bus/ancillary.c b/drivers/bus/ancillary.c
+index 54858f744ef5..615ce40ef8e4 100644
+--- a/drivers/bus/ancillary.c
++++ b/drivers/bus/ancillary.c
+@@ -31,8 +31,10 @@ static const struct ancillary_device_id *ancillary_match_id(const struct ancilla
+ 		match_size = p - dev_name(&ancildev->dev);
 
+ 		/* use dev_name(&ancildev->dev) prefix before last '.' char to match to */
+-		if (!strncmp(dev_name(&ancildev->dev), id->name, match_size))
++		if (match_size == strlen(id->name) && !strncmp(dev_name(&ancildev->dev), id->name, match_size)) {
+ 			return id;
++		}
++
+ 		id++;
+ 	}
+ 	return NULL;
+--
+2.26.2
+
+
+
+> +			return id;
+> +		id++;
+> +	}
+> +	return NULL;
+> +}
