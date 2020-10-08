@@ -2,104 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071352879DB
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 18:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197AE2879DD
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 18:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgJHQUs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 12:20:48 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:40906 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgJHQUs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 12:20:48 -0400
-Received: by mail-wr1-f47.google.com with SMTP id j2so7274768wrx.7
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 09:20:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cl0qx+uvvQ/d/tOqvj4mHFS0lcLyOdj+N6HhnDNaPEU=;
-        b=e6POJ3N7sOeWN5rtlNFNA9TXcb/5VvXcfWRCQB2BJWEWIyT6al1ZhHWRT8OwBo7lI2
-         DZuqXZTHN75kfKX+53pyOSYX4rBEA8hUgCcOtLOWlFzo2ylOCCZaGDjSEGH+sO5Ol5ff
-         Nj7OPVpW+BS/1NqUbVJ98t7tjOldZgRl6RwIf6GSM1n9Gfj77oU9HOzSNYZ/H/EHN2rY
-         dhcYsuj06nvl2Pl70MQqgiQAT3AdOUUKXMPF9LeDhg+JlK8bz5WVVv2LudHddDNjpjia
-         O+r3/4kb3v6mnhue5Q8IMqvYg7UDZBkSROWIwOlvwSlJf80GVOWBijKC9M9fyzUw+Ss8
-         Ut3g==
-X-Gm-Message-State: AOAM530UmWEn5ghkWaCZSYoe4XMgaqEorR0wmkoFHCBDh3oZnT0YbENb
-        Q/eCMJeSttsPbZbHhpTTOFE=
-X-Google-Smtp-Source: ABdhPJxZEoDjgtbOm35/H5l/SeNwaMox1+rAggKlqK1UKPP8uwPq2qPIQtBpeplifDnB+oWHNMwomA==
-X-Received: by 2002:adf:a455:: with SMTP id e21mr11248978wra.158.1602174046825;
-        Thu, 08 Oct 2020 09:20:46 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:68d6:3fd5:5a8b:9959? ([2601:647:4802:9070:68d6:3fd5:5a8b:9959])
-        by smtp.gmail.com with ESMTPSA id s19sm15850488wmc.0.2020.10.08.09.20.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 09:20:46 -0700 (PDT)
-Subject: Re: reduce iSERT Max IO size
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Krishnamraju Eraparaju <krishna2@chelsio.com>,
-        linux-rdma@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-References: <20200922104424.GA18887@chelsio.com>
- <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
- <20201002171007.GA16636@chelsio.com>
- <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
- <20201003033644.GA19516@chelsio.com>
- <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
- <20201007033619.GA11425@chelsio.com>
- <1a034761-3723-3c70-8a44-25ef2cbf786e@nvidia.com>
- <fe4ff8ac-fd0a-ed6f-312b-51be9a9fdcc6@grimberg.me>
- <20201008053002.GC13580@unreal>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <5ab4fea9-fefb-d138-cc3b-03f87cd6ee66@grimberg.me>
-Date:   Thu, 8 Oct 2020 09:20:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201008053002.GC13580@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1729276AbgJHQVR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 12:21:17 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:33090 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgJHQVQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 12:21:16 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098GKK7C115461;
+        Thu, 8 Oct 2020 16:21:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=HDGI7hs/0Q85dyKZTmQ/dGGq1KwIe3QWpWMDFNkI18k=;
+ b=dU8Xvs9X0uDN08xT9L70P3fUuowamvHPBz25ITE7fqpokDG1Utxpl+yd0pK+SeFBAMLH
+ 08uoJYCfLviiBR6hAMxKNa7VQ7mzUOxNT8HlRILsMdRF3ll4Gx2SeVk+lpZoEny+cQMs
+ q0IFrT2qMshdIi40EjxHw3PtLMefCUAcXqY33YdDgXFl4u0yEv4vou00DXRVOYwb/W00
+ yEnh4GHv41mcYpSnxK++lRzgG3SBCQEXEfvOBWeHj63euzEFEJYnCARaW3lyqpHm+tMz
+ ogFzCnaYxCLyXg1MavBnzGGvTlma0+JA0+XCp9vLXr3JPP8GbB3DF/AZxM8bPZ/mCYd/ rQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33xetb8u7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 16:21:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098GEuUT101841;
+        Thu, 8 Oct 2020 16:21:14 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3410k1cbfa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 16:21:13 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098GLCvS001799;
+        Thu, 8 Oct 2020 16:21:13 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 09:21:12 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20201008160814.GF5177@ziepe.ca>
+Date:   Thu, 8 Oct 2020 12:21:10 -0400
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
 Content-Transfer-Encoding: 7bit
+Message-Id: <3AEA60FF-1E16-4BBD-98F1-E8122E85C6B5@oracle.com>
+References: <20201005142554.GS9916@ziepe.ca>
+ <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
+ <20201005154548.GT9916@ziepe.ca>
+ <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+ <20201006124627.GH5177@ziepe.ca>
+ <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+ <20201007111636.GD3678159@unreal>
+ <4d29915c-3ed7-0253-211b-1b97f5f8cfdf@oracle.com>
+ <20201008103641.GM13580@unreal>
+ <aec6906d-7be5-b489-c7dc-0254c4538723@oracle.com>
+ <20201008160814.GF5177@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080122
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
->>>> I think max IO size, at iSER initiator, depends on
->>>> "max_fast_reg_page_list_len".
->>>> currently, below are the supported "max_fast_reg_page_list_len" of
->>>> various iwarp drivers:
->>>>
->>>> iw_cxgb4: 128 pages
->>>> Softiwarp: 256 pages
->>>> i40iw: 512 pages
->>>> qedr: couldn't find.
->>>>
->>>> For iwarp case, if 512 is the max pages supported by all iwarp drivers,
->>>> then provisioning a gigantic MR pool at target(to accommodate never used
->>>> 16MiB IO) wouldn't be a overkill?
->>>
->>> For RoCE/IB Mellanox HCAs we support 16MiB IO size and even more. We
->>> limited to 16MiB in iSER/iSERT.
->>>
->>> Sagi,
->>>
->>> what about adding a module parameter for this as we did in iSER initiator ?
->>
->> I don't think we have any other choice...
-> 
-> Sagi,
-> 
-> I didn't read whole thread and know little about ULPs, but wonder if isn't
-> it possible to check device type (iWARP/RoCE) during iSERT initialization
-> and create MR pool only after device is recognized?
 
-Its already done this way. The problem is that there is no handshake
-procedure in iSER between the host and the target for what the maximum
-transfer size would be, so currently isert sets up to a worse case of
-16MB. This has implications on memory requirements.
+> On Oct 8, 2020, at 12:08 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> 
+> On Thu, Oct 08, 2020 at 07:08:42PM +0800, Ka-Cheong Poon wrote:
+>> Note that namespace does not really play a role in this "rogue" reasoning.
+>> The init_net is also a namespace.  The "rogue" reasoning means that no
+>> kernel module should start a listening RDMA endpoint by itself with or
+>> without any extra namespaces.  In fact, to conform to this reasoning, the
+>> "right" thing to do would be to change the code already in upstream to get
+>> rid of the listening RDMA endpoint in init_net!
+> 
+> Actually I think they all already need user co-ordination?
+> 
+> - NFS, user has to setup and load exports
+> - Storage Targets, user has to setup the target
+> - IPoIB, user has to set the link up
+> 
+> etc.
+> 
+> Each of those could provide the anchor to learn the namespace.
 
-In the absence of a handshake we should have the user choose with a 
-param... Ideally that would be a configfs parameter, but a modparam can 
-work as well here.
+My two cents, and worth every penny:
+
+I think the NFSD listener is net namespace-aware. I vaguely recall
+that a user administrative program (maybe rpc.nfsd?) requests an
+NFS service listener in a particular namespace.
+
+Should work the same for sockets and listener QPs. For RPC-over-RDMA,
+a struct net argument is passed in from the generic code:
+
+ 66 static struct svcxprt_rdma *svc_rdma_create_xprt(struct svc_serv *serv,
+ 67                                                  struct net *net);
+ 68 static struct svc_xprt *svc_rdma_create(struct svc_serv *serv,
+ 69                                         struct net *net,
+ 70                                         struct sockaddr *sa, int salen,
+ 71                                         int flags);
+
+And that struct net is then passed on to rdma_create_id().
+
+
+--
+Chuck Lever
+
+
+
