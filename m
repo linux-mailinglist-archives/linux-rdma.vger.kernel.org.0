@@ -2,60 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAFC286C72
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 03:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A22F286CD1
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 04:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgJHBmb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Oct 2020 21:42:31 -0400
-Received: from sonic305-37.consmr.mail.bf2.yahoo.com ([74.6.133.236]:33026
-        "EHLO sonic305-37.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728008AbgJHBma (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 21:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602121349; bh=KhejUjG+aIFEdaJtUCWO7uMjCXcLLdLXH7PJ9JLxOyc=; h=Date:From:Reply-To:Subject:References:From:Subject; b=mxTCY5u8dojIAoEK7dRRm3e8tg6fQX6p/BSFuCqeFD97orLo/FdEqaUL+Vgv68beRODtWE6heUs3t3B+iCrdkPZy28wUTgEdThl6fQfvPy7Cmjj45R2nqHRz4orr0o5lzILlm7SxT8t/JnS3FFGcXXVml/PsbkAU/grwW0DsmgF/+JX4CKAX/MHjB1Z/Fc6+tETC7+C3bkApWT3CWMvzwZzcrEkjnmCXfDaKgyz2MmhjzZJcAmLTLRucb8uOv6LA5ilSkiI59v8EyKxo9ikH1ok/VFF+PwsHy5ZM/ZrKelzlpDNaHUHtAbnAx10XQk94QLBWkHx84PZc/UAfQz4kYg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602121349; bh=uqDj2VPrKPT25U9T/+fYHyMjjjh3wcJG6jaJ8gvI7Ws=; h=Date:From:Subject; b=JtBSkhoMJzEvWPM48YC1y17q1Cw6lQAEqD4glqgpMbIQ4lSWeupmtDnE9H7mo3uK2gA9VbTzpNk/F51uZ8j4QC0Y92g4a8xzM261RpFFZIsCRnIkWqNWR+HXXV5uHffTmbSDD1SczHuyG5LuHu8M4uCR6Ot+4k36nK/iQjFKKTdPzvpZNkRjSf9z1izmXmdO9UJbmGsv+vUMSiBjXR2R1k5IDm4pF0cC/f5dU45qJ21lJqE3nnbXftaPdT7xR2/CoMv4tD9mcvFpuHD6hIh6+ifDkEurvBudyLEn29nRThkIYO9Hzc+hEI/GB0EjNZb3WlZpNB3WwXWmoEbzOK7wyw==
-X-YMail-OSG: UTHzd1gVM1kUOprq2E7c7l7h8ZbDBFFCByblZ4goQS9jWtmdXfMcT6U_Ox7H4Ds
- X52X6Hqp.i0BTg0dcEHbfnVwE7EPDJT0shydaqCdNkKCKLcop0J5BEe8W7R1hNrjO6IZBic.Ty0e
- Vi2utWyLe8OW3rwC2BixdqwpybZ0pOGqkfpnO7feQDYlZ.MuzlxL0xKB92uI7d5sI1pcKFanYbJH
- _v_tOo51CKqUQvJkYfdxsJNNSTWN6dfyBkWIVXKLQZN4rxhgVMtUeJMXl2LeWZ2a78uaXLmXL776
- UPo72i7127qvJDkDo5hPtUPPJt_TbspsHmuHddiJwmEqpip1TMfAah2ZfFakY0_rgcW9AFFKrTMl
- QHKytwHq632bmejes29GXqabaTUWEQ99V_K79z3zeBrWXnvGeV3u9KQevsBuL3Ci3g9AwLYvLz7s
- jH1j59q8Y6y5CjsHo2.ylfnaQRqh4E2mJLH4A8EoDMHXlcB8.2RTUj3LnqeYkVGxkHftR2gcMIwk
- mm51HDr4h9z6z8zqSTLK0FwuYhWVU1BVHsOeFTfVR9S.gIW8G..C49x35u6WgBNV6WMYzHKvZqzQ
- 7Supxu4WVexoenT9Es5ae3wMuBwSZchSyWX9TxOlWaooazNNkWTiJnZ4pQGcXpl.ZSEDJ8AwejMv
- g14ZUbqVkHdxAiGBOdFdC51JgqgzwfoodHwWF53UkoBTG_XxedDarMuTfx2b5r3vzlJIPxFx5iMQ
- b7zwi6iRKgNOblRDKdttHGlpZAcayXXC.E55z8Wf0oplY_acn4IgN_oYaYkenNx_iD8e5BlO5FI_
- FHn1KoSfR24.y1JswUl_X8KXzqMKBJ1nQ.HiTli75cqpRbNIbUtCNfTdvbJES4iwVPrLPAyupyFw
- KJGPy00fIyKDyxj_ALsuei1cy7PhEkLOBwK2a5emJw7flzrRqV54WKWX3HaZOJzoerLjVPKLNVuV
- CEwCe86d4FF.pgZI0jPMmOh6v0cK1fD8MoMNdiyDI7rs9W8DFl1yerEi9kDJpuEw1mqIZozZfWfp
- 4BGAfmt29jYZ2bKSpc2gRiZjBQ_3DmvVDRRa1FvM8GKWv4uubkIZpPr9UFnkpJqi3vr0X2E5F7W5
- EFgWkGbuuNNz2REdFabs3IDmlf9f7udTWB0PNgSls8sKxapX01i0HKI3C9vPZbmRT8lYrUToPm9T
- Zzip2GLrebwroSMpXkLZJFtkISpZwgqKa1_nUuP2uxx0Pma_ZNYUnKCBIrxHPgajlakK_m71Cunt
- 2X8xe4ORYjEzj0rJXU2YDyW2jay5hpCwpXGHMoVCR8bwzEcqtVIZ7tmqgnMJG9y1sHSClGF5G1AT
- 8eE.ScH4cCKAKKiTxvJE2RQsGvAm9zpEZTrOOyHtKhni7mWP3AdgANxal6OvRvxL87wVgsstADZ0
- Q6D3TndATmhtW.vJ7nRkjDtyTloWdIW2LGR68ORCtLbk0Ff_N6cWlqPswla8YWDgfP2X3YwfUzGq
- y
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Thu, 8 Oct 2020 01:42:29 +0000
-Date:   Thu, 8 Oct 2020 01:40:25 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <mau9@fdco.in>
-Reply-To: maurhinck4@gmail.com
-Message-ID: <2103559524.308380.1602121225814@mail.yahoo.com>
-Subject: RE
+        id S1727707AbgJHCgh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Oct 2020 22:36:37 -0400
+Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:51392 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726400AbgJHCgh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Oct 2020 22:36:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 57877181D337B;
+        Thu,  8 Oct 2020 02:36:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:973:988:989:1260:1311:1314:1345:1437:1515:1534:1542:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2903:3138:3139:3140:3141:3142:3353:3865:3867:3868:3871:3874:4250:4321:4559:4605:5007:6261:8603:8957:10004:10848:11026:11658:11914:12043:12048:12296:12297:12555:12679:12895:12986:13161:13229:13870:13894:14096:14394:14721:21080:21433:21451:21627:30054:30062,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: table34_1a085dd271d4
+X-Filterd-Recvd-Size: 3500
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  8 Oct 2020 02:36:35 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
+Date:   Wed,  7 Oct 2020 19:36:23 -0700
+Message-Id: <cover.1602122879.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2103559524.308380.1602121225814.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+A recent commit added a sysfs_emit and sysfs_emit_at to allow various
+sysfs show functions to ensure that the PAGE_SIZE buffer argument is
+never overrun and always NUL terminated.
 
+Convert the RDMA/InfiniBand subsystem to use these new functions.
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck4@gmail.com) fo=
-r further details.
+The first 2 patches exclusively used coccinelle to convert uses.
+The third and fourth patches were done manually.
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
+Compiled allyesconfig and defconfig with all infiniband options selected
+no warnings, but untested, no hardward
+
+Overall object size is reduced
+
+total size: allyesconfig x86-64
+new: 8364003	1680968	 131520	10176491 9b47eb	(TOTALS)
+old: 8365883	1681032	 131520	10178435 9b4f83	(TOTALS)
+
+total size: defconfig x86-64 with all infiniband selected
+new; 1359153	 131228	   1910  1492291 16c543	(TOTALS)
+old: 1359422	 131228	   1910  1492560 16c650	(TOTALS)
+
+Joe Perches (4):
+  RDMA: Convert sysfs device * show functions to use sysfs_emit()
+  RDMA: Convert sysfs kobject * show functions to use sysfs_emit()
+  RDMA: manual changes for sysfs_emit and neatening
+  RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit
+
+ drivers/infiniband/core/cm.c                  |   4 +-
+ drivers/infiniband/core/cma_configfs.c        |   4 +-
+ drivers/infiniband/core/sysfs.c               | 155 ++++++++++--------
+ drivers/infiniband/core/ucma.c                |   2 +-
+ drivers/infiniband/core/user_mad.c            |   6 +-
+ drivers/infiniband/core/uverbs_main.c         |   4 +-
+ drivers/infiniband/hw/bnxt_re/main.c          |   4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |  13 +-
+ drivers/infiniband/hw/hfi1/sysfs.c            |  62 ++++---
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   6 +-
+ drivers/infiniband/hw/mlx4/main.c             |   9 +-
+ drivers/infiniband/hw/mlx4/mcg.c              |  82 +++++----
+ drivers/infiniband/hw/mlx4/sysfs.c            |  70 ++++----
+ drivers/infiniband/hw/mlx5/main.c             |  13 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  33 ++--
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c    |   4 +-
+ drivers/infiniband/hw/qedr/main.c             |  10 +-
+ drivers/infiniband/hw/qib/qib_sysfs.c         |  91 +++++-----
+ drivers/infiniband/hw/usnic/usnic_ib_sysfs.c  | 104 +++++-------
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |   6 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |   2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c       |   4 +-
+ drivers/infiniband/ulp/ipoib/ipoib_main.c     |   7 +-
+ drivers/infiniband/ulp/ipoib/ipoib_vlan.c     |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c  |  60 +++----
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c  |  20 +--
+ drivers/infiniband/ulp/srp/ib_srp.c           |  49 +++---
+ drivers/infiniband/ulp/srpt/ib_srpt.c         |  14 +-
+ 28 files changed, 423 insertions(+), 417 deletions(-)
+
+-- 
+2.26.0
+
