@@ -2,127 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2A0287ADA
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 19:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A32287B33
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 19:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgJHRVU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 13:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728780AbgJHRVU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:21:20 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87664204EF;
-        Thu,  8 Oct 2020 17:21:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602177679;
-        bh=r/KkSkcvl53CX08vt3Y25ViL49a+viUGbLz4eACO1Ls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ksgfa9NUqyj68Pu9HFy/hcUX3Q+81kAbQHK+Upql6RAIZo1B9Lh6zD0utgGWByKf7
-         pEUIcsQWgiA//JRpMhgwWUG0C1okBG1Q2mYlY3zwAnWyi13FQEaLdwcz4r/MWO5608
-         qKWQCC80yiheruenmrfSyNuaPr7k86ULkEz2Nv5Y=
-Date:   Thu, 8 Oct 2020 20:21:15 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201008172115.GP13580@unreal>
-References: <DM6PR11MB2841C531FC27DB41E078C52BDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201007192610.GD3964015@unreal>
- <BY5PR12MB43221A308CE750FACEB0A806DC0A0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <DM6PR11MB28415A8E53B5FFC276D5A2C4DD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201008052137.GA13580@unreal>
- <CAPcyv4gz=mMTfLO4mAa34MEEXgg77o1AWrT6aguLYODAWxbQDQ@mail.gmail.com>
- <20201008070032.GG13580@unreal>
- <CAPcyv4jUbNaR6zoHdSNf1Rsq7MUp2RvdUtDGrmi5Be6hK_oybg@mail.gmail.com>
- <20201008080010.GK13580@unreal>
- <DM6PR11MB284123995577294BE3E0C36EDD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
+        id S1731741AbgJHRvt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 13:51:49 -0400
+Received: from bosmailout02.eigbox.net ([66.96.188.2]:48089 "EHLO
+        bosmailout02.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgJHRvt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 13:51:49 -0400
+X-Greylist: delayed 1820 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 13:51:48 EDT
+Received: from bosmailscan12.eigbox.net ([10.20.15.12])
+        by bosmailout02.eigbox.net with esmtp (Exim)
+        id 1kQZbb-0003e0-Su; Thu, 08 Oct 2020 13:21:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=cornelisnetworks.com; s=dkim; h=Sender:Content-Transfer-Encoding:
+        Content-Type:Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
+        MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yb1lUypEdJ/LD4Wgo98N0rSSOnyZm2qPCY/lfpwhHrc=; b=xQzlvO10sHeOKA2ydQPJP0e+dZ
+        yvn06E5/3wymqgjD+7PlPH7Nk7ahYFQJzo6b7hPdX/lmk/9ccVvOpqI83l5fVEHhZ9fxN3goXio8Z
+        wDnZRDzLUWUxxcxNQVHIRAE/M+ZS/GMjCwrNhZ7HQhd8Vp7YWf4r+9stDv32fbE3SIAdLp4qVtJOD
+        yh1oKDCmCpUDrgFJIJxAUgAKKkWfOBeRzNGfwp59O5a9bW543kQALfM25WfWGVtEOVMm7NAoZX6N0
+        Xk94Bs6kwLneZHWcFl+phHRK+PzVS2do0LHqccnpFRbIybANToqyRav6rH6c5DhEdiaYbm7dsSAMp
+        EfUS12YQ==;
+Received: from [10.115.3.31] (helo=bosimpout11)
+        by bosmailscan12.eigbox.net with esmtp (Exim)
+        id 1kQZbb-0004rP-IX; Thu, 08 Oct 2020 13:21:27 -0400
+Received: from boswebmail08.eigbox.net ([10.20.16.8])
+        by bosimpout11 with 
+        id dVMP230010ASFPu01VMSgY; Thu, 08 Oct 2020 13:21:27 -0400
+X-Authority-Analysis: v=2.3 cv=DtjNBF3+ c=1 sm=1 tr=0
+ a=nrbQDdKp8bIvKAbSIVj10Q==:117 a=PId9yTw908ogKca1p5g/DQ==:17
+ a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10 a=DfNHnWVPAAAA:8 a=LRYjQimtAAAA:8
+ a=xe5bB9sYCSZpmBIc9o0A:9 a=CjuIK1q_8ugA:10 a=rjTVMONInIDnV1a_A2c_:22
+ a=JC7xiqAVgOyvJ6DxgMma:22
+Received: from [127.0.0.1] (helo=domaincom)
+        by boswebmail08.eigbox.net with esmtp (Exim)
+        id 1kQZbX-0004VS-1r; Thu, 08 Oct 2020 13:21:23 -0400
+Received: from [192.55.54.42]
+ by emailmg.domain.com
+ with HTTP (HTTP/1.1 POST); Thu, 08 Oct 2020 13:21:23 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB284123995577294BE3E0C36EDD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
+Date:   Thu, 08 Oct 2020 13:21:23 -0400
+From:   dennis.dalessandro@cornelisnetworks.com
+To:     Colin King <colin.king@canonical.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Ira Weiny <ira.weiny@intel.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/rdmavt: Fix sizeof mismatch
+In-Reply-To: <20201008095204.82683-1-colin.king@canonical.com>
+References: <20201008095204.82683-1-colin.king@canonical.com>
+Message-ID: <105407a6e7fc28b57cbe5550b8c01c45@cornelisnetworks.com>
+X-Sender: dennis.dalessandro@cornelisnetworks.com
+User-Agent: Roundcube Webmail/1.3.11
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-EN-AuthUser: dennis.dalessandro@cornelisnetworks.com
+Sender:  dennis.dalessandro@cornelisnetworks.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:42:48PM +0000, Ertman, David M wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, October 8, 2020 1:00 AM
-> > To: Williams, Dan J <dan.j.williams@intel.com>
-> > Cc: Ertman, David M <david.m.ertman@intel.com>; Parav Pandit
-> > <parav@nvidia.com>; Pierre-Louis Bossart <pierre-
-> > louis.bossart@linux.intel.com>; alsa-devel@alsa-project.org;
-> > parav@mellanox.com; tiwai@suse.de; netdev@vger.kernel.org;
-> > ranjani.sridharan@linux.intel.com; fred.oh@linux.intel.com; linux-
-> > rdma@vger.kernel.org; dledford@redhat.com; broonie@kernel.org; Jason
-> > Gunthorpe <jgg@nvidia.com>; gregkh@linuxfoundation.org;
-> > kuba@kernel.org; Saleem, Shiraz <shiraz.saleem@intel.com>;
-> > davem@davemloft.net; Patil, Kiran <kiran.patil@intel.com>
-> > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> >
-> > On Thu, Oct 08, 2020 at 12:38:00AM -0700, Dan Williams wrote:
-> > > On Thu, Oct 8, 2020 at 12:01 AM Leon Romanovsky <leon@kernel.org>
-> > wrote:
-> > > [..]
-> > > > All stated above is my opinion, it can be different from yours.
-> > >
-> > > Yes, but we need to converge to move this forward. Jason was involved
-> > > in the current organization for registration, Greg was angling for
-> > > this to be core functionality. I have use cases outside of RDMA and
-> > > netdev. Parav was ok with the current organization. The SOF folks
-> > > already have a proposed incorporation of it. The argument I am hearing
-> > > is that "this registration api seems hard for driver writers" when we
-> > > have several driver writers who have already taken a look and can make
-> > > it work. If you want to follow on with a simpler wrappers for your use
-> > > case, great, but I do not yet see anyone concurring with your opinion
-> > > that the current organization is irretrievably broken or too obscure
-> > > to use.
-> >
-> > Can it be that I'm first one to use this bus for very large driver (>120K LOC)
-> > that has 5 different ->probe() flows?
-> >
-> > For example, this https://lore.kernel.org/linux-
-> > rdma/20201006172317.GN1874917@unreal/
-> > hints to me that this bus wasn't used with anything complex as it was initially
-> > intended.
-> >
-> > And regarding registration, I said many times that init()/add() scheme is ok,
-> > the inability
-> > to call to uninit() after add() failure is not ok from my point of view.
->
-> So, to address your concern of not being able to call an uninit after a add failure
-> I can break the unregister flow into two steps also.  An uninit and a delete to mirror
-> the registration process's init and add.
->
-> Would this make the registration and un-registration flow acceptable?
+On 2020-10-08 05:52, Colin King wrote:
 
-Yes, sure.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> An incorrect sizeof is being used, struct rvt_ibport ** is not correct,
+> it should be struct rvt_ibport *. Note that since ** is the same size 
+> as
+> * this is not causing any issues.  Improve this fix by using
+> sizeof(*rdi->ports) as this allows us to not even reference the type
+> of the pointer.  Also remove line breaks as the entire statement can
+> fit on one line.
+> 
+> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
+> Fixes: ff6acd69518e ("IB/rdmavt: Add device structure allocation")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> drivers/infiniband/sw/rdmavt/vt.c | 4 +---
+> 1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rdmavt/vt.c 
+> b/drivers/infiniband/sw/rdmavt/vt.c
+> index f904bb34477a..2d534c450f3c 100644
+> --- a/drivers/infiniband/sw/rdmavt/vt.c
+> +++ b/drivers/infiniband/sw/rdmavt/vt.c
+> @@ -95,9 +95,7 @@ struct rvt_dev_info *rvt_alloc_device(size_t size, 
+> int nports)
+> if (!rdi)
+> return rdi;
+> 
+> -    rdi->ports = kcalloc(nports,
+> -                 sizeof(struct rvt_ibport **),
+> -                 GFP_KERNEL);
+> +    rdi->ports = kcalloc(nports, sizeof(*rdi->ports), GFP_KERNEL);
+> if (!rdi->ports)
+> ib_dealloc_device(&rdi->ibdev);
 
->
-> -DaveE
->
->
->
-> >
-> > Thanks
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
