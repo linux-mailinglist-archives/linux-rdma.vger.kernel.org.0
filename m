@@ -2,195 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EC5287EC2
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 00:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB160287EC9
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 00:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgJHWle (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 18:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJHWle (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 18:41:34 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECF7C0613D4
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Oct 2020 15:41:34 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id h24so10337717ejg.9
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 15:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WKAAq4D39s8StG/M1lO07+d0CiCysI9oSAC/9fh4N/g=;
-        b=y0e6dbaEHBOEaWBMLIsBwYXUrCmlIkVZjzL674Ojaz3MoNegh7jFicauDQc7uBzpmV
-         I8yR3KOjLE9xrw+FQgK0qsWXwBXab8/hiy0NJqBkldVk/7XjIM1+v4qGGG+xtHxNVUb8
-         crL5loR9gnnIkU1SFWJPBsRrF7Kp4uEsLLC/Mby2tx47G9iLQJERgds1HG9c2nbm3WHp
-         vABJiB/JlPYSjmkLQ98xiY4tHPb3+htluy89bDn32BMR9eaxVeghDrvlGCI+GnSmNopp
-         ez5qNI+eYRxA7+EXip3YNmdPasWUqPYcfMJ7oJE3r4lJ8nzmaelpH7HOajw6gPobWE0C
-         daig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WKAAq4D39s8StG/M1lO07+d0CiCysI9oSAC/9fh4N/g=;
-        b=Ru+0givdV3kP5P11CN0HVwMDxnKaGLbi6uDmSDxgHuMIgeHssrqPNlBnRYORvzAN6p
-         QHa5QBzleyuHpqc3CjVLe/sW8yd2Gv62sOTexRHe2oRQRr8sFdx1ODFTnqRe4hdhhx+C
-         ZFKb91fGM+9XbVvOOA8tOUIvAh41HZGRBxbCAdx5oVaSpmjosS2SmRCw3FzPxip/X2iw
-         H0S9y+xxKP44yNH7JvvTgjWjc1pZrw65O1jeA+AJGNy1hWwaM53Mq2wsweznLWikpZZj
-         1oP7eK+oKo10eDaojYAt1BQsT7Y+N3bSsRpIc26PodAKg5N1u/iNmaWzDpNKMXRyQj/T
-         Qy6g==
-X-Gm-Message-State: AOAM532IUt8Q6VBErEK9woV7MhuTjJDNFZ76aAJ0jzaa2382OVRBBov4
-        DahtTnQo1XWyy1K2pQwB6NhKMjEWLRagzEN7wgzdRg5GGpB1AA==
-X-Google-Smtp-Source: ABdhPJzn83obXIaxacWoR+1oBmm3WlzAU5EGjnIfldcPJdG8BK/orzWfCwt859OcsJxummItwWCyBowjIZCEM2ZM9Ow=
-X-Received: by 2002:a17:906:4306:: with SMTP id j6mr11588545ejm.523.1602196892931;
- Thu, 08 Oct 2020 15:41:32 -0700 (PDT)
+        id S1729123AbgJHWrS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 18:47:18 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17791 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgJHWrS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 18:47:18 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7f96bd0001>; Thu, 08 Oct 2020 15:46:21 -0700
+Received: from [172.27.0.178] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
+ 2020 22:47:07 +0000
+Subject: Re: reduce iSERT Max IO size
+To:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>
+CC:     Sagi Grimberg <sagi@grimberg.me>, <linux-rdma@vger.kernel.org>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        Max Gurtovoy <maxg@mellanox.com>
+References: <20201007033619.GA11425@chelsio.com>
+ <20200922104424.GA18887@chelsio.com>
+ <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
+ <20201002171007.GA16636@chelsio.com>
+ <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
+ <20201003033644.GA19516@chelsio.com>
+ <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
+ <OF798A0BBE.E84F1C4A-ON002585FB.00486CB1-002585FB.004891F2@notes.na.collabserv.com>
+ <20201008185905.GA21229@chelsio.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <b9293781-d720-9c3a-2751-749d13bb3ac0@nvidia.com>
+Date:   Fri, 9 Oct 2020 01:47:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com> <20201006172317.GN1874917@unreal>
- <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 8 Oct 2020 15:41:21 -0700
-Message-ID: <CAPcyv4hoS7ZT_PPrXqFBzEHBKL-O4x1jHtY8x9WWesCPA=2E0g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201008185905.GA21229@chelsio.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602197181; bh=RQx21lIJIpLHn+D/jTqXYWX2Cm9VMDWYKHEAtpI62oY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=o+Td0r+yXxILGoxVrhX0WYdk3EDmGNh7D0dsiv5o6JJzHQhQWJU1WJDS8Hc/rz+ab
+         AP6V71vRLekWbCUnfzN/T3dfxFl8SSo78HU+EQuuUIcGNGMMKVecv44E313rLEUXU+
+         DNacnYOU0DsOToa6sFWUgjvcUq0o0wUdS+dICdw8+YFrPDzJIFzNxg4fuKQIFoEUm/
+         HkS5lHl/ufQSorFGD/+3aZqfPgcpJQIQugrvr8nRN5EUBwB36IOEzrA795pPvtTTgt
+         Ej6SNTGhG4KDxmX5LrjsXXJp6w0YuiXdX+zdOwjmfLJg0Gk31DqMLFdQoY3H1+H22g
+         cITj7t+8DxP1A==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 3:04 PM Ertman, David M <david.m.ertman@intel.com> wrote:
->
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Tuesday, October 6, 2020 10:23 AM
-> > To: Ertman, David M <david.m.ertman@intel.com>
-> > Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux-
-> > rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
-> > netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
-> > gregkh@linuxfoundation.org; ranjani.sridharan@linux.intel.com; pierre-
-> > louis.bossart@linux.intel.com; fred.oh@linux.intel.com;
-> > parav@mellanox.com; Saleem, Shiraz <shiraz.saleem@intel.com>; Williams,
-> > Dan J <dan.j.williams@intel.com>; Patil, Kiran <kiran.patil@intel.com>
-> > Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> >
-> > On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
-> > > Add support for the Ancillary Bus, ancillary_device and ancillary_driver.
-> > > It enables drivers to create an ancillary_device and bind an
-> > > ancillary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each ancillary_device has a unique string based id; driver binds to
-> > > an ancillary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> >
-> > <...>
-> >
-> > > +/**
-> > > + * __ancillary_driver_register - register a driver for ancillary bus devices
-> > > + * @ancildrv: ancillary_driver structure
-> > > + * @owner: owning module/driver
-> > > + */
-> > > +int __ancillary_driver_register(struct ancillary_driver *ancildrv, struct
-> > module *owner)
-> > > +{
-> > > +   if (WARN_ON(!ancildrv->probe) || WARN_ON(!ancildrv->remove)
-> > ||
-> > > +       WARN_ON(!ancildrv->shutdown) || WARN_ON(!ancildrv-
-> > >id_table))
-> > > +           return -EINVAL;
-> >
-> > In our driver ->shutdown is empty, it will be best if ancillary bus will
-> > do "if (->remove) ..->remove()" pattern.
-> >
->
-> Yes, looking it over, only the probe needs to mandatory.  I will change the others to the
-> conditional model, and adjust the WARN_ONs.
->
->
-> > > +
-> > > +   ancildrv->driver.owner = owner;
-> > > +   ancildrv->driver.bus = &ancillary_bus_type;
-> > > +   ancildrv->driver.probe = ancillary_probe_driver;
-> > > +   ancildrv->driver.remove = ancillary_remove_driver;
-> > > +   ancildrv->driver.shutdown = ancillary_shutdown_driver;
-> > > +
-> >
-> > I think that this part is wrong, probe/remove/shutdown functions should
-> > come from ancillary_bus_type.
->
-> From checking other usage cases, this is the model that is used for probe, remove,
-> and shutdown in drivers.  Here is the example from Greybus.
->
-> int greybus_register_driver(struct greybus_driver *driver, struct module *owner,
->                             const char *mod_name)
-> {
->         int retval;
->
->         if (greybus_disabled())
->                 return -ENODEV;
->
->         driver->driver.bus = &greybus_bus_type;
->         driver->driver.name = driver->name;
->         driver->driver.probe = greybus_probe;
->         driver->driver.remove = greybus_remove;
->         driver->driver.owner = owner;
->         driver->driver.mod_name = mod_name;
->
->
-> > You are overwriting private device_driver
-> > callbacks that makes impossible to make container_of of ancillary_driver
-> > to chain operations.
-> >
->
-> I am sorry, you lost me here.  you cannot perform container_of on the callbacks
-> because they are pointers, but if you are referring to going from device_driver
-> to the auxiliary_driver, that is what happens in auxiliary_probe_driver in the
-> very beginning.
->
-> static int auxiliary_probe_driver(struct device *dev)
-> 145 {
-> 146         struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
-> 147         struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
->
-> Did I miss your meaning?
 
-I think you're misunderstanding the cases when the
-bus_type.{probe,remove} is used vs the driver.{probe,remove}
-callbacks. The bus_type callbacks are to implement a pattern where the
-'probe' and 'remove' method are typed to the bus device type. For
-example 'struct pci_dev *' instead of raw 'struct device *'. See this
-conversion of dax bus as an example of going from raw 'struct device
-*' typed probe/remove to dax-device typed probe/remove:
+On 10/8/2020 9:59 PM, Krishnamraju Eraparaju wrote:
+> On Thursday, October 10/08/20, 2020 at 13:12:39 +0000, Bernard Metzler wrote:
+>> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+>>
+>>> To: "Max Gurtovoy" <mgurtovoy@nvidia.com>
+>>> From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>>> Date: 10/07/2020 05:36AM
+>>> Cc: "Sagi Grimberg" <sagi@grimberg.me>, linux-rdma@vger.kernel.org,
+>>> "Potnuri Bharat Teja" <bharat@chelsio.com>, "Max Gurtovoy"
+>>> <maxg@mellanox.com>
+>>> Subject: [EXTERNAL] Re: reduce iSERT Max IO size
+>>>
+>>> On Sunday, October 10/04/20, 2020 at 00:45:26 +0300, Max Gurtovoy
+>>> wrote:
+>>>> On 10/3/2020 6:36 AM, Krishnamraju Eraparaju wrote:
+>>>>> On Friday, October 10/02/20, 2020 at 13:29:30 -0700, Sagi Grimberg
+>>> wrote:
+>>>>>>> Hi Sagi & Max,
+>>>>>>>
+>>>>>>> Any update on this?
+>>>>>>> Please change the max IO size to 1MiB(256 pages).
+>>>>>> I think that the reason why this was changed to handle the worst
+>>> case
+>>>>>> was in case there are different capabilities on the initiator and
+>>> the
+>>>>>> target with respect to number of pages per MR. There is no
+>>> handshake
+>>>>>> that aligns expectations.
+>>>>> But, the max pages per MR supported by most adapters is around 256
+>>> pages
+>>>>> only.
+>>>>> And I think only those iSER initiators, whose max pages per MR is
+>>> 4096,
+>>>>> could send 16MiB sized IOs, am I correct?
+>>>> If the initiator can send 16MiB, we must make sure the target is
+>>>> capable to receive it.
+>>> I think max IO size, at iSER initiator, depends on
+>>> "max_fast_reg_page_list_len".
+>>> currently, below are the supported "max_fast_reg_page_list_len" of
+>>> various iwarp drivers:
+>>>
+>>> iw_cxgb4: 128 pages
+>>> Softiwarp: 256 pages
+>>> i40iw: 512 pages
+>>> qedr: couldn't find.
+>>>
+>> For siw, this limit is not determined by resource constraints.
+>> We could bump it up to 512, or higher. What is a reasonable
+>> maximum, from iSER view?
+> If the most common IO sizes are 4K & 8K, then the reasonable max IO size of
+> 256 pages(1 MiB) would be appropriate, by default. currently, NVMet-rdma
+> also limits max IO size to 1MiB.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=75797273189d
+We can set a default to 1MiB, and add module param that can increase 
+this size to a max IO size of 16MiB.
+
+I'll sent a patch early next week.
+
+
+>>
+>>> For iwarp case, if 512 is the max pages supported by all iwarp
+>>> drivers,
+>>> then provisioning a gigantic MR pool at target(to accommodate never
+>>> used
+>>> 16MiB IO) wouldn't be a overkill?
+>>>>>> If we revert that it would restore the issue that you reported in
+>>> the
+>>>>>> first place:
+>>>>>>
+>>>>>> --
+>>>>>> IB/isert: allocate RW ctxs according to max IO size
+>>>>> I don't see the reported issue after reducing the IO size to 256
+>>>>> pages(keeping all other changes of this patch intact).
+>>>>> That is, "attr.cap.max_rdma_ctxs" is now getting filled properly
+>>> with
+>>>>> "rdma_rw_mr_factor()" related changes, I think.
+>>>>>
+>>>>> Before this change "attr.cap.max_rdma_ctxs" was hardcoded with
+>>>>> 128(ISCSI_DEF_XMIT_CMDS_MAX) pages, which is very low for single
+>>> target
+>>>>> and muli-luns case.
+>>>>>
+>>>>> So reverting only ISCSI_ISER_MAX_SG_TABLESIZE macro to 256 doesn't
+>>> cause the
+>>>>> reported issue.
+>>>>>
+>>>>> Thanks,
+>>>>> Krishnam Raju.
+>>>>>> Current iSER target code allocates MR pool budget based on queue
+>>> size.
+>>>>>> Since there is no handshake between iSER initiator and target on
+>>> max IO
+>>>>>> size, we'll set the iSER target to support upto 16MiB IO
+>>> operations and
+>>>>>> allocate the correct number of RDMA ctxs according to the factor
+>>> of MR's
+>>>>>> per IO operation. This would guaranty sufficient size of the MR
+>>> pool for
+>>>>>> the required IO queue depth and IO size.
+>>>>>>
+>>>>>> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>>>>>> Tested-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>>>>>> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+>>>>>> --
+>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Krishnam Raju.
+>>>>>>> On Wednesday, September 09/23/20, 2020 at 01:57:47 -0700, Sagi
+>>> Grimberg wrote:
+>>>>>>>>> Hi,
+>>>>>>>>>
+>>>>>>>>> Please reduce the Max IO size to 1MiB(256 pages), at iSER
+>>> Target.
+>>>>>>>>> The PBL memory consumption has increased significantly after
+>>> increasing
+>>>>>>>>> the Max IO size to 16MiB(with commit:317000b926b07c).
+>>>>>>>>> Due to the large MR pool, the max no.of iSER connections(On
+>>> one variant
+>>>>>>>>> of Chelsio cards) came down to 9, before it was 250.
+>>>>>>>>> NVMe-RDMA target also uses 1MiB max IO size.
+>>>>>>>> Max, remind me what was the point to support 16M? Did this
+>>> resolve
+>>>>>>>> an issue?
