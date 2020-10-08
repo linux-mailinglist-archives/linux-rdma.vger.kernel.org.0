@@ -2,233 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520A8286E12
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 07:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95429286E1B
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 07:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgJHF02 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 01:26:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
+        id S1726245AbgJHFaG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 01:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgJHF02 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:26:28 -0400
+        id S1725858AbgJHFaG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:30:06 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48A9320708;
-        Thu,  8 Oct 2020 05:26:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2726F20708;
+        Thu,  8 Oct 2020 05:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602134787;
-        bh=/KC8SYmVhsAPwhDcSPWxDyKU8idi29YzN2Gwgc8ifro=;
+        s=default; t=1602135005;
+        bh=0itYT/2Oi7jerNZY1UNsS81UQ96H3ynHfeRmw1iyiVw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f+IA7WVn+08OlKm0xfQHpXE38NaYkfRfgRqCmIFQ5pOUqAYykcsQhkBx3gvYEkORZ
-         eEVLnmGk4w/6TxxyWGZ/pYsSt/0D0qqJ37S2zyyXdTU0p6I6sPTLLu2gOwsxdVmUp7
-         V4pmDotAL27lWCvuNpkxWztyvy9BEzi1FMyYEN08=
-Date:   Thu, 8 Oct 2020 08:26:23 +0300
+        b=gATTpmZNeT33Kcp6jk0G+gBm0UxIpYxI3tg5WliFFe+AwUiOSc9Ps+ucIeCefZNzq
+         2m0CDIkII4ZoiWEPFraJ8zJnXoVy9ODPjIen9wjvD02hJtEgMj0Bwk24wV8qx7m39Q
+         nEEBwdm1Q1sjcBMSdlfW03n/z3OJDYR6VbU2Md8k=
+Date:   Thu, 8 Oct 2020 08:30:02 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201008052623.GB13580@unreal>
-References: <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
- <20201006170241.GM1874917@unreal>
- <DM6PR11MB2841C531FC27DB41E078C52BDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201007192610.GD3964015@unreal>
- <BY5PR12MB43221A308CE750FACEB0A806DC0A0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <DM6PR11MB28415A8E53B5FFC276D5A2C4DD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c90316f5-a5a9-fe22-ec11-a30a54ff0a9d@linux.intel.com>
- <DM6PR11MB284147D4BC3FD081B9F0B8BBDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c88b0339-48c6-d804-6fbd-b2fc6fa826d6@linux.intel.com>
- <BY5PR12MB43222FD5959E490E331D680ADC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        linux-rdma@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: Re: reduce iSERT Max IO size
+Message-ID: <20201008053002.GC13580@unreal>
+References: <20200922104424.GA18887@chelsio.com>
+ <07e53835-8389-3e07-6976-505edbd94f2a@grimberg.me>
+ <20201002171007.GA16636@chelsio.com>
+ <4d0b1a3f-2980-c7ed-ef9a-0ed6a9c87a69@grimberg.me>
+ <20201003033644.GA19516@chelsio.com>
+ <4391e240-5d6d-fb59-e6fb-e7818d1d0bd2@nvidia.com>
+ <20201007033619.GA11425@chelsio.com>
+ <1a034761-3723-3c70-8a44-25ef2cbf786e@nvidia.com>
+ <fe4ff8ac-fd0a-ed6f-312b-51be9a9fdcc6@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BY5PR12MB43222FD5959E490E331D680ADC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
+In-Reply-To: <fe4ff8ac-fd0a-ed6f-312b-51be9a9fdcc6@grimberg.me>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:56:01AM +0000, Parav Pandit wrote:
+On Wed, Oct 07, 2020 at 04:50:27PM -0700, Sagi Grimberg wrote:
 >
->
-> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > Sent: Thursday, October 8, 2020 3:20 AM
-> >
-> >
-> > On 10/7/20 4:22 PM, Ertman, David M wrote:
-> > >> -----Original Message-----
-> > >> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > >> Sent: Wednesday, October 7, 2020 1:59 PM
-> > >> To: Ertman, David M <david.m.ertman@intel.com>; Parav Pandit
-> > >> <parav@nvidia.com>; Leon Romanovsky <leon@kernel.org>
-> > >> Cc: alsa-devel@alsa-project.org; parav@mellanox.com; tiwai@suse.de;
-> > >> netdev@vger.kernel.org; ranjani.sridharan@linux.intel.com;
-> > >> fred.oh@linux.intel.com; linux-rdma@vger.kernel.org;
-> > >> dledford@redhat.com; broonie@kernel.org; Jason Gunthorpe
-> > >> <jgg@nvidia.com>; gregkh@linuxfoundation.org; kuba@kernel.org;
-> > >> Williams, Dan J <dan.j.williams@intel.com>; Saleem, Shiraz
-> > >> <shiraz.saleem@intel.com>; davem@davemloft.net; Patil, Kiran
-> > >> <kiran.patil@intel.com>
-> > >> Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> > >>
-> > >>
-> > >>
-> > >>>> Below is most simple, intuitive and matching with core APIs for
-> > >>>> name and design pattern wise.
-> > >>>> init()
-> > >>>> {
-> > >>>> 	err = ancillary_device_initialize();
-> > >>>> 	if (err)
-> > >>>> 		return ret;
-> > >>>>
-> > >>>> 	err = ancillary_device_add();
-> > >>>> 	if (ret)
-> > >>>> 		goto err_unwind;
-> > >>>>
-> > >>>> 	err = some_foo();
-> > >>>> 	if (err)
-> > >>>> 		goto err_foo;
-> > >>>> 	return 0;
-> > >>>>
-> > >>>> err_foo:
-> > >>>> 	ancillary_device_del(adev);
-> > >>>> err_unwind:
-> > >>>> 	ancillary_device_put(adev->dev);
-> > >>>> 	return err;
-> > >>>> }
-> > >>>>
-> > >>>> cleanup()
-> > >>>> {
-> > >>>> 	ancillary_device_de(adev);
-> > >>>> 	ancillary_device_put(adev);
-> > >>>> 	/* It is common to have a one wrapper for this as
-> > >>>> ancillary_device_unregister().
-> > >>>> 	 * This will match with core device_unregister() that has precise
-> > >>>> documentation.
-> > >>>> 	 * but given fact that init() code need proper error unwinding,
-> > >>>> like above,
-> > >>>> 	 * it make sense to have two APIs, and no need to export another
-> > >>>> symbol for unregister().
-> > >>>> 	 * This pattern is very easy to audit and code.
-> > >>>> 	 */
-> > >>>> }
-> > >>>
-> > >>> I like this flow +1
-> > >>>
-> > >>> But ... since the init() function is performing both device_init and
-> > >>> device_add - it should probably be called ancillary_device_register,
-> > >>> and we are back to a single exported API for both register and
-> > >>> unregister.
-> > >>
-> > >> Kind reminder that we introduced the two functions to allow the
-> > >> caller to know if it needed to free memory when initialize() fails,
-> > >> and it didn't need to free memory when add() failed since
-> > >> put_device() takes care of it. If you have a single init() function
-> > >> it's impossible to know which behavior to select on error.
-> > >>
-> > >> I also have a case with SoundWire where it's nice to first
-> > >> initialize, then set some data and then add.
-> > >>
+> > > I think max IO size, at iSER initiator, depends on
+> > > "max_fast_reg_page_list_len".
+> > > currently, below are the supported "max_fast_reg_page_list_len" of
+> > > various iwarp drivers:
 > > >
-> > > The flow as outlined by Parav above does an initialize as the first
-> > > step, so every error path out of the function has to do a
-> > > put_device(), so you would never need to manually free the memory in
-> > the setup function.
-> > > It would be freed in the release call.
+> > > iw_cxgb4: 128 pages
+> > > Softiwarp: 256 pages
+> > > i40iw: 512 pages
+> > > qedr: couldn't find.
+> > >
+> > > For iwarp case, if 512 is the max pages supported by all iwarp drivers,
+> > > then provisioning a gigantic MR pool at target(to accommodate never used
+> > > 16MiB IO) wouldn't be a overkill?
 > >
-> > err = ancillary_device_initialize();
-> > if (err)
-> > 	return ret;
+> > For RoCE/IB Mellanox HCAs we support 16MiB IO size and even more. We
+> > limited to 16MiB in iSER/iSERT.
 > >
-> > where is the put_device() here? if the release function does any sort of
-> > kfree, then you'd need to do it manually in this case.
-> Since device_initialize() failed, put_device() cannot be done here.
-> So yes, pseudo code should have shown,
-> if (err) {
-> 	kfree(adev);
-> 	return err;
-> }
+> > Sagi,
+> >
+> > what about adding a module parameter for this as we did in iSER initiator ?
 >
-> If we just want to follow register(), unregister() pattern,
->
-> Than,
->
-> ancillar_device_register() should be,
->
-> /**
->  * ancillar_device_register() - register an ancillary device
->  * NOTE: __never directly free @adev after calling this function, even if it returned
->  * an error. Always use ancillary_device_put() to give up the reference initialized by this function.
->  * This note matches with the core and caller knows exactly what to be done.
->  */
-> ancillary_device_register()
-> {
-> 	device_initialize(&adev->dev);
-> 	if (!dev->parent || !adev->name)
-> 		return -EINVAL;
-> 	if (!dev->release && !(dev->type && dev->type->release)) {
-> 		/* core is already capable and throws the warning when release callback is not set.
-> 		 * It is done at drivers/base/core.c:1798.
-> 		 * For NULL release it says, "does not have a release() function, it is broken and must be fixed"
-> 		 */
-> 		return -EINVAL;
-> 	}
-> 	err = dev_set_name(adev...);
-> 	if (err) {
-> 		/* kobject_release() -> kobject_cleanup() are capable to detect if name is set/ not set
-> 		  * and free the const if it was set.
-> 		  */
-> 		return err;
-> 	}
-> 	err = device_add(&adev->dev);
-> 	If (err)
-> 		return err;
-> }
->
-> Caller code:
-> init()
-> {
-> 	adev = kzalloc(sizeof(*foo_adev)..);
-> 	if (!adev)
-> 		return -ENOMEM;
-> 	err = ancillary_device_register(&adev);
-> 	if (err)
-> 		goto err;
->
-> err:
-> 	ancillary_device_put(&adev);
-> 	return err;
-> }
->
-> cleanup()
-> {
-> 	ancillary_device_unregister(&adev);
-> }
->
-> Above pattern is fine too matching the core.
->
-> If I understand Leon correctly, he prefers simple register(), unregister() pattern.
-> If, so it should be explicit register(), unregister() API.
+> I don't think we have any other choice...
 
-This is my summary
-https://lore.kernel.org/linux-rdma/20201008052137.GA13580@unreal
-The API should be symmetric.
+Sagi,
+
+I didn't read whole thread and know little about ULPs, but wonder if isn't
+it possible to check device type (iWARP/RoCE) during iSERT initialization
+and create MR pool only after device is recognized?
 
 Thanks
