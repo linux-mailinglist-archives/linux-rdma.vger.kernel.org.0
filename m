@@ -2,134 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C3428753D
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 15:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81697287554
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 15:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgJHNbW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 09:31:22 -0400
-Received: from mga17.intel.com ([192.55.52.151]:12082 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728969AbgJHNbV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:31:21 -0400
-IronPort-SDR: 6NqxCrgQyj0ACTMO22MoiAXMFUVjKbp2KjS40bFRWwO0cP1MgxNO5CvLBVKESbLR8/T2Gh320y
- OH4R02Koe3ew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="145198616"
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="145198616"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 06:31:20 -0700
-IronPort-SDR: EDWXFozQHFQugMLk+t2v3OyALx6ntuphaaBF0B3QTsIyGXiDKUwLoWCds50m5lGqyVlFEZQU9B
- zBsNczW2IK+A==
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="528494501"
-Received: from kweisner-mobl.amr.corp.intel.com (HELO [10.212.230.16]) ([10.212.230.16])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 06:31:18 -0700
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     Parav Pandit <parav@nvidia.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006071821.GI1874917@unreal>
- <b4f6b5d1-2cf4-ae7a-3e57-b66230a58453@linux.intel.com>
- <20201006170241.GM1874917@unreal>
- <DM6PR11MB2841C531FC27DB41E078C52BDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201007192610.GD3964015@unreal>
- <BY5PR12MB43221A308CE750FACEB0A806DC0A0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <DM6PR11MB28415A8E53B5FFC276D5A2C4DD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c90316f5-a5a9-fe22-ec11-a30a54ff0a9d@linux.intel.com>
- <DM6PR11MB284147D4BC3FD081B9F0B8BBDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c88b0339-48c6-d804-6fbd-b2fc6fa826d6@linux.intel.com>
- <BY5PR12MB43222FD5959E490E331D680ADC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <1e2a38ac-e259-f955-07ad-602431ad354b@linux.intel.com>
-Date:   Thu, 8 Oct 2020 08:29:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730146AbgJHNlw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 09:41:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725871AbgJHNlv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 09:41:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602164510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WD+30Sd20j8+rOxJRDo638HMaE+Re/R6ZquXxyVZL/0=;
+        b=IqqRTc8aUOKAtxrevwq9h+YOh8/728RLyCoNeAqeJudhI0rpEtmxv8QloosbBSADYSABUc
+        lCpevITGi0d8CJN30w/cE3E1BSK1pVKh57jMs9ZcQolOOa1Ft8lhCRfgFzbEW/xElTQP/L
+        czGRYmm1q3ZSstFmKRggaP1WfFzPd5E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-90-1XWT2CJzOH2YnraPTKlo9w-1; Thu, 08 Oct 2020 09:41:46 -0400
+X-MC-Unique: 1XWT2CJzOH2YnraPTKlo9w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAD459CC21;
+        Thu,  8 Oct 2020 13:41:37 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A2C8919C4F;
+        Thu,  8 Oct 2020 13:41:37 +0000 (UTC)
+Received: from zmail23.collab.prod.int.phx2.redhat.com (zmail23.collab.prod.int.phx2.redhat.com [10.5.83.28])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 90DC918095FF;
+        Thu,  8 Oct 2020 13:41:37 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 09:41:37 -0400 (EDT)
+From:   Doug Ledford <dledford@redhat.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     linux-rdma@vger.kernel.org,
+        Joe Balich <jbalich@nereus-worldwide.com>
+Message-ID: <983756542.53009536.1602164497522.JavaMail.zimbra@redhat.com>
+In-Reply-To: <0d3afe23-874b-5b9d-b4b0-62d497610d78@gmail.com>
+References: <252007469.52861641.1602078881249.JavaMail.zimbra@redhat.com> <0d3afe23-874b-5b9d-b4b0-62d497610d78@gmail.com>
+Subject: Re: Upcoming OpenFabrics Alliance Webinar
 MIME-Version: 1.0
-In-Reply-To: <BY5PR12MB43222FD5959E490E331D680ADC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.10.110.57, 10.4.195.13]
+Thread-Topic: Upcoming OpenFabrics Alliance Webinar
+Thread-Index: 17UEucqvJ7+luIO+VSig2lRmPnf/5g==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Absolutely.  Joe, can we make sure this is done please?
 
->>>>> But ... since the init() function is performing both device_init and
->>>>> device_add - it should probably be called ancillary_device_register,
->>>>> and we are back to a single exported API for both register and
->>>>> unregister.
->>>>
->>>> Kind reminder that we introduced the two functions to allow the
->>>> caller to know if it needed to free memory when initialize() fails,
->>>> and it didn't need to free memory when add() failed since
->>>> put_device() takes care of it. If you have a single init() function
->>>> it's impossible to know which behavior to select on error.
->>>>
->>>> I also have a case with SoundWire where it's nice to first
->>>> initialize, then set some data and then add.
->>>>
->>>
->>> The flow as outlined by Parav above does an initialize as the first
->>> step, so every error path out of the function has to do a
->>> put_device(), so you would never need to manually free the memory in
->> the setup function.
->>> It would be freed in the release call.
->>
->> err = ancillary_device_initialize();
->> if (err)
->> 	return ret;
->>
->> where is the put_device() here? if the release function does any sort of
->> kfree, then you'd need to do it manually in this case.
-> Since device_initialize() failed, put_device() cannot be done here.
-> So yes, pseudo code should have shown,
-> if (err) {
-> 	kfree(adev);
-> 	return err;
-> }
+----- Original Message -----
+> "Date/Time: Tuesday, October 13, 2020, at 10 a.m. Pacific"
+>=20
+> This is Beijing time about 1 am.
+> Can we record this meeting and share it?
+>=20
+> Thanks
+> Zhu Yanjun
+>=20
+> On 10/7/2020 9:54 PM, Doug Ledford wrote:
+> > Hi all,
+> >
+> > Next week at 1pm EDT is a webinar about the new Fabric Software Develop=
+ment
+> > Platform (FSDP).  This is a high level presentation about what we are
+> > doing.  This is in line with the new testing program we discussed at th=
+e
+> > 2019 OFA workshop.
+> >
+> > I *strongly* encourage any upstream maintainers related to RDMA to atte=
+nd
+> > (that would be kernel maintainers, rdma-core maintainers, libfabric, uc=
+x,
+> > openmpi, etc. maintainers).  The FSDP is intended to run CI testing of
+> > both upstream kernel and user space projects related to RDMA technologi=
+es
+> > (it need not be a direct RDMA technology, but one that RDMA interacts w=
+ith
+> > is sufficient to qualify, so NVMe because of NVMEoFabrics is a qualifie=
+d
+> > upstream project for the cluster to run CI on).  As an upstream
+> > maintainer, this is your opportunity to see where the cluster design is
+> > going and have input into the how the cluster is built.  Keep in mind t=
+hat
+> > hardware has already started to arrive, so this is a case of "speak now=
+,
+> > or suck it up".
+> >
+> > Also, the cluster is intended to be a place where upstream developers t=
+hat
+> > might have access to limited types of RDMA hardware (Hi Chuck!), but wh=
+o
+> > wish to be able to test across a much broader suite of hardware could l=
+og
+> > into the cluster and run their tests.  Upstream developers who work for
+> > companies that are members of the OFA are automatically qualified for a=
+n
+> > account on the FSDP.  However, upstream developers working for companie=
+s
+> > unrelated to RDMA technologies, but who none-the-less end up working on
+> > stuff that touches the RDMA stack anyway (Hey HCH!) are also eligible f=
+or
+> > free individual memberships in the OFA, which grants them eligibility f=
+or
+> > an account on the FSDP so they too can test their code before sending i=
+t.
+> >
+> > The presentation next week is fairly high level and does not get too de=
+ep
+> > into the details of the structure of the FSDP.  This is because the FSD=
+P
+> > is just now being built (the first orders for hardware have been placed=
+,
+> > servers that control the cluster have been built, now we are starting t=
+o
+> > build the cluster out) and we still have some flexibility in how things
+> > are designed as a result.  This is the upstream community's opportunity=
+ to
+> > make sure their voice is heard in regards to that design.
+> >
+> > I look forward to seeing all of you there, and don't forget to register=
+ so
+> > we can make sure the webinar is sized sufficiently for the number of
+> > attendees.
+> >
+> > Doug Ledford
+> >
+> >
+> >
+> > ------------  Begin forwarded message  ------------------
+> > New OFA Webinar
+> > Introduction to OFA=E2=80=99s Fabric Software Development Platform (FSD=
+P)
+> > October 13 at 10 a.m. Pacific
+> > One Week Remaining to Register
+> > http://bit.ly/OFAWebinarFSDP
+> >
+> >  =20
+> >
+> > As a reminder, the OpenFabrics Alliance (OFA) will host a webinar
+> > highlighting the new Fabric Software Development Platform (FSDP). This
+> > webinar is an ideal opportunity for the OFA Community to learn about th=
+e
+> > new FSDP program, the FSDP Working Group charter and target objectives,
+> > which was highlighted in recent a recent OFA blog series (Part 1, Part =
+2).
+> >
+> > Date/Time: Tuesday, October 13, 2020, at 10 a.m. Pacific
+> >
+> > Registration:  http://bit.ly/OFAWebinarFSDP
+> >
+> > Presenters: OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporation an=
+d
+> > Doug Ledford of Red Hat, Inc.
+> >
+> > Title: Introduction to OFA=E2=80=99s Fabric Software Development Platfo=
+rm (FSDP)
+> >
+> > About: The new Fabric Software Development Platform (FSDP) project is a
+> > vendor-neutral cluster owned and maintained by the OFA for the benefit =
+of
+> > its members to develop, test, and validate new and existing network
+> > technologies. FSDP offers OFA members an opportunity for serious cost
+> > reduction in testing, validation, and development, and provides an
+> > invaluable service to the open source community of maintainers as they
+> > support open source networking software integration.
+> >
+> > In this webinar, OFA FSDP Co-Chairs Tatyana Nikolova of Intel Corporati=
+on
+> > and Doug Ledford of Red Hat, Inc. will cover:
+> >
+> >      Origins of FSDP Project
+> >      Introduction to FSDP Usages
+> >          Continuous Integration Testing Service
+> >          On-Demand Development and Testing Program
+> >          Logo Testing
+> >      How to Join / Contribute
+> >
+> > Please contact press@openfabrics.org with any questions.
+> >
+> >
+>=20
+>=20
 
-This doesn't work if the adev is part of a larger structure allocated by 
-the parent, which is pretty much the intent to extent the basic bus and 
-pass additional information which can be accessed with container_of().
+--=20
+Doug Ledford <dledford@redhat.com>
+              GPG KeyID: 0E572FDD
 
-Only the parent can do the kfree() explicitly in that case. If the 
-parent relies on devm_kzalloc, this also can make the .release callback 
-with no memory free required at all.
-
-See e.g. the code I cooked for the transition of SoundWire away from 
-platform devices at
-
-https://github.com/thesofproject/linux/pull/2484/commits/d0540ae3744f3a748d49c5fe61469d82ed816981#diff-ac8eb3d3951c024f52b1d463b5317f70R305
-
-The allocation is done on an 'ldev' which contains 'adev'.
-
-I really don't seen how an ancillary_device_register() could model the 
-different ways to allocate memory, for maximum flexibility across 
-different domains it seems more relevant to keep the initialize() and 
-add() APIs separate. I will accept the argument that this puts more 
-responsibility on the parent, but it also provides more flexibility to 
-the parent.
-
-If we go with the suggested solution above, that already prevents 
-SoundWire from using this bus. Not so good.
