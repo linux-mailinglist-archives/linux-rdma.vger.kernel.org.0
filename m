@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2860E287DF3
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 23:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6C3287DF4
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 23:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbgJHV2W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 17:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        id S1729236AbgJHV25 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 17:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728891AbgJHV2V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 17:28:21 -0400
+        with ESMTP id S1728891AbgJHV24 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 17:28:56 -0400
 Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772DDC0613D2
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Oct 2020 14:28:21 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id q136so6747851oic.8
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 14:28:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FC7C0613D2
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Oct 2020 14:28:56 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id u126so7867850oif.13
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 14:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=jT9pQBFsUKhZ3y60CD1xIThlw/z/jAxmyuepCIHVGLM=;
-        b=GWTL5TA5wwoQyFuTSf4swZRAIUyqkbEbhnFW7aVHcfkBOb935i0x52nOxVuN+0PP0C
-         5lrPVleneEylkaFhhORTd2cP7j3HvaEJET6rXYuTZgLTHP2zQ86iRJAIB7jsc+OLUuHL
-         /5MLNSIHUF05WHzvlClRNxXxBOwkFpMuEbsb1GVyWGuFxJYzsyDioZnz9+GHk+RAl4wA
-         8WlT+laM6hZ3B/ML7IRv/EJFkFTVdXl0EfPkpr1nBwD4Zjb9UFPf1RXQ188BtQeCJ19u
-         eVEjvyQZHasanOyEtTAjNqkZORJUqLMeukupTsETf9h1VLzRC98wR5JyOAZfy4iFvSyc
-         aTag==
+        b=WZDCfiMq/eBMAHk4xtIgKZlZeH4jVosCmbHhc3sDbzE99um/3mJre1c4gXIcrBzF0d
+         nWfkz9olYIcD0gHSoMK6b7iCp6gY3m5ZdqSY7nYj5qfDFyors0fuje1gI3PtlIC+jzwj
+         Ma+1URJ8VUGiQtgYdy27U1BlfJQyYm2oQmFZBFBWOaOLvUO+isxRsWFNxxye4LBitkt9
+         TTJIbHqO13B+TYX7RWTJBfuTaJshkwYhFVWelA4+juwnTRzuTTU+balnlToLp54aCAcj
+         7M3RyDKuExrVnZkz6qFXK6LlzCpCwl5Bw/X5y6VmPTXe2VP12lyVl3NujbcmxDlPJpck
+         pCqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=jT9pQBFsUKhZ3y60CD1xIThlw/z/jAxmyuepCIHVGLM=;
-        b=Y70jsYk0HYN9COLdn1FQxYhUglUhKnk87gcQR/CpLdf22ZU3p4VzgGO0aTdaomVvRv
-         1s/CjjClFQZyUFWaUo+gsesY2Id+ehSRAZCDs8QDdfJkoGeGliW1hkOhhH6StzxqXo5S
-         yA4SWqoUET/Rz6yNlFLFZiFoAXSh352FgbdqSEHk76dhkBv4t/ixE7GJ7edgX1QUJio0
-         EihAdvFvzMnVBTf1ZE1Y9AUZxh036SL/MD7ZiZq5Je8AigIhIJfwufXz/zBqhMR87H2L
-         BRpp0YVHQcg4/YBftxsyKqvwHltQwBUDDKfKy4JHYzMtrZbHM0eAPpAbDoooB5xmep7j
-         0KHw==
-X-Gm-Message-State: AOAM531Bk+U0pcVQrh0TzC9ESvo4bZUywEKykv+DOgFWaayb8vdzGhn6
-        d5OGLfQqsL1Ip0kkddoLzMj83Lb8xZQ=
-X-Google-Smtp-Source: ABdhPJyD82CZXDuFTUlwTN2KIe7mh4OBlHP/jh18rLjluY0d2GFpVPYmMvompnm8a3T2ht2jj22sVw==
-X-Received: by 2002:aca:b144:: with SMTP id a65mr497114oif.53.1602192500846;
-        Thu, 08 Oct 2020 14:28:20 -0700 (PDT)
+        b=si0PxFV/P6J/QWnCxzQBOg4sQ50k4M/NZEovQojLLhOlA8zwCXb/rDdRbIfqvdME+Q
+         bAE78544d8r8Fe+wVFXxvjt/PYVNhPTwTl1pfe2CMPkVvVlFM1YtfM2eFkGddar1Us/H
+         cpMfwWIHslFerF1BOADFZf4UxQxTfxVpAvbryfkuFGtUgBUyNGD2lXWXLKjyX1waYpDY
+         72wtsPZnJ50tqm6jTLb2hbDmZwyG+n6wJJEc4GQWDlCn4nak4U090UZcVuS9Cksza1K7
+         5f0SxXwzZfJKOcE4hvLgr8VryQOr9VJH7B3iCbDi2nOWorbCk8Zt6tqLHoFNJf/p0rJk
+         BB/Q==
+X-Gm-Message-State: AOAM533jTOBfnLoOPm/6zyfMk1ueOxv1cr0o2oMjJyWTyMnTpD8Chv5R
+        PdJ/O3OFEUAKR1lSk9ETWP1sHB4mYso=
+X-Google-Smtp-Source: ABdhPJyXKzbPfpB1mnmGJaXhXHgfyW9z2YUr53zcD94XUg/ebvJeBYKb3/QkMNNOgWCUEK8JkfpQAQ==
+X-Received: by 2002:aca:ac48:: with SMTP id v69mr472738oie.119.1602192535775;
+        Thu, 08 Oct 2020 14:28:55 -0700 (PDT)
 Received: from localhost ([2605:6000:8b03:f000:b5fa:2b2f:81e9:e2a0])
-        by smtp.gmail.com with ESMTPSA id j10sm1487723ota.56.2020.10.08.14.28.20
+        by smtp.gmail.com with ESMTPSA id 22sm2617949oie.54.2020.10.08.14.28.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 14:28:20 -0700 (PDT)
+        Thu, 08 Oct 2020 14:28:55 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH 4/4] rdma_rxe: remove duplicate entries in struct rxe_mr
-Date:   Thu,  8 Oct 2020 16:28:18 -0500
-Message-Id: <20201008212818.265303-1-rpearson@hpe.com>
+Subject: [PATCH for-next v2] rdma_rxe: remove duplicate entries in struct rxe_mr
+Date:   Thu,  8 Oct 2020 16:28:53 -0500
+Message-Id: <20201008212853.265367-1-rpearson@hpe.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
