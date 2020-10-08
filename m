@@ -2,213 +2,258 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6C3287DF4
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 23:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43908287E7B
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 00:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgJHV25 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 17:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728891AbgJHV24 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 17:28:56 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FC7C0613D2
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Oct 2020 14:28:56 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id u126so7867850oif.13
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Oct 2020 14:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jT9pQBFsUKhZ3y60CD1xIThlw/z/jAxmyuepCIHVGLM=;
-        b=WZDCfiMq/eBMAHk4xtIgKZlZeH4jVosCmbHhc3sDbzE99um/3mJre1c4gXIcrBzF0d
-         nWfkz9olYIcD0gHSoMK6b7iCp6gY3m5ZdqSY7nYj5qfDFyors0fuje1gI3PtlIC+jzwj
-         Ma+1URJ8VUGiQtgYdy27U1BlfJQyYm2oQmFZBFBWOaOLvUO+isxRsWFNxxye4LBitkt9
-         TTJIbHqO13B+TYX7RWTJBfuTaJshkwYhFVWelA4+juwnTRzuTTU+balnlToLp54aCAcj
-         7M3RyDKuExrVnZkz6qFXK6LlzCpCwl5Bw/X5y6VmPTXe2VP12lyVl3NujbcmxDlPJpck
-         pCqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jT9pQBFsUKhZ3y60CD1xIThlw/z/jAxmyuepCIHVGLM=;
-        b=si0PxFV/P6J/QWnCxzQBOg4sQ50k4M/NZEovQojLLhOlA8zwCXb/rDdRbIfqvdME+Q
-         bAE78544d8r8Fe+wVFXxvjt/PYVNhPTwTl1pfe2CMPkVvVlFM1YtfM2eFkGddar1Us/H
-         cpMfwWIHslFerF1BOADFZf4UxQxTfxVpAvbryfkuFGtUgBUyNGD2lXWXLKjyX1waYpDY
-         72wtsPZnJ50tqm6jTLb2hbDmZwyG+n6wJJEc4GQWDlCn4nak4U090UZcVuS9Cksza1K7
-         5f0SxXwzZfJKOcE4hvLgr8VryQOr9VJH7B3iCbDi2nOWorbCk8Zt6tqLHoFNJf/p0rJk
-         BB/Q==
-X-Gm-Message-State: AOAM533jTOBfnLoOPm/6zyfMk1ueOxv1cr0o2oMjJyWTyMnTpD8Chv5R
-        PdJ/O3OFEUAKR1lSk9ETWP1sHB4mYso=
-X-Google-Smtp-Source: ABdhPJyXKzbPfpB1mnmGJaXhXHgfyW9z2YUr53zcD94XUg/ebvJeBYKb3/QkMNNOgWCUEK8JkfpQAQ==
-X-Received: by 2002:aca:ac48:: with SMTP id v69mr472738oie.119.1602192535775;
-        Thu, 08 Oct 2020 14:28:55 -0700 (PDT)
-Received: from localhost ([2605:6000:8b03:f000:b5fa:2b2f:81e9:e2a0])
-        by smtp.gmail.com with ESMTPSA id 22sm2617949oie.54.2020.10.08.14.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 14:28:55 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next v2] rdma_rxe: remove duplicate entries in struct rxe_mr
-Date:   Thu,  8 Oct 2020 16:28:53 -0500
-Message-Id: <20201008212853.265367-1-rpearson@hpe.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727737AbgJHWEU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 18:04:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:56947 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgJHWET (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:04:19 -0400
+IronPort-SDR: OZj/Ti9ycpmxOxyfiwi8p3E6+bPO3xEY+Izu6+1eu3PHuIiXxNzJqi0iLrcPhI9DM7cl/+jKLi
+ nEtJjRwQkIZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="144733803"
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="144733803"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 15:04:18 -0700
+IronPort-SDR: 9cvBlHSZc5IlMo2Tb2w9sWOGry/UcSINIktEztH5goeSJqtMJy/EuK7ImLQwZZ6KA//S/HSbFw
+ BnIIo4J/d7RA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,352,1596524400"; 
+   d="scan'208";a="344872668"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP; 08 Oct 2020 15:04:18 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 8 Oct 2020 15:04:18 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 8 Oct 2020 15:04:18 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.50) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 8 Oct 2020 15:04:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OzjAMkDY/CBtBquXVTE+D84wJdIGqP5NnGkcXUz+p2FALFSDWbJK8iDK8UO5qtkXx44NbEY20Xohf84X7lCXbrODoU6ptTfTMGsQAvT/VYfxl8iepMJwEAXJbyYS8c7IwJWNzinSHAoUwKVGJF2OdYtuIuDqv7Srpee0cXbmhyUZ//OuIuCwdrxLB4zwKPOtfCGcRzo+aEkkMC+PQJaCob6ZjD8434wV10RcV9bEwHNGNjib1F5FqBTrzh97WP8NZK6DAXlvoinutzlTeyNdKK4h6kxc9pUESGIOEr6V3wouOGSQm/1xGP7keVrqF31s2wrNaKIKWH0OCduWrkHskw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3HnfsrDraTjXhgpiqKz2kO4fK3C3dIq6bCmZBRCCRVQ=;
+ b=WFGUxmSiJ4yEzVgKlLUDZMGPcgFZ02jdZp8qdxRmFAJ2vhcImbwbtnH77DmOrXu9BJtJOjuz/F4dQwbdmYK1+joGo+XiHhB0hjJbbJvV2A2TGlXLpDDeGBHlkiVeaJoc/fEbuvaDUV90ogTXuF+o6T1nYOZANNUfjySeHyKN97zszh2N5ZvshHnqa/8dmgbf5AGrHedTOrDcV7PKprawXMqok3CRdoxlBiG7l5/NSnG1vvs2nJiU7znUY4r33shNofBBsTDreJa5QVyDy7MqxgLFh/8V+S7Rp1aM1kyxMSy7UKrqaRTKKJe+77jG3WaXf/HHHauG60wXvgNMKTIGPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3HnfsrDraTjXhgpiqKz2kO4fK3C3dIq6bCmZBRCCRVQ=;
+ b=XY45AD2UfgZq5LdvbxsD1ZKXXp4wPHj+eD56DfW2tiPCMsYTUC0VV6FNhFnFNk79JaDjS7OjkDR9xqKIGRACx3D2vWxdOOOKNY/OYEyCZNjl6YL3OqROZKQoXcgtlBLMYnLb1S3P7u2MkyZT0BGJo6kwmrZhjrZG83B89VAZUnM=
+Received: from DM6PR11MB2841.namprd11.prod.outlook.com (2603:10b6:5:c8::32) by
+ DM6PR11MB3052.namprd11.prod.outlook.com (2603:10b6:5:69::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.24; Thu, 8 Oct 2020 22:04:13 +0000
+Received: from DM6PR11MB2841.namprd11.prod.outlook.com
+ ([fe80::6d8e:9b06:ef72:2a]) by DM6PR11MB2841.namprd11.prod.outlook.com
+ ([fe80::6d8e:9b06:ef72:2a%5]) with mapi id 15.20.3433.046; Thu, 8 Oct 2020
+ 22:04:13 +0000
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: RE: [PATCH v2 1/6] Add ancillary bus support
+Thread-Topic: [PATCH v2 1/6] Add ancillary bus support
+Thread-Index: AQHWm06cVdQZOfJAqUq6P9wAQIqk66mK1CSAgANvhAA=
+Date:   Thu, 8 Oct 2020 22:04:12 +0000
+Message-ID: <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-2-david.m.ertman@intel.com>
+ <20201006172317.GN1874917@unreal>
+In-Reply-To: <20201006172317.GN1874917@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [50.38.47.144]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d3a0c5cc-c596-472a-b433-08d86bd61781
+x-ms-traffictypediagnostic: DM6PR11MB3052:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3052A339FF1E69724B1A82DBDD0B0@DM6PR11MB3052.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gXoG3yRcbTeplcVQbAXMfFh+6SjfOriU/OYRvIIU6NRMrLZw+/9GQ/EyGkRKRU4+xbKnVqE1FA3R7zUVmi7LIELvGX9bFPjMVhkCuTjdQXAsseOX0p0FBuTZs4pk33tyobniAJVhh9M3aBvABj1OPVBLXAQ0EoWlEiYY/XpOJPFSnzbRxOkPksS3fE1luHkCusG2O2iR3RwLPPTMS1tShsUV2JcmiiD5amWAsZZ3IMUMmaEd8yEqQB2ISayD+T/PWNytTPJy8CCRWxBut1UaVnvi0IFlRqfpSuAMEZqdBwicHEjulF6tzgl4rAy9JhLCmWZTF1Sjlti7O0o6BrZf4g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2841.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(346002)(39860400002)(71200400001)(66946007)(316002)(76116006)(66476007)(6916009)(9686003)(54906003)(2906002)(7416002)(52536014)(64756008)(66446008)(66556008)(8936002)(478600001)(8676002)(33656002)(86362001)(6506007)(5660300002)(55016002)(83380400001)(186003)(26005)(4326008)(53546011)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: hN5SBCNr4NRrAOO9ifUCzfWev/kOj7K6nr+WlBH7neLQiZpKNYjvQyH7hk1MUvT3o+3fOlU2IIdJPTklgI/ZZ4idToNAiXhp0qYBRVjUU9sI5rWvDKNz8uqUALurRrgBqi2LcbwmmLAXzvEaAGVo6oriD7a/zSO7RFb6dEb1UcGFRnvoeUiZ0fKMCRx+zufGn87VGRjlWuMShdYXPfeDYcFfwdO8p+SsNMrePutoW8TeRNdTTuokn++vJyGzTxAIaPtjlG5TcsdoWaPfk1n+BWA389hfcZkpPAE8fyisp1bTYkIdNkNvPzK0WTlWAI9JoVj2ME3CCC1u5WDdyA2c6dHCDBZvvYF8DJxm9bejTDZumPcEO0D0XosB1cw6R6FXRVrRr0y3A8CCgOXbYbG/BgdPY4UOv4pLcdQT6XhwVIFDwOR1d4gQ/h1g92VtfgTXLI/SfbyeQYO0GnezLEtLV2GD8JsN8E/cKkLjKSmr0DMYHvbLHjfpfZf+cMkACgLhSjXBU5nYb6Gd3EIzu59NND6YkYDv0UGnovcsINSMReEtlmM05JUKv49FW9O/8nWOPpyuTOwKr0HR2cihU1rwd2cwE87rc7GuWlcurt0T+7xtUBocW9x/l99X9Le5NkT95Rrdkj1+f6bRfljvNzRI0A==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2841.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3a0c5cc-c596-472a-b433-08d86bd61781
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2020 22:04:12.8138
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P5rYP5AGZ+CL4npR+8Pi5eU8RF8tdw4Oek/RCoVLfkD4DzyBh8wwHEP1rL7Lo45kysubtYSIykxlf4Gd0y1ilG1L5I/FG/KPZZdXsaxIcyc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3052
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-  - Struct rxe_mem had pd, lkey and rkey values both in itself
-    and in the struct ib_mr which is also included in rxe_mem.
-  - Delete these entries and replace references with ones in ibmr.
-  - Add mr_lkey and mr_rkey macros which extract these values from mr.
-  - Added mr_pd macro which extracts pd from mr.
-
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
- drivers/infiniband/sw/rxe/rxe_mr.c    | 25 ++++++++++---------------
- drivers/infiniband/sw/rxe/rxe_req.c   |  4 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.c |  2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  8 ++++----
- 4 files changed, 17 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 390d8e6629ad..6e8c41567ba0 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -51,13 +51,8 @@ static void rxe_mem_init(int access, struct rxe_mem *mem)
- 	u32 lkey = mem->pelem.index << 8 | rxe_get_key();
- 	u32 rkey = (access & IB_ACCESS_REMOTE) ? lkey : 0;
- 
--	if (mem->pelem.pool->type == RXE_TYPE_MR) {
--		mem->ibmr.lkey		= lkey;
--		mem->ibmr.rkey		= rkey;
--	}
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Tuesday, October 6, 2020 10:23 AM
+> To: Ertman, David M <david.m.ertman@intel.com>
+> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux=
 -
--	mem->lkey		= lkey;
--	mem->rkey		= rkey;
-+	mem->ibmr.lkey		= lkey;
-+	mem->ibmr.rkey		= rkey;
- 	mem->state		= RXE_MEM_STATE_INVALID;
- 	mem->type		= RXE_MEM_TYPE_NONE;
- 	mem->map_shift		= ilog2(RXE_BUF_PER_MAP);
-@@ -121,7 +116,7 @@ void rxe_mem_init_dma(struct rxe_pd *pd,
- {
- 	rxe_mem_init(access, mem);
- 
--	mem->pd			= pd;
-+	mem->ibmr.pd		= &pd->ibpd;
- 	mem->access		= access;
- 	mem->state		= RXE_MEM_STATE_VALID;
- 	mem->type		= RXE_MEM_TYPE_DMA;
-@@ -190,7 +185,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
- 		}
- 	}
- 
--	mem->pd			= pd;
-+	mem->ibmr.pd		= &pd->ibpd;
- 	mem->umem		= umem;
- 	mem->access		= access;
- 	mem->length		= length;
-@@ -220,7 +215,7 @@ int rxe_mem_init_fast(struct rxe_pd *pd,
- 	if (err)
- 		goto err1;
- 
--	mem->pd			= pd;
-+	mem->ibmr.pd		= &pd->ibpd;
- 	mem->max_buf		= max_pages;
- 	mem->state		= RXE_MEM_STATE_FREE;
- 	mem->type		= RXE_MEM_TYPE_MR;
-@@ -340,7 +335,7 @@ int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr, int length,
- 		memcpy(dest, src, length);
- 
- 		if (crcp)
--			*crcp = rxe_crc32(to_rdev(mem->pd->ibpd.device),
-+			*crcp = rxe_crc32(to_rdev(mem->ibmr.device),
- 					*crcp, dest, length);
- 
- 		return 0;
-@@ -374,7 +369,7 @@ int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr, int length,
- 		memcpy(dest, src, bytes);
- 
- 		if (crcp)
--			crc = rxe_crc32(to_rdev(mem->pd->ibpd.device),
-+			crc = rxe_crc32(to_rdev(mem->ibmr.device),
- 					crc, dest, bytes);
- 
- 		length	-= bytes;
-@@ -547,9 +542,9 @@ struct rxe_mem *lookup_mem(struct rxe_pd *pd, int access, u32 key,
- 	if (!mem)
- 		return NULL;
- 
--	if (unlikely((type == lookup_local && mem->lkey != key) ||
--		     (type == lookup_remote && mem->rkey != key) ||
--		     mem->pd != pd ||
-+	if (unlikely((type == lookup_local && mr_lkey(mem) != key) ||
-+		     (type == lookup_remote && mr_rkey(mem) != key) ||
-+		     mr_pd(mem) != pd ||
- 		     (access && !(access & mem->access)) ||
- 		     mem->state != RXE_MEM_STATE_VALID)) {
- 		rxe_drop_ref(mem);
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index e27585ce9eb7..af3923bf0a36 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -617,8 +617,8 @@ int rxe_requester(void *arg)
- 
- 			rmr->state = RXE_MEM_STATE_VALID;
- 			rmr->access = wqe->wr.wr.reg.access;
--			rmr->lkey = wqe->wr.wr.reg.key;
--			rmr->rkey = wqe->wr.wr.reg.key;
-+			rmr->ibmr.lkey = wqe->wr.wr.reg.key;
-+			rmr->ibmr.rkey = wqe->wr.wr.reg.key;
- 			rmr->iova = wqe->wr.wr.reg.mr->iova;
- 			wqe->state = wqe_state_done;
- 			wqe->status = IB_WC_SUCCESS;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index f368dc16281a..ba8faa34969b 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -921,7 +921,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 	struct rxe_mem *mr = to_rmr(ibmr);
- 
- 	mr->state = RXE_MEM_STATE_ZOMBIE;
--	rxe_drop_ref(mr->pd);
-+	rxe_drop_ref(mr_pd(mr));
- 	rxe_drop_index(mr);
- 	rxe_drop_ref(mr);
- 	return 0;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 658b9b1ebc62..efe5d9f34fc1 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -294,12 +294,8 @@ struct rxe_mem {
- 		struct ib_mw		ibmw;
- 	};
- 
--	struct rxe_pd		*pd;
- 	struct ib_umem		*umem;
- 
--	u32			lkey;
--	u32			rkey;
--
- 	enum rxe_mem_state	state;
- 	enum rxe_mem_type	type;
- 	u64			va;
-@@ -333,6 +329,10 @@ struct rxe_mc_grp {
- 	u16			pkey;
- };
- 
-+#define mr_pd(mr) to_rpd((mr)->ibmr.pd)
-+#define mr_lkey(mr) ((mr)->ibmr.lkey)
-+#define mr_rkey(mr) ((mr)->ibmr.rkey)
-+
- struct rxe_mc_elem {
- 	struct rxe_pool_entry	pelem;
- 	struct list_head	qp_list;
--- 
-2.25.1
+> rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
+> netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
+> gregkh@linuxfoundation.org; ranjani.sridharan@linux.intel.com; pierre-
+> louis.bossart@linux.intel.com; fred.oh@linux.intel.com;
+> parav@mellanox.com; Saleem, Shiraz <shiraz.saleem@intel.com>; Williams,
+> Dan J <dan.j.williams@intel.com>; Patil, Kiran <kiran.patil@intel.com>
+> Subject: Re: [PATCH v2 1/6] Add ancillary bus support
+>=20
+> On Mon, Oct 05, 2020 at 11:24:41AM -0700, Dave Ertman wrote:
+> > Add support for the Ancillary Bus, ancillary_device and ancillary_drive=
+r.
+> > It enables drivers to create an ancillary_device and bind an
+> > ancillary_driver to it.
+> >
+> > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > Each ancillary_device has a unique string based id; driver binds to
+> > an ancillary_device based on this id through the bus.
+> >
+> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
+>
+> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > ---
+>=20
+> <...>
+>=20
+> > +/**
+> > + * __ancillary_driver_register - register a driver for ancillary bus d=
+evices
+> > + * @ancildrv: ancillary_driver structure
+> > + * @owner: owning module/driver
+> > + */
+> > +int __ancillary_driver_register(struct ancillary_driver *ancildrv, str=
+uct
+> module *owner)
+> > +{
+> > +	if (WARN_ON(!ancildrv->probe) || WARN_ON(!ancildrv->remove)
+> ||
+> > +	    WARN_ON(!ancildrv->shutdown) || WARN_ON(!ancildrv-
+> >id_table))
+> > +		return -EINVAL;
+>=20
+> In our driver ->shutdown is empty, it will be best if ancillary bus will
+> do "if (->remove) ..->remove()" pattern.
+>
 
+Yes, looking it over, only the probe needs to mandatory.  I will change the=
+ others to the
+conditional model, and adjust the WARN_ONs.
+
+=20
+> > +
+> > +	ancildrv->driver.owner =3D owner;
+> > +	ancildrv->driver.bus =3D &ancillary_bus_type;
+> > +	ancildrv->driver.probe =3D ancillary_probe_driver;
+> > +	ancildrv->driver.remove =3D ancillary_remove_driver;
+> > +	ancildrv->driver.shutdown =3D ancillary_shutdown_driver;
+> > +
+>
+> I think that this part is wrong, probe/remove/shutdown functions should
+> come from ancillary_bus_type.=20
+
+From checking other usage cases, this is the model that is used for probe, =
+remove,
+and shutdown in drivers.  Here is the example from Greybus.
+
+int greybus_register_driver(struct greybus_driver *driver, struct module *o=
+wner,
+                            const char *mod_name)
+{
+        int retval;
+
+        if (greybus_disabled())
+                return -ENODEV;
+
+        driver->driver.bus =3D &greybus_bus_type;
+        driver->driver.name =3D driver->name;
+        driver->driver.probe =3D greybus_probe;
+        driver->driver.remove =3D greybus_remove;
+        driver->driver.owner =3D owner;
+        driver->driver.mod_name =3D mod_name;
+
+
+> You are overwriting private device_driver
+> callbacks that makes impossible to make container_of of ancillary_driver
+> to chain operations.
+>=20
+
+I am sorry, you lost me here.  you cannot perform container_of on the callb=
+acks
+because they are pointers, but if you are referring to going from device_dr=
+iver
+to the auxiliary_driver, that is what happens in auxiliary_probe_driver in =
+the
+very beginning.
+
+static int auxiliary_probe_driver(struct device *dev)
+145 {
+146         struct auxiliary_driver *auxdrv =3D to_auxiliary_drv(dev->drive=
+r);
+147         struct auxiliary_device *auxdev =3D to_auxiliary_dev(dev);
+
+Did I miss your meaning?
+
+-DaveE
+
+> > +	return driver_register(&ancildrv->driver);
+> > +}
+> > +EXPORT_SYMBOL_GPL(__ancillary_driver_register);
+>=20
+> Thanks
