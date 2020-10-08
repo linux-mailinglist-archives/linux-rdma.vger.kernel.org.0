@@ -2,357 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD80287258
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 12:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1E428727C
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Oct 2020 12:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgJHKRp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Oct 2020 06:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729210AbgJHKRo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:17:44 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2DDC2076B;
-        Thu,  8 Oct 2020 10:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602152262;
-        bh=jnzPcjlckmhKzqEG8+iGrWISe7UZj+mwIWSZMDd+HC8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R0BAMywuKP/3WYWluorvqbOkEZdZTMSjU7Oe3EOYUSFguVokX6WYT7OUj5DN0soxB
-         AhAbWQYAt1zDoKoVVwyye+FaTThbyAnK7QsQAmqDHv1aZ4k6gBC7aEMMl10vIgpM7L
-         fTPltMCWepXGQc2Vn42MB8F+CStVKC9Jhay8ydws=
-Date:   Thu, 8 Oct 2020 13:17:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-Message-ID: <20201008101737.GL13580@unreal>
-References: <BY5PR12MB43221A308CE750FACEB0A806DC0A0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <DM6PR11MB28415A8E53B5FFC276D5A2C4DD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c90316f5-a5a9-fe22-ec11-a30a54ff0a9d@linux.intel.com>
- <DM6PR11MB284147D4BC3FD081B9F0B8BBDD0A0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <c88b0339-48c6-d804-6fbd-b2fc6fa826d6@linux.intel.com>
- <BY5PR12MB43222FD5959E490E331D680ADC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201008052623.GB13580@unreal>
- <BY5PR12MB4322D48FADAAAD66DE7159D7DC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201008074525.GJ13580@unreal>
- <BY5PR12MB4322658669FFC396D8EE5D84DC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
+        id S1729230AbgJHKYQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Oct 2020 06:24:16 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:56206 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729221AbgJHKYQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Oct 2020 06:24:16 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098AKO1o025027;
+        Thu, 8 Oct 2020 10:24:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=lOG+qb1kBnxVdNfqs6aLmsjK6r8cOF99/h1GWUOb5lA=;
+ b=BPMhH/4Czlbu+7r6WiEdaOMbNMiPuq/csItIh8rKRQ0OYCJyb3Hh+2Neoyn0A8eDoNKh
+ WriVExBk82aMDRTFjZsxulfFgg/okV51PJanE/EcsWDSCxvTULI+jf6lYglUWwHeMcpx
+ fw5bTfLRbHPf6jA3hqZdx52y7VVGj8iKQ6igaKSm3fPBEjc+HIOv0xAQTiHTl2wyZPCI
+ KW6gR2Sl9xhLM3/TL0PNmQ+fXjtnWWp0uZrY4BPUAY9oRmCt/FyvhnY4noZFUXEULNxs
+ NTfAM4XsKrzfHHUfKan/M9Bla52Spw0Wzg0KOdzbKarh/aRv3GJv5xvappAvuPq7wtkW /w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33xetb70yf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 10:24:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098AKFJ3091183;
+        Thu, 8 Oct 2020 10:22:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33y380xkkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 10:22:12 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 098AMBuv006624;
+        Thu, 8 Oct 2020 10:22:11 GMT
+Received: from [10.159.211.29] (/10.159.211.29)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 08 Oct 2020 03:22:11 -0700
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+References: <20201002140445.GJ9916@ziepe.ca>
+ <5ab6e8df-851a-32f2-d64a-96e8d6cf0bc7@oracle.com>
+ <20201005131611.GR9916@ziepe.ca>
+ <4bf4bcd7-4aa4-82b9-8d03-c3ded1098c76@oracle.com>
+ <20201005142554.GS9916@ziepe.ca>
+ <3e9497cb-1ccd-2bc0-bbca-41232ebd6167@oracle.com>
+ <20201005154548.GT9916@ziepe.ca>
+ <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+ <20201006124627.GH5177@ziepe.ca>
+ <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+ <20201007111636.GD3678159@unreal>
+From:   Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <4d29915c-3ed7-0253-211b-1b97f5f8cfdf@oracle.com>
+Date:   Thu, 8 Oct 2020 18:22:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB4322658669FFC396D8EE5D84DC0B0@BY5PR12MB4322.namprd12.prod.outlook.com>
+In-Reply-To: <20201007111636.GD3678159@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080077
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 09:45:29AM +0000, Parav Pandit wrote:
->
->
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, October 8, 2020 1:15 PM
-> >
-> > On Thu, Oct 08, 2020 at 07:14:17AM +0000, Parav Pandit wrote:
-> > >
-> > >
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Thursday, October 8, 2020 10:56 AM
-> > > >
-> > > > On Thu, Oct 08, 2020 at 04:56:01AM +0000, Parav Pandit wrote:
-> > > > >
-> > > > >
-> > > > > > From: Pierre-Louis Bossart
-> > > > > > <pierre-louis.bossart@linux.intel.com>
-> > > > > > Sent: Thursday, October 8, 2020 3:20 AM
-> > > > > >
-> > > > > >
-> > > > > > On 10/7/20 4:22 PM, Ertman, David M wrote:
-> > > > > > >> -----Original Message-----
-> > > > > > >> From: Pierre-Louis Bossart
-> > > > > > >> <pierre-louis.bossart@linux.intel.com>
-> > > > > > >> Sent: Wednesday, October 7, 2020 1:59 PM
-> > > > > > >> To: Ertman, David M <david.m.ertman@intel.com>; Parav Pandit
-> > > > > > >> <parav@nvidia.com>; Leon Romanovsky <leon@kernel.org>
-> > > > > > >> Cc: alsa-devel@alsa-project.org; parav@mellanox.com;
-> > > > > > >> tiwai@suse.de; netdev@vger.kernel.org;
-> > > > > > >> ranjani.sridharan@linux.intel.com;
-> > > > > > >> fred.oh@linux.intel.com; linux-rdma@vger.kernel.org;
-> > > > > > >> dledford@redhat.com; broonie@kernel.org; Jason Gunthorpe
-> > > > > > >> <jgg@nvidia.com>; gregkh@linuxfoundation.org;
-> > > > > > >> kuba@kernel.org; Williams, Dan J <dan.j.williams@intel.com>;
-> > > > > > >> Saleem, Shiraz <shiraz.saleem@intel.com>;
-> > > > > > >> davem@davemloft.net; Patil, Kiran <kiran.patil@intel.com>
-> > > > > > >> Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-> > > > > > >>
-> > > > > > >>
-> > > > > > >>
-> > > > > > >>>> Below is most simple, intuitive and matching with core APIs
-> > > > > > >>>> for name and design pattern wise.
-> > > > > > >>>> init()
-> > > > > > >>>> {
-> > > > > > >>>> 	err = ancillary_device_initialize();
-> > > > > > >>>> 	if (err)
-> > > > > > >>>> 		return ret;
-> > > > > > >>>>
-> > > > > > >>>> 	err = ancillary_device_add();
-> > > > > > >>>> 	if (ret)
-> > > > > > >>>> 		goto err_unwind;
-> > > > > > >>>>
-> > > > > > >>>> 	err = some_foo();
-> > > > > > >>>> 	if (err)
-> > > > > > >>>> 		goto err_foo;
-> > > > > > >>>> 	return 0;
-> > > > > > >>>>
-> > > > > > >>>> err_foo:
-> > > > > > >>>> 	ancillary_device_del(adev);
-> > > > > > >>>> err_unwind:
-> > > > > > >>>> 	ancillary_device_put(adev->dev);
-> > > > > > >>>> 	return err;
-> > > > > > >>>> }
-> > > > > > >>>>
-> > > > > > >>>> cleanup()
-> > > > > > >>>> {
-> > > > > > >>>> 	ancillary_device_de(adev);
-> > > > > > >>>> 	ancillary_device_put(adev);
-> > > > > > >>>> 	/* It is common to have a one wrapper for this as
-> > > > > > >>>> ancillary_device_unregister().
-> > > > > > >>>> 	 * This will match with core device_unregister() that has
-> > > > > > >>>> precise documentation.
-> > > > > > >>>> 	 * but given fact that init() code need proper error
-> > > > > > >>>> unwinding, like above,
-> > > > > > >>>> 	 * it make sense to have two APIs, and no need to export
-> > > > > > >>>> another symbol for unregister().
-> > > > > > >>>> 	 * This pattern is very easy to audit and code.
-> > > > > > >>>> 	 */
-> > > > > > >>>> }
-> > > > > > >>>
-> > > > > > >>> I like this flow +1
-> > > > > > >>>
-> > > > > > >>> But ... since the init() function is performing both
-> > > > > > >>> device_init and device_add - it should probably be called
-> > > > > > >>> ancillary_device_register, and we are back to a single
-> > > > > > >>> exported API for both register and unregister.
-> > > > > > >>
-> > > > > > >> Kind reminder that we introduced the two functions to allow
-> > > > > > >> the caller to know if it needed to free memory when
-> > > > > > >> initialize() fails, and it didn't need to free memory when
-> > > > > > >> add() failed since
-> > > > > > >> put_device() takes care of it. If you have a single init()
-> > > > > > >> function it's impossible to know which behavior to select on error.
-> > > > > > >>
-> > > > > > >> I also have a case with SoundWire where it's nice to first
-> > > > > > >> initialize, then set some data and then add.
-> > > > > > >>
-> > > > > > >
-> > > > > > > The flow as outlined by Parav above does an initialize as the
-> > > > > > > first step, so every error path out of the function has to do
-> > > > > > > a put_device(), so you would never need to manually free the
-> > > > > > > memory in
-> > > > > > the setup function.
-> > > > > > > It would be freed in the release call.
-> > > > > >
-> > > > > > err = ancillary_device_initialize(); if (err)
-> > > > > > 	return ret;
-> > > > > >
-> > > > > > where is the put_device() here? if the release function does any
-> > > > > > sort of kfree, then you'd need to do it manually in this case.
-> > > > > Since device_initialize() failed, put_device() cannot be done here.
-> > > > > So yes, pseudo code should have shown, if (err) {
-> > > > > 	kfree(adev);
-> > > > > 	return err;
-> > > > > }
-> > > > >
-> > > > > If we just want to follow register(), unregister() pattern,
-> > > > >
-> > > > > Than,
-> > > > >
-> > > > > ancillar_device_register() should be,
-> > > > >
-> > > > > /**
-> > > > >  * ancillar_device_register() - register an ancillary device
-> > > > >  * NOTE: __never directly free @adev after calling this function,
-> > > > > even if it returned
-> > > > >  * an error. Always use ancillary_device_put() to give up the
-> > > > > reference
-> > > > initialized by this function.
-> > > > >  * This note matches with the core and caller knows exactly what
-> > > > > to be
-> > > > done.
-> > > > >  */
-> > > > > ancillary_device_register()
-> > > > > {
-> > > > > 	device_initialize(&adev->dev);
-> > > > > 	if (!dev->parent || !adev->name)
-> > > > > 		return -EINVAL;
-> > > > > 	if (!dev->release && !(dev->type && dev->type->release)) {
-> > > > > 		/* core is already capable and throws the warning when
-> > > > release callback is not set.
-> > > > > 		 * It is done at drivers/base/core.c:1798.
-> > > > > 		 * For NULL release it says, "does not have a release()
-> > > > function, it is broken and must be fixed"
-> > > > > 		 */
-> > > > > 		return -EINVAL;
-> > > > > 	}
-> > > > > 	err = dev_set_name(adev...);
-> > > > > 	if (err) {
-> > > > > 		/* kobject_release() -> kobject_cleanup() are capable to
-> > > > detect if name is set/ not set
-> > > > > 		  * and free the const if it was set.
-> > > > > 		  */
-> > > > > 		return err;
-> > > > > 	}
-> > > > > 	err = device_add(&adev->dev);
-> > > > > 	If (err)
-> > > > > 		return err;
-> > > > > }
-> > > > >
-> > > > > Caller code:
-> > > > > init()
-> > > > > {
-> > > > > 	adev = kzalloc(sizeof(*foo_adev)..);
-> > > > > 	if (!adev)
-> > > > > 		return -ENOMEM;
-> > > > > 	err = ancillary_device_register(&adev);
-> > > > > 	if (err)
-> > > > > 		goto err;
-> > > > >
-> > > > > err:
-> > > > > 	ancillary_device_put(&adev);
-> > > > > 	return err;
-> > > > > }
-> > > > >
-> > > > > cleanup()
-> > > > > {
-> > > > > 	ancillary_device_unregister(&adev);
-> > > > > }
-> > > > >
-> > > > > Above pattern is fine too matching the core.
-> > > > >
-> > > > > If I understand Leon correctly, he prefers simple register(),
-> > > > > unregister()
-> > > > pattern.
-> > > > > If, so it should be explicit register(), unregister() API.
-> > > >
-> > > > This is my summary
-> > > > https://lore.kernel.org/linux-rdma/20201008052137.GA13580@unreal
-> > > > The API should be symmetric.
-> > > >
-> > >
-> > > I disagree to your below point.
-> > > > 1. You are not providing driver/core API but simplification and
-> > > > obfuscation of basic primitives and structures. This is new layer.
-> > > > There is no room for a claim that we must to follow internal API.
-> > > If ancillary bus has
-> > > ancillary_device_add(), it cannot do device_initialize() and device_add() in
-> > both.
-> > >
-> > > I provided two examples and what really matters is a given patchset
-> > > uses (need to use) which pattern,
-> > > initialize() + add(), or register() + unregister().
-> > >
-> > > As we all know that API is not added for future. It is the future patch
-> > extends it.
-> > > So lets wait for Pierre to reply if soundwire can follow register(),
-> > unregister() sequence.
-> > > This way same APIs can service both use-cases.
-> > >
-> > > Regarding,
-> > > > 3. You can't "ask" from users to call internal calls (put_device)
-> > > > over internal fields in ancillary_device.
-> > > In that case if should be ancillary_device_put() ancillary_device_release().
-> > >
-> > > Or we should follow the patten of ib_alloc_device [1],
-> > > ancillary_device_alloc()
-> > >     -> kzalloc(adev + dev) with compile time assert check like rdma and vdpa
-> > subsystem.
-> > >     ->device_initialize()
-> > > ancillary_device_add()
-> > >
-> > > ancillar_device_de() <- balances with add
-> > > ancillary_device_dealloc() <-- balances with device_alloc(), which does the
-> > put_device() + free the memory allocated in alloc().
-> > >
-> > > This approach of [1] also eliminates exposing adev.dev.release =
-> > <drivers_release_method_to_free_adev> in drivers.
-> > > And container_of() benefit also continues..
-> > >
-> > > [1]
-> > > https://elixir.bootlin.com/linux/v5.9-rc8/source/include/rdma/ib_verbs
-> > > .h#L2791
-> > >
-> >
-> > My code looks like this, probably yours looks the same.
-> >
-> >   247                 priv->adev[i] = kzalloc(sizeof(*priv->adev[i]), GFP_KERNEL);
-> >   248                 if (!priv->adev[i])
-> >   249                         goto init_err;
-> >   250
-> >   251                 adev = &priv->adev[i]->adev;
-> >   252                 adev->id = idx;
-> >   253                 adev->name = mlx5_adev_devices[i].suffix;
-> >   254                 adev->dev.parent = dev->device;
-> >   255                 adev->dev.release = adev_release;
-> >   256                 priv->adev[i]->mdev = dev;
-> >   257
-> >   258                 ret = ancillary_device_initialize(adev);
-> >   259                 if (ret)
-> >   260                         goto init_err;
-> >   261
-> >   262                 ret = ancillary_device_add(adev);
-> >   263                 if (ret) {
-> >   264                         put_device(&adev->dev);
-> >   265                         goto add_err;
-> >   266                 }
->
-> Yes, subfunction code is also very similar.
-> You expressed concerned that you didn't like put_device() at [1].
-> But in above code is touching adev->dev.{parent, release} is ok?
+On 10/7/20 7:16 PM, Leon Romanovsky wrote:
+> On Wed, Oct 07, 2020 at 04:38:45PM +0800, Ka-Cheong Poon wrote:
+>> On 10/6/20 8:46 PM, Jason Gunthorpe wrote:
+>>> On Tue, Oct 06, 2020 at 05:36:32PM +0800, Ka-Cheong Poon wrote:
+>>>
+>>>>>>> Kernel modules should not be doing networking unless commanded to by
+>>>>>>> userspace.
+>>>>>>
+>>>>>> It is still not clear why this is an issue with RDMA
+>>>>>> connection, but not with general kernel socket.  It is
+>>>>>> not random networking.  There is a purpose.
+>>>>>
+>>>>> It is a problem with sockets too, how do the socket users trigger
+>>>>> their socket usages? AFAIK all cases originate with userspace
+>>>>
+>>>> A user starts a namespace.  The module is loaded for servicing
+>>>> requests.  The module starts a listener.  The user deletes
+>>>> the namespace.  This scenario will have everything cleaned up
+>>>> properly if the listener is a kernel socket.  This is not the
+>>>> case with RDMA.
+>>>
+>>> Please point to reputable code in upstream doing this
+>>
+>>
+>> It is not clear what "reputable" here really means.  If it just
+>> means something in kernel, then nearly all, if not all, Internet
+>> protocols code in kernel create a control kernel socket for every
+>> network namespaces.  That socket is deleted in the per namespace
+>> exit function.  If it explicitly means listening socket, AFS and
+>> TIPC in kernel do that for every namespaces.  That socket is
+>> deleted in the per namespace exit function.
+>>
+>> It is very common for a network protocol to have something like
+>> this for protocol processing.  It is not clear why RDMA subsystem
+>> behaves differently and forbids this common practice.  Could you
+>> please elaborate the issues this practice has such that the RDMA
+>> subsystem cannot support it?
+> 
+> Just curious, are we talking about theoretical thing here or do you
+> have concrete and upstream ULP code to present?
 
-Yes, "adev->dev.{parent, release}" is not ok, but at least it doesn't
-complicate error unwinding. This is why I didn't say anything about it.
 
-> >   254                 adev->dev.parent = dev->device;
-> >   255                 adev->dev.release = adev_release;
->
-> If not,
->
-> We can make it elegant by doing,
+As I mentioned in a previous email, I have running code.
+Otherwise, why would I go to such great length to find
+out what is missing in the RDMA subsystem in supporting
+kernel namespace usage.
 
-I like your idea, IMHO it is more clear and less error prone.
 
-Thanks
 
->
-> the patten of ib_alloc_device [1],
-> ancillary_device_alloc()
->     -> kzalloc(adev + dev) with compile time assert check like rdma and vdpa subsystem.
->     ->device_initialize()
-> ancillary_device_add()
->
-> ancillar_device_de() <- balances with add
-> ancillary_device_dealloc() <-- balances with device_alloc(), which does the put_device() + free the memory allocated in alloc().
->
-> This approach of [2] also eliminates exposing adev.dev.release = <drivers_release_method_to_free_adev> in drivers.
-> And container_of() benefit also continues..
->
-> [1] https://lore.kernel.org/linux-rdma/20201007192610.GD3964015@unreal/
-> [2] https://elixir.bootlin.com/linux/v5.9-rc8/source/include/rdma/ib_verbs.h#L2791
+-- 
+K. Poon
+ka-cheong.poon@oracle.com
+
+
