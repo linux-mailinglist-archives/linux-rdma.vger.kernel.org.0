@@ -2,120 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A8F288FE6
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 19:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2C628903D
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 19:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731953AbgJIRTJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 13:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbgJIRSf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 13:18:35 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6F6C0613D2
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 10:18:35 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m13so9637208otl.9
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 10:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G7DYHGqR4MEZUz3FVOoZ01/oeuR7H9bHKs1JQTZgajg=;
-        b=SBsbOi1iqoje+Y0Wst0i4qrsAZfY6/rEUlL7KN1bh2r+peRKVNwVj7kkYjxsToJaly
-         W3+lYOUkw8TP/D4qC9wpmKhfqNCxcr3MsiNt7Au9C8BIK/zgaUMC5VZxHtSWfHLlAuVS
-         2u4dYVFPzuS8MvuqozBVsyWv9covB5k7pYwcUdDfc5ezYHUf8kEhBjwpP0bpN/pS+FXb
-         aECeBAWQq5WK+JZbO5W/l+zR5zgUrOlrLW5x5gN7udH6Ygo2QmBOYcU8zOYYu5wbIanT
-         0SCrdIwoF9jaeKa/cvBAajBDllBWlVspCQT9HE1weUY+uqiWqdkgrO2OnXAIIvcNkMX7
-         i3mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G7DYHGqR4MEZUz3FVOoZ01/oeuR7H9bHKs1JQTZgajg=;
-        b=I0GVRlpNgE3Oo/HL0W+9YWDngqRzMWCh3HOkxR/bndO5z28iNY9X/7Pzqz42GkxUE2
-         pL1z1y5U/9We7lp0bXN9TdC/lRcH5Z9BTffPt0HukwrbWOOsDl1WmWZuj3tpBdNwP7Lj
-         Hl15D1EMlgLgePO3PE2dabmh9YZWJeUoOeS5YXNwkcj3slyiPCxG/7JBkBbaJvHgXGSS
-         Uah1v5lRuypbllwCWhU6woWm/2zJVG0mGAFkrgW/5qLWVkpn49ajRS8DzmZPqr8m0/9A
-         f8PJ0Zwu6JpIurctylJs+jbH0O18+WlUlnhD414RBMRTuBl3ONW8nfUsHkK50zIK8s/A
-         GPtw==
-X-Gm-Message-State: AOAM532krSWNQKdXUewrrim7YqzCwrJaoFoXC7rMB8y3sBLpLk3zKB8R
-        +kuNuE4PUWl6qW6dS0bP/Be3OMLGmGU=
-X-Google-Smtp-Source: ABdhPJwtOY3vCeRg+if1KINTi7rr0yjKq1lE7qiVtMhDuwG1+22WLDRRDOaljQrMQibstM608MMHtQ==
-X-Received: by 2002:a9d:7f15:: with SMTP id j21mr9134148otq.76.1602263915096;
-        Fri, 09 Oct 2020 10:18:35 -0700 (PDT)
-Received: from ?IPv6:2605:6000:8b03:f000:21af:60b5:ebc7:e8c6? ([2605:6000:8b03:f000:21af:60b5:ebc7:e8c6])
-        by smtp.gmail.com with ESMTPSA id u2sm7406088oig.48.2020.10.09.10.18.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 10:18:34 -0700 (PDT)
-Subject: Re: [PATCH for-next v2] rdma_rxe: fix bug rejecting multicast packets
-To:     Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Bob Pearson <rpearson@hpe.com>
-References: <20201008212753.265249-1-rpearson@hpe.com>
- <0e89cd73-e3ea-81fc-c5eb-be7521b10415@gmail.com>
- <20201009152827.GN4734@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <c6c80d1e-d608-c52c-dd33-3393722d266e@gmail.com>
-Date:   Fri, 9 Oct 2020 12:18:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201009152827.GN4734@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2387941AbgJIRrW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 13:47:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58588 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730673AbgJIRrW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 13:47:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099HTYWi053907;
+        Fri, 9 Oct 2020 17:47:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=RrPayZrm5J2koESwq4jLiVatK3JS2GuFNv/DaCzt6cA=;
+ b=mGIQcSa+Pc0KDj+lkIypF/5oY+9KT6jMppx45sa7xpl2sIdZ7thwsxv10DoX6kaRmdmh
+ +EWGxQC0XDhn279LAS9DDhZ9+ujyi+7MjT1VF8GxnXLs+lZQYPCo9alLm+qhl7wi0wmm
+ g5E+PPuKnl7GfEM3C8QD0S38Kp/p14v4SGjG/dGGgw/S3PziMzd7O1d5+BiehgUT+WeM
+ 8/fb3tOIEIxdrXJW36t4l8T9G7KHyI7U/o5HdOtSkBwgbzkp80+u3f2j2NXnMsMLE0Oz
+ FrpOsYH27wYlKZYVgsCfySN9waolfYn/9YK8ZRGm53WmvljjxUr//Z+Rx9H9eGbvRd+P tg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 3429jmmu6u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 09 Oct 2020 17:47:15 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 099HVR0i173223;
+        Fri, 9 Oct 2020 17:47:15 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 342gurqmj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Oct 2020 17:47:14 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 099HlEQM025760;
+        Fri, 9 Oct 2020 17:47:14 GMT
+Received: from dhcp-10-175-176-72.vpn.oracle.com (/10.175.176.72)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 09 Oct 2020 10:47:14 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH for-next v2] IB/mlx4: Convert rej_tmout radix-tree to
+ XArray
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20201009153514.GA527106@nvidia.com>
+Date:   Fri, 9 Oct 2020 19:47:12 +0200
+Cc:     Yishai Hadas <yishaih@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <70AC4469-158B-4AB0-A898-6DA621AA898D@oracle.com>
+References: <1602253482-6718-1-git-send-email-haakon.bugge@oracle.com>
+ <20201009153514.GA527106@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9769 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010090128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9769 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 suspectscore=3
+ clxscore=1015 phishscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010090128
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/9/20 10:28 AM, Jason Gunthorpe wrote:
-> On Fri, Oct 09, 2020 at 11:23:31PM +0800, Zhu Yanjun wrote:
->> On 10/9/2020 5:27 AM, Bob Pearson wrote:
->>>    - Fix a bug in rxe_rcv that causes all multicast packets to be
->>>      dropped. Currently rxe_match_dgid is called for each packet
->>>      to verify that the destination IP address matches one of the
->>>      entries in the port source GID table. This is incorrect for
->>>      IP multicast addresses since they do not appear in the GID table.
->>>    - Add code to detect multicast addresses.
->>>    - Change function name to rxe_chk_dgid which is clearer.
->>>
->>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->>>   drivers/infiniband/sw/rxe/rxe_recv.c | 19 ++++++++++++++++---
->>>   1 file changed, 16 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
->>> index a3eed4da1540..b6fee61b2aee 100644
->>> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
->>> @@ -280,7 +280,17 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->>>   	kfree_skb(skb);
->>>   }
->>> -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
->>> +/**
->>> + * rxe_chk_dgid - validate destination IP address
->>> + * @rxe: rxe device that received packet
->>> + * @skb: the received packet buffer
->>> + *
->>> + * Accept any loopback packets
->>
->> About loopback packets, will rdma_find_gid_by_port return correct value?
-I didn't touch that but the RXE_LOOPBACK test comes before the call to rdma_find_gid_by_port
-so it should never get called for loopback packets.
-> 
-> I don't think you can use 127.0.0.0 with the RDMA devices, at least
-> not on the wire. The CM has special code to swap it out with a real
-> device address
-The following does work:
 
-$ ib_send_bw -d rxe_0 (in window A)                $ ib_send_bw -d rxe_0 127.0.0.1 (in window B)
 
-This uses the LOOPBACK path and just hands the skb from sender to receiver. It never touches the IP stack.
+> On 9 Oct 2020, at 17:35, Jason Gunthorpe <jgg@nvidia.com> wrote:
+>=20
+> On Fri, Oct 09, 2020 at 04:24:42PM +0200, H=C3=A5kon Bugge wrote:
+>> Fixes: 227a0e142e37 ("IB/mlx4: Add support for REJ due to timeout")
+>> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+>> ---
+>> drivers/infiniband/hw/mlx4/cm.c      | 92 =
+++++++++++++++++++------------------
+>> drivers/infiniband/hw/mlx4/mlx4_ib.h |  4 +-
+>> 2 files changed, 48 insertions(+), 48 deletions(-)
+>=20
+> Applied to for-next, thanks
 
-I have never been able to get this to work:
-
-$ ib_send_bw -d rxe_1 (at 10.0.0.1 in window A)    $ ib_send_bw -d rxe_2 10.0.0.1 (at 10.0.0.2 in window B)
-
-If it did work I could test the full path.
-> 
-> Jason
-> 
+Thxs
 
