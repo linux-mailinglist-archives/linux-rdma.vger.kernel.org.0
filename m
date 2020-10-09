@@ -2,225 +2,368 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276962891D8
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 21:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759CD28923F
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 21:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390705AbgJITjH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 15:39:07 -0400
-Received: from mga12.intel.com ([192.55.52.136]:28204 "EHLO mga12.intel.com"
+        id S2390839AbgJITus (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 15:50:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:57507 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731727AbgJITjG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:39:06 -0400
-IronPort-SDR: MXtpdl7+j4kpmFLQv0lO54YKsEEd0IJpaQFsUfFoiD9eL5QmeYcEdty998WdhUYxhmhxWETk24
- YtENxgAxHhlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="144849614"
+        id S1726357AbgJITup (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 9 Oct 2020 15:50:45 -0400
+IronPort-SDR: EgmAoyvHqLfUgUFSlazRhx1Cjp9MmVlenKbZYXMVRVRfgMzpJRftl57MJq2pMTa+nNfk+FbMHQ
+ 4ZNHJky2ihhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="152450718"
 X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="144849614"
+   d="scan'208";a="152450718"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:39:05 -0700
-IronPort-SDR: uMWCl/z89ewPADQDqDsvE8uTFL+LonNGnd79CWADG9OCdGywjmbO0qu5ER6L8tWeAIcomXKybm
- iE+SSrwwwBIg==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:50:41 -0700
+IronPort-SDR: wgvSBhlinBwJf2eRaqYm1d4mOPDeheaaBRmvXZpaWhx0BsPjq5MOqCRmfglsuVIrge+HvLIvQ5
+ IT741lyNdN2Q==
 X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="462298616"
-Received: from dnittama-mobl.amr.corp.intel.com (HELO [10.212.225.198]) ([10.212.225.198])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:39:03 -0700
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006172317.GN1874917@unreal>
- <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <CAPcyv4hoS7ZT_PPrXqFBzEHBKL-O4x1jHtY8x9WWesCPA=2E0g@mail.gmail.com>
- <7dbbc51c-2cbd-a7c5-69de-76f190f1d130@linux.intel.com>
- <CAPcyv4h24md531OYTVkHqzK7Nb0dJc5PHkLDSDywh8mYgrXBjg@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a6eddd81-9746-aee7-3403-971c2b6286ef@linux.intel.com>
-Date:   Fri, 9 Oct 2020 14:39:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="419536654"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:50:41 -0700
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: [PATCH RFC PKS/PMEM 00/58] PMEM: Introduce stray write protection for PMEM
+Date:   Fri,  9 Oct 2020 12:49:35 -0700
+Message-Id: <20201009195033.3208459-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4h24md531OYTVkHqzK7Nb0dJc5PHkLDSDywh8mYgrXBjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
->>>>>> +
->>>>>> +   ancildrv->driver.owner = owner;
->>>>>> +   ancildrv->driver.bus = &ancillary_bus_type;
->>>>>> +   ancildrv->driver.probe = ancillary_probe_driver;
->>>>>> +   ancildrv->driver.remove = ancillary_remove_driver;
->>>>>> +   ancildrv->driver.shutdown = ancillary_shutdown_driver;
->>>>>> +
->>>>>
->>>>> I think that this part is wrong, probe/remove/shutdown functions should
->>>>> come from ancillary_bus_type.
->>>>
->>>>   From checking other usage cases, this is the model that is used for probe, remove,
->>>> and shutdown in drivers.  Here is the example from Greybus.
->>>>
->>>> int greybus_register_driver(struct greybus_driver *driver, struct module *owner,
->>>>                               const char *mod_name)
->>>> {
->>>>           int retval;
->>>>
->>>>           if (greybus_disabled())
->>>>                   return -ENODEV;
->>>>
->>>>           driver->driver.bus = &greybus_bus_type;
->>>>           driver->driver.name = driver->name;
->>>>           driver->driver.probe = greybus_probe;
->>>>           driver->driver.remove = greybus_remove;
->>>>           driver->driver.owner = owner;
->>>>           driver->driver.mod_name = mod_name;
->>>>
->>>>
->>>>> You are overwriting private device_driver
->>>>> callbacks that makes impossible to make container_of of ancillary_driver
->>>>> to chain operations.
->>>>>
->>>>
->>>> I am sorry, you lost me here.  you cannot perform container_of on the callbacks
->>>> because they are pointers, but if you are referring to going from device_driver
->>>> to the auxiliary_driver, that is what happens in auxiliary_probe_driver in the
->>>> very beginning.
->>>>
->>>> static int auxiliary_probe_driver(struct device *dev)
->>>> 145 {
->>>> 146         struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
->>>> 147         struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
->>>>
->>>> Did I miss your meaning?
->>>
->>> I think you're misunderstanding the cases when the
->>> bus_type.{probe,remove} is used vs the driver.{probe,remove}
->>> callbacks. The bus_type callbacks are to implement a pattern where the
->>> 'probe' and 'remove' method are typed to the bus device type. For
->>> example 'struct pci_dev *' instead of raw 'struct device *'. See this
->>> conversion of dax bus as an example of going from raw 'struct device
->>> *' typed probe/remove to dax-device typed probe/remove:
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=75797273189d
->>
->> Thanks Dan for the reference, very useful. This doesn't look like a a
->> big change to implement, just wondering about the benefits and
->> drawbacks, if any? I am a bit confused here.
->>
->> First, was the initial pattern wrong as Leon asserted it? Such code
->> exists in multiple examples in the kernel and there's nothing preventing
->> the use of container_of that I can think of. Put differently, if this
->> code was wrong then there are other existing buses that need to be updated.
->>
->> Second, what additional functionality does this move from driver to
->> bus_type provide? The commit reference just states 'In preparation for
->> introducing seed devices the dax-bus core needs to be able to intercept
->> ->probe() and ->remove() operations", but that doesn't really help me
->> figure out what 'intercept' means. Would you mind elaborating?
->>
->> And last, the existing probe function does calls dev_pm_domain_attach():
->>
->> static int ancillary_probe_driver(struct device *dev)
->> {
->>          struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
->>          struct ancillary_device *ancildev = to_ancillary_dev(dev);
->>          int ret;
->>
->>          ret = dev_pm_domain_attach(dev, true);
->>
->> So the need to access the raw device still exists. Is this still legit
->> if the probe() is moved to the bus_type structure?
-> 
-> Sure, of course.
-> 
->>
->> I have no objection to this change if it preserves the same
->> functionality and possibly extends it, just wanted to better understand
->> the reasons for the change and in which cases the bus probe() makes more
->> sense than a driver probe().
->>
->> Thanks for enlightening the rest of us!
-> 
-> tl;dr: The ops set by the device driver should never be overwritten by
-> the bus, the bus can only wrap them in its own ops.
-> 
-> The reason to use the bus_type is because the bus type is the only
-> agent that knows both how to convert a raw 'struct device *' to the
-> bus's native type, and how to convert a raw 'struct device_driver *'
-> to the bus's native driver type. The driver core does:
-> 
->          if (dev->bus->probe) {
->                  ret = dev->bus->probe(dev);
->          } else if (drv->probe) {
->                  ret = drv->probe(dev);
->          }
-> 
-> ...so that the bus has the first priority for probing a device /
-> wrapping the native driver ops. The bus ->probe, in addition to
-> optionally performing some bus specific pre-work, lets the bus upcast
-> the device to bus-native type.
-> 
-> The bus also knows the types of drivers that will be registered to it,
-> so the bus can upcast the dev->driver to the native type.
-> 
-> So with bus_type based driver ops driver authors can do:
-> 
-> struct auxiliary_device_driver auxdrv {
->      .probe = fn(struct auxiliary_device *, <any aux bus custom probe arguments>)
-> };
-> 
-> auxiliary_driver_register(&auxdrv); <-- the core code can hide bus details
-> 
-> Without bus_type the driver author would need to do:
-> 
-> struct auxiliary_device_driver auxdrv {
->      .drv = {
->          .probe = fn(struct device *), <-- no opportunity for bus
-> specific probe args
->          .bus = &auxilary_bus_type, <-- unnecessary export to device drivers
->      },
-> };
-> 
-> driver_register(&auxdrv.drv)
+Should a stray write in the kernel occur persistent memory is affected more
+than regular memory.  A write to the wrong area of memory could result in
+latent data corruption which will will persist after a reboot.  PKS provides a
+nice way to restrict access to persistent memory kernel mappings, while
+providing fast access when needed.
 
-Thanks Dan, I appreciate the explanation.
+Since the last RFC[1] this patch set has grown quite a bit.  It now depends on
+the core patches submitted separately.
 
-I guess the misunderstanding on my side was that in practice the drivers 
-only declare a probe at the auxiliary level:
+	https://lore.kernel.org/lkml/20201009194258.3207172-1-ira.weiny@intel.com/
 
-struct auxiliary_device_driver auxdrv {
-     .drv = {
-         .name = "my driver"
-         <<< .probe not set here.
-     }
-     .probe =  fn(struct auxiliary_device *, int id),	
-}
+And contained in the git tree here:
 
-It looks indeed cleaner with your suggestion. DaveE and I were talking 
-about this moments ago and made the change, will be testing later today.
+	https://github.com/weiny2/linux-kernel/tree/pks-rfc-v3
 
-Again thanks for the write-up and have a nice week-end.
+However, functionally there is only 1 major change from the last RFC.
+Specifically, kmap() is most often used within a single thread in a 'map/do
+something/unmap' pattern.  In fact this is the pattern used in ~90% of the
+callers of kmap().  This pattern works very well for the pmem use case and the
+testing which was done.  However, there were another ~20-30 kmap users which do
+not follow this pattern.  Some of them seem to expect the mapping to be
+'global' while others require a detailed audit to be sure.[2][3]
 
+While we don't anticipate global mappings to pmem there is a danger in
+changing the semantics of kmap().  Effectively, this would cause an unresolved
+page fault with little to no information about why.
+
+There were a number of options considered.
+
+1) Attempt to change all the thread local kmap() calls to kmap_atomic()
+2) Introduce a flags parameter to kmap() to indicate if the mapping should be
+   global or not
+3) Change ~20-30 call sites to 'kmap_global()' to indicate that they require a
+   global mapping of the pages
+4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
+   be used within that thread of execution only
+
+Option 1 is simply not feasible kmap_atomic() is not the same semantic as
+kmap() within a single tread.  Option 2 would require all of the call sites of
+kmap() to change.  Option 3 seems like a good minimal change but there is a
+danger that new code may miss the semantic change of kmap() and not get the
+behavior intended for future users.  Therefore, option #4 was chosen.
+
+To handle the global PKRS state in the most efficient manner possible.  We
+lazily override the thread specific PKRS key value only when needed because we
+anticipate PKS to not be needed will not be needed most of the time.  And even
+when it is used 90% of the time it is a thread local call.
+
+
+[1] https://lore.kernel.org/lkml/20200717072056.73134-1-ira.weiny@intel.com/
+
+[2] The following list of callers continue calling kmap() (utilizing the global
+PKRS).  It would be nice if more of them could be converted to kmap_thread()
+
+	drivers/firewire/net.c:         ptr = kmap(dev->broadcast_rcv_buffer.pages[u]);
+	drivers/gpu/drm/i915/gem/i915_gem_pages.c:              return kmap(sg_page(sgt->sgl));
+	drivers/gpu/drm/ttm/ttm_bo_util.c:              map->virtual = kmap(map->page);
+	drivers/infiniband/hw/qib/qib_user_sdma.c:      mpage = kmap(page);
+	drivers/misc/vmw_vmci/vmci_host.c:      context->notify = kmap(context->notify_page) + (uva & (PAGE_SIZE - 1));
+	drivers/misc/xilinx_sdfec.c:            addr = kmap(pages[i]);
+	drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped         = kmap(host->pg.page);
+	drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
+	drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
+	drivers/nvme/target/tcp.c:              iov->iov_base = kmap(sg_page(sg)) + sg->offset + sg_offset;
+	drivers/scsi/libiscsi_tcp.c:            segment->sg_mapped = kmap(sg_page(sg));
+	drivers/target/iscsi/iscsi_target.c:            iov[i].iov_base = kmap(sg_page(sg)) + sg->offset + page_off;
+	drivers/target/target_core_transport.c:         return kmap(sg_page(sg)) + sg->offset;
+	fs/btrfs/check-integrity.c:             block_ctx->datav[i] = kmap(block_ctx->pagev[i]);
+	fs/ceph/dir.c:          cache_ctl->dentries = kmap(cache_ctl->page);
+	fs/ceph/inode.c:                ctl->dentries = kmap(ctl->page);
+	fs/erofs/zpvec.h:               kmap_atomic(ctor->curr) : kmap(ctor->curr);
+	lib/scatterlist.c:              miter->addr = kmap(miter->page) + miter->__offset;
+	net/ceph/pagelist.c:    pl->mapped_tail = kmap(page);
+	net/ceph/pagelist.c:            pl->mapped_tail = kmap(page);
+	virt/kvm/kvm_main.c:                    hva = kmap(page);
+
+[3] The following appear to follow the same pattern as ext2 which was converted
+after some code audit.  So I _think_ they too could be converted to
+k[un]map_thread().
+
+	fs/freevxfs/vxfs_subr.c|75| kmap(pp);
+	fs/jfs/jfs_metapage.c|102| kmap(page);
+	fs/jfs/jfs_metapage.c|156| kmap(page);
+	fs/minix/dir.c|72| kmap(page);
+	fs/nilfs2/dir.c|195| kmap(page);
+	fs/nilfs2/ifile.h|24| void *kaddr = kmap(ibh->b_page);
+	fs/ntfs/aops.h|78| kmap(page);
+	fs/ntfs/compress.c|574| kmap(page);
+	fs/qnx6/dir.c|32| kmap(page);
+	fs/qnx6/dir.c|58| kmap(*p = page);
+	fs/qnx6/inode.c|190| kmap(page);
+	fs/qnx6/inode.c|557| kmap(page);
+	fs/reiserfs/inode.c|2397| kmap(bh_result->b_page);
+	fs/reiserfs/xattr.c|444| kmap(page);
+	fs/sysv/dir.c|60| kmap(page);
+	fs/sysv/dir.c|262| kmap(page);
+	fs/ufs/dir.c|194| kmap(page);
+	fs/ufs/dir.c|562| kmap(page);
+
+
+Ira Weiny (58):
+  x86/pks: Add a global pkrs option
+  x86/pks/test: Add testing for global option
+  memremap: Add zone device access protection
+  kmap: Add stray access protection for device pages
+  kmap: Introduce k[un]map_thread
+  kmap: Introduce k[un]map_thread debugging
+  drivers/drbd: Utilize new kmap_thread()
+  drivers/firmware_loader: Utilize new kmap_thread()
+  drivers/gpu: Utilize new kmap_thread()
+  drivers/rdma: Utilize new kmap_thread()
+  drivers/net: Utilize new kmap_thread()
+  fs/afs: Utilize new kmap_thread()
+  fs/btrfs: Utilize new kmap_thread()
+  fs/cifs: Utilize new kmap_thread()
+  fs/ecryptfs: Utilize new kmap_thread()
+  fs/gfs2: Utilize new kmap_thread()
+  fs/nilfs2: Utilize new kmap_thread()
+  fs/hfs: Utilize new kmap_thread()
+  fs/hfsplus: Utilize new kmap_thread()
+  fs/jffs2: Utilize new kmap_thread()
+  fs/nfs: Utilize new kmap_thread()
+  fs/f2fs: Utilize new kmap_thread()
+  fs/fuse: Utilize new kmap_thread()
+  fs/freevxfs: Utilize new kmap_thread()
+  fs/reiserfs: Utilize new kmap_thread()
+  fs/zonefs: Utilize new kmap_thread()
+  fs/ubifs: Utilize new kmap_thread()
+  fs/cachefiles: Utilize new kmap_thread()
+  fs/ntfs: Utilize new kmap_thread()
+  fs/romfs: Utilize new kmap_thread()
+  fs/vboxsf: Utilize new kmap_thread()
+  fs/hostfs: Utilize new kmap_thread()
+  fs/cramfs: Utilize new kmap_thread()
+  fs/erofs: Utilize new kmap_thread()
+  fs: Utilize new kmap_thread()
+  fs/ext2: Use ext2_put_page
+  fs/ext2: Utilize new kmap_thread()
+  fs/isofs: Utilize new kmap_thread()
+  fs/jffs2: Utilize new kmap_thread()
+  net: Utilize new kmap_thread()
+  drivers/target: Utilize new kmap_thread()
+  drivers/scsi: Utilize new kmap_thread()
+  drivers/mmc: Utilize new kmap_thread()
+  drivers/xen: Utilize new kmap_thread()
+  drivers/firmware: Utilize new kmap_thread()
+  drives/staging: Utilize new kmap_thread()
+  drivers/mtd: Utilize new kmap_thread()
+  drivers/md: Utilize new kmap_thread()
+  drivers/misc: Utilize new kmap_thread()
+  drivers/android: Utilize new kmap_thread()
+  kernel: Utilize new kmap_thread()
+  mm: Utilize new kmap_thread()
+  lib: Utilize new kmap_thread()
+  powerpc: Utilize new kmap_thread()
+  samples: Utilize new kmap_thread()
+  dax: Stray access protection for dax_direct_access()
+  nvdimm/pmem: Stray access protection for pmem->virt_addr
+  [dax|pmem]: Enable stray access protection
+
+ Documentation/core-api/protection-keys.rst    |  11 +-
+ arch/powerpc/mm/mem.c                         |   4 +-
+ arch/x86/entry/common.c                       |  28 +++
+ arch/x86/include/asm/pkeys.h                  |   6 +-
+ arch/x86/include/asm/pkeys_common.h           |   8 +-
+ arch/x86/kernel/process.c                     |  74 ++++++-
+ arch/x86/mm/fault.c                           | 193 ++++++++++++++----
+ arch/x86/mm/pkeys.c                           |  88 ++++++--
+ drivers/android/binder_alloc.c                |   4 +-
+ drivers/base/firmware_loader/fallback.c       |   4 +-
+ drivers/base/firmware_loader/main.c           |   4 +-
+ drivers/block/drbd/drbd_main.c                |   4 +-
+ drivers/block/drbd/drbd_receiver.c            |  12 +-
+ drivers/dax/device.c                          |   2 +
+ drivers/dax/super.c                           |   2 +
+ drivers/firmware/efi/capsule-loader.c         |   6 +-
+ drivers/firmware/efi/capsule.c                |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       |  12 +-
+ drivers/gpu/drm/gma500/gma_display.c          |   4 +-
+ drivers/gpu/drm/gma500/mmu.c                  |  10 +-
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c     |   4 +-
+ .../drm/i915/gem/selftests/i915_gem_context.c |   4 +-
+ .../drm/i915/gem/selftests/i915_gem_mman.c    |   8 +-
+ drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c  |   4 +-
+ drivers/gpu/drm/i915/gt/intel_gtt.c           |   4 +-
+ drivers/gpu/drm/i915/gt/shmem_utils.c         |   4 +-
+ drivers/gpu/drm/i915/i915_gem.c               |   8 +-
+ drivers/gpu/drm/i915/i915_gpu_error.c         |   4 +-
+ drivers/gpu/drm/i915/selftests/i915_perf.c    |   4 +-
+ drivers/gpu/drm/radeon/radeon_ttm.c           |   4 +-
+ drivers/infiniband/hw/hfi1/sdma.c             |   4 +-
+ drivers/infiniband/hw/i40iw/i40iw_cm.c        |  10 +-
+ drivers/infiniband/sw/siw/siw_qp_tx.c         |  14 +-
+ drivers/md/bcache/request.c                   |   4 +-
+ drivers/misc/vmw_vmci/vmci_queue_pair.c       |  12 +-
+ drivers/mmc/host/mmc_spi.c                    |   4 +-
+ drivers/mmc/host/sdricoh_cs.c                 |   4 +-
+ drivers/mtd/mtd_blkdevs.c                     |  12 +-
+ drivers/net/ethernet/intel/igb/igb_ethtool.c  |   4 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_ethtool.c  |   4 +-
+ drivers/nvdimm/pmem.c                         |   6 +
+ drivers/scsi/ipr.c                            |   8 +-
+ drivers/scsi/pmcraid.c                        |   8 +-
+ drivers/staging/rts5208/rtsx_transport.c      |   4 +-
+ drivers/target/target_core_iblock.c           |   4 +-
+ drivers/target/target_core_rd.c               |   4 +-
+ drivers/target/target_core_transport.c        |   4 +-
+ drivers/xen/gntalloc.c                        |   4 +-
+ fs/afs/dir.c                                  |  16 +-
+ fs/afs/dir_edit.c                             |  16 +-
+ fs/afs/mntpt.c                                |   4 +-
+ fs/afs/write.c                                |   4 +-
+ fs/aio.c                                      |   4 +-
+ fs/binfmt_elf.c                               |   4 +-
+ fs/binfmt_elf_fdpic.c                         |   4 +-
+ fs/btrfs/check-integrity.c                    |   4 +-
+ fs/btrfs/compression.c                        |   4 +-
+ fs/btrfs/inode.c                              |  16 +-
+ fs/btrfs/lzo.c                                |  24 +--
+ fs/btrfs/raid56.c                             |  34 +--
+ fs/btrfs/reflink.c                            |   8 +-
+ fs/btrfs/send.c                               |   4 +-
+ fs/btrfs/zlib.c                               |  32 +--
+ fs/btrfs/zstd.c                               |  20 +-
+ fs/cachefiles/rdwr.c                          |   4 +-
+ fs/cifs/cifsencrypt.c                         |   6 +-
+ fs/cifs/file.c                                |  16 +-
+ fs/cifs/smb2ops.c                             |   8 +-
+ fs/cramfs/inode.c                             |  10 +-
+ fs/ecryptfs/crypto.c                          |   8 +-
+ fs/ecryptfs/read_write.c                      |   8 +-
+ fs/erofs/super.c                              |   4 +-
+ fs/erofs/xattr.c                              |   4 +-
+ fs/exec.c                                     |  10 +-
+ fs/ext2/dir.c                                 |   8 +-
+ fs/ext2/ext2.h                                |   8 +
+ fs/ext2/namei.c                               |  15 +-
+ fs/f2fs/f2fs.h                                |   8 +-
+ fs/freevxfs/vxfs_immed.c                      |   4 +-
+ fs/fuse/readdir.c                             |   4 +-
+ fs/gfs2/bmap.c                                |   4 +-
+ fs/gfs2/ops_fstype.c                          |   4 +-
+ fs/hfs/bnode.c                                |  14 +-
+ fs/hfs/btree.c                                |  20 +-
+ fs/hfsplus/bitmap.c                           |  20 +-
+ fs/hfsplus/bnode.c                            | 102 ++++-----
+ fs/hfsplus/btree.c                            |  18 +-
+ fs/hostfs/hostfs_kern.c                       |  12 +-
+ fs/io_uring.c                                 |   4 +-
+ fs/isofs/compress.c                           |   4 +-
+ fs/jffs2/file.c                               |   8 +-
+ fs/jffs2/gc.c                                 |   4 +-
+ fs/nfs/dir.c                                  |  20 +-
+ fs/nilfs2/alloc.c                             |  34 +--
+ fs/nilfs2/cpfile.c                            |   4 +-
+ fs/ntfs/aops.c                                |   4 +-
+ fs/reiserfs/journal.c                         |   4 +-
+ fs/romfs/super.c                              |   4 +-
+ fs/splice.c                                   |   4 +-
+ fs/ubifs/file.c                               |  16 +-
+ fs/vboxsf/file.c                              |  12 +-
+ fs/zonefs/super.c                             |   4 +-
+ include/linux/entry-common.h                  |   3 +
+ include/linux/highmem.h                       |  63 +++++-
+ include/linux/memremap.h                      |   1 +
+ include/linux/mm.h                            |  43 ++++
+ include/linux/pkeys.h                         |   6 +-
+ include/linux/sched.h                         |   8 +
+ include/trace/events/kmap_thread.h            |  56 +++++
+ init/init_task.c                              |   6 +
+ kernel/fork.c                                 |  18 ++
+ kernel/kexec_core.c                           |   8 +-
+ lib/Kconfig.debug                             |   8 +
+ lib/iov_iter.c                                |  12 +-
+ lib/pks/pks_test.c                            | 138 +++++++++++--
+ lib/test_bpf.c                                |   4 +-
+ lib/test_hmm.c                                |   8 +-
+ mm/Kconfig                                    |  13 ++
+ mm/debug.c                                    |  23 +++
+ mm/memory.c                                   |   8 +-
+ mm/memremap.c                                 |  90 ++++++++
+ mm/swapfile.c                                 |   4 +-
+ mm/userfaultfd.c                              |   4 +-
+ net/ceph/messenger.c                          |   4 +-
+ net/core/datagram.c                           |   4 +-
+ net/core/sock.c                               |   8 +-
+ net/ipv4/ip_output.c                          |   4 +-
+ net/sunrpc/cache.c                            |   4 +-
+ net/sunrpc/xdr.c                              |   8 +-
+ net/tls/tls_device.c                          |   4 +-
+ samples/vfio-mdev/mbochs.c                    |   4 +-
+ 131 files changed, 1284 insertions(+), 565 deletions(-)
+ create mode 100644 include/trace/events/kmap_thread.h
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
