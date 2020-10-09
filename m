@@ -2,102 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E8C288C8C
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3627B288C8D
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389251AbgJIP1V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 11:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S2388473AbgJIP1s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 11:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389039AbgJIP1U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:27:20 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCB3C0613D2
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:27:20 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b69so10933701qkg.8
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:27:20 -0700 (PDT)
+        with ESMTP id S1732056AbgJIP1s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:27:48 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC572C0613D2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:27:47 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h12so6664827qtu.1
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HvPR/2161MZ4QZ7tllZ9KkNkBA7IMOHJGZ2RgEgNyDE=;
-        b=hpsEuVajXhh1WeEQBiF2+xZszxMFxl6lpuq6+qdwjFamLbsrCYZZXGi/4YarM5dTxP
-         WZVPFyURz6/oN6gR7KRcrI13ciSmQTX+9pSXwU3CInuezUO9xDIGy0PHeG0Lz1J1stFt
-         suvwe6E9VDevDtYAokBcGVW6u5wJuY7VkCW0yX3HYUAAASaWnu9CACyQGDwwRcaK59QG
-         B3Kphzm1RMao4xYxGPPDkjmRI9I0xe7xqSF1pWyEauiW3hd9Le6o7GUgkxABI0lKG/6L
-         jSMXrwqf/M3VEni34hf8lJZpQPQiTfafZWueoL/i2YgrgK0T94o0uu0voJoGZ81jNLBH
-         srXA==
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xwbt5W1SHlsZL0FkYNouOW6g8Ll0wtUCa+SeaTEjzTc=;
+        b=ttgKNRtLI2e0gRDJB8xN+3vB0CIA3SGFb845sFXpRr7EIHR9SS8ayxdQy9u8JWfkph
+         HI5OlftY5A0gElBaq0vcJPjWliRow2CLwAMjRnD8uVpmL0bZhkWu8tOm0d0XFOZnRQfz
+         9KIhZexjYua/dbEnqs+BxBF2NgVCAGF/DQk2GSly54HJjoqrVTj5jVXmIqPiRQ7QKuJa
+         lREN41FmwLNThDKdFAfTDFD2Xu8hJhEVsPgwVzLgWGMXcdCwCtyjqYU9H1HlTcVpDUky
+         Kbs9zUFa+O8xD0B+JBN52OEx/1jgge99+CrwQPKjJ4kbTcvnxFK+KbUyCxHGJnLKjL11
+         F+Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HvPR/2161MZ4QZ7tllZ9KkNkBA7IMOHJGZ2RgEgNyDE=;
-        b=euxaRgcRhMweRx/EV8Rb2BueEGLY3iimaNSId4kbY28Uz4B/Dft+NamybwqqBP/Ux+
-         bIbAMcNdjHuuxffETf+nUrwaUB/thNYkJDG0rhU7759903g+OzUytgr8TjyZrwMZzUMm
-         c9kUMT1HK9VUCj+KiwN192C4MIhN5aOxmxx/cC18zHDSBaeFKZQvEE6sR1b1Z0bXjE4g
-         8nB0m/O3uQYQlkLHof3746q61cOu87AJsyrfLLCUheKSI6gN63TeDDkWHX4DUs1G9AYR
-         576ftPXutQKis3f4IswKavVrhA93B79OVm6MpwFKR3Z5OuG7REsv+6qMxdmrJEdEdiGN
-         uYMQ==
-X-Gm-Message-State: AOAM531p0oTvibMZTaw9sqYomuwsgL2x5ix8ElQCwuVwsy1rPUsdSh4H
-        wvRyM5nKOQBe8zv9QiJNBSrQBw==
-X-Google-Smtp-Source: ABdhPJzr04YGUU48WnZvAMayUmPukFoqGRyi7gqREZ5XZTQVvR0ocEir0zO32tkE0lGlw9qfTkgUpg==
-X-Received: by 2002:ae9:e20f:: with SMTP id c15mr10604643qkc.76.1602257239994;
-        Fri, 09 Oct 2020 08:27:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m25sm6397735qki.105.2020.10.09.08.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 08:27:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQuIg-0020jY-M7; Fri, 09 Oct 2020 12:27:18 -0300
-Date:   Fri, 9 Oct 2020 12:27:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joe Perches <joe@perches.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 4/4] RDMA: Convert various random sprintf sysfs _show
- uses to sysfs_emit
-Message-ID: <20201009152718.GZ5177@ziepe.ca>
-References: <cover.1602122879.git.joe@perches.com>
- <ecde7791467cddb570c6f6d2c908ffbab9145cac.1602122880.git.joe@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ecde7791467cddb570c6f6d2c908ffbab9145cac.1602122880.git.joe@perches.com>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xwbt5W1SHlsZL0FkYNouOW6g8Ll0wtUCa+SeaTEjzTc=;
+        b=eE5vcSaoixK7R/lAzmd1lVdk8GkSc7AK2pwLKFfVNbOlBgt7HAn1CPJ0nUWoIkl5+E
+         hUn5jsEL7xHaFq1eLg+gC8/s6Lr1RJDEvkkLPiYNAwyGpdwcIPgf2Jw+DI5WEhx81Fci
+         immxDAaK9OnWJRTRqIveY8R+ysjibBbaN+39Pht8/EFetu7WgZkifKUZVn1QexuyszzM
+         JPJUAeDSDkQDHerw/R722qzrZYy49fus//gnbAi5xtww8pjzGhWyBny2VQw10qStKNXz
+         Cz2vB4xCqCCvo6H5zEPFjD2xhMBEY6ZR5GrgpCLaNsEe60ru4sN4BmacL4qolJW4NttP
+         I5LQ==
+X-Gm-Message-State: AOAM531RncaVn6y3H1wtGlli/tzXX7nGNWQ9bYtZ0OoIprC50d4EUGA3
+        o8fx/lUSd7eMQWVhwEzR61U=
+X-Google-Smtp-Source: ABdhPJxtkYr/l6zOQJPXwTT/wSwLaSpow47c0q752YtpmOuYGYv7xp6CSBt6hpYQcJSYEWR46CE9hQ==
+X-Received: by 2002:ac8:373b:: with SMTP id o56mr13149216qtb.305.1602257267120;
+        Fri, 09 Oct 2020 08:27:47 -0700 (PDT)
+Received: from anon-dhcp-152.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id w4sm6686317qtb.0.2020.10.09.08.27.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Oct 2020 08:27:46 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+From:   Chuck Lever <chucklever@gmail.com>
+In-Reply-To: <20201009150758.GV5177@ziepe.ca>
+Date:   Fri, 9 Oct 2020 11:27:44 -0400
+Cc:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
+References: <20201007111636.GD3678159@unreal>
+ <4d29915c-3ed7-0253-211b-1b97f5f8cfdf@oracle.com>
+ <20201008103641.GM13580@unreal>
+ <aec6906d-7be5-b489-c7dc-0254c4538723@oracle.com>
+ <20201008160814.GF5177@ziepe.ca>
+ <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
+ <20201009143940.GT5177@ziepe.ca>
+ <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
+ <20201009145706.GU5177@ziepe.ca>
+ <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
+ <20201009150758.GV5177@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:36:27PM -0700, Joe Perches wrote:
-> Manual changes for sysfs_emit as cocci scripts can't easily convert them.
+
+
+> On Oct 9, 2020, at 11:07 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  drivers/infiniband/core/cm.c                 |  4 +-
->  drivers/infiniband/core/cma_configfs.c       |  4 +-
->  drivers/infiniband/core/sysfs.c              | 98 +++++++++++---------
->  drivers/infiniband/core/user_mad.c           |  2 +-
->  drivers/infiniband/hw/hfi1/sysfs.c           | 10 +-
->  drivers/infiniband/hw/mlx4/sysfs.c           | 19 ++--
->  drivers/infiniband/hw/qib/qib_sysfs.c        | 30 +++---
->  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 34 +++----
->  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 14 +--
->  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  7 +-
->  drivers/infiniband/ulp/srp/ib_srp.c          |  4 +-
->  drivers/infiniband/ulp/srpt/ib_srpt.c        | 14 +--
->  12 files changed, 119 insertions(+), 121 deletions(-)
+> On Fri, Oct 09, 2020 at 11:00:22AM -0400, Chuck Lever wrote:
+>> 
+>> 
+>>> On Oct 9, 2020, at 10:57 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>> 
+>>> On Fri, Oct 09, 2020 at 10:48:55AM -0400, Chuck Lever wrote:
+>>>> Hi Jason-
+>>>> 
+>>>>> On Oct 9, 2020, at 10:39 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>>>> 
+>>>>> On Fri, Oct 09, 2020 at 12:49:30PM +0800, Ka-Cheong Poon wrote:
+>>>>>> As I mentioned before, this is a very serious restriction on how
+>>>>>> the RDMA subsystem can be used in a namespace environment by kernel
+>>>>>> module.  The reason given for this restriction is that any kernel
+>>>>>> socket without a corresponding user space file descriptor is "rogue".
+>>>>>> All Internet protocol code create a kernel socket without user
+>>>>>> interaction.  Are they all "rogue"?
+>>>>> 
+>>>>> You should work with Chuck to make NFS use namespaces properly and
+>>>>> then you can propose what changes might be needed with a proper
+>>>>> justification.
+>>>> 
+>>>> The NFS server code already uses namespaces for creating listener
+>>>> endpoints, already has a user space component that drives the
+>>>> creation of listeners, and already passes an appropriate struct
+>>>> net to rdma_create_id. As far as I am aware, it is namespace-aware
+>>>> and -friendly all the way down to rdma_create_id().
+>>>> 
+>>>> What more needs to be done?
+>>> 
+>>> I have no idea, if you are able to pass a namespace all the way down
+>>> to the listening cm_id and everything works right (I'm skeptical) then
+>>> there is nothing more to worry about - why are we having this thread?
+>> 
+>> The thread is about RDS, not NFS. NFS has some useful examples to
+>> crib, but it's not the main point.
+>> 
+>> I don't think NFS/RDMA namespacing works today, but it's not because
+>> NFS isn't ready. I agree that is another thread.
+> 
+> Exactly, so instead of talking about RDS stuff without any patches,
 
-Didn't see anything profound
+Roger that. Maybe Ka-Cheong and team can propose some patches to
+help the discussion along.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Jason
+> let's talk about NFS with patches - if you can make NFS work then I
+> assume RDS will be happy.
+
+Perhaps not a valid assumption :-)
+
+NFS is a traditional client-server model, and has a user space tool
+that drives the creation of endpoints, just as you expect.
+
+With RDS, listener endpoints are not visible in user space. They
+are a globally-managed shared resource, more like network interfaces
+than listener sockets.
+
+Therefore I think the approach is going to be "one RDS listener per
+net namespace". The problem Ka-Cheong is trying to address is how to
+manage the destruction of a listener-namespace pair. The extra
+reference count on the cm_id is pinning the namespace so it cannot
+be destroyed.
+
+
+> NFS has an established model for using namespaces that the other
+> transports uses, so I'd rather focus on this.
+
+Understood, but it doesn't seem like there is enough useful overlap
+between the NFS and RDS usage scenarios. With NFS, I would expect
+an explicit listener shutdown from userland prior to namespace
+destruction.
+
+
+>>>>> The rules for lifetime on IB clients are tricky, and the interaction
+>>>>> with namespaces makes it all a lot more murky.
+>>>> 
+>>>> I think what Ka-cheong is asking is for a detailed explanation of
+>>>> these lifetime rules so we can understand why rdma_create_id bumps
+>>>> the namespace reference count.
+>>> 
+>>> It is because the CM has no code to revoke a CM ID before the
+>>> namespace goes away and the pointer becomes invalid.
+>> 
+>> Is it just a question of "no-one has yet written this code" or is
+>> there a deeper technical reason why this has not been done?
+> 
+> It is hard to know without spending a big deep look at this
+> stuff.
+
+Fair enough.
+
+--
+Chuck Lever
+chucklever@gmail.com
+
+
+
