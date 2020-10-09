@@ -2,138 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37535288C7B
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E8C288C8C
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388719AbgJIPXi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 11:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
+        id S2389251AbgJIP1V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 11:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732056AbgJIPXi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:23:38 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDCAC0613D2
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:23:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b193so6539168pga.6
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:23:36 -0700 (PDT)
+        with ESMTP id S2389039AbgJIP1U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:27:20 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCB3C0613D2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:27:20 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b69so10933701qkg.8
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=c8xZl7T1GwDetBJIEuEDltwZmxcccOLID8cs8i2GrR8=;
-        b=u9zDRu5/0O8YBGU+Qr3cMWbIQ1ImkSAL95PA8QBtL34MtmD8OOBH1WZ3zGm0A6qtlg
-         Pvoba7/rvi9CpHobTYIF2jRI+cGFrmHYiXFFNUfhqKeKLG5p4uVzFM1dPGThcnsdpTt5
-         z3sQy7++45xUUCChplzblS6I5+JPqHAk9i6PGCCWqIDoGuu8y0q5SxL2RkzXCZPFfzQ4
-         gKzCSzwFFYEwZjXwcA/StJauRhgzWOAd327TLmDmU2wrlhrQPReQPfri8yULGV5VHRfg
-         NI9UEQN+5RVjq+GAE0iQAPZojJ43+8GOp+QKOlZhs754J5n0IrDHt7v2V2Byk77SMInk
-         jSdg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HvPR/2161MZ4QZ7tllZ9KkNkBA7IMOHJGZ2RgEgNyDE=;
+        b=hpsEuVajXhh1WeEQBiF2+xZszxMFxl6lpuq6+qdwjFamLbsrCYZZXGi/4YarM5dTxP
+         WZVPFyURz6/oN6gR7KRcrI13ciSmQTX+9pSXwU3CInuezUO9xDIGy0PHeG0Lz1J1stFt
+         suvwe6E9VDevDtYAokBcGVW6u5wJuY7VkCW0yX3HYUAAASaWnu9CACyQGDwwRcaK59QG
+         B3Kphzm1RMao4xYxGPPDkjmRI9I0xe7xqSF1pWyEauiW3hd9Le6o7GUgkxABI0lKG/6L
+         jSMXrwqf/M3VEni34hf8lJZpQPQiTfafZWueoL/i2YgrgK0T94o0uu0voJoGZ81jNLBH
+         srXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=c8xZl7T1GwDetBJIEuEDltwZmxcccOLID8cs8i2GrR8=;
-        b=mDUETmIDvbo8dPrEUUDdLoW+Xk6XwGhjswNr8bJQ/pArZLim+VBhFrXpQZqZhVr9KC
-         STemjsEPI+kebAvHQUUKjLGq0CUD3NuJf15a2oK2KZhz1SXf1d4VX1ruzKpGWtS+xKy8
-         +GWxMac7rijh9hmg8B/fMM6ldNFV+yUSBDsumzqPPL1wxDxzDY+IGCYhY57uk+vS+O78
-         bYSYNk0773mqxansw2+pUkxBsJaOTbpgExW0etz9/PymKJEh58TgPEK/BnqnotlXa046
-         PvFUKI/ZPV/r/pF4JSZNqo7OHrAr70QaQ/lZDdEGXgk3Pt7rXuXV5REEAkH7/wxXUJO+
-         nFag==
-X-Gm-Message-State: AOAM531RT18NimNecTrxQf5n/W8wowIPr1gF7MH7QNwp4rcWxZSvJi5P
-        RrT7b8NCLSKD+r0sHSpEVtg=
-X-Google-Smtp-Source: ABdhPJzxkirtSfTIGxSh7BTVBJHB/xR+XLPF9mKehL+YSiZxubVIvebG5Ws5T1H/dTKjsUrg2gjS7g==
-X-Received: by 2002:a65:4bcc:: with SMTP id p12mr3654135pgr.353.1602257016057;
-        Fri, 09 Oct 2020 08:23:36 -0700 (PDT)
-Received: from [10.75.201.17] ([129.126.144.50])
-        by smtp.gmail.com with ESMTPSA id k15sm10877549pfp.217.2020.10.09.08.23.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 08:23:35 -0700 (PDT)
-Subject: Re: [PATCH for-next v2] rdma_rxe: fix bug rejecting multicast packets
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HvPR/2161MZ4QZ7tllZ9KkNkBA7IMOHJGZ2RgEgNyDE=;
+        b=euxaRgcRhMweRx/EV8Rb2BueEGLY3iimaNSId4kbY28Uz4B/Dft+NamybwqqBP/Ux+
+         bIbAMcNdjHuuxffETf+nUrwaUB/thNYkJDG0rhU7759903g+OzUytgr8TjyZrwMZzUMm
+         c9kUMT1HK9VUCj+KiwN192C4MIhN5aOxmxx/cC18zHDSBaeFKZQvEE6sR1b1Z0bXjE4g
+         8nB0m/O3uQYQlkLHof3746q61cOu87AJsyrfLLCUheKSI6gN63TeDDkWHX4DUs1G9AYR
+         576ftPXutQKis3f4IswKavVrhA93B79OVm6MpwFKR3Z5OuG7REsv+6qMxdmrJEdEdiGN
+         uYMQ==
+X-Gm-Message-State: AOAM531p0oTvibMZTaw9sqYomuwsgL2x5ix8ElQCwuVwsy1rPUsdSh4H
+        wvRyM5nKOQBe8zv9QiJNBSrQBw==
+X-Google-Smtp-Source: ABdhPJzr04YGUU48WnZvAMayUmPukFoqGRyi7gqREZ5XZTQVvR0ocEir0zO32tkE0lGlw9qfTkgUpg==
+X-Received: by 2002:ae9:e20f:: with SMTP id c15mr10604643qkc.76.1602257239994;
+        Fri, 09 Oct 2020 08:27:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m25sm6397735qki.105.2020.10.09.08.27.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 08:27:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQuIg-0020jY-M7; Fri, 09 Oct 2020 12:27:18 -0300
+Date:   Fri, 9 Oct 2020 12:27:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joe Perches <joe@perches.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Bart Van Assche <bvanassche@acm.org>,
         linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-References: <20201008212753.265249-1-rpearson@hpe.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Message-ID: <0e89cd73-e3ea-81fc-c5eb-be7521b10415@gmail.com>
-Date:   Fri, 9 Oct 2020 23:23:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+Subject: Re: [PATCH 4/4] RDMA: Convert various random sprintf sysfs _show
+ uses to sysfs_emit
+Message-ID: <20201009152718.GZ5177@ziepe.ca>
+References: <cover.1602122879.git.joe@perches.com>
+ <ecde7791467cddb570c6f6d2c908ffbab9145cac.1602122880.git.joe@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <20201008212753.265249-1-rpearson@hpe.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecde7791467cddb570c6f6d2c908ffbab9145cac.1602122880.git.joe@perches.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/9/2020 5:27 AM, Bob Pearson wrote:
->    - Fix a bug in rxe_rcv that causes all multicast packets to be
->      dropped. Currently rxe_match_dgid is called for each packet
->      to verify that the destination IP address matches one of the
->      entries in the port source GID table. This is incorrect for
->      IP multicast addresses since they do not appear in the GID table.
->    - Add code to detect multicast addresses.
->    - Change function name to rxe_chk_dgid which is clearer.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+On Wed, Oct 07, 2020 at 07:36:27PM -0700, Joe Perches wrote:
+> Manual changes for sysfs_emit as cocci scripts can't easily convert them.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 > ---
->   drivers/infiniband/sw/rxe/rxe_recv.c | 19 ++++++++++++++++---
->   1 file changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index a3eed4da1540..b6fee61b2aee 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -280,7 +280,17 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->   	kfree_skb(skb);
->   }
->   
-> -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
-> +/**
-> + * rxe_chk_dgid - validate destination IP address
-> + * @rxe: rxe device that received packet
-> + * @skb: the received packet buffer
-> + *
-> + * Accept any loopback packets
+>  drivers/infiniband/core/cm.c                 |  4 +-
+>  drivers/infiniband/core/cma_configfs.c       |  4 +-
+>  drivers/infiniband/core/sysfs.c              | 98 +++++++++++---------
+>  drivers/infiniband/core/user_mad.c           |  2 +-
+>  drivers/infiniband/hw/hfi1/sysfs.c           | 10 +-
+>  drivers/infiniband/hw/mlx4/sysfs.c           | 19 ++--
+>  drivers/infiniband/hw/qib/qib_sysfs.c        | 30 +++---
+>  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 34 +++----
+>  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 14 +--
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  7 +-
+>  drivers/infiniband/ulp/srp/ib_srp.c          |  4 +-
+>  drivers/infiniband/ulp/srpt/ib_srpt.c        | 14 +--
+>  12 files changed, 119 insertions(+), 121 deletions(-)
 
-About loopback packets, will rdma_find_gid_by_port return correct value?
+Didn't see anything profound
 
-In my tests, to loopback packets, sometimes rdma_find_gid_by_port return 
-incorrect value.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Then the packets will be freed.
-
-Zhu Yanjun
-
-> + * Extract IP address from packet and
-> + * Accept if multicast packet
-> + * Accept if matches an SGID table entry
-> + */
-> +static int rxe_chk_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
->   {
->   	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->   	const struct ib_gid_attr *gid_attr;
-> @@ -298,6 +308,9 @@ static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
->   		pdgid = (union ib_gid *)&ipv6_hdr(skb)->daddr;
->   	}
->   
-> +	if (rdma_is_multicast_addr((struct in6_addr *)pdgid))
-> +		return 0;
-> +
->   	gid_attr = rdma_find_gid_by_port(&rxe->ib_dev, pdgid,
->   					 IB_GID_TYPE_ROCE_UDP_ENCAP,
->   					 1, skb->dev);
-> @@ -322,8 +335,8 @@ void rxe_rcv(struct sk_buff *skb)
->   	if (unlikely(skb->len < pkt->offset + RXE_BTH_BYTES))
->   		goto drop;
->   
-> -	if (rxe_match_dgid(rxe, skb) < 0) {
-> -		pr_warn_ratelimited("failed matching dgid\n");
-> +	if (rxe_chk_dgid(rxe, skb) < 0) {
-> +		pr_warn_ratelimited("failed checking dgid\n");
->   		goto drop;
->   	}
->   
-
-
+Jason
