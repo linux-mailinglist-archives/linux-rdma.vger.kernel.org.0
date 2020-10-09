@@ -2,161 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D8B288AD4
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 16:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FD1288BA4
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 16:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733112AbgJIO07 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 10:26:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38118 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731698AbgJIO07 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Oct 2020 10:26:59 -0400
-IronPort-SDR: PZeWGUc4SKMfkJgfqc8O9F78yI4BM/W4O9mMYZrQFcCdWANhXC9q3ugSo6GnH1WmprGjH0JAna
- 7RuPIAOyEytA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="227139527"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="227139527"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 07:26:57 -0700
-IronPort-SDR: 3ts88toX+FpcSjw/MRIl9XJpFPlGTxsTARgljTKSbiRwG08//VzNz1NdpgGIcGrXsOiuc7viXz
- hpGhmMNa224Q==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="419460732"
-Received: from sjkim-mobl1.amr.corp.intel.com (HELO [10.212.131.60]) ([10.212.131.60])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 07:26:55 -0700
-Subject: Re: [PATCH v2 1/6] Add ancillary bus support
-To:     Dan Williams <dan.j.williams@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-2-david.m.ertman@intel.com>
- <20201006172317.GN1874917@unreal>
- <DM6PR11MB2841976B8E89C980CCC29AD2DD0B0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <CAPcyv4hoS7ZT_PPrXqFBzEHBKL-O4x1jHtY8x9WWesCPA=2E0g@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7dbbc51c-2cbd-a7c5-69de-76f190f1d130@linux.intel.com>
-Date:   Fri, 9 Oct 2020 09:26:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388977AbgJIOjn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 10:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387662AbgJIOjn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 10:39:43 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A83CC0613D2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 07:39:42 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id t20so4853661qvv.8
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 07:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rt4wAfb5l6FEnURF1tsFZ7sJF1s13ttCQMfCF91s3T0=;
+        b=SdutQQJqmy/P77+ew1Qu7peuN6sXbl8dp18K3TQjszIEXKsymcbhY7X9/q+WPHdFCt
+         idbNegem8qXi+ZFy4NknLNhrY0qwtebsfuxE6derNgik38l8C4hfMYlHLqEtjqpXiMhD
+         6uimrjK9gO2sthg9c087Rhm30+piKmPEvq6a7IIDa1+UnbKtwRkib1+xsebHiy866zyi
+         jpa4aqzO6jlaO2ziiehlzmye6vbRpaKV8crBtBLWxYbxlQipo0JIcd4J2S3Xynqw/Zid
+         SHYIVWssmgb9JuH+dMF/MxJBlQmzFoYjGvy2pgpwKA7qkodhaM+2/wqaIFD76IIJTpmv
+         jX+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rt4wAfb5l6FEnURF1tsFZ7sJF1s13ttCQMfCF91s3T0=;
+        b=mHcS68q4D0S6y4Lvqg1I9LkruopemaXUNGHAKkYNTOXKrutvq4ZW5xEFTbv/sNi4zN
+         bymRs9vcpgpRrAvenP3tnZyy4775KODbvnKtEMsaIsTkjLxVPTWfumFPyubY5YPdmqq+
+         n5vFondCaYpbI1b8+QFEaNHRh/7jdg4U329NSvU5EjFS9DBiZcqDkKZP1af2xtgOHVEL
+         R+cpCDQrjPgohUU3mIjfXNox8b6gPoYzGj/X2MGxKEyVi51ztHlmjjOUNYQoG2ydZoKT
+         ScqIr5SP9KOaacnZti4rNhYoA3OJgGGL3kBL2mdxnkYg8tHv6Mru8uZv3m9m5dlC4rja
+         m99Q==
+X-Gm-Message-State: AOAM533OOoUUJGrwoy6VBTyfIXewWhW54ln8rP1Ajl6nVVXGDDMVPh8U
+        hg1PMhOIdS2wBU9ca93LYMZXIQ==
+X-Google-Smtp-Source: ABdhPJwttOIme768baG4gb2/SHMB5njcdNK3FoZ6OB9PxcQR1o2SEU4EMMBD9a10XgbUeIWC+9to/Q==
+X-Received: by 2002:a0c:c548:: with SMTP id y8mr6529252qvi.41.1602254381608;
+        Fri, 09 Oct 2020 07:39:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 15sm6232076qka.96.2020.10.09.07.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 07:39:41 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQtYa-00200d-FU; Fri, 09 Oct 2020 11:39:40 -0300
+Date:   Fri, 9 Oct 2020 11:39:40 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+Message-ID: <20201009143940.GT5177@ziepe.ca>
+References: <20201005154548.GT9916@ziepe.ca>
+ <765ff6f8-1cba-0f12-937b-c8893e1466e7@oracle.com>
+ <20201006124627.GH5177@ziepe.ca>
+ <ad892ef5-9b86-2e75-b0f8-432d8e157f60@oracle.com>
+ <20201007111636.GD3678159@unreal>
+ <4d29915c-3ed7-0253-211b-1b97f5f8cfdf@oracle.com>
+ <20201008103641.GM13580@unreal>
+ <aec6906d-7be5-b489-c7dc-0254c4538723@oracle.com>
+ <20201008160814.GF5177@ziepe.ca>
+ <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hoS7ZT_PPrXqFBzEHBKL-O4x1jHtY8x9WWesCPA=2E0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Oct 09, 2020 at 12:49:30PM +0800, Ka-Cheong Poon wrote:
+> As I mentioned before, this is a very serious restriction on how
+> the RDMA subsystem can be used in a namespace environment by kernel
+> module.  The reason given for this restriction is that any kernel
+> socket without a corresponding user space file descriptor is "rogue".
+> All Internet protocol code create a kernel socket without user
+> interaction.  Are they all "rogue"?
 
+You should work with Chuck to make NFS use namespaces properly and
+then you can propose what changes might be needed with a proper
+justification.
 
->>>> +
->>>> +   ancildrv->driver.owner = owner;
->>>> +   ancildrv->driver.bus = &ancillary_bus_type;
->>>> +   ancildrv->driver.probe = ancillary_probe_driver;
->>>> +   ancildrv->driver.remove = ancillary_remove_driver;
->>>> +   ancildrv->driver.shutdown = ancillary_shutdown_driver;
->>>> +
->>>
->>> I think that this part is wrong, probe/remove/shutdown functions should
->>> come from ancillary_bus_type.
->>
->>  From checking other usage cases, this is the model that is used for probe, remove,
->> and shutdown in drivers.  Here is the example from Greybus.
->>
->> int greybus_register_driver(struct greybus_driver *driver, struct module *owner,
->>                              const char *mod_name)
->> {
->>          int retval;
->>
->>          if (greybus_disabled())
->>                  return -ENODEV;
->>
->>          driver->driver.bus = &greybus_bus_type;
->>          driver->driver.name = driver->name;
->>          driver->driver.probe = greybus_probe;
->>          driver->driver.remove = greybus_remove;
->>          driver->driver.owner = owner;
->>          driver->driver.mod_name = mod_name;
->>
->>
->>> You are overwriting private device_driver
->>> callbacks that makes impossible to make container_of of ancillary_driver
->>> to chain operations.
->>>
->>
->> I am sorry, you lost me here.  you cannot perform container_of on the callbacks
->> because they are pointers, but if you are referring to going from device_driver
->> to the auxiliary_driver, that is what happens in auxiliary_probe_driver in the
->> very beginning.
->>
->> static int auxiliary_probe_driver(struct device *dev)
->> 145 {
->> 146         struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
->> 147         struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
->>
->> Did I miss your meaning?
-> 
-> I think you're misunderstanding the cases when the
-> bus_type.{probe,remove} is used vs the driver.{probe,remove}
-> callbacks. The bus_type callbacks are to implement a pattern where the
-> 'probe' and 'remove' method are typed to the bus device type. For
-> example 'struct pci_dev *' instead of raw 'struct device *'. See this
-> conversion of dax bus as an example of going from raw 'struct device
-> *' typed probe/remove to dax-device typed probe/remove:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=75797273189d
+The rules for lifetime on IB clients are tricky, and the interaction
+with namespaces makes it all a lot more murky.
 
-Thanks Dan for the reference, very useful. This doesn't look like a a 
-big change to implement, just wondering about the benefits and 
-drawbacks, if any? I am a bit confused here.
-
-First, was the initial pattern wrong as Leon asserted it? Such code 
-exists in multiple examples in the kernel and there's nothing preventing 
-the use of container_of that I can think of. Put differently, if this 
-code was wrong then there are other existing buses that need to be updated.
-
-Second, what additional functionality does this move from driver to 
-bus_type provide? The commit reference just states 'In preparation for 
-introducing seed devices the dax-bus core needs to be able to intercept 
-->probe() and ->remove() operations", but that doesn't really help me 
-figure out what 'intercept' means. Would you mind elaborating?
-
-And last, the existing probe function does calls dev_pm_domain_attach():
-
-static int ancillary_probe_driver(struct device *dev)
-{
-	struct ancillary_driver *ancildrv = to_ancillary_drv(dev->driver);
-	struct ancillary_device *ancildev = to_ancillary_dev(dev);
-	int ret;
-
-	ret = dev_pm_domain_attach(dev, true);
-
-So the need to access the raw device still exists. Is this still legit 
-if the probe() is moved to the bus_type structure?
-
-I have no objection to this change if it preserves the same 
-functionality and possibly extends it, just wanted to better understand 
-the reasons for the change and in which cases the bus probe() makes more 
-sense than a driver probe().
-
-Thanks for enlightening the rest of us!
-
-
+Jason
