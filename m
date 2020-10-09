@@ -2,109 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593C4288C90
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF83D288CC7
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388726AbgJIP2c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 11:28:32 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10763 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732056AbgJIP2b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:28:31 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8081300000>; Fri, 09 Oct 2020 08:26:40 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 9 Oct
- 2020 15:28:31 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 9 Oct 2020 15:28:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mbvbdezxr048rIAy+R8NATwripaI/Gv6lo2/OgJctQj42HBLIs3WfMFI0sPrRDI79oOtyerPxOxYNA596bl9w9gdsqLjOm2HJMp5nBEMr8ppPNQ8FQ8G3KJdWajaBARiemAfzIMjb876tgObdeSBYmeaU5r1b2dzxtcVppFEZjSYhBnW/QWRXRbyX1JM8yM/Jv7Xmv0X3SJD3ktDwwkoLUUMEV+570cOjFh2mMJR6Gf+Q1xltZfWWDailTvqUqFD6bhE4ILqQ+0nhvWjK73r3xPJSNhlUc250ua8x44q6pcVxo4D7+uzY2qBhsf2m5cA1BaKJP51kyH7FhZSEo+qsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=et4ju5RPeer3y8aG/UnwR7P3FAOxklY+Lp2ZDoDW5fo=;
- b=k5Lfox93WprQstoBgMkaJ8K2L7rYmXnnP7coEr9PVjVMm+vzDOwAC+FmxugyJ18z3hc6+7TsiYbegtsdro/VYJen+idMEKSFa/ESFalAqDTlX+vi7ODNjj6L18v5ZN5o+WTI7J+ehvikeKKjJIMUQzGHmJl1CocSL2ZKS/uUhfJZeNIJfflTLwFR9ay5uQnVrBQJLPZn+d8ySBXWrb28tWhd8PoD88jsWxrwC4waOUSdXZsxLX8YgNYs3vDkoK9muYkfH5FHaIqLV7vZB4464fPS4ZqAXtK7com65LTydZPZd+TXlbPldsUr49fx72zykB+OP9M9Dz96jZbMk2nZoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3211.namprd12.prod.outlook.com (2603:10b6:5:15c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.27; Fri, 9 Oct
- 2020 15:28:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3455.026; Fri, 9 Oct 2020
- 15:28:29 +0000
-Date:   Fri, 9 Oct 2020 12:28:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-CC:     Bob Pearson <rpearsonhpe@gmail.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for-next v2] rdma_rxe: fix bug rejecting multicast packets
-Message-ID: <20201009152827.GN4734@nvidia.com>
-References: <20201008212753.265249-1-rpearson@hpe.com>
- <0e89cd73-e3ea-81fc-c5eb-be7521b10415@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0e89cd73-e3ea-81fc-c5eb-be7521b10415@gmail.com>
-X-ClientProxiedBy: MN2PR08CA0026.namprd08.prod.outlook.com
- (2603:10b6:208:239::31) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2389287AbgJIPeI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 11:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389286AbgJIPeI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:34:08 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E7FC0613D2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:34:08 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 140so9249627qko.2
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cr0Wu9uKFx9jCRmzr4+5wPNR0+MenAtDpXJRGtbSwBk=;
+        b=Hy600MUxVD2WC+0fNwlqo4rNsOcnlUJC04RVcRGZQBSdT4YJ2zADA9bYOc9kATBvEQ
+         y2D1SfQg3JkDB/oNpe7oZb90LUMYjNkDzQJQbrKtR65KIBoh1mHmcl84fPZDH6CFg6pz
+         hsJeQqD091lCG0IMfJ1IjNKljYgg5v7RPj7uB7A6bBkxYURX9v3yGAwc4g4HZigcyYzI
+         k7CXDyIu6HS49e3covDhXVbTMwArVezWQLTsfl3Ru6xN2VuyEfiKE3fEBQpQA3yPughB
+         4myBNg++bos16DRGw4BOG8KqAmiDs87ElGFOeBXjuA+3BHiWx3Gvs31a9dbhIKGYR6zH
+         Sg0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cr0Wu9uKFx9jCRmzr4+5wPNR0+MenAtDpXJRGtbSwBk=;
+        b=nQdPJc9enqNfedT7LZnbIgmo4EOvU8QREnWPVQhNjji8BUzUrubPVQhfpxBB5TP5bt
+         j/qDwTWfJkcg+SAi/MlGMM1DRLCnOIABA8JPsBO0YTgnl4OX+y2UhOXLnkzrXNQEQEnl
+         wo3jJ/c2xXQ3ygIPzFIjBOyKNA4LWTPgaAVIR1+zhxJUbwszu1wimRj8qSf/MWztvg8p
+         FXsUeuGV0Wms+frl5DjP4hRIUDCTMf5zMA4zZfKEqo2nmXw4bXUmNZnl6sBeplIJcgCa
+         mlLO3FaQvXi1GXFEXQXVA16LbSYDhc5WMsPRVOO2a7W1/taZxh4Qvt+fzD/yxPOjURA6
+         l96g==
+X-Gm-Message-State: AOAM5320r7HdEU/M2c/ZCQKtoQTADDQosFU8VgNaNmfIpwWayogdpaQf
+        oSyLtEjPXul5D84lp8oo7SQ5pFbzoJ6FkP9m
+X-Google-Smtp-Source: ABdhPJxhJgv9oxijLhfGnS0B+7QR/lJna4WfXbwaH0VnCF0m6R4MFOI6JBp2FpWkQ+8PvnA8/h2V3w==
+X-Received: by 2002:a05:620a:a09:: with SMTP id i9mr6107222qka.119.1602257647523;
+        Fri, 09 Oct 2020 08:34:07 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id l6sm6394932qkb.56.2020.10.09.08.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 08:34:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQuPG-002CBu-4o; Fri, 09 Oct 2020 12:34:06 -0300
+Date:   Fri, 9 Oct 2020 12:34:06 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chuck Lever <chucklever@gmail.com>
+Cc:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+Message-ID: <20201009153406.GA5177@ziepe.ca>
+References: <20201008103641.GM13580@unreal>
+ <aec6906d-7be5-b489-c7dc-0254c4538723@oracle.com>
+ <20201008160814.GF5177@ziepe.ca>
+ <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
+ <20201009143940.GT5177@ziepe.ca>
+ <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
+ <20201009145706.GU5177@ziepe.ca>
+ <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
+ <20201009150758.GV5177@ziepe.ca>
+ <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0026.namprd08.prod.outlook.com (2603:10b6:208:239::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend Transport; Fri, 9 Oct 2020 15:28:29 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kQuJn-0020kf-Ie; Fri, 09 Oct 2020 12:28:27 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602257200; bh=et4ju5RPeer3y8aG/UnwR7P3FAOxklY+Lp2ZDoDW5fo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=NesCvCWM6x+b7TDGHObZmAuJ7fB3exnoafl1AOHQuO4a7GXLfKepSd+swZO7NDduN
-         gyvIaqTIp0NEyzPdqyov4ohf6h4Wbx7FOJDVtwDyUU2nDOlhwoQLr6Y/2nMYW475LP
-         XZhIlzSUO1IJOGwuMZoCFAwiX9fPZyLeri5tfZNP/3OrMBY53v1Yw0Qma2okLC6qPq
-         i5byDwwsGhLIG0x0IRZcKeFOiQQvfLG2EL8z3RvdG0AUwtv1h+l2/QX1IFz5GOyeo2
-         I3DF6ptIzH/S1Ug6rEJRop6cax+UvRQl968lV5tOYWnwl6t7GbQcFeD/MRYDieiMz9
-         GzP+PE+sSTKEg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:23:31PM +0800, Zhu Yanjun wrote:
-> On 10/9/2020 5:27 AM, Bob Pearson wrote:
-> >    - Fix a bug in rxe_rcv that causes all multicast packets to be
-> >      dropped. Currently rxe_match_dgid is called for each packet
-> >      to verify that the destination IP address matches one of the
-> >      entries in the port source GID table. This is incorrect for
-> >      IP multicast addresses since they do not appear in the GID table.
-> >    - Add code to detect multicast addresses.
-> >    - Change function name to rxe_chk_dgid which is clearer.
-> > 
-> > Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> >   drivers/infiniband/sw/rxe/rxe_recv.c | 19 ++++++++++++++++---
-> >   1 file changed, 16 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> > index a3eed4da1540..b6fee61b2aee 100644
-> > +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> > @@ -280,7 +280,17 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
-> >   	kfree_skb(skb);
-> >   }
-> > -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
-> > +/**
-> > + * rxe_chk_dgid - validate destination IP address
-> > + * @rxe: rxe device that received packet
-> > + * @skb: the received packet buffer
-> > + *
-> > + * Accept any loopback packets
-> 
-> About loopback packets, will rdma_find_gid_by_port return correct value?
+On Fri, Oct 09, 2020 at 11:27:44AM -0400, Chuck Lever wrote:
 
-I don't think you can use 127.0.0.0 with the RDMA devices, at least
-not on the wire. The CM has special code to swap it out with a real
-device address
+> Therefore I think the approach is going to be "one RDS listener per
+> net namespace". The problem Ka-Cheong is trying to address is how to
+> manage the destruction of a listener-namespace pair. The extra
+> reference count on the cm_id is pinning the namespace so it cannot
+> be destroyed.
+
+I really don't think this idea of just loading a kernel module and it
+immediately creates a network visibile listening socket in every
+namespace is very good.
+
+> Understood, but it doesn't seem like there is enough useful overlap
+> between the NFS and RDS usage scenarios. With NFS, I would expect
+> an explicit listener shutdown from userland prior to namespace
+> destruction.
+
+Yes, because namespaces are fundamentally supposed to be anchored in
+the processes inside the namespace.
+
+Having the kernel jump in and start opening holes as soon as a
+namespace is created is just wrong.
+
+At a bare minimum the listener should not exist until something in the
+namespace is willing to work with RDS.
 
 Jason
