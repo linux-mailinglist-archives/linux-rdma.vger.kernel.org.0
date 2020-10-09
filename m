@@ -2,89 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E7288CD1
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2AD288D56
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Oct 2020 17:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389334AbgJIPf0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Oct 2020 11:35:26 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:1040 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389252AbgJIPfV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:35:21 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8083370000>; Fri, 09 Oct 2020 23:35:19 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 9 Oct
- 2020 15:35:18 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 9 Oct 2020 15:35:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cx2yahLSGTn8l9qrB5zCsdllgv9phHaE+Omw7plsh2ho1uF4RV3d5B0DxI41Nke1ZcSqfIhMRq7rmy+PE1eK3PAu7fvtwUhcei7AEfTCtwgZPbLl3ebxOno0tojoPdq3kRzLKxOO+8w1jmOOVEsNp2yTn2KVlqFBG6lme3jJBntE8eqLqtFw62cUKrUzXwcf4BpEo+DJfIOmH5pEig+J8GvQqp6LJFW4ednwWuW+iYD8gjqG25J8x/CwolBfM0cLojLTDhAQAzuy6eadfXGpU5VA9gQqx5XIhbBKMlnNcY9a22PsoiFrAvihDxhmsoiMhDoedAbHavMhgwzQIL8jLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a8qyrZi0q7zPerJQQdrghcJ9+NAmg8UdBgZHTrBhUKM=;
- b=bWsxPkjBFlaG7d7gUQfwCKNIuSfjIGHFW2kb/8m4RLaMgdMUIlbJargAEW/L70hnFVewxep/51udi+F9qypNG9kXd3jgQ1la7zW+Tyv8Sr1Q7d6wyD9pd3S+yfhYfSzBnflRfNTQfkdNpNl2K4objDZPm+K7vfLoKn+f97pPuBQnicEXGU3YZameD27dUoCqGbDFLJbReQ5q0TRchwuXRUcHHwj9ApT8h2xkZF3xD3CRrWZXpzB7tk+yvPHPoJn/U/EkfnQinuaQrdTRXQPPLsaUMnmvmMSSO+uYOdvg0KH347ZYdIi8n9py8waXPqNvQdUbDw291AmGdHOMlKU70A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3308.namprd12.prod.outlook.com (2603:10b6:5:182::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Fri, 9 Oct
- 2020 15:35:15 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3455.026; Fri, 9 Oct 2020
- 15:35:15 +0000
-Date:   Fri, 9 Oct 2020 12:35:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-next v2] IB/mlx4: Convert rej_tmout radix-tree to
- XArray
-Message-ID: <20201009153514.GA527106@nvidia.com>
-References: <1602253482-6718-1-git-send-email-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1602253482-6718-1-git-send-email-haakon.bugge@oracle.com>
-X-ClientProxiedBy: MN2PR16CA0048.namprd16.prod.outlook.com
- (2603:10b6:208:234::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0048.namprd16.prod.outlook.com (2603:10b6:208:234::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Fri, 9 Oct 2020 15:35:15 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kQuQM-002D8N-De; Fri, 09 Oct 2020 12:35:14 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602257719; bh=Qr4KkfBNr1ni2mwDzKia/NLINIbCYjgc11g5/IQ+QJA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=mes0fOjwlWObhlw44STVFN+joWmd1hC49y5YsXYxOM33zVJ28/ejT1WNNVSyhywu+
-         24fX945TVWAcM9k6PZgVMFxve7e9An0tBUmdrUEWYfA1lTrpp5jfGB9DG7+ZirJbJ2
-         ObbVtUzPrEoSy0QaFSsjOB8iDGNeIvAUenx/omZXZynDYJQMUBqPyWqtnVOYMQukIn
-         6utrhe2CdtjUTU70Ywj6ZPFeM4c6aiuLMyx3aJxZkC7sPklmbY7j35JaTg6gO98S9G
-         Rc1PsqE9QIDoErtFC3yitxCLa7MQKjKZ80YaikvW2fHx00cyhX1RriXL6VsTtIiCKf
-         Gde3QLObRjXoA==
+        id S2389144AbgJIPwk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Oct 2020 11:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389135AbgJIPwk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 11:52:40 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFCCC0613D2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 08:52:40 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id b10so2749561qvf.0
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 08:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=kI6koypAHDjdUQJ/OUWn849189Y9AnAmd9opXVnOBNc=;
+        b=dJzb439gwrTjwocUe/dUC6lMORvhZ9ORlQeHV4zn8FfZELb8Qghhx0AubovL9dTcbF
+         VWcGbL/KykORKltezvJzwAtHhiCGQPbWU5HfeeCdsXnLlVslpQMycVDa1YnrW0QUOOpv
+         tcvPSGw9Q6GbP9hvkn8oCer8zQaFWMnmMm05/UWQSgrORV/9qAQDim9czojAE+4Hlc7F
+         szjeS1rR0xAhkV6KiVA3xyikE7fWUM4+9O+6nugDO3yv9/kAMmAnOWfSexIghdf14dhz
+         rFVLwk8vJGF75o1e/muGw5e8YMXJQDtvkSRGMl3c0cBtgqkm7kF0sEN6JrLmCFhqMjI+
+         mYYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=kI6koypAHDjdUQJ/OUWn849189Y9AnAmd9opXVnOBNc=;
+        b=T6SDXcR1Dq1SdJn43+ACLYvYw1p9XsPW888FEqF8EluyKQmQn3SG332as9yxwHQFMJ
+         cT1gDAzC/4FtnZ8Mo6YuUNrQ0kh6NPQlNVgscp9A2ZCulFqZUSKiiGnDHrZQaeURY0J5
+         yENlig5QJq9kz7SwtuAyN+zGO1oJSwhBvnRaCRlSnH4dMFm4cUbacqm80D91JiZIsWR0
+         u3QFPDe2lK9CqPUWtN062lCc4GiCliXCH4CPGSZ08dYf9/yQRO8qNGh/DjZ1JCNnn8t8
+         HP4ACCAAJQAhEqiSU4xPLRYsdixeMGrMLk0fJ+duCKfhm7+QICuLqMdyah0dBIgOnoCJ
+         +iaA==
+X-Gm-Message-State: AOAM532MjKYbNwMLi8PSQ9Z+Mz/frlUTs5xcmKEPDt+TKw0Uzy9BDWmD
+        vbBZPO6AUNT3DmBFU0e2L14=
+X-Google-Smtp-Source: ABdhPJwz/zaI7eihCwPYLdi49dUXU01UwZRuVuz9KPzBTc3OtILBDUwzFR6NfcuU5jwOISby8O3dSA==
+X-Received: by 2002:a05:6214:1873:: with SMTP id eh19mr13830426qvb.16.1602258759580;
+        Fri, 09 Oct 2020 08:52:39 -0700 (PDT)
+Received: from anon-dhcp-152.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id t1sm1743519qkh.19.2020.10.09.08.52.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Oct 2020 08:52:38 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+From:   Chuck Lever <chucklever@gmail.com>
+In-Reply-To: <20201009153406.GA5177@ziepe.ca>
+Date:   Fri, 9 Oct 2020 11:52:37 -0400
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <06F8D44C-BB1E-4D72-AFCE-FFD52E20C9CF@gmail.com>
+References: <20201008103641.GM13580@unreal>
+ <aec6906d-7be5-b489-c7dc-0254c4538723@oracle.com>
+ <20201008160814.GF5177@ziepe.ca>
+ <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
+ <20201009143940.GT5177@ziepe.ca>
+ <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
+ <20201009145706.GU5177@ziepe.ca>
+ <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
+ <20201009150758.GV5177@ziepe.ca>
+ <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
+ <20201009153406.GA5177@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 04:24:42PM +0200, H=C3=A5kon Bugge wrote:
-> Fixes: 227a0e142e37 ("IB/mlx4: Add support for REJ due to timeout")
-> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
-> ---
->  drivers/infiniband/hw/mlx4/cm.c      | 92 ++++++++++++++++++------------=
-------
->  drivers/infiniband/hw/mlx4/mlx4_ib.h |  4 +-
->  2 files changed, 48 insertions(+), 48 deletions(-)
 
-Applied to for-next, thanks
 
-Jason
+> On Oct 9, 2020, at 11:34 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> 
+> On Fri, Oct 09, 2020 at 11:27:44AM -0400, Chuck Lever wrote:
+> 
+>> Therefore I think the approach is going to be "one RDS listener per
+>> net namespace". The problem Ka-Cheong is trying to address is how to
+>> manage the destruction of a listener-namespace pair. The extra
+>> reference count on the cm_id is pinning the namespace so it cannot
+>> be destroyed.
+> 
+> I really don't think this idea of just loading a kernel module and it
+> immediately creates a network visibile listening socket in every
+> namespace is very good.
+> 
+>> Understood, but it doesn't seem like there is enough useful overlap
+>> between the NFS and RDS usage scenarios. With NFS, I would expect
+>> an explicit listener shutdown from userland prior to namespace
+>> destruction.
+> 
+> Yes, because namespaces are fundamentally supposed to be anchored in
+> the processes inside the namespace.
+
+Aye, the container model.
+
+
+> Having the kernel jump in and start opening holes as soon as a
+> namespace is created is just wrong.
+> 
+> At a bare minimum the listener should not exist until something in the
+> namespace is willing to work with RDS.
+
+I was thinking that too, but I'm not sure if that change would have
+ramifications to existing RDS applications. There's quite a bit of
+legacy to deal with.
+
+An alternative would be to add a user daemon to RDS to manage the
+listener lifecycle, rather than having the endpoint created by
+module load. That might help the listener-namespace destruction
+issue, and should be entirely application-transparent.
+
+
+--
+Chuck Lever
+chucklever@gmail.com
+
+
+
