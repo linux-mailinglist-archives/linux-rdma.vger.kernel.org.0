@@ -2,162 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29F4289E21
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Oct 2020 06:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1DA289E9F
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Oct 2020 07:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgJJEEz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 10 Oct 2020 00:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730857AbgJJDyz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Oct 2020 23:54:55 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE66AC0613CF
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Oct 2020 20:54:30 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 7so8842602pgm.11
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Oct 2020 20:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=v5+XnBhlD3eN0Qt7568H3FC+yCMlxLZ0K++bGzRf7JQ=;
-        b=svoZr/BuZMqFT5JTcviQElMMSaN1Bc5SyRzN+KGWR8sE9V/ROFoqC/sifC9HXtzg5U
-         xHuVgS72ykvV4/CGEaLo2Sbs3wLyh2VJekANaWlMloQAfImDN9eCInfsbHMNg+Ze5o6N
-         x/Pg5wgPAbwhrXH5Vmvm2HQHE5q86cLtVXO43r3Oxnroqc239BXo7RCGXw7WA+FZGjdb
-         VnKbB18XLzFoGQb9aUrapF5pJs5F6VYQTXvswuQl4GbwAihb6BnjcP/SpVU7FwChQMVr
-         U0XMCkpRSiHaC0l/6XJKZJAXSM3cZ/OQwQfX49CVBIaV8qxOf7K+iicFy87fLuzn3PsJ
-         8+Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=v5+XnBhlD3eN0Qt7568H3FC+yCMlxLZ0K++bGzRf7JQ=;
-        b=qQ52NWx+pyY8iBYV+cV7x1MCEcitiuf0+ruidF4JRetTlEkBJzh5v6rkF1cXQTHr94
-         AHa6ZSGGAvJTZDjaddA3Hy1Mt7cR33ez2DOy+vYL2G8jvZU/4h2E53v1eJio54MkEOK5
-         VdgaiJNio/0UFTXQz9MGUa+rvUHeG8PkwWYzZBL2Ab2bC9Hq4d0wuFILLLw8c8ab9bMs
-         XETeTNCC+/6BVBXPQm2NnulDNKPg2+jMeuwFB5R1mNlBgACziO3xr4RtpuSCmRaCJCve
-         Hii8KM5x6gF1k9Vo04SQkKzeKwDCEgDESVnYuPcj0thHHEcFLVV5zxayovivAsL0NtRo
-         8EPA==
-X-Gm-Message-State: AOAM531CBeA8xWnrQtB4VeBhZsGHNyLuvy0+FpprBddR82Dtcbyezdcf
-        X4Z1krk06tzPGZz4BF/4w/tFK+ioD2s=
-X-Google-Smtp-Source: ABdhPJz2eaA4H+BzYGqFZPve7YN1NSLFdC58T7tqZopDGwBL5MxNniFlbM+SgtvfCM0yotIi+UlGDQ==
-X-Received: by 2002:a62:7f07:0:b029:155:2b57:7398 with SMTP id a7-20020a627f070000b02901552b577398mr13203367pfd.17.1602302070132;
-        Fri, 09 Oct 2020 20:54:30 -0700 (PDT)
-Received: from [10.75.201.17] ([129.126.144.50])
-        by smtp.gmail.com with ESMTPSA id fu19sm12934493pjb.43.2020.10.09.20.54.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 20:54:29 -0700 (PDT)
-Subject: Re: [PATCH for-next v2] rdma_rxe: fix bug rejecting multicast packets
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Bob Pearson <rpearson@hpe.com>
-References: <20201008212753.265249-1-rpearson@hpe.com>
- <0e89cd73-e3ea-81fc-c5eb-be7521b10415@gmail.com>
- <20201009152827.GN4734@nvidia.com>
- <c6c80d1e-d608-c52c-dd33-3393722d266e@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Message-ID: <cac39621-a45a-7efd-e675-d82ae9ec30cc@gmail.com>
-Date:   Sat, 10 Oct 2020 11:54:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1730808AbgJJFpA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 10 Oct 2020 01:45:00 -0400
+Received: from mga18.intel.com ([134.134.136.126]:52999 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730823AbgJJFnw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 10 Oct 2020 01:43:52 -0400
+IronPort-SDR: Qpy0/eWO8oISwVz5R6fX06wJe8hzVVGbNVq2OTgPhub0V16XYeOSCKO+7f7OhakpE/09RS8rud
+ 9/uVV/hHeMeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="153395695"
+X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
+   d="scan'208";a="153395695"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 22:43:35 -0700
+IronPort-SDR: cqw7LrzlctiEHfm8QfkqO+rw4sDTglDm339e8MnXaJ4Dz1Z96NCFZl4W0Y113n5go+t0/+r3Yl
+ vJI9iZ4sHWdw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,357,1596524400"; 
+   d="scan'208";a="329116918"
+Received: from lkp-server02.sh.intel.com (HELO 3104d2c277ac) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 09 Oct 2020 22:43:34 -0700
+Received: from kbuild by 3104d2c277ac with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kR7fJ-00002I-Et; Sat, 10 Oct 2020 05:43:33 +0000
+Date:   Sat, 10 Oct 2020 13:43:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ b2b6b3d6aeaa7b4d0ab0d6ba0346d1130addcfab
+Message-ID: <5f8149ee.jaTcdzJ+OE6RT+6H%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <c6c80d1e-d608-c52c-dd33-3393722d266e@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/10/2020 1:18 AM, Bob Pearson wrote:
-> On 10/9/20 10:28 AM, Jason Gunthorpe wrote:
->> On Fri, Oct 09, 2020 at 11:23:31PM +0800, Zhu Yanjun wrote:
->>> On 10/9/2020 5:27 AM, Bob Pearson wrote:
->>>>     - Fix a bug in rxe_rcv that causes all multicast packets to be
->>>>       dropped. Currently rxe_match_dgid is called for each packet
->>>>       to verify that the destination IP address matches one of the
->>>>       entries in the port source GID table. This is incorrect for
->>>>       IP multicast addresses since they do not appear in the GID table.
->>>>     - Add code to detect multicast addresses.
->>>>     - Change function name to rxe_chk_dgid which is clearer.
->>>>
->>>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->>>>    drivers/infiniband/sw/rxe/rxe_recv.c | 19 ++++++++++++++++---
->>>>    1 file changed, 16 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
->>>> index a3eed4da1540..b6fee61b2aee 100644
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
->>>> @@ -280,7 +280,17 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->>>>    	kfree_skb(skb);
->>>>    }
->>>> -static int rxe_match_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
->>>> +/**
->>>> + * rxe_chk_dgid - validate destination IP address
->>>> + * @rxe: rxe device that received packet
->>>> + * @skb: the received packet buffer
->>>> + *
->>>> + * Accept any loopback packets
->>> About loopback packets, will rdma_find_gid_by_port return correct value?
-> I didn't touch that but the RXE_LOOPBACK test comes before the call to rdma_find_gid_by_port
-> so it should never get called for loopback packets.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: b2b6b3d6aeaa7b4d0ab0d6ba0346d1130addcfab  Merge branch 'dynamic_sg' into rdma.git for-next
 
-I confronted the loopback problem with rdma-core tests.
+elapsed time: 722m
 
-And I made a patch to fix it. If the following commit exists, this 
-problem will not occur.
+configs tested: 153
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-commit 5c99274be8864519328aa74bc550ba410095bc1c
-Author: Zhu Yanjun <yanjunz@mellanox.com>
-Date:   Tue Jun 30 15:36:05 2020 +0300
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                                 defconfig
+c6x                                 defconfig
+riscv                    nommu_virt_defconfig
+sparc64                          alldefconfig
+arm                          iop32x_defconfig
+powerpc                     pq2fads_defconfig
+arm                        spear6xx_defconfig
+arm                          ep93xx_defconfig
+ia64                             alldefconfig
+nios2                         3c120_defconfig
+powerpc                      walnut_defconfig
+powerpc                    gamecube_defconfig
+xtensa                          iss_defconfig
+sh                             shx3_defconfig
+arm                         hackkit_defconfig
+sh                             sh03_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                         nhk8815_defconfig
+parisc                           allyesconfig
+powerpc                      tqm8xx_defconfig
+mips                      fuloong2e_defconfig
+sh                          sdk7780_defconfig
+m68k                          atari_defconfig
+mips                     loongson1c_defconfig
+powerpc                     mpc83xx_defconfig
+arm                             pxa_defconfig
+powerpc                      cm5200_defconfig
+powerpc                      bamboo_defconfig
+powerpc                         wii_defconfig
+sh                            shmin_defconfig
+powerpc                     kmeter1_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                        m5307c3_defconfig
+arc                      axs103_smp_defconfig
+arm                           sama5_defconfig
+powerpc                     stx_gp3_defconfig
+mips                           ci20_defconfig
+h8300                            allyesconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                       ppc64_defconfig
+arm                       mainstone_defconfig
+powerpc                     tqm5200_defconfig
+um                             i386_defconfig
+sparc64                             defconfig
+openrisc                 simple_smp_defconfig
+sh                        edosk7705_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                      pic32mzda_defconfig
+arc                            hsdk_defconfig
+arm                          lpd270_defconfig
+arm                     davinci_all_defconfig
+m68k                        m5272c3_defconfig
+arm                            u300_defconfig
+arm                           viper_defconfig
+mips                       lemote2f_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                      ppc64e_defconfig
+mips                       capcella_defconfig
+arc                         haps_hs_defconfig
+sh                           se7712_defconfig
+mips                        bcm47xx_defconfig
+arm                         s3c2410_defconfig
+sh                           sh2007_defconfig
+powerpc                 mpc8315_rdb_defconfig
+mips                        qi_lb60_defconfig
+arm                          tango4_defconfig
+h8300                            alldefconfig
+powerpc                     ppa8548_defconfig
+arm                           sunxi_defconfig
+sh                           se7705_defconfig
+riscv                    nommu_k210_defconfig
+m68k                         amcore_defconfig
+arm                             ezx_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      pasemi_defconfig
+riscv                            alldefconfig
+powerpc                     tqm8548_defconfig
+mips                      loongson3_defconfig
+arm                          imote2_defconfig
+powerpc                  mpc866_ads_defconfig
+i386                             alldefconfig
+xtensa                  audio_kc705_defconfig
+arm                       spear13xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201009
+i386                 randconfig-a005-20201009
+i386                 randconfig-a001-20201009
+i386                 randconfig-a004-20201009
+i386                 randconfig-a002-20201009
+i386                 randconfig-a003-20201009
+x86_64               randconfig-a012-20201009
+x86_64               randconfig-a015-20201009
+x86_64               randconfig-a013-20201009
+x86_64               randconfig-a014-20201009
+x86_64               randconfig-a011-20201009
+x86_64               randconfig-a016-20201009
+i386                 randconfig-a015-20201009
+i386                 randconfig-a013-20201009
+i386                 randconfig-a014-20201009
+i386                 randconfig-a016-20201009
+i386                 randconfig-a011-20201009
+i386                 randconfig-a012-20201009
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-     RDMA/rxe: Skip dgid check in loopback mode
+clang tested configs:
+x86_64               randconfig-a004-20201009
+x86_64               randconfig-a003-20201009
+x86_64               randconfig-a005-20201009
+x86_64               randconfig-a001-20201009
+x86_64               randconfig-a002-20201009
+x86_64               randconfig-a006-20201009
 
-     In the loopback tests, the following call trace occurs.
-
-      Call Trace:
-       __rxe_do_task+0x1a/0x30 [rdma_rxe]
-       rxe_qp_destroy+0x61/0xa0 [rdma_rxe]
-       rxe_destroy_qp+0x20/0x60 [rdma_rxe]
-       ib_destroy_qp_user+0xcc/0x220 [ib_core]
-       uverbs_free_qp+0x3c/0xc0 [ib_uverbs]
-       destroy_hw_idr_uobject+0x24/0x70 [ib_uverbs]
-       uverbs_destroy_uobject+0x43/0x1b0 [ib_uverbs]
-       uobj_destroy+0x41/0x70 [ib_uverbs]
-       __uobj_get_destroy+0x39/0x70 [ib_uverbs]
-       ib_uverbs_destroy_qp+0x88/0xc0 [ib_uverbs]
-       ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xb9/0xf0 [ib_uverbs]
-       ib_uverbs_cmd_verbs+0xb16/0xc30 [ib_uverbs]
-
-     The root cause is that the actual RDMA connection is not created in the
-     loopback tests and the rxe_match_dgid will fail randomly.
-
-     To fix this call trace which appear in the loopback tests, skip 
-check of
-     the dgid.
-
-     Fixes: 8700e3e7c485 ("Soft RoCE driver")
-     Link: https://lore.kernel.org/r/20200630123605.446959-1-leon@kernel.org
-     Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-     Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-     Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-
->> I don't think you can use 127.0.0.0 with the RDMA devices, at least
->> not on the wire. The CM has special code to swap it out with a real
->> device address
-> The following does work:
->
-> $ ib_send_bw -d rxe_0 (in window A)                $ ib_send_bw -d rxe_0 127.0.0.1 (in window B)
->
-> This uses the LOOPBACK path and just hands the skb from sender to receiver. It never touches the IP stack.
->
-> I have never been able to get this to work:
->
-> $ ib_send_bw -d rxe_1 (at 10.0.0.1 in window A)    $ ib_send_bw -d rxe_2 10.0.0.1 (at 10.0.0.2 in window B)
->
-> If it did work I could test the full path.
->> Jason
->>
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
