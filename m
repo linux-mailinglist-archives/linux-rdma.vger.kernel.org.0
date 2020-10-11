@@ -2,58 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC5228AA25
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Oct 2020 22:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D1528AAD6
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 00:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgJKUTF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Oct 2020 16:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbgJKUTF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Oct 2020 16:19:05 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EE6C0613CE;
-        Sun, 11 Oct 2020 13:19:05 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t21so14780037eds.6;
-        Sun, 11 Oct 2020 13:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v4MsclsAjBQ07tS6Y2k6AL+A2oNnHE0z2Kb1St2ZEIk=;
-        b=neCttq4/0J3+3NTrhanFCgR56+zz6hfDnAOzM1dINwDLIuAqA3tMADIrgI6aUb+zAi
-         +eW84mbUHzG1mA5KER0AFuvgMSlGeNFlSeYUrjL3m0dJOszx4WBDI7kWKXISNlENJhPD
-         050WWxG7qW9dQuQpk2PmuXO+528K82e7K89uJXuvnEVnilQvnYJVi757k2QQYxh4CVa5
-         Ed4GZZNn1vn+kv1i5dFESGPhlygVY4oDvkiD0PyxkFWDbCeb3YrRkppBbbm0d5WR0fxd
-         tkkajfw+0ba0e9Nb5KjCCcTqY9wUM/LHdfNPLudLcRYIk6kS1/Eq5VLz1CoqDWXm0BU7
-         Hy7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v4MsclsAjBQ07tS6Y2k6AL+A2oNnHE0z2Kb1St2ZEIk=;
-        b=trTzE1LmGNkvCypiEmBtvOENyg2rmSNX8QaQ8pqO0Mf7QiPSd/uNFbF5tK2UBCU/XE
-         LpnUVfA7NTsA2+bhyo84KKCMGI/DbDK6wWPQryvdh1EZKo6x+iw/G+67tyFVN76LQGRt
-         BqrCjiu95k9OHty6PQVzwBaMPBCD6yMF0mN1ZXVlTgVDiENfhDBWhKN1AsgVvRBzHzdu
-         lvQLkK8CGsnxnjrCZFJpLxOkk1kEwzE2v4C8fo/snFnfv+xqr4CuShqJ6qnJaEu9mbTc
-         8cM1rCKgpNT1+ZWWItuC4oS7MVxAfoql31+IYAaZtZchG/j4fxujwXcPBaAIHN9KIbkB
-         5FOw==
-X-Gm-Message-State: AOAM53205Y3oDDv0oguZ4t6nKvcJIuY4OyuzB084L5PnrjwGpWQX4MHR
-        IcZSCajWAkKw21j8UP57Xl8=
-X-Google-Smtp-Source: ABdhPJzdFiYdZKEVK13ixfB6IsshtIGvkXhMrrs+wlxjwrdUKK04SccKxJeGGB6X2gkUtDB6t4LhNg==
-X-Received: by 2002:aa7:c98f:: with SMTP id c15mr10791684edt.200.1602447543892;
-        Sun, 11 Oct 2020 13:19:03 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f00:6a00:51b7:bf4f:604:7d3d? (p200300ea8f006a0051b7bf4f06047d3d.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:51b7:bf4f:604:7d3d])
-        by smtp.googlemail.com with ESMTPSA id l17sm9690345eji.14.2020.10.11.13.19.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Oct 2020 13:19:03 -0700 (PDT)
-Subject: Re: [PATCH net-next 01/12] net: core: add function
- dev_fetch_sw_netstats for fetching pcpu_sw_netstats
-To:     Stephen Hemminger <stephen@networkplumber.org>
+        id S2387616AbgJKWH1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Oct 2020 18:07:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387413AbgJKWH1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 11 Oct 2020 18:07:27 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F3512078B;
+        Sun, 11 Oct 2020 22:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602454046;
+        bh=cYxBbv7sf4+ShksP9pOzn23fOV8hhf0jD3Kignpjdwg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K7is528bYee8e4ispjMW+khAmwmEdHpzI2jR/3mqaBz8G17ewhikeY72h4FIm4VZq
+         O2gcMiHHyPIGA7kAuGKj/jpwPK+4htkDZcK2pt1na8mUCg8551aJvYJdfhxHjjjiH/
+         ONqjZx4F2Em9kdJQAr5IXugBeWC6m2NTW2BSxdHI=
+Date:   Sun, 11 Oct 2020 15:07:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
 Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
+        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
         Oliver Neukum <oneukum@suse.com>,
         Igor Mitsyanko <imitsyanko@quantenna.com>,
         Sergey Matyukevich <geomatsi@gmail.com>,
@@ -75,39 +49,41 @@ Cc:     David Miller <davem@davemloft.net>,
         Linux USB Mailing List <linux-usb@vger.kernel.org>,
         linux-wireless <linux-wireless@vger.kernel.org>,
         bridge@lists.linux-foundation.org
+Subject: Re: [PATCH net-next 01/12] net: core: add function
+ dev_fetch_sw_netstats for fetching pcpu_sw_netstats
+Message-ID: <20201011150723.72dee9f8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <5bb71143-0dac-c413-7e97-50eed8a57862@gmail.com>
 References: <a46f539e-a54d-7e92-0372-cd96bb280729@gmail.com>
- <5bb71143-0dac-c413-7e97-50eed8a57862@gmail.com>
- <20201011125412.3719926a@hermes.local>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <0a127353-4358-9664-6784-dec2c48e9b9d@gmail.com>
-Date:   Sun, 11 Oct 2020 22:18:58 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        <5bb71143-0dac-c413-7e97-50eed8a57862@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201011125412.3719926a@hermes.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11.10.2020 21:54, Stephen Hemminger wrote:
-> On Sun, 11 Oct 2020 21:36:43 +0200
-> Heiner Kallweit <hkallweit1@gmail.com> wrote:
+On Sun, 11 Oct 2020 21:36:43 +0200 Heiner Kallweit wrote:
+> In several places the same code is used to populate rtnl_link_stats64
+> fields with data from pcpu_sw_netstats. Therefore factor out this code
+> to a new function dev_fetch_sw_netstats().
 > 
->> +void dev_fetch_sw_netstats(struct rtnl_link_stats64 *s,
->> +			   struct pcpu_sw_netstats __percpu *netstats)
-> 
-> netstats is unmodified, should it be const?
-> 
->> +{
->> +	int cpu;
->> +
->> +	if (IS_ERR_OR_NULL(netstats))
->> +		return;
-> 
-> Any code calling this with a null pointer is broken/buggy, please don't
-> ignore that.
-> 
-Thanks, I'll consider both points in a v2.
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+> +/**
+> + *	dev_fetch_sw_netstats - get per-cpu network device statistics
+> + *	@s: place to store stats
+> + *	@netstats: per-cpu network stats to read from
+> + *
+> + *	Read per-cpu network statistics and populate the related fields in s.
+
+in @s?
+
+> + */
+> +void dev_fetch_sw_netstats(struct rtnl_link_stats64 *s,
+> +			   struct pcpu_sw_netstats __percpu *netstats)
+
+> +}
+> +EXPORT_SYMBOL(dev_fetch_sw_netstats);
+
+Your pick, but _GPL would be fine too even if most exports here are
+non-GPL-exclusive. 
