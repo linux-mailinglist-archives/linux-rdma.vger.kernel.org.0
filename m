@@ -2,78 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C921228B4B5
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 14:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8492B28B5E0
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 15:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgJLMhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 08:37:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39194 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgJLMhB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:37:01 -0400
-IronPort-SDR: OR2bUKtcph/ao4WnueK4SiN3repoxYzBpqlQyOiEqNdKlvmqJjoKDxFAPjZmPp2CBk7X/SnUVQ
- L3q9UpSDk/sw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="162264369"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="162264369"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 05:37:01 -0700
-IronPort-SDR: 1XoUDNBtzVcVscTXU97SkSUBX9lsh7d3oEWRdc/OOsaupeZ0VbRU50p0x2r5vDKTHCKzQTBLE4
- Aut4qsodfQCQ==
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="529937906"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.99]) ([10.254.201.99])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 05:37:00 -0700
-Subject: Re: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-To:     Xianting Tian <tian.xianting@h3c.com>, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201010085732.20708-1-tian.xianting@h3c.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
-Date:   Mon, 12 Oct 2020 08:36:57 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2387906AbgJLNSS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 09:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387743AbgJLNSS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 09:18:18 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFB5C0613D0
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:17 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id i5so16888995edr.5
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RvirsXnJVSAT6v2zbz7MZzJ59bABXt7Pd4zHTcU+YVo=;
+        b=gr/+DNf6iy25kgT/eVWuLGAWv10XgmQexRjz0wK8X8Rg6gE2L0EfL1c4TwdJf13yqj
+         mulcH6bBdK3LtnUJbXpg3DzC7ED0OqxAStD6lm7w+TC4abpMee1IsnDEWzp0rJbWu1iV
+         Aqydnvr2mPa0o1STbqhV47/u487te1DRNfy0oOrCP2Tv00VoXUZkjo4v1mTTSJPeO7am
+         lEUOC9aOC9QaLD+6wEF+XZnr/RFU1L3ZKcGQG4xIYS58uUzBqJh1CuAy4s0MiZhYjN9V
+         0KOvXNl5MR2wEaB9V57JWEq3OhtTTRfqyBwBS6Wi3eHTEcSf9PdXxeJ1WvkcdFCXhGJR
+         X6RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RvirsXnJVSAT6v2zbz7MZzJ59bABXt7Pd4zHTcU+YVo=;
+        b=hrdgzZp/qiv8TijjETDtdAOzm8JHrQRZ5YN1jYu7YujZkd4N7Y4Kyhdynk0p7VDaV1
+         DQWilYBVdtdgUHmatZOP4ZLjv7ii/9P17xqzbr8lTtQLVQVdrYLi9jI7k/1D0FMdczkK
+         m3hGfgOk91RQ6f6rUiUoCfiUZmdjsFKUdv/zkXriRICL5dBh+5r3q0qIvfmHoWOHgzLM
+         MaXnUmphOf2H3n4Bl7S0iLsTTrmdLlvZjowtlYDJiVY5vg9HChiVmd9OBc9mZdf5MHwO
+         A7064B3qBOS2HGNiZia6woBLmhVGjVELHMOz/hwJOBPNDF3iARThRpibQzclOO69djgj
+         lUWA==
+X-Gm-Message-State: AOAM532i1jVu044HU935CwJVtd0zOdgAvYPRe8K6jGn5/iM+uzev7gHK
+        8OGJLtTRtb9ErMeX1Msuub8tcb13oQi99w==
+X-Google-Smtp-Source: ABdhPJwfgpW4DiWJjBXQ2G6SkT7uXaMX8fZK0yRm+UlQgB89LN1OrUr/oaSFyFxggi2WERZY/WKLZA==
+X-Received: by 2002:aa7:d892:: with SMTP id u18mr14563667edq.305.1602508695768;
+        Mon, 12 Oct 2020 06:18:15 -0700 (PDT)
+Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4915:9700:86d:33e0:2141:a74a])
+        by smtp.gmail.com with ESMTPSA id o12sm10828252ejb.36.2020.10.12.06.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 06:18:15 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@cloud.ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com
+Subject: [PATCH for-next 00/13] rtrs: misc fix and cleanup 
+Date:   Mon, 12 Oct 2020 15:18:01 +0200
+Message-Id: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201010085732.20708-1-tian.xianting@h3c.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/10/2020 4:57 AM, Xianting Tian wrote:
-> In architecture like powerpc, we can have cpus without any local memory
-> attached to it. In such cases the node does not have real memory.
-> 
-> Use local_memory_node(), which is guaranteed to have memory.
-> local_memory_node is a noop in other architectures that does not support
-> memoryless nodes.
-> 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->   drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-> index 8ca51e43c..79fa22cc7 100644
-> --- a/drivers/infiniband/hw/hfi1/file_ops.c
-> +++ b/drivers/infiniband/hw/hfi1/file_ops.c
-> @@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
->   	 */
->   	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
->   	if (fd->rec_cpu_num != -1)
-> -		numa = cpu_to_node(fd->rec_cpu_num);
-> +		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
->   	else
->   		numa = numa_node_id();
->   	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
-> 
+Hi Jason, hi Doug,
 
-The hfi1 driver depends on X86_64. I'm not sure what this patch buys, 
-can you expand a bit?
+Please consider to include following changes to upstream.
 
--Denny
+
+Danil Kipnis (1):
+  RDMA/rtrs-clt: remove destroy_con_cq_qo in case route resolving failed
+
+Gioh Kim (6):
+  RDMA/rtrs-clt: remove unnecessary dev_ref of rtrs_sess
+  RDMA/rtrs: removed unused filed list of rtrs_iu
+  RDMA/rtrs: remove unnecessary argument dir of rtrs_iu_free
+  RDMA/rtrs-clt: remove duplicated switch-case handling for CM error
+    events
+  RDMA/ibtrs-clt: missing error from rtrs_rdma_conn_established
+  RDMA/rtrs-clt: remove duplicated code
+
+Guoqing Jiang (4):
+  RDMA/rtrs-srv: fix typo
+  RDMA/rtrs-srv: kill rtrs_srv_change_state_get_old
+  RDMA/rtrs: introduce rtrs_post_send
+  RDMA/rtrs-clt: remove 'addr' from rtrs_clt_add_path_to_arr
+
+Jack Wang (2):
+  RDMA/rtrs-clt: remove outdated comment in create_con_cq_qp
+  RDMA/rtrs-clt: avoid run destroy_con_cq_qp/create_con_cq_qp in
+    parallel
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 103 +++++++++++--------------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h |   1 +
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |   5 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c |  33 +++-----
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs.c     |  61 ++++++---------
+ 6 files changed, 82 insertions(+), 123 deletions(-)
+
+-- 
+2.25.1
+
