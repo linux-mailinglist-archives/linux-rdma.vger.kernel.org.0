@@ -2,102 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193CB28B5ED
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 15:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E7928B61A
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 15:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388261AbgJLNSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 09:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
+        id S1727198AbgJLNX3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 09:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388160AbgJLNSc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 09:18:32 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A0FC0613D0
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:30 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id i5so16889692edr.5
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:30 -0700 (PDT)
+        with ESMTP id S1727037AbgJLNX3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 09:23:29 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE08C0613D0
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:23:29 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id md26so23108329ejb.10
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B1WTni9FMmqOxX6J8clKnzfWIzfNoMGtmaM+3RUD3qw=;
-        b=WHzBvOUc9Jmvz9h3tqAlNKGcRqGSLaSUDgkk0xi04BLmFPpKwbKqT8TdjBx7ofanYE
-         zhvIvzSAoiEa9fwXhFr3jeSrawKt5IV38+bYRWhjMvsRbYB3hMZK9TEC0QYf15o1TJOM
-         le5Zz1ivCWo68FJNAjESfSARCxqr149capqbwLep0njSzIBnKTo6TuJTLRR0V42zknix
-         zG77EYuN6sqhVfmRYbxFoofAYSuAASxNGhXQ/T67u0EXZ5Ex5GIlIoQk54k4DuQhgHGH
-         /uBOrlKVqzmbbCN38GeRsmKUMPFJByiFyQ5MS2GST/dsfF8ON9jEp3hKIdNgbJ9oI5o7
-         vtcA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wzw9uHPbheR0zWyiHfRvEQEOYXd26owdvMlRLTJqgWc=;
+        b=g5CT5IpqsowSApaFGJE82tfi7oxYqtTg8/O3DrdtpDCynpRjYWR2tIHl9zEf9OKyhG
+         zI71AkiyiLoz5UarbE/uR/EFNkRGqkewJGZX1BdmdAce1kJAyOWyEAGDCQqxas2H2Nr4
+         TYmzZzTxCXfk7vi7bJyUL5pbDe8EnXgD1bbbVX4pb9QI+YNCv4A/pYxFAHVRSiZ63hZT
+         VCjw8LK48H9DDd3vdX6eD2WJF0SmDlK2mNLhzhMnH7jjCUAiTdC4gCRtirARFYz5t18H
+         w5nv9xuSclNmfyPZmtYmeOZpz83GEyayznKkoYDVaF2mF4WSdimnDTi4zY1W7EvrK726
+         wxEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B1WTni9FMmqOxX6J8clKnzfWIzfNoMGtmaM+3RUD3qw=;
-        b=nVq9tphWHDjjw1ohT+lC0BBt0aZIWBB1LVzBheltgitAmMJb5frAsnjn6H2BumugBF
-         H1ZaHplfJPgrj9jrGnsRZOAXnRv760uLd/2ei+F3hBTVw73Lv+U3m4uPTCZTDzLeZFVx
-         TJDDf6/p2KrRjsFHYEV81wIqqTXjaL8yrVLxVGNys7h97MXL+2r3EdWc2+HpF0sT/wxq
-         k3cGj28eFdB+og3CXG+Sl5VtW3IAsoUVTaRb8xNFui+t6yaEgTvSiB16lmazRhrndF4P
-         vsbHv+DkPA0vLOMAswl3Oj1ib/bNzoH9UeO808h/1vKgVgqu0AdpMMO4NrXf0P9Izknk
-         jdpQ==
-X-Gm-Message-State: AOAM532IyiQ4Ydv4tN6vudBh9leejF7B3PrFoyJO6dpENq2UeMa99Qyq
-        5sKi8QT8NcpybKIUtco0x7QHPy7NyuTQzg==
-X-Google-Smtp-Source: ABdhPJy0EB8wEWyxUjxbwzf8ZsupJ259c0rPZ6/SqRnrTIka5ogo+v5zkvGmXu/Z1btz88gQt8bMIQ==
-X-Received: by 2002:aa7:c98f:: with SMTP id c15mr14350861edt.200.1602508708867;
-        Mon, 12 Oct 2020 06:18:28 -0700 (PDT)
-Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4915:9700:86d:33e0:2141:a74a])
-        by smtp.gmail.com with ESMTPSA id o12sm10828252ejb.36.2020.10.12.06.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:18:28 -0700 (PDT)
-From:   Jack Wang <jinpu.wang@cloud.ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Subject: [PATCH for-next 13/13] RDMA/rtrs-clt: remove 'addr' from rtrs_clt_add_path_to_arr
-Date:   Mon, 12 Oct 2020 15:18:14 +0200
-Message-Id: <20201012131814.121096-14-jinpu.wang@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com>
-References: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wzw9uHPbheR0zWyiHfRvEQEOYXd26owdvMlRLTJqgWc=;
+        b=CCAcrBoxtgISW6+M9yPelOCxPdm6HhfBWh12SxuSJ/IpQ2so2vpVqw2G3FFmyVl2+u
+         it5sqzDkr7Y6a3IYcYu3XtYbtXG0xD6d1I8BPqxGZelkK5fcvwd9QI6vZyPQV1cTVFWO
+         1ZfyUjt4y4CLPMRc4anojBmBIbOt6In7iG3Fl5S5o/qCoGcgpaYj5ucjPwoP8phHe84Y
+         dGKgAIVjHQ/D5Lfw1Ut35Li5JWqkOPlXCre1mkBfXuoRudPc5Aq80/Ajl62dOXhnEthK
+         OX6FsGyE0/PpGqzTOCW3Y0RiBKSJM7OpiUoeaWmQSUoZKy9C6/JAZstbHMW7ipVgWi/7
+         +hzg==
+X-Gm-Message-State: AOAM53357F83gjHBrudWfXJzoWmueKQW1p+oplsA0H9KMw7jg4c5128x
+        M796yy5tqxFVBYPDDXeXZkC9zGUUCMfXXUzgHGB6EBWk8UQ=
+X-Google-Smtp-Source: ABdhPJzui6OQArXA+5mKQ42w0i4BP9IcZnUTefBgGxa0LEpX05kAKUVXe9fU5OyDrnlyhvBM1AJlaVZD66QSbbGeKOk=
+X-Received: by 2002:a17:906:388:: with SMTP id b8mr26506609eja.62.1602509007832;
+ Mon, 12 Oct 2020 06:23:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com> <20201012131814.121096-9-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20201012131814.121096-9-jinpu.wang@cloud.ionos.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 12 Oct 2020 15:23:16 +0200
+Message-ID: <CAMGffE=ouR_qsaW5W_5EOeraHc-MaEnk_YnNtJbiPjb9NQT8Hw@mail.gmail.com>
+Subject: Re: [PATCH for-next 08/13] RDMA/ibtrs-clt: missing error from rtrs_rdma_conn_established
+To:     linux-rdma@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-
-Remove the argument since it is not used in the function.
-
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 102df6898339..a9f1dc3295c4 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2154,8 +2154,7 @@ static void rtrs_clt_remove_path_from_arr(struct rtrs_clt_sess *sess)
- 	mutex_unlock(&clt->paths_mutex);
- }
- 
--static void rtrs_clt_add_path_to_arr(struct rtrs_clt_sess *sess,
--				      struct rtrs_addr *addr)
-+static void rtrs_clt_add_path_to_arr(struct rtrs_clt_sess *sess)
- {
- 	struct rtrs_clt *clt = sess->clt;
- 
-@@ -2930,7 +2929,7 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
- 	 * IO will never grab it.  Also it is very important to add
- 	 * path before init, since init fires LINK_CONNECTED event.
- 	 */
--	rtrs_clt_add_path_to_arr(sess, addr);
-+	rtrs_clt_add_path_to_arr(sess);
- 
- 	err = init_sess(sess);
- 	if (err)
--- 
-2.25.1
-
+On Mon, Oct 12, 2020 at 3:18 PM Jack Wang <jinpu.wang@cloud.ionos.com> wrote:
+>
+> From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+>
+> When rtrs_rdma_conn_established returns error (non-zero value),
+> the error value is stored in con->cm_err and it cannot trigger
+> rtrs_rdma_error_recovery. Finally the error of rtrs_rdma_con_established
+> will be forgot.
+>
+> Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+sorry, forgot to change the subject line to rtrs.
+Jason, do you want a resend with the fixed subject.
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> index 7764a01185ef..f63f239bbf55 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> @@ -1822,8 +1822,8 @@ static int rtrs_clt_rdma_cm_handler(struct rdma_cm_id *cm_id,
+>                 cm_err = rtrs_rdma_route_resolved(con);
+>                 break;
+>         case RDMA_CM_EVENT_ESTABLISHED:
+> -               con->cm_err = rtrs_rdma_conn_established(con, ev);
+> -               if (likely(!con->cm_err)) {
+> +               cm_err = rtrs_rdma_conn_established(con, ev);
+> +               if (likely(!cm_err)) {
+>                         /*
+>                          * Report success and wake up. Here we abuse state_wq,
+>                          * i.e. wake up without state change, but we set cm_err.
+> --
+> 2.25.1
+>
