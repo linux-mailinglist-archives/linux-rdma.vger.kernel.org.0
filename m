@@ -2,59 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E7E28B5E9
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D51A28B5EA
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 15:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388838AbgJLNS1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 09:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        id S2388839AbgJLNS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 09:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388160AbgJLNS1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 09:18:27 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4ACC0613D0
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:26 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id 33so16828929edq.13
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:26 -0700 (PDT)
+        with ESMTP id S2388160AbgJLNS2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 09:18:28 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB89C0613D0
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:27 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id i5so16889518edr.5
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 06:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2TUjEk2WzlxSK5DdNDdO9Tl/sONKN92hcjKxyFdyhpM=;
-        b=ihQM3NAjTaciSAJuiBXnuZyqJMy2QO2Xl3WR3tVitBFgN52TqjtQ+3gfW8OiZ1qK2l
-         boLCUjktEvPZmyndW3naW9r1b5Ovn45z7k/1LfrXUrldHc0B2O+7x2j76dbLxLEITHTv
-         XqBE0w43BaSo313Za4U0JPzNePgw8w0vkDEpWl3N8O9IStHtQ6eKHuQ60TpcxL9xJUXU
-         qlV+yE/gj3/QxaUxGaHpJtMY6aX2Zqn/4uZRlrjoTI2lRqIgPSB87bxnpf4YhGKgIpWL
-         Jb6J7zqAyouCfTVnVrDmtM0pm1IAVd4ASIb6oGKhghkI9YLfY0f1GMPJiyUwDwudnnt7
-         zZmg==
+        bh=AKb1ORSrYwaqhwcZIKU1056JH5MXQiyVvSQIqGZ4l/A=;
+        b=bYAmr8pUCCzdX18JYZLIKNDXoJxyUaUmJXzgYU3Axtrawn2lB9YGBijRGMJalg5l8z
+         B45inLSKKExuFfKgvy7HoFHZRsuDZ/sG60WVlocIhQKzIEtWZMr2D7i1KLRLUpcy9pAi
+         901N27f9N/+CxzKhMUyWESviq98UN71Hxtby4wv2F/kGL74RXJJOJVixE9qTPIdi2LYE
+         cH0Qvh7RVQDlq/DJYzAcX+ff3l0VB6QgAXKBcuqH7fZT22WyIZ2EbMDh5iFOCnZ5ECLg
+         6zkeRIYpaH9fZ6gvT6zYRqUzOp/YkWAPXJIO8hB3gF3nh1oP9VzoH+uq7DUAMYb0gJcR
+         xPPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2TUjEk2WzlxSK5DdNDdO9Tl/sONKN92hcjKxyFdyhpM=;
-        b=gSF5swkVhm4/kKxYxYLG5MfwLe8byBVNOyHhbQYOn9ObFc/lffKYNCli0OMM7vQ5wP
-         o+Fbc+c1ZkAPulC0E8toJmUpKqwfx4xv5kmry1Canl2ijUQCv1yZxSv/soepr1WZcORN
-         CdzvZH43+x670I7nf2h1P74iJ2l5C5mmZjKHFgKw3YH1iWR9tWY2c2Catgc1ujDSftYW
-         CmKMlETpZGjyjh+VkKk4rGqlNrD+wZ/bXAVxyNe6arDZEvRc3rI18hFVxSLxJAe6xDVj
-         u/fXmcELKCTn9EHSPK4A/bhbBLgG15NINozMFcHk9bwIe/UK7xlJOgjp3vI6knsJhfv+
-         uGTg==
-X-Gm-Message-State: AOAM5329L94ILqJ7goMr+l7WQkPhF6Mj9x/D9VesAKQbJPh/K7oyTkTY
-        QVn8CY0a6uEluRIpB9QWuGJ+vNlWZ9rKRQ==
-X-Google-Smtp-Source: ABdhPJy4O+UVsqYzVBii0M/PL7Ge8y9dfjFONWbcaPxp1imGVyCjyM/HV4/XbGQPVPVcEqYlGY1Wtg==
-X-Received: by 2002:a50:aa84:: with SMTP id q4mr3067609edc.331.1602508705059;
+        bh=AKb1ORSrYwaqhwcZIKU1056JH5MXQiyVvSQIqGZ4l/A=;
+        b=kcc/TaWWRUOfjRGeIL/6ZpAoZW66iFe8WYy+nrrTF/M0iZAypUDt5lPPWJ6OYSX/gQ
+         +J4I8E2AWvVJeethRIMBPZ3YMlfYYRfm8a2SN2u37h6UQ5w3qpmlT8T6fhMEsrK+M+Ka
+         QpWMm3nYRjLSvopUarJQg4QQ8SOPx1WHdL217dFPeUqYB7/NUtEYmdL2nDXjlY5kSwpa
+         chH2o2BTGeDkscKAsguIm84XCIQoV/KCDMUjm6UkQbwlhF3OuZ2n05pBm4lr9PrKBeIJ
+         LzRa3UOB8UYmEflIZgPMEIV43f+5QdSpexsrjPUWCyk3xJPcSogQjg0IfzJpbetfq2/R
+         3bLA==
+X-Gm-Message-State: AOAM533Mjp8dE5xdl14b4KRrZLbkTE3cTzYoysOlG6Df1xFx1NhEpk+x
+        Xk8g9AnPe8FNRvumZOV22k0OCIiK3XK7Zg==
+X-Google-Smtp-Source: ABdhPJwuzqS7MP8TrVN64z/o1g73UFJebwSj64EKrdiEYW6xru2CrDP8mEVFhSRm+dpr1LqfsjcoZw==
+X-Received: by 2002:aa7:d782:: with SMTP id s2mr14032265edq.111.1602508705952;
         Mon, 12 Oct 2020 06:18:25 -0700 (PDT)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4915:9700:86d:33e0:2141:a74a])
-        by smtp.gmail.com with ESMTPSA id o12sm10828252ejb.36.2020.10.12.06.18.24
+        by smtp.gmail.com with ESMTPSA id o12sm10828252ejb.36.2020.10.12.06.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:18:24 -0700 (PDT)
+        Mon, 12 Oct 2020 06:18:25 -0700 (PDT)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCH for-next 09/13] RDMA/rtrs-clt: remove duplicated code
-Date:   Mon, 12 Oct 2020 15:18:10 +0200
-Message-Id: <20201012131814.121096-10-jinpu.wang@cloud.ionos.com>
+        jinpu.wang@cloud.ionos.com,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCH for-next 10/13] RDMA/rtrs-srv: fix typo
+Date:   Mon, 12 Oct 2020 15:18:11 +0200
+Message-Id: <20201012131814.121096-11-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com>
 References: <20201012131814.121096-1-jinpu.wang@cloud.ionos.com>
@@ -64,46 +65,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-process_info_rsp checks that sg_cnt is zero twice.
+It should mean region here.
 
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index f63f239bbf55..102df6898339 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2257,8 +2257,12 @@ static int process_info_rsp(struct rtrs_clt_sess *sess,
- 	int i, sgi;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+index dc95b0932f0d..6fb39e46e248 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+@@ -62,7 +62,7 @@ struct rtrs_srv_op {
  
- 	sg_cnt = le16_to_cpu(msg->sg_cnt);
--	if (unlikely(!sg_cnt))
-+	if (unlikely(!sg_cnt || (sess->queue_depth % sg_cnt))) {
-+		rtrs_err(sess->clt, "Incorrect sg_cnt %d, is not multiple\n",
-+			  sg_cnt);
- 		return -EINVAL;
-+	}
-+
- 	/*
- 	 * Check if IB immediate data size is enough to hold the mem_id and
- 	 * the offset inside the memory chunk.
-@@ -2271,11 +2275,6 @@ static int process_info_rsp(struct rtrs_clt_sess *sess,
- 			  MAX_IMM_PAYL_BITS, sg_cnt, sess->chunk_size);
- 		return -EINVAL;
- 	}
--	if (unlikely(!sg_cnt || (sess->queue_depth % sg_cnt))) {
--		rtrs_err(sess->clt, "Incorrect sg_cnt %d, is not multiple\n",
--			  sg_cnt);
--		return -EINVAL;
--	}
- 	total_len = 0;
- 	for (sgi = 0, i = 0; sgi < sg_cnt && i < sess->queue_depth; sgi++) {
- 		const struct rtrs_sg_desc *desc = &msg->desc[sgi];
+ /*
+  * server side memory region context, when always_invalidate=Y, we need
+- * queue_depth of memory regrion to invalidate each memory region.
++ * queue_depth of memory region to invalidate each memory region.
+  */
+ struct rtrs_srv_mr {
+ 	struct ib_mr	*mr;
 -- 
 2.25.1
 
