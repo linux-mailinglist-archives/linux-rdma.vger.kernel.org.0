@@ -2,32 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B3628AAFB
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 00:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC6628AB82
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 03:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387735AbgJKWly (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Oct 2020 18:41:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387717AbgJKWlx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 11 Oct 2020 18:41:53 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F8FB2074A;
-        Sun, 11 Oct 2020 22:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602456113;
-        bh=KjfGjYsSnfWIwHrASEVqiRbvBtfZz9AkJ6pI70LmAbY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DXXI2vnw0yJuPJ+UvqE/MJmockTPIdo7j2X4VD6cjbrAv9qt0TDpFCu4E2diTbvCa
-         shuUVYDttC88i8EshqLCBbS7Pgnjatcg9oMtKR2Gt/ZosE3SnuV5Kkmq5YtSR7y6jw
-         Db1nukMbgdyTCNrBWKddb4xAZNlStmyMTtVuHomM=
-Date:   Sun, 11 Oct 2020 15:41:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        id S1726685AbgJLBtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Oct 2020 21:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbgJLBtV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Oct 2020 21:49:21 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDC4C0613CE;
+        Sun, 11 Oct 2020 18:49:21 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q21so1556062pgi.13;
+        Sun, 11 Oct 2020 18:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rIbb0/SViFEAq3N3skmCoQu+YzgDQ+YxSiq/Tk6Jyjs=;
+        b=YatStj6JeisBAbir+YmU7Y5u3EZpGBGxbKaXAmw1CVHxTUc6NcIKpPqjbiRhurBwTi
+         9+/cysSBOniaSGTCjhfXMLOFLQ1wQHQuw0bdIqd4Z92Hmkv4PL0lszVvOvrbEK8jdOkM
+         sA5idgF+CcK58S1mlBzS4oJwDDX/f16/4ock0VZbnFal3wyWoA5qrRNDCgtEhlIsPcBD
+         fksa9vLGqLi7PndXJtXuZSSbdTIf92YYTPLiTcG0/O/6uOE+/2R7TEDcX6qaOK7xBobz
+         /I2Q4ZfZKhD18n2wf2Qb8rrn+HxwwIF7YwWylf6De1dZ0XhJo6DjT1h2S1IhR99CK/au
+         cOpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rIbb0/SViFEAq3N3skmCoQu+YzgDQ+YxSiq/Tk6Jyjs=;
+        b=P1khmQyt6XcIK9iZBdVMGA5yyOa0thxfr0siejD7Yk/F41QBbFx87amCp4UtaAJKCb
+         0/aPWtqmtyFcCsFj9w+OwOTkydmXNG0sL79VGnGNbI4RlEFBJzWXztJjqRdmC5bc930i
+         WBC+kYQhbI90l0kShk+DftX11Gtc4DiAyGfUecJQV5wbaSq7w3RSzLAfK7GcfLruGpDg
+         HUl5W7HMYgEMS7qHn99Bp0Wt/RrIUWG3AUEkfQvZvClXNxQJjnAF3KaWfiE7N6JAuMDJ
+         tvk8lUBpiBP+UCBHnGvW3/UtB8dcoW3+DJbew3bxhXyVoB6yqAPZlwj3KlgaDF/6Eelo
+         LaoA==
+X-Gm-Message-State: AOAM530FXK9j0TQduaJmK7YMwrrFpIwAewOsBrWcW/v0IbY+CuZtMyJH
+        YsxTMVo4Rseag1+C4YaZi9A=
+X-Google-Smtp-Source: ABdhPJw4Pe7H9he+gRS6c+vGPBxNBkJ5eYwam9urDtnsK8QiQhWjspuehNW3K1oIiXedZsnV0pVyCw==
+X-Received: by 2002:a62:5bc2:0:b029:13e:d13d:a130 with SMTP id p185-20020a625bc20000b029013ed13da130mr21501632pfb.24.1602467361220;
+        Sun, 11 Oct 2020 18:49:21 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id g3sm21133168pjl.6.2020.10.11.18.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Oct 2020 18:49:20 -0700 (PDT)
+Subject: Re: [PATCH net-next 08/12] net: dsa: use new function
+ dev_fetch_sw_netstats
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
         Oliver Neukum <oneukum@suse.com>,
         Igor Mitsyanko <imitsyanko@quantenna.com>,
         Sergey Matyukevich <geomatsi@gmail.com>,
@@ -36,49 +62,41 @@ Cc:     David Miller <davem@davemloft.net>,
         Nikolay Aleksandrov <nikolay@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
         Vladimir Oltean <olteanv@gmail.com>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         Johannes Berg <johannes@sipsolutions.net>,
         Pravin B Shelar <pshelar@ovn.org>,
         Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         linux-rdma@vger.kernel.org,
         Linux USB Mailing List <linux-usb@vger.kernel.org>,
         linux-wireless <linux-wireless@vger.kernel.org>,
         bridge@lists.linux-foundation.org
-Subject: Re: [PATCH net-next 00/12] net: add and use function
- dev_fetch_sw_netstats for fetching pcpu_sw_netstats
-Message-ID: <20201011154150.6cad3758@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1f1dceab-bab0-ff9e-dae6-ed35be504a9c@gmail.com>
 References: <a46f539e-a54d-7e92-0372-cd96bb280729@gmail.com>
-        <20201011151030.05ad88dd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <1f1dceab-bab0-ff9e-dae6-ed35be504a9c@gmail.com>
+ <4c7b9a8d-caa2-52dd-8973-10f4e2892dd6@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <44356f33-2191-c5a6-4c38-50c2934d16b0@gmail.com>
+Date:   Sun, 11 Oct 2020 18:49:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <4c7b9a8d-caa2-52dd-8973-10f4e2892dd6@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 12 Oct 2020 00:29:52 +0200 Heiner Kallweit wrote:
-> On 12.10.2020 00:10, Jakub Kicinski wrote:
-> > On Sun, 11 Oct 2020 21:34:58 +0200 Heiner Kallweit wrote:  
-> >> In several places the same code is used to populate rtnl_link_stats64
-> >> fields with data from pcpu_sw_netstats. Therefore factor out this code
-> >> to a new function dev_fetch_sw_netstats().  
-> > 
-> > FWIW probably fine to convert nfp_repr_get_host_stats64() as well, just
-> > take out the drop counter and make it a separate atomic. If you're up
-> > for that.
-> >   
-> Looking at nfp_repr_get_host_stats64() I'm not sure why the authors
-> decided to add a 64bit tx drop counter, struct net_device_stats has
-> an unsigned long tx_dropped counter already. And that the number of
-> dropped tx packets exceeds 32bit (on 32bit systems) seems not very
-> likely.
 
-struct net_device::stats? That's not per-cpu.
-Or do you mean struct net_device::tx_dropped? That'd work nicely.
+
+On 10/11/2020 12:41 PM, Heiner Kallweit wrote:
+> Simplify the code by using new function dev_fetch_sw_netstats().
+> 
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
