@@ -2,108 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15F728AD47
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 06:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB61628AD65
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 06:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgJLEsJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 00:48:09 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22482 "EHLO mga01.intel.com"
+        id S1725967AbgJLE4I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 00:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJLEsH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:48:07 -0400
-IronPort-SDR: D5zKImA/blPs9ugNxSdwTFqrAiCPQ7MfkSDjdD7L1ZPrs2PLYW8mlo8pL00EnU95KhYD7GvV7Z
- Er8+B/ppaVCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="183144505"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="183144505"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:58 -0700
-IronPort-SDR: OeJlrvjJIthwDW5ZiLkp+F246Fw9BWID0JMdXYyjjISLX5UipnPYleFarWgQdoLnt1ZOhIB0kv
- QrFucSf/AAcw==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="529805779"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:57 -0700
-Date:   Sun, 11 Oct 2020 21:47:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freed.esktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@tron.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new
- kmap_thread()
-Message-ID: <20201012044756.GY2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-11-ira.weiny@intel.com>
- <20201009195033.3208459-1-ira.weiny@intel.com>
- <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+        id S1725917AbgJLE4I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:56:08 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C0BE2076C;
+        Mon, 12 Oct 2020 04:56:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602478567;
+        bh=kPt9XZJOp0Cbqt+/5wIeYXokd4ZA7ROyGHIfA+eHTu0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aDaxTK9X5WbLET8rI6AA3MnX4GEqSTtFtlBDYq6Hcf5PuP0nfXATqogQXe3VMSjUi
+         DL3gFl8zoyyYVdPQg401vXQYvKpcrK76jm0VhKEf4+vIeUtphK2qd4JJ4EhWS01hvl
+         6MQgNp5LI/GHWIha8yJn2xWcA3Wduz2RKR0F199A=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-rc 0/3] Fixes to coming PR
+Date:   Mon, 12 Oct 2020 07:55:57 +0300
+Message-Id: <20201012045600.418271-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 11:36:49AM +0000, Bernard Metzler wrote:
-> -----ira.weiny@intel.com wrote: -----
-> 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[snip]
+Leon Romanovsky (2):
+  RDMA/core: Postpone uobject cleanup on failure till FD close
+  RDMA/core: Make FD destroy callback void
 
-> >@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 				page_array[seg] = p;
-> > 
-> > 				if (!c_tx->use_sendpage) {
-> >-					iov[seg].iov_base = kmap(p) + fp_off;
-> >+					iov[seg].iov_base = kmap_thread(p) + fp_off;
-> 
-> This misses a corresponding kunmap_thread() in siw_unmap_pages()
-> (pls change line 403 in siw_qp_tx.c as well)
+Maor Gottlieb (1):
+  RDMA/ucma: Fix use after free in destroy id flow
 
-Thanks I missed that.
+ drivers/infiniband/core/rdma_core.c           | 45 ++++++++-----------
+ drivers/infiniband/core/ucma.c                | 11 ++---
+ drivers/infiniband/core/uverbs_cmd.c          |  5 +--
+ drivers/infiniband/core/uverbs_std_types.c    | 18 +++-----
+ .../core/uverbs_std_types_async_fd.c          |  5 +--
+ .../core/uverbs_std_types_counters.c          |  5 +--
+ drivers/infiniband/core/uverbs_std_types_cq.c |  4 +-
+ drivers/infiniband/core/uverbs_std_types_dm.c |  6 +--
+ .../core/uverbs_std_types_flow_action.c       |  6 +--
+ drivers/infiniband/core/uverbs_std_types_qp.c |  4 +-
+ .../infiniband/core/uverbs_std_types_srq.c    |  4 +-
+ drivers/infiniband/core/uverbs_std_types_wq.c |  4 +-
+ drivers/infiniband/hw/mlx5/devx.c             | 14 +++---
+ drivers/infiniband/hw/mlx5/fs.c               |  6 +--
+ include/rdma/ib_verbs.h                       | 42 -----------------
+ include/rdma/uverbs_types.h                   |  4 +-
+ 16 files changed, 59 insertions(+), 124 deletions(-)
 
-Done.
+--
+2.26.2
 
-Ira
-
-> 
-> Thanks,
-> Bernard.
-> 
