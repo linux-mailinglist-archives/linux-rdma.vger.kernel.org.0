@@ -2,74 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B8828B435
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 13:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8845028C2C4
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 22:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbgJLL4X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 12 Oct 2020 07:56:23 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3629 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388255AbgJLL4W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:56:22 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 27CB1BF8E31593D0B24E;
-        Mon, 12 Oct 2020 19:56:18 +0800 (CST)
-Received: from dggema701-chm.china.huawei.com (10.3.20.65) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 12 Oct 2020 19:56:17 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema701-chm.china.huawei.com (10.3.20.65) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 12 Oct 2020 19:56:17 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Mon, 12 Oct 2020 19:56:17 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next] RDMA/hns: Support owner mode doorbell
-Thread-Topic: [PATCH v2 for-next] RDMA/hns: Support owner mode doorbell
-Thread-Index: AQHWlLMb4zB6/tAMkEeu4l0wwJS1hw==
-Date:   Mon, 12 Oct 2020 11:56:17 +0000
-Message-ID: <1a828087e5ad4880941310afb6843958@huawei.com>
-References: <1601199901-41677-1-git-send-email-liweihang@huawei.com>
- <20200929165356.GA757147@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727077AbgJLUmT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 12 Oct 2020 16:42:19 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:55420 "EHLO mx.metalurgs.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726396AbgJLUmT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:42:19 -0400
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id E4EC37FBE3
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 23:09:43 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id F2E7F7170C
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 22:33:21 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id EBE321301D; Mon, 12 Oct 2020 16:45:08 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.55])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id 378F464664;
+        Mon, 12 Oct 2020 15:19:11 +0300 (EEST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Mon, 12 Oct 2020 09:19:05 -0300
+Reply-To: hmurrah39@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201012192017.EBE321301D@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan./n.,
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201012 notchecked
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/9/30 0:54, Jason Gunthorpe wrote:
-> On Sun, Sep 27, 2020 at 05:45:01PM +0800, Weihang Li wrote:
->> @@ -517,7 +514,18 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
->>  
->>  	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
->>  
->> +	/*
->> +	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
->> +	 * including new WQEs waiting for the doorbell to update the PI again.
->> +	 * Therefore, the owner bit of WQE MUST be updated after all fields
->> +	 * and extSGEs have been written into DDR instead of cache.
->> +	 */
->> +	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
->> +		wmb();
-> 
-> Should this be dma_wmb() ?
-> 
-> Jason
-> 
+Hello Dear,
 
-Yes, dma_wmb() is better, thank you.
+We are Investment Company offering Corporate and Personal
+Loan at 3% Interest Rate for a duration of 10Years.
 
-Weihang
+We also pay 1% commission to brokers, who introduce project
+owners for finance or other opportunities.
+
+Please get back to me if you are interested for more
+details.
+
+Yours faithfully,
+Hashim Bin 
