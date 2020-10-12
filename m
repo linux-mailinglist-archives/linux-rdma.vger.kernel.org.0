@@ -2,124 +2,361 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0F128AD69
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 06:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BAA28AD8E
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 07:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgJLE4U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 00:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJLE4T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:56:19 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 518212076C;
-        Mon, 12 Oct 2020 04:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602478579;
-        bh=rgesGTZtS+Q/witwdtwW8dBw4+gv/G6kpFE0gVB1/bk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwIfvW2Brb+pFTnFxkVbD4c152536JQpCGLF62wHoUlmxJcZuJa9GevhUQPvxSlbt
-         SHhTqDL9+ZdZCI1WbrbmCVOAtUtZ9wSK9xvQ5aVJiIQu2rdVs9hKYOxZrHipztzYkH
-         s7J8zA2FqAsp4p8aUcDDTJZA8ZTSkzIp/ux+m8Ew=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc 3/3] RDMA/ucma: Fix use after free in destroy id flow
-Date:   Mon, 12 Oct 2020 07:56:00 +0300
-Message-Id: <20201012045600.418271-4-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201012045600.418271-1-leon@kernel.org>
-References: <20201012045600.418271-1-leon@kernel.org>
+        id S1726396AbgJLFV4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 01:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgJLFV4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 01:21:56 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED889C0613CE
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Oct 2020 22:21:55 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id dg9so13201305edb.12
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Oct 2020 22:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F0R5L1o53BoczTM3Ja6SfdG7GuhxvBRufVBIdjGJFXc=;
+        b=R2fpRB1Zx0eB4xJ3XescO3XW2ADr7656/xelLBJlE9P7BNX4csGtiWgDTDlzDXCBG0
+         Y18lVQTKoPvOAF0i1t+xuB8yRAreJRmD8xaIUMKaGPEiY4ARsJjbPoM4SLWdUfWaNmj0
+         eV8X105PR4qTDVLk6cXIMCzdAYXn7Q8icVpAmPpnplpgGjbom9XIi5RRZiVEpojlkmwH
+         RsU8++HeO2h3S7DTBBk6pX8ZWBz/aNOFt2i4f5uGFyvfAZLX83U3zhxPo3DJ3LFBc2zh
+         3NJfO7yecVN955UnXR3jg78eEff+4VdCuZi731heXiu9MMBuuIf5WVfppiVeN7qe8ASZ
+         TlhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F0R5L1o53BoczTM3Ja6SfdG7GuhxvBRufVBIdjGJFXc=;
+        b=ZGlF1fdphJUr9uLEpxBC5zECpyCmJ8COW03rUT6K+c72+PTB8zRqz4UG6u+uAMC726
+         cUmadmgI+Jk5s7ZDohSISJseyxpcfSYFh4SU+aYAcUTphhvykHpS1xub9Nsx5mhTXkBa
+         FFw7Bxw/NQ6V/b+7QUh+MXie97vnePdoU8ofdU208duiAwPV5e3UL6meaJ96TgqP2n80
+         6M0wZ+skS55drmya5PYwDk6XZxpAk0Jmvwze+tpA1EaJwUECYjJ66tOZ+yChk1Jn7LdC
+         ASV9HTSTiQDQ3cnDVOi01NnM78h01igMKb71CJzc8467bydxnH+nDY6ZxzmPrGbRiScL
+         H8Ww==
+X-Gm-Message-State: AOAM533iblBKxV2cnrdS+zEzOYhmAvLzIiA/BTlM7/Ue2I/3kuTUePs2
+        gc59ShnkJWBetvnERLiKXAg6hjnhi+nBt8griRcNXw==
+X-Google-Smtp-Source: ABdhPJxHdpvy19s/xYCWzkpKSX+ALqmaw1prmc7MiSkQvjUrP4IK5aSwT2ZeKjUc7fK1/u4135/S94DOLeteS3MKI+o=
+X-Received: by 2002:aa7:c984:: with SMTP id c4mr12079683edt.42.1602480114295;
+ Sun, 11 Oct 2020 22:21:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1602122879.git.joe@perches.com> <7761c1efaebb96c432c85171d58405c25a824ccd.1602122880.git.joe@perches.com>
+In-Reply-To: <7761c1efaebb96c432c85171d58405c25a824ccd.1602122880.git.joe@perches.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 12 Oct 2020 07:21:43 +0200
+Message-ID: <CAMGffE=bkmnUn+fo1QJRJ3tC_gyagyf-spxTtBrM_6rbpYZFxg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] RDMA: Convert sysfs kobject * show functions to use sysfs_emit()
+To:     Joe Perches <joe@perches.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
-
-ucma_free_ctx should call to __destroy_id on all the connection
-requests that have not been delivered to user space. Currently
-it calls on the context itself and cause to use after free.
-
-Fixes the below trace:
-BUG: Unable to handle kernel data access on write at
-0x5deadbeef0000108
-Faulting instruction address: 0xc0080000002428f4
-Oops: Kernel access of bad area, sig: 11 [#1]
-Call Trace:
-[c000000207f2b680] [c00800000024280c] .__destroy_id+0x28c/0x610 [rdma_ucm] (unreliable)
-[c000000207f2b750] [c0080000002429c4] .__destroy_id+0x444/0x610 [rdma_ucm]
-[c000000207f2b820] [c008000000242c24] .ucma_close+0x94/0xf0 [rdma_ucm]
-[c000000207f2b8c0] [c00000000046fbdc] .__fput+0xac/0x330
-[c000000207f2b960] [c00000000015d48c] .task_work_run+0xbc/0x110
-[c000000207f2b9f0] [c00000000012fb00] .do_exit+0x430/0xc50
-[c000000207f2bae0] [c0000000001303ec] .do_group_exit+0x5c/0xd0
-[c000000207f2bb70] [c000000000144a34] .get_signal+0x194/0xe30
-[c000000207f2bc60] [c00000000001f6b4] .do_notify_resume+0x124/0x470
-[c000000207f2bd60] [c000000000032484]
-.interrupt_exit_user_prepare+0x1b4/0x240
-[c000000207f2be20] [c000000000010034] interrupt_return+0x14/0x1c0
-Instruction dump:
-7d094378 3906ffe8 4082ffa8 3f205dea 3f405dea e95d0120 e91d0118
-6339dbee
-635adbee e93f0888 7b3907c6 7b5a07c6 <f9480008> 6739f000 f90a0000
-675af000
----[ end trace 9796e2b012b61b83 ]---
-
-Fixes: a1d33b70dbbc ("RDMA/ucma: Rework how new connections are passed through event delivery")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/ucma.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 08a628246bd6..ffe2563ad345 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -112,7 +112,7 @@ struct ucma_multicast {
-
- struct ucma_event {
- 	struct ucma_context	*ctx;
--	struct ucma_context	*listen_ctx;
-+	struct ucma_context	*conn_req_ctx;
- 	struct ucma_multicast	*mc;
- 	struct list_head	list;
- 	struct rdma_ucm_event_resp resp;
-@@ -308,7 +308,7 @@ static int ucma_connect_event_handler(struct rdma_cm_id *cm_id,
- 	uevent = ucma_create_uevent(listen_ctx, event);
- 	if (!uevent)
- 		goto err_alloc;
--	uevent->listen_ctx = listen_ctx;
-+	uevent->conn_req_ctx = ctx;
- 	uevent->resp.id = ctx->id;
-
- 	ctx->cm_id->context = ctx;
-@@ -534,7 +534,7 @@ static int ucma_free_ctx(struct ucma_context *ctx)
- 	/* Cleanup events not yet reported to the user. */
- 	mutex_lock(&ctx->file->mut);
- 	list_for_each_entry_safe(uevent, tmp, &ctx->file->event_list, list) {
--		if (uevent->ctx == ctx || uevent->listen_ctx == ctx)
-+		if (uevent->ctx == ctx || uevent->conn_req_ctx == ctx)
- 			list_move_tail(&uevent->list, &list);
- 	}
- 	list_del(&ctx->list);
-@@ -548,8 +548,9 @@ static int ucma_free_ctx(struct ucma_context *ctx)
- 	 */
- 	list_for_each_entry_safe(uevent, tmp, &list, list) {
- 		list_del(&uevent->list);
--		if (uevent->resp.event == RDMA_CM_EVENT_CONNECT_REQUEST)
--			__destroy_id(uevent->ctx);
-+		if (uevent->resp.event == RDMA_CM_EVENT_CONNECT_REQUEST &&
-+		    uevent->conn_req_ctx != ctx)
-+			__destroy_id(uevent->conn_req_ctx);
- 		kfree(uevent);
- 	}
-
---
-2.26.2
-
+On Thu, Oct 8, 2020 at 4:36 AM Joe Perches <joe@perches.com> wrote:
+>
+> Done with cocci script:
+>
+> @@
+> identifier k_show;
+> identifier arg1, arg2, arg3;
+> @@
+> ssize_t k_show(struct kobject *
+> -       arg1
+> +       kobj
+>         , struct kobj_attribute *
+> -       arg2
+> +       attr
+>         , char *
+> -       arg3
+> +       buf
+>         )
+> {
+>         ...
+> (
+> -       arg1
+> +       kobj
+> |
+> -       arg2
+> +       attr
+> |
+> -       arg3
+> +       buf
+> )
+>         ...
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         return
+> -       sprintf(buf,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         return
+> -       snprintf(buf, PAGE_SIZE,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         return
+> -       scnprintf(buf, PAGE_SIZE,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> expression chr;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         return
+> -       strcpy(buf, chr);
+> +       sysfs_emit(buf, chr);
+>         ...>
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> identifier len;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         len =
+> -       sprintf(buf,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+>         return len;
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> identifier len;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         len =
+> -       snprintf(buf, PAGE_SIZE,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+>         return len;
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> identifier len;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+>         len =
+> -       scnprintf(buf, PAGE_SIZE,
+> +       sysfs_emit(buf,
+>         ...);
+>         ...>
+>         return len;
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> identifier len;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         <...
+> -       len += scnprintf(buf + len, PAGE_SIZE - len,
+> +       len += sysfs_emit_at(buf, len,
+>         ...);
+>         ...>
+>         return len;
+> }
+>
+> @@
+> identifier k_show;
+> identifier kobj, attr, buf;
+> expression chr;
+> @@
+>
+> ssize_t k_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> {
+>         ...
+> -       strcpy(buf, chr);
+> -       return strlen(buf);
+> +       return sysfs_emit(buf, chr);
+> }
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+Thanks,
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 26 ++++++++++----------
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 14 +++++------
+>  2 files changed, 20 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> index 7f71f10126fc..0c767582286b 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> @@ -187,9 +187,9 @@ static ssize_t rtrs_clt_state_show(struct kobject *kobj,
+>
+>         sess = container_of(kobj, struct rtrs_clt_sess, kobj);
+>         if (sess->state == RTRS_CLT_CONNECTED)
+> -               return sprintf(page, "connected\n");
+> +               return sysfs_emit(page, "connected\n");
+>
+> -       return sprintf(page, "disconnected\n");
+> +       return sysfs_emit(page, "disconnected\n");
+>  }
+>
+>  static struct kobj_attribute rtrs_clt_state_attr =
+> @@ -197,10 +197,10 @@ static struct kobj_attribute rtrs_clt_state_attr =
+>
+>  static ssize_t rtrs_clt_reconnect_show(struct kobject *kobj,
+>                                         struct kobj_attribute *attr,
+> -                                       char *page)
+> +                                       char *buf)
+>  {
+> -       return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
+> -                        attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> +                         attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_reconnect_store(struct kobject *kobj,
+> @@ -229,10 +229,10 @@ static struct kobj_attribute rtrs_clt_reconnect_attr =
+>
+>  static ssize_t rtrs_clt_disconnect_show(struct kobject *kobj,
+>                                          struct kobj_attribute *attr,
+> -                                        char *page)
+> +                                        char *buf)
+>  {
+> -       return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
+> -                        attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> +                         attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_disconnect_store(struct kobject *kobj,
+> @@ -261,10 +261,10 @@ static struct kobj_attribute rtrs_clt_disconnect_attr =
+>
+>  static ssize_t rtrs_clt_remove_path_show(struct kobject *kobj,
+>                                           struct kobj_attribute *attr,
+> -                                         char *page)
+> +                                         char *buf)
+>  {
+> -       return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
+> -                        attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> +                         attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_remove_path_store(struct kobject *kobj,
+> @@ -327,7 +327,7 @@ static ssize_t rtrs_clt_hca_port_show(struct kobject *kobj,
+>
+>         sess = container_of(kobj, typeof(*sess), kobj);
+>
+> -       return scnprintf(page, PAGE_SIZE, "%u\n", sess->hca_port);
+> +       return sysfs_emit(page, "%u\n", sess->hca_port);
+>  }
+>
+>  static struct kobj_attribute rtrs_clt_hca_port_attr =
+> @@ -341,7 +341,7 @@ static ssize_t rtrs_clt_hca_name_show(struct kobject *kobj,
+>
+>         sess = container_of(kobj, struct rtrs_clt_sess, kobj);
+>
+> -       return scnprintf(page, PAGE_SIZE, "%s\n", sess->hca_name);
+> +       return sysfs_emit(page, "%s\n", sess->hca_name);
+>  }
+>
+>  static struct kobj_attribute rtrs_clt_hca_name_attr =
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> index 07fbb063555d..381a776ce404 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> @@ -28,10 +28,10 @@ static struct kobj_type ktype = {
+>
+>  static ssize_t rtrs_srv_disconnect_show(struct kobject *kobj,
+>                                          struct kobj_attribute *attr,
+> -                                        char *page)
+> +                                        char *buf)
+>  {
+> -       return scnprintf(page, PAGE_SIZE, "Usage: echo 1 > %s\n",
+> -                        attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> +                         attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_srv_disconnect_store(struct kobject *kobj,
+> @@ -72,8 +72,8 @@ static ssize_t rtrs_srv_hca_port_show(struct kobject *kobj,
+>         sess = container_of(kobj, typeof(*sess), kobj);
+>         usr_con = sess->s.con[0];
+>
+> -       return scnprintf(page, PAGE_SIZE, "%u\n",
+> -                        usr_con->cm_id->port_num);
+> +       return sysfs_emit(page, "%u\n",
+> +                         usr_con->cm_id->port_num);
+>  }
+>
+>  static struct kobj_attribute rtrs_srv_hca_port_attr =
+> @@ -87,8 +87,8 @@ static ssize_t rtrs_srv_hca_name_show(struct kobject *kobj,
+>
+>         sess = container_of(kobj, struct rtrs_srv_sess, kobj);
+>
+> -       return scnprintf(page, PAGE_SIZE, "%s\n",
+> -                        sess->s.dev->ib_dev->name);
+> +       return sysfs_emit(page, "%s\n",
+> +                         sess->s.dev->ib_dev->name);
+>  }
+>
+>  static struct kobj_attribute rtrs_srv_hca_name_attr =
+> --
+> 2.26.0
+>
