@@ -2,157 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F42728AE8F
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 08:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9980F28AED0
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 09:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgJLG4s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 02:56:48 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8586 "EHLO mga11.intel.com"
+        id S1726334AbgJLHLO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 03:11:14 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:48493 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgJLG4p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 02:56:45 -0400
-IronPort-SDR: KdOQg+ZBqIiV/ltrco9eP5XufL+zHKA8feyxTD5Z0KzKXfiHluIayIhHF5kMMjoAONeEwr8w70
- b6av5HCblNFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="162232222"
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="162232222"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 23:56:37 -0700
-IronPort-SDR: DSpSIoZKV7KPLq4zxFvBA+ZLKNkpgmuUQCwMmUi8wsqk6OFxxWBKXoVpyUUZRY9EN2DChpPczf
- 4EPhWIQlBVGQ==
-X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
-   d="scan'208";a="529842687"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 23:56:35 -0700
-Date:   Sun, 11 Oct 2020 23:56:35 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
-        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
-        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
-        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
-Message-ID: <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-23-ira.weiny@intel.com>
- <20201009213434.GA839@sol.localdomain>
- <20201010003954.GW20115@casper.infradead.org>
- <20201010013036.GD1122@sol.localdomain>
+        id S1726497AbgJLHLL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Oct 2020 03:11:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602486670; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=JAOckvyZSGiRSyfXilzxRRUkdvcueb1oRO7CQ0IBXN0=; b=FWI5vGkobw1EIgauG5dYiDR6ebbAfKeYpHd8jQDKVsX/2Q8jVNq9Okqf9QN2JjpTyfZeNt9e
+ XTLuqsh/EfuJVq9jITT+XF4kEdefjCXFeogbFFfUrPqeCGMguXCjFvrq80eQ1SJFaqfJs1PL
+ lIfcFTsZoWKbSgmQjY5HCUPRTXQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI3Mjk5YSIsICJsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f84017eaad2c3cd1ca5f734 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Oct 2020 07:10:54
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3E5DC433AF; Mon, 12 Oct 2020 07:10:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44889C433CB;
+        Mon, 12 Oct 2020 07:10:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44889C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?utf-8?Q?Bj=C3=B8rn?= Mork <bjorn@mork.no>,
+        Oliver Neukum <oneukum@suse.com>,
+        Igor Mitsyanko <imitsyanko@quantenna.com>,
+        Sergey Matyukevich <geomatsi@gmail.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        bridge@lists.linux-foundation.org
+Subject: Re: [PATCH net-next 06/12] qtnfmac: use new function dev_fetch_sw_netstats
+References: <a46f539e-a54d-7e92-0372-cd96bb280729@gmail.com>
+        <a4fa20e9-23bc-4f2f-cbe9-16d801ce3b20@gmail.com>
+Date:   Mon, 12 Oct 2020 10:10:43 +0300
+In-Reply-To: <a4fa20e9-23bc-4f2f-cbe9-16d801ce3b20@gmail.com> (Heiner
+        Kallweit's message of "Sun, 11 Oct 2020 21:40:10 +0200")
+Message-ID: <87sgajzzpo.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010013036.GD1122@sol.localdomain>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 06:30:36PM -0700, Eric Biggers wrote:
-> On Sat, Oct 10, 2020 at 01:39:54AM +0100, Matthew Wilcox wrote:
-> > On Fri, Oct 09, 2020 at 02:34:34PM -0700, Eric Biggers wrote:
-> > > On Fri, Oct 09, 2020 at 12:49:57PM -0700, ira.weiny@intel.com wrote:
-> > > > The kmap() calls in this FS are localized to a single thread.  To avoid
-> > > > the over head of global PKRS updates use the new kmap_thread() call.
-> > > >
-> > > > @@ -2410,12 +2410,12 @@ static inline struct page *f2fs_pagecache_get_page(
-> > > >  
-> > > >  static inline void f2fs_copy_page(struct page *src, struct page *dst)
-> > > >  {
-> > > > -	char *src_kaddr = kmap(src);
-> > > > -	char *dst_kaddr = kmap(dst);
-> > > > +	char *src_kaddr = kmap_thread(src);
-> > > > +	char *dst_kaddr = kmap_thread(dst);
-> > > >  
-> > > >  	memcpy(dst_kaddr, src_kaddr, PAGE_SIZE);
-> > > > -	kunmap(dst);
-> > > > -	kunmap(src);
-> > > > +	kunmap_thread(dst);
-> > > > +	kunmap_thread(src);
-> > > >  }
-> > > 
-> > > Wouldn't it make more sense to switch cases like this to kmap_atomic()?
-> > > The pages are only mapped to do a memcpy(), then they're immediately unmapped.
-> > 
-> > Maybe you missed the earlier thread from Thomas trying to do something
-> > similar for rather different reasons ...
-> > 
-> > https://lore.kernel.org/lkml/20200919091751.011116649@linutronix.de/
-> 
-> I did miss it.  I'm not subscribed to any of the mailing lists it was sent to.
-> 
-> Anyway, it shouldn't matter.  Patchsets should be standalone, and not require
-> reading random prior threads on linux-kernel to understand.
+Heiner Kallweit <hkallweit1@gmail.com> writes:
 
-Sorry, but I did not think that the discussion above was directly related.  If
-I'm not mistaken, Thomas' work was directed at relaxing kmap_atomic() into
-kmap_thread() calls.  While interesting, it is not the point of this series.  I
-want to restrict kmap() callers into kmap_thread().
+> Simplify the code by using new function dev_fetch_sw_netstats().
+>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-For this series it was considered to change the kmap_thread() call sites to
-kmap_atomic().  But like I said in the cover letter kmap_atomic() is not the
-same semantic.  It is too strict.  Perhaps I should have expanded that
-explanation.
+I assume this goes via net-next so:
 
-> 
-> And I still don't really understand.  After this patchset, there is still code
-> nearly identical to the above (doing a temporary mapping just for a memcpy) that
-> would still be using kmap_atomic().
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
-I don't understand.  You mean there would be other call sites calling:
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-kmap_atomic()
-memcpy()
-kunmap_atomic()
-
-?
-
-> Is the idea that later, such code will be
-> converted to use kmap_thread() instead?  If not, why use one over the other?
- 
-
-The reason for the new call is that with PKS added behind kmap we have 3 levels
-of mapping we want.
-
-global kmap (can span threads and sleep)
-'thread' kmap (can sleep but not span threads)
-'atomic' kmap (can't sleep nor span threads [by definition])
-
-As Matthew said perhaps 'global kmaps' may be best changed to vmaps?  I just
-don't know the details of every call site.
-
-And since I don't know the call site details if there are kmap_thread() calls
-which are better off as kmap_atomic() calls I think it is worth converting
-them.  But I made the assumption that kmap users would already be calling
-kmap_atomic() if they could (because it is more efficient).
-
-Ira
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
