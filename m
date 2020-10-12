@@ -2,63 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8845028C2C4
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 22:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C921228B4B5
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 14:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgJLUmT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 12 Oct 2020 16:42:19 -0400
-Received: from mx.metalurgs.lv ([81.198.125.103]:55420 "EHLO mx.metalurgs.lv"
+        id S1726531AbgJLMhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 08:37:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:39194 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgJLUmT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:42:19 -0400
-Received: from mx.metalurgs.lv (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id E4EC37FBE3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 23:09:43 +0300 (EEST)
-Received: from kas30pipe.localhost (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id F2E7F7170C
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Oct 2020 22:33:21 +0300 (EEST)
-Received: by mx.metalurgs.lv (Postfix, from userid 1005)
-        id EBE321301D; Mon, 12 Oct 2020 16:45:08 +0300 (EEST)
-Received: from [100.64.1.74] (unknown [190.15.125.55])
-        (Authenticated sender: admin)
-        by mx.metalurgs.lv (Postfix) with ESMTPA id 378F464664;
-        Mon, 12 Oct 2020 15:19:11 +0300 (EEST)
+        id S1726348AbgJLMhB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:37:01 -0400
+IronPort-SDR: OR2bUKtcph/ao4WnueK4SiN3repoxYzBpqlQyOiEqNdKlvmqJjoKDxFAPjZmPp2CBk7X/SnUVQ
+ L3q9UpSDk/sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="162264369"
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="162264369"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 05:37:01 -0700
+IronPort-SDR: 1XoUDNBtzVcVscTXU97SkSUBX9lsh7d3oEWRdc/OOsaupeZ0VbRU50p0x2r5vDKTHCKzQTBLE4
+ Aut4qsodfQCQ==
+X-IronPort-AV: E=Sophos;i="5.77,366,1596524400"; 
+   d="scan'208";a="529937906"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.99]) ([10.254.201.99])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 05:37:00 -0700
+Subject: Re: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
+To:     Xianting Tian <tian.xianting@h3c.com>, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201010085732.20708-1-tian.xianting@h3c.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
+Date:   Mon, 12 Oct 2020 08:36:57 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Description: Mail message body
-To:     Recipients <financialcapability6@gmail.com>
-From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
-Date:   Mon, 12 Oct 2020 09:19:05 -0300
-Reply-To: hmurrah39@gmail.com
-X-SpamTest-Envelope-From: financialcapability6@gmail.com
-X-SpamTest-Group-ID: 00000000
-X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
-X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
-X-SpamTest-Info: {DATE: unreal year}
-X-SpamTest-Method: none
-X-SpamTest-Rate: 55
-X-SpamTest-Status: Not detected
-X-SpamTest-Status-Extended: not_detected
-X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
-Message-ID: <20201012192017.EBE321301D@mx.metalurgs.lv>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-Subject: Low Rate Loan./n.,
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-         bases: 20140401 #7726142, check: 20201012 notchecked
+In-Reply-To: <20201010085732.20708-1-tian.xianting@h3c.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Dear,
+On 10/10/2020 4:57 AM, Xianting Tian wrote:
+> In architecture like powerpc, we can have cpus without any local memory
+> attached to it. In such cases the node does not have real memory.
+> 
+> Use local_memory_node(), which is guaranteed to have memory.
+> local_memory_node is a noop in other architectures that does not support
+> memoryless nodes.
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>   drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+> index 8ca51e43c..79fa22cc7 100644
+> --- a/drivers/infiniband/hw/hfi1/file_ops.c
+> +++ b/drivers/infiniband/hw/hfi1/file_ops.c
+> @@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
+>   	 */
+>   	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
+>   	if (fd->rec_cpu_num != -1)
+> -		numa = cpu_to_node(fd->rec_cpu_num);
+> +		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
+>   	else
+>   		numa = numa_node_id();
+>   	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
+> 
 
-We are Investment Company offering Corporate and Personal
-Loan at 3% Interest Rate for a duration of 10Years.
+The hfi1 driver depends on X86_64. I'm not sure what this patch buys, 
+can you expand a bit?
 
-We also pay 1% commission to brokers, who introduce project
-owners for finance or other opportunities.
-
-Please get back to me if you are interested for more
-details.
-
-Yours faithfully,
-Hashim Bin 
+-Denny
