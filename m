@@ -2,118 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9C428ADB1
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 07:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A54828ADBD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Oct 2020 07:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgJLF21 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 01:28:27 -0400
-Received: from mga17.intel.com ([192.55.52.151]:47714 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgJLF2Y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Oct 2020 01:28:24 -0400
-IronPort-SDR: GbtTGQ+LIQEViS39Onovks2tUDOKKPU08qCafY5K9+vdym21FqKofkTnIdrJANf0p7lkfhRJrl
- S2tkbyTKSPrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145556285"
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="145556285"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:28:23 -0700
-IronPort-SDR: Awdi9Evv+UAQx0jH4ny/s7+Nxcmli85F+a73BOsSCHQvCG+q13xwJ2JLwUM5pKItlqpgm8qi5b
- o2XGvRLHUUbw==
-X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="529816997"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 22:28:22 -0700
-Date:   Sun, 11 Oct 2020 22:28:18 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Coly Li <colyli@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 48/58] drivers/md: Utilize new kmap_thread()
-Message-ID: <20201012052817.GZ2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-49-ira.weiny@intel.com>
- <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
+        id S1726098AbgJLFak (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 01:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgJLFak (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 01:30:40 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F46C0613CE
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Oct 2020 22:30:39 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l16so15586379eds.3
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Oct 2020 22:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q+tlvBIXPIpndKCtroYI+zFWJEcB8tB+JAa3U2YJgP8=;
+        b=gH/ilyTgySSIfu8sXrVWLSqL5M31gZ5gqAyDRGOQY79qNirVqmcJ+K7uc31x+F6SYy
+         x6XXvDerbyLDzLm4U55OBdG9OZOvh8a3dLRL8bUR8R2IYFY97e/1OgxRb4wFITuvi43T
+         yVF1zEX9zG1TrePr7o0m9SxTGyUMIGx4SnY9EF2ZMg/pN9vggY5RFdxzlQ7MIF9QCRUv
+         eFc8LGkqsQySVPmTDz3gC5aWoA7GVG6O3GhInRgpvYoBgFsqX99e0Gsxg46IFiCbvAH8
+         BxpIZ4z+NJmMCYYxqE21Aa81ZP68iT3ZhsoqBmXEjsr5WEeu8kEhgDT0uGk6B7bb+z8s
+         9+2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q+tlvBIXPIpndKCtroYI+zFWJEcB8tB+JAa3U2YJgP8=;
+        b=J34hLoyrlBjHE8wBOG2TwVvb8uKJ8YgRIVpGjFGIVBuBcGUtZKU1xpgA5s59Lsz4k2
+         xMF0qn5hm6kWcuICPo7T2RpsDIT+oeiBnv/+BhVuB18OpoY5Cfi+H3c5F0L4ylDvH3BQ
+         YSklocQT132PreSMoX+Gz0uXx1uHlb2N3VEBBjGLYvRd02+GW49OeGHGF0t6cT0fFaPI
+         6gF+8wtcl9olTquAI5Sax3yUnn//SK/tcuDakmRsR3xAeE8NTtl/WJCu3na6KUPb5Qhw
+         2GaQL01jof0F7+lpxg1pmdHnkIjfOeWqA9goyeQ5MAqMd89HwuVCYdKd9Y3TcsWpKn7W
+         +jxQ==
+X-Gm-Message-State: AOAM530dAi/bUjqkzfOAK2EbYK/7Bn0xuPnUMhnZFTnf7HDY7gbKmhbO
+        PVlhF2OQBAnk17/V4wj1O28RdtxESaT8zBBwDhYIXA==
+X-Google-Smtp-Source: ABdhPJwq19S3itBXNN7D6ior4OMucXmM1yjShl7GyXd6KoWXjjKsPb0+xlOlU99ol8rS0zG/Kk2GDhJlp5JMm4VkGMA=
+X-Received: by 2002:aa7:c0d2:: with SMTP id j18mr2437470edp.89.1602480638426;
+ Sun, 11 Oct 2020 22:30:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c802fbf4-f67a-b205-536d-9c71b440f9c8@suse.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <cover.1602122879.git.joe@perches.com> <f5c9e4c9d8dafca1b7b70bd597ee7f8f219c31c8.1602122880.git.joe@perches.com>
+In-Reply-To: <f5c9e4c9d8dafca1b7b70bd597ee7f8f219c31c8.1602122880.git.joe@perches.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 12 Oct 2020 07:30:27 +0200
+Message-ID: <CAMGffEmJQSzF=kkxD8RreGODZdUktewTEaznCuFFu=kw22o=Jg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RDMA: manual changes for sysfs_emit and neatening
+To:     Joe Perches <joe@perches.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 10:20:34AM +0800, Coly Li wrote:
-> On 2020/10/10 03:50, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > These kmap() calls are localized to a single thread.  To avoid the over
-> > head of global PKRS updates use the new kmap_thread() call.
-> > 
-> 
-> Hi Ira,
-> 
-> There were a number of options considered.
-> 
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping
-> should be global or not
-> 3) Change ~20-30 call sites to 'kmap_global()' to indicate that they
-> require a global mapping of the pages
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the
-> mapping is to be used within that thread of execution only
-> 
-> 
-> I copied the above information from patch 00/58 to this message. The
-> idea behind kmap_thread() is fine to me, but as you said the new api is
-> very easy to be missed in new code (even for me). I would like to be
-> supportive to option 2) introduce a flag to kmap(), then we won't forget
-> the new thread-localized kmap method, and people won't ask why a
-> _thread() function is called but no kthread created.
+On Thu, Oct 8, 2020 at 4:36 AM Joe Perches <joe@perches.com> wrote:
+>
+> Make changes to use sysfs_emit in the RDMA code as cocci scripts can not
+> be written to handle _all_ the possible variants of various sprintf family
+> uses in sysfs show functions.
+>
+> While there, make the code more legible and update its style to be more
+> like the typical kernel styles.
+>
+> Miscellanea:
+>
+> o Use intermediate pointers for dereferences
+> o Add and use string lookup functions
+> o return early when any intermediate call fails so normal return is
+>   at the bottom of the function
+> o mlx4/mcg.c:sysfs_show_group: use scnprintf to format intermediate strings
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  drivers/infiniband/core/sysfs.c              | 60 +++++++-------
+>  drivers/infiniband/hw/cxgb4/provider.c       |  5 +-
+>  drivers/infiniband/hw/hfi1/sysfs.c           | 38 ++++-----
+>  drivers/infiniband/hw/mlx4/main.c            |  5 +-
+>  drivers/infiniband/hw/mlx4/mcg.c             | 82 +++++++++++---------
+>  drivers/infiniband/hw/mlx4/sysfs.c           | 47 ++++++-----
+>  drivers/infiniband/hw/mlx5/main.c            |  4 +-
+>  drivers/infiniband/hw/mthca/mthca_provider.c | 29 ++++---
+>  drivers/infiniband/hw/qib/qib_sysfs.c        | 45 +++++------
+>  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 66 +++++++---------
+>  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 21 +++--
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 13 ++--
+>  drivers/infiniband/ulp/srp/ib_srp.c          |  4 +
+>  13 files changed, 206 insertions(+), 213 deletions(-)
+>
 
-Thanks for the feedback.
-
-I'm going to hold off making any changes until others weigh in.  FWIW, I kind
-of like option 2 as well.  But there is already kmap_atomic() so it seemed like
-kmap_XXXX() was more in line with the current API.
-
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> index 0c767582286b..51ba82fc425c 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+> @@ -196,11 +196,10 @@ static struct kobj_attribute rtrs_clt_state_attr =
+>         __ATTR(state, 0444, rtrs_clt_state_show, NULL);
+>
+>  static ssize_t rtrs_clt_reconnect_show(struct kobject *kobj,
+> -                                       struct kobj_attribute *attr,
+> -                                       char *buf)
+> +                                      struct kobj_attribute *attr,
+> +                                      char *buf)
+>  {
+> -       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> -                         attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n", attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_reconnect_store(struct kobject *kobj,
+> @@ -228,11 +227,10 @@ static struct kobj_attribute rtrs_clt_reconnect_attr =
+>                rtrs_clt_reconnect_store);
+>
+>  static ssize_t rtrs_clt_disconnect_show(struct kobject *kobj,
+> -                                        struct kobj_attribute *attr,
+> -                                        char *buf)
+> +                                       struct kobj_attribute *attr,
+> +                                       char *buf)
+>  {
+> -       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> -                         attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n", attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_disconnect_store(struct kobject *kobj,
+> @@ -260,11 +258,10 @@ static struct kobj_attribute rtrs_clt_disconnect_attr =
+>                rtrs_clt_disconnect_store);
+>
+>  static ssize_t rtrs_clt_remove_path_show(struct kobject *kobj,
+> -                                         struct kobj_attribute *attr,
+> -                                         char *buf)
+> +                                        struct kobj_attribute *attr,
+> +                                        char *buf)
+>  {
+> -       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> -                         attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n", attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_clt_remove_path_store(struct kobject *kobj,
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> index 381a776ce404..6e7bebe4e064 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> @@ -27,11 +27,10 @@ static struct kobj_type ktype = {
+>  };
+>
+>  static ssize_t rtrs_srv_disconnect_show(struct kobject *kobj,
+> -                                        struct kobj_attribute *attr,
+> -                                        char *buf)
+> +                                       struct kobj_attribute *attr,
+> +                                       char *buf)
+>  {
+> -       return sysfs_emit(buf, "Usage: echo 1 > %s\n",
+> -                         attr->attr.name);
+> +       return sysfs_emit(buf, "Usage: echo 1 > %s\n", attr->attr.name);
+>  }
+>
+>  static ssize_t rtrs_srv_disconnect_store(struct kobject *kobj,
+> @@ -72,8 +71,7 @@ static ssize_t rtrs_srv_hca_port_show(struct kobject *kobj,
+>         sess = container_of(kobj, typeof(*sess), kobj);
+>         usr_con = sess->s.con[0];
+>
+> -       return sysfs_emit(page, "%u\n",
+> -                         usr_con->cm_id->port_num);
+> +       return sysfs_emit(page, "%u\n", usr_con->cm_id->port_num);
+>  }
+>
+>  static struct kobj_attribute rtrs_srv_hca_port_attr =
+> @@ -87,8 +85,7 @@ static ssize_t rtrs_srv_hca_name_show(struct kobject *kobj,
+>
+>         sess = container_of(kobj, struct rtrs_srv_sess, kobj);
+>
+> -       return sysfs_emit(page, "%s\n",
+> -                         sess->s.dev->ib_dev->name);
+> +       return sysfs_emit(page, "%s\n", sess->s.dev->ib_dev->name);
+>  }
+>
+For rtrs, looks good to me!
 Thanks,
-Ira
-
-> 
-> Thanks.
-> 
-> 
-> Coly Li
-> 
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
