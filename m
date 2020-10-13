@@ -2,82 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97CE28D250
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 18:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D552A28D2D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 19:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgJMQeb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Oct 2020 12:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        id S1728724AbgJMRJQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Oct 2020 13:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJMQeb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Oct 2020 12:34:31 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F89DC0613D0
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 09:34:31 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id m22so608642ots.4
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 09:34:31 -0700 (PDT)
+        with ESMTP id S1728709AbgJMRJQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Oct 2020 13:09:16 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C47C0613D0
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 10:09:16 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x62so103419oix.11
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 10:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fYXc1GYzkLYpOsWrmudmLUIH+WssinhSShDKjcB0jw0=;
-        b=iFUdESmhXGng9QZdt1TdB4rh+EoskljdnXxVO/vQwnBs4CFkMiPOPQVajDZ9LTySBB
-         leD9zo4lc+8fZUzzEzdGfz7d6CmEKikigO7vAr2IvEGa1W82YMkiAdRw/T0kVb59c0/Y
-         TBxsc2LOaSqROQs0yMMKsLalzYKiN46/uGKpkqUOWsXPgKfxgJRIzolf4hkwy160BU7u
-         QBhhKDJ59G4cfK+i6q6CAusSuaw6dJGGs5vNxG0LZtlw9bzT7TxHy5s3MxP4z45c5fde
-         irtAkd3m+BUA6Az+FvMwflX9C2yYjgcvdhidiTonyY+uniwiwh1cifjogkB6j1LCF6iN
-         S9Cw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FLocuD5wnm+drp+khVEwy/stL9jOkK9kiuwnxkxVzbo=;
+        b=dAfNiqobwSfuZDN1ndWzrWiJ6OBjjWMq0qaZLxXiY2+75bAgg6m6YN6Q76KjJdOeMz
+         8wD/y+wzbfpQrt7EUTiJyqXprwohkSImQJKqrSDusbTKR04RhwXRBT1/wDoi4HzSmPGH
+         3vb/ffYch9UqzHaX172aANbOK3gXCjP3ladk70040z5uD9GnNgh8HZhyEGf+/Kn1GXbN
+         h1w2vY9PTWgpNZykDQOPdaHIA4z+xvsPk1i/bddd7w5Qlp7z829IVdDw+d5n5tzVY/dt
+         KAvwBj9XSwC2Rc/s1isib8FDtZ8NKX8pbX4viLNv0UUVU2v/MA2Z598E8tvIDlKctAgJ
+         erYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fYXc1GYzkLYpOsWrmudmLUIH+WssinhSShDKjcB0jw0=;
-        b=XnZw0PxazRvA0B4q3U3AICn2vvaBUjqlkWZhA0+LCVZkxfifxWTi8DKdNLxnx5IyTY
-         nYA6Chou/ia3hHYPKUw9h6vuXSWiVOY0nZg31uxhEZwE7qGg8fvX4H0yrS9nfL39LO2q
-         INBdtuUhBgqNeY/712hU7SK2FX1uObm7TaUEUYciuk4XNz5B+AtBTm53kf47D1JlE5st
-         K3nc5QrbwMQRmJHbbj9w9fgFBxNwuBJevizvLoB8j14skNjjIXtqVYgCKrxd0J9sBvEJ
-         swC7SgrYvOHfrFNDHSvv0QnVIniRNFeaGT9ViPy4MZH9AdtD6QAz9cbnvYHmdA9MXR1g
-         3d8w==
-X-Gm-Message-State: AOAM533Qk1ZElPK5AAcwlj9l/G1jr7kuAVskqPSx5RVN2co5RwejtjCH
-        UWpHw+aia8ZXGafF2cv/St5xMKbiPO8=
-X-Google-Smtp-Source: ABdhPJxiz75v8BScCptJlGnzRxLXW5BImj7gmT9dMrcijMdDJQ8g61/yMoim0ngTw1kv7ZBHPdjx2g==
-X-Received: by 2002:a9d:1ec2:: with SMTP id n60mr356704otn.63.1602606870356;
-        Tue, 13 Oct 2020 09:34:30 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:f92c:93be:3e9d:c2cd? (2603-8081-140c-1a00-f92c-93be-3e9d-c2cd.res6.spectrum.com. [2603:8081:140c:1a00:f92c:93be:3e9d:c2cd])
-        by smtp.gmail.com with ESMTPSA id q64sm100747oib.2.2020.10.13.09.34.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 09:34:29 -0700 (PDT)
-Subject: Re: dynamic-sg patch has broken rdma_rxe
+        bh=FLocuD5wnm+drp+khVEwy/stL9jOkK9kiuwnxkxVzbo=;
+        b=niuxWd3mHu5pJ0UEpjUgGOmLXG1FSkwaANM2VO2Ud0sMWqu+ftbBm1+LuYPW0goJNB
+         CXAx/V1JUNoHr6Ciz/Rm4MzPBsHD5g3jITZLXNYuPe5E7djZVPhXseTs+A8lI9/bZAza
+         1gmVqNj4gilhYJd1ovZ7n4FM9o4fN7L+8lJNCwcDEEZqTiXfpo8BROVP00/OJwqdKUSe
+         s9IW/VM8saZ8iagIHxUluqDlPIefPxoUp/Bx0HEB5BX0vc/blv3umTq3XlcxTTNXNKZe
+         IDeA+z33EuzOor3JGi/8MgLTWsFqF1exrl49x9yGqYtp24Uyv2YhygHZcGpGkPCxLgyh
+         nobA==
+X-Gm-Message-State: AOAM533jPm69Jvu2Uwqx7B39hgHkRRvyizEkTAsP0k/UQLvQ7dbHYgIW
+        sqIru7LTTeyTR1XZ21G1TiVmlZ9jmWg=
+X-Google-Smtp-Source: ABdhPJy+snOG3Gc3FP0087hdENbqzyYuaS8WnaQKEIMu34sjhV7mhdURNzwEleBB9wFyctfbIBqCsg==
+X-Received: by 2002:a05:6808:2c8:: with SMTP id a8mr443666oid.82.1602608955609;
+        Tue, 13 Oct 2020 10:09:15 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-5ee5-86ef-4523-14d5.res6.spectrum.com. [2603:8081:140c:1a00:5ee5:86ef:4523:14d5])
+        by smtp.gmail.com with ESMTPSA id h5sm123725otb.11.2020.10.13.10.09.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 10:09:15 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
-References: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
-Message-ID: <06d6710b-f05e-e370-2acb-68f88040948e@gmail.com>
-Date:   Tue, 13 Oct 2020 11:34:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next] RDMA/rxe fixed bug in rxe_requester
+Date:   Tue, 13 Oct 2020 12:07:42 -0500
+Message-Id: <20201013170741.3590-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/13/20 9:33 AM, Bob Pearson wrote:
-> Jason,
-> 
-> Just pulled for-next and now hit the following warning.
-> Register user space memory is not longer working.
-> I am trying to debug this but if you have any idea where to look let me know.
-> 
-> Bob
-> 
-> [  209.562096] WARNING: CPU: 12 PID: 5343 at lib/scatterlist.c:438 __sg_alloc_table_from_pages+0x21/0x440
-SNIP
-> 
+The code which limited the number of unacknowledged PSNs was incorrect.
+The PSNs are limited to 24 bits and wrap back to zero from 0x00ffffff.
+The test was computing a 32 bit value which wraps at 32 bits so that
+qp->req.psn can appear smaller than the limit when it is actually larger.
 
-I found it. The rxe driver had set the max_segment_size to UINT_MAX (0xffffffff) which triggered the warning since it has an 'offset into page' in __sg_alloc_table_from_pages. Can you tell me what this parameter is supposed to do and what is a reasonable value. What scares me is that the default used in ib_umem_get is 64K. Does this have anything to do with the largest SGL size or is it something else.
+Replace '>' test with psn_compare which is used for other PSN comparisons
+and correctly handles the 24 bit size.
 
-Bob
+Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ drivers/infiniband/sw/rxe/rxe_req.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index af3923bf0a36..d4917646641a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -634,7 +634,8 @@ int rxe_requester(void *arg)
+ 	}
+ 
+ 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
+-		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
++		psn_compare(qp->req.psn, (qp->comp.psn +
++				RXE_MAX_UNACKED_PSNS)) > 0)) {
+ 		qp->req.wait_psn = 1;
+ 		goto exit;
+ 	}
+-- 
+2.25.1
+
