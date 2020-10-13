@@ -2,90 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C7428D692
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Oct 2020 00:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E727228D72D
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Oct 2020 01:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgJMWnf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Oct 2020 18:43:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34364 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728931AbgJMWnZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Oct 2020 18:43:25 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09DMYHRI023311;
-        Tue, 13 Oct 2020 22:43:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=BPXVhR8Zcz1sWINwPPKI15oRrSSfJmS7Dk7t6k2FBvc=;
- b=X98OMsUEJ6iXi28jlvGzIuUNtCUPCHKr9Y26mlldDvGV1tVg0rW4+z19ERv9nUm05fW2
- 7uLfRfkQC87plb6dqK0JgwDllNVeWHEr4KuohBovrquRB4Wp8Fn55mzzRhERGk86b1R8
- IUAHuFALM9P0nzG0SMad9VRc3S4BqwSCpX9uXbI7E8E4JWNs+M489BfaOy69s9tMy36o
- WsDINZk0QvR9KX7AD1uVtYIm858Ec1rCBrQM2cWhu74pWwQ4sERB2XP+p4QlG2a3ov36
- KsDceZW1Gf6MViMvswmWBcHmPujmAKdJrQLwx9ihpq7sGfN7gk8NuWumGIvUgBivX+8I Nw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 3434wkmr7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 13 Oct 2020 22:43:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09DMZeSv129581;
-        Tue, 13 Oct 2020 22:43:18 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 343phntsx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 13 Oct 2020 22:43:18 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09DMhIGo146795;
-        Tue, 13 Oct 2020 22:43:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 343phntswf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Oct 2020 22:43:18 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09DMhFrt005717;
-        Tue, 13 Oct 2020 22:43:16 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Oct 2020 15:43:15 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-spi@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        dmaengine@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-media@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        linux-serial@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, Yossi Leybovich <sleybo@amazon.com>,
-        linux-block@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [PATCH 00/14] drop double zeroing
-Date:   Tue, 13 Oct 2020 18:42:52 -0400
-Message-Id: <160262862433.3018.13907233755506910409.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
+        id S1730329AbgJMXuW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Oct 2020 19:50:22 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:38707 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730124AbgJMXtY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Oct 2020 19:49:24 -0400
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 09DNmu3a014730;
+        Tue, 13 Oct 2020 16:48:57 -0700
+Date:   Wed, 14 Oct 2020 05:18:56 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     sagi@grimberg.me, linux-rdma@vger.kernel.org, jgg@nvidia.com,
+        dledford@redhat.com, oren@nvidia.com, maxg@mellanox.com
+Subject: Re: [PATCH 1/1] IB/isert: add module param to set sg_tablesize for
+ IO cmd
+Message-ID: <20201013234726.GA8423@chelsio.com>
+References: <20201011090608.159333-1-mgurtovoy@nvidia.com>
+ <1d4f4c66-5c87-c2c2-c45b-6ab6a30481ea@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010130158
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d4f4c66-5c87-c2c2-c45b-6ab6a30481ea@nvidia.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 20 Sep 2020 13:26:12 +0200, Julia Lawall wrote:
+On Tuesday, October 10/13/20, 2020 at 20:43:03 +0300, Max Gurtovoy wrote:
+> Krishna,
+> 
+> did this patch fix the issue you reported ?
 
-> sg_init_table zeroes its first argument, so the allocation of that argument
-> doesn't have to.
+With this patch applied, I don't see the reported issue anymore.
+Thanks for the patch!
 
-Applied to 5.10/scsi-queue, thanks!
 
-[02/14] scsi: target: rd: Drop double zeroing
-        https://git.kernel.org/mkp/scsi/c/4b217e015b75
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> 
+> 
+> On 10/11/2020 12:06 PM, Max Gurtovoy wrote:
+> >From: Max Gurtovoy <maxg@mellanox.com>
+> >
+> >Currently, iser target support max IO size of 16MiB by default. For some
+> >adapters, allocating this amount of resources might reduce the total
+> >number of possible connections that can be created. For those adapters,
+> >it's preferred to reduce the max IO size to be able to create more
+> >connections. Since there is no handshake procedure for max IO size in
+> >iser protocol, set the default max IO size to 1MiB and add a module
+> >parameter for enabling the option to control it for suitable adapters.
+> >
+> >Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> >Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> >---
+> >  drivers/infiniband/ulp/isert/ib_isert.c | 27 ++++++++++++++++++++++++-
+> >  drivers/infiniband/ulp/isert/ib_isert.h |  6 ++++++
+> >  2 files changed, 32 insertions(+), 1 deletion(-)
+> >
+> >diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+> >index 695f701dc43d..5a47f1bbca96 100644
+> >--- a/drivers/infiniband/ulp/isert/ib_isert.c
+> >+++ b/drivers/infiniband/ulp/isert/ib_isert.c
+> >@@ -28,6 +28,18 @@ static int isert_debug_level;
+> >  module_param_named(debug_level, isert_debug_level, int, 0644);
+> >  MODULE_PARM_DESC(debug_level, "Enable debug tracing if > 0 (default:0)");
+> >+static int isert_sg_tablesize_set(const char *val,
+> >+				  const struct kernel_param *kp);
+> >+static const struct kernel_param_ops sg_tablesize_ops = {
+> >+	.set = isert_sg_tablesize_set,
+> >+	.get = param_get_int,
+> >+};
+> >+
+> >+static int isert_sg_tablesize = ISCSI_ISER_SG_TABLESIZE;
+> >+module_param_cb(sg_tablesize, &sg_tablesize_ops, &isert_sg_tablesize, 0644);
+> >+MODULE_PARM_DESC(sg_tablesize,
+> >+		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 256, max: 4096)");
+> >+
+> >  static DEFINE_MUTEX(device_list_mutex);
+> >  static LIST_HEAD(device_list);
+> >  static struct workqueue_struct *isert_comp_wq;
+> >@@ -47,6 +59,19 @@ static void isert_send_done(struct ib_cq *cq, struct ib_wc *wc);
+> >  static void isert_login_recv_done(struct ib_cq *cq, struct ib_wc *wc);
+> >  static void isert_login_send_done(struct ib_cq *cq, struct ib_wc *wc);
+> >+static int isert_sg_tablesize_set(const char *val, const struct kernel_param *kp)
+> >+{
+> >+	int n = 0, ret;
+> >+
+> >+	ret = kstrtoint(val, 10, &n);
+> >+	if (ret != 0 || n < ISCSI_ISER_MIN_SG_TABLESIZE ||
+> >+	    n > ISCSI_ISER_MAX_SG_TABLESIZE)
+> >+		return -EINVAL;
+> >+
+> >+	return param_set_int(val, kp);
+> >+}
+> >+
+> >+
+> >  static inline bool
+> >  isert_prot_cmd(struct isert_conn *conn, struct se_cmd *cmd)
+> >  {
+> >@@ -101,7 +126,7 @@ isert_create_qp(struct isert_conn *isert_conn,
+> >  	attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS + 1;
+> >  	attr.cap.max_recv_wr = ISERT_QP_MAX_RECV_DTOS + 1;
+> >  	factor = rdma_rw_mr_factor(device->ib_device, cma_id->port_num,
+> >-				   ISCSI_ISER_MAX_SG_TABLESIZE);
+> >+				   isert_sg_tablesize);
+> >  	attr.cap.max_rdma_ctxs = ISCSI_DEF_XMIT_CMDS_MAX * factor;
+> >  	attr.cap.max_send_sge = device->ib_device->attrs.max_send_sge;
+> >  	attr.cap.max_recv_sge = 1;
+> >diff --git a/drivers/infiniband/ulp/isert/ib_isert.h b/drivers/infiniband/ulp/isert/ib_isert.h
+> >index 7fee4a65e181..90ef215bf755 100644
+> >--- a/drivers/infiniband/ulp/isert/ib_isert.h
+> >+++ b/drivers/infiniband/ulp/isert/ib_isert.h
+> >@@ -65,6 +65,12 @@
+> >   */
+> >  #define ISER_RX_SIZE		(ISCSI_DEF_MAX_RECV_SEG_LEN + 1024)
+> >+/* Default I/O size is 1MB */
+> >+#define ISCSI_ISER_SG_TABLESIZE 256
+> >+
+> >+/* Minimum I/O size is 512KB */
+> >+#define ISCSI_ISER_MIN_SG_TABLESIZE 128
+> >+
+> >  /* Maximum support is 16MB I/O size */
+> >  #define ISCSI_ISER_MAX_SG_TABLESIZE	4096
