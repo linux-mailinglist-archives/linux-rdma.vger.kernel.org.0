@@ -2,144 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D5228D4C1
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 21:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECD228D503
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 21:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgJMTly (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Oct 2020 15:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729216AbgJMTly (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Oct 2020 15:41:54 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D9CC0613E1
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 12:41:53 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id t25so1392766ejd.13
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Oct 2020 12:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlOzF1QhqikCoQxsvfJV6M6Hjgbrow9dB9uNs1AoGLE=;
-        b=kTjS5KS3nYcf/wrvTsuRt1BvzGw557kJOoPvyzYoBgiqb4b8bKtbI2/mMLiZYyRjFR
-         J9ydTuu0x47x+MEvbUBFhFH3/2QgRWgMVRtg9k6OLuYDe131Mp/cuPa30fJMGhSFjepr
-         cqBBXWNROTwzHkSN49lY/psarWhxU27El5EYWXEJaiWvhTqo66L6QK98x3Y0Yvi2nF9y
-         UTW/CUag9LBP+VfPW+1mn8JfLpPCSXoAzeg5FBjWoJMu0+7UEW9Ka5T8iigFwOd+JDvR
-         rrctnvxFOZW164mxjZq4IMmZGZxG4l2jAUbsCf6skOMzcKIRAwJ8OakZ/jL0rfexuXSd
-         7ngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlOzF1QhqikCoQxsvfJV6M6Hjgbrow9dB9uNs1AoGLE=;
-        b=CDdIETCAzaYjVyRpTyrcdZpo9Yhfz1ZAh9cAIyRbXtznKSUbaVghXoYdH3SqHFkrqu
-         qj77kJV6y8AGWkqcB52rMC5VK6DrvL3HIWJ+fwxWtJZmhmbb0n+BliUuGsS+zzF2sanb
-         sz/6sVVrJCg/gsFLqnE8zpyaB++mqdq8yBzb/2GM33gqC3Q18tE6K7QGg95fdgLENzxo
-         fldKvwpB2gsBrSp6O8YW+nQ5Qb5QP4SV8jeP380nUfQQzwEuQu7mmC87OrPhIsLw6T65
-         7ipJAzrO9dFyXxRui49vhqVw/QcqEeUknI6rzgAD41ANjGClwKZ9R3SrdHN6sA4L061t
-         DlKQ==
-X-Gm-Message-State: AOAM53192JsEZAooTYfLcK+Mc4ACVhQhGNsa+x5PqbMH2Q3hLxLd//R+
-        MiuIJ2FXQYpvjGXJre9CSmWh38dlzvkk5L48JUmJGyEk3+E=
-X-Google-Smtp-Source: ABdhPJxGxhMZ7o2BYtIDXOupUr3pSHVXck0tIwC9HMZ0nIbp0pU6AQKRljKqMwVkoxmX0BYp74elTVEnpYvo3LWFH24=
-X-Received: by 2002:a17:906:7e47:: with SMTP id z7mr1390518ejr.418.1602618108255;
- Tue, 13 Oct 2020 12:41:48 -0700 (PDT)
+        id S1728145AbgJMT5q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Oct 2020 15:57:46 -0400
+Received: from mga12.intel.com ([192.55.52.136]:64648 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728094AbgJMT5q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:57:46 -0400
+IronPort-SDR: 0j9C6qPJBqdgbSSAkPUOZPSi1IMO2Vj40o2cze5+43l9N/Q0PME166yDS1NAL42TpHy3K5/mJx
+ ovU8xKavhNyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145292200"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="145292200"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:57:45 -0700
+IronPort-SDR: d0IlcAIZDMxhhDk4Vn2AdgtgrpwB9JQaofY6SZeFhcib7oole0qgEOyzyHL1s4NdDdNZIlJH9b
+ 0FpHvLq3v3CQ==
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="390428718"
+Received: from maryannn-mobl.amr.corp.intel.com (HELO [10.209.70.94]) ([10.209.70.94])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:57:43 -0700
+Subject: Re: [PATCH v2 2/6] ASoC: SOF: Introduce descriptors for SOF client
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     parav@mellanox.com, tiwai@suse.de, netdev@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, fred.oh@linux.intel.com,
+        linux-rdma@vger.kernel.org, dledford@redhat.com,
+        broonie@kernel.org, jgg@nvidia.com, gregkh@linuxfoundation.org,
+        kuba@kernel.org, dan.j.williams@intel.com, shiraz.saleem@intel.com,
+        davem@davemloft.net, kiran.patil@intel.com
+References: <20201005182446.977325-1-david.m.ertman@intel.com>
+ <20201005182446.977325-3-david.m.ertman@intel.com>
+ <076a0c53-0738-270e-845f-0ac968a4ea78@infradead.org>
+ <d9f062ee-a5f0-b41c-c8f6-b81b374754fa@linux.intel.com>
+ <9ef98f33-a0d3-579d-26e0-6046dd593eef@infradead.org>
+ <5b447b78-626d-2680-8a48-53493e2084a2@infradead.org>
+ <7192373a-0347-2d2d-74fc-6544f738b195@linux.intel.com>
+ <b07f6cbc-8e48-a4aa-bfcb-8a938fa00a38@infradead.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <91f0e062-5878-562c-c055-5dc597d4841f@linux.intel.com>
+Date:   Tue, 13 Oct 2020 14:57:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-34-ira.weiny@intel.com>
- <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com> <20201013193643.GK20115@casper.infradead.org>
-In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 13 Oct 2020 12:41:36 -0700
-Message-ID: <CAPcyv4gL70FcLe8az7ezmpcZV=bG0Cka7daKWcCdmV4GoenSZw@mail.gmail.com>
-Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-efi <linux-efi@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-afs@lists.infradead.org,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
-        intel-wired-lan@lists.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b07f6cbc-8e48-a4aa-bfcb-8a938fa00a38@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:37 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Oct 13, 2020 at 11:44:29AM -0700, Dan Williams wrote:
-> > On Fri, Oct 9, 2020 at 12:52 PM <ira.weiny@intel.com> wrote:
-> > >
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > The kmap() calls in this FS are localized to a single thread.  To avoid
-> > > the over head of global PKRS updates use the new kmap_thread() call.
-> > >
-> > > Cc: Nicolas Pitre <nico@fluxnic.net>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  fs/cramfs/inode.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> > > index 912308600d39..003c014a42ed 100644
-> > > --- a/fs/cramfs/inode.c
-> > > +++ b/fs/cramfs/inode.c
-> > > @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
-> > >                 struct page *page = pages[i];
-> > >
-> > >                 if (page) {
-> > > -                       memcpy(data, kmap(page), PAGE_SIZE);
-> > > -                       kunmap(page);
-> > > +                       memcpy(data, kmap_thread(page), PAGE_SIZE);
-> > > +                       kunmap_thread(page);
-> >
-> > Why does this need a sleepable kmap? This looks like a textbook
-> > kmap_atomic() use case.
->
-> There's a lot of code of this form.  Could we perhaps have:
->
-> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
-> {
->         char *vto = kmap_atomic(to);
->
->         memcpy(vto, vfrom, size);
->         kunmap_atomic(vto);
-> }
->
-> in linux/highmem.h ?
 
-Nice, yes, that could also replace the local ones in lib/iov_iter.c
-(memcpy_{to,from}_page())
+>>>>>>> +config SND_SOC_SOF_CLIENT_SUPPORT
+>>>>>>> +    bool "SOF enable clients"
+>>>>>>
+>>>>>> Tell users what "SOF" means.
+>>>>>
+>>>>> This option can only be reached if the user already selected the topic-level option. From there on the SOF acronym is used. Is this not enough?
+>>>>
+>>>> Yes, that's enough. I didn't see it. Sorry about that.
+>>>
+>>> Huh. I still don't see that Kconfig option.
+>>> Which patch is it in?
+>>>
+>>> I only saw patches 1,2,3 on LKML.
+>>
+>> The Sound Open Firmware (SOF) driver is upstream since 2019, see https://elixir.bootlin.com/linux/latest/source/sound/soc/sof/Kconfig
+>>
+>> What was shared in these patches is just an evolution to make the driver more modular to handle of 'subfunctions' with the auxiliary bus.
+>>
+>> we'd love to hear your feedback if you think the help text can be improved. Thanks!
+>>
+> 
+> OK, I looked at the SOF Kconfig files. They are mostly OK except for
+> missing '.' at the end of lots of sentences and a few other typos.
+> 
+> Do you want patches?
+
+Sure! Thanks in advance.
