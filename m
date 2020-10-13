@@ -2,114 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25EF28C6F0
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 03:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9A028C72A
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Oct 2020 04:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgJMB5J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Oct 2020 21:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbgJMB5J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Oct 2020 21:57:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325E9C0613D0;
-        Mon, 12 Oct 2020 18:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=bofq6aL5/+29OZsHkddC1oB1vsNZ0db2q5pYJHTnMUQ=; b=V7Z8AV8Xtib3nBBeqBFkaHoOj6
-        M+hjTGZc9UkYF0l/s8IUvD50nTKjpAgaNSWPlZwfX1z+qzeZq2rk8fcLfHzWG56VZqbOVVnOi4xEe
-        5LaoPCylHKs6v9VE6s60Cw8X1nYKl7oY2Cvjyc4MgTfaOJH0oAw0XkWj2iM9chRv+JhIkg4rJBgCt
-        Knw1bXklm4JtT6GHkAnvj/Vm9Dspje1W9/Y55josQ+H2hxfhFmCQjKEZSdCQqvDIHx9UHzUXdzbl6
-        SWBcxg9lJFIyqPaRgl0QASA2TmYuNegMxcwv5YwJc/5KJH8ZZuECKkfowS22OuaFlHa7FGLbPrZD/
-        259McASA==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kS9Yi-0003ts-LD; Tue, 13 Oct 2020 01:57:01 +0000
-Subject: Re: [PATCH v2 2/6] ASoC: SOF: Introduce descriptors for SOF client
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com, dledford@redhat.com, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        ranjani.sridharan@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com
-References: <20201005182446.977325-1-david.m.ertman@intel.com>
- <20201005182446.977325-3-david.m.ertman@intel.com>
- <076a0c53-0738-270e-845f-0ac968a4ea78@infradead.org>
- <d9f062ee-a5f0-b41c-c8f6-b81b374754fa@linux.intel.com>
- <9ef98f33-a0d3-579d-26e0-6046dd593eef@infradead.org>
-Message-ID: <5b447b78-626d-2680-8a48-53493e2084a2@infradead.org>
-Date:   Mon, 12 Oct 2020 18:56:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728771AbgJMCdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Oct 2020 22:33:51 -0400
+Received: from p3plsmtpa06-03.prod.phx3.secureserver.net ([173.201.192.104]:35878
+        "EHLO p3plsmtpa06-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728770AbgJMCdv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:33:51 -0400
+X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Oct 2020 22:33:51 EDT
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id SA1IkixW0InvDSA1Jk7HQF; Mon, 12 Oct 2020 19:26:33 -0700
+X-CMAE-Analysis: v=2.3 cv=LpLsNUVc c=1 sm=1 tr=0
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=48vgC7mUAAAA:8 a=gsHt2oX1I18S2ETG6AkA:9 a=QEXdDO2ut3YA:10
+ a=F5Kl5K0nGyUA:10 a=w1C3t2QeGrPiZgrLijVG:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: Question about supporting RDMA Extensions for PMEM
+To:     "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>,
+        linux-rdma@vger.kernel.org
+References: <8b3c3c81-c0fd-adb2-52a9-94c73aac7e37@cn.fujitsu.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <b7cc3571-5c4b-d5f1-d4e4-97afba4a7994@talpey.com>
+Date:   Mon, 12 Oct 2020 22:26:32 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <9ef98f33-a0d3-579d-26e0-6046dd593eef@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <8b3c3c81-c0fd-adb2-52a9-94c73aac7e37@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfIYBNiFtRkyj0QsZcXgbb7EnD0ADbXMB/qqKLz5MVnQMFCgEwsjHQRieA6oi4NtFgogrhhtMCYHwBTz6ZIyy5WgBY5xRS+az2KgoF6wof6UwlwkQbLFn
+ URf+be+Md7MYQltUwhJjuVbCPEcNijq7wVTXwWqBFYu6F8spHWWhu1+b3s0BZSeAJmpS6fif1ZeTUC61nlYqj4Z0UO/EPKJ5Jj03jFCdjZXyZMFtb6SNOjpD
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/12/20 6:55 PM, Randy Dunlap wrote:
-> On 10/12/20 6:31 PM, Pierre-Louis Bossart wrote:
->>
->>>> +config SND_SOC_SOF_CLIENT
->>>> +    tristate
->>>> +    select ANCILLARY_BUS
->>>> +    help
->>>> +      This option is not user-selectable but automagically handled by
->>>> +      'select' statements at a higher level
->>>> +
->>>> +config SND_SOC_SOF_CLIENT_SUPPORT
->>>> +    bool "SOF enable clients"
->>>
->>> Tell users what "SOF" means.
->>
->> This option can only be reached if the user already selected the topic-level option. From there on the SOF acronym is used. Is this not enough?
+On 10/12/2020 4:13 AM, Li, Hao wrote:
+> Hi,
 > 
-> Yes, that's enough. I didn't see it. Sorry about that.
-
-Huh. I still don't see that Kconfig option.
-Which patch is it in?
-
-I only saw patches 1,2,3 on LKML.
-
->> config SND_SOC_SOF_TOPLEVEL
->>     bool "Sound Open Firmware Support"
->>     help
->>       This adds support for Sound Open Firmware (SOF). SOF is a free and
->>       generic open source audio DSP firmware for multiple devices.
->>       Say Y if you have such a device that is supported by SOF.
->>
->>>
->>>> +    depends on SND_SOC_SOF
->>>> +    help
->>>> +      This adds support for ancillary client devices to separate out the debug
->>>> +      functionality for IPC tests, probes etc. into separate devices. This
->>>> +      option would also allow adding client devices based on DSP FW
->>>
->>> spell out firmware
->>
->> agree on this one.
->>
->>>
->>>> +      capabilities and ACPI/OF device information.
->>>> +      Say Y if you want to enable clients with SOF.
->>>> +      If unsure select "N".
->>>> +
->>>
->>>
+> I have noticed that IETF has released a draft of RDMA Extensions for
+> PMEM [1]. Does libibverbs has a plan to implement these extensions? Are
+> there some good starting points if we want to participate the development.
+> Thanks!
 > 
-> thanks.
-> 
+> [1]: https://tools.ietf.org/id/draft-talpey-rdma-commit-01.html
 
+The draft you refer to is an individual draft, not an official IETF
+release. However, after a lengthy process, the effort is now an official
+work item of the NFSv4 working group, since the original STORM WG was
+shut down an alternative process had to be determined.
 
--- 
-~Randy
+An updated document is in the works, hopefully in October, and may
+become a full RFC as the IETF process advances. My coauthors and I look
+forward to this.
 
+In the meantime, the IBTA LWG took up a similar task, and we completed
+it several months ago. I am not sure when it might be released as an
+official Annex, but I assume that is in the works as well. The IBTA
+version of the extensions is semantically similar, but does not include
+the "Verify" operation which in the iWARP document. Perhaps this will
+be added later.
+
+In theory, the IBTA SWG is in control of specifying any Verbs changes.
+The Annex does discuss these, but SWG would still need to ratify. If
+Fujitsu is an IBTA member, I'd encourage you to support this. IETF, of
+course, has no dependency on IBTA, or Verbs, so participating there is
+a separate matter. I encourage that participation, too!
+
+Tom.
