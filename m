@@ -2,113 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38E928E3E1
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Oct 2020 18:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6FE28EB0C
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 04:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbgJNQB6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Oct 2020 12:01:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46802 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727034AbgJNQB6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:01:58 -0400
-IronPort-SDR: e1JXhhVj4/hQOKGI0RdC5TmvF9PVx+P9fM50a3+AjtNcjzcr5Bit72U8tuo7IyKnX8pH4/nYWm
- n3qfTTroMpgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145443294"
-X-IronPort-AV: E=Sophos;i="5.77,375,1596524400"; 
-   d="scan'208";a="145443294"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 09:01:57 -0700
-IronPort-SDR: DfBAFi75yC9OryKz1lKBNdATthFLHS9uxKfYZOyLJVz0Fi8UM8WCwYyLuCMwP7KMdqzn4AhFHj
- NVNW30PqycEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,375,1596524400"; 
-   d="scan'208";a="345711986"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Oct 2020 09:01:57 -0700
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH v4 5/5] dma-buf: Clarify that dma-buf sg lists are page aligned
-Date:   Wed, 14 Oct 2020 09:16:01 -0700
-Message-Id: <1602692161-107096-1-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727987AbgJOCTi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Oct 2020 22:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728900AbgJOCTh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Oct 2020 22:19:37 -0400
+X-Greylist: delayed 345 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 14 Oct 2020 14:32:02 PDT
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F6AC0613B2
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Oct 2020 14:32:02 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 195E569C3; Wed, 14 Oct 2020 17:26:16 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 195E569C3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1602710776;
+        bh=fOYQQVYkLChPD6OiLg4J/sj4FskeLbgptD5n8KmZRxY=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=rtm3iJB7yviet329Ti1h1bGcGz9KxS7ad4jygurs7eNyufF6mNT05o3Y9jNti/hpq
+         FNhuGLOHDucMbEuug1dNXosq6klVFX5SD29Mh9nBcMht8H2WFtUuRI55p1ew54aXPz
+         3IC311IDr34JgIuYI16ZZXiu5SYY9iP5FW7xCAvo=
+Date:   Wed, 14 Oct 2020 17:26:16 -0400
+To:     Dan Aloni <dan@kernelim.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v2] svcrdma: fix bounce buffers for unaligned offsets and
+ multiple pages
+Message-ID: <20201014212616.GB23262@fieldses.org>
+References: <58FBC94E-3F7D-4C23-A720-6588B0B22E86@oracle.com>
+ <20201002193343.1040351-1-dan@kernelim.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002193343.1040351-1-dan@kernelim.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The dma-buf API have been used under the assumption that the sg lists
-returned from dma_buf_map_attachment() are fully page aligned. Lots of
-stuff can break otherwise all over the place. Clarify this in the
-documentation and add a check when DMA API debug is enabled.
+Thanks, applying for 5.10.--b.
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
----
- drivers/dma-buf/dma-buf.c | 21 +++++++++++++++++++++
- include/linux/dma-buf.h   |  3 ++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 844967f..7309c83 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -851,6 +851,9 @@ void dma_buf_unpin(struct dma_buf_attachment *attach)
-  * Returns sg_table containing the scatterlist to be returned; returns ERR_PTR
-  * on error. May return -EINTR if it is interrupted by a signal.
-  *
-+ * On success, the DMA addresses and lengths in the returned scatterlist are
-+ * PAGE_SIZE aligned.
-+ *
-  * A mapping must be unmapped by using dma_buf_unmap_attachment(). Note that
-  * the underlying backing storage is pinned for as long as a mapping exists,
-  * therefore users/importers should not hold onto a mapping for undue amounts of
-@@ -904,6 +907,24 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
- 		attach->dir = direction;
- 	}
- 
-+#ifdef CONFIG_DMA_API_DEBUG
-+	{
-+		struct scatterlist *sg;
-+		u64 addr;
-+		int len;
-+		int i;
-+
-+		for_each_sgtable_dma_sg(sg_table, sg, i) {
-+			addr = sg_dma_address(sg);
-+			len = sg_dma_len(sg);
-+			if (!PAGE_ALIGNED(addr) || !PAGE_ALIGNED(len)) {
-+				pr_debug("%s: addr %llx or len %x is not page aligned!\n",
-+					 __func__, addr, len);
-+			}
-+		}
-+	}
-+#endif /* CONFIG_DMA_API_DEBUG */
-+
- 	return sg_table;
- }
- EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index a2ca294e..4a5fa70 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -145,7 +145,8 @@ struct dma_buf_ops {
- 	 *
- 	 * A &sg_table scatter list of or the backing storage of the DMA buffer,
- 	 * already mapped into the device address space of the &device attached
--	 * with the provided &dma_buf_attachment.
-+	 * with the provided &dma_buf_attachment. The addresses and lengths in
-+	 * the scatter list are PAGE_SIZE aligned.
- 	 *
- 	 * On failure, returns a negative error value wrapped into a pointer.
- 	 * May also return -EINTR when a signal was received while being
--- 
-1.8.3.1
-
+On Fri, Oct 02, 2020 at 10:33:43PM +0300, Dan Aloni wrote:
+> This was discovered using O_DIRECT at the client side, with small
+> unaligned file offsets or IOs that span multiple file pages.
+> 
+> Fixes: e248aa7be86 ("svcrdma: Remove max_sge check at connect time")
+> Signed-off-by: Dan Aloni <dan@kernelim.com>
+> ---
+>  net/sunrpc/xprtrdma/svc_rdma_sendto.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> Extended testing found another issue with the loop.
+> 
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+> index 7b94d971feb3..c3d588b149aa 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+> @@ -638,10 +638,11 @@ static int svc_rdma_pull_up_reply_msg(struct svcxprt_rdma *rdma,
+>  		while (remaining) {
+>  			len = min_t(u32, PAGE_SIZE - pageoff, remaining);
+>  
+> -			memcpy(dst, page_address(*ppages), len);
+> +			memcpy(dst, page_address(*ppages) + pageoff, len);
+>  			remaining -= len;
+>  			dst += len;
+>  			pageoff = 0;
+> +			ppages++;
+>  		}
+>  	}
+>  
+> -- 
+> 2.26.2
