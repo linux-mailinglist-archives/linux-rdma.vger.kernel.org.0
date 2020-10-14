@@ -2,86 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE6728E8E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 00:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A398528EA83
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 03:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729726AbgJNWvb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Oct 2020 18:51:31 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:2809 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728250AbgJNWvb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:51:31 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8780f10000>; Thu, 15 Oct 2020 06:51:29 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 22:51:28 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 14 Oct 2020 22:51:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gVG2ab2FQ2SjqWijDOygTlZdasvsSC30Y/ggNP/j5OQElLRP3PLOPe16AtJAy3a86d9Ex96zNKTHTF5WCIWKl3aH1aCRwVci1J1jIfP/RG62ePr6lpeqT2wa1/Aj6r7W1WF+2eODXxDlW+ezeCGv58xp8I0Cey+mtZ4wa/7rpUboSDVAM+h+h8sgsgqo3l5l0jEk6L5N795R5t/eoVkdrE0aetNEt5MuoKvfsO4A6udlxZ6HCKq69nrbsh5coKYJv4I+zq0+KRF62PgEGnuzZaAr6Yo00j2sg4PdNZB49EXnsYXecMvvtXP5h3PpJzez+vWWUDqXKM+kQiTHczCKIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QozgLSbLg2T03V2She+aAryUiB0cUMnvhA5uWoyx1u4=;
- b=GDX2XVdCoKcZ6oJA7AFJ58RjoOTduj31F1JxCJvb978zufLQ0vrTcykfAV08BVFle8eEEaDsXggWTd5mQnBJzt3bMuSKERA+eAzgRreoMetZUYCpmTlq6tY4OwOoIJ/xcpx7GanOuEj1uJHzdSlg7rskZ+pB43OEoq6nhtsR2WCOD/7J7fnYdP7Pf5SXwONbBSZXzdOXuQbXdnidHhjjOy09Mio1eobSBKOV1ZNz+3TRO64KWMyYUu19yhnTq8vKi1QtS7HDmQ3md0whg4377y5aCv/M5M79FojPqSVc8GJHGOpWMvQCEKbAqSYG09NPmjlr6XLzP/iVdneS6y0/ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4483.namprd12.prod.outlook.com (2603:10b6:5:2a2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 14 Oct
- 2020 22:51:26 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Wed, 14 Oct 2020
- 22:51:26 +0000
-Date:   Wed, 14 Oct 2020 19:51:25 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: Re: dynamic-sg patch has broken rdma_rxe
-Message-ID: <20201014225125.GC5316@nvidia.com>
-References: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR01CA0009.prod.exchangelabs.com (2603:10b6:208:10c::22)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        id S1732381AbgJOByo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Oct 2020 21:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732449AbgJOByi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Oct 2020 21:54:38 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B438AC08EC6B
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Oct 2020 16:27:24 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id bl9so370802qvb.10
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Oct 2020 16:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FGMetf2TtDYpQ2U52WWdv6t2v1aPWDuWX9MXwICP818=;
+        b=JKTFenP2amE8CI1KKnHcrQE7Mc94ojhKi/rSYtZlqb0N5vnJYo+8N3vvIMS2e/I04i
+         D5Z7eSkTLyeIsrs4IHivY5UY9sNQ9GuBUlJsVVasrgUmW3dFRT9reK5D+je9jQwshPoy
+         1TDGpVUHE8k/1EkzxNBntAuJkoOxG7IKwSoAQfSW11DxK39NSzxnJMT2ecH3r9RmtFXV
+         6SuABXnye1cmoTB1kt04+1rpliftDeZco1NPwphnQSNiCIK/qmL7HvyiVBu64MJhNIG7
+         vk0q+tlNGdtGq8wS76VsbsV9GqIENipUaFHG9+OBuG8ZufkOwBcOt/gMG8O3i/YRjyCJ
+         tRzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FGMetf2TtDYpQ2U52WWdv6t2v1aPWDuWX9MXwICP818=;
+        b=LFUuT7K9/9mYf0F9Ke9Fqjfu1yYIP2qfeSW1pdOIiDZnvbNyDsKhyt5cSLjP2mRamj
+         smhg4F87bn/neYkOJmInPVNHDKU5zLGppqLhsawJDSprbWfVmMTiCFamdCzIkJM4r/Mj
+         mmiEGn3K75ANAyqrHB2BBsgUGzkyyNOWc3svayxtlPhhXVMLDisvi1vtmbRz/+qyPmmF
+         1gREzYKpRdsS/zD0dAa0hGgYVGwbW21+3cTdY9f0GviXfM2LLlWG9LlwQb2PO8rr9jYs
+         C6s018yheU4CvkQupnA+ltL9wTGqrUHAAu834ekD/tSH3CK5+ZYy8fjTgcKM4EjXAiN8
+         OWuA==
+X-Gm-Message-State: AOAM533akkyOp9iGei4+yXb9CH+JsErwEh6Md6Nl7zYxuASy0YYcErM+
+        yBb+U2Ykx352rhVzZffmVUh6aBsUyEhZEQ==
+X-Google-Smtp-Source: ABdhPJyCFy8Ef1msmxTyTP8my9nEEJAhY8bgrnNAfnPhIUZit37rGO8drXpQwB0Al6ZeBN1iYAP80w==
+X-Received: by 2002:a0c:a482:: with SMTP id x2mr1771542qvx.56.1602718043905;
+        Wed, 14 Oct 2020 16:27:23 -0700 (PDT)
+Received: from ziepe.ca ([142.177.128.188])
+        by smtp.gmail.com with ESMTPSA id z69sm520231qkb.7.2020.10.14.16.27.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Oct 2020 16:27:23 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kSqB0-0001sR-8d; Wed, 14 Oct 2020 20:27:22 -0300
+Date:   Wed, 14 Oct 2020 20:27:22 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH 01/11] RDMA/cxgb4: Remove MW support
+Message-ID: <20201014232722.GC6763@ziepe.ca>
+References: <0-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+ <1-v1-caa70ba3d1ab+1436e-ucmd_mask_jgg@nvidia.com>
+ <20201005055652.GE9764@unreal>
+ <20201005161726.GX816047@nvidia.com>
+ <20201009164004.GA20779@chelsio.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.177.128.188) by MN2PR01CA0009.prod.exchangelabs.com (2603:10b6:208:10c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Wed, 14 Oct 2020 22:51:26 +0000
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@nvidia.com>)        id 1kSpcD-0001ew-Ci; Wed, 14 Oct 2020 19:51:25 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602715889; bh=QozgLSbLg2T03V2She+aAryUiB0cUMnvhA5uWoyx1u4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:User-Agent:X-ClientProxiedBy:
-         MIME-Version:X-MS-Exchange-MessageSentRepresentingType;
-        b=Q3+D8eMEuwlAupdZQXG4kg+DoK20VF5JnL2ShN8/mi0ONcH8GZOfZKgwmaC+eO+xW
-         nGKSURl3SmcosXDiTbvBL9CpjBdCJTfHHAOoP/h9dkDprB4xEMJ0orl9DEbU/78SDW
-         vuY4WcjzyaBHA5FzK7tnR2UfWHDQTc+MH1QGt8RETHn0xxVefuUuIS2tox9q14B12H
-         XslKautH2AymYzqQNqw2lSzyfLGoU2Uv/mqlU1YDk9z/nlPaTyJ/4BxLi2+H8BZ4oU
-         PUNxFBi8KRD6GCHBHf18yQF71dE18LUiyU4nxctK3O6GBFfow8+AE0jHezDbS9VdAQ
-         TAtlzHydS8vtQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009164004.GA20779@chelsio.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:33:14AM -0500, Bob Pearson wrote:
-> Jason,
-> 
-> Just pulled for-next and now hit the following warning.
-> Register user space memory is not longer working.
-> I am trying to debug this but if you have any idea where to look let me know.
+On Fri, Oct 09, 2020 at 10:10:06PM +0530, Potnuri Bharat Teja wrote:
+> On Monday, October 10/05/20, 2020 at 21:47:26 +0530, Jason Gunthorpe wrote:
+> > On Mon, Oct 05, 2020 at 08:56:52AM +0300, Leon Romanovsky wrote:
+> > 
+> > > > -	mhp->rhp = rhp;
+> > > > -	mhp->attr.pdid = php->pdid;
+> > > > -	mhp->attr.type = FW_RI_STAG_MW;
+> > > 
+> > > 75% of "enum fw_ri_stag_type" can be removed too.
+> > 
+> > I think that is the code-gen'd HW API for this driver, I don't mind
+> > leaving it. It seems the HW supports MW, just nobody plumbed it
+> > through to rdma-core
+> > 
+> Hi Jason,
+> Agreed its dead code as is but Chelsio HW suports MW and we are yet to decide on
+> requirements, we may probably add userspace support for MW in future.
 
-The offset_in_page is wrong, but it is protecting some other logic..
-
-Maor? Leon? Can you sort it out tomorrow?
+You can't add userspace support without modifying the kernel since the
+ucmd_mask was never, set. So when/if you get everything working send a
+kernel series bringing these functions back.
 
 Jason
