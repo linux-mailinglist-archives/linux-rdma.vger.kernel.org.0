@@ -2,449 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1849728F65F
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 18:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E62F28F6D0
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 18:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388686AbgJOQG4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Oct 2020 12:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388357AbgJOQG4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 12:06:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A8AC061755
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 09:06:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h7so4200540wre.4
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 09:06:54 -0700 (PDT)
+        id S2390045AbgJOQbx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Oct 2020 12:31:53 -0400
+Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:54464
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390013AbgJOQbx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Oct 2020 12:31:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nbuRt07AT1qcA9xfIknZ0nz8vr/3dJEi04W7hGdPnc9gRZ9yB15LWxfLFvqBZrI5bS/oaZRKYjaimVHsJXkO5DelUivhC6v42q5q5VVpWxo5K51gqBJMn85j9H4SnyLcO5Qqp3I45n2KRJc/0iT/834pCl0zFdCS8YGweS4XVJzs0N4gwqTAYt7V+deGE/wBKm8T590VKOKYj8cNDLkdPtrDfkkwsaNi1wqMyFZC7l7M+JAF4I9qvwtAanP+UhAknxQu3r7yIZ6eWANnlxQtkCu/uJ2eShbRoAyFEjEjfabANr8E5tJ04PS+ieTx8cXGgpwR8d9RULrj3adwpl4y5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u4ktphmCmhn5MbN64FLj978WmpHUMi7g09O453FLsAs=;
+ b=eY0iZ1dktlDb8FVLRc5pm7TkG0FfjNVjnxkhCVK1muWKvfqnHAXRG6uBLL3WI2IkF8uCYd+X3zXYWK79QeVXH7YXVxBi4Q5BE6AXUGFxsY4EFbN02zGH+uU16aIxQEQU8KZHmodUzHVodkUtOlROzPegjC+wFxeWCL95Z9H8K7fi89T468anGZuRTDKaNS7YdkBjq2n7v02a30caAUFKRMsEiJOy1I77OQu3ZdWX2Fa5lhy/pTUuoYcldd/f5eogmk2OJh6xr95xH6joBv97242AgC7R91D4oE0nRaPBVNnyCUWfj47xEkoOtUNYgAgByyCirrUDX5KM6Fbq5s0wZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D8cC18mlTHqJFsKXTazIQXk5u6Tfyu8LoMOhU5TpBnI=;
-        b=JFqKm8+Zyl76xWvyW9HpNmTevNSlXXaCWBuy+FJ9Itkn3uHpivEnZfqKjoSE4t/Rc6
-         NnVoXfKNMYbiWWrlA4HUjVc6XJEHpoJRlBQyslgzLornXHjfnARlspBlqVTOgbXXZunS
-         dli8no3akl1b3oGpnzngFCH2d9ZcBDOpBezzM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D8cC18mlTHqJFsKXTazIQXk5u6Tfyu8LoMOhU5TpBnI=;
-        b=crefkw/Hurrt2kKs8Bpo19pVQ8fx2ZlDKec9qdpPfbxWHiER6YIT7+j0er1MSU7cTd
-         pJfoI1dnbm6Xzm2BmjVuYcFDn+URuFWZg5G1cq0z8/oOiuoD86/Ciw3YKKfQf/CYit4b
-         lWCPQGLFPLKW+tih64eAAm8dQ4kDqFGEhVCsEutyoJjs7lE49H5hFH/yipqopUySgXxK
-         8/A6mUZeJ3HtrZpl9ZF+xpXW+P/B9u18iEPt1H6RHxtcUw9Sfl3rt7I2/PDwT6mgeLSy
-         7G480JgbemmPvKe9PRPoFFqYydTLhPm9pDcy/cdIW0cKLfqlmux9AcecilnMWi7WlXxV
-         7s/g==
-X-Gm-Message-State: AOAM533y7bhLtMUj9dtRfrt3BIruvLLf0PeY/ng468zGxdWCRspG8KsN
-        V176j6MSAnK80oityBtncDa1qjv5RDwQj2jh
-X-Google-Smtp-Source: ABdhPJzfU+EQGr/IktaOMUQ8FHr78ZLS0xqb7+zZmza7+9QVfkbmrbZeMyqz9L4j4eaSuo+yhXUqZw==
-X-Received: by 2002:a5d:480a:: with SMTP id l10mr4964799wrq.279.1602778013174;
-        Thu, 15 Oct 2020 09:06:53 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id o4sm5341795wrv.8.2020.10.15.09.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 09:06:52 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 18:06:50 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u4ktphmCmhn5MbN64FLj978WmpHUMi7g09O453FLsAs=;
+ b=StHOjFyTHsV2iqzMXpVNyZw8nzJyozjKWf6R8t/Vf3dUleA83GPp647QE25h0L9qZ55jJ8gDYEFu1v6aBXAu1P4TLmkIkmKAbDvL6kKGNErX1X7s0b97AZvMNm7YvaJPVJhVWemutJTyTkSsQ3JSDKEstqXh3JiX7ZRPd1kDwuU=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4797.namprd12.prod.outlook.com (2603:10b6:208:a4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Thu, 15 Oct
+ 2020 16:31:49 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3477.021; Thu, 15 Oct 2020
+ 16:31:49 +0000
+Subject: Re: [PATCH v4 5/5] dma-buf: Clarify that dma-buf sg lists are page
+ aligned
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
 Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
         Leon Romanovsky <leon@kernel.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [PATCH v4 1/5] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201015160650.GB401619@phenom.ffwll.local>
-References: <1602692116-106937-1-git-send-email-jianxin.xiong@intel.com>
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <1602692161-107096-1-git-send-email-jianxin.xiong@intel.com>
+ <20201015160344.GA401619@phenom.ffwll.local>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5d7609d0-5548-eab7-b170-c420f6cb3de3@amd.com>
+Date:   Thu, 15 Oct 2020 18:31:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201015160344.GA401619@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [46.114.105.76]
+X-ClientProxiedBy: AM4PR07CA0018.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::31) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602692116-106937-1-git-send-email-jianxin.xiong@intel.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.137.56] (46.114.105.76) by AM4PR07CA0018.eurprd07.prod.outlook.com (2603:10a6:205:1::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.9 via Frontend Transport; Thu, 15 Oct 2020 16:31:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3a2a3b9a-98e2-4959-fe66-08d87127d088
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4797:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4797F2FBB0D9B4947B8A63D583020@MN2PR12MB4797.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VCXjbZPPrmKsrbVgIdvDiX5hqooncuVngQi1u7NXrpSZIxpLpz3xwJiPoOX+eX/F3pwk/l+wUlYlG/hm6scOHs4/HtwS49DLWAyS+zh9g/fzMfILqhK8/BCLbzZq2BEe50etXribafM3PqpqbK9TYSTqQmKQI1VsrYr7DwGvOZQk8dnwroU0qRBq6VAKNyev13dqLB7MJ7kAY1vut3YtqD/K46UIEZQVarhukN6V9hmYRkOId8/lybZe5+3jkc86oMQRyPRbEbYCvcK436WPTUM1FEthZVh04bkRNaVwNeOf+wFyGnOsyjIhgjMQsA2rFyIQPhTCjQHVQolx+RtQJmFo5eeY+wm0F6XdnobR1n2aQ1WlMYho6fV3jGClvD7eFiASSTGrZfSYPSBnDFwy3Pc+8YgO//W6r+vQijApTKCPCP5ojldwRTZdwcSxN4qFntOW1OOkNN+fosWZQDDeng==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(66574015)(31696002)(5660300002)(6486002)(83380400001)(86362001)(66556008)(66946007)(6666004)(66476007)(36756003)(26005)(54906003)(8676002)(31686004)(16526019)(45080400002)(316002)(956004)(16576012)(52116002)(186003)(110136005)(2616005)(34490700002)(2906002)(4326008)(7416002)(478600001)(966005)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: rM8l8uf/Yd0cqJJo6bI4ltHpBvsW8cqk4R1HOOsr3JLc+IKtTtHZ+K/PK3XaLh9eU8+Q2dW71+G3hWvReMHLDm2epNCKLpl3TaV20CvhEBWF9juZKbtymB7XsM+/igNOPD20mtpwE15oQEXkMEOuwKFDFtVg7J6Ip9ftd59BERJgOyXkShlOGqb2w4ymIq1Ds0NtpGzB67Dt0TshJKhq7t0fBdlj1iiaJf+/Wm0rgNDTjX6jyUBKrZzAbwDe0/xQ2dCQ4YRmDyd7QdmZ+6C7S4IVXOyeAklv4gg5+MoxaT/aDSkLwEbLyGJaZEFbQFf/Z7GURXcoJNmrse1kSguD3+u5GYck6ofNYuIbgtklUEE1EeVFf8an+4+9S7F0u98FXwCn24yBXS0TuNdktzQowZrSc8FVlMp+iCAsl/0UJP6WKjJaw9ymWQvyx2i/gESDS6aSvwrb7iU6LIXgJt8Zkm4FKHnkPivN6cht0RfghYeuFbCncDbgyqfsMAoh6fzcLSxsmLxDqA2T0K1s2xbuI7ZPEO4/M+jS9W0Kwfs3mLQJGoEHnk8+COyxK3shnsCU2NNZjkRMHc0pj9rPbXbLXDoIhDuYLc9QZJ4G3G7JinHBCeKESfujs6T6FjS3UrIos3It9sgOJx6IpnCs+GFlRg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a2a3b9a-98e2-4959-fe66-08d87127d088
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 16:31:49.3255
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p6v0hs5bed+SYOHAVxkakmwVOlUtEy+drvRxqlHfYNWv6zV9mExj5bnIHSD89P5q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4797
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:15:16AM -0700, Jianxin Xiong wrote:
-> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
-> used to support peer-to-peer access from RDMA devices.
-> 
-> Device memory exported via dma-buf is associated with a file descriptor.
-> This is passed to the user space as a property associated with the
-> buffer allocation. When the buffer is registered as a memory region,
-> the file descriptor is passed to the RDMA driver along with other
-> parameters.
-> 
-> Implement the common code for importing dma-buf object and mapping
-> dma-buf pages.
-> 
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> Acked-by: Christian Koenig <christian.koenig@amd.com>
-> ---
->  drivers/infiniband/core/Makefile      |   2 +-
->  drivers/infiniband/core/umem.c        |   4 +
->  drivers/infiniband/core/umem_dmabuf.c | 200 ++++++++++++++++++++++++++++++++++
->  drivers/infiniband/core/umem_dmabuf.h |  11 ++
->  include/rdma/ib_umem.h                |  32 +++++-
->  5 files changed, 247 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
->  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
-> 
-> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-> index ccf2670..8ab4eea 100644
-> --- a/drivers/infiniband/core/Makefile
-> +++ b/drivers/infiniband/core/Makefile
-> @@ -40,5 +40,5 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
->  				uverbs_std_types_srq.o \
->  				uverbs_std_types_wq.o \
->  				uverbs_std_types_qp.o
-> -ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o
-> +ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o umem_dmabuf.o
->  ib_uverbs-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += umem_odp.o
-> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> index e9fecbd..8c608a5 100644
-> --- a/drivers/infiniband/core/umem.c
-> +++ b/drivers/infiniband/core/umem.c
-> @@ -2,6 +2,7 @@
->   * Copyright (c) 2005 Topspin Communications.  All rights reserved.
->   * Copyright (c) 2005 Cisco Systems.  All rights reserved.
->   * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
-> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
->   *
->   * This software is available to you under a choice of one of two
->   * licenses.  You may choose to be licensed under the terms of the GNU
-> @@ -43,6 +44,7 @@
->  #include <rdma/ib_umem_odp.h>
->  
->  #include "uverbs.h"
-> +#include "umem_dmabuf.h"
->  
->  static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int dirty)
->  {
-> @@ -269,6 +271,8 @@ void ib_umem_release(struct ib_umem *umem)
->  {
->  	if (!umem)
->  		return;
-> +	if (umem->is_dmabuf)
-> +		return ib_umem_dmabuf_release(umem);
->  	if (umem->is_odp)
->  		return ib_umem_odp_release(to_ib_umem_odp(umem));
->  
-> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-> new file mode 100644
-> index 0000000..4f2303e
-> --- /dev/null
-> +++ b/drivers/infiniband/core/umem_dmabuf.c
-> @@ -0,0 +1,200 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +/*
-> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#include <linux/dma-buf.h>
-> +#include <linux/dma-resv.h>
-> +#include <linux/dma-mapping.h>
-> +
-> +#include "uverbs.h"
-> +
-> +struct ib_umem_dmabuf {
-> +	struct ib_umem umem;
-> +	struct dma_buf_attachment *attach;
-> +	struct sg_table *sgt;
-> +	const struct ib_umem_dmabuf_ops *ops;
-> +	void *device_context;
-> +	struct work_struct work;
-> +};
-> +
-> +static inline struct ib_umem_dmabuf *to_ib_umem_dmabuf(struct ib_umem *umem)
-> +{
-> +	return container_of(umem, struct ib_umem_dmabuf, umem);
-> +}
-> +
-> +int ib_umem_dmabuf_map_pages(struct ib_umem *umem, bool first)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-> +	struct sg_table *sgt;
-> +	struct dma_fence *fence;
-> +	int err;
-> +
-> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> +
-> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
-> +				     DMA_BIDIRECTIONAL);
-> +
-> +	if (IS_ERR(sgt)) {
-> +		dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> +		return PTR_ERR(sgt);
-> +	}
-> +
-> +	umem_dmabuf->umem.sg_head = *sgt;
-> +	umem_dmabuf->umem.nmap = sgt->nents;
-> +	umem_dmabuf->sgt = sgt;
-> +
+Am 15.10.20 um 18:03 schrieb Daniel Vetter:
+> On Wed, Oct 14, 2020 at 09:16:01AM -0700, Jianxin Xiong wrote:
+>> The dma-buf API have been used under the assumption that the sg lists
+>> returned from dma_buf_map_attachment() are fully page aligned. Lots of
+>> stuff can break otherwise all over the place. Clarify this in the
+>> documentation and add a check when DMA API debug is enabled.
+>>
+>> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
 
-Maybe you want to put the explanation why we have to first get the mapping
-and then wait on it here as a comment, since that's rather non-obvious for
-non-gpu people.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-Either way I think the dma-buf side of this looks good now, both the map
-and unmap side.
+> lgtm, thanks for creating this and giving it a spin.
+>
+> I'll queue this up in drm-misc-next for 5.11, should show up in linux-next
+> after the merge window is closed.
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Thanks, I'm currently without landline internet and need to rely on my 
+mobile.
 
-> +	fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
-> +	if (fence)
-> +		dma_fence_wait(fence, false);
-> +
-> +	if (first)
-> +		err = umem_dmabuf->ops->init(umem,
-> +					     umem_dmabuf->device_context);
-> +	else
-> +		err = umem_dmabuf->ops->update(umem,
-> +					       umem_dmabuf->device_context);
-> +
-> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> +	return err;
-> +}
-> +
-> +int ib_umem_dmabuf_init_mapping(struct ib_umem *umem, void *device_context)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-> +
-> +	umem_dmabuf->device_context = device_context;
-> +	return ib_umem_dmabuf_map_pages(umem, true);
-> +}
-> +EXPORT_SYMBOL(ib_umem_dmabuf_init_mapping);
-> +
-> +bool ib_umem_dmabuf_mapping_ready(struct ib_umem *umem)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-> +	bool ret;
-> +
-> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> +	ret = !!umem_dmabuf->sgt;
-> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(ib_umem_dmabuf_mapping_ready);
-> +
-> +static void ib_umem_dmabuf_unmap_pages(struct ib_umem *umem, bool do_invalidate)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-> +
-> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> +
-> +	if (!umem_dmabuf->sgt)
-> +		return;
-> +
-> +	if (do_invalidate)
-> +		umem_dmabuf->ops->invalidate(umem, umem_dmabuf->device_context);
-> +
-> +	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
-> +				 DMA_BIDIRECTIONAL);
-> +	umem_dmabuf->sgt = NULL;
-> +}
-> +
-> +static void ib_umem_dmabuf_work(struct work_struct *work)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf;
-> +	int ret;
-> +
-> +	umem_dmabuf = container_of(work, struct ib_umem_dmabuf, work);
-> +	ret = ib_umem_dmabuf_map_pages(&umem_dmabuf->umem, false);
-> +	if (ret)
-> +		pr_debug("%s: failed to update dmabuf mapping, error %d\n",
-> +			 __func__, ret);
-> +}
-> +
-> +static void ib_umem_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
-> +
-> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> +
-> +	ib_umem_dmabuf_unmap_pages(&umem_dmabuf->umem, true);
-> +	queue_work(ib_wq, &umem_dmabuf->work);
-> +}
-> +
-> +static struct dma_buf_attach_ops ib_umem_dmabuf_attach_ops = {
-> +	.allow_peer2peer = 1,
-> +	.move_notify = ib_umem_dmabuf_invalidate_cb,
-> +};
-> +
-> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> +				   unsigned long addr, size_t size,
-> +				   int dmabuf_fd, int access,
-> +				   const struct ib_umem_dmabuf_ops *ops)
-> +{
-> +	struct dma_buf *dmabuf;
-> +	struct ib_umem_dmabuf *umem_dmabuf;
-> +	struct ib_umem *umem;
-> +	unsigned long end;
-> +	long ret;
-> +
-> +	if (check_add_overflow(addr, size, &end))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (unlikely(PAGE_ALIGN(end) < PAGE_SIZE))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (unlikely(!ops || !ops->invalidate || !ops->update))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	umem_dmabuf = kzalloc(sizeof(*umem_dmabuf), GFP_KERNEL);
-> +	if (!umem_dmabuf)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	umem_dmabuf->ops = ops;
-> +	INIT_WORK(&umem_dmabuf->work, ib_umem_dmabuf_work);
-> +
-> +	umem = &umem_dmabuf->umem;
-> +	umem->ibdev = device;
-> +	umem->length = size;
-> +	umem->address = addr;
-> +	umem->writable = ib_access_writable(access);
-> +	umem->is_dmabuf = 1;
-> +
-> +	dmabuf = dma_buf_get(dmabuf_fd);
-> +	if (IS_ERR(dmabuf)) {
-> +		ret = PTR_ERR(dmabuf);
-> +		goto out_free_umem;
-> +	}
-> +
-> +	umem_dmabuf->attach = dma_buf_dynamic_attach(
-> +					dmabuf,
-> +					device->dma_device,
-> +					&ib_umem_dmabuf_attach_ops,
-> +					umem_dmabuf);
-> +	if (IS_ERR(umem_dmabuf->attach)) {
-> +		ret = PTR_ERR(umem_dmabuf->attach);
-> +		goto out_release_dmabuf;
-> +	}
-> +
-> +	return umem;
-> +
-> +out_release_dmabuf:
-> +	dma_buf_put(dmabuf);
-> +
-> +out_free_umem:
-> +	kfree(umem_dmabuf);
-> +	return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL(ib_umem_dmabuf_get);
-> +
-> +void ib_umem_dmabuf_release(struct ib_umem *umem)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-> +	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
-> +
-> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> +	ib_umem_dmabuf_unmap_pages(umem, false);
-> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> +
-> +	dma_buf_detach(dmabuf, umem_dmabuf->attach);
-> +	dma_buf_put(dmabuf);
-> +	kfree(umem_dmabuf);
-> +}
-> diff --git a/drivers/infiniband/core/umem_dmabuf.h b/drivers/infiniband/core/umem_dmabuf.h
-> new file mode 100644
-> index 0000000..485f653
-> --- /dev/null
-> +++ b/drivers/infiniband/core/umem_dmabuf.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-> +/*
-> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#ifndef UMEM_DMABUF_H
-> +#define UMEM_DMABUF_H
-> +
-> +void ib_umem_dmabuf_release(struct ib_umem *umem);
-> +
-> +#endif /* UMEM_DMABUF_H */
-> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-> index 7059750..fac8553 100644
-> --- a/include/rdma/ib_umem.h
-> +++ b/include/rdma/ib_umem.h
-> @@ -1,6 +1,7 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
->  /*
->   * Copyright (c) 2007 Cisco Systems.  All rights reserved.
-> + * Copyright (c) 2020 Intel Corporation.  All rights reserved.
->   */
->  
->  #ifndef IB_UMEM_H
-> @@ -22,12 +23,19 @@ struct ib_umem {
->  	unsigned long		address;
->  	u32 writable : 1;
->  	u32 is_odp : 1;
-> +	u32 is_dmabuf : 1;
->  	struct work_struct	work;
->  	struct sg_table sg_head;
->  	int             nmap;
->  	unsigned int    sg_nents;
->  };
->  
-> +struct ib_umem_dmabuf_ops {
-> +	int	(*init)(struct ib_umem *umem, void *context);
-> +	int	(*update)(struct ib_umem *umem, void *context);
-> +	int	(*invalidate)(struct ib_umem *umem, void *context);
-> +};
-> +
->  /* Returns the offset of the umem start relative to the first page. */
->  static inline int ib_umem_offset(struct ib_umem *umem)
->  {
-> @@ -79,6 +87,12 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
->  unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
->  				     unsigned long pgsz_bitmap,
->  				     unsigned long virt);
-> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> +				   unsigned long addr, size_t size,
-> +				   int dmabuf_fd, int access,
-> +				   const struct ib_umem_dmabuf_ops *ops);
-> +int ib_umem_dmabuf_init_mapping(struct ib_umem *umem, void *device_context);
-> +bool ib_umem_dmabuf_mapping_ready(struct ib_umem *umem);
->  
->  #else /* CONFIG_INFINIBAND_USER_MEM */
->  
-> @@ -101,7 +115,23 @@ static inline unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
->  {
->  	return 0;
->  }
-> +static inline struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> +						 unsigned long addr,
-> +						 size_t size, int dmabuf_fd,
-> +						 int access,
-> +						 struct ib_umem_dmabuf_ops *ops)
-> +{
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +static inline int ib_umem_dmabuf_init_mapping(struct ib_umem *umem,
-> +					      void *device_context)
-> +{
-> +	return -EINVAL;
-> +}
-> +static inline bool ib_umem_dmabuf_mapping_ready(struct ib_umem *umem)
-> +{
-> +	return false;
-> +}
->  
->  #endif /* CONFIG_INFINIBAND_USER_MEM */
-> -
->  #endif /* IB_UMEM_H */
-> -- 
-> 1.8.3.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Christian.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> Cheers, Daniel
+>
+>> ---
+>>   drivers/dma-buf/dma-buf.c | 21 +++++++++++++++++++++
+>>   include/linux/dma-buf.h   |  3 ++-
+>>   2 files changed, 23 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>> index 844967f..7309c83 100644
+>> --- a/drivers/dma-buf/dma-buf.c
+>> +++ b/drivers/dma-buf/dma-buf.c
+>> @@ -851,6 +851,9 @@ void dma_buf_unpin(struct dma_buf_attachment *attach)
+>>    * Returns sg_table containing the scatterlist to be returned; returns ERR_PTR
+>>    * on error. May return -EINTR if it is interrupted by a signal.
+>>    *
+>> + * On success, the DMA addresses and lengths in the returned scatterlist are
+>> + * PAGE_SIZE aligned.
+>> + *
+>>    * A mapping must be unmapped by using dma_buf_unmap_attachment(). Note that
+>>    * the underlying backing storage is pinned for as long as a mapping exists,
+>>    * therefore users/importers should not hold onto a mapping for undue amounts of
+>> @@ -904,6 +907,24 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
+>>   		attach->dir = direction;
+>>   	}
+>>   
+>> +#ifdef CONFIG_DMA_API_DEBUG
+>> +	{
+>> +		struct scatterlist *sg;
+>> +		u64 addr;
+>> +		int len;
+>> +		int i;
+>> +
+>> +		for_each_sgtable_dma_sg(sg_table, sg, i) {
+>> +			addr = sg_dma_address(sg);
+>> +			len = sg_dma_len(sg);
+>> +			if (!PAGE_ALIGNED(addr) || !PAGE_ALIGNED(len)) {
+>> +				pr_debug("%s: addr %llx or len %x is not page aligned!\n",
+>> +					 __func__, addr, len);
+>> +			}
+>> +		}
+>> +	}
+>> +#endif /* CONFIG_DMA_API_DEBUG */
+>> +
+>>   	return sg_table;
+>>   }
+>>   EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
+>> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+>> index a2ca294e..4a5fa70 100644
+>> --- a/include/linux/dma-buf.h
+>> +++ b/include/linux/dma-buf.h
+>> @@ -145,7 +145,8 @@ struct dma_buf_ops {
+>>   	 *
+>>   	 * A &sg_table scatter list of or the backing storage of the DMA buffer,
+>>   	 * already mapped into the device address space of the &device attached
+>> -	 * with the provided &dma_buf_attachment.
+>> +	 * with the provided &dma_buf_attachment. The addresses and lengths in
+>> +	 * the scatter list are PAGE_SIZE aligned.
+>>   	 *
+>>   	 * On failure, returns a negative error value wrapped into a pointer.
+>>   	 * May also return -EINTR when a signal was received while being
+>> -- 
+>> 1.8.3.1
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.freedesktop.org%2Fmailman%2Flistinfo%2Fdri-devel&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C58ee8712041e4e742fe408d87123e970%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637383746351346603%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=EwAEVcJa6gboHMEQ6XUymC%2BtjFoWd0wl8YUyzdnV5N8%3D&amp;reserved=0
+
