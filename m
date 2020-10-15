@@ -2,97 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338F828EC4B
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 06:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ED728ECA4
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 07:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbgJOEcG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Oct 2020 00:32:06 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:34825 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOEcF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 00:32:05 -0400
-Received: by mail-pj1-f66.google.com with SMTP id h4so1157352pjk.0;
-        Wed, 14 Oct 2020 21:32:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K64GKhtw+rJqkS3SqXm3fRppZopgGb55fc2+FtOF5gQ=;
-        b=tWSfGlYQbcvmrtKPAS+cgouRRfSw4lO47PNj4sOLLtxbYK09dVCNPDclT9NyhMAPFK
-         P+2Ydv+MXh1csm9au1W7n3T+jjjqxIT6Wrm7HuLQD7vwRlQ4bqL9Js8ko+Y5ftdEjZ6i
-         eGr1DMl+ql9jdsue8QpezXqPanTJdHftZ28ATsO53yiGLAl/QWwnopU9+cku6AW6g7gn
-         +0CHixcINBal2/AkdwTO8iwUpUTyyMwutiHooNdRv5oXXcO4+ppVWjPpJFpeYkleaFsG
-         hUMVszCBLgvffnS7JlfFtg3T3J6yPLRxjUvB0pT5W/QtjT2BuhXnYl8WSnP0ZlUoSIuM
-         adpg==
-X-Gm-Message-State: AOAM533Aioho4YZ66eV+sCNOg0PPGUqSLwWeutxBghs/roWu9nqlBJp1
-        RBvxFRMg5EQ9MeVikEiLqksCIPFNOQCBIA==
-X-Google-Smtp-Source: ABdhPJxAHk/YzMqBEB5OL/UCNy2qUEkee/nT3sbO5NNRlDG85RqPqVpO35cLYkqneQeihGANHlLyOw==
-X-Received: by 2002:a17:90a:e107:: with SMTP id c7mr2333525pjz.27.1602736324170;
-        Wed, 14 Oct 2020 21:32:04 -0700 (PDT)
-Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u14sm1282426pjf.53.2020.10.14.21.32.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 21:32:02 -0700 (PDT)
-Subject: Re: [PATCH v6 69/80] IB/srpt: docs: add a description for cq_size
- member
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
- <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <f283f15e-073c-ee42-d022-5b543f041d0b@acm.org>
-Date:   Wed, 14 Oct 2020 21:32:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1727721AbgJOF3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Oct 2020 01:29:24 -0400
+Received: from smtprelay0116.hostedemail.com ([216.40.44.116]:46062 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726323AbgJOF3Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Oct 2020 01:29:24 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 9FB7518029122;
+        Thu, 15 Oct 2020 05:29:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:2903:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3872:3874:4250:4321:5007:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: play60_0117aeb27211
+X-Filterd-Recvd-Size: 1318
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 15 Oct 2020 05:29:21 +0000 (UTC)
+Message-ID: <497ed8109393bdcf6ba9642e3a527d7d25972e4f.camel@perches.com>
+Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
+From:   Joe Perches <joe@perches.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 14 Oct 2020 22:29:20 -0700
+In-Reply-To: <20201008054128.GD13580@unreal>
+References: <cover.1602122879.git.joe@perches.com>
+         <20201008054128.GD13580@unreal>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/13/20 4:54 AM, Mauro Carvalho Chehab wrote:
-> Changeset c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-> added a new member for struct srpt_rdma_ch, but didn't add the
-> corresponding kernel-doc markup, as repoted when doing
-> "make htmldocs":
-> 	./drivers/infiniband/ulp/srpt/ib_srpt.h:331: warning: Function parameter or member 'cq_size' not described in 'srpt_rdma_ch'
+On Thu, 2020-10-08 at 08:41 +0300, Leon Romanovsky wrote:
+> On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
+> > A recent commit added a sysfs_emit and sysfs_emit_at to allow various
+> > sysfs show functions to ensure that the PAGE_SIZE buffer argument is
+> > never overrun and always NUL terminated.
 > 
-> Add a description for it.
-> 
-> Fixes: c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> index 41435a699b53..e5d6af14d073 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> @@ -256,6 +256,7 @@ enum rdma_ch_state {
->   * @rdma_cm:	   See below.
->   * @rdma_cm.cm_id: RDMA CM ID associated with the channel.
->   * @cq:            IB completion queue for this channel.
-> + * @cq_size:	   Size of the @cq pool.
->   * @zw_cqe:	   Zero-length write CQE.
->   * @rcu:           RCU head.
->   * @kref:	   kref for this channel.
+> Unfortunately but the sysfs_emit commit is not in rdma-next tree yet.
 
-That doesn't seem correct to me. My understanding is that cq_size is the
-number of CQEs in @cq. @cq is a completion queue and not a CQ pool.
-
-Bart.
+It is in Linus' tree now.
 
 
