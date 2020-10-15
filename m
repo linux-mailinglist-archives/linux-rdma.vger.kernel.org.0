@@ -2,115 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BF428FADF
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Oct 2020 23:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45C328FBC9
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 01:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgJOVsq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Oct 2020 17:48:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11194 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727684AbgJOVsq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:48:46 -0400
-IronPort-SDR: rFCIcgAzPGDCeIoIoNO3kWPTF/IdEE3d90Dn0q9ARmXXzYQrGsINH6XgS5kswAuf0JLFA0HK0D
- I0tYKVE4IgUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="153389434"
-X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
-   d="scan'208";a="153389434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 14:48:45 -0700
-IronPort-SDR: y0ranw1JxLnitQsTce/ua/Bu76A+mbHQLxiNVUHgdVvNZURtU1glBqOq+aykYZR3kjhT+BMEQ1
- Lzt7i7TL+lyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
-   d="scan'208";a="330954089"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by orsmga002.jf.intel.com with ESMTP; 15 Oct 2020 14:48:45 -0700
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH v5 5/5] dma-buf: Clarify that dma-buf sg lists are page aligned
-Date:   Thu, 15 Oct 2020 15:03:00 -0700
-Message-Id: <1602799380-138355-1-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1732990AbgJOXrY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Oct 2020 19:47:24 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13177 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732988AbgJOXrY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 19:47:24 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f88df5f0000>; Thu, 15 Oct 2020 16:46:39 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
+ 2020 23:47:22 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 15 Oct 2020 23:47:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lsHSrrN6AVWnIdsQxFEnHQ8b4Mwkfk0i8Z40GOuS2p+Dvv+N0SH9HnDuFIWOENJFKcromFhFAKdAlDkkMruZVOLXoxvr3iSwh+EiqtwdxaoQm830Z884kIvLTByloQMIgqCCrveeT16lxq2+Gg+l3WDqS928zcceno1KXrCViFr1vhjMqU+T0HKZ3G28JHnRbekGATebaYJek8kyZ4KRXif7P2ycv5c6Ke9wQqUkTw6Vsur2xQIjZtNfWTdiFfZZ7hgMXCvVN9NbIeM9NXgIoLBpFXsMu1ZhZH/Eb6qK+NdKOFaHahElSimBcHVqHd3PNrEAB+p4OZ53QOtHY18w+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5/he1BR0apycDANF7BHH9Ee+8I5VU4qMB8TVa3yjlzs=;
+ b=BTDxfltLamQVyqVxgW2Bk5FqTNC4JW68UIMphnV0PiAvLmO4QlgaZ0lKeWaBZoUWgzY2hVrD61oYP1NTPL3pGO05ohqvZ2aa4Y00znMUaxiD1Tm5ehofbADD5kpMCAsHz+An8LCWcDBqa1U9nLZbeBYt37j7BXEzDG5ChrOavmfY/18r/OW9Jijn1I9khupnkg/5dQKi8nXNCKuJqrvi9gVi9MFz9+FMf+s1gZEO+VW2jisoh6RTfUVWvV2HSdbpcsR9C5eH5rjawPwbhT6HCDlyN5FsK47s/F3X9POQ/qsrn2zUq2FWtRZ/xhAiTb+nrjjVXNaMNklX+mcZSWycIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2859.namprd12.prod.outlook.com (2603:10b6:5:15d::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Thu, 15 Oct
+ 2020 23:47:21 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Thu, 15 Oct 2020
+ 23:47:21 +0000
+Date:   Thu, 15 Oct 2020 20:47:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH] Provider/rxe: Fix regression to UD traffic
+Message-ID: <20201015234720.GA6219@nvidia.com>
+References: <20201015201750.8336-1-rpearson@hpe.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201015201750.8336-1-rpearson@hpe.com>
+X-ClientProxiedBy: BL0PR02CA0106.namprd02.prod.outlook.com
+ (2603:10b6:208:51::47) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0106.namprd02.prod.outlook.com (2603:10b6:208:51::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Thu, 15 Oct 2020 23:47:21 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTCxs-0005WO-3w; Thu, 15 Oct 2020 20:47:20 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602805599; bh=5/he1BR0apycDANF7BHH9Ee+8I5VU4qMB8TVa3yjlzs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=o9PXflt5uR4fTzlZOxnnz4qou9Nwm6L3deZ+IuQrupl/ALR6lY1Wt8BjMImM7AyQk
+         aWPiKd31btV9iZFZSLDO9bpBlCTWgfzH0DT0r9b0XrwffNLIpN7SwCSIPaaEhvm2ta
+         OrwZt4Cceb644z8/+6xN00H4Zho/pivuGsF+5C1KALUTSq+FoYTcQd61ZzrTsfRzrG
+         ZMvfqDv3j0Tu6H4mevx6JMIR/Ii0+JteVfiidOP1GS2fTLqMzlgXaAkZLQXpwDoBjV
+         FtEL3OFEKz8SJgNfv1K8tX5zKKd45p0vF/7/L/qKXrVSSANyG1O7Rs4nxp+O+qaiqG
+         bgEeCID+T2Deg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The dma-buf API have been used under the assumption that the sg lists
-returned from dma_buf_map_attachment() are fully page aligned. Lots of
-stuff can break otherwise all over the place. Clarify this in the
-documentation and add a check when DMA API debug is enabled.
+On Thu, Oct 15, 2020 at 03:17:51PM -0500, Bob Pearson wrote:
+> Update enum rdma_network_type copy to match kernel version.
+> Without this change provider/rxe will send incorrect
+> network types to the kernel in send WQEs.
+> 
+> This fix keeps rxe functional but should be replaced by a better
+> implementation.
+> 
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+>  providers/rxe/rxe.h | 1 +
+>  1 file changed, 1 insertion(+)
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-Reviewed-by: Christian Koenig <christian.koenig@amd.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Well, we can't just break user space so the kernel has to change in
+some way to accommodate this.
+
+Obviously rxe should not have uAPI stuff that is not in
+include/uapi/rdma, so lets just fix that directly.
+
+Please confirm I did this right. The PR for this merge window must be
+sent Friday.
+
+From 8b20e1ceea413c98cb98930cb549be390226320f Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@nvidia.com>
+Date: Thu, 15 Oct 2020 20:42:18 -0300
+Subject: [PATCH] RDMA/rxe: Move the definitions for rxe_av.network_type to
+ uAPI
+
+RXE was wrongly using an internal kernel enum as part of its uAPI, split
+this out into a dedicated uAPI enum just for RXE. It only uses the IPv4
+and IPv6 values.
+
+This was exposed by changing the internal kernel enum definition which
+broke RXE.
+
+Fixes: 1c15b4f2a42f ("RDMA/core: Modify enum ib_gid_type and enum rdma_network_type")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/dma-buf/dma-buf.c | 21 +++++++++++++++++++++
- include/linux/dma-buf.h   |  3 ++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_net.c | 8 ++++----
+ include/uapi/rdma/rdma_user_rxe.h   | 6 ++++++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 844967f..7309c83 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -851,6 +851,9 @@ void dma_buf_unpin(struct dma_buf_attachment *attach)
-  * Returns sg_table containing the scatterlist to be returned; returns ERR_PTR
-  * on error. May return -EINTR if it is interrupted by a signal.
-  *
-+ * On success, the DMA addresses and lengths in the returned scatterlist are
-+ * PAGE_SIZE aligned.
-+ *
-  * A mapping must be unmapped by using dma_buf_unmap_attachment(). Note that
-  * the underlying backing storage is pinned for as long as a mapping exists,
-  * therefore users/importers should not hold onto a mapping for undue amounts of
-@@ -904,6 +907,24 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
- 		attach->dir = direction;
- 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 31b93e7e1e2f41..575e1a4ec82121 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -133,14 +133,14 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
+ 		if (dst)
+ 			dst_release(dst);
  
-+#ifdef CONFIG_DMA_API_DEBUG
-+	{
-+		struct scatterlist *sg;
-+		u64 addr;
-+		int len;
-+		int i;
+-		if (av->network_type == RDMA_NETWORK_IPV4) {
++		if (av->network_type == RXE_NETWORK_TYPE_IPV4) {
+ 			struct in_addr *saddr;
+ 			struct in_addr *daddr;
+ 
+ 			saddr = &av->sgid_addr._sockaddr_in.sin_addr;
+ 			daddr = &av->dgid_addr._sockaddr_in.sin_addr;
+ 			dst = rxe_find_route4(ndev, saddr, daddr);
+-		} else if (av->network_type == RDMA_NETWORK_IPV6) {
++		} else if (av->network_type == RXE_NETWORK_TYPE_IPV6) {
+ 			struct in6_addr *saddr6;
+ 			struct in6_addr *daddr6;
+ 
+@@ -442,7 +442,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 	if (IS_ERR(attr))
+ 		return NULL;
+ 
+-	if (av->network_type == RDMA_NETWORK_IPV4)
++	if (av->network_type == RXE_NETWORK_TYPE_IPV6)
+ 		hdr_len = ETH_HLEN + sizeof(struct udphdr) +
+ 			sizeof(struct iphdr);
+ 	else
+@@ -469,7 +469,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 	skb->dev	= ndev;
+ 	rcu_read_unlock();
+ 
+-	if (av->network_type == RDMA_NETWORK_IPV4)
++	if (av->network_type == RXE_NETWORK_TYPE_IPV4)
+ 		skb->protocol = htons(ETH_P_IP);
+ 	else
+ 		skb->protocol = htons(ETH_P_IPV6);
+diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+index d8f2e0e46daba7..e591d8c1f3cf10 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -39,6 +39,11 @@
+ #include <linux/in.h>
+ #include <linux/in6.h>
+ 
++enum {
++	RXE_NETWORK_TYPE_IPV4 = 1,
++	RXE_NETWORK_TYPE_IPV6 = 2,
++};
 +
-+		for_each_sgtable_dma_sg(sg_table, sg, i) {
-+			addr = sg_dma_address(sg);
-+			len = sg_dma_len(sg);
-+			if (!PAGE_ALIGNED(addr) || !PAGE_ALIGNED(len)) {
-+				pr_debug("%s: addr %llx or len %x is not page aligned!\n",
-+					 __func__, addr, len);
-+			}
-+		}
-+	}
-+#endif /* CONFIG_DMA_API_DEBUG */
-+
- 	return sg_table;
- }
- EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index a2ca294e..4a5fa70 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -145,7 +145,8 @@ struct dma_buf_ops {
- 	 *
- 	 * A &sg_table scatter list of or the backing storage of the DMA buffer,
- 	 * already mapped into the device address space of the &device attached
--	 * with the provided &dma_buf_attachment.
-+	 * with the provided &dma_buf_attachment. The addresses and lengths in
-+	 * the scatter list are PAGE_SIZE aligned.
- 	 *
- 	 * On failure, returns a negative error value wrapped into a pointer.
- 	 * May also return -EINTR when a signal was received while being
+ union rxe_gid {
+ 	__u8	raw[16];
+ 	struct {
+@@ -57,6 +62,7 @@ struct rxe_global_route {
+ 
+ struct rxe_av {
+ 	__u8			port_num;
++	/* From RXE_NETWORK_TYPE_* */
+ 	__u8			network_type;
+ 	__u8			dmac[6];
+ 	struct rxe_global_route	grh;
 -- 
-1.8.3.1
+2.28.0
 
