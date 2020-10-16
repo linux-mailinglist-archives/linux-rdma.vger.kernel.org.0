@@ -2,121 +2,223 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090EC290CDD
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 22:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D62290CDE
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 22:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392726AbgJPUtr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Oct 2020 16:49:47 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:60564 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391060AbgJPUtr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Oct 2020 16:49:47 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GKn6bs040407;
-        Fri, 16 Oct 2020 20:49:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=DFgnVIfarW6F3Y3YjwRMQU65TdFoWaDPYBkL8LdviC8=;
- b=kGhghMThp7temKJqbipB8egZFl3NUgSmR9exFieqcUvbEE5vPRdZ1n6nPd2zgprDmo28
- U8LX45CstpMi2bjr/OUKnsSZkDKMfysl5se4tai3kJWLAbiXWCKMOPa6zN+EDyx8ryUq
- d0r7amjaxG1HIR2Tl0bvlcNjpao9G2qb3l9ttwNkCTA4Jakddt/Fpc4E2ObFuUDy1nEQ
- gkafBGK52IWABe6QzHp3tpCrLBVN13hSlTybRAjVNLBUeFObbPFADJugt2VoK8i5AdQ2
- tp5Eq35VdTj3mDWKrhNtyi7amWtomGIQsGhbU2i1cjgMDYkSPhEglPCaAqgC2mmfOt8a 3w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 346g8grvu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Oct 2020 20:49:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GKihJm140943;
-        Fri, 16 Oct 2020 20:49:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 343pw28mr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Oct 2020 20:49:44 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09GKngiI012585;
-        Fri, 16 Oct 2020 20:49:43 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 16 Oct 2020 13:49:42 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20201016185443.GA37159@ziepe.ca>
-Date:   Fri, 16 Oct 2020 16:49:41 -0400
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <35A86DEC-33E8-4637-BEBB-767202CF0247@oracle.com>
-References: <20201008160814.GF5177@ziepe.ca>
- <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
- <20201009143940.GT5177@ziepe.ca>
- <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
- <20201009145706.GU5177@ziepe.ca>
- <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
- <20201009150758.GV5177@ziepe.ca>
- <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
- <20201009153406.GA5177@ziepe.ca>
- <4e630f85-c684-1e56-bb68-22c37872c728@oracle.com>
- <20201016185443.GA37159@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9776 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160151
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9776 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160152
+        id S2392730AbgJPUt6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Oct 2020 16:49:58 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22505 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392725AbgJPUt5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 16 Oct 2020 16:49:57 -0400
+IronPort-SDR: kXh4I61X86kjQLC/Y8cGlHp374234slHu0ALwcXnQcfNX8Mxy8Q00jcWYHBpXiTDM+Rj5pywXI
+ VxUZLimdRK9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="153603761"
+X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
+   d="scan'208";a="153603761"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 13:49:51 -0700
+IronPort-SDR: H4U9zLPEcj390iH7St5ip/mOZiDF5d9dM+u5oCIdlgt5EuoM+488yUfc/TXAQ9KgglOcvr8YlW
+ 1nsNB2gw8c1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
+   d="scan'208";a="522391527"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2020 13:49:49 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 16 Oct 2020 13:49:49 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 16 Oct 2020 13:49:49 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 16 Oct 2020 13:49:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mm26f2gmwBUBr0PD0UcJwy03lZuebrtY7N1j9hJOiFxyWhMp6/607H9AHy0Vw7qFaX4l+AWVUqKgsIK+c/fpZjRQHL2uOYLdoaKd89TRlVyoyEAT8ucIt5bZACelxiMqjkrR70zt/w2THXpePoaRWnWY/zZgpjB9wAqWx5ffoZZUjK6/EKwcNvKvBAu4RPOA5AK8P3+11aYSLSvAtvNx4eGKdAvzqnbLqSEiqGiMVpU4dxmSuXDEUCU/XhpHlgpP4hLmOJAL1gcZW7ZBvdJ/fJTP+NLAkU6j/8rAPpBRXSKCQsqk5G2FS7BAZfy+FmI9RDJzS9FDE9QrXcHu0vr/4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z3EYZsfyKg7MMnNexYJA1g5MqAHnh6XWUxMb8roAW80=;
+ b=moKQJGjvhrH3h2CTrDE67nvG/YUvB+FsiXk3V5pXu2TXZooj5Y3C7GV4KVPLHz+jNnidrdHfjF38he/XWjsO9ngBtTjLb+RdKpGHesyrXi37vgyzktCcBw5C5aKG/oTvpEHJWMU3y22ULiaYr9Efz49VWdju1sxPwNu2+eITRsVcZzInW1mqYRbffWkB2AhJXum8BuPU542hrw6gWlkutTv1+nnU2cTGmKlSGBR4o3HCcXf76GaleT/Cg0SRnbf0SbiSonRCjIXh2jSMZKwFLNWjwDfrPfUbTageuYGR8RDzwmM0fxNRFV9Z9Vs6UB10TMzSLLAoY9KmK5KN+r02dA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z3EYZsfyKg7MMnNexYJA1g5MqAHnh6XWUxMb8roAW80=;
+ b=jvs9HTXstZ0gQy9HMKZXde2mp/zbmUqUpEU6LaBQjo7uOOAIHkbzPbLY0N0+U9gdlzDd/yCuzx9GfzACR8Wal7mKHrihTEN51gI8EwKmBFKL6MC/j7ktEF7aUlqbk3/YmRV+bmQuXrBJeoOKAcWX5oACaOoy1XTe5ByKfTCIoNY=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MWHPR11MB0046.namprd11.prod.outlook.com (2603:10b6:301:67::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 16 Oct
+ 2020 20:49:45 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7067:d996:719:10fa]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7067:d996:719:10fa%5]) with mapi id 15.20.3477.022; Fri, 16 Oct 2020
+ 20:49:45 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Sumit Semwal" <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: RE: [PATCH v5 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Thread-Topic: [PATCH v5 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Thread-Index: AQHWozz6PA4Nzmnoo0+o3Tip+3Bz9amZZ0eAgABQccCAAN55gIAAGh5A
+Date:   Fri, 16 Oct 2020 20:49:45 +0000
+Message-ID: <MW3PR11MB45558B3A5B8BFA96A8EF787FE5030@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1602799378-138316-1-git-send-email-jianxin.xiong@intel.com>
+ <20201016005419.GA36674@ziepe.ca>
+ <MW3PR11MB4555528000D39F35A47C5F8CE5030@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20201016185829.GB37159@ziepe.ca>
+In-Reply-To: <20201016185829.GB37159@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8dae64d5-6235-4aa9-af4a-08d87215038e
+x-ms-traffictypediagnostic: MWHPR11MB0046:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB0046B0773CD3474BE5B30E3BE5030@MWHPR11MB0046.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FQDvV7PDRiT4h3rpo3qs7H1bIjZbYcZLo4KS7ECjJkn+R33rVnokIT1CKjeF3JAsPrzKT16V71aVKHjMcKVIhCgGV3EGjcIusvvgh0cQ89cOPZUqrY3LbDAmUpTfrh+m0Um/dDbktigTJLNi0hJ4QsckSuqtgCgAwPCLZn36ZbeLyDZpb1keTuDzksWRt6j8M/flU49imfHY+YY8P0ybnBLW60HlFPRoJMDh5PqZEn1FDzmY1BI1fG8oUndscE6At2Qpb2+jqtJOtgTA1+dQl1y+HAw8g88fyXFIxKD1MYHiOqdGRJygZYtHXqDfw0gP+o8lxiLj9posd6gBpeLAsg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(66556008)(7696005)(86362001)(4326008)(83380400001)(71200400001)(8936002)(186003)(107886003)(6916009)(2906002)(55016002)(6506007)(64756008)(9686003)(53546011)(66476007)(66946007)(66446008)(33656002)(26005)(8676002)(52536014)(76116006)(478600001)(316002)(5660300002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: kW6AuqK9kw3LsIyKgpPqcWVDPy5LYyCTsPLTQxXSfgX/pgR5BDrgV2eh17h9dWE15+ySR1/q/c8J7M+R3N+jcEkgpSeHXdWpziWCTcd/ly0pLPo7rwHbTr4ugCbqr9miuDCoTtGIdiJ2su3Gqme+7xPqod6vAgildAZ+yeYHh3QavQAA3rg4JPo7gIGh3gm1GRxbKJdc78sXCdYSQkgqYm5WnEUjFqdZbzHvRzqsVqhFHxAOIpyw2B0qQMa+YynlsO4UdgZdA3VCKJ7QS+esMOmwKIbzbScIZhvc3MRC31jshCt0/s45t28b+hV0GP8SV+Z1KFJDWepzZcCvBqsI2SZ+Gp6iEFek2zzncJzjVnKjUuaWpwr8BiAqs0a+V07mgAD7oolAhabigo9Xko2XeOoypxPRHiU2FaVTxTEJKk5CVUWOekrjhs0F6ZKZGnvjMpm/6mbwTTmdWTfnxK81iuQ5bPERH2uDA3xv+8hw7hNk2WbCsmV9FX7qwOiBqxOJINn1tLof21DOq5EFU4gVWMntmq+PDvPY5xVKuBNQA2jxK7x8LWJipa1aj5PUae1WhLi3lVWivwscRYwoK+9XK1KkTZu5a0GCifQOqc/EzXOfvakIeUfgcCtIwI/rQhCbT7l1b2gHzlUOzm7smOrKhA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dae64d5-6235-4aa9-af4a-08d87215038e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 20:49:45.1984
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: obmM9p+W5d5cYxhsrB72pBcODFwmS895pwIc/nhYUr+uZnXvtzVstLPqKE7grlvA8BmqqhMO07r+2LkvuLzyVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB0046
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Friday, October 16, 2020 11:58 AM
+> To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
+ford <dledford@redhat.com>; Leon Romanovsky
+> <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
+ig <christian.koenig@amd.com>; Vetter, Daniel
+> <daniel.vetter@intel.com>
+> Subject: Re: [PATCH v5 4/5] RDMA/mlx5: Support dma-buf based userspace me=
+mory region
+>=20
+> On Fri, Oct 16, 2020 at 06:40:01AM +0000, Xiong, Jianxin wrote:
+> > > > +	if (!mr)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
+> > > > +}
+> > > > +
+> > > > +static struct ib_umem_dmabuf_ops mlx5_ib_umem_dmabuf_ops =3D {
+> > > > +	.init =3D mlx5_ib_umem_dmabuf_xlt_init,
+> > > > +	.update =3D mlx5_ib_umem_dmabuf_xlt_update,
+> > > > +	.invalidate =3D mlx5_ib_umem_dmabuf_xlt_invalidate,
+> > > > +};
+> > >
+> > > I'm not really convinced these should be ops, this is usually a bad d=
+esign pattern.
+> > >
+> > > Why do I need so much code to extract the sgl from the dma_buf? I
+> > > would prefer the dma_buf layer simplify this, not by adding a wrapper=
+ around it in the IB core code...
+> > >
+> >
+> > We just need a way to call a device specific function to update the
+> > NIC's translation table.  I considered three ways: (1) ops registered
+> > with ib_umem_get_dmabuf;
+> > (2) a single function pointer registered with ib_umem_get_dmabuf; (3)
+> > a method in 'struct ib_device'. Option (1) was chosen here with no
+> > strong reason. We could consolidate the three functions of the ops into=
+ one, but then we will need to
+> > define commands or flags for different update operations.
+>=20
+> I'd rather the driver directly provide the dma_buf ops.. Inserting layers=
+ that do nothing be call other layers is usually a bad idea. I didn't look
+> carefully yet at how that would be arranged.
 
+I can work along that direction. One change I can see is that the umem_dmab=
+uf structure
+will need to be exposed to the device driver (currently it's private to the=
+ core).
+=20
+>=20
+> > > > +	ncont =3D npages;
+> > > > +	order =3D ilog2(roundup_pow_of_two(ncont));
+> > >
+> > > We still need to deal with contiguity here, this ncont/npages is just=
+ obfuscation.
+> >
+> > Since the pages can move, we can't take advantage of contiguity here.
+> > This handling is similar to the ODP case. The variables 'ncont' and 'pa=
+ge_shift' here are not necessary.
+> > They are kept just for the sake of signifying the semantics of the
+> > following functions that use them.
+>=20
+> Well, in this case we can manage it, and the performance boost is high en=
+ough we need to. The work on mlx5 to do it is a bit inovlved
+> though.
 
-> On Oct 16, 2020, at 2:54 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> 
-> On Mon, Oct 12, 2020 at 04:20:40PM +0800, Ka-Cheong Poon wrote:
->> On 10/9/20 11:34 PM, Jason Gunthorpe wrote:
->> 
->>> Yes, because namespaces are fundamentally supposed to be anchored in
->>> the processes inside the namespace.
->>> 
->>> Having the kernel jump in and start opening holes as soon as a
->>> namespace is created is just wrong.
->>> 
->>> At a bare minimum the listener should not exist until something in the
->>> namespace is willing to work with RDS.
->> 
->> 
->> As I mentioned in a previous email, starting is not the problem.  It
->> is the problem of deleting a namespace.
-> 
-> Starting and ending are symmetric. When the last thing inside the
-> namespace stops needing RDS then RDS should close down the cm_id's.
+Maybe as a future enhancement?
 
-Unfortunately, cluster heartbeat requires the RDS listener endpoint
-to continue after the last RDS user goes away, if the container
-continues to exist.
-
-IMO having an explicit RDS start-up and shutdown apart from namespace
-creation and deletion is a cleaner approach. On a multi-tenant system
-with many containers, some of those containers will want RDS listeners
-and some will not. RDS should not assume that every net namespace
-needs or wants to have a listener.
-
-
---
-Chuck Lever
-
-
-
+>=20
+> > > > +	err =3D ib_umem_dmabuf_init_mapping(umem, mr);
+> > > > +	if (err) {
+> > > > +		dereg_mr(dev, mr);
+> > > > +		return ERR_PTR(err);
+> > > > +	}
+> > >
+> > > Did you test the page fault path at all? Looks like some xarray code
+> > > is missing here, and this is also missing the related complex teardow=
+n logic.
+> > >
+> > > Does this mean you didn't test the pagefault_dmabuf_mr() at all?
+> >
+> > Thanks for the hint. I was unable to get the test runs reaching the
+> > pagefault_dmabuf_mr() function. Now I have found the reason. Along the
+> > path of all the page fault handlers, the array "odp_mkeys" is checked
+> > against the mr key. Since the dmabuf mr keys are not in the list the
+> > handler is never called.
+> >
+> > On the other hand, it seems that pagefault_dmabuf_mr() is not needed at=
+ all.
+> > The pagefault is gracefully handled by retrying until the work thread
+> > finished programming the NIC.
+>=20
+> This is a bug of some kind, pagefaults that can't find a mkey in the xarr=
+ay should cause completion with error.
+>=20
+> Jason
