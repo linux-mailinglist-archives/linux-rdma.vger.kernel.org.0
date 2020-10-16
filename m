@@ -2,285 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8C428FC2E
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 03:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8027E28FC37
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 03:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388739AbgJPAyX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Oct 2020 20:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S2388759AbgJPBXH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Oct 2020 21:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388737AbgJPAyX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 20:54:23 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D11C061755
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 17:54:23 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id n6so1581333ioc.12
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 17:54:23 -0700 (PDT)
+        with ESMTP id S2388752AbgJPBXH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 21:23:07 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7FFC061755
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 18:23:07 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e20so975311otj.11
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 18:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FNvgrlFY+mYnW8LeU28rfZ2P3+p6rVAfraH8nRohf6M=;
-        b=kYGJXtQwFErHyGGOs0+3KoHk3gYQWREQ9FCFyLA4HtiFuHWpStpavqDwLdq6TGxj9W
-         aIBxLhjSD5sWSGlNrqbSirtovhLQiJbDIFnr+NJHHVM0AGCVeCCryU9cjYjul6InBcco
-         VpX++8KBHwKJCZq99xIk8FLNnrpfvV07yG2AxBz7wYDLq0oVf9NPfigbK9xrK2QyHbWB
-         85Bd1M9hg6n6F6uyznuSjZCjYDdFojF4faTxIMmts2mSmgmjhMd6629SeCUVVbD24amW
-         dBtfMGG6k7EV58/8CAydcCSKd9PQDxDEWgXtQ1VJ3SRcAG+KI3Xq0N6wj/svGuIfsNH6
-         nRPA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RovObBpNisJCKcc/ON8pW/HebeWPeEw1lRWgivGX+88=;
+        b=eF4EJZmdwnsO6i1icQu84XR/scp/0aIBHnrMyh/7fAWxlXgUJ+wm2EWxXKA+zytyav
+         EvK7Zce+WgAseBx1WZyc9iumD91y3OAvCPEWi8130/q7Y/uaQsN9hBXcT/LFX0SotuL6
+         Zb5BOZAbxFLw/Mxd3yORXeZWnmMTUQmkA8pYZEI5w1dA4cNRiT24UfLyLl8OV+qUNCxA
+         VmdM8Xp7Si0J3vABNPHRtAZnJCEL26WGSGxxw0lNEoss/6qjybXvHoB+yhkNVzFzLtX+
+         q8B5zwvycwDNHWvpyMwdbITd8vs27LCkJF/sCvzFBC8E86Suo221qLxkM4I7GOHa4ywk
+         mS6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FNvgrlFY+mYnW8LeU28rfZ2P3+p6rVAfraH8nRohf6M=;
-        b=qi1JwOFhFf3PHbKzWW6a7mOr//c1qTMksAnT7NujvcnIRABZBe01v+jS1M5oNmXru3
-         MPq+IahWqZmmcblGnWXFlqyNw/WcDkzkqgtPQaVTrPeV2UUxStJ5524oXlwOq26rec7J
-         z6yue8WrISjXri3j+x+lDPsmgdPIxoC6DYsCeC5iX1EfLKHJ33OeDUtOW9wT9PjbAf/T
-         NtPvQTfimcsXuX3CYeM3ng7p43Xj6qq3VqufqBGyM8nL6hjPjAR/r3GlpbeM4ggR/RkT
-         4fFPMkekCxB7QDeAw/+K0jKH2D175h4AQpLmty5Sh69wWn1Wk5OGzyEkij5nY2UC2XMN
-         iO6Q==
-X-Gm-Message-State: AOAM531hcRHCqgtSIx99KbY0JkQdRgNTJdyfwfFT9BK1EczzgzOlOxP8
-        auO7Bmzey5/YjNg6jh3FaAQB8g==
-X-Google-Smtp-Source: ABdhPJyXDuyHBC23kxewb0cG0HjPVN22Zk3Yz47IeXrJIffXDVzOLmEBCw+yFGS2ID8HcqV75iNGMA==
-X-Received: by 2002:a6b:b2cb:: with SMTP id b194mr619641iof.132.1602809662297;
-        Thu, 15 Oct 2020 17:54:22 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b17sm606302ilo.86.2020.10.15.17.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 17:54:21 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kTE0h-0009jv-W8; Thu, 15 Oct 2020 21:54:20 -0300
-Date:   Thu, 15 Oct 2020 21:54:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
-Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH v5 4/5] RDMA/mlx5: Support dma-buf based userspace memory
- region
-Message-ID: <20201016005419.GA36674@ziepe.ca>
-References: <1602799378-138316-1-git-send-email-jianxin.xiong@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RovObBpNisJCKcc/ON8pW/HebeWPeEw1lRWgivGX+88=;
+        b=XT+Nt/tCBVubFlUyxs76Woyg9bcjdK6veyl0lQcQ8sjVQ6RB+0m/Ug+e2Zs+93i7SJ
+         LnMsLfvEFjq5rVcdEip2OJNG0umlPAHL5OvGN5qTDgJ11XvVselIqpdPjKspE6nxFGeR
+         VXrN1l3khbqbxYrL316G+KvX9n3bQ3Mqc7K+1QDBiNVmOEVt32zOd8Z9IM9vpHmwwt7c
+         pmj3Aj9RShSwERJlg7FpYKcrcSaVONTn7mpiz6pmNe7MVCXvXho4a3zXJip6FiVSXDFp
+         FHRPnwao51ln6S8UZSFYvbTjv6MRYO4amGnUzXDdXOaH3dqiEv7QUw6FkNCLOHWUX76C
+         e2TQ==
+X-Gm-Message-State: AOAM532QE48b4CaoR/4bOQZFewsPrkmLfxX+qmRfGuEX3y3YXed7SCVS
+        DpGEi39aLiLTbMIUvbBgY6g=
+X-Google-Smtp-Source: ABdhPJxAvYCQDqmEq5jXXK5aM8ak7krdh9IXe+X4s5scYfBMhYDhzjGhPWSMvtOREhcZvX5BitOiSw==
+X-Received: by 2002:a9d:ac9:: with SMTP id 67mr897282otq.321.1602811386327;
+        Thu, 15 Oct 2020 18:23:06 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:4fdb:8393:d75b:2d46? (2603-8081-140c-1a00-4fdb-8393-d75b-2d46.res6.spectrum.com. [2603:8081:140c:1a00:4fdb:8393:d75b:2d46])
+        by smtp.gmail.com with ESMTPSA id m1sm422211otq.30.2020.10.15.18.23.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 18:23:05 -0700 (PDT)
+Subject: Re: [PATCH] Provider/rxe: Fix regression to UD traffic
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+References: <20201015201750.8336-1-rpearson@hpe.com>
+ <20201015234720.GA6219@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <fc242ad5-2175-6b34-2d5c-3daae3f4b68b@gmail.com>
+Date:   Thu, 15 Oct 2020 20:23:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602799378-138316-1-git-send-email-jianxin.xiong@intel.com>
+In-Reply-To: <20201015234720.GA6219@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:02:58PM -0700, Jianxin Xiong wrote:
-> Implement the new driver method 'reg_user_mr_dmabuf'.  Utilize the core
-> functions to import dma-buf based memory region and update the mappings.
+On 10/15/20 6:47 PM, Jason Gunthorpe wrote:
+> On Thu, Oct 15, 2020 at 03:17:51PM -0500, Bob Pearson wrote:
+>> Update enum rdma_network_type copy to match kernel version.
+>> Without this change provider/rxe will send incorrect
+>> network types to the kernel in send WQEs.
+>>
+>> This fix keeps rxe functional but should be replaced by a better
+>> implementation.
+>>
+>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+>> ---
+>>  providers/rxe/rxe.h | 1 +
+>>  1 file changed, 1 insertion(+)
 > 
-> Add code to handle dma-buf related page fault.
+> Well, we can't just break user space so the kernel has to change in
+> some way to accommodate this.
 > 
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> Acked-by: Christian Koenig <christian.koenig@amd.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->  drivers/infiniband/hw/mlx5/main.c    |   2 +
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |   5 ++
->  drivers/infiniband/hw/mlx5/mr.c      | 119 +++++++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/mlx5/odp.c     |  42 +++++++++++++
->  4 files changed, 168 insertions(+)
+> Obviously rxe should not have uAPI stuff that is not in
+> include/uapi/rdma, so lets just fix that directly.
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index 89e04ca..ec4ad2f 100644
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->  /*
->   * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
->   */
->  
->  #include <linux/debugfs.h>
-> @@ -4060,6 +4061,7 @@ static int mlx5_ib_enable_driver(struct ib_device *dev)
->  	.query_srq = mlx5_ib_query_srq,
->  	.query_ucontext = mlx5_ib_query_ucontext,
->  	.reg_user_mr = mlx5_ib_reg_user_mr,
-> +	.reg_user_mr_dmabuf = mlx5_ib_reg_user_mr_dmabuf,
->  	.req_notify_cq = mlx5_ib_arm_cq,
->  	.rereg_user_mr = mlx5_ib_rereg_user_mr,
->  	.resize_cq = mlx5_ib_resize_cq,
-> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> index b1f2b34..65fcc18 100644
-> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> @@ -1,6 +1,7 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
->  /*
->   * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
->   */
->  
->  #ifndef MLX5_IB_H
-> @@ -1174,6 +1175,10 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
->  				  u64 virt_addr, int access_flags,
->  				  struct ib_udata *udata);
-> +struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-> +					 u64 length, u64 virt_addr,
-> +					 int dmabuf_fd, int access_flags,
-> +					 struct ib_udata *udata);
->  int mlx5_ib_advise_mr(struct ib_pd *pd,
->  		      enum ib_uverbs_advise_mr_advice advice,
->  		      u32 flags,
-> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> index b261797..24750f1 100644
-> +++ b/drivers/infiniband/hw/mlx5/mr.c
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (c) 2013-2015, Mellanox Technologies. All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
->   *
->   * This software is available to you under a choice of one of two
->   * licenses.  You may choose to be licensed under the terms of the GNU
-> @@ -1462,6 +1463,124 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
->  	return ERR_PTR(err);
->  }
->  
-> +static int mlx5_ib_umem_dmabuf_xlt_init(struct ib_umem *umem, void *context)
-> +{
-> +	struct mlx5_ib_mr *mr = context;
-> +	int flags = MLX5_IB_UPD_XLT_ENABLE;
-> +
-> +	if (!mr)
-> +		return -EINVAL;
-> +
-> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
-> +}
+> Please confirm I did this right. The PR for this merge window must be
+> sent Friday.
 
-> +static int mlx5_ib_umem_dmabuf_xlt_update(struct ib_umem *umem, void *context)
-> +{
-> +	struct mlx5_ib_mr *mr = context;
-> +	int flags = MLX5_IB_UPD_XLT_ATOMIC;
+That works too. I am figuring out how to convert ah_handle to ib_ah in rdma_rxe. I think I've mostly got it.
+uobj_get_obj_read(type, id, attr) is close to what I need. The problem is that all the code in this area assumes
+it is getting called in a user verb API call so there is an attr to pass around. What we need is an API like
+rdma_get_obj(ucontext, type, id) since we need a way to get to the user api data structures. Better would be
+a pointer from qp to ucontext or ufile that would be set for user QPs. If we did this rxe just use handles from
+the core instead of creating its own databases of objects.
 
-Why are these atomic? Why the strange coding style of declaring a
-variable?
+Your patch will get us going for now. The above is a longer project that won't fit in your short term schedule.
 
-> +	if (!mr)
-> +		return -EINVAL;
-
-Why can this happen? Will dma_buf call move_notify prior to
-dma_buf_map_attachment? There are locking problems if that happens.
-
-> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
-> +}
-> +
-> +static int mlx5_ib_umem_dmabuf_xlt_invalidate(struct ib_umem *umem, void *context)
-> +{
-> +	struct mlx5_ib_mr *mr = context;
-> +	int flags = MLX5_IB_UPD_XLT_ZAP | MLX5_IB_UPD_XLT_ATOMIC;
-> +
-> +	if (!mr)
-> +		return -EINVAL;
-> +
-> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
-> +}
-> +
-> +static struct ib_umem_dmabuf_ops mlx5_ib_umem_dmabuf_ops = {
-> +	.init = mlx5_ib_umem_dmabuf_xlt_init,
-> +	.update = mlx5_ib_umem_dmabuf_xlt_update,
-> +	.invalidate = mlx5_ib_umem_dmabuf_xlt_invalidate,
-> +};
-
-I'm not really convinced these should be ops, this is usually a bad
-design pattern. 
-
-Why do I need so much code to extract the sgl from the dma_buf? I
-would prefer the dma_buf layer simplify this, not by adding a wrapper
-around it in the IB core code...
-
-> +struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-> +					 u64 length, u64 virt_addr,
-> +					 int dmabuf_fd, int access_flags,
-> +					 struct ib_udata *udata)
-> +{
-> +	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-> +	struct mlx5_ib_mr *mr = NULL;
-> +	struct ib_umem *umem;
-> +	int page_shift;
-> +	int npages;
-> +	int ncont;
-> +	int order;
-> +	int err;
-> +
-> +	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM))
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	mlx5_ib_dbg(dev,
-> +		    "start 0x%llx, virt_addr 0x%llx, length 0x%llx, fd %d, access_flags 0x%x\n",
-> +		    start, virt_addr, length, dmabuf_fd, access_flags);
-> +
-> +	if (!mlx5_ib_can_load_pas_with_umr(dev, length))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	umem = ib_umem_dmabuf_get(&dev->ib_dev, start, length, dmabuf_fd,
-> +				  access_flags, &mlx5_ib_umem_dmabuf_ops);
-> +	if (IS_ERR(umem)) {
-> +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
-> +		return ERR_PTR(PTR_ERR(umem));
-> +	}
-> +
-> +	npages = ib_umem_num_pages(umem);
-> +	if (!npages) {
-> +		mlx5_ib_warn(dev, "avoid zero region\n");
-> +		ib_umem_release(umem);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	page_shift = PAGE_SHIFT;
-> +	ncont = npages;
-> +	order = ilog2(roundup_pow_of_two(ncont));
-
-We still need to deal with contiguity here, this ncont/npages is just
-obfuscation.
-
-I have a patch series that should get posted soon rewriting all of
-this stuff..
-
-> +	mlx5_ib_dbg(dev, "npages %d, ncont %d, order %d, page_shift %d\n",
-> +		    npages, ncont, order, page_shift);
-> +
-> +	mr = alloc_mr_from_cache(pd, umem, virt_addr, length, ncont,
-> +				 page_shift, order, access_flags);
-> +	if (IS_ERR(mr))
-> +		mr = NULL;
-> +
-> +	if (!mr) {
-> +		mutex_lock(&dev->slow_path_mutex);
-> +		mr = reg_create(NULL, pd, virt_addr, length, umem, ncont,
-> +				page_shift, access_flags, false);
-> +		mutex_unlock(&dev->slow_path_mutex);
-> +	}
-> +
-> +	if (IS_ERR(mr)) {
-> +		err = PTR_ERR(mr);
-> +		goto error;
-> +	}
-> +
-> +	mlx5_ib_dbg(dev, "mkey 0x%x\n", mr->mmkey.key);
-> +
-> +	mr->umem = umem;
-> +	set_mr_fields(dev, mr, npages, length, access_flags);
-
-After another series I have there will be three copies of this
-sequence :\
-
-> +	err = ib_umem_dmabuf_init_mapping(umem, mr);
-> +	if (err) {
-> +		dereg_mr(dev, mr);
-> +		return ERR_PTR(err);
-> +	}
-
-Did you test the page fault path at all? Looks like some xarray code
-is missing here, and this is also missing the related complex teardown
-logic.
-
-Does this mean you didn't test the pagefault_dmabuf_mr() at all?
-
-Jason
+Bob
