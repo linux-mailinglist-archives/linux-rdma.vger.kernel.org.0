@@ -2,158 +2,285 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C6B28FC17
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 02:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8C428FC2E
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 03:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387691AbgJPAbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Oct 2020 20:31:40 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:8295 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387608AbgJPAbj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Oct 2020 20:31:39 -0400
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f88e9e90000>; Fri, 16 Oct 2020 08:31:37 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 00:31:32 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.59) by
- HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 16 Oct 2020 00:31:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EYzXzM2zmcvJxEndEJ7HUywm5GE5gSPwWAHVMVZOR99gaGt9/ApTZJw9290kjrbYTQp3Q3yFg5jgsR8Mg/M1erWLnC+pehW7KthlWdcta0zg74XQ2h/FtrOnjHoHeDjAjF8ZpJFMsBFWYTvCB8rWXkg1FaS28wkLHj2Nwt0dp1SEbDzim69R1ejuLlW2H8zcLaXzGU+hAdhqOgRhXcHzHrD0xwy6B9Z6r4AtmfOjuAhfsLoQBhWuNH0xnPw5s59tyNSfQfJLkxAmHgRvemQ9W1IEpuvEz3UIKQFDGDhsaZfOvbQYv4r07m8j/HXyNhJiWXeUXnjvXCJC78yIGk9CBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VBTQ48n7j9ipiE0LX5p8P4pU8ahzOIqKRTTPDCECQWw=;
- b=biMmCtiR1GQMxM3LEcS3GcojGzVAaC2MGC6p6QV409r9r5X5igZ0tECCCxXDrODClsKEdIelP0O/ewMjoTgN/mE5+YIYbHvNRv/CGxZb+/2wXoWbMorhdRgQBl1Q0wcTolGah7dupepgvJsujf46GEgcJDTsC6wGPxTsykCyzTPiHJQUOqHbyasRkkNpFZOsyZ1qhDIz1Lvt0HJkJhNjFv5LuYXXvPA7flviM0uH6+ceB4zBIBdQ9xTVNVoVDov8zEl34Ono9NN6+IBFCeEJAAamwauxGNkZBeG9Hwom6PribcQn8eX/BdBSomLp5YwvT9B6V84+2proWUCPcXoLyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 16 Oct
- 2020 00:31:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
- 00:31:29 +0000
-Date:   Thu, 15 Oct 2020 21:31:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-CC:     Gal Pressman <galpress@amazon.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: dynamic-sg patch has broken rdma_rxe
-Message-ID: <20201016003127.GD6219@nvidia.com>
-References: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
- <20201014225125.GC5316@nvidia.com>
- <e2763434-2f4f-9971-ae9d-62bab62b2e93@nvidia.com>
- <63997d02-827c-5a0d-c6a1-427cbeb4ef27@amazon.com>
- <8cf4796d-4dcb-ef5a-83ac-e11134eac99b@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <8cf4796d-4dcb-ef5a-83ac-e11134eac99b@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0016.namprd13.prod.outlook.com
- (2603:10b6:208:256::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2388739AbgJPAyX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Oct 2020 20:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388737AbgJPAyX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Oct 2020 20:54:23 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D11C061755
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 17:54:23 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id n6so1581333ioc.12
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Oct 2020 17:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FNvgrlFY+mYnW8LeU28rfZ2P3+p6rVAfraH8nRohf6M=;
+        b=kYGJXtQwFErHyGGOs0+3KoHk3gYQWREQ9FCFyLA4HtiFuHWpStpavqDwLdq6TGxj9W
+         aIBxLhjSD5sWSGlNrqbSirtovhLQiJbDIFnr+NJHHVM0AGCVeCCryU9cjYjul6InBcco
+         VpX++8KBHwKJCZq99xIk8FLNnrpfvV07yG2AxBz7wYDLq0oVf9NPfigbK9xrK2QyHbWB
+         85Bd1M9hg6n6F6uyznuSjZCjYDdFojF4faTxIMmts2mSmgmjhMd6629SeCUVVbD24amW
+         dBtfMGG6k7EV58/8CAydcCSKd9PQDxDEWgXtQ1VJ3SRcAG+KI3Xq0N6wj/svGuIfsNH6
+         nRPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FNvgrlFY+mYnW8LeU28rfZ2P3+p6rVAfraH8nRohf6M=;
+        b=qi1JwOFhFf3PHbKzWW6a7mOr//c1qTMksAnT7NujvcnIRABZBe01v+jS1M5oNmXru3
+         MPq+IahWqZmmcblGnWXFlqyNw/WcDkzkqgtPQaVTrPeV2UUxStJ5524oXlwOq26rec7J
+         z6yue8WrISjXri3j+x+lDPsmgdPIxoC6DYsCeC5iX1EfLKHJ33OeDUtOW9wT9PjbAf/T
+         NtPvQTfimcsXuX3CYeM3ng7p43Xj6qq3VqufqBGyM8nL6hjPjAR/r3GlpbeM4ggR/RkT
+         4fFPMkekCxB7QDeAw/+K0jKH2D175h4AQpLmty5Sh69wWn1Wk5OGzyEkij5nY2UC2XMN
+         iO6Q==
+X-Gm-Message-State: AOAM531hcRHCqgtSIx99KbY0JkQdRgNTJdyfwfFT9BK1EczzgzOlOxP8
+        auO7Bmzey5/YjNg6jh3FaAQB8g==
+X-Google-Smtp-Source: ABdhPJyXDuyHBC23kxewb0cG0HjPVN22Zk3Yz47IeXrJIffXDVzOLmEBCw+yFGS2ID8HcqV75iNGMA==
+X-Received: by 2002:a6b:b2cb:: with SMTP id b194mr619641iof.132.1602809662297;
+        Thu, 15 Oct 2020 17:54:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b17sm606302ilo.86.2020.10.15.17.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 17:54:21 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kTE0h-0009jv-W8; Thu, 15 Oct 2020 21:54:20 -0300
+Date:   Thu, 15 Oct 2020 21:54:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v5 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Message-ID: <20201016005419.GA36674@ziepe.ca>
+References: <1602799378-138316-1-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0016.namprd13.prod.outlook.com (2603:10b6:208:256::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.10 via Frontend Transport; Fri, 16 Oct 2020 00:31:28 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTDeZ-0009Lh-Kd; Thu, 15 Oct 2020 21:31:27 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602808297; bh=5B60WAGXn+l7PqCDZwGBlIBDv2h99Nc8vg7ic/m/qdI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=QbxwJA7RLy+Jv3hDEt92o+9cIviInwC8lJqqnnUurjw1miin4ifnYCm+0AdStGdSO
-         5BrU90MyFeAh9VoOkuGZigXUtfXPLtXpy0z/VSYS61kO3yD9mNMXTSgLCUaUEEfUQ+
-         c721Kt6Gk8KsX5UUU7+ayWeDjcGmSDX2282Ppi6ZP9lDgTFLOYvZOr3g/EUWMLUlGq
-         3aRqmd4KcZ+OLGuuH3tvk1hM7TSg5Hr+LczD7W+GQTfBlkv9PbHiypyZv0mw3BxnC+
-         SJL/HRMiv9ntUXama5lV7cdBu9GQvv3v+qnkbZoa/7IJ/RwrTstUUR1nncWiz+QG9w
-         EXjISos64wp1g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602799378-138316-1-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:21:34PM +0300, Maor Gottlieb wrote:
->=20
-> On 10/15/2020 2:23 PM, Gal Pressman wrote:
-> > On 15/10/2020 10:44, Maor Gottlieb wrote:
-> > > On 10/15/2020 1:51 AM, Jason Gunthorpe wrote:
-> > > > On Tue, Oct 13, 2020 at 09:33:14AM -0500, Bob Pearson wrote:
-> > > > > Jason,
-> > > > >=20
-> > > > > Just pulled for-next and now hit the following warning.
-> > > > > Register user space memory is not longer working.
-> > > > > I am trying to debug this but if you have any idea where to look =
-let me know.
-> > > > The offset_in_page is wrong, but it is protecting some other logic.=
-.
-> > > >=20
-> > > > Maor? Leon? Can you sort it out tomorrow?
-> > > Leon and I investigated it. This check existed before my series to pr=
-otect the
-> > > alloc_table_from_pages logic. It's still relevant.
-> > > This patch that broke it:=C2=A0 54816d3e69d1 ("RDMA: Explicitly pass =
-in the
-> > > dma_device to ib_register_device"), and according to below link it wa=
-s
-> > > expected.=C2=A0 The safest approach is to set the max_segment_size ba=
-ck the 2GB in
-> > > all drivers. What do you think?
-> > >=20
-> > > https://lore.kernel.org/linux-rdma/20200923072111.GA31828@infradead.o=
-rg/
-> > FWIW, EFA is broken as well (same call trace) so it's not just software=
- drivers.
->=20
-> This is true to all drivers that call to ib_umem_get and set UINT_MAX=C2=
-=A0 as
-> max_segment_size.
-> Jason,=C2=A0 maybe instead of set UINT_MAX as max_segment_size, need to s=
-et
-> SCATTERLIST_MAX_SEGMENT which does the required alignment.
+On Thu, Oct 15, 2020 at 03:02:58PM -0700, Jianxin Xiong wrote:
+> Implement the new driver method 'reg_user_mr_dmabuf'.  Utilize the core
+> functions to import dma-buf based memory region and update the mappings.
+> 
+> Add code to handle dma-buf related page fault.
+> 
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Acked-by: Christian Koenig <christian.koenig@amd.com>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>  drivers/infiniband/hw/mlx5/main.c    |   2 +
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |   5 ++
+>  drivers/infiniband/hw/mlx5/mr.c      | 119 +++++++++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mlx5/odp.c     |  42 +++++++++++++
+>  4 files changed, 168 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index 89e04ca..ec4ad2f 100644
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>  /*
+>   * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
+> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
+>   */
+>  
+>  #include <linux/debugfs.h>
+> @@ -4060,6 +4061,7 @@ static int mlx5_ib_enable_driver(struct ib_device *dev)
+>  	.query_srq = mlx5_ib_query_srq,
+>  	.query_ucontext = mlx5_ib_query_ucontext,
+>  	.reg_user_mr = mlx5_ib_reg_user_mr,
+> +	.reg_user_mr_dmabuf = mlx5_ib_reg_user_mr_dmabuf,
+>  	.req_notify_cq = mlx5_ib_arm_cq,
+>  	.rereg_user_mr = mlx5_ib_rereg_user_mr,
+>  	.resize_cq = mlx5_ib_resize_cq,
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index b1f2b34..65fcc18 100644
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -1,6 +1,7 @@
+>  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>  /*
+>   * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
+> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
+>   */
+>  
+>  #ifndef MLX5_IB_H
+> @@ -1174,6 +1175,10 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>  struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+>  				  u64 virt_addr, int access_flags,
+>  				  struct ib_udata *udata);
+> +struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+> +					 u64 length, u64 virt_addr,
+> +					 int dmabuf_fd, int access_flags,
+> +					 struct ib_udata *udata);
+>  int mlx5_ib_advise_mr(struct ib_pd *pd,
+>  		      enum ib_uverbs_advise_mr_advice advice,
+>  		      u32 flags,
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index b261797..24750f1 100644
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -1,5 +1,6 @@
+>  /*
+>   * Copyright (c) 2013-2015, Mellanox Technologies. All rights reserved.
+> + * Copyright (c) 2020, Intel Corporation. All rights reserved.
+>   *
+>   * This software is available to you under a choice of one of two
+>   * licenses.  You may choose to be licensed under the terms of the GNU
+> @@ -1462,6 +1463,124 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+>  	return ERR_PTR(err);
+>  }
+>  
+> +static int mlx5_ib_umem_dmabuf_xlt_init(struct ib_umem *umem, void *context)
+> +{
+> +	struct mlx5_ib_mr *mr = context;
+> +	int flags = MLX5_IB_UPD_XLT_ENABLE;
+> +
+> +	if (!mr)
+> +		return -EINVAL;
+> +
+> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
+> +}
 
-SCATTERLIST_MAX_SEGMENT is almost never used, however there are lots
-of places passing UINT_MAX or similar as the max_segsize for DMA.
+> +static int mlx5_ib_umem_dmabuf_xlt_update(struct ib_umem *umem, void *context)
+> +{
+> +	struct mlx5_ib_mr *mr = context;
+> +	int flags = MLX5_IB_UPD_XLT_ATOMIC;
 
-The only place that does use it looks goofy to me:
+Why are these atomic? Why the strange coding style of declaring a
+variable?
 
-	dma_set_max_seg_size(dev->dev, min_t(unsigned int, U32_MAX & PAGE_MASK,
-					     SCATTERLIST_MAX_SEGMENT));
+> +	if (!mr)
+> +		return -EINVAL;
 
-The seg_size should reflect the HW capability, not be mixed in with
-knowledge about SGL internals. If the SGL can't build up to the HW
-limit then it is fine to internally silently reduce it.
+Why can this happen? Will dma_buf call move_notify prior to
+dma_buf_map_attachment? There are locking problems if that happens.
 
-So I think we need to fix the scatterlist code, like below, and
-just remove SCATTERLIST_MAX_SEGMENT completely.
+> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
+> +}
+> +
+> +static int mlx5_ib_umem_dmabuf_xlt_invalidate(struct ib_umem *umem, void *context)
+> +{
+> +	struct mlx5_ib_mr *mr = context;
+> +	int flags = MLX5_IB_UPD_XLT_ZAP | MLX5_IB_UPD_XLT_ATOMIC;
+> +
+> +	if (!mr)
+> +		return -EINVAL;
+> +
+> +	return mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, flags);
+> +}
+> +
+> +static struct ib_umem_dmabuf_ops mlx5_ib_umem_dmabuf_ops = {
+> +	.init = mlx5_ib_umem_dmabuf_xlt_init,
+> +	.update = mlx5_ib_umem_dmabuf_xlt_update,
+> +	.invalidate = mlx5_ib_umem_dmabuf_xlt_invalidate,
+> +};
 
-It fixes things? Are you OK with this Christoph?
+I'm not really convinced these should be ops, this is usually a bad
+design pattern. 
 
-I need to get this fixed for the merge window PR I want to send on
-Friday.
+Why do I need so much code to extract the sgl from the dma_buf? I
+would prefer the dma_buf layer simplify this, not by adding a wrapper
+around it in the IB core code...
 
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index e102fdfaa75be7..d158033834cdbc 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -435,7 +435,9 @@ struct scatterlist *__sg_alloc_table_from_pages(struct =
-sg_table *sgt,
- 	unsigned int added_nents =3D 0;
- 	struct scatterlist *s =3D prv;
-=20
--	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
-+	/* Avoid overflow when computing sg_len + PAGE_SIZE */
-+	max_segment =3D max_segment & PAGE_MASK;
-+	if (WARN_ON(max_segment < PAGE_SIZE))
- 		return ERR_PTR(-EINVAL);
-=20
- 	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
+> +struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+> +					 u64 length, u64 virt_addr,
+> +					 int dmabuf_fd, int access_flags,
+> +					 struct ib_udata *udata)
+> +{
+> +	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> +	struct mlx5_ib_mr *mr = NULL;
+> +	struct ib_umem *umem;
+> +	int page_shift;
+> +	int npages;
+> +	int ncont;
+> +	int order;
+> +	int err;
+> +
+> +	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM))
+> +		return ERR_PTR(-EOPNOTSUPP);
+> +
+> +	mlx5_ib_dbg(dev,
+> +		    "start 0x%llx, virt_addr 0x%llx, length 0x%llx, fd %d, access_flags 0x%x\n",
+> +		    start, virt_addr, length, dmabuf_fd, access_flags);
+> +
+> +	if (!mlx5_ib_can_load_pas_with_umr(dev, length))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	umem = ib_umem_dmabuf_get(&dev->ib_dev, start, length, dmabuf_fd,
+> +				  access_flags, &mlx5_ib_umem_dmabuf_ops);
+> +	if (IS_ERR(umem)) {
+> +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
+> +		return ERR_PTR(PTR_ERR(umem));
+> +	}
+> +
+> +	npages = ib_umem_num_pages(umem);
+> +	if (!npages) {
+> +		mlx5_ib_warn(dev, "avoid zero region\n");
+> +		ib_umem_release(umem);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	page_shift = PAGE_SHIFT;
+> +	ncont = npages;
+> +	order = ilog2(roundup_pow_of_two(ncont));
+
+We still need to deal with contiguity here, this ncont/npages is just
+obfuscation.
+
+I have a patch series that should get posted soon rewriting all of
+this stuff..
+
+> +	mlx5_ib_dbg(dev, "npages %d, ncont %d, order %d, page_shift %d\n",
+> +		    npages, ncont, order, page_shift);
+> +
+> +	mr = alloc_mr_from_cache(pd, umem, virt_addr, length, ncont,
+> +				 page_shift, order, access_flags);
+> +	if (IS_ERR(mr))
+> +		mr = NULL;
+> +
+> +	if (!mr) {
+> +		mutex_lock(&dev->slow_path_mutex);
+> +		mr = reg_create(NULL, pd, virt_addr, length, umem, ncont,
+> +				page_shift, access_flags, false);
+> +		mutex_unlock(&dev->slow_path_mutex);
+> +	}
+> +
+> +	if (IS_ERR(mr)) {
+> +		err = PTR_ERR(mr);
+> +		goto error;
+> +	}
+> +
+> +	mlx5_ib_dbg(dev, "mkey 0x%x\n", mr->mmkey.key);
+> +
+> +	mr->umem = umem;
+> +	set_mr_fields(dev, mr, npages, length, access_flags);
+
+After another series I have there will be three copies of this
+sequence :\
+
+> +	err = ib_umem_dmabuf_init_mapping(umem, mr);
+> +	if (err) {
+> +		dereg_mr(dev, mr);
+> +		return ERR_PTR(err);
+> +	}
+
+Did you test the page fault path at all? Looks like some xarray code
+is missing here, and this is also missing the related complex teardown
+logic.
+
+Does this mean you didn't test the pagefault_dmabuf_mr() at all?
+
+Jason
