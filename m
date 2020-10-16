@@ -2,122 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBC0290CC6
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 22:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090EC290CDD
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Oct 2020 22:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395513AbgJPUdU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Oct 2020 16:33:20 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9006 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395502AbgJPUdU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Oct 2020 16:33:20 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8a03630000>; Fri, 16 Oct 2020 13:32:35 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 20:33:20 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 16 Oct 2020 20:33:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K+8Jt7ijWr/90Pu2qRSVjlJjY6VjL63Ui7ipyMVAG17q2sAXDVuvhIqogQ4rEOgITF6bklVjJrc5rgrmjiBidlsVeuF2QNGQhK+B8DyB2D+rBPfUNGukrlHFVykX8khuGXr23XPoACWWVa629xTTE4s0OrWWr7JO/0ueTVo4/6FZciMpbGghB6Q5xTjWsf9r34u3TiN7czryMtJDerLqu0AYaiIC+1WghqytCx7tzmYFU1okvVCOKkBf8GrmVAiIFooiOdFD+o2ZbZ3zmKdNk1wjbkwfkm4bHsELXJzS0Ul1gA62geQBItg+SPaMDHr4CUbqsn1d5MMEstpR7nt14g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RpXmCNSDXZz+4tyJXA5AZk1yqS2U56Nu/0YLGdL56aQ=;
- b=EjFeNIltlM7ZjR3voJiXJJWPvRuU17Znbv8ZsPD5edS7F8LP5p3qfS1mnTvoz5swp8h2+13IRW01hPrSM8bfSpHXlCAogVIsA4n804KEp5HTX76vKmS9gzLXUwsZlkjX0xiQ3PGBxGD9Dm5RcIS4HNeS2IZLhm52o3JLgc660wkGnfhQ7mdt3z6zW+De9DAD37R1yq6Ui3CMUFjeco7QcJvCoKIXPAGr2yU20WtsZxon/S7IWpspEdTfNY7OJiWrWbSEeFmp/zuJu00fT4ToSALETocVn+9Pj4j2iuJ19YyIu3dIJmx1fyWY4m5FetoS+/VDvjHOFVh0Bcqa6i2niA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 16 Oct
- 2020 20:33:19 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
- 20:33:19 +0000
-Date:   Fri, 16 Oct 2020 17:33:17 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for next] RDMA/rxe: Fix small problem in network_type
- patch
-Message-ID: <20201016203317.GS6219@nvidia.com>
-References: <20201016202645.17819-1-rpearson@hpe.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201016202645.17819-1-rpearson@hpe.com>
-X-ClientProxiedBy: BL0PR02CA0121.namprd02.prod.outlook.com
- (2603:10b6:208:35::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0121.namprd02.prod.outlook.com (2603:10b6:208:35::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 20:33:18 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTWPd-00109w-Lr; Fri, 16 Oct 2020 17:33:17 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602880355; bh=RpXmCNSDXZz+4tyJXA5AZk1yqS2U56Nu/0YLGdL56aQ=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=ezjtCaiUxaXLvebJpZLKzkVSCN8GS8OAS0xt7fjNIhg3X2DzNQ7DOlskc5iJfv3HZ
-         dSnEQCGTnTkEFLS6bb+TXoIz1Hg+cDFQldj3ldnJ2gy7hYvpmQkRAMJKW++7u2+Jzf
-         IOlXHbKRiSZBKTkr/Gkmwd3oBESCziFxytw1bicnCoaMjwoTTVwJ2N3fgSEUO8tVn1
-         X0XDGH0XGTRRCOoYp0zNm68XVIow8d+3EohIh38hkQ2BA9rSKwWE8ZDTWkRvTuRUNZ
-         OwBlhhodinJDLqmSrcPPffBBu8vCnOuy6Kc3zTa0BwkqHpyiL2ZxN5Q2c1+2/I4pLq
-         jArs5yG1s3jPQ==
+        id S2392726AbgJPUtr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Oct 2020 16:49:47 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:60564 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391060AbgJPUtr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Oct 2020 16:49:47 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GKn6bs040407;
+        Fri, 16 Oct 2020 20:49:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=DFgnVIfarW6F3Y3YjwRMQU65TdFoWaDPYBkL8LdviC8=;
+ b=kGhghMThp7temKJqbipB8egZFl3NUgSmR9exFieqcUvbEE5vPRdZ1n6nPd2zgprDmo28
+ U8LX45CstpMi2bjr/OUKnsSZkDKMfysl5se4tai3kJWLAbiXWCKMOPa6zN+EDyx8ryUq
+ d0r7amjaxG1HIR2Tl0bvlcNjpao9G2qb3l9ttwNkCTA4Jakddt/Fpc4E2ObFuUDy1nEQ
+ gkafBGK52IWABe6QzHp3tpCrLBVN13hSlTybRAjVNLBUeFObbPFADJugt2VoK8i5AdQ2
+ tp5Eq35VdTj3mDWKrhNtyi7amWtomGIQsGhbU2i1cjgMDYkSPhEglPCaAqgC2mmfOt8a 3w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 346g8grvu1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Oct 2020 20:49:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GKihJm140943;
+        Fri, 16 Oct 2020 20:49:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 343pw28mr8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Oct 2020 20:49:44 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09GKngiI012585;
+        Fri, 16 Oct 2020 20:49:43 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 16 Oct 2020 13:49:42 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
+ namespace of a struct ib_device)
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20201016185443.GA37159@ziepe.ca>
+Date:   Fri, 16 Oct 2020 16:49:41 -0400
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <35A86DEC-33E8-4637-BEBB-767202CF0247@oracle.com>
+References: <20201008160814.GF5177@ziepe.ca>
+ <727de097-4338-c1d8-73a0-1fce0854f8af@oracle.com>
+ <20201009143940.GT5177@ziepe.ca>
+ <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
+ <20201009145706.GU5177@ziepe.ca>
+ <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
+ <20201009150758.GV5177@ziepe.ca>
+ <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
+ <20201009153406.GA5177@ziepe.ca>
+ <4e630f85-c684-1e56-bb68-22c37872c728@oracle.com>
+ <20201016185443.GA37159@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9776 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010160151
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9776 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010160152
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:26:46PM -0500, Bob Pearson wrote:
-> The patch referenced below has a typo that results in using the wrong
-> L2 header size for outbound traffic. (V4 <-> V6).
+
+
+> On Oct 16, 2020, at 2:54 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > 
-> It also breaks RC traffic because they use AVs that use RDMA_NETWORK_XXX
-> enums instead of RXE_NETWORK_TYPE_XXX enums. Fis this by making the
-> encodings the same between these different types.
+> On Mon, Oct 12, 2020 at 04:20:40PM +0800, Ka-Cheong Poon wrote:
+>> On 10/9/20 11:34 PM, Jason Gunthorpe wrote:
+>> 
+>>> Yes, because namespaces are fundamentally supposed to be anchored in
+>>> the processes inside the namespace.
+>>> 
+>>> Having the kernel jump in and start opening holes as soon as a
+>>> namespace is created is just wrong.
+>>> 
+>>> At a bare minimum the listener should not exist until something in the
+>>> namespace is willing to work with RDS.
+>> 
+>> 
+>> As I mentioned in a previous email, starting is not the problem.  It
+>> is the problem of deleting a namespace.
 > 
-> Fixes: e0d696d201dd ("RDMA/rxe: Move the definitions for rxe_av.network_type to
-> 		       uAPI")
+> Starting and ending are symmetric. When the last thing inside the
+> namespace stops needing RDS then RDS should close down the cm_id's.
 
-Don't word wrap these
+Unfortunately, cluster heartbeat requires the RDS listener endpoint
+to continue after the last RDS user goes away, if the container
+continues to exist.
 
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->  drivers/infiniband/sw/rxe/rxe_net.c | 2 +-
->  include/uapi/rdma/rdma_user_rxe.h   | 5 +++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 575e1a4ec821..34bef7d8e6b4 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -442,7 +442,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
->  	if (IS_ERR(attr))
->  		return NULL;
->  
-> -	if (av->network_type == RXE_NETWORK_TYPE_IPV6)
-> +	if (av->network_type == RXE_NETWORK_TYPE_IPV4)
->  		hdr_len = ETH_HLEN + sizeof(struct udphdr) +
->  			sizeof(struct iphdr);
->  	else
-> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-> index e591d8c1f3cf..ce430d3dceaf 100644
-> +++ b/include/uapi/rdma/rdma_user_rxe.h
-> @@ -40,8 +40,9 @@
->  #include <linux/in6.h>
->  
->  enum {
-> -	RXE_NETWORK_TYPE_IPV4 = 1,
-> -	RXE_NETWORK_TYPE_IPV6 = 2,
-> +	/* good reasons to make same as RDMA_NETWORK_XXX */
-> +	RXE_NETWORK_TYPE_IPV4 = 2,
-> +	RXE_NETWORK_TYPE_IPV6 = 3,
->  };
+IMO having an explicit RDS start-up and shutdown apart from namespace
+creation and deletion is a cleaner approach. On a multi-tenant system
+with many containers, some of those containers will want RDS listeners
+and some will not. RDS should not assume that every net namespace
+needs or wants to have a listener.
 
-No just transcode them in the only place that matters, we still can't
-break userspace
 
-Jason
+--
+Chuck Lever
+
+
+
