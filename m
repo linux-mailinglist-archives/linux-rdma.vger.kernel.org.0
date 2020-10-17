@@ -2,142 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E99B290F74
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Oct 2020 07:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD9629104C
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Oct 2020 09:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411651AbgJQFjT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 17 Oct 2020 01:39:19 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:21032 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411548AbgJQFjT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:39:19 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8a383b0000>; Sat, 17 Oct 2020 08:18:03 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 17 Oct
- 2020 00:17:56 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Sat, 17 Oct 2020 00:17:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j7FT+UHyBM1rXsBxDPdrbgjRqAiFjj/SybQT5xlSAFNt/nW1YTcFdbam75OO1kOJ4rKn5ydQs9fXxry1QDX+700/e9EdNZVQrtc9ynP+GTGbHA+XaZXrScmIce+17HlgdtxVQe4Zsc5FAyjPnoFPhaOOFh1xLkKzczrkHxwgdAtJGKL1WrDZSHPAYWeVjlM5Q/ds/7l67KkHlIHQV8wuX7hLJMLSUOZk2qIZBZiKKlJpjKnRxAuHUEmV0jr728wfzCfrJ0Ugf1Xa0dJQkL/LYu0VwncK7qDrnf9jGmhWILzVxTzsn4JzG0fFwBn4x7H/YP+ruZcH4AdCh4huQizLLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hDC+cLdTvDs7cePMhIVkbmioJWl/ykLyDE/oZnOBvmE=;
- b=dBe/wnLaGcO2du2RrOJV9ipBUFb7jESNxMWINJTTEXMe1ygdScFU3OVu2cCMDj93htDHA4F/MtqT22JzjH1UtCqSHnfRb9WsCLt1F36RAfNhkySxli5dYctxnThN4m6PdPbQxFwhn3f9MZBECo5JouMPAwK0KJa+nuunAlYd979b9YHufWjWJhqOY+ym02Za32lB0ozRLrA9Bp0DsTiJTy2+ZowCn2hperNCEsfrjhgxXVcLHoEareIvlMcPGphN91x38yeFycGyUwdlcrz8+MHGf+ysZMxk5N65GAXYQZD7qT8Uu9PiDfZFHpc7b8SJ8wjud3BAXDWfEQYhil73xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Sat, 17 Oct
- 2020 00:17:53 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.027; Sat, 17 Oct 2020
- 00:17:53 +0000
-Date:   Fri, 16 Oct 2020 21:17:51 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
-CC:     <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Sumit Semwal" <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH v5 3/5] RDMA/uverbs: Add uverbs command for dma-buf based
- MR registration
-Message-ID: <20201017001751.GA334582@nvidia.com>
-References: <1602799375-138277-1-git-send-email-jianxin.xiong@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1602799375-138277-1-git-send-email-jianxin.xiong@intel.com>
-X-ClientProxiedBy: BL0PR02CA0029.namprd02.prod.outlook.com
- (2603:10b6:207:3c::42) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2391251AbgJQHEA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 17 Oct 2020 03:04:00 -0400
+Received: from p3plsmtpa11-08.prod.phx3.secureserver.net ([68.178.252.109]:56810
+        "EHLO p3plsmtpa11-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729897AbgJQHEA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 17 Oct 2020 03:04:00 -0400
+X-Greylist: delayed 3600 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Oct 2020 03:04:00 EDT
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id TZzIko6YFQ64uTZzJkATte; Fri, 16 Oct 2020 17:22:21 -0700
+X-CMAE-Analysis: v=2.3 cv=RIjN4Lq+ c=1 sm=1 tr=0
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=quMw7rvdrhMgCCBUYJAA:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: Question about supporting RDMA Extensions for PMEM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>,
+        linux-rdma@vger.kernel.org
+References: <8b3c3c81-c0fd-adb2-52a9-94c73aac7e37@cn.fujitsu.com>
+ <b7cc3571-5c4b-d5f1-d4e4-97afba4a7994@talpey.com>
+ <20201016223734.GG36674@ziepe.ca>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <fa3e23a4-49fe-efa2-04dd-1264b352d8cb@talpey.com>
+Date:   Fri, 16 Oct 2020 20:22:21 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0029.namprd02.prod.outlook.com (2603:10b6:207:3c::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Sat, 17 Oct 2020 00:17:52 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTZux-001P58-Gy; Fri, 16 Oct 2020 21:17:51 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602893883; bh=hDC+cLdTvDs7cePMhIVkbmioJWl/ykLyDE/oZnOBvmE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=IkMSJFx9RllQvIvNQT9oDT0UxX3jU//md25XDWl2SxWeOrWponQSR+deEUDi3ztD7
-         L+kWWrGy3jjICaDQOTBQLERBeRNmOBBJutc8EuBH0EGS4APVHcvUO+j5giLvzlYw8g
-         gp7nEudtxxTTduRg5PSbQx4BoQ5nPejrJaYVHauTq6lZB8bhV0m32dyJLhjcHV8Z/R
-         G9jqokvQuIpduewyroDiXFrtBlivMH5WpoTAXX4tarW/4AWF4bdQc56pEtq94QG2HN
-         aXGxPlMF4HOEGT8mB8m4JxaDA3BSe5EHcppcKltfue7YCJNfxXTDDiZth5uW1oeNlv
-         fa34YPpOjsqNQ==
+In-Reply-To: <20201016223734.GG36674@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfOzcp4T5/intnDpTbR9RH/d42IogDbfcsdfEwzbY81qdiuB5QJiPbTIFwirhLfW9wvtwVTB+KHTPL3p9l8MkhZ0LRKKf7cLfuS/vLcEmhZP+X/NCsB8H
+ 8X4FosUrlIpqeWfz6d2pNZHcd2/ghyT+wAKqGkZdggdg4p8Gfxo9x8etfEWZmU+wLZdpvRmGtCJmNR/1YQpgCKoCd8JQDRsSKjTbplaxnBcA6IPLwukp0ijx
+ DA7Z8Z7IOMaPOCHgAFuFsA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:02:55PM -0700, Jianxin Xiong wrote:
-> Implement a new uverbs ioctl method for memory registration with file
-> descriptor as an extra parameter.
+On 10/16/2020 6:37 PM, Jason Gunthorpe wrote:
+> On Mon, Oct 12, 2020 at 10:26:32PM -0400, Tom Talpey wrote:
 > 
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> Acked-by: Christian Koenig <christian.koenig@amd.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->  drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++++++++++++++
->  include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++++
->  2 files changed, 126 insertions(+)
+>> In theory, the IBTA SWG is in control of specifying any Verbs changes.
 > 
-> diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
-> index 9b22bb5..e54459f 100644
-> +++ b/drivers/infiniband/core/uverbs_std_types_mr.c
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
-> + * Copyright (c) 2020, Intel Corporation.  All rights reserved.
->   *
->   * This software is available to you under a choice of one of two
->   * licenses.  You may choose to be licensed under the terms of the GNU
-> @@ -178,6 +179,85 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_MR)(
->  	return IS_UVERBS_COPY_ERR(ret) ? ret : 0;
->  }
->  
-> +static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
-> +	struct uverbs_attr_bundle *attrs)
-> +{
-> +	struct ib_uobject *uobj =
-> +		uverbs_attr_get_uobject(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
-> +	struct ib_pd *pd =
-> +		uverbs_attr_get_obj(attrs, UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE);
-> +	struct ib_device *ib_dev = pd->device;
-> +
-> +	u64 start, length, virt_addr;
-> +	u32 fd, access_flags;
-> +	struct ib_mr *mr;
-> +	int ret;
-> +
-> +	if (!ib_dev->ops.reg_user_mr_dmabuf)
-> +		return -EOPNOTSUPP;
-> +
-> +	ret = uverbs_copy_from(&start, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_ADDR);
+> SWG and IETF should agree on what the general software presentation
+> should look like so HW implementations can be compatible.
+> 
+> It looks fairly straightforward so this probably isn't strictly
+> necessary once the one the wire protocol is decided.
+> 
+> verbs has a life of its own these days outside IBTA/IETF..
 
-This should be called OFFSET uniformly here and in all the call chain
-below. Not start and not addr.
+For the record, I completely agree with the goal of compatible
+interfaces. And, I'm committed to defining it, however I am not
+able to participate in IBTA as I am no longer associated with
+any IBTA member company. I am active in IETF, which has no such
+restriction.
 
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = uverbs_copy_from(&length, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_LENGTH);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = uverbs_copy_from(&virt_addr, attrs,
-> +			       UVERBS_ATTR_REG_DMABUF_MR_HCA_VA);
+However, it's also important to point out that IETF considers
+programming interfaces to be out of scope. The draft-hilland-verbs
+document for iWARP was not adopted as a work item, and its
+content, while extraordinary useful, is not an IETF product.
+As an example, consider TCP and Sockets. IETF owns the former,
+and has no input on the latter.
 
-I've been trying to call this IOVA
+In other words, I think it's on us.
 
-Jason
+Tom.
