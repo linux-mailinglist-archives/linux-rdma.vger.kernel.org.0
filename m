@@ -2,96 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0242918C1
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Oct 2020 20:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C105292224
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 07:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgJRSGM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Oct 2020 14:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJRSGM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Oct 2020 14:06:12 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60DFC061755
-        for <linux-rdma@vger.kernel.org>; Sun, 18 Oct 2020 11:06:11 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id i12so8303803ota.5
-        for <linux-rdma@vger.kernel.org>; Sun, 18 Oct 2020 11:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rVsl1Axinthci9ar7nU6pr8nf93oOM7p1lKKnFskbys=;
-        b=CmaAZeigOTVUGcvHTiNeVQ8JXczmVCbe+BXq1uR+3GfDhE9h1O1purZG2Nilm6Xh+B
-         KuQ6COjqqls8sLyIJbD7gNNvIN1q5Urjfi+8FWUhmzCblBnYRSU1ZrjRl+72vuNnXPQo
-         P/ChD3WGwiEAkWmT62cwi7DTIEXr1I6+BTAIs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rVsl1Axinthci9ar7nU6pr8nf93oOM7p1lKKnFskbys=;
-        b=ubt1/Yl8wYw4mV+6vK79qGrV0bvn6A2sCsT2bCwxLrwxfzmBaNeWmpetG81CR6+FDo
-         +r+EMxzZz043oKYsOXcakw6u5Z96ebiKc0n3otoBtPvXOrT77WaEVV5OwH12pr/4zIjw
-         5eeZ9jh2jcWcVhCDFGQ4b+10WEdtKMFZ0i6duCdb2Oj7akOTlnKC14Moi0S/t6m+ZKff
-         WN6T5aZOfCadDvJLmMqcofByA33WpkSY8y/U97O59qy6Mqbr8hw1ex6Y73ps0S+mFGfF
-         HvGsBtrB0tS2V5FdsWU9WlcOqBoD0AjG0K0x6LMAt2qSRGxGHT7+FQ5KHKYspuf4X+XJ
-         lQYQ==
-X-Gm-Message-State: AOAM531vQVaXFwOV8cExHM+5VtKCLfvAsGcyfOrrgtqIPcmNXSnZ61rF
-        I//g9SwoUjreQ5wHq91CBiXB4NDoZXNcUiRiYVFvkQ==
-X-Google-Smtp-Source: ABdhPJyKixzQxvE+GzxQcaMU2aZfWmNr+/lmh7CXPMS+AZFRiCTXM6Pe4OwS4J4aBsJ0OG1/00t5O5iRLJTHRvxSQa8=
-X-Received: by 2002:a05:6830:8b:: with SMTP id a11mr9322980oto.303.1603044370984;
- Sun, 18 Oct 2020 11:06:10 -0700 (PDT)
+        id S1726341AbgJSF1n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Oct 2020 01:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgJSF1n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Oct 2020 01:27:43 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 702D12223C;
+        Mon, 19 Oct 2020 05:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603085262;
+        bh=h9z88xQxsjjhv2T1XsSCt0UIaZrHKx3S8kfXoaSlPyM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EQyT7Qcix2oVtJai5By0EXIFjYj0udmEQFYYgYa+EirzLop03aG6ooGp2wVB5sn0u
+         9wiCfSe1JbUzqL9FITdOjSHqg8LApQ/99bKBSa8Fd80/vE4+LaGcWfObJWnILn4tVV
+         9e4p4Tz4MkSrz9LZUnUCFOYVzdlSgQROaABWPO6o=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix devlink deadlock on net namespace deletion
+Date:   Mon, 19 Oct 2020 08:27:36 +0300
+Message-Id: <20201019052736.628909-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1602799365-138199-1-git-send-email-jianxin.xiong@intel.com> <20201016185959.GC37159@ziepe.ca>
-In-Reply-To: <20201016185959.GC37159@ziepe.ca>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Sun, 18 Oct 2020 20:05:59 +0200
-Message-ID: <CAKMK7uHvvtOQgoG4SLA_y0DmfusjOHd=xeN14Jsq7jC=J58HTA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/5] RDMA/umem: Support importing dma-buf as user
- memory region
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 9:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Oct 15, 2020 at 03:02:45PM -0700, Jianxin Xiong wrote:
->
-> > +static void ib_umem_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-> > +{
-> > +     struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
-> > +
-> > +     dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> > +
-> > +     ib_umem_dmabuf_unmap_pages(&umem_dmabuf->umem, true);
-> > +     queue_work(ib_wq, &umem_dmabuf->work);
->
-> Do we really want to queue remapping or should it wait until there is
-> a page fault?
->
-> What do GPUs do?
+From: Parav Pandit <parav@nvidia.com>
 
-Atm no gpu drivers in upstream that use buffer-based memory management
-and support page faults in the hw. So we have to pull the entire thing
-in anyway and use the dma_fence stuff to track what's busy.
+When a mlx5 core devlink instance is reloaded in different net
+namespace, its associated IB device is deleted and recreated.
 
-For faulting hardware I'd wait until the first page fault and then map
-in the entire range again (you get the entire thing anyway). Since the
-move_notify happened because the buffer is moving, you'll end up
-stalling anyway. Plus if you prefault right away you need some
-thrashing limiter to not do that when you get immediate move_notify
-again. As a first thing I'd do the same thing you do for mmu notifier
-ranges, since it's kinda similarish.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Example sequence is:
+$ ip netns add foo
+$ devlink dev reload pci/0000:00:08.0 netns foo
+$ ip netns del foo
+
+mlx5 IB device needs to attach and detach the netdevice to it
+through the netdev notifier chain during load and unload sequence.
+A below call graph of the unload flow.
+
+cleanup_net()
+   down_read(&pernet_ops_rwsem); <- first sem acquired
+     ops_pre_exit_list()
+       pre_exit()
+         devlink_pernet_pre_exit()
+           devlink_reload()
+             mlx5_devlink_reload_down()
+               mlx5_unload_one()
+               [...]
+                 mlx5_ib_remove()
+                   mlx5_ib_unbind_slave_port()
+                     mlx5_remove_netdev_notifier()
+                       unregister_netdevice_notifier()
+                         down_write(&pernet_ops_rwsem);<- recurrsive lock
+
+Hence, when net namespace is deleted, mlx5 reload results in deadlock.
+
+When deadlock occurs, devlink mutex is also held. This not only deadlocks
+the mlx5 device under reload, but all the processes which attempt to access
+unrelated devlink devices are deadlocked.
+
+Hence, fix this by mlx5 ib driver to register for per net netdev
+notifier instead of global one, which operats on the net namespace
+without holding the pernet_ops_rwsem.
+
+Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/main.c                  | 6 ++++--
+ drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h | 5 -----
+ include/linux/mlx5/driver.h                        | 5 +++++
+ 3 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 944bb7691913..b1b3e563c15e 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3323,7 +3323,8 @@ static int mlx5_add_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
+ 	int err;
+
+ 	dev->port[port_num].roce.nb.notifier_call = mlx5_netdev_event;
+-	err = register_netdevice_notifier(&dev->port[port_num].roce.nb);
++	err = register_netdevice_notifier_net(mlx5_core_net(dev->mdev),
++					      &dev->port[port_num].roce.nb);
+ 	if (err) {
+ 		dev->port[port_num].roce.nb.notifier_call = NULL;
+ 		return err;
+@@ -3335,7 +3336,8 @@ static int mlx5_add_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
+ static void mlx5_remove_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
+ {
+ 	if (dev->port[port_num].roce.nb.notifier_call) {
+-		unregister_netdevice_notifier(&dev->port[port_num].roce.nb);
++		unregister_netdevice_notifier_net(mlx5_core_net(dev->mdev),
++						  &dev->port[port_num].roce.nb);
+ 		dev->port[port_num].roce.nb.notifier_call = NULL;
+ 	}
+ }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
+index d046db7bb047..3a9fa629503f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
+@@ -90,9 +90,4 @@ int mlx5_create_encryption_key(struct mlx5_core_dev *mdev,
+ 			       u32 key_type, u32 *p_key_id);
+ void mlx5_destroy_encryption_key(struct mlx5_core_dev *mdev, u32 key_id);
+
+-static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
+-{
+-	return devlink_net(priv_to_devlink(dev));
+-}
+-
+ #endif
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index c484805d8a22..1c810911d367 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -1210,4 +1210,9 @@ static inline bool mlx5_is_roce_enabled(struct mlx5_core_dev *dev)
+ 	return val.vbool;
+ }
+
++static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
++{
++	return devlink_net(priv_to_devlink(dev));
++}
++
+ #endif /* MLX5_DRIVER_H */
+--
+2.26.2
+
