@@ -2,137 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232EA292E29
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 21:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14414292E6A
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 21:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731085AbgJSTGl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Oct 2020 15:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730842AbgJSTGl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 15:06:41 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D02C0613CE
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Oct 2020 12:06:41 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id l85so1108315oih.10
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Oct 2020 12:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cnbv3SgE0nvi+Ik4GaN4gNNhMzQnDfvewQ2iJltTjWM=;
-        b=oMjZeRdy1O0K3AwT/qYzNtP9kh5yvLfFTfsp5cYk3uYHovLTe0vaRo4NrVuHfjhDZw
-         V4N26jHZz/RqApyFrFC4ldUNVMAhKWZOSSPNDNAG8WiLYlbt/xOkl7WiiDAtDcQQhXV+
-         FY/TKb9Y5dMFfpG3CMpM0YSJ0pC0Q/bkUeyxhDtpzgZKLAacdIvPt88J/hAnWJKK04T1
-         6dEpACWmxDoB1TEzUGO63Oq94MqXuY9RL2UymAh+6rlwzpBWeWEvWO0HafxjrrTUVTF2
-         51qfAtWUC+R7RQH8Ah+JsVObAVkUbWpNgxqfpa2hIAGlcPT5D9d2Py+WNO1l6Kj82H2Y
-         xiDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cnbv3SgE0nvi+Ik4GaN4gNNhMzQnDfvewQ2iJltTjWM=;
-        b=LhA1QZ47+QK1HUJ3VkXi7WT+nbHnzFlHiYdbHWw5ecKUICm02jlzkSe4cx+L6pt6oT
-         lCLf3Kg4/NjIuuUig4dio0qTXnn9gpYkkBhuLljTft1q5L+NaEYQ+oruVrPMOeEop6c5
-         V7b8tquPe7ExtPV1ex2YnhTWL6DC1su9gT0TglGrmhRwnVv9RRzJq+LRCxgqzd+p5dDm
-         vtMP/4Xpxw6B5xqp7tuQZTt8R1SHyeZNgow6iz1ibAz4orBWIe2/fOBtkvlfvaXKHJ2a
-         VZr1GrijzRliL+f/SNuKVXyUu8Yxm0+WWmbZjAdx8ou2elc1E8412TwU4gCY9sZY++Ua
-         0Nqg==
-X-Gm-Message-State: AOAM533pnqLoyzTTrDwuI+GY79Y5QLn/AylcxEPHvxWtIe9JgU6cQaqE
-        H17HZCojnKMF4pUyqdOZPThvhbmB/bg=
-X-Google-Smtp-Source: ABdhPJxMY0jwIu3M1xx3ESf6EX2zyfYcNSWWBHyR/aprvWQF8O/jGQWpU6jIydbx4UpQV0Ix1/hlaQ==
-X-Received: by 2002:aca:1e09:: with SMTP id m9mr631714oic.60.1603134400586;
-        Mon, 19 Oct 2020 12:06:40 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:3241:1c4f:8926:de8b? (2603-8081-140c-1a00-3241-1c4f-8926-de8b.res6.spectrum.com. [2603:8081:140c:1a00:3241:1c4f:8926:de8b])
-        by smtp.gmail.com with ESMTPSA id 7sm169411ois.3.2020.10.19.12.06.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 12:06:40 -0700 (PDT)
-Subject: Re: [PATCH RFC] rdma_rxe: Stop passing AV from user space
+        id S1730938AbgJST0n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Oct 2020 15:26:43 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:29416 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730845AbgJST0n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Oct 2020 15:26:43 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8de8700000>; Tue, 20 Oct 2020 03:26:40 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 19:26:40 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.51) by
+ HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 19 Oct 2020 19:26:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fwQvCa9k+8No+tLCvhRB08IxFk43rhpWEzB3dg+4DddrKbuWwzpLxcyndO4CFcBruF+BhNlG+wl8SrhDgzLw81f7EechVDYDtF5jZDfD72sCknBNE7z6E9SZ5CdmmgJvvlSeCOdymP7IiWYfdOYnkSByuXi+GKTiwQyhHskN2NL68coXSE2O/Tqud8OQWiZ9DDxoj1YTthedQdOgbeTQkLRh01fmHVO34Te1DYcHkxb1pdCFXwKVC6MmkiH4BQvXKTlnKU4yFNYYpuP9+tBi40W14/a3Sci0uBmgp1FVaUzrlmQOmkZ+Fn0PI1FFLJsLrU0lxWUQ7PSVmCkoRUDAFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cl6JhD0FwSc8rD6k6M7tqKFk/v0p9uFVyhhoUZ4irg4=;
+ b=EePVN7wzb8c6eZoz6JVuKx4CvWrIwPA/sVDTy2P2c88zSfPT2fPKJx2oQxoKilijqYDcCldm6pxSDqSTCv5762nIY9+RrY65GVgSaFdJ7k8sW7FcaMxlTNo9FFPT0hl+KkGpXI/EV2Rs2+vCc7ajpRaUHedLQV9MamF1cO3XxaZ0aQh2fBFEc2QtKWqTVQhRKJ2fXZHIeBjCIkcCrPlKr5xnpwB3xWqsfAFy62tAUZJTIpdGz686hS2NIpW0/U1HWDD1T3bSzP+7VqEEANuCqfX45PaEUxuRAD3UtwY3jkZZzSwXMHjVGpe0lNLvFo05znRBfyJMjQ+JHCpAgTv0Hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BYAPR12MB2872.namprd12.prod.outlook.com (2603:10b6:a03:12e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Mon, 19 Oct
+ 2020 19:26:36 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 19:26:36 +0000
+From:   Parav Pandit <parav@nvidia.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Bob Pearson <rpearson@hpe.com>
-References: <20201016170147.11016-1-rpearson@hpe.com>
- <20201019185348.GZ6219@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <c8e69967-12aa-6f8e-18c5-96fbd9f1dc2b@gmail.com>
-Date:   Mon, 19 Oct 2020 14:06:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201019185348.GZ6219@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: RE: [PATCH rdma-rc] RDMA/mlx5: Fix devlink deadlock on net namespace
+ deletion
+Thread-Topic: [PATCH rdma-rc] RDMA/mlx5: Fix devlink deadlock on net namespace
+ deletion
+Thread-Index: AQHWpdiUyESckSXaE0yVQeBJxm0NBame5gGAgAABELCAAGGbAIAABjLQ
+Date:   Mon, 19 Oct 2020 19:26:36 +0000
+Message-ID: <BY5PR12MB43223A907782D48862D82246DC1E0@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20201019052736.628909-1-leon@kernel.org>
+ <20201019130751.GE6219@nvidia.com>
+ <BY5PR12MB4322102A3DD0EC976FF317E7DC1E0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20201019190100.GA6219@nvidia.com>
+In-Reply-To: <20201019190100.GA6219@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [49.207.195.223]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 91f46ee8-7c4c-4d55-2dfe-08d87464e574
+x-ms-traffictypediagnostic: BYAPR12MB2872:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB2872D6AEA0941E11566AD959DC1E0@BYAPR12MB2872.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o4yfEeeFVk+d3U6W/PVGdfvGYdyWersM7YSQhdPFJ1mwKMhnYqpjqbw6Y9b01ny8V0AGep/onASz8DqiePyIlNHTNlbbghvdedRXoiOgINJbARsqZsVtYFmYwr0SRJ0H54QzMml8i0KeEHz+d0UYdauFxwXX3lODxB+Pq1l6rGO6D7YjGQ4fl5MilLpbSJkjx9TisYkw0Z5T+AB7JGR/ygDWBEayu3x0WPH4bFEN8r0gsKGauB4ZMlmBUlQUlnx5fRAZH7nI25UvGjy60B/WqU1PzapDzW+hr8j5FZJpTVyyFoOsNrbpGpSBP1gL0NIb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(107886003)(66476007)(76116006)(66446008)(4326008)(7696005)(26005)(6862004)(186003)(66556008)(55236004)(8676002)(6506007)(64756008)(83380400001)(9686003)(55016002)(66946007)(5660300002)(54906003)(2906002)(86362001)(478600001)(33656002)(6636002)(71200400001)(8936002)(52536014)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Q89nBGjplerGZsK9K/UJPzQlnNvCL5jK1QNX0PEcQUFm6kSjoZXRaficeg5hqLrfbDo5KBoX0gTb5seqetgAhmFPOSzuHXOVNFt8CD157w05S36aw4+Y/Fzle1bDKct/iU8KVT3cFoaGjQC+2sTfQyr2clUIg8zLoMqr1+Cw6FB9Qr1j8W00RkZJNuM++P0J4MCpjv/jESLkrSRKoG4LkqdSGD4+siG7uY2eiZspt/PYvHSt+OWFKcQYnNJrrKrH647PG3eTB/hbzCZge7tN0Mg/nzJIxS3PrlhCU/vAFxHrpfLKuYJHuWWwgjM+dLNobvPY1+b0ybGdYEauCtslzT1ZZgqcHuHxeyb2nSHzs2Kf3he9OW5v6+Gt7k4q++RwZCMjYPR1Jd8+uHF62AMKz4OZ06Z5D0hxMIZUlGuMSDwjhF9mjew3+XXcHefd9hPA13O4eueJafsBU43x540x/sEr5iEBroULuF4EQEE5bZeA+rELTzz5WRLLpnl+F4V8SAR57paU8FfdVZENZr6bwzb2gAsCJHGio7nngFOlS/Tde0H2pqlyhI7DVhP61dOINZU5EQNQiA3DAc2txf7chkaFAVGMFmvXkm+X3+zwEntMGo2MI0a4XZTPjAfXB7VcE5mKjfoLBdaZi1slV3lcPQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91f46ee8-7c4c-4d55-2dfe-08d87464e574
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 19:26:36.7635
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JHa7FrUU3051qrKWS3f+twQuSQI1cGVuUWIkjDi4Tg4GK6UCRfwEXz3i7cVrzC+WbZ8fNYCQiFiNUxKuSrzmZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2872
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603135600; bh=cl6JhD0FwSc8rD6k6M7tqKFk/v0p9uFVyhhoUZ4irg4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
+         x-microsoft-antispam-prvs:x-ms-oob-tlc-oobclassifiers:
+         x-ms-exchange-senderadcheck:x-microsoft-antispam:
+         x-microsoft-antispam-message-info:x-forefront-antispam-report:
+         x-ms-exchange-antispam-messagedata:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=Ae1tKksiZpmNOTNn8WwvkFAkt268h+RH+LTRlo8RwHFX5JkrtzRIWrXjjpXB77cRI
+         iEuwx4BbatwZ5it3PpL4KPNmTBx4k3tTZUdJxQ/ZlznCpSFTtwfLNirHtBVaJH7vPE
+         5P9PVimDpVhnOn/x3ZJqk3wSAm8tBKfaK0GMuwHsPHLZCNnC+dzO6MbTzWRH/9+2hS
+         FWTS0fft3cSnUgOOJ3GnvujEGw+i8U+nNKjLUGggVODHZwRtFRGn+Nkkvyw+Dckjp2
+         rHgopYLiq4+yKnYfkj3FIBbLUMpHvNm6gH52EBWVbatwzpul/VCJGH5Aqf2JvwzceS
+         cVPMzXrKiLeUw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/19/20 1:53 PM, Jason Gunthorpe wrote:
-> On Fri, Oct 16, 2020 at 12:01:48PM -0500, Bob Pearson wrote:
->>  
->> +static struct ib_ah *get_ah_from_handle(struct rxe_qp *qp, u32 handle)
->> +{
->> +	struct ib_uverbs_file *ufile;
->> +	struct uverbs_api *uapi;
->> +	const struct uverbs_api_object *type;
->> +	struct ib_uobject *uobj;
->> +
->> +	ufile = qp->ibqp.uobject->uevent.uobject.ufile;
->> +	uapi = ufile->device->uapi;
->> +	type = uapi_get_object(uapi, UVERBS_OBJECT_AH);
->> +	if (IS_ERR(type))
->> +		return NULL;
->> +	uobj = rdma_lookup_get_uobject(type, ufile, (s64)handle,
->> +				       UVERBS_LOOKUP_READ, NULL);
->> +	if (IS_ERR(uobj)) {
->> +		pr_warn("unable to lookup ah handle\n");
->> +		return NULL;
->> +	}
->> +
->> +	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_READ);
-> 
-> It can't be put and then return the data pointer, it is a use after free:
-> 
->> +	return uobj->object;
-> 
->> @@ -562,11 +563,6 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->>  
->>  	init_send_wr(qp, &wqe->wr, ibwr);
->>  
->> -	if (qp_type(qp) == IB_QPT_UD ||
->> -	    qp_type(qp) == IB_QPT_SMI ||
->> -	    qp_type(qp) == IB_QPT_GSI)
->> -		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
-> 
-> It needs some kind of negotiated compat, can't just break userspace
-> like this
-> 
+
+
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, October 20, 2020 12:31 AM
+>=20
+> On Mon, Oct 19, 2020 at 01:23:23PM +0000, Parav Pandit wrote:
+> > > > -	err =3D register_netdevice_notifier(&dev->port[port_num].roce.nb)=
+;
+> > > > +	err =3D register_netdevice_notifier_net(mlx5_core_net(dev->mdev),
+> > > > +					      &dev->port[port_num].roce.nb);
+> > >
+> > > This looks racy, what lock needs to be held to keep *mlx5_core_net()
+> stable?
+> >
+> > mlx5_core_net() cannot be accessed outside of mlx5 driver's load, unloa=
+d,
+> reload path.
+> >
+> > When this is getting executed, devlink cannot be executing reload.
+> > This is guarded by devlink_reload_enable/disable calls done by mlx5 cor=
+e.
+>=20
+> A comment that devlink_reload_enable/disable() must be held would be
+> helpful
+>=20
+Yes. will add.
+
+> > >
+> > > >  	if (err) {
+> > > >  		dev->port[port_num].roce.nb.notifier_call =3D NULL;
+> > > >  		return err;
+> > > > @@ -3335,7 +3336,8 @@ static int mlx5_add_netdev_notifier(struct
+> > > >mlx5_ib_dev *dev, u8 port_num)  static void
+> > > >mlx5_remove_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
+> {
+> > > >  	if (dev->port[port_num].roce.nb.notifier_call) {
+> > > > -		unregister_netdevice_notifier(&dev-
+> > > >port[port_num].roce.nb);
+> > > > +		unregister_netdevice_notifier_net(mlx5_core_net(dev-
+> > > >mdev),
+> > > > +						  &dev-
+> > > >port[port_num].roce.nb);
+> > >
+> > > This seems dangerous too, what if the mlx5_core_net changed before
+> > > we get here?
+> >
+> > When I inspected driver, code, I am not aware of any code flow where
+> > this can change before reaching here, because registration and
+> > unregistration is done only in driver load, unload and reload path.
+> > Reload can happen only after devlink_reload_enable() is done.
+>=20
+> But we enable reload right after init_one
+>=20
+> > > What are the rules for when devlink_net() changes?
+> > >
+> > devlink_net() changes only after unload() callback is completed in driv=
+er.
+>=20
+> You mean mlx5_devlink_reload_down ?
+>=20
+Right.
+> That seems OK then
+Ok. will work with Leon to add the comment.
+>=20
 > Jason
-> 
-
-1st point. I get it. uobj->object contains the address of one of the ib_xxx verbs objects.
-Normally the driver never looks at this level but presumably has a kref on that object so it makes
-sense to look it up. Perhaps better would be:
-
-	void *object;
-
-	...
-
-	uobj = rdma_lookup_get_uobject(...);
-
-	object = uobj->object;
-
-	rdma_lookup_put_uobject(...);
-
-	return (struct ib_ah *)object;
-
-Here the caller has created the ib_ah but has not yet destroyed it so it must hold a kref on it.
-
-
-2nd point. I also get. This suggestion imagines that there will come a day when we can change the user API.
-May be a rare day but must happen occasionally. The current design is just plain wrong and needs to get fixed
-eventually.
-
-Thanks for looking at this.
-
-Bob
