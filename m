@@ -2,118 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74BB292D97
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 20:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2EC292DCD
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 20:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730783AbgJSSbf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Oct 2020 14:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730776AbgJSSbf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 14:31:35 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501A0C0613CE
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Oct 2020 11:31:35 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id p9so1279132ilr.1
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Oct 2020 11:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KiYHkdjSKwc5nxbsgSu+T0wEJF/MXkVPRwhMCfSdY6s=;
-        b=AJcK4ZsTLW6to30sHE97EeRWXtJ7lm7xB9ZsTPR14jw6la3mDUfNEDb3DISqDiqa3W
-         RDVInYQS0gQYEDpEb9Zrdw9gRpxxSZUt33rS6Yq2HcXFkCfKiqAMtuZziQYX7RceXMLP
-         3a8xb4AbG0DqWFM/iPX4ftVDlN3DNN1ewyF8JKytKdBEdArKPVTGVKj7S4sn2UQg5kXC
-         ahgwfHcYi8ZoJurr2yOfQ0HEK2iQzeZ/romy9wWE4w+iD465t0n27btLnMPDvXpyxo6E
-         pjiss1oTTrtNzS0c+Cgh6BE+HUbGVOziwGHkldFCqK7fs3nd5JeYmgTewS4ooDqIQkA8
-         EJUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KiYHkdjSKwc5nxbsgSu+T0wEJF/MXkVPRwhMCfSdY6s=;
-        b=Ab8zna4b48LUXFQjQUzR23eD4IuxcjtU/Bt9qvm63QFh7CML8qQXw4tCDlantAzbXS
-         8AD+CDCRX8M0V/z2i55NAnWY3K+D331K/mVWgXO+1IKvaJw+T0lQIMYv4B9rcnEXxB4H
-         UcFwd/iB0XB1ZJoRiiMpa8mEktXUXgKPvq5WIRU2r5TyzPJZPr3Og5hIqqzuxbh05uBl
-         QRchY8+QY59eUw60O3LeBTvvdGCZAyKEK69izDVPqGbpd/0PCDwjFGXNerryqsS+8LY9
-         LPyPP908VZKEZN+2QSOcdCsubxmQjTllxxAy//XGUY1MNkv2s4CkA+jjnCed2cwo44y5
-         isBQ==
-X-Gm-Message-State: AOAM533ndt8NTTaq3KT6sFim9lfuYTAwL2v5wWYJEHnfivJAlVyfH3uu
-        H+b75SCtS3ph4Xer+e60euvOvA==
-X-Google-Smtp-Source: ABdhPJx2J7Nb9vZk6Pdn0u10l8qaqfMqvDqZT00lsW3WJmYkZeju5ClGLzmUj9yuYB8/O6WQas/Y0A==
-X-Received: by 2002:a05:6e02:970:: with SMTP id q16mr1144831ilt.69.1603132294692;
-        Mon, 19 Oct 2020 11:31:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b9sm448279ilq.51.2020.10.19.11.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 11:31:33 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kUZwS-002cPP-N4; Mon, 19 Oct 2020 15:31:32 -0300
-Date:   Mon, 19 Oct 2020 15:31:32 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: RDMA subsystem namespace related questions (was Re: Finding the
- namespace of a struct ib_device)
-Message-ID: <20201019183132.GE37159@ziepe.ca>
-References: <20201009143940.GT5177@ziepe.ca>
- <0E82FB51-244C-4134-8F74-8C365259DCD5@gmail.com>
- <20201009145706.GU5177@ziepe.ca>
- <EC7EE276-3529-4374-9F90-F061AAC3B952@gmail.com>
- <20201009150758.GV5177@ziepe.ca>
- <7EC25CA9-27B5-4900-B49C-43D29ED06EB6@gmail.com>
- <20201009153406.GA5177@ziepe.ca>
- <4e630f85-c684-1e56-bb68-22c37872c728@oracle.com>
- <20201016185443.GA37159@ziepe.ca>
- <35A86DEC-33E8-4637-BEBB-767202CF0247@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1730809AbgJSSxw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Oct 2020 14:53:52 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10123 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727681AbgJSSxw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 14:53:52 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8de0b30000>; Mon, 19 Oct 2020 11:53:39 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 18:53:51 +0000
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.55) by
+ HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 19 Oct 2020 18:53:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OVBQrIetkRL42p1hGchfu3IXwr0PmZoI2YsZU++vQa2DOQifUGTztdWZHvn4yDdIKBkN1YxKuXPvwgNHSa9m1ZudazXUAXOUq7ptMbuXtZk6VNf6ZMGx1EnhtL2CeaYyUsqaqKsdyPIufP3LfJ9x89T/DbaZmFqidb+zelG9Z9pB55ZFSiTqlvhNJAm0VXMguEFHak3Vil6OC6qtPDo2zdO263m05QqDNlZVoPlXhtahxT3me/1zoqZ9I5neHFdO/D+HM3n0lQzz8BS0DwPXH0OODYq0Q6lCtvMNufstu1Jit/oZRPxfRe4+Zu7Kb/2TIOr2PkDs6sRfsXUBXIxpdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EFac+d161dO333s9a+vYPzaUEXie59FLGGUGjw1mD+E=;
+ b=PT7c4CGLYoITS+7gOqzoA/63EbXtoZj5gs8XUT4P2rFeutuzURkybGBVZoJg9p3B1Cvc75jyE3s4DjlQ5OSD+7PlK9QVT5VCp7VX7wqrceTrdE5/QG2GMR1SZu15RLD/mc6ZHNmccx2pMzfUlt6NKrsZ3HYpMkHYhuVEPxthmUhpX3VQLMJk+jQcZfvaITeh3vXcdUwWJWhlcXkzfvYc/tf5RfSbAxFQarwvenQn4DqLKFeHE+caVO+WU+zZCeReWFzjJ3ZOAsjxf8ylZR1A6Dw22Ni6s93D+RRqO1V/pC9YUAMc4Gsr/QlBllyAmmG6VQ0Z1SJcsv5o8GLMnQ8NFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2583.namprd12.prod.outlook.com (2603:10b6:4:b3::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.28; Mon, 19 Oct
+ 2020 18:53:50 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 18:53:50 +0000
+Date:   Mon, 19 Oct 2020 15:53:48 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH RFC] rdma_rxe: Stop passing AV from user space
+Message-ID: <20201019185348.GZ6219@nvidia.com>
+References: <20201016170147.11016-1-rpearson@hpe.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <35A86DEC-33E8-4637-BEBB-767202CF0247@oracle.com>
+In-Reply-To: <20201016170147.11016-1-rpearson@hpe.com>
+X-ClientProxiedBy: MN2PR13CA0030.namprd13.prod.outlook.com
+ (2603:10b6:208:160::43) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR13CA0030.namprd13.prod.outlook.com (2603:10b6:208:160::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.4 via Frontend Transport; Mon, 19 Oct 2020 18:53:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUaI0-002cvR-9k; Mon, 19 Oct 2020 15:53:48 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603133619; bh=EFac+d161dO333s9a+vYPzaUEXie59FLGGUGjw1mD+E=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=Kl669+Z2ZYq5uf/ESaSrTTOBBVdhvVJG40mUADoWxe/b2m/Ow93taKJ8E6c8eIVSn
+         1NNpaRw6IbUc8wjb57dVN5rVUXEpvSilV6v0QLjv9qdphERX0MiLCb9+dW8vIT7Qmx
+         4g6d+5UlEhpHfF7aOkp5JA99g+m7UKSFSYFm1bjYJcuxQY63TCkpN1wogL2qqJ3lVx
+         DL5vVZImlZ5Ql133IBELIntwsT905beFeR321I/lXMhFYuU++EAYJWEHJOETIP3T8i
+         F7oir1wY5QInCugGSmjCzxQcWMFGxPIsqn3199ru0+oCH8Iqv4gKfEAFPfBi6ycJ16
+         pP7XgLcfn+7FQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 04:49:41PM -0400, Chuck Lever wrote:
-> 
-> 
-> > On Oct 16, 2020, at 2:54 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > 
-> > On Mon, Oct 12, 2020 at 04:20:40PM +0800, Ka-Cheong Poon wrote:
-> >> On 10/9/20 11:34 PM, Jason Gunthorpe wrote:
-> >> 
-> >>> Yes, because namespaces are fundamentally supposed to be anchored in
-> >>> the processes inside the namespace.
-> >>> 
-> >>> Having the kernel jump in and start opening holes as soon as a
-> >>> namespace is created is just wrong.
-> >>> 
-> >>> At a bare minimum the listener should not exist until something in the
-> >>> namespace is willing to work with RDS.
-> >> 
-> >> 
-> >> As I mentioned in a previous email, starting is not the problem.  It
-> >> is the problem of deleting a namespace.
-> > 
-> > Starting and ending are symmetric. When the last thing inside the
-> > namespace stops needing RDS then RDS should close down the cm_id's.
-> 
-> Unfortunately, cluster heartbeat requires the RDS listener endpoint
-> to continue after the last RDS user goes away, if the container
-> continues to exist.
+On Fri, Oct 16, 2020 at 12:01:48PM -0500, Bob Pearson wrote:
+>  
+> +static struct ib_ah *get_ah_from_handle(struct rxe_qp *qp, u32 handle)
+> +{
+> +	struct ib_uverbs_file *ufile;
+> +	struct uverbs_api *uapi;
+> +	const struct uverbs_api_object *type;
+> +	struct ib_uobject *uobj;
+> +
+> +	ufile = qp->ibqp.uobject->uevent.uobject.ufile;
+> +	uapi = ufile->device->uapi;
+> +	type = uapi_get_object(uapi, UVERBS_OBJECT_AH);
+> +	if (IS_ERR(type))
+> +		return NULL;
+> +	uobj = rdma_lookup_get_uobject(type, ufile, (s64)handle,
+> +				       UVERBS_LOOKUP_READ, NULL);
+> +	if (IS_ERR(uobj)) {
+> +		pr_warn("unable to lookup ah handle\n");
+> +		return NULL;
+> +	}
+> +
+> +	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_READ);
 
-What purpose is the heartbeat if nobody is listening for RDS stuff
-inside the net namespace anyhow?
+It can't be put and then return the data pointer, it is a use after free:
 
-> IMO having an explicit RDS start-up and shutdown apart from namespace
-> creation and deletion is a cleaner approach. On a multi-tenant system
-> with many containers, some of those containers will want RDS listeners
-> and some will not. RDS should not assume that every net namespace
-> needs or wants to have a listener.
+> +	return uobj->object;
 
-Right
+> @@ -562,11 +563,6 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+>  
+>  	init_send_wr(qp, &wqe->wr, ibwr);
+>  
+> -	if (qp_type(qp) == IB_QPT_UD ||
+> -	    qp_type(qp) == IB_QPT_SMI ||
+> -	    qp_type(qp) == IB_QPT_GSI)
+> -		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
+
+It needs some kind of negotiated compat, can't just break userspace
+like this
 
 Jason
