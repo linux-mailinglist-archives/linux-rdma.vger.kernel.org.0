@@ -2,37 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD222924FD
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 11:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84858292705
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 14:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgJSJua (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Oct 2020 05:50:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26889 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgJSJu3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:50:29 -0400
-IronPort-SDR: iJ/Tr0+YqNwOZYuF8Nuz4QRySEZRhKsdJMA3iHe9qwxqd0KzDJRUaxxqKgTKwM9wJJrPmlDG8l
- WDRN4BQzGFIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="167074347"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="167074347"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 02:50:29 -0700
-IronPort-SDR: wOhg53Sl2o7dSrmuey9mftrC8wQLe5UHW2R48yboVQeair4n2dGzZ/4W1Em2ITVY0vpMmdFkDE
- 2n79TSlJDT+A==
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="465465851"
-Received: from ashaulsk-mobl1.ger.corp.intel.com (HELO [10.214.247.170]) ([10.214.247.170])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 02:50:25 -0700
-Subject: Re: dynamic-sg patch has broken rdma_rxe
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Ursulin, Tvrtko" <tvrtko.ursulin@intel.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        id S1726015AbgJSMMU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Oct 2020 08:12:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6921 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgJSMMU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 08:12:20 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8d82470000>; Mon, 19 Oct 2020 05:10:47 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 12:12:14 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 19 Oct 2020 12:12:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d8cQ331dNC4xKqtCyF58PZgAyKRx5fEb1HaGANMh3IspevPYOxq8Yxm5djT+woFS0VU/x2S8nyzXol7KmDrZEXVhaQXZ/7W+UebRJYwKtRlQ+AxJbUorM+dX9ZJCVyI6Cma67/Y39ojZB8BE6Q9qNQTjLa0nxIZlVVfXZSwYy4cWyuGV+WD3OoBkYXq8Newd4Z7XM1iew3vfh1yCPp7OrkcNg+d9hXNqfMUB+zsZ9FsjAwzdE87/N3e9eAqu3MnNwgUSSVam4F3NfRQn+QXpF88w9s9EJD9sBiKIH5jVWpiUEi2YVUgfD+6eNsbK8gfZOnqAt/zfkU1CTVYNmmcz4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c7Goekc1I0phvgqL9/SAlEdHNSqYGq5Qn+9cpP1RjUA=;
+ b=aftKo8I+XyyUZ5n5aMbY06dJoDEe4MZr17jky3iacdtzyuNlF+hv1EtaJ0vwPNxwInhkofyTpFmP6NzjMpPMrc/tFbtayluTD6/UuPCIOLvKOQrCc+iQ7JBoaZ4bPgPiQhKO4s9PM9w3tzmGX3j64m6qHeuRjlBm/3lMJn5bNvqRyvpGzrFzNnqAkRHsuUenXtzIFGjdV0tR7xK9+dawGqFTk1Ktc69UW98q9pONvXHw4qJfUxJa2l4K+bWSS7p5l6VDBi2458SLu0W+CQrt5z/5NIz5c2BuJuCizDFzE8Esdrl7EKxf9ECtk872SnFy84zLAfyPfZX+w6+hSyzUOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4235.namprd12.prod.outlook.com (2603:10b6:5:220::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 19 Oct
+ 2020 12:12:13 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 12:12:13 +0000
+Date:   Mon, 19 Oct 2020 09:12:11 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+CC:     "Ursulin, Tvrtko" <tvrtko.ursulin@intel.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         Gal Pressman <galpress@amazon.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: dynamic-sg patch has broken rdma_rxe
+Message-ID: <20201019121211.GC6219@nvidia.com>
 References: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
  <20201014225125.GC5316@nvidia.com>
  <e2763434-2f4f-9971-ae9d-62bab62b2e93@nvidia.com>
@@ -41,167 +58,50 @@ References: <0fdfc60e-ea93-8cf2-b23a-ce5d07d5fe33@gmail.com>
  <20201016003127.GD6219@nvidia.com>
  <796ca31aed8f469c957cb850385b9d09@intel.com>
  <20201016115831.GI6219@nvidia.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
-Date:   Mon, 19 Oct 2020 10:50:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
+X-ClientProxiedBy: MN2PR01CA0013.prod.exchangelabs.com (2603:10b6:208:10c::26)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20201016115831.GI6219@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR01CA0013.prod.exchangelabs.com (2603:10b6:208:10c::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Mon, 19 Oct 2020 12:12:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUU1L-002HJW-Rg; Mon, 19 Oct 2020 09:12:11 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603109447; bh=c7Goekc1I0phvgqL9/SAlEdHNSqYGq5Qn+9cpP1RjUA=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=aYhRkG9etqNTFwziHAc4PkDmG/qLHAOCx+JiCRSN1uDANegJzhv89U0Hdaf7kZ0th
+         hDPKrAsdUJp0KEN9+L1QkfTwhbydSnYqEFQY+yiijuXBnKqhdCjA6VvVRO9U82YTM9
+         lxdk++duVLkMT96Hpe4cvM0v5QqEtxClSe+3SVsuIUjVfEnbqZKdQL4oe5W2aaTDVb
+         ojDgQeiox4YyfxE4fzRAzUYS3ryEOYaaoAeW6/RuVgomL9++34NtxH8vgP8N8FO8bz
+         dCc9gshtsT94OxwKgfLQBogmSpJr2q8bjNTc2x0VWGBMV1ZVPN9Ds9yNI88+xVqPmC
+         ghKlVUe08F6QQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 10:50:14AM +0100, Tvrtko Ursulin wrote:
+> > overshoot the max_segment if it is not a multiple of PAGE_SIZE. Simply fix
+> > the alignment before starting and don't expose this implementation detail
+> > to the callers.
+> 
+> What does not make complete sense to me is the statement that input
+> alignment requirement makes it impossible to connect to DMA layer, but then
+> the patch goes to align behind the covers anyway.
+> 
+> At minimum the kerneldoc should explain that max_segment will still be
+> rounded down. But wouldn't it be better for the API to be more explicit and
+> just require aligned anyway?
 
-On 16/10/2020 12:58, Jason Gunthorpe wrote:
-> On Fri, Oct 16, 2020 at 08:29:11AM +0000, Ursulin, Tvrtko wrote:
->>
->> Hi guys,
->>
->> [I removed the mailing list from cc since from this email address) I
->> can't reply properly inline. (tvrtko.ursulin@linux.intel.com works
->> better.)]
-> 
-> I put it back
->   
->> However:
->>
->> +	/* Avoid overflow when computing sg_len + PAGE_SIZE */
->> +	max_segment = max_segment & PAGE_MASK;
->> +	if (WARN_ON(max_segment < PAGE_SIZE))
->>   		return ERR_PTR(-EINVAL);
->>
->> Maybe it's too early for me but I don't get this. It appears the
->> condition can only be true if the max_segment is smaller than page
->> size as passed in to the function to _start with_. Don't see what
->> does filtering out low bits achieves on top.
-> 
-> The entire problem is the algorithm in __sg_alloc_table_from_pages()
-> only limits sg_len to
-> 
->     sg_len == N * PAGE_SIZE <= ALIGN_UP(max_segment, PAGE_SIZE);
-> 
-> ie it overshoots max_segment if it is unaligned.
-> 
-> It also badly malfunctions if the ALIGN_UP() overflows, eg for
-> ALIGN_UP(UINT_MAX).
-> 
-> This is all internal problems inside __sg_alloc_table_from_pages() and
-> has nothing to do with the scatter lists themselves.
-> 
-> Adding an ALIGN_DOWN guarentees this algorithm produces sg_len <=
-> max_segment in all cases.
+Why?
 
-Right, I can follow the story now that ALIGN_DOWN is in the picture.
+The API is to not produce sge's with a length longer than max_segment,
+it isn't to produce sge's of exactly max_segment.
 
->> If the intent is to allow unaligned max_segment then also please
->> change kerneldoc.
-> 
-> Sure
->   
->> Although TBH I don't get how unaligned max segment makes sense. List
->> can end on an unaligned segment but surely shouldn't have then in
->> the middle.
-> 
-> The max_segment should either be UINT_MAX because the caller doesn't
-> care, or come from the DMA max_segment_size which is a HW limitation
-> usually derived from the # of bits available to express a length.
-> 
-> Conflating the HW limitation with the system PAGE_SIZE is
-> nonsense. This is further confused because the only reason we have an
-> alignment restriction is due to this algorithm design, the SGL rules
-> don't prevent the use of unaligned lengths, or length smaller than
-> PAGE_SIZE, even in the interior.
-> 
-> Jason
-> 
->>From b03302028893ce7465ba7e8736abba1922469bc1 Mon Sep 17 00:00:00 2001
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Date: Fri, 16 Oct 2020 08:46:01 -0300
-> Subject: [PATCH] lib/scatterlist: Do not limit max_segment to PAGE_ALIGNED
->   values
-> 
-> The main intention of the max_segment argument to
-> __sg_alloc_table_from_pages() is to match the DMA layer segment size set
-> by dma_set_max_seg_size().
-> 
-> Restricting the input to be page aligned makes it impossible to just
-> connect the DMA layer to this API.
-> 
-> The only reason for a page alignment here is because the algorithm will
-> overshoot the max_segment if it is not a multiple of PAGE_SIZE. Simply fix
-> the alignment before starting and don't expose this implementation detail
-> to the callers.
+Everything else is an internal detail
 
-What does not make complete sense to me is the statement that input 
-alignment requirement makes it impossible to connect to DMA layer, but 
-then the patch goes to align behind the covers anyway.
-
-At minimum the kerneldoc should explain that max_segment will still be 
-rounded down. But wouldn't it be better for the API to be more explicit 
-and just require aligned anyway?
-
-I mean I have no idea what is the problem for connecting to the DMA 
-layer. Is it a matter of too many call sites which would need to align? 
-Or there is more to it?
-
-> A future patch will completely remove SCATTERLIST_MAX_SEGMENT.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->   lib/scatterlist.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> index e102fdfaa75be7..ed2497c79a216b 100644
-> --- a/lib/scatterlist.c
-> +++ b/lib/scatterlist.c
-> @@ -404,7 +404,7 @@ static struct scatterlist *get_next_sg(struct sg_table *table,
->    * @n_pages:	 Number of pages in the pages array
->    * @offset:      Offset from start of the first page to the start of a buffer
->    * @size:        Number of valid bytes in the buffer (after offset)
-> - * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
-> + * @max_segment: Maximum size of a scatterlist element in bytes
->    * @prv:	 Last populated sge in sgt
->    * @left_pages:  Left pages caller have to set after this call
->    * @gfp_mask:	 GFP allocation mask
-> @@ -435,7 +435,12 @@ struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
->   	unsigned int added_nents = 0;
->   	struct scatterlist *s = prv;
->   
-> -	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
-> +	/*
-> +	 * The algorithm below requires max_segment to be aligned to PAGE_SIZE
-> +	 * otherwise it can overshoot.
-> +	 */
-> +	max_segment = ALIGN_DOWN(max_segment, PAGE_SIZE);
-> +	if (WARN_ON(max_segment < PAGE_SIZE))
-
-Equivalent to !max_segment or max_segment == 0 now.
-
-And it's a bit weird API - "you can pass in any unaligned size apart 
-from unaligned sizes less than a PAGE_SIZE". Makes me think more that 
-explicit requirement to pass in page aligned was better.
-
->   		return ERR_PTR(-EINVAL);
->   
->   	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
-> @@ -542,8 +547,7 @@ int sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
->   			      unsigned long size, gfp_t gfp_mask)
->   {
->   	return PTR_ERR_OR_ZERO(__sg_alloc_table_from_pages(sgt, pages, n_pages,
-> -			offset, size, SCATTERLIST_MAX_SEGMENT,
-> -			NULL, 0, gfp_mask));
-> +			offset, size, UINT_MAX, NULL, 0, gfp_mask));
->   }
->   EXPORT_SYMBOL(sg_alloc_table_from_pages);
->   
-> 
-
-Regards,
-
-Tvrtko
+Jason
