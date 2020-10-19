@@ -2,217 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D162930C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Oct 2020 23:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E9C2931A5
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 01:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729516AbgJSVth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Oct 2020 17:49:37 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:32798 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729466AbgJSVth (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 17:49:37 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JLiEDf008628;
-        Mon, 19 Oct 2020 21:49:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=zRnQI8EQayPaK96pH8XspXA3BUSbgetS3UNxcz7mClU=;
- b=f4JRZxxKvGXmW8T+YYxMFfL15OiUxVI5+pdKUflSp52hdOyqBdjMjaaA0LZ8JINECsD+
- baAfQmZb4zdf0Z71vDJC/9nnQnwSVrFlbkNPKoCOLwER+iJmCe2rkR6HFZouMPFTudS2
- LTPjNlSNTQaJKshUkv9GTpIVe2W5cdNd/yFDdxM+xbwmDMeBMTfibJdCuUAJByo0rXk3
- wU4DOR22Tp7CkPo/qiA5KGEXmYUvVUjcIpCVvtCksDCS8K8YiSxVRM3FbjS1gU2olGqm
- nPZ0r5pWN/0wh+WDHr7Nqwr7ezX2428AOPEt4+VLPuaSmJsC6EVrdeHrenXK+Ja77IR0 gw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 347s8mqucd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 21:49:36 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JLnZYb021511;
-        Mon, 19 Oct 2020 21:49:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 348agwn4y4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Oct 2020 21:49:35 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09JLnTgd018606;
-        Mon, 19 Oct 2020 21:49:30 GMT
-Received: from mbpatil.us.oracle.com (/10.211.44.53)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 19 Oct 2020 14:49:29 -0700
-From:   Manjunath Patil <manjunath.b.patil@oracle.com>
-To:     santosh.shilimkar@oracle.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rama.nichanamatlu@oracle.com, manjunath.b.patil@oracle.com
-Subject: [PATCH 2/2] rds: add functionality to print MR related information
-Date:   Mon, 19 Oct 2020 14:48:08 -0700
-Message-Id: <1603144088-8769-3-git-send-email-manjunath.b.patil@oracle.com>
-X-Mailer: git-send-email 1.7.1
-In-Reply-To: <1603144088-8769-1-git-send-email-manjunath.b.patil@oracle.com>
-References: <1603144088-8769-1-git-send-email-manjunath.b.patil@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
- malwarescore=0 spamscore=0 suspectscore=1 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010190147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=1
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- phishscore=0 clxscore=1015 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010190146
+        id S1725800AbgJSXAW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Oct 2020 19:00:22 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10552 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbgJSXAW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Oct 2020 19:00:22 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8e1a790002>; Mon, 19 Oct 2020 16:00:09 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 23:00:21 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 19 Oct 2020 23:00:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nc/ry+ghSckELZUHsN5OWEvlPXI+lc7iaRGVweLO9f9tKDxZPCzzrhggC2Y431wsy3iI8+5vr1PjNskmtTJu6o2orMGb2ydUIuoyuUWuP7wyrWi74SzgGe3pVaPdp0hZRHXYG394MSC9LmW/oEzjllUAzsCbut++h6CC22JNC6ZdgrKJRatgSPVC4joiDDPxxFwQzj5Jy07ytZjVMErvrzu1VmkJdA1EKyMRj1EOYj2kl9UFHV6iGpIfhBGuNxTe+UC/u0Sx6MvN8KSoTbI8lFzuZKX4oAu2tSIUy9CJIJyLX9/ZR8d4mbXodkjJ6NW7zOwpW9MiLao98olAI0TYag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qkAnmxst6KqgQfHlMjBvPxPM3l4VR922qbxiG9JvGD4=;
+ b=IaGxOA1v0syIjDkR0nmk/guQ0/AQhgV28O0w198oo44KIERwmPPJeO68ha2q0ubNn/oiFeC5MWAfgIutWcaHkyzSyWgjYHLhYp/JOFON9/XWFrfDRAUm5OBLOt/V3xo3olXbdOcCN0AA6fmUK2C5vXaAWSg0HPDzxywItvBd28L101CDs9QfLJMJOHgNRZBproS6dxTmiWtqqpNEqGnYtK81bcBJWYYqbg0ZOTrbopzt6yZul5QumHdW8we/bRDtHxlVsiBhTG98jcSoyslpvxaXhO84c3uW2zhu6GvBD4T+anuMEfYQX81l4CiWfJ2cYgOmzzHJVCtWqufanCuKiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4546.namprd12.prod.outlook.com (2603:10b6:5:2ae::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Mon, 19 Oct
+ 2020 23:00:19 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 23:00:19 +0000
+Date:   Mon, 19 Oct 2020 20:00:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH RFC] rdma_rxe: Stop passing AV from user space
+Message-ID: <20201019230017.GB6219@nvidia.com>
+References: <20201016170147.11016-1-rpearson@hpe.com>
+ <20201019185348.GZ6219@nvidia.com>
+ <c8e69967-12aa-6f8e-18c5-96fbd9f1dc2b@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c8e69967-12aa-6f8e-18c5-96fbd9f1dc2b@gmail.com>
+X-ClientProxiedBy: BL0PR05CA0004.namprd05.prod.outlook.com
+ (2603:10b6:208:91::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR05CA0004.namprd05.prod.outlook.com (2603:10b6:208:91::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.8 via Frontend Transport; Mon, 19 Oct 2020 23:00:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUe8X-002hI7-Ij; Mon, 19 Oct 2020 20:00:17 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603148409; bh=qkAnmxst6KqgQfHlMjBvPxPM3l4VR922qbxiG9JvGD4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=mN0AnpQ1CaobejxYe2P82Z7CqBLUoxTGLd1+k/4x13+oa8ikgXJhXuxU8TPVqQNQM
+         1iknQ0ubT6E3kQEJXhW+LVywyPnmCmHs+WWvKyXOOZmiH80Xj/gsNecISGNO9QmBXE
+         kMFrOMNExTq1d6QrwJRMawpPyxUNHfuooqxWo9zW4VQ4M7Bf7ehybFLkCDsxJpOM0f
+         4BRIpuYtaxFSZYxYLQms35/VYDt1bLsn5c8CUAfXCaTJGkBdCNXAI5Tci6kc9lkhvj
+         OqdHJ2fWME/kDcg7q1L/yqh03GK53nhMaAoUNAkMw/J3IdTYeGw1sB+e/jzsLQovFL
+         CmydEax47ZRfw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RDS keeps its own pool of limited MRs[Memory Regions taken from ib
-device for rdma operation] which are shared by RDS applications. Now, we
-can print the applications along with their usage of MRs from userspace
-using 'rds-info -m' command. This would help in tracking the limited
-MRs.
+On Mon, Oct 19, 2020 at 02:06:30PM -0500, Bob Pearson wrote:
+> On 10/19/20 1:53 PM, Jason Gunthorpe wrote:
+> > On Fri, Oct 16, 2020 at 12:01:48PM -0500, Bob Pearson wrote:
+> >>  
+> >> +static struct ib_ah *get_ah_from_handle(struct rxe_qp *qp, u32 handle)
+> >> +{
+> >> +	struct ib_uverbs_file *ufile;
+> >> +	struct uverbs_api *uapi;
+> >> +	const struct uverbs_api_object *type;
+> >> +	struct ib_uobject *uobj;
+> >> +
+> >> +	ufile = qp->ibqp.uobject->uevent.uobject.ufile;
+> >> +	uapi = ufile->device->uapi;
+> >> +	type = uapi_get_object(uapi, UVERBS_OBJECT_AH);
+> >> +	if (IS_ERR(type))
+> >> +		return NULL;
+> >> +	uobj = rdma_lookup_get_uobject(type, ufile, (s64)handle,
+> >> +				       UVERBS_LOOKUP_READ, NULL);
+> >> +	if (IS_ERR(uobj)) {
+> >> +		pr_warn("unable to lookup ah handle\n");
+> >> +		return NULL;
+> >> +	}
+> >> +
+> >> +	rdma_lookup_put_uobject(uobj, UVERBS_LOOKUP_READ);
+> > 
+> > It can't be put and then return the data pointer, it is a use after free:
+> > 
+> >> +	return uobj->object;
+> > 
+> >> @@ -562,11 +563,6 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+> >>  
+> >>  	init_send_wr(qp, &wqe->wr, ibwr);
+> >>  
+> >> -	if (qp_type(qp) == IB_QPT_UD ||
+> >> -	    qp_type(qp) == IB_QPT_SMI ||
+> >> -	    qp_type(qp) == IB_QPT_GSI)
+> >> -		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
+> > 
+> > It needs some kind of negotiated compat, can't just break userspace
+> > like this
+> > 
+> > Jason
+> > 
+> 
+> 1st point. I get it. uobj->object contains the address of one of the ib_xxx verbs objects.
+> Normally the driver never looks at this level but presumably has a kref on that object so it makes
+> sense to look it up. Perhaps better would be:
+> 
+> 	void *object;
+> 
+> 	...
+> 
+> 	uobj = rdma_lookup_get_uobject(...);
+> 
+> 	object = uobj->object;
+> 
+> 	rdma_lookup_put_uobject(...);
+> 
+> 	return (struct ib_ah *)object;
+> 
+> Here the caller has created the ib_ah but has not yet destroyed it so it must hold a kref on it.
 
-MR related information is stored in rds_sock. This patch exposes the
-information to userspace using rds-info command. The usage is limited to
-CAP_NET_ADMIN privilege.
+Drivers are not supposed to keep using object after it has been
+destroyed, so some kind of interlock is needed to prevent/defer
+destruction here.
 
-sample output:
- # rds-info -m
+The uobject layer does not provide something usable to drivers
 
-RDS MRs:
-Program          PID    MR-gets    MR-puts    MR-inuse   <IP,port,ToS>
-rds-stress       17743  28468      28464      4          <192.168.18..
-rds-stress       17744  19385      19381      4          <192.168.18..
+> 2nd point. I also get. This suggestion imagines that there will come
+> a day when we can change the user API.  May be a rare day but must
+> happen occasionally. The current design is just plain wrong and
+> needs to get fixed eventually.
 
-Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-Reviewed-by: Ka-cheong Poon <ka-cheong.poon@oracle.com>
----
- include/uapi/linux/rds.h | 13 ++++++++++++-
- net/rds/af_rds.c         | 38 ++++++++++++++++++++++++++++++++++++++
- net/rds/ib.c             |  1 +
- net/rds/rds.h            |  4 +++-
- 4 files changed, 54 insertions(+), 2 deletions(-)
+You can have some cap negotiation to switch the mode AH mode in the
+WQEs - 'Use WQE format 2' for instance. Most of the HW drivers have
+multiple WQE formats the userspace selects.
 
-diff --git a/include/uapi/linux/rds.h b/include/uapi/linux/rds.h
-index cba368e55863..a6e8e28d95fb 100644
---- a/include/uapi/linux/rds.h
-+++ b/include/uapi/linux/rds.h
-@@ -134,8 +134,9 @@ typedef __u8	rds_tos_t;
- #define RDS6_INFO_SOCKETS		10015
- #define RDS6_INFO_TCP_SOCKETS		10016
- #define RDS6_INFO_IB_CONNECTIONS	10017
-+#define RDS_INFO_MRS			10018
- 
--#define RDS_INFO_LAST			10017
-+#define RDS_INFO_LAST			10018
- 
- struct rds_info_counter {
- 	__u8	name[32];
-@@ -270,6 +271,16 @@ struct rds6_info_rdma_connection {
- 	__u32		cache_allocs;
- };
- 
-+struct rds_info_mr {
-+	__u32		pid;
-+	__u8		comm[TASK_COMM_LEN];
-+	__u64		gets;
-+	__u64		puts;
-+	struct in6_addr	laddr;
-+	__be16		lport;
-+	__u8		tos;
-+} __attribute__((packed));
-+
- /* RDS message Receive Path Latency points */
- enum rds_message_rxpath_latency {
- 	RDS_MSG_RX_HDR_TO_DGRAM_START = 0,
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index e291095e5224..c81acf1a9457 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -486,6 +486,7 @@ static int rds_getsockopt(struct socket *sock, int level, int optname,
- 			  char __user *optval, int __user *optlen)
- {
- 	struct rds_sock *rs = rds_sk_to_rs(sock->sk);
-+	struct net *net = sock_net(sock->sk);
- 	int ret = -ENOPROTOOPT, len;
- 	int trans;
- 
-@@ -499,6 +500,11 @@ static int rds_getsockopt(struct socket *sock, int level, int optname,
- 
- 	switch (optname) {
- 	case RDS_INFO_FIRST ... RDS_INFO_LAST:
-+		if (optname == RDS_INFO_MRS &&
-+		    !ns_capable(net->user_ns, CAP_NET_ADMIN)) {
-+			ret = -EACCES;
-+			break;
-+		}
- 		ret = rds_info_getsockopt(sock, optname, optval,
- 					  optlen);
- 		break;
-@@ -878,6 +884,38 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
- }
- #endif
- 
-+void rds_info_mrs(struct socket *sock, unsigned int len,
-+		  struct rds_info_iterator *iter,
-+		  struct rds_info_lengths *lens)
-+{
-+	struct rds_sock *rs;
-+	struct rds_info_mr mr_info;
-+	unsigned int total = 0;
-+
-+	len /= sizeof(mr_info);
-+
-+	spin_lock_bh(&rds_sock_lock);
-+	list_for_each_entry(rs, &rds_sock_list, rs_item) {
-+		total++;
-+		if (total <= len) {
-+			memset(&mr_info, 0, sizeof(mr_info));
-+			mr_info.pid = rs->rs_pid;
-+			strncpy(mr_info.comm, rs->rs_comm, TASK_COMM_LEN);
-+			mr_info.gets = atomic64_read(&rs->rs_mr_gets);
-+			mr_info.puts = atomic64_read(&rs->rs_mr_puts);
-+			mr_info.laddr = rs->rs_bound_addr;
-+			mr_info.lport = rs->rs_bound_port;
-+			mr_info.tos = rs->rs_tos;
-+			rds_info_copy(iter, &mr_info, sizeof(mr_info));
-+		}
-+	}
-+	spin_unlock_bh(&rds_sock_lock);
-+
-+	lens->nr = total;
-+	lens->each = sizeof(mr_info);
-+}
-+EXPORT_SYMBOL_GPL(rds_info_mrs);
-+
- static void rds_exit(void)
- {
- 	sock_unregister(rds_family_ops.family);
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index a792d8a3872a..48476ae95da9 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -599,6 +599,7 @@ int rds_ib_init(void)
- 	rds_trans_register(&rds_ib_transport);
- 
- 	rds_info_register_func(RDS_INFO_IB_CONNECTIONS, rds_ib_ic_info);
-+	rds_info_register_func(RDS_INFO_MRS, rds_info_mrs);
- #if IS_ENABLED(CONFIG_IPV6)
- 	rds_info_register_func(RDS6_INFO_IB_CONNECTIONS, rds6_ib_ic_info);
- #endif
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index 5e61868e1799..dd42bc95bbeb 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -746,7 +746,9 @@ static inline void __rds_wake_sk_sleep(struct sock *sk)
- 		wake_up(waitq);
- }
- extern wait_queue_head_t rds_poll_waitq;
--
-+void rds_info_mrs(struct socket *sock, unsigned int len,
-+		  struct rds_info_iterator *iter,
-+		  struct rds_info_lengths *lens);
- 
- /* bind.c */
- int rds_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
--- 
-2.27.0.112.g101b320
-
+Jason
