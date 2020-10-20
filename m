@@ -2,107 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AED293A3E
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 13:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF53B293AF2
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 14:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393479AbgJTLrS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Oct 2020 07:47:18 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13461 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392938AbgJTLrS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Oct 2020 07:47:18 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8ece170000>; Tue, 20 Oct 2020 04:46:31 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 11:47:14 +0000
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.42) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 20 Oct 2020 11:47:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PGmxP5lmIvBHBymGY3Q0VeNFnKG7gowKlIOcYkINFTFzbh1B+YM1XQNxRrEWl+9fUZIYEpp56V9cy8QtyuNZcWY3H8hbAOF+oOkOkwvMuAFuEKHYv1ALgLC+lbmMwqMqRit+JfwAJ5g0v67Rxcn8VKTgBd7+0Q8Bj5M0AF1+C+j6rjxsBLs7eQe1Qv0SYVtePMJOx5aSrrGPLbT3+5AblypIqU71LQrPpsvNq87yaNrfNgbd1mNQDCmgwStMBUEW1CCoHLerzbsJMm5Jqfo9pzOtBdP0UslLxc1KTOyWKlwlm552/BJvELHX3kptusfkU6hWon/lc3MsbpRU0AMtjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yic1RmSKXSgCSXrw3W0Yb+O0cwrtJQjdVpDi9cMVvJ4=;
- b=UknTitQJ62W29CFcfMHBfE81cz0BaRVDCCiBYErdRFI31OKb843DcIGp2dorXvayxfComLeh61W41dMJydH3LBBdgrNygtF6pick8zCXLUktOx2hXUf1R629kiyxbTuApIRBl2+8pinkhxnrIFyxPgnNWbZ5tq9jWpv1epwc6s7pvLbgFShhiM7nNLBUbM5XsA1KVfKGfCDt79rzmhvHn7ayrs6gZmziKTZiMcheegwYaCQFFVMhW0YEcNoZzptHTDlPjgTYQrE9p5pQzlegG9N9hSMHNtEB1o4gPYpbaM4qBFsW9MgH32Lqq30zff5NiMEEHVp4PDngCcCawomxsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4636.namprd12.prod.outlook.com (2603:10b6:5:161::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.23; Tue, 20 Oct
- 2020 11:47:12 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 11:47:12 +0000
-Date:   Tue, 20 Oct 2020 08:47:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-CC:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        "Gal Pressman" <galpress@amazon.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        "Leon Romanovsky" <leonro@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: dynamic-sg patch has broken rdma_rxe
-Message-ID: <20201020114710.GC6219@nvidia.com>
-References: <63997d02-827c-5a0d-c6a1-427cbeb4ef27@amazon.com>
- <8cf4796d-4dcb-ef5a-83ac-e11134eac99b@nvidia.com>
- <20201016003127.GD6219@nvidia.com>
- <796ca31aed8f469c957cb850385b9d09@intel.com>
- <20201016115831.GI6219@nvidia.com>
- <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
- <20201019121211.GC6219@nvidia.com>
- <29ab34c2-0ca3-b3c0-6196-829e31d507c8@linux.intel.com>
- <20201019124822.GD6219@nvidia.com>
- <03541c89-92d0-2dc8-5e40-03f3fe527fef@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <03541c89-92d0-2dc8-5e40-03f3fe527fef@linux.intel.com>
-X-ClientProxiedBy: MN2PR14CA0022.namprd14.prod.outlook.com
- (2603:10b6:208:23e::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2393999AbgJTMG3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Oct 2020 08:06:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15239 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2393992AbgJTMG2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:06:28 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E1F7B816C6D238742E46;
+        Tue, 20 Oct 2020 20:06:22 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 20 Oct 2020 20:06:12 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v3 for-next] RDMA/hns: Support owner mode doorbell
+Date:   Tue, 20 Oct 2020 20:04:53 +0800
+Message-ID: <1603195493-22741-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR14CA0022.namprd14.prod.outlook.com (2603:10b6:208:23e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Tue, 20 Oct 2020 11:47:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUq6g-002thW-5G; Tue, 20 Oct 2020 08:47:10 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603194391; bh=Yic1RmSKXSgCSXrw3W0Yb+O0cwrtJQjdVpDi9cMVvJ4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=DvzCoAVIvKnpOvhzFh6J1AFA3FaqLFPrXikWCBC0f9sniamcS6rry3FM2R0veX3zP
-         5HdUKbayiPbOyjWyJwI8i6/UCUZ0o7a44Sac+UA6qf5gdoekO/1ylw+bztnMhcsMZF
-         ktPKiQ+/elSN5ujUC3TviN9bGVRf9afQGJ6pSGigpV5vQ/BTRiVleaOmSuQusMm/Rs
-         ZwIDx5/EuFQlo/csKYt9oHPxG7J9Jv2gxOSU+F6qYvuUnpkpZmrkDPdmHb1Z2o34Di
-         73l51WWMfRXgLElNHD/Q3lrct+5o/up7rEYd07pQm7TsGEbq6JJMmnxir2boipabVd
-         Q1a+bkdB13klA==
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 12:37:05PM +0100, Tvrtko Ursulin wrote:
+From: Lang Cheng <chenglang@huawei.com>
 
-> > Why put this confusing code in every caller? Especially for something
-> > a driver is supposed to call. Will just make bugs
-> 
-> For max_segment to be aligned is a requirement today so callers are
-> ready.
+The doorbell needs to store PI information into QPC, so the RoCEE should
+wait for the results of storing, that is, it needs two bus operations to
+complete a doorbell. When ROCEE is in SDI mode, multiple doorbells may be
+interlocked because the RoCEE can only handle bus operations serially. So a
+flag to mark if HIP09 is working in SDI mode is added. When the SDI flag is
+set, the ROCEE will ignore the PI information of the doorbell, continue to
+fetch wqe and verify its validity by it's owner_bit.
 
-No, it turns out all the RDMA drivers were became broken when they
-converted to use the proper U32_MAX for their DMA max_segment size,
-then they couldn't form SGLs anymore.
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+Changes since v2:
+- Replace wmb() with dma_wmb().
+link: https://patchwork.kernel.org/project/linux-rdma/patch/1601199901-41677-1-git-send-email-liweihang@huawei.com/
 
-I don't want to see nonsense code like this:
+Changes since v1:
+- Fix comments from Leon about the unused enum.
+link: https://patchwork.kernel.org/patch/11799327/
 
-        dma_set_max_seg_size(dev->dev, min_t(unsigned int, U32_MAX & PAGE_MASK,
-                                             SCATTERLIST_MAX_SEGMENT));
+ drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 28 ++++++++++++++++++++++------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  3 +++
+ 3 files changed, 28 insertions(+), 7 deletions(-)
 
-In drivers.
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 6d2acff..07c95d8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -129,9 +129,10 @@ enum {
+ 	SERV_TYPE_UD,
+ };
+ 
+-enum {
++enum hns_roce_qp_caps {
+ 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
+ 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
++	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
+ };
+ 
+ enum hns_roce_cq_flags {
+@@ -221,6 +222,7 @@ enum {
+ 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
+ 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
+ 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
++	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
+ };
+ 
+ #define HNS_ROCE_DB_TYPE_COUNT			2
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 6d30850..c284b13 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -474,9 +474,6 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+ 	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_SE_S,
+ 		     (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
+ 
+-	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
+-		     owner_bit);
+-
+ 	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_PD_M,
+ 		       V2_UD_SEND_WQE_BYTE_16_PD_S, to_hr_pd(qp->ibqp.pd)->pdn);
+ 
+@@ -517,7 +514,18 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+ 
+ 	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
+ 
++	/*
++	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
++	 * including new WQEs waiting for the doorbell to update the PI again.
++	 * Therefore, the owner bit of WQE MUST be updated after all fields
++	 * and extSGEs have been written into DDR instead of cache.
++	 */
++	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
++		dma_wmb();
++
+ 	*sge_idx = curr_idx;
++	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
++		     owner_bit);
+ 
+ 	return 0;
+ }
+@@ -591,9 +599,6 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_CQE_S,
+ 		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
+ 
+-	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
+-		     owner_bit);
+-
+ 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
+ 	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
+ 		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
+@@ -601,7 +606,18 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
+ 					&curr_idx, valid_num_sge);
+ 
++	/*
++	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
++	 * including new WQEs waiting for the doorbell to update the PI again.
++	 * Therefore, the owner bit of WQE MUST be updated after all fields
++	 * and extSGEs have been written into DDR instead of cache.
++	 */
++	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
++		dma_wmb();
++
+ 	*sge_idx = curr_idx;
++	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
++		     owner_bit);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 6c081dd..5370b6e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -725,6 +725,9 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	int ret;
+ 
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SDI_MODE)
++		hr_qp->en_flags |= HNS_ROCE_QP_CAP_OWNER_DB;
++
+ 	if (udata) {
+ 		if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
+ 			ret = hns_roce_db_map_user(uctx, udata, ucmd->sdb_addr,
+-- 
+2.8.1
 
-dma_set_max_seg_size is the *hardware* capability, and mixing in
-things like PAG_MASK here is just nonsense.
-
-Jason
