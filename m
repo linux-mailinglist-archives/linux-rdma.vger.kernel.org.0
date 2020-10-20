@@ -2,163 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF53B293AF2
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 14:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816E1293BA0
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 14:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393999AbgJTMG3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Oct 2020 08:06:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15239 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2393992AbgJTMG2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:06:28 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E1F7B816C6D238742E46;
-        Tue, 20 Oct 2020 20:06:22 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 20 Oct 2020 20:06:12 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v3 for-next] RDMA/hns: Support owner mode doorbell
-Date:   Tue, 20 Oct 2020 20:04:53 +0800
-Message-ID: <1603195493-22741-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S2406033AbgJTMbe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Oct 2020 08:31:34 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58698 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406030AbgJTMbd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:31:33 -0400
+IronPort-SDR: ErN1SytBFJT956aWo+TKQlJvj3puZ5V+HKn55UAaEtNyij9sqx16hVGpFrvs1AgBKIEfb7r6x5
+ WP+5jPVl8Xsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="163708157"
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="163708157"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:31:32 -0700
+IronPort-SDR: j3P/UPJM0tY39ZdLUFmRPJRzGBjZnuLSuYVYugG8e1AtHl9pRDVwWnHcKfFw8cLexa/A8epCbn
+ 0/aQbzuBFL7w==
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="533041079"
+Received: from bszymanx-mobl.ger.corp.intel.com (HELO [10.252.55.244]) ([10.252.55.244])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:31:29 -0700
+Subject: Re: dynamic-sg patch has broken rdma_rxe
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        Gal Pressman <galpress@amazon.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
+References: <63997d02-827c-5a0d-c6a1-427cbeb4ef27@amazon.com>
+ <8cf4796d-4dcb-ef5a-83ac-e11134eac99b@nvidia.com>
+ <20201016003127.GD6219@nvidia.com>
+ <796ca31aed8f469c957cb850385b9d09@intel.com>
+ <20201016115831.GI6219@nvidia.com>
+ <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
+ <20201019121211.GC6219@nvidia.com>
+ <29ab34c2-0ca3-b3c0-6196-829e31d507c8@linux.intel.com>
+ <20201019124822.GD6219@nvidia.com>
+ <03541c89-92d0-2dc8-5e40-03f3fe527fef@linux.intel.com>
+ <20201020114710.GC6219@nvidia.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <c64bc07a-ed95-f462-a394-4191605c05b9@linux.intel.com>
+Date:   Tue, 20 Oct 2020 13:31:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201020114710.GC6219@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
 
-The doorbell needs to store PI information into QPC, so the RoCEE should
-wait for the results of storing, that is, it needs two bus operations to
-complete a doorbell. When ROCEE is in SDI mode, multiple doorbells may be
-interlocked because the RoCEE can only handle bus operations serially. So a
-flag to mark if HIP09 is working in SDI mode is added. When the SDI flag is
-set, the ROCEE will ignore the PI information of the doorbell, continue to
-fetch wqe and verify its validity by it's owner_bit.
+On 20/10/2020 12:47, Jason Gunthorpe wrote:
+> On Tue, Oct 20, 2020 at 12:37:05PM +0100, Tvrtko Ursulin wrote:
+> 
+>>> Why put this confusing code in every caller? Especially for something
+>>> a driver is supposed to call. Will just make bugs
+>>
+>> For max_segment to be aligned is a requirement today so callers are
+>> ready.
+> 
+> No, it turns out all the RDMA drivers were became broken when they
+> converted to use the proper U32_MAX for their DMA max_segment size,
+> then they couldn't form SGLs anymore.
+> 
+> I don't want to see nonsense code like this:
+> 
+>          dma_set_max_seg_size(dev->dev, min_t(unsigned int, U32_MAX & PAGE_MASK,
+>                                               SCATTERLIST_MAX_SEGMENT));
+> 
+> In drivers.
+> 
+> dma_set_max_seg_size is the *hardware* capability, and mixing in
+> things like PAG_MASK here is just nonsense.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
-Changes since v2:
-- Replace wmb() with dma_wmb().
-link: https://patchwork.kernel.org/project/linux-rdma/patch/1601199901-41677-1-git-send-email-liweihang@huawei.com/
+Code was obviously a no-op non-sense.
 
-Changes since v1:
-- Fix comments from Leon about the unused enum.
-link: https://patchwork.kernel.org/patch/11799327/
+So the crux of the argument is that U32_MAX is conceptually the right 
+thing which defines the DMA max_segment size? Not some DMA define or 
+anything, but really U32_MAX? And that all/some DMA hardware does not 
+think in pages but really in bytes?
 
- drivers/infiniband/hw/hns/hns_roce_device.h |  4 +++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 28 ++++++++++++++++++++++------
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  3 +++
- 3 files changed, 28 insertions(+), 7 deletions(-)
+Regards,
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 6d2acff..07c95d8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -129,9 +129,10 @@ enum {
- 	SERV_TYPE_UD,
- };
- 
--enum {
-+enum hns_roce_qp_caps {
- 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
- 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
-+	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
- };
- 
- enum hns_roce_cq_flags {
-@@ -221,6 +222,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
-+	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
- };
- 
- #define HNS_ROCE_DB_TYPE_COUNT			2
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 6d30850..c284b13 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -474,9 +474,6 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
- 	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_SE_S,
- 		     (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
- 
--	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
--		     owner_bit);
--
- 	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_PD_M,
- 		       V2_UD_SEND_WQE_BYTE_16_PD_S, to_hr_pd(qp->ibqp.pd)->pdn);
- 
-@@ -517,7 +514,18 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
- 
- 	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
- 
-+	/*
-+	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
-+	 * including new WQEs waiting for the doorbell to update the PI again.
-+	 * Therefore, the owner bit of WQE MUST be updated after all fields
-+	 * and extSGEs have been written into DDR instead of cache.
-+	 */
-+	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
-+		dma_wmb();
-+
- 	*sge_idx = curr_idx;
-+	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
- 
- 	return 0;
- }
-@@ -591,9 +599,6 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_CQE_S,
- 		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
- 
--	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
--		     owner_bit);
--
- 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
- 	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
- 		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
-@@ -601,7 +606,18 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
- 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
- 					&curr_idx, valid_num_sge);
- 
-+	/*
-+	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
-+	 * including new WQEs waiting for the doorbell to update the PI again.
-+	 * Therefore, the owner bit of WQE MUST be updated after all fields
-+	 * and extSGEs have been written into DDR instead of cache.
-+	 */
-+	if (qp->en_flags & HNS_ROCE_QP_CAP_OWNER_DB)
-+		dma_wmb();
-+
- 	*sge_idx = curr_idx;
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
- 
- 	return ret;
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 6c081dd..5370b6e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -725,6 +725,9 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
- 
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SDI_MODE)
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_OWNER_DB;
-+
- 	if (udata) {
- 		if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
- 			ret = hns_roce_db_map_user(uctx, udata, ucmd->sdb_addr,
--- 
-2.8.1
-
+Tvrtko
