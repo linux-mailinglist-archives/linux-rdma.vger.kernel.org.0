@@ -2,155 +2,228 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6385B294683
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Oct 2020 04:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE3F2947F5
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Oct 2020 07:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439985AbgJUCe2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Oct 2020 22:34:28 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28811 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439977AbgJUCe1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Oct 2020 22:34:27 -0400
-IronPort-SDR: A/XgCxYOIrE7emnH0Sfk8Y2kcIrvDGHaEnqLvsYSHoyXPPbFwmCwT3VY9YmugaMjI5NufNiiVx
- QMCudRrlpshg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155090801"
-X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="155090801"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 19:34:25 -0700
-IronPort-SDR: KEl5C/haZ3cv3IDvjoUanj92fPnTAv+Bkfej6jBdV6FPY+ZZNlSstWmCx4Irh1DG0+tTj7/XUe
- sGRnmwOaj8GA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="301937287"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga007.fm.intel.com with ESMTP; 20 Oct 2020 19:34:26 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 20 Oct 2020 19:34:26 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 20 Oct 2020 19:34:26 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.58) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 20 Oct 2020 19:34:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=keWYcXAcemamOOV3ZSGoyFdrnWlfaKYtRE97v3hoqj/6N5zAiPL//3U3LWsOqIfGc9p5xwGc353GG3ILNnRQOpdOUVSRSESdyRX+b5Ydx0ZYRZeV4v9WDobsZEJcoCkh3gTc0c7e/VNlTspkqEB6+3e5qfHKznRVaGTVGWFmM4Wl1NmktMFRJ1GBUTO6AkKL5ZsqywshRYlfY5qTdlTsJ/ct8SbeEi0c/KEhzz/GZWMgRQhATrWkR3f1sa2lhdtzHBphol2w98+jFEsG8jNbV1N+vcpwCDPf8couj4vR/6N/+bCWDYXCQpEdi9QSYEEJH20+yxKegZo39CPvuGWwMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4U0mOXUKjqThJ06O9zcAlNZZ3NTteivXwC3NWpNyL+U=;
- b=UkOsSRmZV81uvXbeDTOHqbqsvqjHziULKLlWlg8JDGSk/D2t330ohHO512UokaYvf4fzsi1FfsIv/0SEzx8V5dRJFLgTgSDFT7b4xf7gAbeTx7rGSJvaPcMe5NELTiCj5viVhLdOP7RKteOCgdY0yaZGwoQoj1shp/Wf3ZXQOgMwD9+QlGmWpkO76Oi58FPXqYGZHOpG9DcERmKgXDba2ee4MZdoioGqaDap7CntY7e2aux1IY1XF7ET3+RJAFigHCZGJsYU1PqK6J5Ul+GdFkFxG2Pl3QH/5SP4thUsFLxdSvuYfKLSLTwLMCggaXQsoWgQUSHQFYCYhF33YZhB1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4U0mOXUKjqThJ06O9zcAlNZZ3NTteivXwC3NWpNyL+U=;
- b=hqqes7etFSI6rpIZm4yMrYbz4LwPbP5Sn64N2vMESkPFbDmyyTo15uuHoYS0sk4iTBfIxTfADXLblCKq2V9GMDn/M9kMADJMHJyitsnJ6HduhWgud1fdwNkHlTSyw+3c0jbMT6i+5WrUZZnu5DDb2iWFVdR8PQsy7wfoQj+clOU=
-Received: from DM6PR11MB4548.namprd11.prod.outlook.com (2603:10b6:5:2ad::13)
- by DM6PR11MB3386.namprd11.prod.outlook.com (2603:10b6:5:5c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Wed, 21 Oct
- 2020 02:34:00 +0000
-Received: from DM6PR11MB4548.namprd11.prod.outlook.com
- ([fe80::cdc4:d8fd:445e:bc26]) by DM6PR11MB4548.namprd11.prod.outlook.com
- ([fe80::cdc4:d8fd:445e:bc26%7]) with mapi id 15.20.3499.018; Wed, 21 Oct 2020
- 02:34:00 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH v5 0/5] RDMA: Add dma-buf support
-Thread-Topic: [PATCH v5 0/5] RDMA: Add dma-buf support
-Thread-Index: AQHWozzzWh6k/IcTJESOtSPwSU87pKmhUB4AgAAMq+A=
-Date:   Wed, 21 Oct 2020 02:34:00 +0000
-Message-ID: <DM6PR11MB4548EF1D630E8899F7517EEDE51C0@DM6PR11MB4548.namprd11.prod.outlook.com>
-References: <1602799340-138152-1-git-send-email-jianxin.xiong@intel.com>
- <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
-In-Reply-To: <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4153fb3a-09a3-4600-5cfb-08d87569c4e5
-x-ms-traffictypediagnostic: DM6PR11MB3386:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3386D6A6E044840504B925E6E51C0@DM6PR11MB3386.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hnv6rqC8HUAYkSRU/DBiVUB3znJwtzovegxbzQ+rAXbOBCBBYQKo1zHlf0rpIivPB8GxepZAps/CVNQiFNVIXyXyEYxhmBcdSwmjxAxe0ZRftLKuJg7GGAGhFFKbuEy1osWql9WeYGPar1S8FDFrU4LclXufmr4RB9z3jbL1wdQjqPYG1eKjO1wcB+2QTYNq0fBDqG7gpPKClKPN8SHcbmCekCd/oERFzly/c2zsgSG0w4DzAu7aXWZ2bCiYaqcuTdQLmU65PL7MZ8/5/DprD6brKlPWri63KdsbJS8pRT8iiiP/pkF03LHGjnWhq2/rQfc95rf9nYFQltcfxClPLebaxSuvGXyHqD9roBaznnAwLDkMMMRW+KmyMm4CVHSrAFHFNx39I2P8oJ8Rz9FPcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4548.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(26005)(66446008)(66946007)(86362001)(52536014)(5660300002)(64756008)(8936002)(76116006)(7696005)(66476007)(8676002)(66556008)(54906003)(110136005)(2906002)(316002)(71200400001)(6506007)(55016002)(186003)(53546011)(966005)(107886003)(4326008)(478600001)(33656002)(9686003)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ZfurzdvRTbs62JDYtbU16KImr0BXvMen59q1SLB8fazZooeGwtqObhJDfouAqdZLgzTb873aK7WR3hBcuJFPi5e93qtDdELeXJ2YBABYQKK0fMjY3OrDFNjmVUY/9/2whumWQ+STADtoOxrFw1W2tS6JAVadtBrxvNoWFcsbRHItT5/MOhrLRh3/MPk3LU5JkvisfrihcS2VfyhUZvm4Pq+2t3ShKMDEHvgQUkTdbKmaH7f3UsuJykVgUWWRozyXX2o/M7RSa0bq5lU5k2F5EsMleiTCsb+0fktgbNJiUdqtToEKKesi/bBOpGUwSw50o28jrbacNx7mH6ExX29zOzk44yniwFEZSCi99WenCEGKCkI335bcLocW/9n+EOdsUhE2nalTeHta38S8QUcOr7ZOKVDonYFuvgmR1NFZ71B2kUDspuEkF4oROw1MFIfIVjxY4dFGHGaohWf3hAqPhU+6lbBwMvhPJvXSlXgy8gzWkewkI+Y6MbplqBcQa/LDNDV5Fs9lJdmCtAZ6C9mbS1jJxpVT/x2qqkqftUPMLalh2+twVDaydNC9BlCpEma3VxIVnHU/7b4iW71n6FPd/tQtaE3comOOzlMRhWf/EE89iMg/7+soawI7q/YJj/htX0zpD1gVc4NJT6VG9KSOvQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2440655AbgJUFzV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Oct 2020 01:55:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56819 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2440654AbgJUFzV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Oct 2020 01:55:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603259718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ek5oHDiTFczgYmLK7K56N/a1L/zqMUdH26VmRBR/bSc=;
+        b=EZnYprvV4zFeneXp/+jxHyubnA0opJ2K7mB1RykPiXnRdxhj0wp4lvnk8DQ3LbFoHpJ7Ta
+        jAAH+pjHZZqCHqp3IHUtAS2/ri0E25zhBXlA9pDCudYynz77NUlI7V3eE9X5hnAKmuuGMX
+        mP2QB1IFuEhdC3t6i8xEx86dw5xEZBo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-Kh7VaehyPcOmW2OvHqgbYA-1; Wed, 21 Oct 2020 01:55:13 -0400
+X-MC-Unique: Kh7VaehyPcOmW2OvHqgbYA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8255A57086;
+        Wed, 21 Oct 2020 05:55:12 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-127.pek2.redhat.com [10.72.13.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F8D21002C16;
+        Wed, 21 Oct 2020 05:55:09 +0000 (UTC)
+Subject: Re: [bug report] rdma_rxe: kernel NULL pointer observed with blktests
+ nvme/012 on ppc64le/aarch64
+To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     zyjzyj2000@gmail.com, jgg@nvidia.com,
+        linux-nvme@lists.infradead.org, sagi@grimberg.me
+References: <1650006240.4229491.1603034423590.JavaMail.zimbra@redhat.com>
+ <fa25d298-33bc-a110-7074-5f87d7fd418c@gmail.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Message-ID: <1ab3fd1f-5bfe-9778-4abc-b9e6d20357d9@redhat.com>
+Date:   Wed, 21 Oct 2020 13:55:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4548.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4153fb3a-09a3-4600-5cfb-08d87569c4e5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 02:34:00.6723
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GchWPbbT9r1lv5KKphPeL1ILaL+tPZVD932y8qvojQ+gKdpKzTpJwEYUlemJ0lirAlIVso5vD9Spgi/8ZSimYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3386
-X-OriginatorOrg: intel.com
+In-Reply-To: <fa25d298-33bc-a110-7074-5f87d7fd418c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2huIEh1YmJhcmQgPGpodWJi
-YXJkQG52aWRpYS5jb20+DQo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMjAsIDIwMjAgNjo0MiBQ
-TQ0KPiBUbzogWGlvbmcsIEppYW54aW4gPGppYW54aW4ueGlvbmdAaW50ZWwuY29tPjsgbGludXgt
-cmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4g
-Q2M6IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZSA8
-amdnQHppZXBlLmNhPjsgTGVvbiBSb21hbm92c2t5IDxsZW9uQGtlcm5lbC5vcmc+OyBTdW1pdCBT
-ZW13YWwNCj4gPHN1bWl0LnNlbXdhbEBsaW5hcm8ub3JnPjsgQ2hyaXN0aWFuIEtvZW5pZyA8Y2hy
-aXN0aWFuLmtvZW5pZ0BhbWQuY29tPjsgVmV0dGVyLCBEYW5pZWwgPGRhbmllbC52ZXR0ZXJAaW50
-ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY1IDAvNV0gUkRNQTogQWRkIGRtYS1idWYg
-c3VwcG9ydA0KPiANCj4gT24gMTAvMTUvMjAgMzowMiBQTSwgSmlhbnhpbiBYaW9uZyB3cm90ZToN
-Cj4gPiBUaGlzIGlzIHRoZSBmaWZ0aCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZXQuIENoYW5nZWxv
-ZzoNCj4gPg0KPiANCj4gSGksDQo+IA0KPiBBIG1pbm9yIHBvaW50LCBidXQgaWYgeW91IGNhbiB0
-d2VhayB5b3VyIGVtYWlsIHNlbmRpbmcgc2V0dXAsIGl0IHdvdWxkIGJlIG5pY2UuDQo+IFNwZWNp
-ZmljYWxseSwgbWFrZSBmb2xsb3ctdXAgcGF0Y2hlcyBhIHJlcGx5IHRvIHRoZSBmaXJzdCBpdGVt
-LiBUaGF0J3MgYSBsaXN0IGNvbnZlbnRpb24sIGFuZCBnaXQgZm9ybWF0LXBhdGNoICsgZ2l0IHNl
-bmQtZW1haWwgKi5wYXRjaCBpcw0KPiBub3JtYWxseSBzdWZmaWNpZW50IHRvIG1ha2UgdGhhdCBo
-YXBwZW4sIHVubGVzcyB5b3Ugb3ZlcnJpZGUgaXQgYnkgZG9pbmcgc29tZXRoaW5nIGxpa2Ugc2Vu
-ZGluZyBlYWNoIHBhdGNoIHNlcGFyYXRlbHkuLi53aGljaCBpcyBteSBmaXJzdA0KPiBzdXNwaWNp
-b24gYXMgdG8gaG93IHRoaXMgaGFwcGVuZWQuDQo+IA0KPiBUaGVzZSBwYXRjaGVzIGFyZSBkaWZm
-aWN1bHQgdG8gbGluayB0bywgYmVjYXVzZSB0aGV5IGRvbid0IGZvbGxvdyB0aGUgY29udmVudGlv
-biBvZiBwYXRjaGVzIDEtNSBiZWluZyBpbi1yZXBseS10byBwYXRjaCAwLiBTbyBpZiB3ZSB3YW50
-IHRvDQo+IGFzayBwZW9wbGUgb3V0c2lkZSBvZiB0aGlzIGxpc3QgdG8gdGFrZSBhIHBlZWsgKEkg
-d2FzIGFib3V0IHRvKSwgd2UgaGF2ZSB0byBnbyBjb2xsZWN0IDUgb3IgNiBkaWZmZXJlbnQgbG9y
-ZS5rZXJuZWwub3JnIFVSTHMsIG9uZSBmb3IgZWFjaA0KPiBwYXRjaC4uLg0KPiANCj4gVGFrZSBh
-IGxvb2sgb24gbG9yZSBhbmQgeW91IGNhbiBzZWUgdGhlIHByb2JsZW0uIEhlcmUncyBwYXRjaCAw
-LCBhbmQgdGhlcmUgaXMgbm8gd2F5IGZyb20gdGhlcmUgdG8gZmluZCB0aGUgcmVtYWluaW5nIHBh
-dGNoZXM6DQo+IA0KPiAgICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvZHJpLWRldmVsLzE2MDI3
-OTkzNDAtMTM4MTUyLTEtZ2l0LXNlbmQtZW1haWwtamlhbnhpbi54aW9uZ0BpbnRlbC5jb20vDQo+
-IA0KPiANCkhpIEpvaG4sDQoNClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhpcyBvdXQuIEkgZGlkbid0
-IHJlYWxpemUgc2VuZGluZyBvdXQgcGF0Y2hlcyBpbmRpdmlkdWFsbHkgd291bGQgY2F1c2UNCnRo
-ZSBkaWZmZXJlbmNlIGNvbXBhcmVkIHRvIHNlbmRpbmcgd2l0aCBhIHNpbmdsZSBjb21tYW5kLiBP
-bmx5IHZlcnNpb24gNCBhbmQgNSBoYXZlIHRoaXMNCmlzc3VlIGFuZCBJIHdpbGwgc3dpdGNoIGJh
-Y2sgdG8gbXkgb2xkIHNjcmlwdCBmb3IgdGhlIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KSmlh
-bnhpbg0KDQo+IHRoYW5rcywNCj4gLS0NCj4gSm9obiBIdWJiYXJkDQo+IE5WSURJQQ0KPiANCg0K
+
+
+On 10/20/20 2:54 AM, Bob Pearson wrote:
+> On 10/18/20 10:20 AM, Yi Zhang wrote:
+>> Hello
+>>
+>> I found this bug with blktests nvme/012 on ppc64le/aarch64, could anyone help check it,
+>> Let me know if you need any test for further investigation, thanks.
+>>
+>> ppc64le:
+>> [  155.427446] run blktests nvme/012 at 2020-10-18 09:54:03
+>> [  156.593195] rdma_rxe: loaded
+>> [  156.614836] infiniband rxe0: set active
+>> [  156.614843] infiniband rxe0: added env2
+>> [  156.617421] lo speed is unknown, defaulting to 1000
+>> [  156.617449] lo speed is unknown, defaulting to 1000
+>> [  156.617484] lo speed is unknown, defaulting to 1000
+>> [  156.619911] infiniband rxe1: set active
+>> [  156.619916] infiniband rxe1: added lo
+>> [  156.619987] lo speed is unknown, defaulting to 1000
+>> [  156.640971] Rounding down aligned max_sectors from 4294967295 to 4294967168
+>> [  156.641095] db_root: cannot open: /etc/target
+>> [  156.655793] lo speed is unknown, defaulting to 1000
+>> [  156.700482] loop: module loaded
+>> [  156.744820] Loading iSCSI transport class v2.0-870.
+>> [  156.805883] iscsi: registered transport (iser)
+>> [  156.833559] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
+>> [  156.884254] nvmet_rdma: enabling port 0 (10.0.2.182:4420)
+>> [  157.005564] RPC: Registered rdma transport module.
+>> [  157.005573] RPC: Registered rdma backchannel transport module.
+>> [  157.121039] nvmet: creating controller 1 for subsystem blktests-subsystem-1 for NQN nqn.2014-08.org.nvmexpress:uuid:0c00c1b2-6456-4e5e-a0d4-9677000ca7bc.
+>> [  157.121388] nvme nvme0: creating 16 I/O queues.
+>> [  157.128894] nvme nvme0: mapped 16/0/0 default/read/poll queues.
+>> [  157.130039] nvme nvme0: new ctrl: NQN "blktests-subsystem-1", addr 10.0.2.182:4420
+>> [  158.196673] XFS (nvme0n1): Mounting V5 Filesystem
+>> [  158.206313] XFS (nvme0n1): Ending clean mount
+>> [  158.207141] xfs filesystem being mounted at /mnt/blktests supports timestamps until 2038 (0x7fffffff)
+>> [  190.087119] XFS (nvme0n1): Unmounting Filesystem
+>> [  190.087284] BUG: Kernel NULL pointer dereference on read at 0x00000000
+>> [  190.087289] Faulting instruction address: 0xc0000000000ae400
+>> [  190.087294] Oops: Kernel access of bad area, sig: 11 [#1]
+>> [  190.087298] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+>> [  190.087302] Modules linked in: ib_isert iscsi_target_mod rpcrdma ib_iser libiscsi scsi_transport_iscsi loop ib_srpt target_core_mod crc32_generic rdma_rxe ib_srp ib_ipoib rdma_ucm ib_uverbs ip6_udp_tunnel udp_tunnel nvme_rdma nvme_fabrics nvme_core ib_umad nvmet_rdma rdma_cm iw_cm ib_cm ib_core nvmet rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd bonding grace fscache rfkill sunrpc xts pseries_rng uio_pdrv_genirq vmx_crypto uio ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp
+>> [  190.087335] CPU: 9 PID: 56 Comm: ksoftirqd/9 Not tainted 5.9.0 #1
+>> [  190.087339] NIP:  c0000000000ae400 LR: c008000002d1f77c CTR: 0000000000000007
+>> [  190.087342] REGS: c00000033b9bf550 TRAP: 0380   Not tainted  (5.9.0)
+>> [  190.087345] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 48088280  XER: 20040000
+>> [  190.087351] CFAR: c0000000000ae3a8 IRQMASK: 0
+>> [  190.087351] GPR00: c008000002d1f77c c00000033b9bf7e0 c000000001842500 c00000033133b086
+>> [  190.087351] GPR04: 0000000000000000 00000000000003c0 0000000000000007 0000000000000001
+>> [  190.087351] GPR08: c00000033b9bfa70 c00000033133b086 0000000000000000 c008000002d243f0
+>> [  190.087351] GPR12: c0000000000b8680 c00000001eca3200 c00000032d2f4000 0000000000000001
+>> [  190.087351] GPR16: c00000032d2f4000 0000000000000400 0000000000000000 c008000007c3ba38
+>> [  190.087351] GPR20: 0000000000000000 c000000338a06c00 c00000033b9bfa70 c00000033b9bfa70
+>> [  190.087351] GPR24: 0000000000000001 c00000033133b086 c000000334083f00 000000005e7d553d
+>> [  190.087351] GPR28: 0000000000000000 00000000000003c0 00000000000003c0 0000000000000001
+>> [  190.087383] NIP [c0000000000ae400] memcpy_power7+0xa0/0x7e0
+>> [  190.087388] LR [c008000002d1f77c] rxe_mem_copy+0x1f4/0x308 [rdma_rxe]
+>> [  190.087391] Call Trace:
+>> [  190.087394] [c00000033b9bf7e0] [c000000327d83158] 0xc000000327d83158 (unreliable)
+>> [  190.087399] [c00000033b9bf8e0] [c008000002d1f77c] rxe_mem_copy+0x1f4/0x308 [rdma_rxe]
+>> [  190.087404] [c00000033b9bf970] [c008000002d1fbe4] copy_data+0x11c/0x460 [rdma_rxe]
+>> [  190.087409] [c00000033b9bfa00] [c008000002d131ac] rxe_requester+0x1054/0x1368 [rdma_rxe]
+>> [  190.087414] [c00000033b9bfb50] [c008000002d21298] rxe_do_task+0x110/0x1d0 [rdma_rxe]
+>> [  190.087418] [c00000033b9bfbe0] [c000000000157f40] tasklet_action_common.isra.18+0x1b0/0x1c0
+>> [  190.087424] [c00000033b9bfc40] [c000000000d4e8bc] __do_softirq+0x15c/0x3b4
+>> [  190.087427] [c00000033b9bfd30] [c0000000001577f4] run_ksoftirqd+0x64/0x90
+>> [  190.087432] [c00000033b9bfd50] [c00000000018a794] smpboot_thread_fn+0x204/0x270
+>> [  190.087436] [c00000033b9bfdb0] [c000000000184070] kthread+0x1a0/0x1b0
+>> [  190.087440] [c00000033b9bfe20] [c00000000000d3d0] ret_from_kernel_thread+0x5c/0x6c
+>> [  190.087443] Instruction dump:
+>> [  190.087446] f9c10070 f9e10078 fa010080 fa210088 fa410090 fa610098 fa8100a0 faa100a8
+>> [  190.087451] fac100b0 f8010110 78a6c9c2 7cc903a6 <e8040000> e8c40008 e8e40010 e9040018
+>> [  190.087458] ---[ end trace 244246d4a62eb74b ]---
+>> [  190.089228]
+>> [  191.089236] Kernel panic - not syncing: Fatal exception
+>>
+>>
+>> # gdb drivers/infiniband/sw/rxe/rdma_rxe.ko
+>> Reading symbols from drivers/infiniband/sw/rxe/rdma_rxe.ko...done.
+>> (gdb) l *(rxe_mem_copy+0x1f4)
+>> 0xf7bc is in rxe_mem_copy (./include/linux/string.h:406).
+>> 401			if (q_size < size)
+>> 402				__read_overflow2();
+>> 403		}
+>> 404		if (p_size < size || q_size < size)
+>> 405			fortify_panic(__func__);
+>> 406		return __underlying_memcpy(p, q, size);
+>> 407	}
+>> 408	
+>> 409	__FORTIFY_INLINE void *memmove(void *p, const void *q, __kernel_size_t size)
+>> 410	{
+>> (gdb)
+>>
+>> aarch64:
+>> [  691.557907] r[  691.888082] lo speed is unknown, defaulting to 1000
+>> [  691.892016] lo speed is unknown, defaulting to 1000
+>> [  691.896920] lo speed is unknown, defaulting to 1000
+>> [  691.904834] lo speed is unknown, defaulting to 1000
+>> [  691.908762] lo speed is unknown, defaulting to 1000
+>> [  691.913610] lo speed is unknown, defaulting to 1000
+>> [  693.427251] xfs filesystem being mounted at /mnt/blktests supports timestamps until 2038 (0x7fffffff)
+>> [  730.178748] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+>> [  730.186576] Mem abort info:
+>> [  730.189356]   ESR = 0x96000006
+>> [  730.192385]   EC = 0x25: DABT (current EL), IL = 32 bits
+>> [  730.197680]   SET = 0, FnV = 0
+>> [  730.200725]   EA = 0, S1PTW = 0
+>> [  730.203843] Data abort info:
+>> [  730.206707]   ISV = 0, ISS = 0x00000006
+>> [  730.210533]   CM = 0, WnR = 0
+>> [  730.213479] user pgtable: 64k pages, 42-bit VAs, pgdp=00000017b7950000
+>> [  730.219995] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000, pud=0000000000000000, pmd=0000000000000000
+>> [  730.230587] Internal error: Oops: 96000006 [#1] SMP
+>> [  730.235441] Modules linked in: loop crc32_generic rdma_rxe ip6_udp_tunnel udp_tunnel nvme_rdma nvme_fabrics nvme_core nvmet_rdma nvmet rfkill vfat fat ib_isert iscsi_target_mod rpcrdma ib_srpt target_core_mod sunrpc ib_srp scsi_transport_srp rdma_ucm ib_umad ib_iser ib_ipoib libiscsi rdma_cm scsi_transport_iscsi ib_cm iw_cm dm_multipath mlx5_ib ib_uverbs ib_core acpi_ipmi crct10dif_ce ghash_ce sha2_ce sha256_arm64 ipmi_ssif sha1_ce sbsa_gwdt ipmi_devintf ipmi_msghandler ip_tables xfs libcrc32c sg mlx5_core sdhci_acpi mlxfw tls sdhci qcom_emac mmc_core ahci_platform libahci_platform hdma hdma_mgmt dm_mirror dm_region_hash dm_log dm_mod
+>> [  730.291605] CPU: 24 PID: 131 Comm: ksoftirqd/24 Not tainted 5.8.0+ #2
+>> [  730.298027] Hardware name: WIWYNN Qualcomm Centriq 2400 Reference Evaluation Platform CV90-LA115-P11/Qualcomm Centriq 2400 Customer Reference Board, BIOS
+>> [  730.311830] pstate: 20400005 (nzCv daif +PAN -UAO BTYPE=--)
+>> [  730.317392] pc : __memcpy+0x100/0x180
+>> [  730.321038] lr : rxe_mem_copy+0x1fc/0x230 [rdma_rxe]
+>> [  730.325978] sp : fffffe001588faf0
+>> [  730.329277] x29: fffffe001588faf0 x28: fffffe00294b1080
+>> [  730.334572] x27: fffffc17b5065086 x26: 00000000000003c0
+>> [  730.339867] x25: 0000000000000000 x24: fffffe00113f3000
+>> [  730.345162] x23: fffffc17ae07c0f0 x22: 00000000288c9f50
+>> [  730.350457] x21: fffffe001588fc60 x20: 0000000000000001
+>> [  730.355753] x19: 00000000000003c0 x18: 0000000000000002
+>> [  730.361048] x17: 1df0130affff0000 x16: 0000000000000001
+>> [  730.366343] x15: 0000000000000002 x14: 0000000000000000
+>> [  730.371638] x13: 0000000000000000 x12: 0000000000000000
+>> [  730.376933] x11: 0000000000000000 x10: 0000000000000000
+>> [  730.382228] x9 : fffffe000a52dd44 x8 : 0000000000000000
+>> [  730.387523] x7 : 0000000000000000 x6 : fffffc17b5065086
+>> [  730.392818] x5 : fffffe001588fc60 x4 : 0000000000000000
+>> [  730.398113] x3 : 00000000000003c0 x2 : 0000000000000340
+>> [  730.403409] x1 : 0000000000000000 x0 : fffffc17b5065086
+>> [  730.408705] Call trace:
+>> [  730.411136]  __memcpy+0x100/0x180
+>> [  730.414438]  copy_data+0xc4/0x318 [rdma_rxe]
+>> [  730.418691]  rxe_requester+0xa58/0xe38 [rdma_rxe]
+>> [  730.423379]  rxe_do_task+0x128/0x200 [rdma_rxe]
+>> [  730.427892]  tasklet_action_common.isra.21+0xfc/0x130
+>> [  730.432924]  tasklet_action+0x2c/0x38
+>> [  730.436570]  __do_softirq+0x128/0x33c
+>> [  730.440215]  run_ksoftirqd+0x40/0x58
+>> [  730.443777]  smpboot_thread_fn+0x168/0x1b0
+>> [  730.447856]  kthread+0x114/0x118
+>> [  730.451066]  ret_from_fork+0x10/0x18
+>> [  730.454627] Code: d503201f d503201f d503201f d503201f (a8c12027)
+>> [  730.460720] ---[ end trace 7d9bff591d1280d9 ]---
+>> [  730.465302] Kernel panic - not syncing: Fatal exception in interrupt
+>> [  730.471648] SMP: stopping secondary CPUs
+>> [  730.475614] Kernel Offset: disabled
+>> [  730.479017] CPU features: 0x040002,61800418
+>> [  730.483183] Memory Limit: none
+>> [  730.486232] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+>>
+>>
+>> Best Regards,
+>>    Yi Zhang
+>>
+>>
+> The code looks different than current. What kernel version are you testing?
+
+The ppc64le log is from 5.9.0, and aarch64 log is from 5.8.0
+> Is there tight timing on MR creation/destruction/invalidation and use?
+No, I only ran the blktests nvme_trtype=rdma nvme/012
+
+> Bob Pearson
+>
+
