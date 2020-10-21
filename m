@@ -2,111 +2,229 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F53293D5C
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Oct 2020 15:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD4B294654
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Oct 2020 03:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407474AbgJTNc0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Oct 2020 09:32:26 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:60039 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407304AbgJTNc0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:32:26 -0400
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8ee6e80001>; Tue, 20 Oct 2020 21:32:24 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 13:32:19 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.50) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 20 Oct 2020 13:32:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=alvKB3xZ1016OZAMcax76pqQ59NphoBT+a2zraaOiuKxDnFjK8Fq78NKQtS/jzGKh5Pg8cxYG3ZjDgn+1vmUJmIKQ38N2gsBwri/VTdhuylnh9QTcamaSvl4f1n0DEdvqfozXdy6bgNRs+y8CDGl/TwtS2wr2YZPmimMQF0n8DV5OUKgpcBvKsv/KAQC0u9/VvtfQyke30ld9VFk5xAmzZTCPjm+HHHS4GpZpQfEsp47UsUDF2CVL+lADlZGe8RdfqowdfQy2QryuYWP7BNW9g4mnzcZbIm4zPAuLB+5dmhFsx8wsQg3td+XlGnk/WMJXRayXXXaF5ZR8fuTNcmUeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGn/kjOvdjBgxFrycW/9Ps2RG7qrbToRxp0O3HyqtjA=;
- b=gINenzCN689Us1ouzwjQdGtlKS7J4KheoH7SjSP2xd7nN6GUthlMsutHrfeqF7otDkHxs6tdMKYkI6nQ9Fgn0ObjQ193+Z3fmEkgAnm7tDbIKBfrtQWHpl89VkjwJeqebFZQG5GbOp545XNW1TCyVVnapbequolwAhYwnZRn3oH3jOHnqFytpbrduEk2EXTSmMk00cFgxkpiKNp6dNNFfuBm9EsE7/pREzzz5/cNttqGcJ931b5osoYJcyrcKvb/KX89lN8Pc0L1NwquSMEOrqxINhLUnf+K7ziAJE9LMqilPUsTR3nVG146UtqtkCB5r7E4ZfA0E2AVcSuv1z0UIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Tue, 20 Oct
- 2020 13:32:09 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 13:32:08 +0000
-Date:   Tue, 20 Oct 2020 10:32:07 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-CC:     Maor Gottlieb <maorg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        "Gal Pressman" <galpress@amazon.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        "Leon Romanovsky" <leonro@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: dynamic-sg patch has broken rdma_rxe
-Message-ID: <20201020133207.GF6219@nvidia.com>
-References: <20201016115831.GI6219@nvidia.com>
- <9fa38ed1-605e-f0f6-6cb6-70b800a1831a@linux.intel.com>
- <20201019121211.GC6219@nvidia.com>
- <29ab34c2-0ca3-b3c0-6196-829e31d507c8@linux.intel.com>
- <20201019124822.GD6219@nvidia.com>
- <03541c89-92d0-2dc8-5e40-03f3fe527fef@linux.intel.com>
- <20201020114710.GC6219@nvidia.com>
- <c64bc07a-ed95-f462-a394-4191605c05b9@linux.intel.com>
- <20201020125659.GD6219@nvidia.com>
- <3eb34c54-1d19-8a4e-f391-e422fbca587d@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <3eb34c54-1d19-8a4e-f391-e422fbca587d@linux.intel.com>
-X-ClientProxiedBy: BL0PR02CA0092.namprd02.prod.outlook.com
- (2603:10b6:208:51::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2439851AbgJUBlj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Oct 2020 21:41:39 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5018 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439840AbgJUBli (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Oct 2020 21:41:38 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8f91750001>; Tue, 20 Oct 2020 18:40:05 -0700
+Received: from [10.2.55.194] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Oct
+ 2020 01:41:31 +0000
+Subject: Re: [PATCH v5 0/5] RDMA: Add dma-buf support
+To:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <1602799340-138152-1-git-send-email-jianxin.xiong@intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
+Date:   Tue, 20 Oct 2020 18:41:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0092.namprd02.prod.outlook.com (2603:10b6:208:51::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.23 via Frontend Transport; Tue, 20 Oct 2020 13:32:08 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUrkF-002w57-I7; Tue, 20 Oct 2020 10:32:07 -0300
+In-Reply-To: <1602799340-138152-1-git-send-email-jianxin.xiong@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603200744; bh=LGn/kjOvdjBgxFrycW/9Ps2RG7qrbToRxp0O3HyqtjA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=Bax+94yVfg4OE6v1KGA3dYaIsQQV1+BrEs37/I3bukF71YsHpyuemU0J2OtUkMaTd
-         mXFyH37rESb4z2pGfzeu/16ZHuvyI3uo6jsEuoBe0DcKG69nUkZhvX8XNHIJCrjr5h
-         1/CONQ9MR2jU+GBbhbKhLnGvmjLVpSxpiaLIYWf4XhVKWldHk1F1eMXP9ERNHA4OVd
-         xh5aDe2z9bpt0+5PewSXwxKSjeijJVM2gMxdDzKPuiKLNDzQI/KlZrC5A1Cg0ynM4q
-         RHXJ05tn+ZBUKLNt7thxeIpqd1fAOZhTMm/YY2VvrjcP2kJDL/9kALUEhVxcJEY1ov
-         zXiaHt8IzsJbg==
+        t=1603244405; bh=xJeKfWUVfSc7cmlepBvkQ3sWdkqBPukGJgP/nLwW7SI=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=mVr+NEirRj+RHKaSYGgLEx+dbvUxoIjPsEwS8o9uZlUckirZ0nfN5YREwP1cuXxnn
+         xV08xurGhYSGR/DGZ+Tx7ziaXEPIwimUjy/JnRFznLCilBYWi+nNKja+Lo5r0wDFyn
+         9PP9dujyAIifcvYLru0n+1AOyFhhK7u4WoBNaRKZV8QY4ZGUiaN6kqBmZrprsTdZ2i
+         TsYMeU9QFtoLjJxye65MVstIH2tzONey2Dc5Hq+IqixYSBqvWQlKmPyZa9RD+HhkCH
+         O+4uuUc4UOhkq0F+q2SeTukZ9rf+Zu4m0TeI9aTlKzHnafy4O5kix5Tcttj83ESSg9
+         owjzqtI01Q10A==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:09:23PM +0100, Tvrtko Ursulin wrote:
+On 10/15/20 3:02 PM, Jianxin Xiong wrote:
+> This is the fifth version of the patch set. Changelog:
+> 
 
-> Not just the max, but the granularity as well. If byte granularity (well
-> less than PAGE_SIZE/4k) exists in some hw then I agree the API change makes
-> sense.
+Hi,
 
-scatter/gather lists are byte granular in HW, this is basically the
-norm.
+A minor point, but if you can tweak your email sending setup, it would be nice.
+Specifically, make follow-up patches a reply to the first item. That's a list
+convention, and git format-patch + git send-email *.patch is normally sufficient to
+make that happen, unless you override it by doing something like sending each
+patch separately...which is my first suspicion as to how this happened.
 
-Page lists are something a little different.
+These patches are difficult to link to, because they don't follow the convention
+of patches 1-5 being in-reply-to patch 0. So if we want to ask people outside
+of this list to take a peek (I was about to), we have to go collect 5 or 6
+different lore.kernel.org URLs, one for each patch...
 
-At least in RDMA we use scatterlist for both types of objects, but
-their treatement is quite different. For page lists the
-max_segment_size is just something that gets in the way, we really
-want the SGLs to be as large, and as highly aligned as possible.
+Take a look on lore and you can see the problem. Here's patch 0, and there is
+no way from there to find the remaining patches:
 
-Fewer SGE's means less work and less memory everywhere that processes
-them.
+    https://lore.kernel.org/dri-devel/1602799340-138152-1-git-send-email-jianxin.xiong@intel.com/
 
-When it comes times to progam the HW the SGL is analyzed and the HW
-specific page size selected, then the SGL is broken up into a page
-list. Each SGE may be split into many HW DMA blocks.
 
-Again, this has nothing to do with PAGE_SIZE, the HW DMA block size
-selection is HW specific and handled when splitting the SGL.
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-Jason
+> v5:
+> * Fix a few warnings reported by kernel test robot:
+>      - no previous prototype for function 'ib_umem_dmabuf_release'
+>      - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+>      - comparison of distinct pointer types in 'check_add_overflow'
+> * Add comment for the wait between getting the dma-buf sg tagle and
+>    updating the NIC page table
+> 
+> v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+> * Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+>    the existing method reg_user_mr()
+> * Use a separate code flow for dma-buf instead of adding special cases
+>    to the ODP memory region code path
+> * In invalidation callback, new mapping is updated as whole using work
+>    queue instead of being updated in page granularity in the page fault
+>    handler
+> * Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+>    the pages have been moved to the new location before the new mapping
+>    is programmed into the NIC
+> * Add code to the ODP page fault handler to check the mapping status
+> * The new access flag added in v3 is removed.
+> * The checking for on-demand paging support in the new uverbs command
+>    is removed because it is implied by implementing the new ib_device
+>    method
+> * Clarify that dma-buf sg lists are page aligned
+> 
+> v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+> * Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+> * Use on-demand paging mechanism to avoid pinning the GPU memory
+> * Instead of adding a new parameter to the device method for memory
+>    registration, pass all the attributes including the file descriptor
+>    as a structure
+> * Define a new access flag for dma-buf based memory region
+> * Check for on-demand paging support in the new uverbs command
+> 
+> v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+> * The Kconfig option is removed. There is no dependence issue since
+>    dma-buf driver is always enabled.
+> * The declaration of new data structure and functions is reorganized to
+>    minimize the visibility of the changes.
+> * The new uverbs command now goes through ioctl() instead of write().
+> * The rereg functionality is removed.
+> * Instead of adding new device method for dma-buf specific registration,
+>    existing method is extended to accept an extra parameter.
+> * The correct function is now used for address range checking.
+> 
+> v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+> * The initial patch set
+> * Implement core functions for importing and mapping dma-buf
+> * Use dma-buf static attach interface
+> * Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+> * Add two uverbs commands via the write() interface
+> * Add Kconfig option
+> * Add dma-buf support to mlx5 device
+> 
+> When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+> over PCIe to access the local memory located on another device. This can
+> often lead to better performance than using a system memory buffer for
+> RDMA and copying data between the buffer and device memory.
+> 
+> Current kernel RDMA stack uses get_user_pages() to pin the physical
+> pages backing the user buffer and uses dma_map_sg_attrs() to get the
+> dma addresses for memory access. This usually doesn't work for peer
+> device memory due to the lack of associated page structures.
+> 
+> Several mechanisms exist today to facilitate device memory access.
+> 
+> ZONE_DEVICE is a new zone for device memory in the memory management
+> subsystem. It allows pages from device memory being described with
+> specialized page structures, but what can be done with these page
+> structures may be different from system memory. ZONE_DEVICE is further
+> specialized into multiple memory types, such as one type for PCI
+> p2pmem/p2pdma and one type for HMM.
+> 
+> PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+> in a PCI BAR and provides a set of calls to publish, discover, allocate,
+> and map such memory for peer-to-peer transactions. One feature of the
+> API is that the buffer is allocated by the side that does the DMA
+> transfer. This works well with the storage usage case, but is awkward
+> with GPU-NIC communication, where typically the buffer is allocated by
+> the GPU driver rather than the NIC driver.
+> 
+> Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+> and ZONE_DEVICE to support shared virtual address space and page
+> migration between system memory and device memory. HMM doesn't support
+> pinning device memory because pages located on device must be able to
+> migrate to system memory when accessed by CPU. Peer-to-peer access
+> is currently not supported by HMM.
+> 
+> Dma-buf is a standard mechanism for sharing buffers among different
+> device drivers. The buffer to be shared is exported by the owning
+> driver and imported by the driver that wants to use it. The exporter
+> provides a set of ops that the importer can call to pin and map the
+> buffer. In addition, a file descriptor can be associated with a dma-
+> buf object as the handle that can be passed to user space.
+> 
+> This patch series adds dma-buf importer role to the RDMA driver in
+> attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+> chosen for a few reasons: first, the API is relatively simple and allows
+> a lot of flexibility in implementing the buffer manipulation ops.
+> Second, it doesn't require page structure. Third, dma-buf is already
+> supported in many GPU drivers. However, we are aware that existing GPU
+> drivers don't allow pinning device memory via the dma-buf interface.
+> Pinning would simply cause the backing storage to migrate to system RAM.
+> True peer-to-peer access is only possible using dynamic attach, which
+> requires on-demand paging support from the NIC to work. For this reason,
+> this series only works with ODP capable NICs.
+> 
+> This series consists of five patches. The first patch adds the common
+> code for importing dma-buf from a file descriptor and mapping the
+> dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+> Patch 3 adds a new uverbs command for registering dma-buf based memory
+> region. Patch 4 adds dma-buf support to the mlx5 driver. Patch 5 adds
+> clarification to the dma-buf API documentation that dma-buf sg lists
+> are page aligned.
+> 
+> Related user space RDMA library changes will be provided as a separate
+> patch series.
+> 
+> Jianxin Xiong (5):
+>    RDMA/umem: Support importing dma-buf as user memory region
+>    RDMA/core: Add device method for registering dma-buf base memory
+>      region
+>    RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+>    RDMA/mlx5: Support dma-buf based userspace memory region
+>    dma-buf: Clarify that dma-buf sg lists are page aligned
+> 
+>   drivers/dma-buf/dma-buf.c                     |  21 +++
+>   drivers/infiniband/core/Makefile              |   2 +-
+>   drivers/infiniband/core/device.c              |   1 +
+>   drivers/infiniband/core/umem.c                |   4 +
+>   drivers/infiniband/core/umem_dmabuf.c         | 206 ++++++++++++++++++++++++++
+>   drivers/infiniband/core/umem_dmabuf.h         |  11 ++
+>   drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++
+>   drivers/infiniband/hw/mlx5/main.c             |   2 +
+>   drivers/infiniband/hw/mlx5/mlx5_ib.h          |   5 +
+>   drivers/infiniband/hw/mlx5/mr.c               | 119 +++++++++++++++
+>   drivers/infiniband/hw/mlx5/odp.c              |  42 ++++++
+>   include/linux/dma-buf.h                       |   3 +-
+>   include/rdma/ib_umem.h                        |  32 +++-
+>   include/rdma/ib_verbs.h                       |   6 +-
+>   include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++
+>   15 files changed, 576 insertions(+), 4 deletions(-)
+>   create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+>   create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+> 
+
