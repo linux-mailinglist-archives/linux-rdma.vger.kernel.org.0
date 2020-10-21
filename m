@@ -2,229 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD4B294654
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Oct 2020 03:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6385B294683
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Oct 2020 04:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439851AbgJUBlj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Oct 2020 21:41:39 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5018 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439840AbgJUBli (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Oct 2020 21:41:38 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8f91750001>; Tue, 20 Oct 2020 18:40:05 -0700
-Received: from [10.2.55.194] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Oct
- 2020 01:41:31 +0000
-Subject: Re: [PATCH v5 0/5] RDMA: Add dma-buf support
-To:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+        id S2439985AbgJUCe2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Oct 2020 22:34:28 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28811 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439977AbgJUCe1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Oct 2020 22:34:27 -0400
+IronPort-SDR: A/XgCxYOIrE7emnH0Sfk8Y2kcIrvDGHaEnqLvsYSHoyXPPbFwmCwT3VY9YmugaMjI5NufNiiVx
+ QMCudRrlpshg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155090801"
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="155090801"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 19:34:25 -0700
+IronPort-SDR: KEl5C/haZ3cv3IDvjoUanj92fPnTAv+Bkfej6jBdV6FPY+ZZNlSstWmCx4Irh1DG0+tTj7/XUe
+ sGRnmwOaj8GA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="301937287"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Oct 2020 19:34:26 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 20 Oct 2020 19:34:26 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 20 Oct 2020 19:34:26 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.58) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 20 Oct 2020 19:34:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=keWYcXAcemamOOV3ZSGoyFdrnWlfaKYtRE97v3hoqj/6N5zAiPL//3U3LWsOqIfGc9p5xwGc353GG3ILNnRQOpdOUVSRSESdyRX+b5Ydx0ZYRZeV4v9WDobsZEJcoCkh3gTc0c7e/VNlTspkqEB6+3e5qfHKznRVaGTVGWFmM4Wl1NmktMFRJ1GBUTO6AkKL5ZsqywshRYlfY5qTdlTsJ/ct8SbeEi0c/KEhzz/GZWMgRQhATrWkR3f1sa2lhdtzHBphol2w98+jFEsG8jNbV1N+vcpwCDPf8couj4vR/6N/+bCWDYXCQpEdi9QSYEEJH20+yxKegZo39CPvuGWwMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4U0mOXUKjqThJ06O9zcAlNZZ3NTteivXwC3NWpNyL+U=;
+ b=UkOsSRmZV81uvXbeDTOHqbqsvqjHziULKLlWlg8JDGSk/D2t330ohHO512UokaYvf4fzsi1FfsIv/0SEzx8V5dRJFLgTgSDFT7b4xf7gAbeTx7rGSJvaPcMe5NELTiCj5viVhLdOP7RKteOCgdY0yaZGwoQoj1shp/Wf3ZXQOgMwD9+QlGmWpkO76Oi58FPXqYGZHOpG9DcERmKgXDba2ee4MZdoioGqaDap7CntY7e2aux1IY1XF7ET3+RJAFigHCZGJsYU1PqK6J5Ul+GdFkFxG2Pl3QH/5SP4thUsFLxdSvuYfKLSLTwLMCggaXQsoWgQUSHQFYCYhF33YZhB1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4U0mOXUKjqThJ06O9zcAlNZZ3NTteivXwC3NWpNyL+U=;
+ b=hqqes7etFSI6rpIZm4yMrYbz4LwPbP5Sn64N2vMESkPFbDmyyTo15uuHoYS0sk4iTBfIxTfADXLblCKq2V9GMDn/M9kMADJMHJyitsnJ6HduhWgud1fdwNkHlTSyw+3c0jbMT6i+5WrUZZnu5DDb2iWFVdR8PQsy7wfoQj+clOU=
+Received: from DM6PR11MB4548.namprd11.prod.outlook.com (2603:10b6:5:2ad::13)
+ by DM6PR11MB3386.namprd11.prod.outlook.com (2603:10b6:5:5c::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Wed, 21 Oct
+ 2020 02:34:00 +0000
+Received: from DM6PR11MB4548.namprd11.prod.outlook.com
+ ([fe80::cdc4:d8fd:445e:bc26]) by DM6PR11MB4548.namprd11.prod.outlook.com
+ ([fe80::cdc4:d8fd:445e:bc26%7]) with mapi id 15.20.3499.018; Wed, 21 Oct 2020
+ 02:34:00 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         "Leon Romanovsky" <leon@kernel.org>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: RE: [PATCH v5 0/5] RDMA: Add dma-buf support
+Thread-Topic: [PATCH v5 0/5] RDMA: Add dma-buf support
+Thread-Index: AQHWozzzWh6k/IcTJESOtSPwSU87pKmhUB4AgAAMq+A=
+Date:   Wed, 21 Oct 2020 02:34:00 +0000
+Message-ID: <DM6PR11MB4548EF1D630E8899F7517EEDE51C0@DM6PR11MB4548.namprd11.prod.outlook.com>
 References: <1602799340-138152-1-git-send-email-jianxin.xiong@intel.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
-Date:   Tue, 20 Oct 2020 18:41:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1602799340-138152-1-git-send-email-jianxin.xiong@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
+In-Reply-To: <6233a35f-7035-dc96-5680-c3b5bf0b5962@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603244405; bh=xJeKfWUVfSc7cmlepBvkQ3sWdkqBPukGJgP/nLwW7SI=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=mVr+NEirRj+RHKaSYGgLEx+dbvUxoIjPsEwS8o9uZlUckirZ0nfN5YREwP1cuXxnn
-         xV08xurGhYSGR/DGZ+Tx7ziaXEPIwimUjy/JnRFznLCilBYWi+nNKja+Lo5r0wDFyn
-         9PP9dujyAIifcvYLru0n+1AOyFhhK7u4WoBNaRKZV8QY4ZGUiaN6kqBmZrprsTdZ2i
-         TsYMeU9QFtoLjJxye65MVstIH2tzONey2Dc5Hq+IqixYSBqvWQlKmPyZa9RD+HhkCH
-         O+4uuUc4UOhkq0F+q2SeTukZ9rf+Zu4m0TeI9aTlKzHnafy4O5kix5Tcttj83ESSg9
-         owjzqtI01Q10A==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4153fb3a-09a3-4600-5cfb-08d87569c4e5
+x-ms-traffictypediagnostic: DM6PR11MB3386:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3386D6A6E044840504B925E6E51C0@DM6PR11MB3386.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Hnv6rqC8HUAYkSRU/DBiVUB3znJwtzovegxbzQ+rAXbOBCBBYQKo1zHlf0rpIivPB8GxepZAps/CVNQiFNVIXyXyEYxhmBcdSwmjxAxe0ZRftLKuJg7GGAGhFFKbuEy1osWql9WeYGPar1S8FDFrU4LclXufmr4RB9z3jbL1wdQjqPYG1eKjO1wcB+2QTYNq0fBDqG7gpPKClKPN8SHcbmCekCd/oERFzly/c2zsgSG0w4DzAu7aXWZ2bCiYaqcuTdQLmU65PL7MZ8/5/DprD6brKlPWri63KdsbJS8pRT8iiiP/pkF03LHGjnWhq2/rQfc95rf9nYFQltcfxClPLebaxSuvGXyHqD9roBaznnAwLDkMMMRW+KmyMm4CVHSrAFHFNx39I2P8oJ8Rz9FPcA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4548.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(26005)(66446008)(66946007)(86362001)(52536014)(5660300002)(64756008)(8936002)(76116006)(7696005)(66476007)(8676002)(66556008)(54906003)(110136005)(2906002)(316002)(71200400001)(6506007)(55016002)(186003)(53546011)(966005)(107886003)(4326008)(478600001)(33656002)(9686003)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ZfurzdvRTbs62JDYtbU16KImr0BXvMen59q1SLB8fazZooeGwtqObhJDfouAqdZLgzTb873aK7WR3hBcuJFPi5e93qtDdELeXJ2YBABYQKK0fMjY3OrDFNjmVUY/9/2whumWQ+STADtoOxrFw1W2tS6JAVadtBrxvNoWFcsbRHItT5/MOhrLRh3/MPk3LU5JkvisfrihcS2VfyhUZvm4Pq+2t3ShKMDEHvgQUkTdbKmaH7f3UsuJykVgUWWRozyXX2o/M7RSa0bq5lU5k2F5EsMleiTCsb+0fktgbNJiUdqtToEKKesi/bBOpGUwSw50o28jrbacNx7mH6ExX29zOzk44yniwFEZSCi99WenCEGKCkI335bcLocW/9n+EOdsUhE2nalTeHta38S8QUcOr7ZOKVDonYFuvgmR1NFZ71B2kUDspuEkF4oROw1MFIfIVjxY4dFGHGaohWf3hAqPhU+6lbBwMvhPJvXSlXgy8gzWkewkI+Y6MbplqBcQa/LDNDV5Fs9lJdmCtAZ6C9mbS1jJxpVT/x2qqkqftUPMLalh2+twVDaydNC9BlCpEma3VxIVnHU/7b4iW71n6FPd/tQtaE3comOOzlMRhWf/EE89iMg/7+soawI7q/YJj/htX0zpD1gVc4NJT6VG9KSOvQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4548.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4153fb3a-09a3-4600-5cfb-08d87569c4e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 02:34:00.6723
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GchWPbbT9r1lv5KKphPeL1ILaL+tPZVD932y8qvojQ+gKdpKzTpJwEYUlemJ0lirAlIVso5vD9Spgi/8ZSimYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3386
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/15/20 3:02 PM, Jianxin Xiong wrote:
-> This is the fifth version of the patch set. Changelog:
-> 
-
-Hi,
-
-A minor point, but if you can tweak your email sending setup, it would be nice.
-Specifically, make follow-up patches a reply to the first item. That's a list
-convention, and git format-patch + git send-email *.patch is normally sufficient to
-make that happen, unless you override it by doing something like sending each
-patch separately...which is my first suspicion as to how this happened.
-
-These patches are difficult to link to, because they don't follow the convention
-of patches 1-5 being in-reply-to patch 0. So if we want to ask people outside
-of this list to take a peek (I was about to), we have to go collect 5 or 6
-different lore.kernel.org URLs, one for each patch...
-
-Take a look on lore and you can see the problem. Here's patch 0, and there is
-no way from there to find the remaining patches:
-
-    https://lore.kernel.org/dri-devel/1602799340-138152-1-git-send-email-jianxin.xiong@intel.com/
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> v5:
-> * Fix a few warnings reported by kernel test robot:
->      - no previous prototype for function 'ib_umem_dmabuf_release'
->      - no previous prototype for function 'ib_umem_dmabuf_map_pages'
->      - comparison of distinct pointer types in 'check_add_overflow'
-> * Add comment for the wait between getting the dma-buf sg tagle and
->    updating the NIC page table
-> 
-> v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
-> * Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
->    the existing method reg_user_mr()
-> * Use a separate code flow for dma-buf instead of adding special cases
->    to the ODP memory region code path
-> * In invalidation callback, new mapping is updated as whole using work
->    queue instead of being updated in page granularity in the page fault
->    handler
-> * Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
->    the pages have been moved to the new location before the new mapping
->    is programmed into the NIC
-> * Add code to the ODP page fault handler to check the mapping status
-> * The new access flag added in v3 is removed.
-> * The checking for on-demand paging support in the new uverbs command
->    is removed because it is implied by implementing the new ib_device
->    method
-> * Clarify that dma-buf sg lists are page aligned
-> 
-> v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
-> * Use dma_buf_dynamic_attach() instead of dma_buf_attach()
-> * Use on-demand paging mechanism to avoid pinning the GPU memory
-> * Instead of adding a new parameter to the device method for memory
->    registration, pass all the attributes including the file descriptor
->    as a structure
-> * Define a new access flag for dma-buf based memory region
-> * Check for on-demand paging support in the new uverbs command
-> 
-> v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
-> * The Kconfig option is removed. There is no dependence issue since
->    dma-buf driver is always enabled.
-> * The declaration of new data structure and functions is reorganized to
->    minimize the visibility of the changes.
-> * The new uverbs command now goes through ioctl() instead of write().
-> * The rereg functionality is removed.
-> * Instead of adding new device method for dma-buf specific registration,
->    existing method is extended to accept an extra parameter.
-> * The correct function is now used for address range checking.
-> 
-> v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
-> * The initial patch set
-> * Implement core functions for importing and mapping dma-buf
-> * Use dma-buf static attach interface
-> * Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
-> * Add two uverbs commands via the write() interface
-> * Add Kconfig option
-> * Add dma-buf support to mlx5 device
-> 
-> When enabled, an RDMA capable NIC can perform peer-to-peer transactions
-> over PCIe to access the local memory located on another device. This can
-> often lead to better performance than using a system memory buffer for
-> RDMA and copying data between the buffer and device memory.
-> 
-> Current kernel RDMA stack uses get_user_pages() to pin the physical
-> pages backing the user buffer and uses dma_map_sg_attrs() to get the
-> dma addresses for memory access. This usually doesn't work for peer
-> device memory due to the lack of associated page structures.
-> 
-> Several mechanisms exist today to facilitate device memory access.
-> 
-> ZONE_DEVICE is a new zone for device memory in the memory management
-> subsystem. It allows pages from device memory being described with
-> specialized page structures, but what can be done with these page
-> structures may be different from system memory. ZONE_DEVICE is further
-> specialized into multiple memory types, such as one type for PCI
-> p2pmem/p2pdma and one type for HMM.
-> 
-> PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
-> in a PCI BAR and provides a set of calls to publish, discover, allocate,
-> and map such memory for peer-to-peer transactions. One feature of the
-> API is that the buffer is allocated by the side that does the DMA
-> transfer. This works well with the storage usage case, but is awkward
-> with GPU-NIC communication, where typically the buffer is allocated by
-> the GPU driver rather than the NIC driver.
-> 
-> Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
-> and ZONE_DEVICE to support shared virtual address space and page
-> migration between system memory and device memory. HMM doesn't support
-> pinning device memory because pages located on device must be able to
-> migrate to system memory when accessed by CPU. Peer-to-peer access
-> is currently not supported by HMM.
-> 
-> Dma-buf is a standard mechanism for sharing buffers among different
-> device drivers. The buffer to be shared is exported by the owning
-> driver and imported by the driver that wants to use it. The exporter
-> provides a set of ops that the importer can call to pin and map the
-> buffer. In addition, a file descriptor can be associated with a dma-
-> buf object as the handle that can be passed to user space.
-> 
-> This patch series adds dma-buf importer role to the RDMA driver in
-> attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
-> chosen for a few reasons: first, the API is relatively simple and allows
-> a lot of flexibility in implementing the buffer manipulation ops.
-> Second, it doesn't require page structure. Third, dma-buf is already
-> supported in many GPU drivers. However, we are aware that existing GPU
-> drivers don't allow pinning device memory via the dma-buf interface.
-> Pinning would simply cause the backing storage to migrate to system RAM.
-> True peer-to-peer access is only possible using dynamic attach, which
-> requires on-demand paging support from the NIC to work. For this reason,
-> this series only works with ODP capable NICs.
-> 
-> This series consists of five patches. The first patch adds the common
-> code for importing dma-buf from a file descriptor and mapping the
-> dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
-> Patch 3 adds a new uverbs command for registering dma-buf based memory
-> region. Patch 4 adds dma-buf support to the mlx5 driver. Patch 5 adds
-> clarification to the dma-buf API documentation that dma-buf sg lists
-> are page aligned.
-> 
-> Related user space RDMA library changes will be provided as a separate
-> patch series.
-> 
-> Jianxin Xiong (5):
->    RDMA/umem: Support importing dma-buf as user memory region
->    RDMA/core: Add device method for registering dma-buf base memory
->      region
->    RDMA/uverbs: Add uverbs command for dma-buf based MR registration
->    RDMA/mlx5: Support dma-buf based userspace memory region
->    dma-buf: Clarify that dma-buf sg lists are page aligned
-> 
->   drivers/dma-buf/dma-buf.c                     |  21 +++
->   drivers/infiniband/core/Makefile              |   2 +-
->   drivers/infiniband/core/device.c              |   1 +
->   drivers/infiniband/core/umem.c                |   4 +
->   drivers/infiniband/core/umem_dmabuf.c         | 206 ++++++++++++++++++++++++++
->   drivers/infiniband/core/umem_dmabuf.h         |  11 ++
->   drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++
->   drivers/infiniband/hw/mlx5/main.c             |   2 +
->   drivers/infiniband/hw/mlx5/mlx5_ib.h          |   5 +
->   drivers/infiniband/hw/mlx5/mr.c               | 119 +++++++++++++++
->   drivers/infiniband/hw/mlx5/odp.c              |  42 ++++++
->   include/linux/dma-buf.h                       |   3 +-
->   include/rdma/ib_umem.h                        |  32 +++-
->   include/rdma/ib_verbs.h                       |   6 +-
->   include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++
->   15 files changed, 576 insertions(+), 4 deletions(-)
->   create mode 100644 drivers/infiniband/core/umem_dmabuf.c
->   create mode 100644 drivers/infiniband/core/umem_dmabuf.h
-> 
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2huIEh1YmJhcmQgPGpodWJi
+YXJkQG52aWRpYS5jb20+DQo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMjAsIDIwMjAgNjo0MiBQ
+TQ0KPiBUbzogWGlvbmcsIEppYW54aW4gPGppYW54aW4ueGlvbmdAaW50ZWwuY29tPjsgbGludXgt
+cmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4g
+Q2M6IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZSA8
+amdnQHppZXBlLmNhPjsgTGVvbiBSb21hbm92c2t5IDxsZW9uQGtlcm5lbC5vcmc+OyBTdW1pdCBT
+ZW13YWwNCj4gPHN1bWl0LnNlbXdhbEBsaW5hcm8ub3JnPjsgQ2hyaXN0aWFuIEtvZW5pZyA8Y2hy
+aXN0aWFuLmtvZW5pZ0BhbWQuY29tPjsgVmV0dGVyLCBEYW5pZWwgPGRhbmllbC52ZXR0ZXJAaW50
+ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY1IDAvNV0gUkRNQTogQWRkIGRtYS1idWYg
+c3VwcG9ydA0KPiANCj4gT24gMTAvMTUvMjAgMzowMiBQTSwgSmlhbnhpbiBYaW9uZyB3cm90ZToN
+Cj4gPiBUaGlzIGlzIHRoZSBmaWZ0aCB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZXQuIENoYW5nZWxv
+ZzoNCj4gPg0KPiANCj4gSGksDQo+IA0KPiBBIG1pbm9yIHBvaW50LCBidXQgaWYgeW91IGNhbiB0
+d2VhayB5b3VyIGVtYWlsIHNlbmRpbmcgc2V0dXAsIGl0IHdvdWxkIGJlIG5pY2UuDQo+IFNwZWNp
+ZmljYWxseSwgbWFrZSBmb2xsb3ctdXAgcGF0Y2hlcyBhIHJlcGx5IHRvIHRoZSBmaXJzdCBpdGVt
+LiBUaGF0J3MgYSBsaXN0IGNvbnZlbnRpb24sIGFuZCBnaXQgZm9ybWF0LXBhdGNoICsgZ2l0IHNl
+bmQtZW1haWwgKi5wYXRjaCBpcw0KPiBub3JtYWxseSBzdWZmaWNpZW50IHRvIG1ha2UgdGhhdCBo
+YXBwZW4sIHVubGVzcyB5b3Ugb3ZlcnJpZGUgaXQgYnkgZG9pbmcgc29tZXRoaW5nIGxpa2Ugc2Vu
+ZGluZyBlYWNoIHBhdGNoIHNlcGFyYXRlbHkuLi53aGljaCBpcyBteSBmaXJzdA0KPiBzdXNwaWNp
+b24gYXMgdG8gaG93IHRoaXMgaGFwcGVuZWQuDQo+IA0KPiBUaGVzZSBwYXRjaGVzIGFyZSBkaWZm
+aWN1bHQgdG8gbGluayB0bywgYmVjYXVzZSB0aGV5IGRvbid0IGZvbGxvdyB0aGUgY29udmVudGlv
+biBvZiBwYXRjaGVzIDEtNSBiZWluZyBpbi1yZXBseS10byBwYXRjaCAwLiBTbyBpZiB3ZSB3YW50
+IHRvDQo+IGFzayBwZW9wbGUgb3V0c2lkZSBvZiB0aGlzIGxpc3QgdG8gdGFrZSBhIHBlZWsgKEkg
+d2FzIGFib3V0IHRvKSwgd2UgaGF2ZSB0byBnbyBjb2xsZWN0IDUgb3IgNiBkaWZmZXJlbnQgbG9y
+ZS5rZXJuZWwub3JnIFVSTHMsIG9uZSBmb3IgZWFjaA0KPiBwYXRjaC4uLg0KPiANCj4gVGFrZSBh
+IGxvb2sgb24gbG9yZSBhbmQgeW91IGNhbiBzZWUgdGhlIHByb2JsZW0uIEhlcmUncyBwYXRjaCAw
+LCBhbmQgdGhlcmUgaXMgbm8gd2F5IGZyb20gdGhlcmUgdG8gZmluZCB0aGUgcmVtYWluaW5nIHBh
+dGNoZXM6DQo+IA0KPiAgICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvZHJpLWRldmVsLzE2MDI3
+OTkzNDAtMTM4MTUyLTEtZ2l0LXNlbmQtZW1haWwtamlhbnhpbi54aW9uZ0BpbnRlbC5jb20vDQo+
+IA0KPiANCkhpIEpvaG4sDQoNClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhpcyBvdXQuIEkgZGlkbid0
+IHJlYWxpemUgc2VuZGluZyBvdXQgcGF0Y2hlcyBpbmRpdmlkdWFsbHkgd291bGQgY2F1c2UNCnRo
+ZSBkaWZmZXJlbmNlIGNvbXBhcmVkIHRvIHNlbmRpbmcgd2l0aCBhIHNpbmdsZSBjb21tYW5kLiBP
+bmx5IHZlcnNpb24gNCBhbmQgNSBoYXZlIHRoaXMNCmlzc3VlIGFuZCBJIHdpbGwgc3dpdGNoIGJh
+Y2sgdG8gbXkgb2xkIHNjcmlwdCBmb3IgdGhlIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KSmlh
+bnhpbg0KDQo+IHRoYW5rcywNCj4gLS0NCj4gSm9obiBIdWJiYXJkDQo+IE5WSURJQQ0KPiANCg0K
