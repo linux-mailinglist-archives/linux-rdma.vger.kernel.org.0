@@ -2,482 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CAF2976AD
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 20:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415D32976C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 20:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373963AbgJWSNS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 14:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S464893AbgJWSUK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 14:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463949AbgJWSNQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 14:13:16 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667E1C0613CE
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 11:13:16 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id k65so2252748oih.8
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 11:13:16 -0700 (PDT)
+        with ESMTP id S1750606AbgJWSUI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 14:20:08 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1193CC0613D2
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 11:20:08 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j62so1684621qtd.0
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 11:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XkxANxQE4vVZ8S1LIVdS097YvGEHd7DX0RvYdYsjIlo=;
-        b=HhNH7QzIE0gKiZHIIqfHwj2C0T73bM/88UCgfkXfYlZVm7mgXjwXP0X9/ZEm1t9VDA
-         8wf5/R1DRO9XkTI4Rd81LyPRTd7h1TQs4KZRNJJUUxq9XwJrxtlMuHYnO8Nxvr9pSo1s
-         We8tdOZgDyWMGtJ1e1+Po89Di3/gVUJbgjUro=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d/+MlewygeiienB2mRVhuu6CHgxoRL3d5SyiUrYkbUk=;
+        b=P4s3di/PHximFnEKCWi0KnwrrxyUpqpcmCQy2Nth1PVvkNCVxwt8YTbQ+cWCzJ+rnD
+         f5u7no5HH802n8lLR852ZUhFFg0kr2kfshpdHDx1axKHrq58MWe8ZN93rEE/Dhi4yduP
+         +lWucSf+1tTgEBWpz9UaUW9nYQXFF0grtVVrH19T4mCRSk6URpMvHyVqPBsiQK5IJ7Qi
+         BTlV57OclczClDMZu+PXRkkPJmwtdeJaX4kTqMOGVWlzaWL8V+y7I7BDKV/C3C3VckhR
+         ai8VK0aBvsufYBiH7tqeJHT+Q1RpyA+lNbgwb8D9agAm9SxQHuzaNf8S6fnpZmRb4p5I
+         tI8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XkxANxQE4vVZ8S1LIVdS097YvGEHd7DX0RvYdYsjIlo=;
-        b=HNzuyFoNluuGTNcukVro/X4X9WmcV6EonNSGW31tSH2enSNUWVQgrYdANNb75cojRI
-         439UwOBxTPFjAjwWk0xId3ig3XhsSPlkwhmO0JEAHvp0nvKwNADA/cJCEHVGmLfhSbA1
-         bPdMDaGIZBvXv/dArjMKOBWTn/HaoeoSYZED+5RNXB7U16JXPYTmk5+lwgAcPpymLFjZ
-         DqDdmshtm5UDr1jNaPvamsRvEj5naTJXAb7J7r/Pn6uF0/v63mvFrR3pKeRLmNYa4pTa
-         cH2mRwBvryoGLJlSTmE6bvmnv2XhvoHN+/jTZttNNR9QJf1vI6Vk3z/09aiGA5XHtbVE
-         SPMw==
-X-Gm-Message-State: AOAM533P1Any4vDlwk/PfeojhulLsjXWBJf2NnIzXtLSejkm38nFpgNi
-        7/3HX+A1zaPqy3eznk22s09BBoIHtSD4nE5UJqfPkw==
-X-Google-Smtp-Source: ABdhPJx7Keq/nxtsTuVfPI0kFdhtG9FEu9ee7c2I4s9he1DG0vEcG26dM2yz9K6o2Sx6aYafmY6/dl1Ps7T0G/6cI6k=
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr2757760oig.128.1603476795768;
- Fri, 23 Oct 2020 11:13:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
- <1603471201-32588-2-git-send-email-jianxin.xiong@intel.com>
- <20201023164911.GF401619@phenom.ffwll.local> <MW3PR11MB4555B89D76DD99B86270183AE51A0@MW3PR11MB4555.namprd11.prod.outlook.com>
-In-Reply-To: <MW3PR11MB4555B89D76DD99B86270183AE51A0@MW3PR11MB4555.namprd11.prod.outlook.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 23 Oct 2020 20:13:04 +0200
-Message-ID: <CAKMK7uEhyxZqf-gTRqvAkWxt-p74rs7k1eR3i44Gw0i1UPHjRA@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d/+MlewygeiienB2mRVhuu6CHgxoRL3d5SyiUrYkbUk=;
+        b=EyQJpex9rmk7s1gt05dXp7bla+wh2aWRYPoLe6VOJW4c4vICsxk8/XujYZy+ydDJiE
+         UspRwS1Y+M2rvL1SXuoTzOl6DWiGroJFki2RyUPlSlx4DsfQBRDVRWT0rQt9XBPtypQL
+         C7NT9W/p2I54S0IQ2FFqRHijeCuZnxnmbbD01QHoKN5PB3Fohg0E+sz/S3YzlNHN5+m3
+         sNniErGwch0CRJJ+GZaI75PaSruhbaFB1iyihGDX1XDeOUNebx8STPtRCEgbRS3T1rZ4
+         2uDkuVXhb7yjgteOjGp5YbQ6O3iHMSRYyw0L1VbuStPKqrfI/PR65eSRlfas851Q96Vi
+         UsLA==
+X-Gm-Message-State: AOAM530PQ32J6h8/mSub9Xt1ywSe7EsEKjWaRlmZskgKbCRRkOAN3dug
+        nbkPcwQCGJazaPI2G2h+sp3dQw==
+X-Google-Smtp-Source: ABdhPJzEK0E5cN3UuD9k/y/M+Nvpt4LbYO1AelIkz6dEQYGwBH4YhcUAmfE4fNEeUt7dggHiEbURCg==
+X-Received: by 2002:ac8:13c9:: with SMTP id i9mr3275402qtj.89.1603477207177;
+        Fri, 23 Oct 2020 11:20:07 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id v5sm1242273qkv.89.2020.10.23.11.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 11:20:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kW1fZ-006OVO-L8; Fri, 23 Oct 2020 15:20:05 -0300
+Date:   Fri, 23 Oct 2020 15:20:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
 Subject: Re: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user
  memory region
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20201023182005.GP36674@ziepe.ca>
+References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
+ <1603471201-32588-2-git-send-email-jianxin.xiong@intel.com>
+ <20201023164911.GF401619@phenom.ffwll.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023164911.GF401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 8:09 PM Xiong, Jianxin <jianxin.xiong@intel.com> wrote:
->
->
-> > -----Original Message-----
-> > From: Daniel Vetter <daniel@ffwll.ch>
-> > Sent: Friday, October 23, 2020 9:49 AM
-> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Leon Romanovsky <leon@kernel.org>; Jason Gunthorpe <jgg@ziepe.ca>;
-> > Doug Ledford <dledford@redhat.com>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig <christian.koenig@amd.com>
-> > Subject: Re: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user memory region
-> >
-> > On Fri, Oct 23, 2020 at 09:39:58AM -0700, Jianxin Xiong wrote:
-> > > Dma-buf is a standard cross-driver buffer sharing mechanism that can
-> > > be used to support peer-to-peer access from RDMA devices.
-> > >
-> > > Device memory exported via dma-buf is associated with a file descriptor.
-> > > This is passed to the user space as a property associated with the
-> > > buffer allocation. When the buffer is registered as a memory region,
-> > > the file descriptor is passed to the RDMA driver along with other
-> > > parameters.
-> > >
-> > > Implement the common code for importing dma-buf object and mapping
-> > > dma-buf pages.
-> > >
-> > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> > > Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> > > Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> > > Acked-by: Christian Koenig <christian.koenig@amd.com>
-> > > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > ---
-> > >  drivers/infiniband/core/Makefile      |   2 +-
-> > >  drivers/infiniband/core/umem.c        |   4 +
-> > >  drivers/infiniband/core/umem_dmabuf.c | 197
-> > > ++++++++++++++++++++++++++++++++++
-> > >  drivers/infiniband/core/umem_dmabuf.h |  11 ++
-> > >  include/rdma/ib_umem.h                |  35 +++++-
-> > >  5 files changed, 247 insertions(+), 2 deletions(-)  create mode
-> > > 100644 drivers/infiniband/core/umem_dmabuf.c
-> > >  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
-> > >
-> > > diff --git a/drivers/infiniband/core/Makefile
-> > > b/drivers/infiniband/core/Makefile
-> > > index ccf2670..8ab4eea 100644
-> > > --- a/drivers/infiniband/core/Makefile
-> > > +++ b/drivers/infiniband/core/Makefile
-> > > @@ -40,5 +40,5 @@ ib_uverbs-y :=                    uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
-> > >                             uverbs_std_types_srq.o \
-> > >                             uverbs_std_types_wq.o \
-> > >                             uverbs_std_types_qp.o
-> > > -ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o
-> > > +ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o umem_dmabuf.o
-> > >  ib_uverbs-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += umem_odp.o diff
-> > > --git a/drivers/infiniband/core/umem.c
-> > > b/drivers/infiniband/core/umem.c index e9fecbd..2c45525 100644
-> > > --- a/drivers/infiniband/core/umem.c
-> > > +++ b/drivers/infiniband/core/umem.c
-> > > @@ -2,6 +2,7 @@
-> > >   * Copyright (c) 2005 Topspin Communications.  All rights reserved.
-> > >   * Copyright (c) 2005 Cisco Systems.  All rights reserved.
-> > >   * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
-> > > + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> > >   *
-> > >   * This software is available to you under a choice of one of two
-> > >   * licenses.  You may choose to be licensed under the terms of the
-> > > GNU @@ -43,6 +44,7 @@  #include <rdma/ib_umem_odp.h>
-> > >
-> > >  #include "uverbs.h"
-> > > +#include "umem_dmabuf.h"
-> > >
-> > >  static void __ib_umem_release(struct ib_device *dev, struct ib_umem
-> > > *umem, int dirty)  { @@ -269,6 +271,8 @@ void ib_umem_release(struct
-> > > ib_umem *umem)  {
-> > >     if (!umem)
-> > >             return;
-> > > +   if (umem->is_dmabuf)
-> > > +           return ib_umem_dmabuf_release(to_ib_umem_dmabuf(umem));
-> > >     if (umem->is_odp)
-> > >             return ib_umem_odp_release(to_ib_umem_odp(umem));
-> > >
-> > > diff --git a/drivers/infiniband/core/umem_dmabuf.c
-> > > b/drivers/infiniband/core/umem_dmabuf.c
-> > > new file mode 100644
-> > > index 0000000..66b234d
-> > > --- /dev/null
-> > > +++ b/drivers/infiniband/core/umem_dmabuf.c
-> > > @@ -0,0 +1,197 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > > +/*
-> > > + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> > > + */
-> > > +
-> > > +#include <linux/dma-buf.h>
-> > > +#include <linux/dma-resv.h>
-> > > +#include <linux/dma-mapping.h>
-> > > +
-> > > +#include "uverbs.h"
-> > > +#include "umem_dmabuf.h"
-> > > +
-> > > +/*
-> > > + * Generate a new dma sg list from a sub range of an existing dma sg list.
-> > > + * Both the input and output have their entries page aligned.
-> > > + */
-> > > +static int ib_umem_dmabuf_sgt_slice(struct sg_table *sgt, u64 offset,
-> > > +                               u64 length, struct sg_table *new_sgt) {
-> > > +   struct scatterlist *sg, *new_sg;
-> > > +   u64 start, end, off, addr, len;
-> > > +   unsigned int new_nents;
-> > > +   int err;
-> > > +   int i;
-> > > +
-> > > +   start = ALIGN_DOWN(offset, PAGE_SIZE);
-> > > +   end = ALIGN(offset + length, PAGE_SIZE);
-> > > +
-> > > +   offset = start;
-> > > +   length = end - start;
-> > > +   new_nents = 0;
-> > > +   for_each_sgtable_dma_sg(sgt, sg, i) {
-> > > +           len = sg_dma_len(sg);
-> > > +           off = min(len, offset);
-> > > +           len -= off;
-> > > +           len = min(len, length);
-> > > +           if (len)
-> > > +                   new_nents++;
-> > > +           length -= len;
-> > > +           offset -= off;
-> > > +   }
-> > > +
-> > > +   err = sg_alloc_table(new_sgt, new_nents, GFP_KERNEL);
-> > > +   if (err)
-> > > +           return err;
-> > > +
-> > > +   offset = start;
-> > > +   length = end - start;
-> > > +   new_sg = new_sgt->sgl;
-> > > +   for_each_sgtable_dma_sg(sgt, sg, i) {
-> > > +           addr = sg_dma_address(sg);
-> > > +           len = sg_dma_len(sg);
-> > > +           off = min(len, offset);
-> > > +           addr += off;
-> > > +           len -= off;
-> > > +           len = min(len, length);
-> > > +           if (len) {
-> > > +                   sg_dma_address(new_sg) = addr;
-> > > +                   sg_dma_len(new_sg) = len;
-> > > +                   new_sg = sg_next(new_sg);
-> > > +           }
-> > > +           length -= len;
-> > > +           offset -= off;
-> > > +   }
-> > > +
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf) {
-> > > +   struct sg_table *sgt;
-> > > +   struct dma_fence *fence;
-> > > +   int err;
-> > > +
-> > > +   dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> > > +
-> > > +   sgt = dma_buf_map_attachment(umem_dmabuf->attach,
-> > > +                                DMA_BIDIRECTIONAL);
-> > > +
-> > > +   if (IS_ERR(sgt))
-> > > +           return PTR_ERR(sgt);
-> > > +
-> > > +   err = ib_umem_dmabuf_sgt_slice(sgt, umem_dmabuf->umem.address,
-> > > +                                  umem_dmabuf->umem.length,
-> > > +                                  &umem_dmabuf->umem.sg_head);
-> > > +   if (err) {
-> > > +           dma_buf_unmap_attachment(umem_dmabuf->attach, sgt,
-> > > +                                    DMA_BIDIRECTIONAL);
-> > > +           return err;
-> > > +   }
-> > > +
-> > > +   umem_dmabuf->umem.nmap = umem_dmabuf->umem.sg_head.nents;
-> > > +   umem_dmabuf->sgt = sgt;
-> > > +
-> > > +   /*
-> > > +    * Although the sg list is valid now, the content of the pages
-> > > +    * may be not up-to-date. Wait for the exporter to finish
-> > > +    * the migration.
-> > > +    */
-> > > +   fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
-> > > +   if (fence)
-> > > +           dma_fence_wait(fence, false);
-> > > +
-> > > +   return 0;
-> > > +}
-> > > +EXPORT_SYMBOL(ib_umem_dmabuf_map_pages);
-> > > +
-> > > +void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf) {
-> > > +   dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> > > +
-> > > +   if (!umem_dmabuf->sgt)
-> > > +           return;
-> > > +
-> > > +   sg_free_table(&umem_dmabuf->umem.sg_head);
-> > > +   dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
-> > > +                            DMA_BIDIRECTIONAL);
-> > > +   umem_dmabuf->sgt = NULL;
-> > > +}
-> > > +EXPORT_SYMBOL(ib_umem_dmabuf_unmap_pages);
-> > > +
-> > > +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> > > +                              unsigned long offset, size_t size,
-> > > +                              int fd, int access,
-> > > +                              const struct dma_buf_attach_ops *ops) {
-> > > +   struct dma_buf *dmabuf;
-> > > +   struct ib_umem_dmabuf *umem_dmabuf;
-> > > +   struct ib_umem *umem;
-> > > +   unsigned long end;
-> > > +   long ret;
-> > > +
-> > > +   if (check_add_overflow(offset, (unsigned long)size, &end))
-> > > +           return ERR_PTR(-EINVAL);
-> > > +
-> > > +   if (unlikely(PAGE_ALIGN(end) < PAGE_SIZE))
-> > > +           return ERR_PTR(-EINVAL);
-> > > +
-> > > +   if (unlikely(!ops || !ops->move_notify))
-> > > +           return ERR_PTR(-EINVAL);
-> > > +
-> > > +#ifdef CONFIG_DMA_VIRT_OPS
-> > > +   if (device->dma_device->dma_ops == &dma_virt_ops)
-> > > +           return ERR_PTR(-EINVAL);
-> > > +#endif
-> >
-> > Maybe I'm confused, but should we have this check in dma_buf_attach, or at least in dma_buf_dynamic_attach? The p2pdma functions use
-> > that too, and I can't imagine how zerocopy should work (which is like the entire point of
-> > dma-buf) when we have dma_virt_ops.
-> >
-> > A similar problem exists for swiotlb bounce buffers, not sure how that's solved.
-> > -Daniel
-> >
->
-> This is also checked by dma_buf_dynamic_attach(), not in the common code, but
-> in the exporter's attach() method. For example, the attach method of 'amdgpu' calls p2pdma_distance_many and would disable p2p if dma_virt_ops is detected.
->
-> Here we could instead check the peer2peer flag from the returned 'attach' structure.
+On Fri, Oct 23, 2020 at 06:49:11PM +0200, Daniel Vetter wrote:
+> > +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> > +				   unsigned long offset, size_t size,
+> > +				   int fd, int access,
+> > +				   const struct dma_buf_attach_ops *ops)
+> > +{
+> > +	struct dma_buf *dmabuf;
+> > +	struct ib_umem_dmabuf *umem_dmabuf;
+> > +	struct ib_umem *umem;
+> > +	unsigned long end;
+> > +	long ret;
+> > +
+> > +	if (check_add_overflow(offset, (unsigned long)size, &end))
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	if (unlikely(PAGE_ALIGN(end) < PAGE_SIZE))
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	if (unlikely(!ops || !ops->move_notify))
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +#ifdef CONFIG_DMA_VIRT_OPS
+> > +	if (device->dma_device->dma_ops == &dma_virt_ops)
+> > +		return ERR_PTR(-EINVAL);
+> > +#endif
+> 
+> Maybe I'm confused, but should we have this check in dma_buf_attach, or at
+> least in dma_buf_dynamic_attach? The p2pdma functions use that too, and I
+> can't imagine how zerocopy should work (which is like the entire point of
+> dma-buf) when we have dma_virt_ops.
 
-The thing is, if you're a virtual device, there's cpu access functions
-for your in dma_buf. So this should not happen, irrespective of p2p or
-not. Or I'm totally missing the point here.
+The problem is we have RDMA drivers that assume SGL's have a valid
+struct page, and these hacky/wrong P2P sgls that DMABUF creates cannot
+be passed into those drivers.
 
-And in general I'd say if importers expect certain invariants for
-stuff the exporter gives them, then the dma-buf layer should enforce
-that. At least with debugging enabled, like we've done for the page
-alignement.
--Daniel
+But maybe this is just a 'drivers are using it wrong' if they call
+this function and expect struct pages..
 
->
-> > > +
-> > > +   umem_dmabuf = kzalloc(sizeof(*umem_dmabuf), GFP_KERNEL);
-> > > +   if (!umem_dmabuf)
-> > > +           return ERR_PTR(-ENOMEM);
-> > > +
-> > > +   umem = &umem_dmabuf->umem;
-> > > +   umem->ibdev = device;
-> > > +   umem->length = size;
-> > > +   umem->address = offset;
-> > > +   umem->iova = offset;
-> > > +   umem->writable = ib_access_writable(access);
-> > > +   umem->is_dmabuf = 1;
-> > > +
-> > > +   dmabuf = dma_buf_get(fd);
-> > > +   if (IS_ERR(dmabuf)) {
-> > > +           ret = PTR_ERR(dmabuf);
-> > > +           goto out_free_umem;
-> > > +   }
-> > > +
-> > > +   umem_dmabuf->attach = dma_buf_dynamic_attach(
-> > > +                                   dmabuf,
-> > > +                                   device->dma_device,
-> > > +                                   ops,
-> > > +                                   umem_dmabuf);
-> > > +   if (IS_ERR(umem_dmabuf->attach)) {
-> > > +           ret = PTR_ERR(umem_dmabuf->attach);
-> > > +           goto out_release_dmabuf;
-> > > +   }
-> > > +
-> > > +   return umem;
-> > > +
-> > > +out_release_dmabuf:
-> > > +   dma_buf_put(dmabuf);
-> > > +
-> > > +out_free_umem:
-> > > +   kfree(umem_dmabuf);
-> > > +   return ERR_PTR(ret);
-> > > +}
-> > > +EXPORT_SYMBOL(ib_umem_dmabuf_get);
-> > > +
-> > > +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf) {
-> > > +   struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
-> > > +
-> > > +   dma_resv_lock(dmabuf->resv, NULL);
-> > > +   ib_umem_dmabuf_unmap_pages(umem_dmabuf);
-> > > +   dma_resv_unlock(dmabuf->resv);
-> > > +
-> > > +   dma_buf_detach(dmabuf, umem_dmabuf->attach);
-> > > +   dma_buf_put(dmabuf);
-> > > +   kfree(umem_dmabuf);
-> > > +}
-> > > diff --git a/drivers/infiniband/core/umem_dmabuf.h
-> > > b/drivers/infiniband/core/umem_dmabuf.h
-> > > new file mode 100644
-> > > index 0000000..13acf55
-> > > --- /dev/null
-> > > +++ b/drivers/infiniband/core/umem_dmabuf.h
-> > > @@ -0,0 +1,11 @@
-> > > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-> > > +/*
-> > > + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> > > + */
-> > > +
-> > > +#ifndef UMEM_DMABUF_H
-> > > +#define UMEM_DMABUF_H
-> > > +
-> > > +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
-> > > +
-> > > +#endif /* UMEM_DMABUF_H */
-> > > diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h index
-> > > 7059750..73a7b19 100644
-> > > --- a/include/rdma/ib_umem.h
-> > > +++ b/include/rdma/ib_umem.h
-> > > @@ -1,6 +1,7 @@
-> > >  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-> > >  /*
-> > >   * Copyright (c) 2007 Cisco Systems.  All rights reserved.
-> > > + * Copyright (c) 2020 Intel Corporation.  All rights reserved.
-> > >   */
-> > >
-> > >  #ifndef IB_UMEM_H
-> > > @@ -13,6 +14,7 @@
-> > >
-> > >  struct ib_ucontext;
-> > >  struct ib_umem_odp;
-> > > +struct dma_buf_attach_ops;
-> > >
-> > >  struct ib_umem {
-> > >     struct ib_device       *ibdev;
-> > > @@ -22,12 +24,25 @@ struct ib_umem {
-> > >     unsigned long           address;
-> > >     u32 writable : 1;
-> > >     u32 is_odp : 1;
-> > > +   u32 is_dmabuf : 1;
-> > >     struct work_struct      work;
-> > >     struct sg_table sg_head;
-> > >     int             nmap;
-> > >     unsigned int    sg_nents;
-> > >  };
-> > >
-> > > +struct ib_umem_dmabuf {
-> > > +   struct ib_umem umem;
-> > > +   struct dma_buf_attachment *attach;
-> > > +   struct sg_table *sgt;
-> > > +   void *device_context;
-> > > +};
-> > > +
-> > > +static inline struct ib_umem_dmabuf *to_ib_umem_dmabuf(struct ib_umem
-> > > +*umem) {
-> > > +   return container_of(umem, struct ib_umem_dmabuf, umem); }
-> > > +
-> > >  /* Returns the offset of the umem start relative to the first page.
-> > > */  static inline int ib_umem_offset(struct ib_umem *umem)  { @@ -79,6
-> > > +94,12 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem,
-> > > size_t offset,  unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
-> > >                                  unsigned long pgsz_bitmap,
-> > >                                  unsigned long virt);
-> > > +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> > > +                              unsigned long offset, size_t size,
-> > > +                              int fd, int access,
-> > > +                              const struct dma_buf_attach_ops *ops); int
-> > > +ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf); void
-> > > +ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf);
-> > >
-> > >  #else /* CONFIG_INFINIBAND_USER_MEM */
-> > >
-> > > @@ -101,7 +122,19 @@ static inline unsigned long
-> > > ib_umem_find_best_pgsz(struct ib_umem *umem,  {
-> > >     return 0;
-> > >  }
-> > > +static inline struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
-> > > +                                            unsigned long offset,
-> > > +                                            size_t size, int fd,
-> > > +                                            int access,
-> > > +                                            struct dma_buf_attach_ops *ops) {
-> > > +   return ERR_PTR(-EINVAL);
-> > > +}
-> > > +static inline int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf
-> > > +*umem_dmabuf) {
-> > > +   return -EINVAL;
-> > > +}
-> > > +static inline void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf
-> > > +*umem_dmabuf) { }
-> > >
-> > >  #endif /* CONFIG_INFINIBAND_USER_MEM */
-> > > -
-> > >  #endif /* IB_UMEM_H */
-> > > --
-> > > 1.8.3.1
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+The check in the p2p stuff was done to avoid this too, but it was on a
+different flow.
 
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Jason
