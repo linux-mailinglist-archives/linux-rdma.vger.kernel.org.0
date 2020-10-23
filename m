@@ -2,364 +2,458 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1ED297448
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924F32974DD
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465803AbgJWQfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 12:35:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751829AbgJWQdv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:33:51 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6D6024689;
-        Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603470827;
-        bh=j7k7sytz8mKgmUBtNYdsAfWtUy2wSY3Ypl6djEUtgfo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RYJoqd4a41qjmTHYS0m/pi3m5fP/352dPxkQ6viKSFVOyNYQtPgtV2aebt+ONNEl8
-         qs+Wm/tqWz1R+YXP6FHHy3mb3PFHJPEmp6/pr2oK5nRBSJvD9U5udJbDFQtghb/JLj
-         Qs64/Qbn1CQ0AOQ60S2N8PrpFG2/R0zwFi14CWS8=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kW00f-002Avu-6Y; Fri, 23 Oct 2020 18:33:45 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Danit Goldberg <danitg@mellanox.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Divya Indi <divya.indi@oracle.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1750252AbgJWQtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 12:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464780AbgJWQtR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 12:49:17 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B12C0613CE
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 09:49:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a72so2321325wme.5
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 09:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UPn8evHO2X2c4oUVF4dLN8IRh8TGrYGeyqgst8ZZpxM=;
+        b=J5AZtOp5/E6cbX9S5r7f9NPx9aqgH0sW9dl15Iic4S4tVsdkJqLhEeehuD5vbGAo+p
+         UnRUEVZ5Ovek7Lug8d40I61gGrm0ddQDGEXhvQTjmTsfh38edCVHO2UK2vuaP39GkjhM
+         QvREUcBnXlxvE6TJqelAp2aQWMM+ta1vqN9jU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UPn8evHO2X2c4oUVF4dLN8IRh8TGrYGeyqgst8ZZpxM=;
+        b=pLWk7+RmNXWyx8bHiXJNsD5oK7uGQqzI84tN9kmv2tk3qztW+zagxe55n/1yjY5u8S
+         g6ljY3cxklXCmmoi8QLYyWE6B4anU7dWmq3Ld6yFQf88BVVNco8EofDSiB2ah0lwp5mJ
+         KA5PZNfHW0tBbpfMot39DM/iArZRaf+XUiQ2czC9Qzit8Hwm+Qy/RWRdJcV/5K/qHoLc
+         kANfJ+uK4jtjDPWXCL8F3jzPKFIM5G0IzcRARk0LBpWhMoFdPPVcohuILiaJOd5H+Y3X
+         cz8LRoB5AT73OGgtQERYx3JpLCqUR9EXU55Ohz/DQSeoZOerGIXbShrAiTEfs9TbqM0e
+         NSXQ==
+X-Gm-Message-State: AOAM532WQRO4lFET90nDzg/VY+0Jy0wssnl87tUZqBABPO5VkYa84ra+
+        owS0AQoW+6nbhTfCovse8bMfJIkSOhdFJXDI
+X-Google-Smtp-Source: ABdhPJw28FVd7q84l/C9pcw4ZAlgLe9R3O4ztuSaAvZ/9+zsOGKC1I1axsvDvg2SjNhdw2levDRBDg==
+X-Received: by 2002:a1c:b6d5:: with SMTP id g204mr3235316wmf.65.1603471754297;
+        Fri, 23 Oct 2020 09:49:14 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y4sm4350079wrp.74.2020.10.23.09.49.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:49:13 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 18:49:11 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        Xi Wang <wangxi11@huawei.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH v3 14/56] IB: fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:01 +0200
-Message-Id: <f201c81b58f7087425387672b24af5b85aa04b1a.1603469755.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Message-ID: <20201023164911.GF401619@phenom.ffwll.local>
+References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
+ <1603471201-32588-2-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603471201-32588-2-git-send-email-jianxin.xiong@intel.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Some functions have different names between their prototypes
-and the kernel-doc markup.
+On Fri, Oct 23, 2020 at 09:39:58AM -0700, Jianxin Xiong wrote:
+> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
+> used to support peer-to-peer access from RDMA devices.
+> 
+> Device memory exported via dma-buf is associated with a file descriptor.
+> This is passed to the user space as a property associated with the
+> buffer allocation. When the buffer is registered as a memory region,
+> the file descriptor is passed to the RDMA driver along with other
+> parameters.
+> 
+> Implement the common code for importing dma-buf object and mapping
+> dma-buf pages.
+> 
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Acked-by: Christian Koenig <christian.koenig@amd.com>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> ---
+>  drivers/infiniband/core/Makefile      |   2 +-
+>  drivers/infiniband/core/umem.c        |   4 +
+>  drivers/infiniband/core/umem_dmabuf.c | 197 ++++++++++++++++++++++++++++++++++
+>  drivers/infiniband/core/umem_dmabuf.h |  11 ++
+>  include/rdma/ib_umem.h                |  35 +++++-
+>  5 files changed, 247 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+>  create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+> 
+> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+> index ccf2670..8ab4eea 100644
+> --- a/drivers/infiniband/core/Makefile
+> +++ b/drivers/infiniband/core/Makefile
+> @@ -40,5 +40,5 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+>  				uverbs_std_types_srq.o \
+>  				uverbs_std_types_wq.o \
+>  				uverbs_std_types_qp.o
+> -ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o
+> +ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o umem_dmabuf.o
+>  ib_uverbs-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += umem_odp.o
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index e9fecbd..2c45525 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -2,6 +2,7 @@
+>   * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+>   * Copyright (c) 2005 Cisco Systems.  All rights reserved.
+>   * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
+> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+>   *
+>   * This software is available to you under a choice of one of two
+>   * licenses.  You may choose to be licensed under the terms of the GNU
+> @@ -43,6 +44,7 @@
+>  #include <rdma/ib_umem_odp.h>
+>  
+>  #include "uverbs.h"
+> +#include "umem_dmabuf.h"
+>  
+>  static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int dirty)
+>  {
+> @@ -269,6 +271,8 @@ void ib_umem_release(struct ib_umem *umem)
+>  {
+>  	if (!umem)
+>  		return;
+> +	if (umem->is_dmabuf)
+> +		return ib_umem_dmabuf_release(to_ib_umem_dmabuf(umem));
+>  	if (umem->is_odp)
+>  		return ib_umem_odp_release(to_ib_umem_odp(umem));
+>  
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> new file mode 100644
+> index 0000000..66b234d
+> --- /dev/null
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -0,0 +1,197 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +/*
+> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/dma-buf.h>
+> +#include <linux/dma-resv.h>
+> +#include <linux/dma-mapping.h>
+> +
+> +#include "uverbs.h"
+> +#include "umem_dmabuf.h"
+> +
+> +/*
+> + * Generate a new dma sg list from a sub range of an existing dma sg list.
+> + * Both the input and output have their entries page aligned.
+> + */
+> +static int ib_umem_dmabuf_sgt_slice(struct sg_table *sgt, u64 offset,
+> +				    u64 length, struct sg_table *new_sgt)
+> +{
+> +	struct scatterlist *sg, *new_sg;
+> +	u64 start, end, off, addr, len;
+> +	unsigned int new_nents;
+> +	int err;
+> +	int i;
+> +
+> +	start = ALIGN_DOWN(offset, PAGE_SIZE);
+> +	end = ALIGN(offset + length, PAGE_SIZE);
+> +
+> +	offset = start;
+> +	length = end - start;
+> +	new_nents = 0;
+> +	for_each_sgtable_dma_sg(sgt, sg, i) {
+> +		len = sg_dma_len(sg);
+> +		off = min(len, offset);
+> +		len -= off;
+> +		len = min(len, length);
+> +		if (len)
+> +			new_nents++;
+> +		length -= len;
+> +		offset -= off;
+> +	}
+> +
+> +	err = sg_alloc_table(new_sgt, new_nents, GFP_KERNEL);
+> +	if (err)
+> +		return err;
+> +
+> +	offset = start;
+> +	length = end - start;
+> +	new_sg = new_sgt->sgl;
+> +	for_each_sgtable_dma_sg(sgt, sg, i) {
+> +		addr = sg_dma_address(sg);
+> +		len = sg_dma_len(sg);
+> +		off = min(len, offset);
+> +		addr += off;
+> +		len -= off;
+> +		len = min(len, length);
+> +		if (len) {
+> +			sg_dma_address(new_sg) = addr;
+> +			sg_dma_len(new_sg) = len;
+> +			new_sg = sg_next(new_sg);
+> +		}
+> +		length -= len;
+> +		offset -= off;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct sg_table *sgt;
+> +	struct dma_fence *fence;
+> +	int err;
+> +
+> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> +
+> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
+> +				     DMA_BIDIRECTIONAL);
+> +
+> +	if (IS_ERR(sgt))
+> +		return PTR_ERR(sgt);
+> +
+> +	err = ib_umem_dmabuf_sgt_slice(sgt, umem_dmabuf->umem.address,
+> +				       umem_dmabuf->umem.length,
+> +				       &umem_dmabuf->umem.sg_head);
+> +	if (err) {
+> +		dma_buf_unmap_attachment(umem_dmabuf->attach, sgt,
+> +					 DMA_BIDIRECTIONAL);
+> +		return err;
+> +	}
+> +
+> +	umem_dmabuf->umem.nmap = umem_dmabuf->umem.sg_head.nents;
+> +	umem_dmabuf->sgt = sgt;
+> +
+> +	/*
+> +	 * Although the sg list is valid now, the content of the pages
+> +	 * may be not up-to-date. Wait for the exporter to finish
+> +	 * the migration.
+> +	 */
+> +	fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
+> +	if (fence)
+> +		dma_fence_wait(fence, false);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_map_pages);
+> +
+> +void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> +
+> +	if (!umem_dmabuf->sgt)
+> +		return;
+> +
+> +	sg_free_table(&umem_dmabuf->umem.sg_head);
+> +	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
+> +				 DMA_BIDIRECTIONAL);
+> +	umem_dmabuf->sgt = NULL;
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_unmap_pages);
+> +
+> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +				   unsigned long offset, size_t size,
+> +				   int fd, int access,
+> +				   const struct dma_buf_attach_ops *ops)
+> +{
+> +	struct dma_buf *dmabuf;
+> +	struct ib_umem_dmabuf *umem_dmabuf;
+> +	struct ib_umem *umem;
+> +	unsigned long end;
+> +	long ret;
+> +
+> +	if (check_add_overflow(offset, (unsigned long)size, &end))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	if (unlikely(PAGE_ALIGN(end) < PAGE_SIZE))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	if (unlikely(!ops || !ops->move_notify))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +#ifdef CONFIG_DMA_VIRT_OPS
+> +	if (device->dma_device->dma_ops == &dma_virt_ops)
+> +		return ERR_PTR(-EINVAL);
+> +#endif
 
-Others need to be fixed, as kernel-doc markups should use this format:
-        identifier - description
+Maybe I'm confused, but should we have this check in dma_buf_attach, or at
+least in dma_buf_dynamic_attach? The p2pdma functions use that too, and I
+can't imagine how zerocopy should work (which is like the entire point of
+dma-buf) when we have dma_virt_ops.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/infiniband/core/cm.c                         |  5 +++--
- drivers/infiniband/core/cq.c                         |  4 ++--
- drivers/infiniband/core/iwpm_util.h                  |  2 +-
- drivers/infiniband/core/sa_query.c                   |  3 ++-
- drivers/infiniband/core/verbs.c                      |  4 ++--
- drivers/infiniband/sw/rdmavt/ah.c                    |  2 +-
- drivers/infiniband/sw/rdmavt/mcast.c                 | 12 ++++++------
- drivers/infiniband/sw/rdmavt/qp.c                    |  8 ++++----
- drivers/infiniband/ulp/iser/iscsi_iser.c             |  2 +-
- drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h     |  2 +-
- .../infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c    |  2 +-
- drivers/infiniband/ulp/srpt/ib_srpt.h                |  2 +-
- include/rdma/ib_verbs.h                              | 11 +++++++++++
- 13 files changed, 36 insertions(+), 23 deletions(-)
+A similar problem exists for swiotlb bounce buffers, not sure how that's
+solved.
+-Daniel
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 5740d1ba3568..2dfbfdd6cc57 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1251,7 +1251,8 @@ int ib_cm_listen(struct ib_cm_id *cm_id, __be64 service_id, __be64 service_mask)
- EXPORT_SYMBOL(ib_cm_listen);
- 
- /**
-- * Create a new listening ib_cm_id and listen on the given service ID.
-+ * ib_cm_insert_listen - Create a new listening ib_cm_id and listen on
-+ *			 the given service ID.
-  *
-  * If there's an existing ID listening on that same device and service ID,
-  * return it.
-@@ -1764,7 +1765,7 @@ static u16 cm_get_bth_pkey(struct cm_work *work)
- }
- 
- /**
-- * Convert OPA SGID to IB SGID
-+ * cm_opa_to_ib_sgid - Convert OPA SGID to IB SGID
-  * ULPs (such as IPoIB) do not understand OPA GIDs and will
-  * reject them as the local_gid will not match the sgid. Therefore,
-  * change the pathrec's SGID to an IB SGID.
-diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
-index 12ebacf52958..d4248bbe74da 100644
---- a/drivers/infiniband/core/cq.c
-+++ b/drivers/infiniband/core/cq.c
-@@ -123,7 +123,7 @@ static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
- }
- 
- /**
-- * ib_process_direct_cq - process a CQ in caller context
-+ * ib_process_cq_direct - process a CQ in caller context
-  * @cq:		CQ to process
-  * @budget:	number of CQEs to poll for
-  *
-@@ -197,7 +197,7 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
- }
- 
- /**
-- * __ib_alloc_cq        allocate a completion queue
-+ * __ib_alloc_cq - allocate a completion queue
-  * @dev:		device to allocate the CQ for
-  * @private:		driver private data, accessible from cq->cq_context
-  * @nr_cqe:		number of CQEs to allocate
-diff --git a/drivers/infiniband/core/iwpm_util.h b/drivers/infiniband/core/iwpm_util.h
-index 1bf87d9fd0bd..eeb8e6010907 100644
---- a/drivers/infiniband/core/iwpm_util.h
-+++ b/drivers/infiniband/core/iwpm_util.h
-@@ -141,7 +141,7 @@ int iwpm_wait_complete_req(struct iwpm_nlmsg_request *nlmsg_request);
- int iwpm_get_nlmsg_seq(void);
- 
- /**
-- * iwpm_add_reminfo - Add remote address info of the connecting peer
-+ * iwpm_add_remote_info - Add remote address info of the connecting peer
-  *                    to the remote info hash table
-  * @reminfo: The remote info to be added
-  */
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8c930bf1df89..89a831fa1885 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1435,7 +1435,8 @@ enum opa_pr_supported {
- };
- 
- /**
-- * Check if current PR query can be an OPA query.
-+ * opa_pr_query_possible - Check if current PR query can be an OPA query.
-+ *
-  * Retuns PR_NOT_SUPPORTED if a path record query is not
-  * possible, PR_OPA_SUPPORTED if an OPA path record query
-  * is possible and PR_IB_SUPPORTED if an IB path record
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 740f8454b6b4..89f379cd7909 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -244,7 +244,7 @@ EXPORT_SYMBOL(rdma_port_get_link_layer);
- /* Protection domains */
- 
- /**
-- * ib_alloc_pd - Allocates an unused protection domain.
-+ * __ib_alloc_pd - Allocates an unused protection domain.
-  * @device: The device on which to allocate the protection domain.
-  * @flags: protection domain flags
-  * @caller: caller's build-time module name
-@@ -1662,7 +1662,7 @@ static bool is_qp_type_connected(const struct ib_qp *qp)
- 		qp->qp_type == IB_QPT_XRC_TGT);
- }
- 
--/**
-+/*
-  * IB core internal function to perform QP attributes modification.
-  */
- static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
-diff --git a/drivers/infiniband/sw/rdmavt/ah.c b/drivers/infiniband/sw/rdmavt/ah.c
-index b938c4ffa99a..3c175bd4ad55 100644
---- a/drivers/infiniband/sw/rdmavt/ah.c
-+++ b/drivers/infiniband/sw/rdmavt/ah.c
-@@ -126,7 +126,7 @@ int rvt_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- }
- 
- /**
-- * rvt_destory_ah - Destory an address handle
-+ * rvt_destroy_ah - Destory an address handle
-  * @ibah: address handle
-  * @destroy_flags: destroy address handle flags (see enum rdma_destroy_ah_flags)
-  *
-diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
-index dd11c6fcd060..5233a63d99a6 100644
---- a/drivers/infiniband/sw/rdmavt/mcast.c
-+++ b/drivers/infiniband/sw/rdmavt/mcast.c
-@@ -54,7 +54,7 @@
- #include "mcast.h"
- 
- /**
-- * rvt_driver_mcast - init resources for multicast
-+ * rvt_driver_mcast_init - init resources for multicast
-  * @rdi: rvt dev struct
-  *
-  * This is per device that registers with rdmavt
-@@ -69,7 +69,7 @@ void rvt_driver_mcast_init(struct rvt_dev_info *rdi)
- }
- 
- /**
-- * mcast_qp_alloc - alloc a struct to link a QP to mcast GID struct
-+ * rvt_mcast_qp_alloc - alloc a struct to link a QP to mcast GID struct
-  * @qp: the QP to link
-  */
- static struct rvt_mcast_qp *rvt_mcast_qp_alloc(struct rvt_qp *qp)
-@@ -98,7 +98,7 @@ static void rvt_mcast_qp_free(struct rvt_mcast_qp *mqp)
- }
- 
- /**
-- * mcast_alloc - allocate the multicast GID structure
-+ * rvt_mcast_alloc - allocate the multicast GID structure
-  * @mgid: the multicast GID
-  * @lid: the muilticast LID (host order)
-  *
-@@ -181,7 +181,7 @@ struct rvt_mcast *rvt_mcast_find(struct rvt_ibport *ibp, union ib_gid *mgid,
- EXPORT_SYMBOL(rvt_mcast_find);
- 
- /**
-- * mcast_add - insert mcast GID into table and attach QP struct
-+ * rvt_mcast_add - insert mcast GID into table and attach QP struct
-  * @mcast: the mcast GID table
-  * @mqp: the QP to attach
-  *
-@@ -426,8 +426,8 @@ int rvt_detach_mcast(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
- }
- 
- /**
-- *rvt_mast_tree_empty - determine if any qps are attached to any mcast group
-- *@rdi: rvt dev struct
-+ * rvt_mcast_tree_empty - determine if any qps are attached to any mcast group
-+ * @rdi: rvt dev struct
-  *
-  * Return: in use count
-  */
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index ee48befc8978..a0cdde8a2335 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -1823,7 +1823,7 @@ int rvt_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- }
- 
- /**
-- * rvt_post_receive - post a receive on a QP
-+ * rvt_post_recv - post a receive on a QP
-  * @ibqp: the QP to post the receive on
-  * @wr: the WR to post
-  * @bad_wr: the first bad WR is put here
-@@ -2245,7 +2245,7 @@ int rvt_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- }
- 
- /**
-- * rvt_post_srq_receive - post a receive on a shared receive queue
-+ * rvt_post_srq_recv - post a receive on a shared receive queue
-  * @ibsrq: the SRQ to post the receive on
-  * @wr: the list of work requests to post
-  * @bad_wr: A pointer to the first WR to cause a problem is put here
-@@ -2497,7 +2497,7 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
- EXPORT_SYMBOL(rvt_get_rwqe);
- 
- /**
-- * qp_comm_est - handle trap with QP established
-+ * rvt_comm_est - handle trap with QP established
-  * @qp: the QP
-  */
- void rvt_comm_est(struct rvt_qp *qp)
-@@ -2943,7 +2943,7 @@ static enum ib_wc_status loopback_qp_drop(struct rvt_ibport *rvp,
- }
- 
- /**
-- * ruc_loopback - handle UC and RC loopback requests
-+ * rvt_ruc_loopback - handle UC and RC loopback requests
-  * @sqp: the sending QP
-  *
-  * This is called from rvt_do_send() to forward a WQE addressed to the same HFI
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
-index 3690e28cc7ea..84cebf937680 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.c
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
-@@ -739,7 +739,7 @@ iscsi_iser_set_param(struct iscsi_cls_conn *cls_conn,
- }
- 
- /**
-- * iscsi_iser_set_param() - set class connection parameter
-+ * iscsi_iser_conn_get_stats() - set class connection parameter
-  * @cls_conn:    iscsi class connection
-  * @stats:       iscsi stats to output
-  *
-diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-index f64519872297..012fc27c5c93 100644
---- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-+++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-@@ -437,7 +437,7 @@ struct opa_veswport_trap {
- } __packed;
- 
- /**
-- * struct opa_vnic_iface_macs_entry - single entry in the mac list
-+ * struct opa_vnic_iface_mac_entry - single entry in the mac list
-  * @mac_addr: MAC address
-  */
- struct opa_vnic_iface_mac_entry {
-diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c b/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
-index 868b5aec1537..292c037aa239 100644
---- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
-+++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
-@@ -74,7 +74,7 @@ void opa_vnic_vema_report_event(struct opa_vnic_adapter *adapter, u8 event)
- }
- 
- /**
-- * opa_vnic_get_error_counters - get summary counters
-+ * opa_vnic_get_summary_counters - get summary counters
-  * @adapter: vnic port adapter
-  * @cntrs: pointer to destination summary counters structure
-  *
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index bdeb010efee6..76e66f630c17 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -347,7 +347,7 @@ struct srpt_nexus {
- };
- 
- /**
-- * struct srpt_port_attib - attributes for SRPT port
-+ * struct srpt_port_attrib - attributes for SRPT port
-  * @srp_max_rdma_size: Maximum size of SRP RDMA transfers for new connections.
-  * @srp_max_rsp_size: Maximum size of SRP response messages in bytes.
-  * @srp_sq_size: Shared receive queue (SRQ) size.
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 9bf6c319a670..5837bf0ac451 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -3430,6 +3430,17 @@ enum ib_pd_flags {
- struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
- 		const char *caller);
- 
-+/**
-+ * ib_alloc_pd - Allocates an unused protection domain.
-+ * @device: The device on which to allocate the protection domain.
-+ * @flags: protection domain flags
-+ *
-+ * A protection domain object provides an association between QPs, shared
-+ * receive queues, address handles, memory regions, and memory windows.
-+ *
-+ * Every PD has a local_dma_lkey which can be used as the lkey value for local
-+ * memory operations.
-+ */
- #define ib_alloc_pd(device, flags) \
- 	__ib_alloc_pd((device), (flags), KBUILD_MODNAME)
- 
+> +
+> +	umem_dmabuf = kzalloc(sizeof(*umem_dmabuf), GFP_KERNEL);
+> +	if (!umem_dmabuf)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	umem = &umem_dmabuf->umem;
+> +	umem->ibdev = device;
+> +	umem->length = size;
+> +	umem->address = offset;
+> +	umem->iova = offset;
+> +	umem->writable = ib_access_writable(access);
+> +	umem->is_dmabuf = 1;
+> +
+> +	dmabuf = dma_buf_get(fd);
+> +	if (IS_ERR(dmabuf)) {
+> +		ret = PTR_ERR(dmabuf);
+> +		goto out_free_umem;
+> +	}
+> +
+> +	umem_dmabuf->attach = dma_buf_dynamic_attach(
+> +					dmabuf,
+> +					device->dma_device,
+> +					ops,
+> +					umem_dmabuf);
+> +	if (IS_ERR(umem_dmabuf->attach)) {
+> +		ret = PTR_ERR(umem_dmabuf->attach);
+> +		goto out_release_dmabuf;
+> +	}
+> +
+> +	return umem;
+> +
+> +out_release_dmabuf:
+> +	dma_buf_put(dmabuf);
+> +
+> +out_free_umem:
+> +	kfree(umem_dmabuf);
+> +	return ERR_PTR(ret);
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_get);
+> +
+> +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
+> +
+> +	dma_resv_lock(dmabuf->resv, NULL);
+> +	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
+> +	dma_resv_unlock(dmabuf->resv);
+> +
+> +	dma_buf_detach(dmabuf, umem_dmabuf->attach);
+> +	dma_buf_put(dmabuf);
+> +	kfree(umem_dmabuf);
+> +}
+> diff --git a/drivers/infiniband/core/umem_dmabuf.h b/drivers/infiniband/core/umem_dmabuf.h
+> new file mode 100644
+> index 0000000..13acf55
+> --- /dev/null
+> +++ b/drivers/infiniband/core/umem_dmabuf.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/*
+> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef UMEM_DMABUF_H
+> +#define UMEM_DMABUF_H
+> +
+> +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
+> +
+> +#endif /* UMEM_DMABUF_H */
+> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+> index 7059750..73a7b19 100644
+> --- a/include/rdma/ib_umem.h
+> +++ b/include/rdma/ib_umem.h
+> @@ -1,6 +1,7 @@
+>  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>  /*
+>   * Copyright (c) 2007 Cisco Systems.  All rights reserved.
+> + * Copyright (c) 2020 Intel Corporation.  All rights reserved.
+>   */
+>  
+>  #ifndef IB_UMEM_H
+> @@ -13,6 +14,7 @@
+>  
+>  struct ib_ucontext;
+>  struct ib_umem_odp;
+> +struct dma_buf_attach_ops;
+>  
+>  struct ib_umem {
+>  	struct ib_device       *ibdev;
+> @@ -22,12 +24,25 @@ struct ib_umem {
+>  	unsigned long		address;
+>  	u32 writable : 1;
+>  	u32 is_odp : 1;
+> +	u32 is_dmabuf : 1;
+>  	struct work_struct	work;
+>  	struct sg_table sg_head;
+>  	int             nmap;
+>  	unsigned int    sg_nents;
+>  };
+>  
+> +struct ib_umem_dmabuf {
+> +	struct ib_umem umem;
+> +	struct dma_buf_attachment *attach;
+> +	struct sg_table *sgt;
+> +	void *device_context;
+> +};
+> +
+> +static inline struct ib_umem_dmabuf *to_ib_umem_dmabuf(struct ib_umem *umem)
+> +{
+> +	return container_of(umem, struct ib_umem_dmabuf, umem);
+> +}
+> +
+>  /* Returns the offset of the umem start relative to the first page. */
+>  static inline int ib_umem_offset(struct ib_umem *umem)
+>  {
+> @@ -79,6 +94,12 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+>  unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+>  				     unsigned long pgsz_bitmap,
+>  				     unsigned long virt);
+> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +				   unsigned long offset, size_t size,
+> +				   int fd, int access,
+> +				   const struct dma_buf_attach_ops *ops);
+> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf);
+> +void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf);
+>  
+>  #else /* CONFIG_INFINIBAND_USER_MEM */
+>  
+> @@ -101,7 +122,19 @@ static inline unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+>  {
+>  	return 0;
+>  }
+> +static inline struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +						 unsigned long offset,
+> +						 size_t size, int fd,
+> +						 int access,
+> +						 struct dma_buf_attach_ops *ops)
+> +{
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +static inline int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	return -EINVAL;
+> +}
+> +static inline void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf) { }
+>  
+>  #endif /* CONFIG_INFINIBAND_USER_MEM */
+> -
+>  #endif /* IB_UMEM_H */
+> -- 
+> 1.8.3.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.26.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
