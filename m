@@ -2,64 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED85296E56
+	by mail.lfdr.de (Postfix) with ESMTP id C64E1296E57
 	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 14:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463588AbgJWMW2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 08:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
+        id S463592AbgJWMWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 08:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463585AbgJWMW2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 08:22:28 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE60BC0613D4
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n15so1596451wrq.2
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:25 -0700 (PDT)
+        with ESMTP id S369869AbgJWMW3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 08:22:29 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C232FC0613D2
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:28 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d78so1227952wmd.3
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IgQVmlN66kTzdCBU8ZoKnJMQUq1PyY1GSJDM/XX0ojY=;
-        b=SBvkme8oy7kGO+RfY6ceOp15GpaJIvk6RoLhvV/WueIm6Pg+oG/7v+xKkGaetsoFKT
-         4Jrw4O5tvC4Old6EBSgoM8lbYnG5Co58mGGq/XlAbL+NJ+J1nzTnHFdqYbcE/fjum1hb
-         sSY+nGawYtOErvna7ZMT/xH6GPplKKq36FBvY=
+        bh=l68XO7xQj33o6JWbWMWZkGONENy/DxFvUnFeVCTeGi8=;
+        b=HhyQAz2t2mLzwyAZiSSqkGeFXWhJ/QAO3Ky4yYkOswG8UL5+IJIekmejZtr/Eu7jli
+         7O76qRpeBjYlXMgT5JKngM4+wE6qjPXobuph0BlMxT+HEJnO3dlg5uKhDEa8NIDEmcJC
+         1+J+Tolig6BVzwsRsAXFS1UU+lSADV+e+2DBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IgQVmlN66kTzdCBU8ZoKnJMQUq1PyY1GSJDM/XX0ojY=;
-        b=b3+Ze/HlNqXCGWx+TjVOp9rD/Z36SvntVSX49QoUMtnZLhcRoT4a1goeC2nlWQg78C
-         I9UT4v2jxGR2qyITCydDV/ZyinQyrWBaM26dWAr63kf+F7AQTTKIyecaTuAjitCicdxb
-         smCgcrQ+NfVrm6JPFzrKOfQtyz7m3BweZ3pF+g/qNi2/WK7obAssPMhj8AM95X5xlaOZ
-         dXL4tX+kF1xAVOozKVUpBxhY4+04E3vlTWk8G+OaBvZmJ+NIqEEsRJ1HcGg+jbSHJkwA
-         oaPlpWPCccJFmoojLcpca7OVki+WQajsiQOLadhTXlVx/tB4lU1ARe7eq7ThBaWrs766
-         0nog==
-X-Gm-Message-State: AOAM530VIthJvhLRNKSBVthGWgQUBPQHCWJGVRJtGjYWV/SsXOvxS96q
-        Hnpk8gL8PAGsLvGiHdhuzUFoiHY8bT3Uw+gP
-X-Google-Smtp-Source: ABdhPJznoMnt3wkQ258dPqEZNcn4LIp7cxpxLk7m7dixQUbSTt/QJMXc3d+QHpQiaKAR3urrcsOBqA==
-X-Received: by 2002:adf:e8c7:: with SMTP id k7mr2365623wrn.102.1603455744516;
-        Fri, 23 Oct 2020 05:22:24 -0700 (PDT)
+        bh=l68XO7xQj33o6JWbWMWZkGONENy/DxFvUnFeVCTeGi8=;
+        b=d1r2M1hiCOft+vOnlXilpsu+dQpEwN3UyetOY5jlTNbP549cVIt/dMgErlzgrMjydM
+         ugK4dcCKqqKLyWUyfbv9pCZ3QYaSRw1H73fjpecNtuzBxbtMqpG8KeadxVzIoAOwjdp4
+         opam4xPlo2UCp8BO7TeBLl7jritlFUryWdMYHVemkdFnZUOun5vwK3k8MzxMPkbUdDzl
+         aPAiz8zrHL3Oz1Fdd/g5H2bl2109D/ojyYHWovi3flTmTrrTrydb2OL19YbZ3OvfSmop
+         z4/9fjAIilda9neRIWgX3mQo0RAXOAjwswSEMt5fKcZBFRkoQnyww+n3LD/oVML4H1YJ
+         X66g==
+X-Gm-Message-State: AOAM531ha2P6x4nPTaGHk6LfpDZHmIkkFm649mYASQX8wt5jKDsWgLnq
+        2ucr2Muhuef6uL3qbGrzzgljVA==
+X-Google-Smtp-Source: ABdhPJwPwU1hLA+MfVAzbSi/5oxo75UPCs85Tq0o08JbHiqr38YS1fGUKKAsWwR4dLGwDNigNva1dA==
+X-Received: by 2002:a7b:c183:: with SMTP id y3mr2049208wmi.84.1603455747583;
+        Fri, 23 Oct 2020 05:22:27 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y4sm3056484wrp.74.2020.10.23.05.22.23
+        by smtp.gmail.com with ESMTPSA id y4sm3056484wrp.74.2020.10.23.05.22.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 05:22:23 -0700 (PDT)
+        Fri, 23 Oct 2020 05:22:26 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        Qian Cai <cai@lca.pw>, linux-xfs@vger.kernel.org,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 03/65] mm: Track mmu notifiers in fs_reclaim_acquire/release
-Date:   Fri, 23 Oct 2020 14:21:14 +0200
-Message-Id: <20201023122216.2373294-3-daniel.vetter@ffwll.ch>
+Subject: [PATCH 05/65] drm/atomic-helper: Add dma-fence annotations
+Date:   Fri, 23 Oct 2020 14:21:16 +0200
+Message-Id: <20201023122216.2373294-5-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201023122216.2373294-1-daniel.vetter@ffwll.ch>
 References: <20201021163242.1458885-1-daniel.vetter@ffwll.ch>
@@ -71,154 +68,120 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-fs_reclaim_acquire/release nicely catch recursion issues when
-allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
-to use to keep the excessive caches in check). For mmu notifier
-recursions we do have lockdep annotations since 23b68395c7c7
-("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
+This is a bit disappointing since we need to split the annotations
+over all the different parts.
 
-But these only fire if a path actually results in some pte
-invalidation - for most small allocations that's very rarely the case.
-The other trouble is that pte invalidation can happen any time when
-__GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
-choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
-recursion.
+I was considering just leaking the critical section into the
+->atomic_commit_tail callback of each driver. But that would mean we
+need to pass the fence_cookie into each driver (there's a total of 13
+implementations of this hook right now), so bad flag day. And also a
+bit leaky abstraction.
 
-I was pondering whether we should just do the general annotation, but
-there's always the risk for false positives. Plus I'm assuming that
-the core fs and io code is a lot better reviewed and tested than
-random mmu notifier code in drivers. Hence why I decide to only
-annotate for that specific case.
+Hence just do it function-by-function.
 
-Furthermore even if we'd create a lockdep map for direct reclaim, we'd
-still need to explicit pull in the mmu notifier map - there's a lot
-more places that do pte invalidation than just direct reclaim, these
-two contexts arent the same.
-
-Note that the mmu notifiers needing their own independent lockdep map
-is also the reason we can't hold them from fs_reclaim_acquire to
-fs_reclaim_release - it would nest with the acquistion in the pte
-invalidation code, causing a lockdep splat. And we can't remove the
-annotations from pte invalidation and all the other places since
-they're called from many other places than page reclaim. Hence we can
-only do the equivalent of might_lock, but on the raw lockdep map.
-
-With this we can also remove the lockdep priming added in 66204f1d2d1b
-("mm/mmu_notifiers: prime lockdep") since the new annotations are
-strictly more powerful.
-
-v2: Review from Thomas Hellstrom:
-- unbotch the fs_reclaim context check, I accidentally inverted it,
-  but it didn't blow up because I inverted it immediately
-- fix compiling for !CONFIG_MMU_NOTIFIER
-
-v3: Unbreak the PF_MEMALLOC_ context flags. Thanks to Qian for the
-report and Dave for explaining what I failed to see.
-
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: linux-xfs@vger.kernel.org
-Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: linux-mm@kvack.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Cc: linux-rdma@vger.kernel.org
+Cc: amd-gfx@lists.freedesktop.org
+Cc: intel-gfx@lists.freedesktop.org
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Cc: Christian König <christian.koenig@amd.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
 ---
- mm/mmu_notifier.c |  7 -------
- mm/page_alloc.c   | 31 ++++++++++++++++++++-----------
- 2 files changed, 20 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/drm_atomic_helper.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 4fc918163dd3..6bf798373eb0 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -612,13 +612,6 @@ int __mmu_notifier_register(struct mmu_notifier *subscription,
- 	mmap_assert_write_locked(mm);
- 	BUG_ON(atomic_read(&mm->mm_users) <= 0);
- 
--	if (IS_ENABLED(CONFIG_LOCKDEP)) {
--		fs_reclaim_acquire(GFP_KERNEL);
--		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
--		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
--		fs_reclaim_release(GFP_KERNEL);
--	}
--
- 	if (!mm->notifier_subscriptions) {
- 		/*
- 		 * kmalloc cannot be called under mm_take_all_locks(), but we
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 780c8f023b28..2edd3fd447fa 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -57,6 +57,7 @@
- #include <trace/events/oom.h>
- #include <linux/prefetch.h>
- #include <linux/mm_inline.h>
-+#include <linux/mmu_notifier.h>
- #include <linux/migrate.h>
- #include <linux/hugetlb.h>
- #include <linux/sched/rt.h>
-@@ -4207,10 +4208,8 @@ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_fla
- static struct lockdep_map __fs_reclaim_map =
- 	STATIC_LOCKDEP_MAP_INIT("fs_reclaim", &__fs_reclaim_map);
- 
--static bool __need_fs_reclaim(gfp_t gfp_mask)
-+static bool __need_reclaim(gfp_t gfp_mask)
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index 549a31e6042c..23013209d4bf 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -1567,6 +1567,7 @@ EXPORT_SYMBOL(drm_atomic_helper_wait_for_flip_done);
+ void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
  {
--	gfp_mask = current_gfp_context(gfp_mask);
--
- 	/* no reclaim without waiting on it */
- 	if (!(gfp_mask & __GFP_DIRECT_RECLAIM))
- 		return false;
-@@ -4219,10 +4218,6 @@ static bool __need_fs_reclaim(gfp_t gfp_mask)
- 	if (current->flags & PF_MEMALLOC)
- 		return false;
+ 	struct drm_device *dev = old_state->dev;
++	bool fence_cookie = dma_fence_begin_signalling();
  
--	/* We're only interested __GFP_FS allocations for now */
--	if (!(gfp_mask & __GFP_FS))
--		return false;
--
- 	if (gfp_mask & __GFP_NOLOCKDEP)
- 		return false;
+ 	drm_atomic_helper_commit_modeset_disables(dev, old_state);
  
-@@ -4241,15 +4236,29 @@ void __fs_reclaim_release(void)
+@@ -1578,6 +1579,8 @@ void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
  
- void fs_reclaim_acquire(gfp_t gfp_mask)
+ 	drm_atomic_helper_commit_hw_done(old_state);
+ 
++	dma_fence_end_signalling(fence_cookie);
++
+ 	drm_atomic_helper_wait_for_vblanks(dev, old_state);
+ 
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+@@ -1597,6 +1600,7 @@ EXPORT_SYMBOL(drm_atomic_helper_commit_tail);
+ void drm_atomic_helper_commit_tail_rpm(struct drm_atomic_state *old_state)
  {
--	if (__need_fs_reclaim(gfp_mask))
--		__fs_reclaim_acquire();
-+	gfp_mask = current_gfp_context(gfp_mask);
+ 	struct drm_device *dev = old_state->dev;
++	bool fence_cookie = dma_fence_begin_signalling();
+ 
+ 	drm_atomic_helper_commit_modeset_disables(dev, old_state);
+ 
+@@ -1609,6 +1613,8 @@ void drm_atomic_helper_commit_tail_rpm(struct drm_atomic_state *old_state)
+ 
+ 	drm_atomic_helper_commit_hw_done(old_state);
+ 
++	dma_fence_end_signalling(fence_cookie);
 +
-+	if (__need_reclaim(gfp_mask)) {
-+		if (gfp_mask & __GFP_FS)
-+			__fs_reclaim_acquire();
+ 	drm_atomic_helper_wait_for_vblanks(dev, old_state);
+ 
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+@@ -1624,6 +1630,9 @@ static void commit_tail(struct drm_atomic_state *old_state)
+ 	ktime_t start;
+ 	s64 commit_time_ms;
+ 	unsigned int i, new_self_refresh_mask = 0;
++	bool fence_cookie;
 +
-+#ifdef CONFIG_MMU_NOTIFIER
-+		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
-+		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
-+#endif
++	fence_cookie = dma_fence_begin_signalling();
+ 
+ 	funcs = dev->mode_config.helper_private;
+ 
+@@ -1652,6 +1661,8 @@ static void commit_tail(struct drm_atomic_state *old_state)
+ 		if (new_crtc_state->self_refresh_active)
+ 			new_self_refresh_mask |= BIT(i);
+ 
++	dma_fence_end_signalling(fence_cookie);
 +
-+	}
+ 	if (funcs && funcs->atomic_commit_tail)
+ 		funcs->atomic_commit_tail(old_state);
+ 	else
+@@ -1810,6 +1821,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 			     bool nonblock)
+ {
+ 	int ret;
++	bool fence_cookie;
+ 
+ 	if (state->async_update) {
+ 		ret = drm_atomic_helper_prepare_planes(dev, state);
+@@ -1832,6 +1844,8 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	if (ret)
+ 		return ret;
+ 
++	fence_cookie = dma_fence_begin_signalling();
++
+ 	if (!nonblock) {
+ 		ret = drm_atomic_helper_wait_for_fences(dev, state, true);
+ 		if (ret)
+@@ -1869,6 +1883,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	 */
+ 
+ 	drm_atomic_state_get(state);
++	dma_fence_end_signalling(fence_cookie);
+ 	if (nonblock)
+ 		queue_work(system_unbound_wq, &state->commit_work);
+ 	else
+@@ -1877,6 +1892,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+ 	return 0;
+ 
+ err:
++	dma_fence_end_signalling(fence_cookie);
+ 	drm_atomic_helper_cleanup_planes(dev, state);
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(fs_reclaim_acquire);
- 
- void fs_reclaim_release(gfp_t gfp_mask)
- {
--	if (__need_fs_reclaim(gfp_mask))
--		__fs_reclaim_release();
-+	gfp_mask = current_gfp_context(gfp_mask);
-+
-+	if (__need_reclaim(gfp_mask)) {
-+		if (gfp_mask & __GFP_FS)
-+			__fs_reclaim_release();
-+	}
- }
- EXPORT_SYMBOL_GPL(fs_reclaim_release);
- #endif
 -- 
 2.28.0
 
