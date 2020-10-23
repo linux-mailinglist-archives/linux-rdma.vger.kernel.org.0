@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAF4296E70
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 14:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE80296E71
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 14:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463633AbgJWMWs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 08:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S371521AbgJWMWt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 08:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463632AbgJWMWr (ORCPT
+        with ESMTP id S463626AbgJWMWr (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Oct 2020 08:22:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277A1C0613CE
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:46 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h5so1574166wrv.7
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:46 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5879AC0613D4
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:47 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n15so1597772wrq.2
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Oct 2020 05:22:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fHzwpOVHrIbQLdmsuDmh6xvbrH+DqYzNXJD+pE0pvSU=;
-        b=Edq/tGIRKQ88HrDhuJq2i7oTlejAOjJ2LX7qUq3NrAb27IYCN8NuptMkKr0dm/Z2VB
-         TdWm4oN9A72isl4LC2F7iKYqPLd2Cmmtbz5kTmVHXWXyiGCWYR2PYPeTtVfm/xHi+K2Q
-         YmBw7hL8GMCn4q/q9NBEdTONzn/v6ye+CqNio=
+        bh=Pt7r3r8KzR5b5qiGeAc9wam0F2FH3YbYbdtTLI7+5pA=;
+        b=J1ovvaeRgAyxo4+fhyaimEa7i+0LS95i5IhmBF2STfEkqG/VqrnAk7NJv/NWmihpPf
+         X7Np5ypMJj57D3bg6y5M89f/D5DBHFvI4gBX/jBw4SJGMzN43CprGiEkGtFlLBdX8fbV
+         vsahdqW51+kNqRYjTRhqxtPo2IT1e1Su+fPVA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fHzwpOVHrIbQLdmsuDmh6xvbrH+DqYzNXJD+pE0pvSU=;
-        b=OG4+WQ/JZ/xceDwdxwh3b8qpU5kgxstJH158t4lFXZrka+nd5omhTapxxB7ee5+b88
-         DJuehqF3nMypzorQYu/ROVzoelHtZa64pOj98InX2DyVPqe7vnoGEn9kORMrSBiKP2ts
-         B+OHEp79iQYQvq2dF6XmeNIH79MuqigMUfPXsZn27Myn/9wx3yuN0IPm+fNHJ2CZO7UX
-         MwST7UJgey2KZsNOy2KxykNHzaOjS0BAOENeiGARkhzcJOArDaAqQcfe15Z961dsVrut
-         JbPAR2Es83uCKBTOk98AGaRWEVT2xaKUL6eDDWJGBTNYfa/mhT6S88HvdHuN9f8nR6fK
-         Zipw==
-X-Gm-Message-State: AOAM531NKun+Q+hbGcvi+oNeYIFNb5VXMdczE2CJ0hwzRTVwNpUfdS0s
-        eM5AoWF/dYPFlON3j0z/U2yMbg==
-X-Google-Smtp-Source: ABdhPJx8O/4FjcZWjwjAl63soPWTKchHeUQbq383W3x/1+VQsikl3G0yQpze6wY/eIGgJ5a6pGKAwQ==
-X-Received: by 2002:adf:fc08:: with SMTP id i8mr2537904wrr.116.1603455764887;
-        Fri, 23 Oct 2020 05:22:44 -0700 (PDT)
+        bh=Pt7r3r8KzR5b5qiGeAc9wam0F2FH3YbYbdtTLI7+5pA=;
+        b=ljPftl8YM/i5IFmFX5//r+z+Nx5HZzh6yxJb09h4j66ixJ9sHjubHjG31fYsFiRzTg
+         5t/B0VuQvxdP9ooFgSruvVavgJ3dYRcX+UysvJJXaITtkJB6MGKiiDGoVakuJWs9Kyg0
+         6jAXcAmUKRb8f9lD4+sHFh6OdfzEvvzHOJDHXh53Rd1f5fmyvP4oK71KOQjJ/cVJzY3P
+         GNXXBEqUpR345wsZY0hSewLgEBSIf1SjgvLMr4c9eVurqBkLBZlKMSDWsp4O3l5zLvLU
+         ZNDpXrWN6jO3qd2DXKy1fBDU/IZEmkylUBe2Tw26S0HtdN0Hef6JxhgOAAI9jnjIDaBb
+         xA9A==
+X-Gm-Message-State: AOAM530y03dciSjpyShZZYXiPNqa/0FOsT7cPfsHE39HpneKmn7BVuUz
+        sz9EjHQYrz8iRdA9kv0XtMDbVuBpyrY6GRK8
+X-Google-Smtp-Source: ABdhPJzeL0b3o7SdVpsqso58ueQCQULN8UwDSO9Ve2MQd7IHgs3k/2/xklwW61HBtOOF7k0eWuT9pw==
+X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr2315042wrt.221.1603455766129;
+        Fri, 23 Oct 2020 05:22:46 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y4sm3056484wrp.74.2020.10.23.05.22.43
+        by smtp.gmail.com with ESMTPSA id y4sm3056484wrp.74.2020.10.23.05.22.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 05:22:44 -0700 (PDT)
+        Fri, 23 Oct 2020 05:22:45 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
@@ -52,11 +52,10 @@ Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
         Chris Wilson <chris@chris-wilson.co.uk>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 20/65] drm/scheduler: use dma-fence annotations in tdr work
-Date:   Fri, 23 Oct 2020 14:21:31 +0200
-Message-Id: <20201023122216.2373294-20-daniel.vetter@ffwll.ch>
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH 21/65] drm/amdgpu: use dma-fence annotations for gpu reset code
+Date:   Fri, 23 Oct 2020 14:21:32 +0200
+Message-Id: <20201023122216.2373294-21-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201023122216.2373294-1-daniel.vetter@ffwll.ch>
 References: <20201021163242.1458885-1-daniel.vetter@ffwll.ch>
@@ -68,75 +67,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In the face of unpriviledged userspace being able to submit bogus gpu
-workloads the kernel needs gpu timeout and reset (tdr) to guarantee
-that dma_fences actually complete. Annotate this worker to make sure
-we don't have any accidental locking inversions or other problems
-lurking.
-
-Originally this was part of the overall scheduler annotation patch.
-But amdgpu has some glorious inversions here:
-
-- grabs console_lock
-- does a full modeset, which grabs all kinds of locks
-  (drm_modeset_lock, dma_resv_lock) which can deadlock with
-  dma_fence_wait held inside them.
-- almost minor at that point, but the modeset code also allocates
-  memory
-
-These all look like they'll be very hard to fix properly, the hardware
-seems to require a full display reset with any gpu recovery.
-
-Hence split out as a seperate patch.
-
-Since amdgpu isn't the only hardware driver that needs to reset the
-display (at least gen2/3 on intel have the same problem) we need a
-generic solution for this. There's two tricks we could still from
-drm/i915 and lift to dma-fence:
-
-- The big whack, aka force-complete all fences. i915 does this for all
-  pending jobs if the reset is somehow stuck. Trouble is we'd need to
-  do this for all fences in the entire system, and just the
-  book-keeping for that will be fun. Plus lots of drivers use fences
-  for all kinds of internal stuff like memory management, so
-  unconditionally resetting all of them doesn't work.
-
-  I'm also hoping that with these fence annotations we could enlist
-  lockdep in finding the last offenders causing deadlocks, and we
-  could remove this get-out-of-jail trick.
-
-- The more feasible approach (across drivers at least as part of the
-  dma_fence contract) is what drm/i915 does for gen2/3: When we need
-  to reset the display we wake up all dma_fence_wait_interruptible
-  calls, or well at least the equivalent of those in i915 internally.
-
-  Relying on ioctl restart we force all other threads to release their
-  locks, which means the tdr thread is guaranteed to be able to get
-  them. I think we could implement this at the dma_fence level,
-  including proper lockdep annotations.
-
-  dma_fence_begin_tdr():
-  - must be nested within a dma_fence_begin/end_signalling section
-  - will wake up all interruptible (but not the non-interruptible)
-    dma_fence_wait() calls and force them to complete with a
-    -ERESTARTSYS errno code. All new interrupitble calls to
-    dma_fence_wait() will immeidately fail with the same error code.
-
-  dma_fence_end_trdr():
-  - this will convert dma_fence_wait() calls back to normal.
-
-  Of course interrupting dma_fence_wait is only ok if the caller
-  specified that, which means we need to split the annotations into
-  interruptible and non-interruptible version. If we then make sure
-  that we only use interruptible dma_fence_wait() calls while holding
-  drm_modeset_lock we can grab them in tdr code, and allow display
-  resets. Doing the same for dma_resv_lock might be a lot harder, so
-  buffer updates must be avoided.
-
-  What's worse, we're not going to be able to make the dma_fence_wait
-  calls in mmu-notifiers interruptible, that doesn't work. So
-  allocating memory still wont' be allowed, even in tdr sections. Plus
-  obviously we can use this trick only in tdr, it is rather intrusive.
+To improve coverage also annotate the gpu reset code itself, since
+that's called from other places than drm/scheduler (which is already
+annotated). Annotations nests, so this doesn't break anything, and
+allows easier testing.
 
 Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
@@ -146,37 +80,62 @@ Cc: intel-gfx@lists.freedesktop.org
 Cc: Chris Wilson <chris@chris-wilson.co.uk>
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Cc: Christian König <christian.koenig@amd.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 ---
- drivers/gpu/drm/scheduler/sched_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-index f69abc4e70d3..ae0d5ceca49a 100644
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -281,9 +281,12 @@ static void drm_sched_job_timedout(struct work_struct *work)
- {
- 	struct drm_gpu_scheduler *sched;
- 	struct drm_sched_job *job;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index e8b41756c9f9..029a026ecfa9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -4496,6 +4496,9 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
+ 	int i, r = 0;
+ 	bool need_emergency_restart = false;
+ 	bool audio_suspended = false;
 +	bool fence_cookie;
- 
- 	sched = container_of(work, struct drm_gpu_scheduler, work_tdr.work);
- 
++
 +	fence_cookie = dma_fence_begin_signalling();
-+
- 	/* Protects against concurrent deletion in drm_sched_get_cleanup_job */
- 	spin_lock(&sched->job_list_lock);
- 	job = list_first_entry_or_null(&sched->ring_mirror_list,
-@@ -315,6 +318,8 @@ static void drm_sched_job_timedout(struct work_struct *work)
- 	spin_lock(&sched->job_list_lock);
- 	drm_sched_start_timeout(sched);
- 	spin_unlock(&sched->job_list_lock);
-+
+ 
+ 	/**
+ 	 * Special case: RAS triggered and full reset isn't supported
+@@ -4529,6 +4532,7 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
+ 			DRM_INFO("Bailing on TDR for s_job:%llx, hive: %llx as another already in progress",
+ 				job ? job->base.id : -1, hive->hive_id);
+ 			amdgpu_put_xgmi_hive(hive);
++			dma_fence_end_signalling(fence_cookie);
+ 			return 0;
+ 		}
+ 		mutex_lock(&hive->hive_lock);
+@@ -4541,8 +4545,10 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
+ 	 */
+ 	INIT_LIST_HEAD(&device_list);
+ 	if (adev->gmc.xgmi.num_physical_nodes > 1) {
+-		if (!hive)
++		if (!hive) {
++			dma_fence_end_signalling(fence_cookie);
+ 			return -ENODEV;
++		}
+ 		if (!list_is_first(&adev->gmc.xgmi.head, &hive->device_list))
+ 			list_rotate_to_front(&adev->gmc.xgmi.head, &hive->device_list);
+ 		device_list_handle = &hive->device_list;
+@@ -4556,8 +4562,6 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
+ 		if (!amdgpu_device_lock_adev(tmp_adev, hive)) {
+ 			dev_info(tmp_adev->dev, "Bailing on TDR for s_job:%llx, as another already in progress",
+ 				  job ? job->base.id : -1);
+-			r = 0;
+-			goto skip_recovery;
+ 		}
+ 
+ 		/*
+@@ -4699,6 +4703,7 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
+ 
+ 	if (r)
+ 		dev_info(adev->dev, "GPU reset end with ret = %d\n", r);
 +	dma_fence_end_signalling(fence_cookie);
+ 	return r;
  }
  
-  /**
 -- 
 2.28.0
 
