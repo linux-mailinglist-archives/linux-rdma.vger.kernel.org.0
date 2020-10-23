@@ -2,31 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E412E297392
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470D4297393
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750451AbgJWQ0N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 12:26:13 -0400
+        id S1750563AbgJWQ0O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 12:26:14 -0400
 Received: from mga17.intel.com ([192.55.52.151]:10550 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750557AbgJWQ0M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:26:12 -0400
-IronPort-SDR: SpPBnGCJrvswRmL+fCwhmg36Jt/qQQAGVLaVQJ6hzxfy0yH5O9QZQ4J+FzoEro6Z/2m6AL2QtA
- tUyZnHyOU6iQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="147556659"
+        id S1750557AbgJWQ0O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:26:14 -0400
+IronPort-SDR: AizJtGnpLxneVxfq0hMKTBpYqaeQWIAeC3xpki9rKAXleaLme1QXvS2DSaofH1Ix8atSUwJWP3
+ Ew+1GQkty/Pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="147556668"
 X-IronPort-AV: E=Sophos;i="5.77,409,1596524400"; 
-   d="scan'208";a="147556659"
+   d="scan'208";a="147556668"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 09:26:12 -0700
-IronPort-SDR: kn9nRitkIU9KBZtka5v7dlLch/6Z4D4K3lpKLolOkJR4W3sSJQIBWJwUnmVzBP0IcR+qq+wusm
- V5dn7zyB7wxA==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 09:26:13 -0700
+IronPort-SDR: 0EwbaYOQ7s5N483dC6rILbkDDd/53/Kl0MHqlhCngdGHe0djlGKyq29IZMEyseJlCvQc3Qk3Fk
+ XjxzOfwJMhHw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,409,1596524400"; 
-   d="scan'208";a="349257197"
+   d="scan'208";a="349257206"
 Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Oct 2020 09:26:12 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 23 Oct 2020 09:26:13 -0700
 From:   Jianxin Xiong <jianxin.xiong@intel.com>
 To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
 Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
@@ -36,9 +36,9 @@ Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Christian Koenig <christian.koenig@amd.com>,
         Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH v6 2/4] RDMA/core: Add device method for registering dma-buf base memory region
-Date:   Fri, 23 Oct 2020 09:39:59 -0700
-Message-Id: <1603471201-32588-3-git-send-email-jianxin.xiong@intel.com>
+Subject: [PATCH v6 3/4] RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+Date:   Fri, 23 Oct 2020 09:40:00 -0700
+Message-Id: <1603471201-32588-4-git-send-email-jianxin.xiong@intel.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
 References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
@@ -46,9 +46,8 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dma-buf based memory region requires one extra parameter and is processed
-quite differently. Adding a separate method allows clean separation from
-regular memory regions.
+Implement a new uverbs ioctl method for memory registration with file
+descriptor as an extra parameter.
 
 Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
 Reviewed-by: Sean Hefty <sean.hefty@intel.com>
@@ -56,46 +55,191 @@ Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
 Acked-by: Christian Koenig <christian.koenig@amd.com>
 Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 ---
- drivers/infiniband/core/device.c | 1 +
- include/rdma/ib_verbs.h          | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/uverbs_std_types_mr.c | 112 ++++++++++++++++++++++++++
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++++
+ 2 files changed, 126 insertions(+)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index feaec8d..d6cd0ac 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2653,6 +2653,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, read_counters);
- 	SET_DEVICE_OP(dev_ops, reg_dm_mr);
- 	SET_DEVICE_OP(dev_ops, reg_user_mr);
-+	SET_DEVICE_OP(dev_ops, reg_user_mr_dmabuf);
- 	SET_DEVICE_OP(dev_ops, req_ncomp_notif);
- 	SET_DEVICE_OP(dev_ops, req_notify_cq);
- 	SET_DEVICE_OP(dev_ops, rereg_user_mr);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 9bf6c31..5f0f8be 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2,7 +2,7 @@
+diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
+index 9b22bb5..f22e58b 100644
+--- a/drivers/infiniband/core/uverbs_std_types_mr.c
++++ b/drivers/infiniband/core/uverbs_std_types_mr.c
+@@ -1,5 +1,6 @@
  /*
-  * Copyright (c) 2004 Mellanox Technologies Ltd.  All rights reserved.
-  * Copyright (c) 2004 Infinicon Corporation.  All rights reserved.
-- * Copyright (c) 2004 Intel Corporation.  All rights reserved.
-+ * Copyright (c) 2004, 2020 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004 Voltaire Corporation.  All rights reserved.
-  * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-@@ -2429,6 +2429,10 @@ struct ib_device_ops {
- 	struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
- 				     u64 virt_addr, int mr_access_flags,
- 				     struct ib_udata *udata);
-+	struct ib_mr *(*reg_user_mr_dmabuf)(struct ib_pd *pd, u64 offset,
-+				     u64 length, u64 virt_addr, int fd,
-+				     int mr_access_flags,
-+				     struct ib_udata *udata);
- 	int (*rereg_user_mr)(struct ib_mr *mr, int flags, u64 start, u64 length,
- 			     u64 virt_addr, int mr_access_flags,
- 			     struct ib_pd *pd, struct ib_udata *udata);
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
++ * Copyright (c) 2020, Intel Corporation.  All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -178,6 +179,85 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_MR)(
+ 	return IS_UVERBS_COPY_ERR(ret) ? ret : 0;
+ }
+ 
++static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
++	struct uverbs_attr_bundle *attrs)
++{
++	struct ib_uobject *uobj =
++		uverbs_attr_get_uobject(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
++	struct ib_pd *pd =
++		uverbs_attr_get_obj(attrs, UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE);
++	struct ib_device *ib_dev = pd->device;
++
++	u64 offset, length, virt_addr;
++	u32 fd, access_flags;
++	struct ib_mr *mr;
++	int ret;
++
++	if (!ib_dev->ops.reg_user_mr_dmabuf)
++		return -EOPNOTSUPP;
++
++	ret = uverbs_copy_from(&offset, attrs,
++			       UVERBS_ATTR_REG_DMABUF_MR_OFFSET);
++	if (ret)
++		return ret;
++
++	ret = uverbs_copy_from(&length, attrs,
++			       UVERBS_ATTR_REG_DMABUF_MR_LENGTH);
++	if (ret)
++		return ret;
++
++	ret = uverbs_copy_from(&virt_addr, attrs,
++			       UVERBS_ATTR_REG_DMABUF_MR_IOVA);
++	if (ret)
++		return ret;
++
++	ret = uverbs_copy_from(&fd, attrs,
++			       UVERBS_ATTR_REG_DMABUF_MR_FD);
++	if (ret)
++		return ret;
++
++	ret = uverbs_get_flags32(&access_flags, attrs,
++				 UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
++				 IB_ACCESS_SUPPORTED);
++	if (ret)
++		return ret;
++
++	ret = ib_check_mr_access(access_flags);
++	if (ret)
++		return ret;
++
++	mr = pd->device->ops.reg_user_mr_dmabuf(pd, offset, length, virt_addr,
++						fd, access_flags,
++						&attrs->driver_udata);
++	if (IS_ERR(mr))
++		return PTR_ERR(mr);
++
++	mr->device  = pd->device;
++	mr->pd      = pd;
++	mr->type    = IB_MR_TYPE_USER;
++	mr->uobject = uobj;
++	atomic_inc(&pd->usecnt);
++
++	uobj->object = mr;
++
++	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
++			     &mr->lkey, sizeof(mr->lkey));
++	if (ret)
++		goto err_dereg;
++
++	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
++			     &mr->rkey, sizeof(mr->rkey));
++	if (ret)
++		goto err_dereg;
++
++	return 0;
++
++err_dereg:
++	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
++
++	return ret;
++}
++
+ DECLARE_UVERBS_NAMED_METHOD(
+ 	UVERBS_METHOD_ADVISE_MR,
+ 	UVERBS_ATTR_IDR(UVERBS_ATTR_ADVISE_MR_PD_HANDLE,
+@@ -243,6 +323,37 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_MR)(
+ 			    UVERBS_ATTR_TYPE(u32),
+ 			    UA_MANDATORY));
+ 
++DECLARE_UVERBS_NAMED_METHOD(
++	UVERBS_METHOD_REG_DMABUF_MR,
++	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
++			UVERBS_OBJECT_MR,
++			UVERBS_ACCESS_NEW,
++			UA_MANDATORY),
++	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
++			UVERBS_OBJECT_PD,
++			UVERBS_ACCESS_READ,
++			UA_MANDATORY),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_OFFSET,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_MANDATORY),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_MANDATORY),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_IOVA,
++			   UVERBS_ATTR_TYPE(u64),
++			   UA_MANDATORY),
++	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_DMABUF_MR_FD,
++			   UVERBS_ATTR_TYPE(u32),
++			   UA_MANDATORY),
++	UVERBS_ATTR_FLAGS_IN(UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
++			     enum ib_access_flags),
++	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
++			    UVERBS_ATTR_TYPE(u32),
++			    UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
++			    UVERBS_ATTR_TYPE(u32),
++			    UA_MANDATORY));
++
+ DECLARE_UVERBS_NAMED_METHOD_DESTROY(
+ 	UVERBS_METHOD_MR_DESTROY,
+ 	UVERBS_ATTR_IDR(UVERBS_ATTR_DESTROY_MR_HANDLE,
+@@ -253,6 +364,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_MR)(
+ DECLARE_UVERBS_NAMED_OBJECT(
+ 	UVERBS_OBJECT_MR,
+ 	UVERBS_TYPE_ALLOC_IDR(uverbs_free_mr),
++	&UVERBS_METHOD(UVERBS_METHOD_REG_DMABUF_MR),
+ 	&UVERBS_METHOD(UVERBS_METHOD_DM_MR_REG),
+ 	&UVERBS_METHOD(UVERBS_METHOD_MR_DESTROY),
+ 	&UVERBS_METHOD(UVERBS_METHOD_ADVISE_MR),
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index 7968a18..dafc7eb 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2018, Mellanox Technologies inc.  All rights reserved.
++ * Copyright (c) 2020, Intel Corporation. All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -251,6 +252,7 @@ enum uverbs_methods_mr {
+ 	UVERBS_METHOD_MR_DESTROY,
+ 	UVERBS_METHOD_ADVISE_MR,
+ 	UVERBS_METHOD_QUERY_MR,
++	UVERBS_METHOD_REG_DMABUF_MR,
+ };
+ 
+ enum uverbs_attrs_mr_destroy_ids {
+@@ -272,6 +274,18 @@ enum uverbs_attrs_query_mr_cmd_attr_ids {
+ 	UVERBS_ATTR_QUERY_MR_RESP_IOVA,
+ };
+ 
++enum uverbs_attrs_reg_dmabuf_mr_cmd_attr_ids {
++	UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
++	UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE,
++	UVERBS_ATTR_REG_DMABUF_MR_OFFSET,
++	UVERBS_ATTR_REG_DMABUF_MR_LENGTH,
++	UVERBS_ATTR_REG_DMABUF_MR_IOVA,
++	UVERBS_ATTR_REG_DMABUF_MR_FD,
++	UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS,
++	UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
++	UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
++};
++
+ enum uverbs_attrs_create_counters_cmd_attr_ids {
+ 	UVERBS_ATTR_CREATE_COUNTERS_HANDLE,
+ };
 -- 
 1.8.3.1
 
